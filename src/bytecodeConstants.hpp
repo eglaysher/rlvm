@@ -1,0 +1,3 @@
+
+const int INTZ_LOCATION_IN_BYTECODE = 25;
+const int INTL_LOCATION_IN_BYTECODE = 11;

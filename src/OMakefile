@@ -1,0 +1,51 @@
+if $(not $(defined-env VERBOSE))
+  OMakeFlags(-S --progress)
+  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/
+
+# for testing
+#CXXFLAGS += -DWIN32
+
+.PHONY: clean
+
+########
+
+LRLFILES[] =
+  mmap_impl
+  filemap
+  compression
+  expression
+  bytecode
+  scenario
+  archive
+  reference
+  RLMachine
+  RLModule
+  RLOperation
+  Module_Jmp
+  Module_Sys
+  Module_Str
+  Module_Mem
+
+
+alldefs.h.gch: alldefs.h
+  $(CXX) $(CXXFLAGS) -I. -c $< -o $@
+
+kfnLexer.cc: kfnLexer.lex
+  $(LEX) -okfnLexer.cc kfnLexer.lex
+
+kfnParser.tab.cc: kfnParser.yy
+  $(YACC) -d $(YFLAGS) kfnParser.yy
+
+CGeneratedFiles(alldefs.h.gch)
+StaticCLibrary(libreallive, $(LRLFILES))
+
+########
+
+LIBS += libreallive$(EXT_LIB)
+.DEFAULT: libreallive$(EXT_LIB) $(CXXProgram test, sigh)
+test$(EXE): libreallive$(EXT_LIB) 
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc test$(EXE) test$(EXE).stackdump
