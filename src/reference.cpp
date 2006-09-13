@@ -18,7 +18,7 @@ IntAccessor& IntAccessor::operator=(const int newValue) {
 
 StringAccessor::operator std::string() const
 {
-  return it->machine->getStringValue(it->type, it->location); 
+  return it->machine->getStringValue(it->type, it->location);
 }
 
 // -----------------------------------------------------------------------
@@ -28,3 +28,8 @@ StringAccessor& StringAccessor::operator=(const std::string& newValue) {
   return *this;
 }
 
+// -----------------------------------------------------------------------
+
+bool StringAccessor::operator==(const std::string& rhs) {
+  return operator std::string() == rhs;
+}

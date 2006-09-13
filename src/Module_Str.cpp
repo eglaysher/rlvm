@@ -32,16 +32,113 @@
 #include <iostream>
 
 using namespace std;
+using namespace Reallive;
 
 /** 
  * @defgroup ModuleStr Module 010, Str.
- * @ingroup Modules
  * 
  * Module that implements string handeling opcodes in the RealLive
  * virtual machine. This moduel implements commands such as strcpy,
  * strcat, strlen, et cetera.
  * @{
  */
+
+namespace {
+
+/** 
+ * Checks to see if the byte c is the first byte of a two byte
+ * character. RealLive encodes its strings in Shift_JIS, so we have to
+ * deal with this character encoding.
+ */
+inline bool is_lead_byte(const unsigned char c)
+{
+  return (c >= 0x81 && c <= 0xa0) || (c >= 0xe0 && c <= 0xef);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Advanced the Shift_JIS character string c by one char. 
+ * 
+ * @param c Pointer to the current character in the string
+ */
+void advanceOneChar(const unsigned char*& c)
+{
+  if(is_lead_byte(c[0]))
+  {
+    if(c[1] == '\0')
+      throw Error("Malformed Shift_JIS string!");
+    else
+      c += 2;
+  }
+  else
+    ++c;
+}
+
+/** 
+ * Copies a single Shift_JIS character into output and advances the string.
+ * 
+ * @param str The input character string
+ * @param output The output std::string
+ */
+void copyOneShiftJisCharacter(const unsigned char*& str, std::string& output)
+{
+  if(is_lead_byte(str[0]))
+  {
+    if(str[1] == '\0')
+      throw Error("Malformed Shift_JIS string!");
+    else {
+      output += *str++;
+      output += *str++;
+    }
+  }
+  else
+    output += *str++;
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Counts the number of Shift_JIS characters in a string.
+ * 
+ * @author This is really Haeleth's work.
+ * @param string The string to count
+ * @return The length of the string in characters
+ */
+size_t strcharlen(const unsigned char* string)
+{
+  if (!string) return 0;
+  size_t result = 0;
+  while (*string) {
+    ++result;
+    advanceOneChar(string);
+  } 
+  return result;
+}
+
+/** 
+ * Changes the case of a character to uppercase. In some (most?)
+ * versions of gcc, toupper is a template, and thus can't be used
+ * in a transform.
+ * 
+ * @param x Input character
+ * @return Uppercase character
+ */
+static char ToUpper(char x) { return toupper(x); }
+
+/** 
+ * Changes the case of a character to lowercase. In some (most?)
+ * versions of gcc, tolower is a template, and thus can't be used
+ * in a transform.
+ * 
+ * @param x Input character
+ * @return Lowercase character
+ */
+static char ToLower(char x) { return tolower(x); }
+
+}
+
+// -----------------------------------------------------------------------
 
 /** 
  * @brief Implement op<1:Str:00000, 0>, fun strcpy(str, strC).
@@ -100,10 +197,23 @@ struct Str_strclear_1 : public RLOp_Void_2< StrReference_T, StrReference_T > {
 // -----------------------------------------------------------------------
 
 /** 
- * @brief Implement op<1:Str:00003, 0>, fun strlen(strC)
- * 
- * Returns the length of value; Double-byte characters are counted as
- * two bytes.
+ * Implement op<1:Str:00002, 0>, fun strcat(str, strC). Concatenates
+ * the string into the memory location of the first.
+ */
+struct Str_strcat : public RLOp_Void_2< StrReference_T, StrConstant_T > {
+  void operator()(RLMachine& machine, StringReferenceIterator it, 
+                  string append) {
+    string s = *it;
+    s += append;
+    *it = s;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implement op<1:Str:00003, 0>, fun strlen(strC). Returns the length
+ * of value; Double-byte characters are counted as two bytes.
  */
 struct Str_strlen : public RLOp_Store_1< StrConstant_T > {
   int operator()(RLMachine& machine, string value) {
@@ -131,18 +241,209 @@ struct Str_strcmp : public RLOp_Store_2< StrConstant_T, StrConstant_T> {
 // -----------------------------------------------------------------------
 
 /** 
- * 
- * 
+ * Implement op<1:Str:00005, 0>, fun strsub(str, strC, intC). 
+ *
+ * Returns the substring, starting at offset.
  */
 struct Str_strsub_0 : public RLOp_Void_3< StrReference_T, StrConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
-                  int length) {
+                  int offset) {
+    string input = *dest;
+    const unsigned char* str = (const unsigned char*)input.c_str();
+    string output;
     
+    // Advance the string to the first 
+    while(offset > 0) {
+      if(*str == '\0')
+        throw Error("Error in strsub: offset is greater then string length");
+
+      advanceOneChar(str);
+      offset--;
+    }
+
+    // Copy the rest of the string to the output buffer. We do not need to
+    // worry about bytes vs. characters since we aren't worrying about the
+    // number of characters.
+    while(*str) {
+      output += *str++;
+    }
+
+    *dest = output;
   }
 };
 
 // -----------------------------------------------------------------------
+
+/** 
+ * Implement op<1:Str:00005, 1>, fun strsub(str, strC, intC). 
+ *
+ * Returns the substring of length length, starting at offset.
+ */
+struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
+                                          IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
+                  int offset, int length) {
+    string input = *dest;
+    const unsigned char* str = (const unsigned char*)input.c_str();
+    string output;
+    
+    // Advance the string to the first 
+    while(offset > 0) {
+      if(*str == '\0')
+        throw Error("Error in strsub: offset is greater then string length");
+
+      advanceOneChar(str);
+      offset--;
+    }
+
+    while(*str && length > 0) 
+    {
+      copyOneShiftJisCharacter(str, output);
+      length--;
+    }
+
+    *dest = output;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00006, 0>, fun strrsub(str, strC, intC). 
+ * 
+ */
+struct Str_strrsub_0 : public Str_strsub_0 {
+  void operator()(RLMachine& machine, StringReferenceIterator dest, 
+                  string source, int offsetFromBack) {
+    int offset = strcharlen((const unsigned char*)source.c_str()) - 
+      offsetFromBack;
+    return operator()(machine, dest, source, offset);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00006, 1>, fun strrsub(str, strC, intC, intC). 
+ * 
+ */
+struct Str_strrsub_1 : public Str_strsub_1 {
+  void operator()(RLMachine& machine, StringReferenceIterator dest, 
+                  string source, int offsetFromBack, int length) {
+    if(length > offsetFromBack)
+      throw Error("strrsub: length of substring greater then offset in rsub");
+
+    int offset = strcharlen((const unsigned char*)source.c_str()) - 
+      offsetFromBack;
+    return operator()(machine, dest, source, offset, length);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00007, 0>, fun strcharlen(strC). Returns the
+ * number of characters (as opposed to bytes) in a string. This
+ * function deals with Shift_JIS characters properly.
+ */
+struct Str_strcharlen : public RLOp_Store_1< StrConstant_T > {
+  int operator()(RLMachine& machine, string val) {
+    return strcharlen((const unsigned char*)val.c_str());
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00008, 0>, fun strstrun(str, intC).
+ * 
+ * Truncates dest such that its length does not exceed length characters. 
+ */
+struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
+  void operator()(RLMachine& machine, StringReferenceIterator dest,
+                  int length) {
+    string input = *dest;
+    const unsigned char* str = (const unsigned char*)input.c_str();
+    string output;
+    while(*str && length > 0) {
+      copyOneShiftJisCharacter(str, output);
+      --length;
+    }
+    *dest = output;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00012, 0>, fun Uppercase(str).
+ * 
+ * Changes the case of all ASCII characters to UPPERCASE. This
+ * function does not affect full-width Shift_JIS characters.
+ */
+struct Str_Uppercase_0 : public RLOp_Void_1< StrReference_T > {
+  void operator()(RLMachine& machine, StringReferenceIterator dest) {
+    string input = *dest;
+    transform(input.begin(), input.end(), input.begin(), ToUpper);
+    *dest = input;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**a
+ * Implements op<1:Str:00012, 1>, fun Uppercase(strC, str).
+ * 
+ * Changes the case of all ASCII characters to UPPERCASE. This
+ * function does not affect full-width Shift_JIS characters.
+ */
+struct Str_Uppercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+  void operator()(RLMachine& machine, string input,
+                  StringReferenceIterator dest) {
+    transform(input.begin(), input.end(), input.begin(), ToUpper);
+    *dest = input;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00012, 0>, fun Lowercase(str).
+ * 
+ * Changes the case of all ASCII characters to LOWERCASE. This
+ * function does not affect full-width Shift_JIS characters.
+ */
+struct Str_Lowercase_0 : public RLOp_Void_1< StrReference_T > {
+  void operator()(RLMachine& machine, StringReferenceIterator dest) {
+    string input = *dest;
+    transform(input.begin(), input.end(), input.begin(), ToLower);
+    *dest = input;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements op<1:Str:00012, 1>, fun Lowercase(strC, str).
+ * 
+ * Changes the case of all ASCII characters to LOWERCASE. This
+ * function does not affect full-width Shift_JIS characters.
+ */
+struct Str_Lowercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+  void operator()(RLMachine& machine, string input,
+                  StringReferenceIterator dest) {
+    transform(input.begin(), input.end(), input.begin(), ToLower);
+    *dest = input;
+  }
+};
+
+// -----------------------------------------------------------------------
+
 
 
 // -----------------------------------------------------------------------
@@ -199,8 +500,22 @@ StrModule::StrModule()
   addOpcode(  0, 1, new Str_strcpy_1);
   addOpcode(  1, 0, new Str_strclear_0);
   addOpcode(  1, 1, new Str_strclear_1);
-  addOpcode(  2, 0, new Str_strlen);
-  addOpcode(  3, 0, new Str_strcmp);
+  addOpcode(  2, 0, new Str_strcat);
+  addOpcode(  3, 0, new Str_strlen);
+  addOpcode(  4, 0, new Str_strcmp);
+  addOpcode(  5, 0, new Str_strsub_0);
+  addOpcode(  5, 1, new Str_strsub_1);
+  addOpcode(  6, 0, new Str_strrsub_0);
+  addOpcode(  6, 1, new Str_strrsub_1);
+  addOpcode(  7, 0, new Str_strcharlen);
+  addOpcode(  8, 0, new Str_strtrunc);
+  // hantozen (!?!?)
+  // zentohan (!?!?)
+  addOpcode( 12, 0, new Str_Uppercase_0);
+  addOpcode( 12, 1, new Str_Uppercase_1);
+  addOpcode( 13, 0, new Str_Lowercase_0);
+  addOpcode( 13, 1, new Str_Lowercase_1);
+
   addOpcode(100, 0, new Str_strout);
   addOpcode(100, 1, new Str_intout);
   addOpcode(200, 0, new Str_strused);

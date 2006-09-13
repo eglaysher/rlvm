@@ -42,6 +42,8 @@ public:
   operator std::string() const;
 
   StringAccessor& operator=(const std::string& newValue);
+
+  bool operator==(const std::string& rhs);
 };
 
 /** 
