@@ -123,8 +123,8 @@ size_t strcharlen(const unsigned char* string)
 
 /** 
  * Changes the case of a character to uppercase. In some (most?)
- * versions of gcc, toupper is a template, and thus can't be used
- * in a transform.
+ * versions of gcc, toupper is a macro, and thus can't be used in a
+ * transform.
  * 
  * @param x Input character
  * @return Uppercase character
@@ -133,8 +133,8 @@ static char ToUpper(char x) { return toupper(x); }
 
 /** 
  * Changes the case of a character to lowercase. In some (most?)
- * versions of gcc, tolower is a template, and thus can't be used
- * in a transform.
+ * versions of gcc, tolower is a macro, and thus can't be used in a
+ * transform.
  * 
  * @param x Input character
  * @return Lowercase character
@@ -185,7 +185,8 @@ struct Str_strcpy_1 : public RLOp_Void_3< StrReference_T, StrConstant_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string val,
                   int count) {
-    fill_n(dest, count, val);
+    *dest = val.substr(0, count);
+//    fill_n(dest, count, val);
   }
 };
 
@@ -576,22 +577,55 @@ struct Str_digits : public RLOp_Store_1< IntConstant_T > {
  * decimal representation of value, and returns the total number of
  * digits in the number.
  * 
- * @todo Refactor copypasta code in here from digits and strrsub into
- * shared functions
- * @note Who is *designing* this thing!?
+ * @note Who the hell thought this function was a good idea?
  */
 struct Str_digit : public RLOp_Store_3< IntConstant_T, IntReference_T, 
                                         IntConstant_T > {
   int operator()(RLMachine& machine, int value, 
                  IntReferenceIterator dest, int index) {
-//    dest = 
-    
-
-    // digits implementation
     string number = rl_itoa_implementation(abs(value), 1, '0');
+    *dest = number[number.size() - index] - '0';
     return number.size();
   }
 };
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00030, 0>, fun strpos(strC, strC).
+ * 
+ * Returns the offset of the first instance of substring in str, or
+ * -1 if substring is not found.
+ */
+struct Str_strpos : public RLOp_Store_2< StrConstant_T, StrConstant_T > {
+  int operator()(RLMachine& machine, string str, string substring) {
+    size_t pos = str.find(substring);
+    if(pos == string::npos)
+      return -1;
+    else
+      return pos;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00031, 0>, fun strpos(strC, strC).
+ * 
+ * As strpos, but returns the offset of the last instance of
+ * substring. If substring appears only once, or not at all, in
+ * string, the behaviour is identical with that of strpos.
+ */
+struct Str_strlpos : public RLOp_Store_2< StrConstant_T, StrConstant_T > {
+  int operator()(RLMachine& machine, string str, string substring) {
+    size_t pos = str.rfind(substring);
+    if(pos == string::npos)
+      return -1;
+    else
+      return pos;
+  }
+};
+
 
 // -----------------------------------------------------------------------
 
@@ -670,7 +704,10 @@ StrModule::StrModule()
   addOpcode( 17, 1, new Str_itoa_1);
   addOpcode( 18, 0, new Str_atoi);
   addOpcode( 19, 0, new Str_digits);
-  
+  addOpcode( 20, 0, new Str_digit);
+  addOpcode( 30, 0, new Str_strpos);
+  addOpcode( 31, 1, new Str_strlpos);
+
   addOpcode(100, 0, new Str_strout);
   addOpcode(100, 1, new Str_intout);
   addOpcode(200, 0, new Str_strused);
