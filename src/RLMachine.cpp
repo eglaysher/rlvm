@@ -83,6 +83,15 @@ void RLMachine::executeNextInstruction()
 
 // -----------------------------------------------------------------------
 
+void RLMachine::executeUntilHalted()
+{
+  while(!halted()) {
+    executeNextInstruction();
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::advanceInstructionPointer()
 {
   callStack.top().ip++;

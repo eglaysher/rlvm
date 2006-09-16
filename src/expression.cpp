@@ -288,7 +288,8 @@ static ExpressionPiece* get_string(const char*& src)
 {
   // Get the length of this string in the bytecode:
   size_t length = next_string(src);
-  string s = string(src, src + length);
+  // The string is quoted, so ignore the first and last characters.
+  string s = string(src + 1, src + length - 1);
 
   // Increment the source by that many characters
   src += length;

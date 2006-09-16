@@ -21,6 +21,9 @@
 // -----------------------------------------------------------------------
 
 #include "Module_Str.hpp"
+#include "Archive.h"
+#include "RLMachine.hpp"
+
 #include "tut.hpp"
 
 /**
@@ -65,6 +68,13 @@ namespace tut
   template<>
   void object::test<1>()
   {
+    Reallive::Archive arc("test/seenFiles/strcpy_0.TXT");
+    RLMachine rlmachine(arc);
+    rlmachine.attatchModule(new StrModule);
+    rlmachine.executeUntilHalted();
+
+    string one = rlmachine.getStringValue(0x12, 0);
+    ensure_equals("strcpy_0 script failed to set value", one, "valid");
   }
 }
 

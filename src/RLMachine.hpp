@@ -222,6 +222,15 @@ public:
   void executeNextInstruction();
 
   /** 
+   * Call executeNextInstruction() repeatedly until the RLMachine is
+   * halted. This function is used in unit testing, and would never be
+   * called during real usage of an RLMachine instance since other
+   * subsytems (graphics, sound, etc) would need to have a chance to
+   * fire between RLMachine instructions.
+   */
+  void executeUntilHalted();
+
+  /** 
    * Increments the stack pointer in the current frame. If we have run
    * off the end of the current scenario, set the halted bit.
    */
