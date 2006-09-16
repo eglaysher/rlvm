@@ -308,8 +308,7 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
                   int offset, int length) {
-    string input = *dest;
-    const unsigned char* str = (const unsigned char*)input.c_str();
+    const unsigned char* str = (const unsigned char*)source.c_str();
     string output;
     
     // Advance the string to the first 

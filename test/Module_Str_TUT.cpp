@@ -267,7 +267,6 @@ void object::test<7>()
 
 /** 
  * First strsub_0 test. Make sure it works on ASCII strings.
- * 
  */
 template<>
 template<>
@@ -287,7 +286,11 @@ void object::test<8>()
 
 /** 
  * Second strsub_0 test. Make sure it works on Shift_JIS strings.
- * 
+ *
+ * @code
+ * strS[0] = "わたしの名前、まだ覚えてる？"
+ * strS[1] = strsub(strS[0], 7)
+ * @endcode
  */
 template<>
 template<>
@@ -301,6 +304,54 @@ void object::test<9>()
   ensure_equals("strsub returned wrong value",
                 rlmachine.getStringValue(0x12, 1),
                 "\x82\xDC\x82\xBE\x8A\x6F\x82\xA6\x82\xC4\x82\xE9\x81\x48");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * First strsub_1 test. Make sure it deals with ASCII.
+ * 
+ * @code
+ * strS[0] = "valid"
+ * strS[1] = strsub(strS[0], 1, 2)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<10>()
+{
+  Reallive::Archive arc("test/seenFiles/strsub_2.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strsub returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "al");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Second strsub_1 test. Make sure it works on Shift_JIS strings.
+ *
+ * @code
+ * strS[0] = "わたしの名前、まだ覚えてる？"
+ * strS[1] = strsub(strS[0], 7)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<11>()
+{
+  Reallive::Archive arc("test/seenFiles/strsub_3.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strsub returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "\x96\xBC\x91\x4F");
 }
 
 }
