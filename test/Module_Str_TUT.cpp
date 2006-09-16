@@ -27,55 +27,155 @@
 #include "tut.hpp"
 
 /**
- * This example test group tests std::auto_ptr implementation.
- * Tests are far from full, of course.
+ * @file
+ * @ingroup TestCase
+ *
+ * This test group tests the String module. 
  */
+
+
 namespace tut
 {
-  /**
-   * Struct which may contain test data members.
-   * Test object (class that contains test methods)
-   * will inherite from it, so each test method can
-   * access members directly.
-   *
-   * Additionally, for each test, test object is re-created
-   * using defaut constructor. Thus, any prepare work can be put
-   * into default constructor.
-   *
-   * Finally, after each test, test object is destroyed independently
-   * of test result, so any cleanup work should be located in destructor.
-   */
-  struct Module_Str_data
-  { 
 
-  };
+/**
+ * Struct which may contain test data members.
+ * Test object (class that contains test methods)
+ * will inherite from it, so each test method can
+ * access members directly.
+ *
+ * Additionally, for each test, test object is re-created
+ * using defaut constructor. Thus, any prepare work can be put
+ * into default constructor.
+ *
+ * Finally, after each test, test object is destroyed independently
+ * of test result, so any cleanup work should be located in destructor.
+ */
+struct Module_Str_data
+{ 
 
-  /**
-   * This group of declarations is just to register
-   * test group in test-application-wide singleton.
-   * Name of test group object (auto_ptr_group) shall
-   * be unique in tut:: namespace. Alternatively, you
-   * you may put it into anonymous namespace.
-   */
-  typedef test_group<Module_Str_data> tf;
-  typedef tf::object object;
-  tf auto_ptr_group("Module_Str");
+};
 
-  /**
-   * Checks strcpy_0...
-   */
-  template<>
-  template<>
-  void object::test<1>()
-  {
-    Reallive::Archive arc("test/seenFiles/strcpy_0.TXT");
-    RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new StrModule);
-    rlmachine.executeUntilHalted();
+/**
+ * This group of declarations is just to register
+ * test group in test-application-wide singleton.
+ * Name of test group object (auto_ptr_group) shall
+ * be unique in tut:: namespace. Alternatively, you
+ * you may put it into anonymous namespace.
+ */
+typedef test_group<Module_Str_data> tf;
+typedef tf::object object;
+tf module_str_group("Module_Str");
 
-    string one = rlmachine.getStringValue(0x12, 0);
-    ensure_equals("strcpy_0 script failed to set value", one, "valid");
-  }
+// -----------------------------------------------------------------------
+
+/**
+ * Tests strcpy_0, which should copy the string valid int strS[0].
+ *
+ * Corresponding kepago listing:
+ * @code
+ * strS[0] = "valid"
+ * @endcode
+ */
+template<>
+template<>
+void object::test<1>()
+{
+  Reallive::Archive arc("test/seenFiles/strcpy_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  string one = rlmachine.getStringValue(0x12, 0);
+  ensure_equals("strcpy_0 script failed to set value", one, "valid");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests strcpy_1, which should copy the first 2 chracters into strS[0].
+ * 
+ * Corresponding kepago listing:
+ * @code
+ * strcpy(strS[0], "valid", 2)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<2>()
+{
+  Reallive::Archive arc("test/seenFiles/strcpy_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  string one = rlmachine.getStringValue(0x12, 0);
+  ensure_equals("strcpy_1 script failed to set value", one, "va");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests strclear_0, which should clear the value of a string.
+ * 
+ * Corresponding kepago listing:
+ * @code
+ * strS[0] = "valid"
+ * strS[1] = "valid"
+ * strclear(strS[0])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<3>()
+{
+  Reallive::Archive arc("test/seenFiles/strclear_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  string one = rlmachine.getStringValue(0x12, 0);
+  ensure_equals("strclear_0 script failed to unset value", one, "");
+
+  // We include this check to make sure the machine is sane and that
+  // the first assignment works, so strclear doesn't appear to work
+  // because assignment failed.
+  string two = rlmachine.getStringValue(0x12, 1);
+  ensure_equals("strclear_0 script failed to set value", two, "valid");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests strclear_1, which should clear out a whole range of values.
+ * 
+ * @code
+ * strS[0] = "valid"
+ * strS[1] = "valid"
+ * strS[2] = "valid"
+ * strclear(strS[0], strS[1])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<4>()
+{
+  Reallive::Archive arc("test/seenFiles/strclear_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  string one = rlmachine.getStringValue(0x12, 0);
+  ensure_equals("strclear_0 script failed to unset value", one, "");
+  string two = rlmachine.getStringValue(0x12, 1);
+  ensure_equals("strclear_0 script failed to unset value", two, "");
+
+  // We include this check to make sure the machine is sane and that
+  // the first assignment works, so strclear doesn't appear to work
+  // because assignment failed.
+  string three = rlmachine.getStringValue(0x12, 2);
+  ensure_equals("strclear_0 script failed to set value", three, "valid");
+}
+
 }
 
 
