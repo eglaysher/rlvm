@@ -17,4 +17,4 @@ KEPAGOFILES = $(glob *.ke)
 .DEFAULT: $(replacesuffixes .ke, .TXT, $(KEPAGOFILES))
 
 clean:
-  $(RM) *.TXT
+  $(RM) *~ *.TXT *.TXT.uncompressed
