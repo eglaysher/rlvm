@@ -379,7 +379,7 @@ struct Str_strcharlen : public RLOp_Store_1< StrConstant_T > {
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<1:Str:00008, 0>, fun strstrun(str, intC).
+ * Implements op<1:Str:00008, 0>, fun strstrunc(str, intC).
  * 
  * Truncates dest such that its length does not exceed length characters. 
  */

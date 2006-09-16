@@ -431,7 +431,7 @@ void object::test<14>()
 // -----------------------------------------------------------------------
 
 /** 
- * strcharlen test on ASCII strings
+ * strcharlen test on Shift_JIS strings
  * 
  * @code
  * strS[0] = "わたしの名前、まだ覚えてる？"
@@ -451,6 +451,111 @@ void object::test<15>()
                 rlmachine.getIntValue(0, 0),
                 14);
 }
+
+// -----------------------------------------------------------------------
+
+/** 
+ * strstrunc test on ASCII characters
+ * 
+ * @code
+ * strS[0] = "valid"
+ * strtrunc(strS[0], 2)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<16>()
+{
+  Reallive::Archive arc("test/seenFiles/strtrunc_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strtrunc returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "va"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * strstrunc test on ASCII characters
+ * 
+ * @code
+ * strS[0] = "valid"
+ * strtrunc(strS[0], 2)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<17>()
+{
+  Reallive::Archive arc("test/seenFiles/strtrunc_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strtrunc returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "\x82\xED\x82\xBD\x82\xB5"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test Uppercase_0
+ * 
+ * @code
+ * strS[0] = "Valid"
+ * // This syntax hurts my brain
+ * strS[0] = Uppercase()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<18>()
+{
+  Reallive::Archive arc("test/seenFiles/uppercase_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Uppercase returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "VALID"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test Uppercase_1
+ * 
+ * @code
+ * strS[0] = "Valid"
+ * // This syntax hurts my brain
+ * strS[0] = Uppercase()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<19>()
+{
+  Reallive::Archive arc("test/seenFiles/uppercase_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Uppercase touched strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "Valid"); 
+  ensure_equals("Uppercase returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "VALID"); 
+}
+
+// -----------------------------------------------------------------------
+
+
 
 
 
