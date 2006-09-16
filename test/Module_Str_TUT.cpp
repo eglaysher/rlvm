@@ -357,8 +357,14 @@ void object::test<11>()
 // -----------------------------------------------------------------------
 
 /** 
- * strrsub test.
+ * Strrsub test. (We don't need to test this on Shift_JIS since this
+ * calls the same code path as strsub, with just a different offset
+ * method.)
  * 
+ * @code
+ * strS[0] = "valid"
+ * strS[1] = strrsub(strS[0], 2)
+ * @endcode
  */
 template<>
 template<>
@@ -373,6 +379,80 @@ void object::test<12>()
                 rlmachine.getStringValue(0x12, 1),
                 "id"); 
 }
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Strrsub test.
+ * 
+ * @code
+ * strS[0] = "valid"
+ * strS[1] = strrsub(strS[0], 2, 1)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<13>()
+{
+  Reallive::Archive arc("test/seenFiles/strrsub_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strrsub returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "i"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * strcharlen test on ASCII strings
+ * 
+ * @code
+ * strS[0] = "valid"
+ * intA[0] = strcharlen(strS[0])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<14>()
+{
+  Reallive::Archive arc("test/seenFiles/strcharlen_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strcharlen returned wrong value",
+                rlmachine.getIntValue(0, 0),
+                5);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * strcharlen test on ASCII strings
+ * 
+ * @code
+ * strS[0] = "わたしの名前、まだ覚えてる？"
+ * intA[0] = strcharlen(strS[0])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<15>()
+{
+  Reallive::Archive arc("test/seenFiles/strcharlen_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strcharlen returned wrong value",
+                rlmachine.getIntValue(0, 0),
+                14);
+}
+
+
 
 }
 
