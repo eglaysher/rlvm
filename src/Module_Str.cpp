@@ -77,7 +77,7 @@ void advanceOneChar(const unsigned char*& c)
       c += 2;
   }
   else
-    ++c;
+    c += 1;
 }
 
 /** 
@@ -273,13 +273,12 @@ struct Str_strsub_0 : public RLOp_Void_3< StrReference_T, StrConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
                   int offset) {
-    string input = *dest;
-    const unsigned char* str = (const unsigned char*)input.c_str();
+    const unsigned char* str = (const unsigned char*)source.c_str();
     string output;
-    
+
     // Advance the string to the first 
     while(offset > 0) {
-      if(*str == '\0')
+      if(str[0] == '\0')
         throw Error("Error in strsub: offset is greater then string length");
 
       advanceOneChar(str);
@@ -290,7 +289,8 @@ struct Str_strsub_0 : public RLOp_Void_3< StrReference_T, StrConstant_T,
     // worry about bytes vs. characters since we aren't worrying about the
     // number of characters.
     while(*str) {
-      output += *str++;
+      output += *str;
+      str++;
     }
 
     *dest = output;

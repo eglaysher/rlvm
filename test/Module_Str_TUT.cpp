@@ -26,6 +26,9 @@
 
 #include "tut.hpp"
 
+
+#include <iostream>
+using namespace std;
 /**
  * @file
  * @ingroup TestCase
@@ -262,7 +265,43 @@ void object::test<7>()
 
 // -----------------------------------------------------------------------
 
+/** 
+ * First strsub_0 test. Make sure it works on ASCII strings.
+ * 
+ */
+template<>
+template<>
+void object::test<8>()
+{
+  Reallive::Archive arc("test/seenFiles/strsub_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
 
+  ensure_equals("strsub returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "lid");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Second strsub_0 test. Make sure it works on Shift_JIS strings.
+ * 
+ */
+template<>
+template<>
+void object::test<9>()
+{
+  Reallive::Archive arc("test/seenFiles/strsub_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strsub returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "\x82\xDC\x82\xBE\x8A\x6F\x82\xA6\x82\xC4\x82\xE9\x81\x48");
+}
 
 }
 
