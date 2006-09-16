@@ -165,16 +165,104 @@ void object::test<4>()
   rlmachine.executeUntilHalted();
 
   string one = rlmachine.getStringValue(0x12, 0);
-  ensure_equals("strclear_0 script failed to unset value", one, "");
+  ensure_equals("strclear_1 script failed to unset value", one, "");
   string two = rlmachine.getStringValue(0x12, 1);
-  ensure_equals("strclear_0 script failed to unset value", two, "");
+  ensure_equals("strclear_1 script failed to unset value", two, "");
 
   // We include this check to make sure the machine is sane and that
   // the first assignment works, so strclear doesn't appear to work
   // because assignment failed.
   string three = rlmachine.getStringValue(0x12, 2);
-  ensure_equals("strclear_0 script failed to set value", three, "valid");
+  ensure_equals("strclear_1 script failed to set value", three, "valid");
 }
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests strcat, which should end up with the string "valid" in strS[0].
+ *
+ * Corresponding kepago listing:
+ * @code
+ * strS[0] = "va"
+ * strS[0] += "lid"
+ * @endcode
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  Reallive::Archive arc("test/seenFiles/strcat_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  string one = rlmachine.getStringValue(0x12, 0);
+  ensure_equals("strcat script failed to set value", one, "valid");
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests strlen. Should be 5, for "vaild"
+ *
+ * Corresponding kepago listing:
+ * @code
+ * strS[0] = "valid"
+ * intA[0] = strlen(strS[0])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<6>()
+{
+  Reallive::Archive arc("test/seenFiles/strlen_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  int one = rlmachine.getIntValue(0, 0);
+  ensure_equals("strlen script failed to set the strlen(\"valid\") to 5", one, 5);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests strcmp; make sure that it gives the same values as normal strcmp.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * strS[0] = "a"
+ * strS[1] = "b"
+ * strS[2] = "b"
+ * strS[3] = "c"
+ * intA[0] = strcmp(strS[0], strS[1])
+ * intA[1] = strcmp(strS[1], strS[2])
+ * intA[2] = strcmp(strS[2], strS[3])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<7>()
+{
+  Reallive::Archive arc("test/seenFiles/strcmp_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Different values for strcmp(\"a\", \"b\")",
+                rlmachine.getIntValue(0, 0),
+                strcmp("a", "b"));
+  ensure_equals("Different values for strcmp(\"b\", \"b\")",
+                rlmachine.getIntValue(0, 1),
+                strcmp("b", "b"));
+  ensure_equals("Different values for strcmp(\"b\", \"c\")",
+                rlmachine.getIntValue(0, 2),
+                strcmp("b", "c"));
+}
+
+// -----------------------------------------------------------------------
+
+
 
 }
 
