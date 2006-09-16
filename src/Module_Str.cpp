@@ -341,7 +341,7 @@ struct Str_strrsub_0 : public Str_strsub_0 {
                   string source, int offsetFromBack) {
     int offset = strcharlen((const unsigned char*)source.c_str()) - 
       offsetFromBack;
-    return operator()(machine, dest, source, offset);
+    return Str_strsub_0::operator()(machine, dest, source, offset);
   }
 };
 
@@ -359,7 +359,7 @@ struct Str_strrsub_1 : public Str_strsub_1 {
 
     int offset = strcharlen((const unsigned char*)source.c_str()) - 
       offsetFromBack;
-    return operator()(machine, dest, source, offset, length);
+    return Str_strsub_1::operator()(machine, dest, source, offset, length);
   }
 };
 
@@ -415,7 +415,7 @@ struct Str_Uppercase_0 : public RLOp_Void_1< StrReference_T > {
 
 // -----------------------------------------------------------------------
 
-/**a
+/**
  * Implements op<1:Str:00012, 1>, fun Uppercase(strC, str).
  * 
  * Changes the case of all ASCII characters to UPPERCASE. This

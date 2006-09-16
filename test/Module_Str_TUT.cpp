@@ -354,6 +354,26 @@ void object::test<11>()
                 "\x96\xBC\x91\x4F");
 }
 
+// -----------------------------------------------------------------------
+
+/** 
+ * strrsub test.
+ * 
+ */
+template<>
+template<>
+void object::test<12>()
+{
+  Reallive::Archive arc("test/seenFiles/strrsub_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strrsub returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "id"); 
+}
+
 }
 
 
