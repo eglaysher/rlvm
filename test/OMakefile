@@ -1,0 +1,22 @@
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/
+
+.PHONY: clean
+
+.SUBDIRS: seenFiles
+
+INCLUDES += ../src
+LIBS += ../src/libreallive$(EXT_LIB)
+
+TEST_FILES[] = 
+  rlvmTest
+  Module_Str_TUT
+
+.DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
+rlvmTest$(EXE): ../src/libreallive$(EXT_LIB) seenFiles
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump

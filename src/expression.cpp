@@ -98,15 +98,9 @@ size_t next_data(const char* src)
 	else return next_expr(src);
 }
 
-void expect(const char*& src, char expected, const std::string& location)
-{
-  if(*src != expected)
-    throw Error(string("Unexpected character \"") + expected + " in " + location);
-  src++;
-}
-
-/** What follows is a fairly naieve translation of the code from Haeleth's disassembler, kprl.
- * Specifically, the functions starting with get_expr_token.
+/** What follows is a fairly naieve translation of the code from
+ * Haeleth's disassembler, kprl.  Specifically, the functions starting
+ * with get_expr_token.
  */
 ExpressionPiece* get_expr_token(const char*& src)
 {
@@ -114,19 +108,25 @@ ExpressionPiece* get_expr_token(const char*& src)
     src++;
     int value = read_i32(src);
     src += 4;
-//    cerr << value;
+//    cerr << "$(" <<value << ")";
     return new IntegerConstant(value);
   } else if(src[0] == 0xc8) {
     src++;
-//    cerr << "STORE";
+//    cerr << "$STORE";
     return new StoreRegisterExpressionPiece();
   } else if((src[0] != 0xc8 && src[0] != 0xff) && src[1] == '[') {
     int type = src[0];
     src += 2;
-//    cerr << "var[";
     ExpressionPiece* location = get_expression(src);
-    expect(src, ']', "get_expr_token");
-//    cerr << "]";
+
+    if(src[0] != ']') {
+      stringstream ss;
+      ss << "Unexpected character '" << src[0] << "' in get_expr_token"
+         << " (']' expected)";
+      throw Error(ss.str());
+    }
+    src++;
+
     return new MemoryReference(type, location);
   } else if(src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_token");
@@ -141,7 +141,6 @@ ExpressionPiece* get_expr_term(const char*& src)
 {
   if(src[0] == '$') {
     src++;
-//    cerr << "$";
     return get_expr_token(src);
   } else if(src[0] == '\\' && src[1] == 0x00) {
     // Uniary plus? We ignore.
@@ -154,7 +153,16 @@ ExpressionPiece* get_expr_term(const char*& src)
   } else if(src[0] == '(') {
     src++;
     ExpressionPiece* p = get_expr_bool(src);
-    expect(src, ')', "get_expr_term");
+//    cerr << "P:" << p->isLValue() << endl;
+//    cerr << "Src: " << src << endl;
+//    expect(src, ')', "get_expr_term");
+    if(src[0] != ')') {
+      stringstream ss;
+      ss << "Unexpected character '" << src[0] << "' in get_expr_term"
+         << " (')' expected)";
+      throw Error(ss.str());
+    }
+    src++;
     return p;
   } else if(src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_term");

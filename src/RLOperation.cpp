@@ -39,6 +39,11 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
 
   // Now dispatch based on these parameters.
   dispatch(machine, parameterPieces);
+
+  // By default, we advacne the instruction pointer on any instruction we
+  // perform. Weird special cases all derive from RLOp_SpecialCase, which
+  // redefines the dispatcher, so this is ok.
+  machine.advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------

@@ -1,15 +1,17 @@
+intA[0] = intA[1] > 0
+
 setarray(intA[0], 1, 2, 3, 4)
 setarray(intB[0], 5, 6, 7, 8)
 setarray(intC[0], 9, 10, 11, 12)
 intD[0] = sums({intA[0], intA[3]}, {intB[0], intB[3]}, {intC[0], intC[3]})
-intD[1] = 0
+intD[1] = 1
 
-goto_if(intD[1]) @after
+goto_if(intD[1] > 0) @after
 //goto @after
 intout(0)
 intout(0)
 intout(0)
 intout(0)
 
-@after
+ @after
 intout(intD[0])

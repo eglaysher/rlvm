@@ -30,7 +30,6 @@ using namespace Reallive;
 
 /**
  * @defgroup ModuleJmp Module 001, Jmp.
- * @ingroup Modules
  *
  * Module that describes flow control opcodes in the RealLive virtual
  * machine. This module implements commands such as goto, gosub, ret,
@@ -47,7 +46,7 @@ using namespace Reallive;
  * 
  * Jumps to the supplied label in the current scenario.
  */
-struct Jmp_Goto : public RLOp_SpecialCase {
+struct Jmp_goto : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& f) {
     const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
     const Pointers& pointers = gotoElement.get_pointersRef();
@@ -65,13 +64,11 @@ struct Jmp_Goto : public RLOp_SpecialCase {
  * Conditional equivalents of goto; goto_if() jumps to @label if the
  * value of condition is non-zero
  */
-struct Jmp_Goto_if : public RLOp_SpecialCase {
+struct Jmp_goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& f) {
     const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
     const char* location = gotoElement.get_param(0).c_str();
       
-    // @todo Fix this. get_expression isn't working correctly.
-
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
     if(condition->getIntegerValue(machine)) {
@@ -80,6 +77,81 @@ struct Jmp_Goto_if : public RLOp_SpecialCase {
       // Goto the first pointer
       machine.gotoLocation(pointers[0]);
     }
+    else 
+      machine.advanceInstructionPointer();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements op<0:Jmp:00002, 0>, fun goto_if(<'condition').
+ *
+ * Conditional equivalents of goto; goto_if() jumps to @label if the
+ * value of condition is non-zero
+ */
+struct Jmp_goto_unless : public RLOp_SpecialCase {
+  void operator()(RLMachine& machine, const CommandElement& f) {
+    const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+    const char* location = gotoElement.get_param(0).c_str();
+      
+    auto_ptr<ExpressionPiece> condition(get_expression(location));
+      
+    if(!condition->getIntegerValue(machine)) {
+      const Pointers& pointers = gotoElement.get_pointersRef();
+      machine.gotoLocation(pointers[0]);
+    } 
+    else 
+      machine.advanceInstructionPointer();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<0:Jmp:00003, 0>, fun goto_on(special case).
+ * 
+ * Table jumps. expr is evaluated, and control passed to the
+ * corresponding label in the list, counting from 0. If expr falls
+ * outside the valid range, no jump takes place, and execution
+ * continues from the next statement instead.
+ */
+struct Jmp_goto_on : public RLOp_SpecialCase {
+  void operator()(RLMachine& machine, const CommandElement& f) {
+    const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+    const char* location = gotoElement.get_param(0).c_str();
+      
+    auto_ptr<ExpressionPiece> condition(get_expression(location));
+    int value = condition->getIntegerValue(machine);
+    const Pointers& pointers = gotoElement.get_pointersRef();
+    if(value >= 0 && value < pointers.size()) 
+      machine.gotoLocation(pointers[value]);
+    else
+      // If the value is not a valid pointer, simply increment.
+      machine.advanceInstructionPointer();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<0:Jmp:00004, 0>, fun goto_case (expr) { val1:
+ * @label1... } 
+ *
+ * Conditional table jumps. expr is evaluated, and
+ * compared to val1, val2, etc. in turn, and control passes to the
+ * label associated with the first matching value.
+ */
+struct Jmp_goto_case : public RLOp_SpecialCase {
+  void operator()(RLMachine& machine, const CommandElement& f) {
+    const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+    const char* location = gotoElement.get_param(0).c_str();
+      
+    auto_ptr<ExpressionPiece> condition(get_expression(location));
+    int value = condition->getIntegerValue(machine);
+    const Pointers& pointers = gotoElement.get_pointersRef();
+    
+//    cerr << "[" << pointers.size() << "/" << pointeres.idSize() << "]" << endl;
   }
 };
 
@@ -93,8 +165,10 @@ struct Jmp_Goto_if : public RLOp_SpecialCase {
 JmpModule::JmpModule()
   : RLModule("Jmp", 0, 1)
 {
-  addOpcode(0, 0, new Jmp_Goto);
-  addOpcode(1, 0, new Jmp_Goto_if);
+  addOpcode(0, 0, new Jmp_goto);
+  addOpcode(1, 0, new Jmp_goto_if);
+  addOpcode(2, 0, new Jmp_goto_unless);
+  addOpcode(3, 0, new Jmp_goto_on);
 }
 
 //@}

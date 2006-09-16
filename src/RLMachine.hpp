@@ -222,6 +222,12 @@ public:
   void executeNextInstruction();
 
   /** 
+   * Increments the stack pointer in the current frame. If we have run
+   * off the end of the current scenario, set the halted bit.
+   */
+  void advanceInstructionPointer();
+
+  /** 
    * Returns whether the machine is halted. When the machine is
    * halted, no more instruction may be executed, either because it
    * ran off the end of a scenario, or because the end() or halt()

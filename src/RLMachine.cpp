@@ -66,7 +66,7 @@ void RLMachine::executeNextInstruction()
       break;
     default:
       // Increment the IP for things we don't handle yet or very well.
-      callStack.top().ip++;
+      advanceInstructionPointer();
     }
   }
   catch(std::exception& e) {
@@ -79,10 +79,18 @@ void RLMachine::executeNextInstruction()
 
     cerr << "Uncaught exception: " << e.what() << endl;
   }
+}
 
+// -----------------------------------------------------------------------
+
+void RLMachine::advanceInstructionPointer()
+{
+  callStack.top().ip++;
   if(callStack.top().ip == callStack.top().scenario->end())
     m_halted = true;
 }
+
+// -----------------------------------------------------------------------
 
 /**
  *
@@ -164,9 +172,6 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
 }
 
 void RLMachine::executeCommand(const CommandElement& f) {
-//  cerr << "op<" << f.modtype() << ":" << f.module() << ":" << f.opcode() << ", " << f.overload()
-//       << ">" << endl;
-
   ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
   if(it != modules.end()) {
     it->dispatchFunction(*this, f);
@@ -175,9 +180,6 @@ void RLMachine::executeCommand(const CommandElement& f) {
     ss << "Undefined module<" << f.modtype() << ":" << f.module() << ">";
     throw Error(ss.str());
   }
-
-  // Increment the instruction pointer.
-  callStack.top().ip++;
 }
 
 // -----------------------------------------------------------------------

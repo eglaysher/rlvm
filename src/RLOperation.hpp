@@ -269,7 +269,13 @@ struct Complex2_T {
 // ----------------------------------------------------------------------
 
 /**
- * @brief Implements a special case operation.
+ * Implements a special case operation. This should be used with
+ * things that don't follow the usually function syntax in the
+ * bytecode, such as weird gotos, et cetera.
+ *
+ * RLOp_SpecialCase gives you complete control of the dispatch,
+ * performing no type checking, no parameter conversion, and no
+ * implicit instruction pointer advancement. 
  * 
  * @warning This is almost certainly not what you want. This is only
  * used to define handlers for CommandElements that aren't

@@ -49,6 +49,7 @@ public:
 	pointer_t& operator[] (long idx) { return targets.at(idx); }
 	const pointer_t& operator[] (long idx) const { return targets.at(idx); }
 	const size_t size() const { return targets.size(); }
+  const size_t idSize() const { return target_ids.size(); }
 
 	void set_pointers(ConstructionData& cdata);
 };

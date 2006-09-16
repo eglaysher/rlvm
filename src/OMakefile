@@ -1,6 +1,6 @@
-if $(not $(defined-env VERBOSE))
-  OMakeFlags(-S --progress)
-  export
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
 
 CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/
 
@@ -32,20 +32,14 @@ LRLFILES[] =
 alldefs.h.gch: alldefs.h
   $(CXX) $(CXXFLAGS) -I. -c $< -o $@
 
-kfnLexer.cc: kfnLexer.lex
-  $(LEX) -okfnLexer.cc kfnLexer.lex
-
-kfnParser.tab.cc: kfnParser.yy
-  $(YACC) -d $(YFLAGS) kfnParser.yy
-
 CGeneratedFiles(alldefs.h.gch)
 StaticCLibrary(libreallive, $(LRLFILES))
 
 ########
 
 LIBS += libreallive$(EXT_LIB)
-.DEFAULT: libreallive$(EXT_LIB) $(CXXProgram test, sigh)
-test$(EXE): libreallive$(EXT_LIB) 
+.DEFAULT: libreallive$(EXT_LIB) $(CXXProgram rlvm, rlvm)
+rlvm$(EXE): libreallive$(EXT_LIB) 
 
 clean:
-  $(RM) *.o *.gch *$(EXT_LIB) *.omc test$(EXE) test$(EXE).stackdump
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvm$(EXE) rlvm$(EXE).stackdump
