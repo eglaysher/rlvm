@@ -20,6 +20,15 @@
 //  
 // -----------------------------------------------------------------------
 
+/**
+ * @file   Module_Str_TUT.cpp
+ * @author Elliot Glaysher
+ * @date   Sat Sep 16 14:22:35 2006
+ * 
+ * Test cases for the string module
+ */
+
+
 #include "Module_Str.hpp"
 #include "Archive.h"
 #include "RLMachine.hpp"
@@ -481,6 +490,7 @@ void object::test<16>()
 /** 
  * strstrunc test on ASCII characters
  * 
+ * @todo comment is wrong; recopy the code
  * @code
  * strS[0] = "valid"
  * strtrunc(strS[0], 2)
@@ -555,8 +565,52 @@ void object::test<19>()
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Test hantozen() on ASCII numbers
+ * 
+ * @code
+ * strS[0] = "12345"
+ * strS[0] = hantozen()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<20>()
+{
+  Reallive::Archive arc("test/seenFiles/hantozen_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
 
+  ensure_equals("hantozen returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "\x82\x50\x82\x51\x82\x52\x82\x53\x82\x54");
+}
 
+// -----------------------------------------------------------------------
+
+/** 
+ * Test hantozen() on half width katakana; should convert them to full
+ * width katakana.
+ * 
+ * @code
+ * strS[0] = "ﾜﾀｼﾉﾅﾏｴ"
+ * strS[0] = hantozen()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<21>()
+{
+  Reallive::Archive arc("test/seenFiles/hantozen_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("hantozen returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "\x83\x8F\x83\x5E\x83\x56\x83\x6D\x83\x69\x83\x7D\x83\x47");
+}
 
 
 }

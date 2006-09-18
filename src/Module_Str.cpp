@@ -27,6 +27,8 @@
 
 #include "Module_Str.hpp"
 #include "RLOperation.hpp"
+#include "cp932toUnicode.hpp"
+//#include "hanzen.h"
 
 #include <cmath>
 #include <iostream>
@@ -129,7 +131,7 @@ size_t strcharlen(const unsigned char* string)
  * @param x Input character
  * @return Uppercase character
  */
-static char ToUpper(char x) { return toupper(x); }
+inline char ToUpper(char x) { return toupper(x); }
 
 /** 
  * Changes the case of a character to lowercase. In some (most?)
@@ -139,7 +141,7 @@ static char ToUpper(char x) { return toupper(x); }
  * @param x Input character
  * @return Lowercase character
  */
-static char ToLower(char x) { return tolower(x); }
+inline char ToLower(char x) { return tolower(x); }
 
 /** 
  * Impelmentation for the ASCII versions of itoa. 
@@ -157,6 +159,70 @@ string rl_itoa_implementation(int number, int length, char fill)
     ss << setw(length);
   ss << right << setfill(fill) << number;
   return ss.str();
+}
+
+// -----------------------------------------------------------------------
+
+// All hankaku characters are <U+FF??>, 
+// while all zenkaku characters are <U+30??>
+//
+// hankaku characters that need translation are in the rance 0xFF65 to
+// 0x9F inclusive and continuous, so this table starts at 0xFF65.
+char han2zen_table[] = {
+  0xFB,   0xF2,   0xA1,   0xA3,   0xA5,   0xA7,   0xA9,   0xE3,
+  0xE5,   0xE7,   0xC3,   0xFC,   0xA2,   0xA4,   0xA6,   0xA8,   
+  0xAA,   0xAB,   0xAD,   0xAF,   0xB1,   0xB3,   0xB5,   0xB7,   
+  0xB9,   0xBB,   0xBD,   0xBF,   0xC1,   0xC4,   0xC6,   0xC8,   
+  0xCA,   0xCB,   0xCC,   0xCD,   0xCE,   0xCF,   0xD2,   0xD5,   
+  0xD8,   0xDB,   0xDE,   0xDF,   0xE0,   0xE1,   0xE2,   0xE4,   
+  0xE6,   0xE8,   0xE9,   0xEA,   0xEB,   0xEC,   0xED,   0xEF,   
+  0xF3,   0x9B,   0x0C
+};
+/** 
+ * Converts a single half-width unicode character to its full-width
+ * equivalent.
+ * 
+ * @param input Input character
+ * @return Converted character (or input character if no translation
+ * neccessary).
+ * @todo Get this working with hiragana/katakana. I've had it trying to find
+ * a lookup table for Unicode
+ */
+wchar_t hantozen_wchar(wchar_t input)
+{
+  if(input >= '!' && input <= '~')
+  {
+    input += 0xFEE0;
+  }
+  // Need to build a conversion by reading the cp932 ucm file, and then building
+  // a mapping between "^KATAKANA X" and "^HALFWIDTH KATAKANA"
+  else if(input >= 0xFF65 && input <= 0xFF9F) 
+  {
+    cerr << "Switching char" << endl;
+    input = han2zen_table[input - 0xFF65];
+  }
+
+  return input;
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Converts half-width ASCII and katakana characters to their
+ * full-width equivalents in a CP932 string.
+ * 
+ * @param string Input strin
+ * @return Output string with full-width characters.
+ */
+string hantozen_cp932(const std::string& string) 
+{
+  // First convert the string to unicode so handling is easier
+  wstring tmp = cp932toUnicode(string);
+  transform(tmp.begin(), tmp.end(), tmp.begin(), hantozen_wchar);
+  std::string out;
+  out = unicodetocp932(tmp);
+  cerr << string.size() << " -> " << tmp.size() << " -> " << out.size() << endl;
+  return out;
 }
 
 }
@@ -399,6 +465,23 @@ struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
+struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
+  void operator()(RLMachine& machine, StringReferenceIterator dest) {
+    *dest = hantozen_cp932(*dest);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+  void operator()(RLMachine& machine, string input, 
+                  StringReferenceIterator dest) {
+    *dest = hantozen_cp932(input);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 /** 
  * Implements op<1:Str:00012, 0>, fun Uppercase(str).
  * 
@@ -430,6 +513,7 @@ struct Str_Uppercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
 };
 
 // -----------------------------------------------------------------------
+
 
 
 
@@ -690,6 +774,8 @@ StrModule::StrModule()
   addOpcode(  7, 0, new Str_strcharlen);
   addOpcode(  8, 0, new Str_strtrunc);
   // hantozen (!?!?)
+  addOpcode( 10, 0, new Str_hantozen_0);
+  addOpcode( 10, 1, new Str_hantozen_1);
   // zentohan (!?!?)
   addOpcode( 12, 0, new Str_Uppercase_0);
   addOpcode( 12, 1, new Str_Uppercase_1);

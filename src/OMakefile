@@ -27,6 +27,7 @@ LRLFILES[] =
   Module_Sys
   Module_Str
   Module_Mem
+  cp932toUnicode
 
 
 alldefs.h.gch: alldefs.h
