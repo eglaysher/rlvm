@@ -5622,8 +5622,9 @@ string unicodetocp932(const std::wstring& line)
       ret += (char)(j >> 8);
       ret += (char)(j & 0xff);
     }
-    else
+    else {
       ret += (char)(j & 0xff);
+    }
     
     c++;
   } 

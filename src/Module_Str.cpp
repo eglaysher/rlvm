@@ -198,8 +198,7 @@ wchar_t hantozen_wchar(wchar_t input)
   // a mapping between "^KATAKANA X" and "^HALFWIDTH KATAKANA"
   else if(input >= 0xFF65 && input <= 0xFF9F) 
   {
-    cerr << "Switching char" << endl;
-    input = han2zen_table[input - 0xFF65];
+    input = (0x30 << 8) | han2zen_table[input - 0xFF65];
   }
 
   return input;
@@ -220,9 +219,7 @@ string hantozen_cp932(const std::string& string)
   wstring tmp = cp932toUnicode(string);
   transform(tmp.begin(), tmp.end(), tmp.begin(), hantozen_wchar);
   std::string out;
-  out = unicodetocp932(tmp);
-  cerr << string.size() << " -> " << tmp.size() << " -> " << out.size() << endl;
-  return out;
+  return unicodetocp932(tmp);
 }
 
 }
