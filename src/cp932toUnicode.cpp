@@ -5695,7 +5695,11 @@ char han2zen_table[] = {
  */
 wchar_t hantozen_wchar(wchar_t input)
 {
-  if(input >= '!' && input <= '~')
+  if(input == 0x0020)
+  {
+    input = 0x3000;
+  }
+  else if(input >= '!' && input <= '~')
   {
     input += 0xFEE0;
   }
@@ -5773,6 +5777,10 @@ wchar_t zentohan_wchar(wchar_t input)
   if(input >= 0xFF01 && input <= 0xFF5E)
   {
     input -= 0xFEE0;
+  }
+  else if(input == 0x3000)
+  {
+    input = 0x0020;
   }
   // Need to build a conversion by reading the cp932 ucm file, and then building
   // a mapping between "^KATAKANA X" and "^HALFWIDTH KATAKANA X"

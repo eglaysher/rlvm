@@ -455,7 +455,7 @@ namespace tut
       if( expected != actual )
       {
         std::stringstream ss;
-        ss << (msg?msg:"") << (msg?": ":"") << "expected " << expected << " actual " << actual;
+        ss << (msg?msg:"") << (msg?": ":"") << "expected '" << expected << "', actual '" << actual << "'";
         throw failure(ss.str().c_str());
       }
     }

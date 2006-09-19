@@ -24,10 +24,10 @@
  * @file   Module_Str_TUT.cpp
  * @author Elliot Glaysher
  * @date   Sat Sep 16 14:22:35 2006
+ * @ingroup TestCase
  * 
  * Test cases for the string module
  */
-
 
 #include "Module_Str.hpp"
 #include "Archive.h"
@@ -38,13 +38,6 @@
 
 #include <iostream>
 using namespace std;
-/**
- * @file
- * @ingroup TestCase
- *
- * This test group tests the String module. 
- */
-
 
 namespace tut
 {
@@ -709,6 +702,349 @@ void object::test<25>()
   ensure_equals("Lowercase returned wrong value",
                 rlmachine.getStringValue(0x12, 1),
                 "valid"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test itoa_ws's various stuff
+ * 
+ * @code
+ * strS[0] = itoa_ws(-1)
+ * strS[1] = itoa_ws(-1, 3)
+ * strS[2] = itoa_ws(3)
+ * strS[3] = itoa_ws(1, 3)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<26>()
+{
+  Reallive::Archive arc("test/seenFiles/itoa_ws_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("itoa_ws set wrong value for strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "\x81\x7C\x82\x50");
+  ensure_equals("itoa_ws set wrong value for strS[1]",
+                rlmachine.getStringValue(0x12, 1),
+                "\x81\x7C\x81\x40\x81\x40\x82\x50"); 
+  ensure_equals("itoa_ws set wrong value for strS[2]",
+                rlmachine.getStringValue(0x12, 2),
+                "\x82\x52"); 
+  ensure_equals("itoa_ws set wrong value for strS[3]",
+                rlmachine.getStringValue(0x12, 3),
+                "\x81\x40\x81\x40\x82\x50"); 
+
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test itoa_s, which shouldn't be as hard to write as itoa_ws. -_-
+ * 
+ * @code
+ * strS[0] = itoa_s(-1)
+ * strS[1] = itoa_s(-1, 3)
+ * strS[2] = itoa_s(3)
+ * strS[3] = itoa_s(1, 3)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<27>()
+{
+  Reallive::Archive arc("test/seenFiles/itoa_s_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("itoa_s set wrong value for strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "-1");
+  ensure_equals("itoa_s set wrong value for strS[1]",
+                rlmachine.getStringValue(0x12, 1),
+                "-  1"); 
+  ensure_equals("itoa_s set wrong value for strS[2]",
+                rlmachine.getStringValue(0x12, 2),
+                "3"); 
+  ensure_equals("itoa_s set wrong value for strS[3]",
+                rlmachine.getStringValue(0x12, 3),
+                "  1"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test itoa_s, which shouldn't be as hard to write as itoa_ws. -_-
+ * 
+ * @code
+ * strS[0] = itoa_w(-1)
+ * strS[1] = itoa_w(-1, 3)
+ * strS[2] = itoa_w(3)
+ * strS[3] = itoa_w(1, 3)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<28>()
+{
+  Reallive::Archive arc("test/seenFiles/itoa_w_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("itoa_w set wrong value for strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "\x81\x7C\x82\x50");
+  ensure_equals("itoa_w set wrong value for strS[1]",
+                rlmachine.getStringValue(0x12, 1),
+                "\x81\x7C\x82\x4F\x82\x4F\x82\x50");
+  ensure_equals("itoa_w set wrong value for strS[2]",
+                rlmachine.getStringValue(0x12, 2),
+                "\x82\x52"); 
+  ensure_equals("itoa_w set wrong value for strS[3]",
+                rlmachine.getStringValue(0x12, 3),
+                "\x82\x4F\x82\x4F\x82\x50");
+//                "  1"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test itoa
+ * 
+ * @code
+ * strS[0] = itoa(-1)
+ * strS[1] = itoa(-1, 3)
+ * strS[2] = itoa(3)
+ * strS[3] = itoa(1, 3)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<29>()
+{
+  Reallive::Archive arc("test/seenFiles/itoa_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("itoa set wrong value for strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "-1");
+  ensure_equals("itoa set wrong value for strS[1]",
+                rlmachine.getStringValue(0x12, 1),
+                "-001");
+  ensure_equals("itoa set wrong value for strS[2]",
+                rlmachine.getStringValue(0x12, 2),
+                "3"); 
+  ensure_equals("itoa set wrong value for strS[3]",
+                rlmachine.getStringValue(0x12, 3),
+                "001");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests atoi.
+ *
+ * @code
+ * intA[0] = atoi("15")
+ * intA[1] = atoi("   15")
+ * intA[2] = atoi("-12")
+ * intA[3] = atoi("5  27")
+ * intA[4] = atoi("asdf")
+ * @endcode
+ */
+template<>
+template<>
+void object::test<30>()
+{
+  Reallive::Archive arc("test/seenFiles/atoi_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("atoi returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                15);
+  ensure_equals("atoi returned wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                15);
+  ensure_equals("atoi returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                -12);
+  ensure_equals("atoi returned wrong value for intA[3]",
+                rlmachine.getIntValue(0, 3),
+                5);
+  ensure_equals("atoi returned wrong value for intA[4]",
+                rlmachine.getIntValue(0, 4),
+                0);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests digits.
+ *
+ * @code
+ * intA[0] = digits(1)
+ * intA[1] = digits(20)
+ * intA[2] = digits(-20)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<31>()
+{
+  Reallive::Archive arc("test/seenFiles/digits_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("digits returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("digits returned wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                2);
+  ensure_equals("digits returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                2);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests digits.
+ *
+ * @code
+ * intA[0] = digit(1, strS[0], 1)
+ * intA[1] = digit(20, strS[1], 2)
+ * intA[2] = digit(-20, strS[2], 1)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<32>()
+{
+  Reallive::Archive arc("test/seenFiles/digit_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("digit returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("digit set wrong value for intB[0]",
+                rlmachine.getIntValue(1, 0),
+                1);
+  ensure_equals("digit returned wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                2);
+  ensure_equals("digit set wrong value for intB[1]",
+                rlmachine.getIntValue(1, 1),
+                2);
+  ensure_equals("digit returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                2);
+  ensure_equals("digit set wrong value for intB[2]",
+                rlmachine.getIntValue(1, 2),
+                0);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests strpos.
+ * 
+ * @code
+ * intA[0] = strpos("equal", "equal")
+ * intA[1] = strpos("This is the the repitition test.", "the")
+ * intA[2] = strpos("Itaiyo", "Uguu~")
+ * @endcode
+ */
+template<>
+template<>
+void object::test<33>()
+{
+  Reallive::Archive arc("test/seenFiles/strpos_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strpos returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                0);
+  ensure_equals("strpos returned wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                8);
+  ensure_equals("strpos returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                -1);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests strlpos.
+ * 
+ * @code
+ * intA[0] = strlpos("equal", "equal")
+ * intA[1] = strlpos("This is the the repitition test.", "the")
+ * intA[2] = strlpos("Itaiyo", "Uguu~")
+ * @endcode
+ */
+template<>
+template<>
+void object::test<34>()
+{
+  Reallive::Archive arc("test/seenFiles/strlpos_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strlpos returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                0);
+  ensure_equals("strlpos returned wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                12);
+  ensure_equals("strlpos returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                -1);
+}
+
+// -----------------------------------------------------------------------
+
+
+/** 
+ * Tests strused.
+ * 
+ * @code
+ * strS[1] = "Used"
+ * intA[0] = strused(strS[0])
+ * intA[1] = strused(strS[1])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<35>()
+{
+  Reallive::Archive arc("test/seenFiles/strused_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("strused returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                0);
+  ensure_equals("strused returned wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                1);
 }
 
 }

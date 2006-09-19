@@ -157,7 +157,7 @@ string rl_itoa_implementation(int number, int length, char fill)
     ss << "-";
   if(length > 0)
     ss << setw(length);
-  ss << right << setfill(fill) << number;
+  ss << right << setfill(fill) << abs(number);
   return ss.str();
 }
 
@@ -401,6 +401,11 @@ struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Str:00010, 0>, fun hantozen(>str).
+ * 
+ * Changes half width characters to their full width equivalents.
+ */
 struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = hantozen_cp932(*dest);
@@ -409,6 +414,11 @@ struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Str:00010, 1>, fun hantozen(strC, >str).
+ * 
+ * Changes half width characters to their full width equivalents.
+ */
 struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input, 
                   StringReferenceIterator dest) {
@@ -418,6 +428,11 @@ struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Str:00011, 0>, fun zentohan(>str).
+ * 
+ * Changes full width characters to their half width equivalents.
+ */
 struct Str_zentohan_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = zentohan_cp932(*dest);
@@ -426,6 +441,11 @@ struct Str_zentohan_0 : public RLOp_Void_1< StrReference_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Str:00011, 1>, fun zentohan(strC, >str).
+ * 
+ * Changes full width characters to their half width equivalents.
+ */
 struct Str_zentohan_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input, 
                   StringReferenceIterator dest) {
@@ -467,11 +487,6 @@ struct Str_Uppercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
 
 // -----------------------------------------------------------------------
 
-
-
-
-// -----------------------------------------------------------------------
-
 /** 
  * Implements op<1:Str:00012, 0>, fun Lowercase(str).
  * 
@@ -499,6 +514,38 @@ struct Str_Lowercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
                   StringReferenceIterator dest) {
     transform(input.begin(), input.end(), input.begin(), ToLower);
     *dest = input;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00014, 0>, fun itoa_ws(intC, str).
+ * 
+ * Converts the integer value into a decimal representation. I don't understand
+ * how this function is any different from Str_itoa_0, since we don't have a
+ * length parameter. See RLdev documentation on itoa_s.
+ */
+struct Str_itoa_ws_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+  void operator()(RLMachine& machine, int input,
+                  StringReferenceIterator dest) {
+    *dest = hantozen_cp932(rl_itoa_implementation(input, -1, ' '));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00014, 1>, fun itoa_ws(intC, str, intC).
+ * 
+ * Converts the integer value into a decimal representation, right aligned
+ * with spaces to length characters.
+ */
+struct Str_itoa_ws_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
+                                          IntConstant_T > {
+  void operator()(RLMachine& machine, int input,
+                  StringReferenceIterator dest, int length) {
+    *dest = hantozen_cp932(rl_itoa_implementation(input, length, ' '));
   }
 };
 
@@ -537,7 +584,39 @@ struct Str_itoa_s_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<1:Str:00017, 0>, fun itoa_s(intC, str).
+ * Implements op<1:Str:00016, 0>, fun itoa_w(intC, str).
+ * 
+ * Converts the integer value into a decimal representation. I don't understand
+ * how this function is any different from Str_itoa_0, since we don't have a
+ * length parameter. See RLdev documentation on itoa_s.
+ */
+struct Str_itoa_w_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+  void operator()(RLMachine& machine, int input,
+                  StringReferenceIterator dest) {
+    *dest = hantozen_cp932(rl_itoa_implementation(input, -1, '0'));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00016, 1>, fun itoa_w(intC, str, intC).
+ * 
+ * Converts the integer value into a decimal representation, right aligned
+ * with spaces to length characters.
+ */
+struct Str_itoa_w_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
+                                        IntConstant_T > {
+  void operator()(RLMachine& machine, int input,
+                  StringReferenceIterator dest, int length) {
+    *dest = hantozen_cp932(rl_itoa_implementation(input, length, '0'));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Str:00017, 0>, fun itoa(intC, str).
  * 
  * Converts the integer value into a decimal representation. I don't understand
  * how this function is any different from Str_itoa_0, since we don't have a
@@ -574,14 +653,20 @@ struct Str_itoa_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
  * Returns the value of the integer represented by string, or 0 if
  * string does not represent an integer. Leading whitespace is
  * ignored, as is anything following the last decimal digit.
+ *
+ * I used to implement this as a call to boost::lexical_cast, until I
+ * started testing and I failed most of them because lexical_cast has
+ * different semantics about consuming *all* of the input string.
  */
 struct Str_atoi : public RLOp_Store_1< StrConstant_T > {
   int operator()(RLMachine& machine, string word) {
-    try {
-      return lexical_cast<int>(word);
-    } catch(boost::bad_lexical_cast& e) {
+    stringstream ss(word);
+    int out;
+    ss >> out;
+    if(ss)
+      return out;
+    else 
       return 0;
-    }
   }
 };
 
@@ -734,17 +819,19 @@ StrModule::StrModule()
   addOpcode( 12, 1, new Str_Uppercase_1);
   addOpcode( 13, 0, new Str_Lowercase_0);
   addOpcode( 13, 1, new Str_Lowercase_1);
-  // itoa_ws (uses wide characters for numbers!)
+  addOpcode( 14, 0, new Str_itoa_ws_0);
+  addOpcode( 14, 1, new Str_itoa_ws_1);
   addOpcode( 15, 0, new Str_itoa_s_0);
   addOpcode( 15, 1, new Str_itoa_s_1);
-  // itoa_w (uses wide characters for numbers!)
+  addOpcode( 16, 0, new Str_itoa_w_0);
+  addOpcode( 16, 1, new Str_itoa_w_1);
   addOpcode( 17, 0, new Str_itoa_0);
   addOpcode( 17, 1, new Str_itoa_1);
   addOpcode( 18, 0, new Str_atoi);
   addOpcode( 19, 0, new Str_digits);
   addOpcode( 20, 0, new Str_digit);
   addOpcode( 30, 0, new Str_strpos);
-  addOpcode( 31, 1, new Str_strlpos);
+  addOpcode( 31, 0, new Str_strlpos);
 
   addOpcode(100, 0, new Str_strout);
   addOpcode(100, 1, new Str_intout);
