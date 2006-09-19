@@ -85,7 +85,7 @@ template<>
 template<>
 void object::test<1>()
 {
-  Reallive::Archive arc("test/seenFiles/strcpy_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strcpy_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -108,7 +108,7 @@ template<>
 template<>
 void object::test<2>()
 {
-  Reallive::Archive arc("test/seenFiles/strcpy_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strcpy_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -133,7 +133,7 @@ template<>
 template<>
 void object::test<3>()
 {
-  Reallive::Archive arc("test/seenFiles/strclear_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strclear_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -164,7 +164,7 @@ template<>
 template<>
 void object::test<4>()
 {
-  Reallive::Archive arc("test/seenFiles/strclear_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strclear_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -196,7 +196,7 @@ template<>
 template<>
 void object::test<5>()
 {
-  Reallive::Archive arc("test/seenFiles/strcat_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strcat_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -220,7 +220,7 @@ template<>
 template<>
 void object::test<6>()
 {
-  Reallive::Archive arc("test/seenFiles/strlen_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strlen_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -249,7 +249,7 @@ template<>
 template<>
 void object::test<7>()
 {
-  Reallive::Archive arc("test/seenFiles/strcmp_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strcmp_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -274,7 +274,7 @@ template<>
 template<>
 void object::test<8>()
 {
-  Reallive::Archive arc("test/seenFiles/strsub_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strsub_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -298,7 +298,7 @@ template<>
 template<>
 void object::test<9>()
 {
-  Reallive::Archive arc("test/seenFiles/strsub_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strsub_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -322,7 +322,7 @@ template<>
 template<>
 void object::test<10>()
 {
-  Reallive::Archive arc("test/seenFiles/strsub_2.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strsub_2.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -346,7 +346,7 @@ template<>
 template<>
 void object::test<11>()
 {
-  Reallive::Archive arc("test/seenFiles/strsub_3.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strsub_3.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -372,7 +372,7 @@ template<>
 template<>
 void object::test<12>()
 {
-  Reallive::Archive arc("test/seenFiles/strrsub_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strrsub_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -396,7 +396,7 @@ template<>
 template<>
 void object::test<13>()
 {
-  Reallive::Archive arc("test/seenFiles/strrsub_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strrsub_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -420,7 +420,7 @@ template<>
 template<>
 void object::test<14>()
 {
-  Reallive::Archive arc("test/seenFiles/strcharlen_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strcharlen_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -444,7 +444,7 @@ template<>
 template<>
 void object::test<15>()
 {
-  Reallive::Archive arc("test/seenFiles/strcharlen_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strcharlen_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -468,7 +468,7 @@ template<>
 template<>
 void object::test<16>()
 {
-  Reallive::Archive arc("test/seenFiles/strtrunc_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strtrunc_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -493,7 +493,7 @@ template<>
 template<>
 void object::test<17>()
 {
-  Reallive::Archive arc("test/seenFiles/strtrunc_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strtrunc_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -517,7 +517,7 @@ template<>
 template<>
 void object::test<18>()
 {
-  Reallive::Archive arc("test/seenFiles/hantozen_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/hantozen_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -542,7 +542,7 @@ template<>
 template<>
 void object::test<19>()
 {
-  Reallive::Archive arc("test/seenFiles/hantozen_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/hantozen_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -566,7 +566,7 @@ template<>
 template<>
 void object::test<20>()
 {
-  Reallive::Archive arc("test/seenFiles/zentohan_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/zentohan_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -590,7 +590,7 @@ template<>
 template<>
 void object::test<21>()
 {
-  Reallive::Archive arc("test/seenFiles/zentohan_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/zentohan_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -613,7 +613,7 @@ template<>
 template<>
 void object::test<22>()
 {
-  Reallive::Archive arc("test/seenFiles/uppercase_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/uppercase_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -638,7 +638,7 @@ template<>
 template<>
 void object::test<23>()
 {
-  Reallive::Archive arc("test/seenFiles/uppercase_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/uppercase_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -666,7 +666,7 @@ template<>
 template<>
 void object::test<24>()
 {
-  Reallive::Archive arc("test/seenFiles/lowercase_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/lowercase_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -691,7 +691,7 @@ template<>
 template<>
 void object::test<25>()
 {
-  Reallive::Archive arc("test/seenFiles/lowercase_1.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/lowercase_1.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -720,7 +720,7 @@ template<>
 template<>
 void object::test<26>()
 {
-  Reallive::Archive arc("test/seenFiles/itoa_ws_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/itoa_ws_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -756,7 +756,7 @@ template<>
 template<>
 void object::test<27>()
 {
-  Reallive::Archive arc("test/seenFiles/itoa_s_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/itoa_s_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -791,7 +791,7 @@ template<>
 template<>
 void object::test<28>()
 {
-  Reallive::Archive arc("test/seenFiles/itoa_w_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/itoa_w_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -827,7 +827,7 @@ template<>
 template<>
 void object::test<29>()
 {
-  Reallive::Archive arc("test/seenFiles/itoa_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/itoa_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -863,7 +863,7 @@ template<>
 template<>
 void object::test<30>()
 {
-  Reallive::Archive arc("test/seenFiles/atoi_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/atoi_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -900,7 +900,7 @@ template<>
 template<>
 void object::test<31>()
 {
-  Reallive::Archive arc("test/seenFiles/digits_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/digits_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -931,7 +931,7 @@ template<>
 template<>
 void object::test<32>()
 {
-  Reallive::Archive arc("test/seenFiles/digit_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/digit_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -971,7 +971,7 @@ template<>
 template<>
 void object::test<33>()
 {
-  Reallive::Archive arc("test/seenFiles/strpos_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strpos_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -1002,7 +1002,7 @@ template<>
 template<>
 void object::test<34>()
 {
-  Reallive::Archive arc("test/seenFiles/strlpos_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strlpos_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -1020,7 +1020,6 @@ void object::test<34>()
 
 // -----------------------------------------------------------------------
 
-
 /** 
  * Tests strused.
  * 
@@ -1034,7 +1033,7 @@ template<>
 template<>
 void object::test<35>()
 {
-  Reallive::Archive arc("test/seenFiles/strused_0.TXT");
+  Reallive::Archive arc("test/Module_Str_SEEN/strused_0.TXT");
   RLMachine rlmachine(arc);
   rlmachine.attatchModule(new StrModule);
   rlmachine.executeUntilHalted();

@@ -6,7 +6,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 
 .PHONY: clean
 
-.SUBDIRS: seenFiles
+.SUBDIRS: Module_Str_SEEN
 
 INCLUDES += ../src
 LIBS += ../src/libreallive$(EXT_LIB)
