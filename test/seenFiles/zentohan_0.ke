@@ -19,21 +19,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
 // -----------------------------------------------------------------------
-/**
- * @file   cp932toUnicode.hpp
- * @author Elliot Glaysher
- * @date   Sun Sep 17 14:24:05 2006
- * 
- * @brief  Header that declares the two string conversion functions...
- */
 
-#ifndef __cp932toUnicode_hpp__
-#define __cp932toUnicode_hpp__
-
-std::string unicodetocp932(const std::wstring& line);
-std::wstring cp932toUnicode(const std::string& line);
-
-string hantozen_cp932(const std::string& string);
-string zentohan_cp932(const std::string& string);
-
-#endif
+strS[0] = "‚P‚Q‚R‚S‚T"
+strS[0] = zentohan()

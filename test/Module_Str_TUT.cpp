@@ -612,6 +612,54 @@ void object::test<21>()
                 "\x83\x8F\x83\x5E\x83\x56\x83\x6D\x83\x69\x83\x7D\x83\x47");
 }
 
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests zentohan on fullwidth ASCII characters.
+ * 
+ * @code
+ * strS[0] = "１２３４５"
+ * strS[0] = zentohan()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<22>()
+{
+  Reallive::Archive arc("test/seenFiles/zentohan_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("zentohan returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "12345");
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests zentohan on fullwidth katakana characters.
+ * 
+ * @code
+ * strS[0] = "ワタシノナマエ"
+ * strS[0] = zentohan()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<23>()
+{
+  Reallive::Archive arc("test/seenFiles/zentohan_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("zentohan returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "\xDC\xC0\xBC\xC9\xC5\xCF\xB4");
+}
+
 
 }
 
