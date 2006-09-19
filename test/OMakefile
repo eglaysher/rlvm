@@ -6,7 +6,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 
 .PHONY: clean
 
-.SUBDIRS: Module_Str_SEEN
+.SUBDIRS: Module_Str_SEEN Module_Mem_SEEN
 
 INCLUDES += ../src
 LIBS += ../src/libreallive$(EXT_LIB)
@@ -14,9 +14,10 @@ LIBS += ../src/libreallive$(EXT_LIB)
 TEST_FILES[] = 
   rlvmTest
   Module_Str_TUT
+  Module_Mem_TUT
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
-rlvmTest$(EXE): ../src/libreallive$(EXT_LIB) seenFiles
+rlvmTest$(EXE): ../src/libreallive$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump
