@@ -513,59 +513,6 @@ void object::test<17>()
 // -----------------------------------------------------------------------
 
 /** 
- * Test Uppercase_0
- * 
- * @code
- * strS[0] = "Valid"
- * // This syntax hurts my brain
- * strS[0] = Uppercase()
- * @endcode
- */
-template<>
-template<>
-void object::test<18>()
-{
-  Reallive::Archive arc("test/seenFiles/uppercase_0.TXT");
-  RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new StrModule);
-  rlmachine.executeUntilHalted();
-
-  ensure_equals("Uppercase returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
-                "VALID"); 
-}
-
-// -----------------------------------------------------------------------
-
-/** 
- * Test Uppercase_1
- * 
- * @code
- * strS[0] = "Valid"
- * // This syntax hurts my brain
- * strS[0] = Uppercase()
- * @endcode
- */
-template<>
-template<>
-void object::test<19>()
-{
-  Reallive::Archive arc("test/seenFiles/uppercase_1.TXT");
-  RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new StrModule);
-  rlmachine.executeUntilHalted();
-
-  ensure_equals("Uppercase touched strS[0]",
-                rlmachine.getStringValue(0x12, 0),
-                "Valid"); 
-  ensure_equals("Uppercase returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
-                "VALID"); 
-}
-
-// -----------------------------------------------------------------------
-
-/** 
  * Test hantozen() on ASCII numbers
  * 
  * @code
@@ -575,7 +522,7 @@ void object::test<19>()
  */
 template<>
 template<>
-void object::test<20>()
+void object::test<18>()
 {
   Reallive::Archive arc("test/seenFiles/hantozen_0.TXT");
   RLMachine rlmachine(arc);
@@ -600,7 +547,7 @@ void object::test<20>()
  */
 template<>
 template<>
-void object::test<21>()
+void object::test<19>()
 {
   Reallive::Archive arc("test/seenFiles/hantozen_1.TXT");
   RLMachine rlmachine(arc);
@@ -624,7 +571,7 @@ void object::test<21>()
  */
 template<>
 template<>
-void object::test<22>()
+void object::test<20>()
 {
   Reallive::Archive arc("test/seenFiles/zentohan_0.TXT");
   RLMachine rlmachine(arc);
@@ -648,7 +595,7 @@ void object::test<22>()
  */
 template<>
 template<>
-void object::test<23>()
+void object::test<21>()
 {
   Reallive::Archive arc("test/seenFiles/zentohan_1.TXT");
   RLMachine rlmachine(arc);
@@ -660,6 +607,109 @@ void object::test<23>()
                 "\xDC\xC0\xBC\xC9\xC5\xCF\xB4");
 }
 
+/** 
+ * Test Uppercase_0
+ * 
+ * @code
+ * strS[0] = "Valid"
+ * // This syntax hurts my brain
+ * strS[0] = Uppercase()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<22>()
+{
+  Reallive::Archive arc("test/seenFiles/uppercase_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Uppercase returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "VALID"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test Uppercase_1
+ * 
+ * @code
+ * strS[0] = "Valid"
+ * // This syntax hurts my brain
+ * strS[0] = Uppercase()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<23>()
+{
+  Reallive::Archive arc("test/seenFiles/uppercase_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Uppercase touched strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "Valid"); 
+  ensure_equals("Uppercase returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "VALID"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test Lowercase_0
+ * 
+ * @code
+ * strS[0] = "Valid"
+ * // This syntax hurts my brain
+ * strS[0] = Lowercase()
+ * @endcode
+ */
+template<>
+template<>
+void object::test<24>()
+{
+  Reallive::Archive arc("test/seenFiles/lowercase_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Lowercase returned wrong value",
+                rlmachine.getStringValue(0x12, 0),
+                "valid"); 
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Test Lowercase_1.
+ * 
+ * @code
+ * strS[0] = "Valid"
+ * // This syntax hurts my brain
+ * strS[1] = Lowercase(strS[0])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<25>()
+{
+  Reallive::Archive arc("test/seenFiles/lowercase_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Lowercase touched strS[0]",
+                rlmachine.getStringValue(0x12, 0),
+                "Valid"); 
+  ensure_equals("Lowercase returned wrong value",
+                rlmachine.getStringValue(0x12, 1),
+                "valid"); 
+}
 
 }
 

@@ -726,10 +726,8 @@ StrModule::StrModule()
   addOpcode(  6, 1, new Str_strrsub_1);
   addOpcode(  7, 0, new Str_strcharlen);
   addOpcode(  8, 0, new Str_strtrunc);
-  // hantozen (!?!?)
   addOpcode( 10, 0, new Str_hantozen_0);
   addOpcode( 10, 1, new Str_hantozen_1);
-  // zentohan (!?!?)
   addOpcode( 11, 0, new Str_zentohan_0);
   addOpcode( 11, 1, new Str_zentohan_1);
   addOpcode( 12, 0, new Str_Uppercase_0);
