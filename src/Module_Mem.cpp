@@ -13,6 +13,13 @@
 using namespace std;
 using namespace boost;
 
+/** 
+ * Implement op<1:Mem:00000, 0>, fun setarray(int, intC+).
+ * 
+ * Sets a block of integers, starting with origin, to the given
+ * values. values is an arbitrary number of integer expressions, each
+ * of which is assigned in turn to the next variable.
+ */
 struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
                   vector<int> values) {
@@ -22,6 +29,11 @@ struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T >
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00001, 0>, fun setrng(int, int).
+ * 
+ * Set block of integers to zero.
+ */
 struct Mem_setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last) {
@@ -32,6 +44,11 @@ struct Mem_setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00001, 1>, fun setrng(int, int, intC).
+ * 
+ * Set block of integers to the constant passed in.
+ */
 struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T, 
                                           IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
@@ -44,11 +61,14 @@ struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T,
 // -----------------------------------------------------------------------
 
 /** 
+ * Implement op<1:Mem:00002, 0>, fun(int, intC, intC).
+ *
+ * Copies a block of values of length count from source to dest. The
+ * function appears to succeed even if the ranges overlap.
+ *
  * @note copy_n is not part of the C++ standard, and while it's part of 
  * STL on the machines at work, it doesn't exist on OSX's implementation,
  * so grab a copy that boost includes.
- * @warning I'm assuming Haeleth is wrong about the type of dest in
- * reallive.kfn, since it doesn't make semantic sense as written.
  */
 struct Mem_cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
                                         IntConstant_T > {
@@ -62,6 +82,12 @@ struct Mem_cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00003, 0>, fun setarray_stepped(int, int, intC+).
+ * 
+ * Sets every stepth memory block starting at origin with the sequence
+ * of passed in values.
+ */
 struct Mem_setarray_stepped 
   : public RLOp_Void_3< IntReference_T, IntConstant_T, Argc_T<IntConstant_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
@@ -76,6 +102,12 @@ struct Mem_setarray_stepped
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00004, 0>, fun setrng_stepped(int, intC, intC).
+ * 
+ * Sets count number of memory locations to zero, starting at origin
+ * and going forward step.
+ */
 struct Mem_setrng_stepped_0
   : public RLOp_Void_3< IntReference_T, IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
@@ -90,6 +122,12 @@ struct Mem_setrng_stepped_0
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00004, 1>, fun setrng_stepped(int, intC, intC, intC).
+ * 
+ * Sets count number of memory locations to the passed in constant,
+ * starting at origin and going forward step.
+ */
 struct Mem_setrng_stepped_1
   : public RLOp_Void_4< IntReference_T, IntConstant_T, IntConstant_T,
                         IntConstant_T > {
@@ -105,10 +143,15 @@ struct Mem_setrng_stepped_1
 
 // -----------------------------------------------------------------------
 
-// op<1:Mem:00005, 0> is something weird that needs to be filled in.
+// op<1:Mem:00005, 0> is something weird that nobody understands.
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00006, 0>, fun cpyvars(int, intC, int+).
+ * 
+ * I'm not even going to try for this one. See RLDev.
+ */
 struct Mem_cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
                                          Argc_T< IntReference_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
@@ -117,7 +160,6 @@ struct Mem_cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
         it != values.end(); ++it) {
       IntReferenceIterator irIt = *it;
       advance(irIt, offset);
-      
       *origin++ = *irIt;
     }    
   }
@@ -125,6 +167,11 @@ struct Mem_cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00100, 0>, fun sum(int, int).
+ * 
+ * Returns the sum of all the numbers in the given memory range.
+ */
 struct Mem_sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
   int operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last) {
@@ -135,6 +182,11 @@ struct Mem_sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<1:Mem:00101, 0>, fun sums((int, int)+).
+ * 
+ * Returns the sum of all the numbers in all the given memory ranges.
+ */
 struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
                                                            IntReference_T > > >{
   int operator()(RLMachine& machine, 

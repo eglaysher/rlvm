@@ -223,5 +223,224 @@ void object::test<4>()
                 3);
 
 }
+// -----------------------------------------------------------------------
+
+/**
+ * Tests setarray_stepped_0.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * setrng(intA[0], intA[5], -1)
+ * setarray_stepped(intA[0], 2, 1, 2, 3)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  Reallive::Archive arc("test/Module_Mem_SEEN/setarray_stepped_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new MemModule);
+  rlmachine.executeUntilHalted();
+
+  // First make sure setarray_stepped did what we expected it to, and that it
+  // didn't overwrite the work of setrng
+  ensure_equals("setarray_stepped returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("setarray_stepped touched the value of intA[1]",
+                rlmachine.getIntValue(0, 1),
+                -1);
+  ensure_equals("setarray_stepped returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                2);
+  ensure_equals("setarray_stepped touched the value for intA[3]",
+                rlmachine.getIntValue(0, 3),
+                -1);
+  ensure_equals("setarray_stepped returned wrong value for intA[4]",
+                rlmachine.getIntValue(0, 4),
+                3);
+  ensure_equals("setarray_stepped touched the value for intA[5]",
+                rlmachine.getIntValue(0, 5),
+                -1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests setrng_stepped_0.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * setrng(intA[0], intA[5], -1)
+ * setrng_stepped(intA[0], 2, 3)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<6>()
+{
+  Reallive::Archive arc("test/Module_Mem_SEEN/setrng_stepped_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new MemModule);
+  rlmachine.executeUntilHalted();
+
+  // First make sure setrng_stepped did what we expected it to, and that it
+  // didn't overwrite the work of setrng
+  ensure_equals("setrng_stepped returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                0);
+  ensure_equals("setrng_stepped touched the value of intA[1]",
+                rlmachine.getIntValue(0, 1),
+                -1);
+  ensure_equals("setrng_stepped returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                0);
+  ensure_equals("setrng_stepped touched the value for intA[3]",
+                rlmachine.getIntValue(0, 3),
+                -1);
+  ensure_equals("setrng_stepped returned wrong value for intA[4]",
+                rlmachine.getIntValue(0, 4),
+                0);
+  ensure_equals("setrng_stepped touched the value for intA[5]",
+                rlmachine.getIntValue(0, 5),
+                -1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests setrng_stepped_1.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * setrng(intA[0], intA[5], -1)
+ * setrng_stepped(intA[0], 2, 3, 5)
+ * @endcode
+ */
+template<>
+template<>
+void object::test<7>()
+{
+  Reallive::Archive arc("test/Module_Mem_SEEN/setrng_stepped_1.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new MemModule);
+  rlmachine.executeUntilHalted();
+
+  // First make sure setrng_stepped did what we expected it to, and that it
+  // didn't overwrite the work of setrng
+  ensure_equals("setrng_stepped returned wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                5);
+  ensure_equals("setrng_stepped touched the value of intA[1]",
+                rlmachine.getIntValue(0, 1),
+                -1);
+  ensure_equals("setrng_stepped returned wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                5);
+  ensure_equals("setrng_stepped touched the value for intA[3]",
+                rlmachine.getIntValue(0, 3),
+                -1);
+  ensure_equals("setrng_stepped returned wrong value for intA[4]",
+                rlmachine.getIntValue(0, 4),
+                5);
+  ensure_equals("setrng_stepped touched the value for intA[5]",
+                rlmachine.getIntValue(0, 5),
+                -1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests cpyvars.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intB[3] = 5
+ * intB[5] = 1
+ * intB[8] = 2
+ * cpyvars(intA[0], 2, intB[1], intB[3], intB[6])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<8>()
+{
+  Reallive::Archive arc("test/Module_Mem_SEEN/cpyvars_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new MemModule);
+  rlmachine.executeUntilHalted();
+
+  // First make sure cpyvars did what we expected it to...
+  ensure_equals("cpyvars set wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                5);
+  ensure_equals("cpyvars set wrong value for intA[1]",
+                rlmachine.getIntValue(0, 1),
+                1);
+  ensure_equals("cpyvars set wrong value for intA[2]",
+                rlmachine.getIntValue(0, 2),
+                2);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests sum.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intA[0] = 0
+ * intA[1] = 1
+ * intA[2] = 2
+ * intA[3] = 3
+ * intA[10] = sum(intA[0], intA[3])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<9>()
+{
+  Reallive::Archive arc("test/Module_Mem_SEEN/sum_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new MemModule);
+  rlmachine.executeUntilHalted();
+
+  // First make sure sum did what we expected it to...
+  ensure_equals("sum returned the wrong value for intA[10]",
+                rlmachine.getIntValue(0, 10),
+                6);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests sum.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intA[0] = 0
+ * intA[1] = 1
+ * intA[2] = 2
+ * intA[3] = 3
+ * intA[10] = sum(intA[0], intA[3])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<10>()
+{
+  Reallive::Archive arc("test/Module_Mem_SEEN/sums_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new MemModule);
+  rlmachine.executeUntilHalted();
+
+  // First make sure sums did what we expected it to...
+  ensure_equals("sums returned the wrong value for intA[0]",
+                rlmachine.getIntValue(0, 0),
+                45);
+}
+
+// -----------------------------------------------------------------------
 
 }

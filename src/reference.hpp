@@ -13,9 +13,15 @@ class RLMachine;
  * dereferenced. Each IntAcessor will (probably) be a short-lived
  * temporary object which is immediatly casted to an int, or it may
  * have a value assigned to it.
+ *
+ * @note If you are having weird problems with code that dereferences
+ * MemoryReferenceIterators, you may need to overload an operator in
+ * this class.
  */
 class IntAccessor {
 private:
+  /// Pointer to the real memory reference that we work with whenever
+  /// we operate with an IntAccessor
   MemoryReferenceIterator<IntAccessor>* it;
 
 public:
@@ -24,6 +30,7 @@ public:
   operator int() const;
 
   IntAccessor& operator=(const int newValue);
+  IntAccessor& operator=(const IntAccessor& rhs);
 };
 
 /** 
@@ -31,9 +38,15 @@ public:
  * dereferenced. Each StringAcessor will (probably) be a short-lived
  * temporary object which is immediatly casted to an string, or it may
  * have a value assigned to it.
+ *
+ * @note If you are having weird problems with code that dereferences
+ * MemoryReferenceIterators, you may need to overload an operator in
+ * this class.
  */
 class StringAccessor {
 private:
+  /// Pointer to the real memory reference that we work with whenever
+  /// we operate with an StringAccessor
   MemoryReferenceIterator<StringAccessor>* it;
 
 public:
@@ -42,6 +55,7 @@ public:
   operator std::string() const;
 
   StringAccessor& operator=(const std::string& newValue);
+  StringAccessor& operator=(const StringAccessor& newValue);
 
   bool operator==(const std::string& rhs);
 };
@@ -72,6 +86,8 @@ public:
   MemoryReferenceIterator(RLMachine* inMachine, const int inType, const int inLocation)
     : machine(inMachine), type(inType), location(inLocation) { }     
 
+  int getType() const { return type; }
+  int getLocation() const { return location; }
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*()     { return ACCESS(this); }
   
