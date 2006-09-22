@@ -22,28 +22,37 @@ void RLOperation::addParameterTo(const string& parameter,
 
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
 {
-  // Cast to correct type
-  const FunctionElement& f = static_cast<const FunctionElement&>(ff);
+  try {
+    // Cast to correct type
+    const FunctionElement& f = static_cast<const FunctionElement&>(ff);
 
-  // Well, here it is. What a mess.
-  ptr_vector<ExpressionPiece> parameterPieces;
-  size_t numberOfParameters = f.param_count();
-  for(size_t i = 0; i < numberOfParameters; ++i) {
-    addParameterTo(f.get_param(i), parameterPieces);
+    // Well, here it is. What a mess.
+    ptr_vector<ExpressionPiece> parameterPieces;
+    size_t numberOfParameters = f.param_count();
+    for(size_t i = 0; i < numberOfParameters; ++i) {
+      addParameterTo(f.get_param(i), parameterPieces);
+    }
+
+    // Now make sure these parameters match what we expect. 
+    if(!checkTypes(machine, parameterPieces)) {
+      throw Error("Expected type mismatch in parameters.");
+    }
+
+    // Now dispatch based on these parameters.
+    dispatch(machine, parameterPieces);
+
+    // By default, we advacne the instruction pointer on any instruction we
+    // perform. Weird special cases all derive from RLOp_SpecialCase, which
+    // redefines the dispatcher, so this is ok.
+    machine.advanceInstructionPointer();
   }
-
-  // Now make sure these parameters match what we expect. 
-  if(!checkTypes(machine, parameterPieces)) {
-    throw Error("Expected type mismatch in parameters.");
+  catch(...) {
+    // If there was an exception on this line, and we are in warning
+    // mode, where RLMachine will catch the exception and just log a
+    // warning, then an exception will cause an infinite loop if we
+    // don't also increment the instruciton pointer.
+    machine.advanceInstructionPointer();
   }
-
-  // Now dispatch based on these parameters.
-  dispatch(machine, parameterPieces);
-
-  // By default, we advacne the instruction pointer on any instruction we
-  // perform. Weird special cases all derive from RLOp_SpecialCase, which
-  // redefines the dispatcher, so this is ok.
-  machine.advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -92,9 +101,20 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
   try {
     operator()(machine, f);
   } catch(std::bad_cast& e) {
+    // Prevent an infinite loop in RLMachine if we are in warning mode
+    // so that we don't try to rerun this instruction
+    machine.advanceInstructionPointer();
+
     stringstream ss;
     ss << "Type mismatch in op<" << f.modtype() << ":" << f.module() << ":" 
        << f.opcode() << ", " << f.overload() << ">";
     throw Error(ss.str());
+  } catch(...) {
+    // Prevent an infinite loop in RLMachine if we are in warning mode
+    // so that we don't try to rerun this instruction
+    machine.advanceInstructionPointer();
+
+    // Rethrow since we can't handle this
+    throw;
   }
 }

@@ -20,6 +20,9 @@
 //  
 // -----------------------------------------------------------------------
 
-intA[4] = -1
-intA[0] = -1
-setrng(intA[0], intA[3], 4)
+// intB[0] may or maynot be set by the calling program.
+intA[0] = 1
+goto_if(intB[0]) @aa
+intA[1] = 1
+@aa
+intA[2] = 1

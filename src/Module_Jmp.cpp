@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <typeinfo>
 
 using namespace std;
 using namespace Reallive;
@@ -118,7 +119,7 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
  */
 struct Jmp_goto_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& f) {
-    const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+    const GotoOnElement& gotoElement = dynamic_cast<const GotoOnElement&>(f);
     const char* location = gotoElement.get_param(0).c_str();
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
@@ -144,14 +145,49 @@ struct Jmp_goto_on : public RLOp_SpecialCase {
  */
 struct Jmp_goto_case : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& f) {
-    const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+    const GotoCaseElement& gotoElement = 
+      dynamic_cast<const GotoCaseElement&>(f);
     const char* location = gotoElement.get_param(0).c_str();
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->getIntegerValue(machine);
     const Pointers& pointers = gotoElement.get_pointersRef();
-    
-//    cerr << "[" << pointers.size() << "/" << pointeres.idSize() << "]" << endl;
+
+    // Walk linearly through the output cases, executing the first
+    // match against value.
+    int cases = gotoElement.case_count();
+    for(int i = 0; i < cases; ++i) 
+    {
+      string caseUnparsed = gotoElement.get_case(i);
+
+      // Check for bytecode wellformedness. All cases should be
+      // surrounded by parens
+      if(caseUnparsed[0] != '(' || 
+         caseUnparsed[caseUnparsed.size() - 1] != ')')
+        throw Error("Malformed bytecode in goto_case statment");
+
+      // In the case of an empty set of parens, always accept. It is
+      // the bytecode representation for the default case.
+      if(caseUnparsed == "()") {
+        machine.gotoLocation(pointers[i]);
+        return;
+      }
+
+      caseUnparsed = caseUnparsed.substr(1, caseUnparsed.size() - 2);
+
+      // Parse this expression, and goto the corresponding label if
+      // it's equal to the value we're searching for
+      const char* e = (const char*)caseUnparsed.c_str();
+      auto_ptr<ExpressionPiece> output(get_expression(e));
+      if(output->getIntegerValue(machine) == value)
+      {
+        machine.gotoLocation(pointers[i]);
+        return;
+      }
+    }
+
+    // Something is seriously wrong here.
+    machine.advanceInstructionPointer();
   }
 };
 
@@ -169,6 +205,7 @@ JmpModule::JmpModule()
   addOpcode(1, 0, new Jmp_goto_if);
   addOpcode(2, 0, new Jmp_goto_unless);
   addOpcode(3, 0, new Jmp_goto_on);
+  addOpcode(4, 0, new Jmp_goto_case);
 }
 
 //@}

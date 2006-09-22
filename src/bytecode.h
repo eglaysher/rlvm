@@ -283,6 +283,10 @@ public:
 	// The cases are not counted as parameters.
 	const size_t param_count() const { return 1; }
 	string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
+
+  // Accessors for the cases
+  const size_t case_count() const { return cases.size(); }
+  const string get_case(int i) const { return cases[i]; }
 };
 
 class GotoOnElement : public PointerElement {

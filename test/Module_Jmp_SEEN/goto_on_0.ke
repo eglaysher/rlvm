@@ -20,6 +20,20 @@
 //  
 // -----------------------------------------------------------------------
 
-intA[4] = -1
+goto_on(intB[0]) { @a , @b , @c }
 intA[0] = -1
-setrng(intA[0], intA[3], 4)
+goto @end
+
+@a
+intA[0] = 0
+goto @end
+
+@b
+intA[0] = 1
+goto @end
+
+@c
+intA[0] = 2
+goto @end
+
+@end

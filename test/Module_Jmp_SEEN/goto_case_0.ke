@@ -20,6 +20,21 @@
 //  
 // -----------------------------------------------------------------------
 
-intA[4] = -1
-intA[0] = -1
-setrng(intA[0], intA[3], 4)
+goto_case(intB[0]) { 0: @a; 1: @b; 2: @c; _: @default }
+
+@a
+intA[0] = 0
+goto @end
+
+@b
+intA[0] = 1
+goto @end
+
+@c
+intA[0] = 2
+goto @end
+
+@default
+intA[0] = 3
+
+@end

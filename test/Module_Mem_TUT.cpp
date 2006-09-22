@@ -108,7 +108,7 @@ void object::test<1>()
 // -----------------------------------------------------------------------
 
 /**
- * Tests setarray_0.
+ * Tests setrng_0.
  *
  * Corresponding kepago listing:
  * @code
@@ -146,7 +146,7 @@ void object::test<2>()
 // -----------------------------------------------------------------------
 
 /**
- * Tests setarray_1.
+ * Tests setrng_1.
  *
  * Corresponding kepago listing:
  * @code

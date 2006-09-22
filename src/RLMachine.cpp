@@ -23,10 +23,15 @@ RLMachine::RLMachine(Archive& inArchive)
   // we get the Gameexe.ini file parser working
   Reallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
   callStack.push(StackFrame(scenario, scenario->begin()));
+
+  // Initialize the big memory block to zero
+  memset(intVar, 0, sizeof(intVar));
 }
 
 RLMachine::~RLMachine()
 {}
+
+// -----------------------------------------------------------------------
 
 void RLMachine::attatchModule(RLModule* module) 
 {
@@ -36,6 +41,8 @@ void RLMachine::attatchModule(RLModule* module)
 
   modules.insert(packedModule, module);
 }
+
+// -----------------------------------------------------------------------
 
 void RLMachine::executeNextInstruction() 
 {
@@ -126,6 +133,8 @@ int RLMachine::getIntValue(int type, int location)
   }
 }
 
+// -----------------------------------------------------------------------
+
 /**
  *
  * @note This method was plagarized from xclannad.
@@ -158,6 +167,8 @@ void RLMachine::setIntValue(int rawtype, int location, int value) {
   }
 }
 
+// -----------------------------------------------------------------------
+
 const std::string& RLMachine::getStringValue(int type, int location) {
   switch(type) {
   case 0x12: return strS[location];
@@ -166,6 +177,8 @@ const std::string& RLMachine::getStringValue(int type, int location) {
     throw Error("Invalid type in RLMachine::getStringValue");
   }
 }
+
+// -----------------------------------------------------------------------
 
 void RLMachine::setStringValue(int type, int number, const std::string& value) {
   switch(type) {
@@ -179,6 +192,8 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
     throw Error("Invalid type in RLMachine::setStringValue");
   }     
 }
+
+// -----------------------------------------------------------------------
 
 void RLMachine::executeCommand(const CommandElement& f) {
   ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
