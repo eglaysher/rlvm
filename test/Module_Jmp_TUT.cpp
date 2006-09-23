@@ -534,6 +534,148 @@ void object::test<12>()
                 1);
 }
 
+// -----------------------------------------------------------------------
+
+
+/**
+ * Tests gosub_unless (if false)
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intA[0] = 1
+ * gosub_unless(intB[0]) @sub
+ * intA[2] = 1
+ * goto @end
+ * 
+ * @sub
+ * intA[1] = 1
+ * ret()
+ * 
+ * // If we fall through, reset the flag
+ * intA[1] = 0
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<13>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_unless_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Didn't set precondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("Didn't set intA[1]; didn't gosub on false!",
+                rlmachine.getIntValue(0, 1),
+                1);
+  ensure_equals("Didn't set postcondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests gosub_unless (if true)
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intA[0] = 1
+ * gosub_unless(intB[0]) @sub
+ * intA[2] = 1
+ * goto @end
+ * 
+ * @sub
+ * intA[1] = 1
+ * ret()
+ * 
+ * // If we fall through, reset the flag
+ * intA[1] = 0
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<14>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_unless_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.setIntValue(1, 0, 1);
+
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Didn't set precondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("Set intA[1]; this means we gosubed on a true value (or ret problem)",
+                rlmachine.getIntValue(0, 1),
+                0);
+  ensure_equals("Didn't set postcondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests goto_case
+ *
+ * Corresponding kepago listing:
+ * @code
+ * goto_case(intB[0]) { 0: @a; 1: @b; 2: @c; _: @default }
+ *
+ * @a
+ * intA[0] = 0
+ * goto @end
+ * 
+ * @b
+ * intA[0] = 1
+ * goto @end
+ *
+ * @c
+ * intA[0] = 2
+ * goto @end
+ *
+ * @default
+ * intA[0] = 3
+ *
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<15>()
+{
+  for(int i = 0; i < 3; ++i) 
+  {
+    Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_case_0.TXT");
+    RLMachine rlmachine(arc);
+    rlmachine.attatchModule(new JmpModule);
+    rlmachine.setIntValue(1, 0, i);
+    rlmachine.executeUntilHalted();
+  
+    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+                  rlmachine.getIntValue(0, 0),
+                  i);
+  }
+
+  // Now test the default value
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_case_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.setIntValue(1, 0, 29);
+  rlmachine.executeUntilHalted();
+  
+  ensure_equals("We jumped somewhere unexpected on a bad value!", 
+                rlmachine.getIntValue(0, 0),
+                3);
+}
+
+
 
 
 }

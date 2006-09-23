@@ -374,6 +374,7 @@ JmpModule::JmpModule()
   addOpcode(6, 0, new Jmp_gosub_if);
   addOpcode(7, 0, new Jmp_gosub_unless);
   addOpcode(8, 0, new Jmp_gosub_on);
+  addOpcode(9, 0, new Jmp_gosub_case);
 
   addOpcode(10, 0, new Jmp_ret);
 }
