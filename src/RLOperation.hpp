@@ -130,6 +130,7 @@ struct IntReference_T {
   /// We pass iterators to the 
   typedef IntReferenceIterator type;
 
+  /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
                       boost::ptr_vector<Reallive::ExpressionPiece>& p, 
                       int position) {
@@ -137,6 +138,7 @@ struct IntReference_T {
       getIntegerReferenceIterator(machine);
   }
 
+  /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p,
                          int position);
 };
@@ -182,7 +184,7 @@ struct StrReference_T {
   /// The output type of this type struct
   typedef StringReferenceIterator type;
 
-  /// 
+  /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
                       boost::ptr_vector<Reallive::ExpressionPiece>& p, 
                       int position) {
@@ -190,6 +192,7 @@ struct StrReference_T {
       getStringReferenceIterator(machine);
   }
 
+  /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p,
                          int position);
 };
@@ -298,6 +301,8 @@ struct RLOp_SpecialCase : public RLOperation {
   void dispatchFunction(RLMachine& machine, 
                         const Reallive::CommandElement& f);
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual void operator()(RLMachine&, const Reallive::CommandElement&) = 0;
 };
 
@@ -317,6 +322,8 @@ struct RLOp_Void_Void : public RLOperation {
     operator()(machine);
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual void operator()(RLMachine&) = 0;
 };
 
@@ -337,6 +344,8 @@ struct RLOp_Store_Void : public RLOperation {
     machine.setStoreRegister(store);
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual int operator()(RLMachine&) = 0;
 };
 
@@ -359,6 +368,8 @@ struct RLOp_Void_1 : public RLOperation {
     operator()(machine, A::getData(machine, parameters, 0));
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual void operator()(RLMachine&, firstType) = 0;
 };
 
@@ -382,6 +393,8 @@ struct RLOp_Store_1 : public RLOperation {
     machine.setStoreRegister(store);
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual int operator()(RLMachine&, firstType) = 0;
 };
 
@@ -408,6 +421,8 @@ struct RLOp_Void_2 : public RLOperation {
                B::getData(machine, parameters, 1));
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual void operator()(RLMachine&, firstType, secondType) = 0;
 };
 
@@ -435,6 +450,8 @@ struct RLOp_Store_2 : public RLOperation {
     machine.setStoreRegister(store);
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual int operator()(RLMachine&, firstType, secondType) = 0;
 };
 
@@ -465,6 +482,8 @@ struct RLOp_Void_3 : public RLOperation {
                C::getData(machine, parameters, 2));
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual void operator()(RLMachine&, firstType, secondType, thirdType) = 0;
 };
 
@@ -496,6 +515,8 @@ struct RLOp_Store_3 : public RLOperation {
     machine.setStoreRegister(store);
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual int operator()(RLMachine&, firstType, secondType, thirdType) = 0;
 };
 
@@ -530,6 +551,8 @@ struct RLOp_Void_4 : public RLOperation {
                D::getData(machine, parameters, 3));
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType) = 0;
 };
 
@@ -565,6 +588,8 @@ struct RLOp_Store_4 : public RLOperation {
     machine.setStoreRegister(store);
   }
 
+  /// Method that is overridden by all subclasses to implement the
+  /// function of this opcode
   virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType) = 0;
 };
 

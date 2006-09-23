@@ -51,29 +51,46 @@ private:
   /// Mapping between the module_type:module pair and the module implementation
   ModuleMap modules;
 
-  /// States whether the RLMachine is in the halted state (and thus won't
-  /// execute more instructions)
+  /// States whether the RLMachine is in the halted state (and thus
+  /// won't execute more instructions)
   bool m_halted;
 
-  /// States whether the machine should halt if an unhandled exception is thrown
+  /// States whether the machine should halt if an unhandled exception
+  /// is thrown
   bool m_haltOnException;
 
   /// The SEEN.TXT the machine is currently executing.
   Reallive::Archive& archive;
 
-  // Describes a stack frame 
+  /** Describes a stack frame. Stack frames are added by two
+   * mechanisms: gosubs and farcalls. gosubs move the instruction
+   * pointer within one Scenario, while farcalls move the instruction
+   * pointer between Scenarios.
+   */
   struct StackFrame {
-    StackFrame(Reallive::Scenario* s, const Reallive::Scenario::const_iterator& i) 
-      : scenario(s), ip(i) {}
-
     /// The scenario in the SEEN file for this stack frame.
     Reallive::Scenario* scenario;
     
     /// The instruction pointer in the stack frame.
     Reallive::Scenario::const_iterator ip;
+
+    /**
+     * The function that pushed the @i current frame onto the
+     * stack. Used in error checking.
+     */
+    enum FrameType {
+      TYPE_ROOT,   /**< Added by the Machine's constructor */
+      TYPE_GOSUB,  /**< Added by a call by gosub */
+      TYPE_FARCALL /**< Added by a call by farcall */
+    } frameType;
+
+    /// Default constructor
+    StackFrame(Reallive::Scenario* s, const Reallive::Scenario::const_iterator& i,
+               FrameType t) 
+      : scenario(s), ip(i), frameType(t) {}
   };
 
-  /// The call stack.
+  /// The actual call stack.
   std::stack<StackFrame> callStack;
 
   unsigned int packModuleNumber(int modtype, int module);
@@ -200,7 +217,7 @@ public:
    * 
    * @param newLocation New location of the instruction pointer.
    */
-//  void gosub(BytecodeList::iterator newLocation);
+  void gosub(Reallive::BytecodeList::iterator newLocation);
 
   /** 
    * Returns from the most recent gosub call. 
@@ -208,7 +225,7 @@ public:
    * @throw Error Throws an error when there's a mismatch in the
    * script between farcall()/rtl() gosub()/ret() pairs.
    */
-//  void ret();
+  void returnFromGosub();
 
   // @}
 

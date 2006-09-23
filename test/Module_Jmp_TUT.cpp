@@ -392,6 +392,148 @@ void object::test<8>()
                 3);
 }
 
+// -----------------------------------------------------------------------
+
+/**
+ * Tests gosub
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intA[0] = 1
+ * gosub @sub
+ * intA[2] = 1
+ * goto @end
+ *
+ * @sub
+ * intA[1] = 1
+ * ret()
+ *
+ * // If we fall through, reset the flag
+ * intA[1] = 0
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<9>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Didn't set precondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("intA[1] is unset; this means the gosub or ret was ignored!",
+                rlmachine.getIntValue(0, 1),
+                1);
+  ensure_equals("Didn't set postcondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests gosub
+ *
+ * Corresponding kepago listing:
+ * @code
+ * intA[0] = 1
+ * gosub @sub
+ * intA[2] = 1
+ * goto @end
+ *
+ * @sub
+ * intA[1] = 1
+ * ret()
+ *
+ * // If we fall through, reset the flag
+ * intA[1] = 0
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<10>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Didn't set precondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("intA[1] is unset; this means the gosub or ret was ignored!",
+                rlmachine.getIntValue(0, 1),
+                1);
+  ensure_equals("Didn't set postcondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests gosub_if (if false)
+ *
+ * Corresponding kepago listing:
+ * @code
+ * @endcode
+ */
+template<>
+template<>
+void object::test<11>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_if_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Didn't set precondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("Set intA[1]; this means we gosubed on a false value (or ret problem)",
+                rlmachine.getIntValue(0, 1),
+                0);
+  ensure_equals("Didn't set postcondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests gosub_if (if true)
+ *
+ * Corresponding kepago listing:
+ * @code
+ * @endcode
+ */
+template<>
+template<>
+void object::test<12>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_if_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.setIntValue(1, 0, 1);
+
+  rlmachine.executeUntilHalted();
+
+  ensure_equals("Didn't set precondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+  ensure_equals("Didn't set intA[1]; didn't gosub on true!",
+                rlmachine.getIntValue(0, 1),
+                1);
+  ensure_equals("Didn't set postcondition (!?!?)",
+                rlmachine.getIntValue(0, 0),
+                1);
+}
+
 
 
 }

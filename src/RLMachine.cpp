@@ -22,7 +22,7 @@ RLMachine::RLMachine(Archive& inArchive)
   // Arbitrarily set the scenario to the first one in the archive, which is what we want until
   // we get the Gameexe.ini file parser working
   Reallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
-  callStack.push(StackFrame(scenario, scenario->begin()));
+  callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
   memset(intVar, 0, sizeof(intVar));
@@ -213,12 +213,35 @@ void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
   callStack.top().ip = newLocation;
 }
 
+// -----------------------------------------------------------------------
+
+void RLMachine::gosub(BytecodeList::iterator newLocation) 
+{
+  callStack.push(StackFrame(callStack.top().scenario, newLocation, 
+                            StackFrame::TYPE_GOSUB));
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::returnFromGosub()
+{
+  // Check to make sure the types match up.
+  if(callStack.top().frameType != StackFrame::TYPE_GOSUB) 
+    throw Error("Callstack type mismatch in returnFromGosub()");
+
+  callStack.pop();
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::executeExpression(const ExpressionElement& e) {
   int value = e.parsedExpression().getIntegerValue(*this);
 
   // Increment the instruction pointer.
   callStack.top().ip++;
 }
+
+// -----------------------------------------------------------------------
 
 unsigned int RLMachine::packModuleNumber(int modtype, int module)
 {
