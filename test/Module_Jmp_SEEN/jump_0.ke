@@ -20,28 +20,18 @@
 //  
 // -----------------------------------------------------------------------
 
-gosub_case(intB[0]) { 0: @a; 1: @b; 2: @c; _: @default }
-goto @end
-
-@a
-intA[0] = 0
-"0"
-goto @end
-
-@b
-intA[0] = 1
-"1"
-goto @end
-
-@c
-intA[0] = 2
-"2"
-goto @end
-
-@default
-"3"
-intA[0] = 3
-
-@end
+jump(1, intB[0])
 
 #ENTRYPOINT 1
+intA[0] = 1
+goto @end
+
+#ENTRYPOINT 2
+intA[0] = 2
+goto @end
+
+#ENTRYPOINT 3
+intA[0] = 3
+goto @end
+
+@end

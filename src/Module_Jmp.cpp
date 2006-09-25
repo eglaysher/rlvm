@@ -357,6 +357,35 @@ struct Jmp_ret : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implement op<0:Jmp:00011, 0>, fun jump(intC).
+ * 
+ * Jumps the instruction pointer to the begining of the scenario
+ * #scenario.
+ */
+struct Jmp_jump_0 : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int scenario) {
+    machine.jump(scenario);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implement op<0:Jmp:00011, 1>, fun jump(intC, intC).
+ * 
+ * Jumps the instruction pointer to entrypoint #entrypoint of scenario
+ * #scenario.
+ */
+struct Jmp_jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, int scenario, int entrypoint) {
+    machine.jump(scenario, entrypoint);
+  }
+};
+
+
+// -----------------------------------------------------------------------
+
 /**
  * @class JmpModule
  *
@@ -375,8 +404,9 @@ JmpModule::JmpModule()
   addOpcode(7, 0, new Jmp_gosub_unless);
   addOpcode(8, 0, new Jmp_gosub_on);
   addOpcode(9, 0, new Jmp_gosub_case);
-
   addOpcode(10, 0, new Jmp_ret);
+  addOpcode(11, 0, new Jmp_jump_0);
+  addOpcode(11, 1, new Jmp_jump_1);
 }
 
 //@}

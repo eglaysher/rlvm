@@ -23,10 +23,14 @@ public:
 	
 	// Rebuild a scenario to bytecode, optionally removing unnecessary debugging metadata at the same time.
 	const string* rebuild();
-	
+
 	// Access to script
 	typedef BytecodeList::const_iterator const_iterator;
 	typedef BytecodeList::iterator iterator;
+
+  /// Locate the entrypoint
+  const_iterator findEntrypoint(int entrypoint) const;
+	
 	iterator begin();
 	iterator end();
 	const_iterator begin() const;

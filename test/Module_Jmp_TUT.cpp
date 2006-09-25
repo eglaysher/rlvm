@@ -622,7 +622,7 @@ void object::test<14>()
 // -----------------------------------------------------------------------
 
 /**
- * Tests goto_case
+ * Tests gosub_case
  *
  * Corresponding kepago listing:
  * @code
@@ -673,6 +673,49 @@ void object::test<15>()
   ensure_equals("We jumped somewhere unexpected on a bad value!", 
                 rlmachine.getIntValue(0, 0),
                 3);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests jump (within current file). In this test, we use entrypoints
+ * like goto labels.
+ *
+ * Corresponding kepago listing:
+ * @code
+ * jump(1, intB[0]);
+ *
+ * #ENTRYPOINT 1
+ * intA[0] = 1
+ * goto @end
+ * 
+ * #ENTRYPOINT 2
+ * intA[0] = 2
+ * goto @end
+ *
+ * #ENTRYPOINT 3
+ * intA[0] = 3
+ * goto @end
+ *
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<16>()
+{
+  for(int i = 1; i < 4; ++i) 
+  {
+    Reallive::Archive arc("test/Module_Jmp_SEEN/jump_0.TXT");
+    RLMachine rlmachine(arc);
+    rlmachine.attatchModule(new JmpModule);
+    rlmachine.setIntValue(1, 0, i);
+    rlmachine.executeUntilHalted();
+  
+    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+                  rlmachine.getIntValue(0, 0),
+                  i);
+  }
 }
 
 

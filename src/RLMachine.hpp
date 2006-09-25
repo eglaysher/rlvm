@@ -184,7 +184,7 @@ public:
    * @param scenario SEEN number to jump to
    * @param entrypoint Entrypoint number in that SEEN to jump to
    */
-//  void jump(int scenario, int entrypoint = 0);
+  void jump(int scenario, int entrypoint = 0);
 
   /** 
    * Push a new stack frame onto the call stack 

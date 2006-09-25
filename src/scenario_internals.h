@@ -39,7 +39,13 @@ class Script {
 	// Pointer/label handling.
 	typedef std::vector<pointer_t> pointer_list;
 	typedef std::map<pointer_t, pointer_list> labelmap;
+
 	labelmap labels;
+
+  // Entrypoint handeling
+  typedef std::map<int, pointer_t> pointernumber;
+  pointernumber entrypointAssociations;
+
 	void update_pointers(pointer_t&, pointer_t&);
 	void remove_label(pointer_t&, pointer_t&);
 	void remove_elt(pointer_t&);
@@ -48,4 +54,6 @@ public:
 	void invalidate() { uptodate = false; }
 
 	const size_t size() { recalculate(); return lencache; }
+
+  const pointer_t getEntrypoint(int entrypoint) const;
 };

@@ -41,7 +41,9 @@ Script::Script(const Header& hdr, const char* data, const size_t length) : uptod
 	const int kidoku_offs = read_i32(data + 0x08);
 	const size_t kidoku_length = read_i32(data + 0x0c);
 	ConstructionData cdat(kidoku_length, elts.end());
-	for (int i = 0; i < kidoku_length; ++i) cdat.kidoku_table[i] = read_i32(data + kidoku_offs + i * 4);
+	for (int i = 0; i < kidoku_length; ++i) 
+      cdat.kidoku_table[i] =  read_i32(data + kidoku_offs + i * 4);
+
 	// Decompress data
 	const size_t dlen = read_i32(data + 0x24);
 	std::auto_ptr<char> uncompressed = std::auto_ptr<char>(new char[dlen]);
@@ -55,6 +57,12 @@ Script::Script(const Header& hdr, const char* data, const size_t length) : uptod
 		pointer_t it = elts.end();
 		cdat.offsets[pos] = --it;
 		it->offset_ = pos;
+        
+        // Keep track of the entrypoints
+        if(it->type() == Entrypoint) {
+          entrypointAssociations.insert(make_pair(it->entrypoint(), it));
+        }
+
 		// Advance
 		size_t l = it->length();
 		if (l <= 0) l = 1; // Failsafe: always advance at least one byte.
@@ -127,6 +135,15 @@ Script::remove_elt(pointer_t& it)
 	pointer_t new_it(it);
 	update_pointers(it, ++new_it);
 	it = elts.erase(it);
+}
+
+const pointer_t Script::getEntrypoint(int entrypoint) const
+{
+  pointernumber::const_iterator it = entrypointAssociations.find(entrypoint);
+  if(it == entrypointAssociations.end())
+    throw Error("Unknown entrypoint");
+
+  return it->second;
 }
 
 const string*
@@ -214,6 +231,10 @@ Scenario::rebuild()
 	return rv;
 }
 
+Scenario::const_iterator Scenario::findEntrypoint(int entrypoint) const
+{
+  return script.getEntrypoint(entrypoint);
+}
 
 // Classification functions for optimisation code.
 

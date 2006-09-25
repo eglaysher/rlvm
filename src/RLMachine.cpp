@@ -208,6 +208,19 @@ void RLMachine::executeCommand(const CommandElement& f) {
 
 // -----------------------------------------------------------------------
 
+void RLMachine::jump(int scenarioNum, int entrypoint) 
+{
+  // Check to make sure it's a valid scenario
+  Reallive::Scenario* scenario = archive.scenario(scenarioNum);
+  if(scenario == 0)
+    throw Error("Invalid scenario number in jump");
+
+  callStack.top().scenario = scenario;
+  callStack.top().ip = scenario->findEntrypoint(entrypoint);
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
   // Modify the current frame of the call stack so that it's 
   callStack.top().ip = newLocation;

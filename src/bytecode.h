@@ -82,7 +82,10 @@ public:
 	virtual ~BytecodeElement() {}
 	
 	BytecodeElement() : id(id_src++) {}
-	
+
+  // Needed for MetaElement during reading the script
+  virtual const int entrypoint() const { return -999; }	
+
 	// Read the next element from a stream.
 	static BytecodeElement* read(const char* stream, ConstructionData& cdata);
 };
