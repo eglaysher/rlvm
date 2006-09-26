@@ -718,6 +718,49 @@ void object::test<16>()
   }
 }
 
+// -----------------------------------------------------------------------
+
+/** 
+ * 
+ * @code
+ * // ------------- In seen00001
+ * jump(2, intB[0])
+ *
+ * // ------------- In seen00002
+ * #ENTRYPOINT 1
+ * intA[0] = 1
+ * goto @end
+ * 
+ * #ENTRYPOINT 2
+ * intA[0] = 2
+ * goto @end
+ *
+ * #ENTRYPOINT 3
+ * intA[0] = 3
+ * goto @end
+ *
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<17>()
+{
+  for(int i = 1; i < 4; ++i) 
+  {
+    Reallive::Archive arc("test/Module_Jmp_SEEN/jumpTest/SEEN.TXT");
+    RLMachine rlmachine(arc);
+    rlmachine.attatchModule(new JmpModule);
+    rlmachine.setIntValue(1, 0, i);
+    rlmachine.executeUntilHalted();
+  
+    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+                  rlmachine.getIntValue(0, 0),
+                  i);
+  }
+}
+
+// -----------------------------------------------------------------------
 
 
 

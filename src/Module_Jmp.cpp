@@ -364,6 +364,8 @@ struct Jmp_ret : public RLOp_Void_Void {
  * #scenario.
  */
 struct Jmp_jump_0 : public RLOp_Void_1< IntConstant_T > {
+  virtual bool advanceInstructionPointer() { return false; }
+
   void operator()(RLMachine& machine, int scenario) {
     machine.jump(scenario);
   }
@@ -378,10 +380,46 @@ struct Jmp_jump_0 : public RLOp_Void_1< IntConstant_T > {
  * #scenario.
  */
 struct Jmp_jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+  virtual bool advanceInstructionPointer() { return false; }
+
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
     machine.jump(scenario, entrypoint);
   }
 };
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implement op<0:Jmp:00012, 0>, fun farcall(intC).
+ * 
+ * Farcalls the instruction pointer to the begining of the scenario
+ * #scenario.
+ */
+struct Jmp_farcall_0 : public RLOp_Void_1< IntConstant_T > {
+  virtual bool advanceInstructionPointer() { return false; }
+
+  void operator()(RLMachine& machine, int scenario) {
+    machine.farcall(scenario);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implement op<0:Jmp:00012, 1>, fun farcall(intC, intC).
+ * 
+ * Farcalls the instruction pointer to entrypoint #entrypoint of scenario
+ * #scenario.
+ */
+struct Jmp_farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, int scenario, int entrypoint) {
+    machine.farcall(scenario, entrypoint);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+
 
 
 // -----------------------------------------------------------------------
@@ -407,6 +445,8 @@ JmpModule::JmpModule()
   addOpcode(10, 0, new Jmp_ret);
   addOpcode(11, 0, new Jmp_jump_0);
   addOpcode(11, 1, new Jmp_jump_1);
+  addOpcode(12, 0, new Jmp_farcall_0);
+  addOpcode(12, 1, new Jmp_farcall_1);
 }
 
 //@}

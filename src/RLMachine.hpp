@@ -192,7 +192,7 @@ public:
    * @param scenario SEEN number to jump to
    * @param entrypoint Entrypoint number to that SEEN to jump to
    */
-//  void farcall(int scenario, int entrypoint = 0);
+  void farcall(int scenario, int entrypoint = 0);
 
   /** 
    * Return from the most recent farcall().

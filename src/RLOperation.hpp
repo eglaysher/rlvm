@@ -65,6 +65,14 @@
  * the RLMachine.
  */
 struct RLOperation {
+  /** 
+   * Check made as to whether the instruction pointer should be
+   * incremented after the instruction is executed. Override this in
+   * the *rare* case where an instruction messes about with the
+   * instruction pointer and we don't want to mess with it afterwards.
+   */
+  virtual bool advanceInstructionPointer() { return true; }
+
   /** The type checker is called by the Module to make sure the parameters read in
    * are of the expected type.
    */

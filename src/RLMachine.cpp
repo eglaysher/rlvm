@@ -221,6 +221,15 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
 
 // -----------------------------------------------------------------------
 
+void RLMachine::farcall(int scenarioNum, int entrypoint) {
+  Reallive::Scenario* scenario = archive.scenario(scenarioNum);
+  Reallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
+
+  callStack.push(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
   // Modify the current frame of the call stack so that it's 
   callStack.top().ip = newLocation;

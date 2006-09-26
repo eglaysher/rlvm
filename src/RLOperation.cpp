@@ -44,13 +44,17 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
     // By default, we advacne the instruction pointer on any instruction we
     // perform. Weird special cases all derive from RLOp_SpecialCase, which
     // redefines the dispatcher, so this is ok.
-    machine.advanceInstructionPointer();
+    if(advanceInstructionPointer())
+      machine.advanceInstructionPointer();
   }
   catch(...) {
     // If there was an exception on this line, and we are in warning
     // mode, where RLMachine will catch the exception and just log a
     // warning, then an exception will cause an infinite loop if we
     // don't also increment the instruciton pointer.
+    // 
+    // Note that we don't check to see whether this is a good idea or
+    // not; we increment to prevent the infinite loop.
     machine.advanceInstructionPointer();
   }
 }
