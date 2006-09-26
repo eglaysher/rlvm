@@ -230,6 +230,17 @@ void RLMachine::farcall(int scenarioNum, int entrypoint) {
 
 // -----------------------------------------------------------------------
 
+void RLMachine::returnFromFarcall() {
+  // Check to make sure the types match up.
+  if(callStack.top().frameType != StackFrame::TYPE_FARCALL) {
+    throw Error("Callstack type mismatch in returnFromFarcall()");
+  }
+
+  callStack.pop();
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
   // Modify the current frame of the call stack so that it's 
   callStack.top().ip = newLocation;
@@ -248,8 +259,9 @@ void RLMachine::gosub(BytecodeList::iterator newLocation)
 void RLMachine::returnFromGosub()
 {
   // Check to make sure the types match up.
-  if(callStack.top().frameType != StackFrame::TYPE_GOSUB) 
+  if(callStack.top().frameType != StackFrame::TYPE_GOSUB) {
     throw Error("Callstack type mismatch in returnFromGosub()");
+  }
 
   callStack.pop();
 }

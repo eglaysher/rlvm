@@ -6,16 +6,16 @@ RLC = rlc
 KPRL = kprl
 
 .PHONY: clean 
-.SUBDIRS: jumpTest farcallTest_0
 
 KEPAGOFILES = $(glob *.ke)
 
 %.TXT: %.ke
-	$(RLC) $< -o seen0001.TXT
-	$(KPRL) -a $@ seen0001.TXT
-	$(RM) seen0001.TXT
+	$(RLC) $< -o $@
 
-.DEFAULT: $(replacesuffixes .ke, .TXT, $(KEPAGOFILES)) jumpTest farcallTest_0
+SEEN.TXT: $(replacesuffixes .ke, .TXT, $(KEPAGOFILES))
+	$(KPRL) -a $@ seen00001.TXT seen00002.TXT
+
+.DEFAULT: SEEN.TXT
 
 clean:
   $(RM) *~ *.TXT *.TXT.uncompressed

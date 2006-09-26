@@ -200,7 +200,7 @@ public:
    * @throw Error Throws an error when there's a mismatch in the
    * script between farcall()/rtl() gosub()/ret() pairs
    */
-//  void rtl();
+  void returnFromFarcall();
 
   /**
    * Permanently moves the instruction pointer to the passed in

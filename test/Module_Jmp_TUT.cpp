@@ -763,5 +763,51 @@ void object::test<17>()
 // -----------------------------------------------------------------------
 
 
+/** 
+ * 
+ * @code
+ * // ------------- In seen00001
+ * intA[0] = 1
+ * farcall(2, intB[0])
+ * intA[2] = 1
+ *
+ * // ------------- In seen00002
+ * #ENTRYPOINT 1
+ * intA[1] = 1
+ * ret
+ * 
+ * #ENTRYPOINT 2
+ * intA[1] = 2
+ * ret
+ *
+ * #ENTRYPOINT 3
+ * intA[1] = 3
+ * ret
+ * @endcode
+ */
+template<>
+template<>
+void object::test<18>()
+{
+  for(int i = 1; i < 4; ++i) 
+  {
+    Reallive::Archive arc("test/Module_Jmp_SEEN/farcallTest_0/SEEN.TXT");
+    RLMachine rlmachine(arc);
+    rlmachine.attatchModule(new JmpModule);
+    rlmachine.setIntValue(1, 0, i);
+    rlmachine.executeUntilHalted();
+  
+    ensure_equals("Precondition not set! (!?!?!?!)",
+                  rlmachine.getIntValue(0, 0),
+                  1);
+    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+                  rlmachine.getIntValue(0, 1),
+                  i);
+    ensure_equals("Postcondition not set! (We didn't return correctly!)",
+                  rlmachine.getIntValue(0, 2),
+                  1);
+  }
+}
+
 
 }

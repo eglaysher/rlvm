@@ -347,13 +347,16 @@ struct Jmp_gosub_case : public RLOp_SpecialCase {
  * 
  * Pushes the current location onto the call stack, then jumps to the
  * label @label in the current scenario.
+ *
+ * @note This functor MUST increment the instruction pointer, since
+ * the instruction pointer at this stack frame is still pointing to
+ * the gosub that created the new frame.
  */
 struct Jmp_ret : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.returnFromGosub();
   }
 };
-
 
 // -----------------------------------------------------------------------
 
@@ -412,6 +415,8 @@ struct Jmp_farcall_0 : public RLOp_Void_1< IntConstant_T > {
  * #scenario.
  */
 struct Jmp_farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+  virtual bool advanceInstructionPointer() { return false; }
+
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
     machine.farcall(scenario, entrypoint);
   }
@@ -419,8 +424,20 @@ struct Jmp_farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-
-
+/** 
+ * Implement op<0:Jmp:00013, 0>, fun rtl().
+ * 
+ * Returns from the current stack frame if it was a farcall.
+ *
+ * @note This functor MUST increment the instruction pointer, since
+ * the instruction pointer at this stack frame is still pointing to
+ * the gosub that created the new frame.
+ */
+struct Jmp_rtl : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.returnFromFarcall();
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -447,6 +464,7 @@ JmpModule::JmpModule()
   addOpcode(11, 1, new Jmp_jump_1);
   addOpcode(12, 0, new Jmp_farcall_0);
   addOpcode(12, 1, new Jmp_farcall_1);
+  addOpcode(13, 0, new Jmp_rtl);
 }
 
 //@}

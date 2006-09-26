@@ -56,6 +56,8 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
     // Note that we don't check to see whether this is a good idea or
     // not; we increment to prevent the infinite loop.
     machine.advanceInstructionPointer();
+
+    throw;
   }
 }
 
