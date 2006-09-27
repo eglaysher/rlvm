@@ -90,7 +90,11 @@ size_t next_data(const char* src)
 		const char* end = src;
 		if (*end++ == 'a') {
 			++end;
-			if (*end++ != '(') throw Error("next_data(): expected `(' in special param");
+			if (*end != '(') {
+              end += next_data(end);
+              return end - src;
+//              throw Error("next_data(): expected `(' in special param");
+            } else end++;
 		}
 		while (*end != ')') end += next_data(end);
 		return end - src + 1;
@@ -325,17 +329,24 @@ ExpressionPiece* get_data(const char*& src)
     return get_string(src);
   } else if(*src == 'a' || *src == '(') {
     const char* end = src;
-    // I am assuming Haeleth does this because special parameters
-    // can be prefixed by an "a" ??????
-    if (*end++ == 'a') {
-      ++end;
-      if (*end++ != '(') 
-        throw Error("next_data(): expected `(' in special param");
-    }
+    auto_ptr<ComplexExpressionPiece> cep;
 
-    auto_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece);
+    if (*end++ == 'a') {
+      int tag = *end++;
+      cep.reset(new SpecialExpressionPiece(tag));
+
+      if (*end != '(') 
+      {
+        // We have a single parameter in this special expression;
+        cep->addContainedPiece(get_data(end));
+        return cep.release();
+      } else end++;
+    }
+    else
+      cep.reset(new ComplexExpressionPiece());
+
     while (*end != ')') {
-      cep->addContainedPiece(get_expression(end));
+      cep->addContainedPiece(get_data(end));
     }
 
     return cep.release();
@@ -556,6 +567,18 @@ bool ComplexExpressionPiece::isComplexParameter() const
 void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece)
 {
   containedPieces.push_back(piece);
+}
+
+// -----------------------------------------------------------------------
+
+SpecialExpressionPiece::SpecialExpressionPiece(int tag)
+  : overloadTag(tag)
+{}
+
+// -----------------------------------------------------------------------
+
+bool SpecialExpressionPiece::isSpecialParamater() const {
+  return true;
 }
 
 

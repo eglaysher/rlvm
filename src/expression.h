@@ -172,13 +172,33 @@ private:
   boost::ptr_vector<ExpressionPiece> containedPieces;
 
 public:
-
   virtual bool isComplexParameter() const;
 
   void addContainedPiece(ExpressionPiece* piece);
 
   boost::ptr_vector<ExpressionPiece>& getContainedPieces() 
     { return containedPieces; }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Represents a Special parameter; a type that can be multiple types. 
+ * 
+ * In both Haeleth's code and my study of the bytecode, Special
+ * parameters seem to be types of Complex expressions. Even if they
+ * weren't, we need to maintain this relationships to make Special_T
+ * work.
+ */
+class SpecialExpressionPiece : public ComplexExpressionPiece {
+private:
+  int overloadTag;
+
+public:
+  SpecialExpressionPiece(int tag);
+  virtual bool isSpecialParamater() const;
+
+  int getOverloadTag() const { return overloadTag; }
 };
 
 }

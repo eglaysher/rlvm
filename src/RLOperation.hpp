@@ -277,6 +277,103 @@ struct Complex2_T {
   }
 };
 
+// -----------------------------------------------------------------------
+
+struct emptyStruct { };
+
+/// Defines a null type for the Special parameter.
+struct Empty_T {
+  typedef emptyStruct type;
+
+  /// Convert the incoming parameter objects into the resulting type.
+  static type getData(RLMachine& machine, 
+                      boost::ptr_vector<Reallive::ExpressionPiece>& p,
+                      int position) {
+    return emptyStruct();
+  }
+
+  static bool verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p,
+                         int position) {
+    return true;
+  }
+};
+
+/** 
+ * Type definition that implements the special parameter concept; the
+ * way to expect multiple different types in a parameter slot. 
+ */
+template<typename A, typename B = Empty_T, typename C = Empty_T, 
+         typename D = Empty_T, typename E = Empty_T>
+struct Special_T {
+  /// Internal unionish structure which we pass in to the 
+  struct Parameter {
+    // 0 = A, 1 = B
+    int type;
+
+    typename A::type first;
+    typename B::type second;
+    typename C::type third;
+    typename D::type fourth;
+    typename E::type fifth;
+  };
+
+  /// Export our internal struct as our external type
+  typedef Parameter type;
+
+  /// Convert the incoming parameter objects into the resulting type.
+  static type getData(RLMachine& machine, 
+                      boost::ptr_vector<Reallive::ExpressionPiece>& p,
+                      int position)
+  {
+    Reallive::SpecialExpressionPiece& sp = 
+      static_cast<Reallive::SpecialExpressionPiece&>(p[position]);
+    Parameter par;
+    par.type = sp.getOverloadTag();
+    switch(par.type) {
+    case 0:
+      par.first = A::getData(machine, sp.getContainedPieces(), 0);
+      break;
+    case 1:
+      par.second = B::getData(machine, sp.getContainedPieces(), 0);
+      break;
+    case 2:
+      par.third = C::getData(machine, sp.getContainedPieces(), 0);
+      break;
+    case 3:
+      par.fourth = D::getData(machine, sp.getContainedPieces(), 0);
+      break;
+    case 4:
+      par.fifth = E::getData(machine, sp.getContainedPieces(), 0);
+      break;
+    default:
+      throw Reallive::Error("Illegal overload in Special2_T::getData()");
+    };
+
+    return par;
+  }
+
+  /// Takes a type and makes sure that 
+  static bool verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p,
+                         int position) 
+  {
+/*    // Verify the size of the vector, that we have a special parameter, and then
+    // make sure all the 
+    bool typeOK = position < p.size();
+    typeOK = typeOK && p[position].isComplexParameter(); 
+    if(typeOK) {
+      Reallive::ComplexExpressionPiece& sp = 
+        static_cast<Reallive::ComplexExpressionPiece&>(p[position]);
+      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
+      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 1);
+    }
+    return typeOK;
+*/
+    // We may need to wrap everything up in another layer of
+    // ptr_vector to get the above to work.
+    return true;
+  }
+};
+
 // ----------------------------------------------------------------------
 
 /**

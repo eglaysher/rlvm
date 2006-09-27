@@ -37,7 +37,8 @@
 
 #include <cmath>
 #include <iostream>
-#include <typeinfo>
+#include <sstream>
+//#include <typeinfo>
 
 using namespace std;
 using namespace Reallive;
@@ -345,8 +346,7 @@ struct Jmp_gosub_case : public RLOp_SpecialCase {
 /** 
  * Implement op<0:Jmp:00010, 0>, fun ret().
  * 
- * Pushes the current location onto the call stack, then jumps to the
- * label @label in the current scenario.
+ * Returns from the current stack frame if it was a farcall.
  *
  * @note This functor MUST increment the instruction pointer, since
  * the instruction pointer at this stack frame is still pointing to
@@ -441,6 +441,54 @@ struct Jmp_rtl : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+
+struct Jmp_gosub_with : public RLOp_SpecialCase {
+  void operator()(RLMachine& machine, const CommandElement& f) {
+    const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+    const Pointers& pointers = gotoElement.get_pointersRef();
+
+    // Process the parameters
+
+    machine.gosub(pointers[0]);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Jmp_farcall_with
+  : public RLOp_Void_3< IntConstant_T, IntConstant_T,
+                        Argc_T< Special_T< IntConstant_T, StrConstant_T > > >
+{
+  typedef Special_T< IntConstant_T, StrConstant_T>::type Param;
+
+  void operator()(RLMachine& machine, int scenario, int entrypoint,
+                  vector<Param> withStuff) {
+    // First, we copy all the input parameters into 
+    int intLpos = 0;
+    int strKpos = 0;
+
+    for(vector<Param>::iterator it = withStuff.begin(); it != withStuff.end(); 
+        ++it)
+    {
+      switch(it->type) {
+      case 0:
+        // Make sure we aren't overflowing
+        cerr << "(0, " << it->first << ")" << endl;
+        break;
+      case 1:
+        cerr << "(1, " << it->second << ")" << endl;
+        break;
+      default:
+      {
+        stringstream ss;
+        ss << "Unknown type tag " << it->type << " in Jmp_farcall_with";
+        throw Error(ss.str());
+      }
+      }
+    }
+  }
+};
+
 /**
  * @class JmpModule
  *
@@ -465,6 +513,8 @@ JmpModule::JmpModule()
   addOpcode(12, 0, new Jmp_farcall_0);
   addOpcode(12, 1, new Jmp_farcall_1);
   addOpcode(13, 0, new Jmp_rtl);
+
+  addOpcode(18, 0, new Jmp_farcall_with);
 }
 
 //@}
