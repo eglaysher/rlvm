@@ -889,7 +889,7 @@ void object::test<19>()
 /** 
  * Recursive C implementation of fibonaci. Doesn't have all the weird
  * stack maitanance of the Reallive one I wrote, so this should help
- * test it.
+ * test it. Used in test<20>
  */
 static int recFib(int input) {
   if(input == 0) return 0;
@@ -961,6 +961,58 @@ void object::test<20>()
     ensure_equals(ss.str().c_str(),
                   rlmachine.getIntValue(0x04, 0),
                   recFib(i));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests farcall_with()/rtl_with().
+ * 
+ * @code
+ * // ---------------------------- SEEN00001
+ * #version 1.3
+ *
+ * intA[0] = 1
+ * intA[1] = farcall_with(2, intB[0], intB[1])
+ * intA[2] = 1
+ *
+ * // ---------------------------- SEEN00002
+ * #version 1.3
+ *
+ * #ENTRYPOINT 1
+ * rtl_with(1 + intL[0])
+ *
+ * #ENTRYPOINT 2
+ * rtl_with(2 + intL[0])
+ *
+ * #ENTRYPOINT 3
+ * rtl_with(3 + intL[0])
+ * @endcode
+ */
+template<>
+template<>
+void object::test<21>()
+{
+  for(int offset = 0; offset < 2; ++offset)
+  {
+    for(int entrypoint = 1; entrypoint < 4; ++entrypoint) 
+    {
+      Reallive::Archive arc("test/Module_Jmp_SEEN/farcall_withTest/SEEN.TXT");
+      RLMachine rlmachine(arc);
+      rlmachine.attatchModule(new JmpModule);
+      rlmachine.attatchModule(new StrModule);
+      rlmachine.setIntValue(0x1, 0, entrypoint);
+      rlmachine.setIntValue(0x1, 1, offset);
+      rlmachine.executeUntilHalted();
+
+      stringstream ss;
+      ss << "Wrong output value for pair (" << offset << ", " << entrypoint
+         << ") in farcall_with test!";
+      ensure_equals(ss.str().c_str(),
+                    rlmachine.getIntValue(0, 1),
+                    entrypoint + offset);
+    }
   }
 }
 

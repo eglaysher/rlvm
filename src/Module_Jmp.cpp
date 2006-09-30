@@ -548,6 +548,44 @@ struct Jmp_farcall_with
   }
 };
 
+// -----------------------------------------------------------------------
+
+/** 
+ * Implement op<0:Jmp:00019, 0>, fun rtl_with(intC).
+ * 
+ * Returns from the current stack frame if it was a farcall_with.
+ *
+ * @note This functor MUST increment the instruction pointer, since
+ * the instruction pointer at this stack frame is still pointing to
+ * the gosub that created the new frame.
+ */
+struct Jmp_rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int retVal) {
+    machine.setStoreRegister(retVal);
+    machine.returnFromFarcall();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implement op<0:Jmp:00019, 1>, fun rtl_with().
+ * 
+ * Returns from the current stack frame if it was a farcall_with.
+ *
+ * @note This functor MUST increment the instruction pointer, since
+ * the instruction pointer at this stack frame is still pointing to
+ * the gosub that created the new frame.
+ */
+struct Jmp_rtl_with_1 : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+//    machine.setStoreRegister(retVal);
+    machine.returnFromFarcall();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 /**
  * @class JmpModule
  *
@@ -577,6 +615,8 @@ JmpModule::JmpModule()
   addOpcode(17, 0, new Jmp_ret_with_0);
   addOpcode(17, 1, new Jmp_ret_with_1);
   addOpcode(18, 0, new Jmp_farcall_with);
+  addOpcode(19, 0, new Jmp_rtl_with_0);
+  addOpcode(19, 1, new Jmp_rtl_with_1);
 }
 
 //@}

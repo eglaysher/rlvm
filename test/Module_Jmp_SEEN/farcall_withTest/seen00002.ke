@@ -19,43 +19,13 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
 // -----------------------------------------------------------------------
-
 #version 1.3
 
-// Stack marker. Since Reallive provides no variable
-// stack, we need to manually keep track of this.
-intA[0] = 0
+#ENTRYPOINT 1
+rtl_with(1 + intL[0])
 
-// intB[0] is the top of our stack.
-intB[0] = 0
+#ENTRYPOINT 2
+rtl_with(2 + intL[0])
 
-// Call fibonacci. intD[0] was set before the program
-// was run, and the caller will read the result from
-// intE[0]
-intE[0] = gosub_with(intD[0]) @fib
-goto @end
-
-// -----------------------------------------------------
-
-@fib
-// Check the termination conditions
-if intL[0] == 0 ret_with(0)
-if intL[0] == 1 ret_with(1)
-
-// Copy the incoming data onto the stack, and 
-// increment the pointer.
-intB[intA[0]] = intL[0] - 1
-intA[0] += 1
-intB[intA[0]] = intL[0] - 2
-intA[0] += 1
-
-intB[intA[0] - 2] = gosub_with(intB[intA[0] - 2]) @fib
-intB[intA[0] - 1] = gosub_with(intB[intA[0] - 1]) @fib
-
-// Decrement the stack point
-intA[0] -= 2
-ret_with(intB[intA[0]] + intB[intA[0] + 1])
-
-@end
-
-
+#ENTRYPOINT 3
+rtl_with(3 + intL[0])

@@ -1,0 +1,21 @@
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
+
+RLC = rlc
+KPRL = kprl
+
+.PHONY: clean 
+
+KEPAGOFILES = $(glob *.ke)
+
+%.TXT: %.ke
+	$(RLC) $< -o $@
+
+SEEN.TXT: $(replacesuffixes .ke, .TXT, $(KEPAGOFILES))
+	$(KPRL) -a $@ seen00001.TXT seen00002.TXT
+
+.DEFAULT: SEEN.TXT
+
+clean:
+  $(RM) *~ *.TXT *.TXT.uncompressed
