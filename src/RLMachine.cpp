@@ -17,7 +17,7 @@ using namespace std;
 using namespace LIBRL_NAMESPACE;
 
 RLMachine::RLMachine(Archive& inArchive) 
-  : m_halted(false), m_haltOnException(false), archive(inArchive)
+  : m_halted(false), m_haltOnException(true), archive(inArchive)
 {
   // Arbitrarily set the scenario to the first one in the archive, which is what we want until
   // we get the Gameexe.ini file parser working
@@ -79,12 +79,12 @@ void RLMachine::executeNextInstruction()
   catch(std::exception& e) {
     if(m_haltOnException) {
       m_halted = true;
-      cerr << "ERROR: ";
+      cout << "ERROR: ";
     } else {
-      cerr << "WARNING: ";
+      cout << "WARNING: ";
     }
 
-    cerr << "Uncaught exception: " << e.what() << endl;
+    cout << "Uncaught exception: " << e.what() << endl;
   }
 }
 
@@ -108,9 +108,17 @@ void RLMachine::advanceInstructionPointer()
 
 // -----------------------------------------------------------------------
 
+static void throwIllegalIndex(int location) {
+  stringstream ss;
+  ss << "Illegal index location (" << location 
+     << ") in RLMachine::getIntVlaue()";
+  throw Error(ss.str());
+}
+
 /**
  *
  * @note This method was plagarized from xclannad.
+ * @todo Does this allow for access like intL4[]? I don't think it does...
  */
 int RLMachine::getIntValue(int type, int location) 
 {
@@ -118,16 +126,19 @@ int RLMachine::getIntValue(int type, int location)
   type /= 26;
   if(index == INTZ_LOCATION_IN_BYTECODE) index = INTZ_LOCATION;
   if(index == INTL_LOCATION_IN_BYTECODE) index = INTL_LOCATION;
-  if(index > NUMBER_OF_INT_LOCATIONS) return 0;
+  if(index > NUMBER_OF_INT_LOCATIONS) 
+      throw Error("Illegal index location in RLMachine::getIntValue()");
   if (type == 0) {
     // A[]..G[], Z[] を直に読む
-    if (uint(location) >= 2000) return 0;
+    if (uint(location) >= 2000) 
+      throwIllegalIndex(location);
     return intVar[index][location];
   } else {
     // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
-    if (uint(location) >= (64000 / factor)) return 0;
+    if (uint(location) >= (64000 / factor)) 
+      throwIllegalIndex(location);
     return (intVar[index][location / eltsize] >>
             ((location % eltsize) * factor)) & ((1 << factor) - 1);
   }
@@ -138,7 +149,6 @@ int RLMachine::getIntValue(int type, int location)
 /**
  *
  * @note This method was plagarized from xclannad.
- * @todo Make things scream and die on overlow
  */
 void RLMachine::setIntValue(int rawtype, int location, int value) {
 //  cerr << "setIntValue(" << rawtype << ", " << location << ", " << value << ")" << endl;
@@ -172,10 +182,6 @@ void RLMachine::setIntValue(int rawtype, int location, int value) {
 
 // -----------------------------------------------------------------------
 
-/**
- * @todo Make things scream and die on overlow
- * @todo Support strK, the argument one.
- */
 const std::string& RLMachine::getStringValue(int type, int location) {
   if(location > 1999)
       throw Error("Invalid range access in RLMachine::setStringValue");
@@ -243,7 +249,8 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::farcall(int scenarioNum, int entrypoint) {
+void RLMachine::farcall(int scenarioNum, int entrypoint) 
+{
   Reallive::Scenario* scenario = archive.scenario(scenarioNum);
   Reallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
@@ -252,7 +259,8 @@ void RLMachine::farcall(int scenarioNum, int entrypoint) {
 
 // -----------------------------------------------------------------------
 
-void RLMachine::returnFromFarcall() {
+void RLMachine::returnFromFarcall() 
+{
   // Check to make sure the types match up.
   if(callStack.top().frameType != StackFrame::TYPE_FARCALL) {
     throw Error("Callstack type mismatch in returnFromFarcall()");

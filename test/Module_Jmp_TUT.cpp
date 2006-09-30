@@ -884,5 +884,84 @@ void object::test<19>()
                 6);
 }
 
+// -----------------------------------------------------------------------
+
+/** 
+ * Recursive C implementation of fibonaci. Doesn't have all the weird
+ * stack maitanance of the Reallive one I wrote, so this should help
+ * test it.
+ */
+static int recFib(int input) {
+  if(input == 0) return 0;
+  if(input == 1) return 1;
+  return recFib(input - 1) + recFib(input - 2);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Tests the most complex test regarding goto_with and the stack:
+ * calculate fibonacci numbers.
+ * 
+ * @code
+ * #version 1.3
+ *
+ * // Stack marker. Since Reallive provides no variable
+ * // stack, we need to manually keep track of this.
+ * intA[0] = 0
+ *
+ * // intB[0] is the top of our stack.
+ * intB[0] = 0
+ *
+ * // Call fibonacci
+ * intE[0] = gosub_with(intD[0]) @fib
+ * goto @end
+ *
+ * // -----------------------------------------------------
+ *
+ * @fib
+ * // Check the termination conditions
+ * if intL[0] == 0 ret_with(0)
+ * if intL[0] == 1 ret_with(1)
+ *
+ * // Copy the incoming data onto the stack, and 
+ * // increment the pointer.
+ * intB[intA[0]] = intL[0] - 1
+ * intA[0] += 1
+ * intB[intA[0]] = intL[0] - 2
+ * intA[0] += 1
+ * 
+ * intB[intA[0] - 2] = gosub_with(intB[intA[0] - 2]) @fib
+ * intB[intA[0] - 1] = gosub_with(intB[intA[0] - 1]) @fib
+ *
+ * // Decrement the stack point
+ * intA[0] -= 2
+ * ret_with(intB[intA[0]] + intB[intA[0] + 1])
+ *
+ * @end
+ *
+ * @endcode
+ *
+ */
+template<>
+template<>
+void object::test<20>()
+{
+  for(int i = 0; i < 10; ++i) 
+  {
+    Reallive::Archive arc("test/Module_Jmp_SEEN/fibonacci.TXT");
+    RLMachine rlmachine(arc);
+    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attatchModule(new StrModule);
+    rlmachine.setIntValue(0x03, 0, i);
+    rlmachine.executeUntilHalted();
+
+    stringstream ss;
+    ss << "Wrong output value for fib(" << i << ")";
+    ensure_equals(ss.str().c_str(),
+                  rlmachine.getIntValue(0x04, 0),
+                  recFib(i));
+  }
+}
 
 }

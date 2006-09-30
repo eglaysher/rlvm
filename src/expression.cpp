@@ -481,34 +481,34 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
 {
   switch(operation) {
   case 0: 
-  case 10:
+  case 20:
     return lhs + rhs;
   case 1:
-  case 11:
+  case 21:
     return lhs - rhs;
   case 2:
-  case 12:
+  case 22:
     return lhs * rhs;
   case 3: 
-  case 13:
+  case 23:
     return rhs != 0 ? lhs / rhs : lhs;
   case 4: 
-  case 14:
+  case 24:
     return rhs != 0 ? lhs % rhs : lhs;
   case 5: 
-  case 15:
+  case 25:
     return lhs & rhs;
   case 6:
-  case 16:
+  case 26:
     return lhs | rhs;
   case 7:
-  case 17:
+  case 27:
     return lhs ^ rhs;
   case 8: 
-  case 18:
+  case 28:
     return lhs << rhs;
   case 9:
-  case 19:
+  case 29:
     return lhs >> rhs;
   case 40: return lhs == rhs;
   case 41: return lhs != rhs;
@@ -518,9 +518,13 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
   case 45: return lhs >  rhs;
   case 60: return lhs && rhs;
   case 61: return lhs || rhs;
+  default:
+  {
+    stringstream ss;
+    ss << "Invalid operator " << (int)operation << " in expression!";
+    throw Error(ss.str());
   }
-
-  return rhs;
+  }
 }
 
 int BinaryExpressionOperator::getIntegerValue(RLMachine& machine) const {
@@ -543,7 +547,7 @@ AssignmentExpressionOperator::~AssignmentExpressionOperator()
 
 int AssignmentExpressionOperator::getIntegerValue(RLMachine& machine) const 
 {
-  if(operation == 40) {
+  if(operation == 30) {
     int value = rightOperand->getIntegerValue(machine);
     leftOperand->assignIntValue(machine, value);
     return value;    
