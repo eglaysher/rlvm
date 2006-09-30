@@ -20,20 +20,25 @@ void RLOperation::addParameterTo(const string& parameter,
   outputParameters.push_back(get_data(location));
 }
 
+void RLOperation::parseParameters(const CommandElement& ff, 
+                                  ptr_vector<ExpressionPiece>& parameterPieces)
+{
+    size_t numberOfParameters = ff.param_count();
+    for(size_t i = 0; i < numberOfParameters; ++i) {
+      addParameterTo(ff.get_param(i), parameterPieces);
+    }
+}
+
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
 {
   try {
-    // Cast to correct type
-    const FunctionElement& f = static_cast<const FunctionElement&>(ff);
-
     // Well, here it is. What a mess.
     ptr_vector<ExpressionPiece> parameterPieces;
-    size_t numberOfParameters = f.param_count();
-    for(size_t i = 0; i < numberOfParameters; ++i) {
-      addParameterTo(f.get_param(i), parameterPieces);
-    }
+    parseParameters(ff, parameterPieces);
 
     // Now make sure these parameters match what we expect. 
+//    cerr<< "opcode<" << ff.modtype() << ":" << ff.module() << ":" << ff.opcode() 
+//        << ", " << ff.overload() << "> " << endl;
     if(!checkTypes(machine, parameterPieces)) {
       throw Error("Expected type mismatch in parameters.");
     }
@@ -92,13 +97,13 @@ bool RLOp_SpecialCase::checkTypes(
   RLMachine& machine, 
   boost::ptr_vector<Reallive::ExpressionPiece>& parameters) 
 {       
+  return true;
 }
 
 void RLOp_SpecialCase::dispatch(
   RLMachine& machine, 
   boost::ptr_vector<Reallive::ExpressionPiece>& parameters) 
-{
-}
+{}
 
 void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
                                         const Reallive::CommandElement& f)

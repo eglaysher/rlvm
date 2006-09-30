@@ -2,10 +2,13 @@
 
 #include <exception>
 #include <utility>
+#include <iostream>
 
 #include "bytecode.h"
 #include "scenario.h"
 #include "expression.h"
+
+using namespace std;
 
 namespace LIBRL_NAMESPACE {
 
@@ -188,7 +191,7 @@ const ExpressionPiece& ExpressionElement::parsedExpression() const {
   if(m_parsedExpression.get() == 0) {
     const char* location = repr.c_str();
     m_parsedExpression.reset(get_assignment(location));
-  }
+  } 
   
   return *m_parsedExpression;
 }
@@ -361,12 +364,17 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata) : PointerElem
 	const int op = (module() * 100000) | opcode();
 	if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
 		if (*src++ != '(') throw Error("GotoElement(): expected `('");
-		int expr = next_expr(src);
 		repr.push_back('(');
-		repr.append(src, expr);
+
+        while(*src != ')') {
+          int expr = next_data(src);
+          repr.append(src, expr);
+          params.push_back(string(src, expr));
+          src += expr;
+        }
+        src++;
+
 		repr.push_back(')');
-		src += expr;
-		if (*src++ != ')') throw Error("GotoElement(): expected `)'");
 	}
 	targets.push_id(read_i32(src));
 }

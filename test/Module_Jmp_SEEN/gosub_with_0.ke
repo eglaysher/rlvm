@@ -1,0 +1,44 @@
+// This file is part of RLVM, a RealLive virutal machine clone.
+//
+// -----------------------------------------------------------------------
+//
+// Copyright (C) 2006 El Riot
+//  
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//  
+// -----------------------------------------------------------------------
+
+#version 1.3
+
+intB[0] = 1
+intB[1] = 2
+strS[0] = "one"
+strS[1] = "two"
+
+intA[0] = gosub_with(intB[0], intB[1]) @intTest
+intA[1] = gosub_with(strS[0], strS[1]) @stringTest
+goto @end
+
+@stringTest
+strS[3] = strK[0] + strK[1]
+ret_with(strlen(strS[3]))
+goto @end
+
+@intTest
+intD[0] = intL[0] + intL[1]
+ret_with(intD[0])
+goto @end
+
+@end

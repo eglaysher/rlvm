@@ -183,9 +183,9 @@ static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src, Expression
     char op = src[1];
     // Advance past this operator
     src += 2;
-    ExpressionPiece* newPiece = NULL;
     ExpressionPiece* rhs = get_expr_term(src);
-    newPiece = new BinaryExpressionOperator(op, tok, rhs);
+    cerr << "LHS: " << tok << ", RHS: " << rhs << endl;
+    ExpressionPiece* newPiece = new BinaryExpressionOperator(op, tok, rhs);
     return get_expr_arith_loop_hi_prec(src, newPiece);
   } else {
     // We don't consume anything and just return our input token.
@@ -200,7 +200,7 @@ static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* t
     src += 2;
     ExpressionPiece* other = get_expr_term(src);
     ExpressionPiece* rhs = get_expr_arith_loop_hi_prec(src, other);
-    ExpressionPiece* newPiece = new BinaryExpressionOperator(op, other, rhs);
+    ExpressionPiece* newPiece = new BinaryExpressionOperator(op, tok, rhs);
     return get_expr_arith_loop(src, newPiece);
   } else {
     return tok;
@@ -271,12 +271,12 @@ ExpressionPiece* get_expression(const char*& src)
  */
 ExpressionPiece* get_assignment(const char*& src)
 {
-  ExpressionPiece* itok = get_expr_term(src);
+  auto_ptr<ExpressionPiece> itok(get_expr_term(src));
   int op = src[1];
   src += 2;
-  ExpressionPiece* etok = get_expression(src);
+  auto_ptr<ExpressionPiece> etok(get_expression(src));
   if(op >= 0x14 && op <= 0x24) {
-    return new AssignmentExpressionOperator(op, itok, etok);
+    return new AssignmentExpressionOperator(op, itok.release(), etok.release());
   } else {
     throw Error("Undefined assignment in get_assignment");
   }
@@ -357,7 +357,9 @@ ExpressionPiece* get_data(const char*& src)
 
 // ----------------------------------------------------------------------
 
-ExpressionPiece::~ExpressionPiece() {}
+ExpressionPiece::~ExpressionPiece() {
+//  cerr << "Destroying expression piece " << this << endl;
+}
 bool ExpressionPiece::isMemoryReference() const  { return false; }
 bool ExpressionPiece::isOperator() const         { return false; }
 bool ExpressionPiece::isComplexParameter() const { return false; }
@@ -401,7 +403,7 @@ MemoryReference::MemoryReference(int inType, ExpressionPiece* target)
   : type(inType), location(target) {}
 bool MemoryReference::isMemoryReference() const { return true; }
 ExpressionValueType MemoryReference::expressionValueType() const {
-  if(type == 0x12 || type == 0x0C) {
+  if(type == 0x12 || type == 0x0A || type == 0x0C) {
     return ValueTypeString;
   } else {
     return ValueTypeInteger;
@@ -533,6 +535,11 @@ AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
                                                            ExpressionPiece* rhs)
   : BinaryExpressionOperator(op, lhs, rhs)
 {}
+
+AssignmentExpressionOperator::~AssignmentExpressionOperator()
+{
+//  cerr << "Destroying AssignmentExpressionOperator(" << this << ")" << endl;
+}
 
 int AssignmentExpressionOperator::getIntegerValue(RLMachine& machine) const 
 {

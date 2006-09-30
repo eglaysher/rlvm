@@ -149,9 +149,16 @@ public:
 
 // ----------------------------------------------------------------------
 
+/** 
+ * @bug There is some sort of odd double free in either
+ * AssignmentExpressionOperator or its superclass. This needs full
+ * attention later.
+ */
 class AssignmentExpressionOperator : public BinaryExpressionOperator {
 public:
-  AssignmentExpressionOperator(char operation, ExpressionPiece* lhs, ExpressionPiece* rhs);
+  AssignmentExpressionOperator(char operation, ExpressionPiece* lhs, 
+                               ExpressionPiece* rhs);
+  ~AssignmentExpressionOperator();
 
   /** For the entire assignment operator hiearchy, we use getIntegerValue,
    * since it acts as the execute.

@@ -138,6 +138,7 @@ int RLMachine::getIntValue(int type, int location)
 /**
  *
  * @note This method was plagarized from xclannad.
+ * @todo Make things scream and die on overlow
  */
 void RLMachine::setIntValue(int rawtype, int location, int value) {
 //  cerr << "setIntValue(" << rawtype << ", " << location << ", " << value << ")" << endl;
@@ -152,7 +153,8 @@ void RLMachine::setIntValue(int rawtype, int location, int value) {
   }
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
-    if (uint(location) >= 2000) return;
+    if (uint(location) >= 2000) 
+      throw Error("Illegal index in RLMachine::setIntValue()");
     intVar[index][location] = value;
   } else {
     // Ab[]..G4b[], Z8b[] などを書く
@@ -160,7 +162,8 @@ void RLMachine::setIntValue(int rawtype, int location, int value) {
     int eltsize = 32 / factor;
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
-    if (uint(location) >= (64000 / factor)) return;
+    if (uint(location) >= (64000 / factor)) 
+      throw Error("Illegal index in RLMachine::setIntValue()");
     intVar[index][location / eltsize] =
       (intVar[index][location / eltsize] & ~(eltmask << shift))
       | (value & eltmask) << shift;
@@ -169,9 +172,20 @@ void RLMachine::setIntValue(int rawtype, int location, int value) {
 
 // -----------------------------------------------------------------------
 
+/**
+ * @todo Make things scream and die on overlow
+ * @todo Support strK, the argument one.
+ */
 const std::string& RLMachine::getStringValue(int type, int location) {
+  if(location > 1999)
+      throw Error("Invalid range access in RLMachine::setStringValue");
+
   switch(type) {
   case 0x12: return strS[location];
+  case 0x0A:
+    if(location > 2)
+      throw Error("Invalid range access on strK in RLMachine::setStringValue");
+    return strK[location];
   case 0x0C: return strM[location];
   default:
     throw Error("Invalid type in RLMachine::getStringValue");
@@ -181,9 +195,17 @@ const std::string& RLMachine::getStringValue(int type, int location) {
 // -----------------------------------------------------------------------
 
 void RLMachine::setStringValue(int type, int number, const std::string& value) {
+  if(number > 1999)
+      throw Error("Invalid range access in RLMachine::setStringValue");
+
   switch(type) {
   case 0x12: 
     strS[number] = value;
+    break;
+  case 0x0A:
+    if(number > 2)
+      throw Error("Invalid range access on strK in RLMachine::setStringValue");
+    strK[number] = value;
     break;
   case 0x0C:
     strM[number] = value;
@@ -270,7 +292,7 @@ void RLMachine::returnFromGosub()
 
 void RLMachine::executeExpression(const ExpressionElement& e) {
   int value = e.parsedExpression().getIntegerValue(*this);
-
+  
   // Increment the instruction pointer.
   callStack.top().ip++;
 }

@@ -38,8 +38,8 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
-//#include <typeinfo>
 
+using namespace boost;
 using namespace std;
 using namespace Reallive;
 
@@ -66,7 +66,8 @@ namespace {
  * @return Which pointer we should follow.
  * @exception Error Throws on malformed bytecode
  */
-int evaluateCase(RLMachine& machine, const CommandElement& f) {
+int evaluateCase(RLMachine& machine, const CommandElement& f) 
+{
   const GotoCaseElement& gotoElement = 
     dynamic_cast<const GotoCaseElement&>(f);
   const char* location = gotoElement.get_param(0).c_str();
@@ -90,9 +91,8 @@ int evaluateCase(RLMachine& machine, const CommandElement& f) {
 
     // In the case of an empty set of parens, always accept. It is
     // the bytecode representation for the default case.
-    if(caseUnparsed == "()") {
+    if(caseUnparsed == "()")
       return i;
-    }
 
     // Strip the parens for parsing
     caseUnparsed = caseUnparsed.substr(1, caseUnparsed.size() - 2);
@@ -102,13 +102,52 @@ int evaluateCase(RLMachine& machine, const CommandElement& f) {
     const char* e = (const char*)caseUnparsed.c_str();
     auto_ptr<ExpressionPiece> output(get_expression(e));
     if(output->getIntegerValue(machine) == value)
-    {
       return i;
-    }
   }
 
   throw Error("Malformed bytecode: no default case");
 }
+
+// -----------------------------------------------------------------------
+
+/// Type of the parameter data in the _with functions
+typedef Argc_T< Special_T< IntConstant_T, StrConstant_T> >::type ParamVector;
+
+/** 
+ * Stores the incoming parameter format into the local variables used
+ * for parameters in gosub_with and farcall_with calls, strK[] (0a)
+ * and intL[] (0b).
+ * 
+ * @param machine 
+ */
+void storeData(RLMachine& machine, const ParamVector& f)
+{
+  // First, we copy all the input parameters into 
+  int intLpos = 0;
+  int strKpos = 0;
+
+  for(ParamVector::const_iterator it = f.begin(); it != f.end(); 
+      ++it)
+  {
+    switch(it->type) {
+    case 0:
+      machine.setIntValue(0x0b, intLpos, it->first);
+      intLpos++;
+      break;
+    case 1:
+      machine.setStringValue(0x0a, strKpos, it->second);
+      strKpos++;
+      break;
+    default:
+    {
+      stringstream ss;
+      ss << "Unknown type tag " << it->type 
+         << " during a *_with function call" << endl;
+      throw Error(ss.str());
+    }
+    }
+  }
+}   
 
 }
 
@@ -441,15 +480,56 @@ struct Jmp_rtl : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
-
 struct Jmp_gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& f) {
     const GotoElement& gotoElement = dynamic_cast<const GotoElement&>(f);
+
+    ptr_vector<ExpressionPiece> parameterPieces;
+    parseParameters(f, parameterPieces);
+//    cerr << "Parameters: " << parameterPieces.size() << endl;
+
+    typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
+
+    if(!ParamFormat::verifyType(parameterPieces, 0))
+      throw Error("Invalid parameters in Jmp_gosub_with");
+
+    ParamFormat::type data = ParamFormat::getData(machine, parameterPieces, 0);
+    storeData(machine, data);
+      
     const Pointers& pointers = gotoElement.get_pointersRef();
-
-    // Process the parameters
-
     machine.gosub(pointers[0]);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<0:Jmp:00017, 0>, fun ret_with('value').
+ *
+ * Returns from a goto_with call, storing the value in the store
+ * register.
+ * 
+ * @todo Do we need to check to see if the caller was gosub_with?
+ */
+struct Jmp_ret_with_0 : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int retVal) {
+    machine.setStoreRegister(retVal);
+    machine.returnFromGosub();
+  }
+};
+
+// -----------------------------------------------------------------------
+/** 
+ * Implements op<0:Jmp:00017, 1>, fun ret_with().
+ *
+ * Returns from a goto_with call
+ * 
+ * @todo Do we need to check to see if the caller was gosub_with?
+ */
+struct Jmp_ret_with_1 : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+//    machine.setStoreRegister(retVal);
+    machine.returnFromGosub();
   }
 };
 
@@ -459,33 +539,12 @@ struct Jmp_farcall_with
   : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                         Argc_T< Special_T< IntConstant_T, StrConstant_T > > >
 {
-  typedef Special_T< IntConstant_T, StrConstant_T>::type Param;
+  virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint,
-                  vector<Param> withStuff) {
-    // First, we copy all the input parameters into 
-    int intLpos = 0;
-    int strKpos = 0;
-
-    for(vector<Param>::iterator it = withStuff.begin(); it != withStuff.end(); 
-        ++it)
-    {
-      switch(it->type) {
-      case 0:
-        // Make sure we aren't overflowing
-        cerr << "(0, " << it->first << ")" << endl;
-        break;
-      case 1:
-        cerr << "(1, " << it->second << ")" << endl;
-        break;
-      default:
-      {
-        stringstream ss;
-        ss << "Unknown type tag " << it->type << " in Jmp_farcall_with";
-        throw Error(ss.str());
-      }
-      }
-    }
+                  ParamVector withStuff) {
+    storeData(machine, withStuff);
+    machine.farcall(scenario, entrypoint);
   }
 };
 
@@ -514,6 +573,9 @@ JmpModule::JmpModule()
   addOpcode(12, 1, new Jmp_farcall_1);
   addOpcode(13, 0, new Jmp_rtl);
 
+  addOpcode(16, 0, new Jmp_gosub_with);
+  addOpcode(17, 0, new Jmp_ret_with_0);
+  addOpcode(17, 1, new Jmp_ret_with_1);
   addOpcode(18, 0, new Jmp_farcall_with);
 }
 

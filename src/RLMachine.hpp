@@ -43,6 +43,8 @@ private:
   /// Second string bank
   std::string strM[1999];
 
+  std::string strK[3];
+
   /// The RealLive machine's single result register
   int storeRegister;
 

@@ -30,6 +30,7 @@
  */
 
 #include "Module_Jmp.hpp"
+#include "Module_Str.hpp"
 #include "Archive.h"
 #include "RLMachine.hpp"
 
@@ -807,6 +808,80 @@ void object::test<18>()
                   rlmachine.getIntValue(0, 2),
                   1);
   }
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * 
+ * @code
+ * #version 1.3
+ *
+ * intB[0] = 1
+ * intB[1] = 2
+ * strS[0] = "one"
+ * strS[1] = "two"
+ *
+ * intA[0] = gosub_with(intB[0], intB[1]) @intTest
+ * intA[1] = gosub_with(strS[0], strS[1]) @stringTest
+ * goto @end
+ *
+ * @stringTest
+ * strS[3] = strK[0] + strK[1]
+ * ret_with(strlen(strS[3]))
+ * goto @end
+ *
+ * @intTest
+ * intD[0] = intL[0] + intL[1]
+ * ret_with(intD[0])
+ * goto @end
+ *
+ * @end
+ * @endcode
+ */
+template<>
+template<>
+void object::test<19>()
+{
+  Reallive::Archive arc("test/Module_Jmp_SEEN/gosub_with_0.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attatchModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  // @nextaction Continue writing the test case from here.
+  
+  // Original states that shouldn't be modified
+  ensure_equals("Precondition not set! (!?!?!?!) (intB[0])",
+                rlmachine.getIntValue(1, 0),
+                1);
+  ensure_equals("Precondition not set! (!?!?!?!) (intB[1])",
+                rlmachine.getIntValue(1, 1),
+                2);
+  ensure_equals("Precondition not set! (!?!?!?!) (strS[0])",
+                rlmachine.getStringValue(0x12, 0),
+                "one");
+  ensure_equals("Precondition not set! (!?!?!?!) (strS[1])",
+                rlmachine.getStringValue(0x12, 1),
+                "two");
+
+  // Check the intermediate values that were calculated in the
+  // functions
+  ensure_equals("Wrong intermediary value for strS[3] in @stringTest!",
+                rlmachine.getStringValue(0x12, 3),
+                "onetwo");
+  ensure_equals("Wrong intermediary value for intD[0] in @intTest!",
+                rlmachine.getIntValue(0x03, 0),
+                3);
+
+  // Make sure that intA[0] and intA[1] are set correctly when the
+  // gosub_with returns
+  ensure_equals("Wrong final value for intA[0]!",
+                rlmachine.getIntValue(0, 0),
+                3);
+  ensure_equals("Wrong final value for intA[1]!",
+                rlmachine.getIntValue(0, 1),
+                6);
 }
 
 

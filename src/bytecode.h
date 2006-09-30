@@ -255,6 +255,7 @@ public:
 };
 
 class GotoElement : public PointerElement {
+	std::vector<string> params;
 public:
 	const ElementType type() const { return Goto; }
 	GotoElement(const char* src, ConstructionData& cdata);
@@ -266,8 +267,10 @@ public:
 	const Case taken() const;
 
 	// The pointer is not counted as a parameter.
-	const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
-	string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
+//	const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
+//	string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
+	const size_t param_count() const { return params.size(); }
+	string get_param(int i) const { return params[i]; }
 
 	const string data() const;
 	const size_t length() const { return repr.size() + 4; }

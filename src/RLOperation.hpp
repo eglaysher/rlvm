@@ -88,6 +88,9 @@ struct RLOperation {
   void addParameterTo(const std::string& parameter, 
                       boost::ptr_vector<Reallive::ExpressionPiece>& outputParameters);
 
+  void parseParameters(const Reallive::CommandElement& ff, 
+                       boost::ptr_vector<Reallive::ExpressionPiece>& output);
+
   /** The public interface used by the RLModule; how a method is dispatched.
    *
    * @param machine RLMachine to operate on
@@ -715,6 +718,7 @@ struct Argc_T<CON>::type Argc_T<CON>::getData(RLMachine& machine,
                      boost::ptr_vector<Reallive::ExpressionPiece>& p,
                      int position) {
   type returnVector;
+//  std::cerr << "(" << position << ", " << p.size() << std::endl;
   for(int i = position; i < p.size(); ++i)
     returnVector.push_back(CON::getData(machine, p, i));
 
