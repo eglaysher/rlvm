@@ -192,6 +192,17 @@ public:
 	
 	virtual const size_t param_count() const = 0;
 	virtual string get_param(int) const = 0;
+
+  /// Get pointer reference. I consider the fatter interface the lesser of two
+  /// evils between this and casting CommandElements to their subclasses.
+  virtual const Pointers& get_pointersRef() const { 
+    static Pointers falseTargets;
+    return falseTargets; 
+  }
+
+  // Fat interface stuff for GotoCase. Prevents casting, etc.
+  virtual const size_t case_count() const { return 0; }
+  virtual const string get_case(int i) const { return ""; }
 	
   CommandElement(const int type, const int module, const int opcode, const int argc, const int overload);
   CommandElement(const char* src);
