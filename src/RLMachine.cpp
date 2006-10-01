@@ -81,6 +81,10 @@ void RLMachine::executeNextInstruction()
       m_halted = true;
       cout << "ERROR: ";
     } else {
+      // Advance the instruction pointer so as to prevent infinite
+      // loops where we throw an exception, and then try again.
+      advanceInstructionPointer();
+
       cout << "WARNING: ";
     }
 
