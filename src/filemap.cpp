@@ -16,7 +16,7 @@ const HANDLE INVALID_HANDLE_VALUE = -1;
 #include <sys/types.h>
 #include <sys/stat.h>
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 #ifdef WIN32
 const int O_BINARY = 0;

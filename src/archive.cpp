@@ -2,7 +2,7 @@
 #include "archive.h"
 #include "string.h"
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 Archive::Archive(string filename) : name(filename), info(filename, Read)
 {

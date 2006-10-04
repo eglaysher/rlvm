@@ -6,7 +6,7 @@
 #include "defs.h"
 #include <boost/scoped_ptr.hpp>
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 // A nasty-hacky (but simple and efficient) form of RTTI.
 enum ElementType { 
@@ -109,12 +109,12 @@ public:
 };
 
 } namespace std {
-template<> struct less<LIBRL_NAMESPACE::pointer_t> {
-	bool operator() (const LIBRL_NAMESPACE::pointer_t& a, const LIBRL_NAMESPACE::pointer_t& b) {
+template<> struct less<libReallive::pointer_t> {
+	bool operator() (const libReallive::pointer_t& a, const libReallive::pointer_t& b) {
 		return a->id < b->id;
 	}
 };
-} namespace LIBRL_NAMESPACE {
+} namespace libReallive {
 	
 // Metadata elements: source line, kidoku, and entrypoint markers.
 

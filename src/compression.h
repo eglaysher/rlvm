@@ -23,7 +23,7 @@
 #include "defs.h"
 #include "lzcomp.h"
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 namespace Compression {
 
 typedef AVG32Comp::Compress<AVG32Comp::CInfoRealLive, AVG32Comp::Container::RLDataContainer> RealliveCompressor;

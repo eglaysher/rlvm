@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 Header::Header(const char* data, const size_t length)
 {

@@ -2,6 +2,7 @@
 #define __RLMachine_hpp__
 
 #include "defs.h"
+#include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include "scenario.h"
 #include "bytecode.h"
@@ -9,12 +10,13 @@
 
 #include <stack>
 
-namespace  LIBRL_NAMESPACE {
+namespace  libReallive {
 class Archive;
 class FunctionElement;
 };
 
 class RLModule;
+class LongOperation;
 
   const int INTA_LOCATION = 0   ;
   const int INTB_LOCATION = 1;
@@ -62,7 +64,7 @@ private:
   bool m_haltOnException;
 
   /// The SEEN.TXT the machine is currently executing.
-  Reallive::Archive& archive;
+  libReallive::Archive& archive;
 
   /** Describes a stack frame. Stack frames are added by two
    * mechanisms: gosubs and farcalls. gosubs move the instruction
@@ -71,10 +73,10 @@ private:
    */
   struct StackFrame {
     /// The scenario in the SEEN file for this stack frame.
-    Reallive::Scenario* scenario;
+    libReallive::Scenario* scenario;
     
     /// The instruction pointer in the stack frame.
-    Reallive::Scenario::const_iterator ip;
+    libReallive::Scenario::const_iterator ip;
 
     /**
      * The function that pushed the @i current frame onto the
@@ -87,7 +89,8 @@ private:
     } frameType;
 
     /// Default constructor
-    StackFrame(Reallive::Scenario* s, const Reallive::Scenario::const_iterator& i,
+    StackFrame(libReallive::Scenario* s,
+               const libReallive::Scenario::const_iterator& i,
                FrameType t) 
       : scenario(s), ip(i), frameType(t) {}
   };
@@ -95,14 +98,21 @@ private:
   /// The actual call stack.
   std::stack<StackFrame> callStack;
 
+  /// A pointer to a LongOperation
+  boost::scoped_ptr<LongOperation> currentLongOperation;
+
+  /// The RLMachine carried around a pointer to the local system, to
+  /// keep it from being a Singleton so we can do proper unit testing.
+//  boost::scoped_ptr<System> m_system;
+
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, int& module);
 
-  void executeCommand(const LIBRL_NAMESPACE::CommandElement& f);
-  void executeExpression(const LIBRL_NAMESPACE::ExpressionElement& e);
+  void executeCommand(const libReallive::CommandElement& f);
+  void executeExpression(const libReallive::ExpressionElement& e);
 
 public:
-  RLMachine(Reallive::Archive& inArchive);
+  RLMachine(libReallive::Archive& inArchive);
   ~RLMachine();
 
   /** Registers a given module with this RLMachine instance. A module is a set of
@@ -210,7 +220,7 @@ public:
    *
    * @param newLocation New location of the instruction pointer.
    */
-  void gotoLocation(Reallive::BytecodeList::iterator newLocation);
+  void gotoLocation(libReallive::BytecodeList::iterator newLocation);
   
   /** 
    * Pushes a new stack frame onto the call stack, saving the current
@@ -219,7 +229,7 @@ public:
    * 
    * @param newLocation New location of the instruction pointer.
    */
-  void gosub(Reallive::BytecodeList::iterator newLocation);
+  void gosub(libReallive::BytecodeList::iterator newLocation);
 
   /** 
    * Returns from the most recent gosub call. 
@@ -228,6 +238,16 @@ public:
    * script between farcall()/rtl() gosub()/ret() pairs.
    */
   void returnFromGosub();
+
+  /** 
+   * Sets a long operation. Control will be passed to this
+   * LongOperation instead of normal bytecode passing until the
+   * LongOperation gives control up.
+   * 
+   * @param longOperation LongOperation to take control
+   * @see LongOperation
+   */
+  void setLongOperation(LongOperation* longOperation);
 
   // @}
 

@@ -1,3 +1,25 @@
+// This file is part of RLVM, a RealLive virutal machine clone.
+//
+// -----------------------------------------------------------------------
+//
+// Copyright (C) 2006 El Riot
+//  
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//  
+// -----------------------------------------------------------------------
+
 /** 
  * @file
  * @ingroup RLOperation
@@ -11,7 +33,7 @@
 
 using namespace std;
 using namespace boost;
-using namespace Reallive;
+using namespace libReallive;
 
 void RLOperation::addParameterTo(const string& parameter, 
                                  ptr_vector<ExpressionPiece>& outputParameters)
@@ -19,6 +41,8 @@ void RLOperation::addParameterTo(const string& parameter,
   const char* location = parameter.c_str();
   outputParameters.push_back(get_data(location));
 }
+
+// -----------------------------------------------------------------------
 
 void RLOperation::parseParameters(const CommandElement& ff, 
                                   ptr_vector<ExpressionPiece>& parameterPieces)
@@ -28,6 +52,8 @@ void RLOperation::parseParameters(const CommandElement& ff,
       addParameterTo(ff.get_param(i), parameterPieces);
     }
 }
+
+// -----------------------------------------------------------------------
 
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
 {
@@ -53,44 +79,56 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
 // -----------------------------------------------------------------------
 
 // Implementation for IntConstant_T
-bool IntConstant_T::verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p, int position) {
+bool IntConstant_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                               int position) {
   return position < p.size() & 
-    p[position].expressionValueType() == Reallive::ValueTypeInteger;
+    p[position].expressionValueType() == libReallive::ValueTypeInteger;
 }
 
-bool IntReference_T::verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p,
+// -----------------------------------------------------------------------
+
+bool IntReference_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
                                 int position) {
   return position < p.size() && p[position].isMemoryReference() &&
-    p[position].expressionValueType() == Reallive::ValueTypeInteger;
+    p[position].expressionValueType() == libReallive::ValueTypeInteger;
 }
 
-bool StrConstant_T::verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p, int position) { 
+// -----------------------------------------------------------------------
+
+bool StrConstant_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                               int position) { 
   return position < p.size() && 
-    p[position].expressionValueType() == Reallive::ValueTypeString; 
+    p[position].expressionValueType() == libReallive::ValueTypeString; 
 }
 
-bool StrReference_T::verifyType(boost::ptr_vector<Reallive::ExpressionPiece>& p,
+// -----------------------------------------------------------------------
+
+bool StrReference_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
                                    int position) {
   return position < p.size() && p[position].isMemoryReference() &&
-    p[position].expressionValueType() == Reallive::ValueTypeString;
+    p[position].expressionValueType() == libReallive::ValueTypeString;
 }
 
 // -----------------------------------------------------------------------
 
 bool RLOp_SpecialCase::checkTypes(
   RLMachine& machine, 
-  boost::ptr_vector<Reallive::ExpressionPiece>& parameters) 
+  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {       
   return true;
 }
 
+// -----------------------------------------------------------------------
+
 void RLOp_SpecialCase::dispatch(
   RLMachine& machine, 
-  boost::ptr_vector<Reallive::ExpressionPiece>& parameters) 
+  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {}
 
+// -----------------------------------------------------------------------
+
 void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
-                                        const Reallive::CommandElement& f)
+                                        const libReallive::CommandElement& f)
 {
   // Pass this on to the implementation of this functor.
   operator()(machine, f);

@@ -8,7 +8,7 @@
 
 #include <map>
 
-namespace Reallive {
+namespace libReallive {
 class FunctionElement;
 class CommandElement;
 };      
@@ -47,7 +47,7 @@ public:
   int moduleNumber() const { return m_moduleNumber; }
   const std::string& moduleName() const { return m_moduleName; }
 
-  void dispatchFunction(RLMachine& machine, const Reallive::CommandElement& f);
+  void dispatchFunction(RLMachine& machine, const libReallive::CommandElement& f);
 };
 
 #endif

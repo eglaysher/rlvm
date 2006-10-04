@@ -6,7 +6,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace Reallive;
+using namespace libReallive;
 
 RLModule::RLModule(const std::string& inModuleName, int inModuleType, 
                    int inModuleNumber)

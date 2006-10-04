@@ -28,7 +28,6 @@
 #include "Module_Str.hpp"
 #include "RLOperation.hpp"
 #include "cp932toUnicode.hpp"
-//#include "hanzen.h"
 
 #include <cmath>
 #include <iostream>
@@ -39,7 +38,7 @@
 
 using namespace std;
 using namespace boost;
-using namespace Reallive;
+using namespace libReallive;
 
 /** 
  * @defgroup ModuleStr Module 010, Str.

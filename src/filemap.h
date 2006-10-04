@@ -10,7 +10,7 @@
 typedef int HANDLE;
 #endif
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 enum Mode { Read, Write };
 

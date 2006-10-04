@@ -2,7 +2,7 @@
 #  OMakeFlags(-S --progress)
 #  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/ -I/opt/local/include/SDL -D_THREAD_SAFE
 
 # for testing
 #CXXFLAGS += -DWIN32
@@ -27,8 +27,12 @@ LRLFILES[] =
   Module_Sys
   Module_Str
   Module_Mem
+  Module_Msg
+  Module_Grp
   cp932toUnicode
-
+  gameexe
+  SDLSystem
+  SDLGraphicsSystem
 
 alldefs.h.gch: alldefs.h
   $(CXX) $(CXXFLAGS) -I. -c $< -o $@
@@ -38,7 +42,7 @@ StaticCLibrary(libreallive, $(LRLFILES))
 
 ########
 
-LIBS += libreallive$(EXT_LIB)
+LIBS += libreallive$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -framework Cocoa -framework OpenGL
 .DEFAULT: libreallive$(EXT_LIB) $(CXXProgram rlvm, rlvm)
 rlvm$(EXE): libreallive$(EXT_LIB) 
 

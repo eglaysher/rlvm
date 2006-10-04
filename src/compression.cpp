@@ -19,7 +19,7 @@
 
 #include "compression.h"
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 namespace Compression {
 
 /* RealLive uses a rather basic XOR encryption scheme, to which this is the key. */

@@ -41,7 +41,7 @@
 
 using namespace boost;
 using namespace std;
-using namespace Reallive;
+using namespace libReallive;
 
 /**
  * @defgroup ModuleJmp Module 001, Jmp.

@@ -1,7 +1,3 @@
-#ifndef LIBRL_NAMESPACE
-#define LIBRL_NAMESPACE Reallive
-#endif
-
 #include <cstdio>
 #include <string>
 #include <map>
@@ -13,7 +9,7 @@
 
 using std::string;
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 inline void
 insert_i16(string& dest, int dpos, const int i16)

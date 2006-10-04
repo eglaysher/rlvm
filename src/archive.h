@@ -6,7 +6,7 @@
 #include "scenario.h"
 #include "filemap.h"
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 class Archive {
 	typedef std::map<int, FilePos> scenarios_t;

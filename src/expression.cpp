@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 size_t next_token(const char* src)
 {

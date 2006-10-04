@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 char BytecodeElement::entrypoint_marker = '@';
 long BytecodeElement::id_src = 0;

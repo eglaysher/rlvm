@@ -4,7 +4,7 @@
 #include "defs.h"
 #include "bytecode.h"
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 #include "scenario_internals.h"
 

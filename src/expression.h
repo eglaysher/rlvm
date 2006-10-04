@@ -8,7 +8,7 @@
 
 class RLMachine;
 
-namespace LIBRL_NAMESPACE {
+namespace libReallive {
 
 // Size of expression functions
 size_t next_token(const char* src);

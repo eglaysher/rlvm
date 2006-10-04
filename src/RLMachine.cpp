@@ -9,19 +9,20 @@
 #include "RLModule.hpp"
 #include "RLOperation.hpp"
 #include "expression.h"
+#include "LongOperation.hpp"
 
 #include <sstream>
 #include <iostream>
 
 using namespace std;
-using namespace LIBRL_NAMESPACE;
+using namespace libReallive;
 
 RLMachine::RLMachine(Archive& inArchive) 
   : m_halted(false), m_haltOnException(true), archive(inArchive)
 {
   // Arbitrarily set the scenario to the first one in the archive, which is what we want until
   // we get the Gameexe.ini file parser working
-  Reallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
+  libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
@@ -49,46 +50,55 @@ void RLMachine::executeNextInstruction()
   // Do not execute any more instructions if the machine is halted.
   if(halted() == true)
     return;
-
-  try {
-
-    // Refactor this out into a virtual function?
-    // @todo Yeah, really refactor this ugly mess below before it grows and eats
-    // tokyo
-    // Switch to the proper handler based on the type of this bytecode element
-    switch(callStack.top().ip->type()) {
-    // Handle all the other stuff
-    case Expression:
-      executeExpression(static_cast<const LIBRL_NAMESPACE::ExpressionElement&>(
-                          *(callStack.top().ip)));
-      break;
-    case Command:
-    case Function:
-    case Select:
-    case Goto:
-    case GotoCase:
-    case GotoOn:
-      executeCommand(static_cast<const LIBRL_NAMESPACE::CommandElement&>(
-                       *(callStack.top().ip)));
-      break;
-    default:
-      // Increment the IP for things we don't handle yet or very well.
-      advanceInstructionPointer();
-    }
+  // If we are in a long operation, run it, and end it if it returns true.
+  else if(currentLongOperation)
+  {
+    bool retVal = (*currentLongOperation)(*this);
+    if(retVal)
+      currentLongOperation.reset();
   }
-  catch(std::exception& e) {
-    if(m_haltOnException) {
-      m_halted = true;
-      cout << "ERROR: ";
-    } else {
-      // Advance the instruction pointer so as to prevent infinite
-      // loops where we throw an exception, and then try again.
-      advanceInstructionPointer();
-
-      cout << "WARNING: ";
+  else 
+  {
+    try 
+    {
+      // Refactor this out into a virtual function?
+      // @todo Yeah, really refactor this ugly mess below before it grows and eats
+      // tokyo
+      // Switch to the proper handler based on the type of this bytecode element
+      switch(callStack.top().ip->type()) {
+        // Handle all the other stuff
+      case Expression:
+        executeExpression(static_cast<const libReallive::ExpressionElement&>(
+                            *(callStack.top().ip)));
+        break;
+      case Command:
+      case Function:
+      case Select:
+      case Goto:
+      case GotoCase:
+      case GotoOn:
+        executeCommand(static_cast<const libReallive::CommandElement&>(
+                         *(callStack.top().ip)));
+        break;
+      default:
+        // Increment the IP for things we don't handle yet or very well.
+        advanceInstructionPointer();
+      }
     }
+    catch(std::exception& e) {
+      if(m_haltOnException) {
+        m_halted = true;
+        cout << "ERROR: ";
+      } else {
+        // Advance the instruction pointer so as to prevent infinite
+        // loops where we throw an exception, and then try again.
+        advanceInstructionPointer();
 
-    cout << "Uncaught exception: " << e.what() << endl;
+        cout << "WARNING: ";
+      }
+
+      cout << "Uncaught exception: " << e.what() << endl;
+    }
   }
 }
 
@@ -243,7 +253,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
 void RLMachine::jump(int scenarioNum, int entrypoint) 
 {
   // Check to make sure it's a valid scenario
-  Reallive::Scenario* scenario = archive.scenario(scenarioNum);
+  libReallive::Scenario* scenario = archive.scenario(scenarioNum);
   if(scenario == 0)
     throw Error("Invalid scenario number in jump");
 
@@ -255,8 +265,8 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
 
 void RLMachine::farcall(int scenarioNum, int entrypoint) 
 {
-  Reallive::Scenario* scenario = archive.scenario(scenarioNum);
-  Reallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
+  libReallive::Scenario* scenario = archive.scenario(scenarioNum);
+  libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
   callStack.push(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
 }
@@ -298,6 +308,13 @@ void RLMachine::returnFromGosub()
   }
 
   callStack.pop();
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setLongOperation(LongOperation* longOperation)
+{
+  currentLongOperation.reset(longOperation);
 }
 
 // -----------------------------------------------------------------------
