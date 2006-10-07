@@ -1,0 +1,31 @@
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I/opt/local/include -D_THREAD_SAFE
+
+# for testing
+#CXXFLAGS += -DWIN32
+
+.PHONY: clean
+
+########
+
+LRLFILES[] =
+  Module_Grp
+  Module_Jmp
+  Module_Mem
+  Module_Msg
+  Module_Str
+  Module_Sys
+  cp932toUnicode
+
+StaticCObject(libModules, $(LRLFILES))
+
+########
+
+LIBS += -L/opt/local/lib
+.DEFAULT: libModules$(EXT_OBJ)
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc

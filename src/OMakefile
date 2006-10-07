@@ -8,43 +8,16 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 #CXXFLAGS += -DWIN32
 
 .PHONY: clean
+.SUBDIRS: libReallive Modules MachineBase Systems
+########
+
+StaticCLibrary(librlvm, MachineBase/libMachineBase Modules/libModules Systems/SDL/libSDLSystem libReallive/libReallive)
 
 ########
 
-LRLFILES[] =
-  mmap_impl
-  filemap
-  compression
-  expression
-  bytecode
-  scenario
-  archive
-  reference
-  RLMachine
-  RLModule
-  RLOperation
-  Module_Jmp
-  Module_Sys
-  Module_Str
-  Module_Mem
-  Module_Msg
-  Module_Grp
-  cp932toUnicode
-  gameexe
-  SDLSystem
-  SDLGraphicsSystem
-
-alldefs.h.gch: alldefs.h
-  $(CXX) $(CXXFLAGS) -I. -c $< -o $@
-
-CGeneratedFiles(alldefs.h.gch)
-StaticCLibrary(libreallive, $(LRLFILES))
-
-########
-
-LIBS += libreallive$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -framework Cocoa -framework OpenGL
-.DEFAULT: libreallive$(EXT_LIB) $(CXXProgram rlvm, rlvm)
-rlvm$(EXE): libreallive$(EXT_LIB) 
+LIBS += librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -framework Cocoa -framework OpenGL
+.DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)
+rlvm$(EXE): librlvm$(EXT_LIB) 
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvm$(EXE) rlvm$(EXE).stackdump

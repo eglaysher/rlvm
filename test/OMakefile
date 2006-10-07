@@ -2,14 +2,14 @@
 #  OMakeFlags(-S --progress)
 #  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/ -I../src -I/opt/local/include/SDL -D_THREAD_SAFE
 
 .PHONY: clean
 
 .SUBDIRS: Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
 
 INCLUDES += ../src
-LIBS += ../src/libreallive$(EXT_LIB)
+LIBS += ../src/librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -framework Cocoa -framework OpenGL
 
 TEST_FILES[] = 
   rlvmTest
@@ -19,7 +19,7 @@ TEST_FILES[] =
   Gameexe_TUT
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
-rlvmTest$(EXE): ../src/libreallive$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
+rlvmTest$(EXE): ../src/librlvm$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump

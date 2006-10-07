@@ -1,0 +1,26 @@
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ -I/opt/local/include -D_THREAD_SAFE
+
+# for testing
+#CXXFLAGS += -DWIN32
+
+.PHONY: clean
+
+########
+
+LRLFILES[] =
+  SDLSystem
+  SDLGraphicsSystem
+
+StaticCObject(libSDLSystem, $(LRLFILES))
+
+########
+
+LIBS += -L/opt/local/lib
+.DEFAULT: libSDLSystem$(EXT_OBJ)
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc

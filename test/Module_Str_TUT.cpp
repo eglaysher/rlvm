@@ -29,9 +29,9 @@
  * Test cases for the string module
  */
 
-#include "Module_Str.hpp"
-#include "Archive.h"
-#include "RLMachine.hpp"
+#include "Modules/Module_Str.hpp"
+#include "libReallive/Archive.h"
+#include "MachineBase/RLMachine.hpp"
 
 #include "tut.hpp"
 

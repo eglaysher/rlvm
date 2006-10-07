@@ -1,0 +1,28 @@
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -D_THREAD_SAFE
+
+# for testing
+#CXXFLAGS += -DWIN32
+
+.PHONY: clean
+
+# We don't include Base since it's all headers that define the interface that
+# the other directories are supposed to implement
+# Null
+.SUBDIRS: SDL
+
+########
+
+#StaticCLibrary(libSystems, Base/libBaseSystem SDL/libSDLSystem)
+
+########
+
+LIBS += -L/opt/local/lib
+.DEFAULT: SDL
+#libSystems$(EXT_LIB)
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc

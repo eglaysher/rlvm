@@ -1,14 +1,14 @@
-#include "reallive.h"
-#include "RLMachine.hpp"
-#include "Module_Jmp.hpp"
-#include "Module_Sys.hpp"
-#include "Module_Str.hpp"
-#include "Module_Mem.hpp"
-#include "Module_Grp.hpp"
-#include "gameexe.h"
+#include "libReallive/reallive.h"
+#include "libReallive/gameexe.h"
+#include "MachineBase/RLMachine.hpp"
+#include "Modules/Module_Jmp.hpp"
+#include "Modules/Module_Sys.hpp"
+#include "Modules/Module_Str.hpp"
+#include "Modules/Module_Mem.hpp"
+#include "Modules/Module_Grp.hpp"
 
-#include "SDLSystem.hpp"
-#include "SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
+#include "Systems/SDL/SDLGraphicsSystem.hpp"
 
 #include <iostream>
 

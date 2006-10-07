@@ -29,9 +29,9 @@
  * Test cases for the memory module
  */
 
-#include "Module_Mem.hpp"
-#include "Archive.h"
-#include "RLMachine.hpp"
+#include "Modules/Module_Mem.hpp"
+#include "libReallive/Archive.h"
+#include "MachineBase/RLMachine.hpp"
 
 #include "tut.hpp"
 
