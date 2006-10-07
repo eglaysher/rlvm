@@ -74,9 +74,9 @@ class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
 //  : public std::iterator<std::bidirectional_iterator_tag, IntAccessor> {
 private:
-  int type;
-  int location;
-  RLMachine* machine;
+  int m_type;
+  int m_location;
+  RLMachine* m_machine;
   // Can this be templated?
   friend class StringAccessor;
   friend class IntAccessor;
@@ -84,26 +84,26 @@ private:
 public:
   // Explicit reference creation
   MemoryReferenceIterator(RLMachine* inMachine, const int inType, const int inLocation)
-    : machine(inMachine), type(inType), location(inLocation) { }     
+    : m_machine(inMachine), m_type(inType), m_location(inLocation) { }     
 
-  int getType() const { return type; }
-  int getLocation() const { return location; }
+  int type() const { return type; }
+  int location() const { return location; }
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*()     { return ACCESS(this); }
   
-  MemoryReferenceIterator& operator++()   { ++location; return *this; }
-  MemoryReferenceIterator& operator--()   { --location; return *this; }
-  MemoryReferenceIterator& operator+=(int step) { location += step; return *this; }
-  MemoryReferenceIterator& operator-=(int step) { location -= step; return *this; }
+  MemoryReferenceIterator& operator++()   { ++m_location; return *this; }
+  MemoryReferenceIterator& operator--()   { --m_location; return *this; }
+  MemoryReferenceIterator& operator+=(int step) { m_location += step; return *this; }
+  MemoryReferenceIterator& operator-=(int step) { m_location -= step; return *this; }
 
   MemoryReferenceIterator operator++(int) { 
     MemoryReferenceIterator tmp(*this);
-    ++location; 
+    ++m_location; 
     return tmp; 
   }
   MemoryReferenceIterator operator--(int) {
     MemoryReferenceIterator tmp(*this);
-    --location; 
+    --m_location; 
     return tmp; 
   }
 
@@ -117,11 +117,11 @@ public:
   }
 
   int operator-(const MemoryReferenceIterator& rhs) {
-    return location - rhs.location;
+    return m_location - rhs.m_location;
   }
 
   bool operator<(const MemoryReferenceIterator& rhs) {
-    return location < rhs.location;
+    return m_location < rhs.m_location;
   }
 
 /* Fix this if something complains
@@ -131,7 +131,8 @@ public:
 */
 
   bool operator==(const MemoryReferenceIterator<ACCESS>& rhs) const {
-    return machine == rhs.machine && type == rhs.type && location == rhs.location;
+    return m_machine == rhs.m_machine && m_type == rhs.m_type && 
+      m_location == rhs.m_location;
   }
 
   bool operator!=(const MemoryReferenceIterator<ACCESS>& rhs) const {

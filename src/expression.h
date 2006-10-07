@@ -45,7 +45,7 @@ public:
   virtual ExpressionValueType expressionValueType() const;
 
   virtual void assignIntValue(RLMachine& machine, int rvalue);
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 
   virtual void assignStringValue(RLMachine& machine);
   virtual const std::string& getStringValue(RLMachine& machine) const;
@@ -56,7 +56,7 @@ public:
   virtual bool isMemoryReference() const;
   
   virtual void assignIntValue(RLMachine& machine, int rvalue);
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 };
 
 class IntegerConstant : public ExpressionPiece {
@@ -65,7 +65,7 @@ private:
 public:
   IntegerConstant(const int in);
 
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 };
 
 class StringConstant : public ExpressionPiece {
@@ -105,7 +105,7 @@ public:
   virtual ExpressionValueType expressionValueType() const;
 
   virtual void assignIntValue(RLMachine& machine, int rvalue);
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 
   virtual void assignStringValue(RLMachine& machine, const std::string& rvalue);
   virtual const std::string& getStringValue(RLMachine& machine) const;
@@ -125,7 +125,7 @@ private:
 
 public:
   UniaryExpressionOperator(char inOperation, ExpressionPiece* inOperand);
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 };
 
 // ----------------------------------------------------------------------
@@ -144,7 +144,7 @@ protected:
 public:
   BinaryExpressionOperator(char inOperation, ExpressionPiece* lhs,
                            ExpressionPiece* rhs);
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 };
 
 // ----------------------------------------------------------------------
@@ -160,10 +160,10 @@ public:
                                ExpressionPiece* rhs);
   ~AssignmentExpressionOperator();
 
-  /** For the entire assignment operator hiearchy, we use getIntegerValue,
+  /** For the entire assignment operator hiearchy, we use integerValue,
    * since it acts as the execute.
    */
-  virtual int getIntegerValue(RLMachine& machine) const;
+  virtual int integerValue(RLMachine& machine) const;
 };
 
 

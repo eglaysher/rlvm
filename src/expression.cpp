@@ -372,7 +372,7 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
 /// A default implementation is provided since not everything will have assign
 /// semantics.
 void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
-int ExpressionPiece::getIntegerValue(RLMachine& machine) const {}
+int ExpressionPiece::integerValue(RLMachine& machine) const {}
 
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
 const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {}
@@ -381,13 +381,13 @@ bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
 void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {
   machine.setStoreRegister(rvalue);
 }
-int StoreRegisterExpressionPiece::getIntegerValue(RLMachine& machine) const {
+int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
 }
 
 // IntegerConstant
 IntegerConstant::IntegerConstant(const int in) : constant(in) {}
-int IntegerConstant::getIntegerValue(RLMachine& machine) const { return constant; }
+int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
 
 // StringConstant
 StringConstant::StringConstant(const std::string& in) : constant(in) {}
@@ -411,18 +411,18 @@ ExpressionValueType MemoryReference::expressionValueType() const {
 }
 
 void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) { 
-  return machine.setIntValue(type, location->getIntegerValue(machine), rvalue); 
+  return machine.setIntValue(type, location->integerValue(machine), rvalue); 
 }
-int MemoryReference::getIntegerValue(RLMachine& machine) const {
-  return machine.getIntValue(type, location->getIntegerValue(machine)); 
+int MemoryReference::integerValue(RLMachine& machine) const {
+  return machine.getIntValue(type, location->integerValue(machine)); 
 }
 
 void MemoryReference::assignStringValue(RLMachine& machine, 
                                         const std::string& rvalue) {
-  return machine.setStringValue(type, location->getIntegerValue(machine), rvalue);
+  return machine.setStringValue(type, location->integerValue(machine), rvalue);
 }
 const std::string& MemoryReference::getStringValue(RLMachine& machine) const {
-  return machine.getStringValue(type, location->getIntegerValue(machine));
+  return machine.getStringValue(type, location->integerValue(machine));
 }
 
 IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& machine) const {
@@ -431,7 +431,7 @@ IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& mac
     throw Error("Request to getIntegerReferenceIterator() on a string reference!");
   }
 
-  return IntReferenceIterator(&machine, type, location->getIntegerValue(machine));
+  return IntReferenceIterator(&machine, type, location->integerValue(machine));
 }
 
 StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& machine) const {
@@ -440,7 +440,7 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& m
     throw Error("Request to getStringReferenceIterator() on an integer reference!");
   }
 
-  return StringReferenceIterator(&machine, type, location->getIntegerValue(machine));
+  return StringReferenceIterator(&machine, type, location->integerValue(machine));
 }
 
 // ----------------------------------------------------------------------
@@ -463,8 +463,8 @@ int UniaryExpressionOperator::performOperationOn(int int_operand) const
   return result;
 }
 
-int UniaryExpressionOperator::getIntegerValue(RLMachine& machine) const {
-  return performOperationOn(operand->getIntegerValue(machine));
+int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
+  return performOperationOn(operand->integerValue(machine));
 }
 
 // ----------------------------------------------------------------------
@@ -527,9 +527,9 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
   }
 }
 
-int BinaryExpressionOperator::getIntegerValue(RLMachine& machine) const {
-  return performOperationOn(leftOperand->getIntegerValue(machine),
-                            rightOperand->getIntegerValue(machine));
+int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
+  return performOperationOn(leftOperand->integerValue(machine),
+                            rightOperand->integerValue(machine));
 }     
 
 // ----------------------------------------------------------------------
@@ -545,15 +545,15 @@ AssignmentExpressionOperator::~AssignmentExpressionOperator()
 //  cerr << "Destroying AssignmentExpressionOperator(" << this << ")" << endl;
 }
 
-int AssignmentExpressionOperator::getIntegerValue(RLMachine& machine) const 
+int AssignmentExpressionOperator::integerValue(RLMachine& machine) const 
 {
   if(operation == 30) {
-    int value = rightOperand->getIntegerValue(machine);
+    int value = rightOperand->integerValue(machine);
     leftOperand->assignIntValue(machine, value);
     return value;    
   } else {
-    int value = performOperationOn(leftOperand->getIntegerValue(machine),
-                                   rightOperand->getIntegerValue(machine));
+    int value = performOperationOn(leftOperand->integerValue(machine),
+                                   rightOperand->integerValue(machine));
     leftOperand->assignIntValue(machine, value);
     return value;
   }

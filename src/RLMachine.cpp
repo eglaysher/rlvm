@@ -20,14 +20,17 @@ using namespace libReallive;
 RLMachine::RLMachine(Archive& inArchive) 
   : m_halted(false), m_haltOnException(true), archive(inArchive)
 {
-  // Arbitrarily set the scenario to the first one in the archive, which is what we want until
-  // we get the Gameexe.ini file parser working
+  // Arbitrarily set the scenario to the first one in the archive,
+  // which is what we want until we get the Gameexe.ini file parser
+  // working
   libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
   memset(intVar, 0, sizeof(intVar));
 }
+
+// -----------------------------------------------------------------------
 
 RLMachine::~RLMachine()
 {}
@@ -122,7 +125,8 @@ void RLMachine::advanceInstructionPointer()
 
 // -----------------------------------------------------------------------
 
-static void throwIllegalIndex(int location) {
+static void throwIllegalIndex(int location) 
+{
   stringstream ss;
   ss << "Illegal index location (" << location 
      << ") in RLMachine::getIntVlaue()";
@@ -164,7 +168,8 @@ int RLMachine::getIntValue(int type, int location)
  *
  * @note This method was plagarized from xclannad.
  */
-void RLMachine::setIntValue(int rawtype, int location, int value) {
+void RLMachine::setIntValue(int rawtype, int location, int value) 
+{
 //  cerr << "setIntValue(" << rawtype << ", " << location << ", " << value << ")" << endl;
 
   int type = rawtype / 26;
@@ -196,7 +201,8 @@ void RLMachine::setIntValue(int rawtype, int location, int value) {
 
 // -----------------------------------------------------------------------
 
-const std::string& RLMachine::getStringValue(int type, int location) {
+const std::string& RLMachine::getStringValue(int type, int location) 
+{
   if(location > 1999)
       throw Error("Invalid range access in RLMachine::setStringValue");
 
@@ -319,8 +325,9 @@ void RLMachine::setLongOperation(LongOperation* longOperation)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::executeExpression(const ExpressionElement& e) {
-  int value = e.parsedExpression().getIntegerValue(*this);
+void RLMachine::executeExpression(const ExpressionElement& e) 
+{
+  int value = e.parsedExpression().integerValue(*this);
   
   // Increment the instruction pointer.
   callStack.top().ip++;
@@ -333,7 +340,10 @@ unsigned int RLMachine::packModuleNumber(int modtype, int module)
   return (modtype << 8) | module;
 }
 
-void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype,  int& module)
+// -----------------------------------------------------------------------
+
+void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype,  
+                                   int& module)
 {
   modtype = packedModuleNumber >> 8;
   module = packedModuleNumber && 0xFF;

@@ -5,7 +5,9 @@
 
 #include <vector>
 
-class SDLGraphicsSystem
+#include "GraphicsSystem.hpp"
+
+class SDLGraphicsSystem : public GraphicsSystem
 {
 private:
   // 
@@ -13,6 +15,11 @@ private:
 
 public:
   SDLGraphicsSystem(); 
+
+  virtual void allocateDC(int dc, int width, int height);
+  virtual void freeDC(int dc);
+
+  virtual void wipe(int dc, int r, int g, int b);
 };
 
 #endif

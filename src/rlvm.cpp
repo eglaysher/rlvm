@@ -4,6 +4,7 @@
 #include "Module_Sys.hpp"
 #include "Module_Str.hpp"
 #include "Module_Mem.hpp"
+#include "Module_Grp.hpp"
 #include "gameexe.h"
 
 #include "SDLSystem.hpp"
@@ -76,6 +77,7 @@ int main(int argc, char* argv[])
     rlmachine.attatchModule(new SysModule);
     rlmachine.attatchModule(new StrModule);
     rlmachine.attatchModule(new MemModule);
+    rlmachine.attatchModule(new GrpModule);
 
     while(!rlmachine.halted()) {
       rlmachine.executeNextInstruction();

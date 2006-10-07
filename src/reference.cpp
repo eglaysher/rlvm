@@ -9,7 +9,7 @@
  */
 IntAccessor::operator int() const
 {
-  return it->machine->getIntValue(it->type, it->location); 
+  return it->m_machine->getIntValue(it->m_type, it->m_location); 
 }
 
 // -----------------------------------------------------------------------
@@ -21,7 +21,7 @@ IntAccessor::operator int() const
  * @return Self
  */
 IntAccessor& IntAccessor::operator=(const int newValue) { 
-  it->machine->setIntValue(it->type, it->location, newValue);
+  it->m_machine->setIntValue(it->m_type, it->m_location, newValue);
   return *this;
 } 
 
@@ -51,7 +51,7 @@ IntAccessor& IntAccessor::operator=(const IntAccessor& rhs)
  */
 StringAccessor::operator std::string() const
 {
-  return it->machine->getStringValue(it->type, it->location);
+  return it->m_machine->getStringValue(it->m_type, it->m_location);
 }
 
 // -----------------------------------------------------------------------
@@ -63,7 +63,7 @@ StringAccessor::operator std::string() const
  * @return Self
  */
 StringAccessor& StringAccessor::operator=(const std::string& newValue) {
-  it->machine->setStringValue(it->type, it->location, newValue);
+  it->m_machine->setStringValue(it->m_type, it->m_location, newValue);
   return *this;
 }
 

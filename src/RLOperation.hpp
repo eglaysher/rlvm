@@ -119,7 +119,7 @@ struct IntConstant_T {
   static type getData(RLMachine& machine,
                       boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       int position) {
-    return p[position].getIntegerValue(machine);
+    return p[position].integerValue(machine);
    }
 
   /// Verify that the incoming parameter objects meet the desired types

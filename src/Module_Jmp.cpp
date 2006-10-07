@@ -71,7 +71,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
   const char* location = gotoElement.get_param(0).c_str();
       
   auto_ptr<ExpressionPiece> condition(get_expression(location));
-  int value = condition->getIntegerValue(machine);
+  int value = condition->integerValue(machine);
   const Pointers& pointers = gotoElement.get_pointersRef();
 
   // Walk linearly through the output cases, executing the first
@@ -99,7 +99,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
     // it's equal to the value we're searching for
     const char* e = (const char*)caseUnparsed.c_str();
     auto_ptr<ExpressionPiece> output(get_expression(e));
-    if(output->getIntegerValue(machine) == value)
+    if(output->integerValue(machine) == value)
       return i;
   }
 
@@ -179,7 +179,7 @@ struct Jmp_goto_if : public RLOp_SpecialCase {
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
-    if(condition->getIntegerValue(machine)) 
+    if(condition->integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
@@ -203,7 +203,7 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
-    if(!condition->getIntegerValue(machine)) 
+    if(!condition->integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
@@ -228,7 +228,7 @@ struct Jmp_goto_on : public RLOp_SpecialCase {
     const char* location = gotoElement.get_param(0).c_str();
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
-    int value = condition->getIntegerValue(machine);
+    int value = condition->integerValue(machine);
     const Pointers& pointers = gotoElement.get_pointersRef();
     if(value >= 0 && value < pointers.size()) 
       machine.gotoLocation(pointers[value]);
@@ -286,7 +286,7 @@ struct Jmp_gosub_if : public RLOp_SpecialCase {
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
-    if(condition->getIntegerValue(machine)) 
+    if(condition->integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
@@ -311,7 +311,7 @@ struct Jmp_gosub_unless : public RLOp_SpecialCase {
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
-    if(!condition->getIntegerValue(machine)) 
+    if(!condition->integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
@@ -336,7 +336,7 @@ struct Jmp_gosub_on : public RLOp_SpecialCase {
     const char* location = gotoElement.get_param(0).c_str();
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
-    int value = condition->getIntegerValue(machine);
+    int value = condition->integerValue(machine);
     const Pointers& pointers = gotoElement.get_pointersRef();
     if(value >= 0 && value < pointers.size()) 
       machine.gosub(pointers[value]);

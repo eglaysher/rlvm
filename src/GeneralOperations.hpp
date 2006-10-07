@@ -4,77 +4,78 @@
 #include "RLOperation.hpp"
 
 /** 
- * Binds setting an internal variable to a passed in value in a
- * generic way.
+ * Binds setting an internal variable to a passed in value in from a
+ * running Reallive script. 
  */
-template<typename TYPE>
+template<typename OBJTYPE, typename RETTYPE>
 class Op_SetToIncoming : public RLOp_Void_1< IntConstant_T > {
-  TYPE& reference;
-  ScriptModifyable& objToAlert;
+  /// The object we are going to operate on when called.
+  OBJTYPE& reference;
 
-  Op_SetToIncoming(TYPE& ref, ScriptModifyable& in) 
-    : reference(ref), objToAlert(in) {}
+  /// The function signature for the setter function
+  typedef void(OBJTYPE::*Setter)(RETTYPE);
 
-  void operator()(RLMachine& machine, int incoming) {
-    reference = incoming;
-    objToAlert->alertModified();
+  /// The setter function to call on Op_SetToIncoming::reference when
+  /// called.
+  Setter setter;
+
+  Op_SetToIncoming(OBJTYPE& ref, Setter s)
+    : RLOp_Void_1(), reference(ref), setter(s) 
+  {}
+
+  void operator()(RLMachine& machine, int incoming) 
+  {
+    ((reference).*(setter)(incoming));
   }
 };
 
 // -----------------------------------------------------------------------
 
 /** 
- * Binds setting an internal variable to true in a
- * generic way.
+ * Sets an internal variable to a specific value set at compile time,
+ * and exposes this as an operation to Reallive scripts.
  */
-template<typename TYPE>
-class Op_SetToTrue : public RLOp_Void_Void {
-  TYPE& reference;
-  ScriptModifyable& objToAlert;
+template<typename OBJTYPE, typename RETTYPE, typename VALTYPE>
+class Op_SetToConstant : public RLOp_Void_Void {
+  OBJTYPE& reference;
 
-  Op_SetToTrue(TYPE& ref, ScriptModifyable& in) 
-    : reference(ref), objToAlert(in) {}
+  typedef void(OBJTYPE::*Setter)(RETTYPE);
+  Setter setter;
 
-  void operator()(RLMachine& machine) {
-    reference = 1;
-    objToAlert->alertModified();
+  VALTYPE value;
+
+  Op_SetToIncoming(OBJTYPE& ref, Setter s, VALTYPE inVal)
+    : RLOp_Void_Void(), reference(ref), setter(s), 
+      value(inVal)
+  {}
+
+  void operator()(RLMachine& machine) 
+  {
+    ((reference).*(setter)(value));
   }
 };
 
 // -----------------------------------------------------------------------
 
 /** 
- * Binds setting an internal variable to false in a generic way.
+ * Reads the value of an internal variable in a generic way using an
+ * arbitrary getter function and places it in the store register.
  */
-template<typename TYPE>
-class Op_SetToFalse : public RLOp_Void_Void {
-  TYPE& reference;
-  ScriptModifyable& objToAlert;
-
-  Op_SetToFalse(TYPE& ref, ScriptModifyable& in)
-    : reference(ref), objToAlert(in) {}
-
-  void operator()(RLMachine& machine) {
-    reference = 0;
-    objToAlert->alertModified();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-/** 
- * Reads the value of an internal variable in a generic way.
- */
-template<typename TYPE>
+template<typename OBJTYPE, typename RETTYPE>
 class Op_ReturnValue : public RLOp_Store_Void {
   TYPE& reference;
 
-  Op_ReturnValue(TYPE& ref) : reference(ref) {}
+  typedef void(OBJTYPE::*Getter)(RETTYPE);
+  Getter getter;
 
-  int operator()(RLMachine& machine) {
-    return reference;
+  Op_ReturnValue(OBJTYPE& ref, Getter g) 
+    : RLOp_Store_Void(), reference(ref), getter(g) 
+  {}
+
+  int operator()(RLMachine& machine) 
+  {
+    return ((reference).*(getter)());
   }
 };
-
 
 #endif

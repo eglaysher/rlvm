@@ -39,9 +39,19 @@ struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
+struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
+                                      IntConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, int dc, int r, int g, int b) {
+    machine.system().graphics().wipe(dc, r, g, b);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 GrpModule::GrpModule()
-  : RLModule("Grp", 1, 033)
+  : RLModule("Grp", 1, 33)
 {
+  cerr << "Loading GRP!" << endl;
   addOpcode(15, 0, new Grp_allocDC);
   addOpcode(16, 0, new Grp_freeDC);
 }

@@ -1,4 +1,5 @@
-
+#ifndef __GraphicsSystem_hpp__
+#define __GraphicsSystem_hpp__
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -13,15 +14,17 @@
 class GraphicsSystem
 {
 public:
-  virtual void initialize() = 0;
-
-/*  
   virtual void allocateDC(int dc, int width, int height) = 0;
   virtual void freeDC(int dc) = 0;
 
+  virtual void wipe(int dc, int r, int g, int b) = 0;
+
+/*
   virtual void getDCPixel(int x, int y, int dc, int& r, int& g, int& b) = 0;
   virtual void wipe(int dc, int r, int g, int b) = 0;
 
   virtual void 
 */
 };
+
+#endif
