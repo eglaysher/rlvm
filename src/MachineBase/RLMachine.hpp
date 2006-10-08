@@ -40,6 +40,8 @@
 #include "libReallive/bytecode.h"
 #include "MachineBase/bytecodeConstants.hpp"
 
+#include "Systems/Base/System.hpp"
+
 #include <stack>
 
 namespace  libReallive {
@@ -133,9 +135,14 @@ private:
   /// A pointer to a LongOperation
   boost::scoped_ptr<LongOperation> currentLongOperation;
 
-  /// The RLMachine carried around a pointer to the local system, to
+  /// There are some cases where we need to create our own system,
+  /// since one isn't provided for us. This variable is for those
+  /// times; m_system will simply point to this object
+  boost::scoped_ptr<System> m_ownedSystem;
+
+  /// The RLMachine carried around a reference to the local system, to
   /// keep it from being a Singleton so we can do proper unit testing.
-//  boost::scoped_ptr<System> m_system;
+  System& m_system;
 
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, int& module);
@@ -145,6 +152,7 @@ private:
 
 public:
   RLMachine(libReallive::Archive& inArchive);
+  RLMachine(System& inSystem, libReallive::Archive& inArchive);
   ~RLMachine();
 
   /** Registers a given module with this RLMachine instance. A module is a set of
@@ -316,6 +324,12 @@ public:
    * @return Whether the machine is halted
    */
   bool halted() const { return m_halted; }
+
+
+  /** 
+   * Returns the current System that this RLMachine outputs to.
+   */
+  System& system() { return m_system; }
 };
 
 #endif

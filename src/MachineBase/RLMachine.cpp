@@ -69,6 +69,10 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 
+// Some RLMachines will cary around a copy of the Null system.
+#include "Systems/Null/NullSystem.hpp"
+#include "Systems/Null/NullGraphicsSystem.hpp"
+
 #include <sstream>
 #include <iostream>
 
@@ -76,7 +80,24 @@ using namespace std;
 using namespace libReallive;
 
 RLMachine::RLMachine(Archive& inArchive) 
-  : m_halted(false), m_haltOnException(true), archive(inArchive)
+  : m_halted(false), m_haltOnException(true), archive(inArchive), 
+    m_ownedSystem(new NullSystem), m_system(*m_ownedSystem)
+{
+  // Arbitrarily set the scenario to the first one in the archive,
+  // which is what we want until we get the Gameexe.ini file parser
+  // working
+  libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
+  callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
+
+  // Initialize the big memory block to zero
+  memset(intVar, 0, sizeof(intVar));
+}
+
+// -----------------------------------------------------------------------
+
+RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
+  : m_halted(false), m_haltOnException(true), archive(inArchive), 
+    m_ownedSystem(NULL), m_system(inSystem)
 {
   // Arbitrarily set the scenario to the first one in the archive,
   // which is what we want until we get the Gameexe.ini file parser

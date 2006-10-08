@@ -46,3 +46,8 @@ SDLSystem::SDLSystem()
 
   graphicsSystem.reset(new SDLGraphicsSystem);
 }
+
+GraphicsSystem& SDLSystem::graphics()
+{
+  return *graphicsSystem;
+}

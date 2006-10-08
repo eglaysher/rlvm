@@ -58,6 +58,8 @@ public:
 //  virtual void alertModified() { }
 //};
 
+class GraphicsSystem;
+
 /**
  * The system class provides a generalized interface to all the
  * components that make up a local system that may need to be
@@ -69,7 +71,7 @@ public:
 class System
 {
 public:
-//  virtual GraphicsSystem& graphicsSystem() = 0;
+  virtual GraphicsSystem& graphics() = 0;
 //  virtual TextSystem& textSystem() = 0;
 //  virtual SoundSystem& soundSystem() = 0;
 };

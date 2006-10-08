@@ -37,6 +37,7 @@ private:
 public:
   SDLSystem();
 
+  virtual GraphicsSystem& graphics();
 };
 
 #endif

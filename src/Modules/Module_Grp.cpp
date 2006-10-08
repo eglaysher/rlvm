@@ -28,9 +28,12 @@
  * @brief  Implements the Graphics module (mod<1:33>).
  */
 
-#include "Module_Grp.hpp"
-#include "../MachineBase/RLOperation.hpp"
-#include "../MachineBase/RLMachine.hpp"
+#include "Modules/Module_Grp.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 
 #include <iostream>
 
@@ -41,7 +44,7 @@ using namespace std;
 struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                                          IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
-//    machine.system().graphics().allocDC(dc, width, height);
+    machine.system().graphics().allocateDC(dc, width, height);
   }
 };
 
@@ -49,7 +52,7 @@ struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int dc) {
-//    machine.system().graphics().freeDC(dc);
+    machine.system().graphics().freeDC(dc);
   }
 };
 
@@ -58,7 +61,7 @@ struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
 struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
                                       IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-//    machine.system().graphics().wipe(dc, r, g, b);
+    machine.system().graphics().wipe(dc, r, g, b);
   }
 };
 
@@ -67,7 +70,8 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 GrpModule::GrpModule()
   : RLModule("Grp", 1, 33)
 {
-  cerr << "Loading GRP!" << endl;
   addOpcode(15, 0, new Grp_allocDC);
   addOpcode(16, 0, new Grp_freeDC);
+
+  addOpcode(31, 0, new Grp_wipe);
 }

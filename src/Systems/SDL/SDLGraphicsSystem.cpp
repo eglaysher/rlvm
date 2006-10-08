@@ -3,18 +3,18 @@
  * @author Elliot Glaysher
  * @date   Fri Oct  6 13:34:08 2006
  * 
- * @brief  
+ * @brief  Exposed interface for the SDL Graphics system.
  * 
+ * While there are other 
  * 
  * @todo Make the constructor take the Gameexe.ini, and read the
  * initial window size from it.
- *
- *
  */
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "libReallive/defs.h"
 
+#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -154,6 +154,9 @@ void SDLGraphicsSystem::freeDC(int dc)
 
 void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 {
+  cerr << "wipe(" << dc << ", " << r << ", " << g << ", " << b << ")" 
+       << endl;
+
   if(dc >= displayContexts.size())
     throw Error("Invalid DC number in SDLGrpahicsSystem::wipe");
 

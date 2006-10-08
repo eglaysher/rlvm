@@ -74,7 +74,6 @@ struct RLOperation {
    * incremented after the instruction is executed. Override this in
    * the *rare* case where an instruction messes about with the
    * instruction pointer and we don't want to mess with it afterwards.
-   *
    * The default implmentation returns true; 99% of instructions want
    * the instruction pointer to be advanced automaticly.
    */

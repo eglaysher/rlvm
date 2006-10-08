@@ -1,11 +1,13 @@
 #include "libReallive/reallive.h"
 #include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
+
 #include "Modules/Module_Jmp.hpp"
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Str.hpp"
 #include "Modules/Module_Mem.hpp"
 #include "Modules/Module_Grp.hpp"
+#include "Modules/Module_Msg.hpp"
 
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
@@ -28,7 +30,7 @@ using namespace std;
  * the fine details of the RealLive system, along with doing all the
  * really hard reverse engineering work that I'd rather not do.
  *
- * @section Table of Contents
+ * @section Table Table of Contents
  * 
  * The documentation is divided into the following sections.
  *
@@ -44,7 +46,28 @@ using namespace std;
  * @section Overview
  *
  * There are several classes that represent the SEEN.TXT file in
- * memory; most of this code is stolen from Haeleth.
+ * memory; most of this code is stolen from Haeleth in the namespace
+ * libReallive. This page describes the reading of SEEN files from the
+ * file to memory.
+ *
+ * @section Archive "The Archive and Scenario access"
+ *
+ * We start with the main class that represents the SEEN.TXT file,
+ * libReallive::Archive. When we construct an Archive, we pass in the
+ * path to a SEEN.TXT file to load. Currently, the only thing done on
+ * startup is the parsing of the TOC, which defines which Scenarios
+ * are in the SEEN.TXT archive.
+ *
+ * From the Archive, we can access libReallive::Scenarios using the
+ * libReallive::Archive::scenario() member. This method will return
+ * the Scenario relating to the passed in number. Archive has other
+ * members for manipulating and rewriting the data, but these aren't
+ * used in RLVM.
+ *
+ * @section Scenario "The Scenario"
+ *
+ * The libReallive::Scenario class represents a Scenario, a sequence
+ * of commands with metadata.
  */
 
 // -----------------------------------------------------------------------
@@ -66,17 +89,16 @@ int main(int argc, char* argv[])
   try {
 //    Gameexe gamexex(argv[1]);
 
-    // Initialize the sdlSystem
     SDLSystem sdlSystem;
-
     libReallive::Archive arc(argv[1]);
-    RLMachine rlmachine(arc);
+    RLMachine rlmachine(sdlSystem, arc);
 
     // Attatch the modules for some commands
     rlmachine.attatchModule(new JmpModule);
     rlmachine.attatchModule(new SysModule);
     rlmachine.attatchModule(new StrModule);
     rlmachine.attatchModule(new MemModule);
+    rlmachine.attatchModule(new MsgModule);
     rlmachine.attatchModule(new GrpModule);
 
     while(!rlmachine.halted()) {
