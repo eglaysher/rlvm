@@ -159,8 +159,13 @@ public:
 // Expression elements.
 // Construct from long to build a representation of an integer constant.
 
+/** 
+ * A BytecodeElement that represents an expression
+ */
 class ExpressionElement : public DataElement {
 private:
+  /// Storage for the parsed expression so we only have to calculate
+  /// it once (and so we can return it by const reference)
   mutable boost::scoped_ptr<ExpressionPiece> m_parsedExpression;
 
 public:
@@ -170,6 +175,14 @@ public:
   ExpressionElement(const ExpressionElement& rhs);
   ExpressionElement* clone() const;
 
+  /** 
+   * Returns an ExpressionPiece representing this expression. This
+   * function lazily parses the expression and stores the tree for
+   * reuse.
+   *
+   * @return A parsed expression tree 
+   * @see expression.cpp
+   */
   const ExpressionPiece& parsedExpression() const;
 };
 

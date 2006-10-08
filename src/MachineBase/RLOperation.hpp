@@ -92,9 +92,24 @@ struct RLOperation {
   virtual void dispatch(RLMachine& machine, 
                         boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
 
+  /** 
+   * Takes a raw, unparsed parameter string, parses it, and places the
+   * result in outputParameters
+   * 
+   * @param parameter The input, unparsed parameter string
+   * @param outputParameters The output ptr_vector to place the 
+   * resulting ExpressionPieces
+   */
   void addParameterTo(const std::string& parameter, 
                       boost::ptr_vector<libReallive::ExpressionPiece>& outputParameters);
 
+  /** 
+   * Parses the parameters in the CommandElement passed in into an
+   * output ptr_vector that contains parsed ExpressionPieces for each 
+   * 
+   * @param ff The incoming CommandElement
+   * @param output The output ptr_vector, filled with the parsed parameters
+   */
   void parseParameters(const libReallive::CommandElement& ff, 
                        boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
@@ -111,7 +126,7 @@ struct RLOperation {
 // -----------------------------------------------------------------------
 
 /**
- * @brief Type definition for a Constant integer value. 
+ * Type definition for a Constant integer value. 
  * 
  * This struct is used to define the parameter types of a RLOperation
  * subclass, and should not be used directly. It should only be used
@@ -136,8 +151,8 @@ struct IntConstant_T {
 // -----------------------------------------------------------------------
 
 /** 
- * @brief Type definition for a reference into the RLMachine's memory,
- * referencing an integer value. 
+ * Type definition for a reference into the RLMachine's memory,
+ * referencing an integer value.
  *
  * This struct is used to define the parameter types of a RLOperation
  * subclass, and should not be used directly. It should only be used
@@ -164,7 +179,7 @@ struct IntReference_T {
 // -----------------------------------------------------------------------
 
 /** 
- * @brief Type definition for a constant string value. 
+ * Type definition for a constant string value. 
  * 
  * This struct is used to define the parameter types of a RLOperation
  * subclass, and should not be used directly. It should only be used
@@ -190,8 +205,8 @@ struct StrConstant_T {
 // -----------------------------------------------------------------------
 
 /** 
- * @brief Type struct for a reference into the RLMachine's memory,
- * referencing a string value. 
+ * Type struct for a reference into the RLMachine's memory,
+ * referencing a string value.
  * 
  * This struct is used to define the parameter types of a RLOperation
  * subclass, and should not be used directly. It should only be used
@@ -218,7 +233,7 @@ struct StrReference_T {
 // -----------------------------------------------------------------------
 
 /** 
- * @brief Type struct that implements the argc concept. 
+ * Type struct that implements the argc concept. 
  *
  * This type struct can only be used as the last element in a type
  * definition. (This is not checked for at runtime; I'm not even sure
@@ -251,7 +266,7 @@ struct Argc_T {
 // -----------------------------------------------------------------------
 
 /** 
- * @brief Type definition that implements the complex parameter concept.
+ * Type definition that implements the complex parameter concept.
  *
  * It really should have been called tuple, but the name's stuck
  * now. Takes two other type structs as template parameters.

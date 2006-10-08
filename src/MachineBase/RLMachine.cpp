@@ -183,6 +183,12 @@ void RLMachine::advanceInstructionPointer()
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Helper function that throws errors for illegal memory access
+ * 
+ * @param location The illegal index that was accessed
+ * @see RLMachine::getIntValue
+ */
 static void throwIllegalIndex(int location) 
 {
   stringstream ss;

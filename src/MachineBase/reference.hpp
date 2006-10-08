@@ -170,7 +170,10 @@ public:
 
 // -----------------------------------------------------------------------
 
+/// Defines a MemoryReferenceIterator that operates on the numeric memory
 typedef MemoryReferenceIterator<IntAccessor> IntReferenceIterator;
+
+/// Defines a MemoryReferenceIterator that operates on the string memory
 typedef MemoryReferenceIterator<StringAccessor> StringReferenceIterator;
 
 #endif

@@ -54,12 +54,20 @@ public:
 
   /// Capability method; returns false by default. Override only in
   /// classes that represent a special parameter to the type system.
-  /// @see 
+  /// @see Special_T
   virtual bool isSpecialParamater() const;
 
+  /// Returns the value type of this expression (i.e. string or
+  /// integer)
   virtual ExpressionValueType expressionValueType() const;
 
+  /// Assigns the value into the memory location represented by the
+  /// current expression. Not all ExpressionPieces can do this, so
+  /// there is a default implementation which does nothing.
   virtual void assignIntValue(RLMachine& machine, int rvalue);
+
+  /// Returns the integer value of this expression; this can either be
+  /// a memory access or a calculation based on some subexpressions.
   virtual int integerValue(RLMachine& machine) const;
 
   virtual void assignStringValue(RLMachine& machine);
@@ -74,17 +82,26 @@ class StoreRegisterExpressionPiece : public ExpressionPiece {
 public:
   /// StoreRegisterExpressionPiece is a memory reference; returns true
   virtual bool isMemoryReference() const;
-  
+
+  /// Assign the incoming value to the store register of the passed in
+  /// machine.
   virtual void assignIntValue(RLMachine& machine, int rvalue);
+
+  /// Returns the store register value of the passed in machine
   virtual int integerValue(RLMachine& machine) const;
 };
 
+/** 
+ * Represents a constant integer in an Expression.
+ */
 class IntegerConstant : public ExpressionPiece {
 private:
+  /// The value of this constant
   int constant;
 public:
   IntegerConstant(const int in);
 
+  /// Returns the constant value
   virtual int integerValue(RLMachine& machine) const;
 };
 
@@ -100,14 +117,15 @@ public:
 
 // -----------------------------------------------------------------------
 
-/* Reference into the IntA memory
- *
+/**
+ * Reference to a piece of memory in an RLMachine. Noe that this 
  */
 class MemoryReference : public ExpressionPiece {
 private:
   /* The type of an memory reference refers to both the memory
    * bank we're accessing, and how we're addressing it.
    * @see RLMachine::getIntValue
+   * @see RLMachine::getStringValue
    */
   int type;
 
@@ -115,6 +133,7 @@ private:
    * determine the index of the location we want to address.
    *
    * @see RLMachine::getIntValue
+   * @see RLMachine::getStringValue
    */
   boost::scoped_ptr<ExpressionPiece> location;
 
@@ -136,11 +155,25 @@ public:
 
 // ----------------------------------------------------------------------
 
+/** 
+ * Represents an operation on one ExpressionPiece, i.e. unary
+ * negative, et cetera.
+ */
 class UniaryExpressionOperator : public ExpressionPiece {
 private:
+  /// The sub-Expression to operate on
   boost::scoped_ptr<ExpressionPiece> operand;
 
+  /// Which operation we are to perform.
   char operation;
+
+  /** 
+   * Performs operation on the passed in parameter, and returns the
+   * value.
+   * 
+   * @param int Number to operate on.
+   * @return The result of the operation
+   */
   int performOperationOn(int) const;
 
 public:
@@ -152,15 +185,27 @@ public:
 
 class BinaryExpressionOperator : public ExpressionPiece {
 protected:
+  /// The operation to perform
   char operation;
+
+  /// The left operand for this expression
   boost::scoped_ptr<ExpressionPiece> leftOperand;
+  /// The right operand for this expression
   boost::scoped_ptr<ExpressionPiece> rightOperand;
 
   /**
-   * To anyone who says that creating a full object hiearchy of all the
-   * operations would be more OO, I tried, and it's 20x more misserable.
+   * Performs operation on the two passed in operands.
+   *
+   * @param lhs The left operand
+   * @param rhs The right operand
+   * @return The result of this operation.
+   *
+   * @note To anyone who says that creating a full object hiearchy of
+   * all the operations would be more OO, I tried, and it's 20x more
+   * misserable.
    */
   int performOperationOn(int lhs, int rhs) const;
+
 public:
   BinaryExpressionOperator(char inOperation, ExpressionPiece* lhs,
                            ExpressionPiece* rhs);
@@ -170,9 +215,8 @@ public:
 // ----------------------------------------------------------------------
 
 /** 
- * @bug There is some sort of odd double free in either
- * AssignmentExpressionOperator or its superclass. This needs full
- * attention later.
+ * Operation that modies a given memory location, sucha as +=, -=, /=,
+ * et cetera.
  */
 class AssignmentExpressionOperator : public BinaryExpressionOperator {
 public:

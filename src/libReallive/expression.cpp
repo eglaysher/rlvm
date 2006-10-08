@@ -1,3 +1,10 @@
+/**
+ * @file   expression.cpp
+ * 
+ * @brief Defines functions and structures for representing
+ * expressions in Reallive byte code.
+ */
+
 #include "libReallive/expression.h"
 #include "MachineBase/reference.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -8,6 +15,16 @@
 using namespace std;
 
 namespace libReallive {
+
+/**
+ * @name Expression Tokenization
+ *
+ * Functions that tokenize expression data while parsing the bytecode
+ * to create the BytecodeElements. These functions simply tokenize and
+ * mark boundaries; they do not perform any parsing.
+ *
+ * @{
+ */
 
 size_t next_token(const char* src)
 {
@@ -84,7 +101,8 @@ size_t next_data(const char* src)
 		return 1 + next_data(src + 1);
 	if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
         || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
-	    || *src == '?' || *src == '_' || *src == '"' || strcmp(src, "###PRINT(") == 0)
+	    || *src == '?' || *src == '_' || *src == '"' 
+        || strcmp(src, "###PRINT(") == 0)
 	    return next_string(src);
 	if (*src == 'a' || *src == '(') {
 		const char* end = src;
@@ -93,7 +111,6 @@ size_t next_data(const char* src)
 			if (*end != '(') {
               end += next_data(end);
               return end - src;
-//              throw Error("next_data(): expected `(' in special param");
             } else end++;
 		}
 		while (*end != ')') end += next_data(end);
@@ -102,21 +119,40 @@ size_t next_data(const char* src)
 	else return next_expr(src);
 }
 
-/** What follows is a fairly naieve translation of the code from
- * Haeleth's disassembler, kprl.  Specifically, the functions starting
- * with get_expr_token.
+//@}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * @name Expression Parsing
+ *
+ * @author Elliot, but really Haeleth.
+ *
+ * Functions used at runtime to parse expressions, both as
+ * ExpressionPieces, parameters in function calls, and other uses in
+ * some special cases. These functions form a recursive descent parser
+ * that parses expressions and parameters in Reallive byte code into
+ * ExpressionPieces, which are executed with the current RLMachine.
+ *
+ * These functions were translated from the O'Caml implementation in
+ * dissassembler.ml in RLDev, so really, while I coded this, Haeleth
+ * really gets all the credit.
+ *
+ * @see libReallive::ExpressionElement::parsedExpression()
+ * @see RLOperation::parseParameters()
+ *
+ * @{
  */
+
 ExpressionPiece* get_expr_token(const char*& src)
 {
   if(src[0] == 0xff) {
     src++;
     int value = read_i32(src);
     src += 4;
-//    cerr << "$(" <<value << ")";
     return new IntegerConstant(value);
   } else if(src[0] == 0xc8) {
     src++;
-//    cerr << "$STORE";
     return new StoreRegisterExpressionPiece();
   } else if((src[0] != 0xc8 && src[0] != 0xff) && src[1] == '[') {
     int type = src[0];
@@ -147,7 +183,6 @@ ExpressionPiece* get_expr_term(const char*& src)
     src++;
     return get_expr_token(src);
   } else if(src[0] == '\\' && src[1] == 0x00) {
-    // Uniary plus? We ignore.
     src += 2;
     return get_expr_term(src);
   } else if(src[0] == '\\' && src[1] == 0x01) {
@@ -157,9 +192,6 @@ ExpressionPiece* get_expr_term(const char*& src)
   } else if(src[0] == '(') {
     src++;
     ExpressionPiece* p = get_expr_bool(src);
-//    cerr << "P:" << p->isLValue() << endl;
-//    cerr << "Src: " << src << endl;
-//    expect(src, ')', "get_expr_term");
     if(src[0] != ')') {
       stringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_term"
@@ -177,14 +209,14 @@ ExpressionPiece* get_expr_term(const char*& src)
   }
 }
 
-static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src, ExpressionPiece* tok)
+static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src, 
+                                                    ExpressionPiece* tok)
 {
   if(src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
     char op = src[1];
     // Advance past this operator
     src += 2;
     ExpressionPiece* rhs = get_expr_term(src);
-    cerr << "LHS: " << tok << ", RHS: " << rhs << endl;
     ExpressionPiece* newPiece = new BinaryExpressionOperator(op, tok, rhs);
     return get_expr_arith_loop_hi_prec(src, newPiece);
   } else {
@@ -264,7 +296,7 @@ ExpressionPiece* get_expression(const char*& src)
 }
 
 /** 
- * Parses an expression of the form <dest> = [source expression];
+ * Parses an expression of the form [dest] = [source expression];
  * 
  * @param src Current location in string to parse
  * @return The parsed ExpressionPiece
@@ -354,6 +386,8 @@ ExpressionPiece* get_data(const char*& src)
   else
     return get_expression(src);
 }
+
+//@}
 
 // ----------------------------------------------------------------------
 
