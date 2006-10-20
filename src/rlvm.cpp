@@ -11,6 +11,7 @@
 
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLEventSystem.hpp"
 
 #include <iostream>
 
@@ -95,13 +96,18 @@ int main(int argc, char* argv[])
 
     // Attatch the modules for some commands
     rlmachine.attatchModule(new JmpModule);
-    rlmachine.attatchModule(new SysModule);
+    rlmachine.attatchModule(new SysModule(sdlSystem.graphics()));
     rlmachine.attatchModule(new StrModule);
     rlmachine.attatchModule(new MemModule);
     rlmachine.attatchModule(new MsgModule);
     rlmachine.attatchModule(new GrpModule);
 
     while(!rlmachine.halted()) {
+      // Give SDL a chance to respond to events, redraw the screen,
+      // etc.
+      sdlSystem.run(rlmachine);
+
+      // Run the rlmachine through another instruction
       rlmachine.executeNextInstruction();
     }
   }

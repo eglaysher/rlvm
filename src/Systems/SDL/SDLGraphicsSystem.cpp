@@ -1,3 +1,25 @@
+// This file is part of RLVM, a RealLive virutal machine clone.
+//
+// -----------------------------------------------------------------------
+//
+// Copyright (C) 2006 El Riot
+//  
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//  
+// -----------------------------------------------------------------------
+
 /**
  * @file   SDLGraphicsSystem.cpp
  * @author Elliot Glaysher
@@ -13,22 +35,109 @@
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "libReallive/defs.h"
+#include "file.h"
 
 #include <iostream>
 #include <sstream>
+#include <cstdio>
 
 using namespace std;
 using namespace libReallive;
 
+// -----------------------------------------------------------------------
+// SDLSurface
+// -----------------------------------------------------------------------
+
+SDLSurface::SDLSurface(int width, int height, SDL_PixelFormat* pixelFormat)
+{
+  allocate(width, height, pixelFormat);
+}
+
+// -----------------------------------------------------------------------
+
+SDLSurface::~SDLSurface()
+{
+  if(m_surface)
+    SDL_FreeSurface(m_surface);
+}
+
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::allocate(int width, int height, SDL_PixelFormat* format)
+{
+  deallocate();
+
+  m_surface = SDL_CreateRGBSurface(0, width, height, 
+                                   format->BitsPerPixel,
+                                   format->Rmask, format->Gmask,
+                                   format->Bmask, format->Amask);
+
+  if(m_surface == NULL)
+  {
+    stringstream ss;
+    ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
+       << ": " << SDL_GetError();
+    throw Error(ss.str());
+  }  
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::deallocate()
+{
+  if(m_surface)
+    SDL_FreeSurface(m_surface);
+}
+
+// -----------------------------------------------------------------------
+// Private Interface
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::dc0writtenTo()
+{
+  switch(screenUpdateMode())
+  {
+  case SCREENUPDATEMODE_AUTOMATIC:
+  case SCREENUPDATEMODE_SEMIAUTOMATIC:
+  {
+    // Perform a blit of DC0 to the screen, and update it.
+    refresh();
+    break;
+  }
+  case SCREENUPDATEMODE_MANUAL:
+  {
+    // Simply mark that we are dirty
+    m_screenDirty = true;
+  }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::refresh() 
+{
+  // For now, we simply blit DC0 to the screen. This needs to be
+  // improved later.
+  SDL_BlitSurface(displayContexts[0], NULL, m_screen, NULL);
+  
+  // Update the screen
+  SDL_UpdateRect(m_screen, 0, 0, 0, 0);
+}
+
+// -----------------------------------------------------------------------
+// Public Interface
+// -----------------------------------------------------------------------
+
 /** 
- * 
  *
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem()
-  // 0 is the screen, and then there are fifteen offscreen contexts
-  : displayContexts(16)
 {
+  for(int i = 0; i < 16; ++i)
+    displayContexts.push_back(new SDLSurface);
+
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo( );
   
@@ -47,13 +156,13 @@ SDLGraphicsSystem::SDLGraphicsSystem()
   // resolution, so this is probably being overly
   // safe. Under Win32, ChangeDisplaySettings
   // can change the bpp.
-  int width = 800;
-  int height = 600;
+  m_width = 800;
+  m_height = 600;
   int bpp = info->vfmt->BitsPerPixel;
 
   // Set the video mode
-  if((displayContexts[0] =
-      SDL_SetVideoMode( width, height, bpp, SDL_ANYFORMAT |
+  if((m_screen =
+      SDL_SetVideoMode( m_width, m_height, bpp, SDL_ANYFORMAT |
                         //SDL_FULLSCREEN |
                         //SDL_DOUBLEBUF |
                         SDL_HWPALETTE |
@@ -66,22 +175,38 @@ SDLGraphicsSystem::SDLGraphicsSystem()
     ss << "Video mode set failed: " << SDL_GetError();
     throw Error(ss.str());
   }	
-  else 
-  {
-    // We successfully created the main display. Now we allocate
-    // displayContexts[1] to the same size as the main screen
-    SDL_PixelFormat* format = displayContexts[0]->format;
-    displayContexts[1] = SDL_CreateRGBSurface(0, width, height, 
-                                              format->BitsPerPixel,
-                                              format->Rmask, format->Gmask,
-                                              format->Bmask, format->Amask);
-    if(displayContexts[1] == NULL) 
-    {
-      stringstream ss;
-      ss << "Couldn't create DC[1]: " << SDL_GetError();
-      throw Error(ss.str());
-    }
-  }
+
+  SDL_PixelFormat* format = m_screen->format;
+
+  // Now we allocate the first two display contexts with equal size to
+  // the display
+  for(int i = 0; i < 2; ++i) 
+    displayContexts[i].allocate(m_width, m_height, format);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::executeGraphicsSystem()
+{
+  // For now, nothing, but later, we need to put all code each cycle
+  // here.
+
+  // For example, we should probably do something when the screen is
+  // dirty.
+}
+
+// -----------------------------------------------------------------------
+
+int SDLGraphicsSystem::screenWidth() const
+{
+  return m_width;
+}
+
+// -----------------------------------------------------------------------
+
+int SDLGraphicsSystem::screenHeight() const 
+{
+  return m_height;
 }
 
 // -----------------------------------------------------------------------
@@ -106,30 +231,8 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
       height = dc0->h;
   }
 
-  // Free the current display context if it exists.
-  if(displayContexts[dc] != NULL)
-  {
-    SDL_FreeSurface(displayContexts[dc]);
-    displayContexts[dc] = NULL;
-  }
-
-  // Allocate the new surface based off of the pixel format
-  // information in the display
-  SDL_PixelFormat* format = displayContexts[0]->format;
-  SDL_Surface* newSurface = SDL_CreateRGBSurface(
-    0, width, height, format->BitsPerPixel,
-    format->Rmask, format->Gmask,
-    format->Bmask, format->Amask);
-
-  if(newSurface == NULL)
-  {
-    stringstream ss;
-    ss << "Couldn't create DC[" << dc << "]: " << SDL_GetError();
-    throw Error(ss.str());
-  }
-
-  // Assign
-  displayContexts[dc] = newSurface;
+  // Allocate a new obj.
+  displayContexts[dc].allocate(width, height, m_screen->format);
 }
 
 // -----------------------------------------------------------------------
@@ -137,16 +240,45 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
 void SDLGraphicsSystem::freeDC(int dc)
 {
   if(dc == 0)
-    throw Error("Attempt to deallocate DC[0] (the screen)");
+    throw Error("Attempt to deallocate DC[0]");
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
     wipe(dc, 0, 0, 0);
   }
   else
+    displayContexts[dc].deallocate();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
+{
+  if(dc >= displayContexts.size())
   {
-    SDL_FreeSurface(displayContexts[dc]);
-    displayContexts[dc] = 0;
+    stringstream ss;
+    ss << "Invalid DC number (" << dc << ") in " << caller;
+    throw Error(ss.str());
+  }
+
+  if(displayContexts[dc] == NULL)
+  {
+    stringstream ss;
+    ss << "Parameter DC[" << dc << "] not allocated in " << caller;
+    throw Error(ss.str());
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
+{
+  if(displayContexts[dc] == NULL)
+  {
+    stringstream ss;
+    ss << "Couldn't allocate DC[" << dc << "] in " << caller 
+       << ": " << SDL_GetError();
+    throw Error(ss.str());
   }
 }
 
@@ -157,12 +289,9 @@ void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
   cerr << "wipe(" << dc << ", " << r << ", " << g << ", " << b << ")" 
        << endl;
 
-  if(dc >= displayContexts.size())
-    throw Error("Invalid DC number in SDLGrpahicsSystem::wipe");
+  verifySurfaceExists(dc, "SDLGraphicsSystem::wipe");
 
   SDL_Surface* surface = displayContexts[dc];
-  if(surface == NULL)
-    throw Error("Device Context not allocated in SDLGraphicsSystem::wipe");
 
   // Fill the entire surface with the incoming color
   Uint32 color = SDL_MapRGB(surface->format, r, g, b);
@@ -174,4 +303,126 @@ void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 }
 
 // -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::blitSurfaceToDC(
+  Surface& sourceObj, int targetDC, 
+  int srcX, int srcY, int srcWidth, int srcHeight,
+  int destX, int destY, int destWidth, int destHeight)
+{
+  verifySurfaceExists(targetDC, "SDLGraphicsSystem::blitSurfaceToDC");
+  SDL_Surface* dest = displayContexts[targetDC];
+  SDL_Surface* src = dynamic_cast<SDLSurface&>(sourceObj).surface();
+
+  SDL_Rect srcRect, destRect;
+  srcRect.x = srcX;
+  srcRect.y = srcY;
+  srcRect.w = srcWidth;
+  srcRect.h = srcHeight;
+
+  destRect.x = destX;
+  destRect.y = destY;
+  destRect.w = destWidth;
+  destRect.h = destHeight;
+
+  SDL_BlitSurface(src, &srcRect, dest, &destRect);
+
+  if(targetDC == 0)
+    dc0writtenTo();
+}
+
+// -----------------------------------------------------------------------
+typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
+
+#define DefaultRmask 0xff0000
+#define DefaultGmask 0xff00
+#define DefaultBmask 0xff
+#define DefaultAmask 0xff000000
+#define DefaultBpp 32
+
+static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data, 
+                                           MaskType with_mask)
+{
+  int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
+  SDL_Surface* s = SDL_CreateRGBSurfaceFrom(
+    data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
+    DefaultBmask, amask);
+
+  // This is the perfect example of why I need to come back and
+  // really understand this part of the code I'm stealing. WTF is
+  // this!?
+  s->flags &= ~SDL_PREALLOC;
+
+  return s;
+};
+
+/** 
+ * @author Jagarl
+ * @source Xclannad
+ *
+ * Loads a file from disk into a Surface object. The file loaded
+ * should be a type 0 or type 1 g00 bitmap. We don't handle PDT files
+ * (yet).
+ * 
+ * @param filename File to load (a full filename, not the basename)
+ * @return A Surface object with the data from this file
+ *
+ * @todo Considering that I really don't understand this whole section
+ * of the code, I'll probably *NEED* to come back and rewrite this,
+ * simply because I'll find out that this doesn't do what I think it does.
+ *
+ * @warning This function probably isn't basic exception safe.
+ */
+Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
+{
+  // Glue code to allow my stuff to work with Jagarl's loader
+  FILE* file = fopen(filename.c_str(), "rb");
+  fseek(file, 0, SEEK_END);
+  int size = ftell(file);
+  char* d = new char[size];
+  fseek(file, 0, SEEK_SET);
+  fread(d, size, 1, file);
+  fclose(file);
+
+  // For the time being, and against my better judgement, we simply
+  // call the image loading methods stolen from xclannad. The
+  // following code is stolen verbatim from picture.cc in xclannad.
+  GRPCONV* conv = GRPCONV::AssignConverter(d, size, "???");
+  if (conv == 0) { return 0;}
+  char* mem = (char*)malloc(conv->Width() * conv->Height() * 4 + 1024);
+  SDL_Surface* s = 0;
+  if (conv->Read(mem)) {
+    MaskType is_mask = conv->IsMask() ? ALPHA_MASK : NO_MASK;
+    if (is_mask == ALPHA_MASK) { // alpha がすべて 0xff ならマスク無しとする
+      int len = conv->Width()*conv->Height();
+      unsigned int* d = (unsigned int*)mem;
+      int i; for (i=0; i<len; i++) {
+        if ( (*d&0xff000000) != 0xff000000) break;
+        d++;
+      }
+      if (i == len) {
+        is_mask = NO_MASK;
+      }
+    }
+    s = newSurfaceFromRGBAData(conv->Width(), conv->Height(), mem, is_mask);
+  }
+
+  // @todo Right about here, we might want to deal with stealing the
+  // type 2 information out of Jagarl's grpconv object.
+
+  delete conv;  // delete data;
+  delete d;
+
+  return new SDLSurface(s);
+}
+
+// -----------------------------------------------------------------------
+
+Surface& SDLGraphicsSystem::getDC(int dc)
+{
+  verifySurfaceExists(dc, "SDLGraphicsSystem::getDC");
+  return displayContexts[dc];
+}
+                                
+int SDLSurface::width() const { return m_surface->w; }
+int SDLSurface::height() const { return m_surface->h; }
 

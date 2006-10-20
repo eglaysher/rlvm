@@ -37,7 +37,10 @@
 
 #include <iostream>
 
+#include <boost/scoped_ptr.hpp>
+
 using namespace std;
+using namespace boost;
 
 // -----------------------------------------------------------------------
 
@@ -67,6 +70,35 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
+struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int effectNum) {
+//    int steps, style, direction, interpolation, density, speed, a, b, opacity, c;
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+
+    // Hack until I do this correctly
+    filename = "/Users/elliot/KANON_SE_ALL/g00/" + filename;
+    filename += ".g00";
+
+    // First, load the file to DC1.
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    graphics.blitSurfaceToDC(*surface, 1, 
+                             0, 0, surface->width(), surface->height(),
+                             0, 0, graphics.screenWidth(), graphics.screenHeight());
+
+    // Eventually, we need to implement the effects, but for now we
+    // simply blit DC1 to DC0. This will probably be some sort of
+    // LongOperation to get the fading/transition effect...
+    Surface& dc1 = graphics.getDC(1);
+    graphics.blitSurfaceToDC(dc1, 0, 
+                             0, 0, dc1.width(), dc1.height(),
+                             0, 0, graphics.screenWidth(), graphics.screenHeight());
+  }
+};
+
+// -----------------------------------------------------------------------
+
 GrpModule::GrpModule()
   : RLModule("Grp", 1, 33)
 {
@@ -74,4 +106,6 @@ GrpModule::GrpModule()
   addOpcode(16, 0, new Grp_freeDC);
 
   addOpcode(31, 0, new Grp_wipe);
+
+  addOpcode(76, 0, new Grp_grpOpen_0);
 }

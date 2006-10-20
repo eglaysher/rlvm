@@ -28,16 +28,20 @@
 #include "Systems/Base/System.hpp"
 
 class SDLGraphicsSystem;
+class SDLEventSystem;
 
 class SDLSystem : public System
 {
 private:
   boost::scoped_ptr<SDLGraphicsSystem> graphicsSystem;
+  boost::scoped_ptr<SDLEventSystem> eventSystem;
 
 public:
   SDLSystem();
 
+  virtual void run(RLMachine& machine);
   virtual GraphicsSystem& graphics();
+  virtual EventSystem& event();
 };
 
 #endif

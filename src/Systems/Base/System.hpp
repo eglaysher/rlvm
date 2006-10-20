@@ -59,21 +59,36 @@ public:
 //};
 
 class GraphicsSystem;
+class EventSystem;
+class RLMachine;
 
 /**
  * The system class provides a generalized interface to all the
  * components that make up a local system that may need to be
  * implemented differently on different systems, i.e., sound,
- * graphics, et cetera.
+ * graphics, filesystem et cetera.
  *
  * The base System class is an abstract base class that 
  */
 class System
 {
 public:
+  virtual void run(RLMachine& machine) = 0;
+
   virtual GraphicsSystem& graphics() = 0;
+  virtual EventSystem& event() = 0;
 //  virtual TextSystem& textSystem() = 0;
 //  virtual SoundSystem& soundSystem() = 0;
+
+  
+  /** 
+   * Locates a file. 
+   * 
+   * @param filebasename 
+   * 
+   * @return 
+   */
+//  virtual std::string& findFile(const std::string& filebasename) = 0;
 };
 
 #endif

@@ -3,9 +3,11 @@
 
 #include "MachineBase/RLModule.hpp"
 
+class GraphicsSystem;
+
 class SysModule : public RLModule {
 public:
-  SysModule();
+  SysModule(GraphicsSystem& system);
 };
 
 #endif

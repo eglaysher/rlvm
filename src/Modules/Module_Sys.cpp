@@ -1,6 +1,9 @@
 
 #include "Modules/Module_Sys.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+
+#include "Systems/Base/GraphicsSystem.hpp"
 
 #include <cmath>
 #include <iostream>
@@ -103,7 +106,7 @@ struct Sys_GetYear : public RLOp_Store_Void {
   }
 };
 
-SysModule::SysModule()
+SysModule::SysModule(GraphicsSystem& system)
   : RLModule("Sys", 1, 004)
 {
   addOpcode(1000, 0, new Sys_rnd_0);
@@ -123,6 +126,15 @@ SysModule::SysModule()
   // sign 01011
   // (unknown) 01012
   // (unknown) 01013
+
+  addOpcode(1130, 0, new Op_ReturnStringValue<GraphicsSystem>(
+              system, &GraphicsSystem::defaultGrpName));
+  addOpcode(1131, 0, new Op_SetToIncomingString<GraphicsSystem>(
+              system, &GraphicsSystem::setDefaultGrpName));
+  addOpcode(1132, 0, new Op_ReturnStringValue<GraphicsSystem>(
+              system, &GraphicsSystem::defaultBgrName));
+  addOpcode(1133, 0, new Op_SetToIncomingString<GraphicsSystem>(
+              system, &GraphicsSystem::setDefaultBgrName));
 
   addOpcode(1100, 0, new Sys_GetYear);
 }

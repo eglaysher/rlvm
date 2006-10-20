@@ -35,6 +35,8 @@
 #include "MachineBase/RLModule.hpp"
 //#include "GeneralOperations.hpp"
 
+#include "Systems/Base/EventSystem.hpp"
+
 #include <iostream>
 
 
@@ -43,17 +45,16 @@ using namespace std;
 /** 
  * Implements op<0:Msg:17, 0>, fun pause().
  * 
- * 
- * @todo Make this a real implmentation of pause() instead of a
- * debugging tool.
+ * @todo This still isn't a real implementation of pause(), needs to
+ * handle the window events when we have text windows.
+ * @bug Does this work with ctrl()?
  */
 struct Msg_pause : public RLOp_Void_Void {
   /// Long operation
   struct Longop_pause : public LongOperation {
     bool operator()(RLMachine& machine) {
-      char x;
-      cin.get(x);
-      return true;
+      // Check the status of the window.
+      return machine.system().event().ctrlPressed();
     }
   };
 
@@ -70,13 +71,17 @@ MsgModule::MsgModule()
 //  addOpcode(3, 0, /* par */);
 //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, new Msg_pause);
-//  addOpcode(100, 0, /* SetFontColour */);
+//  addOpcode(100, 0, );
+
 //   addOpcode(101, 0, new Op_SetToIncoming(textSystem.fontSizeInPixels(),
 //                                          textSystem));            
 //   addOpcode(101, 1, new Op_ReturnValue(textSystem.fontSizeInPixels()));
 //  addOpcode(102 ...)
-//   addOpcode(103, 0, new Op_SetToTrue(text.fastTextMode(),
-//                                      textSystem));
+//  addOpcode(103, 0, new Op_SetToIntConstant(textSystem, 
+//                                            &TextSystem::setFastTextMode, 1));
+//  addOpcode(104, 0, new Op_SetToIntConstant(textSystem,
+//                                            &TextSystem::setFastTextMode, 0));
+
 //   addOpcode(104, 0, new Op_SetToFalse(text.fastTextMode(),
 //                                       textSystem));
 //  addOpcode(105, 0

@@ -12,8 +12,10 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 ########
 
 LRLFILES[] =
+  file
   SDLSystem
   SDLGraphicsSystem
+  SDLEventSystem
 
 StaticCObject(libSDLSystem, $(LRLFILES))
 

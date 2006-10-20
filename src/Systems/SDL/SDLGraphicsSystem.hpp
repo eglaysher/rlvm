@@ -23,25 +23,156 @@
 #ifndef __SDLGraphicsSystem_hpp_
 #define __SDLGraphicsSystem_hpp_
 
+#include <boost/noncopyable.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include <SDL/SDL.h>
 
 #include <vector>
 
 #include "Systems/Base/GraphicsSystem.hpp"
 
+
+/** 
+ * Simple container for SDL_Surface; meant to be passed out of the
+ * graphics system.
+ *
+ * Some SDLSurfaces will own their underlying SDL_Surface, for
+ * example, anything returned from loadSurfaceFromFile(), while others
+ * don't own their surfaces (SDLSurfaces returned by getDC()
+ */
+class SDLSurface : public Surface, public boost::noncopyable
+{
+private:
+  SDL_Surface* m_surface;
+
+public:
+  SDLSurface()
+    : m_surface(NULL) {}
+
+  /// Surface that takes ownership of an externally created surface.
+  SDLSurface(SDL_Surface* surf)
+    : m_surface(surf) {}
+
+  /// Surface created with a specified width and height
+  SDLSurface(int width, int height, SDL_PixelFormat* pixelFormat);
+
+  ~SDLSurface();
+
+  /// allocate a surface
+  void allocate(int width, int height, SDL_PixelFormat* pixelFormat);
+  
+  /// deallocate
+  void deallocate();
+
+  operator SDL_Surface*()
+  {
+    return m_surface;
+  }
+
+  // -----------------------------------------------------------------------
+
+  int width() const;
+  int height() const;
+
+  SDL_Surface* surface() { return m_surface; }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements all screen output and screen management functionality.
+ *
+ * @todo This public interface really needs to be rethought out.
+ */
 class SDLGraphicsSystem : public GraphicsSystem
 {
 private:
-  // 
-  std::vector<SDL_Surface*> displayContexts;
+  SDL_Surface* m_screen;
+  
+  boost::ptr_vector<SDLSurface> displayContexts;
+
+  int m_width, m_height;
+  
+  /// Flag set to indicate that the screen needs a redraw (usually
+  /// because of a blit to DC0)
+  bool m_screenDirty;
+
+  // ---------------------------------------------------------------------
+
+  /** 
+   * @name Internal Error Checking Methods
+   * 
+   * These methods are used internally to seperate out commonly used
+   * error checking and parameter validation code from the rest of the
+   * class.
+   *
+   * @{
+   */
+
+  /** 
+   * Makes sure that a passed in dc number is valid.
+   * 
+   * @exception Error Throws when dc is greater then the maximum.
+   * @exception Error Throws when dc is unallocated.
+   */
+  void verifySurfaceExists(int dc, const std::string& caller);
+
+  /** 
+   * Makes sure that a surface we just allocated was, in fact,
+   * allocated.
+   */
+  void verifyDCAllocation(int dc, const std::string& caller);
+
+  /// @}
+  // ---------------------------------------------------------------------
+
+
+  /** 
+   * Should be called by any of the drawing functions when 
+   * 
+   * For more information, please see section 5.10.4 of the RLDev
+   * manual, which deals with the behaviour of screen updates, and the
+   * various modes.
+   */
+  void dc0writtenTo();
 
 public:
   SDLGraphicsSystem(); 
+
+  /** 
+   * Performs a full redraw of the screen; blitting dc0 to the screen,
+   * then blitting all the visible objects, and then blitting all the
+   * visible text windows.
+   *
+   * The Reallive function refresh() simply calls this method, but
+   * this method is also used internally to perform the same task.
+   *
+   * @todo When we support Objects and TextWindows, make this blit
+   * them. For now, only blit DC0.
+   */
+  virtual void refresh();
+
+  virtual void executeGraphicsSystem();
+
+  virtual int screenWidth() const;
+  virtual int screenHeight() const;
 
   virtual void allocateDC(int dc, int width, int height);
   virtual void freeDC(int dc);
 
   virtual void wipe(int dc, int r, int g, int b);
+
+  virtual Surface* loadSurfaceFromFile(const std::string& filename);
+
+  virtual Surface& getDC(int dc);
+  virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
+                               int srcX, int srcY, int srcWidth, int srcHeight,
+                               int destX, int destY, int destWidth, int destHeight);
+
+//  virtual void recFade(int x, int y, int width, int height,
+//                       int r, int g, int b);
 };
+
 
 #endif

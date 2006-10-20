@@ -25,6 +25,7 @@
 
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLEventSystem.hpp"
 
 #include <SDL/SDL.h>
 
@@ -36,18 +37,33 @@ using namespace libReallive;
 SDLSystem::SDLSystem()
 {
   // First, initialize SDL's video subsystem.
-  if( SDL_Init( SDL_INIT_VIDEO) < 0 ) {
+  if( SDL_Init( SDL_INIT_VIDEO) < 0 )
+  {
     stringstream ss;
     ss << "Video initialization failed: " << SDL_GetError();
     throw Error(ss.str());
   } 
-  else
-    cerr << "SDL initialized!" << endl;
 
+  // Initialize the various subsystems
   graphicsSystem.reset(new SDLGraphicsSystem);
+  eventSystem.reset(new SDLEventSystem);
+}
+
+void SDLSystem::run(RLMachine& machine)
+{
+  // Give the event handler a chance to run
+  eventSystem->executeEventSystem(machine);
+
+  // Finally, run any screen updates needed
+  graphicsSystem->executeGraphicsSystem();
 }
 
 GraphicsSystem& SDLSystem::graphics()
 {
   return *graphicsSystem;
+}
+
+EventSystem& SDLSystem::event()
+{
+  return *eventSystem;
 }
