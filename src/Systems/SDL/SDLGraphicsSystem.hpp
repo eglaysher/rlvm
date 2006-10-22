@@ -76,6 +76,8 @@ public:
   int height() const;
 
   SDL_Surface* surface() { return m_surface; }
+
+  virtual Surface* clone() const;
 };
 
 // -----------------------------------------------------------------------
@@ -97,6 +99,9 @@ private:
   /// Flag set to indicate that the screen needs a redraw (usually
   /// because of a blit to DC0)
   bool m_screenDirty;
+
+  /// Flag set to redraw the screen NOW
+  bool m_screenNeedsRefresh;
 
   // ---------------------------------------------------------------------
 
@@ -123,6 +128,16 @@ private:
    * allocated.
    */
   void verifyDCAllocation(int dc, const std::string& caller);
+
+  /** 
+   * Called when an SDL function returns a non-zero value.
+   * 
+   * @param sdlName 
+   * @param functionName 
+   */
+  void reportSDLError(const std::string& sdlName,
+                      const std::string& functionName);
+
 
   /// @}
   // ---------------------------------------------------------------------
@@ -168,7 +183,8 @@ public:
   virtual Surface& getDC(int dc);
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight);
+                               int destX, int destY, int destWidth, int destHeight,
+                               int alpha = 255);
 
 //  virtual void recFade(int x, int y, int width, int height,
 //                       int r, int g, int b);

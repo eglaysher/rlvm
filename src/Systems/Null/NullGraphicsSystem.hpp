@@ -7,6 +7,7 @@ class NullSurface : public Surface
 {
   virtual int width() const { return 0; }
   virtual int height() const { return 0; }
+  virtual Surface* clone() const { return 0; }
 };
 
 class NullGraphicsSystem : public GraphicsSystem
@@ -30,7 +31,8 @@ public:
   virtual Surface& getDC(int dc) { static NullSurface s; return s; };
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight) { }
+                               int destX, int destY, int destWidth, int destHeight,
+                               int alpha = 255) { }
 };
 
 #endif

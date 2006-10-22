@@ -68,10 +68,21 @@ void SDLSurface::allocate(int width, int height, SDL_PixelFormat* format)
 {
   deallocate();
 
-  m_surface = SDL_CreateRGBSurface(0, width, height, 
-                                   format->BitsPerPixel,
-                                   format->Rmask, format->Gmask,
-                                   format->Bmask, format->Amask);
+  SDL_Surface* tmp = 
+    SDL_CreateRGBSurface(0, width, height, 
+                         format->BitsPerPixel,
+                         format->Rmask, format->Gmask,
+                         format->Bmask, format->Amask);
+
+  if(tmp == NULL)
+  {
+    stringstream ss;
+    ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
+       << ": " << SDL_GetError();
+    throw Error(ss.str());
+  }  
+
+  m_surface = SDL_DisplayFormat(tmp);
 
   if(m_surface == NULL)
   {
@@ -79,7 +90,7 @@ void SDLSurface::allocate(int width, int height, SDL_PixelFormat* format)
     ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
        << ": " << SDL_GetError();
     throw Error(ss.str());
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -88,6 +99,24 @@ void SDLSurface::deallocate()
 {
   if(m_surface)
     SDL_FreeSurface(m_surface);
+}
+
+// -----------------------------------------------------------------------
+
+Surface* SDLSurface::clone() const
+{
+  // Make a copy of the current surface
+  SDL_Surface* tmpSurface = 
+    SDL_CreateRGBSurface(m_surface->flags, m_surface->w, m_surface->h, 
+                         m_surface->format->BitsPerPixel,
+                         m_surface->format->Rmask, m_surface->format->Gmask,
+                         m_surface->format->Bmask, m_surface->format->Amask);
+  SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL);
+
+  SDL_Surface* output = SDL_DisplayFormat(tmpSurface);
+  SDL_FreeSurface(tmpSurface);
+
+  return new SDLSurface(output);
 }
 
 // -----------------------------------------------------------------------
@@ -102,7 +131,7 @@ void SDLGraphicsSystem::dc0writtenTo()
   case SCREENUPDATEMODE_SEMIAUTOMATIC:
   {
     // Perform a blit of DC0 to the screen, and update it.
-    refresh();
+    m_screenNeedsRefresh = true;
     break;
   }
   case SCREENUPDATEMODE_MANUAL:
@@ -134,6 +163,7 @@ void SDLGraphicsSystem::refresh()
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem()
+  : m_screenDirty(false), m_screenNeedsRefresh(false)
 {
   for(int i = 0; i < 16; ++i)
     displayContexts.push_back(new SDLSurface);
@@ -162,11 +192,11 @@ SDLGraphicsSystem::SDLGraphicsSystem()
 
   // Set the video mode
   if((m_screen =
-      SDL_SetVideoMode( m_width, m_height, bpp, SDL_ANYFORMAT |
+      SDL_SetVideoMode( m_width, m_height, bpp, 
+                        SDL_ANYFORMAT |
                         //SDL_FULLSCREEN |
                         //SDL_DOUBLEBUF |
-                        SDL_HWPALETTE |
-                        SDL_SWSURFACE)) == 0 )
+                        SDL_HWSURFACE)) == 0 )
   {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -190,7 +220,12 @@ void SDLGraphicsSystem::executeGraphicsSystem()
 {
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-
+  if(m_screenNeedsRefresh)
+  {
+    refresh();
+    m_screenNeedsRefresh = false;
+  }
+    
   // For example, we should probably do something when the screen is
   // dirty.
 }
@@ -284,6 +319,17 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
+void SDLGraphicsSystem::reportSDLError(const std::string& sdlName,
+                                       const std::string& functionName)
+{
+  stringstream ss;
+  ss << "Error while calling SDL function '" << sdlName << "' in "
+     << functionName << ": " << SDL_GetError();
+  throw Error(ss.str());
+}
+
+// -----------------------------------------------------------------------
+
 void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 {
   cerr << "wipe(" << dc << ", " << r << ", " << g << ", " << b << ")" 
@@ -295,11 +341,13 @@ void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 
   // Fill the entire surface with the incoming color
   Uint32 color = SDL_MapRGB(surface->format, r, g, b);
-  SDL_FillRect(surface, NULL, color);
+
+  if(SDL_FillRect(surface, NULL, color))
+    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
   if(dc == 0)
-    SDL_UpdateRect(surface, 0, 0, 0, 0);
+    dc0writtenTo();
 }
 
 // -----------------------------------------------------------------------
@@ -307,8 +355,13 @@ void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 void SDLGraphicsSystem::blitSurfaceToDC(
   Surface& sourceObj, int targetDC, 
   int srcX, int srcY, int srcWidth, int srcHeight,
-  int destX, int destY, int destWidth, int destHeight)
+  int destX, int destY, int destWidth, int destHeight,
+  int alpha)
 {
+  // Drawing an empty image is a noop
+  if(alpha == 0)
+    return;
+
   verifySurfaceExists(targetDC, "SDLGraphicsSystem::blitSurfaceToDC");
   SDL_Surface* dest = displayContexts[targetDC];
   SDL_Surface* src = dynamic_cast<SDLSurface&>(sourceObj).surface();
@@ -324,7 +377,14 @@ void SDLGraphicsSystem::blitSurfaceToDC(
   destRect.w = destWidth;
   destRect.h = destHeight;
 
-  SDL_BlitSurface(src, &srcRect, dest, &destRect);
+  if(alpha != 255) 
+  {
+    if(SDL_SetAlpha(src, SDL_SRCALPHA, alpha))
+      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+
+  if(SDL_BlitSurface(src, &srcRect, dest, &destRect))
+    reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
   if(targetDC == 0)
     dc0writtenTo();
@@ -343,14 +403,17 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
                                            MaskType with_mask)
 {
   int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
-  SDL_Surface* s = SDL_CreateRGBSurfaceFrom(
+  SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
     DefaultBmask, amask);
 
   // This is the perfect example of why I need to come back and
   // really understand this part of the code I'm stealing. WTF is
   // this!?
-  s->flags &= ~SDL_PREALLOC;
+  tmp->flags &= ~SDL_PREALLOC;
+
+  SDL_Surface* s = SDL_DisplayFormat(tmp);
+  SDL_FreeSurface(tmp);
 
   return s;
 };

@@ -35,6 +35,8 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
+#include "Modules/FadeEffect.hpp"
+
 #include <iostream>
 
 #include <boost/scoped_ptr.hpp>
@@ -85,15 +87,16 @@ struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     graphics.blitSurfaceToDC(*surface, 1, 
                              0, 0, surface->width(), surface->height(),
-                             0, 0, graphics.screenWidth(), graphics.screenHeight());
+                             0, 0, graphics.screenWidth(), graphics.screenHeight(),
+                             // Modify this value later:
+                             255);
 
-    // Eventually, we need to implement the effects, but for now we
-    // simply blit DC1 to DC0. This will probably be some sort of
-    // LongOperation to get the fading/transition effect...
-    Surface& dc1 = graphics.getDC(1);
-    graphics.blitSurfaceToDC(dc1, 0, 
-                             0, 0, dc1.width(), dc1.height(),
-                             0, 0, graphics.screenWidth(), graphics.screenHeight());
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(
+      new FadeEffect(machine, 0, 0, surface->width(), surface->height(),
+                     0, 0, 600));
+
+    //EffectFactory::build(filename, machine.gameexe(), effectNum));
   }
 };
 

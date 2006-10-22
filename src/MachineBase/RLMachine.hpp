@@ -153,7 +153,7 @@ private:
 public:
   RLMachine(libReallive::Archive& inArchive);
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
-  ~RLMachine();
+  virtual ~RLMachine();
 
   /** Registers a given module with this RLMachine instance. A module is a set of
    * different functions registered as one unit.

@@ -20,6 +20,8 @@ public:
   
   virtual bool shiftPressed() const { return m_shiftPressed; }
   virtual bool ctrlPressed() const  { return m_ctrlPressed;  }
+
+  virtual unsigned int getTicks() const;
 };
 
 #endif

@@ -51,8 +51,12 @@ SDLSystem::SDLSystem()
 
 void SDLSystem::run(RLMachine& machine)
 {
+  // cerr << "Begin eventSystem: " << event().getTicks() << endl;
+
   // Give the event handler a chance to run
   eventSystem->executeEventSystem(machine);
+
+//  cerr << "Begin graphicsSystem: " << event().getTicks() << endl;
 
   // Finally, run any screen updates needed
   graphicsSystem->executeGraphicsSystem();

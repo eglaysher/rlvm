@@ -87,6 +87,7 @@ private:
 
 public:
   GraphicsSystem() : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC) {}
+  virtual ~GraphicsSystem() { }
 
   void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }
   const std::string& defaultGrpName() const { return m_defaultGrpName; }
@@ -123,7 +124,8 @@ public:
   virtual Surface& getDC(int dc) = 0;
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight) = 0;
+                               int destX, int destY, int destWidth, int destHeight,
+                               int alpha = 255) = 0;
 
 };
 
@@ -136,8 +138,12 @@ public:
 class Surface
 {
 public:
+  virtual ~Surface() { }
+
   virtual int width() const = 0;
   virtual int height() const = 0;
+
+  virtual Surface* clone() const = 0;
 };
 
 #endif

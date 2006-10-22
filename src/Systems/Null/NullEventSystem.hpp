@@ -9,6 +9,7 @@ public:
   virtual void executeEventSystem(RLMachine& machine) {}
   virtual bool shiftPressed() const {return false;}
   virtual bool ctrlPressed() const {return false; }
+  virtual unsigned int getTicks() const { return 0; }
 };
 
 #endif

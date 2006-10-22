@@ -19,6 +19,8 @@ LRLFILES[] =
   Module_Str
   Module_Sys
   cp932toUnicode
+  Effect
+  FadeEffect
 
 StaticCObject(libModules, $(LRLFILES))
 

@@ -28,6 +28,12 @@ public:
    * two ctrlPressed() invocations?
    */
   virtual bool ctrlPressed() const = 0;
+
+  /** 
+   * Returns the number of milliseconds since the program
+   * started. Used for timing things.
+   */
+  virtual unsigned int getTicks() const = 0;
 };
 
 #endif

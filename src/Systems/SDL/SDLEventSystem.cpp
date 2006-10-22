@@ -3,6 +3,10 @@
 
 #include <SDL/SDL.h>
 
+#include <iostream>
+
+using namespace std;
+
 // -----------------------------------------------------------------------
 // Private implementation
 // -----------------------------------------------------------------------
@@ -26,6 +30,7 @@ void SDLEventSystem::handleKeyDown(SDL_Event& e)
   }
 }
 
+// -----------------------------------------------------------------------
 
 void SDLEventSystem::handleKeyUp(SDL_Event& e)
 {
@@ -72,4 +77,13 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
       break;
     }
   }
+
+//  SDL_Delay(10);
+}
+
+// -----------------------------------------------------------------------
+
+unsigned int SDLEventSystem::getTicks() const
+{
+  return SDL_GetTicks();
 }
