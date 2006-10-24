@@ -30,11 +30,13 @@
 #include <SDL/SDL.h>
 
 #include "libReallive/defs.h"
+#include "libReallive/gameexe.h"
 
 using namespace std;
 using namespace libReallive;
 
-SDLSystem::SDLSystem()
+SDLSystem::SDLSystem(Gameexe& gameexe)
+  : m_gameexe(gameexe)
 {
   // First, initialize SDL's video subsystem.
   if( SDL_Init( SDL_INIT_VIDEO) < 0 )
@@ -70,4 +72,9 @@ GraphicsSystem& SDLSystem::graphics()
 EventSystem& SDLSystem::event()
 {
   return *eventSystem;
+}
+
+Gameexe& SDLSystem::gameexe()
+{
+  return m_gameexe;
 }

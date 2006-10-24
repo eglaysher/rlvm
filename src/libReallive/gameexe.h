@@ -71,6 +71,7 @@ public:
 	//
 	// Currently, this will fail if the ini file declared these as #WINDOW.12.MOJI_REP.  However,
 	// this syntax has never been seen in the wild.
+  int getInt(const char* section, const int secidx, const int index, const int defval) const;
 	int getInt(const char* section, const int secidx, const char* key, const int index = 0, const int defval = 0) const;
 	int getInt(const char* section, const int sec1idx, const int sec2idx, const char* key, const int index = 0, const int defval = 0) const;
 	
@@ -82,6 +83,7 @@ public:
 
   size_t size() const { return data_.size(); }
 
+  Gameexe() { }
   Gameexe(const std::string& file);
 private:
 	// Implementation details.
@@ -104,6 +106,14 @@ inline bool
 Gameexe::mem(const char* key) const
 {
 	return data_.find(std::string(key)) != data_.end();
+}
+
+inline int
+Gameexe::getInt(const char* section, const int secidx, const int index, const int defval) const
+{
+	char buf[128];
+	sprintf(buf, "%s.%03d", section, secidx);
+	return getInt(buf, index, defval);
 }
 
 inline int

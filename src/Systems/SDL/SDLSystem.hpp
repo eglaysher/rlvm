@@ -35,13 +35,15 @@ class SDLSystem : public System
 private:
   boost::scoped_ptr<SDLGraphicsSystem> graphicsSystem;
   boost::scoped_ptr<SDLEventSystem> eventSystem;
+  Gameexe& m_gameexe;
 
 public:
-  SDLSystem();
+  SDLSystem(Gameexe& gameexe);
 
   virtual void run(RLMachine& machine);
   virtual GraphicsSystem& graphics();
   virtual EventSystem& event();
+  virtual Gameexe& gameexe();
 };
 
 #endif

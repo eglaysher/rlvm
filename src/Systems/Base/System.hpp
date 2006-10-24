@@ -61,6 +61,7 @@ public:
 class GraphicsSystem;
 class EventSystem;
 class RLMachine;
+  class Gameexe;
 
 /**
  * The system class provides a generalized interface to all the
@@ -77,6 +78,7 @@ public:
 
   virtual GraphicsSystem& graphics() = 0;
   virtual EventSystem& event() = 0;
+  virtual Gameexe& gameexe() = 0;
 //  virtual TextSystem& textSystem() = 0;
 //  virtual SoundSystem& soundSystem() = 0;
 

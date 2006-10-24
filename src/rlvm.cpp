@@ -90,10 +90,11 @@ int main(int argc, char* argv[])
   try {
 //    Gameexe gamexex(argv[1]);
 
-    SDLSystem sdlSystem;
+    Gameexe gameexe("Gameexe.ini");
+    SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(argv[1]);
     RLMachine rlmachine(sdlSystem, arc);
-
+    cerr << "Past initialization!" << endl;
     // Attatch the modules for some commands
     rlmachine.attatchModule(new JmpModule);
     rlmachine.attatchModule(new SysModule(sdlSystem.graphics()));
