@@ -1,14 +1,12 @@
+#ifndef __EffectFactory_hpp__
+#define __EffectFactory_hpp__
 
-#include "Modules/EffectFactory.hpp"
-#include "Modules/FadeEffect.hpp"
+class LongOperation;
+class RLMachine;
 
-#include <iostream>
-#include <sstream>
-
-#include "libReallive/defs.h"
-
-using namespace std;
-using namespace libReallive;
+class EffectFactory
+{
+public:
 /** 
  * Returns a constructed LongOperation with the following properties
  * to perform a transition.
@@ -43,25 +41,10 @@ using namespace libReallive;
  * @return A LongOperation which will perform the following transition
  *         and then exit.
  */
-LongOperation* EffectFactory::build(RLMachine& machine, 
+static LongOperation* build(RLMachine& machine, 
   int x, int y, int width, int height, int dx, int dy, int time, int style,
   int direction, int interpolation, int xsize, int ysize, int a, int b,
-  int opacity, int c)
-{
-  // There is a completely ridaculous number of transitions here! Damn
-  // you, VisualArts, for making something so simple sounding so
-  // confusing and hard to implement!
-  switch(style)
-  {
-  case 0: 
-  case 50:
-    cerr << "FadeEffect(" << x << "," << y << "," << width << "," 
-         << height << "," << dx << "," << dy << "," << time << ")"
-         << endl;
-    return new FadeEffect(machine, x, y, width, height, dx, dy, time);
-  }
+                            int opacity, int c);
+};
 
-  stringstream ss;
-  ss << "Unsupported effect number in #SEL:" << style;
-  throw Error(ss.str());
-}
+#endif
