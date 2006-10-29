@@ -27,15 +27,15 @@ private:
   /// The time since startup when this effect started (in milliseconds)
   unsigned int m_startTime;
 
-  /// The current state of DC1 (we don't own this, so it is a
-  /// reference. After blitting to DC1, we treat this as the source
-  /// image)
-  Surface& m_dc1;
+//   /// The current state of DC1 (we don't own this, so it is a
+//   /// reference. After blitting to DC1, we treat this as the source
+//   /// image)
+//   Surface& m_dc1;
 
-  /// The original state of DC0 before the transition effect started
-  /// (we keep this around since it is easier conceptually to redraw
-  /// the effect
-  boost::scoped_ptr<Surface> m_originalDC0;
+//   /// The original state of DC0 before the transition effect started
+//   /// (we keep this around since it is easier conceptually to redraw
+//   /// the effect
+//   boost::scoped_ptr<Surface> m_originalDC0;
 
   /// Whether the orriginal dc0 should be blitted onto the target
   /// surface before we pass control to the effect
@@ -49,7 +49,7 @@ protected:
   int dx() const { return m_dx; }
   int dy() const { return m_dy; }
 
-  Surface& dc1() { return m_dc1; }
+//  Surface& dc1() { return m_dc1; }
 
   int duration() const { return m_duration; }
 

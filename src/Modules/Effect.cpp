@@ -14,9 +14,7 @@ Effect::Effect(RLMachine& machine, int x, int y, int width,
                int height, int dx, int dy, int time)
   : m_x(x), m_y(y), m_width(width), m_height(height), m_dx(dx), 
     m_dy(dy), m_duration(time), 
-    m_startTime(machine.system().event().getTicks()),
-    m_dc1(machine.system().graphics().getDC(1)),
-    m_originalDC0(machine.system().graphics().getDC(0).clone())
+    m_startTime(machine.system().event().getTicks())
 {
   
 }
@@ -31,16 +29,6 @@ bool Effect::operator()(RLMachine& machine)
 
   cout << currentFrame << "/" << m_duration << endl;
 
-  // Blit the portional of the original DC0 image onto DC0, so we
-  // make sure we have the correct original state. We do this when we
-  // are instructed to. We also do it ALWAYS on the last frame.
-  if(blitOriginalImage() || currentFrame >= m_duration)
-  {
-    graphics.blitSurfaceToDC(*m_originalDC0, 0,
-                             m_x, m_y, m_width, m_height,
-                             m_dx, m_dy, m_width, m_height);
-  }
-
   if(currentFrame < m_duration)
   {
     performEffectForTime(machine, currentFrame);
@@ -49,9 +37,9 @@ bool Effect::operator()(RLMachine& machine)
   else
   {
     // Blit DC1 onto DC0, with full opacity, and end the operation
-    graphics.blitSurfaceToDC(dc1(), 0,
-                             m_x, m_y, m_width, m_height,
-                             m_dx, m_dy, m_width, m_height);
+    graphics.getDC(1).blitToSurface(graphics.getDC(0),
+                                    m_x, m_y, m_width, m_height,
+                                    m_dx, m_dy, m_width, m_height, 255);
     return true;
   }
 }

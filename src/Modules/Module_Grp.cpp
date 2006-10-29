@@ -90,8 +90,8 @@ void loadGrpSELCoordinates(RLMachine& machine, int selNum, int selParams[SEL_SIZ
   for(int i = 0; i < SEL_SIZE; ++i)
     selParams[i] = gexe.getInt("SEL", selNum, i, 0);
 
-  grpToRecCoordinates(selParams[0], selParams[1], 
-                      selParams[2], selParams[3]);
+//  grpToRecCoordinates(selParams[0], selParams[1], 
+//                      selParams[2], selParams[3]);
 
   // SDL's handling of opacity is flipped
 //  selParams[12] = 255 - selParams[12];
@@ -143,13 +143,12 @@ struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
     cerr << "b(" << filename<< ")" << endl;
     // First, load the file to DC1.
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
-    graphics.blitSurfaceToDC(*surface, 1, 
-                             0, 0, surface->width(), surface->height(),
-                             0, 0, graphics.screenWidth(), graphics.screenHeight(),
-                             // Modify this value later:
-                             selParams[14]);
+    surface->blitToSurface(graphics.getDC(1),
+                          0, 0, surface->width(), surface->height(),
+                          0, 0, graphics.screenWidth(), graphics.screenHeight(),
+                          // Modify this value later:
+                          255);
 
-    cerr << "c" << endl;
     // Set the long operation for the correct transition long operation
     machine.setLongOperation(
         EffectFactory::build(
@@ -157,10 +156,6 @@ struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
           selParams[4], selParams[5], selParams[6], selParams[7], 
           selParams[8], selParams[9], selParams[10], selParams[11],
           selParams[12], selParams[13], selParams[14], selParams[15]));
-//     cerr << "d" << endl;
-//      new FadeEffect(machine, 0, 0, surface->width(), surface->height(),
-//                     0, 0, 600));
-     //EffectFactory::build(filename, machine.gameexe(), effectNum));
   }
 };
 

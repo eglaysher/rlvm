@@ -24,6 +24,7 @@
 #define __SDLGraphicsSystem_hpp_
 
 #include <boost/noncopyable.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include <SDL/SDL.h>
@@ -32,9 +33,11 @@
 
 #include "Systems/Base/GraphicsSystem.hpp"
 
+class Texture;
+class SDLGraphicsSystem;
 
 /** 
- * Simple container for SDL_Surface; meant to be passed out of the
+ * Wrapper around an OpenGL texture; meant to be passed out of the
  * graphics system.
  *
  * Some SDLSurfaces will own their underlying SDL_Surface, for
@@ -44,31 +47,58 @@
 class SDLSurface : public Surface, public boost::noncopyable
 {
 private:
+  /// The SDL_Surface that contains the software version of the bitmap.
   SDL_Surface* m_surface;
 
+  /// The SDLTexture which wraps one or more OpenGL textures
+  boost::scoped_ptr<Texture> m_texture;
+
+  /// Whether m_texture represents the contents of m_surface. Blits
+  /// from surfaces to surfaces invalidate the target surfaces's
+  /// texture.
+  bool m_textureIsValid;
+
+  /// A pointer to the graphicsSystem. This item being non-NULL means
+  /// that this Surface is the special DC0.
+  SDLGraphicsSystem* m_graphicsSystem;
+
 public:
-  SDLSurface()
-    : m_surface(NULL) {}
+  SDLSurface();
 
   /// Surface that takes ownership of an externally created surface.
-  SDLSurface(SDL_Surface* surf)
-    : m_surface(surf) {}
+  SDLSurface(SDL_Surface* surf);
 
   /// Surface created with a specified width and height
-  SDLSurface(int width, int height, SDL_PixelFormat* pixelFormat);
-
+  SDLSurface(int width, int height);
   ~SDLSurface();
 
   /// allocate a surface
-  void allocate(int width, int height, SDL_PixelFormat* pixelFormat);
+  void allocate(int width, int height);
+
+  void allocate(int width, int height, SDLGraphicsSystem* in);
   
-  /// deallocate
+  /// Deallocate
   void deallocate();
 
   operator SDL_Surface*()
   {
     return m_surface;
   }
+
+  /// Blits to another surface
+  virtual void blitToSurface(Surface& surface, 
+                     int srcX, int srcY, int srcWidth, int srcHeight,
+                     int destX, int destY, int destWidth, int destHeight,
+                     int alpha = 255);
+
+  virtual void renderToScreen(
+                     int srcX, int srcY, int srcWidth, int srcHeight,
+                     int destX, int destY, int destWidth, int destHeight,
+                     int alpha = 255);
+
+  /// Called after each change to m_surface. Marks the texture as
+  /// invalid and notifies SDLGraphicsSystem when appropriate.
+  void markWrittenTo();
 
   // -----------------------------------------------------------------------
 
@@ -129,18 +159,12 @@ private:
    */
   void verifyDCAllocation(int dc, const std::string& caller);
 
-  /** 
-   * Called when an SDL function returns a non-zero value.
-   * 
-   * @param sdlName 
-   * @param functionName 
-   */
-  void reportSDLError(const std::string& sdlName,
-                      const std::string& functionName);
-
-
   /// @}
   // ---------------------------------------------------------------------
+
+
+public:
+  SDLGraphicsSystem(); 
 
 
   /** 
@@ -152,8 +176,8 @@ private:
    */
   void dc0writtenTo();
 
-public:
-  SDLGraphicsSystem(); 
+
+  virtual void beginFrame();
 
   /** 
    * Performs a full redraw of the screen; blitting dc0 to the screen,
@@ -168,6 +192,8 @@ public:
    */
   virtual void refresh();
 
+  virtual void endFrame();
+
   virtual void executeGraphicsSystem();
 
   virtual int screenWidth() const;
@@ -181,10 +207,34 @@ public:
   virtual Surface* loadSurfaceFromFile(const std::string& filename);
 
   virtual Surface& getDC(int dc);
-  virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
-                               int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight,
-                               int alpha = 255);
+
+  // Wrapper around 
+  /** 
+   * Sets the current color;
+   * 
+   * @param r 
+   * @param g 
+   * @param b 
+   */
+//  virtual void rawSetColor(float r, float g, float b);
+
+  /** 
+   * Displays a 
+   * 
+   * @param texture 
+   * @param srcX 
+   * @param srcY 
+   * @param srcWidth 
+   * @param srcHeight 
+   * @param destX 
+   * @param destY 
+   * @param destWidth 
+   * @param destHeight 
+   */
+//   virtual void rawDisplayQuad(Surface& texture, 
+//                               int srcX, int srcY, int srcWidth, int srcHeight,
+//                               int destX, int destY, int destWidth, int destHeight);
+
 
 //  virtual void recFade(int x, int y, int width, int height,
 //                       int r, int g, int b);

@@ -41,38 +41,210 @@
 #include <sstream>
 #include <cstdio>
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL_image.h>
+
 using namespace std;
 using namespace libReallive;
+
+static void reportSDLError(const std::string& sdlName,
+                           const std::string& functionName)
+{
+  stringstream ss;
+  ss << "Error while calling SDL function '" << sdlName << "' in "
+     << functionName << ": " << SDL_GetError();
+  throw Error(ss.str());
+
+}
+
+void ShowGLErrors(void)
+{
+  GLenum error;
+  const GLubyte* errStr;
+  if ((error = glGetError()) != GL_NO_ERROR)
+  {
+    errStr = gluErrorString(error);
+    fprintf(stderr, "OpenGL Error: %s\n", errStr);
+    abort();
+  }
+}
+
+static int SafeSize(int i) {
+  static GLint maxTextureSize = 0;
+  if(maxTextureSize == 0)
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+  int p;
+
+  if (i > maxTextureSize) return maxTextureSize;
+
+  for (p = 0; p < 24; p++)
+    if (i <= (1<<p))
+      return 1<<p;
+
+  return maxTextureSize;
+}
+
+// -----------------------------------------------------------------------
+// Texture
+// -----------------------------------------------------------------------
+
+
+class Texture
+{
+private:
+  unsigned int m_logicalWidth;
+  unsigned int m_logicalHeight;
+
+  unsigned int m_textureWidth;
+  unsigned int m_textureHeight;
+
+  GLuint m_textureID;
+
+public:
+  Texture(SDL_Surface* surface);
+  ~Texture();
+
+  int width() { return m_logicalWidth; }
+  int height() { return m_logicalHeight; }
+  GLuint textureId() { return m_textureID; }
+
+  void renderToScreen(int x1, int y1, int x2, int y2,
+                      int dx1, int dy1, int dx2, int dy2,
+                      int opacity);
+};
+
+// -----------------------------------------------------------------------
+
+Texture::Texture(SDL_Surface* surface)
+  : m_logicalWidth(surface->w), m_logicalHeight(surface->h)
+{
+//  cerr << "Building texture of " << surface << endl;
+  glGenTextures(1, &m_textureID);
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+  ShowGLErrors();
+//  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//  SDL_Surface* surface = IMG_Load("/Users/elliot/KANON_SE_ALL/g00.png/BG003B.png");
+//  SDL_Surface* surface2 = SDL_LoadBMP("/Users/elliot/Desktop/lesson08/data/glass.bmp");
+
+//   static int count = 0;
+//   stringstream ss;
+//   ss << "texture_" << count << ".bmp";
+//   count++;
+//   SDL_SaveBMP(surface, ss.str().c_str());
+
+  SDL_LockSurface(surface);
+
+  m_textureWidth = SafeSize(surface->w);
+  m_textureHeight = SafeSize(surface->h);
+  glTexImage2D(GL_TEXTURE_2D, 0, surface->format->BytesPerPixel, 
+               m_textureWidth, m_textureHeight,
+               0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  ShowGLErrors();
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
+                  GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+            
+  ShowGLErrors();
+  SDL_UnlockSurface(surface);
+}
+
+// -----------------------------------------------------------------------
+
+Texture::~Texture()
+{
+  glDeleteTextures(1, &m_textureID);
+  ShowGLErrors();
+}
+
+// -----------------------------------------------------------------------
+
+// This is really broken and brain dead.
+void Texture::renderToScreen(int x1, int y1, int x2, int y2,
+                             int dx1, int dy1, int dx2, int dy2,
+                             int opacity)
+{
+  // For the time being, we are dumb and assume that it's one texture
+  
+  float thisx1 = float(x1) / m_textureWidth;
+  float thisy1 = float(y1) / m_textureHeight;
+  float thisx2 = float(x2) / m_textureWidth;
+  float thisy2 = float(y2) / m_textureHeight;
+
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+  // Blend when we have less opacity
+  if(opacity < 255)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+  glBegin(GL_QUADS);
+  {
+    glColor4ub(255, 255, 255, opacity);
+    glTexCoord2f(thisx1, thisy1);
+    glVertex2i(dx1, dy1);
+    glTexCoord2f(thisx2, thisy1);
+    glVertex2i(dx2, dy1);
+    glTexCoord2f(thisx2, thisy2);
+    glVertex2i(dx2, dy2);        
+    glTexCoord2f(thisx1, thisy2);
+    glVertex2i(dx1, dy2);
+  }
+  glEnd();
+  glBlendFunc(GL_ONE, GL_ONE);
+}
 
 // -----------------------------------------------------------------------
 // SDLSurface
 // -----------------------------------------------------------------------
 
-SDLSurface::SDLSurface(int width, int height, SDL_PixelFormat* pixelFormat)
+SDLSurface::SDLSurface()
+  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL)
+{}
+
+/// Surface that takes ownership of an externally created surface.
+SDLSurface::SDLSurface(SDL_Surface* surf)
+  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL)
+{}
+
+SDLSurface::SDLSurface(int width, int height)
+  : m_textureIsValid(false), m_graphicsSystem(NULL)
 {
-  allocate(width, height, pixelFormat);
+  allocate(width, height);
 }
 
 // -----------------------------------------------------------------------
 
 SDLSurface::~SDLSurface()
 {
-  if(m_surface)
-    SDL_FreeSurface(m_surface);
+  deallocate();
 }
-
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::allocate(int width, int height, SDL_PixelFormat* format)
+void SDLSurface::allocate(int width, int height)
 {
   deallocate();
 
+  // Create an empty surface
+  Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    rmask = 0xff000000;
+    gmask = 0x00ff0000;
+    bmask = 0x0000ff00;
+    amask = 0x000000ff;
+#else
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+    amask = 0xff000000;
+#endif
+
   SDL_Surface* tmp = 
-    SDL_CreateRGBSurface(0, width, height, 
-                         format->BitsPerPixel,
-                         format->Rmask, format->Gmask,
-                         format->Bmask, format->Amask);
+    SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 
+                         32, 
+                         rmask, gmask, bmask, amask);
 
   if(tmp == NULL)
   {
@@ -82,7 +254,8 @@ void SDLSurface::allocate(int width, int height, SDL_PixelFormat* format)
     throw Error(ss.str());
   }  
 
-  m_surface = SDL_DisplayFormat(tmp);
+//  m_surface = SDL_DisplayFormat(tmp);
+  m_surface =tmp;
 
   if(m_surface == NULL)
   {
@@ -91,21 +264,126 @@ void SDLSurface::allocate(int width, int height, SDL_PixelFormat* format)
        << ": " << SDL_GetError();
     throw Error(ss.str());
   }
+
+//  SDL_FreeSurface(tmp);
+
+  // Fill the entire surface with the incoming color
+  Uint32 color = SDL_MapRGBA(m_surface->format, 0, 0, 0, 0);
+
+  if(SDL_FillRect(m_surface, NULL, color))
+    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
+
+  m_textureIsValid = false;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::allocate(int width, int height, SDLGraphicsSystem* sys)
+{
+  m_graphicsSystem = sys;
+  allocate(width, height);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSurface::deallocate()
 {
+  m_texture.reset();
   if(m_surface)
     SDL_FreeSurface(m_surface);
 }
 
 // -----------------------------------------------------------------------
 
+void SDLSurface::blitToSurface(Surface& destSurface,
+  int srcX, int srcY, int srcWidth, int srcHeight,
+  int destX, int destY, int destWidth, int destHeight,
+  int alpha)
+{
+  // Drawing an empty image is a noop
+  if(alpha == 0)
+    return;
+
+  SDLSurface& dest = dynamic_cast<SDLSurface&>(destSurface);
+
+  SDL_Rect srcRect, destRect;
+  srcRect.x = srcX;
+  srcRect.y = srcY;
+  srcRect.w = srcWidth;
+  srcRect.h = srcHeight;
+
+  destRect.x = destX;
+  destRect.y = destY;
+  destRect.w = destWidth;
+  destRect.h = destHeight;
+
+  if(alpha != 255) 
+  {
+    if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
+      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+
+//   static int count = 0;
+//   stringstream ss;
+//   ss << "source_" << count << ".bmp";
+//   count++;
+//   SDL_SaveBMP(m_surface, ss.str().c_str());
+
+  cerr << "blit(" << destX << ", " << destY << ", " << destWidth << ", " 
+       << destHeight << ")" << endl;
+  if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
+    reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+  dest.markWrittenTo();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::renderToScreen(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     int alpha)
+{
+//  cout << "Rendering to screen!" << endl;
+  if(!m_textureIsValid)
+  {
+    cout << "Uploading texture!" << endl;
+    m_texture.reset(new Texture(m_surface));
+    m_textureIsValid = true;
+  }
+
+  m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
+                            destX1, destY1, destX2, destY2,
+                            alpha);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::markWrittenTo()
+{
+  cerr << "---- markWrittenTo ----" << endl;
+  
+  // If we are marked as dc0, alert the SDLGraphicsSystem.
+  if(m_graphicsSystem) {
+    cerr << "We are dc0" << endl;
+    m_graphicsSystem->dc0writtenTo();
+
+//    static int count = 0;
+//     stringstream ss;
+//     ss << "dc0_" << count << ".bmp";
+//     count++;
+//     SDL_SaveBMP(m_surface, ss.str().c_str());
+  }
+
+  // Mark that the texture needs reuploading
+  m_textureIsValid = false;
+}
+
+// -----------------------------------------------------------------------
+
 Surface* SDLSurface::clone() const
 {
-  // Make a copy of the current surface
+ // Make a copy of the current surface
   SDL_Surface* tmpSurface = 
     SDL_CreateRGBSurface(m_surface->flags, m_surface->w, m_surface->h, 
                          m_surface->format->BitsPerPixel,
@@ -113,10 +391,7 @@ Surface* SDLSurface::clone() const
                          m_surface->format->Bmask, m_surface->format->Amask);
   SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL);
 
-  SDL_Surface* output = SDL_DisplayFormat(tmpSurface);
-  SDL_FreeSurface(tmpSurface);
-
-  return new SDLSurface(output);
+  return new SDLSurface(tmpSurface);
 }
 
 // -----------------------------------------------------------------------
@@ -132,6 +407,7 @@ void SDLGraphicsSystem::dc0writtenTo()
   {
     // Perform a blit of DC0 to the screen, and update it.
     m_screenNeedsRefresh = true;
+    cerr << "m_screenNeesdRefresh = true" << endl;
     break;
   }
   case SCREENUPDATEMODE_MANUAL:
@@ -139,19 +415,63 @@ void SDLGraphicsSystem::dc0writtenTo()
     // Simply mark that we are dirty
     m_screenDirty = true;
   }
+  default:
+    cerr << "WTF!" << endl;
   }
 }
 
 // -----------------------------------------------------------------------
 
+void SDLGraphicsSystem::beginFrame()
+{
+  glClearColor(0,0,0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  ShowGLErrors();
+
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_CULL_FACE);
+  glDisable(GL_LIGHTING);
+  ShowGLErrors();
+ 	
+  glMatrixMode(GL_PROJECTION);
+//  glPushMatrix();
+  glLoadIdentity();
+  glOrtho(0.0, (GLdouble)m_width, (GLdouble)m_height, 0.0, 0.0, 1.0);
+  ShowGLErrors();
+ 	
+  glMatrixMode(GL_MODELVIEW);
+//  glPushMatrix();
+  glLoadIdentity();
+  ShowGLErrors();
+}
+
 void SDLGraphicsSystem::refresh() 
 {
-  // For now, we simply blit DC0 to the screen. This needs to be
-  // improved later.
-  SDL_BlitSurface(displayContexts[0], NULL, m_screen, NULL);
+  beginFrame();
+
+  displayContexts[0].renderToScreen(0, 0, m_width, m_height, 
+                                    0, 0, m_width, m_height, 
+                                    255);
+//    glBegin( GL_QUADS);
+//    {
+//      glVertex2i(90, 1000);
+//      glVertex2i(m_width, 0);
+//      glVertex2i(m_width, m_height);
+//      glVertex2i(30, m_height);
+//    }
+//    glEnd();
+  ShowGLErrors();
+
+  endFrame();
+}
+
+void SDLGraphicsSystem::endFrame()
+{
+  glFlush();
   
-  // Update the screen
-  SDL_UpdateRect(m_screen, 0, 0, 0, 0);
+  // Swap the buffers
+  SDL_GL_SwapBuffers();
+  ShowGLErrors();
 }
 
 // -----------------------------------------------------------------------
@@ -190,13 +510,32 @@ SDLGraphicsSystem::SDLGraphicsSystem()
   m_height = 600;
   int bpp = info->vfmt->BitsPerPixel;
 
+  /* the flags to pass to SDL_SetVideoMode */
+  int videoFlags;
+  videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
+  videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
+  videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
+  videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
+  
+  /* This checks to see if surfaces can be stored in memory */
+  if ( info->hw_available )
+	videoFlags |= SDL_HWSURFACE;
+  else
+	videoFlags |= SDL_SWSURFACE;
+
+  /* This checks if hardware blits can be done */
+  if ( info->blit_hw )
+	videoFlags |= SDL_HWACCEL;
+
+  /* Sets up OpenGL double buffering */
+  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
   // Set the video mode
   if((m_screen =
-      SDL_SetVideoMode( m_width, m_height, bpp, 
-                        SDL_ANYFORMAT |
-                        //SDL_FULLSCREEN |
-                        //SDL_DOUBLEBUF |
-                        SDL_HWSURFACE)) == 0 )
+      SDL_SetVideoMode( m_width, m_height, bpp, videoFlags)) == 0 )
   {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -206,22 +545,64 @@ SDLGraphicsSystem::SDLGraphicsSystem()
     throw Error(ss.str());
   }	
 
-  SDL_PixelFormat* format = m_screen->format;
+  glEnable(GL_TEXTURE_2D);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+
+    /* Enable Texture Mapping ( NEW ) */
+    glEnable( GL_TEXTURE_2D );
+
+    /* Enable smooth shading */
+    glShadeModel( GL_SMOOTH );
+
+    /* Set the background black */
+    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+
+    /* Depth buffer setup */
+    glClearDepth( 1.0f );
+
+    /* Enables Depth Testing */
+    glEnable( GL_DEPTH_TEST );
+
+    glEnable( GL_BLEND);
+
+    /* The Type Of Depth Test To Do */
+    glDepthFunc( GL_LEQUAL );
+
+    /* Really Nice Perspective Calculations */
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+
+    /* Setup The Ambient Light */
+//    glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient );
+
+    /* Setup The Diffuse Light */
+//    glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse );
+
+    /* Position The Light */
+//    glLightfv( GL_LIGHT1, GL_POSITION, LightPosition );
+
+    /* Enable Light One */
+//    glEnable( GL_LIGHT1 );
+
+    /* Full Brightness, 50% Alpha ( NEW ) */
+    glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);
 
   // Now we allocate the first two display contexts with equal size to
   // the display
-  for(int i = 0; i < 2; ++i) 
-    displayContexts[i].allocate(m_width, m_height, format);
+  displayContexts[0].allocate(m_width, m_height, this);
+  displayContexts[1].allocate(m_width, m_height);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::executeGraphicsSystem()
 {
+//  cerr << "executeGraphicsSystm()" << endl;
   // For now, nothing, but later, we need to put all code each cycle
   // here.
   if(m_screenNeedsRefresh)
   {
+    cerr << "Going to refresh!" << endl;
     refresh();
     m_screenNeedsRefresh = false;
   }
@@ -267,7 +648,7 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
   }
 
   // Allocate a new obj.
-  displayContexts[dc].allocate(width, height, m_screen->format);
+  displayContexts[dc].allocate(width, height);
 }
 
 // -----------------------------------------------------------------------
@@ -319,17 +700,6 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::reportSDLError(const std::string& sdlName,
-                                       const std::string& functionName)
-{
-  stringstream ss;
-  ss << "Error while calling SDL function '" << sdlName << "' in "
-     << functionName << ": " << SDL_GetError();
-  throw Error(ss.str());
-}
-
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 {
   cerr << "wipe(" << dc << ", " << r << ", " << g << ", " << b << ")" 
@@ -352,45 +722,6 @@ void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::blitSurfaceToDC(
-  Surface& sourceObj, int targetDC, 
-  int srcX, int srcY, int srcWidth, int srcHeight,
-  int destX, int destY, int destWidth, int destHeight,
-  int alpha)
-{
-  // Drawing an empty image is a noop
-  if(alpha == 0)
-    return;
-
-  verifySurfaceExists(targetDC, "SDLGraphicsSystem::blitSurfaceToDC");
-  SDL_Surface* dest = displayContexts[targetDC];
-  SDL_Surface* src = dynamic_cast<SDLSurface&>(sourceObj).surface();
-
-  SDL_Rect srcRect, destRect;
-  srcRect.x = srcX;
-  srcRect.y = srcY;
-  srcRect.w = srcWidth;
-  srcRect.h = srcHeight;
-
-  destRect.x = destX;
-  destRect.y = destY;
-  destRect.w = destWidth;
-  destRect.h = destHeight;
-
-  if(alpha != 255) 
-  {
-    if(SDL_SetAlpha(src, SDL_SRCALPHA, alpha))
-      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
-  }
-
-  if(SDL_BlitSurface(src, &srcRect, dest, &destRect))
-    reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
-
-  if(targetDC == 0)
-    dc0writtenTo();
-}
-
-// -----------------------------------------------------------------------
 typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 
 #define DefaultRmask 0xff0000

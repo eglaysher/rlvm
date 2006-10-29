@@ -39,6 +39,7 @@ private:
 
 public:
   SDLSystem(Gameexe& gameexe);
+  ~SDLSystem();
 
   virtual void run(RLMachine& machine);
   virtual GraphicsSystem& graphics();

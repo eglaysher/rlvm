@@ -22,11 +22,18 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
   // Blit the source image to the screen with the opacity
   int opacity = (float(currentTime) / duration()) * 255;
 
-  machine.system().graphics().
-    blitSurfaceToDC(dc1(), 0,
-                    x(), y(), width(), height(), 
-                    dx(), dy(), width(), height(),
-                    opacity);
+  // Render to the screen
+  GraphicsSystem& graphics = machine.system().graphics();
+  graphics.beginFrame();
+  graphics.getDC(0).
+    renderToScreen(x(), y(), x() + width(), y() + height(),
+                   dx(), dy(), dx() + width(), dy() + height(),
+                   255);
+  graphics.getDC(1).
+    renderToScreen(x(), y(), x() + width(), y() + height(), 
+                   dx(), dy(), dx() + width(), dy() + height(),
+                   opacity);
+  graphics.endFrame();
 }
 
 // -----------------------------------------------------------------------

@@ -97,8 +97,9 @@ public:
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
   void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
 
-
+  virtual void beginFrame() { }
   virtual void refresh() = 0;
+  virtual void endFrame() { }
 
   /** 
    * Called from the game loop; Does everything that's needed to keep
@@ -122,11 +123,6 @@ public:
   virtual Surface* loadSurfaceFromFile(const std::string& filename) = 0;
 
   virtual Surface& getDC(int dc) = 0;
-  virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
-                               int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight,
-                               int alpha = 255) = 0;
-
 };
 
 /** 
@@ -142,6 +138,18 @@ public:
 
   virtual int width() const = 0;
   virtual int height() const = 0;
+
+
+  /// Blits to another surface
+  virtual void blitToSurface(Surface& surface, 
+                     int srcX, int srcY, int srcWidth, int srcHeight,
+                     int destX, int destY, int destWidth, int destHeight,
+                             int alpha = 255) { }
+
+  virtual void renderToScreen(
+                     int srcX, int srcY, int srcWidth, int srcHeight,
+                     int destX, int destY, int destWidth, int destHeight,
+                     int alpha = 255) { }
 
   virtual Surface* clone() const = 0;
 };

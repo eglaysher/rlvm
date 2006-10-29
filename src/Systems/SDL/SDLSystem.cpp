@@ -51,6 +51,10 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   eventSystem.reset(new SDLEventSystem);
 }
 
+SDLSystem::~SDLSystem()
+{
+}
+
 void SDLSystem::run(RLMachine& machine)
 {
   // cerr << "Begin eventSystem: " << event().getTicks() << endl;
