@@ -22,6 +22,7 @@ public:
   virtual bool ctrlPressed() const  { return m_ctrlPressed;  }
 
   virtual unsigned int getTicks() const;
+  virtual void wait(unsigned int milliseconds) const;
 };
 
 #endif

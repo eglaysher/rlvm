@@ -12,7 +12,7 @@ using namespace std;
 
 Effect::Effect(RLMachine& machine, int x, int y, int width, 
                int height, int dx, int dy, int time)
-  : m_x(x), m_y(y), m_width(width), m_height(height), m_dx(dx), 
+  : m_x(x), m_y(y), m_width(width + 1), m_height(height + 1), m_dx(dx), 
     m_dy(dy), m_duration(time), 
     m_startTime(machine.system().event().getTicks())
 {
@@ -27,7 +27,7 @@ bool Effect::operator()(RLMachine& machine)
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - m_startTime;
 
-  cout << currentFrame << "/" << m_duration << endl;
+//  cout << currentFrame << "/" << m_duration << endl;
 
   if(currentFrame < m_duration)
   {

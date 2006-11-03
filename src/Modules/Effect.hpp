@@ -69,6 +69,9 @@ public:
    * - Blits imageToBlitToDC1 to DC1 with opacity. (Constructor does
    *   not take ownership)
    * - Sets up all other variables
+   *
+   * Note that we add 1 to both width and height; RL is the only
+   * system I know of where ranges are inclusive...
    */
   Effect(RLMachine& machine, int x, int y, int width, 
          int height, int dx, int dy, int time);

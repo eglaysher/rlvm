@@ -45,6 +45,9 @@
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_image.h>
 
+#include <boost/bind.hpp>
+
+using namespace boost;
 using namespace std;
 using namespace libReallive;
 
@@ -112,6 +115,14 @@ public:
   void renderToScreen(int x1, int y1, int x2, int y2,
                       int dx1, int dy1, int dx2, int dy2,
                       int opacity);
+  void renderToScreen(int x1, int y1, int x2, int y2,
+                      int dx1, int dy1, int dx2, int dy2,
+                      const int opacity[4]);
+
+  void rawRenderQuad(const int srcCoords[8], 
+                     const int destCoords[8],
+                     const int opacity[4]);
+
 };
 
 // -----------------------------------------------------------------------
@@ -162,6 +173,7 @@ Texture::~Texture()
 // -----------------------------------------------------------------------
 
 // This is really broken and brain dead.
+/// @todo s/GL_ONE/GL_ONE_MINUS_SRC_ALPHA/; ?
 void Texture::renderToScreen(int x1, int y1, int x2, int y2,
                              int dx1, int dy1, int dx2, int dy2,
                              int opacity)
@@ -192,7 +204,84 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
     glVertex2i(dx1, dy2);
   }
   glEnd();
-  glBlendFunc(GL_ONE, GL_ONE);
+  glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// -----------------------------------------------------------------------
+
+void Texture::renderToScreen(int x1, int y1, int x2, int y2,
+                             int dx1, int dy1, int dx2, int dy2,
+                             const int opacity[4])
+{
+    // For the time being, we are dumb and assume that it's one texture
+  
+  float thisx1 = float(x1) / m_textureWidth;
+  float thisy1 = float(y1) / m_textureHeight;
+  float thisx2 = float(x2) / m_textureWidth;
+  float thisy2 = float(y2) / m_textureHeight;
+
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+  // Blend when we have less opacity
+  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255)) 
+     != opacity + 4)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glBegin(GL_QUADS);
+  {
+    glColor4ub(255, 255, 255, opacity[0]);
+    glTexCoord2f(thisx1, thisy1);
+    glVertex2i(dx1, dy1);
+    glColor4ub(255, 255, 255, opacity[1]);
+    glTexCoord2f(thisx2, thisy1);
+    glVertex2i(dx2, dy1);
+    glColor4ub(255, 255, 255, opacity[2]);
+    glTexCoord2f(thisx2, thisy2);
+    glVertex2i(dx2, dy2);        
+    glColor4ub(255, 255, 255, opacity[3]);
+    glTexCoord2f(thisx1, thisy2);
+    glVertex2i(dx1, dy2);
+  }
+  glEnd();
+  glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// -----------------------------------------------------------------------
+
+/// @todo s/GL_ONE/GL_ONE_MINUS_SRC_ALPHA/; ?
+void Texture::rawRenderQuad(const int srcCoords[8], 
+                            const int destCoords[8],
+                            const int opacity[4])
+{
+  // For the time being, we are dumb and assume that it's one texture
+  float textureCoords[8];
+  for(int i = 0; i < 8; i += 2)
+  {
+    textureCoords[i] = float(srcCoords[i]) / m_textureWidth;
+    textureCoords[i + 1] = float(srcCoords[i + 1]) / m_textureHeight;
+  }
+
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+  // Blend when we have less opacity
+  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255)) 
+     != opacity + 4)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+  glBegin(GL_QUADS);
+  {
+    for(int i = 0; i < 4; i++)
+    {
+      glColor4ub(255, 255, 255, opacity[i]);
+
+      int firstIndex = i * 2;
+      int secondIndex = firstIndex + 1;
+      glTexCoord2f(srcCoords[firstIndex], srcCoords[secondIndex]);
+      glVertex2i(destCoords[firstIndex], destCoords[secondIndex]);
+    }
+  }
+  glEnd();
+  glBlendFunc(GL_ONE, GL_ZERO);
 }
 
 // -----------------------------------------------------------------------
@@ -339,23 +428,55 @@ void SDLSurface::blitToSurface(Surface& destSurface,
 
 // -----------------------------------------------------------------------
 
+void SDLSurface::uploadTextureIfNeeded()
+{
+  if(!m_textureIsValid)
+  {
+//    cout << "Uploading texture!" << endl;
+    m_texture.reset(new Texture(m_surface));
+    m_textureIsValid = true;
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSurface::renderToScreen(
                      int srcX1, int srcY1, int srcX2, int srcY2,
                      int destX1, int destY1, int destX2, int destY2,
                      int alpha)
 {
-//  cout << "Rendering to screen!" << endl;
-  if(!m_textureIsValid)
-  {
-    cout << "Uploading texture!" << endl;
-    m_texture.reset(new Texture(m_surface));
-    m_textureIsValid = true;
-  }
+  uploadTextureIfNeeded();
 
   m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
                             destX1, destY1, destX2, destY2,
                             alpha);
 }
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::renderToScreen(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     const int opacity[4])
+{
+  uploadTextureIfNeeded();
+
+  m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
+                            destX1, destY1, destX2, destY2,
+                            opacity);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::rawRenderQuad(const int srcCoords[8], 
+                               const int destCoords[8],
+                               const int opacity[4])
+{
+  uploadTextureIfNeeded();
+
+  m_texture->rawRenderQuad(srcCoords, destCoords, opacity);
+}
+
 
 // -----------------------------------------------------------------------
 
@@ -449,18 +570,10 @@ void SDLGraphicsSystem::refresh()
 {
   beginFrame();
 
+  // Display DC0
   displayContexts[0].renderToScreen(0, 0, m_width, m_height, 
                                     0, 0, m_width, m_height, 
                                     255);
-//    glBegin( GL_QUADS);
-//    {
-//      glVertex2i(90, 1000);
-//      glVertex2i(m_width, 0);
-//      glVertex2i(m_width, m_height);
-//      glVertex2i(30, m_height);
-//    }
-//    glEnd();
-  ShowGLErrors();
 
   endFrame();
 }
@@ -506,8 +619,8 @@ SDLGraphicsSystem::SDLGraphicsSystem()
   // resolution, so this is probably being overly
   // safe. Under Win32, ChangeDisplaySettings
   // can change the bpp.
-  m_width = 800;
-  m_height = 600;
+  m_width = 640;
+  m_height = 480;
   int bpp = info->vfmt->BitsPerPixel;
 
   /* the flags to pass to SDL_SetVideoMode */

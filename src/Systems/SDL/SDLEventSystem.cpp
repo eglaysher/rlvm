@@ -87,3 +87,10 @@ unsigned int SDLEventSystem::getTicks() const
 {
   return SDL_GetTicks();
 }
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::wait(unsigned int milliseconds) const
+{
+  SDL_Delay(milliseconds);
+}

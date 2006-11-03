@@ -62,6 +62,13 @@ private:
   /// that this Surface is the special DC0.
   SDLGraphicsSystem* m_graphicsSystem;
 
+  /** 
+   * Makes sure that m_texture is a valid object and that it's
+   * updated. This method should be called before doing anything with
+   * m_texture.
+   */
+  void uploadTextureIfNeeded();
+
 public:
   SDLSurface();
 
@@ -95,6 +102,15 @@ public:
                      int srcX, int srcY, int srcWidth, int srcHeight,
                      int destX, int destY, int destWidth, int destHeight,
                      int alpha = 255);
+
+  virtual void renderToScreen(
+                     int srcX, int srcY, int srcWidth, int srcHeight,
+                     int destX, int destY, int destWidth, int destHeight,
+                     const int opacity[4]);
+
+  virtual void rawRenderQuad(const int srcCoords[8], 
+                             const int destCoords[8],
+                             const int opacity[4]);
 
   /// Called after each change to m_surface. Marks the texture as
   /// invalid and notifies SDLGraphicsSystem when appropriate.

@@ -1,2 +1,5 @@
-grpOpen("BG011", 0)
+grpOpen("BG011", 2)
+grpOpen("BG001", 3)
+//grpOpen("BG002", 2)
+//grpOpen("BG003B", 3)
 pause()

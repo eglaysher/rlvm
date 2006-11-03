@@ -1,6 +1,7 @@
 
 #include "Modules/EffectFactory.hpp"
 #include "Modules/FadeEffect.hpp"
+#include "Modules/WipeEffect.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -9,6 +10,7 @@
 
 using namespace std;
 using namespace libReallive;
+
 /** 
  * Returns a constructed LongOperation with the following properties
  * to perform a transition.
@@ -53,8 +55,12 @@ LongOperation* EffectFactory::build(RLMachine& machine,
   // confusing and hard to implement!
   switch(style)
   {
-  case 0: 
+  case 10:
+    return new WipeEffect(machine, x, y, width, height, dx, dy, time, 
+                          direction, interpolation);
+  case 0:
   case 50:
+  default:
     cerr << "FadeEffect(" << x << "," << y << "," << width << "," 
          << height << "," << dx << "," << dy << "," << time << ")"
          << endl;

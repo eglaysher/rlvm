@@ -66,6 +66,9 @@ void SDLSystem::run(RLMachine& machine)
 
   // Finally, run any screen updates needed
   graphicsSystem->executeGraphicsSystem();
+
+  // Pause the system for a moment
+  eventSystem->wait(10);
 }
 
 GraphicsSystem& SDLSystem::graphics()

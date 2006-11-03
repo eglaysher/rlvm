@@ -10,6 +10,7 @@ public:
   virtual bool shiftPressed() const {return false;}
   virtual bool ctrlPressed() const {return false; }
   virtual unsigned int getTicks() const { return 0; }
+  virtual void wait(unsigned int milliseconds) const { }
 };
 
 #endif

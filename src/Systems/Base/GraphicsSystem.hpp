@@ -139,17 +139,27 @@ public:
   virtual int width() const = 0;
   virtual int height() const = 0;
 
-
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
+                             int srcX, int srcY, int srcWidth, int srcHeight,
+                             int destX, int destY, int destWidth, int destHeight,
                              int alpha = 255) { }
 
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,
                      int destX, int destY, int destWidth, int destHeight,
                      int alpha = 255) { }
+
+
+  virtual void renderToScreen(
+    int srcX1, int srcY1, int srcX2, int srcY2,
+    int destX1, int destY1, int destX2, int destY2,
+    const int opacity[4]) { }
+
+
+  virtual void rawRenderQuad(const int srcCoords[8], 
+                             const int destCoords[8],
+                             const int opacity[4]) { }
 
   virtual Surface* clone() const = 0;
 };

@@ -34,6 +34,13 @@ public:
    * started. Used for timing things.
    */
   virtual unsigned int getTicks() const = 0;
+
+  /** 
+   * Idles the program for a certain amount of time in milliseconds.
+   * 
+   * @param milliseconds Time
+   */
+  virtual void wait(unsigned int milliseconds) const = 0;
 };
 
 #endif
