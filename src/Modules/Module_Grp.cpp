@@ -36,7 +36,6 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 
 #include "Modules/EffectFactory.hpp"
-#include "Modules/FadeEffect.hpp"
 
 #include "libReallive/gameexe.h"
 

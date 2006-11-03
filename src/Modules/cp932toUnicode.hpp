@@ -30,10 +30,12 @@
 #ifndef __cp932toUnicode_hpp__
 #define __cp932toUnicode_hpp__
 
+#include <string>
+
 std::string unicodetocp932(const std::wstring& line);
 std::wstring cp932toUnicode(const std::string& line);
 
-string hantozen_cp932(const std::string& string);
-string zentohan_cp932(const std::string& string);
+std::string hantozen_cp932(const std::string& string);
+std::string zentohan_cp932(const std::string& string);
 
 #endif

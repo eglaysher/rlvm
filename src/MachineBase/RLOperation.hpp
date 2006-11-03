@@ -32,7 +32,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/tuple/tuple.hpp>
 
-#include "libReallive/defs.h"
+//#include "libReallive/defs.h"
+#include "libReallive/bytecode.h"
 #include "libReallive/expression.h"
 
 #include "MachineBase/RLMachine.hpp"

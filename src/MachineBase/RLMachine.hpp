@@ -35,12 +35,9 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include "libReallive/defs.h"
 #include "libReallive/scenario.h"
 #include "libReallive/bytecode.h"
 #include "MachineBase/bytecodeConstants.hpp"
-
-#include "Systems/Base/System.hpp"
 
 #include <stack>
 
@@ -51,6 +48,7 @@ class FunctionElement;
 
 class RLModule;
 class LongOperation;
+class System;
 
   const int INTA_LOCATION = 0   ;
   const int INTB_LOCATION = 1;
