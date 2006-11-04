@@ -477,12 +477,25 @@ struct RLOp_SpecialCase : public RLOperation {
  * @param D Type struct representing type to check for.
  */
 template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T, 
-         typename D = Empty_T>
+         typename D = Empty_T, typename E = Empty_T, typename F = Empty_T,
+         typename G = Empty_T, typename H = Empty_T, typename I = Empty_T,
+         typename J = Empty_T, typename K = Empty_T, typename L = Empty_T,
+         typename M = Empty_T, typename N = Empty_T, typename O = Empty_T,
+         typename P = Empty_T>
 struct RLOp_Void : public RLOperation {
   typedef typename A::type firstType;
   typedef typename B::type secondType;
   typedef typename C::type thirdType;
   typedef typename D::type fourthType;
+  typedef typename E::type fifthType;
+  typedef typename F::type sixthType;
+  typedef typename G::type seventhType;
+  typedef typename H::type eighthType;
+  typedef typename I::type ninthType;
+  typedef typename J::type tenthType;
+  typedef typename K::type eleventhType;
+  typedef typename L::type twelvthType;
+  typedef typename M::type thirteenthType;
 
   bool checkTypes(RLMachine& machine, 
                   boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
@@ -490,7 +503,16 @@ struct RLOp_Void : public RLOperation {
     return (!A::isRealTypestruct  || A::verifyType(parameters, 0)) &&
       (!B::isRealTypestruct || B::verifyType(parameters, 1)) &&
       (!C::isRealTypestruct || C::verifyType(parameters, 2)) &&
-      (!D::isRealTypestruct || D::verifyType(parameters, 3));
+      (!D::isRealTypestruct || D::verifyType(parameters, 3)) &&
+      (!E::isRealTypestruct || E::verifyType(parameters, 4)) &&
+      (!F::isRealTypestruct || F::verifyType(parameters, 5)) &&
+      (!G::isRealTypestruct || G::verifyType(parameters, 6)) &&
+      (!H::isRealTypestruct || H::verifyType(parameters, 7)) &&
+      (!I::isRealTypestruct || I::verifyType(parameters, 8)) &&
+      (!J::isRealTypestruct || J::verifyType(parameters, 9)) &&
+      (!K::isRealTypestruct || K::verifyType(parameters, 10)) &&
+      (!L::isRealTypestruct || L::verifyType(parameters, 11)) &&
+      (!M::isRealTypestruct || M::verifyType(parameters, 12));
   }
 
   void dispatch(RLMachine& machine, 
@@ -521,13 +543,155 @@ struct RLOp_Void : public RLOperation {
                  B::getData(machine, parameters, 1),
                  C::getData(machine, parameters, 2));
     }
-    else
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            !E::isRealTypestruct)
     {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3));
     }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && !F::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            !G::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && !H::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            !I::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && !J::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            !K::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && !L::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            !M::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11));
+    }
+    else
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12));
+    }
   }
 
   /// Method that is overridden by all subclasses to implement the
@@ -537,12 +701,23 @@ struct RLOp_Void : public RLOperation {
   virtual void operator()(RLMachine&, firstType, secondType) { }
   virtual void operator()(RLMachine&, firstType, secondType, thirdType) { }
   virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { }
+
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType) { }
 };
 
 // Partial specialization for RLOp_Store::checkTypes for when
 // everything is empty (aka an operation that takes no parameters)
 template<>
-inline bool RLOp_Void<Empty_T, Empty_T, Empty_T, Empty_T>::
+inline bool RLOp_Void<Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, 
+                      Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
 checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {
   return parameters.size() == 0;
@@ -558,12 +733,25 @@ checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& 
  * @param D Type struct representing type to check for.
  */
 template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T, 
-         typename D = Empty_T>
+         typename D = Empty_T, typename E = Empty_T, typename F = Empty_T,
+         typename G = Empty_T, typename H = Empty_T, typename I = Empty_T,
+         typename J = Empty_T, typename K = Empty_T, typename L = Empty_T,
+         typename M = Empty_T, typename N = Empty_T, typename O = Empty_T,
+         typename P = Empty_T>
 struct RLOp_Store : public RLOperation {
   typedef typename A::type firstType;
   typedef typename B::type secondType;
   typedef typename C::type thirdType;
   typedef typename D::type fourthType;
+  typedef typename E::type fifthType;
+  typedef typename F::type sixthType;
+  typedef typename G::type seventhType;
+  typedef typename H::type eighthType;
+  typedef typename I::type ninthType;
+  typedef typename J::type tenthType;
+  typedef typename K::type eleventhType;
+  typedef typename L::type twelvthType;
+  typedef typename M::type thirteenthType;
 
   bool checkTypes(RLMachine& machine, 
                   boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
@@ -571,7 +759,16 @@ struct RLOp_Store : public RLOperation {
     return (!A::isRealTypestruct  || A::verifyType(parameters, 0)) &&
       (!B::isRealTypestruct || B::verifyType(parameters, 1)) &&
       (!C::isRealTypestruct || C::verifyType(parameters, 2)) &&
-      (!D::isRealTypestruct || D::verifyType(parameters, 3));
+      (!D::isRealTypestruct || D::verifyType(parameters, 3)) &&
+      (!E::isRealTypestruct || E::verifyType(parameters, 4)) &&
+      (!F::isRealTypestruct || F::verifyType(parameters, 5)) &&
+      (!G::isRealTypestruct || G::verifyType(parameters, 6)) &&
+      (!H::isRealTypestruct || H::verifyType(parameters, 7)) &&
+      (!I::isRealTypestruct || I::verifyType(parameters, 8)) &&
+      (!J::isRealTypestruct || J::verifyType(parameters, 9)) &&
+      (!K::isRealTypestruct || K::verifyType(parameters, 10)) &&
+      (!L::isRealTypestruct || L::verifyType(parameters, 11)) &&
+      (!M::isRealTypestruct || M::verifyType(parameters, 12));
   }
 
   void dispatch(RLMachine& machine, 
@@ -604,12 +801,154 @@ struct RLOp_Store : public RLOperation {
                          B::getData(machine, parameters, 1),
                          C::getData(machine, parameters, 2));
     }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            !E::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && !F::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            !G::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && !H::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            !I::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && !J::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            !K::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9));
+    }   
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && !L::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            !M::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11));
+    }
     else
     {
       store = operator()(machine, A::getData(machine, parameters, 0),
-                         B::getData(machine, parameters, 1), 
-                         C::getData(machine, parameters, 2),
-                         D::getData(machine, parameters, 3));
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12));
     }
 
     machine.setStoreRegister(store);
@@ -622,12 +961,24 @@ struct RLOp_Store : public RLOperation {
   virtual int operator()(RLMachine&, firstType, secondType) { }
   virtual int operator()(RLMachine&, firstType, secondType, thirdType) { }
   virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { }
+
+
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType) { }
 };
 
 // Partial specialization for RLOp_Store::checkTypes for when
 // everything is empty (aka an operation that takes no parameters)
 template<>
-inline bool RLOp_Store<Empty_T, Empty_T, Empty_T, Empty_T>::
+inline bool RLOp_Store<Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, 
+                      Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
 checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {
   return parameters.size() == 0;
