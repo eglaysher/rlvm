@@ -8,7 +8,7 @@
  * running Reallive script. 
  */
 template<typename OBJTYPE, typename RETTYPE>
-class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
+class Op_SetToIncomingInt : public RLOp_Void< IntConstant_T > {
   /// The object we are going to operate on when called.
   OBJTYPE& reference;
 
@@ -36,7 +36,7 @@ class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
  * running Reallive script. 
  */
 template<typename OBJTYPE>
-class Op_SetToIncomingString : public RLOp_Void_1< StrConstant_T > {
+class Op_SetToIncomingString : public RLOp_Void< StrConstant_T > {
 private:
   /// The object we are going to operate on when called.
   OBJTYPE& reference;
@@ -66,7 +66,7 @@ public:
  * and exposes this as an operation to Reallive scripts.
  */
 template<typename OBJTYPE, typename RETTYPE, typename VALTYPE>
-class Op_SetToConstant : public RLOp_Void_Void {
+class Op_SetToConstant : public RLOp_Void<> {
   OBJTYPE& reference;
 
   typedef void(OBJTYPE::*Setter)(RETTYPE);
@@ -91,7 +91,7 @@ class Op_SetToConstant : public RLOp_Void_Void {
  * arbitrary getter function and places it in the store register.
  */
 template<typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValue : public RLOp_Store_Void {
+class Op_ReturnIntValue : public RLOp_Store<> {
   OBJTYPE& reference;
 
   typedef void(OBJTYPE::*Getter)(RETTYPE);
@@ -114,7 +114,7 @@ class Op_ReturnIntValue : public RLOp_Store_Void {
  * arbitrary getter function and places it in the store register.
  */
 template<typename OBJTYPE>
-class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
+class Op_ReturnStringValue : public RLOp_Void< StrReference_T > {
 private:
   /// The object on which we want to call the getter function
   OBJTYPE& reference;

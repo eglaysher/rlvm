@@ -12,55 +12,55 @@ const float PI = 3.14159265;
 
 using namespace std;
 
-struct Sys_rnd_0 : public RLOp_Store_1< IntConstant_T > {
+struct Sys_rnd_0 : public RLOp_Store< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
     return rand() % var1;
   }
 };
 
-struct Sys_rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct Sys_rnd_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return rand() % (var2 - var1) + var1;
   }
 };
 
-struct Sys_pcnt : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct Sys_pcnt : public RLOp_Store< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int numenator, int denominator) {
     return int( ((float)numenator / (float)denominator) * 100 );
   }
 };
 
-struct Sys_abs : public RLOp_Store_1< IntConstant_T > {
+struct Sys_abs : public RLOp_Store< IntConstant_T > {
   int operator()(RLMachine& machine, int var) {
     return abs(var);
   }
 };
 
-struct Sys_power_0 : public RLOp_Store_1< IntConstant_T > {
+struct Sys_power_0 : public RLOp_Store< IntConstant_T > {
   int operator()(RLMachine& machine, int var) {
     return var * var;
   }
 };
 
-struct Sys_power_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct Sys_power_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return (int)std::pow((float)var1, var2);
   }
 };
 
-struct Sys_sin_0 : public RLOp_Store_1< IntConstant_T > {
+struct Sys_sin_0 : public RLOp_Store< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
     return std::sin(var1 * (PI/180)) * 32640;
   }
 };
 
-struct Sys_sin_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct Sys_sin_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::sin(var1 * (PI/180)) * 32640 / var2;
   }
 };
 
-struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
+struct Sys_modulus : public RLOp_Store< IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, 
                  int var3, int var4) {
@@ -68,7 +68,7 @@ struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
   }
 };
 
-struct Sys_angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
+struct Sys_angle : public RLOp_Store< IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, 
                  int var3, int var4) {
@@ -76,19 +76,19 @@ struct Sys_angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
   }
 };
 
-struct Sys_min : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct Sys_min : public RLOp_Store< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::min(var1, var2);
   }
 };
 
-struct Sys_max : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct Sys_max : public RLOp_Store< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::max(var1, var2);
   }
 };
 
-struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+struct Sys_constrain : public RLOp_Store< IntConstant_T, IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
     if(var2 < var1)
       return var1;
@@ -100,7 +100,7 @@ struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntCon
 };
 
 // ----------------------------------------------------------- Date & Time Functions
-struct Sys_GetYear : public RLOp_Store_Void {
+struct Sys_GetYear : public RLOp_Store<> {
   int operator()(RLMachine& machine) {
     
   }

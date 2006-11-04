@@ -64,8 +64,8 @@ string findFile(const std::string& fileName)
 
 // -----------------------------------------------------------------------
 
-struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
-                                         IntConstant_T > {
+struct Grp_allocDC : public RLOp_Void< IntConstant_T, IntConstant_T,
+                                       IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
     machine.system().graphics().allocateDC(dc, width, height);
   }
@@ -73,7 +73,7 @@ struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
+struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
   void operator()(RLMachine& machine, int dc) {
     machine.system().graphics().freeDC(dc);
   }
@@ -81,8 +81,8 @@ struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
-                                      IntConstant_T, IntConstant_T > {
+struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
+                                    IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
     machine.system().graphics().wipe(dc, r, g, b);
   }
@@ -90,7 +90,7 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
+struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum) {
     int opacity = machine.system().gameexe().getInt("SEL", effectNum, 14, 0);
 
@@ -113,8 +113,8 @@ struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
 // -----------------------------------------------------------------------
 
 /// @todo factor out the common code between grpOpens!
-struct Grp_grpOpen_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
-                                           IntConstant_T > {
+struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
+                                         IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum, 
                   int opacity)
   {

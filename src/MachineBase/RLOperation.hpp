@@ -146,6 +146,10 @@ struct IntConstant_T {
 
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position);
+
+  enum {
+    isRealTypestruct = true
+  };
 };
 
 // -----------------------------------------------------------------------
@@ -174,6 +178,10 @@ struct IntReference_T {
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          int position);
+
+  enum {
+    isRealTypestruct = true
+  };
 };
 
 // -----------------------------------------------------------------------
@@ -200,6 +208,10 @@ struct StrConstant_T {
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          int position);
+
+  enum {
+    isRealTypestruct = true
+  };
 };
 
 // -----------------------------------------------------------------------
@@ -228,6 +240,10 @@ struct StrReference_T {
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          int position);
+
+  enum {
+    isRealTypestruct = true
+  };
 };
 
 // -----------------------------------------------------------------------
@@ -261,6 +277,10 @@ struct Argc_T {
    */
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                          int position);
+
+  enum {
+    isRealTypestruct = true
+  };
 };
 
 // -----------------------------------------------------------------------
@@ -300,6 +320,10 @@ struct Complex2_T {
     }
     return typeOK;
   }
+
+  enum {
+    isRealTypestruct = true
+  };
 };
 
 // -----------------------------------------------------------------------
@@ -321,6 +345,10 @@ struct Empty_T {
                          int position) {
     return true;
   }
+
+  enum {
+    isRealTypestruct = false
+  };
 };
 
 /** 
@@ -439,293 +467,171 @@ struct RLOp_SpecialCase : public RLOperation {
   virtual void operator()(RLMachine&, const libReallive::CommandElement&) = 0;
 };
 
-// ----------------------------------------------------------------------
-
-/** RLOp that doesn't expect a return value, and doesn't take any
- * parameters.
- */
-struct RLOp_Void_Void : public RLOperation {
-  bool checkTypes(RLMachine& machine, 
-                  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return parameters.size() == 0;
-  }
-
-  void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    operator()(machine);
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual void operator()(RLMachine&) = 0;
-};
-
 // -----------------------------------------------------------------------
 
-/** RLOp that stores the return value in the store register, and which
- * takes no parameters.
- */
-struct RLOp_Store_Void : public RLOperation {
-  bool checkTypes(RLMachine& machine, 
-                  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return parameters.size() == 0;
-  }
-
-  void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    int store = operator()(machine);
-    machine.setStoreRegister(store);
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual int operator()(RLMachine&) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that doesn't expect a return value, and which takes a single
- * parameter.
- * 
- * @param A Type struct representing type to check for.
- */
-template<typename A>
-struct RLOp_Void_1 : public RLOperation {
-  typedef typename A::type firstType;
-
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0);
-  }
-
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    operator()(machine, A::getData(machine, parameters, 0));
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual void operator()(RLMachine&, firstType) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that stores the return in the store register, and which takes
- * a single parameter.
- * 
- * @param A Type struct representing type to check for.
- */
-template<typename A>
-struct RLOp_Store_1 : public RLOperation {
-  typedef typename A::type firstType;
-
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0);
-  }
-
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    int store = operator()(machine, A::getData(machine, parameters, 0));
-    machine.setStoreRegister(store);
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual int operator()(RLMachine&, firstType) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that doesn't expect a return value, and which takes
- * two parameters.
- * 
- * @param A Type struct representing type to check for.
- * @param B Type struct representing type to check for.
- */
-template<typename A, typename B>
-struct RLOp_Void_2 : public RLOperation {
-  typedef typename A::type firstType;
-  typedef typename B::type secondType;
-
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0) &&
-      B::verifyType(parameters, 1);
-  }
-
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    operator()(machine, A::getData(machine, parameters, 0),
-               B::getData(machine, parameters, 1));
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual void operator()(RLMachine&, firstType, secondType) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that stores the return in the store register, and which takes
- * two parameters.
- * 
- * @param A Type struct representing type to check for.
- * @param B Type struct representing type to check for.
- */
-template<typename A, typename B>
-struct RLOp_Store_2 : public RLOperation {
-  typedef typename A::type firstType;
-  typedef typename B::type secondType;
-
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0) &&
-      B::verifyType(parameters, 1);
-  }
-
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    int store = operator()(machine, A::getData(machine, parameters, 0),
-                           B::getData(machine, parameters, 1));
-    machine.setStoreRegister(store);
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual int operator()(RLMachine&, firstType, secondType) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that doesn't expect a return value, and which takes
- * three parameters.
- * 
- * @param A Type struct representing type to check for.
- * @param B Type struct representing type to check for.
- * @param C Type struct representing type to check for.
- */
-template<typename A, typename B, typename C>
-struct RLOp_Void_3 : public RLOperation {
-  typedef typename A::type firstType;
-  typedef typename B::type secondType;
-  typedef typename C::type thirdType;
-
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0) &&
-      B::verifyType(parameters, 1) &&
-      C::verifyType(parameters, 2);
-  }
-
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    operator()(machine, A::getData(machine, parameters, 0),
-               B::getData(machine, parameters, 1), 
-               C::getData(machine, parameters, 2));
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that stores the return in the store register, and which takes
- * three parameters.
- * 
- * @param A Type struct representing type to check for.
- * @param B Type struct representing type to check for.
- * @param C Type struct representing type to check for.
- */
-template<typename A, typename B, typename C>
-struct RLOp_Store_3 : public RLOperation {
-  typedef typename A::type firstType;
-  typedef typename B::type secondType;
-  typedef typename C::type thirdType;
-
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0) &&
-      B::verifyType(parameters, 1) &&
-      C::verifyType(parameters, 2);
-  }
-
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    int store = operator()(machine, A::getData(machine, parameters, 0),
-                           B::getData(machine, parameters, 1), 
-                           C::getData(machine, parameters, 2));
-    machine.setStoreRegister(store);
-  }
-
-  /// Method that is overridden by all subclasses to implement the
-  /// function of this opcode
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/** RLOp that doesn't expect a return value, and which takes
- * three parameters.
+/** RLOp that does not return a value.
  * 
  * @param A Type struct representing type to check for.
  * @param B Type struct representing type to check for.
  * @param C Type struct representing type to check for.
  * @param D Type struct representing type to check for.
  */
-template<typename A, typename B, typename C, typename D>
-struct RLOp_Void_4 : public RLOperation {
+template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T, 
+         typename D = Empty_T>
+struct RLOp_Void : public RLOperation {
   typedef typename A::type firstType;
   typedef typename B::type secondType;
   typedef typename C::type thirdType;
   typedef typename D::type fourthType;
 
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0) &&
-      B::verifyType(parameters, 1) &&
-      C::verifyType(parameters, 2) &&
-      D::verifyType(parameters, 3);
+  bool checkTypes(RLMachine& machine, 
+                  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  {
+    return (!A::isRealTypestruct  || A::verifyType(parameters, 0)) &&
+      (!B::isRealTypestruct || B::verifyType(parameters, 1)) &&
+      (!C::isRealTypestruct || C::verifyType(parameters, 2)) &&
+      (!D::isRealTypestruct || D::verifyType(parameters, 3));
   }
 
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    operator()(machine, A::getData(machine, parameters, 0),
-               B::getData(machine, parameters, 1), 
-               C::getData(machine, parameters, 2),
-               D::getData(machine, parameters, 3));
+  void dispatch(RLMachine& machine, 
+                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  {
+    // The following is fucking ugly. If anyone knows a way to make
+    // this pretty, but still get gcc to reason about template types
+    // and optimize away everything but one of these instances, I'd
+    // love to hear from you.
+    if(!A::isRealTypestruct)
+    {
+      operator()(machine);
+    }
+    else if(A::isRealTypestruct && !B::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            !C::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && !D::isRealTypestruct)
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1),
+                 C::getData(machine, parameters, 2));
+    }
+    else
+    {
+      operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3));
+    }   
   }
 
   /// Method that is overridden by all subclasses to implement the
   /// function of this opcode
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType) = 0;
+  virtual void operator()(RLMachine&) { }
+  virtual void operator()(RLMachine&, firstType) { }
+  virtual void operator()(RLMachine&, firstType, secondType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { }
 };
+
+// Partial specialization for RLOp_Store::checkTypes for when
+// everything is empty (aka an operation that takes no parameters)
+template<>
+inline bool RLOp_Void<Empty_T, Empty_T, Empty_T, Empty_T>::
+checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+{
+  return parameters.size() == 0;
+}
 
 // -----------------------------------------------------------------------
 
-/** RLOp that stores the return in the store register, and which takes
- * three parameters.
+/** RLOp that stores the return in the store register. 
  * 
  * @param A Type struct representing type to check for.
  * @param B Type struct representing type to check for.
  * @param C Type struct representing type to check for.
  * @param D Type struct representing type to check for.
  */
-template<typename A, typename B, typename C, typename D>
-struct RLOp_Store_4 : public RLOperation {
+template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T, 
+         typename D = Empty_T>
+struct RLOp_Store : public RLOperation {
   typedef typename A::type firstType;
   typedef typename B::type secondType;
   typedef typename C::type thirdType;
   typedef typename D::type fourthType;
 
-  bool checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    return A::verifyType(parameters, 0) &&
-      B::verifyType(parameters, 1) &&
-      C::verifyType(parameters, 2) &&
-      D::verifyType(parameters, 3);
+  bool checkTypes(RLMachine& machine, 
+                  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  {
+    return (!A::isRealTypestruct  || A::verifyType(parameters, 0)) &&
+      (!B::isRealTypestruct || B::verifyType(parameters, 1)) &&
+      (!C::isRealTypestruct || C::verifyType(parameters, 2)) &&
+      (!D::isRealTypestruct || D::verifyType(parameters, 3));
   }
 
-  void dispatch(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
-    int store = operator()(machine, A::getData(machine, parameters, 0),
-                           B::getData(machine, parameters, 1), 
-                           C::getData(machine, parameters, 2),
-                           D::getData(machine, parameters, 3));
+  void dispatch(RLMachine& machine, 
+                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  {
+    int store;
+
+    // The following is fucking ugly. If anyone knows a way to make
+    // this pretty, but still get gcc to reason about template types
+    // and optimize away everything but one of these instances, I'd
+    // love to hear from you.
+    if(!A::isRealTypestruct)
+    {
+      store = operator()(machine);
+    }
+    else if(A::isRealTypestruct && !B::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            !C::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                         B::getData(machine, parameters, 1));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && !D::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                         B::getData(machine, parameters, 1),
+                         C::getData(machine, parameters, 2));
+    }
+    else
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                         B::getData(machine, parameters, 1), 
+                         C::getData(machine, parameters, 2),
+                         D::getData(machine, parameters, 3));
+    }
+
     machine.setStoreRegister(store);
   }
 
   /// Method that is overridden by all subclasses to implement the
   /// function of this opcode
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType) = 0;
+  virtual int operator()(RLMachine&) { }
+  virtual int operator()(RLMachine&, firstType) { }
+  virtual int operator()(RLMachine&, firstType, secondType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType) { }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { }
 };
 
+// Partial specialization for RLOp_Store::checkTypes for when
+// everything is empty (aka an operation that takes no parameters)
+template<>
+inline bool RLOp_Store<Empty_T, Empty_T, Empty_T, Empty_T>::
+checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+{
+  return parameters.size() == 0;
+}
 // @}
 
 // -----------------------------------------------------------------------
@@ -735,6 +641,8 @@ struct RLOp_Store_4 : public RLOperation {
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
+
+
 
 // -----------------------------------------------------------------------
 
