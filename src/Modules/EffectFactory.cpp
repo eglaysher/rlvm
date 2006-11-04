@@ -65,26 +65,6 @@ void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
   y2 = y2 - y1;
 }
 
-/** 
- * Factory out all the common code for loading SELs from the
- * Gameexe.ini during the grp_* functions.
- * 
- * @param machine   RLMachine to read Gameexe from
- * @param selParams 
- */
-void loadGrpSELCoordinates(RLMachine& machine, int selNum, int selParams[SEL_SIZE])
-{
-  Gameexe& gexe = machine.system().gameexe();
-  for(int i = 0; i < SEL_SIZE; ++i)
-    selParams[i] = gexe.getInt("SEL", selNum, i, 0);
-
-  grpToRecCoordinates(selParams[0], selParams[1], 
-                      selParams[2], selParams[3]);
-
-  // SDL's handling of opacity is flipped
-//  selParams[12] = 255 - selParams[12];
-}
-
 }
 
 // -----------------------------------------------------------------------
@@ -96,6 +76,9 @@ LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
 
   for(int i = 0; i < SEL_SIZE; ++i)
     selParams[i] = gexe.getInt("SEL", selNum, i, 0);
+
+  grpToRecCoordinates(selParams[0], selParams[1], 
+                      selParams[2], selParams[3]);
 
   return build(machine, selParams[0], selParams[1], selParams[2], selParams[3],
                selParams[4], selParams[5], selParams[6], selParams[7], 

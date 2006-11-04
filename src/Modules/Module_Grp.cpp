@@ -92,24 +92,51 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 
 struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    int opacity = machine.system().gameexe().getInt("SEL", effectNum, 14);
+    int opacity = machine.system().gameexe().getInt("SEL", effectNum, 14, 0);
 
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename[0] == '?') filename = graphics.defaultBgrName();
     filename = findFile(filename);
-    cerr << "b(" << filename<< ")" << endl;
     // First, load the file to DC1.
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     surface->blitToSurface(graphics.getDC(1),
                           0, 0, surface->width(), surface->height(),
                           0, 0, graphics.screenWidth(), graphics.screenHeight(),
                           // Modify this value later:
-                          255);
+                          opacity);
 
     // Set the long operation for the correct transition long operation
     machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
   }
 };
+
+// -----------------------------------------------------------------------
+
+/// @todo factor out the common code between grpOpens!
+struct Grp_grpOpen_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
+                                           IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int opacity)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+    // First, load the file to DC1.
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    surface->blitToSurface(graphics.getDC(1),
+                          0, 0, surface->width(), surface->height(),
+                          0, 0, graphics.screenWidth(), graphics.screenHeight(),
+                          // Modify this value later:
+                          opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+//struct Grp_grpOpen_2 : public RLOp_Void_
 
 // -----------------------------------------------------------------------
 
@@ -122,4 +149,5 @@ GrpModule::GrpModule()
   addOpcode(31, 0, new Grp_wipe);
 
   addOpcode(76, 0, new Grp_grpOpen_0);
+  addOpcode(76, 1, new Grp_grpOpen_1);
 }
