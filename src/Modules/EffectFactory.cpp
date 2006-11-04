@@ -35,45 +35,92 @@
 #include <iostream>
 #include <sstream>
 
-#include "libReallive/defs.h"
+//#include "libReallive/defs.h"
+#include "libReallive/gameexe.h"
+
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/System.hpp"
 
 using namespace std;
 using namespace libReallive;
 
+const int SEL_SIZE = 16;
+
+// Helper functions
+namespace {
+
 /** 
- * Returns a constructed LongOperation with the following properties
- * to perform a transition.
+ * Changes the coordinate types. All operations internally are done in
+ * rec coordinates, (x, y, width, height). The GRP functions pass
+ * parameters of the format (x1, y1, x2, y2).
  * 
- * @param filename      Image file to use
- * @param x             Source x coordinate
- * @param y             Source y coordinate
- * @param width         Source width
- * @param height        Source hight
- * @param dx            Destination x coordinate
- * @param dy            Destination y coordinate
- * @param time          Length of transition, in ms.
- * @param style         The style of transition. This factory does a
- *                      big switch statement on this value.
- * @param direction     For wipes and pans, sets the wipe direction.
- * @param interpolation Smooths certain transitions. For For dithered
- *                      fades, interpolation N adds N intermediate
- *                      steps so that the transition fades between
- *                      patterns rather than stepping between them.
- *                      For wipes, interpolation N replaces the hard
- *                      boundary with a soft edge of thickness roughly
- *                      2^N * 2.5 pixels.
- * @param xsize         X size of pattern in some transitions
- * @param ysize         Y size of pattern in some transitions
- * @param a             Unknown
- * @param b             Unknown
- * @param opacity       Opacity of the new image composited onto the
- *                      old image in DC1. (DC1 is then copied onto DC0
- *                      with this transition object.)
- * @param c             Unknown
- * 
- * @return A LongOperation which will perform the following transition
- *         and then exit.
+ * @param x1 X coordinate. Not changed by this function
+ * @param y1 Y coordinate. Not changed by this function
+ * @param x2 X2. In place changed to width.
+ * @param y2 Y2. In place changed to height.
  */
+void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
+{
+  x2 = x2 - x1;
+  y2 = y2 - y1;
+}
+
+/** 
+ * Factory out all the common code for loading SELs from the
+ * Gameexe.ini during the grp_* functions.
+ * 
+ * @param machine   RLMachine to read Gameexe from
+ * @param selParams 
+ */
+void loadGrpSELCoordinates(RLMachine& machine, int selNum, int selParams[SEL_SIZE])
+{
+  Gameexe& gexe = machine.system().gameexe();
+  for(int i = 0; i < SEL_SIZE; ++i)
+    selParams[i] = gexe.getInt("SEL", selNum, i, 0);
+
+  grpToRecCoordinates(selParams[0], selParams[1], 
+                      selParams[2], selParams[3]);
+
+  // SDL's handling of opacity is flipped
+//  selParams[12] = 255 - selParams[12];
+}
+
+}
+
+// -----------------------------------------------------------------------
+
+LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
+{
+  Gameexe& gexe = machine.system().gameexe();
+  int selParams[SEL_SIZE];
+
+  for(int i = 0; i < SEL_SIZE; ++i)
+    selParams[i] = gexe.getInt("SEL", selNum, i, 0);
+
+  return build(machine, selParams[0], selParams[1], selParams[2], selParams[3],
+               selParams[4], selParams[5], selParams[6], selParams[7], 
+               selParams[8], selParams[9], selParams[10], selParams[11],
+               selParams[12], selParams[13], selParams[14], selParams[15]);
+}
+
+// -----------------------------------------------------------------------
+
+LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, int selNum)
+{
+  Gameexe& gexe = machine.system().gameexe();
+  int selParams[SEL_SIZE];
+
+  for(int i = 0; i < SEL_SIZE; ++i)
+    selParams[i] = gexe.getInt("SELR", selNum, i, 0);
+
+  return build(machine, selParams[0], selParams[1], selParams[2], selParams[3],
+               selParams[4], selParams[5], selParams[6], selParams[7], 
+               selParams[8], selParams[9], selParams[10], selParams[11],
+               selParams[12], selParams[13], selParams[14], selParams[15]);  
+}
+
+// -----------------------------------------------------------------------
+
 LongOperation* EffectFactory::build(RLMachine& machine, 
   int x, int y, int width, int height, int dx, int dy, int time, int style,
   int direction, int interpolation, int xsize, int ysize, int a, int b,

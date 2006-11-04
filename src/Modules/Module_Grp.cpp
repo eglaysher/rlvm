@@ -60,42 +60,6 @@ string findFile(const std::string& fileName)
   return file;
 }
 
-/** 
- * Changes the coordinate types. All operations internally are done in
- * rec coordinates, (x, y, width, height). The GRP functions pass
- * parameters of the format (x1, y1, x2, y2).
- * 
- * @param x1 X coordinate. Not changed by this function
- * @param y1 Y coordinate. Not changed by this function
- * @param x2 X2. In place changed to width.
- * @param y2 Y2. In place changed to height.
- */
-void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
-{
-  x2 = x2 - x1;
-  y2 = y2 - y1;
-}
-
-/** 
- * Factory out all the common code for loading SELs from the
- * Gameexe.ini during the grp_* functions.
- * 
- * @param machine   RLMachine to read Gameexe from
- * @param selParams 
- */
-void loadGrpSELCoordinates(RLMachine& machine, int selNum, int selParams[SEL_SIZE])
-{
-  Gameexe& gexe = machine.system().gameexe();
-  for(int i = 0; i < SEL_SIZE; ++i)
-    selParams[i] = gexe.getInt("SEL", selNum, i, 0);
-
-//  grpToRecCoordinates(selParams[0], selParams[1], 
-//                      selParams[2], selParams[3]);
-
-  // SDL's handling of opacity is flipped
-//  selParams[12] = 255 - selParams[12];
-}
-
 }
 
 // -----------------------------------------------------------------------
@@ -128,13 +92,7 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 
 struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    int selParams[SEL_SIZE];
-    loadGrpSELCoordinates(machine, effectNum, selParams);
-    cerr << "SEL(";
-    for(int i = 0; i < SEL_SIZE; ++i)
-      cerr << selParams[i] << ",";
-    cerr << ")" << endl;
-    cerr << "a" << endl;
+    int opacity = machine.system().gameexe().getInt("SEL", effectNum, 14);
 
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename[0] == '?') filename = graphics.defaultBgrName();
@@ -149,12 +107,7 @@ struct Grp_grpOpen_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
                           255);
 
     // Set the long operation for the correct transition long operation
-    machine.setLongOperation(
-        EffectFactory::build(
-          machine, selParams[0], selParams[1], selParams[2], selParams[3],
-          selParams[4], selParams[5], selParams[6], selParams[7], 
-          selParams[8], selParams[9], selParams[10], selParams[11],
-          selParams[12], selParams[13], selParams[14], selParams[15]));
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
   }
 };
 
