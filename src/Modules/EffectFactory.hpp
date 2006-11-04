@@ -111,6 +111,11 @@ public:
     int x, int y, int width, int height, int dx, int dy, int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int opacity, int c);
+
+private:
+  static LongOperation* buildWipeEffect(
+    RLMachine& machine, int x, int y, int width, int height, int dx, 
+    int dy, int time, int direction, int interpolation);
 };
 
 #endif

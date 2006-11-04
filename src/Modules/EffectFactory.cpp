@@ -115,8 +115,8 @@ LongOperation* EffectFactory::build(RLMachine& machine,
   switch(style)
   {
   case 10:
-    return new WipeEffect(machine, x, y, width, height, dx, dy, time, 
-                          direction, interpolation);
+    return buildWipeEffect(machine, x, y, width, height, dx, dy, time, 
+                           direction, interpolation);
   case 0:
   case 50:
   default:
@@ -129,4 +129,43 @@ LongOperation* EffectFactory::build(RLMachine& machine,
   stringstream ss;
   ss << "Unsupported effect number in #SEL:" << style;
   throw Error(ss.str());
+}
+
+// -----------------------------------------------------------------------
+// Private methods
+// -----------------------------------------------------------------------
+
+/// Which direction we wipe in 
+enum ScreenDirection {
+  TOP_TO_BOTTOM = 0, ///< From the top to the bottom
+  BOTTOM_TO_TOP = 1, ///< From the bottom to the top
+  LEFT_TO_RIGHT = 2, ///< From left to right
+  RIGHT_TO_LEFT = 3  ///< From right to left
+};
+
+/** 
+ * Creates a specific subclass of WipeEffect for #SEL #10, Wipe.
+ */
+LongOperation* EffectFactory::buildWipeEffect(
+  RLMachine& machine, int x, int y, int width, int height, int dx, 
+  int dy, int time, int direction, int interpolation)
+{
+  switch(direction)
+  {
+  case TOP_TO_BOTTOM:
+    return new WipeTopToBottomEffect(machine, x, y, width, height, dx, 
+                                     dy, time, interpolation);
+  case BOTTOM_TO_TOP:
+    return new WipeBottomToTopEffect(machine, x, y, width, height, dx, 
+                                     dy, time, interpolation);
+  case LEFT_TO_RIGHT:
+    return new WipeLeftToRightEffect(machine, x, y, width, height, dx,
+                                     dy, time, interpolation);
+  default:
+    cerr << "WARNING! Unsupported direction " << direction 
+         << " in EffectFactory::buildWipeEffect. Returning Top to"
+         << " Bottom effect." << endl;
+    return new WipeTopToBottomEffect(machine, x, y, width, height, dx, 
+                                     dy, time, interpolation);
+  };
 }

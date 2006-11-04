@@ -781,26 +781,18 @@ struct RLOp_Store : public RLOperation {
     // and optimize away everything but one of these instances, I'd
     // love to hear from you.
     if(!A::isRealTypestruct)
-    {
       store = operator()(machine);
-    }
     else if(A::isRealTypestruct && !B::isRealTypestruct)
-    {
       store = operator()(machine, A::getData(machine, parameters, 0));
-    }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             !C::isRealTypestruct)
-    {
       store = operator()(machine, A::getData(machine, parameters, 0),
                          B::getData(machine, parameters, 1));
-    }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && !D::isRealTypestruct)
-    {
       store = operator()(machine, A::getData(machine, parameters, 0),
                          B::getData(machine, parameters, 1),
                          C::getData(machine, parameters, 2));
-    }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
             !E::isRealTypestruct)
@@ -978,7 +970,7 @@ struct RLOp_Store : public RLOperation {
 // everything is empty (aka an operation that takes no parameters)
 template<>
 inline bool RLOp_Store<Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, 
-                      Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
+                       Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
 checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {
   return parameters.size() == 0;

@@ -36,42 +36,98 @@
 class GraphicsSystem;
 
 /**
- * Implements #SEL transition style #10, Wipe.
+ * Base class for the four classess that implement #SEL transition
+ * style #10, Wipe. There are four direct subclasses from WipeEffect
+ * that implement the individual directions that we wipe in.
  * 
+ * @bug It's obvious to me now that the Wipe for style #10 is not so
+ *      much a slide on for DC1, but a slide off for DC0. It's ninety
+ *      percent correct, thought, and would only be noticed by
+ *      observing Reallive and RLVM's transition.
  */
 class WipeEffect : public Effect
 {
 private:
-  /// Which direction we wipe in 
-  enum Direction {
-    WIPE_TOP_TO_BOTTOM = 0, ///< Wipe from the top to the bottom
-    WIPE_BOTTOM_TO_TOP = 1, ///< Wipe from the bottom to the top
-    WIPE_LEFT_TO_RIGHT = 2, ///< Wipe from left to right
-    WIPE_RIGHT_TO_LEFT = 3  ///< Wipe from right to left
-  } m_direction;
   int m_interpolation;
   int m_interpolationInPixels;
 
   virtual bool blitOriginalImage() const;
 
+protected:
   void calculateSizes(int currentTime,
                       int& sizeOfInterpolation, 
                       int& sizeOfMainPolygon,
                       int sizeOfScreen);
 
-  void wipeFromTopToBottom(GraphicsSystem& system, int currentTime);
-  void wipeFromBottomToTop(GraphicsSystem& system, int currentTime);
-  void wipeFromLeftToRight(GraphicsSystem& system, int currentTime);
-  void wipeFromRightToLeft(GraphicsSystem& system, int currentTime);
-
-protected:
-  virtual void performEffectForTime(RLMachine& machine,
-                                    int currentTime);
-
 public:
   WipeEffect(RLMachine& machine, int x, int y, int width, 
-             int height, int dx, int dy, int time, int direction,
+             int height, int dx, int dy, int time, int interpolation);
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements SEL #10, Wipe, with direction 0, top to bottom.
+ */
+class WipeTopToBottomEffect : public WipeEffect
+{
+protected:
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+
+public:
+  WipeTopToBottomEffect(RLMachine& machine, int x, int y, int width, 
+             int height, int dx, int dy, int time,
              int interpolation);
 };
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements SEL #10, Wipe, with direction 1, bottom to top.
+ */
+class WipeBottomToTopEffect : public WipeEffect
+{
+protected:
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+
+public:
+  WipeBottomToTopEffect(RLMachine& machine, int x, int y, int width, 
+                        int height, int dx, int dy, int time,
+                        int interpolation);
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements SEL #10, Wipe, with direction 2, left to right.
+ */
+class WipeLeftToRightEffect : public WipeEffect
+{
+protected:
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+
+public:
+  WipeLeftToRightEffect(RLMachine& machine, int x, int y, int width, 
+                        int height, int dx, int dy, int time,
+                        int interpolation);
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements SEL #10, Wipe, with direction 2, left to right.
+ */
+class WipeRightToLeftEffect : public WipeEffect
+{
+protected:
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+
+public:
+  WipeRightToLeftEffect(RLMachine& machine, int x, int y, int width, 
+                  int height, int dx, int dy, int time,
+                  int interpolation);
+};
+
+
 
 #endif

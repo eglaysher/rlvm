@@ -42,6 +42,8 @@
 using namespace std;
 
 // -----------------------------------------------------------------------
+// WipeEffect base class
+// -----------------------------------------------------------------------
 
 bool WipeEffect::blitOriginalImage() const
 {
@@ -54,14 +56,14 @@ bool WipeEffect::blitOriginalImage() const
  * Calculates the size of the interpolation and main polygons.
  *
  * There are 3 possible stages:
- * 1. [0, m_interpolationInPixels) - Draw only the
- *    transition. (sizeOfMainPolygon == 0, sizeOfInterpolation ==
- *    amountVisible)
- * 2. [m_interpolationInPixels, sizeOfScreen) - Draw both
- *    polygons. (sizeOfMainPolygon == amountVisible -
- *    m_interpolationInPixels, sizeOfInterpolation == amountVisible)
- * 3. [height, height + m_interpolationInPixels) - Draw both
- *    polygons, flooring the height of the transition to 
+ * - [0, m_interpolationInPixels) - Draw only the
+ *   transition. (sizeOfMainPolygon == 0, sizeOfInterpolation ==
+ *   amountVisible)
+ * - [m_interpolationInPixels, sizeOfScreen) - Draw both
+ *   polygons. (sizeOfMainPolygon == amountVisible -
+ *   m_interpolationInPixels, sizeOfInterpolation == amountVisible)
+ * - [height, height + m_interpolationInPixels) - Draw both
+ *   polygons, flooring the height of the transition to 
  * 
  * @param sizeOfInterpolation 
  * @param sizeOfMainPolygon 
@@ -95,8 +97,34 @@ void WipeEffect::calculateSizes(int currentTime,
 
 // -----------------------------------------------------------------------
 
-void WipeEffect::wipeFromTopToBottom(GraphicsSystem& graphics, int currentTime)
+WipeEffect::WipeEffect(RLMachine& machine, int x, int y, int width, 
+                       int height, int dx, int dy, int time, 
+                       int interpolation)
+  : Effect(machine, x, y, width, height, dx, dy, time), 
+//    m_direction(Direction(direction)),
+    m_interpolation(interpolation),
+    m_interpolationInPixels(0)
 {
+  if(m_interpolation)
+    m_interpolationInPixels = pow(float(2), interpolation) * 2.5;
+}
+
+// -----------------------------------------------------------------------
+// WipeTopToBottomEffect
+// -----------------------------------------------------------------------
+
+WipeTopToBottomEffect::WipeTopToBottomEffect(
+  RLMachine& machine, int x, int y, int width, int height, int dx, 
+  int dy, int time, int interpolation)
+  : WipeEffect(machine, x, y, width, height, dx, dy, time, interpolation)
+{}
+
+// -----------------------------------------------------------------------
+
+void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine, 
+                                                 int currentTime)
+{
+  GraphicsSystem& graphics = machine.system().graphics();
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
 
@@ -114,7 +142,8 @@ void WipeEffect::wipeFromTopToBottom(GraphicsSystem& graphics, int currentTime)
     int opacity[4] = {255, 255, 0, 0};
 
     graphics.getDC(1).
-      renderToScreen(x(), y() + height() - sizeOfInterpolation, x() + width(), y() + height(), 
+      renderToScreen(x(), y() + height() - sizeOfInterpolation, 
+                     x() + width(), y() + height(), 
                      dx(), dy() + sizeOfMainPolygon, dx() + width(), 
                      dy() + sizeOfMainPolygon + sizeOfInterpolation,
                      opacity);    
@@ -122,11 +151,26 @@ void WipeEffect::wipeFromTopToBottom(GraphicsSystem& graphics, int currentTime)
 }
 
 // -----------------------------------------------------------------------
+// WipeBottomToTopEffect
+// -----------------------------------------------------------------------
 
-void WipeEffect::wipeFromBottomToTop(GraphicsSystem& graphics, int currentTime)
+WipeBottomToTopEffect::WipeBottomToTopEffect(
+  RLMachine& machine, int x, int y, int width, int height, int dx, 
+  int dy, int time, int interpolation)
+  : WipeEffect(machine, x, y, width, height, dx, dy, time,
+               interpolation)
+{}
+
+// -----------------------------------------------------------------------
+
+void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
+                                                 int currentTime)
 {
+  GraphicsSystem& graphics = machine.system().graphics();
+
   int sizeOfInterpolation, sizeOfMainPolygon;
-  calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
+  calculateSizes(currentTime, sizeOfInterpolation, 
+                 sizeOfMainPolygon, height());
 
   // Render the sliding on frame
   if(sizeOfMainPolygon)
@@ -152,9 +196,22 @@ void WipeEffect::wipeFromBottomToTop(GraphicsSystem& graphics, int currentTime)
 }
 
 // -----------------------------------------------------------------------
+// WipeFromLeftToRightEffect
+// -----------------------------------------------------------------------
 
-void WipeEffect::wipeFromLeftToRight(GraphicsSystem& graphics, int currentTime)
+WipeLeftToRightEffect::WipeLeftToRightEffect(
+  RLMachine& machine, int x, int y, int width, int height, int dx, 
+  int dy, int time, int interpolation)
+  : WipeEffect(machine, x,y, width, height, dx, dy, time, 
+               interpolation)
+{}
+
+// -----------------------------------------------------------------------
+
+void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
+                                                  int currentTime)
 {
+  GraphicsSystem& graphics = machine.system().graphics();
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 
@@ -180,9 +237,22 @@ void WipeEffect::wipeFromLeftToRight(GraphicsSystem& graphics, int currentTime)
 }
 
 // -----------------------------------------------------------------------
+// WipeFromRightToLeftEffect
+// -----------------------------------------------------------------------
 
-void WipeEffect::wipeFromRightToLeft(GraphicsSystem& graphics, int currentTime)
+WipeRightToLeftEffect::WipeRightToLeftEffect(
+  RLMachine& machine, int x, int y, int width, int height, int dx, 
+  int dy, int time, int interpolation)
+  : WipeEffect(machine, x, y, width, height, dx, dy, time, 
+               interpolation)
+{}
+
+// -----------------------------------------------------------------------
+
+void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
+                                                 int currentTime)
 {
+  GraphicsSystem& graphics = machine.system().graphics();
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 
@@ -207,64 +277,4 @@ void WipeEffect::wipeFromRightToLeft(GraphicsSystem& graphics, int currentTime)
                      dx() + width() - sizeOfMainPolygon, dy() + height(),
                      opacity);
   }
-}
-
-// -----------------------------------------------------------------------
-
-/** 
- * 
- * 
- * @todo Think about refactoring WipeEffect as a base class, changing
- *       the switch below into a performWipe() which is overridden by
- *       four subclasses; this pushes direction parameter parsing
- *       logic into the EffectFactory, where it debatably belongs,
- *       since many Effects will have a direction value. 
- */
-void WipeEffect::performEffectForTime(RLMachine& machine,
-                                      int currentTime)
-{
-  // Render to the screen
-  GraphicsSystem& graphics = machine.system().graphics();
-  graphics.beginFrame();
-  // Render the previous frame
-  graphics.getDC(0).
-    renderToScreen(x(), y(), x() + width(), y() + height(),
-                   dx(), dy(), dx() + width(), dy() + height(),
-                   255);
-
-  // Switch on the correct wipe implementation
-  switch(m_direction)
-  {
-  case WIPE_TOP_TO_BOTTOM:
-    wipeFromTopToBottom(graphics, currentTime);
-    break;
-  case WIPE_BOTTOM_TO_TOP:
-    wipeFromBottomToTop(graphics, currentTime);
-    break;
-  case WIPE_LEFT_TO_RIGHT:
-    wipeFromLeftToRight(graphics, currentTime);
-    break;
-  default:
-  case WIPE_RIGHT_TO_LEFT:
-    wipeFromRightToLeft(graphics, currentTime);
-    break;
-  };
-
-  graphics.endFrame();
-}
-
-// -----------------------------------------------------------------------
-
-WipeEffect::WipeEffect(RLMachine& machine, int x, int y, int width, 
-                       int height, int dx, int dy, int time, 
-                       int direction, int interpolation)
-  : Effect(machine, x, y, width, height, dx, dy, time), 
-    m_direction(Direction(direction)),
-    m_interpolation(interpolation),
-    m_interpolationInPixels(0)
-{
-  cerr << "m_interpolation: " << m_interpolation << endl;
-  if(m_interpolation)
-    m_interpolationInPixels = pow(float(2), interpolation) * 2.5;
-  cerr << "m_interpolationInPixels: " << m_interpolationInPixels << endl;
 }

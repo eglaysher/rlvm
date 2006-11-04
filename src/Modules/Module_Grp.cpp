@@ -136,7 +136,28 @@ struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-//struct Grp_grpOpen_2 : public RLOp_Void_
+struct Grp_grpOpen_2 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+    // First, load the file to DC1.
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    surface->blitToSurface(graphics.getDC(1),
+                          0, 0, surface->width(), surface->height(),
+                          0, 0, graphics.screenWidth(), graphics.screenHeight(),
+                          // Modify this value later:
+                          255);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -150,4 +171,5 @@ GrpModule::GrpModule()
 
   addOpcode(76, 0, new Grp_grpOpen_0);
   addOpcode(76, 1, new Grp_grpOpen_1);
+  addOpcode(76, 2, new Grp_grpOpen_2);
 }

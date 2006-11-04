@@ -58,7 +58,21 @@ bool Effect::operator()(RLMachine& machine)
 
   if(currentFrame < m_duration)
   {
+    // Render to the screen
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.beginFrame();
+
+    if(blitOriginalImage())
+    {
+      graphics.getDC(0).
+        renderToScreen(x(), y(), x() + width(), y() + height(),
+                       dx(), dy(), dx() + width(), dy() + height(),
+                       255);
+    }
+
     performEffectForTime(machine, currentFrame);
+
+    graphics.endFrame();
     return false;
   }
   else

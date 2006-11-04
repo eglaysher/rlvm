@@ -173,7 +173,6 @@ Texture::~Texture()
 // -----------------------------------------------------------------------
 
 // This is really broken and brain dead.
-/// @todo s/GL_ONE/GL_ONE_MINUS_SRC_ALPHA/; ?
 void Texture::renderToScreen(int x1, int y1, int x2, int y2,
                              int dx1, int dy1, int dx2, int dy2,
                              int opacity)
@@ -189,7 +188,7 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
 
   // Blend when we have less opacity
   if(opacity < 255)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   {
@@ -248,7 +247,6 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
 
 // -----------------------------------------------------------------------
 
-/// @todo s/GL_ONE/GL_ONE_MINUS_SRC_ALPHA/; ?
 void Texture::rawRenderQuad(const int srcCoords[8], 
                             const int destCoords[8],
                             const int opacity[4])
@@ -266,7 +264,7 @@ void Texture::rawRenderQuad(const int srcCoords[8],
   // Blend when we have less opacity
   if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255)) 
      != opacity + 4)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   {
