@@ -101,7 +101,6 @@ WipeEffect::WipeEffect(RLMachine& machine, int x, int y, int width,
                        int height, int dx, int dy, int time, 
                        int interpolation)
   : Effect(machine, x, y, width, height, dx, dy, time), 
-//    m_direction(Direction(direction)),
     m_interpolation(interpolation),
     m_interpolationInPixels(0)
 {

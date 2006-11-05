@@ -116,6 +116,10 @@ private:
   static LongOperation* buildWipeEffect(
     RLMachine& machine, int x, int y, int width, int height, int dx, 
     int dy, int time, int direction, int interpolation);
+
+  static LongOperation* buildSlideEffect(
+    RLMachine& machine, int x, int y, int width, int height, int dx, 
+    int dy, int time, int direction);
 };
 
 #endif

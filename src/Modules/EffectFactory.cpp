@@ -31,6 +31,7 @@
 #include "Modules/EffectFactory.hpp"
 #include "Modules/FadeEffect.hpp"
 #include "Modules/WipeEffect.hpp"
+#include "Modules/SlideEffect.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -117,6 +118,9 @@ LongOperation* EffectFactory::build(RLMachine& machine,
   case 10:
     return buildWipeEffect(machine, x, y, width, height, dx, dy, time, 
                            direction, interpolation);
+  case 15:
+    return buildSlideEffect(machine, x, y, width, height, dx, dy, time, 
+                           direction);
   case 0:
   case 50:
   default:
@@ -143,6 +147,8 @@ enum ScreenDirection {
   RIGHT_TO_LEFT = 3  ///< From right to left
 };
 
+// -----------------------------------------------------------------------
+
 /** 
  * Creates a specific subclass of WipeEffect for #SEL #10, Wipe.
  */
@@ -161,11 +167,47 @@ LongOperation* EffectFactory::buildWipeEffect(
   case LEFT_TO_RIGHT:
     return new WipeLeftToRightEffect(machine, x, y, width, height, dx,
                                      dy, time, interpolation);
+  case RIGHT_TO_LEFT:
+    return new WipeRightToLeftEffect(machine, x, y, width, height, dx,
+                                     dy, time, interpolation);
   default:
     cerr << "WARNING! Unsupported direction " << direction 
          << " in EffectFactory::buildWipeEffect. Returning Top to"
          << " Bottom effect." << endl;
     return new WipeTopToBottomEffect(machine, x, y, width, height, dx, 
                                      dy, time, interpolation);
+  };
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Creates a specific subclass of SlideEffect for #SEL #10, Slide.
+ */
+LongOperation* EffectFactory::buildSlideEffect(
+  RLMachine& machine, int x, int y, int width, int height, int dx, 
+  int dy, int time, int direction)
+{
+  switch(direction)
+  {
+  case TOP_TO_BOTTOM:
+    return new SlideTopToBottomEffect(machine, x, y, width, height, dx, 
+                                      dy, time);
+  case BOTTOM_TO_TOP:
+    return new SlideBottomToTopEffect(machine, x, y, width, height, dx, 
+                                      dy, time);
+  case LEFT_TO_RIGHT:
+    return new SlideLeftToRightEffect(machine, x, y, width, height, dx,
+                                      dy, time);
+  case RIGHT_TO_LEFT:
+    return new SlideLeftToRightEffect(machine, x, y, width, height, dx,
+                                     dy, time);
+
+  default:
+    cerr << "WARNING! Unsupported direction " << direction 
+         << " in EffectFactory::buildSlideEffect. Returning Top to"
+         << " Bottom effect." << endl;
+    return new SlideTopToBottomEffect(machine, x, y, width, height, dx, 
+                                      dy, time);
   };
 }
