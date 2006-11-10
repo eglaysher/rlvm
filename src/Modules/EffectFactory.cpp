@@ -41,48 +41,24 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 
 using namespace std;
 using namespace libReallive;
 
 const int SEL_SIZE = 16;
 
-// Helper functions
-namespace {
-
-/** 
- * Changes the coordinate types. All operations internally are done in
- * rec coordinates, (x, y, width, height). The GRP functions pass
- * parameters of the format (x1, y1, x2, y2).
- * 
- * @param x1 X coordinate. Not changed by this function
- * @param y1 Y coordinate. Not changed by this function
- * @param x2 X2. In place changed to width.
- * @param y2 Y2. In place changed to height.
- */
-void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
-{
-  x2 = x2 - x1;
-  y2 = y2 - y1;
-}
-
-}
-
 // -----------------------------------------------------------------------
 
 LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
 {
   Gameexe& gexe = machine.system().gameexe();
-  int selParams[SEL_SIZE];
+  vector<int> selParams = gexe("SEL", selNum).to_intVector();
 
-  for(int i = 0; i < SEL_SIZE; ++i)
-    selParams[i] = gexe.getInt("SEL", selNum, i, 0);
-
-  grpToRecCoordinates(selParams[0], selParams[1], 
-                      selParams[2], selParams[3]);
-
-  return build(machine, selParams[0], selParams[1], selParams[2], selParams[3],
-               selParams[4], selParams[5], selParams[6], selParams[7], 
+  return build(machine, 
+// selParams[0], selParams[1], selParams[2], selParams[3],
+//                selParams[4], selParams[5], 
+               selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
                selParams[12], selParams[13], selParams[14], selParams[15]);
 }
@@ -92,42 +68,40 @@ LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
 LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, int selNum)
 {
   Gameexe& gexe = machine.system().gameexe();
-  int selParams[SEL_SIZE];
+  vector<int> selParams = gexe("SELR", selNum).to_intVector();
 
-  for(int i = 0; i < SEL_SIZE; ++i)
-    selParams[i] = gexe.getInt("SELR", selNum, i, 0);
-
-  return build(machine, selParams[0], selParams[1], selParams[2], selParams[3],
-               selParams[4], selParams[5], selParams[6], selParams[7], 
+  return build(machine, 
+               selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
                selParams[12], selParams[13], selParams[14], selParams[15]);  
 }
 
 // -----------------------------------------------------------------------
 
-LongOperation* EffectFactory::build(RLMachine& machine, 
-  int x, int y, int width, int height, int dx, int dy, int time, int style,
+//  int x, int y, int width, int height, int dx, int dy, 
+LongOperation* EffectFactory::build(
+  RLMachine& machine, int time, int style,
   int direction, int interpolation, int xsize, int ysize, int a, int b,
   int opacity, int c)
 {
+  int width = machine.system().graphics().screenWidth();
+  int height = machine.system().graphics().screenHeight();
+
   // There is a completely ridaculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so
   // confusing and hard to implement!
   switch(style)
   {
   case 10:
-    return buildWipeEffect(machine, x, y, width, height, dx, dy, time, 
+    return buildWipeEffect(machine, width, height, time, 
                            direction, interpolation);
   case 15:
-    return buildSlideEffect(machine, x, y, width, height, dx, dy, time, 
+    return buildSlideEffect(machine, width, height, time, 
                            direction);
   case 0:
   case 50:
   default:
-    cerr << "FadeEffect(" << x << "," << y << "," << width << "," 
-         << height << "," << dx << "," << dy << "," << time << ")"
-         << endl;
-    return new FadeEffect(machine, x, y, width, height, dx, dy, time);
+    return new FadeEffect(machine, width, height, time);
   }
 
   stringstream ss;
@@ -153,29 +127,29 @@ enum ScreenDirection {
  * Creates a specific subclass of WipeEffect for #SEL #10, Wipe.
  */
 LongOperation* EffectFactory::buildWipeEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time, int direction, int interpolation)
+  RLMachine& machine, int width, int height, int time, 
+  int direction, int interpolation)
 {
   switch(direction)
   {
   case TOP_TO_BOTTOM:
-    return new WipeTopToBottomEffect(machine, x, y, width, height, dx, 
-                                     dy, time, interpolation);
+    return new WipeTopToBottomEffect(machine, width, height, 
+                                     time, interpolation);
   case BOTTOM_TO_TOP:
-    return new WipeBottomToTopEffect(machine, x, y, width, height, dx, 
-                                     dy, time, interpolation);
+    return new WipeBottomToTopEffect(machine, width, height, 
+                                     time, interpolation);
   case LEFT_TO_RIGHT:
-    return new WipeLeftToRightEffect(machine, x, y, width, height, dx,
-                                     dy, time, interpolation);
+    return new WipeLeftToRightEffect(machine, width, height,
+                                     time, interpolation);
   case RIGHT_TO_LEFT:
-    return new WipeRightToLeftEffect(machine, x, y, width, height, dx,
-                                     dy, time, interpolation);
+    return new WipeRightToLeftEffect(machine, width, height,
+                                     time, interpolation);
   default:
     cerr << "WARNING! Unsupported direction " << direction 
          << " in EffectFactory::buildWipeEffect. Returning Top to"
          << " Bottom effect." << endl;
-    return new WipeTopToBottomEffect(machine, x, y, width, height, dx, 
-                                     dy, time, interpolation);
+    return new WipeTopToBottomEffect(machine, width, height, 
+                                     time, interpolation);
   };
 }
 
@@ -185,29 +159,28 @@ LongOperation* EffectFactory::buildWipeEffect(
  * Creates a specific subclass of SlideEffect for #SEL #10, Slide.
  */
 LongOperation* EffectFactory::buildSlideEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time, int direction)
+  RLMachine& machine, int width, int height, int time, int direction)
 {
   switch(direction)
   {
   case TOP_TO_BOTTOM:
-    return new SlideTopToBottomEffect(machine, x, y, width, height, dx, 
-                                      dy, time);
+    return new SlideTopToBottomEffect(machine, width, height, 
+                                      time);
   case BOTTOM_TO_TOP:
-    return new SlideBottomToTopEffect(machine, x, y, width, height, dx, 
-                                      dy, time);
+    return new SlideBottomToTopEffect(machine, width, height, 
+                                      time);
   case LEFT_TO_RIGHT:
-    return new SlideLeftToRightEffect(machine, x, y, width, height, dx,
-                                      dy, time);
+    return new SlideLeftToRightEffect(machine, width, height,
+                                      time);
   case RIGHT_TO_LEFT:
-    return new SlideLeftToRightEffect(machine, x, y, width, height, dx,
-                                     dy, time);
+    return new SlideLeftToRightEffect(machine, width, height,
+                                     time);
 
   default:
     cerr << "WARNING! Unsupported direction " << direction 
          << " in EffectFactory::buildSlideEffect. Returning Top to"
          << " Bottom effect." << endl;
-    return new SlideTopToBottomEffect(machine, x, y, width, height, dx, 
-                                      dy, time);
+    return new SlideTopToBottomEffect(machine, width, height, 
+                                      time);
   };
 }

@@ -49,8 +49,8 @@ class Surface;
 class Effect : public LongOperation
 {
 private:
-  /// Defines the source and destination areas.
-  int m_x, m_y, m_width, m_height, m_dx, m_dy;
+  /// Defines the size of the screen; since effects update the entire screen.
+  int m_width, m_height;
 
   /// Defines the duration of in milliseconds
   unsigned int m_duration;
@@ -73,12 +73,8 @@ private:
   virtual bool blitOriginalImage() const = 0;
 
 protected:
-  int x() const { return m_x; }
-  int y() const { return m_y; }
   int width() const { return m_width; }
   int height() const { return m_height; }
-  int dx() const { return m_dx; }
-  int dy() const { return m_dy; }
 
 //  Surface& dc1() { return m_dc1; }
 
@@ -104,8 +100,7 @@ public:
    * Note that we add 1 to both width and height; RL is the only
    * system I know of where ranges are inclusive...
    */
-  Effect(RLMachine& machine, int x, int y, int width, 
-         int height, int dx, int dy, int time);
+  Effect(RLMachine& machine, int width, int height, int time);
 
   /** 
    * Implements the LongOperation calling interface. This simply keeps

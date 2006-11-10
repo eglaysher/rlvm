@@ -35,6 +35,8 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
 #ifdef __GNUC__
 //// Can't read STL error messages.
@@ -47,96 +49,350 @@
 using stdext::hash_map;
 #endif
 
+#include "libReallive/defs.h"
+
+class Gameexe;
+
 /**
- * Interface to Gameexe. This code is not mine. I've already removed
- * the Singleton antipattern. (WTF, people!)
+ * Encapsulates a line of the Gameexe file that's passed to the
+ * user. This is a temporary class, which should hopefully be inlined
+ * away from the target implementation. 
  *
- * @todo This class needs to be redesigned and reimplemented with a
- * more intuitive interface. This feels very C-ish and contains
- * *sprintfs*!
+ * This allows us to write code like this:
+ *
+ * @code
+ * vector<string> x = gameexe("WHATEVER", 5).to_strVector();
+ * int var = gameexe("EXPLICIT_CAST").to_int();
+ * int var2 = gameexe("IMPLICIT_CAST");
+ * gameexe("SOMEVAL") = 5;
+ * @endcode
+ *
+ * This design solves the problem with the old interface, where all
+ * the default parameters and overloads lead to confusion about
+ * whether a parameter was part of the key, or was the deafult
+ * value. Saying that components of the key are part of the operator()
+ * on Gameexe and that default values are in the casting function in
+ * GameexeInterpretObject solves this accidental difficulty.
  */
-class Gameexe {
-public:
-	// Return data, or defval if nothing matches the given key or index (or if it's a string not an integer).
-	// For example, to read the line "#WINDOW.012.MOJI_REP=x,y", use
-	//
-	//   int x = Gameexe::instance().getInt("WINDOW.012.MOJI_REP", 0);
-	//   int y = Gameexe::instance().getInt("WINDOW.012.MOJI_REP", 1);
-	int getInt(const char* key, const int index = 0, const int defval = 0) const;
-	
-	// As above, but specialised for blocks.  For example, the above example could
-	// also use
-	//
-	//   int x = Gameexe::instance().getInt("WINDOW", 12 ,"MOJI_REP", 0);
-	//
-	// Currently, this will fail if the ini file declared these as #WINDOW.12.MOJI_REP.  However,
-	// this syntax has never been seen in the wild.
-  int getInt(const char* section, const int secidx, const int index, const int defval) const;
-	int getInt(const char* section, const int secidx, const char* key, const int index = 0, const int defval = 0) const;
-	int getInt(const char* section, const int sec1idx, const int sec2idx, const char* key, const int index = 0, const int defval = 0) const;
-	
-	// Similarly:
-	const char* getStr(const char* key, const int index = 0, const char* defval = NULL) const;
-	
-	// Check for the existence of a key.
-	bool mem(const char* key) const;
-
-  size_t size() const { return data_.size(); }
-
-  Gameexe() { }
-  Gameexe(const std::string& file);
+class GameexeInterpretObject
+{
 private:
-	// Implementation details.
-	typedef std::vector<int> vec_type;
-	typedef hash_map<std::string, vec_type> data_t;
-	data_t data_;
-	std::vector<std::string> cdata_;
+  /// We expose our private interface to tightly couple with Gameexe,
+  /// since we are a helper class for it.
+  friend class Gameexe;
+
+  const std::string m_key;
+  Gameexe& m_objectToLookupOn;
+
+  /** 
+   * Private; only allow construction by Gameexe
+   */
+  GameexeInterpretObject(const std::string& key, Gameexe& objectToLookupOn)
+    : m_key(key), m_objectToLookupOn(objectToLookupOn)
+  {
+    
+  }
+
+  /**
+   * Disallow copying.
+   */
+  GameexeInterpretObject(const GameexeInterpretObject&);
+
+public:
+
+  /** 
+   * Finds an int value, returning a default if non-existant.
+   * 
+   * @param defaultValue Default integer value to return if key not found
+   * @return 
+   */
+  const int to_int(const int defaultValue);
+
+  /** 
+   * Finds an int value, throwing if non-existant.
+   * 
+   * @return The first int value from the Gameexe in the row key
+   * @throw Error if the key doesn't exist
+   */
+  const int to_int();
+
+  /// Allow implicit casts to int with no default value
+  operator int() {
+    return to_int();
+  }
+
+  /** 
+   * Finds a string value, throwing if non-existant.
+   * 
+   * @return The first string value from the Gameexe in that row
+   * @throw Error if the key doesn't exist
+   */
+  const std::string to_string(const std::string& defaultValue);
+
+  /** 
+   * Finds a string value, throwing if non-existant.
+   * 
+   * @return The first string value from the Gameexe in that row
+   * @throw Error if the key doesn't exist
+   */
+  const std::string to_string();
+
+  /// Allow implicit casts to string
+  operator std::string() {
+    return to_string();
+  }
+
+  /** 
+   * Finds a vector of ints, throwing if non-existant.
+   * 
+   * @return The full row in the Gameexe (if it's an int row)
+   * @throw Error if the key doesn't exist
+   */
+  const std::vector<int>& to_intVector();
+
+  /** 
+   * Checks to see if the key exists.
+   * 
+   * @return True if exists, false otherwise
+   */
+  bool exists();
+  
+  /** 
+   * Assign a value. Unlike all the other methods, we can safely
+   * templatize this since the functions it calls can be overloaded.
+   * 
+   * @param value Incoming value
+   * @return self
+   */
+//   template<typename T>
+//   GameexeInterpretObject& operator=(const T& value) {
+//     // Set the key to incoming int
+//     m_objectToLookupOn.setKeyTo(m_key, value);
+//     return *this;
+//   }
 };
 
-inline int
-Gameexe::getInt(const char* key, const int index, const int defval) const
+/**
+ * New interface to Gameexe, replacing the one inherited from Haeleth,
+ * which was hard to use and was very C-ish. This interface's goal is
+ * to make accessing data in the Gameexe as easy as possible.
+ * 
+ */
+class Gameexe
 {
-	data_t::const_iterator it = data_.find(std::string(key));
-	if (it == data_.end()) return defval;
-	const vec_type& vec = it->second;
-	return vec.size() >= index + 1 ? vec[index] : defval;
+
+private:
+  /// Allow access from the helper class
+  friend class GameexeInterpretObject;
+
+  /// @{
+  /**
+   * @name Data storage
+   * 
+   * Implementation detail of how parsed Gameexe.ini data is stored in
+   * the class. This was stolen directly from Haeleth's parser in
+   * rlBabel. Eventually, this should be redone, since everything is
+   * really a vector of ints, unless you want a string in which case
+   * that int is an index into a vector of strings on the side.
+   */
+  typedef std::vector<int> vec_type;
+  typedef hash_map<std::string, vec_type> data_t;
+  data_t data_;
+  std::vector<std::string> cdata_;
+  /// @}
+
+public:
+  /**
+   * Create an empty Gameexe, with no configuration data.
+   */
+  Gameexe();
+
+  /**
+   * Create a Gameexe based off the configuration data in the incoming
+   * file.
+   */
+  Gameexe(const std::string& filename);
+
+  /**
+   * Constructor
+   * 
+   */
+  ~Gameexe();
+
+  /// @{
+  /**
+   * @name Streamlined Interface for data access
+   * 
+   * This is the interface intended for common use. It seperates the
+   * construction of the key from the intended type, and default value.
+   */
+
+  /** 
+   * Access the key "firstKey"
+   */
+  template<typename A>
+  GameexeInterpretObject operator()(const A& firstKey)
+  {
+    std::stringstream ss;
+    addToStream(firstKey, ss);
+    return GameexeInterpretObject(ss.str(), *this);
+  }
+
+  /** 
+   * Access the key "firstKey"."secondKey"
+   */
+  template<typename A, typename B>
+  GameexeInterpretObject operator()(const A& firstKey, const B& secondKey)
+  {
+    std::stringstream ss;
+    addToStream(firstKey, ss);
+    ss << ".";
+    addToStream(secondKey, ss);
+    return GameexeInterpretObject(ss.str(), *this);
+  }
+
+  /// @}
+
+
+  /// @{
+  /**
+   * @name Raw interface for Gameexe.ini data access
+   * 
+   * This is the internal interface used by GameexeInterpretObject,
+   * but it is exposed to the user for the handfull of cases where the 
+   */
+
+  /**
+   * Raw interface for 
+   */
+  const std::vector<int>& getIntArray(const std::string& key) {
+	data_t::const_iterator it = data_.find(key);
+    if(it == data_.end())
+    {
+      static std::vector<int> falseVector;
+      return falseVector;
+    }
+
+    return it->second;
+  }
+
+  int getIntAt(const std::string& key, int index) {
+    data_t::const_iterator it = data_.find(key);
+    if(it == data_.end()) 
+      throwUnknownKey(key);
+
+    return it->second.at(index);
+  }
+
+  /** 
+   * Returns whether key exists in the stored data
+   */
+  bool exists(const std::string& key) {
+    return data_.find(key) != data_.end();
+  }
+
+  /** 
+   * Returns the number of keys in the Gameexe.ini file.
+   */
+  int size() const {
+    return data_.size();
+  }
+
+  /** 
+   * Internal function that returns an array of int values.
+   */
+  std::string getStringAt(const std::string& key, int index) {
+    int cindex = getIntAt(key, index);
+    return cdata_.at(cindex);
+  }
+
+  /// @}
+
+private:
+  /** 
+   * Regrettable artifact of hack to get all integers in streams to
+   * have setw(3).
+   */
+  void addToStream(const std::string& x, std::stringstream& ss) {
+    ss << x;
+  }
+
+  /** 
+   * Hack to get all integers in streams to have setw(3).
+   */
+  void addToStream(const int& x, std::stringstream& ss) {
+    ss << std::setw(3) << std::setfill('0') << x;
+  }
+
+  void throwUnknownKey(const std::string& key) 
+  {
+    std::stringstream ss;
+    ss << "Unknown Gameexe key '" << key << "'";
+    throw libReallive::Error(ss.str());
+  }
+};
+
+// -----------------------------------------------------------------------
+
+inline const int GameexeInterpretObject::to_int(const int defaultValue) {
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  if(ints.size() == 0)
+    return defaultValue;
+
+  return ints[0];
 }
 
-inline bool
-Gameexe::mem(const char* key) const
-{
-	return data_.find(std::string(key)) != data_.end();
+// -----------------------------------------------------------------------
+
+inline const int GameexeInterpretObject::to_int() {
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  if(ints.size() == 0)
+    m_objectToLookupOn.throwUnknownKey(m_key);
+
+  return ints[0];
 }
 
-inline int
-Gameexe::getInt(const char* section, const int secidx, const int index, const int defval) const
-{
-	char buf[128];
-	sprintf(buf, "%s.%03d", section, secidx);
-	return getInt(buf, index, defval);
+// -----------------------------------------------------------------------
+
+inline const std::string GameexeInterpretObject::to_string(const std::string& defaultValue) {
+  try 
+  {
+    return m_objectToLookupOn.getStringAt(m_key, 0);
+  } 
+  catch(...) 
+  {
+    return defaultValue;
+  }
 }
 
-inline int
-Gameexe::getInt(const char* section, const int secidx, const char* key, const int index, const int defval) const
-{
-	char buf[128];
-	sprintf(buf, "%s.%03d.%s", section, secidx, key);
-	return getInt(buf, index, defval);
+// -----------------------------------------------------------------------
+
+inline const std::string GameexeInterpretObject::to_string() {
+  try 
+  {
+    return m_objectToLookupOn.getStringAt(m_key, 0);
+  } 
+  catch(...) 
+  {
+    m_objectToLookupOn.throwUnknownKey(m_key);
+  }
 }
 
-inline int
-Gameexe::getInt(const char* section, const int sec1idx, const int sec2idx, const char* key, const int index, const int defval) const
-{
-	char buf[128];
-	sprintf(buf, "%s.%03d.%03d.%s", section, sec1idx, sec2idx, key);
-	return getInt(buf, index, defval);
+// -----------------------------------------------------------------------
+
+inline const std::vector<int>& GameexeInterpretObject::to_intVector() {
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  if(ints.size() == 0)
+    m_objectToLookupOn.throwUnknownKey(m_key);
+
+  return ints;    
 }
 
-inline const char*
-Gameexe::getStr(const char* key, const int index, const char* defval) const
+// -----------------------------------------------------------------------
+
+inline bool GameexeInterpretObject::exists()
 {
-	int cidx = getInt(key, index, -1);
-	return cidx < 0 || cidx >= cdata_.size() ? defval : cdata_[cidx].c_str();
+  return m_objectToLookupOn.exists(m_key);
 }
 
 #endif

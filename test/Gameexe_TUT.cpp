@@ -90,8 +90,8 @@ template<>
 void object::test<2>()
 {
   Gameexe ini("test/Gameexe_data/Gameexe.ini");
-  ensure("#CAPTION exists", ini.mem("CAPTION"));
-  ensure_equals("Wrong value for CAPTION", ini.getStr("CAPTION"),
+  ensure("#CAPTION exists", ini("CAPTION").exists());
+  ensure_equals("Wrong value for CAPTION", ini("CAPTION").to_string(),
                 string("Canon: A firearm"));
 }
 
@@ -105,7 +105,7 @@ template<>
 void object::test<3>()
 {
   Gameexe ini("test/Gameexe_data/Gameexe.ini");
-  ensure("#RANDOM_KEY does not exist", !ini.mem("RANDOM_KEY"));
+  ensure("#RANDOM_KEY does not exist", !ini("RANDOM_KEY").exists());
 }
 
 // -----------------------------------------------------------------------
@@ -115,9 +115,11 @@ template<>
 void object::test<4>()
 {
   Gameexe ini("test/Gameexe_data/Gameexe.ini");
-  ensure("#WINDOW_ATTR exists!", ini.mem("WINDOW_ATTR"));
+  ensure("#WINDOW_ATTR exists!", ini("WINDOW_ATTR").exists());
+  vector<int> ints = ini("WINDOW_ATTR").to_intVector();
+
   for(int i = 0; i < 5; ++i)
-    ensure_equals("Wrong value!", ini.getInt("WINDOW_ATTR", i), i + 1);
+    ensure_equals("Wrong value!", ints.at(i), i + 1);
 }
 
 // -----------------------------------------------------------------------

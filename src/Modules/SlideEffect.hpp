@@ -49,8 +49,7 @@ protected:
   int calculateAmountVisible(int currentTime, int screenSize);
 
 public:
-  SlideEffect(RLMachine& machine, int x, int y, int width, 
-             int height, int dx, int dy, int time);
+  SlideEffect(RLMachine& machine, int width, int height, int time);
 };
 
 // -----------------------------------------------------------------------
@@ -64,8 +63,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideTopToBottomEffect(RLMachine& machine, int x, int y, int width, 
-                         int height, int dx, int dy, int time);
+  SlideTopToBottomEffect(RLMachine& machine, int width, 
+                         int height, int time);
 };
 
 // -----------------------------------------------------------------------
@@ -79,8 +78,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideBottomToTopEffect(RLMachine& machine, int x, int y, int width, 
-                         int height, int dx, int dy, int time);
+  SlideBottomToTopEffect(RLMachine& machine, int width, 
+                         int height, int time);
 };
 
 // -----------------------------------------------------------------------
@@ -94,8 +93,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideLeftToRightEffect(RLMachine& machine, int x, int y, int width, 
-                         int height, int dx, int dy, int time);
+  SlideLeftToRightEffect(RLMachine& machine, int width, 
+                         int height, int time);
 };
 
 // -----------------------------------------------------------------------
@@ -109,8 +108,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideRightToLeftEffect(RLMachine& machine, int x, int y, int width, 
-                         int height, int dx, int dy, int time);
+  SlideRightToLeftEffect(RLMachine& machine, int width, 
+                         int height, int time);
 };
 
 

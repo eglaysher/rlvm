@@ -40,23 +40,33 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-Effect::Effect(RLMachine& machine, int x, int y, int width, 
-               int height, int dx, int dy, int time)
-  : m_x(x), m_y(y), m_width(width + 1), m_height(height + 1), m_dx(dx), 
-    m_dy(dy), m_duration(time), 
+Effect::Effect(RLMachine& machine, int width, int height, int time)
+  : m_width(width), m_height(height), m_duration(time), 
     m_startTime(machine.system().event().getTicks())
 {
 }
 
 // -----------------------------------------------------------------------
 
+/// @todo Riht now, the ctrl pressed behaviour *may* not match
+///       RealLive exactly. Verify this.
 bool Effect::operator()(RLMachine& machine)
 {
   GraphicsSystem& graphics = machine.system().graphics();
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - m_startTime;
 
-  if(currentFrame < m_duration)
+  bool ctrlPressed = machine.system().event().ctrlPressed();
+
+  if(currentFrame >= m_duration || ctrlPressed)
+  {
+    // Blit DC1 onto DC0, with full opacity, and end the operation
+    graphics.getDC(1).blitToSurface(graphics.getDC(0),
+                                    0, 0, m_width, m_height,
+                                    0, 0, m_width, m_height, 255);
+    return true;
+  }
+  else
   {
     // Render to the screen
     GraphicsSystem& graphics = machine.system().graphics();
@@ -65,8 +75,8 @@ bool Effect::operator()(RLMachine& machine)
     if(blitOriginalImage())
     {
       graphics.getDC(0).
-        renderToScreen(x(), y(), x() + width(), y() + height(),
-                       dx(), dy(), dx() + width(), dy() + height(),
+        renderToScreen(0, 0, width(), height(),
+                       0, 0, width(), height(),
                        255);
     }
 
@@ -74,13 +84,5 @@ bool Effect::operator()(RLMachine& machine)
 
     graphics.endFrame();
     return false;
-  }
-  else
-  {
-    // Blit DC1 onto DC0, with full opacity, and end the operation
-    graphics.getDC(1).blitToSurface(graphics.getDC(0),
-                                    m_x, m_y, m_width, m_height,
-                                    m_dx, m_dy, m_width, m_height, 255);
-    return true;
   }
 }

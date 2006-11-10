@@ -97,10 +97,10 @@ void WipeEffect::calculateSizes(int currentTime,
 
 // -----------------------------------------------------------------------
 
-WipeEffect::WipeEffect(RLMachine& machine, int x, int y, int width, 
-                       int height, int dx, int dy, int time, 
+WipeEffect::WipeEffect(RLMachine& machine, int width, 
+                       int height, int time, 
                        int interpolation)
-  : Effect(machine, x, y, width, height, dx, dy, time), 
+  : Effect(machine, width, height, time), 
     m_interpolation(interpolation),
     m_interpolationInPixels(0)
 {
@@ -113,9 +113,8 @@ WipeEffect::WipeEffect(RLMachine& machine, int x, int y, int width,
 // -----------------------------------------------------------------------
 
 WipeTopToBottomEffect::WipeTopToBottomEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time, int interpolation)
-  : WipeEffect(machine, x, y, width, height, dx, dy, time, interpolation)
+  RLMachine& machine, int width, int height, int time, int interpolation)
+  : WipeEffect(machine, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -130,9 +129,9 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfMainPolygon)
   {
     graphics.getDC(1).
-      renderToScreen(x(), y() + height() - sizeOfMainPolygon - sizeOfInterpolation, 
-                     x() + width(), y() + height() - sizeOfInterpolation, 
-                     dx(), dy(), dx() + width(), dy() + sizeOfMainPolygon,
+      renderToScreen(0, height() - sizeOfMainPolygon - sizeOfInterpolation, 
+                     width(), height() - sizeOfInterpolation, 
+                     0, 0, width(), sizeOfMainPolygon,
                      255);
   }
 
@@ -141,10 +140,10 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
     int opacity[4] = {255, 255, 0, 0};
 
     graphics.getDC(1).
-      renderToScreen(x(), y() + height() - sizeOfInterpolation, 
-                     x() + width(), y() + height(), 
-                     dx(), dy() + sizeOfMainPolygon, dx() + width(), 
-                     dy() + sizeOfMainPolygon + sizeOfInterpolation,
+      renderToScreen(0, height() - sizeOfInterpolation, 
+                     width(), height(), 
+                     0, sizeOfMainPolygon, width(), 
+                     sizeOfMainPolygon + sizeOfInterpolation,
                      opacity);    
   }
 }
@@ -154,10 +153,8 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeBottomToTopEffect::WipeBottomToTopEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time, int interpolation)
-  : WipeEffect(machine, x, y, width, height, dx, dy, time,
-               interpolation)
+  RLMachine& machine, int width, int height, int time, int interpolation)
+  : WipeEffect(machine, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -175,10 +172,10 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfMainPolygon)
   {
     graphics.getDC(1).
-      renderToScreen(x(), y() + sizeOfInterpolation, 
-                     x() + width(), y() + sizeOfInterpolation + sizeOfMainPolygon, 
-                     dx(), dy() + height() - sizeOfMainPolygon, 
-                     dx() + width(), dy() + height(),
+      renderToScreen(0, sizeOfInterpolation, 
+                     width(), sizeOfInterpolation + sizeOfMainPolygon, 
+                     0, height() - sizeOfMainPolygon, 
+                     width(), height(),
                      255);
   }
 
@@ -186,10 +183,10 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {0, 0, 255, 255};
     graphics.getDC(1).
-      renderToScreen(x(), y(),
-                     x() + width(), y() + sizeOfInterpolation,
-                     dx(), dy() + height() - sizeOfMainPolygon - sizeOfInterpolation,
-                     dx() + width(), dy() + height() - sizeOfMainPolygon,
+      renderToScreen(0, 0,
+                     width(), sizeOfInterpolation,
+                     0, height() - sizeOfMainPolygon - sizeOfInterpolation,
+                     width(), height() - sizeOfMainPolygon,
                      opacity);
   }
 }
@@ -199,10 +196,8 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeLeftToRightEffect::WipeLeftToRightEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time, int interpolation)
-  : WipeEffect(machine, x,y, width, height, dx, dy, time, 
-               interpolation)
+  RLMachine& machine, int width, int height, int time, int interpolation)
+  : WipeEffect(machine, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -217,9 +212,9 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfMainPolygon)
   {
     graphics.getDC(1).
-      renderToScreen(x() + width() - sizeOfInterpolation - sizeOfMainPolygon, y(), 
-                     x() + width() - sizeOfInterpolation, y() + height(), 
-                     dx(), dy(), dx() + sizeOfMainPolygon, dy() + height(),
+      renderToScreen(width() - sizeOfInterpolation - sizeOfMainPolygon, 0, 
+                     width() - sizeOfInterpolation, height(), 
+                     0, 0, sizeOfMainPolygon, height(),
                      255);
   }
 
@@ -227,10 +222,10 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {255, 0, 0, 255};
     graphics.getDC(1).
-      renderToScreen(x() + width() - sizeOfInterpolation, y(), 
-                     x() + width(), y() + height(), 
-                     dx() + sizeOfMainPolygon, dy(), 
-                     dx() + sizeOfMainPolygon + sizeOfInterpolation, dy() + height(),
+      renderToScreen(width() - sizeOfInterpolation, 0, 
+                     width(), height(), 
+                     sizeOfMainPolygon, 0, 
+                     sizeOfMainPolygon + sizeOfInterpolation, height(),
                      opacity);
   }
 }
@@ -240,10 +235,8 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeRightToLeftEffect::WipeRightToLeftEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time, int interpolation)
-  : WipeEffect(machine, x, y, width, height, dx, dy, time, 
-               interpolation)
+  RLMachine& machine, int width, int height, int time, int interpolation)
+  : WipeEffect(machine, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -259,10 +252,10 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
   {
     // broken
     graphics.getDC(1).
-      renderToScreen(x() + sizeOfInterpolation, y(), 
-                     x() + sizeOfInterpolation + sizeOfMainPolygon, y() + height(), 
-                     dx() + width() - sizeOfMainPolygon, dy(),
-                     dx() + width(), dy() + height(),
+      renderToScreen(sizeOfInterpolation, 0, 
+                     sizeOfInterpolation + sizeOfMainPolygon, height(), 
+                     width() - sizeOfMainPolygon, 0,
+                     width(), height(),
                      255);
   }
 
@@ -270,10 +263,10 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {0, 255, 255, 0};
     graphics.getDC(1).
-      renderToScreen(x(), y(), 
-                     x() + sizeOfInterpolation, y() + height(), 
-                     dx() + width() - sizeOfInterpolation - sizeOfMainPolygon, dy(),
-                     dx() + width() - sizeOfMainPolygon, dy() + height(),
+      renderToScreen(0, 0, 
+                     sizeOfInterpolation, height(), 
+                     width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
+                     width() - sizeOfMainPolygon, height(),
                      opacity);
   }
 }

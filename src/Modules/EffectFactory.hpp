@@ -77,12 +77,6 @@ public:
    * grp* coordinate system (x1, y1, x2, y2) .
    * 
    * @param filename      Image file to use
-   * @param x             Source x coordinate
-   * @param y             Source y coordinate
-   * @param width         Source width
-   * @param height        Source hight
-   * @param dx            Destination x coordinate
-   * @param dy            Destination y coordinate
    * @param time          Length of transition, in ms.
    * @param style         The style of transition. This factory does a
    *                      big switch statement on this value.
@@ -108,18 +102,18 @@ public:
    */
   static LongOperation* build(
     RLMachine& machine, 
-    int x, int y, int width, int height, int dx, int dy, int time, int style,
+//    int x, int y, int width, int height, int dx, int dy, 
+int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int opacity, int c);
 
 private:
   static LongOperation* buildWipeEffect(
-    RLMachine& machine, int x, int y, int width, int height, int dx, 
-    int dy, int time, int direction, int interpolation);
+    RLMachine& machine, int width, int height, int time, 
+    int direction, int interpolation);
 
   static LongOperation* buildSlideEffect(
-    RLMachine& machine, int x, int y, int width, int height, int dx, 
-    int dy, int time, int direction);
+    RLMachine& machine, int width, int height, int time, int direction);
 };
 
 #endif

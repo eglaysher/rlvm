@@ -60,8 +60,8 @@ protected:
                       int sizeOfScreen);
 
 public:
-  WipeEffect(RLMachine& machine, int x, int y, int width, 
-             int height, int dx, int dy, int time, int interpolation);
+  WipeEffect(RLMachine& machine, int width, 
+             int height, int time, int interpolation);
 };
 
 // -----------------------------------------------------------------------
@@ -75,8 +75,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeTopToBottomEffect(RLMachine& machine, int x, int y, int width, 
-             int height, int dx, int dy, int time,
+  WipeTopToBottomEffect(RLMachine& machine, int width, 
+             int height, int time,
              int interpolation);
 };
 
@@ -91,8 +91,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeBottomToTopEffect(RLMachine& machine, int x, int y, int width, 
-                        int height, int dx, int dy, int time,
+  WipeBottomToTopEffect(RLMachine& machine, int width, 
+                        int height, int time,
                         int interpolation);
 };
 
@@ -107,8 +107,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeLeftToRightEffect(RLMachine& machine, int x, int y, int width, 
-                        int height, int dx, int dy, int time,
+  WipeLeftToRightEffect(RLMachine& machine, int width, 
+                        int height, int time,
                         int interpolation);
 };
 
@@ -123,9 +123,9 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeRightToLeftEffect(RLMachine& machine, int x, int y, int width, 
-                  int height, int dx, int dy, int time,
-                  int interpolation);
+  WipeRightToLeftEffect(RLMachine& machine, int width, 
+                        int height, int time,
+                        int interpolation);
 };
 
 

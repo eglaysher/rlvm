@@ -56,9 +56,9 @@ int SlideEffect::calculateAmountVisible(int currentTime, int screenSize)
 
 // -----------------------------------------------------------------------
 
-SlideEffect::SlideEffect(RLMachine& machine, int x, int y, int width, 
-                         int height, int dx, int dy, int time)
-  : Effect(machine, x, y, width, height, dx, dy, time)
+SlideEffect::SlideEffect(RLMachine& machine, int width, 
+                         int height, int time)
+  : Effect(machine, width, height, time)
 {
 }
 
@@ -67,9 +67,8 @@ SlideEffect::SlideEffect(RLMachine& machine, int x, int y, int width,
 // -----------------------------------------------------------------------
 
 SlideTopToBottomEffect::SlideTopToBottomEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time)
-  : SlideEffect(machine, x, y, width, height, dx, dy, time)
+  RLMachine& machine, int width, int height, int time)
+  : SlideEffect(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
@@ -81,16 +80,16 @@ void SlideTopToBottomEffect::performEffectForTime(RLMachine& machine,
   int amountVisible = calculateAmountVisible(currentTime, height());
   
    graphics.getDC(0).
-     renderToScreen(x(), y(), 
-                    x() + width(), y() + height() - amountVisible,
-                    dx(), dy() + amountVisible, 
-                    dx() + width(), dy() + height(),
+     renderToScreen(0, 0, 
+                    width(), height() - amountVisible,
+                    0, amountVisible, 
+                    width(), height(),
                     255);
   graphics.getDC(1).
-    renderToScreen(x(), y() + height() - amountVisible,
-                   x() + width(), y() + height(),
-                   dx(), dy(), 
-                   dx() + width(), dy() + amountVisible,
+    renderToScreen(0, height() - amountVisible,
+                   width(), height(),
+                   0, 0, 
+                   width(), amountVisible,
                    255);
 }
 
@@ -99,9 +98,8 @@ void SlideTopToBottomEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 SlideBottomToTopEffect::SlideBottomToTopEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time)
-  : SlideEffect(machine, x, y, width, height, dx, dy, time)
+  RLMachine& machine, int width, int height, int time)
+  : SlideEffect(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
@@ -113,16 +111,16 @@ void SlideBottomToTopEffect::performEffectForTime(RLMachine& machine,
   int amountVisible = calculateAmountVisible(currentTime, height());
   
    graphics.getDC(0).
-     renderToScreen(x(), y() + amountVisible, 
-                    x() + width(), y() + height(),
-                    dx(), dy(),
-                    dx() + width(), dy() + height() - amountVisible,
+     renderToScreen(0, amountVisible, 
+                    width(), height(),
+                    0, 0,
+                    width(), height() - amountVisible,
                     255);
    graphics.getDC(1).
-     renderToScreen(x(), y(),
-                    x() + width(), y() + amountVisible,
-                    dx(), dy() + height() - amountVisible, 
-                    dx() + width(), dy() + height(),
+     renderToScreen(0, 0,
+                    width(), amountVisible,
+                    0, height() - amountVisible, 
+                    width(), height(),
                     255);
 }
 
@@ -131,9 +129,8 @@ void SlideBottomToTopEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 SlideLeftToRightEffect::SlideLeftToRightEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time)
-  : SlideEffect(machine, x,y, width, height, dx, dy, time)
+  RLMachine& machine, int width, int height, int time)
+  : SlideEffect(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
@@ -145,16 +142,16 @@ void SlideLeftToRightEffect::performEffectForTime(RLMachine& machine,
   int amountVisible = calculateAmountVisible(currentTime, width());
   
   graphics.getDC(0).
-    renderToScreen(x(), y(), 
-                   x() + width() - amountVisible, y() + height(),
-                   dx() + amountVisible, dy(),
-                   dx() + width(), dy() + height(),
+    renderToScreen(0, 0, 
+                   width() - amountVisible, height(),
+                   amountVisible, 0,
+                   width(), height(),
                    255);
   graphics.getDC(1).
-    renderToScreen(x() + width() - amountVisible, y(),
-                   x() + width(), y() + height(),
-                   dx(), dy(),
-                   dx() + amountVisible, dy() + height(),
+    renderToScreen(width() - amountVisible, 0,
+                   width(), height(),
+                   0, 0,
+                   amountVisible, height(),
                    255);
 }
 
@@ -163,9 +160,8 @@ void SlideLeftToRightEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 SlideRightToLeftEffect::SlideRightToLeftEffect(
-  RLMachine& machine, int x, int y, int width, int height, int dx, 
-  int dy, int time)
-  : SlideEffect(machine, x, y, width, height, dx, dy, time)
+  RLMachine& machine, int width, int height, int time)
+  : SlideEffect(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
@@ -177,15 +173,15 @@ void SlideRightToLeftEffect::performEffectForTime(RLMachine& machine,
   int amountVisible = calculateAmountVisible(currentTime, width());
 
   graphics.getDC(0).
-    renderToScreen(x() + amountVisible, y(),
-                   x() + width(), y() + height(),
-                   dx(), dy(),
-                   dx() + width() - amountVisible, dy() + height(),
+    renderToScreen(amountVisible, 0,
+                   width(), height(),
+                   0, 0,
+                   width() - amountVisible, height(),
                    255);
   graphics.getDC(1).
-    renderToScreen(x(), y(),
-                   x() + amountVisible, y() + height(),
-                   dx() + width() - amountVisible, dy() + height(),
-                   dx() + width(), dy() + height(),
+    renderToScreen(0, 0,
+                   amountVisible, height(),
+                   width() - amountVisible, height(),
+                   width(), height(),
                    255);
 }

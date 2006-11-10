@@ -25,7 +25,7 @@
 
   A "publicly distributed version of the library" means either an unmodified 
   binary as distributed by Haeleth, or a modified version of the library that is 
-  distributed under the conditions defined in clause 2 of the LGPL, and a 
+  distributed under the conditions defined in clause 2 of the LGPL, a\nd a 
   "composite work that includes the library" means a RealLive program which 
   links to the library, either through the LoadDLL() interface or a #DLL 
   directive, and/or includes code from the library's Kepago header.
@@ -37,16 +37,23 @@
 #include "gameexe.h"
 #include "defs.h"
 
+#include <iostream>
+
+using namespace std;
+
 #define is_space(c) (c == '\r' || c == '\n' || c == ' ' || c == '\t')
 #define is_num(c)   (c == '-' || (c >= '0' && c <= '9'))
 #define is_data(c)  (c == '"' || is_num(c))
 
-const int num_paths = 7;
-char* paths[num_paths] = {
-	"rlBabel.ini", "gameexe.kor", "gameexe.ini", 
-	"KINETICDATA\\rlBabel.ini","KINETICDATA\\gameexe.ini", 
-	"REALLIVEDATA\\rlBabel.ini", "REALLIVEDATA\\gameexe.ini" 
-};
+// const int num_paths = 7;
+// char* paths[num_paths] = {
+// 	"rlBabel.ini", "gameexe.kor", "gameexe.ini", 
+// 	"KINETICDATA\\rlBabel.ini","KINETICDATA\\gameexe.ini", 
+// 	"REALLIVEDATA\\rlBabel.ini", "REALLIVEDATA\\gameexe.ini" 
+// };
+
+Gameexe::Gameexe()
+{}
 
 // @todo OMFG! Teh evil! sprintf!?! This needs a rewrite!
 Gameexe::Gameexe(const std::string& gameexefile)
@@ -99,4 +106,8 @@ Gameexe::Gameexe(const std::string& gameexefile)
 		}
 	}
 	fclose(ini);
+}
+
+Gameexe::~Gameexe()
+{
 }

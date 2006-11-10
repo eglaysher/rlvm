@@ -25,15 +25,15 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
 
   GraphicsSystem& graphics = machine.system().graphics();
   graphics.getDC(1).
-    renderToScreen(x(), y(), x() + width(), y() + height(), 
-                   dx(), dy(), dx() + width(), dy() + height(),
+    renderToScreen(0, 0, width(), height(), 
+                   0, 0, width(), height(),
                    opacity);
 }
 
 // -----------------------------------------------------------------------
 
-FadeEffect::FadeEffect(RLMachine& machine, int x, int y, int width, 
-                       int height, int dx, int dy, int time)
-  : Effect(machine, x, y, width, height, dx, dy, time)
+FadeEffect::FadeEffect(RLMachine& machine, int width, int height, 
+                       int time)
+  : Effect(machine, width, height, time)
 {
 }
