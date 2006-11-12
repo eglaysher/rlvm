@@ -703,7 +703,7 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11));
     }
-    else
+/*    else
     {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
@@ -719,6 +719,444 @@ struct RLOp_Void : public RLOperation {
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12));
     }
+*/
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && !N::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            !O::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                 N::getData(machine, parameters, 13));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && !P::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            !Q::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && !R::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            !S::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && !T::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            !U::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && !V::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            !W::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            W::isRealTypestruct && !X::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            W::isRealTypestruct && X::isRealTypestruct &&
+            !Y::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22),
+                         X::getData(machine, parameters, 23));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            W::isRealTypestruct && X::isRealTypestruct &&
+            Y::isRealTypestruct && !Z::isRealTypestruct)
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22),
+                         X::getData(machine, parameters, 23),
+                         Y::getData(machine, parameters, 24));
+    }
+    else
+    {
+       operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22),
+                         X::getData(machine, parameters, 23),
+                         Y::getData(machine, parameters, 24),
+                         Z::getData(machine, parameters, 25));
+    }
+
+
   }
 
   /// Method that is overridden by all subclasses to implement the
@@ -997,7 +1435,13 @@ struct RLOp_Store : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11));
     }
-    else
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && !N::isRealTypestruct)
     {
       store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
@@ -1013,6 +1457,420 @@ struct RLOp_Store : public RLOperation {
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12));
     }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            !O::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                 N::getData(machine, parameters, 13));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && !P::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            !Q::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && !R::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            !S::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && !T::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            !U::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && !V::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            !W::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            W::isRealTypestruct && !X::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            W::isRealTypestruct && X::isRealTypestruct &&
+            !Y::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22),
+                         X::getData(machine, parameters, 23));
+    }
+    else if(A::isRealTypestruct && B::isRealTypestruct &&
+            C::isRealTypestruct && D::isRealTypestruct &&
+            E::isRealTypestruct && F::isRealTypestruct &&
+            G::isRealTypestruct && H::isRealTypestruct &&
+            I::isRealTypestruct && J::isRealTypestruct &&
+            K::isRealTypestruct && L::isRealTypestruct &&
+            M::isRealTypestruct && N::isRealTypestruct &&
+            O::isRealTypestruct && P::isRealTypestruct &&
+            Q::isRealTypestruct && R::isRealTypestruct &&
+            S::isRealTypestruct && T::isRealTypestruct &&
+            U::isRealTypestruct && V::isRealTypestruct &&
+            W::isRealTypestruct && X::isRealTypestruct &&
+            Y::isRealTypestruct && !Z::isRealTypestruct)
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22),
+                         X::getData(machine, parameters, 23),
+                         Y::getData(machine, parameters, 24));
+    }
+    else
+    {
+      store = operator()(machine, A::getData(machine, parameters, 0),
+                 B::getData(machine, parameters, 1), 
+                 C::getData(machine, parameters, 2),
+                 D::getData(machine, parameters, 3),
+                 E::getData(machine, parameters, 4),
+                 F::getData(machine, parameters, 5),
+                 G::getData(machine, parameters, 6),
+                 H::getData(machine, parameters, 7),
+                 I::getData(machine, parameters, 8),
+                 J::getData(machine, parameters, 9),
+                 K::getData(machine, parameters, 10),
+                 L::getData(machine, parameters, 11),
+                 M::getData(machine, parameters, 12),
+                         N::getData(machine, parameters, 13),
+                         O::getData(machine, parameters, 14),
+                         P::getData(machine, parameters, 15),
+                         Q::getData(machine, parameters, 16),
+                         R::getData(machine, parameters, 17),   
+                         S::getData(machine, parameters, 18),
+                         T::getData(machine, parameters, 19),
+                         U::getData(machine, parameters, 20),
+                         V::getData(machine, parameters, 21),
+                         W::getData(machine, parameters, 22),
+                         X::getData(machine, parameters, 23),
+                         Y::getData(machine, parameters, 24),
+                         Z::getData(machine, parameters, 25));
+    }
+
 
     machine.setStoreRegister(store);
   }
