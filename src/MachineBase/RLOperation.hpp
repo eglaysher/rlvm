@@ -703,23 +703,6 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11));
     }
-/*    else
-    {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1), 
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12));
-    }
-*/
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
             E::isRealTypestruct && F::isRealTypestruct &&
@@ -728,7 +711,7 @@ struct RLOp_Void : public RLOperation {
             K::isRealTypestruct && L::isRealTypestruct &&
             M::isRealTypestruct && !N::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -751,7 +734,7 @@ struct RLOp_Void : public RLOperation {
             M::isRealTypestruct && N::isRealTypestruct &&
             !O::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -775,7 +758,7 @@ struct RLOp_Void : public RLOperation {
             M::isRealTypestruct && N::isRealTypestruct &&
             O::isRealTypestruct && !P::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -788,8 +771,8 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -801,7 +784,7 @@ struct RLOp_Void : public RLOperation {
             O::isRealTypestruct && P::isRealTypestruct &&
             !Q::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -814,9 +797,9 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -828,7 +811,7 @@ struct RLOp_Void : public RLOperation {
             O::isRealTypestruct && P::isRealTypestruct &&
             Q::isRealTypestruct && !R::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -841,10 +824,10 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -857,7 +840,7 @@ struct RLOp_Void : public RLOperation {
             Q::isRealTypestruct && R::isRealTypestruct &&
             !S::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -870,11 +853,11 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -887,7 +870,7 @@ struct RLOp_Void : public RLOperation {
             Q::isRealTypestruct && R::isRealTypestruct &&
             S::isRealTypestruct && !T::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -900,12 +883,12 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -919,7 +902,7 @@ struct RLOp_Void : public RLOperation {
             S::isRealTypestruct && T::isRealTypestruct &&
             !U::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -932,13 +915,13 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -952,7 +935,7 @@ struct RLOp_Void : public RLOperation {
             S::isRealTypestruct && T::isRealTypestruct &&
             U::isRealTypestruct && !V::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -965,14 +948,14 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19),
-                         U::getData(machine, parameters, 20));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19),
+                 U::getData(machine, parameters, 20));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -987,7 +970,7 @@ struct RLOp_Void : public RLOperation {
             U::isRealTypestruct && V::isRealTypestruct &&
             !W::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -1000,15 +983,15 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19),
-                         U::getData(machine, parameters, 20),
-                         V::getData(machine, parameters, 21));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19),
+                 U::getData(machine, parameters, 20),
+                 V::getData(machine, parameters, 21));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -1023,7 +1006,7 @@ struct RLOp_Void : public RLOperation {
             U::isRealTypestruct && V::isRealTypestruct &&
             W::isRealTypestruct && !X::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -1036,16 +1019,16 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19),
-                         U::getData(machine, parameters, 20),
-                         V::getData(machine, parameters, 21),
-                         W::getData(machine, parameters, 22));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19),
+                 U::getData(machine, parameters, 20),
+                 V::getData(machine, parameters, 21),
+                 W::getData(machine, parameters, 22));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -1061,7 +1044,7 @@ struct RLOp_Void : public RLOperation {
             W::isRealTypestruct && X::isRealTypestruct &&
             !Y::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -1074,17 +1057,17 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19),
-                         U::getData(machine, parameters, 20),
-                         V::getData(machine, parameters, 21),
-                         W::getData(machine, parameters, 22),
-                         X::getData(machine, parameters, 23));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19),
+                 U::getData(machine, parameters, 20),
+                 V::getData(machine, parameters, 21),
+                 W::getData(machine, parameters, 22),
+                 X::getData(machine, parameters, 23));
     }
     else if(A::isRealTypestruct && B::isRealTypestruct &&
             C::isRealTypestruct && D::isRealTypestruct &&
@@ -1100,7 +1083,7 @@ struct RLOp_Void : public RLOperation {
             W::isRealTypestruct && X::isRealTypestruct &&
             Y::isRealTypestruct && !Z::isRealTypestruct)
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -1113,22 +1096,22 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19),
-                         U::getData(machine, parameters, 20),
-                         V::getData(machine, parameters, 21),
-                         W::getData(machine, parameters, 22),
-                         X::getData(machine, parameters, 23),
-                         Y::getData(machine, parameters, 24));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19),
+                 U::getData(machine, parameters, 20),
+                 V::getData(machine, parameters, 21),
+                 W::getData(machine, parameters, 22),
+                 X::getData(machine, parameters, 23),
+                 Y::getData(machine, parameters, 24));
     }
     else
     {
-       operator()(machine, A::getData(machine, parameters, 0),
+      operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1), 
                  C::getData(machine, parameters, 2),
                  D::getData(machine, parameters, 3),
@@ -1141,22 +1124,20 @@ struct RLOp_Void : public RLOperation {
                  K::getData(machine, parameters, 10),
                  L::getData(machine, parameters, 11),
                  M::getData(machine, parameters, 12),
-                         N::getData(machine, parameters, 13),
-                         O::getData(machine, parameters, 14),
-                         P::getData(machine, parameters, 15),
-                         Q::getData(machine, parameters, 16),
-                         R::getData(machine, parameters, 17),   
-                         S::getData(machine, parameters, 18),
-                         T::getData(machine, parameters, 19),
-                         U::getData(machine, parameters, 20),
-                         V::getData(machine, parameters, 21),
-                         W::getData(machine, parameters, 22),
-                         X::getData(machine, parameters, 23),
-                         Y::getData(machine, parameters, 24),
-                         Z::getData(machine, parameters, 25));
+                 N::getData(machine, parameters, 13),
+                 O::getData(machine, parameters, 14),
+                 P::getData(machine, parameters, 15),
+                 Q::getData(machine, parameters, 16),
+                 R::getData(machine, parameters, 17),   
+                 S::getData(machine, parameters, 18),
+                 T::getData(machine, parameters, 19),
+                 U::getData(machine, parameters, 20),
+                 V::getData(machine, parameters, 21),
+                 W::getData(machine, parameters, 22),
+                 X::getData(machine, parameters, 23),
+                 Y::getData(machine, parameters, 24),
+                 Z::getData(machine, parameters, 25));
     }
-
-
   }
 
   /// Method that is overridden by all subclasses to implement the

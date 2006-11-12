@@ -115,6 +115,12 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
   }
 };
 
+
+// -----------------------------------------------------------------------
+// GRP COMMANDS
+// -----------------------------------------------------------------------
+
+
 // -----------------------------------------------------------------------
 
 struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
@@ -126,6 +132,8 @@ struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
     if(filename[0] == '?') filename = graphics.defaultBgrName();
     filename = findFile(filename);
 
+    grpToRecCoordinates(selEffect[0], selEffect[1], 
+                        selEffect[2], selEffect[3]);
     loadImageToDC1(graphics, filename,
                    selEffect[0], selEffect[1], selEffect[2], selEffect[3],
                    selEffect[4], selEffect[5], selEffect[14]);
@@ -150,6 +158,8 @@ struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
     if(filename[0] == '?') filename = graphics.defaultBgrName();
     filename = findFile(filename);
 
+    grpToRecCoordinates(selEffect[0], selEffect[1], 
+                        selEffect[2], selEffect[3]);
     loadImageToDC1(graphics, filename,
                    selEffect[0], selEffect[1], selEffect[2], selEffect[3],
                    selEffect[4], selEffect[5], selEffect[14]);
@@ -214,11 +224,137 @@ struct Grp_grpOpen_4 : public RLOp_Void<
 {
   void operator()(RLMachine& machine, string filename, int effectNum,
                   int x1, int y1, int x2, int y2, int dx, int dy,
-                  int steps, int effect, int direction, int interpolation,
-                  int density, int speed, int a, int b, int opacity, int c)
+                  int time, int style, int direction, int interpolation,
+                  int xsize, int ysize, int a, int b, int opacity, int c)
   {
-    
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
 
+    grpToRecCoordinates(x1, y1, x2, y2);
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(
+      EffectFactory::build(machine, time, style, direction, 
+                           interpolation, xsize, ysize, a, b, opacity, c));
+  }
+};
+
+// -----------------------------------------------------------------------
+// REC COMMANDS
+// -----------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------
+
+struct Grp_recOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int effectNum) {
+    vector<int> selEffect = machine.system().gameexe()("SELR", effectNum).
+      to_intVector();
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+
+    loadImageToDC1(graphics, filename,
+                   selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+                   selEffect[4], selEffect[5], selEffect[14]);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSELR(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_recOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
+                                         IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int opacity)
+  {
+    vector<int> selEffect = machine.system().gameexe()("SELR", effectNum).
+      to_intVector();
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+
+    loadImageToDC1(graphics, filename,
+                   selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+                   selEffect[4], selEffect[5], selEffect[14]);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSELR(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_recOpen_2 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy)
+  {
+    int opacity = machine.system().gameexe()("SELR", effectNum).
+      to_intVector().at(14);
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSELR(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_recOpen_3 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSELR(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_recOpen_4 : public RLOp_Void<
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum,
+                  int x1, int y1, int x2, int y2, int dx, int dy,
+                  int time, int style, int direction, int interpolation,
+                  int xsize, int ysize, int a, int b, int opacity, int c)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    filename = findFile(filename);
+
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(
+      EffectFactory::build(machine, time, style, direction, 
+                           interpolation, xsize, ysize, a, b, opacity, c));
   }
 };
 
@@ -237,4 +373,10 @@ GrpModule::GrpModule()
   addOpcode(76, 2, new Grp_grpOpen_2);
   addOpcode(76, 3, new Grp_grpOpen_3);
   addOpcode(76, 4, new Grp_grpOpen_4);
+
+  addOpcode(1056, 0, new Grp_recOpen_0);
+  addOpcode(1056, 1, new Grp_recOpen_1);
+  addOpcode(1057, 2, new Grp_recOpen_2);
+  addOpcode(1058, 3, new Grp_recOpen_3);
+  addOpcode(1059, 4, new Grp_recOpen_4);
 }
