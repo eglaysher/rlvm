@@ -137,7 +137,7 @@ struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
 struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
                                     IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    machine.system().graphics().wipe(dc, r, g, b);
+    machine.system().graphics().getDC(dc).wipe(r, g, b);
   }
 };
 

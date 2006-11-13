@@ -475,23 +475,27 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
   m_texture->rawRenderQuad(srcCoords, destCoords, opacity);
 }
 
+// -----------------------------------------------------------------------
+
+void SDLSurface::wipe(int r, int g, int b)
+{
+  // Fill the entire surface with the incoming color
+  Uint32 color = SDL_MapRGB(m_surface->format, r, g, b);
+
+  if(SDL_FillRect(m_surface, NULL, color))
+    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
+
+  // If we are the main screen, then we want to update the screen
+  markWrittenTo();
+}
 
 // -----------------------------------------------------------------------
 
 void SDLSurface::markWrittenTo()
 {
-  cerr << "---- markWrittenTo ----" << endl;
-  
   // If we are marked as dc0, alert the SDLGraphicsSystem.
   if(m_graphicsSystem) {
-    cerr << "We are dc0" << endl;
     m_graphicsSystem->dc0writtenTo();
-
-//    static int count = 0;
-//     stringstream ss;
-//     ss << "dc0_" << count << ".bmp";
-//     count++;
-//     SDL_SaveBMP(m_surface, ss.str().c_str());
   }
 
   // Mark that the texture needs reuploading
@@ -526,7 +530,6 @@ void SDLGraphicsSystem::dc0writtenTo()
   {
     // Perform a blit of DC0 to the screen, and update it.
     m_screenNeedsRefresh = true;
-    cerr << "m_screenNeesdRefresh = true" << endl;
     break;
   }
   case SCREENUPDATEMODE_MANUAL:
@@ -771,7 +774,7 @@ void SDLGraphicsSystem::freeDC(int dc)
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
-    wipe(dc, 0, 0, 0);
+    getDC(1).wipe(0, 0, 0);
   }
   else
     displayContexts[dc].deallocate();
@@ -811,25 +814,6 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::wipe(int dc, int r, int g, int b)
-{
-  cerr << "wipe(" << dc << ", " << r << ", " << g << ", " << b << ")" 
-       << endl;
-
-  verifySurfaceExists(dc, "SDLGraphicsSystem::wipe");
-
-  SDL_Surface* surface = displayContexts[dc];
-
-  // Fill the entire surface with the incoming color
-  Uint32 color = SDL_MapRGB(surface->format, r, g, b);
-
-  if(SDL_FillRect(surface, NULL, color))
-    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
-
-  // If we are the main screen, then we want to update the screen
-  if(dc == 0)
-    dc0writtenTo();
-}
 
 // -----------------------------------------------------------------------
 

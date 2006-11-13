@@ -121,6 +121,8 @@ public:
   int width() const;
   int height() const;
 
+  virtual void wipe(int r, int g, int b);
+
   SDL_Surface* surface() { return m_surface; }
 
   virtual Surface* clone() const;
@@ -217,8 +219,6 @@ public:
 
   virtual void allocateDC(int dc, int width, int height);
   virtual void freeDC(int dc);
-
-  virtual void wipe(int dc, int r, int g, int b);
 
   virtual Surface* loadSurfaceFromFile(const std::string& filename);
 

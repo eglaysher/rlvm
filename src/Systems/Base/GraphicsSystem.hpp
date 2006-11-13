@@ -113,8 +113,6 @@ public:
   virtual void allocateDC(int dc, int width, int height) = 0;
   virtual void freeDC(int dc) = 0;
 
-  virtual void wipe(int dc, int r, int g, int b) = 0;
-
 /*
   virtual void getDCPixel(int x, int y, int dc, int& r, int& g, int& b) = 0;
 */
@@ -160,6 +158,8 @@ public:
   virtual void rawRenderQuad(const int srcCoords[8], 
                              const int destCoords[8],
                              const int opacity[4]) { }
+
+  virtual void wipe(int r, int g, int b) = 0;
 
   virtual Surface* clone() const = 0;
 };

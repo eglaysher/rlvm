@@ -7,6 +7,9 @@ class NullSurface : public Surface
 {
   virtual int width() const { return 0; }
   virtual int height() const { return 0; }
+
+  virtual void wipe(int r, int g, int b) { }
+
   virtual Surface* clone() const { return 0; }
 };
 
@@ -23,8 +26,6 @@ public:
 
   virtual void allocateDC(int dc, int width, int height) { }
   virtual void freeDC(int dc) { }
-
-  virtual void wipe(int dc, int r, int g, int b) { }
 
   // Make a null Surface object?
   virtual Surface* loadSurfaceFromFile(const std::string& filename) { return NULL; }
