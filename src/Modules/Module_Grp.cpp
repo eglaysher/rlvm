@@ -120,9 +120,6 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
 // GRP COMMANDS
 // -----------------------------------------------------------------------
 
-
-// -----------------------------------------------------------------------
-
 struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = machine.system().gameexe()("SEL", effectNum).
@@ -376,7 +373,7 @@ GrpModule::GrpModule()
 
   addOpcode(1056, 0, new Grp_recOpen_0);
   addOpcode(1056, 1, new Grp_recOpen_1);
-  addOpcode(1057, 2, new Grp_recOpen_2);
-  addOpcode(1058, 3, new Grp_recOpen_3);
-  addOpcode(1059, 4, new Grp_recOpen_4);
+  addOpcode(1056, 2, new Grp_recOpen_2);
+  addOpcode(1056, 3, new Grp_recOpen_3);
+  addOpcode(1056, 4, new Grp_recOpen_4);
 }
