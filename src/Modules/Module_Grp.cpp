@@ -54,6 +54,15 @@ const int SEL_SIZE = 16;
 
 namespace {
 
+/** 
+ * Returns the full path to a g00 file for the basename of the file.
+ * 
+ * @param fileName The filename given in the source code.
+ * @return The full path of the file
+ * @todo This function is currently a hack and does not actually
+ *       search for the file; it points directly into my copy of the
+ *       Kannon all ages DVD.
+ */
 string findFile(const std::string& fileName)
 {
   // Hack until I do this correctly
@@ -62,6 +71,23 @@ string findFile(const std::string& fileName)
   return file;
 }
 
+/** 
+ * Performs half the grunt work of a recOpen command; Copies DC0 to
+ * DC1, loads a graphics file, and then composites that file to DC1.
+ * 
+ * Note that it works in rec coordinate space; grp commands must
+ * convert from grp coordinate space.
+ * 
+ * @param graphics The graphics system to composite on
+ * @param fileName The full filename (as returned by findFile)
+ * @param x Source X coordinate
+ * @param y Source Y coordinate
+ * @param width Width of area to composite
+ * @param height Height of area to composite
+ * @param dx Destination X coordinate
+ * @param dy Destination Y coordinate
+ * @param opacity Opacity in range from 0 - 255
+ */
 void loadImageToDC1(GraphicsSystem& graphics,
                     const std::string& fileName,
                     int x, int y, int width, int height,
