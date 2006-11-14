@@ -341,26 +341,9 @@ void SDLSurface::allocate(int width, int height)
     throw Error(ss.str());
   }  
 
-//  m_surface = SDL_DisplayFormat(tmp);
   m_surface =tmp;
 
-  if(m_surface == NULL)
-  {
-    stringstream ss;
-    ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
-       << ": " << SDL_GetError();
-    throw Error(ss.str());
-  }
-
-//  SDL_FreeSurface(tmp);
-
-  // Fill the entire surface with the incoming color
-  Uint32 color = SDL_MapRGBA(m_surface->format, 0, 0, 0, 0);
-
-  if(SDL_FillRect(m_surface, NULL, color))
-    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
-
-  m_textureIsValid = false;
+  wipe(0, 0, 0);
 }
 
 // -----------------------------------------------------------------------
@@ -416,8 +399,6 @@ void SDLSurface::blitToSurface(Surface& destSurface,
 //   count++;
 //   SDL_SaveBMP(m_surface, ss.str().c_str());
 
-  cerr << "blit(" << destX << ", " << destY << ", " << destWidth << ", " 
-       << destHeight << ")" << endl;
   if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
     reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
