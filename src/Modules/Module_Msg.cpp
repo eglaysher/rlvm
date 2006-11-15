@@ -40,8 +40,15 @@
 
 #include <iostream>
 
-
 using namespace std;
+
+/**
+ * @defgroup ModuleMessage The Message and Textout module (mod<0:3>).
+ * @ingroup ModulesOpcodes
+ *
+ * @{
+ */
+
 
 /** 
  * Implements op<0:Msg:17, 0>, fun pause().
@@ -89,3 +96,5 @@ MsgModule::MsgModule()
 //  addOpcode(106
 //  addOpcode
 }
+
+// @}

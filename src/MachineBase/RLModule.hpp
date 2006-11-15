@@ -46,8 +46,23 @@ class CommandElement;
 class RLOperation;
 class RLMachine;
 
+/**
+ * @defgroup ModulesOpcodes Modules and Opcode Definition.
+ * 
+ * Contains definitions for each operation that RLVM executes based
+ * off of an instruction in the SEEN.TXT file.
+ *
+ * Each opcode/overload that RLVM recognizes has a concrete instance
+ * of RLOperation represented with it's opcode number. There are a set
+ * of GeneralOperations that take parameters and are used as function
+ * binders to call various functions, but most opcodes are defined by
+ * having a concrete subclass of RLOp_Store<> or RLOp_Void<>.
+ */
+
 /** Describes a Module, a grouping of functions. Modules are added to
- * an RLMachine before the machine starts.
+ *  an RLMachine before the machine starts.
+ *
+ * @ingroup ModulesOpcodes
  */
 class RLModule : public boost::noncopyable {
 private:

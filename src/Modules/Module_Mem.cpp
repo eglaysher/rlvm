@@ -21,11 +21,11 @@
 // -----------------------------------------------------------------------
 
 /**
- * @file   Module_Mem.cpp
- * @author Elliot Glaysher
- * @date   Sat Oct  7 11:18:42 2006
- * 
- * @brief  Defines the Memory module (mod<1:11>).
+ * @file    Module_Mem.cpp
+ * @author  Elliot Glaysher
+ * @date    Sat Oct  7 11:18:42 2006
+ * @ingroup ModulesOpcodes
+ * @brief   Defines the Memory module (mod<1:11>).
  */
 
 #include "Modules/Module_Mem.hpp"
@@ -44,13 +44,15 @@ using namespace std;
 using namespace boost;
 
 /**
- * @defgroup ModuleMem Module 011, Mem.
+ * @defgroup ModuleMemory The Memory Modules (mod<1:11>)
+ * @ingroup ModulesOpcodes
  *
  * Module that describes memory manipulation opcodes in the RealLive
  * virtual machine. This module implements commands such as setarray,
  * cpyrng, sums, et cetera.
+ *
+ * @{
  */
-//@{
 
 /** 
  * Implement op<1:Mem:00000, 0>, fun setarray(int, intC+).
@@ -225,7 +227,7 @@ struct Mem_sum : public RLOp_Store< IntReference_T, IntReference_T > {
  * Returns the sum of all the numbers in all the given memory ranges.
  */
 struct Mem_sums : public RLOp_Store< Argc_T< Complex2_T< IntReference_T,
-                                                           IntReference_T > > >{
+                                                         IntReference_T > > >{
   int operator()(RLMachine& machine, 
                  vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
     int total = 0;
@@ -238,8 +240,6 @@ struct Mem_sums : public RLOp_Store< Argc_T< Complex2_T< IntReference_T,
     return total;
   }
 };
-
-// @}
 
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
@@ -260,3 +260,5 @@ MemModule::MemModule()
   addOpcode(100, 0, new Mem_sum);
   addOpcode(101, 0, new Mem_sums);
 }
+
+// @}

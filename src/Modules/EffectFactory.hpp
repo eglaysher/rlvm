@@ -24,7 +24,7 @@
  * @file   EffectFactory.hpp
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:37:58 2006
- * 
+ * @ingroup TransitionEffects
  * @brief  Factory that creates all Effect s.
  */
 
@@ -38,6 +38,8 @@ class RLMachine;
  * Factory that creates all Effect s. This factory is called with
  * either a Gameexe and the #SEL or #SELR number, or it is passed the
  * equivalent parameters.
+ *
+ * @ingroup TransitionEffects
  */
 class EffectFactory
 {

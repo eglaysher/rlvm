@@ -36,6 +36,12 @@
 class GraphicsSystem;
 
 /**
+ * @ingroup TransitionEffects
+ * 
+ * @{
+ */
+
+/**
  * Base class for the four classess that implement #SEL transition
  * style #15, Slide. There are four direct subclasses from SlideEffect
  * that implement the individual directions that we wipe in.
@@ -112,6 +118,6 @@ public:
                          int height, int time);
 };
 
-
+// @}
 
 #endif

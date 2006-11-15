@@ -36,6 +36,12 @@
 class GraphicsSystem;
 
 /**
+ * @ingroup TransitionEffects
+ * 
+ * @{
+ */
+
+/**
  * Base class for the four classess that implement #SEL transition
  * style #10, Wipe. There are four direct subclasses from WipeEffect
  * that implement the individual directions that we wipe in.
@@ -128,6 +134,6 @@ public:
                         int interpolation);
 };
 
-
+// @}
 
 #endif

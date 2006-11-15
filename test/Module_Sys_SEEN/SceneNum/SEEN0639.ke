@@ -20,27 +20,4 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Mem_hpp__
-#define __Module_Mem_hpp__
-
-/**
- * @file    Module_Mem.hpp
- * @author  Elliot Glaysher
- * @date    Sat Oct  7 11:17:55 2006
- * @ingroup ModulesOpcodes
- * @brief   Declares the Memory module (mod<1:11>).
- */
-
-#include "../MachineBase/RLModule.hpp"
-
-/**
- * Contains functions for mod<1:11>, Mem.
- * 
- * @ingroup ModuleMemory
- */
-class MemModule : public RLModule {
-public:
-  MemModule();
-};
-
-#endif
+intA[2] = SceneNum()

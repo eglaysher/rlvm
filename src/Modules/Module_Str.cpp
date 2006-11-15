@@ -19,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
 // -----------------------------------------------------------------------
+
 /**
- * @file
- * @ingroup ModuleStr
- * @brief Contains definitions for string handling functions.
+ * @file    Module_Str.cpp
+ * @ingroup ModulesOpcodes
+ * @brief   Contains definitions for string handling functions.
  */
 
 #include "Modules/Module_Str.hpp"
@@ -40,8 +41,9 @@ using namespace std;
 using namespace boost;
 using namespace libReallive;
 
-/** 
- * @defgroup ModuleStr Module 010, Str.
+/**
+ * @defgroup ModuleStr The String module (mod<1:10>)
+ * @ingroup ModulesOpcodes
  * 
  * Module that implements string handeling opcodes in the RealLive
  * virtual machine. This moduel implements commands such as strcpy,

@@ -23,8 +23,21 @@
 #ifndef __Module_Jmp_hpp__
 #define __Module_Jmp_hpp__
 
+/**
+ * @file   Module_Jmp.cpp
+ * @author Elliot Glaysher
+ * @date   Fri Sep 22 20:10:16 2006
+ * @ingroup ModulesOpcodes
+ * @brief  Declaration of JmpModule
+ */
+
 #include "MachineBase/RLModule.hpp"
 
+/**
+ * Contains functions for mod<0:1>, Jmp.
+ * 
+ * @ingroup ModuleJmp
+ */
 class JmpModule : public RLModule {
 public:
   JmpModule();

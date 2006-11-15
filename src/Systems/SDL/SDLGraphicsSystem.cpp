@@ -548,17 +548,20 @@ void SDLGraphicsSystem::beginFrame()
   ShowGLErrors();
 }
 
+// -----------------------------------------------------------------------
+
 void SDLGraphicsSystem::refresh() 
 {
   beginFrame();
 
   // Display DC0
   displayContexts[0].renderToScreen(0, 0, m_width, m_height, 
-                                    0, 0, m_width, m_height, 
-                                    255);
+                                    0, 0, m_width, m_height, 255);
 
   endFrame();
 }
+
+// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::endFrame()
 {

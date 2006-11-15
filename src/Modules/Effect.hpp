@@ -24,7 +24,7 @@
  * @file   Effect.hpp
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:35:25 2006
- * 
+ * @ingroup TransitionEffects
  * @brief  Base LongOperation for all transition effects on DCs.
  */
 
@@ -37,6 +37,25 @@
 #include "MachineBase/LongOperation.hpp"
 
 class Surface;
+
+/**
+ * @defgroup TransitionEffects SEL/SELR transition effects
+ * 
+ * recOpen/grpOpen use a large number of transition effects when
+ * compositing DC1 to DC0. These effects are created either based of
+ * the #SEL/#SELR entries in the Gameexe.ini file, or based off of
+ * arguments to a recOpen/grpOpen command. These transition effects
+ * are all LongOperations which take over the screen during the
+ * transition, surpressing the normal auto-redrawing behaviour.
+ *
+ * There are a large number of Effect s. Instead of trying to manually
+ * create them, use the EffectFactory instead, which will instantiate
+ * the correct Effect subclass based off the parameters
+ *
+ * @see EffectFactory
+ *
+ * @{
+ */
 
 /**
  * Transition effect on DCs.
@@ -58,16 +77,6 @@ private:
   /// The time since startup when this effect started (in milliseconds)
   unsigned int m_startTime;
 
-//   /// The current state of DC1 (we don't own this, so it is a
-//   /// reference. After blitting to DC1, we treat this as the source
-//   /// image)
-//   Surface& m_dc1;
-
-//   /// The original state of DC0 before the transition effect started
-//   /// (we keep this around since it is easier conceptually to redraw
-//   /// the effect
-//   boost::scoped_ptr<Surface> m_originalDC0;
-
   /// Whether the orriginal dc0 should be blitted onto the target
   /// surface before we pass control to the effect
   virtual bool blitOriginalImage() const = 0;
@@ -75,9 +84,6 @@ private:
 protected:
   int width() const { return m_width; }
   int height() const { return m_height; }
-
-//  Surface& dc1() { return m_dc1; }
-
   int duration() const { return m_duration; }
 
   /** 
@@ -110,5 +116,7 @@ public:
    */
   virtual bool operator()(RLMachine& machine);
 };
+
+// @}
 
 #endif

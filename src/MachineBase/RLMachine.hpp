@@ -35,7 +35,6 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include "libReallive/scenario.h"
 #include "libReallive/bytecode.h"
 #include "MachineBase/bytecodeConstants.hpp"
 
@@ -44,6 +43,8 @@
 namespace  libReallive {
 class Archive;
 class FunctionElement;
+//class CommandElement;
+//class ExpressionElement;
 };
 
 class RLModule;
@@ -103,29 +104,7 @@ private:
    * pointer within one Scenario, while farcalls move the instruction
    * pointer between Scenarios.
    */
-  struct StackFrame {
-    /// The scenario in the SEEN file for this stack frame.
-    libReallive::Scenario* scenario;
-    
-    /// The instruction pointer in the stack frame.
-    libReallive::Scenario::const_iterator ip;
-
-    /**
-     * The function that pushed the @i current frame onto the
-     * stack. Used in error checking.
-     */
-    enum FrameType {
-      TYPE_ROOT,   /**< Added by the Machine's constructor */
-      TYPE_GOSUB,  /**< Added by a call by gosub */
-      TYPE_FARCALL /**< Added by a call by farcall */
-    } frameType;
-
-    /// Default constructor
-    StackFrame(libReallive::Scenario* s,
-               const libReallive::Scenario::const_iterator& i,
-               FrameType t) 
-      : scenario(s), ip(i), frameType(t) {}
-  };
+  struct StackFrame;
 
   /// The actual call stack.
   std::stack<StackFrame> callStack;
@@ -222,10 +201,12 @@ public:
   //@}
 
   // -----------------------------------------------------------------------
+
   /** @name StackManip
    *  Call stack manipulation functions
+   *
+   * @{
    */
-  // @{
 
   /**
    * Permanently modifies the current stack frame to point to the new
@@ -287,6 +268,12 @@ public:
    */
   void setLongOperation(LongOperation* longOperation);
 
+  /** 
+   * Returns the current scene number for the Scenario on the top of
+   * the call stack.
+   */
+  int sceneNumber() const;
+
   // @}
 
   // -----------------------------------------------------------------------
@@ -322,7 +309,6 @@ public:
    * @return Whether the machine is halted
    */
   bool halted() const { return m_halted; }
-
 
   /** 
    * Returns the current System that this RLMachine outputs to.

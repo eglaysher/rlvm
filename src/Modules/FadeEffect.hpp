@@ -25,6 +25,11 @@
 
 #include "Modules/Effect.hpp"
 
+/**
+ * Simple fade in.
+ *
+ * @ingroup TransitionEffects
+ */
 class FadeEffect : public Effect
 {
 private:
@@ -37,5 +42,6 @@ protected:
 public:
   FadeEffect(RLMachine& machine, int width, int height, int time);
 };
+
 
 #endif

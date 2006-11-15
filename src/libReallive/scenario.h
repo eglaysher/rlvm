@@ -11,9 +11,13 @@ namespace libReallive {
 class Scenario {
 	Header header;
 	Script script;
+  int scenarioNum;
 public:
-	Scenario(const char* data, const size_t length);
-	Scenario(const FilePos& fp);
+  Scenario(const char* data, const size_t length, int scenarioNum);
+  Scenario(const FilePos& fp, int scenarioNum);
+
+  /// Get the scenario number
+  int sceneNumber() const { return scenarioNum; }
 
 	// Strip a scenario of non-essential metadata.
 	Scenario& strip();
@@ -46,13 +50,17 @@ public:
 // Inline definitions for Scenario
 
 inline
-Scenario::Scenario(const char* data, const size_t length) : header(data, length), script(header, data, length) 
+Scenario::Scenario(const char* data, const size_t length, int sn) 
+  : header(data, length), script(header, data, length), scenarioNum(sn)
 {
 }
+
 inline
-Scenario::Scenario(const FilePos& fp) : header(fp.data, fp.length), script(header, fp.data, fp.length)
+Scenario::Scenario(const FilePos& fp, int sn) 
+  : header(fp.data, fp.length), script(header, fp.data, fp.length), scenarioNum(sn)
 {
 }
+
 inline Scenario& 
 Scenario::strip()
 {
@@ -60,41 +68,49 @@ Scenario::strip()
 	script.strip = true;
 	return *this;
 }
+
 inline Scenario::iterator
 Scenario::begin()
 {
 	return script.elts.begin(); 
 }
+
 inline Scenario::iterator
 Scenario::end()
 { 
 	return script.elts.end(); 
 }
+
 inline Scenario::const_iterator
 Scenario::begin() const
 { 
 	return script.elts.begin(); 
 }
+
 inline Scenario::const_iterator
 Scenario::end() const
 { 
 	return script.elts.end(); 
 }
+
 inline const size_t
 Scenario::size() const
 { 
 	return script.elts.size();
 }
+
 inline Scenario::iterator
 Scenario::insert(iterator pos, BytecodeElement* elt)
 { 
 	return script.elts.insert(pos, elt); 
 }
+
 inline void
 Scenario::erase(Scenario::iterator first, Scenario::iterator last)
 { 
 	if (first != last) do { erase(--last); } while (first != last); 
 }
+
 inline Scenario::iterator
 Scenario::erase(Scenario::iterator pos)
 { 
@@ -103,11 +119,13 @@ Scenario::erase(Scenario::iterator pos)
 	script.remove_elt(pos);
 	return pos;
 }
+
 inline Scenario::iterator
 Scenario::find_next(const ElementType what, Scenario::iterator where)
 {
 	if (where != end()) do { ++where; } while (where != end() && where->type() != what); return where;
 }
+
 inline Scenario::const_iterator
 Scenario::find_next(const ElementType what, Scenario::const_iterator where) const
 {

@@ -27,12 +27,18 @@
  * @file   Module_Grp.hpp
  * @author Elliot Glaysher
  * @date   Sat Oct  7 11:20:27 2006
+ * @ingroup ModulesOpcodes
  * 
  * @brief  Defines the Graphcis module (mod<1:33>).
  */
 
 #include "../MachineBase/RLModule.hpp"
 
+/**
+ * Contains functions for mod<1:33>, Grp.
+ * 
+ * @ingroup ModuleGrp
+ */
 class GrpModule : public RLModule {
 public:
   GrpModule();

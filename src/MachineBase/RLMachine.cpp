@@ -73,11 +73,49 @@
 #include "Systems/Null/NullSystem.hpp"
 #include "Systems/Null/NullGraphicsSystem.hpp"
 
+#include "libReallive/scenario.h"
+
 #include <sstream>
 #include <iostream>
 
 using namespace std;
 using namespace libReallive;
+
+// -----------------------------------------------------------------------
+// Stack Frame
+// -----------------------------------------------------------------------
+
+/**
+ * Internally used type that represents a stack frame in RLMachine's
+ * call stack.
+ */
+struct RLMachine::StackFrame {
+  /// The scenario in the SEEN file for this stack frame.
+  libReallive::Scenario* scenario;
+    
+  /// The instruction pointer in the stack frame.
+  libReallive::Scenario::const_iterator ip;
+
+  /**
+   * The function that pushed the @i current frame onto the
+   * stack. Used in error checking.
+   */
+  enum FrameType {
+    TYPE_ROOT,   /**< Added by the Machine's constructor */
+    TYPE_GOSUB,  /**< Added by a call by gosub */
+    TYPE_FARCALL /**< Added by a call by farcall */
+  } frameType;
+
+  /// Default constructor
+  StackFrame(libReallive::Scenario* s,
+             const libReallive::Scenario::const_iterator& i,
+             FrameType t) 
+    : scenario(s), ip(i), frameType(t) {}
+};
+
+// -----------------------------------------------------------------------
+// RLMachine
+// -----------------------------------------------------------------------
 
 RLMachine::RLMachine(Archive& inArchive) 
   : m_halted(false), m_haltOnException(true), archive(inArchive), 
@@ -87,6 +125,8 @@ RLMachine::RLMachine(Archive& inArchive)
   // which is what we want until we get the Gameexe.ini file parser
   // working
   libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
+  if(scenario == 0)
+    throw Error("Invalid scenario file");
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
@@ -103,6 +143,8 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
   // which is what we want until we get the Gameexe.ini file parser
   // working
   libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
+  if(scenario == 0)
+    throw Error("Invalid scenario file");
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
@@ -217,6 +259,8 @@ static void throwIllegalIndex(int location)
      << ") in RLMachine::getIntVlaue()";
   throw Error(ss.str());
 }
+
+// -----------------------------------------------------------------------
 
 /**
  *
@@ -355,6 +399,9 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
 void RLMachine::farcall(int scenarioNum, int entrypoint) 
 {
   libReallive::Scenario* scenario = archive.scenario(scenarioNum);
+  if(scenario == 0)
+    throw Error("Invalid scenario number in jump");
+
   libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
   callStack.push(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
@@ -404,6 +451,13 @@ void RLMachine::returnFromGosub()
 void RLMachine::setLongOperation(LongOperation* longOperation)
 {
   currentLongOperation.reset(longOperation);
+}
+
+// -----------------------------------------------------------------------
+
+int RLMachine::sceneNumber() const
+{
+  return callStack.top().scenario->sceneNumber();
 }
 
 // -----------------------------------------------------------------------

@@ -24,7 +24,7 @@ Archive::scenario(int index) {
 	accessed_t::const_iterator at = accessed.find(index);
 	if (at != accessed.end()) return at->second;
 	scenarios_t::const_iterator st = scenarios.find(index);
-	if (st != scenarios.end()) return accessed[index] = new Scenario(st->second);
+	if (st != scenarios.end()) return accessed[index] = new Scenario(st->second, index);
 	return NULL;
 }
 

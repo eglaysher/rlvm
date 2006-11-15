@@ -6,7 +6,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 
 .PHONY: clean
 
-.SUBDIRS: Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
+.SUBDIRS: Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN
 
 INCLUDES += ../src
 LIBS += ../src/librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -framework Cocoa -framework OpenGL
@@ -16,6 +16,7 @@ TEST_FILES[] =
   Module_Jmp_TUT
   Module_Str_TUT
   Module_Mem_TUT
+  Module_Sys_TUT
   Gameexe_TUT
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))

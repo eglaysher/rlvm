@@ -24,13 +24,18 @@
 #define __Module_Str_hpp__
 
 /**
- * @file
+ * @file    Module_Str.hpp
  * @ingroup ModuleStr
- * @brief Contains definitions for string handling functions.
+ * @brief   Contains definitions for string handling functions.
  */
 
 #include "MachineBase/RLModule.hpp"
 
+/**
+ * Contains functions for mod<1:10>, Str.
+ * 
+ * @ingroup ModuleStr
+ */
 class StrModule : public RLModule {
 public:
   StrModule();

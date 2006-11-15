@@ -23,7 +23,7 @@
  * @file   Module_Jmp.cpp
  * @author Elliot Glaysher
  * @date   Fri Sep 22 20:10:16 2006
- * 
+ * @ingroup ModulesOpcodes
  * @brief  Definitions for flow control opcodes.
  * 
  * @todo Consider cleaning up the code here; generalize the repeated
@@ -44,7 +44,8 @@ using namespace std;
 using namespace libReallive;
 
 /**
- * @defgroup ModuleJmp Module 001, Jmp.
+ * @defgroup ModuleJmp The Flow Control (Jump) Module (mod<0:1>).
+ * @ingroup ModulesOpcodes
  *
  * Module that describes flow control opcodes in the RealLive virtual
  * machine. This module implements commands such as goto, gosub, ret,

@@ -24,7 +24,7 @@
  * @file   Module_Grp.cpp
  * @author Elliot Glaysher
  * @date   Wed Oct  4 16:45:44 2006
- * 
+ * @ingroup ModulesOpcodes
  * @brief  Implements the Graphics module (mod<1:33>).
  */
 
@@ -49,6 +49,15 @@ using namespace std;
 using namespace boost;
 
 const int SEL_SIZE = 16;
+
+/**
+ * @defgroup ModuleGrp The Graphics Module (mod<1:33>)
+ * @ingroup ModulesOpcodes
+ * 
+ * Module that describes various graphics commands that operate on the DCs.
+ *
+ * @{
+ */
 
 // -----------------------------------------------------------------------
 
@@ -117,6 +126,14 @@ void loadImageToDC1(GraphicsSystem& graphics,
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
+ * 
+ * Allocates a blank width × height bitmap in dc. Any DC apart from DC
+ * 0 may be allocated thus, although DC 1 is never given a size
+ * smaller than the screen resolution. Any previous contents of dc are
+ * erased.
+ */
 struct Grp_allocDC : public RLOp_Void< IntConstant_T, IntConstant_T,
                                        IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
@@ -126,6 +143,12 @@ struct Grp_allocDC : public RLOp_Void< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Grp:00016, 0>, fun freeDC('DC').
+ * 
+ * Frees dc, releasing the memory allocated to it. DC may not be 0; if
+ * it is 1, DC 1 will be blanked, but not released.
+ */
 struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
   void operator()(RLMachine& machine, int dc) {
     machine.system().graphics().freeDC(dc);
@@ -134,6 +157,11 @@ struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Grp:00031, 0>, fun wipe('DC', 'r', 'g', 'b')
+ * 
+ * Fills dc with the colour indicated by the given RGB triplet.
+ */
 struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
                                     IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
@@ -146,6 +174,13 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
 // GRP COMMANDS
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Grp:00076, 0>, fun grpOpen(strC 'filename', '#SEL').
+ * 
+ * Load and display a bitmap. @em filename is loaded into DC1, and
+ * then is passed off to whatever transition effect, which will
+ * perform some intermediary steps and then render DC1 to DC0.
+ */
 struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = machine.system().gameexe()("SEL", effectNum).
@@ -168,7 +203,16 @@ struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-/// @todo factor out the common code between grpOpens!
+/** 
+ * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL', 'opacity').
+ * 
+ * Load and display a bitmap. @em filename is loaded into DC1 with
+ * opacity @em opacity, and then is passed off to whatever transition
+ * effect, which will perform some intermediary steps and then render
+ * DC1 to DC0.
+ *
+ * @todo factor out the common code between grpOpens!
+ */
 struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
                                          IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum, 
@@ -185,7 +229,7 @@ struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
                         selEffect[2], selEffect[3]);
     loadImageToDC1(graphics, filename,
                    selEffect[0], selEffect[1], selEffect[2], selEffect[3],
-                   selEffect[4], selEffect[5], selEffect[14]);
+                   selEffect[4], selEffect[5], opacity);
 
     // Set the long operation for the correct transition long operation
     machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
@@ -194,6 +238,16 @@ struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL', 'opacity').
+ * 
+ * Load and display a bitmap. @em filename is loaded into DC1 with
+ * opacity @em opacity, and then is passed off to whatever transition
+ * effect, which will perform some intermediary steps and then render
+ * DC1 to DC0.
+ *
+ * @todo Finish documentation
+ */
 struct Grp_grpOpen_2 : public RLOp_Void< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T>
@@ -389,7 +443,13 @@ GrpModule::GrpModule()
   addOpcode(15, 0, new Grp_allocDC);
   addOpcode(16, 0, new Grp_freeDC);
 
+  // addOpcode(20, 0, new Grp_grpLoadMask);
+  // addOpcode(30, 0, new Grp_grpTextout);
+
   addOpcode(31, 0, new Grp_wipe);
+  // addOpcode(32, 0, new Grp_shake);
+
+//  addOpcode(50, 0, new Grp_grpLoad_0);
 
   addOpcode(76, 0, new Grp_grpOpen_0);
   addOpcode(76, 1, new Grp_grpOpen_1);
@@ -403,3 +463,5 @@ GrpModule::GrpModule()
   addOpcode(1056, 3, new Grp_recOpen_3);
   addOpcode(1056, 4, new Grp_recOpen_4);
 }
+
+// @}

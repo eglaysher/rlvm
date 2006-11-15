@@ -30,9 +30,12 @@ Header::Header(const char* data, const size_t length)
 		offs += elen + 4;
 	}
 
-	// Metadata
-	if (offs < read_i32(data + 0x20)) 
-          rldev_metadata.assign(data + offs, read_i32(data + 0x20));
+	// Metadata: This has been nothing but trouble from the
+    // begining. It wasn't written correctly and often crashes, even
+    // after I tried to fix it. I have no idea what Haeleth was trying
+    // to do here, but it is severaly broken.
+//	if (offs < read_i32(data + 0x20)) 
+//          rldev_metadata.assign(data + offs, read_i32(data + 0x20));
 }
 
 Script::Script(const Header& hdr, const char* data, const size_t length) : uptodate(true), strip(false)
