@@ -93,9 +93,6 @@ public:
    * @param ysize         Y size of pattern in some transitions
    * @param a             Unknown
    * @param b             Unknown
-   * @param opacity       Opacity of the new image composited onto the
-   *                      old image in DC1. (DC1 is then copied onto DC0
-   *                      with this transition object.)
    * @param c             Unknown
    * 
    * @return A LongOperation which will perform the following transition
@@ -104,7 +101,7 @@ public:
   static LongOperation* build(
     RLMachine& machine, int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
-    int opacity, int c);
+    int c);
 
 private:
   static LongOperation* buildWipeEffect(

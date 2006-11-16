@@ -60,7 +60,7 @@ LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
 //                selParams[4], selParams[5], 
                selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
-               selParams[12], selParams[13], selParams[14], selParams[15]);
+               selParams[12], selParams[13], selParams[15]);
 }
 
 // -----------------------------------------------------------------------
@@ -73,7 +73,7 @@ LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, int selNum)
   return build(machine, 
                selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
-               selParams[12], selParams[13], selParams[14], selParams[15]);  
+               selParams[12], selParams[13], selParams[15]);  
 }
 
 // -----------------------------------------------------------------------
@@ -82,7 +82,7 @@ LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, int selNum)
 LongOperation* EffectFactory::build(
   RLMachine& machine, int time, int style,
   int direction, int interpolation, int xsize, int ysize, int a, int b,
-  int opacity, int c)
+  int c)
 {
   int width = machine.system().graphics().screenWidth();
   int height = machine.system().graphics().screenHeight();

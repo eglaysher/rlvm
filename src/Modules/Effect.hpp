@@ -98,10 +98,7 @@ protected:
 
 public:
   /** 
-   * Constructor for Effects. The constructor does the following:
-   * - Blits imageToBlitToDC1 to DC1 with opacity. (Constructor does
-   *   not take ownership)
-   * - Sets up all other variables
+   * Sets up all other variables
    *
    * Note that we add 1 to both width and height; RL is the only
    * system I know of where ranges are inclusive...

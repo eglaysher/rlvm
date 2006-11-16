@@ -314,7 +314,7 @@ struct Grp_grpOpen_4 : public RLOp_Void<
     // Set the long operation for the correct transition long operation
     machine.setLongOperation(
       EffectFactory::build(machine, time, style, direction, 
-                           interpolation, xsize, ysize, a, b, opacity, c));
+                           interpolation, xsize, ysize, a, b, c));
   }
 };
 
@@ -431,7 +431,7 @@ struct Grp_recOpen_4 : public RLOp_Void<
     // Set the long operation for the correct transition long operation
     machine.setLongOperation(
       EffectFactory::build(machine, time, style, direction, 
-                           interpolation, xsize, ysize, a, b, opacity, c));
+                           interpolation, xsize, ysize, a, b, c));
   }
 };
 
