@@ -45,11 +45,6 @@ class GraphicsSystem;
  * Base class for the four classess that implement #SEL transition
  * style #10, Wipe. There are four direct subclasses from WipeEffect
  * that implement the individual directions that we wipe in.
- * 
- * @bug It's obvious to me now that the Wipe for style #10 is not so
- *      much a slide on for DC1, but a slide off for DC0. It's ninety
- *      percent correct, thought, and would only be noticed by
- *      observing Reallive and RLVM's transition.
  */
 class WipeEffect : public Effect
 {

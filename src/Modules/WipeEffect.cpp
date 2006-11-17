@@ -129,8 +129,8 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfMainPolygon)
   {
     graphics.getDC(1).
-      renderToScreen(0, height() - sizeOfMainPolygon - sizeOfInterpolation, 
-                     width(), height() - sizeOfInterpolation, 
+      renderToScreen(0, 0,
+                     width(), sizeOfMainPolygon,
                      0, 0, width(), sizeOfMainPolygon,
                      255);
   }
@@ -140,8 +140,8 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
     int opacity[4] = {255, 255, 0, 0};
 
     graphics.getDC(1).
-      renderToScreen(0, height() - sizeOfInterpolation, 
-                     width(), height(), 
+      renderToScreen(0, sizeOfMainPolygon,
+                     width(), sizeOfMainPolygon + sizeOfInterpolation,
                      0, sizeOfMainPolygon, width(), 
                      sizeOfMainPolygon + sizeOfInterpolation,
                      opacity);    
@@ -172,8 +172,8 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfMainPolygon)
   {
     graphics.getDC(1).
-      renderToScreen(0, sizeOfInterpolation, 
-                     width(), sizeOfInterpolation + sizeOfMainPolygon, 
+      renderToScreen(0, height() - sizeOfMainPolygon,
+                     width(), height(),
                      0, height() - sizeOfMainPolygon, 
                      width(), height(),
                      255);
@@ -183,8 +183,8 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {0, 0, 255, 255};
     graphics.getDC(1).
-      renderToScreen(0, 0,
-                     width(), sizeOfInterpolation,
+      renderToScreen(0, height() - sizeOfMainPolygon - sizeOfInterpolation,
+                     width(), height() - sizeOfMainPolygon,
                      0, height() - sizeOfMainPolygon - sizeOfInterpolation,
                      width(), height() - sizeOfMainPolygon,
                      opacity);
@@ -209,11 +209,14 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 
+
+  // CONTINUE FIXING THE WIPES HERE!
+
   if(sizeOfMainPolygon)
   {
     graphics.getDC(1).
-      renderToScreen(width() - sizeOfInterpolation - sizeOfMainPolygon, 0, 
-                     width() - sizeOfInterpolation, height(), 
+      renderToScreen(0, 0, 
+                     sizeOfMainPolygon, height(), 
                      0, 0, sizeOfMainPolygon, height(),
                      255);
   }
@@ -222,8 +225,8 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {255, 0, 0, 255};
     graphics.getDC(1).
-      renderToScreen(width() - sizeOfInterpolation, 0, 
-                     width(), height(), 
+      renderToScreen(sizeOfMainPolygon, 0, 
+                     sizeOfMainPolygon + sizeOfInterpolation, height(), 
                      sizeOfMainPolygon, 0, 
                      sizeOfMainPolygon + sizeOfInterpolation, height(),
                      opacity);
@@ -250,10 +253,9 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
 
   if(sizeOfMainPolygon)
   {
-    // broken
     graphics.getDC(1).
-      renderToScreen(sizeOfInterpolation, 0, 
-                     sizeOfInterpolation + sizeOfMainPolygon, height(), 
+      renderToScreen(width() - sizeOfMainPolygon, 0, 
+                     width(), height(), 
                      width() - sizeOfMainPolygon, 0,
                      width(), height(),
                      255);
@@ -263,8 +265,8 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {0, 255, 255, 0};
     graphics.getDC(1).
-      renderToScreen(0, 0, 
-                     sizeOfInterpolation, height(), 
+      renderToScreen(width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
+                     width() - sizeOfMainPolygon, height(),
                      width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
                      width() - sizeOfMainPolygon, height(),
                      opacity);
