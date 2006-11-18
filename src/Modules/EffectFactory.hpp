@@ -108,7 +108,7 @@ private:
     RLMachine& machine, int width, int height, int time, 
     int direction, int interpolation);
 
-  static LongOperation* buildSlideEffect(
+  static LongOperation* buildScrollOnScrollOffEffect(
     RLMachine& machine, int width, int height, int time, int direction);
 };
 

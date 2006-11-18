@@ -31,7 +31,7 @@
 #include "Modules/EffectFactory.hpp"
 #include "Modules/FadeEffect.hpp"
 #include "Modules/WipeEffect.hpp"
-#include "Modules/SlideEffect.hpp"
+#include "Modules/ScrollOnScrollOff.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -96,7 +96,7 @@ LongOperation* EffectFactory::build(
     return buildWipeEffect(machine, width, height, time, 
                            direction, interpolation);
   case 15:
-    return buildSlideEffect(machine, width, height, time, 
+    return buildScrollOnScrollOffEffect(machine, width, height, time, 
                            direction);
   case 0:
   case 50:
@@ -156,31 +156,31 @@ LongOperation* EffectFactory::buildWipeEffect(
 // -----------------------------------------------------------------------
 
 /** 
- * Creates a specific subclass of SlideEffect for #SEL #10, Slide.
+ * Creates a specific subclass of ScrollOnScrollOffEffect for #SEL #10, ScrollOnScrollOff.
  */
-LongOperation* EffectFactory::buildSlideEffect(
+LongOperation* EffectFactory::buildScrollOnScrollOffEffect(
   RLMachine& machine, int width, int height, int time, int direction)
 {
   switch(direction)
   {
   case TOP_TO_BOTTOM:
-    return new SlideTopToBottomEffect(machine, width, height, 
+    return new ScrollOnScrollOffTopToBottomEffect(machine, width, height, 
                                       time);
   case BOTTOM_TO_TOP:
-    return new SlideBottomToTopEffect(machine, width, height, 
+    return new ScrollOnScrollOffBottomToTopEffect(machine, width, height, 
                                       time);
   case LEFT_TO_RIGHT:
-    return new SlideLeftToRightEffect(machine, width, height,
+    return new ScrollOnScrollOffLeftToRightEffect(machine, width, height,
                                       time);
   case RIGHT_TO_LEFT:
-    return new SlideLeftToRightEffect(machine, width, height,
+    return new ScrollOnScrollOffLeftToRightEffect(machine, width, height,
                                      time);
 
   default:
     cerr << "WARNING! Unsupported direction " << direction 
-         << " in EffectFactory::buildSlideEffect. Returning Top to"
+         << " in EffectFactory::buildScrollOnScrollOffEffect. Returning Top to"
          << " Bottom effect." << endl;
-    return new SlideTopToBottomEffect(machine, width, height, 
-                                      time);
+    return new ScrollOnScrollOffTopToBottomEffect(machine, width, height, 
+                                                  time);
   };
 }

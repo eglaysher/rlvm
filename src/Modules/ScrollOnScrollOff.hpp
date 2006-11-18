@@ -21,15 +21,15 @@
 // -----------------------------------------------------------------------
 
 /**
- * @file   SlideEffect.hpp
+ * @file   ScrollOnScrollOff.hpp
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:34:27 2006
  * 
- * @brief  Implements #SEL transition style #10, Slide.
+ * @brief  Implements #SEL transition style #10, ScrollOnScrollOff.
  */
 
-#ifndef __SlideEffect_hpp__
-#define __SlideEffect_hpp__
+#ifndef __ScrollOnScrollOff_hpp__
+#define __ScrollOnScrollOff_hpp__
 
 #include "Modules/Effect.hpp"
 
@@ -43,10 +43,10 @@ class GraphicsSystem;
 
 /**
  * Base class for the four classess that implement #SEL transition
- * style #15, Slide. There are four direct subclasses from SlideEffect
+ * style #15, ScrollOnScrollOff. There are four direct subclasses from ScrollOnScrollOff
  * that implement the individual directions that we wipe in.
  */
-class SlideEffect : public Effect
+class ScrollOnScrollOff : public Effect
 {
 private:
   virtual bool blitOriginalImage() const;
@@ -55,66 +55,66 @@ protected:
   int calculateAmountVisible(int currentTime, int screenSize);
 
 public:
-  SlideEffect(RLMachine& machine, int width, int height, int time);
+  ScrollOnScrollOff(RLMachine& machine, int width, int height, int time);
 };
 
 // -----------------------------------------------------------------------
 
 /**
- * Implements SEL #15, Slide, with direction 0, top to bottom.
+ * Implements SEL #15, ScrollOnScrollOff, with direction 0, top to bottom.
  */
-class SlideTopToBottomEffect : public SlideEffect
+class ScrollOnScrollOffTopToBottomEffect : public ScrollOnScrollOff
 {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideTopToBottomEffect(RLMachine& machine, int width, 
+  ScrollOnScrollOffTopToBottomEffect(RLMachine& machine, int width, 
                          int height, int time);
 };
 
 // -----------------------------------------------------------------------
 
 /**
- * Implements SEL #15, Slide, with direction 1, bottom to top.
+ * Implements SEL #15, ScrollOnScrollOff, with direction 1, bottom to top.
  */
-class SlideBottomToTopEffect : public SlideEffect
+class ScrollOnScrollOffBottomToTopEffect : public ScrollOnScrollOff
 {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideBottomToTopEffect(RLMachine& machine, int width, 
+  ScrollOnScrollOffBottomToTopEffect(RLMachine& machine, int width, 
                          int height, int time);
 };
 
 // -----------------------------------------------------------------------
 
 /**
- * Implements SEL #15, Slide, with direction 2, left to right.
+ * Implements SEL #15, ScrollOnScrollOff, with direction 2, left to right.
  */
-class SlideLeftToRightEffect : public SlideEffect
+class ScrollOnScrollOffLeftToRightEffect : public ScrollOnScrollOff
 {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideLeftToRightEffect(RLMachine& machine, int width, 
+  ScrollOnScrollOffLeftToRightEffect(RLMachine& machine, int width, 
                          int height, int time);
 };
 
 // -----------------------------------------------------------------------
 
 /**
- * Implements SEL #15, Slide, with direction 3, right to left.
+ * Implements SEL #15, ScrollOnScrollOff, with direction 3, right to left.
  */
-class SlideRightToLeftEffect : public SlideEffect
+class ScrollOnScrollOffRightToLeftEffect : public ScrollOnScrollOff
 {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  SlideRightToLeftEffect(RLMachine& machine, int width, 
+  ScrollOnScrollOffRightToLeftEffect(RLMachine& machine, int width, 
                          int height, int time);
 };
 

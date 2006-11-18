@@ -22,7 +22,7 @@ LRLFILES[] =
   Effect
   FadeEffect
   WipeEffect
-  SlideEffect
+  ScrollOnScrollOff
   EffectFactory
 
 StaticCObject(libModules, $(LRLFILES))

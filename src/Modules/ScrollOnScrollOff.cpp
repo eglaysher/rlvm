@@ -21,14 +21,14 @@
 // -----------------------------------------------------------------------
 
 /**
- * @file   SlideEffect.cpp
+ * @file   ScrollOnScrollOff.cpp
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:33:21 2006
  * 
- * @brief  Implements #SEL transition style #15, Slide.
+ * @brief  Implements #SEL transition style #15, ScrollOnScrollOff.
  */
 
-#include "SlideEffect.hpp"
+#include "ScrollOnScrollOff.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -39,41 +39,41 @@
 using namespace std;
 
 // -----------------------------------------------------------------------
-// SlideEffect base class
+// ScrollOnScrollOff base class
 // -----------------------------------------------------------------------
 
-bool SlideEffect::blitOriginalImage() const
+bool ScrollOnScrollOff::blitOriginalImage() const
 {
   return false; 
 }
 
 // -----------------------------------------------------------------------
 
-int SlideEffect::calculateAmountVisible(int currentTime, int screenSize)
+int ScrollOnScrollOff::calculateAmountVisible(int currentTime, int screenSize)
 {
   return int((float(currentTime) / duration()) * screenSize);
 }
 
 // -----------------------------------------------------------------------
 
-SlideEffect::SlideEffect(RLMachine& machine, int width, 
+ScrollOnScrollOff::ScrollOnScrollOff(RLMachine& machine, int width, 
                          int height, int time)
   : Effect(machine, width, height, time)
 {
 }
 
 // -----------------------------------------------------------------------
-// SlideTopToBottomEffect
+// ScrollOnScrollOffTopToBottomEffect
 // -----------------------------------------------------------------------
 
-SlideTopToBottomEffect::SlideTopToBottomEffect(
+ScrollOnScrollOffTopToBottomEffect::ScrollOnScrollOffTopToBottomEffect(
   RLMachine& machine, int width, int height, int time)
-  : SlideEffect(machine, width, height, time)
+  : ScrollOnScrollOff(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
 
-void SlideTopToBottomEffect::performEffectForTime(RLMachine& machine, 
+void ScrollOnScrollOffTopToBottomEffect::performEffectForTime(RLMachine& machine, 
                                                  int currentTime)
 {
   GraphicsSystem& graphics = machine.system().graphics();
@@ -94,17 +94,17 @@ void SlideTopToBottomEffect::performEffectForTime(RLMachine& machine,
 }
 
 // -----------------------------------------------------------------------
-// SlideBottomToTopEffect
+// ScrollOnScrollOffBottomToTopEffect
 // -----------------------------------------------------------------------
 
-SlideBottomToTopEffect::SlideBottomToTopEffect(
+ScrollOnScrollOffBottomToTopEffect::ScrollOnScrollOffBottomToTopEffect(
   RLMachine& machine, int width, int height, int time)
-  : SlideEffect(machine, width, height, time)
+  : ScrollOnScrollOff(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
 
-void SlideBottomToTopEffect::performEffectForTime(RLMachine& machine,
+void ScrollOnScrollOffBottomToTopEffect::performEffectForTime(RLMachine& machine,
                                                  int currentTime)
 {
   GraphicsSystem& graphics = machine.system().graphics();
@@ -125,17 +125,17 @@ void SlideBottomToTopEffect::performEffectForTime(RLMachine& machine,
 }
 
 // -----------------------------------------------------------------------
-// SlideFromLeftToRightEffect
+// ScrollOnScrollOffFromLeftToRightEffect
 // -----------------------------------------------------------------------
 
-SlideLeftToRightEffect::SlideLeftToRightEffect(
+ScrollOnScrollOffLeftToRightEffect::ScrollOnScrollOffLeftToRightEffect(
   RLMachine& machine, int width, int height, int time)
-  : SlideEffect(machine, width, height, time)
+  : ScrollOnScrollOff(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
 
-void SlideLeftToRightEffect::performEffectForTime(RLMachine& machine,
+void ScrollOnScrollOffLeftToRightEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime)
 {
   GraphicsSystem& graphics = machine.system().graphics();
@@ -156,17 +156,17 @@ void SlideLeftToRightEffect::performEffectForTime(RLMachine& machine,
 }
 
 // -----------------------------------------------------------------------
-// SlideFromRightToLeftEffect
+// ScrollOnScrollOffFromRightToLeftEffect
 // -----------------------------------------------------------------------
 
-SlideRightToLeftEffect::SlideRightToLeftEffect(
+ScrollOnScrollOffRightToLeftEffect::ScrollOnScrollOffRightToLeftEffect(
   RLMachine& machine, int width, int height, int time)
-  : SlideEffect(machine, width, height, time)
+  : ScrollOnScrollOff(machine, width, height, time)
 {}
 
 // -----------------------------------------------------------------------
 
-void SlideRightToLeftEffect::performEffectForTime(RLMachine& machine,
+void ScrollOnScrollOffRightToLeftEffect::performEffectForTime(RLMachine& machine,
                                                  int currentTime)
 {
   GraphicsSystem& graphics = machine.system().graphics();
