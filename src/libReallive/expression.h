@@ -171,10 +171,10 @@ private:
    * Performs operation on the passed in parameter, and returns the
    * value.
    * 
-   * @param int Number to operate on.
+   * @param x Number to operate on.
    * @return The result of the operation
    */
-  int performOperationOn(int) const;
+  int performOperationOn(int x) const;
 
 public:
   UniaryExpressionOperator(char inOperation, ExpressionPiece* inOperand);

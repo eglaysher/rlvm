@@ -25,9 +25,7 @@
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:33:21 2006
  * 
- * @brief  Implements #SEL transition style #10, Wipe.
- * 
- * 
+ * @brief  Implements \#SEL transition style \#10, Wipe.
  */
 
 
@@ -65,9 +63,10 @@ bool WipeEffect::blitOriginalImage() const
  * - [height, height + m_interpolationInPixels) - Draw both
  *   polygons, flooring the height of the transition to 
  * 
- * @param sizeOfInterpolation 
- * @param sizeOfMainPolygon 
- * @param sizeOfScreen Size of the area we are rendering to. Name is
+ * @param[in] currentTime The current number of ms since the Effect started
+ * @param[out] sizeOfInterpolation Size of the interpolation
+ * @param[out] sizeOfMainPolygon Size of the main polygon
+ * @param[in] sizeOfScreen Size of the area we are rendering to. Name is
  *                     intentionally ambigous so we can apply this to
  *                     both width and height.
  */

@@ -97,7 +97,7 @@ struct RLMachine::StackFrame {
   libReallive::Scenario::const_iterator ip;
 
   /**
-   * The function that pushed the @i current frame onto the
+   * The function that pushed the current frame onto the
    * stack. Used in error checking.
    */
   enum FrameType {

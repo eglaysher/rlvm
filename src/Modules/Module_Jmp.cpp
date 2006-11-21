@@ -171,7 +171,7 @@ struct Jmp_goto : public RLOp_SpecialCase {
 /**
  * Implements op<0:Jmp:00001, 0>, fun goto_if(<'condition').
  *
- * Conditional equivalents of goto; goto_if() jumps to @label if the
+ * Conditional equivalents of goto; goto_if() jumps to \@label if the
  * value of condition is non-zero
  */
 struct Jmp_goto_if : public RLOp_SpecialCase {
@@ -195,7 +195,7 @@ struct Jmp_goto_if : public RLOp_SpecialCase {
 /**
  * Implements op<0:Jmp:00002, 0>, fun goto_if(<'condition').
  *
- * Conditional equivalents of goto; goto_if() jumps to @label if the
+ * Conditional equivalents of goto; goto_if() jumps to \@label if the
  * value of condition is non-zero
  */
 struct Jmp_goto_unless : public RLOp_SpecialCase {
@@ -243,7 +243,7 @@ struct Jmp_goto_on : public RLOp_SpecialCase {
 
 /** 
  * Implements op<0:Jmp:00004, 0>, fun goto_case (expr) { val1:
- * @label1... } 
+ * \@label1... } 
  *
  * Conditional table jumps. expr is evaluated, and
  * compared to val1, val2, etc. in turn, and control passes to the
@@ -263,7 +263,7 @@ struct Jmp_goto_case : public RLOp_SpecialCase {
  * Implements op<0:Jmp:00005, 0>, fun gosub().
  * 
  * Pushes the current location onto the call stack, then jumps to the
- * label @label in the current scenario.
+ * label \@label in the current scenario.
  */
 struct Jmp_gosub : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
@@ -278,7 +278,7 @@ struct Jmp_gosub : public RLOp_SpecialCase {
  * Implements op<0:Jmp:00006, 0>, fun gosub_if().
  * 
  * Pushes the current location onto the call stack, then jumps to the
- * label @label in the current scenario, if the passed in condition is
+ * label \@label in the current scenario, if the passed in condition is
  * true.
  */
 struct Jmp_gosub_if : public RLOp_SpecialCase {
@@ -303,7 +303,7 @@ struct Jmp_gosub_if : public RLOp_SpecialCase {
  * Implements op<0:Jmp:00007, 0>, fun gosub_unless().
  * 
  * Pushes the current location onto the call stack, then jumps to the
- * label @label in the current scenario, if the passed in condition is
+ * label \@label in the current scenario, if the passed in condition is
  * false.
  */
 struct Jmp_gosub_unless : public RLOp_SpecialCase {
@@ -351,7 +351,7 @@ struct Jmp_gosub_on : public RLOp_SpecialCase {
 
 /** 
  * Implements op<0:Jmp:00009, 0>, fun gosub_case (expr) { val1:
- * @label1... } 
+ * \@label1... } 
  *
  * Conditional table gosub. expr is evaluated, and
  * compared to val1, val2, etc. in turn, and control passes to the
@@ -388,7 +388,7 @@ struct Jmp_ret : public RLOp_Void<> {
  * Implements op<0:Jmp:00011, 0>, fun jump(intC).
  * 
  * Jumps the instruction pointer to the begining of the scenario
- * #scenario.
+ * \#scenario.
  */
 struct Jmp_jump_0 : public RLOp_Void< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
@@ -403,8 +403,8 @@ struct Jmp_jump_0 : public RLOp_Void< IntConstant_T > {
 /** 
  * Implements op<0:Jmp:00011, 1>, fun jump(intC, intC).
  * 
- * Jumps the instruction pointer to entrypoint #entrypoint of scenario
- * #scenario.
+ * Jumps the instruction pointer to entrypoint \#entrypoint of scenario
+ * \#scenario.
  */
 struct Jmp_jump_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
@@ -420,7 +420,7 @@ struct Jmp_jump_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
  * Implements op<0:Jmp:00012, 0>, fun farcall(intC).
  * 
  * Farcalls the instruction pointer to the begining of the scenario
- * #scenario.
+ * \#scenario.
  */
 struct Jmp_farcall_0 : public RLOp_Void< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
@@ -435,8 +435,8 @@ struct Jmp_farcall_0 : public RLOp_Void< IntConstant_T > {
 /** 
  * Implements op<0:Jmp:00012, 1>, fun farcall(intC, intC).
  * 
- * Farcalls the instruction pointer to entrypoint #entrypoint of scenario
- * #scenario.
+ * Farcalls the instruction pointer to entrypoint \#entrypoint of scenario
+ * \#scenario.
  */
 struct Jmp_farcall_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
@@ -466,7 +466,7 @@ struct Jmp_rtl : public RLOp_Void<> {
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<0:Jmp:16,0>, fun gosub_with(params...) @label.
+ * Implements op<0:Jmp:16,0>, fun gosub_with(params...) \@label.
  * 
  * Sets the passing variables intL[] and strK[] to the incoming
  * parameters and gosub to the given label.

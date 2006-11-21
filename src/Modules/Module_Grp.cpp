@@ -175,7 +175,7 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<1:Grp:00076, 0>, fun grpOpen(strC 'filename', '#SEL').
+ * Implements op<1:Grp:00076, 0>, fun grpOpen(strC 'filename', '\#SEL').
  * 
  * Load and display a bitmap. @em filename is loaded into DC1, and
  * then is passed off to whatever transition effect, which will
@@ -204,7 +204,7 @@ struct Grp_grpOpen_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL', 'opacity').
+ * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
  * 
  * Load and display a bitmap. @em filename is loaded into DC1 with
  * opacity @em opacity, and then is passed off to whatever transition
@@ -239,7 +239,7 @@ struct Grp_grpOpen_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL', 'opacity').
+ * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
  * 
  * Load and display a bitmap. @em filename is loaded into DC1 with
  * opacity @em opacity, and then is passed off to whatever transition

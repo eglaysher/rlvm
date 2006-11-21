@@ -830,7 +830,6 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
 
 /** 
  * @author Jagarl
- * @source Xclannad
  *
  * Loads a file from disk into a Surface object. The file loaded
  * should be a type 0 or type 1 g00 bitmap. We don't handle PDT files

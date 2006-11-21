@@ -24,8 +24,8 @@
  * @file   ScrollOnScrollOff.cpp
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:33:21 2006
- * 
- * @brief  Implements #SEL transition style #15, ScrollOnScrollOff.
+ * @ingroup TransitionEffects
+ * @brief  Implements a bunch of \#SEL transitions.
  */
 
 #include "ScrollOnScrollOff.hpp"
@@ -115,9 +115,9 @@ void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
 void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
-    graphics.getDC(0).
-      renderToScreen(0, 0, width, height,
-                     0, amountVisible, width, height, 255);
+  graphics.getDC(0).
+    renderToScreen(0, 0, width, height,
+                   0, amountVisible, width, height, 255);
 }
 
 // -----------------------------------------------------------------------
@@ -172,9 +172,9 @@ void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
 void BottomToTopDrawer::squashOff(GraphicsSystem& graphics, 
                                   int amountVisible, int width, int height)
 {
-   graphics.getDC(0).
-     renderToScreen(0, 0, width, height,
-                    0, 0, width, height - amountVisible, 255);
+  graphics.getDC(0).
+    renderToScreen(0, 0, width, height,
+                   0, 0, width, height - amountVisible, 255);
 }
 
 // ------------------------------------------------- [ LeftToRightDrawer ]
@@ -224,7 +224,7 @@ void LeftToRightDrawer::squashOff(GraphicsSystem& graphics,
                    amountVisible, 0, width, height, 255);
 }
 
-// ------------------------------------------------- [ RightToLeftDrawer ]a
+// ------------------------------------------------- [ RightToLeftDrawer ]
 
 int RightToLeftDrawer::getMaxSize(GraphicsSystem& gs)
 {

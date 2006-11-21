@@ -24,8 +24,8 @@
  * @file   ScrollOnScrollOff.hpp
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:34:27 2006
- * 
- * @brief  Implements a bunch of #SEL transitions.
+ * @ingroup TransitionEffects
+ * @brief  Implements a bunch of \#SEL transitions.
  */
 
 #ifndef __ScrollOnScrollOff_hpp__
@@ -38,13 +38,7 @@ class ScrollSquashSlideDrawer;
 class ScrollSquashSlideEffectTypeBase;
 
 /**
- * @ingroup TransitionEffects
- * 
- * @{
- */
-
-/**
- * Base class for all the classess that implement variations on #SEL
+ * Base class for all the classess that implement variations on \#SEL
  * transition styles #15 (Scroll on, Scroll off), #16 (Scroll on,
  * Squash off), #17 (Squash on, Scroll off), #18 (Squash on, Squash
  * off), #20 (Slide on), #21 (Slide off).
@@ -92,9 +86,8 @@ public:
  * operation in a certain direction.
  *
  * There are four, all representing the four directions used in these selections
- *
- * @{
  */
+//@}
 
 /**
  * Base interface which describes the (very) high level primatives
@@ -157,8 +150,7 @@ public:
   virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
   virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
 };
-
-// @}
+//@}
 
 // -----------------------------------------------------------------------
 
@@ -167,8 +159,8 @@ public:
  * 
  * Each EffectType that derives from ScrollSquashSlideEffectTypeBase
  * represents one of the SEL effects.
- * 
  */
+//@{
 
 /**
  * Base class that defines the interface 
@@ -273,9 +265,6 @@ public:
                                  int amountVisible);
 };
 
-// -----------------------------------------------------------------------
+//@}
 
-
-// @}
-// @}
 #endif

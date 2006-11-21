@@ -134,7 +134,7 @@ enum ScreenDirection {
 // -----------------------------------------------------------------------
 
 /** 
- * Creates a specific subclass of WipeEffect for #SEL #10, Wipe.
+ * Creates a specific subclass of WipeEffect for \#SEL #10, Wipe.
  */
 LongOperation* EffectFactory::buildWipeEffect(
   RLMachine& machine, int width, int height, int time, 

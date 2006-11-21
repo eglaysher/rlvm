@@ -25,7 +25,7 @@
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:34:27 2006
  * 
- * @brief  Implements #SEL transition style #10, Wipe.
+ * @brief  Implements \#SEL transition style \#10, Wipe.
  */
 
 #ifndef __WipeEffect_hpp__
@@ -42,7 +42,7 @@ class GraphicsSystem;
  */
 
 /**
- * Base class for the four classess that implement #SEL transition
+ * Base class for the four classess that implement \#SEL transition
  * style #10, Wipe. There are four direct subclasses from WipeEffect
  * that implement the individual directions that we wipe in.
  */

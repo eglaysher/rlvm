@@ -43,7 +43,7 @@ class Surface;
  * 
  * recOpen/grpOpen use a large number of transition effects when
  * compositing DC1 to DC0. These effects are created either based of
- * the #SEL/#SELR entries in the Gameexe.ini file, or based off of
+ * the \#SEL/\#SELR entries in the Gameexe.ini file, or based off of
  * arguments to a recOpen/grpOpen command. These transition effects
  * are all LongOperations which take over the screen during the
  * transition, surpressing the normal auto-redrawing behaviour.
@@ -61,7 +61,7 @@ class Surface;
  * Transition effect on DCs.
  * 
  * Effect is the base class from which all transition effects defined
- * on #SELs derive from. These effects are all implemented as
+ * on \#SELs derive from. These effects are all implemented as
  * LongOperations on the RLMahcine, as they are all long and blocking
  * operations.
  */
@@ -90,6 +90,7 @@ protected:
    * Implements the effect. Usually, this is all that needs to be
    * overriden, other then the public constructor.
    * 
+   * @param machine Machine to run on
    * @param currentTime A value [0, m_duration) reprsenting the
    *                    current time of the effect.
    */

@@ -756,7 +756,7 @@ struct Str_strlpos : public RLOp_Store< StrConstant_T, StrConstant_T > {
  *
  * Prints a string.
  * 
- * @note This is usually called from within long text strings as \s{intV}.
+ * @note This is usually called from within long text strings as \\s{intV}.
  * @todo For now, we print to cout, but once we have a display system,
  * this needs to be changed so we output to it.
  */
@@ -773,7 +773,7 @@ struct Str_strout : public RLOp_Void< StrConstant_T > {
  *
  * Prints an integer.
  * 
- * @note This is usually called from within long text strings as \i{intV}.
+ * @note This is usually called from within long text strings as \\i{intV}.
  * @todo For now, we print to cout, but once we have a display system,
  * this needs to be changed so we output to it.
  */
