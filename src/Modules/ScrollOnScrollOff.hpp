@@ -25,7 +25,7 @@
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:34:27 2006
  * 
- * @brief  Implements #SEL transition style #10, ScrollOnScrollOff.
+ * @brief  Implements a bunch of #SEL transitions.
  */
 
 #ifndef __ScrollOnScrollOff_hpp__
@@ -34,6 +34,8 @@
 #include "Modules/Effect.hpp"
 
 class GraphicsSystem;
+class ScrollSquashSlideDrawer;
+class ScrollSquashSlideEffectTypeBase;
 
 /**
  * @ingroup TransitionEffects
@@ -42,82 +44,238 @@ class GraphicsSystem;
  */
 
 /**
- * Base class for the four classess that implement #SEL transition
- * style #15, ScrollOnScrollOff. There are four direct subclasses from ScrollOnScrollOff
- * that implement the individual directions that we wipe in.
+ * Base class for all the classess that implement variations on #SEL
+ * transition styles #15 (Scroll on, Scroll off), #16 (Scroll on,
+ * Squash off), #17 (Squash on, Scroll off), #18 (Squash on, Squash
+ * off), #20 (Slide on), #21 (Slide off).
+ *
+ * These effects are all very similar and are implemented by passing
+ * two behaviour classes to an instance of
+ * ScrollSquashSlideBaseEffect. The first behavioural class are the
+ * subclassess of ScrollSquashSlideDrawer, which describe the
+ * direction to draw in. The second is
+ * ScrollSquashSlideEffectTypeBase, which defines what combination of
+ * primitives to use.
  */
-class ScrollOnScrollOff : public Effect
+class ScrollSquashSlideBaseEffect : public Effect
 {
 private:
+  /// Drawer behavior class
+  boost::scoped_ptr<ScrollSquashSlideDrawer> m_drawer;
+
+  /// Effect type behavior class
+  boost::scoped_ptr<ScrollSquashSlideEffectTypeBase> m_effectType;
+
+  /// Don't blit the original image.
   virtual bool blitOriginalImage() const;
 
-protected:
+  /// Calculates the amountVisible passed into composeEffectsFor().
   int calculateAmountVisible(int currentTime, int screenSize);
 
+  /// Implement the Effect interface
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+
 public:
-  ScrollOnScrollOff(RLMachine& machine, int width, int height, int time);
+  ScrollSquashSlideBaseEffect(RLMachine& machine,
+                              ScrollSquashSlideDrawer* drawer,
+                              ScrollSquashSlideEffectTypeBase* effectType,
+                              int width, int height, int time);
 };
 
 // -----------------------------------------------------------------------
 
 /**
- * Implements SEL #15, ScrollOnScrollOff, with direction 0, top to bottom.
+ * @name Drawer Behavior classes
+ * 
+ * These classess implement drawing for directions; They are used by
+ * child classes of ScrollOnScrollOff to perform the requested
+ * operation in a certain direction.
+ *
+ * There are four, all representing the four directions used in these selections
+ *
+ * @{
  */
-class ScrollOnScrollOffTopToBottomEffect : public ScrollOnScrollOff
-{
-protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
+/**
+ * Base interface which describes the (very) high level primatives
+ * that are composed in the ScrollSquashSlideEffectTypeBase subclasses.
+ */
+class ScrollSquashSlideDrawer
+{
 public:
-  ScrollOnScrollOffTopToBottomEffect(RLMachine& machine, int width, 
-                         int height, int time);
+  virtual int getMaxSize(GraphicsSystem& gs) = 0;
+  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height) = 0;
+  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height) = 0;
+  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height) = 0;
+  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height) = 0;
 };
 
 // -----------------------------------------------------------------------
 
-/**
- * Implements SEL #15, ScrollOnScrollOff, with direction 1, bottom to top.
- */
-class ScrollOnScrollOffBottomToTopEffect : public ScrollOnScrollOff
+class TopToBottomDrawer : public ScrollSquashSlideDrawer
 {
-protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
-
 public:
-  ScrollOnScrollOffBottomToTopEffect(RLMachine& machine, int width, 
-                         int height, int time);
+  virtual int getMaxSize(GraphicsSystem& gs);
+  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
 };
 
 // -----------------------------------------------------------------------
 
-/**
- * Implements SEL #15, ScrollOnScrollOff, with direction 2, left to right.
- */
-class ScrollOnScrollOffLeftToRightEffect : public ScrollOnScrollOff
+class BottomToTopDrawer : public ScrollSquashSlideDrawer
 {
-protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
-
 public:
-  ScrollOnScrollOffLeftToRightEffect(RLMachine& machine, int width, 
-                         int height, int time);
+  virtual int getMaxSize(GraphicsSystem& gs);
+  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
 };
 
 // -----------------------------------------------------------------------
 
-/**
- * Implements SEL #15, ScrollOnScrollOff, with direction 3, right to left.
- */
-class ScrollOnScrollOffRightToLeftEffect : public ScrollOnScrollOff
+class LeftToRightDrawer : public ScrollSquashSlideDrawer
 {
-protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
-
 public:
-  ScrollOnScrollOffRightToLeftEffect(RLMachine& machine, int width, 
-                         int height, int time);
+  virtual int getMaxSize(GraphicsSystem& gs);
+  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
+};
+
+// -----------------------------------------------------------------------
+
+class RightToLeftDrawer : public ScrollSquashSlideDrawer
+{
+public:
+  virtual int getMaxSize(GraphicsSystem& gs);
+  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
 };
 
 // @}
 
+// -----------------------------------------------------------------------
+
+/**
+ * @name Effect Types
+ * 
+ * Each EffectType that derives from ScrollSquashSlideEffectTypeBase
+ * represents one of the SEL effects.
+ * 
+ */
+
+/**
+ * Base class that defines the interface 
+ * 
+ */
+class ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible) = 0;
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Behavioural class that defines the high level behaviour for SEL
+ * #15, Scroll On/Scroll Off.
+ * 
+ */
+class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible);
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Behavioural class that defines the high level behaviour for SEL
+ * #16, Scroll On/Squash Off.
+ * 
+ */
+class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible);
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Behavioural class that defines the high level behaviour for SEL
+ * #17, Squash On/Scroll Off.
+ * 
+ */
+class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible);
+};
+
+// -----------------------------------------------------------------------
+
+
+/** 
+ * Behavioural class that defines the high level behaviour for SEL
+ * #18, Squash On/Squash Off.
+ * 
+ */
+class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible);
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Behavioural class that defines the high level behaviour for SEL
+ * #20, Slide On.
+ * 
+ */
+class SlideOn : public ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible);
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Behavioural class that defines the high level behaviour for SEL
+ * #21, Slide Off.
+ * 
+ */
+class SlideOff : public ScrollSquashSlideEffectTypeBase
+{
+public:
+  virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideDrawer& drawer,
+                                 int amountVisible);
+};
+
+// -----------------------------------------------------------------------
+
+
+// @}
+// @}
 #endif

@@ -34,6 +34,9 @@
 class LongOperation;
 class RLMachine;
 
+class ScrollSquashSlideDrawer;
+class ScrollSquashSlideEffectTypeBase;
+
 /**
  * Factory that creates all Effect s. This factory is called with
  * either a Gameexe and the #SEL or #SELR number, or it is passed the
@@ -108,8 +111,11 @@ private:
     RLMachine& machine, int width, int height, int time, 
     int direction, int interpolation);
 
-  static LongOperation* buildScrollOnScrollOffEffect(
-    RLMachine& machine, int width, int height, int time, int direction);
+  static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(
+    int drawerType);
+
+  static ScrollSquashSlideEffectTypeBase* buildScrollSquashSlideTypeBase(
+    int style);
 };
 
 #endif

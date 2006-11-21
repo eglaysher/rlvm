@@ -42,146 +42,307 @@ using namespace std;
 // ScrollOnScrollOff base class
 // -----------------------------------------------------------------------
 
-bool ScrollOnScrollOff::blitOriginalImage() const
+bool ScrollSquashSlideBaseEffect::blitOriginalImage() const
 {
   return false; 
 }
 
 // -----------------------------------------------------------------------
 
-int ScrollOnScrollOff::calculateAmountVisible(int currentTime, int screenSize)
+int ScrollSquashSlideBaseEffect::calculateAmountVisible(int currentTime, int screenSize)
 {
   return int((float(currentTime) / duration()) * screenSize);
 }
 
 // -----------------------------------------------------------------------
 
-ScrollOnScrollOff::ScrollOnScrollOff(RLMachine& machine, int width, 
-                         int height, int time)
-  : Effect(machine, width, height, time)
+void ScrollSquashSlideBaseEffect::performEffectForTime(
+  RLMachine& machine, int currentTime)
+{
+  GraphicsSystem& graphics = machine.system().graphics();
+  int amountVisible = calculateAmountVisible(currentTime,  
+                                             m_drawer->getMaxSize(graphics));
+  m_effectType->composeEffectsFor(graphics, *m_drawer, amountVisible);
+}
+
+// -----------------------------------------------------------------------
+
+ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
+  RLMachine& machine,
+  ScrollSquashSlideDrawer* drawer,
+  ScrollSquashSlideEffectTypeBase* effectType,
+  int width, int height, int time)
+  : Effect(machine, width, height, time), 
+    m_drawer(drawer), m_effectType(effectType)
 {
 }
 
 // -----------------------------------------------------------------------
-// ScrollOnScrollOffTopToBottomEffect
-// -----------------------------------------------------------------------
-
-ScrollOnScrollOffTopToBottomEffect::ScrollOnScrollOffTopToBottomEffect(
-  RLMachine& machine, int width, int height, int time)
-  : ScrollOnScrollOff(machine, width, height, time)
-{}
 
 // -----------------------------------------------------------------------
+// Direction Interface
+// -----------------------------------------------------------------------
 
-void ScrollOnScrollOffTopToBottomEffect::performEffectForTime(RLMachine& machine, 
-                                                 int currentTime)
+// ------------------------------------------------- [ TopToBottomDrawer ]
+
+int TopToBottomDrawer::getMaxSize(GraphicsSystem& gs)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
-  int amountVisible = calculateAmountVisible(currentTime, height());
-  
+  return gs.screenHeight();
+}
+
+// -----------------------------------------------------------------------
+
+void TopToBottomDrawer::scrollOff(GraphicsSystem& graphics,
+                                  int amountVisible, int width, int height)
+{
    graphics.getDC(0).
-     renderToScreen(0, 0, 
-                    width(), height() - amountVisible,
-                    0, amountVisible, 
-                    width(), height(),
-                    255);
+     renderToScreen(0, 0, width, height - amountVisible,
+                    0, amountVisible, width, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
+                                 int amountVisible, int width, int height)
+{
   graphics.getDC(1).
-    renderToScreen(0, height() - amountVisible,
-                   width(), height(),
-                   0, 0, 
-                   width(), amountVisible,
-                   255);
+    renderToScreen(0, height - amountVisible, width, height,
+                   0, 0, width, amountVisible, 255);
 }
 
 // -----------------------------------------------------------------------
-// ScrollOnScrollOffBottomToTopEffect
-// -----------------------------------------------------------------------
 
-ScrollOnScrollOffBottomToTopEffect::ScrollOnScrollOffBottomToTopEffect(
-  RLMachine& machine, int width, int height, int time)
-  : ScrollOnScrollOff(machine, width, height, time)
-{}
-
-// -----------------------------------------------------------------------
-
-void ScrollOnScrollOffBottomToTopEffect::performEffectForTime(RLMachine& machine,
-                                                 int currentTime)
+void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
+                                  int amountVisible, int width, int height)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
-  int amountVisible = calculateAmountVisible(currentTime, height());
-  
-   graphics.getDC(0).
-     renderToScreen(0, amountVisible, 
-                    width(), height(),
-                    0, 0,
-                    width(), height() - amountVisible,
-                    255);
+    graphics.getDC(0).
+      renderToScreen(0, 0, width, height,
+                     0, amountVisible, width, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void TopToBottomDrawer::squashOn(GraphicsSystem& graphics,
+                                 int amountVisible, int width, int height)
+{
+  graphics.getDC(1).
+    renderToScreen(0, 0, width, height,
+                   0, 0, width, amountVisible, 255);
+}
+
+// ------------------------------------------------- [ BottomToTopDrawer ]
+
+int BottomToTopDrawer::getMaxSize(GraphicsSystem& gs)
+{
+  return gs.screenHeight();
+}
+
+// -----------------------------------------------------------------------
+
+void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
+                                 int amountVisible, int width, int height)
+{
    graphics.getDC(1).
-     renderToScreen(0, 0,
-                    width(), amountVisible,
-                    0, height() - amountVisible, 
-                    width(), height(),
-                    255);
+     renderToScreen(0, 0, width, amountVisible,
+                    0, height - amountVisible, width, height, 255);
 }
 
 // -----------------------------------------------------------------------
-// ScrollOnScrollOffFromLeftToRightEffect
-// -----------------------------------------------------------------------
 
-ScrollOnScrollOffLeftToRightEffect::ScrollOnScrollOffLeftToRightEffect(
-  RLMachine& machine, int width, int height, int time)
-  : ScrollOnScrollOff(machine, width, height, time)
-{}
-
-// -----------------------------------------------------------------------
-
-void ScrollOnScrollOffLeftToRightEffect::performEffectForTime(RLMachine& machine,
-                                                  int currentTime)
+void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics, 
+                                  int amountVisible, int width, int height)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
-  int amountVisible = calculateAmountVisible(currentTime, width());
-  
-  graphics.getDC(0).
-    renderToScreen(0, 0, 
-                   width() - amountVisible, height(),
-                   amountVisible, 0,
-                   width(), height(),
-                   255);
-  graphics.getDC(1).
-    renderToScreen(width() - amountVisible, 0,
-                   width(), height(),
-                   0, 0,
-                   amountVisible, height(),
-                   255);
+   graphics.getDC(0).
+     renderToScreen(0, amountVisible, width, height,
+                    0, 0, width, height - amountVisible, 255);
 }
 
 // -----------------------------------------------------------------------
-// ScrollOnScrollOffFromRightToLeftEffect
-// -----------------------------------------------------------------------
 
-ScrollOnScrollOffRightToLeftEffect::ScrollOnScrollOffRightToLeftEffect(
-  RLMachine& machine, int width, int height, int time)
-  : ScrollOnScrollOff(machine, width, height, time)
-{}
-
-// -----------------------------------------------------------------------
-
-void ScrollOnScrollOffRightToLeftEffect::performEffectForTime(RLMachine& machine,
-                                                 int currentTime)
+void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
+                                 int amountVisible, int width, int height)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
-  int amountVisible = calculateAmountVisible(currentTime, width());
-
-  graphics.getDC(0).
-    renderToScreen(amountVisible, 0,
-                   width(), height(),
-                   0, 0,
-                   width() - amountVisible, height(),
-                   255);
-  graphics.getDC(1).
-    renderToScreen(0, 0,
-                   amountVisible, height(),
-                   width() - amountVisible, height(),
-                   width(), height(),
-                   255);
+   graphics.getDC(1).
+     renderToScreen(0, 0, width, height,
+                    0, height - amountVisible, width, height, 255);
 }
+
+// -----------------------------------------------------------------------
+
+void BottomToTopDrawer::squashOff(GraphicsSystem& graphics, 
+                                  int amountVisible, int width, int height)
+{
+   graphics.getDC(0).
+     renderToScreen(0, 0, width, height,
+                    0, 0, width, height - amountVisible, 255);
+}
+
+// ------------------------------------------------- [ LeftToRightDrawer ]
+
+int LeftToRightDrawer::getMaxSize(GraphicsSystem& gs)
+{
+  return gs.screenWidth();
+}
+
+// -----------------------------------------------------------------------
+
+void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics, 
+                                 int amountVisible, int width, int height)
+{
+  graphics.getDC(1).
+    renderToScreen(width - amountVisible, 0, width, height,
+                   0, 0, amountVisible, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics, 
+                                  int amountVisible, int width, int height)
+{
+  graphics.getDC(0).
+    renderToScreen(0, 0, width - amountVisible, height,
+                   amountVisible, 0, width, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void LeftToRightDrawer::squashOn(GraphicsSystem& graphics, 
+                                 int amountVisible, int width, int height)
+{
+  graphics.getDC(1).
+    renderToScreen(0, 0, width, height, 
+                   0, 0, amountVisible, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void LeftToRightDrawer::squashOff(GraphicsSystem& graphics, 
+                                  int amountVisible, int width, int height)
+{
+  graphics.getDC(0).
+    renderToScreen(0, 0, width, height,
+                   amountVisible, 0, width, height, 255);
+}
+
+// ------------------------------------------------- [ RightToLeftDrawer ]a
+
+int RightToLeftDrawer::getMaxSize(GraphicsSystem& gs)
+{
+  return gs.screenWidth();
+}
+
+// -----------------------------------------------------------------------
+
+void RightToLeftDrawer::scrollOff(GraphicsSystem& graphics,
+                                  int amountVisible, int width, int height)
+{
+  graphics.getDC(0).
+    renderToScreen(amountVisible, 0, width, height,
+                   0, 0, width - amountVisible, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics, 
+                                 int amountVisible, int width, int height)
+{
+  graphics.getDC(1).
+    renderToScreen(0, 0, amountVisible, height,
+                   width - amountVisible, 0, width, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void RightToLeftDrawer::squashOff(GraphicsSystem& graphics,
+                                  int amountVisible, int width, int height)
+{
+  graphics.getDC(0).
+    renderToScreen(0, 0, width, height,
+                   0, 0, width - amountVisible, height, 255);
+}
+
+// -----------------------------------------------------------------------
+
+void RightToLeftDrawer::squashOn(GraphicsSystem& graphics, 
+                                 int amountVisible, int width, int height)
+{
+  graphics.getDC(1).
+    renderToScreen(0, 0, width, height,
+                   width - amountVisible, 0, width, height, 255);  
+}
+
+// -----------------------------------------------------------------------
+// Effect Type Interface
+// -----------------------------------------------------------------------
+
+void ScrollOnScrollOff::composeEffectsFor(
+  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  int amountVisible)
+{
+  drawer.scrollOn(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.scrollOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+}
+
+// -----------------------------------------------------------------------
+
+void ScrollOnSquashOff::composeEffectsFor(
+  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  int amountVisible)
+{
+  drawer.scrollOn(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.squashOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+}
+
+// -----------------------------------------------------------------------
+
+void SquashOnScrollOff::composeEffectsFor(
+  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  int amountVisible)
+{
+  drawer.squashOn(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.scrollOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+}
+
+// -----------------------------------------------------------------------
+
+void SquashOnSquashOff::composeEffectsFor(
+  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  int amountVisible)
+{
+  drawer.squashOn(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.squashOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+}
+
+// -----------------------------------------------------------------------
+
+void SlideOn::composeEffectsFor(
+  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  int amountVisible)
+{
+  int width = system.screenWidth();
+  int height = system.screenHeight();
+
+  // Draw the old image
+  system.getDC(0).
+    renderToScreen(0, 0, width, height, 0, 0, width, height, 255);
+
+  drawer.scrollOn(system, amountVisible, width, height);
+}
+
+// -----------------------------------------------------------------------
+
+void SlideOff::composeEffectsFor(
+  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  int amountVisible)
+{
+  int width = system.screenWidth();
+  int height = system.screenHeight();
+
+  // Draw the old image
+  system.getDC(1).
+    renderToScreen(0, 0, width, height, 0, 0, width, height, 255);
+
+  drawer.scrollOff(system, amountVisible, width, height);
+}
+
+// -----------------------------------------------------------------------

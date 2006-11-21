@@ -95,9 +95,19 @@ LongOperation* EffectFactory::build(
   case 10:
     return buildWipeEffect(machine, width, height, time, 
                            direction, interpolation);
+  // We have the bunch of similar effects that are all implemented by
+  // ScrollSquashSlideBaseEffect
   case 15:
-    return buildScrollOnScrollOffEffect(machine, width, height, time, 
-                           direction);
+  case 16:
+  case 17:
+  case 18:
+  case 20:
+  case 21:
+  {
+    ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
+    ScrollSquashSlideEffectTypeBase* effect = buildScrollSquashSlideTypeBase(style);
+    return new ScrollSquashSlideBaseEffect(machine, drawer, effect, width, height, time);
+  }
   case 0:
   case 50:
   default:
@@ -155,32 +165,46 @@ LongOperation* EffectFactory::buildWipeEffect(
 
 // -----------------------------------------------------------------------
 
-/** 
- * Creates a specific subclass of ScrollOnScrollOffEffect for #SEL #10, ScrollOnScrollOff.
- */
-LongOperation* EffectFactory::buildScrollOnScrollOffEffect(
-  RLMachine& machine, int width, int height, int time, int direction)
+ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
+  int drawerType)
 {
-  switch(direction)
+  switch(drawerType)
   {
   case TOP_TO_BOTTOM:
-    return new ScrollOnScrollOffTopToBottomEffect(machine, width, height, 
-                                      time);
+    return new TopToBottomDrawer;
   case BOTTOM_TO_TOP:
-    return new ScrollOnScrollOffBottomToTopEffect(machine, width, height, 
-                                      time);
+    return new BottomToTopDrawer;
   case LEFT_TO_RIGHT:
-    return new ScrollOnScrollOffLeftToRightEffect(machine, width, height,
-                                      time);
+    return new LeftToRightDrawer;
   case RIGHT_TO_LEFT:
-    return new ScrollOnScrollOffLeftToRightEffect(machine, width, height,
-                                     time);
-
+    return new RightToLeftDrawer;
   default:
-    cerr << "WARNING! Unsupported direction " << direction 
-         << " in EffectFactory::buildScrollOnScrollOffEffect. Returning Top to"
+    cerr << "WARNING! Unsupported direction " << drawerType
+         << " in EffectFactory::buildWipeEffect. Returning Top to"
          << " Bottom effect." << endl;
-    return new ScrollOnScrollOffTopToBottomEffect(machine, width, height, 
-                                                  time);
+    return new TopToBottomDrawer;
+  };
+}
+
+// -----------------------------------------------------------------------
+
+ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
+  int style)
+{
+  switch(style)
+  {
+  case 15:
+    return new ScrollOnScrollOff;
+  case 16:
+    return new ScrollOnSquashOff;
+  case 17:
+    return new SquashOnScrollOff;
+  case 18:
+    return new SquashOnSquashOff;
+  case 20:
+    return new SlideOn;
+  case 21:    
+    return new SlideOff;
+//  default:
   };
 }
