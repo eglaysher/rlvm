@@ -38,6 +38,8 @@ class ScrollSquashSlideDrawer;
 class ScrollSquashSlideEffectTypeBase;
 
 /**
+ * @ingroup TransitionEffects
+ *
  * Base class for all the classess that implement variations on \#SEL
  * transition styles #15 (Scroll on, Scroll off), #16 (Scroll on,
  * Squash off), #17 (Squash on, Scroll off), #18 (Squash on, Squash
@@ -50,6 +52,20 @@ class ScrollSquashSlideEffectTypeBase;
  * direction to draw in. The second is
  * ScrollSquashSlideEffectTypeBase, which defines what combination of
  * primitives to use.
+ *
+ * There are four drawer classes:
+ * - TopToBottomDrawer
+ * - BottomToTopDrawer
+ * - LeftToRightDrawer
+ * - RightToLeftDrawer
+ *
+ * and six effect type classes:
+ * - ScrollOnScrollOff
+ * - ScrollOnSquashOff
+ * - SquashOnScrollOff
+ * - SquashOnSquashOff
+ * - SlideOn
+ * - SlideOff
  */
 class ScrollSquashSlideBaseEffect : public Effect
 {

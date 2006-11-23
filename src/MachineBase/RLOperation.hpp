@@ -22,7 +22,7 @@
 
 /** 
  * @file
- * @ingroup RLOperation
+ * @ingroup RLOperationGroup
  * @brief Defines all the base RLOperations and their type checking structs.
  */
 
@@ -44,27 +44,54 @@
 // ------------------------------------------------------------ Real
 
 /**
- * @defgroup RLOperation RLOperations/Type structures
+ * @defgroup RLOperationGroup RLOperation and it's type system
  *
  * Defines the base classes from which the all of the opcode
  * implementations derive from. This heiarchy of classes works by
  * having one of your operation classes, which handles a specific
  * prototype of a specific opcode, derfive from one of the subclases
- * of RLOperation, specifically RLOP_{Void,Store}_{# of
- * parameters}. The template parameters of these subclasses refer to
- * the types of the parameters.
+ * of RLOperation, specifically RLOp_Void<> and RLOp_Store<>. The
+ * template parameters of these subclasses refer to the types of the
+ * parameters, some of which can be composed to represent more complex
+ * parameters.
  *
  * Valid type parameters are IntConstant_T, IntReference_T,
- * StrConstant_T, StrReference_T, Argc_T (takes another type as a
- * parameter), 
+ * StrConstant_T, StrReference_T, Argc_T< U > (takes another type as a
+ * parameter). The type parameters change the arguments to the
+ * implementation function.
+ *
+ * Let's say we want to implement an operation with the following
+ * prototype: <tt>fun (store)doSomething(str, intC+)</tt>. The
+ * function returns an integer value to the store register, so we want
+ * to derive the implementation struct from RLOp_Store<>, which will
+ * automatically place the return value in the store register. Our
+ * first parameter is a reference to a piece of string memory, so our
+ * first template argument is StrReference_T. We then take a variable
+ * number of ints, so we compose IntConstant_T into the template
+ * Argc_T for our second parameter.
  * 
+ * Thus, our sample operation would be implemented with this:
+ *
+ * @code
+ * struct Operation : public RLOp_Store<StrReference_T, Argc_T< IntConstant_T > > {
+ *   int operator()(RLMachine& machine, StringReferenceIterator x, vector<int> y) {
+ *     // Do whatever with the input parameters...
+ *     return 5;
+ *   }
+ * }; 
+ * @endcode
+ *
+ * For information on how to group RLOperations into modules to
+ * attatch to an RLMachine instance, please see @ref ModulesOpcodes
+ * "Modules and Opcode Definitions".
+ *
  * @{
  */
 
 /** 
- * @brief Root of the entire operation heiarchy.
- *
- * An RLOperation object implements an individual bytecode command.
+ * An RLOperation object implements an individual bytecode
+ * command. All command bytecodes have a corresponding instance of a
+ * subclass of RLOperation that defines it. 
  *
  * RLOperations are grouped into RLModule s, which are then added to
  * the RLMachine.
@@ -132,6 +159,8 @@ struct RLOperation {
  * subclass, and should not be used directly. It should only be used
  * as a template parameter to one of those classes, or of another type
  * definition struct.
+ *
+ * The
  */
 struct IntConstant_T {
   /// The output type of this type struct

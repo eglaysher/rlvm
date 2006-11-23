@@ -47,7 +47,7 @@ class RLOperation;
 class RLMachine;
 
 /**
- * @defgroup ModulesOpcodes Modules and Opcode Definition.
+ * @defgroup ModulesOpcodes Modules and Opcode Definitions
  * 
  * Contains definitions for each operation that RLVM executes based
  * off of an instruction in the SEEN.TXT file.
@@ -57,6 +57,35 @@ class RLMachine;
  * of GeneralOperations that take parameters and are used as function
  * binders to call various functions, but most opcodes are defined by
  * having a concrete subclass of RLOp_Store<> or RLOp_Void<>.
+ *
+ * Subclasseess of RLModule are used to contain subclasses of
+ * RLOperation; Each module should have a class derived from RLModule,
+ * where, in the constructor, the modules two identification numbers
+ * (@c moduleType and @c moduleNumber) are passed up to RLModule's
+ * constructor. The subclass constructor should then call
+ * RLModule::addOpcode for each opcode/overload pair with the
+ * RLOperation object that implements that operation.
+ *
+ * Example:
+ * @code
+ * FakeModule::FakeModule()
+ *   : RLModule("Fake", 0, 0)
+ * {
+ *   addOpcode(0, 0, new Fake_fakeOperation_0);
+ *   addOpcode(0, 1, new Fake_fakeOperation_1);
+ * }
+ * @endcode
+ *
+ * An instance of this module can now be passed to
+ * RLMachine::attatchModule to expose these opcodes to an instance of RLMachine:
+ *
+ * @code
+ * RLMachine machine(someArchiveObject);
+ * machine.attatchModule(new FakeModule);
+ * @endcode
+ *
+ * For information on how to write an RLOperation subclass, see the
+ * documentation on @ref RLOperationGroup "RLOperation and it's type system"
  */
 
 /** Describes a Module, a grouping of functions. Modules are added to

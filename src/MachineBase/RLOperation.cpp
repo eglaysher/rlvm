@@ -22,7 +22,7 @@
 
 /** 
  * @file
- * @ingroup RLOperation
+ * @ingroup RLOperationGroup
  * @brief Defines all the base RLOperations and their type checking structs.
  */
 

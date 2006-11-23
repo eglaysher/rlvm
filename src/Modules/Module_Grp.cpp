@@ -169,9 +169,269 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
   }
 };
 
-
 // -----------------------------------------------------------------------
 // GRP COMMANDS
+// -----------------------------------------------------------------------
+
+/**
+ * Implements op<1:Grp:00050, 0>, fun grpLoad(strC 'filename', 'DC').
+ *
+ * Loads filename into dc; note that filename may not be '???'. 
+ *
+ */
+struct Grp_grpLoad_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int dc) {
+    filename = findFile(filename);
+    GraphicsSystem& graphics = machine.system().graphics();
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    surface->blitToSurface(graphics.getDC(dc),
+                           0, 0, surface->width(), surface->height(),
+                           0, 0, surface->width(), surface->height(),
+                           255);    
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements op<1:Grp:00050, 1>, fun grpLoad(strC 'filename', 'DC',
+ * 'opacity').
+ *
+ * Loads filename into dc; note that filename may not be '???'. 
+ *
+ */
+struct Grp_grpLoad_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
+                                         IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int dc, int opacity) {
+    filename = findFile(filename);
+    GraphicsSystem& graphics = machine.system().graphics();
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    surface->blitToSurface(graphics.getDC(dc),
+                           0, 0, surface->width(), surface->height(),
+                           0, 0, surface->width(), surface->height(),
+                           opacity);    
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements op<1:Grp:00050, 2>, fun grpLoad(strC 'filename', 'DC',
+ * 'x1', 'y1', 'x2', 'y2', 'dx', 'dy').
+ *
+ * Loads filename into dc; note that filename may not be '???'. Using
+ * this form, the given area of the bitmap is loaded at the given
+ * location.
+ */
+struct Grp_grpLoad_2 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int dc,
+                  int x1, int y1, int x2, int y2, int dx, int dy) {
+    filename = findFile(filename);
+    GraphicsSystem& graphics = machine.system().graphics();
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    grpToRecCoordinates(x1, y1, x2, y2);
+    surface->blitToSurface(graphics.getDC(dc),
+                           x1, y1, x2, y2, dx, dy, x2, y2, 255);    
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Implements op<1:Grp:00050, 3>, fun grpLoad(strC 'filename', 'DC',
+ * 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha').
+ *
+ * Loads filename into dc; note that filename may not be '???'. Using
+ * this form, the given area of the bitmap is loaded at the given
+ * location.
+ */
+struct Grp_grpLoad_3 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T> {
+  void operator()(RLMachine& machine, string filename, int dc,
+                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
+    filename = findFile(filename);
+    GraphicsSystem& graphics = machine.system().graphics();
+    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    grpToRecCoordinates(x1, y1, x2, y2);
+    surface->blitToSurface(graphics.getDC(dc),
+                           x1, y1, x2, y2, dx, dy, x2, y2, opacity);    
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Grp:00076, 0>, fun grpOpenBg(strC 'filename', '\#SEL').
+ * 
+ * Load and display a bitmap. @em filename is loaded into DC1, and
+ * then is passed off to whatever transition effect, which will
+ * perform some intermediary steps and then render DC1 to DC0.
+ *
+ * @todo When I write the SerialPDT support and the object buffer
+ *       support, have this clear the foreground layer, and promote
+ *       everything in the background layer to the foreground.
+ */
+struct Grp_grpOpenBg_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int effectNum) {
+    vector<int> selEffect = machine.system().gameexe()("SEL", effectNum).
+      to_intVector();
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setDefaultGrpName(filename);
+    filename = findFile(filename);
+
+    grpToRecCoordinates(selEffect[0], selEffect[1], 
+                        selEffect[2], selEffect[3]);
+    loadImageToDC1(graphics, filename,
+                   selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+                   selEffect[4], selEffect[5], selEffect[14]);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Grp:00076, 1>, fun grpOpenBg(strC 'filename', '\#SEL', 'opacity').
+ * 
+ * Load and display a bitmap. @em filename is loaded into DC1 with
+ * opacity @em opacity, and then is passed off to whatever transition
+ * effect, which will perform some intermediary steps and then render
+ * DC1 to DC0.
+ *
+ * @todo When I write the SerialPDT support and the object buffer
+ *       support, have this clear the foreground layer, and promote
+ *       everything in the background layer to the foreground.
+ *
+ * @todo factor out the common code between grpOpenBgs!
+ */
+struct Grp_grpOpenBg_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
+                                         IntConstant_T > {
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int opacity)
+  {
+    vector<int> selEffect = machine.system().gameexe()("SEL", effectNum).
+      to_intVector();
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setDefaultGrpName(filename);
+    filename = findFile(filename);
+
+    grpToRecCoordinates(selEffect[0], selEffect[1], 
+                        selEffect[2], selEffect[3]);
+    loadImageToDC1(graphics, filename,
+                   selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+                   selEffect[4], selEffect[5], opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<1:Grp:00076, 1>, fun grpOpenBg(strC 'filename', '\#SEL', 'opacity').
+ * 
+ * Load and display a bitmap. @em filename is loaded into DC1 with
+ * opacity @em opacity, and then is passed off to whatever transition
+ * effect, which will perform some intermediary steps and then render
+ * DC1 to DC0.
+ *
+ * @todo When I write the SerialPDT support and the object buffer
+ *       support, have this clear the foreground layer, and promote
+ *       everything in the background layer to the foreground.
+ *
+ * @todo Finish documentation
+ */
+struct Grp_grpOpenBg_2 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy)
+  {
+    int opacity = machine.system().gameexe()("SEL", effectNum).
+      to_intVector().at(14);
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setDefaultGrpName(filename);
+    filename = findFile(filename);
+
+    grpToRecCoordinates(x1, y1, x2, y2);
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ *
+ * @todo When I write the SerialPDT support and the object buffer
+ *       support, have this clear the foreground layer, and promote
+ *       everything in the background layer to the foreground.
+ */
+struct Grp_grpOpenBg_3 : public RLOp_Void< 
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setDefaultGrpName(filename);
+    filename = findFile(filename);
+
+    grpToRecCoordinates(x1, y1, x2, y2);
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(EffectFactory::buildFromSEL(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ *
+ * @todo When I write the SerialPDT support and the object buffer
+ *       support, have this clear the foreground layer, and promote
+ *       everything in the background layer to the foreground.
+ */
+struct Grp_grpOpenBg_4 : public RLOp_Void<
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, string filename, int effectNum,
+                  int x1, int y1, int x2, int y2, int dx, int dy,
+                  int time, int style, int direction, int interpolation,
+                  int xsize, int ysize, int a, int b, int opacity, int c)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setDefaultGrpName(filename);
+    filename = findFile(filename);
+
+    grpToRecCoordinates(x1, y1, x2, y2);
+    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(
+      EffectFactory::build(machine, time, style, direction, 
+                           interpolation, xsize, ysize, a, b, c));
+  }
+};
+
 // -----------------------------------------------------------------------
 
 /** 
@@ -449,7 +709,16 @@ GrpModule::GrpModule()
   addOpcode(31, 0, new Grp_wipe);
   // addOpcode(32, 0, new Grp_shake);
 
-//  addOpcode(50, 0, new Grp_grpLoad_0);
+  addOpcode(50, 0, new Grp_grpLoad_0);
+  addOpcode(50, 1, new Grp_grpLoad_1);
+  addOpcode(50, 2, new Grp_grpLoad_2);
+  addOpcode(50, 3, new Grp_grpLoad_3);
+
+  addOpcode(73, 0, new Grp_grpOpenBg_0);
+  addOpcode(73, 1, new Grp_grpOpenBg_1);
+  addOpcode(73, 2, new Grp_grpOpenBg_2);
+  addOpcode(73, 3, new Grp_grpOpenBg_3);
+  addOpcode(73, 4, new Grp_grpOpenBg_4);
 
   addOpcode(76, 0, new Grp_grpOpen_0);
   addOpcode(76, 1, new Grp_grpOpen_1);
