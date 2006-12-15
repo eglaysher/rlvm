@@ -35,6 +35,7 @@
 
 class Texture;
 class SDLGraphicsSystem;
+class GraphicsObject;
 
 /** 
  * Wrapper around an OpenGL texture; meant to be passed out of the
@@ -151,6 +152,12 @@ private:
   /// Flag set to redraw the screen NOW
   bool m_screenNeedsRefresh;
 
+  /// Foreground objects
+  boost::shared_ptr<GraphicsObject> foregroundObjects[512];
+
+  /// Background objects
+  boost::shared_ptr<GraphicsObject> backgroundObjects[512];
+
   // ---------------------------------------------------------------------
 
   /** 
@@ -180,10 +187,8 @@ private:
   /// @}
   // ---------------------------------------------------------------------
 
-
 public:
   SDLGraphicsSystem(); 
-
 
   /** 
    * Should be called by any of the drawing functions when 
@@ -193,7 +198,6 @@ public:
    * various modes.
    */
   void dc0writtenTo();
-
 
   virtual void beginFrame();
 
@@ -224,36 +228,12 @@ public:
 
   virtual Surface& getDC(int dc);
 
-  // Wrapper around 
-  /** 
-   * Sets the current color;
-   * 
-   * @param r 
-   * @param g 
-   * @param b 
-   */
-//  virtual void rawSetColor(float r, float g, float b);
+  // -----------------------------------------------------------------------
 
-  /** 
-   * Displays a 
-   * 
-   * @param texture 
-   * @param srcX 
-   * @param srcY 
-   * @param srcWidth 
-   * @param srcHeight 
-   * @param destX 
-   * @param destY 
-   * @param destWidth 
-   * @param destHeight 
-   */
-//   virtual void rawDisplayQuad(Surface& texture, 
-//                               int srcX, int srcY, int srcWidth, int srcHeight,
-//                               int destX, int destY, int destWidth, int destHeight);
+  // Object related functions
 
-
-//  virtual void recFade(int x, int y, int width, int height,
-//                       int r, int g, int b);
+  virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber);
+  virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber);
 };
 
 

@@ -184,6 +184,8 @@ struct Grp_grpLoad_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
     filename = findFile(filename);
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+
+    graphics.allocateDC(dc, surface->width(), surface->height());
     surface->blitToSurface(graphics.getDC(dc),
                            0, 0, surface->width(), surface->height(),
                            0, 0, surface->width(), surface->height(),
@@ -206,6 +208,7 @@ struct Grp_grpLoad_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
     filename = findFile(filename);
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    graphics.allocateDC(dc, graphics.screenWidth(), graphics.screenHeight());
     surface->blitToSurface(graphics.getDC(dc),
                            0, 0, surface->width(), surface->height(),
                            0, 0, surface->width(), surface->height(),
@@ -232,6 +235,7 @@ struct Grp_grpLoad_2 : public RLOp_Void<
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     grpToRecCoordinates(x1, y1, x2, y2);
+//    graphics.getDC(dc).allocate(x2, y2);
     surface->blitToSurface(graphics.getDC(dc),
                            x1, y1, x2, y2, dx, dy, x2, y2, 255);    
   }
@@ -257,6 +261,7 @@ struct Grp_grpLoad_3 : public RLOp_Void<
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     grpToRecCoordinates(x1, y1, x2, y2);
+//    graphics.getDC(dc).allocate(x2, y2);
     surface->blitToSurface(graphics.getDC(dc),
                            x1, y1, x2, y2, dx, dy, x2, y2, opacity);    
   }
@@ -579,6 +584,100 @@ struct Grp_grpOpen_4 : public RLOp_Void<
 };
 
 // -----------------------------------------------------------------------
+
+struct Grp_grpCopy_0 : public RLOp_Void<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int src, int dst) {
+    // Copying to self is a noop
+    if(src == dst)
+      return;
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    Surface& sourceSurface = graphics.getDC(src);
+
+    // Reallocate the destination so that it's the same size as the first.
+    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
+
+    sourceSurface.blitToSurface(
+      graphics.getDC(dst),
+      0, 0, sourceSurface.width(), sourceSurface.height(),
+      0, 0, sourceSurface.width(), sourceSurface.height(),
+      255);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_grpCopy_1 : public RLOp_Void<IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int src, int dst, int opacity) {
+    // Copying to self is a noop
+    if(src == dst)
+      return;
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    Surface& sourceSurface = graphics.getDC(src);
+
+    // Reallocate the destination so that it's the same size as the first.
+    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
+
+    sourceSurface.blitToSurface(
+      graphics.getDC(dst),
+      0, 0, sourceSurface.width(), sourceSurface.height(),
+      0, 0, sourceSurface.width(), sourceSurface.height(),
+      opacity);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_grpCopy_2 : public RLOp_Void<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
+                  int src, int dx, int dy, int dst) {
+    // Copying to self is a noop
+    if(src == dst)
+      return;
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    Surface& sourceSurface = graphics.getDC(src);
+
+    // Reallocate the destination so that it's the same size as the first.
+    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
+
+    grpToRecCoordinates(x1, y1, x2, y2);
+    sourceSurface.blitToSurface(
+      graphics.getDC(dst),
+      x1, y1, x2, y2, dx, dy, x2, y2, 255);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_grpCopy_3 : public RLOp_Void<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T> {
+
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
+                  int src, int dx, int dy, int dst, int opacity) {
+    // Copying to self is a noop
+    if(src == dst)
+      return;
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    Surface& sourceSurface = graphics.getDC(src);
+
+    // Reallocate the destination so that it's the same size as the first.
+    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
+
+    grpToRecCoordinates(x1, y1, x2, y2);
+    sourceSurface.blitToSurface(
+      graphics.getDC(dst),
+      x1, y1, x2, y2, dx, dy, x2, y2, opacity);
+  }
+};
+
+// -----------------------------------------------------------------------
 // REC COMMANDS
 // -----------------------------------------------------------------------
 
@@ -697,6 +796,24 @@ struct Grp_recOpen_4 : public RLOp_Void<
 
 // -----------------------------------------------------------------------
 
+/**
+ *
+ * At minimum, we need to get these functions working for Kanon:
+ *
+ * [elliot@Kotori:~/Projects/Kanon] $  grep grp *.ke -h | cut -f 1 -d " " | sort | uniq  
+ * grpBuffer
+ * grpCopy
+ * grpFill
+ * grpMaskCopy
+ * grpMaskOpen
+ * grpMulti
+ * grpOpenBg
+ * [elliot@Kotori:~/Projects/Kanon] $  grep rec *.ke -h | cut -f 1 -d " " | sort | uniq
+ * recCopy
+ * recFill
+ * recOpen
+ * recOpenBg
+ */
 GrpModule::GrpModule()
   : RLModule("Grp", 1, 33)
 {
@@ -714,6 +831,14 @@ GrpModule::GrpModule()
   addOpcode(50, 2, new Grp_grpLoad_2);
   addOpcode(50, 3, new Grp_grpLoad_3);
 
+  // These are grpBuffer, which is very similar to grpLoad and Haeleth
+  // doesn't know how they differ. For now, we just assume they're
+  // equivalent.
+  addOpcode(70, 0, new Grp_grpLoad_0);
+  addOpcode(70, 1, new Grp_grpLoad_1);
+  addOpcode(70, 2, new Grp_grpLoad_2);
+  addOpcode(70, 3, new Grp_grpLoad_3);
+
   addOpcode(73, 0, new Grp_grpOpenBg_0);
   addOpcode(73, 1, new Grp_grpOpenBg_1);
   addOpcode(73, 2, new Grp_grpOpenBg_2);
@@ -725,6 +850,11 @@ GrpModule::GrpModule()
   addOpcode(76, 2, new Grp_grpOpen_2);
   addOpcode(76, 3, new Grp_grpOpen_3);
   addOpcode(76, 4, new Grp_grpOpen_4);
+
+  addOpcode(100, 0, new Grp_grpCopy_0);
+  addOpcode(100, 1, new Grp_grpCopy_1);
+  addOpcode(100, 2, new Grp_grpCopy_2);
+  addOpcode(100, 3, new Grp_grpCopy_3);
 
   addOpcode(1056, 0, new Grp_recOpen_0);
   addOpcode(1056, 1, new Grp_recOpen_1);

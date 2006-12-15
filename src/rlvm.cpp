@@ -158,13 +158,9 @@ int main(int argc, char* argv[])
     rlmachine.attatchModule(new GrpModule);
 
     while(!rlmachine.halted()) {
-//      cerr << "Begin sdlSystem: " << sdlSystem.event().getTicks() << endl;
-
       // Give SDL a chance to respond to events, redraw the screen,
       // etc.
       sdlSystem.run(rlmachine);
-
-//      cerr << "Begin rlmachine: " << sdlSystem.event().getTicks() << endl;
 
       // Run the rlmachine through another instruction
       rlmachine.executeNextInstruction();

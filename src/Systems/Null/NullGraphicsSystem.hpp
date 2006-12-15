@@ -27,6 +27,11 @@ public:
   virtual void allocateDC(int dc, int width, int height) { }
   virtual void freeDC(int dc) { }
 
+
+  virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber) { }
+  virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber) { }
+
+
   // Make a null Surface object?
   virtual Surface* loadSurfaceFromFile(const std::string& filename) { return NULL; }
   virtual Surface& getDC(int dc) { static NullSurface s; return s; };

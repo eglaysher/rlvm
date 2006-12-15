@@ -33,7 +33,10 @@
 
 #include <string>
 
+#include <boost/shared_ptr.hpp>
+
 class Surface;
+class GraphicsObject;
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -121,6 +124,10 @@ public:
   virtual Surface* loadSurfaceFromFile(const std::string& filename) = 0;
 
   virtual Surface& getDC(int dc) = 0;
+
+
+  virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber) = 0;
+  virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber) = 0;
 };
 
 /** 

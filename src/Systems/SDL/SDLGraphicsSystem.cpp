@@ -798,6 +798,26 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
+boost::shared_ptr<GraphicsObject> SDLGraphicsSystem::getFgObject(int objNumber)
+{
+  if(objNumber < 0 || objNumber > 512)
+    throw Error("Out of rnage object number");
+
+  return foregroundObjects[objNumber];
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<GraphicsObject> SDLGraphicsSystem::getBgObject(int objNumber)
+{
+  if(objNumber < 0 || objNumber > 512)
+    throw Error("Out of rnage object number");
+
+  return backgroundObjects[objNumber];
+}
+
+// -----------------------------------------------------------------------
+
 
 // -----------------------------------------------------------------------
 
@@ -897,4 +917,6 @@ Surface& SDLGraphicsSystem::getDC(int dc)
                                 
 int SDLSurface::width() const { return m_surface->w; }
 int SDLSurface::height() const { return m_surface->h; }
+
+
 

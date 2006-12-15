@@ -109,6 +109,8 @@ private:
 protected:
   RLModule(const std::string& inModuleName, int inModuleType, int inModuleNumber);
 
+public:
+
   /** Used in derived Module constructors to declare all the
    * operations the module handles.
    *
@@ -122,7 +124,6 @@ protected:
    */
   void addOpcode(int opcode, unsigned char overload, RLOperation* op);
 
-public:
   /// Accessor that returns this module's type number
   int moduleType() const { return m_moduleType; }
 
