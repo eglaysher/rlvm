@@ -122,7 +122,9 @@ public:
   int width() const;
   int height() const;
 
-  virtual void wipe(int r, int g, int b);
+  virtual void fill(int r, int g, int b, int alpha);
+  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
+                    int width, int height);
 
   SDL_Surface* surface() { return m_surface; }
 

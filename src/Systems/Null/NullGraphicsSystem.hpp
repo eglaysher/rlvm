@@ -8,7 +8,9 @@ class NullSurface : public Surface
   virtual int width() const { return 0; }
   virtual int height() const { return 0; }
 
-  virtual void wipe(int r, int g, int b) { }
+  virtual void fill(int r, int g, int b, int alpha) { }
+  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
+                    int width, int height) { }
 
   virtual Surface* clone() const { return 0; }
 };

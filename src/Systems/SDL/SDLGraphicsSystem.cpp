@@ -343,7 +343,7 @@ void SDLSurface::allocate(int width, int height)
 
   m_surface =tmp;
 
-  wipe(0, 0, 0);
+  fill(0, 0, 0, 255);
 }
 
 // -----------------------------------------------------------------------
@@ -458,12 +458,31 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::wipe(int r, int g, int b)
+void SDLSurface::fill(int r, int g, int b, int alpha)
 {
   // Fill the entire surface with the incoming color
-  Uint32 color = SDL_MapRGB(m_surface->format, r, g, b);
+  Uint32 color = SDL_MapRGBA(m_surface->format, r, g, b, alpha);
 
   if(SDL_FillRect(m_surface, NULL, color))
+    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
+
+  // If we are the main screen, then we want to update the screen
+  markWrittenTo();
+}
+
+void SDLSurface::fill(int r, int g, int b, int alpha, int x, int y, 
+                      int width, int height)
+{
+  // Fill the entire surface with the incoming color
+  Uint32 color = SDL_MapRGBA(m_surface->format, r, g, b, alpha);
+
+  SDL_Rect rect;
+  rect.x = x;
+  rect.y = y;
+  rect.w = width;
+  rect.h = height;
+
+  if(SDL_FillRect(m_surface, &rect, color))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
@@ -758,7 +777,7 @@ void SDLGraphicsSystem::freeDC(int dc)
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
-    getDC(1).wipe(0, 0, 0);
+    getDC(1).fill(0, 0, 0, 255);
   }
   else
     displayContexts[dc].deallocate();

@@ -232,7 +232,7 @@ struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
 struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
                                     IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    machine.system().graphics().getDC(dc).wipe(r, g, b);
+    machine.system().graphics().getDC(dc).fill(r, g, b, 255);
   }
 };
 
@@ -543,8 +543,46 @@ struct Grp_copy_2 : public RLOp_Void<
 // {grp,rec}Fill
 // -----------------------------------------------------------------------
 
-//struct Grp_fill_0 : public RLOp_Void<
-//  IntC
+struct Grp_fill_1 : public RLOp_Void<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
+    machine.system().graphics().getDC(dc).fill(r, g, b, alpha);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_fill_0 : public RLOp_Void<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int dc, int r, int g, int b) {
+    Grp_fill_1()(machine, dc, r, g, b, 255);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_fill_3 : public RLOp_Void<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
+                  int dc, int r, int g, int b, int alpha) {
+    SPACE::translateToRec(x1, y1, x2, y2);
+    machine.system().graphics().getDC(dc).fill(r, g, b, alpha, x1, y1, x2, y2);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_fill_2 : public RLOp_Void<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
+                  int dc, int r, int g, int b) {
+    Grp_fill_3<SPACE>()(machine, x1, y1, x2, y2, dc, r, g, b, 255);
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -610,6 +648,11 @@ GrpModule::GrpModule()
   addOpcode(100, 2, new Grp_copy_2<GRP_SPACE>);
   addOpcode(100, 3, new Grp_copy_3<GRP_SPACE>);
 
+  addOpcode(201, 0, new Grp_fill_0);
+  addOpcode(201, 1, new Grp_fill_1);
+  addOpcode(201, 2, new Grp_fill_2<GRP_SPACE>);
+  addOpcode(201, 3, new Grp_fill_3<GRP_SPACE>);
+
   // -----------------------------------------------------------------------
   
   addOpcode(1050, 0, new Grp_load_0);
@@ -635,6 +678,11 @@ GrpModule::GrpModule()
   addOpcode(1100, 1, new Grp_copy_1);
   addOpcode(1100, 2, new Grp_copy_2<REC_SPACE>);
   addOpcode(1100, 3, new Grp_copy_3<REC_SPACE>);
+
+  addOpcode(1201, 0, new Grp_fill_0);
+  addOpcode(1201, 1, new Grp_fill_1);
+  addOpcode(1201, 2, new Grp_fill_2<REC_SPACE>);
+  addOpcode(1201, 3, new Grp_fill_3<REC_SPACE>);
 }
 
 // @}

@@ -166,7 +166,9 @@ public:
                              const int destCoords[8],
                              const int opacity[4]) { }
 
-  virtual void wipe(int r, int g, int b) = 0;
+  virtual void fill(int r, int g, int b, int alpha) = 0;
+  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
+                    int width, int height) = 0;
 
   virtual Surface* clone() const = 0;
 };
