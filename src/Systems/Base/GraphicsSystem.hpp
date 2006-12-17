@@ -148,7 +148,7 @@ public:
   virtual void blitToSurface(Surface& surface, 
                              int srcX, int srcY, int srcWidth, int srcHeight,
                              int destX, int destY, int destWidth, int destHeight,
-                             int alpha = 255) { }
+                             int alpha = 255, bool useSrcAlpha = true) { }
 
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,

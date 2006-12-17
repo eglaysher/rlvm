@@ -124,6 +124,15 @@ public:
    */
   void addOpcode(int opcode, unsigned char overload, RLOperation* op);
 
+  /** 
+   * Convenience function to allow a function name to be embeded in
+   * the declaration.
+   */
+  void addOpcode(int opcode, unsigned char overload, const std::string& name,
+                 RLOperation* op) {
+    addOpcode(opcode, overload, op);
+  }
+
   /// Accessor that returns this module's type number
   int moduleType() const { return m_moduleType; }
 

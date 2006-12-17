@@ -368,7 +368,7 @@ void SDLSurface::deallocate()
 void SDLSurface::blitToSurface(Surface& destSurface,
   int srcX, int srcY, int srcWidth, int srcHeight,
   int destX, int destY, int destWidth, int destHeight,
-  int alpha)
+                               int alpha, bool useSrcAlpha)
 {
   // Drawing an empty image is a noop
   if(alpha == 0)
@@ -387,17 +387,11 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   destRect.w = destWidth;
   destRect.h = destHeight;
 
-  if(alpha != 255) 
+  if(useSrcAlpha) 
   {
     if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
-
-//   static int count = 0;
-//   stringstream ss;
-//   ss << "source_" << count << ".bmp";
-//   count++;
-//   SDL_SaveBMP(m_surface, ss.str().c_str());
 
   if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
     reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
