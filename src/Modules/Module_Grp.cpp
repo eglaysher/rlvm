@@ -252,6 +252,9 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
  */
 struct Grp_load_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
                                          IntConstant_T > {
+  bool m_useAlpha;
+  Grp_load_1(bool in) : m_useAlpha(in) {}
+
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
     filename = findFile(filename);
     GraphicsSystem& graphics = machine.system().graphics();
@@ -260,7 +263,7 @@ struct Grp_load_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
     surface->blitToSurface(graphics.getDC(dc),
                            0, 0, surface->width(), surface->height(),
                            0, 0, surface->width(), surface->height(),
-                           opacity);
+                           opacity, m_useAlpha);
   }
 };
 
@@ -277,8 +280,11 @@ struct Grp_load_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
  * grp/rec coordinate space), we write one function for both versions.
  */
 struct Grp_load_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
+  Grp_load_1 delegate;
+  Grp_load_0(bool in) : delegate(in) {}
+
   void operator()(RLMachine& machine, string filename, int dc) {
-    Grp_load_1()(machine, filename, dc, 255);
+    delegate(machine, filename, dc, 255);
   }
 };
 
@@ -295,7 +301,11 @@ struct Grp_load_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
 template<typename SPACE>
 struct Grp_load_2 : public RLOp_Void< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T > {
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T > 
+{
+  bool m_useAlpha;
+  Grp_load_2(bool in) : m_useAlpha(in) {}
+
   void operator()(RLMachine& machine, string filename, int dc,
                   int x1, int y1, int x2, int y2, int dx, int dy) {
     filename = findFile(filename);
@@ -304,7 +314,7 @@ struct Grp_load_2 : public RLOp_Void<
     SPACE::translateToRec(x1, y1, x2, y2);
 //    graphics.getDC(dc).allocate(x2, y2);
     surface->blitToSurface(graphics.getDC(dc),
-                           x1, y1, x2, y2, dx, dy, x2, y2, 255);    
+                           x1, y1, x2, y2, dx, dy, x2, y2, 255, m_useAlpha);    
   }
 };
 
@@ -322,7 +332,11 @@ template<typename SPACE>
 struct Grp_load_3 : public RLOp_Void< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T> {
+  IntConstant_T> 
+{
+  bool m_useAlpha;
+  Grp_load_3(bool in) : m_useAlpha(in) {}
+
   void operator()(RLMachine& machine, string filename, int dc,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
     filename = findFile(filename);
@@ -331,7 +345,7 @@ struct Grp_load_3 : public RLOp_Void<
     SPACE::translateToRec(x1, y1, x2, y2);
 //    graphics.getDC(dc).allocate(x2, y2);
     surface->blitToSurface(graphics.getDC(dc),
-                           x1, y1, x2, y2, dx, dy, x2, y2, opacity);    
+                           x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);    
   }
 };
 
@@ -386,13 +400,12 @@ struct Grp_open_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
  */
 template<typename SPACE>
 struct Grp_open_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
-  bool m_useAlpha;
-  Grp_open_0(bool in) : m_useAlpha(in) {}
+  Grp_open_1<SPACE> delegate;
+  Grp_open_0(bool in) : delegate(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = SPACE::getEffect(machine, effectNum);
-    Grp_open_1<SPACE> x(m_useAlpha);
-    x(machine, filename, effectNum, selEffect[14]);
+    delegate(machine, filename, effectNum, selEffect[14]);
   }
 };
 
@@ -438,15 +451,15 @@ struct Grp_open_2 : public RLOp_Void<
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T>
 {
-  bool m_useAlpha;
-  Grp_open_2(bool in) : m_useAlpha(in) {}
+  Grp_open_3<SPACE> delegate;
+  Grp_open_2(bool in) : delegate(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum, 
                   int x1, int y1, int x2, int y2, int dx, int dy)
   {
     int opacity = SPACE::getEffect(machine, effectNum).at(14);
-    Grp_open_3<SPACE>(m_useAlpha)(machine, filename, effectNum, x1, y1, x2, y2, 
-                                  dx, dy, opacity);
+    delegate(machine, filename, effectNum, x1, y1, x2, y2, 
+             dx, dy, opacity);
   }
 };
 
@@ -490,7 +503,10 @@ template<typename SPACE>
 struct Grp_copy_3 : public RLOp_Void<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T> {
+  IntConstant_T> 
+{
+  bool m_useAlpha;
+  Grp_copy_3(bool in) : m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int src, int dx, int dy, int dst, int opacity) {
@@ -508,14 +524,18 @@ struct Grp_copy_3 : public RLOp_Void<
 
     sourceSurface.blitToSurface(
       graphics.getDC(dst),
-      x1, y1, x2, y2, dx, dy, x2, y2, opacity);
+      x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);
   }
 };
 
 // -----------------------------------------------------------------------
 
 struct Grp_copy_1 : public RLOp_Void<IntConstant_T, IntConstant_T, 
-                                     IntConstant_T> {
+                                     IntConstant_T> 
+{
+  bool m_useAlpha;
+  Grp_copy_1(bool in) : m_useAlpha(in) {}
+
   void operator()(RLMachine& machine, int src, int dst, int opacity) {
     // Copying to self is a noop
     if(src == dst)
@@ -531,15 +551,18 @@ struct Grp_copy_1 : public RLOp_Void<IntConstant_T, IntConstant_T,
       graphics.getDC(dst),
       0, 0, sourceSurface.width(), sourceSurface.height(),
       0, 0, sourceSurface.width(), sourceSurface.height(),
-      opacity);
+      opacity, m_useAlpha);
   }
 };
 
 // -----------------------------------------------------------------------
 
 struct Grp_copy_0 : public RLOp_Void<IntConstant_T, IntConstant_T> {
+  Grp_copy_1 delegate;
+  Grp_copy_0(bool in) : delegate(in) {}
+
   void operator()(RLMachine& machine, int src, int dst) {
-    Grp_copy_1()(machine, src, dst, 255);
+    delegate(machine, src, dst, 255);
   }
 };
 
@@ -548,10 +571,14 @@ struct Grp_copy_0 : public RLOp_Void<IntConstant_T, IntConstant_T> {
 template<typename SPACE>
 struct Grp_copy_2 : public RLOp_Void<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> 
+{
+  Grp_copy_3<SPACE> delegate;
+  Grp_copy_2(bool in) : delegate(in) {}
+
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int src, int dx, int dy, int dst) {
-    Grp_copy_3<SPACE>()(machine, x1, y1, x2, y2, src, dx, dy, dst, 255);
+    delegate(machine, x1, y1, x2, y2, src, dx, dy, dst, 255);
   }
 };
 
@@ -632,18 +659,26 @@ GrpModule::GrpModule()
   addOpcode(31, 0, "wipe", new Grp_wipe);
   // addOpcode(32, 0, new Grp_shake);
 
-  addOpcode(50, 0, "grpLoad", new Grp_load_0);
-  addOpcode(50, 1, "grpLoad", new Grp_load_1);
-  addOpcode(50, 2, "grpLoad", new Grp_load_2<GRP_SPACE>);
-  addOpcode(50, 3, "grpLoad", new Grp_load_3<GRP_SPACE>);
+  addOpcode(50, 0, "grpLoad", new Grp_load_0(false));
+  addOpcode(50, 1, "grpLoad", new Grp_load_1(false));
+  addOpcode(50, 2, "grpLoad", new Grp_load_2<GRP_SPACE>(false));
+  addOpcode(50, 3, "grpLoad", new Grp_load_3<GRP_SPACE>(false));
+  addOpcode(51, 0, "grpMaskLoad", new Grp_load_0(true));
+  addOpcode(51, 1, "grpMaskLoad", new Grp_load_1(true));
+  addOpcode(51, 2, "grpMaskLoad", new Grp_load_2<GRP_SPACE>(true));
+  addOpcode(51, 3, "grpMaskLoad", new Grp_load_3<GRP_SPACE>(true));
 
   // These are grpBuffer, which is very similar to grpLoad and Haeleth
   // doesn't know how they differ. For now, we just assume they're
   // equivalent.
-  addOpcode(70, 0, "grpBuffer", new Grp_load_0);
-  addOpcode(70, 1, "grpBuffer", new Grp_load_1);
-  addOpcode(70, 2, "grpBuffer", new Grp_load_2<GRP_SPACE>);
-  addOpcode(70, 3, "grpBuffer", new Grp_load_3<GRP_SPACE>);
+  addOpcode(70, 0, "grpBuffer", new Grp_load_0(false));
+  addOpcode(70, 1, "grpBuffer", new Grp_load_1(false));
+  addOpcode(70, 2, "grpBuffer", new Grp_load_2<GRP_SPACE>(false));
+  addOpcode(70, 3, "grpBuffer", new Grp_load_3<GRP_SPACE>(false));
+  addOpcode(71, 0, "grpMaskBuffer", new Grp_load_0(true));
+  addOpcode(71, 1, "grpMaskBuffer", new Grp_load_1(true));
+  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_2<GRP_SPACE>(true));
+  addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3<GRP_SPACE>(true));
 
   // These are supposed to be grpOpenBg, but until I have the object
   // layer working, this simply does the same thing.
@@ -665,10 +700,14 @@ GrpModule::GrpModule()
   addOpcode(76, 3, "grpOpen", new Grp_open_3<GRP_SPACE>(false));
   addOpcode(76, 4, "grpOpen", new Grp_open_4<GRP_SPACE>(false));
 
-  addOpcode(100, 0, "grpCopy", new Grp_copy_0);
-  addOpcode(100, 1, "grpCopy", new Grp_copy_1);
-  addOpcode(100, 2, "grpCopy", new Grp_copy_2<GRP_SPACE>);
-  addOpcode(100, 3, "grpCopy", new Grp_copy_3<GRP_SPACE>);
+  addOpcode(100, 0, "grpCopy", new Grp_copy_0(false));
+  addOpcode(100, 1, "grpCopy", new Grp_copy_1(false));
+  addOpcode(100, 2, "grpCopy", new Grp_copy_2<GRP_SPACE>(false));
+  addOpcode(100, 3, "grpCopy", new Grp_copy_3<GRP_SPACE>(false));
+  addOpcode(101, 0, "grpMaskCopy", new Grp_copy_0(true));
+  addOpcode(101, 1, "grpMaskCopy", new Grp_copy_1(true));
+  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_2<GRP_SPACE>(true));
+  addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3<GRP_SPACE>(true));
 
   addOpcode(201, 0, "grpFill", new Grp_fill_0);
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
@@ -677,18 +716,18 @@ GrpModule::GrpModule()
 
   // -----------------------------------------------------------------------
   
-  addOpcode(1050, 0, "recLoad", new Grp_load_0);
-  addOpcode(1050, 1, "recLoad", new Grp_load_1);
-  addOpcode(1050, 2, "recLoad", new Grp_load_2<REC_SPACE>);
-  addOpcode(1050, 3, "recLoad", new Grp_load_3<REC_SPACE>);
+  addOpcode(1050, 0, "recLoad", new Grp_load_0(false));
+  addOpcode(1050, 1, "recLoad", new Grp_load_1(false));
+  addOpcode(1050, 2, "recLoad", new Grp_load_2<REC_SPACE>(false));
+  addOpcode(1050, 3, "recLoad", new Grp_load_3<REC_SPACE>(false));
 
   // These are supposed to be recOpenBg, but until I have the object
   // layer working, this simply does the same thing.
-  addOpcode(1053, 0, "recOpenBg", new Grp_open_0<GRP_SPACE>(false));
-  addOpcode(1053, 1, "recOpenBg", new Grp_open_1<GRP_SPACE>(false));
-  addOpcode(1053, 2, "recOpenBg", new Grp_open_2<GRP_SPACE>(false));
-  addOpcode(1053, 3, "recOpenBg", new Grp_open_3<GRP_SPACE>(false));
-  addOpcode(1053, 4, "recOpenBg", new Grp_open_4<GRP_SPACE>(false));
+  addOpcode(1053, 0, "recOpenBg", new Grp_open_0<REC_SPACE>(false));
+  addOpcode(1053, 1, "recOpenBg", new Grp_open_1<REC_SPACE>(false));
+  addOpcode(1053, 2, "recOpenBg", new Grp_open_2<REC_SPACE>(false));
+  addOpcode(1053, 3, "recOpenBg", new Grp_open_3<REC_SPACE>(false));
+  addOpcode(1053, 4, "recOpenBg", new Grp_open_4<REC_SPACE>(false));
 
   addOpcode(1054, 0, "recMaskOpen", new Grp_open_0<REC_SPACE>(true));
   addOpcode(1054, 1, "recMaskOpen", new Grp_open_1<REC_SPACE>(true));
@@ -702,10 +741,14 @@ GrpModule::GrpModule()
   addOpcode(1056, 3, "recOpen", new Grp_open_3<REC_SPACE>(false));
   addOpcode(1056, 4, "recOpen", new Grp_open_4<REC_SPACE>(false));
 
-  addOpcode(1100, 0, "recCopy", new Grp_copy_0);
-  addOpcode(1100, 1, "recCopy", new Grp_copy_1);
-  addOpcode(1100, 2, "recCopy", new Grp_copy_2<REC_SPACE>);
-  addOpcode(1100, 3, "recCopy", new Grp_copy_3<REC_SPACE>);
+  addOpcode(1100, 0, "recCopy", new Grp_copy_0(false));
+  addOpcode(1100, 1, "recCopy", new Grp_copy_1(false));
+  addOpcode(1100, 2, "recCopy", new Grp_copy_2<REC_SPACE>(false));
+  addOpcode(1100, 3, "recCopy", new Grp_copy_3<REC_SPACE>(false));
+  addOpcode(1101, 0, "recMaskCopy", new Grp_copy_0(true));
+  addOpcode(1101, 1, "recMaskCopy", new Grp_copy_1(true));
+  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_2<REC_SPACE>(true));
+  addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3<REC_SPACE>(true));
 
   addOpcode(1201, 0, new Grp_fill_0);
   addOpcode(1201, 1, new Grp_fill_1);
