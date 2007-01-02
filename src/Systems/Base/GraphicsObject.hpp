@@ -1,14 +1,32 @@
 #ifndef __GraphicObject_hpp__
 #define __GraphicObject_hpp__
 
+#include <boost/scoped_ptr.hpp>
+
+class RLMachine;
+class GraphicsObjectSlot;
+
 /**
- * Describes an independent, movable graphical object on the screen.
+ * Describes what is rendered in a graphics object;
+ * 
+ */
+class GraphicsObjectData {
+  virtual void render(RLMachine& machine, 
+                      const GraphicsObject& renderingProperties) = 0;
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Describes an independent, movable graphical object on the
+ * screen. GraphicsObject simply contains a set of properties and a
+ * GraphicsObjectData object, which we dispatch render calls to if it
+ * exists.
  */
 class GraphicsObject
 {
 public:
   GraphicsObject();
-
 
   /**
    * @name Object Position Accessors
@@ -76,17 +94,19 @@ public:
   int compositeMode() const { return m_compositeMode; }
   void setCompositeMode(const int in) { m_compositeMode = in; }
 
-  /// @}
+  int scrollRateX() const { return m_scrollRateX; }
+  void setScrollRateX(const int x) { m_scrollRateX = x; }
 
-  
+  int scrollRateY() const { return m_scrollRateY; }
+  void setScrollRateY(const int y) { m_scrollRateY = y; }
+
+  /// @}
 
   int alpha() const { return m_alpha; }
   void setAlpha(const int alpha) { m_alpha = alpha; }
 
-
-//  virtual void render() = 0;
-
-
+  /// Render!
+  void render(RLMachine& machine);
   
 private:
 
@@ -156,8 +176,12 @@ private:
 
   int m_compositeMode;
 
+  int m_scrollRateX, m_scrollRateY;
+
   /// @}
 
+  /// The actual data used to render the object
+  boost::scoped_ptr<GraphicsObjectData> m_objectData;
 };
 
 

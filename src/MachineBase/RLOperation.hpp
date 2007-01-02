@@ -177,7 +177,8 @@ struct IntConstant_T {
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position);
 
   enum {
-    isRealTypestruct = true
+    isRealTypestruct = true,
+    isComplex = false
   };
 };
 
@@ -209,7 +210,8 @@ struct IntReference_T {
                          int position);
 
   enum {
-    isRealTypestruct = true
+    isRealTypestruct = true,
+    isComplex = false
   };
 };
 
@@ -239,7 +241,8 @@ struct StrConstant_T {
                          int position);
 
   enum {
-    isRealTypestruct = true
+    isRealTypestruct = true,
+    isComplex = false
   };
 };
 
@@ -271,7 +274,8 @@ struct StrReference_T {
                          int position);
 
   enum {
-    isRealTypestruct = true
+    isRealTypestruct = true,
+    isComplex = false
   };
 };
 
@@ -308,7 +312,8 @@ struct Argc_T {
                          int position);
 
   enum {
-    isRealTypestruct = true
+    isRealTypestruct = true,
+    isComplex = false
   };
 };
 
@@ -345,15 +350,183 @@ struct Complex2_T {
       libReallive::ComplexExpressionPiece& sp = 
         static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
-      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 1);
+      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
     }
     return typeOK;
   }
 
   enum {
-    isRealTypestruct = true
+    isRealTypestruct = true,
+    isComplex = true
   };
 };
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Type definition that implements the complex parameter concept.
+ *
+ * It really should have been called tuple, but the name's stuck
+ * now. Takes two other type structs as template parameters.
+ */
+template<typename A, typename B, typename C>
+struct Complex3_T {
+  /// The output type of this type struct
+  typedef boost::tuple<typename A::type, typename B::type, 
+                       typename C::type> type;
+
+  /// Convert the incoming parameter objects into the resulting type.
+  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      int position) {
+    libReallive::ComplexExpressionPiece& sp = 
+      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+    return boost::tuple<typename A::type, typename B::type>(
+      A::getData(machine, sp.getContainedPieces(), 0), 
+      B::getData(machine, sp.getContainedPieces(), 1),
+      C::getData(machine, sp.getContainedPieces(), 2));
+  }
+
+  /// Takes a type and makes sure that 
+  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position) {
+    // Verify the size of the vector, that we have a special parameter, and then
+    // make sure all the 
+    bool typeOK = position < p.size();
+    typeOK = typeOK && p[position].isComplexParameter(); 
+    if(typeOK) {
+      libReallive::ComplexExpressionPiece& sp = 
+        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
+      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
+      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
+    }
+    return typeOK;
+  }
+
+  enum {
+    isRealTypestruct = true,
+    isComplex = true
+  };
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Type definition that implements the complex parameter concept.
+ *
+ * It really should have been called tuple, but the name's stuck
+ * now. Takes two other type structs as template parameters.
+ */
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F, typename G>
+struct Complex7_T {
+  /// The output type of this type struct
+  typedef boost::tuple<typename A::type, typename B::type, 
+                       typename C::type, typename D::type,
+                       typename E::type, typename F::type,
+                       typename G::type> type;
+
+  /// Convert the incoming parameter objects into the resulting type.
+  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      int position) {
+    libReallive::ComplexExpressionPiece& sp = 
+      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+    return boost::tuple<typename A::type, typename B::type>(
+      A::getData(machine, sp.getContainedPieces(), 0), 
+      B::getData(machine, sp.getContainedPieces(), 1),
+      C::getData(machine, sp.getContainedPieces(), 2),
+      D::getData(machine, sp.getContainedPieces(), 3),
+      E::getData(machine, sp.getContainedPieces(), 4),
+      F::getData(machine, sp.getContainedPieces(), 5),
+      G::getData(machine, sp.getContainedPieces(), 6));
+  }
+
+  /// Takes a type and makes sure that 
+  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position) {
+    // Verify the size of the vector, that we have a special parameter, and then
+    // make sure all the 
+    bool typeOK = position < p.size();
+    typeOK = typeOK && p[position].isComplexParameter(); 
+    if(typeOK) {
+      libReallive::ComplexExpressionPiece& sp = 
+        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
+      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
+      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
+      typeOK = typeOK && D::verifyType(sp.getContainedPieces(), 3);
+      typeOK = typeOK && E::verifyType(sp.getContainedPieces(), 4);
+      typeOK = typeOK && F::verifyType(sp.getContainedPieces(), 5);
+      typeOK = typeOK && G::verifyType(sp.getContainedPieces(), 6);
+    }
+    return typeOK;
+  }
+
+  enum {
+    isRealTypestruct = true,
+    isComplex = true
+  };
+};
+
+// -----------------------------------------------------------------------
+
+
+/** 
+ * Type definition that implements the complex parameter concept.
+ *
+ * It really should have been called tuple, but the name's stuck
+ * now. Takes two other type structs as template parameters.
+ */
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F, typename G, typename H>
+struct Complex8_T {
+  /// The output type of this type struct
+  typedef boost::tuple<typename A::type, typename B::type, 
+                       typename C::type, typename D::type,
+                       typename E::type, typename F::type,
+                       typename G::type, typename H::type> type;
+
+  /// Convert the incoming parameter objects into the resulting type.
+  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      int position) {
+    libReallive::ComplexExpressionPiece& sp = 
+      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+    return boost::tuple<typename A::type, typename B::type>(
+      A::getData(machine, sp.getContainedPieces(), 0), 
+      B::getData(machine, sp.getContainedPieces(), 1),
+      C::getData(machine, sp.getContainedPieces(), 2),
+      D::getData(machine, sp.getContainedPieces(), 3),
+      E::getData(machine, sp.getContainedPieces(), 4),
+      F::getData(machine, sp.getContainedPieces(), 5),
+      G::getData(machine, sp.getContainedPieces(), 6),
+      H::getData(machine, sp.getContainedPieces(), 7));
+  }
+
+  /// Takes a type and makes sure that 
+  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position) {
+    // Verify the size of the vector, that we have a special parameter, and then
+    // make sure all the 
+    bool typeOK = position < p.size();
+    typeOK = typeOK && p[position].isComplexParameter(); 
+    if(typeOK) {
+      libReallive::ComplexExpressionPiece& sp = 
+        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
+      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
+      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
+      typeOK = typeOK && D::verifyType(sp.getContainedPieces(), 3);
+      typeOK = typeOK && E::verifyType(sp.getContainedPieces(), 4);
+      typeOK = typeOK && F::verifyType(sp.getContainedPieces(), 5);
+      typeOK = typeOK && G::verifyType(sp.getContainedPieces(), 6);
+      typeOK = typeOK && H::verifyType(sp.getContainedPieces(), 7);
+    }
+    return typeOK;
+  }
+
+  enum {
+    isRealTypestruct = true,
+    isComplex = true
+  };
+};
+
 
 // -----------------------------------------------------------------------
 
@@ -376,7 +549,8 @@ struct Empty_T {
   }
 
   enum {
-    isRealTypestruct = false
+    isRealTypestruct = false,
+    isComplex = false
   };
 };
 
@@ -434,6 +608,16 @@ struct Special_T {
     return par;
   }
 
+  template<typename TYPE>
+  static bool verifyTypeOf(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                    int position, libReallive::SpecialExpressionPiece& sp)
+  {
+    if(TYPE::isComplex)
+      return TYPE::verifyType(p, position);
+    else
+      return TYPE::verifyType(sp.getContainedPieces(), 0);
+  }                    
+
   /// Takes a type and makes sure that 
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          int position) 
@@ -444,19 +628,24 @@ struct Special_T {
     par.type = sp.getOverloadTag();
     switch(par.type) {
     case 0:
-      return A::verifyType(sp.getContainedPieces(), 0);
+      return verifyTypeOf<A>(p, position, sp);
     case 1:
-      return B::verifyType(sp.getContainedPieces(), 0);
+      return verifyTypeOf<B>(p, position, sp);
     case 2:
-      return C::verifyType(sp.getContainedPieces(), 0);
+      return verifyTypeOf<C>(p, position, sp);
     case 3:
-      return D::verifyType(sp.getContainedPieces(), 0);
+      return verifyTypeOf<D>(p, position, sp);
     case 4:
-      return E::verifyType(sp.getContainedPieces(), 0);
+      return verifyTypeOf<E>(p, position, sp);
     default:
       throw libReallive::Error("Illegal overload in Special2_T::verifyType()");
     };
   }
+
+  enum {
+    isRealTypestruct = true,
+    isComplex = false
+  };
 };
 
 // ----------------------------------------------------------------------
@@ -502,6 +691,9 @@ struct RLOp_SpecialCase : public RLOperation {
  * parameters, thoguh I'm sure I'm going to have to start again with
  * AA, BB, CC, et cetera because some of these functions have LONG
  * lists of parameters.
+ *
+ * @note I may just have to bite the bullet and write 26 different
+ * classes. :(
  */
 template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T, 
          typename D = Empty_T, typename E = Empty_T, typename F = Empty_T,

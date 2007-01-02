@@ -25,9 +25,9 @@
  * @author Elliot Glaysher
  * @date   Thu Dec  7 19:44:24 2006
  * @ingroup ModulesOpcodes
- * @brief  Contains definitions for object handling functions.
- * 
- * 
+ *
+ * @brief Contains definitions for object handling functions for the
+ * Modules 81 "ObjFg", 82 "ObjBg", 90 "ObjRange", and 91 "ObjBgRange".
  */
 
 #include "Modules/Module_Obj.hpp"
@@ -108,6 +108,9 @@ struct BG_LAYER {
  * Specialized form of Op_SetToIncomingInt to deal with looking up
  * object from the Obj* helper templates; since a lot of Object
  * related functions simply call a setter.
+ *
+ * This template magic saves having to write out 25 - 30 operation
+ * structs.
  */
 template<typename LAYER, typename SETTYPE = int>
 class Obj_SetOneIntOnObj : public RLOp_Void< IntConstant_T, IntConstant_T > {
@@ -208,8 +211,7 @@ struct Obj_colour : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T,
  * This is certainly not the most efficient way to do it, but it cuts
  * down on a duplicated operation struct for each obj* and objBg*
  * function, alowing us to just use this adapter with the already
- * defined 
- *
+ * defined operations.
  */
 template<typename HANDLER>
 struct ObjRangeAdapter : RLOp_SpecialCase {
@@ -295,6 +297,11 @@ void addObjectFunctions(RLModule& m)
   m.addOpcode(1019, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setColourB));
   m.addOpcode(1020, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setColourLevel));
   m.addOpcode(1021, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setCompositeMode));
+
+/*  m.addOpcode(1028, 0, new  */
+  m.addOpcode(1030, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setScrollRateX));
+  m.addOpcode(1031, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setScrollRateY));
+
   m.addOpcode(1036, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setVert));
 
   m.addOpcode(1054, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setXOrigin));

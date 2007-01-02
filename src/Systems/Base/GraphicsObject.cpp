@@ -10,3 +10,9 @@ GraphicsObject::GraphicsObject()
   fill(m_adjustX, m_adjustX + 8, 0);
   fill(m_adjustY, m_adjustY + 8, 0);
 }
+
+void GraphicsObject::render(RLMachine& machine) {
+  if(m_objectData) {
+    m_objectData->render(machine, *this);
+  }
+}

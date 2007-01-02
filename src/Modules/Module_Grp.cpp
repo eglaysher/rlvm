@@ -122,6 +122,31 @@ void loadImageToDC1(GraphicsSystem& graphics,
                          opacity, useAlpha);
 }
 
+// -----------------------------------------------------------------------
+
+void loadDCToDC1(GraphicsSystem& graphics,
+                 int srcDc,
+                 int x, int y, int width, int height,
+                 int dx, int dy, int opacity)
+{
+  Surface& dc0 = graphics.getDC(0);
+  Surface& dc1 = graphics.getDC(1);
+  Surface& src = graphics.getDC(srcDc);
+
+  // Inclusive ranges are a monstrosity to computer people
+  width++;
+  height++;
+
+  dc0.blitToSurface(dc1,
+                    0, 0, dc0.width(), dc0.height(),
+                    0, 0, dc0.width(), dc0.height(),
+                    255);
+  src.blitToSurface(dc1,
+                    x, y, width, height,
+                    dx, dy, width, height,
+                    opacity, false);
+}
+
 }
 
 // -----------------------------------------------------------------------
@@ -241,8 +266,7 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 /**
- * Implements op<1:Grp:00050, 1>, fun grpLoad(strC, intC, intC) and
- * op<1:Grp:01050, 1>, fun recLoad(strC, intC, intC).
+ * Implements the {grp,rec}(Mask)?Load family of functions.
  *
  * Loads filename into dc; note that filename may not be '???'. 
  *
@@ -348,6 +372,80 @@ struct Grp_load_3 : public RLOp_Void<
                            x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);    
   }
 };
+
+// -----------------------------------------------------------------------
+// {grp,rec}Display
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_display_1 : public RLOp_Void< IntConstant_T, IntConstant_T, 
+                                         IntConstant_T > {
+  void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
+    vector<int> selEffect = SPACE::getEffect(machine, effectNum);
+    SPACE::translateToRec(selEffect[0], selEffect[1], 
+                        selEffect[2], selEffect[3]);
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    loadDCToDC1(graphics, dc,
+                selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+                selEffect[4], selEffect[5], opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(SPACE::buildEffectFrom(machine, effectNum));    
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_display_0 : public RLOp_Void< IntConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, int dc, int effectNum) {
+    vector<int> selEffect = SPACE::getEffect(machine, effectNum);
+    Grp_display_1<SPACE>()(machine, dc, effectNum, selEffect.at(14));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_display_3 : public RLOp_Void< 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, int dc, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+    SPACE::translateToRec(x1, y1, x2, y2);
+    loadDCToDC1(graphics, dc, x1, y1, x2, y2, dx, dy, opacity);
+
+    // Set the long operation for the correct transition long operation
+    machine.setLongOperation(SPACE::buildEffectFrom(machine, effectNum));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * @todo Finish documentation
+ */
+template<typename SPACE>
+struct Grp_display_2 : public RLOp_Void< 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  Grp_display_3<SPACE> delegate;
+
+  void operator()(RLMachine& machine, int dc, int effectNum, 
+                  int x1, int y1, int x2, int y2, int dx, int dy)
+  {
+    int opacity = SPACE::getEffect(machine, effectNum).at(14);
+    delegate(machine, dc, effectNum, x1, y1, x2, y2, dx, dy, 
+             opacity);
+  }
+};
+
+
 
 // -----------------------------------------------------------------------
 // {grp,rec}Open
@@ -628,6 +726,109 @@ struct Grp_fill_2 : public RLOp_Void<
 };
 
 // -----------------------------------------------------------------------
+// {grp,rec}Multi
+// -----------------------------------------------------------------------
+
+/**
+ * Defines the fairly complex parameter definition for the list of
+ * functions to call in a {grp,rec}Multi command.
+ */
+typedef Argc_T< 
+  Special_T<
+    StrConstant_T, // 0:copy
+    Complex2_T<StrConstant_T, IntConstant_T>, // 1:copy
+    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>, // 2:copy
+    // 3:area
+    Complex7_T<StrConstant_T, IntConstant_T, IntConstant_T,
+               IntConstant_T, IntConstant_T, IntConstant_T, 
+               IntConstant_T>,
+    // 4:area
+    Complex8_T<StrConstant_T, IntConstant_T, IntConstant_T,
+               IntConstant_T, IntConstant_T, IntConstant_T, 
+               IntConstant_T, IntConstant_T>
+    > >  MultiCommand;
+
+// -----------------------------------------------------------------------
+
+/**
+ * Defines the weird multi commands. I will be the first to admit that
+ * the following is fairly difficult to read; it comes from the
+ * quagmire of composing Special_T and ComplexX_T templates.
+ *
+ * In the end, this operation struct simply dispatches the
+ * Special/Complex commands to functions and other operation structs
+ * that are clearer in purpose.
+ * 
+ * @todo Finish this operation; it's in an incomplete, but compiling
+ *       state.
+ * @see MultiCommand
+ */
+template<typename SPACE>
+struct Grp_multi_1 : public RLOp_Void<StrConstant_T, IntConstant_T, 
+                                      IntConstant_T, MultiCommand>
+{
+  void operator()(RLMachine& machine, string filename, int effect, int alpha,
+                  MultiCommand::type commands)
+  {
+    Grp_load_0(false)(machine, filename, effect);
+
+    for(MultiCommand::type::iterator it = commands.begin(); it != commands.end();
+        it++) 
+    {
+      switch(it->type)
+      {
+      case 0:
+//        Grp_load_0(true)(machine, it->first.get<0>(), it->first.get<1>(),
+//                         it->first.get<2>(), it->first.get<3>());
+        break;
+      case 1:
+//        Grp_load_1(true)(machine, it->second.get<0>(), it->second.get<1>(),
+//                         it->second.get<2>(), it->second.get<3>());
+        break;
+      case 2:
+
+        break;
+      case 3:
+        Grp_load_3<SPACE>(true)(machine, it->fourth.get<0>(), 
+                                it->fourth.get<1>(),
+                                it->fourth.get<2>(),
+                                it->fourth.get<3>(),
+                                it->fourth.get<4>(),
+                                it->fourth.get<5>(),
+                                it->fourth.get<6>(),
+                                255);
+        break;
+      case 4:
+        Grp_load_3<SPACE>(true)(machine, it->fifth.get<0>(), 
+                                it->fifth.get<1>(),
+                                it->fifth.get<2>(),
+                                it->fifth.get<3>(),
+                                it->fifth.get<4>(),
+                                it->fifth.get<5>(),
+                                it->fifth.get<6>(),
+                                it->fifth.get<7>());
+        break;
+      }
+    }
+
+    // Does this work?
+    Grp_display_0<SPACE>()(1, effect);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_multi_0 : public RLOp_Void<StrConstant_T, IntConstant_T, MultiCommand>
+{
+  void operator()(RLMachine& machine, string dc, int effect, 
+                  MultiCommand::type commands)
+  {
+    Grp_multi_1<SPACE>()(machine, dc, effect, 255, commands);
+  }     
+};     
+                                                                 
+// -----------------------------------------------------------------------
 
 /**
  *
@@ -680,6 +881,11 @@ GrpModule::GrpModule()
   addOpcode(71, 2, "grpMaskBuffer", new Grp_load_2<GRP_SPACE>(true));
   addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3<GRP_SPACE>(true));
 
+  addOpcode(72, 0, "grpDisplay", new Grp_display_0<GRP_SPACE>);
+  addOpcode(72, 1, "grpDisplay", new Grp_display_1<GRP_SPACE>);
+  addOpcode(72, 2, "grpDisplay", new Grp_display_2<GRP_SPACE>);
+  addOpcode(72, 3, "grpDisplay", new Grp_display_3<GRP_SPACE>);
+
   // These are supposed to be grpOpenBg, but until I have the object
   // layer working, this simply does the same thing.
   addOpcode(73, 0, "grpOpenBg", new Grp_open_0<GRP_SPACE>(false));
@@ -721,6 +927,11 @@ GrpModule::GrpModule()
   addOpcode(1050, 2, "recLoad", new Grp_load_2<REC_SPACE>(false));
   addOpcode(1050, 3, "recLoad", new Grp_load_3<REC_SPACE>(false));
 
+  addOpcode(1052, 0, "grpDisplay", new Grp_display_0<REC_SPACE>);
+  addOpcode(1052, 1, "grpDisplay", new Grp_display_1<REC_SPACE>);
+  addOpcode(1052, 2, "grpDisplay", new Grp_display_2<REC_SPACE>);
+  addOpcode(1052, 3, "grpDisplay", new Grp_display_3<REC_SPACE>);
+
   // These are supposed to be recOpenBg, but until I have the object
   // layer working, this simply does the same thing.
   addOpcode(1053, 0, "recOpenBg", new Grp_open_0<REC_SPACE>(false));
@@ -750,10 +961,10 @@ GrpModule::GrpModule()
   addOpcode(1101, 2, "recMaskCopy", new Grp_copy_2<REC_SPACE>(true));
   addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3<REC_SPACE>(true));
 
-  addOpcode(1201, 0, new Grp_fill_0);
-  addOpcode(1201, 1, new Grp_fill_1);
-  addOpcode(1201, 2, new Grp_fill_2<REC_SPACE>);
-  addOpcode(1201, 3, new Grp_fill_3<REC_SPACE>);
+  addOpcode(1201, 0, "recFill", new Grp_fill_0);
+  addOpcode(1201, 1, "recFill", new Grp_fill_1);
+  addOpcode(1201, 2, "recFill", new Grp_fill_2<REC_SPACE>);
+  addOpcode(1201, 3, "recFill", new Grp_fill_3<REC_SPACE>);
 }
 
 // @}

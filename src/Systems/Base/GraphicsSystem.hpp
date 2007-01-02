@@ -37,6 +37,7 @@
 
 class Surface;
 class GraphicsObject;
+class GraphicsObjectData;
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -125,6 +126,11 @@ public:
 
   virtual Surface& getDC(int dc) = 0;
 
+
+  // ----------------------------------- [ Object getter/factory functions ]
+
+//  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename, 
+//                                             int visible) = 0;
 
   virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber) = 0;
   virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber) = 0;
