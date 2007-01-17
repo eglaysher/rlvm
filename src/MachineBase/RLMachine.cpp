@@ -164,6 +164,21 @@ void RLMachine::attatchModule(RLModule* module)
   int moduleNumber = module->moduleNumber();
   unsigned int packedModule = packModuleNumber(moduleType, moduleNumber);
 
+  ModuleMap::iterator it = modules.find(packedModule);
+  if(it != modules.end())
+  {
+    RLModule& curMod = *it;
+    ostringstream ss;
+    ss << "Module identification clash: tyring to overwrite "
+       << curMod << " with " << *module << endl;
+
+    throw Error(ss.str());
+  }
+  else
+  {
+    cerr << "Inserting " << *module << endl;
+  }
+
   modules.insert(packedModule, module);
 }
 
@@ -371,6 +386,8 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
 // -----------------------------------------------------------------------
 
 void RLMachine::executeCommand(const CommandElement& f) {
+  cerr << "About to execute opcode<" << f.modtype() << ":" << f.module() << ":" 
+       << f.opcode() << ", " << f.overload() << ">" << endl;
   ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
   if(it != modules.end()) {
     it->dispatchFunction(*this, f);

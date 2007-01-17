@@ -39,6 +39,8 @@
 #include<string.h>
 #include<sys/types.h>
 
+#include <vector>
+
 #if defined(__sparc) || defined(sparc)
 #  if !defined(WORDS_BIGENDIAN)
 #    define WORDS_BIGENDIAN 1
@@ -188,6 +190,26 @@ public:
 
 class GRPCONV {
 public:
+	struct REGION {
+		int x1, y1, x2, y2;
+		int Width() { return x2-x1+1;}
+		int Height() { return y2-y1+1;}
+		void FixVar(int& v, int& w) {
+			if (v < 0) v = 0;
+			if (v >= w) v = w-1;
+		}
+		void Fix(int w, int h) {
+			FixVar(x1,w);
+			FixVar(x2,w);
+			FixVar(y1,h);
+			FixVar(y2,h);
+			if (x1 > x2) x2 = x1;
+			if (y1 > y2) y2 = y1;
+		}
+	};
+
+  std::vector<REGION> region_table;
+
 	int width;
 	int height;
 	bool is_mask;

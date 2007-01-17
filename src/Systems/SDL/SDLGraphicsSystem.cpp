@@ -33,10 +33,15 @@
  * initial window size from it.
  */
 
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
 #include "libReallive/defs.h"
 #include "file.h"
+#include "Utilities.h"
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <cstdio>
@@ -46,6 +51,8 @@
 #include <SDL/SDL_image.h>
 
 #include <boost/bind.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/scoped_array.hpp>
 
 using namespace boost;
 using namespace std;
@@ -130,35 +137,78 @@ public:
 Texture::Texture(SDL_Surface* surface)
   : m_logicalWidth(surface->w), m_logicalHeight(surface->h)
 {
-//  cerr << "Building texture of " << surface << endl;
   glGenTextures(1, &m_textureID);
+  cerr << "Building texture of " << surface << " with textid " << m_textureID
+       << endl;
   glBindTexture(GL_TEXTURE_2D, m_textureID);
   ShowGLErrors();
 //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//  SDL_Surface* surface = IMG_Load("/Users/elliot/KANON_SE_ALL/g00.png/BG003B.png");
-//  SDL_Surface* surface2 = SDL_LoadBMP("/Users/elliot/Desktop/lesson08/data/glass.bmp");
-
-//   static int count = 0;
-//   stringstream ss;
-//   ss << "texture_" << count << ".bmp";
-//   count++;
-//   SDL_SaveBMP(surface, ss.str().c_str());
-
   SDL_LockSurface(surface);
+
+  Uint8 bytesPerPixel = surface->format->BytesPerPixel;
+  GLint byteOrder = GL_RGBA;
+  GLint byteType = GL_UNSIGNED_BYTE;
+
+  // Determine the byte order of the surface
+  SDL_PixelFormat* format = surface->format;
+  if(bytesPerPixel == 4)
+  {
+    // If the order is RGBA...
+    if(format->Rmask == 0xFF000000 && format->Amask == 0xFF)
+      byteOrder = GL_RGBA;
+    // OSX's crazy ARGB pixel format
+    else if(format->Amask == 0xFF000000 && format->Rmask == 0xFF0000 &&
+            format->Gmask == 0xFF00 && format->Bmask == 0xFF)
+    {
+      // This is an insane hack to get around OSX's crazy byte order
+      // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
+      // need to specify BGRA and then tell the byte type to be
+      // reversed order.
+      byteOrder = GL_BGRA;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+      byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
+#else
+      byteType = GL_UNSIGNED_INT_8_8_8_8;
+#endif
+    }
+    else
+      cerr << "AAAAAAAAAAAHHHHH!" << endl;
+  }
+  else if(bytesPerPixel == 3)
+  {
+    // For now, just assume RGB.
+    byteOrder = GL_RGB;
+    cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
+         << endl;
+  }
+  else
+    throw Error("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
+
+  // I have no idea what I'm doing!
+  cerr << "MASK: [" << hex << surface->format->Rmask 
+       << ", " << surface->format->Gmask 
+       << ", " << surface->format->Bmask 
+       << ", " << surface->format->Amask 
+       << "]" << endl;
 
   m_textureWidth = SafeSize(surface->w);
   m_textureHeight = SafeSize(surface->h);
-  glTexImage2D(GL_TEXTURE_2D, 0, surface->format->BytesPerPixel, 
+  glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
                m_textureWidth, m_textureHeight,
-               0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+               0, 
+               byteOrder,
+               byteType, NULL);
   ShowGLErrors();
+
+  // Check the surface for the byte order of the surface:
+
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
-                  GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-            
+                  byteOrder, byteType, surface->pixels);            
   ShowGLErrors();
+
   SDL_UnlockSurface(surface);
 }
 
@@ -167,6 +217,7 @@ Texture::Texture(SDL_Surface* surface)
 Texture::~Texture()
 {
   glDeleteTextures(1, &m_textureID);
+  cerr << "Deleteing texture with texid " << m_textureID << endl;
   ShowGLErrors();
 }
 
@@ -187,7 +238,7 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
   // Blend when we have less opacity
-  if(opacity < 255)
+//  if(opacity < 255)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
@@ -291,14 +342,27 @@ SDLSurface::SDLSurface()
 {}
 
 /// Surface that takes ownership of an externally created surface.
-SDLSurface::SDLSurface(SDL_Surface* surf)
-  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL)
+SDLSurface::SDLSurface(SDL_Surface* surf, 
+                       const vector<SDLSurface::GrpRect>& region_table)
+  : m_surface(surf), m_regionTable(region_table),
+    m_textureIsValid(false), m_graphicsSystem(NULL)
 {}
 
 SDLSurface::SDLSurface(int width, int height)
   : m_textureIsValid(false), m_graphicsSystem(NULL)
 {
   allocate(width, height);
+
+  // Build a region table with one entry the size of the surface (This
+  // should never need to be used with objects created with this
+  // constructor, but let's make sure everything is initialized since
+  // it'll happen somehow.)
+  SDLSurface::GrpRect rect;
+  rect.x1 = 0;
+  rect.y1 = 0;
+  rect.x2 = width;
+  rect.y2 = height;
+  m_regionTable.push_back(rect);
 }
 
 // -----------------------------------------------------------------------
@@ -306,6 +370,15 @@ SDLSurface::SDLSurface(int width, int height)
 SDLSurface::~SDLSurface()
 {
   deallocate();
+}
+
+void SDLSurface::dump()
+{
+  static int count = 0;
+  stringstream ss;
+  ss << "dump_" << count << ".bmp";
+  count++;
+  SDL_SaveBMP(m_surface, ss.str().c_str());
 }
 
 // -----------------------------------------------------------------------
@@ -329,7 +402,7 @@ void SDLSurface::allocate(int width, int height)
 #endif
 
   SDL_Surface* tmp = 
-    SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 
+    SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, width, height, 
                          32, 
                          rmask, gmask, bmask, amask);
 
@@ -365,15 +438,15 @@ void SDLSurface::deallocate()
 
 // -----------------------------------------------------------------------
 
+/**
+ * @todo This function doesn't ignore alpha blending when useSrcAlpha
+ *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
+ */
 void SDLSurface::blitToSurface(Surface& destSurface,
-  int srcX, int srcY, int srcWidth, int srcHeight,
-  int destX, int destY, int destWidth, int destHeight,
+                               int srcX, int srcY, int srcWidth, int srcHeight,
+                               int destX, int destY, int destWidth, int destHeight,
                                int alpha, bool useSrcAlpha)
 {
-  // Drawing an empty image is a noop
-  if(alpha == 0)
-    return;
-
   SDLSurface& dest = dynamic_cast<SDLSurface&>(destSurface);
 
   SDL_Rect srcRect, destRect;
@@ -390,6 +463,11 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   if(useSrcAlpha) 
   {
     if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
+      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+  else
+  {
+    if(SDL_SetAlpha(m_surface, 0, 0))
       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
 
@@ -409,6 +487,14 @@ void SDLSurface::uploadTextureIfNeeded()
     m_texture.reset(new Texture(m_surface));
     m_textureIsValid = true;
   }
+}
+
+// -----------------------------------------------------------------------
+
+Texture& SDLSurface::texture()
+{
+  uploadTextureIfNeeded();
+  return *m_texture;
 }
 
 // -----------------------------------------------------------------------
@@ -464,6 +550,8 @@ void SDLSurface::fill(int r, int g, int b, int alpha)
   markWrittenTo();
 }
 
+// -----------------------------------------------------------------------
+
 void SDLSurface::fill(int r, int g, int b, int alpha, int x, int y, 
                       int width, int height)
 {
@@ -489,11 +577,18 @@ void SDLSurface::markWrittenTo()
 {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
   if(m_graphicsSystem) {
-    m_graphicsSystem->dc0writtenTo();
+    m_graphicsSystem->markScreenAsDirty();
   }
 
   // Mark that the texture needs reuploading
   m_textureIsValid = false;
+}
+
+// -----------------------------------------------------------------------
+
+const SDLSurface::GrpRect& SDLSurface::getPattern(int pattNo) const
+{
+  return m_regionTable.at(pattNo);
 }
 
 // -----------------------------------------------------------------------
@@ -508,14 +603,14 @@ Surface* SDLSurface::clone() const
                          m_surface->format->Bmask, m_surface->format->Amask);
   SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL);
 
-  return new SDLSurface(tmpSurface);
+  return new SDLSurface(tmpSurface, m_regionTable);
 }
 
 // -----------------------------------------------------------------------
 // Private Interface
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::dc0writtenTo()
+void SDLGraphicsSystem::markScreenAsDirty()
 {
   switch(screenUpdateMode())
   {
@@ -563,13 +658,17 @@ void SDLGraphicsSystem::beginFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::refresh() 
+void SDLGraphicsSystem::refresh(RLMachine& machine) 
 {
   beginFrame();
 
   // Display DC0
   displayContexts[0].renderToScreen(0, 0, m_width, m_height, 
                                     0, 0, m_width, m_height, 255);
+
+  // Render all visible foreground objects
+  for_each(foregroundObjects, foregroundObjects + 256,
+           bind(&GraphicsObject::render, _1, ref(machine)));
 
   endFrame();
 }
@@ -706,7 +805,7 @@ SDLGraphicsSystem::SDLGraphicsSystem()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::executeGraphicsSystem()
+void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 {
 //  cerr << "executeGraphicsSystm()" << endl;
   // For now, nothing, but later, we need to put all code each cycle
@@ -714,7 +813,7 @@ void SDLGraphicsSystem::executeGraphicsSystem()
   if(m_screenNeedsRefresh)
   {
     cerr << "Going to refresh!" << endl;
-    refresh();
+    refresh(machine);
     m_screenNeedsRefresh = false;
   }
     
@@ -811,7 +910,7 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<GraphicsObject> SDLGraphicsSystem::getFgObject(int objNumber)
+GraphicsObject& SDLGraphicsSystem::getFgObject(int objNumber)
 {
   if(objNumber < 0 || objNumber > 512)
     throw Error("Out of rnage object number");
@@ -821,7 +920,7 @@ boost::shared_ptr<GraphicsObject> SDLGraphicsSystem::getFgObject(int objNumber)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<GraphicsObject> SDLGraphicsSystem::getBgObject(int objNumber)
+GraphicsObject& SDLGraphicsSystem::getBgObject(int objNumber)
 {
   if(objNumber < 0 || objNumber > 512)
     throw Error("Out of rnage object number");
@@ -836,6 +935,8 @@ boost::shared_ptr<GraphicsObject> SDLGraphicsSystem::getBgObject(int objNumber)
 
 typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 
+// Note to self: These describe the byte order IN THE RAW G00 DATA!
+// These should NOT be switched to native byte order.
 #define DefaultRmask 0xff0000
 #define DefaultGmask 0xff00
 #define DefaultBmask 0xff
@@ -846,6 +947,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
                                            MaskType with_mask)
 {
   int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
+  cerr << "Amask: " << amask << endl;
   SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
     DefaultBmask, amask);
@@ -855,11 +957,31 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   // this!?
   tmp->flags &= ~SDL_PREALLOC;
 
-  SDL_Surface* s = SDL_DisplayFormat(tmp);
+  // Convert to the proper type of alpha channel
+  SDL_Surface* s;
+  if(with_mask == ALPHA_MASK)
+    s = SDL_DisplayFormatAlpha(tmp);
+  else
+    s = SDL_DisplayFormat(tmp);
   SDL_FreeSurface(tmp);
 
   return s;
 };
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Helper function for loadSurfaceFromFile; invoked in a stl loop.
+ */
+SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
+{
+  SDLSurface::GrpRect rect;
+  rect.x1 = region.x1;
+  rect.y1 = region.y1;
+  rect.x2 = region.x2;
+  rect.y2 = region.y2;
+  return rect;
+}
 
 /** 
  * @author Jagarl
@@ -881,23 +1003,31 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
 {
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.c_str(), "rb");
+  if(!file)
+  {
+    ostringstream oss;
+    oss << "Could not open file: " << filename;
+    throw Error(oss.str());
+  }
+
   fseek(file, 0, SEEK_END);
   int size = ftell(file);
-  char* d = new char[size];
+  scoped_array<char> d(new char[size]);
   fseek(file, 0, SEEK_SET);
-  fread(d, size, 1, file);
+  fread(d.get(), size, 1, file);
   fclose(file);
 
   // For the time being, and against my better judgement, we simply
   // call the image loading methods stolen from xclannad. The
   // following code is stolen verbatim from picture.cc in xclannad.
-  GRPCONV* conv = GRPCONV::AssignConverter(d, size, "???");
+  scoped_ptr<GRPCONV> conv(GRPCONV::AssignConverter(d.get(), size, "???"));
   if (conv == 0) { return 0;}
   char* mem = (char*)malloc(conv->Width() * conv->Height() * 4 + 1024);
   SDL_Surface* s = 0;
   if (conv->Read(mem)) {
     MaskType is_mask = conv->IsMask() ? ALPHA_MASK : NO_MASK;
     if (is_mask == ALPHA_MASK) { // alpha がすべて 0xff ならマスク無しとする
+      cerr << "Loading alpha mask..." << endl;
       int len = conv->Width()*conv->Height();
       unsigned int* d = (unsigned int*)mem;
       int i; for (i=0; i<len; i++) {
@@ -905,19 +1035,37 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
         d++;
       }
       if (i == len) {
+        cerr << "No mask found!" << endl;
         is_mask = NO_MASK;
       }
     }
+    else
+      cerr << "No alpha mask!" << endl;
     s = newSurfaceFromRGBAData(conv->Width(), conv->Height(), mem, is_mask);
   }
 
-  // @todo Right about here, we might want to deal with stealing the
-  // type 2 information out of Jagarl's grpconv object.
+  cerr << "Converter table size: " << conv->region_table.size() << endl;
 
-  delete conv;  // delete data;
-  delete d;
+  // Grab the Type-2 information out of the converter or create one
+  // default region if none exist
+  vector<SDLSurface::GrpRect> region_table;
+  if(conv->region_table.size())
+  {
+    transform(conv->region_table.begin(), conv->region_table.end(),
+              back_inserter(region_table),
+              xclannadRegionToGrpRect);
+  }
+  else
+  {
+    SDLSurface::GrpRect rect;
+    rect.x1 = 0;
+    rect.y1 = 0;
+    rect.x2 = conv->Width();
+    rect.y2 = conv->Height();
+    region_table.push_back(rect);
+  }
 
-  return new SDLSurface(s);
+  return new SDLSurface(s, region_table);
 }
 
 // -----------------------------------------------------------------------
@@ -931,5 +1079,100 @@ Surface& SDLGraphicsSystem::getDC(int dc)
 int SDLSurface::width() const { return m_surface->w; }
 int SDLSurface::height() const { return m_surface->h; }
 
+// -----------------------------------------------------------------------
 
+class SDLGraphicsObjectOfFile : public GraphicsObjectData
+{
+private:
+  scoped_ptr<SDLSurface> surface;
+  // A texture is fine too?
 
+public:
+  SDLGraphicsObjectOfFile(SDLGraphicsSystem& graphics, 
+                          const std::string& filename)
+    : surface(static_cast<SDLSurface*>(graphics.loadSurfaceFromFile(filename)))
+  {
+  }
+
+  void render(RLMachine& machine, const GraphicsObject& rp)
+  {
+    // At first, we're just going to do simple object position stuff
+    cerr << "Attempting to render object!" << endl;
+
+    surface->dump();
+
+    // For the time being, we are dumb and assume that it's one texture  
+//     float thisx1 = float(x1) / m_textureWidth;
+//     float thisy1 = float(y1) / m_textureHeight;
+//     float thisx2 = float(x2) / m_textureWidth;
+//     float thisy2 = float(y2) / m_textureHeight;
+/*
+    int texId =  surface->texture().textureId();
+    cerr << texId << endl;
+    glBindTexture(GL_TEXTURE_2D, texId);
+    ShowGLErrors();
+*/
+    // We probably use rp.compositeMode() to determine this when I
+    // become competent.
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Figure out the source to clip out of the image
+    int pattNo = rp.pattNo();
+    int xSrc1 = surface->getPattern(pattNo).x1;
+    int ySrc1 = surface->getPattern(pattNo).y1;
+    int xSrc2 = surface->getPattern(pattNo).x2;
+    int ySrc2 = surface->getPattern(pattNo).y2;
+
+    // Figure out position to display on
+    int xPos1 = rp.x() + rp.xAdjustmentSum();
+    int yPos1 = rp.y() + rp.yAdjustmentSum();
+    int xPos2 = xPos1 + (xSrc2 - xSrc1) * (rp.width() / 100.0f);
+    int yPos2 = yPos1 + (ySrc2 - ySrc1) * (rp.height() / 100.0f);
+
+    surface->renderToScreen(
+      xSrc1, ySrc1, xSrc2, ySrc2,
+      xPos1, yPos1, xPos2, yPos2,
+      255);
+/*
+
+    cerr << "{Origin: (" << rp.xOrigin() << ", " << rp.yOrigin() << "), "
+         << "Colour: (" << rp.colourR() << ", " << rp.colourG()<< ", " 
+         << rp.colourB() << ", " << rp.colourLevel() << "), "
+         << "Texture: {" << xSrc1 << ", " << ySrc1 << ", " << xSrc2 << ", "
+         << ySrc2 << " )"
+         << "Destination: {" << xPos1 << ", " << yPos1 << ", " << xPos2 << ", "
+         << yPos2 << " }}" << endl;
+
+//     glPushMatrix();
+//     {
+//      glTranslatef(rp.xOrigin(), rp.yOrigin(), 0);
+
+      glBegin(GL_QUADS);
+      {
+//        glColor4i(rp.colourR(), rp.colourG(), rp.colourB(), rp.colourLevel());
+
+        glTexCoord2f(xSrc1, ySrc1);
+        glVertex2i(xPos1, yPos1);
+        glTexCoord2f(xSrc2, ySrc1);
+        glVertex2i(xPos2, yPos1);
+        glTexCoord2f(xSrc2, ySrc2);
+        glVertex2i(xPos2, yPos2);        
+        glTexCoord2f(xSrc1, ySrc2);
+        glVertex2i(xPos1, yPos2);
+      }
+      glEnd();
+
+//      glBlendFunc(GL_ONE, GL_ZERO);
+//     }
+//     glPopMatrix();
+*/
+    ShowGLErrors();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(const std::string& filename)
+{
+  return new SDLGraphicsObjectOfFile(*this, findFile(filename));
+}

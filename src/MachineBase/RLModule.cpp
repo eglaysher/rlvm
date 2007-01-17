@@ -81,3 +81,12 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
     throw Error(ss.str());
   }
 }
+
+// -----------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& os, const RLModule& module)
+{
+  os << "mod<" << module.moduleName() << "," << module.moduleType() 
+     << ":" << module.moduleNumber() << ">";
+  return os;
+}

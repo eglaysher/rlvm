@@ -47,9 +47,17 @@ class GraphicsObject;
  */
 class SDLSurface : public Surface, public boost::noncopyable
 {
+public:
+  struct GrpRect {
+    int x1, y1, x2, y2;
+  };
+
 private:
   /// The SDL_Surface that contains the software version of the bitmap.
   SDL_Surface* m_surface;
+
+  /// The region table
+  std::vector<GrpRect> m_regionTable;
 
   /// The SDLTexture which wraps one or more OpenGL textures
   boost::scoped_ptr<Texture> m_texture;
@@ -74,11 +82,14 @@ public:
   SDLSurface();
 
   /// Surface that takes ownership of an externally created surface.
-  SDLSurface(SDL_Surface* surf);
+  SDLSurface(SDL_Surface* surf, 
+             const std::vector<SDLSurface::GrpRect>& region_table);
 
   /// Surface created with a specified width and height
   SDLSurface(int width, int height);
   ~SDLSurface();
+
+  void dump();
 
   /// allocate a surface
   void allocate(int width, int height);
@@ -92,6 +103,10 @@ public:
   {
     return m_surface;
   }
+
+  /// Accessor to the texture for doing advanced rendering by composing
+  /// SDLSurface into another part of the SDL_* graphics system
+  Texture& texture();
 
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
@@ -116,6 +131,9 @@ public:
   /// Called after each change to m_surface. Marks the texture as
   /// invalid and notifies SDLGraphicsSystem when appropriate.
   void markWrittenTo();
+
+  /// Returns pattern information.
+  const GrpRect& getPattern(int pattNo) const;
 
   // -----------------------------------------------------------------------
 
@@ -155,10 +173,10 @@ private:
   bool m_screenNeedsRefresh;
 
   /// Foreground objects
-  boost::shared_ptr<GraphicsObject> foregroundObjects[512];
+  GraphicsObject foregroundObjects[256];
 
   /// Background objects
-  boost::shared_ptr<GraphicsObject> backgroundObjects[512];
+  GraphicsObject backgroundObjects[256];
 
   // ---------------------------------------------------------------------
 
@@ -193,13 +211,14 @@ public:
   SDLGraphicsSystem(); 
 
   /** 
-   * Should be called by any of the drawing functions when 
+   * Should be called by any of the drawing functions the screen is
+   * invalidated.
    * 
    * For more information, please see section 5.10.4 of the RLDev
    * manual, which deals with the behaviour of screen updates, and the
    * various modes.
    */
-  void dc0writtenTo();
+  virtual void markScreenAsDirty();
 
   virtual void beginFrame();
 
@@ -214,11 +233,11 @@ public:
    * @todo When we support Objects and TextWindows, make this blit
    * them. For now, only blit DC0.
    */
-  virtual void refresh();
+  virtual void refresh(RLMachine& machine);
 
   virtual void endFrame();
 
-  virtual void executeGraphicsSystem();
+  virtual void executeGraphicsSystem(RLMachine& machine);
 
   virtual int screenWidth() const;
   virtual int screenHeight() const;
@@ -234,8 +253,10 @@ public:
 
   // Object related functions
 
-  virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber);
-  virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber);
+  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename);
+
+  virtual GraphicsObject& getFgObject(int objNumber);
+  virtual GraphicsObject& getBgObject(int objNumber);
 };
 
 

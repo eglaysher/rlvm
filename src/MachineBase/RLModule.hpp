@@ -153,4 +153,7 @@ public:
   void dispatchFunction(RLMachine& machine, const libReallive::CommandElement& f);
 };
 
+
+std::ostream& operator<<(std::ostream&, const RLModule& module);
+
 #endif

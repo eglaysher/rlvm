@@ -31,7 +31,9 @@
  */
 
 #include "Modules/Module_Obj.hpp"
+#include "Modules/Module_ObjFgBg.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -82,64 +84,11 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-/**
- * Helper template used by Obj* definitions; work on the foreground.
- */
-struct FG_LAYER {
-  static boost::shared_ptr<GraphicsObject> get(RLMachine& machine, int objNum) {
-    return machine.system().graphics().getFgObject(objNum);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Helper template used by Obj* definitions; work on the background.
- */
-struct BG_LAYER {
-  static boost::shared_ptr<GraphicsObject> get(RLMachine& machine, int objNum) {
-    return machine.system().graphics().getBgObject(objNum);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-/** 
- * Specialized form of Op_SetToIncomingInt to deal with looking up
- * object from the Obj* helper templates; since a lot of Object
- * related functions simply call a setter.
- *
- * This template magic saves having to write out 25 - 30 operation
- * structs.
- */
-template<typename LAYER, typename SETTYPE = int>
-class Obj_SetOneIntOnObj : public RLOp_Void< IntConstant_T, IntConstant_T > {
-  /// The function signature for the setter function
-  typedef void(GraphicsObject::*Setter)(const SETTYPE);
-
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
-  Setter setter;
-
-public:
-  Obj_SetOneIntOnObj(Setter s)
-    : setter(s) 
-  {}
-
-  void operator()(RLMachine& machine, int buf, int incoming) 
-  {
-    ((*LAYER::get(machine, buf)).*(setter))(incoming);
-  }
-};
-
-
-// -----------------------------------------------------------------------
-
 template<typename LAYER>
 struct Obj_move : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x, int y) {
-    LAYER::get(machine, buf)->setX(x);
-    LAYER::get(machine, buf)->setY(y);
+    LAYER::get(machine, buf).setX(x);
+    LAYER::get(machine, buf).setY(y);
   }
 };
 
@@ -149,8 +98,8 @@ template<typename LAYER>
 struct Obj_adjust : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
                                IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
-    LAYER::get(machine, buf)->setXAdjustment(idx, x);
-    LAYER::get(machine, buf)->setYAdjustment(idx, y);
+    LAYER::get(machine, buf).setXAdjustment(idx, x);
+    LAYER::get(machine, buf).setYAdjustment(idx, y);
   }
 };
 
@@ -159,7 +108,7 @@ struct Obj_adjust : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T,
 template<typename LAYER>
 struct Obj_adjustX : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x) {
-    LAYER::get(machine, buf)->setXAdjustment(idx, x);
+    LAYER::get(machine, buf).setXAdjustment(idx, x);
   }
 };
 
@@ -168,7 +117,7 @@ struct Obj_adjustX : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
 template<typename LAYER>
 struct Obj_adjustY : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int y) {
-    LAYER::get(machine, buf)->setYAdjustment(idx, y);
+    LAYER::get(machine, buf).setYAdjustment(idx, y);
   }
 };
 
@@ -178,9 +127,9 @@ template<typename LAYER>
 struct Obj_tint : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
                              IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
-    LAYER::get(machine, buf)->setTintR(r);
-    LAYER::get(machine, buf)->setTintG(g);
-    LAYER::get(machine, buf)->setTintB(b);
+    LAYER::get(machine, buf).setTintR(r);
+    LAYER::get(machine, buf).setTintG(g);
+    LAYER::get(machine, buf).setTintB(b);
   }
 };
 
@@ -190,10 +139,10 @@ template<typename LAYER>
 struct Obj_colour : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
                                IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
-    LAYER::get(machine, buf)->setColourR(r);
-    LAYER::get(machine, buf)->setColourG(g);
-    LAYER::get(machine, buf)->setColourB(b);
-    LAYER::get(machine, buf)->setColourLevel(level);
+    LAYER::get(machine, buf).setColourR(r);
+    LAYER::get(machine, buf).setColourG(g);
+    LAYER::get(machine, buf).setColourB(b);
+    LAYER::get(machine, buf).setColourLevel(level);
   }
 };
 
@@ -303,6 +252,7 @@ void addObjectFunctions(RLModule& m)
   m.addOpcode(1031, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setScrollRateY));
 
   m.addOpcode(1036, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setVert));
+  m.addOpcode(1039, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setPattNo));
 
   m.addOpcode(1054, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setXOrigin));
   m.addOpcode(1055, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setYOrigin));

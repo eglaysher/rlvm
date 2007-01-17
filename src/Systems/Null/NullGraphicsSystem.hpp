@@ -19,9 +19,9 @@ class NullGraphicsSystem : public GraphicsSystem
 {
 public:
 
-  virtual void refresh() { }
+  virtual void refresh(RLMachine&) { }
 
-  virtual void executeGraphicsSystem() { };
+  virtual void executeGraphicsSystem(RLMachine&) { };
 
   virtual int screenWidth() const { };
   virtual int screenHeight() const { };
@@ -29,10 +29,13 @@ public:
   virtual void allocateDC(int dc, int width, int height) { }
   virtual void freeDC(int dc) { }
 
+  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename)
+  { return NULL; }
 
-  virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber) { }
-  virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber) { }
-
+  virtual GraphicsObject& getFgObject(int objNumber) 
+  { static GraphicsObject x; return x;}
+  virtual GraphicsObject& getBgObject(int objNumber)
+  { static GraphicsObject x; return x;}
 
   // Make a null Surface object?
   virtual Surface* loadSurfaceFromFile(const std::string& filename) { return NULL; }

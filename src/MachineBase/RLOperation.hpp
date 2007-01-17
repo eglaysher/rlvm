@@ -148,6 +148,11 @@ struct RLOperation {
    */
   virtual void dispatchFunction(RLMachine& machine, 
                                 const libReallive::CommandElement& f);
+
+  /// Used for quality control. The downside of a dynamic typesystem
+  /// hack is errors found at runtime instead of compiletime. *tear*
+  void throw_unimplemented() 
+  { throw libReallive::Error("Unimplemented function"); }
 };
 
 // -----------------------------------------------------------------------
@@ -1363,34 +1368,34 @@ struct RLOp_Void : public RLOperation {
 
   /// Method that is overridden by all subclasses to implement the
   /// function of this opcode
-  virtual void operator()(RLMachine&) { }
-  virtual void operator()(RLMachine&, firstType) { }
-  virtual void operator()(RLMachine&, firstType, secondType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { }
+  virtual void operator()(RLMachine&) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { throw_unimplemented(); }
 
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType) { }
-  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType, tweentysixthType) { }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType) { throw_unimplemented(); }
+  virtual void operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType, tweentysixthType) { throw_unimplemented(); }
 };
 
 // Partial specialization for RLOp_Store::checkTypes for when
@@ -2079,33 +2084,33 @@ struct RLOp_Store : public RLOperation {
 
   /// Method that is overridden by all subclasses to implement the
   /// function of this opcode
-  virtual int operator()(RLMachine&) { }
-  virtual int operator()(RLMachine&, firstType) { }
-  virtual int operator()(RLMachine&, firstType, secondType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType) { }
-  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType, tweentysixthType) { }
+  virtual int operator()(RLMachine&) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType) { throw_unimplemented(); }
+  virtual int operator()(RLMachine&, firstType, secondType, thirdType, fourthType, fifthType, sixthType, seventhType, eighthType, ninthType, tenthType, eleventhType, twelvthType, thirteenthType, fourteenthType, fifteenthType, sixteenthType, seventeenthType, eighteenthType, nineteenthType, tweentethType, tweentyfirstType, tweentysecondType, tweentythirdType, tweentyfourthType, tweentyfifthType, tweentysixthType) { throw_unimplemented(); }
 };
 
 // Partial specialization for RLOp_Store::checkTypes for when

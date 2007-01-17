@@ -1,0 +1,7 @@
+grpOpen("BG053", 1)
+objOfFile(0, "CGAK10A")
+//grpOpen("CGAK10A", 0)
+//grpOpen("FGNY02A", 1)
+//grpOpen("BG002", 2)
+//grpOpen("BG003B", 3)
+pause()

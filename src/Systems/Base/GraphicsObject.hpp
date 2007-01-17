@@ -1,9 +1,13 @@
 #ifndef __GraphicObject_hpp__
 #define __GraphicObject_hpp__
 
+#include "libReallive/defs.h"
 #include <boost/scoped_ptr.hpp>
 
+#include <numeric>
+
 class RLMachine;
+class GraphicsObject;
 class GraphicsObjectSlot;
 
 /**
@@ -11,6 +15,8 @@ class GraphicsObjectSlot;
  * 
  */
 class GraphicsObjectData {
+public:
+  virtual ~GraphicsObjectData() { }
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties) = 0;
 };
@@ -44,9 +50,11 @@ public:
   void setY(const int y) { m_y = y; }
 
   int xAdjustment(int idx) const { return m_adjustX[idx]; }
+  int xAdjustmentSum() const { return std::accumulate(m_adjustX, m_adjustX + 8, 0); }
   void setXAdjustment(int idx, int x) { m_adjustX[idx] = x; }
 
   int yAdjustment(int idx) const { return m_adjustY[idx]; }
+  int yAdjustmentSum() const { return std::accumulate(m_adjustY, m_adjustY + 8, 0); }
   void setYAdjustment(int idx, int y) { m_adjustY[idx] = y; }
 
   int vert() const { return m_whateverAdjustVertOperatesOn; }
@@ -58,6 +66,12 @@ public:
   int yOrigin() const { return m_originY; }
   void setYOrigin(const int y) { m_originY = y; }
 
+  int width() const { return m_width; }
+  void setWidth(const int in) { m_width = in; }
+
+  int height() const { return m_height; }
+  void setHeight(const int in) { m_height = in; }
+
   /// @}
 
   /**
@@ -65,6 +79,9 @@ public:
    * 
    * @{
    */
+
+  int pattNo() const { return m_pattNo; }
+  void setPattNo(const int in) { m_pattNo = in; }
 
   int mono() const { return m_mono; }
   void setMono(const int in) { m_mono = in; }
@@ -104,6 +121,18 @@ public:
 
   int alpha() const { return m_alpha; }
   void setAlpha(const int alpha) { m_alpha = alpha; }
+
+  GraphicsObjectData& objectData() const {
+    if(m_objectData)
+      return *m_objectData;
+    else
+    {
+      throw libReallive::Error("null object data");
+    }
+  }
+  void setObjectData(GraphicsObjectData* obj) {
+    m_objectData.reset(obj);
+  }
 
   /// Render!
   void render(RLMachine& machine);
@@ -156,8 +185,8 @@ private:
    * @{
    */
 
-  /// The region in g00 bitmaps
-  int m_type2g00region;
+  /// The region ("pattern") in g00 bitmaps
+  int m_pattNo;
 
   /// The source alpha for this image
   int m_alpha;

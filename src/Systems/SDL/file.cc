@@ -859,24 +859,6 @@ public:
 	bool Read(char* image);
 };
 class G00CONV : public GRPCONV {
-	struct REGION {
-		int x1, y1, x2, y2;
-		int Width() { return x2-x1+1;}
-		int Height() { return y2-y1+1;}
-		void FixVar(int& v, int& w) {
-			if (v < 0) v = 0;
-			if (v >= w) v = w-1;
-		}
-		void Fix(int w, int h) {
-			FixVar(x1,w);
-			FixVar(x2,w);
-			FixVar(y1,h);
-			FixVar(y2,h);
-			if (x1 > x2) x2 = x1;
-			if (y1 > y2) y2 = y1;
-		}
-	};
-
 	void Copy_16bpp(char* image, int x, int y, const char* src, int bpl, int h);
 	void Copy_32bpp(char* image, int x, int y, const char* src, int bpl, int h);
 	bool Read_Type0(char* image);
@@ -1458,7 +1440,8 @@ bool G00CONV::Read_Type2(char* image) {
 	memset(image, 0, width*height*4);
 	/* 分割領域を得る */
 	int region_deal = read_little_endian_int(data+5);
-	REGION* region_table = new REGION[region_deal];
+//	REGION* region_table = new REGION[region_deal];
+    region_table = vector<REGION>(region_deal);
 
 	const char* head = data + 9;
 	int i; for (i=0; i<region_deal; i++) {

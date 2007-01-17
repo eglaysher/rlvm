@@ -34,10 +34,10 @@
 #include <string>
 
 #include <boost/shared_ptr.hpp>
+#include "Systems/Base/GraphicsObject.hpp"
 
 class Surface;
-class GraphicsObject;
-class GraphicsObjectData;
+class RLMachine;
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -100,16 +100,17 @@ public:
 
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
   void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
+  virtual void markScreenAsDirty() { }
 
   virtual void beginFrame() { }
-  virtual void refresh() = 0;
+  virtual void refresh(RLMachine& machine) = 0;
   virtual void endFrame() { }
 
   /** 
    * Called from the game loop; Does everything that's needed to keep
    * things up.
    */
-  virtual void executeGraphicsSystem() = 0;
+  virtual void executeGraphicsSystem(RLMachine& machine) = 0;
 
   virtual int screenWidth() const = 0;
   virtual int screenHeight() const = 0;
@@ -129,11 +130,11 @@ public:
 
   // ----------------------------------- [ Object getter/factory functions ]
 
-//  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename, 
-//                                             int visible) = 0;
+  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename) = 0;
 
-  virtual boost::shared_ptr<GraphicsObject> getFgObject(int objNumber) = 0;
-  virtual boost::shared_ptr<GraphicsObject> getBgObject(int objNumber) = 0;
+  /// Object getters
+  virtual GraphicsObject& getFgObject(int objNumber) = 0;
+  virtual GraphicsObject& getBgObject(int objNumber) = 0;
 };
 
 /** 

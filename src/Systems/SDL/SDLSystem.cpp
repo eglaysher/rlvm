@@ -65,7 +65,7 @@ void SDLSystem::run(RLMachine& machine)
 //  cerr << "Begin graphicsSystem: " << event().getTicks() << endl;
 
   // Finally, run any screen updates needed
-  graphicsSystem->executeGraphicsSystem();
+  graphicsSystem->executeGraphicsSystem(machine);
 
   // Pause the system for a moment
   eventSystem->wait(10);

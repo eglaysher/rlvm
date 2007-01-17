@@ -24,7 +24,8 @@ LRLFILES[] =
   WipeEffect
   ScrollOnScrollOff
   EffectFactory
-  Module_Obj
+  Module_ObjFgBg
+  Module_ObjCreation
 
 StaticCObject(libModules, $(LRLFILES))
 

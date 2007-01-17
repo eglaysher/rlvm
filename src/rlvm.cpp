@@ -8,6 +8,8 @@
 #include "Modules/Module_Mem.hpp"
 #include "Modules/Module_Grp.hpp"
 #include "Modules/Module_Msg.hpp"
+#include "Modules/Module_ObjCreation.hpp"
+#include "Modules/Module_ObjFgBg.hpp"
 
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
@@ -28,8 +30,8 @@ using namespace std;
  *
  * RLVM would not exist if it weren't for the help of Haeleth, and,
  * indirectly, Jagarl, both of who have done amazing jobs documenting
- * the fine details of the RealLive system, along with doing all the
- * really hard reverse engineering work that I'd rather not do.
+ * the fine details of the RealLive system, along with doing most of
+ * the really hard reverse engineering work that I'd rather not do.
  *
  * @section Table Table of Contents
  * 
@@ -52,7 +54,8 @@ using namespace std;
  * popular in most English speaking countries. They are simple, plot
  * and character oriented games which are very text-heavy. Gameplay
  * wise, they are comporable to a large slide show with text, images
- * and sound.
+ * and sound, and can be thought of as massive, more serious, mature
+ * versions of the Choose-Your-Own-Adventure series of childrens books.
  * 
  * @section IsAndIsnt What RLVM is and isn't
  *
@@ -62,16 +65,20 @@ using namespace std;
  * that will play a large variety of commercial visual novels written
  * in Reallive.
  *
- * RLVM is not intended to to compete with VisualArts KK as a . While
- * someone could theoretically combine RLVM with <a
- * href="http://www.haeleth.net">Haeleth</a>'s <a
+ * RLVM is not intended to to compete with VisualArts KK as a
+ * development toolki. While someone could theoretically combine RLVM
+ * with <a href="http://www.haeleth.net">Haeleth</a>'s <a
  * href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler
  * toolkit to produce games (at least after RLVM supports a base set
  * of operations), it would be overly cumbersome and I would recommend
  * one of the many free visual novel development systems, which would
  * be both easier to use and more featurefull.
  *
- * RLVM is not a big truck.
+ * RLVM is not meant to facillitate piracy. Please buy these games;
+ * many people put their hearts into writing these stories and they
+ * deserve to be rewarded financially.
+ *
+ * Finally, RLVM is not a big truck...It's a series of tubes.
  */
 
 // -----------------------------------------------------------------------
@@ -142,13 +149,11 @@ int main(int argc, char* argv[])
   srand(time(NULL));
 
   try {
-//    Gameexe gamexex(argv[1]);
-
     Gameexe gameexe("Gameexe.ini");
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(argv[1]);
     RLMachine rlmachine(sdlSystem, arc);
-    cerr << "Past initialization!" << endl;
+
     // Attatch the modules for some commands
     rlmachine.attatchModule(new JmpModule);
     rlmachine.attatchModule(new SysModule(sdlSystem.graphics()));
@@ -156,6 +161,12 @@ int main(int argc, char* argv[])
     rlmachine.attatchModule(new MemModule);
     rlmachine.attatchModule(new MsgModule);
     rlmachine.attatchModule(new GrpModule);
+    rlmachine.attatchModule(new ObjFgModule);
+    rlmachine.attatchModule(new ObjBgModule);
+    rlmachine.attatchModule(new ObjRangeFgModule);
+    rlmachine.attatchModule(new ObjRangeBgModule);
+    rlmachine.attatchModule(new ObjFgCreationModule);
+    rlmachine.attatchModule(new ObjBgCreationModule);
 
     while(!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
@@ -167,7 +178,13 @@ int main(int argc, char* argv[])
     }
   }
   catch (libReallive::Error& b) {
-    printf("Fatal error: %s\n", b.what());
+    cerr << "Fatal libReallive error: " << b.what() << endl;
     return 1;
   }
+  catch(std::exception& e) {
+    cout << "Uncaught exception: " << e.what() << endl;
+    return 1;
+  }
+
+  return 0;
 }

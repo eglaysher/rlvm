@@ -2,6 +2,24 @@
 #ifndef __Utilities_h__
 #define __Utilities_h__
 
+
+/** 
+ * Returns the full path to a g00 file for the basename of the file.
+ * 
+ * @param fileName The filename given in the source code.
+ * @return The full path of the file
+ * @todo This function is currently a hack and does not actually
+ *       search for the file; it points directly into my copy of the
+ *       Kannon all ages DVD.
+ */
+inline string findFile(const std::string& fileName)
+{
+  // Hack until I do this correctly
+  string file = "/Users/elliot/KANON_SE_ALL/g00/" + fileName;
+  file += ".g00";
+  return file;
+}
+
 /** 
  * Changes the coordinate types. All operations internally are done in
  * rec coordinates, (x, y, width, height). The GRP functions pass

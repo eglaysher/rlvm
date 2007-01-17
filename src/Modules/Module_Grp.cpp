@@ -64,23 +64,6 @@ const int SEL_SIZE = 16;
 namespace {
 
 /** 
- * Returns the full path to a g00 file for the basename of the file.
- * 
- * @param fileName The filename given in the source code.
- * @return The full path of the file
- * @todo This function is currently a hack and does not actually
- *       search for the file; it points directly into my copy of the
- *       Kannon all ages DVD.
- */
-string findFile(const std::string& fileName)
-{
-  // Hack until I do this correctly
-  string file = "/Users/elliot/KANON_SE_ALL/g00/" + fileName;
-  file += ".g00";
-  return file;
-}
-
-/** 
  * Performs half the grunt work of a recOpen command; Copies DC0 to
  * DC1, loads a graphics file, and then composites that file to DC1.
  * 

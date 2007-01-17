@@ -20,11 +20,11 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Obj_hpp__
-#define __Module_Obj_hpp__
+#ifndef __Module_ObjFgBg_hpp__
+#define __Module_ObjFgBg_hpp__
 
 /**
- * @file    Module_Obj.hpp
+ * @file    Module_ObjFgBg.hpp
  * @ingroup ModuleObj
  * @brief   Contains definitions for string handling functions.
  */

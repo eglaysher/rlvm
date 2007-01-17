@@ -11,7 +11,14 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char -Wall $(if $(defined-env DEB
 .SUBDIRS: libReallive Modules MachineBase Systems
 ########
 
-StaticCLibrary(librlvm, MachineBase/libMachineBase Modules/libModules Systems/SDL/libSDLSystem libReallive/libReallive)
+LIBRLVMFILES[] = 
+  MachineBase/libMachineBase
+  Modules/libModules
+  Systems/Base/GraphicsObject
+  Systems/SDL/libSDLSystem
+  libReallive/libReallive
+
+StaticCLibrary(librlvm, $(LIBRLVMFILES))
 
 ########
 
