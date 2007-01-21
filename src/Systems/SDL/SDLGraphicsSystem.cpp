@@ -119,6 +119,8 @@ public:
   int height() { return m_logicalHeight; }
   GLuint textureId() { return m_textureID; }
 
+  void renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surface);
+
   void renderToScreen(int x1, int y1, int x2, int y2,
                       int dx1, int dy1, int dx2, int dy2,
                       int opacity);
@@ -294,6 +296,41 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
   }
   glEnd();
   glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// -----------------------------------------------------------------------
+
+void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surface)
+{
+  // Figure out the source to clip out of the image
+  int pattNo = go.pattNo();
+  int xSrc1 = surface.getPattern(pattNo).x1;
+  int ySrc1 = surface.getPattern(pattNo).y1;
+  int xSrc2 = surface.getPattern(pattNo).x2;
+  int ySrc2 = surface.getPattern(pattNo).y2;
+
+  // Figure out position to display on
+  int xPos1 = go.x() + go.xAdjustmentSum();
+  int yPos1 = go.y() + go.yAdjustmentSum();
+  int xPos2 = xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f);
+  int yPos2 = yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f);
+
+  glPushMatrix();
+  {
+    // Move the "origin" to the correct position.
+    glTranslatef(go.xOrigin(), go.yOrigin(), 0);
+
+    // Rotate here?
+    glRotatef(float(go.rotation()) / 10, 0, 0, 1);
+
+    renderToScreen(
+      xSrc1, ySrc1, xSrc2, ySrc2,
+      xPos1, yPos1, xPos2, yPos2,
+      255);
+  }
+  glPopMatrix();
+
+  ShowGLErrors();
 }
 
 // -----------------------------------------------------------------------
@@ -523,6 +560,14 @@ void SDLSurface::renderToScreen(
   m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
                             destX1, destY1, destX2, destY2,
                             opacity);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
+{
+  uploadTextureIfNeeded();
+  m_texture->renderToScreenAsObject(rp, *this);
 }
 
 // -----------------------------------------------------------------------
@@ -812,7 +857,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   // here.
   if(m_screenNeedsRefresh)
   {
-    cerr << "Going to refresh!" << endl;
+//    cerr << "Going to refresh!" << endl;
     refresh(machine);
     m_screenNeedsRefresh = false;
   }
@@ -947,7 +992,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
                                            MaskType with_mask)
 {
   int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
-  cerr << "Amask: " << amask << endl;
+//  cerr << "Amask: " << amask << endl;
   SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
     DefaultBmask, amask);
@@ -1027,7 +1072,7 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
   if (conv->Read(mem)) {
     MaskType is_mask = conv->IsMask() ? ALPHA_MASK : NO_MASK;
     if (is_mask == ALPHA_MASK) { // alpha がすべて 0xff ならマスク無しとする
-      cerr << "Loading alpha mask..." << endl;
+//      cerr << "Loading alpha mask..." << endl;
       int len = conv->Width()*conv->Height();
       unsigned int* d = (unsigned int*)mem;
       int i; for (i=0; i<len; i++) {
@@ -1035,16 +1080,15 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
         d++;
       }
       if (i == len) {
-        cerr << "No mask found!" << endl;
+//        cerr << "No mask found!" << endl;
         is_mask = NO_MASK;
       }
     }
-    else
-      cerr << "No alpha mask!" << endl;
+
     s = newSurfaceFromRGBAData(conv->Width(), conv->Height(), mem, is_mask);
   }
 
-  cerr << "Converter table size: " << conv->region_table.size() << endl;
+//  cerr << "Converter table size: " << conv->region_table.size() << endl;
 
   // Grab the Type-2 information out of the converter or create one
   // default region if none exist
@@ -1097,24 +1141,12 @@ public:
   void render(RLMachine& machine, const GraphicsObject& rp)
   {
     // At first, we're just going to do simple object position stuff
-    cerr << "Attempting to render object!" << endl;
+//    cerr << "Attempting to render object!" << endl;
 
-    surface->dump();
+    surface->renderToScreenAsObject(rp);
 
-    // For the time being, we are dumb and assume that it's one texture  
-//     float thisx1 = float(x1) / m_textureWidth;
-//     float thisy1 = float(y1) / m_textureHeight;
-//     float thisx2 = float(x2) / m_textureWidth;
-//     float thisy2 = float(y2) / m_textureHeight;
 /*
-    int texId =  surface->texture().textureId();
-    cerr << texId << endl;
-    glBindTexture(GL_TEXTURE_2D, texId);
-    ShowGLErrors();
-*/
-    // We probably use rp.compositeMode() to determine this when I
-    // become competent.
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    surface->dump();
 
     // Figure out the source to clip out of the image
     int pattNo = rp.pattNo();
@@ -1129,44 +1161,19 @@ public:
     int xPos2 = xPos1 + (xSrc2 - xSrc1) * (rp.width() / 100.0f);
     int yPos2 = yPos1 + (ySrc2 - ySrc1) * (rp.height() / 100.0f);
 
-    surface->renderToScreen(
-      xSrc1, ySrc1, xSrc2, ySrc2,
-      xPos1, yPos1, xPos2, yPos2,
-      255);
-/*
+    glPushMatrix();
+    {
+      glTranslatef(rp.xOrigin(), rp.yOrigin(), 0);
 
-    cerr << "{Origin: (" << rp.xOrigin() << ", " << rp.yOrigin() << "), "
-         << "Colour: (" << rp.colourR() << ", " << rp.colourG()<< ", " 
-         << rp.colourB() << ", " << rp.colourLevel() << "), "
-         << "Texture: {" << xSrc1 << ", " << ySrc1 << ", " << xSrc2 << ", "
-         << ySrc2 << " )"
-         << "Destination: {" << xPos1 << ", " << yPos1 << ", " << xPos2 << ", "
-         << yPos2 << " }}" << endl;
+      surface->renderToScreen(
+        xSrc1, ySrc1, xSrc2, ySrc2,
+        xPos1, yPos1, xPos2, yPos2,
+        255);
+    }
+    glPopMatrix();
 
-//     glPushMatrix();
-//     {
-//      glTranslatef(rp.xOrigin(), rp.yOrigin(), 0);
-
-      glBegin(GL_QUADS);
-      {
-//        glColor4i(rp.colourR(), rp.colourG(), rp.colourB(), rp.colourLevel());
-
-        glTexCoord2f(xSrc1, ySrc1);
-        glVertex2i(xPos1, yPos1);
-        glTexCoord2f(xSrc2, ySrc1);
-        glVertex2i(xPos2, yPos1);
-        glTexCoord2f(xSrc2, ySrc2);
-        glVertex2i(xPos2, yPos2);        
-        glTexCoord2f(xSrc1, ySrc2);
-        glVertex2i(xPos1, yPos2);
-      }
-      glEnd();
-
-//      glBlendFunc(GL_ONE, GL_ZERO);
-//     }
-//     glPopMatrix();
-*/
     ShowGLErrors();
+*/
   }
 };
 

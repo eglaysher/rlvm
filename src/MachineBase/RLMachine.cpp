@@ -386,8 +386,8 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
 // -----------------------------------------------------------------------
 
 void RLMachine::executeCommand(const CommandElement& f) {
-  cerr << "About to execute opcode<" << f.modtype() << ":" << f.module() << ":" 
-       << f.opcode() << ", " << f.overload() << ">" << endl;
+//   cerr << "About to execute opcode<" << f.modtype() << ":" << f.module() << ":" 
+//        << f.opcode() << ", " << f.overload() << ">" << endl;
   ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
   if(it != modules.end()) {
     it->dispatchFunction(*this, f);

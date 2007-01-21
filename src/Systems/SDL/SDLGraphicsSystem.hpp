@@ -128,6 +128,9 @@ public:
                              const int destCoords[8],
                              const int opacity[4]);
 
+  // Used internally; not exposed to the general graphics system
+  void renderToScreenAsObject(const GraphicsObject& rp);
+
   /// Called after each change to m_surface. Marks the texture as
   /// invalid and notifies SDLGraphicsSystem when appropriate.
   void markWrittenTo();

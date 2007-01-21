@@ -72,6 +72,9 @@ public:
   int height() const { return m_height; }
   void setHeight(const int in) { m_height = in; }
 
+  int rotation() const { return m_rotation; }
+  void setRotation(const int in) { m_rotation = in; }
+
   /// @}
 
   /**

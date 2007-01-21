@@ -85,16 +85,6 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_move : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T > {
-  void operator()(RLMachine& machine, int buf, int x, int y) {
-    LAYER::get(machine, buf).setX(x);
-    LAYER::get(machine, buf).setY(y);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-template<typename LAYER>
 struct Obj_adjust : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
                                IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
@@ -223,7 +213,9 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 template<typename LAYER>
 void addObjectFunctions(RLModule& m)
 {
-  m.addOpcode(1000, 0, new Obj_move<LAYER>);
+  m.addOpcode(1000, 0, "objMove", new Obj_SetTwoIntOnObj<LAYER>(
+                &GraphicsObject::setX, 
+                &GraphicsObject::setY));
   m.addOpcode(1001, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setX));
   m.addOpcode(1002, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setY));
   m.addOpcode(1003, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setAlpha));
@@ -247,6 +239,7 @@ void addObjectFunctions(RLModule& m)
   m.addOpcode(1020, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setColourLevel));
   m.addOpcode(1021, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setCompositeMode));
 
+
 /*  m.addOpcode(1028, 0, new  */
   m.addOpcode(1030, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setScrollRateX));
   m.addOpcode(1031, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setScrollRateY));
@@ -254,16 +247,29 @@ void addObjectFunctions(RLModule& m)
   m.addOpcode(1036, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setVert));
   m.addOpcode(1039, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setPattNo));
 
+  m.addOpcode(1046, 0, new Obj_SetTwoIntOnObj<LAYER>(
+                &GraphicsObject::setWidth,
+                &GraphicsObject::setHeight));
+  m.addOpcode(1047, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setWidth));
+  m.addOpcode(1048, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setHeight));
+  m.addOpcode(1049, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setRotation));
+
+
+  m.addOpcode(1053, 0, "objOrigin", new Obj_SetTwoIntOnObj<LAYER>(
+                &GraphicsObject::setXOrigin,
+                &GraphicsObject::setYOrigin));
   m.addOpcode(1054, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setXOrigin));
   m.addOpcode(1055, 0, new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setYOrigin));
 }
 
 // -----------------------------------------------------------------------
 
+// @todo Make this reflect the normal ones. I've let this fall out of
+//       sync with the previous function.
 template<typename LAYER>
 void addRangeObjectFunctions(RLModule& m)
 {
-  m.addOpcode(1000, 0, new ObjRangeAdapter<Obj_move<LAYER> >( new Obj_move<LAYER> ));
+//  m.addOpcode(1000, 0, new ObjRangeAdapter<Obj_move<LAYER> >( new Obj_move<LAYER> ));
   m.addOpcode(1001, 0, new ObjRangeAdapter<Obj_SetOneIntOnObj<LAYER> >( 
                 new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setX) ));
   m.addOpcode(1002, 0, new ObjRangeAdapter<Obj_SetOneIntOnObj<LAYER> >( 

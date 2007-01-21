@@ -30,7 +30,7 @@ GraphicsObject::GraphicsObject()
 
 void GraphicsObject::render(RLMachine& machine) {
   if(m_objectData && visible()) {
-    cerr << "Rendering object!" << endl;
+//    cerr << "Rendering object!" << endl;
     m_objectData->render(machine, *this);
   }
 }
