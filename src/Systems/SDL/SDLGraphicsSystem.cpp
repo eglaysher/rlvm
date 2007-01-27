@@ -1140,40 +1140,7 @@ public:
 
   void render(RLMachine& machine, const GraphicsObject& rp)
   {
-    // At first, we're just going to do simple object position stuff
-//    cerr << "Attempting to render object!" << endl;
-
     surface->renderToScreenAsObject(rp);
-
-/*
-    surface->dump();
-
-    // Figure out the source to clip out of the image
-    int pattNo = rp.pattNo();
-    int xSrc1 = surface->getPattern(pattNo).x1;
-    int ySrc1 = surface->getPattern(pattNo).y1;
-    int xSrc2 = surface->getPattern(pattNo).x2;
-    int ySrc2 = surface->getPattern(pattNo).y2;
-
-    // Figure out position to display on
-    int xPos1 = rp.x() + rp.xAdjustmentSum();
-    int yPos1 = rp.y() + rp.yAdjustmentSum();
-    int xPos2 = xPos1 + (xSrc2 - xSrc1) * (rp.width() / 100.0f);
-    int yPos2 = yPos1 + (ySrc2 - ySrc1) * (rp.height() / 100.0f);
-
-    glPushMatrix();
-    {
-      glTranslatef(rp.xOrigin(), rp.yOrigin(), 0);
-
-      surface->renderToScreen(
-        xSrc1, ySrc1, xSrc2, ySrc2,
-        xPos1, yPos1, xPos2, yPos2,
-        255);
-    }
-    glPopMatrix();
-
-    ShowGLErrors();
-*/
   }
 };
 

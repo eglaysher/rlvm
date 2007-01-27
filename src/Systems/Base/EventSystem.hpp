@@ -1,7 +1,11 @@
 #ifndef __EventSystem_hpp__
 #define __EventSystem_hpp__
 
+#include <boost/scoped_ptr.hpp>
+
 class RLMachine;
+
+class FrameCounter;
 
 /**
  * Generalization of an event system. Reallive's event model is a bit
@@ -10,7 +14,13 @@ class RLMachine;
  */
 class EventSystem
 {
+private:
+  boost::scoped_ptr<FrameCounter> m_frameCounters[255];
+
 public:
+  EventSystem();
+  virtual ~EventSystem();
+
   virtual void executeEventSystem(RLMachine& machine) = 0;
 
   /** 
@@ -34,6 +44,10 @@ public:
    * started. Used for timing things.
    */
   virtual unsigned int getTicks() const = 0;
+
+  void setFrameCounter(int frameCounter, FrameCounter* counter);
+  FrameCounter& getFrameCounter(int frameCounter);
+//  virtual FrameCounter& getExFrameCounter(int frameCounter) const;
 
   /** 
    * Idles the program for a certain amount of time in milliseconds.

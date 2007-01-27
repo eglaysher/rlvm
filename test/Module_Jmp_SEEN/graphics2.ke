@@ -1,16 +1,11 @@
 grpOpen("BG053", 1)
 objOfFile(0, "CGAK10A")
-intA[2] = 100
-intA[1] = 0
-
-for (intA[3] = 0) (intA[3] < 25) (intA[3] += 1):
-	objOrigin(0, 0 - intA[1], 0 - intA[1])
-	objScale(0, intA[2], intA[2])
-	refresh
-	intA[2] += 10
-	intA[1] += 20
-	pause();
-
+InitFrame(10, 0, 640, 8000)
+repeat
+    intA[5] = ReadFrame(10)
+    objLeft(0, intA[5])
+    refresh
+till intA[5] >= 640
 
 //grpOpen("CGAK10A", 0)
 //grpOpen("FGNY02A", 1)

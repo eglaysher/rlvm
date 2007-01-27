@@ -32,6 +32,8 @@
  */
 
 #include "Modules/Module_Sys.hpp"
+#include "Modules/Module_Sys_Frame.hpp"
+
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 
@@ -296,4 +298,7 @@ SysModule::SysModule(GraphicsSystem& system)
   addOpcode(1133, 0, new Op_SetToIncomingString<GraphicsSystem>(
               system, &GraphicsSystem::setDefaultBgrName));
 
+  // Sys is hueger than xbox, so lets group some of the operations by
+  // what they do.
+  addSysFrameOpcodes(*this);
 }
