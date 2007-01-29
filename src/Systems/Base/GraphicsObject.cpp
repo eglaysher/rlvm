@@ -19,6 +19,7 @@ GraphicsObject::GraphicsObject()
 
     m_pattNo(0), m_alpha(255), m_mono(0), m_invert(0),
     // Do the rest later.
+    m_tintR(255), m_tintG(255), m_tintB(255), 
     m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255)
 {
   // Regretfully, we can't do this in the initializer list.

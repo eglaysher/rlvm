@@ -140,8 +140,8 @@ Texture::Texture(SDL_Surface* surface)
   : m_logicalWidth(surface->w), m_logicalHeight(surface->h)
 {
   glGenTextures(1, &m_textureID);
-  cerr << "Building texture of " << surface << " with textid " << m_textureID
-       << endl;
+//   cerr << "Building texture of " << surface << " with textid " << m_textureID
+//        << endl;
   glBindTexture(GL_TEXTURE_2D, m_textureID);
   ShowGLErrors();
 //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -190,11 +190,11 @@ Texture::Texture(SDL_Surface* surface)
     throw Error("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
 
   // I have no idea what I'm doing!
-  cerr << "MASK: [" << hex << surface->format->Rmask 
-       << ", " << surface->format->Gmask 
-       << ", " << surface->format->Bmask 
-       << ", " << surface->format->Amask 
-       << "]" << endl;
+//   cerr << "MASK: [" << hex << surface->format->Rmask 
+//        << ", " << surface->format->Gmask 
+//        << ", " << surface->format->Bmask 
+//        << ", " << surface->format->Amask 
+//        << "]" << endl;
 
   m_textureWidth = SafeSize(surface->w);
   m_textureHeight = SafeSize(surface->h);
@@ -219,7 +219,7 @@ Texture::Texture(SDL_Surface* surface)
 Texture::~Texture()
 {
   glDeleteTextures(1, &m_textureID);
-  cerr << "Deleteing texture with texid " << m_textureID << endl;
+//  cerr << "Deleteing texture with texid " << m_textureID << endl;
   ShowGLErrors();
 }
 
@@ -315,6 +315,16 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   int xPos2 = xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f);
   int yPos2 = yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f);
 
+  // Convert the pixel coordinates into [0,1) texture coordinates
+  float thisx1 = float(xSrc1) / m_textureWidth;
+  float thisy1 = float(ySrc1) / m_textureHeight;
+  float thisx2 = float(xSrc2) / m_textureWidth;
+  float thisy2 = float(ySrc2) / m_textureHeight;
+
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   glPushMatrix();
   {
     // Move the "origin" to the correct position.
@@ -323,10 +333,21 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
     // Rotate here?
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
 
-    renderToScreen(
-      xSrc1, ySrc1, xSrc2, ySrc2,
-      xPos1, yPos1, xPos2, yPos2,
-      255);
+    glBegin(GL_QUADS);
+    {
+      glColor4ub(go.tintR(), go.tintG(), go.tintB(), go.alpha());
+      glTexCoord2f(thisx1, thisy1);
+      glVertex2i(xPos1, yPos1);
+      glTexCoord2f(thisx2, thisy1);
+      glVertex2i(xPos2, yPos1);
+      glTexCoord2f(thisx2, thisy2);
+      glVertex2i(xPos2, yPos2);        
+      glTexCoord2f(thisx1, thisy2);
+      glVertex2i(xPos1, yPos2);
+    }
+    glEnd();
+    glBlendFunc(GL_ONE, GL_ZERO);
+
   }
   glPopMatrix();
 
@@ -1023,8 +1044,8 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
   SDLSurface::GrpRect rect;
   rect.x1 = region.x1;
   rect.y1 = region.y1;
-  rect.x2 = region.x2;
-  rect.y2 = region.y2;
+  rect.x2 = region.x2 + 1;
+  rect.y2 = region.y2 + 1;
   return rect;
 }
 

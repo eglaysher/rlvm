@@ -133,7 +133,34 @@ public:
   {
     *dest = (reference.*getter)();
   }
-
 };
 
+// -----------------------------------------------------------------------
+
+/**
+ * Special adapter for multiple dispatch versions of operations. This
+ * operation structure will take a Varc_T<  >
+ *
+ * For example, consider the two functions @c InitFrame and @c
+ * InitFrames. The following pieces of kepago are equivalent:
+ *
+ * @code
+ * InitFrame(0, 0, 1000, 2500)
+ * InitFrame(1, 1000, 0, 2500)
+ * @endcode
+ *
+ * @code
+ * InitFrames({0, 0, 1000, 2500}, {1, 1000, 0, 2500))
+ * @endcode
+ */
+/*
+template<typename DISPATCHER>
+class MultiDispatch : public RLOp_SpecialCase
+{
+  void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
+
+
+  }
+};
+*/
 #endif

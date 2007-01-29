@@ -68,7 +68,10 @@ void SDLSystem::run(RLMachine& machine)
   graphicsSystem->executeGraphicsSystem(machine);
 
   // Pause the system for a moment
-  eventSystem->wait(10);
+  if(eventSystem->canBeNice())
+  {
+    eventSystem->wait(10);
+  }
 }
 
 GraphicsSystem& SDLSystem::graphics()

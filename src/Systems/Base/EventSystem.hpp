@@ -17,6 +17,11 @@ class EventSystem
 private:
   boost::scoped_ptr<FrameCounter> m_frameCounters[255];
 
+  /// Counter for the number of things that require realtime
+  /// speed. Whenever this is zero, the system will wait 10ms between
+  /// rendering frames to be nice to the user and the OS.
+  int m_numberOfRealtimeTasks;
+
 public:
   EventSystem();
   virtual ~EventSystem();
@@ -47,6 +52,8 @@ public:
 
   void setFrameCounter(int frameCounter, FrameCounter* counter);
   FrameCounter& getFrameCounter(int frameCounter);
+  bool frameCounterExists(int frameCounter);
+
 //  virtual FrameCounter& getExFrameCounter(int frameCounter) const;
 
   /** 
@@ -55,6 +62,22 @@ public:
    * @param milliseconds Time
    */
   virtual void wait(unsigned int milliseconds) const = 0;
+
+
+  /**
+   * @name Niceness functions
+   * 
+   * @{
+   */
+  void beginRealtimeTask();
+  void endRealtimeTask();
+
+  /// Returns whether there are any current tasks that require
+  /// realtime acces for smooth animation.
+  bool canBeNice();
+
+  /// @}
+
 };
 
 #endif

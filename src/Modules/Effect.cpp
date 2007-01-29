@@ -42,8 +42,17 @@ using namespace std;
 
 Effect::Effect(RLMachine& machine, int width, int height, int time)
   : m_width(width), m_height(height), m_duration(time), 
-    m_startTime(machine.system().event().getTicks())
+    m_startTime(machine.system().event().getTicks()),
+    m_machine(machine)
 {
+  m_machine.system().event().beginRealtimeTask();
+}
+
+// -----------------------------------------------------------------------
+
+Effect::~Effect()
+{
+  m_machine.system().event().endRealtimeTask();
 }
 
 // -----------------------------------------------------------------------

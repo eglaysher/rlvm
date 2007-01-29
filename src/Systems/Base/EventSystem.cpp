@@ -4,12 +4,15 @@
 
 #include "libReallive/defs.h"
 
+#include <iostream>
+
+using namespace std;
 using namespace boost;
 using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-EventSystem::EventSystem() {}
+EventSystem::EventSystem() : m_numberOfRealtimeTasks(0) {}
 
 // -----------------------------------------------------------------------
 
@@ -37,4 +40,38 @@ FrameCounter& EventSystem::getFrameCounter(int frameCounter)
     throw Error("Trying to get an uninitialized frame counter!");
 
   return *counter;
+}
+
+// -----------------------------------------------------------------------
+
+bool EventSystem::frameCounterExists(int frameCounter)
+{
+  if(frameCounter < 0 || frameCounter > 255)
+    throw Error("Frame Counter index out of range!");
+
+  scoped_ptr<FrameCounter>& counter = m_frameCounters[frameCounter];
+  return counter.get() != NULL;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::beginRealtimeTask()
+{
+//  cerr << "EventSystem::beginRealtimeTask()" << endl;
+  m_numberOfRealtimeTasks++;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::endRealtimeTask()
+{
+//  cerr << "EventSystem::endRealtimeTask()" << endl;
+  m_numberOfRealtimeTasks--;
+}
+
+// -----------------------------------------------------------------------
+
+bool EventSystem::canBeNice()
+{
+  return m_numberOfRealtimeTasks == 0;
 }

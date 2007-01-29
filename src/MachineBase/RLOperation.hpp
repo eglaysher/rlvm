@@ -666,7 +666,9 @@ struct Special_T {
  * 
  * @warning This is almost certainly not what you want. This is only
  * used to define handlers for CommandElements that aren't
- * FunctionElements. Meaning the Gotos and Select.
+ * FunctionElements. Meaning the Gotos and Select. Also, you get to do
+ * weird tricks with the 
+ *
  * @see JmpModule
  */
 struct RLOp_SpecialCase : public RLOperation {

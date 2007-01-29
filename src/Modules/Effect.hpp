@@ -37,6 +37,7 @@
 #include "MachineBase/LongOperation.hpp"
 
 class Surface;
+class RLMachine;
 
 /**
  * @defgroup TransitionEffects SEL/SELR transition effects
@@ -81,6 +82,10 @@ private:
   /// surface before we pass control to the effect
   virtual bool blitOriginalImage() const = 0;
 
+  /// Keep track of what machine we're running on so we can send an
+  /// appropriate endRealtimeTask() to the eventsystem on destruction
+  RLMachine& m_machine;
+
 protected:
   int width() const { return m_width; }
   int height() const { return m_height; }
@@ -105,6 +110,8 @@ public:
    * system I know of where ranges are inclusive...
    */
   Effect(RLMachine& machine, int width, int height, int time);
+
+  virtual ~Effect();
 
   /** 
    * Implements the LongOperation calling interface. This simply keeps
