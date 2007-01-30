@@ -152,12 +152,11 @@ struct Obj_colour : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T,
  * function, alowing us to just use this adapter with the already
  * defined operations.
  */
-template<typename HANDLER>
 struct ObjRangeAdapter : RLOp_SpecialCase {
   /// Keep a copy of the operation that we wrap
-  scoped_ptr<HANDLER> handler;
+  scoped_ptr<RLOperation> handler;
 
-  ObjRangeAdapter(HANDLER* in) : handler(in) { }
+  ObjRangeAdapter(RLOperation* in) : handler(in) { }
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
     ptr_vector<ExpressionPiece> range;
@@ -181,6 +180,10 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
       addParameterTo(ff.get_param(i), parameters);
     }
 
+    // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
+    // what RLOperation.dispatchFunction() does; we manually call the
+    // subclass's disptach() so that we can get around the automated
+    // incrementing of the instruction pointer.
     int lowerRange = range[0].integerValue(machine);
     int upperRange = range[1].integerValue(machine);
     for(int i = lowerRange; i <= upperRange; ++i) {
@@ -270,13 +273,13 @@ template<typename LAYER>
 void addRangeObjectFunctions(RLModule& m)
 {
 //  m.addOpcode(1000, 0, new ObjRangeAdapter<Obj_move<LAYER> >( new Obj_move<LAYER> ));
-  m.addOpcode(1001, 0, new ObjRangeAdapter<Obj_SetOneIntOnObj<LAYER> >( 
+  m.addOpcode(1001, 0, new ObjRangeAdapter( 
                 new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setX) ));
-  m.addOpcode(1002, 0, new ObjRangeAdapter<Obj_SetOneIntOnObj<LAYER> >( 
+  m.addOpcode(1002, 0, new ObjRangeAdapter( 
                 new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setY) ));
-  m.addOpcode(1003, 0, new ObjRangeAdapter<Obj_SetOneIntOnObj<LAYER> >( 
+  m.addOpcode(1003, 0, new ObjRangeAdapter( 
                 new Obj_SetOneIntOnObj<LAYER>(&GraphicsObject::setAlpha) ));
-  m.addOpcode(1004, 0, new ObjRangeAdapter<Obj_SetOneIntOnObj<LAYER, bool> >( 
+  m.addOpcode(1004, 0, new ObjRangeAdapter( 
                 new Obj_SetOneIntOnObj<LAYER, bool>(&GraphicsObject::setVisible) ));
 }
 

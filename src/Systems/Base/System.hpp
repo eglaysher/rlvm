@@ -74,6 +74,8 @@ class RLMachine;
 class System
 {
 public:
+  virtual ~System() {}
+
   virtual void run(RLMachine& machine) = 0;
 
   virtual GraphicsSystem& graphics() = 0;

@@ -26,6 +26,14 @@ public:
   virtual int readFrame(EventSystem& eventSystem) = 0;
 
   /** 
+   * The converse is setting the value, which should be done after the
+   * frame counter has been turned off.
+   * 
+   * @param value New value for the frame counter
+   */
+  void setValue(int value) { m_value = value; }
+
+  /** 
    * When a timer starts, we need to tell the EventSystem that we now
    * have a near realtime event going on and to stop being nice to the
    * operating system.
@@ -44,6 +52,9 @@ public:
   void endTimer(EventSystem& eventSystem);
 
   bool isActive() const { return m_isActive; }
+  void setActive(bool active) { m_isActive = active; }
+
+
 
 // Give these accessors later?
 protected:

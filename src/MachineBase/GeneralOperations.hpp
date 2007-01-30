@@ -2,6 +2,7 @@
 #define __GeneralOperations_hpp__
 
 #include "RLOperation.hpp"
+#include <boost/scoped_ptr.hpp>
 
 /** 
  * Binds setting an internal variable to a passed in value in from a
@@ -139,7 +140,7 @@ public:
 
 /**
  * Special adapter for multiple dispatch versions of operations. This
- * operation structure will take a Varc_T<  >
+ * operation structure will take a Argc_T<  >
  *
  * For example, consider the two functions @c InitFrame and @c
  * InitFrames. The following pieces of kepago are equivalent:
@@ -153,14 +154,14 @@ public:
  * InitFrames({0, 0, 1000, 2500}, {1, 1000, 0, 2500))
  * @endcode
  */
-/*
-template<typename DISPATCHER>
-class MultiDispatch : public RLOp_SpecialCase
-{
-  void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
+class MultiDispatch : public RLOp_SpecialCase {
+private:
+  boost::scoped_ptr<RLOperation> handler;
 
+public:
+  MultiDispatch(RLOperation* op) : handler(op) {}
 
-  }
+  void operator()(RLMachine& machine, const libReallive::CommandElement& ff);
 };
-*/
+
 #endif
