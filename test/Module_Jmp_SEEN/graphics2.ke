@@ -2,15 +2,16 @@ grpOpen("BG053", 1)
 objOfFile(0, "CGAK10A")
 objOrigin(0, ScreenWidth / 2, ScreenHeight / 2)
 objMove(0, - ScreenWidth / 2, - ScreenHeight / 2)
-//InitFrameDecel(10, 0, 360 * 10, 8000)
-//InitFrameTurn(9, 0, 255, 2000)
-InitFramesTurn({10, 0, 360 * 10, 4000}, {9, 0, 255, 1000})
+InitFrameDecel(10, 0, 360 * 10, 8000)
+InitFrameTurn(9, 0, 255, 2000)
+//InitFrames({10, 0, 360 * 10, 4000}, {9, 0, 255, 1000})
+
 repeat
-    intA[5] = ReadFrame(10)
-	intA[6] = ReadFrame(9)
+    intA[1] = ReadFrames({10, intA[5]}, {9, intA[6]})
     objRotate(0, intA[5])
     objAlpha(0, intA[6])
     refresh
 till intA[5] >= 360 * 10
+//till intA[1] == 0
 
 pause()

@@ -20,22 +20,19 @@ EventSystem::~EventSystem() {}
 
 // -----------------------------------------------------------------------
 
-void EventSystem::setFrameCounter(int frameCounter, FrameCounter* counter)
+void EventSystem::setFrameCounter(int layer, int frameCounter, FrameCounter* counter)
 {
-  if(frameCounter < 0 || frameCounter > 255)
-    throw Error("Frame Counter index out of range!");
-
-  m_frameCounters[frameCounter].reset(counter);
+  checkLayerAndCounter(layer, frameCounter);
+  m_frameCounters[layer][frameCounter].reset(counter);
 }
 
 // -----------------------------------------------------------------------
 
-FrameCounter& EventSystem::getFrameCounter(int frameCounter)
+FrameCounter& EventSystem::getFrameCounter(int layer, int frameCounter)
 {
-  if(frameCounter < 0 || frameCounter > 255)
-    throw Error("Frame Counter index out of range!");
+  checkLayerAndCounter(layer, frameCounter);
 
-  scoped_ptr<FrameCounter>& counter = m_frameCounters[frameCounter];
+  scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
   if(counter.get() == NULL)
     throw Error("Trying to get an uninitialized frame counter!");
 
@@ -44,12 +41,10 @@ FrameCounter& EventSystem::getFrameCounter(int frameCounter)
 
 // -----------------------------------------------------------------------
 
-bool EventSystem::frameCounterExists(int frameCounter)
+bool EventSystem::frameCounterExists(int layer, int frameCounter)
 {
-  if(frameCounter < 0 || frameCounter > 255)
-    throw Error("Frame Counter index out of range!");
-
-  scoped_ptr<FrameCounter>& counter = m_frameCounters[frameCounter];
+  checkLayerAndCounter(layer, frameCounter);
+  scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
   return counter.get() != NULL;
 }
 
@@ -74,4 +69,15 @@ void EventSystem::endRealtimeTask()
 bool EventSystem::canBeNice()
 {
   return m_numberOfRealtimeTasks == 0;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
+{
+  if(layer < 0 || layer > 1)
+    throw Error("Illegal frame counter layer!");
+
+  if(frameCounter < 0 || frameCounter > 255)
+    throw Error("Frame Counter index out of range!");
 }

@@ -309,6 +309,12 @@ public:
   bool halted() const { return m_halted; }
 
   /** 
+   * Force the machine to halt. This should terminate the execution of
+   * bytecode, and theoretically, the program.
+   */
+  void halt() { m_halted = true; }
+
+  /** 
    * Returns the current System that this RLMachine outputs to.
    */
   System& system() { return m_system; }

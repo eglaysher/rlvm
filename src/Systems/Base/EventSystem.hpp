@@ -15,12 +15,14 @@ class FrameCounter;
 class EventSystem
 {
 private:
-  boost::scoped_ptr<FrameCounter> m_frameCounters[255];
+  boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
 
   /// Counter for the number of things that require realtime
   /// speed. Whenever this is zero, the system will wait 10ms between
   /// rendering frames to be nice to the user and the OS.
   int m_numberOfRealtimeTasks;
+
+  void checkLayerAndCounter(int layer, int counter);
 
 public:
   EventSystem();
@@ -50,9 +52,9 @@ public:
    */
   virtual unsigned int getTicks() const = 0;
 
-  void setFrameCounter(int frameCounter, FrameCounter* counter);
-  FrameCounter& getFrameCounter(int frameCounter);
-  bool frameCounterExists(int frameCounter);
+  void setFrameCounter(int layer, int frameCounter, FrameCounter* counter);
+  FrameCounter& getFrameCounter(int layer, int frameCounter);
+  bool frameCounterExists(int layer, int frameCounter);
 
 //  virtual FrameCounter& getExFrameCounter(int frameCounter) const;
 

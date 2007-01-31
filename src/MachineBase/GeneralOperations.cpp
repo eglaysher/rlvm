@@ -18,7 +18,7 @@ void MultiDispatch::operator()(RLMachine& machine, const libReallive::CommandEle
       dynamic_cast<ComplexExpressionPiece&>(parameterPieces[i]).getContainedPieces();
 
     if(!handler->checkTypes(machine, element)) {
-      throw Error("Expected type mismatch in parameters.");
+      throw Error("Expected type mismatch in parameters in MultiDispatch.");
     }
 
     handler->dispatch(machine, element);

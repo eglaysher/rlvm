@@ -1,4 +1,5 @@
 
+#include "MachineBase/RLMachine.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 
 #include <SDL/SDL.h>
@@ -74,6 +75,9 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
       break;
     case SDL_KEYUP:
       handleKeyUp(event);
+      break;
+    case SDL_QUIT:
+      machine.halt();
       break;
     }
   }

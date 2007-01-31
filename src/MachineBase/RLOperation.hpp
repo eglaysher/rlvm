@@ -421,6 +421,56 @@ struct Complex3_T {
  * It really should have been called tuple, but the name's stuck
  * now. Takes two other type structs as template parameters.
  */
+template<typename A, typename B, typename C, typename D>
+struct Complex4_T {
+  /// The output type of this type struct
+  typedef boost::tuple<typename A::type, typename B::type, 
+                       typename C::type, typename D::type> type;
+
+  /// Convert the incoming parameter objects into the resulting type.
+  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      int position) {
+    libReallive::ComplexExpressionPiece& sp = 
+      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+    return boost::tuple<typename A::type, typename B::type>(
+      A::getData(machine, sp.getContainedPieces(), 0), 
+      B::getData(machine, sp.getContainedPieces(), 1),
+      C::getData(machine, sp.getContainedPieces(), 2),
+      D::getData(machine, sp.getContainedPieces(), 3));
+  }
+
+  /// Takes a type and makes sure that 
+  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position) {
+    // Verify the size of the vector, that we have a special parameter, and then
+    // make sure all the 
+    bool typeOK = position < p.size();
+    typeOK = typeOK && p[position].isComplexParameter(); 
+    if(typeOK) {
+      libReallive::ComplexExpressionPiece& sp = 
+        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
+      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
+      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
+      typeOK = typeOK && D::verifyType(sp.getContainedPieces(), 3);
+    }
+    return typeOK;
+  }
+
+  enum {
+    isRealTypestruct = true,
+    isComplex = true
+  };
+};
+
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Type definition that implements the complex parameter concept.
+ *
+ * It really should have been called tuple, but the name's stuck
+ * now. Takes two other type structs as template parameters.
+ */
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
 struct Complex7_T {
