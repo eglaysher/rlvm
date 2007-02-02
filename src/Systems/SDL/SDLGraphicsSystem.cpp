@@ -140,8 +140,6 @@ Texture::Texture(SDL_Surface* surface)
   : m_logicalWidth(surface->w), m_logicalHeight(surface->h)
 {
   glGenTextures(1, &m_textureID);
-//   cerr << "Building texture of " << surface << " with textid " << m_textureID
-//        << endl;
   glBindTexture(GL_TEXTURE_2D, m_textureID);
   ShowGLErrors();
 //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -320,6 +318,11 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   float thisy1 = float(ySrc1) / m_textureHeight;
   float thisx2 = float(xSrc2) / m_textureWidth;
   float thisy2 = float(ySrc2) / m_textureHeight;
+
+//   cerr << "patt: " << pattNo << ", texid: " << m_textureID << ", alpha: " << go.alpha()
+//        << ", src:{" << xSrc1 << "," << ySrc1 << "," << xSrc2 << "," << ySrc2 << "}"
+//        << ", dst:{" << xPos1 << "," << yPos1 << "," << xPos2 << "," << yPos2 << "}"
+//        << endl;
 
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
@@ -661,13 +664,19 @@ const SDLSurface::GrpRect& SDLSurface::getPattern(int pattNo) const
 
 Surface* SDLSurface::clone() const
 {
- // Make a copy of the current surface
   SDL_Surface* tmpSurface = 
     SDL_CreateRGBSurface(m_surface->flags, m_surface->w, m_surface->h, 
                          m_surface->format->BitsPerPixel,
                          m_surface->format->Rmask, m_surface->format->Gmask,
                          m_surface->format->Bmask, m_surface->format->Amask);
-  SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL);
+
+  // Disable alpha blending because we're copying onto a blank (and
+  // blank alpha!) surface
+  if(SDL_SetAlpha(m_surface, 0, 0))
+      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+  if(SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL))
+    reportSDLError("SDL_BlitSurface", "SDLSurface::clone()");
 
   return new SDLSurface(tmpSurface, m_regionTable);
 }
@@ -986,12 +995,32 @@ GraphicsObject& SDLGraphicsSystem::getFgObject(int objNumber)
 
 // -----------------------------------------------------------------------
 
+void SDLGraphicsSystem::setFgObject(int objNumber, GraphicsObject& obj)
+{
+  if(objNumber < 0 || objNumber > 512)
+    throw Error("Out of rnage object number");
+
+  foregroundObjects[objNumber] = obj;
+}
+
+// -----------------------------------------------------------------------
+
 GraphicsObject& SDLGraphicsSystem::getBgObject(int objNumber)
 {
   if(objNumber < 0 || objNumber > 512)
     throw Error("Out of rnage object number");
 
   return backgroundObjects[objNumber];
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::setBgObject(int objNumber, GraphicsObject& obj)
+{
+  if(objNumber < 0 || objNumber > 512)
+    throw Error("Out of rnage object number");
+
+  backgroundObjects[objNumber] = obj;
 }
 
 // -----------------------------------------------------------------------
@@ -1156,12 +1185,22 @@ public:
   SDLGraphicsObjectOfFile(SDLGraphicsSystem& graphics, 
                           const std::string& filename)
     : surface(static_cast<SDLSurface*>(graphics.loadSurfaceFromFile(filename)))
-  {
-  }
+  {  }
+
+  SDLGraphicsObjectOfFile(SDLSurface* inSurface)
+    : surface(inSurface)
+  {  }
 
   void render(RLMachine& machine, const GraphicsObject& rp)
   {
+//    cerr << "Rendering object!" << endl;
+//    surface->dump();
     surface->renderToScreenAsObject(rp);
+  }
+
+  GraphicsObjectData* clone() const 
+  {
+    return new SDLGraphicsObjectOfFile(static_cast<SDLSurface*>(surface->clone()));
   }
 };
 

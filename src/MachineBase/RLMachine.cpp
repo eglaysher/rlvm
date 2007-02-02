@@ -174,16 +174,17 @@ void RLMachine::attatchModule(RLModule* module)
 
     throw Error(ss.str());
   }
-  else
-  {
-    cerr << "Inserting " << *module << endl;
-  }
+//  else
+//  {
+//    cerr << "Inserting " << *module << endl;
+//  }
 
   modules.insert(packedModule, module);
 }
 
 // -----------------------------------------------------------------------
 
+/// @todo Refactor this. Seriously.
 void RLMachine::executeNextInstruction() 
 {
   // Do not execute any more instructions if the machine is halted.
@@ -349,12 +350,12 @@ const std::string& RLMachine::getStringValue(int type, int location)
       throw Error("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
-  case 0x12: return strS[location];
   case 0x0A:
     if(location > 2)
       throw Error("Invalid range access on strK in RLMachine::setStringValue");
     return strK[location];
   case 0x0C: return strM[location];
+  case 0x12: return strS[location];
   default:
     throw Error("Invalid type in RLMachine::getStringValue");
   }
@@ -367,9 +368,6 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
       throw Error("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
-  case 0x12: 
-    strS[number] = value;
-    break;
   case 0x0A:
     if(number > 2)
       throw Error("Invalid range access on strK in RLMachine::setStringValue");
@@ -377,6 +375,9 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
     break;
   case 0x0C:
     strM[number] = value;
+    break;
+  case 0x12: 
+    strS[number] = value;
     break;
   default:
     throw Error("Invalid type in RLMachine::setStringValue");

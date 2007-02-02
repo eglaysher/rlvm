@@ -33,6 +33,7 @@
 #include "Modules/Module_Msg.hpp"
 #include "Modules/Module_ObjCreation.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
+#include "Modules/Module_ObjManagement.hpp"
 #include "Modules/Module_Refresh.hpp"
 
 #include "Systems/SDL/SDLSystem.hpp"
@@ -90,7 +91,7 @@ using namespace std;
  * in Reallive.
  *
  * RLVM is not intended to to compete with VisualArts KK as a
- * development toolki. While someone could theoretically combine RLVM
+ * development toolkit. While someone could theoretically combine RLVM
  * with <a href="http://www.haeleth.net">Haeleth</a>'s <a
  * href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler
  * toolkit to produce games (at least after RLVM supports a base set
@@ -191,6 +192,8 @@ int main(int argc, char* argv[])
     rlmachine.attatchModule(new ObjRangeBgModule);
     rlmachine.attatchModule(new ObjFgCreationModule);
     rlmachine.attatchModule(new ObjBgCreationModule);
+    rlmachine.attatchModule(new ObjFgManagement);
+    rlmachine.attatchModule(new ObjBgManagement);
     rlmachine.attatchModule(new RefreshModule);
 
     while(!rlmachine.halted()) {

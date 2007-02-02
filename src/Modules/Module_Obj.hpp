@@ -56,6 +56,10 @@ struct FG_LAYER {
   static GraphicsObject& get(RLMachine& machine, int objNum) {
     return machine.system().graphics().getFgObject(objNum);
   }
+
+  static void set(RLMachine& machine, int objNum, GraphicsObject& obj) {
+    machine.system().graphics().setFgObject(objNum, obj);
+  }
 };
 
 // -----------------------------------------------------------------------
@@ -66,6 +70,10 @@ struct FG_LAYER {
 struct BG_LAYER {
   static GraphicsObject& get(RLMachine& machine, int objNum) {
     return machine.system().graphics().getBgObject(objNum);
+  }
+
+  static void set(RLMachine& machine, int objNum, GraphicsObject& obj) {
+    machine.system().graphics().setBgObject(objNum, obj);
   }
 };
 

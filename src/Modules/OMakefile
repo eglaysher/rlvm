@@ -27,6 +27,7 @@ LRLFILES[] =
   EffectFactory
   Module_ObjFgBg
   Module_ObjCreation
+  Module_ObjManagement
   Module_Refresh
 
 StaticCObject(libModules, $(LRLFILES))

@@ -134,7 +134,9 @@ public:
 
   /// Object getters
   virtual GraphicsObject& getFgObject(int objNumber) = 0;
+  virtual void setFgObject(int objNumber, GraphicsObject& object) {}
   virtual GraphicsObject& getBgObject(int objNumber) = 0;
+  virtual void setBgObject(int objNumber, GraphicsObject& object) {}
 };
 
 /** 

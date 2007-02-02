@@ -41,6 +41,8 @@ public:
   virtual ~GraphicsObjectData() { }
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties) = 0;
+
+  virtual GraphicsObjectData* clone() const = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -55,6 +57,15 @@ class GraphicsObject
 {
 public:
   GraphicsObject();
+
+  GraphicsObject(const GraphicsObject& obj);
+
+  /** 
+   * Copy operator.
+   * 
+   * @param obj 
+   */
+  GraphicsObject& operator=(const GraphicsObject& obj);
 
   /**
    * @name Object Position Accessors
@@ -161,6 +172,17 @@ public:
 
   /// Render!
   void render(RLMachine& machine);
+
+  /** 
+   * Deletes the object data. Corresponds to the RLAPI command objDelete.
+   */
+  void deleteObject();
+
+  /** 
+   * Deletes the object data and resets all values in this
+   * GraphicsObject. Corresponds to the RLAPI command objClear.
+   */
+  void clearObject();
   
 private:
 
