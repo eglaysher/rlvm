@@ -100,7 +100,14 @@ public:
 
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
   void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
+
+  // Marks the screen as dirty; something is done about this if we are
+  // in automatic mode.
   virtual void markScreenAsDirty() { }
+
+  // Marks the screen for refresh; we refresh the screen the next time
+  // the graphics system is executed.
+  virtual void markScreenForRefresh() { }
 
   virtual void beginFrame() { }
   virtual void refresh(RLMachine& machine) = 0;

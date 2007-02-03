@@ -21,35 +21,59 @@
 // -----------------------------------------------------------------------
 
 /**
- * @file   Module_Refresh.cpp
+ * @file   Module_Scr.cpp
  * @author Elliot Glaysher
- * @date   Sun Jan 21 13:16:13 2007
+ * @date   Sat Feb  3 09:32:05 2007
  * 
- * @brief  Contains module<1:31>, which contains a single command: refresh()
+ * @brief A module that contains a few graphics related functions.
+ *
+ * A quarter of what's in Sys should really be here instead. This
+ * probably has something to do with the implementation details of the
+ * official RealLive interpreter.
  */
+#include "Module_Scr.hpp"
 
-#include "Modules/Module_Refresh.hpp"
 
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLModule.hpp"
+#include "MachineBase/RLMachine.hpp"
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
 
 // -----------------------------------------------------------------------
 
-struct Refresh : public RLOp_Void<>
-{
-  void operator()(RLMachine& machine)
-  {
-    machine.system().graphics().markScreenForRefresh();
+struct Scr_DrawAuto : public RLOp_Void<> {
+  void operator()(RLMachine& machine) {
+    machine.system().graphics().setScreenUpdateMode(
+      GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
   }
 };
 
 // -----------------------------------------------------------------------
 
-RefreshModule::RefreshModule()
-  : RLModule("Refresh", 1, 31)
+struct Scr_DrawSemiAuto : public RLOp_Void<> {
+  void operator()(RLMachine& machine) {
+    machine.system().graphics().setScreenUpdateMode(
+      GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Scr_DrawManual : public RLOp_Void<> {
+  void operator()(RLMachine& machine) {
+    machine.system().graphics().setScreenUpdateMode(
+      GraphicsSystem::SCREENUPDATEMODE_MANUAL);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+ScrModule::ScrModule()
+  : RLModule("Scr", 1, 30)
 {
-  addOpcode(0, 0, new Refresh);
+  addOpcode(20, 0, new Scr_DrawAuto);
+  addOpcode(21, 0, new Scr_DrawSemiAuto);
+  addOpcode(22, 0, new Scr_DrawManual);
 }
+

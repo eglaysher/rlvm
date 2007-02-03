@@ -693,17 +693,28 @@ void SDLGraphicsSystem::markScreenAsDirty()
   case SCREENUPDATEMODE_SEMIAUTOMATIC:
   {
     // Perform a blit of DC0 to the screen, and update it.
-    m_screenNeedsRefresh = true;
+    m_screenDirty = true;
     break;
   }
   case SCREENUPDATEMODE_MANUAL:
   {
-    // Simply mark that we are dirty
-    m_screenDirty = true;
+    // Don't really do anything.
+    break;
   }
   default:
-    cerr << "WTF!" << endl;
+  {
+    ostringstream oss;
+    oss << "Invalid screen update mode value: " << screenUpdateMode();
+    throw Error(oss.str());
   }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::markScreenForRefresh()
+{
+  m_screenNeedsRefresh = true;
 }
 
 // -----------------------------------------------------------------------
@@ -885,11 +896,12 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 //  cerr << "executeGraphicsSystm()" << endl;
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-  if(m_screenNeedsRefresh)
+  if(m_screenNeedsRefresh || 
+     (screenUpdateMode() != SCREENUPDATEMODE_MANUAL && m_screenDirty))
   {
-//    cerr << "Going to refresh!" << endl;
     refresh(machine);
     m_screenNeedsRefresh = false;
+    m_screenDirty = false;
   }
     
   // For example, we should probably do something when the screen is

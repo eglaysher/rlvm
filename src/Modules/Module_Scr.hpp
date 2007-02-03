@@ -20,36 +20,30 @@
 //  
 // -----------------------------------------------------------------------
 
+#ifndef __Module_Scr_hpp__
+#define __Module_Scr_hpp__
+
 /**
- * @file   Module_Refresh.cpp
+ * @file   Module_Scr.hpp
  * @author Elliot Glaysher
- * @date   Sun Jan 21 13:16:13 2007
  * 
- * @brief  Contains module<1:31>, which contains a single command: refresh()
+ * @brief A module that contains a few graphics related functions.
+ *
+ * A quarter of what's in Sys should really be here instead. This
+ * probably has something to do with the implementation details of the
+ * official RealLive interpreter.
  */
 
-#include "Modules/Module_Refresh.hpp"
-
-#include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLModule.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
 
-// -----------------------------------------------------------------------
-
-struct Refresh : public RLOp_Void<>
-{
-  void operator()(RLMachine& machine)
-  {
-    machine.system().graphics().markScreenForRefresh();
-  }
+/**
+ * Contains functions for mod<1:30>, Scr.
+ * 
+ * @ingroup ModuleScr
+ */
+class ScrModule : public RLModule {
+public:
+  ScrModule();
 };
 
-// -----------------------------------------------------------------------
-
-RefreshModule::RefreshModule()
-  : RLModule("Refresh", 1, 31)
-{
-  addOpcode(0, 0, new Refresh);
-}
+#endif

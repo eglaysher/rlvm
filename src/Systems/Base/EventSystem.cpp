@@ -33,11 +33,14 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-EventSystem::EventSystem() : m_numberOfRealtimeTasks(0) {}
+EventSystem::EventSystem() 
+  : m_numberOfRealtimeTasks(0) 
+{}
 
 // -----------------------------------------------------------------------
 
-EventSystem::~EventSystem() {}
+EventSystem::~EventSystem()
+{}
 
 // -----------------------------------------------------------------------
 

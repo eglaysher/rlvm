@@ -315,6 +315,13 @@ public:
   void halt() { m_halted = true; }
 
   /** 
+   * Sets whether the RLMachine will be put into the halt state if an
+   * exception is thrown while executing an instruction. By default,
+   * it will.
+   */
+  void setHaltOnException(bool haltOnException) { m_haltOnException = haltOnException; }
+
+  /** 
    * Returns the current System that this RLMachine outputs to.
    */
   System& system() { return m_system; }

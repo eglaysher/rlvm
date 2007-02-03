@@ -223,6 +223,12 @@ public:
    */
   virtual void markScreenAsDirty();
 
+  /** 
+   * Forces a refresh of the screen the next time the graphics system
+   * executes.
+   */
+  virtual void markScreenForRefresh();
+
   virtual void beginFrame();
 
   /** 

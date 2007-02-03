@@ -31,7 +31,6 @@
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
 
 #include <sstream>
 
@@ -42,6 +41,11 @@ RLModule::RLModule(const std::string& inModuleName, int inModuleType,
                    int inModuleNumber)
   : m_moduleType(inModuleType), m_moduleNumber(inModuleNumber), 
     m_moduleName(inModuleName) 
+{}
+
+// -----------------------------------------------------------------------
+
+RLModule::~RLModule()
 {}
 
 // -----------------------------------------------------------------------

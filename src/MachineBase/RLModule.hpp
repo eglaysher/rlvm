@@ -110,6 +110,7 @@ protected:
   RLModule(const std::string& inModuleName, int inModuleType, int inModuleNumber);
 
 public:
+  virtual ~RLModule();
 
   /** Used in derived Module constructors to declare all the
    * operations the module handles.

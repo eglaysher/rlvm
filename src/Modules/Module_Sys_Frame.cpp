@@ -212,6 +212,9 @@ struct Sys_ReadFrames : public RLOp_Store< Argc_T<FrameDataInReadFrames> >
       }
       else
         *(it->get<1>()) = 0;
+
+      cerr << "Read frame: {" << it->get<0>() << ", " << *(it->get<1>())
+           << "}" << endl;
     }
 
     return storeValue;

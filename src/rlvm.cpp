@@ -35,6 +35,7 @@
 #include "Modules/Module_ObjFgBg.hpp"
 #include "Modules/Module_ObjManagement.hpp"
 #include "Modules/Module_Refresh.hpp"
+#include "Modules/Module_Scr.hpp"
 
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
@@ -195,6 +196,9 @@ int main(int argc, char* argv[])
     rlmachine.attatchModule(new ObjFgManagement);
     rlmachine.attatchModule(new ObjBgManagement);
     rlmachine.attatchModule(new RefreshModule);
+    rlmachine.attatchModule(new ScrModule);
+
+    rlmachine.setHaltOnException(false);
 
     while(!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
