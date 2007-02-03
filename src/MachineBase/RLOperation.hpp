@@ -105,7 +105,7 @@ struct RLOperation {
    * The default implmentation returns true; 99% of instructions want
    * the instruction pointer to be advanced automaticly.
    */
-  virtual bool advanceInstructionPointer() { return true; }
+  virtual bool advanceInstructionPointer();
 
   /** The type checker is called by the Module to make sure the parameters read in
    * are of the expected type.
@@ -151,8 +151,7 @@ struct RLOperation {
 
   /// Used for quality control. The downside of a dynamic typesystem
   /// hack is errors found at runtime instead of compiletime. *tear*
-  void throw_unimplemented() 
-  { throw libReallive::Error("Unimplemented function"); }
+  void throw_unimplemented();
 };
 
 // -----------------------------------------------------------------------
@@ -174,9 +173,7 @@ struct IntConstant_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      int position) {
-    return p[position].integerValue(machine);
-   }
+                      int position);
 
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, int position);
@@ -205,10 +202,7 @@ struct IntReference_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
                       boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                      int position) {
-    return static_cast<libReallive::MemoryReference&>(p[position]).
-      getIntegerReferenceIterator(machine);
-  }
+                      int position);
 
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
@@ -237,9 +231,7 @@ struct StrConstant_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
                       boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      int position) { 
-    return p[position].getStringValue(machine);
-  }
+                      int position);
 
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
@@ -269,10 +261,7 @@ struct StrReference_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
                       boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                      int position) {
-    return static_cast<libReallive::MemoryReference&>(p[position]).
-      getStringReferenceIterator(machine);
-  }
+                      int position);
 
   /// Verify that the incoming parameter objects meet the desired types
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
@@ -594,14 +583,10 @@ struct Empty_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine, 
                       boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      int position) {
-    return emptyStruct();
-  }
+                      int position);
 
   static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         int position) {
-    return true;
-  }
+                         int position);
 
   enum {
     isRealTypestruct = false,
@@ -2195,7 +2180,6 @@ struct Argc_T<CON>::type Argc_T<CON>::getData(RLMachine& machine,
                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
                      int position) {
   type returnVector;
-//  std::cerr << "(" << position << ", " << p.size() << std::endl;
   for(int i = position; i < p.size(); ++i)
     returnVector.push_back(CON::getData(machine, p, i));
 
