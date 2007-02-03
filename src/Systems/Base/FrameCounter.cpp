@@ -242,6 +242,10 @@ DeceleratingFrameCounter::DeceleratingFrameCounter(
 
 // -----------------------------------------------------------------------
 
+/**
+ * @bug Sometimes this screws up, will turn around and go in the total
+ *      other direction. Investiage later.
+ */
 int DeceleratingFrameCounter::readFrame(EventSystem& eventSystem) {
   if(m_isActive)
   {

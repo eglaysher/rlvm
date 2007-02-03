@@ -15,4 +15,4 @@ repeat
 till intA[5] >= 360 * 10
 
 pause()
-objClear(0)
+objDelete(0)

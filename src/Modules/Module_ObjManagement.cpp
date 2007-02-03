@@ -37,6 +37,8 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
+// -----------------------------------------------------------------------
+
 template<typename FROMLAYER, typename TOLAYER>
 struct Obj_objCopy : public RLOp_Void<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int sbuf, int dbuf) {
@@ -68,6 +70,28 @@ struct Obj_objClear_1 : public RLOp_Void<IntConstant_T, IntConstant_T> {
   }
 };
 
+// -----------------------------------------------------------------------
+
+template<typename LAYER>
+struct Obj_objDelete_0 : public RLOp_Void<IntConstant_T> {
+  void operator()(RLMachine& machine, int buf) {
+    LAYER::get(machine, buf).deleteObject();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename LAYER>
+struct Obj_objDelete_1 : public RLOp_Void<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int min, int max) {
+    // Inclusive ranges make baby Kerrigan and Ritchie cry.
+    max++;
+
+    for(int i = min; i < max; ++i) {
+      LAYER::get(machine, i).deleteObject();
+    }
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -79,6 +103,8 @@ ObjFgManagement::ObjFgManagement()
 
   addOpcode(10, 0, "objClear", new Obj_objClear_0<FG_LAYER>);
   addOpcode(10, 1, "objClear", new Obj_objClear_1<FG_LAYER>);
+  addOpcode(11, 0, "objDelete", new Obj_objDelete_0<FG_LAYER>);
+  addOpcode(11, 1, "objDelete", new Obj_objDelete_1<FG_LAYER>);
 }
 
 // -----------------------------------------------------------------------
@@ -91,4 +117,6 @@ ObjBgManagement::ObjBgManagement()
 
   addOpcode(10, 0, "objBgClear", new Obj_objClear_0<FG_LAYER>);
   addOpcode(10, 1, "objBgClear", new Obj_objClear_1<FG_LAYER>);
+  addOpcode(11, 0, "objBgDelete", new Obj_objDelete_0<BG_LAYER>);
+  addOpcode(11, 1, "objBgDelete", new Obj_objDelete_1<BG_LAYER>);
 }
