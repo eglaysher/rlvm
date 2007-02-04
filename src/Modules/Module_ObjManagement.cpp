@@ -40,7 +40,7 @@
 // -----------------------------------------------------------------------
 
 template<typename FROMLAYER, typename TOLAYER>
-struct Obj_objCopy : public RLOp_Void<IntConstant_T, IntConstant_T> {
+struct Obj_objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int sbuf, int dbuf) {
     GraphicsObject& go = FROMLAYER::get(machine, sbuf);
     TOLAYER::set(machine, dbuf, go);
@@ -50,7 +50,7 @@ struct Obj_objCopy : public RLOp_Void<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objClear_0 : public RLOp_Void<IntConstant_T> {
+struct Obj_objClear_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     LAYER::get(machine, buf).clearObject();
   }
@@ -59,7 +59,7 @@ struct Obj_objClear_0 : public RLOp_Void<IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objClear_1 : public RLOp_Void<IntConstant_T, IntConstant_T> {
+struct Obj_objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int min, int max) {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;
@@ -73,7 +73,7 @@ struct Obj_objClear_1 : public RLOp_Void<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objDelete_0 : public RLOp_Void<IntConstant_T> {
+struct Obj_objDelete_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     LAYER::get(machine, buf).deleteObject();
   }
@@ -82,7 +82,7 @@ struct Obj_objDelete_0 : public RLOp_Void<IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objDelete_1 : public RLOp_Void<IntConstant_T, IntConstant_T> {
+struct Obj_objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int min, int max) {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;

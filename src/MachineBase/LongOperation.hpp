@@ -39,7 +39,7 @@ class RLMachine;
 class LongOperation 
 {
 public:
-  virtual ~LongOperation() {}
+  virtual ~LongOperation();
 
   /** 
    * Executes the current LongOperation.

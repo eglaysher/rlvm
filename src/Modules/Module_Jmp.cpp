@@ -73,7 +73,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
       
   auto_ptr<ExpressionPiece> condition(get_expression(location));
   int value = condition->integerValue(machine);
-  const Pointers& pointers = gotoElement.get_pointersRef();
+//  const Pointers& pointers = gotoElement.get_pointersRef();
 
   // Walk linearly through the output cases, executing the first
   // match against value.
@@ -231,7 +231,7 @@ struct Jmp_goto_on : public RLOp_SpecialCase {
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
     const Pointers& pointers = gotoElement.get_pointersRef();
-    if(value >= 0 && value < pointers.size()) 
+    if(value >= 0 && value < int(pointers.size()))
       machine.gotoLocation(pointers[value]);
     else
       // If the value is not a valid pointer, simply increment.
@@ -339,7 +339,7 @@ struct Jmp_gosub_on : public RLOp_SpecialCase {
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
     const Pointers& pointers = gotoElement.get_pointersRef();
-    if(value >= 0 && value < pointers.size()) 
+    if(value >= 0 && value < int(pointers.size()))
       machine.gosub(pointers[value]);
     else
       // If the value is not a valid pointer, simply increment.
@@ -376,7 +376,7 @@ struct Jmp_gosub_case : public RLOp_SpecialCase {
  * the instruction pointer at this stack frame is still pointing to
  * the gosub that created the new frame.
  */
-struct Jmp_ret : public RLOp_Void<> {
+struct Jmp_ret : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.returnFromGosub();
   }
@@ -390,7 +390,7 @@ struct Jmp_ret : public RLOp_Void<> {
  * Jumps the instruction pointer to the begining of the scenario
  * \#scenario.
  */
-struct Jmp_jump_0 : public RLOp_Void< IntConstant_T > {
+struct Jmp_jump_0 : public RLOp_Void_1< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
@@ -406,7 +406,7 @@ struct Jmp_jump_0 : public RLOp_Void< IntConstant_T > {
  * Jumps the instruction pointer to entrypoint \#entrypoint of scenario
  * \#scenario.
  */
-struct Jmp_jump_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
+struct Jmp_jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
@@ -422,7 +422,7 @@ struct Jmp_jump_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
  * Farcalls the instruction pointer to the begining of the scenario
  * \#scenario.
  */
-struct Jmp_farcall_0 : public RLOp_Void< IntConstant_T > {
+struct Jmp_farcall_0 : public RLOp_Void_1< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
@@ -438,7 +438,7 @@ struct Jmp_farcall_0 : public RLOp_Void< IntConstant_T > {
  * Farcalls the instruction pointer to entrypoint \#entrypoint of scenario
  * \#scenario.
  */
-struct Jmp_farcall_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
+struct Jmp_farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
@@ -457,7 +457,7 @@ struct Jmp_farcall_1 : public RLOp_Void< IntConstant_T, IntConstant_T > {
  * the instruction pointer at this stack frame is still pointing to
  * the gosub that created the new frame.
  */
-struct Jmp_rtl : public RLOp_Void<> {
+struct Jmp_rtl : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.returnFromFarcall();
   }
@@ -507,7 +507,7 @@ struct Jmp_gosub_with : public RLOp_SpecialCase {
  * 
  * @todo Do we need to check to see if the caller was gosub_with?
  */
-struct Jmp_ret_with_0 : public RLOp_Void< IntConstant_T > {
+struct Jmp_ret_with_0 : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int retVal) {
     machine.setStoreRegister(retVal);
     machine.returnFromGosub();
@@ -525,7 +525,7 @@ struct Jmp_ret_with_0 : public RLOp_Void< IntConstant_T > {
  * @todo Do we need to check to see if the caller was gosub_with?
  * @todo Think about what should go in the store register.
  */
-struct Jmp_ret_with_1 : public RLOp_Void<> {
+struct Jmp_ret_with_1 : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
 //    machine.setStoreRegister(retVal);
     machine.returnFromGosub();
@@ -542,7 +542,7 @@ struct Jmp_ret_with_1 : public RLOp_Void<> {
  * memory blocks.
  */
 struct Jmp_farcall_with
-  : public RLOp_Void< IntConstant_T, IntConstant_T,
+  : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                       Argc_T< Special_T< IntConstant_T, StrConstant_T > > >
 {
   virtual bool advanceInstructionPointer() { return false; }
@@ -565,7 +565,7 @@ struct Jmp_farcall_with
  * the instruction pointer at this stack frame is still pointing to
  * the gosub that created the new frame.
  */
-struct Jmp_rtl_with_0 : public RLOp_Void< IntConstant_T > {
+struct Jmp_rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int retVal) {
     machine.setStoreRegister(retVal);
     machine.returnFromFarcall();
@@ -583,7 +583,7 @@ struct Jmp_rtl_with_0 : public RLOp_Void< IntConstant_T > {
  * the instruction pointer at this stack frame is still pointing to
  * the gosub that created the new frame.
  */
-struct Jmp_rtl_with_1 : public RLOp_Void<> {
+struct Jmp_rtl_with_1 : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
 //    machine.setStoreRegister(retVal);
     machine.returnFromFarcall();

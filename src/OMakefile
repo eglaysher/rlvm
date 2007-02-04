@@ -1,6 +1,6 @@
-#if $(not $(defined-env VERBOSE))
-#  OMakeFlags(-S --progress)
-#  export
+if $(not $(defined-env VERBOSE))
+  OMakeFlags(-S --progress)
+  export
 
 CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char -Wall $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/ -I/opt/local/include/SDL -D_THREAD_SAFE
 

@@ -90,6 +90,8 @@ public:
                               ScrollSquashSlideDrawer* drawer,
                               ScrollSquashSlideEffectTypeBase* effectType,
                               int width, int height, int time);
+
+  virtual ~ScrollSquashSlideBaseEffect();
 };
 
 // -----------------------------------------------------------------------
@@ -98,7 +100,7 @@ public:
  * @name Drawer Behavior classes
  * 
  * These classess implement drawing for directions; They are used by
- * child classes of ScrollOnScrollOff to perform the requested
+4 * child classes of ScrollOnScrollOff to perform the requested
  * operation in a certain direction.
  *
  * There are four, all representing the four directions used in these selections
@@ -112,6 +114,9 @@ public:
 class ScrollSquashSlideDrawer
 {
 public:
+  ScrollSquashSlideDrawer();
+  virtual ~ScrollSquashSlideDrawer();
+
   virtual int getMaxSize(GraphicsSystem& gs) = 0;
   virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height) = 0;
   virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height) = 0;
@@ -185,6 +190,7 @@ public:
 class ScrollSquashSlideEffectTypeBase
 {
 public:
+  virtual ~ScrollSquashSlideEffectTypeBase();
   virtual void composeEffectsFor(GraphicsSystem& system, 
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible) = 0;

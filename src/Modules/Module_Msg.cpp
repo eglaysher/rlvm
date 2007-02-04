@@ -57,7 +57,7 @@ using namespace std;
  * handle the window events when we have text windows.
  * @bug Does this work with ctrl()?
  */
-struct Msg_pause : public RLOp_Void<> {
+struct Msg_pause : public RLOp_Void_Void {
   /// Long operation
   struct Longop_pause : public LongOperation {
     bool operator()(RLMachine& machine) {

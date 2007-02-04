@@ -42,7 +42,7 @@
 
 // -----------------------------------------------------------------------
 
-struct Scr_DrawAuto : public RLOp_Void<> {
+struct Scr_DrawAuto : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.system().graphics().setScreenUpdateMode(
       GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
@@ -51,7 +51,7 @@ struct Scr_DrawAuto : public RLOp_Void<> {
 
 // -----------------------------------------------------------------------
 
-struct Scr_DrawSemiAuto : public RLOp_Void<> {
+struct Scr_DrawSemiAuto : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.system().graphics().setScreenUpdateMode(
       GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC);
@@ -60,7 +60,7 @@ struct Scr_DrawSemiAuto : public RLOp_Void<> {
 
 // -----------------------------------------------------------------------
 
-struct Scr_DrawManual : public RLOp_Void<> {
+struct Scr_DrawManual : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.system().graphics().setScreenUpdateMode(
       GraphicsSystem::SCREENUPDATEMODE_MANUAL);

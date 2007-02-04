@@ -37,7 +37,7 @@ using namespace std;
 
 template<typename FRAMECLASS>
 struct Sys_InitFrame 
-  : public RLOp_Void<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   const int m_layer;
   Sys_InitFrame(int layer) : m_layer(layer) {}
@@ -52,7 +52,7 @@ struct Sys_InitFrame
 
 // -----------------------------------------------------------------------
 
-struct Sys_ReadFrame : public RLOp_Store<IntConstant_T>
+struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
 {
   const int m_layer;
   Sys_ReadFrame(int layer) : m_layer(layer) {}
@@ -69,7 +69,7 @@ struct Sys_ReadFrame : public RLOp_Store<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_FrameActive : public RLOp_Store<IntConstant_T>
+struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
 {
   const int m_layer;
   Sys_FrameActive(int layer) : m_layer(layer) {}
@@ -86,7 +86,7 @@ struct Sys_FrameActive : public RLOp_Store<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_AnyFrameActive : public RLOp_Store<IntConstant_T>
+struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
 {
   const int m_layer;
   Sys_AnyFrameActive(int layer) : m_layer(layer) {}
@@ -109,7 +109,7 @@ struct Sys_AnyFrameActive : public RLOp_Store<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearFrame_0 : public RLOp_Void<IntConstant_T>
+struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T>
 {
   const int m_layer;
   Sys_ClearFrame_0(int layer) : m_layer(layer) {}
@@ -123,7 +123,7 @@ struct Sys_ClearFrame_0 : public RLOp_Void<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearFrame_1 : public RLOp_Void<IntConstant_T, IntConstant_T>
+struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 {
   const int m_layer;
   Sys_ClearFrame_1(int layer) : m_layer(layer) {}
@@ -138,7 +138,7 @@ struct Sys_ClearFrame_1 : public RLOp_Void<IntConstant_T, IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearAllFrames_0 : public RLOp_Void<IntConstant_T>
+struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
 {
   const int m_layer;
   Sys_ClearAllFrames_0(int layer) : m_layer(layer) {}
@@ -161,7 +161,7 @@ struct Sys_ClearAllFrames_0 : public RLOp_Void<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearAllFrames_1 : public RLOp_Void<>
+struct Sys_ClearAllFrames_1 : public RLOp_Void_Void
 {
   const int m_layer;
   Sys_ClearAllFrames_1(int layer) : m_layer(layer) {}
@@ -184,7 +184,7 @@ struct Sys_ClearAllFrames_1 : public RLOp_Void<>
 
 typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
-struct Sys_ReadFrames : public RLOp_Store< Argc_T<FrameDataInReadFrames> >
+struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
 {
   const int m_layer;
   Sys_ReadFrames(int layer) : m_layer(layer) {}

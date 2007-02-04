@@ -55,7 +55,8 @@ private:
   MemoryReferenceIterator<IntAccessor>* it;
 
 public:
-  IntAccessor(MemoryReferenceIterator<IntAccessor>* i) : it(i) {}
+  IntAccessor(MemoryReferenceIterator<IntAccessor>* i);
+  ~IntAccessor();
 
   operator int() const;
 
@@ -80,7 +81,8 @@ private:
   MemoryReferenceIterator<StringAccessor>* it;
 
 public:
-  StringAccessor(MemoryReferenceIterator<StringAccessor>* i) : it(i) {}
+  StringAccessor(MemoryReferenceIterator<StringAccessor>* i);
+  ~StringAccessor();
 
   operator std::string() const;
 
@@ -151,12 +153,6 @@ public:
   bool operator<(const MemoryReferenceIterator& rhs) {
     return m_location < rhs.m_location;
   }
-
-/* Fix this if something complains
-  IntAccessor operator[](int offset) {
-    return IntAccessor
-  }
-*/
 
   bool operator==(const MemoryReferenceIterator<ACCESS>& rhs) const {
     return m_machine == rhs.m_machine && m_type == rhs.m_type && 

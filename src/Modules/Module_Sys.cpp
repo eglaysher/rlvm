@@ -49,7 +49,7 @@ const float PI = 3.14159265;
 
 using namespace std;
 
-struct Sys_rnd_0 : public RLOp_Store< IntConstant_T > {
+struct Sys_rnd_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
     return rand() % var1;
   }
@@ -57,7 +57,7 @@ struct Sys_rnd_0 : public RLOp_Store< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_rnd_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
+struct Sys_rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return rand() % (var2 - var1) + var1;
   }
@@ -65,7 +65,7 @@ struct Sys_rnd_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_pcnt : public RLOp_Store< IntConstant_T, IntConstant_T > {
+struct Sys_pcnt : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int numenator, int denominator) {
     return int( ((float)numenator / (float)denominator) * 100 );
   }
@@ -73,7 +73,7 @@ struct Sys_pcnt : public RLOp_Store< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_abs : public RLOp_Store< IntConstant_T > {
+struct Sys_abs : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var) {
     return abs(var);
   }
@@ -81,7 +81,7 @@ struct Sys_abs : public RLOp_Store< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_power_0 : public RLOp_Store< IntConstant_T > {
+struct Sys_power_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var) {
     return var * var;
   }
@@ -89,7 +89,7 @@ struct Sys_power_0 : public RLOp_Store< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_power_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
+struct Sys_power_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return (int)std::pow((float)var1, var2);
   }
@@ -97,7 +97,7 @@ struct Sys_power_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_sin_0 : public RLOp_Store< IntConstant_T > {
+struct Sys_sin_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
     return std::sin(var1 * (PI/180)) * 32640;
   }
@@ -105,7 +105,7 @@ struct Sys_sin_0 : public RLOp_Store< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_sin_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
+struct Sys_sin_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::sin(var1 * (PI/180)) * 32640 / var2;
   }
@@ -113,7 +113,7 @@ struct Sys_sin_1 : public RLOp_Store< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_modulus : public RLOp_Store< IntConstant_T, IntConstant_T,
+struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, 
                  int var3, int var4) {
@@ -123,8 +123,8 @@ struct Sys_modulus : public RLOp_Store< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Sys_angle : public RLOp_Store< IntConstant_T, IntConstant_T,
-                                          IntConstant_T, IntConstant_T > {
+struct Sys_angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
+                                        IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, 
                  int var3, int var4) {
     return int( float(var1 - var3) / float(var2 - var4) );
@@ -133,7 +133,7 @@ struct Sys_angle : public RLOp_Store< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Sys_min : public RLOp_Store< IntConstant_T, IntConstant_T > {
+struct Sys_min : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::min(var1, var2);
   }
@@ -141,7 +141,7 @@ struct Sys_min : public RLOp_Store< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_max : public RLOp_Store< IntConstant_T, IntConstant_T > {
+struct Sys_max : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::max(var1, var2);
   }
@@ -149,7 +149,7 @@ struct Sys_max : public RLOp_Store< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_constrain : public RLOp_Store< IntConstant_T, IntConstant_T, IntConstant_T > {
+struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
     if(var2 < var1)
       return var1;
@@ -167,7 +167,7 @@ struct Sys_constrain : public RLOp_Store< IntConstant_T, IntConstant_T, IntConst
  * 
  * Returns the current four digit year.
  */
-struct Sys_GetYear : public RLOp_Store<> {
+struct Sys_GetYear : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::gregorian::day_clock::local_day().year();
   }
@@ -175,7 +175,7 @@ struct Sys_GetYear : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetMonth : public RLOp_Store<> {
+struct Sys_GetMonth : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::gregorian::day_clock::local_day().month();
   }
@@ -183,7 +183,7 @@ struct Sys_GetMonth : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetDay : public RLOp_Store<> {
+struct Sys_GetDay : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::gregorian::day_clock::local_day().day();
   }
@@ -191,7 +191,7 @@ struct Sys_GetDay : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetDayOfWeek : public RLOp_Store<> {
+struct Sys_GetDayOfWeek : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::gregorian::day_clock::local_day().day_of_week();
   }
@@ -199,7 +199,7 @@ struct Sys_GetDayOfWeek : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetHour : public RLOp_Store<> {
+struct Sys_GetHour : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::posix_time::second_clock::local_time().time_of_day().hours();
   }
@@ -207,7 +207,7 @@ struct Sys_GetHour : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetMinute : public RLOp_Store<> {
+struct Sys_GetMinute : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::posix_time::second_clock::local_time().time_of_day().minutes();
   }
@@ -215,7 +215,7 @@ struct Sys_GetMinute : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetSecond : public RLOp_Store<> {
+struct Sys_GetSecond : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::posix_time::second_clock::local_time().time_of_day().seconds();
   }
@@ -223,7 +223,7 @@ struct Sys_GetSecond : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetMs : public RLOp_Store<> {
+struct Sys_GetMs : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return boost::posix_time::second_clock::local_time().time_of_day().fractional_seconds();
   }
@@ -231,8 +231,8 @@ struct Sys_GetMs : public RLOp_Store<> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetDate : public RLOp_Void< IntReference_T, IntReference_T,
-                                       IntReference_T, IntReference_T> {
+struct Sys_GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
+                                         IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator y, 
                   IntReferenceIterator m, IntReferenceIterator d,
                   IntReferenceIterator wd) {
@@ -246,7 +246,7 @@ struct Sys_GetDate : public RLOp_Void< IntReference_T, IntReference_T,
 
 // -----------------------------------------------------------------------
 
-struct Sys_SceneNum : public RLOp_Store<> {
+struct Sys_SceneNum : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return machine.sceneNumber();
   }

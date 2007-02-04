@@ -85,7 +85,7 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_adjust : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T, 
                                IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
     LAYER::get(machine, buf).setXAdjustment(idx, x);
@@ -96,7 +96,7 @@ struct Obj_adjust : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_adjustX : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
+struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x) {
     LAYER::get(machine, buf).setXAdjustment(idx, x);
   }
@@ -105,7 +105,7 @@ struct Obj_adjustX : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_adjustY : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
+struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int y) {
     LAYER::get(machine, buf).setYAdjustment(idx, y);
   }
@@ -114,8 +114,8 @@ struct Obj_adjustY : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_tint : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
-                             IntConstant_T> {
+struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T, 
+                               IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
     LAYER::get(machine, buf).setTintR(r);
     LAYER::get(machine, buf).setTintG(g);
@@ -126,8 +126,8 @@ struct Obj_tint : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_colour : RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T, 
-                               IntConstant_T, IntConstant_T> {
+struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T, 
+                                 IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
     LAYER::get(machine, buf).setColourR(r);
     LAYER::get(machine, buf).setColourG(g);

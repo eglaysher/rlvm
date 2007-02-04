@@ -79,9 +79,24 @@ ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
 
 // -----------------------------------------------------------------------
 
+ScrollSquashSlideBaseEffect::~ScrollSquashSlideBaseEffect()
+{}
+
+// -----------------------------------------------------------------------
+
 // -----------------------------------------------------------------------
 // Direction Interface
 // -----------------------------------------------------------------------
+
+// ------------------------------------------- [ ScrollSquashSlideDrawer ]
+
+ScrollSquashSlideDrawer::ScrollSquashSlideDrawer()
+{}
+
+// -----------------------------------------------------------------------
+
+ScrollSquashSlideDrawer::~ScrollSquashSlideDrawer()
+{}
 
 // ------------------------------------------------- [ TopToBottomDrawer ]
 
@@ -273,6 +288,11 @@ void RightToLeftDrawer::squashOn(GraphicsSystem& graphics,
 
 // -----------------------------------------------------------------------
 // Effect Type Interface
+// -----------------------------------------------------------------------
+
+ScrollSquashSlideEffectTypeBase::~ScrollSquashSlideEffectTypeBase()
+{}
+
 // -----------------------------------------------------------------------
 
 void ScrollOnScrollOff::composeEffectsFor(

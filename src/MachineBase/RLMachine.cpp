@@ -73,8 +73,6 @@
 #include "Systems/Null/NullSystem.hpp"
 #include "Systems/Null/NullGraphicsSystem.hpp"
 
-#include "libReallive/scenario.h"
-
 #include <sstream>
 #include <iostream>
 

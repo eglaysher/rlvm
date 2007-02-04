@@ -46,7 +46,7 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objOfFile_0 : public RLOp_Void<IntConstant_T, StrConstant_T> {
+struct Obj_objOfFile_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int buf, string filename) {
     GraphicsSystem& gs = machine.system().graphics();
     LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
@@ -58,7 +58,7 @@ struct Obj_objOfFile_0 : public RLOp_Void<IntConstant_T, StrConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objOfFile_1 : public RLOp_Void<IntConstant_T, StrConstant_T, 
+struct Obj_objOfFile_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T, 
                                           IntConstant_T> {
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
     GraphicsSystem& gs = machine.system().graphics();
@@ -71,9 +71,9 @@ struct Obj_objOfFile_1 : public RLOp_Void<IntConstant_T, StrConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objOfFile_2 : public RLOp_Void<IntConstant_T, StrConstant_T, 
-                                          IntConstant_T, 
-                                          IntConstant_T, IntConstant_T> {
+struct Obj_objOfFile_2 : public RLOp_Void_5<IntConstant_T, StrConstant_T, 
+                                            IntConstant_T, 
+                                            IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y) {
     GraphicsSystem& gs = machine.system().graphics();
@@ -88,7 +88,7 @@ struct Obj_objOfFile_2 : public RLOp_Void<IntConstant_T, StrConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objOfFile_3 : public RLOp_Void<IntConstant_T, StrConstant_T, 
+struct Obj_objOfFile_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T, 
                                           IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, string filename, int visible,
@@ -106,7 +106,7 @@ struct Obj_objOfFile_3 : public RLOp_Void<IntConstant_T, StrConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename LAYER>
-struct Obj_objOfFile_4 : public RLOp_Void<
+struct Obj_objOfFile_4 : public RLOp_Void_8<
   IntConstant_T, StrConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {

@@ -209,8 +209,8 @@ struct REC_SPACE {
  * smaller than the screen resolution. Any previous contents of dc are
  * erased.
  */
-struct Grp_allocDC : public RLOp_Void< IntConstant_T, IntConstant_T,
-                                       IntConstant_T > {
+struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
+                                         IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
     machine.system().graphics().allocateDC(dc, width, height);
   }
@@ -224,7 +224,7 @@ struct Grp_allocDC : public RLOp_Void< IntConstant_T, IntConstant_T,
  * Frees dc, releasing the memory allocated to it. DC may not be 0; if
  * it is 1, DC 1 will be blanked, but not released.
  */
-struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
+struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int dc) {
     machine.system().graphics().freeDC(dc);
   }
@@ -237,8 +237,8 @@ struct Grp_freeDC : public RLOp_Void< IntConstant_T > {
  * 
  * Fills dc with the colour indicated by the given RGB triplet.
  */
-struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
-                                    IntConstant_T, IntConstant_T > {
+struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
+                                      IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
     machine.system().graphics().getDC(dc).fill(r, g, b, 255);
   }
@@ -257,8 +257,8 @@ struct Grp_wipe : public RLOp_Void< IntConstant_T, IntConstant_T,
  * therefore doesn't need to worry about the difference between
  * grp/rec coordinate space), we write one function for both versions.
  */
-struct Grp_load_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
-                                         IntConstant_T > {
+struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
+                                        IntConstant_T > {
   bool m_useAlpha;
   Grp_load_1(bool in) : m_useAlpha(in) {}
 
@@ -286,7 +286,7 @@ struct Grp_load_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
  * therefore doesn't need to worry about the difference between
  * grp/rec coordinate space), we write one function for both versions.
  */
-struct Grp_load_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
+struct Grp_load_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   Grp_load_1 delegate;
   Grp_load_0(bool in) : delegate(in) {}
 
@@ -306,7 +306,7 @@ struct Grp_load_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
  * location.
  */
 template<typename SPACE>
-struct Grp_load_2 : public RLOp_Void< 
+struct Grp_load_2 : public RLOp_Void_8< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T > 
 {
@@ -336,7 +336,7 @@ struct Grp_load_2 : public RLOp_Void<
  * location.
  */
 template<typename SPACE>
-struct Grp_load_3 : public RLOp_Void< 
+struct Grp_load_3 : public RLOp_Void_9< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T> 
@@ -361,7 +361,7 @@ struct Grp_load_3 : public RLOp_Void<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_display_1 : public RLOp_Void< IntConstant_T, IntConstant_T, 
+struct Grp_display_1 : public RLOp_Void_3< IntConstant_T, IntConstant_T, 
                                          IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
     vector<int> selEffect = SPACE::getEffect(machine, effectNum);
@@ -381,7 +381,7 @@ struct Grp_display_1 : public RLOp_Void< IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_display_0 : public RLOp_Void< IntConstant_T, IntConstant_T > {
+struct Grp_display_0 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int effectNum) {
     vector<int> selEffect = SPACE::getEffect(machine, effectNum);
     Grp_display_1<SPACE>()(machine, dc, effectNum, selEffect.at(14));
@@ -391,9 +391,10 @@ struct Grp_display_0 : public RLOp_Void< IntConstant_T, IntConstant_T > {
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_display_3 : public RLOp_Void< 
+struct Grp_display_3 : public RLOp_Void_9< 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T>
 {
   void operator()(RLMachine& machine, int dc, int effectNum, 
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
@@ -413,9 +414,9 @@ struct Grp_display_3 : public RLOp_Void<
  * @todo Finish documentation
  */
 template<typename SPACE>
-struct Grp_display_2 : public RLOp_Void< 
+struct Grp_display_2 : public RLOp_Void_8< 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T>
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   Grp_display_3<SPACE> delegate;
 
@@ -445,8 +446,8 @@ struct Grp_display_2 : public RLOp_Void<
  * @todo factor out the common code between grpOpens!
  */
 template<typename SPACE>
-struct Grp_open_1 : public RLOp_Void< StrConstant_T, IntConstant_T, 
-                                      IntConstant_T > {
+struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
+                                        IntConstant_T > {
   bool m_useAlpha;
   Grp_open_1(bool in) : m_useAlpha(in) {}
 
@@ -480,7 +481,7 @@ struct Grp_open_1 : public RLOp_Void< StrConstant_T, IntConstant_T,
  * perform some intermediary steps and then render DC1 to DC0.
  */
 template<typename SPACE>
-struct Grp_open_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
+struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   Grp_open_1<SPACE> delegate;
   Grp_open_0(bool in) : delegate(in) {}
 
@@ -493,9 +494,10 @@ struct Grp_open_0 : public RLOp_Void< StrConstant_T, IntConstant_T > {
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_open_3 : public RLOp_Void< 
+struct Grp_open_3 : public RLOp_Void_9< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T>
 {
   bool m_useAlpha;
   Grp_open_3(bool in) : m_useAlpha(in) {}
@@ -528,9 +530,9 @@ struct Grp_open_3 : public RLOp_Void<
  * @todo Finish documentation
  */
 template<typename SPACE>
-struct Grp_open_2 : public RLOp_Void< 
+struct Grp_open_2 : public RLOp_Void_8< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T>
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   Grp_open_3<SPACE> delegate;
   Grp_open_2(bool in) : delegate(in) {}
@@ -547,11 +549,11 @@ struct Grp_open_2 : public RLOp_Void<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_open_4 : public RLOp_Void<
+struct Grp_open_4 : public RLOp_Void_18<
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T>
+  IntConstant_T, IntConstant_T, IntConstant_T>
 {
   bool m_useAlpha;
   Grp_open_4(bool in) : m_useAlpha(in) {}
@@ -581,7 +583,7 @@ struct Grp_open_4 : public RLOp_Void<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_copy_3 : public RLOp_Void<
+struct Grp_copy_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T> 
@@ -611,8 +613,8 @@ struct Grp_copy_3 : public RLOp_Void<
 
 // -----------------------------------------------------------------------
 
-struct Grp_copy_1 : public RLOp_Void<IntConstant_T, IntConstant_T, 
-                                     IntConstant_T> 
+struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T, 
+                                       IntConstant_T> 
 {
   bool m_useAlpha;
   Grp_copy_1(bool in) : m_useAlpha(in) {}
@@ -638,7 +640,7 @@ struct Grp_copy_1 : public RLOp_Void<IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Grp_copy_0 : public RLOp_Void<IntConstant_T, IntConstant_T> {
+struct Grp_copy_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   Grp_copy_1 delegate;
   Grp_copy_0(bool in) : delegate(in) {}
 
@@ -650,7 +652,7 @@ struct Grp_copy_0 : public RLOp_Void<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_copy_2 : public RLOp_Void<
+struct Grp_copy_2 : public RLOp_Void_8<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> 
 {
@@ -667,7 +669,7 @@ struct Grp_copy_2 : public RLOp_Void<
 // {grp,rec}Fill
 // -----------------------------------------------------------------------
 
-struct Grp_fill_1 : public RLOp_Void<
+struct Grp_fill_1 : public RLOp_Void_5<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
     machine.system().graphics().getDC(dc).fill(r, g, b, alpha);
@@ -676,7 +678,7 @@ struct Grp_fill_1 : public RLOp_Void<
 
 // -----------------------------------------------------------------------
 
-struct Grp_fill_0 : public RLOp_Void<
+struct Grp_fill_0 : public RLOp_Void_4<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
     Grp_fill_1()(machine, dc, r, g, b, 255);
@@ -686,7 +688,7 @@ struct Grp_fill_0 : public RLOp_Void<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_fill_3 : public RLOp_Void<
+struct Grp_fill_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
@@ -699,7 +701,7 @@ struct Grp_fill_3 : public RLOp_Void<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_fill_2 : public RLOp_Void<
+struct Grp_fill_2 : public RLOp_Void_8<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
@@ -747,8 +749,8 @@ typedef Argc_T<
  * @see MultiCommand
  */
 template<typename SPACE>
-struct Grp_multi_1 : public RLOp_Void<StrConstant_T, IntConstant_T, 
-                                      IntConstant_T, MultiCommand>
+struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T, 
+                                        IntConstant_T, MultiCommand>
 {
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
                   MultiCommand::type commands)
@@ -802,7 +804,7 @@ struct Grp_multi_1 : public RLOp_Void<StrConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_multi_0 : public RLOp_Void<StrConstant_T, IntConstant_T, MultiCommand>
+struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand>
 {
   void operator()(RLMachine& machine, string dc, int effect, 
                   MultiCommand::type commands)

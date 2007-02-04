@@ -38,7 +38,7 @@
 
 // -----------------------------------------------------------------------
 
-struct Refresh : public RLOp_Void<>
+struct Refresh : public RLOp_Void_Void
 {
   void operator()(RLMachine& machine)
   {

@@ -88,7 +88,7 @@ struct BG_LAYER {
  * structs.
  */
 template<typename LAYER, typename SETTYPE = int>
-class Obj_SetOneIntOnObj : public RLOp_Void< IntConstant_T, IntConstant_T > {
+class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   /// The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const SETTYPE);
 
@@ -117,7 +117,7 @@ public:
  * structs.
  */
 template<typename LAYER, typename SETTYPE = int>
-class Obj_SetTwoIntOnObj : public RLOp_Void< IntConstant_T, IntConstant_T, IntConstant_T > {
+class Obj_SetTwoIntOnObj : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
   /// The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const SETTYPE);
 

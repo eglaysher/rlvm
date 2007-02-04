@@ -61,7 +61,7 @@ using namespace boost;
  * values. values is an arbitrary number of integer expressions, each
  * of which is assigned in turn to the next variable.
  */
-struct Mem_setarray : public RLOp_Void< IntReference_T, Argc_T<IntConstant_T > > {
+struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
                   vector<int> values) {
     copy(values.begin(), values.end(), origin);
@@ -75,7 +75,7 @@ struct Mem_setarray : public RLOp_Void< IntReference_T, Argc_T<IntConstant_T > >
  * 
  * Set block of integers to zero.
  */
-struct Mem_setrng_0 : public RLOp_Void< IntReference_T, IntReference_T > {
+struct Mem_setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last) {
     ++last; // RealLive ranges are inclusive
@@ -90,7 +90,7 @@ struct Mem_setrng_0 : public RLOp_Void< IntReference_T, IntReference_T > {
  * 
  * Set block of integers to the constant passed in.
  */
-struct Mem_setrng_1 : public RLOp_Void< IntReference_T, IntReference_T, 
+struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T, 
                                           IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last, int value) {
@@ -111,7 +111,7 @@ struct Mem_setrng_1 : public RLOp_Void< IntReference_T, IntReference_T,
  * STL on the machines at work, it doesn't exist on OSX's implementation,
  * so grab a copy that boost includes.
  */
-struct Mem_cpyrng : public RLOp_Void< IntReference_T, IntReference_T,
+struct Mem_cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
                                         IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator source,
                   IntReferenceIterator dest, int count) {
@@ -130,7 +130,7 @@ struct Mem_cpyrng : public RLOp_Void< IntReference_T, IntReference_T,
  * of passed in values.
  */
 struct Mem_setarray_stepped 
-  : public RLOp_Void< IntReference_T, IntConstant_T, Argc_T<IntConstant_T > > {
+  : public RLOp_Void_3< IntReference_T, IntConstant_T, Argc_T<IntConstant_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
                   int step, vector<int> values) {
     // Sigh. No more simple STL statements
@@ -150,7 +150,7 @@ struct Mem_setarray_stepped
  * and going forward step.
  */
 struct Mem_setrng_stepped_0
-  : public RLOp_Void< IntReference_T, IntConstant_T, IntConstant_T > {
+  : public RLOp_Void_3< IntReference_T, IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
                   int step, int count) {
     for(int i = 0; i < count; ++i) {
@@ -169,7 +169,7 @@ struct Mem_setrng_stepped_0
  * starting at origin and going forward step.
  */
 struct Mem_setrng_stepped_1
-  : public RLOp_Void< IntReference_T, IntConstant_T, IntConstant_T,
+  : public RLOp_Void_4< IntReference_T, IntConstant_T, IntConstant_T,
                         IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
                   int step, int count, int value) {
@@ -191,7 +191,7 @@ struct Mem_setrng_stepped_1
  * 
  * I'm not even going to try for this one. See RLDev.
  */
-struct Mem_cpyvars : public RLOp_Void< IntReference_T, IntConstant_T,
+struct Mem_cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
                                          Argc_T< IntReference_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin, 
                   int offset, vector<IntReferenceIterator> values) {
@@ -211,7 +211,7 @@ struct Mem_cpyvars : public RLOp_Void< IntReference_T, IntConstant_T,
  * 
  * Returns the sum of all the numbers in the given memory range.
  */
-struct Mem_sum : public RLOp_Store< IntReference_T, IntReference_T > {
+struct Mem_sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
   int operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last) {
     last++;
@@ -226,7 +226,7 @@ struct Mem_sum : public RLOp_Store< IntReference_T, IntReference_T > {
  * 
  * Returns the sum of all the numbers in all the given memory ranges.
  */
-struct Mem_sums : public RLOp_Store< Argc_T< Complex2_T< IntReference_T,
+struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
                                                          IntReference_T > > >{
   int operator()(RLMachine& machine, 
                  vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {

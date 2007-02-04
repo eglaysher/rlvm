@@ -2,7 +2,7 @@
 #  OMakeFlags(-S --progress)
 #  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I/opt/local/include -D_THREAD_SAFE
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char -Wall $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I/opt/local/include -D_THREAD_SAFE
 
 # for testing
 #CXXFLAGS += -DWIN32
@@ -13,6 +13,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 
 LRLFILES[] =
   reference
+  LongOperation
   RLMachine
   RLModule
   RLOperation

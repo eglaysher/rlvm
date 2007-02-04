@@ -31,6 +31,21 @@
 #include "MachineBase/reference.hpp"
 #include "MachineBase/RLMachine.hpp"
 
+// -----------------------------------------------------------------------
+// IntAccessor
+// -----------------------------------------------------------------------
+
+IntAccessor::IntAccessor(MemoryReferenceIterator<IntAccessor>* i) 
+  : it(i) 
+{}
+
+// -----------------------------------------------------------------------
+
+IntAccessor::~IntAccessor()
+{}
+
+// -----------------------------------------------------------------------
+
 /** 
  * Read from the memory location, and return the value.
  * 
@@ -70,7 +85,18 @@ IntAccessor& IntAccessor::operator=(const IntAccessor& rhs)
 }
 
 // -----------------------------------------------------------------------
+// StringAccessor
 // -----------------------------------------------------------------------
+
+StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i) 
+  : it(i) 
+{}
+
+// -----------------------------------------------------------------------
+
+StringAccessor::~StringAccessor()
+{}
+
 // -----------------------------------------------------------------------
 
 /** 

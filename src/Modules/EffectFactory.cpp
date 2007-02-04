@@ -205,6 +205,7 @@ ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
     return new SlideOn;
   case 21:    
     return new SlideOff;
-//  default:
+  default:
+    throw libReallive::Error("Impossible style number in EffectFactory::buildScrollSquashSlideTypeBase");
   };
 }

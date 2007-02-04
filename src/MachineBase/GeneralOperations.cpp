@@ -29,12 +29,23 @@
 using namespace boost;
 using namespace libReallive;
 
+MultiDispatch::MultiDispatch(RLOperation* op) 
+  : handler(op)
+{}
+
+// -----------------------------------------------------------------------
+
+MultiDispatch::~MultiDispatch()
+{}
+
+// -----------------------------------------------------------------------
+
 void MultiDispatch::operator()(RLMachine& machine, const libReallive::CommandElement& ff) 
 {
   ptr_vector<ExpressionPiece> parameterPieces;
   parseParameters(ff, parameterPieces);
 
-  for(int i = 0; i < parameterPieces.size(); ++i) {
+  for(unsigned int i = 0; i < parameterPieces.size(); ++i) {
     ptr_vector<ExpressionPiece>& element = 
       dynamic_cast<ComplexExpressionPiece&>(parameterPieces[i]).getContainedPieces();
 
