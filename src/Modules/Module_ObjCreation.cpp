@@ -31,13 +31,8 @@
 #include "Systems/Base/GraphicsObject.hpp"
 
 #include <cmath>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/bind.hpp>
 
 using namespace std;
 using namespace boost;
@@ -51,7 +46,6 @@ struct Obj_objOfFile_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
     GraphicsSystem& gs = machine.system().graphics();
     LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
     LAYER::get(machine, buf).setVisible(true);
-    gs.markScreenAsDirty();
   }
 };
 
@@ -64,7 +58,6 @@ struct Obj_objOfFile_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
     GraphicsSystem& gs = machine.system().graphics();
     LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
     LAYER::get(machine, buf).setVisible(visible);
-    gs.markScreenAsDirty();
   }
 };
 
@@ -81,7 +74,6 @@ struct Obj_objOfFile_2 : public RLOp_Void_5<IntConstant_T, StrConstant_T,
     LAYER::get(machine, buf).setVisible(visible);
     LAYER::get(machine, buf).setX(x);
     LAYER::get(machine, buf).setY(y);
-    gs.markScreenAsDirty();
   }
 };
 
@@ -99,7 +91,6 @@ struct Obj_objOfFile_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
     LAYER::get(machine, buf).setX(x);
     LAYER::get(machine, buf).setY(y);
     LAYER::get(machine, buf).setPattNo(pattern);
-    gs.markScreenAsDirty();
   }
 };
 
@@ -120,7 +111,6 @@ struct Obj_objOfFile_4 : public RLOp_Void_8<
     LAYER::get(machine, buf).setPattNo(pattern);
     LAYER::get(machine, buf).setScrollRateX(scrollX);
     LAYER::get(machine, buf).setScrollRateY(scrollY);
-    gs.markScreenAsDirty();
   }
 };
 

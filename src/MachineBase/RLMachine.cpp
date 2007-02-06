@@ -232,10 +232,10 @@ void RLMachine::executeNextInstruction()
         // loops where we throw an exception, and then try again.
         advanceInstructionPointer();
 
-//        cout << "WARNING: ";
+        cout << "WARNING: ";
       }
 
-//      cout << "Uncaught exception: " << e.what() << endl;
+      cout << "Uncaught exception: " << e.what() << endl;
     }
   }
 }

@@ -87,6 +87,7 @@ protected:
   int m_maxValue;
   bool m_isActive;
 
+  unsigned int m_timeAtStart;
   unsigned int m_totalTime;
 };
 
@@ -153,9 +154,6 @@ public:
   AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
-
-private:
-  unsigned int m_timeAtStart;
 };
 
 // -----------------------------------------------------------------------
@@ -170,9 +168,6 @@ public:
   DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
-
-private:
-  unsigned int m_timeAtStart;
 };
 
 

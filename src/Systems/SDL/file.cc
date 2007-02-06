@@ -68,6 +68,7 @@ extern "C" {
 #include "file.h"
 #include "file_impl.h"
 
+#include <iostream>
 using namespace std;
 
 FILESEARCH file_searcher;
@@ -1030,6 +1031,7 @@ bool G00CONV::Read(char* image) {
 	if (data == 0) return false;
 	/* header º± Ã */
 	int type = *data;
+    cerr << "Type: " << type << endl;
 	if (type == 0) return Read_Type0(image);
 	else if (type == 1) return Read_Type1(image);
 	else if (type == 2) return Read_Type2(image);

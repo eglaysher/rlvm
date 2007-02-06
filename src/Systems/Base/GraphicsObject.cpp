@@ -31,6 +31,7 @@ GraphicsObject::GraphicsObject()
   : m_visible(false), 
     m_x(0), m_y(0), 
     m_whateverAdjustVertOperatesOn(0),
+    m_originX(0), m_originY(0),
     m_repOriginX(0), m_repOriginY(0),
 
     // Width and height are percentages
@@ -126,6 +127,9 @@ void GraphicsObject::render(RLMachine& machine) {
 //    cerr << "Rendering object!" << endl;
     m_objectData->render(machine, *this);
   }
+//  else {
+//    cerr << "NOT rendering object!" << endl;
+//  }
 }
 
 // -----------------------------------------------------------------------

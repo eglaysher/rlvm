@@ -175,7 +175,9 @@ Texture::Texture(SDL_Surface* surface)
 #endif
     }
     else
-      cerr << "AAAAAAAAAAAHHHHH!" << endl;
+    {
+      cerr << "Unknown mask! It's not Hakuro!" << endl;
+    }
   }
   else if(bytesPerPixel == 3)
   {
@@ -188,11 +190,11 @@ Texture::Texture(SDL_Surface* surface)
     throw Error("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
 
   // I have no idea what I'm doing!
-//   cerr << "MASK: [" << hex << surface->format->Rmask 
-//        << ", " << surface->format->Gmask 
-//        << ", " << surface->format->Bmask 
-//        << ", " << surface->format->Amask 
-//        << "]" << endl;
+//    cerr << "MASK: [" << hex << surface->format->Rmask 
+//         << ", " << surface->format->Gmask 
+//         << ", " << surface->format->Bmask 
+//         << ", " << surface->format->Amask 
+//         << "]" << endl;
 
   m_textureWidth = SafeSize(surface->w);
   m_textureHeight = SafeSize(surface->h);
@@ -204,6 +206,8 @@ Texture::Texture(SDL_Surface* surface)
   ShowGLErrors();
 
   // Check the surface for the byte order of the surface:
+//   cerr << "Size: {" << dec << surface->w << ", " << surface->h << "}"
+//        << " First pixel: " << hex << ((int*)surface->pixels)[0] << endl;
 
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
                   byteOrder, byteType, surface->pixels);            
@@ -336,6 +340,9 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
     // Rotate here?
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
 
+//    cerr << "Color: " << go.tintR() << ", " << go.tintG() << ", " << go.tintB()
+//         << ", " << go.alpha() << endl;
+
     glBegin(GL_QUADS);
     {
       glColor4ub(go.tintR(), go.tintG(), go.tintB(), go.alpha());
@@ -349,8 +356,8 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
       glVertex2i(xPos1, yPos2);
     }
     glEnd();
-    glBlendFunc(GL_ONE, GL_ZERO);
 
+    glBlendFunc(GL_ONE, GL_ZERO);
   }
   glPopMatrix();
 
@@ -475,7 +482,7 @@ void SDLSurface::allocate(int width, int height)
     throw Error(ss.str());
   }  
 
-  m_surface =tmp;
+  m_surface = tmp;
 
   fill(0, 0, 0, 255);
 }
@@ -1053,8 +1060,8 @@ typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data, 
                                            MaskType with_mask)
 {
-  int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
-//  cerr << "Amask: " << amask << endl;
+//  int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
+  int amask = DefaultAmask;
   SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
     DefaultBmask, amask);
@@ -1065,14 +1072,26 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   tmp->flags &= ~SDL_PREALLOC;
 
   // Convert to the proper type of alpha channel
-  SDL_Surface* s;
-  if(with_mask == ALPHA_MASK)
-    s = SDL_DisplayFormatAlpha(tmp);
-  else
-    s = SDL_DisplayFormat(tmp);
-  SDL_FreeSurface(tmp);
+//  SDL_Surface* s;
+//  if(with_mask == ALPHA_MASK)
+//  {
+//    s = SDL_DisplayFormatAlpha(tmp);
+//    SDL_FreeSurface(tmp);
+//   }
+//   else
+//   {
+//     // Check to see:
+//     // * bpp ? Might be an issue
+//     // * What g00 type are we trying to load in?
+//     // * 
 
-  return s;
+//     s = tmp;
+// //    s = SDL_DisplayFormat(tmp);
+// //    if(SDL_SetAlpha(s, 0, 255))
+// //      reportSDLError("SDL_SetAlpha", "newSurfaceFromRGBAData");
+//   }
+
+  return tmp;
 };
 
 // -----------------------------------------------------------------------

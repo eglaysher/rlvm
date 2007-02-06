@@ -32,7 +32,7 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 
-#include <iostream>
+//#include <iostream>
 using namespace std;
 
 template<typename FRAMECLASS>
@@ -213,8 +213,8 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
       else
         *(it->get<1>()) = 0;
 
-      cerr << "Read frame: {" << it->get<0>() << ", " << *(it->get<1>())
-           << "}" << endl;
+//       cerr << "Read frame: {" << it->get<0>() << ", " << *(it->get<1>())
+//            << "}" << endl;
     }
 
     return storeValue;
