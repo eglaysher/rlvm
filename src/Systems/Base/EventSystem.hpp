@@ -89,6 +89,15 @@ public:
   virtual void wait(unsigned int milliseconds) const = 0;
 
 
+  virtual void getCursorPos(int& xPos, int& yPos) {}
+  virtual void getCursorPos(int& xPos, int& yPos, int& button1, int& button2) {}
+
+  /** 
+   * Resets the state of the mouse buttons.
+   */
+  virtual void flushMouseClicks() {}
+
+
   /**
    * @name Niceness functions
    * 

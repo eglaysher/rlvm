@@ -74,6 +74,35 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 }
 
 // -----------------------------------------------------------------------
+
+void SDLEventSystem::handleMouseMotion(SDL_Event& event)
+{
+  m_mouseXPos = event.motion.x;
+  m_mouseYPos = event.motion.y;
+//  cerr << "Mouse pos: {" << event.motion.x << ", " << event.motion.y << "}" << endl;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::handleMouseButtonDown(SDL_Event& event)
+{
+  if(event.button.button == SDL_BUTTON_LEFT)
+    m_button1State = 1;
+  else
+    m_button2State = 1;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
+{
+  if(event.button.button == SDL_BUTTON_LEFT)
+    m_button1State = 2;
+  else
+    m_button2State = 2;
+}
+
+// -----------------------------------------------------------------------
 // Public implementation
 // -----------------------------------------------------------------------
 
@@ -97,13 +126,47 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
     case SDL_KEYUP:
       handleKeyUp(event);
       break;
+    case SDL_MOUSEMOTION:
+      handleMouseMotion(event);
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+      handleMouseButtonDown(event);
+      break;
+    case SDL_MOUSEBUTTONUP:
+      handleMouseButtonUp(event);
+      break;
     case SDL_QUIT:
       machine.halt();
       break;
     }
   }
+}
 
-//  SDL_Delay(10);
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::getCursorPos(int& xPos, int& yPos)
+{
+  xPos = m_mouseXPos;
+  yPos = m_mouseYPos;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::getCursorPos(int& xPos, int& yPos, int& button1, 
+                                  int& button2)
+{
+  xPos = m_mouseXPos;
+  yPos = m_mouseYPos;
+  button1 = m_button1State;
+  button2 = m_button2State;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::flushMouseClicks()
+{
+  m_button1State = 0;
+  m_button2State = 0;
 }
 
 // -----------------------------------------------------------------------

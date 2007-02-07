@@ -35,8 +35,10 @@
 #include "Modules/Module_Sys_Frame.hpp"
 
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
-
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
 #include "boost/date_time/gregorian/gregorian.hpp"
@@ -48,6 +50,97 @@
 const float PI = 3.14159265;
 
 using namespace std;
+
+struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
+  struct LongOp_wait : public LongOperation 
+  {
+    unsigned int m_targetTime;
+
+    LongOp_wait(RLMachine& machine, int time)
+      : m_targetTime(machine.system().event().getTicks() + time)
+    {}
+
+    bool operator()(RLMachine& machine) 
+    {
+      machine.system().event().wait(10);
+      return machine.system().event().getTicks() > m_targetTime;
+    }
+  };
+
+  /// Simply set the long operation
+  void operator()(RLMachine& machine, int time) {
+    machine.setLongOperation(new LongOp_wait(machine, time));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_waitC : public RLOp_Void_1< IntConstant_T > {
+  struct LongOp_waitC : public LongOperation 
+  {
+    unsigned int m_targetTime;
+
+    LongOp_waitC(RLMachine& machine, int time)
+      : m_targetTime(machine.system().event().getTicks() + time)
+    {}
+
+    /** 
+     * 
+     * @todo Make this respond to clicks by the user.
+     */
+    bool operator()(RLMachine& machine) 
+    {
+      machine.system().event().wait(10);
+      return machine.system().event().getTicks() > m_targetTime;
+    }
+  };
+
+  /// Simply set the long operation
+  void operator()(RLMachine& machine, int time) {
+    machine.setLongOperation(new LongOp_waitC(machine, time));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_FlushClick : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.system().event().flushMouseClicks();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_GetCursorPos_gc1 
+  : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T, IntReference_T>
+{
+  void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit,
+                  IntReferenceIterator button1It, IntReferenceIterator button2It) 
+  {
+    int x, y, button1, button2;
+    machine.system().event().getCursorPos(x, y, button1, button2);
+    *xit = x;
+    *yit = y;
+    *button1It = button1;
+    *button2It = button2;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_GetCursorPos_gc2
+  : public RLOp_Void_2< IntReference_T, IntReference_T>
+{
+  void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit)
+  {
+    int x, y;
+    machine.system().event().getCursorPos(x, y);
+    *xit = x;
+    *yit = y;
+  }
+};
+
+// -----------------------------------------------------------------------
 
 struct Sys_rnd_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
@@ -257,7 +350,15 @@ struct Sys_SceneNum : public RLOp_Store_Void {
 SysModule::SysModule(GraphicsSystem& system)
   : RLModule("Sys", 1, 004)
 {
-  addOpcode(1000, 0, new Sys_rnd_0);
+  addOpcode( 100, 0, "wait", new Sys_wait);
+  addOpcode( 101, 0, "waitC", new Sys_waitC);
+
+  addOpcode( 130, 0, "FlushClick", new Sys_FlushClick);
+  addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
+
+  addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
+
+  addOpcode(1000, 0, "rnd", new Sys_rnd_0);
   addOpcode(1000, 1, new Sys_rnd_1);
   addOpcode(1001, 0, new Sys_pcnt);
   addOpcode(1002, 0, new Sys_abs);
@@ -298,7 +399,7 @@ SysModule::SysModule(GraphicsSystem& system)
   addOpcode(1133, 0, new Op_SetToIncomingString<GraphicsSystem>(
               system, &GraphicsSystem::setDefaultBgrName));
 
-  // Sys is hueger than xbox, so lets group some of the operations by
+  // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
   addSysFrameOpcodes(*this);
 }

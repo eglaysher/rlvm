@@ -32,8 +32,15 @@ class SDLEventSystem : public EventSystem
 private:
   bool m_shiftPressed, m_ctrlPressed;
 
+  int m_mouseXPos, m_mouseYPos;
+
+  int m_button1State, m_button2State;
+
   void handleKeyDown(SDL_Event& e);
   void handleKeyUp(SDL_Event& e);
+  void handleMouseMotion(SDL_Event& e);
+  void handleMouseButtonUp(SDL_Event& event);
+  void handleMouseButtonDown(SDL_Event& event);
 
 public:
   SDLEventSystem();
@@ -43,8 +50,18 @@ public:
   virtual bool shiftPressed() const { return m_shiftPressed; }
   virtual bool ctrlPressed() const  { return m_ctrlPressed;  }
 
+  virtual void getCursorPos(int& xPos, int& yPos);
+  virtual void getCursorPos(int& xPos, int& yPos, int& button1, int& button2);
+
+  /** 
+   * Resets the state of the mouse buttons.
+   */
+  virtual void flushMouseClicks();
+
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
+
+//  virtual void setTitle(const  title) const;
 };
 
 #endif
