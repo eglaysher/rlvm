@@ -26,9 +26,12 @@
 
 #include <boost/scoped_ptr.hpp>
 
+#include "Systems/Base/RLTimer.hpp"
+
 class RLMachine;
 
 class FrameCounter;
+
 
 /**
  * Generalization of an event system. Reallive's event model is a bit
@@ -39,6 +42,7 @@ class EventSystem
 {
 private:
   boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
+  RLTimer m_timers[255][2];
 
   /// Counter for the number of things that require realtime
   /// speed. Whenever this is zero, the system will wait 10ms between
@@ -80,6 +84,9 @@ public:
   bool frameCounterExists(int layer, int frameCounter);
 
 //  virtual FrameCounter& getExFrameCounter(int frameCounter) const;
+
+  RLTimer& getTimer(int layer, int counter) 
+  { return m_timers[layer][counter]; }
 
   /** 
    * Idles the program for a certain amount of time in milliseconds.

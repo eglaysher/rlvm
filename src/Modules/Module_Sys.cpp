@@ -33,6 +33,7 @@
 
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
+#include "Modules/Module_Sys_Timer.hpp"
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -352,6 +353,8 @@ SysModule::SysModule(GraphicsSystem& system)
 {
   addOpcode( 100, 0, "wait", new Sys_wait);
   addOpcode( 101, 0, "waitC", new Sys_waitC);
+
+  addSysTimerOpcodes(*this);
 
   addOpcode( 130, 0, "FlushClick", new Sys_FlushClick);
   addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
