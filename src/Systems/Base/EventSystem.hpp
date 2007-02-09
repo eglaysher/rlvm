@@ -88,7 +88,13 @@ public:
    */
   virtual void wait(unsigned int milliseconds) const = 0;
 
+  // -----------------------------------------------------------------------
 
+  /**
+   * @name Keyboard and Mouse Input
+   * 
+   * @{
+   */
   virtual void getCursorPos(int& xPos, int& yPos) {}
   virtual void getCursorPos(int& xPos, int& yPos, int& button1, int& button2) {}
 
@@ -97,6 +103,9 @@ public:
    */
   virtual void flushMouseClicks() {}
 
+  /// @}
+
+  // -----------------------------------------------------------------------
 
   /**
    * @name Niceness functions

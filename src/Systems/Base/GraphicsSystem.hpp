@@ -90,7 +90,8 @@ private:
   DCScreenUpdateMode m_screenUpdateMode;
 
 public:
-  GraphicsSystem() : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC) {}
+  GraphicsSystem() 
+    : m_defaultGrpName("S_TT_BG00"), m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC){}
   virtual ~GraphicsSystem() { }
 
   void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }

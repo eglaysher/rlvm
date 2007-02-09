@@ -693,6 +693,49 @@ struct Special_T {
   };
 };
 
+// -----------------------------------------------------------------------
+
+template<int DEFAULTVAL>
+struct DefaultIntValue_T
+{
+  /// The output type of this type struct
+  typedef int type;
+
+  /// Convert the incoming parameter objects into the resulting type
+  static type getData(RLMachine& machine,
+                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      unsigned int position)
+  {
+    if(position < p.size())
+    {
+      return p[position].integerValue(machine);
+    }
+    else
+    {
+      return DEFAULTVAL;
+    }
+  }
+
+  /// Verify that the incoming parameter objects meet the desired types
+  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                         unsigned int position)
+  {
+    if(position < p.size())
+    {
+      return p[position].expressionValueType() == libReallive::ValueTypeInteger;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  enum {
+    isRealTypestruct = true,
+    isComplex = false
+  };
+};
+
 // ----------------------------------------------------------------------
 
 /**

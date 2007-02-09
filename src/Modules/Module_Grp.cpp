@@ -258,7 +258,7 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
  * grp/rec coordinate space), we write one function for both versions.
  */
 struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
-                                        IntConstant_T > {
+                                        DefaultIntValue_T<255> > {
   bool m_useAlpha;
   Grp_load_1(bool in) : m_useAlpha(in) {}
 
@@ -277,57 +277,6 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 /**
- * Implements op<1:Grp:00050, 0>, fun grpLoad(strC 'filename', 'DC')
- * and op<1:Grp:01050, 0>, fun recLoad(strC, intC).
- *
- * Loads filename into dc; note that filename may not be '???'. 
- *
- * @note Since this function deals with the entire screen (and
- * therefore doesn't need to worry about the difference between
- * grp/rec coordinate space), we write one function for both versions.
- */
-struct Grp_load_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
-  Grp_load_1 delegate;
-  Grp_load_0(bool in) : delegate(in) {}
-
-  void operator()(RLMachine& machine, string filename, int dc) {
-    delegate(machine, filename, dc, 255);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Implements op<1:Grp:00050, 2>, fun grpLoad(strC 'filename', 'DC',
- * 'x1', 'y1', 'x2', 'y2', 'dx', 'dy').
- *
- * Loads filename into dc; note that filename may not be '???'. Using
- * this form, the given area of the bitmap is loaded at the given
- * location.
- */
-template<typename SPACE>
-struct Grp_load_2 : public RLOp_Void_8< 
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T > 
-{
-  bool m_useAlpha;
-  Grp_load_2(bool in) : m_useAlpha(in) {}
-
-  void operator()(RLMachine& machine, string filename, int dc,
-                  int x1, int y1, int x2, int y2, int dx, int dy) {
-    filename = findFile(filename);
-    GraphicsSystem& graphics = machine.system().graphics();
-    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
-    SPACE::translateToRec(x1, y1, x2, y2);
-//    graphics.getDC(dc).allocate(x2, y2);
-    surface->blitToSurface(graphics.getDC(dc),
-                           x1, y1, x2, y2, dx, dy, x2, y2, 255, m_useAlpha);    
-  }
-};
-
-// -----------------------------------------------------------------------
-
-/**
  * Implements op<1:Grp:00050, 3>, fun grpLoad(strC 'filename', 'DC',
  * 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha').
  *
@@ -339,7 +288,7 @@ template<typename SPACE>
 struct Grp_load_3 : public RLOp_Void_9< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T> 
+  DefaultIntValue_T<255> > 
 {
   bool m_useAlpha;
   Grp_load_3(bool in) : m_useAlpha(in) {}
@@ -457,7 +406,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     vector<int> selEffect = SPACE::getEffect(machine, effectNum);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    if(filename[0] == '?') filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
     SPACE::translateToRec(selEffect[0], selEffect[1], 
@@ -506,7 +455,7 @@ struct Grp_open_3 : public RLOp_Void_9<
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    if(filename[0] == '?') filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
     SPACE::translateToRec(x1, y1, x2, y2);
@@ -548,23 +497,27 @@ struct Grp_open_2 : public RLOp_Void_8<
 
 // -----------------------------------------------------------------------
 
+//(strC 'filename', 'x1', 'y1', 'x2', 'y2', 
+// 'dx', 'dy', 'steps', 'effect', 'direction',
+// 'interpolation', 'density', 'speed', '?', '?',
+// 'alpha', '?')
 template<typename SPACE>
-struct Grp_open_4 : public RLOp_Void_18<
+struct Grp_open_4 : public RLOp_Void_17<
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T>
+  IntConstant_T, IntConstant_T>
 {
   bool m_useAlpha;
   Grp_open_4(bool in) : m_useAlpha(in) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum,
+  void operator()(RLMachine& machine, string filename,
                   int x1, int y1, int x2, int y2, int dx, int dy,
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename[0] == '?') filename = graphics.defaultBgrName();
+    if(filename[0] == '?') filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
     SPACE::translateToRec(x1, y1, x2, y2);
@@ -586,7 +539,7 @@ template<typename SPACE>
 struct Grp_copy_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T> 
+  DefaultIntValue_T<255> > 
 {
   bool m_useAlpha;
   Grp_copy_3(bool in) : m_useAlpha(in) {}
@@ -614,7 +567,7 @@ struct Grp_copy_3 : public RLOp_Void_9<
 // -----------------------------------------------------------------------
 
 struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T, 
-                                       IntConstant_T> 
+                                       DefaultIntValue_T<255> > 
 {
   bool m_useAlpha;
   Grp_copy_1(bool in) : m_useAlpha(in) {}
@@ -639,49 +592,14 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 };
 
 // -----------------------------------------------------------------------
-
-struct Grp_copy_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  Grp_copy_1 delegate;
-  Grp_copy_0(bool in) : delegate(in) {}
-
-  void operator()(RLMachine& machine, int src, int dst) {
-    delegate(machine, src, dst, 255);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-template<typename SPACE>
-struct Grp_copy_2 : public RLOp_Void_8<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> 
-{
-  Grp_copy_3<SPACE> delegate;
-  Grp_copy_2(bool in) : delegate(in) {}
-
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
-                  int src, int dx, int dy, int dst) {
-    delegate(machine, x1, y1, x2, y2, src, dx, dy, dst, 255);
-  }
-};
-
-// -----------------------------------------------------------------------
 // {grp,rec}Fill
 // -----------------------------------------------------------------------
 
 struct Grp_fill_1 : public RLOp_Void_5<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
     machine.system().graphics().getDC(dc).fill(r, g, b, alpha);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Grp_fill_0 : public RLOp_Void_4<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    Grp_fill_1()(machine, dc, r, g, b, 255);
   }
 };
 
@@ -690,23 +608,12 @@ struct Grp_fill_0 : public RLOp_Void_4<
 template<typename SPACE>
 struct Grp_fill_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int dc, int r, int g, int b, int alpha) {
     SPACE::translateToRec(x1, y1, x2, y2);
     machine.system().graphics().getDC(dc).fill(r, g, b, alpha, x1, y1, x2, y2);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-template<typename SPACE>
-struct Grp_fill_2 : public RLOp_Void_8<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
-                  int dc, int r, int g, int b) {
-    Grp_fill_3<SPACE>()(machine, x1, y1, x2, y2, dc, r, g, b, 255);
   }
 };
 
@@ -755,7 +662,7 @@ struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
                   MultiCommand::type commands)
   {
-    Grp_load_0(false)(machine, filename, effect);
+//    Grp_load_0(false)(machine, filename, effect);
 
     for(MultiCommand::type::iterator it = commands.begin(); it != commands.end();
         it++) 
@@ -845,25 +752,25 @@ GrpModule::GrpModule()
   addOpcode(31, 0, "wipe", new Grp_wipe);
   // addOpcode(32, 0, new Grp_shake);
 
-  addOpcode(50, 0, "grpLoad", new Grp_load_0(false));
+  addOpcode(50, 0, "grpLoad", new Grp_load_1(false));
   addOpcode(50, 1, "grpLoad", new Grp_load_1(false));
-  addOpcode(50, 2, "grpLoad", new Grp_load_2<GRP_SPACE>(false));
+  addOpcode(50, 2, "grpLoad", new Grp_load_3<GRP_SPACE>(false));
   addOpcode(50, 3, "grpLoad", new Grp_load_3<GRP_SPACE>(false));
-  addOpcode(51, 0, "grpMaskLoad", new Grp_load_0(true));
+  addOpcode(51, 0, "grpMaskLoad", new Grp_load_1(true));
   addOpcode(51, 1, "grpMaskLoad", new Grp_load_1(true));
-  addOpcode(51, 2, "grpMaskLoad", new Grp_load_2<GRP_SPACE>(true));
+  addOpcode(51, 2, "grpMaskLoad", new Grp_load_3<GRP_SPACE>(true));
   addOpcode(51, 3, "grpMaskLoad", new Grp_load_3<GRP_SPACE>(true));
 
   // These are grpBuffer, which is very similar to grpLoad and Haeleth
   // doesn't know how they differ. For now, we just assume they're
   // equivalent.
-  addOpcode(70, 0, "grpBuffer", new Grp_load_0(false));
+  addOpcode(70, 0, "grpBuffer", new Grp_load_1(false));
   addOpcode(70, 1, "grpBuffer", new Grp_load_1(false));
-  addOpcode(70, 2, "grpBuffer", new Grp_load_2<GRP_SPACE>(false));
+  addOpcode(70, 2, "grpBuffer", new Grp_load_3<GRP_SPACE>(false));
   addOpcode(70, 3, "grpBuffer", new Grp_load_3<GRP_SPACE>(false));
-  addOpcode(71, 0, "grpMaskBuffer", new Grp_load_0(true));
+  addOpcode(71, 0, "grpMaskBuffer", new Grp_load_1(true));
   addOpcode(71, 1, "grpMaskBuffer", new Grp_load_1(true));
-  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_2<GRP_SPACE>(true));
+  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_3<GRP_SPACE>(true));
   addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3<GRP_SPACE>(true));
 
   addOpcode(72, 0, "grpDisplay", new Grp_display_0<GRP_SPACE>);
@@ -891,25 +798,25 @@ GrpModule::GrpModule()
   addOpcode(76, 3, "grpOpen", new Grp_open_3<GRP_SPACE>(false));
   addOpcode(76, 4, "grpOpen", new Grp_open_4<GRP_SPACE>(false));
 
-  addOpcode(100, 0, "grpCopy", new Grp_copy_0(false));
+  addOpcode(100, 0, "grpCopy", new Grp_copy_1(false));
   addOpcode(100, 1, "grpCopy", new Grp_copy_1(false));
-  addOpcode(100, 2, "grpCopy", new Grp_copy_2<GRP_SPACE>(false));
+  addOpcode(100, 2, "grpCopy", new Grp_copy_3<GRP_SPACE>(false));
   addOpcode(100, 3, "grpCopy", new Grp_copy_3<GRP_SPACE>(false));
-  addOpcode(101, 0, "grpMaskCopy", new Grp_copy_0(true));
+  addOpcode(101, 0, "grpMaskCopy", new Grp_copy_1(true));
   addOpcode(101, 1, "grpMaskCopy", new Grp_copy_1(true));
-  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_2<GRP_SPACE>(true));
+  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_3<GRP_SPACE>(true));
   addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3<GRP_SPACE>(true));
 
-  addOpcode(201, 0, "grpFill", new Grp_fill_0);
+  addOpcode(201, 0, "grpFill", new Grp_fill_1);
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
-  addOpcode(201, 2, "grpFill", new Grp_fill_2<GRP_SPACE>);
+  addOpcode(201, 2, "grpFill", new Grp_fill_3<GRP_SPACE>);
   addOpcode(201, 3, "grpFill", new Grp_fill_3<GRP_SPACE>);
 
   // -----------------------------------------------------------------------
   
-  addOpcode(1050, 0, "recLoad", new Grp_load_0(false));
+  addOpcode(1050, 0, "recLoad", new Grp_load_1(false));
   addOpcode(1050, 1, "recLoad", new Grp_load_1(false));
-  addOpcode(1050, 2, "recLoad", new Grp_load_2<REC_SPACE>(false));
+  addOpcode(1050, 2, "recLoad", new Grp_load_3<REC_SPACE>(false));
   addOpcode(1050, 3, "recLoad", new Grp_load_3<REC_SPACE>(false));
 
   addOpcode(1052, 0, "grpDisplay", new Grp_display_0<REC_SPACE>);
@@ -937,18 +844,18 @@ GrpModule::GrpModule()
   addOpcode(1056, 3, "recOpen", new Grp_open_3<REC_SPACE>(false));
   addOpcode(1056, 4, "recOpen", new Grp_open_4<REC_SPACE>(false));
 
-  addOpcode(1100, 0, "recCopy", new Grp_copy_0(false));
+  addOpcode(1100, 0, "recCopy", new Grp_copy_1(false));
   addOpcode(1100, 1, "recCopy", new Grp_copy_1(false));
-  addOpcode(1100, 2, "recCopy", new Grp_copy_2<REC_SPACE>(false));
+  addOpcode(1100, 2, "recCopy", new Grp_copy_3<REC_SPACE>(false));
   addOpcode(1100, 3, "recCopy", new Grp_copy_3<REC_SPACE>(false));
-  addOpcode(1101, 0, "recMaskCopy", new Grp_copy_0(true));
+  addOpcode(1101, 0, "recMaskCopy", new Grp_copy_1(true));
   addOpcode(1101, 1, "recMaskCopy", new Grp_copy_1(true));
-  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_2<REC_SPACE>(true));
+  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_3<REC_SPACE>(true));
   addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3<REC_SPACE>(true));
 
-  addOpcode(1201, 0, "recFill", new Grp_fill_0);
+  addOpcode(1201, 0, "recFill", new Grp_fill_1);
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
-  addOpcode(1201, 2, "recFill", new Grp_fill_2<REC_SPACE>);
+  addOpcode(1201, 2, "recFill", new Grp_fill_3<REC_SPACE>);
   addOpcode(1201, 3, "recFill", new Grp_fill_3<REC_SPACE>);
 }
 
