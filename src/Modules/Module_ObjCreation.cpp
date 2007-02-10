@@ -40,90 +40,105 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-template<typename LAYER>
 struct Obj_objOfFile_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+  int m_layer;
+  Obj_objOfFile_0(int layer) : m_layer(layer) {}
+
   void operator()(RLMachine& machine, int buf, string filename) {
     GraphicsSystem& gs = machine.system().graphics();
-    LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
-    LAYER::get(machine, buf).setVisible(true);
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setVisible(true);
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename LAYER>
 struct Obj_objOfFile_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T, 
                                           IntConstant_T> {
+  int m_layer;
+  Obj_objOfFile_1(int layer) : m_layer(layer) {}
+  
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
     GraphicsSystem& gs = machine.system().graphics();
-    LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
-    LAYER::get(machine, buf).setVisible(visible);
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setVisible(visible);
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename LAYER>
 struct Obj_objOfFile_2 : public RLOp_Void_5<IntConstant_T, StrConstant_T, 
                                             IntConstant_T, 
                                             IntConstant_T, IntConstant_T> {
+  int m_layer;
+  Obj_objOfFile_2(int layer) : m_layer(layer) {}
+
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y) {
     GraphicsSystem& gs = machine.system().graphics();
-    LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
-    LAYER::get(machine, buf).setVisible(visible);
-    LAYER::get(machine, buf).setX(x);
-    LAYER::get(machine, buf).setY(y);
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setVisible(visible);
+    obj.setX(x);
+    obj.setY(y);
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename LAYER>
 struct Obj_objOfFile_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T, 
                                           IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T> {
+  int m_layer;
+  Obj_objOfFile_3(int layer) : m_layer(layer) {}
+
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern) {
     GraphicsSystem& gs = machine.system().graphics();
-    LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
-    LAYER::get(machine, buf).setVisible(visible);
-    LAYER::get(machine, buf).setX(x);
-    LAYER::get(machine, buf).setY(y);
-    LAYER::get(machine, buf).setPattNo(pattern);
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setVisible(visible);
+    obj.setX(x);
+    obj.setY(y);
+    obj.setPattNo(pattern);
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename LAYER>
 struct Obj_objOfFile_4 : public RLOp_Void_8<
   IntConstant_T, StrConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
+  int m_layer;
+  Obj_objOfFile_4(int layer) : m_layer(layer) {}
+
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern, int scrollX, int scrollY) {
     GraphicsSystem& gs = machine.system().graphics();
-    LAYER::get(machine, buf).setObjectData(gs.buildObjOfFile(filename));
-    LAYER::get(machine, buf).setVisible(visible);
-    LAYER::get(machine, buf).setX(x);
-    LAYER::get(machine, buf).setY(y);
-    LAYER::get(machine, buf).setPattNo(pattern);
-    LAYER::get(machine, buf).setScrollRateX(scrollX);
-    LAYER::get(machine, buf).setScrollRateY(scrollY);
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+
+    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setVisible(visible);
+    obj.setX(x);
+    obj.setY(y);
+    obj.setPattNo(pattern);
+    obj.setScrollRateX(scrollX);
+    obj.setScrollRateY(scrollY);
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename LAYER>
-void addObjectCreationFunctions(RLModule& m)
+void addObjectCreationFunctions(RLModule& m, int layer)
 {
-  m.addOpcode(1000, 0, new Obj_objOfFile_0<LAYER>());
-  m.addOpcode(1000, 1, new Obj_objOfFile_1<LAYER>());
-  m.addOpcode(1000, 2, new Obj_objOfFile_2<LAYER>());
-  m.addOpcode(1000, 3, new Obj_objOfFile_3<LAYER>());
-  m.addOpcode(1000, 4, new Obj_objOfFile_4<LAYER>());
+  m.addOpcode(1000, 0, new Obj_objOfFile_0(layer));
+  m.addOpcode(1000, 1, new Obj_objOfFile_1(layer));
+  m.addOpcode(1000, 2, new Obj_objOfFile_2(layer));
+  m.addOpcode(1000, 3, new Obj_objOfFile_3(layer));
+  m.addOpcode(1000, 4, new Obj_objOfFile_4(layer));
 }
 
 // -----------------------------------------------------------------------
@@ -131,7 +146,7 @@ void addObjectCreationFunctions(RLModule& m)
 ObjFgCreationModule::ObjFgCreationModule()
   : RLModule("ObjFgCreation", 1, 71)
 {
-  addObjectCreationFunctions<FG_LAYER>(*this);
+  addObjectCreationFunctions(*this, OBJ_FG_LAYER);
 }
 
 // -----------------------------------------------------------------------
@@ -139,5 +154,5 @@ ObjFgCreationModule::ObjFgCreationModule()
 ObjBgCreationModule::ObjBgCreationModule()
   : RLModule("ObjBgCreation", 1, 72)
 {   
-  addObjectCreationFunctions<BG_LAYER>(*this);
+  addObjectCreationFunctions(*this, OBJ_BG_LAYER);
 }

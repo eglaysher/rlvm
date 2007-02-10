@@ -32,9 +32,7 @@ public:
   virtual GraphicsObjectData* buildObjOfFile(const std::string& filename)
   { return NULL; }
 
-  virtual GraphicsObject& getFgObject(int objNumber) 
-  { static GraphicsObject x; return x;}
-  virtual GraphicsObject& getBgObject(int objNumber)
+  virtual GraphicsObject& getObject(int layer, int objNumber) 
   { static GraphicsObject x; return x;}
 
   // Make a null Surface object?

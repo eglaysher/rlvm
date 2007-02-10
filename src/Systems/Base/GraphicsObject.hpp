@@ -72,9 +72,12 @@ public:
    * 
    * @{
    */
-
-  bool visible() const { return m_visible; }
-  void setVisible(const bool in) { m_visible = in; }
+  
+  /// This code, while a boolean, uses an int so that we can get rid
+  /// of one template parameter in one of the generic operation
+  /// functors.
+  int visible() const { return m_visible; }
+  void setVisible(const int in) { m_visible = in; }
 
   int x() const { return m_x; }
   void setX(const int x) { m_x = x; }

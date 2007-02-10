@@ -406,7 +406,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     vector<int> selEffect = SPACE::getEffect(machine, effectNum);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename[0] == '?') filename = graphics.defaultGrpName();
+    if(filename == "???") filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
     SPACE::translateToRec(selEffect[0], selEffect[1], 
@@ -455,7 +455,7 @@ struct Grp_open_3 : public RLOp_Void_9<
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename[0] == '?') filename = graphics.defaultGrpName();
+    if(filename == "???") filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
     SPACE::translateToRec(x1, y1, x2, y2);
@@ -517,7 +517,7 @@ struct Grp_open_4 : public RLOp_Void_17<
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename[0] == '?') filename = graphics.defaultGrpName();
+    if(filename == "???") filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
     SPACE::translateToRec(x1, y1, x2, y2);

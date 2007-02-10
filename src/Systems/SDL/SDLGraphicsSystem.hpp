@@ -264,11 +264,8 @@ public:
 
   virtual GraphicsObjectData* buildObjOfFile(const std::string& filename);
 
-  virtual GraphicsObject& getFgObject(int objNumber);
-  virtual void setFgObject(int objNumber, GraphicsObject& object);
-  
-  virtual GraphicsObject& getBgObject(int objNumber);
-  virtual void setBgObject(int objNumber, GraphicsObject& object);
+  virtual GraphicsObject& getObject(int layer, int objNumber);
+  virtual void setObject(int layer, int objNumber, GraphicsObject& object);
 };
 
 

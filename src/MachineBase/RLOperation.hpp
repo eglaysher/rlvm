@@ -708,7 +708,7 @@ struct DefaultIntValue_T
   {
     if(position < p.size())
     {
-      return p[position].integerValue(machine);
+      return IntConstant_T::getData(machine, p, position);
     }
     else
     {
@@ -722,7 +722,7 @@ struct DefaultIntValue_T
   {
     if(position < p.size())
     {
-      return p[position].expressionValueType() == libReallive::ValueTypeInteger;
+      return IntConstant_T::verifyType(p, position);
     }
     else
     {

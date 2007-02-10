@@ -1004,8 +1004,11 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& SDLGraphicsSystem::getFgObject(int objNumber)
+GraphicsObject& SDLGraphicsSystem::getObject(int layer, int objNumber)
 {
+  if(layer < 0 || layer > 1)
+    throw Error("Invalid layer number");
+
   if(objNumber < 0 || objNumber > 512)
     throw Error("Out of rnage object number");
 
@@ -1014,36 +1017,16 @@ GraphicsObject& SDLGraphicsSystem::getFgObject(int objNumber)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setFgObject(int objNumber, GraphicsObject& obj)
+void SDLGraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
 {
+  if(layer < 0 || layer > 1)
+    throw Error("Invalid layer number");
+
   if(objNumber < 0 || objNumber > 512)
     throw Error("Out of rnage object number");
 
   foregroundObjects[objNumber] = obj;
 }
-
-// -----------------------------------------------------------------------
-
-GraphicsObject& SDLGraphicsSystem::getBgObject(int objNumber)
-{
-  if(objNumber < 0 || objNumber > 512)
-    throw Error("Out of rnage object number");
-
-  return backgroundObjects[objNumber];
-}
-
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::setBgObject(int objNumber, GraphicsObject& obj)
-{
-  if(objNumber < 0 || objNumber > 512)
-    throw Error("Out of rnage object number");
-
-  backgroundObjects[objNumber] = obj;
-}
-
-// -----------------------------------------------------------------------
-
 
 // -----------------------------------------------------------------------
 

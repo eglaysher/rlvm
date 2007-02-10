@@ -141,11 +141,13 @@ public:
   virtual GraphicsObjectData* buildObjOfFile(const std::string& filename) = 0;
 
   /// Object getters
-  virtual GraphicsObject& getFgObject(int objNumber) = 0;
-  virtual void setFgObject(int objNumber, GraphicsObject& object) {}
-  virtual GraphicsObject& getBgObject(int objNumber) = 0;
-  virtual void setBgObject(int objNumber, GraphicsObject& object) {}
+  /// layer == 0 for fg, layer == 1 for bg.
+  virtual GraphicsObject& getObject(int layer, int objNumber) = 0;
+  virtual void setObject(int layer, int objNumber, GraphicsObject& object) {}
 };
+
+const static int OBJ_FG_LAYER = 0;
+const static int OBJ_BG_LAYER = 1;
 
 /** 
  * Abstract concept of a surface. Used 
