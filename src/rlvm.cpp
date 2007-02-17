@@ -20,26 +20,17 @@
 //  
 // -----------------------------------------------------------------------
 
-
 #include "libReallive/reallive.h"
 #include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "Modules/Module_Jmp.hpp"
-#include "Modules/Module_Sys.hpp"
-#include "Modules/Module_Str.hpp"
-#include "Modules/Module_Mem.hpp"
-#include "Modules/Module_Grp.hpp"
-#include "Modules/Module_Msg.hpp"
-#include "Modules/Module_ObjCreation.hpp"
-#include "Modules/Module_ObjFgBg.hpp"
-#include "Modules/Module_ObjManagement.hpp"
-#include "Modules/Module_Refresh.hpp"
-#include "Modules/Module_Scr.hpp"
+// We include this here because SDL is retarded and works by #define
+// main(inat argc, char* agrv[]). Loosers.
+#include <SDL/SDL.h>
 
 #include "Systems/SDL/SDLSystem.hpp"
-#include "Systems/SDL/SDLGraphicsSystem.hpp"
-#include "Systems/SDL/SDLEventSystem.hpp"
+
+#include "Modules/Modules.hpp"
 
 #include <iostream>
 
@@ -179,24 +170,7 @@ int main(int argc, char* argv[])
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(argv[1]);
     RLMachine rlmachine(sdlSystem, arc);
-
-    // Attatch the modules for some commands
-    rlmachine.attatchModule(new JmpModule);
-    rlmachine.attatchModule(new SysModule(sdlSystem.graphics()));
-    rlmachine.attatchModule(new StrModule);
-    rlmachine.attatchModule(new MemModule);
-    rlmachine.attatchModule(new MsgModule);
-    rlmachine.attatchModule(new GrpModule);
-    rlmachine.attatchModule(new ObjFgModule);
-    rlmachine.attatchModule(new ObjBgModule);
-    rlmachine.attatchModule(new ObjRangeFgModule);
-    rlmachine.attatchModule(new ObjRangeBgModule);
-    rlmachine.attatchModule(new ObjFgCreationModule);
-    rlmachine.attatchModule(new ObjBgCreationModule);
-    rlmachine.attatchModule(new ObjFgManagement);
-    rlmachine.attatchModule(new ObjBgManagement);
-    rlmachine.attatchModule(new RefreshModule);
-    rlmachine.attatchModule(new ScrModule);
+    addAllModules(rlmachine);
 
     rlmachine.setHaltOnException(false);
 

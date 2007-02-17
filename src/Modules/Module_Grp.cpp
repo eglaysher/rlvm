@@ -134,6 +134,16 @@ void loadDCToDC1(GraphicsSystem& graphics,
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Abstract interface for a space. Taken as a parameter to most Grp
+ * classess.
+ */
+struct SPACE {
+  virtual vector<int> getEffect(RLMachine& machine, int effectNum) = 0;
+  virtual void translateToRec(int x1, int y1, int& x2, int& y2) = 0;
+  virtual LongOperation* buildEffectFrom(RLMachine& machine, int effectNum) = 0;
+};
+
 /**
  * A large number of the operation structs in the Grp module are
  * written in a generic way so that they can be done in either rec or
@@ -143,11 +153,11 @@ void loadDCToDC1(GraphicsSystem& graphics,
  * @see REC_SPACE
  * @see Grp_open_0
  */
-struct GRP_SPACE {
+struct GRP_SPACE : public SPACE {
   /** 
    * Gets the effect vector for grp coordinates (#SEL)
    */
-  static vector<int> getEffect(RLMachine& machine, int effectNum) 
+  virtual vector<int> getEffect(RLMachine& machine, int effectNum) 
   {
     return machine.system().gameexe()("SEL", effectNum).to_intVector();
   }
@@ -162,25 +172,30 @@ struct GRP_SPACE {
    * @param x2 X2. In place changed to width.
    * @param y2 Y2. In place changed to height.
    */
-  static void translateToRec(int x1, int y1, int& x2, int& y2)
+  virtual void translateToRec(int x1, int y1, int& x2, int& y2)
   {
     x2 = x2 - x1;
     y2 = y2 - y1;
   }
 
-  static LongOperation* buildEffectFrom(RLMachine& machine, int effectNum) 
+  virtual LongOperation* buildEffectFrom(RLMachine& machine, int effectNum) 
   {
     return EffectFactory::buildFromSEL(machine, effectNum);
+  }
+
+  static SPACE& get() {
+    static GRP_SPACE space;
+    return space;
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct REC_SPACE {
+struct REC_SPACE : public SPACE {
   /** 
    * Gets the effect vector for grp coordinates (#SELR)
    */
-  static vector<int> getEffect(RLMachine& machine, int effectNum) 
+  virtual vector<int> getEffect(RLMachine& machine, int effectNum) 
   {
     return machine.system().gameexe()("SELR", effectNum).to_intVector();
   }
@@ -188,13 +203,18 @@ struct REC_SPACE {
   /** 
    * Don't do anything; leave the incoming coordinates as they are.
    */
-  static void translateToRec(int x1, int y1, int& x2, int& y2)
+  virtual void translateToRec(int x1, int y1, int& x2, int& y2)
   {
   }
 
-  static LongOperation* buildEffectFrom(RLMachine& machine, int effectNum) 
+  virtual LongOperation* buildEffectFrom(RLMachine& machine, int effectNum) 
   {
     return EffectFactory::buildFromSELR(machine, effectNum);
+  }
+
+  static SPACE& get() {
+    static REC_SPACE space;
+    return space;
   }
 };
 
@@ -284,21 +304,21 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
  * this form, the given area of the bitmap is loaded at the given
  * location.
  */
-template<typename SPACE>
 struct Grp_load_3 : public RLOp_Void_9< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   DefaultIntValue_T<255> > 
 {
   bool m_useAlpha;
-  Grp_load_3(bool in) : m_useAlpha(in) {}
+  SPACE& m_space;
+  Grp_load_3(bool in, SPACE& space) : m_useAlpha(in), m_space(space) {}
 
   void operator()(RLMachine& machine, string filename, int dc,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
     filename = findFile(filename);
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
-    SPACE::translateToRec(x1, y1, x2, y2);
+    m_space.translateToRec(x1, y1, x2, y2);
 //    graphics.getDC(dc).allocate(x2, y2);
     surface->blitToSurface(graphics.getDC(dc),
                            x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);    
@@ -309,12 +329,16 @@ struct Grp_load_3 : public RLOp_Void_9<
 // {grp,rec}Display
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
-struct Grp_display_1 : public RLOp_Void_3< IntConstant_T, IntConstant_T, 
-                                         IntConstant_T > {
-  void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
-    vector<int> selEffect = SPACE::getEffect(machine, effectNum);
-    SPACE::translateToRec(selEffect[0], selEffect[1], 
+struct Grp_display_1
+  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > 
+{
+  SPACE& m_space;
+  Grp_display_1(SPACE& space) : m_space(space) {}
+
+  void operator()(RLMachine& machine, int dc, int effectNum, int opacity) 
+  {
+    vector<int> selEffect = m_space.getEffect(machine, effectNum);
+    m_space.translateToRec(selEffect[0], selEffect[1], 
                         selEffect[2], selEffect[3]);
 
     GraphicsSystem& graphics = machine.system().graphics();
@@ -323,37 +347,42 @@ struct Grp_display_1 : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                 selEffect[4], selEffect[5], opacity);
 
     // Set the long operation for the correct transition long operation
-    machine.setLongOperation(SPACE::buildEffectFrom(machine, effectNum));    
+    machine.setLongOperation(m_space.buildEffectFrom(machine, effectNum));    
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
 struct Grp_display_0 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+  SPACE& m_space;
+  Grp_display_1 m_delegate;
+  Grp_display_0(SPACE& space) : m_space(space), m_delegate(space) {}
+
   void operator()(RLMachine& machine, int dc, int effectNum) {
-    vector<int> selEffect = SPACE::getEffect(machine, effectNum);
-    Grp_display_1<SPACE>()(machine, dc, effectNum, selEffect.at(14));
+    vector<int> selEffect = m_space.getEffect(machine, effectNum);
+    m_delegate(machine, dc, effectNum, selEffect.at(14));
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
 struct Grp_display_3 : public RLOp_Void_9< 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T>
 {
+  SPACE& m_space;
+  Grp_display_3(SPACE& space) : m_space(space) {}
+
   void operator()(RLMachine& machine, int dc, int effectNum, 
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    SPACE::translateToRec(x1, y1, x2, y2);
+    m_space.translateToRec(x1, y1, x2, y2);
     loadDCToDC1(graphics, dc, x1, y1, x2, y2, dx, dy, opacity);
 
     // Set the long operation for the correct transition long operation
-    machine.setLongOperation(SPACE::buildEffectFrom(machine, effectNum));
+    machine.setLongOperation(m_space.buildEffectFrom(machine, effectNum));
   }
 };
 
@@ -362,22 +391,22 @@ struct Grp_display_3 : public RLOp_Void_9<
 /** 
  * @todo Finish documentation
  */
-template<typename SPACE>
 struct Grp_display_2 : public RLOp_Void_8< 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
-  Grp_display_3<SPACE> delegate;
+  SPACE& m_space;
+  Grp_display_3 delegate;
+  Grp_display_2(SPACE& space) : m_space(space), delegate(space) {}
 
   void operator()(RLMachine& machine, int dc, int effectNum, 
                   int x1, int y1, int x2, int y2, int dx, int dy)
   {
-    int opacity = SPACE::getEffect(machine, effectNum).at(14);
+    int opacity = m_space.getEffect(machine, effectNum).at(14);
     delegate(machine, dc, effectNum, x1, y1, x2, y2, dx, dy, 
              opacity);
   }
 };
-
 
 
 // -----------------------------------------------------------------------
@@ -394,29 +423,29 @@ struct Grp_display_2 : public RLOp_Void_8<
  *
  * @todo factor out the common code between grpOpens!
  */
-template<typename SPACE>
 struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
                                         IntConstant_T > {
+  SPACE& m_space;
   bool m_useAlpha;
-  Grp_open_1(bool in) : m_useAlpha(in) {}
+  Grp_open_1(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum, 
                   int opacity)
   {
-    vector<int> selEffect = SPACE::getEffect(machine, effectNum);
+    vector<int> selEffect = m_space.getEffect(machine, effectNum);
 
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
-    SPACE::translateToRec(selEffect[0], selEffect[1], 
+    m_space.translateToRec(selEffect[0], selEffect[1], 
                         selEffect[2], selEffect[3]);
     loadImageToDC1(graphics, filename,
                    selEffect[0], selEffect[1], selEffect[2], selEffect[3],
                    selEffect[4], selEffect[5], opacity, m_useAlpha);
 
     // Set the long operation for the correct transition long operation
-    machine.setLongOperation(SPACE::buildEffectFrom(machine, effectNum));
+    machine.setLongOperation(m_space.buildEffectFrom(machine, effectNum));
   }
 };
 
@@ -429,27 +458,28 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
  * then is passed off to whatever transition effect, which will
  * perform some intermediary steps and then render DC1 to DC0.
  */
-template<typename SPACE>
 struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
-  Grp_open_1<SPACE> delegate;
-  Grp_open_0(bool in) : delegate(in) {}
+  SPACE& m_space;
+  Grp_open_1 m_delegate;
+  Grp_open_0(bool in, SPACE& space) 
+    : m_space(space), m_delegate(in, space) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    vector<int> selEffect = SPACE::getEffect(machine, effectNum);
-    delegate(machine, filename, effectNum, selEffect[14]);
+    vector<int> selEffect = m_space.getEffect(machine, effectNum);
+    m_delegate(machine, filename, effectNum, selEffect[14]);
   }
 };
 
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
 struct Grp_open_3 : public RLOp_Void_9< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T>
 {
+  SPACE& m_space;
   bool m_useAlpha;
-  Grp_open_3(bool in) : m_useAlpha(in) {}
+  Grp_open_3(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum, 
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
@@ -458,11 +488,11 @@ struct Grp_open_3 : public RLOp_Void_9<
     if(filename == "???") filename = graphics.defaultGrpName();
     filename = findFile(filename);
 
-    SPACE::translateToRec(x1, y1, x2, y2);
+    m_space.translateToRec(x1, y1, x2, y2);
     loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity, m_useAlpha);
 
     // Set the long operation for the correct transition long operation
-    machine.setLongOperation(SPACE::buildEffectFrom(machine, effectNum));
+    machine.setLongOperation(m_space.buildEffectFrom(machine, effectNum));
   }
 };
 
@@ -478,20 +508,20 @@ struct Grp_open_3 : public RLOp_Void_9<
  *
  * @todo Finish documentation
  */
-template<typename SPACE>
 struct Grp_open_2 : public RLOp_Void_8< 
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
-  Grp_open_3<SPACE> delegate;
-  Grp_open_2(bool in) : delegate(in) {}
+  SPACE& m_space;
+  Grp_open_3 m_delegate;
+  Grp_open_2(bool in, SPACE& space) : m_space(space), m_delegate(in, space) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum, 
                   int x1, int y1, int x2, int y2, int dx, int dy)
   {
-    int opacity = SPACE::getEffect(machine, effectNum).at(14);
-    delegate(machine, filename, effectNum, x1, y1, x2, y2, 
-             dx, dy, opacity);
+    int opacity = m_space.getEffect(machine, effectNum).at(14);
+    m_delegate(machine, filename, effectNum, x1, y1, x2, y2, 
+               dx, dy, opacity);
   }
 };
 
@@ -501,15 +531,15 @@ struct Grp_open_2 : public RLOp_Void_8<
 // 'dx', 'dy', 'steps', 'effect', 'direction',
 // 'interpolation', 'density', 'speed', '?', '?',
 // 'alpha', '?')
-template<typename SPACE>
 struct Grp_open_4 : public RLOp_Void_17<
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T>
 {
+  SPACE& m_space;
   bool m_useAlpha;
-  Grp_open_4(bool in) : m_useAlpha(in) {}
+  Grp_open_4(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, string filename,
                   int x1, int y1, int x2, int y2, int dx, int dy,
@@ -517,12 +547,16 @@ struct Grp_open_4 : public RLOp_Void_17<
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename == "???") filename = graphics.defaultGrpName();
-    filename = findFile(filename);
+    m_space.translateToRec(x1, y1, x2, y2);
 
-    SPACE::translateToRec(x1, y1, x2, y2);
-    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
-                   opacity, m_useAlpha);
+    if(filename != "?")
+    {
+      if(filename == "???") filename = graphics.defaultGrpName();
+      filename = findFile(filename);
+
+      loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
+                     opacity, m_useAlpha);
+    }
 
     // Set the long operation for the correct transition long operation
     machine.setLongOperation(
@@ -535,14 +569,14 @@ struct Grp_open_4 : public RLOp_Void_17<
 // {grp,rec}Copy
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
 struct Grp_copy_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   DefaultIntValue_T<255> > 
 {
+  SPACE& m_space;
   bool m_useAlpha;
-  Grp_copy_3(bool in) : m_useAlpha(in) {}
+  Grp_copy_3(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int src, int dx, int dy, int dst, int opacity) {
@@ -556,7 +590,7 @@ struct Grp_copy_3 : public RLOp_Void_9<
     // Reallocate the destination so that it's the same size as the first.
 //    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
 
-    SPACE::translateToRec(x1, y1, x2, y2);
+    m_space.translateToRec(x1, y1, x2, y2);
 
     sourceSurface.blitToSurface(
       graphics.getDC(dst),
@@ -605,14 +639,17 @@ struct Grp_fill_1 : public RLOp_Void_5<
 
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
 struct Grp_fill_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  DefaultIntValue_T<255> > {
+  DefaultIntValue_T<255> > 
+{
+  SPACE& m_space;
+  Grp_fill_3(SPACE& space) : m_space(space) {}
+
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int dc, int r, int g, int b, int alpha) {
-    SPACE::translateToRec(x1, y1, x2, y2);
+    m_space.translateToRec(x1, y1, x2, y2);
     machine.system().graphics().getDC(dc).fill(r, g, b, alpha, x1, y1, x2, y2);
   }
 };
@@ -655,7 +692,8 @@ typedef Argc_T<
  *       state.
  * @see MultiCommand
  */
-template<typename SPACE>
+//template<typename SPACE>
+/*
 struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T, 
                                         IntConstant_T, MultiCommand>
 {
@@ -707,9 +745,10 @@ struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
     Grp_display_0<SPACE>()(1, effect);
   }
 };
+*/
 
 // -----------------------------------------------------------------------
-
+/*
 template<typename SPACE>
 struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand>
 {
@@ -718,7 +757,8 @@ struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiComma
   {
     Grp_multi_1<SPACE>()(machine, dc, effect, 255, commands);
   }     
-};     
+};
+*/     
                                                                  
 // -----------------------------------------------------------------------
 
@@ -743,6 +783,9 @@ struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiComma
 GrpModule::GrpModule()
   : RLModule("Grp", 1, 33)
 {
+  SPACE& GRP = GRP_SPACE::get();
+  SPACE& REC = REC_SPACE::get();
+
   addOpcode(15, 0, "allocDC", new Grp_allocDC);
   addOpcode(16, 0, "freeDC", new Grp_freeDC);
 
@@ -754,109 +797,109 @@ GrpModule::GrpModule()
 
   addOpcode(50, 0, "grpLoad", new Grp_load_1(false));
   addOpcode(50, 1, "grpLoad", new Grp_load_1(false));
-  addOpcode(50, 2, "grpLoad", new Grp_load_3<GRP_SPACE>(false));
-  addOpcode(50, 3, "grpLoad", new Grp_load_3<GRP_SPACE>(false));
+  addOpcode(50, 2, "grpLoad", new Grp_load_3(false, GRP));
+  addOpcode(50, 3, "grpLoad", new Grp_load_3(false, GRP));
   addOpcode(51, 0, "grpMaskLoad", new Grp_load_1(true));
   addOpcode(51, 1, "grpMaskLoad", new Grp_load_1(true));
-  addOpcode(51, 2, "grpMaskLoad", new Grp_load_3<GRP_SPACE>(true));
-  addOpcode(51, 3, "grpMaskLoad", new Grp_load_3<GRP_SPACE>(true));
+  addOpcode(51, 2, "grpMaskLoad", new Grp_load_3(true, GRP));
+  addOpcode(51, 3, "grpMaskLoad", new Grp_load_3(true, GRP));
 
   // These are grpBuffer, which is very similar to grpLoad and Haeleth
   // doesn't know how they differ. For now, we just assume they're
   // equivalent.
   addOpcode(70, 0, "grpBuffer", new Grp_load_1(false));
   addOpcode(70, 1, "grpBuffer", new Grp_load_1(false));
-  addOpcode(70, 2, "grpBuffer", new Grp_load_3<GRP_SPACE>(false));
-  addOpcode(70, 3, "grpBuffer", new Grp_load_3<GRP_SPACE>(false));
+  addOpcode(70, 2, "grpBuffer", new Grp_load_3(false, GRP));
+  addOpcode(70, 3, "grpBuffer", new Grp_load_3(false, GRP));
   addOpcode(71, 0, "grpMaskBuffer", new Grp_load_1(true));
   addOpcode(71, 1, "grpMaskBuffer", new Grp_load_1(true));
-  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_3<GRP_SPACE>(true));
-  addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3<GRP_SPACE>(true));
+  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_3(true, GRP));
+  addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3(true, GRP));
 
-  addOpcode(72, 0, "grpDisplay", new Grp_display_0<GRP_SPACE>);
-  addOpcode(72, 1, "grpDisplay", new Grp_display_1<GRP_SPACE>);
-  addOpcode(72, 2, "grpDisplay", new Grp_display_2<GRP_SPACE>);
-  addOpcode(72, 3, "grpDisplay", new Grp_display_3<GRP_SPACE>);
+  addOpcode(72, 0, "grpDisplay", new Grp_display_0(GRP));
+  addOpcode(72, 1, "grpDisplay", new Grp_display_1(GRP));
+  addOpcode(72, 2, "grpDisplay", new Grp_display_2(GRP));
+  addOpcode(72, 3, "grpDisplay", new Grp_display_3(GRP));
 
   // These are supposed to be grpOpenBg, but until I have the object
   // layer working, this simply does the same thing.
-  addOpcode(73, 0, "grpOpenBg", new Grp_open_0<GRP_SPACE>(false));
-  addOpcode(73, 1, "grpOpenBg", new Grp_open_1<GRP_SPACE>(false));
-  addOpcode(73, 2, "grpOpenBg", new Grp_open_2<GRP_SPACE>(false));
-  addOpcode(73, 3, "grpOpenBg", new Grp_open_3<GRP_SPACE>(false));
-  addOpcode(73, 4, "grpOpenBg", new Grp_open_4<GRP_SPACE>(false));
+  addOpcode(73, 0, "grpOpenBg", new Grp_open_0(false, GRP));
+  addOpcode(73, 1, "grpOpenBg", new Grp_open_1(false, GRP));
+  addOpcode(73, 2, "grpOpenBg", new Grp_open_2(false, GRP));
+  addOpcode(73, 3, "grpOpenBg", new Grp_open_3(false, GRP));
+  addOpcode(73, 4, "grpOpenBg", new Grp_open_4(false, GRP));
 
-  addOpcode(74, 0, "grpMaskOpen", new Grp_open_0<GRP_SPACE>(true));
-  addOpcode(74, 1, "grpMaskOpen", new Grp_open_1<GRP_SPACE>(true));
-  addOpcode(74, 2, "grpMaskOpen", new Grp_open_2<GRP_SPACE>(true));
-  addOpcode(74, 3, "grpMaskOpen", new Grp_open_3<GRP_SPACE>(true));
-  addOpcode(74, 4, "grpMaskOpen", new Grp_open_4<GRP_SPACE>(true));
+  addOpcode(74, 0, "grpMaskOpen", new Grp_open_0(true, GRP));
+  addOpcode(74, 1, "grpMaskOpen", new Grp_open_1(true, GRP));
+  addOpcode(74, 2, "grpMaskOpen", new Grp_open_2(true, GRP));
+  addOpcode(74, 3, "grpMaskOpen", new Grp_open_3(true, GRP));
+  addOpcode(74, 4, "grpMaskOpen", new Grp_open_4(true, GRP));
 
-  addOpcode(76, 0, "grpOpen", new Grp_open_0<GRP_SPACE>(false));
-  addOpcode(76, 1, "grpOpen", new Grp_open_1<GRP_SPACE>(false));
-  addOpcode(76, 2, "grpOpen", new Grp_open_2<GRP_SPACE>(false));
-  addOpcode(76, 3, "grpOpen", new Grp_open_3<GRP_SPACE>(false));
-  addOpcode(76, 4, "grpOpen", new Grp_open_4<GRP_SPACE>(false));
+  addOpcode(76, 0, "grpOpen", new Grp_open_0(false, GRP));
+  addOpcode(76, 1, "grpOpen", new Grp_open_1(false, GRP));
+  addOpcode(76, 2, "grpOpen", new Grp_open_2(false, GRP));
+  addOpcode(76, 3, "grpOpen", new Grp_open_3(false, GRP));
+  addOpcode(76, 4, "grpOpen", new Grp_open_4(false, GRP));
 
   addOpcode(100, 0, "grpCopy", new Grp_copy_1(false));
   addOpcode(100, 1, "grpCopy", new Grp_copy_1(false));
-  addOpcode(100, 2, "grpCopy", new Grp_copy_3<GRP_SPACE>(false));
-  addOpcode(100, 3, "grpCopy", new Grp_copy_3<GRP_SPACE>(false));
+  addOpcode(100, 2, "grpCopy", new Grp_copy_3(false, GRP));
+  addOpcode(100, 3, "grpCopy", new Grp_copy_3(false, GRP));
   addOpcode(101, 0, "grpMaskCopy", new Grp_copy_1(true));
   addOpcode(101, 1, "grpMaskCopy", new Grp_copy_1(true));
-  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_3<GRP_SPACE>(true));
-  addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3<GRP_SPACE>(true));
+  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_3(true, GRP));
+  addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3(true, GRP));
 
   addOpcode(201, 0, "grpFill", new Grp_fill_1);
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
-  addOpcode(201, 2, "grpFill", new Grp_fill_3<GRP_SPACE>);
-  addOpcode(201, 3, "grpFill", new Grp_fill_3<GRP_SPACE>);
+  addOpcode(201, 2, "grpFill", new Grp_fill_3(GRP));
+  addOpcode(201, 3, "grpFill", new Grp_fill_3(GRP));
 
   // -----------------------------------------------------------------------
   
   addOpcode(1050, 0, "recLoad", new Grp_load_1(false));
   addOpcode(1050, 1, "recLoad", new Grp_load_1(false));
-  addOpcode(1050, 2, "recLoad", new Grp_load_3<REC_SPACE>(false));
-  addOpcode(1050, 3, "recLoad", new Grp_load_3<REC_SPACE>(false));
+  addOpcode(1050, 2, "recLoad", new Grp_load_3(false, REC));
+  addOpcode(1050, 3, "recLoad", new Grp_load_3(false, REC));
 
-  addOpcode(1052, 0, "grpDisplay", new Grp_display_0<REC_SPACE>);
-  addOpcode(1052, 1, "grpDisplay", new Grp_display_1<REC_SPACE>);
-  addOpcode(1052, 2, "grpDisplay", new Grp_display_2<REC_SPACE>);
-  addOpcode(1052, 3, "grpDisplay", new Grp_display_3<REC_SPACE>);
+  addOpcode(1052, 0, "grpDisplay", new Grp_display_0(REC));
+  addOpcode(1052, 1, "grpDisplay", new Grp_display_1(REC));
+  addOpcode(1052, 2, "grpDisplay", new Grp_display_2(REC));
+  addOpcode(1052, 3, "grpDisplay", new Grp_display_3(REC));
 
   // These are supposed to be recOpenBg, but until I have the object
   // layer working, this simply does the same thing.
-  addOpcode(1053, 0, "recOpenBg", new Grp_open_0<REC_SPACE>(false));
-  addOpcode(1053, 1, "recOpenBg", new Grp_open_1<REC_SPACE>(false));
-  addOpcode(1053, 2, "recOpenBg", new Grp_open_2<REC_SPACE>(false));
-  addOpcode(1053, 3, "recOpenBg", new Grp_open_3<REC_SPACE>(false));
-  addOpcode(1053, 4, "recOpenBg", new Grp_open_4<REC_SPACE>(false));
+  addOpcode(1053, 0, "recOpenBg", new Grp_open_0(false, REC));
+  addOpcode(1053, 1, "recOpenBg", new Grp_open_1(false, REC));
+  addOpcode(1053, 2, "recOpenBg", new Grp_open_2(false, REC));
+  addOpcode(1053, 3, "recOpenBg", new Grp_open_3(false, REC));
+  addOpcode(1053, 4, "recOpenBg", new Grp_open_4(false, REC));
 
-  addOpcode(1054, 0, "recMaskOpen", new Grp_open_0<REC_SPACE>(true));
-  addOpcode(1054, 1, "recMaskOpen", new Grp_open_1<REC_SPACE>(true));
-  addOpcode(1054, 2, "recMaskOpen", new Grp_open_2<REC_SPACE>(true));
-  addOpcode(1054, 3, "recMaskOpen", new Grp_open_3<REC_SPACE>(true));
-  addOpcode(1054, 4, "recMaskOpen", new Grp_open_4<REC_SPACE>(true));
+  addOpcode(1054, 0, "recMaskOpen", new Grp_open_0(true, REC));
+  addOpcode(1054, 1, "recMaskOpen", new Grp_open_1(true, REC));
+  addOpcode(1054, 2, "recMaskOpen", new Grp_open_2(true, REC));
+  addOpcode(1054, 3, "recMaskOpen", new Grp_open_3(true, REC));
+  addOpcode(1054, 4, "recMaskOpen", new Grp_open_4(true, REC));
 
-  addOpcode(1056, 0, "recOpen", new Grp_open_0<REC_SPACE>(false));
-  addOpcode(1056, 1, "recOpen", new Grp_open_1<REC_SPACE>(false));
-  addOpcode(1056, 2, "recOpen", new Grp_open_2<REC_SPACE>(false));
-  addOpcode(1056, 3, "recOpen", new Grp_open_3<REC_SPACE>(false));
-  addOpcode(1056, 4, "recOpen", new Grp_open_4<REC_SPACE>(false));
+  addOpcode(1056, 0, "recOpen", new Grp_open_0(false, REC));
+  addOpcode(1056, 1, "recOpen", new Grp_open_1(false, REC));
+  addOpcode(1056, 2, "recOpen", new Grp_open_2(false, REC));
+  addOpcode(1056, 3, "recOpen", new Grp_open_3(false, REC));
+  addOpcode(1056, 4, "recOpen", new Grp_open_4(false, REC));
 
   addOpcode(1100, 0, "recCopy", new Grp_copy_1(false));
   addOpcode(1100, 1, "recCopy", new Grp_copy_1(false));
-  addOpcode(1100, 2, "recCopy", new Grp_copy_3<REC_SPACE>(false));
-  addOpcode(1100, 3, "recCopy", new Grp_copy_3<REC_SPACE>(false));
+  addOpcode(1100, 2, "recCopy", new Grp_copy_3(false, REC));
+  addOpcode(1100, 3, "recCopy", new Grp_copy_3(false, REC));
   addOpcode(1101, 0, "recMaskCopy", new Grp_copy_1(true));
   addOpcode(1101, 1, "recMaskCopy", new Grp_copy_1(true));
-  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_3<REC_SPACE>(true));
-  addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3<REC_SPACE>(true));
+  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_3(true, REC));
+  addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3(true, REC));
 
   addOpcode(1201, 0, "recFill", new Grp_fill_1);
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
-  addOpcode(1201, 2, "recFill", new Grp_fill_3<REC_SPACE>);
-  addOpcode(1201, 3, "recFill", new Grp_fill_3<REC_SPACE>);
+  addOpcode(1201, 2, "recFill", new Grp_fill_3(REC));
+  addOpcode(1201, 3, "recFill", new Grp_fill_3(REC));
 }
 
 // @}
