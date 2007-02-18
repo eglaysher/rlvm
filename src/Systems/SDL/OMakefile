@@ -15,7 +15,9 @@ LRLFILES[] =
   file
   SDLSystem
   SDLGraphicsSystem
+  SDLSurface
   SDLEventSystem
+  SDLUtils
   Texture
 
 StaticCObject(libSDLSystem, $(LRLFILES))

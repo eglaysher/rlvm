@@ -107,11 +107,48 @@ struct Obj_objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
+struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T >
+{
+  int m_layer;
+  int m_val;
+  Obj_setWipeCopyTo_0(int layer, int value) 
+    : m_layer(layer), m_val(value) {}
+
+  void operator()(RLMachine& machine, int buf)
+  {
+    getGraphicsObject(machine, m_layer, buf).setWipeCopy(m_val);
+  }
+};
+// -----------------------------------------------------------------------
+
+struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
+{
+  int m_layer;
+  int m_val;
+  Obj_setWipeCopyTo_1(int layer, int value) 
+    : m_layer(layer), m_val(value) {}
+
+  void operator()(RLMachine& machine, int min, int max)
+  {
+    max++;
+    for(int i = min; i < max; ++i) {
+      getGraphicsObject(machine, m_layer, i).setWipeCopy(m_val);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------
+
 ObjFgManagement::ObjFgManagement()
   : RLModule("ObjFgManagement", 1, 61)
 {
   addOpcode(2, 0, "objCopy", new Obj_objCopy(OBJ_FG_LAYER, OBJ_FG_LAYER));
   addOpcode(3, 0, "objCopyToBg", new Obj_objCopy(OBJ_FG_LAYER, OBJ_BG_LAYER));
+
+  addOpcode(4, 0, "objWipeCopyOn", new Obj_setWipeCopyTo_0(OBJ_FG_LAYER, 1));
+  addOpcode(4, 1, "objWipeCopyOn", new Obj_setWipeCopyTo_1(OBJ_FG_LAYER, 1));
+  addOpcode(5, 0, "objWipeCopyOff", new Obj_setWipeCopyTo_0(OBJ_FG_LAYER, 0));
+  addOpcode(5, 1, "objWipeCopyOff", new Obj_setWipeCopyTo_1(OBJ_FG_LAYER, 0));
 
   addOpcode(10, 0, "objClear", new Obj_objClear_0(OBJ_FG_LAYER));
   addOpcode(10, 1, "objClear", new Obj_objClear_1(OBJ_FG_LAYER));
@@ -126,6 +163,11 @@ ObjBgManagement::ObjBgManagement()
 {
   addOpcode(2, 0, "objBgCopyToFg", new Obj_objCopy(OBJ_BG_LAYER, OBJ_FG_LAYER));
   addOpcode(3, 0, "objBgCopy", new Obj_objCopy(OBJ_BG_LAYER, OBJ_BG_LAYER));
+
+  addOpcode(4, 0, "objWipeCopyOn", new Obj_setWipeCopyTo_0(OBJ_BG_LAYER, 1));
+  addOpcode(4, 1, "objWipeCopyOn", new Obj_setWipeCopyTo_1(OBJ_BG_LAYER, 1));
+  addOpcode(5, 0, "objWipeCopyOff", new Obj_setWipeCopyTo_0(OBJ_BG_LAYER, 0));
+  addOpcode(5, 1, "objWipeCopyOff", new Obj_setWipeCopyTo_1(OBJ_BG_LAYER, 0));
 
   addOpcode(10, 0, "objBgClear", new Obj_objClear_0(OBJ_BG_LAYER));
   addOpcode(10, 1, "objBgClear", new Obj_objClear_1(OBJ_BG_LAYER));

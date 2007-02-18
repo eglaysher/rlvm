@@ -161,6 +161,8 @@ public:
   int alpha() const { return m_alpha; }
   void setAlpha(const int alpha) { m_alpha = alpha; }
 
+  bool hasObjectData() const { return m_objectData; }
+
   GraphicsObjectData& objectData() const {
     if(m_objectData)
       return *m_objectData;
@@ -186,6 +188,9 @@ public:
    * GraphicsObject. Corresponds to the RLAPI command objClear.
    */
   void clearObject();
+
+  int wipeCopy() const { return m_wipeCopy; }
+  void setWipeCopy(const int wipeCopy) { m_wipeCopy = wipeCopy; }
   
 private:
 
@@ -258,6 +263,9 @@ private:
   int m_scrollRateX, m_scrollRateY;
 
   /// @}
+
+  /// The wipeCopy bit
+  int m_wipeCopy;
 
   /// The actual data used to render the object
   boost::scoped_ptr<GraphicsObjectData> m_objectData;

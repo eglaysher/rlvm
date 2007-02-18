@@ -42,7 +42,8 @@ GraphicsObject::GraphicsObject()
     m_pattNo(0), m_alpha(255), m_mono(0), m_invert(0),
     // Do the rest later.
     m_tintR(255), m_tintG(255), m_tintB(255), 
-    m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255)
+    m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255),
+    m_wipeCopy(0)
 {
   // Regretfully, we can't do this in the initializer list.
   fill(m_adjustX, m_adjustX + 8, 0);
@@ -63,7 +64,7 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
     m_colourB(rhs.m_colourB), m_colourLevel(rhs.m_colourLevel),
     m_compositeMode(rhs.m_compositeMode),
     m_scrollRateX(rhs.m_scrollRateX),
-    m_scrollRateY(rhs.m_scrollRateY)
+     m_scrollRateY(rhs.m_scrollRateY), m_wipeCopy(0)
 {   
   if(rhs.m_objectData)
     m_objectData.reset(rhs.m_objectData->clone());
@@ -112,6 +113,8 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
     m_compositeMode = rhs.m_compositeMode;
     m_scrollRateX = rhs.m_scrollRateX;
     m_scrollRateY = rhs.m_scrollRateY;
+
+    m_wipeCopy = rhs.m_wipeCopy;
 
     if(rhs.m_objectData)
       m_objectData.reset(rhs.m_objectData->clone());

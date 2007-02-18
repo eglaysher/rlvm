@@ -90,9 +90,8 @@ private:
   DCScreenUpdateMode m_screenUpdateMode;
 
 public:
-  GraphicsSystem() 
-    : m_defaultGrpName("S_TT_BG00"), m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC){}
-  virtual ~GraphicsSystem() { }
+  GraphicsSystem();
+  virtual ~GraphicsSystem();
 
   void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }
   const std::string& defaultGrpName() const { return m_defaultGrpName; }
@@ -137,6 +136,7 @@ public:
 
 
   // ----------------------------------- [ Object getter/factory functions ]
+  virtual void promoteObjects() = 0;
 
   virtual GraphicsObjectData* buildObjOfFile(const std::string& filename) = 0;
 
@@ -148,48 +148,5 @@ public:
 
 const static int OBJ_FG_LAYER = 0;
 const static int OBJ_BG_LAYER = 1;
-
-/** 
- * Abstract concept of a surface. Used 
- * 
- * 
- * @return 
- */
-class Surface
-{
-public:
-  virtual ~Surface() { }
-
-  virtual int width() const = 0;
-  virtual int height() const = 0;
-
-  /// Blits to another surface
-  virtual void blitToSurface(Surface& surface, 
-                             int srcX, int srcY, int srcWidth, int srcHeight,
-                             int destX, int destY, int destWidth, int destHeight,
-                             int alpha = 255, bool useSrcAlpha = true) { }
-
-  virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     int alpha = 255) { }
-
-
-  virtual void renderToScreen(
-    int srcX1, int srcY1, int srcX2, int srcY2,
-    int destX1, int destY1, int destX2, int destY2,
-    const int opacity[4]) { }
-
-
-  virtual void rawRenderQuad(const int srcCoords[8], 
-                             const int destCoords[8],
-                             const int opacity[4]) { }
-
-  virtual void fill(int r, int g, int b, int alpha) = 0;
-  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
-                    int width, int height) = 0;
-
-  virtual Surface* clone() const = 0;
-};
 
 #endif

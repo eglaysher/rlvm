@@ -34,6 +34,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 
 #include "Modules/EffectFactory.hpp"
 
@@ -147,11 +148,13 @@ struct SPACE {
                                          int effectNum) = 0;
 };
 
+// -----------------------------------------------------------------------
+
 /**
  * A large number of the operation structs in the Grp module are
  * written in a generic way so that they can be done in either rec or
  * grp coordinate space. GRP_SPACE or REC_SPACE are passed as
- * parameters to templatized versions of the operations.
+ * parameters to these operations.
  * 
  * @see REC_SPACE
  * @see Grp_open_0
@@ -616,6 +619,10 @@ struct Grp_openBg_4 : public RLOp_Void_17<
                      opacity, m_useAlpha);
     }
 
+    // Promote the objects 
+    graphics.promoteObjects();
+
+    // Render the screen to a temporary 
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);

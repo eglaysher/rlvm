@@ -33,6 +33,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 
 #include <iostream>
 #include <cmath>

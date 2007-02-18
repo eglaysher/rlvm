@@ -15,6 +15,7 @@ LIBRLVMFILES[] =
   MachineBase/libMachineBase
   MachineBase/GeneralOperations
   Modules/libModules
+  Systems/Base/GraphicsSystem
   Systems/Base/GraphicsObject
   Systems/Base/FrameCounter
   Systems/Base/EventSystem

@@ -20,8 +20,6 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "Texture.hpp"
-
 #include <boost/bind.hpp>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
@@ -31,6 +29,9 @@
 
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/Texture.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
 
 #include "libReallive/defs.h"
 
@@ -38,37 +39,7 @@ using namespace std;
 using namespace boost;
 using namespace libReallive;
 
-namespace {
-
-void ShowGLErrors(void)
-{
-  GLenum error;
-  const GLubyte* errStr;
-  if ((error = glGetError()) != GL_NO_ERROR)
-  {
-    errStr = gluErrorString(error);
-    fprintf(stderr, "OpenGL Error: %s\n", errStr);
-    abort();
-  }
-}
-
 // -----------------------------------------------------------------------
-
-int SafeSize(int i) {
-  static GLint maxTextureSize = 0;
-  if(maxTextureSize == 0)
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-  int p;
-
-  if (i > maxTextureSize) return maxTextureSize;
-
-  for (p = 0; p < 24; p++)
-    if (i <= (1<<p))
-      return 1<<p;
-
-  return maxTextureSize;
-}
-}
 
 Texture::Texture(SDL_Surface* surface)
   : m_logicalWidth(surface->w), m_logicalHeight(surface->h)
@@ -123,13 +94,6 @@ Texture::Texture(SDL_Surface* surface)
   else
     throw Error("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
 
-  // I have no idea what I'm doing!
-//    cerr << "MASK: [" << hex << surface->format->Rmask 
-//         << ", " << surface->format->Gmask 
-//         << ", " << surface->format->Bmask 
-//         << ", " << surface->format->Amask 
-//         << "]" << endl;
-
   m_textureWidth = SafeSize(surface->w);
   m_textureHeight = SafeSize(surface->h);
   glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
@@ -139,15 +103,33 @@ Texture::Texture(SDL_Surface* surface)
                byteType, NULL);
   ShowGLErrors();
 
-  // Check the surface for the byte order of the surface:
-//   cerr << "Size: {" << dec << surface->w << ", " << surface->h << "}"
-//        << " First pixel: " << hex << ((int*)surface->pixels)[0] << endl;
-
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
                   byteOrder, byteType, surface->pixels);            
   ShowGLErrors();
 
   SDL_UnlockSurface(surface);
+}
+
+// -----------------------------------------------------------------------
+
+Texture::Texture(render_to_texture, int width, int height)
+  : m_logicalWidth(width), m_logicalHeight(height)
+{
+  glGenTextures(1, &m_textureID);
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+  ShowGLErrors();
+//  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  m_textureWidth = SafeSize(m_logicalWidth);
+  m_textureHeight = SafeSize(m_logicalHeight);
+
+  // This may fail.
+  glCopyTexSubImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, m_logicalWidth, 
+                      m_logicalHeight, 0);
+  ShowGLErrors();
 }
 
 // -----------------------------------------------------------------------

@@ -2,6 +2,7 @@
 #define __NullGraphicsSystem_hpp__
 
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 
 class NullSurface : public Surface
 {
@@ -28,6 +29,8 @@ public:
 
   virtual void allocateDC(int dc, int width, int height) { }
   virtual void freeDC(int dc) { }
+
+  virtual void promoteObjects() { }
 
   virtual GraphicsObjectData* buildObjOfFile(const std::string& filename)
   { return NULL; }
