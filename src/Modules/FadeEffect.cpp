@@ -53,7 +53,7 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
   int opacity = (float(currentTime) / duration()) * 255;
 
   GraphicsSystem& graphics = machine.system().graphics();
-  graphics.getDC(1).
+  srcSurface().
     renderToScreen(0, 0, width(), height(), 
                    0, 0, width(), height(),
                    opacity);
@@ -61,8 +61,10 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-FadeEffect::FadeEffect(RLMachine& machine, int width, int height, 
+FadeEffect::FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src, 
+                       boost::shared_ptr<Surface> dst,
+                       int width, int height, 
                        int time)
-  : Effect(machine, width, height, time)
+  : Effect(machine, src, dst, width, height, time)
 {
 }

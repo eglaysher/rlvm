@@ -40,7 +40,9 @@ protected:
                                     int currentTime);
 
 public:
-  FadeEffect(RLMachine& machine, int width, int height, int time);
+  FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src, 
+    boost::shared_ptr<Surface> dst,
+             int width, int height, int time);
 };
 
 

@@ -40,10 +40,11 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-Effect::Effect(RLMachine& machine, int width, int height, int time)
+Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
+         boost::shared_ptr<Surface> dst, int width, int height, int time)
   : m_width(width), m_height(height), m_duration(time), 
     m_startTime(machine.system().event().getTicks()),
-    m_machine(machine)
+    m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
 {
   m_machine.system().event().beginRealtimeTask();
 }
@@ -61,7 +62,6 @@ Effect::~Effect()
 ///       RealLive exactly. Verify this.
 bool Effect::operator()(RLMachine& machine)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - m_startTime;
 
@@ -70,9 +70,9 @@ bool Effect::operator()(RLMachine& machine)
   if(currentFrame >= m_duration || ctrlPressed)
   {
     // Blit DC1 onto DC0, with full opacity, and end the operation
-    graphics.getDC(1).blitToSurface(graphics.getDC(0),
-                                    0, 0, m_width, m_height,
-                                    0, 0, m_width, m_height, 255);
+    srcSurface().blitToSurface(dstSurface(),
+                               0, 0, m_width, m_height,
+                               0, 0, m_width, m_height, 255);
     return true;
   }
   else
@@ -83,7 +83,7 @@ bool Effect::operator()(RLMachine& machine)
 
     if(blitOriginalImage())
     {
-      graphics.getDC(0).
+      dstSurface().
         renderToScreen(0, 0, width(), height(),
                        0, 0, width(), height(),
                        255);

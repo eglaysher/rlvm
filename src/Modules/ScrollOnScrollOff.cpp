@@ -62,17 +62,19 @@ void ScrollSquashSlideBaseEffect::performEffectForTime(
   GraphicsSystem& graphics = machine.system().graphics();
   int amountVisible = calculateAmountVisible(currentTime,  
                                              m_drawer->getMaxSize(graphics));
-  m_effectType->composeEffectsFor(graphics, *m_drawer, amountVisible);
+  m_effectType->composeEffectsFor(graphics, *this, *m_drawer, amountVisible);
 }
 
 // -----------------------------------------------------------------------
 
 ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
   RLMachine& machine,
+  boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst,
   ScrollSquashSlideDrawer* drawer,
   ScrollSquashSlideEffectTypeBase* effectType,
   int width, int height, int time)
-  : Effect(machine, width, height, time), 
+  : Effect(machine, src, dst, width, height, time), 
     m_drawer(drawer), m_effectType(effectType)
 {
 }
@@ -108,9 +110,10 @@ int TopToBottomDrawer::getMaxSize(GraphicsSystem& gs)
 // -----------------------------------------------------------------------
 
 void TopToBottomDrawer::scrollOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
-   graphics.getDC(0).
+   effect.dstSurface().
      renderToScreen(0, 0, width, height - amountVisible,
                     0, amountVisible, width, height, 255);
 }
@@ -118,9 +121,10 @@ void TopToBottomDrawer::scrollOff(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
-  graphics.getDC(1).
+  effect.srcSurface().
     renderToScreen(0, height - amountVisible, width, height,
                    0, 0, width, amountVisible, 255);
 }
@@ -128,9 +132,10 @@ void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
-  graphics.getDC(0).
+  effect.dstSurface().
     renderToScreen(0, 0, width, height,
                    0, amountVisible, width, height, 255);
 }
@@ -138,9 +143,10 @@ void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void TopToBottomDrawer::squashOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
-  graphics.getDC(1).
+  effect.srcSurface().
     renderToScreen(0, 0, width, height,
                    0, 0, width, amountVisible, 255);
 }
@@ -155,9 +161,10 @@ int BottomToTopDrawer::getMaxSize(GraphicsSystem& gs)
 // -----------------------------------------------------------------------
 
 void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
-   graphics.getDC(1).
+   effect.srcSurface().
      renderToScreen(0, 0, width, amountVisible,
                     0, height - amountVisible, width, height, 255);
 }
@@ -165,9 +172,10 @@ void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics, 
+                                  ScrollSquashSlideBaseEffect& effect, 
                                   int amountVisible, int width, int height)
 {
-   graphics.getDC(0).
+   effect.dstSurface().
      renderToScreen(0, amountVisible, width, height,
                     0, 0, width, height - amountVisible, 255);
 }
@@ -175,19 +183,21 @@ void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
-   graphics.getDC(1).
+   effect.srcSurface().
      renderToScreen(0, 0, width, height,
                     0, height - amountVisible, width, height, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void BottomToTopDrawer::squashOff(GraphicsSystem& graphics, 
+void BottomToTopDrawer::squashOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect, 
                                   int amountVisible, int width, int height)
 {
-  graphics.getDC(0).
+  effect.dstSurface().
     renderToScreen(0, 0, width, height,
                    0, 0, width, height - amountVisible, 255);
 }
@@ -201,40 +211,44 @@ int LeftToRightDrawer::getMaxSize(GraphicsSystem& gs)
 
 // -----------------------------------------------------------------------
 
-void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics, 
+void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect, 
                                  int amountVisible, int width, int height)
 {
-  graphics.getDC(1).
+  effect.srcSurface().
     renderToScreen(width - amountVisible, 0, width, height,
                    0, 0, amountVisible, height, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics, 
+void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect, 
                                   int amountVisible, int width, int height)
 {
-  graphics.getDC(0).
+  effect.dstSurface().
     renderToScreen(0, 0, width - amountVisible, height,
                    amountVisible, 0, width, height, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void LeftToRightDrawer::squashOn(GraphicsSystem& graphics, 
+void LeftToRightDrawer::squashOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect, 
                                  int amountVisible, int width, int height)
 {
-  graphics.getDC(1).
+  effect.srcSurface().
     renderToScreen(0, 0, width, height, 
                    0, 0, amountVisible, height, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void LeftToRightDrawer::squashOff(GraphicsSystem& graphics, 
+void LeftToRightDrawer::squashOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect, 
                                   int amountVisible, int width, int height)
 {
-  graphics.getDC(0).
+  effect.dstSurface().
     renderToScreen(0, 0, width, height,
                    amountVisible, 0, width, height, 255);
 }
@@ -249,19 +263,21 @@ int RightToLeftDrawer::getMaxSize(GraphicsSystem& gs)
 // -----------------------------------------------------------------------
 
 void RightToLeftDrawer::scrollOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
-  graphics.getDC(0).
+  effect.dstSurface().
     renderToScreen(amountVisible, 0, width, height,
                    0, 0, width - amountVisible, height, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics, 
+void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect, 
                                  int amountVisible, int width, int height)
 {
-  graphics.getDC(1).
+  effect.srcSurface().
     renderToScreen(0, 0, amountVisible, height,
                    width - amountVisible, 0, width, height, 255);
 }
@@ -269,19 +285,21 @@ void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void RightToLeftDrawer::squashOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
-  graphics.getDC(0).
+  effect.dstSurface().
     renderToScreen(0, 0, width, height,
                    0, 0, width - amountVisible, height, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void RightToLeftDrawer::squashOn(GraphicsSystem& graphics, 
+void RightToLeftDrawer::squashOn(GraphicsSystem& graphics,
+                                 ScrollSquashSlideBaseEffect& effect, 
                                  int amountVisible, int width, int height)
 {
-  graphics.getDC(1).
+  effect.srcSurface().
     renderToScreen(0, 0, width, height,
                    width - amountVisible, 0, width, height, 255);  
 }
@@ -296,73 +314,85 @@ ScrollSquashSlideEffectTypeBase::~ScrollSquashSlideEffectTypeBase()
 // -----------------------------------------------------------------------
 
 void ScrollOnScrollOff::composeEffectsFor(
-  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  GraphicsSystem& system,                                
+  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
-  drawer.scrollOn(system, amountVisible, system.screenWidth(), system.screenHeight());
-  drawer.scrollOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.scrollOn(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.scrollOff(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
 }
 
 // -----------------------------------------------------------------------
 
 void ScrollOnSquashOff::composeEffectsFor(
-  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  GraphicsSystem& system, 
+  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
-  drawer.scrollOn(system, amountVisible, system.screenWidth(), system.screenHeight());
-  drawer.squashOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.scrollOn(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.squashOff(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
 }
 
 // -----------------------------------------------------------------------
 
 void SquashOnScrollOff::composeEffectsFor(
-  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  GraphicsSystem& system,
+  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
-  drawer.squashOn(system, amountVisible, system.screenWidth(), system.screenHeight());
-  drawer.scrollOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.squashOn(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.scrollOff(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
 }
 
 // -----------------------------------------------------------------------
 
 void SquashOnSquashOff::composeEffectsFor(
-  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  GraphicsSystem& system, 
+  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
-  drawer.squashOn(system, amountVisible, system.screenWidth(), system.screenHeight());
-  drawer.squashOff(system, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.squashOn(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
+  drawer.squashOff(system, effect, amountVisible, system.screenWidth(), system.screenHeight());
 }
 
 // -----------------------------------------------------------------------
 
 void SlideOn::composeEffectsFor(
-  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  GraphicsSystem& system,
+  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
   int width = system.screenWidth();
   int height = system.screenHeight();
 
   // Draw the old image
-  system.getDC(0).
+  effect.dstSurface().
     renderToScreen(0, 0, width, height, 0, 0, width, height, 255);
 
-  drawer.scrollOn(system, amountVisible, width, height);
+  drawer.scrollOn(system, effect, amountVisible, width, height);
 }
 
 // -----------------------------------------------------------------------
 
 void SlideOff::composeEffectsFor(
-  GraphicsSystem& system, ScrollSquashSlideDrawer& drawer,
+  GraphicsSystem& system,
+  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
   int width = system.screenWidth();
   int height = system.screenHeight();
 
   // Draw the old image
-  system.getDC(1).
+  effect.srcSurface().
     renderToScreen(0, 0, width, height, 0, 0, width, height, 255);
 
-  drawer.scrollOff(system, amountVisible, width, height);
+  drawer.scrollOff(system, effect, amountVisible, width, height);
 }
 
 // -----------------------------------------------------------------------

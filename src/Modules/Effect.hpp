@@ -33,6 +33,7 @@
 #define __Effect_hpp__
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
 
@@ -86,6 +87,13 @@ private:
   /// appropriate endRealtimeTask() to the eventsystem on destruction
   RLMachine& m_machine;
 
+  /// The source surface (previously known as DC1, before I realized
+  /// that temporary surfaces could in fact be part of effects)
+  boost::shared_ptr<Surface> m_srcSurface;
+
+  /// The destination surface (previously known as DC0)
+  boost::shared_ptr<Surface> m_dstSurface;
+
 protected:
   int width() const { return m_width; }
   int height() const { return m_height; }
@@ -102,6 +110,7 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, 
                                     int currentTime) = 0;
 
+
 public:
   /** 
    * Sets up all other variables
@@ -109,7 +118,8 @@ public:
    * Note that we add 1 to both width and height; RL is the only
    * system I know of where ranges are inclusive...
    */
-  Effect(RLMachine& machine, int width, int height, int time);
+  Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
+         boost::shared_ptr<Surface> dst, int width, int height, int time);
 
   virtual ~Effect();
 
@@ -120,6 +130,13 @@ public:
    * the current dc0 to the original dc0, then blits dc1 onto it.
    */
   virtual bool operator()(RLMachine& machine);
+
+  /**
+   * Accessors for which surfaces we're composing. These are public as
+   * an ugly hack for ScrollOnScrollOff.cpp.
+   */
+  Surface& srcSurface() { return *m_srcSurface; }
+  Surface& dstSurface() { return *m_dstSurface; }
 };
 
 // @}

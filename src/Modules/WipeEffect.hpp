@@ -33,6 +33,8 @@
 
 #include "Modules/Effect.hpp"
 
+#include <boost/shared_ptr.hpp>
+
 class GraphicsSystem;
 
 /**
@@ -61,7 +63,8 @@ protected:
                       int sizeOfScreen);
 
 public:
-  WipeEffect(RLMachine& machine, int width, 
+  WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+             boost::shared_ptr<Surface> dst, int width, 
              int height, int time, int interpolation);
 };
 
@@ -76,9 +79,10 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeTopToBottomEffect(RLMachine& machine, int width, 
-             int height, int time,
-             int interpolation);
+  WipeTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+                        boost::shared_ptr<Surface> dst, int width, 
+                        int height, int time,
+                        int interpolation);
 };
 
 // -----------------------------------------------------------------------
@@ -92,7 +96,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeBottomToTopEffect(RLMachine& machine, int width, 
+  WipeBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+                        boost::shared_ptr<Surface> dst, int width, 
                         int height, int time,
                         int interpolation);
 };
@@ -108,7 +113,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeLeftToRightEffect(RLMachine& machine, int width, 
+  WipeLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+                        boost::shared_ptr<Surface> dst, int width, 
                         int height, int time,
                         int interpolation);
 };
@@ -124,7 +130,8 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
 public:
-  WipeRightToLeftEffect(RLMachine& machine, int width, 
+  WipeRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+                        boost::shared_ptr<Surface> dst, int width, 
                         int height, int time,
                         int interpolation);
 };

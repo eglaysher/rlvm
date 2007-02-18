@@ -31,8 +31,12 @@
 #ifndef __EffectFactory_hpp__
 #define __EffectFactory_hpp__
 
+#include <boost/shared_ptr.hpp>
+
 class LongOperation;
 class RLMachine;
+
+class Surface;
 
 class ScrollSquashSlideDrawer;
 class ScrollSquashSlideEffectTypeBase;
@@ -60,7 +64,10 @@ public:
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */
-  static LongOperation* buildFromSEL(RLMachine& machine, int selnum);
+  static LongOperation* buildFromSEL(RLMachine& machine, 
+                                     boost::shared_ptr<Surface> src, 
+                                     boost::shared_ptr<Surface> dst,
+                                     int selnum);
 
   /** 
    * Builds an Effect based off the \#SELR.selnum line in the
@@ -73,7 +80,10 @@ public:
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */  
-  static LongOperation* buildFromSELR(RLMachine& machine, int selnum);
+  static LongOperation* buildFromSELR(RLMachine& machine, 
+                                      boost::shared_ptr<Surface> src, 
+                                      boost::shared_ptr<Surface> dst,
+                                      int selnum);
 
   /** 
    * Returns a constructed LongOperation with the following properties
@@ -103,14 +113,17 @@ public:
    *         and then exit.
    */
   static LongOperation* build(
-    RLMachine& machine, int time, int style,
+    RLMachine& machine, boost::shared_ptr<Surface> src, 
+    boost::shared_ptr<Surface> dst,
+    int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int c);
 
 private:
   static LongOperation* buildWipeEffect(
-    RLMachine& machine, int width, int height, int time, 
-    int direction, int interpolation);
+    RLMachine& machine, boost::shared_ptr<Surface> src, 
+    boost::shared_ptr<Surface> dst,
+    int width, int height, int time, int direction, int interpolation);
 
   static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(
     int drawerType);

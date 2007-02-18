@@ -87,6 +87,8 @@ private:
 
 public:
   ScrollSquashSlideBaseEffect(RLMachine& machine,
+                              boost::shared_ptr<Surface> src,
+                              boost::shared_ptr<Surface> dst,
                               ScrollSquashSlideDrawer* drawer,
                               ScrollSquashSlideEffectTypeBase* effectType,
                               int width, int height, int time);
@@ -118,10 +120,10 @@ public:
   virtual ~ScrollSquashSlideDrawer();
 
   virtual int getMaxSize(GraphicsSystem& gs) = 0;
-  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height) = 0;
-  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height) = 0;
-  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height) = 0;
-  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height) = 0;
+  virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height) = 0;
+  virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height) = 0;
+  virtual void squashOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height) = 0;
+  virtual void squashOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -130,10 +132,10 @@ class TopToBottomDrawer : public ScrollSquashSlideDrawer
 {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
-  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
 };
 
 // -----------------------------------------------------------------------
@@ -142,10 +144,10 @@ class BottomToTopDrawer : public ScrollSquashSlideDrawer
 {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
-  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
 };
 
 // -----------------------------------------------------------------------
@@ -154,10 +156,10 @@ class LeftToRightDrawer : public ScrollSquashSlideDrawer
 {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
-  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
 };
 
 // -----------------------------------------------------------------------
@@ -166,10 +168,10 @@ class RightToLeftDrawer : public ScrollSquashSlideDrawer
 {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
-  virtual void scrollOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void scrollOff(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOn(GraphicsSystem&, int amountVisible, int width, int height);
-  virtual void squashOff(GraphicsSystem&, int amountVisible, int width, int height);
+  virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
+  virtual void squashOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
 };
 //@}
 
@@ -192,6 +194,7 @@ class ScrollSquashSlideEffectTypeBase
 public:
   virtual ~ScrollSquashSlideEffectTypeBase();
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible) = 0;
 };
@@ -207,6 +210,7 @@ class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
 };
@@ -222,6 +226,7 @@ class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
 };
@@ -237,6 +242,7 @@ class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
 };
@@ -253,6 +259,7 @@ class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
 };
@@ -268,6 +275,7 @@ class SlideOn : public ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
 };
@@ -283,6 +291,7 @@ class SlideOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system, 
+                                 ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
 };

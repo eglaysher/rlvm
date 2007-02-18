@@ -25,7 +25,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <SDL/SDL.h>
 
@@ -164,7 +164,7 @@ class SDLGraphicsSystem : public GraphicsSystem
 private:
   SDL_Surface* m_screen;
   
-  boost::ptr_vector<SDLSurface> displayContexts;
+  boost::shared_ptr<SDLSurface> m_displayContexts[16];
 
   int m_width, m_height;
   
@@ -256,7 +256,7 @@ public:
 
   virtual Surface* loadSurfaceFromFile(const std::string& filename);
 
-  virtual Surface& getDC(int dc);
+  virtual boost::shared_ptr<Surface> getDC(int dc);
 
   // -----------------------------------------------------------------------
 

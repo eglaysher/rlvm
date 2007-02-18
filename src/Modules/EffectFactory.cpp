@@ -50,14 +50,15 @@ const int SEL_SIZE = 16;
 
 // -----------------------------------------------------------------------
 
-LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
+LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, 
+                                           boost::shared_ptr<Surface> src, 
+                                           boost::shared_ptr<Surface> dst,
+                                           int selNum)
 {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> selParams = gexe("SEL", selNum).to_intVector();
 
-  return build(machine, 
-// selParams[0], selParams[1], selParams[2], selParams[3],
-//                selParams[4], selParams[5], 
+  return build(machine, src, dst,
                selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
                selParams[12], selParams[13], selParams[15]);
@@ -65,12 +66,15 @@ LongOperation* EffectFactory::buildFromSEL(RLMachine& machine, int selNum)
 
 // -----------------------------------------------------------------------
 
-LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, int selNum)
+LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, 
+                                            boost::shared_ptr<Surface> src, 
+                                            boost::shared_ptr<Surface> dst,
+                                            int selNum)
 {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> selParams = gexe("SELR", selNum).to_intVector();
 
-  return build(machine, 
+  return build(machine, src, dst,
                selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
                selParams[12], selParams[13], selParams[15]);  
@@ -80,7 +84,8 @@ LongOperation* EffectFactory::buildFromSELR(RLMachine& machine, int selNum)
 
 //  int x, int y, int width, int height, int dx, int dy, 
 LongOperation* EffectFactory::build(
-  RLMachine& machine, int time, int style,
+  RLMachine& machine, boost::shared_ptr<Surface> src, 
+  boost::shared_ptr<Surface> dst, int time, int style,
   int direction, int interpolation, int xsize, int ysize, int a, int b,
   int c)
 {
@@ -93,7 +98,7 @@ LongOperation* EffectFactory::build(
   switch(style)
   {
   case 10:
-    return buildWipeEffect(machine, width, height, time, 
+    return buildWipeEffect(machine, src, dst, width, height, time, 
                            direction, interpolation);
   // We have the bunch of similar effects that are all implemented by
   // ScrollSquashSlideBaseEffect
@@ -106,12 +111,13 @@ LongOperation* EffectFactory::build(
   {
     ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
     ScrollSquashSlideEffectTypeBase* effect = buildScrollSquashSlideTypeBase(style);
-    return new ScrollSquashSlideBaseEffect(machine, drawer, effect, width, height, time);
+    return new ScrollSquashSlideBaseEffect(machine, src, dst, drawer, effect,
+                                           width, height, time);
   }
   case 0:
   case 50:
   default:
-    return new FadeEffect(machine, width, height, time);
+    return new FadeEffect(machine, src, dst, width, height, time);
   }
 
   stringstream ss;
@@ -137,28 +143,30 @@ enum ScreenDirection {
  * Creates a specific subclass of WipeEffect for \#SEL #10, Wipe.
  */
 LongOperation* EffectFactory::buildWipeEffect(
-  RLMachine& machine, int width, int height, int time, 
+  RLMachine& machine, boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst,
+  int width, int height, int time, 
   int direction, int interpolation)
 {
   switch(direction)
   {
   case TOP_TO_BOTTOM:
-    return new WipeTopToBottomEffect(machine, width, height, 
+    return new WipeTopToBottomEffect(machine, src, dst, width, height, 
                                      time, interpolation);
   case BOTTOM_TO_TOP:
-    return new WipeBottomToTopEffect(machine, width, height, 
+    return new WipeBottomToTopEffect(machine, src, dst, width, height, 
                                      time, interpolation);
   case LEFT_TO_RIGHT:
-    return new WipeLeftToRightEffect(machine, width, height,
+    return new WipeLeftToRightEffect(machine, src, dst, width, height,
                                      time, interpolation);
   case RIGHT_TO_LEFT:
-    return new WipeRightToLeftEffect(machine, width, height,
+    return new WipeRightToLeftEffect(machine, src, dst, width, height,
                                      time, interpolation);
   default:
     cerr << "WARNING! Unsupported direction " << direction 
          << " in EffectFactory::buildWipeEffect. Returning Top to"
          << " Bottom effect." << endl;
-    return new WipeTopToBottomEffect(machine, width, height, 
+    return new WipeTopToBottomEffect(machine, src, dst, width, height, 
                                      time, interpolation);
   };
 }

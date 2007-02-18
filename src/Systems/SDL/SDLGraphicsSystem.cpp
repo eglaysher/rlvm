@@ -756,8 +756,8 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   beginFrame();
 
   // Display DC0
-  displayContexts[0].renderToScreen(0, 0, m_width, m_height, 
-                                    0, 0, m_width, m_height, 255);
+  m_displayContexts[0]->renderToScreen(0, 0, m_width, m_height, 
+                                       0, 0, m_width, m_height, 255);
 
   // Render all visible foreground objects
   for_each(foregroundObjects, foregroundObjects + 256,
@@ -789,7 +789,7 @@ SDLGraphicsSystem::SDLGraphicsSystem()
   : m_screenDirty(false), m_screenNeedsRefresh(false)
 {
   for(int i = 0; i < 16; ++i)
-    displayContexts.push_back(new SDLSurface);
+    m_displayContexts[i].reset(new SDLSurface);
 
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo( );
@@ -856,48 +856,48 @@ SDLGraphicsSystem::SDLGraphicsSystem()
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 
-    /* Enable Texture Mapping ( NEW ) */
-    glEnable( GL_TEXTURE_2D );
+  /* Enable Texture Mapping ( NEW ) */
+  glEnable( GL_TEXTURE_2D );
 
-    /* Enable smooth shading */
-    glShadeModel( GL_SMOOTH );
+  /* Enable smooth shading */
+  glShadeModel( GL_SMOOTH );
 
-    /* Set the background black */
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  /* Set the background black */
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
-    /* Depth buffer setup */
-    glClearDepth( 1.0f );
+  /* Depth buffer setup */
+  glClearDepth( 1.0f );
 
-    /* Enables Depth Testing */
-    glEnable( GL_DEPTH_TEST );
+  /* Enables Depth Testing */
+  glEnable( GL_DEPTH_TEST );
 
-    glEnable( GL_BLEND);
+  glEnable( GL_BLEND);
 
-    /* The Type Of Depth Test To Do */
-    glDepthFunc( GL_LEQUAL );
+  /* The Type Of Depth Test To Do */
+  glDepthFunc( GL_LEQUAL );
 
-    /* Really Nice Perspective Calculations */
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+  /* Really Nice Perspective Calculations */
+  glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-    /* Setup The Ambient Light */
+  /* Setup The Ambient Light */
 //    glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient );
 
-    /* Setup The Diffuse Light */
+  /* Setup The Diffuse Light */
 //    glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse );
 
-    /* Position The Light */
+  /* Position The Light */
 //    glLightfv( GL_LIGHT1, GL_POSITION, LightPosition );
 
-    /* Enable Light One */
+  /* Enable Light One */
 //    glEnable( GL_LIGHT1 );
 
-    /* Full Brightness, 50% Alpha ( NEW ) */
-    glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);
+  /* Full Brightness, 50% Alpha ( NEW ) */
+  glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);
 
   // Now we allocate the first two display contexts with equal size to
   // the display
-  displayContexts[0].allocate(m_width, m_height, this);
-  displayContexts[1].allocate(m_width, m_height);
+  m_displayContexts[0]->allocate(m_width, m_height, this);
+  m_displayContexts[1]->allocate(m_width, m_height);
 }
 
 // -----------------------------------------------------------------------
@@ -937,7 +937,7 @@ int SDLGraphicsSystem::screenHeight() const
 
 void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
 {
-  if(dc >= displayContexts.size())
+  if(dc >= 16)
     throw Error("Invalid DC number in SDLGrpahicsSystem::allocateDC");
 
   // We can't reallocate the screen!
@@ -948,7 +948,7 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
   // the screen.
   if(dc == 1)
   {
-    SDL_Surface* dc0 = displayContexts[0];
+    SDL_Surface* dc0 = *(m_displayContexts[0]);
     if(width < dc0->w)
       width = dc0->w;
     if(height < dc0->h)
@@ -956,7 +956,7 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
   }
 
   // Allocate a new obj.
-  displayContexts[dc].allocate(width, height);
+  m_displayContexts[dc]->allocate(width, height);
 }
 
 // -----------------------------------------------------------------------
@@ -968,24 +968,24 @@ void SDLGraphicsSystem::freeDC(int dc)
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
-    getDC(1).fill(0, 0, 0, 255);
+    getDC(1)->fill(0, 0, 0, 255);
   }
   else
-    displayContexts[dc].deallocate();
+    m_displayContexts[dc]->deallocate();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
 {
-  if(dc >= displayContexts.size())
+  if(dc >= 16)
   {
     stringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
     throw Error(ss.str());
   }
 
-  if(displayContexts[dc] == NULL)
+  if(m_displayContexts[dc] == NULL)
   {
     stringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
@@ -997,7 +997,7 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
 
 void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 {
-  if(displayContexts[dc] == NULL)
+  if(m_displayContexts[dc] == NULL)
   {
     stringstream ss;
     ss << "Couldn't allocate DC[" << dc << "] in " << caller 
@@ -1182,10 +1182,10 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
 
 // -----------------------------------------------------------------------
 
-Surface& SDLGraphicsSystem::getDC(int dc)
+boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 {
   verifySurfaceExists(dc, "SDLGraphicsSystem::getDC");
-  return displayContexts[dc];
+  return m_displayContexts[dc];
 }
                                 
 int SDLSurface::width() const { return m_surface->w; }

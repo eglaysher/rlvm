@@ -37,6 +37,8 @@
 #include <iostream>
 #include <cmath>
 
+#include <boost/shared_ptr.hpp>
+
 using namespace std;
 
 // -----------------------------------------------------------------------
@@ -96,10 +98,11 @@ void WipeEffect::calculateSizes(int currentTime,
 
 // -----------------------------------------------------------------------
 
-WipeEffect::WipeEffect(RLMachine& machine, int width, 
+WipeEffect::WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+                       boost::shared_ptr<Surface> dst,  int width, 
                        int height, int time, 
                        int interpolation)
-  : Effect(machine, width, height, time), 
+  : Effect(machine, src, dst, width, height, time), 
     m_interpolation(interpolation),
     m_interpolationInPixels(0)
 {
@@ -112,8 +115,10 @@ WipeEffect::WipeEffect(RLMachine& machine, int width,
 // -----------------------------------------------------------------------
 
 WipeTopToBottomEffect::WipeTopToBottomEffect(
-  RLMachine& machine, int width, int height, int time, int interpolation)
-  : WipeEffect(machine, width, height, time, interpolation)
+  RLMachine& machine, boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst, int width, int height, int time, 
+  int interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -127,7 +132,7 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
 
   if(sizeOfMainPolygon)
   {
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(0, 0,
                      width(), sizeOfMainPolygon,
                      0, 0, width(), sizeOfMainPolygon,
@@ -138,7 +143,7 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
   {
     int opacity[4] = {255, 255, 0, 0};
 
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(0, sizeOfMainPolygon,
                      width(), sizeOfMainPolygon + sizeOfInterpolation,
                      0, sizeOfMainPolygon, width(), 
@@ -152,8 +157,10 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeBottomToTopEffect::WipeBottomToTopEffect(
-  RLMachine& machine, int width, int height, int time, int interpolation)
-  : WipeEffect(machine, width, height, time, interpolation)
+  RLMachine& machine,  boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst, int width, int height, int time, 
+  int interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -170,7 +177,7 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   // Render the sliding on frame
   if(sizeOfMainPolygon)
   {
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(0, height() - sizeOfMainPolygon,
                      width(), height(),
                      0, height() - sizeOfMainPolygon, 
@@ -181,7 +188,7 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfInterpolation)
   {
     int opacity[4] = {0, 0, 255, 255};
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(0, height() - sizeOfMainPolygon - sizeOfInterpolation,
                      width(), height() - sizeOfMainPolygon,
                      0, height() - sizeOfMainPolygon - sizeOfInterpolation,
@@ -195,8 +202,10 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeLeftToRightEffect::WipeLeftToRightEffect(
-  RLMachine& machine, int width, int height, int time, int interpolation)
-  : WipeEffect(machine, width, height, time, interpolation)
+  RLMachine& machine,  boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst, int width, int height, int time, 
+  int interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -213,7 +222,7 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
 
   if(sizeOfMainPolygon)
   {
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(0, 0, 
                      sizeOfMainPolygon, height(), 
                      0, 0, sizeOfMainPolygon, height(),
@@ -223,7 +232,7 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfInterpolation)
   {
     int opacity[4] = {255, 0, 0, 255};
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(sizeOfMainPolygon, 0, 
                      sizeOfMainPolygon + sizeOfInterpolation, height(), 
                      sizeOfMainPolygon, 0, 
@@ -237,8 +246,10 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeRightToLeftEffect::WipeRightToLeftEffect(
-  RLMachine& machine, int width, int height, int time, int interpolation)
-  : WipeEffect(machine, width, height, time, interpolation)
+  RLMachine& machine, boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst, int width, int height, int time,
+  int interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -252,7 +263,7 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
 
   if(sizeOfMainPolygon)
   {
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(width() - sizeOfMainPolygon, 0, 
                      width(), height(), 
                      width() - sizeOfMainPolygon, 0,
@@ -263,7 +274,7 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
   if(sizeOfInterpolation)
   {
     int opacity[4] = {0, 255, 255, 0};
-    graphics.getDC(1).
+    srcSurface().
       renderToScreen(width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
                      width() - sizeOfMainPolygon, height(),
                      width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
