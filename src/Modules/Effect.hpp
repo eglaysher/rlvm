@@ -94,6 +94,19 @@ private:
   /// The destination surface (previously known as DC0)
   boost::shared_ptr<Surface> m_dstSurface;
 
+  /// Final image to compose onto DC0. This will usually point to the
+  /// same surface as m_srcSurface. In the case of {grp,rec}OpenBg,
+  /// this will be different, since m_srcSurface will actually be a
+  /// Texture only surface.
+  ///
+  /// @see SDLRenderToTextureSurface
+  boost::shared_ptr<Surface> m_finalSurface;
+
+  /// Whether to blit finalSurface to dstSurface as the final act
+  /// right before we leave this LongOperation. Defaults to
+  /// true. grpOpenBg will set this to false.
+  bool m_performFinalBlit;
+
 protected:
   int width() const { return m_width; }
   int height() const { return m_height; }
@@ -110,7 +123,6 @@ protected:
   virtual void performEffectForTime(RLMachine& machine, 
                                     int currentTime) = 0;
 
-
 public:
   /** 
    * Sets up all other variables
@@ -119,9 +131,14 @@ public:
    * system I know of where ranges are inclusive...
    */
   Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
-         boost::shared_ptr<Surface> dst, int width, int height, int time);
+         boost::shared_ptr<Surface> dst,
+         boost::shared_ptr<Surface> final, 
+         int width, int height, int time);
 
   virtual ~Effect();
+
+  /// Changes whether we should blit finalSurface to dstSurface
+  void setPerformFinalBlit(const bool in) { m_performFinalBlit = in; }
 
   /** 
    * Implements the LongOperation calling interface. This simply keeps

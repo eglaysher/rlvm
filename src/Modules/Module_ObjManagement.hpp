@@ -3,6 +3,12 @@
 
 #include "MachineBase/RLModule.hpp"
 
+class ObjCopyFgToBg : public RLModule
+{
+public:
+  ObjCopyFgToBg();
+};
+
 class ObjFgManagement : public RLModule
 {
 public:

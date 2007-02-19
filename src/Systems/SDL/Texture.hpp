@@ -50,6 +50,8 @@ private:
 
   GLuint m_textureID;
 
+  bool m_isUpsideDown;
+
 public:
   Texture(SDL_Surface* surface);
   Texture(render_to_texture, int screenWidth, int screenHeight);

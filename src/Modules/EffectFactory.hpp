@@ -33,11 +33,10 @@
 
 #include <boost/shared_ptr.hpp>
 
-class LongOperation;
 class RLMachine;
 
 class Surface;
-
+class Effect;
 class ScrollSquashSlideDrawer;
 class ScrollSquashSlideEffectTypeBase;
 
@@ -64,10 +63,11 @@ public:
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */
-  static LongOperation* buildFromSEL(RLMachine& machine, 
-                                     boost::shared_ptr<Surface> src, 
-                                     boost::shared_ptr<Surface> dst,
-                                     int selnum);
+  static Effect* buildFromSEL(RLMachine& machine, 
+                              boost::shared_ptr<Surface> src, 
+                              boost::shared_ptr<Surface> dst,
+                              boost::shared_ptr<Surface> final,
+                              int selnum);
 
   /** 
    * Builds an Effect based off the \#SELR.selnum line in the
@@ -80,10 +80,11 @@ public:
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */  
-  static LongOperation* buildFromSELR(RLMachine& machine, 
-                                      boost::shared_ptr<Surface> src, 
-                                      boost::shared_ptr<Surface> dst,
-                                      int selnum);
+  static Effect* buildFromSELR(RLMachine& machine, 
+                               boost::shared_ptr<Surface> src, 
+                               boost::shared_ptr<Surface> dst,
+                               boost::shared_ptr<Surface> final,
+                               int selnum);
 
   /** 
    * Returns a constructed LongOperation with the following properties
@@ -112,17 +113,19 @@ public:
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */
-  static LongOperation* build(
+  static Effect* build(
     RLMachine& machine, boost::shared_ptr<Surface> src, 
     boost::shared_ptr<Surface> dst,
+    boost::shared_ptr<Surface> final,  
     int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int c);
 
 private:
-  static LongOperation* buildWipeEffect(
+  static Effect* buildWipeEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src, 
     boost::shared_ptr<Surface> dst,
+    boost::shared_ptr<Surface> final,  
     int width, int height, int time, int direction, int interpolation);
 
   static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(

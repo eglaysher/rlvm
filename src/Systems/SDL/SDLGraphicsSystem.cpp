@@ -37,6 +37,7 @@
 #include "MachineBase/RLModule.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -141,8 +142,8 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-/*
-shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(shared_ptr<Surface> bg)
+shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
+  RLMachine& machine, shared_ptr<Surface> bg)
 {
   beginFrame();
 
@@ -156,7 +157,6 @@ shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(shared_ptr<Surface>
 
   return endFrameToSurface();
 }
-*/
 
 // -----------------------------------------------------------------------
 
@@ -167,6 +167,13 @@ void SDLGraphicsSystem::endFrame()
   // Swap the buffers
   SDL_GL_SwapBuffers();
   ShowGLErrors();
+}
+
+// -----------------------------------------------------------------------
+
+shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
+{
+  return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_width, m_height));
 }
 
 // -----------------------------------------------------------------------
@@ -187,7 +194,7 @@ SDLGraphicsSystem::SDLGraphicsSystem()
   const SDL_VideoInfo* info = SDL_GetVideoInfo( );
   
   if( !info ) {
-    stringstream ss;
+    ostringstream ss;
     ss << "Video query failed: " << SDL_GetError();
     throw Error(ss.str());
   }
@@ -235,7 +242,7 @@ SDLGraphicsSystem::SDLGraphicsSystem()
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
     // resolution not being available, etc.
-    stringstream ss;
+    ostringstream ss;
     ss << "Video mode set failed: " << SDL_GetError();
     throw Error(ss.str());
   }	
@@ -372,14 +379,14 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
 {
   if(dc >= 16)
   {
-    stringstream ss;
+    ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
     throw Error(ss.str());
   }
 
   if(m_displayContexts[dc] == NULL)
   {
-    stringstream ss;
+    ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
     throw Error(ss.str());
   }
@@ -391,7 +398,7 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 {
   if(m_displayContexts[dc] == NULL)
   {
-    stringstream ss;
+    ostringstream ss;
     ss << "Couldn't allocate DC[" << dc << "] in " << caller 
        << ": " << SDL_GetError();
     throw Error(ss.str());

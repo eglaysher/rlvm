@@ -42,7 +42,7 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 Texture::Texture(SDL_Surface* surface)
-  : m_logicalWidth(surface->w), m_logicalHeight(surface->h)
+  : m_logicalWidth(surface->w), m_logicalHeight(surface->h), m_isUpsideDown(false)
 {
   glGenTextures(1, &m_textureID);
   glBindTexture(GL_TEXTURE_2D, m_textureID);
@@ -113,7 +113,7 @@ Texture::Texture(SDL_Surface* surface)
 // -----------------------------------------------------------------------
 
 Texture::Texture(render_to_texture, int width, int height)
-  : m_logicalWidth(width), m_logicalHeight(height)
+  : m_logicalWidth(width), m_logicalHeight(height), m_isUpsideDown(true)
 {
   glGenTextures(1, &m_textureID);
   glBindTexture(GL_TEXTURE_2D, m_textureID);
@@ -127,8 +127,13 @@ Texture::Texture(render_to_texture, int width, int height)
   m_textureHeight = SafeSize(m_logicalHeight);
 
   // This may fail.
-  glCopyTexSubImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, m_logicalWidth, 
-                      m_logicalHeight, 0);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+               m_textureWidth, m_textureHeight,
+               0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  ShowGLErrors();
+
+  glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_logicalWidth, 
+                      m_logicalHeight);
   ShowGLErrors();
 }
 
@@ -154,6 +159,13 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
   float thisy2 = float(y2) / m_textureHeight;
+
+   if(m_isUpsideDown)
+   {
+//     cerr << "is upside down" << endl;
+     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+   }
 
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
@@ -239,10 +251,10 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   float thisx2 = float(xSrc2) / m_textureWidth;
   float thisy2 = float(ySrc2) / m_textureHeight;
 
-//   cerr << "patt: " << pattNo << ", texid: " << m_textureID << ", alpha: " << go.alpha()
-//        << ", src:{" << xSrc1 << "," << ySrc1 << "," << xSrc2 << "," << ySrc2 << "}"
-//        << ", dst:{" << xPos1 << "," << yPos1 << "," << xPos2 << "," << yPos2 << "}"
-//        << endl;
+//    cerr << "patt: " << pattNo << ", texid: " << m_textureID << ", alpha: " << go.alpha()
+//         << ", src:{" << xSrc1 << "," << ySrc1 << "," << xSrc2 << "," << ySrc2 << "}"
+//         << ", dst:{" << xPos1 << "," << yPos1 << "," << xPos2 << "," << yPos2 << "}"
+//         << endl;
 
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
@@ -256,8 +268,8 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
     // Rotate here?
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
 
-//    cerr << "Color: " << go.tintR() << ", " << go.tintG() << ", " << go.tintB()
-//         << ", " << go.alpha() << endl;
+//     cerr << "Color: " << go.tintR() << ", " << go.tintG() << ", " << go.tintB()
+//          << ", " << go.alpha() << endl;
 
     glBegin(GL_QUADS);
     {

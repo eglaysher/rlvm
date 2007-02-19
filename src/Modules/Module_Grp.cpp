@@ -36,6 +36,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
+#include "Modules/Effect.hpp"
 #include "Modules/EffectFactory.hpp"
 
 #include "libReallive/gameexe.h"
@@ -189,7 +190,7 @@ struct GRP_SPACE : public SPACE {
                                          boost::shared_ptr<Surface> dst,
                                          int effectNum) 
   {
-    return EffectFactory::buildFromSEL(machine, src, dst, effectNum);
+    return EffectFactory::buildFromSEL(machine, src, dst, src, effectNum);
   }
 
   static SPACE& get() {
@@ -221,7 +222,7 @@ struct REC_SPACE : public SPACE {
                                          boost::shared_ptr<Surface> dst,
                                          int effectNum) 
   {
-    return EffectFactory::buildFromSELR(machine, src, dst, effectNum);
+    return EffectFactory::buildFromSELR(machine, src, dst, src, effectNum);
   }
 
   static SPACE& get() {
@@ -582,7 +583,7 @@ struct Grp_open_4 : public RLOp_Void_17<
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     machine.setLongOperation(
-      EffectFactory::build(machine, dc1, dc0, time, style, direction, 
+      EffectFactory::build(machine, dc1, dc0, dc1, time, style, direction, 
                            interpolation, xsize, ysize, a, b, c));
   }
 };
@@ -610,6 +611,9 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     GraphicsSystem& graphics = machine.system().graphics();
     m_space.translateToRec(x1, y1, x2, y2);
 
+    // Set the long operation for the correct transition long operation
+    shared_ptr<Surface> dc0 = graphics.getDC(0);
+
     if(filename != "?")
     {
       if(filename == "???") filename = graphics.defaultGrpName();
@@ -618,18 +622,24 @@ struct Grp_openBg_4 : public RLOp_Void_17<
       loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
                      opacity, m_useAlpha);
     }
+    else 
+    {
+      // The current DC0 is really 
+      dc0 = graphics.renderToSurfaceWithBg(machine, dc0);
+    }
 
     // Promote the objects 
     graphics.promoteObjects();
 
     // Render the screen to a temporary 
+    shared_ptr<Surface> dc1 = graphics.getDC(1);    
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
-    machine.setLongOperation(
-      EffectFactory::build(machine, dc1, dc0, time, style, direction, 
-                           interpolation, xsize, ysize, a, b, c));
+    Effect* effect = EffectFactory::build(machine, tmp, dc0, dc1, time, 
+                                          style, direction, interpolation,
+                                          xsize, ysize, a, b, c);
+    effect->setPerformFinalBlit(false);
+    machine.setLongOperation(effect);
   }
 };
 

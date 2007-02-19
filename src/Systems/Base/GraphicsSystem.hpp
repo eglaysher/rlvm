@@ -113,6 +113,10 @@ public:
   virtual void refresh(RLMachine& machine) = 0;
   virtual void endFrame() { }
 
+  virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
+    RLMachine& machine, boost::shared_ptr<Surface> bg) { return boost::shared_ptr<Surface>(); }
+
+
   /** 
    * Called from the game loop; Does everything that's needed to keep
    * things up.

@@ -14,6 +14,8 @@ public:
   virtual int width() const = 0;
   virtual int height() const = 0;
 
+  virtual void dump() {}
+
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
                              int srcX, int srcY, int srcWidth, int srcHeight,

@@ -64,8 +64,9 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
 
 FadeEffect::FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src, 
                        boost::shared_ptr<Surface> dst,
+                       boost::shared_ptr<Surface> final, 
                        int width, int height, 
                        int time)
-  : Effect(machine, src, dst, width, height, time)
+  : Effect(machine, src, dst, final, width, height, time)
 {
 }

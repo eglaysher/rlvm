@@ -139,6 +139,14 @@ struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
 
 // -----------------------------------------------------------------------
 
+ObjCopyFgToBg::ObjCopyFgToBg()
+  : RLModule("ObjCopyFgToBg", 1, 60)
+{
+  
+}
+
+// -----------------------------------------------------------------------
+
 ObjFgManagement::ObjFgManagement()
   : RLModule("ObjFgManagement", 1, 61)
 {

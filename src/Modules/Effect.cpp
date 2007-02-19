@@ -42,11 +42,17 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
-         boost::shared_ptr<Surface> dst, int width, int height, int time)
+               boost::shared_ptr<Surface> dst,
+               boost::shared_ptr<Surface> final,
+               int width, int height, int time)
   : m_width(width), m_height(height), m_duration(time), 
     m_startTime(machine.system().event().getTicks()),
-    m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
+    m_machine(machine), m_srcSurface(src), m_dstSurface(dst), 
+    m_finalSurface(final), m_performFinalBlit(true)
 {
+  dst->dump();
+  final->dump();
+
   m_machine.system().event().beginRealtimeTask();
 }
 
@@ -71,9 +77,16 @@ bool Effect::operator()(RLMachine& machine)
   if(currentFrame >= m_duration || ctrlPressed)
   {
     // Blit DC1 onto DC0, with full opacity, and end the operation
-    srcSurface().blitToSurface(dstSurface(),
-                               0, 0, m_width, m_height,
-                               0, 0, m_width, m_height, 255);
+    if(m_performFinalBlit)
+    {
+      m_finalSurface->blitToSurface(dstSurface(),
+                                    0, 0, m_width, m_height,
+                                    0, 0, m_width, m_height, 255);
+    }
+
+    // Now force a screen refresh
+    machine.system().graphics().markScreenForRefresh();
+
     return true;
   }
   else

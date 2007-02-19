@@ -79,7 +79,7 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
 {
   if(this != &rhs)
   {
-    cerr << "Copying graphics object!" << endl;
+//    cerr << "Copying graphics object!" << endl;
 
     m_visible = rhs.m_visible;
     m_x = rhs.m_x;
@@ -126,6 +126,21 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
 // -----------------------------------------------------------------------
 
 void GraphicsObject::render(RLMachine& machine) {
+  bool needNewline = false;
+  
+//   if(m_objectData) {
+//     cerr << "Has object data...";
+//     needNewline = true;
+//   }
+
+//   if(visible()) {
+//     cerr << "Is visible...";
+//     needNewline = true;
+//   }
+
+//   if(needNewline)
+//     cerr << endl;
+      
   if(m_objectData && visible()) {
 //    cerr << "Rendering object!" << endl;
     m_objectData->render(machine, *this);
