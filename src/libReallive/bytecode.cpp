@@ -211,6 +211,33 @@ CommandElement::CommandElement(const char* src) {
   repr.assign(src, 8);
 }
 
+CommandElement::CommandElement(const CommandElement& ce) 
+  : m_parsedParameters()
+{
+}
+
+CommandElement::~CommandElement()
+{}
+
+const boost::ptr_vector<libReallive::ExpressionPiece>& CommandElement::getParameters() const
+{
+  if(param_count() != m_parsedParameters.size())
+  {
+    m_parsedParameters.clear();
+
+    size_t numberOfParameters = param_count();
+    for(size_t i = 0; i < numberOfParameters; ++i) 
+    {
+      const char* dataStr = get_param(i).c_str();
+      m_parsedParameters.push_back(get_data(dataStr));
+    }
+  }
+
+  return m_parsedParameters;
+}
+
+// -----------------------------------------------------------------------
+
 // SelectElement implementation
 SelectElement::SelectElement(const char* src) : CommandElement(src)
 {

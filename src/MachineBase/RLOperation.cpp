@@ -51,16 +51,16 @@ bool RLOperation::advanceInstructionPointer()
 }
 
 // -----------------------------------------------------------------------
-
+/*
 void RLOperation::addParameterTo(const string& parameter, 
-                                 ptr_vector<ExpressionPiece>& outputParameters)
+                                 const ptr_vector<ExpressionPiece>& outputParameters)
 {
   const char* location = parameter.c_str();
   outputParameters.push_back(get_data(location));
 }
-
+*/
 // -----------------------------------------------------------------------
-
+ /*
 void RLOperation::parseParameters(const CommandElement& ff, 
                                   ptr_vector<ExpressionPiece>& parameterPieces)
 {
@@ -69,14 +69,16 @@ void RLOperation::parseParameters(const CommandElement& ff,
       addParameterTo(ff.get_param(i), parameterPieces);
     }
 }
-
+ */
 // -----------------------------------------------------------------------
 
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
 {
   // Well, here it is. What a mess.
-  ptr_vector<ExpressionPiece> parameterPieces;
-  parseParameters(ff, parameterPieces);
+  const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
+
+  // @todo PROPOGATE CONSTEDNESS!
+  // @todo GOTO ALL RL_SPECIALCASES AND USE CACHED PARAMETERS!
 
   // Now make sure these parameters match what we expect. 
   if(!checkTypes(machine, parameterPieces)) {
@@ -104,7 +106,7 @@ void RLOperation::throw_unimplemented()
 
 // Implementation for IntConstant_T
 IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                                           const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                                            unsigned int position) 
 {
   return p[position].integerValue(machine);
@@ -112,7 +114,7 @@ IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool IntConstant_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+bool IntConstant_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                                unsigned int position) {
   return position < p.size() & 
     p[position].expressionValueType() == libReallive::ValueTypeInteger;
@@ -121,15 +123,15 @@ bool IntConstant_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& 
 // -----------------------------------------------------------------------
 
 IntReference_T::type IntReference_T::getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                       unsigned int position) {
-  return static_cast<libReallive::MemoryReference&>(p[position]).
+  return static_cast<const libReallive::MemoryReference&>(p[position]).
     getIntegerReferenceIterator(machine);
 }
 
 // -----------------------------------------------------------------------
 
-bool IntReference_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+bool IntReference_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                                 unsigned int position) {
   return position < p.size() && p[position].isMemoryReference() &&
     p[position].expressionValueType() == libReallive::ValueTypeInteger;
@@ -138,7 +140,7 @@ bool IntReference_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>&
 // -----------------------------------------------------------------------
 
 StrConstant_T::type StrConstant_T::getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                                           const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
 {
   return p[position].getStringValue(machine);
@@ -146,7 +148,7 @@ StrConstant_T::type StrConstant_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool StrConstant_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+bool StrConstant_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                                unsigned int position) { 
   return position < p.size() && 
     p[position].expressionValueType() == libReallive::ValueTypeString; 
@@ -155,16 +157,16 @@ bool StrConstant_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& 
 // -----------------------------------------------------------------------
 
 StrReference_T::type StrReference_T::getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                       unsigned int position) 
 {
-  return static_cast<libReallive::MemoryReference&>(p[position]).
+  return static_cast<const libReallive::MemoryReference&>(p[position]).
     getStringReferenceIterator(machine);
 }
 
 // -----------------------------------------------------------------------
 
-bool StrReference_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+bool StrReference_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                                 unsigned int position) {
   return position < p.size() && p[position].isMemoryReference() &&
     p[position].expressionValueType() == libReallive::ValueTypeString;
@@ -175,7 +177,7 @@ bool StrReference_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>&
 // -----------------------------------------------------------------------
 
 Empty_T::type Empty_T::getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                               const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position) 
 {
   return emptyStruct();
@@ -183,7 +185,7 @@ Empty_T::type Empty_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool Empty_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+bool Empty_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
 {
   return true;
@@ -193,7 +195,7 @@ bool Empty_T::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
 
 bool RLOp_SpecialCase::checkTypes(
   RLMachine& machine, 
-  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {       
   return true;
 }
@@ -202,7 +204,7 @@ bool RLOp_SpecialCase::checkTypes(
 
 void RLOp_SpecialCase::dispatch(
   RLMachine& machine, 
-  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {}
 
 // -----------------------------------------------------------------------

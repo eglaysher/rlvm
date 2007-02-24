@@ -116,13 +116,13 @@ struct RLOperation {
    * are of the expected type.
    */
   virtual bool checkTypes(RLMachine& machine, 
-                          boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
+                          const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
 
   /** The dispatch function is implemented on a per type basis and is called by the
    * Module, after checking to make sure that the 
    */
   virtual void dispatch(RLMachine& machine, 
-                        boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
+                        const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
 
   /** 
    * Takes a raw, unparsed parameter string, parses it, and places the
@@ -132,8 +132,8 @@ struct RLOperation {
    * @param outputParameters The output ptr_vector to place the 
    * resulting ExpressionPieces
    */
-  void addParameterTo(const std::string& parameter, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& outputParameters);
+//  void addParameterTo(const std::string& parameter, 
+//                      const boost::ptr_vector<libReallive::ExpressionPiece>& outputParameters);
 
   /** 
    * Parses the parameters in the CommandElement passed in into an
@@ -142,8 +142,8 @@ struct RLOperation {
    * @param ff The incoming CommandElement
    * @param output The output ptr_vector, filled with the parsed parameters
    */
-  void parseParameters(const libReallive::CommandElement& ff, 
-                       boost::ptr_vector<libReallive::ExpressionPiece>& output);
+//  void parseParameters(const libReallive::CommandElement& ff, 
+//                       const boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   /** The public interface used by the RLModule; how a method is dispatched.
    *
@@ -177,11 +177,12 @@ struct IntConstant_T {
 
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
   /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, unsigned int position);
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                         unsigned int position);
 
   enum {
     isRealTypestruct = true,
@@ -206,11 +207,11 @@ struct IntReference_T {
 
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                       unsigned int position);
 
   /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position);
 
   enum {
@@ -235,11 +236,11 @@ struct StrConstant_T {
 
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
   /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position);
 
   enum {
@@ -265,11 +266,11 @@ struct StrReference_T {
 
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                       unsigned int position);
 
   /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position);
 
   enum {
@@ -298,7 +299,7 @@ struct Argc_T {
    * Passes each parameter down to 
    */
   static type getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
   /** Verify that the incoming parameter objects meet the desired types,
@@ -307,7 +308,7 @@ struct Argc_T {
    *
    * @return true if all parameters are of the correct type.
    */
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                          unsigned int position);
 
   enum {
@@ -330,24 +331,27 @@ struct Complex2_T {
   typedef boost::tuple<typename A::type, typename B::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static type getData(RLMachine& machine,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position) {
-    libReallive::ComplexExpressionPiece& sp = 
-      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+    const libReallive::ComplexExpressionPiece& sp = 
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
       A::getData(machine, sp.getContainedPieces(), 0), 
       B::getData(machine, sp.getContainedPieces(), 1));
   }
 
   /// Takes a type and makes sure that 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, unsigned int position) {
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                         unsigned int position)
+  {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the 
     bool typeOK = position < p.size();
     typeOK = typeOK && p[position].isComplexParameter(); 
     if(typeOK) {
-      libReallive::ComplexExpressionPiece& sp = 
-        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      const libReallive::ComplexExpressionPiece& sp = 
+        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
     }
@@ -375,10 +379,12 @@ struct Complex3_T {
                        typename C::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) {
-    libReallive::ComplexExpressionPiece& sp = 
-      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+  static type getData(RLMachine& machine, 
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      unsigned int position)
+  {
+    const libReallive::ComplexExpressionPiece& sp = 
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
       A::getData(machine, sp.getContainedPieces(), 0), 
       B::getData(machine, sp.getContainedPieces(), 1),
@@ -386,14 +392,16 @@ struct Complex3_T {
   }
 
   /// Takes a type and makes sure that 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, unsigned int position) {
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                         unsigned int position)
+  {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the 
     bool typeOK = position < p.size();
     typeOK = typeOK && p[position].isComplexParameter(); 
     if(typeOK) {
-      libReallive::ComplexExpressionPiece& sp = 
-        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      const libReallive::ComplexExpressionPiece& sp = 
+        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
       typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
@@ -422,10 +430,12 @@ struct Complex4_T {
                        typename C::type, typename D::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) {
-    libReallive::ComplexExpressionPiece& sp = 
-      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+  static type getData(RLMachine& machine, 
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      unsigned int position)
+  {
+    const libReallive::ComplexExpressionPiece& sp = 
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
       A::getData(machine, sp.getContainedPieces(), 0), 
       B::getData(machine, sp.getContainedPieces(), 1),
@@ -434,14 +444,16 @@ struct Complex4_T {
   }
 
   /// Takes a type and makes sure that 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, unsigned int position) {
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                         unsigned int position)
+  {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the 
     bool typeOK = position < p.size();
     typeOK = typeOK && p[position].isComplexParameter(); 
     if(typeOK) {
-      libReallive::ComplexExpressionPiece& sp = 
-        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      const libReallive::ComplexExpressionPiece& sp = 
+        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
       typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
@@ -475,10 +487,12 @@ struct Complex7_T {
                        typename G::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) {
-    libReallive::ComplexExpressionPiece& sp = 
-      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+  static type getData(RLMachine& machine, 
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      unsigned int position)
+  {
+    const libReallive::ComplexExpressionPiece& sp = 
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
       A::getData(machine, sp.getContainedPieces(), 0), 
       B::getData(machine, sp.getContainedPieces(), 1),
@@ -490,14 +504,16 @@ struct Complex7_T {
   }
 
   /// Takes a type and makes sure that 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, unsigned int position) {
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                         unsigned int position)
+  {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the 
     bool typeOK = position < p.size();
     typeOK = typeOK && p[position].isComplexParameter(); 
     if(typeOK) {
-      libReallive::ComplexExpressionPiece& sp = 
-        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      const libReallive::ComplexExpressionPiece& sp = 
+        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
       typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
@@ -534,10 +550,12 @@ struct Complex8_T {
                        typename G::type, typename H::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) {
-    libReallive::ComplexExpressionPiece& sp = 
-      static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+  static type getData(RLMachine& machine, 
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      unsigned int position)
+  {
+    const libReallive::ComplexExpressionPiece& sp = 
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
       A::getData(machine, sp.getContainedPieces(), 0), 
       B::getData(machine, sp.getContainedPieces(), 1),
@@ -550,14 +568,16 @@ struct Complex8_T {
   }
 
   /// Takes a type and makes sure that 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p, unsigned int position) {
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+                         unsigned int position)
+  {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the 
     bool typeOK = position < p.size();
     typeOK = typeOK && p[position].isComplexParameter(); 
     if(typeOK) {
-      libReallive::ComplexExpressionPiece& sp = 
-        static_cast<libReallive::ComplexExpressionPiece&>(p[position]);
+      const libReallive::ComplexExpressionPiece& sp = 
+        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
       typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
@@ -587,10 +607,10 @@ struct Empty_T {
 
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position);
 
   enum {
@@ -623,11 +643,11 @@ struct Special_T {
 
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine, 
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
-    libReallive::SpecialExpressionPiece& sp = 
-      static_cast<libReallive::SpecialExpressionPiece&>(p[position]);
+    const libReallive::SpecialExpressionPiece& sp = 
+      static_cast<const libReallive::SpecialExpressionPiece&>(p[position]);
     Parameter par;
     par.type = sp.getOverloadTag();
     switch(par.type) {
@@ -654,8 +674,9 @@ struct Special_T {
   }
 
   template<typename TYPE>
-  static bool verifyTypeOf(boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                    unsigned int position, libReallive::SpecialExpressionPiece& sp)
+  static bool verifyTypeOf(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                           unsigned int position, 
+                           const libReallive::SpecialExpressionPiece& sp)
   {
     if(TYPE::isComplex)
       return TYPE::verifyType(p, position);
@@ -664,11 +685,11 @@ struct Special_T {
   }                    
 
   /// Takes a type and makes sure that 
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position) 
   {
-    libReallive::SpecialExpressionPiece& sp = 
-      static_cast<libReallive::SpecialExpressionPiece&>(p[position]);
+    const libReallive::SpecialExpressionPiece& sp = 
+      static_cast<const libReallive::SpecialExpressionPiece&>(p[position]);
     Parameter par;
     par.type = sp.getOverloadTag();
     switch(par.type) {
@@ -703,7 +724,7 @@ struct DefaultIntValue_T
 
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
     if(position < p.size())
@@ -717,7 +738,7 @@ struct DefaultIntValue_T
   }
 
   /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
     if(position < p.size())
@@ -759,13 +780,13 @@ struct RLOp_SpecialCase : public RLOperation {
    * Empty function defined simply to obey the interface
    */
   bool checkTypes(RLMachine& machine, 
-                  boost::ptr_vector<libReallive::ExpressionPiece>& parameters);
+                  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters);
 
   /** 
    * Empty function defined simply to obey the interface
    */
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters);
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters);
 
   void dispatchFunction(RLMachine& machine, 
                         const libReallive::CommandElement& f);
@@ -806,7 +827,7 @@ template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
          typename Y = Empty_T, typename Z = Empty_T>
 struct RLOp_NormalOperation : public RLOperation {
   bool checkTypes(RLMachine& machine, 
-                  boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
     return (!A::isRealTypestruct  || A::verifyType(parameters, 0)) &&
       (!B::isRealTypestruct || B::verifyType(parameters, 1)) &&
@@ -845,7 +866,7 @@ inline bool RLOp_NormalOperation<
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, 
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T,
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
-checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+checkTypes(RLMachine& machine, const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
 {
   return parameters.size() == 0;
 }
@@ -855,7 +876,7 @@ checkTypes(RLMachine& machine, boost::ptr_vector<libReallive::ExpressionPiece>& 
 struct RLOp_Void_Void : public RLOp_NormalOperation<>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
     operator()(machine);
   }
@@ -869,7 +890,7 @@ template<typename A>
 struct RLOp_Void_1 : public RLOp_NormalOperation<A>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   { 
     operator()(machine, A::getData(machine, parameters, 0));
   }
@@ -883,7 +904,7 @@ template<typename A, typename B>
 struct RLOp_Void_2 : public RLOp_NormalOperation<A, B>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
     operator()(machine, A::getData(machine, parameters, 0),
                B::getData(machine, parameters, 1));
@@ -898,7 +919,7 @@ template<typename A, typename B, typename C>
 struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -914,7 +935,7 @@ template<typename A, typename B, typename C, typename D>
 struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -933,7 +954,7 @@ template<typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -954,7 +975,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -975,7 +996,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -997,7 +1018,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1021,7 +1042,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1046,7 +1067,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1073,7 +1094,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1101,7 +1122,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1131,7 +1152,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1163,7 +1184,7 @@ struct RLOp_Void_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1197,7 +1218,7 @@ struct RLOp_Void_15 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1233,7 +1254,7 @@ struct RLOp_Void_16 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1271,7 +1292,7 @@ struct RLOp_Void_17 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P, Q>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1309,7 +1330,7 @@ struct RLOp_Void_18 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P, Q, R>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1349,7 +1370,7 @@ struct RLOp_Void_19 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P, Q, R, S>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1390,7 +1411,7 @@ struct RLOp_Void_20 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P, Q, R, S, T>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1433,7 +1454,7 @@ struct RLOp_Void_21 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P, Q, R, S, T, U>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1478,7 +1499,7 @@ struct RLOp_Void_22 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   L, M, N, O, P, Q, R, S, T, U, V>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1525,7 +1546,7 @@ struct RLOp_Void_23 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   W>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1574,7 +1595,7 @@ struct RLOp_Void_24 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   W, X>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1624,7 +1645,7 @@ struct RLOp_Void_25 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   W, X, Y>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1677,7 +1698,7 @@ struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                                                   W, X, Y, Z>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1726,7 +1747,7 @@ struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 struct RLOp_Store_Void : public RLOp_NormalOperation<>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
     int store = operator()(machine);
     machine.setStoreRegister(store);
@@ -1741,7 +1762,7 @@ template<typename A>
 struct RLOp_Store_1 : public RLOp_NormalOperation<A>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   { 
     int store = operator()(machine, A::getData(machine, parameters, 0));
     machine.setStoreRegister(store);
@@ -1756,7 +1777,7 @@ template<typename A, typename B>
 struct RLOp_Store_2 : public RLOp_NormalOperation<A, B>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
     int store = operator()(machine, A::getData(machine, parameters, 0),
                B::getData(machine, parameters, 1));
@@ -1772,7 +1793,7 @@ template<typename A, typename B, typename C>
 struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1789,7 +1810,7 @@ template<typename A, typename B, typename C, typename D>
 struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1809,7 +1830,7 @@ template<typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Store_5 : public RLOp_NormalOperation<A, B, C, D, E>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1831,7 +1852,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_6 : public RLOp_NormalOperation<A, B, C, D, E, F>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1853,7 +1874,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1876,7 +1897,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1901,7 +1922,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1927,7 +1948,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1955,7 +1976,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -1984,7 +2005,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2015,7 +2036,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2048,7 +2069,7 @@ struct RLOp_Store_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2083,7 +2104,7 @@ struct RLOp_Store_15 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2120,7 +2141,7 @@ struct RLOp_Store_16 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2159,7 +2180,7 @@ struct RLOp_Store_17 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P, Q>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2198,7 +2219,7 @@ struct RLOp_Store_18 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P, Q, R>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2239,7 +2260,7 @@ struct RLOp_Store_19 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P, Q, R, S>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2281,7 +2302,7 @@ struct RLOp_Store_20 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P, Q, R, S, T>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2325,7 +2346,7 @@ struct RLOp_Store_21 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P, Q, R, S, T, U>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2371,7 +2392,7 @@ struct RLOp_Store_22 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   L, M, N, O, P, Q, R, S, T, U, V>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2419,7 +2440,7 @@ struct RLOp_Store_23 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   W>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2469,7 +2490,7 @@ struct RLOp_Store_24 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   W, X>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2520,7 +2541,7 @@ struct RLOp_Store_25 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   W, X, Y>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2574,7 +2595,7 @@ struct RLOp_Store_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
                                                   W, X, Y, Z>
 {
   void dispatch(RLMachine& machine, 
-                boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+                const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
   {
       int store = operator()(machine, A::getData(machine, parameters, 0),
                  B::getData(machine, parameters, 1),
@@ -2633,7 +2654,7 @@ struct RLOp_Store_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
 
 template<typename CON>
 struct Argc_T<CON>::type Argc_T<CON>::getData(RLMachine& machine, 
-                     boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                     const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                      unsigned int position) {
   type returnVector;
   for(unsigned int i = position; i < p.size(); ++i)
@@ -2645,7 +2666,7 @@ struct Argc_T<CON>::type Argc_T<CON>::getData(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 template<typename CON>
-bool Argc_T<CON>::verifyType(boost::ptr_vector<libReallive::ExpressionPiece>& p,
+bool Argc_T<CON>::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                              unsigned int position) {
   for(unsigned int i = position; i < p.size(); ++i) {
     if(!CON::verifyType(p, i)) {

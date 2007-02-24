@@ -5,6 +5,7 @@
 
 #include "defs.h"
 #include <boost/scoped_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp> 
 
 namespace libReallive {
 
@@ -189,6 +190,9 @@ public:
 // Command elements.
 
 class CommandElement : public DataElement {
+private:
+  mutable boost::ptr_vector<libReallive::ExpressionPiece> m_parsedParameters;
+
 public:
 	virtual const ElementType type() const { return Command; }
 	const int modtype()  const { return repr[1]; }
@@ -205,7 +209,8 @@ public:
 	
 	virtual const size_t param_count() const = 0;
 	virtual string get_param(int) const = 0;
-//  const ExpressionPiece& get_parsed_parameter(
+
+  const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
   /// Get pointer reference. I consider the fatter interface the lesser of two
   /// evils between this and casting CommandElements to their subclasses.
@@ -220,6 +225,8 @@ public:
 	
   CommandElement(const int type, const int module, const int opcode, const int argc, const int overload);
   CommandElement(const char* src);
+  CommandElement(const CommandElement& ce);
+  ~CommandElement();
 };
 
 class SelectElement : public CommandElement {

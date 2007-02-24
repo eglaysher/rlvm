@@ -115,6 +115,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
 {
   SDL_Event event;
 
+//  if(SDL_PollEvent(&event) == 1)
   while(SDL_PollEvent(&event))
   {
     switch(event.type)

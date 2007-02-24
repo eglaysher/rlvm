@@ -285,7 +285,7 @@ public:
 
   void addContainedPiece(ExpressionPiece* piece);
 
-  boost::ptr_vector<ExpressionPiece>& getContainedPieces() 
+  const boost::ptr_vector<ExpressionPiece>& getContainedPieces() const 
     { return containedPieces; }
 
   virtual ExpressionPiece* clone() const {

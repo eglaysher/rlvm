@@ -176,11 +176,9 @@ struct Jmp_goto : public RLOp_SpecialCase {
  */
 struct Jmp_goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const char* location = gotoElement.get_param(0).c_str();
+    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
       
-    auto_ptr<ExpressionPiece> condition(get_expression(location));
-      
-    if(condition->integerValue(machine)) 
+    if(conditions.at(0).integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
@@ -200,11 +198,9 @@ struct Jmp_goto_if : public RLOp_SpecialCase {
  */
 struct Jmp_goto_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const char* location = gotoElement.get_param(0).c_str();
-      
-    auto_ptr<ExpressionPiece> condition(get_expression(location));
+    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if(!condition->integerValue(machine)) 
+    if(!conditions.at(0).integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
@@ -223,13 +219,18 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
  * corresponding label in the list, counting from 0. If expr falls
  * outside the valid range, no jump takes place, and execution
  * continues from the next statement instead.
+ *
+ * @todo Figure out why I couldn't use cached expressions here.
  */
 struct Jmp_goto_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const char* location = gotoElement.get_param(0).c_str();
-      
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
+
+//     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
+//     int value = conditions.at(0).integerValue(machine);
+
     const Pointers& pointers = gotoElement.get_pointersRef();
     if(value >= 0 && value < int(pointers.size()))
       machine.gotoLocation(pointers[value]);
@@ -308,11 +309,9 @@ struct Jmp_gosub_if : public RLOp_SpecialCase {
  */
 struct Jmp_gosub_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const char* location = gotoElement.get_param(0).c_str();
+    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
       
-    auto_ptr<ExpressionPiece> condition(get_expression(location));
-      
-    if(!condition->integerValue(machine)) 
+    if(!conditions.at(0).integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
@@ -334,10 +333,9 @@ struct Jmp_gosub_unless : public RLOp_SpecialCase {
  */
 struct Jmp_gosub_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const char* location = gotoElement.get_param(0).c_str();
-      
-    auto_ptr<ExpressionPiece> condition(get_expression(location));
-    int value = condition->integerValue(machine);
+    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
+    int value = conditions.at(0).integerValue(machine);
+
     const Pointers& pointers = gotoElement.get_pointersRef();
     if(value >= 0 && value < int(pointers.size()))
       machine.gosub(pointers[value]);
@@ -480,8 +478,7 @@ struct Jmp_rtl : public RLOp_Void_Void {
  */
 struct Jmp_gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    ptr_vector<ExpressionPiece> parameterPieces;
-    parseParameters(gotoElement, parameterPieces);
+    const ptr_vector<ExpressionPiece>& parameterPieces = gotoElement.getParameters();
 
     // Manually perform what the unoverridden RLOperation would do for
     // us.
