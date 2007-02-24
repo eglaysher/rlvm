@@ -74,25 +74,120 @@ tf expression_test_group("ExpressionTest");
 // -----------------------------------------------------------------------
 
 /**
- * Tests the use of addition and subtraction in kepago. Tests "+" and
- * "-" used in an expression, "+=", and "-=".
+ * Tests basic arithmatic operations
  */
 template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc("test/ExpressionTest_SEEN/addition.TXT");
+  libReallive::Archive arc("test/ExpressionTest_SEEN/basicOperators.TXT");
   RLMachine rlmachine(arc);
   rlmachine.executeUntilHalted();
 
-  int values[4];
-  for(int i = 0; i < 4; ++i)
+  int values[10];
+  for(int i = 0; i < 10; ++i)
     values[i] = rlmachine.getIntValue(0, i);
 
-  ensure_equals("Incorect value for intA[0]", values[0], 2);
-  ensure_equals("Incorect value for intA[1]", values[1], 3);
+  ensure_equals("Incorect value for intA[0] (+ test)", values[0], 2);
+  ensure_equals("Incorect value for intA[1] (+= test)", values[1], 3);
+  ensure_equals("Incorect value for intA[2] (- test)", values[2], 0);
+  ensure_equals("Incorect value for intA[3] (-= test)", values[3], 3);
+  ensure_equals("Incorect value for intA[4] (* test)", values[4], 10);
+  ensure_equals("Incorect value for intA[5] (*= test)", values[5], 30);
+  ensure_equals("Incorect value for intA[6] (/ test)", values[6], 10);
+  ensure_equals("Incorect value for intA[7] (/= test)", values[7], 2);
+  ensure_equals("Incorect value for intA[8] (% test)", values[8], 2);
+  ensure_equals("Incorect value for intA[9] (%= test)", values[9], 1);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests basic arithmatic operations
+ */
+template<>
+template<>
+void object::test<2>()
+{
+/*
+  libReallive::Archive arc("test/ExpressionTest_SEEN/bitwiseOperators.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.executeUntilHalted();
+
+  int values[10];
+  for(int i = 0; i < 10; ++i)
+    values[i] = rlmachine.getIntValue(0, i);
+
+  ensure_equals("Incorect value for intA[0] (+ test)", values[0], 2);
+  ensure_equals("Incorect value for intA[1] (+= test)", values[1], 3);
+  ensure_equals("Incorect value for intA[2] (- test)", values[2], 0);
+  ensure_equals("Incorect value for intA[3] (-= test)", values[3], 3);
+  ensure_equals("Incorect value for intA[4] (* test)", values[4], 10);
+  ensure_equals("Incorect value for intA[5] (*= test)", values[5], 30);
+  ensure_equals("Incorect value for intA[6] (/ test)", values[6], 10);
+  ensure_equals("Incorect value for intA[7] (/= test)", values[7], 2);
+  ensure_equals("Incorect value for intA[8] (% test)", values[8], 2);
+  ensure_equals("Incorect value for intA[9] (%= test)", values[9], 1);
+*/
+}
+
+// -----------------------------------------------------------------------
+
+
+/**
+ * Tests logical operators in both basic and complex contexts.
+ */
+template<>
+template<>
+void object::test<3>()
+{
+  libReallive::Archive arc("test/ExpressionTest_SEEN/comparisonOperators.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.executeUntilHalted();
+
+  int values[14];
+  for(int i = 0; i < 14; ++i)
+    values[i] = rlmachine.getIntValue(0, i);
+
+  ensure_equals("Incorect value for intA[0]", values[0], 0);
+  ensure_equals("Incorect value for intA[1]", values[1], 1);
   ensure_equals("Incorect value for intA[2]", values[2], 0);
-  ensure_equals("Incorect value for intA[3]", values[3], 3);
+  ensure_equals("Incorect value for intA[3]", values[3], 1);
+  ensure_equals("Incorect value for intA[4]", values[4], 1);
+  ensure_equals("Incorect value for intA[5]", values[5], 1);
+  ensure_equals("Incorect value for intA[6]", values[6], 0);
+  ensure_equals("Incorect value for intA[7]", values[7], 1);
+  ensure_equals("Incorect value for intA[8]", values[8], 0);
+  ensure_equals("Incorect value for intA[9]", values[9], 1);
+  ensure_equals("Incorect value for intA[10]", values[10], 1);
+  ensure_equals("Incorect value for intA[11]", values[11], 0);
+  ensure_equals("Incorect value for intA[12]", values[12], 1);
+  ensure_equals("Incorect value for intA[13]", values[13], 0);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests logical operators in both basic and complex contexts.
+ */
+template<>
+template<>
+void object::test<4>()
+{
+  libReallive::Archive arc("test/ExpressionTest_SEEN/logicalOperators.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.executeUntilHalted();
+
+  int values[6];
+  for(int i = 0; i < 6; ++i)
+    values[i] = rlmachine.getIntValue(0, i);
+
+  ensure_equals("Incorect value for intA[0]", values[0], 1);
+  ensure_equals("Incorect value for intA[1]", values[1], 0);
+  ensure_equals("Incorect value for intA[2]", values[2], 1);
+  ensure_equals("Incorect value for intA[3]", values[3], 1);
+  ensure_equals("Incorect value for intA[4]", values[4], 1);
+  ensure_equals("Incorect value for intA[5]", values[5], 0);
 }
 
 
