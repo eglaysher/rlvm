@@ -205,6 +205,7 @@ public:
 	
 	virtual const size_t param_count() const = 0;
 	virtual string get_param(int) const = 0;
+//  const ExpressionPiece& get_parsed_parameter(
 
   /// Get pointer reference. I consider the fatter interface the lesser of two
   /// evils between this and casting CommandElements to their subclasses.

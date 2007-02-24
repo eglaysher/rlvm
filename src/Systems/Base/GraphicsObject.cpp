@@ -125,6 +125,28 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
 
 // -----------------------------------------------------------------------
 
+int GraphicsObject::pixelWidth() const
+{
+  // Calculate out the pixel width of the current object taking in the
+  // width() scaling.
+  if(hasObjectData())
+    return m_objectData->pixelWidth(*this);
+  else
+    return 0;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::pixelHeight() const
+{
+  if(hasObjectData())
+    return m_objectData->pixelHeight(*this);
+  else
+    return 0;
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsObject::render(RLMachine& machine) {
   bool needNewline = false;
   

@@ -203,7 +203,7 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
     const char* location = gotoElement.get_param(0).c_str();
       
     auto_ptr<ExpressionPiece> condition(get_expression(location));
-      
+
     if(!condition->integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();

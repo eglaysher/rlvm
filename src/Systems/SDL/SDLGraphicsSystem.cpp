@@ -460,26 +460,6 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   // this!?
   tmp->flags &= ~SDL_PREALLOC;
 
-  // Convert to the proper type of alpha channel
-//  SDL_Surface* s;
-//  if(with_mask == ALPHA_MASK)
-//  {
-//    s = SDL_DisplayFormatAlpha(tmp);
-//    SDL_FreeSurface(tmp);
-//   }
-//   else
-//   {
-//     // Check to see:
-//     // * bpp ? Might be an issue
-//     // * What g00 type are we trying to load in?
-//     // * 
-
-//     s = tmp;
-// //    s = SDL_DisplayFormat(tmp);
-// //    if(SDL_SetAlpha(s, 0, 255))
-// //      reportSDLError("SDL_SetAlpha", "newSurfaceFromRGBAData");
-//   }
-
   return tmp;
 };
 
@@ -599,7 +579,6 @@ class SDLGraphicsObjectOfFile : public GraphicsObjectData
 {
 private:
   scoped_ptr<SDLSurface> surface;
-  // A texture is fine too?
 
 public:
   SDLGraphicsObjectOfFile(SDLGraphicsSystem& graphics, 
@@ -611,11 +590,25 @@ public:
     : surface(inSurface)
   {  }
 
-  void render(RLMachine& machine, const GraphicsObject& rp)
+  virtual void render(RLMachine& machine, const GraphicsObject& rp)
   {
 //    cerr << "Rendering object!" << endl;
 //    surface->dump();
     surface->renderToScreenAsObject(rp);
+  }
+
+  virtual int pixelWidth(const GraphicsObject& rp)
+  {
+    const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
+    int width = rect.x2 - rect.x1;
+    return (rp.width() / 100.0f) * width;
+  }
+
+  virtual int pixelHeight(const GraphicsObject& rp)
+  {
+    const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
+    int height = rect.y2 - rect.y1;
+    return (rp.height() / 100.0f) * height;
   }
 
   GraphicsObjectData* clone() const 

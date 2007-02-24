@@ -50,9 +50,6 @@ Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
     m_machine(machine), m_srcSurface(src), m_dstSurface(dst), 
     m_finalSurface(final), m_performFinalBlit(true)
 {
-  dst->dump();
-  final->dump();
-
   m_machine.system().event().beginRealtimeTask();
 }
 

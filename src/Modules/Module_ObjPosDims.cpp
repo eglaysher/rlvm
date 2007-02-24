@@ -28,6 +28,8 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
+#include <iostream>
+using namespace std;
 
 /**
  * Theoretically implements objGetPos. People don't actually
@@ -54,8 +56,35 @@ struct Obj_objGetPos
 
 // -----------------------------------------------------------------------
 
+/**
+ * @note objGetDims takes an integer as its fourth argument, but we
+ * have no idea what this is or how it affects things. Usually appears
+ * to be 4. ????
+ */
+struct Obj_objGetDims
+  : public RLOp_Void_4< IntConstant_T, IntReference_T, IntReference_T,
+                        DefaultIntValue_T<4> >
+{
+  int m_layer;
+  Obj_objGetDims(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int objNum, IntReferenceIterator widthIt,
+                  IntReferenceIterator heightIt, int unknown)
+  {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, objNum);
+//    cerr << "Graphics Obj data: " << objNum << ", " << obj.pixelWidth()
+//         << ", " << obj.pixelHeight() << endl;
+    *widthIt = obj.pixelWidth();
+    *heightIt = obj.pixelHeight();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 ObjPosDimsModule::ObjPosDimsModule()
   : RLModule("ObjPosDims", 1, 84)
 {
   addOpcode(1000, 0, new Obj_objGetPos(OBJ_FG_LAYER));
+  addOpcode(1100, 0, new Obj_objGetDims(OBJ_FG_LAYER));
+  addOpcode(1100, 1, new Obj_objGetDims(OBJ_FG_LAYER));
 }

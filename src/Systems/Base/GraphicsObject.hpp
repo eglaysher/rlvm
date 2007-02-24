@@ -42,6 +42,9 @@ public:
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties) = 0;
 
+  virtual int pixelWidth(const GraphicsObject& renderingProperties) = 0;
+  virtual int pixelHeight(const GraphicsObject& renderingProperties) = 0;
+
   virtual GraphicsObjectData* clone() const = 0;
 };
 
@@ -107,6 +110,9 @@ public:
 
   int height() const { return m_height; }
   void setHeight(const int in) { m_height = in; }
+
+  int pixelWidth() const;
+  int pixelHeight() const;
 
   int rotation() const { return m_rotation; }
   void setRotation(const int in) { m_rotation = in; }

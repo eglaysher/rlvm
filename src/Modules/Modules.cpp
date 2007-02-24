@@ -34,6 +34,7 @@
 #include "Modules/Module_ObjManagement.hpp"
 #include "Modules/Module_Refresh.hpp"
 #include "Modules/Module_Scr.hpp"
+#include "Modules/Module_Debug.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -60,4 +61,5 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attatchModule(new ObjBgManagement);
   rlmachine.attatchModule(new RefreshModule);
   rlmachine.attatchModule(new ScrModule);
+  rlmachine.attatchModule(new DebugModule);
 }

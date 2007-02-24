@@ -79,7 +79,6 @@ void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 {
   m_mouseXPos = event.motion.x;
   m_mouseYPos = event.motion.y;
-//  cerr << "Mouse pos: {" << event.motion.x << ", " << event.motion.y << "}" << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -155,6 +154,7 @@ void SDLEventSystem::getCursorPos(int& xPos, int& yPos)
 void SDLEventSystem::getCursorPos(int& xPos, int& yPos, int& button1, 
                                   int& button2)
 {
+  cerr << "Mouse pos: {" << m_mouseXPos << ", " << m_mouseYPos << "}" << endl;
   xPos = m_mouseXPos;
   yPos = m_mouseYPos;
   button1 = m_button1State;

@@ -137,10 +137,24 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
   : m_halted(false), m_haltOnException(true), archive(inArchive), 
     m_ownedSystem(NULL), m_system(inSystem)
 {
-  // Arbitrarily set the scenario to the first one in the archive,
-  // which is what we want until we get the Gameexe.ini file parser
-  // working
-  libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
+  // Search in the Gameexe for #SEEN_START and place us there
+  Gameexe& gameexe = inSystem.gameexe();
+  libReallive::Scenario* scenario = NULL;
+  if(gameexe.exists("SEEN_START"))
+  {
+    int firstSeen = gameexe("SEEN_START").to_int();
+    scenario = inArchive.scenario(firstSeen);
+
+    if(scenario == NULL)
+      cerr << "WARNING: Invalid #SEEN_START in Gameexe" << endl;
+  }
+
+  if(scenario == NULL)
+  {
+    // if SEEN_START is undefined, then just grab the first SEEN.
+    scenario = inArchive.scenario(archive.begin()->first);
+  }
+
   if(scenario == 0)
     throw Error("Invalid scenario file");
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));

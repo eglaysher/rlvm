@@ -34,6 +34,7 @@ LRLFILES[] =
   Module_ObjManagement
   Module_ObjPosDims
   Module_Refresh
+  Module_Debug
 
 StaticCObject(libModules, $(LRLFILES))
 
