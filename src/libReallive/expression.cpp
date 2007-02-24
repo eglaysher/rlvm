@@ -160,7 +160,7 @@ ExpressionPiece* get_expr_token(const char*& src)
     ExpressionPiece* location = get_expression(src);
 
     if(src[0] != ']') {
-      stringstream ss;
+      ostringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_token"
          << " (']' expected)";
       throw Error(ss.str());
@@ -171,7 +171,7 @@ ExpressionPiece* get_expr_token(const char*& src)
   } else if(src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_token");
   } else {
-    stringstream err;
+    ostringstream err;
     err << "Unknown toke type 0x" << hex << src[0] << " in get_expr_token" << endl;
     throw Error(err.str());
   }
@@ -193,7 +193,8 @@ ExpressionPiece* get_expr_term(const char*& src)
     src++;
     ExpressionPiece* p = get_expr_bool(src);
     if(src[0] != ')') {
-      stringstream ss;
+      ostringstream ss;
+      cerr << "Src: '" << src << "'" << endl;
       ss << "Unexpected character '" << src[0] << "' in get_expr_term"
          << " (')' expected)";
       throw Error(ss.str());
@@ -203,7 +204,7 @@ ExpressionPiece* get_expr_term(const char*& src)
   } else if(src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_term");
   } else {
-    stringstream err;
+    ostringstream err;
     err << "Unknown token type 0x" << hex << (short)src[0] << " in get_expr_term";
     throw Error(err.str());
   }
@@ -264,10 +265,10 @@ ExpressionPiece* get_expr_cond(const char*& src)
 
 static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && src[0] == '<') {
+  if(src[0] == '\\' && src[1] == '<') {
     src += 2;
     ExpressionPiece* rhs = get_expr_cond(src);
-    return get_expr_bool_loop_and(src, new AssignmentExpressionOperator(0x3c, tok, rhs));
+    return get_expr_bool_loop_and(src, new BinaryExpressionOperator(0x3c, tok, rhs));
   } else {
     return tok;
   }
@@ -275,11 +276,11 @@ static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece
 
 static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && src[0] == '=') {
+  if(src[0] == '\\' && src[1] == '=') {
     src += 2;
     ExpressionPiece* innerTerm = get_expr_cond(src);
     ExpressionPiece* rhs = get_expr_bool_loop_and(src, innerTerm);    
-    return get_expr_bool_loop_or(src, new AssignmentExpressionOperator(0x3d, tok, rhs));
+    return get_expr_bool_loop_or(src, new BinaryExpressionOperator(0x3d, tok, rhs));
   } else {
     return tok;
   }
@@ -554,7 +555,7 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
   case 61: return lhs || rhs;
   default:
   {
-    stringstream ss;
+    ostringstream ss;
     ss << "Invalid operator " << (int)operation << " in expression!";
     throw Error(ss.str());
   }

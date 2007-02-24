@@ -32,6 +32,8 @@
 #include "libReallive/Archive.h"
 #include "MachineBase/RLMachine.hpp"
 
+#include "Modules/Module_Jmp.hpp"
+
 #include "Systems/Null/NullSystem.hpp"
 
 #include "tut.hpp"
@@ -178,8 +180,8 @@ void object::test<4>()
   RLMachine rlmachine(arc);
   rlmachine.executeUntilHalted();
 
-  int values[6];
-  for(int i = 0; i < 6; ++i)
+  int values[7];
+  for(int i = 0; i < 7; ++i)
     values[i] = rlmachine.getIntValue(0, i);
 
   ensure_equals("Incorect value for intA[0]", values[0], 1);
@@ -188,8 +190,33 @@ void object::test<4>()
   ensure_equals("Incorect value for intA[3]", values[3], 1);
   ensure_equals("Incorect value for intA[4]", values[4], 1);
   ensure_equals("Incorect value for intA[5]", values[5], 0);
+  ensure_equals("Incorect value for intA[6]", values[6], 0);
 }
 
+// -----------------------------------------------------------------------
+
+/**
+ * Tests logical operators in both basic and complex contexts.
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  libReallive::Archive arc("test/ExpressionTest_SEEN/previousErrors.TXT");
+  RLMachine rlmachine(arc);
+  rlmachine.attatchModule(new JmpModule);
+  rlmachine.executeUntilHalted();
+
+  int values[5];
+  for(int i = 0; i < 5; ++i)
+    values[i] = rlmachine.getIntValue(1, i);
+
+  ensure_equals("Incorect value for intB[0]", values[0], 1);
+  ensure_equals("Incorect value for intB[1]", values[1], 1);
+  ensure_equals("Incorect value for intB[2]", values[2], 1);
+  ensure_equals("Incorect value for intB[3]", values[3], 0);
+  ensure_equals("Incorect value for intB[4]", values[4], 0);
+}
 
 }
 

@@ -30,3 +30,6 @@ intA[3] = 4 || 0
 intA[4] = 0 || 3
 intA[5] = 0 || 0
 
+// Test chaining the &&
+intA[6] = 1 && 1 && 1 && 0
+//intA[6] = 1 && 1 && (1 && 0)

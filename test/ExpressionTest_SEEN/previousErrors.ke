@@ -20,11 +20,17 @@
 //  
 // -----------------------------------------------------------------------
 
-// Test both the binary addition operator and the inplace one
-intA[0] = 1 + 1
-intA[1] = intA[0]
-intA[1] += 1
+intF[1001] = 277
+intF[1002] = 399
 
-intA[2] = 3 - intA[1]
-intA[3] = 5
-intA[3] -= 2
+intA[1000] = 205
+intA[1001] = 235
+intA[1002] = 220
+intA[1003] = 47
+
+intB[0] = intA[1000] <= intF[1001]
+intB[1] = intF[1001] <= intA[1000] + intA[1002]
+intB[2] = intA[1001] <= intF[1002]
+intB[3] = intF[1002] <= intA[1001] + intA[1003]
+intB[4] = intA[1000] <= intF[1001] && intF[1001] <= intA[1000] + intA[1002] && (intA[1001] <= intF[1002] && intF[1002] <= intA[1001] + intA[1003])
+
