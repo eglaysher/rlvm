@@ -65,7 +65,7 @@ int SafeSize(int i) {
 void reportSDLError(const std::string& sdlName,
                     const std::string& functionName)
 {
-  stringstream ss;
+  ostringstream ss;
   ss << "Error while calling SDL function '" << sdlName << "' in "
      << functionName << ": " << SDL_GetError();
   throw Error(ss.str());

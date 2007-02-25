@@ -233,7 +233,7 @@ public:
   template<typename A>
   GameexeInterpretObject operator()(const A& firstKey)
   {
-    std::stringstream ss;
+    std::ostringstream ss;
     addToStream(firstKey, ss);
     return GameexeInterpretObject(ss.str(), *this);
   }
@@ -244,7 +244,7 @@ public:
   template<typename A, typename B>
   GameexeInterpretObject operator()(const A& firstKey, const B& secondKey)
   {
-    std::stringstream ss;
+    std::ostringstream ss;
     addToStream(firstKey, ss);
     ss << ".";
     addToStream(secondKey, ss);
@@ -313,20 +313,20 @@ private:
    * Regrettable artifact of hack to get all integers in streams to
    * have setw(3).
    */
-  void addToStream(const std::string& x, std::stringstream& ss) {
+  void addToStream(const std::string& x, std::ostringstream& ss) {
     ss << x;
   }
 
   /** 
    * Hack to get all integers in streams to have setw(3).
    */
-  void addToStream(const int& x, std::stringstream& ss) {
+  void addToStream(const int& x, std::ostringstream& ss) {
     ss << std::setw(3) << std::setfill('0') << x;
   }
 
   void throwUnknownKey(const std::string& key) 
   {
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "Unknown Gameexe key '" << key << "'";
     throw libReallive::Error(ss.str());
   }

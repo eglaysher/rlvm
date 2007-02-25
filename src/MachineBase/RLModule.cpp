@@ -79,7 +79,7 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
   if(it != storedOperations.end()) {
     it->dispatchFunction(machine, f);
   } else {
-    stringstream ss;
+    ostringstream ss;
     ss << "Undefined opcode<" << f.modtype() << ":" << f.module() << ":" 
        << f.opcode() << ", " << f.overload() << ">";
     throw Error(ss.str());

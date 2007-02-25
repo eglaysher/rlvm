@@ -282,7 +282,7 @@ void RLMachine::advanceInstructionPointer()
  */
 static void throwIllegalIndex(int location) 
 {
-  stringstream ss;
+  ostringstream ss;
   ss << "Illegal index location (" << location 
      << ") in RLMachine::getIntVlaue()";
   throw Error(ss.str());
@@ -405,7 +405,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
   if(it != modules.end()) {
     it->dispatchFunction(*this, f);
   } else {
-    stringstream ss;
+    ostringstream ss;
     ss << "Undefined module<" << f.modtype() << ":" << f.module() << ">";
     throw Error(ss.str());
   }

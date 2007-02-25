@@ -77,7 +77,7 @@ SDLSurface::~SDLSurface()
 void SDLSurface::dump()
 {
   static int count = 0;
-  stringstream ss;
+  ostringstream ss;
   ss << "dump_" << count << ".bmp";
   count++;
   SDL_SaveBMP(m_surface, ss.str().c_str());
@@ -110,7 +110,7 @@ void SDLSurface::allocate(int width, int height)
 
   if(tmp == NULL)
   {
-    stringstream ss;
+    ostringstream ss;
     ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
        << ": " << SDL_GetError();
     throw Error(ss.str());

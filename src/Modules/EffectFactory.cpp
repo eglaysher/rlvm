@@ -124,7 +124,7 @@ Effect* EffectFactory::build(
     return new FadeEffect(machine, src, dst, final, width, height, time);
   }
 
-  stringstream ss;
+  ostringstream ss;
   ss << "Unsupported effect number in #SEL:" << style;
   throw Error(ss.str());
 }

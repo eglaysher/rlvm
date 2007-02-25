@@ -151,7 +151,7 @@ inline char ToLower(char x) { return tolower(x); }
  */
 string rl_itoa_implementation(int number, int length, char fill)
 {
-  stringstream ss;
+  ostringstream ss;
   if(number < 0)
     ss << "-";
   if(length > 0)

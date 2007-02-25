@@ -139,7 +139,7 @@ void storeData(RLMachine& machine, const ParamVector& f)
       break;
     default:
     {
-      stringstream ss;
+      ostringstream ss;
       ss << "Unknown type tag " << it->type 
          << " during a *_with function call" << endl;
       throw Error(ss.str());
