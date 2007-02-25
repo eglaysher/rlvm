@@ -34,3 +34,4 @@ intB[2] = intA[1001] <= intF[1002]
 intB[3] = intF[1002] <= intA[1001] + intA[1003]
 intB[4] = intA[1000] <= intF[1001] && intF[1001] <= intA[1000] + intA[1002] && (intA[1001] <= intF[1002] && intF[1002] <= intA[1001] + intA[1003])
 
+intB[5] = 2 * (4 + intB[0])

@@ -207,8 +207,8 @@ void object::test<5>()
   rlmachine.attatchModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  int values[5];
-  for(int i = 0; i < 5; ++i)
+  int values[6];
+  for(int i = 0; i < 6; ++i)
     values[i] = rlmachine.getIntValue(1, i);
 
   ensure_equals("Incorect value for intB[0]", values[0], 1);
@@ -216,6 +216,7 @@ void object::test<5>()
   ensure_equals("Incorect value for intB[2]", values[2], 1);
   ensure_equals("Incorect value for intB[3]", values[3], 0);
   ensure_equals("Incorect value for intB[4]", values[4], 0);
+  ensure_equals("Incorect value for intB[5]", values[5], 10);
 }
 
 }
