@@ -285,7 +285,6 @@ struct Jmp_gosub : public RLOp_SpecialCase {
 struct Jmp_gosub_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const char* location = gotoElement.get_param(0).c_str();
-      
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
     if(condition->integerValue(machine)) 

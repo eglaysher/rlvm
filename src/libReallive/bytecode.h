@@ -190,7 +190,7 @@ public:
 // Command elements.
 
 class CommandElement : public DataElement {
-private:
+protected:
   mutable boost::ptr_vector<libReallive::ExpressionPiece> m_parsedParameters;
 
 public:
@@ -210,7 +210,7 @@ public:
 	virtual const size_t param_count() const = 0;
 	virtual string get_param(int) const = 0;
 
-  const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
+  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
   /// Get pointer reference. I consider the fatter interface the lesser of two
   /// evils between this and casting CommandElements to their subclasses.
@@ -303,6 +303,8 @@ public:
 //	string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
 	const size_t param_count() const { return params.size(); }
 	string get_param(int i) const { return params[i]; }
+  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
+
 
 	const string data() const;
 	const size_t length() const { return repr.size() + 4; }

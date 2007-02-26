@@ -230,6 +230,7 @@ const boost::ptr_vector<libReallive::ExpressionPiece>& CommandElement::getParame
     {
       const char* dataStr = get_param(i).c_str();
       m_parsedParameters.push_back(get_data(dataStr));
+//      m_parsedParameters.push_back(get_expression(dataStr));
     }
   }
 
@@ -387,6 +388,21 @@ PointerElement::PointerElement(const char* src) : CommandElement(src) {}
 
 GotoElement::GotoElement(const char* src, ConstructionData& cdata) : PointerElement(src)
 {
+// 	src += 8;
+// 	const int op = (module() * 100000) | opcode();
+// 	if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
+// 		if (*src++ != '(') throw Error("GotoElement(): expected `('");
+// 		int expr = next_expr(src);
+// 		repr.push_back('(');
+//         cerr << "Goto: " << string(src, expr) << endl;
+// 		repr.append(src, expr);
+//         params.push_back(string(src, expr));
+// 		repr.push_back(')');
+// 		src += expr;
+// 		if (*src++ != ')') throw Error("GotoElement(): expected `)'");
+// 	}
+// 	targets.push_id(read_i32(src));
+
 	src += 8;
 	const int op = (module() * 100000) | opcode();
 	if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
@@ -394,7 +410,9 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata) : PointerElem
 		repr.push_back('(');
 
         while(*src != ')') {
-          int expr = next_data(src);
+          int expr = next_expr(src);
+          cerr << "Expr: " << expr << endl;
+          cerr << "Goto on: " << string(src, expr) <<endl;
           repr.append(src, expr);
           params.push_back(string(src, expr));
           src += expr;
@@ -412,6 +430,25 @@ GotoElement::data() const
 	string rv(repr);
 	append_i32(rv, targets[0]->offset());
 	return rv;
+}
+
+
+const boost::ptr_vector<libReallive::ExpressionPiece>& GotoElement::getParameters() const
+{
+  if(param_count() != m_parsedParameters.size())
+  {
+    m_parsedParameters.clear();
+
+    size_t numberOfParameters = param_count();
+    for(size_t i = 0; i < numberOfParameters; ++i) 
+    {
+      const char* dataStr = get_param(i).c_str();
+//      m_parsedParameters.push_back(get_data(dataStr));
+      m_parsedParameters.push_back(get_expression(dataStr));
+    }
+  }
+
+  return m_parsedParameters;
 }
 
 const GotoElement::Case
