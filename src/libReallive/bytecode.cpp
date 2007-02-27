@@ -29,7 +29,7 @@ read_function(const char* stream, ConstructionData& cdata)
 	switch (opcode) {
 	case 0x00010000: case 0x00010005: 
 	case 0x00050001: case 0x00050005:
-	case 0x00010001: case 0x00010002: case 0x00010006: case 0x00010007:	case 0x00010010: 
+	case 0x00010001: case 0x00010002: case 0x00010006: case 0x00010007:	
 	case 0x00050002: case 0x00050006: case 0x00050007:
 		return new GotoElement(stream, cdata);
 	case 0x00010003: case 0x00010008:
@@ -38,6 +38,8 @@ read_function(const char* stream, ConstructionData& cdata)
 	case 0x00010004: case 0x00010009:
 	case 0x00050004: case 0x00050009:
 		return new GotoCaseElement(stream, cdata);
+    case 0x00010010: 
+      return new GosubWithElement(stream, cdata);
 	}
 	if (stream[2] == 2)
 		return new SelectElement(stream);
@@ -388,38 +390,17 @@ PointerElement::PointerElement(const char* src) : CommandElement(src) {}
 
 GotoElement::GotoElement(const char* src, ConstructionData& cdata) : PointerElement(src)
 {
-// 	src += 8;
-// 	const int op = (module() * 100000) | opcode();
-// 	if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
-// 		if (*src++ != '(') throw Error("GotoElement(): expected `('");
-// 		int expr = next_expr(src);
-// 		repr.push_back('(');
-//         cerr << "Goto: " << string(src, expr) << endl;
-// 		repr.append(src, expr);
-//         params.push_back(string(src, expr));
-// 		repr.push_back(')');
-// 		src += expr;
-// 		if (*src++ != ')') throw Error("GotoElement(): expected `)'");
-// 	}
-// 	targets.push_id(read_i32(src));
-
 	src += 8;
 	const int op = (module() * 100000) | opcode();
 	if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
 		if (*src++ != '(') throw Error("GotoElement(): expected `('");
+		int expr = next_expr(src);
 		repr.push_back('(');
-
-        while(*src != ')') {
-          int expr = next_expr(src);
-          cerr << "Expr: " << expr << endl;
-          cerr << "Goto on: " << string(src, expr) <<endl;
-          repr.append(src, expr);
-          params.push_back(string(src, expr));
-          src += expr;
-        }
-        src++;
-
+		repr.append(src, expr);
+//        params.push_back(string(src, expr));
 		repr.push_back(')');
+		src += expr;
+		if (*src++ != ')') throw Error("GotoElement(): expected `)'");
 	}
 	targets.push_id(read_i32(src));
 }
@@ -577,5 +558,56 @@ Pointers::set_pointers(ConstructionData& cdata)
 	}
 	target_ids.clear();
 }
+
+// -----------------------------------------------------------------------
+
+GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata) : PointerElement(src)
+{
+	src += 8;
+	const int op = (module() * 100000) | opcode();
+	if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
+		if (*src++ != '(') throw Error("GosubWithElement(): expected `('");
+		repr.push_back('(');
+
+        while(*src != ')') {
+          int expr = next_data(src);
+          repr.append(src, expr);
+          params.push_back(string(src, expr));
+          src += expr;
+        }
+        src++;
+
+		repr.push_back(')');
+	}
+	targets.push_id(read_i32(src));
+}
+
+const string
+GosubWithElement::data() const
+{
+	string rv(repr);
+	append_i32(rv, targets[0]->offset());
+	return rv;
+}
+
+/*
+const boost::ptr_vector<libReallive::ExpressionPiece>& GosubWithElement::getParameters() const
+{
+  if(param_count() != m_parsedParameters.size())
+  {
+    m_parsedParameters.clear();
+
+    size_t numberOfParameters = param_count();
+    for(size_t i = 0; i < numberOfParameters; ++i) 
+    {
+      const char* dataStr = get_param(i).c_str();
+      m_parsedParameters.push_back(get_data(dataStr));
+    }
+  }
+
+  return m_parsedParameters;
+}
+*/
+
 
 }
