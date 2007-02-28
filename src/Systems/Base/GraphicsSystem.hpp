@@ -142,7 +142,8 @@ public:
   // ----------------------------------- [ Object getter/factory functions ]
   virtual void promoteObjects() = 0;
 
-  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename) = 0;
+  virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
+                                             const std::string& filename) = 0;
 
   /// Object getters
   /// layer == 0 for fg, layer == 1 for bg.

@@ -47,7 +47,7 @@ struct Obj_objOfFile_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int buf, string filename) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setObjectData(gs.buildObjOfFile(machine, filename));
     obj.setVisible(true);
   }
 };
@@ -62,7 +62,7 @@ struct Obj_objOfFile_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setObjectData(gs.buildObjOfFile(machine, filename));
     obj.setVisible(visible);
   }
 };
@@ -79,7 +79,7 @@ struct Obj_objOfFile_2 : public RLOp_Void_5<IntConstant_T, StrConstant_T,
                   int x, int y) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setObjectData(gs.buildObjOfFile(machine, filename));
     obj.setVisible(visible);
     obj.setX(x);
     obj.setY(y);
@@ -98,7 +98,7 @@ struct Obj_objOfFile_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
                   int x, int y, int pattern) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setObjectData(gs.buildObjOfFile(machine, filename));
     obj.setVisible(visible);
     obj.setX(x);
     obj.setY(y);
@@ -120,7 +120,7 @@ struct Obj_objOfFile_4 : public RLOp_Void_8<
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
 
-    obj.setObjectData(gs.buildObjOfFile(filename));
+    obj.setObjectData(gs.buildObjOfFile(machine, filename));
     obj.setVisible(visible);
     obj.setX(x);
     obj.setY(y);

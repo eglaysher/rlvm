@@ -111,3 +111,110 @@ Gameexe::Gameexe(const std::string& gameexefile)
 Gameexe::~Gameexe()
 {
 }
+
+// -----------------------------------------------------------------------
+
+const std::vector<int>& Gameexe::getIntArray(const std::string& key)
+{
+  data_t::const_iterator it = data_.find(key);
+  if(it == data_.end())
+  {
+    static std::vector<int> falseVector;
+    return falseVector;
+  }
+
+  return it->second;
+}
+
+// -----------------------------------------------------------------------
+
+int Gameexe::getIntAt(const std::string& key, int index)
+{
+  data_t::const_iterator it = data_.find(key);
+  if(it == data_.end()) 
+    throwUnknownKey(key);
+
+  return it->second.at(index);
+}
+
+// -----------------------------------------------------------------------
+
+void Gameexe::throwUnknownKey(const std::string& key) 
+{
+  std::ostringstream ss;
+  ss << "Unknown Gameexe key '" << key << "'";
+  throw libReallive::Error(ss.str());
+}
+
+// -----------------------------------------------------------------------
+
+const int GameexeInterpretObject::to_int(const int defaultValue) {
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  if(ints.size() == 0)
+    return defaultValue;
+
+  return ints[0];
+}
+
+// -----------------------------------------------------------------------
+
+const int GameexeInterpretObject::to_int() {
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  if(ints.size() == 0)
+    m_objectToLookupOn.throwUnknownKey(m_key);
+
+  return ints[0];
+}
+
+// -----------------------------------------------------------------------
+
+const std::string GameexeInterpretObject::to_string(const std::string& defaultValue) {
+  try 
+  {
+    return m_objectToLookupOn.getStringAt(m_key, 0);
+  } 
+  catch(...) 
+  {
+    return defaultValue;
+  }
+}
+
+// -----------------------------------------------------------------------
+
+const std::string GameexeInterpretObject::to_string() {
+  try 
+  {
+    return m_objectToLookupOn.getStringAt(m_key, 0);
+  } 
+  catch(...) 
+  {
+    m_objectToLookupOn.throwUnknownKey(m_key);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+const std::vector<int>& GameexeInterpretObject::to_intVector() {
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  if(ints.size() == 0)
+    m_objectToLookupOn.throwUnknownKey(m_key);
+
+  return ints;    
+}
+
+// -----------------------------------------------------------------------
+
+bool GameexeInterpretObject::exists()
+{
+  return m_objectToLookupOn.exists(m_key);
+}
+
+// -----------------------------------------------------------------------
+
+GameexeInterpretObject& GameexeInterpretObject::operator=(const std::string& value)
+{
+  // Set the key to incoming int
+  m_objectToLookupOn.setStringAt(m_key, value);
+  return *this;
+}
+

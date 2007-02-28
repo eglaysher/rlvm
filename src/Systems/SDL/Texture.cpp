@@ -242,8 +242,8 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   // Figure out position to display on
   int xPos1 = go.x() + go.xAdjustmentSum();
   int yPos1 = go.y() + go.yAdjustmentSum();
-  int xPos2 = xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f);
-  int yPos2 = yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f);
+  int xPos2 = int(xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f));
+  int yPos2 = int(yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f));
 
   // Convert the pixel coordinates into [0,1) texture coordinates
   float thisx1 = float(xSrc1) / m_textureWidth;

@@ -1031,7 +1031,7 @@ bool G00CONV::Read(char* image) {
 	if (data == 0) return false;
 	/* header ¼±ÊÌ */
 	int type = *data;
-    cerr << "Type: " << type << endl;
+//    cerr << "Type: " << type << endl;
 	if (type == 0) return Read_Type0(image);
 	else if (type == 1) return Read_Type1(image);
 	else if (type == 2) return Read_Type2(image);

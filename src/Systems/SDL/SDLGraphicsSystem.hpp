@@ -31,6 +31,7 @@ class SDLSurface;
 class Texture;
 class SDLGraphicsSystem;
 class GraphicsObject;
+class Gameexe;
 
 // -----------------------------------------------------------------------
 
@@ -91,7 +92,7 @@ private:
   // ---------------------------------------------------------------------
 
 public:
-  SDLGraphicsSystem(); 
+  SDLGraphicsSystem(Gameexe& gameexe);
 
   /** 
    * Should be called by any of the drawing functions the screen is
@@ -147,7 +148,7 @@ public:
   // Object related functions
   virtual void promoteObjects();
 
-  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename);
+  virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename);
 
   virtual GraphicsObject& getObject(int layer, int objNumber);
   virtual void setObject(int layer, int objNumber, GraphicsObject& object);

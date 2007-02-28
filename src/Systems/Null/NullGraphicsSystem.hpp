@@ -32,7 +32,7 @@ public:
 
   virtual void promoteObjects() { }
 
-  virtual GraphicsObjectData* buildObjOfFile(const std::string& filename)
+  virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename)
   { return NULL; }
 
   virtual GraphicsObject& getObject(int layer, int objNumber) 

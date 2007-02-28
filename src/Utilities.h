@@ -23,6 +23,10 @@
 #ifndef __Utilities_h__
 #define __Utilities_h__
 
+#include <string>
+
+class RLMachine;
+
 /** 
  * Returns the full path to a g00 file for the basename of the file.
  * 
@@ -32,13 +36,7 @@
  *       search for the file; it points directly into my copy of the
  *       Kannon all ages DVD.
  */
-inline string findFile(const std::string& fileName)
-{
-  // Hack until I do this correctly
-  string file = "/Users/elliot/KANON_SE_ALL/g00/" + fileName;
-  file += ".g00";
-  return file;
-}
+std::string findFile(RLMachine& machine, const std::string& fileName);
 
 /** 
  * Changes the coordinate types. All operations internally are done in

@@ -22,6 +22,7 @@ LIBRLVMFILES[] =
   Systems/Base/RLTimer
   Systems/SDL/libSDLSystem
   libReallive/libReallive
+  Utilities
 
 StaticCLibrary(librlvm, $(LIBRLVMFILES))
 

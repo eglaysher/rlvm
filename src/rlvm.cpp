@@ -165,10 +165,14 @@ int main(int argc, char* argv[])
 {
   srand(time(NULL));
 
+  string gamepath = argv[1];
+
   try {
-    Gameexe gameexe("Gameexe.ini");
+    Gameexe gameexe(gamepath + "/Gameexe.ini");
+    // @todo Make the next line work.
+    gameexe("__GAMEPATH") = gamepath;
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(argv[1]);
+    libReallive::Archive arc(gamepath + "/Seen.txt");
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
 

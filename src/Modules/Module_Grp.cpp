@@ -296,7 +296,7 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   Grp_load_1(bool in) : m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
-    filename = findFile(filename);
+    filename = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     graphics.allocateDC(dc, graphics.screenWidth(), graphics.screenHeight());
@@ -328,7 +328,7 @@ struct Grp_load_3 : public RLOp_Void_9<
 
   void operator()(RLMachine& machine, string filename, int dc,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
-    filename = findFile(filename);
+    filename = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     m_space.translateToRec(x1, y1, x2, y2);
@@ -453,7 +453,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
-    filename = findFile(filename);
+    filename = findFile(machine, filename);
 
     m_space.translateToRec(selEffect[0], selEffect[1], 
                         selEffect[2], selEffect[3]);
@@ -505,7 +505,7 @@ struct Grp_open_3 : public RLOp_Void_9<
   {
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
-    filename = findFile(filename);
+    filename = findFile(machine, filename);
 
     m_space.translateToRec(x1, y1, x2, y2);
     loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity, m_useAlpha);
@@ -573,7 +573,7 @@ struct Grp_open_4 : public RLOp_Void_17<
     if(filename != "?")
     {
       if(filename == "???") filename = graphics.defaultGrpName();
-      filename = findFile(filename);
+      filename = findFile(machine, filename);
 
       loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
                      opacity, m_useAlpha);
@@ -617,7 +617,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     if(filename != "?")
     {
       if(filename == "???") filename = graphics.defaultGrpName();
-      filename = findFile(filename);
+      filename = findFile(machine, filename);
 
       loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
                      opacity, m_useAlpha);

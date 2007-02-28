@@ -42,6 +42,7 @@
 #include "Systems/SDL/Texture.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "libReallive/defs.h"
+#include "libReallive/gameexe.h"
 #include "file.h"
 #include "Utilities.h"
 
@@ -184,7 +185,7 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  *
  * @pre SDL is initialized.
  */
-SDLGraphicsSystem::SDLGraphicsSystem()
+SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   : m_screenDirty(false), m_screenNeedsRefresh(false)
 {
   for(int i = 0; i < 16; ++i)
@@ -199,17 +200,23 @@ SDLGraphicsSystem::SDLGraphicsSystem()
     throw Error(ss.str());
   }
 
-  // Make this read these values from the Gameexe
-  //
-  // Set our width/height to 640/480 (you would
-  // of course let the user decide this in a normal
-  // app). We get the bpp we will request from
-  // the display. On X11, VidMode can't change
-  // resolution, so this is probably being overly
-  // safe. Under Win32, ChangeDisplaySettings
-  // can change the bpp.
-  m_width = 640;
-  m_height = 480;
+  int graphicsMode = gameexe("SCREENSIZE_MOD").to_int();
+  if(graphicsMode == 0)
+  {
+    m_width = 640;
+    m_height = 480;
+  }
+  else if(graphicsMode == 1)
+  {
+    m_width = 800;
+    m_height = 600;
+  }
+  else
+  {
+    ostringstream oss;
+    oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
+    throw Error(oss.str());
+  }
   int bpp = info->vfmt->BitsPerPixel;
 
   /* the flags to pass to SDL_SetVideoMode */
@@ -637,7 +644,8 @@ void SDLGraphicsSystem::promoteObjects()
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(const std::string& filename)
+GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(RLMachine& machine, 
+                                                      const std::string& filename)
 {
-  return new SDLGraphicsObjectOfFile(*this, findFile(filename));
+  return new SDLGraphicsObjectOfFile(*this, findFile(machine, filename));
 }

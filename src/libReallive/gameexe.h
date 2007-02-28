@@ -156,7 +156,7 @@ public:
    * @return True if exists, false otherwise
    */
   bool exists();
-  
+
   /** 
    * Assign a value. Unlike all the other methods, we can safely
    * templatize this since the functions it calls can be overloaded.
@@ -164,12 +164,7 @@ public:
    * @param value Incoming value
    * @return self
    */
-//   template<typename T>
-//   GameexeInterpretObject& operator=(const T& value) {
-//     // Set the key to incoming int
-//     m_objectToLookupOn.setKeyTo(m_key, value);
-//     return *this;
-//   }
+  GameexeInterpretObject& operator=(const std::string& value);
 };
 
 /**
@@ -265,24 +260,9 @@ public:
   /**
    * Raw interface for 
    */
-  const std::vector<int>& getIntArray(const std::string& key) {
-	data_t::const_iterator it = data_.find(key);
-    if(it == data_.end())
-    {
-      static std::vector<int> falseVector;
-      return falseVector;
-    }
+  const std::vector<int>& getIntArray(const std::string& key);
 
-    return it->second;
-  }
-
-  int getIntAt(const std::string& key, int index) {
-    data_t::const_iterator it = data_.find(key);
-    if(it == data_.end()) 
-      throwUnknownKey(key);
-
-    return it->second.at(index);
-  }
+  int getIntAt(const std::string& key, int index);
 
   /** 
    * Returns whether key exists in the stored data
@@ -306,6 +286,13 @@ public:
     return cdata_.at(cindex);
   }
 
+  void setStringAt(const std::string& key, const std::string& value) {
+    vec_type toStore;
+    cdata_.push_back(value);
+    toStore.push_back(cdata_.size() - 1);
+    data_[key] = toStore;
+  }
+
   /// @}
 
 private:
@@ -324,75 +311,7 @@ private:
     ss << std::setw(3) << std::setfill('0') << x;
   }
 
-  void throwUnknownKey(const std::string& key) 
-  {
-    std::ostringstream ss;
-    ss << "Unknown Gameexe key '" << key << "'";
-    throw libReallive::Error(ss.str());
-  }
+  void throwUnknownKey(const std::string& key);
 };
-
-// -----------------------------------------------------------------------
-
-inline const int GameexeInterpretObject::to_int(const int defaultValue) {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
-  if(ints.size() == 0)
-    return defaultValue;
-
-  return ints[0];
-}
-
-// -----------------------------------------------------------------------
-
-inline const int GameexeInterpretObject::to_int() {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
-  if(ints.size() == 0)
-    m_objectToLookupOn.throwUnknownKey(m_key);
-
-  return ints[0];
-}
-
-// -----------------------------------------------------------------------
-
-inline const std::string GameexeInterpretObject::to_string(const std::string& defaultValue) {
-  try 
-  {
-    return m_objectToLookupOn.getStringAt(m_key, 0);
-  } 
-  catch(...) 
-  {
-    return defaultValue;
-  }
-}
-
-// -----------------------------------------------------------------------
-
-inline const std::string GameexeInterpretObject::to_string() {
-  try 
-  {
-    return m_objectToLookupOn.getStringAt(m_key, 0);
-  } 
-  catch(...) 
-  {
-    m_objectToLookupOn.throwUnknownKey(m_key);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-inline const std::vector<int>& GameexeInterpretObject::to_intVector() {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
-  if(ints.size() == 0)
-    m_objectToLookupOn.throwUnknownKey(m_key);
-
-  return ints;    
-}
-
-// -----------------------------------------------------------------------
-
-inline bool GameexeInterpretObject::exists()
-{
-  return m_objectToLookupOn.exists(m_key);
-}
 
 #endif
