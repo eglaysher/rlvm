@@ -1,0 +1,30 @@
+GAME COMPATIBILITY STATUS
+=======================================================================
+
+Kanon SE ALL
+------------
+* Starts
+* Fades Key logo in/out (snow effect unimplemented)
+* Menu correctly animates in (except for 
+* Menu items highlight on mouseover and work when clicked on. 
+* (Actual game doesn't work)
+* (Hack the SEEN_START to point to the OP/Last Regrets to watch ammusing
+  glitching)
+
+Planetarian
+-----------
+* Starts
+* Displays what I assume is an antipiracy message
+* Correctly renders menu, items highlight on mouseover, but do not work.
+
+CLANNAD
+-------
+* Starts...with key logo misplaced at top left
+* The log says that expressions aren't being parsed correctly. 
+* Main menu is the glitchiest of the three:
+  * White BG with only 12 glowing dots on the right side of the screen. Missing BG?
+  * CLANNAD logo fades in on right side of screen
+  * Basic menu appears...the disapears, only to be replaced with the menu with
+    "After Story" and the CG and Music modes.
+  * After that happens, menu items are highlightable. Clicking on them produces no
+    effect.
