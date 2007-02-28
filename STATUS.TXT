@@ -7,6 +7,12 @@ Kanon SE ALL
 * Fades Key logo in/out (snow effect unimplemented)
 * Menu correctly animates in (except for 
 * Menu items highlight on mouseover and work when clicked on. 
+  * Clicking load has RLVM complain about <1:Sys:03001> (menu_load) not being 
+    implemented.
+  * Clicking on enter name glitches. The cancel button, and the big circular button
+    are rendered over the Kanon backdrop. owarisuru is rendered on top of some 
+    smaller button. Nothing works, ^C.
+  * owarisuru shuts down the interpreter cleanly.
 * (Actual game doesn't work)
 * (Hack the SEEN_START to point to the OP/Last Regrets to watch ammusing
   glitching)
@@ -15,7 +21,8 @@ Planetarian
 -----------
 * Starts
 * Displays what I assume is an antipiracy message
-* Correctly renders menu, items highlight on mouseover, but do not work.
+* Correctly renders menu, items highlight on mouseover. Crashes on start game.
+  May be crashing or exiting on clicking owari.
 
 CLANNAD
 -------
@@ -25,6 +32,29 @@ CLANNAD
   * White BG with only 12 glowing dots on the right side of the screen. Missing BG?
   * CLANNAD logo fades in on right side of screen
   * Basic menu appears...the disapears, only to be replaced with the menu with
-    "After Story" and the CG and Music modes.
-  * After that happens, menu items are highlightable. Clicking on them produces no
-    effect.
+    "After Story" and the CG and Music modes after clicking once.
+  * After that happens, menu items are highlightable.
+    * Clicking New game takes me to a white screen. Have to ^C.
+    * Load brings me to the load menu, but it's glitching. It's asking me something,
+      but rendering the hai/iie buttons twice, obsucuring what it's trying to ask 
+      me. The buttons don't work. ^C.
+    * CG Mode renders the number zero in the top right corner,
+      the clickable numerals 1, 2, 3, 4, the verb modoru, and link to sound mode.
+      * sound mode link doesn't work
+      * modoru correctly brings me back to the main menu.
+    * Sound Mode (when selected from main menu): Renders one single box in the 
+	  near upper right, and on the bottom right: 1, 2, ???, modoru, cg mode.
+      * cg mode crashes the interpreter with an uncaught exception.
+      * modoru works
+    * Config:
+      * Exceptions are constantly being throw in expression parser. Ouch.
+      * The push buttons on the first page of options (the one with fullscreen
+        option) toggle state.
+      * On the other option pages, all scroll bars work in one direction: down.
+        No idea what's up with that.
+      * Will return to main menu.
+    * Name:
+      * Only three buttons are rendered, of which cancel is the only one that has
+        any discernable effect, taking me back to the main menu.
+    * Exit + an additional quit shut down interpreter, but there's an exception
+      in the log
