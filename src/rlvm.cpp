@@ -34,6 +34,7 @@
 #include <SDL/SDL.h>
 
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -170,9 +171,14 @@ namespace fs = boost::filesystem;
 void printVersionInformation()
 {
   const string svnRevision = "$Rev$";
+  string number = svnRevision.substr(6);
+  stringstream ss;
+  ss << number;
+  int ver;
+  ss >> ver;
 
   cout
-    << "rlvm (svn revision #" << svnRevision << ")" << endl
+    << "rlvm (svn revision #" << ver << ")" << endl
     << "Copyright (C) 2006,2007 Elliot Glaysher" << endl
     << "This is free software.  You may redistribute copies of it under the terms of"
     << endl
