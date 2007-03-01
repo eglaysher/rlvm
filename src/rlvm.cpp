@@ -23,18 +23,22 @@
 #include "libReallive/reallive.h"
 #include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
+#include "Modules/Modules.hpp"
+
+#include <boost/program_options.hpp>
+#include <boost/filesystem/operations.hpp>
 
 // We include this here because SDL is retarded and works by #define
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
-#include "Systems/SDL/SDLSystem.hpp"
-
-#include "Modules/Modules.hpp"
-
 #include <iostream>
 
 using namespace std;
+
+namespace po = boost::program_options;
+namespace fs = boost::filesystem;
 
 /**
  * @mainpage RLVM, a Reallive virtual machine clone
@@ -161,18 +165,124 @@ using namespace std;
  * 
  */
 
+// -----------------------------------------------------------------------
+
+void printVersionInformation()
+{
+  int revision = 5;
+
+  cout
+    << "rlvm (svn revision #" << revision << ")" << endl
+    << "Copyright (C) 2006,2007 Elliot Glaysher" << endl
+    << "This is free software.  You may redistribute copies of it under the terms of"
+    << endl
+    << "the GNU General Public License <http://www.gnu.org/licenses/gpl.html>."
+    << endl
+    << "There is NO WARRANTY, to the extent permitted by law."
+    << endl;
+}
+
+// -----------------------------------------------------------------------
+
+void printUsage(const string& name, po::options_description& opts)
+{
+  cout << "Usage: " << name << " [options] <game root>" << endl;
+  cout << opts << endl;
+}
+
+// -----------------------------------------------------------------------
+
+
 int main(int argc, char* argv[])
 {
   srand(time(NULL));
 
-  string gamepath = argv[1];
+  // -----------------------------------------------------------------------
+  // Parse command line options
+
+  // Declare the supported options.
+  po::options_description opts("Options");
+  opts.add_options()
+    ("help", "produce help message")
+    ("version", "display version and license information")
+    ("gameexe", po::value<string>(), "Override location of Gameexe.ini")
+    ("seen", po::value<string>(), "Override location of SEEN.TXT")
+    ;
+
+  // Declare the final option to be game-root
+  po::options_description hidden("Hidden");
+  hidden.add_options()
+    ("game-root", po::value<string>(), "Location of game root");
+  po::positional_options_description p;
+  p.add("game-root", -1);
+
+  // Use these on the command line
+  po::options_description commandLineOpts;
+  commandLineOpts.add(opts).add(hidden);
+
+  po::variables_map vm;
+  po::store(po::basic_command_line_parser<char>(argc, argv).options(commandLineOpts).positional(p).run(),
+            vm);
+  po::notify(vm);
+
+  // -----------------------------------------------------------------------
+  // Process command line options
+  string gamerootPath, gameexePath, seenPath;
+
+  if(vm.count("help"))
+  {
+    printUsage(argv[0], opts);
+    return 0;
+  }
+
+  if(vm.count("version"))
+  {
+    printVersionInformation();
+    return 0;
+  }
+
+  if(vm.count("game-root"))
+  {
+    gamerootPath = vm["game-root"].as<string>();
+
+    if(!fs::exists(gamerootPath))
+    {
+      cerr << "ERROR: Path '" << gamerootPath << "' does not exist." << endl;
+      return -1;
+    }
+  }
+  else
+  {
+    printUsage(argv[0], opts);
+    return -1;
+  }
+
+  // --gameexe
+  if(vm.count("gameexe"))
+  {
+    gameexePath = vm["gameexe"].as<string>();
+  }
+  else
+  {
+    gameexePath = gamerootPath + "Gameexe.ini";    
+    cerr << "gameexePath: " << gameexePath << endl;
+  }
+
+  // --seen
+  if(vm.count("seen"))
+  {
+    seenPath = vm["seen"].as<string>();
+  }
+  else
+  {
+    seenPath = gamerootPath + "/Seen.txt";
+  }
 
   try {
-    Gameexe gameexe(gamepath + "/Gameexe.ini");
-    // @todo Make the next line work.
-    gameexe("__GAMEPATH") = gamepath;
+    Gameexe gameexe(gameexePath);
+    gameexe("__GAMEPATH") = gamerootPath;
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(gamepath + "/Seen.txt");
+    libReallive::Archive arc(seenPath);
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
 

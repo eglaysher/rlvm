@@ -32,6 +32,7 @@
 #include "Modules/FadeEffect.hpp"
 #include "Modules/WipeEffect.hpp"
 #include "Modules/ScrollOnScrollOff.hpp"
+#include "Modules/BlindEffect.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -118,6 +119,9 @@ Effect* EffectFactory::build(
     return new ScrollSquashSlideBaseEffect(machine, src, dst, final, drawer, effect,
                                            width, height, time);
   }
+  case 120:
+    return buildBlindEffect(machine, src, dst, final, width, height, time,
+                            direction, xsize, ysize);
   case 0:
   case 50:
   default:
@@ -173,6 +177,54 @@ Effect* EffectFactory::buildWipeEffect(
          << " Bottom effect." << endl;
     return new WipeTopToBottomEffect(machine, src, dst, final, width, height, 
                                      time, interpolation);
+  };
+}
+
+
+/** 
+ * Creates a specific subclass of BlindEffect for \#SEL #120, Blind.
+ *
+ * RL does something really weird: if the wrong xsize/ysize was set
+ * (the correct one is zero), it uses the other.
+ */
+Effect* EffectFactory::buildBlindEffect(
+  RLMachine& machine, boost::shared_ptr<Surface> src,
+  boost::shared_ptr<Surface> dst,
+  boost::shared_ptr<Surface> final,
+  int width, int height, int time, 
+  int direction, int xsize, int ysize)
+{
+  switch(direction)
+  {
+  case TOP_TO_BOTTOM:
+    if(xsize == 0 && ysize > 0)
+      xsize = ysize;
+    return new BlindTopToBottomEffect(machine, src, dst, final, width, height, 
+                                      time, xsize);
+  case BOTTOM_TO_TOP:
+    if(xsize == 0 && ysize > 0)
+      xsize = ysize;
+    return new BlindBottomToTopEffect(machine, src, dst, final, width, height, 
+                                      time, xsize);
+  case LEFT_TO_RIGHT:
+    if(ysize == 0 && xsize > 0)
+      ysize = xsize;
+    return new BlindLeftToRightEffect(machine, src, dst, final, width, height, 
+                                      time, ysize);
+  case RIGHT_TO_LEFT:
+    if(ysize == 0 && xsize > 0)
+      ysize = xsize;
+    return new BlindRightToLeftEffect(machine, src, dst, final, width, height, 
+                                      time, ysize);
+
+  default:
+    cerr << "WARNING! Unsupported direction " << direction 
+         << " in EffectFactory::buildWipeEffect. Returning Top to"
+         << " Bottom effect." << endl;
+    if(xsize == 0 && ysize > 0)
+      xsize = ysize;
+    return new BlindTopToBottomEffect(machine, src, dst, final, width, height, 
+                                     time, xsize);
   };
 }
 

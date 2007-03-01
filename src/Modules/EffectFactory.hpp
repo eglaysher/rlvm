@@ -128,6 +128,13 @@ private:
     boost::shared_ptr<Surface> final,  
     int width, int height, int time, int direction, int interpolation);
 
+  static Effect* EffectFactory::buildBlindEffect(
+    RLMachine& machine, boost::shared_ptr<Surface> src,
+    boost::shared_ptr<Surface> dst,
+    boost::shared_ptr<Surface> final,
+    int width, int height, int time, 
+    int direction, int xsize, int ysize);
+
   static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(
     int drawerType);
 

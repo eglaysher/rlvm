@@ -28,7 +28,7 @@ StaticCLibrary(librlvm, $(LIBRLVMFILES))
 
 ########
 
-LIBS += librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -lSDL_image -framework Cocoa -framework OpenGL
+LIBS += librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -lSDL_image -framework Cocoa -framework OpenGL -lboost_program_options -lboost_filesystem
 .DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)
 rlvm$(EXE): librlvm$(EXT_LIB) 
 
