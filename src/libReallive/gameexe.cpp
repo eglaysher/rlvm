@@ -218,3 +218,11 @@ GameexeInterpretObject& GameexeInterpretObject::operator=(const std::string& val
   return *this;
 }
 
+// -----------------------------------------------------------------------
+
+GameexeInterpretObject& GameexeInterpretObject::operator=(const int value)
+{
+  // Set the key to incoming int
+  m_objectToLookupOn.setIntAt(m_key, value);
+  return *this;
+}

@@ -169,10 +169,10 @@ namespace fs = boost::filesystem;
 
 void printVersionInformation()
 {
-  int revision = 5;
+  const string svnRevision = "$Rev$";
 
   cout
-    << "rlvm (svn revision #" << revision << ")" << endl
+    << "rlvm (svn revision #" << svnRevision << ")" << endl
     << "Copyright (C) 2006,2007 Elliot Glaysher" << endl
     << "This is free software.  You may redistribute copies of it under the terms of"
     << endl
@@ -207,6 +207,7 @@ int main(int argc, char* argv[])
     ("version", "display version and license information")
     ("gameexe", po::value<string>(), "Override location of Gameexe.ini")
     ("seen", po::value<string>(), "Override location of SEEN.TXT")
+    ("start-seen", po::value<int>(), "Force start at SEEN#")
     ;
 
   // Declare the final option to be game-root
@@ -281,6 +282,13 @@ int main(int argc, char* argv[])
   try {
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath;
+
+    // Possibly force starting at a different seen
+    if(vm.count("start-seen"))
+    {
+      gameexe("SEEN_START") = vm["start-seen"].as<int>();
+    }
+
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(seenPath);
     RLMachine rlmachine(sdlSystem, arc);

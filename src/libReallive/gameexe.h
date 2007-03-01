@@ -165,6 +165,8 @@ public:
    * @return self
    */
   GameexeInterpretObject& operator=(const std::string& value);
+
+  GameexeInterpretObject& operator=(const int value);
 };
 
 /**
@@ -290,6 +292,12 @@ public:
     vec_type toStore;
     cdata_.push_back(value);
     toStore.push_back(cdata_.size() - 1);
+    data_[key] = toStore;
+  }
+
+  void setIntAt(const std::string& key, const int value) {
+    vec_type toStore;
+    toStore.push_back(value);
     data_[key] = toStore;
   }
 
