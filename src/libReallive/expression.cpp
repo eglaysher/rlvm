@@ -10,7 +10,10 @@
 #include "MachineBase/RLMachine.hpp"
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
+
+#include <boost/tokenizer.hpp>
 
 using namespace std;
 
@@ -386,6 +389,77 @@ ExpressionPiece* get_data(const char*& src)
   }
   else
     return get_expression(src);
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Converts a parameter string (as read from the binary SEEN.TXT file)
+ * into a human readable (and printable) format.
+ * 
+ * @param src Raw string to turn into a printable string
+ * @return Printable string
+ */
+std::string parsableToPrintableString(const std::string& src)
+{
+  string output;
+
+  bool firstToken = true;
+  for(string::const_iterator it = src.begin(); it != src.end(); ++it) 
+  {
+    if(firstToken)
+      firstToken = false;
+    else
+    {
+      output += " ";
+    }
+    
+    char tok = *it;
+    if(tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']')
+      output.push_back(tok);
+    else
+    {
+      ostringstream ss;
+      ss << std::hex << std::setw(2) << std::setfill('0') << int(tok);
+      output += ss.str();
+    }
+  }
+
+  return output;
+}
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Converts a printable string (i.e., "$ 05 [ $ FF EE 03 00 00 ]")
+ * into one that can be parsed by all the get_expr family of functions.
+ * 
+ * @param src Printable string 
+ * @return Parsable string
+ */
+std::string printableToParsableString(const std::string& src)
+{
+  typedef boost::tokenizer<boost::char_separator<char> > ttokenizer;
+
+  std::string output;
+
+  boost::char_separator<char> sep(" ");
+  ttokenizer tokens(src, sep);
+  for(ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it)
+  {
+    const std::string& tok = *it;
+    if(tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
+      output.push_back(tok[0]);
+    else
+    {
+      char charToAdd;
+      istringstream ss(tok);
+      ss >> std::hex >> charToAdd;
+      output.push_back(charToAdd);
+    }
+  }
+  
+  return output;
 }
 
 //@}

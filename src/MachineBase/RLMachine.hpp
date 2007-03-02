@@ -115,6 +115,9 @@ private:
   /// times; m_system will simply point to this object
   boost::scoped_ptr<System> m_ownedSystem;
 
+  /// The most recent line marker we've come across
+  int m_line;
+
   /// The RLMachine carried around a reference to the local system, to
   /// keep it from being a Singleton so we can do proper unit testing.
   System& m_system;

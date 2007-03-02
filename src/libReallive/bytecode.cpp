@@ -3,6 +3,7 @@
 #include <exception>
 #include <utility>
 #include <iostream>
+#include <sstream>
 
 #include "bytecode.h"
 #include "scenario.h"
@@ -230,9 +231,17 @@ const boost::ptr_vector<libReallive::ExpressionPiece>& CommandElement::getParame
     size_t numberOfParameters = param_count();
     for(size_t i = 0; i < numberOfParameters; ++i) 
     {
-      const char* dataStr = get_param(i).c_str();
-      m_parsedParameters.push_back(get_data(dataStr));
-//      m_parsedParameters.push_back(get_expression(dataStr));
+      try
+      {
+        const char* dataStr = get_param(i).c_str();
+        m_parsedParameters.push_back(get_data(dataStr));
+      } catch(Error& e) {
+        // Add the 
+        ostringstream oss;
+        oss << e.what() << " (parameter string was '"
+            << parsableToPrintableString(get_param(i)) << "')";
+        throw Error(oss.str());
+      }
     }
   }
 

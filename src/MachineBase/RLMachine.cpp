@@ -219,6 +219,11 @@ void RLMachine::executeNextInstruction()
       // Switch to the proper handler based on the type of this bytecode element
       switch(callStack.top().ip->type()) {
         // Handle all the other stuff
+      case Line:
+        m_line = static_cast<const libReallive::MetaElement&>(
+          *(callStack.top().ip)).value(); 
+        advanceInstructionPointer();
+        break;
       case Expression:
         executeExpression(static_cast<const libReallive::ExpressionElement&>(
                             *(callStack.top().ip)));
@@ -240,16 +245,14 @@ void RLMachine::executeNextInstruction()
     catch(std::exception& e) {
       if(m_haltOnException) {
         m_halted = true;
-        cout << "ERROR: ";
       } else {
         // Advance the instruction pointer so as to prevent infinite
         // loops where we throw an exception, and then try again.
         advanceInstructionPointer();
-
-        cout << "WARNING: ";
       }
 
-      cout << "Uncaught exception: " << e.what() << endl;
+      cout << "(SEEN" << callStack.top().scenario->sceneNumber() 
+           << ")(Line " << m_line << "):  " << e.what() << endl;
     }
   }
 }

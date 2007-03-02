@@ -29,6 +29,9 @@ ExpressionPiece* get_expression(const char*& src);
 ExpressionPiece* get_assignment(const char*& src);
 ExpressionPiece* get_data(const char*& src);
 
+std::string parsableToPrintableString(const std::string& src);
+std::string printableToParsableString(const std::string& src);
+
 enum ExpressionValueType {
   ValueTypeInteger,
   ValueTypeString

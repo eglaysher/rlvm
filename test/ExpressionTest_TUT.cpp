@@ -30,6 +30,8 @@
  */
 
 #include "libReallive/Archive.h"
+#include "libReallive/expression.h"
+
 #include "MachineBase/RLMachine.hpp"
 
 #include "Modules/Module_Jmp.hpp"
@@ -40,6 +42,7 @@
 
 #include <iostream>
 using namespace std;
+using namespace libReallive;
 
 namespace tut
 {
@@ -217,6 +220,15 @@ void object::test<5>()
   ensure_equals("Incorect value for intB[3]", values[3], 0);
   ensure_equals("Incorect value for intB[4]", values[4], 0);
   ensure_equals("Incorect value for intB[5]", values[5], 10);
+}
+
+// -----------------------------------------------------------------------
+
+template<>
+template<>
+void object::test<6>()
+{
+  string exprString = printableToParsableString("( ( $ 00 [ $ ff e8 03 ] ");
 }
 
 }
