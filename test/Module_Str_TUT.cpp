@@ -30,7 +30,7 @@
  */
 
 #include "Modules/Module_Str.hpp"
-#include "libReallive/Archive.h"
+#include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "tut.hpp"

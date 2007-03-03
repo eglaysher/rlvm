@@ -31,7 +31,7 @@
 
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Jmp.hpp"
-#include "libReallive/Archive.h"
+#include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "Systems/Null/NullSystem.hpp"

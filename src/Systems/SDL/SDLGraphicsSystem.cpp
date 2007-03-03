@@ -436,7 +436,7 @@ void SDLGraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
     throw Error("Invalid layer number");
 
   if(objNumber < 0 || objNumber > 256)
-    throw Error("Out of rnage object number");
+    throw Error("Out of range object number");
 
   foregroundObjects[objNumber] = obj;
 }

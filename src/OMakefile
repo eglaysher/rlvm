@@ -2,7 +2,7 @@ if $(not $(defined-env VERBOSE))
   OMakeFlags(-S --progress)
   export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/ -I/opt/local/include/SDL -D_THREAD_SAFE
+CXXFLAGS = --ansi -Wall -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
 
 # for testing
 #CXXFLAGS += -DWIN32
@@ -28,7 +28,7 @@ StaticCLibrary(librlvm, $(LIBRLVMFILES))
 
 ########
 
-LIBS += librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -lSDL_image -framework Cocoa -framework OpenGL -lboost_program_options -lboost_filesystem
+LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_program_options -lboost_filesystem
 .DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)
 rlvm$(EXE): librlvm$(EXT_LIB) 
 

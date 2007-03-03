@@ -32,7 +32,7 @@
 #include "Modules/Module_Jmp.hpp"
 #include "Modules/Module_Str.hpp"
 #include "Modules/Module_Msg.hpp"
-#include "libReallive/Archive.h"
+#include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "tut.hpp"

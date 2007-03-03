@@ -27,6 +27,18 @@
 
 class RLMachine;
 
+/**
+ * Takes the full path to a file, and adjusts its case so that it
+ * points to an existing file if possible.
+ *
+ * @param fileName The path to correct the case of.
+ * @return On platforms with case-insensitive file systems, returns
+ *         a copy of the input unchanged. On less tolerant platforms,
+ *         returns a copy of the input with correct case, or the empty
+ *         string if no solution could be found.
+ */
+std::string correctPathCase(const std::string& fileName);
+
 /** 
  * Returns the full path to a g00 file for the basename of the file.
  * 
@@ -34,7 +46,7 @@ class RLMachine;
  * @return The full path of the file
  * @todo This function is currently a hack and does not actually
  *       search for the file; it points directly into my copy of the
- *       Kannon all ages DVD.
+ *       Kanon all ages DVD.
  */
 std::string findFile(RLMachine& machine, const std::string& fileName);
 

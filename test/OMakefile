@@ -1,15 +1,15 @@
-#if $(not $(defined-env VERBOSE))
-#  OMakeFlags(-S --progress)
-#  export
+if $(not $(defined-env VERBOSE))
+  OMakeFlags(-S --progress)
+  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I/opt/local/include/ -I../src -I/opt/local/include/SDL -D_THREAD_SAFE
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
 
 .PHONY: clean
 
 .SUBDIRS: Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN
 
 INCLUDES += ../src
-LIBS += ../src/librlvm$(EXT_LIB) -L/opt/local/lib -lSDLmain -lSDL -framework Cocoa -framework OpenGL
+LIBS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs) $(PLATFORMLIBS) -lboost_filesystem
 
 TEST_FILES[] = 
   rlvmTest

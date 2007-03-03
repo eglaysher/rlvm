@@ -38,7 +38,12 @@ close(HANDLE fp)
 void
 Mapping::mclose()
 {
-	if (mem) munmap(mem, len);
+	if (mem && mapped) {
+	    munmap(mem, len);
+	}
+	else if (mem) {
+	    delete[] (char*) mem;
+	}
 	if (fp != INVALID_HANDLE_VALUE) close(fp);
 }
 
@@ -57,11 +62,22 @@ Mapping::mopen()
 	}
 	fp = open(fn_.c_str(), O_BINARY | (mode_ == Read ? O_RDONLY : O_RDWR), 0644);
 	if (fp == INVALID_HANDLE_VALUE) throw Error("Could not open file");
-	mem = mmap(0, len, mode_ == Read ? PROT_READ : PROT_READ | PROT_WRITE, 0, fp, 0);
+	mem = mmap(0, len, mode_ == Read ? PROT_READ : PROT_READ | PROT_WRITE, MAP_SHARED, fp, 0);
 	if (mem == MAP_FAILED) {
 		close(fp);
-		throw Error("Could not map memory");
+		fp = INVALID_HANDLE_VALUE;
+		if (mode_ != Read) {
+		    throw Error("Could not map memory");
+		}
+		else {
+		    mapped = false;
+		    mem = (void*)(new char[len]);
+		    FILE* fh = fopen(fn_.c_str(), "rb");
+		    fread(mem, 1, len, fh);
+		    fclose(fh);
+		}
 	}
+	else mapped = true;
 }
 
 Mapping::Mapping(string filename, Mode mode, off_t min_size)

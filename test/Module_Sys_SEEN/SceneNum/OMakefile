@@ -13,7 +13,7 @@ KEPAGOFILES = $(glob *.ke)
 	$(RLC) $< -o $@
 
 SEEN.TXT: $(replacesuffixes .ke, .TXT, $(KEPAGOFILES))
-	$(KPRL) -a $@ seen0001.TXT seen0248.TXT seen0639.TXT
+	$(KPRL) -a $@ SEEN0001.TXT SEEN0248.TXT SEEN0639.TXT
 
 .DEFAULT: SEEN.TXT
 

@@ -156,7 +156,7 @@ class ARCINFO_AVG32 : public ARCINFO {
 	friend class ARCFILE;
 };
 class ARCINFO2k : public ARCINFO {
-	static char ARCINFO2k::decode_seed[256];
+	static char decode_seed[256];
 protected:
 	ARCINFO2k(const char* name, ARCFILE_ATOM& atom) : ARCINFO(name,atom) {
 	}

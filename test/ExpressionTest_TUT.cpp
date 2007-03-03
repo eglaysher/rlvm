@@ -29,7 +29,7 @@
  * Test cases for the randomish module
  */
 
-#include "libReallive/Archive.h"
+#include "libReallive/archive.h"
 #include "libReallive/expression.h"
 
 #include "MachineBase/RLMachine.hpp"

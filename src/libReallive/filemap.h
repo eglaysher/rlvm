@@ -16,6 +16,7 @@ enum Mode { Read, Write };
 
 class Mapping {
 	void* mem;
+	bool mapped;
 	size_t len;
 	HANDLE fp;
 	

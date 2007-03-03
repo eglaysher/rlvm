@@ -24,9 +24,26 @@
 # If so, define the subdirectory targets and uncomment this section.
 #
 
+if $(equal $(OSTYPE), WIN32)
+  # TODO: what are the correct values here?
+  PLATFORMLIBS = 
+  PLATFORMFLAGS =
+  export
+else
+  switch $(shell uname -s)
+  case Darwin
+    PLATFORMLIBS = -framework Cocoa -framework OpenGL
+    PLATFORMFLAGS = 
+    export
+  default
+    # Correct for GNU/Linux, and probably other POSIX-a-likes
+    PLATFORMLIBS = -lGL -lGLU
+    PLATFORMFLAGS = -DCASE_SENSITIVE_FILESYSTEM
+    export
+  export
+
 .SUBDIRS: src test
 .PHONY: tags
-
 
 tags:
 	find . -name "*.cpp" | xargs etags -a

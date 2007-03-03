@@ -1,3 +1,4 @@
+// -*-  indent-tabs-mode:nil; c-basic-offset:2  -*-
 // This file is part of RLVM, a RealLive virutal machine clone.
 //
 // -----------------------------------------------------------------------
@@ -79,9 +80,17 @@ Texture::Texture(SDL_Surface* surface)
       byteType = GL_UNSIGNED_INT_8_8_8_8;
 #endif
     }
-    else
+    // ABGR (32-bit little-endian platforms)
+    else if (format->Rmask = 0xFF && format->Amask == 0xFF000000)
     {
-      cerr << "Unknown mask! It's not Hakuro!" << endl;
+      // Nothing I put here seems to work. :(
+    }
+    else 
+    {
+      ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
+      cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
+           << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
+      cerr.flags(f);
     }
   }
   else if(bytesPerPixel == 3)

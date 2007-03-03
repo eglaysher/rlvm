@@ -1,3 +1,4 @@
+// -*-  indent-tabs-mode:nil; c-basic-offset:2  -*-
 // This file is part of RLVM, a RealLive virutal machine clone.
 //
 // -----------------------------------------------------------------------
@@ -25,6 +26,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Modules/Modules.hpp"
+#include "Utilities.h"
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -257,6 +259,12 @@ int main(int argc, char* argv[])
       cerr << "ERROR: Path '" << gamerootPath << "' does not exist." << endl;
       return -1;
     }
+    if(!fs::is_directory(gamerootPath))
+    {
+      cerr << "ERROR: Path '" << gamerootPath << "' is not a directory." << endl;
+      return -1;
+    }
+    if (gamerootPath[gamerootPath.size() - 1] != '/') gamerootPath += "/";
   }
   else
   {
@@ -271,7 +279,7 @@ int main(int argc, char* argv[])
   }
   else
   {
-    gameexePath = gamerootPath + "Gameexe.ini";    
+    gameexePath = correctPathCase(gamerootPath + "Gameexe.ini");
     cerr << "gameexePath: " << gameexePath << endl;
   }
 
@@ -282,7 +290,7 @@ int main(int argc, char* argv[])
   }
   else
   {
-    seenPath = gamerootPath + "/Seen.txt";
+    seenPath = correctPathCase(gamerootPath + "Seen.txt");
   }
 
   try {
