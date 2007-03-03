@@ -363,7 +363,9 @@ ExpressionPiece* get_data(const char*& src)
 	    || *src == '?' || *src == '_' || *src == '"' 
             || strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
-  } else if(*src == 'a' || *src == '(') {
+  } else if(*src == 'a') {
+// || *src == '(') {
+    // @todo Cleanup below.
     const char* end = src;
     auto_ptr<ComplexExpressionPiece> cep;
 
@@ -390,6 +392,28 @@ ExpressionPiece* get_data(const char*& src)
   else
     return get_expression(src);
 }
+
+// -----------------------------------------------------------------------
+
+ExpressionPiece* get_complex_param(const char*& src)
+{
+  if(*src == ',') {
+    ++src;
+    return get_data(src);
+  } else if(*src == '(') {
+    ++src;
+    auto_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
+
+    while (*src != ')') {
+      cep->addContainedPiece(get_data(src));
+    }
+
+    return cep.release();
+  }
+  else
+    return get_expression(src);
+}
+
 
 // -----------------------------------------------------------------------
 

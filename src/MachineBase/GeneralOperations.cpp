@@ -40,11 +40,15 @@ MultiDispatch::~MultiDispatch()
 
 // -----------------------------------------------------------------------
 
+/// @todo Port this up to the new expression handling code
 void MultiDispatch::operator()(RLMachine& machine, const libReallive::CommandElement& ff) 
 {
   const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
 
   for(unsigned int i = 0; i < parameterPieces.size(); ++i) {
+/*
+    
+
     const ptr_vector<ExpressionPiece>& element = 
       dynamic_cast<const ComplexExpressionPiece&>(parameterPieces[i]).getContainedPieces();
 
@@ -53,6 +57,7 @@ void MultiDispatch::operator()(RLMachine& machine, const libReallive::CommandEle
     }
 
     handler->dispatch(machine, element);
+*/
   }
 
   machine.advanceInstructionPointer();

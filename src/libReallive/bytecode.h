@@ -191,6 +191,7 @@ public:
 
 class CommandElement : public DataElement {
 protected:
+  mutable std::vector<std::string> m_unparsedParameters;
   mutable boost::ptr_vector<libReallive::ExpressionPiece> m_parsedParameters;
 
 public:
@@ -210,7 +211,11 @@ public:
 	virtual const size_t param_count() const = 0;
 	virtual string get_param(int) const = 0;
 
-  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
+  const std::vector<string>& getUnparsedParameters() const;
+  bool areParametersParsed() const;
+
+  void setParsedParameters(boost::ptr_vector<libReallive::ExpressionPiece>& p) const;
+  const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
   /// Get pointer reference. I consider the fatter interface the lesser of two
   /// evils between this and casting CommandElements to their subclasses.

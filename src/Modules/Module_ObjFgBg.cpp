@@ -166,6 +166,8 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
  * down on a duplicated operation struct for each obj* and objBg*
  * function, alowing us to just use this adapter with the already
  * defined operations.
+ *
+ * @todo Convert this up to the new parameter style.
  */
 struct ObjRangeAdapter : RLOp_SpecialCase {
   /// Keep a copy of the operation that we wrap
@@ -174,6 +176,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
   ObjRangeAdapter(RLOperation* in) : handler(in) { }
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
+/*
     const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
 
     // Range check the data
@@ -207,7 +210,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
       // Now dispatch based on these parameters.
       handler->dispatch(machine, currentInstantiation);
     }
-
+*/
     machine.advanceInstructionPointer();
   }
 };
