@@ -48,8 +48,8 @@ Texture::Texture(SDL_Surface* surface)
   glGenTextures(1, &m_textureID);
   glBindTexture(GL_TEXTURE_2D, m_textureID);
   ShowGLErrors();
-//  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   SDL_LockSurface(surface);
@@ -73,17 +73,11 @@ Texture::Texture(SDL_Surface* surface)
       // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
       // need to specify BGRA and then tell the byte type to be
       // reversed order.
+      //
+      // 20070303: Whoah! Is this the internal format on all
+      // platforms!?
       byteOrder = GL_BGRA;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
       byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
-#else
-      byteType = GL_UNSIGNED_INT_8_8_8_8;
-#endif
-    }
-    // ABGR (32-bit little-endian platforms)
-    else if (format->Rmask = 0xFF && format->Amask == 0xFF000000)
-    {
-      // Nothing I put here seems to work. :(
     }
     else 
     {

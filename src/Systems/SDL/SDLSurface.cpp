@@ -114,9 +114,12 @@ void SDLSurface::allocate(int width, int height)
     ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
        << ": " << SDL_GetError();
     throw Error(ss.str());
-  }  
+  }
 
-  m_surface = tmp;
+  SDL_Surface* out = SDL_DisplayFormatAlpha(tmp);
+  SDL_FreeSurface(tmp);
+  
+  m_surface = out;
 
   fill(0, 0, 0, 255);
 }
