@@ -181,7 +181,7 @@ void printVersionInformation()
 
   cout
     << "rlvm (svn revision #" << ver << ")" << endl
-    << "Copyright (C) 2006,2007 Elliot Glaysher" << endl
+    << "Copyright (C) 2006,2007 Elliot Glaysher, Haeleth, et all." << endl
     << "This is free software.  You may redistribute copies of it under the terms of"
     << endl
     << "the GNU General Public License <http://www.gnu.org/licenses/gpl.html>."
