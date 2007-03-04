@@ -12,7 +12,9 @@ Kanon SE ALL
   * Clicking on enter name glitches. The cancel button, and the big circular button
     are rendered over the Kanon backdrop. owarisuru is rendered on top of some 
     smaller button. Nothing works, ^C.
+    [Haeleth: right-click works to return to menu]
   * owarisuru shuts down the interpreter cleanly.
+    [Haeleth: owarisuru dumps core]
 * (Actual game doesn't work)
 * (Hack the SEEN_START to point to the OP/Last Regrets to watch ammusing
   glitching)
@@ -23,11 +25,11 @@ Planetarian
 * Displays what I assume is an antipiracy message
 * Correctly renders menu, items highlight on mouseover. Crashes on start game.
   May be crashing or exiting on clicking owari.
+  [Haeleth: exits cleanly for me, unlike Kanon!]
 
 CLANNAD
 -------
-* Starts...with key logo misplaced at top left
-* The log says that expressions aren't being parsed correctly. 
+* Starts
 * Main menu is the glitchiest of the three:
   * White BG with only 12 glowing dots on the right side of the screen. Missing BG?
   * CLANNAD logo fades in on right side of screen
@@ -52,9 +54,30 @@ CLANNAD
         option) toggle state.
       * On the other option pages, all scroll bars work in one direction: down.
         No idea what's up with that.
+        [Haeleth: they all work perfectly for me...]
       * Will return to main menu.
     * Name:
       * Only three buttons are rendered, of which cancel is the only one that has
         any discernable effect, taking me back to the main menu.
     * Exit + an additional quit shut down interpreter, but there's an exception
       in the log
+
+KOUKA TRIAL
+-----------
+* Starts
+* Main menu options do not appear
+
+MAIDEN HALO TRIAL
+-----------------
+* Black screen
+
+TRANCE KISS TRIAL
+-----------------
+* Displays colourful background, but no splashes or copyright notice
+* Exits after about 10 seconds (due to lack of text support)
+
+UNOFFICIAL "ONE" DEMO
+---------------------
+* Language-select menu doesn't appear
+* Warnings in log about "?.g00"
+* Quite a lot works; the things that don't are quite instructive!

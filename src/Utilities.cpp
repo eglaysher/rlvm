@@ -25,7 +25,7 @@ string correctPathCase(const string& fileName)
   return fileName;
 #else
   using namespace boost::filesystem;  
-  path Path(fileName, native);
+  path Path(fileName);
   // If the path is OK as it stands, do nothing.
   if (exists(Path)) return fileName;
   // If the path doesn't seem to be OK, track backwards through it

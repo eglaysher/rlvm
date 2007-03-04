@@ -205,6 +205,9 @@ int main(int argc, char* argv[])
 {
   srand(time(NULL));
 
+  // Set global state: allow spaces in game paths
+  fs::path::default_name_check(fs::native);
+
   // -----------------------------------------------------------------------
   // Parse command line options
 
@@ -265,6 +268,17 @@ int main(int argc, char* argv[])
       return -1;
     }
     if (gamerootPath[gamerootPath.size() - 1] != '/') gamerootPath += "/";
+
+    // Some games hide data in a lower subdirectory.  A little hack to
+    // make these behave as expected...
+    if (correctPathCase(gamerootPath + "Gameexe.ini") == "") {
+      if (correctPathCase(gamerootPath + "KINETICDATA/Gameexe.ini") != "")
+        gamerootPath += "KINETICDATA/";
+      else if (correctPathCase(gamerootPath + "REALLIVEDATA/Gameexe.ini") != "")
+        gamerootPath += "REALLIVEDATA/";
+      else
+        cerr << "WARNING: Path '" << gamerootPath << "' may not contain a RealLive game." << endl;
+    }
   }
   else
   {
