@@ -98,6 +98,12 @@ size_t next_string(const char* src)
 	return end - src;
 }
 
+/**
+ * @note This still isn't a robust solution. While it takes care of
+ *       the CLANNAD errors, it's not general. What's really needed is
+ *       a way to tell if something should be a complex parameter or a
+ *       parenthisized expression at tokenization time.
+ */
 size_t next_data(const char* src)
 {
 	if (*src == ',')
@@ -117,7 +123,10 @@ size_t next_data(const char* src)
             } else end++;
 		}
 		while (*end != ')') end += next_data(end);
-		return end - src + 1;
+        end++;
+        if(*end == '\\')
+          end += next_expr(end);
+		return end - src;
 	}
 	else return next_expr(src);
 }

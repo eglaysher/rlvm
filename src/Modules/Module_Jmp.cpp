@@ -177,7 +177,7 @@ struct Jmp_goto : public RLOp_SpecialCase {
 struct Jmp_goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
-      
+
     if(conditions.at(0).integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();

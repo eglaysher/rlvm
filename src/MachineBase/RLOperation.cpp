@@ -81,6 +81,7 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
     const vector<string>& unparsed = ff.getUnparsedParameters();
     ptr_vector<ExpressionPiece> output;
     parseParameters(unparsed, output);
+    ff.setParsedParameters(output);
   }
 
   const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
@@ -235,11 +236,13 @@ void Empty_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
+/*
 void RLOp_SpecialCase::parseParameters(
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {       
 }
+*/
 
 // -----------------------------------------------------------------------
 
@@ -250,9 +253,32 @@ void RLOp_SpecialCase::dispatch(
 
 // -----------------------------------------------------------------------
 
-void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
-                                        const libReallive::CommandElement& f)
+void RLOp_SpecialCase::parseParameters(
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
+  for(vector<string>::const_iterator it = input.begin(); it != input.end();
+      ++it)
+  {
+    const char* src = it->c_str();
+    output.push_back(get_data(src));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
+                                        const libReallive::CommandElement& ff)
+{
+  // First try to run the default parseParameters if we can.
+  if(!ff.areParametersParsed())
+  {
+    const vector<string>& unparsed = ff.getUnparsedParameters();
+    ptr_vector<ExpressionPiece> output;
+    parseParameters(unparsed, output);
+    ff.setParsedParameters(output);
+  }
+
   // Pass this on to the implementation of this functor.
-  operator()(machine, f);
+  operator()(machine, ff);
 }

@@ -368,7 +368,17 @@ struct Complex2_T {
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    throw libReallive::Error("Unimplemented");
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//    throw libReallive::Error("Unimplemented");
   }
 
 
@@ -429,7 +439,17 @@ struct Complex3_T {
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    throw libReallive::Error("Unimplemented");
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//    throw libReallive::Error("Unimplemented");
   }
 
 
@@ -492,7 +512,17 @@ struct Complex4_T {
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    throw libReallive::Error("Unimplemented");
+    const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//  throw libReallive::Error("Unimplemented");
   }
 
 
@@ -565,7 +595,18 @@ struct Complex7_T {
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    throw libReallive::Error("Unimplemented");
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+
+//    throw libReallive::Error("Unimplemented");
   }
 
 
@@ -615,7 +656,18 @@ struct Complex8_T {
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    throw libReallive::Error("Unimplemented");
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+
+//    throw libReallive::Error("Unimplemented");
   }
 
   /// Takes a type and makes sure that 
@@ -735,7 +787,17 @@ struct Special_T {
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    throw libReallive::Error("Unimplemented");
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//    throw libReallive::Error("Unimplemented");
   }
 
 /*
@@ -855,6 +917,8 @@ struct RLOp_SpecialCase : public RLOperation {
   void dispatchFunction(RLMachine& machine, 
                         const libReallive::CommandElement& f);
 
+  /// Default implementation that simply parses everything as data;
+  /// doesn't work in the case of complex expressions.
   void parseParameters(const std::vector<std::string>& input,
                        boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
@@ -900,6 +964,8 @@ private:
   {
     if(TYPE::isRealTypestruct)
     {
+//      std::cerr << "Parameter #" << position << " is " 
+//                << libReallive::parsableToPrintableString(input[position]) << std::endl;
       TYPE::parseParameters(position, input, output);
     }
   }

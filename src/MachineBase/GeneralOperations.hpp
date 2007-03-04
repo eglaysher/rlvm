@@ -185,6 +185,9 @@ public:
   MultiDispatch(RLOperation* op);
   ~MultiDispatch();
 
+  void parseParameters(const std::vector<std::string>& input,
+                       boost::ptr_vector<libReallive::ExpressionPiece>& output);
+
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff);
 };
 

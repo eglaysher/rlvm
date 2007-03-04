@@ -308,8 +308,6 @@ public:
 	string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
 //	const size_t param_count() const { return params.size(); }
 //	string get_param(int i) const { return params[i]; }
-  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
-
 
 	const string data() const;
 	const size_t length() const { return repr.size() + 4; }

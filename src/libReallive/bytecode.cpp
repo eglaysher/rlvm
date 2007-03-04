@@ -432,25 +432,6 @@ GotoElement::data() const
 	return rv;
 }
 
-
-const boost::ptr_vector<libReallive::ExpressionPiece>& GotoElement::getParameters() const
-{
-  if(param_count() != m_parsedParameters.size())
-  {
-    m_parsedParameters.clear();
-
-    size_t numberOfParameters = param_count();
-    for(size_t i = 0; i < numberOfParameters; ++i) 
-    {
-      const char* dataStr = get_param(i).c_str();
-//      m_parsedParameters.push_back(get_data(dataStr));
-      m_parsedParameters.push_back(get_expression(dataStr));
-    }
-  }
-
-  return m_parsedParameters;
-}
-
 const GotoElement::Case
 GotoElement::taken() const
 {
