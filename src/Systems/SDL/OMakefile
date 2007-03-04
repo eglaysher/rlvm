@@ -2,7 +2,7 @@
 #  OMakeFlags(-S --progress)
 #  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ -I/opt/local/include -D_THREAD_SAFE
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(PLATFORMFLAGS) -D_THREAD_SAFE
 
 # for testing
 #CXXFLAGS += -DWIN32

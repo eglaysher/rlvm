@@ -44,9 +44,9 @@ std::string correctPathCase(const std::string& fileName);
  * 
  * @param fileName The filename given in the source code.
  * @return The full path of the file
- * @todo This function is currently a hack and does not actually
- *       search for the file; it points directly into my copy of the
- *       Kanon all ages DVD.
+ * @todo This function is currently a hack, doing a naive look into
+ *       #__GAMEPATH / g00. Should eventually be fixed to do full
+ *       searches based on the #FOLDNAME.ext .
  */
 std::string findFile(RLMachine& machine, const std::string& fileName);
 
