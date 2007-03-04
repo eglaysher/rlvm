@@ -62,6 +62,18 @@ private:
   /// Background objects
   GraphicsObject backgroundObjects[256];
 
+  /// Whether to display (SEEN####)(Line ###) in the title bar
+  bool m_displayDataInTitlebar;
+
+  /// The last time the titlebar was updated (in getTicks())
+  unsigned int m_timeOfLastTitlebarUpdate;
+
+  /// The last seen number;
+  unsigned int m_lastSeenNumber;
+
+  /// The last line number;
+  unsigned int m_lastLineNumber;
+
   // ---------------------------------------------------------------------
 
   /** 

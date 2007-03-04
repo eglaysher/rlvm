@@ -275,6 +275,12 @@ public:
    */
   int sceneNumber() const;
 
+  /** 
+   * Returns the value of the most recent line MetadataElement, which
+   * should correspond with the line in the source file.
+   */
+  int lineNumber() const { return m_line; }
+
   // @}
 
   // -----------------------------------------------------------------------

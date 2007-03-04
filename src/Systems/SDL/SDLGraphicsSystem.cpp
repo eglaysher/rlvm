@@ -40,6 +40,8 @@
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "libReallive/defs.h"
 #include "libReallive/gameexe.h"
@@ -186,7 +188,9 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
-  : m_screenDirty(false), m_screenNeedsRefresh(false)
+  : m_screenDirty(false), m_screenNeedsRefresh(false), 
+    m_displayDataInTitlebar(false), m_lastSeenNumber(0), 
+    m_lastLineNumber(0)
 {
   for(int i = 0; i < 16; ++i)
     m_displayContexts[i].reset(new SDLSurface);
@@ -304,6 +308,12 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   // the display
   m_displayContexts[0]->allocate(m_width, m_height, this);
   m_displayContexts[1]->allocate(m_width, m_height);
+
+  // When debug is set, display trace data in the titlebar
+  if(gameexe("MEMORY").exists())
+  {
+    m_displayDataInTitlebar = true;
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -323,6 +333,29 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
     
   // For example, we should probably do something when the screen is
   // dirty.
+
+  // Update the seen.
+  if(m_displayDataInTitlebar)
+  {
+    int currentTime = machine.system().event().getTicks();
+
+    if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
+    {
+      m_timeOfLastTitlebarUpdate = currentTime;
+      if(machine.sceneNumber() != m_lastSeenNumber ||
+         machine.lineNumber() != m_lastLineNumber)
+      {
+        m_lastSeenNumber = machine.sceneNumber();
+        m_lastLineNumber = machine.lineNumber();
+
+        ostringstream oss;
+        oss << "RLVM - (SEEN" << m_lastSeenNumber << ")(Line " 
+            << m_lastLineNumber << ")";
+
+        SDL_WM_SetCaption(oss.str().c_str(), NULL);
+      }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------

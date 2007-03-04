@@ -219,6 +219,7 @@ int main(int argc, char* argv[])
     ("gameexe", po::value<string>(), "Override location of Gameexe.ini")
     ("seen", po::value<string>(), "Override location of SEEN.TXT")
     ("start-seen", po::value<int>(), "Force start at SEEN#")
+    ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
     ;
 
   // Declare the final option to be game-root
@@ -315,6 +316,11 @@ int main(int argc, char* argv[])
     if(vm.count("start-seen"))
     {
       gameexe("SEEN_START") = vm["start-seen"].as<int>();
+    }
+
+    if(vm.count("memory"))
+    {
+      gameexe("MEMORY") = 1;
     }
 
     SDLSystem sdlSystem(gameexe);
