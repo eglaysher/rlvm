@@ -81,7 +81,7 @@ void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
 {
   GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = height() / blindSize() + 1;
-  int rowsToDisplay = (float(currentTime) / duration()) * (blindSize() + numBlinds);
+  int rowsToDisplay = int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
   for(int currentBlind = 0; currentBlind < numBlinds; ++currentBlind)
   {
@@ -124,7 +124,7 @@ void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine,
 {
   GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = height() / blindSize() + 1;
-  int rowsToDisplay = (float(currentTime) / duration()) * (blindSize() + numBlinds);
+  int rowsToDisplay = int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
   for(int currentBlind = numBlinds; currentBlind >= 0; --currentBlind)
   {
@@ -170,7 +170,7 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
 {
   GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = width() / blindSize() + 1;
-  int rowsToDisplay = (float(currentTime) / duration()) * (blindSize() + numBlinds);
+  int rowsToDisplay = int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
   for(int currentBlind = 0; currentBlind < numBlinds; ++currentBlind)
   {
@@ -213,7 +213,7 @@ void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
 {
   GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = width() / blindSize() + 1;
-  int rowsToDisplay = (float(currentTime) / duration()) * (blindSize() + numBlinds);
+  int rowsToDisplay = int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
   for(int currentBlind = numBlinds; currentBlind >= 0; --currentBlind)
   {

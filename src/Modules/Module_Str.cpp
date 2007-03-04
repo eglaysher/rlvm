@@ -44,7 +44,7 @@ using namespace libReallive;
  * @ingroup ModulesOpcodes
  * 
  * Module that implements string handeling opcodes in the RealLive
- * virtual machine. This moduel implements commands such as strcpy,
+ * virtual machine. This module implements commands such as strcpy,
  * strcat, strlen, et cetera.
  * @{
  */
@@ -249,7 +249,7 @@ struct Str_strlen : public RLOp_Store_1< StrConstant_T > {
 // -----------------------------------------------------------------------
 
 /**
- * @brief Implament op<1:Str:00004, 0>, fun strcmp(strC, strC)
+ * @brief Implement op<1:Str:00004, 0>, fun strcmp(strC, strC)
  *
  * Returns the standard strcmp() output of the two strings, ordering
  * the strings in JIS X 0208.
@@ -380,7 +380,7 @@ struct Str_strcharlen : public RLOp_Store_1< StrConstant_T > {
 // -----------------------------------------------------------------------
 
 /** 
- * Implements op<1:Str:00008, 0>, fun strstrunc(str, intC).
+ * Implements op<1:Str:00008, 0>, fun strtrunc(str, intC).
  * 
  * Truncates dest such that its length does not exceed length characters. 
  */
@@ -602,7 +602,7 @@ struct Str_itoa_w_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
  * Implements op<1:Str:00016, 1>, fun itoa_w(intC, str, intC).
  * 
  * Converts the integer value into a decimal representation, right aligned
- * with spaces to length characters.
+ * with zeroes to length characters.
  */
 struct Str_itoa_w_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                           IntConstant_T > {
@@ -634,7 +634,7 @@ struct Str_itoa_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
  * Implements op<1:Str:00017, 1>, fun itoa_s(intC, str, intC).
  * 
  * Converts the integer value into a decimal representation, right aligned
- * with spaces to length characters.
+ * with zeroes to length characters.
  */
 struct Str_itoa_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                         IntConstant_T > {
@@ -680,6 +680,7 @@ struct Str_atoi : public RLOp_Store_1< StrConstant_T > {
  *
  * @note What the heck is this used for!? This is a standard library
  * function!?
+ * @note I've never seen it used... - Haeleth
  */
 struct Str_digits : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int word) {
@@ -698,6 +699,8 @@ struct Str_digits : public RLOp_Store_1< IntConstant_T > {
  * digits in the number.
  * 
  * @note Who the hell thought this function was a good idea?
+ * @note It's used in `Princess Brave' to simplify displaying a number
+ * from a bitmap of digits. - Haeleth
  */
 struct Str_digit : public RLOp_Store_3< IntConstant_T, IntReference_T, 
                                         IntConstant_T > {

@@ -77,11 +77,11 @@ class RLMachine;
  * @endcode
  *
  * An instance of this module can now be passed to
- * RLMachine::attatchModule to expose these opcodes to an instance of RLMachine:
+ * RLMachine::attachModule to expose these opcodes to an instance of RLMachine:
  *
  * @code
  * RLMachine machine(someArchiveObject);
- * machine.attatchModule(new FakeModule);
+ * machine.attachModule(new FakeModule);
  * @endcode
  *
  * For information on how to write an RLOperation subclass, see the

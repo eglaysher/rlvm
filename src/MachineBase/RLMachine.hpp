@@ -49,7 +49,7 @@ class RLModule;
 class LongOperation;
 class System;
 
-  const int INTA_LOCATION = 0   ;
+  const int INTA_LOCATION = 0;
   const int INTB_LOCATION = 1;
   const int INTC_LOCATION = 2;
   const int INTD_LOCATION = 3;
@@ -136,11 +136,11 @@ public:
   /** Registers a given module with this RLMachine instance. A module is a set of
    * different functions registered as one unit.
    *
-   * @param module Module to attatch to the RLMachine
+   * @param module Module to attach to the RLMachine
    * @note RLMachine takes ownership of any RLModule object passed in through 
-   * attatchModule.
+   * attachModule.
    */
-  void attatchModule(RLModule* module);
+  void attachModule(RLModule* module);
 
   // -----------------------------------------------------------------------
   /**

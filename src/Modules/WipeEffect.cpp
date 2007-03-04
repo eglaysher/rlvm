@@ -78,8 +78,8 @@ void WipeEffect::calculateSizes(int currentTime,
                                 int& sizeOfMainPolygon,
                                 int sizeOfScreen)
 {
-  int amountVisible = (float(currentTime) / duration()) * 
-    (sizeOfScreen + m_interpolationInPixels);
+  int amountVisible = int((float(currentTime) / duration()) * 
+                          (sizeOfScreen + m_interpolationInPixels));
   if(amountVisible < m_interpolationInPixels)
   {
     sizeOfInterpolation = amountVisible;
@@ -109,7 +109,7 @@ WipeEffect::WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
     m_interpolationInPixels(0)
 {
   if(m_interpolation)
-    m_interpolationInPixels = pow(float(2), interpolation) * 2.5;
+    m_interpolationInPixels = int(pow(float(2), interpolation) * 2.5);
 }
 
 // -----------------------------------------------------------------------

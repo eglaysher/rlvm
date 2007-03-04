@@ -81,7 +81,7 @@
  * @endcode
  *
  * For information on how to group RLOperations into modules to
- * attatch to an RLMachine instance, please see @ref ModulesOpcodes
+ * attach to an RLMachine instance, please see @ref ModulesOpcodes
  * "Modules and Opcode Definitions".
  *
  * @{

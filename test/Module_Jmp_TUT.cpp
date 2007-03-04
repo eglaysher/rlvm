@@ -95,7 +95,7 @@ void object::test<1>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
@@ -130,7 +130,7 @@ void object::test<2>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_if_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
@@ -165,7 +165,7 @@ void object::test<3>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_if_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
 
   rlmachine.executeUntilHalted();
@@ -202,7 +202,7 @@ void object::test<4>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_unless_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
 
   rlmachine.executeUntilHalted();
 
@@ -239,7 +239,7 @@ void object::test<5>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_unless_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
   rlmachine.executeUntilHalted();
 
@@ -289,7 +289,7 @@ void object::test<6>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/goto_on_0.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
 
@@ -331,7 +331,7 @@ void object::test<7>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_on_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 7);
   rlmachine.executeUntilHalted();
   
@@ -375,7 +375,7 @@ void object::test<8>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/goto_case_0.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
   
@@ -387,7 +387,7 @@ void object::test<8>()
   // Now test the default value
   libReallive::Archive arc("test/Module_Jmp_SEEN/goto_case_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 29);
   rlmachine.executeUntilHalted();
   
@@ -423,7 +423,7 @@ void object::test<9>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
@@ -464,7 +464,7 @@ void object::test<10>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
@@ -493,7 +493,7 @@ void object::test<11>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_if_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
@@ -522,7 +522,7 @@ void object::test<12>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_if_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
 
   rlmachine.executeUntilHalted();
@@ -566,7 +566,7 @@ void object::test<13>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_unless_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
@@ -607,7 +607,7 @@ void object::test<14>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_unless_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
 
   rlmachine.executeUntilHalted();
@@ -658,7 +658,7 @@ void object::test<15>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_case_0.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
   
@@ -670,7 +670,7 @@ void object::test<15>()
   // Now test the default value
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_case_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 29);
   rlmachine.executeUntilHalted();
   
@@ -712,7 +712,7 @@ void object::test<16>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/jump_0.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
   
@@ -754,7 +754,7 @@ void object::test<17>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/jumpTest/SEEN.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
   
@@ -797,7 +797,7 @@ void object::test<18>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/farcallTest_0/SEEN.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
+    rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
   
@@ -848,8 +848,8 @@ void object::test<19>()
 {
   libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_with_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
-  rlmachine.attatchModule(new StrModule);
+  rlmachine.attachModule(new JmpModule);
+  rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
   // @nextaction Continue writing the test case from here.
@@ -954,8 +954,8 @@ void object::test<20>()
   {
     libReallive::Archive arc("test/Module_Jmp_SEEN/fibonacci.TXT");
     RLMachine rlmachine(arc);
-    rlmachine.attatchModule(new JmpModule);
-    rlmachine.attatchModule(new StrModule);
+    rlmachine.attachModule(new JmpModule);
+    rlmachine.attachModule(new StrModule);
     rlmachine.setIntValue(0x03, 0, i);
     rlmachine.executeUntilHalted();
 
@@ -1003,8 +1003,8 @@ void object::test<21>()
     {
       libReallive::Archive arc("test/Module_Jmp_SEEN/farcall_withTest/SEEN.TXT");
       RLMachine rlmachine(arc);
-      rlmachine.attatchModule(new JmpModule);
-      rlmachine.attatchModule(new StrModule);
+      rlmachine.attachModule(new JmpModule);
+      rlmachine.attachModule(new StrModule);
       rlmachine.setIntValue(0x1, 0, entrypoint);
       rlmachine.setIntValue(0x1, 1, offset);
       rlmachine.executeUntilHalted();
@@ -1027,8 +1027,8 @@ void object::test<22>()
 {
 //   libReallive::Archive arc("test/Module_Jmp_SEEN/graphicTest.TXT");
 //   RLMachine rlmachine(arc);
-//   rlmachine.attatchModule(new JmpModule);
-//   rlmachine.attatchModule(new MsgModule);
+//   rlmachine.attachModule(new JmpModule);
+//   rlmachine.attachModule(new MsgModule);
 //   rlmachine.executeUntilHalted();
 }
 

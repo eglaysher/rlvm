@@ -88,7 +88,7 @@ void object::test<1>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/setarray_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("setarray returned wrong value for intA[0]",
@@ -123,7 +123,7 @@ void object::test<2>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/setrng_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("setrng returned wrong value for intA[0]",
@@ -161,7 +161,7 @@ void object::test<3>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/setrng_1.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   ensure_equals("setrng returned wrong value for intA[0]",
@@ -197,7 +197,7 @@ void object::test<4>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/cpyrng_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure setarray did what we expected it to...
@@ -240,7 +240,7 @@ void object::test<5>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/setarray_stepped_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure setarray_stepped did what we expected it to, and that it
@@ -282,7 +282,7 @@ void object::test<6>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/setrng_stepped_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure setrng_stepped did what we expected it to, and that it
@@ -324,7 +324,7 @@ void object::test<7>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/setrng_stepped_1.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure setrng_stepped did what we expected it to, and that it
@@ -368,7 +368,7 @@ void object::test<8>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/cpyvars_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure cpyvars did what we expected it to...
@@ -403,7 +403,7 @@ void object::test<9>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/sum_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure sum did what we expected it to...
@@ -432,7 +432,7 @@ void object::test<10>()
 {
   libReallive::Archive arc("test/Module_Mem_SEEN/sums_0.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new MemModule);
+  rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
   // First make sure sums did what we expected it to...

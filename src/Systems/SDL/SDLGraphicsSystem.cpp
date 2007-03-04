@@ -610,14 +610,14 @@ public:
   {
     const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
     int width = rect.x2 - rect.x1;
-    return (rp.width() / 100.0f) * width;
+    return int((rp.width() / 100.0f) * width);
   }
 
   virtual int pixelHeight(const GraphicsObject& rp)
   {
     const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
     int height = rect.y2 - rect.y1;
-    return (rp.height() / 100.0f) * height;
+    return int((rp.height() / 100.0f) * height);
   }
 
   GraphicsObjectData* clone() const 

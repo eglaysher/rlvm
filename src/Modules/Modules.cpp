@@ -43,23 +43,23 @@
 void addAllModules(RLMachine& rlmachine)
 {
   // Attatch the modules for some commands
-  rlmachine.attatchModule(new JmpModule);
-  rlmachine.attatchModule(new SysModule(rlmachine.system().graphics()));
-  rlmachine.attatchModule(new StrModule);
-  rlmachine.attatchModule(new MemModule);
-  rlmachine.attatchModule(new MsgModule);
-  rlmachine.attatchModule(new GrpModule);
-  rlmachine.attatchModule(new ObjCopyFgToBg);
-  rlmachine.attatchModule(new ObjPosDimsModule);
-  rlmachine.attatchModule(new ObjFgModule);
-  rlmachine.attatchModule(new ObjBgModule);
-  rlmachine.attatchModule(new ObjRangeFgModule);
-  rlmachine.attatchModule(new ObjRangeBgModule);
-  rlmachine.attatchModule(new ObjFgCreationModule);
-  rlmachine.attatchModule(new ObjBgCreationModule);
-  rlmachine.attatchModule(new ObjFgManagement);
-  rlmachine.attatchModule(new ObjBgManagement);
-  rlmachine.attatchModule(new RefreshModule);
-  rlmachine.attatchModule(new ScrModule);
-  rlmachine.attatchModule(new DebugModule);
+  rlmachine.attachModule(new JmpModule);
+  rlmachine.attachModule(new SysModule(rlmachine.system().graphics()));
+  rlmachine.attachModule(new StrModule);
+  rlmachine.attachModule(new MemModule);
+  rlmachine.attachModule(new MsgModule);
+  rlmachine.attachModule(new GrpModule);
+  rlmachine.attachModule(new ObjCopyFgToBg);
+  rlmachine.attachModule(new ObjPosDimsModule);
+  rlmachine.attachModule(new ObjFgModule);
+  rlmachine.attachModule(new ObjBgModule);
+  rlmachine.attachModule(new ObjRangeFgModule);
+  rlmachine.attachModule(new ObjRangeBgModule);
+  rlmachine.attachModule(new ObjFgCreationModule);
+  rlmachine.attachModule(new ObjBgCreationModule);
+  rlmachine.attachModule(new ObjFgManagement);
+  rlmachine.attachModule(new ObjBgManagement);
+  rlmachine.attachModule(new RefreshModule);
+  rlmachine.attachModule(new ScrModule);
+  rlmachine.attachModule(new DebugModule);
 }

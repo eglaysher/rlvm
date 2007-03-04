@@ -193,7 +193,7 @@ struct Sys_power_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
 
 struct Sys_sin_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
-    return std::sin(var1 * (PI/180)) * 32640;
+    return int( std::sin(var1 * (PI/180)) * 32640 );
   }
 };
 
@@ -201,7 +201,7 @@ struct Sys_sin_0 : public RLOp_Store_1< IntConstant_T > {
 
 struct Sys_sin_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
-    return std::sin(var1 * (PI/180)) * 32640 / var2;
+    return int( std::sin(var1 * (PI/180)) * 32640 / var2 );
   }
 };
 

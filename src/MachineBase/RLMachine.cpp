@@ -170,7 +170,7 @@ RLMachine::~RLMachine()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::attatchModule(RLModule* module) 
+void RLMachine::attachModule(RLModule* module) 
 {
   int moduleType = module->moduleType();
   int moduleNumber = module->moduleNumber();

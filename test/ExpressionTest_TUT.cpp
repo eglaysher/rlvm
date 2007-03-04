@@ -207,7 +207,7 @@ void object::test<5>()
 {
   libReallive::Archive arc("test/ExpressionTest_SEEN/previousErrors.TXT");
   RLMachine rlmachine(arc);
-  rlmachine.attatchModule(new JmpModule);
+  rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
   int values[6];
