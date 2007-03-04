@@ -115,8 +115,8 @@ struct RLOperation {
   /** The type checker is called by the Module to make sure the parameters read in
    * are of the expected type.
    */
-  virtual bool checkTypes(RLMachine& machine, 
-                          const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
+//   virtual bool checkTypes(RLMachine& machine, 
+//                           const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
 
   /** The dispatch function is implemented on a per type basis and is called by the
    * Module, after checking to make sure that the 
@@ -142,8 +142,8 @@ struct RLOperation {
    * @param ff The incoming CommandElement
    * @param output The output ptr_vector, filled with the parsed parameters
    */
-//  void parseParameters(const libReallive::CommandElement& ff, 
-//                       const boost::ptr_vector<libReallive::ExpressionPiece>& output);
+  virtual void parseParameters(const std::vector<std::string>& input,
+                       boost::ptr_vector<libReallive::ExpressionPiece>& output) = 0;
 
   /** The public interface used by the RLModule; how a method is dispatched.
    *
@@ -180,9 +180,10 @@ struct IntConstant_T {
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
-  /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position);
+  /// Parse the raw parameter string and put the results in ExpressionPiece
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     isRealTypestruct = true,
@@ -210,9 +211,10 @@ struct IntReference_T {
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                       unsigned int position);
 
-  /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position);
+  /// Parse the raw parameter string and put the results in ExpressionPiece
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     isRealTypestruct = true,
@@ -239,9 +241,11 @@ struct StrConstant_T {
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
-  /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position);
+
+  /// Parse the raw parameter string and put the results in ExpressionPiece
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     isRealTypestruct = true,
@@ -269,9 +273,10 @@ struct StrReference_T {
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                       unsigned int position);
 
-  /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position);
+  /// Parse the raw parameter string and put the results in ExpressionPiece
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     isRealTypestruct = true,
@@ -302,14 +307,13 @@ struct Argc_T {
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
-  /** Verify that the incoming parameter objects meet the desired types,
-   * by passing each object from its spot in the parameters on to 
-   * the template argument type.
-   *
-   * @return true if all parameters are of the correct type.
-   */
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                         unsigned int position);
+  /// Parse the raw parameter string and put the results in ExpressionPiece
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
+
+//  static void parseParameters(const char*& position,
+//                              boost::ptr_vector<libReallive::ExpressionPiece>& p);
 
   enum {
     isRealTypestruct = true,
@@ -342,6 +346,7 @@ struct Complex2_T {
   }
 
   /// Takes a type and makes sure that 
+/*
   static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                          unsigned int position)
   {
@@ -357,6 +362,25 @@ struct Complex2_T {
     }
     return typeOK;
   }
+*/
+
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//    throw libReallive::Error("Unimplemented");
+  }
+
 
   enum {
     isRealTypestruct = true,
@@ -392,6 +416,7 @@ struct Complex3_T {
   }
 
   /// Takes a type and makes sure that 
+/*
   static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
@@ -408,6 +433,25 @@ struct Complex3_T {
     }
     return typeOK;
   }
+*/
+
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//    throw libReallive::Error("Unimplemented");
+  }
+
 
   enum {
     isRealTypestruct = true,
@@ -443,6 +487,7 @@ struct Complex4_T {
       D::getData(machine, sp.getContainedPieces(), 3));
   }
 
+/*
   /// Takes a type and makes sure that 
   static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                          unsigned int position)
@@ -461,6 +506,25 @@ struct Complex4_T {
     }
     return typeOK;
   }
+*/
+
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+    const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//  throw libReallive::Error("Unimplemented");
+  }
+
 
   enum {
     isRealTypestruct = true,
@@ -503,6 +567,7 @@ struct Complex7_T {
       G::getData(machine, sp.getContainedPieces(), 6));
   }
 
+/*
   /// Takes a type and makes sure that 
   static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                          unsigned int position)
@@ -524,6 +589,26 @@ struct Complex7_T {
     }
     return typeOK;
   }
+*/
+
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+
+//    throw libReallive::Error("Unimplemented");
+  }
+
 
   enum {
     isRealTypestruct = true,
@@ -567,7 +652,26 @@ struct Complex8_T {
       H::getData(machine, sp.getContainedPieces(), 7));
   }
 
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+
+//    throw libReallive::Error("Unimplemented");
+  }
+
   /// Takes a type and makes sure that 
+/*
   static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
                          unsigned int position)
   {
@@ -589,6 +693,7 @@ struct Complex8_T {
     }
     return typeOK;
   }
+*/
 
   enum {
     isRealTypestruct = true,
@@ -610,8 +715,13 @@ struct Empty_T {
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position);
+  /// Parse the raw parameter string and put the results in ExpressionPiece
+//  static void parseParameters(const char*& position,
+//                              boost::ptr_vector<libReallive::ExpressionPiece>& p);
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
+
 
   enum {
     isRealTypestruct = false,
@@ -673,6 +783,24 @@ struct Special_T {
     return par;
   }
 
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+  const char* data = input.at(position).c_str();
+  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
+
+//   if(ep->expressionValueType() != libReallive::ValueTypeString)
+//   {
+//     throw libReallive::Error("StrConstant_T parse err.");
+//   }
+
+  output.push_back(ep.release());
+
+//    throw libReallive::Error("Unimplemented");
+  }
+
+/*
   template<typename TYPE>
   static bool verifyTypeOf(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                            unsigned int position, 
@@ -707,6 +835,7 @@ struct Special_T {
       throw libReallive::Error("Illegal overload in Special2_T::verifyType()");
     };
   }
+*/
 
   enum {
     isRealTypestruct = true,
@@ -737,17 +866,17 @@ struct DefaultIntValue_T
     }
   }
 
-  /// Verify that the incoming parameter objects meet the desired types
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
+  static void parseParameters(unsigned int position,
+                              const std::vector<std::string>& input,
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    if(position < p.size())
+    if(position < input.size())
     {
-      return IntConstant_T::verifyType(p, position);
+      IntConstant_T::parseParameters(position, input, output);
     }
     else
     {
-      return true;
+      output.push_back(new libReallive::IntegerConstant(DEFAULTVAL));
     }
   }
 
@@ -773,14 +902,11 @@ struct DefaultIntValue_T
  * FunctionElements. Meaning the Gotos and Select. Also, you get to do
  * weird tricks with the 
  *
+ * @todo Make this invoke parseParameters
+ *
  * @see JmpModule
  */
 struct RLOp_SpecialCase : public RLOperation {
-  /** 
-   * Empty function defined simply to obey the interface
-   */
-  bool checkTypes(RLMachine& machine, 
-                  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters);
 
   /** 
    * Empty function defined simply to obey the interface
@@ -790,6 +916,11 @@ struct RLOp_SpecialCase : public RLOperation {
 
   void dispatchFunction(RLMachine& machine, 
                         const libReallive::CommandElement& f);
+
+  /// Default implementation that simply parses everything as data;
+  /// doesn't work in the case of complex expressions.
+  void parseParameters(const std::vector<std::string>& input,
+                       boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   /// Method that is overridden by all subclasses to implement the
   /// function of this opcode
@@ -826,49 +957,63 @@ template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
          typename V = Empty_T, typename W = Empty_T, typename X = Empty_T,
          typename Y = Empty_T, typename Z = Empty_T>
 struct RLOp_NormalOperation : public RLOperation {
-  bool checkTypes(RLMachine& machine, 
-                  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+private:
+  template<typename TYPE>
+  void addTypeTo(int position, const std::vector<std::string>& input,
+                 boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    return (!A::isRealTypestruct  || A::verifyType(parameters, 0)) &&
-      (!B::isRealTypestruct || B::verifyType(parameters, 1)) &&
-      (!C::isRealTypestruct || C::verifyType(parameters, 2)) &&
-      (!D::isRealTypestruct || D::verifyType(parameters, 3)) &&
-      (!E::isRealTypestruct || E::verifyType(parameters, 4)) &&
-      (!F::isRealTypestruct || F::verifyType(parameters, 5)) &&
-      (!G::isRealTypestruct || G::verifyType(parameters, 6)) &&
-      (!H::isRealTypestruct || H::verifyType(parameters, 7)) &&
-      (!I::isRealTypestruct || I::verifyType(parameters, 8)) &&
-      (!J::isRealTypestruct || J::verifyType(parameters, 9)) &&
-      (!K::isRealTypestruct || K::verifyType(parameters, 10)) &&
-      (!L::isRealTypestruct || L::verifyType(parameters, 11)) &&
-      (!M::isRealTypestruct || M::verifyType(parameters, 12)) &&
-      (!N::isRealTypestruct || N::verifyType(parameters, 13)) &&
-      (!O::isRealTypestruct || O::verifyType(parameters, 14)) &&
-      (!P::isRealTypestruct || P::verifyType(parameters, 15)) &&
-      (!Q::isRealTypestruct || Q::verifyType(parameters, 16)) &&
-      (!R::isRealTypestruct || R::verifyType(parameters, 17)) &&
-      (!S::isRealTypestruct || S::verifyType(parameters, 18)) &&
-      (!T::isRealTypestruct || T::verifyType(parameters, 19)) &&
-      (!U::isRealTypestruct || U::verifyType(parameters, 20)) &&
-      (!V::isRealTypestruct || V::verifyType(parameters, 21)) &&
-      (!W::isRealTypestruct || W::verifyType(parameters, 22)) &&
-      (!X::isRealTypestruct || X::verifyType(parameters, 23)) &&
-      (!Y::isRealTypestruct || Y::verifyType(parameters, 24)) &&
-      (!Z::isRealTypestruct || Z::verifyType(parameters, 25));
+    if(TYPE::isRealTypestruct)
+    {
+//      std::cerr << "Parameter #" << position << " is " 
+//                << libReallive::parsableToPrintableString(input[position]) << std::endl;
+      TYPE::parseParameters(position, input, output);
+    }
+  }
+
+public:
+  void parseParameters(const std::vector<std::string>& input,
+                       boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  {
+    addTypeTo<A>(0, input, output);
+    addTypeTo<B>(1, input, output);
+    addTypeTo<C>(2, input, output);
+    addTypeTo<D>(3, input, output);
+    addTypeTo<E>(4, input, output);
+    addTypeTo<F>(5, input, output);
+    addTypeTo<G>(6, input, output);
+    addTypeTo<H>(7, input, output);
+    addTypeTo<I>(8, input, output);
+    addTypeTo<J>(9, input, output);
+    addTypeTo<K>(10, input, output);
+    addTypeTo<L>(11, input, output);
+    addTypeTo<M>(12, input, output);
+    addTypeTo<N>(13, input, output);
+    addTypeTo<O>(14, input, output);
+    addTypeTo<P>(15, input, output);
+    addTypeTo<Q>(16, input, output);
+    addTypeTo<R>(17, input, output);
+    addTypeTo<S>(18, input, output);
+    addTypeTo<T>(19, input, output);
+    addTypeTo<U>(20, input, output);
+    addTypeTo<V>(21, input, output);
+    addTypeTo<W>(22, input, output);
+    addTypeTo<X>(23, input, output);
+    addTypeTo<Y>(24, input, output);
+    addTypeTo<Z>(25, input, output);
   }
 };
 
 // Partial specialization for RLOp_Normal::checkTypes for when
 // everything is empty (aka an operation that takes no parameters)
 template<>
-inline bool RLOp_NormalOperation<
+inline void RLOp_NormalOperation<
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, 
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, 
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T,
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
-checkTypes(RLMachine& machine, const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+parseParameters(const std::vector<std::string>& input,
+                boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
-  return parameters.size() == 0;
 }
 
 // -----------------------------------------------------------------------
@@ -2666,15 +2811,14 @@ struct Argc_T<CON>::type Argc_T<CON>::getData(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 template<typename CON>
-bool Argc_T<CON>::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                             unsigned int position) {
-  for(unsigned int i = position; i < p.size(); ++i) {
-    if(!CON::verifyType(p, i)) {
-      return false;
-    } 
+void Argc_T<CON>::
+parseParameters(unsigned int position,
+                const std::vector<std::string>& input,
+                boost::ptr_vector<libReallive::ExpressionPiece>& output)
+{
+  for(unsigned int i = position; i < input.size(); ++i) {
+    CON::parseParameters(i, input, output);
   }
-
-  return true;
 }
 
 #endif

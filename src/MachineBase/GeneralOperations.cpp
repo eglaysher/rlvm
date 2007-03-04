@@ -26,6 +26,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/defs.h"
 
+using namespace std;
 using namespace boost;
 using namespace libReallive;
 
@@ -40,7 +41,24 @@ MultiDispatch::~MultiDispatch()
 
 // -----------------------------------------------------------------------
 
-void MultiDispatch::operator()(RLMachine& machine, const libReallive::CommandElement& ff) 
+void MultiDispatch::parseParameters(
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
+{
+  for(vector<string>::const_iterator it = input.begin(); it != input.end();
+      ++it)
+  {
+    const char* src = it->c_str();
+    output.push_back(get_complex_param(src));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+/// @todo Port this up to the new expression handling code
+void MultiDispatch::operator()(
+  RLMachine& machine, 
+  const libReallive::CommandElement& ff) 
 {
   const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
 
@@ -48,9 +66,10 @@ void MultiDispatch::operator()(RLMachine& machine, const libReallive::CommandEle
     const ptr_vector<ExpressionPiece>& element = 
       dynamic_cast<const ComplexExpressionPiece&>(parameterPieces[i]).getContainedPieces();
 
-    if(!handler->checkTypes(machine, element)) {
-      throw Error("Expected type mismatch in parameters in MultiDispatch.");
-    }
+    // @todo Do whatever is needed to get this part working...
+//     if(!handler->checkTypes(machine, element)) {
+//       throw Error("Expected type mismatch in parameters in MultiDispatch.");
+//     }
 
     handler->dispatch(machine, element);
   }

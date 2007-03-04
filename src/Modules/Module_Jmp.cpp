@@ -177,7 +177,7 @@ struct Jmp_goto : public RLOp_SpecialCase {
 struct Jmp_goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
-      
+
     if(conditions.at(0).integerValue(machine)) 
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
@@ -477,14 +477,17 @@ struct Jmp_rtl : public RLOp_Void_Void {
  */
 struct Jmp_gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const ptr_vector<ExpressionPiece>& parameterPieces = gotoElement.getParameters();
-
-    // Manually perform what the unoverridden RLOperation would do for
-    // us.
     typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
-    if(!ParamFormat::verifyType(parameterPieces, 0))
-      throw Error("Invalid parameters in Jmp_gosub_with");
 
+    if(!gotoElement.areParametersParsed())
+    {
+      const vector<string>& unparsed = gotoElement.getUnparsedParameters();
+      ptr_vector<ExpressionPiece> output;
+
+      ParamFormat::parseParameters(0, unparsed, output);
+    }
+
+    const ptr_vector<ExpressionPiece>& parameterPieces = gotoElement.getParameters();
     ParamFormat::type data = ParamFormat::getData(machine, parameterPieces, 0);
     storeData(machine, data);
       

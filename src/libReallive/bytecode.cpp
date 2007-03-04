@@ -222,29 +222,39 @@ CommandElement::CommandElement(const CommandElement& ce)
 CommandElement::~CommandElement()
 {}
 
-const boost::ptr_vector<libReallive::ExpressionPiece>& CommandElement::getParameters() const
+const vector<string>& CommandElement::getUnparsedParameters() const
 {
-  if(param_count() != m_parsedParameters.size())
+  size_t numberOfParameters = param_count();
+  if(numberOfParameters != m_unparsedParameters.size())
   {
-    m_parsedParameters.clear();
+    m_unparsedParameters.clear();
 
-    size_t numberOfParameters = param_count();
     for(size_t i = 0; i < numberOfParameters; ++i) 
-    {
-      try
-      {
-        const char* dataStr = get_param(i).c_str();
-        m_parsedParameters.push_back(get_data(dataStr));
-      } catch(Error& e) {
-        // Add the 
-        ostringstream oss;
-        oss << e.what() << " (parameter string was '"
-            << parsableToPrintableString(get_param(i)) << "')";
-        throw Error(oss.str());
-      }
-    }
+      m_unparsedParameters.push_back(get_param(i));
   }
 
+  return m_unparsedParameters;  
+}
+
+bool CommandElement::areParametersParsed() const
+{
+  return param_count() == m_parsedParameters.size(); 
+}
+
+/// This function shows...some deeper truth about mutability and
+/// const-ness in C++, but I for one can't figure it out.
+void CommandElement::setParsedParameters(
+  boost::ptr_vector<libReallive::ExpressionPiece>& parsedParameters) const
+{
+  m_parsedParameters.clear();
+  m_parsedParameters.transfer( m_parsedParameters.end(),
+                               parsedParameters.begin(),
+                               parsedParameters.end(),
+                               parsedParameters);
+}
+
+const boost::ptr_vector<libReallive::ExpressionPiece>& CommandElement::getParameters() const
+{
   return m_parsedParameters;
 }
 
@@ -420,25 +430,6 @@ GotoElement::data() const
 	string rv(repr);
 	append_i32(rv, targets[0]->offset());
 	return rv;
-}
-
-
-const boost::ptr_vector<libReallive::ExpressionPiece>& GotoElement::getParameters() const
-{
-  if(param_count() != m_parsedParameters.size())
-  {
-    m_parsedParameters.clear();
-
-    size_t numberOfParameters = param_count();
-    for(size_t i = 0; i < numberOfParameters; ++i) 
-    {
-      const char* dataStr = get_param(i).c_str();
-//      m_parsedParameters.push_back(get_data(dataStr));
-      m_parsedParameters.push_back(get_expression(dataStr));
-    }
-  }
-
-  return m_parsedParameters;
 }
 
 const GotoElement::Case

@@ -60,30 +60,31 @@ void RLOperation::addParameterTo(const string& parameter,
 }
 */
 // -----------------------------------------------------------------------
- /*
-void RLOperation::parseParameters(const CommandElement& ff, 
-                                  ptr_vector<ExpressionPiece>& parameterPieces)
-{
-    size_t numberOfParameters = ff.param_count();
-    for(size_t i = 0; i < numberOfParameters; ++i) {
-      addParameterTo(ff.get_param(i), parameterPieces);
-    }
-}
- */
+
+// void RLOperation::parseParameters(const CommandElement& ff, 
+//                                   ptr_vector<ExpressionPiece>& parameterPieces);
+// void RLOperation::parseParameters(const std::vector<std::string>& input,
+//                        boost::ptr_vector<libReallive::ExpressionPiece>& output);
+// {
+//     size_t numberOfParameters = ff.param_count();
+//     for(size_t i = 0; i < numberOfParameters; ++i) {
+//       addParameterTo(ff.get_param(i), parameterPieces);
+//     }
+// }
+
 // -----------------------------------------------------------------------
 
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
 {
-  // Well, here it is. What a mess.
-  const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
-
-  // @todo PROPOGATE CONSTEDNESS!
-  // @todo GOTO ALL RL_SPECIALCASES AND USE CACHED PARAMETERS!
-
-  // Now make sure these parameters match what we expect. 
-  if(!checkTypes(machine, parameterPieces)) {
-    throw Error("Expected type mismatch in parameters.");
+  if(!ff.areParametersParsed())
+  {
+    const vector<string>& unparsed = ff.getUnparsedParameters();
+    ptr_vector<ExpressionPiece> output;
+    parseParameters(unparsed, output);
+    ff.setParsedParameters(output);
   }
+
+  const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
 
   // Now dispatch based on these parameters.
   dispatch(machine, parameterPieces);
@@ -114,10 +115,21 @@ IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool IntConstant_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                               unsigned int position) {
-  return position < p.size() & 
-    p[position].expressionValueType() == libReallive::ValueTypeInteger;
+// Was working to change the verifyType to parseParameters.
+void IntConstant_T::parseParameters(
+  unsigned int position,
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
+{
+  const char* data = input.at(position).c_str();
+  auto_ptr<ExpressionPiece> ep(get_data(data));
+
+  if(ep->expressionValueType() != libReallive::ValueTypeInteger)
+  {
+    throw libReallive::Error("IntConstant_T parse err.");
+  }
+
+  output.push_back(ep.release());
 }
 
 // -----------------------------------------------------------------------
@@ -131,10 +143,20 @@ IntReference_T::type IntReference_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool IntReference_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                                unsigned int position) {
-  return position < p.size() && p[position].isMemoryReference() &&
-    p[position].expressionValueType() == libReallive::ValueTypeInteger;
+void IntReference_T::parseParameters(
+  unsigned int position,
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
+{
+  const char* data = input.at(position).c_str();
+  auto_ptr<ExpressionPiece> ep(get_data(data));
+
+  if(ep->expressionValueType() != libReallive::ValueTypeInteger)
+  {
+    throw libReallive::Error("IntReference_T parse err.");
+  }
+
+  output.push_back(ep.release());
 }
 
 // -----------------------------------------------------------------------
@@ -148,10 +170,20 @@ StrConstant_T::type StrConstant_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool StrConstant_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                               unsigned int position) { 
-  return position < p.size() && 
-    p[position].expressionValueType() == libReallive::ValueTypeString; 
+void StrConstant_T::parseParameters(
+  unsigned int position,
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
+{ 
+  const char* data = input.at(position).c_str();
+  auto_ptr<ExpressionPiece> ep(get_data(data));
+
+  if(ep->expressionValueType() != libReallive::ValueTypeString)
+  {
+    throw libReallive::Error("StrConstant_T parse err.");
+  }
+
+  output.push_back(ep.release());
 }
 
 // -----------------------------------------------------------------------
@@ -166,10 +198,20 @@ StrReference_T::type StrReference_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool StrReference_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                                unsigned int position) {
-  return position < p.size() && p[position].isMemoryReference() &&
-    p[position].expressionValueType() == libReallive::ValueTypeString;
+void StrReference_T::parseParameters(
+  unsigned int position,
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
+{
+  const char* data = input.at(position).c_str();
+  auto_ptr<ExpressionPiece> ep(get_data(data));
+
+  if(ep->expressionValueType() != libReallive::ValueTypeString)
+  {
+    throw libReallive::Error("StrReference_T parse err.");
+  }
+
+  output.push_back(ep.release());
 }
 
 // -----------------------------------------------------------------------
@@ -185,20 +227,22 @@ Empty_T::type Empty_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool Empty_T::verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
+void Empty_T::parseParameters(
+  unsigned int position,
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
-  return true;
 }
 
 // -----------------------------------------------------------------------
 
-bool RLOp_SpecialCase::checkTypes(
-  RLMachine& machine, 
-  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+/*
+void RLOp_SpecialCase::parseParameters(
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {       
-  return true;
 }
+*/
 
 // -----------------------------------------------------------------------
 
@@ -209,9 +253,32 @@ void RLOp_SpecialCase::dispatch(
 
 // -----------------------------------------------------------------------
 
-void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
-                                        const libReallive::CommandElement& f)
+void RLOp_SpecialCase::parseParameters(
+  const std::vector<std::string>& input,
+  boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
+  for(vector<string>::const_iterator it = input.begin(); it != input.end();
+      ++it)
+  {
+    const char* src = it->c_str();
+    output.push_back(get_data(src));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
+                                        const libReallive::CommandElement& ff)
+{
+  // First try to run the default parseParameters if we can.
+  if(!ff.areParametersParsed())
+  {
+    const vector<string>& unparsed = ff.getUnparsedParameters();
+    ptr_vector<ExpressionPiece> output;
+    parseParameters(unparsed, output);
+    ff.setParsedParameters(output);
+  }
+
   // Pass this on to the implementation of this functor.
-  operator()(machine, f);
+  operator()(machine, ff);
 }

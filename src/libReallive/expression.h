@@ -28,6 +28,7 @@ ExpressionPiece* get_expr_bool(const char*& src);
 ExpressionPiece* get_expression(const char*& src);
 ExpressionPiece* get_assignment(const char*& src);
 ExpressionPiece* get_data(const char*& src);
+ExpressionPiece* get_complex_param(const char*& src);
 
 std::string parsableToPrintableString(const std::string& src);
 std::string printableToParsableString(const std::string& src);
