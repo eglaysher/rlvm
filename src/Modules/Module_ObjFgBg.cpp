@@ -175,10 +175,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 
   ObjRangeAdapter(RLOperation* in) : handler(in) { }
 
-  virtual void parseParameters(const std::vector<std::string>&, boost::ptr_vector<libReallive::ExpressionPiece>&) { }
-
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
-/*
     const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
 
     // Range check the data
@@ -204,15 +201,10 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
         currentInstantiation.push_back(it->clone());
       }
 
-      // Verify it against the type
-      if(!handler->checkTypes(machine, currentInstantiation)) {
-        throw Error("Expected type mismatch in parameters.");
-      }
-
       // Now dispatch based on these parameters.
       handler->dispatch(machine, currentInstantiation);
     }
-*/
+
     machine.advanceInstructionPointer();
   }
 };

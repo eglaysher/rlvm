@@ -23,6 +23,8 @@
 #ifndef __LongOperation_hpp__
 #define __LongOperation_hpp__
 
+#include <boost/scoped_ptr.hpp>
+
 class RLMachine;
 
 /** 
@@ -50,5 +52,28 @@ public:
    */
   virtual bool operator()(RLMachine& machine) = 0;
 };
+
+// -----------------------------------------------------------------------
+
+/**
+ * LongOperator decorator that simply invokes the included
+ * LongOperation and when that LongOperation finishes, performs an
+ * arbitrary action. 
+ */
+class PerformAfterLongOperationDecorator : public LongOperation
+{
+private:
+  boost::scoped_ptr<LongOperation> m_operation;
+
+  /// Payload of decorator implemented by subclasses
+  virtual void performAfterLongOperation(RLMachine& machine) = 0;
+
+public:
+  PerformAfterLongOperationDecorator(LongOperation* inOp);
+  ~PerformAfterLongOperationDecorator();
+
+  virtual bool operator()(RLMachine& machine);
+};
+
 
 #endif

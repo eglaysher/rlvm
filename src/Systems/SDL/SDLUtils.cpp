@@ -69,5 +69,4 @@ void reportSDLError(const std::string& sdlName,
   ss << "Error while calling SDL function '" << sdlName << "' in "
      << functionName << ": " << SDL_GetError();
   throw Error(ss.str());
-
 }

@@ -66,7 +66,6 @@ public:
   static Effect* buildFromSEL(RLMachine& machine, 
                               boost::shared_ptr<Surface> src, 
                               boost::shared_ptr<Surface> dst,
-                              boost::shared_ptr<Surface> final,
                               int selnum);
 
   /** 
@@ -83,7 +82,6 @@ public:
   static Effect* buildFromSELR(RLMachine& machine, 
                                boost::shared_ptr<Surface> src, 
                                boost::shared_ptr<Surface> dst,
-                               boost::shared_ptr<Surface> final,
                                int selnum);
 
   /** 
@@ -116,7 +114,6 @@ public:
   static Effect* build(
     RLMachine& machine, boost::shared_ptr<Surface> src, 
     boost::shared_ptr<Surface> dst,
-    boost::shared_ptr<Surface> final,  
     int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int c);
@@ -125,13 +122,11 @@ private:
   static Effect* buildWipeEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src, 
     boost::shared_ptr<Surface> dst,
-    boost::shared_ptr<Surface> final,  
     int width, int height, int time, int direction, int interpolation);
 
   static Effect* buildBlindEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
-    boost::shared_ptr<Surface> final,
     int width, int height, int time, 
     int direction, int xsize, int ysize);
 

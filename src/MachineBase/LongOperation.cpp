@@ -23,6 +23,35 @@
 #include "MachineBase/LongOperation.hpp"
 
 // -----------------------------------------------------------------------
+// LongOperation
+// -----------------------------------------------------------------------
 
 LongOperation::~LongOperation() 
 {}
+
+// -----------------------------------------------------------------------
+// PerformAfterLongOperationDecorator
+// -----------------------------------------------------------------------
+
+PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
+  LongOperation* inOp)
+  : m_operation(inOp)
+{
+}
+
+// -----------------------------------------------------------------------
+
+PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator()
+{
+}
+
+// -----------------------------------------------------------------------
+
+bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine)
+{
+  bool retVal = (*m_operation)(machine);
+  if(retVal)
+    performAfterLongOperation(machine);
+
+  return retVal;
+}

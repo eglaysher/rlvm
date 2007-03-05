@@ -143,10 +143,10 @@ void loadDCToDC1(GraphicsSystem& graphics,
 struct SPACE {
   virtual vector<int> getEffect(RLMachine& machine, int effectNum) = 0;
   virtual void translateToRec(int x1, int y1, int& x2, int& y2) = 0;
-  virtual LongOperation* buildEffectFrom(RLMachine& machine, 
-                                         boost::shared_ptr<Surface> src,
-                                         boost::shared_ptr<Surface> dst,
-                                         int effectNum) = 0;
+  virtual Effect* buildEffectFrom(RLMachine& machine, 
+                                  boost::shared_ptr<Surface> src,
+                                  boost::shared_ptr<Surface> dst,
+                                  int effectNum) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -185,12 +185,12 @@ struct GRP_SPACE : public SPACE {
     y2 = y2 - y1;
   }
 
-  virtual LongOperation* buildEffectFrom(RLMachine& machine, 
-                                         boost::shared_ptr<Surface> src,
-                                         boost::shared_ptr<Surface> dst,
-                                         int effectNum) 
+  virtual Effect* buildEffectFrom(RLMachine& machine, 
+                                  boost::shared_ptr<Surface> src,
+                                  boost::shared_ptr<Surface> dst,
+                                  int effectNum) 
   {
-    return EffectFactory::buildFromSEL(machine, src, dst, src, effectNum);
+    return EffectFactory::buildFromSEL(machine, src, dst, effectNum);
   }
 
   static SPACE& get() {
@@ -217,12 +217,12 @@ struct REC_SPACE : public SPACE {
   {
   }
 
-  virtual LongOperation* buildEffectFrom(RLMachine& machine, 
-                                         boost::shared_ptr<Surface> src,
-                                         boost::shared_ptr<Surface> dst,
-                                         int effectNum) 
+  virtual Effect* buildEffectFrom(RLMachine& machine, 
+                                  boost::shared_ptr<Surface> src,
+                                  boost::shared_ptr<Surface> dst,
+                                  int effectNum) 
   {
-    return EffectFactory::buildFromSELR(machine, src, dst, src, effectNum);
+    return EffectFactory::buildFromSELR(machine, src, dst, effectNum);
   }
 
   static SPACE& get() {
@@ -362,7 +362,9 @@ struct Grp_display_1
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    machine.setLongOperation(m_space.buildEffectFrom(machine, dc1, dc0, effectNum));
+    LongOperation* lop = m_space.buildEffectFrom(machine, dc1, dc0, effectNum);
+    decorateEffectWithBlit(lop, dc1, dc0);
+    machine.setLongOperation(lop);
   }
 };
 
@@ -399,7 +401,9 @@ struct Grp_display_3 : public RLOp_Void_9<
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    machine.setLongOperation(m_space.buildEffectFrom(machine, dc1, dc0, effectNum));
+    LongOperation* lop = m_space.buildEffectFrom(machine, dc1, dc0, effectNum);
+    decorateEffectWithBlit(lop, dc1, dc0);
+    machine.setLongOperation(lop);
   }
 };
 
@@ -464,7 +468,9 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    machine.setLongOperation(m_space.buildEffectFrom(machine, dc1, dc0, effectNum));
+    LongOperation* lop = m_space.buildEffectFrom(machine, dc1, dc0, effectNum);
+    decorateEffectWithBlit(lop, dc1, dc0);
+    machine.setLongOperation(lop);
   }
 };
 
@@ -513,7 +519,9 @@ struct Grp_open_3 : public RLOp_Void_9<
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    machine.setLongOperation(m_space.buildEffectFrom(machine, dc1, dc0, effectNum));
+    LongOperation* lop = m_space.buildEffectFrom(machine, dc1, dc0, effectNum);
+    decorateEffectWithBlit(lop, dc1, dc0);
+    machine.setLongOperation(lop);
   }
 };
 
@@ -582,17 +590,80 @@ struct Grp_open_4 : public RLOp_Void_17<
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    machine.setLongOperation(
-      EffectFactory::build(machine, dc1, dc0, dc1, time, style, direction, 
-                           interpolation, xsize, ysize, a, b, c));
+
+    LongOperation* lop = 
+      EffectFactory::build(machine, dc1, dc0, time, style, direction, 
+                           interpolation, xsize, ysize, a, b, c);
+    decorateEffectWithBlit(lop, dc1, dc0);
+    machine.setLongOperation(lop);
   }
 };
 
+// -----------------------------------------------------------------------
 
-//(strC 'filename', 'x1', 'y1', 'x2', 'y2', 
-// 'dx', 'dy', 'steps', 'effect', 'direction',
-// 'interpolation', 'density', 'speed', '?', '?',
-// 'alpha', '?')
+struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
+                                          IntConstant_T >
+{
+  SPACE& m_space;
+  Grp_openBg_1(SPACE& space) 
+    : m_space(space) {}
+
+  void operator()(RLMachine& machine, string filename, int effectNum, int opacity)
+  {
+    vector<int> selEffect = m_space.getEffect(machine, effectNum);
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    // Set the long operation for the correct transition long operation
+    shared_ptr<Surface> dc0 = 
+      graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
+
+    if(filename != "?")
+    {
+      if(filename == "???") filename = graphics.defaultGrpName();
+      filename = findFile(machine, filename);
+
+      loadImageToDC1(graphics, filename,
+                     selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+                     selEffect[4], selEffect[5], opacity, false);
+    }
+//     else 
+//     {
+//       // The current DC0 is really 
+//       dc0 = 
+//     }
+
+    // Promote the objects 
+    graphics.promoteObjects();
+
+    // Render the screen to a temporary 
+    shared_ptr<Surface> dc1 = graphics.getDC(1);    
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
+
+    LongOperation* effect = m_space.buildEffectFrom(machine, tmp, dc0, effectNum);
+    if(filename != "?")
+    {
+      decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
+    }
+    machine.setLongOperation(effect);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
+  SPACE& m_space;
+  Grp_openBg_1 m_delegate;
+  Grp_openBg_0(SPACE& space) 
+    : m_space(space), m_delegate(space) {}
+
+  void operator()(RLMachine& machine, string filename, int effectNum) {
+    vector<int> selEffect = m_space.getEffect(machine, effectNum);
+    m_delegate(machine, filename, effectNum, selEffect[14]);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Grp_openBg_4 : public RLOp_Void_17<
   StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
@@ -635,10 +706,13 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     shared_ptr<Surface> dc1 = graphics.getDC(1);    
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
-    Effect* effect = EffectFactory::build(machine, tmp, dc0, dc1, time, 
+    LongOperation* effect = EffectFactory::build(machine, tmp, dc0, time, 
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
-    effect->setPerformFinalBlit(false);
+    if(filename != "?")
+    {
+      decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
+    }
     machine.setLongOperation(effect);
   }
 };
@@ -901,8 +975,8 @@ GrpModule::GrpModule()
 
   // These are supposed to be grpOpenBg, but until I have the object
   // layer working, this simply does the same thing.
-  addOpcode(73, 0, "grpOpenBg", new Grp_open_0(false, GRP));
-  addOpcode(73, 1, "grpOpenBg", new Grp_open_1(false, GRP));
+  addOpcode(73, 0, "grpOpenBg", new Grp_openBg_0(GRP));
+  addOpcode(73, 1, "grpOpenBg", new Grp_openBg_1(GRP));
   addOpcode(73, 2, "grpOpenBg", new Grp_open_2(false, GRP));
   addOpcode(73, 3, "grpOpenBg", new Grp_open_3(false, GRP));
   addOpcode(73, 4, "grpOpenBg", new Grp_openBg_4(false, GRP));
@@ -947,8 +1021,8 @@ GrpModule::GrpModule()
 
   // These are supposed to be recOpenBg, but until I have the object
   // layer working, this simply does the same thing.
-  addOpcode(1053, 0, "recOpenBg", new Grp_open_0(false, REC));
-  addOpcode(1053, 1, "recOpenBg", new Grp_open_1(false, REC));
+  addOpcode(1053, 0, "recOpenBg", new Grp_openBg_0(REC));
+  addOpcode(1053, 1, "recOpenBg", new Grp_openBg_1(REC));
   addOpcode(1053, 2, "recOpenBg", new Grp_open_2(false, REC));
   addOpcode(1053, 3, "recOpenBg", new Grp_open_3(false, REC));
   addOpcode(1053, 4, "recOpenBg", new Grp_openBg_4(false, REC));

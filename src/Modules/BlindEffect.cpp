@@ -48,10 +48,9 @@ bool BlindEffect::blitOriginalImage() const
 
 BlindEffect::BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         boost::shared_ptr<Surface> final, 
                          int width, int height, int time, 
                          int blindSize)
-  : Effect(machine, src, dst, final, width, height, time), 
+  : Effect(machine, src, dst, width, height, time), 
     m_blindSize(blindSize)
 {
 }
@@ -68,9 +67,8 @@ BlindEffect::~BlindEffect()
 BlindTopToBottomEffect::BlindTopToBottomEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  boost::shared_ptr<Surface> final, 
   int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, final, width, height, time, 
+  : BlindEffect(machine, src, dst, width, height, time, 
                 blindSize)
 {}
 
@@ -111,9 +109,8 @@ void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
 BlindBottomToTopEffect::BlindBottomToTopEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  boost::shared_ptr<Surface> final, 
   int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, final, width, height, time, 
+  : BlindEffect(machine, src, dst, width, height, time, 
                 blindSize)
 {}
 
@@ -154,9 +151,8 @@ void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine,
 BlindLeftToRightEffect::BlindLeftToRightEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  boost::shared_ptr<Surface> final, 
   int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, final, width, height, time, 
+  : BlindEffect(machine, src, dst, width, height, time, 
                 blindSize)
 {}
 
@@ -200,9 +196,8 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
 BlindRightToLeftEffect::BlindRightToLeftEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  boost::shared_ptr<Surface> final, 
   int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, final, width, height, time, 
+  : BlindEffect(machine, src, dst, width, height, time, 
                 blindSize)
 {}
 

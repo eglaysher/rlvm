@@ -165,7 +165,7 @@ public:
   /// @}
 
   int alpha() const { return m_alpha; }
-  void setAlpha(const int alpha) { m_alpha = alpha; }
+  void setAlpha(const int alpha);
 
   bool hasObjectData() const { return m_objectData; }
 

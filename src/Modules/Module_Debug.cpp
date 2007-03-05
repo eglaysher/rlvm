@@ -20,15 +20,34 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "Modules/Module_Debug.hpp"
+/**
+ * @file   Module_Debug.cpp
+ * @author Elliot Glaysher
+ * @date   Sun Mar  4 17:41:03 2007
+ * 
+ * @brief  Defines debugging functions. (mod<1:255)
+ */
 
+#include "Modules/Module_Debug.hpp"
 #include "MachineBase/RLOperation.hpp"
-//#include "MachineBase/
+#include "Systems/Base/System.hpp"
+#include "libReallive/gameexe.h"
 
 #include <iostream>
 using namespace std;
 
-namespace Operations {
+/**
+ * @defgroup ModuleDebug The Debug Module (mod<1:255)
+ * @ingroup ModulesOpcodes 
+ *
+ * Module that defines runtime debugging operations. The following
+ * operations are only executed when #MEMORY is defined in the
+ * incoming Gameexe file.
+ * 
+ * @{
+ */
+
+namespace Opcodes {
 namespace Debug {
 
 template<typename TYPE>
@@ -36,7 +55,8 @@ struct DebugMessage : public RLOp_Void_1< TYPE >
 {
   void operator()(RLMachine& machine, typename TYPE::type value)
   {
-    cerr << "VALUE: " << value << endl;
+    if(machine.system().gameexe()("MEMORY").exists())
+       cerr << "VALUE: " << value << endl;
   }
 };
 
@@ -48,8 +68,10 @@ struct DebugMessage : public RLOp_Void_1< TYPE >
 DebugModule::DebugModule()
   : RLModule("Debug", 1, 255)
 {
-  using namespace Operations::Debug;
+  using namespace Opcodes::Debug;
 
   addOpcode(  10, 0, new DebugMessage<IntConstant_T>);
   addOpcode(  10, 1, new DebugMessage<StrConstant_T>);
 }
+
+/// @}

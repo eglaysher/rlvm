@@ -101,10 +101,9 @@ void WipeEffect::calculateSizes(int currentTime,
 
 WipeEffect::WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                        boost::shared_ptr<Surface> dst,
-                       boost::shared_ptr<Surface> final, 
                        int width, int height, int time, 
                        int interpolation)
-  : Effect(machine, src, dst, final, width, height, time), 
+  : Effect(machine, src, dst, width, height, time), 
     m_interpolation(interpolation),
     m_interpolationInPixels(0)
 {
@@ -119,10 +118,9 @@ WipeEffect::WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
 WipeTopToBottomEffect::WipeTopToBottomEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  boost::shared_ptr<Surface> final, 
   int width, int height, int time, 
   int interpolation)
-  : WipeEffect(machine, src, dst, final, width, height, time, interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -163,9 +161,9 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
 WipeBottomToTopEffect::WipeBottomToTopEffect(
   RLMachine& machine,  boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  boost::shared_ptr<Surface> final,  int width, int height, int time, 
+  int width, int height, int time, 
   int interpolation)
-  : WipeEffect(machine, src, dst, final, width, height, time, interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -209,9 +207,9 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
 WipeLeftToRightEffect::WipeLeftToRightEffect(
   RLMachine& machine,  boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst,
-  boost::shared_ptr<Surface> final,  int width, int height, int time, 
+  int width, int height, int time, 
   int interpolation)
-  : WipeEffect(machine, src, dst, final, width, height, time, interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------
@@ -254,9 +252,9 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
 WipeRightToLeftEffect::WipeRightToLeftEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst,
-  boost::shared_ptr<Surface> final,  int width, int height, int time,
+  int width, int height, int time,
   int interpolation)
-  : WipeEffect(machine, src, dst, final, width, height, time, interpolation)
+  : WipeEffect(machine, src, dst, width, height, time, interpolation)
 {}
 
 // -----------------------------------------------------------------------

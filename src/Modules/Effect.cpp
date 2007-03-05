@@ -43,12 +43,10 @@ using namespace std;
 
 Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
                boost::shared_ptr<Surface> dst,
-               boost::shared_ptr<Surface> final,
                int width, int height, int time)
   : m_width(width), m_height(height), m_duration(time), 
     m_startTime(machine.system().event().getTicks()),
-    m_machine(machine), m_srcSurface(src), m_dstSurface(dst), 
-    m_finalSurface(final), m_performFinalBlit(true)
+    m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
 {
   m_machine.system().event().beginRealtimeTask();
 }
@@ -73,17 +71,6 @@ bool Effect::operator()(RLMachine& machine)
 
   if(currentFrame >= m_duration || ctrlPressed)
   {
-    // Blit DC1 onto DC0, with full opacity, and end the operation
-    if(m_performFinalBlit)
-    {
-      m_finalSurface->blitToSurface(dstSurface(),
-                                    0, 0, m_width, m_height,
-                                    0, 0, m_width, m_height, 255);
-    }
-
-    // Now force a screen refresh
-    machine.system().graphics().markScreenForRefresh();
-
     return true;
   }
   else
@@ -105,4 +92,45 @@ bool Effect::operator()(RLMachine& machine)
     graphics.endFrame();
     return false;
   }
+}
+
+// -----------------------------------------------------------------------
+// BlitAfterEffectFinishes
+// -----------------------------------------------------------------------
+
+void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
+{
+  // Blit DC1 onto DC0, with full opacity, and end the operation
+  m_srcSurface->blitToSurface(*m_dstSurface,
+                              0, 0, m_width, m_height,
+                              0, 0, m_width, m_height, 255);
+
+  // Now force a screen refresh
+  machine.system().graphics().markScreenForRefresh();
+}
+
+// -----------------------------------------------------------------------
+
+BlitAfterEffectFinishes::BlitAfterEffectFinishes(LongOperation* in,
+                                                 boost::shared_ptr<Surface> src, 
+                                                 boost::shared_ptr<Surface> dst,
+                                                 int width, int height)
+  : PerformAfterLongOperationDecorator(in), m_srcSurface(src), m_dstSurface(dst),
+    m_width(width), m_height(height)
+{}
+
+// -----------------------------------------------------------------------
+
+BlitAfterEffectFinishes::~BlitAfterEffectFinishes()
+{}
+
+// -----------------------------------------------------------------------
+
+void decorateEffectWithBlit(LongOperation*& lop, 
+                            boost::shared_ptr<Surface> src,
+                            boost::shared_ptr<Surface> dst)
+{
+  BlitAfterEffectFinishes* blit =
+    new BlitAfterEffectFinishes(lop, src, dst, src->width(), src->height());
+  lop = blit;
 }

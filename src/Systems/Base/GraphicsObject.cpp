@@ -137,6 +137,14 @@ int GraphicsObject::pixelWidth() const
 
 // -----------------------------------------------------------------------
 
+void GraphicsObject::setAlpha(const int alpha)
+{   
+//  cerr << "m_alpha: " << alpha << endl;
+  m_alpha = alpha;
+}
+
+// -----------------------------------------------------------------------
+
 int GraphicsObject::pixelHeight() const
 {
   if(hasObjectData())
@@ -148,7 +156,7 @@ int GraphicsObject::pixelHeight() const
 // -----------------------------------------------------------------------
 
 void GraphicsObject::render(RLMachine& machine) {
-  bool needNewline = false;
+//  bool needNewline = false;
   
 //   if(m_objectData) {
 //     cerr << "Has object data...";

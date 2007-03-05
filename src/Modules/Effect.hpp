@@ -94,19 +94,6 @@ private:
   /// The destination surface (previously known as DC0)
   boost::shared_ptr<Surface> m_dstSurface;
 
-  /// Final image to compose onto DC0. This will usually point to the
-  /// same surface as m_srcSurface. In the case of {grp,rec}OpenBg,
-  /// this will be different, since m_srcSurface will actually be a
-  /// Texture only surface.
-  ///
-  /// @see SDLRenderToTextureSurface
-  boost::shared_ptr<Surface> m_finalSurface;
-
-  /// Whether to blit finalSurface to dstSurface as the final act
-  /// right before we leave this LongOperation. Defaults to
-  /// true. grpOpenBg will set this to false.
-  bool m_performFinalBlit;
-
 protected:
   int width() const { return m_width; }
   int height() const { return m_height; }
@@ -132,13 +119,9 @@ public:
    */
   Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
          boost::shared_ptr<Surface> dst,
-         boost::shared_ptr<Surface> final, 
          int width, int height, int time);
 
   virtual ~Effect();
-
-  /// Changes whether we should blit finalSurface to dstSurface
-  void setPerformFinalBlit(const bool in) { m_performFinalBlit = in; }
 
   /** 
    * Implements the LongOperation calling interface. This simply keeps
@@ -155,6 +138,55 @@ public:
   Surface& srcSurface() { return *m_srcSurface; }
   Surface& dstSurface() { return *m_dstSurface; }
 };
+
+// -----------------------------------------------------------------------
+
+/**
+ * LongOperationDecorator used in cases where we need to blit an image
+ * to the screen after an Effect finishes. This is most of the cases.
+ * This is optional and isn't part of Effect because {rec,grp}OpenBg
+ * can take '?' as the name of the image file to load, in which case
+ * the Blit doesn't happen.
+ *
+ * @see Grp_openBg_1
+ */
+class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator
+{
+private:
+  /// The source surface (previously known as DC1, before I realized
+  /// that temporary surfaces could in fact be part of effects)
+  boost::shared_ptr<Surface> m_srcSurface;
+
+  /// The destination surface (previously known as DC0)
+  boost::shared_ptr<Surface> m_dstSurface;
+
+  /// The width and height
+  int m_width, m_height;
+
+  virtual void performAfterLongOperation(RLMachine& machine);
+
+public:
+  BlitAfterEffectFinishes(LongOperation* in,
+                          boost::shared_ptr<Surface> src, 
+                          boost::shared_ptr<Surface> dst,
+                          int width, int height);
+  ~BlitAfterEffectFinishes();
+};
+
+/** 
+ * Takes a normal Effect and decorates it with the
+ * BlitAfterEffectFinishes, so that after the Effect has run, it will
+ * do the final blit.
+ *
+ * @relates BlitAfterEffectFinishes
+ * @param[in,out] lop LongOperation to decorate
+ * @param src 
+ * @param dst 
+ */
+void decorateEffectWithBlit(LongOperation*& lop, 
+                            boost::shared_ptr<Surface> src,
+                            boost::shared_ptr<Surface> dst);
+                        
 
 // @}
 

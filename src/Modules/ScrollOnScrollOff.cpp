@@ -72,11 +72,10 @@ ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
   RLMachine& machine,
   boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst,
-  boost::shared_ptr<Surface> final, 
   ScrollSquashSlideDrawer* drawer,
   ScrollSquashSlideEffectTypeBase* effectType,
   int width, int height, int time)
-  : Effect(machine, src, dst, final, width, height, time), 
+  : Effect(machine, src, dst, width, height, time), 
     m_drawer(drawer), m_effectType(effectType)
 {
 }
