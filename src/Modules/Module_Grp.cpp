@@ -626,11 +626,6 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                      selEffect[0], selEffect[1], selEffect[2], selEffect[3],
                      selEffect[4], selEffect[5], opacity, false);
     }
-//     else 
-//     {
-//       // The current DC0 is really 
-//       dc0 = 
-//     }
 
     // Promote the objects 
     graphics.promoteObjects();
@@ -640,10 +635,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
     LongOperation* effect = m_space.buildEffectFrom(machine, tmp, dc0, effectNum);
-    if(filename != "?")
-    {
-      decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
-    }
+    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
     machine.setLongOperation(effect);
   }
 };
@@ -682,8 +674,10 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     GraphicsSystem& graphics = machine.system().graphics();
     m_space.translateToRec(x1, y1, x2, y2);
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
+    // Set the long operation for the corect transition long operation
+    shared_ptr<Surface> dc0 = 
+      graphics.renderToSurfaceWithBg(machine, 
+                                     graphics.getDC(0));
 
     if(filename != "?")
     {
@@ -692,11 +686,6 @@ struct Grp_openBg_4 : public RLOp_Void_17<
 
       loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
                      opacity, m_useAlpha);
-    }
-    else 
-    {
-      // The current DC0 is really 
-      dc0 = graphics.renderToSurfaceWithBg(machine, dc0);
     }
 
     // Promote the objects 
@@ -709,10 +698,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     LongOperation* effect = EffectFactory::build(machine, tmp, dc0, time, 
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
-    if(filename != "?")
-    {
-      decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
-    }
+    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
     machine.setLongOperation(effect);
   }
 };
