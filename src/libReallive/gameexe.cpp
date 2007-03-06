@@ -37,75 +37,109 @@
 #include "gameexe.h"
 #include "defs.h"
 
-#include <iostream>
+#include <boost/tokenizer.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
+#include <iostream>
+#include <fstream>
+
+using namespace boost;
 using namespace std;
 
 #define is_space(c) (c == '\r' || c == '\n' || c == ' ' || c == '\t')
 #define is_num(c)   (c == '-' || (c >= '0' && c <= '9'))
 #define is_data(c)  (c == '"' || is_num(c))
 
-// const int num_paths = 7;
-// char* paths[num_paths] = {
-// 	"rlBabel.ini", "gameexe.kor", "gameexe.ini", 
-// 	"KINETICDATA\\rlBabel.ini","KINETICDATA\\gameexe.ini", 
-// 	"REALLIVEDATA\\rlBabel.ini", "REALLIVEDATA\\gameexe.ini" 
-// };
+/**
+ * A boost::TokenizerFunction used to extract valid pieces of data
+ * from the value part of a gameexe key/value pair.
+ */
+class gameexe_token_extractor
+{
+public:
+  void reset() { }
+
+  template<typename InputIterator, typename Token>
+  bool operator()(InputIterator& next, InputIterator end, Token& tok)
+  {
+    tok = Token();    
+    // Advance to the next data character
+    for(; next != end && ( !is_data(*next) ); ++next);
+
+    if(next == end)
+      return false;
+
+    if(*next == '"')
+    {
+      tok += '"';
+      next++;
+      for(; next != end && *next != '"'; ++next)
+        tok += *next;
+      tok += '"';
+      next++;
+    }
+    else
+    {
+      // Eat the current character and all 
+      for(; next != end && is_num(*next); ++next)
+        tok += *next;
+    }
+
+    return true;
+  }
+};
+
+// -----------------------------------------------------------------------
 
 Gameexe::Gameexe()
 {}
 
-// @todo OMFG! Teh evil! sprintf!?! This needs a rewrite!
+// -----------------------------------------------------------------------
+
 Gameexe::Gameexe(const std::string& gameexefile)
   : data_(), cdata_()
 {
-  char ini_path[2048], *filename;
-	FILE *ini = NULL;
-	
-    ini = fopen(gameexefile.c_str(), "r");
-    if(!ini)
-      throw libReallive::Error("Could not find Gameexe.ini file!");
+  ifstream ifs(gameexefile.c_str());
+  if(!ifs)
+    throw libReallive::Error("Could not find Gameexe.ini file!");
 
-	char buf[2048]; // longest line seen in the wild is 571 chars long
-	while (fgets(buf, 2048, ini)) {
-		if (buf[0] == '#') {
-			int l = strlen(buf);
-			while (is_space(buf[l - 1])) buf[--l] = 0;
-			// Set "buf" to null-terminated stripped key, and "key" to null-terminated stripped value.
-			char *val = buf;
-			while (val++ < buf + l && *val != '=');
-			if (val < buf + l) {
-				char *key = val - 1;
-				while (is_space(*key)) --key;
-				key[1] = 0;
-				val++;
-				key = buf + 1;
-				// Parse value
-				vec_type vec;
-				while (*val) {
-					while (*val && !is_data(*val)) ++val;
-					if (!*val) break;
-					char *token = val;
-					if (*val == '"') {
-						// string
-						++token;
-						while (*(++val) != '"') if (*val == '\\' && val[1] == '"') ++val;
-						*val++ = 0;
-						cdata_.push_back(std::string(token));
-						vec.push_back(cdata_.size() - 1);
-					}
-					else {
-						// integer
-						while (is_num(*val)) ++val;
-						if (*val) *val++ = 0;
-						vec.push_back(atoi(token));
-					}
-				}
-				data_[std::string(key)] = vec;
-			}
-		}
-	}
-	fclose(ini);
+  string line;
+  while(getline(ifs, line))
+  {
+    size_t firstHash = line.find_first_of('#');
+    if(firstHash != string::npos)
+    {
+      // Extract what's the key and value
+      size_t firstEqual = line.find_first_of('=');
+      string key = line.substr(firstHash + 1, firstEqual - firstHash - 1);
+      string value = line.substr(firstEqual + 1);
+
+      // Get rid of extra whitespace
+      trim(key);
+      trim(value);
+
+      vec_type vec;
+
+      // Extract all numeric and data values from the value
+      typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
+      ValueTokenizer tokenizer(value);
+      for(ValueTokenizer::iterator it = tokenizer.begin(); 
+          it != tokenizer.end(); ++it)
+      {
+        const string& tok = *it;
+        if(tok[0] == '"')
+        {
+          string unquoted = tok.substr(1, tok.size() - 2);
+          cdata_.push_back(unquoted);
+          vec.push_back(cdata_.size() - 1);
+        }
+        else if(tok != "-")
+          vec.push_back(lexical_cast<int>(tok));
+      }
+      data_[key] = vec;
+    }
+  }
 }
 
 Gameexe::~Gameexe()
