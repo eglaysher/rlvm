@@ -1,4 +1,4 @@
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
@@ -52,7 +52,7 @@ using namespace boost;
 using namespace libReallive;
 
 
-// List of functions we're goign to have to handle to be compatible
+// List of functions we're going to have to handle to be compatible
 // with Kanon:
 //
 // objBgAdjust
@@ -81,6 +81,59 @@ using namespace libReallive;
 // objOfFile
 // objPattNo
 // objShow
+
+// -----------------------------------------------------------------------
+
+struct Obj_dispArea_0 : RLOp_Void_1< IntConstant_T > {
+  int m_layer;
+  Obj_dispArea_0(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf) {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.clearClip();
+  }
+};
+
+struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
+                                     IntConstant_T, IntConstant_T,
+                                     IntConstant_T > {
+  int m_layer;
+  Obj_dispArea_1(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setClip(x1, y1, x2, y2);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
+                                     IntConstant_T, IntConstant_T,
+                                     IntConstant_T > {
+  int m_layer;
+  Obj_dispRect_1(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setClip(x, y, x + w, y + h);
+  }
+};
+
+
+// -----------------------------------------------------------------------
+
+struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
+                                     IntConstant_T > {
+  int m_layer;
+  Obj_dispCorner_1(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, int x, int y) {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setClip(0, 0, x, y);
+  }
+};
+
 
 // -----------------------------------------------------------------------
 
@@ -184,7 +237,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 
     // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
     // what RLOperation.dispatchFunction() does; we manually call the
-    // subclass's disptach() so that we can get around the automated
+    // subclass's dispatch() so that we can get around the automated
     // incrementing of the instruction pointer.
     int lowerRange = allParameters[0].integerValue(machine);
     int upperRange = allParameters[1].integerValue(machine);
@@ -222,8 +275,8 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1002, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setY));
   m.addOpcode(1003, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setAlpha));
   m.addOpcode(1004, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVisible));
-//  m.addOpcode(1005, 0, new Obj_dispArea_0<LAYER>);
-//  m.addOpcode(1005, 1, new Obj_dispArea_1<LAYER>);
+  m.addOpcode(1005, 0, new Obj_dispArea_0(layer));
+  m.addOpcode(1005, 1, new Obj_dispArea_1(layer));
   m.addOpcode(1006, 0, new Obj_adjust(layer));
   m.addOpcode(1007, 0, new Obj_adjustX(layer));
   m.addOpcode(1008, 0, new Obj_adjustY(layer));
@@ -246,6 +299,11 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1030, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateX));
   m.addOpcode(1031, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateY));
 
+  m.addOpcode(1034, 0, new Obj_dispArea_0(layer)); //dispRect_0 == dispArea_0
+  m.addOpcode(1034, 1, new Obj_dispRect_1(layer));
+  m.addOpcode(1035, 0, new Obj_dispArea_0(layer)); //dispCorner_0 == dispArea_0
+  m.addOpcode(1035, 1, new Obj_dispCorner_1(layer));
+  
   m.addOpcode(1036, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVert));
   m.addOpcode(1039, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setPattNo));
 

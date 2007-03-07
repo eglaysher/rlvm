@@ -1,4 +1,4 @@
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
@@ -41,7 +41,7 @@ public:
   virtual ~GraphicsObjectData() { }
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties) = 0;
-
+  
   virtual int pixelWidth(const GraphicsObject& renderingProperties) = 0;
   virtual int pixelHeight(const GraphicsObject& renderingProperties) = 0;
 
@@ -87,7 +87,7 @@ public:
 
   int y() const { return m_y; }
   void setY(const int y) { m_y = y; }
-
+  
   int xAdjustment(int idx) const { return m_adjustX[idx]; }
   int xAdjustmentSum() const { return std::accumulate(m_adjustX, m_adjustX + 8, 0); }
   void setXAdjustment(int idx, int x) { m_adjustX[idx] = x; }
@@ -167,6 +167,16 @@ public:
   int alpha() const { return m_alpha; }
   void setAlpha(const int alpha);
 
+  bool hasClip() const { return m_clipX2 >= 0 || m_clipY2 >= 0; }
+  void clearClip() { m_clipX2 = -1; m_clipY2 = -1; }
+  void setClip(const int x1, const int y1, const int x2, const int y2) {
+    m_clipX1 = x1; m_clipY1 = y1; m_clipX2 = x2; m_clipY2 = y2;
+  }
+  int clipX1() const { return m_clipX1; }
+  int clipY1() const { return m_clipY1; }
+  int clipX2() const { return m_clipX2; }
+  int clipY2() const { return m_clipY2; }
+  
   bool hasObjectData() const { return m_objectData; }
 
   GraphicsObjectData& objectData() const {
@@ -252,6 +262,9 @@ private:
   /// The source alpha for this image
   int m_alpha;
 
+  /// The clipping region for this image
+  int m_clipX1, m_clipY1, m_clipX2, m_clipY2;
+
   /// The monochrome transformation
   int m_mono;
 
@@ -265,7 +278,7 @@ private:
   int m_colourR, m_colourG, m_colourB, m_colourLevel;
 
   int m_compositeMode;
-
+  
   int m_scrollRateX, m_scrollRateY;
 
   /// @}

@@ -1,4 +1,4 @@
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
@@ -39,7 +39,11 @@ GraphicsObject::GraphicsObject()
 
     m_rotation(0),
 
-    m_pattNo(0), m_alpha(255), m_mono(0), m_invert(0),
+    m_pattNo(0), m_alpha(255),
+
+    m_clipX1(0), m_clipY1(0), m_clipX2(-1), m_clipY2(-1),
+
+    m_mono(0), m_invert(0),
     // Do the rest later.
     m_tintR(255), m_tintG(255), m_tintB(255), 
     m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255),
@@ -51,12 +55,14 @@ GraphicsObject::GraphicsObject()
 }
 
 GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
-  :  m_visible(rhs.m_visible), m_x(rhs.m_x), m_y(rhs.m_y),
+  : m_visible(rhs.m_visible), m_x(rhs.m_x), m_y(rhs.m_y),
     m_whateverAdjustVertOperatesOn(rhs.m_whateverAdjustVertOperatesOn),
     m_originX(rhs.m_originX), m_originY(rhs.m_originY), 
     m_repOriginX(rhs.m_repOriginX), m_repOriginY(rhs.m_repOriginY),
     m_width(rhs.m_width), m_rotation(rhs.m_rotation),
     m_pattNo(rhs.m_pattNo), m_alpha(rhs.m_alpha),
+    m_clipX1(rhs.m_clipX1), m_clipY1(rhs.m_clipY1),
+    m_clipX2(rhs.m_clipX2), m_clipY2(rhs.m_clipY2),
     m_mono(rhs.m_mono), m_invert(rhs.m_invert),
     m_light(rhs.m_light), m_tintR(rhs.m_tintR),
     m_tintG(rhs.m_tintG), m_tintB(rhs.m_tintB),
@@ -64,7 +70,7 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
     m_colourB(rhs.m_colourB), m_colourLevel(rhs.m_colourLevel),
     m_compositeMode(rhs.m_compositeMode),
     m_scrollRateX(rhs.m_scrollRateX),
-     m_scrollRateY(rhs.m_scrollRateY), m_wipeCopy(0)
+    m_scrollRateY(rhs.m_scrollRateY), m_wipeCopy(0)
 {   
   if(rhs.m_objectData)
     m_objectData.reset(rhs.m_objectData->clone());
@@ -98,6 +104,8 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
 
     m_pattNo = rhs.m_pattNo;
     m_alpha = rhs.m_alpha;
+    m_clipX1 = rhs.m_clipX1; m_clipY1 = rhs.m_clipY1;
+    m_clipX2 = rhs.m_clipX2; m_clipY2 = rhs.m_clipY2;
     m_mono = rhs.m_mono;
     m_invert = rhs.m_invert;
     m_light = rhs.m_light;
@@ -115,7 +123,7 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
     m_scrollRateY = rhs.m_scrollRateY;
 
     m_wipeCopy = rhs.m_wipeCopy;
-
+      
     if(rhs.m_objectData)
       m_objectData.reset(rhs.m_objectData->clone());
   }

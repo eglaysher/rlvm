@@ -1,5 +1,4 @@
-// -*-  indent-tabs-mode:nil; c-basic-offset:2  -*-
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //

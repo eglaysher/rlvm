@@ -1,4 +1,4 @@
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // The translation tables in this file were taken from the perl
 // package ShiftJIS::CP932::MapUTF. It was distributed under the same

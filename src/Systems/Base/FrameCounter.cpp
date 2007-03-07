@@ -1,4 +1,4 @@
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
@@ -93,7 +93,7 @@ int SimpleFrameCounter::readFrame(EventSystem& eventSystem) {
       endTimer(eventSystem);
     }
     else
-      m_value = m_minValue + ((m_maxValue - m_minValue) * currentRate);
+      m_value = m_minValue + int((m_maxValue - m_minValue) * currentRate);
 
 
 //     unsigned int currentTime = eventSystem.getTicks();
@@ -227,7 +227,7 @@ int AcceleratingFrameCounter::readFrame(EventSystem& eventSystem) {
   {
     unsigned int currentTime = eventSystem.getTicks();
     float currentRate = pow(float(currentTime - m_timeAtStart) / m_totalTime, 2);
-    m_value = m_minValue + ((m_maxValue - m_minValue) * currentRate);
+    m_value = m_minValue + int((m_maxValue - m_minValue) * currentRate);
 
     if(m_value >= m_maxValue)
     {
@@ -262,7 +262,7 @@ int DeceleratingFrameCounter::readFrame(EventSystem& eventSystem) {
   {
     unsigned int currentTime = eventSystem.getTicks();
     float currentRate = 1 - pow((float(currentTime - m_timeAtStart) / m_totalTime) - 1, 2);
-    m_value = m_minValue + ((m_maxValue - m_minValue) * currentRate);
+    m_value = m_minValue + int((m_maxValue - m_minValue) * currentRate);
 
     if(m_value >= m_maxValue)
     {

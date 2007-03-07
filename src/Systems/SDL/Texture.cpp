@@ -1,5 +1,4 @@
-// -*-  indent-tabs-mode:nil; c-basic-offset:2  -*-
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
@@ -248,6 +247,32 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   int xPos2 = int(xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f));
   int yPos2 = int(yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f));
 
+  // If clipping is active for this object, take that into account too.
+  if (go.hasClip()) {
+    // Do nothing if object falls wholly outside clip area
+    if (xPos2 < go.clipX1() || xPos1 > go.clipX2() ||
+        yPos2 < go.clipY1() || yPos1 > go.clipY2()) {
+      return;
+    }
+    // Otherwise, adjust coordinates to present only the visible area.
+    if (xPos1 < go.clipX1()) {
+      xSrc1 += go.clipX1() - xPos1;
+      xPos1 = go.clipX1();
+    }
+    if (yPos1 < go.clipY1()) {
+      ySrc1 += go.clipY1() - yPos1;
+      yPos1 = go.clipY1();
+    }
+    if (xPos2 >= go.clipX2()) {
+      xSrc2 -= xPos2 - go.clipX2();
+      xPos2 = go.clipX2() + 1; // Yeah, more inclusive ranges. Hurray!
+    }
+    if (yPos2 >= go.clipY2()) {
+      ySrc2 -= yPos2 - go.clipY2();
+      yPos2 = go.clipY2() + 1;
+    }
+  }
+  
   // Convert the pixel coordinates into [0,1) texture coordinates
   float thisx1 = float(xSrc1) / m_textureWidth;
   float thisy1 = float(ySrc1) / m_textureHeight;

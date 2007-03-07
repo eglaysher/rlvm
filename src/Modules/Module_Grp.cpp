@@ -1,4 +1,4 @@
-// This file is part of RLVM, a RealLive virutal machine clone.
+// This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
@@ -138,7 +138,7 @@ void loadDCToDC1(GraphicsSystem& graphics,
 
 /** 
  * Abstract interface for a space. Taken as a parameter to most Grp
- * classess.
+ * classes.
  */
 struct SPACE {
   virtual vector<int> getEffect(RLMachine& machine, int effectNum) = 0;

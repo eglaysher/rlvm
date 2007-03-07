@@ -1,5 +1,3 @@
-// -*-  indent-tabs-mode:nil; c-basic-offset:2  -*-
-
 #include "Utilities.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
