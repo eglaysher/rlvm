@@ -31,6 +31,8 @@
  * operations that don't otherwise fit into other categories.
  */
 
+#include "libReallive/gameexe.h"
+
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Timer.hpp"
@@ -348,6 +350,31 @@ struct Sys_SceneNum : public RLOp_Store_Void {
 
 // -----------------------------------------------------------------------
 
+struct Sys_end : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.halt();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Implements op<0:Sys:01203, 0>, ReturnMenu.
+ * 
+ * Jumps the instruction pointer to the begining of the scenario
+ * defined in the Gameexe key \#SEEN_MENU.
+ */
+struct Sys_ReturnMenu : public RLOp_Void_Void {
+  virtual bool advanceInstructionPointer() { return false; }
+
+  void operator()(RLMachine& machine) {
+    int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
+    machine.jump(scenario);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 SysModule::SysModule(GraphicsSystem& system)
   : RLModule("Sys", 1, 004)
 {
@@ -392,6 +419,9 @@ SysModule::SysModule(GraphicsSystem& system)
 //  addOpcode(1112, 0, new Sys_GetDateTime);
 
   addOpcode(1120, 0, new Sys_SceneNum);
+
+  addOpcode(1200, 0, "end", new Sys_end);
+  addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
 
   addOpcode(1130, 0, new Op_ReturnStringValue<GraphicsSystem>(
               system, &GraphicsSystem::defaultGrpName));

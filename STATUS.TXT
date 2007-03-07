@@ -14,27 +14,26 @@ Kanon SE ALL
     smaller button. Nothing works, ^C.
     [Haeleth: right-click works to return to menu]
   * owarisuru shuts down the interpreter cleanly.
-    [Haeleth: owarisuru dumps core]
-    [Elliot: I just tried on both my mac and my linux box; can't reproduce 
-             crash. Core file/stack trace please?]
-* (Actual game doesn't work)
-* (Hack the SEEN_START to point to the OP/Last Regrets to watch ammusing
-  glitching)
+* (Actual game still doesn't work, but at least it changes to the snow 
+  backgrop on new game, and if you hold ctrl down, you can go through
+  the prologue to the OP/Last Regrets.)
 
 Planetarian CD
 --------------
 * Starts
 * Displays what I assume is an antipiracy message
-* Correctly renders menu, items highlight on mouseover. Crashes on start game.
-  May be crashing or exiting on clicking owari.
-  [Haeleth: exits cleanly for me, unlike Kanon!]
+* Correctly renders menu, items highlight on mouseover. 
+  * Clicking New Game works. 
+    * "It is a tale told by..." "Key." 
+	* "Puranetariamu wa ikaga deshyou?" *sniff*
+    * Goes all the way up to where the game text starts.
+  * Exits cleanly with a clean stack; no more exception from ret()
 
 CLANNAD
 -------
 * Starts
 * Main menu is the glitchiest of the three:
-  * White BG with only 12 glowing dots on the right side of the screen. Missing BG?
-  * CLANNAD logo fades in on right side of screen
+  * Menu background image fades in properly, CLANNAD logo then fades in
   * Basic menu appears, but it looks like some extra (non-selectable) menu items
     are just hanging out in the top left corner of the screen.
   * After that happens, menu items are highlightable.
@@ -78,6 +77,5 @@ TRANCE KISS TRIAL
 
 UNOFFICIAL "ONE" DEMO
 ---------------------
-* Language-select menu doesn't appear
 * Warnings in log about "?.g00"
 * Quite a lot works; the things that don't are quite instructive!
