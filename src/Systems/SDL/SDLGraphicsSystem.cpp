@@ -673,7 +673,10 @@ void SDLGraphicsSystem::promoteObjects()
       copyBgToFg = false;
 
     if(copyBgToFg)
+    {
       fgObj = bgObj;
+      bgObj.deleteObject();
+    }
   }
 }
 
