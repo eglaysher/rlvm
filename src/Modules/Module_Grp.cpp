@@ -299,7 +299,10 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     filename = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
-    graphics.allocateDC(dc, graphics.screenWidth(), graphics.screenHeight());
+
+    if(dc != 0)
+      graphics.allocateDC(dc, graphics.screenWidth(), graphics.screenHeight());
+
     surface->blitToSurface(*graphics.getDC(dc),
                            0, 0, surface->width(), surface->height(),
                            0, 0, surface->width(), surface->height(),
@@ -753,7 +756,8 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     // Reallocate the destination so that it's the same size as the first.
-    graphics.allocateDC(dst, sourceSurface->width(), sourceSurface->height());
+    if(dst != 0)
+      graphics.allocateDC(dst, sourceSurface->width(), sourceSurface->height());
 
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
