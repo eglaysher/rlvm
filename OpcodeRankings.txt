@@ -1,0 +1,136 @@
+			FUNCTIONS BY FREQUENCY
+
+Lists of functions arranged in descending order of frequency.  This
+may be useful for deciding what needs implementing next.
+
+The scores represent the number of RealLive programs (including demos
+and trials) which Haeleth has that use the function at least once.
+
+Key titles are additionally indicated as follows:
+
+  Air SE              A
+  Clannad             C
+  Kanon SE            K
+  Planetarian PE      P
+  Tomoyo After        T
+
+
+Grp (combined scores for grp*/rec*)
+
+  grpBuffer            34  ACKPT
+  grpOpenBg            33  ACKPT
+  grpCopy              32  ACKT
+  grpFill              25  ACKPT
+  grpMaskCopy          19  AK
+  grpMulti             16  ACK
+  grpDisplay           15  
+  grpFade              12  C
+  grpLoadMask          12  
+  grpStretchBlt        12  AC
+  grpCopyWithMask      11  
+  grpMaskBuffer        11  
+  grpOpen              10  K
+  grpMaskOpen          9   AK
+  grpMaskCopyWithMask  7   
+  grpMono              7   A
+  grpLoad              6   AK
+  grpMaskStretchBlt    6   
+  grpCopyInvMask       5   
+  grpZoom              5   AP
+  grpColour            4   
+  grpAdd               3   C
+  grpFlash             3   AC
+  grpInvert            3   AC
+  grpLight             3   C
+  grpMaskNumber        3   
+  grpAddWithMask       2   
+  grpMaskAdd           2   
+  grpMaskCopyInvMask   2   
+  grpMaskLoad          2   A
+  grpTextout           2   
+  grpMaskRotate        1   
+  grpMaskSub           1   
+  grpPan               1   
+  grpRotate            1   
+  grpSub               1   C
+
+
+Obj (combined scores for obj*/objBg*/objRange*/objBgRange*)
+
+  objOfFile            32  ACKPT
+  objAlpha             23  ACKPT
+  objMove              23  ACKPT
+  objShow              22  ACKPT
+  objDispRect          16  ACKPT
+  objOfFileGan         16  CKPT
+  objWipeCopyOn        16  CPT
+  objLayer             14  
+  objAdjust            13  ACKPT
+  objScale             13  CP
+  objColour            12  ACT
+  objDriftOfFile       12  ACKPT
+  objDriftOpts         12  ACKPT
+  objLeft              12  C
+  objTop               12  C
+  objComposite         11  CPT
+  objCopyFgToBg        11  ACKT
+  objOfRect            11  ACT
+  objClear             10  ACKPT
+  objPattNo            10  ACKPT
+  objDelete            9   ACKPT
+  objLight             9   P
+  objMono              9   CT
+  objOfText            9   CP
+  objAdjustX           8   
+  objGetPos            8   ACKPT
+  objRotate            8   C
+  objTextOpts          8   CP
+  objAdjustY           7   
+  objDispArea          7   
+  objGetDims           7   ACKPT
+  objWipeCopyOff       7   
+  objOrigin            6   
+  objStop              6   
+  objCopy              5   CT
+  objOfFile2           5   CT
+  objRepOrigin         5   CP
+  objHeight            4   C
+  objInvert            4   
+  objOfArea            4   
+  objWidth             4   T
+  objRepOriginX        3   
+  objTint              3   
+  objCopyToBg          2   
+  objFadeOpts          2   C
+  objLoop              2   AP
+  objNumOpts           2   
+  objOfDigits          2   
+  objOrder             2   
+  objRepOriginY        2   C
+  objSetDigits         2   
+  objSetText           2   
+  objBgCopyToFg        1   A
+  objColLevel          1   
+  objOfFileAnm         1   
+  objOriginY           1   
+  objPlay              1   C
+  objPlayEx            1   
+
+
+
+  
+
+For future reference, the basic command to generate scores for Grp was
+
+  find -L . -type d | perl -e '
+  %key=(kanon=>1,air=>1,clannad=>1,planetarian=>1,tomoyo_full=>1);
+  @f = map { chomp; "$_/*.ke" } <STDIN>;
+  push @f, "misc/$_" for split " ", `ls misc`;
+  for (@f) { next if m(\.(/gameexes|/misc)?/\*\.ke$);
+  open F, qq{grep -Eoh "\\b(grp|rec)[^ (]+" $_ | sort -u -k1.4 |};
+  while $l (<F>) { chomp, $l =~ s/^rec/grp/, ++$c{$l};
+  $g{$l} .= uc $2 if m(/((.).+)/\*\.ke$) && $key{$1} }
+  close F } printf "%-21s%-4s%s\n", $_, $c{$_}, $g{$_} for keys %c
+  ' | sort -nrk 2
+
+No, I haven't won any obfuscation contests yet.  :P
