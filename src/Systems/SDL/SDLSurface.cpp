@@ -138,7 +138,10 @@ void SDLSurface::deallocate()
 {
   m_texture.reset();
   if(m_surface)
+  {
     SDL_FreeSurface(m_surface);
+    m_surface = NULL;
+  }
 }
 
 // -----------------------------------------------------------------------
