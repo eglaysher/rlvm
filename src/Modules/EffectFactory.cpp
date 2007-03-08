@@ -44,6 +44,8 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
+#include "Utilities.h"
+
 using namespace std;
 using namespace libReallive;
 
@@ -52,33 +54,17 @@ const int SEL_SIZE = 16;
 // -----------------------------------------------------------------------
 
 Effect* EffectFactory::buildFromSEL(RLMachine& machine, 
-                                           boost::shared_ptr<Surface> src, 
-                                           boost::shared_ptr<Surface> dst,
-                                           int selNum)
+                                    boost::shared_ptr<Surface> src, 
+                                    boost::shared_ptr<Surface> dst,
+                                    int selNum)
 {
   Gameexe& gexe = machine.system().gameexe();
-  vector<int> selParams = gexe("SEL", selNum).to_intVector();
+  vector<int> selParams = getSELEffect(machine, selNum);
 
   return build(machine, src, dst,
                selParams[6], selParams[7], 
                selParams[8], selParams[9], selParams[10], selParams[11],
                selParams[12], selParams[13], selParams[15]);
-}
-
-// -----------------------------------------------------------------------
-
-Effect* EffectFactory::buildFromSELR(RLMachine& machine, 
-                                            boost::shared_ptr<Surface> src, 
-                                            boost::shared_ptr<Surface> dst,
-                                            int selNum)
-{
-  Gameexe& gexe = machine.system().gameexe();
-  vector<int> selParams = gexe("SELR", selNum).to_intVector();
-
-  return build(machine, src, dst, 
-               selParams[6], selParams[7], 
-               selParams[8], selParams[9], selParams[10], selParams[11],
-               selParams[12], selParams[13], selParams[15]);  
 }
 
 // -----------------------------------------------------------------------

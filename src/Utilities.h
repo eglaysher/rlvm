@@ -24,6 +24,7 @@
 #define __Utilities_h__
 
 #include <string>
+#include <vector>
 
 class RLMachine;
 
@@ -65,5 +66,14 @@ inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
   x2 = x2 - x1;
   y2 = y2 - y1;
 }
+
+/** 
+ * Will search for a #SEL.selNum (and translate from grp to rec
+ * coordinates), or #SELR.selNum if a #SEL version isn't found in the
+ * gameexe.ini file.
+ * 
+ * @return #SEL in rec coordinates
+ */
+std::vector<int> getSELEffect(RLMachine& machine, int selNum);
 
 #endif

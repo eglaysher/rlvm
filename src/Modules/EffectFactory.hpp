@@ -69,22 +69,6 @@ public:
                               int selnum);
 
   /** 
-   * Builds an Effect based off the \#SELR.selnum line in the
-   * Gameexe.ini file. The
-   * 
-   * @param machine  Machine to read Gameexe from
-   * @param selnum   \#SELR to read
-   * @throw Error selnum is not a valid \#SELR number, Gameexe file is
-   *              malformed.
-   * @return A LongOperation which will perform the following transition
-   *         and then exit.
-   */  
-  static Effect* buildFromSELR(RLMachine& machine, 
-                               boost::shared_ptr<Surface> src, 
-                               boost::shared_ptr<Surface> dst,
-                               int selnum);
-
-  /** 
    * Returns a constructed LongOperation with the following properties
    * to perform a transition. Note: Effect's external interface work on
    * the rec* coordinate system (x, y, width, height) instead of the

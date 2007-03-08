@@ -2,6 +2,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
+#include "libReallive/defs.h"
 
 #include <string>
 #include <iostream>
@@ -11,11 +12,15 @@
 
 using namespace std;
 
+// -----------------------------------------------------------------------
+
 inline void uppercase(string& what)
 {
   for (string::size_type i = 0; i < what.size(); ++i) 
     what[i] = toupper(what[i]);
 }
+
+// -----------------------------------------------------------------------
 
 string correctPathCase(const string& fileName)
 {
@@ -73,11 +78,38 @@ string correctPathCase(const string& fileName)
 #endif
 }
 
+// -----------------------------------------------------------------------
+
 string findFile(RLMachine& machine, const string& fileName)
 {
   // Hack until I do this correctly
-//  cerr << "__GAMEPATH: " << machine.system().gameexe()("__GAMEPATH").to_string() << endl;
   string file = machine.system().gameexe()("__GAMEPATH").to_string() + "g00/" + fileName;
   file += ".g00";
   return correctPathCase(file);
+}
+
+// -----------------------------------------------------------------------
+
+std::vector<int> getSELEffect(RLMachine& machine, int selNum)
+{
+  Gameexe& gexe = machine.system().gameexe();
+  vector<int> selEffect;
+
+  if(gexe("SEL", selNum).exists())
+  {
+    selEffect = gexe("SEL", selNum).to_intVector();
+    grpToRecCoordinates(selEffect[0], selEffect[1], 
+                        selEffect[2], selEffect[3]);
+  }
+  else if(gexe("SELR", selNum).exists())
+    selEffect = gexe("SELR", selNum).to_intVector();
+  else
+  {
+    ostringstream oss;
+    oss << "Could not find either #SEL." << selNum << " or #SELR."
+        << selNum;
+    throw libReallive::Error(oss.str());
+  }
+
+  return selEffect;
 }
