@@ -72,13 +72,13 @@ namespace fs = boost::filesystem;
  * 
  * @section Overview
  *
- * Visual Novels (refered to as NVL, AVG or ADV games in Japanese) are
+ * Visual Novels (referred to as NVL, AVG or ADV games in Japanese) are
  * a form of interactive fiction in Japan which never really became
  * popular in most English speaking countries. They are simple, plot
  * and character oriented games which are very text-heavy. Gameplay
- * wise, they are comporable to a large slide show with text, images
+ * wise, they are comparable to a large slide show with text, images
  * and sound, and can be thought of as massive, more serious, mature
- * versions of the Choose-Your-Own-Adventure series of childrens books.
+ * versions of the Choose-Your-Own-Adventure series of children's books.
  * 
  * @section IsAndIsnt What RLVM is and isn't
  *
@@ -88,16 +88,16 @@ namespace fs = boost::filesystem;
  * that will play a large variety of commercial visual novels written
  * in Reallive.
  *
- * RLVM is not intended to to compete with VisualArts KK as a
- * development toolkit. While someone could theoretically combine RLVM
- * with <a href="http://www.haeleth.net">Haeleth</a>'s <a
+ * RLVM is not intended to compete with VisualArts KK as a development
+ * toolkit. While someone could theoretically combine RLVM with <a
+ * href="http://www.haeleth.net">Haeleth</a>'s <a
  * href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler
  * toolkit to produce games (at least after RLVM supports a base set
  * of operations), it would be overly cumbersome and I would recommend
  * one of the many free visual novel development systems, which would
  * be both easier to use and more featurefull.
  *
- * RLVM is not meant to facillitate piracy. Please buy these games;
+ * RLVM is not meant to facilitate piracy. Please buy these games;
  * many people put their hearts into writing these stories and they
  * deserve to be rewarded financially.
  *
@@ -142,7 +142,7 @@ namespace fs = boost::filesystem;
  *
  * - Debug information
  * - "Misc settings"
- * - A list of actors that appear in the scene (refered to as the {@em
+ * - A list of actors that appear in the scene (referred to as the {@em
  *   dramatic personae} table, which is used for debugging
  * - Metadata which can be added by Haeleth's <a
  *   href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler.
@@ -233,7 +233,8 @@ int main(int argc, char* argv[])
   commandLineOpts.add(opts).add(hidden);
 
   po::variables_map vm;
-  po::store(po::basic_command_line_parser<char>(argc, argv).options(commandLineOpts).positional(p).run(),
+  po::store(po::basic_command_line_parser<char>(argc, argv).
+            options(commandLineOpts).positional(p).run(),
             vm);
   po::notify(vm);
 
