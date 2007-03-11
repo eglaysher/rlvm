@@ -213,34 +213,7 @@ void RLMachine::executeNextInstruction()
   {
     try 
     {
-      // Refactor this out into a virtual function?
-      // @todo Yeah, really refactor this ugly mess below before it grows and eats
-      // tokyo
-      // Switch to the proper handler based on the type of this bytecode element
-      switch(callStack.top().ip->type()) {
-        // Handle all the other stuff
-      case Line:
-        m_line = static_cast<const libReallive::MetaElement&>(
-          *(callStack.top().ip)).value(); 
-        advanceInstructionPointer();
-        break;
-      case Expression:
-        executeExpression(static_cast<const libReallive::ExpressionElement&>(
-                            *(callStack.top().ip)));
-        break;
-      case Command:
-      case Function:
-      case Select:
-      case Goto:
-      case GotoCase:
-      case GotoOn:
-        executeCommand(static_cast<const libReallive::CommandElement&>(
-                         *(callStack.top().ip)));
-        break;
-      default:
-        // Increment the IP for things we don't handle yet or very well.
-        advanceInstructionPointer();
-      }
+      callStack.top().ip->runOnMachine(*this);
     }
     catch(std::exception& e) {
       if(m_haltOnException) {

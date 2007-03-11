@@ -125,9 +125,6 @@ private:
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, int& module);
 
-  void executeCommand(const libReallive::CommandElement& f);
-  void executeExpression(const libReallive::ExpressionElement& e);
-
 public:
   RLMachine(libReallive::Archive& inArchive);
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
@@ -282,6 +279,30 @@ public:
   int lineNumber() const { return m_line; }
 
   // @}
+
+  // -----------------------------------------------------------------------
+
+  /**
+   * @name Execution interface
+   * 
+   * Normally, executeNextInstruction will call runOnMachine() on
+   * whatever BytecodeElement is currently pointed to by the
+   * instruction pointer. 
+   *
+   * @{
+   */
+
+  /** 
+   * Sets the current line number
+   * 
+   * @param i 
+   */
+  void setLineNumber(const int i) { m_line = i; }
+
+  void executeCommand(const libReallive::CommandElement& f);
+  void executeExpression(const libReallive::ExpressionElement& e);
+
+  /// @}
 
   // -----------------------------------------------------------------------
 

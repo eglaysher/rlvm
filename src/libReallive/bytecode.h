@@ -7,6 +7,8 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp> 
 
+class RLMachine;
+
 namespace libReallive {
 
 // A nasty-hacky (but simple and efficient) form of RTTI.
@@ -84,6 +86,9 @@ public:
 	
 	BytecodeElement() : id(id_src++) {}
 
+  /// Execute this bytecode instruction on this virtual machine
+  virtual void runOnMachine(RLMachine& machine) const;
+
   // Needed for MetaElement during reading the script
   virtual const int entrypoint() const { return -999; }	
 
@@ -138,6 +143,9 @@ public:
 	const int value() const { return value_; }
 	void set_value(const int value) { value_ = value; }
 	const int entrypoint() const { return type_ == Entrypoint_ ? entrypoint_index : -999; }
+
+  /// Execute this bytecode instruction on this virtual machine
+  virtual void runOnMachine(RLMachine& machine) const;
 	
   MetaElement(const ConstructionData* cv, const char* src);
 	
@@ -155,6 +163,9 @@ public:
 	TextoutElement(const char* src);
   TextoutElement();
 	TextoutElement* clone() const { return new TextoutElement(*this); }
+
+  /// Execute this bytecode instruction on this virtual machine
+  virtual void runOnMachine(RLMachine& machine) const;
 };
 
 // Expression elements.
@@ -185,6 +196,8 @@ public:
    * @see expression.cpp
    */
   const ExpressionPiece& parsedExpression() const;
+
+  virtual void runOnMachine(RLMachine& machine) const;
 };
 
 // Command elements.
@@ -232,6 +245,8 @@ public:
   CommandElement(const char* src);
   CommandElement(const CommandElement& ce);
   ~CommandElement();
+
+  virtual void runOnMachine(RLMachine& machine) const;
 };
 
 class SelectElement : public CommandElement {

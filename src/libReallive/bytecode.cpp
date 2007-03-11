@@ -9,6 +9,8 @@
 #include "scenario.h"
 #include "expression.h"
 
+#include "MachineBase/RLMachine.hpp"
+
 using namespace std;
 
 namespace libReallive {
@@ -16,17 +18,28 @@ namespace libReallive {
 char BytecodeElement::entrypoint_marker = '@';
 long BytecodeElement::id_src = 0;
 
+// -----------------------------------------------------------------------
+// ConstructionData
+// -----------------------------------------------------------------------
+
 ConstructionData::ConstructionData(size_t kt, pointer_t pt)
   : kidoku_table(kt), null(pt) {}
 
+// -----------------------------------------------------------------------
+// BytecodeElement
+// -----------------------------------------------------------------------
+
 BytecodeElement::BytecodeElement(const BytecodeElement& c)
   : id(id_src++) {}
+
+// -----------------------------------------------------------------------
 
 inline BytecodeElement*
 read_function(const char* stream, ConstructionData& cdata)
 {
 	// opcode: 0xttmmoooo (Type, Module, Opcode: e.g. 0x01030101 = 1:03:00257
-	const unsigned long opcode = (stream[1] << 24) | (stream[2] << 16) | (stream[4] << 8) | stream[3];
+	const unsigned long opcode = (stream[1] << 24) | (stream[2] << 16) |
+      (stream[4] << 8) | stream[3];
 	switch (opcode) {
 	case 0x00010000: case 0x00010005: 
 	case 0x00050001: case 0x00050005:
@@ -48,6 +61,16 @@ read_function(const char* stream, ConstructionData& cdata)
 		return new FunctionElement(stream);
 }
 
+// -----------------------------------------------------------------------
+
+void BytecodeElement::runOnMachine(RLMachine& machine) const
+{
+  std::cerr << "Warning, running empty bytecode!?" << std::endl;
+  machine.advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+
 BytecodeElement*
 BytecodeElement::read(const char* stream, ConstructionData& cdata)
 {
@@ -65,15 +88,20 @@ BytecodeElement::read(const char* stream, ConstructionData& cdata)
 	}
 }
 
-// DataElement implementation.
+// -----------------------------------------------------------------------
+// DataElement
+// -----------------------------------------------------------------------
 
 DataElement::DataElement() {}
 DataElement::DataElement(const char* src, const size_t count)
   : repr(src, count) {}
 
-// MetaElement implementation
+// -----------------------------------------------------------------------
+// MetaElement
+// -----------------------------------------------------------------------
 
-MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
+MetaElement::MetaElement(const ConstructionData* cv, const char* src)
+{
   value_ = read_i16(src + 1);
   if (!cv) {
     type_ = Line_; 
@@ -87,7 +115,19 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
   }
 }
 
-// TextoutElement implementation.
+// -----------------------------------------------------------------------
+
+void MetaElement::runOnMachine(RLMachine& machine) const
+{
+  if(type_ == Line_)
+    machine.setLineNumber(value_);
+
+  machine.advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+// TextoutElement
+// -----------------------------------------------------------------------
 
 TextoutElement::TextoutElement(const char* src)
 {
@@ -101,7 +141,8 @@ TextoutElement::TextoutElement(const char* src)
 		else {
 			if (*end == ',') ++end;
 			quoted = *end == '"';
-			if (!*end || *end == '#' || *end == '$' || *end == '\n' || *end == '@' || *end == entrypoint_marker)
+			if (!*end || *end == '#' || *end == '$' || *end == '\n' ||
+                *end == '@' || *end == entrypoint_marker)
 				break;
 		}
 		if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)) 
@@ -112,7 +153,11 @@ TextoutElement::TextoutElement(const char* src)
 	repr.assign(src, end);
 }
 
+// -----------------------------------------------------------------------
+
 TextoutElement::TextoutElement() {}
+
+// -----------------------------------------------------------------------
 
 const string 
 TextoutElement::text() const
@@ -142,25 +187,40 @@ TextoutElement::text() const
 	return rv;
 }
 
+// -----------------------------------------------------------------------
+
 void 
 TextoutElement::set_text(const char* src)
 {
 	bool quoted = false;
 	repr.clear();
 	if (src) while (*src) {
-		if (!quoted && (*src == '"' || *src == '#' || *src == '$' || *src == '\n' || *src == '@' ||
-			            *src == ',' || *src == entrypoint_marker)) {
+		if (!quoted && (*src == '"' || *src == '#' || *src == '$' ||
+                        *src == '\n' || *src == '@' ||
+			            *src == ',' || *src == entrypoint_marker)) 
+        {
 			quoted = true;
 			repr.push_back('"');
 		}
 		if (*src == '"') repr.push_back('\\');
-		if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)) repr.push_back(*src++);
+		if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef))
+          repr.push_back(*src++);
 		repr.push_back(*src++);
 	}
 	if (quoted) repr.push_back('"');
 }
 
-// ExpressionElement implementation
+// -----------------------------------------------------------------------
+
+void TextoutElement::runOnMachine(RLMachine& machine) const
+{
+  // Whatever for now
+  machine.advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+// ExpressionElement
+// -----------------------------------------------------------------------
 
 ExpressionElement::ExpressionElement(const char* src)
 {
@@ -174,6 +234,8 @@ ExpressionElement::ExpressionElement(const char* src)
 	repr.assign(src, end);
 }
 
+// -----------------------------------------------------------------------
+
 ExpressionElement::ExpressionElement(const long val)
 {
   repr.resize(6, '$');
@@ -181,14 +243,20 @@ ExpressionElement::ExpressionElement(const long val)
   insert_i32(repr, 2, val); 
 }
 
+// -----------------------------------------------------------------------
+
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
   : DataElement(rhs), m_parsedExpression(NULL)
 { 
 }
 
+// -----------------------------------------------------------------------
+
 ExpressionElement* ExpressionElement::clone() const {
   return new ExpressionElement(*this); 
 }
+
+// -----------------------------------------------------------------------
 
 const ExpressionPiece& ExpressionElement::parsedExpression() const {
   if(m_parsedExpression.get() == 0) {
@@ -199,8 +267,21 @@ const ExpressionPiece& ExpressionElement::parsedExpression() const {
   return *m_parsedExpression;
 }
 
-// CommandElement implementations
-CommandElement::CommandElement(const int type, const int module, const int opcode, const int argc, const int overload) { 
+// -----------------------------------------------------------------------
+
+void ExpressionElement::runOnMachine(RLMachine& machine) const
+{
+  machine.executeExpression(*this);
+}
+
+// -----------------------------------------------------------------------
+// CommandElement
+// -----------------------------------------------------------------------
+
+CommandElement::CommandElement(
+  const int type, const int module, const int opcode, const int argc,
+  const int overload)
+{ 
   repr.resize(8, 0);
   repr[0] = '#';
   repr[1] = type;
@@ -210,17 +291,25 @@ CommandElement::CommandElement(const int type, const int module, const int opcod
   repr[7] = overload;
 }
 
+// -----------------------------------------------------------------------
+
 CommandElement::CommandElement(const char* src) {
   repr.assign(src, 8);
 }
+
+// -----------------------------------------------------------------------
 
 CommandElement::CommandElement(const CommandElement& ce) 
   : m_parsedParameters()
 {
 }
 
+// -----------------------------------------------------------------------
+
 CommandElement::~CommandElement()
 {}
+
+// -----------------------------------------------------------------------
 
 const vector<string>& CommandElement::getUnparsedParameters() const
 {
@@ -236,10 +325,14 @@ const vector<string>& CommandElement::getUnparsedParameters() const
   return m_unparsedParameters;  
 }
 
+// -----------------------------------------------------------------------
+
 bool CommandElement::areParametersParsed() const
 {
   return param_count() == m_parsedParameters.size(); 
 }
+
+// -----------------------------------------------------------------------
 
 /// This function shows...some deeper truth about mutability and
 /// const-ness in C++, but I for one can't figure it out.
@@ -253,14 +346,25 @@ void CommandElement::setParsedParameters(
                                parsedParameters);
 }
 
-const boost::ptr_vector<libReallive::ExpressionPiece>& CommandElement::getParameters() const
+// -----------------------------------------------------------------------
+
+const boost::ptr_vector<libReallive::ExpressionPiece>&
+CommandElement::getParameters() const
 {
   return m_parsedParameters;
 }
 
 // -----------------------------------------------------------------------
 
-// SelectElement implementation
+void CommandElement::runOnMachine(RLMachine& machine) const
+{
+  machine.executeCommand(*this);
+}
+
+// -----------------------------------------------------------------------
+// SelectElement
+// -----------------------------------------------------------------------
+
 SelectElement::SelectElement(const char* src) : CommandElement(src)
 {
 	src += 8;
@@ -300,6 +404,8 @@ SelectElement::SelectElement(const char* src) : CommandElement(src)
 	if (*src++ != '}') throw Error("SelectElement(): expected `}'");
 }
 
+// -----------------------------------------------------------------------
+
 ExpressionElement
 SelectElement::window()
 {
@@ -307,6 +413,8 @@ SelectElement::window()
 	      ? ExpressionElement(repr.data() + 9) 
 	      : ExpressionElement(-1);
 }
+
+// -----------------------------------------------------------------------
 
 const string
 SelectElement::text(const int index) const
@@ -340,6 +448,8 @@ SelectElement::text(const int index) const
 	return rv;
 }
 
+// -----------------------------------------------------------------------
+
 const string
 SelectElement::data() const
 {
@@ -358,6 +468,8 @@ SelectElement::data() const
 	return rv;
 }
 
+// -----------------------------------------------------------------------
+
 const size_t 
 SelectElement::length() const
 {
@@ -366,6 +478,10 @@ SelectElement::length() const
 		rv += it->cond.size() + it->text.size() + 3;
 	return rv;
 }
+
+// -----------------------------------------------------------------------
+// FunctionElement
+// -----------------------------------------------------------------------
 
 FunctionElement::FunctionElement(const char* src) : CommandElement(src) 
 {
@@ -380,6 +496,8 @@ FunctionElement::FunctionElement(const char* src) : CommandElement(src)
 	}
 }
 
+// -----------------------------------------------------------------------
+
 const string 
 FunctionElement::data() const 
 {
@@ -391,6 +509,8 @@ FunctionElement::data() const
 	}
 	return rv;
 }
+
+// -----------------------------------------------------------------------
 
 const size_t 
 FunctionElement::length() const
@@ -405,9 +525,18 @@ FunctionElement::length() const
 	}
 }
 
+// -----------------------------------------------------------------------
+// PointerElement
+// -----------------------------------------------------------------------
+
 PointerElement::PointerElement(const char* src) : CommandElement(src) {}
 
-GotoElement::GotoElement(const char* src, ConstructionData& cdata) : PointerElement(src)
+// -----------------------------------------------------------------------
+// GotoElement
+// -----------------------------------------------------------------------
+
+GotoElement::GotoElement(const char* src, ConstructionData& cdata)
+  : PointerElement(src)
 {
 	src += 8;
 	const int op = (module() * 100000) | opcode();
@@ -424,6 +553,8 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata) : PointerElem
 	targets.push_id(read_i32(src));
 }
 
+// -----------------------------------------------------------------------
+
 const string
 GotoElement::data() const
 {
@@ -431,6 +562,8 @@ GotoElement::data() const
 	append_i32(rv, targets[0]->offset());
 	return rv;
 }
+
+// -----------------------------------------------------------------------
 
 const GotoElement::Case
 GotoElement::taken() const
@@ -458,6 +591,8 @@ GotoElement::taken() const
 	return Variable;
 }
 
+// -----------------------------------------------------------------------
+
 void 
 GotoElement::make_unconditional()
 {
@@ -465,7 +600,12 @@ GotoElement::make_unconditional()
 	repr.resize(8);
 }
 
-GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata) : PointerElement(src) 
+// -----------------------------------------------------------------------
+// GotoCaseElement
+// -----------------------------------------------------------------------
+
+GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
+  : PointerElement(src) 
 {
 	src += 8;
 	// Condition
@@ -495,6 +635,8 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata) : Poi
 	if (*src != '}') throw Error("GotoCaseElement(): expected `}'");
 }
 
+// -----------------------------------------------------------------------
+
 const string
 GotoCaseElement::data() const
 {
@@ -508,6 +650,8 @@ GotoCaseElement::data() const
 	return rv;
 }
 
+// -----------------------------------------------------------------------
+
 const size_t
 GotoCaseElement::length() const
 {
@@ -516,7 +660,12 @@ GotoCaseElement::length() const
 	return rv;
 }
 
-GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata) : PointerElement(src) 
+// -----------------------------------------------------------------------
+// GotoOnElement
+// -----------------------------------------------------------------------
+
+GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata) 
+  : PointerElement(src)
 {
 	src += 8;
 	// Condition
@@ -534,6 +683,8 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata) : Pointer
 	if (*src != '}') throw Error("GotoOnElement(): expected `}'");
 }
 
+// -----------------------------------------------------------------------
+
 const string
 GotoOnElement::data() const
 {
@@ -546,13 +697,16 @@ GotoOnElement::data() const
 	return rv;	
 }
 
+// -----------------------------------------------------------------------
+
 void
 Pointers::set_pointers(ConstructionData& cdata)
 {
 	assert(target_ids.size() != 0);
 	targets.reserve(target_ids.size());
 	for (int i = 0; i < target_ids.size(); ++i) {
-		ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(target_ids[i]);
+		ConstructionData::offsets_t::const_iterator it =
+          cdata.offsets.find(target_ids[i]);
 		assert(it != cdata.offsets.end());
 		targets.push_back(it->second);
 	}
@@ -560,8 +714,11 @@ Pointers::set_pointers(ConstructionData& cdata)
 }
 
 // -----------------------------------------------------------------------
+// GosubWithElement
+// -----------------------------------------------------------------------
 
-GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata) : PointerElement(src)
+GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
+  : PointerElement(src)
 {
 	src += 8;
 	const int op = (module() * 100000) | opcode();
@@ -582,6 +739,8 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata) : P
 	targets.push_id(read_i32(src));
 }
 
+// -----------------------------------------------------------------------
+
 const string
 GosubWithElement::data() const
 {
@@ -589,25 +748,5 @@ GosubWithElement::data() const
 	append_i32(rv, targets[0]->offset());
 	return rv;
 }
-
-/*
-const boost::ptr_vector<libReallive::ExpressionPiece>& GosubWithElement::getParameters() const
-{
-  if(param_count() != m_parsedParameters.size())
-  {
-    m_parsedParameters.clear();
-
-    size_t numberOfParameters = param_count();
-    for(size_t i = 0; i < numberOfParameters; ++i) 
-    {
-      const char* dataStr = get_param(i).c_str();
-      m_parsedParameters.push_back(get_data(dataStr));
-    }
-  }
-
-  return m_parsedParameters;
-}
-*/
-
 
 }
