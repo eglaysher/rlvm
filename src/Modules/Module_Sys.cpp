@@ -54,6 +54,15 @@ const float PI = 3.14159265;
 
 using namespace std;
 
+//  fun title                   <1:Sys:00000, 0> (res 'sub-title')
+struct Sys_title : public RLOp_Void_1< StrConstant_T > {
+  void operator()(RLMachine& machine, std::string subtitle) {
+    machine.system().graphics().setWindowSubtitle(subtitle);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
   struct LongOp_wait : public LongOperation 
   {
@@ -378,6 +387,7 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 SysModule::SysModule(GraphicsSystem& system)
   : RLModule("Sys", 1, 004)
 {
+  addOpcode(   0, 0, "title", new Sys_title);
   addOpcode( 100, 0, "wait", new Sys_wait);
   addOpcode( 101, 0, "waitC", new Sys_waitC);
 

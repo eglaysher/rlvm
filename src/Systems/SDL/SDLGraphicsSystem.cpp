@@ -183,6 +183,13 @@ void SDLGraphicsSystem::endFrame()
 
 // -----------------------------------------------------------------------
 
+void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932encoded)
+{
+  m_subtitle = cp932encoded;
+}
+
+// -----------------------------------------------------------------------
+
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
   return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_width, m_height));
@@ -233,7 +240,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   int bpp = info->vfmt->BitsPerPixel;
 
   /// Grab the caption
-  m_baseTitle = gameexe("CAPTION").to_string();
+  m_captionTitle = gameexe("CAPTION").to_string();
+  m_displaySubtitle = gameexe("SUBTITLE").to_int(0);
 
   /* the flags to pass to SDL_SetVideoMode */
   int videoFlags;
@@ -318,7 +326,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   m_displayContexts[0]->allocate(m_width, m_height, this);
   m_displayContexts[1]->allocate(m_width, m_height);
 
-  setTitle();
+  setWindowTitle();
 
   // When debug is set, display trace data in the titlebar
   if(gameexe("MEMORY").exists())
@@ -359,16 +367,21 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
       m_lastLineNumber = machine.lineNumber();
     }
 
-    setTitle();
+    setWindowTitle();
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setTitle()
+void SDLGraphicsSystem::setWindowTitle()
 {
   ostringstream oss;
-  oss << m_baseTitle;
+  oss << m_captionTitle;
+
+  if(m_displaySubtitle && m_subtitle != "")
+  {
+    oss << ": " << m_subtitle;
+  }
   
   if(m_displayDataInTitlebar)
   {

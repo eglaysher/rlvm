@@ -75,7 +75,14 @@ private:
   unsigned int m_lastLineNumber;
 
   /// cp932 encoded title string
-  string m_baseTitle;
+  string m_captionTitle;
+
+  /// Whether we should try to append m_subtitle in the window
+  /// titlebar
+  bool m_displaySubtitle;
+
+  /// cp932 encoded subtitle string
+  string m_subtitle;
 
   // ---------------------------------------------------------------------
 
@@ -106,7 +113,7 @@ private:
   /// @}
   // ---------------------------------------------------------------------
 
-  void setTitle();
+  void setWindowTitle();
 
 public:
   SDLGraphicsSystem(Gameexe& gameexe);
@@ -143,6 +150,8 @@ public:
   virtual void refresh(RLMachine& machine);
 
   virtual void endFrame();
+
+  virtual void setWindowSubtitle(const std::string& cp932encoded);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);
