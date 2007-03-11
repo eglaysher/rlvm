@@ -74,6 +74,9 @@ private:
   /// The last line number;
   unsigned int m_lastLineNumber;
 
+  /// cp932 encoded title string
+  string m_baseTitle;
+
   // ---------------------------------------------------------------------
 
   /** 
@@ -102,6 +105,8 @@ private:
 
   /// @}
   // ---------------------------------------------------------------------
+
+  void setTitle();
 
 public:
   SDLGraphicsSystem(Gameexe& gameexe);

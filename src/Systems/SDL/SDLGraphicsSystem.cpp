@@ -52,6 +52,8 @@
 #include "file.h"
 #include "Utilities.h"
 
+#include "Modules/cp932toUnicode.hpp"
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -211,7 +213,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw Error(ss.str());
   }
 
-  int graphicsMode = gameexe("SCREENSIZE_MOD").to_int();
+  int graphicsMode = gameexe("SCREENSIZE_MOD");
   if(graphicsMode == 0)
   {
     m_width = 640;
@@ -229,6 +231,9 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw Error(oss.str());
   }
   int bpp = info->vfmt->BitsPerPixel;
+
+  /// Grab the caption
+  m_baseTitle = gameexe("CAPTION").to_string();
 
   /* the flags to pass to SDL_SetVideoMode */
   int videoFlags;
@@ -264,9 +269,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     ss << "Video mode set failed: " << SDL_GetError();
     throw Error(ss.str());
   }	
-
-  // Se tthe title
-  SDL_WM_SetCaption("RLVM", NULL);
 
 
   glEnable(GL_TEXTURE_2D);
@@ -316,6 +318,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   m_displayContexts[0]->allocate(m_width, m_height, this);
   m_displayContexts[1]->allocate(m_width, m_height);
 
+  setTitle();
+
   // When debug is set, display trace data in the titlebar
   if(gameexe("MEMORY").exists())
   {
@@ -342,27 +346,41 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   // dirty.
 
   // Update the seen.
+  int currentTime = machine.system().event().getTicks();
+  
+  if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
+  {
+    m_timeOfLastTitlebarUpdate = currentTime;
+
+    if(machine.sceneNumber() != m_lastSeenNumber ||
+       machine.lineNumber() != m_lastLineNumber)
+    {
+      m_lastSeenNumber = machine.sceneNumber();
+      m_lastLineNumber = machine.lineNumber();
+    }
+
+    setTitle();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::setTitle()
+{
+  ostringstream oss;
+  oss << m_baseTitle;
+  
   if(m_displayDataInTitlebar)
   {
-    int currentTime = machine.system().event().getTicks();
-
-    if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
-    {
-      m_timeOfLastTitlebarUpdate = currentTime;
-      if(machine.sceneNumber() != m_lastSeenNumber ||
-         machine.lineNumber() != m_lastLineNumber)
-      {
-        m_lastSeenNumber = machine.sceneNumber();
-        m_lastLineNumber = machine.lineNumber();
-
-        ostringstream oss;
-        oss << "RLVM - (SEEN" << m_lastSeenNumber << ")(Line " 
-            << m_lastLineNumber << ")";
-
-        SDL_WM_SetCaption(oss.str().c_str(), NULL);
-      }
-    }
+    oss << " - (SEEN" << m_lastSeenNumber << ")(Line " 
+        << m_lastLineNumber << ")";
   }
+
+  std::string cp932str = oss.str().c_str();
+  std::wstring ws = cp932toUnicode(cp932str);
+  std::string utf8str = unicodeToUTF8(ws);
+
+  SDL_WM_SetCaption(utf8str.c_str(), NULL);
 }
 
 // -----------------------------------------------------------------------

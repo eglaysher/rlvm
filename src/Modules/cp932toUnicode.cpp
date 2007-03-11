@@ -40,6 +40,9 @@
 
 #include <string>
 #include <iostream>
+#include <stdexcept>
+
+#include "Modules/ConvertUTF.h"
 
 using namespace std;
 
@@ -5787,4 +5790,33 @@ string zentohan_cp932(const std::string& string)
   wstring tmp = cp932toUnicode(string);
   transform(tmp.begin(), tmp.end(), tmp.begin(), zentohan_wchar);
   return unicodetocp932(tmp);
+}
+
+// -----------------------------------------------------------------------
+
+/// One way transformation; we don't have to worry about the other way
+/// since this is only for output. This function makes assumptions
+/// about the kind of unicode used (sizeof(wchar_t) == sizeof(unsigned
+/// short))
+///
+/// @author http://www.codeproject.com/useritems/UtfConverter.asp
+std::string unicodeToUTF8(const std::wstring& widestring)
+{
+  size_t widesize = widestring.length();
+  size_t utf8size = 4 * widesize + 1;
+  std::string resultstring;
+  resultstring.resize(utf8size, '\0');
+  const UTF32* sourcestart = reinterpret_cast<const UTF32*>(widestring.c_str());
+  const UTF32* sourceend = sourcestart + widesize;
+  UTF8* targetstart = reinterpret_cast<UTF8*>(&resultstring[0]);
+  UTF8* targetend = targetstart + utf8size;
+  ConversionResult res = ConvertUTF32toUTF8(&sourcestart, sourceend,
+                                            &targetstart, targetend, 
+                                            strictConversion);
+  if (res != conversionOK)
+  {
+    throw std::runtime_error("unicodeToUTF8 failed.");
+  }
+  *targetstart = 0;
+  return resultstring;
 }
