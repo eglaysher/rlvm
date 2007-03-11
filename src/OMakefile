@@ -20,6 +20,7 @@ LIBRLVMFILES[] =
   Systems/Base/FrameCounter
   Systems/Base/EventSystem
   Systems/Base/RLTimer
+  Systems/Base/TextWindow
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities

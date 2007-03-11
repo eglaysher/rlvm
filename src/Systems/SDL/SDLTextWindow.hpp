@@ -20,35 +20,36 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __System_hpp__
-#define __System_hpp__
+#ifndef __SDLTextWindow_hpp__
+#define __SDLTextWindow_hpp__
 
-class GraphicsSystem;
-class EventSystem;
-class TextSystem;
-class RLMachine;
-class Gameexe;
+#include "Systems/Base/TextWindow.hpp"
 
-/**
- * The system class provides a generalized interface to all the
- * components that make up a local system that may need to be
- * implemented differently on different systems, i.e., sound,
- * graphics, filesystem et cetera.
- *
- * The base System class is an abstract base class that 
- */
-class System
+class SDLTextWindow : public TextWindow
 {
+private:
+//   typedef void(SDLTextWindow::*TextWindowIntSetter)(const GameexeInterpretObject& ref);
+
+//   void setVal(Gameexe& gexe, int window num, const std::string& key,
+//               TextWindowIntSetter setter);
+
+  /** 
+   * @name Gameexe event functions
+   *
+   * Callback functions called when the correct gameexe key is found
+   * during object construction.
+   * 
+   * @{
+   */
+//  void setMojiSize(const GameexeInterpretObject& ref);
+
+  /// @}
+
 public:
-  virtual ~System() {}
+  SDLTextWindow(RLMachine& machine, int window);
 
-  virtual void run(RLMachine& machine) = 0;
-
-  virtual GraphicsSystem& graphics() = 0;
-  virtual EventSystem& event() = 0;
-  virtual Gameexe& gameexe() = 0;
-  virtual TextSystem& text() = 0;
-//  virtual SoundSystem& soundSystem() = 0;
+  virtual void render(RLMachine& machine);
 };
+
 
 #endif

@@ -19,6 +19,8 @@ LRLFILES[] =
   SDLEventSystem
   SDLUtils
   SDLRenderToTextureSurface
+  SDLTextSystem
+  SDLTextWindow
   Texture
 
 StaticCObject(libSDLSystem, $(LRLFILES))

@@ -1,24 +1,35 @@
+#ifndef __TextSystem_hpp__
+#define __TextSystem_hpp__
+
+class RLMachine;
 
 class TextSystem
 {
 private:
-
-  
   /// Fast text mode
-  bool fastTextMode;
+  bool m_fastTextMode;
 
   /// Internal 'no wait' flag
-  bool messageNoWait;
+  bool m_messageNoWait;
 
   /// Message speed; range from 0 to 255
-  char messageSpeed;
+  char m_messageSpeed;
+
 public:
-  virtual void setFastTextMode(int i) const { fastTextMode = i; }
-  virtual int& fastTextMode() { return fastTextMode; }
+  virtual void setActiveTextWindow(RLMachine& machine, int window) = 0;
+  virtual void render(RLMachine& machine) = 0;
 
-  virtual void setMessageNoWait(int i) const { messageNoWait = i; }
-  virtual int& messageNoWait() { return messageNoWait; }
+  void setFastTextMode(int i) { m_fastTextMode = i; }
+  int fastTextMode() const { return m_fastTextMode; }
 
-  virtual void setMessageSpeed(int i) const { messageSpeed = i; }
-  virtual int& messageSpeed() { return messageSpeed; }
+  void setMessageNoWait(int i) { m_messageNoWait = i; }
+  int messageNoWait() const { return m_messageNoWait; }
+
+  void setMessageSpeed(int i) { m_messageSpeed = i; }
+  int messageSpeed() const { return m_messageSpeed; }
 };
+
+#endif
+
+
+

@@ -35,14 +35,18 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
+
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/TextSystem.hpp"
+
 #include "libReallive/defs.h"
 #include "libReallive/gameexe.h"
 #include "file.h"
@@ -139,6 +143,9 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   // Render all visible foreground objects
   for_each(foregroundObjects, foregroundObjects + 256,
            bind(&GraphicsObject::render, _1, ref(machine)));
+
+  // Render text
+  machine.system().text().render(machine);
 
   endFrame();
 }

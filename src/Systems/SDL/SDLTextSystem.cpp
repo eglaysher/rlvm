@@ -20,35 +20,43 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __System_hpp__
-#define __System_hpp__
-
-class GraphicsSystem;
-class EventSystem;
-class TextSystem;
-class RLMachine;
-class Gameexe;
-
 /**
- * The system class provides a generalized interface to all the
- * components that make up a local system that may need to be
- * implemented differently on different systems, i.e., sound,
- * graphics, filesystem et cetera.
- *
- * The base System class is an abstract base class that 
+ * @file   SDLTextSystem.cpp
+ * @author Elliot Glaysher
+ * @date   Wed Mar  7 22:04:25 2007
+ * 
+ * @brief  SDL specialization of the text system
  */
-class System
+
+#include "Systems/SDL/SDLTextSystem.hpp"
+#include "Systems/SDL/SDLTextWindow.hpp"
+
+SDLTextSystem::SDLTextSystem()
+{}
+
+// -----------------------------------------------------------------------
+
+SDLTextSystem::~SDLTextSystem()
+{}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setActiveTextWindow(RLMachine& machine, int window)
 {
-public:
-  virtual ~System() {}
+  m_textWindow.reset(new SDLTextWindow(machine, window));
+}
 
-  virtual void run(RLMachine& machine) = 0;
+// -----------------------------------------------------------------------
 
-  virtual GraphicsSystem& graphics() = 0;
-  virtual EventSystem& event() = 0;
-  virtual Gameexe& gameexe() = 0;
-  virtual TextSystem& text() = 0;
-//  virtual SoundSystem& soundSystem() = 0;
-};
+void SDLTextSystem::render(RLMachine& machine)
+{
+  if(m_textWindow)
+    m_textWindow->render(machine);
+}
 
-#endif
+// -----------------------------------------------------------------------
+
+TextWindow& SDLTextSystem::activeTextWindow()
+{
+  return *m_textWindow;
+}

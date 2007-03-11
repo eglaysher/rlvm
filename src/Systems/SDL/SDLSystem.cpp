@@ -26,6 +26,7 @@
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
+#include "Systems/SDL/SDLTextSystem.hpp"
 
 #include <SDL/SDL.h>
 
@@ -49,6 +50,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   // Initialize the various subsystems
   graphicsSystem.reset(new SDLGraphicsSystem(gameexe));
   eventSystem.reset(new SDLEventSystem);
+  textSystem.reset(new SDLTextSystem);
 }
 
 SDLSystem::~SDLSystem()
@@ -87,4 +89,9 @@ EventSystem& SDLSystem::event()
 Gameexe& SDLSystem::gameexe()
 {
   return m_gameexe;
+}
+
+TextSystem& SDLSystem::text()
+{
+  return *textSystem;
 }

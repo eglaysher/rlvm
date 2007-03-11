@@ -20,35 +20,29 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __System_hpp__
-#define __System_hpp__
+#ifndef __SDLTextSystem_hpp__
+#define __SDLTextSystem_hpp__
 
-class GraphicsSystem;
-class EventSystem;
-class TextSystem;
-class RLMachine;
-class Gameexe;
+#include "Systems/Base/TextSystem.hpp"
 
-/**
- * The system class provides a generalized interface to all the
- * components that make up a local system that may need to be
- * implemented differently on different systems, i.e., sound,
- * graphics, filesystem et cetera.
- *
- * The base System class is an abstract base class that 
- */
-class System
+#include <boost/scoped_ptr.hpp>
+
+class TextWindow;
+class SDLTextWindow;
+
+class SDLTextSystem : public TextSystem
 {
+private:
+  boost::scoped_ptr<SDLTextWindow> m_textWindow;
+
 public:
-  virtual ~System() {}
+  SDLTextSystem();
+  ~SDLTextSystem();
 
-  virtual void run(RLMachine& machine) = 0;
+  virtual void setActiveTextWindow(RLMachine& machine, int window);
+  virtual void render(RLMachine& machine);
 
-  virtual GraphicsSystem& graphics() = 0;
-  virtual EventSystem& event() = 0;
-  virtual Gameexe& gameexe() = 0;
-  virtual TextSystem& text() = 0;
-//  virtual SoundSystem& soundSystem() = 0;
+  TextWindow& activeTextWindow();
 };
 
 #endif

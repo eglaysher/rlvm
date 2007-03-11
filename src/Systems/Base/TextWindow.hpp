@@ -1,5 +1,31 @@
+// This file is part of RLVM, a RealLive virtual machine clone.
+//
+// -----------------------------------------------------------------------
+//
+// Copyright (C) 2006 El Riot
+//  
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//  
+// -----------------------------------------------------------------------
+
 #ifndef __TextWindow_hpp__
 #define __TextWindow_hpp__
+
+#include <vector>
+
+class RLMachine;
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by TextSystem,
@@ -17,9 +43,9 @@ private:
    * 
    * @{
    */
-  int windowPositionOrigin;
-  int windowPositionX;
-  int windowPositionY;
+  int m_windowPositionOrigin;
+  int m_windowPositionX;
+  int m_windowPositionY;
   /// @}
 
   /** The text insertion point. These two numbers are relative to the
@@ -27,32 +53,137 @@ private:
    *
    * @{
    */
-  int textInsertionPointX;
-  int textInsertionPointY;
+  int m_textInsertionPointX;
+  int m_textInsertionPointY;
   /// @}
-  
-  /// The current size of the font
-  int fontSizeInPixels;
 
-  /// The text color
-  int r, g, b, alpha, filter;
+  /**
+   * Text output properties
+   * 
+   * @{
+   */
+
+  /// The current size of the font
+  int m_fontSizeInPixels;
+
+  /// The current size of the ruby text
+  int m_rubySize;
+
+  /// Size of the window in characters
+  int m_xWindowSizeInChars, m_yWindowSizeInChars;
+
+  /// Spacing between characters
+  int m_xSpacing, m_ySpacing;
+
+  /// @}
+
+  /**
+   * @name Positional data
+   * 
+   * @{
+   */
+  int m_origin, m_xDistanceFromOrigin, m_yDistanceFromOrigin;
+
+  /// @}
+
+  int m_upperBoxPadding, m_lowerBoxPadding, m_leftBoxPadding, m_rightBoxPadding;
+
+  /// The window background color
+  int m_r, m_g, m_b, m_alpha, m_filter;
+
+protected:
+
+  /// Internal calculations stuff
 
 public:
+  TextWindow();
 
-  virtual void setFontSizeInPixels(int i) const { fontSizeInPixels = i; }
-  virtual int& fontSizeInPixels() { return fontSizeInPixels; }
+  virtual ~TextWindow() {}
 
-  virtual void setR(int i) const { r = i; }
-  virtual void setG(int i) const { g = i; }
-  virtual void setB(int i) const { b = i; }
-  virtual void setAlph(int i) const { alpha = i; }
-  virtual void setFilter(int i) const { filter = i; }
+  /**
+   * @name Text size and location
+   * 
+   * Accessors dealing with the size and location of the text
+   * window. 
+   *
+   * @{
+   */
+
+
+  /**
+   * Sets the size of the text window in characters. Reprsented by
+   * \#WINDOW.xxx.MOJI_CNT.
+   */
+  void setWindowSizeInCharacters(const std::vector<int>& posData);
+  int xWindowSizeInChars() const { return m_xWindowSizeInChars; }
+  int yWindowSizeInChars() const { return m_yWindowSizeInChars; }
+
+  /**
+   * Sets the size of the spacing between characters. Reprsented by
+   * \#WINDOW.xxx.MOJI_REP.
+   */
+  void setSpacingBetweenCharacters(const std::vector<int>& posData);
+  int xSpacing() const { return m_xSpacing; }
+  int ySpacing() const { return m_ySpacing; }
+
+  /**
+   * Sets the size of the ruby (furigana; pronounciation guide) text
+   * in pixels. If zero, ruby text is disabled in this
+   * window. Hilariously represented by \#WINDOW.xxx.LUBY_SIZE.
+   */
+  void setRubyTextSize(const int i) { m_rubySize = i; }
+  int rubyTextSize() const { return m_rubySize; }
+
+  /** 
+   * Sets the size of the font. Reprsented by \#WINDOW.xxx.MOJI.SIZE.
+   */
+  void setFontSizeInPixels(int i) { m_fontSizeInPixels = i; }
+  int fontSizeInPixels() const { return m_fontSizeInPixels; }
+
+  void setTextboxPadding(const std::vector<int>& posData);
+
+  /// @}
+
+  /**
+   * @name Window Positional 
+   * 
+   * @{
+   */
+  void setWindowPosition(const std::vector<int>& posData);
+
+  int x1(RLMachine& machine) const;
+  int y1(RLMachine& machine) const;
+  int x2(RLMachine& machine) const;
+  int y2(RLMachine& machine) const;
+
+  /// @}
+
+  /**
+   * @name Window Color Attributes
+   * 
+   * Accessors regarding the background color of the window.
+   *
+   * Represents the data parsed from \#WINDOW_ATTR,
+   * \#WINDOW.index.ATTR_MOD, and \#WINDOW.index.ATTR
+   *
+   * @{
+   */
+  void setR(int i) { m_r = i; }
+  void setG(int i) { m_g = i; }
+  void setB(int i) { m_b = i; }
+  void setAlpha(int i) { m_alpha = i; }
+  void setFilter(int i) { m_filter = i; }
+  void setRGBAF(const std::vector<int>& rgbaValues);
   
-  virtual int& r() { return r; }
-  virtual int& g() { return g; }
-  virtual int& b() { return b; }
-  virtual int& alpha() { return alpha; }
-  virtual int& filter() { return filter; }
+  int r() const { return m_r; }
+  int g() const { return m_g; }
+  int b() const { return m_b; }
+  int alpha() const { return m_alpha; }
+  int filter() const { return m_filter; }
+  /// @}
+
+  // ------------------------------------------------ [ Abstract interface ]
+  virtual void render(RLMachine& machine) = 0;
 };
 
 #endif

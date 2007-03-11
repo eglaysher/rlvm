@@ -182,7 +182,7 @@ void Gameexe::throwUnknownKey(const std::string& key)
 
 // -----------------------------------------------------------------------
 
-const int GameexeInterpretObject::to_int(const int defaultValue) {
+const int GameexeInterpretObject::to_int(const int defaultValue) const {
   const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
   if(ints.size() == 0)
     return defaultValue;
@@ -192,7 +192,7 @@ const int GameexeInterpretObject::to_int(const int defaultValue) {
 
 // -----------------------------------------------------------------------
 
-const int GameexeInterpretObject::to_int() {
+const int GameexeInterpretObject::to_int() const {
   const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
   if(ints.size() == 0)
     m_objectToLookupOn.throwUnknownKey(m_key);
@@ -202,7 +202,9 @@ const int GameexeInterpretObject::to_int() {
 
 // -----------------------------------------------------------------------
 
-const std::string GameexeInterpretObject::to_string(const std::string& defaultValue) {
+const std::string GameexeInterpretObject::to_string(
+  const std::string& defaultValue) const
+{
   try 
   {
     return m_objectToLookupOn.getStringAt(m_key, 0);
@@ -215,7 +217,8 @@ const std::string GameexeInterpretObject::to_string(const std::string& defaultVa
 
 // -----------------------------------------------------------------------
 
-const std::string GameexeInterpretObject::to_string() {
+const std::string GameexeInterpretObject::to_string() const
+{
   try 
   {
     return m_objectToLookupOn.getStringAt(m_key, 0);
@@ -228,7 +231,8 @@ const std::string GameexeInterpretObject::to_string() {
 
 // -----------------------------------------------------------------------
 
-const std::vector<int>& GameexeInterpretObject::to_intVector() {
+const std::vector<int>& GameexeInterpretObject::to_intVector() const
+{
   const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
   if(ints.size() == 0)
     m_objectToLookupOn.throwUnknownKey(m_key);
@@ -238,7 +242,7 @@ const std::vector<int>& GameexeInterpretObject::to_intVector() {
 
 // -----------------------------------------------------------------------
 
-bool GameexeInterpretObject::exists()
+bool GameexeInterpretObject::exists() const
 {
   return m_objectToLookupOn.exists(m_key);
 }

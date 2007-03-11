@@ -37,6 +37,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 #include <iostream>
 
@@ -73,12 +74,26 @@ struct Msg_pause : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
+{
+  void operator()(RLMachine& machine, int window)
+  {
+    TextSystem& textSystem = machine.system().text();
+    textSystem.setActiveTextWindow(machine, window);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
 //  addOpcode(3, 0, /* par */);
 //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, new Msg_pause);
+
+  addOpcode(102, 0, new Msg_TextWindow);
+
 //  addOpcode(100, 0, );
 
 //   addOpcode(101, 0, new Op_SetToIncoming(textSystem.fontSizeInPixels(),
