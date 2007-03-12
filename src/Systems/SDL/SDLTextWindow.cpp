@@ -29,12 +29,17 @@
  */
 
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
+#include "Systems/SDL/SDLSurface.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"
 
+#include "Modules/cp932toUnicode.hpp"
+
 #include <SDL/SDL_opengl.h>
+#include <SDL/SDL_ttf.h>
 
 #include <boost/function.hpp>
 
@@ -70,25 +75,78 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
 
   setWindowPosition(window("POS"));
 
-  cerr << "Building whatever!" << endl;
+  m_font = TTF_OpenFont("/Users/elliot/msgothic.ttc", fontSizeInPixels());
+  if(m_font == NULL)
+  {
+    ostringstream oss;
+    oss << "Error loading font: " << TTF_GetError();
+    throw libReallive::Error(oss.str());
+  }
+
+  TTF_SetFontStyle(m_font, TTF_STYLE_NORMAL);
+}
+
+// -----------------------------------------------------------------------
+
+SDLTextWindow::~SDLTextWindow()
+{
+  TTF_CloseFont(m_font);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::setCurrentText(RLMachine& machine, const std::string& tex)
+{
+  std::wstring ws = cp932toUnicode(tex);
+  std::string utf8str = unicodeToUTF8(ws);
+
+//  SDL_Color color = {255, 255, 255};
+  SDL_Color color = {0, 0, 0};
+  SDL_Surface* tmp =
+    TTF_RenderUTF8_Blended(m_font, utf8str.c_str(), color);
+
+  m_surface.reset(new SDLSurface(tmp));
+
+  std::cerr << "Textout: " << utf8str << std::endl;
+
+  machine.system().graphics().markScreenAsDirty();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::render(RLMachine& machine)
 {
-  glBegin(GL_QUADS);
+  if(m_surface)
   {
-    cerr << "RGBA: " << r() << ", " << g() << "," << b() << "," << alpha() << endl;
-    glColor4ub(r(), g(), b(), alpha());
-    cerr << "{" << x1(machine) << "," << y1(machine) << "," << x2(machine)
-         << "," << y2(machine) << "}" << endl;
-    glVertex2i(x1(machine), y1(machine));
-    glVertex2i(x2(machine), y1(machine));
-    glVertex2i(x2(machine), y2(machine));
-    glVertex2i(x1(machine), y2(machine));
+    int width = m_surface->width();
+    int height = m_surface->height();
+    cout << "W: " << width << ", H: " << height << endl;
+
+    int x = x1(machine);
+    int y = y1(machine);
+
+
+//     cerr << "{" << 0 << ", " << 0 << ", " << width << ", "
+//          << height << "} - {" << x << ", " << y << ", "
+//          << x + width << ", " << y + wi
+    m_surface->renderToScreen(
+      0, 0, width, height,
+      x, y, x + width, y + height, 
+      255);
   }
-  glEnd();
+
+//   glBegin(GL_QUADS);
+//   {
+//     cerr << "RGBA: " << r() << ", " << g() << "," << b() << "," << alpha() << endl;
+//     glColor4ub(r(), g(), b(), alpha());
+//     cerr << "{" << x1(machine) << "," << y1(machine) << "," << x2(machine)
+//          << "," << y2(machine) << "}" << endl;
+//     glVertex2i(x1(machine), y1(machine));
+//     glVertex2i(x2(machine), y1(machine));
+//     glVertex2i(x2(machine), y2(machine));
+//     glVertex2i(x1(machine), y2(machine));
+//   }
+//   glEnd();
 }
 
 // -----------------------------------------------------------------------

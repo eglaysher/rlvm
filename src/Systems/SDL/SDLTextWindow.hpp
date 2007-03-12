@@ -25,28 +25,29 @@
 
 #include "Systems/Base/TextWindow.hpp"
 
+#include <string>
+#include <boost/shared_ptr.hpp>
+#include <SDL/SDL_ttf.h>
+
+class SDLSurface;
+
 class SDLTextWindow : public TextWindow
 {
 private:
-//   typedef void(SDLTextWindow::*TextWindowIntSetter)(const GameexeInterpretObject& ref);
+  /// 
+  std::string m_currentValue;
 
-//   void setVal(Gameexe& gexe, int window num, const std::string& key,
-//               TextWindowIntSetter setter);
+  /// Converted surface for uploading.
+  boost::shared_ptr<SDLSurface> m_surface;
 
-  /** 
-   * @name Gameexe event functions
-   *
-   * Callback functions called when the correct gameexe key is found
-   * during object construction.
-   * 
-   * @{
-   */
-//  void setMojiSize(const GameexeInterpretObject& ref);
-
-  /// @}
+  /// Font being used.
+  TTF_Font* m_font;
 
 public:
   SDLTextWindow(RLMachine& machine, int window);
+  ~SDLTextWindow();
+
+  void setCurrentText(RLMachine& machine, const std::string& tex);
 
   virtual void render(RLMachine& machine);
 };

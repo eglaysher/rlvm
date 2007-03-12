@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <cstdio>
+#include <sstream>
 
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
@@ -94,7 +95,12 @@ Texture::Texture(SDL_Surface* surface)
          << endl;
   }
   else
-    throw Error("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
+  {
+    ostringstream oss;
+    oss << "Error loading texture: bytesPerPixel == " << int(bytesPerPixel)
+        << " and we only handle 3 or 4.";
+    throw Error(oss.str());
+  }
 
   m_textureWidth = SafeSize(surface->w);
   m_textureHeight = SafeSize(surface->h);

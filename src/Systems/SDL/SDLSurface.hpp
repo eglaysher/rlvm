@@ -79,6 +79,10 @@ private:
 public:
   SDLSurface();
 
+  /// Surface that takes ownership of an externally created surface
+  /// and assumes it is only a single region.
+  SDLSurface(SDL_Surface* sruf);
+
   /// Surface that takes ownership of an externally created surface.
   SDLSurface(SDL_Surface* surf, 
              const std::vector<SDLSurface::GrpRect>& region_table);
@@ -86,6 +90,8 @@ public:
   /// Surface created with a specified width and height
   SDLSurface(int width, int height);
   ~SDLSurface();
+
+  void buildRegionTable(int width, int height);
 
   void dump();
 

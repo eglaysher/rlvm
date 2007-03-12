@@ -301,6 +301,7 @@ public:
 
   void executeCommand(const libReallive::CommandElement& f);
   void executeExpression(const libReallive::ExpressionElement& e);
+  void performTextout(const libReallive::TextoutElement& e);
 
   /// @}
 

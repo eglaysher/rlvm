@@ -41,6 +41,8 @@ public:
 
   virtual void setActiveTextWindow(RLMachine& machine, int window);
   virtual void render(RLMachine& machine);
+  virtual void setCurrentText(RLMachine& machine, 
+                              const std::string& cp932encodedText);
 
   TextWindow& activeTextWindow();
 };

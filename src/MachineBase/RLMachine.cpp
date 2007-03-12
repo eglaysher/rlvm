@@ -72,6 +72,7 @@
 // Some RLMachines will cary around a copy of the Null system.
 #include "Systems/Null/NullSystem.hpp"
 #include "Systems/Null/NullGraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -472,8 +473,16 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 {
   int value = e.parsedExpression().integerValue(*this);
   
-  // Increment the instruction pointer.
-  callStack.top().ip++;
+  advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::performTextout(const TextoutElement& e)
+{
+  system().text().setCurrentText(*this, e.text());
+
+  advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------

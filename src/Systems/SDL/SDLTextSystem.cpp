@@ -31,13 +31,29 @@
 #include "Systems/SDL/SDLTextSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
 
+#include <SDL/SDL_ttf.h>
+#include <sstream>
+#include <stdexcept>
+
+using namespace std;
+
+// -----------------------------------------------------------------------
+
 SDLTextSystem::SDLTextSystem()
-{}
+{
+  if(TTF_Init()==-1) {
+    ostringstream oss;
+    oss << "Error initializing SDL_ttf: " << TTF_GetError();
+    throw runtime_error(oss.str());
+  }
+}
 
 // -----------------------------------------------------------------------
 
 SDLTextSystem::~SDLTextSystem()
-{}
+{
+  TTF_Quit();
+}
 
 // -----------------------------------------------------------------------
 
@@ -52,6 +68,17 @@ void SDLTextSystem::render(RLMachine& machine)
 {
   if(m_textWindow)
     m_textWindow->render(machine);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setCurrentText(RLMachine& machine, 
+                                   const std::string& cp932encodedText)
+{
+  if(!m_textWindow)
+    setActiveTextWindow(machine, 0);
+
+  m_textWindow->setCurrentText(machine, cp932encodedText);
 }
 
 // -----------------------------------------------------------------------

@@ -41,6 +41,16 @@ SDLSurface::SDLSurface()
   : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL)
 {}
 
+// -----------------------------------------------------------------------
+
+SDLSurface::SDLSurface(SDL_Surface* surf)
+  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL)
+{
+  buildRegionTable(surf->w, surf->h);
+}
+
+// -----------------------------------------------------------------------
+
 /// Surface that takes ownership of an externally created surface.
 SDLSurface::SDLSurface(SDL_Surface* surf, 
                        const vector<SDLSurface::GrpRect>& region_table)
@@ -52,7 +62,14 @@ SDLSurface::SDLSurface(int width, int height)
   : m_textureIsValid(false), m_graphicsSystem(NULL)
 {
   allocate(width, height);
+  buildRegionTable(width, height);
+}
 
+// -----------------------------------------------------------------------
+
+/// Constructor helper function
+void SDLSurface::buildRegionTable(int width, int height)
+{
   // Build a region table with one entry the size of the surface (This
   // should never need to be used with objects created with this
   // constructor, but let's make sure everything is initialized since
