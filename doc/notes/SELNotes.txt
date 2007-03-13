@@ -1,0 +1,186 @@
+	 
+Elliot Glaysher wrote:
+> Do you have any unpublished notes about #SEL? In the documentation for recOpen, you
+> allude to some of its parameters...
+
+The format is
+
+#SEL.nnn =  x1, y1, x2, y2, dx, dy, time, style, direction, \
+           interpolation, xsize, ysize, a, b, opacity, c
+
+#SELR.nnn = x, y, width, height, [dx onwards as in #SEL]
+
+Where the first four parameters define an area on the source image, and
+(dx, dy) is the location on the destination surface.  I'm less certain
+about most of the remaining parameters - whenever I've created or
+modified an effect, I've generally done so by trial and error - but as I
+understand it:
+
+time
+ Length of the transition, in ms.
+
+style
+ The style of transition.  I have attached a list of all the
+transitions that existed as of 1.2.6.8 -- there may have been some added
+in later versions, of course.  :)
+
+direction
+ For wipes and pans, sets the wipe direction (see attachment).
+
+interpolation
+ Smooths certain transitions.  For dithered fades, interpolation N adds
+N intermediate steps so that the transition fades between patterns
+rather than stepping between them.  For wipes, interpolation N replaces
+the hard boundary with a soft edge of thickness roughly 2^N * 2.5 pixels.
+
+xsize, ysize
+ For pattern-based transitions, sets the size of the pattern.  For
+example, a dithered fade with xsize and ysize both set to 0 uses
+pixel-level dithering; setting xsize to 2 and ysize to 3, each pixel in
+the dither will be replaced by a 2x3 pixel block.
+ For strip-based transitions (30, 31, etc), I believe xsize sets the
+width of the strip (regardless of whether rows or columns are being used).
+
+opacity
+ 0-255, the opacity of the new image.  The way this works is that the
+new image is composited onto the old image in DC1 with this opacity, and
+then DC1 is copied to DC0 with the given transition.
+
+The remaining parameters (a, b, c) are mysteries.  They probably only
+affect certain specific transition styles, and I don't know which or how.
+
+Two further notes:
+
+Firstly, the parameters in the long form of grp/recMulti() are identical
+to these.  The names in the 1.40 manual are wrong.  (They're fixed in
+SVN; if you aren't already, you should be using the up-to-date manual at
+http://svn.haeleth.net/doc/manual.shtml, which is regenerated
+automatically whenever I change anything...)
+
+Secondly, not all parameters apply to all transition styles (e.g.
+direction has no effect on plain fades; interpolation has no effect on
+pans).  My comments above are based on a few minutes' experimentation,
+and should not be taken for exhaustive details of what affects what.  :)
+
+* = direction is 0=ud 1=du 2=lr 3=rl,
+   or 0=tl-br, 1=bl-tr?, 2=tr-bl, 3=br-tl?
+   or 0/1 = vertical, 2/3 = horizontal,
+   or 0/1 = rows/columns as described, 2/3 = reversed
+
++ = direction affects centre or corner: 0 is centre, 2 is top right
+
+       0   Fade
+       1   Instant at start of <time>
+       2   Instant at end of <time>
+       4   Dithered fade (orthogonal screen)
+       5   Dithered fade (diagonal screen)
+      10 * Wipe
+      15 * Scroll on/off
+      16 * Scroll on/squash off
+      17 * Squash on/scroll off
+      18 * Squash on/off
+      20 * Slide on
+      21 * Slide off
+      25 + Square wipe inwards
+      27 + Diamond wipe inwards
+      30 * Rows wipe inwards
+      31 * Alternate columns wipe inwards
+      34 * Alternate columns slide inwards
+      35 * Alternate columns slide outwards
+      36 * Rows slide inwards
+      37 * Rows slide outwards
+      38 * Transparent slide inwards
+      39 * Transparent slide outwards
+      40   TV-off effect wipe
+      45 + Four-way `+' wipe inwards
+      50   Fade (accelerating?)
+      54   Fade (decelerating?)
+      61   Square spiral fade
+      62   Square linear fade
+      63   Square rotating fade
+      64   Square wiping fade
+      65   Wiping diamonds fade
+     100 * Rows wipe
+     101 * Blocks wipe in alternate directions
+     102 * Brick-pattern blocks wipe
+     110 * Wipe inwards
+     111 * Wipe outwards
+     112 * Slide on inwards
+     113 * Slide off outwards
+     114 * Slide on outwards
+     115 * Slide off inwards
+     116 * Scroll on/off inwards
+     117 * Scroll on/off outwards
+     118 * Scroll on/squash off inwards
+     119 * Squash on/scroll off outwards
+     120 * Venetian blind-effect wipe
+     130 * Diagonal wipe
+     140 + Plus-shaped wipe inwards
+     150   Rotating plus wipe
+     160 + Zoom in growing, fading in
+     161 + Zoom out shrinking, fading out
+     162 + Zoom in, flip, zoom out
+     163 + Zoom in shrinking, fading in
+     164 + Zoom out growing, fading out
+1255] 165   Zoom in growing from top left corner, fading in (new image?)
+1255] 166   Zoom _new image_ out shrinking to top left corner, fading out
+     170 * Ripple off and on
+     171 * Columns ripple off and on
+     180   Random block fade
+     181 * Random row fade
+     185   Pixellated fade in
+     186   Pixellated fade out
+     187   Pixellated fade out and in
+     190 * Columns slide inwards (or blocks, with direction 2)
+     191 * Columns slide outwards (or blocks, with direction 2)
+     194 * Ripple on and fade in
+     195 * Ripple off and fade out
+     196 * Columns ripple on and fade in
+     197 * Columns ripple off and fade out
+     200 * Columns wipe randomly on
+     201 * Columns wipe randomly on and off
+     202 * Columns wipe randomly inwards (check against 232)
+     203 * Columns wipe randomly outwards
+     204 * Columns wipe randomly inwards and outwards
+     220 * Columns slide randomly on
+     221 * Columns slide randomly on and off
+     222 * Columns slide randomly inwards (check against 232)
+     223 * Columns slide randomly outwards
+     224 * Columns slide randomly inwards and outwards
+     230 * Columns scroll randomly on
+     231 * Columns scroll randomly on and off
+     232 * Columns scroll randomly outwards
+     233 * Columns scroll randomly inwards
+     234 * Columns scroll randomly inwards and outwards
+     240   (check difference from 230)
+     241   (check difference from 231)
+     242   (check difference from 232)
+     243   (check difference from 233)
+     244   (check difference from 234)
+1154] 260   Zoom in growing, rotating
+1154] 261   Zoom out shrinking, rotating
+1154] 262   Zoom out growing and in shrinking, rotating
+1154] 263   Zoom in shrinking, rotating
+1154] 264   Zoom out growing, rotating
+1154] 265   Stretch in growing, rotating 90 deg
+1154] 266   Stretch out shrinking, rotating 90 deg
+1154] 267   Stretch in growing, rotating 180 deg
+1154] 268   Stretch out shrinking, rotating 180 deg
+1154] 269   Rotate slide on around bottom right
+1154] 270   Rotate slide off around bottom right
+1154] 280   (check: some kind of wipe)
+1154] 281   (check: some kind of wipe)
+1154] 282   (check: some kind of wipe)
+1154] 283   (check: some kind of wipe)
+1154] 284   (check: some kind of wipe)
+1154] 285   (check: some kind of wipe)
+1154] 290   (check: some kind of wipe)
+1154] 291   (check: some kind of wipe)
+1154] 292   (check: some kind of wipe)
+1154] 293   (check: some kind of wipe)
+1154] 294   (check: some kind of wipe)
+1154] 295   (check: some kind of wipe)
+     900   "mask wipe" - apparently needs a mask, and it's not clear how to give it one
+     901   "mask wipe" - apparently needs a mask, and it's not clear how to give it one
+1154] 902   "mask wipe" - apparently needs a mask, and it's not clear how to give it one
+1154] 903   "mask wipe" - apparently needs a mask, and it's not clear how to give it one
