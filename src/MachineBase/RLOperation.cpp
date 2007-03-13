@@ -100,7 +100,7 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
 
 void RLOperation::throw_unimplemented() 
 {
-  throw libReallive::Error("Unimplemented function");
+  throw rlvm::Exception("Unimplemented function");
 }
 
 // -----------------------------------------------------------------------
@@ -126,7 +126,7 @@ void IntConstant_T::parseParameters(
 
   if(ep->expressionValueType() != libReallive::ValueTypeInteger)
   {
-    throw libReallive::Error("IntConstant_T parse err.");
+    throw rlvm::Exception("IntConstant_T parse err.");
   }
 
   output.push_back(ep.release());
@@ -153,7 +153,7 @@ void IntReference_T::parseParameters(
 
   if(ep->expressionValueType() != libReallive::ValueTypeInteger)
   {
-    throw libReallive::Error("IntReference_T parse err.");
+    throw rlvm::Exception("IntReference_T parse err.");
   }
 
   output.push_back(ep.release());
@@ -180,7 +180,7 @@ void StrConstant_T::parseParameters(
 
   if(ep->expressionValueType() != libReallive::ValueTypeString)
   {
-    throw libReallive::Error("StrConstant_T parse err.");
+    throw rlvm::Exception("StrConstant_T parse err.");
   }
 
   output.push_back(ep.release());
@@ -208,7 +208,7 @@ void StrReference_T::parseParameters(
 
   if(ep->expressionValueType() != libReallive::ValueTypeString)
   {
-    throw libReallive::Error("StrReference_T parse err.");
+    throw rlvm::Exception("StrReference_T parse err.");
   }
 
   output.push_back(ep.release());

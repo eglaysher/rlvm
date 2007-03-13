@@ -37,7 +37,6 @@
 #include <iostream>
 #include <sstream>
 
-//#include "libReallive/defs.h"
 #include "libReallive/gameexe.h"
 
 #include "MachineBase/RLMachine.hpp"
@@ -113,7 +112,7 @@ Effect* EffectFactory::build(
 
   ostringstream ss;
   ss << "Unsupported effect number in #SEL:" << style;
-  throw Error(ss.str());
+  throw rlvm::Exception(ss.str());
 }
 
 // -----------------------------------------------------------------------

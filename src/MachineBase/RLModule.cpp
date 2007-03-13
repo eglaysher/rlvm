@@ -82,7 +82,7 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
     ostringstream ss;
     ss << "Undefined opcode<" << f.modtype() << ":" << f.module() << ":" 
        << f.opcode() << ", " << f.overload() << ">";
-    throw Error(ss.str());
+    throw rlvm::Exception(ss.str());
   }
 }
 

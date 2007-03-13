@@ -339,6 +339,10 @@ int main(int argc, char* argv[])
       rlmachine.executeNextInstruction();
     }
   }
+  catch (rlvm::Exception& e) {
+    cerr << "Fatal RLVM error: " << e.what() << endl;
+    return 1;
+  }
   catch (libReallive::Error& b) {
     cerr << "Fatal libReallive error: " << b.what() << endl;
     return 1;

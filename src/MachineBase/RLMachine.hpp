@@ -43,6 +43,8 @@
 namespace  libReallive {
 class Archive;
 class FunctionElement;
+class CommandElement;
+class ExpressionElement;
 };
 
 class RLModule;

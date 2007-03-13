@@ -25,13 +25,13 @@
 #include "Systems/SDL/Texture.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
+#include "Systems/Base/SystemError.hpp"
+
 #include <SDL/SDL.h>
 
 #include <sstream>
-#include "libReallive/defs.h"
 
 using namespace std;
-using namespace libReallive;
 
 // -----------------------------------------------------------------------
 // SDLRenderToTextureSurface
@@ -58,7 +58,7 @@ void SDLRenderToTextureSurface::blitToSurface(Surface& destSurface,
                                int destX, int destY, int destWidth, int destHeight,
                                int alpha, bool useSrcAlpha)
 {
-  throw Error("Unsupported operation blitToSurface on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation blitToSurface on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
@@ -98,7 +98,7 @@ void SDLRenderToTextureSurface::rawRenderQuad(const int srcCoords[8],
 
 void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha)
 {
-  throw Error("Unsupported operation fill on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
@@ -106,7 +106,7 @@ void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha)
 void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha, int x, int y, 
                       int width, int height)
 {
-  throw Error("Unsupported operation fill on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
@@ -127,5 +127,5 @@ int SDLRenderToTextureSurface::height() const
 
 Surface* SDLRenderToTextureSurface::clone() const
 {
-  throw Error("Unsupported operation clone on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation clone on SDLRenderToTextureSurface!");
 }

@@ -65,7 +65,7 @@ namespace {
  * @param machine RLMachine reference
  * @param f       Bytecode element being evalutated
  * @return Which pointer we should follow.
- * @exception Error Throws on malformed bytecode
+ * @exception Exception Throws on malformed bytecode
  */
 int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) 
 {
@@ -86,7 +86,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
     // surrounded by parens
     if(caseUnparsed[0] != '(' || 
        caseUnparsed[caseUnparsed.size() - 1] != ')')
-      throw Error("Malformed bytecode in goto_case statment");
+      throw rlvm::Exception("Malformed bytecode in goto_case statment");
 
     // In the case of an empty set of parens, always accept. It is
     // the bytecode representation for the default case.
@@ -104,7 +104,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
       return i;
   }
 
-  throw Error("Malformed bytecode: no default case");
+  throw rlvm::Exception("Malformed bytecode: no default case");
 }
 
 // -----------------------------------------------------------------------
@@ -142,7 +142,7 @@ void storeData(RLMachine& machine, const ParamVector& f)
       ostringstream ss;
       ss << "Unknown type tag " << it->type 
          << " during a *_with function call" << endl;
-      throw Error(ss.str());
+      throw rlvm::Exception(ss.str());
     }
     }
   }

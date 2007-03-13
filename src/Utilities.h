@@ -40,6 +40,8 @@ class RLMachine;
  */
 std::string correctPathCase(const std::string& fileName);
 
+// -----------------------------------------------------------------------
+
 /** 
  * Returns the full path to a g00 file for the basename of the file.
  * 
@@ -50,6 +52,8 @@ std::string correctPathCase(const std::string& fileName);
  *       searches based on the #FOLDNAME.ext .
  */
 std::string findFile(RLMachine& machine, const std::string& fileName);
+
+// -----------------------------------------------------------------------
 
 /** 
  * Changes the coordinate types. All operations internally are done in
@@ -67,6 +71,8 @@ inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
   y2 = y2 - y1;
 }
 
+// -----------------------------------------------------------------------
+
 /** 
  * Will search for a #SEL.selNum (and translate from grp to rec
  * coordinates), or #SELR.selNum if a #SEL version isn't found in the
@@ -75,5 +81,21 @@ inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
  * @return #SEL in rec coordinates
  */
 std::vector<int> getSELEffect(RLMachine& machine, int selNum);
+
+// -----------------------------------------------------------------------
+
+namespace rlvm {
+
+class Exception : public std::exception
+{
+private:
+  std::string description;
+public:
+  virtual const char* what() const throw();
+  Exception(std::string what);
+  virtual ~Exception() throw();
+};
+
+}
 
 #endif

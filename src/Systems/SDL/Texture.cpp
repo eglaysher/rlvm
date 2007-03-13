@@ -33,11 +33,10 @@
 #include "Systems/SDL/Texture.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 
-#include "libReallive/defs.h"
+#include "Systems/Base/SystemError.hpp"
 
 using namespace std;
 using namespace boost;
-using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
@@ -94,7 +93,7 @@ Texture::Texture(SDL_Surface* surface)
          << endl;
   }
   else
-    throw Error("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
+    throw SystemError("Error loading texture: bytesPerPixel != 3 or 4. Duuudee...");
 
   m_textureWidth = SafeSize(surface->w);
   m_textureHeight = SafeSize(surface->h);

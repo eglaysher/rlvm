@@ -35,15 +35,18 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
+
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
-#include "libReallive/defs.h"
+#include "Systems/Base/SystemError.hpp"
+
 #include "libReallive/gameexe.h"
 #include "file.h"
 #include "Utilities.h"
@@ -89,7 +92,7 @@ void SDLGraphicsSystem::markScreenAsDirty()
   {
     ostringstream oss;
     oss << "Invalid screen update mode value: " << screenUpdateMode();
-    throw Error(oss.str());
+    throw SystemError(oss.str());
   }
   }
 }
@@ -201,7 +204,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   if( !info ) {
     ostringstream ss;
     ss << "Video query failed: " << SDL_GetError();
-    throw Error(ss.str());
+    throw SystemError(ss.str());
   }
 
   int graphicsMode = gameexe("SCREENSIZE_MOD").to_int();
@@ -219,7 +222,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   {
     ostringstream oss;
     oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
-    throw Error(oss.str());
+    throw SystemError(oss.str());
   }
   int bpp = info->vfmt->BitsPerPixel;
 
@@ -255,7 +258,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     // resolution not being available, etc.
     ostringstream ss;
     ss << "Video mode set failed: " << SDL_GetError();
-    throw Error(ss.str());
+    throw SystemError(ss.str());
   }	
 
   // Se tthe title
@@ -377,11 +380,11 @@ int SDLGraphicsSystem::screenHeight() const
 void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
 {
   if(dc >= 16)
-    throw Error("Invalid DC number in SDLGrpahicsSystem::allocateDC");
+    throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocateDC");
 
   // We can't reallocate the screen!
   if(dc == 0)
-    throw Error("Attempting to reallocate DC 0!");
+    throw rlvm::Exception("Attempting to reallocate DC 0!");
 
   // DC 1 is a special case and must always be at least the size of
   // the screen.
@@ -403,7 +406,7 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
 void SDLGraphicsSystem::freeDC(int dc)
 {
   if(dc == 0)
-    throw Error("Attempt to deallocate DC[0]");
+    throw rlvm::Exception("Attempt to deallocate DC[0]");
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
@@ -421,14 +424,14 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
   {
     ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
-    throw Error(ss.str());
+    throw rlvm::Exception(ss.str());
   }
 
   if(m_displayContexts[dc] == NULL)
   {
     ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
-    throw Error(ss.str());
+    throw rlvm::Exception(ss.str());
   }
 }
 
@@ -441,7 +444,7 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
     ostringstream ss;
     ss << "Couldn't allocate DC[" << dc << "] in " << caller 
        << ": " << SDL_GetError();
-    throw Error(ss.str());
+    throw SystemError(ss.str());
   }
 }
 
@@ -450,10 +453,10 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 GraphicsObject& SDLGraphicsSystem::getObject(int layer, int objNumber)
 {
   if(layer < 0 || layer > 1)
-    throw Error("Invalid layer number");
+    throw rlvm::Exception("Invalid layer number");
 
   if(objNumber < 0 || objNumber > 512)
-    throw Error("Out of rnage object number");
+    throw rlvm::Exception("Out of rnage object number");
 
   if(layer == OBJ_BG_LAYER)
     return backgroundObjects[objNumber];
@@ -466,10 +469,10 @@ GraphicsObject& SDLGraphicsSystem::getObject(int layer, int objNumber)
 void SDLGraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
 {
   if(layer < 0 || layer > 1)
-    throw Error("Invalid layer number");
+    throw rlvm::Exception("Invalid layer number");
 
   if(objNumber < 0 || objNumber > 256)
-    throw Error("Out of range object number");
+    throw rlvm::Exception("Out of range object number");
 
   foregroundObjects[objNumber] = obj;
 }
@@ -544,7 +547,7 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
   {
     ostringstream oss;
     oss << "Could not open file: " << filename;
-    throw Error(oss.str());
+    throw rlvm::Exception(oss.str());
   }
 
   fseek(file, 0, SEEK_END);

@@ -38,7 +38,9 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/reference.hpp"
 
-#include <iostream>
+#include "Utilities.h"
+
+//#include <iostream>
 
 // ------------------------------------------------------------ Real
 
@@ -373,12 +375,12 @@ struct Complex2_T {
 
 //   if(ep->expressionValueType() != libReallive::ValueTypeString)
 //   {
-//     throw libReallive::Error("StrConstant_T parse err.");
+//     throw rlvm::Exception("StrConstant_T parse err.");
 //   }
 
   output.push_back(ep.release());
 
-//    throw libReallive::Error("Unimplemented");
+//    throw rlvm::Exception("Unimplemented");
   }
 
 
@@ -444,12 +446,12 @@ struct Complex3_T {
 
 //   if(ep->expressionValueType() != libReallive::ValueTypeString)
 //   {
-//     throw libReallive::Error("StrConstant_T parse err.");
+//     throw rlvm::Exception("StrConstant_T parse err.");
 //   }
 
   output.push_back(ep.release());
 
-//    throw libReallive::Error("Unimplemented");
+//    throw rlvm::Exception("Unimplemented");
   }
 
 
@@ -517,12 +519,12 @@ struct Complex4_T {
 
 //   if(ep->expressionValueType() != libReallive::ValueTypeString)
 //   {
-//     throw libReallive::Error("StrConstant_T parse err.");
+//     throw rlvm::Exception("StrConstant_T parse err.");
 //   }
 
   output.push_back(ep.release());
 
-//  throw libReallive::Error("Unimplemented");
+//  throw rlvm::Exception("Unimplemented");
   }
 
 
@@ -600,13 +602,13 @@ struct Complex7_T {
 
 //   if(ep->expressionValueType() != libReallive::ValueTypeString)
 //   {
-//     throw libReallive::Error("StrConstant_T parse err.");
+//     throw rlvm::Exception("StrConstant_T parse err.");
 //   }
 
   output.push_back(ep.release());
 
 
-//    throw libReallive::Error("Unimplemented");
+//    throw rlvm::Exception("Unimplemented");
   }
 
 
@@ -661,13 +663,13 @@ struct Complex8_T {
 
 //   if(ep->expressionValueType() != libReallive::ValueTypeString)
 //   {
-//     throw libReallive::Error("StrConstant_T parse err.");
+//     throw rlvm::Exception("StrConstant_T parse err.");
 //   }
 
   output.push_back(ep.release());
 
 
-//    throw libReallive::Error("Unimplemented");
+//    throw rlvm::Exception("Unimplemented");
   }
 
   /// Takes a type and makes sure that 
@@ -777,7 +779,7 @@ struct Special_T {
       par.fifth = E::getData(machine, sp.getContainedPieces(), 0);
       break;
     default:
-      throw libReallive::Error("Illegal overload in Special2_T::getData()");
+      throw rlvm::Exception("Illegal overload in Special2_T::getData()");
     };
 
     return par;
@@ -792,12 +794,12 @@ struct Special_T {
 
 //   if(ep->expressionValueType() != libReallive::ValueTypeString)
 //   {
-//     throw libReallive::Error("StrConstant_T parse err.");
+//     throw rlvm::Exception("StrConstant_T parse err.");
 //   }
 
   output.push_back(ep.release());
 
-//    throw libReallive::Error("Unimplemented");
+//    throw rlvm::Exception("Unimplemented");
   }
 
 /*
@@ -832,7 +834,7 @@ struct Special_T {
     case 4:
       return verifyTypeOf<E>(p, position, sp);
     default:
-      throw libReallive::Error("Illegal overload in Special2_T::verifyType()");
+      throw rlvm::Exception("Illegal overload in Special2_T::verifyType()");
     };
   }
 */
@@ -964,8 +966,6 @@ private:
   {
     if(TYPE::isRealTypestruct)
     {
-//      std::cerr << "Parameter #" << position << " is " 
-//                << libReallive::parsableToPrintableString(input[position]) << std::endl;
       TYPE::parseParameters(position, input, output);
     }
   }

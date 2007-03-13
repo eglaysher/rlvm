@@ -21,11 +21,23 @@
 // -----------------------------------------------------------------------
 
 #include "GraphicsObject.hpp"
+#include "Utilities.h"
 
 #include <iostream>
 #include <algorithm>
+#include <numeric>
 
 using namespace std;
+
+// -----------------------------------------------------------------------
+// GraphicsObjectData
+// -----------------------------------------------------------------------
+
+GraphicsObjectData::~GraphicsObjectData() { }
+
+// -----------------------------------------------------------------------
+// GraphicsObject
+// -----------------------------------------------------------------------
 
 GraphicsObject::GraphicsObject()
   : m_visible(false), 
@@ -53,6 +65,8 @@ GraphicsObject::GraphicsObject()
   fill(m_adjustX, m_adjustX + 8, 0);
   fill(m_adjustY, m_adjustY + 8, 0);
 }
+
+// -----------------------------------------------------------------------
 
 GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
   : m_visible(rhs.m_visible), m_x(rhs.m_x), m_y(rhs.m_y),
@@ -133,6 +147,20 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
 
 // -----------------------------------------------------------------------
 
+int GraphicsObject::xAdjustmentSum() const 
+{
+  return std::accumulate(m_adjustX, m_adjustX + 8, 0);
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::yAdjustmentSum() const
+{ 
+  return std::accumulate(m_adjustY, m_adjustY + 8, 0); 
+}
+
+// -----------------------------------------------------------------------
+
 int GraphicsObject::pixelWidth() const
 {
   // Calculate out the pixel width of the current object taking in the
@@ -163,7 +191,20 @@ int GraphicsObject::pixelHeight() const
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::render(RLMachine& machine) {
+GraphicsObjectData& GraphicsObject::objectData() const 
+{
+  if(m_objectData)
+    return *m_objectData;
+  else
+  {
+    throw rlvm::Exception("null object data");
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::render(RLMachine& machine)
+{
 //  bool needNewline = false;
   
 //   if(m_objectData) {

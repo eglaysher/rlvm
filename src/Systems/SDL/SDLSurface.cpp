@@ -25,13 +25,13 @@
 #include "Systems/SDL/Texture.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
+#include "Systems/Base/SystemError.hpp"
+
 #include <SDL/SDL.h>
 
 #include <sstream>
-#include "libReallive/defs.h"
 
 using namespace std;
-using namespace libReallive;
 
 // -----------------------------------------------------------------------
 // SDLSurface
@@ -113,7 +113,7 @@ void SDLSurface::allocate(int width, int height)
     ostringstream ss;
     ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
        << ": " << SDL_GetError();
-    throw Error(ss.str());
+    throw SystemError(ss.str());
   }
 
   SDL_Surface* out = SDL_DisplayFormatAlpha(tmp);

@@ -20,53 +20,23 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "SDLUtils.hpp"
 #include "Systems/Base/SystemError.hpp"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
+// -----------------------------------------------------------------------
+// SystemError
+// -----------------------------------------------------------------------
 
-#include <sstream>
-
-using namespace std;
-
-void ShowGLErrors(void)
+const char* SystemError::what() const throw()
 {
-  GLenum error;
-  const GLubyte* errStr;
-  if ((error = glGetError()) != GL_NO_ERROR)
-  {
-    errStr = gluErrorString(error);
-    ostringstream oss;
-    oss << "OpenGL Error: " << (char*)gluErrorString;
-    throw SystemError(oss.str());
-  }
+  return description.c_str(); 
 }
 
 // -----------------------------------------------------------------------
 
-int SafeSize(int i) {
-  static GLint maxTextureSize = 0;
-  if(maxTextureSize == 0)
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-  int p;
-
-  if (i > maxTextureSize) return maxTextureSize;
-
-  for (p = 0; p < 24; p++)
-    if (i <= (1<<p))
-      return 1<<p;
-
-  return maxTextureSize;
-}
+SystemError::SystemError(std::string what) 
+  : description(what) 
+{}
 
 // -----------------------------------------------------------------------
 
-void reportSDLError(const std::string& sdlName,
-                    const std::string& functionName)
-{
-  ostringstream ss;
-  ss << "Error while calling SDL function '" << sdlName << "' in "
-     << functionName << ": " << SDL_GetError();
-  throw SystemError(ss.str());
-}
+SystemError::~SystemError() throw() {}

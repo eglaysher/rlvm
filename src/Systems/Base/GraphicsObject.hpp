@@ -23,10 +23,7 @@
 #ifndef __GraphicObject_hpp__
 #define __GraphicObject_hpp__
 
-#include "libReallive/defs.h"
 #include <boost/scoped_ptr.hpp>
-
-#include <numeric>
 
 class RLMachine;
 class GraphicsObject;
@@ -38,7 +35,7 @@ class GraphicsObjectSlot;
  */
 class GraphicsObjectData {
 public:
-  virtual ~GraphicsObjectData() { }
+  virtual ~GraphicsObjectData();
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties) = 0;
   
@@ -55,6 +52,8 @@ public:
  * screen. GraphicsObject simply contains a set of properties and a
  * GraphicsObjectData object, which we dispatch render calls to if it
  * exists.
+ *
+ * @todo I want to put index checks on a lot of these accessors.
  */
 class GraphicsObject
 {
@@ -89,11 +88,11 @@ public:
   void setY(const int y) { m_y = y; }
   
   int xAdjustment(int idx) const { return m_adjustX[idx]; }
-  int xAdjustmentSum() const { return std::accumulate(m_adjustX, m_adjustX + 8, 0); }
+  int xAdjustmentSum() const;
   void setXAdjustment(int idx, int x) { m_adjustX[idx] = x; }
 
   int yAdjustment(int idx) const { return m_adjustY[idx]; }
-  int yAdjustmentSum() const { return std::accumulate(m_adjustY, m_adjustY + 8, 0); }
+  int yAdjustmentSum() const;
   void setYAdjustment(int idx, int y) { m_adjustY[idx] = y; }
 
   int vert() const { return m_whateverAdjustVertOperatesOn; }
@@ -179,14 +178,8 @@ public:
   
   bool hasObjectData() const { return m_objectData; }
 
-  GraphicsObjectData& objectData() const {
-    if(m_objectData)
-      return *m_objectData;
-    else
-    {
-      throw libReallive::Error("null object data");
-    }
-  }
+  GraphicsObjectData& objectData() const;
+
   void setObjectData(GraphicsObjectData* obj) {
     m_objectData.reset(obj);
   }

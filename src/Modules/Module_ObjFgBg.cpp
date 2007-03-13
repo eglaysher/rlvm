@@ -233,7 +233,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 
     // Range check the data
     if(allParameters.size() < 2) 
-      throw Error("Less then two arguments to an objRange function!");
+      throw rlvm::Exception("Less then two arguments to an objRange function!");
 
     // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
     // what RLOperation.dispatchFunction() does; we manually call the

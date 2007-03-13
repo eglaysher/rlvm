@@ -73,7 +73,7 @@ void advanceOneChar(const unsigned char*& c)
   if(is_lead_byte(c[0]))
   {
     if(c[1] == '\0')
-      throw Error("Malformed Shift_JIS string!");
+      throw rlvm::Exception("Malformed Shift_JIS string!");
     else
       c += 2;
   }
@@ -92,7 +92,7 @@ void copyOneShiftJisCharacter(const unsigned char*& str, std::string& output)
   if(is_lead_byte(str[0]))
   {
     if(str[1] == '\0')
-      throw Error("Malformed Shift_JIS string!");
+      throw rlvm::Exception("Malformed Shift_JIS string!");
     else {
       output += *str++;
       output += *str++;
@@ -280,7 +280,7 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
     // Advance the string to the first 
     while(offset > 0) {
       if(str[0] == '\0')
-        throw Error("Error in strsub: offset is greater then string length");
+        throw rlvm::Exception("Error in strsub: offset is greater then string length");
 
       advanceOneChar(str);
       offset--;
@@ -315,7 +315,7 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
     // Advance the string to the first 
     while(offset > 0) {
       if(*str == '\0')
-        throw Error("Error in strsub: offset is greater then string length");
+        throw rlvm::Exception("Error in strsub: offset is greater then string length");
 
       advanceOneChar(str);
       offset--;
@@ -356,7 +356,7 @@ struct Str_strrsub_1 : public Str_strsub_1 {
   void operator()(RLMachine& machine, StringReferenceIterator dest, 
                   string source, int offsetFromBack, int length) {
     if(length > offsetFromBack)
-      throw Error("strrsub: length of substring greater then offset in rsub");
+      throw rlvm::Exception("strrsub: length of substring greater then offset in rsub");
 
     int offset = strcharlen((const unsigned char*)source.c_str()) - 
       offsetFromBack;

@@ -24,7 +24,6 @@
 
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
-#include "libReallive/defs.h"
 
 using namespace std;
 using namespace boost;

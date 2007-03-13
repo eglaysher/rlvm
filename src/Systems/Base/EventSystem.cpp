@@ -22,14 +22,12 @@
 
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
-
-#include "libReallive/defs.h"
+#include "Utilities.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace boost;
-using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
@@ -58,7 +56,7 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frameCounter)
 
   scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
   if(counter.get() == NULL)
-    throw Error("Trying to get an uninitialized frame counter!");
+    throw rlvm::Exception("Trying to get an uninitialized frame counter!");
 
   return *counter;
 }
@@ -100,8 +98,8 @@ bool EventSystem::canBeNice()
 void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
 {
   if(layer < 0 || layer > 1)
-    throw Error("Illegal frame counter layer!");
+    throw rlvm::Exception("Illegal frame counter layer!");
 
   if(frameCounter < 0 || frameCounter > 255)
-    throw Error("Frame Counter index out of range!");
+    throw rlvm::Exception("Frame Counter index out of range!");
 }

@@ -58,7 +58,6 @@
  * 
  */
 
-#include "libReallive/defs.h"
 #include "libReallive/archive.h"
 #include "libReallive/bytecode.h"
 #include "libReallive/scenario.h"
@@ -72,6 +71,7 @@
 // Some RLMachines will cary around a copy of the Null system.
 #include "Systems/Null/NullSystem.hpp"
 #include "Systems/Null/NullGraphicsSystem.hpp"
+#include "Systems/Base/SystemError.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -124,7 +124,7 @@ RLMachine::RLMachine(Archive& inArchive)
   // working
   libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
   if(scenario == 0)
-    throw Error("Invalid scenario file");
+    throw rlvm::Exception("Invalid scenario file");
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
@@ -156,7 +156,7 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
   }
 
   if(scenario == 0)
-    throw Error("Invalid scenario file");
+    throw rlvm::Exception("Invalid scenario file");
   callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
@@ -184,7 +184,7 @@ void RLMachine::attachModule(RLModule* module)
     ss << "Module identification clash: tyring to overwrite "
        << curMod << " with " << *module << endl;
 
-    throw Error(ss.str());
+    throw rlvm::Exception(ss.str());
   }
 //  else
 //  {
@@ -199,19 +199,20 @@ void RLMachine::attachModule(RLModule* module)
 /// @todo Refactor this. Seriously.
 void RLMachine::executeNextInstruction() 
 {
-  // Do not execute any more instructions if the machine is halted.
-  if(halted() == true)
-    return;
-  // If we are in a long operation, run it, and end it if it returns true.
-  else if(currentLongOperation)
+  try
   {
-    bool retVal = (*currentLongOperation)(*this);
-    if(retVal)
-      currentLongOperation.reset();
-  }
-  else 
-  {
-    try 
+
+    // Do not execute any more instructions if the machine is halted.
+    if(halted() == true)
+      return;
+    // If we are in a long operation, run it, and end it if it returns true.
+    else if(currentLongOperation)
+    {
+      bool retVal = (*currentLongOperation)(*this);
+      if(retVal)
+        currentLongOperation.reset();
+    }
+    else 
     {
       // Refactor this out into a virtual function?
       // @todo Yeah, really refactor this ugly mess below before it grows and eats
@@ -242,18 +243,24 @@ void RLMachine::executeNextInstruction()
         advanceInstructionPointer();
       }
     }
-    catch(std::exception& e) {
-      if(m_haltOnException) {
-        m_halted = true;
-      } else {
-        // Advance the instruction pointer so as to prevent infinite
-        // loops where we throw an exception, and then try again.
-        advanceInstructionPointer();
-      }
-
-      cout << "(SEEN" << callStack.top().scenario->sceneNumber() 
-           << ")(Line " << m_line << "):  " << e.what() << endl;
+  }
+  catch(SystemError& e) {
+    // System errors are serious faults in the graphics/event/sound
+    // code and are probably unrecoverable. These aren't little script
+    // parsing problems or opcode finding problems that can be ignored.
+    throw;
+  }
+  catch(std::exception& e) {
+    if(m_haltOnException) {
+      m_halted = true;
+    } else {
+      // Advance the instruction pointer so as to prevent infinite
+      // loops where we throw an exception, and then try again.
+      advanceInstructionPointer();
     }
+
+    cout << "(SEEN" << callStack.top().scenario->sceneNumber() 
+         << ")(Line " << m_line << "):  " << e.what() << endl;
   }
 }
 
@@ -288,7 +295,7 @@ static void throwIllegalIndex(int location)
   ostringstream ss;
   ss << "Illegal index location (" << location 
      << ") in RLMachine::getIntVlaue()";
-  throw Error(ss.str());
+  throw rlvm::Exception(ss.str());
 }
 
 // -----------------------------------------------------------------------
@@ -305,7 +312,7 @@ int RLMachine::getIntValue(int type, int location)
   if(index == INTZ_LOCATION_IN_BYTECODE) index = INTZ_LOCATION;
   if(index == INTL_LOCATION_IN_BYTECODE) index = INTL_LOCATION;
   if(index > NUMBER_OF_INT_LOCATIONS) 
-      throw Error("Illegal index location in RLMachine::getIntValue()");
+      throw rlvm::Exception("Illegal index location in RLMachine::getIntValue()");
   if (type == 0) {
     // A[]..G[], Z[] を直に読む
     if (uint(location) >= 2000) 
@@ -341,7 +348,7 @@ void RLMachine::setIntValue(int rawtype, int location, int value)
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
     if (uint(location) >= 2000) 
-      throw Error("Illegal index in RLMachine::setIntValue()");
+      throw rlvm::Exception("Illegal index in RLMachine::setIntValue()");
     intVar[index][location] = value;
   } else {
     // Ab[]..G4b[], Z8b[] などを書く
@@ -350,7 +357,7 @@ void RLMachine::setIntValue(int rawtype, int location, int value)
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
     if (uint(location) >= (64000 / factor)) 
-      throw Error("Illegal index in RLMachine::setIntValue()");
+      throw rlvm::Exception("Illegal index in RLMachine::setIntValue()");
     intVar[index][location / eltsize] =
       (intVar[index][location / eltsize] & ~(eltmask << shift))
       | (value & eltmask) << shift;
@@ -362,17 +369,17 @@ void RLMachine::setIntValue(int rawtype, int location, int value)
 const std::string& RLMachine::getStringValue(int type, int location) 
 {
   if(location > 1999)
-      throw Error("Invalid range access in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
   case 0x0A:
     if(location > 2)
-      throw Error("Invalid range access on strK in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
     return strK[location];
   case 0x0C: return strM[location];
   case 0x12: return strS[location];
   default:
-    throw Error("Invalid type in RLMachine::getStringValue");
+    throw rlvm::Exception("Invalid type in RLMachine::getStringValue");
   }
 }
 
@@ -380,12 +387,12 @@ const std::string& RLMachine::getStringValue(int type, int location)
 
 void RLMachine::setStringValue(int type, int number, const std::string& value) {
   if(number > 1999)
-      throw Error("Invalid range access in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
   case 0x0A:
     if(number > 2)
-      throw Error("Invalid range access on strK in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
     strK[number] = value;
     break;
   case 0x0C:
@@ -395,7 +402,7 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
     strS[number] = value;
     break;
   default:
-    throw Error("Invalid type in RLMachine::setStringValue");
+    throw rlvm::Exception("Invalid type in RLMachine::setStringValue");
   }     
 }
 
@@ -410,7 +417,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
   } else {
     ostringstream ss;
     ss << "Undefined module<" << f.modtype() << ":" << f.module() << ">";
-    throw Error(ss.str());
+    throw rlvm::Exception(ss.str());
   }
 }
 
@@ -421,7 +428,7 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
   // Check to make sure it's a valid scenario
   libReallive::Scenario* scenario = archive.scenario(scenarioNum);
   if(scenario == 0)
-    throw Error("Invalid scenario number in jump");
+    throw rlvm::Exception("Invalid scenario number in jump");
 
   callStack.top().scenario = scenario;
   callStack.top().ip = scenario->findEntrypoint(entrypoint);
@@ -433,7 +440,7 @@ void RLMachine::farcall(int scenarioNum, int entrypoint)
 {
   libReallive::Scenario* scenario = archive.scenario(scenarioNum);
   if(scenario == 0)
-    throw Error("Invalid scenario number in jump");
+    throw rlvm::Exception("Invalid scenario number in jump");
 
   libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
@@ -446,7 +453,7 @@ void RLMachine::returnFromFarcall()
 {
   // Check to make sure the types match up.
   if(callStack.top().frameType != StackFrame::TYPE_FARCALL) {
-    throw Error("Callstack type mismatch in returnFromFarcall()");
+    throw rlvm::Exception("Callstack type mismatch in returnFromFarcall()");
   }
 
   callStack.pop();
@@ -473,7 +480,7 @@ void RLMachine::returnFromGosub()
 {
   // Check to make sure the types match up.
   if(callStack.top().frameType != StackFrame::TYPE_GOSUB) {
-    throw Error("Callstack type mismatch in returnFromGosub()");
+    throw rlvm::Exception("Callstack type mismatch in returnFromGosub()");
   }
 
   callStack.pop();

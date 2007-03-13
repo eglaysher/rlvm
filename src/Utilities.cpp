@@ -2,7 +2,6 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
-#include "libReallive/defs.h"
 
 #include <string>
 #include <iostream>
@@ -112,4 +111,27 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum)
   }
 
   return selEffect;
+}
+
+// -----------------------------------------------------------------------
+// rlvm::Exception
+// -----------------------------------------------------------------------
+
+namespace rlvm {
+
+const char* Exception::what() const throw()
+{
+  return description.c_str(); 
+}
+
+// -----------------------------------------------------------------------
+
+Exception::Exception(std::string what) 
+  : description(what) 
+{}
+
+// -----------------------------------------------------------------------
+
+Exception::~Exception() throw() {}
+
 }
