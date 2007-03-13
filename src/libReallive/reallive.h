@@ -8,7 +8,7 @@
  * 
  * libReallive is a library for manipulating Reallive bytecode. It was
  * orriginally written by Haeleth, and was copy/pasted into
- * RLVM. While I've modified it to suit my needs (for example, assing
+ * RLVM. While I've modified it to suit my needs (for example, adding
  * support for RLv1.3 goto_with constructs, parameter parsing code in
  * expression.cpp, et cetera), 99% of this code was written by
  * Haeleth.
