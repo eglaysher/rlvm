@@ -622,7 +622,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     GraphicsSystem& graphics = machine.system().graphics();
     m_space.translateToRec(x1, y1, x2, y2);
 
-    // Set the long operation for the corect transition long operation
+    // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = 
       graphics.renderToSurfaceWithBg(machine, 
                                      graphics.getDC(0));
@@ -740,6 +740,78 @@ struct Grp_fill_3 : public RLOp_Void_9<
     machine.system().graphics().getDC(dc)->fill(r, g, b, alpha, x1, y1, x2, y2);
   }
 };
+
+// -----------------------------------------------------------------------
+// {grp,rec}Fade
+// -----------------------------------------------------------------------
+
+struct Grp_fade_7 : public RLOp_Void_8<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> >
+{
+  SPACE& m_space;
+  Grp_fade_7(SPACE& space) : m_space(space) {}
+
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2, 
+                  int r, int g, int b, int time) {
+    m_space.translateToRec(x1, y1, x2, y2);
+    GraphicsSystem& graphics = machine.system().graphics();
+    if (time == 0) {
+      graphics.getDC(0)->fill(r, g, b, 255, x1, y1, x2, y2);
+    }
+    else {
+      // TODO: take time into account
+      cerr << "Warning: grpFade() with time not implemented"
+           << endl;
+      graphics.getDC(0)->fill(r, g, b, 255, x1, y1, x2, y2);
+    }
+  }
+};
+
+struct Grp_fade_5 : public RLOp_Void_6<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, DefaultIntValue_T<0> >
+{
+  Grp_fade_7 m_delegate;
+  SPACE& m_space;
+  Grp_fade_5(SPACE& space) : m_space(space), m_delegate(space) {}
+
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2, 
+                  int color_num, int time) {
+    Gameexe& gexe = machine.system().gameexe();
+    const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
+    m_delegate(machine, x1, y1, x2, y2, rgb[0], rgb[1], rgb[2], time);
+  }
+};
+
+struct Grp_fade_3 : public RLOp_Void_4<
+  IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> >
+{
+  Grp_fade_7 m_delegate;
+  Grp_fade_3() : m_delegate(REC_SPACE::get()) {}
+
+  void operator()(RLMachine& machine, int r, int g, int b, int time) {
+    GraphicsSystem& graphics = machine.system().graphics();
+    m_delegate(machine, 0, 0, graphics.screenWidth(), graphics.screenHeight(),
+               r, g, b, time);
+  }
+};
+
+struct Grp_fade_1 : public RLOp_Void_2<
+  IntConstant_T, DefaultIntValue_T<0> >
+{
+  Grp_fade_7 m_delegate;
+  Grp_fade_1() : m_delegate(REC_SPACE::get()) {}
+
+  void operator()(RLMachine& machine, int color_num, int time) {
+    GraphicsSystem& graphics = machine.system().graphics();
+    Gameexe& gexe = machine.system().gameexe();
+    const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
+    m_delegate(machine, 0, 0, graphics.screenWidth(), graphics.screenHeight(),
+               rgb[0], rgb[1], rgb[2], time);
+  }
+};
+
 
 // -----------------------------------------------------------------------
 // {grp,rec}Multi
@@ -942,6 +1014,16 @@ GrpModule::GrpModule()
   addOpcode(201, 2, "grpFill", new Grp_fill_3(GRP));
   addOpcode(201, 3, "grpFill", new Grp_fill_3(GRP));
 
+  addOpcode(403, 0, "grpFade", new Grp_fade_1);
+  addOpcode(403, 1, "grpFade", new Grp_fade_1);
+  addOpcode(403, 2, "grpFade", new Grp_fade_3);
+  addOpcode(403, 3, "grpFade", new Grp_fade_3);
+  addOpcode(403, 4, "grpFade", new Grp_fade_5(GRP));
+  addOpcode(403, 5, "grpFade", new Grp_fade_5(GRP));
+  addOpcode(403, 6, "grpFade", new Grp_fade_7(GRP));
+  addOpcode(403, 7, "grpFade", new Grp_fade_7(GRP));
+
+
   // -----------------------------------------------------------------------
   
   addOpcode(1050, 0, "recLoad", new Grp_load_1(false));
@@ -987,6 +1069,15 @@ GrpModule::GrpModule()
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
   addOpcode(1201, 2, "recFill", new Grp_fill_3(REC));
   addOpcode(1201, 3, "recFill", new Grp_fill_3(REC));
+
+  addOpcode(1403, 0, "recFade", new Grp_fade_1);
+  addOpcode(1403, 1, "recFade", new Grp_fade_1);
+  addOpcode(1403, 2, "recFade", new Grp_fade_3);
+  addOpcode(1403, 3, "recFade", new Grp_fade_3);
+  addOpcode(1403, 4, "recFade", new Grp_fade_5(REC));
+  addOpcode(1403, 5, "recFade", new Grp_fade_5(REC));
+  addOpcode(1403, 6, "recFade", new Grp_fade_7(REC));
+  addOpcode(1403, 7, "recFade", new Grp_fade_7(REC));
 }
 
 // @}

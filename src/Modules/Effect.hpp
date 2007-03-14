@@ -64,7 +64,7 @@ class RLMachine;
  * 
  * Effect is the base class from which all transition effects defined
  * on \#SELs derive from. These effects are all implemented as
- * LongOperations on the RLMahcine, as they are all long and blocking
+ * LongOperations on the RLMachine, as they are all long and blocking
  * operations.
  */
 class Effect : public LongOperation

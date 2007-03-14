@@ -320,7 +320,7 @@ Surface* SDLSurface::clone() const
   // Disable alpha blending because we're copying onto a blank (and
   // blank alpha!) surface
   if(SDL_SetAlpha(m_surface, 0, 0))
-      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+      reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
 
   if(SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL))
     reportSDLError("SDL_BlitSurface", "SDLSurface::clone()");

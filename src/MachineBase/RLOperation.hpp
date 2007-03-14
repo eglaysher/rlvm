@@ -45,12 +45,12 @@
 // ------------------------------------------------------------ Real
 
 /**
- * @defgroup RLOperationGroup RLOperation and it's type system
+ * @defgroup RLOperationGroup RLOperation and its type system
  *
- * Defines the base classes from which the all of the opcode
- * implementations derive from. This heiarchy of classes works by
+ * Defines the base classes from which all of the opcode
+ * implementations derive from. This heirarchy of classes works by
  * having one of your operation classes, which handles a specific
- * prototype of a specific opcode, derfive from one of the subclases
+ * prototype of a specific opcode, derive from one of the subclases
  * of RLOperation, specifically RLOp_Void_* and RLOp_Store_*. The
  * template parameters of these subclasses refer to the types of the
  * parameters, some of which can be composed to represent more complex

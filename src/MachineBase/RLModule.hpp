@@ -56,7 +56,7 @@ class RLMachine;
  * binders to call various functions, but most opcodes are defined by
  * having a concrete subclass of RLOp_Store<> or RLOp_Void<>.
  *
- * Subclasseess of RLModule are used to contain subclasses of
+ * Subclasses of RLModule are used to contain subclasses of
  * RLOperation; Each module should have a class derived from RLModule,
  * where, in the constructor, the modules two identification numbers
  * (@c moduleType and @c moduleNumber) are passed up to RLModule's

@@ -41,7 +41,7 @@ class ScrollSquashSlideDrawer;
 class ScrollSquashSlideEffectTypeBase;
 
 /**
- * Factory that creates all Effect s. This factory is called with
+ * Factory that creates all Effects. This factory is called with
  * either a Gameexe and the \#SEL or \#SELR number, or it is passed the
  * equivalent parameters.
  *
