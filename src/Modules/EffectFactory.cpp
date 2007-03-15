@@ -79,7 +79,7 @@ Effect* EffectFactory::build(
   int width = machine.system().graphics().screenWidth();
   int height = machine.system().graphics().screenHeight();
 
-  // There is a completely ridaculous number of transitions here! Damn
+  // There is a completely ridiculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so
   // confusing and hard to implement!
   switch(style)

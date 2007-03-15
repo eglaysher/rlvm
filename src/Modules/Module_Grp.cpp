@@ -760,10 +760,18 @@ struct Grp_fade_7 : public RLOp_Void_8<
       graphics.getDC(0)->fill(r, g, b, 255, x1, y1, x2, y2);
     }
     else {
-      // TODO: take time into account
-      cerr << "Warning: grpFade() with time not implemented"
-           << endl;
-      graphics.getDC(0)->fill(r, g, b, 255, x1, y1, x2, y2);
+      // FIXME: this needs checking for sanity of implementation, lack
+      // of memory leaks, correct functioning in the presence of
+      // objects, etc.
+      m_space.translateToRec(x1, y1, x2, y2);
+      shared_ptr<Surface> dc0 = graphics.getDC(0);
+      shared_ptr<Surface> tmp(dc0->clone());
+      tmp->fill(r, g, b, 255, x1, y1, x2, y2);
+      LongOperation* lop = 
+        EffectFactory::build(machine, tmp, dc0, time, 0, 0, 
+                             0, 0, 0, 0, 0, 0);
+      decorateEffectWithBlit(lop, tmp, dc0);
+      machine.setLongOperation(lop);
     }
   }
 };
