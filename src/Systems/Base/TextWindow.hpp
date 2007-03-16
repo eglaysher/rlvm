@@ -91,6 +91,8 @@ private:
   /// The window background color
   int m_r, m_g, m_b, m_alpha, m_filter;
 
+  int m_isVisible;
+
 protected:
 
   /// Internal calculations stuff
@@ -108,7 +110,6 @@ public:
    *
    * @{
    */
-
 
   /**
    * Sets the size of the text window in characters. Reprsented by
@@ -182,8 +183,15 @@ public:
   int filter() const { return m_filter; }
   /// @}
 
+  void setVisible(int in) { m_isVisible = in; }
+
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine) = 0;
+
+  /** 
+   * Displays 1 or more UTF-8 characters in this window.
+   */
+  virtual void displayText(RLMachine& machine, const std::string& text) = 0;
 };
 
 #endif

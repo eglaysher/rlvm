@@ -25,11 +25,18 @@
 
 #include <string>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 class RLMachine;
+class TextWindow;
 
 class TextSystem
 {
 private:
+  /// TextPage will call our internals since it actually does most of
+  /// the work while we hold state.
+  friend class TextPage;
+
   /// Fast text mode
   bool m_fastTextMode;
 
@@ -39,12 +46,46 @@ private:
   /// Message speed; range from 0 to 255
   char m_messageSpeed;
 
+  /// Default text window to render to. We need this to initialize new
+  /// pages.
+  int m_defaultTextWindow;
+
+  /// Previous Text Pages. The TextSystem owns the list of previous
+  /// pages because multiple windows can be displayed in one text page.
+  boost::ptr_vector<TextPage> m_previousPages;
+
+  /// The current text page. If we were to 
+  std::auto_ptr<TextPage> m_activePage;
+
 public:
-  virtual void setActiveTextWindow(RLMachine& machine, int window) = 0;
+  TextSystem();
+  virtual ~TextSystem();
+
+  /**
+   * @name Implementation detail interface
+   * 
+   * @{
+   */
+
   virtual void render(RLMachine& machine) = 0;
 
-  virtual void setCurrentText(RLMachine& machine, 
-                              const std::string& cp932encodedText) = 0;
+  virtual void hideAllTextWindows() = 0;
+  virtual TextWindow& textWindow(RLMachine&, int textWindowNumber) = 0;
+
+  /// @}
+
+  /** 
+   * Get the current active page.
+   */
+  TextPage& currentPage(RLMachine& machine);
+
+  /** 
+   * Adds the current page to the backlog, and puts a new TextPage
+   * object as the current active page, along with some setup commands.
+   */
+  void newPage(RLMachine& machine);
+
+
 
   void setFastTextMode(int i) { m_fastTextMode = i; }
   int fastTextMode() const { return m_fastTextMode; }

@@ -31,11 +31,13 @@
 #include "Systems/SDL/SDLTextSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
 
+#include <boost/bind.hpp>
 #include <SDL/SDL_ttf.h>
 #include <sstream>
 #include <stdexcept>
 
 using namespace std;
+using namespace boost;
 
 // -----------------------------------------------------------------------
 
@@ -57,33 +59,30 @@ SDLTextSystem::~SDLTextSystem()
 
 // -----------------------------------------------------------------------
 
-void SDLTextSystem::setActiveTextWindow(RLMachine& machine, int window)
-{
-  m_textWindow.reset(new SDLTextWindow(machine, window));
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextSystem::render(RLMachine& machine)
 {
-  if(m_textWindow)
-    m_textWindow->render(machine);
+  for_each(m_textWindow.begin(), m_textWindow.end(), 
+           bind(&TextWindow::render, _1, ref(machine)));
 }
 
 // -----------------------------------------------------------------------
 
-void SDLTextSystem::setCurrentText(RLMachine& machine, 
-                                   const std::string& cp932encodedText)
+void SDLTextSystem::hideAllTextWindows()
 {
-  if(!m_textWindow)
-    setActiveTextWindow(machine, 0);
-
-  m_textWindow->setCurrentText(machine, cp932encodedText);
+  for_each(m_textWindow.begin(), m_textWindow.end(), 
+           bind(&TextWindow::setVisible, _1, 0));
 }
 
 // -----------------------------------------------------------------------
 
-TextWindow& SDLTextSystem::activeTextWindow()
+TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
 {
-  return *m_textWindow;
+  WindowMap::iterator it = m_textWindow.find(textWindow);
+  if(it == m_textWindow.end())
+  {
+    it = m_textWindow.insert(
+      textWindow, new SDLTextWindow(machine, textWindow)).first;
+  }
+
+  return *it;
 }

@@ -36,8 +36,6 @@
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"
 
-#include "Modules/cp932toUnicode.hpp"
-
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
 
@@ -95,11 +93,8 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::setCurrentText(RLMachine& machine, const std::string& tex)
+void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 {
-  std::wstring ws = cp932toUnicode(tex);
-  std::string utf8str = unicodeToUTF8(ws);
-
 //  SDL_Color color = {255, 255, 255};
   SDL_Color color = {0, 0, 0};
   SDL_Surface* tmp =

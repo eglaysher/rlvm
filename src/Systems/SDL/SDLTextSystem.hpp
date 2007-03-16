@@ -25,7 +25,7 @@
 
 #include "Systems/Base/TextSystem.hpp"
 
-#include <boost/scoped_ptr.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 
 class TextWindow;
 class SDLTextWindow;
@@ -33,18 +33,17 @@ class SDLTextWindow;
 class SDLTextSystem : public TextSystem
 {
 private:
-  boost::scoped_ptr<SDLTextWindow> m_textWindow;
+  /// Window dispatch
+  typedef boost::ptr_map<int, SDLTextWindow> WindowMap;
+  WindowMap m_textWindow;
 
 public:
   SDLTextSystem();
   ~SDLTextSystem();
 
-  virtual void setActiveTextWindow(RLMachine& machine, int window);
   virtual void render(RLMachine& machine);
-  virtual void setCurrentText(RLMachine& machine, 
-                              const std::string& cp932encodedText);
-
-  TextWindow& activeTextWindow();
+  virtual void hideAllTextWindows();
+  virtual TextWindow& textWindow(RLMachine&, int textWindowNumber);
 };
 
 #endif

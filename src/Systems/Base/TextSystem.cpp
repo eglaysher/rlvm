@@ -20,38 +20,43 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __SDLTextWindow_hpp__
-#define __SDLTextWindow_hpp__
 
-#include "Systems/Base/TextWindow.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
 
-#include <string>
-#include <boost/shared_ptr.hpp>
-#include <SDL/SDL_ttf.h>
-
-class SDLSurface;
-
-class SDLTextWindow : public TextWindow
+TextSystem::TextSystem()
+  : m_defaultTextWindow(0)
 {
-private:
-  /// 
-  std::string m_currentValue;
+  
+}
 
-  /// Converted surface for uploading.
-  boost::shared_ptr<SDLSurface> m_surface;
+// -----------------------------------------------------------------------
 
-  /// Font being used.
-  TTF_Font* m_font;
+TextSystem::~TextSystem()
+{
+  
+}
 
-public:
-  SDLTextWindow(RLMachine& machine, int window);
-  ~SDLTextWindow();
+// -----------------------------------------------------------------------
 
-  void setCurrentText(RLMachine& machine, const std::string& tex);
+TextPage& TextSystem::currentPage(RLMachine& machine)
+{
+  if(!m_activePage.get())
+  {
+    newPage(machine);
+  }
 
-  virtual void render(RLMachine& machine);
-  virtual void displayText(RLMachine& machine, const std::string& text);
-};
+  return *m_activePage;
+}
 
+// -----------------------------------------------------------------------
 
-#endif
+void TextSystem::newPage(RLMachine& machine)
+{
+  // Add the current page to the backlog
+  if(m_activePage.get())
+    m_previousPages.push_back(m_activePage.release());
+
+  m_activePage.reset(new TextPage(machine));
+  m_activePage->setWindow(m_defaultTextWindow);
+}

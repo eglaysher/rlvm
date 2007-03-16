@@ -38,6 +38,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
 
 #include <iostream>
 
@@ -78,8 +79,8 @@ struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int window)
   {
-    TextSystem& textSystem = machine.system().text();
-    textSystem.setActiveTextWindow(machine, window);
+    machine.system().text().currentPage(machine).setWindow(window);
+//setActiveTextWindow(machine, window);
   }
 };
 

@@ -166,6 +166,7 @@ void SDLSurface::deallocate()
 /**
  * @todo This function doesn't ignore alpha blending when useSrcAlpha
  *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
+ * @todo Make this only upload the changed parts of the texture!
  */
 void SDLSurface::blitToSurface(Surface& destSurface,
                                int srcX, int srcY, int srcWidth, int srcHeight,
@@ -198,6 +199,7 @@ void SDLSurface::blitToSurface(Surface& destSurface,
 
   if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
     reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
 
   dest.markWrittenTo();
 }

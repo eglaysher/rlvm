@@ -72,7 +72,11 @@
 // Some RLMachines will cary around a copy of the Null system.
 #include "Systems/Null/NullSystem.hpp"
 #include "Systems/Null/NullGraphicsSystem.hpp"
+
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
+
+#include "Modules/cp932toUnicode.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -480,7 +484,11 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 
 void RLMachine::performTextout(const TextoutElement& e)
 {
-  system().text().setCurrentText(*this, e.text());
+  std::wstring ws = cp932toUnicode(e.text());
+  std::string utf8str = unicodeToUTF8(ws);
+
+  // Display UTF-8 characters
+  system().text().currentPage(*this).text(utf8str);
 
   advanceInstructionPointer();
 }

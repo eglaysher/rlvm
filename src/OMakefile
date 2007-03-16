@@ -21,6 +21,8 @@ LIBRLVMFILES[] =
   Systems/Base/EventSystem
   Systems/Base/RLTimer
   Systems/Base/TextWindow
+  Systems/Base/TextPage
+  Systems/Base/TextSystem
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities
