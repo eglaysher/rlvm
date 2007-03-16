@@ -103,6 +103,15 @@ public:
    * @{
    */
   virtual void getCursorPos(int& xPos, int& yPos) {}
+
+  /** 
+   * Gets the location of the mouse cursor and the button states.
+   * 
+   * The following values are used to indicate a button's status:
+   * - 0 if unpressed
+   * - 1 if being pressed
+   * - 2 if pressed and released.
+   */
   virtual void getCursorPos(int& xPos, int& yPos, int& button1, int& button2) {}
 
   /** 

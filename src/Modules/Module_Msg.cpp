@@ -64,7 +64,17 @@ struct Msg_pause : public RLOp_Void_Void {
   struct Longop_pause : public LongOperation {
     bool operator()(RLMachine& machine) {
       // Check the status of the window.
-      return machine.system().event().ctrlPressed();
+      EventSystem& es = machine.system().event();
+      int x, y, btn1, btn2;
+
+      es.getCursorPos(x, y, btn1, btn2);
+      if(btn1 == 2)
+      {
+        es.flushMouseClicks();
+        return true;
+      }
+
+      return es.ctrlPressed();
     }
   };
 
