@@ -58,8 +58,10 @@ SDLSurface::SDLSurface(SDL_Surface* surf,
     m_textureIsValid(false), m_graphicsSystem(NULL)
 {}
 
+// -----------------------------------------------------------------------
+
 SDLSurface::SDLSurface(int width, int height)
-  : m_textureIsValid(false), m_graphicsSystem(NULL)
+  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL)
 {
   allocate(width, height);
   buildRegionTable(width, height);
@@ -203,6 +205,45 @@ void SDLSurface::blitToSurface(Surface& destSurface,
 
   dest.markWrittenTo();
 }
+
+// -----------------------------------------------------------------------
+
+/**
+ * Allows for tight coupling with SDL_ttf. Rethink the existence of
+ * this function later.
+ */
+void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
+                                 int srcX, int srcY, int srcWidth, int srcHeight,
+                                 int destX, int destY, int destWidth, int destHeight,
+                                 int alpha, bool useSrcAlpha)
+{
+  SDL_Rect srcRect, destRect;
+  srcRect.x = srcX;
+  srcRect.y = srcY;
+  srcRect.w = srcWidth;
+  srcRect.h = srcHeight;
+
+  destRect.x = destX;
+  destRect.y = destY;
+  destRect.w = destWidth;
+  destRect.h = destHeight;
+
+  if(useSrcAlpha) 
+  {
+    if(SDL_SetAlpha(srcSurface, SDL_SRCALPHA, alpha))
+      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+  else
+  {
+    if(SDL_SetAlpha(srcSurface, 0, 0))
+      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+
+  if(SDL_BlitSurface(srcSurface, &srcRect, m_surface, &destRect))
+    reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+  markWrittenTo();
+}                                 
 
 // -----------------------------------------------------------------------
 

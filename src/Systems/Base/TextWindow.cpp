@@ -73,6 +73,22 @@ void TextWindow::setWindowPosition(const std::vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
+int TextWindow::windowWidth() const
+{
+  return (m_xWindowSizeInChars * 
+          (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding;
+}
+
+// -----------------------------------------------------------------------
+
+int TextWindow::windowHeight() const
+{
+  return (m_yWindowSizeInChars * 
+          (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + m_lowerBoxPadding;
+}
+
+// -----------------------------------------------------------------------
+
 int TextWindow::x1(RLMachine& machine) const
 {
   switch(m_origin)
@@ -109,17 +125,14 @@ int TextWindow::y1(RLMachine& machine) const
 
 int TextWindow::x2(RLMachine& machine) const
 {
-  return x1(machine) + (m_xWindowSizeInChars * 
-                        (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding;
+  return x1(machine) + windowWidth();
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::y2(RLMachine& machine) const
 {
-  return y1(machine) + (m_yWindowSizeInChars * 
-                        (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + 
-    m_lowerBoxPadding;
+  return y1(machine) + windowHeight();
 }
 
 // -----------------------------------------------------------------------

@@ -43,6 +43,9 @@ private:
   /// Font being used.
   TTF_Font* m_font;
 
+  /// Insertion point for text.
+  int m_insertionPointX, m_insertionPointY;
+
 public:
   SDLTextWindow(RLMachine& machine, int window);
   ~SDLTextWindow();
@@ -50,7 +53,11 @@ public:
   void setCurrentText(RLMachine& machine, const std::string& tex);
 
   virtual void render(RLMachine& machine);
+
+  virtual void clearWin();
+
   virtual void displayText(RLMachine& machine, const std::string& text);
+
 };
 
 

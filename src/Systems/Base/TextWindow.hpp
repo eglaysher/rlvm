@@ -37,7 +37,7 @@ class RLMachine;
  */
 class TextWindow
 {
-private:
+protected:
   /**
    * Describes the origin point of the window
    * 
@@ -152,6 +152,9 @@ public:
    */
   void setWindowPosition(const std::vector<int>& posData);
 
+  int windowWidth() const;
+  int windowHeight() const;
+
   int x1(RLMachine& machine) const;
   int y1(RLMachine& machine) const;
   int x2(RLMachine& machine) const;
@@ -187,6 +190,12 @@ public:
 
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine) = 0;
+
+  /** 
+   * Clears the text window of all text and resets the insertion
+   * point.
+   */
+  virtual void clearWin() = 0;
 
   /** 
    * Displays 1 or more UTF-8 characters in this window.

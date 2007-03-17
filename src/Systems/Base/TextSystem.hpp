@@ -70,6 +70,7 @@ public:
   virtual void render(RLMachine& machine) = 0;
 
   virtual void hideAllTextWindows() = 0;
+  virtual void clearAllTextWindows() = 0;
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber) = 0;
 
   /// @}

@@ -26,6 +26,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/EventSystem.hpp"
 
 #include <boost/utility.hpp>
 
@@ -56,6 +57,8 @@ TextoutLongOperation::~TextoutLongOperation()
 
 bool TextoutLongOperation::operator()(RLMachine& machine)
 {
+//  machine.system().event().wait(10);
+
   // Isolate the next character
   string::iterator it = m_currentPosition;
 

@@ -43,6 +43,7 @@ public:
 
   virtual void render(RLMachine& machine);
   virtual void hideAllTextWindows();
+  virtual void clearAllTextWindows();
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber);
 };
 

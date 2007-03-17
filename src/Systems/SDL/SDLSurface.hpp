@@ -118,6 +118,11 @@ public:
                      int destX, int destY, int destWidth, int destHeight,
                              int alpha = 255, bool useSrcAlpha = true);
 
+  void blitFROMSurface(SDL_Surface* srcSurface,
+                       int srcX, int srcY, int srcWidth, int srcHeight,
+                       int destX, int destY, int destWidth, int destHeight,
+                       int alpha = 255, bool useSrcAlpha = true);
+
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,
                      int destX, int destY, int destWidth, int destHeight,

@@ -57,6 +57,10 @@ void TextSystem::newPage(RLMachine& machine)
   if(m_activePage.get())
     m_previousPages.push_back(m_activePage.release());
 
+  // Clear all windows
+  clearAllTextWindows();
+//  hideAllTextWindows();
+
   m_activePage.reset(new TextPage(machine));
   m_activePage->setWindow(m_defaultTextWindow);
 }

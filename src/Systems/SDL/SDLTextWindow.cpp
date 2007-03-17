@@ -82,6 +82,8 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   }
 
   TTF_SetFontStyle(m_font, TTF_STYLE_NORMAL);
+
+  clearWin();
 }
 
 // -----------------------------------------------------------------------
@@ -93,25 +95,44 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
-// void SDLTextWindow::clearWindow()
-// {
-//   m_insertionPointX = 0;
-//   m_insertionPointY = 0;
+void SDLTextWindow::clearWin()
+{
+  m_insertionPointX = 0;
+  m_insertionPointY = 0;
 
-//   // Allocate the text window surface
-
-// }
+  // Allocate the text window surface
+  m_surface.reset(new SDLSurface(windowWidth(), windowHeight()));
+}
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 {
-//  SDL_Color color = {255, 255, 255};
-  SDL_Color color = {0, 0, 0};
+  SDL_Color color = {255, 255, 255};
+//  SDL_Color color = {0, 0, 0};
   SDL_Surface* tmp =
     TTF_RenderUTF8_Blended(m_font, utf8str.c_str(), color);
 
-  m_surface.reset(new SDLSurface(tmp));
+  // If the width of this glyph plus the spacing will put us over the
+  // edge of the window, then line increment.
+  if(m_insertionPointX + tmp->w + m_xSpacing > windowWidth() )
+  {
+    m_insertionPointX = 0;
+    m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
+  }
+
+  // Render glyph to surface
+  int w = tmp->w;
+  int h = tmp->h;
+  m_surface->blitFROMSurface(tmp,
+                            0, 0, w, h,
+                            m_insertionPointX, m_insertionPointY,
+                            m_insertionPointX + w, m_insertionPointY + h);
+
+  // Move the insertion point forward one character
+  m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
+
+//  m_surface.reset(new SDLSurface(tmp));
 
 //  std::cerr << "Textout: " << utf8str << std::endl;
 

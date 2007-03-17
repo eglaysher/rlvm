@@ -66,15 +66,24 @@ struct Msg_pause : public RLOp_Void_Void {
       // Check the status of the window.
       EventSystem& es = machine.system().event();
       int x, y, btn1, btn2;
+      bool done = false;
 
       es.getCursorPos(x, y, btn1, btn2);
       if(btn1 == 2)
       {
         es.flushMouseClicks();
-        return true;
+        done = true;
       }
 
-      return es.ctrlPressed();
+      if(!done)
+        done = es.ctrlPressed();
+
+      if(done)
+      {
+        machine.system().text().newPage(machine);
+      }
+
+      return done;
     }
   };
 
@@ -96,6 +105,16 @@ struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 // -----------------------------------------------------------------------
 
+struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
+{
+  void operator()(RLMachine& machine, int unknown)
+  {
+//    machine.system().text().
+  }
+};
+
+// -----------------------------------------------------------------------
+
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
@@ -104,6 +123,8 @@ MsgModule::MsgModule()
   addOpcode(17, 0, new Msg_pause);
 
   addOpcode(102, 0, new Msg_TextWindow);
+
+  addOpcode(151, 0, new Msg_msgHide);
 
 //  addOpcode(100, 0, );
 

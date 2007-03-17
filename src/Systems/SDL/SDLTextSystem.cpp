@@ -75,6 +75,14 @@ void SDLTextSystem::hideAllTextWindows()
 
 // -----------------------------------------------------------------------
 
+void SDLTextSystem::clearAllTextWindows()
+{
+  for_each(m_textWindow.begin(), m_textWindow.end(), 
+           bind(&TextWindow::clearWin, _1));
+}
+
+// -----------------------------------------------------------------------
+
 TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
 {
   WindowMap::iterator it = m_textWindow.find(textWindow);
