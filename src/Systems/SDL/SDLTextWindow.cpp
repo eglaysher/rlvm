@@ -93,6 +93,17 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
+// void SDLTextWindow::clearWindow()
+// {
+//   m_insertionPointX = 0;
+//   m_insertionPointY = 0;
+
+//   // Allocate the text window surface
+
+// }
+
+// -----------------------------------------------------------------------
+
 void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 {
 //  SDL_Color color = {255, 255, 255};
@@ -102,7 +113,7 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 
   m_surface.reset(new SDLSurface(tmp));
 
-  std::cerr << "Textout: " << utf8str << std::endl;
+//  std::cerr << "Textout: " << utf8str << std::endl;
 
   machine.system().graphics().markScreenAsDirty();
 }
@@ -115,11 +126,10 @@ void SDLTextWindow::render(RLMachine& machine)
   {
     int width = m_surface->width();
     int height = m_surface->height();
-    cout << "W: " << width << ", H: " << height << endl;
+//    cout << "W: " << width << ", H: " << height << endl;
 
     int x = x1(machine);
     int y = y1(machine);
-
 
 //     cerr << "{" << 0 << ", " << 0 << ", " << width << ", "
 //          << height << "} - {" << x << ", " << y << ", "

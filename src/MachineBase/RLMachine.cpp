@@ -78,6 +78,8 @@
 
 #include "Modules/cp932toUnicode.hpp"
 
+#include "Modules/TextoutLongOperation.hpp"
+
 #include <sstream>
 #include <iostream>
 
@@ -487,8 +489,18 @@ void RLMachine::performTextout(const TextoutElement& e)
   std::wstring ws = cp932toUnicode(e.text());
   std::string utf8str = unicodeToUTF8(ws);
 
+  TextSystem& ts = system().text();
+
   // Display UTF-8 characters
-  system().text().currentPage(*this).text(utf8str);
+  if(ts.messageNoWait())
+  {
+    ts.currentPage(*this).text(utf8str);
+  }
+  else
+  {
+    // Build a 
+    setLongOperation(new TextoutLongOperation(utf8str));
+  }
 
   advanceInstructionPointer();
 }
