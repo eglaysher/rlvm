@@ -102,6 +102,7 @@ void SDLTextWindow::clearWin()
 
   // Allocate the text window surface
   m_surface.reset(new SDLSurface(windowWidth(), windowHeight()));
+  m_surface->fill(0, 0, 0, 0);
 }
 
 // -----------------------------------------------------------------------
@@ -132,10 +133,6 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
   // Move the insertion point forward one character
   m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
 
-//  m_surface.reset(new SDLSurface(tmp));
-
-//  std::cerr << "Textout: " << utf8str << std::endl;
-
   machine.system().graphics().markScreenAsDirty();
 }
 
@@ -143,6 +140,7 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 
 void SDLTextWindow::render(RLMachine& machine)
 {
+  m_surface->dump();
   if(m_surface)
   {
     int width = m_surface->width();
@@ -160,19 +158,6 @@ void SDLTextWindow::render(RLMachine& machine)
       x, y, x + width, y + height, 
       255);
   }
-
-//   glBegin(GL_QUADS);
-//   {
-//     cerr << "RGBA: " << r() << ", " << g() << "," << b() << "," << alpha() << endl;
-//     glColor4ub(r(), g(), b(), alpha());
-//     cerr << "{" << x1(machine) << "," << y1(machine) << "," << x2(machine)
-//          << "," << y2(machine) << "}" << endl;
-//     glVertex2i(x1(machine), y1(machine));
-//     glVertex2i(x2(machine), y1(machine));
-//     glVertex2i(x2(machine), y2(machine));
-//     glVertex2i(x1(machine), y2(machine));
-//   }
-//   glEnd();
 }
 
 // -----------------------------------------------------------------------

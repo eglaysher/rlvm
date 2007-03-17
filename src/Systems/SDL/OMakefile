@@ -22,6 +22,7 @@ LRLFILES[] =
   SDLTextSystem
   SDLTextWindow
   Texture
+  alphablit
 
 StaticCObject(libSDLSystem, $(LRLFILES))
 

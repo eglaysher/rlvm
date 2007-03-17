@@ -26,6 +26,7 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
 #include <SDL/SDL.h>
+#include "Systems/SDL/alphablit.h"
 
 #include <sstream>
 #include "libReallive/defs.h"
@@ -230,17 +231,23 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
 
   if(useSrcAlpha) 
   {
-    if(SDL_SetAlpha(srcSurface, SDL_SRCALPHA, alpha))
-      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+//     if(SDL_SetAlpha(srcSurface, SDL_SRCALPHA, alpha))
+//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+//     if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
+//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+    if(pygame_AlphaBlit(srcSurface, &srcRect, m_surface, &destRect))
+      reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
   else
   {
-    if(SDL_SetAlpha(srcSurface, 0, 0))
-      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    if(SDL_BlitSurface(srcSurface, &srcRect, m_surface, &destRect))
+      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+//     if(SDL_SetAlpha(srcSurface, 0, 0))
+//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
 
-  if(SDL_BlitSurface(srcSurface, &srcRect, m_surface, &destRect))
-    reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
   markWrittenTo();
 }                                 
