@@ -24,6 +24,10 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 TextSystem::TextSystem()
   : m_defaultTextWindow(0)
 {
@@ -59,8 +63,9 @@ void TextSystem::newPage(RLMachine& machine)
 
   // Clear all windows
   clearAllTextWindows();
-//  hideAllTextWindows();
+  hideAllTextWindows();
 
   m_activePage.reset(new TextPage(machine));
+  cerr << "Setting to default window: " << m_defaultTextWindow << endl;
   m_activePage->setWindow(m_defaultTextWindow);
 }

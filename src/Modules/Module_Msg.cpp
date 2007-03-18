@@ -98,8 +98,9 @@ struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int window)
   {
+    cerr << " ----- TextWindow : " << window << endl;
+    machine.system().text().setDefaultWindow(window);
     machine.system().text().currentPage(machine).setWindow(window);
-//setActiveTextWindow(machine, window);
   }
 };
 
@@ -123,6 +124,7 @@ MsgModule::MsgModule()
   addOpcode(17, 0, new Msg_pause);
 
   addOpcode(102, 0, new Msg_TextWindow);
+  addOpcode(102, 1, new Msg_TextWindow);
 
   addOpcode(151, 0, new Msg_msgHide);
 

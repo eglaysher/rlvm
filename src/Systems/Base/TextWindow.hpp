@@ -222,6 +222,7 @@ public:
   /// @}
 
   void setVisible(int in) { m_isVisible = in; }
+  bool isVisible() const { return m_isVisible; }
 
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine) = 0;

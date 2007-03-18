@@ -75,6 +75,8 @@ public:
 
   /// @}
 
+  void setDefaultWindow(int window) { m_defaultTextWindow = window; }
+
   /** 
    * Get the current active page.
    */

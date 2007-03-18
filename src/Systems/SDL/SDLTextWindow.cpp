@@ -112,6 +112,7 @@ void SDLTextWindow::clearWin()
 
 void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 {
+  setVisible(true);
   SDL_Color color = {255, 255, 255};
 //  SDL_Color color = {0, 0, 0};
   SDL_Surface* tmp =
@@ -121,6 +122,7 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
   // edge of the window, then line increment.
   if(m_insertionPointX + tmp->w + m_xSpacing > windowWidth() )
   {
+    cerr << "Going onto new line..." << endl;
     m_insertionPointX = 0;
     m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
   }
@@ -144,7 +146,7 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 
 void SDLTextWindow::render(RLMachine& machine)
 {
-  if(m_surface)
+  if(m_surface && isVisible())
   {
     int width = m_surface->width();
     int height = m_surface->height();
@@ -153,13 +155,11 @@ void SDLTextWindow::render(RLMachine& machine)
     int boxX = boxX1();
     int boxY = boxY1();
 
-    m_wakuBacking->dump();
     int backingWidth = m_wakuBacking->width();
     int backingHeight = m_wakuBacking->height();
     m_wakuBacking->renderToScreen(0, 0, backingWidth, backingHeight,
                                   boxX, boxY, boxX + backingWidth,
-                                  boxY + backingHeight);
-
+                                  boxY + backingHeight, m_alpha);
 
     int mainWidth = m_wakuMain->width();
     int mainHeight = m_wakuMain->height();

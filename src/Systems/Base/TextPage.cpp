@@ -28,6 +28,7 @@
 #include "MachineBase/RLMachine.hpp"
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 using namespace boost;
@@ -141,6 +142,7 @@ void TextPage::setWindow_impl(int windowNum)
 
 void TextPage::text_impl(const std::string& text)
 {
+//  cerr << "Displaying to " << m_currentWindow << endl;
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .displayText(m_machine, text);
 }
