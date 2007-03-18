@@ -261,6 +261,22 @@ public:
     return GameexeInterpretObject(ss.str(), *this);
   }
 
+  /** 
+   * Access the key "firstKey"."secondKey"
+   */
+  template<typename A, typename B, typename C>
+  GameexeInterpretObject operator()(const A& firstKey, const B& secondKey,
+                                    const C& thirdKey)
+  {
+    std::ostringstream ss;
+    addToStream(firstKey, ss);
+    ss << ".";
+    addToStream(secondKey, ss);
+    ss << ".";
+    addToStream(thirdKey, ss);
+    return GameexeInterpretObject(ss.str(), *this);
+  }
+
   /// @}
 
 

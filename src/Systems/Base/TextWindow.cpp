@@ -28,6 +28,8 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
+#include "libReallive/gameexe.h"
+
 #include <vector>
 
 using namespace std;
@@ -89,16 +91,44 @@ int TextWindow::windowHeight() const
 
 // -----------------------------------------------------------------------
 
-int TextWindow::x1(RLMachine& machine) const
+int TextWindow::boxX1() const
+{
+  switch(m_origin)
+  {
+  case 0:
+  case 2:
+    return m_xDistanceFromOrigin;
+  };
+
+  throw libReallive::Error("Invalid origin");
+}   
+
+// -----------------------------------------------------------------------
+
+int TextWindow::boxY1() const
+{
+  switch(m_origin)
+  {
+  case 0: // Top and left
+  case 1: // Top and right
+    return m_yDistanceFromOrigin;
+  }
+
+  throw libReallive::Error("Invalid origin");  
+}
+
+// -----------------------------------------------------------------------
+
+int TextWindow::textX1(RLMachine& machine) const
 {
   switch(m_origin)
   {
   case 0: // Top and left
   case 2: // Bottom and left
     return m_xDistanceFromOrigin + m_leftBoxPadding;
-  case 1: // Top and right
-  case 3: // Bottom and right
-    return machine.system().graphics().screenWidth() - m_xDistanceFromOrigin;
+//   case 1: // Top and right
+//   case 3: // Bottom and right
+//     return machine.system().graphics().screenWidth() - m_xDistanceFromOrigin;
   };
 
   throw libReallive::Error("Invalid origin");
@@ -106,16 +136,16 @@ int TextWindow::x1(RLMachine& machine) const
 
 // -----------------------------------------------------------------------
 
-int TextWindow::y1(RLMachine& machine) const
+int TextWindow::textY1(RLMachine& machine) const
 {
   switch(m_origin)
   {
   case 0: // Top and left
   case 1: // Top and right
     return m_yDistanceFromOrigin + m_upperBoxPadding;
-  case 2: // Bottom and left
-  case 3: // Bottom and right
-    return machine.system().graphics().screenHeight() - m_yDistanceFromOrigin;
+//   case 2: // Bottom and left
+//   case 3: // Bottom and right
+//     return machine.system().graphics().screenHeight() - m_yDistanceFromOrigin;
   }
 
   throw libReallive::Error("Invalid origin");
@@ -123,16 +153,28 @@ int TextWindow::y1(RLMachine& machine) const
 
 // -----------------------------------------------------------------------
 
-int TextWindow::x2(RLMachine& machine) const
+int TextWindow::textX2(RLMachine& machine) const
 {
-  return x1(machine) + windowWidth();
+  return textX1(machine) + windowWidth();
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::y2(RLMachine& machine) const
+int TextWindow::textY2(RLMachine& machine) const
 {
-  return y1(machine) + windowHeight();
+  return textY1(machine) + windowHeight();
+}
+
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
+                               const int wakuNo)
+{
+  GameexeInterpretObject waku(gexe("WAKU", wakuNo, 0));
+
+  setWakuMain(machine, waku("NAME"));
+  setWakuBacking(machine, waku("BACK"));
 }
 
 // -----------------------------------------------------------------------

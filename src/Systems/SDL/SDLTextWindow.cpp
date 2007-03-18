@@ -40,6 +40,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include <boost/function.hpp>
+#include "Utilities.h"
 
 #include <iostream>
 #include <vector>
@@ -72,6 +73,8 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   setTextboxPadding(window("MOJI_POS"));
 
   setWindowPosition(window("POS"));
+
+  setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
   m_font = TTF_OpenFont("/Users/elliot/msgothic.ttc", fontSizeInPixels());
   if(m_font == NULL)
@@ -126,9 +129,10 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
   int w = tmp->w;
   int h = tmp->h;
   m_surface->blitFROMSurface(tmp,
-                            0, 0, w, h,
-                            m_insertionPointX, m_insertionPointY,
-                            m_insertionPointX + w, m_insertionPointY + h);
+                             0, 0, w, h,
+                             m_insertionPointX, m_insertionPointY,
+                             m_insertionPointX + w, m_insertionPointY + h,
+                             255);
 
   // Move the insertion point forward one character
   m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
@@ -140,19 +144,35 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 
 void SDLTextWindow::render(RLMachine& machine)
 {
-  m_surface->dump();
   if(m_surface)
   {
     int width = m_surface->width();
     int height = m_surface->height();
 //    cout << "W: " << width << ", H: " << height << endl;
 
-    int x = x1(machine);
-    int y = y1(machine);
+    int boxX = boxX1();
+    int boxY = boxY1();
+
+    m_wakuBacking->dump();
+    int backingWidth = m_wakuBacking->width();
+    int backingHeight = m_wakuBacking->height();
+    m_wakuBacking->renderToScreen(0, 0, backingWidth, backingHeight,
+                                  boxX, boxY, boxX + backingWidth,
+                                  boxY + backingHeight);
+
+
+    int mainWidth = m_wakuMain->width();
+    int mainHeight = m_wakuMain->height();
+    m_wakuMain->renderToScreen(0, 0, mainWidth, mainHeight,
+                                  boxX, boxY, boxX + mainWidth,
+                                  boxY + mainHeight, 255);
 
 //     cerr << "{" << 0 << ", " << 0 << ", " << width << ", "
 //          << height << "} - {" << x << ", " << y << ", "
 //          << x + width << ", " << y + wi
+
+    int x = textX1(machine);
+    int y = textY1(machine);
     m_surface->renderToScreen(
       0, 0, width, height,
       x, y, x + width, y + height, 
@@ -162,10 +182,18 @@ void SDLTextWindow::render(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-// void SDLTextWindow::setVal(Gameexe& gexe, int window, const std::string& key,
-//                            TextWindowIntSetter setter)
-// {
-//   if(gexe("WINDOW", window, key).exists())
-//     (this->setter)(gexe("WINDOW", window, key));
-// }
+void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
+{
+  GraphicsSystem& gs = machine.system().graphics();
+  m_wakuMain.reset(dynamic_cast<SDLSurface*>(gs.loadSurfaceFromFile(
+                                               findFile(machine, name))));
+}
 
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
+{
+  GraphicsSystem& gs = machine.system().graphics();
+  m_wakuBacking.reset(dynamic_cast<SDLSurface*>(gs.loadSurfaceFromFile(
+                                                  findFile(machine, name))));
+}

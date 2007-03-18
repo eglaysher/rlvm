@@ -46,6 +46,9 @@ private:
   /// Insertion point for text.
   int m_insertionPointX, m_insertionPointY;
 
+  boost::shared_ptr<SDLSurface> m_wakuMain;
+  boost::shared_ptr<SDLSurface> m_wakuBacking;
+
 public:
   SDLTextWindow(RLMachine& machine, int window);
   ~SDLTextWindow();
@@ -57,6 +60,9 @@ public:
   virtual void clearWin();
 
   virtual void displayText(RLMachine& machine, const std::string& text);
+
+  virtual void setWakuMain(RLMachine& machine, const std::string& name);
+  virtual void setWakuBacking(RLMachine& machine, const std::string& name);
 
 };
 

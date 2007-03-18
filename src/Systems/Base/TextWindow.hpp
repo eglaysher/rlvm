@@ -26,6 +26,8 @@
 #include <vector>
 
 class RLMachine;
+class Gameexe;
+class GraphicsSystem;
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by TextSystem,
@@ -93,6 +95,15 @@ protected:
 
   int m_isVisible;
 
+  /**
+   * @name Waku (window decorations)
+   * 
+   * @{
+   */
+  
+
+  /// @}
+
 protected:
 
   /// Internal calculations stuff
@@ -155,12 +166,36 @@ public:
   int windowWidth() const;
   int windowHeight() const;
 
-  int x1(RLMachine& machine) const;
-  int y1(RLMachine& machine) const;
-  int x2(RLMachine& machine) const;
-  int y2(RLMachine& machine) const;
+  int boxX1() const;
+  int boxY1() const;
+
+  int textX1(RLMachine& machine) const;
+  int textY1(RLMachine& machine) const;
+  int textX2(RLMachine& machine) const;
+  int textY2(RLMachine& machine) const;
 
   /// @}
+
+  /**
+   * @name Waku (Window decoration) Handling Functions
+   * 
+   * @{
+   */
+
+  void setWindowWaku(RLMachine& machine, Gameexe& gexe, const int wakuNo);
+
+
+  virtual void setWakuMain(RLMachine& machine, const std::string& name) = 0;
+
+  /** 
+   * Loads the graphics file name as the backing for the 
+   * 
+   * @param name 
+   */
+  virtual void setWakuBacking(RLMachine& machine, const std::string& name) = 0;
+
+  /// @}
+
 
   /**
    * @name Window Color Attributes
