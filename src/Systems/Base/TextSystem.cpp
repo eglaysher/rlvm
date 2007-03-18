@@ -66,6 +66,5 @@ void TextSystem::newPage(RLMachine& machine)
   hideAllTextWindows();
 
   m_activePage.reset(new TextPage(machine));
-  cerr << "Setting to default window: " << m_defaultTextWindow << endl;
   m_activePage->setWindow(m_defaultTextWindow);
 }

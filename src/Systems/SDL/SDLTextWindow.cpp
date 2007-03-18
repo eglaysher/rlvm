@@ -42,6 +42,8 @@
 #include <boost/function.hpp>
 #include "Utilities.h"
 
+#include "Modules/utf8.h"
+
 #include <iostream>
 #include <vector>
 
@@ -73,6 +75,11 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   setTextboxPadding(window("MOJI_POS"));
 
   setWindowPosition(window("POS"));
+
+  // INDENT_USE appears to default to on. See the first scene in the
+  // game with Nagisa, paying attention to indentation; then check the
+  // Gameexe.ini.
+  setUseIndentation(window("INDENT_USE").to_int(1));
 
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
@@ -115,35 +122,75 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
   setVisible(true);
   SDL_Color color = {255, 255, 255};
 //  SDL_Color color = {0, 0, 0};
-  SDL_Surface* tmp =
-    TTF_RenderUTF8_Blended(m_font, utf8str.c_str(), color);
 
-  // If the width of this glyph plus the spacing will put us over the
-  // edge of the window, then line increment.
-  if(m_insertionPointX + tmp->w + m_xSpacing > windowWidth() )
+  // Iterate over each incoming character to display (we do this
+  // instead of rendering the entire string so that we can perform
+  // indentation, et cetera.)
+  string::const_iterator cur = utf8str.begin();
+  string::const_iterator tmp = cur;
+  string::const_iterator end = utf8str.end();
+  for(;tmp != end; cur = tmp)
   {
-    cerr << "Going onto new line..." << endl;
-    m_insertionPointX = 0;
-    m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
+    int codepoint = utf8::next(tmp, end);
+    string ch(cur, tmp);
+
+//    cerr << ch << ":" << codepoint << endl;
+
+    // For now, ignore U+3010 (LEFT BLACK LENTICULAR BRACKET) and
+    // U+3011 (RIGHT BLACK LENTICULAR BRACKET). When I come back and
+    // do name boxes, I'll have to change this.
+    if(codepoint == 0x3010)
+      continue;
+    if(codepoint == 0x3011)
+      continue;
+
+    SDL_Surface* tmp =
+      TTF_RenderUTF8_Blended(m_font, ch.c_str(), color);
+
+    // If the width of this glyph plus the spacing will put us over the
+    // edge of the window, then line increment.
+    if(m_insertionPointX + tmp->w + m_xSpacing > windowWidth() )
+    {
+//      cerr << "Going onto new line..." << endl;
+      m_insertionPointX = m_currentIndentationInPixels;
+      m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
+    }
+
+    // Render glyph to surface
+    int w = tmp->w;
+    int h = tmp->h;
+    m_surface->blitFROMSurface(tmp,
+                               0, 0, w, h,
+                               m_insertionPointX, m_insertionPointY,
+                               m_insertionPointX + w, m_insertionPointY + h,
+                               255);
+
+    // Move the insertion point forward one character
+    m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
+
+    // After the insertion point has been moved, check if this is a
+    // special indentation mark
+    if(m_useIndentation)
+    {
+      // If this is U+300C (LEFT CORNER BRACKET), and we're set to do
+      // indentation, then set the indentation
+      if(codepoint == 0x300C)
+        m_currentIndentationInPixels = m_insertionPointX;
+
+      // If this is U+300D (RIGHT CORNER BRACKET), reset the indentation
+      if(codepoint == 0x300D)
+        m_currentIndentationInPixels = 0;
+    }
   }
-
-  // Render glyph to surface
-  int w = tmp->w;
-  int h = tmp->h;
-  m_surface->blitFROMSurface(tmp,
-                             0, 0, w, h,
-                             m_insertionPointX, m_insertionPointY,
-                             m_insertionPointX + w, m_insertionPointY + h,
-                             255);
-
-  // Move the insertion point forward one character
-  m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
-
   machine.system().graphics().markScreenAsDirty();
 }
 
 // -----------------------------------------------------------------------
 
+/** 
+ * @todo Make this pass the #WINDOW_ATTR color off wile rendering the
+ *       wakuBacking.
+ */
 void SDLTextWindow::render(RLMachine& machine)
 {
   if(m_surface && isVisible())

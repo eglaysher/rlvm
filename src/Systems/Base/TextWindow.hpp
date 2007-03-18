@@ -77,6 +77,11 @@ protected:
   /// Spacing between characters
   int m_xSpacing, m_ySpacing;
 
+  /// 
+  int m_useIndentation;
+
+  int m_currentIndentationInPixels;
+
   /// @}
 
   /**
@@ -153,6 +158,8 @@ public:
   int fontSizeInPixels() const { return m_fontSizeInPixels; }
 
   void setTextboxPadding(const std::vector<int>& posData);
+
+  void setUseIndentation(const int i) { m_useIndentation = i; }
 
   /// @}
 
