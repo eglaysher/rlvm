@@ -169,9 +169,9 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
     // If the current character will fit on this line, and it is NOT
     // in this set, then we should additionally check the next
     // character.  If that IS in this set and will not fit on the
-    // current line, then we break the line before this character
-    // instead, to prevent the next character being stranded at the
-    // start of a line.
+    // current line, then we break the line before the current
+    // character instead, to prevent the next character being stranded
+    // at the start of a line.
     //
     if(m_insertionPointX + tmp->w + m_xSpacing > windowWidth() )
     {
