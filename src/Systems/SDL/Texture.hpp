@@ -59,6 +59,20 @@ private:
 
   static unsigned int s_screenWidth;
   static unsigned int s_screenHeight;
+
+  void renderToScreenAsColorMask_subtractive_glsl(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha);
+  void renderToScreenAsColorMask_subtractive_fallback(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha);
+  void renderToScreenAsColorMask_additive(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha);
+
  
 public:
   static void SetScreenSize(unsigned int screenWidth, unsigned int screenHeight);
@@ -81,7 +95,7 @@ public:
   void renderToScreenAsColorMask(
     int x1, int y1, int x2, int y2,
     int dx1, int dy1, int dx2, int dy2,
-    int r, int g, int b, int alpha);
+    int r, int g, int b, int alpha, int filter);
 
   void renderToScreen(int x1, int y1, int x2, int y2,
                       int dx1, int dy1, int dx2, int dy2,

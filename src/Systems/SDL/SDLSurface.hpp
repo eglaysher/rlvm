@@ -135,7 +135,7 @@ public:
   virtual void renderToScreenAsColorMask(
                      int srcX1, int srcY1, int srcX2, int srcY2,
                      int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha);
+                     int r, int g, int b, int alpha, int filter);
 
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,

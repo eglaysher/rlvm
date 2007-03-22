@@ -232,7 +232,7 @@ void SDLTextWindow::render(RLMachine& machine)
     m_wakuBacking->renderToScreenAsColorMask(0, 0, backingWidth, backingHeight,
                                              boxX, boxY, boxX + backingWidth,
                                              boxY + backingHeight,
-                                             m_r, m_g, m_b, m_alpha);
+                                             m_r, m_g, m_b, m_alpha, m_filter);
 
     int mainWidth = m_wakuMain->width();
     int mainHeight = m_wakuMain->height();

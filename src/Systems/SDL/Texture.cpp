@@ -128,7 +128,7 @@ Texture::Texture(SDL_Surface* surface, bool isMask)
   if(isMask)
   {
     // Compile shader for use:
-    buildShader();
+//    buildShader();
     bytesPerPixel = GL_ALPHA;
   }
 
@@ -313,12 +313,40 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
 /** 
  * @todo A function of this hairiness needs super more amounts of
  *       documentation.
- * @todo Provide a fallback version that doesn't use any shaders or
- *       multitexturing, but only operates on the alpha channel.
  * @todo When I merge back to trunk, make sure to change the throw
  *       cstrs over to the new exception class.
  */
 void Texture::renderToScreenAsColorMask(
+  int x1, int y1, int x2, int y2,
+  int dx1, int dy1, int dx2, int dy2,
+  int r, int g, int b, int alpha, int filter)
+{
+  if(filter == 0)
+  {
+    if(GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
+    {
+      renderToScreenAsColorMask_subtractive_glsl(
+        x1, y1, x2, y2,
+        dx1, dy1, dx2, dy2, r, g, b, alpha);
+    }
+    else
+    {
+      renderToScreenAsColorMask_subtractive_fallback(
+        x1, y1, x2, y2,
+        dx1, dy1, dx2, dy2, r, g, b, alpha);
+    }
+  }
+  else
+  {
+    renderToScreenAsColorMask_additive(
+        x1, y1, x2, y2,
+        dx1, dy1, dx2, dy2, r, g, b, alpha);      
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void Texture::renderToScreenAsColorMask_subtractive_glsl(
   int x1, int y1, int x2, int y2,
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
@@ -412,6 +440,100 @@ void Texture::renderToScreenAsColorMask(
 
   glUseProgramObjectARB(0);
   glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * This fallback does not accurately render the scene according to
+ * standard RealLive. This only negatively shades according to the
+ * alpha value, ignoring the rest of the #WINDOW_ATTR color.
+ * 
+ * This will probably only occur with mesa software and people with
+ * graphics cards > 5 years old.
+ */
+void Texture::renderToScreenAsColorMask_subtractive_fallback(
+  int x1, int y1, int x2, int y2,
+  int dx1, int dy1, int dx2, int dy2,
+  int r, int g, int b, int alpha)
+{
+  // For the time being, we are dumb and assume that it's one texture
+  
+  float thisx1 = float(x1) / m_textureWidth;
+  float thisy1 = float(y1) / m_textureHeight;
+  float thisx2 = float(x2) / m_textureWidth;
+  float thisy2 = float(y2) / m_textureHeight;
+
+   if(m_isUpsideDown)
+   {
+//     cerr << "is upside down" << endl;
+     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+   }
+
+   // First draw the mask
+   glBindTexture(GL_TEXTURE_2D, m_textureID);
+//   glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+//   glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+   glBlendFuncSeparate(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA,
+                       GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+
+  glBegin(GL_QUADS);
+  {
+    glColor4ub(r, g, b, alpha);
+    glTexCoord2f(thisx1, thisy1);
+    glVertex2i(dx1, dy1);
+    glTexCoord2f(thisx2, thisy1);
+    glVertex2i(dx2, dy1);
+    glTexCoord2f(thisx2, thisy2);
+    glVertex2i(dx2, dy2);        
+    glTexCoord2f(thisx1, thisy2);
+    glVertex2i(dx1, dy2);
+  }
+  glEnd();
+
+  glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// -----------------------------------------------------------------------
+
+void Texture::renderToScreenAsColorMask_additive(
+  int x1, int y1, int x2, int y2,
+  int dx1, int dy1, int dx2, int dy2,
+  int r, int g, int b, int alpha)
+{
+  // For the time being, we are dumb and assume that it's one texture
+  
+  float thisx1 = float(x1) / m_textureWidth;
+  float thisy1 = float(y1) / m_textureHeight;
+  float thisx2 = float(x2) / m_textureWidth;
+  float thisy2 = float(y2) / m_textureHeight;
+
+   if(m_isUpsideDown)
+   {
+     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+   }
+
+   // First draw the mask
+   glBindTexture(GL_TEXTURE_2D, m_textureID);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glBegin(GL_QUADS);
+  {
+    glColor4ub(r, g, b, alpha);
+    glTexCoord2f(thisx1, thisy1);
+    glVertex2i(dx1, dy1);
+    glTexCoord2f(thisx2, thisy1);
+    glVertex2i(dx2, dy1);
+    glTexCoord2f(thisx2, thisy2);
+    glVertex2i(dx2, dy2);        
+    glTexCoord2f(thisx1, thisy2);
+    glVertex2i(dx1, dy2);
+  }
+  glEnd();
+
   glBlendFunc(GL_ONE, GL_ZERO);
 }
 

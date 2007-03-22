@@ -282,22 +282,17 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw Error(ss.str());
   }	
 
-  glewInit();
-
-  // Check for the existence of GL_ARB_fragment_shader and
-  // GL_ARB_vertex_shader
-  char* extensions = (char *)glGetString(GL_EXTENSIONS);
-  if(strstr(extensions, "GL_ARB_fragment_shader") &&
-     strstr(extensions, "GL_ARB_vertex_shader"))
+  // Initialize glew
+  GLenum err = glewInit();
+  if(GLEW_OK != err)
   {
-    cerr << "Have the shaders!" << endl;
-//    glCreateShaderObject = (glCreateShaderObjectARBProcPtr)
-//      SDL_GL_GetProcAddress("glCreateShaderObjectARB");
+    ostringstream oss;
+    oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
+    throw Error(oss.str());
   }
 
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
 
   /* Enable Texture Mapping ( NEW ) */
   glEnable( GL_TEXTURE_2D );

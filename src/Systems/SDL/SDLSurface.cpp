@@ -294,13 +294,13 @@ void SDLSurface::renderToScreen(
 void SDLSurface::renderToScreenAsColorMask(
                      int srcX1, int srcY1, int srcX2, int srcY2,
                      int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha)
+                     int r, int g, int b, int alpha, int filter)
 {
   uploadTextureIfNeeded();
 
   m_texture->renderToScreenAsColorMask(srcX1, srcY1, srcX2, srcY2,
                                        destX1, destY1, destX2, destY2, 
-                                       r, g, b, alpha);
+                                       r, g, b, alpha, filter);
 }
 
 // -----------------------------------------------------------------------
