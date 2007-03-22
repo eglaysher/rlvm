@@ -28,6 +28,7 @@
 #include <SDL/SDL.h>
 #include "Systems/SDL/alphablit.h"
 
+#include <iostream>
 #include <sstream>
 #include "libReallive/defs.h"
 
@@ -39,13 +40,15 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface()
-  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL)
+  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {}
 
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(SDL_Surface* surf)
-  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL)
+  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {
   buildRegionTable(surf->w, surf->h);
 }
@@ -56,13 +59,15 @@ SDLSurface::SDLSurface(SDL_Surface* surf)
 SDLSurface::SDLSurface(SDL_Surface* surf, 
                        const vector<SDLSurface::GrpRect>& region_table)
   : m_surface(surf), m_regionTable(region_table),
-    m_textureIsValid(false), m_graphicsSystem(NULL)
+    m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {}
 
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(int width, int height)
-  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL)
+  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {
   allocate(width, height);
   buildRegionTable(width, height);
@@ -203,7 +208,6 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
     reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
-
   dest.markWrittenTo();
 }
 
@@ -248,7 +252,6 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
 //       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
 
-
   markWrittenTo();
 }                                 
 
@@ -259,7 +262,7 @@ void SDLSurface::uploadTextureIfNeeded()
   if(!m_textureIsValid)
   {
 //    cout << "Uploading texture!" << endl;
-    m_texture.reset(new Texture(m_surface));
+    m_texture.reset(new Texture(m_surface, m_isMask));
     m_textureIsValid = true;
   }
 }
@@ -284,6 +287,20 @@ void SDLSurface::renderToScreen(
   m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
                             destX1, destY1, destX2, destY2,
                             alpha);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::renderToScreenAsColorMask(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     int r, int g, int b, int alpha)
+{
+  uploadTextureIfNeeded();
+
+  m_texture->renderToScreenAsColorMask(srcX1, srcY1, srcX2, srcY2,
+                                       destX1, destY1, destX2, destY2, 
+                                       r, g, b, alpha);
 }
 
 // -----------------------------------------------------------------------
@@ -394,3 +411,4 @@ Surface* SDLSurface::clone() const
 
   return new SDLSurface(tmpSurface, m_regionTable);
 }
+

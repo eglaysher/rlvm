@@ -219,18 +219,20 @@ void SDLTextWindow::render(RLMachine& machine)
 {
   if(m_surface && isVisible())
   {
+    GraphicsSystem& gs = machine.system().graphics();
+
     int width = m_surface->width();
     int height = m_surface->height();
-//    cout << "W: " << width << ", H: " << height << endl;
 
     int boxX = boxX1();
     int boxY = boxY1();
 
     int backingWidth = m_wakuBacking->width();
     int backingHeight = m_wakuBacking->height();
-    m_wakuBacking->renderToScreen(0, 0, backingWidth, backingHeight,
-                                  boxX, boxY, boxX + backingWidth,
-                                  boxY + backingHeight, m_alpha);
+    m_wakuBacking->renderToScreenAsColorMask(0, 0, backingWidth, backingHeight,
+                                             boxX, boxY, boxX + backingWidth,
+                                             boxY + backingHeight,
+                                             m_r, m_g, m_b, m_alpha);
 
     int mainWidth = m_wakuMain->width();
     int mainHeight = m_wakuMain->height();
@@ -256,8 +258,9 @@ void SDLTextWindow::render(RLMachine& machine)
 void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
 {
   GraphicsSystem& gs = machine.system().graphics();
-  m_wakuMain.reset(dynamic_cast<SDLSurface*>(gs.loadSurfaceFromFile(
-                                               findFile(machine, name))));
+  SDLSurface* s = dynamic_cast<SDLSurface*>(
+    gs.loadSurfaceFromFile(findFile(machine, name)));
+  m_wakuMain.reset(s);
 }
 
 // -----------------------------------------------------------------------
@@ -265,6 +268,8 @@ void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
 void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
 {
   GraphicsSystem& gs = machine.system().graphics();
-  m_wakuBacking.reset(dynamic_cast<SDLSurface*>(gs.loadSurfaceFromFile(
-                                                  findFile(machine, name))));
+  SDLSurface* s = dynamic_cast<SDLSurface*>(
+    gs.loadSurfaceFromFile(findFile(machine, name)));
+  s->setIsMask(true);
+  m_wakuBacking.reset(s);
 }

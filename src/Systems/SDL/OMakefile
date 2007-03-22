@@ -3,6 +3,7 @@
 #  export
 
 CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(PLATFORMFLAGS) -D_THREAD_SAFE
+CFLAGS = $(CXXFLAGS)
 
 # for testing
 #CXXFLAGS += -DWIN32
@@ -12,6 +13,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 ########
 
 LRLFILES[] =
+  glew
   file
   SDLSystem
   SDLGraphicsSystem

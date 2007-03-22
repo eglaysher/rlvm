@@ -27,6 +27,10 @@ public:
                      int destX, int destY, int destWidth, int destHeight,
                      int alpha = 255) { }
 
+  virtual void renderToScreenAsColorMask(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     int r, int g, int b, int alpha) { }
 
   virtual void renderToScreen(
     int srcX1, int srcY1, int srcX2, int srcY2,

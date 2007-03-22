@@ -33,6 +33,8 @@
  * initial window size from it.
  */
 
+#include "glew.h"
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 
@@ -237,6 +239,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
     throw Error(oss.str());
   }
+  Texture::SetScreenSize(m_width, m_height);
+
   int bpp = info->vfmt->BitsPerPixel;
 
   /// Grab the caption
@@ -278,6 +282,18 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw Error(ss.str());
   }	
 
+  glewInit();
+
+  // Check for the existence of GL_ARB_fragment_shader and
+  // GL_ARB_vertex_shader
+  char* extensions = (char *)glGetString(GL_EXTENSIONS);
+  if(strstr(extensions, "GL_ARB_fragment_shader") &&
+     strstr(extensions, "GL_ARB_vertex_shader"))
+  {
+    cerr << "Have the shaders!" << endl;
+//    glCreateShaderObject = (glCreateShaderObjectARBProcPtr)
+//      SDL_GL_GetProcAddress("glCreateShaderObjectARB");
+  }
 
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -305,18 +321,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
 
   /* Really Nice Perspective Calculations */
   glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-
-  /* Setup The Ambient Light */
-//    glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient );
-
-  /* Setup The Diffuse Light */
-//    glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse );
-
-  /* Position The Light */
-//    glLightfv( GL_LIGHT1, GL_POSITION, LightPosition );
-
-  /* Enable Light One */
-//    glEnable( GL_LIGHT1 );
 
   /* Full Brightness, 50% Alpha ( NEW ) */
   glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);

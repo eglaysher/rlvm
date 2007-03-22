@@ -26,12 +26,21 @@
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
 
+//#include <SDL/SDL_opengl.h>
+
 struct SDL_Surface;
 class SDLSurface;
 class Texture;
 class SDLGraphicsSystem;
 class GraphicsObject;
 class Gameexe;
+
+// -----------------------------------------------------------------------
+
+/// These are function pointers to OpenGL extensions that we use in
+/// fragment shaders, which we do to get the closest blending to how
+/// RealLive does it.
+//extern glCreateShaderObjectARBProcPtr glCreateShaderObject;
 
 // -----------------------------------------------------------------------
 

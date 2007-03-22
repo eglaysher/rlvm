@@ -76,6 +76,8 @@ private:
    */
   void uploadTextureIfNeeded();
 
+  bool m_isMask;
+
 public:
   SDLSurface();
 
@@ -90,6 +92,8 @@ public:
   /// Surface created with a specified width and height
   SDLSurface(int width, int height);
   ~SDLSurface();
+
+  void setIsMask(const bool is) { m_isMask = is; }
 
   void buildRegionTable(int width, int height);
 
@@ -128,6 +132,11 @@ public:
                      int destX, int destY, int destWidth, int destHeight,
                      int alpha = 255);
 
+  virtual void renderToScreenAsColorMask(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     int r, int g, int b, int alpha);
+
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,
                      int destX, int destY, int destWidth, int destHeight,
@@ -159,6 +168,8 @@ public:
   SDL_Surface* surface() { return m_surface; }
 
   virtual Surface* clone() const;
+
+  void interpretAsColorMask(int r, int g, int b, int alpha);
 };
 
 
