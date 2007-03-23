@@ -26,6 +26,10 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 class RLMachine;
+class TextPageElement;
+class SetWindowTextPageElement;
+class TextTextPageElement;
+
 
 // -----------------------------------------------------------------------
 

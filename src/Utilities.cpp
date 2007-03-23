@@ -80,6 +80,15 @@ string correctPathCase(const string& fileName)
 
 // -----------------------------------------------------------------------
 
+std::string findFontFile(const std::string& fileName)
+{
+  using namespace boost::filesystem;  
+  path home(getenv("HOME"));
+  return (home / fileName).string();
+}
+
+// -----------------------------------------------------------------------
+
 string findFile(RLMachine& machine, const string& fileName)
 {
   // Hack until I do this correctly

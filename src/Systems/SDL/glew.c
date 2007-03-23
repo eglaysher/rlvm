@@ -29,13 +29,13 @@
 ** THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <glew.h>
+#include "glew.h"
 
-/* #if defined(_WIN32) */
-/* #  include <GL/wglew.h> */
-/* #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX) */
-/* #  include <GL/glxew.h> */
-/* #endif */
+#if defined(_WIN32)
+#  include "wglew.h"
+#elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
+#  include "glxew.h"
+#endif
 
 /*
  * Define glewGetContext and related helper macros.

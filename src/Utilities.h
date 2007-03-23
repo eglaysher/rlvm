@@ -51,6 +51,11 @@ std::string correctPathCase(const std::string& fileName);
  */
 std::string findFile(RLMachine& machine, const std::string& fileName);
 
+/**
+ * Attempts to find the file fileName in the home directory
+ */
+std::string findFontFile(const std::string& fileName);
+
 /** 
  * Changes the coordinate types. All operations internally are done in
  * rec coordinates, (x, y, width, height). The GRP functions pass

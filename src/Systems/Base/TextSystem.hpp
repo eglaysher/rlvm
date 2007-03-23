@@ -29,6 +29,8 @@
 
 class RLMachine;
 class TextWindow;
+class TextPage;
+
 
 class TextSystem
 {

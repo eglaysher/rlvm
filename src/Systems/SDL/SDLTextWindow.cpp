@@ -83,7 +83,10 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
 
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
-  m_font = TTF_OpenFont("/Users/elliot/msgothic.ttc", fontSizeInPixels());
+  string filename = findFontFile("msgothic.ttc");
+  cerr << "font file: " << filename << endl;
+  m_font = TTF_OpenFont(filename.c_str(), fontSizeInPixels());
+//"/home/elliot//msgothic.ttc", fontSizeInPixels());
   if(m_font == NULL)
   {
     ostringstream oss;
