@@ -39,6 +39,8 @@ private:
   boost::scoped_ptr<SDLTextSystem> textSystem;
   Gameexe& m_gameexe;
 
+  unsigned int m_lastTimePaused;
+
 public:
   SDLSystem(Gameexe& gameexe);
   ~SDLSystem();
