@@ -229,8 +229,9 @@ string Texture::getSubtractiveShaderString()
     "void main()"
     "{"
     "vec4 bgColor = texture2D(currentValues, gl_TexCoord[0].st);"
-    "vec4 maskColor = texture2D(mask, gl_TexCoord[1].st);"
-    "gl_FragColor = clamp(bgColor - maskColor.a + gl_Color * maskColor.a, 0.0, 1.0);"
+    "vec4 maskVector = texture2D(mask, gl_TexCoord[1].st);"
+    "float maskColor = clamp(maskVector.a * gl_Color.a, 0.0, 1.0);"
+    "gl_FragColor = clamp(bgColor - maskColor + gl_Color * maskColor, 0.0, 1.0);"
     "}";
 
   return x;
@@ -351,7 +352,6 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
 {
-  // For the time being, we are dumb and assume that it's one texture
   if(m_shaderObjectID == 0)
     buildShader();
   
@@ -360,61 +360,65 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   float thisx2 = float(x2) / m_textureWidth;
   float thisy2 = float(y2) / m_textureHeight;
 
-   if(m_isUpsideDown)
-   {
-//     cerr << "is upside down" << endl;
-     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
-     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
-   }
+  if(m_isUpsideDown)
+  {
+    thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+    thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+  }
 
-   // Copy the current region of this text box 
-   if(m_backTextureID == 0)
-   {
-     glGenTextures(1, &m_backTextureID);
-     glBindTexture(GL_TEXTURE_2D, m_backTextureID);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  // If we haven't already, allocate video memory for the back
+  // texture. 
+  //
+  // NOTE: Does this code deal with changing the dimensions of the
+  // text box? Does it matter?
+  if(m_backTextureID == 0)
+  {
+    glGenTextures(1, &m_backTextureID);
+    glBindTexture(GL_TEXTURE_2D, m_backTextureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-     // Generate this texture
-     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                  m_textureWidth, m_textureHeight,
-                  0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-     ShowGLErrors();
-   }
+    // Generate this texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                 m_textureWidth, m_textureHeight,
+                 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    ShowGLErrors();
+  }
 
-   // Copy the screen to the back texture
-   glBindTexture(GL_TEXTURE_2D, m_backTextureID);
-   int ystart = s_screenHeight - dy1 - (dy2 - dy1);
-   glCopyTexSubImage2D(GL_TEXTURE_2D, 
-                       0,
-                       0, 0, 
-                       dx1, ystart, dx2 - dx1, dy2 - dy1);
-   ShowGLErrors();
-   
-   glUseProgramObjectARB(m_programObjectID);
+  // Copy the current value of the region where we're going to render
+  // to a texture for input to the shader
+  glBindTexture(GL_TEXTURE_2D, m_backTextureID);
+  int ystart = s_screenHeight - dy1 - (dy2 - dy1);
+  glCopyTexSubImage2D(GL_TEXTURE_2D, 
+                      0,
+                      0, 0, 
+                      dx1, ystart, dx2 - dx1, dy2 - dy1);
+  ShowGLErrors();
 
-   // First draw the mask
-   glActiveTextureARB(GL_TEXTURE0_ARB);
-   glEnable(GL_TEXTURE_2D);
-   glBindTexture(GL_TEXTURE_2D, m_backTextureID);
-   GLint currentValuesLoc = glGetUniformLocationARB(m_programObjectID,
+  glUseProgramObjectARB(m_programObjectID);
+
+  // Put the backTexture in texture slot zero and set this to be the
+  // texture "currentValues" in the above shader program.
+  glActiveTextureARB(GL_TEXTURE0_ARB);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, m_backTextureID);
+  GLint currentValuesLoc = glGetUniformLocationARB(m_programObjectID,
                                                    "currentValues");
-   if(currentValuesLoc == -1)
-     throw "Bad uniform value";
-   glUniform1iARB(currentValuesLoc, 0);
+  if(currentValuesLoc == -1)
+    throw "Bad uniform value";
+  glUniform1iARB(currentValuesLoc, 0);
 
-   glActiveTextureARB(GL_TEXTURE1_ARB);
-   glEnable(GL_TEXTURE_2D);
-   glBindTexture(GL_TEXTURE_2D, m_textureID);
-   GLint maskLoc = glGetUniformLocationARB(m_programObjectID, "mask");
-   if(maskLoc == -1)
-     throw "Bad uniform value";
-   glUniform1iARB(maskLoc, 1);
+  // Put the mask in texture slot one and set this to be the
+  // texture "mask" in the above shader program.
+  glActiveTextureARB(GL_TEXTURE1_ARB);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+  GLint maskLoc = glGetUniformLocationARB(m_programObjectID, "mask");
+  if(maskLoc == -1)
+    throw "Bad uniform value";
+  glUniform1iARB(maskLoc, 1);
 
-//   glDisable(GL_BLEND);
-
-   // Produces half-way results; Write the fallback with this:
-//   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glDisable(GL_BLEND);
 
   glBegin(GL_QUADS);
   {
@@ -458,26 +462,21 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
 {
-  // For the time being, we are dumb and assume that it's one texture
-  
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
   float thisy2 = float(y2) / m_textureHeight;
 
-   if(m_isUpsideDown)
-   {
-//     cerr << "is upside down" << endl;
-     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
-     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
-   }
+  if(m_isUpsideDown)
+  {
+    thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+    thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+  }
 
-   // First draw the mask
-   glBindTexture(GL_TEXTURE_2D, m_textureID);
-//   glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-//   glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-   glBlendFuncSeparate(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA,
-                       GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+  // First draw the mask
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+  glBlendFuncSeparate(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA,
+                      GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   {
@@ -503,22 +502,20 @@ void Texture::renderToScreenAsColorMask_additive(
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
 {
-  // For the time being, we are dumb and assume that it's one texture
-  
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
   float thisy2 = float(y2) / m_textureHeight;
 
-   if(m_isUpsideDown)
-   {
-     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
-     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
-   }
+  if(m_isUpsideDown)
+  {
+    thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+    thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+  }
 
-   // First draw the mask
-   glBindTexture(GL_TEXTURE_2D, m_textureID);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  // First draw the mask
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   {
