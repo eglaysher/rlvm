@@ -36,7 +36,6 @@ LRLFILES[] =
   Module_ObjPosDims
   Module_Refresh
   Module_Debug
-  ConvertUTF
   TextoutLongOperation
 
 StaticCObject(libModules, $(LRLFILES))
