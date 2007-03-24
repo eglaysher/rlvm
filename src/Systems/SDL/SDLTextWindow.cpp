@@ -43,6 +43,7 @@
 #include "Utilities.h"
 
 #include "Modules/utf8.h"
+#include "Modules/cp932toUnicode.hpp"
 
 #include <iostream>
 #include <vector>
@@ -120,11 +121,69 @@ void SDLTextWindow::clearWin()
 
 // -----------------------------------------------------------------------
 
+void SDLTextWindow::displayChar(RLMachine& machine,
+                                const std::string& current,
+                                const std::string& next)
+{
+  setVisible(true);
+
+  SDL_Color color = {255, 255, 255};
+  int curCodepoint = codepoint(current);
+  int nextCodepoint = codepoint(next);
+
+  // For now, ignore U+3010 (LEFT BLACK LENTICULAR BRACKET) and
+  // U+3011 (RIGHT BLACK LENTICULAR BRACKET). When I come back and
+  // do name boxes, I'll have to change this.
+  if(curCodepoint == 0x3010)
+    return;
+  if(curCodepoint == 0x3011)
+    return;
+
+  SDL_Surface* tmp =
+    TTF_RenderUTF8_Blended(m_font, current.c_str(), color);
+
+  // If the width of this glyph plus the spacing will put us over the
+  // edge of the window, then line increment.
+  //
+  // If the current character will fit on this line, and it is NOT
+  // in this set, then we should additionally check the next
+  // character.  If that IS in this set and will not fit on the
+  // current line, then we break the line before the current
+  // character instead, to prevent the next character being stranded
+  // at the start of a line.
+  //
+  bool charWillFitOnLine = m_insertionPointX + tmp->w + m_xSpacing <=
+    windowWidth();
+  bool nextCharWillFitOnLine = m_insertionPointX + 2*(tmp->w + m_xSpacing) <=
+    windowWidth();
+  if(!charWillFitOnLine || 
+     (charWillFitOnLine && !isKinsoku(curCodepoint) &&
+      !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
+  {
+    m_insertionPointX = m_currentIndentationInPixels;
+    m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
+  }
+
+  // Render glyph to surface
+  int w = tmp->w;
+  int h = tmp->h;
+  m_surface->blitFROMSurface(
+    tmp, 0, 0, w, h,
+    m_insertionPointX, m_insertionPointY,
+    m_insertionPointX + w, m_insertionPointY + h,
+    255);
+
+  // Move the insertion point forward one character
+  m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
+
+  machine.system().graphics().markScreenAsDirty();
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
 {
   setVisible(true);
-  SDL_Color color = {255, 255, 255};
-//  SDL_Color color = {0, 0, 0};
 
   // Iterate over each incoming character to display (we do this
   // instead of rendering the entire string so that we can perform
@@ -132,83 +191,19 @@ void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
   string::const_iterator cur = utf8str.begin();
   string::const_iterator tmp = cur;
   string::const_iterator end = utf8str.end();
-  for(;tmp != end; cur = tmp)
+  utf8::next(tmp, end);
+  string curChar(cur, tmp);
+  for(cur = tmp; tmp != end; cur = tmp)
   {
-    int codepoint = utf8::next(tmp, end);
-    string ch(cur, tmp);
+    utf8::next(tmp, end);
+    string next(cur, tmp);
+    displayChar(machine, curChar, next);
 
-//    cerr << ch << ":" << codepoint << endl;
-
-    // For now, ignore U+3010 (LEFT BLACK LENTICULAR BRACKET) and
-    // U+3011 (RIGHT BLACK LENTICULAR BRACKET). When I come back and
-    // do name boxes, I'll have to change this.
-    if(codepoint == 0x3010)
-      continue;
-    if(codepoint == 0x3011)
-      continue;
-
-    SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(m_font, ch.c_str(), color);
-
-    // If the width of this glyph plus the spacing will put us over the
-    // edge of the window, then line increment.
-    //
-    // @todo Kinsoku not implemented.  The kinsoku feature is as
-    // follows: the following characters are considered `special' when
-    // wrapping lines automatically:
-    //
-    // { 0x0021, 0x0022, 0x0027, 0x0029, 0x002c, 0x002e, 0x003a,
-    //   0x003b, 0x003e, 0x003f, 0x005d, 0x007d, 0x2019, 0x201d,
-    //   0x2025, 0x2026, 0x3001, 0x3002, 0x3009, 0x300b, 0x300d,
-    //   0x300f, 0x3011, 0x301f, 0x3041, 0x3043, 0x3045, 0x3047,
-    //   0x3049, 0x3063, 0x3083, 0x3085, 0x3087, 0x308e, 0x30a1,
-    //   0x30a3, 0x30a5, 0x30a7, 0x30a9, 0x30c3, 0x30e3, 0x30e5,
-    //   0x30e7, 0x30ee, 0x30f5, 0x30f6, 0x30fb, 0x30fc, 0xff01,
-    //   0xff09, 0xff0c, 0xff0e, 0xff1a, 0xff1b, 0xff1f, 0xff3d,
-    //   0xff5d, 0xff5e, 0xff61, 0xff63, 0xff64, 0xff65, 0xff67,
-    //   0xff68, 0xff69, 0xff6a, 0xff6b, 0xff6c, 0xff6d, 0xff6e,
-    //   0xff6f, 0xff70, 0xff9e, 0xff9f }
-    //
-    // If the current character will fit on this line, and it is NOT
-    // in this set, then we should additionally check the next
-    // character.  If that IS in this set and will not fit on the
-    // current line, then we break the line before the current
-    // character instead, to prevent the next character being stranded
-    // at the start of a line.
-    //
-    if(m_insertionPointX + tmp->w + m_xSpacing > windowWidth() )
-    {
-//      cerr << "Going onto new line..." << endl;
-      m_insertionPointX = m_currentIndentationInPixels;
-      m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
-    }
-
-    // Render glyph to surface
-    int w = tmp->w;
-    int h = tmp->h;
-    m_surface->blitFROMSurface(tmp,
-                               0, 0, w, h,
-                               m_insertionPointX, m_insertionPointY,
-                               m_insertionPointX + w, m_insertionPointY + h,
-                               255);
-
-    // Move the insertion point forward one character
-    m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
-
-    // After the insertion point has been moved, check if this is a
-    // special indentation mark
-    if(m_useIndentation)
-    {
-      // If this is U+300C (LEFT CORNER BRACKET), and we're set to do
-      // indentation, then set the indentation
-      if(codepoint == 0x300C)
-        m_currentIndentationInPixels = m_insertionPointX;
-
-      // If this is U+300D (RIGHT CORNER BRACKET), reset the indentation
-      if(codepoint == 0x300D)
-        m_currentIndentationInPixels = 0;
-    }
+    curChar = next;
   }
+
+  displayChar(machine, curChar, "");
+
   machine.system().graphics().markScreenAsDirty();
 }
 
@@ -240,8 +235,8 @@ void SDLTextWindow::render(RLMachine& machine)
     int mainWidth = m_wakuMain->width();
     int mainHeight = m_wakuMain->height();
     m_wakuMain->renderToScreen(0, 0, mainWidth, mainHeight,
-                                  boxX, boxY, boxX + mainWidth,
-                                  boxY + mainHeight, 255);
+                               boxX, boxY, boxX + mainWidth,
+                               boxY + mainHeight, 255);
 
 //     cerr << "{" << 0 << ", " << 0 << ", " << width << ", "
 //          << height << "} - {" << x << ", " << y << ", "

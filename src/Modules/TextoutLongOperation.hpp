@@ -33,6 +33,8 @@ class TextoutLongOperation : public NiceLongOperation
 {
 private:
   std::string m_utf8string;
+
+  std::string m_currentChar;
   std::string::iterator m_currentPosition;
   
 public:

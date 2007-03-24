@@ -41,6 +41,7 @@ class TextPageElement
 {
 public:
   virtual ~TextPageElement() { }
+  virtual bool isTextElement() { return false; }
   virtual void replayElement(TextPage& ts) = 0;
 };
 
@@ -82,7 +83,11 @@ private:
 public:
   TextTextPageElement(const std::string& payload);
 
+  virtual bool isTextElement() { return true; }
+
   virtual void replayElement(TextPage& ts);  
+
+  void append(const std::string& in) { m_payload.append(in); }
 };
 
 // -----------------------------------------------------------------------
@@ -121,6 +126,22 @@ void TextPage::setWindow(int windowNum)
 {
   m_elementsToReplay.push_back(new SetWindowTextPageElement(windowNum) );
   setWindow_impl(windowNum);
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::character(const std::string& current, const std::string& next)
+{
+  if(!m_elementsToReplay.back().isTextElement())
+    m_elementsToReplay.push_back(new TextTextPageElement(current));
+  else
+  {
+    dynamic_cast<TextTextPageElement&>(m_elementsToReplay.back()).
+      append(current);
+  }
+
+  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .displayChar(m_machine, current, next);
 }
 
 // -----------------------------------------------------------------------

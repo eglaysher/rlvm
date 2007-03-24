@@ -83,6 +83,13 @@ public:
   void setWindow(int windowNum);
 
   /**
+   * Add this character to the most recent text render operation on
+   * this page's backlog, and then render it, minding the kinsoku
+   * spacing rules. 
+   */
+  void character(const std::string& current, const std::string& next);
+
+  /**
    * Add one or more UTF-8 character dropped in a raw string. We leave
    * things in UTF-8 from textPage on for both space, and for the
    * serious problem that our TTF rendering library thinks uses a

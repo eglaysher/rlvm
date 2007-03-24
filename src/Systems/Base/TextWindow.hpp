@@ -240,6 +240,13 @@ public:
    */
   virtual void clearWin() = 0;
 
+  /**
+   * Displays one character, and performs line breaking logic based on
+   * the next character.
+   */
+  virtual void displayChar(RLMachine& machine, const std::string& current,
+                           const std::string& next) = 0;
+
   /** 
    * Displays 1 or more UTF-8 characters in this window.
    */

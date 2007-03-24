@@ -40,4 +40,7 @@ std::string zentohan_cp932(const std::string& string);
 
 std::string unicodeToUTF8(const std::wstring& widestring);
 
+bool isKinsoku(int codepoint);
+int codepoint(const std::string& c);
+
 #endif

@@ -492,15 +492,14 @@ void RLMachine::performTextout(const TextoutElement& e)
   TextSystem& ts = system().text();
 
   // Display UTF-8 characters
-  if(ts.messageNoWait())
-  {
+   if(ts.messageNoWait())
+   {
     ts.currentPage(*this).text(utf8str);
-  }
-  else
-  {
-    // Build a 
-    setLongOperation(new TextoutLongOperation(*this, utf8str));
-  }
+   }
+   else
+   {
+     setLongOperation(new TextoutLongOperation(*this, utf8str));
+   }
 
   advanceInstructionPointer();
 }

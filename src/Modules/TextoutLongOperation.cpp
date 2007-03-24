@@ -47,6 +47,12 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
   : NiceLongOperation(machine), m_utf8string(utf8string), 
     m_currentPosition(m_utf8string.begin())
 {
+  // Retrieve the first character (prime the loop in operator())
+  string::iterator tmp = m_currentPosition;
+  utf8::next(tmp, m_utf8string.end());
+  m_currentChar = string(m_currentPosition, tmp);
+  m_currentPosition = tmp;
+
   cerr << "UTF: " << m_utf8string << endl;
 }
 
@@ -60,23 +66,32 @@ TextoutLongOperation::~TextoutLongOperation()
 
 bool TextoutLongOperation::operator()(RLMachine& machine)
 {
-//  machine.system().event().wait(10);
-
   // Isolate the next character
   string::iterator it = m_currentPosition;
 
-  int codepoint = utf8::next(it, m_utf8string.end());
-  if(codepoint)
+  if(it != m_utf8string.end())
   {
-    string c(m_currentPosition, it);
+    int codepoint = utf8::next(it, m_utf8string.end());
+    if(codepoint)
+    {
+      string nextChar(m_currentPosition, it);
 
-    machine.system().text().currentPage(machine).text(c);
+      machine.system().text().currentPage(machine).
+        character(m_currentChar, nextChar);
+
+      m_currentChar = nextChar;
+    }
 
     // advance to the next character
     m_currentPosition = it;
 
-    return it == m_utf8string.end();
+    return false;
   }
   else
+  {
+    machine.system().text().currentPage(machine).
+      character(m_currentChar, "");
+
     return true;
+  }
 }

@@ -59,6 +59,10 @@ public:
 
   virtual void clearWin();
 
+  virtual void displayChar(RLMachine& machine, 
+                           const std::string& current,
+                           const std::string& next);
+
   virtual void displayText(RLMachine& machine, const std::string& text);
 
   virtual void setWakuMain(RLMachine& machine, const std::string& name);
