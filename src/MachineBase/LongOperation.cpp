@@ -21,6 +21,9 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
 
 // -----------------------------------------------------------------------
 // LongOperation
@@ -28,6 +31,23 @@
 
 LongOperation::~LongOperation() 
 {}
+
+// -----------------------------------------------------------------------
+// NiceLongOperation
+// -----------------------------------------------------------------------
+
+NiceLongOperation::NiceLongOperation(RLMachine& machine)
+  : m_machine(machine)
+{
+  m_machine.system().event().beginBeingNiceAfterEachPass();
+}
+
+// -----------------------------------------------------------------------
+
+NiceLongOperation::~NiceLongOperation()
+{
+  m_machine.system().event().endBeingNiceAfterEachPass();
+}
 
 // -----------------------------------------------------------------------
 // PerformAfterLongOperationDecorator

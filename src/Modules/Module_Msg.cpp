@@ -61,7 +61,10 @@ using namespace std;
  */
 struct Msg_pause : public RLOp_Void_Void {
   /// Long operation
-  struct Longop_pause : public LongOperation {
+  struct Longop_pause : public NiceLongOperation {
+    Longop_pause(RLMachine& machine)
+      : NiceLongOperation(machine) {}
+
     bool operator()(RLMachine& machine) {
       // Check the status of the window.
       EventSystem& es = machine.system().event();
@@ -88,7 +91,7 @@ struct Msg_pause : public RLOp_Void_Void {
   };
 
   void operator()(RLMachine& machine) {
-    machine.setLongOperation(new Longop_pause());
+    machine.setLongOperation(new Longop_pause(machine));
   }
 };
 

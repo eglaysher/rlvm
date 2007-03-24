@@ -49,6 +49,8 @@ private:
   /// rendering frames to be nice to the user and the OS.
   int m_numberOfRealtimeTasks;
 
+  int m_numberOfNiceAfterEachTaskItems;
+
   void checkLayerAndCounter(int layer, int counter);
 
 public:
@@ -128,11 +130,20 @@ public:
    * 
    * @{
    */
+
+  /// Manages whether we're in a low priority task (whether we can
+  /// sleep after each instruction or tick of a LongOperation)
+  void beginBeingNiceAfterEachPass();
+  void endBeingNiceAfterEachPass();
+  bool beNiceAfterEachPass();
+
+  /// Manages whether we're in a task (animation?) that requires
+  /// closer to realtime.
   void beginRealtimeTask();
   void endRealtimeTask();
 
   /// Returns whether there are any current tasks that require
-  /// realtime acces for smooth animation.
+  /// realtime access for smooth animation.
   bool canBeNice();
 
   /// @}

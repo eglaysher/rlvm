@@ -42,8 +42,10 @@ using namespace std;
 // TextoutLongOperation
 // -----------------------------------------------------------------------
 
-TextoutLongOperation::TextoutLongOperation(const std::string& utf8string)
-  : m_utf8string(utf8string), m_currentPosition(m_utf8string.begin())
+TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
+                                           const std::string& utf8string)
+  : NiceLongOperation(machine), m_utf8string(utf8string), 
+    m_currentPosition(m_utf8string.begin())
 {
   cerr << "UTF: " << m_utf8string << endl;
 }

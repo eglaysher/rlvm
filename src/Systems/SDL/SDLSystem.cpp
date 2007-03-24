@@ -66,15 +66,22 @@ void SDLSystem::run(RLMachine& machine)
   graphicsSystem->executeGraphicsSystem(machine);
 
   // Pause the system for a moment
-  unsigned int nicenessThreshold = 5;
-  if(!eventSystem->canBeNice())
-    nicenessThreshold = 20;
-
-  unsigned int currentTime = eventSystem->getTicks();
-  if(currentTime - m_lastTimePaused > nicenessThreshold)
+  if(eventSystem->beNiceAfterEachPass() && eventSystem->canBeNice())
   {
     eventSystem->wait(10);
-    m_lastTimePaused = eventSystem->getTicks();
+  }
+  else
+  {
+    unsigned int nicenessThreshold = 5;
+    if(!eventSystem->canBeNice())
+      nicenessThreshold = 20;
+
+    unsigned int currentTime = eventSystem->getTicks();
+    if(currentTime - m_lastTimePaused > nicenessThreshold)
+    {
+      eventSystem->wait(10);
+      m_lastTimePaused = eventSystem->getTicks();
+    }
   }
 }
 

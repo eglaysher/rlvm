@@ -29,14 +29,14 @@
 
 class RLMachine;
 
-class TextoutLongOperation : public LongOperation
+class TextoutLongOperation : public NiceLongOperation
 {
 private:
   std::string m_utf8string;
   std::string::iterator m_currentPosition;
   
 public:
-  TextoutLongOperation(const std::string& utf8string);
+  TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
   ~TextoutLongOperation();
 
   virtual bool operator()(RLMachine& machine);

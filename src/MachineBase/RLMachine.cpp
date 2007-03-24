@@ -499,7 +499,7 @@ void RLMachine::performTextout(const TextoutElement& e)
   else
   {
     // Build a 
-    setLongOperation(new TextoutLongOperation(utf8str));
+    setLongOperation(new TextoutLongOperation(*this, utf8str));
   }
 
   advanceInstructionPointer();

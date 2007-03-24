@@ -34,7 +34,7 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 EventSystem::EventSystem() 
-  : m_numberOfRealtimeTasks(0) 
+  : m_numberOfRealtimeTasks(0), m_numberOfNiceAfterEachTaskItems(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -70,6 +70,27 @@ bool EventSystem::frameCounterExists(int layer, int frameCounter)
   checkLayerAndCounter(layer, frameCounter);
   scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
   return counter.get() != NULL;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::beginBeingNiceAfterEachPass()
+{
+  m_numberOfNiceAfterEachTaskItems++;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::endBeingNiceAfterEachPass()
+{
+  m_numberOfNiceAfterEachTaskItems--;
+}
+
+// -----------------------------------------------------------------------
+
+bool EventSystem::beNiceAfterEachPass()
+{
+  return m_numberOfNiceAfterEachTaskItems > 0;
 }
 
 // -----------------------------------------------------------------------
