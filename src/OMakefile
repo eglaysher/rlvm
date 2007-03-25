@@ -27,6 +27,11 @@ LIBRLVMFILES[] =
   libReallive/libReallive
   Utilities
 
+# Build our precompiled headers
+Precompiled.hpp.gch: Precompiled.hpp
+  $(CXX) $(CXXFLAGS) -I. -x c++-header -c $< -o $@
+CGeneratedFiles(Precompiled.hpp.gch)
+
 StaticCLibrary(librlvm, $(LIBRLVMFILES))
 
 ########

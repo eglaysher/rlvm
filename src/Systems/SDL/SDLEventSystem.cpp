@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 

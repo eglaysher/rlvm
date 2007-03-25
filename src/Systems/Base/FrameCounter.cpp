@@ -20,6 +20,9 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
 
 #include "Systems/Base/FrameCounter.hpp"
 #include "Systems/Base/EventSystem.hpp"

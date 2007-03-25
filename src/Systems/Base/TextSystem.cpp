@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"

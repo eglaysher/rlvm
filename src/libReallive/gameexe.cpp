@@ -33,6 +33,11 @@
   Note that this exception does not invalidate any other reasons why any part of 
   the work might be covered by the LGPL.
 */
+// -----------------------------------------------------------------------
+
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
   
 #include "gameexe.h"
 #include "defs.h"

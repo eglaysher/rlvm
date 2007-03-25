@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "Modules/TextoutLongOperation.hpp"
 
 #include "MachineBase/RLMachine.hpp"

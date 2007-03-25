@@ -20,6 +20,8 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "MachineBase/GeneralOperations.hpp"
