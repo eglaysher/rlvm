@@ -117,6 +117,7 @@ void SDLTextWindow::clearWin()
 {
   m_insertionPointX = 0;
   m_insertionPointY = 0;
+  m_currentLineNumber = 0;
 
   // Allocate the text window surface
   m_surface.reset(new SDLSurface(windowWidth(), windowHeight()));
@@ -125,7 +126,7 @@ void SDLTextWindow::clearWin()
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::displayChar(RLMachine& machine,
+bool SDLTextWindow::displayChar(RLMachine& machine,
                                 const std::string& current,
                                 const std::string& next)
 {
@@ -135,13 +136,15 @@ void SDLTextWindow::displayChar(RLMachine& machine,
   int curCodepoint = codepoint(current);
   int nextCodepoint = codepoint(next);
 
+  cerr << current << " : " << next << endl;
+
   // For now, ignore U+3010 (LEFT BLACK LENTICULAR BRACKET) and
   // U+3011 (RIGHT BLACK LENTICULAR BRACKET). When I come back and
   // do name boxes, I'll have to change this.
   if(curCodepoint == 0x3010)
-    return;
+    return true;
   if(curCodepoint == 0x3011)
-    return;
+    return true;
 
   SDL_Surface* tmp =
     TTF_RenderUTF8_Blended(m_font, current.c_str(), color);
@@ -166,6 +169,10 @@ void SDLTextWindow::displayChar(RLMachine& machine,
   {
     m_insertionPointX = m_currentIndentationInPixels;
     m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
+    m_currentLineNumber++;
+
+    if(isFull())
+      return false;
   }
 
   // Render glyph to surface
@@ -181,34 +188,15 @@ void SDLTextWindow::displayChar(RLMachine& machine,
   m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
 
   machine.system().graphics().markScreenAsDirty();
+
+  return true;
 }
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::displayText(RLMachine& machine, const std::string& utf8str)
+bool SDLTextWindow::isFull() const
 {
-  setVisible(true);
-
-  // Iterate over each incoming character to display (we do this
-  // instead of rendering the entire string so that we can perform
-  // indentation, et cetera.)
-  string::const_iterator cur = utf8str.begin();
-  string::const_iterator tmp = cur;
-  string::const_iterator end = utf8str.end();
-  utf8::next(tmp, end);
-  string curChar(cur, tmp);
-  for(cur = tmp; tmp != end; cur = tmp)
-  {
-    utf8::next(tmp, end);
-    string next(cur, tmp);
-    displayChar(machine, curChar, next);
-
-    curChar = next;
-  }
-
-  displayChar(machine, curChar, "");
-
-  machine.system().graphics().markScreenAsDirty();
+  return m_currentLineNumber >= m_yWindowSizeInChars;
 }
 
 // -----------------------------------------------------------------------

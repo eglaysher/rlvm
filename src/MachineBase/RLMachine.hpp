@@ -33,6 +33,7 @@
  */
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
 #include "libReallive/bytecode.h"
@@ -107,8 +108,8 @@ private:
   /// The actual call stack.
   std::stack<StackFrame> callStack;
 
-  /// A pointer to a LongOperation
-  boost::scoped_ptr<LongOperation> currentLongOperation;
+  /// The stack of LongOperations (which preempt the normal call stack)
+  boost::ptr_vector<LongOperation> m_longOperationStack;
 
   /// There are some cases where we need to create our own system,
   /// since one isn't provided for us. This variable is for those
@@ -257,14 +258,17 @@ public:
   void returnFromGosub();
 
   /** 
-   * Sets a long operation. Control will be passed to this
-   * LongOperation instead of normal bytecode passing until the
-   * LongOperation gives control up.
+   * Pushes a long operation onto the function stack. Control will be
+   * passed to this LongOperation instead of normal bytecode passing
+   * until the LongOperation gives control up.
    * 
    * @param longOperation LongOperation to take control
+   * @warning Never call pushLongOperation from a LongOperation that
+   *          is about to return true. The operation you just pushed
+   *          will be removed instead of the current operation.
    * @see LongOperation
    */
-  void setLongOperation(LongOperation* longOperation);
+  void pushLongOperation(LongOperation* longOperation);
 
   /** 
    * Returns the current scene number for the Scenario on the top of

@@ -39,7 +39,8 @@
 using namespace std;
 
 TextWindow::TextWindow()
-  : m_useIndentation(0), m_currentIndentationInPixels(0),
+  : m_currentLineNumber(0), m_useIndentation(0), 
+    m_currentIndentationInPixels(0),
     m_r(0), m_g(0), m_b(0), m_alpha(0), m_filter(0), m_isVisible(0)
 {}
 

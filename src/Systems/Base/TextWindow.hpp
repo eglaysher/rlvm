@@ -57,6 +57,7 @@ protected:
    */
   int m_textInsertionPointX;
   int m_textInsertionPointY;
+  int m_currentLineNumber;
   /// @}
 
   /**
@@ -243,14 +244,17 @@ public:
   /**
    * Displays one character, and performs line breaking logic based on
    * the next character.
+   *
+   * @return True if the character fits on the screen. False if it
+   *         does not and was not displayed.
    */
-  virtual void displayChar(RLMachine& machine, const std::string& current,
+  virtual bool displayChar(RLMachine& machine, const std::string& current,
                            const std::string& next) = 0;
 
-  /** 
-   * Displays 1 or more UTF-8 characters in this window.
+  /**
+   * Returns whether another character can be placed on the screen.
    */
-  virtual void displayText(RLMachine& machine, const std::string& text) = 0;
+  virtual bool isFull() const = 0;
 };
 
 #endif

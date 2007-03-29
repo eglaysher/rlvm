@@ -85,7 +85,7 @@ struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
 
   /// Simply set the long operation
   void operator()(RLMachine& machine, int time) {
-    machine.setLongOperation(new LongOp_wait(machine, time));
+    machine.pushLongOperation(new LongOp_wait(machine, time));
   }
 };
 
@@ -113,7 +113,7 @@ struct Sys_waitC : public RLOp_Void_1< IntConstant_T > {
 
   /// Simply set the long operation
   void operator()(RLMachine& machine, int time) {
-    machine.setLongOperation(new LongOp_waitC(machine, time));
+    machine.pushLongOperation(new LongOp_waitC(machine, time));
   }
 };
 

@@ -36,10 +36,18 @@ private:
 
   std::string m_currentChar;
   std::string::iterator m_currentPosition;
+
+  /// Sets whether we should display as much text as we can immediately.
+  bool m_noWait;
+
+  bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
+  bool displayOneMoreCharacter(RLMachine& machine);
   
 public:
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
   ~TextoutLongOperation();
+
+  void setNoWait(bool in = true) { m_noWait = in; }
 
   virtual bool operator()(RLMachine& machine);
 };

@@ -58,7 +58,7 @@ private:
 
   void setWindow_impl(int window);
 
-  void text_impl(const std::string& text);
+  bool character_impl(const std::string& c, const std::string& nextChar);
 
   /// @}
 
@@ -87,16 +87,13 @@ public:
    * this page's backlog, and then render it, minding the kinsoku
    * spacing rules. 
    */
-  void character(const std::string& current, const std::string& next);
+  bool character(const std::string& current, const std::string& next);
 
-  /**
-   * Add one or more UTF-8 character dropped in a raw string. We leave
-   * things in UTF-8 from textPage on for both space, and for the
-   * serious problem that our TTF rendering library thinks uses a
-   * character of unsigned 16 bits, thus not being able to handle the
-   * entire unicode standard. :(
+  /** 
+   * Queries the corresponding TextWindow to see if it is full. Used
+   * to implement implicit pauses when a page is full.
    */
-  void text(const std::string& text);
+  bool isFull() const;
 
   /// @}
 };

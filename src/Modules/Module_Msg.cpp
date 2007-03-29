@@ -34,7 +34,6 @@
 
 #include "Modules/Module_Msg.hpp"
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 //#include "GeneralOperations.hpp"
@@ -55,6 +54,40 @@ using namespace std;
  * @{
  */
 
+// -----------------------------------------------------------------------
+// Longop_pause
+// -----------------------------------------------------------------------
+
+Longop_pause::Longop_pause(RLMachine& machine)
+  : NiceLongOperation(machine) {}
+
+// -----------------------------------------------------------------------
+
+bool Longop_pause::operator()(RLMachine& machine) {
+  // Check the status of the window.
+  EventSystem& es = machine.system().event();
+  int x, y, btn1, btn2;
+  bool done = false;
+
+  es.getCursorPos(x, y, btn1, btn2);
+  if(btn1 == 2)
+  {
+    es.flushMouseClicks();
+    done = true;
+  }
+
+  if(!done)
+    done = es.ctrlPressed();
+
+  if(done)
+  {
+    machine.system().text().newPage(machine);
+  }
+
+  return done;
+}
+
+// -----------------------------------------------------------------------
 
 /** 
  * Implements op<0:Msg:17, 0>, fun pause().
@@ -64,38 +97,8 @@ using namespace std;
  * @bug Does this work with ctrl()?
  */
 struct Msg_pause : public RLOp_Void_Void {
-  /// Long operation
-  struct Longop_pause : public NiceLongOperation {
-    Longop_pause(RLMachine& machine)
-      : NiceLongOperation(machine) {}
-
-    bool operator()(RLMachine& machine) {
-      // Check the status of the window.
-      EventSystem& es = machine.system().event();
-      int x, y, btn1, btn2;
-      bool done = false;
-
-      es.getCursorPos(x, y, btn1, btn2);
-      if(btn1 == 2)
-      {
-        es.flushMouseClicks();
-        done = true;
-      }
-
-      if(!done)
-        done = es.ctrlPressed();
-
-      if(done)
-      {
-        machine.system().text().newPage(machine);
-      }
-
-      return done;
-    }
-  };
-
   void operator()(RLMachine& machine) {
-    machine.setLongOperation(new Longop_pause(machine));
+    machine.pushLongOperation(new Longop_pause(machine));
   }
 };
 

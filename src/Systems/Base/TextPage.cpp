@@ -31,6 +31,8 @@
 
 #include "MachineBase/RLMachine.hpp"
 
+#include "Modules/utf8.h"
+
 #include <string>
 #include <iostream>
 
@@ -59,7 +61,6 @@ private:
   int m_toSetTo;
 public:
   SetWindowTextPageElement(int in);
-
   virtual void replayElement(TextPage& ts);  
 };
 
@@ -83,28 +84,56 @@ void SetWindowTextPageElement::replayElement(TextPage& page)
 class TextTextPageElement : public TextPageElement
 {
 private:
-  std::string m_payload;
+  /// A list of UTF-8 characters to print.
+  std::string m_listOfCharsToPrint;
+
+  /// The nextChar on the last operation.
+  std::string m_nextChar;
+
 public:
-  TextTextPageElement(const std::string& payload);
-
+  TextTextPageElement();
   virtual bool isTextElement() { return true; }
-
   virtual void replayElement(TextPage& ts);  
-
-  void append(const std::string& in) { m_payload.append(in); }
+  void append(const std::string& c, const std::string& nextChar);
 };
 
 // -----------------------------------------------------------------------
 
-TextTextPageElement::TextTextPageElement(const std::string& payload)
-  : m_payload(payload)
+TextTextPageElement::TextTextPageElement()
 {}
 
 // -----------------------------------------------------------------------
 
 void TextTextPageElement::replayElement(TextPage& page)
 {
-  page.text_impl(m_payload);
+  // Iterate over each incoming character to display (we do this
+  // instead of rendering the entire string so that we can perform
+  // indentation, et cetera.)
+  string::const_iterator cur = m_listOfCharsToPrint.begin();
+  string::const_iterator tmp = cur;
+  string::const_iterator end = m_listOfCharsToPrint.end();
+  utf8::next(tmp, end);
+  string curChar(cur, tmp);
+  for(cur = tmp; tmp != end; cur = tmp)
+  {
+    utf8::next(tmp, end);
+    string next(cur, tmp);
+    page.character_impl(curChar, next);
+    curChar = next;
+  }
+
+  page.character_impl(curChar, m_nextChar);
+  
+//  page.text_impl(m_payload);
+}
+
+// -----------------------------------------------------------------------
+
+void TextTextPageElement::append(const std::string& c, 
+                                 const std::string& nextChar)
+{
+  m_listOfCharsToPrint.append(c); 
+  m_nextChar = nextChar;
 }
 
 // -----------------------------------------------------------------------
@@ -113,16 +142,12 @@ void TextTextPageElement::replayElement(TextPage& page)
 
 TextPage::TextPage(RLMachine& machine)
   : m_machine(machine), m_currentWindow(0)
-{
-
-}
+{}
 
 // -----------------------------------------------------------------------
 
 TextPage::~TextPage()
-{
-
-}
+{}
 
 // ------------------------------------------------- [ Public operations ]
 
@@ -134,26 +159,20 @@ void TextPage::setWindow(int windowNum)
 
 // -----------------------------------------------------------------------
 
-void TextPage::character(const std::string& current, const std::string& next)
+bool TextPage::character(const std::string& current, const std::string& next)
 {
-  if(!m_elementsToReplay.back().isTextElement())
-    m_elementsToReplay.push_back(new TextTextPageElement(current));
-  else
+  bool rendered = character_impl(current, next);
+
+  if(rendered)
   {
+    if(!m_elementsToReplay.back().isTextElement())
+      m_elementsToReplay.push_back(new TextTextPageElement);
+
     dynamic_cast<TextTextPageElement&>(m_elementsToReplay.back()).
-      append(current);
+      append(current, next);
   }
 
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
-    .displayChar(m_machine, current, next);
-}
-
-// -----------------------------------------------------------------------
-
-void TextPage::text(const std::string& text)
-{
-  m_elementsToReplay.push_back(new TextTextPageElement(text));
-  text_impl(text);
+  return rendered;
 }
 
 // ------------------------------------------- [ Private implementations ]
@@ -165,9 +184,18 @@ void TextPage::setWindow_impl(int windowNum)
 
 // -----------------------------------------------------------------------
 
-void TextPage::text_impl(const std::string& text)
+bool TextPage::character_impl(const std::string& c, 
+                              const std::string& nextChar)
 {
-//  cerr << "Displaying to " << m_currentWindow << endl;
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
-    .displayText(m_machine, text);
+  return m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .displayChar(m_machine, c, nextChar);
+}
+
+// -----------------------------------------------------------------------
+
+
+bool TextPage::isFull() const
+{
+  return m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .isFull();
 }

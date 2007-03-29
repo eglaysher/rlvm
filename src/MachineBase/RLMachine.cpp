@@ -214,11 +214,11 @@ void RLMachine::executeNextInstruction()
   if(halted() == true)
     return;
   // If we are in a long operation, run it, and end it if it returns true.
-  else if(currentLongOperation)
+  else if(m_longOperationStack.size())
   {
-    bool retVal = (*currentLongOperation)(*this);
+    bool retVal = m_longOperationStack.back()(*this);
     if(retVal)
-      currentLongOperation.reset();
+      m_longOperationStack.pop_back();
   }
   else 
   {
@@ -465,9 +465,9 @@ void RLMachine::returnFromGosub()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setLongOperation(LongOperation* longOperation)
+void RLMachine::pushLongOperation(LongOperation* longOperation)
 {
-  currentLongOperation.reset(longOperation);
+  m_longOperationStack.push_back(longOperation);
 }
 
 // -----------------------------------------------------------------------
@@ -496,15 +496,12 @@ void RLMachine::performTextout(const TextoutElement& e)
   TextSystem& ts = system().text();
 
   // Display UTF-8 characters
-   if(ts.messageNoWait())
-   {
-    ts.currentPage(*this).text(utf8str);
-   }
-   else
-   {
-     setLongOperation(new TextoutLongOperation(*this, utf8str));
-   }
+  auto_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
 
+  if(ts.messageNoWait())
+    ptr->setNoWait();
+ 
+  pushLongOperation(ptr.release());
   advanceInstructionPointer();
 }
 

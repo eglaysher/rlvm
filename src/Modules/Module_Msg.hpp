@@ -32,6 +32,7 @@
  */
 
 #include "MachineBase/RLModule.hpp"
+#include "MachineBase/LongOperation.hpp"
 
 /**
  * Contains functions for mod<0:3>, Msg.
@@ -41,6 +42,17 @@
 class MsgModule : public RLModule {
 public:
   MsgModule();
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Main pause function. Exported for TextoutLongOperation to abuse. 
+ */
+struct Longop_pause : public NiceLongOperation 
+{
+  Longop_pause(RLMachine& machine);
+  bool operator()(RLMachine& machine);
 };
 
 #endif
