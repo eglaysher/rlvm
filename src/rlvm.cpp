@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "libReallive/reallive.h"
 #include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
@@ -335,6 +339,7 @@ int main(int argc, char* argv[])
       // etc.
       sdlSystem.run(rlmachine);
 
+
       // Run the rlmachine through another instruction
       rlmachine.executeNextInstruction();
     }
@@ -346,6 +351,10 @@ int main(int argc, char* argv[])
   catch(std::exception& e) {
     cout << "Uncaught exception: " << e.what() << endl;
     return 1;
+  }
+  catch(const char* e) {
+    cout << "Uncaught exception: " << e << endl;
+    return 1;    
   }
 
   return 0;

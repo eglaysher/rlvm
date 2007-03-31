@@ -25,6 +25,7 @@
 
 #include "MachineBase/LongOperation.hpp"
 
+#include <boost/function.hpp>
 #include <string>
 
 class RLMachine;
@@ -34,6 +35,7 @@ class TextoutLongOperation : public NiceLongOperation
 private:
   std::string m_utf8string;
 
+  int m_currentCodepoint;
   std::string m_currentChar;
   std::string::iterator m_currentPosition;
 
@@ -41,6 +43,8 @@ private:
   bool m_noWait;
 
   bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
+
+  bool displayName(RLMachine& machine);
   bool displayOneMoreCharacter(RLMachine& machine);
   
 public:
@@ -51,5 +55,11 @@ public:
 
   virtual bool operator()(RLMachine& machine);
 };
+
+// -----------------------------------------------------------------------
+
+void printTextToFunction(
+  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
+  const std::string& charsToPrint, const std::string& nextCharForFinal);
 
 #endif

@@ -41,6 +41,7 @@ class TextWindow
 {
 protected:
   /**
+   * @name Text window Origin
    * Describes the origin point of the window
    * 
    * @{
@@ -50,7 +51,8 @@ protected:
   int m_windowPositionY;
   /// @}
 
-  /** The text insertion point. These two numbers are relative to the
+  /** @name Insertion point 
+   * The text insertion point. These two numbers are relative to the
    * text window location. 
    *
    * @{
@@ -61,7 +63,7 @@ protected:
   /// @}
 
   /**
-   * Text output properties
+   * @name Text output properties
    * 
    * @{
    */
@@ -69,7 +71,7 @@ protected:
   /// The current size of the font
   int m_fontSizeInPixels;
 
-  /// The current size of the ruby text
+  /// The current size of the ruby text in pixels
   int m_rubySize;
 
   /// Size of the window in characters
@@ -100,6 +102,21 @@ protected:
   int m_r, m_g, m_b, m_alpha, m_filter;
 
   int m_isVisible;
+
+
+  /** 
+   * @name Name display options
+   * 
+   * Options related to the display of the current speaker's name.
+   */
+
+  /// Describes how to render character names.
+  /// - 0: Display names inline (default)
+  /// - 1: Display names in a seperate window
+  /// - 2: Do not display names
+  int m_nameMod;
+
+  /// @}
 
   /**
    * @name Waku (window decorations)
@@ -147,7 +164,7 @@ public:
   /**
    * Sets the size of the ruby (furigana; pronounciation guide) text
    * in pixels. If zero, ruby text is disabled in this
-   * window. Hilariously represented by \#WINDOW.xxx.LUBY_SIZE.
+   * window. Represented by \#WINDOW.xxx.LUBY_SIZE.
    */
   void setRubyTextSize(const int i) { m_rubySize = i; }
   int rubyTextSize() const { return m_rubySize; }
@@ -183,6 +200,20 @@ public:
   int textY2(RLMachine& machine) const;
 
   /// @}
+
+  /**
+   * @name Name window settings
+   * 
+   * @{
+   */
+
+  /// Sets how the name is displayed
+  /// @see m_nameMod
+  void setNameMod(const int in) { m_nameMod = in; }
+
+  /// @}
+
+
 
   /**
    * @name Waku (Window decoration) Handling Functions
@@ -255,6 +286,18 @@ public:
    * Returns whether another character can be placed on the screen.
    */
   virtual bool isFull() const = 0;
+
+ 
+  /** 
+   *  Write this later.
+   */
+ //  virtual void resetName() = 0;
+ 
+  /**
+   * Sets (and displays, if appropriate) the name of the current speaker.
+   */
+  virtual void setName(RLMachine& machine, const std::string& utf8name, 
+                       const std::string& nextChar) = 0;
 };
 
 #endif

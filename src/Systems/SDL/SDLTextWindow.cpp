@@ -44,15 +44,18 @@
 #include <SDL/SDL_ttf.h>
 
 #include <boost/function.hpp>
+#include <boost/bind.hpp>
 #include "Utilities.h"
 
 #include "Modules/utf8.h"
 #include "Modules/cp932toUnicode.hpp"
+#include "Modules/TextoutLongOperation.hpp"
 
 #include <iostream>
 #include <vector>
 
 using namespace std;
+using namespace boost;
 
 // -----------------------------------------------------------------------
 
@@ -86,6 +89,8 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   // Gameexe.ini.
   setUseIndentation(window("INDENT_USE").to_int(1));
 
+  setNameMod(window("NAME_MOD").to_int(0));
+
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
   string filename = findFontFile("msgothic.ttc");
@@ -117,6 +122,7 @@ void SDLTextWindow::clearWin()
 {
   m_insertionPointX = 0;
   m_insertionPointY = 0;
+  m_currentIndentationInPixels = 0;
   m_currentLineNumber = 0;
 
   // Allocate the text window surface
@@ -136,15 +142,16 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   int curCodepoint = codepoint(current);
   int nextCodepoint = codepoint(next);
 
-  cerr << current << " : " << next << endl;
+  cerr << current << "(" << isKinsoku(curCodepoint) << ") : " << next
+       << "(" << isKinsoku(nextCodepoint) << ")" << endl;
 
-  // For now, ignore U+3010 (LEFT BLACK LENTICULAR BRACKET) and
-  // U+3011 (RIGHT BLACK LENTICULAR BRACKET). When I come back and
-  // do name boxes, I'll have to change this.
-  if(curCodepoint == 0x3010)
-    return true;
-  if(curCodepoint == 0x3011)
-    return true;
+  // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
+  // LENTICULAR BRACKET) should be handled before this
+  // function. Otherwise, it's an error.
+  if(curCodepoint == 0x3010 || curCodepoint == 0x3011)
+  {
+    throw "Bug in parser; \{name} construct should be handled before displayChar";
+  }
 
   SDL_Surface* tmp =
     TTF_RenderUTF8_Blended(m_font, current.c_str(), color);
@@ -187,6 +194,11 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   // Move the insertion point forward one character
   m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
 
+  // Now check to see if this character is one of the opening quotes
+  if(curCodepoint == 0x300C || curCodepoint == 0x300E || 
+     curCodepoint == 0xFF08)
+    setIndentation();
+
   machine.system().graphics().markScreenAsDirty();
 
   return true;
@@ -197,6 +209,40 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 bool SDLTextWindow::isFull() const
 {
   return m_currentLineNumber >= m_yWindowSizeInChars;
+}
+
+// -----------------------------------------------------------------------
+
+bool SDLTextWindow::setIndentation()
+{
+  m_currentIndentationInPixels = m_insertionPointX;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
+                            const std::string& nextChar)
+{
+  if(m_nameMod == 0)
+  {
+    // Display the name in one pass
+    printTextToFunction(bind(&SDLTextWindow::displayChar, ref(*this), 
+                             ref(machine), _1, _2),
+                        utf8name, nextChar);
+    setIndentation();
+  }
+  else if(m_nameMod == 1)
+  {
+    throw "NAME_MOD=1 is unsupported.";
+  }
+  else if(m_nameMod == 2)
+  {
+    throw "Unimplemented.";
+  }
+  else
+  {
+    throw "Invalid";
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -263,3 +309,5 @@ void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
   s->setIsMask(true);
   m_wakuBacking.reset(s);
 }
+
+// -----------------------------------------------------------------------

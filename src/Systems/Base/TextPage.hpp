@@ -60,6 +60,8 @@ private:
 
   bool character_impl(const std::string& c, const std::string& nextChar);
 
+  void name_impl(const std::string& name, const std::string& nextChar);
+
   /// @}
 
 public:
@@ -94,6 +96,13 @@ public:
    * to implement implicit pauses when a page is full.
    */
   bool isFull() const;
+
+  /**
+   * Displays a name. This function will be called by the
+   * TextoutLongOperation.
+   * 
+   */
+  void name(const std::string& name, const std::string& nextChar);
 
   /// @}
 };
