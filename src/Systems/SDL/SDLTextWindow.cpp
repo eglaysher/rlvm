@@ -245,7 +245,7 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
   }
   else if(m_nameMod == 2)
   {
-    throw "Unimplemented.";
+    // Don't print anything for now. Needs to be more robust.
   }
   else
   {
@@ -287,18 +287,24 @@ void SDLTextWindow::render(RLMachine& machine)
     int boxX = boxX1();
     int boxY = boxY1();
 
-    int backingWidth = m_wakuBacking->width();
-    int backingHeight = m_wakuBacking->height();
-    m_wakuBacking->renderToScreenAsColorMask(0, 0, backingWidth, backingHeight,
-                                             boxX, boxY, boxX + backingWidth,
-                                             boxY + backingHeight,
-                                             m_r, m_g, m_b, m_alpha, m_filter);
+    if(m_wakuBacking)
+    {
+      int backingWidth = m_wakuBacking->width();
+      int backingHeight = m_wakuBacking->height();
+      m_wakuBacking->renderToScreenAsColorMask(0, 0, backingWidth, backingHeight,
+                                               boxX, boxY, boxX + backingWidth,
+                                               boxY + backingHeight,
+                                               m_r, m_g, m_b, m_alpha, m_filter);
+    }
 
-    int mainWidth = m_wakuMain->width();
-    int mainHeight = m_wakuMain->height();
-    m_wakuMain->renderToScreen(0, 0, mainWidth, mainHeight,
-                               boxX, boxY, boxX + mainWidth,
-                               boxY + mainHeight, 255);
+    if(m_wakuMain)
+    {
+      int mainWidth = m_wakuMain->width();
+      int mainHeight = m_wakuMain->height();
+      m_wakuMain->renderToScreen(0, 0, mainWidth, mainHeight,
+                                 boxX, boxY, boxX + mainWidth,
+                                 boxY + mainHeight, 255);
+    }
 
 //     cerr << "{" << 0 << ", " << 0 << ", " << width << ", "
 //          << height << "} - {" << x << ", " << y << ", "
@@ -317,21 +323,31 @@ void SDLTextWindow::render(RLMachine& machine)
 
 void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
 {
-  GraphicsSystem& gs = machine.system().graphics();
-  SDLSurface* s = dynamic_cast<SDLSurface*>(
-    gs.loadSurfaceFromFile(findFile(machine, name)));
-  m_wakuMain.reset(s);
+  if(name != "")
+  {
+    GraphicsSystem& gs = machine.system().graphics();
+    SDLSurface* s = dynamic_cast<SDLSurface*>(
+      gs.loadSurfaceFromFile(findFile(machine, name)));
+    m_wakuMain.reset(s);
+  }
+  else
+    m_wakuMain.reset();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
 {
-  GraphicsSystem& gs = machine.system().graphics();
-  SDLSurface* s = dynamic_cast<SDLSurface*>(
-    gs.loadSurfaceFromFile(findFile(machine, name)));
-  s->setIsMask(true);
-  m_wakuBacking.reset(s);
+  if(name != "")
+  {
+    GraphicsSystem& gs = machine.system().graphics();
+    SDLSurface* s = dynamic_cast<SDLSurface*>(
+      gs.loadSurfaceFromFile(findFile(machine, name)));
+    s->setIsMask(true);
+    m_wakuBacking.reset(s);
+  }
+  else
+    m_wakuBacking.reset();
 }
 
 // -----------------------------------------------------------------------
