@@ -72,6 +72,8 @@ public:
 
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& nextChar);
+  virtual void hardBrake();
+  virtual void resetIndentation();
 };
 
 

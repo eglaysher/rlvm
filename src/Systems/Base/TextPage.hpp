@@ -41,6 +41,9 @@ private:
   friend class TextPageElement;
   friend class SetWindowTextPageElement;
   friend class TextTextPageElement;
+  friend class NamePageElement;
+  friend class HardBreakElement;
+  friend class ResetIndentationElement;
 
   boost::ptr_vector<TextPageElement> m_elementsToReplay;
 
@@ -61,6 +64,10 @@ private:
   bool character_impl(const std::string& c, const std::string& nextChar);
 
   void name_impl(const std::string& name, const std::string& nextChar);
+
+  void hardBrake_impl();
+
+  void resetIndentation_impl();
 
   /// @}
 
@@ -91,20 +98,30 @@ public:
    */
   bool character(const std::string& current, const std::string& next);
 
+  /**
+   * Displays a name. This function will be called by the
+   * TextoutLongOperation.
+   */
+  void name(const std::string& name, const std::string& nextChar);
+
+  /** 
+   * Forces a hard line brake.
+   */
+  void hardBrake();
+
+  /** 
+   * Resets the indentation.
+   */
+  void resetIndentation();
+
+  /// @}
+
+
   /** 
    * Queries the corresponding TextWindow to see if it is full. Used
    * to implement implicit pauses when a page is full.
    */
   bool isFull() const;
-
-  /**
-   * Displays a name. This function will be called by the
-   * TextoutLongOperation.
-   * 
-   */
-  void name(const std::string& name, const std::string& nextChar);
-
-  /// @}
 };
 
 #endif

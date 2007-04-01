@@ -136,6 +136,11 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
                                 const std::string& current,
                                 const std::string& next)
 {
+  // If this text page is already full, save some time and reject
+  // early.
+  if(isFull())
+    return false;
+
   setVisible(true);
 
   SDL_Color color = {255, 255, 255};
@@ -174,9 +179,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
      (charWillFitOnLine && !isKinsoku(curCodepoint) &&
       !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
   {
-    m_insertionPointX = m_currentIndentationInPixels;
-    m_insertionPointY += (tmp->h + m_ySpacing + m_rubySize);
-    m_currentLineNumber++;
+    hardBrake();
 
     if(isFull())
       return false;
@@ -193,11 +196,6 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
   // Move the insertion point forward one character
   m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
-
-  // Now check to see if this character is one of the opening quotes
-  if(curCodepoint == 0x300C || curCodepoint == 0x300E || 
-     curCodepoint == 0xFF08)
-    setIndentation();
 
   machine.system().graphics().markScreenAsDirty();
 
@@ -230,6 +228,16 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
                              ref(machine), _1, _2),
                         utf8name, nextChar);
     setIndentation();
+
+    // Check to see if we set the indentation after the 
+    string::const_iterator it = nextChar.begin();
+    int nextCodepoint = utf8::next(it, nextChar.end());
+    if(nextCodepoint == 0x300C || nextCodepoint == 0x300E || 
+       nextCodepoint == 0xFF08)
+    {
+      m_currentIndentationInPixels = m_insertionPointX + m_fontSizeInPixels + 
+        m_xSpacing;
+    }
   }
   else if(m_nameMod == 1)
   {
@@ -243,6 +251,22 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
   {
     throw "Invalid";
   }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::hardBrake()
+{
+  m_insertionPointX = m_currentIndentationInPixels;
+  m_insertionPointY += (m_fontSizeInPixels + m_ySpacing + m_rubySize);
+  m_currentLineNumber++;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::resetIndentation()
+{
+  m_currentIndentationInPixels = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -311,3 +335,4 @@ void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
 }
 
 // -----------------------------------------------------------------------
+

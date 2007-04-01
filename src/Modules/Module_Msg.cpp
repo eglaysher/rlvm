@@ -89,6 +89,16 @@ bool Longop_pause::operator()(RLMachine& machine) {
 
 // -----------------------------------------------------------------------
 
+struct Msg_par : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.resetIndentation();
+    page.hardBrake();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 /** 
  * Implements op<0:Msg:17, 0>, fun pause().
  * 
@@ -125,10 +135,18 @@ struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 // -----------------------------------------------------------------------
 
+struct Msg_br : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.system().text().currentPage(machine).hardBrake();    
+  }
+};
+
+// -----------------------------------------------------------------------
+
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
-//  addOpcode(3, 0, /* par */);
+  addOpcode(3, 0, new Msg_par);
 //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, new Msg_pause);
 
@@ -136,6 +154,8 @@ MsgModule::MsgModule()
   addOpcode(102, 1, new Msg_TextWindow);
 
   addOpcode(151, 0, new Msg_msgHide);
+
+  addOpcode(201, 0, new Msg_br);
 
 //  addOpcode(100, 0, );
 

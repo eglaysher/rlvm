@@ -298,6 +298,9 @@ public:
    */
   virtual void setName(RLMachine& machine, const std::string& utf8name, 
                        const std::string& nextChar) = 0;
+
+  virtual void hardBrake() = 0;
+  virtual void resetIndentation() = 0;
 };
 
 #endif

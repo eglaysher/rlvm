@@ -148,7 +148,54 @@ NamePageElement::NamePageElement(const string& name,
 
 void NamePageElement::replayElement(TextPage& page)
 {
-//  page.name_impl(m_name, m_nextchar);
+  page.name_impl(m_name, m_nextchar);
+}
+
+// -----------------------------------------------------------------------
+// HardBreakElement
+// -----------------------------------------------------------------------
+
+class HardBreakElement : public TextPageElement
+{
+public:
+  HardBreakElement();
+  virtual void replayElement(TextPage& ts);  
+};
+
+// -----------------------------------------------------------------------
+
+HardBreakElement::HardBreakElement()
+{}
+
+// -----------------------------------------------------------------------
+
+void HardBreakElement::replayElement(TextPage& page)
+{
+  page.hardBrake_impl();
+}
+
+
+// -----------------------------------------------------------------------
+// ResetIndentationElement
+// -----------------------------------------------------------------------
+
+class ResetIndentationElement : public TextPageElement
+{
+public:
+  ResetIndentationElement();
+  virtual void replayElement(TextPage& ts);  
+};
+
+// -----------------------------------------------------------------------
+
+ResetIndentationElement::ResetIndentationElement()
+{}
+
+// -----------------------------------------------------------------------
+
+void ResetIndentationElement::replayElement(TextPage& page)
+{
+  page.hardBrake_impl();
 }
 
 // -----------------------------------------------------------------------
@@ -198,6 +245,22 @@ void TextPage::name(const string& name, const string& nextChar)
   name_impl(name, nextChar);
 }
 
+// -----------------------------------------------------------------------
+
+void TextPage::hardBrake()
+{
+  m_elementsToReplay.push_back(new HardBreakElement());
+  hardBrake_impl();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::resetIndentation()
+{
+  m_elementsToReplay.push_back(new ResetIndentationElement());
+  resetIndentation_impl();
+}
+
 // ------------------------------------------- [ Private implementations ]
 
 void TextPage::setWindow_impl(int windowNum)
@@ -221,6 +284,22 @@ void TextPage::name_impl(const string& name,
 {
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .setName(m_machine, name, nextChar);
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::hardBrake_impl()
+{
+  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .hardBrake();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::resetIndentation_impl()
+{
+  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .resetIndentation();
 }
 
 // -----------------------------------------------------------------------
