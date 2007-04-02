@@ -65,10 +65,56 @@ void TextSystem::newPage(RLMachine& machine)
   if(m_activePage.get())
     m_previousPages.push_back(m_activePage.release());
 
+  m_previousPageIt = m_previousPages.end();
+
   // Clear all windows
   clearAllTextWindows();
   hideAllTextWindows();
 
   m_activePage.reset(new TextPage(machine));
   m_activePage->setWindow(m_defaultTextWindow);
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::backPage(RLMachine& machine)
+{
+  if(m_previousPageIt != m_previousPages.begin())
+  {
+    cerr << "Moving back a page." << endl;
+    m_previousPageIt = boost::prior(m_previousPageIt);
+
+    // Clear all windows
+    clearAllTextWindows();
+    hideAllTextWindows();
+
+    m_previousPageIt->replay();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::forwardPage(RLMachine& machine)
+{
+  if(m_previousPageIt != m_previousPages.end())
+  {
+    cerr << "Moving back a page." << endl;
+    m_previousPageIt = boost::next(m_previousPageIt);
+
+    // Clear all windows
+    clearAllTextWindows();
+    hideAllTextWindows();
+
+    if(m_previousPageIt != m_previousPages.end())
+      m_previousPageIt->replay();
+    else
+      m_activePage->replay();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+bool TextSystem::isReadingBacklog() const
+{
+  return m_previousPageIt != m_previousPages.end();
 }

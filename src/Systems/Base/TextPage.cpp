@@ -77,6 +77,7 @@ SetWindowTextPageElement::SetWindowTextPageElement(int in)
 
 void SetWindowTextPageElement::replayElement(TextPage& page)
 {
+  cerr << "Replay: setWindow: " << m_toSetTo << endl;
   page.setWindow_impl(m_toSetTo);
 }
 
@@ -109,6 +110,7 @@ TextTextPageElement::TextTextPageElement()
 
 void TextTextPageElement::replayElement(TextPage& page)
 {
+  cerr << "Replay: print text: " << m_listOfCharsToPrint << endl;
   printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
                       m_listOfCharsToPrint, m_nextChar);
 }
@@ -148,6 +150,7 @@ NamePageElement::NamePageElement(const string& name,
 
 void NamePageElement::replayElement(TextPage& page)
 {
+  cerr << "Replay: setName: " << m_name << endl;
   page.name_impl(m_name, m_nextchar);
 }
 
@@ -171,6 +174,7 @@ HardBreakElement::HardBreakElement()
 
 void HardBreakElement::replayElement(TextPage& page)
 {
+  cerr << "Replay: hardBrake" << endl;
   page.hardBrake_impl();
 }
 
@@ -195,6 +199,7 @@ ResetIndentationElement::ResetIndentationElement()
 
 void ResetIndentationElement::replayElement(TextPage& page)
 {
+  cerr << "Replay: resetIndentation" << endl;
   page.hardBrake_impl();
 }
 
@@ -210,6 +215,14 @@ TextPage::TextPage(RLMachine& machine)
 
 TextPage::~TextPage()
 {}
+
+// -----------------------------------------------------------------------
+
+void TextPage::replay()
+{
+  for_each(m_elementsToReplay.begin(), m_elementsToReplay.end(),
+           bind(&TextPageElement::replayElement, _1, ref(*this)));
+}
 
 // ------------------------------------------------- [ Public operations ]
 

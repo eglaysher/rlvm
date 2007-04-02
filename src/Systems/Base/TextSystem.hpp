@@ -56,7 +56,13 @@ private:
   /// pages because multiple windows can be displayed in one text page.
   boost::ptr_vector<TextPage> m_previousPages;
 
-  /// The current text page. If we were to 
+  /// When m_previousPageIt == m_previousPages.end(), m_activePage is
+  /// currently being rendered to the screen. When it is any valid
+  /// iterator pointing into m_previousPages, that is the current page
+  /// being rendered.
+  boost::ptr_vector<TextPage>::iterator m_previousPageIt;
+
+  /// The current text page. 
   std::auto_ptr<TextPage> m_activePage;
 
 public:
@@ -80,7 +86,9 @@ public:
   void setDefaultWindow(int window) { m_defaultTextWindow = window; }
 
   /** 
-   * Get the current active page.
+   * Get the active page. This function will always return
+   * m_activePage, instead of getting whatever page is currently being
+   * rendered to the screen.
    */
   TextPage& currentPage(RLMachine& machine);
 
@@ -90,6 +98,23 @@ public:
    */
   void newPage(RLMachine& machine);
 
+  /**
+   * @name Backlog management
+   * 
+   * @{
+   */
+
+  /**
+   * Cleares the screen, moves back one page and renders it.
+   */
+  void backPage(RLMachine& machine);
+  void forwardPage(RLMachine& machine);
+
+  
+  bool isReadingBacklog() const;
+
+  /// @}
+  
 
 
   void setFastTextMode(int i) { m_fastTextMode = i; }

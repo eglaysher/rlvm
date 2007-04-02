@@ -66,14 +66,24 @@ Longop_pause::Longop_pause(RLMachine& machine)
 bool Longop_pause::operator()(RLMachine& machine) {
   // Check the status of the window.
   EventSystem& es = machine.system().event();
+  TextSystem& text = machine.system().text();
   int x, y, btn1, btn2;
   bool done = false;
 
   es.getCursorPos(x, y, btn1, btn2);
+  if(btn2 == 2)
+  {
+    es.flushMouseClicks();
+    text.backPage(machine);
+  }
   if(btn1 == 2)
   {
     es.flushMouseClicks();
-    done = true;
+
+    if(text.isReadingBacklog())
+      text.forwardPage(machine);
+    else
+      done = true;
   }
 
   if(!done)

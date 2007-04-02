@@ -147,8 +147,8 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   int curCodepoint = codepoint(current);
   int nextCodepoint = codepoint(next);
 
-  cerr << current << "(" << isKinsoku(curCodepoint) << ") : " << next
-       << "(" << isKinsoku(nextCodepoint) << ")" << endl;
+//   cerr << current << "(" << isKinsoku(curCodepoint) << ") : " << next
+//        << "(" << isKinsoku(nextCodepoint) << ")" << endl;
 
   // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
   // LENTICULAR BRACKET) should be handled before this

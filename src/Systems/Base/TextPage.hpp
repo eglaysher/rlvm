@@ -76,6 +76,8 @@ public:
 
   ~TextPage();
 
+  void replay();
+
   /**
    * @name Public operations
    * 
