@@ -45,7 +45,7 @@ private:
   bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
 
   bool displayName(RLMachine& machine);
-  bool displayOneMoreCharacter(RLMachine& machine);
+  bool displayOneMoreCharacter(RLMachine& machine, bool& paused);
   
 public:
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);

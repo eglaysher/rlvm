@@ -72,8 +72,12 @@ TextoutLongOperation::~TextoutLongOperation()
 
 bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine)
 {
-  // Continue to print characters until 
-  throw "Unimplemented";
+  bool paused = false;
+  while(!displayOneMoreCharacter(machine, paused))
+    if(paused)
+      return false;
+
+  return true;
 }
 
 // -----------------------------------------------------------------------
@@ -123,7 +127,8 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine)
+bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine, 
+                                                   bool& paused)
 {
   if(m_currentCodepoint == 0x3010)
   {
@@ -165,7 +170,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine)
       // Call the pause operation if we've filled up the current page.
       if(page.isFull())
       {
-//        cerr << "Pause " << endl;
+        paused = true;
         machine.pushLongOperation(new Longop_pause(machine));
       }
 
@@ -188,7 +193,10 @@ bool TextoutLongOperation::operator()(RLMachine& machine)
   if(m_noWait)
     return displayAsMuchAsWeCanThenPause(machine);
   else
-    return displayOneMoreCharacter(machine);
+  {
+    bool paused = false;
+    return displayOneMoreCharacter(machine, paused);
+  }
 }
 
 // -----------------------------------------------------------------------
