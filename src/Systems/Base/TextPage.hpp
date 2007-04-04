@@ -45,6 +45,7 @@ private:
   friend class HardBreakElement;
   friend class ResetIndentationElement;
   friend class FontColourElement;
+  friend class SetToRightStartingColorElement;
 
   boost::ptr_vector<TextPageElement> m_elementsToReplay;
 
@@ -72,6 +73,8 @@ private:
 
   void fontColour_impl(const int color);
 
+  void setToRightStartingColor_impl(bool isActivePage);
+
   /// @}
 
 public:
@@ -79,7 +82,7 @@ public:
 
   ~TextPage();
 
-  void replay();
+  void replay(bool isActivePage);
 
   /**
    * @name Public operations
@@ -124,6 +127,14 @@ public:
    * next pause().
    */
   void fontColour(const int color);
+
+  /** 
+   * This is a hack to get the backlog color working. This adds a
+   * SetToRightStartingColorElement element to the TextPage, which, on
+   * replay, simply checks to see if we're redisplaying a backlog
+   * page and sets the color to the backlog color if we are.
+   */
+  void addSetToRightStartingColorElement();
 
   /// @}
 

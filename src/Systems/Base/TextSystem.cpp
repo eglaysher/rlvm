@@ -74,6 +74,7 @@ void TextSystem::newPage(RLMachine& machine)
 
   m_activePage.reset(new TextPage(machine));
   m_activePage->setWindow(m_defaultTextWindow);
+  m_activePage->addSetToRightStartingColorElement();
 }
 
 // -----------------------------------------------------------------------
@@ -89,7 +90,7 @@ void TextSystem::backPage(RLMachine& machine)
     clearAllTextWindows();
     hideAllTextWindows();
 
-    m_previousPageIt->replay();
+    m_previousPageIt->replay(false);
   }
 }
 
@@ -107,9 +108,9 @@ void TextSystem::forwardPage(RLMachine& machine)
     hideAllTextWindows();
 
     if(m_previousPageIt != m_previousPages.end())
-      m_previousPageIt->replay();
+      m_previousPageIt->replay(false);
     else
-      m_activePage->replay();
+      m_activePage->replay(true);
   }
 }
 

@@ -53,7 +53,7 @@ class TextPageElement
 public:
   virtual ~TextPageElement() { }
   virtual bool isTextElement() { return false; }
-  virtual void replayElement(TextPage& ts) = 0;
+  virtual void replayElement(TextPage& ts, bool isActivePage) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -67,7 +67,7 @@ private:
 public:
   SetWindowTextPageElement(int in) : m_toSetTo(in) {}
 
-  virtual void replayElement(TextPage& page)
+  virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.setWindow_impl(m_toSetTo);
   }
@@ -89,7 +89,7 @@ private:
 public:
   TextTextPageElement();
   virtual bool isTextElement() { return true; }
-  virtual void replayElement(TextPage& page);  
+  virtual void replayElement(TextPage& page, bool isActivePage);  
   void append(const string& c, const string& nextChar);
 };
 
@@ -100,7 +100,7 @@ TextTextPageElement::TextTextPageElement()
 
 // -----------------------------------------------------------------------
 
-void TextTextPageElement::replayElement(TextPage& page)
+void TextTextPageElement::replayElement(TextPage& page, bool isActivePage)
 {
   cerr << "Replay: print text: " << m_listOfCharsToPrint << endl;
   printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
@@ -130,7 +130,7 @@ public:
   NamePageElement(const string& name, const string& nextChar)
     : m_name(name), m_nextchar(nextChar) {}
 
-  virtual void replayElement(TextPage& page)
+  virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.name_impl(m_name, m_nextchar);
   }
@@ -143,7 +143,7 @@ class HardBreakElement : public TextPageElement
 {
 public:
   HardBreakElement() {}
-  virtual void replayElement(TextPage& page)
+  virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.hardBrake_impl();
   }
@@ -156,7 +156,7 @@ class ResetIndentationElement : public TextPageElement
 {
 public:
   ResetIndentationElement() { }
-  virtual void replayElement(TextPage& page)
+  virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.hardBrake_impl();
   }
@@ -174,9 +174,21 @@ public:
   FontColourElement(int inColor)
     : color(inColor) {}
 
-  virtual void replayElement(TextPage& page)
+  virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.fontColour_impl(color);
+  }
+};
+
+// -----------------------------------------------------------------------
+// SetToRightStartingColorElement
+// -----------------------------------------------------------------------
+class SetToRightStartingColorElement : public TextPageElement
+{
+public:
+  virtual void replayElement(TextPage& page, bool isActivePage)
+  {
+    page.setToRightStartingColor_impl(isActivePage);
   }
 };
 
@@ -196,10 +208,11 @@ TextPage::~TextPage()
 
 // -----------------------------------------------------------------------
 
-void TextPage::replay()
+void TextPage::replay(bool isActivePage)
 {
   for_each(m_elementsToReplay.begin(), m_elementsToReplay.end(),
-           bind(&TextPageElement::replayElement, _1, ref(*this)));
+           bind(&TextPageElement::replayElement, _1, ref(*this), 
+                isActivePage));
 }
 
 // ------------------------------------------------- [ Public operations ]
@@ -260,6 +273,13 @@ void TextPage::fontColour(int color)
   fontColour_impl(color);
 }
 
+// -----------------------------------------------------------------------
+
+void TextPage::addSetToRightStartingColorElement()
+{
+  m_elementsToReplay.push_back(new SetToRightStartingColorElement);
+}
+
 // ------------------------------------------- [ Private implementations ]
 
 void TextPage::setWindow_impl(int windowNum)
@@ -307,6 +327,21 @@ void TextPage::fontColour_impl(int color)
 {
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .setFontColor(m_machine.system().gameexe()("COLOR_TABLE", color));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::setToRightStartingColor_impl(bool isActivePage)
+{
+  Gameexe& gexe = m_machine.system().gameexe();
+  TextWindow& window = m_machine.system().text().textWindow(
+    m_machine, m_currentWindow);
+  if(!isActivePage)
+  {
+    GameexeInterpretObject color(gexe("COLOR_TABLE", 254));
+    if(color.exists())
+      window.setFontColor(color);
+  }
 }
 
 // -----------------------------------------------------------------------
