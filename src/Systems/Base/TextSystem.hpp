@@ -65,6 +65,9 @@ private:
   /// The current text page. 
   std::auto_ptr<TextPage> m_activePage;
 
+  /// Whether we are in a state where the interpreter is pause()d.
+  bool m_inPauseState;
+
 public:
   TextSystem();
   virtual ~TextSystem();

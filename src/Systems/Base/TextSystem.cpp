@@ -33,7 +33,8 @@
 using namespace std;
 
 TextSystem::TextSystem()
-  : m_defaultTextWindow(0)
+  : m_fastTextMode(false), m_messageNoWait(false), m_messageSpeed(0),
+    m_defaultTextWindow(0), m_inPauseState(false)
 {
   
 }
@@ -98,7 +99,7 @@ void TextSystem::forwardPage(RLMachine& machine)
 {
   if(m_previousPageIt != m_previousPages.end())
   {
-    cerr << "Moving back a page." << endl;
+    cerr << "Moving forward a page." << endl;
     m_previousPageIt = boost::next(m_previousPageIt);
 
     // Clear all windows

@@ -67,6 +67,8 @@ void SDLTextSystem::render(RLMachine& machine)
 {
   for_each(m_textWindow.begin(), m_textWindow.end(), 
            bind(&TextWindow::render, _1, ref(machine)));
+
+  // Tell the active text window to render its 
 }
 
 // -----------------------------------------------------------------------

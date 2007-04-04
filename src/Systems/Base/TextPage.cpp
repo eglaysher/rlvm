@@ -34,6 +34,8 @@
 #include "Modules/utf8.h"
 #include "Modules/TextoutLongOperation.hpp"
 
+#include "libReallive/gameexe.h"
+
 #include <string>
 #include <iostream>
 
@@ -63,23 +65,13 @@ class SetWindowTextPageElement : public TextPageElement
 private:
   int m_toSetTo;
 public:
-  SetWindowTextPageElement(int in);
-  virtual void replayElement(TextPage& ts);  
+  SetWindowTextPageElement(int in) : m_toSetTo(in) {}
+
+  virtual void replayElement(TextPage& page)
+  {
+    page.setWindow_impl(m_toSetTo);
+  }
 };
-
-// -----------------------------------------------------------------------
-
-SetWindowTextPageElement::SetWindowTextPageElement(int in)
-  : m_toSetTo(in)
-{}
-
-// -----------------------------------------------------------------------
-
-void SetWindowTextPageElement::replayElement(TextPage& page)
-{
-  cerr << "Replay: setWindow: " << m_toSetTo << endl;
-  page.setWindow_impl(m_toSetTo);
-}
 
 // -----------------------------------------------------------------------
 // TextTextPageElement
@@ -97,7 +89,7 @@ private:
 public:
   TextTextPageElement();
   virtual bool isTextElement() { return true; }
-  virtual void replayElement(TextPage& ts);  
+  virtual void replayElement(TextPage& page);  
   void append(const string& c, const string& nextChar);
 };
 
@@ -135,73 +127,59 @@ private:
   string m_nextchar;
 
 public:
-  NamePageElement(const string& name, const string& nextChar);
-  virtual void replayElement(TextPage& ts);  
+  NamePageElement(const string& name, const string& nextChar)
+    : m_name(name), m_nextchar(nextChar) {}
+
+  virtual void replayElement(TextPage& page)
+  {
+    page.name_impl(m_name, m_nextchar);
+  }
 };
-
-// -----------------------------------------------------------------------
-
-NamePageElement::NamePageElement(const string& name,
-                                 const string& nextChar)
-  : m_name(name), m_nextchar(nextChar)
-{}
-
-// -----------------------------------------------------------------------
-
-void NamePageElement::replayElement(TextPage& page)
-{
-  cerr << "Replay: setName: " << m_name << endl;
-  page.name_impl(m_name, m_nextchar);
-}
 
 // -----------------------------------------------------------------------
 // HardBreakElement
 // -----------------------------------------------------------------------
-
 class HardBreakElement : public TextPageElement
 {
 public:
-  HardBreakElement();
-  virtual void replayElement(TextPage& ts);  
+  HardBreakElement() {}
+  virtual void replayElement(TextPage& page)
+  {
+    page.hardBrake_impl();
+  }
 };
-
-// -----------------------------------------------------------------------
-
-HardBreakElement::HardBreakElement()
-{}
-
-// -----------------------------------------------------------------------
-
-void HardBreakElement::replayElement(TextPage& page)
-{
-  cerr << "Replay: hardBrake" << endl;
-  page.hardBrake_impl();
-}
-
 
 // -----------------------------------------------------------------------
 // ResetIndentationElement
 // -----------------------------------------------------------------------
-
 class ResetIndentationElement : public TextPageElement
 {
 public:
-  ResetIndentationElement();
-  virtual void replayElement(TextPage& ts);  
+  ResetIndentationElement() { }
+  virtual void replayElement(TextPage& page)
+  {
+    page.hardBrake_impl();
+  }
 };
 
 // -----------------------------------------------------------------------
-
-ResetIndentationElement::ResetIndentationElement()
-{}
-
+// FontColourElement
 // -----------------------------------------------------------------------
-
-void ResetIndentationElement::replayElement(TextPage& page)
+class FontColourElement : public TextPageElement
 {
-  cerr << "Replay: resetIndentation" << endl;
-  page.hardBrake_impl();
-}
+private:
+  int color;
+
+public:
+  FontColourElement(int inColor)
+    : color(inColor) {}
+
+  virtual void replayElement(TextPage& page)
+  {
+    page.fontColour_impl(color);
+  }
+};
+
 
 // -----------------------------------------------------------------------
 // TextPage
@@ -274,6 +252,14 @@ void TextPage::resetIndentation()
   resetIndentation_impl();
 }
 
+// -----------------------------------------------------------------------
+
+void TextPage::fontColour(int color)
+{
+  m_elementsToReplay.push_back(new FontColourElement(color));
+  fontColour_impl(color);
+}
+
 // ------------------------------------------- [ Private implementations ]
 
 void TextPage::setWindow_impl(int windowNum)
@@ -313,6 +299,14 @@ void TextPage::resetIndentation_impl()
 {
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .resetIndentation();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::fontColour_impl(int color)
+{
+  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .setFontColor(m_machine.system().gameexe()("COLOR_TABLE", color));
 }
 
 // -----------------------------------------------------------------------

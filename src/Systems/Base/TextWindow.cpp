@@ -42,7 +42,9 @@ TextWindow::TextWindow()
   : m_currentLineNumber(0), m_useIndentation(0), 
     m_currentIndentationInPixels(0),
     m_r(0), m_g(0), m_b(0), m_alpha(0), m_filter(0), m_isVisible(0)
-{}
+{
+  
+}
 
 // -----------------------------------------------------------------------
 
@@ -52,6 +54,26 @@ void TextWindow::setTextboxPadding(const std::vector<int>& posData)
   m_lowerBoxPadding = posData.at(1);
   m_leftBoxPadding = posData.at(2);
   m_rightBoxPadding = posData.at(3);  
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setDefaultTextColor(const std::vector<int>& colorData)
+{
+  m_defaultRed = colorData.at(0);
+  m_defaultGreen = colorData.at(1);
+  m_defaultBlue = colorData.at(2);
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setFontColor(const std::vector<int>& colorData)
+{
+  m_fontRed = colorData.at(0);
+  m_fontGreen = colorData.at(1);
+  m_fontBlue = colorData.at(2);
+  cerr << "{" << m_fontRed << ", " << m_fontGreen << ", " << m_fontBlue << "}"
+       << endl;
 }
 
 // -----------------------------------------------------------------------

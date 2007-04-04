@@ -44,6 +44,7 @@ private:
   friend class NamePageElement;
   friend class HardBreakElement;
   friend class ResetIndentationElement;
+  friend class FontColourElement;
 
   boost::ptr_vector<TextPageElement> m_elementsToReplay;
 
@@ -68,6 +69,8 @@ private:
   void hardBrake_impl();
 
   void resetIndentation_impl();
+
+  void fontColour_impl(const int color);
 
   /// @}
 
@@ -115,6 +118,12 @@ public:
    * Resets the indentation.
    */
   void resetIndentation();
+
+  /** 
+   * Sets the text foreground to the color passed in, up until the
+   * next pause().
+   */
+  void fontColour(const int color);
 
   /// @}
 

@@ -85,6 +85,14 @@ protected:
 
   int m_currentIndentationInPixels;
 
+  /// The default color. Initialized to #COLOR_TABLE.000, but can be
+  /// changed with the SetFontColour() command
+  int m_defaultRed, m_defaultGreen, m_defaultBlue;
+
+  /// The current color. Initialized to the default color on every
+  /// clearWin() call. 
+  int m_fontRed, m_fontGreen, m_fontBlue;
+
   /// @}
 
   /**
@@ -98,8 +106,10 @@ protected:
 
   int m_upperBoxPadding, m_lowerBoxPadding, m_leftBoxPadding, m_rightBoxPadding;
 
-  /// The window background color
+  /// The default window background color.
+  /// @{
   int m_r, m_g, m_b, m_alpha, m_filter;
+  /// @}
 
   int m_isVisible;
 
@@ -179,6 +189,9 @@ public:
 
   void setUseIndentation(const int i) { m_useIndentation = i; }
 
+  void setDefaultTextColor(const std::vector<int>& colorData);
+  void setFontColor(const std::vector<int>& colorData);
+
   /// @}
 
   /**
@@ -237,7 +250,7 @@ public:
 
 
   /**
-   * @name Window Color Attributes
+   * @name Window Background Color Attributes
    * 
    * Accessors regarding the background color of the window.
    *

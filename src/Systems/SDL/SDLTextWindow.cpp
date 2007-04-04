@@ -84,6 +84,8 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
 
   setWindowPosition(window("POS"));
 
+  setDefaultTextColor(gexe("COLOR_TABLE", 0));
+
   // INDENT_USE appears to default to on. See the first scene in the
   // game with Nagisa, paying attention to indentation; then check the
   // Gameexe.ini.
@@ -125,6 +127,11 @@ void SDLTextWindow::clearWin()
   m_currentIndentationInPixels = 0;
   m_currentLineNumber = 0;
 
+  // Reset the color
+  m_fontRed = m_defaultRed;
+  m_fontGreen = m_defaultGreen;
+  m_fontBlue = m_defaultBlue;
+
   // Allocate the text window surface
   m_surface.reset(new SDLSurface(windowWidth(), windowHeight()));
   m_surface->fill(0, 0, 0, 0);
@@ -143,7 +150,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
   setVisible(true);
 
-  SDL_Color color = {255, 255, 255};
+  SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
   int curCodepoint = codepoint(current);
   int nextCodepoint = codepoint(next);
 

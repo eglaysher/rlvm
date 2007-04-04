@@ -135,6 +135,17 @@ struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 // -----------------------------------------------------------------------
 
+struct Msg_FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
+                                            DefaultIntValue_T< 0 > >
+{
+  void operator()(RLMachine& machine, int textColorNum, int shadowColorNum)
+  {
+    machine.system().text().currentPage(machine).fontColour(textColorNum);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int unknown)
@@ -162,6 +173,10 @@ MsgModule::MsgModule()
 
   addOpcode(102, 0, new Msg_TextWindow);
   addOpcode(102, 1, new Msg_TextWindow);
+
+  addOpcode(105, 0, new Msg_FontColour);
+  addOpcode(105, 1, new Msg_FontColour);
+  addOpcode(105, 2, new Msg_FontColour);
 
   addOpcode(151, 0, new Msg_msgHide);
 
