@@ -27,7 +27,7 @@
 #include "TextKeyCursor.hpp"
 #include "Utilities.h"
 
-#include "libReallive/Gameexe.h"
+#include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
