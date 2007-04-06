@@ -41,12 +41,6 @@
 
 #include <vector>
 
-#if defined(__sparc) || defined(sparc)
-#  if !defined(WORDS_BIGENDIAN)
-#    define WORDS_BIGENDIAN 1
-#  endif
-#endif
-
 #define INT_SIZE 4
 
 static int read_little_endian_int(const char* buf) {

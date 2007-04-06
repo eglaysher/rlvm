@@ -6,6 +6,20 @@
 
 // -----------------------------------------------------------------------
 
+// Do a more-portable Endian check
+bool IsBigEndian()
+{
+   short word = 0x4321;
+   if((*(char *)& word) != 0x21 )
+     return true;
+   else 
+     return false;
+}
+
+static bool s_isBigEndian = IsBigEndian();
+
+// -----------------------------------------------------------------------
+
 bool init_end=false;
 /*  file.cc  : KANON の圧縮ファイル・PDT ファイル（画像ファイル）の展開の
  *            ためのメソッド
@@ -1137,15 +1151,19 @@ public:
 		lsrc += 2;
 	}
 	static void Copy1Pixel(const char*& lsrc, char*& ldest) {
-#ifdef WORDS_BIGENDIAN
-		ldest[3] = lsrc[0];
-		ldest[2] = lsrc[1];
-		ldest[1] = lsrc[2];
-		ldest[0] = 0;
-#else
+      if(s_isBigEndian)
+      {
+ 		ldest[3] = lsrc[0];
+ 		ldest[2] = lsrc[1];
+ 		ldest[1] = lsrc[2];
+ 		ldest[0] = 0;
+      }
+      else
+      {
 		*(int*)ldest = read_little_endian_int(lsrc); ldest[3]=0;
-#endif
-		lsrc += 3; ldest += 4;
+      }
+
+      lsrc += 3; ldest += 4;
 	}
 	static int IsRev(void) { return 0; }
 };
@@ -1222,14 +1240,18 @@ public:
 		lsrc += 2;
 	}
 	static void Copy1Pixel(const char*& lsrc, char*& ldest) {
-#ifdef WORDS_BIGENDIAN
+      if(s_isBigEndian)
+      {
 		ldest[0] = lsrc[0];
 		ldest[1] = lsrc[1];
 		ldest[2] = lsrc[2];
-#else /* LITTLE ENDIAN / intel architecture */
+      }
+      else
+      {
 		*(int*)ldest = *(int*)lsrc;
-#endif
-		lsrc += 3; ldest += 3;
+      }
+
+      lsrc += 3; ldest += 3;
 	}
 	static int IsRev(void) { return 1; }
 };
