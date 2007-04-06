@@ -27,6 +27,7 @@
 #include <vector>
 
 class RLMachine;
+class Gameexe;
 
 /**
  * Takes the full path to a file, and adjusts its case so that it
@@ -80,5 +81,10 @@ inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
  * @return #SEL in rec coordinates
  */
 std::vector<int> getSELEffect(RLMachine& machine, int selNum);
+
+/**
+ * Gets the size of the screen and sets it in width/height.
+ */
+void getScreenSize(Gameexe& gameexe, int& width, int& height);
 
 #endif

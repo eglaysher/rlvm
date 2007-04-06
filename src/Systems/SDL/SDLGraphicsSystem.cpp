@@ -226,23 +226,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw Error(ss.str());
   }
 
-  int graphicsMode = gameexe("SCREENSIZE_MOD");
-  if(graphicsMode == 0)
-  {
-    m_width = 640;
-    m_height = 480;
-  }
-  else if(graphicsMode == 1)
-  {
-    m_width = 800;
-    m_height = 600;
-  }
-  else
-  {
-    ostringstream oss;
-    oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
-    throw Error(oss.str());
-  }
+  getScreenSize(gameexe, m_width, m_height);
   Texture::SetScreenSize(m_width, m_height);
 
   int bpp = info->vfmt->BitsPerPixel;

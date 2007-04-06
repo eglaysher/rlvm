@@ -33,17 +33,48 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 
 #include "libReallive/gameexe.h"
+#include "Utilities.h"
 
 #include <vector>
 
 using namespace std;
 
-TextWindow::TextWindow()
+TextWindow::TextWindow(RLMachine& machine, int windowNum)
   : m_currentLineNumber(0), m_useIndentation(0), 
     m_currentIndentationInPixels(0),
     m_r(0), m_g(0), m_b(0), m_alpha(0), m_filter(0), m_isVisible(0)
 {
-  
+  Gameexe& gexe = machine.system().gameexe();
+
+  getScreenSize(gexe, m_screenWidth, m_screenHeight);
+
+  // Base form for everything to follow.
+  GameexeInterpretObject window(gexe("WINDOW", windowNum));
+
+  // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
+  if(window("ATTR_MOD") == 0)
+    setRGBAF(gexe("WINDOW_ATTR"));
+  else if(window("ATTR_MOD") == 1)
+    setRGBAF(window("ATTR"));
+
+  setFontSizeInPixels(window("MOJI_SIZE"));
+  setWindowSizeInCharacters(window("MOJI_CNT"));
+  setSpacingBetweenCharacters(window("MOJI_REP"));
+  setRubyTextSize(window("LUBY_SIZE"));
+  setTextboxPadding(window("MOJI_POS"));
+
+  setWindowPosition(window("POS"));
+
+  setDefaultTextColor(gexe("COLOR_TABLE", 0));
+
+  // INDENT_USE appears to default to on. See the first scene in the
+  // game with Nagisa, paying attention to indentation; then check the
+  // Gameexe.ini.
+  setUseIndentation(window("INDENT_USE").to_int(1));
+
+  setNameMod(window("NAME_MOD").to_int(0));
+
+  setKeycurMod(window("KEYCUR_MOD"));
 }
 
 // -----------------------------------------------------------------------
@@ -103,7 +134,7 @@ void TextWindow::setWindowPosition(const std::vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
-int TextWindow::windowWidth() const
+int TextWindow::textWindowWidth() const
 {
   return (m_xWindowSizeInChars * 
           (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding;
@@ -111,7 +142,7 @@ int TextWindow::windowWidth() const
 
 // -----------------------------------------------------------------------
 
-int TextWindow::windowHeight() const
+int TextWindow::textWindowHeight() const
 {
   return (m_yWindowSizeInChars * 
           (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + m_lowerBoxPadding;
@@ -126,9 +157,13 @@ int TextWindow::boxX1() const
   case 0:
   case 2:
     return m_xDistanceFromOrigin;
+  case 1:
+  case 3:
+    return m_screenWidth - m_xDistanceFromOrigin - textWindowWidth() -
+      m_leftBoxPadding;
+  default:
+    throw libReallive::Error("Invalid origin");
   };
-
-  throw libReallive::Error("Invalid origin");
 }   
 
 // -----------------------------------------------------------------------
@@ -140,59 +175,105 @@ int TextWindow::boxY1() const
   case 0: // Top and left
   case 1: // Top and right
     return m_yDistanceFromOrigin;
+  case 2: // Bottom and left
+  case 3: // Bottom and right
+    return m_screenHeight - m_yDistanceFromOrigin - textWindowHeight() - 
+      m_upperBoxPadding;
+  default:
+    throw libReallive::Error("Invalid origin");  
   }
-
-  throw libReallive::Error("Invalid origin");  
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::textX1(RLMachine& machine) const
+int TextWindow::textX1() const
 {
   switch(m_origin)
   {
   case 0: // Top and left
   case 2: // Bottom and left
     return m_xDistanceFromOrigin + m_leftBoxPadding;
-//   case 1: // Top and right
-//   case 3: // Bottom and right
-//     return machine.system().graphics().screenWidth() - m_xDistanceFromOrigin;
+  case 1: // Top and right
+  case 3: // Bottom and right
+    return m_screenWidth - m_xDistanceFromOrigin - textWindowWidth();
+  default:
+    throw libReallive::Error("Invalid origin");
   };
-
-  throw libReallive::Error("Invalid origin");
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::textY1(RLMachine& machine) const
+int TextWindow::textY1() const
 {
   switch(m_origin)
   {
   case 0: // Top and left
   case 1: // Top and right
     return m_yDistanceFromOrigin + m_upperBoxPadding;
-//   case 2: // Bottom and left
-//   case 3: // Bottom and right
-//     return machine.system().graphics().screenHeight() - m_yDistanceFromOrigin;
+  case 2: // Bottom and left
+  case 3: // Bottom and right
+    return m_screenHeight - m_yDistanceFromOrigin - textWindowHeight();
+  default:
+    throw libReallive::Error("Invalid origin");
   }
-
-  throw libReallive::Error("Invalid origin");
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::textX2(RLMachine& machine) const
+int TextWindow::textX2() const
 {
-  return textX1(machine) + windowWidth();
+  return textX1() + textWindowWidth();
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::textY2(RLMachine& machine) const
+int TextWindow::textY2() const
 {
-  return textY1(machine) + windowHeight();
+  return textY1() + textWindowHeight();
 }
 
+// -----------------------------------------------------------------------
+
+void TextWindow::setKeycurMod(const std::vector<int>& keycur)
+{
+  m_keycursorType = keycur.at(0);
+  m_keycursorX = keycur.at(1);
+  m_keycursorY = keycur.at(2);
+}
+
+// -----------------------------------------------------------------------
+
+int TextWindow::keycursorX() const
+{
+  switch(m_keycursorType)
+  {
+  case 0:
+    return textX2();
+  case 1:
+    return m_textInsertionPointX;
+  case 2:
+    return textX1() + m_keycursorX;
+  default:
+    throw runtime_error("Invalid keycursor type");    
+  }
+}
+
+// -----------------------------------------------------------------------
+
+int TextWindow::keycursorY() const
+{
+  switch(m_keycursorType)
+  {
+  case 0:
+    return textY2();
+  case 1:
+    return m_textInsertionPointY;
+  case 2:
+    return textY1() + m_keycursorY;
+  default:
+    throw runtime_error("Invalid keycursor type");
+  }
+}
 
 // -----------------------------------------------------------------------
 

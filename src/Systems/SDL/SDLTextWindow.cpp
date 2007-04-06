@@ -64,35 +64,10 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
+  : TextWindow(machine, windowNum)
 {
   Gameexe& gexe = machine.system().gameexe();
-
-  // Base form for everything to follow.
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
-
-  // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
-  if(window("ATTR_MOD") == 0)
-    setRGBAF(gexe("WINDOW_ATTR"));
-  else if(window("ATTR_MOD") == 1)
-    setRGBAF(window("ATTR"));
-
-  setFontSizeInPixels(window("MOJI_SIZE"));
-  setWindowSizeInCharacters(window("MOJI_CNT"));
-  setSpacingBetweenCharacters(window("MOJI_REP"));
-  setRubyTextSize(window("LUBY_SIZE"));
-  setTextboxPadding(window("MOJI_POS"));
-
-  setWindowPosition(window("POS"));
-
-  setDefaultTextColor(gexe("COLOR_TABLE", 0));
-
-  // INDENT_USE appears to default to on. See the first scene in the
-  // game with Nagisa, paying attention to indentation; then check the
-  // Gameexe.ini.
-  setUseIndentation(window("INDENT_USE").to_int(1));
-
-  setNameMod(window("NAME_MOD").to_int(0));
-
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
   string filename = findFontFile("msgothic.ttc");
@@ -133,7 +108,7 @@ void SDLTextWindow::clearWin()
   m_fontBlue = m_defaultBlue;
 
   // Allocate the text window surface
-  m_surface.reset(new SDLSurface(windowWidth(), windowHeight()));
+  m_surface.reset(new SDLSurface(textWindowWidth(), textWindowHeight()));
   m_surface->fill(0, 0, 0, 0);
 }
 
@@ -179,9 +154,9 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   // at the start of a line.
   //
   bool charWillFitOnLine = m_insertionPointX + tmp->w + m_xSpacing <=
-    windowWidth();
+    textWindowWidth();
   bool nextCharWillFitOnLine = m_insertionPointX + 2*(tmp->w + m_xSpacing) <=
-    windowWidth();
+    textWindowWidth();
   if(!charWillFitOnLine || 
      (charWillFitOnLine && !isKinsoku(curCodepoint) &&
       !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
@@ -317,8 +292,8 @@ void SDLTextWindow::render(RLMachine& machine)
 //          << height << "} - {" << x << ", " << y << ", "
 //          << x + width << ", " << y + wi
 
-    int x = textX1(machine);
-    int y = textY1(machine);
+    int x = textX1();
+    int y = textY1();
     m_surface->renderToScreen(
       0, 0, width, height,
       x, y, x + width, y + height, 

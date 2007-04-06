@@ -40,6 +40,10 @@ class GraphicsSystem;
 class TextWindow
 {
 protected:
+  /// We cache the size of the screen so we don't need the machine in
+  /// some accessors.
+  int m_screenWidth, m_screenHeight;
+
   /**
    * @name Text window Origin
    * Describes the origin point of the window
@@ -114,6 +118,20 @@ protected:
   int m_isVisible;
 
 
+  /// Determines the position of the keycursor (the animated cursor
+  /// that appears when the game is waiting for a click to move to the
+  /// next page of text).
+  ///
+  /// If type is 0, the cursor appears at the bottom right corner of
+  /// the text area; if it is 1, it appears directly after the final
+  /// character printed; if it is 2, it appears at (x, y) relative to
+  /// the top left of the text area. (x and y are ignored when type is
+  /// 0 or 1.)
+  ///
+  /// @{
+  int m_keycursorType, m_keycursorX, m_keycursorY;
+  /// @}
+
   /** 
    * @name Name display options
    * 
@@ -142,7 +160,7 @@ protected:
   /// Internal calculations stuff
 
 public:
-  TextWindow();
+  TextWindow(RLMachine& machine, int windowNum);
 
   virtual ~TextWindow() {}
 
@@ -201,16 +219,16 @@ public:
    */
   void setWindowPosition(const std::vector<int>& posData);
 
-  int windowWidth() const;
-  int windowHeight() const;
+  int textWindowWidth() const;
+  int textWindowHeight() const;
 
   int boxX1() const;
   int boxY1() const;
 
-  int textX1(RLMachine& machine) const;
-  int textY1(RLMachine& machine) const;
-  int textX2(RLMachine& machine) const;
-  int textY2(RLMachine& machine) const;
+  int textX1() const;
+  int textY1() const;
+  int textX2() const;
+  int textY2() const;
 
   /// @}
 
@@ -226,7 +244,24 @@ public:
 
   /// @}
 
+  /**
+   * @name Keycursor settings
+   * 
+   * Set and access the position of the animated icon that appears
+   * when waiting for user input. The TextWindow only owns the
+   * position which is queried by the TextKeyCursor object which owns
+   * the actual image and other properties. This is an artifact of how
+   * RealLive handles this.
+   *
+   * @see TextKeyCursor
+   *
+   * @{
+   */
+  void setKeycurMod(const std::vector<int>& keycur);
 
+  int keycursorX() const;
+  int keycursorY() const;
+  /// @}
 
   /**
    * @name Waku (Window decoration) Handling Functions

@@ -27,6 +27,7 @@
 
 #include <boost/ptr_container/ptr_map.hpp>
 
+class RLMachine;
 class TextWindow;
 class SDLTextWindow;
 

@@ -30,11 +30,11 @@
 class RLMachine;
 class TextWindow;
 class TextPage;
-
+class TextKeyCursor;
 
 class TextSystem
 {
-private:
+protected:
   /// TextPage will call our internals since it actually does most of
   /// the work while we hold state.
   friend class TextPage;
@@ -67,6 +67,8 @@ private:
 
   /// Whether we are in a state where the interpreter is pause()d.
   bool m_inPauseState;
+
+  boost::shared_ptr<TextKeyCursor> m_textKeyCursor;
 
 public:
   TextSystem();
@@ -117,7 +119,8 @@ public:
   bool isReadingBacklog() const;
 
   /// @}
-  
+
+  void setKeyCursor(RLMachine& machine, int newCursor);
 
 
   void setFastTextMode(int i) { m_fastTextMode = i; }

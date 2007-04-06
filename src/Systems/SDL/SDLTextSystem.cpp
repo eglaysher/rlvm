@@ -34,6 +34,7 @@
 
 #include "Systems/SDL/SDLTextSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
+#include "Systems/Base/TextKeyCursor.hpp"
 
 #include <boost/bind.hpp>
 #include <SDL/SDL_ttf.h>
@@ -68,7 +69,15 @@ void SDLTextSystem::render(RLMachine& machine)
   for_each(m_textWindow.begin(), m_textWindow.end(), 
            bind(&TextWindow::render, _1, ref(machine)));
 
-  // Tell the active text window to render its 
+  if(m_textWindow.size() > 0)
+  {
+    if(!m_textKeyCursor)
+      setKeyCursor(machine, 0);
+
+    // Render the key cursor
+    WindowMap::iterator it = m_textWindow.begin();    
+    m_textKeyCursor->render(machine, *it);
+  }
 }
 
 // -----------------------------------------------------------------------

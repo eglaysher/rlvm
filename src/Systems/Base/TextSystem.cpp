@@ -27,6 +27,7 @@
 
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextKeyCursor.hpp"
 
 #include <iostream>
 
@@ -36,7 +37,6 @@ TextSystem::TextSystem()
   : m_fastTextMode(false), m_messageNoWait(false), m_messageSpeed(0),
     m_defaultTextWindow(0), m_inPauseState(false)
 {
-  
 }
 
 // -----------------------------------------------------------------------
@@ -119,4 +119,15 @@ void TextSystem::forwardPage(RLMachine& machine)
 bool TextSystem::isReadingBacklog() const
 {
   return m_previousPageIt != m_previousPages.end();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
+{
+  if(!m_textKeyCursor || 
+     m_textKeyCursor->cursorNumber() != newCursor)
+  {
+    m_textKeyCursor.reset(new TextKeyCursor(machine, newCursor));
+  }
 }

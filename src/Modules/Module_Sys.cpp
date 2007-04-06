@@ -47,6 +47,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include "boost/date_time/posix_time/posix_time_types.hpp"    
@@ -153,6 +154,15 @@ struct Sys_GetCursorPos_gc2
     machine.system().event().getCursorPos(x, y);
     *xit = x;
     *yit = y;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_PauseCursor : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int newCursor) {
+    TextSystem& text = machine.system().text();
+    text.setKeyCursor(machine, newCursor);
   }
 };
 
@@ -402,6 +412,8 @@ SysModule::SysModule(GraphicsSystem& system)
 
   addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
 
+  addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
+  
   addOpcode(1000, 0, "rnd", new Sys_rnd_0);
   addOpcode(1000, 1, new Sys_rnd_1);
   addOpcode(1001, 0, new Sys_pcnt);
