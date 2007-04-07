@@ -27,6 +27,8 @@
 #include "RLOperation.hpp"
 #include <boost/scoped_ptr.hpp>
 
+#include <string>
+
 /** 
  * Binds setting an internal variable to a passed in value in from a
  * running Reallive script. 
@@ -91,15 +93,17 @@ public:
  * Sets an internal variable to a specific value set at compile time,
  * and exposes this as an operation to Reallive scripts.
  */
-template<typename OBJTYPE, typename RETTYPE, typename VALTYPE>
+template<typename OBJTYPE, typename VALTYPE>
 class Op_SetToConstant : public RLOp_Void_Void {
+private:
   OBJTYPE& reference;
 
-  typedef void(OBJTYPE::*Setter)(RETTYPE);
+  typedef void(OBJTYPE::*Setter)(VALTYPE);
   Setter setter;
 
   VALTYPE value;
 
+public:
   Op_SetToConstant(OBJTYPE& ref, Setter s, VALTYPE inVal)
     : reference(ref), setter(s), value(inVal)
   {}
@@ -193,6 +197,17 @@ public:
                        boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff);
+};
+
+class ReturnGameexeInt : public RLOp_Store_Void {
+private:
+  std::string fullKeyName;
+  int entry;
+
+public:
+  ReturnGameexeInt(const std::string& fullKey, int en);
+
+  int operator()(RLMachine& machine);
 };
 
 #endif

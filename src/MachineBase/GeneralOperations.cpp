@@ -24,8 +24,11 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include "Systems/Base/System.hpp"
+
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "libReallive/gameexe.h"
 #include "libReallive/defs.h"
 
 using namespace std;
@@ -77,4 +80,19 @@ void MultiDispatch::operator()(
   }
 
   machine.advanceInstructionPointer();
+}
+
+// -------------------------------------------------- [ ReturnGameexeInt ]
+
+ReturnGameexeInt::ReturnGameexeInt(const std::string& fullKey, int en)
+  : fullKeyName(fullKey), entry(en) 
+{}
+
+// -----------------------------------------------------------------------
+
+int ReturnGameexeInt::operator()(RLMachine& machine) 
+{
+  Gameexe& gexe = machine.system().gameexe();
+  vector<int> values = gexe(fullKeyName);
+  return values.at(entry);
 }

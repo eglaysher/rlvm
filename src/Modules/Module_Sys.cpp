@@ -398,6 +398,29 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Sys_GetWindowAttr : public RLOp_Void_5<
+  IntReference_T, IntReference_T, IntReference_T, IntReference_T,
+  IntReference_T>
+{
+  void operator()(RLMachine& machine, 
+                  IntReferenceIterator r,
+                  IntReferenceIterator g,
+                  IntReferenceIterator b,
+                  IntReferenceIterator a,
+                  IntReferenceIterator f)
+  {
+    TextSystem& text = machine.system().text();
+
+    *r = text.windowAttrR();
+    *g = text.windowAttrG();
+    *b = text.windowAttrB();
+    *a = text.windowAttrA();
+    *f = text.windowAttrF();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 SysModule::SysModule(System& system)
   : RLModule("Sys", 1, 004)
 {
@@ -414,6 +437,16 @@ SysModule::SysModule(System& system)
   addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
 
   addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
+
+  addOpcode( 350, 0, "CtrlKeyShip", 
+             new Op_ReturnIntValue<TextSystem, int>(
+               text, &TextSystem::ctrlKeySkip));
+  addOpcode( 351, 0, "CtrlKeySkipOn",
+             new Op_SetToConstant<TextSystem, int>(
+               text, &TextSystem::setCtrlKeySkip, 1));
+  addOpcode( 352, 0, "CtrlKeySkipOff",
+             new Op_SetToConstant<TextSystem, int>(
+               text, &TextSystem::setCtrlKeySkip, 0));
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
   
@@ -461,8 +494,43 @@ SysModule::SysModule(System& system)
   addOpcode(1133, 0, new Op_SetToIncomingString<GraphicsSystem>(
               graphics, &GraphicsSystem::setDefaultBgrName));
 
+  addOpcode(2224, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setMessageNoWait));
   addOpcode(2250, 0, new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setAutoMode));
+
+  addOpcode(2360, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setWindowAttrR));
+  addOpcode(2261, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setWindowAttrG));
+  addOpcode(2262, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setWindowAttrB));
+  addOpcode(2263, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setWindowAttrA));
+  addOpcode(2264, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setWindowAttrF));
+
+  addOpcode(2360, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::windowAttrR));
+  addOpcode(2361, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::windowAttrG));
+  addOpcode(2362, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::windowAttrB));
+  addOpcode(2363, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::windowAttrA));
+  addOpcode(2364, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::windowAttrF));
+
+  addOpcode(2367, 0, new Sys_GetWindowAttr);
+
+  addOpcode(2610, 0, new ReturnGameexeInt("WINDOW_ATTR", 0));
+  addOpcode(2611, 0, new ReturnGameexeInt("WINDOW_ATTR", 1));
+  addOpcode(2612, 0, new ReturnGameexeInt("WINDOW_ATTR", 2));
+  addOpcode(2613, 0, new ReturnGameexeInt("WINDOW_ATTR", 3));
+  addOpcode(2614, 0, new ReturnGameexeInt("WINDOW_ATTR", 4));
+
+  addOpcode(2324, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::messageNoWait));
   addOpcode(2350, 0, new Op_ReturnIntValue<TextSystem, int>(
               text, &TextSystem::autoMode));
   

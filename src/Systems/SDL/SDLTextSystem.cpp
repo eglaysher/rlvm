@@ -46,7 +46,8 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-SDLTextSystem::SDLTextSystem()
+SDLTextSystem::SDLTextSystem(Gameexe& gameexe)
+  : TextSystem(gameexe)
 {
   if(TTF_Init()==-1) {
     ostringstream oss;
@@ -125,4 +126,65 @@ TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
   }
 
   return *it;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::updateWindowsForChangeToWindowAttr()
+{
+  // Check each text window to see if it needs updating
+  for(WindowMap::iterator it = m_textWindow.begin(); 
+      it != m_textWindow.end(); ++it)
+  {
+    if(!it->windowAttrMod())
+      it->setRGBAF(windowAttr());
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
+{
+  TextSystem::setDefaultWindowAttr(attr);
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setWindowAttrR(int i)
+{
+  TextSystem::setWindowAttrR(i);
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setWindowAttrG(int i)
+{
+  TextSystem::setWindowAttrG(i);
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setWindowAttrB(int i)
+{
+  TextSystem::setWindowAttrB(i);
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setWindowAttrA(int i)
+{
+  TextSystem::setWindowAttrA(i);
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setWindowAttrF(int i)
+{
+  TextSystem::setWindowAttrF(i);
+  updateWindowsForChangeToWindowAttr();
 }

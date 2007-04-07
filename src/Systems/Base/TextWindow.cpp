@@ -27,7 +27,7 @@
 #include "libReallive/defs.h"
 
 #include "Systems/Base/TextWindow.hpp"
-
+#include "Systems/Base/TextSystem.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -52,9 +52,12 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
 
   // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
-  if(window("ATTR_MOD") == 0)
-    setRGBAF(gexe("WINDOW_ATTR"));
-  else if(window("ATTR_MOD") == 1)
+  m_windowAttrMod = window("ATTR_MOD");
+  if(m_windowAttrMod == 0)
+  {
+    setRGBAF(machine.system().text().windowAttr());
+  }
+  else
     setRGBAF(window("ATTR"));
 
   setFontSizeInPixels(window("MOJI_SIZE"));

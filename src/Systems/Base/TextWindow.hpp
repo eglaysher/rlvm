@@ -114,6 +114,9 @@ protected:
 
   int m_upperBoxPadding, m_lowerBoxPadding, m_leftBoxPadding, m_rightBoxPadding;
 
+  /// Whether m_r, etc is a per-window color.
+  int m_windowAttrMod;
+
   /// The default window background color.
   /// @{
   int m_r, m_g, m_b, m_alpha, m_filter;
@@ -304,6 +307,9 @@ public:
    *
    * @{
    */
+  void setWindowAttrMod(int i) { m_windowAttrMod = i; }
+  int windowAttrMod() const { return m_windowAttrMod; }
+
   void setR(int i) { m_r = i; }
   void setG(int i) { m_g = i; }
   void setB(int i) { m_b = i; }

@@ -27,6 +27,7 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
+class Gameexe;
 class RLMachine;
 class TextWindow;
 class TextPage;
@@ -41,6 +42,9 @@ protected:
 
   /// Automatic mode
   bool m_autoMode;
+
+  /// Whether holding down the control key will skip text.
+  bool m_ctrlKeySkip;
 
   /// Fast text mode
   bool m_fastTextMode;
@@ -73,8 +77,11 @@ protected:
 
   boost::shared_ptr<TextKeyCursor> m_textKeyCursor;
 
+  /// The default \#WINDOW_ATTR. This is what is changed by the 
+  std::vector<int> m_windowAttr;
+
 public:
-  TextSystem();
+  TextSystem(Gameexe& gexe);
   virtual ~TextSystem();
 
   /**
@@ -132,6 +139,9 @@ public:
   void setAutoMode(int i) { m_autoMode = i; }
   int autoMode() const { return m_autoMode; }
 
+  void setCtrlKeySkip(int i) { m_ctrlKeySkip = i; }
+  int ctrlKeySkip() const { return m_ctrlKeySkip; }
+
   void setFastTextMode(int i) { m_fastTextMode = i; }
   int fastTextMode() const { return m_fastTextMode; }
 
@@ -140,6 +150,21 @@ public:
 
   void setMessageSpeed(int i) { m_messageSpeed = i; }
   int messageSpeed() const { return m_messageSpeed; }
+
+  virtual void setDefaultWindowAttr(const std::vector<int>& attr);
+  std::vector<int> windowAttr() const { return m_windowAttr; }
+
+  int windowAttrR() const { return m_windowAttr.at(0); }
+  int windowAttrG() const { return m_windowAttr.at(1); }
+  int windowAttrB() const { return m_windowAttr.at(2); }
+  int windowAttrA() const { return m_windowAttr.at(3); }
+  int windowAttrF() const { return m_windowAttr.at(4); }
+
+  virtual void setWindowAttrR(int i) { m_windowAttr.at(0) = i; }
+  virtual void setWindowAttrG(int i) { m_windowAttr.at(1) = i; }
+  virtual void setWindowAttrB(int i) { m_windowAttr.at(2) = i; }
+  virtual void setWindowAttrA(int i) { m_windowAttr.at(3) = i; }
+  virtual void setWindowAttrF(int i) { m_windowAttr.at(4) = i; }
 };
 
 #endif

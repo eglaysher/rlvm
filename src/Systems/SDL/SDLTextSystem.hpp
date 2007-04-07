@@ -38,8 +38,10 @@ private:
   typedef boost::ptr_map<int, SDLTextWindow> WindowMap;
   WindowMap m_textWindow;
 
+  void updateWindowsForChangeToWindowAttr();
+
 public:
-  SDLTextSystem();
+  SDLTextSystem(Gameexe& gameexe);
   ~SDLTextSystem();
 
   virtual void executeTextSystem(RLMachine& machine);
@@ -48,6 +50,14 @@ public:
   virtual void hideAllTextWindows();
   virtual void clearAllTextWindows();
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber);
+
+  virtual void setDefaultWindowAttr(const std::vector<int>& attr);
+
+  virtual void setWindowAttrR(int i);
+  virtual void setWindowAttrG(int i);
+  virtual void setWindowAttrB(int i);
+  virtual void setWindowAttrA(int i);
+  virtual void setWindowAttrF(int i);
 };
 
 #endif

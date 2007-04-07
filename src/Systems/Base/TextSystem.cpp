@@ -24,19 +24,29 @@
 
 // -----------------------------------------------------------------------
 
-
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
+
+#include "libReallive/gameexe.h"
 
 #include <iostream>
 
 using namespace std;
 
-TextSystem::TextSystem()
-  : m_autoMode(false), m_fastTextMode(false), m_messageNoWait(false),
+TextSystem::TextSystem(Gameexe& gexe)
+  : m_autoMode(false), m_ctrlKeySkip(true), m_fastTextMode(false),
+    m_messageNoWait(false),
     m_messageSpeed(0), m_defaultTextWindow(0), m_inPauseState(false)
 {
+  GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
+  if(ctrlUse.exists())
+    m_ctrlKeySkip = ctrlUse;
+
+  GameexeInterpretObject windowAttr(gexe("WINDOW_ATTR"));
+  if(windowAttr.exists())
+    setDefaultWindowAttr(windowAttr);
 }
 
 // -----------------------------------------------------------------------
@@ -128,4 +138,11 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
   {
     m_textKeyCursor.reset(new TextKeyCursor(machine, newCursor));
   }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
+{
+  m_windowAttr = attr;
 }
