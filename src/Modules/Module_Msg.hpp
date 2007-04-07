@@ -56,6 +56,8 @@ struct Longop_pause : public NiceLongOperation, public EventHandler
 private:
   bool m_isDone;
 
+  void handleSyscomCall();
+
 public:
   Longop_pause(RLMachine& machine);
   ~Longop_pause();

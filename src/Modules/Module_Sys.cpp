@@ -398,9 +398,12 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
-SysModule::SysModule(GraphicsSystem& system)
+SysModule::SysModule(System& system)
   : RLModule("Sys", 1, 004)
 {
+  GraphicsSystem& graphics = system.graphics();
+  TextSystem& text = system.text();
+
   addOpcode(   0, 0, "title", new Sys_title);
   addOpcode( 100, 0, "wait", new Sys_wait);
   addOpcode( 101, 0, "waitC", new Sys_waitC);
@@ -450,14 +453,19 @@ SysModule::SysModule(GraphicsSystem& system)
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
 
   addOpcode(1130, 0, new Op_ReturnStringValue<GraphicsSystem>(
-              system, &GraphicsSystem::defaultGrpName));
+              graphics, &GraphicsSystem::defaultGrpName));
   addOpcode(1131, 0, new Op_SetToIncomingString<GraphicsSystem>(
-              system, &GraphicsSystem::setDefaultGrpName));
+              graphics, &GraphicsSystem::setDefaultGrpName));
   addOpcode(1132, 0, new Op_ReturnStringValue<GraphicsSystem>(
-              system, &GraphicsSystem::defaultBgrName));
+              graphics, &GraphicsSystem::defaultBgrName));
   addOpcode(1133, 0, new Op_SetToIncomingString<GraphicsSystem>(
-              system, &GraphicsSystem::setDefaultBgrName));
+              graphics, &GraphicsSystem::setDefaultBgrName));
 
+  addOpcode(2250, 0, new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setAutoMode));
+  addOpcode(2350, 0, new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::autoMode));
+  
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
   addSysFrameOpcodes(*this);

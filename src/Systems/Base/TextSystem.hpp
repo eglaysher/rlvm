@@ -39,6 +39,9 @@ protected:
   /// the work while we hold state.
   friend class TextPage;
 
+  /// Automatic mode
+  bool m_autoMode;
+
   /// Fast text mode
   bool m_fastTextMode;
 
@@ -126,6 +129,8 @@ public:
 
   void setKeyCursor(RLMachine& machine, int newCursor);
 
+  void setAutoMode(int i) { m_autoMode = i; }
+  int autoMode() const { return m_autoMode; }
 
   void setFastTextMode(int i) { m_fastTextMode = i; }
   int fastTextMode() const { return m_fastTextMode; }

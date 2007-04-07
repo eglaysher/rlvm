@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 El Riot
+// Copyright (C) 2007 El Riot
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,29 +20,27 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_hpp__
-#define __Module_Sys_hpp__
+#ifndef __Module_EventLoop_hpp__
+#define __Module_EventLoop_hpp__
 
 /**
- * @file   Module_Sys.hpp
+ * @file   Module_EventLoop.cpp
  * @author Elliot Glaysher
- * @date   Tue Nov 14 21:04:24 2006
- * 
- * @brief  A module that contains completely random and non-related functions.
+ * @date   Sat Apr  7 12:55:50 2007
+ * @ingroup ModulesOpcodes
+ * @brief  Declaration of EventLoopModule
  */
 
 #include "MachineBase/RLModule.hpp"
 
-class System;
-
 /**
- * Contains functions for mod<1:4>, Sys.
+ * Contains functions for mod<0:1>, EventLoop.
  * 
- * @ingroup ModuleSys
+ * @ingroup ModuleEventLoop
  */
-class SysModule : public RLModule {
+class EventLoopModule : public RLModule {
 public:
-  SysModule(System& system);
+  EventLoopModule();
 };
 
 #endif

@@ -33,6 +33,7 @@
  */
 template<typename OBJTYPE, typename RETTYPE>
 class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
+private:
   /// The object we are going to operate on when called.
   OBJTYPE& reference;
 
@@ -43,13 +44,14 @@ class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
   /// called.
   Setter setter;
 
+public:
   Op_SetToIncomingInt(OBJTYPE& ref, Setter s)
     : reference(ref), setter(s) 
   {}
 
   void operator()(RLMachine& machine, int incoming) 
   {
-    ((reference).*(setter)(incoming));
+    (reference.*setter)(incoming);
   }
 };
 
@@ -104,7 +106,7 @@ class Op_SetToConstant : public RLOp_Void_Void {
 
   void operator()(RLMachine& machine) 
   {
-    ((reference).*(setter)(value));
+    (reference.*setter)(value);
   }
 };
 
@@ -116,18 +118,20 @@ class Op_SetToConstant : public RLOp_Void_Void {
  */
 template<typename OBJTYPE, typename RETTYPE>
 class Op_ReturnIntValue : public RLOp_Store_Void {
+private:
   OBJTYPE& reference;
 
-  typedef void(OBJTYPE::*Getter)(RETTYPE);
+  typedef RETTYPE(OBJTYPE::*Getter)() const;
   Getter getter;
 
+public:
   Op_ReturnIntValue(OBJTYPE& ref, Getter g) 
     : reference(ref), getter(g) 
   {}
 
   int operator()(RLMachine& machine) 
   {
-    return ((reference).*(getter)());
+    return (reference.*getter)();
   }
 };
 

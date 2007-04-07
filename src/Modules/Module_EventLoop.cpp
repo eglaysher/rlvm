@@ -20,29 +20,30 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_hpp__
-#define __Module_Sys_hpp__
+#include "Precompiled.hpp"
 
-/**
- * @file   Module_Sys.hpp
- * @author Elliot Glaysher
- * @date   Tue Nov 14 21:04:24 2006
- * 
- * @brief  A module that contains completely random and non-related functions.
+// -----------------------------------------------------------------------
+
+#include "Modules/Module_EventLoop.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLOperation.hpp"
+
+/** 
+ * Copy/pasted Jmp_rtl. There may be a difference, but it appears to
+ * behave identically.
  */
-
-#include "MachineBase/RLModule.hpp"
-
-class System;
-
-/**
- * Contains functions for mod<1:4>, Sys.
- * 
- * @ingroup ModuleSys
- */
-class SysModule : public RLModule {
-public:
-  SysModule(System& system);
+struct EL_rtl : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.returnFromFarcall();
+  }
 };
 
-#endif
+// -----------------------------------------------------------------------
+
+EventLoopModule::EventLoopModule()
+  : RLModule("EventLoop", 0, 4)
+{
+  addOpcode(300, 0, new EL_rtl());
+  addOpcode(301, 0, new EL_rtl());
+  addOpcode(302, 0, new EL_rtl());
+}

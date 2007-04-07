@@ -34,8 +34,8 @@
 using namespace std;
 
 TextSystem::TextSystem()
-  : m_fastTextMode(false), m_messageNoWait(false), m_messageSpeed(0),
-    m_defaultTextWindow(0), m_inPauseState(false)
+  : m_autoMode(false), m_fastTextMode(false), m_messageNoWait(false),
+    m_messageSpeed(0), m_defaultTextWindow(0), m_inPauseState(false)
 {
 }
 

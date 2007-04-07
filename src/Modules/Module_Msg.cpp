@@ -38,6 +38,8 @@
 #include "MachineBase/RLModule.hpp"
 //#include "GeneralOperations.hpp"
 
+#include "libReallive/gameexe.h"
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -76,6 +78,36 @@ Longop_pause::~Longop_pause()
   machine().system().text().setInPauseState(false);
 }
 
+// -----------------------------------------------------------------------
+
+/** 
+ * @todo This is fairly buggy right now. I wanted to support the
+ *       CLANNAD menu, but there are three problems. 1) I don't handle
+ *       everything necessary to display the menu properly. 2) The
+ *       code in CLANNAD's SEEN.TXT doesn't return properly. 3) Even
+ *       if it did, THIS C++ code doesn't return properly.
+ *  
+ *       To really fix that final one, I'm going to have to make
+ *       Longoperations and Reallive stack frames use the same call
+ *       stack instead of the hacktastic separate stacks I'm doing
+ *       now.
+ */
+void Longop_pause::handleSyscomCall()
+{
+  Gameexe& gexe = machine().system().gameexe();
+
+  if(gexe("CANCELCALL_MOD") == 1)
+  {
+    vector<int> cancelcall = gexe("CANCELCALL");
+    machine().farcall(cancelcall.at(0), cancelcall.at(1));
+    m_isDone = true;
+  }
+  else
+  {
+    cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
+  }
+}
+
 // -------------------------------------------- [ EventHandler interface ]
 void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton, 
                                            bool pressed)
@@ -89,6 +121,9 @@ void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton,
     {
     case MOUSE_LEFT:
       m_isDone = true;
+      break;
+    case MOUSE_RIGHT:
+      handleSyscomCall();
       break;
     case MOUSE_WHEELUP:
       text.backPage(machine());

@@ -87,7 +87,7 @@ void object::test<1>()
   libReallive::Archive arc("test/Module_Sys_SEEN/SceneNum/SEEN.TXT");
   NullSystem system;
   RLMachine rlmachine(arc);
-  rlmachine.attachModule(new SysModule(system.graphics()));
+  rlmachine.attachModule(new SysModule(system));
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
