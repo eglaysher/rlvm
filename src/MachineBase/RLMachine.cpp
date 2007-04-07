@@ -520,3 +520,24 @@ void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype
   modtype = packedModuleNumber >> 8;
   module = packedModuleNumber && 0xFF;
 }
+
+// -----------------------------------------------------------------------
+
+bool RLMachine::halted() const 
+{ 
+  return m_halted;
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::halt() 
+{
+  m_halted = true; 
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setHaltOnException(bool haltOnException) 
+{
+  m_haltOnException = haltOnException;
+}

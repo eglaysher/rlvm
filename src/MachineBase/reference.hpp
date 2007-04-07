@@ -113,8 +113,8 @@ private:
 
 public:
   // Explicit reference creation
-  MemoryReferenceIterator(RLMachine* inMachine, const int inType, const int inLocation)
-    : m_machine(inMachine), m_type(inType), m_location(inLocation) { }     
+  MemoryReferenceIterator(RLMachine* inMachine, const int inType, 
+                          const int inLocation);
 
   int type() const { return type; }
   int location() const { return location; }
@@ -163,6 +163,14 @@ public:
     return ! operator==(rhs);
   }
 };
+
+// -----------------------------------------------------------------------
+
+template<typename ACCESS>
+MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
+  RLMachine* inMachine, const int inType, const int inLocation)
+  : m_machine(inMachine), m_type(inType), m_location(inLocation)
+{ }
 
 // -----------------------------------------------------------------------
 

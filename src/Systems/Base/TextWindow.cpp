@@ -283,6 +283,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
   setWakuMain(machine, waku("NAME"));
   setWakuBacking(machine, waku("BACK"));
+  setWakuButton(machine, waku("BTN"));
 }
 
 // -----------------------------------------------------------------------

@@ -279,11 +279,17 @@ public:
   virtual void setWakuMain(RLMachine& machine, const std::string& name) = 0;
 
   /** 
-   * Loads the graphics file name as the backing for the 
-   * 
-   * @param name 
+   * Loads the graphics file name as the mask for represents the areas
+   * of the text window that should be shaded.
    */
   virtual void setWakuBacking(RLMachine& machine, const std::string& name) = 0;
+
+  /**
+   * Loads the graphics file name as the image with all the button
+   * images used when drawing 
+   * 
+   */
+  virtual void setWakuButton(RLMachine& machine, const std::string& name) = 0;  
 
   /// @}
 

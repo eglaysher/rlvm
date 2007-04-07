@@ -48,6 +48,7 @@ private:
 
   boost::shared_ptr<SDLSurface> m_wakuMain;
   boost::shared_ptr<SDLSurface> m_wakuBacking;
+  boost::shared_ptr<SDLSurface> m_wakuButton;
 
   bool setIndentation();
 
@@ -69,6 +70,7 @@ public:
 
   virtual void setWakuMain(RLMachine& machine, const std::string& name);
   virtual void setWakuBacking(RLMachine& machine, const std::string& name);
+  virtual void setWakuButton(RLMachine& machine, const std::string& name);
 
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& nextChar);

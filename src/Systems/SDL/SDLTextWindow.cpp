@@ -334,3 +334,15 @@ void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
 
 // -----------------------------------------------------------------------
 
+void SDLTextWindow::setWakuButton(RLMachine& machine, const std::string& name)
+{
+  if(name != "")
+  {
+    GraphicsSystem& gs = machine.system().graphics();
+    SDLSurface* s = dynamic_cast<SDLSurface*>(
+      gs.loadSurfaceFromFile(findFile(machine, name)));
+    m_wakuButton.reset(s);
+  }
+  else
+    m_wakuButton.reset();
+}

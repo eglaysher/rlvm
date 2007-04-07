@@ -124,7 +124,8 @@ private:
   System& m_system;
 
   unsigned int packModuleNumber(int modtype, int module);
-  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, int& module);
+  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, 
+                          int& module);
 
 public:
   RLMachine(libReallive::Archive& inArchive);
@@ -341,20 +342,20 @@ public:
    * 
    * @return Whether the machine is halted
    */
-  bool halted() const { return m_halted; }
+  bool halted() const;
 
   /** 
    * Force the machine to halt. This should terminate the execution of
    * bytecode, and theoretically, the program.
    */
-  void halt() { m_halted = true; }
+  void halt();
 
   /** 
    * Sets whether the RLMachine will be put into the halt state if an
    * exception is thrown while executing an instruction. By default,
    * it will.
    */
-  void setHaltOnException(bool haltOnException) { m_haltOnException = haltOnException; }
+  void setHaltOnException(bool haltOnException);
 
   /** 
    * Returns the current System that this RLMachine outputs to.
