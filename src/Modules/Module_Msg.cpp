@@ -40,6 +40,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 
@@ -59,7 +60,18 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 Longop_pause::Longop_pause(RLMachine& machine)
-  : NiceLongOperation(machine) {}
+  : NiceLongOperation(machine), m_machine(machine)
+{
+  machine.system().text().setInPauseState(true);
+  machine.system().graphics().markScreenAsDirty();
+}
+
+// -----------------------------------------------------------------------
+
+Longop_pause::~Longop_pause()
+{
+  m_machine.system().text().setInPauseState(false);
+}
 
 // -----------------------------------------------------------------------
 

@@ -32,6 +32,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 
 #include <string>
@@ -42,7 +43,8 @@ using namespace std;
 // TextKeyCursor
 // -----------------------------------------------------------------------
 TextKeyCursor::TextKeyCursor(RLMachine& machine, int curosrNumber)
-  : m_currentFrame(0)
+  : m_currentFrame(0), 
+    m_lastTimeFrameIncremented(machine.system().event().getTicks())
 {
   cerr << "Setting key cursor to " << curosrNumber << endl;
 
@@ -62,6 +64,27 @@ TextKeyCursor::~TextKeyCursor()
 
 // -----------------------------------------------------------------------
 
+void TextKeyCursor::execute(RLMachine& machine)
+{
+//  cerr << "Executing key cursor~!" << endl;
+  unsigned int curTime = machine.system().event().getTicks();
+//   cerr << m_lastTimeFrameIncremented << " + " << m_frameSpeed << " > "
+//        << curTime << endl;
+  if(m_lastTimeFrameIncremented + m_frameSpeed < curTime)
+  {
+//    cerr << "Updating frame!" << endl;
+    m_lastTimeFrameIncremented = curTime;
+
+    machine.system().graphics().markScreenAsDirty();
+
+    m_currentFrame++;
+    if(m_currentFrame >= m_frameCount)
+      m_currentFrame = 0;
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextKeyCursor::render(RLMachine& machine, TextWindow& textWindow)
 {
   // Get the location to render from textWindow
@@ -75,10 +98,6 @@ void TextKeyCursor::render(RLMachine& machine, TextWindow& textWindow)
     m_frameYSize,
     keycurX, keycurY, keycurX + m_frameXSize, keycurY + m_frameYSize,
     255);
-
-  m_currentFrame++;
-  if(m_currentFrame >= m_frameCount)
-    m_currentFrame = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -115,5 +134,5 @@ void TextKeyCursor::setCursorFrameCount(const int frameCount)
 
 void TextKeyCursor::setCursorFrameSpeed(const int speed)
 {
-  m_frameSpeed = speed;
+  m_frameSpeed = speed / 10;
 }

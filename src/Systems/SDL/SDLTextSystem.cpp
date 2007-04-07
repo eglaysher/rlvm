@@ -64,18 +64,35 @@ SDLTextSystem::~SDLTextSystem()
 
 // -----------------------------------------------------------------------
 
+void SDLTextSystem::executeTextSystem(RLMachine& machine)
+{
+  // Check to see if the cursor is displayed
+  WindowMap::iterator it = m_textWindow.find(m_defaultTextWindow);
+  if(it != m_textWindow.end() && it->isVisible() && 
+     m_inPauseState && !isReadingBacklog())
+  {
+    if(!m_textKeyCursor)
+      setKeyCursor(machine, 0);
+
+    m_textKeyCursor->execute(machine);
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextSystem::render(RLMachine& machine)
 {
   for_each(m_textWindow.begin(), m_textWindow.end(), 
            bind(&TextWindow::render, _1, ref(machine)));
 
-  if(m_textWindow.size() > 0)
+  WindowMap::iterator it = m_textWindow.find(m_defaultTextWindow);
+
+  if(it != m_textWindow.end() && it->isVisible() && 
+     m_inPauseState && !isReadingBacklog())
   {
     if(!m_textKeyCursor)
       setKeyCursor(machine, 0);
 
-    // Render the key cursor
-    WindowMap::iterator it = m_textWindow.begin();    
     m_textKeyCursor->render(machine, *it);
   }
 }

@@ -42,6 +42,8 @@ public:
   SDLTextSystem();
   ~SDLTextSystem();
 
+  virtual void executeTextSystem(RLMachine& machine);
+
   virtual void render(RLMachine& machine);
   virtual void hideAllTextWindows();
   virtual void clearAllTextWindows();

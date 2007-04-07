@@ -54,6 +54,9 @@ private:
   /// How long an individual frame should be displayed 
   int m_frameSpeed;
 
+  /// The last time m_currentFrame was incremented in ticks
+  unsigned int m_lastTimeFrameIncremented;
+
 public:
   /** 
    * Creates a Key Cursor object based off of the properties in
@@ -63,6 +66,13 @@ public:
   TextKeyCursor(RLMachine& machine, int curosrNumber);
 
   ~TextKeyCursor();
+
+  /**
+   * Updates the key cursor properties during the System::execute()
+   * phase. This should run once every game loop while a key cursor is
+   * displayed on the screen.
+   */
+  void execute(RLMachine& machine);
 
   /** 
    * Render this key cursor to the specified window, which owns

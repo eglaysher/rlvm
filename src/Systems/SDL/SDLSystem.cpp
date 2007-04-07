@@ -66,6 +66,8 @@ void SDLSystem::run(RLMachine& machine)
   // Give the event handler a chance to run
   eventSystem->executeEventSystem(machine);
 
+  textSystem->executeTextSystem(machine);
+
   // Finally, run any screen updates needed
   graphicsSystem->executeGraphicsSystem(machine);
 

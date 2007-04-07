@@ -80,6 +80,8 @@ public:
    * @{
    */
 
+  virtual void executeTextSystem(RLMachine& machine) = 0;
+
   virtual void render(RLMachine& machine) = 0;
 
   virtual void hideAllTextWindows() = 0;
@@ -87,6 +89,8 @@ public:
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber) = 0;
 
   /// @}
+
+  void setInPauseState(bool in) { m_inPauseState = in; }
 
   void setDefaultWindow(int window) { m_defaultTextWindow = window; }
 

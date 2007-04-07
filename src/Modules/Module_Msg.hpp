@@ -51,7 +51,13 @@ public:
  */
 struct Longop_pause : public NiceLongOperation 
 {
+private:
+  RLMachine& m_machine;
+
+public:
   Longop_pause(RLMachine& machine);
+  ~Longop_pause();
+
   bool operator()(RLMachine& machine);
 };
 
