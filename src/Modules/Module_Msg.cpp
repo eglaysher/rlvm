@@ -60,53 +60,77 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 Longop_pause::Longop_pause(RLMachine& machine)
-  : NiceLongOperation(machine), m_machine(machine)
+  : NiceLongOperation(machine), m_isDone(false)
 {
   machine.system().text().setInPauseState(true);
   machine.system().graphics().markScreenAsDirty();
+  machine.system().event().addEventHandler(this);
 }
 
 // -----------------------------------------------------------------------
 
 Longop_pause::~Longop_pause()
 {
-  m_machine.system().text().setInPauseState(false);
+  machine().system().event().removeEventHandler(this);
+  machine().system().text().setInPauseState(false);
+}
+
+// -------------------------------------------- [ EventHandler interface ]
+void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton, 
+                                           bool pressed)
+{
+  EventSystem& es = machine().system().event();
+  TextSystem& text = machine().system().text();
+
+  if(pressed)
+  {
+    switch(mouseButton)
+    {
+    case MOUSE_LEFT:
+      m_isDone = true;
+      break;
+    case MOUSE_WHEELUP:
+      text.backPage(machine());
+      break;
+    case MOUSE_WHEELDOWN:
+      if(text.isReadingBacklog())
+        text.forwardPage(machine());
+      break;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
 
-bool Longop_pause::operator()(RLMachine& machine) {
-  // Check the status of the window.
-  EventSystem& es = machine.system().event();
-  TextSystem& text = machine.system().text();
-  int x, y, btn1, btn2;
-  bool done = false;
+void Longop_pause::keyStateChanged(KeyCode keyCode, bool pressed)
+{
+  EventSystem& es = machine().system().event();
+  TextSystem& text = machine().system().text();
 
-  es.getCursorPos(x, y, btn1, btn2);
-  if(btn2 == 2)
+  if(pressed)
   {
-    es.flushMouseClicks();
-    text.backPage(machine);
+    if(keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)
+      m_isDone = true;
+    else if(keyCode == RLKEY_UP)
+      text.backPage(machine());
+    else if(keyCode == RLKEY_DOWN)
+    {
+      if(text.isReadingBacklog())
+        text.forwardPage(machine());
+    }
+    else if(keyCode == RLKEY_RETURN)
+      m_isDone = true;
   }
-  if(btn1 == 2)
-  {
-    es.flushMouseClicks();
+}
 
-    if(text.isReadingBacklog())
-      text.forwardPage(machine);
-    else
-      done = true;
-  }
+// -----------------------------------------------------------------------
 
-  if(!done)
-    done = es.ctrlPressed();
-
-  if(done)
-  {
+bool Longop_pause::operator()(RLMachine& machine)
+{
+  if(m_isDone)
     machine.system().text().newPage(machine);
-  }
 
-  return done;
+  return m_isDone;
 }
 
 // -----------------------------------------------------------------------

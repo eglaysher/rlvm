@@ -83,7 +83,6 @@ void TextSystem::backPage(RLMachine& machine)
 {
   if(m_previousPageIt != m_previousPages.begin())
   {
-    cerr << "Moving back a page." << endl;
     m_previousPageIt = boost::prior(m_previousPageIt);
 
     // Clear all windows
@@ -100,7 +99,6 @@ void TextSystem::forwardPage(RLMachine& machine)
 {
   if(m_previousPageIt != m_previousPages.end())
   {
-    cerr << "Moving forward a page." << endl;
     m_previousPageIt = boost::next(m_previousPageIt);
 
     // Clear all windows

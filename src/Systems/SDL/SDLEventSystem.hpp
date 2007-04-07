@@ -36,16 +36,28 @@ private:
 
   int m_button1State, m_button2State;
 
+  /**
+   * @name RealLive event system commands
+   * 
+   * @{
+   */
   void handleKeyDown(SDL_Event& e);
   void handleKeyUp(SDL_Event& e);
   void handleMouseMotion(SDL_Event& e);
   void handleMouseButtonUp(SDL_Event& event);
   void handleMouseButtonDown(SDL_Event& event);
+  void executeRealLiveEventSystem(RLMachine& machine);
+  /// @}
+
+  void executeEventHandlerSystem(RLMachine& machine);
+
 
 public:
   SDLEventSystem();
 
   virtual void executeEventSystem(RLMachine& machine);
+
+  virtual void addEventHandler(EventHandler* handler);
   
   virtual bool shiftPressed() const { return m_shiftPressed; }
   virtual bool ctrlPressed() const  { return m_ctrlPressed;  }

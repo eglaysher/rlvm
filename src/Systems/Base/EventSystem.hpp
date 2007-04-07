@@ -24,6 +24,7 @@
 #ifndef __EventSystem_hpp__
 #define __EventSystem_hpp__
 
+#include <vector>
 #include <boost/scoped_ptr.hpp>
 
 #include "Systems/Base/RLTimer.hpp"
@@ -31,15 +32,22 @@
 class RLMachine;
 
 class FrameCounter;
-
+class EventHandler;
 
 /**
  * Generalization of an event system. Reallive's event model is a bit
  * weird; interpreted code will check the state of certain keyboard
  * modifiers, with functions such as CtrlPressed() or ShiftPressed().
+ *
+ * So what's the solution? Have two different event systems side by
+ * side. One is exposed to Reallive and mimics what RealLive bytecode
+ * expects. The other is based on event handlers and is sane.
  */
 class EventSystem
 {
+protected:
+  typedef std::vector<EventHandler*> Handlers;
+
 private:
   boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
   RLTimer m_timers[255][2];
@@ -51,13 +59,23 @@ private:
 
   int m_numberOfNiceAfterEachTaskItems;
 
+  /// Helper function that verifies input
   void checkLayerAndCounter(int layer, int counter);
+
+  Handlers m_eventHandlers;
+
+protected:
+  Handlers::iterator handlers_begin() { return m_eventHandlers.begin(); }
+  Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
 
 public:
   EventSystem();
   virtual ~EventSystem();
 
   virtual void executeEventSystem(RLMachine& machine) = 0;
+
+  virtual void addEventHandler(EventHandler* handler);
+  virtual void removeEventHandler(EventHandler* handler);
 
   /** 
    * Returns whether shift is currently pressed.
@@ -85,8 +103,6 @@ public:
   FrameCounter& getFrameCounter(int layer, int frameCounter);
   bool frameCounterExists(int layer, int frameCounter);
 
-//  virtual FrameCounter& getExFrameCounter(int frameCounter) const;
-
   RLTimer& getTimer(int layer, int counter) 
   { return m_timers[layer][counter]; }
 
@@ -100,7 +116,17 @@ public:
   // -----------------------------------------------------------------------
 
   /**
-   * @name Keyboard and Mouse Input
+   * @name Keyboard and Mouse Input (Event Handler style)
+   * 
+   * @{
+   */
+
+
+  /// @}
+
+
+  /**
+   * @name Keyboard and Mouse Input (Reallive style)
    * 
    * @{
    */

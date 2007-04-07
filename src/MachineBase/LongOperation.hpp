@@ -66,6 +66,9 @@ private:
   /// destructor.
   RLMachine& m_machine;
 
+protected:
+  RLMachine& machine();
+
 public:
   NiceLongOperation(RLMachine& machine);
   ~NiceLongOperation();

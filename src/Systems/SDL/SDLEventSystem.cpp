@@ -25,9 +25,11 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventHandler.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 
 #include <SDL/SDL.h>
+#include <boost/bind.hpp>
 
 #include <iostream>
 
@@ -91,7 +93,7 @@ void SDLEventSystem::handleMouseButtonDown(SDL_Event& event)
 {
   if(event.button.button == SDL_BUTTON_LEFT)
     m_button1State = 1;
-  else
+  else if(event.button.button == SDL_BUTTON_RIGHT)
     m_button2State = 1;
 }
 
@@ -101,7 +103,7 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 {
   if(event.button.button == SDL_BUTTON_LEFT)
     m_button1State = 2;
-  else
+  else if(event.button.button == SDL_BUTTON_RIGHT)
     m_button2State = 2;
 }
 
@@ -117,9 +119,98 @@ SDLEventSystem::SDLEventSystem()
 
 void SDLEventSystem::executeEventSystem(RLMachine& machine)
 {
-  SDL_Event event;
+  if(handlers_begin() == handlers_end())
+    executeRealLiveEventSystem(machine);
+  else
+    executeEventHandlerSystem(machine);
+}
 
-//  if(SDL_PollEvent(&event) == 1)
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::addEventHandler(EventHandler* handler)
+{
+  EventSystem::addEventHandler(handler);
+
+  if(m_ctrlPressed)
+    handler->keyStateChanged(RLKEY_LCTRL, true);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
+{
+  SDL_Event event;
+  while(SDL_PollEvent(&event))
+  {
+    switch(event.type)
+    {
+    case SDL_KEYDOWN:
+    {
+      KeyCode code = KeyCode(event.key.keysym.sym);
+      for_each(handlers_begin(), handlers_end(),
+               bind(&EventHandler::keyStateChanged, _1,
+                    code, true));
+
+      // Still keep track of what keys are held down      
+      handleKeyDown(event);
+      break;
+    }
+    case SDL_KEYUP:
+    {
+      KeyCode code = KeyCode(event.key.keysym.sym);
+      for_each(handlers_begin(), handlers_end(),
+               bind(&EventHandler::keyStateChanged, _1,
+                    code, false));
+
+      // Still keep track of what keys are released
+      handleKeyUp(event);
+      break;
+    }
+    case SDL_MOUSEMOTION:
+      // Handle this somehow.
+//      handleMouseMotion(event);
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+    {
+      bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
+      MouseButton button;
+      switch(event.button.button)
+      {
+      case SDL_BUTTON_LEFT: 
+        button = MOUSE_LEFT;
+        break;
+      case SDL_BUTTON_RIGHT:
+        button = MOUSE_RIGHT;
+        break;
+      case SDL_BUTTON_MIDDLE:
+        button = MOUSE_MIDDLE;
+        break;
+      case SDL_BUTTON_WHEELUP:
+        button = MOUSE_WHEELUP;
+        break;
+      case SDL_BUTTON_WHEELDOWN:
+        button = MOUSE_WHEELDOWN;
+        break;
+      }
+
+      for_each(handlers_begin(), handlers_end(),
+               bind(&EventHandler::mouseButtonStateChanged, _1,
+                    button, pressed));
+      break;
+    }
+    case SDL_QUIT:
+      machine.halt();
+      break;
+    }
+  }  
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
+{
+  SDL_Event event;
   while(SDL_PollEvent(&event))
   {
     switch(event.type)

@@ -48,6 +48,28 @@ EventSystem::~EventSystem()
 
 // -----------------------------------------------------------------------
 
+void EventSystem::addEventHandler(EventHandler* handler)
+{
+  Handlers::iterator it = 
+    std::find(m_eventHandlers.begin(), m_eventHandlers.end(), handler);
+
+  if(it == m_eventHandlers.end())
+    m_eventHandlers.push_back(handler);
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::removeEventHandler(EventHandler* handler)
+{
+  Handlers::iterator it = 
+    std::find(m_eventHandlers.begin(), m_eventHandlers.end(), handler);
+
+  if(it != m_eventHandlers.end())
+    m_eventHandlers.erase(it);
+}
+
+// -----------------------------------------------------------------------
+
 void EventSystem::setFrameCounter(int layer, int frameCounter, FrameCounter* counter)
 {
   checkLayerAndCounter(layer, frameCounter);

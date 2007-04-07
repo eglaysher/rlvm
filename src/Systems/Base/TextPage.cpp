@@ -102,7 +102,6 @@ TextTextPageElement::TextTextPageElement()
 
 void TextTextPageElement::replayElement(TextPage& page, bool isActivePage)
 {
-  cerr << "Replay: print text: " << m_listOfCharsToPrint << endl;
   printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
                       m_listOfCharsToPrint, m_nextChar);
 }

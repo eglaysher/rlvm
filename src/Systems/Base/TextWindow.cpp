@@ -103,8 +103,6 @@ void TextWindow::setFontColor(const std::vector<int>& colorData)
   m_fontRed = colorData.at(0);
   m_fontGreen = colorData.at(1);
   m_fontBlue = colorData.at(2);
-  cerr << "{" << m_fontRed << ", " << m_fontGreen << ", " << m_fontBlue << "}"
-       << endl;
 }
 
 // -----------------------------------------------------------------------

@@ -54,6 +54,13 @@ NiceLongOperation::~NiceLongOperation()
 }
 
 // -----------------------------------------------------------------------
+
+RLMachine& NiceLongOperation::machine()
+{
+  return m_machine;
+}
+
+// -----------------------------------------------------------------------
 // PerformAfterLongOperationDecorator
 // -----------------------------------------------------------------------
 

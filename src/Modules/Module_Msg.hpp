@@ -34,6 +34,8 @@
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/LongOperation.hpp"
 
+#include "Systems/Base/EventHandler.hpp"
+
 /**
  * Contains functions for mod<0:3>, Msg.
  * 
@@ -49,15 +51,20 @@ public:
 /**
  * Main pause function. Exported for TextoutLongOperation to abuse. 
  */
-struct Longop_pause : public NiceLongOperation 
+struct Longop_pause : public NiceLongOperation, public EventHandler
 {
 private:
-  RLMachine& m_machine;
+  bool m_isDone;
 
 public:
   Longop_pause(RLMachine& machine);
   ~Longop_pause();
 
+  // ------------------------------------------ [ EventHandler interface ]
+  void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  void keyStateChanged(KeyCode keyCode, bool pressed);
+
+  // ----------------------------------------- [ LongOperation interface ]
   bool operator()(RLMachine& machine);
 };
 
