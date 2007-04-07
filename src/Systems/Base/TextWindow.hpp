@@ -84,7 +84,7 @@ protected:
   /// Spacing between characters
   int m_xSpacing, m_ySpacing;
 
-  /// 
+  /// Whether to indent (INDENT_USE)
   int m_useIndentation;
 
   int m_currentIndentationInPixels;
@@ -98,6 +98,10 @@ protected:
   int m_fontRed, m_fontGreen, m_fontBlue;
 
   /// @}
+
+  /// Determines how the window will react to pause()
+  /// calls. Initialized to \#WINDOW.x.R_COMMAND_MOD.
+  int m_actionOnPause;
 
   /**
    * @name Positional data
@@ -310,6 +314,9 @@ public:
 
   void setVisible(int in) { m_isVisible = in; }
   bool isVisible() const { return m_isVisible; }
+
+  void setActionOnPause(const int i) { m_actionOnPause = i; }
+  bool actionOnPause() const { return m_actionOnPause; }
 
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine) = 0;

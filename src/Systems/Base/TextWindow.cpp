@@ -75,6 +75,7 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
   setNameMod(window("NAME_MOD").to_int(0));
 
   setKeycurMod(window("KEYCUR_MOD"));
+  setActionOnPause(window("R_COMMAND_MOD"));
 }
 
 // -----------------------------------------------------------------------

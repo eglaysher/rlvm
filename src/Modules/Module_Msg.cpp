@@ -43,6 +43,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextWindow.hpp"
 
 #include <iostream>
 
@@ -128,11 +129,26 @@ void Longop_pause::keyStateChanged(KeyCode keyCode, bool pressed)
 bool Longop_pause::operator()(RLMachine& machine)
 {
   if(m_isDone)
-    machine.system().text().newPage(machine);
+  {
+    TextSystem& text = machine.system().text();
+    TextPage& page = text.currentPage(machine);
+    int windowNum = page.currentWindowNum();
+    TextWindow& textWindow = text.textWindow(machine, windowNum);
+
+    if(textWindow.actionOnPause())
+    {
+      machine.system().text().currentPage(machine).hardBrake();    
+    }
+    else
+    {
+      machine.system().text().newPage(machine);
+    }
+  }
 
   return m_isDone;
 }
 
+// -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
 struct Msg_par : public RLOp_Void_Void {

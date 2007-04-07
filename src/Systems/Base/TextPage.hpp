@@ -144,6 +144,11 @@ public:
    * to implement implicit pauses when a page is full.
    */
   bool isFull() const;
+
+  /**
+   * Returns the current window this page is rendering to.
+   */
+  int currentWindowNum() const { return m_currentWindow; }
 };
 
 #endif
