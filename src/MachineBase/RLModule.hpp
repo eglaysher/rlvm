@@ -130,9 +130,7 @@ public:
    * the declaration.
    */
   void addOpcode(int opcode, unsigned char overload, const std::string& name,
-                 RLOperation* op) {
-    addOpcode(opcode, overload, op);
-  }
+                 RLOperation* op);
 
   /// Accessor that returns this module's type number
   int moduleType() const { return m_moduleType; }

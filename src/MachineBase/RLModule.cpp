@@ -69,9 +69,22 @@ void RLModule::unpackOpcodeNumber(int packedOpcode, int& opcode, unsigned char& 
 
 // -----------------------------------------------------------------------
 
-void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op) 
+void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
 {
-  int packedOpcode = packOpcodeNumber(opcode, overload);
+  ostringstream oss;
+  oss << "opcode<" << m_moduleType << ":" << m_moduleNumber << ":" 
+      << opcode << ", " << overload << ">";
+
+  addOpcode(opcode, overload, oss.str(), op);
+}
+
+// -----------------------------------------------------------------------
+
+void RLModule::addOpcode(int opcode, unsigned char overload, 
+                         const std::string& name, RLOperation* op) 
+{
+  int packedOpcode = packOpcodeNumber(opcode, overload);  
+  op->setName(name);
   storedOperations.insert(packedOpcode, op);
 }
 
@@ -86,6 +99,12 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
     ostringstream ss;
     ss << "Undefined opcode<" << f.modtype() << ":" << f.module() << ":" 
        << f.opcode() << ", " << f.overload() << ">";
+
+//     for(OpcodeMap::iterator it = storedOperations.begin(); 
+//         it != storedOperations.end(); ++it)
+//     {
+//       cerr << it->name() << endl;
+//     }
     throw Error(ss.str());
   }
 }

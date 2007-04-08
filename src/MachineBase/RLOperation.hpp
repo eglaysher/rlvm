@@ -96,11 +96,18 @@
  * the RLMachine.
  */
 struct RLOperation {
+private:
+  std::string m_name;
+
+public:
   /// Default constructor
   RLOperation();
 
   /// Destructor
   virtual ~RLOperation();
+
+  void setName(const std::string& name) { m_name = name; }
+  const std::string& name() const { return m_name; }
 
   /** 
    * Check made as to whether the instruction pointer should be

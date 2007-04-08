@@ -398,16 +398,32 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Sys_SetWindowAttr : public RLOp_Void_5<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T>
+{
+  void operator()(RLMachine& machine, int r, int g, int b, int a, int f)
+  {
+    vector<int> attr(5);
+    attr[0] = r; 
+    attr[1] = g;
+    attr[2] = b;
+    attr[3] = a;
+    attr[4] = f;
+
+    machine.system().text().setDefaultWindowAttr(attr);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Sys_GetWindowAttr : public RLOp_Void_5<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
   IntReference_T>
 {
-  void operator()(RLMachine& machine, 
-                  IntReferenceIterator r,
-                  IntReferenceIterator g,
-                  IntReferenceIterator b,
-                  IntReferenceIterator a,
-                  IntReferenceIterator f)
+  void operator()(RLMachine& machine, IntReferenceIterator r,
+                  IntReferenceIterator g, IntReferenceIterator b,
+                  IntReferenceIterator a, IntReferenceIterator f)
   {
     TextSystem& text = machine.system().text();
 
@@ -416,6 +432,27 @@ struct Sys_GetWindowAttr : public RLOp_Void_5<
     *b = text.windowAttrB();
     *a = text.windowAttrA();
     *f = text.windowAttrF();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_DefWindowAttr : public RLOp_Void_5<
+  IntReference_T, IntReference_T, IntReference_T, IntReference_T,
+  IntReference_T>
+{
+  void operator()(RLMachine& machine, IntReferenceIterator r,
+                  IntReferenceIterator g, IntReferenceIterator b,
+                  IntReferenceIterator a, IntReferenceIterator f)
+  {
+    Gameexe& gexe = machine.system().gameexe();
+    vector<int> attr = gexe("WINDOW_ATTR");
+
+    *r = attr.at(0);
+    *g = attr.at(1);
+    *b = attr.at(2);
+    *a = attr.at(3);
+    *f = attr.at(4);
   }
 };
 
@@ -480,26 +517,32 @@ SysModule::SysModule(System& system)
 //  addOpcode(1111, 0, new Sys_GetTime);
 //  addOpcode(1112, 0, new Sys_GetDateTime);
 
-  addOpcode(1120, 0, new Sys_SceneNum);
+  addOpcode(1120, 0, "SceneNum", new Sys_SceneNum);
 
   addOpcode(1200, 0, "end", new Sys_end);
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
 
-  addOpcode(1130, 0, new Op_ReturnStringValue<GraphicsSystem>(
+  addOpcode(1130, 0, "DefaultGrp", 
+            new Op_ReturnStringValue<GraphicsSystem>(
               graphics, &GraphicsSystem::defaultGrpName));
-  addOpcode(1131, 0, new Op_SetToIncomingString<GraphicsSystem>(
+  addOpcode(1131, 0, "SetDefaultGrp", 
+            new Op_SetToIncomingString<GraphicsSystem>(
               graphics, &GraphicsSystem::setDefaultGrpName));
-  addOpcode(1132, 0, new Op_ReturnStringValue<GraphicsSystem>(
+  addOpcode(1132, 0, "DefaultBgr", 
+            new Op_ReturnStringValue<GraphicsSystem>(
               graphics, &GraphicsSystem::defaultBgrName));
-  addOpcode(1133, 0, new Op_SetToIncomingString<GraphicsSystem>(
+  addOpcode(1133, 0, "SetDefaultBgr",
+            new Op_SetToIncomingString<GraphicsSystem>(
               graphics, &GraphicsSystem::setDefaultBgrName));
 
-  addOpcode(2224, 0, new Op_SetToIncomingInt<TextSystem, int>(
+  addOpcode(2224, 0, "SetMessageNoWait",
+            new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setMessageNoWait));
-  addOpcode(2250, 0, new Op_SetToIncomingInt<TextSystem, int>(
+  addOpcode(2250, 0, "SetAutoMode",
+            new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setAutoMode));
 
-  addOpcode(2360, 0, new Op_SetToIncomingInt<TextSystem, int>(
+  addOpcode(2260, 0, new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setWindowAttrR));
   addOpcode(2261, 0, new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setWindowAttrG));
@@ -509,6 +552,8 @@ SysModule::SysModule(System& system)
               text, &TextSystem::setWindowAttrA));
   addOpcode(2264, 0, new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setWindowAttrF));
+
+  addOpcode(2267, 0, new Sys_SetWindowAttr);
 
   addOpcode(2360, 0, new Op_ReturnIntValue<TextSystem, int>(
               text, &TextSystem::windowAttrR));
@@ -528,6 +573,8 @@ SysModule::SysModule(System& system)
   addOpcode(2612, 0, new ReturnGameexeInt("WINDOW_ATTR", 2));
   addOpcode(2613, 0, new ReturnGameexeInt("WINDOW_ATTR", 3));
   addOpcode(2614, 0, new ReturnGameexeInt("WINDOW_ATTR", 4));
+
+  addOpcode(2617, 0, new Sys_DefWindowAttr);
 
   addOpcode(2324, 0, new Op_ReturnIntValue<TextSystem, int>(
               text, &TextSystem::messageNoWait));
