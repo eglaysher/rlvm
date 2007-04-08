@@ -305,10 +305,10 @@ void SDLTextWindow::renderButtons(RLMachine& machine)
 {
   TextSystem& textSystem = machine.system().text();
 
-  m_msgbkleftButton.render(machine, *this, m_wakuButton, 24);
-  m_msgbkrightButton.render(machine, *this, m_wakuButton, 32);
-  m_readjumpButton.render(machine, *this, m_wakuButton, 104);
-  m_automodeButton.render(machine, *this, m_wakuButton, 112);
+  m_buttonMap["MSGBKLEFT_BOX"].render(machine, *this, m_wakuButton, 24);
+  m_buttonMap["MSGBKRIGHT_BOX"].render(machine, *this, m_wakuButton, 32);
+  m_buttonMap["READJUMP_BOX"].render(machine, *this, m_wakuButton, 104);
+  m_buttonMap["AUTOMODE_BOX"].render(machine, *this, m_wakuButton, 112);
 }
 
 // -----------------------------------------------------------------------
@@ -356,3 +356,4 @@ void SDLTextWindow::setWakuButton(RLMachine& machine, const std::string& name)
   else
     m_wakuButton.reset();
 }
+

@@ -188,3 +188,22 @@ void SDLTextSystem::setWindowAttrF(int i)
   TextSystem::setWindowAttrF(i);
   updateWindowsForChangeToWindowAttr();
 }
+
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::setMousePosition(RLMachine& machine, int x, int y)
+{
+  for_each(m_textWindow.begin(), m_textWindow.end(),    
+           bind(&SDLTextWindow::setMousePosition, _1, 
+                ref(machine), x, y));
+}
+
+// -----------------------------------------------------------------------
+
+bool SDLTextSystem::handleMouseClick(RLMachine& machine, int x, int y, 
+                                     bool pressed)
+{
+  return find_if(m_textWindow.begin(), m_textWindow.end(),    
+           bind(&SDLTextWindow::handleMouseClick, _1, 
+                ref(machine), x, y, pressed)) != m_textWindow.end();
+}

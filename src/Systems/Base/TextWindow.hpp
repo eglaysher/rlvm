@@ -24,6 +24,7 @@
 #define __TextWindow_hpp__
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 #include "Systems/Base/TextWindowButton.hpp"
 
@@ -160,13 +161,15 @@ protected:
    * 
    * @{
    */
-  TextWindowButton m_moveButton;
-  TextWindowButton m_clearButton;
-  TextWindowButton m_readjumpButton;
-  TextWindowButton m_automodeButton;
-  TextWindowButton m_msgbkButton;
-  TextWindowButton m_msgbkleftButton;
-  TextWindowButton m_msgbkrightButton;
+  boost::ptr_map<std::string, TextWindowButton> m_buttonMap;
+
+//   boost::shared_ptr<TextWindowButton> m_moveButton;
+//   boost::shared_ptr<TextWindowButton> m_clearButton;
+//   boost::shared_ptr<TextWindowButton> m_readjumpButton;
+//   boost::shared_ptr<TextWindowButton> m_automodeButton;
+//   boost::shared_ptr<TextWindowButton> m_msgbkButton;
+//   boost::shared_ptr<TextWindowButton> m_msgbkleftButton;
+//   boost::shared_ptr<TextWindowButton> m_msgbkrightButton;
   /// @}
 
 protected:
@@ -245,6 +248,9 @@ public:
   int textY2() const;
 
   /// @}
+
+  void setMousePosition(RLMachine& machine, int x, int y);
+  bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
 
   /**
    * @name Name window settings

@@ -200,6 +200,11 @@ public:
   bool windowMsgbkleftUse() const { return m_msgbkleftUse; }
   bool windowMsgbkrightUse() const { return m_msgbkrightUse; }
   bool windowExbtnUse() const { return m_exbtnUse; }
+
+  /// Update the mouse cursor.
+  virtual void setMousePosition(RLMachine& machine, int x, int y) = 0;
+  virtual bool handleMouseClick(RLMachine& machine, int x, int y,
+                                bool pressed) = 0;
   /// @}
 };
 

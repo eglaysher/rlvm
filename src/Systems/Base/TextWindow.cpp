@@ -37,6 +37,8 @@
 
 #include <vector>
 
+#include <boost/bind.hpp>
+
 using namespace std;
 
 TextWindow::TextWindow(RLMachine& machine, int windowNum)
@@ -289,17 +291,33 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
   setWakuButton(machine, waku("BTN"));
 
   TextSystem& ts = machine.system().text();
-  m_moveButton = TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX"));
-  m_clearButton = TextWindowButton(ts.windowClearUse(), waku("CLEAR_BOX"));
-  m_readjumpButton = TextWindowButton(ts.windowReadJumpUse(), 
-                                      waku("READJUMP_BOX"));
-  m_automodeButton = TextWindowButton(ts.windowAutomodeUse(), 
-                                      waku("AUTOMODE_BOX"));
-  m_msgbkButton = TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX"));
-  m_msgbkleftButton = TextWindowButton(ts.windowMsgbkleftUse(), 
-                                       waku("MSGBKLEFT_BOX"));
-  m_msgbkrightButton = TextWindowButton(ts.windowMsgbkrightUse(), 
-                                        waku("MSGBKRIGHT_BOX"));
+  m_buttonMap.clear();
+  // Translation: Boost ptr_map is retarded.
+  string key = "MOVE_BOX";
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
+  key = string("CLEAR_BOX");
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowClearUse(), waku("CLEAR_BOX")));
+  key = string("READJUMP_BOX");
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowReadJumpUse(), 
+                                          waku("READJUMP_BOX")));
+  key = string("AUTOMODE_BOX");
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowAutomodeUse(), 
+                                          waku("AUTOMODE_BOX")));
+  key = string("MSGBK_BOX");
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
+  key = string("MSGBKLEFT_BOX");
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowMsgbkleftUse(), 
+                                          waku("MSGBKLEFT_BOX")));
+  key = string("MSGBKRIGHT_BOX");
+  m_buttonMap.insert(key,
+                     new TextWindowButton(ts.windowMsgbkrightUse(), 
+                                          waku("MSGBKRIGHT_BOX")));
 }
 
 // -----------------------------------------------------------------------
@@ -311,4 +329,26 @@ void TextWindow::setRGBAF(const vector<int>& attr)
   setB(attr.at(2));
   setAlpha(attr.at(3));
   setFilter(attr.at(4));
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setMousePosition(RLMachine& machine, int x, int y)
+{
+  using namespace boost;
+  for_each(m_buttonMap.begin(), m_buttonMap.end(),
+           bind(&TextWindowButton::setMousePosition, _1, ref(machine), 
+                ref(*this), x, y));
+}
+
+// -----------------------------------------------------------------------
+
+bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y, 
+                                  bool pressed)
+{
+  using namespace boost;
+  return find_if(m_buttonMap.begin(), m_buttonMap.end(),   
+                 bind(&TextWindowButton::handleMouseClick, _1, 
+                      ref(machine), ref(*this), x, y, pressed))
+    != m_buttonMap.end();
 }

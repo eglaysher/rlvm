@@ -169,3 +169,4 @@ void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
   m_windowAttr = attr;
 }
+

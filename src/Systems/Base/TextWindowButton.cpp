@@ -27,9 +27,27 @@
 #include "Systems/Base/TextWindowButton.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 
 #include <stdexcept>
+#include <iostream>
+
+using namespace std;
+
+/**
+ * Describes the state of a Waku button
+ */
+enum ButtonState
+{
+  BUTTONSTATE_BUTTON_NOT_USED = -1,
+  BUTTONSTATE_NORMAL = 0,   
+  BUTTONSTATE_HIGHLIGHTED = 1,
+  BUTTONSTATE_PRESSED = 2,
+  BUTTONSTATE_ACTIVATED = 3,
+  BUTTONSTATE_DISABLED = 4
+};
 
 // -----------------------------------------------------------------------
 
@@ -87,14 +105,82 @@ int TextWindowButton::yLocation(TextWindow& window)
 
 // -----------------------------------------------------------------------
 
+bool TextWindowButton::isValid() const
+{
+  return m_state != BUTTONSTATE_BUTTON_NOT_USED && m_location.size() == 5 &&
+    !(m_location[0] == 0 && m_location[1] == 0 && m_location[2] == 0 &&
+      m_location[3] == 0 && m_location[4] == 0);
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindowButton::setMousePosition(
+  RLMachine& machine, TextWindow& window, int x, int y)
+{
+  if(isValid())
+  {
+    int origState = m_state;
+    
+    int x1 = xLocation(window);
+    int x2 = x1 + m_location.at(3);
+    int y1 = yLocation(window);
+    int y2 = y1 + m_location.at(4);
+
+    bool inBox = x >= x1 && x < x2 && y >= y1 && y < y2;
+
+    if(inBox && m_state == BUTTONSTATE_NORMAL)
+      m_state = BUTTONSTATE_HIGHLIGHTED;
+    else if(!inBox && m_state == BUTTONSTATE_HIGHLIGHTED)
+        m_state = BUTTONSTATE_NORMAL;
+    else if(!inBox && m_state == BUTTONSTATE_PRESSED)
+      m_state = BUTTONSTATE_NORMAL;
+
+    if(origState != m_state)
+      machine.system().graphics().markScreenAsDirty();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+bool TextWindowButton::handleMouseClick(
+  RLMachine& machine, TextWindow& window, int x, int y, bool pressed)
+{
+  if(isValid())
+  {
+    int x1 = xLocation(window);
+    int x2 = x1 + m_location.at(3);
+    int y1 = yLocation(window);
+    int y2 = y1 + m_location.at(4);
+
+    bool inBox = x >= x1 && x < x2 && y >= y1 && y < y2;
+
+    if(inBox)
+    {
+      // Perform any activation 
+      if(pressed)
+      {
+        m_state = BUTTONSTATE_PRESSED;
+      }
+      else
+        m_state = BUTTONSTATE_HIGHLIGHTED;
+
+      machine.system().graphics().markScreenAsDirty();
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void TextWindowButton::render(RLMachine& machine, 
                               TextWindow& window,
                               const boost::shared_ptr<Surface>& buttons,
                               int basePattern)
 {
-  if(m_state != BUTTONSTATE_BUTTON_NOT_USED && m_location.size() == 5 &&
-     !(m_location[0] == 0 && m_location[1] == 0 && m_location[2] == 0 &&
-       m_location[3] == 0 && m_location[4] == 0))
+  if(isValid())
   {
     Surface::GrpRect rect = buttons->getPattern(basePattern + m_state);
     if(!(rect.x1 == 0 && rect.y1 == 0 && rect.x2 == 0 && rect.y2 == 0))

@@ -112,7 +112,7 @@ void Longop_pause::handleSyscomCall()
 void Longop_pause::mouseMotion(int x, int y)
 {
   // Tell the text system about the move
-//  machine().system().text().
+  machine().system().text().setMousePosition(machine(), x, y);
 }
 
 // -----------------------------------------------------------------------
@@ -123,24 +123,31 @@ void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton,
   EventSystem& es = machine().system().event();
   TextSystem& text = machine().system().text();
 
-  if(pressed)
+  switch(mouseButton)
   {
-    switch(mouseButton)
+  case MOUSE_LEFT:
+  {
+    int x, y;
+    es.getCursorPos(x, y);
+    if(!machine().system().text().handleMouseClick(machine(), x, y, pressed))
     {
-    case MOUSE_LEFT:
-      m_isDone = true;
-      break;
-    case MOUSE_RIGHT:
-      handleSyscomCall();
-      break;
-    case MOUSE_WHEELUP:
-      text.backPage(machine());
-      break;
-    case MOUSE_WHEELDOWN:
-      if(text.isReadingBacklog())
-        text.forwardPage(machine());
-      break;
+      if(pressed)
+        m_isDone = true;
     }
+    break;
+  }
+  case MOUSE_RIGHT:
+    if(pressed)
+      handleSyscomCall();
+    break;
+  case MOUSE_WHEELUP:
+    if(pressed)
+      text.backPage(machine());
+    break;
+  case MOUSE_WHEELDOWN:
+    if(pressed && text.isReadingBacklog())
+      text.forwardPage(machine());
+    break;
   }
 }
 

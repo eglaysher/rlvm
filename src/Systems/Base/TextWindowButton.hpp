@@ -31,24 +31,11 @@ class RLMachine;
 class TextWindow;
 class Surface;
 
-/**
- * Describes the state of a Waku button
- */
-enum ButtonState
-{
-  BUTTONSTATE_BUTTON_NOT_USED = -1,
-  BUTTONSTATE_NORMAL = 0,   
-  BUTTONSTATE_DISABLED = 1,
-  BUTTONSTATE_HIGHLIGHTED = 2,
-  BUTTONSTATE_PRSEED = 3,
-  BUTTONSTATE_ACTIVATED = 4
-};
-
 class TextWindowButton
 {
 private:
   std::vector<int> m_location;
-  ButtonState m_state;
+  int m_state;
 
 public:
   TextWindowButton();
@@ -58,6 +45,16 @@ public:
   /// Returns the absolute screen coordinate of this button.
   int xLocation(TextWindow& window);
   int yLocation(TextWindow& window);
+
+  /// Checks to see if this is a valid, used button
+  bool isValid() const;
+
+  /// Track the mouse position to see if we need to alter our state
+  void setMousePosition(RLMachine& machine, TextWindow& window, 
+                        int x, int y);
+
+  bool handleMouseClick(RLMachine& machine, TextWindow& window, 
+                        int x, int y, bool pressed);
 
   // 
   void render(RLMachine& machine, TextWindow& window,

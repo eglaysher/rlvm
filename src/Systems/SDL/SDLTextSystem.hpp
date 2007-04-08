@@ -58,6 +58,10 @@ public:
   virtual void setWindowAttrB(int i);
   virtual void setWindowAttrA(int i);
   virtual void setWindowAttrF(int i);
+
+  virtual void setMousePosition(RLMachine& machine, int x, int y);
+  virtual bool handleMouseClick(RLMachine& machine, int x, int y, 
+                                bool pressed);
 };
 
 #endif
