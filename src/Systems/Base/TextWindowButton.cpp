@@ -45,10 +45,12 @@ enum ButtonState
   BUTTONSTATE_NORMAL = 0,   
   BUTTONSTATE_HIGHLIGHTED = 1,
   BUTTONSTATE_PRESSED = 2,
-  BUTTONSTATE_ACTIVATED = 3,
-  BUTTONSTATE_DISABLED = 4
+  BUTTONSTATE_ACTIVATED = 4,
+  BUTTONSTATE_DISABLED = 3
 };
 
+// -----------------------------------------------------------------------
+// TextWindowButton
 // -----------------------------------------------------------------------
 
 TextWindowButton::TextWindowButton()
@@ -160,9 +162,13 @@ bool TextWindowButton::handleMouseClick(
       if(pressed)
       {
         m_state = BUTTONSTATE_PRESSED;
+        buttonPressed();
       }
       else
+      {
         m_state = BUTTONSTATE_HIGHLIGHTED;
+        buttonReleased();
+      }
 
       machine.system().graphics().markScreenAsDirty();
 
@@ -195,5 +201,42 @@ void TextWindowButton::render(RLMachine& machine,
         destX, destY, destX + width, destY + height,
         255);
     }
+  }
+}
+
+// -----------------------------------------------------------------------
+// ActivationTextWindowButton
+// -----------------------------------------------------------------------
+
+ActivationTextWindowButton::ActivationTextWindowButton(
+  bool use, GameexeInterpretObject locationBox,
+  CallbackFunction start,
+  CallbackFunction end)
+  : TextWindowButton(use, locationBox), m_onStart(start), m_onEnd(end),
+    m_on(false)
+{
+}
+
+// -----------------------------------------------------------------------
+
+ActivationTextWindowButton::~ActivationTextWindowButton()
+{
+}
+
+// -----------------------------------------------------------------------
+
+void ActivationTextWindowButton::buttonReleased()
+{
+  if(m_on)
+  {
+    m_onEnd();
+    m_on = false;
+    m_state = BUTTONSTATE_NORMAL;
+  }
+  else
+  {
+    m_onStart();
+    m_on = true;
+    m_state = BUTTONSTATE_ACTIVATED;
   }
 }

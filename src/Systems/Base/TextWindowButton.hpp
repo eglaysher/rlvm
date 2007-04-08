@@ -23,6 +23,7 @@
 #ifndef __TextWindowButton_hpp__
 #define __TextWindowButton_hpp__
 
+#include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "libReallive/gameexe.h"
@@ -33,14 +34,14 @@ class Surface;
 
 class TextWindowButton
 {
-private:
+protected:
   std::vector<int> m_location;
   int m_state;
 
 public:
   TextWindowButton();
   TextWindowButton(bool use, GameexeInterpretObject locationBox);
-  ~TextWindowButton();
+  virtual ~TextWindowButton();
 
   /// Returns the absolute screen coordinate of this button.
   int xLocation(TextWindow& window);
@@ -60,6 +61,37 @@ public:
   void render(RLMachine& machine, TextWindow& window,
               const boost::shared_ptr<Surface>& buttons, 
               int basePattern);
+
+  /// Called when the button is pressed
+  virtual void buttonPressed() {}
+
+  /// Called by other execute() calls while the System object has its
+  /// turn to do any updating
+  virtual void execute() {}
+
+  /// Called when the button is released
+  virtual void buttonReleased() {}
+};
+
+// -----------------------------------------------------------------------
+
+class ActivationTextWindowButton : public TextWindowButton
+{
+public:
+  typedef boost::function<void(void)> CallbackFunction;
+
+private:
+  CallbackFunction m_onStart;
+  CallbackFunction m_onEnd;
+  bool m_on;
+
+public:
+  ActivationTextWindowButton(bool use, GameexeInterpretObject locationBox,
+                             CallbackFunction start,
+                             CallbackFunction end);
+  ~ActivationTextWindowButton();
+
+  virtual void buttonReleased();
 };
 
 #endif

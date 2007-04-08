@@ -281,6 +281,29 @@ int TextWindow::keycursorY() const
 
 // -----------------------------------------------------------------------
 
+void readjumpTurnsOn()
+{
+  cerr << "Readjump (falsly) turn on!" << endl;
+}
+
+void readjumpTurnsOff()
+{
+  cerr << "Readjump (falsly) turn off!" << endl;
+}
+
+void automodeTurnsOn()
+{
+  cerr << "Automode (falsly) turn on!" << endl;
+}
+
+void automodeTurnsOff()
+{
+  cerr << "Automode (falsly) turn off!" << endl;
+}
+
+// -----------------------------------------------------------------------
+
+
 void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                                const int wakuNo)
 {
@@ -301,12 +324,14 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                      new TextWindowButton(ts.windowClearUse(), waku("CLEAR_BOX")));
   key = string("READJUMP_BOX");
   m_buttonMap.insert(key,
-                     new TextWindowButton(ts.windowReadJumpUse(), 
-                                          waku("READJUMP_BOX")));
+                     new ActivationTextWindowButton(
+                       ts.windowReadJumpUse(), waku("READJUMP_BOX"),
+                       &readjumpTurnsOn, &readjumpTurnsOff));
   key = string("AUTOMODE_BOX");
   m_buttonMap.insert(key,
-                     new TextWindowButton(ts.windowAutomodeUse(), 
-                                          waku("AUTOMODE_BOX")));
+                     new ActivationTextWindowButton(
+                       ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
+                       &automodeTurnsOn, &automodeTurnsOff));
   key = string("MSGBK_BOX");
   m_buttonMap.insert(key,
                      new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
