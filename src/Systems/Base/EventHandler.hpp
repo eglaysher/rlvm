@@ -272,6 +272,7 @@ enum KeyCode {
 class EventHandler
 {
 public:
+  virtual void mouseMotion(int x, int y) {}
   virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed) {}
   virtual void keyStateChanged(KeyCode keyCode, bool pressed) {}
 };

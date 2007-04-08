@@ -45,11 +45,6 @@ class GraphicsObject;
  */
 class SDLSurface : public Surface, public boost::noncopyable
 {
-public:
-  struct GrpRect {
-    int x1, y1, x2, y2;
-  };
-
 private:
   /// The SDL_Surface that contains the software version of the bitmap.
   SDL_Surface* m_surface;
@@ -154,7 +149,7 @@ public:
   void markWrittenTo();
 
   /// Returns pattern information.
-  const GrpRect& getPattern(int pattNo) const;
+  virtual const GrpRect& getPattern(int pattNo) const;
 
   // -----------------------------------------------------------------------
 

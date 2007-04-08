@@ -167,9 +167,16 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       break;
     }
     case SDL_MOUSEMOTION:
+    {
       // Handle this somehow.
-//      handleMouseMotion(event);
+      int x = event.motion.x;
+      int y = event.motion.y;
+      for_each(handlers_begin(), handlers_end(),
+               bind(&EventHandler::mouseMotion, _1,
+                    x, y));
+      handleMouseMotion(event);
       break;
+    }
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
     {

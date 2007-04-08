@@ -289,64 +289,17 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
   setWakuButton(machine, waku("BTN"));
 
   TextSystem& ts = machine.system().text();
-  setWakuBoxProperty(ts.windowMoveUse(), waku("MOVE_BOX"),
-                     m_moveBoxState, m_moveBoxLocation);
-  setWakuBoxProperty(ts.windowClearUse(), waku("CLEAR_BOX"),
-                     m_clearBoxState, m_clearBoxLocation);
-  setWakuBoxProperty(ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-                     m_readjumpBoxState, m_readjumpBoxLocation);
-  setWakuBoxProperty(ts.windowAutomodeUse(), waku("AUTOMODE_BOX"), 
-                     m_automodeBoxState, m_automodeBoxLocation);
-  setWakuBoxProperty(ts.windowMsgbkUse(), waku("MSGBK_BOX"),
-                     m_msgbkBoxState, m_msgbkBoxLocation);
-  setWakuBoxProperty(ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
-                     m_msgbkleftBoxState, m_msgbkleftBoxLocation);
-  setWakuBoxProperty(ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
-                     m_msgbkrightBoxState, m_msgbkrightBoxLocation);
-}
-
-// -----------------------------------------------------------------------
-
-void TextWindow::setWakuBoxProperty(
-  bool enabled, GameexeInterpretObject waku, ButtonState& state, 
-  std::vector<int>& box)
-{
-  box.clear();
-  state = BUTTONSTATE_BUTTON_NOT_USED;
-
-  if(enabled && waku.exists())
-  {
-    box = waku;
-    state = BUTTONSTATE_NORMAL;
-  }
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindow::getXLocationOfBox(const std::vector<int>& locVec)
-{
-  int type = locVec.at(0);
-  switch(type)
-  {
-  case 0:
-    return boxX1() + locVec.at(1);
-  default:
-    throw runtime_error("Unsupported coordinate system"); 
-  }
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindow::getYLocationOfBox(const std::vector<int>& locVec)
-{
-  int type = locVec.at(0);
-  switch(type)
-  {
-  case 0:
-    return boxY1() + locVec.at(2);
-  default:
-    throw runtime_error("Unsupported coordinate system"); 
-  }
+  m_moveButton = TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX"));
+  m_clearButton = TextWindowButton(ts.windowClearUse(), waku("CLEAR_BOX"));
+  m_readjumpButton = TextWindowButton(ts.windowReadJumpUse(), 
+                                      waku("READJUMP_BOX"));
+  m_automodeButton = TextWindowButton(ts.windowAutomodeUse(), 
+                                      waku("AUTOMODE_BOX"));
+  m_msgbkButton = TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX"));
+  m_msgbkleftButton = TextWindowButton(ts.windowMsgbkleftUse(), 
+                                       waku("MSGBKLEFT_BOX"));
+  m_msgbkrightButton = TextWindowButton(ts.windowMsgbkrightUse(), 
+                                        waku("MSGBKRIGHT_BOX"));
 }
 
 // -----------------------------------------------------------------------

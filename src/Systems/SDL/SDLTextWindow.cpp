@@ -305,38 +305,12 @@ void SDLTextWindow::renderButtons(RLMachine& machine)
 {
   TextSystem& textSystem = machine.system().text();
 
-  renderSpecificButton(machine,  24, m_msgbkleftBoxState, m_msgbkleftBoxLocation);
-  renderSpecificButton(machine,  32, m_msgbkrightBoxState, m_msgbkrightBoxLocation);
-  renderSpecificButton(machine, 104, m_readjumpBoxState, m_readjumpBoxLocation);
-  renderSpecificButton(machine, 112, m_automodeBoxState, m_automodeBoxLocation);
+  m_msgbkleftButton.render(machine, *this, m_wakuButton, 24);
+  m_msgbkrightButton.render(machine, *this, m_wakuButton, 32);
+  m_readjumpButton.render(machine, *this, m_wakuButton, 104);
+  m_automodeButton.render(machine, *this, m_wakuButton, 112);
 }
 
-// -----------------------------------------------------------------------
-
-void SDLTextWindow::renderSpecificButton(
-  RLMachine& machine, int basePattern, 
-  ButtonState state, const std::vector<int>& location)
-{
-  if(state != BUTTONSTATE_BUTTON_NOT_USED && location.size() == 5 &&
-     !(location[0] == 0 && location[1] == 0 && location[2] == 0 &&
-       location[3] == 0 && location[4] == 0))
-  {
-    SDLSurface::GrpRect rect = m_wakuButton->getPattern(basePattern + state);
-    if(!(rect.x1 == 0 && rect.y1 == 0 && rect.x2 == 0 && rect.y2 == 0))
-    {
-      int destX = getXLocationOfBox(location);
-      int destY = getYLocationOfBox(location);
-      int width = rect.x2 - rect.x1;
-      int height = rect.y2 - rect.y1;
-
-      m_wakuButton->renderToScreen(
-        rect.x1, rect.y1, rect.x2, rect.y2,
-        destX, destY, destX + width, destY + height,
-        255);
-    }
-  }
-}
- 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)

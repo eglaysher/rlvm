@@ -63,6 +63,7 @@ public:
   ~Longop_pause();
 
   // ------------------------------------------ [ EventHandler interface ]
+  void mouseMotion(int x, int y);
   void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
   void keyStateChanged(KeyCode keyCode, bool pressed);
 

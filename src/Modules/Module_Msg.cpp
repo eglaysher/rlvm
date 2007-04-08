@@ -109,6 +109,14 @@ void Longop_pause::handleSyscomCall()
 }
 
 // -------------------------------------------- [ EventHandler interface ]
+void Longop_pause::mouseMotion(int x, int y)
+{
+  // Tell the text system about the move
+//  machine().system().text().
+}
+
+// -----------------------------------------------------------------------
+
 void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton, 
                                            bool pressed)
 {

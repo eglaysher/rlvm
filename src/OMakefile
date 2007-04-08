@@ -21,6 +21,7 @@ LIBRLVMFILES[] =
   Systems/Base/EventSystem
   Systems/Base/RLTimer
   Systems/Base/TextWindow
+  Systems/Base/TextWindowButton
   Systems/Base/TextPage
   Systems/Base/TextSystem
   Systems/Base/TextKeyCursor
