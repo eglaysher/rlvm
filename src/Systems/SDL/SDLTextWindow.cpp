@@ -73,7 +73,6 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   string filename = findFontFile("msgothic.ttc");
   cerr << "font file: " << filename << endl;
   m_font = TTF_OpenFont(filename.c_str(), fontSizeInPixels());
-//"/home/elliot//msgothic.ttc", fontSizeInPixels());
   if(m_font == NULL)
   {
     ostringstream oss;
@@ -288,9 +287,8 @@ void SDLTextWindow::render(RLMachine& machine)
                                  boxY + mainHeight, 255);
     }
 
-//     cerr << "{" << 0 << ", " << 0 << ", " << width << ", "
-//          << height << "} - {" << x << ", " << y << ", "
-//          << x + width << ", " << y + wi
+    if(m_wakuButton)
+      renderButtons(machine);
 
     int x = textX1();
     int y = textY1();
@@ -301,6 +299,44 @@ void SDLTextWindow::render(RLMachine& machine)
   }
 }
 
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::renderButtons(RLMachine& machine)
+{
+  TextSystem& textSystem = machine.system().text();
+
+  renderSpecificButton(machine,  24, m_msgbkleftBoxState, m_msgbkleftBoxLocation);
+  renderSpecificButton(machine,  32, m_msgbkrightBoxState, m_msgbkrightBoxLocation);
+  renderSpecificButton(machine, 104, m_readjumpBoxState, m_readjumpBoxLocation);
+  renderSpecificButton(machine, 112, m_automodeBoxState, m_automodeBoxLocation);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::renderSpecificButton(
+  RLMachine& machine, int basePattern, 
+  ButtonState state, const std::vector<int>& location)
+{
+  if(state != BUTTONSTATE_BUTTON_NOT_USED && location.size() == 5 &&
+     !(location[0] == 0 && location[1] == 0 && location[2] == 0 &&
+       location[3] == 0 && location[4] == 0))
+  {
+    SDLSurface::GrpRect rect = m_wakuButton->getPattern(basePattern + state);
+    if(!(rect.x1 == 0 && rect.y1 == 0 && rect.x2 == 0 && rect.y2 == 0))
+    {
+      int destX = getXLocationOfBox(location);
+      int destY = getYLocationOfBox(location);
+      int width = rect.x2 - rect.x1;
+      int height = rect.y2 - rect.y1;
+
+      m_wakuButton->renderToScreen(
+        rect.x1, rect.y1, rect.x2, rect.y2,
+        destX, destY, destX + width, destY + height,
+        255);
+    }
+  }
+}
+ 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)

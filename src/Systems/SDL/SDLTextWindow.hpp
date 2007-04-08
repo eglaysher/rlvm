@@ -52,6 +52,11 @@ private:
 
   bool setIndentation();
 
+  void renderButtons(RLMachine& machine);
+  void renderSpecificButton(
+    RLMachine& machine, int basePattern, 
+    ButtonState state, const std::vector<int>& location);
+
 public:
   SDLTextWindow(RLMachine& machine, int window);
   ~SDLTextWindow();

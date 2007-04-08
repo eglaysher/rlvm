@@ -38,7 +38,12 @@ using namespace std;
 TextSystem::TextSystem(Gameexe& gexe)
   : m_autoMode(false), m_ctrlKeySkip(true), m_fastTextMode(false),
     m_messageNoWait(false),
-    m_messageSpeed(0), m_defaultTextWindow(0), m_inPauseState(false)
+    m_messageSpeed(0), m_defaultTextWindow(0), m_inPauseState(false),
+
+    // #WINDOW_*_USE
+    m_moveUse(false), m_clearUse(false), m_readJumpUse(false),
+    m_automodeUse(false), m_msgbkUse(false), m_msgbkleftUse(false),
+    m_msgbkrightUse(false), m_exbtnUse(false)
 {
   GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
   if(ctrlUse.exists())
@@ -47,6 +52,15 @@ TextSystem::TextSystem(Gameexe& gexe)
   GameexeInterpretObject windowAttr(gexe("WINDOW_ATTR"));
   if(windowAttr.exists())
     setDefaultWindowAttr(windowAttr);
+
+  checkAndSetBool(gexe, "WINDOW_MOVE_USE", m_moveUse);
+  checkAndSetBool(gexe, "WINDOW_CLEAR_USE", m_clearUse);
+  checkAndSetBool(gexe, "WINDOW_READJUMP_USE", m_readJumpUse);
+  checkAndSetBool(gexe, "WINDOW_AUTOMODE_USE", m_automodeUse);
+  checkAndSetBool(gexe, "WINDOW_MSGBK_USE", m_msgbkUse);
+  checkAndSetBool(gexe, "WINDOW_MSGBKLEFT_USE", m_msgbkleftUse);
+  checkAndSetBool(gexe, "WINDOW_MSGBKRIGHT_USE", m_msgbkrightUse);
+  checkAndSetBool(gexe, "WINDOW_EXBTN_USE", m_exbtnUse);
 }
 
 // -----------------------------------------------------------------------
@@ -56,6 +70,15 @@ TextSystem::~TextSystem()
   
 }
 
+// -----------------------------------------------------------------------
+
+void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
+                                 bool& out)
+{
+  GameexeInterpretObject keyObj(gexe(key));
+  if(keyObj.exists())
+    out = keyObj.to_int();
+}
 // -----------------------------------------------------------------------
 
 TextPage& TextSystem::currentPage(RLMachine& machine)

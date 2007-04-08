@@ -27,7 +27,21 @@
 
 class RLMachine;
 class Gameexe;
+class GameexeInterpretObject;
 class GraphicsSystem;
+
+/**
+ * Describes the state of a Waku button
+ */
+enum ButtonState
+{
+  BUTTONSTATE_BUTTON_NOT_USED = -1,
+  BUTTONSTATE_NORMAL = 0,   
+  BUTTONSTATE_DISABLED = 1,
+  BUTTONSTATE_HIGHLIGHTED = 2,
+  BUTTONSTATE_PRSEED = 3,
+  BUTTONSTATE_ACTIVATED = 4
+};
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by TextSystem,
@@ -154,12 +168,36 @@ protected:
   /// @}
 
   /**
-   * @name Waku (window decorations)
+   * @name Buttons in this text box
    * 
    * @{
    */
-  
+  ButtonState m_moveBoxState;
+  std::vector<int> m_moveBoxLocation;
 
+  ButtonState m_clearBoxState;
+  std::vector<int> m_clearBoxLocation;
+
+  ButtonState m_readjumpBoxState;
+  std::vector<int> m_readjumpBoxLocation;
+
+  ButtonState m_automodeBoxState;
+  std::vector<int> m_automodeBoxLocation;
+
+  ButtonState m_msgbkBoxState;
+  std::vector<int> m_msgbkBoxLocation;
+
+  ButtonState m_msgbkleftBoxState;
+  std::vector<int> m_msgbkleftBoxLocation;
+
+  ButtonState m_msgbkrightBoxState;
+  std::vector<int> m_msgbkrightBoxLocation;
+
+  void setWakuBoxProperty(bool enabled, GameexeInterpretObject waku,
+                          ButtonState& state, std::vector<int>& box);
+
+  int getXLocationOfBox(const std::vector<int>& location);
+  int getYLocationOfBox(const std::vector<int>& location);
   /// @}
 
 protected:

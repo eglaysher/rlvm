@@ -80,6 +80,17 @@ protected:
   /// The default \#WINDOW_ATTR. This is what is changed by the 
   std::vector<int> m_windowAttr;
 
+  /**
+   * @name Global Window Button Toggles
+   * 
+   * @{
+   */
+  bool m_moveUse, m_clearUse, m_readJumpUse, m_automodeUse, m_msgbkUse,
+    m_msgbkleftUse, m_msgbkrightUse, m_exbtnUse;
+
+  void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
+  /// @}
+
 public:
   TextSystem(Gameexe& gexe);
   virtual ~TextSystem();
@@ -151,6 +162,15 @@ public:
   void setMessageSpeed(int i) { m_messageSpeed = i; }
   int messageSpeed() const { return m_messageSpeed; }
 
+  /**
+   * @name Window Attr Related functions
+   *
+   * @note Any class deriving from TextSystem is responsible for
+   *       overriding all the virtual functions in this section, so as
+   *       to alert any TextWindow derived objects that it owns that
+   *       the default window attr has changed.
+   * @{
+   */
   virtual void setDefaultWindowAttr(const std::vector<int>& attr);
   std::vector<int> windowAttr() const { return m_windowAttr; }
 
@@ -165,6 +185,22 @@ public:
   virtual void setWindowAttrB(int i) { m_windowAttr.at(2) = i; }
   virtual void setWindowAttrA(int i) { m_windowAttr.at(3) = i; }
   virtual void setWindowAttrF(int i) { m_windowAttr.at(4) = i; }
+  /// @}
+
+  /**
+   * @name Window button state
+   * 
+   * @{
+   */
+  bool windowMoveUse() const { return m_moveUse; }
+  bool windowClearUse() const { return m_clearUse; }
+  bool windowReadJumpUse() const { return m_readJumpUse; }
+  bool windowAutomodeUse() const { return m_automodeUse; }
+  bool windowMsgbkUse() const { return m_msgbkUse; }
+  bool windowMsgbkleftUse() const { return m_msgbkleftUse; }
+  bool windowMsgbkrightUse() const { return m_msgbkrightUse; }
+  bool windowExbtnUse() const { return m_exbtnUse; }
+  /// @}
 };
 
 #endif
