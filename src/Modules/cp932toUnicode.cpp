@@ -5643,15 +5643,40 @@ string unicodetocp932(const std::wstring& line)
 /** 
  * Converts a CP932/Shift_JIS string into a wstring with Unicode
  * characters.
+ *
+ * If the string was not CP932, but actually another encoding
+ * transformed such that it can be processed as CP932, this additional
+ * transformation should be reversed here.  This technique is how
+ * non-Japanese text is used in RealLive.  Transformations that might
+ * potentially be encountered are:
+ *
+ *   0 - plain CP932 (no transformation)
+ *   1 - CP936
+ *   2 - CP1252 (also requires rlBabel support)
+ *   3 - CP949
+ *
+ * These are the transformations applied by RLdev, and translation
+ * tables can be found in the rlBabel source code.  There are also at
+ * least two CP936 transformations used by the Key Fans Club and
+ * possibly one or more other CP949 transformations, but details of
+ * these are not publicly available.
  * 
- * @param line Input string in CP932 encoding 
+ * @param line Input string in CP932 encoding
+ * @param transformation Additional encoding transformation
  * @return Equivalent string in Unicode
  */
-wstring cp932toUnicode(const std::string& line) 
+wstring cp932toUnicode(const std::string& line, int transformation) 
 {
   const unsigned char* c = (const unsigned char*)line.c_str();
   wstring ret;
 
+  if (transformation) {
+    // Some transformations require more big lookup tables; if we
+    // implement transformations, we'll need a way to disable those
+    // for low-memory platforms.  For now, however, just die.
+    throw "RLdev text transformations are not implemented.";
+  }
+  
   while(*c) 
   {
     wchar_t uv;
@@ -5679,7 +5704,7 @@ wstring cp932toUnicode(const std::string& line)
 // All hankaku characters are <U+FF??>, 
 // while all zenkaku characters are <U+30??>
 //
-// hankaku characters that need translation are in the rance 0xFF65 to
+// hankaku characters that need translation are in the range 0xFF65 to
 // 0x9F inclusive and continuous, so this table starts at 0xFF65.
 char han2zen_table[] = {
   0xFB,   0xF2,   0xA1,   0xA3,   0xA5,   0xA7,   0xA9,   0xE3,
@@ -5731,8 +5756,10 @@ wchar_t hantozen_wchar(wchar_t input)
  */
 string hantozen_cp932(const std::string& string) 
 {
-  // First convert the string to unicode so handling is easier
-  wstring tmp = cp932toUnicode(string);
+  // First convert the string to unicode so handling is easier.
+  // (We can ignore any subsidiary transformation at this stage,
+  // since RealLive always does.)
+  wstring tmp = cp932toUnicode(string, 0);
   transform(tmp.begin(), tmp.end(), tmp.begin(), hantozen_wchar);
   return unicodetocp932(tmp);
 }
@@ -5791,7 +5818,7 @@ wchar_t zentohan_wchar(wchar_t input)
 
 string zentohan_cp932(const std::string& string)
 {
-  wstring tmp = cp932toUnicode(string);
+  wstring tmp = cp932toUnicode(string, 0);
   transform(tmp.begin(), tmp.end(), tmp.begin(), zentohan_wchar);
   return unicodetocp932(tmp);
 }

@@ -83,14 +83,14 @@ private:
   /// The last line number;
   unsigned int m_lastLineNumber;
 
-  /// cp932 encoded title string
+  /// utf8 encoded title string
   string m_captionTitle;
 
   /// Whether we should try to append m_subtitle in the window
   /// titlebar
   bool m_displaySubtitle;
 
-  /// cp932 encoded subtitle string
+  /// utf8 encoded subtitle string
   string m_subtitle;
 
   // ---------------------------------------------------------------------
@@ -160,7 +160,7 @@ public:
 
   virtual void endFrame();
 
-  virtual void setWindowSubtitle(const std::string& cp932encoded);
+  virtual void setWindowSubtitle(const std::string& utf8encoded);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);

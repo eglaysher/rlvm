@@ -101,7 +101,7 @@ public:
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
   void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
 
-  virtual void setWindowSubtitle(const std::string& cp932encoded) {}
+  virtual void setWindowSubtitle(const std::string& utf8encoded) {}
 
   // Marks the screen as dirty; something is done about this if we are
   // in automatic mode.

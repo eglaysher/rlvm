@@ -488,10 +488,14 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 
 // -----------------------------------------------------------------------
 
+int RLMachine::getTextEncoding() const
+{
+  return callStack.top().scenario->encoding();
+}
+
 void RLMachine::performTextout(const TextoutElement& e)
 {
-  std::wstring ws = cp932toUnicode(e.text());
-  std::string utf8str = unicodeToUTF8(ws);
+  std::string utf8str = cp932toUTF8(e.text(), getTextEncoding());
 
   TextSystem& ts = system().text();
 

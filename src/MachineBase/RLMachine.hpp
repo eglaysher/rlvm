@@ -304,6 +304,17 @@ public:
    */
   void setLineNumber(const int i) { m_line = i; }
 
+  /**
+   * Where the current scenario was compiled with RLdev, returns the text
+   * encoding used:
+   *   0 -> CP932
+   *   1 -> CP936 within CP932 codespace
+   *   2 -> CP1252 within CP932 codespace
+   *   3 -> CP949 within CP932 codespace
+   * Where a scenario was not compiled with RLdev, always returns 0.
+   */
+  int getTextEncoding() const;
+  
   void executeCommand(const libReallive::CommandElement& f);
   void executeExpression(const libReallive::ExpressionElement& e);
   void performTextout(const libReallive::TextoutElement& e);

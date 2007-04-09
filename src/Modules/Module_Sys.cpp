@@ -40,6 +40,7 @@
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Timer.hpp"
+#include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -62,7 +63,8 @@ using namespace std;
 //  fun title                   <1:Sys:00000, 0> (res 'sub-title')
 struct Sys_title : public RLOp_Void_1< StrConstant_T > {
   void operator()(RLMachine& machine, std::string subtitle) {
-    machine.system().graphics().setWindowSubtitle(subtitle);
+    std::string utf8sub = cp932toUTF8(subtitle, machine.getTextEncoding());
+    machine.system().graphics().setWindowSubtitle(utf8sub);
   }
 };
 

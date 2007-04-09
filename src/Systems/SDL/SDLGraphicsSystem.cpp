@@ -189,9 +189,9 @@ void SDLGraphicsSystem::endFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932encoded)
+void SDLGraphicsSystem::setWindowSubtitle(const std::string& utf8encoded)
 {
-  m_subtitle = cp932encoded;
+  m_subtitle = utf8encoded;
 }
 
 // -----------------------------------------------------------------------
@@ -232,7 +232,9 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   int bpp = info->vfmt->BitsPerPixel;
 
   /// Grab the caption
-  m_captionTitle = gameexe("CAPTION").to_string();
+  std::string cp932caption = gameexe("CAPTION").to_string();
+  int name_enc = gameexe("NAME_ENC").to_int(0);
+  m_captionTitle = cp932toUTF8(cp932caption, name_enc);
   m_displaySubtitle = gameexe("SUBTITLE").to_int(0);
 
   /* the flags to pass to SDL_SetVideoMode */
@@ -376,11 +378,7 @@ void SDLGraphicsSystem::setWindowTitle()
         << m_lastLineNumber << ")";
   }
 
-  std::string cp932str = oss.str().c_str();
-  std::wstring ws = cp932toUnicode(cp932str);
-  std::string utf8str = unicodeToUTF8(ws);
-
-  SDL_WM_SetCaption(utf8str.c_str(), NULL);
+  SDL_WM_SetCaption(oss.str().c_str(), NULL);
 }
 
 // -----------------------------------------------------------------------
