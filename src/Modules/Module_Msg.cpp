@@ -65,9 +65,21 @@ using namespace std;
 Longop_pause::Longop_pause(RLMachine& machine)
   : NiceLongOperation(machine), m_isDone(false)
 {
-  machine.system().text().setInPauseState(true);
+  TextSystem& text = machine.system().text();
+  EventSystem& event = machine.system().event();
+
+  // Initialize Auto Mode (in case it's activated, or in case it gets
+  // activated)
+  int numChars =
+    text.currentPage(machine).numberOfCharsOnPage();
+  m_automodeTime = text.getAutoTime(numChars);
+  m_startTime = event.getTicks();
+
   machine.system().graphics().markScreenAsDirty();
-  machine.system().event().addEventHandler(this);
+
+  // We undo this in the destructor
+  text.setInPauseState(true);
+  event.addEventHandler(this);
 }
 
 // -----------------------------------------------------------------------
@@ -160,8 +172,13 @@ void Longop_pause::keyStateChanged(KeyCode keyCode, bool pressed)
 
   if(pressed)
   {
-    if(keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)
+    bool ctrlKeySkips = text.ctrlKeySkip();
+
+    if(ctrlKeySkips && 
+       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
+    {
       m_isDone = true;
+    }
     else if(keyCode == RLKEY_UP)
       text.backPage(machine());
     else if(keyCode == RLKEY_DOWN)
@@ -178,6 +195,14 @@ void Longop_pause::keyStateChanged(KeyCode keyCode, bool pressed)
 
 bool Longop_pause::operator()(RLMachine& machine)
 {
+  // Check to see if we're done because of the auto mode timer
+  if(machine.system().text().autoMode())
+  {
+    unsigned int curTime = machine.system().event().getTicks();
+    if(m_startTime + m_automodeTime < curTime)
+      m_isDone = true;
+  }
+
   if(m_isDone)
   {
     TextSystem& text = machine.system().text();

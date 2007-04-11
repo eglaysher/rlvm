@@ -543,6 +543,12 @@ SysModule::SysModule(System& system)
   addOpcode(2250, 0, "SetAutoMode",
             new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setAutoMode));
+  addOpcode(2251, 0, "SetAutoCharTime",
+            new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setAutoCharTime));
+  addOpcode(2252, 0, "SetAutoBaseTime",
+            new Op_SetToIncomingInt<TextSystem, int>(
+              text, &TextSystem::setAutoCharTime));
 
   addOpcode(2260, 0, new Op_SetToIncomingInt<TextSystem, int>(
               text, &TextSystem::setWindowAttrR));
@@ -556,6 +562,16 @@ SysModule::SysModule(System& system)
               text, &TextSystem::setWindowAttrF));
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
+
+  addOpcode(2350, 0, "AutoMode",
+            new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::autoMode));
+  addOpcode(2351, 0, "AutoCharTime",
+            new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::autoCharTime));
+  addOpcode(2352, 0, "AutoBaseTime",
+            new Op_ReturnIntValue<TextSystem, int>(
+              text, &TextSystem::autoBaseTime));
 
   addOpcode(2360, 0, new Op_ReturnIntValue<TextSystem, int>(
               text, &TextSystem::windowAttrR));

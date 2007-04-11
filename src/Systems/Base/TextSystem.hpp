@@ -40,8 +40,18 @@ protected:
   /// the work while we hold state.
   friend class TextPage;
 
-  /// Automatic mode
+  /**
+   * @name Auto mode (variables)
+   * 
+   * @{
+   */
+  /// Whether Auto mode is enabled
   bool m_autoMode;
+
+  int m_autoModeBaseTime;
+  int m_autoModeCharTime;
+
+  /// @}
 
   /// Whether holding down the control key will skip text.
   bool m_ctrlKeySkip;
@@ -145,10 +155,29 @@ public:
 
   /// @}
 
-  void setKeyCursor(RLMachine& machine, int newCursor);
-
+  /**
+   * @name Auto mode
+   * 
+   * It is possible to set the interpreter up to advance text
+   * automatically instead of waiting for player input after each
+   * screen is displayed; the `auto mode' controls permit this
+   * behaviour to be customised.
+   * 
+   * @{
+   */
   void setAutoMode(int i) { m_autoMode = i; }
   int autoMode() const { return m_autoMode; }
+
+  void setAutoBaseTime(int i) { m_autoModeBaseTime = i; }
+  int autoBaseTime() const { return m_autoModeBaseTime; }
+
+  void setAutoCharTime(int i) { m_autoModeCharTime = i; }
+  int autoCharTime() const { return m_autoModeCharTime; }
+
+  int getAutoTime(int numChars);
+  /// @}
+
+  void setKeyCursor(RLMachine& machine, int newCursor);
 
   void setCtrlKeySkip(int i) { m_ctrlKeySkip = i; }
   int ctrlKeySkip() const { return m_ctrlKeySkip; }

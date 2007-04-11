@@ -36,10 +36,13 @@
 #include "Utilities.h"
 
 #include <vector>
-
 #include <boost/bind.hpp>
 
 using namespace std;
+
+// -----------------------------------------------------------------------
+// TextWindow
+// -----------------------------------------------------------------------
 
 TextWindow::TextWindow(RLMachine& machine, int windowNum)
   : m_currentLineNumber(0), m_useIndentation(0), 
@@ -113,7 +116,7 @@ void TextWindow::setFontColor(const std::vector<int>& colorData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowSizeInCharacters(const vector<int>& posData)
+void TextWindow::setWindowSizeInCharacters(const std::vector<int>& posData)
 {
   m_xWindowSizeInChars = posData.at(0);
   m_yWindowSizeInChars = posData.at(1);
@@ -121,7 +124,7 @@ void TextWindow::setWindowSizeInCharacters(const vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setSpacingBetweenCharacters(const vector<int>& posData)
+void TextWindow::setSpacingBetweenCharacters(const std::vector<int>& posData)
 {
   m_xSpacing = posData.at(0);
   m_ySpacing = posData.at(1);
@@ -307,6 +310,8 @@ void automodeTurnsOff()
 void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                                const int wakuNo)
 {
+  using namespace boost;
+
   GameexeInterpretObject waku(gexe("WAKU", wakuNo, 0));
 
   setWakuMain(machine, waku("NAME"));
@@ -331,7 +336,9 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
   m_buttonMap.insert(key,
                      new ActivationTextWindowButton(
                        ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-                       &automodeTurnsOn, &automodeTurnsOff));
+                       bind(&TextSystem::setAutoMode, ref(ts), true),
+                       bind(&TextSystem::setAutoMode, ref(ts), false)));
+
   key = string("MSGBK_BOX");
   m_buttonMap.insert(key,
                      new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
@@ -347,7 +354,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setRGBAF(const vector<int>& attr)
+void TextWindow::setRGBAF(const std::vector<int>& attr)
 {
   setR(attr.at(0)); 
   setG(attr.at(1)); 

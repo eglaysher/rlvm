@@ -197,7 +197,7 @@ public:
 // -----------------------------------------------------------------------
 
 TextPage::TextPage(RLMachine& machine)
-  : m_machine(machine), m_currentWindow(0)
+  : m_machine(machine), m_currentWindow(0), m_numberOfCharsOnPage(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -235,6 +235,8 @@ bool TextPage::character(const string& current, const string& next)
 
     dynamic_cast<TextTextPageElement&>(m_elementsToReplay.back()).
       append(current, next);
+
+    m_numberOfCharsOnPage++;
   }
 
   return rendered;
@@ -245,6 +247,7 @@ bool TextPage::character(const string& current, const string& next)
 void TextPage::name(const string& name, const string& nextChar)
 {
   m_elementsToReplay.push_back(new NamePageElement(name, nextChar));
+  m_numberOfCharsOnPage++;
   name_impl(name, nextChar);
 }
 

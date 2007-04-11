@@ -56,6 +56,20 @@ struct Longop_pause : public NiceLongOperation, public EventHandler
 private:
   bool m_isDone;
 
+  /**
+   * @name Automode Related Variables
+   * 
+   * @{
+   */
+  /// Keeps track of when Longop_pause was constructed (in ticks from
+  /// start)
+  unsigned int m_startTime;
+
+  /// How long after m_startTime to automatically break out of this
+  /// Longoperation if auto mode is enabled
+  unsigned int m_automodeTime;
+  /// @}
+
   void handleSyscomCall();
 
 public:

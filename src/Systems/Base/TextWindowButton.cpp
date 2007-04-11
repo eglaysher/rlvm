@@ -240,3 +240,21 @@ void ActivationTextWindowButton::buttonReleased()
     m_state = BUTTONSTATE_ACTIVATED;
   }
 }
+
+// -----------------------------------------------------------------------
+// RepeatActionWhileHoldingWindowButton
+// -----------------------------------------------------------------------
+
+RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
+  bool use, GameexeInterpretObject locationBox,
+  CallbackFunction callback, unsigned int timeBetweenInvocations)
+  : TextWindowButton(use, locationBox), m_callback(callback),
+    m_timeBetweenInvocations(timeBetweenInvocations)
+{
+}
+
+// -----------------------------------------------------------------------
+
+RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton()
+{
+}

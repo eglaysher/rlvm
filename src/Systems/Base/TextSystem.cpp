@@ -36,7 +36,9 @@
 using namespace std;
 
 TextSystem::TextSystem(Gameexe& gexe)
-  : m_autoMode(false), m_ctrlKeySkip(true), m_fastTextMode(false),
+  : m_autoMode(false),  m_autoModeBaseTime(1000), m_autoModeCharTime(100),
+
+    m_ctrlKeySkip(true), m_fastTextMode(false),
     m_messageNoWait(false),
     m_messageSpeed(0), m_defaultTextWindow(0), m_inPauseState(false),
 
@@ -150,6 +152,13 @@ void TextSystem::forwardPage(RLMachine& machine)
 bool TextSystem::isReadingBacklog() const
 {
   return m_previousPageIt != m_previousPages.end();
+}
+
+// -----------------------------------------------------------------------
+
+int TextSystem::getAutoTime(int numChars)
+{
+  return m_autoModeBaseTime + m_autoModeCharTime * numChars;
 }
 
 // -----------------------------------------------------------------------

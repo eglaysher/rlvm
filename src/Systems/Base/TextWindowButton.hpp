@@ -94,4 +94,23 @@ public:
   virtual void buttonReleased();
 };
 
+// -----------------------------------------------------------------------
+
+class RepeatActionWhileHoldingWindowButton : public TextWindowButton
+{
+public:
+  typedef boost::function<void(void)> CallbackFunction;
+
+private:
+  CallbackFunction m_callback;
+  unsigned int m_timeBetweenInvocations;
+
+public:
+  RepeatActionWhileHoldingWindowButton(
+    bool use, GameexeInterpretObject locationBox,
+    CallbackFunction callback,
+    unsigned int timeBetweenInvocations);
+  ~RepeatActionWhileHoldingWindowButton();
+};
+
 #endif

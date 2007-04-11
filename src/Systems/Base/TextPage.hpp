@@ -54,6 +54,9 @@ private:
   /// Current window that this page is rendering into
   int m_currentWindow;
 
+  /// Number of characters on this page (used in automode)
+  int m_numberOfCharsOnPage;
+
   /**
    * @name Private implementations
    * 
@@ -83,6 +86,8 @@ public:
   ~TextPage();
 
   void replay(bool isActivePage);
+
+  int numberOfCharsOnPage() const { return m_numberOfCharsOnPage; }
 
   /**
    * @name Public operations
