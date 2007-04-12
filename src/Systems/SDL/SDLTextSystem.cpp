@@ -77,6 +77,10 @@ void SDLTextSystem::executeTextSystem(RLMachine& machine)
 
     m_textKeyCursor->execute(machine);
   }
+
+  // Let each window update any TextWindowButton s.
+  for_each(m_textWindow.begin(), m_textWindow.end(),
+           bind(&TextWindow::execute, _1, ref(machine)));
 }
 
 // -----------------------------------------------------------------------

@@ -28,6 +28,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 
@@ -246,9 +247,10 @@ void ActivationTextWindowButton::buttonReleased()
 // -----------------------------------------------------------------------
 
 RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
-  bool use, GameexeInterpretObject locationBox,
+  bool use, GameexeInterpretObject locationBox, RLMachine& machine,
   CallbackFunction callback, unsigned int timeBetweenInvocations)
-  : TextWindowButton(use, locationBox), m_callback(callback),
+  : TextWindowButton(use, locationBox), m_machine(machine),
+    m_callback(callback), m_heldDown(false),
     m_timeBetweenInvocations(timeBetweenInvocations)
 {
 }
@@ -257,4 +259,37 @@ RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
 
 RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton()
 {
+}
+
+// -----------------------------------------------------------------------
+
+void RepeatActionWhileHoldingWindowButton::buttonPressed()
+{
+  m_heldDown = true;
+
+  m_callback();
+  m_lastInvocation = m_machine.system().event().getTicks();
+}
+
+// -----------------------------------------------------------------------
+
+void RepeatActionWhileHoldingWindowButton::execute()
+{
+  if(m_heldDown)
+  {
+    unsigned int curTime = m_machine.system().event().getTicks();
+
+    if(m_lastInvocation + m_timeBetweenInvocations > curTime)
+    {
+      m_callback();
+      m_lastInvocation = curTime;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void RepeatActionWhileHoldingWindowButton::buttonReleased()
+{
+  m_heldDown = false;
 }

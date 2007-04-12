@@ -157,7 +157,7 @@ void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton,
       text.backPage(machine());
     break;
   case MOUSE_WHEELDOWN:
-    if(pressed && text.isReadingBacklog())
+    if(pressed)
       text.forwardPage(machine());
     break;
   }
@@ -182,10 +182,7 @@ void Longop_pause::keyStateChanged(KeyCode keyCode, bool pressed)
     else if(keyCode == RLKEY_UP)
       text.backPage(machine());
     else if(keyCode == RLKEY_DOWN)
-    {
-      if(text.isReadingBacklog())
-        text.forwardPage(machine());
-    }
+      text.forwardPage(machine());
     else if(keyCode == RLKEY_RETURN)
       m_isDone = true;
   }

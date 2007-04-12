@@ -88,6 +88,19 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
 
 // -----------------------------------------------------------------------
 
+void TextWindow::execute(RLMachine& machine)
+{
+  using namespace boost;
+
+  if(isVisible())
+  {
+    for_each(m_buttonMap.begin(), m_buttonMap.end(),  
+             bind(&TextWindowButton::execute, _1));
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextWindow::setTextboxPadding(const std::vector<int>& posData)
 {
   m_upperBoxPadding = posData.at(0);
@@ -344,12 +357,20 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                      new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
   key = string("MSGBKLEFT_BOX");
   m_buttonMap.insert(key,
-                     new TextWindowButton(ts.windowMsgbkleftUse(), 
-                                          waku("MSGBKLEFT_BOX")));
+                     new RepeatActionWhileHoldingWindowButton(
+                       ts.windowMsgbkleftUse(), 
+                       waku("MSGBKLEFT_BOX"),
+                       machine, 
+                       bind(&TextSystem::backPage, ref(ts), ref(machine)),
+                       250));
   key = string("MSGBKRIGHT_BOX");
   m_buttonMap.insert(key,
-                     new TextWindowButton(ts.windowMsgbkrightUse(), 
-                                          waku("MSGBKRIGHT_BOX")));
+                     new RepeatActionWhileHoldingWindowButton(
+                       ts.windowMsgbkrightUse(), 
+                       waku("MSGBKRIGHT_BOX"),
+                       machine,
+                       bind(&TextSystem::forwardPage, ref(ts), ref(machine)),
+                       250));
 }
 
 // -----------------------------------------------------------------------
@@ -379,8 +400,13 @@ bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y,
                                   bool pressed)
 {
   using namespace boost;
-  return find_if(m_buttonMap.begin(), m_buttonMap.end(),   
-                 bind(&TextWindowButton::handleMouseClick, _1, 
-                      ref(machine), ref(*this), x, y, pressed))
-    != m_buttonMap.end();
+  if(isVisible())
+  {
+    return find_if(m_buttonMap.begin(), m_buttonMap.end(),   
+                   bind(&TextWindowButton::handleMouseClick, _1, 
+                        ref(machine), ref(*this), x, y, pressed))
+      != m_buttonMap.end();
+  }
+  
+  return false;
 }

@@ -102,15 +102,23 @@ public:
   typedef boost::function<void(void)> CallbackFunction;
 
 private:
+  RLMachine& m_machine;
   CallbackFunction m_callback;
+  bool m_heldDown;
+  unsigned int m_lastInvocation;
   unsigned int m_timeBetweenInvocations;
 
 public:
   RepeatActionWhileHoldingWindowButton(
     bool use, GameexeInterpretObject locationBox,
+    RLMachine& machine,
     CallbackFunction callback,
     unsigned int timeBetweenInvocations);
   ~RepeatActionWhileHoldingWindowButton();
+
+  virtual void buttonPressed();
+  virtual void execute();
+  virtual void buttonReleased();
 };
 
 #endif

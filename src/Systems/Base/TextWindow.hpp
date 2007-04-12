@@ -162,14 +162,6 @@ protected:
    * @{
    */
   boost::ptr_map<std::string, TextWindowButton> m_buttonMap;
-
-//   boost::shared_ptr<TextWindowButton> m_moveButton;
-//   boost::shared_ptr<TextWindowButton> m_clearButton;
-//   boost::shared_ptr<TextWindowButton> m_readjumpButton;
-//   boost::shared_ptr<TextWindowButton> m_automodeButton;
-//   boost::shared_ptr<TextWindowButton> m_msgbkButton;
-//   boost::shared_ptr<TextWindowButton> m_msgbkleftButton;
-//   boost::shared_ptr<TextWindowButton> m_msgbkrightButton;
   /// @}
 
 protected:
@@ -180,6 +172,8 @@ public:
   TextWindow(RLMachine& machine, int windowNum);
 
   virtual ~TextWindow() {}
+
+  virtual void execute(RLMachine& machine);
 
   /**
    * @name Text size and location
