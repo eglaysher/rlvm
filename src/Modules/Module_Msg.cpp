@@ -75,13 +75,21 @@ struct Msg_pause : public RLOp_Void_Void
 {
   void operator()(RLMachine& machine)
   {
-    int windowNumber = machine.system().text().defaultWindow();
+    TextSystem& text = machine.system().text();
+    TextPage& page = text.currentPage(machine);
+    int windowNum = page.currentWindowNum();
+    TextWindow& textWindow = text.textWindow(machine, windowNum);
 
-    // Move that big if(m_isDone) block into a
-    // PerformAfterLongOperationDecorator, which we can attach
-    // here. We'll need to do this so we can implement page() correctly.
-
-    machine.pushLongOperation(new PauseLongOperation(machine));
+    if(textWindow.actionOnPause())
+    {
+      machine.pushLongOperation(
+        new HardBrakeAfterLongop(new PauseLongOperation(machine)));
+    }
+    else
+    {
+      machine.pushLongOperation(
+        new NewPageAfterLongop(new PauseLongOperation(machine)));
+    }
   }
 };
 
@@ -127,6 +135,23 @@ struct Msg_br : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Msg_spause : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.pushLongOperation(new PauseLongOperation(machine));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_page : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.pushLongOperation(
+      new NewPageAfterLongop(new PauseLongOperation(machine)));
+  }
+};
+
+// -----------------------------------------------------------------------
+
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
@@ -144,23 +169,9 @@ MsgModule::MsgModule()
   addOpcode(151, 0, new Msg_msgHide);
 
   addOpcode(201, 0, new Msg_br);
+  addOpcode(205, 0, new Msg_spause);
 
-//  addOpcode(100, 0, );
-
-//   addOpcode(101, 0, new Op_SetToIncoming(textSystem.fontSizeInPixels(),
-//                                          textSystem));            
-//   addOpcode(101, 1, new Op_ReturnValue(textSystem.fontSizeInPixels()));
-//  addOpcode(102 ...)
-//  addOpcode(103, 0, new Op_SetToIntConstant(textSystem, 
-//                                            &TextSystem::setFastTextMode, 1));
-//  addOpcode(104, 0, new Op_SetToIntConstant(textSystem,
-//                                            &TextSystem::setFastTextMode, 0));
-
-//   addOpcode(104, 0, new Op_SetToFalse(text.fastTextMode(),
-//                                       textSystem));
-//  addOpcode(105, 0
-//  addOpcode(106
-//  addOpcode
+  addOpcode(210, 0, new Msg_page);
 }
 
 // @}

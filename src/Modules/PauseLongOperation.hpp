@@ -63,4 +63,28 @@ public:
   bool operator()(RLMachine& machine);
 };
 
+// -----------------------------------------------------------------------
+// NewPageAfterLongop
+// -----------------------------------------------------------------------
+class NewPageAfterLongop : public PerformAfterLongOperationDecorator
+{
+private:
+  virtual void performAfterLongOperation(RLMachine& machine);
+public:
+  NewPageAfterLongop(LongOperation* inOp);
+  ~NewPageAfterLongop();
+};
+
+// -----------------------------------------------------------------------
+// HardBrakeAfterLongop
+// -----------------------------------------------------------------------
+class HardBrakeAfterLongop : public PerformAfterLongOperationDecorator
+{
+private:
+  virtual void performAfterLongOperation(RLMachine& machine);
+public:
+  HardBrakeAfterLongop(LongOperation* inOp);
+  ~HardBrakeAfterLongop();
+};
+
 #endif

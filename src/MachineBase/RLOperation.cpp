@@ -55,28 +55,6 @@ bool RLOperation::advanceInstructionPointer()
 }
 
 // -----------------------------------------------------------------------
-/*
-void RLOperation::addParameterTo(const string& parameter, 
-                                 const ptr_vector<ExpressionPiece>& outputParameters)
-{
-  const char* location = parameter.c_str();
-  outputParameters.push_back(get_data(location));
-}
-*/
-// -----------------------------------------------------------------------
-
-// void RLOperation::parseParameters(const CommandElement& ff, 
-//                                   ptr_vector<ExpressionPiece>& parameterPieces);
-// void RLOperation::parseParameters(const std::vector<std::string>& input,
-//                        boost::ptr_vector<libReallive::ExpressionPiece>& output);
-// {
-//     size_t numberOfParameters = ff.param_count();
-//     for(size_t i = 0; i < numberOfParameters; ++i) {
-//       addParameterTo(ff.get_param(i), parameterPieces);
-//     }
-// }
-
-// -----------------------------------------------------------------------
 
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
 {
@@ -237,16 +215,6 @@ void Empty_T::parseParameters(
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
 }
-
-// -----------------------------------------------------------------------
-
-/*
-void RLOp_SpecialCase::parseParameters(
-  const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output)
-{       
-}
-*/
 
 // -----------------------------------------------------------------------
 

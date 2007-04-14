@@ -181,22 +181,44 @@ bool PauseLongOperation::operator()(RLMachine& machine)
       m_isDone = true;
   }
 
-  if(m_isDone)
-  {
-    TextSystem& text = machine.system().text();
-    TextPage& page = text.currentPage(machine);
-    int windowNum = page.currentWindowNum();
-    TextWindow& textWindow = text.textWindow(machine, windowNum);
-
-    if(textWindow.actionOnPause())
-    {
-      machine.system().text().currentPage(machine).hardBrake();    
-    }
-    else
-    {
-      machine.system().text().newPage(machine);
-    }
-  }
-
   return m_isDone;
 }
+
+// -----------------------------------------------------------------------
+// NewPageAfterLongop
+// -----------------------------------------------------------------------
+NewPageAfterLongop::NewPageAfterLongop(LongOperation* inOp)
+  : PerformAfterLongOperationDecorator(inOp)
+{}
+
+// -----------------------------------------------------------------------
+
+NewPageAfterLongop::~NewPageAfterLongop()
+{}
+
+// -----------------------------------------------------------------------
+
+void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
+{
+  machine.system().text().newPage(machine);
+}
+
+// -----------------------------------------------------------------------
+// HardBrakeAfterLongop
+// -----------------------------------------------------------------------
+HardBrakeAfterLongop::HardBrakeAfterLongop(LongOperation* inOp)
+  : PerformAfterLongOperationDecorator(inOp)
+{}
+
+// -----------------------------------------------------------------------
+
+HardBrakeAfterLongop::~HardBrakeAfterLongop()
+{}
+
+// -----------------------------------------------------------------------
+
+void HardBrakeAfterLongop::performAfterLongOperation(RLMachine& machine)
+{
+  machine.system().text().currentPage(machine).hardBrake();
+}
+
