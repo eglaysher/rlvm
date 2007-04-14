@@ -39,6 +39,7 @@
 //#include "GeneralOperations.hpp"
 
 #include "libReallive/gameexe.h"
+#include "Modules/PauseLongOperation.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -46,8 +47,6 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextWindow.hpp"
-
-#include <iostream>
 
 using namespace std;
 
@@ -57,171 +56,6 @@ using namespace std;
  *
  * @{
  */
-
-// -----------------------------------------------------------------------
-// Longop_pause
-// -----------------------------------------------------------------------
-
-Longop_pause::Longop_pause(RLMachine& machine)
-  : NiceLongOperation(machine), m_isDone(false)
-{
-  TextSystem& text = machine.system().text();
-  EventSystem& event = machine.system().event();
-
-  // Initialize Auto Mode (in case it's activated, or in case it gets
-  // activated)
-  int numChars =
-    text.currentPage(machine).numberOfCharsOnPage();
-  m_automodeTime = text.getAutoTime(numChars);
-  m_startTime = event.getTicks();
-
-  machine.system().graphics().markScreenAsDirty();
-
-  // We undo this in the destructor
-  text.setInPauseState(true);
-  event.addEventHandler(this);
-}
-
-// -----------------------------------------------------------------------
-
-Longop_pause::~Longop_pause()
-{
-  machine().system().event().removeEventHandler(this);
-  machine().system().text().setInPauseState(false);
-}
-
-// -----------------------------------------------------------------------
-
-/** 
- * @todo This is fairly buggy right now. I wanted to support the
- *       CLANNAD menu, but there are three problems. 1) I don't handle
- *       everything necessary to display the menu properly. 2) The
- *       code in CLANNAD's SEEN.TXT doesn't return properly. 3) Even
- *       if it did, THIS C++ code doesn't return properly.
- *  
- *       To really fix that final one, I'm going to have to make
- *       Longoperations and Reallive stack frames use the same call
- *       stack instead of the hacktastic separate stacks I'm doing
- *       now.
- */
-void Longop_pause::handleSyscomCall()
-{
-  Gameexe& gexe = machine().system().gameexe();
-
-  if(gexe("CANCELCALL_MOD") == 1)
-  {
-    vector<int> cancelcall = gexe("CANCELCALL");
-    machine().farcall(cancelcall.at(0), cancelcall.at(1));
-    m_isDone = true;
-  }
-  else
-  {
-    cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
-  }
-}
-
-// -------------------------------------------- [ EventHandler interface ]
-void Longop_pause::mouseMotion(int x, int y)
-{
-  // Tell the text system about the move
-  machine().system().text().setMousePosition(machine(), x, y);
-}
-
-// -----------------------------------------------------------------------
-
-void Longop_pause::mouseButtonStateChanged(MouseButton mouseButton, 
-                                           bool pressed)
-{
-  EventSystem& es = machine().system().event();
-  TextSystem& text = machine().system().text();
-
-  switch(mouseButton)
-  {
-  case MOUSE_LEFT:
-  {
-    int x, y;
-    es.getCursorPos(x, y);
-    if(!machine().system().text().handleMouseClick(machine(), x, y, pressed))
-    {
-      if(pressed)
-        m_isDone = true;
-    }
-    break;
-  }
-  case MOUSE_RIGHT:
-    if(pressed)
-      handleSyscomCall();
-    break;
-  case MOUSE_WHEELUP:
-    if(pressed)
-      text.backPage(machine());
-    break;
-  case MOUSE_WHEELDOWN:
-    if(pressed)
-      text.forwardPage(machine());
-    break;
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void Longop_pause::keyStateChanged(KeyCode keyCode, bool pressed)
-{
-  EventSystem& es = machine().system().event();
-  TextSystem& text = machine().system().text();
-
-  if(pressed)
-  {
-    bool ctrlKeySkips = text.ctrlKeySkip();
-
-    if(ctrlKeySkips && 
-       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
-    {
-      m_isDone = true;
-    }
-    else if(keyCode == RLKEY_UP)
-      text.backPage(machine());
-    else if(keyCode == RLKEY_DOWN)
-      text.forwardPage(machine());
-    else if(keyCode == RLKEY_RETURN)
-      m_isDone = true;
-  }
-}
-
-// -----------------------------------------------------------------------
-
-bool Longop_pause::operator()(RLMachine& machine)
-{
-  // Check to see if we're done because of the auto mode timer
-  if(machine.system().text().autoMode())
-  {
-    unsigned int curTime = machine.system().event().getTicks();
-    if(m_startTime + m_automodeTime < curTime)
-      m_isDone = true;
-  }
-
-  if(m_isDone)
-  {
-    TextSystem& text = machine.system().text();
-    TextPage& page = text.currentPage(machine);
-    int windowNum = page.currentWindowNum();
-    TextWindow& textWindow = text.textWindow(machine, windowNum);
-
-    if(textWindow.actionOnPause())
-    {
-      machine.system().text().currentPage(machine).hardBrake();    
-    }
-    else
-    {
-      machine.system().text().newPage(machine);
-    }
-  }
-
-  return m_isDone;
-}
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
 
 struct Msg_par : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
@@ -235,14 +69,19 @@ struct Msg_par : public RLOp_Void_Void {
 
 /** 
  * Implements op<0:Msg:17, 0>, fun pause().
- * 
- * @todo This still isn't a real implementation of pause(), needs to
- * handle the window events when we have text windows.
- * @bug Does this work with ctrl()?
+ *
  */
-struct Msg_pause : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.pushLongOperation(new Longop_pause(machine));
+struct Msg_pause : public RLOp_Void_Void
+{
+  void operator()(RLMachine& machine)
+  {
+    int windowNumber = machine.system().text().defaultWindow();
+
+    // Move that big if(m_isDone) block into a
+    // PerformAfterLongOperationDecorator, which we can attach
+    // here. We'll need to do this so we can implement page() correctly.
+
+    machine.pushLongOperation(new PauseLongOperation(machine));
   }
 };
 

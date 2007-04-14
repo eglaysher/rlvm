@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/TextoutLongOperation.hpp"
-#include "Modules/Module_Msg.hpp"
+#include "Modules/PauseLongOperation.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
@@ -171,7 +171,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       if(page.isFull())
       {
         paused = true;
-        machine.pushLongOperation(new Longop_pause(machine));
+        machine.pushLongOperation(new PauseLongOperation(machine));
       }
 
       return false;

@@ -123,6 +123,7 @@ public:
 
   void setInPauseState(bool in) { m_inPauseState = in; }
 
+  int defaultWindow() const { return m_defaultTextWindow; }
   void setDefaultWindow(int window) { m_defaultTextWindow = window; }
 
   /** 

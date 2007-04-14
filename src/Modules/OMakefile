@@ -38,6 +38,7 @@ LRLFILES[] =
   Module_Refresh
   Module_Debug
   TextoutLongOperation
+  PauseLongOperation
 
 StaticCObject(libModules, $(LRLFILES))
 

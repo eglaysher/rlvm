@@ -32,9 +32,6 @@
  */
 
 #include "MachineBase/RLModule.hpp"
-#include "MachineBase/LongOperation.hpp"
-
-#include "Systems/Base/EventHandler.hpp"
 
 /**
  * Contains functions for mod<0:3>, Msg.
@@ -44,45 +41,6 @@
 class MsgModule : public RLModule {
 public:
   MsgModule();
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Main pause function. Exported for TextoutLongOperation to abuse. 
- */
-struct Longop_pause : public NiceLongOperation, public EventHandler
-{
-private:
-  bool m_isDone;
-
-  /**
-   * @name Automode Related Variables
-   * 
-   * @{
-   */
-  /// Keeps track of when Longop_pause was constructed (in ticks from
-  /// start)
-  unsigned int m_startTime;
-
-  /// How long after m_startTime to automatically break out of this
-  /// Longoperation if auto mode is enabled
-  unsigned int m_automodeTime;
-  /// @}
-
-  void handleSyscomCall();
-
-public:
-  Longop_pause(RLMachine& machine);
-  ~Longop_pause();
-
-  // ------------------------------------------ [ EventHandler interface ]
-  void mouseMotion(int x, int y);
-  void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  void keyStateChanged(KeyCode keyCode, bool pressed);
-
-  // ----------------------------------------- [ LongOperation interface ]
-  bool operator()(RLMachine& machine);
 };
 
 #endif
