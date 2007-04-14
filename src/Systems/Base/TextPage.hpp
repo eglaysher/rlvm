@@ -140,8 +140,8 @@ public:
    * page and sets the color to the backlog color if we are.
    */
   void addSetToRightStartingColorElement();
-
-  /// @}
+ 
+ /// @}
 
 
   /** 

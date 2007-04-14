@@ -47,6 +47,7 @@ public:
   virtual void executeTextSystem(RLMachine& machine);
 
   virtual void render(RLMachine& machine);
+  virtual void hideTextWindow(int winNumber);
   virtual void hideAllTextWindows();
   virtual void clearAllTextWindows();
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber);

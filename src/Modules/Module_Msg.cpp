@@ -121,7 +121,9 @@ struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int unknown)
   {
-//    machine.system().text().
+    int winNum = machine.system().text().currentPage(machine)
+      .currentWindowNum();
+    machine.system().text().hideTextWindow(winNum);
   }
 };
 

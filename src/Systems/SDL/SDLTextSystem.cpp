@@ -105,6 +105,17 @@ void SDLTextSystem::render(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+void SDLTextSystem::hideTextWindow(int winNumber)
+{
+  WindowMap::iterator it = m_textWindow.find(winNumber);
+  if(it != m_textWindow.end())
+  {
+    it->setVisible(0);
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextSystem::hideAllTextWindows()
 {
   for_each(m_textWindow.begin(), m_textWindow.end(), 
