@@ -27,12 +27,15 @@
 #include "RLOperation.hpp"
 #include <boost/scoped_ptr.hpp>
 
+#include <string>
+
 /** 
  * Binds setting an internal variable to a passed in value in from a
  * running Reallive script. 
  */
 template<typename OBJTYPE, typename RETTYPE>
 class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
+private:
   /// The object we are going to operate on when called.
   OBJTYPE& reference;
 
@@ -43,13 +46,14 @@ class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
   /// called.
   Setter setter;
 
+public:
   Op_SetToIncomingInt(OBJTYPE& ref, Setter s)
     : reference(ref), setter(s) 
   {}
 
   void operator()(RLMachine& machine, int incoming) 
   {
-    ((reference).*(setter)(incoming));
+    (reference.*setter)(incoming);
   }
 };
 
@@ -89,22 +93,24 @@ public:
  * Sets an internal variable to a specific value set at compile time,
  * and exposes this as an operation to Reallive scripts.
  */
-template<typename OBJTYPE, typename RETTYPE, typename VALTYPE>
+template<typename OBJTYPE, typename VALTYPE>
 class Op_SetToConstant : public RLOp_Void_Void {
+private:
   OBJTYPE& reference;
 
-  typedef void(OBJTYPE::*Setter)(RETTYPE);
+  typedef void(OBJTYPE::*Setter)(VALTYPE);
   Setter setter;
 
   VALTYPE value;
 
+public:
   Op_SetToConstant(OBJTYPE& ref, Setter s, VALTYPE inVal)
     : reference(ref), setter(s), value(inVal)
   {}
 
   void operator()(RLMachine& machine) 
   {
-    ((reference).*(setter)(value));
+    (reference.*setter)(value);
   }
 };
 
@@ -116,18 +122,20 @@ class Op_SetToConstant : public RLOp_Void_Void {
  */
 template<typename OBJTYPE, typename RETTYPE>
 class Op_ReturnIntValue : public RLOp_Store_Void {
+private:
   OBJTYPE& reference;
 
-  typedef void(OBJTYPE::*Getter)(RETTYPE);
+  typedef RETTYPE(OBJTYPE::*Getter)() const;
   Getter getter;
 
+public:
   Op_ReturnIntValue(OBJTYPE& ref, Getter g) 
     : reference(ref), getter(g) 
   {}
 
   int operator()(RLMachine& machine) 
   {
-    return ((reference).*(getter)());
+    return (reference.*getter)();
   }
 };
 
@@ -189,6 +197,17 @@ public:
                        boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff);
+};
+
+class ReturnGameexeInt : public RLOp_Store_Void {
+private:
+  std::string fullKeyName;
+  int entry;
+
+public:
+  ReturnGameexeInt(const std::string& fullKey, int en);
+
+  int operator()(RLMachine& machine);
 };
 
 #endif

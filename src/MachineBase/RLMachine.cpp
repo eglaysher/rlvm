@@ -49,6 +49,10 @@
 //
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   RLMachine.cpp
  * @author Elliot Glaysher
@@ -72,6 +76,13 @@
 #include "Systems/Null/NullSystem.hpp"
 #include "Systems/Null/NullGraphicsSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
+
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
+
+#include "Modules/cp932toUnicode.hpp"
+
+#include "Modules/TextoutLongOperation.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -199,68 +210,34 @@ void RLMachine::attachModule(RLModule* module)
 /// @todo Refactor this. Seriously.
 void RLMachine::executeNextInstruction() 
 {
-  try
+  // Do not execute any more instructions if the machine is halted.
+  if(halted() == true)
+    return;
+  // If we are in a long operation, run it, and end it if it returns true.
+  else if(m_longOperationStack.size())
   {
-
-    // Do not execute any more instructions if the machine is halted.
-    if(halted() == true)
-      return;
-    // If we are in a long operation, run it, and end it if it returns true.
-    else if(currentLongOperation)
+    bool retVal = m_longOperationStack.back()(*this);
+    if(retVal)
+      m_longOperationStack.pop_back();
+  }
+  else 
+  {
+    try 
     {
-      bool retVal = (*currentLongOperation)(*this);
-      if(retVal)
-        currentLongOperation.reset();
+      callStack.top().ip->runOnMachine(*this);
     }
-    else 
-    {
-      // Refactor this out into a virtual function?
-      // @todo Yeah, really refactor this ugly mess below before it grows and eats
-      // tokyo
-      // Switch to the proper handler based on the type of this bytecode element
-      switch(callStack.top().ip->type()) {
-        // Handle all the other stuff
-      case Line:
-        m_line = static_cast<const libReallive::MetaElement&>(
-          *(callStack.top().ip)).value(); 
-        advanceInstructionPointer();
-        break;
-      case Expression:
-        executeExpression(static_cast<const libReallive::ExpressionElement&>(
-                            *(callStack.top().ip)));
-        break;
-      case Command:
-      case Function:
-      case Select:
-      case Goto:
-      case GotoCase:
-      case GotoOn:
-        executeCommand(static_cast<const libReallive::CommandElement&>(
-                         *(callStack.top().ip)));
-        break;
-      default:
-        // Increment the IP for things we don't handle yet or very well.
+    catch(std::exception& e) {
+      if(m_haltOnException) {
+        m_halted = true;
+      } else {
+        // Advance the instruction pointer so as to prevent infinite
+        // loops where we throw an exception, and then try again.
         advanceInstructionPointer();
       }
-    }
-  }
-  catch(SystemError& e) {
-    // System errors are serious faults in the graphics/event/sound
-    // code and are probably unrecoverable. These aren't little script
-    // parsing problems or opcode finding problems that can be ignored.
-    throw;
-  }
-  catch(std::exception& e) {
-    if(m_haltOnException) {
-      m_halted = true;
-    } else {
-      // Advance the instruction pointer so as to prevent infinite
-      // loops where we throw an exception, and then try again.
-      advanceInstructionPointer();
-    }
 
-    cout << "(SEEN" << callStack.top().scenario->sceneNumber() 
-         << ")(Line " << m_line << "):  " << e.what() << endl;
+      cout << "(SEEN" << callStack.top().scenario->sceneNumber() 
+           << ")(Line " << m_line << "):  " << e.what() << endl;
+    }
   }
 }
 
@@ -488,9 +465,9 @@ void RLMachine::returnFromGosub()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setLongOperation(LongOperation* longOperation)
+void RLMachine::pushLongOperation(LongOperation* longOperation)
 {
-  currentLongOperation.reset(longOperation);
+  m_longOperationStack.push_back(longOperation);
 }
 
 // -----------------------------------------------------------------------
@@ -506,8 +483,30 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 {
   int value = e.parsedExpression().integerValue(*this);
   
-  // Increment the instruction pointer.
-  callStack.top().ip++;
+  advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+
+int RLMachine::getTextEncoding() const
+{
+  return callStack.top().scenario->encoding();
+}
+
+void RLMachine::performTextout(const TextoutElement& e)
+{
+  std::string utf8str = cp932toUTF8(e.text(), getTextEncoding());
+
+  TextSystem& ts = system().text();
+
+  // Display UTF-8 characters
+  auto_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
+
+  if(ts.messageNoWait())
+    ptr->setNoWait();
+ 
+  pushLongOperation(ptr.release());
+  advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -524,4 +523,25 @@ void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype
 {
   modtype = packedModuleNumber >> 8;
   module = packedModuleNumber && 0xFF;
+}
+
+// -----------------------------------------------------------------------
+
+bool RLMachine::halted() const 
+{ 
+  return m_halted;
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::halt() 
+{
+  m_halted = true; 
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setHaltOnException(bool haltOnException) 
+{
+  m_haltOnException = haltOnException;
 }

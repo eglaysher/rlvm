@@ -29,13 +29,17 @@
 
 class SDLGraphicsSystem;
 class SDLEventSystem;
+class SDLTextSystem;
 
 class SDLSystem : public System
 {
 private:
   boost::scoped_ptr<SDLGraphicsSystem> graphicsSystem;
   boost::scoped_ptr<SDLEventSystem> eventSystem;
+  boost::scoped_ptr<SDLTextSystem> textSystem;
   Gameexe& m_gameexe;
+
+  unsigned int m_lastTimePaused;
 
 public:
   SDLSystem(Gameexe& gameexe);
@@ -45,6 +49,7 @@ public:
   virtual GraphicsSystem& graphics();
   virtual EventSystem& event();
   virtual Gameexe& gameexe();
+  virtual TextSystem& text();
 };
 
 #endif

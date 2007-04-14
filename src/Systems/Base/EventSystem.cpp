@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 #include "Utilities.h"
@@ -32,13 +36,35 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 EventSystem::EventSystem() 
-  : m_numberOfRealtimeTasks(0) 
+  : m_numberOfRealtimeTasks(0), m_numberOfNiceAfterEachTaskItems(0)
 {}
 
 // -----------------------------------------------------------------------
 
 EventSystem::~EventSystem()
 {}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::addEventHandler(EventHandler* handler)
+{
+  Handlers::iterator it = 
+    std::find(m_eventHandlers.begin(), m_eventHandlers.end(), handler);
+
+  if(it == m_eventHandlers.end())
+    m_eventHandlers.push_back(handler);
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::removeEventHandler(EventHandler* handler)
+{
+  Handlers::iterator it = 
+    std::find(m_eventHandlers.begin(), m_eventHandlers.end(), handler);
+
+  if(it != m_eventHandlers.end())
+    m_eventHandlers.erase(it);
+}
 
 // -----------------------------------------------------------------------
 
@@ -68,6 +94,27 @@ bool EventSystem::frameCounterExists(int layer, int frameCounter)
   checkLayerAndCounter(layer, frameCounter);
   scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
   return counter.get() != NULL;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::beginBeingNiceAfterEachPass()
+{
+  m_numberOfNiceAfterEachTaskItems++;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::endBeingNiceAfterEachPass()
+{
+  m_numberOfNiceAfterEachTaskItems--;
+}
+
+// -----------------------------------------------------------------------
+
+bool EventSystem::beNiceAfterEachPass()
+{
+  return m_numberOfNiceAfterEachTaskItems > 0;
 }
 
 // -----------------------------------------------------------------------

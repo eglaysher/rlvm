@@ -33,9 +33,20 @@
 #include <string>
 
 std::string unicodetocp932(const std::wstring& line);
-std::wstring cp932toUnicode(const std::string& line);
+std::wstring cp932toUnicode(const std::string& line, int transformation);
 
 std::string hantozen_cp932(const std::string& string);
 std::string zentohan_cp932(const std::string& string);
+
+std::string unicodeToUTF8(const std::wstring& widestring);
+
+// For convenience...
+inline std::string cp932toUTF8(const std::string& line, int transformation) {
+  std::wstring ws = cp932toUnicode(line, transformation);
+  return unicodeToUTF8(ws);
+}
+
+bool isKinsoku(int codepoint);
+int codepoint(const std::string& c);
 
 #endif

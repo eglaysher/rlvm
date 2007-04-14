@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   RLModule.cpp
  * @author Elliot Glaysher
@@ -65,9 +69,22 @@ void RLModule::unpackOpcodeNumber(int packedOpcode, int& opcode, unsigned char& 
 
 // -----------------------------------------------------------------------
 
-void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op) 
+void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
 {
-  int packedOpcode = packOpcodeNumber(opcode, overload);
+  ostringstream oss;
+  oss << "opcode<" << m_moduleType << ":" << m_moduleNumber << ":" 
+      << opcode << ", " << overload << ">";
+
+  addOpcode(opcode, overload, oss.str(), op);
+}
+
+// -----------------------------------------------------------------------
+
+void RLModule::addOpcode(int opcode, unsigned char overload, 
+                         const std::string& name, RLOperation* op) 
+{
+  int packedOpcode = packOpcodeNumber(opcode, overload);  
+  op->setName(name);
   storedOperations.insert(packedOpcode, op);
 }
 

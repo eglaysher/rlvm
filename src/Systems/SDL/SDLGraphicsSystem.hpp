@@ -35,6 +35,13 @@ class Gameexe;
 
 // -----------------------------------------------------------------------
 
+/// These are function pointers to OpenGL extensions that we use in
+/// fragment shaders, which we do to get the closest blending to how
+/// RealLive does it.
+//extern glCreateShaderObjectARBProcPtr glCreateShaderObject;
+
+// -----------------------------------------------------------------------
+
 /**
  * Implements all screen output and screen management functionality.
  *
@@ -74,6 +81,16 @@ private:
   /// The last line number;
   unsigned int m_lastLineNumber;
 
+  /// utf8 encoded title string
+  std::string m_captionTitle;
+
+  /// Whether we should try to append m_subtitle in the window
+  /// titlebar
+  bool m_displaySubtitle;
+
+  /// utf8 encoded subtitle string
+  std::string m_subtitle;
+
   // ---------------------------------------------------------------------
 
   /** 
@@ -102,6 +119,8 @@ private:
 
   /// @}
   // ---------------------------------------------------------------------
+
+  void setWindowTitle();
 
 public:
   SDLGraphicsSystem(Gameexe& gameexe);
@@ -138,6 +157,8 @@ public:
   virtual void refresh(RLMachine& machine);
 
   virtual void endFrame();
+
+  virtual void setWindowSubtitle(const std::string& utf8encoded);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);

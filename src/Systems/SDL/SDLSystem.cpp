@@ -20,12 +20,17 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include <iostream>
 #include <sstream>
 
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
+#include "Systems/SDL/SDLTextSystem.hpp"
 
 #include <SDL/SDL.h>
 
@@ -36,7 +41,7 @@ using namespace std;
 using namespace libReallive;
 
 SDLSystem::SDLSystem(Gameexe& gameexe)
-  : m_gameexe(gameexe)
+  : m_gameexe(gameexe), m_lastTimePaused(0)
 {
   // First, initialize SDL's video subsystem.
   if( SDL_Init( SDL_INIT_VIDEO) < 0 )
@@ -49,6 +54,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   // Initialize the various subsystems
   graphicsSystem.reset(new SDLGraphicsSystem(gameexe));
   eventSystem.reset(new SDLEventSystem);
+  textSystem.reset(new SDLTextSystem(gameexe));
 }
 
 SDLSystem::~SDLSystem()
@@ -57,21 +63,32 @@ SDLSystem::~SDLSystem()
 
 void SDLSystem::run(RLMachine& machine)
 {
-  // cerr << "Begin eventSystem: " << event().getTicks() << endl;
-
   // Give the event handler a chance to run
   eventSystem->executeEventSystem(machine);
 
-//  cerr << "Begin graphicsSystem: " << event().getTicks() << endl;
+  textSystem->executeTextSystem(machine);
 
   // Finally, run any screen updates needed
   graphicsSystem->executeGraphicsSystem(machine);
 
   // Pause the system for a moment
-//   if(eventSystem->canBeNice())
-//   {
-//     eventSystem->wait(10);
-//   }
+  if(eventSystem->beNiceAfterEachPass() && eventSystem->canBeNice())
+  {
+    eventSystem->wait(10);
+  }
+  else
+  {
+    unsigned int nicenessThreshold = 5;
+    if(!eventSystem->canBeNice())
+      nicenessThreshold = 20;
+
+    unsigned int currentTime = eventSystem->getTicks();
+    if(currentTime - m_lastTimePaused > nicenessThreshold)
+    {
+      eventSystem->wait(10);
+      m_lastTimePaused = eventSystem->getTicks();
+    }
+  }
 }
 
 GraphicsSystem& SDLSystem::graphics()
@@ -87,4 +104,9 @@ EventSystem& SDLSystem::event()
 Gameexe& SDLSystem::gameexe()
 {
   return m_gameexe;
+}
+
+TextSystem& SDLSystem::text()
+{
+  return *textSystem;
 }

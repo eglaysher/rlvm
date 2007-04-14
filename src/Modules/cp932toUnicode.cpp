@@ -25,6 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   cp932toUnicode.cpp
  * @date   Sun Sep 17 14:10:35 2006
@@ -40,6 +44,10 @@
 
 #include <string>
 #include <iostream>
+#include <stdexcept>
+
+#include "Modules/utf8.h"
+#include "Systems/Base/SystemError.hpp"
 
 using namespace std;
 
@@ -5636,15 +5644,40 @@ string unicodetocp932(const std::wstring& line)
 /** 
  * Converts a CP932/Shift_JIS string into a wstring with Unicode
  * characters.
+ *
+ * If the string was not CP932, but actually another encoding
+ * transformed such that it can be processed as CP932, this additional
+ * transformation should be reversed here.  This technique is how
+ * non-Japanese text is used in RealLive.  Transformations that might
+ * potentially be encountered are:
+ *
+ *   0 - plain CP932 (no transformation)
+ *   1 - CP936
+ *   2 - CP1252 (also requires rlBabel support)
+ *   3 - CP949
+ *
+ * These are the transformations applied by RLdev, and translation
+ * tables can be found in the rlBabel source code.  There are also at
+ * least two CP936 transformations used by the Key Fans Club and
+ * possibly one or more other CP949 transformations, but details of
+ * these are not publicly available.
  * 
- * @param line Input string in CP932 encoding 
+ * @param line Input string in CP932 encoding
+ * @param transformation Additional encoding transformation
  * @return Equivalent string in Unicode
  */
-wstring cp932toUnicode(const std::string& line) 
+wstring cp932toUnicode(const std::string& line, int transformation) 
 {
   const unsigned char* c = (const unsigned char*)line.c_str();
   wstring ret;
 
+  if (transformation) {
+    // Some transformations require more big lookup tables; if we
+    // implement transformations, we'll need a way to disable those
+    // for low-memory platforms.  For now, however, just die.
+    throw SystemError("RLdev text transformations are not implemented.");
+  }
+  
   while(*c) 
   {
     wchar_t uv;
@@ -5672,7 +5705,7 @@ wstring cp932toUnicode(const std::string& line)
 // All hankaku characters are <U+FF??>, 
 // while all zenkaku characters are <U+30??>
 //
-// hankaku characters that need translation are in the rance 0xFF65 to
+// hankaku characters that need translation are in the range 0xFF65 to
 // 0x9F inclusive and continuous, so this table starts at 0xFF65.
 char han2zen_table[] = {
   0xFB,   0xF2,   0xA1,   0xA3,   0xA5,   0xA7,   0xA9,   0xE3,
@@ -5724,8 +5757,10 @@ wchar_t hantozen_wchar(wchar_t input)
  */
 string hantozen_cp932(const std::string& string) 
 {
-  // First convert the string to unicode so handling is easier
-  wstring tmp = cp932toUnicode(string);
+  // First convert the string to unicode so handling is easier.
+  // (We can ignore any subsidiary transformation at this stage,
+  // since RealLive always does.)
+  wstring tmp = cp932toUnicode(string, 0);
   transform(tmp.begin(), tmp.end(), tmp.begin(), hantozen_wchar);
   return unicodetocp932(tmp);
 }
@@ -5784,7 +5819,55 @@ wchar_t zentohan_wchar(wchar_t input)
 
 string zentohan_cp932(const std::string& string)
 {
-  wstring tmp = cp932toUnicode(string);
+  wstring tmp = cp932toUnicode(string, 0);
   transform(tmp.begin(), tmp.end(), tmp.begin(), zentohan_wchar);
   return unicodetocp932(tmp);
+}
+
+// -----------------------------------------------------------------------
+
+std::string unicodeToUTF8(const std::wstring& widestring)
+{
+  string out;
+  utf8::utf16to8(widestring.begin(), widestring.end(), 
+                 back_inserter(out));
+
+  return out;
+}
+
+// -----------------------------------------------------------------------
+
+bool isKinsoku(int codepoint)
+{
+  static const int matchingCodepoints[] =
+    { 0x0021, 0x0022, 0x0027, 0x0029, 0x002c, 0x002e, 0x003a,
+      0x003b, 0x003e, 0x003f, 0x005d, 0x007d, 0x2019, 0x201d,
+      0x2025, 0x2026, 0x3001, 0x3002, 0x3009, 0x300b, 0x300d,
+      0x300f, 0x3011, 0x301f, 0x3041, 0x3043, 0x3045, 0x3047,
+      0x3049, 0x3063, 0x3083, 0x3085, 0x3087, 0x308e, 0x30a1,
+      0x30a3, 0x30a5, 0x30a7, 0x30a9, 0x30c3, 0x30e3, 0x30e5,
+      0x30e7, 0x30ee, 0x30f5, 0x30f6, 0x30fb, 0x30fc, 0xff01,
+      0xff09, 0xff0c, 0xff0e, 0xff1a, 0xff1b, 0xff1f, 0xff3d,
+      0xff5d, 0xff5e, 0xff61, 0xff63, 0xff64, 0xff65, 0xff67,
+      0xff68, 0xff69, 0xff6a, 0xff6b, 0xff6c, 0xff6d, 0xff6e,
+      0xff6f, 0xff70, 0xff9e, 0xff9f, 0x0 };
+
+  for(int i = 0; matchingCodepoints[i] != 0x0; ++i)
+    if(matchingCodepoints[i] == codepoint)
+      return true;
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+int codepoint(const std::string& c)
+{
+  if(c == "")
+    return 0;
+  else
+  {
+    std::string::const_iterator it = c.begin();
+    return utf8::next(it, c.end());
+  }
 }

@@ -84,12 +84,21 @@ private:
     
   }
 
-  /**
-   * Disallow copying.
-   */
-  GameexeInterpretObject(const GameexeInterpretObject&);
+//   /**
+//    * Disallow copying.
+//    */
+//   GameexeInterpretObject(const GameexeInterpretObject&);
 
 public:
+
+  /** 
+   * Extend a key by one key piece
+   */
+  template<typename A>
+  GameexeInterpretObject operator()(const A& nextKey)
+  {
+    return m_objectToLookupOn(m_key, nextKey);
+  }
 
   /** 
    * Finds an int value, returning a default if non-existant.
@@ -97,7 +106,7 @@ public:
    * @param defaultValue Default integer value to return if key not found
    * @return 
    */
-  const int to_int(const int defaultValue);
+  const int to_int(const int defaultValue) const;
 
   /** 
    * Finds an int value, throwing if non-existant.
@@ -105,10 +114,10 @@ public:
    * @return The first int value from the Gameexe in the row key
    * @throw Error if the key doesn't exist
    */
-  const int to_int();
+  const int to_int() const;
 
   /// Allow implicit casts to int with no default value
-  operator int() {
+  operator int() const {
     return to_int();
   }
 
@@ -118,7 +127,7 @@ public:
    * @return The first string value from the Gameexe in that row
    * @throw Error if the key doesn't exist
    */
-  const std::string to_string(const std::string& defaultValue);
+  const std::string to_string(const std::string& defaultValue) const;
 
   /** 
    * Finds a string value, throwing if non-existant.
@@ -126,10 +135,10 @@ public:
    * @return The first string value from the Gameexe in that row
    * @throw Error if the key doesn't exist
    */
-  const std::string to_string();
+  const std::string to_string() const;
 
   /// Allow implicit casts to string
-  operator std::string() {
+  operator std::string() const {
     return to_string();
   }
 
@@ -139,14 +148,18 @@ public:
    * @return The full row in the Gameexe (if it's an int row)
    * @throw Error if the key doesn't exist
    */
-  const std::vector<int>& to_intVector();
+  const std::vector<int>& to_intVector() const;
+
+  operator std::vector<int>() const {
+    return to_intVector();
+  }
 
   /** 
    * Checks to see if the key exists.
    * 
    * @return True if exists, false otherwise
    */
-  bool exists();
+  bool exists() const;
 
   /** 
    * Assign a value. Unlike all the other methods, we can safely
@@ -236,6 +249,22 @@ public:
     addToStream(firstKey, ss);
     ss << ".";
     addToStream(secondKey, ss);
+    return GameexeInterpretObject(ss.str(), *this);
+  }
+
+  /** 
+   * Access the key "firstKey"."secondKey"
+   */
+  template<typename A, typename B, typename C>
+  GameexeInterpretObject operator()(const A& firstKey, const B& secondKey,
+                                    const C& thirdKey)
+  {
+    std::ostringstream ss;
+    addToStream(firstKey, ss);
+    ss << ".";
+    addToStream(secondKey, ss);
+    ss << ".";
+    addToStream(thirdKey, ss);
     return GameexeInterpretObject(ss.str(), *this);
   }
 

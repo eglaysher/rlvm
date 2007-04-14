@@ -45,11 +45,6 @@ class GraphicsObject;
  */
 class SDLSurface : public Surface, public boost::noncopyable
 {
-public:
-  struct GrpRect {
-    int x1, y1, x2, y2;
-  };
-
 private:
   /// The SDL_Surface that contains the software version of the bitmap.
   SDL_Surface* m_surface;
@@ -76,8 +71,14 @@ private:
    */
   void uploadTextureIfNeeded();
 
+  bool m_isMask;
+
 public:
   SDLSurface();
+
+  /// Surface that takes ownership of an externally created surface
+  /// and assumes it is only a single region.
+  SDLSurface(SDL_Surface* sruf);
 
   /// Surface that takes ownership of an externally created surface.
   SDLSurface(SDL_Surface* surf, 
@@ -86,6 +87,10 @@ public:
   /// Surface created with a specified width and height
   SDLSurface(int width, int height);
   ~SDLSurface();
+
+  void setIsMask(const bool is) { m_isMask = is; }
+
+  void buildRegionTable(int width, int height);
 
   void dump();
 
@@ -112,10 +117,20 @@ public:
                      int destX, int destY, int destWidth, int destHeight,
                              int alpha = 255, bool useSrcAlpha = true);
 
+  void blitFROMSurface(SDL_Surface* srcSurface,
+                       int srcX, int srcY, int srcWidth, int srcHeight,
+                       int destX, int destY, int destWidth, int destHeight,
+                       int alpha = 255, bool useSrcAlpha = true);
+
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,
                      int destX, int destY, int destWidth, int destHeight,
                      int alpha = 255);
+
+  virtual void renderToScreenAsColorMask(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     int r, int g, int b, int alpha, int filter);
 
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,
@@ -134,7 +149,7 @@ public:
   void markWrittenTo();
 
   /// Returns pattern information.
-  const GrpRect& getPattern(int pattNo) const;
+  virtual const GrpRect& getPattern(int pattNo) const;
 
   // -----------------------------------------------------------------------
 
@@ -148,6 +163,8 @@ public:
   SDL_Surface* surface() { return m_surface; }
 
   virtual Surface* clone() const;
+
+  void interpretAsColorMask(int r, int g, int b, int alpha);
 };
 
 

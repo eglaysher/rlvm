@@ -56,6 +56,27 @@ public:
 // -----------------------------------------------------------------------
 
 /**
+ * LongOperation that has the even system sleep(10) after each pass
+ * through the operation. 
+ */
+class NiceLongOperation : public LongOperation
+{
+private:
+  /// Keep track of which machine we're running on for the call in the
+  /// destructor.
+  RLMachine& m_machine;
+
+protected:
+  RLMachine& machine();
+
+public:
+  NiceLongOperation(RLMachine& machine);
+  ~NiceLongOperation();
+};
+
+// -----------------------------------------------------------------------
+
+/**
  * LongOperator decorator that simply invokes the included
  * LongOperation and when that LongOperation finishes, performs an
  * arbitrary action. 

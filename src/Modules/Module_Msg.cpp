@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   Module_Msg.cpp
  * @author Elliot Glaysher
@@ -30,15 +34,19 @@
 
 #include "Modules/Module_Msg.hpp"
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 //#include "GeneralOperations.hpp"
 
+#include "libReallive/gameexe.h"
+#include "Modules/PauseLongOperation.hpp"
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
-
-#include <iostream>
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextWindow.hpp"
 
 using namespace std;
 
@@ -49,25 +57,96 @@ using namespace std;
  * @{
  */
 
+struct Msg_par : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.resetIndentation();
+    page.hardBrake();
+  }
+};
+
+// -----------------------------------------------------------------------
 
 /** 
  * Implements op<0:Msg:17, 0>, fun pause().
- * 
- * @todo This still isn't a real implementation of pause(), needs to
- * handle the window events when we have text windows.
- * @bug Does this work with ctrl()?
+ *
  */
-struct Msg_pause : public RLOp_Void_Void {
-  /// Long operation
-  struct Longop_pause : public LongOperation {
-    bool operator()(RLMachine& machine) {
-      // Check the status of the window.
-      return machine.system().event().ctrlPressed();
-    }
-  };
+struct Msg_pause : public RLOp_Void_Void
+{
+  void operator()(RLMachine& machine)
+  {
+    TextSystem& text = machine.system().text();
+    TextPage& page = text.currentPage(machine);
+    int windowNum = page.currentWindowNum();
+    TextWindow& textWindow = text.textWindow(machine, windowNum);
 
+    if(textWindow.actionOnPause())
+    {
+      machine.pushLongOperation(
+        new HardBrakeAfterLongop(new PauseLongOperation(machine)));
+    }
+    else
+    {
+      machine.pushLongOperation(
+        new NewPageAfterLongop(new PauseLongOperation(machine)));
+    }
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
+{
+  void operator()(RLMachine& machine, int window)
+  {
+    machine.system().text().setDefaultWindow(window);
+    machine.system().text().currentPage(machine).setWindow(window);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
+                                            DefaultIntValue_T< 0 > >
+{
+  void operator()(RLMachine& machine, int textColorNum, int shadowColorNum)
+  {
+    machine.system().text().currentPage(machine).fontColour(textColorNum);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
+{
+  void operator()(RLMachine& machine, int unknown)
+  {
+//    machine.system().text().
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_br : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.setLongOperation(new Longop_pause());
+    machine.system().text().currentPage(machine).hardBrake();    
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_spause : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.pushLongOperation(new PauseLongOperation(machine));
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_page : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.pushLongOperation(
+      new NewPageAfterLongop(new PauseLongOperation(machine)));
   }
 };
 
@@ -76,25 +155,23 @@ struct Msg_pause : public RLOp_Void_Void {
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
-//  addOpcode(3, 0, /* par */);
+  addOpcode(3, 0, new Msg_par);
 //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, new Msg_pause);
-//  addOpcode(100, 0, );
 
-//   addOpcode(101, 0, new Op_SetToIncoming(textSystem.fontSizeInPixels(),
-//                                          textSystem));            
-//   addOpcode(101, 1, new Op_ReturnValue(textSystem.fontSizeInPixels()));
-//  addOpcode(102 ...)
-//  addOpcode(103, 0, new Op_SetToIntConstant(textSystem, 
-//                                            &TextSystem::setFastTextMode, 1));
-//  addOpcode(104, 0, new Op_SetToIntConstant(textSystem,
-//                                            &TextSystem::setFastTextMode, 0));
+  addOpcode(102, 0, new Msg_TextWindow);
+  addOpcode(102, 1, new Msg_TextWindow);
 
-//   addOpcode(104, 0, new Op_SetToFalse(text.fastTextMode(),
-//                                       textSystem));
-//  addOpcode(105, 0
-//  addOpcode(106
-//  addOpcode
+  addOpcode(105, 0, new Msg_FontColour);
+  addOpcode(105, 1, new Msg_FontColour);
+  addOpcode(105, 2, new Msg_FontColour);
+
+  addOpcode(151, 0, new Msg_msgHide);
+
+  addOpcode(201, 0, new Msg_br);
+  addOpcode(205, 0, new Msg_spause);
+
+  addOpcode(210, 0, new Msg_page);
 }
 
 // @}

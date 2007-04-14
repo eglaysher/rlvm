@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
@@ -28,7 +32,9 @@
 #include "Systems/Base/SystemError.hpp"
 
 #include <SDL/SDL.h>
+#include "Systems/SDL/alphablit.h"
 
+#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -38,21 +44,44 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface()
-  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL)
+  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {}
+
+// -----------------------------------------------------------------------
+
+SDLSurface::SDLSurface(SDL_Surface* surf)
+  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
+{
+  buildRegionTable(surf->w, surf->h);
+}
+
+// -----------------------------------------------------------------------
 
 /// Surface that takes ownership of an externally created surface.
 SDLSurface::SDLSurface(SDL_Surface* surf, 
                        const vector<SDLSurface::GrpRect>& region_table)
   : m_surface(surf), m_regionTable(region_table),
-    m_textureIsValid(false), m_graphicsSystem(NULL)
+    m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {}
 
+// -----------------------------------------------------------------------
+
 SDLSurface::SDLSurface(int width, int height)
-  : m_textureIsValid(false), m_graphicsSystem(NULL)
+  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
+    m_isMask(false)
 {
   allocate(width, height);
+  buildRegionTable(width, height);
+}
 
+// -----------------------------------------------------------------------
+
+/// Constructor helper function
+void SDLSurface::buildRegionTable(int width, int height)
+{
   // Build a region table with one entry the size of the surface (This
   // should never need to be used with objects created with this
   // constructor, but let's make sure everything is initialized since
@@ -149,6 +178,7 @@ void SDLSurface::deallocate()
 /**
  * @todo This function doesn't ignore alpha blending when useSrcAlpha
  *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
+ * @todo Make this only upload the changed parts of the texture!
  */
 void SDLSurface::blitToSurface(Surface& destSurface,
                                int srcX, int srcY, int srcWidth, int srcHeight,
@@ -187,12 +217,56 @@ void SDLSurface::blitToSurface(Surface& destSurface,
 
 // -----------------------------------------------------------------------
 
+/**
+ * Allows for tight coupling with SDL_ttf. Rethink the existence of
+ * this function later.
+ */
+void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
+                                 int srcX, int srcY, int srcWidth, int srcHeight,
+                                 int destX, int destY, int destWidth, int destHeight,
+                                 int alpha, bool useSrcAlpha)
+{
+  SDL_Rect srcRect, destRect;
+  srcRect.x = srcX;
+  srcRect.y = srcY;
+  srcRect.w = srcWidth;
+  srcRect.h = srcHeight;
+
+  destRect.x = destX;
+  destRect.y = destY;
+  destRect.w = destWidth;
+  destRect.h = destHeight;
+
+  if(useSrcAlpha) 
+  {
+//     if(SDL_SetAlpha(srcSurface, SDL_SRCALPHA, alpha))
+//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+//     if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
+//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+    if(pygame_AlphaBlit(srcSurface, &srcRect, m_surface, &destRect))
+      reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+  else
+  {
+    if(SDL_BlitSurface(srcSurface, &srcRect, m_surface, &destRect))
+      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+//     if(SDL_SetAlpha(srcSurface, 0, 0))
+//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+  }
+
+  markWrittenTo();
+}                                 
+
+// -----------------------------------------------------------------------
+
 void SDLSurface::uploadTextureIfNeeded()
 {
   if(!m_textureIsValid)
   {
 //    cout << "Uploading texture!" << endl;
-    m_texture.reset(new Texture(m_surface));
+    m_texture.reset(new Texture(m_surface, m_isMask));
     m_textureIsValid = true;
   }
 }
@@ -217,6 +291,20 @@ void SDLSurface::renderToScreen(
   m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
                             destX1, destY1, destX2, destY2,
                             alpha);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::renderToScreenAsColorMask(
+                     int srcX1, int srcY1, int srcX2, int srcY2,
+                     int destX1, int destY1, int destX2, int destY2,
+                     int r, int g, int b, int alpha, int filter)
+{
+  uploadTextureIfNeeded();
+
+  m_texture->renderToScreenAsColorMask(srcX1, srcY1, srcX2, srcY2,
+                                       destX1, destY1, destX2, destY2, 
+                                       r, g, b, alpha, filter);
 }
 
 // -----------------------------------------------------------------------
@@ -327,3 +415,4 @@ Surface* SDLSurface::clone() const
 
   return new SDLSurface(tmpSurface, m_regionTable);
 }
+

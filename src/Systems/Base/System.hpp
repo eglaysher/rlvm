@@ -23,67 +23,11 @@
 #ifndef __System_hpp__
 #define __System_hpp__
 
-//#include "ScriptModifyable.hpp"
-
-/** 
- * Abstract base class that provides a generalized interface to the
- * text windows.
- *
- */
-/* class TextSystem : public ScriptModifyable
-{
-private:
-  int xpos;
-  int ypos;
-
-  // The current size of the font
-  int fontSizeInPixels;
-
-  /// The text color
-  int r, g, b, alpha, filter;
-
-  /// Fast text mode
-  bool fastTextMode;
-
-  /// Internal 'no wait' flag
-  bool messageNoWait;
-
-  /// Message speed; range from 0 to 255
-  char messageSpeed;
-
-public:
-  TextSystem() 
-    : xpos(0), ypos(0), fontSizeInPixels(0), r(0), g(0), b(0), 
-      alpha(0), filter(0), fastTextMode(0)
-  {}
-
-  virtual int& xpos() { return xpos; }
-  virtual int& ypos() { return ypos; }
-
-  virtual int& fontSizeInPixels() { return fontSizeInPixels; }
-  
-  virtual int& r() { return r; }
-  virtual int& g() { return g; }
-  virtual int& b() { return b; }
-  virtual int& alpha() { return alpha; }
-  virtual int& filter() { return filter; }
-
-  virtual int& fastTextMode() { return fastTextMode; }
-  virtual int& messageNoWait() { return messageNoWait; }
-  virtual int& messageSpeed() { return messageSpeed; }
-*/
-  /** 
-   * Give a default implementation for alertModified(). This should be
-   * overridden by subclasses that need to be alerted when one of the
-   * values were modified.
-   */
-//  virtual void alertModified() { }
-//};
-
 class GraphicsSystem;
 class EventSystem;
+class TextSystem;
 class RLMachine;
-  class Gameexe;
+class Gameexe;
 
 /**
  * The system class provides a generalized interface to all the
@@ -103,18 +47,8 @@ public:
   virtual GraphicsSystem& graphics() = 0;
   virtual EventSystem& event() = 0;
   virtual Gameexe& gameexe() = 0;
-//  virtual TextSystem& textSystem() = 0;
+  virtual TextSystem& text() = 0;
 //  virtual SoundSystem& soundSystem() = 0;
-
-  
-  /** 
-   * Locates a file. 
-   * 
-   * @param filebasename 
-   * 
-   * @return 
-   */
-//  virtual std::string& findFile(const std::string& filebasename) = 0;
 };
 
 #endif

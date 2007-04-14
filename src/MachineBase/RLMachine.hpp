@@ -33,6 +33,7 @@
  */
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
 #include "libReallive/bytecode.h"
@@ -109,8 +110,8 @@ private:
   /// The actual call stack.
   std::stack<StackFrame> callStack;
 
-  /// A pointer to a LongOperation
-  boost::scoped_ptr<LongOperation> currentLongOperation;
+  /// The stack of LongOperations (which preempt the normal call stack)
+  boost::ptr_vector<LongOperation> m_longOperationStack;
 
   /// There are some cases where we need to create our own system,
   /// since one isn't provided for us. This variable is for those
@@ -125,10 +126,8 @@ private:
   System& m_system;
 
   unsigned int packModuleNumber(int modtype, int module);
-  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, int& module);
-
-  void executeCommand(const libReallive::CommandElement& f);
-  void executeExpression(const libReallive::ExpressionElement& e);
+  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, 
+                          int& module);
 
 public:
   RLMachine(libReallive::Archive& inArchive);
@@ -262,14 +261,17 @@ public:
   void returnFromGosub();
 
   /** 
-   * Sets a long operation. Control will be passed to this
-   * LongOperation instead of normal bytecode passing until the
-   * LongOperation gives control up.
+   * Pushes a long operation onto the function stack. Control will be
+   * passed to this LongOperation instead of normal bytecode passing
+   * until the LongOperation gives control up.
    * 
    * @param longOperation LongOperation to take control
+   * @warning Never call pushLongOperation from a LongOperation that
+   *          is about to return true. The operation you just pushed
+   *          will be removed instead of the current operation.
    * @see LongOperation
    */
-  void setLongOperation(LongOperation* longOperation);
+  void pushLongOperation(LongOperation* longOperation);
 
   /** 
    * Returns the current scene number for the Scenario on the top of
@@ -284,6 +286,42 @@ public:
   int lineNumber() const { return m_line; }
 
   // @}
+
+  // -----------------------------------------------------------------------
+
+  /**
+   * @name Execution interface
+   * 
+   * Normally, executeNextInstruction will call runOnMachine() on
+   * whatever BytecodeElement is currently pointed to by the
+   * instruction pointer. 
+   *
+   * @{
+   */
+
+  /** 
+   * Sets the current line number
+   * 
+   * @param i 
+   */
+  void setLineNumber(const int i) { m_line = i; }
+
+  /**
+   * Where the current scenario was compiled with RLdev, returns the text
+   * encoding used:
+   *   0 -> CP932
+   *   1 -> CP936 within CP932 codespace
+   *   2 -> CP1252 within CP932 codespace
+   *   3 -> CP949 within CP932 codespace
+   * Where a scenario was not compiled with RLdev, always returns 0.
+   */
+  int getTextEncoding() const;
+  
+  void executeCommand(const libReallive::CommandElement& f);
+  void executeExpression(const libReallive::ExpressionElement& e);
+  void performTextout(const libReallive::TextoutElement& e);
+
+  /// @}
 
   // -----------------------------------------------------------------------
 
@@ -317,20 +355,20 @@ public:
    * 
    * @return Whether the machine is halted
    */
-  bool halted() const { return m_halted; }
+  bool halted() const;
 
   /** 
    * Force the machine to halt. This should terminate the execution of
    * bytecode, and theoretically, the program.
    */
-  void halt() { m_halted = true; }
+  void halt();
 
   /** 
    * Sets whether the RLMachine will be put into the halt state if an
    * exception is thrown while executing an instruction. By default,
    * it will.
    */
-  void setHaltOnException(bool haltOnException) { m_haltOnException = haltOnException; }
+  void setHaltOnException(bool haltOnException);
 
   /** 
    * Returns the current System that this RLMachine outputs to.

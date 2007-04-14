@@ -50,10 +50,35 @@ private:
 
   GLuint m_textureID;
 
+  static GLuint m_shaderObjectID;
+  static GLuint m_programObjectID;
+
+  GLuint m_backTextureID;
+
   bool m_isUpsideDown;
 
+  static unsigned int s_screenWidth;
+  static unsigned int s_screenHeight;
+
+  void renderToScreenAsColorMask_subtractive_glsl(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha);
+  void renderToScreenAsColorMask_subtractive_fallback(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha);
+  void renderToScreenAsColorMask_additive(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha);
+
+ 
 public:
-  Texture(SDL_Surface* surface);
+  static void SetScreenSize(unsigned int screenWidth, unsigned int screenHeight);
+
+public:
+  Texture(SDL_Surface* surface, bool isMask);
   Texture(render_to_texture, int screenWidth, int screenHeight);
   ~Texture();
 
@@ -66,6 +91,12 @@ public:
   void renderToScreen(int x1, int y1, int x2, int y2,
                       int dx1, int dy1, int dx2, int dy2,
                       int opacity);
+
+  void renderToScreenAsColorMask(
+    int x1, int y1, int x2, int y2,
+    int dx1, int dy1, int dx2, int dy2,
+    int r, int g, int b, int alpha, int filter);
+
   void renderToScreen(int x1, int y1, int x2, int y2,
                       int dx1, int dy1, int dx2, int dy2,
                       const int opacity[4]);
@@ -73,6 +104,9 @@ public:
   void rawRenderQuad(const int srcCoords[8], 
                      const int destCoords[8],
                      const int opacity[4]);
+
+  void buildShader();
+  std::string getSubtractiveShaderString();
 
 };
 

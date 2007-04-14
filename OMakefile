@@ -46,7 +46,7 @@ else
 .PHONY: tags
 
 tags:
-	find . -name "*.cpp" | xargs etags -a
-	find . -name "*.cc" | xargs etags -a
-	find . -name "*.hpp" | xargs etags -a
-	find . -name "*.h" | xargs etags -a
+	find src -name "*.cpp" | xargs etags -
+	find src -name "*.cc" | xargs etags -a -
+	find src -name "*.hpp" | xargs etags -a -
+	find src -name "*.h" | xargs etags -a -

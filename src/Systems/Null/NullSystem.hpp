@@ -25,6 +25,7 @@ public:
   virtual GraphicsSystem& graphics() { return nullGraphicsSystem; }
   virtual EventSystem& event() { return nullEventSystem; }
   virtual Gameexe& gameexe() { return m_gameexe; }
+  virtual TextSystem& text() { throw "whatever"; }
 };
 
 #endif

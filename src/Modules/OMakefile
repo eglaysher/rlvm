@@ -13,6 +13,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 
 LRLFILES[] =
   Modules
+  Module_EventLoop
   Module_Grp
   Module_Jmp
   Module_Mem
@@ -36,6 +37,8 @@ LRLFILES[] =
   Module_ObjPosDims
   Module_Refresh
   Module_Debug
+  TextoutLongOperation
+  PauseLongOperation
 
 StaticCObject(libModules, $(LRLFILES))
 

@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/RLTimer.hpp"
 

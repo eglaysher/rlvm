@@ -23,6 +23,7 @@
 #include "MachineBase/RLMachine.hpp"
 
 #include "Modules/Module_Jmp.hpp"
+#include "Modules/Module_EventLoop.hpp"
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Str.hpp"
 #include "Modules/Module_Mem.hpp"
@@ -44,7 +45,8 @@ void addAllModules(RLMachine& rlmachine)
 {
   // Attatch the modules for some commands
   rlmachine.attachModule(new JmpModule);
-  rlmachine.attachModule(new SysModule(rlmachine.system().graphics()));
+  rlmachine.attachModule(new EventLoopModule);
+  rlmachine.attachModule(new SysModule(rlmachine.system()));
   rlmachine.attachModule(new StrModule);
   rlmachine.attachModule(new MemModule);
   rlmachine.attachModule(new MsgModule);

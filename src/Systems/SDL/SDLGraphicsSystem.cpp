@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   SDLGraphicsSystem.cpp
  * @author Elliot Glaysher
@@ -32,6 +36,8 @@
  * @todo Make the constructor take the Gameexe.ini, and read the
  * initial window size from it.
  */
+
+#include "glew.h"
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
@@ -46,10 +52,13 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 #include "libReallive/gameexe.h"
 #include "file.h"
 #include "Utilities.h"
+
+#include "Modules/cp932toUnicode.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -143,6 +152,9 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   for_each(foregroundObjects, foregroundObjects + 256,
            bind(&GraphicsObject::render, _1, ref(machine)));
 
+  // Render text
+  machine.system().text().render(machine);
+
   endFrame();
 }
 
@@ -177,6 +189,13 @@ void SDLGraphicsSystem::endFrame()
 
 // -----------------------------------------------------------------------
 
+void SDLGraphicsSystem::setWindowSubtitle(const std::string& utf8encoded)
+{
+  m_subtitle = utf8encoded;
+}
+
+// -----------------------------------------------------------------------
+
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
   return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_width, m_height));
@@ -207,24 +226,16 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw SystemError(ss.str());
   }
 
-  int graphicsMode = gameexe("SCREENSIZE_MOD").to_int();
-  if(graphicsMode == 0)
-  {
-    m_width = 640;
-    m_height = 480;
-  }
-  else if(graphicsMode == 1)
-  {
-    m_width = 800;
-    m_height = 600;
-  }
-  else
-  {
-    ostringstream oss;
-    oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
-    throw SystemError(oss.str());
-  }
+  getScreenSize(gameexe, m_width, m_height);
+  Texture::SetScreenSize(m_width, m_height);
+
   int bpp = info->vfmt->BitsPerPixel;
+
+  /// Grab the caption
+  std::string cp932caption = gameexe("CAPTION").to_string();
+  int name_enc = gameexe("NAME_ENC").to_int(0);
+  m_captionTitle = cp932toUTF8(cp932caption, name_enc);
+  m_displaySubtitle = gameexe("SUBTITLE").to_int(0);
 
   /* the flags to pass to SDL_SetVideoMode */
   int videoFlags;
@@ -261,13 +272,17 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw SystemError(ss.str());
   }	
 
-  // Se tthe title
-  SDL_WM_SetCaption("RLVM", NULL);
-
+  // Initialize glew
+  GLenum err = glewInit();
+  if(GLEW_OK != err)
+  {
+    ostringstream oss;
+    oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
+    throw SystemError(oss.str());
+  }
 
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
 
   /* Enable Texture Mapping ( NEW ) */
   glEnable( GL_TEXTURE_2D );
@@ -292,18 +307,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   /* Really Nice Perspective Calculations */
   glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-  /* Setup The Ambient Light */
-//    glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient );
-
-  /* Setup The Diffuse Light */
-//    glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse );
-
-  /* Position The Light */
-//    glLightfv( GL_LIGHT1, GL_POSITION, LightPosition );
-
-  /* Enable Light One */
-//    glEnable( GL_LIGHT1 );
-
   /* Full Brightness, 50% Alpha ( NEW ) */
   glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);
 
@@ -311,6 +314,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   // the display
   m_displayContexts[0]->allocate(m_width, m_height, this);
   m_displayContexts[1]->allocate(m_width, m_height);
+
+  setWindowTitle();
 
   // When debug is set, display trace data in the titlebar
   if(gameexe("MEMORY").exists())
@@ -338,27 +343,42 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   // dirty.
 
   // Update the seen.
+  int currentTime = machine.system().event().getTicks();
+  
+  if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
+  {
+    m_timeOfLastTitlebarUpdate = currentTime;
+
+    if(machine.sceneNumber() != m_lastSeenNumber ||
+       machine.lineNumber() != m_lastLineNumber)
+    {
+      m_lastSeenNumber = machine.sceneNumber();
+      m_lastLineNumber = machine.lineNumber();
+    }
+
+    setWindowTitle();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::setWindowTitle()
+{
+  ostringstream oss;
+  oss << m_captionTitle;
+
+  if(m_displaySubtitle && m_subtitle != "")
+  {
+    oss << ": " << m_subtitle;
+  }
+  
   if(m_displayDataInTitlebar)
   {
-    int currentTime = machine.system().event().getTicks();
-
-    if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
-    {
-      m_timeOfLastTitlebarUpdate = currentTime;
-      if(machine.sceneNumber() != m_lastSeenNumber ||
-         machine.lineNumber() != m_lastLineNumber)
-      {
-        m_lastSeenNumber = machine.sceneNumber();
-        m_lastLineNumber = machine.lineNumber();
-
-        ostringstream oss;
-        oss << "RLVM - (SEEN" << m_lastSeenNumber << ")(Line " 
-            << m_lastLineNumber << ")";
-
-        SDL_WM_SetCaption(oss.str().c_str(), NULL);
-      }
-    }
+    oss << " - (SEEN" << m_lastSeenNumber << ")(Line " 
+        << m_lastLineNumber << ")";
   }
+
+  SDL_WM_SetCaption(oss.str().c_str(), NULL);
 }
 
 // -----------------------------------------------------------------------

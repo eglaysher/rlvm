@@ -33,7 +33,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-class GraphicsSystem;
+class System;
 
 /**
  * Contains functions for mod<1:4>, Sys.
@@ -42,7 +42,7 @@ class GraphicsSystem;
  */
 class SysModule : public RLModule {
 public:
-  SysModule(GraphicsSystem& system);
+  SysModule(System& system);
 };
 
 #endif

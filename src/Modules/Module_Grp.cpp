@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   Module_Grp.cpp
  * @author Elliot Glaysher
@@ -324,7 +328,7 @@ struct Grp_display_1
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
-    machine.setLongOperation(lop);
+    machine.pushLongOperation(lop);
   }
 };
 
@@ -362,7 +366,7 @@ struct Grp_display_3 : public RLOp_Void_9<
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
 //    LongOperation* lop = m_space.buildEffectFrom(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
-    machine.setLongOperation(lop);
+    machine.pushLongOperation(lop);
   }
 };
 
@@ -426,7 +430,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
-    machine.setLongOperation(lop);
+    machine.pushLongOperation(lop);
   }
 };
 
@@ -477,7 +481,7 @@ struct Grp_open_3 : public RLOp_Void_9<
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
-    machine.setLongOperation(lop);
+    machine.pushLongOperation(lop);
   }
 };
 
@@ -550,7 +554,7 @@ struct Grp_open_4 : public RLOp_Void_17<
       EffectFactory::build(machine, dc1, dc0, time, style, direction, 
                            interpolation, xsize, ysize, a, b, c);
     decorateEffectWithBlit(lop, dc1, dc0);
-    machine.setLongOperation(lop);
+    machine.pushLongOperation(lop);
   }
 };
 
@@ -587,7 +591,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
-    machine.setLongOperation(effect);
+    machine.pushLongOperation(effect);
   }
 };
 
@@ -647,7 +651,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
-    machine.setLongOperation(effect);
+    machine.pushLongOperation(effect);
   }
 };
 
@@ -771,7 +775,7 @@ struct Grp_fade_7 : public RLOp_Void_8<
         EffectFactory::build(machine, tmp, dc0, time, 0, 0, 
                              0, 0, 0, 0, 0, 0);
       decorateEffectWithBlit(lop, tmp, dc0);
-      machine.setLongOperation(lop);
+      machine.pushLongOperation(lop);
     }
   }
 };

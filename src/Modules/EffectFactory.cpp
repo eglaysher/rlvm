@@ -20,6 +20,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 /**
  * @file   EffectFactory.cpp
  * @author Elliot Glaysher
@@ -27,6 +31,8 @@
  * 
  * @brief  Factory that creates all Effect s.
  */
+
+#include "Systems/Base/SystemError.hpp"
 
 #include "Modules/EffectFactory.hpp"
 #include "Modules/FadeEffect.hpp"
@@ -251,6 +257,6 @@ ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
   case 21:    
     return new SlideOff;
   default:
-    throw libReallive::Error("Impossible style number in EffectFactory::buildScrollSquashSlideTypeBase");
+    throw SystemError("Impossible style number in EffectFactory::buildScrollSquashSlideTypeBase");
   };
 }
