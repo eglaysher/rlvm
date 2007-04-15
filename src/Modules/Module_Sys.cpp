@@ -475,6 +475,7 @@ SysModule::SysModule(System& system)
   : RLModule("Sys", 1, 004)
 {
   GraphicsSystem& graphics = system.graphics();
+  EventSystem& event = system.event();
   TextSystem& text = system.text();
 
   addOpcode(   0, 0, "title", new Sys_title);
@@ -497,6 +498,12 @@ SysModule::SysModule(System& system)
   addOpcode( 352, 0, "CtrlKeySkipOff",
              new Op_SetToConstant<TextSystem, int>(
                text, &TextSystem::setCtrlKeySkip, 0));
+  addOpcode( 353, 0, "CtrlPressed",
+             new Op_ReturnIntValue<EventSystem, bool>(
+               event, &EventSystem::ctrlPressed));
+  addOpcode( 354, 0, "ShiftPressed",
+             new Op_ReturnIntValue<EventSystem, bool>(
+               event, &EventSystem::shiftPressed));
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
   
@@ -609,7 +616,7 @@ SysModule::SysModule(System& system)
               text, &TextSystem::messageNoWait));
   addOpcode(2350, 0, new Op_ReturnIntValue<TextSystem, int>(
               text, &TextSystem::autoMode));
-  
+
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
   addSysFrameOpcodes(*this);

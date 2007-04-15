@@ -181,8 +181,8 @@ void addSysTimerOpcodes(RLModule& m)
   m.addOpcode(110, 1, "ResetTimer", new Sys_ResetTimer(0));
   m.addOpcode(111, 0, "time", new Sys_time(0, false));
   m.addOpcode(111, 1, "time", new Sys_time(0, false));
-  m.addOpcode(112, 0, "time", new Sys_time(0, true));
-  m.addOpcode(112, 1, "time", new Sys_time(0, true));
+  m.addOpcode(112, 0, "timeC", new Sys_time(0, true));
+  m.addOpcode(112, 1, "timeC", new Sys_time(0, true));
   m.addOpcode(114, 0, "Timer", new Sys_Timer(0));
   m.addOpcode(114, 1, "Timer", new Sys_Timer(0));
   m.addOpcode(115, 0, "CmpTimer", new Sys_CmpTimer(0));
