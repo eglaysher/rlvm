@@ -47,6 +47,7 @@
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
@@ -70,53 +71,63 @@ struct Sys_title : public RLOp_Void_1< StrConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
-  struct LongOp_wait : public LongOperation 
+struct LongOp_wait : public NiceLongOperation, public EventHandler
+{
+  const unsigned int m_targetTime;
+  const bool m_breakOnClicks;
+  int m_buttonPressed;
+
+  LongOp_wait(RLMachine& machine, int time, bool breakOnClicks)
+    : NiceLongOperation(machine), EventHandler(machine),
+      m_targetTime(machine.system().event().getTicks() + time),
+      m_breakOnClicks(breakOnClicks), m_buttonPressed(0)
+  {}
+
+  /** 
+   * Listen for mouseclicks (provided by EventHandler).
+   */
+  void mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
   {
-    unsigned int m_targetTime;
-
-    LongOp_wait(RLMachine& machine, int time)
-      : m_targetTime(machine.system().event().getTicks() + time)
-    {}
-
-    bool operator()(RLMachine& machine) 
+    if(pressed && m_breakOnClicks)
     {
-      machine.system().event().wait(10);
-      return machine.system().event().getTicks() > m_targetTime;
+      if(mouseButton == MOUSE_LEFT)
+        m_buttonPressed = 1;
+      else if(mouseButton == MOUSE_RIGHT)
+        m_buttonPressed = -1;
     }
-  };
+  }
 
-  /// Simply set the long operation
-  void operator()(RLMachine& machine, int time) {
-    machine.pushLongOperation(new LongOp_wait(machine, time));
+  bool operator()(RLMachine& machine) 
+  {
+    EventSystem& es = machine.system().event();
+    bool done = machine.system().event().getTicks() > m_targetTime;
+
+    if(m_breakOnClicks)
+    {
+      if(m_buttonPressed)
+      {
+        done = true;
+        machine.setStoreRegister(m_buttonPressed);
+        cerr << "Returning value of " << m_buttonPressed << endl;
+      }
+      else if(done)
+        machine.setStoreRegister(0);
+    }
+
+    return done;
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Sys_waitC : public RLOp_Void_1< IntConstant_T > {
-  struct LongOp_waitC : public LongOperation 
-  {
-    unsigned int m_targetTime;
+struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
+  const bool m_cancelable;
 
-    LongOp_waitC(RLMachine& machine, int time)
-      : m_targetTime(machine.system().event().getTicks() + time)
-    {}
-
-    /** 
-     * 
-     * @todo Make this respond to clicks by the user.
-     */
-    bool operator()(RLMachine& machine) 
-    {
-      machine.system().event().wait(10);
-      return machine.system().event().getTicks() > m_targetTime;
-    }
-  };
+  Sys_wait(bool cancelable) : m_cancelable(cancelable) {}
 
   /// Simply set the long operation
   void operator()(RLMachine& machine, int time) {
-    machine.pushLongOperation(new LongOp_waitC(machine, time));
+    machine.pushLongOperation(new LongOp_wait(machine, time, m_cancelable));
   }
 };
 
@@ -467,8 +478,8 @@ SysModule::SysModule(System& system)
   TextSystem& text = system.text();
 
   addOpcode(   0, 0, "title", new Sys_title);
-  addOpcode( 100, 0, "wait", new Sys_wait);
-  addOpcode( 101, 0, "waitC", new Sys_waitC);
+  addOpcode( 100, 0, "wait", new Sys_wait(false));
+  addOpcode( 101, 0, "waitC", new Sys_wait(true));
 
   addSysTimerOpcodes(*this);
 

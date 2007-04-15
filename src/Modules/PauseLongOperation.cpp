@@ -44,7 +44,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 PauseLongOperation::PauseLongOperation(RLMachine& machine)
-  : NiceLongOperation(machine), m_isDone(false)
+  : NiceLongOperation(machine), EventHandler(machine), m_isDone(false)
 {
   TextSystem& text = machine.system().text();
   EventSystem& event = machine.system().event();
@@ -60,14 +60,12 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
 
   // We undo this in the destructor
   text.setInPauseState(true);
-  event.addEventHandler(this);
 }
 
 // -----------------------------------------------------------------------
 
 PauseLongOperation::~PauseLongOperation()
 {
-  machine().system().event().removeEventHandler(this);
   machine().system().text().setInPauseState(false);
 }
 
