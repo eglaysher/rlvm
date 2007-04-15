@@ -97,7 +97,7 @@ struct LongOp_wait : public NiceLongOperation, public EventHandler
     }
   }
 
-  bool operator()(RLMachine& machine) 
+  bool operator()(RLMachine& machine)
   {
     EventSystem& es = machine.system().event();
     bool done = machine.system().event().getTicks() > m_targetTime;
