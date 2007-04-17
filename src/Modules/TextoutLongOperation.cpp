@@ -106,7 +106,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
     codepoint = utf8::next(it, strend);
   }
 
-  if(it == strend)
+  if(codepoint != 0x3011 && it == strend)
     throw SystemError("Malformed string code. Opening bracket in \{name} construct,"
                       " but missing closing bracket.");
 
@@ -115,15 +115,19 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
 
   // Consume the next character
   m_currentPosition = it;
-  m_currentCodepoint = utf8::next(it, strend);
-  m_currentChar = string(m_currentPosition, it);
-  m_currentPosition = it;
+
+  if(it != strend)
+  {
+    m_currentCodepoint = utf8::next(it, strend);
+    m_currentChar = string(m_currentPosition, it);
+    m_currentPosition = it;
+  }
 
   TextPage& page = machine.system().text().currentPage(machine);
-//  cerr << "Displaying name: " << name << endl;
   page.name(name, m_currentChar);
 
-  return false;
+  // Stop if this was the end of input
+  return it == strend;
 }
 
 // -----------------------------------------------------------------------
