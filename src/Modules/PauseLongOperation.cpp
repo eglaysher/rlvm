@@ -148,7 +148,7 @@ void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
   EventSystem& es = machine().system().event();
   TextSystem& text = machine().system().text();
-
+  
   if(pressed)
   {
     bool ctrlKeySkips = text.ctrlKeySkip();

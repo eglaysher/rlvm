@@ -27,6 +27,9 @@
 
 #include <SDL/SDL_events.h>
 
+#include <queue>
+#include <boost/function.hpp>
+
 class SDLEventSystem : public EventSystem
 {
 private:
@@ -35,6 +38,8 @@ private:
   int m_mouseXPos, m_mouseYPos;
 
   int m_button1State, m_button2State;
+
+  std::queue<boost::function<void(void)> > m_queuedActions;
 
   /**
    * @name RealLive event system commands

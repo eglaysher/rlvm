@@ -35,6 +35,8 @@
 
 using namespace std;
 
+using boost::bind;
+
 // -----------------------------------------------------------------------
 // Private implementation
 // -----------------------------------------------------------------------
@@ -132,13 +134,22 @@ void SDLEventSystem::addEventHandler(EventHandler* handler)
   EventSystem::addEventHandler(handler);
 
   if(m_ctrlPressed)
-    handler->keyStateChanged(RLKEY_LCTRL, true);
+  {
+    m_queuedActions.push(
+      bind(&EventHandler::keyStateChanged, handler, RLKEY_LCTRL, true));
+  }
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
 {
+  while(m_queuedActions.size())
+  {
+    m_queuedActions.front()();
+    m_queuedActions.pop();
+  }
+
   SDL_Event event;
   while(SDL_PollEvent(&event))
   {

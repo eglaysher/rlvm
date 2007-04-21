@@ -50,9 +50,9 @@ using namespace std;
 
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
-  : NiceLongOperation(machine), m_utf8string(utf8string), 
-    m_currentCodepoint(0), m_currentPosition(m_utf8string.begin()), 
-    m_noWait(false)
+  : NiceLongOperation(machine), EventHandler(machine),
+    m_utf8string(utf8string), m_currentCodepoint(0),
+    m_currentPosition(m_utf8string.begin()), m_noWait(false)
 {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = m_currentPosition;
@@ -67,6 +67,23 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
 TextoutLongOperation::~TextoutLongOperation()
 {
+}
+
+// -----------------------------------------------------------------------
+
+void TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton, 
+                                                   bool pressed)
+{
+  if(pressed && mouseButton == MOUSE_LEFT)
+    m_noWait = true;  
+}
+
+// -----------------------------------------------------------------------
+
+void TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
+{
+  if(pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL))
+    m_noWait = true;
 }
 
 // -----------------------------------------------------------------------
