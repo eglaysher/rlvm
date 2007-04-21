@@ -61,8 +61,9 @@ void Texture::SetScreenSize(unsigned int width, unsigned int height)
 // -----------------------------------------------------------------------
 
 Texture::Texture(SDL_Surface* surface, bool isMask)
-  : m_logicalWidth(surface->w), m_logicalHeight(surface->h), m_isUpsideDown(false),
-    m_backTextureID(0)
+  : m_logicalWidth(surface->w), m_logicalHeight(surface->h),
+    m_textureWidth(0), m_textureHeight(0), m_textureID(0),
+    m_backTextureID(0), m_isUpsideDown(false)
 {
 //   const GLubyte* str = glGetString(GL_EXTENSIONS);
 //   cerr << str << endl;
@@ -150,8 +151,9 @@ Texture::Texture(SDL_Surface* surface, bool isMask)
 // -----------------------------------------------------------------------
 
 Texture::Texture(render_to_texture, int width, int height)
-  : m_logicalWidth(width), m_logicalHeight(height), m_isUpsideDown(true),
-    m_backTextureID(0)
+  : m_logicalWidth(width), m_logicalHeight(height), 
+    m_textureWidth(0), m_textureHeight(0), m_textureID(0),
+    m_backTextureID(0), m_isUpsideDown(true)
 {
   glGenTextures(1, &m_textureID);
   glBindTexture(GL_TEXTURE_2D, m_textureID);
@@ -479,8 +481,12 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
 
   // First draw the mask
   glBindTexture(GL_TEXTURE_2D, m_textureID);
-  glBlendFuncSeparate(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA,
-                      GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+
+  /// SERIOUS WTF: glBlendFuncSeparate causes a segmentation fault
+  /// under the current i810 driver for linux.
+//  glBlendFuncSeparate(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA,
+//                      GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+  glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   {
