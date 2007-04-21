@@ -38,7 +38,14 @@
 #include <cctype>
 #include "boost/filesystem/operations.hpp"
 
-using namespace std;
+#include <boost/algorithm/string.hpp>
+
+using std::stack;
+using std::cerr;
+using std::endl;
+using std::ostringstream;
+using std::string;
+using std::vector;
 
 // -----------------------------------------------------------------------
 
@@ -125,16 +132,23 @@ std::string findFontFile(const std::string& fileName)
  */
 string findFile(RLMachine& machine, const string& fileName)
 {
+  using namespace boost;
+
+  vector<string> out;
+  split(out, fileName, is_any_of("?"));
+  string newName = out.at(0);
+
+  cerr << "Attempting to find file: \"" << newName << "\"" << endl;
   // Hack until I do this correctly
   string gamepath = machine.system().gameexe()("__GAMEPATH").to_string();
 
   // First search for this file as a g00
-  string file = gamepath + "g00/" + fileName + ".g00";
+  string file = gamepath + "g00/" + newName + ".g00";
   string correctFile = correctPathCase(file);
   if(correctFile == "")
   {
     // Then try PDT.
-    file = gamepath + "pdt/" + fileName + ".pdt";
+    file = gamepath + "pdt/" + newName + ".pdt";
     correctFile = correctPathCase(file);
   }
 
