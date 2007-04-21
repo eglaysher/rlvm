@@ -142,6 +142,16 @@ void SDLEventSystem::addEventHandler(EventHandler* handler)
 
 // -----------------------------------------------------------------------
 
+void SDLEventSystem::removeEventHandler(EventHandler* handler)
+{
+  EventSystem::removeEventHandler(handler);
+
+  while(m_queuedActions.size())
+    m_queuedActions.pop();
+}
+
+// -----------------------------------------------------------------------
+
 void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
 {
   while(m_queuedActions.size())

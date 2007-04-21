@@ -63,7 +63,8 @@ public:
   virtual void executeEventSystem(RLMachine& machine);
 
   virtual void addEventHandler(EventHandler* handler);
-  
+  virtual void removeEventHandler(EventHandler* handler);
+
   virtual bool shiftPressed() const { return m_shiftPressed; }
   virtual bool ctrlPressed() const  { return m_ctrlPressed;  }
 
