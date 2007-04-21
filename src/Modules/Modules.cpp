@@ -52,7 +52,8 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new MsgModule);
   rlmachine.attachModule(new GrpModule);
   rlmachine.attachModule(new ObjCopyFgToBg);
-  rlmachine.attachModule(new ObjPosDimsModule);
+  rlmachine.attachModule(new ObjFgPosDimsModule);
+  rlmachine.attachModule(new ObjBgPosDimsModule);
   rlmachine.attachModule(new ObjFgModule);
   rlmachine.attachModule(new ObjBgModule);
   rlmachine.attachModule(new ObjRangeFgModule);
