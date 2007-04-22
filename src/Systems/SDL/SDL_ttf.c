@@ -1596,7 +1596,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			SDL_FreeSurface( textbuf );
 			return NULL;
 		}
-        fprintf(stderr, "sdl_ttf: Uin16 c: %x\n", c);
 
 		glyph = font->current;
 		/* Ensure the width of the pixmap is correct. On some cases,
@@ -1605,7 +1604,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		if (width > glyph->maxx - glyph->minx) {
 			width = glyph->maxx - glyph->minx;
 		}
-        fprintf(stderr, "sdl_ttf:   width: %d\n", width);
 
 		/* do kerning, if possible AC-Patch */
 		if ( use_kerning && prev_index && glyph->index ) {
@@ -1613,16 +1611,13 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
 			xstart += delta.x >> 6;
 		}
-        fprintf(stderr, "sdl_ttf:   xstart(1): %d\n", xstart);
 		
 		/* Compensate for the wrap around bug with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;
 		}
-        fprintf(stderr, "sdl_ttf:   xstart(2): %d\n", xstart);
 
 		for ( row = 0; row < glyph->pixmap.rows; ++row ) {
-          fprintf(stderr, "sdl_ttf:   row: %d\n", row);
 			/* Make sure we don't go either over, or under the
 			 * limit */
 			if ( row+glyph->yoffset < 0 ) {
@@ -1639,7 +1634,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			 * account for pitch.
 			 * */
 			src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
-            fprintf(stderr, "sdl_ttf:     src: %u\n", *src);
 			for ( col = width; col>0 && dst < dst_check; --col) {
 				alpha = *src++;
 				*dst++ |= pixel | (alpha << 24);
