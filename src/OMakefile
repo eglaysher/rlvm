@@ -40,7 +40,7 @@ StaticCLibrary(librlvm, $(LIBRLVMFILES))
 
 ########
 
-LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --libs) -lSDL_image -lSDL_ttf $(PLATFORMLIBS) -lboost_program_options -lboost_filesystem
+LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --libs) $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_program_options -lboost_filesystem
 .DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)
 rlvm$(EXE): librlvm$(EXT_LIB) 
 
