@@ -31,7 +31,7 @@
 
 #include "MachineBase/RLMachine.hpp"
 
-#include "Modules/utf8.h"
+#include "utf8.h"
 #include "Modules/TextoutLongOperation.hpp"
 
 #include "libReallive/gameexe.h"

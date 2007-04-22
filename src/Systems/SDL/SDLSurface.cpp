@@ -32,7 +32,7 @@
 #include "Systems/Base/SystemError.hpp"
 
 #include <SDL/SDL.h>
-#include "Systems/SDL/alphablit.h"
+#include "alphablit.h"
 
 #include <iostream>
 #include <sstream>

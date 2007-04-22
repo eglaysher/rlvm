@@ -2,7 +2,7 @@
 #  OMakeFlags(-S --progress)
 #  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ -I../../../vendor/ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
 CFLAGS = $(CXXFLAGS)
 
 # for testing
@@ -13,8 +13,6 @@ CFLAGS = $(CXXFLAGS)
 ########
 
 LRLFILES[] =
-  glew
-  file
   SDLSystem
   SDLGraphicsSystem
   SDLSurface
@@ -24,8 +22,6 @@ LRLFILES[] =
   SDLTextSystem
   SDLTextWindow
   Texture
-  alphablit
-  SDL_ttf
 
 StaticCObject(libSDLSystem, $(LRLFILES))
 

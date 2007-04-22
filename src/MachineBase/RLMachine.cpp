@@ -197,10 +197,6 @@ void RLMachine::attachModule(RLModule* module)
 
     throw rlvm::Exception(ss.str());
   }
-//  else
-//  {
-//    cerr << "Inserting " << *module << endl;
-//  }
 
   modules.insert(packedModule, module);
 }

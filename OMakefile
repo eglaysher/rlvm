@@ -42,7 +42,7 @@ else
     export
   export
 
-.SUBDIRS: src test
+.SUBDIRS: vendor src test
 .PHONY: tags
 
 tags:

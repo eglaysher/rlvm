@@ -30,6 +30,7 @@ LIBRLVMFILES[] =
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities
+  ../vendor/libVendorLibs
 
 # Build our precompiled headers
 Precompiled.hpp.gch: Precompiled.hpp

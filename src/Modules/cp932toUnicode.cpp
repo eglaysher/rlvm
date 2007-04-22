@@ -46,7 +46,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "Modules/utf8.h"
+#include "utf8.h"
 #include "Systems/Base/SystemError.hpp"
 
 using namespace std;

@@ -134,11 +134,12 @@ string findFile(RLMachine& machine, const string& fileName)
 {
   using namespace boost;
 
+  // Hack to get around fileNames like "REALNAME?010", where we only
+  // want REALNAME.
   vector<string> out;
   split(out, fileName, is_any_of("?"));
   string newName = out.at(0);
 
-  cerr << "Attempting to find file: \"" << newName << "\"" << endl;
   // Hack until I do this correctly
   string gamepath = machine.system().gameexe()("__GAMEPATH").to_string();
 

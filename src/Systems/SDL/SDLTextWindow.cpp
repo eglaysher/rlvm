@@ -48,7 +48,7 @@
 #include <boost/bind.hpp>
 #include "Utilities.h"
 
-#include "Modules/utf8.h"
+#include "utf8.h"
 #include "Modules/cp932toUnicode.hpp"
 #include "Modules/TextoutLongOperation.hpp"
 

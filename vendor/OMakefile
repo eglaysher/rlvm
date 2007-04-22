@@ -1,0 +1,29 @@
+#if $(not $(defined-env VERBOSE))
+#  OMakeFlags(-S --progress)
+#  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+CFLAGS = $(CXXFLAGS)
+
+# for testing
+#CXXFLAGS += -DWIN32
+
+.PHONY: clean
+
+########
+
+LRLFILES[] =
+  glew
+  file
+  SDL_ttf
+  alphablit
+
+StaticCObject(libVendorLibs, $(LRLFILES))
+
+########
+
+LIBS += -L/opt/local/lib
+.DEFAULT: libVendorLibs$(EXT_OBJ)
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc
