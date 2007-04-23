@@ -50,20 +50,6 @@ CLANNAD
   answered with the first choice, which leads to a bad end, and
   returns to the main menu.
 
-KOUKA TRIAL
------------
-* Starts
-* Main menu options do not appear
-
-MAIDEN HALO TRIAL
------------------
-* Black screen
-
-TRANCE KISS TRIAL
------------------
-* Displays colourful background, but no splashes or copyright notice
-* Exits after about 10 seconds (due to lack of text support)
-
 UNOFFICIAL "ONE" DEMO
 ---------------------
 * Warnings in log about "?.g00"
