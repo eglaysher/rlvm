@@ -14,20 +14,16 @@ Kanon SE ALL
     smaller button. Nothing works, ^C.
     [Haeleth: right-click works to return to menu]
   * owarisuru shuts down the interpreter cleanly.
-* (Actual game still doesn't work, but at least it changes to the snow 
-  backgrop on new game, and if you hold ctrl down, you can go through
-  the prologue to the OP/Last Regrets.)
+* Playable through the prologue. Glitches and hangs during Last Regrets.
 
 Planetarian CD
 --------------
 * Starts
 * Displays what I assume is an antipiracy message
 * Correctly renders menu, items highlight on mouseover. 
-  * Clicking New Game works. 
-    * "It is a tale told by..." "Key." 
-	* "Puranetariamu wa ikaga deshyou?" *sniff*
-    * Goes all the way up to where the game text starts.
-  * Exits cleanly with a clean stack; no more exception from ret()
+* Clicking New Game works. 
+* Playable for several dozens pages, until it crashes when asked to
+  load a texture larger then OpenGL can handle.
 
 CLANNAD
 -------
@@ -37,7 +33,7 @@ CLANNAD
   * Basic menu appears, but it looks like some extra (non-selectable) menu items
     are just hanging out in the top left corner of the screen.
   * After that happens, menu items are highlightable.
-    * Clicking New game takes me to a white screen. Have to ^C.
+    * Clicking New game opens to new game.
     * Load brings me to the load menu, but it's glitching. It's asking me something,
       but rendering the hai/iie buttons twice, obsucuring what it's trying to ask 
       me. The buttons don't work. There is a modoru button partially under, and 
@@ -45,21 +41,14 @@ CLANNAD
     * Config:
       * The push buttons on the first page of options (the one with fullscreen
         option) toggle state.
-      * On the other option pages, the scrollbars work fine. [confirming Haleth]
-        [Haeleth: they all work perfectly for me...]
-      * Will return to main menu.
     * Name:
       * Only three buttons are rendered, of which cancel is the only one that has
         any discernable effect, taking me back to the main menu.
     * Exit + an additional quit shut down interpreter, but there's an exception
       in the log
-
-ALMA ~ZUTTO SOBA NI~ COMPLETE EDITION
--------------------------------------
-* Starts, displays 18kin warning, piracy warning, Bonbee!'s logo. Then
-  appears to do nothing because ALMA jumps straight into the opening
-  movie. If you wait awhile, there's a bit of graphical glitches. ^C
-* --start-seen 2010: Menu will fade in, but items are unselectable.
+* Main game is playable until end, assuming that all questions are
+  answered with the first choice, which leads to a bad end, and
+  returns to the main menu.
 
 KOUKA TRIAL
 -----------
