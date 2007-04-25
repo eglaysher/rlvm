@@ -25,6 +25,7 @@
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/utility.hpp>
 
 #include "libReallive/gameexe.h"
 
@@ -32,7 +33,7 @@ class RLMachine;
 class TextWindow;
 class Surface;
 
-class TextWindowButton
+class TextWindowButton : public boost::noncopyable
 {
 protected:
   std::vector<int> m_location;
@@ -118,6 +119,22 @@ public:
 
   virtual void buttonPressed();
   virtual void execute();
+  virtual void buttonReleased();
+};
+
+// -----------------------------------------------------------------------
+
+class ExbtnWindowButton : public TextWindowButton
+{
+private:
+  int m_scenario;
+  int m_entrypoint;
+
+public:
+  ExbtnWindowButton(bool use, GameexeInterpretObject locationBox,
+                    GameexeInterpretObject toCall);
+  ~ExbtnWindowButton();
+
   virtual void buttonReleased();
 };
 

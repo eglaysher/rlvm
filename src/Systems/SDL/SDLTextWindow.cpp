@@ -309,6 +309,11 @@ void SDLTextWindow::renderButtons(RLMachine& machine)
 
   m_buttonMap["MSGBKLEFT_BOX"].render(machine, *this, m_wakuButton, 24);
   m_buttonMap["MSGBKRIGHT_BOX"].render(machine, *this, m_wakuButton, 32);
+
+  m_buttonMap["EXBTN_000_BOX"].render(machine, *this, m_wakuButton, 40);
+  m_buttonMap["EXBTN_001_BOX"].render(machine, *this, m_wakuButton, 48);
+  m_buttonMap["EXBTN_002_BOX"].render(machine, *this, m_wakuButton, 56);
+
   m_buttonMap["READJUMP_BOX"].render(machine, *this, m_wakuButton, 104);
   m_buttonMap["AUTOMODE_BOX"].render(machine, *this, m_wakuButton, 112);
 }

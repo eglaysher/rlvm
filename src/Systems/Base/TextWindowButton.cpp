@@ -68,6 +68,7 @@ TextWindowButton::TextWindowButton(bool useThisButton,
 {
   if(useThisButton && locationBox.exists())
   {
+    std::vector<int> z = locationBox;
     m_location = locationBox;
     m_state = BUTTONSTATE_NORMAL;
   }
@@ -293,4 +294,34 @@ void RepeatActionWhileHoldingWindowButton::execute()
 void RepeatActionWhileHoldingWindowButton::buttonReleased()
 {
   m_heldDown = false;
+}
+
+// -----------------------------------------------------------------------
+// ExbtnWindowButton
+// -----------------------------------------------------------------------
+
+ExbtnWindowButton::ExbtnWindowButton(
+  bool use, GameexeInterpretObject locationBox,
+  GameexeInterpretObject toCall)
+  : TextWindowButton(use, locationBox), m_scenario(0), m_entrypoint(0)
+{
+  if(locationBox.exists() && toCall.exists())
+  {
+    vector<int> farcall = toCall;
+    m_scenario = farcall.at(0);
+    m_entrypoint = farcall.at(1);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+ExbtnWindowButton::~ExbtnWindowButton()
+{}
+
+// -----------------------------------------------------------------------
+
+void ExbtnWindowButton::buttonReleased()
+{
+  cerr << "Would execute farcall(" << m_scenario << ", " << m_entrypoint 
+       << ") if we had this implemented." << endl;
 }

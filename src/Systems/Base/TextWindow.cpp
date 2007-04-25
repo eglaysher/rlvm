@@ -372,6 +372,20 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                        machine,
                        bind(&TextSystem::forwardPage, ref(ts), ref(machine)),
                        250));
+
+  // Read the seven EXBTNs.
+  for(int i = 0; i < 7; ++i)
+  {
+    GameexeInterpretObject wbcall(gexe("WBCALL", i));
+    ostringstream oss;
+    oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
+    key = oss.str();
+    m_buttonMap.insert(key, 
+                       new ExbtnWindowButton(
+                         ts.windowExbtnUse(),
+                         waku(oss.str()), 
+                         wbcall));
+  }
 }
 
 // -----------------------------------------------------------------------
