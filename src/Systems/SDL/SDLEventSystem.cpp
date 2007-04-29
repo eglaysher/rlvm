@@ -26,7 +26,7 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventHandler.hpp"
-#include "Systems/Base/System.hpp"g
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 
