@@ -50,3 +50,7 @@ tags:
 	find src -name "*.cc" | xargs etags -a -
 	find src -name "*.hpp" | xargs etags -a -
 	find src -name "*.h" | xargs etags -a -
+	find vendor -name "*.cpp" | xargs etags -a -
+	find vendor -name "*.cc" | xargs etags -a -
+	find vendor -name "*.hpp" | xargs etags -a -
+	find vendor -name "*.h" | xargs etags -a -

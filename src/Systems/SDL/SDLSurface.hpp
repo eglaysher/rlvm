@@ -26,7 +26,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
-#include <vector>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "Systems/Base/Surface.hpp"
 
@@ -53,7 +53,7 @@ private:
   std::vector<GrpRect> m_regionTable;
 
   /// The SDLTexture which wraps one or more OpenGL textures
-  boost::scoped_ptr<Texture> m_texture;
+  boost::ptr_vector<Texture> m_textures;
 
   /// Whether m_texture represents the contents of m_surface. Blits
   /// from surfaces to surfaces invalidate the target surfaces's
@@ -72,6 +72,8 @@ private:
   void uploadTextureIfNeeded();
 
   bool m_isMask;
+
+  static std::vector<int> segmentPicture(int sizeRemainging);
 
 public:
   SDLSurface();
@@ -106,10 +108,6 @@ public:
   {
     return m_surface;
   }
-
-  /// Accessor to the texture for doing advanced rendering by composing
-  /// SDLSurface into another part of the SDL_* graphics system
-  Texture& texture();
 
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 

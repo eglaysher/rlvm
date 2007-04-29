@@ -39,22 +39,33 @@ class GraphicsObject;
 
 struct render_to_texture { };
 
+/**
+ * Contains one or more OpenGL textures, representing a single image,
+ * and provides a logical interface to working with them.
+ */
 class Texture
 {
 private:
-  unsigned int m_logicalWidth;
-  unsigned int m_logicalHeight;
+  int m_xOffset;
+  int m_yOffset;
+
+  int m_logicalWidth;
+  int m_logicalHeight;
+
+  int m_totalWidth;
+  int m_totalHeight;
 
   unsigned int m_textureWidth;
   unsigned int m_textureHeight;
 
   GLuint m_textureID;
 
+  GLuint m_backTextureID;
+
   static GLuint m_shaderObjectID;
   static GLuint m_programObjectID;
 
-  GLuint m_backTextureID;
-
+  /// Is this texture upside down? (Because it's a screenshot, et cetera.)
   bool m_isUpsideDown;
 
   static unsigned int s_screenWidth;
@@ -73,12 +84,15 @@ private:
     int dx1, int dy1, int dx2, int dy2,
     int r, int g, int b, int alpha);
 
- 
+  bool filterCoords(int& x1, int& y1, int& x2, int& y2, int& dx1, 
+                    int& dy1, int& dx2, int& dy2);
+
 public:
   static void SetScreenSize(unsigned int screenWidth, unsigned int screenHeight);
 
 public:
-  Texture(SDL_Surface* surface, bool isMask);
+  Texture(SDL_Surface* surface, int x, int y, int w, int h,
+          GLenum bytesPerPixel, GLint byteOrder, GLint byteType);
   Texture(render_to_texture, int screenWidth, int screenHeight);
   ~Texture();
 

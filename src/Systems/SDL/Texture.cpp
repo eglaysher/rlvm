@@ -31,6 +31,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -40,6 +41,8 @@
 #include "Systems/SDL/SDLUtils.hpp"
 
 #include "Systems/Base/SystemError.hpp"
+
+#include "alphablit.h"
 
 using namespace std;
 using namespace boost;
@@ -60,15 +63,15 @@ void Texture::SetScreenSize(unsigned int width, unsigned int height)
 
 // -----------------------------------------------------------------------
 
-Texture::Texture(SDL_Surface* surface, bool isMask)
-  : m_logicalWidth(surface->w), m_logicalHeight(surface->h),
-    m_textureWidth(0), m_textureHeight(0), m_textureID(0),
+// -----------------------------------------------------------------------
+// Texture
+// -----------------------------------------------------------------------
+Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h, 
+                 GLenum bytesPerPixel, GLint byteOrder, GLint byteType)
+  : m_xOffset(x), m_yOffset(y), m_logicalWidth(w), m_logicalHeight(h),
+    m_totalWidth(surface->w), m_totalHeight(surface->h),     
     m_backTextureID(0), m_isUpsideDown(false)
 {
-//   const GLubyte* str = glGetString(GL_EXTENSIONS);
-//   cerr << str << endl;
-//   exit(-1);
-
   glGenTextures(1, &m_textureID);
   glBindTexture(GL_TEXTURE_2D, m_textureID);
   ShowGLErrors();
@@ -76,82 +79,45 @@ Texture::Texture(SDL_Surface* surface, bool isMask)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  SDL_LockSurface(surface);
 
-  GLenum bytesPerPixel = surface->format->BytesPerPixel;
-  GLint byteOrder = GL_RGBA;
-  GLint byteType = GL_UNSIGNED_BYTE;
+  // Build a surface of this part of the 
+  SDL_Surface* tmpSurface =
+    SDL_CreateRGBSurface(surface->flags, w, h,
+                         surface->format->BitsPerPixel,
+                         surface->format->Rmask, surface->format->Gmask,
+                         surface->format->Bmask, surface->format->Amask);
+  if(tmpSurface == NULL)
+    reportSDLError("SDL_CreateRGBSurface", "Texture::Texture()");
 
-  // Determine the byte order of the surface
-  SDL_PixelFormat* format = surface->format;
-  if(bytesPerPixel == 4)
-  {
-    // If the order is RGBA...
-    if(format->Rmask == 0xFF000000 && format->Amask == 0xFF)
-      byteOrder = GL_RGBA;
-    // OSX's crazy ARGB pixel format
-    else if(format->Amask == 0xFF000000 && format->Rmask == 0xFF0000 &&
-            format->Gmask == 0xFF00 && format->Bmask == 0xFF)
-    {
-      // This is an insane hack to get around OSX's crazy byte order
-      // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
-      // need to specify BGRA and then tell the byte type to be
-      // reversed order.
-      //
-      // 20070303: Whoah! Is this the internal format on all
-      // platforms!?
-      byteOrder = GL_BGRA;
-      byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
-    }
-    else 
-    {
-      ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
-      cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
-           << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
-      cerr.flags(f);
-    }
-  }
-  else if(bytesPerPixel == 3)
-  {
-    // For now, just assume RGB.
-    byteOrder = GL_RGB;
-    cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
-         << endl;
-  }
-  else
-  {
-    ostringstream oss;
-    oss << "Error loading texture: bytesPerPixel == " << int(bytesPerPixel)
-        << " and we only handle 3 or 4.";
-    throw SystemError(oss.str());
-  }
+  SDL_Rect rect;
+  rect.x = x; rect.y = y; rect.w = w; rect.h = h;
+  if(pygame_AlphaBlit(surface, &rect, tmpSurface, NULL))
+    reportSDLError("pygame_AlphaBlit", "Texture::Texture()");
 
-  if(isMask)
-  {
-    // Compile shader for use:
-//    buildShader();
-    bytesPerPixel = GL_ALPHA;
-  }
+  SDL_LockSurface(tmpSurface);
 
-  m_textureWidth = SafeSize(surface->w);
-  m_textureHeight = SafeSize(surface->h);
+  m_textureWidth = SafeSize(m_logicalWidth);
+  m_textureHeight = SafeSize(m_logicalHeight);
   glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
                m_textureWidth, m_textureHeight,
                0, 
                byteOrder, byteType, NULL);
   ShowGLErrors();
 
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
-                  byteOrder, byteType, surface->pixels);            
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, tmpSurface->w, tmpSurface->h,
+                  byteOrder, byteType, tmpSurface->pixels);            
   ShowGLErrors();
 
-  SDL_UnlockSurface(surface);
+  SDL_UnlockSurface(tmpSurface);
+  SDL_FreeSurface(tmpSurface);
 }
 
 // -----------------------------------------------------------------------
 
 Texture::Texture(render_to_texture, int width, int height)
-  : m_logicalWidth(width), m_logicalHeight(height), 
+  : m_xOffset(0), m_yOffset(0),
+    m_logicalWidth(width), m_logicalHeight(height), 
+    m_totalWidth(width), m_totalHeight(height),     
     m_textureWidth(0), m_textureHeight(0), m_textureID(0),
     m_backTextureID(0), m_isUpsideDown(true)
 {
@@ -279,6 +245,9 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
                              int dx1, int dy1, int dx2, int dy2,
                              int opacity)
 {
+  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+    return;
+
   // For the time being, we are dumb and assume that it's one texture
   
   float thisx1 = float(x1) / m_textureWidth;
@@ -288,7 +257,6 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
 
    if(m_isUpsideDown)
    {
-//     cerr << "is upside down" << endl;
      thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
      thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
    }
@@ -358,6 +326,9 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
 {
+  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+    return;
+
   if(m_shaderObjectID == 0)
     buildShader();
   
@@ -398,7 +369,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   glCopyTexSubImage2D(GL_TEXTURE_2D, 
                       0,
                       0, 0, 
-                      dx1, ystart, dx2 - dx1, dy2 - dy1);
+                      dx1, ystart, m_textureWidth, m_textureHeight);
   ShowGLErrors();
 
   glUseProgramObjectARB(m_programObjectID);
@@ -468,6 +439,9 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
 {
+  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+    return;
+
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
@@ -512,6 +486,9 @@ void Texture::renderToScreenAsColorMask_additive(
   int dx1, int dy1, int dx2, int dy2,
   int r, int g, int b, int alpha)
 {
+  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+    return;
+
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
@@ -550,7 +527,9 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
                              int dx1, int dy1, int dx2, int dy2,
                              const int opacity[4])
 {
-    // For the time being, we are dumb and assume that it's one texture
+  // For the time being, we are dumb and assume that it's one texture
+  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+    return;
   
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
@@ -625,17 +604,15 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
       yPos2 = go.clipY2() + 1;
     }
   }
+
+  if(!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2, xPos1, yPos1, xPos2, yPos2))
+    return;
   
   // Convert the pixel coordinates into [0,1) texture coordinates
   float thisx1 = float(xSrc1) / m_textureWidth;
   float thisy1 = float(ySrc1) / m_textureHeight;
   float thisx2 = float(xSrc2) / m_textureWidth;
   float thisy2 = float(ySrc2) / m_textureHeight;
-
-//    cerr << "patt: " << pattNo << ", texid: " << m_textureID << ", alpha: " << go.alpha()
-//         << ", src:{" << xSrc1 << "," << ySrc1 << "," << xSrc2 << "," << ySrc2 << "}"
-//         << ", dst:{" << xPos1 << "," << yPos1 << "," << xPos2 << "," << yPos2 << "}"
-//         << endl;
 
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
@@ -648,9 +625,6 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
 
     // Rotate here?
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
-
-//     cerr << "Color: " << go.tintR() << ", " << go.tintG() << ", " << go.tintB()
-//          << ", " << go.alpha() << endl;
 
     glBegin(GL_QUADS);
     {
@@ -679,6 +653,10 @@ void Texture::rawRenderQuad(const int srcCoords[8],
                             const int destCoords[8],
                             const int opacity[4])
 {
+  /// @bug FIXME!
+//  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+//    return;
+
   // For the time being, we are dumb and assume that it's one texture
   float textureCoords[8];
   for(int i = 0; i < 8; i += 2)
@@ -708,4 +686,59 @@ void Texture::rawRenderQuad(const int srcCoords[8],
   }
   glEnd();
   glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// -----------------------------------------------------------------------
+
+bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2, int& dx1, 
+                           int& dy1, int& dx2, int& dy2)
+{
+  using std::max;
+  using std::min;
+
+  // Input: raw image coordinates
+  // Output: false if this doesn't intersect with the texture piece we hold.
+  //         true otherwise, and set the local coordinates
+  int w1 = x2 - x1;
+  int w2 = m_logicalWidth;
+
+  int h1 = y2 - y1;
+  int h2 = m_logicalHeight;
+
+  // First thing we do is an intersection test to see if this input
+  // range intersects the virtual range this Texture object holds.
+  //
+  /// @bug s/>/>=/?
+  if (x1 + w1 > m_xOffset && x1 < m_xOffset + m_logicalWidth &&
+      y1 + h1 > m_yOffset && y1 < m_yOffset + m_logicalHeight)
+  {
+    // Do an intersection test in terms of the virtual coordinates
+    int virX = max(x1, m_xOffset);
+    int virY = max(y1, m_yOffset);
+    int w = min(x1+w1, m_xOffset + m_logicalWidth) - max(x1, m_xOffset);
+    int h = min(y1+h1, m_yOffset + m_logicalHeight) - max(y1, m_yOffset);
+
+    // Adjust the destination coordinates
+    int dxWidth = dx2 - dx1;
+    int dyHeight = dy2 - dy1;
+    float dx1Off = (virX - x1) / float(w1);
+    dx1 = dx1 + (dxWidth * dx1Off);
+    float dx2Off = (w1 - w - (virX - x1)) / float(w1);
+    dx2 = dx2 - (dxWidth * dx2Off);
+    float dy1Off = (virY - y1) / float(h1);
+    dy1 = dy1 + (dyHeight * dy1Off);
+    float dy2Off = (h1 - h - (virY - y1)) / float(h1);
+    dy2 = dy2 - (dyHeight * dy2Off);
+
+    // Output the source intersection in real (instead of
+    // virtual) coordinates
+    x1 = virX - m_xOffset;
+    x2 = x1 + w;
+    y1 = virY - m_yOffset;
+    y2 = y1 + h;
+
+    return true;
+  }
+
+  return false;
 }

@@ -39,6 +39,8 @@
 
 using namespace std;
 
+using boost::ptr_vector;
+
 // -----------------------------------------------------------------------
 // SDLSurface
 // -----------------------------------------------------------------------
@@ -165,7 +167,7 @@ void SDLSurface::allocate(int width, int height, SDLGraphicsSystem* sys)
 
 void SDLSurface::deallocate()
 {
-  m_texture.reset();
+  m_textures.clear();
   if(m_surface)
   {
     SDL_FreeSurface(m_surface);
@@ -265,18 +267,95 @@ void SDLSurface::uploadTextureIfNeeded()
 {
   if(!m_textureIsValid)
   {
-//    cout << "Uploading texture!" << endl;
-    m_texture.reset(new Texture(m_surface, m_isMask));
+    m_textures.clear();
+
+    GLenum bytesPerPixel;
+    GLint byteOrder, byteType;
+    SDL_LockSurface(m_surface);
+    {
+      bytesPerPixel = m_surface->format->BytesPerPixel;
+      byteOrder = GL_RGBA;
+      byteType = GL_UNSIGNED_BYTE;
+
+      // Determine the byte order of the surface
+      SDL_PixelFormat* format = m_surface->format;
+      if(bytesPerPixel == 4)
+      {
+        // If the order is RGBA...
+        if(format->Rmask == 0xFF000000 && format->Amask == 0xFF)
+          byteOrder = GL_RGBA;
+        // OSX's crazy ARGB pixel format
+        else if(format->Amask == 0xFF000000 && format->Rmask == 0xFF0000 &&
+                format->Gmask == 0xFF00 && format->Bmask == 0xFF)
+        {
+          // This is an insane hack to get around OSX's crazy byte order
+          // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
+          // need to specify BGRA and then tell the byte type to be
+          // reversed order.
+          //
+          // 20070303: Whoah! Is this the internal format on all
+          // platforms!?
+          byteOrder = GL_BGRA;
+          byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
+        }
+        else 
+        {
+          ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
+          cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
+               << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
+          cerr.flags(f);
+        }
+      }
+      else if(bytesPerPixel == 3)
+      {
+        // For now, just assume RGB.
+        byteOrder = GL_RGB;
+        cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
+             << endl;
+      }
+      else
+      {
+        ostringstream oss;
+        oss << "Error loading texture: bytesPerPixel == " << int(bytesPerPixel)
+            << " and we only handle 3 or 4.";
+        throw SystemError(oss.str());
+      }
+
+      if(m_isMask)
+      {
+        // Compile shader for use:
+        bytesPerPixel = GL_ALPHA;
+      }
+    }
+    SDL_UnlockSurface(m_surface);
+
+    // ---------------------------------------------------------------------
+
+    // Figure out the optimal way of splitting up the image.
+    vector<int> xPieces, yPieces;
+    xPieces = segmentPicture(m_surface->w);
+    yPieces = segmentPicture(m_surface->h);
+
+    int xOffset = 0;
+    for(vector<int>::const_iterator it = xPieces.begin(); 
+        it != xPieces.end(); ++it)
+    {
+      int yOffset = 0;
+      for(vector<int>::const_iterator jt = yPieces.begin();
+          jt != yPieces.end(); ++jt)
+      {
+        m_textures.push_back(
+          new Texture(m_surface,
+            xOffset, yOffset, *it, *jt,  bytesPerPixel, byteOrder, byteType));
+
+        yOffset += *jt;
+      }
+
+      xOffset += *it;
+    }
+
     m_textureIsValid = true;
   }
-}
-
-// -----------------------------------------------------------------------
-
-Texture& SDLSurface::texture()
-{
-  uploadTextureIfNeeded();
-  return *m_texture;
 }
 
 // -----------------------------------------------------------------------
@@ -288,9 +367,13 @@ void SDLSurface::renderToScreen(
 {
   uploadTextureIfNeeded();
 
-  m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
-                            destX1, destY1, destX2, destY2,
-                            alpha);
+  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+      it != m_textures.end(); ++it)
+  {
+    it->renderToScreen(srcX1, srcY1, srcX2, srcY2,
+                       destX1, destY1, destX2, destY2,
+                       alpha);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -302,9 +385,13 @@ void SDLSurface::renderToScreenAsColorMask(
 {
   uploadTextureIfNeeded();
 
-  m_texture->renderToScreenAsColorMask(srcX1, srcY1, srcX2, srcY2,
-                                       destX1, destY1, destX2, destY2, 
-                                       r, g, b, alpha, filter);
+  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+      it != m_textures.end(); ++it)
+  {
+    it->renderToScreenAsColorMask(srcX1, srcY1, srcX2, srcY2,
+                                  destX1, destY1, destX2, destY2, 
+                                  r, g, b, alpha, filter);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -316,9 +403,13 @@ void SDLSurface::renderToScreen(
 {
   uploadTextureIfNeeded();
 
-  m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
-                            destX1, destY1, destX2, destY2,
-                            opacity);
+  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+      it != m_textures.end(); ++it)
+  {
+    it->renderToScreen(srcX1, srcY1, srcX2, srcY2,
+                       destX1, destY1, destX2, destY2,
+                       opacity);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -326,7 +417,12 @@ void SDLSurface::renderToScreen(
 void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
 {
   uploadTextureIfNeeded();
-  m_texture->renderToScreenAsObject(rp, *this);
+
+  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+      it != m_textures.end(); ++it)
+  {
+    it->renderToScreenAsObject(rp, *this);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -337,7 +433,11 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
 {
   uploadTextureIfNeeded();
 
-  m_texture->rawRenderQuad(srcCoords, destCoords, opacity);
+  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+      it != m_textures.end(); ++it)
+  {
+    it->rawRenderQuad(srcCoords, destCoords, opacity);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -416,3 +516,38 @@ Surface* SDLSurface::clone() const
   return new SDLSurface(tmpSurface, m_regionTable);
 }
 
+// -----------------------------------------------------------------------
+
+/** 
+ * @todo This scheme may be entirely suboptimal. Needs field testing.
+ */
+vector<int> SDLSurface::segmentPicture(int sizeRemainging)
+{
+  static GLint maxTextureSize = 0;
+  if(maxTextureSize == 0)
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+
+  vector<int> output;
+  while(sizeRemainging > maxTextureSize) 
+  {
+    output.push_back(maxTextureSize);
+    sizeRemainging -= maxTextureSize;
+  }
+
+  while(sizeRemainging)
+  {
+    int ss = SafeSize(sizeRemainging);
+    if(ss > 512)
+    {
+      output.push_back(512);
+      sizeRemainging -= 512;
+    }
+    else
+    {
+      output.push_back(sizeRemainging);
+      sizeRemainging = 0;
+    }
+  }
+
+  return output;
+}
