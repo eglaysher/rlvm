@@ -26,6 +26,8 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/System.hpp"g
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 
 #include <SDL/SDL.h>
@@ -230,6 +232,11 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
     case SDL_QUIT:
       machine.halt();
       break;
+    case SDL_VIDEOEXPOSE:
+    {
+      machine.system().graphics().markScreenAsDirty();
+      break;
+    }
     }
   }  
 }
@@ -261,6 +268,11 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
     case SDL_QUIT:
       machine.halt();
       break;
+    case SDL_VIDEOEXPOSE:
+    {
+      machine.system().graphics().markScreenAsDirty();
+      break;
+    }
     }
   }
 }
