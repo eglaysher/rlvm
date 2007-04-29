@@ -193,7 +193,8 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       if(page.isFull())
       {
         paused = true;
-        machine.pushLongOperation(new PauseLongOperation(machine));
+        machine.pushLongOperation(
+          new NewPageAfterLongop(new PauseLongOperation(machine)));
       }
 
       return false;
