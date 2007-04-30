@@ -39,7 +39,12 @@
 #include <vector>
 #include <boost/bind.hpp>
 
-using namespace std;
+using std::cerr;
+using std::endl;
+using std::ostringstream;
+using std::setfill;
+using std::setw;
+using std::vector;
 
 // -----------------------------------------------------------------------
 // TextWindow
@@ -102,7 +107,7 @@ void TextWindow::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setTextboxPadding(const std::vector<int>& posData)
+void TextWindow::setTextboxPadding(const vector<int>& posData)
 {
   m_upperBoxPadding = posData.at(0);
   m_lowerBoxPadding = posData.at(1);
@@ -112,7 +117,7 @@ void TextWindow::setTextboxPadding(const std::vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setDefaultTextColor(const std::vector<int>& colorData)
+void TextWindow::setDefaultTextColor(const vector<int>& colorData)
 {
   m_defaultRed = colorData.at(0);
   m_defaultGreen = colorData.at(1);
@@ -121,7 +126,7 @@ void TextWindow::setDefaultTextColor(const std::vector<int>& colorData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setFontColor(const std::vector<int>& colorData)
+void TextWindow::setFontColor(const vector<int>& colorData)
 {
   m_fontRed = colorData.at(0);
   m_fontGreen = colorData.at(1);
@@ -130,7 +135,7 @@ void TextWindow::setFontColor(const std::vector<int>& colorData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowSizeInCharacters(const std::vector<int>& posData)
+void TextWindow::setWindowSizeInCharacters(const vector<int>& posData)
 {
   m_xWindowSizeInChars = posData.at(0);
   m_yWindowSizeInChars = posData.at(1);
@@ -138,7 +143,7 @@ void TextWindow::setWindowSizeInCharacters(const std::vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setSpacingBetweenCharacters(const std::vector<int>& posData)
+void TextWindow::setSpacingBetweenCharacters(const vector<int>& posData)
 {
   m_xSpacing = posData.at(0);
   m_ySpacing = posData.at(1);
@@ -146,7 +151,7 @@ void TextWindow::setSpacingBetweenCharacters(const std::vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowPosition(const std::vector<int>& posData)
+void TextWindow::setWindowPosition(const vector<int>& posData)
 {
   m_origin = posData.at(0);
   m_xDistanceFromOrigin = posData.at(1);
@@ -255,7 +260,7 @@ int TextWindow::textY2() const
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setKeycurMod(const std::vector<int>& keycur)
+void TextWindow::setKeycurMod(const vector<int>& keycur)
 {
   m_keycursorType = keycur.at(0);
   m_keycursorX = keycur.at(1);
@@ -390,7 +395,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setRGBAF(const std::vector<int>& attr)
+void TextWindow::setRGBAF(const vector<int>& attr)
 {
   setR(attr.at(0)); 
   setG(attr.at(1)); 
