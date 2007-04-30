@@ -32,6 +32,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <cmath>
 
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -722,13 +723,13 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2, int& dx1,
     int dxWidth = dx2 - dx1;
     int dyHeight = dy2 - dy1;
     float dx1Off = (virX - x1) / float(w1);
-    dx1 = dx1 + (dxWidth * dx1Off);
+    dx1 = floor(dx1 + (dxWidth * dx1Off));
     float dx2Off = (w1 - w - (virX - x1)) / float(w1);
-    dx2 = dx2 - (dxWidth * dx2Off);
+    dx2 = floor(dx2 - (dxWidth * dx2Off));
     float dy1Off = (virY - y1) / float(h1);
-    dy1 = dy1 + (dyHeight * dy1Off);
+    dy1 = floor(dy1 + (dyHeight * dy1Off));
     float dy2Off = (h1 - h - (virY - y1)) / float(h1);
-    dy2 = dy2 - (dyHeight * dy2Off);
+    dy2 = floor(dy2 - (dyHeight * dy2Off));
 
     // Output the source intersection in real (instead of
     // virtual) coordinates
