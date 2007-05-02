@@ -33,6 +33,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 
 #include <boost/utility.hpp>
 
@@ -59,6 +60,11 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
   m_currentCodepoint = utf8::next(tmp, m_utf8string.end());
   m_currentChar = string(m_currentPosition, tmp);
   m_currentPosition = tmp;
+
+  // If we are inside a ruby gloss right now, don't delay at
+  // all. Render the entire gloss!
+  if(machine.system().text().currentPage(machine).inRubyGloss())
+    m_noWait = true;
 
   cerr << "UTF: " << m_utf8string << endl;
 }
@@ -193,6 +199,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       if(page.isFull())
       {
         paused = true;
+        machine.system().graphics().markScreenAsDirty();
         machine.pushLongOperation(
           new NewPageAfterLongop(new PauseLongOperation(machine)));
       }

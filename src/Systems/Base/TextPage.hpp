@@ -59,6 +59,8 @@ private:
   /// Number of characters on this page (used in automode)
   int m_numberOfCharsOnPage;
 
+  bool m_inRubyGloss;
+
   /**
    * @name Private implementations
    * 
@@ -167,6 +169,12 @@ public:
    * to implement implicit pauses when a page is full.
    */
   bool isFull() const;
+
+  /** 
+   * Queries to see if there has been an invocation of
+   * markRubyBegin(), but not the closing displayRubyText().
+   */
+  bool inRubyGloss() const { return m_inRubyGloss; }
 
   /**
    * Returns the current window this page is rendering to.

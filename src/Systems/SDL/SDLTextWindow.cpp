@@ -195,7 +195,10 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   // Move the insertion point forward one character
   m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
 
-  machine.system().graphics().markScreenAsDirty();
+  // When we aren't rendering a piece of text with a ruby gloss, mark
+  // the screen as dirty so that this character renders.
+  if(m_rubyBeginPoint == -1)
+    machine.system().graphics().markScreenAsDirty();
 
   return true;
 }

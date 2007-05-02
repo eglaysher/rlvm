@@ -226,7 +226,8 @@ public:
 // -----------------------------------------------------------------------
 
 TextPage::TextPage(RLMachine& machine)
-  : m_machine(machine), m_currentWindow(0), m_numberOfCharsOnPage(0)
+  : m_machine(machine), m_currentWindow(0), m_numberOfCharsOnPage(0),
+    m_inRubyGloss(false)
 {}
 
 // -----------------------------------------------------------------------
@@ -382,6 +383,7 @@ void TextPage::markRubyBegin_impl()
 {
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .markRubyBegin();
+  m_inRubyGloss = true;
 }
 
 // -----------------------------------------------------------------------
@@ -390,6 +392,7 @@ void TextPage::displayRubyText_impl(const std::string& utf8str)
 {
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .displayRubyText(m_machine, utf8str);
+  m_inRubyGloss = false;
 }
 
 // -----------------------------------------------------------------------
