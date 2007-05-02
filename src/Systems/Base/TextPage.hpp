@@ -46,6 +46,8 @@ private:
   friend class ResetIndentationElement;
   friend class FontColourElement;
   friend class SetToRightStartingColorElement;
+  friend class MarkRubyBeginElement;
+  friend class DisplayRubyTextElement;
 
   boost::ptr_vector<TextPageElement> m_elementsToReplay;
 
@@ -75,6 +77,10 @@ private:
   void resetIndentation_impl();
 
   void fontColour_impl(const int color);
+
+  void markRubyBegin_impl();
+
+  void displayRubyText_impl(const std::string& utf8str);
 
   void setToRightStartingColor_impl(bool isActivePage);
 
@@ -132,6 +138,18 @@ public:
    * next pause().
    */
   void fontColour(const int color);
+
+  /** 
+   * Marks the current character as the beginning of a phrase that has
+   * rubytext over it.
+   */
+  void markRubyBegin();
+
+  /**
+   * Display the incoming phrase as ruby
+   * 
+   */
+  void displayRubyText(const std::string& utf8str);
 
   /** 
    * This is a hack to get the backlog color working. This adds a

@@ -375,6 +375,9 @@ public:
 
   virtual void hardBrake() = 0;
   virtual void resetIndentation() = 0;
+
+  virtual void markRubyBegin() = 0;
+  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) = 0;
 };
 
 #endif

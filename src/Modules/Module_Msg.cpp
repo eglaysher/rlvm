@@ -48,6 +48,8 @@
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextWindow.hpp"
 
+#include "Modules/cp932toUnicode.hpp"
+
 using namespace std;
 
 /**
@@ -117,6 +119,27 @@ struct Msg_FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
 
 // -----------------------------------------------------------------------
 
+struct Msg_doruby_display : public RLOp_Void_1< StrConstant_T >
+{
+  void operator()(RLMachine& machine, std::string cpStr)
+  {
+    std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
+    machine.system().text().currentPage(machine).displayRubyText(utf8str);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_doruby_mark : public RLOp_Void_Void
+{
+  void operator()(RLMachine& machine)
+  {
+    machine.system().text().currentPage(machine).markRubyBegin();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int unknown)
@@ -167,6 +190,9 @@ MsgModule::MsgModule()
   addOpcode(105, 0, new Msg_FontColour);
   addOpcode(105, 1, new Msg_FontColour);
   addOpcode(105, 2, new Msg_FontColour);
+
+  addOpcode(120, 0, new Msg_doruby_display);
+  addOpcode(120, 1, new Msg_doruby_mark);
 
   addOpcode(151, 0, new Msg_msgHide);
 

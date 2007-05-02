@@ -42,9 +42,14 @@ private:
 
   /// Font being used.
   TTF_Font* m_font;
+  TTF_Font* m_rubyFont;
 
   /// Insertion point for text.
   int m_insertionPointX, m_insertionPointY;
+
+  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
+  /// been called)
+  int m_rubyBeginPoint;
 
   boost::shared_ptr<SDLSurface> m_wakuMain;
   boost::shared_ptr<SDLSurface> m_wakuBacking;
@@ -53,6 +58,8 @@ private:
   bool setIndentation();
 
   void renderButtons(RLMachine& machine);
+
+  TTF_Font* loadFont(const std::string& filename, int size);
 
 public:
   SDLTextWindow(RLMachine& machine, int window);
@@ -78,6 +85,9 @@ public:
                        const std::string& nextChar);
   virtual void hardBrake();
   virtual void resetIndentation();
+
+  virtual void markRubyBegin();
+  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
 };
 
 

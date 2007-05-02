@@ -65,7 +65,7 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
-  : TextWindow(machine, windowNum)
+  : TextWindow(machine, windowNum), m_rubyBeginPoint(-1)
 {
   Gameexe& gexe = machine.system().gameexe();
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
@@ -73,17 +73,30 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
 
   string filename = findFontFile("msgothic.ttc");
   cerr << "font file: " << filename << endl;
-  m_font = TTF_OpenFont(filename.c_str(), fontSizeInPixels());
-  if(m_font == NULL)
+  cerr << "Normal font size: " << fontSizeInPixels() << ", ruby size: "
+       << rubyTextSize() << endl;
+
+  m_font = loadFont(filename, fontSizeInPixels());
+  m_rubyFont = loadFont(filename, rubyTextSize());
+
+  clearWin();
+}
+
+// -----------------------------------------------------------------------
+
+TTF_Font* SDLTextWindow::loadFont(const std::string& filename, int size)
+{
+  TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
+  if(f == NULL)
   {
     ostringstream oss;
     oss << "Error loading font: " << TTF_GetError();
     throw SystemError(oss.str());
   }
 
-  TTF_SetFontStyle(m_font, TTF_STYLE_NORMAL);
+  TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
 
-  clearWin();
+  return f;
 }
 
 // -----------------------------------------------------------------------
@@ -98,9 +111,11 @@ SDLTextWindow::~SDLTextWindow()
 void SDLTextWindow::clearWin()
 {
   m_insertionPointX = 0;
-  m_insertionPointY = 0;
+  m_insertionPointY = rubyTextSize();
   m_currentIndentationInPixels = 0;
   m_currentLineNumber = 0;
+
+  m_rubyBeginPoint = -1;
 
   // Reset the color
   m_fontRed = m_defaultRed;
@@ -364,3 +379,48 @@ void SDLTextWindow::setWakuButton(RLMachine& machine, const std::string& name)
     m_wakuButton.reset();
 }
 
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::markRubyBegin()
+{
+  m_rubyBeginPoint = m_insertionPointX;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::displayRubyText(RLMachine& machine, 
+                                    const std::string& utf8str)
+{
+  if(m_rubyBeginPoint != -1)
+  {
+    int endPoint = m_insertionPointX - m_xSpacing;
+
+    if(m_rubyBeginPoint > endPoint)
+    {
+      m_rubyBeginPoint = -1;
+      throw rlvm::Exception("We don't handle ruby across line breaks yet!");
+    }
+
+    SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
+    SDL_Surface* tmp =
+      TTF_RenderUTF8_Blended(m_rubyFont, utf8str.c_str(), color);
+
+    // Render glyph to surface
+    int w = tmp->w;
+    int h = tmp->h;
+    int heightLocation = m_insertionPointY - rubyTextSize();
+    int widthStart = m_rubyBeginPoint + ((endPoint - m_rubyBeginPoint) * 0.5f) - 
+      (w * 0.5f);
+    m_surface->blitFROMSurface(
+      tmp, 0, 0, w, h,
+      widthStart, heightLocation,
+      widthStart + w, heightLocation + h,
+      255);
+
+    machine.system().graphics().markScreenAsDirty();
+
+    m_rubyBeginPoint = -1;
+  }
+//  else
+//    throw rlvm::Exception("No staring call to markRubyBegin()! Bad bytecode?");
+}

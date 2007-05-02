@@ -141,7 +141,6 @@ public:
 class HardBreakElement : public TextPageElement
 {
 public:
-  HardBreakElement() {}
   virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.hardBrake_impl();
@@ -154,7 +153,6 @@ public:
 class ResetIndentationElement : public TextPageElement
 {
 public:
-  ResetIndentationElement() { }
   virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.hardBrake_impl();
@@ -191,6 +189,37 @@ public:
   }
 };
 
+
+// -----------------------------------------------------------------------
+// MarkRubyBeginElement
+// -----------------------------------------------------------------------
+class MarkRubyBeginElement : public TextPageElement
+{
+public:
+  virtual void replayElement(TextPage& page, bool isActivePage)
+  {
+    page.markRubyBegin_impl();
+  }
+};
+
+
+// -----------------------------------------------------------------------
+// DisplayRubyTextElement
+// -----------------------------------------------------------------------
+class DisplayRubyTextElement : public TextPageElement
+{
+private:
+  string m_name;
+
+public:
+  DisplayRubyTextElement(const string& name)
+    : m_name(name) {}
+
+  virtual void replayElement(TextPage& page, bool isActivePage)
+  {
+    page.displayRubyText_impl(m_name);
+  }
+};
 
 // -----------------------------------------------------------------------
 // TextPage
@@ -277,6 +306,22 @@ void TextPage::fontColour(int color)
 
 // -----------------------------------------------------------------------
 
+void TextPage::markRubyBegin()
+{
+  m_elementsToReplay.push_back(new MarkRubyBeginElement());
+  markRubyBegin_impl();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::displayRubyText(const std::string& utf8str)
+{
+  m_elementsToReplay.push_back(new DisplayRubyTextElement(utf8str));
+  displayRubyText_impl(utf8str);
+}
+
+// -----------------------------------------------------------------------
+
 void TextPage::addSetToRightStartingColorElement()
 {
   m_elementsToReplay.push_back(new SetToRightStartingColorElement);
@@ -329,6 +374,22 @@ void TextPage::fontColour_impl(int color)
 {
   m_machine.system().text().textWindow(m_machine, m_currentWindow)
     .setFontColor(m_machine.system().gameexe()("COLOR_TABLE", color));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::markRubyBegin_impl()
+{
+  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .markRubyBegin();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::displayRubyText_impl(const std::string& utf8str)
+{
+  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+    .displayRubyText(m_machine, utf8str);
 }
 
 // -----------------------------------------------------------------------
