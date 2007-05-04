@@ -230,15 +230,7 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
                         utf8name, nextChar);
     setIndentation();
 
-    // Check to see if we set the indentation after the 
-    string::const_iterator it = nextChar.begin();
-    int nextCodepoint = utf8::next(it, nextChar.end());
-    if(nextCodepoint == 0x300C || nextCodepoint == 0x300E || 
-       nextCodepoint == 0xFF08)
-    {
-      m_currentIndentationInPixels = m_insertionPointX + m_fontSizeInPixels + 
-        m_xSpacing;
-    }
+    setIndentationIfNextCharIsOpeningQuoteMark(nextChar);
   }
   else if(m_nameMod == 1)
   {
@@ -246,11 +238,30 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
   }
   else if(m_nameMod == 2)
   {
-    // Don't print anything for now. Needs to be more robust.
+    // This doesn't actually fix the problem in Planetarian because
+    // the call to set the name and the actual quotetext are in two
+    // different strings. This logic will need to be moved.
+//    setIndentationIfNextCharIsOpeningQuoteMark(nextChar);
   }
   else
   {
     throw SystemError("Invalid");
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
+  const std::string& nextChar)
+{
+  // Check to see if we set the indentation after the 
+  string::const_iterator it = nextChar.begin();
+  int nextCodepoint = utf8::next(it, nextChar.end());
+  if(nextCodepoint == 0x300C || nextCodepoint == 0x300E || 
+     nextCodepoint == 0xFF08)
+  {   
+    m_currentIndentationInPixels = m_insertionPointX + m_fontSizeInPixels + 
+      m_xSpacing;
   }
 }
 

@@ -824,13 +824,32 @@ struct Grp_fade_1 : public RLOp_Void_2<
   }
 };
 
+// -----------------------------------------------------------------------
+
+/*
+struct Grp_zoom : public RLOp_Void_14<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  void operator()(RLMachine& machine, int fx, int fy, int fwidth, int fheight,
+                  int tx, int ty, int twidth, int theight, int srcDC, int dx,
+                  int dy, int dwidth, int dheight, int time)
+  {
+    machine.pushLongOperation(
+      new ZoomLongOperation(
+        fx, fy, fwidth, fheight, tx, ty, twidth, theight, srcDC, dx, dy, 
+        dwidth, dheight, time));
+  }
+};
+*/
 
 // -----------------------------------------------------------------------
-// {grp,rec}Multi
+// {grp,rec}multi
 // -----------------------------------------------------------------------
 
 /**
- * Defines the fairly complex parameter definition for the list of
+ * defines the fairly complex parameter definition for the list of
  * functions to call in a {grp,rec}Multi command.
  */
 typedef Argc_T< 

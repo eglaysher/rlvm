@@ -61,6 +61,8 @@ private:
 
   TTF_Font* loadFont(const std::string& filename, int size);
 
+  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& nextChar);
+
 public:
   SDLTextWindow(RLMachine& machine, int window);
   ~SDLTextWindow();

@@ -91,6 +91,9 @@ private:
   /// utf8 encoded subtitle string
   std::string m_subtitle;
 
+  /// Window icon
+  SDL_Surface* m_icon;
+
   // ---------------------------------------------------------------------
 
   /** 
