@@ -354,9 +354,8 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
     {
       m_lastSeenNumber = machine.sceneNumber();
       m_lastLineNumber = machine.lineNumber();
+      setWindowTitle();
     }
-
-    setWindowTitle();
   }
 }
 
