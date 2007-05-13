@@ -78,8 +78,7 @@ struct Msg_pause : public RLOp_Void_Void
   void operator()(RLMachine& machine)
   {
     TextSystem& text = machine.system().text();
-    TextPage& page = text.currentPage(machine);
-    int windowNum = page.currentWindowNum();
+    int windowNum = text.activeWindow();
     TextWindow& textWindow = text.textWindow(machine, windowNum);
 
     if(textWindow.actionOnPause())
@@ -101,8 +100,7 @@ struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int window)
   {
-    machine.system().text().setDefaultWindow(window);
-    machine.system().text().currentPage(machine).setWindow(window);
+    machine.system().text().setActiveWindow(window);
   }
 };
 
@@ -144,9 +142,37 @@ struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int unknown)
   {
-    int winNum = machine.system().text().currentPage(machine)
-      .currentWindowNum();
+    int winNum = machine.system().text().activeWindow();
     machine.system().text().hideTextWindow(winNum);
+    machine.system().text().newPageOnWindow(machine, winNum);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_msgClear : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextSystem& text = machine.system().text();
+    int activeWindow = text.activeWindow();
+    text.textWindow(machine, activeWindow).clearWin();
+    text.newPageOnWindow(machine, activeWindow);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_msgClearAll : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextSystem& text = machine.system().text();
+    vector<int> activeWindows = text.activeWindows();
+    int activeWindow = text.activeWindow();
+
+    for(vector<int>::const_iterator it = activeWindows.begin(); 
+        it != activeWindows.end(); ++it)
+    {
+      text.textWindow(machine, activeWindow).clearWin();
+      text.newPageOnWindow(machine, *it);
+    }
   }
 };
 
@@ -195,6 +221,10 @@ MsgModule::MsgModule()
   addOpcode(120, 1, new Msg_doruby_mark);
 
   addOpcode(151, 0, new Msg_msgHide);
+
+  addOpcode(152, 0, new Msg_msgClear);
+
+  addOpcode(162, 0, new Msg_msgClearAll);
 
   addOpcode(201, 0, new Msg_br);
   addOpcode(205, 0, new Msg_spause);

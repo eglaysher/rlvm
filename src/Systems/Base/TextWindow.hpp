@@ -297,7 +297,6 @@ public:
   /**
    * Loads the graphics file name as the image with all the button
    * images used when drawing 
-   * 
    */
   virtual void setWakuButton(RLMachine& machine, const std::string& name) = 0;  
 

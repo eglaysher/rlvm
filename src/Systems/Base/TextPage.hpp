@@ -51,10 +51,10 @@ private:
 
   boost::ptr_vector<TextPageElement> m_elementsToReplay;
 
-  RLMachine& m_machine;
+  RLMachine* m_machine;
 
   /// Current window that this page is rendering into
-  int m_currentWindow;
+  int m_windowNum;
 
   /// Number of characters on this page (used in automode)
   int m_numberOfCharsOnPage;
@@ -67,8 +67,6 @@ private:
    * These methods are what actually does things. They output to the
    * screen, etc. 
    */
-
-  void setWindow_impl(int window);
 
   bool character_impl(const std::string& c, const std::string& nextChar);
 
@@ -89,9 +87,12 @@ private:
   /// @}
 
 public:
-  TextPage(RLMachine& inSys);
-
+  TextPage(RLMachine& inSys, int windowNum);
+  TextPage(const TextPage& rhs);
   ~TextPage();
+
+  TextPage& operator=(const TextPage& rhs);
+  void swap(TextPage& rhs);
 
   void replay(bool isActivePage);
 
@@ -106,11 +107,6 @@ public:
    *
    * @{
    */
-
-  /** 
-   * Sets the window we render to.
-   */
-  void setWindow(int windowNum);
 
   /**
    * Add this character to the most recent text render operation on
@@ -175,11 +171,6 @@ public:
    * markRubyBegin(), but not the closing displayRubyText().
    */
   bool inRubyGloss() const { return m_inRubyGloss; }
-
-  /**
-   * Returns the current window this page is rendering to.
-   */
-  int currentWindowNum() const { return m_currentWindow; }
 };
 
 #endif

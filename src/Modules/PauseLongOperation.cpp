@@ -123,7 +123,17 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     if(!machine().system().text().handleMouseClick(machine(), x, y, pressed))
     {
       if(pressed)
-        m_isDone = true;
+      {
+        if(text.isReadingBacklog())
+        {
+          // Move back to the main page.
+          text.stopReadingBacklog();
+        }
+        else
+        {
+          m_isDone = true;
+        }
+      }
     }
     break;
   }
@@ -136,8 +146,8 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
       text.backPage(machine());
     break;
   case MOUSE_WHEELDOWN:
-    if(pressed)
-      text.forwardPage(machine());
+   if(pressed)
+     text.forwardPage(machine());
     break;
   }
 }
@@ -198,7 +208,10 @@ NewPageAfterLongop::~NewPageAfterLongop()
 
 void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
 {
-  machine.system().text().newPage(machine);
+  TextSystem& text = machine.system().text();
+  text.snapshot(machine);
+  text.currentWindow(machine).clearWin();
+  text.newPageOnWindow(machine, text.activeWindow());
 }
 
 // -----------------------------------------------------------------------

@@ -34,6 +34,7 @@ struct PauseLongOperation : public NiceLongOperation, public EventHandler
 private:
   bool m_isDone;
 
+
   /**
    * @name Automode Related Variables
    * 

@@ -69,7 +69,7 @@ SDLTextSystem::~SDLTextSystem()
 void SDLTextSystem::executeTextSystem(RLMachine& machine)
 {
   // Check to see if the cursor is displayed
-  WindowMap::iterator it = m_textWindow.find(m_defaultTextWindow);
+  WindowMap::iterator it = m_textWindow.find(m_activeWindow);
   if(it != m_textWindow.end() && it->isVisible() && 
      m_inPauseState && !isReadingBacklog())
   {
@@ -91,7 +91,7 @@ void SDLTextSystem::render(RLMachine& machine)
   for_each(m_textWindow.begin(), m_textWindow.end(), 
            bind(&TextWindow::render, _1, ref(machine)));
 
-  WindowMap::iterator it = m_textWindow.find(m_defaultTextWindow);
+  WindowMap::iterator it = m_textWindow.find(m_activeWindow);
 
   if(it != m_textWindow.end() && it->isVisible() && 
      m_inPauseState && !isReadingBacklog())

@@ -65,25 +65,38 @@ protected:
   /// Message speed; range from 0 to 255
   char m_messageSpeed;
 
-  /// Default text window to render to. We need this to initialize new
-  /// pages.
-  int m_defaultTextWindow;
+  /// Sets which window is the current active window.
+  int m_activeWindow;
+
+  /**
+   * @name Backlog Management
+   * 
+   * @{
+   */
+
+  /// Whether we are reading the backlog
+  bool m_isReadingBacklog;
+
+  /// Internal structure used to keep track of the state of 
+  typedef boost::ptr_map<int, TextPage> PageSet;
+
+  /// The current page set. Represents what is on the screen right now.
+  std::auto_ptr<PageSet> m_currentPageset;
 
   /// Previous Text Pages. The TextSystem owns the list of previous
   /// pages because multiple windows can be displayed in one text page.
-  boost::ptr_vector<TextPage> m_previousPages;
+  boost::ptr_vector<PageSet> m_previousPageSets;
 
   /// When m_previousPageIt == m_previousPages.end(), m_activePage is
   /// currently being rendered to the screen. When it is any valid
   /// iterator pointing into m_previousPages, that is the current page
   /// being rendered.
-  boost::ptr_vector<TextPage>::iterator m_previousPageIt;
-
-  /// The current text page. 
-  std::auto_ptr<TextPage> m_activePage;
+  boost::ptr_vector<PageSet>::iterator m_previousPageIt;
 
   /// Whether we are in a state where the interpreter is pause()d.
   bool m_inPauseState;
+
+  /// @}
 
   boost::shared_ptr<TextKeyCursor> m_textKeyCursor;
 
@@ -118,26 +131,33 @@ public:
   virtual void hideAllTextWindows() = 0;
   virtual void clearAllTextWindows() = 0;
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber) = 0;
+  TextWindow& currentWindow(RLMachine& machine);
 
   /// @}
 
   void setInPauseState(bool in) { m_inPauseState = in; }
 
-  int defaultWindow() const { return m_defaultTextWindow; }
-  void setDefaultWindow(int window) { m_defaultTextWindow = window; }
+  int activeWindow() const { return m_activeWindow; }
+  void setActiveWindow(int window) { m_activeWindow = window; }
+
+  std::vector<int> activeWindows();
 
   /** 
-   * Get the active page. This function will always return
-   * m_activePage, instead of getting whatever page is currently being
-   * rendered to the screen.
+   * Take a snapshot of the current window state, with their
+   * respective TextPages, and add it to the backlog.
+   */
+  void snapshot(RLMachine& machine);
+
+  /** 
+   * Resets the text page in the currentSet
+   */
+  void newPageOnWindow(RLMachine& machine, int window);
+
+  /** 
+   * Get the active page. This function will return
+   * m_windows[m_activeWindow].page().
    */
   TextPage& currentPage(RLMachine& machine);
-
-  /** 
-   * Adds the current page to the backlog, and puts a new TextPage
-   * object as the current active page, along with some setup commands.
-   */
-  void newPage(RLMachine& machine);
 
   /**
    * @name Backlog management
@@ -151,8 +171,10 @@ public:
   void backPage(RLMachine& machine);
   void forwardPage(RLMachine& machine);
 
-  
+  void replayPageSet(PageSet& set, bool isCurrentPage);
+
   bool isReadingBacklog() const;
+  void stopReadingBacklog();
 
   /// @}
 

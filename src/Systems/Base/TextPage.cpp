@@ -54,24 +54,15 @@ public:
   virtual ~TextPageElement() { }
   virtual bool isTextElement() { return false; }
   virtual void replayElement(TextPage& ts, bool isActivePage) = 0;
+  virtual TextPageElement* clone() const = 0;
 };
 
-// -----------------------------------------------------------------------
-// SetWindowTextPageElement
-// -----------------------------------------------------------------------
-
-class SetWindowTextPageElement : public TextPageElement
+namespace boost {
+inline TextPageElement* new_clone(const TextPageElement& in)
 {
-private:
-  int m_toSetTo;
-public:
-  SetWindowTextPageElement(int in) : m_toSetTo(in) {}
-
-  virtual void replayElement(TextPage& page, bool isActivePage)
-  {
-    page.setWindow_impl(m_toSetTo);
-  }
-};
+  return in.clone();
+}
+}
 
 // -----------------------------------------------------------------------
 // TextTextPageElement
@@ -91,6 +82,8 @@ public:
   virtual bool isTextElement() { return true; }
   virtual void replayElement(TextPage& page, bool isActivePage);  
   void append(const string& c, const string& nextChar);
+
+  virtual TextPageElement* clone() const { return new TextTextPageElement(*this); }
 };
 
 // -----------------------------------------------------------------------
@@ -133,6 +126,8 @@ public:
   {
     page.name_impl(m_name, m_nextchar);
   }
+
+  virtual TextPageElement* clone() const { return new NamePageElement(*this); }
 };
 
 // -----------------------------------------------------------------------
@@ -145,6 +140,8 @@ public:
   {
     page.hardBrake_impl();
   }
+
+  virtual TextPageElement* clone() const { return new HardBreakElement(*this); }
 };
 
 // -----------------------------------------------------------------------
@@ -157,6 +154,9 @@ public:
   {
     page.hardBrake_impl();
   }
+
+  virtual TextPageElement* clone() const 
+  { return new ResetIndentationElement(*this); }
 };
 
 // -----------------------------------------------------------------------
@@ -175,6 +175,10 @@ public:
   {
     page.fontColour_impl(color);
   }
+
+  virtual TextPageElement* clone() const { 
+    return new FontColourElement(*this); 
+  }
 };
 
 // -----------------------------------------------------------------------
@@ -186,6 +190,10 @@ public:
   virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.setToRightStartingColor_impl(isActivePage);
+  }
+
+  virtual TextPageElement* clone() const { 
+    return new SetToRightStartingColorElement(*this); 
   }
 };
 
@@ -199,6 +207,10 @@ public:
   virtual void replayElement(TextPage& page, bool isActivePage)
   {
     page.markRubyBegin_impl();
+  }
+
+  virtual TextPageElement* clone() const { 
+    return new MarkRubyBeginElement(*this); 
   }
 };
 
@@ -219,21 +231,60 @@ public:
   {
     page.displayRubyText_impl(m_name);
   }
+
+  virtual TextPageElement* clone() const { 
+    return new DisplayRubyTextElement(*this); 
+  }
 };
 
 // -----------------------------------------------------------------------
 // TextPage
 // -----------------------------------------------------------------------
 
-TextPage::TextPage(RLMachine& machine)
-  : m_machine(machine), m_currentWindow(0), m_numberOfCharsOnPage(0),
+TextPage::TextPage(RLMachine& machine, int windowNum)
+  : m_machine(&machine), m_windowNum(windowNum), m_numberOfCharsOnPage(0),
     m_inRubyGloss(false)
-{}
+{
+  addSetToRightStartingColorElement();
+}
+
+// -----------------------------------------------------------------------
+
+TextPage::TextPage(const TextPage& rhs)
+  : m_machine(rhs.m_machine), m_windowNum(rhs.m_windowNum), 
+    m_numberOfCharsOnPage(rhs.m_numberOfCharsOnPage), 
+    m_inRubyGloss(rhs.m_inRubyGloss)
+{
+  m_elementsToReplay.insert(
+    m_elementsToReplay.end(),
+    rhs.m_elementsToReplay.begin(),
+    rhs.m_elementsToReplay.end());
+}
 
 // -----------------------------------------------------------------------
 
 TextPage::~TextPage()
 {}
+
+// -----------------------------------------------------------------------
+
+TextPage& TextPage::operator=(const TextPage& rhs)
+{
+  TextPage tmp(rhs);
+  swap(tmp);
+  return *this;
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::swap(TextPage& rhs)
+{
+  m_elementsToReplay.swap(rhs.m_elementsToReplay);
+  std::swap(m_machine, rhs.m_machine);
+  std::swap(m_windowNum, rhs.m_windowNum);
+  std::swap(m_numberOfCharsOnPage, rhs.m_numberOfCharsOnPage);
+  std::swap(m_inRubyGloss, rhs.m_inRubyGloss);
+}
 
 // -----------------------------------------------------------------------
 
@@ -246,21 +297,14 @@ void TextPage::replay(bool isActivePage)
 
 // ------------------------------------------------- [ Public operations ]
 
-void TextPage::setWindow(int windowNum)
-{
-  m_elementsToReplay.push_back(new SetWindowTextPageElement(windowNum) );
-  setWindow_impl(windowNum);
-}
-
-// -----------------------------------------------------------------------
-
 bool TextPage::character(const string& current, const string& next)
 {
   bool rendered = character_impl(current, next);
 
   if(rendered)
   {
-    if(!m_elementsToReplay.back().isTextElement())
+    if(m_elementsToReplay.size() == 0 || 
+       !m_elementsToReplay.back().isTextElement())
       m_elementsToReplay.push_back(new TextTextPageElement);
 
     dynamic_cast<TextTextPageElement&>(m_elementsToReplay.back()).
@@ -328,20 +372,13 @@ void TextPage::addSetToRightStartingColorElement()
   m_elementsToReplay.push_back(new SetToRightStartingColorElement);
 }
 
-// ------------------------------------------- [ Private implementations ]
-
-void TextPage::setWindow_impl(int windowNum)
-{
-  m_currentWindow = windowNum;
-}
-
 // -----------------------------------------------------------------------
 
 bool TextPage::character_impl(const string& c, 
                               const string& nextChar)
 {
-  return m_machine.system().text().textWindow(m_machine, m_currentWindow)
-    .displayChar(m_machine, c, nextChar);
+  return m_machine->system().text().textWindow(*m_machine, m_windowNum)
+    .displayChar(*m_machine, c, nextChar);
 }
 
 // -----------------------------------------------------------------------
@@ -349,15 +386,15 @@ bool TextPage::character_impl(const string& c,
 void TextPage::name_impl(const string& name, 
                          const string& nextChar)
 {
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
-    .setName(m_machine, name, nextChar);
+  m_machine->system().text().textWindow(*m_machine, m_windowNum)
+    .setName(*m_machine, name, nextChar);
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::hardBrake_impl()
 {
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+  m_machine->system().text().textWindow(*m_machine, m_windowNum)
     .hardBrake();
 }
 
@@ -365,7 +402,7 @@ void TextPage::hardBrake_impl()
 
 void TextPage::resetIndentation_impl()
 {
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+  m_machine->system().text().textWindow(*m_machine, m_windowNum)
     .resetIndentation();
 }
 
@@ -373,15 +410,15 @@ void TextPage::resetIndentation_impl()
 
 void TextPage::fontColour_impl(int color)
 {
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
-    .setFontColor(m_machine.system().gameexe()("COLOR_TABLE", color));
+  m_machine->system().text().textWindow(*m_machine, m_windowNum)
+    .setFontColor(m_machine->system().gameexe()("COLOR_TABLE", color));
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::markRubyBegin_impl()
 {
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
+  m_machine->system().text().textWindow(*m_machine, m_windowNum)
     .markRubyBegin();
   m_inRubyGloss = true;
 }
@@ -390,8 +427,8 @@ void TextPage::markRubyBegin_impl()
 
 void TextPage::displayRubyText_impl(const std::string& utf8str)
 {
-  m_machine.system().text().textWindow(m_machine, m_currentWindow)
-    .displayRubyText(m_machine, utf8str);
+  m_machine->system().text().textWindow(*m_machine, m_windowNum)
+    .displayRubyText(*m_machine, utf8str);
   m_inRubyGloss = false;
 }
 
@@ -399,9 +436,9 @@ void TextPage::displayRubyText_impl(const std::string& utf8str)
 
 void TextPage::setToRightStartingColor_impl(bool isActivePage)
 {
-  Gameexe& gexe = m_machine.system().gameexe();
-  TextWindow& window = m_machine.system().text().textWindow(
-    m_machine, m_currentWindow);
+  Gameexe& gexe = m_machine->system().gameexe();
+  TextWindow& window = m_machine->system().text().textWindow(
+    *m_machine, m_windowNum);
   if(!isActivePage)
   {
     GameexeInterpretObject color(gexe("COLOR_TABLE", 254));
@@ -414,6 +451,6 @@ void TextPage::setToRightStartingColor_impl(bool isActivePage)
 
 bool TextPage::isFull() const
 {
-  return m_machine.system().text().textWindow(m_machine, m_currentWindow)
+  return m_machine->system().text().textWindow(*m_machine, m_windowNum)
     .isFull();
 }
