@@ -42,6 +42,7 @@
 
 #include "Modules/Effect.hpp"
 #include "Modules/EffectFactory.hpp"
+#include "Modules/ZoomLongOperation.hpp"
 
 #include "libReallive/gameexe.h"
 
@@ -267,8 +268,10 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
 
-    if(dc != 0)
-      graphics.allocateDC(dc, graphics.screenWidth(), graphics.screenHeight());
+    if(dc != 0 && dc != 1)
+      graphics.allocateDC(dc,
+                          max(surface->width(), graphics.screenWidth()),
+                          max(surface->height(), graphics.screenHeight()));
 
     surface->blitToSurface(*graphics.getDC(dc),
                            0, 0, surface->width(), surface->height(),
@@ -302,6 +305,12 @@ struct Grp_load_3 : public RLOp_Void_9<
     GraphicsSystem& graphics = machine.system().graphics();
     scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     m_space.translateToRec(x1, y1, x2, y2);
+
+    if(dc != 0 && dc != 1)
+      graphics.allocateDC(dc,
+                          max(surface->width(), graphics.screenWidth()),
+                          max(surface->height(), graphics.screenHeight()));
+
     surface->blitToSurface(*graphics.getDC(dc),
                            x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);    
   }
@@ -679,6 +688,7 @@ struct Grp_copy_3 : public RLOp_Void_9<
 
     // Reallocate the destination so that it's the same size as the first.
 //    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
+    // @todo allocateDC?
 
     m_space.translateToRec(x1, y1, x2, y2);
 
@@ -705,8 +715,12 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     // Reallocate the destination so that it's the same size as the first.
-    if(dst != 0)
-      graphics.allocateDC(dst, sourceSurface->width(), sourceSurface->height());
+//     if(dst != 0)
+//       graphics.allocateDC(dst, sourceSurface->width(), sourceSurface->height());
+    if(dst != 0 && dst != 1)
+      graphics.allocateDC(dst,
+                          max(sourceSurface->width(), graphics.screenWidth()),
+                          max(sourceSurface->height(), graphics.screenHeight()));
 
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
@@ -826,23 +840,30 @@ struct Grp_fade_1 : public RLOp_Void_2<
 
 // -----------------------------------------------------------------------
 
-/*
 struct Grp_zoom : public RLOp_Void_14<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
+  SPACE& m_space;
+  Grp_zoom(SPACE& space) : m_space(space) {}
+
   void operator()(RLMachine& machine, int fx, int fy, int fwidth, int fheight,
                   int tx, int ty, int twidth, int theight, int srcDC, int dx,
                   int dy, int dwidth, int dheight, int time)
   {
+    GraphicsSystem& gs = machine.system().graphics();
+    m_space.translateToRec(fx, fy, fwidth, fheight);
+    m_space.translateToRec(tx, ty, twidth, theight);
+    m_space.translateToRec(dx, dy, dwidth, dheight);
+
     machine.pushLongOperation(
       new ZoomLongOperation(
-        fx, fy, fwidth, fheight, tx, ty, twidth, theight, srcDC, dx, dy, 
+        machine, gs.getDC(0), gs.getDC(srcDC),
+        fx, fy, fwidth, fheight, tx, ty, twidth, theight, dx, dy, 
         dwidth, dheight, time));
   }
 };
-*/
 
 // -----------------------------------------------------------------------
 // {grp,rec}multi
@@ -1045,6 +1066,8 @@ GrpModule::GrpModule()
   addOpcode(201, 2, "grpFill", new Grp_fill_3(GRP));
   addOpcode(201, 3, "grpFill", new Grp_fill_3(GRP));
 
+  addOpcode(402, 0, "grpZoom", new Grp_zoom(GRP));
+
   addOpcode(403, 0, "grpFade", new Grp_fade_1);
   addOpcode(403, 1, "grpFade", new Grp_fade_1);
   addOpcode(403, 2, "grpFade", new Grp_fade_3);
@@ -1100,6 +1123,8 @@ GrpModule::GrpModule()
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
   addOpcode(1201, 2, "recFill", new Grp_fill_3(REC));
   addOpcode(1201, 3, "recFill", new Grp_fill_3(REC));
+
+  addOpcode(1402, 0, "recZoom", new Grp_zoom(REC));
 
   addOpcode(1403, 0, "recFade", new Grp_fade_1);
   addOpcode(1403, 1, "recFade", new Grp_fade_1);
