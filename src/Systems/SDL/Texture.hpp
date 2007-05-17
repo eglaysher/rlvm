@@ -84,8 +84,8 @@ private:
     int dx1, int dy1, int dx2, int dy2,
     int r, int g, int b, int alpha);
 
-  bool filterCoords(int& x1, int& y1, int& x2, int& y2, int& dx1, 
-                    int& dy1, int& dx2, int& dy2);
+  bool filterCoords(int& x1, int& y1, int& x2, int& y2, 
+                    float& dx1, float& dy1, float& dx2, float& dy2);
 
 public:
   static void SetScreenSize(unsigned int screenWidth, unsigned int screenHeight);
