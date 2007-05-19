@@ -42,6 +42,44 @@ using namespace std;
 using boost::ptr_vector;
 
 // -----------------------------------------------------------------------
+
+static SDL_Surface* buildNewSurface(int width, int height)
+{
+  // Create an empty surface
+  Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    rmask = 0xff000000;
+    gmask = 0x00ff0000;
+    bmask = 0x0000ff00;
+    amask = 0x000000ff;
+#else
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+    amask = 0xff000000;
+#endif
+
+  SDL_Surface* tmp = 
+    SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, width, height, 
+                         32, 
+                         rmask, gmask, bmask, amask);
+
+  if(tmp == NULL)
+  {
+    ostringstream ss;
+    ss << "Couldn't allocate surface in buildNewSurface"
+       << ": " << SDL_GetError();
+    throw SystemError(ss.str());
+  }
+
+  SDL_Surface* out = SDL_DisplayFormatAlpha(tmp);
+  SDL_FreeSurface(tmp);
+
+  return out;
+}
+
+
+// -----------------------------------------------------------------------
 // SDLSurface
 // -----------------------------------------------------------------------
 
@@ -120,37 +158,7 @@ void SDLSurface::allocate(int width, int height)
 {
   deallocate();
 
-  // Create an empty surface
-  Uint32 rmask, gmask, bmask, amask;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
-#else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
-#endif
-
-  SDL_Surface* tmp = 
-    SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, width, height, 
-                         32, 
-                         rmask, gmask, bmask, amask);
-
-  if(tmp == NULL)
-  {
-    ostringstream ss;
-    ss << "Couldn't allocate surface in SDLSurface::SDLSurface"
-       << ": " << SDL_GetError();
-    throw SystemError(ss.str());
-  }
-
-  SDL_Surface* out = SDL_DisplayFormatAlpha(tmp);
-  SDL_FreeSurface(tmp);
-  
-  m_surface = out;
+  m_surface = buildNewSurface(width, height);
 
   fill(0, 0, 0, 255);
 }
@@ -177,6 +185,102 @@ void SDLSurface::deallocate()
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Stretches out an image.
+ *
+ * @author Pete Shinners, Taken from pygame
+ * @license LGPL
+ */
+static void stretch(SDL_Surface *src, SDL_Surface *dst)
+{
+	int looph, loopw;
+	
+	Uint8* srcrow = (Uint8*)src->pixels;
+	Uint8* dstrow = (Uint8*)dst->pixels;
+
+	int srcpitch = src->pitch;
+	int dstpitch = dst->pitch;
+
+	int dstwidth = dst->w;
+	int dstheight = dst->h;
+	int dstwidth2 = dst->w << 1;
+	int dstheight2 = dst->h << 1;
+
+	int srcwidth2 = src->w << 1;
+	int srcheight2 = src->h << 1;
+
+	int w_err, h_err = srcheight2 - dstheight2;
+
+
+	switch(src->format->BytesPerPixel)
+	{
+	case 1:
+		for(looph = 0; looph < dstheight; ++looph)
+		{
+			Uint8 *srcpix = (Uint8*)srcrow, *dstpix = (Uint8*)dstrow;
+			w_err = srcwidth2 - dstwidth2;
+			for(loopw = 0; loopw < dstwidth; ++ loopw)
+			{
+				*dstpix++ = *srcpix;
+				while(w_err >= 0) {++srcpix; w_err -= dstwidth2;}
+				w_err += srcwidth2;
+			}
+			while(h_err >= 0) {srcrow += srcpitch; h_err -= dstheight2;}
+			dstrow += dstpitch;
+			h_err += srcheight2;
+		}break;
+	case 2:
+		for(looph = 0; looph < dstheight; ++looph)
+		{
+			Uint16 *srcpix = (Uint16*)srcrow, *dstpix = (Uint16*)dstrow;
+			w_err = srcwidth2 - dstwidth2;
+			for(loopw = 0; loopw < dstwidth; ++ loopw)
+			{
+				*dstpix++ = *srcpix;
+				while(w_err >= 0) {++srcpix; w_err -= dstwidth2;}
+				w_err += srcwidth2;
+			}
+			while(h_err >= 0) {srcrow += srcpitch; h_err -= dstheight2;}
+			dstrow += dstpitch;
+			h_err += srcheight2;
+		}break;
+	case 3:
+		for(looph = 0; looph < dstheight; ++looph)
+		{
+			Uint8 *srcpix = (Uint8*)srcrow, *dstpix = (Uint8*)dstrow;
+			w_err = srcwidth2 - dstwidth2;
+			for(loopw = 0; loopw < dstwidth; ++ loopw)
+			{
+				dstpix[0] = srcpix[0]; dstpix[1] = srcpix[1]; dstpix[2] = srcpix[2];
+				dstpix += 3;
+				while(w_err >= 0) {srcpix+=3; w_err -= dstwidth2;}
+				w_err += srcwidth2;
+			}
+			while(h_err >= 0) {srcrow += srcpitch; h_err -= dstheight2;}
+			dstrow += dstpitch;
+			h_err += srcheight2;
+		}break;
+	default: /*case 4:*/
+		for(looph = 0; looph < dstheight; ++looph)
+		{
+			Uint32 *srcpix = (Uint32*)srcrow, *dstpix = (Uint32*)dstrow;
+			w_err = srcwidth2 - dstwidth2;
+			for(loopw = 0; loopw < dstwidth; ++ loopw)
+			{
+				*dstpix++ = *srcpix;
+				while(w_err >= 0) {++srcpix; w_err -= dstwidth2;}
+				w_err += srcwidth2;
+			}
+			while(h_err >= 0) {srcrow += srcpitch; h_err -= dstheight2;}
+			dstrow += dstpitch;
+			h_err += srcheight2;
+		}break;
+	}
+}
+
+// -----------------------------------------------------------------------
+
+
 /**
  * @todo This function doesn't ignore alpha blending when useSrcAlpha
  *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
@@ -200,20 +304,50 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   destRect.w = destWidth;
   destRect.h = destHeight;
 
-  if(useSrcAlpha) 
+  if(srcWidth != destWidth || srcHeight != destHeight)
   {
-    if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
-      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    // Blit the source rectangle into its own image.
+    SDL_Surface* srcImage = buildNewSurface(srcWidth, srcHeight);
+    if(pygame_AlphaBlit(m_surface, &srcRect, srcImage, NULL))
+      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+    SDL_Surface* tmp = buildNewSurface(destWidth, destHeight);
+    stretch(srcImage, tmp);
+
+    if(useSrcAlpha) 
+    {
+      if(SDL_SetAlpha(tmp, SDL_SRCALPHA, alpha))
+        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    }
+    else
+    {
+      if(SDL_SetAlpha(tmp, 0, 0))
+        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    }
+
+    if(SDL_BlitSurface(tmp, NULL, dest.surface(), &destRect))
+      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
+    SDL_FreeSurface(tmp);
+    SDL_FreeSurface(srcImage);
   }
   else
   {
-    if(SDL_SetAlpha(m_surface, 0, 0))
-      reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    if(useSrcAlpha) 
+    {
+      if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
+        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    }
+    else
+    {
+      if(SDL_SetAlpha(m_surface, 0, 0))
+        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+    }
+
+    if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
+      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+
   }
-
-  if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
-    reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
-
   dest.markWrittenTo();
 }
 

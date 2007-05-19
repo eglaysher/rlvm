@@ -857,11 +857,18 @@ struct Grp_zoom : public RLOp_Void_14<
     m_space.translateToRec(tx, ty, twidth, theight);
     m_space.translateToRec(dx, dy, dwidth, dheight);
 
-    machine.pushLongOperation(
+    LongOperation* zoomOp =
       new ZoomLongOperation(
         machine, gs.getDC(0), gs.getDC(srcDC),
         fx, fy, fwidth, fheight, tx, ty, twidth, theight, dx, dy, 
-        dwidth, dheight, time));
+        dwidth, dheight, time);
+    BlitAfterEffectFinishes* blitOp = 
+      new BlitAfterEffectFinishes(
+        zoomOp, 
+        gs.getDC(srcDC), gs.getDC(0), /* order? */
+        tx, ty, twidth, theight,
+        dx, dy, dwidth, dheight);
+    machine.pushLongOperation(blitOp);
   }
 };
 

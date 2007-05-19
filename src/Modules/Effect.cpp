@@ -106,8 +106,8 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
 {
   // Blit DC1 onto DC0, with full opacity, and end the operation
   m_srcSurface->blitToSurface(*m_dstSurface,
-                              0, 0, m_width, m_height,
-                              0, 0, m_width, m_height, 255);
+                              m_srcX, m_srcY, m_srcWidth, m_srcHeight,
+                              m_dstX, m_dstY, m_dstWidth, m_dstHeight, 255);
 
   // Now force a screen refresh
   machine.system().graphics().markScreenForRefresh();
@@ -115,12 +115,13 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-BlitAfterEffectFinishes::BlitAfterEffectFinishes(LongOperation* in,
-                                                 boost::shared_ptr<Surface> src, 
-                                                 boost::shared_ptr<Surface> dst,
-                                                 int width, int height)
+BlitAfterEffectFinishes::BlitAfterEffectFinishes(
+  LongOperation* in, boost::shared_ptr<Surface> src, boost::shared_ptr<Surface> dst,
+  int srcX, int srcY, int srcWidth, int srcHeight,
+  int dstX, int dstY, int dstWidth, int dstHeight)
   : PerformAfterLongOperationDecorator(in), m_srcSurface(src), m_dstSurface(dst),
-    m_width(width), m_height(height)
+    m_srcX(srcX), m_srcY(srcY), m_srcWidth(srcWidth), m_srcHeight(srcHeight),
+    m_dstX(dstX), m_dstY(dstY), m_dstWidth(dstWidth), m_dstHeight(dstHeight)
 {}
 
 // -----------------------------------------------------------------------
@@ -135,6 +136,8 @@ void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> dst)
 {
   BlitAfterEffectFinishes* blit =
-    new BlitAfterEffectFinishes(lop, src, dst, src->width(), src->height());
+    new BlitAfterEffectFinishes(lop, src, dst, 
+                                0, 0, src->width(), src->height(),
+                                0, 0, src->width(), src->height());
   lop = blit;
 }

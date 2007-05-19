@@ -160,8 +160,14 @@ private:
   /// The destination surface (previously known as DC0)
   boost::shared_ptr<Surface> m_dstSurface;
 
-  /// The width and height
-  int m_width, m_height;
+  int m_srcX;
+  int m_srcY;
+  int m_srcWidth;
+  int m_srcHeight;
+  int m_dstX;
+  int m_dstY;
+  int m_dstWidth;
+  int m_dstHeight;
 
   virtual void performAfterLongOperation(RLMachine& machine);
 
@@ -169,7 +175,9 @@ public:
   BlitAfterEffectFinishes(LongOperation* in,
                           boost::shared_ptr<Surface> src, 
                           boost::shared_ptr<Surface> dst,
-                          int width, int height);
+                          int srcX, int srcY, int srcWidth, int srcHeight,
+                          int dstX, int dstY, int dstWidth, int dstHeight);
+
   ~BlitAfterEffectFinishes();
 };
 
