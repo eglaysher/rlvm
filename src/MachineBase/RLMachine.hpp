@@ -39,7 +39,7 @@
 #include "libReallive/bytecode.h"
 #include "MachineBase/bytecodeConstants.hpp"
 
-#include <stack>
+#include <vector>
 
 namespace  libReallive {
 class Archive;
