@@ -297,6 +297,7 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1019, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourB));
   m.addOpcode(1020, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourLevel));
   m.addOpcode(1021, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setCompositeMode));
+  m.addUnsupportedOpcode(1025, 0, "objTextOpts");
 
 
 /*  m.addOpcode(1028, 0, new  */

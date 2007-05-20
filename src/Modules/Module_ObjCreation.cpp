@@ -143,6 +143,17 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addOpcode(1000, 2, new Obj_objOfFile_2(layer));
   m.addOpcode(1000, 3, new Obj_objOfFile_3(layer));
   m.addOpcode(1000, 4, new Obj_objOfFile_4(layer));
+
+  m.addUnsupportedOpcode(1003, 0, "objOfFileGan");
+  m.addUnsupportedOpcode(1003, 1, "objOfFileGan");
+  m.addUnsupportedOpcode(1003, 2, "objOfFileGan");
+  m.addUnsupportedOpcode(1003, 3, "objOfFileGan");
+  m.addUnsupportedOpcode(1003, 4, "objOfFileGan");
+
+  m.addUnsupportedOpcode(1200, 0, "objOfText");
+  m.addUnsupportedOpcode(1200, 1, "objOfText");
+  m.addUnsupportedOpcode(1200, 2, "objOfText");
+  m.addUnsupportedOpcode(1200, 3, "objOfText");
 }
 
 // -----------------------------------------------------------------------
