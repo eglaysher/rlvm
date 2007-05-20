@@ -59,6 +59,15 @@ public:
 
 // -----------------------------------------------------------------------
 
+template<typename OBJTYPE, typename RETTYPE>
+RLOperation* setToIncomingInt(OBJTYPE& ref, void(OBJTYPE::*s)(RETTYPE))
+{
+  return new Op_SetToIncomingInt<OBJTYPE, RETTYPE>(ref, s);
+}
+
+
+// -----------------------------------------------------------------------
+
 /** 
  * Binds setting an internal variable to a passed in value in from a
  * running Reallive script. 
@@ -89,6 +98,14 @@ public:
 
 // -----------------------------------------------------------------------
 
+template<typename OBJTYPE>
+RLOperation* setToIncomingString(OBJTYPE& ref, void(OBJTYPE::*s)(const std::string&))
+{
+  return new Op_SetToIncomingString<OBJTYPE>(ref, s);
+}
+
+// -----------------------------------------------------------------------
+
 /** 
  * Sets an internal variable to a specific value set at compile time,
  * and exposes this as an operation to Reallive scripts.
@@ -113,6 +130,14 @@ public:
     (reference.*setter)(value);
   }
 };
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE, typename VALTYPE>
+RLOperation* setToConstant(OBJTYPE& ref, void(OBJTYPE::*s)(VALTYPE), VALTYPE val)
+{
+  return new Op_SetToConstant<OBJTYPE, VALTYPE>(ref, s, val);
+}
 
 // -----------------------------------------------------------------------
 
@@ -141,6 +166,14 @@ public:
 
 // -----------------------------------------------------------------------
 
+template<typename OBJTYPE, typename RETTYPE>
+RLOperation* returnIntValue(OBJTYPE& ref, RETTYPE(OBJTYPE::*s)() const)
+{
+  return new Op_ReturnIntValue<OBJTYPE, RETTYPE>(ref, s);
+}
+
+// -----------------------------------------------------------------------
+
 /** 
  * Reads the value of an internal variable in a generic way using an
  * arbitrary getter function and places it in the store register.
@@ -166,6 +199,14 @@ public:
     *dest = (reference.*getter)();
   }
 };
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+RLOperation* returnStringValue(OBJTYPE& ref, const std::string&(OBJTYPE::*s)() const)
+{
+  return new Op_ReturnStringValue<OBJTYPE>(ref, s);
+}
 
 // -----------------------------------------------------------------------
 
@@ -198,6 +239,8 @@ public:
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff);
 };
+
+// -----------------------------------------------------------------------
 
 class ReturnGameexeInt : public RLOp_Store_Void {
 private:
