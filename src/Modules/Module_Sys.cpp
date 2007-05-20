@@ -77,10 +77,15 @@ struct LongOp_wait : public NiceLongOperation, public EventHandler
   const bool m_breakOnClicks;
   int m_buttonPressed;
 
+  bool m_ctrlPressed;
+  bool m_breakOnCtrlPressed;
+
   LongOp_wait(RLMachine& machine, int time, bool breakOnClicks)
     : NiceLongOperation(machine), EventHandler(machine),
       m_targetTime(machine.system().event().getTicks() + time),
-      m_breakOnClicks(breakOnClicks), m_buttonPressed(0)
+      m_breakOnClicks(breakOnClicks), m_buttonPressed(0),
+      m_ctrlPressed(false), 
+      m_breakOnCtrlPressed(machine.system().text().ctrlKeySkip())
   {}
 
   /** 
@@ -97,10 +102,18 @@ struct LongOp_wait : public NiceLongOperation, public EventHandler
     }
   }
 
+  void keyStateChanged(KeyCode keyCode, bool pressed)
+  {
+    if(pressed && m_breakOnCtrlPressed && 
+       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
+      m_ctrlPressed = true;
+  }
+
   bool operator()(RLMachine& machine)
   {
     EventSystem& es = machine.system().event();
-    bool done = machine.system().event().getTicks() > m_targetTime;
+    bool done = machine.system().event().getTicks() > m_targetTime ||
+      m_ctrlPressed;
 
     if(m_breakOnClicks)
     {
