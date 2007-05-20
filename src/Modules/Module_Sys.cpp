@@ -576,6 +576,19 @@ SysModule::SysModule(System& system)
   addOpcode(2252, 0, "SetAutoBaseTime",
             setToIncomingInt(text, &TextSystem::setAutoCharTime));
 
+  addOpcode(2221, 0, "SetGeneric1",
+            setToIncomingInt(event, &EventSystem::setGeneric1));
+  addOpcode(2620, 0, "DefGeneric1",
+            new ReturnGameexeInt("INIT_ORIGINALSETING1_MOD", 0));
+  addOpcode(2321, 0, "Generic1",
+            returnIntValue(event, &EventSystem::generic1));
+  addOpcode(2222, 0, "SetGeneric2",
+            setToIncomingInt(event, &EventSystem::setGeneric2));
+  addOpcode(2621, 0, "DefGeneric2",
+            new ReturnGameexeInt("INIT_ORIGINALSETING2_MOD", 0));
+  addOpcode(2322, 0, "Generic2",
+            returnIntValue(event, &EventSystem::generic2));
+
   addOpcode(2260, 0, "SetWindowAttrR",
             setToIncomingInt(text, &TextSystem::setWindowAttrR));
   addOpcode(2261, 0, "SetWindowAttrG",

@@ -64,6 +64,10 @@ private:
 
   Handlers m_eventHandlers;
 
+  /// The two generic values that the reallive game has control over
+  /// with the Generic1 and Generic2 functions.
+  int m_generic1, m_generic2;
+
 protected:
   Handlers::iterator handlers_begin() { return m_eventHandlers.begin(); }
   Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
@@ -172,6 +176,19 @@ public:
   /// realtime access for smooth animation.
   bool canBeNice();
 
+  /// @}
+
+  // -----------------------------------------------------------------------
+
+  /**
+   * @name Generic values
+   * 
+   */
+  void setGeneric1(const int in) { m_generic1 = in; }
+  int generic1() const { return m_generic1; }
+
+  void setGeneric2(const int in) { m_generic2 = in; }
+  int generic2() const { return m_generic2; }
   /// @}
 
 };
