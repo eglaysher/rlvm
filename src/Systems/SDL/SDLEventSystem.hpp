@@ -58,7 +58,7 @@ private:
 
 
 public:
-  SDLEventSystem();
+  SDLEventSystem(Gameexe& gexe);
 
   virtual void executeEventSystem(RLMachine& machine);
 

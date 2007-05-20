@@ -6,6 +6,8 @@
 class NullEventSystem : public EventSystem
 {
 public:
+  NullEventSystem(Gameexe& gexe) : EventSystem(gexe) {}
+
   virtual void executeEventSystem(RLMachine& machine) {}
   virtual bool shiftPressed() const {return false;}
   virtual bool ctrlPressed() const {return false; }

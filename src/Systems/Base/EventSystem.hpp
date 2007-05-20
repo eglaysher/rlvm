@@ -31,6 +31,7 @@
 
 class RLMachine;
 
+class Gameexe;
 class FrameCounter;
 class EventHandler;
 
@@ -73,7 +74,7 @@ protected:
   Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
 
 public:
-  EventSystem();
+  EventSystem(Gameexe& gexe);
   virtual ~EventSystem();
 
   virtual void executeEventSystem(RLMachine& machine) = 0;

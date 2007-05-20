@@ -16,14 +16,14 @@ class NullSystem : public System
 {
 private:
   NullGraphicsSystem nullGraphicsSystem;
-  NullEventSystem nullEventSystem;
+//  NullEventSystem nullEventSystem;
   Gameexe m_gameexe;
 
 public:
   virtual void run(RLMachine& machine) { /* do nothing */ }
 
   virtual GraphicsSystem& graphics() { return nullGraphicsSystem; }
-  virtual EventSystem& event() { return nullEventSystem; }
+  virtual EventSystem& event() { throw "whatever"; }
   virtual Gameexe& gameexe() { return m_gameexe; }
   virtual TextSystem& text() { throw "whatever"; }
 };

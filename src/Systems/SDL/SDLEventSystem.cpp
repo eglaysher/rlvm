@@ -115,8 +115,8 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 // Public implementation
 // -----------------------------------------------------------------------
 
-SDLEventSystem::SDLEventSystem()
-  : m_shiftPressed(false), m_ctrlPressed(false)
+SDLEventSystem::SDLEventSystem(Gameexe& gexe)
+  : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false)
 {}
 
 // -----------------------------------------------------------------------

@@ -27,6 +27,7 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 #include "Utilities.h"
+#include "libReallive/gameexe.h"
 
 #include <iostream>
 
@@ -35,9 +36,12 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-EventSystem::EventSystem() 
+EventSystem::EventSystem(Gameexe& gexe) 
   : m_numberOfRealtimeTasks(0), m_numberOfNiceAfterEachTaskItems(0)
-{}
+{
+  m_generic1 = gexe("INIT_ORIGINALSETING1_MOD").to_int(0);
+  m_generic2 = gexe("INIT_ORIGINALSETING2_MOD").to_int(0);
+}
 
 // -----------------------------------------------------------------------
 
