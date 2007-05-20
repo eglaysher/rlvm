@@ -108,10 +108,10 @@ private:
   struct StackFrame;
 
   /// The actual call stack.
-  std::stack<StackFrame> callStack;
+  std::vector<StackFrame> callStack;
 
   /// The stack of LongOperations (which preempt the normal call stack)
-  boost::ptr_vector<LongOperation> m_longOperationStack;
+//  boost::ptr_vector<LongOperation> m_longOperationStack;
 
   /// There are some cases where we need to create our own system,
   /// since one isn't provided for us. This variable is for those

@@ -253,4 +253,20 @@ public:
   int operator()(RLMachine& machine);
 };
 
+// -----------------------------------------------------------------------
+
+/**
+ * Class that exists simply to print out a prettier output message on
+ * unimplemented functions.
+ */
+class UndefinedFunction : public RLOp_SpecialCase {
+private:
+  std::string m_name;
+
+public:
+  UndefinedFunction(const std::string& name);
+
+  virtual void operator()(RLMachine&, const libReallive::CommandElement&);
+};
+
 #endif

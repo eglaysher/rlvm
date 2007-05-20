@@ -76,6 +76,12 @@ struct Scr_DrawManual : public RLOp_Void_Void {
 ScrModule::ScrModule()
   : RLModule("Scr", 1, 30)
 {
+  addUnsupportedOpcode(0, 0, "stackClear");
+  addUnsupportedOpcode(1, 0, "stackNop");
+  addUnsupportedOpcode(2, 0, "stackPop");
+  addUnsupportedOpcode(3, 0, "stackSize");
+  addUnsupportedOpcode(4, 0, "stackTrunc");
+
   addOpcode(20, 0, new Scr_DrawAuto);
   addOpcode(21, 0, new Scr_DrawSemiAuto);
   addOpcode(22, 0, new Scr_DrawManual);

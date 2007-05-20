@@ -32,9 +32,9 @@
  * @brief  Definition of RLModule
  */
 
-
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 
 #include <sstream>
 
@@ -87,6 +87,20 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
   op->setName(name);
   storedOperations.insert(packedOpcode, op);
 }
+
+// -----------------------------------------------------------------------
+
+void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload, 
+                                    const std::string& name)
+{
+  ostringstream oss;
+  oss << "\"" << name << "\", " << "opcode<" << m_moduleType << ":" 
+      << m_moduleName
+      << "(" << m_moduleNumber << "):" << opcode << ", " << (int)overload << ">";
+
+  addOpcode(opcode, overload, new UndefinedFunction(oss.str()));
+}
+
 
 // -----------------------------------------------------------------------
 

@@ -225,11 +225,21 @@ MsgModule::MsgModule()
   addOpcode(152, 0, new Msg_msgClear);
 
   addOpcode(162, 0, new Msg_msgClearAll);
-
+  addUnsupportedOpcode(170, 0, "msgHideAllTemp");
   addOpcode(201, 0, new Msg_br);
   addOpcode(205, 0, new Msg_spause);
 
   addOpcode(210, 0, new Msg_page);
+
+  addUnsupportedOpcode(300, 0, "SetIndent");
+  addUnsupportedOpcode(301, 0, "ClearIndent");
+
+  addUnsupportedOpcode(310, 0, "TextPos");
+  addUnsupportedOpcode(311, 0, "TextPosX");
+  addUnsupportedOpcode(312, 0, "TextPosY");
+  addUnsupportedOpcode(320, 0, "TextOffset");
+  addUnsupportedOpcode(321, 0, "TextOffsetX");
+  addUnsupportedOpcode(322, 0, "TextOffsetY");
 }
 
 // @}

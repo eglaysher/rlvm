@@ -386,7 +386,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
     key = oss.str();
     m_buttonMap.insert(key, 
-                       new ExbtnWindowButton(
+                       new ExbtnWindowButton(machine,
                          ts.windowExbtnUse(),
                          waku(oss.str()), 
                          wbcall));

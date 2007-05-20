@@ -559,6 +559,14 @@ SysModule::SysModule(System& system)
   addOpcode(1133, 0, "SetDefaultBgr",
             setToIncomingString(graphics, &GraphicsSystem::setDefaultBgrName));
 
+  addUnsupportedOpcode(1210, 0, "ContextMenu");
+  addUnsupportedOpcode(1211, 0, "EnableSyscom");
+  addUnsupportedOpcode(1211, 1, "EnableSyscom");
+  addUnsupportedOpcode(1212, 0, "HideSyscom");
+  addUnsupportedOpcode(1212, 1, "HideSyscom");
+  addUnsupportedOpcode(1213, 0, "DisableSyscom");
+  addUnsupportedOpcode(1214, 0, "SyscomEnabled");
+
   addOpcode(2224, 0, "SetMessageNoWait",
             setToIncomingInt(text, &TextSystem::setMessageNoWait));
   addOpcode(2250, 0, "SetAutoMode",
@@ -580,6 +588,8 @@ SysModule::SysModule(System& system)
             setToIncomingInt(text, &TextSystem::setWindowAttrF));
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
+
+  addUnsupportedOpcode(2375, 0, "ScreenMode");
 
   addOpcode(2350, 0, "AutoMode",
             returnIntValue(text, &TextSystem::autoMode));

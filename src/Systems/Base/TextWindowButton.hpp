@@ -127,11 +127,14 @@ public:
 class ExbtnWindowButton : public TextWindowButton
 {
 private:
+  RLMachine& m_machine;
+
   int m_scenario;
   int m_entrypoint;
 
 public:
-  ExbtnWindowButton(bool use, GameexeInterpretObject locationBox,
+  ExbtnWindowButton(RLMachine& machine, 
+                    bool use, GameexeInterpretObject locationBox,
                     GameexeInterpretObject toCall);
   ~ExbtnWindowButton();
 

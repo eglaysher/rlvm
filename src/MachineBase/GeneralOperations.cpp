@@ -95,3 +95,19 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
   vector<int> values = gexe(fullKeyName);
   return values.at(entry);
 }
+
+// ------------------------------------------------- [ UndefinedFunction ]
+
+UndefinedFunction::UndefinedFunction(const std::string& name)
+  : m_name(name)
+{}
+
+// -----------------------------------------------------------------------
+
+void UndefinedFunction::operator()(RLMachine&, 
+                                   const libReallive::CommandElement&)
+{
+  ostringstream oss;
+  oss << "Undefined function " << m_name;
+  throw rlvm::Exception(oss.str());
+}

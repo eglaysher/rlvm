@@ -301,9 +301,11 @@ void RepeatActionWhileHoldingWindowButton::buttonReleased()
 // -----------------------------------------------------------------------
 
 ExbtnWindowButton::ExbtnWindowButton(
+  RLMachine& machine,
   bool use, GameexeInterpretObject locationBox,
   GameexeInterpretObject toCall)
-  : TextWindowButton(use, locationBox), m_scenario(0), m_entrypoint(0)
+  : TextWindowButton(use, locationBox), m_machine(machine),
+    m_scenario(0), m_entrypoint(0)
 {
   if(locationBox.exists() && toCall.exists())
   {
@@ -322,6 +324,7 @@ ExbtnWindowButton::~ExbtnWindowButton()
 
 void ExbtnWindowButton::buttonReleased()
 {
-  cerr << "Would execute farcall(" << m_scenario << ", " << m_entrypoint 
-       << ") if we had this implemented." << endl;
+//  cerr << "Would execute farcall(" << m_scenario << ", " << m_entrypoint 
+//       << ") if we had this implemented." << endl;
+  m_machine.farcall(m_scenario, m_entrypoint);
 }

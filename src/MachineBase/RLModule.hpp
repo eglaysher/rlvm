@@ -130,6 +130,12 @@ public:
   void addOpcode(int opcode, unsigned char overload, const std::string& name,
                  RLOperation* op);
 
+  /**
+   * Adds an UndefinedFunction object to this module.
+   */
+  void addUnsupportedOpcode(int opcode, unsigned char overload, 
+                            const std::string& name);
+
   /// Accessor that returns this module's type number
   int moduleType() const { return m_moduleType; }
 

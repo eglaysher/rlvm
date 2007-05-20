@@ -87,8 +87,12 @@
 #include <sstream>
 #include <iostream>
 
+#include <boost/bind.hpp>
+
 using namespace std;
 using namespace libReallive;
+
+using boost::bind;
 
 // -----------------------------------------------------------------------
 // Stack Frame
@@ -105,14 +109,18 @@ struct RLMachine::StackFrame {
   /// The instruction pointer in the stack frame.
   libReallive::Scenario::const_iterator ip;
 
+  /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
+  boost::shared_ptr<LongOperation> longOp;
+
   /**
    * The function that pushed the current frame onto the
    * stack. Used in error checking.
    */
   enum FrameType {
-    TYPE_ROOT,   /**< Added by the Machine's constructor */
-    TYPE_GOSUB,  /**< Added by a call by gosub */
-    TYPE_FARCALL /**< Added by a call by farcall */
+    TYPE_ROOT,    /**< Added by the Machine's constructor */
+    TYPE_GOSUB,   /**< Added by a call by gosub */
+    TYPE_FARCALL, /**< Added by a call by farcall */
+    TYPE_LONGOP   /**< Added by pushLongOperation() */
   } frameType;
 
   /// Default constructor
@@ -120,6 +128,11 @@ struct RLMachine::StackFrame {
              const libReallive::Scenario::const_iterator& i,
              FrameType t) 
     : scenario(s), ip(i), frameType(t) {}
+
+  StackFrame(libReallive::Scenario* s,
+             const libReallive::Scenario::const_iterator& i,
+             LongOperation* op)
+    : scenario(s), ip(i), longOp(op), frameType(TYPE_LONGOP) {}
 };
 
 // -----------------------------------------------------------------------
@@ -136,7 +149,7 @@ RLMachine::RLMachine(Archive& inArchive)
   libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario file");
-  callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
+  callStack.push_back(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
   memset(intVar, 0, sizeof(intVar));
@@ -168,7 +181,7 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
 
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario file");
-  callStack.push(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
+  callStack.push_back(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
   memset(intVar, 0, sizeof(intVar));
@@ -209,18 +222,18 @@ void RLMachine::executeNextInstruction()
   // Do not execute any more instructions if the machine is halted.
   if(halted() == true)
     return;
-  // If we are in a long operation, run it, and end it if it returns true.
-  else if(m_longOperationStack.size())
-  {
-    bool retVal = m_longOperationStack.back()(*this);
-    if(retVal)
-      m_longOperationStack.pop_back();
-  }
   else 
   {
     try 
     {
-      callStack.top().ip->runOnMachine(*this);
+      if(callStack.back().frameType == StackFrame::TYPE_LONGOP)
+      {
+        bool retVal = (*callStack.back().longOp)(*this);
+        if(retVal)
+          callStack.pop_back();
+      }
+      else
+        callStack.back().ip->runOnMachine(*this);
     }
     catch(std::exception& e) {
       if(m_haltOnException) {
@@ -231,7 +244,7 @@ void RLMachine::executeNextInstruction()
         advanceInstructionPointer();
       }
 
-      cout << "(SEEN" << callStack.top().scenario->sceneNumber() 
+      cout << "(SEEN" << callStack.back().scenario->sceneNumber() 
            << ")(Line " << m_line << "):  " << e.what() << endl;
     }
   }
@@ -250,9 +263,16 @@ void RLMachine::executeUntilHalted()
 
 void RLMachine::advanceInstructionPointer()
 {
-  callStack.top().ip++;
-  if(callStack.top().ip == callStack.top().scenario->end())
-    m_halted = true;
+  std::vector<StackFrame>::reverse_iterator it = 
+    find_if(callStack.rbegin(), callStack.rend(),
+            bind(&StackFrame::frameType, _1) != StackFrame::TYPE_LONGOP);
+
+  if(it != callStack.rend())
+  {
+    it->ip++;
+    if(it->ip == it->scenario->end())
+      m_halted = true;
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -403,8 +423,8 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
-  callStack.top().scenario = scenario;
-  callStack.top().ip = scenario->findEntrypoint(entrypoint);
+  callStack.back().scenario = scenario;
+  callStack.back().ip = scenario->findEntrypoint(entrypoint);
 }
 
 // -----------------------------------------------------------------------
@@ -417,7 +437,7 @@ void RLMachine::farcall(int scenarioNum, int entrypoint)
 
   libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
-  callStack.push(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
+  callStack.push_back(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
 }
 
 // -----------------------------------------------------------------------
@@ -425,25 +445,25 @@ void RLMachine::farcall(int scenarioNum, int entrypoint)
 void RLMachine::returnFromFarcall() 
 {
   // Check to make sure the types match up.
-  if(callStack.top().frameType != StackFrame::TYPE_FARCALL) {
+  if(callStack.back().frameType != StackFrame::TYPE_FARCALL) {
     throw rlvm::Exception("Callstack type mismatch in returnFromFarcall()");
   }
 
-  callStack.pop();
+  callStack.pop_back();
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
   // Modify the current frame of the call stack so that it's 
-  callStack.top().ip = newLocation;
+  callStack.back().ip = newLocation;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::gosub(BytecodeList::iterator newLocation) 
 {
-  callStack.push(StackFrame(callStack.top().scenario, newLocation, 
+  callStack.push_back(StackFrame(callStack.back().scenario, newLocation, 
                             StackFrame::TYPE_GOSUB));
 }
 
@@ -452,25 +472,27 @@ void RLMachine::gosub(BytecodeList::iterator newLocation)
 void RLMachine::returnFromGosub()
 {
   // Check to make sure the types match up.
-  if(callStack.top().frameType != StackFrame::TYPE_GOSUB) {
+  if(callStack.back().frameType != StackFrame::TYPE_GOSUB) {
     throw rlvm::Exception("Callstack type mismatch in returnFromGosub()");
   }
 
-  callStack.pop();
+  callStack.pop_back();
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::pushLongOperation(LongOperation* longOperation)
 {
-  m_longOperationStack.push_back(longOperation);
+  callStack.push_back(StackFrame(callStack.back().scenario, callStack.back().ip,
+                            longOperation));
+//  m_longOperationStack.push_back(longOperation);
 }
 
 // -----------------------------------------------------------------------
 
 int RLMachine::sceneNumber() const
 {
-  return callStack.top().scenario->sceneNumber();
+  return callStack.back().scenario->sceneNumber();
 }
 
 // -----------------------------------------------------------------------
@@ -486,8 +508,10 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 
 int RLMachine::getTextEncoding() const
 {
-  return callStack.top().scenario->encoding();
+  return callStack.back().scenario->encoding();
 }
+
+// -----------------------------------------------------------------------
 
 void RLMachine::performTextout(const TextoutElement& e)
 {
