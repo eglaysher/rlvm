@@ -57,12 +57,12 @@ public:
   virtual TextPageElement* clone() const = 0;
 };
 
-namespace boost {
+//namespace boost {
 inline TextPageElement* new_clone(const TextPageElement& in)
 {
   return in.clone();
 }
-}
+//}
 
 // -----------------------------------------------------------------------
 // TextTextPageElement

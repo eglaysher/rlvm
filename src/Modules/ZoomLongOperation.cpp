@@ -94,10 +94,10 @@ bool ZoomLongOperation::operator()(RLMachine& machine)
 
     // figure out the new coordinates for the zoom.
     float ratio = currentFrame / float(m_duration);
-    int zX = m_fx + (ratio * (m_tx - m_fx));
-    int zY = m_fy + (ratio * (m_ty - m_fy));
-    int zWidth = m_fwidth + (ratio * (m_twidth - m_fwidth));
-    int zHeight = m_fheight + (ratio * (m_theight - m_fheight));
+    int zX = int(m_fx + (ratio * (m_tx - m_fx)));
+    int zY = int(m_fy + (ratio * (m_ty - m_fy)));
+    int zWidth = int(m_fwidth + (ratio * (m_twidth - m_fwidth)));
+    int zHeight = int(m_fheight + (ratio * (m_theight - m_fheight)));
 
     m_srcSurface->
       renderToScreen(zX, zY, zX + zWidth, zY + zHeight,

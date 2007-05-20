@@ -369,7 +369,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   // to a texture for input to the shader
   glBindTexture(GL_TEXTURE_2D, m_backTextureID);
   int ystart = int(s_screenHeight - fdy1 - (fdy2 - fdy1));
-  int idx1 = fdx1;
+  int idx1 = int(fdx1);
   glCopyTexSubImage2D(GL_TEXTURE_2D, 
                       0,
                       0, 0, 
@@ -728,8 +728,8 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
     int h = min(y1+h1, m_yOffset + m_logicalHeight) - max(y1, m_yOffset);
 
     // Adjust the destination coordinates
-    int dxWidth = dx2 - dx1;
-    int dyHeight = dy2 - dy1;
+    float dxWidth = dx2 - dx1;
+    float dyHeight = dy2 - dy1;
     float dx1Off = (virX - x1) / float(w1);
     dx1 = dx1 + (dxWidth * dx1Off);
     float dx2Off = w / float(w1);

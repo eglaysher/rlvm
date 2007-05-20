@@ -423,8 +423,9 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
     int w = tmp->w;
     int h = tmp->h;
     int heightLocation = m_insertionPointY - rubyTextSize();
-    int widthStart = m_rubyBeginPoint + ((endPoint - m_rubyBeginPoint) * 0.5f) - 
-      (w * 0.5f);
+    int widthStart = 
+      int(m_rubyBeginPoint + ((endPoint - m_rubyBeginPoint) * 0.5f) - 
+          (w * 0.5f));
     m_surface->blitFROMSurface(
       tmp, 0, 0, w, h,
       widthStart, heightLocation,
