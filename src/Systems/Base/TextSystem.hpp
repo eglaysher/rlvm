@@ -26,6 +26,7 @@
 #include <string>
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include "SDL_ttf.h"
 
 class Gameexe;
 class RLMachine;
@@ -102,6 +103,17 @@ protected:
 
   /// The default \#WINDOW_ATTR. This is what is changed by the 
   std::vector<int> m_windowAttr;
+
+  /** 
+   * @name Font storage
+   * 
+   * @{
+   */
+
+  typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
+  FontSizeMap m_map;
+
+  /// @}
 
   /**
    * @name Global Window Button Toggles
@@ -258,6 +270,8 @@ public:
   virtual bool handleMouseClick(RLMachine& machine, int x, int y,
                                 bool pressed) = 0;
   /// @}
+
+  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
 };
 
 #endif

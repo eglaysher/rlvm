@@ -35,6 +35,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 
@@ -71,39 +72,17 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
-  string filename = findFontFile("msgothic.ttc");
-  cerr << "font file: " << filename << endl;
-  cerr << "Normal font size: " << fontSizeInPixels() << ", ruby size: "
-       << rubyTextSize() << endl;
-
-  m_font = loadFont(filename, fontSizeInPixels());
-  m_rubyFont = loadFont(filename, rubyTextSize());
+  TextSystem& text = machine.system().text();
+  m_font = text.getFontOfSize(fontSizeInPixels());
+  m_rubyFont = text.getFontOfSize(rubyTextSize());
 
   clearWin();
 }
 
 // -----------------------------------------------------------------------
 
-TTF_Font* SDLTextWindow::loadFont(const std::string& filename, int size)
-{
-  TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
-  if(f == NULL)
-  {
-    ostringstream oss;
-    oss << "Error loading font: " << TTF_GetError();
-    throw SystemError(oss.str());
-  }
-
-  TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
-
-  return f;
-}
-
-// -----------------------------------------------------------------------
-
 SDLTextWindow::~SDLTextWindow()
 {
-  TTF_CloseFont(m_font);
 }
 
 // -----------------------------------------------------------------------
@@ -157,7 +136,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   }
 
   SDL_Surface* tmp =
-    TTF_RenderUTF8_Blended(m_font, current.c_str(), color);
+    TTF_RenderUTF8_Blended(m_font.get(), current.c_str(), color);
 
   // If the width of this glyph plus the spacing will put us over the
   // edge of the window, then line increment.
@@ -417,7 +396,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 
     SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(m_rubyFont, utf8str.c_str(), color);
+      TTF_RenderUTF8_Blended(m_rubyFont.get(), utf8str.c_str(), color);
 
     // Render glyph to surface
     int w = tmp->w;

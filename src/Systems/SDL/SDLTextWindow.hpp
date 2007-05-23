@@ -41,8 +41,8 @@ private:
   boost::shared_ptr<SDLSurface> m_surface;
 
   /// Font being used.
-  TTF_Font* m_font;
-  TTF_Font* m_rubyFont;
+  boost::shared_ptr<TTF_Font> m_font;
+  boost::shared_ptr<TTF_Font> m_rubyFont;
 
   /// Insertion point for text.
   int m_insertionPointX, m_insertionPointY;
@@ -58,8 +58,6 @@ private:
   bool setIndentation();
 
   void renderButtons(RLMachine& machine);
-
-  TTF_Font* loadFont(const std::string& filename, int size);
 
   void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& nextChar);
 

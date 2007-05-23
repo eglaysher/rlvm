@@ -24,19 +24,24 @@
 
 // -----------------------------------------------------------------------
 
+#include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 
 #include "libReallive/gameexe.h"
+#include "Utilities.h"
 
 #include <boost/bind.hpp>
 
 #include <iostream>
+#include <sstream>
 
 using std::vector;
+using std::ostringstream;
 using boost::bind;
+using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
 // TextSystem
@@ -82,6 +87,36 @@ TextSystem::TextSystem(Gameexe& gexe)
 TextSystem::~TextSystem()
 {
   
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<TTF_Font> TextSystem::getFontOfSize(int size)
+{
+  FontSizeMap::iterator it = m_map.find(size);
+  if(it == m_map.end())
+  {
+    string filename = findFontFile("msgothic.ttc");
+    TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
+    if(f == NULL)
+    {
+      ostringstream oss;
+      oss << "Error loading font: " << TTF_GetError();
+      throw SystemError(oss.str());
+    }
+
+    TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
+
+    // Build a smart_ptr to own this font, and set a deleter function.
+    shared_ptr<TTF_Font> font(f, TTF_CloseFont);
+
+    m_map[size] = font;
+    return font;
+  }
+  else
+  {
+    return it->second;
+  }
 }
 
 // -----------------------------------------------------------------------
