@@ -546,6 +546,10 @@ struct Grp_open_4 : public RLOp_Void_17<
     GraphicsSystem& graphics = machine.system().graphics();
     m_space.translateToRec(x1, y1, x2, y2);
 
+    // Set the long operation for the correct transition long operation
+    shared_ptr<Surface> dc0 = 
+      graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
+
     if(filename != "?")
     {
       if(filename == "???") filename = graphics.defaultGrpName();
@@ -555,14 +559,18 @@ struct Grp_open_4 : public RLOp_Void_17<
                      opacity, m_useAlpha);
     }
 
+    // Promote the objects 
+    graphics.promoteObjects();
+
     // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
+//    shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
     LongOperation* lop = 
-      EffectFactory::build(machine, dc1, dc0, time, style, direction, 
+      EffectFactory::build(machine, tmp, dc0, time, style, direction, 
                            interpolation, xsize, ysize, a, b, c);
-    decorateEffectWithBlit(lop, dc1, dc0);
+    decorateEffectWithBlit(lop, dc1, graphics.getDC(0));
     machine.pushLongOperation(lop);
   }
 };
@@ -592,7 +600,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     }
 
     // Promote the objects 
-    graphics.promoteObjects();
+    graphics.clearAndPromoteObjects();
 
     // Render the screen to a temporary 
     shared_ptr<Surface> dc1 = graphics.getDC(1);    
@@ -650,7 +658,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
     }
 
     // Promote the objects 
-    graphics.promoteObjects();
+    graphics.clearAndPromoteObjects();
 
     // Render the screen to a temporary 
     shared_ptr<Surface> dc1 = graphics.getDC(1);    

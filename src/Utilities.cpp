@@ -151,6 +151,13 @@ string findFile(RLMachine& machine, const string& fileName)
     // Then try PDT.
     file = gamepath + "pdt/" + newName + ".pdt";
     correctFile = correctPathCase(file);
+
+    if(correctFile == "")
+    {
+      ostringstream oss;
+      oss << "Could not open file: " << newName << endl;
+      throw rlvm::Exception(oss.str());
+    }
   }
 
   return correctFile;

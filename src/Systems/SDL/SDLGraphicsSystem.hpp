@@ -183,6 +183,7 @@ public:
 
   // Object related functions
   virtual void promoteObjects();
+  virtual void clearAndPromoteObjects();
 
   virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename);
 

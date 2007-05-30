@@ -699,6 +699,32 @@ void SDLGraphicsSystem::promoteObjects()
       fgObj = bgObj;
       bgObj.deleteObject();
     }
+  }  
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::clearAndPromoteObjects()
+{
+  for(int i = 0; i < 256; ++i) 
+  {
+    GraphicsObject& bgObj = getObject(OBJ_BG_LAYER, i);
+    GraphicsObject& fgObj = getObject(OBJ_FG_LAYER, i);
+    bool copyBgToFg = true;
+
+    if(!bgObj.hasObjectData() && fgObj.wipeCopy())
+      copyBgToFg = false;
+
+    if(copyBgToFg)
+    {
+      fgObj = bgObj;
+      bgObj.deleteObject();
+    }
+    else
+    {
+      // Clear the fg layer
+      fgObj.deleteObject();
+    }
   }
 }
 

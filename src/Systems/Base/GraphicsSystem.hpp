@@ -143,6 +143,7 @@ public:
 
   // ----------------------------------- [ Object getter/factory functions ]
   virtual void promoteObjects() = 0;
+  virtual void clearAndPromoteObjects() = 0;
 
   virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
                                              const std::string& filename) = 0;
