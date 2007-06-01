@@ -355,7 +355,9 @@ public:
    * 
    * @return Whether the machine is halted
    */
-  bool halted() const;
+  bool halted() const { return m_halted; }
+
+  // ---------------------------------------------------------------------
 
   /** 
    * Force the machine to halt. This should terminate the execution of

@@ -149,7 +149,8 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
                                        0, 0, m_width, m_height, 255);
 
   // Render all visible foreground objects
-  for_each(foregroundObjects, foregroundObjects + 256,
+  for_each(foregroundObjects.allocated_begin(), 
+           foregroundObjects.allocated_end(),
            bind(&GraphicsObject::render, _1, ref(machine)));
 
   // Render text
@@ -170,7 +171,8 @@ shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
                      0, 0, m_width, m_height, 255);
 
   // Render all visible foreground objects
-  for_each(foregroundObjects, foregroundObjects + 256,
+  for_each(foregroundObjects.allocated_begin(), 
+           foregroundObjects.allocated_end(),
            bind(&GraphicsObject::render, _1, ref(machine)));
 
   return endFrameToSurface();
@@ -210,7 +212,8 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
-  : m_screenDirty(false), m_screenNeedsRefresh(false), 
+  : m_screenDirty(false), m_screenNeedsRefresh(false),
+    foregroundObjects(256), backgroundObjects(256),
     m_displayDataInTitlebar(false), m_lastSeenNumber(0), 
     m_lastLineNumber(0)
 {
@@ -474,9 +477,6 @@ GraphicsObject& SDLGraphicsSystem::getObject(int layer, int objNumber)
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
-  if(objNumber < 0 || objNumber > 512)
-    throw rlvm::Exception("Out of rnage object number");
-
   if(layer == OBJ_BG_LAYER)
     return backgroundObjects[objNumber];
   else
@@ -490,10 +490,10 @@ void SDLGraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
-  if(objNumber < 0 || objNumber > 256)
-    throw rlvm::Exception("Out of range object number");
-
-  foregroundObjects[objNumber] = obj;
+  if(layer == OBJ_BG_LAYER)
+    backgroundObjects[objNumber] = obj;
+  else
+    foregroundObjects[objNumber] = obj;
 }
 
 // -----------------------------------------------------------------------
@@ -642,22 +642,22 @@ int SDLSurface::height() const { return m_surface->h; }
 class SDLGraphicsObjectOfFile : public GraphicsObjectData
 {
 private:
-  scoped_ptr<SDLSurface> surface;
+  shared_ptr<SDLSurface> surface;
+
+  // Private copying constructor
+  SDLGraphicsObjectOfFile(shared_ptr<SDLSurface> inSurface)
+    : surface(inSurface)
+  {}
 
 public:
   SDLGraphicsObjectOfFile(SDLGraphicsSystem& graphics, 
                           const std::string& filename)
     : surface(static_cast<SDLSurface*>(graphics.loadSurfaceFromFile(filename)))
-  {  }
-
-  SDLGraphicsObjectOfFile(SDLSurface* inSurface)
-    : surface(inSurface)
-  {  }
+  {  
+  }
 
   virtual void render(RLMachine& machine, const GraphicsObject& rp)
   {
-//    cerr << "Rendering object!" << endl;
-//    surface->dump();
     surface->renderToScreenAsObject(rp);
   }
 
@@ -677,7 +677,7 @@ public:
 
   GraphicsObjectData* clone() const 
   {
-    return new SDLGraphicsObjectOfFile(static_cast<SDLSurface*>(surface->clone()));
+    return new SDLGraphicsObjectOfFile(surface);
   }
 };
 
@@ -685,45 +685,44 @@ public:
 
 void SDLGraphicsSystem::promoteObjects()
 {
-  for(int i = 0; i < 256; ++i) 
+  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
+
+  FullIterator bg = backgroundObjects.full_begin();
+  FullIterator bgEnd = backgroundObjects.full_end();
+  FullIterator fg = foregroundObjects.full_begin();
+  FullIterator fgEnd = foregroundObjects.full_end();
+  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
-    GraphicsObject& bgObj = getObject(OBJ_BG_LAYER, i);
-    GraphicsObject& fgObj = getObject(OBJ_FG_LAYER, i);
-    bool copyBgToFg = true;
-
-    if(!bgObj.hasObjectData() && fgObj.wipeCopy())
-      copyBgToFg = false;
-
-    if(copyBgToFg)
+    if(bg.valid())
     {
-      fgObj = bgObj;
-      bgObj.deleteObject();
+      *fg = *bg;
+      bg->deleteObject();
     }
   }  
 }
 
 // -----------------------------------------------------------------------
 
+/// @todo The looping constructs here totally defeat the purpose of
+///       LazyArray, and make it a bit worse.
 void SDLGraphicsSystem::clearAndPromoteObjects()
 {
-  for(int i = 0; i < 256; ++i) 
+  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
+
+  FullIterator bg = backgroundObjects.full_begin();
+  FullIterator bgEnd = backgroundObjects.full_end();
+  FullIterator fg = foregroundObjects.full_begin();
+  FullIterator fgEnd = foregroundObjects.full_end();
+  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
-    GraphicsObject& bgObj = getObject(OBJ_BG_LAYER, i);
-    GraphicsObject& fgObj = getObject(OBJ_FG_LAYER, i);
-    bool copyBgToFg = true;
-
-    if(!bgObj.hasObjectData() && fgObj.wipeCopy())
-      copyBgToFg = false;
-
-    if(copyBgToFg)
+    if(bg.valid())
     {
-      fgObj = bgObj;
-      bgObj.deleteObject();
+      *fg = *bg;
+      bg->deleteObject();
     }
-    else
+    else if(fg.valid() && !fg->wipeCopy())
     {
-      // Clear the fg layer
-      fgObj.deleteObject();
+      fg->deleteObject();
     }
   }
 }

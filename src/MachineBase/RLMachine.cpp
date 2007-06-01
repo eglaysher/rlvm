@@ -547,13 +547,6 @@ void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype
 
 // -----------------------------------------------------------------------
 
-bool RLMachine::halted() const 
-{ 
-  return m_halted;
-}
-
-// -----------------------------------------------------------------------
-
 void RLMachine::halt() 
 {
   m_halted = true; 

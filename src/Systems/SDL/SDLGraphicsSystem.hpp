@@ -25,6 +25,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "LazyArray.hpp"
 
 struct SDL_Surface;
 class SDLSurface;
@@ -64,10 +65,10 @@ private:
   bool m_screenNeedsRefresh;
 
   /// Foreground objects
-  GraphicsObject foregroundObjects[256];
+  LazyArray<GraphicsObject> foregroundObjects;
 
   /// Background objects
-  GraphicsObject backgroundObjects[256];
+  LazyArray<GraphicsObject> backgroundObjects;
 
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool m_displayDataInTitlebar;

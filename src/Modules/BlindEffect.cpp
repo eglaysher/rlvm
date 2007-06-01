@@ -38,6 +38,10 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
+#include <iostream>
+using std::cerr;
+using std::endl;
+
 // -----------------------------------------------------------------------
 // BlindEffect base class
 // -----------------------------------------------------------------------
@@ -158,7 +162,8 @@ BlindLeftToRightEffect::BlindLeftToRightEffect(
   int width, int height, int time, int blindSize)
   : BlindEffect(machine, src, dst, width, height, time, 
                 blindSize)
-{}
+{
+}
 
 // -----------------------------------------------------------------------
 
@@ -172,6 +177,7 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
   int numBlinds = width() / blindSize() + 1;
   int rowsToDisplay = int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
+  cerr << "----" << endl;
   for(int currentBlind = 0; currentBlind < numBlinds; ++currentBlind)
   {
     if(currentBlind <= rowsToDisplay)
@@ -181,6 +187,9 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
         currentlyDisplayed = blindSize();
 
       int polygonXStart = currentBlind * blindSize();
+
+      cerr << "(" << polygonXStart << ", " << polygonXStart + currentlyDisplayed
+           << ")" << endl;
 
       // Render polygon
       srcSurface().
