@@ -79,7 +79,7 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
                                  int currentTime)
 {
   GraphicsSystem& graphics = machine.system().graphics();
-  int numBlinds = height() / blindSize() + 1;
+  int numBlinds = maxSize / blindSize() + 1;
   int rowsToDisplay = int((float(currentTime) / duration()) * 
                           (blindSize() + numBlinds));
 
@@ -87,12 +87,11 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
   {
     if(currentBlind <= rowsToDisplay)
     {
-      int currentlyDisplayed = currentBlind - rowsToDisplay;
+      int currentlyDisplayed = abs(currentBlind - rowsToDisplay);
       if(currentlyDisplayed > blindSize())
         currentlyDisplayed = blindSize();
 
       int polygonStart = currentBlind * blindSize();
-
       renderPolygon(polygonStart, polygonStart + currentlyDisplayed);
     }
   }
@@ -105,13 +104,14 @@ void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
 {
   GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = maxSize / blindSize() + 1;
-  int rowsToDisplay = int((float(currentTime) / duration()) * (blindSize() + numBlinds));
+  int rowsToDisplay = int((float(currentTime) / duration()) *
+                          (blindSize() + numBlinds));
 
   for(int currentBlind = numBlinds; currentBlind >= 0; --currentBlind)
   {
     if((numBlinds - currentBlind) < rowsToDisplay)
     {
-      int currentlyDisplayed = numBlinds - currentBlind - rowsToDisplay;
+      int currentlyDisplayed = abs(numBlinds - currentBlind - rowsToDisplay);
       if(currentlyDisplayed > blindSize())
         currentlyDisplayed = blindSize();
 
