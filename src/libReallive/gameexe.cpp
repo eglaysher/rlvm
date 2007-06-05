@@ -36,7 +36,7 @@
 
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -179,6 +179,22 @@ void Gameexe::throwUnknownKey(const std::string& key)
 
 // -----------------------------------------------------------------------
 
+GameexeFilteringIterator Gameexe::filtering_begin(const std::string& filter)
+{
+  return GameexeFilteringIterator(filter, *this, data_.begin());
+}
+
+// -----------------------------------------------------------------------
+
+GameexeFilteringIterator Gameexe::filtering_end()
+{
+  return GameexeFilteringIterator("", *this, data_.end());
+}
+
+// -----------------------------------------------------------------------
+// GameexeInterpretObject
+// -----------------------------------------------------------------------
+
 const int GameexeInterpretObject::to_int(const int defaultValue) const {
   const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
   if(ints.size() == 0)
@@ -261,3 +277,18 @@ GameexeInterpretObject& GameexeInterpretObject::operator=(const int value)
   m_objectToLookupOn.setIntAt(m_key, value);
   return *this;
 }
+
+// -----------------------------------------------------------------------
+// GameexeFilteringIterator
+// -----------------------------------------------------------------------
+
+void GameexeFilteringIterator::incrementUntilValid()
+{
+  while(currentKey != gexe.data_.end() &&
+        !istarts_with(currentKey->first, filterKeys))
+  {
+    currentKey++;
+  }
+}
+
+

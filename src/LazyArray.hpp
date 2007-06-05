@@ -180,8 +180,8 @@ private:
   void increment()
   {
     m_currentPosition++;
-    while(m_array->rawDeref(m_currentPosition) == NULL && 
-          m_currentPosition < m_array->size())
+    while(m_currentPosition < m_array->size() &&
+          m_array->rawDeref(m_currentPosition) == NULL)
       m_currentPosition++;
   }
 

@@ -72,6 +72,7 @@
 #include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
+#include <boost/algorithm/string.hpp>
 
 using namespace boost;
 using namespace std;
@@ -732,5 +733,15 @@ void SDLGraphicsSystem::clearAndPromoteObjects()
 GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(RLMachine& machine, 
                                                       const std::string& filename)
 {
-  return new SDLGraphicsObjectOfFile(*this, findFile(machine, filename));
+  string fullPath = findFile(machine, filename);
+  if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
+  {
+    return new SDLGraphicsObjectOfFile(*this, fullPath);
+  }
+  else
+  {
+    ostringstream oss;
+    oss << "Don't know how to handle object file: \"" << fullPath << "\"";
+    throw rlvm::Exception(oss.str());
+  }
 }

@@ -23,11 +23,15 @@
 #ifndef __System_hpp__
 #define __System_hpp__
 
+#include <vector>
+#include <string>
+
 class GraphicsSystem;
 class EventSystem;
 class TextSystem;
 class RLMachine;
 class Gameexe;
+class GameexeInterpretObject;
 
 /**
  * The system class provides a generalized interface to all the
@@ -39,6 +43,11 @@ class Gameexe;
  */
 class System
 {
+private:
+  std::vector<std::string> cachedSearchPaths;
+
+  void addPath(GameexeInterpretObject gio);
+
 public:
   virtual ~System() {}
 
@@ -49,6 +58,8 @@ public:
   virtual Gameexe& gameexe() = 0;
   virtual TextSystem& text() = 0;
 //  virtual SoundSystem& soundSystem() = 0;
+
+  const std::vector<std::string>& getSearchPaths();
 };
 
 #endif

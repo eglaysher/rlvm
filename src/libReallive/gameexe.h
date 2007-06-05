@@ -49,6 +49,7 @@ using stdext::hash_map;
 #include "libReallive/defs.h"
 
 class Gameexe;
+class GameexeFilteringIterator;
 
 /**
  * Encapsulates a line of the Gameexe file that's passed to the
@@ -77,6 +78,7 @@ private:
   /// We expose our private interface to tightly couple with Gameexe,
   /// since we are a helper class for it.
   friend class Gameexe;
+  friend class GameexeFilteringIterator;
 
   const std::string m_key;
   Gameexe& m_objectToLookupOn;
@@ -183,14 +185,13 @@ public:
  * New interface to Gameexe, replacing the one inherited from Haeleth,
  * which was hard to use and was very C-ish. This interface's goal is
  * to make accessing data in the Gameexe as easy as possible.
- * 
  */
 class Gameexe
 {
-
 private:
   /// Allow access from the helper class
   friend class GameexeInterpretObject;
+  friend class GameexeFilteringIterator;
 
   /// @{
   /**
@@ -276,13 +277,25 @@ public:
 
   /// @}
 
+  /**
+   * @name Iterated interface for keys
+   *
+   * This interface gives filtering iterators that filter on a
+   * possible value.
+   * 
+   * @{
+   */
+  GameexeFilteringIterator filtering_begin(const std::string& filter);
+  GameexeFilteringIterator filtering_end();
+  /// @}
 
   /// @{
   /**
    * @name Raw interface for Gameexe.ini data access
    * 
    * This is the internal interface used by GameexeInterpretObject,
-   * but it is exposed to the user for the handfull of cases where the 
+   * but it is exposed to the user for the handfull of cases where
+   * integer and string data are mixed in the same line.
    */
 
   /**
@@ -347,5 +360,58 @@ private:
 
   void throwUnknownKey(const std::string& key);
 };
+
+// -----------------------------------------------------------------------
+
+class GameexeFilteringIterator 
+  : public boost::iterator_facade<
+  GameexeFilteringIterator,
+  GameexeInterpretObject,
+  boost::forward_traversal_tag, GameexeInterpretObject>
+{
+public:
+  explicit GameexeFilteringIterator(const std::string& inFilterKeys,
+                                    Gameexe& inGexe,
+                                    Gameexe::data_t::const_iterator it)
+    : filterKeys(inFilterKeys), gexe(inGexe), currentKey(it)
+  {}
+
+  template<class OtherValue>
+  GameexeFilteringIterator(GameexeFilteringIterator const& other)
+    : filterKeys(other.filterKeys), gexe(other.gexe), 
+      currentKey(other.currentKey)
+  {}
+
+private:
+  friend class boost::iterator_core_access;
+  friend class Gameexe;
+
+  bool equal(GameexeFilteringIterator const& other) const
+  {
+    // It is deliberate that we only compare the current keys. This
+    // means you don't need to 
+    return currentKey == other.currentKey;
+  }
+
+  void increment()
+  {
+    currentKey++;
+    incrementUntilValid();
+  }
+
+  GameexeInterpretObject dereference() const
+  {
+    return GameexeInterpretObject(currentKey->first, gexe);
+  }
+
+  void incrementUntilValid();
+
+  const std::string filterKeys;
+  Gameexe& gexe;
+  Gameexe::data_t::const_iterator currentKey;
+};
+
+// -----------------------------------------------------------------------
+
 
 #endif

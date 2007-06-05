@@ -43,16 +43,27 @@ std::string correctPathCase(const std::string& fileName);
 
 // -----------------------------------------------------------------------
 
+/**
+ * @name File type constants.
+ * 
+ * These constant, externed vectors are passed as parameters to
+ * findFile to control which file types are searched for. Defaults to
+ * all.
+ *
+ * @{
+ */
+extern const std::vector<std::string> ALL_FILETYPES;
+extern const std::vector<std::string> IMAGE_FILETYPES;
+/// @}
+
 /** 
  * Returns the full path to a g00 file for the basename of the file.
  * 
  * @param fileName The filename given in the source code.
  * @return The full path of the file
- * @todo This function is currently a hack, doing a naive look into
- *       #__GAMEPATH / g00. Should eventually be fixed to do full
- *       searches based on the #FOLDNAME.ext .
  */
-std::string findFile(RLMachine& machine, const std::string& fileName);
+std::string findFile(RLMachine& machine, const std::string& fileName,
+                     const std::vector<std::string>& extensions = ALL_FILETYPES);
 
 // -----------------------------------------------------------------------
 

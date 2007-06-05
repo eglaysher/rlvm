@@ -39,7 +39,9 @@
 #include "boost/filesystem/operations.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/assign/list_of.hpp> // for 'list_of()'
 
+using boost::assign::list_of;
 using std::stack;
 using std::cerr;
 using std::endl;
@@ -126,41 +128,42 @@ std::string findFontFile(const std::string& fileName)
 
 // -----------------------------------------------------------------------
 
+const std::vector<std::string> ALL_FILETYPES = list_of("g00")("pdt")("anm");
+const std::vector<std::string> IMAGE_FILETYPES = list_of("g00")("pdt");
+
 /**
  * @todo This function is a hack and needs to be completely rewritten
  *       to use the \#FOLDNAME table in the Gameexe.ini file.
  */
-string findFile(RLMachine& machine, const string& fileName)
+string findFile(RLMachine& machine, const string& fileName,
+                const vector<string>& extensions)
 {
   using namespace boost;
 
   // Hack to get around fileNames like "REALNAME?010", where we only
   // want REALNAME.
-  vector<string> out;
-  split(out, fileName, is_any_of("?"));
-  string newName = out.at(0);
+  string newName = 
+    string(fileName.begin(), find(fileName.begin(), fileName.end(), '?'));
 
-  // Hack until I do this correctly
-  string gamepath = machine.system().gameexe()("__GAMEPATH").to_string();
-
-  // First search for this file as a g00
-  string file = gamepath + "g00/" + newName + ".g00";
-  string correctFile = correctPathCase(file);
-  if(correctFile == "")
+  // Iterate across the search paths in the order they were specified.
+  const vector<string>& blah = machine.system().getSearchPaths();
+  for(vector<string>::const_iterator it = blah.begin(); it != blah.end(); ++it)
   {
-    // Then try PDT.
-    file = gamepath + "pdt/" + newName + ".pdt";
-    correctFile = correctPathCase(file);
-
-    if(correctFile == "")
+    for(vector<string>::const_iterator ext = extensions.begin();
+        ext != extensions.end(); ++ext)
     {
-      ostringstream oss;
-      oss << "Could not open file: " << newName << endl;
-      throw rlvm::Exception(oss.str());
+      string file = *it + "/" + newName + "." + *ext;
+      string correctFile = correctPathCase(file);
+      if(correctFile != "")
+      {
+        return correctFile;
+      }
     }
   }
 
-  return correctFile;
+  ostringstream oss;
+  oss << "Could not open file: " << newName << endl;
+  throw rlvm::Exception(oss.str());
 }
 
 // -----------------------------------------------------------------------
