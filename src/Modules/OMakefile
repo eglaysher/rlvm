@@ -23,6 +23,7 @@ LRLFILES[] =
   Module_Sys
   Module_Sys_Frame
   Module_Sys_Timer
+  Module_Gan
   cp932toUnicode
   Effect
   FadeEffect

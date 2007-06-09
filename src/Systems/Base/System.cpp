@@ -42,7 +42,6 @@ void System::addPath(GameexeInterpretObject gio)
 {
   string gamepath = gameexe()("__GAMEPATH").to_string();
   gamepath += gio.to_string();
-  cerr << "Path: " << gamepath << endl;
   cachedSearchPaths.push_back(gamepath);
 }
 

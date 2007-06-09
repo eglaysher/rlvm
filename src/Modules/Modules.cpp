@@ -36,6 +36,7 @@
 #include "Modules/Module_Refresh.hpp"
 #include "Modules/Module_Scr.hpp"
 #include "Modules/Module_Debug.hpp"
+#include "Modules/Module_Gan.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -65,4 +66,5 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new RefreshModule);
   rlmachine.attachModule(new ScrModule);
   rlmachine.attachModule(new DebugModule);
+  rlmachine.attachModule(new GanModule);
 }

@@ -31,6 +31,8 @@
 #include "Modules/Modules.hpp"
 #include "Utilities.h"
 
+//#include "Systems/Base/AnmGraphicsObjectData.hpp"
+
 #include <boost/program_options.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -333,6 +335,8 @@ int main(int argc, char* argv[])
     addAllModules(rlmachine);
 
     rlmachine.setHaltOnException(false);
+
+//    AnmGraphicsObjectData d(rlmachine, "/Users/elliot/KANON_SE_ALL/anm/KAN_MOJA.Anm");
 
     while(!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,

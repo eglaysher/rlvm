@@ -28,6 +28,7 @@ LIBRLVMFILES[] =
   Systems/Base/TextPage
   Systems/Base/TextSystem
   Systems/Base/TextKeyCursor
+  Systems/Base/AnmGraphicsObjectData
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities

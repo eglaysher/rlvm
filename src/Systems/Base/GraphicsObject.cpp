@@ -40,6 +40,22 @@ using namespace std;
 GraphicsObjectData::~GraphicsObjectData() { }
 
 // -----------------------------------------------------------------------
+
+bool GraphicsObjectData::isAnimation() const
+{   
+  return false; 
+}
+
+// -----------------------------------------------------------------------
+// AnimatedObjectData
+// -----------------------------------------------------------------------
+
+bool AnimatedObjectData::isAnimation() const
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------
 // GraphicsObject
 // -----------------------------------------------------------------------
 
@@ -245,4 +261,13 @@ void GraphicsObject::deleteObject()
 void GraphicsObject::clearObject()
 {
   *this = GraphicsObject();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::execute(RLMachine& machine)
+{
+  if(m_objectData) {
+    m_objectData->execute(machine);
+  }
 }

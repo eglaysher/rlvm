@@ -43,6 +43,22 @@ public:
   virtual int pixelHeight(const GraphicsObject& renderingProperties) = 0;
 
   virtual GraphicsObjectData* clone() const = 0;
+
+  virtual void execute(RLMachine& machine) { }
+
+  virtual bool isAnimation() const;
+};
+
+// -----------------------------------------------------------------------
+
+class AnimatedObjectData : public GraphicsObjectData 
+{
+public:
+  virtual bool isAnimation() const;
+
+  virtual bool isPlaying() const = 0;
+
+  virtual void playSet(RLMachine& machine, int set) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -200,6 +216,12 @@ public:
 
   int wipeCopy() const { return m_wipeCopy; }
   void setWipeCopy(const int wipeCopy) { m_wipeCopy = wipeCopy; }
+
+  /**
+   * Called each pass through the gameloop to see if this object needs
+   * to force a redraw, or something.
+   */
+  void execute(RLMachine& machine);
   
 private:
 

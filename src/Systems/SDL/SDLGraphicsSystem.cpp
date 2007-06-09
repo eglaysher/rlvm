@@ -53,6 +53,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/AnmGraphicsObjectData.hpp"
 
 #include "libReallive/gameexe.h"
 #include "file.h"
@@ -346,9 +347,14 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   // For example, we should probably do something when the screen is
   // dirty.
 
+  // Check to see if any of the graphics objects are reporting that
+  // they want to force a redraw
+  for_each(foregroundObjects.allocated_begin(),
+           foregroundObjects.allocated_end(),
+           bind(&GraphicsObject::execute, _1, ref(machine)));
+
   // Update the seen.
-  int currentTime = machine.system().event().getTicks();
-  
+  int currentTime = machine.system().event().getTicks();  
   if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
   {
     m_timeOfLastTitlebarUpdate = currentTime;
@@ -737,6 +743,10 @@ GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(RLMachine& machine,
   if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
   {
     return new SDLGraphicsObjectOfFile(*this, fullPath);
+  }
+  else if(iends_with(fullPath, "anm"))
+  {
+    return new AnmGraphicsObjectData(machine, fullPath);
   }
   else
   {
