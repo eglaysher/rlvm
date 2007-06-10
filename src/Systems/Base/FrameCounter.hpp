@@ -67,8 +67,8 @@ public:
   /** 
    * When a timer ends, there's no need to be so harsh on the
    * system. Tell the eventSystem that we no longer require near
-   * realtime event handeling.
-   * 
+   * realtime event handling.
+   *
    * @see beginTimer
    */
   void endTimer(EventSystem& eventSystem);
@@ -76,13 +76,26 @@ public:
   bool isActive() const { return m_isActive; }
   void setActive(bool active) { m_isActive = active; }
 
+  bool checkIfFinished(float newValue);
+  void updateTimeValue(float numTicks);
 
+  
+  int readNormalFrameWithChangeInterval(
+    EventSystem& eventSystem, float changeInterval, 
+    float& timeAtLastCheck);
+
+  /**
+   * Called from readNormalFrameWithChangeInterval when finished. This
+   * method can be overloaded to control what happens when the timer
+   * has reached its end.
+   */
+  virtual void finished(EventSystem& eventSystem);
 
 // Give these accessors later?
 protected:
   EventSystem& m_eventSystem;
 
-  int m_value;
+  float m_value;
   int m_minValue;
   int m_maxValue;
   bool m_isActive;
@@ -104,8 +117,8 @@ public:
   virtual int readFrame(EventSystem& eventSystem);
 
 private:
-  unsigned int m_changeInterval;
-  unsigned int m_timeAtLastCheck;
+  float m_changeInterval;
+  float m_timeAtLastCheck;
 };
 
 // -----------------------------------------------------------------------
@@ -119,10 +132,11 @@ public:
   LoopFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
+  virtual void finished(EventSystem& eventSystem);
 
 private:
-  unsigned int m_changeInterval;
-  unsigned int m_timeAtLastCheck;
+  float m_changeInterval;
+  float m_timeAtLastCheck;
 };
 
 // -----------------------------------------------------------------------
@@ -150,8 +164,13 @@ private:
  */
 class AcceleratingFrameCounter : public FrameCounter
 {
+private:
+  unsigned int m_startTime;
+  float m_timeAtLastCheck;
+
 public:
-  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, 
+                           int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
 };
@@ -164,8 +183,13 @@ public:
  */
 class DeceleratingFrameCounter : public FrameCounter
 {
+private:
+  unsigned int m_startTime;
+  float m_timeAtLastCheck;
+
 public:
-  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, 
+                           int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
 };

@@ -304,7 +304,7 @@ public:
    * 
    * @param i 
    */
-  void setLineNumber(const int i) { m_line = i; }
+  void setLineNumber(const int i);
 
   /**
    * Where the current scenario was compiled with RLdev, returns the text

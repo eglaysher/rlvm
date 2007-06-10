@@ -558,3 +558,11 @@ void RLMachine::setHaltOnException(bool haltOnException)
 {
   m_haltOnException = haltOnException;
 }
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setLineNumber(const int i) 
+{
+//  cerr << "On line " << i << endl;
+  m_line = i;
+}
