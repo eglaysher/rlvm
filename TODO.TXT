@@ -1,0 +1,16 @@
+
+- Redo the graphics layer so graphics data lives on the graphics
+  card. As is, we have an SDL_Surface in main memory, which uploads
+  its data to the graphics card. And then hangs around to be blitted
+  against itself and 
+  - Effect: Half our runtime is spent uploading memory to the graphics
+    card.
+  - Stopgap: implement lazy updating, so that full images don't get
+    uploaded each time.
+  - Real fix: 
+    - Remove SDL_Surface from the system. Make loadSurfaceFromFile
+      take the raw data and upload it to the graphics card. 
+    - Switch from the SDL_Surface based SDL_ttf to the OpenGL ftgl.
+
+- Implement GAN animation
+- Write index_series

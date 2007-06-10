@@ -43,6 +43,16 @@
 
 // -----------------------------------------------------------------------
 
+struct Obj_objCopyFgToBg : public RLOp_Void_1<IntConstant_T> 
+{
+  void operator()(RLMachine& machine, int buf) {
+    GraphicsObject& go = getGraphicsObject(machine, OBJ_FG_LAYER, buf);
+    setGraphicsObject(machine, OBJ_BG_LAYER, buf, go);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Obj_objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int m_fromLayer, m_toLayer;
   Obj_objCopy(int from, int to) : m_fromLayer(from), m_toLayer(to) {}
@@ -146,7 +156,9 @@ struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
 ObjCopyFgToBg::ObjCopyFgToBg()
   : RLModule("ObjCopyFgToBg", 1, 60)
 {
-  
+  // This may be wrong; the function is undocumented, but this appears
+  // to fix the display problem in Kanon OP.
+  addOpcode(2, 0, "objCopyFgToBg", new Obj_objCopyFgToBg);
 }
 
 // -----------------------------------------------------------------------

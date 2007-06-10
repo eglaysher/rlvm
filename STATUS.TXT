@@ -14,8 +14,10 @@ Kanon SE ALL
     smaller button. Nothing works, ^C.
     [Haeleth: right-click works to return to menu]
   * owarisuru shuts down the interpreter cleanly.
-* Playable through the prologue. Glitches and hangs during Last Regrets.
-
+* Playable through the prologue. Gets through most of Last Regrets,
+  but glitches right after the part with Ayu getting
+  wings. Theoretically caused by index_series.
+a
 Planetarian CD
 --------------
 * Starts
