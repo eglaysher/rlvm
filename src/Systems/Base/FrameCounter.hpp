@@ -76,7 +76,11 @@ public:
   bool isActive() const { return m_isActive; }
   void setActive(bool active) { m_isActive = active; }
 
-
+  bool checkIfFinished(int newValue);
+  void updateTimeValue(int numTicks);
+  int readNormalFrameWithChangeInterval(
+    EventSystem& eventSystem, int changeInterval, 
+    unsigned int& timeAtLastCheck);
 
 // Give these accessors later?
 protected:
@@ -150,8 +154,13 @@ private:
  */
 class AcceleratingFrameCounter : public FrameCounter
 {
+private:
+  unsigned int m_startTime;
+  unsigned int m_timeAtLastCheck;
+
 public:
-  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, 
+                           int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
 };
@@ -164,8 +173,13 @@ public:
  */
 class DeceleratingFrameCounter : public FrameCounter
 {
+private:
+  unsigned int m_startTime;
+  unsigned int m_timeAtLastCheck;
+
 public:
-  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, 
+                           int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
 };

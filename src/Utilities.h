@@ -110,6 +110,13 @@ void getScreenSize(Gameexe& gameexe, int& width, int& height);
 
 // -----------------------------------------------------------------------
 
+/**
+ * Clamp var between [min, max].
+ */
+void clamp(float& var, float min, float max);
+
+// -----------------------------------------------------------------------
+
 namespace rlvm {
 
 class Exception : public std::exception
