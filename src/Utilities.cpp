@@ -32,6 +32,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "libReallive/gameexe.h"
 
+#include <fstream>
 #include <string>
 #include <iostream>
 #include <stack>
@@ -41,6 +42,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/assign/list_of.hpp> // for 'list_of()'
 
+using boost::scoped_array;
 using boost::assign::list_of;
 using std::stack;
 using std::cerr;
@@ -48,6 +50,8 @@ using std::endl;
 using std::ostringstream;
 using std::string;
 using std::vector;
+using std::ifstream;
+using std::ios;
 
 // -----------------------------------------------------------------------
 
@@ -223,6 +227,20 @@ void clamp(float& var, float min, float max)
     var = min;
   else if(var > max)
     var = max;
+}
+
+// -----------------------------------------------------------------------
+
+bool loadFileData(ifstream& ifs, scoped_array<char>& anmData, int& fileSize)
+{
+  ifs.seekg(0, ios::end);
+  fileSize = ifs.tellg();  
+  ifs.seekg(0, ios::beg);
+
+  anmData.reset(new char[fileSize]);
+  ifs.read(anmData.get(), fileSize);
+
+  return !ifs.good();
 }
 
 

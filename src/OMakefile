@@ -1,6 +1,6 @@
-if $(not $(defined-env VERBOSE))
-  OMakeFlags(-S --progress)
-  export
+# if $(not $(defined-env VERBOSE))
+#   OMakeFlags(-S --progress)
+#   export
 
 CXXFLAGS = --ansi -Wall -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
 
@@ -28,6 +28,7 @@ LIBRLVMFILES[] =
   Systems/Base/TextPage
   Systems/Base/TextSystem
   Systems/Base/TextKeyCursor
+  Systems/Base/GanGraphicsObjectData
   Systems/Base/AnmGraphicsObjectData
   Systems/SDL/libSDLSystem
   libReallive/libReallive

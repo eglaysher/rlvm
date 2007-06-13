@@ -25,6 +25,9 @@
 
 #include <string>
 #include <vector>
+#include <iosfwd>
+
+#include <boost/scoped_array.hpp>
 
 class RLMachine;
 class Gameexe;
@@ -114,6 +117,12 @@ void getScreenSize(Gameexe& gameexe, int& width, int& height);
  * Clamp var between [min, max].
  */
 void clamp(float& var, float min, float max);
+
+// -----------------------------------------------------------------------
+
+bool loadFileData(std::ifstream& ifs, 
+                  boost::scoped_array<char>& anmData, 
+                  int& fileSize);
 
 // -----------------------------------------------------------------------
 

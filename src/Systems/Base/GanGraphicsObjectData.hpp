@@ -20,8 +20,8 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __AnmGraphicsObjectData_hpp__
-#define __AnmGraphicsObjectData_hpp__
+#ifndef __GanGraphicsObjectData_hpp__
+#define __GanGraphicsObjectData_hpp__
 
 #include "GraphicsObject.hpp"
 
@@ -34,74 +34,25 @@
 class Surface;
 class RLMachine;
 
-class AnmGraphicsObjectData : public AnimatedObjectData
+class GanGraphicsObjectData : public AnimatedObjectData
 {
 private:
-  /// Note: This internal structure is heavily based off of xkanon's
-  /// ANM file implementation, but has been changed to be all C++ like.
 
-  /**
-   * @name Animation Data
-   * 
-   * (This structure was stolen from xkanon.)
-   *
-   * @{
-   */
-  struct Frame {
-    int src_x1, src_y1;
-    int src_x2, src_y2;
-    int dest_x, dest_y;
-    int time;
-  };
-
-  std::vector<Frame> frames;
-  std::vector< std::vector<int> > framelist;
-  std::vector< std::vector<int> > animationSet;
-
-  /// The image the above coordinates map into.
-  boost::shared_ptr<Surface> image;
-
-  /// @}
-
-  /**
-   * @name Animation state
-   * 
-   * @{
-   */
   bool m_currentlyPlaying;
 
-  std::vector<int>::iterator m_curFrameSet;
-  std::vector<int>::iterator m_curFrameSetEnd;
+  void testFileMagic(const std::string& fileName,
+                     boost::scoped_array<char>& ganData, int fileSize);
+  void readData(
+    const std::string& fileName,
+    boost::scoped_array<char>& ganData, int fileSize);
 
-  std::vector<int>::iterator m_curFrame;
-  std::vector<int>::iterator m_curFrameEnd;
+  void throwBadFormat(
+    const std::string& filename, const std::string& error);
 
-  int m_currentFrame;
-
-  unsigned int m_timeAtLastFrameChange;
-
-  // @}
-
-  void advanceFrame(RLMachine& machine);
-
-
-  /** 
-   * @name Data loading functions
-   * 
-   * @{
-   */
-  bool testFileMagic(boost::scoped_array<char>& anmData);
-  void readIntegerList(
-    const char* start, int offset, int iterations, 
-    std::vector< std::vector<int> >& dest);
-  void loadAnmFileFromData(
-    RLMachine& machine, boost::scoped_array<char>& anmData);
-  void fixAxis(Frame& frame, int width, int height);
-  /// @}
 
 public:
-  AnmGraphicsObjectData(RLMachine& machine, const std::string& file);
-  ~AnmGraphicsObjectData();
+  GanGraphicsObjectData(RLMachine& machine, const std::string& file);
+  ~GanGraphicsObjectData();
 
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties);
@@ -116,6 +67,5 @@ public:
   virtual bool isPlaying() const;
   virtual void playSet(RLMachine& machine, int set);
 };
-
 
 #endif

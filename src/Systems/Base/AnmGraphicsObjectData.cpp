@@ -91,8 +91,9 @@ AnmGraphicsObjectData::AnmGraphicsObjectData(
     throw rlvm::Exception(oss.str());
   }
 
+  int fileSize = 0;
   scoped_array<char> anmData;
-  if(loadFileData(ifs, anmData))
+  if(loadFileData(ifs, anmData, fileSize))
   {
     ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
@@ -113,23 +114,6 @@ AnmGraphicsObjectData::AnmGraphicsObjectData(
 
 AnmGraphicsObjectData::~AnmGraphicsObjectData()
 {}
-
-// -----------------------------------------------------------------------
-
-bool AnmGraphicsObjectData::loadFileData(
-  ifstream& ifs, scoped_array<char>& anmData)
-{
-  ifs.seekg(0, ios::end);
-  int fileSize = ifs.tellg();  
-  if(fileSize < 0xb8)
-    throw rlvm::Exception("ANM file impossibly small!");
-  ifs.seekg(0, ios::beg);
-
-  anmData.reset(new char[fileSize]);
-  ifs.read(anmData.get(), fileSize);
-
-  return !ifs.good();
-}
 
 // -----------------------------------------------------------------------
 
