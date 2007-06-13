@@ -78,7 +78,7 @@ template<>
 void object::test<1>()
 {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
-  ensure_equals("Wrong number of keys", ini.size(), 4);
+  ensure_equals("Wrong number of keys", ini.size(), 7);
 }
 
 // -----------------------------------------------------------------------
@@ -125,5 +125,56 @@ void object::test<4>()
 
 // -----------------------------------------------------------------------
 
+/**
+ * Make sure operator() works with multiple keys...
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
+  ensure_equals("Wrong value!", ini("IMAGINE", "ONE"), 1);
+  ensure_equals("Wrong value!", ini("IMAGINE", "TWO"), 2);
+  ensure_equals("Wrong value!", ini("IMAGINE", "THREE"), 3);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Make sure GameexeInterpretObject chaining works correctly.
+ */
+template<>
+template<>
+void object::test<6>()
+{
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
+  GameexeInterpretObject imagine = ini("IMAGINE");
+  ensure_equals("Wrong value!", imagine("ONE"), 1);
+  ensure_equals("Wrong value!", imagine("TWO"), 2);
+  ensure_equals("Wrong value!", imagine("THREE"), 3);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Make sure the filtering iterators work on Gameexe...
+ */
+template<>
+template<>
+void object::test<7>()
+{
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
+  GameexeFilteringIterator it = ini.filtering_begin("IMAGINE");
+  GameexeFilteringIterator end = ini.filtering_end();
+  for(; it != end; ++it)
+  {
+    if(it->key() != "IMAGINE.ONE" &&
+       it->key() != "IMAGINE.TWO" &&
+       it->key() != "IMAGINE.THREE")
+    {
+      fail("Failed to filter keys in GameexeFilteringIterator.");
+    }
+  }
+}
 
 }

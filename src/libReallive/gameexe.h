@@ -169,6 +169,10 @@ public:
    */
   bool exists() const;
 
+  const std::string& key() const {
+    return m_key;
+  }
+
   /** 
    * Assign a value. Unlike all the other methods, we can safely
    * templatize this since the functions it calls can be overloaded.
@@ -374,7 +378,9 @@ public:
                                     Gameexe& inGexe,
                                     Gameexe::data_t::const_iterator it)
     : filterKeys(inFilterKeys), gexe(inGexe), currentKey(it)
-  {}
+  {
+    incrementUntilValid();
+  }
 
   template<class OtherValue>
   GameexeFilteringIterator(GameexeFilteringIterator const& other)
