@@ -24,6 +24,7 @@
 #define __LazyArray_hpp__
 
 #include <stdexcept>
+#include <boost/utility.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 
 // Forward declaration
@@ -164,6 +165,8 @@ public:
     : m_currentPosition(other.m_currentPosition), 
       m_array(other.m_array)
   {}
+
+  size_t pos() const { return m_currentPosition; }
 
 private:
   friend class boost::iterator_core_access;
