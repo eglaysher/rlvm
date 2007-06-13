@@ -113,11 +113,6 @@ private:
   /// The stack of LongOperations (which preempt the normal call stack)
 //  boost::ptr_vector<LongOperation> m_longOperationStack;
 
-  /// There are some cases where we need to create our own system,
-  /// since one isn't provided for us. This variable is for those
-  /// times; m_system will simply point to this object
-  boost::scoped_ptr<System> m_ownedSystem;
-
   /// The most recent line marker we've come across
   int m_line;
 
@@ -130,7 +125,6 @@ private:
                           int& module);
 
 public:
-  RLMachine(libReallive::Archive& inArchive);
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
   virtual ~RLMachine();
 

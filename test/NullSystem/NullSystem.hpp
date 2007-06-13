@@ -2,8 +2,9 @@
 #define __NullSystem_hpp__
 
 #include "Systems/Base/System.hpp"
-#include "Systems/Null/NullGraphicsSystem.hpp"
-#include "Systems/Null/NullEventSystem.hpp"
+#include "NullSystem/NullGraphicsSystem.hpp"
+#include "NullSystem/NullEventSystem.hpp"
+#include "NullSystem/NullTextSystem.hpp"
 #include "libReallive/gameexe.h"
 
 /** 
@@ -15,17 +16,22 @@
 class NullSystem : public System
 {
 private:
-  NullGraphicsSystem nullGraphicsSystem;
-//  NullEventSystem nullEventSystem;
   Gameexe m_gameexe;
 
+  NullGraphicsSystem nullGraphicsSystem;
+  NullEventSystem nullEventSystem;
+  NullTextSystem nullTextSystem;
+
 public:
+  NullSystem() : m_gameexe(), nullEventSystem(m_gameexe), 
+                 nullTextSystem(m_gameexe) {}
+
   virtual void run(RLMachine& machine) { /* do nothing */ }
 
   virtual GraphicsSystem& graphics() { return nullGraphicsSystem; }
-  virtual EventSystem& event() { throw "whatever"; }
+  virtual EventSystem& event() { return nullEventSystem; }
   virtual Gameexe& gameexe() { return m_gameexe; }
-  virtual TextSystem& text() { throw "whatever"; }
+  virtual TextSystem& text() { return nullTextSystem; }
 };
 
 #endif

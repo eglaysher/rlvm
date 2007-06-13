@@ -33,8 +33,10 @@
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "tut.hpp"
+#include "NullSystem/NullSystem.hpp"
 
+#include "testUtils.hpp"
+#include "tut.hpp"
 
 #include <iostream>
 using namespace std;
@@ -85,8 +87,9 @@ template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strcpy_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -108,8 +111,9 @@ template<>
 template<>
 void object::test<2>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strcpy_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -133,8 +137,9 @@ template<>
 template<>
 void object::test<3>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strclear_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strclear_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -164,8 +169,9 @@ template<>
 template<>
 void object::test<4>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strclear_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strclear_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -196,8 +202,9 @@ template<>
 template<>
 void object::test<5>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strcat_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcat_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -220,8 +227,9 @@ template<>
 template<>
 void object::test<6>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strlen_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strlen_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -249,8 +257,9 @@ template<>
 template<>
 void object::test<7>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strcmp_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcmp_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -274,8 +283,9 @@ template<>
 template<>
 void object::test<8>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strsub_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -298,8 +308,9 @@ template<>
 template<>
 void object::test<9>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strsub_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -322,8 +333,9 @@ template<>
 template<>
 void object::test<10>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strsub_2.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_2.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -346,8 +358,9 @@ template<>
 template<>
 void object::test<11>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strsub_3.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_3.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -372,8 +385,9 @@ template<>
 template<>
 void object::test<12>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strrsub_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strrsub_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -396,8 +410,9 @@ template<>
 template<>
 void object::test<13>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strrsub_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strrsub_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -420,8 +435,9 @@ template<>
 template<>
 void object::test<14>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strcharlen_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcharlen_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -444,8 +460,9 @@ template<>
 template<>
 void object::test<15>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strcharlen_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcharlen_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -468,8 +485,9 @@ template<>
 template<>
 void object::test<16>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strtrunc_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strtrunc_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -493,8 +511,9 @@ template<>
 template<>
 void object::test<17>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strtrunc_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strtrunc_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -517,8 +536,9 @@ template<>
 template<>
 void object::test<18>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/hantozen_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/hantozen_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -542,8 +562,9 @@ template<>
 template<>
 void object::test<19>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/hantozen_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/hantozen_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -566,8 +587,9 @@ template<>
 template<>
 void object::test<20>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/zentohan_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/zentohan_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -590,8 +612,9 @@ template<>
 template<>
 void object::test<21>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/zentohan_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/zentohan_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -613,8 +636,9 @@ template<>
 template<>
 void object::test<22>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/uppercase_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/uppercase_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -638,8 +662,9 @@ template<>
 template<>
 void object::test<23>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/uppercase_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/uppercase_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -666,8 +691,9 @@ template<>
 template<>
 void object::test<24>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/lowercase_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/lowercase_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -691,8 +717,9 @@ template<>
 template<>
 void object::test<25>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/lowercase_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/lowercase_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -720,8 +747,9 @@ template<>
 template<>
 void object::test<26>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/itoa_ws_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_ws_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -756,8 +784,9 @@ template<>
 template<>
 void object::test<27>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/itoa_s_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_s_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -791,8 +820,9 @@ template<>
 template<>
 void object::test<28>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/itoa_w_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_w_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -827,8 +857,9 @@ template<>
 template<>
 void object::test<29>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/itoa_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -863,8 +894,9 @@ template<>
 template<>
 void object::test<30>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/atoi_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/atoi_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -900,8 +932,9 @@ template<>
 template<>
 void object::test<31>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/digits_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/digits_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -931,8 +964,9 @@ template<>
 template<>
 void object::test<32>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/digit_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/digit_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -971,8 +1005,9 @@ template<>
 template<>
 void object::test<33>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strpos_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strpos_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -1002,8 +1037,9 @@ template<>
 template<>
 void object::test<34>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strlpos_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strlpos_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
@@ -1033,8 +1069,9 @@ template<>
 template<>
 void object::test<35>()
 {
-  libReallive::Archive arc("test/Module_Str_SEEN/strused_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strused_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 

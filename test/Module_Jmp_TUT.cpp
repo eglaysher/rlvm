@@ -35,6 +35,9 @@
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
+#include "NullSystem/NullSystem.hpp"
+
+#include "testUtils.hpp"
 #include "tut.hpp"
 
 //#include "SDLSystem.hpp"
@@ -93,8 +96,9 @@ template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -128,8 +132,9 @@ template<>
 template<>
 void object::test<2>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_if_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -163,8 +168,9 @@ template<>
 template<>
 void object::test<3>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_if_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
 
@@ -200,8 +206,9 @@ template<>
 template<>
 void object::test<4>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_unless_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
 
   rlmachine.executeUntilHalted();
@@ -237,8 +244,9 @@ template<>
 template<>
 void object::test<5>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_unless_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
   rlmachine.executeUntilHalted();
@@ -287,8 +295,9 @@ void object::test<6>()
   // Repeat this test to hit each label
   for(int i = 0; i < 3; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/goto_on_0.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
@@ -329,8 +338,9 @@ template<>
 template<>
 void object::test<7>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_on_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 7);
   rlmachine.executeUntilHalted();
@@ -373,8 +383,9 @@ void object::test<8>()
 {
   for(int i = 0; i < 3; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/goto_case_0.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
@@ -385,8 +396,9 @@ void object::test<8>()
   }
 
   // Now test the default value
-  libReallive::Archive arc("test/Module_Jmp_SEEN/goto_case_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 29);
   rlmachine.executeUntilHalted();
@@ -421,8 +433,9 @@ template<>
 template<>
 void object::test<9>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -462,8 +475,9 @@ template<>
 template<>
 void object::test<10>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -491,8 +505,9 @@ template<>
 template<>
 void object::test<11>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_if_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -520,8 +535,9 @@ template<>
 template<>
 void object::test<12>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_if_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
 
@@ -564,8 +580,9 @@ template<>
 template<>
 void object::test<13>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_unless_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -605,8 +622,9 @@ template<>
 template<>
 void object::test<14>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_unless_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 1);
 
@@ -656,8 +674,9 @@ void object::test<15>()
 {
   for(int i = 0; i < 3; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_case_0.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
@@ -668,8 +687,9 @@ void object::test<15>()
   }
 
   // Now test the default value
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_case_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 29);
   rlmachine.executeUntilHalted();
@@ -710,8 +730,9 @@ void object::test<16>()
 {
   for(int i = 1; i < 4; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/jump_0.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
@@ -752,8 +773,9 @@ void object::test<17>()
 {
   for(int i = 1; i < 4; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/jumpTest/SEEN.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest/SEEN.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
@@ -795,8 +817,9 @@ void object::test<18>()
 {
   for(int i = 1; i < 4; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/farcallTest_0/SEEN.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcallTest_0/SEEN.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
     rlmachine.executeUntilHalted();
@@ -846,8 +869,9 @@ template<>
 template<>
 void object::test<19>()
 {
-  libReallive::Archive arc("test/Module_Jmp_SEEN/gosub_with_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_with_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -952,8 +976,9 @@ void object::test<20>()
 {
   for(int i = 0; i < 10; ++i) 
   {
-    libReallive::Archive arc("test/Module_Jmp_SEEN/fibonacci.TXT");
-    RLMachine rlmachine(arc);
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
+    NullSystem system;
+    RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.attachModule(new StrModule);
     rlmachine.setIntValue(0x03, 0, i);
@@ -1001,8 +1026,9 @@ void object::test<21>()
   {
     for(int entrypoint = 1; entrypoint < 4; ++entrypoint) 
     {
-      libReallive::Archive arc("test/Module_Jmp_SEEN/farcall_withTest/SEEN.TXT");
-      RLMachine rlmachine(arc);
+      libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcall_withTest/SEEN.TXT"));
+      NullSystem system;
+      RLMachine rlmachine(system, arc);
       rlmachine.attachModule(new JmpModule);
       rlmachine.attachModule(new StrModule);
       rlmachine.setIntValue(0x1, 0, entrypoint);
@@ -1025,8 +1051,9 @@ template<>
 template<>
 void object::test<22>()
 {
-//   libReallive::Archive arc("test/Module_Jmp_SEEN/graphicTest.TXT");
-//   RLMachine rlmachine(arc);
+//   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/graphicTest.TXT"));
+//   NullSystem system;
+//   RLMachine rlmachine(system, arc);
 //   rlmachine.attachModule(new JmpModule);
 //   rlmachine.attachModule(new MsgModule);
 //   rlmachine.executeUntilHalted();

@@ -34,8 +34,9 @@
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "Systems/Null/NullSystem.hpp"
+#include "NullSystem/NullSystem.hpp"
 
+#include "testUtils.hpp"
 #include "tut.hpp"
 
 #include <iostream>
@@ -84,9 +85,9 @@ template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc("test/Module_Sys_SEEN/SceneNum/SEEN.TXT");
+  libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum/SEEN.TXT"));
   NullSystem system;
-  RLMachine rlmachine(arc);
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new SysModule(system));
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();

@@ -72,11 +72,9 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 
-// Some RLMachines will cary around a copy of the Null system.
-#include "Systems/Null/NullSystem.hpp"
-#include "Systems/Null/NullGraphicsSystem.hpp"
+#include "libReallive/Gameexe.h"
 #include "Systems/Base/SystemError.hpp"
-
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 
@@ -139,27 +137,9 @@ struct RLMachine::StackFrame {
 // RLMachine
 // -----------------------------------------------------------------------
 
-RLMachine::RLMachine(Archive& inArchive) 
-  : m_halted(false), m_haltOnException(true), archive(inArchive), 
-    m_ownedSystem(new NullSystem), m_system(*m_ownedSystem)
-{
-  // Arbitrarily set the scenario to the first one in the archive,
-  // which is what we want until we get the Gameexe.ini file parser
-  // working
-  libReallive::Scenario* scenario = inArchive.scenario(archive.begin()->first);
-  if(scenario == 0)
-    throw rlvm::Exception("Invalid scenario file");
-  callStack.push_back(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
-
-  // Initialize the big memory block to zero
-  memset(intVar, 0, sizeof(intVar));
-}
-
-// -----------------------------------------------------------------------
-
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
   : m_halted(false), m_haltOnException(true), archive(inArchive), 
-    m_ownedSystem(NULL), m_system(inSystem)
+    m_system(inSystem)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();

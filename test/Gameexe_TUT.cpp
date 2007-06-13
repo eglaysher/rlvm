@@ -30,6 +30,7 @@
 
 #include "libReallive/gameexe.h"
 
+#include "testUtils.hpp"
 #include "tut.hpp"
 
 #include <iostream>
@@ -76,7 +77,7 @@ template<>
 template<>
 void object::test<1>()
 {
-  Gameexe ini("test/Gameexe_data/Gameexe.ini");
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   ensure_equals("Wrong number of keys", ini.size(), 4);
 }
 
@@ -89,7 +90,7 @@ template<>
 template<>
 void object::test<2>()
 {
-  Gameexe ini("test/Gameexe_data/Gameexe.ini");
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   ensure("#CAPTION exists", ini("CAPTION").exists());
   ensure_equals("Wrong value for CAPTION", ini("CAPTION").to_string(),
                 string("Canon: A firearm"));
@@ -104,7 +105,7 @@ template<>
 template<>
 void object::test<3>()
 {
-  Gameexe ini("test/Gameexe_data/Gameexe.ini");
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   ensure("#RANDOM_KEY does not exist", !ini("RANDOM_KEY").exists());
 }
 
@@ -114,7 +115,7 @@ template<>
 template<>
 void object::test<4>()
 {
-  Gameexe ini("test/Gameexe_data/Gameexe.ini");
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   ensure("#WINDOW_ATTR exists!", ini("WINDOW_ATTR").exists());
   vector<int> ints = ini("WINDOW_ATTR").to_intVector();
 

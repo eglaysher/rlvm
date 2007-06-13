@@ -13,6 +13,7 @@ LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype
 
 TEST_FILES[] = 
   rlvmTest
+  testUtils
   Module_Jmp_TUT
   Module_Str_TUT
   Module_Mem_TUT

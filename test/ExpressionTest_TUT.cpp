@@ -36,8 +36,9 @@
 
 #include "Modules/Module_Jmp.hpp"
 
-#include "Systems/Null/NullSystem.hpp"
+#include "NullSystem/NullSystem.hpp"
 
+#include "testUtils.hpp"
 #include "tut.hpp"
 
 #include <iostream>
@@ -85,8 +86,9 @@ template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc("test/ExpressionTest_SEEN/basicOperators.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/basicOperators.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
   int values[10];
@@ -115,8 +117,9 @@ template<>
 void object::test<2>()
 {
 /*
-  libReallive::Archive arc("test/ExpressionTest_SEEN/bitwiseOperators.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/bitwiseOperators.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
   int values[10];
@@ -146,8 +149,9 @@ template<>
 template<>
 void object::test<3>()
 {
-  libReallive::Archive arc("test/ExpressionTest_SEEN/comparisonOperators.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/comparisonOperators.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
   int values[14];
@@ -179,8 +183,9 @@ template<>
 template<>
 void object::test<4>()
 {
-  libReallive::Archive arc("test/ExpressionTest_SEEN/logicalOperators.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/logicalOperators.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
   int values[7];
@@ -205,8 +210,9 @@ template<>
 template<>
 void object::test<5>()
 {
-  libReallive::Archive arc("test/ExpressionTest_SEEN/previousErrors.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/previousErrors.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 

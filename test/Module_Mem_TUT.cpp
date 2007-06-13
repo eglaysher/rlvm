@@ -33,8 +33,10 @@
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "tut.hpp"
+#include "NullSystem/NullSystem.hpp"
 
+#include "testUtils.hpp"
+#include "tut.hpp"
 
 #include <iostream>
 using namespace std;
@@ -86,8 +88,9 @@ template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/setarray_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setarray_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -121,8 +124,9 @@ template<>
 template<>
 void object::test<2>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/setrng_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -159,8 +163,9 @@ template<>
 template<>
 void object::test<3>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/setrng_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -195,8 +200,9 @@ template<>
 template<>
 void object::test<4>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/cpyrng_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/cpyrng_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -238,8 +244,9 @@ template<>
 template<>
 void object::test<5>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/setarray_stepped_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setarray_stepped_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -280,8 +287,9 @@ template<>
 template<>
 void object::test<6>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/setrng_stepped_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_stepped_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -322,8 +330,9 @@ template<>
 template<>
 void object::test<7>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/setrng_stepped_1.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_stepped_1.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -366,8 +375,9 @@ template<>
 template<>
 void object::test<8>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/cpyvars_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/cpyvars_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -401,8 +411,9 @@ template<>
 template<>
 void object::test<9>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/sum_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/sum_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 
@@ -430,8 +441,9 @@ template<>
 template<>
 void object::test<10>()
 {
-  libReallive::Archive arc("test/Module_Mem_SEEN/sums_0.TXT");
-  RLMachine rlmachine(arc);
+  libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/sums_0.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
 

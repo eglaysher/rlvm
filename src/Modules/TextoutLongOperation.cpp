@@ -66,7 +66,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
   if(machine.system().text().currentPage(machine).inRubyGloss())
     m_noWait = true;
 
-  cerr << "UTF: " << m_utf8string << endl;
+//  cerr << "UTF: " << m_utf8string << endl;
 }
 
 // -----------------------------------------------------------------------
