@@ -57,6 +57,7 @@ std::string correctPathCase(const std::string& fileName);
  */
 extern const std::vector<std::string> ALL_FILETYPES;
 extern const std::vector<std::string> IMAGE_FILETYPES;
+extern const std::vector<std::string> GAN_FILETYPES;
 /// @}
 
 /** 

@@ -45,6 +45,7 @@ public:
   virtual GraphicsObjectData* clone() const = 0;
 
   virtual void execute(RLMachine& machine) { }
+  virtual void setOwnedBy(GraphicsObject& godata) { }
 
   virtual bool isAnimation() const;
 };
@@ -54,6 +55,25 @@ public:
 class AnimatedObjectData : public GraphicsObjectData 
 {
 public:
+  enum AfterAnimation {
+    AFTER_NONE,
+    AFTER_CLEAR
+  };
+
+private:
+  AfterAnimation m_afterAnimation;
+  GraphicsObject* m_objectToCleanupOn;
+
+public:
+  AnimatedObjectData();
+
+  AfterAnimation afterAnimation() const { return m_afterAnimation; }
+  void setAfterAction(AfterAnimation after) { m_afterAnimation = after; }
+
+  virtual void setOwnedBy(GraphicsObject& godata) 
+  { m_objectToCleanupOn = &godata; }
+  GraphicsObject* ownedBy() const { return m_objectToCleanupOn; }
+
   virtual bool isAnimation() const;
 
   virtual bool isPlaying() const = 0;
@@ -195,10 +215,7 @@ public:
   bool hasObjectData() const { return m_objectData; }
 
   GraphicsObjectData& objectData() const;
-
-  void setObjectData(GraphicsObjectData* obj) {
-    m_objectData.reset(obj);
-  }
+  void setObjectData(GraphicsObjectData* obj);
 
   /// Render!
   void render(RLMachine& machine);
@@ -297,6 +314,22 @@ private:
   int m_scrollRateX, m_scrollRateY;
 
   /// @}
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * @name Animation state
+   * 
+   * Certain pieces of state from Animated objects are cached on the
+   * GraphicsObject to implement the delete-after-play semantics of
+   * ganPlayOnce, et all.
+   *
+   * @{
+   */
+
+  /// @}
+
+
 
   /// The wipeCopy bit
   int m_wipeCopy;

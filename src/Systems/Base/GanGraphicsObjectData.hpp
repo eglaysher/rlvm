@@ -37,21 +37,42 @@ class RLMachine;
 class GanGraphicsObjectData : public AnimatedObjectData
 {
 private:
+  struct Frame {
+    int pattern;
+    int x;
+    int y;
+    int time;
+    int alpha;
+    int other; ///< WTF?
+  };
+
+  std::vector< std::vector<Frame> > animationSets;
 
   bool m_currentlyPlaying;
+
+  int m_currentSet;
+  int m_currentFrame;
+  unsigned int m_timeAtLastFrameChange;
+
+  /// The image the above coordinates map into.
+  boost::shared_ptr<Surface> image;
 
   void testFileMagic(const std::string& fileName,
                      boost::scoped_array<char>& ganData, int fileSize);
   void readData(
+    RLMachine& machine,
     const std::string& fileName,
     boost::scoped_array<char>& ganData, int fileSize);
+  Frame readSetFrame(const std::string& filename, const char*& data);
 
   void throwBadFormat(
     const std::string& filename, const std::string& error);
 
+  void endAnimation();
 
 public:
-  GanGraphicsObjectData(RLMachine& machine, const std::string& file);
+  GanGraphicsObjectData(RLMachine& machine, const std::string& file,
+                        const boost::shared_ptr<Surface>& incomingImage);
   ~GanGraphicsObjectData();
 
   virtual void render(RLMachine& machine, 

@@ -31,6 +31,7 @@
 #include "Modules/Modules.hpp"
 #include "Utilities.h"
 
+#include "Systems/Base/GanGraphicsObjectData.hpp"
 //#include "Systems/Base/AnmGraphicsObjectData.hpp"
 
 #include <boost/program_options.hpp>
@@ -336,6 +337,7 @@ int main(int argc, char* argv[])
 
     rlmachine.setHaltOnException(false);
 
+//    GanGraphicsObjectData d(rlmachine, "/Users/elliot/CLANNAD/gan/sbtact00.gan");
 //    AnmGraphicsObjectData d(rlmachine, "/Users/elliot/KANON_SE_ALL/anm/KAN_MOJA.Anm");
 
     while(!rlmachine.halted()) {
@@ -356,14 +358,14 @@ int main(int argc, char* argv[])
     cerr << "Fatal libReallive error: " << b.what() << endl;
     return 1;
   }
-  catch(std::exception& e) {
-    cout << "Uncaught exception: " << e.what() << endl;
-    return 1;
-  }
-  catch(const char* e) {
-    cout << "Uncaught exception: " << e << endl;
-    return 1;    
-  }
+//   catch(std::exception& e) {
+//     cout << "Uncaught exception: " << e.what() << endl;
+//     return 1;
+//   }
+//   catch(const char* e) {
+//     cout << "Uncaught exception: " << e << endl;
+//     return 1;    
+//   }
 
   return 0;
 }

@@ -50,6 +50,12 @@ bool GraphicsObjectData::isAnimation() const
 // AnimatedObjectData
 // -----------------------------------------------------------------------
 
+AnimatedObjectData::AnimatedObjectData()
+  : m_afterAnimation(AFTER_NONE), m_objectToCleanupOn(NULL)
+{}
+
+// -----------------------------------------------------------------------
+
 bool AnimatedObjectData::isAnimation() const
 {
   return true;
@@ -134,6 +140,7 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
     m_repOriginX = rhs.m_repOriginX;
     m_repOriginY = rhs.m_repOriginY;
     m_width = rhs.m_width;
+    m_height = rhs.m_height;
     m_rotation = rhs.m_rotation;
 
     m_pattNo = rhs.m_pattNo;
@@ -159,11 +166,23 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
     m_wipeCopy = rhs.m_wipeCopy;
       
     if(rhs.m_objectData)
+    {
       m_objectData.reset(rhs.m_objectData->clone());
+      m_objectData->setOwnedBy(*this);
+    }
   }
 
   return *this;
 }
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setObjectData(GraphicsObjectData* obj)
+{
+  m_objectData.reset(obj);
+  m_objectData->setOwnedBy(*this);
+}
+
 
 // -----------------------------------------------------------------------
 

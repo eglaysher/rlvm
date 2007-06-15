@@ -31,8 +31,10 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GanGraphicsObjectData.hpp"
 
 #include <cmath>
 
@@ -41,6 +43,33 @@
 using namespace std;
 using namespace boost;
 using namespace libReallive;
+
+// -----------------------------------------------------------------------
+
+namespace {
+
+void setObjectDataToGan(
+  RLMachine& machine,
+  GraphicsObject& obj,
+  std::string& imgFilename, 
+  const std::string& ganFilename)
+{
+  GraphicsSystem& gs = machine.system().graphics();
+
+  /// @todo This is a hack and probably a source of errors. Figure
+  ///       out what '???' means when used as the first parameter to
+  ///       objOfFileGan.
+  if(imgFilename == "???")
+    imgFilename = ganFilename;
+  string imgFilePath = findFile(machine, imgFilename, IMAGE_FILETYPES);
+  shared_ptr<Surface> img(gs.loadSurfaceFromFile(imgFilePath));
+
+  string ganFilePath = findFile(machine, ganFilename, GAN_FILETYPES);
+  obj.setObjectData(
+    new GanGraphicsObjectData(machine, ganFilePath, img));
+}
+
+}
 
 // -----------------------------------------------------------------------
 
@@ -136,6 +165,23 @@ struct Obj_objOfFile_4 : public RLOp_Void_8<
 
 // -----------------------------------------------------------------------
 
+struct Obj_objOfFileGan_0 
+  : public RLOp_Void_3<IntConstant_T, StrConstant_T, StrConstant_T>
+{
+  int m_layer;
+  Obj_objOfFileGan_0(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, string imgFilename, 
+                  string ganFilename) 
+  { 
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    setObjectDataToGan(machine, obj, imgFilename, ganFilename);
+    obj.setVisible(true);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 void addObjectCreationFunctions(RLModule& m, int layer)
 {
   m.addOpcode(1000, 0, new Obj_objOfFile_0(layer));
@@ -144,7 +190,7 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addOpcode(1000, 3, new Obj_objOfFile_3(layer));
   m.addOpcode(1000, 4, new Obj_objOfFile_4(layer));
 
-  m.addUnsupportedOpcode(1003, 0, "objOfFileGan");
+  m.addOpcode(1003, 0, "objOfFileGan", new Obj_objOfFileGan_0(layer));
   m.addUnsupportedOpcode(1003, 1, "objOfFileGan");
   m.addUnsupportedOpcode(1003, 2, "objOfFileGan");
   m.addUnsupportedOpcode(1003, 3, "objOfFileGan");

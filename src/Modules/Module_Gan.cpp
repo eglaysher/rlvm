@@ -32,7 +32,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
-
+#include "Systems/Base/GanGraphicsObjectData.hpp"
 
 #include <boost/shared_ptr.hpp>
 
@@ -42,7 +42,7 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-struct Gan_ganPlayEx : public RLOp_Void_2<IntConstant_T, IntConstant_T>
+struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 {
   struct WaitForGanToFinish : public LongOperation
   {
@@ -73,6 +73,13 @@ struct Gan_ganPlayEx : public RLOp_Void_2<IntConstant_T, IntConstant_T>
     }
   };
 
+  bool m_block;
+  AnimatedObjectData::AfterAnimation m_afterEffect;
+
+  Gan_ganPlay(bool block, 
+              AnimatedObjectData::AfterAnimation after) 
+    : m_block(block), m_afterEffect(after) {}
+
   void operator()(RLMachine& machine, int buf, int animationSet)
   {
     GraphicsSystem& gs = machine.system().graphics();
@@ -85,7 +92,10 @@ struct Gan_ganPlayEx : public RLOp_Void_2<IntConstant_T, IntConstant_T>
       if(data)
       {
         data->playSet(machine, animationSet);
-        machine.pushLongOperation(new WaitForGanToFinish(buf));
+        data->setAfterAction(m_afterEffect);
+
+        if(m_block)
+          machine.pushLongOperation(new WaitForGanToFinish(buf));
       }
     }
   }
@@ -96,5 +106,8 @@ struct Gan_ganPlayEx : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 GanModule::GanModule()
   : RLModule("Gan", 1, 73)
 {
-  addOpcode(1006, 0, new Gan_ganPlayEx);
+  addOpcode(1006, 0, new Gan_ganPlay(true, AnimatedObjectData::AFTER_NONE));
+
+  addOpcode(3003, 0, new Gan_ganPlay(false, AnimatedObjectData::AFTER_NONE));
+  addOpcode(3005, 0, new Gan_ganPlay(false, AnimatedObjectData::AFTER_CLEAR));
 }

@@ -35,6 +35,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <iterator>
 #include <stack>
 #include <cctype>
 #include "boost/filesystem/operations.hpp"
@@ -52,6 +53,7 @@ using std::string;
 using std::vector;
 using std::ifstream;
 using std::ios;
+using std::ostream_iterator;
 
 // -----------------------------------------------------------------------
 
@@ -132,8 +134,12 @@ std::string findFontFile(const std::string& fileName)
 
 // -----------------------------------------------------------------------
 
-const std::vector<std::string> ALL_FILETYPES = list_of("g00")("pdt")("anm");
-const std::vector<std::string> IMAGE_FILETYPES = list_of("g00")("pdt");
+const std::vector<std::string> ALL_FILETYPES = 
+  list_of("g00")("pdt")("anm")("gan");
+const std::vector<std::string> IMAGE_FILETYPES = 
+  list_of("g00")("pdt");
+const std::vector<std::string> GAN_FILETYPES =
+  list_of("gan");
 
 /**
  * @todo This function is a hack and needs to be completely rewritten
@@ -166,7 +172,11 @@ string findFile(RLMachine& machine, const string& fileName,
   }
 
   ostringstream oss;
-  oss << "Could not open file: " << newName << endl;
+  oss << "Could not open file: \"" << newName << "\" looking for types: {";
+  copy(extensions.begin(), extensions.end(), 
+       ostream_iterator<string>(oss, ","));
+  oss << "}";
+
   throw rlvm::Exception(oss.str());
 }
 
