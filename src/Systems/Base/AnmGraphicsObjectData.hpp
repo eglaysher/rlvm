@@ -23,7 +23,8 @@
 #ifndef __AnmGraphicsObjectData_hpp__
 #define __AnmGraphicsObjectData_hpp__
 
-#include "GraphicsObject.hpp"
+//#include "GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
 
 #include <vector>
 #include <string>

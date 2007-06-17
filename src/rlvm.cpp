@@ -27,6 +27,7 @@
 #include "libReallive/reallive.h"
 #include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Modules/Modules.hpp"
 #include "Utilities.h"
@@ -354,18 +355,22 @@ int main(int argc, char* argv[])
     cerr << "Fatal RLVM error: " << e.what() << endl;
     return 1;
   }
-  catch (libReallive::Error& b) {
-    cerr << "Fatal libReallive error: " << b.what() << endl;
+  catch (libReallive::Error& e) {
+    cerr << "Fatal libReallive error: " << e.what() << endl;
     return 1;
   }
-//   catch(std::exception& e) {
-//     cout << "Uncaught exception: " << e.what() << endl;
-//     return 1;
-//   }
-//   catch(const char* e) {
-//     cout << "Uncaught exception: " << e << endl;
-//     return 1;    
-//   }
+  catch(SystemError& e) {
+    cerr << "Fatal local system error: " << e.what() << endl;
+    return 1;    
+  }
+  catch(std::exception& e) {
+    cout << "Uncaught exception: " << e.what() << endl;
+    return 1;
+  }
+  catch(const char* e) {
+    cout << "Uncaught exception: " << e << endl;
+    return 1;    
+  }
 
   return 0;
 }

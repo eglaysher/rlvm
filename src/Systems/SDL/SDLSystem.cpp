@@ -27,6 +27,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"

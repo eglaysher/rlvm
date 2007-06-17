@@ -28,60 +28,7 @@
 class RLMachine;
 class GraphicsObject;
 class GraphicsObjectSlot;
-
-/**
- * Describes what is rendered in a graphics object;
- * 
- */
-class GraphicsObjectData {
-public:
-  virtual ~GraphicsObjectData();
-  virtual void render(RLMachine& machine, 
-                      const GraphicsObject& renderingProperties) = 0;
-  
-  virtual int pixelWidth(const GraphicsObject& renderingProperties) = 0;
-  virtual int pixelHeight(const GraphicsObject& renderingProperties) = 0;
-
-  virtual GraphicsObjectData* clone() const = 0;
-
-  virtual void execute(RLMachine& machine) { }
-  virtual void setOwnedBy(GraphicsObject& godata) { }
-
-  virtual bool isAnimation() const;
-};
-
-// -----------------------------------------------------------------------
-
-class AnimatedObjectData : public GraphicsObjectData 
-{
-public:
-  enum AfterAnimation {
-    AFTER_NONE,
-    AFTER_CLEAR
-  };
-
-private:
-  AfterAnimation m_afterAnimation;
-  GraphicsObject* m_objectToCleanupOn;
-
-public:
-  AnimatedObjectData();
-
-  AfterAnimation afterAnimation() const { return m_afterAnimation; }
-  void setAfterAction(AfterAnimation after) { m_afterAnimation = after; }
-
-  virtual void setOwnedBy(GraphicsObject& godata) 
-  { m_objectToCleanupOn = &godata; }
-  GraphicsObject* ownedBy() const { return m_objectToCleanupOn; }
-
-  virtual bool isAnimation() const;
-
-  virtual bool isPlaying() const = 0;
-
-  virtual void playSet(RLMachine& machine, int set) = 0;
-};
-
-// -----------------------------------------------------------------------
+class GraphicsObjectData;
 
 /**
  * Describes an independent, movable graphical object on the
@@ -95,8 +42,8 @@ class GraphicsObject
 {
 public:
   GraphicsObject();
-
   GraphicsObject(const GraphicsObject& obj);
+  ~GraphicsObject();
 
   /** 
    * Copy operator.
@@ -189,7 +136,7 @@ public:
   void setColourLevel(const int in) { m_colourLevel = in; }
 
   int compositeMode() const { return m_compositeMode; }
-  void setCompositeMode(const int in) { m_compositeMode = in; }
+  void setCompositeMode(const int in);
 
   int scrollRateX() const { return m_scrollRateX; }
   void setScrollRateX(const int x) { m_scrollRateX = x; }
@@ -337,6 +284,5 @@ private:
   /// The actual data used to render the object
   boost::scoped_ptr<GraphicsObjectData> m_objectData;
 };
-
 
 #endif 

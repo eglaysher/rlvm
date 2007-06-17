@@ -580,9 +580,26 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   int xSrc2 = surface.getPattern(pattNo).x2;
   int ySrc2 = surface.getPattern(pattNo).y2;
 
+/*
+  if(overrides.overrideSource)
+  {
+    xSrc1 = overrides.srcX1;
+    ySrc1 = overrides.srcY1;
+    xSrc2 = overrides.srcX2;
+    ySrc2 = overrides.srcY2;
+  }
+ */
+
   // Figure out position to display on
   int xPos1 = go.x() + go.xAdjustmentSum();
   int yPos1 = go.y() + go.yAdjustmentSum();
+/*
+  if(overrides.hasDestOffset)
+  {
+    xPos1 += overrides.dstX;
+    yPos1 += overrides.dstY;
+  }
+ */
   int xPos2 = int(xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f));
   int yPos2 = int(yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f));
 
@@ -625,7 +642,26 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
 
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  // Make this so that when we have composite 1, we're doing a pure
+  // additive blend, (ignoring the alpha channel?)
+  switch(go.compositeMode())
+  {
+  case 0:
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    break;
+  case 1:
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    break;
+  case 2:
+    cerr << "Compisite mode 2 (unwritten!)" << endl;
+    break;
+  default:
+  {
+    ostringstream oss;
+    oss << "Invalid compositeMode in render: " << go.compositeMode();
+    throw SystemError(oss.str());
+  }
+  }
 
   glPushMatrix();
   {

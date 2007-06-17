@@ -18,6 +18,7 @@ LIBRLVMFILES[] =
   Systems/Base/System
   Systems/Base/GraphicsSystem
   Systems/Base/GraphicsObject
+  Systems/Base/GraphicsObjectData
   Systems/Base/FrameCounter
   Systems/Base/EventSystem
   Systems/Base/EventHandler

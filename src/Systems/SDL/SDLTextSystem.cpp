@@ -38,7 +38,7 @@
 #include "Systems/Base/TextKeyCursor.hpp"
 
 #include <boost/bind.hpp>
-#include <SDL/SDL_ttf.h>
+#include "SDL_ttf.h"
 #include <sstream>
 #include <stdexcept>
 

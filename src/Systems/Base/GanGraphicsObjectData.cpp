@@ -234,6 +234,8 @@ void GanGraphicsObjectData::render(
   RLMachine& machine, 
   const GraphicsObject& go)
 {
+  // @todo This NEEDS to use renderToScreenAsObject(), to use the
+  //       composite whatever.
   if(m_currentSet != -1 && m_currentFrame != -1)
   {
     const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);

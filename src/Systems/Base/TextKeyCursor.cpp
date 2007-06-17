@@ -134,5 +134,6 @@ void TextKeyCursor::setCursorFrameCount(const int frameCount)
 
 void TextKeyCursor::setCursorFrameSpeed(const int speed)
 {
+  // What's the divider in this statement? 
   m_frameSpeed = speed / 10;
 }

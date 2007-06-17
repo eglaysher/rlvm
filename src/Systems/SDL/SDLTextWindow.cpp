@@ -43,7 +43,7 @@
 #include "libReallive/gameexe.h"
 
 #include <SDL/SDL_opengl.h>
-#include <SDL/SDL_ttf.h>
+#include "SDL_ttf.h"
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>

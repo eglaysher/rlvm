@@ -24,7 +24,8 @@
 
 // -----------------------------------------------------------------------
 
-#include "GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
 #include "Utilities.h"
 
 #include <iostream>
@@ -32,34 +33,6 @@
 #include <numeric>
 
 using namespace std;
-
-// -----------------------------------------------------------------------
-// GraphicsObjectData
-// -----------------------------------------------------------------------
-
-GraphicsObjectData::~GraphicsObjectData() { }
-
-// -----------------------------------------------------------------------
-
-bool GraphicsObjectData::isAnimation() const
-{   
-  return false; 
-}
-
-// -----------------------------------------------------------------------
-// AnimatedObjectData
-// -----------------------------------------------------------------------
-
-AnimatedObjectData::AnimatedObjectData()
-  : m_afterAnimation(AFTER_NONE), m_objectToCleanupOn(NULL)
-{}
-
-// -----------------------------------------------------------------------
-
-bool AnimatedObjectData::isAnimation() const
-{
-  return true;
-}
 
 // -----------------------------------------------------------------------
 // GraphicsObject
@@ -85,6 +58,7 @@ GraphicsObject::GraphicsObject()
     // Do the rest later.
     m_tintR(255), m_tintG(255), m_tintB(255), 
     m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255),
+    m_compositeMode(0),
     m_wipeCopy(0)
 {
   // Regretfully, we can't do this in the initializer list.
@@ -118,6 +92,11 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
   copy(rhs.m_adjustX, rhs.m_adjustX + 8, m_adjustX);
   copy(rhs.m_adjustY, rhs.m_adjustY + 8, m_adjustY);
 }
+
+// -----------------------------------------------------------------------
+
+GraphicsObject::~GraphicsObject()
+{}
 
 // -----------------------------------------------------------------------
 
@@ -289,4 +268,12 @@ void GraphicsObject::execute(RLMachine& machine)
   if(m_objectData) {
     m_objectData->execute(machine);
   }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setCompositeMode(const int in) 
+{ 
+  cerr << "Setting composite to " << in << endl;
+  m_compositeMode = in; 
 }

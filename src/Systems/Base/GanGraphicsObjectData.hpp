@@ -23,7 +23,7 @@
 #ifndef __GanGraphicsObjectData_hpp__
 #define __GanGraphicsObjectData_hpp__
 
-#include "GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
 
 #include <vector>
 #include <string>
@@ -33,7 +33,14 @@
 
 class Surface;
 class RLMachine;
+class GraphicsObject;
 
+// -----------------------------------------------------------------------
+
+/**
+ * In-memory representation of a GAN file. Responsible for reading in,
+ * storing, and rendering GAN data as a GraphicsObjectData.
+ */
 class GanGraphicsObjectData : public AnimatedObjectData
 {
 private:
@@ -46,13 +53,14 @@ private:
     int other; ///< WTF?
   };
 
-  std::vector< std::vector<Frame> > animationSets;
+  typedef std::vector< std::vector<Frame> > AnimationSets;
+  AnimationSets animationSets;
 
   bool m_currentlyPlaying;
 
   int m_currentSet;
   int m_currentFrame;
-  unsigned int m_timeAtLastFrameChange;
+  int m_timeAtLastFrameChange;
 
   /// The image the above coordinates map into.
   boost::shared_ptr<Surface> image;
