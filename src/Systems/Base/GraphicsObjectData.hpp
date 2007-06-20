@@ -101,13 +101,16 @@ struct GraphicsObjectOverride
 
   void setOverrideSource(int insrcX1, int insrcY1, int insrcX2, int insrcY2);
   void setDestOffset(int indstX, int indstY);
+  void setOverrideDestination(int indstX1, int indstY1, int indstX2, int indstY2);
   void setAlphaOverride(int inalpha);
 
   bool overrideSource;
+  bool overrideDest;
   bool hasDestOffset;
   bool hasAlphaOverride;
   int srcX1, srcY1, srcX2, srcY2;
   int dstX, dstY;
+  int dstX1, dstY1, dstX2, dstY2;
   int alpha;
 };
 

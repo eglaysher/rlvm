@@ -39,6 +39,8 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
+// -----------------------------------------------------------------------
+
 GraphicsObject& getGraphicsObject(RLMachine& machine, int layer, int obj)
 {
   return machine.system().graphics().getObject(layer, obj);

@@ -30,6 +30,7 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
 
 #include <SDL/SDL.h>
 #include "alphablit.h"
@@ -550,13 +551,28 @@ void SDLSurface::renderToScreen(
 
 void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
 {
+  static const GraphicsObjectOverride overrideData;
   uploadTextureIfNeeded();
 
   for(ptr_vector<Texture>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreenAsObject(rp, *this);
+    it->renderToScreenAsObject(rp, *this, overrideData);
   }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp, 
+                                        const GraphicsObjectOverride& override)
+{
+  uploadTextureIfNeeded();
+
+  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+      it != m_textures.end(); ++it)
+  {
+    it->renderToScreenAsObject(rp, *this, override);
+  }  
 }
 
 // -----------------------------------------------------------------------

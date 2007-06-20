@@ -36,6 +36,7 @@
 
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/Texture.hpp"
@@ -571,7 +572,10 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surface)
+void Texture::renderToScreenAsObject(
+  const GraphicsObject& go, 
+  SDLSurface& surface,
+  const GraphicsObjectOverride& overrides)
 {
   // Figure out the source to clip out of the image
   int pattNo = go.pattNo();
@@ -580,7 +584,6 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   int xSrc2 = surface.getPattern(pattNo).x2;
   int ySrc2 = surface.getPattern(pattNo).y2;
 
-/*
   if(overrides.overrideSource)
   {
     xSrc1 = overrides.srcX1;
@@ -588,20 +591,28 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
     xSrc2 = overrides.srcX2;
     ySrc2 = overrides.srcY2;
   }
- */
 
-  // Figure out position to display on
-  int xPos1 = go.x() + go.xAdjustmentSum();
-  int yPos1 = go.y() + go.yAdjustmentSum();
-/*
-  if(overrides.hasDestOffset)
+  // Figure out position to display on the screen
+  int xPos1, yPos1, xPos2, yPos2;
+  if(overrides.overrideDest)
   {
-    xPos1 += overrides.dstX;
-    yPos1 += overrides.dstY;
+    xPos1 = overrides.dstX1; yPos1 = overrides.dstY1;
+    xPos2 = overrides.dstX2; yPos2 = overrides.dstY2;
   }
- */
-  int xPos2 = int(xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f));
-  int yPos2 = int(yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f));
+  else
+  {
+    xPos1 = go.x() + go.xAdjustmentSum();
+    yPos1 = go.y() + go.yAdjustmentSum();
+
+    if(overrides.hasDestOffset)
+    {
+      xPos1 += overrides.dstX;
+      yPos1 += overrides.dstY;
+    }
+
+    xPos2 = int(xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f));
+    yPos2 = int(yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f));
+  }
 
   // If clipping is active for this object, take that into account too.
   if (go.hasClip()) {
@@ -633,7 +644,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   if(!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2, 
                    fdx1, fdy1, fdx2, fdy2))
     return;
-  
+
   // Convert the pixel coordinates into [0,1) texture coordinates
   float thisx1 = float(xSrc1) / m_textureWidth;
   float thisy1 = float(ySrc1) / m_textureHeight;
@@ -663,6 +674,14 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
   }
   }
 
+  // @todo Double and triple check to see that the light it being
+  // added in against the gold standard when I get home.
+  int alpha = go.alpha();
+  if(overrides.hasAlphaOverride)
+  {
+    alpha = overrides.alpha;
+  }
+
   glPushMatrix();
   {
     // Move the "origin" to the correct position.
@@ -673,7 +692,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surfa
 
     glBegin(GL_QUADS);
     {
-      glColor4ub(go.tintR(), go.tintG(), go.tintB(), go.alpha());
+      glColor4ub(go.tintR(), go.tintG(), go.tintB(), alpha);
       glTexCoord2f(thisx1, thisy1);
       glVertex2f(fdx1, fdy1);
       glTexCoord2f(thisx2, thisy1);

@@ -106,8 +106,19 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 GanModule::GanModule()
   : RLModule("Gan", 1, 73)
 {
-  addOpcode(1006, 0, new Gan_ganPlay(true, AnimatedObjectData::AFTER_NONE));
+  addOpcode(1003, 0, "ganPlay",
+            new Gan_ganPlay(false, AnimatedObjectData::AFTER_NONE));
+  addOpcode(1005, 0, "ganPlayOnce",
+            new Gan_ganPlay(false, AnimatedObjectData::AFTER_CLEAR));
+  addOpcode(1006, 0, "ganPlayEx",
+            new Gan_ganPlay(true, AnimatedObjectData::AFTER_NONE));
+  addOpcode(1007, 0, "ganPlayOnceEx",
+            new Gan_ganPlay(true, AnimatedObjectData::AFTER_CLEAR));
 
-  addOpcode(3003, 0, new Gan_ganPlay(false, AnimatedObjectData::AFTER_NONE));
-  addOpcode(3005, 0, new Gan_ganPlay(false, AnimatedObjectData::AFTER_CLEAR));
+  addOpcode(3003, 0, "ganPlay2", 
+            new Gan_ganPlay(false, AnimatedObjectData::AFTER_NONE));
+  addOpcode(3005, 0, "ganPlayOnce2",
+            new Gan_ganPlay(false, AnimatedObjectData::AFTER_CLEAR));
+
+  // Bg versions!?
 }

@@ -1,6 +1,9 @@
 #ifndef __Surface_hpp__
 #define __Surface_hpp__
 
+class GraphicsObject;
+class GraphicsObjectOverride;
+
 /** 
  * Abstract concept of a surface. Used 
  * 
@@ -41,6 +44,10 @@ public:
     int srcX1, int srcY1, int srcX2, int srcY2,
     int destX1, int destY1, int destX2, int destY2,
     const int opacity[4]) { }
+
+  virtual void renderToScreenAsObject(const GraphicsObject& rp) {}
+  virtual void renderToScreenAsObject(const GraphicsObject& rp, 
+                                      const GraphicsObjectOverride& override) {}
 
   virtual const GrpRect& getPattern(int pattNo) const 
   {

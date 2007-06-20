@@ -100,7 +100,10 @@ public:
   int height() { return m_logicalHeight; }
   GLuint textureId() { return m_textureID; }
 
-  void renderToScreenAsObject(const GraphicsObject& go, SDLSurface& surface);
+  void renderToScreenAsObject(
+    const GraphicsObject& go, 
+    SDLSurface& surface,
+    const GraphicsObjectOverride& overrides);
 
   void renderToScreen(int x1, int y1, int x2, int y2,
                       int dx1, int dy1, int dx2, int dy2,

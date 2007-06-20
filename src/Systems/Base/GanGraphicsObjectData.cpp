@@ -227,15 +227,10 @@ void GanGraphicsObjectData::throwBadFormat(
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
-/// @todo This implementation ignores all the esoteric rendering 
-//        options that come from renderToScreenAsObject(). Later, we
-//        may need to do something about this.
 void GanGraphicsObjectData::render(
   RLMachine& machine, 
   const GraphicsObject& go)
 {
-  // @todo This NEEDS to use renderToScreenAsObject(), to use the
-  //       composite whatever.
   if(m_currentSet != -1 && m_currentFrame != -1)
   {
     const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);
@@ -245,13 +240,13 @@ void GanGraphicsObjectData::render(
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
 
-      int xPos1 = go.x() + go.xAdjustmentSum() + frame.x;
-      int yPos1 = go.y() + go.yAdjustmentSum() + frame.y;
-      int xPos2 = int(xPos1 + (rect.x2 - rect.x1) * (go.width() / 100.0f));
-      int yPos2 = int(yPos1 + (rect.y2 - rect.y1) * (go.height() / 100.0f));
-      image->renderToScreen(rect.x1, rect.y1, rect.x2, rect.y2,
-                            xPos1, yPos1, xPos2, yPos2,
-                            frame.alpha);
+      // Groan. Now I can't really test this.
+      GraphicsObjectOverride overrideData;
+      overrideData.setOverrideSource(rect.x1, rect.y1, rect.x2, rect.y2);
+      overrideData.setDestOffset(frame.x, frame.y);
+      overrideData.setAlphaOverride(frame.alpha);
+
+      image->renderToScreenAsObject(go, overrideData);
     }
   }
 }
@@ -301,6 +296,7 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
       }
 
       m_timeAtLastFrameChange = currentTime;
+      machine.system().graphics().markScreenForRefresh();
     }
   }
 }

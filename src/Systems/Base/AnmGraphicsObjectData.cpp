@@ -225,9 +225,6 @@ void AnmGraphicsObjectData::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-/// @todo This implementation ignores all the esoteric rendering 
-//        options that come from renderToScreenAsObject(). Later, we
-//        may need to do something about this.
 void AnmGraphicsObjectData::render(
   RLMachine& machine, 
   const GraphicsObject& renderingProperties)
@@ -237,12 +234,15 @@ void AnmGraphicsObjectData::render(
   {
     const Frame& frame = frames.at(m_currentFrame);
 
-    image->renderToScreen(frame.src_x1, frame.src_y1, 
-                          frame.src_x2, frame.src_y2,
-                          frame.dest_x, frame.dest_y,
-                          frame.dest_x + (frame.src_x2 - frame.src_x1),
-                          frame.dest_y + (frame.src_y2 - frame.src_y1),
-                          255);
+    GraphicsObjectOverride overrideData;
+    overrideData.setOverrideSource(frame.src_x1, frame.src_y1,
+                                   frame.src_x2, frame.src_y2);
+    overrideData.setOverrideDestination(
+      frame.dest_x, frame.dest_y,
+      frame.dest_x + (frame.src_x2 - frame.src_x1),
+      frame.dest_y + (frame.src_y2 - frame.src_y1));
+
+    image->renderToScreenAsObject(renderingProperties, overrideData);
   }
 }
 

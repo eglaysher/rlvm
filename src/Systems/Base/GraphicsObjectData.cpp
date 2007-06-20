@@ -64,7 +64,8 @@ bool AnimatedObjectData::isAnimation() const
 // -----------------------------------------------------------------------
 
 GraphicsObjectOverride::GraphicsObjectOverride()
-  : overrideSource(false), hasDestOffset(false), hasAlphaOverride(false), 
+  : overrideSource(false), overrideDest(false),
+    hasDestOffset(false), hasAlphaOverride(false), 
     srcX1(-1), srcY1(-1), srcX2(-1), srcY2(-1),
     dstX(-1), dstY(-1), alpha(-1)
 {
@@ -77,6 +78,15 @@ void GraphicsObjectOverride::setOverrideSource(
 {
   overrideSource = true;
   srcX1 = insrcX1; srcY1 = insrcY1; srcX2 = insrcX2; srcY2 = insrcY2;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObjectOverride::setOverrideDestination(
+  int indstX1, int indstY1, int indstX2, int indstY2)
+{
+  overrideDest = true;
+  dstX1 = indstX1; dstY1 = indstY1; dstX2 = indstX2; dstY2 = indstY2;
 }
 
 // -----------------------------------------------------------------------
