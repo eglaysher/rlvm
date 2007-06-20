@@ -116,7 +116,8 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 // -----------------------------------------------------------------------
 
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
-  : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false)
+  : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false),
+    m_unaccessedItems(false)
 {}
 
 // -----------------------------------------------------------------------
@@ -227,6 +228,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       for_each(handlers_begin(), handlers_end(),
                bind(&EventHandler::mouseButtonStateChanged, _1,
                     button, pressed));
+      m_unaccessedItems = true;
       break;
     }
     case SDL_QUIT:
@@ -261,9 +263,11 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
       break;
     case SDL_MOUSEBUTTONDOWN:
       handleMouseButtonDown(event);
+      m_unaccessedItems = true;
       break;
     case SDL_MOUSEBUTTONUP:
       handleMouseButtonUp(event);
+      m_unaccessedItems = true;
       break;
     case SDL_QUIT:
       machine.halt();
@@ -295,14 +299,20 @@ void SDLEventSystem::getCursorPos(int& xPos, int& yPos, int& button1,
   yPos = m_mouseYPos;
   button1 = m_button1State;
   button2 = m_button2State;
+
+  m_unaccessedItems = false;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::flushMouseClicks()
 {
-  m_button1State = 0;
-  m_button2State = 0;
+  if(!m_unaccessedItems)
+  {
+    m_button1State = 0;
+    m_button2State = 0;
+    m_unaccessedItems = false;
+  }
 }
 
 // -----------------------------------------------------------------------

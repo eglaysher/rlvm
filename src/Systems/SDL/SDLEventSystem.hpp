@@ -35,6 +35,9 @@ class SDLEventSystem : public EventSystem
 private:
   bool m_shiftPressed, m_ctrlPressed;
 
+
+  bool m_unaccessedItems;
+
   int m_mouseXPos, m_mouseYPos;
 
   int m_button1State, m_button2State;
