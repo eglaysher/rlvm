@@ -552,6 +552,8 @@ int ExpressionPiece::integerValue(RLMachine& machine) const {}
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
 const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {}
 
+// -----------------------------------------------------------------------
+
 bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
 void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {
   machine.setStoreRegister(rvalue);
@@ -560,9 +562,25 @@ int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
 }
 
+ExpressionPiece* StoreRegisterExpressionPiece::clone() const 
+{
+  return new StoreRegisterExpressionPiece;
+}
+
+// -----------------------------------------------------------------------
+
 // IntegerConstant
 IntegerConstant::IntegerConstant(const int in) : constant(in) {}
+IntegerConstant::~IntegerConstant() {}
+
 int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
+
+ExpressionPiece* IntegerConstant::clone() const 
+{
+  return new IntegerConstant(constant);
+}
+
+// -----------------------------------------------------------------------
 
 // StringConstant
 StringConstant::StringConstant(const std::string& in) : constant(in) {}
@@ -572,10 +590,18 @@ const std::string& StringConstant::getStringValue(RLMachine& machine) const {
   return constant; 
 }
 
+ExpressionPiece* StringConstant::clone() const 
+{
+  return new StringConstant(constant);
+}
+
+// -----------------------------------------------------------------------
 
 // MemoryReference
 MemoryReference::MemoryReference(int inType, ExpressionPiece* target) 
   : type(inType), location(target) {}
+MemoryReference::~MemoryReference() {}
+
 bool MemoryReference::isMemoryReference() const { return true; }
 ExpressionValueType MemoryReference::expressionValueType() const {
   if(type == 0x12 || type == 0x0A || type == 0x0C) {
@@ -618,11 +644,18 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& m
   return StringReferenceIterator(&machine, type, location->integerValue(machine));
 }
 
+ExpressionPiece* MemoryReference::clone() const 
+{
+  return new MemoryReference(type, location->clone());
+}
+
 // ----------------------------------------------------------------------
 
 UniaryExpressionOperator::UniaryExpressionOperator(char inOperation, 
                                                    ExpressionPiece* inOperand)
   : operation(inOperation), operand(inOperand) {}
+
+UniaryExpressionOperator::~UniaryExpressionOperator() {}
 
 int UniaryExpressionOperator::performOperationOn(int int_operand) const
 {
@@ -642,6 +675,11 @@ int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
   return performOperationOn(operand->integerValue(machine));
 }
 
+ExpressionPiece* UniaryExpressionOperator::clone() const 
+{
+  return new UniaryExpressionOperator(operation, operand->clone());
+}
+
 // ----------------------------------------------------------------------
 
 BinaryExpressionOperator::BinaryExpressionOperator(char inOperation,
@@ -650,6 +688,8 @@ BinaryExpressionOperator::BinaryExpressionOperator(char inOperation,
   : operation(inOperation), leftOperand(lhs), rightOperand(rhs)
 {}
 
+BinaryExpressionOperator::~BinaryExpressionOperator()
+{}
 
 // Stolen from xclannad
 int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
@@ -707,6 +747,12 @@ int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
                             rightOperand->integerValue(machine));
 }     
 
+ExpressionPiece* BinaryExpressionOperator::clone() const 
+{
+  return new BinaryExpressionOperator(operation, leftOperand->clone(), 
+                                      rightOperand->clone());
+}
+
 // ----------------------------------------------------------------------
 
 AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
@@ -734,6 +780,13 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const
   }
 }
 
+ExpressionPiece* AssignmentExpressionOperator::clone() const 
+{
+  return new AssignmentExpressionOperator(operation, leftOperand->clone(), 
+                                          rightOperand->clone());
+}
+
+
 // -----------------------------------------------------------------------
 
 bool ComplexExpressionPiece::isComplexParameter() const
@@ -757,6 +810,15 @@ void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece)
 
 // -----------------------------------------------------------------------
 
+ExpressionPiece* ComplexExpressionPiece::clone() const 
+{
+  ComplexExpressionPiece* cep = new ComplexExpressionPiece;
+  cep->containedPieces = containedPieces.clone();
+  return cep;
+}
+
+// -----------------------------------------------------------------------
+
 SpecialExpressionPiece::SpecialExpressionPiece(int tag)
   : overloadTag(tag)
 {}
@@ -765,6 +827,13 @@ SpecialExpressionPiece::SpecialExpressionPiece(int tag)
 
 bool SpecialExpressionPiece::isSpecialParamater() const {
   return true;
+}
+
+ExpressionPiece* SpecialExpressionPiece::clone() const 
+{
+  SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
+  cep->containedPieces = containedPieces.clone();
+  return cep;
 }
 
 

@@ -58,11 +58,65 @@ ConstructionData::ConstructionData(size_t kt, pointer_t pt)
   : kidoku_table(kt), null(pt) {}
 
 // -----------------------------------------------------------------------
+
+ConstructionData::~ConstructionData() {}
+
+// -----------------------------------------------------------------------
 // BytecodeElement
 // -----------------------------------------------------------------------
 
 BytecodeElement::BytecodeElement(const BytecodeElement& c)
   : id(id_src++) {}
+
+// -----------------------------------------------------------------------
+
+const ElementType BytecodeElement::type() const 
+{
+  return Unspecified;
+}
+
+// -----------------------------------------------------------------------
+
+const size_t BytecodeElement::offset() const { return offset_; }
+
+// -----------------------------------------------------------------------
+
+const string BytecodeElement::data() const 
+{ return string(); }
+
+// -----------------------------------------------------------------------
+
+const size_t BytecodeElement::length() const 
+{ return 0; }
+
+// -----------------------------------------------------------------------
+	
+Pointers* BytecodeElement::get_pointers() 
+{ return NULL; }
+
+// -----------------------------------------------------------------------
+
+void BytecodeElement::set_pointers(ConstructionData& cdata) {}
+
+// -----------------------------------------------------------------------
+
+BytecodeElement* BytecodeElement::clone() const 
+{  return new BytecodeElement(*this); }
+
+// -----------------------------------------------------------------------
+
+BytecodeElement::~BytecodeElement()
+{}
+
+// -----------------------------------------------------------------------
+
+BytecodeElement::BytecodeElement() 
+  : id(id_src++) 
+{}
+
+// -----------------------------------------------------------------------
+
+const int BytecodeElement::entrypoint() const { return -999; }	
 
 // -----------------------------------------------------------------------
 
@@ -129,6 +183,17 @@ DataElement::DataElement(const char* src, const size_t count)
   : repr(src, count) {}
 
 // -----------------------------------------------------------------------
+
+DataElement::~DataElement() {}
+
+// -----------------------------------------------------------------------
+
+const ElementType DataElement::type() const { return Data; }
+const string DataElement::data() const { return repr; }
+const size_t DataElement::length() const { return repr.size(); }
+DataElement* DataElement::clone() const { return new DataElement(*this); }
+
+// -----------------------------------------------------------------------
 // MetaElement
 // -----------------------------------------------------------------------
 
@@ -149,6 +214,40 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src)
 
 // -----------------------------------------------------------------------
 
+MetaElement::~MetaElement()
+{}
+
+// -----------------------------------------------------------------------
+
+const ElementType MetaElement::type() const 
+{
+  return type_ == Line_ ? Line
+    : (type_ == Kidoku_ ? Kidoku
+       : Entrypoint);
+}
+
+// -----------------------------------------------------------------------
+
+const string MetaElement::data() const 
+{ 
+  string rv(3, 0);
+  rv[0] = type_ == Entrypoint_ ? entrypoint_marker : type_;
+  insert_i16(rv, 1, value_);
+  return rv;
+}
+
+// -----------------------------------------------------------------------
+
+const size_t MetaElement::length() const { return 3; }
+
+// -----------------------------------------------------------------------
+
+const int MetaElement::entrypoint() const {
+  return type_ == Entrypoint_ ? entrypoint_index : -999;
+}
+
+// -----------------------------------------------------------------------
+
 void MetaElement::runOnMachine(RLMachine& machine) const
 {
   if(type_ == Line_)
@@ -156,6 +255,10 @@ void MetaElement::runOnMachine(RLMachine& machine) const
 
   machine.advanceInstructionPointer();
 }
+
+// -----------------------------------------------------------------------
+
+MetaElement* MetaElement::clone() const { return new MetaElement(*this); }
 
 // -----------------------------------------------------------------------
 // TextoutElement
@@ -188,6 +291,10 @@ TextoutElement::TextoutElement(const char* src)
 // -----------------------------------------------------------------------
 
 TextoutElement::TextoutElement() {}
+
+// -----------------------------------------------------------------------
+
+const ElementType TextoutElement::type() const { return Textout; }
 
 // -----------------------------------------------------------------------
 
@@ -248,6 +355,11 @@ void TextoutElement::runOnMachine(RLMachine& machine) const
 {
   machine.performTextout(*this);
 }
+
+// -----------------------------------------------------------------------
+
+TextoutElement* TextoutElement::clone() const
+{ return new TextoutElement(*this); }
 
 // -----------------------------------------------------------------------
 // ExpressionElement
@@ -339,6 +451,10 @@ CommandElement::CommandElement(const CommandElement& ce)
 
 CommandElement::~CommandElement()
 {}
+
+// -----------------------------------------------------------------------
+
+const ElementType CommandElement::type() const { return Command; }
 
 // -----------------------------------------------------------------------
 
@@ -511,6 +627,11 @@ SelectElement::length() const
 }
 
 // -----------------------------------------------------------------------
+
+SelectElement* SelectElement::clone() const
+{ return new SelectElement(*this); }
+
+// -----------------------------------------------------------------------
 // FunctionElement
 // -----------------------------------------------------------------------
 
@@ -526,6 +647,10 @@ FunctionElement::FunctionElement(const char* src) : CommandElement(src)
 		}
 	}
 }
+
+// -----------------------------------------------------------------------
+
+const ElementType FunctionElement::type() const { return Function; }
 
 // -----------------------------------------------------------------------
 
@@ -557,6 +682,11 @@ FunctionElement::length() const
 }
 
 // -----------------------------------------------------------------------
+
+FunctionElement* FunctionElement::clone() const
+{ return new FunctionElement(*this); }
+
+// -----------------------------------------------------------------------
 // PointerElement
 // -----------------------------------------------------------------------
 
@@ -583,6 +713,14 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata)
 	}
 	targets.push_id(read_i32(src));
 }
+
+// -----------------------------------------------------------------------
+
+const ElementType GotoElement::type() const { return Goto; }
+
+// -----------------------------------------------------------------------
+
+GotoElement* GotoElement::clone() const { return new GotoElement(*this); }
 
 // -----------------------------------------------------------------------
 
@@ -668,6 +806,15 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
 
 // -----------------------------------------------------------------------
 
+const ElementType GotoCaseElement::type() const { return GotoCase; }
+
+// -----------------------------------------------------------------------
+
+GotoCaseElement* GotoCaseElement::clone() const
+{ return new GotoCaseElement(*this); }
+
+// -----------------------------------------------------------------------
+
 const string
 GotoCaseElement::data() const
 {
@@ -713,6 +860,19 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
 	}
 	if (*src != '}') throw Error("GotoOnElement(): expected `}'");
 }
+
+// -----------------------------------------------------------------------
+
+const ElementType GotoOnElement::type() const { return GotoOn; }
+
+// -----------------------------------------------------------------------
+
+GotoOnElement* GotoOnElement::clone() const { return new GotoOnElement(*this); }
+
+// -----------------------------------------------------------------------
+
+const size_t GotoOnElement::length() const
+{ return repr.size() + targets.size() * 4 + 2; }
 
 // -----------------------------------------------------------------------
 
@@ -772,6 +932,15 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
 
 // -----------------------------------------------------------------------
 
+const ElementType GosubWithElement::type() const { return Goto; }
+
+// -----------------------------------------------------------------------
+
+GosubWithElement* GosubWithElement::clone() const 
+{ return new GosubWithElement(*this); }
+
+// -----------------------------------------------------------------------
+
 const string
 GosubWithElement::data() const
 {
@@ -779,5 +948,9 @@ GosubWithElement::data() const
 	append_i32(rv, targets[0]->offset());
 	return rv;
 }
+
+// -----------------------------------------------------------------------
+
+const size_t GosubWithElement::length() const { return repr.size() + 4; }
 
 }

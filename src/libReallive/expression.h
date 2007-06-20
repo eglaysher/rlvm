@@ -130,9 +130,7 @@ public:
   /// Returns the store register value of the passed in machine
   virtual int integerValue(RLMachine& machine) const;
 
-  virtual ExpressionPiece* clone() const {
-    return new StoreRegisterExpressionPiece;
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 /** 
@@ -144,14 +142,15 @@ private:
   int constant;
 public:
   IntegerConstant(const int in);
+  ~IntegerConstant();
 
   /// Returns the constant value
   virtual int integerValue(RLMachine& machine) const;
 
-  virtual ExpressionPiece* clone() const {
-    return new IntegerConstant(constant);
-  }
+  virtual ExpressionPiece* clone() const;
 };
+
+// -----------------------------------------------------------------------
 
 class StringConstant : public ExpressionPiece {
 private:
@@ -161,10 +160,7 @@ public:
 
   virtual ExpressionValueType expressionValueType() const;
   virtual const std::string& getStringValue(RLMachine& machine) const;
-
-  virtual ExpressionPiece* clone() const {
-    return new StringConstant(constant);
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 // -----------------------------------------------------------------------
@@ -191,6 +187,7 @@ private:
 
 public:
   MemoryReference(int type, ExpressionPiece* inLoc);
+  ~MemoryReference();
 
   virtual bool isMemoryReference() const;
   virtual ExpressionValueType expressionValueType() const;
@@ -204,9 +201,7 @@ public:
   IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
   StringReferenceIterator getStringReferenceIterator(RLMachine& machine) const;
 
-  virtual ExpressionPiece* clone() const {
-    return new MemoryReference(type, location->clone());
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 // ----------------------------------------------------------------------
@@ -234,11 +229,10 @@ private:
 
 public:
   UniaryExpressionOperator(char inOperation, ExpressionPiece* inOperand);
+  ~UniaryExpressionOperator();
   virtual int integerValue(RLMachine& machine) const;
 
-  virtual ExpressionPiece* clone() const {
-    return new UniaryExpressionOperator(operation, operand->clone());
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 // ----------------------------------------------------------------------
@@ -269,12 +263,10 @@ protected:
 public:
   BinaryExpressionOperator(char inOperation, ExpressionPiece* lhs,
                            ExpressionPiece* rhs);
+  ~BinaryExpressionOperator();
   virtual int integerValue(RLMachine& machine) const;
 
-  virtual ExpressionPiece* clone() const {
-    return new BinaryExpressionOperator(operation, leftOperand->clone(), 
-                                        rightOperand->clone());
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 // ----------------------------------------------------------------------
@@ -294,10 +286,7 @@ public:
    */
   virtual int integerValue(RLMachine& machine) const;
 
-  virtual ExpressionPiece* clone() const {
-    return new AssignmentExpressionOperator(operation, leftOperand->clone(), 
-                                            rightOperand->clone());
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 
@@ -320,11 +309,7 @@ public:
   const boost::ptr_vector<ExpressionPiece>& getContainedPieces() const 
     { return containedPieces; }
 
-  virtual ExpressionPiece* clone() const {
-    ComplexExpressionPiece* cep = new ComplexExpressionPiece;
-    cep->containedPieces = containedPieces.clone();
-    return cep;
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 // -----------------------------------------------------------------------
@@ -347,11 +332,7 @@ public:
 
   int getOverloadTag() const { return overloadTag; }
 
-  virtual ExpressionPiece* clone() const {
-    SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
-    cep->containedPieces = containedPieces.clone();
-    return cep;
-  }
+  virtual ExpressionPiece* clone() const;
 };
 
 }

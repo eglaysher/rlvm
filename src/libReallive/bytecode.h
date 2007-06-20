@@ -62,6 +62,7 @@ struct ConstructionData {
 private:
   friend class Script;
   ConstructionData(size_t kt, pointer_t pt);
+  ~ConstructionData();
 };
 
 class Pointers {
@@ -95,28 +96,28 @@ protected:
 public:
   const long id;
 
-  virtual const ElementType type() const { return Unspecified; }
+  virtual const ElementType type() const;
 
-  const size_t offset() const { return offset_; }
+  const size_t offset() const;
 
-  virtual const string data() const { return string(); }
-  virtual const size_t length() const { return 0; }
+  virtual const string data() const;
+  virtual const size_t length() const;
 	
-  virtual Pointers* get_pointers() { return NULL; }
-  virtual void set_pointers(ConstructionData& cdata) {}
+  virtual Pointers* get_pointers();
+  virtual void set_pointers(ConstructionData& cdata);
 	
   // Note that x.clone() != x, since the copy constructor assigns a new id.
-  virtual BytecodeElement* clone() const { return new BytecodeElement(*this); }
+  virtual BytecodeElement* clone() const;
 	
-  virtual ~BytecodeElement() {}
+  virtual ~BytecodeElement();
 	
-  BytecodeElement() : id(id_src++) {}
+  BytecodeElement();
 
   /// Execute this bytecode instruction on this virtual machine
   virtual void runOnMachine(RLMachine& machine) const;
 
   // Needed for MetaElement during reading the script
-  virtual const int entrypoint() const { return -999; }	
+  virtual const int entrypoint() const;
 
   // Read the next element from a stream.
   static BytecodeElement* read(const char* stream, ConstructionData& cdata);
@@ -131,75 +132,66 @@ class DataElement : public BytecodeElement {
 protected:
   string repr;
 public:
-  virtual const ElementType type() const { return Data; }
-  virtual const string data() const { return repr; }
-  virtual const size_t length() const { return repr.size(); }
+  virtual const ElementType type() const;
+  virtual const string data() const;
+  virtual const size_t length() const;
 	
-  virtual DataElement* clone() const { return new DataElement(*this); }
+  virtual DataElement* clone() const;
   DataElement();
   DataElement(const char* src, const size_t count);
+  ~DataElement();
 };
 
 } namespace std {
-    template<> struct less<libReallive::pointer_t> {
-      bool operator() (const libReallive::pointer_t& a,
-                       const libReallive::pointer_t& b) {
-        return a->id < b->id;
-      }
-    };
-  } namespace libReallive {
+template<> struct less<libReallive::pointer_t> {
+  bool operator() (const libReallive::pointer_t& a,
+                   const libReallive::pointer_t& b) {
+    return a->id < b->id;
+  }
+};
+} namespace libReallive {
 	
 // Metadata elements: source line, kidoku, and entrypoint markers.
 
-    class MetaElement : public BytecodeElement {
-      enum MetaElementType { Line_ = '\n', Kidoku_ = '@', Entrypoint_ };
-      MetaElementType type_;
-      int value_;
-      int entrypoint_index;
-    public:
-      const ElementType type() const {
-        return type_ == Line_ ? Line
-                              : (type_ == Kidoku_ ? Kidoku
-                                                  : Entrypoint);
-      }
+class MetaElement : public BytecodeElement {
+  enum MetaElementType { Line_ = '\n', Kidoku_ = '@', Entrypoint_ };
+  MetaElementType type_;
+  int value_;
+  int entrypoint_index;
+public:
+  const ElementType type() const;
+  const string data() const;
 
-      const string data() const { 
-        string rv(3, 0);
-        rv[0] = type_ == Entrypoint_ ? entrypoint_marker : type_;
-        insert_i16(rv, 1, value_);
-        return rv;
-      }
-      const size_t length() const { return 3; }
+  const size_t length() const;
 
-      const int value() const { return value_; }
-      void set_value(const int value) { value_ = value; }
-      const int entrypoint() const {
-        return type_ == Entrypoint_ ? entrypoint_index : -999;
-      }
+  const int value() const { return value_; }
+  void set_value(const int value) { value_ = value; }
+  const int entrypoint() const;
 
-      /// Execute this bytecode instruction on this virtual machine
-      virtual void runOnMachine(RLMachine& machine) const;
+  /// Execute this bytecode instruction on this virtual machine
+  virtual void runOnMachine(RLMachine& machine) const;
 	
-      MetaElement(const ConstructionData* cv, const char* src);
+  MetaElement(const ConstructionData* cv, const char* src);
+  ~MetaElement();
 	
-      MetaElement* clone() const { return new MetaElement(*this); }
-    };
+  virtual MetaElement* clone() const;
+};
 
 // Display-text elements.
 
-    class TextoutElement : public DataElement {
-    public:
-      const ElementType type() const { return Textout; }
-      const string text() const;
-      void set_text(const char* src);
-      void set_text(const string& src) { set_text(src.c_str()); }
-      TextoutElement(const char* src);
-      TextoutElement();
-      TextoutElement* clone() const { return new TextoutElement(*this); }
+class TextoutElement : public DataElement {
+public:
+  const ElementType type() const;
+  const string text() const;
+  void set_text(const char* src);
+  void set_text(const string& src) { set_text(src.c_str()); }
+  TextoutElement(const char* src);
+  TextoutElement();
+  TextoutElement* clone() const;
 
-      /// Execute this bytecode instruction on this virtual machine
-      virtual void runOnMachine(RLMachine& machine) const;
-    };
+  /// Execute this bytecode instruction on this virtual machine
+  virtual void runOnMachine(RLMachine& machine) const;
+};
 
 // Expression elements.
 // Construct from long to build a representation of an integer constant.
@@ -207,215 +199,215 @@ public:
 /** 
  * A BytecodeElement that represents an expression
  */
-    class ExpressionElement : public DataElement {
-    private:
-      /// Storage for the parsed expression so we only have to calculate
-      /// it once (and so we can return it by const reference)
-      mutable boost::scoped_ptr<ExpressionPiece> m_parsedExpression;
+class ExpressionElement : public DataElement {
+private:
+  /// Storage for the parsed expression so we only have to calculate
+  /// it once (and so we can return it by const reference)
+  mutable boost::scoped_ptr<ExpressionPiece> m_parsedExpression;
 
-    public:
-      const ElementType type() const { return Expression; }
-      ExpressionElement(const long val);
-      ExpressionElement(const char* src);
-      ExpressionElement(const ExpressionElement& rhs);
-      ExpressionElement* clone() const;
+public:
+  const ElementType type() const { return Expression; }
+  ExpressionElement(const long val);
+  ExpressionElement(const char* src);
+  ExpressionElement(const ExpressionElement& rhs);
+  ExpressionElement* clone() const;
 
-      /** 
-       * Returns an ExpressionPiece representing this expression. This
-       * function lazily parses the expression and stores the tree for
-       * reuse.
-       *
-       * @return A parsed expression tree 
-       * @see expression.cpp
-       */
-      const ExpressionPiece& parsedExpression() const;
+  /** 
+   * Returns an ExpressionPiece representing this expression. This
+   * function lazily parses the expression and stores the tree for
+   * reuse.
+   *
+   * @return A parsed expression tree 
+   * @see expression.cpp
+   */
+  const ExpressionPiece& parsedExpression() const;
 
-      virtual void runOnMachine(RLMachine& machine) const;
-    };
+  virtual void runOnMachine(RLMachine& machine) const;
+};
 
 // Command elements.
 
-    class CommandElement : public DataElement {
-    protected:
-      mutable std::vector<std::string> m_unparsedParameters;
-      mutable boost::ptr_vector<libReallive::ExpressionPiece> m_parsedParameters;
+class CommandElement : public DataElement {
+protected:
+  mutable std::vector<std::string> m_unparsedParameters;
+  mutable boost::ptr_vector<libReallive::ExpressionPiece> m_parsedParameters;
 
-    public:
-      virtual const ElementType type() const { return Command; }
-      const int modtype()  const { return repr[1]; }
-      const int module()   const { return repr[2]; }
-      const int opcode()   const { return repr[3] | (repr[4] << 8); }
-      const int argc()     const { return repr[5] | (repr[6] << 8); }
-      const int overload() const { return repr[7]; }
+public:
+  virtual const ElementType type() const;
+  const int modtype()  const { return repr[1]; }
+  const int module()   const { return repr[2]; }
+  const int opcode()   const { return repr[3] | (repr[4] << 8); }
+  const int argc()     const { return repr[5] | (repr[6] << 8); }
+  const int overload() const { return repr[7]; }
 	
-      void set_modtype(unsigned char to)  { repr[1] = to; }
-      void set_module(unsigned char to)   { repr[2] = to; }
-      void set_opcode(int to)             { repr[3] = to & 0xff; repr[4] = (to >> 8) & 0xff; }
-      void set_argc(int to)               { repr[5] = to & 0xff; repr[6] = (to >> 8) & 0xff; }
-      void set_overload(unsigned char to) { repr[7] = to; }
+  void set_modtype(unsigned char to)  { repr[1] = to; }
+  void set_module(unsigned char to)   { repr[2] = to; }
+  void set_opcode(int to)             { repr[3] = to & 0xff; repr[4] = (to >> 8) & 0xff; }
+  void set_argc(int to)               { repr[5] = to & 0xff; repr[6] = (to >> 8) & 0xff; }
+  void set_overload(unsigned char to) { repr[7] = to; }
 	
-      virtual const size_t param_count() const = 0;
-      virtual string get_param(int) const = 0;
+  virtual const size_t param_count() const = 0;
+  virtual string get_param(int) const = 0;
 
-      const std::vector<string>& getUnparsedParameters() const;
-      bool areParametersParsed() const;
+  const std::vector<string>& getUnparsedParameters() const;
+  bool areParametersParsed() const;
 
-      void setParsedParameters(boost::ptr_vector<libReallive::ExpressionPiece>& p) const;
-      const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
+  void setParsedParameters(boost::ptr_vector<libReallive::ExpressionPiece>& p) const;
+  const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
-      /// Get pointer reference. I consider the fatter interface the lesser of two
-      /// evils between this and casting CommandElements to their subclasses.
-      virtual const Pointers& get_pointersRef() const { 
-        static Pointers falseTargets;
-        return falseTargets; 
-      }
+  /// Get pointer reference. I consider the fatter interface the lesser of two
+  /// evils between this and casting CommandElements to their subclasses.
+  virtual const Pointers& get_pointersRef() const { 
+    static Pointers falseTargets;
+    return falseTargets; 
+  }
 
-      // Fat interface stuff for GotoCase. Prevents casting, etc.
-      virtual const size_t case_count() const { return 0; }
-      virtual const string get_case(int i) const { return ""; }
+  // Fat interface stuff for GotoCase. Prevents casting, etc.
+  virtual const size_t case_count() const { return 0; }
+  virtual const string get_case(int i) const { return ""; }
 	
-      CommandElement(const int type, const int module, const int opcode, const int argc, const int overload);
-      CommandElement(const char* src);
-      CommandElement(const CommandElement& ce);
-      ~CommandElement();
+  CommandElement(const int type, const int module, const int opcode, const int argc, const int overload);
+  CommandElement(const char* src);
+  CommandElement(const CommandElement& ce);
+  ~CommandElement();
 
-      virtual void runOnMachine(RLMachine& machine) const;
-    };
+  virtual void runOnMachine(RLMachine& machine) const;
+};
 
-    class SelectElement : public CommandElement {
-      struct Param {
-        string cond, text;
-        int line;
-        Param() : cond(), text(), line(0) {}
-        Param(const char* tsrc, const size_t tlen, const int lnum) :
-          cond(), text(tsrc, tlen), line(lnum) {}
-        Param(const char* csrc, const size_t clen, const char* tsrc, const size_t tlen, const int lnum) :
-          cond(csrc, clen), text(tsrc, tlen), line(lnum) {}
-      };
-      typedef std::vector<Param> params_t;
-      params_t params;
-      int firstline;
-    public:
-      const ElementType type() const { return Select; }
-      ExpressionElement window();
-      const string text(const int index) const;
+class SelectElement : public CommandElement {
+  struct Param {
+    string cond, text;
+    int line;
+    Param() : cond(), text(), line(0) {}
+    Param(const char* tsrc, const size_t tlen, const int lnum) :
+      cond(), text(tsrc, tlen), line(lnum) {}
+    Param(const char* csrc, const size_t clen, const char* tsrc, const size_t tlen, const int lnum) :
+      cond(csrc, clen), text(tsrc, tlen), line(lnum) {}
+  };
+  typedef std::vector<Param> params_t;
+  params_t params;
+  int firstline;
+public:
+  const ElementType type() const { return Select; }
+  ExpressionElement window();
+  const string text(const int index) const;
 	
-      const string data() const;
-      const size_t length() const;
+  const string data() const;
+  const size_t length() const;
 	
-      const size_t param_count() const { return params.size(); }
-      string get_param(int i) const { string rv(params[i].cond); rv.append(params[i].text); return rv; }
+  const size_t param_count() const { return params.size(); }
+  string get_param(int i) const { string rv(params[i].cond); rv.append(params[i].text); return rv; }
 	
-      SelectElement(const char* src);
-      SelectElement* clone() const { return new SelectElement(*this); }
-    };
+  SelectElement(const char* src);
+  SelectElement* clone() const;
+};
 
-    class FunctionElement : public CommandElement {
-      std::vector<string> params;
-    public:
-      virtual const ElementType type() const { return Function; }
-      FunctionElement(const char* src);
+class FunctionElement : public CommandElement {
+  std::vector<string> params;
+public:
+  virtual const ElementType type() const;
+  FunctionElement(const char* src);
 
-      const string data() const;
-      const size_t length() const;
+  const string data() const;
+  const size_t length() const;
 
-      const size_t param_count() const { return params.size(); }
-      string get_param(int i) const { return params[i]; }
+  const size_t param_count() const { return params.size(); }
+  string get_param(int i) const { return params[i]; }
 
-      virtual FunctionElement* clone() const { return new FunctionElement(*this); }
-    };
+  virtual FunctionElement* clone() const;
+};
 
-    class PointerElement : public CommandElement {
-    protected:
-      Pointers targets;
-    public:
-      PointerElement(const char* src);
-      virtual const ElementType type() const = 0;
-      virtual PointerElement* clone() const = 0;
-      virtual const string data() const = 0;
-      virtual const size_t length() const = 0;
-      void set_pointers(ConstructionData& cdata) { targets.set_pointers(cdata); }
-      Pointers* get_pointers() { return &targets; }
-      const Pointers& get_pointersRef() const { return targets; }
-    };
+class PointerElement : public CommandElement {
+protected:
+  Pointers targets;
+public:
+  PointerElement(const char* src);
+  virtual const ElementType type() const = 0;
+  virtual PointerElement* clone() const = 0;
+  virtual const string data() const = 0;
+  virtual const size_t length() const = 0;
+  void set_pointers(ConstructionData& cdata) { targets.set_pointers(cdata); }
+  Pointers* get_pointers() { return &targets; }
+  const Pointers& get_pointersRef() const { return targets; }
+};
 
-    class GotoElement : public PointerElement {
+class GotoElement : public PointerElement {
 //	std::vector<string> params;
-    public:
-      const ElementType type() const { return Goto; }
-      GotoElement(const char* src, ConstructionData& cdata);
-      GotoElement* clone() const { return new GotoElement(*this); }
+public:
+  const ElementType type() const;
+  GotoElement(const char* src, ConstructionData& cdata);
+  GotoElement* clone() const;
 
-      void make_unconditional();
+  void make_unconditional();
 
-      enum Case { Unconditional, Always, Never, Variable };
-      const Case taken() const;
+  enum Case { Unconditional, Always, Never, Variable };
+  const Case taken() const;
 
-      // The pointer is not counted as a parameter.
-      const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
-      string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
+  // The pointer is not counted as a parameter.
+  const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
+  string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
 //	const size_t param_count() const { return params.size(); }
 //	string get_param(int i) const { return params[i]; }
 
-      const string data() const;
-      const size_t length() const { return repr.size() + 4; }
-    };
+  const string data() const;
+  const size_t length() const { return repr.size() + 4; }
+};
 
-    class GotoCaseElement : public PointerElement {
-      std::vector<string> cases;
-    public:
-      const ElementType type() const { return GotoCase; }
-      GotoCaseElement(const char* src, ConstructionData& cdata);
-      GotoCaseElement* clone() const { return new GotoCaseElement(*this); }
+class GotoCaseElement : public PointerElement {
+  std::vector<string> cases;
+public:
+  const ElementType type() const;
+  GotoCaseElement(const char* src, ConstructionData& cdata);
+  GotoCaseElement* clone() const;
 
-      const string data() const;
-      const size_t length() const;
+  const string data() const;
+  const size_t length() const;
 
-      // The cases are not counted as parameters.
-      const size_t param_count() const { return 1; }
-      string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
+  // The cases are not counted as parameters.
+  const size_t param_count() const { return 1; }
+  string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
 
-      // Accessors for the cases
-      const size_t case_count() const { return cases.size(); }
-      const string get_case(int i) const { return cases[i]; }
-    };
+  // Accessors for the cases
+  const size_t case_count() const { return cases.size(); }
+  const string get_case(int i) const { return cases[i]; }
+};
 
-    class GotoOnElement : public PointerElement {
-    public:
-      const ElementType type() const { return GotoOn; }
-      GotoOnElement(const char* src, ConstructionData& cdata);
-      GotoOnElement* clone() const { return new GotoOnElement(*this); }
+class GotoOnElement : public PointerElement {
+public:
+  const ElementType type() const;
+  GotoOnElement(const char* src, ConstructionData& cdata);
+  GotoOnElement* clone() const;
 
-      const string data() const;
-      const size_t length() const { return repr.size() + targets.size() * 4 + 2; }
+  const string data() const;
+  const size_t length() const;
 
-      // The pointers are not counted as parameters.
-      const size_t param_count() const { return 1; }
-      string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
-    };
+  // The pointers are not counted as parameters.
+  const size_t param_count() const { return 1; }
+  string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
+};
 
-    class GosubWithElement : public PointerElement {
-      std::vector<string> params;
-    public:
-      const ElementType type() const { return Goto; }
-      GosubWithElement(const char* src, ConstructionData& cdata);
-      GosubWithElement* clone() const { return new GosubWithElement(*this); }
+class GosubWithElement : public PointerElement {
+  std::vector<string> params;
+public:
+  const ElementType type() const;
+  GosubWithElement(const char* src, ConstructionData& cdata);
+  GosubWithElement* clone() const;
 
-      void make_unconditional();
+  void make_unconditional();
 
-      enum Case { Unconditional, Always, Never, Variable };
-      const Case taken() const;
+  enum Case { Unconditional, Always, Never, Variable };
+  const Case taken() const;
 
-      // The pointer is not counted as a parameter.
+  // The pointer is not counted as a parameter.
 //	const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
 //	string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
-      const size_t param_count() const { return params.size(); }
-      string get_param(int i) const { return params[i]; }
+  const size_t param_count() const { return params.size(); }
+  string get_param(int i) const { return params[i]; }
 //  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
-      const string data() const;
-      const size_t length() const { return repr.size() + 4; }
-    };
+  const string data() const;
+  const size_t length() const;
+};
 
 
 }
