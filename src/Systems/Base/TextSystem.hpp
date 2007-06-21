@@ -25,7 +25,10 @@
 
 #include <string>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+
 #include "SDL_ttf.h"
 
 class Gameexe;

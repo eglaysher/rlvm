@@ -339,7 +339,7 @@ template<>
 void object::test<7>()
 {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
-  NullSystem system;
+  NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 7);
@@ -675,7 +675,7 @@ void object::test<15>()
   for(int i = 0; i < 3; ++i) 
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
-    NullSystem system;
+    NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(1, 0, i);
@@ -688,7 +688,7 @@ void object::test<15>()
 
   // Now test the default value
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
-  NullSystem system;
+  NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(1, 0, 29);

@@ -20,40 +20,30 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __NullTextSystem_hpp__
-#define __NullTextSystem_hpp__
+#include "NullTextSystem.hpp"
+#include "NullTextWindow.hpp"
 
-#include "Systems/Base/TextSystem.hpp"
-#include <boost/ptr_container/ptr_map.hpp>
+// -----------------------------------------------------------------------
 
-class RLMachine;
-class TextWindow;
-class NullTextWindow;
+NullTextSystem::NullTextSystem(Gameexe& gexe) 
+  : TextSystem(gexe) {}
 
-class NullTextSystem : public TextSystem
+// -----------------------------------------------------------------------
+
+NullTextSystem::~NullTextSystem() { }
+
+// -----------------------------------------------------------------------
+
+TextWindow& NullTextSystem::textWindow(RLMachine& machine, int textWindowNum)
 {
-private:
-  /// Window dispatch
-  typedef boost::ptr_map<int, NullTextWindow> WindowMap;
-  WindowMap m_textWindow;
+  WindowMap::iterator it = m_textWindow.find(textWindowNum);
+  if(it == m_textWindow.end())
+  {
+    it = m_textWindow.insert(
+      textWindowNum, new NullTextWindow(machine, textWindowNum)).first;
+  }
 
-public:
-  NullTextSystem(Gameexe& gexe);
-  ~NullTextSystem();
+  return *it;
+}
 
-  void executeTextSystem(RLMachine& machine) { }
 
-  void render(RLMachine& machine) { }
-  void hideTextWindow(int winNumber) { }
-  void hideAllTextWindows() { }
-  void clearAllTextWindows() { }
-
-  TextWindow& textWindow(RLMachine& machine, int textWindowNumber);
-
-  // We can safely ignore mouse clicks...for now.
-  void setMousePosition(RLMachine& machine, int x, int y) { }
-  bool handleMouseClick(RLMachine& machine, int x, int y,
-                        bool pressed) { }
-};
-
-#endif

@@ -1,0 +1,15 @@
+if $(not $(defined-env VERBOSE))
+  OMakeFlags(-S --progress)
+  export
+
+CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
+
+.PHONY: clean
+
+INCLUDES += ../../src
+
+.DEFAULT: 
+#$(CXXProgram rlvmTest, $(TEST_FILES))
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump

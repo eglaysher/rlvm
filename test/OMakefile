@@ -6,7 +6,7 @@ CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -
 
 .PHONY: clean
 
-.SUBDIRS: Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN
+.SUBDIRS: NullSystem Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN
 
 INCLUDES += ../src
 LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_filesystem
@@ -21,6 +21,7 @@ TEST_FILES[] =
   ExpressionTest_TUT
   Gameexe_TUT
   LazyArray_TUT
+  NullSystem/NullTextSystem
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
 rlvmTest$(EXE): ../src/librlvm$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
