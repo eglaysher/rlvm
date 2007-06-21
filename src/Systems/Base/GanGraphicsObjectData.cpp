@@ -333,4 +333,5 @@ void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
   m_currentSet = set;
   m_currentFrame = 0;
   m_timeAtLastFrameChange = machine.system().event().getTicks();
+  machine.system().graphics().markScreenForRefresh();
 }
