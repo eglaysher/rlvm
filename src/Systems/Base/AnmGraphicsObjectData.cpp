@@ -143,7 +143,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   // Read the corresponding image file we read from, and load the image.
   string rawFileName = data + 0x1c;
   string fileName = findFile(machine, rawFileName, IMAGE_FILETYPES);
-  image.reset(machine.system().graphics().loadSurfaceFromFile(fileName));
+  image = machine.system().graphics().loadSurfaceFromFile(fileName);
   
   // Read the frame list
   const char* buf = data + 0xb8;

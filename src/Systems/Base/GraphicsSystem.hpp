@@ -136,7 +136,8 @@ public:
 */
 
   // ----------------------------------------- [ Surface loading functions ]
-  virtual Surface* loadSurfaceFromFile(const std::string& filename) = 0;
+  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
+    const std::string& filename) = 0;
 
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 

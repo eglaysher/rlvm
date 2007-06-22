@@ -4,6 +4,8 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
+#include <boost/shared_ptr.hpp>
+
 class NullSurface : public Surface
 {
   virtual int width() const { return 0; }
@@ -40,7 +42,7 @@ public:
   { static GraphicsObject x; return x;}
 
   // Make a null Surface object?
-  virtual Surface* loadSurfaceFromFile(const std::string& filename) { return NULL; }
+  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const std::string& filename) { return boost::shared_ptr<Surface>(); }
   virtual boost::shared_ptr<Surface> getDC(int dc)
   { return boost::shared_ptr<Surface>(); }
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 

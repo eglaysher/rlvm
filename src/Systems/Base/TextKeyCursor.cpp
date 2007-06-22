@@ -108,8 +108,8 @@ void TextKeyCursor::setCursorImage(RLMachine& machine,
   if(name != "")
   {
     GraphicsSystem& gs = machine.system().graphics();
-    m_cursorImage.reset(gs.loadSurfaceFromFile(
-                          findFile(machine, name)));
+    m_cursorImage = 
+      gs.loadSurfaceFromFile(findFile(machine, name));
   }
   else
     m_cursorImage.reset();

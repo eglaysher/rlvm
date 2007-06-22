@@ -344,9 +344,6 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
     m_screenDirty = false;
   }
     
-  // For example, we should probably do something when the screen is
-  // dirty.
-
   // Check to see if any of the graphics objects are reporting that
   // they want to force a redraw
   for_each(foregroundObjects.allocated_begin(),
@@ -355,7 +352,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 
   // Update the seen.
   int currentTime = machine.system().event().getTicks();  
-  if((currentTime - m_timeOfLastTitlebarUpdate) > 20)
+  if((currentTime - m_timeOfLastTitlebarUpdate) > 60)
   {
     m_timeOfLastTitlebarUpdate = currentTime;
 
@@ -565,7 +562,7 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
  *
  * @warning This function probably isn't basic exception safe.
  */
-Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
+shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
 {
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.c_str(), "rb");
@@ -587,7 +584,9 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
   // call the image loading methods stolen from xclannad. The
   // following code is stolen verbatim from picture.cc in xclannad.
   scoped_ptr<GRPCONV> conv(GRPCONV::AssignConverter(d.get(), size, "???"));
-  if (conv == 0) { return 0;}
+  if (conv == 0) { 
+    throw SystemError("Failure in GRPCONV.");
+  }
   char* mem = (char*)malloc(conv->Width() * conv->Height() * 4 + 1024);
   SDL_Surface* s = 0;
   if (conv->Read(mem)) {
@@ -630,7 +629,7 @@ Surface* SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
     region_table.push_back(rect);
   }
 
-  return new SDLSurface(s, region_table);
+  return shared_ptr<Surface>(new SDLSurface(s, region_table));
 }
 
 // -----------------------------------------------------------------------
@@ -659,7 +658,8 @@ private:
 public:
   SDLGraphicsObjectOfFile(SDLGraphicsSystem& graphics, 
                           const std::string& filename)
-    : surface(static_cast<SDLSurface*>(graphics.loadSurfaceFromFile(filename)))
+    : surface(static_pointer_cast<SDLSurface>(
+                graphics.loadSurfaceFromFile(filename)))
   {  
   }
 

@@ -93,6 +93,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
 
   SDL_Rect rect;
   rect.x = x; rect.y = y; rect.w = w; rect.h = h;
+  // Get rid of the alphablit!!!!!!!!
   if(pygame_AlphaBlit(surface, &rect, tmpSurface, NULL))
     reportSDLError("pygame_AlphaBlit", "Texture::Texture()");
 

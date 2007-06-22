@@ -105,7 +105,7 @@ void loadImageToDC1(GraphicsSystem& graphics,
                      255);
 
   // Load the section of the image file on top of dc1
-  scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(fileName));
+  shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(fileName));
   surface->blitToSurface(*graphics.getDC(1),
                          x, y, width, height,
                          dx, dy, width, height,
@@ -266,7 +266,7 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
     filename = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
-    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
 
     if(dc != 0 && dc != 1)
       graphics.allocateDC(dc,
@@ -303,7 +303,7 @@ struct Grp_load_3 : public RLOp_Void_9<
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
     filename = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
-    scoped_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
     m_space.translateToRec(x1, y1, x2, y2);
 
     if(dc != 0 && dc != 1)

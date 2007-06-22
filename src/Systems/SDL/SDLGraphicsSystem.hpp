@@ -176,7 +176,8 @@ public:
   virtual void allocateDC(int dc, int width, int height);
   virtual void freeDC(int dc);
 
-  virtual Surface* loadSurfaceFromFile(const std::string& filename);
+  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
+    const std::string& filename);
 
   virtual boost::shared_ptr<Surface> getDC(int dc);
 
