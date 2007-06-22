@@ -72,6 +72,8 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
                  GLenum bytesPerPixel, GLint byteOrder, GLint byteType)
   : m_xOffset(x), m_yOffset(y), m_logicalWidth(w), m_logicalHeight(h),
     m_totalWidth(surface->w), m_totalHeight(surface->h),     
+    m_textureWidth(SafeSize(m_logicalWidth)), 
+    m_textureHeight(SafeSize(m_logicalHeight)),
     m_backTextureID(0), m_isUpsideDown(false)
 {
   glGenTextures(1, &m_textureID);
@@ -82,37 +84,53 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  // Build a surface of this part of the 
-  SDL_Surface* tmpSurface =
-    SDL_CreateRGBSurface(surface->flags, w, h,
-                         surface->format->BitsPerPixel,
-                         surface->format->Rmask, surface->format->Gmask,
-                         surface->format->Bmask, surface->format->Amask);
-  if(tmpSurface == NULL)
-    reportSDLError("SDL_CreateRGBSurface", "Texture::Texture()");
+  if(w == m_totalWidth && h == m_totalHeight)
+  {
+    SDL_LockSurface(surface);
+    glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
+                 m_textureWidth, m_textureHeight,
+                 0, 
+                 byteOrder, byteType, NULL);
+    ShowGLErrors();
 
-  SDL_Rect rect;
-  rect.x = x; rect.y = y; rect.w = w; rect.h = h;
-  // Get rid of the alphablit!!!!!!!!
-  if(pygame_AlphaBlit(surface, &rect, tmpSurface, NULL))
-    reportSDLError("pygame_AlphaBlit", "Texture::Texture()");
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
+                    byteOrder, byteType, surface->pixels);
+    ShowGLErrors();
 
-  SDL_LockSurface(tmpSurface);
+    SDL_UnlockSurface(surface);
+  }
+  else
+  {
+    // Cut out the current piece
+    scoped_array<char> pixelData(new char[surface->format->BytesPerPixel * w * h]);
+    char* curDstPtr = pixelData.get();
 
-  m_textureWidth = SafeSize(m_logicalWidth);
-  m_textureHeight = SafeSize(m_logicalHeight);
-  glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
-               m_textureWidth, m_textureHeight,
-               0, 
-               byteOrder, byteType, NULL);
-  ShowGLErrors();
+    SDL_LockSurface(surface);
+    {
+      char* curSrcPtr = (char*) surface->pixels;
+      curSrcPtr += surface->pitch * y;
 
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, tmpSurface->w, tmpSurface->h,
-                  byteOrder, byteType, tmpSurface->pixels);            
-  ShowGLErrors();
+      int rowStart = surface->format->BytesPerPixel * x;
+      int subrowSize = surface->format->BytesPerPixel * w;
+      for(int currentRow = 0; currentRow < h; ++currentRow)
+      {
+        memcpy(curDstPtr, curSrcPtr + rowStart, subrowSize);
+        curDstPtr += subrowSize;
+        curSrcPtr += surface->pitch;
+      }
+    }
+    SDL_UnlockSurface(surface);
 
-  SDL_UnlockSurface(tmpSurface);
-  SDL_FreeSurface(tmpSurface);
+    glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
+                 m_textureWidth, m_textureHeight,
+                 0, 
+                 byteOrder, byteType, NULL);
+    ShowGLErrors();
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
+                    byteOrder, byteType, pixelData.get());            
+    ShowGLErrors();
+  }
 }
 
 // -----------------------------------------------------------------------
