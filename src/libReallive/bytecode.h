@@ -275,6 +275,7 @@ public:
 };
 
 class SelectElement : public CommandElement {
+public:
   struct Param {
     string cond, text;
     int line;
@@ -285,6 +286,7 @@ class SelectElement : public CommandElement {
       cond(csrc, clen), text(tsrc, tlen), line(lnum) {}
   };
   typedef std::vector<Param> params_t;
+private:
   params_t params;
   int firstline;
 public:
@@ -297,6 +299,8 @@ public:
 	
   const size_t param_count() const { return params.size(); }
   string get_param(int i) const { string rv(params[i].cond); rv.append(params[i].text); return rv; }
+
+  const params_t& getRawParams() const { return params; }
 	
   SelectElement(const char* src);
   SelectElement* clone() const;

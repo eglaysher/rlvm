@@ -37,6 +37,7 @@
 #include "Modules/Module_Scr.hpp"
 #include "Modules/Module_Debug.hpp"
 #include "Modules/Module_Gan.hpp"
+#include "Modules/Module_Sel.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -47,6 +48,7 @@ void addAllModules(RLMachine& rlmachine)
   // Attatch the modules for some commands
   rlmachine.attachModule(new JmpModule);
   rlmachine.attachModule(new EventLoopModule);
+  rlmachine.attachModule(new SelModule);
   rlmachine.attachModule(new SysModule(rlmachine.system()));
   rlmachine.attachModule(new StrModule);
   rlmachine.attachModule(new MemModule);

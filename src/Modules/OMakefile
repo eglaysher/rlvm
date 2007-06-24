@@ -19,6 +19,7 @@ LRLFILES[] =
   Module_Mem
   Module_Msg
   Module_Scr
+  Module_Sel
   Module_Str
   Module_Sys
   Module_Sys_Frame

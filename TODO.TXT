@@ -12,5 +12,4 @@
       take the raw data and upload it to the graphics card. 
     - Switch from the SDL_Surface based SDL_ttf to the OpenGL ftgl.
 
-- Pull the alphablit out of Texture::Texture. It is an abomination.
 - Write index_series
