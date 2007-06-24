@@ -206,30 +206,30 @@ struct Msg_page : public RLOp_Void_Void {
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
-  addOpcode(3, 0, new Msg_par);
+  addOpcode(3, 0, "par", new Msg_par);
 //  addOpcode(15, 0, /* spause3 */ );
-  addOpcode(17, 0, new Msg_pause);
+  addOpcode(17, 0, "pause", new Msg_pause);
 
-  addOpcode(102, 0, new Msg_TextWindow);
-  addOpcode(102, 1, new Msg_TextWindow);
+  addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
+  addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
-  addOpcode(105, 0, new Msg_FontColour);
-  addOpcode(105, 1, new Msg_FontColour);
-  addOpcode(105, 2, new Msg_FontColour);
+  addOpcode(105, 0, "FontColor", new Msg_FontColour);
+  addOpcode(105, 1, "FontColor", new Msg_FontColour);
+  addOpcode(105, 2, "FontColor", new Msg_FontColour);
 
-  addOpcode(120, 0, new Msg_doruby_display);
-  addOpcode(120, 1, new Msg_doruby_mark);
+  addOpcode(120, 0, "__doruby_on", new Msg_doruby_display);
+  addOpcode(120, 1, "__doruby_off", new Msg_doruby_mark);
 
-  addOpcode(151, 0, new Msg_msgHide);
+  addOpcode(151, 0, "msgHide", new Msg_msgHide);
+  addOpcode(152, 0, "msgClear", new Msg_msgClear);
 
-  addOpcode(152, 0, new Msg_msgClear);
-
-  addOpcode(162, 0, new Msg_msgClearAll);
+  addUnsupportedOpcode(161, 0, "msgHideAll");
+  addOpcode(162, 0, "msgClearAll", new Msg_msgClearAll);
   addUnsupportedOpcode(170, 0, "msgHideAllTemp");
-  addOpcode(201, 0, new Msg_br);
-  addOpcode(205, 0, new Msg_spause);
+  addOpcode(201, 0, "br", new Msg_br);
+  addOpcode(205, 0, "spause", new Msg_spause);
 
-  addOpcode(210, 0, new Msg_page);
+  addOpcode(210, 0, "page", new Msg_page);
 
   addUnsupportedOpcode(300, 0, "SetIndent");
   addUnsupportedOpcode(301, 0, "ClearIndent");

@@ -274,6 +274,5 @@ void GraphicsObject::execute(RLMachine& machine)
 
 void GraphicsObject::setCompositeMode(const int in) 
 { 
-  cerr << "Setting composite to " << in << endl;
   m_compositeMode = in; 
 }
