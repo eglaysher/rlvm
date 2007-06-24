@@ -159,10 +159,9 @@ class MetaElement : public BytecodeElement {
   int value_;
   int entrypoint_index;
 public:
-  const ElementType type() const;
-  const string data() const;
-
-  const size_t length() const;
+  virtual const ElementType type() const;
+  virtual const string data() const;
+  virtual const size_t length() const;
 
   const int value() const { return value_; }
   void set_value(const int value) { value_ = value; }
@@ -181,7 +180,7 @@ public:
 
 class TextoutElement : public DataElement {
 public:
-  const ElementType type() const;
+  virtual const ElementType type() const;
   const string text() const;
   void set_text(const char* src);
   void set_text(const string& src) { set_text(src.c_str()); }
@@ -206,7 +205,7 @@ private:
   mutable boost::scoped_ptr<ExpressionPiece> m_parsedExpression;
 
 public:
-  const ElementType type() const { return Expression; }
+  virtual const ElementType type() const;
   ExpressionElement(const long val);
   ExpressionElement(const char* src);
   ExpressionElement(const ExpressionElement& rhs);
@@ -290,15 +289,15 @@ private:
   params_t params;
   int firstline;
 public:
-  const ElementType type() const { return Select; }
+  virtual const ElementType type() const;
   ExpressionElement window();
   const string text(const int index) const;
 	
   const string data() const;
   const size_t length() const;
 	
-  const size_t param_count() const { return params.size(); }
-  string get_param(int i) const { string rv(params[i].cond); rv.append(params[i].text); return rv; }
+  const size_t param_count() const;
+  string get_param(int i) const;
 
   const params_t& getRawParams() const { return params; }
 	
@@ -315,8 +314,8 @@ public:
   const string data() const;
   const size_t length() const;
 
-  const size_t param_count() const { return params.size(); }
-  string get_param(int i) const { return params[i]; }
+  const size_t param_count() const;
+  string get_param(int i) const;
 
   virtual FunctionElement* clone() const;
 };
@@ -326,19 +325,20 @@ protected:
   Pointers targets;
 public:
   PointerElement(const char* src);
+  ~PointerElement();
   virtual const ElementType type() const = 0;
   virtual PointerElement* clone() const = 0;
   virtual const string data() const = 0;
   virtual const size_t length() const = 0;
-  void set_pointers(ConstructionData& cdata) { targets.set_pointers(cdata); }
-  Pointers* get_pointers() { return &targets; }
-  const Pointers& get_pointersRef() const { return targets; }
+  virtual void set_pointers(ConstructionData& cdata);
+  virtual Pointers* get_pointers();
+  virtual const Pointers& get_pointersRef() const;
 };
 
 class GotoElement : public PointerElement {
 //	std::vector<string> params;
 public:
-  const ElementType type() const;
+  virtual const ElementType type() const;
   GotoElement(const char* src, ConstructionData& cdata);
   GotoElement* clone() const;
 
@@ -360,12 +360,12 @@ public:
 class GotoCaseElement : public PointerElement {
   std::vector<string> cases;
 public:
-  const ElementType type() const;
+  virtual const ElementType type() const;
+  virtual const string data() const;
+  virtual const size_t length() const;
+
   GotoCaseElement(const char* src, ConstructionData& cdata);
   GotoCaseElement* clone() const;
-
-  const string data() const;
-  const size_t length() const;
 
   // The cases are not counted as parameters.
   const size_t param_count() const { return 1; }
@@ -378,12 +378,12 @@ public:
 
 class GotoOnElement : public PointerElement {
 public:
-  const ElementType type() const;
+  virtual const ElementType type() const;
+  virtual const string data() const;
+  virtual const size_t length() const;
+
   GotoOnElement(const char* src, ConstructionData& cdata);
   GotoOnElement* clone() const;
-
-  const string data() const;
-  const size_t length() const;
 
   // The pointers are not counted as parameters.
   const size_t param_count() const { return 1; }
@@ -393,7 +393,10 @@ public:
 class GosubWithElement : public PointerElement {
   std::vector<string> params;
 public:
-  const ElementType type() const;
+  virtual const ElementType type() const;
+  virtual const string data() const;
+  virtual const size_t length() const;
+
   GosubWithElement(const char* src, ConstructionData& cdata);
   GosubWithElement* clone() const;
 
@@ -409,8 +412,6 @@ public:
   string get_param(int i) const { return params[i]; }
 //  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
-  const string data() const;
-  const size_t length() const;
 };
 
 

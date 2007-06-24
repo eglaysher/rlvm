@@ -278,18 +278,18 @@ GraphicsObjectData* GanGraphicsObjectData::clone() const
 
 void GanGraphicsObjectData::execute(RLMachine& machine)
 {
-  if(m_currentlyPlaying)
+  if(m_currentlyPlaying && m_currentFrame >= 0)
   {
     unsigned int currentTime = machine.system().event().getTicks();
     unsigned int timeSinceLastFrameChange = 
       currentTime - m_timeAtLastFrameChange;
 
     const vector<Frame>& currentSet = animationSets.at(m_currentSet);
-    int frameTime = currentSet[m_currentFrame].time;
+    unsigned int frameTime = (unsigned int)(currentSet[m_currentFrame].time);
     if(timeSinceLastFrameChange > frameTime)
     {
       m_currentFrame++;
-      if(m_currentFrame == currentSet.size())
+      if(size_t(m_currentFrame) == currentSet.size())
       {
         m_currentFrame--;
         endAnimation();

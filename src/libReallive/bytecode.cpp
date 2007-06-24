@@ -388,6 +388,13 @@ ExpressionElement::ExpressionElement(const long val)
 
 // -----------------------------------------------------------------------
 
+const ElementType ExpressionElement::type() const
+{
+  return Expression; 
+}
+
+// -----------------------------------------------------------------------
+
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
   : DataElement(rhs), m_parsedExpression(NULL)
 { 
@@ -553,6 +560,13 @@ SelectElement::SelectElement(const char* src) : CommandElement(src)
 
 // -----------------------------------------------------------------------
 
+const ElementType SelectElement::type() const 
+{
+  return Select; 
+}
+
+// -----------------------------------------------------------------------
+
 ExpressionElement
 SelectElement::window()
 {
@@ -628,6 +642,22 @@ SelectElement::length() const
 
 // -----------------------------------------------------------------------
 
+const size_t SelectElement::param_count() const 
+{
+  return params.size(); 
+}
+
+// -----------------------------------------------------------------------
+
+string SelectElement::get_param(int i) const
+{
+  string rv(params[i].cond); 
+  rv.append(params[i].text); 
+  return rv;
+}
+
+// -----------------------------------------------------------------------
+
 SelectElement* SelectElement::clone() const
 { return new SelectElement(*this); }
 
@@ -683,6 +713,11 @@ FunctionElement::length() const
 
 // -----------------------------------------------------------------------
 
+const size_t FunctionElement::param_count() const { return params.size(); }
+string FunctionElement::get_param(int i) const { return params[i]; }
+
+// -----------------------------------------------------------------------
+
 FunctionElement* FunctionElement::clone() const
 { return new FunctionElement(*this); }
 
@@ -691,6 +726,25 @@ FunctionElement* FunctionElement::clone() const
 // -----------------------------------------------------------------------
 
 PointerElement::PointerElement(const char* src) : CommandElement(src) {}
+
+// -----------------------------------------------------------------------
+
+PointerElement::~PointerElement() {}
+
+// -----------------------------------------------------------------------
+
+void PointerElement::set_pointers(ConstructionData& cdata)
+{
+  targets.set_pointers(cdata); 
+}
+
+// -----------------------------------------------------------------------
+
+Pointers* PointerElement::get_pointers() { return &targets; }
+
+// -----------------------------------------------------------------------
+
+const Pointers& PointerElement::get_pointersRef() const { return targets; }
 
 // -----------------------------------------------------------------------
 // GotoElement

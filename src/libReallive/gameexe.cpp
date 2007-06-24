@@ -170,6 +170,40 @@ int Gameexe::getIntAt(const std::string& key, int index)
 
 // -----------------------------------------------------------------------
 
+bool Gameexe::exists(const std::string& key) 
+{
+  return data_.find(key) != data_.end();
+}
+
+// -----------------------------------------------------------------------
+
+std::string Gameexe::getStringAt(const std::string& key, int index) 
+{
+  int cindex = getIntAt(key, index);
+  return cdata_.at(cindex);
+}
+
+// -----------------------------------------------------------------------
+
+void Gameexe::setStringAt(const std::string& key, const std::string& value) 
+{
+  vec_type toStore;
+  cdata_.push_back(value);
+  toStore.push_back(cdata_.size() - 1);
+  data_[key] = toStore;
+}
+
+// -----------------------------------------------------------------------
+
+void Gameexe::setIntAt(const std::string& key, const int value) 
+{
+  vec_type toStore;
+  toStore.push_back(value);
+  data_[key] = toStore;
+}
+
+// -----------------------------------------------------------------------
+
 void Gameexe::throwUnknownKey(const std::string& key) 
 {
   std::ostringstream ss;

@@ -243,41 +243,20 @@ public:
    * Access the key "firstKey"
    */
   template<typename A>
-  GameexeInterpretObject operator()(const A& firstKey)
-  {
-    std::ostringstream ss;
-    addToStream(firstKey, ss);
-    return GameexeInterpretObject(ss.str(), *this);
-  }
+  GameexeInterpretObject operator()(const A& firstKey);
 
   /** 
    * Access the key "firstKey"."secondKey"
    */
   template<typename A, typename B>
-  GameexeInterpretObject operator()(const A& firstKey, const B& secondKey)
-  {
-    std::ostringstream ss;
-    addToStream(firstKey, ss);
-    ss << ".";
-    addToStream(secondKey, ss);
-    return GameexeInterpretObject(ss.str(), *this);
-  }
+  GameexeInterpretObject operator()(const A& firstKey, const B& secondKey);
 
   /** 
    * Access the key "firstKey"."secondKey"
    */
   template<typename A, typename B, typename C>
   GameexeInterpretObject operator()(const A& firstKey, const B& secondKey,
-                                    const C& thirdKey)
-  {
-    std::ostringstream ss;
-    addToStream(firstKey, ss);
-    ss << ".";
-    addToStream(secondKey, ss);
-    ss << ".";
-    addToStream(thirdKey, ss);
-    return GameexeInterpretObject(ss.str(), *this);
-  }
+                                    const C& thirdKey);
 
   /// @}
 
@@ -312,9 +291,7 @@ public:
   /** 
    * Returns whether key exists in the stored data
    */
-  bool exists(const std::string& key) {
-    return data_.find(key) != data_.end();
-  }
+  bool exists(const std::string& key);
 
   /** 
    * Returns the number of keys in the Gameexe.ini file.
@@ -326,24 +303,9 @@ public:
   /** 
    * Internal function that returns an array of int values.
    */
-  std::string getStringAt(const std::string& key, int index) {
-    int cindex = getIntAt(key, index);
-    return cdata_.at(cindex);
-  }
-
-  void setStringAt(const std::string& key, const std::string& value) {
-    vec_type toStore;
-    cdata_.push_back(value);
-    toStore.push_back(cdata_.size() - 1);
-    data_[key] = toStore;
-  }
-
-  void setIntAt(const std::string& key, const int value) {
-    vec_type toStore;
-    toStore.push_back(value);
-    data_[key] = toStore;
-  }
-
+  std::string getStringAt(const std::string& key, int index);
+  void setStringAt(const std::string& key, const std::string& value);
+  void setIntAt(const std::string& key, const int value);
   /// @}
 
 private:
@@ -364,6 +326,52 @@ private:
 
   void throwUnknownKey(const std::string& key);
 };
+
+// -----------------------------------------------------------------------
+
+template<typename A>
+GameexeInterpretObject Gameexe::operator()(const A& firstKey)
+{
+  std::ostringstream ss;
+  addToStream(firstKey, ss);
+  return GameexeInterpretObject(ss.str(), *this);
+}
+
+// -----------------------------------------------------------------------
+
+template<>
+inline GameexeInterpretObject Gameexe::operator()(const std::string& firstKey)
+{
+  return GameexeInterpretObject(firstKey, *this);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename A, typename B>
+GameexeInterpretObject Gameexe::operator()(const A& firstKey, const B& secondKey)
+{
+  std::ostringstream ss;
+  addToStream(firstKey, ss);
+  ss << ".";
+  addToStream(secondKey, ss);
+  return GameexeInterpretObject(ss.str(), *this);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename A, typename B, typename C>
+GameexeInterpretObject Gameexe::operator()(
+  const A& firstKey, const B& secondKey,
+  const C& thirdKey)
+{
+  std::ostringstream ss;
+  addToStream(firstKey, ss);
+  ss << ".";
+  addToStream(secondKey, ss);
+  ss << ".";
+  addToStream(thirdKey, ss);
+  return GameexeInterpretObject(ss.str(), *this);
+}
 
 // -----------------------------------------------------------------------
 
