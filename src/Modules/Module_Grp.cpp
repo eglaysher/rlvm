@@ -39,6 +39,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 #include "Modules/Effect.hpp"
 #include "Modules/EffectFactory.hpp"
@@ -440,6 +441,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
+    machine.system().text().hideAllTextWindows();
   }
 };
 
@@ -491,6 +493,7 @@ struct Grp_open_3 : public RLOp_Void_9<
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
+    machine.system().text().hideAllTextWindows();
   }
 };
 
@@ -572,6 +575,7 @@ struct Grp_open_4 : public RLOp_Void_17<
                            interpolation, xsize, ysize, a, b, c);
     decorateEffectWithBlit(lop, dc1, graphics.getDC(0));
     machine.pushLongOperation(lop);
+    machine.system().text().hideAllTextWindows();
   }
 };
 
@@ -609,6 +613,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
     machine.pushLongOperation(effect);
+    machine.system().text().hideAllTextWindows();
   }
 };
 
@@ -669,6 +674,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
                                           xsize, ysize, a, b, c);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
     machine.pushLongOperation(effect);
+    machine.system().text().hideAllTextWindows();
   }
 };
 
