@@ -200,6 +200,11 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addUnsupportedOpcode(1200, 1, "objOfText");
   m.addUnsupportedOpcode(1200, 2, "objOfText");
   m.addUnsupportedOpcode(1200, 3, "objOfText");
+
+  m.addUnsupportedOpcode(1300, 0, "objDriftOfFile");
+  m.addUnsupportedOpcode(1300, 1, "objDriftOfFile");
+  m.addUnsupportedOpcode(1300, 2, "objDriftOfFile");
+  m.addUnsupportedOpcode(1300, 3, "objDriftOfFile");
 }
 
 // -----------------------------------------------------------------------

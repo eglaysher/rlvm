@@ -502,6 +502,9 @@ SysModule::SysModule(System& system)
 
   addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
 
+  addUnsupportedOpcode(204, 0, "ShowCursor");
+  addUnsupportedOpcode(205, 0, "HideCursor");
+
   addOpcode( 350, 0, "CtrlKeyShip", 
              returnIntValue(text, &TextSystem::ctrlKeySkip));
   addOpcode( 351, 0, "CtrlKeySkipOn",

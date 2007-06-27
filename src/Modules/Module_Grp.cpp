@@ -1021,7 +1021,7 @@ GrpModule::GrpModule()
   addOpcode(15, 0, "allocDC", new Grp_allocDC);
   addOpcode(16, 0, "freeDC", new Grp_freeDC);
 
-  // addOpcode(20, 0, new Grp_grpLoadMask);
+  addUnsupportedOpcode(20, 0, "grpLoadMask");
   // addOpcode(30, 0, new Grp_grpTextout);
 
   addOpcode(31, 0, "wipe", new Grp_wipe);
@@ -1067,11 +1067,23 @@ GrpModule::GrpModule()
   addOpcode(74, 3, "grpMaskOpen", new Grp_open_3(true, GRP));
   addOpcode(74, 4, "grpMaskOpen", new Grp_open_4(true, GRP));
 
+  addUnsupportedOpcode(75, 0, "grpMulti");
+  addUnsupportedOpcode(75, 1, "grpMulti");
+  addUnsupportedOpcode(75, 2, "grpMulti");
+  addUnsupportedOpcode(75, 3, "grpMulti");
+  addUnsupportedOpcode(75, 4, "grpMulti");
+
   addOpcode(76, 0, "grpOpen", new Grp_open_0(false, GRP));
   addOpcode(76, 1, "grpOpen", new Grp_open_1(false, GRP));
   addOpcode(76, 2, "grpOpen", new Grp_open_2(false, GRP));
   addOpcode(76, 3, "grpOpen", new Grp_open_3(false, GRP));
   addOpcode(76, 4, "grpOpen", new Grp_open_4(false, GRP));
+
+  addUnsupportedOpcode(77, 0, "grpMulti");
+  addUnsupportedOpcode(77, 1, "grpMulti");
+  addUnsupportedOpcode(77, 2, "grpMulti");
+  addUnsupportedOpcode(77, 3, "grpMulti");
+  addUnsupportedOpcode(77, 4, "grpMulti");
 
   addOpcode(100, 0, "grpCopy", new Grp_copy_1(false));
   addOpcode(100, 1, "grpCopy", new Grp_copy_1(false));
@@ -1082,10 +1094,16 @@ GrpModule::GrpModule()
   addOpcode(101, 2, "grpMaskCopy", new Grp_copy_3(true, GRP));
   addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3(true, GRP));
 
+  addUnsupportedOpcode(120, 5, "grpCopyWithMask");
+  addUnsupportedOpcode(140, 5, "grpCopyInvMask");
+
   addOpcode(201, 0, "grpFill", new Grp_fill_1);
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
   addOpcode(201, 2, "grpFill", new Grp_fill_3(GRP));
   addOpcode(201, 3, "grpFill", new Grp_fill_3(GRP));
+
+  addUnsupportedOpcode(400, 0, "grpSwap");
+  addUnsupportedOpcode(400, 1, "grpSwap");
 
   addOpcode(402, 0, "grpZoom", new Grp_zoom(GRP));
 
