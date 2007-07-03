@@ -43,6 +43,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/assign/list_of.hpp> // for 'list_of()'
 
+using boost::to_upper;
 using boost::scoped_array;
 using boost::assign::list_of;
 using std::stack;
@@ -54,14 +55,6 @@ using std::vector;
 using std::ifstream;
 using std::ios;
 using std::ostream_iterator;
-
-// -----------------------------------------------------------------------
-
-inline void uppercase(string& what)
-{
-  for (string::size_type i = 0; i < what.size(); ++i) 
-    what[i] = toupper(what[i]);
-}
 
 // -----------------------------------------------------------------------
 
@@ -104,12 +97,12 @@ string correctPathCase(const string& fileName)
     }
     else {
       // If not, search for a suitable candidate.
-      uppercase(elt);
+      to_upper(elt);
       directory_iterator end;
       bool found = false;
       for (directory_iterator dir(Path); dir != end; ++dir) {
         string uleaf = dir->leaf();
-        uppercase(uleaf);
+        to_upper(uleaf);
         if (uleaf == elt && (!needDir || is_directory(*dir))) {
           Path /= dir->leaf();
           found = true;
