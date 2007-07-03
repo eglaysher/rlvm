@@ -29,6 +29,7 @@
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:33:21 2006
  * 
+ * @ingroup TransitionEffects
  * @brief  Implements \#SEL transition style \#10, Wipe.
  */
 

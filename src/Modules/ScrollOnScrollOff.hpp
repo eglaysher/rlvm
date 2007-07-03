@@ -102,16 +102,18 @@ public:
  * @name Drawer Behavior classes
  * 
  * These classess implement drawing for directions; They are used by
-4 * child classes of ScrollOnScrollOff to perform the requested
+ * child classes of ScrollOnScrollOff to perform the requested
  * operation in a certain direction.
  *
  * There are four, all representing the four directions used in these selections
  */
-//@}
+///@}
 
 /**
  * Base interface which describes the (very) high level primatives
  * that are composed in the ScrollSquashSlideEffectTypeBase subclasses.
+ *
+ * @ingroup TransitionEffects
  */
 class ScrollSquashSlideDrawer
 {
@@ -128,6 +130,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class TopToBottomDrawer : public ScrollSquashSlideDrawer
 {
 public:
@@ -140,6 +145,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class BottomToTopDrawer : public ScrollSquashSlideDrawer
 {
 public:
@@ -152,6 +160,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class LeftToRightDrawer : public ScrollSquashSlideDrawer
 {
 public:
@@ -164,6 +175,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class RightToLeftDrawer : public ScrollSquashSlideDrawer
 {
 public:
@@ -183,11 +197,12 @@ public:
  * Each EffectType that derives from ScrollSquashSlideEffectTypeBase
  * represents one of the SEL effects.
  */
-//@{
+///@{
 
 /**
  * Base class that defines the interface 
  * 
+ * @ingroup TransitionEffects
  */
 class ScrollSquashSlideEffectTypeBase
 {
@@ -205,6 +220,7 @@ public:
  * Behavioural class that defines the high level behaviour for SEL
  * #15, Scroll On/Scroll Off.
  * 
+ * @ingroup TransitionEffects
  */
 class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase
 {
@@ -221,6 +237,7 @@ public:
  * Behavioural class that defines the high level behaviour for SEL
  * #16, Scroll On/Squash Off.
  * 
+ * @ingroup TransitionEffects
  */
 class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase
 {
@@ -237,6 +254,7 @@ public:
  * Behavioural class that defines the high level behaviour for SEL
  * #17, Squash On/Scroll Off.
  * 
+ * @ingroup TransitionEffects
  */
 class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase
 {
@@ -254,6 +272,7 @@ public:
  * Behavioural class that defines the high level behaviour for SEL
  * #18, Squash On/Squash Off.
  * 
+ * @ingroup TransitionEffects
  */
 class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase
 {
@@ -286,6 +305,7 @@ public:
  * Behavioural class that defines the high level behaviour for SEL
  * #21, Slide Off.
  * 
+ * @ingroup TransitionEffects
  */
 class SlideOff : public ScrollSquashSlideEffectTypeBase
 {
@@ -296,6 +316,6 @@ public:
                                  int amountVisible);
 };
 
-//@}
+///@}
 
 #endif

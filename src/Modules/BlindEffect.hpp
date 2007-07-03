@@ -24,7 +24,8 @@
  * @file   BlindEffect.hpp
  * @author Elliot Glaysher
  * @date   Tue Feb 27 21:04:47 2007
- * 
+ *
+ * @ingroup TransitionEffects
  * @brief  Implements \#SEL transition style \#10, Blind.
  */
 
@@ -34,11 +35,10 @@
 #include "Modules/Effect.hpp"
 
 /**
- * @ingroup TransitionEffects
+ * Base class for implementing \#SEL transition style \#10, Blind.
  * 
- * @{
+ * @ingroup TransitionEffects
  */
-
 class BlindEffect : public Effect
 {
 private:
@@ -68,6 +68,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class BlindTopToBottomEffect : public BlindEffect
 {
 protected:
@@ -82,6 +85,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class BlindBottomToTopEffect : public BlindEffect
 {
 protected:
@@ -96,6 +102,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class BlindLeftToRightEffect : public BlindEffect
 {
 protected:
@@ -110,6 +119,9 @@ public:
 
 // -----------------------------------------------------------------------
 
+/**
+ * @ingroup TransitionEffects
+ */
 class BlindRightToLeftEffect : public BlindEffect
 {
 protected:
@@ -121,7 +133,5 @@ public:
              boost::shared_ptr<Surface> dst, 
              int width, int height, int time, int blindSize);
 };
-
-/// @}
 
 #endif

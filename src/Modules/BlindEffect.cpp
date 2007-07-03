@@ -29,6 +29,7 @@
  * @author Elliot Glaysher
  * @date   Tue Feb 27 21:11:04 2007
  * 
+ * @ingroup TransitionEffects
  * @brief  Implements \#SEL transition style \#10, Blind.
  */
 

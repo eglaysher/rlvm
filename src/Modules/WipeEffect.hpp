@@ -25,6 +25,7 @@
  * @author Elliot Glaysher
  * @date   Thu Nov  2 20:34:27 2006
  * 
+ * @ingroup TransitionEffects
  * @brief  Implements \#SEL transition style \#10, Wipe.
  */
 
@@ -38,15 +39,11 @@
 class GraphicsSystem;
 
 /**
- * @ingroup TransitionEffects
- * 
- * @{
- */
-
-/**
  * Base class for the four classess that implement \#SEL transition
  * style #10, Wipe. There are four direct subclasses from WipeEffect
  * that implement the individual directions that we wipe in.
+ *
+ * @ingroup TransitionEffects
  */
 class WipeEffect : public Effect
 {
@@ -72,6 +69,8 @@ public:
 
 /**
  * Implements SEL #10, Wipe, with direction 0, top to bottom.
+ *
+ * @ingroup TransitionEffects
  */
 class WipeTopToBottomEffect : public WipeEffect
 {
@@ -89,6 +88,8 @@ public:
 
 /**
  * Implements SEL #10, Wipe, with direction 1, bottom to top.
+ *
+ * @ingroup TransitionEffects
  */
 class WipeBottomToTopEffect : public WipeEffect
 {
@@ -107,6 +108,8 @@ public:
 
 /**
  * Implements SEL #10, Wipe, with direction 2, left to right.
+ *
+ * @ingroup TransitionEffects
  */
 class WipeLeftToRightEffect : public WipeEffect
 {
@@ -124,6 +127,8 @@ public:
 
 /**
  * Implements SEL #10, Wipe, with direction 2, left to right.
+ *
+ * @ingroup TransitionEffects
  */
 class WipeRightToLeftEffect : public WipeEffect
 {
@@ -136,7 +141,5 @@ public:
                         int width, int height, int time,
                         int interpolation);
 };
-
-// @}
 
 #endif

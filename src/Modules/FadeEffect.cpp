@@ -29,6 +29,7 @@
  * @author Elliot Glaysher
  * @date   Tue Nov 14 20:58:10 2006
  * 
+ * @ingroup TransitionEffects
  * @brief  Fade transition Effect
  */
 
