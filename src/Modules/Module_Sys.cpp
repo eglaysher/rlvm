@@ -517,6 +517,8 @@ SysModule::SysModule(System& system)
              returnIntValue(event, &EventSystem::shiftPressed));
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
+
+  addUnsupportedOpcode(800, 0, "index_series");
   
   addOpcode(1000, 0, "rnd", new Sys_rnd_0);
   addOpcode(1000, 1, new Sys_rnd_1);
@@ -569,6 +571,9 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(1212, 1, "HideSyscom");
   addUnsupportedOpcode(1213, 0, "DisableSyscom");
   addUnsupportedOpcode(1214, 0, "SyscomEnabled");
+
+  addUnsupportedOpcode(2001, 0, "SkipAnimations");
+  addUnsupportedOpcode(2051, 0, "SetSkipAnimations");
 
   addOpcode(2224, 0, "SetMessageNoWait",
             setToIncomingInt(text, &TextSystem::setMessageNoWait));
@@ -632,6 +637,9 @@ SysModule::SysModule(System& system)
 
   addOpcode(2324, 0, returnIntValue(text, &TextSystem::messageNoWait));
   addOpcode(2350, 0, returnIntValue(text, &TextSystem::autoMode));
+
+  addUnsupportedOpcode(3000, 0, "menu_save");
+  addUnsupportedOpcode(3001, 0, "menu_load");
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
