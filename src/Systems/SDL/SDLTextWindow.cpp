@@ -36,8 +36,10 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/SelectionElement.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"
@@ -83,6 +85,40 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
 
 SDLTextWindow::~SDLTextWindow()
 {
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::setMousePosition(RLMachine& machine, int x, int y)
+{
+  if(inSelectionMode())
+  {
+    for_each(m_selections.begin(), m_selections.end(),
+             bind(&SelectionElement::setMousePosition, _1,
+                  ref(machine), x, y));
+  }
+  
+  TextWindow::setMousePosition(machine, x, y);
+}
+
+// -----------------------------------------------------------------------
+
+bool SDLTextWindow::handleMouseClick(RLMachine& machine, int x, int y, 
+                                     bool pressed)
+{
+   if(inSelectionMode())
+   {
+     bool found =
+       find_if(m_selections.begin(), m_selections.end(),
+               bind(&SelectionElement::handleMouseClick, _1, 
+                        ref(machine), x, y, pressed))
+       != m_selections.end();
+
+     if(found)
+       return true;
+   }
+
+  return TextWindow::handleMouseClick(machine, x, y, pressed);
 }
 
 // -----------------------------------------------------------------------
@@ -302,15 +338,29 @@ void SDLTextWindow::render(RLMachine& machine)
 
     int x = textX1();
     int y = textY1();
-    m_surface->renderToScreen(
-      0, 0, width, height,
-      x, y, x + width, y + height, 
-      255);
+
+    if(inSelectionMode())
+    {
+      for_each(m_selections.begin(), m_selections.end(), 
+               bind(&SelectionElement::render, _1));
+    }
+    else
+    {
+      m_surface->renderToScreen(
+        0, 0, width, height,
+        x, y, x + width, y + height, 
+        255);
+    }
   }
 }
 
 // -----------------------------------------------------------------------
 
+/** 
+ * @todo Move the offset magic numbers into constants, and make that a
+ *       member of TextWindowButton; this function because a trivial
+ *       iteration then.
+ */
 void SDLTextWindow::renderButtons(RLMachine& machine)
 {
   TextSystem& textSystem = machine.system().text();
@@ -416,4 +466,41 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
   }
 //  else
 //    throw rlvm::Exception("No staring call to markRubyBegin()! Bad bytecode?");
+}
+
+// -----------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------
+
+bool SDLTextWindow::addSelectionItem(
+  RLMachine& machine, const std::string& utf8str)
+{
+  // Render the incoming string for both selected and not-selected.
+  SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
+  SDL_Surface* normal =
+    TTF_RenderUTF8_Blended(m_font.get(), utf8str.c_str(), color);
+
+  // Copy and invert the surface for whatever.
+  SDL_Surface* inverted = AlphaInvert(normal);
+
+  // Figure out xpos and ypos
+  SelectionElement* element = new SelectionElement(
+    shared_ptr<Surface>(new SDLSurface(normal)),
+    shared_ptr<Surface>(new SDLSurface(inverted)),
+    selectionCallback(), getNextSelectionID(),
+    textX1() + m_insertionPointX, textY1() + m_insertionPointY);
+  
+  m_insertionPointY += (m_fontSizeInPixels + m_ySpacing + m_rubySize);
+  m_selections.push_back(element);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::endSelectionMode()
+{
+  m_selections.clear();
+  TextWindow::endSelectionMode();
+
+  clearWin();
 }

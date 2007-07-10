@@ -31,6 +31,7 @@ LIBRLVMFILES[] =
   Systems/Base/TextKeyCursor
   Systems/Base/GanGraphicsObjectData
   Systems/Base/AnmGraphicsObjectData
+  Systems/Base/SelectionElement
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities

@@ -30,4 +30,7 @@ void reportSDLError(const std::string& sdlName,
                     const std::string& functionName);
 int SafeSize(int i);
 
+struct SDL_Surface;
+SDL_Surface* AlphaInvert(SDL_Surface* inSurface);
+
 #endif

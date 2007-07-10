@@ -30,9 +30,18 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindow.hpp"
+#include "Systems/Base/EventSystem.hpp"
+
 #include <vector>
 #include <iostream>
 
+#include <boost/bind.hpp>
+
+using boost::bind;
 using std::cin;
 using std::cerr;
 using std::endl;
@@ -42,29 +51,95 @@ using libReallive::CommandElement;
 
 // -----------------------------------------------------------------------
 
+Sel_LongOperation::Sel_LongOperation(
+  RLMachine& machine,
+  const libReallive::SelectElement& commandElement)
+  : NiceLongOperation(machine), EventHandler(machine),
+    textWindow(machine.system().text().currentWindow(machine)),
+    m_returnValue(-1)
+{
+  textWindow.startSelectionMode();
+  textWindow.setSelectionCallback(
+    bind(&Sel_LongOperation::selected, this, _1));
+
+  cerr << "---------" << endl;
+  const vector<SelectElement::Param>& params = commandElement.getRawParams();
+  for(int i = 0; i < params.size(); ++i)
+  {
+    std::string utf8str = cp932toUTF8(params[i].text, 
+                                      machine.getTextEncoding());
+    cerr << i << ": " << utf8str << endl;
+    textWindow.addSelectionItem(machine, utf8str);
+  }
+  cerr << "---------" << endl;
+  machine.system().graphics().markScreenForRefresh();
+}
+
+// -----------------------------------------------------------------------
+
+Sel_LongOperation::~Sel_LongOperation()
+{
+  textWindow.endSelectionMode();
+}
+
+// -----------------------------------------------------------------------
+
+void Sel_LongOperation::selected(int num)
+{
+  m_returnValue = num;
+}
+
+// -----------------------------------------------------------------------
+
+bool Sel_LongOperation::operator()(RLMachine& machine) 
+{
+  if(m_returnValue != -1)
+  {
+    machine.setStoreRegister(m_returnValue);
+    return true;
+  }
+  else 
+    return false;
+}
+
+// -------------------------------------------- [ EventHandler interface ]
+void Sel_LongOperation::mouseMotion(int x, int y)
+{
+  // Tell the text system about the move
+  machine().system().text().setMousePosition(machine(), x, y);
+}
+
+// -----------------------------------------------------------------------
+
+void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton, 
+                                                bool pressed)
+{
+  EventSystem& es = machine().system().event();
+  TextSystem& text = machine().system().text();
+
+  switch(mouseButton)
+  {
+  case MOUSE_LEFT:
+  {
+    int x, y;
+    es.getCursorPos(x, y);
+    machine().system().text().handleMouseClick(machine(), x, y, pressed);
+    break;
+  case MOUSE_RIGHT:
+    cerr << "Doesn't handle syscom!" << endl;
+    break;
+  }
+  }
+}
+ 
+// -----------------------------------------------------------------------
+
 struct Sel_select : public RLOp_SpecialCase
 {
   void operator()(RLMachine& machine, const CommandElement& ce)
   {
-    cerr << "-----------SELECT!!!-----------" << endl;
-    
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
-    cerr << "We have " << element.param_count() << " options!" << endl;
-
-    const vector<SelectElement::Param>& params = element.getRawParams();
-    for(int i = 0; i < params.size(); ++i)
-    {
-      std::string utf8str = cp932toUTF8(params[i].text, 
-                                        machine.getTextEncoding());
-
-      cerr << params[i].line << ": " << utf8str << endl;
-    }
-
-    int retVal;
-    cerr << "> ";
-    cin >> retVal;
-
-    machine.setStoreRegister(retVal);
+    machine.pushLongOperation(new Sel_LongOperation(machine, element));
     machine.advanceInstructionPointer();
   }
 };

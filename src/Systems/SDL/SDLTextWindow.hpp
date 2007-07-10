@@ -30,6 +30,7 @@
 #include "SDL_ttf.h"
 
 class SDLSurface;
+class SelectionElement;
 
 class SDLTextWindow : public TextWindow
 {
@@ -55,6 +56,9 @@ private:
   boost::shared_ptr<SDLSurface> m_wakuBacking;
   boost::shared_ptr<SDLSurface> m_wakuButton;
 
+  typedef boost::ptr_vector<SelectionElement> Selections;
+  Selections m_selections;
+
   bool setIndentation();
 
   void renderButtons(RLMachine& machine);
@@ -66,6 +70,9 @@ public:
   ~SDLTextWindow();
 
   void setCurrentText(RLMachine& machine, const std::string& tex);
+
+  virtual void setMousePosition(RLMachine& machine, int x, int y);
+  virtual bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
 
   virtual void render(RLMachine& machine);
 
@@ -88,6 +95,10 @@ public:
 
   virtual void markRubyBegin();
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
+
+
+  virtual bool addSelectionItem(RLMachine& machine, const std::string& utf8str);
+  virtual void endSelectionMode();
 };
 
 

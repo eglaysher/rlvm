@@ -53,7 +53,8 @@ using std::vector;
 TextWindow::TextWindow(RLMachine& machine, int windowNum)
   : m_currentLineNumber(0), m_useIndentation(0), 
     m_currentIndentationInPixels(0),
-    m_r(0), m_g(0), m_b(0), m_alpha(0), m_filter(0), m_isVisible(0)
+    m_r(0), m_g(0), m_b(0), m_alpha(0), m_filter(0), m_isVisible(0),
+    m_inSelectionMode(0), m_nextId(0)
 {
   Gameexe& gexe = machine.system().gameexe();
 
@@ -409,6 +410,8 @@ void TextWindow::setRGBAF(const vector<int>& attr)
 void TextWindow::setMousePosition(RLMachine& machine, int x, int y)
 {
   using namespace boost;
+
+  // Update buttons
   for_each(m_buttonMap.begin(), m_buttonMap.end(),
            bind(&TextWindowButton::setMousePosition, _1, ref(machine), 
                 ref(*this), x, y));
@@ -420,6 +423,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y,
                                   bool pressed)
 {
   using namespace boost;
+
   if(isVisible())
   {
     return find_if(m_buttonMap.begin(), m_buttonMap.end(),   
@@ -429,4 +433,34 @@ bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y,
   }
   
   return false;
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::startSelectionMode()
+{
+  m_inSelectionMode = true;
+  m_nextId = 0;
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setSelectionCallback(const boost::function<void(int)>& in)
+{
+  m_selectionCallback = in;
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::endSelectionMode()
+{
+  m_inSelectionMode = false;
+  m_selectionCallback.clear();
+}
+
+// -----------------------------------------------------------------------
+
+const boost::function<void(int)>& TextWindow::selectionCallback()
+{
+  return m_selectionCallback;
 }

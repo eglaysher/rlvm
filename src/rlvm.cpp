@@ -338,14 +338,10 @@ int main(int argc, char* argv[])
 
     rlmachine.setHaltOnException(false);
 
-//    GanGraphicsObjectData d(rlmachine, "/Users/elliot/CLANNAD/gan/sbtact00.gan");
-//    AnmGraphicsObjectData d(rlmachine, "/Users/elliot/KANON_SE_ALL/anm/KAN_MOJA.Anm");
-
     while(!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
       // etc.
       sdlSystem.run(rlmachine);
-
 
       // Run the rlmachine through another instruction
       rlmachine.executeNextInstruction();

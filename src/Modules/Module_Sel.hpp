@@ -24,10 +24,49 @@
 #define __Module_Sel_hpp__
 
 #include "MachineBase/RLModule.hpp"
+#include "MachineBase/LongOperation.hpp"
+#include "Systems/Base/EventHandler.hpp"
+
+#include <vector>
+#include <string>
+
+class TextWindow;
+
+// -----------------------------------------------------------------------
+
+namespace libReallive {
+class SelectElement;
+}
+
+// -----------------------------------------------------------------------
+
+class Sel_LongOperation : public NiceLongOperation, public EventHandler
+{
+private:
+  std::vector<std::string> options;
+
+  TextWindow& textWindow;
+
+  int m_returnValue;
+
+public:
+  Sel_LongOperation(RLMachine& machine, 
+                    const libReallive::SelectElement& commandElement);
+  ~Sel_LongOperation();
+
+  void selected(int num);
+
+  // ----------------------------------------------- [ NiceLongOperation ]
+  virtual bool operator()(RLMachine& machine);
+
+  virtual void mouseMotion(int x, int y);
+  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+};
+
+// -----------------------------------------------------------------------
 
 /**
  * Contains functions for mod<0:2>, Sel.
- * 
  */
 class SelModule : public RLModule {
 public:

@@ -34,6 +34,8 @@
 
 using namespace std;
 
+// -----------------------------------------------------------------------
+
 void ShowGLErrors(void)
 {
   GLenum error;
@@ -50,7 +52,8 @@ void ShowGLErrors(void)
 
 // -----------------------------------------------------------------------
 
-int SafeSize(int i) {
+int SafeSize(int i)
+{
   static GLint maxTextureSize = 0;
   if(maxTextureSize == 0)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
@@ -74,4 +77,41 @@ void reportSDLError(const std::string& sdlName,
   ss << "Error while calling SDL function '" << sdlName << "' in "
      << functionName << ": " << SDL_GetError();
   throw SystemError(ss.str());
+}
+
+// -----------------------------------------------------------------------
+
+SDL_Surface* AlphaInvert(SDL_Surface* inSurface)
+{
+  SDL_PixelFormat* format = inSurface->format;
+
+  if(format->BitsPerPixel != 32)
+    throw SystemError("AlphaInvert requires an alpha channel!");
+
+  // Build a copy of the surface
+  SDL_Surface* dst = SDL_AllocSurface(
+    inSurface->flags, inSurface->w, inSurface->h,
+    format->BitsPerPixel, format->Rmask,
+    format->Gmask, format->Bmask, 0);
+
+  SDL_BlitSurface(inSurface, NULL, dst, NULL);
+
+  // iterate over the copy and make the alpha value = 255 - alpha value.
+  if(SDL_MUSTLOCK(dst)) SDL_LockSurface(dst);
+  {
+    int numPixels = dst->h * dst->pitch;
+    char* pData = (char*)dst->pixels;
+
+    for(int i = 0; i < numPixels; i += 4)
+    {
+      // Invert the pixel here.
+      pData[i] = 255;
+      pData[i + 1] = 255;
+      pData[i + 2] = 255;
+      pData[i + 3] = 255 - pData[i +3];
+    }
+  }
+  if(SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
+
+  return dst;
 }

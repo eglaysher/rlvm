@@ -141,7 +141,7 @@ void TextWindowButton::setMousePosition(
       m_state = BUTTONSTATE_NORMAL;
 
     if(origState != m_state)
-      machine.system().graphics().markScreenAsDirty();
+      machine.system().graphics().markScreenForRefresh();
   }
 }
 
@@ -173,7 +173,7 @@ bool TextWindowButton::handleMouseClick(
         buttonReleased();
       }
 
-      machine.system().graphics().markScreenAsDirty();
+      machine.system().graphics().markScreenForRefresh();
 
       return true;
     }

@@ -34,8 +34,12 @@ class GameexeInterpretObject;
 class GraphicsSystem;
 
 /**
- * Abstract representation of a TextWindow. Aggrigated by TextSystem,
- * and rendered in conjunction with GraphicsSystem.
+ * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
+ * and rendered in conjunction with @c GraphicsSystem.
+ *
+ * TextWindows usually have their state maintained in @c TextPage ,
+ * though there are some notable exceptions, specifically 
+ * @c Select_LongOperation .
  *
  * This class has all sorts of complex, rarely used text rendering
  * options, including several co-ordinate systems, which I'm sure was
@@ -164,9 +168,22 @@ protected:
   boost::ptr_map<std::string, TextWindowButton> m_buttonMap;
   /// @}
 
-protected:
+  /**
+   * @name Selection mode data
+   * 
+   * @{
+   */
+  bool m_inSelectionMode;
 
+  /// Callback function for when item is selected.
+  boost::function<void(int)> m_selectionCallback;
+
+  int m_nextId;
+  /// @}
+
+protected:
   /// Internal calculations stuff
+  const boost::function<void(int)>& selectionCallback();
 
 public:
   TextWindow(RLMachine& machine, int windowNum);
@@ -243,8 +260,8 @@ public:
 
   /// @}
 
-  void setMousePosition(RLMachine& machine, int x, int y);
-  bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
+  virtual void setMousePosition(RLMachine& machine, int x, int y);
+  virtual bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
 
   /**
    * @name Name window settings
@@ -377,6 +394,26 @@ public:
 
   virtual void markRubyBegin() = 0;
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) = 0;
+
+
+  /**
+   * @name Selection Mode
+   * 
+   * Text Windows are responsible for presenting the questions from
+   * select() and select_s() calls. (select_w() is not done here.)
+   *
+   * @{
+   */
+  virtual void startSelectionMode();
+
+  bool inSelectionMode() { return m_inSelectionMode; }
+  int getNextSelectionID() { return m_nextId++; }
+
+  virtual bool addSelectionItem(RLMachine& machine, const std::string& utf8str) = 0;
+  virtual void setSelectionCallback(const boost::function<void(int)>& func);
+
+  virtual void endSelectionMode();
+  /// @}
 };
 
 #endif
