@@ -505,6 +505,12 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(204, 0, "ShowCursor");
   addUnsupportedOpcode(205, 0, "HideCursor");
 
+  addUnsupportedOpcode(330, 0, "EnableSkipMode");
+  addUnsupportedOpcode(331, 0, "DisableSkipMode");
+  addUnsupportedOpcode(332, 0, "LocalSkipMode");
+  addUnsupportedOpcode(333, 0, "SetLocalSkipMode");
+  addUnsupportedOpcode(334, 0, "ClearLocalSkipMode");
+
   addOpcode( 350, 0, "CtrlKeyShip", 
              returnIntValue(text, &TextSystem::ctrlKeySkip));
   addOpcode( 351, 0, "CtrlKeySkipOn",
@@ -520,6 +526,17 @@ SysModule::SysModule(System& system)
 
   addUnsupportedOpcode(800, 0, "index_series");
   
+  addUnsupportedOpcode(460, 0, "EnableWindowAnm");
+  addUnsupportedOpcode(461, 0, "DisableWindowAnm");
+  addUnsupportedOpcode(462, 0, "GetOpenAnmMod");
+  addUnsupportedOpcode(463, 0, "SetOpenAnmMod");
+  addUnsupportedOpcode(464, 0, "GetOpenAnmTime");
+  addUnsupportedOpcode(465, 0, "SetOpenAnmTime");
+  addUnsupportedOpcode(466, 0, "GetCloseAnmMod");
+  addUnsupportedOpcode(467, 0, "SetCloseAnmMod");
+  addUnsupportedOpcode(468, 0, "GetCloseAnmTime");
+  addUnsupportedOpcode(469, 0, "SetCloseAnmTime");
+
   addOpcode(1000, 0, "rnd", new Sys_rnd_0);
   addOpcode(1000, 1, new Sys_rnd_1);
   addOpcode(1001, 0, new Sys_pcnt);
@@ -572,8 +589,23 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(1213, 0, "DisableSyscom");
   addUnsupportedOpcode(1214, 0, "SyscomEnabled");
 
-  addUnsupportedOpcode(2001, 0, "SkipAnimations");
+  addUnsupportedOpcode(1300, 0, "GetName");
+  addUnsupportedOpcode(1301, 0, "SetName");
+  addUnsupportedOpcode(1302, 0, "nwSingle");
+  addUnsupportedOpcode(1303, 0, "nwMulti");
+  addUnsupportedOpcode(1310, 0, "GetLocalName");
+  addUnsupportedOpcode(1311, 0, "SetLocalName");
+  addUnsupportedOpcode(1312, 0, "nwSingleLocal");
+  addUnsupportedOpcode(1313, 0, "nwMultiLocal");
+
+  addUnsupportedOpcode(2050, 0, "SetCursorMono");
+  addUnsupportedOpcode(2000, 0, "CursorMono");
   addUnsupportedOpcode(2051, 0, "SetSkipAnimations");
+  addUnsupportedOpcode(2001, 0, "SkipAnimations");
+  addUnsupportedOpcode(2052, 0, "SetLowPriority");
+  addUnsupportedOpcode(2002, 0, "LowPriority");
+  addUnsupportedOpcode(2053, 0, "SetConfirmSaveLoad");
+  addUnsupportedOpcode(2003, 0, "ConfirmSaveLoad");
 
   addOpcode(2224, 0, "SetMessageNoWait",
             setToIncomingInt(text, &TextSystem::setMessageNoWait));

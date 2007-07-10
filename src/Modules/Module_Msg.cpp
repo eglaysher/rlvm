@@ -210,12 +210,27 @@ MsgModule::MsgModule()
 //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, "pause", new Msg_pause);
 
+  addUnsupportedOpcode(100, 0, "SetFontColour");
+  addUnsupportedOpcode(100, 1, "SetFontColour");
+  addUnsupportedOpcode(100, 2, "SetFontColour");
+  addUnsupportedOpcode(101, 0, "FontSize");
+  addUnsupportedOpcode(101, 1, "FontSize");
+
   addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
   addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
+
+  addUnsupportedOpcode(103, 0, "FastText");
+  addUnsupportedOpcode(104, 0, "NormalText");
 
   addOpcode(105, 0, "FontColor", new Msg_FontColour);
   addOpcode(105, 1, "FontColor", new Msg_FontColour);
   addOpcode(105, 2, "FontColor", new Msg_FontColour);
+
+  addUnsupportedOpcode(106, 0, "SetFontColourAll");
+  addUnsupportedOpcode(106, 1, "SetFontColourAll");
+  addUnsupportedOpcode(106, 2, "SetFontColourAll");
+
+  addUnsupportedOpcode(107, 0, "FontSizeAll");
 
   addOpcode(120, 0, "__doruby_on", new Msg_doruby_display);
   addOpcode(120, 1, "__doruby_off", new Msg_doruby_mark);
