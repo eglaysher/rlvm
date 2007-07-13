@@ -81,7 +81,6 @@ struct Obj_objOfFile_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     obj.setObjectData(gs.buildObjOfFile(machine, filename));
-    obj.setVisible(true);
   }
 };
 
