@@ -72,24 +72,28 @@ void SDLSystem::run(RLMachine& machine)
   // Finally, run any screen updates needed
   graphicsSystem->executeGraphicsSystem(machine);
 
+
+  // My pausing model is wrong. Really wrong. For an example of just
+  // how wrong it is, take a look at the performance under CLANNAD's menu. 
+
   // Pause the system for a moment
   if(eventSystem->beNiceAfterEachPass() && eventSystem->canBeNice())
   {
     eventSystem->wait(10);
   }
-  else
-  {
-    unsigned int nicenessThreshold = 5;
-    if(!eventSystem->canBeNice())
-      nicenessThreshold = 20;
+//   else
+//   {
+//     unsigned int nicenessThreshold = 5;
+//     if(!eventSystem->canBeNice())
+//       nicenessThreshold = 20;
 
-    unsigned int currentTime = eventSystem->getTicks();
-    if(currentTime - m_lastTimePaused > nicenessThreshold)
-    {
-      eventSystem->wait(10);
-      m_lastTimePaused = eventSystem->getTicks();
-    }
-  }
+//     unsigned int currentTime = eventSystem->getTicks();
+//     if(currentTime - m_lastTimePaused > nicenessThreshold)
+//     {
+//       eventSystem->wait(10);
+//       m_lastTimePaused = eventSystem->getTicks();
+//     }
+//   }
 }
 
 GraphicsSystem& SDLSystem::graphics()
