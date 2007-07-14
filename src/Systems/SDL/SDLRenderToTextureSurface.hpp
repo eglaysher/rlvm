@@ -43,6 +43,8 @@ public:
   SDLRenderToTextureSurface(int w, int h);
   ~SDLRenderToTextureSurface();
 
+  virtual void dump();
+
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
                      int srcX, int srcY, int srcWidth, int srcHeight,

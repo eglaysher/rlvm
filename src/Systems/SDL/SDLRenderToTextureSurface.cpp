@@ -53,6 +53,13 @@ SDLRenderToTextureSurface::~SDLRenderToTextureSurface()
 
 // -----------------------------------------------------------------------
 
+void SDLRenderToTextureSurface::dump()
+{
+  cerr << "Attempting to dump a remembered texture." << endl;
+}
+
+// -----------------------------------------------------------------------
+
 /**
  * @todo This function doesn't ignore alpha blending when useSrcAlpha
  *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
