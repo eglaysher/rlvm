@@ -320,7 +320,8 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1049, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setRotation));
 
   m.addUnsupportedOpcode(1050, 0, "objRepOrigin");
-
+  m.addUnsupportedOpcode(1051, 0, "objRepOriginX");
+  m.addUnsupportedOpcode(1052, 0, "objRepOriginY");
   m.addOpcode(1053, 0, "objOrigin", new Obj_SetTwoIntOnObj(layer,
                 &GraphicsObject::setXOrigin,
                 &GraphicsObject::setYOrigin));

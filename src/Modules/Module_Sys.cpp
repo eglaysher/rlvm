@@ -642,6 +642,17 @@ SysModule::SysModule(System& system)
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
 
+  addUnsupportedOpcode(2270, 0, "SetShowObject1");
+  addUnsupportedOpcode(2370, 0, "ShowObject1");
+  addUnsupportedOpcode(2271, 0, "SetShowObject2");
+  addUnsupportedOpcode(2371, 0, "ShowObject2");
+  addUnsupportedOpcode(2272, 0, "SetShowWeather");
+  addUnsupportedOpcode(2372, 0, "ShowWeather");
+  addUnsupportedOpcode(2273, 0, "SetClassifyText");
+  addUnsupportedOpcode(2373, 0, "ClassifyText");
+  addUnsupportedOpcode(2274, 0, "SetUseKoe");
+  addUnsupportedOpcode(2374, 0, "UseKoe");
+  addUnsupportedOpcode(2275, 0, "SetScreenMode");
   addUnsupportedOpcode(2375, 0, "ScreenMode");
 
   addOpcode(2350, 0, "AutoMode",
