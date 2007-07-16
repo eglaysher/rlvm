@@ -157,31 +157,6 @@ public:
   // -----------------------------------------------------------------------
 
   /**
-   * @name Niceness functions
-   * 
-   * @{
-   */
-
-  /// Manages whether we're in a low priority task (whether we can
-  /// sleep after each instruction or tick of a LongOperation)
-  void beginBeingNiceAfterEachPass();
-  void endBeingNiceAfterEachPass();
-  bool beNiceAfterEachPass();
-
-  /// Manages whether we're in a task (animation?) that requires
-  /// closer to realtime.
-  void beginRealtimeTask();
-  void endRealtimeTask();
-
-  /// Returns whether there are any current tasks that require
-  /// realtime access for smooth animation.
-  bool canBeNice();
-
-  /// @}
-
-  // -----------------------------------------------------------------------
-
-  /**
    * @name Generic values
    * 
    */

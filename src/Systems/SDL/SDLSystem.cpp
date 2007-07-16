@@ -27,6 +27,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "MachineBase/RLMachine.hpp"
+
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
@@ -64,36 +66,22 @@ SDLSystem::~SDLSystem()
 
 void SDLSystem::run(RLMachine& machine)
 {
-  // Give the event handler a chance to run
+  // Give the event handler a chance to run.
   eventSystem->executeEventSystem(machine);
 
   textSystem->executeTextSystem(machine);
 
-  // Finally, run any screen updates needed
+  // Only run the graphics system every 5 ms.
   graphicsSystem->executeGraphicsSystem(machine);
-
 
   // My pausing model is wrong. Really wrong. For an example of just
   // how wrong it is, take a look at the performance under CLANNAD's menu. 
 
-  // Pause the system for a moment
-  if(eventSystem->beNiceAfterEachPass() && eventSystem->canBeNice())
+  // Try to prevent spinning a bit...
+  if(machine.inLongOperation())
   {
     eventSystem->wait(10);
   }
-//   else
-//   {
-//     unsigned int nicenessThreshold = 5;
-//     if(!eventSystem->canBeNice())
-//       nicenessThreshold = 20;
-
-//     unsigned int currentTime = eventSystem->getTicks();
-//     if(currentTime - m_lastTimePaused > nicenessThreshold)
-//     {
-//       eventSystem->wait(10);
-//       m_lastTimePaused = eventSystem->getTicks();
-//     }
-//   }
 }
 
 GraphicsSystem& SDLSystem::graphics()

@@ -470,6 +470,14 @@ void RLMachine::pushLongOperation(LongOperation* longOperation)
 
 // -----------------------------------------------------------------------
 
+bool RLMachine::inLongOperation() const
+{
+  return callStack.size() && 
+    callStack.back().frameType == StackFrame::TYPE_LONGOP;
+}
+
+// -----------------------------------------------------------------------
+
 int RLMachine::sceneNumber() const
 {
   return callStack.back().scenario->sceneNumber();

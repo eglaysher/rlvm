@@ -40,9 +40,11 @@ class SelectElement;
 
 // -----------------------------------------------------------------------
 
-class Sel_LongOperation : public NiceLongOperation, public EventHandler
+class Sel_LongOperation : public LongOperation, public EventHandler
 {
 private:
+  RLMachine& m_machine;
+
   std::vector<std::string> options;
 
   TextWindow& textWindow;

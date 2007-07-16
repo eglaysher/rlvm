@@ -52,14 +52,12 @@ Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
     m_startTime(machine.system().event().getTicks()),
     m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
 {
-  m_machine.system().event().beginRealtimeTask();
 }
 
 // -----------------------------------------------------------------------
 
 Effect::~Effect()
 {
-  m_machine.system().event().endRealtimeTask();
 }
 
 // -----------------------------------------------------------------------

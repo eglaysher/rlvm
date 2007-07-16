@@ -53,7 +53,7 @@ struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 // -----------------------------------------------------------------------
 
-struct LongOp_time : public NiceLongOperation, public EventHandler
+struct LongOp_time : public LongOperation, public EventHandler
 {
   const int m_layer;
   const int m_counter;
@@ -64,7 +64,7 @@ struct LongOp_time : public NiceLongOperation, public EventHandler
   
   LongOp_time(RLMachine& machine, int layer, int counter, int time,
               bool cancelOnClick)
-    : NiceLongOperation(machine), EventHandler(machine),
+    : EventHandler(machine),
       m_layer(layer), m_counter(counter), m_targetTime(time),
       m_cancelOnClick(cancelOnClick), m_buttonPressed(0)
   {}

@@ -71,7 +71,7 @@ struct Sys_title : public RLOp_Void_1< StrConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct LongOp_wait : public NiceLongOperation, public EventHandler
+struct LongOp_wait : public LongOperation, public EventHandler
 {
   const unsigned int m_targetTime;
   const bool m_breakOnClicks;
@@ -81,7 +81,7 @@ struct LongOp_wait : public NiceLongOperation, public EventHandler
   bool m_breakOnCtrlPressed;
 
   LongOp_wait(RLMachine& machine, int time, bool breakOnClicks)
-    : NiceLongOperation(machine), EventHandler(machine),
+    : EventHandler(machine),
       m_targetTime(machine.system().event().getTicks() + time),
       m_breakOnClicks(breakOnClicks), m_buttonPressed(0),
       m_ctrlPressed(false), 

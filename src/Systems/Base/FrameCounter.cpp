@@ -59,7 +59,6 @@ FrameCounter::~FrameCounter()
 
 void FrameCounter::beginTimer(EventSystem& eventSystem)
 {
-  eventSystem.beginRealtimeTask();
   m_isActive = true;
 }
 
@@ -67,9 +66,6 @@ void FrameCounter::beginTimer(EventSystem& eventSystem)
 
 void FrameCounter::endTimer(EventSystem& eventSystem)
 {
-  if(m_isActive)
-    eventSystem.endRealtimeTask();
-
   m_isActive = false;
 }
 

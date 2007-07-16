@@ -43,8 +43,8 @@ using namespace std;
 // PauseLongOperation
 // -----------------------------------------------------------------------
 
-PauseLongOperation::PauseLongOperation(RLMachine& machine)
-  : NiceLongOperation(machine), EventHandler(machine), m_isDone(false)
+PauseLongOperation::PauseLongOperation(RLMachine& imachine)
+  : EventHandler(imachine), machine(imachine), m_isDone(false)
 {
   TextSystem& text = machine.system().text();
   EventSystem& event = machine.system().event();
@@ -66,7 +66,7 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
 
 PauseLongOperation::~PauseLongOperation()
 {
-  machine().system().text().setInPauseState(false);
+  machine.system().text().setInPauseState(false);
 }
 
 // -----------------------------------------------------------------------
@@ -85,12 +85,12 @@ PauseLongOperation::~PauseLongOperation()
  */
 void PauseLongOperation::handleSyscomCall()
 {
-  Gameexe& gexe = machine().system().gameexe();
+  Gameexe& gexe = machine.system().gameexe();
 
   if(gexe("CANCELCALL_MOD") == 1)
   {
     vector<int> cancelcall = gexe("CANCELCALL");
-    machine().farcall(cancelcall.at(0), cancelcall.at(1));
+    machine.farcall(cancelcall.at(0), cancelcall.at(1));
     m_isDone = true;
   }
   else
@@ -103,7 +103,7 @@ void PauseLongOperation::handleSyscomCall()
 void PauseLongOperation::mouseMotion(int x, int y)
 {
   // Tell the text system about the move
-  machine().system().text().setMousePosition(machine(), x, y);
+  machine.system().text().setMousePosition(machine, x, y);
 }
 
 // -----------------------------------------------------------------------
@@ -111,8 +111,8 @@ void PauseLongOperation::mouseMotion(int x, int y)
 void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton, 
                                            bool pressed)
 {
-  EventSystem& es = machine().system().event();
-  TextSystem& text = machine().system().text();
+  EventSystem& es = machine.system().event();
+  TextSystem& text = machine.system().text();
 
   switch(mouseButton)
   {
@@ -120,7 +120,7 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   {
     int x, y;
     es.getCursorPos(x, y);
-    if(!machine().system().text().handleMouseClick(machine(), x, y, pressed))
+    if(!machine.system().text().handleMouseClick(machine, x, y, pressed))
     {
       if(pressed)
       {
@@ -143,11 +143,11 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     break;
   case MOUSE_WHEELUP:
     if(pressed)
-      text.backPage(machine());
+      text.backPage(machine);
     break;
   case MOUSE_WHEELDOWN:
    if(pressed)
-     text.forwardPage(machine());
+     text.forwardPage(machine);
     break;
   }
 }
@@ -156,8 +156,8 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
-  EventSystem& es = machine().system().event();
-  TextSystem& text = machine().system().text();
+  EventSystem& es = machine.system().event();
+  TextSystem& text = machine.system().text();
   
   if(pressed)
   {
@@ -169,9 +169,9 @@ void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
       m_isDone = true;
     }
     else if(keyCode == RLKEY_UP)
-      text.backPage(machine());
+      text.backPage(machine);
     else if(keyCode == RLKEY_DOWN)
-      text.forwardPage(machine());
+      text.forwardPage(machine);
     else if(keyCode == RLKEY_RETURN)
       m_isDone = true;
   }

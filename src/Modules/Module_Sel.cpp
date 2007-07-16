@@ -54,7 +54,7 @@ using libReallive::CommandElement;
 Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
-  : NiceLongOperation(machine), EventHandler(machine),
+  : m_machine(machine), EventHandler(machine),
     textWindow(machine.system().text().currentWindow(machine)),
     m_returnValue(-1)
 {
@@ -106,7 +106,7 @@ bool Sel_LongOperation::operator()(RLMachine& machine)
 void Sel_LongOperation::mouseMotion(int x, int y)
 {
   // Tell the text system about the move
-  machine().system().text().setMousePosition(machine(), x, y);
+  m_machine.system().text().setMousePosition(m_machine, x, y);
 }
 
 // -----------------------------------------------------------------------
@@ -114,8 +114,8 @@ void Sel_LongOperation::mouseMotion(int x, int y)
 void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton, 
                                                 bool pressed)
 {
-  EventSystem& es = machine().system().event();
-  TextSystem& text = machine().system().text();
+  EventSystem& es = m_machine.system().event();
+  TextSystem& text = m_machine.system().text();
 
   switch(mouseButton)
   {
@@ -123,7 +123,7 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   {
     int x, y;
     es.getCursorPos(x, y);
-    machine().system().text().handleMouseClick(machine(), x, y, pressed);
+    m_machine.system().text().handleMouseClick(m_machine, x, y, pressed);
     break;
   case MOUSE_RIGHT:
     cerr << "Doesn't handle syscom!" << endl;

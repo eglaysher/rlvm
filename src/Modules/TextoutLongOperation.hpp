@@ -31,7 +31,7 @@
 
 class RLMachine;
 
-class TextoutLongOperation : public NiceLongOperation, public EventHandler
+class TextoutLongOperation : public LongOperation, public EventHandler
 {
 private:
   std::string m_utf8string;

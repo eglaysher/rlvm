@@ -37,30 +37,6 @@ LongOperation::~LongOperation()
 {}
 
 // -----------------------------------------------------------------------
-// NiceLongOperation
-// -----------------------------------------------------------------------
-
-NiceLongOperation::NiceLongOperation(RLMachine& machine)
-  : m_machine(machine)
-{
-  m_machine.system().event().beginBeingNiceAfterEachPass();
-}
-
-// -----------------------------------------------------------------------
-
-NiceLongOperation::~NiceLongOperation()
-{
-  m_machine.system().event().endBeingNiceAfterEachPass();
-}
-
-// -----------------------------------------------------------------------
-
-RLMachine& NiceLongOperation::machine()
-{
-  return m_machine;
-}
-
-// -----------------------------------------------------------------------
 // PerformAfterLongOperationDecorator
 // -----------------------------------------------------------------------
 

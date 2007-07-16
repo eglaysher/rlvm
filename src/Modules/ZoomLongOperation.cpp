@@ -57,14 +57,12 @@ ZoomLongOperation::ZoomLongOperation(
     m_dheight(dheight),  m_duration(time),
     m_startTime(machine.system().event().getTicks())
 {
-  m_machine.system().event().beginRealtimeTask();
 }
 
 // -----------------------------------------------------------------------
 
 ZoomLongOperation::~ZoomLongOperation()
 {
-  m_machine.system().event().endRealtimeTask();
 }
 
 // -----------------------------------------------------------------------

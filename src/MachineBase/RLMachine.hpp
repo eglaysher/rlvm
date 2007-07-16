@@ -267,6 +267,12 @@ public:
    */
   void pushLongOperation(LongOperation* longOperation);
 
+  /**
+   * Returns whether the top of the call stack is a LongOperation.
+   * 
+   */
+  bool inLongOperation() const;
+
   /** 
    * Returns the current scene number for the Scenario on the top of
    * the call stack.

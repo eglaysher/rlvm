@@ -102,50 +102,6 @@ bool EventSystem::frameCounterExists(int layer, int frameCounter)
 
 // -----------------------------------------------------------------------
 
-void EventSystem::beginBeingNiceAfterEachPass()
-{
-  m_numberOfNiceAfterEachTaskItems++;
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::endBeingNiceAfterEachPass()
-{
-  m_numberOfNiceAfterEachTaskItems--;
-}
-
-// -----------------------------------------------------------------------
-
-bool EventSystem::beNiceAfterEachPass()
-{
-  return m_numberOfNiceAfterEachTaskItems > 0;
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::beginRealtimeTask()
-{
-//  cerr << "EventSystem::beginRealtimeTask()" << endl;
-  m_numberOfRealtimeTasks++;
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::endRealtimeTask()
-{
-//  cerr << "EventSystem::endRealtimeTask()" << endl;
-  m_numberOfRealtimeTasks--;
-}
-
-// -----------------------------------------------------------------------
-
-bool EventSystem::canBeNice()
-{
-  return m_numberOfRealtimeTasks == 0;
-}
-
-// -----------------------------------------------------------------------
-
 void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
 {
   if(layer < 0 || layer > 1)

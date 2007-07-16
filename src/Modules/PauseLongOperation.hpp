@@ -29,11 +29,12 @@
 /**
  * Main pause function. Exported for TextoutLongOperation to abuse. 
  */
-struct PauseLongOperation : public NiceLongOperation, public EventHandler
+struct PauseLongOperation : public LongOperation, public EventHandler
 {
 private:
-  bool m_isDone;
+  RLMachine& machine;
 
+  bool m_isDone;
 
   /**
    * @name Automode Related Variables

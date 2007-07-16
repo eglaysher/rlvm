@@ -51,7 +51,7 @@ using namespace std;
 
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
-  : NiceLongOperation(machine), EventHandler(machine),
+  : EventHandler(machine),
     m_utf8string(utf8string), m_currentCodepoint(0),
     m_currentPosition(m_utf8string.begin()), m_noWait(false)
 {
