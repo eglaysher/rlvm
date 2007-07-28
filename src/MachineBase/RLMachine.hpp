@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -109,9 +109,6 @@ private:
 
   /// The actual call stack.
   std::vector<StackFrame> callStack;
-
-  /// The stack of LongOperations (which preempt the normal call stack)
-//  boost::ptr_vector<LongOperation> m_longOperationStack;
 
   /// The most recent line marker we've come across
   int m_line;
