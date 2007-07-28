@@ -83,11 +83,25 @@ tf rlmachine_group("RLMachine");
 // -----------------------------------------------------------------------
 
 /**
- * Test register storage.
+ * Test halting semantics.
  */
 template<>
 template<>
 void object::test<1>()
+{
+  ensure("Machine does not start halted.", !rlmachine.halted());
+  rlmachine.halt();
+  ensure("Machine is halted.", rlmachine.halted());
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Test register storage.
+ */
+template<>
+template<>
+void object::test<2>()
 {
   for(int i = 0; i < 10; ++i)
   {
@@ -104,7 +118,7 @@ void object::test<1>()
  */
 template<>
 template<>
-void object::test<2>()
+void object::test<3>()
 {
   vector<int> types = list_of(0x0A)(0x0C)(0x12);
 
@@ -125,7 +139,7 @@ void object::test<2>()
  */
 template<>
 template<>
-void object::test<3>()
+void object::test<4>()
 {
   try {
 	rlmachine.setStringValue(0x0A, 3, "Blah");
@@ -147,6 +161,49 @@ void object::test<3>()
 	fail("Did not catch out of bound exception on get for strM/strS");
   } catch(rlvm::Exception) {}
 }
+
+// -----------------------------------------------------------------------
+
+/**
+ * Test valid integer access of all types.
+ *
+ * For reference to understand the following
+ * signed 32-bit integer: 10281 (0010 1000 0010 1001b)
+ *        8-bit integers: 0,0,40,41
+ *
+ * For    8-bit integers: 38,39,40,41
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  vector<int> banks = list_of(0)(1)(2)(3)(4)(5)(6)(11)(25);
+
+  const int in8b[] = {38,  39, 40, 41};
+  const int base = (in8b[0] << 24) | (in8b[1] << 16) | (in8b[2] << 8) | in8b[3];
+
+  for(vector<int>::const_iterator it = banks.begin(); it != banks.end(); ++it)
+  {
+	rlmachine.setIntValue(*it, 0, base);
+	ensure_equals("Didn't record full value", rlmachine.getIntValue(*it, 0), base);
+
+// 	ensure_equals("Can't read 1st 8bit seq.", 
+// 				  rlmachine.getIntValue(*it + 25, 0), in8b[0]);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Test illegal access to integer memory.
+ */
+// template<>
+// template<>
+// void object::test<6>()
+// {
+  
+
+// }
 
 
 }
