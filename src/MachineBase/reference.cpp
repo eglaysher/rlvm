@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@
 
 #include "MachineBase/reference.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "libReallive/intmemref.h"
+
+using libReallive::IntMemRef;
 
 // -----------------------------------------------------------------------
 // IntAccessor
@@ -57,7 +60,7 @@ IntAccessor::~IntAccessor()
  */
 IntAccessor::operator int() const
 {
-  return it->m_machine->getIntValue(it->m_type, it->m_location); 
+  return it->m_machine->getIntValue(IntMemRef(it->m_type, it->m_location));
 }
 
 // -----------------------------------------------------------------------
@@ -69,7 +72,7 @@ IntAccessor::operator int() const
  * @return Self
  */
 IntAccessor& IntAccessor::operator=(const int newValue) { 
-  it->m_machine->setIntValue(it->m_type, it->m_location, newValue);
+  it->m_machine->setIntValue(IntMemRef(it->m_type, it->m_location), newValue);
   return *this;
 } 
 

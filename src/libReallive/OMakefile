@@ -19,6 +19,7 @@ LRLFILES[] =
   filemap
   gameexe
   scenario
+  intmemref
 
 StaticCObject(libReallive, $(LRLFILES))
 

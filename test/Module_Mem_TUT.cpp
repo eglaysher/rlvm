@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include "Modules/Module_Mem.hpp"
 #include "libReallive/archive.h"
+#include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "NullSystem/NullSystem.hpp"
@@ -40,6 +41,7 @@
 
 #include <iostream>
 using namespace std;
+using libReallive::IntMemRef;
 
 namespace tut
 {
@@ -95,16 +97,16 @@ void object::test<1>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("setarray returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("setarray returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 2);
   ensure_equals("setarray returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 3);
   ensure_equals("setarray touched the value in intA[3]!!",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 -1);
 }
 
@@ -131,19 +133,19 @@ void object::test<2>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("setrng returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 0);
   ensure_equals("setrng returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 0);
   ensure_equals("setrng returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 0);
   ensure_equals("setrng returned wrong value for intA[3]",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 0);
   ensure_equals("setrng touched the value in intA[4]!!!",
-                rlmachine.getIntValue(0, 4),
+                rlmachine.getIntValue(IntMemRef('A', 4)),
                 -1);
 }
 
@@ -170,19 +172,19 @@ void object::test<3>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("setrng returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 4);
   ensure_equals("setrng returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 4);
   ensure_equals("setrng returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 4);
   ensure_equals("setrng returned wrong value for intA[3]",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 4);
   ensure_equals("setrng touched the value in intA[4]!!!",
-                rlmachine.getIntValue(0, 4),
+                rlmachine.getIntValue(IntMemRef('A', 4)),
                 -1);
 }
 
@@ -208,24 +210,24 @@ void object::test<4>()
 
   // First make sure setarray did what we expected it to...
   ensure_equals("setarray returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("setarray returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 2);
   ensure_equals("setarray returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 3);
 
   // Now make sure cpyrng did its job.
   ensure_equals("cpyrng returned wrong value for intB[0]",
-                rlmachine.getIntValue(1, 0),
+                rlmachine.getIntValue(IntMemRef('B', 0)),
                 1);
   ensure_equals("cpyrng returned wrong value for intB[1]",
-                rlmachine.getIntValue(1, 1),
+                rlmachine.getIntValue(IntMemRef('B', 1)),
                 2);
   ensure_equals("cpyrng returned wrong value for intB[2]",
-                rlmachine.getIntValue(1, 2),
+                rlmachine.getIntValue(IntMemRef('B', 2)),
                 3);
 
 }
@@ -253,22 +255,22 @@ void object::test<5>()
   // First make sure setarray_stepped did what we expected it to, and that it
   // didn't overwrite the work of setrng
   ensure_equals("setarray_stepped returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("setarray_stepped touched the value of intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 -1);
   ensure_equals("setarray_stepped returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 2);
   ensure_equals("setarray_stepped touched the value for intA[3]",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 -1);
   ensure_equals("setarray_stepped returned wrong value for intA[4]",
-                rlmachine.getIntValue(0, 4),
+                rlmachine.getIntValue(IntMemRef('A', 4)),
                 3);
   ensure_equals("setarray_stepped touched the value for intA[5]",
-                rlmachine.getIntValue(0, 5),
+                rlmachine.getIntValue(IntMemRef('A', 5)),
                 -1);
 }
 
@@ -296,22 +298,22 @@ void object::test<6>()
   // First make sure setrng_stepped did what we expected it to, and that it
   // didn't overwrite the work of setrng
   ensure_equals("setrng_stepped returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 0);
   ensure_equals("setrng_stepped touched the value of intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 -1);
   ensure_equals("setrng_stepped returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 0);
   ensure_equals("setrng_stepped touched the value for intA[3]",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 -1);
   ensure_equals("setrng_stepped returned wrong value for intA[4]",
-                rlmachine.getIntValue(0, 4),
+                rlmachine.getIntValue(IntMemRef('A', 4)),
                 0);
   ensure_equals("setrng_stepped touched the value for intA[5]",
-                rlmachine.getIntValue(0, 5),
+                rlmachine.getIntValue(IntMemRef('A', 5)),
                 -1);
 }
 
@@ -339,22 +341,22 @@ void object::test<7>()
   // First make sure setrng_stepped did what we expected it to, and that it
   // didn't overwrite the work of setrng
   ensure_equals("setrng_stepped returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 5);
   ensure_equals("setrng_stepped touched the value of intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 -1);
   ensure_equals("setrng_stepped returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 5);
   ensure_equals("setrng_stepped touched the value for intA[3]",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 -1);
   ensure_equals("setrng_stepped returned wrong value for intA[4]",
-                rlmachine.getIntValue(0, 4),
+                rlmachine.getIntValue(IntMemRef('A', 4)),
                 5);
   ensure_equals("setrng_stepped touched the value for intA[5]",
-                rlmachine.getIntValue(0, 5),
+                rlmachine.getIntValue(IntMemRef('A', 5)),
                 -1);
 }
 
@@ -383,13 +385,13 @@ void object::test<8>()
 
   // First make sure cpyvars did what we expected it to...
   ensure_equals("cpyvars set wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 5);
   ensure_equals("cpyvars set wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("cpyvars set wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 2);
 }
 
@@ -419,7 +421,7 @@ void object::test<9>()
 
   // First make sure sum did what we expected it to...
   ensure_equals("sum returned the wrong value for intA[10]",
-                rlmachine.getIntValue(0, 10),
+                rlmachine.getIntValue(IntMemRef('A', 10)),
                 6);
 }
 
@@ -449,7 +451,7 @@ void object::test<10>()
 
   // First make sure sums did what we expected it to...
   ensure_equals("sums returned the wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 45);
 }
 

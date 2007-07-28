@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include "Modules/Module_Str.hpp"
 #include "Modules/Module_Msg.hpp"
 #include "libReallive/archive.h"
+#include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "NullSystem/NullSystem.hpp"
@@ -45,6 +46,7 @@
 
 #include <iostream>
 using namespace std;
+using libReallive::IntMemRef;
 
 namespace tut
 {
@@ -103,13 +105,13 @@ void object::test<1>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Set intA[1]; this means the goto was ignored!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 0);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -139,13 +141,13 @@ void object::test<2>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Didn't set intA[1]; this means the goto-ed when we had a false value!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -172,18 +174,18 @@ void object::test<3>()
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 1);
+  rlmachine.setIntValue(IntMemRef('B', 0), 1);
 
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Set intA[1]; this means that we failed to goto when we had a true value!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 0);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -214,13 +216,13 @@ void object::test<4>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Set intA[1]; this means that we didn't goto but we had a false val",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 0);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -248,17 +250,17 @@ void object::test<5>()
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 1);
+  rlmachine.setIntValue(IntMemRef('B', 0), 1);
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Set intA[1]; this means that we gotoed when we had a true val",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -299,11 +301,11 @@ void object::test<6>()
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(1, 0, i);
+    rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
     ensure_equals("Wrong destination on goto_on",
-                  rlmachine.getIntValue(0, 0),
+                  rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
 }
@@ -342,11 +344,11 @@ void object::test<7>()
   NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 7);
+  rlmachine.setIntValue(IntMemRef('B', 0), 7);
   rlmachine.executeUntilHalted();
   
   ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 -1);
 }
 
@@ -387,11 +389,11 @@ void object::test<8>()
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(1, 0, i);
+    rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
   
     ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                  rlmachine.getIntValue(0, 0),
+                  rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
 
@@ -400,11 +402,11 @@ void object::test<8>()
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 29);
+  rlmachine.setIntValue(IntMemRef('B', 0), 29);
   rlmachine.executeUntilHalted();
   
   ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef(0, 0)),
                 3);
 }
 
@@ -440,13 +442,13 @@ void object::test<9>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("intA[1] is unset; this means the gosub or ret was ignored!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -482,13 +484,13 @@ void object::test<10>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("intA[1] is unset; this means the gosub or ret was ignored!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -512,13 +514,13 @@ void object::test<11>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Set intA[1]; this means we gosubed on a false value (or ret problem)",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 0);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -539,18 +541,18 @@ void object::test<12>()
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 1);
+  rlmachine.setIntValue(IntMemRef('B', 0), 1);
 
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Didn't set intA[1]; didn't gosub on true!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -587,13 +589,13 @@ void object::test<13>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Didn't set intA[1]; didn't gosub on false!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -626,18 +628,18 @@ void object::test<14>()
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 1);
+  rlmachine.setIntValue(IntMemRef('B', 0), 1);
 
   rlmachine.executeUntilHalted();
 
   ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("Set intA[1]; this means we gosubed on a true value (or ret problem)",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 0);
   ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
 }
 
@@ -678,11 +680,11 @@ void object::test<15>()
     NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(1, 0, i);
+    rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
   
     ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                  rlmachine.getIntValue(0, 0),
+                  rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
 
@@ -691,11 +693,11 @@ void object::test<15>()
   NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(1, 0, 29);
+  rlmachine.setIntValue(IntMemRef('B', 0), 29);
   rlmachine.executeUntilHalted();
   
   ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 3);
 }
 
@@ -734,11 +736,11 @@ void object::test<16>()
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(1, 0, i);
+    rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
   
     ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                  rlmachine.getIntValue(0, 0),
+                  rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
 }
@@ -777,11 +779,11 @@ void object::test<17>()
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(1, 0, i);
+    rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
   
     ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                  rlmachine.getIntValue(0, 0),
+                  rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
 }
@@ -821,17 +823,17 @@ void object::test<18>()
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(1, 0, i);
+    rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
   
     ensure_equals("Precondition not set! (!?!?!?!)",
-                  rlmachine.getIntValue(0, 0),
+                  rlmachine.getIntValue(IntMemRef('A', 0)),
                   1);
     ensure_equals("We jumped somewhere unexpected on a bad value!", 
-                  rlmachine.getIntValue(0, 1),
+                  rlmachine.getIntValue(IntMemRef('A', 1)),
                   i);
     ensure_equals("Postcondition not set! (We didn't return correctly!)",
-                  rlmachine.getIntValue(0, 2),
+                  rlmachine.getIntValue(IntMemRef('A', 2)),
                   1);
   }
 }
@@ -880,10 +882,10 @@ void object::test<19>()
   
   // Original states that shouldn't be modified
   ensure_equals("Precondition not set! (!?!?!?!) (intB[0])",
-                rlmachine.getIntValue(1, 0),
+                rlmachine.getIntValue(IntMemRef('B', 0)),
                 1);
   ensure_equals("Precondition not set! (!?!?!?!) (intB[1])",
-                rlmachine.getIntValue(1, 1),
+                rlmachine.getIntValue(IntMemRef('B', 1)),
                 2);
   ensure_equals("Precondition not set! (!?!?!?!) (strS[0])",
                 rlmachine.getStringValue(0x12, 0),
@@ -898,16 +900,16 @@ void object::test<19>()
                 rlmachine.getStringValue(0x12, 3),
                 "onetwo");
   ensure_equals("Wrong intermediary value for intD[0] in @intTest!",
-                rlmachine.getIntValue(0x03, 0),
+                rlmachine.getIntValue(IntMemRef('D', 0)),
                 3);
 
   // Make sure that intA[0] and intA[1] are set correctly when the
   // gosub_with returns
   ensure_equals("Wrong final value for intA[0]!",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 3);
   ensure_equals("Wrong final value for intA[1]!",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 6);
 }
 
@@ -981,13 +983,13 @@ void object::test<20>()
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.attachModule(new StrModule);
-    rlmachine.setIntValue(0x03, 0, i);
+    rlmachine.setIntValue(IntMemRef('D', 0), i);
     rlmachine.executeUntilHalted();
 
     stringstream ss;
     ss << "Wrong output value for fib(" << i << ")";
     ensure_equals(ss.str().c_str(),
-                  rlmachine.getIntValue(0x04, 0),
+                  rlmachine.getIntValue(IntMemRef('E', 0)),
                   recFib(i));
   }
 }
@@ -1031,15 +1033,15 @@ void object::test<21>()
       RLMachine rlmachine(system, arc);
       rlmachine.attachModule(new JmpModule);
       rlmachine.attachModule(new StrModule);
-      rlmachine.setIntValue(0x1, 0, entrypoint);
-      rlmachine.setIntValue(0x1, 1, offset);
+      rlmachine.setIntValue(IntMemRef('B', 0), entrypoint);
+      rlmachine.setIntValue(IntMemRef('B', 1), offset);
       rlmachine.executeUntilHalted();
 
       stringstream ss;
       ss << "Wrong output value for pair (" << offset << ", " << entrypoint
          << ") in farcall_with test!";
       ensure_equals(ss.str().c_str(),
-                    rlmachine.getIntValue(0, 1),
+                    rlmachine.getIntValue(IntMemRef('A', 1)),
                     entrypoint + offset);
     }
   }

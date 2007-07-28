@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Jmp.hpp"
 #include "libReallive/archive.h"
+#include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "NullSystem/NullSystem.hpp"
@@ -41,6 +42,8 @@
 
 #include <iostream>
 using namespace std;
+
+using libReallive::IntMemRef;
 
 namespace tut
 {
@@ -94,7 +97,7 @@ void object::test<1>()
 
   int values[3];
   for(int i = 0; i < 3; ++i)
-    values[i] = rlmachine.getIntValue(0, i);
+    values[i] = rlmachine.getIntValue(IntMemRef(0, i));
 
   ensure_equals("SceneNum::SEEN0001 didn't set value", values[0], 1);
   ensure_equals("SceneNum::SEEN0248 didn't set value", values[1], 248);

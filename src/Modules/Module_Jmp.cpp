@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@
 
 #include "Modules/Module_Jmp.hpp"
 #include "MachineBase/RLOperation.hpp"
+
+#include "libReallive/intmemref.h"
 
 #include <cmath>
 #include <iostream>
@@ -135,7 +137,7 @@ void storeData(RLMachine& machine, const ParamVector& f)
   {
     switch(it->type) {
     case 0:
-      machine.setIntValue(0x0b, intLpos, it->first);
+      machine.setIntValue(IntMemRef(INTL_LOCATION, 0, intLpos), it->first);
       intLpos++;
       break;
     case 1:

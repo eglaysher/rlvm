@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 // Copyright (c) 2007 Elliot Glaysher
 //
 // Permission is hereby granted, free of charge, to any person
@@ -39,6 +39,7 @@
  */
 
 #include "libReallive/expression.h"
+#include "libReallive/intmemref.h"
 #include "MachineBase/reference.hpp"
 #include "MachineBase/RLMachine.hpp"
 
@@ -612,10 +613,11 @@ ExpressionValueType MemoryReference::expressionValueType() const {
 }
 
 void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) { 
-  return machine.setIntValue(type, location->integerValue(machine), rvalue); 
+  return machine.setIntValue(IntMemRef(type, location->integerValue(machine)),
+							 rvalue); 
 }
 int MemoryReference::integerValue(RLMachine& machine) const {
-  return machine.getIntValue(type, location->integerValue(machine)); 
+  return machine.getIntValue(IntMemRef(type, location->integerValue(machine))); 
 }
 
 void MemoryReference::assignStringValue(RLMachine& machine, 

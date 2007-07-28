@@ -22,6 +22,7 @@
 
 #include "Modules/Module_Str.hpp"
 #include "libReallive/archive.h"
+#include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "NullSystem/NullSystem.hpp"
@@ -35,7 +36,7 @@
 #include <iostream>
 
 using namespace std;
-
+using libReallive::IntMemRef;
 using boost::lexical_cast;
 using boost::assign::list_of;
 
@@ -177,15 +178,17 @@ template<>
 template<>
 void object::test<5>()
 {
-  vector<int> banks = list_of(0)(1)(2)(3)(4)(5)(6)(11)(25);
+  vector<int> banks = list_of(0)(1)(2)(3)(4)(5)(6)(7)(8);
 
   const int in8b[] = {38,  39, 40, 41};
   const int base = (in8b[0] << 24) | (in8b[1] << 16) | (in8b[2] << 8) | in8b[3];
 
   for(vector<int>::const_iterator it = banks.begin(); it != banks.end(); ++it)
   {
-	rlmachine.setIntValue(*it, 0, base);
-	ensure_equals("Didn't record full value", rlmachine.getIntValue(*it, 0), base);
+	IntMemRef wordRef(*it, 0, 0);
+	rlmachine.setIntValue(wordRef, base);
+	ensure_equals("Didn't record full value", 
+				  rlmachine.getIntValue(wordRef), base);
 
 // 	ensure_equals("Can't read 1st 8bit seq.", 
 // 				  rlmachine.getIntValue(*it + 25, 0), in8b[0]);

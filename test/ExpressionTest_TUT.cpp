@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include "libReallive/archive.h"
 #include "libReallive/expression.h"
+#include "libReallive/intmemref.h"
 
 #include "MachineBase/RLMachine.hpp"
 
@@ -93,7 +94,7 @@ void object::test<1>()
 
   int values[10];
   for(int i = 0; i < 10; ++i)
-    values[i] = rlmachine.getIntValue(0, i);
+    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
 
   ensure_equals("Incorect value for intA[0] (+ test)", values[0], 2);
   ensure_equals("Incorect value for intA[1] (+= test)", values[1], 3);
@@ -124,7 +125,7 @@ void object::test<2>()
 
   int values[10];
   for(int i = 0; i < 10; ++i)
-    values[i] = rlmachine.getIntValue(0, i);
+    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
 
   ensure_equals("Incorect value for intA[0] (+ test)", values[0], 2);
   ensure_equals("Incorect value for intA[1] (+= test)", values[1], 3);
@@ -156,7 +157,7 @@ void object::test<3>()
 
   int values[14];
   for(int i = 0; i < 14; ++i)
-    values[i] = rlmachine.getIntValue(0, i);
+    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
 
   ensure_equals("Incorect value for intA[0]", values[0], 0);
   ensure_equals("Incorect value for intA[1]", values[1], 1);
@@ -190,7 +191,7 @@ void object::test<4>()
 
   int values[7];
   for(int i = 0; i < 7; ++i)
-    values[i] = rlmachine.getIntValue(0, i);
+    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
 
   ensure_equals("Incorect value for intA[0]", values[0], 1);
   ensure_equals("Incorect value for intA[1]", values[1], 0);
@@ -218,7 +219,7 @@ void object::test<5>()
 
   int values[6];
   for(int i = 0; i < 6; ++i)
-    values[i] = rlmachine.getIntValue(1, i);
+    values[i] = rlmachine.getIntValue(IntMemRef('B', i));
 
   ensure_equals("Incorect value for intB[0]", values[0], 1);
   ensure_equals("Incorect value for intB[1]", values[1], 1);

@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 
 #include "Modules/Module_Str.hpp"
 #include "libReallive/archive.h"
+#include "libReallive/intmemref.h"
+
 #include "MachineBase/RLMachine.hpp"
 
 #include "NullSystem/NullSystem.hpp"
@@ -39,7 +41,9 @@
 #include "tut.hpp"
 
 #include <iostream>
+
 using namespace std;
+using libReallive::IntMemRef;
 
 namespace tut
 {
@@ -233,7 +237,7 @@ void object::test<6>()
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
-  int one = rlmachine.getIntValue(0, 0);
+  int one = rlmachine.getIntValue(IntMemRef('A', 0));
   ensure_equals("strlen script failed to set the strlen(\"valid\") to 5", one, 5);
 }
 
@@ -264,13 +268,13 @@ void object::test<7>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Different values for strcmp(\"a\", \"b\")",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 strcmp("a", "b"));
   ensure_equals("Different values for strcmp(\"b\", \"b\")",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 strcmp("b", "b"));
   ensure_equals("Different values for strcmp(\"b\", \"c\")",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 strcmp("b", "c"));
 }
 
@@ -442,7 +446,7 @@ void object::test<14>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strcharlen returned wrong value",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 5);
 }
 
@@ -467,7 +471,7 @@ void object::test<15>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strcharlen returned wrong value",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 14);
 }
 
@@ -901,19 +905,19 @@ void object::test<30>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("atoi returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 15);
   ensure_equals("atoi returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 15);
   ensure_equals("atoi returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 -12);
   ensure_equals("atoi returned wrong value for intA[3]",
-                rlmachine.getIntValue(0, 3),
+                rlmachine.getIntValue(IntMemRef('A', 3)),
                 5);
   ensure_equals("atoi returned wrong value for intA[4]",
-                rlmachine.getIntValue(0, 4),
+                rlmachine.getIntValue(IntMemRef('A', 4)),
                 0);
 }
 
@@ -939,13 +943,13 @@ void object::test<31>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("digits returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("digits returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 2);
   ensure_equals("digits returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 2);
 }
 
@@ -971,22 +975,22 @@ void object::test<32>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("digit returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 1);
   ensure_equals("digit set wrong value for intB[0]",
-                rlmachine.getIntValue(1, 0),
+                rlmachine.getIntValue(IntMemRef('B', 0)),
                 1);
   ensure_equals("digit returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 2);
   ensure_equals("digit set wrong value for intB[1]",
-                rlmachine.getIntValue(1, 1),
+                rlmachine.getIntValue(IntMemRef('B', 1)),
                 2);
   ensure_equals("digit returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 2);
   ensure_equals("digit set wrong value for intB[2]",
-                rlmachine.getIntValue(1, 2),
+                rlmachine.getIntValue(IntMemRef('B', 2)),
                 0);
 }
 
@@ -1012,13 +1016,13 @@ void object::test<33>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strpos returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 0);
   ensure_equals("strpos returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 8);
   ensure_equals("strpos returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 -1);
 }
 
@@ -1044,13 +1048,13 @@ void object::test<34>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strlpos returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 0);
   ensure_equals("strlpos returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 12);
   ensure_equals("strlpos returned wrong value for intA[2]",
-                rlmachine.getIntValue(0, 2),
+                rlmachine.getIntValue(IntMemRef('A', 2)),
                 -1);
 }
 
@@ -1076,10 +1080,10 @@ void object::test<35>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strused returned wrong value for intA[0]",
-                rlmachine.getIntValue(0, 0),
+                rlmachine.getIntValue(IntMemRef('A', 0)),
                 0);
   ensure_equals("strused returned wrong value for intA[1]",
-                rlmachine.getIntValue(0, 1),
+                rlmachine.getIntValue(IntMemRef('A', 1)),
                 1);
 }
 

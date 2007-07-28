@@ -37,7 +37,6 @@
 #include <boost/ptr_container/ptr_map.hpp>
 
 #include "libReallive/bytecode.h"
-#include "MachineBase/bytecodeConstants.hpp"
 
 #include <vector>
 
@@ -46,23 +45,12 @@ class Archive;
 class FunctionElement;
 class CommandElement;
 class ExpressionElement;
+class IntMemRef;
 };
 
 class RLModule;
 class LongOperation;
 class System;
-
-  const int INTA_LOCATION = 0;
-  const int INTB_LOCATION = 1;
-  const int INTC_LOCATION = 2;
-  const int INTD_LOCATION = 3;
-  const int INTE_LOCATION = 4;
-  const int INTF_LOCATION = 5;
-  const int INTG_LOCATION = 6;
-
-  const int INTZ_LOCATION = 7;
-
-  const int INTL_LOCATION = 8;
   const int NUMBER_OF_INT_LOCATIONS = 9;
 
 /**
@@ -148,7 +136,7 @@ public:
    * @param location The offset into that memory bank
    * @return The integer value
    */
-  int getIntValue(int type, int location);    
+  int getIntValue(const libReallive::IntMemRef& ref);    
 
   /** 
    * Sets the value of a certain memory location
@@ -157,7 +145,7 @@ public:
    * @param number The offset into that memory bank
    * @param value The new value
    */
-  void setIntValue(int type, int number, int value);
+  void setIntValue(const libReallive::IntMemRef& ref, int value);
 
   /** 
    * Returns the string value of a string memory bank

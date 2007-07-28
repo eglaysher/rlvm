@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -72,7 +72,9 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 
+#include "libReallive/IntMemRef.h"
 #include "libReallive/gameexe.h"
+
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
@@ -263,11 +265,11 @@ void RLMachine::advanceInstructionPointer()
  * @param location The illegal index that was accessed
  * @see RLMachine::getIntValue
  */
-static void throwIllegalIndex(int location) 
+static void throwIllegalIndex(const IntMemRef& ref,
+							  const std::string& function)
 {
   ostringstream ss;
-  ss << "Illegal index location (" << location 
-     << ") in RLMachine::getIntVlaue()";
+  ss << "Invalid memory access " << ref << " in " << function;
   throw rlvm::Exception(ss.str());
 }
 
@@ -278,25 +280,28 @@ static void throwIllegalIndex(int location)
  * @note This method was plagarized from xclannad.
  * @todo Does this allow for access like intL4[]? I don't think it does...
  */
-int RLMachine::getIntValue(int type, int location) 
+int RLMachine::getIntValue(const IntMemRef& ref) 
 {
-  int index = type % 26;
-  type /= 26;
-  if(index == INTZ_LOCATION_IN_BYTECODE) index = INTZ_LOCATION;
-  if(index == INTL_LOCATION_IN_BYTECODE) index = INTL_LOCATION;
+  int type = ref.type();
+  int index = ref.bank();
+  int location = ref.location();
+
   if(index > NUMBER_OF_INT_LOCATIONS) 
-      throw rlvm::Exception("Illegal index location in RLMachine::getIntValue()");
+      throwIllegalIndex(ref, "RLMachine::getIntValue()");
+
   if (type == 0) {
     // A[]..G[], Z[] を直に読む
     if (uint(location) >= 2000) 
-      throwIllegalIndex(location);
+      throwIllegalIndex(ref, "RLMachine::getIntValue()");
+
     return intVar[index][location];
   } else {
     // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
     if (uint(location) >= (64000 / factor)) 
-      throwIllegalIndex(location);
+      throwIllegalIndex(ref, "RLMachine::getIntValue()");
+
     return (intVar[index][location / eltsize] >>
             ((location % eltsize) * factor)) & ((1 << factor) - 1);
   }
@@ -308,20 +313,19 @@ int RLMachine::getIntValue(int type, int location)
  *
  * @note This method was plagarized from xclannad.
  */
-void RLMachine::setIntValue(int rawtype, int location, int value) 
+void RLMachine::setIntValue(const IntMemRef& ref, int value) 
 {
-  int type = rawtype / 26;
-  int index = rawtype % 26;
-  if (index == INTZ_LOCATION_IN_BYTECODE) index = INTZ_LOCATION;
-  if (index == INTL_LOCATION_IN_BYTECODE) index = INTL_LOCATION;
+  int type = ref.type();
+  int index = ref.bank();
+  int location = ref.location();
+
   if (index < 0 || index > NUMBER_OF_INT_LOCATIONS) {
-    fprintf(stderr, "Error: invalid access to Var<%d>[%d]\n",
-            type, location);
+	throwIllegalIndex(ref, "RLMachine::setIntValue()");
   }
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
     if (uint(location) >= 2000) 
-      throw rlvm::Exception("Illegal index in RLMachine::setIntValue()");
+      throwIllegalIndex(ref, "RLMachine::setIntValue()");
     intVar[index][location] = value;
   } else {
     // Ab[]..G4b[], Z8b[] などを書く
@@ -330,7 +334,8 @@ void RLMachine::setIntValue(int rawtype, int location, int value)
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
     if (uint(location) >= (64000 / factor)) 
-      throw rlvm::Exception("Illegal index in RLMachine::setIntValue()");
+      throwIllegalIndex(ref, "RLMachine::setIntValue()");
+
     intVar[index][location / eltsize] =
       (intVar[index][location / eltsize] & ~(eltmask << shift))
       | (value & eltmask) << shift;
