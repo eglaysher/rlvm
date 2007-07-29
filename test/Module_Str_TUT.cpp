@@ -43,7 +43,7 @@
 #include <iostream>
 
 using namespace std;
-using libReallive::IntMemRef;
+using namespace libReallive;
 
 namespace tut
 {
@@ -97,7 +97,7 @@ void object::test<1>()
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
-  string one = rlmachine.getStringValue(0x12, 0);
+  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
   ensure_equals("strcpy_0 script failed to set value", one, "valid");
 }
 
@@ -121,7 +121,7 @@ void object::test<2>()
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
-  string one = rlmachine.getStringValue(0x12, 0);
+  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
   ensure_equals("strcpy_1 script failed to set value", one, "va");
 }
 
@@ -147,13 +147,13 @@ void object::test<3>()
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
-  string one = rlmachine.getStringValue(0x12, 0);
+  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
   ensure_equals("strclear_0 script failed to unset value", one, "");
 
   // We include this check to make sure the machine is sane and that
   // the first assignment works, so strclear doesn't appear to work
   // because assignment failed.
-  string two = rlmachine.getStringValue(0x12, 1);
+  string two = rlmachine.getStringValue(STRS_LOCATION, 1);
   ensure_equals("strclear_0 script failed to set value", two, "valid");
 }
 
@@ -179,15 +179,15 @@ void object::test<4>()
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
-  string one = rlmachine.getStringValue(0x12, 0);
+  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
   ensure_equals("strclear_1 script failed to unset value", one, "");
-  string two = rlmachine.getStringValue(0x12, 1);
+  string two = rlmachine.getStringValue(STRS_LOCATION, 1);
   ensure_equals("strclear_1 script failed to unset value", two, "");
 
   // We include this check to make sure the machine is sane and that
   // the first assignment works, so strclear doesn't appear to work
   // because assignment failed.
-  string three = rlmachine.getStringValue(0x12, 2);
+  string three = rlmachine.getStringValue(STRS_LOCATION, 2);
   ensure_equals("strclear_1 script failed to set value", three, "valid");
 }
 
@@ -212,7 +212,7 @@ void object::test<5>()
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
 
-  string one = rlmachine.getStringValue(0x12, 0);
+  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
   ensure_equals("strcat script failed to set value", one, "valid");
 }
 
@@ -294,7 +294,7 @@ void object::test<8>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strsub returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "lid");
 }
 
@@ -319,7 +319,7 @@ void object::test<9>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strsub returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "\x82\xDC\x82\xBE\x8A\x6F\x82\xA6\x82\xC4\x82\xE9\x81\x48");
 }
 
@@ -344,7 +344,7 @@ void object::test<10>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strsub returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "al");
 }
 
@@ -369,7 +369,7 @@ void object::test<11>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strsub returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "\x96\xBC\x91\x4F");
 }
 
@@ -396,7 +396,7 @@ void object::test<12>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strrsub returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "id"); 
 }
 
@@ -421,7 +421,7 @@ void object::test<13>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strrsub returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "i"); 
 }
 
@@ -496,7 +496,7 @@ void object::test<16>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strtrunc returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "va"); 
 }
 
@@ -522,7 +522,7 @@ void object::test<17>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("strtrunc returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "\x82\xED\x82\xBD\x82\xB5"); 
 }
 
@@ -547,7 +547,7 @@ void object::test<18>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("hantozen returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "\x82\x50\x82\x51\x82\x52\x82\x53\x82\x54");
 }
 
@@ -573,7 +573,7 @@ void object::test<19>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("hantozen returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "\x83\x8F\x83\x5E\x83\x56\x83\x6D\x83\x69\x83\x7D\x83\x47");
 }
 
@@ -598,7 +598,7 @@ void object::test<20>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("zentohan returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "12345");
 }
 
@@ -623,7 +623,7 @@ void object::test<21>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("zentohan returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "\xDC\xC0\xBC\xC9\xC5\xCF\xB4");
 }
 
@@ -647,7 +647,7 @@ void object::test<22>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Uppercase returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "VALID"); 
 }
 
@@ -673,10 +673,10 @@ void object::test<23>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Uppercase touched strS[0]",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "Valid"); 
   ensure_equals("Uppercase returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "VALID"); 
 }
 
@@ -702,7 +702,7 @@ void object::test<24>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Lowercase returned wrong value",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "valid"); 
 }
 
@@ -728,10 +728,10 @@ void object::test<25>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("Lowercase touched strS[0]",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "Valid"); 
   ensure_equals("Lowercase returned wrong value",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "valid"); 
 }
 
@@ -758,16 +758,16 @@ void object::test<26>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("itoa_ws set wrong value for strS[0]",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "\x81\x7C\x82\x50");
   ensure_equals("itoa_ws set wrong value for strS[1]",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "\x81\x7C\x81\x40\x81\x40\x82\x50"); 
   ensure_equals("itoa_ws set wrong value for strS[2]",
-                rlmachine.getStringValue(0x12, 2),
+                rlmachine.getStringValue(STRS_LOCATION, 2),
                 "\x82\x52"); 
   ensure_equals("itoa_ws set wrong value for strS[3]",
-                rlmachine.getStringValue(0x12, 3),
+                rlmachine.getStringValue(STRS_LOCATION, 3),
                 "\x81\x40\x81\x40\x82\x50"); 
 
 }
@@ -795,16 +795,16 @@ void object::test<27>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("itoa_s set wrong value for strS[0]",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "-1");
   ensure_equals("itoa_s set wrong value for strS[1]",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "-  1"); 
   ensure_equals("itoa_s set wrong value for strS[2]",
-                rlmachine.getStringValue(0x12, 2),
+                rlmachine.getStringValue(STRS_LOCATION, 2),
                 "3"); 
   ensure_equals("itoa_s set wrong value for strS[3]",
-                rlmachine.getStringValue(0x12, 3),
+                rlmachine.getStringValue(STRS_LOCATION, 3),
                 "  1"); 
 }
 
@@ -831,16 +831,16 @@ void object::test<28>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("itoa_w set wrong value for strS[0]",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "\x81\x7C\x82\x50");
   ensure_equals("itoa_w set wrong value for strS[1]",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "\x81\x7C\x82\x4F\x82\x4F\x82\x50");
   ensure_equals("itoa_w set wrong value for strS[2]",
-                rlmachine.getStringValue(0x12, 2),
+                rlmachine.getStringValue(STRS_LOCATION, 2),
                 "\x82\x52"); 
   ensure_equals("itoa_w set wrong value for strS[3]",
-                rlmachine.getStringValue(0x12, 3),
+                rlmachine.getStringValue(STRS_LOCATION, 3),
                 "\x82\x4F\x82\x4F\x82\x50");
 //                "  1"); 
 }
@@ -868,16 +868,16 @@ void object::test<29>()
   rlmachine.executeUntilHalted();
 
   ensure_equals("itoa set wrong value for strS[0]",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "-1");
   ensure_equals("itoa set wrong value for strS[1]",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "-001");
   ensure_equals("itoa set wrong value for strS[2]",
-                rlmachine.getStringValue(0x12, 2),
+                rlmachine.getStringValue(STRS_LOCATION, 2),
                 "3"); 
   ensure_equals("itoa set wrong value for strS[3]",
-                rlmachine.getStringValue(0x12, 3),
+                rlmachine.getStringValue(STRS_LOCATION, 3),
                 "001");
 }
 

@@ -36,7 +36,7 @@
 #include <iostream>
 
 using namespace std;
-using libReallive::IntMemRef;
+using namespace libReallive;
 using boost::lexical_cast;
 using boost::assign::list_of;
 
@@ -121,7 +121,7 @@ template<>
 template<>
 void object::test<3>()
 {
-  vector<int> types = list_of(0x0A)(0x0C)(0x12);
+  vector<int> types = list_of(STRK_LOCATION)(STRM_LOCATION)(STRS_LOCATION);
 
   for(vector<int>::const_iterator it = types.begin(); it != types.end(); ++it)
   {
@@ -143,22 +143,22 @@ template<>
 void object::test<4>()
 {
   try {
-	rlmachine.setStringValue(0x0A, 3, "Blah");
+	rlmachine.setStringValue(STRK_LOCATION, 3, "Blah");
 	fail("Did not catch out of bound exception on set for strK");
   } catch(rlvm::Exception) {}
 
   try {
-	rlmachine.setStringValue(0x0C, 2000, "Blah");
+	rlmachine.setStringValue(STRM_LOCATION, 2000, "Blah");
 	fail("Did not catch out of bound exception on set for strM/strS");
   } catch(rlvm::Exception) {}
 
   try {
-	rlmachine.getStringValue(0x0A, 3);
+	rlmachine.getStringValue(STRK_LOCATION, 3);
 	fail("Did not catch out of bound exception on get for strK");
   } catch(rlvm::Exception) {}
 
   try {
-	rlmachine.getStringValue(0x0C, 2000);
+	rlmachine.getStringValue(STRM_LOCATION, 2000);
 	fail("Did not catch out of bound exception on get for strM/strS");
   } catch(rlvm::Exception) {}
 }
@@ -178,20 +178,33 @@ template<>
 template<>
 void object::test<5>()
 {
-  vector<int> banks = list_of(0)(1)(2)(3)(4)(5)(6)(7)(8);
+  vector<char> banks = list_of('A')('B')('C')('D')('E')('F')('G')('L')('Z');
 
   const int in8b[] = {38,  39, 40, 41};
   const int base = (in8b[0] << 24) | (in8b[1] << 16) | (in8b[2] << 8) | in8b[3];
 
-  for(vector<int>::const_iterator it = banks.begin(); it != banks.end(); ++it)
+  const int rc = 8;
+  const int final = (rc << 24) | (rc << 16) | (rc << 8) | rc;
+
+  for(vector<char>::const_iterator it = banks.begin(); it != banks.end(); ++it)
   {
-	IntMemRef wordRef(*it, 0, 0);
+	IntMemRef wordRef(*it, 0);
 	rlmachine.setIntValue(wordRef, base);
 	ensure_equals("Didn't record full value", 
 				  rlmachine.getIntValue(wordRef), base);
 
-// 	ensure_equals("Can't read 1st 8bit seq.", 
-// 				  rlmachine.getIntValue(*it + 25, 0), in8b[0]);
+	for(int i = 0; i < 4; ++i)
+	{
+	  IntMemRef comp(*it, "8b", i);
+	  ensure_equals("Could get partial value", 
+					rlmachine.getIntValue(comp),
+					in8b[3 - i]);
+
+	  rlmachine.setIntValue(comp, rc);
+	}
+
+	ensure_equals("Changing the components didn't change the full value!",
+				  rlmachine.getIntValue(wordRef), final);
   }
 }
 

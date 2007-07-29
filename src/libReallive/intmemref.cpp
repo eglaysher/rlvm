@@ -50,6 +50,34 @@ IntMemRef::IntMemRef(char bankName, int location)
 
 // -----------------------------------------------------------------------
 
+IntMemRef::IntMemRef(char bankName, const char* accessStr, int location)
+  : accessType(0), loc(location)
+{
+  if(bankName >= 'A' && bankName <= 'G')
+	memoryBank = bankName - 'A';
+  else if(bankName == 'Z')
+	memoryBank = INTZ_LOCATION;
+  else if(bankName == 'L')
+	memoryBank = INTL_LOCATION;
+  else
+	throw std::runtime_error("Invalid memory bank name.");
+
+  if(strcmp(accessStr, "") == 0)
+	accessType = 0;
+  else if(strcmp(accessStr, "b") == 0)
+	accessType = 1;
+  else if(strcmp(accessStr, "2b") == 0)
+	accessType = 2;
+  else if(strcmp(accessStr, "4b") == 0)
+	accessType = 3;
+  else if(strcmp(accessStr, "8b") == 0)
+	accessType = 4;
+  else 
+	throw std::runtime_error("Invalid access type string.");
+}
+
+// -----------------------------------------------------------------------
+
 IntMemRef::~IntMemRef()
 {}
 

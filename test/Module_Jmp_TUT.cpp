@@ -46,7 +46,7 @@
 
 #include <iostream>
 using namespace std;
-using libReallive::IntMemRef;
+using namespace libReallive;
 
 namespace tut
 {
@@ -888,16 +888,16 @@ void object::test<19>()
                 rlmachine.getIntValue(IntMemRef('B', 1)),
                 2);
   ensure_equals("Precondition not set! (!?!?!?!) (strS[0])",
-                rlmachine.getStringValue(0x12, 0),
+                rlmachine.getStringValue(STRS_LOCATION, 0),
                 "one");
   ensure_equals("Precondition not set! (!?!?!?!) (strS[1])",
-                rlmachine.getStringValue(0x12, 1),
+                rlmachine.getStringValue(STRS_LOCATION, 1),
                 "two");
 
   // Check the intermediate values that were calculated in the
   // functions
   ensure_equals("Wrong intermediary value for strS[3] in @stringTest!",
-                rlmachine.getStringValue(0x12, 3),
+                rlmachine.getStringValue(STRS_LOCATION, 3),
                 "onetwo");
   ensure_equals("Wrong intermediary value for intD[0] in @intTest!",
                 rlmachine.getIntValue(IntMemRef('D', 0)),
@@ -1049,16 +1049,16 @@ void object::test<21>()
 
 // -----------------------------------------------------------------------
 
-template<>
-template<>
-void object::test<22>()
-{
-//   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/graphicTest.TXT"));
-//   NullSystem system;
-//   RLMachine rlmachine(system, arc);
-//   rlmachine.attachModule(new JmpModule);
-//   rlmachine.attachModule(new MsgModule);
-//   rlmachine.executeUntilHalted();
-}
+// template<>
+// template<>
+// void object::test<22>()
+// {
+// //   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/graphicTest.TXT"));
+// //   NullSystem system;
+// //   RLMachine rlmachine(system, arc);
+// //   rlmachine.attachModule(new JmpModule);
+// //   rlmachine.attachModule(new MsgModule);
+// //   rlmachine.executeUntilHalted();
+// }
 
 }

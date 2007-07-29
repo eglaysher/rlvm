@@ -605,7 +605,8 @@ MemoryReference::~MemoryReference() {}
 
 bool MemoryReference::isMemoryReference() const { return true; }
 ExpressionValueType MemoryReference::expressionValueType() const {
-  if(type == 0x12 || type == 0x0A || type == 0x0C) {
+  if(isStringLocation(type)) 
+  {
     return ValueTypeString;
   } else {
     return ValueTypeInteger;
@@ -630,7 +631,7 @@ const std::string& MemoryReference::getStringValue(RLMachine& machine) const {
 
 IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
-  if(type == 0x12 || type == 0x0C) {
+  if(isStringLocation(type)) {
     throw Error("Request to getIntegerReferenceIterator() on a string reference!");
   }
 
@@ -639,7 +640,7 @@ IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& mac
 
 StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
-  if(!(type == 0x12 || type == 0x0C)) {
+  if(!isStringLocation(type)) {
     throw Error("Request to getStringReferenceIterator() on an integer reference!");
   }
 

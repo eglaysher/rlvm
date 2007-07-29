@@ -350,12 +350,12 @@ const std::string& RLMachine::getStringValue(int type, int location)
       throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
-  case 0x0A:
+  case STRK_LOCATION:
     if(location > 2)
       throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
     return strK[location];
-  case 0x0C: return strM[location];
-  case 0x12: return strS[location];
+  case STRM_LOCATION: return strM[location];
+  case STRS_LOCATION: return strS[location];
   default:
     throw rlvm::Exception("Invalid type in RLMachine::getStringValue");
   }
@@ -368,15 +368,15 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
       throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
-  case 0x0A:
+  case STRK_LOCATION:
     if(number > 2)
       throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
     strK[number] = value;
     break;
-  case 0x0C:
+  case STRM_LOCATION:
     strM[number] = value;
     break;
-  case 0x12: 
+  case STRS_LOCATION: 
     strS[number] = value;
     break;
   default:
