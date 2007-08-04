@@ -17,13 +17,14 @@ LRLFILES[] =
   file
   SDL_ttf
   alphablit
+  json/libjsoncpp
 
 StaticCObject(libVendorLibs, $(LRLFILES))
 
 ########
 
 LIBS += -L/opt/local/lib
-.SUBDIRS: jsoncpp
+.SUBDIRS: json
 .DEFAULT: libVendorLibs$(EXT_OBJ)
 
 clean:
