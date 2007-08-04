@@ -5,26 +5,20 @@
 CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
 CFLAGS = $(CXXFLAGS)
 
-# for testing
-#CXXFLAGS += -DWIN32
-
 .PHONY: clean
 
-########
+#########################################################################
 
 LRLFILES[] =
-  glew
-  file
-  SDL_ttf
-  alphablit
+  json_reader
+  json_value
+  json_writer
 
-StaticCObject(libVendorLibs, $(LRLFILES))
+StaticCObject(libjsoncpp, $(LRLFILES))
 
-########
+#########################################################################
 
-LIBS += -L/opt/local/lib
-.SUBDIRS: jsoncpp
-.DEFAULT: libVendorLibs$(EXT_OBJ)
+.DEFAULT: libjsoncpp$(EXT_OBJ)
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc
