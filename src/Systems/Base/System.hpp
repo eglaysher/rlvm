@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,13 +33,16 @@ class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
 
+namespace boost { namespace filesystem { class path; } }
+
 /**
  * The system class provides a generalized interface to all the
  * components that make up a local system that may need to be
  * implemented differently on different systems, i.e., sound,
  * graphics, filesystem et cetera.
  *
- * The base System class is an abstract base class that 
+ * The base System class is an abstract base class that is meant to be
+ * specialized by the 
  */
 class System
 {
@@ -47,6 +50,9 @@ private:
   std::vector<std::string> cachedSearchPaths;
 
   void addPath(GameexeInterpretObject gio);
+
+protected:
+  boost::filesystem::path System::getHomeDirectory();
 
 public:
   virtual ~System() {}
@@ -60,6 +66,17 @@ public:
 //  virtual SoundSystem& soundSystem() = 0;
 
   const std::vector<std::string>& getSearchPaths();
+
+  /**
+   * Returns a boost::filesystem object which points to the directory
+   * where saved game data, preferences, et cetera should be stored
+   * for this game.
+   *
+   * The default implementation returns "~/.rlvm/#{REGNAME}/". A Mac
+   * specific override could return "~/Library/Application
+   * Support/rlvm/#{REGNAME}/"
+   */
+  virtual boost::filesystem::path gameSaveDirectory();
 };
 
 #endif

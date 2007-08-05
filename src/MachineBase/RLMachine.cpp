@@ -84,15 +84,37 @@
 
 #include "Modules/TextoutLongOperation.hpp"
 
+#include <string>
 #include <sstream>
 #include <iostream>
 
 #include <boost/bind.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
+
+#include <boost/assign.hpp>
+
+#include "json/value.h"
+#include "json/reader.h"
+#include "json/writer.h"
+
+namespace fs = boost::filesystem;
 
 using namespace std;
 using namespace libReallive;
 
 using boost::bind;
+using boost::assign::list_of;
+
+const vector<pair<int, char> > GLOBAL_INTEGER_BANKS =
+  list_of(make_pair(INTB_LOCATION, 'B'))
+  (make_pair(INTC_LOCATION, 'C'))
+  (make_pair(INTD_LOCATION, 'D'))
+  (make_pair(INTE_LOCATION, 'E'))
+  (make_pair(INTF_LOCATION, 'F'))
+  (make_pair(INTG_LOCATION, 'G'))
+  (make_pair(INTZ_LOCATION, 'Z'));
+
 
 // -----------------------------------------------------------------------
 // Stack Frame
@@ -198,7 +220,130 @@ void RLMachine::attachModule(RLModule* module)
 
 // -----------------------------------------------------------------------
 
-/// @todo Refactor this. Seriously.
+void RLMachine::saveGlobalMemory()
+{
+  fs::path home = m_system.gameSaveDirectory() / "global.jsn";
+  fs::ofstream file(home);
+  if(!file)
+  {
+	ostringstream oss;
+	oss << "Could not open global memory file.";
+	throw rlvm::Exception(oss.str());
+  }
+
+  saveGlobalMemoryTo(file);
+}
+
+// -----------------------------------------------------------------------
+
+namespace {
+
+Json::Value buildFromString(const std::string& str)
+{
+  return Json::Value(str);
+}
+
+// -----------------------------------------------------------------------
+
+Json::Value buildFromInt(const int val)
+{
+  return Json::Value(val);
+}
+
+}
+// -----------------------------------------------------------------------
+
+void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
+{
+  Json::Value root(Json::objectValue);
+
+  Json::Value strMarray(Json::arrayValue);
+  transform(strM, strM + 2000, back_inserter(strMarray),
+			buildFromString);
+  root["strM"] = strMarray;
+
+  for(vector<pair<int, char> >::const_iterator it = 
+		GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+	  ++it)
+  {
+	Json::Value intArray;
+	transform(intVar[it->first], intVar[it->first] + 2000,
+			  back_inserter(intArray),
+			  buildFromInt);
+
+	ostringstream oss;
+	oss << "int" << it->second;
+	root[oss.str()] = intArray;
+  }
+
+  Json::StyledWriter writer;
+  ofs << writer.write( root );
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::loadGlobalMemory()
+{
+  fs::path home = m_system.gameSaveDirectory() / "global.jsn";
+  fs::ifstream file(home);
+
+  // If we were able to open the file for reading, load it. Don't
+  // complain if we're unable to, since this may be the first run on
+  // this certain game and it may not exist yet.
+  if(file)
+  {
+	loadGlobalMemoryFrom(file);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::loadGlobalMemoryFrom(std::istream& iss)
+{
+  string memoryContents;
+  string line;
+  while(getline(iss, line))
+  {
+	memoryContents += line;
+	memoryContents += "\n";
+  }
+
+  Json::Value root;
+  Json::Reader reader;
+  if(!reader.parse(memoryContents, root))
+  {
+	ostringstream oss;
+	oss << "Failed to read global memory file for game \""
+		<< m_system.gameexe()("REGNAME").to_string() << "\": "
+		<< reader.getFormatedErrorMessages();
+
+	throw rlvm::Exception(oss.str());
+  }
+
+  if(!root.isMember("strM"))
+	throw rlvm::Exception("No strM memory bank in global file!");
+  const Json::Value& strMarray = root["strM"];
+  if(strMarray.size() != 2000)
+	throw rlvm::Exception("strM memory bank.size() != 2000");
+  transform(strMarray.begin(), strMarray.end(),
+			strM, bind(&Json::Value::asString, _1));
+
+  for(vector<pair<int, char> >::const_iterator it = 
+		GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+	  ++it)
+  {
+	ostringstream oss;
+	oss << "int" << it->second;
+	const Json::Value& intMem = root[oss.str()];
+
+	transform(intMem.begin(), intMem.end(), 
+			  intVar[it->first], 
+			  bind(&Json::Value::asInt, _1));
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::executeNextInstruction() 
 {
   // Do not execute any more instructions if the machine is halted.

@@ -213,13 +213,69 @@ void object::test<5>()
 /**
  * Test illegal access to integer memory.
  */
-// template<>
-// template<>
-// void object::test<6>()
-// {
-  
+template<>
+template<>
+void object::test<6>()
+{
+  try { 
+	rlmachine.getIntValue(IntMemRef(10, 0, 0)); 
+	fail("Allowed access to a non-existant memory bank");
+  } catch(rlvm::Exception) {}
 
-// }
+  rlmachine.getIntValue(IntMemRef('A', 1999));
+  try { 
+	rlmachine.getIntValue(IntMemRef('A', 2000)); 
+	fail("Allowed access to memory past the end of the bank");
+  } catch(rlvm::Exception) {}
+}
 
+// -----------------------------------------------------------------------
+
+template<>
+template<>
+void object::test<7>()
+{
+  stringstream ss;
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+
+  // Save data
+  {
+	RLMachine saveMachine(system, arc);
+
+	int count = 0;
+	for(vector<pair<int, char> >::const_iterator it = 
+		  GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+		++it)
+	{
+	  for(int i = 0; i < 2000; ++i)	  
+	  {
+		saveMachine.setIntValue(IntMemRef(it->second, i), count);
+		count++;
+	  }
+	}
+
+	saveMachine.saveGlobalMemoryTo(ss);
+  }
+
+  // Load data
+  {
+	RLMachine loadMachine(system, arc);
+	loadMachine.loadGlobalMemoryFrom(ss);
+
+	int count = 0;
+	for(vector<pair<int, char> >::const_iterator it = 
+		  GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+		++it)
+	{
+	  for(int i = 0; i < 2000; ++i)	  
+	  {
+		ensure_equals("Didn't read memory correctly!",
+					  loadMachine.getIntValue(IntMemRef(it->second, i)), count);
+		count++;
+	  }
+	}
+  }
+
+}
 
 }

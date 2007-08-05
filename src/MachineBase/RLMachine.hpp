@@ -53,6 +53,8 @@ class LongOperation;
 class System;
   const int NUMBER_OF_INT_LOCATIONS = 9;
 
+extern const std::vector<std::pair<int, char> > GLOBAL_INTEGER_BANKS;
+
 /**
  * The RealLive virtual machine implementation.
  */
@@ -123,6 +125,48 @@ public:
   void attachModule(RLModule* module);
 
   // -----------------------------------------------------------------------
+
+  /**
+   * @name Memory Persistence 
+   * 
+   * Saves the contents of memory.
+   *
+   * @{
+   */
+
+  /**
+   * Writes the contents of global memory to the default global memory
+   * file for this game.
+   */
+  void saveGlobalMemory();
+
+  /**
+   * Writes the contents of memory to a stream.
+   *
+   * @note This function is used by saveGlobalMemory(), but is exposed
+   *       publicly for unit testing.
+   */
+  void saveGlobalMemoryTo(std::ostream& oss);
+
+  /**
+   * Reads the contents of global memory to the default global memory
+   * file for this game.
+   */
+  void loadGlobalMemory();
+
+  /**
+   * Reads global memory from a stream.
+   * 
+   * @note This function is used by saveGlobalMemory(), but is exposed
+   *       publicly for unit testing.
+   */
+  void loadGlobalMemoryFrom(std::istream& oss);
+
+  /// @}
+
+
+  // -----------------------------------------------------------------------
+
   /**
    * @name MemoryManip 
    * Memory Manipulation Functions

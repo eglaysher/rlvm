@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,8 +26,11 @@
 
 #include "libReallive/gameexe.h"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/SystemError.hpp"
 
 #include <boost/bind.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <algorithm>
 #include <string>
@@ -35,6 +38,8 @@
 
 using namespace std;
 using boost::bind;
+
+namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
@@ -63,4 +68,43 @@ const std::vector<std::string>& System::getSearchPaths()
   }
 
   return cachedSearchPaths;
+}
+
+// -----------------------------------------------------------------------
+
+boost::filesystem::path System::getHomeDirectory()
+{
+  string drive, home;
+  if((home = getenv("HOME")) != "")
+  {
+	// UN*X like home directory
+	return fs::path(home);
+  }
+  else if((drive = getenv("HOMEDRIVE")) != "" &&
+		  (home  = getenv("HOMEPATH")) != "")
+  {
+	// Windows.
+	return fs::path(drive) / fs::path(home);
+  }
+  else if((home = getenv("USERPROFILE")) != "")
+  {
+	// Windows?
+	return fs::path(home);
+  }
+  else
+  {
+	throw SystemError("Could not find location of home directory.");
+  }
+}
+
+// -----------------------------------------------------------------------
+
+boost::filesystem::path System::gameSaveDirectory()
+{
+  Gameexe& gexe = gameexe();
+
+  fs::path baseDir = getHomeDirectory() / ".rlvm" / gexe("REGNAME").to_string();
+  create_directory(baseDir);
+
+  return baseDir;
 }
