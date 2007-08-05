@@ -295,6 +295,7 @@ class EventHandler
 {
 private:
   RLMachine& m_machine;
+
 public:
   EventHandler(RLMachine& machine);
   virtual ~EventHandler();

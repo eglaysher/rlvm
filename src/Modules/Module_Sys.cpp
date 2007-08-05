@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -121,7 +121,6 @@ struct LongOp_wait : public LongOperation, public EventHandler
       {
         done = true;
         machine.setStoreRegister(m_buttonPressed);
-        cerr << "Returning value of " << m_buttonPressed << endl;
       }
       else if(done)
         machine.setStoreRegister(0);
@@ -155,9 +154,11 @@ struct Sys_FlushClick : public RLOp_Void_Void {
 // -----------------------------------------------------------------------
 
 struct Sys_GetCursorPos_gc1 
-  : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T, IntReference_T>
+  : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T, 
+						IntReference_T>
 {
-  void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit,
+  void operator()(RLMachine& machine, 
+				  IntReferenceIterator xit, IntReferenceIterator yit,
                   IntReferenceIterator button1It, IntReferenceIterator button2It) 
   {
     int x, y, button1, button2;

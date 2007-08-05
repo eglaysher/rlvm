@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -100,7 +100,6 @@ struct LongOp_time : public LongOperation, public EventHandler
       {
         done = true;
         machine.setStoreRegister(m_buttonPressed);
-        cerr << "Returning value of " << m_buttonPressed << endl;
       }
       else if(done)
         machine.setStoreRegister(0);

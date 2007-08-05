@@ -185,7 +185,7 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
 
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario file");
-  callStack.push_back(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
+  pushStackFrame(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
 
   // Initialize the big memory block to zero
   memset(intVar, 0, sizeof(intVar));
@@ -357,7 +357,7 @@ void RLMachine::executeNextInstruction()
       {
         bool retVal = (*callStack.back().longOp)(*this);
         if(retVal)
-          callStack.pop_back();
+          popStackFrame();
       }
       else
         callStack.back().ip->runOnMachine(*this);
@@ -567,7 +567,7 @@ void RLMachine::farcall(int scenarioNum, int entrypoint)
 
   libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
-  callStack.push_back(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
+  pushStackFrame(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
 }
 
 // -----------------------------------------------------------------------
@@ -579,7 +579,7 @@ void RLMachine::returnFromFarcall()
     throw rlvm::Exception("Callstack type mismatch in returnFromFarcall()");
   }
 
-  callStack.pop_back();
+  popStackFrame();
 }
 
 // -----------------------------------------------------------------------
@@ -593,7 +593,7 @@ void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
 
 void RLMachine::gosub(BytecodeList::iterator newLocation) 
 {
-  callStack.push_back(StackFrame(callStack.back().scenario, newLocation, 
+  pushStackFrame(StackFrame(callStack.back().scenario, newLocation, 
                             StackFrame::TYPE_GOSUB));
 }
 
@@ -606,16 +606,35 @@ void RLMachine::returnFromGosub()
     throw rlvm::Exception("Callstack type mismatch in returnFromGosub()");
   }
 
-  callStack.pop_back();
+  popStackFrame();
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::pushLongOperation(LongOperation* longOperation)
 {
-  callStack.push_back(StackFrame(callStack.back().scenario, callStack.back().ip,
+  pushStackFrame(StackFrame(callStack.back().scenario, callStack.back().ip,
                             longOperation));
-//  m_longOperationStack.push_back(longOperation);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::pushStackFrame(const StackFrame& frame)
+{
+  if(callStack.size() && callStack.back().frameType == StackFrame::TYPE_LONGOP)
+	callStack.back().longOp->looseFocus();
+
+  callStack.push_back(frame);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::popStackFrame()
+{
+  callStack.pop_back();  
+
+  if(callStack.size() && callStack.back().frameType == StackFrame::TYPE_LONGOP)
+	callStack.back().longOp->gainFocus();
 }
 
 // -----------------------------------------------------------------------

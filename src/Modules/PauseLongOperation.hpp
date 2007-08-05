@@ -63,6 +63,8 @@ public:
 
   // ----------------------------------------- [ LongOperation interface ]
   bool operator()(RLMachine& machine);
+  virtual void looseFocus();
+  virtual void gainFocus();
 };
 
 // -----------------------------------------------------------------------

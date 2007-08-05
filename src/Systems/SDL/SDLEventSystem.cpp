@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -117,7 +117,8 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
   : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false),
-    m_unaccessedItems(false)
+    m_unaccessedItems(false), m_mouseXPos(0), m_mouseYPos(0),
+	m_button1State(0), m_button2State(0)
 {}
 
 // -----------------------------------------------------------------------

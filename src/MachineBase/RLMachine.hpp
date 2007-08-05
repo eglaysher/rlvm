@@ -111,6 +111,18 @@ private:
   void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, 
                           int& module);
 
+  /**
+   * Pushes a stack frame onto the call stack, alerting possible
+   * LongOperations of this change if needed.
+   */
+  void pushStackFrame(const StackFrame& frame);
+
+  /**
+   * Pops a stack frame from the call stack, alerting possible
+   * LongOperations of this change if needed.
+   */
+  void popStackFrame();
+
 public:
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
   virtual ~RLMachine();
