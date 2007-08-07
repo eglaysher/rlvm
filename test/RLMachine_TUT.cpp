@@ -254,6 +254,9 @@ void object::test<7>()
 	  }
 	}
 
+	for(int i = 0; i < 2000; ++i)
+	  saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(count));
+
 	saveMachine.saveGlobalMemoryTo(ss);
   }
 
@@ -274,8 +277,12 @@ void object::test<7>()
 		count++;
 	  }
 	}
-  }
 
+	for(int i = 0; i < 2000; ++i)
+	  ensure_equals("Didn't save string memory correctly!",
+					loadMachine.getStringValue(STRM_LOCATION, i),
+					lexical_cast<string>(count));
+  }
 }
 
 }

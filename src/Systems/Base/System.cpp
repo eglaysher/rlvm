@@ -31,6 +31,7 @@
 #include <boost/bind.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 #include <algorithm>
 #include <string>
@@ -104,7 +105,7 @@ boost::filesystem::path System::gameSaveDirectory()
   Gameexe& gexe = gameexe();
 
   fs::path baseDir = getHomeDirectory() / ".rlvm" / gexe("REGNAME").to_string();
-  create_directory(baseDir);
+  fs::create_directories(baseDir);
 
   return baseDir;
 }

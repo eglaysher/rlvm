@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -336,6 +336,7 @@ int main(int argc, char* argv[])
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
 
+	rlmachine.loadGlobalMemory();
     rlmachine.setHaltOnException(false);
 
     while(!rlmachine.halted()) {
@@ -346,6 +347,8 @@ int main(int argc, char* argv[])
       // Run the rlmachine through another instruction
       rlmachine.executeNextInstruction();
     }
+
+	rlmachine.saveGlobalMemory();
   }
   catch (rlvm::Exception& e) {
     cerr << "Fatal RLVM error: " << e.what() << endl;
