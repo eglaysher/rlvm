@@ -72,7 +72,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 
-#include "libReallive/IntMemRef.h"
+#include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
 
 #include "Systems/Base/SystemError.hpp"

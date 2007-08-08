@@ -30,7 +30,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/Surface.hpp"
-#include "utilities.h"
+#include "Utilities.h"
 
 // -----------------------------------------------------------------------
 

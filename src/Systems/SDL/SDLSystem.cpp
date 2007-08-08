@@ -77,7 +77,6 @@ void SDLSystem::run(RLMachine& machine)
   // My pausing model is wrong. Really wrong. For an example of just
   // how wrong it is, take a look at the performance under CLANNAD's menu. 
 
-  // Try to prevent spinning a bit...
   if(machine.inLongOperation())
   {
     eventSystem->wait(10);

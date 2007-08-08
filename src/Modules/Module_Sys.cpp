@@ -571,6 +571,11 @@ SysModule::SysModule(System& system)
   addOpcode(1120, 0, "SceneNum", new Sys_SceneNum);
 
   addOpcode(1200, 0, "end", new Sys_end);
+  addUnsupportedOpcode(1201, 0, "MenuReturn");
+  addUnsupportedOpcode(1202, 0, "MenuReturn2");
+  addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
+  addUnsupportedOpcode(1204, 0, "ReturnPrevSelect");
+  addUnsupportedOpcode(1205, 0, "ReturnPrevSelect2");
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
 
   addOpcode(1130, 0, "DefaultGrp", 

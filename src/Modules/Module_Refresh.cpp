@@ -40,6 +40,10 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 // -----------------------------------------------------------------------
 
 struct Refresh : public RLOp_Void_Void

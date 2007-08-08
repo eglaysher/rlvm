@@ -52,7 +52,7 @@ private:
   void addPath(GameexeInterpretObject gio);
 
 protected:
-  boost::filesystem::path System::getHomeDirectory();
+  boost::filesystem::path getHomeDirectory();
 
 public:
   virtual ~System() {}
