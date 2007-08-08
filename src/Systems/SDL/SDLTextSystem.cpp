@@ -32,10 +32,17 @@
  * @brief  SDL specialization of the text system
  */
 
+#include "MachineBase/RLMachine.hpp"
+
 #include "Systems/SDL/SDLTextSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
+#include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
+
+#include "algoplus.hpp"
+#include "Utilities.h"
 
 #include <boost/bind.hpp>
 #include "SDL_ttf.h"
@@ -222,4 +229,41 @@ bool SDLTextSystem::handleMouseClick(RLMachine& machine, int x, int y,
   return find_if(m_textWindow.begin(), m_textWindow.end(),    
            bind(&SDLTextWindow::handleMouseClick, _1, 
                 ref(machine), x, y, pressed)) != m_textWindow.end();
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> SDLTextSystem::renderText(
+  RLMachine& machine, const std::string& utf8str, int size, int xspace,
+  int yspace, int colour)
+{
+  // Pick the correct font
+  shared_ptr<TTF_Font> font = machine.system().text().getFontOfSize(size);
+
+  // Pick the correct font colour
+  Gameexe& gexe = machine.system().gameexe();
+  vector<int> colourVec = gexe("COLOR_TABLE", colour);
+  SDL_Color color = {colourVec.at(0), colourVec.at(1), colourVec.at(2)};
+
+  // Naively render. Ignore most of the arguments for now
+  if(utf8str.size())
+  {
+	cerr << "Rendering \"" << utf8str << "\" with size " << size << endl;
+	SDL_Surface* tmp =
+	  TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), color);
+	if(tmp == NULL)
+	{
+	  ostringstream oss;
+	  oss << "Error printing \"" << utf8str << "\" in font size " << size;
+	  throw rlvm::Exception(oss.str());
+	}
+	return shared_ptr<Surface>(new SDLSurface(tmp));
+  }
+  else
+  {
+	// Allocate a 1x1 SDL_Surface
+	return shared_ptr<Surface>(new SDLSurface(buildNewSurface(1, 1)));
+  }
+
+
 }

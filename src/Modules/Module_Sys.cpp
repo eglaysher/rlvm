@@ -599,6 +599,14 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(1312, 0, "nwSingleLocal");
   addUnsupportedOpcode(1313, 0, "nwMultiLocal");
 
+  addUnsupportedOpcode(1409, 0, "SaveExists");
+  addUnsupportedOpcode(1410, 0, "SaveDate");
+  addUnsupportedOpcode(1411, 0, "SaveTime");
+  addUnsupportedOpcode(1412, 0, "SaveDateTime");
+  addUnsupportedOpcode(1413, 0, "SaveInfo");
+  addUnsupportedOpcode(1414, 0, "GetSaveFlag");
+  addUnsupportedOpcode(1421, 0, "LatestSave");
+
   addUnsupportedOpcode(2050, 0, "SetCursorMono");
   addUnsupportedOpcode(2000, 0, "CursorMono");
   addUnsupportedOpcode(2051, 0, "SetSkipAnimations");
@@ -607,6 +615,10 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(2002, 0, "LowPriority");
   addUnsupportedOpcode(2053, 0, "SetConfirmSaveLoad");
   addUnsupportedOpcode(2003, 0, "ConfirmSaveLoad");
+
+  addUnsupportedOpcode(2223, 0, "SetMessageSpeed");
+  addUnsupportedOpcode(2323, 0, "MessageSpeed");
+  addUnsupportedOpcode(2600, 0, "DefaultMessageSpeed");
 
   addOpcode(2224, 0, "SetMessageNoWait",
             setToIncomingInt(text, &TextSystem::setMessageNoWait));

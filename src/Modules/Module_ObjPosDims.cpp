@@ -78,8 +78,8 @@ struct Obj_objGetDims
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, objNum);
 //    cerr << "Graphics Obj data: " << objNum << ", " << obj.pixelWidth()
 //         << ", " << obj.pixelHeight() << endl;
-    *widthIt = obj.pixelWidth();
-    *heightIt = obj.pixelHeight();
+    *widthIt = obj.pixelWidth(machine);
+    *heightIt = obj.pixelHeight(machine);
   }
 };
 

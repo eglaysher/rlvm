@@ -2,8 +2,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2000- Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
 // Copyright (C) 2007 Elliot Glaysher
+// Copyright (C) 2000 Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 
 /**
  * @file   AnmGraphicsObjectData.cpp
- * @author Elliot Glaysher
  * @date   Sun Jun  3 13:04:19 2007
  * 
  * @brief  In memory representation of an ANM file.
@@ -288,7 +287,8 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 
 /// I am not entirely sure these methods even make sense given the
 /// context...
-int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp) 
+int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
+									  const GraphicsObject& rp) 
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int width = rect.x2 - rect.x1;
@@ -297,7 +297,8 @@ int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp)
+int AnmGraphicsObjectData::pixelHeight(RLMachine& machine,
+									   const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int height = rect.y2 - rect.y1;

@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ class RLMachine;
 class TextWindow;
 class TextPage;
 class TextKeyCursor;
+class Surface;
 
 class TextSystem
 {
@@ -274,8 +275,18 @@ public:
                                 bool pressed) = 0;
   /// @}
 
-  /// Danger Will Robinson! This should be pushed down to SDLTextSystem!
+  /**
+   * @name Font Management and Text Rendering
+   * 
+   * @{
+   */
+   virtual boost::shared_ptr<Surface> renderText(
+	RLMachine& machine, const std::string& utf8str, int size, int xspace,
+	int yspace, int colour) = 0;
+
+  /// Danger Will Robinson! This should be pushed down to SDLTextSystem! 
   boost::shared_ptr<TTF_Font> getFontOfSize(int size);
+  /// @}
 };
 
 #endif

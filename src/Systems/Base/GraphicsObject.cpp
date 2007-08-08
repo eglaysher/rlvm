@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -59,6 +59,11 @@ GraphicsObject::GraphicsObject()
     m_tintR(255), m_tintG(255), m_tintB(255), 
     m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255),
     m_compositeMode(0),
+
+	m_text_textSize(14), m_text_xspace(0), m_text_yspace(0),
+	m_text_vertical(0),
+	m_text_colour(0),
+	m_text_shadowColour(0),
     m_wipeCopy(0)
 {
   // Regretfully, we can't do this in the initializer list.
@@ -84,7 +89,16 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
     m_colourB(rhs.m_colourB), m_colourLevel(rhs.m_colourLevel),
     m_compositeMode(rhs.m_compositeMode),
     m_scrollRateX(rhs.m_scrollRateX),
-    m_scrollRateY(rhs.m_scrollRateY), m_wipeCopy(0)
+    m_scrollRateY(rhs.m_scrollRateY), 
+
+	m_text_textSize(rhs.m_text_textSize), 
+	m_text_xspace(rhs.m_text_xspace), 
+	m_text_yspace(rhs.m_text_yspace),
+	m_text_vertical(rhs.m_text_vertical),
+	m_text_colour(rhs.m_text_colour),
+	m_text_shadowColour(rhs.m_text_shadowColour),
+
+	m_wipeCopy(0)
 {   
   if(rhs.m_objectData)
     m_objectData.reset(rhs.m_objectData->clone());
@@ -142,6 +156,13 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
     m_scrollRateX = rhs.m_scrollRateX;
     m_scrollRateY = rhs.m_scrollRateY;
 
+	m_text_textSize = rhs.m_text_textSize; 
+	m_text_xspace = rhs.m_text_xspace; 
+	m_text_yspace = rhs.m_text_yspace;
+	m_text_vertical = rhs.m_text_vertical;
+	m_text_colour = rhs.m_text_colour;
+	m_text_shadowColour = rhs.m_text_shadowColour;
+
     m_wipeCopy = rhs.m_wipeCopy;
       
     if(rhs.m_objectData)
@@ -179,12 +200,12 @@ int GraphicsObject::yAdjustmentSum() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelWidth() const
+int GraphicsObject::pixelWidth(RLMachine& machine) const
 {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
   if(hasObjectData())
-    return m_objectData->pixelWidth(*this);
+    return m_objectData->pixelWidth(machine, *this);
   else
     return 0;
 }
@@ -199,10 +220,10 @@ void GraphicsObject::setAlpha(const int alpha)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelHeight() const
+int GraphicsObject::pixelHeight(RLMachine& machine) const
 {
   if(hasObjectData())
-    return m_objectData->pixelHeight(*this);
+    return m_objectData->pixelHeight(machine, *this);
   else
     return 0;
 }
@@ -217,6 +238,26 @@ GraphicsObjectData& GraphicsObject::objectData() const
   {
     throw rlvm::Exception("null object data");
   }
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsObjectData* GraphicsObject::objectDataPtr() const 
+{
+  return m_objectData.get();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setTextOps(
+  int size, int xspace, int yspace, int vertical, int colour, int shadow)
+{
+  m_text_textSize = size;
+  m_text_xspace = xspace;
+  m_text_yspace = yspace;
+  m_text_vertical = vertical;
+  m_text_colour = colour;
+  m_text_shadowColour = shadow;
 }
 
 // -----------------------------------------------------------------------

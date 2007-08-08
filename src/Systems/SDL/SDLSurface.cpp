@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ using boost::ptr_vector;
 
 // -----------------------------------------------------------------------
 
-static SDL_Surface* buildNewSurface(int width, int height)
+SDL_Surface* buildNewSurface(int width, int height)
 {
   // Create an empty surface
   Uint32 rmask, gmask, bmask, amask;

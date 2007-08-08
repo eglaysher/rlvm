@@ -4,6 +4,8 @@
 class GraphicsObject;
 class GraphicsObjectOverride;
 
+class GraphicsObject;
+
 /** 
  * Abstract concept of a surface. Used 
  * 

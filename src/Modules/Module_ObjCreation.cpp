@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsTextObject.hpp"
+  
+#include "Modules/cp932toUnicode.hpp"
 
 #include <cmath>
 
@@ -51,8 +54,8 @@ namespace {
 void setObjectDataToGan(
   RLMachine& machine,
   GraphicsObject& obj,
-  std::string& imgFilename, 
-  const std::string& ganFilename)
+  string& imgFilename, 
+  const string& ganFilename)
 {
   GraphicsSystem& gs = machine.system().graphics();
 
@@ -69,49 +72,79 @@ void setObjectDataToGan(
     new GanGraphicsObjectData(machine, ganFilePath, img));
 }
 
+// -----------------------------------------------------------------------
+
+typedef boost::function<void(RLMachine&, GraphicsObject& obj, const string&)> DataFunction;
+
+// -----------------------------------------------------------------------
+
+void objOfFileLoader(RLMachine& machine, GraphicsObject& obj, const string& val)
+{
+  GraphicsSystem& gs = machine.system().graphics();
+  obj.setObjectData(gs.buildObjOfFile(machine, val));
 }
 
 // -----------------------------------------------------------------------
 
-struct Obj_objOfFile_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj, const string& val)
+{
+  // The text at this point is still cp932. Convert it.
+  string utf8str = cp932toUTF8(val, machine.getTextEncoding());
+  obj.setTextText(utf8str);
+  obj.setObjectData(new GraphicsTextObject(machine));
+}
+
+}
+
+// -----------------------------------------------------------------------
+
+struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   int m_layer;
-  Obj_objOfFile_0(int layer) : m_layer(layer) {}
+  DataFunction m_dataFun;
+  Obj_objGeneric_0(int layer, const DataFunction& fun) 
+	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(machine, filename));
+    m_dataFun(machine, obj, filename);
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Obj_objOfFile_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T, 
-                                          IntConstant_T> {
+struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T, 
+											 IntConstant_T> 
+{
   int m_layer;
-  Obj_objOfFile_1(int layer) : m_layer(layer) {}
-  
+  DataFunction m_dataFun;
+  Obj_objGeneric_1(int layer, const DataFunction& fun) 
+	: m_layer(layer), m_dataFun(fun) {}
+
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(machine, filename));
+    m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Obj_objOfFile_2 : public RLOp_Void_5<IntConstant_T, StrConstant_T, 
-                                            IntConstant_T, 
-                                            IntConstant_T, IntConstant_T> {
+struct Obj_objGeneric_2 
+  : public RLOp_Void_5<IntConstant_T, StrConstant_T, IntConstant_T, 
+					   IntConstant_T, IntConstant_T> 
+{
   int m_layer;
-  Obj_objOfFile_2(int layer) : m_layer(layer) {}
+  DataFunction m_dataFun;
+  Obj_objGeneric_2(int layer, const DataFunction& fun) 
+	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(machine, filename));
+    m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
     obj.setX(x);
     obj.setY(y);
@@ -120,17 +153,20 @@ struct Obj_objOfFile_2 : public RLOp_Void_5<IntConstant_T, StrConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_objOfFile_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T, 
+struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T, 
                                           IntConstant_T, IntConstant_T,
-                                          IntConstant_T, IntConstant_T> {
+                                          IntConstant_T, IntConstant_T> 
+{
   int m_layer;
-  Obj_objOfFile_3(int layer) : m_layer(layer) {}
+  DataFunction m_dataFun;
+  Obj_objGeneric_3(int layer, const DataFunction& fun) 
+    : m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setObjectData(gs.buildObjOfFile(machine, filename));
+    m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
     obj.setX(x);
     obj.setY(y);
@@ -140,19 +176,21 @@ struct Obj_objOfFile_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_objOfFile_4 : public RLOp_Void_8<
+struct Obj_objGeneric_4 : public RLOp_Void_8<
   IntConstant_T, StrConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   int m_layer;
-  Obj_objOfFile_4(int layer) : m_layer(layer) {}
+  DataFunction m_dataFun;
+  Obj_objGeneric_4(int layer, const DataFunction& fun) 
+    : m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern, int scrollX, int scrollY) {
     GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
 
-    obj.setObjectData(gs.buildObjOfFile(machine, filename));
+    m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
     obj.setX(x);
     obj.setY(y);
@@ -183,11 +221,11 @@ struct Obj_objOfFileGan_0
 
 void addObjectCreationFunctions(RLModule& m, int layer)
 {
-  m.addOpcode(1000, 0, new Obj_objOfFile_0(layer));
-  m.addOpcode(1000, 1, new Obj_objOfFile_1(layer));
-  m.addOpcode(1000, 2, new Obj_objOfFile_2(layer));
-  m.addOpcode(1000, 3, new Obj_objOfFile_3(layer));
-  m.addOpcode(1000, 4, new Obj_objOfFile_4(layer));
+  m.addOpcode(1000, 0, new Obj_objGeneric_0(layer, objOfFileLoader));
+  m.addOpcode(1000, 1, new Obj_objGeneric_1(layer, objOfFileLoader));
+  m.addOpcode(1000, 2, new Obj_objGeneric_2(layer, objOfFileLoader));
+  m.addOpcode(1000, 3, new Obj_objGeneric_3(layer, objOfFileLoader));
+  m.addOpcode(1000, 4, new Obj_objGeneric_4(layer, objOfFileLoader));
 
   m.addOpcode(1003, 0, "objOfFileGan", new Obj_objOfFileGan_0(layer));
   m.addUnsupportedOpcode(1003, 1, "objOfFileGan");
@@ -195,9 +233,9 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addUnsupportedOpcode(1003, 3, "objOfFileGan");
   m.addUnsupportedOpcode(1003, 4, "objOfFileGan");
 
-  m.addUnsupportedOpcode(1200, 0, "objOfText");
-  m.addUnsupportedOpcode(1200, 1, "objOfText");
-  m.addUnsupportedOpcode(1200, 2, "objOfText");
+  m.addOpcode(1200, 0, new Obj_objGeneric_0(layer, objOfTextBuilder));
+  m.addOpcode(1200, 1, new Obj_objGeneric_1(layer, objOfTextBuilder));
+  m.addOpcode(1200, 2, new Obj_objGeneric_2(layer, objOfTextBuilder));
   m.addUnsupportedOpcode(1200, 3, "objOfText");
 
   m.addUnsupportedOpcode(1300, 0, "objDriftOfFile");

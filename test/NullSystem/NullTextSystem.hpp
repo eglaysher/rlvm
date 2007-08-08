@@ -54,6 +54,10 @@ public:
   void setMousePosition(RLMachine& machine, int x, int y) { }
   bool handleMouseClick(RLMachine& machine, int x, int y,
                         bool pressed) { }
+
+  boost::shared_ptr<Surface> renderText(
+	RLMachine& machine, const std::string& utf8str, int size, int xspace,
+	int yspace, int colour) { return boost::shared_ptr<Surface>(); }
 };
 
 #endif

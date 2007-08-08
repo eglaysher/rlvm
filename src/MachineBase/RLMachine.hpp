@@ -53,6 +53,7 @@ class LongOperation;
 class System;
   const int NUMBER_OF_INT_LOCATIONS = 9;
 
+extern const std::vector<std::pair<int, char> > LOCAL_INTEGER_BANKS;
 extern const std::vector<std::pair<int, char> > GLOBAL_INTEGER_BANKS;
 
 /**

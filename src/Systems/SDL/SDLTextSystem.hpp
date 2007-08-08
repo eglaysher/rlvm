@@ -63,6 +63,11 @@ public:
   virtual void setMousePosition(RLMachine& machine, int x, int y);
   virtual bool handleMouseClick(RLMachine& machine, int x, int y, 
                                 bool pressed);
+
+  virtual boost::shared_ptr<Surface> renderText(
+    RLMachine& machine, const std::string& utf8str, int size, int xspace,
+    int yspace, int colour);
+
 };
 
 #endif

@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -668,14 +668,14 @@ public:
     surface->renderToScreenAsObject(rp);
   }
 
-  virtual int pixelWidth(const GraphicsObject& rp)
+  virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp)
   {
     const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
     int width = rect.x2 - rect.x1;
     return int((rp.width() / 100.0f) * width);
   }
 
-  virtual int pixelHeight(const GraphicsObject& rp)
+  virtual int pixelHeight(RLMachine& machine, const GraphicsObject& rp)
   {
     const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
     int height = rect.y2 - rect.y1;

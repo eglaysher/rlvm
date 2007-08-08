@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -93,8 +93,8 @@ public:
   int height() const { return m_height; }
   void setHeight(const int in) { m_height = in; }
 
-  int pixelWidth() const;
-  int pixelHeight() const;
+  int pixelWidth(RLMachine& machine) const;
+  int pixelHeight(RLMachine& machine) const;
 
   int rotation() const { return m_rotation; }
   void setRotation(const int in) { m_rotation = in; }
@@ -162,6 +162,7 @@ public:
   bool hasObjectData() const { return m_objectData; }
 
   GraphicsObjectData& objectData() const;
+  GraphicsObjectData* objectDataPtr() const;
   void setObjectData(GraphicsObjectData* obj);
 
   /// Render!
@@ -186,7 +187,26 @@ public:
    * to force a redraw, or something.
    */
   void execute(RLMachine& machine);
-  
+
+  /**
+   * @name Text Object accessors
+   * 
+   * @{
+   */
+  void setTextText(const std::string& utf8str) { m_text_value = utf8str; }
+  const std::string& textText() const { return m_text_value; }
+ 
+  void setTextOps(int size, int xspace, int yspace, int vertical, int colour, 
+				  int shadow);
+  int textSize() const { return m_text_textSize; }
+  int textXSpace() const { return m_text_xspace; }
+  int textYSpace() const { return m_text_yspace; }
+  int textVertical() const { return m_text_vertical; }
+  int textColour() const { return m_text_colour; }
+  int textShadowColour() const { return m_text_shadowColour; }
+
+  // @}  
+
 private:
 
   /**
@@ -277,6 +297,23 @@ private:
   /// @}
 
 
+
+  // -----------------------------------------------------------------------
+
+  /**
+   * @name Text Object properties
+   * 
+   * @{
+   */
+  std::string m_text_value;
+
+  int m_text_textSize, m_text_xspace, m_text_yspace;
+
+  // Figure this out later.
+  int m_text_vertical;
+  int m_text_colour;
+  int m_text_shadowColour;
+  /// @}
 
   /// The wipeCopy bit
   int m_wipeCopy;

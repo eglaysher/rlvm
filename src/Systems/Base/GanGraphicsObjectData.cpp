@@ -254,6 +254,7 @@ void GanGraphicsObjectData::render(
 // -----------------------------------------------------------------------
   
 int GanGraphicsObjectData::pixelWidth(
+  RLMachine& machine,
   const GraphicsObject& renderingProperties)
 {
   throw std::runtime_error("Unimplemented: GanGraphicsObjectData::pixelWidth");
@@ -262,6 +263,7 @@ int GanGraphicsObjectData::pixelWidth(
 // -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelHeight(
+  RLMachine& machine, 
   const GraphicsObject& renderingProperties)
 {
   throw std::runtime_error("Unimplemented: GanGraphicsObjectData::pixelHeight");

@@ -86,8 +86,10 @@ public:
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties);
   
-  virtual int pixelWidth(const GraphicsObject& renderingProperties);
-  virtual int pixelHeight(const GraphicsObject& renderingProperties);
+  virtual int pixelWidth(RLMachine& machine, 
+						 const GraphicsObject& renderingProperties);
+  virtual int pixelHeight(RLMachine& machine, 
+						  const GraphicsObject& renderingProperties);
 
   virtual GraphicsObjectData* clone() const;  
   virtual void execute(RLMachine& machine);

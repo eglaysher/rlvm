@@ -106,13 +106,16 @@ using namespace libReallive;
 using boost::bind;
 using boost::assign::list_of;
 
-const vector<pair<int, char> > GLOBAL_INTEGER_BANKS =
-  list_of(make_pair(INTB_LOCATION, 'B'))
+const vector<pair<int, char> > LOCAL_INTEGER_BANKS =
+  list_of(make_pair(INTB_LOCATION, 'A'))
+  (make_pair(INTB_LOCATION, 'B'))
   (make_pair(INTC_LOCATION, 'C'))
   (make_pair(INTD_LOCATION, 'D'))
   (make_pair(INTE_LOCATION, 'E'))
-  (make_pair(INTF_LOCATION, 'F'))
-  (make_pair(INTG_LOCATION, 'G'))
+  (make_pair(INTF_LOCATION, 'F'));
+
+const vector<pair<int, char> > GLOBAL_INTEGER_BANKS =
+  list_of(make_pair(INTG_LOCATION, 'G'))
   (make_pair(INTZ_LOCATION, 'Z'));
 
 

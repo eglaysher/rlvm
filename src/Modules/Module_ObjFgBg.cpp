@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
  * Modules 81 "ObjFg", 82 "ObjBg", 90 "ObjRange", and 91 "ObjBgRange".
  */
 
+#include "Modules/cp932toUnicode.hpp"
 #include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
 #include "MachineBase/RLOperation.hpp"
@@ -41,6 +42,8 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsTextObject.hpp"
 
 #include <cmath>
 #include <iostream>
@@ -210,6 +213,40 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
+struct Obj_objSetText 
+  : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T>
+{
+  int m_layer;
+  Obj_objSetText(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, string val)
+  {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+	std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
+	obj.setTextText(utf8str);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Obj_objTextOpts
+  : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
+                       IntConstant_T, IntConstant_T, IntConstant_T, 
+                       IntConstant_T>
+{
+  int m_layer;
+  Obj_objTextOpts(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, int size, int xspace, 
+                  int yspace, int vert, int colour, int shadow)
+  {
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    obj.setTextOps(size, xspace, yspace, vert, colour, shadow);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 /**
  * Special adapter to make any of obj* and objBg* operation structs
  * into an objRange* or objRangeBg* struct.
@@ -297,8 +334,10 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1019, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourB));
   m.addOpcode(1020, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourLevel));
   m.addOpcode(1021, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setCompositeMode));
-  m.addUnsupportedOpcode(1025, 0, "objTextOpts");
 
+  m.addOpcode(1024, 0, new Obj_objSetText(layer));
+  m.addOpcode(1024, 1, new Obj_objSetText(layer));
+  m.addOpcode(1025, 0, new Obj_objTextOpts(layer));
 
 /*  m.addOpcode(1028, 0, new  */
   m.addOpcode(1030, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateX));
