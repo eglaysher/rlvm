@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "libReallive/defs.h"
 
 #include "Systems/Base/TextWindow.hpp"
+#include "Systems/Base/TextWindowButton.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
@@ -92,6 +93,10 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
   setKeycurMod(window("KEYCUR_MOD"));
   setActionOnPause(window("R_COMMAND_MOD"));
 }
+
+// -----------------------------------------------------------------------
+
+TextWindow::~TextWindow() {}
 
 // -----------------------------------------------------------------------
 

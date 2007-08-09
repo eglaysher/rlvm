@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@
 
 #include "Modules/Module_Msg.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 //#include "GeneralOperations.hpp"

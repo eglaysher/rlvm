@@ -25,9 +25,9 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
+class GraphicsObject;
 class Surface;
 
 /**

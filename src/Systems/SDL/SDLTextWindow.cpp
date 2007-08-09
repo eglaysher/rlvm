@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindowButton.hpp"
 #include "Systems/Base/SelectionElement.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
 #include "Systems/SDL/SDLSurface.hpp"

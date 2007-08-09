@@ -41,6 +41,8 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 
+#include "libReallive/gameexe.h"
+
 #include "algoplus.hpp"
 #include "Utilities.h"
 

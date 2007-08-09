@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 #define __GeneralOperations_hpp__
 
 #include "RLOperation.hpp"
+#include "RLOperation/RLOp_Store.hpp"
+
 #include <boost/scoped_ptr.hpp>
 
 #include <string>

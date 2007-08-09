@@ -38,9 +38,14 @@
  */
 
 #include "Modules/Module_Jmp.hpp"
+
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Special_T.hpp"
 
 #include "libReallive/intmemref.h"
+#include "libReallive/bytecode.h"
 
 #include <cmath>
 #include <iostream>

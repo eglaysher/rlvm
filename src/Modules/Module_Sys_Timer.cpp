@@ -27,6 +27,9 @@
 #include "Module_Sys_Frame.hpp"
 
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "MachineBase/RLOperation/RLOp_Store.hpp"
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/LongOperation.hpp"

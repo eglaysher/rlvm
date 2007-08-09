@@ -36,6 +36,8 @@
 #include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/EventSystem.hpp"
 
+#include "libReallive/bytecode.h"
+
 #include <vector>
 #include <iostream>
 

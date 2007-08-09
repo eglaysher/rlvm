@@ -26,6 +26,7 @@
 
 #include "Modules/Module_Gan.hpp"
 #include "Modules/Module_Obj.hpp"
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/LongOperation.hpp"

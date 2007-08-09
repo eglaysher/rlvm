@@ -6,7 +6,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Transition tables are probably Copyright (C) 2001-2005 SADAHIRO
+// Transition tables are probably Copyright (C) 2001-2005, 2007 SADAHIRO
 // Tomoyuki.
 //  
 // This program is free software; you can redistribute it and/or modify
@@ -5833,6 +5833,14 @@ std::string unicodeToUTF8(const std::wstring& widestring)
                  back_inserter(out));
 
   return out;
+}
+
+// -----------------------------------------------------------------------
+
+std::string cp932toUTF8(const std::string& line, int transformation) 
+{
+  std::wstring ws = cp932toUnicode(line, transformation);
+  return unicodeToUTF8(ws);
 }
 
 // -----------------------------------------------------------------------

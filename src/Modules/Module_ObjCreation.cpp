@@ -26,6 +26,7 @@
 
 // Insert headers here
 
+#include "MachineBase/RLMachine.hpp"
 #include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjCreation.hpp"
 #include "MachineBase/RLOperation.hpp"

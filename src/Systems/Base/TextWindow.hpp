@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,13 +25,13 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
-
-#include "Systems/Base/TextWindowButton.hpp"
+#include <boost/function.hpp>
 
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
 class GraphicsSystem;
+class TextWindowButton;
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
@@ -187,8 +187,7 @@ protected:
 
 public:
   TextWindow(RLMachine& machine, int windowNum);
-
-  virtual ~TextWindow() {}
+  virtual ~TextWindow();
 
   virtual void execute(RLMachine& machine);
 

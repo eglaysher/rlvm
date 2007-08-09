@@ -37,7 +37,11 @@
 #include "Modules/cp932toUnicode.hpp"
 #include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
+
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -53,6 +57,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
+
+#include "libReallive/bytecode.h"
 
 using namespace std;
 using namespace boost;
