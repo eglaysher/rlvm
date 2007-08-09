@@ -40,6 +40,10 @@
 
 #include <vector>
 
+namespace Json {
+class Value;
+}
+
 namespace  libReallive {
 class Archive;
 class FunctionElement;
@@ -53,8 +57,10 @@ class LongOperation;
 class System;
   const int NUMBER_OF_INT_LOCATIONS = 9;
 
-extern const std::vector<std::pair<int, char> > LOCAL_INTEGER_BANKS;
-extern const std::vector<std::pair<int, char> > GLOBAL_INTEGER_BANKS;
+
+typedef std::vector<std::pair<int, char> > IntegerBank_t;
+extern const IntegerBank_t LOCAL_INTEGER_BANKS;
+extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
 
 /**
  * The RealLive virtual machine implementation.
@@ -175,6 +181,27 @@ public:
    */
   void loadGlobalMemoryFrom(std::istream& oss);
 
+  /**
+   * Writes out a
+   * 
+   * Then, it saves the state of the global memory.
+   */
+  void saveGame(int slot);
+
+  /**
+   * Writes out the saved game to the stream.
+   */
+  void saveGameTo(std::ostream& oss);
+
+
+
+
+  void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
+  void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
+
+  void saveStringBank(const std::string* strPtr, char bankName, 
+					  Json::Value& root);
+  void loadStringBank(std::string* strPtr, char bankName, Json::Value& root);
   /// @}
 
 

@@ -106,7 +106,7 @@ using namespace libReallive;
 using boost::bind;
 using boost::assign::list_of;
 
-const vector<pair<int, char> > LOCAL_INTEGER_BANKS =
+const IntegerBank_t LOCAL_INTEGER_BANKS =
   list_of(make_pair(INTB_LOCATION, 'A'))
   (make_pair(INTB_LOCATION, 'B'))
   (make_pair(INTC_LOCATION, 'C'))
@@ -114,7 +114,7 @@ const vector<pair<int, char> > LOCAL_INTEGER_BANKS =
   (make_pair(INTE_LOCATION, 'E'))
   (make_pair(INTF_LOCATION, 'F'));
 
-const vector<pair<int, char> > GLOBAL_INTEGER_BANKS =
+const IntegerBank_t GLOBAL_INTEGER_BANKS =
   list_of(make_pair(INTG_LOCATION, 'G'))
   (make_pair(INTZ_LOCATION, 'Z'));
 
@@ -256,17 +256,10 @@ Json::Value buildFromInt(const int val)
 }
 // -----------------------------------------------------------------------
 
-void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
+void RLMachine::saveIntegerBanksTo(const IntegerBank_t& banks, 
+								   Json::Value& root)
 {
-  Json::Value root(Json::objectValue);
-
-  Json::Value strMarray(Json::arrayValue);
-  transform(strM, strM + 2000, back_inserter(strMarray),
-			buildFromString);
-  root["strM"] = strMarray;
-
-  for(vector<pair<int, char> >::const_iterator it = 
-		GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+  for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
 	  ++it)
   {
 	Json::Value intArray;
@@ -278,6 +271,76 @@ void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
 	oss << "int" << it->second;
 	root[oss.str()] = intArray;
   }
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::saveStringBank(const std::string* strPtr,
+							   char bankName, 
+							   Json::Value& root)
+{
+  ostringstream oss;
+  oss << "str" << bankName;
+
+  Json::Value strBank(Json::arrayValue);
+  transform(strPtr, strPtr + 2000, back_inserter(strBank),
+			buildFromString);
+  root[oss.str()] = strBank;
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::loadStringBank(std::string* strPtr,
+							   char bankName, 
+							   Json::Value& root)
+{
+  ostringstream oss;
+  oss << "str" << bankName;
+
+  if(!root.isMember(oss.str()))
+  {
+	ostringstream err;
+	err << "No " << oss.str() << " memory bank in global file!";
+	throw rlvm::Exception(err.str());
+  }
+
+  const Json::Value& strBank = root[oss.str()];
+  if(strBank.size() != 2000)
+  {
+	ostringstream err;
+	err << oss.str() << " memory bank.size() != 2000";
+	throw rlvm::Exception(err.str());
+  }
+
+  transform(strBank.begin(), strBank.end(),
+			strPtr, bind(&Json::Value::asString, _1));
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks, 
+									 Json::Value& root)
+{
+  for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
+	  ++it)
+  {
+	ostringstream oss;
+	oss << "int" << it->second;
+	const Json::Value& intMem = root[oss.str()];
+
+	transform(intMem.begin(), intMem.end(), 
+			  intVar[it->first], 
+			  bind(&Json::Value::asInt, _1));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
+{
+  Json::Value root(Json::objectValue);
+  saveStringBank(strM, 'M', root);
+  saveIntegerBanksTo(GLOBAL_INTEGER_BANKS, root);
 
   Json::StyledWriter writer;
   ofs << writer.write( root );
@@ -323,26 +386,38 @@ void RLMachine::loadGlobalMemoryFrom(std::istream& iss)
 	throw rlvm::Exception(oss.str());
   }
 
-  if(!root.isMember("strM"))
-	throw rlvm::Exception("No strM memory bank in global file!");
-  const Json::Value& strMarray = root["strM"];
-  if(strMarray.size() != 2000)
-	throw rlvm::Exception("strM memory bank.size() != 2000");
-  transform(strMarray.begin(), strMarray.end(),
-			strM, bind(&Json::Value::asString, _1));
+  loadStringBank(strM, 'M', root);
+  loadIntegerBanksFrom(GLOBAL_INTEGER_BANKS, root);
+}
 
-  for(vector<pair<int, char> >::const_iterator it = 
-		GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
-	  ++it)
+// -----------------------------------------------------------------------
+
+void RLMachine::saveGame(int slot)
+{
+  ostringstream oss;
+  oss << "save" << setw(3) << setfill('0') << slot << ".jsn";
+  fs::path home = m_system.gameSaveDirectory() / oss.str();
+  fs::ofstream file(home);
+  if(!file)
   {
 	ostringstream oss;
-	oss << "int" << it->second;
-	const Json::Value& intMem = root[oss.str()];
-
-	transform(intMem.begin(), intMem.end(), 
-			  intVar[it->first], 
-			  bind(&Json::Value::asInt, _1));
+	oss << "Could not open global memory file.";
+	throw rlvm::Exception(oss.str());
   }
+
+  saveGameTo(file);  
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::saveGameTo(std::ostream& ofs)
+{
+  Json::Value root(Json::objectValue);
+
+  saveIntegerBanksTo(LOCAL_INTEGER_BANKS, root);
+
+  Json::StyledWriter writer;
+  ofs << writer.write( root );
 }
 
 // -----------------------------------------------------------------------
