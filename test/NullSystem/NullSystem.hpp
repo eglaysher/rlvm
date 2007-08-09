@@ -46,10 +46,12 @@ private:
 
 public:
   NullSystem(const std::string& pathToGameexe)
-    : m_gameexe(pathToGameexe), nullEventSystem(m_gameexe), 
+    : m_gameexe(pathToGameexe), nullGraphicsSystem(m_gameexe),
+	  nullEventSystem(m_gameexe), 
       nullTextSystem(m_gameexe) {}
 
-  NullSystem() : m_gameexe(), nullEventSystem(m_gameexe), 
+  NullSystem() : m_gameexe(), nullGraphicsSystem(m_gameexe),
+				 nullEventSystem(m_gameexe), 
                  nullTextSystem(m_gameexe) {}
 
   virtual void run(RLMachine& machine) { /* do nothing */ }

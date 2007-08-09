@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -85,13 +85,6 @@ private:
   /// utf8 encoded title string
   std::string m_captionTitle;
 
-  /// Whether we should try to append m_subtitle in the window
-  /// titlebar
-  bool m_displaySubtitle;
-
-  /// utf8 encoded subtitle string
-  std::string m_subtitle;
-
   /// Window icon
   SDL_Surface* m_icon;
 
@@ -162,7 +155,6 @@ public:
 
   virtual void endFrame();
 
-  virtual void setWindowSubtitle(const std::string& utf8encoded);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);

@@ -23,12 +23,10 @@
 #ifndef __AnmGraphicsObjectData_hpp__
 #define __AnmGraphicsObjectData_hpp__
 
-//#include "GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
 #include <vector>
 #include <string>
-#include <iosfwd>
 #include <boost/scoped_array.hpp>
 #include <boost/shared_ptr.hpp>
 

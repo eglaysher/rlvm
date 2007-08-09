@@ -18,9 +18,12 @@ class NullSurface : public Surface
   virtual Surface* clone() const { return 0; }
 };
 
+// -----------------------------------------------------------------------
+
 class NullGraphicsSystem : public GraphicsSystem
 {
 public:
+  NullGraphicsSystem(Gameexe& gexe);
 
   virtual void refresh(RLMachine&) { }
 
@@ -38,13 +41,12 @@ public:
   virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename)
   { return NULL; }
 
-  virtual GraphicsObject& getObject(int layer, int objNumber) 
-  { static GraphicsObject x; return x;}
+  virtual GraphicsObject& getObject(int layer, int objNumber);
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const std::string& filename) { return boost::shared_ptr<Surface>(); }
-  virtual boost::shared_ptr<Surface> getDC(int dc)
-  { return boost::shared_ptr<Surface>(); }
+  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const std::string& filename);
+  virtual boost::shared_ptr<Surface> getDC(int dc);
+
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,
                                int destX, int destY, int destWidth, int destHeight,

@@ -193,13 +193,6 @@ void SDLGraphicsSystem::endFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setWindowSubtitle(const std::string& utf8encoded)
-{
-  m_subtitle = utf8encoded;
-}
-
-// -----------------------------------------------------------------------
-
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
   return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_width, m_height));
@@ -214,7 +207,8 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
-  : m_screenDirty(false), m_screenNeedsRefresh(false),
+  : GraphicsSystem(gameexe), 
+	m_screenDirty(false), m_screenNeedsRefresh(false),
     foregroundObjects(256), backgroundObjects(256),
     m_displayDataInTitlebar(false), m_lastSeenNumber(0), 
     m_lastLineNumber(0)
@@ -240,7 +234,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   std::string cp932caption = gameexe("CAPTION").to_string();
   int name_enc = gameexe("NAME_ENC").to_int(0);
   m_captionTitle = cp932toUTF8(cp932caption, name_enc);
-  m_displaySubtitle = gameexe("SUBTITLE").to_int(0);
 
   /* the flags to pass to SDL_SetVideoMode */
   int videoFlags;
@@ -373,9 +366,9 @@ void SDLGraphicsSystem::setWindowTitle()
   ostringstream oss;
   oss << m_captionTitle;
 
-  if(m_displaySubtitle && m_subtitle != "")
+  if(displaySubtitle() && windowSubtitle() != "")
   {
-    oss << ": " << m_subtitle;
+    oss << ": " << windowSubtitle();
   }
   
   if(m_displayDataInTitlebar)

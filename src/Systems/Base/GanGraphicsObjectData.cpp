@@ -41,6 +41,7 @@
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
 
 #include "Utilities.h"
 #include "libReallive/defs.h"

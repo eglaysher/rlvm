@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,10 +34,12 @@
 #include <string>
 
 #include <boost/shared_ptr.hpp>
-#include "Systems/Base/GraphicsObject.hpp"
 
 class Surface;
 class RLMachine;
+class GraphicsObject;
+class GraphicsObjectData;
+class Gameexe;
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -89,8 +91,15 @@ private:
   /// Current screen update mode
   DCScreenUpdateMode m_screenUpdateMode;
 
+  /// Whether we should try to append m_subtitle in the window
+  /// titlebar
+  bool m_displaySubtitle;
+
+  /// utf8 encoded subtitle string
+  std::string m_subtitle;
+
 public:
-  GraphicsSystem();
+  GraphicsSystem(Gameexe& gameexe);
   virtual ~GraphicsSystem();
 
   void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }
@@ -101,22 +110,33 @@ public:
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
   void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
 
-  virtual void setWindowSubtitle(const std::string& utf8encoded) {}
+  /**
+   * @name Title management
+   * 
+   * We put this here since there's no good place to put it in
+   * general. (And it was here before I figured out what I was doing)
+   *
+   * @{
+   */
+  void setWindowSubtitle(const std::string& utf8encoded);
+  const std::string& windowSubtitle() const;
+  bool displaySubtitle() const { return m_displaySubtitle; }
+  /// @}
 
   // Marks the screen as dirty; something is done about this if we are
   // in automatic mode.
-  virtual void markScreenAsDirty() { }
+  virtual void markScreenAsDirty();
 
   // Marks the screen for refresh; we refresh the screen the next time
   // the graphics system is executed.
-  virtual void markScreenForRefresh() { }
+  virtual void markScreenForRefresh();
 
-  virtual void beginFrame() { }
+  virtual void beginFrame();
   virtual void refresh(RLMachine& machine) = 0;
-  virtual void endFrame() { }
+  virtual void endFrame();
 
   virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
-    RLMachine& machine, boost::shared_ptr<Surface> bg) { return boost::shared_ptr<Surface>(); }
+    RLMachine& machine, boost::shared_ptr<Surface> bg);
 
 
   /** 

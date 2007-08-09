@@ -32,11 +32,9 @@
  * constants.
  */
 
-#include <boost/scoped_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include "libReallive/bytecode.h"
+#include "libReallive/bytecode_fwd.h"
 
 #include <vector>
 
@@ -46,9 +44,6 @@ class Value;
 
 namespace  libReallive {
 class Archive;
-class FunctionElement;
-class CommandElement;
-class ExpressionElement;
 class IntMemRef;
 };
 

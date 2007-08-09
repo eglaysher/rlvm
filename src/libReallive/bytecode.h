@@ -33,26 +33,11 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp> 
 
+#include "bytecode_fwd.h"
+
 class RLMachine;
 
 namespace libReallive {
-
-// A nasty-hacky (but simple and efficient) form of RTTI.
-enum ElementType { 
-  Unspecified, Data, 
-  Line, Kidoku, Entrypoint, 
-  Textout, Expression, 
-  // Everything after this point must be a CommandElement or subtype.
-  Command, Select, Function, 
-  // Everything after this point must be a PointerElement or subtype.
-  Goto, GotoCase, GotoOn
-};
-
-// List definitions.
-class ExpressionPiece;
-class BytecodeElement;
-typedef boost::ptr_list<BytecodeElement> BytecodeList;
-typedef BytecodeList::iterator pointer_t;
 
 struct ConstructionData {
   pointer_t null;

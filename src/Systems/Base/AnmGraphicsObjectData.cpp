@@ -47,6 +47,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "libReallive/defs.h"
+#include "Systems/Base/GraphicsObject.hpp"
 
 #include <iterator>
 #include <fstream>

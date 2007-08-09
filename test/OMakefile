@@ -23,6 +23,7 @@ TEST_FILES[] =
   Gameexe_TUT
   LazyArray_TUT
   NullSystem/NullTextSystem
+  NullSystem/NullGraphicsSystem
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
 rlvmTest$(EXE): ../src/librlvm$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN

@@ -20,54 +20,33 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "NullGraphicsSystem.hpp"
 
 // -----------------------------------------------------------------------
 
-#include "GraphicsSystem.hpp"
-#include "libReallive/gameexe.h"
 
-// -----------------------------------------------------------------------
-
-GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
-  : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
-	m_displaySubtitle(gameexe("SUBTITLE").to_int(0))
+NullGraphicsSystem::NullGraphicsSystem(Gameexe& gexe)
+  : GraphicsSystem(gexe)
 {
 
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsSystem::~GraphicsSystem()
-{}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::setWindowSubtitle(const std::string& utf8encoded)
-{
-  m_subtitle = utf8encoded;
+GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber) 
+{ 
+  static GraphicsObject x; return x;
 }
 
 // -----------------------------------------------------------------------
 
-const std::string& GraphicsSystem::windowSubtitle() const
-{
-  return m_subtitle;
-}
-
-// -----------------------------------------------------------------------
-
-// Default implementations for some functions (which probably have
-// default implementations because I'm lazy, and these really should
-// be pure virtual)
-void GraphicsSystem::markScreenAsDirty() { }
-void GraphicsSystem::markScreenForRefresh() { }
-void GraphicsSystem::beginFrame() { }
-void GraphicsSystem::endFrame() { }
-
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
-  RLMachine& machine, boost::shared_ptr<Surface> bg) 
+boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
+  const std::string& filename) 
 { return boost::shared_ptr<Surface>(); }
 
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc) 
+{ return boost::shared_ptr<Surface>(); }
