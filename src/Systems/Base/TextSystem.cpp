@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -87,36 +87,6 @@ TextSystem::TextSystem(Gameexe& gexe)
 TextSystem::~TextSystem()
 {
   
-}
-
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<TTF_Font> TextSystem::getFontOfSize(int size)
-{
-  FontSizeMap::iterator it = m_map.find(size);
-  if(it == m_map.end())
-  {
-    string filename = findFontFile("msgothic.ttc");
-    TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
-    if(f == NULL)
-    {
-      ostringstream oss;
-      oss << "Error loading font: " << TTF_GetError();
-      throw SystemError(oss.str());
-    }
-
-    TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
-
-    // Build a smart_ptr to own this font, and set a deleter function.
-    shared_ptr<TTF_Font> font(f, TTF_CloseFont);
-
-    m_map[size] = font;
-    return font;
-  }
-  else
-  {
-    return it->second;
-  }
 }
 
 // -----------------------------------------------------------------------

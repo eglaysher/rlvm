@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 
 #include <boost/ptr_container/ptr_map.hpp>
 
+#include "SDL_ttf.h"
+
 class RLMachine;
 class TextWindow;
 class SDLTextWindow;
@@ -37,6 +39,15 @@ private:
   /// Window dispatch
   typedef boost::ptr_map<int, SDLTextWindow> WindowMap;
   WindowMap m_textWindow;
+
+  /** 
+   * @name Font storage
+   * 
+   * @{
+   */
+  typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
+  FontSizeMap m_map;
+  /// @}
 
   void updateWindowsForChangeToWindowAttr();
 
@@ -68,6 +79,8 @@ public:
     RLMachine& machine, const std::string& utf8str, int size, int xspace,
     int yspace, int colour);
 
+  /// Danger Will Robinson! This should be pushed down to SDLTextSystem! 
+  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
 };
 
 #endif

@@ -35,7 +35,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
+#include "Systems/SDL/SDLTextSystem.hpp"
 #include "Systems/Base/TextWindowButton.hpp"
 #include "Systems/Base/SelectionElement.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
@@ -75,7 +75,7 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
-  TextSystem& text = machine.system().text();
+  SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
   m_font = text.getFontOfSize(fontSizeInPixels());
   m_rubyFont = text.getFontOfSize(rubyTextSize());
 

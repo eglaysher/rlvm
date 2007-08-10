@@ -28,6 +28,7 @@
 
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
+#include "libReallive/expression_pieces.h"
 
 /** 
  * Type definition that implements the special parameter concept; the

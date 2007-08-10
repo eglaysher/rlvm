@@ -29,8 +29,6 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-#include "SDL_ttf.h"
-
 class Gameexe;
 class RLMachine;
 class TextWindow;
@@ -107,17 +105,6 @@ protected:
 
   /// The default \#WINDOW_ATTR. This is what is changed by the 
   std::vector<int> m_windowAttr;
-
-  /** 
-   * @name Font storage
-   * 
-   * @{
-   */
-
-  typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
-  FontSizeMap m_map;
-
-  /// @}
 
   /**
    * @name Global Window Button Toggles
@@ -283,9 +270,6 @@ public:
    virtual boost::shared_ptr<Surface> renderText(
 	RLMachine& machine, const std::string& utf8str, int size, int xspace,
 	int yspace, int colour) = 0;
-
-  /// Danger Will Robinson! This should be pushed down to SDLTextSystem! 
-  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
   /// @}
 };
 

@@ -34,7 +34,6 @@
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
 
-
 #include "Utilities.h"
 
 // ------------------------------------------------------------ Real
@@ -198,37 +197,6 @@ struct IntConstant_T {
 // -----------------------------------------------------------------------
 
 /** 
- * Type definition for a reference into the RLMachine's memory,
- * referencing an integer value.
- *
- * This struct is used to define the parameter types of a RLOperation
- * subclass, and should not be used directly. It should only be used
- * as a template parameter to one of those classes, or of another type
- * definition struct.
- */
-struct IntReference_T {
-  /// We pass iterators to the 
-  typedef IntReferenceIterator type;
-
-  /// Convert the incoming parameter objects into the resulting type
-  static type getData(RLMachine& machine, 
-                      const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                      unsigned int position);
-
-  /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
-
-  enum {
-    isRealTypestruct = true,
-    isComplex = false
-  };
-};
-
-// -----------------------------------------------------------------------
-
-/** 
  * Type definition for a constant string value. 
  * 
  * This struct is used to define the parameter types of a RLOperation
@@ -258,35 +226,6 @@ struct StrConstant_T {
 };
 
 // -----------------------------------------------------------------------
-
-/** 
- * Type struct for a reference into the RLMachine's memory,
- * referencing a string value.
- * 
- * This struct is used to define the parameter types of a RLOperation
- * subclass, and should not be used directly. It should only be used
- * as a template parameter to one of those classes, or of another type
- * definition struct.
- */
-struct StrReference_T {
-  /// The output type of this type struct
-  typedef StringReferenceIterator type;
-
-  /// Convert the incoming parameter objects into the resulting type
-  static type getData(RLMachine& machine, 
-                      const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                      unsigned int position);
-
-  /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
-
-  enum {
-    isRealTypestruct = true,
-    isComplex = false
-  };
-};
 
 // -----------------------------------------------------------------------
 

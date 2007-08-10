@@ -34,6 +34,7 @@
 #include "Modules/cp932toUnicode.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "MachineBase/RLOperation/References.hpp"
 
 #include <cmath>
 #include <iostream>

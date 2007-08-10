@@ -19,13 +19,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
 // -----------------------------------------------------------------------
-
 #ifndef __SDLSurface_hpp__
 #define __SDLSurface_hpp__
 
 #include <boost/scoped_ptr.hpp>
-#include <boost/noncopyable.hpp>
-
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "Systems/Base/Surface.hpp"
@@ -50,7 +47,7 @@ SDL_Surface* buildNewSurface(int width, int height);
  * example, anything returned from loadSurfaceFromFile(), while others
  * don't own their surfaces (SDLSurfaces returned by getDC()
  */
-class SDLSurface : public Surface, public boost::noncopyable
+class SDLSurface : public Surface
 {
 private:
   /// The SDL_Surface that contains the software version of the bitmap.

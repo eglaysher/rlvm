@@ -240,7 +240,7 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   int yspace, int colour)
 {
   // Pick the correct font
-  shared_ptr<TTF_Font> font = machine.system().text().getFontOfSize(size);
+  shared_ptr<TTF_Font> font = getFontOfSize(size);
 
   // Pick the correct font colour
   Gameexe& gexe = machine.system().gameexe();
@@ -267,3 +267,34 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 	return shared_ptr<Surface>(new SDLSurface(buildNewSurface(1, 1)));
   }
 }
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size)
+{
+  FontSizeMap::iterator it = m_map.find(size);
+  if(it == m_map.end())
+  {
+    string filename = findFontFile("msgothic.ttc");
+    TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
+    if(f == NULL)
+    {
+      ostringstream oss;
+      oss << "Error loading font: " << TTF_GetError();
+      throw SystemError(oss.str());
+    }
+
+    TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
+
+    // Build a smart_ptr to own this font, and set a deleter function.
+    shared_ptr<TTF_Font> font(f, TTF_CloseFont);
+
+    m_map[size] = font;
+    return font;
+  }
+  else
+  {
+    return it->second;
+  }
+}
+

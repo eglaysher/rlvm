@@ -39,6 +39,7 @@
  */
 
 #include "libReallive/expression.h"
+#include "libReallive/expression_pieces.h"
 #include "libReallive/intmemref.h"
 #include "MachineBase/reference.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -48,6 +49,7 @@
 #include <sstream>
 
 #include <boost/tokenizer.hpp>
+#include "defs.h"
 
 using namespace std;
 

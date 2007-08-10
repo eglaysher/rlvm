@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 #define __SDLRenderToTextureSurface_hpp__
 
 #include <boost/scoped_ptr.hpp>
-#include <boost/noncopyable.hpp>
 
 #include "Systems/Base/Surface.hpp"
 
@@ -33,7 +32,7 @@ class Texture;
 /** 
  * Fake SDLSurface used to 
  */
-class SDLRenderToTextureSurface : public Surface, public boost::noncopyable
+class SDLRenderToTextureSurface : public Surface
 {
 private:
   /// The SDLTexture which wraps one or more OpenGL textures

@@ -26,10 +26,13 @@
 
 #include "RLOperation.hpp"
 #include "RLOperation/RLOp_Store.hpp"
+#include "RLOperation/References.hpp"
 
 #include <boost/scoped_ptr.hpp>
 
 #include <string>
+
+// -----------------------------------------------------------------------
 
 /** 
  * Binds setting an internal variable to a passed in value in from a
@@ -92,7 +95,7 @@ public:
     : reference(ref), setter(s) 
   {}
 
-  void operator()(RLMachine& machine, string incoming) 
+  void operator()(RLMachine& machine, std::string incoming) 
   {
     (reference.*setter)(incoming);
   }

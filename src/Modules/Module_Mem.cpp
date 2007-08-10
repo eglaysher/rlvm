@@ -37,6 +37,7 @@
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "MachineBase/RLOperation/References.hpp"
 
 #include <cmath>
 #include <iostream>

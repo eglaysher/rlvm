@@ -24,7 +24,7 @@
 #define __DefaultValue_hpp__
 
 #include <boost/ptr_container/ptr_vector.hpp>
-
+#include "libReallive/expression_pieces.h"
 
 
 template<int DEFAULTVAL>
