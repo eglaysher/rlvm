@@ -40,6 +40,7 @@
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Timer.hpp"
+#include "Modules/Module_Sys_Save.hpp"
 #include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
@@ -51,9 +52,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
-#include "boost/date_time/gregorian/gregorian.hpp"
-#include "boost/date_time/posix_time/posix_time_types.hpp"    
-
+#include "dateUtil.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -315,7 +314,7 @@ struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntCon
  */
 struct Sys_GetYear : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::gregorian::day_clock::local_day().year();
+	return datetime::getYear();
   }
 };
 
@@ -323,7 +322,7 @@ struct Sys_GetYear : public RLOp_Store_Void {
 
 struct Sys_GetMonth : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::gregorian::day_clock::local_day().month();
+	return datetime::getMonth();
   }
 };
 
@@ -331,7 +330,7 @@ struct Sys_GetMonth : public RLOp_Store_Void {
 
 struct Sys_GetDay : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::gregorian::day_clock::local_day().day();
+	return datetime::getDay();
   }
 };
 
@@ -339,7 +338,7 @@ struct Sys_GetDay : public RLOp_Store_Void {
 
 struct Sys_GetDayOfWeek : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::gregorian::day_clock::local_day().day_of_week();
+	return datetime::getDayOfWeek();
   }
 };
 
@@ -347,7 +346,7 @@ struct Sys_GetDayOfWeek : public RLOp_Store_Void {
 
 struct Sys_GetHour : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::posix_time::second_clock::local_time().time_of_day().hours();
+	return datetime::getHour();
   }
 };
 
@@ -355,7 +354,7 @@ struct Sys_GetHour : public RLOp_Store_Void {
 
 struct Sys_GetMinute : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::posix_time::second_clock::local_time().time_of_day().minutes();
+	return datetime::getMinute();
   }
 };
 
@@ -363,7 +362,7 @@ struct Sys_GetMinute : public RLOp_Store_Void {
 
 struct Sys_GetSecond : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::posix_time::second_clock::local_time().time_of_day().seconds();
+	return datetime::getSecond();
   }
 };
 
@@ -371,7 +370,7 @@ struct Sys_GetSecond : public RLOp_Store_Void {
 
 struct Sys_GetMs : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return boost::posix_time::second_clock::local_time().time_of_day().fractional_seconds();
+	return datetime::getMs();
   }
 };
 
@@ -496,8 +495,6 @@ SysModule::SysModule(System& system)
   addOpcode( 100, 0, "wait", new Sys_wait(false));
   addOpcode( 101, 0, "waitC", new Sys_wait(true));
 
-  addSysTimerOpcodes(*this);
-
   addOpcode( 130, 0, "FlushClick", new Sys_FlushClick);
   addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
 
@@ -604,14 +601,6 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(1312, 0, "nwSingleLocal");
   addUnsupportedOpcode(1313, 0, "nwMultiLocal");
 
-  addUnsupportedOpcode(1409, 0, "SaveExists");
-  addUnsupportedOpcode(1410, 0, "SaveDate");
-  addUnsupportedOpcode(1411, 0, "SaveTime");
-  addUnsupportedOpcode(1412, 0, "SaveDateTime");
-  addUnsupportedOpcode(1413, 0, "SaveInfo");
-  addUnsupportedOpcode(1414, 0, "GetSaveFlag");
-  addUnsupportedOpcode(1421, 0, "LatestSave");
-
   addUnsupportedOpcode(2050, 0, "SetCursorMono");
   addUnsupportedOpcode(2000, 0, "CursorMono");
   addUnsupportedOpcode(2051, 0, "SetSkipAnimations");
@@ -699,10 +688,9 @@ SysModule::SysModule(System& system)
   addOpcode(2324, 0, returnIntValue(text, &TextSystem::messageNoWait));
   addOpcode(2350, 0, returnIntValue(text, &TextSystem::autoMode));
 
-  addUnsupportedOpcode(3000, 0, "menu_save");
-  addUnsupportedOpcode(3001, 0, "menu_load");
-
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
+  addSysTimerOpcodes(*this);
   addSysFrameOpcodes(*this);
+  addSysSaveOpcodes(*this);
 }

@@ -149,6 +149,11 @@ public:
    */
 
   /**
+   * Builds the save file name.
+   */
+  std::string makeSaveGameName(int slot);
+
+  /**
    * Writes the contents of global memory to the default global memory
    * file for this game.
    */

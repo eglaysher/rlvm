@@ -36,6 +36,7 @@ LIBRLVMFILES[] =
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities
+  dateUtil
   ../vendor/libVendorLibs
 
 # Build our precompiled headers

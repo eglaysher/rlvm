@@ -79,10 +79,13 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 
 #include "Modules/cp932toUnicode.hpp"
 
 #include "Modules/TextoutLongOperation.hpp"
+
+#include "dateUtil.hpp"
 
 #include <string>
 #include <sstream>
@@ -254,6 +257,16 @@ Json::Value buildFromInt(const int val)
 }
 
 }
+
+// -----------------------------------------------------------------------
+
+string RLMachine::makeSaveGameName(int slot)
+{
+  ostringstream oss;
+  oss << "save" << setw(3) << setfill('0') << slot << ".jsn";
+  return oss.str();
+}
+
 // -----------------------------------------------------------------------
 
 void RLMachine::saveIntegerBanksTo(const IntegerBank_t& banks, 
@@ -388,15 +401,14 @@ void RLMachine::loadGlobalMemoryFrom(std::istream& iss)
 
   loadStringBank(strM, 'M', root);
   loadIntegerBanksFrom(GLOBAL_INTEGER_BANKS, root);
+  
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::saveGame(int slot)
 {
-  ostringstream oss;
-  oss << "save" << setw(3) << setfill('0') << slot << ".jsn";
-  fs::path home = m_system.gameSaveDirectory() / oss.str();
+  fs::path home = m_system.gameSaveDirectory() / makeSaveGameName(slot);
   fs::ofstream file(home);
   if(!file)
   {
@@ -405,7 +417,7 @@ void RLMachine::saveGame(int slot)
 	throw rlvm::Exception(oss.str());
   }
 
-  saveGameTo(file);  
+  saveGameTo(file);
 }
 
 // -----------------------------------------------------------------------
@@ -415,6 +427,21 @@ void RLMachine::saveGameTo(std::ostream& ofs)
   Json::Value root(Json::objectValue);
 
   saveIntegerBanksTo(LOCAL_INTEGER_BANKS, root);
+  saveStringBank(strS, 'S', root);
+
+  root["title"] = system().graphics().windowSubtitle();
+
+  Json::Value saveTime(Json::arrayValue);
+  using namespace datetime;
+  saveTime.append(Json::Value(getYear()));
+  saveTime.append(Json::Value(getMonth()));
+  saveTime.append(Json::Value(getDay()));
+  saveTime.append(Json::Value(getDayOfWeek()));
+  saveTime.append(Json::Value(getHour()));
+  saveTime.append(Json::Value(getMinute()));
+  saveTime.append(Json::Value(getSecond()));
+  saveTime.append(Json::Value(getMs()));
+  root["saveTime"] = saveTime;
 
   Json::StyledWriter writer;
   ofs << writer.write( root );
