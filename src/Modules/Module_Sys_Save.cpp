@@ -35,6 +35,9 @@
 #include <iostream>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "json/value.h"
 #include "json/reader.h"
@@ -44,6 +47,9 @@
 #include "Modules/cp932toUnicode.hpp"
 
 using namespace std;
+using boost::lexical_cast;
+using boost::starts_with;
+using boost::ends_with;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -243,6 +249,39 @@ struct Sys_SaveInfo : public RLOp_Store_10<
 
 // -----------------------------------------------------------------------
 
+struct Sys_LatestSave : public RLOp_Store_Void
+{
+  int operator()(RLMachine& machine)
+  {
+	fs::path saveDir = machine.system().gameSaveDirectory();
+	int latestSlot = -1;
+	time_t latestTime = numeric_limits<time_t>::min();
+
+	if(fs::exists(saveDir))
+	{
+	  fs::directory_iterator end;
+	  for(fs::directory_iterator it(saveDir); it != end; ++it) 
+	  {
+		string filename = it->leaf();
+		if(starts_with(filename, "save") && ends_with(filename, ".jsn"))
+		{
+		  time_t mtime = fs::last_write_time(*it);
+
+		  if(mtime > latestTime)
+		  {
+			latestTime = mtime;
+			latestSlot = lexical_cast<int>(filename.substr(4, 3));
+		  }
+		}
+	  }
+	}
+
+	return latestSlot;
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Sys_save : public RLOp_Void_1< IntConstant_T >
 {
   void operator()(RLMachine& machine, int slot)
@@ -262,7 +301,7 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(1412, 0, "SaveDateTime", new Sys_SaveDateTime);
   m.addOpcode(1413, 0, "SaveInfo", new Sys_SaveInfo);
   m.addUnsupportedOpcode(1414, 0, "GetSaveFlag");
-  m.addUnsupportedOpcode(1421, 0, "LatestSave");
+  m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
 
   m.addUnsupportedOpcode(3000, 0, "menu_save");
   m.addUnsupportedOpcode(3001, 0, "menu_load");
