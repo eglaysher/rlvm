@@ -623,6 +623,36 @@ SysModule::SysModule(System& system)
   addOpcode(2252, 0, "SetAutoBaseTime",
             setToIncomingInt(text, &TextSystem::setAutoCharTime));
 
+  addUnsupportedOpcode(2225, 0, "SetKoeMode");
+  addUnsupportedOpcode(2325, 0, "KoeMode");
+  addUnsupportedOpcode(2226, 0, "SetBgmKoeFadeVol");
+  addUnsupportedOpcode(2326, 0, "BgmKoeFadeVol");
+  addUnsupportedOpcode(2602, 0, "DefBgmKoeFadeVol");
+  addUnsupportedOpcode(2227, 0, "SetBgmKoeFade");
+  addUnsupportedOpcode(2327, 0, "BgmKoeFade");
+  addUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
+  addUnsupportedOpcode(2230, 0, "SetBgmVolMod");
+  addUnsupportedOpcode(2330, 0, "BgmVolMod");
+  addUnsupportedOpcode(2231, 0, "SetKoeVolMod");
+  addUnsupportedOpcode(2331, 0, "KoeVolMod");
+  addUnsupportedOpcode(2232, 0, "SetPcmVolMod");
+  addUnsupportedOpcode(2332, 0, "PcmVolMod");
+  addUnsupportedOpcode(2233, 0, "SetSeVolMod");
+  addUnsupportedOpcode(2333, 0, "SeVolMod");
+  addUnsupportedOpcode(2240, 0, "SetBgmEnabled");
+  addUnsupportedOpcode(2340, 0, "BgmEnabled");
+  addUnsupportedOpcode(2241, 0, "SetKoeEnabled");
+  addUnsupportedOpcode(2341, 0, "KoeEnabled");
+  addUnsupportedOpcode(2242, 0, "SetPcmEnabled");
+  addUnsupportedOpcode(2342, 0, "PcmEnabled");
+  addUnsupportedOpcode(2243, 0, "SetSeEnabled");
+  addUnsupportedOpcode(2343, 0, "SeEnabled");
+
+  addUnsupportedOpcode(2054, 0, "SetReduceDistortion");
+  addUnsupportedOpcode(2004, 0, "ReduceDistortion");
+  addUnsupportedOpcode(2059, 0, "SetSoundQuality");
+  addUnsupportedOpcode(2009, 0, "SoundQuality");
+
   addOpcode(2221, 0, "SetGeneric1",
             setToIncomingInt(event, &EventSystem::setGeneric1));
   addOpcode(2620, 0, "DefGeneric1",
