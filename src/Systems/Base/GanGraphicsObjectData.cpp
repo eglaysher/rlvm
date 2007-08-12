@@ -258,7 +258,19 @@ int GanGraphicsObjectData::pixelWidth(
   RLMachine& machine,
   const GraphicsObject& renderingProperties)
 {
-  throw std::runtime_error("Unimplemented: GanGraphicsObjectData::pixelWidth");
+  if(m_currentSet != -1 && m_currentFrame != -1)
+  {
+    const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);
+    if(frame.pattern != -1)
+    {
+      const Surface::GrpRect& rect = image->getPattern(frame.pattern);
+
+	  return rect.x2 - rect.x1;
+	}
+  }
+
+  // return the width of the first set, first frame
+  return 0;
 }
 
 // -----------------------------------------------------------------------
@@ -267,7 +279,19 @@ int GanGraphicsObjectData::pixelHeight(
   RLMachine& machine, 
   const GraphicsObject& renderingProperties)
 {
-  throw std::runtime_error("Unimplemented: GanGraphicsObjectData::pixelHeight");
+  if(m_currentSet != -1 && m_currentFrame != -1)
+  {
+    const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);
+    if(frame.pattern != -1)
+    {
+      const Surface::GrpRect& rect = image->getPattern(frame.pattern);
+
+	  return rect.y2 - rect.y1;
+	}
+  }
+
+  // return the width of the first set, first frame
+  return 0;
 }
 
 // -----------------------------------------------------------------------
