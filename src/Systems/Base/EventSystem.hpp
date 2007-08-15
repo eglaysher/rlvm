@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,6 +34,10 @@ class RLMachine;
 class Gameexe;
 class FrameCounter;
 class EventHandler;
+
+namespace Json {
+class Value;
+}
 
 /**
  * Generalization of an event system. Reallive's event model is a bit
@@ -167,6 +171,10 @@ public:
   int generic2() const { return m_generic2; }
   /// @}
 
+  // -----------------------------------------------------------------------
+
+  virtual void saveGlobals(Json::Value& root);
+  virtual void loadGlobals(const Json::Value& root);
 };
 
 #endif

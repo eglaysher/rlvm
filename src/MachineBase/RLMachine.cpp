@@ -355,6 +355,8 @@ void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
   saveStringBank(strM, 'M', root);
   saveIntegerBanksTo(GLOBAL_INTEGER_BANKS, root);
 
+  m_system.saveGlobals(root);
+
   Json::StyledWriter writer;
   ofs << writer.write( root );
 }
@@ -401,7 +403,8 @@ void RLMachine::loadGlobalMemoryFrom(std::istream& iss)
 
   loadStringBank(strM, 'M', root);
   loadIntegerBanksFrom(GLOBAL_INTEGER_BANKS, root);
-  
+
+  m_system.loadGlobals(root);  
 }
 
 // -----------------------------------------------------------------------

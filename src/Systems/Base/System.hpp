@@ -33,6 +33,10 @@ class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
 
+namespace Json {
+class Value;
+}
+
 namespace boost { namespace filesystem { class path; } }
 
 /**
@@ -66,6 +70,12 @@ public:
 //  virtual SoundSystem& soundSystem() = 0;
 
   const std::vector<std::string>& getSearchPaths();
+
+  /**
+   * Save the global configuration.
+   */
+  virtual void saveGlobals(Json::Value& root);
+  virtual void loadGlobals(Json::Value& root);
 
   /**
    * Returns a boost::filesystem object which points to the directory

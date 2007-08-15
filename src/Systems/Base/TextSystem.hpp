@@ -36,6 +36,12 @@ class TextPage;
 class TextKeyCursor;
 class Surface;
 
+namespace Json {
+class Value;
+}
+
+// -----------------------------------------------------------------------
+
 class TextSystem
 {
 protected:
@@ -271,6 +277,9 @@ public:
 	RLMachine& machine, const std::string& utf8str, int size, int xspace,
 	int yspace, int colour) = 0;
   /// @}
+
+  virtual void saveGlobals(Json::Value& system);
+  virtual void loadGlobals(const Json::Value& system);
 };
 
 #endif

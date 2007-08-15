@@ -35,9 +35,13 @@
 
 #include <boost/bind.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
+#include "json/value.h"
+
+using std::back_inserter;
 using std::vector;
 using std::ostringstream;
 using boost::bind;
@@ -245,3 +249,36 @@ void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
   m_windowAttr = attr;
 }
 
+// -----------------------------------------------------------------------
+
+void TextSystem::saveGlobals(Json::Value& system)
+{
+  Json::Value text(Json::objectValue);
+  text["autoBaseTime"] = autoBaseTime();
+  text["autoCharTime"] = autoCharTime();
+  
+  text["messageSpeed"] = messageSpeed();
+
+  Json::Value windowAttr(Json::arrayValue);
+  copy(m_windowAttr.begin(), m_windowAttr.end(), back_inserter(windowAttr));
+  text["windowAttr"] = windowAttr;
+
+  system["text"] = text;
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::loadGlobals(const Json::Value& system)
+{
+  Json::Value textSys = system["text"];
+
+  setAutoBaseTime(textSys["autoBaseTime"].asInt());
+  setAutoCharTime(textSys["autoCharTime"].asInt());
+  setMessageSpeed(textSys["messageSpeed"].asInt());
+
+  vector<int> attr;
+  Json::Value windowAttr = textSys["windowAttr"];
+  for(int i = 0; i < windowAttr.size(); ++i)
+	attr.push_back(windowAttr[i].asInt());
+  setDefaultWindowAttr(attr);
+}

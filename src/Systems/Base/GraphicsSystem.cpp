@@ -71,3 +71,17 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
   RLMachine& machine, boost::shared_ptr<Surface> bg) 
 { return boost::shared_ptr<Surface>(); }
 
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::saveGlobals(Json::Value& system)
+{
+  // Right now, does no work
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::loadGlobals(const Json::Value& system)
+{
+  // Right now, noop
+}

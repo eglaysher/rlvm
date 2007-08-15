@@ -27,6 +27,9 @@
 #include "libReallive/gameexe.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 #include <boost/bind.hpp>
 #include <boost/filesystem/path.hpp>
@@ -36,6 +39,8 @@
 #include <algorithm>
 #include <string>
 #include <iostream>
+
+#include "json/value.h"
 
 using namespace std;
 using boost::bind;
@@ -69,6 +74,28 @@ const std::vector<std::string>& System::getSearchPaths()
   }
 
   return cachedSearchPaths;
+}
+
+// -----------------------------------------------------------------------
+
+void System::saveGlobals(Json::Value& root)
+{
+  Json::Value system(Json::objectValue);
+
+  graphics().saveGlobals(system);
+  event().saveGlobals(system);
+  text().saveGlobals(system);
+
+  root["system"] = system;
+}
+
+// -----------------------------------------------------------------------
+
+void System::loadGlobals(Json::Value& root)
+{
+  graphics().loadGlobals(root["system"]);
+  event().loadGlobals(root["system"]);
+  text().loadGlobals(root["system"]);
 }
 
 // -----------------------------------------------------------------------

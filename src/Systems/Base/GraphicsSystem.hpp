@@ -41,6 +41,10 @@ class GraphicsObject;
 class GraphicsObjectData;
 class Gameexe;
 
+namespace Json {
+class Value;
+}
+
 /** 
  * Abstract interface to a graphics system. Specialize this class for
  * each system you plan on running RLVM on. For now, there's only one
@@ -122,6 +126,16 @@ public:
   const std::string& windowSubtitle() const;
   bool displaySubtitle() const { return m_displaySubtitle; }
   /// @}
+
+  /**
+   * @name Saving Global Values
+   * 
+   * @{
+   */
+  virtual void saveGlobals(Json::Value& system);
+  virtual void loadGlobals(const Json::Value& system);
+  /// @}
+
 
   // Marks the screen as dirty; something is done about this if we are
   // in automatic mode.

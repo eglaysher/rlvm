@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@
 #include "libReallive/gameexe.h"
 
 #include <iostream>
+
+#include "json/value.h"
 
 using namespace std;
 using namespace boost;
@@ -109,4 +111,23 @@ void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
 
   if(frameCounter < 0 || frameCounter > 255)
     throw rlvm::Exception("Frame Counter index out of range!");
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::saveGlobals(Json::Value& system)
+{
+  Json::Value event(Json::objectValue);
+  event["generic1"] = generic1();
+  event["generic2"] = generic2();
+
+  system["event"] = event;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::loadGlobals(const Json::Value& system)
+{
+  setGeneric1(system["event"]["generic1"].asInt());
+  setGeneric2(system["event"]["generic2"].asInt());
 }
