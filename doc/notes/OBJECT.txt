@@ -1,0 +1,49 @@
+> 1) In the Gameexe.ini, there is a set of lines:
+>
+> #OBJECT.999 = 0, 0, 0, 0, 0, 0
+> #OBJECT.080 = 0, 0, 0, 0, 0, 1
+> #OBJECT.081 = 0, 0, 0, 0, 0, 1
+> #OBJECT.082 = 0, 0, 0, 0, 0, 1
+> #OBJECT.083 = 0, 0, 0, 0, 0, 1
+> #OBJECT.084 = 0, 1, 1, 0, 0, 1
+>
+> I'm assuming this is initialization of some sort of state on
+> individual Objects, but I don't know how to interpret it. xclannad
+> doesn't appear to deal with it. Do you have notes on this?
+
+The actual syntax of this command permits _seven_ values, not six, but
+trailing zeroes can be omitted, and the final one usually is.
+
+They control the values that are named in the debug mode as,
+respectively: Layer, SpaceKey, ObjOnOff, TimeMod, DispSort, InitMod, and
+WeatherOnOff.
+
+The value 999 is special: it sets the defaults for any objects not
+specifically mentioned in an #OBJECT directive.
+
+I know what a few of them do:
+
+* SpaceKey determines whether an object is considered part of the UI
+layer or not; if it's non-zero, then the object is hidden temporarily if
+the player hides the text window to view the picture properly (typically
+by pressing the space key).
+
+* ObjOnOff determines whether an object can be toggled on and off
+independently by the player.  Valid values are 0, 1, and 2.  Values of 1
+and 2 correspond to [Set]ShowObject1() and [Set]ShowObject2(), and to
+#SYSCOMs 18 and 19 respectively.
+
+* WeatherOnOff determines whether the object is considered a weather
+effect object or not; if it's non-zero, the object will be shown and
+hidden with [Set]ShowWeather(), #SYSCOM 17.
+
+Default visibility of ObjOnOff and WeatherOnOff are configured with
+#INIT_OBJECT1_ONOFF_MOD, #INIT_OBJECT2_ONOFF_MOD, and
+#INIT_WEATHER_ONOFF_MOD, where values of 0 mean that the objects are
+visible by default, and values of 1 mean they are invisible.  These
+default settings are only used at first launch, after which the player's
+choices are stored in the global environment saved data.
+
+The others remain obscure, I'm afraid.
+
+-- Haeleth
