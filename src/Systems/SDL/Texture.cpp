@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -783,10 +783,10 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
   // Output: false if this doesn't intersect with the texture piece we hold.
   //         true otherwise, and set the local coordinates
   int w1 = x2 - x1;
-  int w2 = m_logicalWidth;
+//  int w2 = m_logicalWidth;
 
   int h1 = y2 - y1;
-  int h2 = m_logicalHeight;
+//  int h2 = m_logicalHeight;
 
   // First thing we do is an intersection test to see if this input
   // range intersects the virtual range this Texture object holds.

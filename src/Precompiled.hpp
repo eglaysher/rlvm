@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -65,5 +65,25 @@
 #include <boost/tokenizer.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/utility.hpp>
+
+// At least for the time being, I'm putting these files in the
+// precompiled header because they're large template messes and are
+// probably eating up a lot of parsing time.
+//
+// REMEMBER TO COMMENT THESE LINES OUT BEFORE YOU GO OFF AND FIDDLE
+// WITH THEM!
+#include "libReallive/gameexe.h"
+#include "libReallive/defs.h"
+#include "libReallive/bytecode.h"
+#include "libReallive/bytecode_fwd.h"
+
+#include "MachineBase/reference.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "MachineBase/RLOperation/References.hpp"
+#include "MachineBase/RLOperation/Special_T.hpp"
 
 #endif

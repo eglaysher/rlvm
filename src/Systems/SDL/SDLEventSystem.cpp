@@ -59,6 +59,8 @@ void SDLEventSystem::handleKeyDown(SDL_Event& e)
       m_ctrlPressed = true;
       break;
     }
+  default:
+	break;
   }
 }
 
@@ -80,6 +82,8 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
       m_ctrlPressed = false;
       break;
     }
+  default:
+	break;
   }
 }
 
@@ -224,6 +228,8 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       case SDL_BUTTON_WHEELDOWN:
         button = MOUSE_WHEELDOWN;
         break;
+	  default:
+		break;
       }
 
       for_each(handlers_begin(), handlers_end(),

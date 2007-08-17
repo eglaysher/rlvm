@@ -106,7 +106,6 @@ struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename) {
-    GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     m_dataFun(machine, obj, filename);
   }
@@ -123,7 +122,6 @@ struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
 	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
-    GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
@@ -143,7 +141,6 @@ struct Obj_objGeneric_2
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y) {
-    GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
@@ -165,7 +162,6 @@ struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern) {
-    GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     m_dataFun(machine, obj, filename);
     obj.setVisible(visible);
@@ -188,7 +184,6 @@ struct Obj_objGeneric_4 : public RLOp_Void_8<
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern, int scrollX, int scrollY) {
-    GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
 
     m_dataFun(machine, obj, filename);

@@ -550,10 +550,12 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
 /// A default implementation is provided since not everything will have assign
 /// semantics.
 void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
-int ExpressionPiece::integerValue(RLMachine& machine) const {}
+int ExpressionPiece::integerValue(RLMachine& machine) const 
+{ throw libReallive::Error(""); }
 
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
-const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {}
+const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const 
+{ return ""; }
 
 // -----------------------------------------------------------------------
 
@@ -658,13 +660,13 @@ ExpressionPiece* MemoryReference::clone() const
 
 UniaryExpressionOperator::UniaryExpressionOperator(char inOperation, 
                                                    ExpressionPiece* inOperand)
-  : operation(inOperation), operand(inOperand) {}
+  : operand(inOperand), operation(inOperation) {}
 
 UniaryExpressionOperator::~UniaryExpressionOperator() {}
 
 int UniaryExpressionOperator::performOperationOn(int int_operand) const
 {
-  int result;
+  int result = int_operand;
   switch(operation) {
   case 0x01:
     result = - int_operand;

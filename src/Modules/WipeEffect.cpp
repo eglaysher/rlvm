@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -133,7 +133,6 @@ WipeTopToBottomEffect::WipeTopToBottomEffect(
 void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine, 
                                                  int currentTime)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
 
@@ -176,8 +175,6 @@ WipeBottomToTopEffect::WipeBottomToTopEffect(
 void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
                                                  int currentTime)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
-
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, 
                  sizeOfMainPolygon, height());
@@ -222,7 +219,6 @@ WipeLeftToRightEffect::WipeLeftToRightEffect(
 void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 
@@ -267,7 +263,6 @@ WipeRightToLeftEffect::WipeRightToLeftEffect(
 void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
                                                  int currentTime)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
   int sizeOfInterpolation, sizeOfMainPolygon;
   calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 

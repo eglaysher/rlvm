@@ -1,12 +1,3 @@
-#if $(not $(defined-env VERBOSE))
-#  OMakeFlags(-S --progress)
-#  export
-
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ -I../../../vendor/ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
-CFLAGS = $(CXXFLAGS)
-
-# for testing
-#CXXFLAGS += -DWIN32
 
 .PHONY: clean
 

@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 // Copyright (c) 2007 Elliot Glaysher
 //
 // Permission is hereby granted, free of charge, to any person
@@ -274,6 +274,9 @@ const std::string GameexeInterpretObject::to_string() const
   {
     m_objectToLookupOn.throwUnknownKey(m_key);
   }
+
+  // Shut the -Wall up
+  return "";
 }
 
 // -----------------------------------------------------------------------

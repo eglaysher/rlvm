@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -874,7 +874,7 @@ GotoCaseElement::data() const
 {
 	string rv(repr);
 	rv += '{';
-	for (int i = 0; i < cases.size(); ++i) {
+	for (unsigned int i = 0; i < cases.size(); ++i) {
 		rv += cases[i];
 		append_i32(rv, targets[i]->offset());
 	}
@@ -888,7 +888,7 @@ const size_t
 GotoCaseElement::length() const
 {
 	size_t rv = repr.size() + 2;
-	for (int i = 0; i < cases.size(); ++i) rv += cases[i].size() + 4;
+	for (unsigned int i = 0; i < cases.size(); ++i) rv += cases[i].size() + 4;
 	return rv;
 }
 
@@ -935,7 +935,7 @@ GotoOnElement::data() const
 {
 	string rv(repr);
 	rv += '{';
-	for (int i = 0; i < targets.size(); ++i) {
+	for (unsigned int i = 0; i < targets.size(); ++i) {
 		append_i32(rv, targets[i]->offset());
 	}
 	rv += '}';
@@ -949,7 +949,7 @@ Pointers::set_pointers(ConstructionData& cdata)
 {
 	assert(target_ids.size() != 0);
 	targets.reserve(target_ids.size());
-	for (int i = 0; i < target_ids.size(); ++i) {
+	for (unsigned int i = 0; i < target_ids.size(); ++i) {
 		ConstructionData::offsets_t::const_iterator it =
           cdata.offsets.find(target_ids[i]);
 		assert(it != cdata.offsets.end());

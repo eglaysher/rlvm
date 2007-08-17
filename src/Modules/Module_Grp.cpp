@@ -817,8 +817,8 @@ struct Grp_fade_5 : public RLOp_Void_6<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   IntConstant_T, DefaultIntValue_T<0> >
 {
-  Grp_fade_7 m_delegate;
   SPACE& m_space;
+  Grp_fade_7 m_delegate;
   Grp_fade_5(SPACE& space) : m_space(space), m_delegate(space) {}
 
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2, 

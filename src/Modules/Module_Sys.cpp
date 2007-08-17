@@ -110,7 +110,6 @@ struct LongOp_wait : public LongOperation, public EventHandler
 
   bool operator()(RLMachine& machine)
   {
-    EventSystem& es = machine.system().event();
     bool done = machine.system().event().getTicks() > m_targetTime ||
       m_ctrlPressed;
 

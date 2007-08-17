@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,7 +58,6 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
   // Blit the source image to the screen with the opacity
   int opacity = int((float(currentTime) / duration()) * 255);
 
-  GraphicsSystem& graphics = machine.system().graphics();
   srcSurface().
     renderToScreen(0, 0, width(), height(), 
                    0, 0, width(), height(),

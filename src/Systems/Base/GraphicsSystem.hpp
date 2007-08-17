@@ -33,6 +33,7 @@
 
 #include <string>
 
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 class Surface;
@@ -102,6 +103,12 @@ private:
   /// utf8 encoded subtitle string
   std::string m_subtitle;
 
+  /// ShowObject flags
+  int m_showObject1, m_showObject2;
+
+  struct GraphicsObjectSettings;
+  boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
+
 public:
   GraphicsSystem(Gameexe& gameexe);
   virtual ~GraphicsSystem();
@@ -134,6 +141,33 @@ public:
    */
   virtual void saveGlobals(Json::Value& system);
   virtual void loadGlobals(const Json::Value& system);
+  /// @}
+
+  /**
+   * @name Show Object flags
+   * 
+   * The `show object' flags are used to provide a way of enabling or
+   * disabling interface elements from the menu. If an object's
+   * `ObjectOnOff' property is set to 1 or 2, it will be shown or
+   * hidden depending on the corresponding `show object' flag. This is
+   * one of the properties controlled by the #OBJECT variables in
+   * gameexe.ini.
+   *
+   * In Clannad, ShowObject1 is used to control display of the date
+   * marker at the top left of the screen (object 84).
+   * 
+   * @note { @b A value of 0 from these functions means that data is
+   *       visible by default and a value of 1 means thaey are invisible. }
+   *
+   * @{
+   */
+  void setShowObject1(const int in);
+  int showObject1() const { return m_showObject1; }
+
+  void setShowObject2(const int in);
+  int showObject2() const { return m_showObject1; }
+
+  int objectIsPartOfWhichShowObject(const int objNum);
   /// @}
 
 
@@ -191,5 +225,7 @@ public:
 
 const static int OBJ_FG_LAYER = 0;
 const static int OBJ_BG_LAYER = 1;
+
+const int OBJECTS_IN_A_LAYER = 256;
 
 #endif

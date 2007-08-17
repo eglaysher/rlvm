@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -122,7 +122,14 @@ Archive::commit()
 	for (unsigned long i = 0; i < 0xffffffff; ++i) {
 		sprintf(tmpfile, "%s.%x", name.c_str(), i);
 		FILE* f;
-		if (f = fopen(tmpfile, "r")) fclose(f); else break;
+		if ((f = fopen(tmpfile, "r")))
+		{
+		  fclose(f);
+		} 
+		else
+		{
+		  break;
+		}
 	}
 	// Output.
 	write_to(tmpfile);

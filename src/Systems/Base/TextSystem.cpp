@@ -278,7 +278,7 @@ void TextSystem::loadGlobals(const Json::Value& system)
 
   vector<int> attr;
   Json::Value windowAttr = textSys["windowAttr"];
-  for(int i = 0; i < windowAttr.size(); ++i)
+  for(unsigned int i = 0; i < windowAttr.size(); ++i)
 	attr.push_back(windowAttr[i].asInt());
   setDefaultWindowAttr(attr);
 }

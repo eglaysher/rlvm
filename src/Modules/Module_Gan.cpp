@@ -52,7 +52,6 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
     bool operator()(RLMachine& machine)
     {
-      GraphicsSystem& gs = machine.system().graphics();
       GraphicsObject& obj = getGraphicsObject(machine, OBJ_FG_LAYER, buf);
 
       if(!obj.visible())
@@ -83,7 +82,6 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
   void operator()(RLMachine& machine, int buf, int animationSet)
   {
-    GraphicsSystem& gs = machine.system().graphics();
     GraphicsObject& obj = getGraphicsObject(machine, OBJ_FG_LAYER, buf);
 
     if(obj.hasObjectData())

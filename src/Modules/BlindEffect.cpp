@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -79,7 +79,6 @@ BlindEffect::~BlindEffect()
 void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
                                  int currentTime)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = maxSize / blindSize() + 1;
   int rowsToDisplay = int((float(currentTime) / duration()) * 
                           (blindSize() + numBlinds));
@@ -103,7 +102,6 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
 void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize, 
                                     int currentTime)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
   int numBlinds = maxSize / blindSize() + 1;
   int rowsToDisplay = int((float(currentTime) / duration()) *
                           (blindSize() + numBlinds));

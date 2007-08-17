@@ -2,7 +2,9 @@
 #   OMakeFlags(-S --progress)
 #   export
 
-CXXFLAGS = --ansi -Wall -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+SRCTOP = $(shell pwd)
+
+CXXFLAGS = --ansi -Wall -U__STRICT_ANSI__ -funsigned-char -I$(SRCTOP) -I$(SRCTOP)/../vendor $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
 
 # for testing
 #CXXFLAGS += -DWIN32

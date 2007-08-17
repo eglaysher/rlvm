@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -40,8 +40,8 @@ class RLMachine;
 namespace libReallive {
 
 struct ConstructionData {
-  pointer_t null;
   std::vector<unsigned long> kidoku_table;
+  pointer_t null;
   typedef std::map<unsigned long, pointer_t> offsets_t;
   offsets_t offsets;	
 private:

@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 // Copyright (c) 2007 Elliot Glaysher
 //
 // Permission is hereby granted, free of charge, to any person
@@ -91,11 +91,6 @@ private:
   {
     
   }
-
-//   /**
-//    * Disallow copying.
-//    */
-//   GameexeInterpretObject(const GameexeInterpretObject&);
 
 public:
 

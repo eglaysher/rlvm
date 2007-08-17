@@ -307,8 +307,6 @@ void SDLTextWindow::render(RLMachine& machine)
 {
   if(m_surface && isVisible())
   {
-    GraphicsSystem& gs = machine.system().graphics();
-
     int width = m_surface->width();
     int height = m_surface->height();
 
@@ -364,8 +362,6 @@ void SDLTextWindow::render(RLMachine& machine)
  */
 void SDLTextWindow::renderButtons(RLMachine& machine)
 {
-  TextSystem& textSystem = machine.system().text();
-
   m_buttonMap["MSGBKLEFT_BOX"].render(machine, *this, m_wakuButton, 24);
   m_buttonMap["MSGBKRIGHT_BOX"].render(machine, *this, m_wakuButton, 32);
 

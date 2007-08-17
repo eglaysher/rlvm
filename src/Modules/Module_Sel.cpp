@@ -56,7 +56,7 @@ using libReallive::CommandElement;
 Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
-  : m_machine(machine), EventHandler(machine),
+  : EventHandler(machine), m_machine(machine), 
     textWindow(machine.system().text().currentWindow(machine)),
     m_returnValue(-1)
 {
@@ -66,7 +66,7 @@ Sel_LongOperation::Sel_LongOperation(
 
   cerr << "---------" << endl;
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
-  for(int i = 0; i < params.size(); ++i)
+  for(unsigned int i = 0; i < params.size(); ++i)
   {
     std::string utf8str = cp932toUTF8(params[i].text, 
                                       machine.getTextEncoding());
@@ -130,6 +130,8 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   case MOUSE_RIGHT:
     cerr << "Doesn't handle syscom!" << endl;
     break;
+  default:
+	break;
   }
   }
 }

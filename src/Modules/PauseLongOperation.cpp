@@ -149,6 +149,8 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
    if(pressed)
      text.forwardPage(machine);
     break;
+  default:
+	break;
   }
 }
 
@@ -156,7 +158,6 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
-  EventSystem& es = machine.system().event();
   TextSystem& text = machine.system().text();
   
   if(pressed)

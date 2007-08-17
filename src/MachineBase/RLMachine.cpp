@@ -552,7 +552,7 @@ int RLMachine::getIntValue(const IntMemRef& ref)
     // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
-    if (uint(location) >= (64000 / factor)) 
+    if (uint(location) >= (64000u / factor)) 
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return (intVar[index][location / eltsize] >>
@@ -586,7 +586,7 @@ void RLMachine::setIntValue(const IntMemRef& ref, int value)
     int eltsize = 32 / factor;
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
-    if (uint(location) >= (64000 / factor)) 
+    if (uint(location) >= (64000u / factor)) 
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
 
     intVar[index][location / eltsize] =
@@ -764,8 +764,7 @@ int RLMachine::sceneNumber() const
 
 void RLMachine::executeExpression(const ExpressionElement& e) 
 {
-  int value = e.parsedExpression().integerValue(*this);
-  
+  e.parsedExpression().integerValue(*this);
   advanceInstructionPointer();
 }
 
