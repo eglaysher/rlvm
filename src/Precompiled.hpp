@@ -28,43 +28,27 @@
 
 // C++ Standard Template Library
 #include <algorithm>
-#include <cassert>
-#include <cctype>
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <memory>
 #include <sstream>
-#include <stack>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 // Boost.org Template Libraries
 #include <boost/algorithm/string.hpp>
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/multi_array/algorithm.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/program_options.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/tokenizer.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/utility.hpp>
 
 // At least for the time being, I'm putting these files in the
 // precompiled header because they're large template messes and are
