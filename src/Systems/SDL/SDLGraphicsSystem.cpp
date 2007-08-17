@@ -54,6 +54,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
+#include "Systems/Base/ObjectSettings.hpp"
 
 #include "libReallive/gameexe.h"
 #include "file.h"
@@ -151,9 +152,23 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
                                        0, 0, m_width, m_height, 255);
 
   // Render all visible foreground objects
-  for_each(foregroundObjects.allocated_begin(), 
-           foregroundObjects.allocated_end(),
-           bind(&GraphicsObject::render, _1, ref(machine)));
+  AllocatedLazyArrayIterator<GraphicsObject> it = 
+	foregroundObjects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end = 
+	foregroundObjects.allocated_end();
+  for(; it != end; ++it)
+  {
+	const ObjectSettings& settings = getObjectSettings(it.pos());
+	if(settings.objOnOff)
+	{
+	  if(settings.objOnOff == 1 && showObject1() == false)
+		continue;
+	  else if(settings.objOnOff == 2 && showObject2() == false)
+		continue;
+	}
+
+	it->render(machine);
+  }
 
   // Render text
   machine.system().text().render(machine);
@@ -173,9 +188,27 @@ shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
                      0, 0, m_width, m_height, 255);
 
   // Render all visible foreground objects
-  for_each(foregroundObjects.allocated_begin(), 
-           foregroundObjects.allocated_end(),
-           bind(&GraphicsObject::render, _1, ref(machine)));
+  AllocatedLazyArrayIterator<GraphicsObject> it = 
+	foregroundObjects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end = 
+	foregroundObjects.allocated_end();
+  for(; it != end; ++it)
+  {
+	const ObjectSettings& settings = getObjectSettings(it.pos());
+	if(settings.objOnOff)
+	{
+	  if(settings.objOnOff == 1 && showObject1() == false)
+		continue;
+	  else if(settings.objOnOff == 2 && showObject2() == false)
+		continue;
+	}
+
+	it->render(machine);
+  }
+
+//   for_each(foregroundObjects.allocated_begin(), 
+//            foregroundObjects.allocated_end(),
+//            bind(&GraphicsObject::render, _1, ref(machine)));
 
   return endFrameToSurface();
 }

@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -104,9 +104,10 @@ template<typename ACCESS>
 class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
 private:
+  RLMachine* m_machine;
   int m_type;
   int m_location;
-  RLMachine* m_machine;
+
   // Can this be templated?
   friend class StringAccessor;
   friend class IntAccessor;

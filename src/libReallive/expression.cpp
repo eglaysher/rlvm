@@ -551,11 +551,11 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
 /// semantics.
 void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
 int ExpressionPiece::integerValue(RLMachine& machine) const 
-{ throw libReallive::Error(""); }
+{ throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
 const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const 
-{ return ""; }
+{ throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
 // -----------------------------------------------------------------------
 

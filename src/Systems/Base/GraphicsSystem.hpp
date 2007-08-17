@@ -41,6 +41,7 @@ class RLMachine;
 class GraphicsObject;
 class GraphicsObjectData;
 class Gameexe;
+class ObjectSettings;
 
 namespace Json {
 class Value;
@@ -167,7 +168,7 @@ public:
   void setShowObject2(const int in);
   int showObject2() const { return m_showObject1; }
 
-  int objectIsPartOfWhichShowObject(const int objNum);
+  ObjectSettings getObjectSettings(const int objNum);
   /// @}
 
 

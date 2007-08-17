@@ -24,7 +24,8 @@
 
 // -----------------------------------------------------------------------
 
-#include "GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
 #include <vector>
@@ -41,53 +42,6 @@ using std::fill;
 using std::vector;
 
 // -----------------------------------------------------------------------
-
-namespace {
-
-struct GraphicsData
-{
-  GraphicsData();
-  GraphicsData(const vector<int>& data);
-
-  int layer;
-  int spaceKey;
-  int objOnOff;
-  int timeMod;
-  int dispSort;
-  int initMod;
-  int weatherOnOff;
-};
-
-// -----------------------------------------------------------------------
-
-GraphicsData::GraphicsData()
-  : layer(0), spaceKey(0), objOnOff(0), timeMod(0), dispSort(0), initMod(0),
-	weatherOnOff(0)
-{}
-
-// -----------------------------------------------------------------------
-
-GraphicsData::GraphicsData(const vector<int>& data)
-{
-  if(data.size() > 0)
-	layer = data[0];
-  if(data.size() > 1)
-	spaceKey = data[1];
-  if(data.size() > 2)
-	objOnOff = data[2];
-  if(data.size() > 3)
-	timeMod = data[3];
-  if(data.size() > 4)
-	dispSort = data[4];
-  if(data.size() > 5)
-	initMod = data[5];
-  if(data.size() > 6)
-	weatherOnOff = data[6];
-}
-
-};
-
-// -----------------------------------------------------------------------
 // GraphicsSystem::GraphicsObjectSettings
 // -----------------------------------------------------------------------
 /// Impl object
@@ -96,11 +50,11 @@ struct GraphicsSystem::GraphicsObjectSettings
   /// Each is a valid index into data, refering to 
   unsigned char position[OBJECTS_IN_A_LAYER];
 
-  std::vector<GraphicsData> data;
+  std::vector<ObjectSettings> data;
 
   GraphicsObjectSettings(Gameexe& gameexe);
 
-  const GraphicsData& getGraphicsDataFor(int objNum);
+  const ObjectSettings& getObjectSettingsFor(int objNum);
 };
 
 // -----------------------------------------------------------------------
@@ -111,9 +65,9 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   // First we populate everything with the special value
   fill(position, position + OBJECTS_IN_A_LAYER, 0);
   if(gameexe.exists("OBJECT.999"))
-	data.push_back(GraphicsData(gameexe("OBJECT.999")));
+	data.push_back(ObjectSettings(gameexe("OBJECT.999")));
   else
-	data.push_back(GraphicsData());
+	data.push_back(ObjectSettings());
 
   // Read the #OBJECT.xxx entries from the Gameexe
   GameexeFilteringIterator it = gameexe.filtering_begin("OBJECT.");
@@ -122,19 +76,18 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   {
 	const std::string& key = it->key();
 	string s = key.substr(key.find_first_of(".") + 1);
-	cout << "S: " << s << endl;
 	int objNum = lexical_cast<int>(s);
 	if(objNum != 999 && objNum < OBJECTS_IN_A_LAYER)
 	{
 	  position[objNum] = data.size();
-	  data.push_back(GraphicsData(*it));
+	  data.push_back(ObjectSettings(*it));
 	}	
   }
 }
 
 // -----------------------------------------------------------------------
 
-const GraphicsData& GraphicsSystem::GraphicsObjectSettings::getGraphicsDataFor(
+const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsFor(
   int objNum)
 {
   return data[position[objNum]];
@@ -146,8 +99,8 @@ const GraphicsData& GraphicsSystem::GraphicsObjectSettings::getGraphicsDataFor(
 GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
   : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
 	m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
-	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0)),
-	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0)),
+	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
+	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe))
 {
 }
@@ -187,9 +140,9 @@ void GraphicsSystem::setShowObject2(const int in)
 
 // -----------------------------------------------------------------------
 
-int GraphicsSystem::objectIsPartOfWhichShowObject(const int objNum)
+ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
 {
-  return m_graphicsObjectSettings->getGraphicsDataFor(objNum).objOnOff;
+  return m_graphicsObjectSettings->getObjectSettingsFor(objNum);
 }
 
 // -----------------------------------------------------------------------

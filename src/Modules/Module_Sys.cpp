@@ -678,10 +678,6 @@ SysModule::SysModule(System& system)
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
 
-  addUnsupportedOpcode(2270, 0, "SetShowObject1");
-  addUnsupportedOpcode(2370, 0, "ShowObject1");
-  addUnsupportedOpcode(2271, 0, "SetShowObject2");
-  addUnsupportedOpcode(2371, 0, "ShowObject2");
   addUnsupportedOpcode(2272, 0, "SetShowWeather");
   addUnsupportedOpcode(2372, 0, "ShowWeather");
   addUnsupportedOpcode(2273, 0, "SetClassifyText");
@@ -713,6 +709,15 @@ SysModule::SysModule(System& system)
   addOpcode(2614, 0, new ReturnGameexeInt("WINDOW_ATTR", 4));
 
   addOpcode(2617, 0, new Sys_DefWindowAttr);
+
+  addOpcode(2270, 0, "SetShowObject1", 
+			setToIncomingInt(graphics, &GraphicsSystem::setShowObject1));
+  addOpcode(2370, 0, "ShowObject1",
+			returnIntValue(graphics, &GraphicsSystem::showObject1));
+  addOpcode(2271, 0, "SetShowObject2", 
+			setToIncomingInt(graphics, &GraphicsSystem::setShowObject2));
+  addOpcode(2371, 0, "ShowObject2",
+			returnIntValue(graphics, &GraphicsSystem::showObject2));
 
   addOpcode(2324, 0, returnIntValue(text, &TextSystem::messageNoWait));
   addOpcode(2350, 0, returnIntValue(text, &TextSystem::autoMode));
