@@ -25,7 +25,7 @@ bool init_end=false;
 
 /*
  *
- *  Copyright (C) 2000-   Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
+ *  Copyright (C) 2000, 2007-   Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,6 +86,45 @@ extern "C" {
 
 #include <iostream>
 using namespace std;
+
+// -----------------------------------------------------------------------
+
+static int read_little_endian_int(const char* buf) {
+	const unsigned char *p = (const unsigned char *) buf;
+	return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
+}
+
+static int read_little_endian_short(const char* buf) {
+	const unsigned char *p = (const unsigned char *) buf;
+	return (p[1] << 8) | p[0];
+}
+
+static int write_little_endian_int(char* buf, int number) {
+	int c = read_little_endian_int(buf);
+	unsigned char *p = (unsigned char *) buf;
+	unsigned int unum = (unsigned int) number;
+	p[0] = unum & 255;
+	unum >>= 8;
+	p[1] = unum & 255;
+	unum >>= 8;
+	p[2] = unum & 255;
+	unum >>= 8;
+	p[3] = unum & 255;
+	return c;
+}
+
+static int write_little_endian_short(char* buf, int number) {
+	int c = read_little_endian_short(buf);
+	unsigned char *p = (unsigned char *) buf;
+	unsigned int unum = (unsigned int) number;
+	p[0] = unum & 255;
+	unum >>= 8;
+	p[1] = unum & 255;
+	return c;
+}
+
+// -----------------------------------------------------------------------
+
 
 FILESEARCH file_searcher;
 // #define delete fprintf(stderr,"file.cc: %d.",__LINE__), delete

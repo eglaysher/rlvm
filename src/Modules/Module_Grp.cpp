@@ -152,6 +152,7 @@ void loadDCToDC1(GraphicsSystem& graphics,
  * classes.
  */
 struct SPACE {
+  virtual ~SPACE() {}
   virtual void translateToRec(int x1, int y1, int& x2, int& y2) = 0;
 };
 

@@ -59,52 +59,52 @@ Archive::scenario(int index) {
 	return NULL;
 }
 
-void
-Archive::write_to(string filename)
-{
-	// Handle the special case of writing to the input file.
-	if (filename == name) {
-		commit();
-		return;
-	}	
-	// Get length of output file.
-	size_t outlen = 80000;
-	std::map<int, const string*> compressed;
-	for (scenarios_t::const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
-		accessed_t::const_iterator at = accessed.find(it->first);
-		if (at == accessed.end()) {
-			outlen += it->second.length;
-			compressed[it->first] = NULL;
-		}
-		else {
-//printf("SEEN%04d\n", it->first);
-			const string* s = at->second->rebuild();
-			outlen += s->size();
-			compressed[it->first] = s;
-		}
-	}
-	// Write output.
-	Mapping out(filename, Write, outlen);
-	char* omem = out.get();
-	char* ptr = out.get() + 80000;
-	memset((void*) omem, 0, 80000);
-	for (scenarios_t::const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
-		char* idxpos = omem + it->first * 8;
-		insert_i32(idxpos, ptr - omem);
-		const string* s = compressed[it->first];
-		if (s == NULL) {
-			insert_i32(idxpos + 4, it->second.length);
-			memcpy(ptr, it->second.data, it->second.length);
-			ptr += it->second.length;
-		}
-		else {
-			insert_i32(idxpos + 4, s->size());
-			memcpy(ptr, s->data(), s->size());
-			ptr += s->size();
-			delete s;
-		}
-	}
-}
+// void
+// Archive::write_to(string filename)
+// {
+// 	// Handle the special case of writing to the input file.
+// 	if (filename == name) {
+// 		commit();
+// 		return;
+// 	}	
+// 	// Get length of output file.
+// 	size_t outlen = 80000;
+// 	std::map<int, const string*> compressed;
+// 	for (scenarios_t::const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
+// 		accessed_t::const_iterator at = accessed.find(it->first);
+// 		if (at == accessed.end()) {
+// 			outlen += it->second.length;
+// 			compressed[it->first] = NULL;
+// 		}
+// 		else {
+// //printf("SEEN%04d\n", it->first);
+// 			const string* s = at->second->rebuild();
+// 			outlen += s->size();
+// 			compressed[it->first] = s;
+// 		}
+// 	}
+// 	// Write output.
+// 	Mapping out(filename, Write, outlen);
+// 	char* omem = out.get();
+// 	char* ptr = out.get() + 80000;
+// 	memset((void*) omem, 0, 80000);
+// 	for (scenarios_t::const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
+// 		char* idxpos = omem + it->first * 8;
+// 		insert_i32(idxpos, ptr - omem);
+// 		const string* s = compressed[it->first];
+// 		if (s == NULL) {
+// 			insert_i32(idxpos + 4, it->second.length);
+// 			memcpy(ptr, it->second.data, it->second.length);
+// 			ptr += it->second.length;
+// 		}
+// 		else {
+// 			insert_i32(idxpos + 4, s->size());
+// 			memcpy(ptr, s->data(), s->size());
+// 			ptr += s->size();
+// 			delete s;
+// 		}
+// 	}
+// }
 
 void
 Archive::reset()
@@ -113,28 +113,28 @@ Archive::reset()
 	accessed.clear();
 }
 
-void
-Archive::commit()
-{
-	if (accessed.empty()) return;
-	// Get unique filename.
-	char tmpfile[256];
-	for (unsigned long i = 0; i < 0xffffffff; ++i) {
-		sprintf(tmpfile, "%s.%x", name.c_str(), i);
-		FILE* f;
-		if ((f = fopen(tmpfile, "r")))
-		{
-		  fclose(f);
-		} 
-		else
-		{
-		  break;
-		}
-	}
-	// Output.
-	write_to(tmpfile);
-	reset();
-	info.replace(tmpfile);
-}
+// void
+// Archive::commit()
+// {
+// 	if (accessed.empty()) return;
+// 	// Get unique filename.
+// 	char tmpfile[256];
+// 	for (unsigned long i = 0; i < 0xffffffff; ++i) {
+// 		sprintf(tmpfile, "%s.%x", name.c_str(), i);
+// 		FILE* f;
+// 		if ((f = fopen(tmpfile, "r")))
+// 		{
+// 		  fclose(f);
+// 		} 
+// 		else
+// 		{
+// 		  break;
+// 		}
+// 	}
+// 	// Output.
+// 	write_to(tmpfile);
+// 	reset();
+// 	info.replace(tmpfile);
+// }
 
 }

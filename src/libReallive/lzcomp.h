@@ -168,8 +168,9 @@ struct Match {
 */
 class WriteInterface {
 public:
-	virtual void WriteCompData(int pos, Match& match) = 0;
-	virtual void WriteCompRaw(const char* data) = 0;
+  virtual ~WriteInterface() {}
+  virtual void WriteCompData(int pos, Match& match) = 0;
+  virtual void WriteCompRaw(const char* data) = 0;
 };
 
 /**********************
@@ -405,7 +406,7 @@ template<class CInfo> int LZComp<CInfo>::LongestMatch(int pos, Match& match) {
 	}
 	int window_first = window_top;
 	if (window_first < pos-info.MaxDist()) window_first = pos-info.MaxDist();
-	int window_last = pos;
+//	int window_last = pos;
 	int i; for (i=0; i<search_length; i++) {
 		if (cmp_pos < window_first || cmp_pos >= pos) break; /* hash link ‚ª”ÍˆÍŠO‚É‚È‚Á‚½ */
 		char* d = window + (pos-window_top);
@@ -600,10 +601,11 @@ public:
 
 template<class CInfo, class DataContainer = Container::DataContainer> class Compress : private WriteInterface {
 protected:
+	LZComp<CInfo> compress;
 	Container::TmpData tmp;
 	DataContainer data;
 	CInfo info;
-	LZComp<CInfo> compress;
+
 	void WriteCompData(int pos, Match& match) {
 		if (tmp.AddComp(info.MakeCompData(pos, match)) == 0)
 			data.Append(tmp);

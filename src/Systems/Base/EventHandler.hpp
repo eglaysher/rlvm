@@ -25,7 +25,8 @@
 
 enum MouseButton
 {
-  MOUSE_LEFT = 0,
+  MOUSE_NONE = 0,
+  MOUSE_LEFT,
   MOUSE_RIGHT,
   MOUSE_MIDDLE,
   MOUSE_WHEELUP,

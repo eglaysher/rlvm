@@ -39,8 +39,11 @@
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 
+#include <boost/numeric/conversion/cast.hpp>
+
 //#include <iostream>
 using namespace std;
+using boost::numeric_cast;
 
 struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
@@ -124,7 +127,7 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > >
   {
     EventSystem& es = machine.system().event();
 
-    if(es.getTimer(m_layer, counter).read(es) < time)
+    if(es.getTimer(m_layer, counter).read(es) < numeric_cast<unsigned int>(time))
     {
       machine.pushLongOperation(new LongOp_time(machine, m_layer, counter, 
                                                 time, m_inTimeC));
@@ -156,7 +159,7 @@ struct Sys_CmpTimer : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> >
   int operator()(RLMachine& machine, int val, int counter)
   {
     EventSystem& es = machine.system().event();
-    return es.getTimer(m_layer, counter).read(es) > val;
+    return es.getTimer(m_layer, counter).read(es) > numeric_cast<unsigned int>(val);
   }
 };
 

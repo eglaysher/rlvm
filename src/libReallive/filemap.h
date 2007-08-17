@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -43,10 +43,10 @@ namespace libReallive {
 enum Mode { Read, Write };
 
 class Mapping {
+	HANDLE fp;
 	void* mem;
 	bool mapped;
 	size_t len;
-	HANDLE fp;
 	
 	string fn_;
 	Mode mode_;

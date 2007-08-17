@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ private:
   typedef boost::ptr_vector<SelectionElement> Selections;
   Selections m_selections;
 
-  bool setIndentation();
+  void setIndentation();
 
   void renderButtons(RLMachine& machine);
 
@@ -97,7 +97,7 @@ public:
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
 
 
-  virtual bool addSelectionItem(RLMachine& machine, const std::string& utf8str);
+  virtual void addSelectionItem(RLMachine& machine, const std::string& utf8str);
   virtual void endSelectionMode();
 };
 

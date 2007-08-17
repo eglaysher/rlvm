@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -62,14 +62,17 @@ public:
 };
 
 class Script {
+private:
   friend class Scenario;
-  BytecodeList elts;
-  bool strip;
-  Script(const Header& hdr, const char* data, const size_t length);
-	
   // Recalculate all internal data lazily
   mutable bool uptodate;
   mutable size_t lencache;
+
+  BytecodeList elts;
+  bool strip;
+
+  Script(const Header& hdr, const char* data, const size_t length);
+
   void recalculate(const bool force = false);
 
   // Recalculate offset data (do this before serialising)

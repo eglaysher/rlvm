@@ -117,7 +117,6 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed)
 {
   EventSystem& es = m_machine.system().event();
-  TextSystem& text = m_machine.system().text();
 
   switch(mouseButton)
   {

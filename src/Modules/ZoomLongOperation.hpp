@@ -50,7 +50,7 @@ private:
   const int m_dy; 
   const int m_dwidth; 
   const int m_dheight; 
-  const int m_duration;
+  const unsigned int m_duration;
 
   unsigned int m_startTime;
 

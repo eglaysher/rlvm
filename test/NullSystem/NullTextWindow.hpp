@@ -62,7 +62,7 @@ public:
 
   std::string currentContents() const { return m_currentContents; }
 
-  virtual bool addSelectionItem(RLMachine& machine, const std::string& utf8str) {}
+  virtual void addSelectionItem(RLMachine& machine, const std::string& utf8str) {}
 };
 
 #endif

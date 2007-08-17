@@ -77,10 +77,10 @@ private:
   unsigned int m_timeOfLastTitlebarUpdate;
 
   /// The last seen number;
-  unsigned int m_lastSeenNumber;
+  int m_lastSeenNumber;
 
   /// The last line number;
-  unsigned int m_lastLineNumber;
+  int m_lastLineNumber;
 
   /// utf8 encoded title string
   std::string m_captionTitle;
@@ -118,6 +118,9 @@ private:
   // ---------------------------------------------------------------------
 
   void setWindowTitle();
+
+
+  void renderObjects(RLMachine& machine);
 
 public:
   SDLGraphicsSystem(Gameexe& gameexe);

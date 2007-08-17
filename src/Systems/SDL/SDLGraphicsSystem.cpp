@@ -143,14 +143,8 @@ void SDLGraphicsSystem::beginFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::refresh(RLMachine& machine) 
+void SDLGraphicsSystem::renderObjects(RLMachine& machine)
 {
-  beginFrame();
-
-  // Display DC0
-  m_displayContexts[0]->renderToScreen(0, 0, m_width, m_height, 
-                                       0, 0, m_width, m_height, 255);
-
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it = 
 	foregroundObjects.allocated_begin();
@@ -169,6 +163,19 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
 
 	it->render(machine);
   }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::refresh(RLMachine& machine) 
+{
+  beginFrame();
+
+  // Display DC0
+  m_displayContexts[0]->renderToScreen(0, 0, m_width, m_height, 
+                                       0, 0, m_width, m_height, 255);
+
+  renderObjects(machine);
 
   // Render text
   machine.system().text().render(machine);
@@ -187,28 +194,7 @@ shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   bg->renderToScreen(0, 0, m_width, m_height, 
                      0, 0, m_width, m_height, 255);
 
-  // Render all visible foreground objects
-  AllocatedLazyArrayIterator<GraphicsObject> it = 
-	foregroundObjects.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end = 
-	foregroundObjects.allocated_end();
-  for(; it != end; ++it)
-  {
-	const ObjectSettings& settings = getObjectSettings(it.pos());
-	if(settings.objOnOff)
-	{
-	  if(settings.objOnOff == 1 && showObject1() == false)
-		continue;
-	  else if(settings.objOnOff == 2 && showObject2() == false)
-		continue;
-	}
-
-	it->render(machine);
-  }
-
-//   for_each(foregroundObjects.allocated_begin(), 
-//            foregroundObjects.allocated_end(),
-//            bind(&GraphicsObject::render, _1, ref(machine)));
+  renderObjects(machine);
 
   return endFrameToSurface();
 }

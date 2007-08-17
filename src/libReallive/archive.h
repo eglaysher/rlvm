@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -63,10 +63,10 @@ public:
   Scenario* scenario(int index);
   
   void reset();
-  void commit();
+//  void commit();
   
   /// Rewrites an optimized form of 
-  void write_to(string filename);
+//  void write_to(string filename);
 };
 
 }

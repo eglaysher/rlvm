@@ -210,7 +210,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
     case SDL_MOUSEBUTTONUP:
     {
       bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
-      MouseButton button;
+      MouseButton button = MOUSE_NONE;
       switch(event.button.button)
       {
       case SDL_BUTTON_LEFT: 

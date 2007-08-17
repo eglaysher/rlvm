@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -93,7 +93,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length)
   const int kidoku_offs = read_i32(data + 0x08);
   const size_t kidoku_length = read_i32(data + 0x0c);
   ConstructionData cdat(kidoku_length, elts.end());
-  for (int i = 0; i < kidoku_length; ++i) 
+  for (size_t i = 0; i < kidoku_length; ++i) 
     cdat.kidoku_table[i] =  read_i32(data + kidoku_offs + i * 4);
 
   // Decompress data
@@ -105,7 +105,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length)
                           dlen);
   // Read bytecode
   const char* stream = uncompressed.get();
-  int pos = 0;
+  size_t pos = 0;
   while (pos < dlen) {
     // Read element
     elts.push_back(BytecodeElement::read(stream, cdat));

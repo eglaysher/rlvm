@@ -2,7 +2,7 @@
 // 
 // -----------------------------------------------------------------------
 //
-// Copyright (c) 2006 Peter Jolly
+// Copyright (c) 2006, 2007 Peter Jolly
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -119,7 +119,7 @@ compress(char* arr, size_t len)
 	append_i32(*rv, len);
 	rv->append(cmp.Data(), cmp.Length());
 	char m = 0;
-	for (int i = 0; i < rv->size(); ++i) (*rv)[i] ^= xor_mask[m++];
+	for (unsigned int i = 0; i < rv->size(); ++i) (*rv)[i] ^= xor_mask[m++];
 	return rv;
 }
 

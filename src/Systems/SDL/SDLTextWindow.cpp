@@ -228,7 +228,7 @@ bool SDLTextWindow::isFull() const
 
 // -----------------------------------------------------------------------
 
-bool SDLTextWindow::setIndentation()
+void SDLTextWindow::setIndentation()
 {
   m_currentIndentationInPixels = m_insertionPointX;
 }
@@ -470,7 +470,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool SDLTextWindow::addSelectionItem(
+void SDLTextWindow::addSelectionItem(
   RLMachine& machine, const std::string& utf8str)
 {
   // Render the incoming string for both selected and not-selected.
