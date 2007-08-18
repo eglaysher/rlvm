@@ -153,13 +153,12 @@ void SDLGraphicsSystem::renderObjects(RLMachine& machine)
   for(; it != end; ++it)
   {
 	const ObjectSettings& settings = getObjectSettings(it.pos());
-	if(settings.objOnOff)
-	{
-	  if(settings.objOnOff == 1 && showObject1() == false)
-		continue;
-	  else if(settings.objOnOff == 2 && showObject2() == false)
-		continue;
-	}
+    if(settings.objOnOff == 1 && showObject1() == false)
+      continue;
+    else if(settings.objOnOff == 2 && showObject2() == false)
+      continue;
+    else if(settings.weatherOnOff && showWeather() == false)
+      continue;
 
 	it->render(machine);
   }

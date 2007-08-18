@@ -107,6 +107,8 @@ private:
   /// ShowObject flags
   int m_showObject1, m_showObject2;
 
+  int m_showWeather;
+
   struct GraphicsObjectSettings;
   boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
 
@@ -167,6 +169,9 @@ public:
 
   void setShowObject2(const int in);
   int showObject2() const { return m_showObject1; }
+
+  void setShowWeather(const int in);
+  int showWeather() const { return m_showWeather; }
 
   ObjectSettings getObjectSettings(const int objNum);
   /// @}

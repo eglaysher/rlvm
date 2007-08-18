@@ -101,6 +101,7 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
 	m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
 	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
 	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
+    m_showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe))
 {
 }
@@ -140,6 +141,13 @@ void GraphicsSystem::setShowObject2(const int in)
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::setShowWeather(const int in)
+{
+  m_showWeather = in;
+}
+
+// -----------------------------------------------------------------------
+
 ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
 {
   return m_graphicsObjectSettings->getObjectSettingsFor(objNum);
@@ -168,6 +176,7 @@ void GraphicsSystem::saveGlobals(Json::Value& system)
   Json::Value graphics(Json::objectValue);
   graphics["showObject1"] = showObject1();
   graphics["showObject2"] = showObject2();
+  graphics["showWeather"] = showWeather();
 
   system["graphics"] = graphics;
 }
@@ -180,4 +189,5 @@ void GraphicsSystem::loadGlobals(const Json::Value& system)
   Json::Value textSys = system["graphics"];
   setShowObject1(textSys["showObject1"].asInt());
   setShowObject2(textSys["showObject2"].asInt());
+  setShowWeather(textSys["showWeather"].asInt());
 }

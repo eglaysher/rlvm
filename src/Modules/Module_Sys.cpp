@@ -678,8 +678,6 @@ SysModule::SysModule(System& system)
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
 
-  addUnsupportedOpcode(2272, 0, "SetShowWeather");
-  addUnsupportedOpcode(2372, 0, "ShowWeather");
   addUnsupportedOpcode(2273, 0, "SetClassifyText");
   addUnsupportedOpcode(2373, 0, "ClassifyText");
   addUnsupportedOpcode(2274, 0, "SetUseKoe");
@@ -718,6 +716,10 @@ SysModule::SysModule(System& system)
 			setToIncomingInt(graphics, &GraphicsSystem::setShowObject2));
   addOpcode(2371, 0, "ShowObject2",
 			returnIntValue(graphics, &GraphicsSystem::showObject2));
+  addOpcode(2272, 0, "SetShowWeather",
+            setToIncomingInt(graphics, &GraphicsSystem::setShowWeather));
+  addOpcode(2372, 0, "ShowWeather",
+            returnIntValue(graphics, &GraphicsSystem::showWeather));
 
   addOpcode(2324, 0, returnIntValue(text, &TextSystem::messageNoWait));
   addOpcode(2350, 0, returnIntValue(text, &TextSystem::autoMode));
