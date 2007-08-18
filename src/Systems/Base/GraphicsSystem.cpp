@@ -102,6 +102,7 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
 	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
 	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
     m_showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
+    m_hideInterface(false),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe))
 {
 }
@@ -144,6 +145,20 @@ void GraphicsSystem::setShowObject2(const int in)
 void GraphicsSystem::setShowWeather(const int in)
 {
   m_showWeather = in;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::toggleInterfaceHidden()
+{
+  m_hideInterface = !m_hideInterface;
+}
+
+// -----------------------------------------------------------------------
+
+bool GraphicsSystem::interfaceHidden()
+{
+  return m_hideInterface;
 }
 
 // -----------------------------------------------------------------------

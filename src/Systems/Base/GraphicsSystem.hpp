@@ -109,6 +109,10 @@ private:
 
   int m_showWeather;
 
+  /// Controls whether we render the interface (this can be
+  /// temporarily toggled by the user at runtime)
+  bool m_hideInterface;
+
   struct GraphicsObjectSettings;
   boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
 
@@ -169,10 +173,28 @@ public:
 
   void setShowObject2(const int in);
   int showObject2() const { return m_showObject1; }
+  /// @}
 
+  /**
+   * @name Other object display settings
+   * 
+   * @{
+   */
   void setShowWeather(const int in);
   int showWeather() const { return m_showWeather; }
 
+  /**
+   * Toggles whether the interface is shown. Called by
+   * PauseLongOperation and related functors.
+   */
+  void toggleInterfaceHidden();
+  bool interfaceHidden();
+
+  /**
+   * Returns the ObjectSettings from the Gameexe for objNum. The data
+   * from this method should be used by all subclasses of
+   * GraphicsSystem when deciding whether to render an object or not.
+   */
   ObjectSettings getObjectSettings(const int objNum);
   /// @}
 

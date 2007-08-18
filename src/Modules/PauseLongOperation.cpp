@@ -109,48 +109,55 @@ void PauseLongOperation::mouseMotion(int x, int y)
 // -----------------------------------------------------------------------
 
 void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton, 
-                                           bool pressed)
+                                                 bool pressed)
 {
-  EventSystem& es = machine.system().event();
-  TextSystem& text = machine.system().text();
+  GraphicsSystem& graphics = machine.system().graphics();
 
-  switch(mouseButton)
+  if(graphics.interfaceHidden())
+    graphics.toggleInterfaceHidden();
+  else
   {
-  case MOUSE_LEFT:
-  {
-    int x, y;
-    es.getCursorPos(x, y);
-    if(!machine.system().text().handleMouseClick(machine, x, y, pressed))
+    EventSystem& es = machine.system().event();
+    TextSystem& text = machine.system().text();
+
+    switch(mouseButton)
     {
-      if(pressed)
+    case MOUSE_LEFT:
+    {
+      int x, y;
+      es.getCursorPos(x, y);
+      if(!machine.system().text().handleMouseClick(machine, x, y, pressed))
       {
-        if(text.isReadingBacklog())
+        if(pressed)
         {
-          // Move back to the main page.
-          text.stopReadingBacklog();
-        }
-        else
-        {
-          m_isDone = true;
+          if(text.isReadingBacklog())
+          {
+            // Move back to the main page.
+            text.stopReadingBacklog();
+          }
+          else
+          {
+            m_isDone = true;
+          }
         }
       }
+      break;
     }
-    break;
-  }
-  case MOUSE_RIGHT:
-    if(pressed)
-      handleSyscomCall();
-    break;
-  case MOUSE_WHEELUP:
-    if(pressed)
-      text.backPage(machine);
-    break;
-  case MOUSE_WHEELDOWN:
-   if(pressed)
-     text.forwardPage(machine);
-    break;
-  default:
-	break;
+    case MOUSE_RIGHT:
+      if(pressed)
+        handleSyscomCall();
+      break;
+    case MOUSE_WHEELUP:
+      if(pressed)
+        text.backPage(machine);
+      break;
+    case MOUSE_WHEELDOWN:
+      if(pressed)
+        text.forwardPage(machine);
+      break;
+    default:
+      break;
+    }
   }
 }
 
@@ -158,23 +165,33 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
+  GraphicsSystem& graphics = machine.system().graphics();
   TextSystem& text = machine.system().text();
   
   if(pressed)
   {
-    bool ctrlKeySkips = text.ctrlKeySkip();
-
-    if(ctrlKeySkips && 
-       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
+    if(graphics.interfaceHidden())
     {
-      m_isDone = true;
+      graphics.toggleInterfaceHidden();
     }
-    else if(keyCode == RLKEY_UP)
-      text.backPage(machine);
-    else if(keyCode == RLKEY_DOWN)
-      text.forwardPage(machine);
-    else if(keyCode == RLKEY_RETURN)
-      m_isDone = true;
+    else
+    {
+      bool ctrlKeySkips = text.ctrlKeySkip();
+
+      if(ctrlKeySkips && 
+         (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
+      {
+        m_isDone = true;
+      }
+      else if(keyCode == RLKEY_SPACE)
+        graphics.toggleInterfaceHidden();
+      else if(keyCode == RLKEY_UP)
+        text.backPage(machine);
+      else if(keyCode == RLKEY_DOWN)
+        text.forwardPage(machine);
+      else if(keyCode == RLKEY_RETURN)
+        m_isDone = true;
+    }
   }
 }
 

@@ -159,6 +159,8 @@ void SDLGraphicsSystem::renderObjects(RLMachine& machine)
       continue;
     else if(settings.weatherOnOff && showWeather() == false)
       continue;
+    else if(settings.spaceKey && interfaceHidden())
+      continue;
 
 	it->render(machine);
   }
@@ -177,7 +179,8 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   renderObjects(machine);
 
   // Render text
-  machine.system().text().render(machine);
+  if(!interfaceHidden())
+    machine.system().text().render(machine);
 
   endFrame();
 }

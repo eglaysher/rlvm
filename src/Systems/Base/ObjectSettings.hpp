@@ -39,12 +39,39 @@ struct ObjectSettings
   ObjectSettings();
   ObjectSettings(const std::vector<int>& data);
 
+  /// Purpose unknown
   int layer;
+
+  /**
+   * SpaceKey determines whether an object is considered part of the
+   * UI layer or not; if it's non-zero, then the object is hidden
+   * temporarily if the player hides the text window to view the
+   * picture properly (typically by pressing the space key).
+   */
   int spaceKey;
+
+  /**
+   * ObjOnOff determines whether an object can be toggled on and off
+   * independently by the player.  Valid values are 0, 1, and 2.
+   * Values of 1 and 2 correspond to [Set]ShowObject1() and
+   * [Set]ShowObject2(), and to #SYSCOMs 18 and 19 respectively.
+   */
   int objOnOff;
+
+  /// Purpose Unknown
   int timeMod;
+
+  /// Purpose Unknown
   int dispSort;
+
+  /// Purpose Unknown. (Set to 1 in objects 08[1234] in CLANNAD)
   int initMod;
+
+  /**
+   * WeatherOnOff determines whether the object is considered a
+   * weather effect object or not; if it's non-zero, the object will
+   * be shown and hidden with [Set]ShowWeather(), #SYSCOM 17.
+   */
   int weatherOnOff;
 };
 
