@@ -56,18 +56,18 @@
 //
 // REMEMBER TO COMMENT THESE LINES OUT BEFORE YOU GO OFF AND FIDDLE
 // WITH THEM!
-#include "libReallive/gameexe.h"
-#include "libReallive/defs.h"
-#include "libReallive/bytecode.h"
-#include "libReallive/bytecode_fwd.h"
+// #include "libReallive/gameexe.h"
+// #include "libReallive/defs.h"
+// #include "libReallive/bytecode.h"
+// #include "libReallive/bytecode_fwd.h"
 
-#include "MachineBase/reference.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
-#include "MachineBase/RLOperation/References.hpp"
-#include "MachineBase/RLOperation/Special_T.hpp"
+// #include "MachineBase/reference.hpp"
+// #include "MachineBase/RLOperation.hpp"
+// #include "MachineBase/RLOperation/Argc_T.hpp"
+// #include "MachineBase/RLOperation/Complex_T.hpp"
+// #include "MachineBase/RLOperation/DefaultValue.hpp"
+// #include "MachineBase/RLOperation/RLOp_Store.hpp"
+// #include "MachineBase/RLOperation/References.hpp"
+// #include "MachineBase/RLOperation/Special_T.hpp"
 
 #endif

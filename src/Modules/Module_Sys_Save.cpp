@@ -293,6 +293,18 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
 
 // -----------------------------------------------------------------------
 
+struct Sys_load : public RLOp_Void_1< IntConstant_T >
+{
+  bool advanceInstructionPointer() { return false; }
+
+  void operator()(RLMachine& machine, int slot)
+  {
+	machine.loadGame(slot);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 void addSysSaveOpcodes(RLModule& m)
 {
   m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
@@ -308,4 +320,7 @@ void addSysSaveOpcodes(RLModule& m)
 
   m.addOpcode(3007, 0, "save", new Sys_save);
   m.addOpcode(3107, 0, "save_always", new Sys_save);
+
+  m.addOpcode(3009, 0, "load", new Sys_load);
+  m.addOpcode(3109, 0, "load_always", new Sys_load);
 }

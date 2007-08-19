@@ -141,10 +141,8 @@ public:
   // -----------------------------------------------------------------------
 
   /**
-   * @name Memory Persistence 
+   * @name Saving/Loading Games and Global Memory
    * 
-   * Saves the contents of memory.
-   *
    * @{
    */
 
@@ -182,7 +180,7 @@ public:
   void loadGlobalMemoryFrom(std::istream& oss);
 
   /**
-   * Writes out a
+   * Writes out the current game state to save game slot @c slot .
    * 
    * Then, it saves the state of the global memory.
    */
@@ -193,14 +191,38 @@ public:
    */
   void saveGameTo(std::ostream& oss);
 
+  /**
+   * Reads in and overwrites the current game state with the data from
+   * save game slot @c slot .
+   */
+  void loadGame(const int slot);
 
-
+  /**
+   * Reads in the save game data from the stream and overwrites
+   * current memory.
+   */
+  void loadGameFrom(std::istream& iss);
 
   void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
   void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
 
+  /** 
+   * Serializes an individual bank of strings
+   * 
+   * @param strPtr Pointer to the beginning of a string[2000] array.
+   * @param bankName single character name for the string bank
+   * @param root JSON tree root to save to
+   */
   void saveStringBank(const std::string* strPtr, char bankName, 
 					  Json::Value& root);
+
+  /** 
+   * Serializes an individual bank of strings
+   * 
+   * @param strPtr Pointer to the beginning of a string[2000] array.
+   * @param bankName single character name for the string bank
+   * @param root JSON tree root to read from
+   */
   void loadStringBank(std::string* strPtr, char bankName, Json::Value& root);
   /// @}
 
