@@ -141,6 +141,9 @@ struct Sel_select : public RLOp_SpecialCase
 {
   void operator()(RLMachine& machine, const CommandElement& ce)
   {
+    if(machine.shouldSetSelcomSavepoint())
+      machine.markSavepoint();
+
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
     machine.pushLongOperation(new Sel_LongOperation(machine, element));
     machine.advanceInstructionPointer();

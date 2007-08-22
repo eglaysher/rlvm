@@ -30,6 +30,7 @@
 #include "MachineBase/RLOperation/References.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
 
 #include <iostream>
@@ -305,6 +306,20 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
 
 // -----------------------------------------------------------------------
 
+struct Sys_EnableAutoSavepoints : public RLOp_Void_Void
+{
+  void operator()(RLMachine& machine) { machine.setMarkSavepoints(1); }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_DisableAutoSavepoints : public RLOp_Void_Void
+{
+  void operator()(RLMachine& machine) { machine.setMarkSavepoints(0); }
+};
+
+// -----------------------------------------------------------------------
+
 void addSysSaveOpcodes(RLModule& m)
 {
   m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
@@ -323,4 +338,9 @@ void addSysSaveOpcodes(RLModule& m)
 
   m.addOpcode(3009, 0, "load", new Sys_load);
   m.addOpcode(3109, 0, "load_always", new Sys_load);
+
+  m.addOpcode(3501, 0, "EnableAutoSavepoints", 
+              new Sys_EnableAutoSavepoints);
+  m.addOpcode(3502, 0, "DisableAutoSavepoints", 
+              new Sys_DisableAutoSavepoints);
 }

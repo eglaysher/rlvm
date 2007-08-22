@@ -35,6 +35,7 @@
 #include <boost/ptr_container/ptr_map.hpp>
 
 #include "libReallive/bytecode_fwd.h"
+#include "libReallive/scenario.h"
 
 #include <vector>
 
@@ -45,6 +46,7 @@ class Value;
 namespace  libReallive {
 class Archive;
 class IntMemRef;
+//class Scenario;
 };
 
 class RLModule;
@@ -125,6 +127,15 @@ private:
    */
   void popStackFrame();
 
+  /// Override defaults
+  bool m_markSavepoints;
+
+  /// The scenario the save point is in.
+  libReallive::Scenario const* scenarioSavePoint;
+
+  /// The last save point hit (from this stack frame). 
+  libReallive::Scenario::const_iterator savePoint;
+
 public:
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
   virtual ~RLMachine();
@@ -203,6 +214,13 @@ public:
    */
   void loadGameFrom(std::istream& iss);
 
+  /** 
+   * Copies the current instruction pointer to the save pointer on the
+   * topmost stackframe. 
+   * 
+   */
+//  void markSavepoint();
+
   void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
   void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
 
@@ -226,6 +244,62 @@ public:
   void loadStringBank(std::string* strPtr, char bankName, Json::Value& root);
   /// @}
 
+  // -----------------------------------------------------------------------
+
+  /** 
+   * @name Implicit savepoint management
+   * 
+   * RealLive will save the latest savepoint for the topmost stack
+   * frame. Savepoints can be manually set (with the "Savepoint"
+   * command), but are usually implicit.
+   *
+   * @{
+   */
+
+  /**
+   * Mark a savepoint on the top of the stack. Used by both the
+   * explicit Savepoint command, and most actions that would trigger
+   * an implicit savepoint.
+   */
+  void markSavepoint();
+
+  /// Checks to see if we should set a savepoint on the start of a
+  /// textout when all text windows are empty (aka, when a message starts)
+  bool shouldSetMessageSavepoint() const;
+
+  /// Checks to see if we should set a savepoint on the start of a
+  /// user selection choice
+  bool shouldSetSelcomSavepoint() const;
+
+  /// Do we set a savepoint when we enter the top of a seen. (This may
+  /// be on every farcall, or it may mean #entrypoint 0. We're not sure.)
+  bool shouldSetSeentopSavepoint() const;
+
+  typedef long(libReallive::Scenario::*AttributeFunction)() const;
+
+  /**
+   * Implementation function for shouldSet*Savepoint().
+   * 
+   * - If automatic savepoints have been explicitly disabled with
+   *   DisableAutoSavepoints, return false. Otherwise...
+   * - The current Scenario is checked; in the bytecode header, there
+   *   is a value for each of these properties. If it is 1 (always
+   *   create this class of savepoint) or 2 (never), then we
+   *   return. On any other value, we fall through to...
+   * - Check a Gameexe key, which has the final say.
+   */
+  bool savepointDecide(AttributeFunction func, 
+                       const std::string& gameexeKey) const;
+
+  /**
+   * Whether the DisableAutoSavepoints override is on. This is
+   * triggered purely from bytecode.
+   * 
+   * @param in The new value. 0 is the override for false. 1 is normal
+   *           and will consult the rest of the values.
+   */
+  void setMarkSavepoints(const int in); // m_markSavepoints
+  /// @}
 
   // -----------------------------------------------------------------------
 
@@ -369,6 +443,12 @@ public:
    * the call stack.
    */
   int sceneNumber() const;
+
+
+  /**
+   * Returns the actual Scenario on the top top of the call stack.
+   */
+  const libReallive::Scenario& scenario() const;
 
   /** 
    * Returns the value of the most recent line MetadataElement, which

@@ -171,7 +171,7 @@ struct RLMachine::StackFrame {
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
   : m_halted(false), m_haltOnException(true), archive(inArchive), 
-    m_system(inSystem)
+    m_system(inSystem), m_markSavepoints(false)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();
@@ -197,6 +197,9 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
 
   // Initialize the big memory block to zero
   memset(intVar, 0, sizeof(intVar));
+
+  // Initial value of the savepoint
+  markSavepoint();
 }
 
 // -----------------------------------------------------------------------
@@ -333,6 +336,73 @@ void RLMachine::loadStringBank(std::string* strPtr,
 
 // -----------------------------------------------------------------------
 
+void RLMachine::markSavepoint()
+{
+  scenarioSavePoint = callStack.back().scenario;
+  savePoint = callStack.back().ip;
+}
+
+// -----------------------------------------------------------------------
+
+bool RLMachine::savepointDecide(AttributeFunction func, 
+                                const std::string& gameexeKey) const
+{
+  // 
+  if(!m_markSavepoints)
+    return false;
+
+  long attribute = (scenario().*func)();
+  if(attribute == 1)
+    return true;
+  else if(attribute == 2)
+    return false;
+
+  //
+  // check Gameexe key
+  Gameexe& gexe = m_system.gameexe();
+  if(gexe.exists(gameexeKey))
+  {
+    int value = gexe(gameexeKey);
+    if(value == 0)
+      return false;
+    else if(value == 1)
+      return true;
+  }
+
+  // Assume default of true
+  return true;
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setMarkSavepoints(const int in)
+{
+  m_markSavepoints = in;
+}
+
+// -----------------------------------------------------------------------
+
+bool RLMachine::shouldSetMessageSavepoint() const
+{
+  return savepointDecide(&Scenario::savepointMessage, "");
+}
+
+// -----------------------------------------------------------------------
+
+bool RLMachine::shouldSetSelcomSavepoint() const
+{
+  return savepointDecide(&Scenario::savepointSelcom, "");
+}
+
+// -----------------------------------------------------------------------
+
+bool RLMachine::shouldSetSeentopSavepoint() const
+{
+  return savepointDecide(&Scenario::savepointSeentop, "");
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks, 
 									 Json::Value& root)
 {
@@ -462,7 +532,12 @@ void RLMachine::saveGameTo(std::ostream& ofs)
     {
       Json::Value frame(Json::arrayValue);
 
-      int position = distance(it->scenario->begin(), it->ip);
+      int position = 0;
+      if(it->scenario == scenarioSavePoint)
+        position = distance(it->scenario->begin(), savePoint);
+      else
+        position = distance(it->scenario->begin(), it->ip);
+
       frame.push_back(Json::Value(it->scenario->sceneNumber()));
       frame.push_back(Json::Value(position));
       frame.push_back(Json::Value(it->frameType));
@@ -565,6 +640,10 @@ void RLMachine::loadGameFrom(std::istream& iss)
     else
       throw rlvm::Exception("Unknown token in callStack in save file!");
   }
+
+  // Reset the system
+  // @todo Make this work.
+//  system().reset();
 }
 
 // -----------------------------------------------------------------------
@@ -792,6 +871,9 @@ void RLMachine::farcall(int scenarioNum, int entrypoint)
 
   libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
 
+  if(entrypoint == 0 && shouldSetSeentopSavepoint())
+    markSavepoint();
+
   pushStackFrame(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
 }
 
@@ -879,6 +961,13 @@ int RLMachine::sceneNumber() const
 
 // -----------------------------------------------------------------------
 
+const Scenario& RLMachine::scenario() const
+{
+  return *callStack.back().scenario;
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::executeExpression(const ExpressionElement& e) 
 {
   e.parsedExpression().integerValue(*this);
@@ -896,6 +985,10 @@ int RLMachine::getTextEncoding() const
 
 void RLMachine::performTextout(const TextoutElement& e)
 {
+  // Check to see if we mark savepoints on textout
+  if(shouldSetMessageSavepoint())
+    markSavepoint();
+
   std::string utf8str = cp932toUTF8(e.text(), getTextEncoding());
 
   TextSystem& ts = system().text();

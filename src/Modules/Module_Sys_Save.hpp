@@ -23,6 +23,7 @@
 #ifndef __Module_Sys_Save_hpp__
 #define __Module_Sys_Save_hpp__
 
+class RLMachine;
 class RLModule;
 
 /** 
