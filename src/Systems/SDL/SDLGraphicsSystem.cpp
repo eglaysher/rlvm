@@ -198,6 +198,10 @@ shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
 
   renderObjects(machine);
 
+  // Render text
+  if(!interfaceHidden())
+    machine.system().text().render(machine);
+
   return endFrameToSurface();
 }
 
@@ -768,4 +772,29 @@ GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(RLMachine& machine,
     oss << "Don't know how to handle object file: \"" << fullPath << "\"";
     throw rlvm::Exception(oss.str());
   }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::clearAllObjectsAndDCs()
+{
+  getDC(0)->fill(0, 0, 0, 255);
+  
+  for(int i = 1; i < 16; ++i)
+    freeDC(i);
+
+  foregroundObjects.clear();
+  backgroundObjects.clear();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::reset()
+{
+  clearAllObjectsAndDCs();
+
+  m_lastSeenNumber = 0;
+  m_lastLineNumber = 0;
+
+  GraphicsSystem::reset();
 }

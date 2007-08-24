@@ -598,6 +598,7 @@ void RLMachine::loadGameFrom(std::istream& iss)
 
   system().graphics().setWindowSubtitle(root["title"].asString());
 
+  callStack.clear();
   const Value saveCallStack = root["callStack"];
   for(ValueConstIterator it = saveCallStack.begin(); 
       it != saveCallStack.end(); ++it)
@@ -643,7 +644,8 @@ void RLMachine::loadGameFrom(std::istream& iss)
 
   // Reset the system
   // @todo Make this work.
-//  system().reset();
+  system().reset();
+  system().graphics().markScreenForRefresh();
 }
 
 // -----------------------------------------------------------------------

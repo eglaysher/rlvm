@@ -72,6 +72,19 @@ public:
   const std::vector<std::string>& getSearchPaths();
 
   /**
+   * Resets the present values of the system; this doesn't clear user
+   * settings, but clears things like the current graphics state and
+   * the status of all the text windows. 
+   *
+   * This method is called when the user loads a game or resets the
+   * machine.
+   *
+   * The System implementation of reset() will call reset() on all
+   * systems.
+   */
+  virtual void reset();
+
+  /**
    * Save the global configuration.
    */
   virtual void saveGlobals(Json::Value& root);

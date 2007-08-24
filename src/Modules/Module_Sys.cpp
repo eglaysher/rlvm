@@ -52,6 +52,11 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
+
+#include "Modules/FadeEffect.hpp"
+
 #include "dateUtil.hpp"
 #include <cmath>
 #include <iostream>
@@ -59,6 +64,7 @@
 const float PI = 3.14159265;
 
 using namespace std;
+using boost::shared_ptr;
 
 //  fun title                   <1:Sys:00000, 0> (res 'sub-title')
 struct Sys_title : public RLOp_Void_1< StrConstant_T > {
@@ -483,6 +489,39 @@ struct Sys_DefWindowAttr : public RLOp_Void_5<
 
 // -----------------------------------------------------------------------
 
+struct Sys_MenuReturn : public RLOp_Void_Void
+{
+  /// Don't advance the instruction pointer when this returns
+  virtual bool advanceInstructionPointer() { return false; }
+
+  void operator()(RLMachine& machine)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    // Render the screen as is.
+    shared_ptr<Surface> dc0 = graphics.getDC(0);
+    shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
+
+    // Clear everything
+    graphics.clearAllObjectsAndDCs();
+    machine.system().text().hideAllTextWindows();
+
+    shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);
+
+    // First, we jump the instruction pointer to the new location.
+    int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
+    machine.jump(scenario);
+
+    // Now we push a LongOperation on top of the stack; when this
+    // ends, we'll be at SEEN_MENU.
+    LongOperation* effect = 
+      new FadeEffect(machine, after, before, after->width(), after->height(), 1000);
+    machine.pushLongOperation(effect);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 SysModule::SysModule(System& system)
   : RLModule("Sys", 1, 004)
 {
@@ -567,8 +606,8 @@ SysModule::SysModule(System& system)
   addOpcode(1120, 0, "SceneNum", new Sys_SceneNum);
 
   addOpcode(1200, 0, "end", new Sys_end);
-  addUnsupportedOpcode(1201, 0, "MenuReturn");
-  addUnsupportedOpcode(1202, 0, "MenuReturn2");
+  addOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
+  addOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
   addUnsupportedOpcode(1204, 0, "ReturnPrevSelect");
   addUnsupportedOpcode(1205, 0, "ReturnPrevSelect2");

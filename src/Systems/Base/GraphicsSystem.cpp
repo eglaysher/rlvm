@@ -206,3 +206,14 @@ void GraphicsSystem::loadGlobals(const Json::Value& system)
   setShowObject2(textSys["showObject2"].asInt());
   setShowWeather(textSys["showWeather"].asInt());
 }
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::reset()
+{
+  m_defaultGrpName = "";
+  m_defaultBgrName = "";
+  m_screenUpdateMode = SCREENUPDATEMODE_AUTOMATIC;
+  m_subtitle = "";
+  m_hideInterface = false;
+}

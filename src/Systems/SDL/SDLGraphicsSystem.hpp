@@ -186,6 +186,14 @@ public:
 
   virtual GraphicsObject& getObject(int layer, int objNumber);
   virtual void setObject(int layer, int objNumber, GraphicsObject& object);
+
+  virtual void clearAllObjectsAndDCs();
+
+  /** 
+   * Reset the system. Should clear all state for when a user loads a
+   * game.
+   */
+  virtual void reset();
 };
 
 

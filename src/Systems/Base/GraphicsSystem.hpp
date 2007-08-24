@@ -249,6 +249,14 @@ public:
   /// layer == 0 for fg, layer == 1 for bg.
   virtual GraphicsObject& getObject(int layer, int objNumber) = 0;
   virtual void setObject(int layer, int objNumber, GraphicsObject& object) {}
+
+  virtual void clearAllObjectsAndDCs() { }
+
+  /** 
+   * Reset the system. Should clear all state for when a user loads a
+   * game.
+   */
+  virtual void reset();
 };
 
 const static int OBJ_FG_LAYER = 0;

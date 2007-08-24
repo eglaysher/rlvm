@@ -78,6 +78,15 @@ const std::vector<std::string>& System::getSearchPaths()
 
 // -----------------------------------------------------------------------
 
+void System::reset()
+{
+  graphics().reset();
+//  event().reset();
+  text().reset();
+}
+
+// -----------------------------------------------------------------------
+
 void System::saveGlobals(Json::Value& root)
 {
   Json::Value system(Json::objectValue);

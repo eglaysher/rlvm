@@ -282,3 +282,14 @@ void TextSystem::loadGlobals(const Json::Value& system)
 	attr.push_back(windowAttr[i].asInt());
   setDefaultWindowAttr(attr);
 }
+
+// -----------------------------------------------------------------------
+
+void TextSystem::reset()
+{
+  m_isReadingBacklog = false;
+
+  m_currentPageset = std::auto_ptr<PageSet>(new PageSet);
+  m_previousPageSets.clear();
+  m_previousPageIt = m_previousPageSets.end();
+}

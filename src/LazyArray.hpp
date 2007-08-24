@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -70,6 +70,8 @@ public:
   const T& operator[](int pos) const;
 
   int size() const { return m_size; }
+
+  void clear();
 
   // Iterate across all items, allocated or not. It is the users
   // responsibility to call the isValid() method on the iterator
@@ -257,6 +259,18 @@ const T& LazyArray<T>::operator[](int pos) const
   }
   
   return *(m_array[pos]);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename T>
+void LazyArray<T>::clear()
+{
+  for(int i = 0; i < m_size; ++i)
+  {
+    boost::checked_delete<T>(m_array[i]);
+    m_array[i] = NULL;
+  }
 }
 
 // -----------------------------------------------------------------------

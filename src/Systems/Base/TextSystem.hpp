@@ -280,6 +280,11 @@ public:
 
   virtual void saveGlobals(Json::Value& system);
   virtual void loadGlobals(const Json::Value& system);
+
+  /**
+   * Resets non-configuration values (so we can load games).
+   */
+  virtual void reset();
 };
 
 #endif
