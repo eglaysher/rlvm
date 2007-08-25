@@ -648,9 +648,12 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(2053, 0, "SetConfirmSaveLoad");
   addUnsupportedOpcode(2003, 0, "ConfirmSaveLoad");
 
-  addUnsupportedOpcode(2223, 0, "SetMessageSpeed");
-  addUnsupportedOpcode(2323, 0, "MessageSpeed");
-  addUnsupportedOpcode(2600, 0, "DefaultMessageSpeed");
+  addOpcode(2223, 0, "SetMessageSpeed",
+            setToIncomingInt(text, &TextSystem::setMessageSpeed));
+  addOpcode(2323, 0, "MessageSpeed",
+            returnIntValue(text, &TextSystem::messageSpeed));
+  addOpcode(2600, 0, "DefaultMessageSpeed",
+            new ReturnGameexeInt("INIT_MESSAGE_SPEED", 30));
 
   addOpcode(2224, 0, "SetMessageNoWait",
             setToIncomingInt(text, &TextSystem::setMessageNoWait));

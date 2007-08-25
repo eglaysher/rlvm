@@ -55,7 +55,8 @@ TextSystem::TextSystem(Gameexe& gexe)
 
     m_ctrlKeySkip(true), m_fastTextMode(false),
     m_messageNoWait(false),
-    m_messageSpeed(0), m_activeWindow(0), m_isReadingBacklog(false),
+    m_messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30)), 
+    m_activeWindow(0), m_isReadingBacklog(false),
 
     m_currentPageset(new PageSet),
 
