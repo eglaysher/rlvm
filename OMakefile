@@ -46,7 +46,7 @@ else
 # CXX = $(if $(CCACHE_FOUND), ccache g++, g++)
 
 .SUBDIRS: vendor src test
-.PHONY: tags
+.PHONY: tags docs
 
 tags:
 	find src -name "*.cpp" | xargs etags -
@@ -57,3 +57,6 @@ tags:
 	find vendor -name "*.cc" | xargs etags -a -
 	find vendor -name "*.hpp" | xargs etags -a -
 	find vendor -name "*.h" | xargs etags -a -
+
+docs:
+	doxygen doc/Doxygen.default
