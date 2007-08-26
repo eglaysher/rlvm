@@ -1,0 +1,79 @@
+Elliot Glaysher wrote:
+> For the top most stack frame, what instruction pointer value is saved? The
+> current location of the instruction pointer? The last kidoku marker that was
+> hit? A specifically marked point? (possibly with <1:Sys:211, 0> or
+> <1:Sys:216, 0>?) And if the current location of the instruction pointer is
+> saved, is the current state of the text windows simply serialized? (instead
+> of naturally being replayed by having the instruction pointer before the
+> commands that populated the current window state.)
+
+Starting at the end, the answer is that games are saved before text
+display commands, and the text window is reconstructed naturally as the
+commands are re-executed.
+
+Sadly, that's the only simple bit!
+
+Instead of explicit savepoint functions, most games just use a concept
+of `implicit' savepoints.  These are what the notes in reallive.kfn
+relate to.  To expand and clarify those, there are three places where a
+savepoint may be placed implicitly:
+
+* MESSAGE: at the start of a message[1]
+* SELCOM: at a selection command
+* SEENTOP: at the start of a scenario file[2]
+
+The creation of implicit savepoints in these places is controlled in
+three ways:
+
+* by settings in the bytecode header
+* by settings in gameexe.ini
+* by two functions
+
+The bytecode header settings are the fields that libreallive calls
+"savepoint_message", "savepoint_selcom", and "savepoint_seentop".  These
+are integers: the values 1 and 2 override the gameexe.ini defaults (1 =
+always create this class of savepoint in this scenario, 2 = never),
+while any other value means to use the gameexe.ini settings for this
+scenario.
+
+The gameexe.ini settings are #SAVEPOINT_MESSAGE, #SAVEPOINT_SELCOM, and
+#SAVEPOINT_SEENTOP.  1 means savepoints are created, 0 means they are
+not.  I don't know what the default is.
+
+Finally, the functions that control this are <1:Sys:03501> and
+<1:Sys:03502> - I assume these override all other settings, though I
+haven't actually tested this.
+
+As far as explicit placement of savepoints goes, you've probably seen
+the notes in reallive.kfn regarding <1:Sys:03500>, which I don't fully
+understand.[3]  I don't think the two opcodes you mention create
+savepoints; they're referenced in one of roxfan's emails, where he wrote
+
+> 1:sys:210: WipeCommandOn() //??? see game info dlg
+> 1:sys:211: WipeCommandOff() //??? see game info dlg
+>
+> 1:sys:215: Graphic command after window close ON  //??? see game info
+> 1:sys:216: Graphic command after window close OFF //    dlg
+
+
+[1] I believe this refers to the kidoku marker at the start of a screen
+   of text, not to _every_ kidoku marker - i.e. in the code
+
+    'foo'
+    spause
+      @label
+    'bar'
+    pause
+    goto @label
+
+   there are kidoku markers before 'foo' and before 'bar'; the one
+   before 'bar' does not represent a savepoint if 'foo' is already
+   visible, but would represent a savepoint when reached after the
+   pause and goto had been executed.
+
+[2] Not sure offhand whether this literally means entrypoint 0, or
+   whether it refers to scenario transitions in general.
+
+[3] In rlBabel I actually used strout() with an empty string variable to
+   force a savepoint to be placed, since I couldn't find a savepoint
+   function I could work out how to use!
