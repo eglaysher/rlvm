@@ -2,7 +2,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2006, 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -298,3 +298,10 @@ boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size)
   }
 }
 
+// -----------------------------------------------------------------------
+
+void SDLTextSystem::reset()
+{
+  m_textWindow.clear();
+  TextSystem::reset();
+}

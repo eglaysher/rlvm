@@ -132,7 +132,8 @@ const IntegerBank_t GLOBAL_INTEGER_BANKS =
  * Internally used type that represents a stack frame in RLMachine's
  * call stack.
  */
-struct RLMachine::StackFrame {
+struct RLMachine::StackFrame 
+{
   /// The scenario in the SEEN file for this stack frame.
   libReallive::Scenario const* scenario;
     
@@ -141,6 +142,12 @@ struct RLMachine::StackFrame {
 
   /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
   boost::shared_ptr<LongOperation> longOp;
+
+  /// Whether this frame has save game information.
+  bool saveGameFrame;
+
+  /// The last save point hit (from this stack frame). 
+  libReallive::Scenario::const_iterator savePoint;
 
   /**
    * The function that pushed the current frame onto the
@@ -157,12 +164,13 @@ struct RLMachine::StackFrame {
   StackFrame(libReallive::Scenario const* s,
              const libReallive::Scenario::const_iterator& i,
              FrameType t) 
-    : scenario(s), ip(i), frameType(t) {}
+    : scenario(s), ip(i), saveGameFrame(false), frameType(t) {}
 
   StackFrame(libReallive::Scenario const* s,
              const libReallive::Scenario::const_iterator& i,
              LongOperation* op)
-    : scenario(s), ip(i), longOp(op), frameType(TYPE_LONGOP) {}
+    : scenario(s), ip(i), longOp(op), saveGameFrame(false),
+      frameType(TYPE_LONGOP) {}
 };
 
 // -----------------------------------------------------------------------
@@ -171,7 +179,7 @@ struct RLMachine::StackFrame {
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
   : m_halted(false), m_haltOnException(true), archive(inArchive), 
-    m_system(inSystem), m_markSavepoints(false)
+    m_system(inSystem), m_markSavepoints(true)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();
@@ -338,8 +346,8 @@ void RLMachine::loadStringBank(std::string* strPtr,
 
 void RLMachine::markSavepoint()
 {
-  scenarioSavePoint = callStack.back().scenario;
-  savePoint = callStack.back().ip;
+  callStack.back().saveGameFrame = true;
+  callStack.back().savePoint = callStack.back().ip;
 }
 
 // -----------------------------------------------------------------------
@@ -519,13 +527,13 @@ void RLMachine::saveGameTo(std::ostream& ofs)
   saveTime.append(Json::Value(getMs()));
   root["saveTime"] = saveTime;
 
+  cerr << "Stack: ";
   Json::Value saveCallStack(Json::arrayValue);
   for(vector<StackFrame>::const_iterator it = callStack.begin();
       it != callStack.end(); ++it)
   {
     if(it->frameType == StackFrame::TYPE_LONGOP)
     {
-      saveCallStack.push_back(Json::Value("PauseLongOperation"));
       break;
     }
     else
@@ -533,10 +541,21 @@ void RLMachine::saveGameTo(std::ostream& ofs)
       Json::Value frame(Json::arrayValue);
 
       int position = 0;
-      if(it->scenario == scenarioSavePoint)
-        position = distance(it->scenario->begin(), savePoint);
+      vector<StackFrame>::const_iterator next = boost::next(it);
+
+      if(it->saveGameFrame && 
+         (next == callStack.end() || next->frameType == StackFrame::TYPE_LONGOP))
+      {
+        cerr << "SP";
+        position = distance(it->scenario->begin(), it->savePoint);
+      }
       else
+      {
+        cerr << "N";
         position = distance(it->scenario->begin(), it->ip);
+      }
+
+      cerr << position << "(" << it->scenario << "), ";
 
       frame.push_back(Json::Value(it->scenario->sceneNumber()));
       frame.push_back(Json::Value(position));
@@ -545,6 +564,8 @@ void RLMachine::saveGameTo(std::ostream& ofs)
       saveCallStack.push_back(frame);
     }
   }
+
+  cerr << endl;
 
   root["callStack"] = saveCallStack;
 
@@ -598,19 +619,12 @@ void RLMachine::loadGameFrom(std::istream& iss)
 
   system().graphics().setWindowSubtitle(root["title"].asString());
 
-  callStack.clear();
+  clearCallstack();
   const Value saveCallStack = root["callStack"];
   for(ValueConstIterator it = saveCallStack.begin(); 
       it != saveCallStack.end(); ++it)
   {
-    if((*it).type() == stringValue)
-    {
-      if((*it).asString() == "PauseLongOperation")
-        pushLongOperation(new PauseLongOperation(*this));
-      else
-        throw rlvm::Exception("Unknown string in callStack in save file!");
-    }
-    else if((*it).type() == arrayValue)
+    if((*it).type() == arrayValue)
     {
       int scenarioNum = (*it)[0u].asInt();
       int offset = (*it)[1u].asInt();
@@ -956,6 +970,14 @@ bool RLMachine::inLongOperation() const
 
 // -----------------------------------------------------------------------
 
+void RLMachine::clearCallstack() 
+{
+  while(callStack.size())
+    popStackFrame();
+}
+
+// -----------------------------------------------------------------------
+
 int RLMachine::sceneNumber() const
 {
   return callStack.back().scenario->sceneNumber();
@@ -987,10 +1009,6 @@ int RLMachine::getTextEncoding() const
 
 void RLMachine::performTextout(const TextoutElement& e)
 {
-  // Check to see if we mark savepoints on textout
-  if(shouldSetMessageSavepoint())
-    markSavepoint();
-
   std::string utf8str = cp932toUTF8(e.text(), getTextEncoding());
 
   TextSystem& ts = system().text();
@@ -1003,6 +1021,18 @@ void RLMachine::performTextout(const TextoutElement& e)
  
   pushLongOperation(ptr.release());
   advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+
+/// @todo Only markSavepoint() if the current screen is empty.
+void RLMachine::setKidokuMarker(int kidokuNumber)
+{
+  // Check to see if we mark savepoints on textout
+  if(shouldSetMessageSavepoint())
+    markSavepoint();
+  else
+    cerr << "Shouldn't set message savepoint!" << endl;  
 }
 
 // -----------------------------------------------------------------------

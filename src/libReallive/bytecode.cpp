@@ -252,6 +252,8 @@ void MetaElement::runOnMachine(RLMachine& machine) const
 {
   if(type_ == Line_)
     machine.setLineNumber(value_);
+  else if(type_ == Kidoku_)
+    machine.setKidokuMarker(value_);
 
   machine.advanceInstructionPointer();
 }

@@ -81,6 +81,8 @@ public:
 
   /// Danger Will Robinson! This should be pushed down to SDLTextSystem! 
   boost::shared_ptr<TTF_Font> getFontOfSize(int size);
+
+  virtual void reset();
 };
 
 #endif

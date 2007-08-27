@@ -130,12 +130,6 @@ private:
   /// Override defaults
   bool m_markSavepoints;
 
-  /// The scenario the save point is in.
-  libReallive::Scenario const* scenarioSavePoint;
-
-  /// The last save point hit (from this stack frame). 
-  libReallive::Scenario::const_iterator savePoint;
-
 public:
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
   virtual ~RLMachine();
@@ -439,6 +433,11 @@ public:
   bool inLongOperation() const;
 
   /** 
+   * Clears the callstack, properly freeing any LongOperations.
+   */
+  void clearCallstack();
+
+  /** 
    * Returns the current scene number for the Scenario on the top of
    * the call stack.
    */
@@ -491,6 +490,16 @@ public:
   void executeCommand(const libReallive::CommandElement& f);
   void executeExpression(const libReallive::ExpressionElement& e);
   void performTextout(const libReallive::TextoutElement& e);
+
+  /** 
+   * Marks a kidoku marker as visited.
+   * 
+   * @param kidokuNumber Kidoku number in the current scene to set to
+   *                     true
+   * @todo This function is half implemented; it will set savepoints,
+   *       but it won't make a mark in the actual kidoku table.
+   */
+  void setKidokuMarker(int kidokuNumber);
 
   /// @}
 
