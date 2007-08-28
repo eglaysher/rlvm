@@ -238,10 +238,7 @@ struct Sys_SaveInfo : public RLOp_Store_10<
 	  *msIt = ms;
 
 	  // Convert the UTF-8 string to the memory internal CP932
-	  string utf8str = root["title"].asString();
-	  wstring unicode;
-	  utf8::utf8to32(utf8str.begin(), utf8str.end(), back_inserter(unicode));
-	  *titleIt = unicodetocp932(unicode);
+	  *titleIt = root["title"].asString();
 	}
 
 	return fileExists;

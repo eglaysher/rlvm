@@ -101,7 +101,7 @@ private:
   /// titlebar
   bool m_displaySubtitle;
 
-  /// utf8 encoded subtitle string
+  /// cp932 encoded subtitle string
   std::string m_subtitle;
 
   /// ShowObject flags
@@ -136,8 +136,24 @@ public:
    *
    * @{
    */
-  void setWindowSubtitle(const std::string& utf8encoded);
+
+  /**
+   * Sets the current value of the subtitle, as set with title(). This
+   * is virtual so that UTF8 or other charset systems can convert for
+   * their own internal copy.
+   *
+   * @param cp932str The subtitle (encoded in cp932 or similar)
+   * @param textEncoding The encoding type (as passed in to cp932toUTF8)
+   */
+  virtual void setWindowSubtitle(const std::string& cp932str, int textEncoding);
+
+  /** 
+   * Returns the current window subtitle.
+   * 
+   * @return The current window subtitle in cp932 encoding.
+   */
   const std::string& windowSubtitle() const;
+
   bool displaySubtitle() const { return m_displaySubtitle; }
   /// @}
 

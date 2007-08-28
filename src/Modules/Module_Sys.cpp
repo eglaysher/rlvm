@@ -69,8 +69,8 @@ using boost::shared_ptr;
 //  fun title                   <1:Sys:00000, 0> (res 'sub-title')
 struct Sys_title : public RLOp_Void_1< StrConstant_T > {
   void operator()(RLMachine& machine, std::string subtitle) {
-    std::string utf8sub = cp932toUTF8(subtitle, machine.getTextEncoding());
-    machine.system().graphics().setWindowSubtitle(utf8sub);
+    machine.system().graphics().setWindowSubtitle(
+      subtitle, machine.getTextEncoding());
   }
 };
 

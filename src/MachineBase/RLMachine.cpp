@@ -617,7 +617,7 @@ void RLMachine::loadGameFrom(std::istream& iss)
   loadIntegerBanksFrom(LOCAL_INTEGER_BANKS, root);
   loadStringBank(strS, 'S', root);
 
-  system().graphics().setWindowSubtitle(root["title"].asString());
+  system().graphics().setWindowSubtitle(root["title"].asString(), getTextEncoding());
 
   clearCallstack();
   const Value saveCallStack = root["callStack"];

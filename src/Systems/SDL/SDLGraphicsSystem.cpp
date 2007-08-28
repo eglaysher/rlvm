@@ -391,9 +391,9 @@ void SDLGraphicsSystem::setWindowTitle()
   ostringstream oss;
   oss << m_captionTitle;
 
-  if(displaySubtitle() && windowSubtitle() != "")
+  if(displaySubtitle() && m_subtitle != "")
   {
-    oss << ": " << windowSubtitle();
+    oss << ": " << m_subtitle;
   }
   
   if(m_displayDataInTitlebar)
@@ -403,6 +403,17 @@ void SDLGraphicsSystem::setWindowTitle()
   }
 
   SDL_WM_SetCaption(oss.str().c_str(), NULL);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
+                                          int textEncoding)
+{
+  // @todo Still not restoring title correctly!
+  m_subtitle = cp932toUTF8(cp932str, textEncoding);
+
+  GraphicsSystem::setWindowSubtitle(cp932str, textEncoding);
 }
 
 // -----------------------------------------------------------------------

@@ -114,9 +114,10 @@ GraphicsSystem::~GraphicsSystem()
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::setWindowSubtitle(const std::string& utf8encoded)
+void GraphicsSystem::setWindowSubtitle(const std::string& cp932str,
+                                       int textEncoding)
 {
-  m_subtitle = utf8encoded;
+  m_subtitle = cp932str;
 }
 
 // -----------------------------------------------------------------------

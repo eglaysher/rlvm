@@ -85,6 +85,9 @@ private:
   /// utf8 encoded title string
   std::string m_captionTitle;
 
+  /// utf8 encoded subtitle
+  std::string m_subtitle;
+
   /// Window icon
   SDL_Surface* m_icon;
 
@@ -177,6 +180,9 @@ public:
   virtual boost::shared_ptr<Surface> getDC(int dc);
 
   // -----------------------------------------------------------------------
+
+  virtual void setWindowSubtitle(const std::string& cp932str,
+                                 int textEncoding);
 
   // Object related functions
   virtual void promoteObjects();
