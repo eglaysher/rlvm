@@ -35,6 +35,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 #include <string>
@@ -44,6 +45,7 @@
 
 using namespace std;
 using boost::bind;
+using boost::replace_all;
 
 namespace fs = boost::filesystem;
 
@@ -140,7 +142,10 @@ boost::filesystem::path System::gameSaveDirectory()
 {
   Gameexe& gexe = gameexe();
 
-  fs::path baseDir = getHomeDirectory() / ".rlvm" / gexe("REGNAME").to_string();
+  string regname = gexe("REGNAME");
+  replace_all(regname, "\\", "_");
+
+  fs::path baseDir = getHomeDirectory() / ".rlvm" / regname;
   fs::create_directories(baseDir);
 
   return baseDir;
