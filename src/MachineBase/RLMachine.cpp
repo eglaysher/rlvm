@@ -392,21 +392,21 @@ void RLMachine::setMarkSavepoints(const int in)
 
 bool RLMachine::shouldSetMessageSavepoint() const
 {
-  return savepointDecide(&Scenario::savepointMessage, "");
+  return savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
 }
 
 // -----------------------------------------------------------------------
 
 bool RLMachine::shouldSetSelcomSavepoint() const
 {
-  return savepointDecide(&Scenario::savepointSelcom, "");
+  return savepointDecide(&Scenario::savepointSelcom, "SAVEPOINT_SELCOM");
 }
 
 // -----------------------------------------------------------------------
 
 bool RLMachine::shouldSetSeentopSavepoint() const
 {
-  return savepointDecide(&Scenario::savepointSeentop, "");
+  return savepointDecide(&Scenario::savepointSeentop, "SAVEPOINT_SEENTOP");
 }
 
 // -----------------------------------------------------------------------
