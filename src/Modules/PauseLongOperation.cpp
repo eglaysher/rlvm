@@ -72,16 +72,9 @@ PauseLongOperation::~PauseLongOperation()
 // -----------------------------------------------------------------------
 
 /** 
- * @todo This is fairly buggy right now. I wanted to support the
- *       CLANNAD menu, but there are three problems. 1) I don't handle
- *       everything necessary to display the menu properly. 2) The
- *       code in CLANNAD's SEEN.TXT doesn't return properly. 3) Even
- *       if it did, THIS C++ code doesn't return properly.
- *  
- *       To really fix that final one, I'm going to have to make
- *       Longoperations and Reallive stack frames use the same call
- *       stack instead of the hacktastic separate stacks I'm doing
- *       now.
+ * @todo This code has some issues; we don't handle non custom SYSCOM
+ *       calls, we don't disable parts of rendering (such as the key
+ *       cursor). Still, for the most pat this works.
  */
 void PauseLongOperation::handleSyscomCall()
 {
@@ -91,7 +84,6 @@ void PauseLongOperation::handleSyscomCall()
   {
     vector<int> cancelcall = gexe("CANCELCALL");
     machine.farcall(cancelcall.at(0), cancelcall.at(1));
-    m_isDone = true;
   }
   else
   {
