@@ -93,9 +93,9 @@ void System::saveGlobals(Json::Value& root)
 {
   Json::Value system(Json::objectValue);
 
-  graphics().saveGlobals(system);
-  event().saveGlobals(system);
-  text().saveGlobals(system);
+  graphics().saveGlobals(system["graphics"]);
+  event().saveGlobals(system["event"]);
+  text().saveGlobals(system["text"]);
 
   root["system"] = system;
 }
@@ -104,9 +104,31 @@ void System::saveGlobals(Json::Value& root)
 
 void System::loadGlobals(Json::Value& root)
 {
-  graphics().loadGlobals(root["system"]);
-  event().loadGlobals(root["system"]);
-  text().loadGlobals(root["system"]);
+  Json::Value system = root["system"];
+
+  graphics().loadGlobals(system["graphics"]);
+  event().loadGlobals(system["event"]);
+  text().loadGlobals(system["text"]);
+}
+
+// -----------------------------------------------------------------------
+
+void System::saveGameValues(Json::Value& root)
+{
+  Json::Value system(Json::objectValue);
+  Json::Value txt(Json::objectValue);
+  text().saveGameValues(txt);
+  system["text"] = txt;
+  root["system"] = system;
+}
+
+// -----------------------------------------------------------------------
+
+void System::loadGameValues(RLMachine& machine, const Json::Value& root)
+{
+  Json::Value system = root["system"];
+
+  text().loadGameValues(machine, system["text"]);
 }
 
 // -----------------------------------------------------------------------

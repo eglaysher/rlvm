@@ -41,6 +41,8 @@
 
 #include "json/value.h"
 
+using std::endl;
+using std::cerr;
 using std::back_inserter;
 using std::vector;
 using std::ostringstream;
@@ -252,9 +254,8 @@ void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::saveGlobals(Json::Value& system)
+void TextSystem::saveGlobals(Json::Value& text)
 {
-  Json::Value text(Json::objectValue);
   text["autoBaseTime"] = autoBaseTime();
   text["autoCharTime"] = autoCharTime();
   
@@ -263,16 +264,12 @@ void TextSystem::saveGlobals(Json::Value& system)
   Json::Value windowAttr(Json::arrayValue);
   copy(m_windowAttr.begin(), m_windowAttr.end(), back_inserter(windowAttr));
   text["windowAttr"] = windowAttr;
-
-  system["text"] = text;
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::loadGlobals(const Json::Value& system)
+void TextSystem::loadGlobals(const Json::Value& textSys)
 {
-  Json::Value textSys = system["text"];
-
   setAutoBaseTime(textSys["autoBaseTime"].asInt());
   setAutoCharTime(textSys["autoCharTime"].asInt());
   setMessageSpeed(textSys["messageSpeed"].asInt());
@@ -282,6 +279,32 @@ void TextSystem::loadGlobals(const Json::Value& system)
   for(unsigned int i = 0; i < windowAttr.size(); ++i)
 	attr.push_back(windowAttr[i].asInt());
   setDefaultWindowAttr(attr);
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::saveGameValues(Json::Value& text)
+{
+  text["activeWindow"] = activeWindow();
+
+  if(m_textKeyCursor)
+    text["keyCursor"] = m_textKeyCursor->cursorNumber();
+  else
+    text["keyCursor"] = -1;
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::loadGameValues(RLMachine& machine, const Json::Value& textSys)
+{
+  setActiveWindow(textSys["activeWindow"].asInt());
+
+  int curNum = textSys["keyCursor"].asInt();
+  cerr << "Saved cur: " << curNum << endl;
+  if(curNum != -1)
+    m_textKeyCursor.reset(new TextKeyCursor(machine, curNum));
+  else
+    m_textKeyCursor.reset();
 }
 
 // -----------------------------------------------------------------------

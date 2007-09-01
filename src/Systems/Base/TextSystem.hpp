@@ -281,6 +281,9 @@ public:
   virtual void saveGlobals(Json::Value& system);
   virtual void loadGlobals(const Json::Value& system);
 
+  virtual void saveGameValues(Json::Value& system);
+  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
+
   /**
    * Resets non-configuration values (so we can load games).
    */

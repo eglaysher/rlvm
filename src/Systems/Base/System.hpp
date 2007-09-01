@@ -91,6 +91,12 @@ public:
   virtual void loadGlobals(Json::Value& root);
 
   /**
+   * Save the game state.
+   */
+  virtual void saveGameValues(Json::Value& system);
+  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
+
+  /**
    * Returns a boost::filesystem object which points to the directory
    * where saved game data, preferences, et cetera should be stored
    * for this game.

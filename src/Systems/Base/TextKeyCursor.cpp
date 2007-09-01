@@ -42,14 +42,14 @@ using namespace std;
 // -----------------------------------------------------------------------
 // TextKeyCursor
 // -----------------------------------------------------------------------
-TextKeyCursor::TextKeyCursor(RLMachine& machine, int curosrNumber)
-  : m_currentFrame(0), 
+TextKeyCursor::TextKeyCursor(RLMachine& machine, int inCurosrNumber)
+  : m_cursorNumber(inCurosrNumber), m_currentFrame(0), 
     m_lastTimeFrameIncremented(machine.system().event().getTicks())
 {
-  cerr << "Setting key cursor to " << curosrNumber << endl;
+  cerr << "Setting key cursor to " << inCurosrNumber << endl;
 
   Gameexe& gexe = machine.system().gameexe();
-  GameexeInterpretObject cursor = gexe("CURSOR", curosrNumber);
+  GameexeInterpretObject cursor = gexe("CURSOR", inCurosrNumber);
 
   setCursorImage(machine, cursor("NAME"));
   setCursorSize(cursor("SIZE"));

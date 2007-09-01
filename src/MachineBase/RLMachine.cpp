@@ -569,6 +569,8 @@ void RLMachine::saveGameTo(std::ostream& ofs)
 
   root["callStack"] = saveCallStack;
 
+  m_system.saveGameValues(root);
+
   Json::StyledWriter writer;
   ofs << writer.write( root );
 }
@@ -655,6 +657,8 @@ void RLMachine::loadGameFrom(std::istream& iss)
     else
       throw rlvm::Exception("Unknown token in callStack in save file!");
   }
+
+  m_system.loadGameValues(*this, root);
 
   // Reset the system
   // @todo Make this work.
