@@ -1,8 +1,13 @@
+// -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+// vi:tw=80:et:ts=2:sts=2
+//
+// -----------------------------------------------------------------------
+//
 // This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006, 2007 Elliot Glaysher
+// Copyright (C) 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,29 +25,27 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Grp_hpp__
-#define __Module_Grp_hpp__
+#include "Precompiled.hpp"
 
-/**
- * @file   Module_Grp.hpp
- * @author Elliot Glaysher
- * @date   Sat Oct  7 11:20:27 2006
- * @ingroup ModulesOpcodes
- * 
- * @brief  Defines the Graphcis module (mod<1:33>), along with
- *         replaying the graohics stack.
- */
+// -----------------------------------------------------------------------
 
-#include "../MachineBase/RLModule.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
 
-/**
- * Contains functions for mod<1:33>, Grp.
- * 
- * @ingroup ModuleGrp
- */
-class GrpModule : public RLModule {
-public:
-  GrpModule();
-};
+// -----------------------------------------------------------------------
 
-#endif
+GraphicsStackFrame::GraphicsStackFrame() {}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame::GraphicsStackFrame(const Json::Value& frame) {}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame::~GraphicsStackFrame() {}
+
+// -----------------------------------------------------------------------
+
+void GraphicsStackFrame::serializeTo(Json::Value& frame)
+{
+
+}
