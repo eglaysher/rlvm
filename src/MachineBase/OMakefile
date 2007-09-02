@@ -7,6 +7,7 @@ LRLFILES[] =
   reference
   LongOperation
   RLMachine
+  RLMachine_intmem
   RLModule
   RLOperation
 
