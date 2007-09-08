@@ -31,13 +31,39 @@
 
 #include "Systems/Base/GraphicsStackFrame.hpp"
 
-// -----------------------------------------------------------------------
-
-GraphicsStackFrame::GraphicsStackFrame() {}
+#include "json/value.h"
 
 // -----------------------------------------------------------------------
 
-GraphicsStackFrame::GraphicsStackFrame(const Json::Value& frame) {}
+GraphicsStackFrame::GraphicsStackFrame() 
+  : m_commandName(""), m_hasFilename(false), m_hasTargetDC(false),
+    m_hasTargetCoordinates(false), m_hasOpacity(false)
+{}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame::GraphicsStackFrame(const Json::Value& frame) 
+  : m_commandName(""), m_hasFilename(false), m_hasTargetDC(false),
+    m_hasTargetCoordinates(false), m_hasOpacity(false)
+{
+  m_commandName = frame["command"].asString();
+
+  if(frame.isMember("filename"))
+    setFilename(frame["filename"].asString());
+
+  if(frame.isMember("targetDC"))
+    setTargetDC(frame["targetDC"].asInt());
+
+  if(frame.isMember("opacity"))
+    setOpacity(frame["opacity"].asInt());
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame::GraphicsStackFrame(const std::string& name)
+  : m_commandName(name), m_hasFilename(false), m_hasTargetDC(false),
+    m_hasTargetCoordinates(false), m_hasOpacity(false)
+{}
 
 // -----------------------------------------------------------------------
 
@@ -45,7 +71,43 @@ GraphicsStackFrame::~GraphicsStackFrame() {}
 
 // -----------------------------------------------------------------------
 
+GraphicsStackFrame& GraphicsStackFrame::setFilename(const std::string& filename) 
+{
+  m_hasFilename = true;
+  m_fileName = filename;
+  return *this;
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame& GraphicsStackFrame::setTargetDC(int in)
+{
+  m_hasTargetDC = true;
+  m_targetDC = in;
+  return *this;
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame& GraphicsStackFrame::setOpacity(int in)
+{
+  m_hasOpacity = true;
+  m_opacity = in;
+  return *this;
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsStackFrame::serializeTo(Json::Value& frame)
 {
+  frame["command"] = m_commandName;
 
+  if(m_hasFilename)
+    frame["filename"] = m_fileName;
+
+  if(m_hasTargetDC)
+    frame["targetDC"] = m_targetDC;
+
+  if(m_hasOpacity)
+    frame["opacity"] = m_opacity;
 }

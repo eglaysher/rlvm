@@ -39,6 +39,7 @@
 
 
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
 
 #include "Systems/Base/System.hpp"
@@ -46,44 +47,60 @@
 
 // -----------------------------------------------------------------------
 
-struct Scr_DrawAuto : public RLOp_Void_Void {
+struct Scr_stackClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.system().graphics().setScreenUpdateMode(
-      GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
+    machine.system().graphics().clearStack();
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Scr_DrawSemiAuto : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.system().graphics().setScreenUpdateMode(
-      GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC);
+struct Scr_stackNop : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int numberOfNops) {
+    GraphicsSystem& sys = machine.system().graphics();
+
+    for(int i = 0; i < numberOfNops; ++i) {
+      sys.addGraphicsStackFrame("Nop");
+    }
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Scr_DrawManual : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.system().graphics().setScreenUpdateMode(
-      GraphicsSystem::SCREENUPDATEMODE_MANUAL);
+struct Scr_stackPop : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int count) {
+    machine.system().graphics().stackPop(count);
   }
 };
 
 // -----------------------------------------------------------------------
 
-ScrModule::ScrModule()
+struct Scr_stackTrunc : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int count) {
+    GraphicsSystem& sys = machine.system().graphics();
+    sys.stackPop(sys.stackSize() - count);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+ScrModule::ScrModule(GraphicsSystem& sys)
   : RLModule("Scr", 1, 30)
 {
-  addUnsupportedOpcode(0, 0, "stackClear");
-  addUnsupportedOpcode(1, 0, "stackNop");
-  addUnsupportedOpcode(2, 0, "stackPop");
-  addUnsupportedOpcode(3, 0, "stackSize");
-  addUnsupportedOpcode(4, 0, "stackTrunc");
+  addOpcode(0, 0, "stackClear", new Scr_stackClear);
+  addOpcode(1, 0, "stackNop", new Scr_stackNop);
+  addOpcode(2, 0, "stackPop", new Scr_stackPop);
+  addOpcode(3, 0, "stackSize", returnIntValue(sys, &GraphicsSystem::stackSize));
+  addOpcode(4, 0, "stackTrunc", new Scr_stackTrunc);
 
-  addOpcode(20, 0, new Scr_DrawAuto);
-  addOpcode(21, 0, new Scr_DrawSemiAuto);
-  addOpcode(22, 0, new Scr_DrawManual);
+  addOpcode(20, 0, "DrawAuto",
+            setToConstant(sys, &GraphicsSystem::setScreenUpdateMode,
+                          GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC));
+  addOpcode(21, 0, "DrawSemiAuto",
+            setToConstant(sys, &GraphicsSystem::setScreenUpdateMode,
+                          GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC));
+  addOpcode(22, 0, "DrawManual",
+            setToConstant(sys, &GraphicsSystem::setScreenUpdateMode,
+                          GraphicsSystem::SCREENUPDATEMODE_MANUAL));
 }
 

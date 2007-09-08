@@ -43,6 +43,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
@@ -51,6 +52,7 @@
 #include "Modules/ZoomLongOperation.hpp"
 
 #include "libReallive/gameexe.h"
+#include "json/value.h"
 
 #include <iostream>
 
@@ -284,6 +286,13 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                            0, 0, surface->width(), surface->height(),
                            0, 0, surface->width(), surface->height(),
                            opacity, m_useAlpha);
+
+    if(m_useAlpha)
+      graphics.addGraphicsStackFrame("Grp_load_1")
+        .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
+    else
+      graphics.addGraphicsStackFrame("Grp_mask_load_1")
+        .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
   }
 };
 
@@ -1182,3 +1191,19 @@ GrpModule::GrpModule()
 }
 
 // @}
+
+
+// -----------------------------------------------------------------------
+
+void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack)
+{
+  using namespace Json;
+
+  for(Value::iterator it = serializedStack.begin(); it != serializedStack.end(); ++it)
+  {
+    GraphicsStackFrame frame(*it);
+
+    if(frame.name() == "Grp_load_1")
+      ;
+  }
+}

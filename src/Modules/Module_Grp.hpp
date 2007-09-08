@@ -35,6 +35,10 @@
 
 #include "../MachineBase/RLModule.hpp"
 
+namespace Json {
+class Value;
+}
+
 /**
  * Contains functions for mod<1:33>, Grp.
  * 
@@ -44,5 +48,7 @@ class GrpModule : public RLModule {
 public:
   GrpModule();
 };
+
+void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack);
 
 #endif

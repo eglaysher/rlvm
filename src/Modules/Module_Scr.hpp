@@ -36,6 +36,11 @@
 
 #include "MachineBase/RLModule.hpp"
 
+// -----------------------------------------------------------------------
+
+class GraphicsSystem;
+
+
 /**
  * Contains functions for mod<1:30>, Scr.
  * 
@@ -43,7 +48,7 @@
  */
 class ScrModule : public RLModule {
 public:
-  ScrModule();
+  ScrModule(GraphicsSystem& sys);
 };
 
 #endif

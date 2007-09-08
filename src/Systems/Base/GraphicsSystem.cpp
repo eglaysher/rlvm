@@ -25,6 +25,7 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
@@ -51,6 +52,8 @@ struct GraphicsSystem::GraphicsObjectSettings
   unsigned char position[OBJECTS_IN_A_LAYER];
 
   std::vector<ObjectSettings> data;
+
+  std::vector<GraphicsStackFrame> graphicsStack;
 
   GraphicsObjectSettings(Gameexe& gameexe);
 
@@ -111,6 +114,36 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
 
 GraphicsSystem::~GraphicsSystem()
 {}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(const std::string& name)
+{
+  m_graphicsObjectSettings->graphicsStack.push_back(GraphicsStackFrame(name));
+  return m_graphicsObjectSettings->graphicsStack.back();
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsSystem::stackSize() const
+{
+  return m_graphicsObjectSettings->graphicsStack.size();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::clearStack() 
+{
+  m_graphicsObjectSettings->graphicsStack.clear();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::stackPop(int items)
+{
+  for(int i = 0; i < items; ++i)
+    m_graphicsObjectSettings->graphicsStack.pop_back();
+}
 
 // -----------------------------------------------------------------------
 
@@ -201,6 +234,33 @@ void GraphicsSystem::loadGlobals(const Json::Value& textSys)
   setShowObject1(textSys["showObject1"].asInt());
   setShowObject2(textSys["showObject2"].asInt());
   setShowWeather(textSys["showWeather"].asInt());
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::saveGameValues(Json::Value& graphicsSys)
+{
+  Json::Value graphicsValue(Json::arrayValue);
+  
+  std::vector<GraphicsStackFrame>::iterator it = 
+    m_graphicsObjectSettings->graphicsStack.begin();
+  std::vector<GraphicsStackFrame>::iterator end = 
+    m_graphicsObjectSettings->graphicsStack.end();
+  for(; it != end; ++it) 
+  { 
+    Json::Value frame(Json::objectValue);
+    it->serializeTo(frame);
+    graphicsValue.push_back(frame);
+  }
+
+  graphicsSys["stack"] = graphicsValue;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::loadGameValues(RLMachine& machine, const Json::Value& graphicsSys)
+{
+
 }
 
 // -----------------------------------------------------------------------

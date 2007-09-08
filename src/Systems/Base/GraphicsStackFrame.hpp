@@ -46,14 +46,38 @@ class GraphicsStackFrame
 {
 private:
   std::string m_commandName;
+
+  bool m_hasFilename;
   std::string m_fileName;
+
+  bool m_hasTargetDC;
+  int m_targetDC;
+
+  bool m_hasTargetCoordinates;
+
+
+  bool m_hasOpacity;
+  int m_opacity;
 
 public: 
   GraphicsStackFrame();
   GraphicsStackFrame(const Json::Value& frame);
+  GraphicsStackFrame(const std::string& name);
   ~GraphicsStackFrame();
 
-  const std::string& commandName() const { return m_commandName; }
+  const std::string& name() const { return m_commandName; }
+
+  bool hasFilename() const { return m_hasFilename; }
+  const std::string& filename() const { return m_fileName; }
+  GraphicsStackFrame& setFilename(const std::string& filename);
+
+  bool hasTargetDC() const { return m_hasTargetDC; }
+  int targetDC() const { return m_targetDC; }
+  GraphicsStackFrame& setTargetDC(int in);
+
+  bool hasOpacity() const { return m_hasOpacity; }
+  int opacity() const { return m_opacity; }
+  GraphicsStackFrame& setOpacity(int in);
 
   void serializeTo(Json::Value& frame);
 };	// end of class GraphicsStackFrame

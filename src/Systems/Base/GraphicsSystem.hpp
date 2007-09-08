@@ -40,6 +40,7 @@ class Surface;
 class RLMachine;
 class GraphicsObject;
 class GraphicsObjectData;
+class GraphicsStackFrame;
 class Gameexe;
 class ObjectSettings;
 
@@ -129,6 +130,20 @@ public:
   void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
 
   /**
+   * @name Graphics Stack
+   * 
+   * @{
+   */
+  GraphicsStackFrame& addGraphicsStackFrame(const std::string& name);
+
+  int stackSize() const;
+  void clearStack();
+
+  void stackPop(int numItems);
+  /// @}
+
+
+  /**
    * @name Title management
    * 
    * We put this here since there's no good place to put it in
@@ -165,6 +180,9 @@ public:
   virtual void saveGlobals(Json::Value& system);
   virtual void loadGlobals(const Json::Value& system);
   /// @}
+
+  virtual void saveGameValues(Json::Value& system);
+  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
 
   /**
    * @name Show Object flags
