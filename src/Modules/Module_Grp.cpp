@@ -76,6 +76,13 @@ const int SEL_SIZE = 16;
 
 // -----------------------------------------------------------------------
 
+namespace graphicsStack {
+const string GRP_LOAD = "grpLoad";
+}
+using namespace graphicsStack;
+
+// -----------------------------------------------------------------------
+
 namespace {
 
 /** 
@@ -273,8 +280,12 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   Grp_load_1(bool in) : m_useAlpha(in) {}
 
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
-    filename = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
+
+    graphics.addGraphicsStackFrame(GRP_LOAD)
+      .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
+
+    filename = findFile(machine, filename);
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
 
     if(dc != 0 && dc != 1)
@@ -287,12 +298,6 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                            0, 0, surface->width(), surface->height(),
                            opacity, m_useAlpha);
 
-    if(m_useAlpha)
-      graphics.addGraphicsStackFrame("Grp_load_1")
-        .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
-    else
-      graphics.addGraphicsStackFrame("Grp_mask_load_1")
-        .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
   }
 };
 
@@ -1203,7 +1208,18 @@ void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack)
   {
     GraphicsStackFrame frame(*it);
 
-    if(frame.name() == "Grp_load_1")
-      ;
+    if(frame.name() == GRP_LOAD)
+    {
+      if(frame.hasTargetCoordinates())
+      {//Grp_load_3(true)(machine,    
+      }
+      else
+        Grp_load_1(true)(machine, frame.filename(), frame.targetDC(),
+                         frame.opacity());
+    }
+/*    else if(frame.name() == GRP_OPENBG)
+    {
+        Grp_openBg_0( )
+        } */
   }
 }

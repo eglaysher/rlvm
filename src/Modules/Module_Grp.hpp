@@ -34,10 +34,19 @@
  */
 
 #include "../MachineBase/RLModule.hpp"
+#include <string>
 
 namespace Json {
 class Value;
 }
+
+// -----------------------------------------------------------------------
+
+namespace graphicsStack {
+extern const std::string GRP_LOAD;
+}
+
+// -----------------------------------------------------------------------
 
 /**
  * Contains functions for mod<1:33>, Grp.
@@ -49,6 +58,15 @@ public:
   GrpModule();
 };
 
+// -----------------------------------------------------------------------
+
+/** 
+ * Replays the serialized graphics stack; this should put the graphics
+ * DCs in the same state as they were before the game was saved.
+ * 
+ * @param machine Machine to replay on
+ * @param serializedStack Serialized JSON array of the graphics stack
+ */
 void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack);
 
 #endif

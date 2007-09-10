@@ -50,14 +50,26 @@ private:
   bool m_hasFilename;
   std::string m_fileName;
 
+  bool m_hasSourceDC;
+  int m_sourceDC;
+
+  bool m_hasSourceCoordinates;
+  int m_sourceX, m_sourceY, m_sourceX2, m_sourceY2;
+
   bool m_hasTargetDC;
   int m_targetDC;
 
   bool m_hasTargetCoordinates;
+  int m_targetX, m_targetY, m_targetX2, m_targetY2;
 
+  bool m_hasRGB;
+  int m_r, m_g, m_b;
 
   bool m_hasOpacity;
   int m_opacity;
+
+  bool m_hasMask;
+  int m_mask;
 
 public: 
   GraphicsStackFrame();
@@ -71,13 +83,44 @@ public:
   const std::string& filename() const { return m_fileName; }
   GraphicsStackFrame& setFilename(const std::string& filename);
 
+  // source stuff
+  bool hasSourceDC() const { return m_hasSourceDC; }
+  int sourceDC() const { return m_sourceDC; }
+  GraphicsStackFrame& setSourceDC(int in);
+
+  bool hasSourceCoordinates() const { return m_hasSourceCoordinates; }
+  int sourceX1() const { return m_sourceX; }
+  int sourceY1() const { return m_sourceY; }
+  int sourceX2() const { return m_sourceX2; }
+  int sourceY2() const { return m_sourceY2; }
+  GraphicsStackFrame& setSourceCoordinates(int x1, int y1, int x2, int y2);
+
   bool hasTargetDC() const { return m_hasTargetDC; }
   int targetDC() const { return m_targetDC; }
   GraphicsStackFrame& setTargetDC(int in);
 
+  bool hasTargetCoordinates() const { return m_hasTargetCoordinates; }
+  int targetX1() const { return m_targetX; }
+  int targetY1() const { return m_targetY; }
+  int targetX2() const { return m_targetX2; }
+  int targetY2() const { return m_targetY2; }
+  GraphicsStackFrame& setTargetCoordinates(int x1, int y1, int x2, int y2);
+
+  bool hasRGB() const { return m_hasRGB; }
+  int r() const { return m_r; }
+  int g() const { return m_g; }
+  int b() const { return m_b; }
+  GraphicsStackFrame& setRGB(int r, int g, int b);
+
   bool hasOpacity() const { return m_hasOpacity; }
   int opacity() const { return m_opacity; }
   GraphicsStackFrame& setOpacity(int in);
+
+  bool hasMask() const { return m_hasMask; }
+  bool mask() const { return m_mask; }
+  GraphicsStackFrame& setMask(bool in);
+
+  // Size (??)
 
   void serializeTo(Json::Value& frame);
 };	// end of class GraphicsStackFrame
