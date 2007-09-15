@@ -152,6 +152,26 @@ void loadDCToDC1(GraphicsSystem& graphics,
                      opacity, false);
 }
 
+// -----------------------------------------------------------------------
+
+void handleOpenBgFileName(
+  RLMachine& machine,
+  std::string fileName,
+  int x1, int y1, int x2, int y2,
+  int dx, int dy, int opacity, bool useAlpha)
+{
+  GraphicsSystem& graphics = machine.system().graphics();
+
+  if(fileName != "?")
+  {
+    if(fileName == "???") fileName = graphics.defaultGrpName();
+    fileName = findFile(machine, fileName);
+    
+    loadImageToDC1(graphics, fileName, x1, y1, x2, y2, dx, dy, 
+                   opacity, useAlpha);
+  }
+}
+
 }
 
 // -----------------------------------------------------------------------
@@ -561,7 +581,7 @@ struct Grp_open_4 : public RLOp_Void_17<
   bool m_useAlpha;
   Grp_open_4(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
-  void operator()(RLMachine& machine, string filename,
+  void operator()(RLMachine& machine, string fileName,
                   int x1, int y1, int x2, int y2, int dx, int dy,
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c)
@@ -573,20 +593,13 @@ struct Grp_open_4 : public RLOp_Void_17<
     shared_ptr<Surface> dc0 = 
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    if(filename != "?")
-    {
-      if(filename == "???") filename = graphics.defaultGrpName();
-      filename = findFile(machine, filename);
-
-      loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
-                     opacity, m_useAlpha);
-    }
+    handleOpenBgFileName(machine, fileName, x1, y1, x2, y2, dx, dy, 
+                         opacity, m_useAlpha);
 
     // Promote the objects 
     graphics.promoteObjects();
 
     // Set the long operation for the correct transition long operation
-//    shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
@@ -604,7 +617,7 @@ struct Grp_open_4 : public RLOp_Void_17<
 struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                           IntConstant_T >
 {
-  void operator()(RLMachine& machine, string filename, int effectNum, int opacity)
+  void operator()(RLMachine& machine, string fileName, int effectNum, int opacity)
   {
     vector<int> selEffect = getSELEffect(machine, effectNum);
     GraphicsSystem& graphics = machine.system().graphics();
@@ -613,15 +626,9 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     shared_ptr<Surface> dc0 = 
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    if(filename != "?")
-    {
-      if(filename == "???") filename = graphics.defaultGrpName();
-      filename = findFile(machine, filename);
-
-      loadImageToDC1(graphics, filename,
-                     selEffect[0], selEffect[1], selEffect[2], selEffect[3],
-                     selEffect[4], selEffect[5], opacity, false);
-    }
+    handleOpenBgFileName(machine, fileName, selEffect[0], selEffect[1], 
+                         selEffect[2], selEffect[3], selEffect[4], 
+                         selEffect[5], opacity, false);
 
     // Promote the objects 
     graphics.clearAndPromoteObjects();
@@ -660,7 +667,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
   bool m_useAlpha;
   Grp_openBg_4(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
-  void operator()(RLMachine& machine, string filename,
+  void operator()(RLMachine& machine, string fileName,
                   int x1, int y1, int x2, int y2, int dx, int dy,
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c)
@@ -673,14 +680,8 @@ struct Grp_openBg_4 : public RLOp_Void_17<
       graphics.renderToSurfaceWithBg(machine, 
                                      graphics.getDC(0));
 
-    if(filename != "?")
-    {
-      if(filename == "???") filename = graphics.defaultGrpName();
-      filename = findFile(machine, filename);
-
-      loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, 
-                     opacity, m_useAlpha);
-    }
+    handleOpenBgFileName(machine, fileName, x1, y1, x2, y2, dx, dy, 
+                         opacity, m_useAlpha);
 
     // Promote the objects 
     graphics.clearAndPromoteObjects();
@@ -1217,9 +1218,9 @@ void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack)
         Grp_load_1(true)(machine, frame.filename(), frame.targetDC(),
                          frame.opacity());
     }
-/*    else if(frame.name() == GRP_OPENBG)
+    /*else if(frame.name() == GRP_OPENBG)
     {
-        Grp_openBg_0( )
-        } */
+
+    }*/
   }
 }

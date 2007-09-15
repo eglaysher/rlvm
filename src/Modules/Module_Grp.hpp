@@ -63,6 +63,11 @@ public:
 /** 
  * Replays the serialized graphics stack; this should put the graphics
  * DCs in the same state as they were before the game was saved.
+ *
+ * If the command has no transition effect, we can safely call it, but
+ * we often have to call the implementation function so that we don't
+ * display all the transition effects that happened since the last
+ * stackTrunc on load.
  * 
  * @param machine Machine to replay on
  * @param serializedStack Serialized JSON array of the graphics stack
