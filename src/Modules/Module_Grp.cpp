@@ -78,12 +78,31 @@ const int SEL_SIZE = 16;
 
 namespace graphicsStack {
 const string GRP_LOAD = "grpLoad";
+const std::string GRP_OPENBG = "grpOpenBg";
 }
+
 using namespace graphicsStack;
 
 // -----------------------------------------------------------------------
 
 namespace {
+
+void blitDC1toDC0(RLMachine& machine)
+{
+  GraphicsSystem& graphics = machine.system().graphics();
+
+  boost::shared_ptr<Surface> src = graphics.getDC(1);
+  boost::shared_ptr<Surface> dst = graphics.getDC(0);
+
+  // Blit DC1 onto DC0, with full opacity, and end the operation
+  src->blitToSurface(
+    *dst,
+    0, 0, src->width(), src->height(),
+    0, 0, dst->width(), dst->height(), 255);
+
+  // Now force a screen refresh
+  machine.system().graphics().markScreenForRefresh();
+}
 
 /** 
  * Performs half the grunt work of a recOpen command; Copies DC0 to
@@ -619,8 +638,15 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 {
   void operator()(RLMachine& machine, string fileName, int effectNum, int opacity)
   {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
     GraphicsSystem& graphics = machine.system().graphics();
+    vector<int> selEffect = getSELEffect(machine, effectNum);
+
+    graphics.addGraphicsStackFrame(GRP_OPENBG)
+      .setFilename(fileName)
+      .setSourceCoordinates(selEffect[0], selEffect[1], 
+                            selEffect[2], selEffect[3])
+      .setTargetCoordinates(selEffect[4], selEffect[5])
+      .setOpacity(opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = 
@@ -674,6 +700,12 @@ struct Grp_openBg_4 : public RLOp_Void_17<
   {
     GraphicsSystem& graphics = machine.system().graphics();
     m_space.translateToRec(x1, y1, x2, y2);
+
+    graphics.addGraphicsStackFrame(GRP_OPENBG)
+      .setFilename(fileName)
+      .setSourceCoordinates(x1, y1, x2, y2)
+      .setTargetCoordinates(dx, dy)
+      .setOpacity(opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = 
@@ -1201,26 +1233,45 @@ GrpModule::GrpModule()
 
 // -----------------------------------------------------------------------
 
-void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack)
+void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
+{ 
+  handleOpenBgFileName(
+    machine, f.filename(), 
+    f.sourceX1(), f.sourceY1(), f.sourceX2(), f.sourceY2(),
+    f.targetX1(), f.targetY1(), f.opacity(), false);
+
+  blitDC1toDC0(machine);
+  cerr << "Finished replaying grpOpenBg" << endl;
+}
+
+// -----------------------------------------------------------------------
+
+void replayGraphicsStack(RLMachine& machine, const Json::Value& serializedStack)
 {
   using namespace Json;
+  cerr << "REPLAYING GRAPHICS STACK" << endl;
 
-  for(Value::iterator it = serializedStack.begin(); it != serializedStack.end(); ++it)
+  for(Value::iterator it = serializedStack.begin(); it != serializedStack.end();
+      ++it)
   {
     GraphicsStackFrame frame(*it);
 
     if(frame.name() == GRP_LOAD)
     {
       if(frame.hasTargetCoordinates())
-      {//Grp_load_3(true)(machine,    
+      {
+        cerr << "Ignoring because we are dumb!" << endl;
       }
       else
         Grp_load_1(true)(machine, frame.filename(), frame.targetDC(),
                          frame.opacity());
     }
-    /*else if(frame.name() == GRP_OPENBG)
+    else if(frame.name() == GRP_OPENBG)
     {
-
-    }*/
+      replayOpenBg(machine, frame);
+    }
   }
+
+  // Now force a screen refresh
+  machine.system().graphics().markScreenForRefresh();
 }

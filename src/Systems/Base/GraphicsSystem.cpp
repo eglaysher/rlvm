@@ -29,6 +29,8 @@
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
+#include "Modules/Module_Grp.hpp"
+
 #include <vector>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
@@ -258,9 +260,10 @@ void GraphicsSystem::saveGameValues(Json::Value& graphicsSys)
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::loadGameValues(RLMachine& machine, const Json::Value& graphicsSys)
+void GraphicsSystem::loadGameValues(RLMachine& machine,
+                                    const Json::Value& graphicsSys)
 {
-
+  replayGraphicsStack(machine, graphicsSys["stack"]);
 }
 
 // -----------------------------------------------------------------------

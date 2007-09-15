@@ -104,6 +104,7 @@ public:
   int targetY1() const { return m_targetY; }
   int targetX2() const { return m_targetX2; }
   int targetY2() const { return m_targetY2; }
+  GraphicsStackFrame& setTargetCoordinates(int x1, int y1);
   GraphicsStackFrame& setTargetCoordinates(int x1, int y1, int x2, int y2);
 
   bool hasRGB() const { return m_hasRGB; }

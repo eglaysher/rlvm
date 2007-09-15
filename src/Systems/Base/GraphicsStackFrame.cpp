@@ -91,8 +91,10 @@ GraphicsStackFrame::GraphicsStackFrame(const Json::Value& frame)
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame::GraphicsStackFrame(const std::string& name)
-  : m_commandName(name), m_hasFilename(false), m_hasTargetDC(false),
-    m_hasTargetCoordinates(false), m_hasOpacity(false)
+  : m_commandName(name), m_hasFilename(false), m_hasSourceDC(false),
+    m_hasSourceCoordinates(false), m_hasTargetDC(false),
+    m_hasTargetCoordinates(false), m_hasRGB(false), m_hasOpacity(false),
+    m_hasMask(false)
 {}
 
 // -----------------------------------------------------------------------
@@ -136,6 +138,18 @@ GraphicsStackFrame& GraphicsStackFrame::setTargetDC(int in)
 {
   m_hasTargetDC = true;
   m_targetDC = in;
+  return *this;
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsStackFrame& GraphicsStackFrame::setTargetCoordinates(int x1, int y1)
+{
+  m_hasTargetCoordinates = true;
+  m_targetX = x1;
+  m_targetY = y1;
+  m_targetX2 = -1;
+  m_targetY2 = -1;
   return *this;
 }
 

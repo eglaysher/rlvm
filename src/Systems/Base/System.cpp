@@ -31,6 +31,8 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
+#include "MachineBase/RLMachine.hpp"
+
 #include <boost/bind.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -132,10 +134,18 @@ void System::saveGameValues(Json::Value& root)
 
 void System::loadGameValues(RLMachine& machine, const Json::Value& root)
 {
+  reset();
+
   Json::Value system = root["system"];
 
   graphics().loadGameValues(machine, system["graphics"]);
   text().loadGameValues(machine, system["text"]);
+
+  // @todo Move this into graphics
+  graphics().setWindowSubtitle(root["title"].asString(), 
+                               machine.getTextEncoding());
+
+  graphics().markScreenForRefresh();
 }
 
 // -----------------------------------------------------------------------

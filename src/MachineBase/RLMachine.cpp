@@ -590,8 +590,6 @@ void RLMachine::loadGameFrom(std::istream& iss)
   loadIntegerBanksFrom(LOCAL_INTEGER_BANKS, root);
   loadStringBank(strS, 'S', root);
 
-  system().graphics().setWindowSubtitle(root["title"].asString(), getTextEncoding());
-
   clearCallstack();
   const Value saveCallStack = root["callStack"];
   for(ValueConstIterator it = saveCallStack.begin(); 
@@ -630,11 +628,6 @@ void RLMachine::loadGameFrom(std::istream& iss)
   }
 
   m_system.loadGameValues(*this, root);
-
-  // Reset the system
-  // @todo Make this work.
-  system().reset();
-  system().graphics().markScreenForRefresh();
 }
 
 // -----------------------------------------------------------------------

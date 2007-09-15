@@ -44,6 +44,7 @@ class Value;
 
 namespace graphicsStack {
 extern const std::string GRP_LOAD;
+extern const std::string GRP_OPENBG;
 }
 
 // -----------------------------------------------------------------------
@@ -72,6 +73,6 @@ public:
  * @param machine Machine to replay on
  * @param serializedStack Serialized JSON array of the graphics stack
  */
-void replayGraphicsStack(RLMachine& machine, Json::Value& serializedStack);
+void replayGraphicsStack(RLMachine& machine, const Json::Value& serializedStack);
 
 #endif
