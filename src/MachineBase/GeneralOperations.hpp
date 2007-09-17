@@ -215,6 +215,37 @@ RLOperation* returnStringValue(OBJTYPE& ref, const std::string&(OBJTYPE::*s)() c
 
 // -----------------------------------------------------------------------
 
+template<typename OBJTYPE>
+class Op_CallFunction : public RLOp_Void_Void {
+private:
+  /// The object on which we want to call the getter function
+  OBJTYPE& reference;
+
+  /// The string getter function to call
+  typedef void(OBJTYPE::*FUNCTYPE)();
+  FUNCTYPE func;
+
+public:
+  Op_CallFunction(OBJTYPE& ref, FUNCTYPE f) 
+    : reference(ref), func(f) 
+  {}
+
+  void operator()(RLMachine& machine) 
+  {
+    (reference.*func)();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+RLOperation* callFunction(OBJTYPE& ref, void(OBJTYPE::*s)())
+{
+  return new Op_CallFunction<OBJTYPE>(ref, s);
+}
+
+// -----------------------------------------------------------------------
+
 /**
  * Special adapter for multiple dispatch versions of operations. This
  * operation structure will take a Argc_T<  >

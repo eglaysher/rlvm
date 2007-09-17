@@ -45,11 +45,100 @@
 
 #include "json/value.h"
 
+#include "Utilities.h"
+
 using namespace std;
 using boost::bind;
 using boost::replace_all;
 
 namespace fs = boost::filesystem;
+
+// -----------------------------------------------------------------------
+
+System::System()
+{
+  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
+}
+
+// -----------------------------------------------------------------------
+
+void System::checkSyscomIndex(int index, const char* function)
+{
+  if(index < 0 || index >= NUM_SYSCOM_ENTRIES)
+  {
+    ostringstream oss;
+    oss << "Illegal syscom index #" << index << " in " << function;
+    throw std::runtime_error(oss.str());
+  }
+}
+
+// -----------------------------------------------------------------------
+
+bool System::isSyscomEnabled(int syscom)
+{
+  checkSyscomIndex(syscom, "System::isSyscomEnabled");
+  return m_syscomStatus[syscom];
+}
+
+// -----------------------------------------------------------------------
+
+void System::hideSyscom()
+{
+//  cerr << "Hiding all syscom!" << endl;
+  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_INVISIBLE);
+}
+
+// -----------------------------------------------------------------------
+
+void System::hideSyscom(int syscom)
+{
+//  cerr << "Hiding syscom" << syscom << "!" << endl;
+  checkSyscomIndex(syscom, "System::hideSystem");
+  m_syscomStatus[syscom] = SYSCOM_INVISIBLE;
+}
+
+// -----------------------------------------------------------------------
+
+void System::enableSyscom()
+{
+//  cerr << "Enabling all syscom!" << endl;
+  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
+}
+
+// -----------------------------------------------------------------------
+
+void System::enableSyscom(int syscom)
+{
+//  cerr << "Enabling syscom" << syscom << "!" << endl;
+  checkSyscomIndex(syscom, "System::enableSystem");
+  m_syscomStatus[syscom] = SYSCOM_VISIBLE; 
+}
+
+// -----------------------------------------------------------------------
+
+void System::disableSyscom()
+{
+  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_GREYED_OUT);
+}
+
+// -----------------------------------------------------------------------
+
+void System::disableSyscom(int syscom)
+{
+  checkSyscomIndex(syscom, "System::disableSystem");
+  m_syscomStatus[syscom] = SYSCOM_GREYED_OUT;
+}
+
+// -----------------------------------------------------------------------
+
+  /// @todo Write InvokeSyscom
+
+// -----------------------------------------------------------------------
+
+int System::readSyscom(int syscom)
+{
+  throw rlvm::Exception("ReadSyscom unimplemented!");
+}
 
 // -----------------------------------------------------------------------
 

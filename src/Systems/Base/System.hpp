@@ -39,6 +39,13 @@ class Value;
 
 namespace boost { namespace filesystem { class path; } }
 
+
+const int NUM_SYSCOM_ENTRIES = 32;
+
+const int SYSCOM_INVISIBLE = 0;
+const int SYSCOM_VISIBLE = 1;
+const int SYSCOM_GREYED_OUT = 2;
+
 /**
  * The system class provides a generalized interface to all the
  * components that make up a local system that may need to be
@@ -51,6 +58,11 @@ namespace boost { namespace filesystem { class path; } }
 class System
 {
 private:
+  /// The visibility status for all syscom entries
+  int m_syscomStatus[NUM_SYSCOM_ENTRIES];
+
+  void checkSyscomIndex(int index, const char* function);
+
   std::vector<std::string> cachedSearchPaths;
 
   void addPath(GameexeInterpretObject gio);
@@ -59,6 +71,8 @@ protected:
   boost::filesystem::path getHomeDirectory();
 
 public:
+  System();
+
   virtual ~System() {}
 
   virtual void run(RLMachine& machine) = 0;
@@ -68,6 +82,62 @@ public:
   virtual Gameexe& gameexe() = 0;
   virtual TextSystem& text() = 0;
 //  virtual SoundSystem& soundSystem() = 0;
+
+  /**
+   * @name Syscom related functions
+   * 
+   * RealLive provides a context menu system to handle most actions
+   * and configuration settings. The system command menu is configured
+   * with the #SYSCOM variables in gameexe.ini. It can be disabled by
+   * setting #SYSCOM_USE to 0, and if a #CANCELCALL hook is defined it
+   * will never be used at all (Clannad does this, although it uses
+   * the internal flags associated with the system command menu to
+   * control its own menu system).
+   *
+   * These functions are used to manipulate the visibility, change the
+   * values of, and invoke standard dialogs for 
+   *
+   * @{
+   */
+  
+  /** 
+   * Checks the visibility of a single syscom command.
+   * 
+   * @param num The syscom number to check
+   * @return Returns 0 if the given system command is invisible, 1 if
+   *         it is visible, and 2 if it is visible but disabled
+   *         (greyed out).
+   */
+  bool isSyscomEnabled(int syscom);
+
+  /// Hides all syscom entries
+  void hideSyscom();
+
+  /// Hides the syscom entry @c syscom
+  void hideSyscom(int syscom);
+
+  /// Enables all syscom entries
+  void enableSyscom();
+
+  /// Enables the syscom entry @c syscom
+  void enableSyscom(int syscom);
+
+  /// Disables all syscom entries
+  void disableSyscom();
+
+  /// Disables the syscom entry @c syscom
+  void disableSyscom(int syscom);
+
+
+
+  /// @todo Write InvokeSyscom
+
+  /// Reads the corresponding value for syscom number @c syscom
+  int readSyscom(int syscom);
+
+  /// @}
+
+
 
   const std::vector<std::string>& getSearchPaths();
 

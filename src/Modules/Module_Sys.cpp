@@ -41,6 +41,7 @@
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Timer.hpp"
 #include "Modules/Module_Sys_Save.hpp"
+#include "Modules/Module_Sys_Syscom.hpp"
 #include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
@@ -622,14 +623,6 @@ SysModule::SysModule(System& system)
   addOpcode(1133, 0, "SetDefaultBgr",
             setToIncomingString(graphics, &GraphicsSystem::setDefaultBgrName));
 
-  addUnsupportedOpcode(1210, 0, "ContextMenu");
-  addUnsupportedOpcode(1211, 0, "EnableSyscom");
-  addUnsupportedOpcode(1211, 1, "EnableSyscom");
-  addUnsupportedOpcode(1212, 0, "HideSyscom");
-  addUnsupportedOpcode(1212, 1, "HideSyscom");
-  addUnsupportedOpcode(1213, 0, "DisableSyscom");
-  addUnsupportedOpcode(1214, 0, "SyscomEnabled");
-
   addUnsupportedOpcode(1300, 0, "GetName");
   addUnsupportedOpcode(1301, 0, "SetName");
   addUnsupportedOpcode(1302, 0, "nwSingle");
@@ -771,4 +764,5 @@ SysModule::SysModule(System& system)
   addSysTimerOpcodes(*this);
   addSysFrameOpcodes(*this);
   addSysSaveOpcodes(*this);
+  addSysSyscomOpcodes(*this, system);
 }
