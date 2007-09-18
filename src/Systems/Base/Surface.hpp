@@ -65,6 +65,8 @@ public:
   virtual void fill(int r, int g, int b, int alpha, int x, int y, 
                     int width, int height) = 0;
 
+  virtual void getDCPixel(int x, int y, int& r, int& g, int& b) { }
+
   virtual Surface* clone() const = 0;
 };
 

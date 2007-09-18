@@ -44,6 +44,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 
 // -----------------------------------------------------------------------
 
@@ -84,6 +85,24 @@ struct Scr_stackTrunc : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
+struct Scr_GetDCPixel : public RLOp_Void_6<
+  IntConstant_T, IntConstant_T, IntConstant_T,
+  IntReference_T, IntReference_T, IntReference_T>
+{
+  void operator()(RLMachine& machine, int x, int y, int dc,
+                  IntReferenceIterator r, IntReferenceIterator g,
+                  IntReferenceIterator b)
+  {
+    int rval, gval, bval;
+    machine.system().graphics().getDC(dc)->getDCPixel(x, y, rval, gval, bval);
+    *r = rval;
+    *g = gval;
+    *b = bval;
+  }
+};
+
+// -----------------------------------------------------------------------
+
 ScrModule::ScrModule(GraphicsSystem& sys)
   : RLModule("Scr", 1, 30)
 {
@@ -102,5 +121,7 @@ ScrModule::ScrModule(GraphicsSystem& sys)
   addOpcode(22, 0, "DrawManual",
             setToConstant(sys, &GraphicsSystem::setScreenUpdateMode,
                           GraphicsSystem::SCREENUPDATEMODE_MANUAL));
+
+  addOpcode(31, 0, "GetDCPixel", new Scr_GetDCPixel);
 }
 

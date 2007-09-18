@@ -701,3 +701,30 @@ vector<int> SDLSurface::segmentPicture(int sizeRemainging)
 
   return output;
 }
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
+{
+  SDL_Color color;
+  Uint32 col = 0 ;
+
+  //determine position
+  char* pPosition = ( char* ) m_surface->pixels ;
+
+  //offset by y
+  pPosition += ( m_surface->pitch * y ) ;
+
+  //offset by x
+  pPosition += ( m_surface->format->BytesPerPixel * x ) ;
+
+  //copy pixel data
+  memcpy ( &col , pPosition , m_surface->format->BytesPerPixel ) ;
+
+  // Before someone tries to simplify the following four lines,
+  // remember that sizeof(int) != sizeof(Uint8).
+  SDL_GetRGB ( col , m_surface->format , &color.r , &color.g , &color.b ) ;
+  r = color.r;
+  g = color.g;
+  b = color.b;
+}

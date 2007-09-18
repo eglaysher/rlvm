@@ -166,7 +166,12 @@ public:
 
   SDL_Surface* surface() { return m_surface; }
 
+
+  virtual void getDCPixel(int x, int y, int& r, int& g, int& b);
+
   virtual Surface* clone() const;
+
+
 
   void interpretAsColorMask(int r, int g, int b, int alpha);
 };
