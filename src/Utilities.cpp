@@ -121,7 +121,16 @@ string correctPathCase(const string& fileName)
 std::string findFontFile(const std::string& fileName)
 {
   using namespace boost::filesystem;  
-  path home(getenv("HOME"));
+  char* homeptr = getenv("HOME");
+  char* rootptr = getenv("SYSTEMROOT");
+  path home;
+  if (homeptr != 0) {
+	  home = homeptr;
+  }
+  else if (rootptr != 0) {
+	  home = rootptr;
+	  home /= "Fonts";
+  }
   return (home / fileName).string();
 }
 

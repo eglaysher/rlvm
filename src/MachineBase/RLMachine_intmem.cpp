@@ -88,16 +88,16 @@ int RLMachine::getIntValue(const IntMemRef& ref)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
   if (type == 0) {
-    // A[]..G[], Z[] を直に読む
-    if (uint(location) >= 2000) 
+   // A[]..G[], Z[] を直に読む
+    if ((unsigned int)(location) >= 2000) 
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return intVar[index][location];
   } else {
-    // Ab[]..G4b[], Z8b[] などを読む
+   // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
-    if (uint(location) >= (64000u / factor)) 
+    if ((unsigned int)(location) >= (64000u / factor)) 
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return (intVar[index][location / eltsize] >>
@@ -122,7 +122,7 @@ void RLMachine::setIntValue(const IntMemRef& ref, int value)
   }
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
-    if (uint(location) >= 2000) 
+    if ((unsigned int)(location) >= 2000) 
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
     intVar[index][location] = value;
   } else {
@@ -131,7 +131,7 @@ void RLMachine::setIntValue(const IntMemRef& ref, int value)
     int eltsize = 32 / factor;
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
-    if (uint(location) >= (64000u / factor)) 
+    if ((unsigned int)(location) >= (64000u / factor)) 
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
 
     intVar[index][location / eltsize] =

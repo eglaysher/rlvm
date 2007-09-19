@@ -385,7 +385,6 @@ public:
     incrementUntilValid();
   }
 
-  template<class OtherValue>
   GameexeFilteringIterator(GameexeFilteringIterator const& other)
     : filterKeys(other.filterKeys), gexe(other.gexe), 
       currentKey(other.currentKey)

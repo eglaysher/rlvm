@@ -55,7 +55,11 @@ bool init_end=false;
 
 #include <ctype.h>
 #include <fcntl.h>
-#include <unistd.h>
+#ifdef WIN32
+# include <io.h>
+#else
+# include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -66,7 +70,19 @@ bool init_end=false;
 #include<sys/mman.h>
 #endif /* HAVE_MMAP */
 
+#ifdef WIN32
+# include <direct.h>
+# include "dirent_impl.h"
+# ifdef MAX_PATH
+#  define PATH_MAX MAX_PATH
+# else
+#  define PATH_MAX 260
+# endif
+#else
 # include <dirent.h>
+# define PATH_MAX 1024
+#endif
+
 # define NAMLEN(dirent) strlen((dirent)->d_name)
 
 #if HAVE_LIBZ
@@ -426,6 +442,9 @@ void DIRFILE::ListupFiles(int fname_len) {
 		fprintf(stderr, "Cannot open dir file : %s\n",arcname);
 		return;
 	}
+	char old_dir_path[PATH_MAX];
+	getcwd(old_dir_path, PATH_MAX);
+	old_dir_path[PATH_MAX - 1] = 0;
 	/* 一時的に arcname のディレクトリに移動する */
 	int old_dir_fd = open(".",O_RDONLY);
 	if (old_dir_fd < 0) {
@@ -469,7 +488,9 @@ void DIRFILE::ListupFiles(int fname_len) {
 	}
 	/* chdir() したのを元に戻る */
 	closedir(dir);
-	fchdir(old_dir_fd); close(old_dir_fd);
+	//fchdir(old_dir_fd);
+	chdir(old_dir_path);
+	close(old_dir_fd);
 	return;
 }
 int NULFILE::CheckFileDeal(void) {

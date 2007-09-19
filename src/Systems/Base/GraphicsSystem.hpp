@@ -42,7 +42,7 @@ class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
 class Gameexe;
-class ObjectSettings;
+struct ObjectSettings;
 
 namespace Json {
 class Value;

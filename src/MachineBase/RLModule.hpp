@@ -41,7 +41,7 @@ class FunctionElement;
 class CommandElement;
 };      
 
-class RLOperation;
+struct RLOperation;
 class RLMachine;
 
 /**

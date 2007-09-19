@@ -553,7 +553,9 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   // This is the perfect example of why I need to come back and
   // really understand this part of the code I'm stealing. WTF is
   // this!?
-  tmp->flags &= ~SDL_PREALLOC;
+  // :Surface doesn't use preallocated memory? (the malloc'd data argument)
+  // :This is silly! --RT
+  //tmp->flags &= ~SDL_PREALLOC;
 
   SDL_Surface* surf = SDL_DisplayFormatAlpha(tmp);
   SDL_FreeSurface(tmp);
@@ -616,6 +618,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
   if (conv == 0) { 
     throw SystemError("Failure in GRPCONV.");
   }
+  // do not free until SDL_FreeSurface() is called on the surface using it
   char* mem = (char*)malloc(conv->Width() * conv->Height() * 4 + 1024);
   SDL_Surface* s = 0;
   if (conv->Read(mem)) {
@@ -636,6 +639,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
 
     s = newSurfaceFromRGBAData(conv->Width(), conv->Height(), mem, is_mask);
   }
+  free(mem);
 
 //  cerr << "Converter table size: " << conv->region_table.size() << endl;
 

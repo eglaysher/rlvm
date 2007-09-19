@@ -80,6 +80,7 @@
 #define PROT_EXEC       (0x04)          /*!< \brief page can be executed */
 #define PROT_NONE       (0x00)          /*!< \brief page can not be accessed */
 
+#define MAP_SHARED      (0x01)          /*!< \brief Ignored */
 #define MAP_PRIVATE     (0x02)          /*!< \brief Changes are private */
 #define MAP_ANONYMOUS   (0x20)          /*!< \brief Ignore fd and offset parameters */
 #define MAP_FIXED       (0x10)          /*!< \brief Interpret addr exactly */

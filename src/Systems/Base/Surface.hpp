@@ -2,9 +2,7 @@
 #define __Surface_hpp__
 
 class GraphicsObject;
-class GraphicsObjectOverride;
-
-class GraphicsObject;
+struct GraphicsObjectOverride;
 
 /** 
  * Abstract concept of a surface. Used 

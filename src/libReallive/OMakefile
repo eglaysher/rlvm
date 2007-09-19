@@ -16,6 +16,10 @@ LRLFILES[] =
   scenario
   intmemref
 
+if $(equal $(OSTYPE), WIN32) or $(equal $(OSTYPE), WindowsNT)
+  LRLFILES[] += mmap_impl
+  export
+
 StaticCObject(libReallive, $(LRLFILES))
 
 ########

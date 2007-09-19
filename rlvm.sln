@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "librlvm", "src\librlvm.vcproj", "{9D133B45-1C77-453D-A44C-887619407513}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rlvm", "src\rlvm.vcproj", "{E89AF197-6E99-4E1C-A698-D5784A1F04B9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9D133B45-1C77-453D-A44C-887619407513} = {9D133B45-1C77-453D-A44C-887619407513}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D133B45-1C77-453D-A44C-887619407513}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9D133B45-1C77-453D-A44C-887619407513}.Debug|Win32.Build.0 = Debug|Win32
+		{9D133B45-1C77-453D-A44C-887619407513}.Release|Win32.ActiveCfg = Release|Win32
+		{9D133B45-1C77-453D-A44C-887619407513}.Release|Win32.Build.0 = Release|Win32
+		{E89AF197-6E99-4E1C-A698-D5784A1F04B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E89AF197-6E99-4E1C-A698-D5784A1F04B9}.Debug|Win32.Build.0 = Debug|Win32
+		{E89AF197-6E99-4E1C-A698-D5784A1F04B9}.Release|Win32.ActiveCfg = Release|Win32
+		{E89AF197-6E99-4E1C-A698-D5784A1F04B9}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -27,10 +27,10 @@ public:
 
   virtual void refresh(RLMachine&) { }
 
-  virtual void executeGraphicsSystem(RLMachine&) { };
+  virtual void executeGraphicsSystem(RLMachine&) { }
 
-  virtual int screenWidth() const { };
-  virtual int screenHeight() const { };
+  virtual int screenWidth() const { return 0; }
+  virtual int screenHeight() const { return 0; }
 
   virtual void allocateDC(int dc, int width, int height) { }
   virtual void freeDC(int dc) { }

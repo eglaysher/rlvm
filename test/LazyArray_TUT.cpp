@@ -26,6 +26,7 @@
 #include "tut.hpp"
 
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 const int SIZE = 10;

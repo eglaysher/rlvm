@@ -126,7 +126,7 @@ namespace Json {
 	  typedef Value value_type;
 	  typedef Value* pointer;
 	  typedef const Value* const_pointer;
-	  typedef Value& refrence;
+	  typedef Value& reference;
 	  typedef const Value& const_reference;
 
       static const Value null;
@@ -943,9 +943,11 @@ public: // overridden from ValueArrayAllocator
    {
       friend class Value;
    public:
+      typedef std::input_iterator_tag iterator_category;
       typedef unsigned int size_t;
       typedef int difference_type;
       typedef const Value &reference;
+      typedef reference value_type;
       typedef const Value *pointer;
       typedef ValueConstIterator SelfType;
 
@@ -1058,5 +1060,16 @@ public: // overridden from ValueArrayAllocator
 
 } // namespace Json
 
+namespace std {
+template <>
+struct iterator_traits<Json::ValueConstIterator>
+{
+   typedef Json::ValueConstIterator::iterator_category iterator_category;
+   typedef Json::ValueConstIterator::value_type        value_type;
+   typedef Json::ValueConstIterator::difference_type   difference_type;
+   typedef Json::ValueConstIterator::pointer           pointer;
+   typedef Json::ValueConstIterator::reference         reference;
+};
+} // namespace std
 
 #endif // CPPTL_JSON_H_INCLUDED

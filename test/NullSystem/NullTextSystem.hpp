@@ -53,7 +53,7 @@ public:
   // We can safely ignore mouse clicks...for now.
   void setMousePosition(RLMachine& machine, int x, int y) { }
   bool handleMouseClick(RLMachine& machine, int x, int y,
-                        bool pressed) { }
+                        bool pressed) { return false; }
 
   boost::shared_ptr<Surface> renderText(
 	RLMachine& machine, const std::string& utf8str, int size, int xspace,

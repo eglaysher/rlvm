@@ -63,7 +63,7 @@ class SCN2kFILE;
 class RaffresiaFILE;
 /* ARCINFO はファイルを読み込むために必要 */
 class ARCINFO;
-class ARCFILE_ATOM;
+struct ARCFILE_ATOM;
 class FILESEARCH {
 public:
 #define TYPEMAX 14
@@ -108,7 +108,7 @@ public:
 		char* filename);
 	ARCFILE* MakeARCFILE(ARCTYPE tp, char* filename);
 	/* fname で指定された名前のファイルを検索 */
-	class ARCINFO* Find(FILETYPE type, const char* fname, const char* ext=0);
+	ARCINFO* Find(FILETYPE type, const char* fname, const char* ext=0);
 	/* ある種類のファイルをすべてリストアップ
 	** 末尾は NULL pointer
 	*/

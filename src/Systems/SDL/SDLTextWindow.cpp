@@ -169,7 +169,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   if(curCodepoint == 0x3010 || curCodepoint == 0x3011)
   {
     throw SystemError(
-      "Bug in parser; \{name} construct should be handled before displayChar");
+      "Bug in parser; \\{name} construct should be handled before displayChar");
   }
 
   SDL_Surface* tmp =

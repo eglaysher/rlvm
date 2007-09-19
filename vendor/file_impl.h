@@ -45,7 +45,15 @@ struct ARCFILE_ATOM {
 	bool operator <(char* const to) const {
 		return strcmp(filename_lower, to) < 0;
 	}
+
+	friend bool operator <(char* const to, ARCFILE_ATOM const& from);
 };
+
+bool operator <(char* const to, ARCFILE_ATOM const& from)
+{
+	return from.operator <(to);
+}
+
 
 class ARCFILE {
 protected:

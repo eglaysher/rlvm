@@ -37,7 +37,7 @@
 template<typename CON>
 struct Argc_T {
   /// The output type of this type struct
-  typedef std::vector<typename CON::type> type;
+  typedef typename std::vector<typename CON::type> type;
 
   /** Convert the incoming parameter objects into the resulting type.
    * Passes each parameter down to 
@@ -60,7 +60,8 @@ struct Argc_T {
 // -----------------------------------------------------------------------
 
 template<typename CON>
-struct Argc_T<CON>::type Argc_T<CON>::getData(RLMachine& machine, 
+typename Argc_T<CON>::type Argc_T<CON>::
+getData(RLMachine& machine, 
                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                      unsigned int position) {
   type returnVector;

@@ -242,18 +242,24 @@ void System::loadGameValues(RLMachine& machine, const Json::Value& root)
 boost::filesystem::path System::getHomeDirectory()
 {
   string drive, home;
-  if((home = getenv("HOME")) != "")
+  char *homeptr     = getenv("HOME");
+  char *driveptr    = getenv("HOMEDRIVE");
+  char *homepathptr = getenv("HOMEPATH");
+  char *profileptr  = getenv("USERPROFILE");
+  if(homeptr != 0 && (home = homeptr) != "")
   {
 	// UN*X like home directory
 	return fs::path(home);
   }
-  else if((drive = getenv("HOMEDRIVE")) != "" &&
-		  (home  = getenv("HOMEPATH")) != "")
+  else if(driveptr != 0 &&
+		  homepathptr !=0 &&
+		  (drive = driveptr) != "" &&
+		  (home  = homepathptr) != "")
   {
 	// Windows.
 	return fs::path(drive) / fs::path(home);
   }
-  else if((home = getenv("USERPROFILE")) != "")
+  else if(profileptr != 0 && (home = profileptr) != "")
   {
 	// Windows?
 	return fs::path(home);

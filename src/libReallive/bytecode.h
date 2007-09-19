@@ -130,7 +130,7 @@ public:
 } namespace std {
 template<> struct less<libReallive::pointer_t> {
   bool operator() (const libReallive::pointer_t& a,
-                   const libReallive::pointer_t& b) {
+                   const libReallive::pointer_t& b) const {
     return a->id < b->id;
   }
 };

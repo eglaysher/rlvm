@@ -130,7 +130,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
   }
 
   if(codepoint != 0x3011 && it == strend)
-    throw SystemError("Malformed string code. Opening bracket in \{name} construct,"
+    throw SystemError("Malformed string code. Opening bracket in \\{name} construct,"
                       " but missing closing bracket.");
 
   // Grab the name

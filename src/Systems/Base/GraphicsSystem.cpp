@@ -32,6 +32,7 @@
 #include "Modules/Module_Grp.hpp"
 
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 
@@ -79,14 +80,32 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   GameexeFilteringIterator end = gameexe.filtering_end();
   for(; it != end; ++it)
   {
-	const std::string& key = it->key();
-	string s = key.substr(key.find_first_of(".") + 1);
-	int objNum = lexical_cast<int>(s);
+  string s = it->key().substr(it->key().find_first_of(".") + 1);
+  std::list<int> object_nums;
+  string::size_type poscolon = s.find_first_of(":");
+  if ( poscolon != string::npos )
+  {
+    int objNumFirst = lexical_cast<int>(s.substr(0, poscolon));
+    int objNumLast = lexical_cast<int>(s.substr(poscolon + 1));
+    while ( objNumFirst <= objNumLast )
+    {
+      object_nums.push_back(objNumFirst++);
+    }
+  }
+  else
+  {
+    object_nums.push_back(lexical_cast<int>(s));
+  }
+  
+  for ( std::list<int>::const_iterator intit = object_nums.begin(); intit != object_nums.end(); ++intit )
+  {
+    int objNum = *intit;
 	if(objNum != 999 && objNum < OBJECTS_IN_A_LAYER)
 	{
 	  position[objNum] = data.size();
 	  data.push_back(ObjectSettings(*it));
 	}	
+  }
   }
 }
 
