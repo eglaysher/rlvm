@@ -751,14 +751,15 @@ void SDLGraphicsSystem::clearAndPromoteObjects()
   FullIterator fgEnd = foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
+    if(fg.valid() && !fg->wipeCopy())
+    {
+      fg->deleteObject();
+    }
+
     if(bg.valid())
     {
       *fg = *bg;
       bg->deleteObject();
-    }
-    else if(fg.valid() && !fg->wipeCopy())
-    {
-      fg->deleteObject();
     }
   }
 }

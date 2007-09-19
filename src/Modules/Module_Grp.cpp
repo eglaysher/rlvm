@@ -104,6 +104,8 @@ void blitDC1toDC0(RLMachine& machine)
   machine.system().graphics().markScreenForRefresh();
 }
 
+// -----------------------------------------------------------------------
+
 /** 
  * Performs half the grunt work of a recOpen command; Copies DC0 to
  * DC1, loads a graphics file, and then composites that file to DC1.
