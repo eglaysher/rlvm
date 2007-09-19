@@ -3,56 +3,44 @@ GAME COMPATIBILITY STATUS
 
 Kanon SE ALL
 ------------
-* Starts
-* Fades Key logo in/out (snow effect unimplemented)
-* Menu correctly animates in
-* Menu items highlight on mouseover and work when clicked on. 
-  * Clicking load has RLVM complain about <1:Sys:03001> (menu_load) not being 
+- Starts
+- Fades Key logo in/out (snow effect unimplemented)
+- Main menu works except for load
+  - Clicking load has RLVM complain about <1:Sys:03001> (menu_load) not being 
     implemented.
-  * Clicking on enter name glitches. The cancel button, and the big circular button
-    are rendered over the Kanon backdrop. owarisuru is rendered on top of some 
-    smaller button. Nothing works, ^C.
-    [Haeleth: right-click works to return to menu]
-  * owarisuru shuts down the interpreter cleanly.
-* Playable through the prologue. Gets through most of Last Regrets,
-  but glitches right after the part with Ayu getting
-  wings. Theoretically caused by index_series.
-a
+- Playable through the prologue. 
+- Gets through most of Last Regrets, but glitches right after the part
+  with Ayu getting wings. Theoretically caused by index_series.
+  - Small graphics glitch: vertical blind transition effect doesn't
+    clear the screen after each character portrait
+
 Planetarian CD
 --------------
-* Starts
-* Displays what I assume is an antipiracy message
-* Correctly renders menu, items highlight on mouseover. 
-* Clicking New Game works. 
-* Playable for several dozens pages, until it crashes when asked to
-  load a texture larger then OpenGL can handle.
+- Planetarian is playable through the end, with the following caveats:
+  - In the intro, and immediately following the iconic climax scene of
+    Planetarian, some functions regarding Haikei are used. The Haikei
+    functions, and the corresponding HIK file format have not been
+    reverse engineered. 
+  - There are many small issues where some backgrounds refuse to
+    display correctly. (This needs investigation)
+  - In the save/load menu, tooltips display immediately, instead of
+    requiring a short hovering period.
+  - There are minor issues with indentation that need to be worked out.
 
 CLANNAD
 -------
-* Starts
-* Main menu is the glitchiest of the three:
-  * Menu background image fades in properly, CLANNAD logo then fades in
-  * Basic menu appears, but it looks like some extra (non-selectable) menu items
-    are just hanging out in the top left corner of the screen.
-  * After that happens, menu items are highlightable.
-    * Clicking New game opens to new game.
-    * Load brings me to the load menu, but it's glitching. It's asking me something,
-      but rendering the hai/iie buttons twice, obsucuring what it's trying to ask 
-      me. The buttons don't work. There is a modoru button partially under, and 
-	  that does bring you back to the main menu.
-    * Config:
-      * The push buttons on the first page of options (the one with fullscreen
-        option) toggle state.
-    * Name:
-      * Only three buttons are rendered, of which cancel is the only one that has
-        any discernable effect, taking me back to the main menu.
-    * Exit + an additional quit shut down interpreter, but there's an exception
-      in the log
-* Main game is playable until end, assuming that all questions are
-  answered with the first choice, which leads to a bad end, and
-  returns to the main menu.
+- Main menu renders correctly; the option menu (for the most part)
+  works correctly; most options can be set (and will be remembered
+  between invocations)
+- Main game may be playable until the end
+  - Things *appear* to work (but I haven't tested things in depth)
+  - ctrl-ing through most of the game, I got a weird hang on a
+    selection; Clicking on one of the items (which highlighted on
+    mouse over properly) would not advance. Needs investigation.
+- In game menu mostly works.
 
 UNOFFICIAL "ONE" DEMO
 ---------------------
-* Warnings in log about "?.g00"
-* Quite a lot works; the things that don't are quite instructive!
+- Considering how much this relies on the grp commands, I'm surprised
+  this works as well as it does.
+- Quite a lot works; the things that don't are quite instructive!
