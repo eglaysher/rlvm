@@ -2,7 +2,14 @@
 #  OMakeFlags(-S --progress)
 #  export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+if $(or $(equal $(OSTYPE), WIN32), $(equal $(OSTYPE), WindowsNT))
+  CXXFLAGS += -EHsc -W3 -wd4800 -wd4819 -wd4996 -U__STRICT_ANSI__ /J $(if $(defined-env DEBUG), -Od, -O2) -I./ -I../ -I../../ $(shell freetype-config --cflags) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+  export
+else
+  CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) -I./ -I../ -I../../ $(shell freetype-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+  export
+
+
 CFLAGS = $(CXXFLAGS)
 
 # for testing
@@ -15,9 +22,13 @@ CFLAGS = $(CXXFLAGS)
 LRLFILES[] =
   glew
   file
-  SDL_ttf
   alphablit
   json/libjsoncpp
+
+if $(not $(equal $(OSTYPE), WIN32))
+  if $(not $(equal $(OSTYPE), WindowsNT))
+    LRLFILES[] += SDL_ttf
+    export
 
 StaticCObject(libVendorLibs, $(LRLFILES))
 

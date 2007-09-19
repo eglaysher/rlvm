@@ -2,14 +2,26 @@ if $(not $(defined-env VERBOSE))
   OMakeFlags(-S --progress)
   export
 
-CXXFLAGS = --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
+if $(or $(equal $(OSTYPE), WIN32), $(equal $(OSTYPE), WindowsNT))
+  CXXFLAGS += -EHsc -W3 -wd4800 -wd4819 -wd4996 -U__STRICT_ANSI__ /J $(if $(defined-env DEBUG), -Od, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
+  export
+else
+  CXXFLAGS += --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
+  export
 
 .PHONY: clean
 
 .SUBDIRS: NullSystem Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN
 
 INCLUDES += ../src
-LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_filesystem
+if $(or $(equal $(OSTYPE), WIN32), $(equal $(OSTYPE), WindowsNT))
+  LDOUT = /Fo
+  LDFLAGS += /link $(if $(defined-env DEBUG), /DEBUG, /RELEASE) ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs) $(PLATFORMLIBS) SDL.lib SDL_image.lib SDL_ttf.lib
+  export
+else
+  LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_filesystem
+  export
+
 
 TEST_FILES[] = 
   rlvmTest
