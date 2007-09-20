@@ -88,13 +88,13 @@ int RLMachine::getIntValue(const IntMemRef& ref)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
   if (type == 0) {
-   // A[]..G[], Z[] ¤òÄ¾¤ËÆÉ¤à
+   // A[]..G[], Z[] ã‚’ç›´ã«èª­ã‚€
     if ((unsigned int)(location) >= 2000) 
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return intVar[index][location];
   } else {
-   // Ab[]..G4b[], Z8b[] ¤Ê¤É¤òÆÉ¤à
+   // Ab[]..G4b[], Z8b[] ãªã©ã‚’èª­ã‚€
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
     if ((unsigned int)(location) >= (64000u / factor)) 
@@ -121,12 +121,12 @@ void RLMachine::setIntValue(const IntMemRef& ref, int value)
 	throwIllegalIndex(ref, "RLMachine::setIntValue()");
   }
   if (type == 0) {
-    // A[]..G[], Z[] ¤òÄ¾¤Ë½ñ¤¯
+    // A[]..G[], Z[] ã‚’ç›´ã«æ›¸ã
     if ((unsigned int)(location) >= 2000) 
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
     intVar[index][location] = value;
   } else {
-    // Ab[]..G4b[], Z8b[] ¤Ê¤É¤ò½ñ¤¯
+    // Ab[]..G4b[], Z8b[] ãªã©ã‚’æ›¸ã
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
     int eltmask = (1 << factor) - 1;

@@ -15,11 +15,11 @@ static bool s_isBigEndian = IsBigEndian();
 // -----------------------------------------------------------------------
 
 bool init_end=false;
-/*  file.cc  : KANON ¤Î°µ½Ì¥Õ¥¡¥¤¥ë¡¦PDT ¥Õ¥¡¥¤¥ë¡Ê²èÁü¥Õ¥¡¥¤¥ë¡Ë¤ÎÅ¸³«¤Î
- *            ¤¿¤á¤Î¥á¥½¥Ã¥É
- *     class ARCFILE : ½ñ¸Ë¥Õ¥¡¥¤¥ëÁ´ÂÎ¤ò°·¤¦¥¯¥é¥¹
- *     class ARCINFO : ½ñ¸Ë¥Õ¥¡¥¤¥ë¤ÎÃæ¤Î£±¤Ä¤Î¥Õ¥¡¥¤¥ë¤ò°·¤¦¥¯¥é¥¹
- *     class PDTCONV : PDT ¥Õ¥¡¥¤¥ë¤ÎÅ¸³«¤ò¹Ô¤¦¡£
+/*  file.cc  : KANON ã®åœ§ç¸®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»PDT ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ï¼‰ã®å±•é–‹ã®
+ *            ãŸã‚ã®ãƒ¡ã‚½ãƒƒãƒ‰
+ *     class ARCFILE : æ›¸åº«ãƒ•ã‚¡ã‚¤ãƒ«å…¨ä½“ã‚’æ‰±ã†ã‚¯ãƒ©ã‚¹
+ *     class ARCINFO : æ›¸åº«ãƒ•ã‚¡ã‚¤ãƒ«ã®ä¸­ã®ï¼‘ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã†ã‚¯ãƒ©ã‚¹
+ *     class PDTCONV : PDT ãƒ•ã‚¡ã‚¤ãƒ«ã®å±•é–‹ã‚’è¡Œã†ã€‚
  *
  */
 
@@ -145,7 +145,7 @@ static int write_little_endian_short(char* buf, int number) {
 FILESEARCH file_searcher;
 // #define delete fprintf(stderr,"file.cc: %d.",__LINE__), delete
 
-/* FILESEARCH class ¤Î default ¤Î¿¶¤ëÉñ¤¤ */
+/* FILESEARCH class ã® default ã®æŒ¯ã‚‹èˆã„ */
 FILESEARCH::ARCTYPE FILESEARCH::default_is_archived[TYPEMAX] = {
 	ATYPE_DIR, ATYPE_DIR, ATYPE_DIR, ATYPE_DIR,
 	ATYPE_ARC, ATYPE_ARC, ATYPE_ARC, ATYPE_ARC,
@@ -159,22 +159,22 @@ char* FILESEARCH::default_dirnames[TYPEMAX] = {
 
 /*********************************************
 **  ARCFILE / DIRFILE:
-**	½ñ¸Ë¥Õ¥¡¥¤¥ë¡¢¤¢¤ë¤¤¤Ï¥Ç¥£¥ì¥¯¥È¥ê¤Î
-**	Á´ÂÎ¤ò´ÉÍı¤¹¤ë¥¯¥é¥¹
+**	æ›¸åº«ãƒ•ã‚¡ã‚¤ãƒ«ã€ã‚ã‚‹ã„ã¯ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®
+**	å…¨ä½“ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹
 **
-**	½ñ¸Ë¥Õ¥¡¥¤¥ë¤«¤é¥Õ¥¡¥¤¥ë¤ÎÈ´¤­½Ğ¤·¤ÏFind()
-**	Find ¤·¤¿¤â¤Î¤òRead¤¹¤ë¤ÈÆâÍÆ¤¬ÆÀ¤é¤ì¤ë¡£
+**	æ›¸åº«ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«ã®æŠœãå‡ºã—ã¯Find()
+**	Find ã—ãŸã‚‚ã®ã‚’Readã™ã‚‹ã¨å†…å®¹ãŒå¾—ã‚‰ã‚Œã‚‹ã€‚
 */
 
 ARCFILE::ARCFILE(char* aname) {
 	struct stat sb;
-	/* ÊÑ¿ô½é´ü²½ */
+	/* å¤‰æ•°åˆæœŸåŒ– */
 	arcname = 0;
 	list_point = 0;
 	filenames_orig = 0;
 	next = 0;
 	if (aname[0] == '\0') {arcname=new char[1]; arcname[0]='\0';return;} // NULFILE
-	/* ¥Ç¥£¥ì¥¯¥È¥ê¤«Èİ¤«¤Î¥Á¥§¥Ã¥¯ */
+	/* ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‹å¦ã‹ã®ãƒã‚§ãƒƒã‚¯ */
 	if (stat(aname,&sb) == -1) { /* error */
 		perror("stat");
 	}
@@ -198,9 +198,9 @@ void ARCFILE::Init(void) {
 	int i;
 	if (! arc_atom.empty()) return;
 	if (arcname == 0) return;
-	/* ¥Õ¥¡¥¤¥ë¿ô¤òÆÀ¤ë */
+	/* ãƒ•ã‚¡ã‚¤ãƒ«æ•°ã‚’å¾—ã‚‹ */
 	int slen = CheckFileDeal();
-	/* ¥Õ¥¡¥¤¥ëÌ¾¤Î¥»¥Ã¥È */
+	/* ãƒ•ã‚¡ã‚¤ãƒ«åã®ã‚»ãƒƒãƒˆ */
 	ListupFiles(slen);
 	if ( (!arc_atom.empty()) && arc_atom[0].filename) filenames_orig = arc_atom[0].filename;
 	sort(arc_atom.begin(), arc_atom.end());
@@ -216,16 +216,16 @@ ARCFILE::iterator ARCFILE::SearchName(const char* f, const char* ext) {
 	Init();
 	if (f == 0) return arc_atom.end();
 	if (arc_atom.empty()) return arc_atom.end();
-	/* ¥¨¥é¡¼¥Á¥§¥Ã¥¯ */
+	/* ã‚¨ãƒ©ãƒ¼ãƒã‚§ãƒƒã‚¯ */
 	if (strlen(f)>500) return arc_atom.end();
 	if (ext && strlen(ext)>500) return arc_atom.end();
 
-	/* ¸¡º÷ */
+	/* æ¤œç´¢ */
 	strncpy(buf, f, 1000);
 	buf[1000]=0;
 	it = lower_bound(arc_atom.begin(), arc_atom.end(), (char*)buf);
 	if (it != arc_atom.end() && strcmp(it->filename_lower, buf) == 0) return it;
-	// ³ÈÄ¥»Ò¤ò¤Ä¤±¤Æ¸¡º÷
+	// æ‹¡å¼µå­ã‚’ã¤ã‘ã¦æ¤œç´¢
 	if (ext) {
 		strcpy(buf_ext, buf);
 		char* ext_pt = strrchr(buf_ext, '.');
@@ -237,7 +237,7 @@ ARCFILE::iterator ARCFILE::SearchName(const char* f, const char* ext) {
 		if (it != arc_atom.end() && strcmp(it->filename_lower, buf_ext) == 0) return it;
 	}
 
-	/* ¾®Ê¸»ú¤Ë¤·¤Æ ¸¡º÷ */
+	/* å°æ–‡å­—ã«ã—ã¦ æ¤œç´¢ */
 	int i; int l = strlen(f);
 	if (l > 500) l = 500;
 	for (i=0; i<l; i++)
@@ -246,13 +246,13 @@ ARCFILE::iterator ARCFILE::SearchName(const char* f, const char* ext) {
 	it = lower_bound(arc_atom.begin(), arc_atom.end(), (char*)buf);
 	if (it != arc_atom.end() && strcmp(it->filename_lower, buf) == 0) return it;
 
-	// ³ÈÄ¥»Ò¤ò¤Ä¤±¤Æ¸¡º÷
+	// æ‹¡å¼µå­ã‚’ã¤ã‘ã¦æ¤œç´¢
 	if (ext == 0) return arc_atom.end();
 	strcpy(buf_ext, buf);
 	char* ext_pt = strrchr(buf_ext, '.');
 	if (ext_pt == 0 || ext_pt == buf_ext) ext_pt = buf_ext + strlen(buf_ext);
 	*ext_pt++ = '.';
-	/* ³ÈÄ¥»Ò¤ÎÄ¹¤µ¤òÆÀ¤ë */
+	/* æ‹¡å¼µå­ã®é•·ã•ã‚’å¾—ã‚‹ */
 	l = strlen(ext);
 	for (i=0; i<l; i++)
 		ext_pt[i] = tolower(*ext++);
@@ -274,7 +274,7 @@ ARCINFO* ARCFILE::Find(const char* fname, const char* ext) {
 ARCINFO* ARCFILE::MakeARCINFO(ARCFILE_ATOM& atom) {
 	if (atom.arcsize == atom.filesize)
 		return new ARCINFO(arcname, atom);
-	else // °µ½ÌÉÕ
+	else // åœ§ç¸®ä»˜
 		return new ARCINFO_AVG32(arcname, atom);
 }
 ARCINFO* NULFILE::MakeARCINFO(ARCFILE_ATOM& atom) {
@@ -354,7 +354,7 @@ char* ARCFILE::ListItem(void) {
 
 int ARCFILE::CheckFileDeal(void) {
 	char buf[0x20];
-	/* ¥Ø¥Ã¥À¤Î¥Á¥§¥Ã¥¯ */
+	/* ãƒ˜ãƒƒãƒ€ã®ãƒã‚§ãƒƒã‚¯ */
 	FILE* stream = fopen(arcname, "rb");
 	if (stream == 0) {
 		fprintf(stderr, "Cannot open archive file : %s\n",arcname);
@@ -445,7 +445,7 @@ void DIRFILE::ListupFiles(int fname_len) {
 	char old_dir_path[PATH_MAX];
 	getcwd(old_dir_path, PATH_MAX);
 	old_dir_path[PATH_MAX - 1] = 0;
-	/* °ì»şÅª¤Ë arcname ¤Î¥Ç¥£¥ì¥¯¥È¥ê¤Ë°ÜÆ°¤¹¤ë */
+	/* ä¸€æ™‚çš„ã« arcname ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ç§»å‹•ã™ã‚‹ */
 	int old_dir_fd = open(".",O_RDONLY);
 	if (old_dir_fd < 0) {
 		closedir(dir);
@@ -486,7 +486,7 @@ void DIRFILE::ListupFiles(int fname_len) {
 		arc_atom.push_back(atom);
 		buf += l*2+2; fname_len -= l*2+2;
 	}
-	/* chdir() ¤·¤¿¤Î¤ò¸µ¤ËÌá¤ë */
+	/* chdir() ã—ãŸã®ã‚’å…ƒã«æˆ»ã‚‹ */
 	closedir(dir);
 	//fchdir(old_dir_fd);
 	chdir(old_dir_path);
@@ -506,7 +506,7 @@ void NULFILE::ListupFiles(int fname_len) {
 	arc_atom.push_back(atom);
 }
 int SCN2kFILE::CheckFileDeal(void) {
-	/* ¥Ø¥Ã¥À¤Î¥Á¥§¥Ã¥¯ */
+	/* ãƒ˜ãƒƒãƒ€ã®ãƒã‚§ãƒƒã‚¯ */
 	FILE* stream = fopen(arcname, "rb");
 	if (stream == 0) {
 		fprintf(stderr, "Cannot open archive file : %s\n",arcname);
@@ -520,7 +520,7 @@ int SCN2kFILE::CheckFileDeal(void) {
 	}
 	char* buf = new char[10000*8];
 	fread(buf, 10000, 8, stream);
-	/* size == 0 ¤Î¥Ç¡¼¥¿¤ÏÂ¸ºß¤·¤Ê¤¤ */
+	/* size == 0 ã®ãƒ‡ãƒ¼ã‚¿ã¯å­˜åœ¨ã—ãªã„ */
 	int count = 0;
 	int i; for (i=0; i<10000; i++) {
 		int tmp_offset = read_little_endian_int(buf+i*8);
@@ -530,7 +530,7 @@ int SCN2kFILE::CheckFileDeal(void) {
 	}
 	fclose(stream);
 	delete[] buf;
-	return count*13; /* ¥Õ¥¡¥¤¥ëÌ¾¤Ï seenXXXX.txt ¤À¤«¤é¡¢°ì¤Ä12Ê¸»ú+null */
+	return count*13; /* ãƒ•ã‚¡ã‚¤ãƒ«åã¯ seenXXXX.txt ã ã‹ã‚‰ã€ä¸€ã¤12æ–‡å­—+null */
 }
 void SCN2kFILE::ListupFiles(int fname_len) {
 	FILE* stream = fopen(arcname, "rb");
@@ -548,22 +548,22 @@ void SCN2kFILE::ListupFiles(int fname_len) {
 		int tmp_offset = read_little_endian_int(buf+i*8);
 		int tmp_size = read_little_endian_int(buf+i*8+4);
 		if (tmp_size <= 0 || tmp_offset < 0 || tmp_offset+tmp_size > int(arc_size) ) continue;
-		/* header ¤òÆÀ¤Æ°µ½Ì·Á¼°¤Ê¤É¤òÄ´¤Ù¤ë */
+		/* header ã‚’å¾—ã¦åœ§ç¸®å½¢å¼ãªã©ã‚’èª¿ã¹ã‚‹ */
 		fseek(stream, tmp_offset, 0);
 		fread(header, 0x200, 1, stream);
 		int header_top = read_little_endian_int(header+0);
 		int file_version = read_little_endian_int(header+4);
 
-		if (file_version != 0x2712) continue; /* system version ¤¬°ã¤¦ */
+		if (file_version != 0x2712) continue; /* system version ãŒé•ã† */
 
-		if (header_top == 0x1cc) { /* ¸Å¤¤·Á¼° : avg2000 */
+		if (header_top == 0x1cc) { /* å¤ã„å½¢å¼ : avg2000 */
 			int header_size = read_little_endian_int(header+0)+read_little_endian_int(header+0x20)*4;
 			int data_size = read_little_endian_int(header+0x24);
 			atom.arcsize = data_size + header_size;
 			atom.filesize = data_size + header_size;
 			atom.private_data = header_size;
 
-		} else if (header_top == 0x1b8) { /* ½éÌë¸¥¾å */
+		} else if (header_top == 0x1b8) { /* åˆå¤œçŒ®ä¸Š */
 			int header_size = read_little_endian_int(header+0)+read_little_endian_int(header+0x08)*4;
 			int data_size = read_little_endian_int(header+0x0c);
 			int compdata_size = read_little_endian_int(header+0x10);
@@ -571,7 +571,7 @@ void SCN2kFILE::ListupFiles(int fname_len) {
 			atom.filesize = data_size + header_size;
 			atom.private_data = header_size;
 			
-		} else if (header_top == 0x1d0) { /* ¿·¤·¤¤·Á¼°¡§ reallive */
+		} else if (header_top == 0x1d0) { /* æ–°ã—ã„å½¢å¼ï¼š reallive */
 			int header_size = read_little_endian_int(header+0x20);
 			int data_size = read_little_endian_int(header+0x24);
 			int compdata_size = read_little_endian_int(header+0x28);
@@ -580,7 +580,7 @@ void SCN2kFILE::ListupFiles(int fname_len) {
 			atom.private_data = header_size;
 		} else {
 			fprintf(stderr,"invalid header top; %x : not supported\n",header_top);
-			continue; /* ¥µ¥İ¡¼¥È¤·¤Ê¤¤·Á¼° */
+			continue; /* ã‚µãƒãƒ¼ãƒˆã—ãªã„å½¢å¼ */
 		}
 
 		atom.offset = tmp_offset;
@@ -594,7 +594,7 @@ void SCN2kFILE::ListupFiles(int fname_len) {
 }
 
 /********************************************************
-** FILESEARCH ¥¯¥é¥¹¤Î¼ÂÁõ
+** FILESEARCH ã‚¯ãƒ©ã‚¹ã®å®Ÿè£…
 */
 
 FILESEARCH::FILESEARCH(void) {
@@ -619,7 +619,7 @@ FILESEARCH::~FILESEARCH(void) {
 }
 
 int FILESEARCH::InitRoot(char* root) {
-	/* É¬Í×¤Ë±ş¤¸¤Æ ~/ ¤òÅ¸³« */
+	/* å¿…è¦ã«å¿œã˜ã¦ ~/ ã‚’å±•é–‹ */
 	if (root[0] == '~' && root[1] == '/') {
 		char* home = getenv("HOME");
 		if (home != 0) {
@@ -629,7 +629,7 @@ int FILESEARCH::InitRoot(char* root) {
 			root = new_root;
 		}
 	}
-	/* ¸Å¤¤¥Ç¡¼¥¿¤ò¾Ã¤¹ */
+	/* å¤ã„ãƒ‡ãƒ¼ã‚¿ã‚’æ¶ˆã™ */
 	int i;
 	for (i=0; i<TYPEMAX; i++) {
 		if (searcher[i] != 0 &&
@@ -643,13 +643,13 @@ int FILESEARCH::InitRoot(char* root) {
 	if (root_dir) delete root_dir;
 	dat_dir = 0;
 
-	/* ¿·¤·¤¤¥Ç¥£¥ì¥¯¥È¥ê¤Î¤â¤È¤Ç½é´ü²½ */
+	/* æ–°ã—ã„ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ã‚‚ã¨ã§åˆæœŸåŒ– */
 	root_dir = new DIRFILE(root);
 	root_dir->Init();
-	/* dat/ ¤ò¸¡º÷ */
+	/* dat/ ã‚’æ¤œç´¢ */
 	char* dat_path = root_dir->SearchFile("dat");
 	if (dat_path == 0) {
-		/* ¸«¤Ä¤«¤é¤Ê¤«¤Ã¤¿¤é root ¤ò dat ¤ÎÂå¤ï¤ê¤Ë¤Ä¤«¤¦ */
+		/* è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã‚‰ root ã‚’ dat ã®ä»£ã‚ã‚Šã«ã¤ã‹ã† */
 		dat_dir = root_dir;
 	} else {
 		dat_dir = new DIRFILE(dat_path);
@@ -664,7 +664,7 @@ void FILESEARCH::SetFileInformation(FILETYPE tp, ARCTYPE is_arc, char* filename)
 	int type = tp;
 	if (type < 0 || type >= TYPEMAX) return;
 	ARCFILE* next_arc = 0;
-	/* ¤¹¤Ç¤Ë searcher ¤¬Â¸ºß¤¹¤ì¤Ğ²òÊü */
+	/* ã™ã§ã« searcher ãŒå­˜åœ¨ã™ã‚Œã°è§£æ”¾ */
 	if (searcher[type] != 0 &&
 	  searcher[type] != root_dir &&
 	  searcher[type] != dat_dir) {
@@ -672,7 +672,7 @@ void FILESEARCH::SetFileInformation(FILETYPE tp, ARCTYPE is_arc, char* filename)
 		delete searcher[type];
 	}
 	searcher[type] = 0;
-	/* Å¬Åö¤Ë½é´ü²½ */
+	/* é©å½“ã«åˆæœŸåŒ– */
 	if (filenames[type] != 0 &&
 		filenames[type] != default_dirnames[type]) delete[] filenames[type];
 	filenames[type] = new char[strlen(filename)+1];
@@ -686,18 +686,18 @@ void FILESEARCH::SetFileInformation(FILETYPE tp, ARCTYPE is_arc, char* filename)
 void FILESEARCH::AppendFileInformation(FILETYPE tp, ARCTYPE is_arc, char* filename) {
 	int type = tp;
 	if (type < 0 || type >= TYPEMAX) return;
-	/* searcher ¤¬¤Ş¤À³ä¤êÅö¤Æ¤é¤ì¤Æ¤Ê¤¤¾ì¹ç */
+	/* searcher ãŒã¾ã å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ãªã„å ´åˆ */
 	if (searcher[type] == 0 ||
 	  searcher[type] == root_dir ||
 	  searcher[type] == dat_dir) {
 		searcher[type] = MakeARCFILE(is_archived[type], filenames[type]);
-		if (searcher[type] == 0) { /* ºîÀ®¤Ç¤­¤Ê¤«¤Ã¤¿¾ì¹ç */
-			/* ¤³¤Î·¿¾ğÊó¤ò FileInformation ¤È¤¹¤ë */
+		if (searcher[type] == 0) { /* ä½œæˆã§ããªã‹ã£ãŸå ´åˆ */
+			/* ã“ã®å‹æƒ…å ±ã‚’ FileInformation ã¨ã™ã‚‹ */
 			SetFileInformation(tp, is_arc, filename);
 			return;
 		}
 	}
-	/* ½é´ü²½ */
+	/* åˆæœŸåŒ– */
 	ARCFILE* arc = MakeARCFILE(is_arc, filename);
 	/* append */
 	ARCFILE* cur;
@@ -747,7 +747,7 @@ err:
 
 ARCINFO* FILESEARCH::Find(FILETYPE type, const char* fname, const char* ext) {
 	if (searcher[type] == 0) {
-		/* searcher ºîÀ® */
+		/* searcher ä½œæˆ */
 		if (filenames[type] == 0) {
 			searcher[type] = dat_dir;
 		} else {
@@ -763,10 +763,10 @@ ARCINFO* FILESEARCH::Find(FILETYPE type, const char* fname, const char* ext) {
 
 char** FILESEARCH::ListAll(FILETYPE type) {
 	int i;
-	/* ¤È¤ê¤¢¤¨¤º searcher ¤ò½é´ü²½ */
+	/* ã¨ã‚Šã‚ãˆãš searcher ã‚’åˆæœŸåŒ– */
 	Find(type, "THIS FILENAME MAY NOT EXIST IN THE FILE SYSTEM !!!");
 	if (searcher[type] == 0) return 0;
-	/* Á´¥Õ¥¡¥¤¥ë¤Î¥ê¥¹¥È¥¢¥Ã¥× */
+	/* å…¨ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒªã‚¹ãƒˆã‚¢ãƒƒãƒ— */
 	int deal = 0;
 	ARCFILE* file;
 	for (file = searcher[type]; file != 0; file = file->Next())
@@ -809,7 +809,7 @@ int ARCINFO::Size(void) const {
 	return info.filesize;
 }
 
-/* ¥³¥Ô¡¼¤òÊÖ¤¹ */
+/* ã‚³ãƒ”ãƒ¼ã‚’è¿”ã™ */
 char* ARCINFO::CopyRead(void) {
 	const char* d = Read();
 	if (d == 0) return 0;
@@ -820,12 +820,12 @@ char* ARCINFO::CopyRead(void) {
 }
 
 const char* ARCINFO::Path(void) const {
-	if (info.offset != 0) return 0; /* archive file ¤Ê¤Î¤Ç¥Ñ¥¹¤òµ¢¤»¤Ê¤¤ */
+	if (info.offset != 0) return 0; /* archive file ãªã®ã§ãƒ‘ã‚¹ã‚’å¸°ã›ãªã„ */
 	char* ret = new char[strlen(arcfile)+1];
 	strcpy(ret, arcfile);
 	return ret;
 }
-/* ¸ß´¹À­ÀìÍÑ */
+/* äº’æ›æ€§å°‚ç”¨ */
 FILE* ARCINFO::OpenFile(int* length) const {
 	FILE* f = fopen(arcfile, "rb");
 	if (info.offset) lseek(fileno(f), info.offset, SEEK_SET);
@@ -833,19 +833,19 @@ FILE* ARCINFO::OpenFile(int* length) const {
 	return f;
 }
 
-// Å¸³«½èÍı¤Ï¤Ê¤·
+// å±•é–‹å‡¦ç†ã¯ãªã—
 bool ARCINFO::ExecExtract(void) {
 	return true;
 }
-/* ÆÉ¤ß¹ş¤ß¤ò³«»Ï¤¹¤ë */
+/* èª­ã¿è¾¼ã¿ã‚’é–‹å§‹ã™ã‚‹ */
 const char* ARCINFO::Read(void) {
-	// ¤¹¤Ç¤Ë¥Ç¡¼¥¿¤òÆÉ¤ß¹ş¤ßºÑ¤ß¤Ê¤é²¿¤â¤·¤Ê¤¤
+	// ã™ã§ã«ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã¿æ¸ˆã¿ãªã‚‰ä½•ã‚‚ã—ãªã„
 	if (data) return data;
 
 	if (info.offset < 0 || info.arcsize <= 0) {
 		return 0;
 	}
-	/* ¥Õ¥¡¥¤¥ë¤ò³«¤¯ */
+	/* ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã */
 	fd = open(arcfile, O_RDONLY);
 	if (fd < 0) {
 		return 0;
@@ -853,7 +853,7 @@ const char* ARCINFO::Read(void) {
 	if (lseek(fd, info.offset, 0) != info.offset) {
 		close(fd); fd = -1; return 0;
 	}
-	/* mmap ¤ò»î¤ß¤ë */
+	/* mmap ã‚’è©¦ã¿ã‚‹ */
 #ifdef HAVE_MMAP
 	mmapped_memory = (char*)mmap(0, info.arcsize, PROT_READ, MAP_SHARED, fd, info.offset);
 	if (mmapped_memory != MAP_FAILED) {
@@ -862,7 +862,7 @@ const char* ARCINFO::Read(void) {
 	} else
 #endif /* HAVE_MMAP */
 	{
-		/* ¼ºÇÔ¡§ÉáÄÌ¤Ë¥Õ¥¡¥¤¥ë¤òÆÉ¤ß¹ş¤ß */
+		/* å¤±æ•—ï¼šæ™®é€šã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ */
 		char* d = new char[info.arcsize];
 		read(fd, d, info.arcsize);
 		close(fd);
@@ -870,9 +870,9 @@ const char* ARCINFO::Read(void) {
 		use_mmap = false;
 		data = d;
 	}
-	/* Å¸³«¤¹¤ë */
+	/* å±•é–‹ã™ã‚‹ */
 	if (! ExecExtract()) {
-		// ¼ºÇÔ
+		// å¤±æ•—
 #ifdef HAVE_MMAP
 		if (use_mmap) {
 			munmap(mmapped_memory, info.arcsize);
@@ -886,7 +886,7 @@ const char* ARCINFO::Read(void) {
 	}
 #ifdef HAVE_MMAP
 	if (use_mmap && data != (const char*)mmapped_memory) {
-		// ¤¹¤Ç¤Ë mmap ¤ÏÉ¬Í×¤Ê¤¤
+		// ã™ã§ã« mmap ã¯å¿…è¦ãªã„
 		munmap(mmapped_memory, info.arcsize);
 		close(fd);
 		fd = -1;
@@ -898,7 +898,7 @@ const char* ARCINFO::Read(void) {
 
 /**********************************************
 **
-**	²èÁüÅ¸³«·Ï¥¯¥é¥¹¤ÎÄêµÁ¡¢¼ÂÁõ
+**	ç”»åƒå±•é–‹ç³»ã‚¯ãƒ©ã‚¹ã®å®šç¾©ã€å®Ÿè£…
 **
 ***********************************************
 */
@@ -982,7 +982,7 @@ public:
 #endif
 
 GRPCONV* GRPCONV::AssignConverter(const char* inbuf, int inlen, const char* fname) {
-	/* ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤Ë±ş¤¸¤¿¥³¥ó¥Ğ¡¼¥¿¡¼¤ò³ä¤êÅö¤Æ¤ë */
+	/* ãƒ•ã‚¡ã‚¤ãƒ«ã®å†…å®¹ã«å¿œã˜ãŸã‚³ãƒ³ãƒãƒ¼ã‚¿ãƒ¼ã‚’å‰²ã‚Šå½“ã¦ã‚‹ */
 	GRPCONV* conv = 0;
 	if (inlen < 10) return 0; /* invalid file */
 	if (conv == 0 && strncmp(inbuf, "PDT10", 5) == 0 || strncmp(inbuf, "PDT11", 5) == 0) { /* PDT10 or PDT11 */
@@ -1015,16 +1015,16 @@ GRPCONV* GRPCONV::AssignConverter(const char* inbuf, int inlen, const char* fnam
 }
 
 PDTCONV::PDTCONV(const char* _inbuf, int _inlen,const char* filename) {
-//	PDT FILE ¤Î¥Ø¥Ã¥À
-//	+00 'PDT10'	(PDT11 ¤ÏÌ¤ÂĞ±ş)
-//	+08 ¥Õ¥¡¥¤¥ë¥µ¥¤¥º (Ìµ»ë)
-//	+0C width (¤Û¤Ü¤¹¤Ù¤Æ¡¢640)
-//	+10 height(¤Û¤Ü¤¹¤Ù¤Æ¡¢480)
-//	+14 (mask ¤Î) x ºÂÉ¸ (¼Âºİ¤ÏÌµ»ë¡¦¡¦¡¦Á´¥Õ¥¡¥¤¥ë¤Ç 0 )
-//	+1c (mask ¤Î) yºÂÉ¸ (¼Âºİ¤ÏÌµ»ë ¡¦¡¦¡¦Á´¥Õ¥¡¥¤¥ë¤Ç 0 )
-//	+20 mask ¤¬Â¸ºß¤¹¤ì¤Ğ¡¢mask ¤Ø¤Î¥İ¥¤¥ó¥¿
+//	PDT FILE ã®ãƒ˜ãƒƒãƒ€
+//	+00 'PDT10'	(PDT11 ã¯æœªå¯¾å¿œ)
+//	+08 ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º (ç„¡è¦–)
+//	+0C width (ã»ã¼ã™ã¹ã¦ã€640)
+//	+10 height(ã»ã¼ã™ã¹ã¦ã€480)
+//	+14 (mask ã®) x åº§æ¨™ (å®Ÿéš›ã¯ç„¡è¦–ãƒ»ãƒ»ãƒ»å…¨ãƒ•ã‚¡ã‚¤ãƒ«ã§ 0 )
+//	+1c (mask ã®) yåº§æ¨™ (å®Ÿéš›ã¯ç„¡è¦– ãƒ»ãƒ»ãƒ»å…¨ãƒ•ã‚¡ã‚¤ãƒ«ã§ 0 )
+//	+20 mask ãŒå­˜åœ¨ã™ã‚Œã°ã€mask ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
-	/* ¥Ø¥Ã¥À¥Á¥§¥Ã¥¯ */
+	/* ãƒ˜ãƒƒãƒ€ãƒã‚§ãƒƒã‚¯ */
 	if (_inlen < 0x20) {
 		fprintf(stderr, "Invalid PDT file %s : size is too small\n",filename);
 		return;
@@ -1049,14 +1049,14 @@ PDTCONV::PDTCONV(const char* _inbuf, int _inlen,const char* filename) {
 
 
 G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
-//	G00 FILE ¤Î¥Ø¥Ã¥À
+//	G00 FILE ã®ãƒ˜ãƒƒãƒ€
 //	+00 type (1, 2)
 //	+01: width(word)
 //	+03: height(word)
-//	type 1: (color table ÉÕ¤­ LZ °µ½Ì ; PDT11 ¤ËÂĞ±ş)
-//		+05: °µ½Ì¥µ¥¤¥º(dword) ; +5 ¤¹¤ë¤È¥Ç¡¼¥¿Á´ÂÎ¤Î¥µ¥¤¥º
-//		+09: Å¸³«¸å¥µ¥¤¥º(dword)
-//	type 2: (¥Ş¥¹¥¯²Ä¡¢²èÁü¤ò¶ë·ÁÎÎ°è¤ËÊ¬³ä¤·¤Æ¤½¤ì¤¾¤ì°µ½Ì)
+//	type 1: (color table ä»˜ã LZ åœ§ç¸® ; PDT11 ã«å¯¾å¿œ)
+//		+05: åœ§ç¸®ã‚µã‚¤ã‚º(dword) ; +5 ã™ã‚‹ã¨ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º
+//		+09: å±•é–‹å¾Œã‚µã‚¤ã‚º(dword)
+//	type 2: (ãƒã‚¹ã‚¯å¯ã€ç”»åƒã‚’çŸ©å½¢é ˜åŸŸã«åˆ†å‰²ã—ã¦ãã‚Œãã‚Œåœ§ç¸®)
 //		+05: index size
 //		+09: index table(each size is 0x18)
 //			+00
@@ -1066,14 +1066,14 @@ G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
 //		+09+0x18*size+08: (data top)
 //
 
-	/* ¥Ç¡¼¥¿¤«¤é¾ğÊóÆÉ¤ß¹ş¤ß */
+	/* ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰æƒ…å ±èª­ã¿è¾¼ã¿ */
 	int type = *_inbuf;
 
 	int w = read_little_endian_short(_inbuf+1);
 	int h = read_little_endian_short(_inbuf+3);
 	if (w < 0 || h < 0) return;
 
-	if (type == 0 || type == 1) { // color table ÉÕ¤­°µ½Ì
+	if (type == 0 || type == 1) { // color table ä»˜ãåœ§ç¸®
 		if (_inlen < 13) {
 			fprintf(stderr, "Invalid G00 file %s : size is too small\n",filename);
 			return;
@@ -1086,7 +1086,7 @@ G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
 			return;
 		}
 		Init(filename, _inbuf, _inlen, w, h, false);
-	} else if (type == 2) { // color table ¤Ê¤·¡¢¥Ş¥¹¥¯ÉÕ¤­²Ä¤Î°µ½Ì
+	} else if (type == 2) { // color table ãªã—ã€ãƒã‚¹ã‚¯ä»˜ãå¯ã®åœ§ç¸®
 
 		int head_size = read_little_endian_short(_inbuf+5);
 		if (head_size < 0 || head_size*24 > _inlen) return;
@@ -1105,7 +1105,7 @@ G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
 
 bool G00CONV::Read(char* image) {
 	if (data == 0) return false;
-	/* header ¼±ÊÌ */
+	/* header è­˜åˆ¥ */
 	int type = *data;
 //    cerr << "Type: " << type << endl;
 	if (type == 0) return Read_Type0(image);
@@ -1113,10 +1113,10 @@ bool G00CONV::Read(char* image) {
 	else if (type == 2) return Read_Type2(image);
 }
 
-/* °ìÈÌÅª¤Ê LZ °µ½Ì¤ÎÅ¸³«¥ë¡¼¥Á¥ó */
-/* datasize ¤Ï¥Ç¡¼¥¿¤ÎÂç¤­¤µ¡¢char / short / int ¤òÁÛÄê */
-/* datatype ¤Ï Copy1Pixel (1¥Ç¡¼¥¿¤Î¥³¥Ô¡¼)µÚ¤Ó ExtractData(LZ °µ½Ì¤Î¾ğÊó¤òÆÀ¤ë
-** ¤È¤¤¤¦¥á¥½¥Ã¥É¤ò¼ÂÁõ¤·¤¿¥¯¥é¥¹ */
+/* ä¸€èˆ¬çš„ãª LZ åœ§ç¸®ã®å±•é–‹ãƒ«ãƒ¼ãƒãƒ³ */
+/* datasize ã¯ãƒ‡ãƒ¼ã‚¿ã®å¤§ãã•ã€char / short / int ã‚’æƒ³å®š */
+/* datatype ã¯ Copy1Pixel (1ãƒ‡ãƒ¼ã‚¿ã®ã‚³ãƒ”ãƒ¼)åŠã³ ExtractData(LZ åœ§ç¸®ã®æƒ…å ±ã‚’å¾—ã‚‹
+** ã¨ã„ã†ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã—ãŸã‚¯ãƒ©ã‚¹ */
 static int bitrev_table[256] = {
 	0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70, 0xf0,
 	0x08, 0x88, 0x48, 0xc8, 0x28, 0xa8, 0x68, 0xe8, 0x18, 0x98, 0x58, 0xd8, 0x38, 0xb8, 0x78, 0xf8,
@@ -1140,7 +1140,7 @@ template<class DataType, class DataSize> inline int lzExtract(DataType& datatype
 	const char* lsrc = src; char* ldest = dest;
 
 	if (lsrc+50 < lsrcend && ldest+1024 < ldestend) {
-		/* ¤Ş¤º¡¢ÈÏ°Ï¥Á¥§¥Ã¥¯¤ò´Ë¤¯¤·¤Æ¹âÂ®¤Ê¥ë¡¼¥Á¥ó¤ò»È¤¦ */
+		/* ã¾ãšã€ç¯„å›²ãƒã‚§ãƒƒã‚¯ã‚’ç·©ãã—ã¦é«˜é€Ÿãªãƒ«ãƒ¼ãƒãƒ³ã‚’ä½¿ã† */
 		lsrcend -= 50;
 		ldestend += 1024;
 		while (ldest < ldestend && lsrc < lsrcend) {
@@ -1166,7 +1166,7 @@ template<class DataType, class DataSize> inline int lzExtract(DataType& datatype
 		lsrcend += 50;
 		ldestend += 1024;
 	}
-	/* »Ä¤ê¤òÊÑ´¹ */
+	/* æ®‹ã‚Šã‚’å¤‰æ› */
 	while (ldest < ldestend && lsrc < lsrcend) {
 		count += 8;
 		int flag = int(*(unsigned char*)lsrc++);
@@ -1190,12 +1190,12 @@ template<class DataType, class DataSize> inline int lzExtract(DataType& datatype
 	dest=ldest; src=lsrc;
 	return 0;
 }
-/* °ú¿ô¤ò¸º¤é¤¹¤¿¤á¤Îwrapper */
+/* å¼•æ•°ã‚’æ¸›ã‚‰ã™ãŸã‚ã®wrapper */
 template<class DataType, class DataSize> inline int lzExtract(DataType datatype, DataSize datasize ,const char*& src, char*& dest, const char* srcend, char* destend) {
 	return lzExtract<DataType, DataSize>(datatype,src,dest,srcend,destend);
 }
 
-/* ÉáÄÌ¤Î PDT */
+/* æ™®é€šã® PDT */
 class Extract_DataType {
 public:
 	static void ExtractData(const char*& lsrc, int& data, int& size) {
@@ -1222,7 +1222,7 @@ public:
 	static int IsRev(void) { return 0; }
 };
 
-/* PDT11 ¤ÎÂè°ìÃÊ³¬ÊÑ´¹ */
+/* PDT11 ã®ç¬¬ä¸€æ®µéšå¤‰æ› */
 class Extract_DataType_PDT11 {
 	int* index_table;
 public:
@@ -1239,7 +1239,7 @@ public:
 	}
 	static int IsRev(void) { return 0; }
 };
-/* ¥Ş¥¹¥¯ÍÑ */
+/* ãƒã‚¹ã‚¯ç”¨ */
 class Extract_DataType_Mask {
 public:
 	void ExtractData(const char*& lsrc, int& data, int& size) {
@@ -1254,7 +1254,7 @@ public:
 	}
 	static int IsRev(void) { return 0; }
 };
-/* ½ñ¸ËÍÑ */
+/* æ›¸åº«ç”¨ */
 class Extract_DataType_ARC {
 public:
 	void ExtractData(const char*& lsrc, int& data, int& size) {
@@ -1269,7 +1269,7 @@ public:
 	}
 	static int IsRev(void) { return 0; }
 };
-/* avg2000 ¤Î¥·¥Ê¥ê¥ªÍÑ */
+/* avg2000 ã®ã‚·ãƒŠãƒªã‚ªç”¨ */
 class Extract_DataType_SCN2k {
 public:
 	void ExtractData(const char*& lsrc, int& data, int& size) {
@@ -1284,7 +1284,7 @@ public:
 	}
 	static int IsRev(void) { return 1; }
 };
-/* ReadLive ¤Î type0 */
+/* ReadLive ã® type0 */
 class Extract_DataType_G00Type0 {
 public:
 	static void ExtractData(const char*& lsrc, int& data, int& size) {
@@ -1320,7 +1320,7 @@ bool PDTCONV::Read(char* image) {
 		if (! Read_PDT11(image)) return false;
 	}
 	if (! is_mask) return true;
-	// ¥Ş¥¹¥¯ÆÉ¤ß¹ş¤ß
+	// ãƒã‚¹ã‚¯èª­ã¿è¾¼ã¿
 	int mask_pt = read_little_endian_int(data + 0x1c);
 	char* buf = new char[width*height+1024];
 	const char* src = data + mask_pt;
@@ -1386,8 +1386,8 @@ bool PDTCONV::Read_PDT11(char* image) {
 	return true;
 }
 
-/* dest ¤Ï dest_end ¤è¤ê¤â 256 byte °Ê¾åÀè¤Ş¤Ç
-** ½ñ¤­¹ş¤ß²ÄÇ½¤Ç¤¢¤ë¤³¤È¡£
+/* dest ã¯ dest_end ã‚ˆã‚Šã‚‚ 256 byte ä»¥ä¸Šå…ˆã¾ã§
+** æ›¸ãè¾¼ã¿å¯èƒ½ã§ã‚ã‚‹ã“ã¨ã€‚
 */
 void ARCINFO::Extract(char*& dest_start, char*& src_start, char* dest_end, char* src_end) {
 	const char* src = src_start;
@@ -1403,12 +1403,12 @@ void ARCINFO::Extract2k(char*& dest_start, char*& src_start, char* dest_end, cha
 }
 
 bool ARCINFO_AVG32::ExecExtract(void) {
-	// ¥Ø¥Ã¥À¤Î¥Á¥§¥Ã¥¯
+	// ãƒ˜ãƒƒãƒ€ã®ãƒã‚§ãƒƒã‚¯
 	if (strncmp(data, "PACK", 4) != 0) return false;
 	if (read_little_endian_int(data+8) != info.filesize) return false;
 	if (read_little_endian_int(data+12) != info.arcsize) return false;
 
-	// ¥Õ¥¡¥¤¥ë¤òÅ¸³«¤¹¤ë
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å±•é–‹ã™ã‚‹
 	char* ret_data = new char[info.filesize+1024];
 
 	const char* s = data + 0x10;
@@ -1444,10 +1444,10 @@ bool ARCINFO2k::ExecExtract(void) {
 	char* ret_data = new char[info.filesize + 1024];
 	char* decoded_data = new char[info.arcsize + 1024];
 	
-	/* header ¤Î¥³¥Ô¡¼ */
+	/* header ã®ã‚³ãƒ”ãƒ¼ */
 	memcpy(ret_data, data, info.private_data);
 
-	/* ¤Ş¤º¡¢xor ¤Î°Å¹æ²½¤ò²ò¤¯ */
+	/* ã¾ãšã€xor ã®æš—å·åŒ–ã‚’è§£ã */
 	const char* s; const char* send;
 	char* d; char* dend;
 
@@ -1462,7 +1462,7 @@ bool ARCINFO2k::ExecExtract(void) {
 	if (info.filesize == info.arcsize) {
 		memcpy(ret_data+info.private_data, decoded_data + info.private_data + 8, info.arcsize - info.private_data - 8);
 	} else {
-		/* °µ½Ì¤µ¤ì¤Æ¤¤¤ë¤Ê¤é¡¢¤½¤ì¤òÅ¸³« */
+		/* åœ§ç¸®ã•ã‚Œã¦ã„ã‚‹ãªã‚‰ã€ãã‚Œã‚’å±•é–‹ */
 		s = (const char*)(decoded_data + info.private_data + 8);
 		send = (const char*)(decoded_data + info.arcsize);
 		d = ret_data + info.private_data;
@@ -1479,13 +1479,13 @@ bool G00CONV::Read_Type0(char* image) {
 	int uncompress_size = read_little_endian_int(data+9);
 	char* uncompress_data = new char[uncompress_size+1024];
 
-	// ¤Ş¤ºÅ¸³«
+	// ã¾ãšå±•é–‹
 	const char* src = data + 13;
 	const char* srcend = data + datalen;
 	char* dest = uncompress_data;
 	char* dstend = uncompress_data + uncompress_size;
 	while(lzExtract(Extract_DataType_G00Type0(), char(), src, dest, srcend, dstend));
-	// image ¤Ë¥³¥Ô¡¼
+	// image ã«ã‚³ãƒ”ãƒ¼
 	CopyRGB(image, uncompress_data);
 	delete[] uncompress_data;
 	return true;
@@ -1495,7 +1495,7 @@ bool G00CONV::Read_Type1(char* image) {
 	int uncompress_size = read_little_endian_int(data+9) + 1;
 	char* uncompress_data = new char[uncompress_size + 1024];
 
-	// ¤Ş¤º¡¢Å¸³«
+	// ã¾ãšã€å±•é–‹
 	const char* src = data + 13;
 	const char* srcend = data + datalen;
 	char* dest = uncompress_data;
@@ -1524,7 +1524,7 @@ bool G00CONV::Read_Type1(char* image) {
 
 bool G00CONV::Read_Type2(char* image) {
 	memset(image, 0, width*height*4);
-	/* Ê¬³äÎÎ°è¤òÆÀ¤ë */
+	/* åˆ†å‰²é ˜åŸŸã‚’å¾—ã‚‹ */
 	int region_deal = read_little_endian_int(data+5);
 //	REGION* region_table = new REGION[region_deal];
     region_table = vector<REGION>(region_deal);
@@ -1539,7 +1539,7 @@ bool G00CONV::Read_Type2(char* image) {
 		head += 24;
 	}
 
-	// Å¸³«
+	// å±•é–‹
 	int uncompress_size = read_little_endian_int(head+4);
 	char* uncompress_data = new char[uncompress_size + 1024];
 
@@ -1549,7 +1549,7 @@ bool G00CONV::Read_Type2(char* image) {
 	char* destend = uncompress_data + uncompress_size;
 	while(lzExtract(Extract_DataType_SCN2k(), char(), src, dest, srcend, destend));
 
-	/* region_deal2 == region_deal ¤Î¤Ï¤º¡Ä¡Ä*/
+	/* region_deal2 == region_deal ã®ã¯ãšâ€¦â€¦*/
 	int region_deal2 = read_little_endian_int(uncompress_data);
 	if (region_deal > region_deal2) region_deal = region_deal2;
 
@@ -1560,7 +1560,7 @@ bool G00CONV::Read_Type2(char* image) {
 		srcend = (const char*)(uncompress_data + offset + length);
 		while(src < srcend) {
 			int x, y, w, h;
-			/* ¥³¥Ô¡¼¤¹¤ëÎÎ°è¤òÆÀ¤ë */
+			/* ã‚³ãƒ”ãƒ¼ã™ã‚‹é ˜åŸŸã‚’å¾—ã‚‹ */
 			x = read_little_endian_short(src);
 			y = read_little_endian_short(src+2);
 			w = read_little_endian_short(src+6);
@@ -1596,7 +1596,7 @@ void G00CONV::Copy_32bpp(char* image, int x, int y, const char* src, int bpl, in
 
 void GRPCONV::CopyRGBA_rev(char* image, const char* buf) {
 	int mask = is_mask ? 0 : 0xff000000;
-	/* ¿§ÊÑ´¹¤ò¹Ô¤¦ */
+	/* è‰²å¤‰æ›ã‚’è¡Œã† */
 	int len = width * height;
 	int i;
 	unsigned char* s = (unsigned char*)buf;
@@ -1613,7 +1613,7 @@ void GRPCONV::CopyRGBA(char* image, const char* buf) {
 		CopyRGB(image, buf);
 		return;
 	}
-	/* ¿§ÊÑ´¹¤ò¹Ô¤¦ */
+	/* è‰²å¤‰æ›ã‚’è¡Œã† */
 	int len = width * height;
 	int i;
 	int* outbuf = (int*)image;
@@ -1624,7 +1624,7 @@ void GRPCONV::CopyRGBA(char* image, const char* buf) {
 	return;
 }
 void GRPCONV::CopyRGB(char* image, const char* buf) {
-	/* ¿§ÊÑ´¹¤ò¹Ô¤¦ */
+	/* è‰²å¤‰æ›ã‚’è¡Œã† */
 	int len = width * height;
 	int i;
 	unsigned char* s = (unsigned char*)buf;
@@ -1843,7 +1843,7 @@ void JPEGCONV::SetupSrc(struct jpeg_decompress_struct* cinfo, const char* data, 
 }
 #endif /* HAVE_LIBJPEG */
 BMPCONV::BMPCONV(const char* _inbuf, int _inlen, const char* _filename) {
-	/* ¥Ç¡¼¥¿¤«¤é¾ğÊóÆÉ¤ß¹ş¤ß */
+	/* ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰æƒ…å ±èª­ã¿è¾¼ã¿ */
 	int w = read_little_endian_int(_inbuf + 0x12);
 	int h = read_little_endian_int(_inbuf + 0x16);
 	if (h < 0) h = -h;
@@ -1856,7 +1856,7 @@ BMPCONV::BMPCONV(const char* _inbuf, int _inlen, const char* _filename) {
 bool BMPCONV::Read(char* image) {
 	if (data == 0) return false;
 
-	/* ¥Ş¥¹¥¯¤Î¥Á¥§¥Ã¥¯ */
+	/* ãƒã‚¹ã‚¯ã®ãƒã‚§ãƒƒã‚¯ */
 	int bpp = read_little_endian_short(data+0x1c);
 	int h = read_little_endian_int(data + 0x16);
 	int dsz = read_little_endian_int(data + 0x22);

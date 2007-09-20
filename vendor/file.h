@@ -1,8 +1,8 @@
-/*  file.h  : KANON д╬░╡╜╠е╒ебедеыбжPDT е╒ебедеыб╩▓ш┴№е╒ебедеыб╦д╬┼╕│лд╬
- *            д┐дсд╬епеще╣
- *     class FILESEARCH : е╒ебедеыд╬┤╔═¤дЄ╣╘дж
- *     class ARCINFO : ╜ё╕╦е╒ебедеыд╬├цд╬г▒д─д╬е╒ебедеыдЄ░╖джепеще╣
- *     class PDTCONV : PDT е╒ебедеыд╬┼╕│лдЄ╣╘джбг
+/*  file.h  : KANON уБохЬзч╕оуГХуВбуВдуГлуГ╗PDT уГХуВбуВдуГля╝ИчФ╗хГПуГХуВбуВдуГля╝ЙуБох▒ХщЦЛуБо
+ *            уБЯуВБуБоуВпуГйуВ╣
+ *     class FILESEARCH : уГХуВбуВдуГлуБочобчРЖуВТшбМуБЖ
+ *     class ARCINFO : цЫ╕х║луГХуВбуВдуГлуБоф╕нуБоя╝СуБдуБоуГХуВбуВдуГлуВТцЙ▒уБЖуВпуГйуВ╣
+ *     class PDTCONV : PDT уГХуВбуВдуГлуБох▒ХщЦЛуВТшбМуБЖуАВ
  */
 
 /*
@@ -46,31 +46,31 @@
 
 /*********************************************
 **  FILESEARCH:
-**	╜ё╕╦е╒ебедеыб┐е╟егеьепе╚еъдЄ┤▐дсбв
-**	┴┤е╒ебедеыд╬┤╔═¤дЄ╣╘джбг
+**	цЫ╕х║луГХуВбуВдуГля╝ПуГЗуВгуГмуВпуГИуГкуВТхРлуВБуАБ
+**	хЕиуГХуВбуВдуГлуБочобчРЖуВТшбМуБЖуАВ
 **
-**	║╟╜щд╦бв└▀─ъе╒ебедеыдлдще╒ебедеыд╬╝я╬рд┤д╚д╦
-**	╝┬║▌д╦╞■д├д╞дддые╟егеьепе╚еъбв╜ё╕╦дЄ└▀─ъд╣ды
+**	цЬАхИЭуБлуАБшинхоЪуГХуВбуВдуГлуБЛуВЙуГХуВбуВдуГлуБочиощбЮуБФуБиуБл
+**	хоЯщЪЫуБлхЕеуБгуБжуБДуВЛуГЗуВгуГмуВпуГИуГкуАБцЫ╕х║луВТшинхоЪуБЩуВЛ
 **
-**	░╩╣▀д╧Find() есе╜е├е╔д╟╝┬║▌д╬е╒ебедеыд╬╞т═╞дЄ╞└ды
+**	ф╗ещЩНуБпFind() уГбуВ╜уГГуГЙуБзхоЯщЪЫуБоуГХуВбуВдуГлуБохЖЕхо╣уВТх╛ЧуВЛ
 **
 */
 
-/* ARCFILE д╚ DIRFILE д╧е╒ебедеы╝я╬рд┤д╚д╬╛Ё╩є */
+/* ARCFILE уБи DIRFILE уБпуГХуВбуВдуГлчиощбЮуБФуБиуБоцГЕха▒ */
 class ARCFILE;
 class DIRFILE;
 class SCN2kFILE;
 class RaffresiaFILE;
-/* ARCINFO д╧е╒ебедеыдЄ╞╔д▀╣■дрд┐дсд╦╔м═╫ */
+/* ARCINFO уБпуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВАуБЯуВБуБлх┐ЕшжБ */
 class ARCINFO;
 struct ARCFILE_ATOM;
 class FILESEARCH {
 public:
 #define TYPEMAX 14
 	enum FILETYPE {
-		/* ░ь▒■бв0 - 15 д▐д╟ reserved */
-		ALL = 1, /* dat/ ░╩▓╝д╬е╒ебедеы(е╟е╒ейеые╚д╬╕б║ў└ш) */
-		ROOT= 2, /* е▓б╝ерд╬едеєе╣е╚б╝еые╟егеьепе╚еъ */
+		/* ф╕Ах┐ЬуАБ0 - 15 уБ╛уБз reserved */
+		ALL = 1, /* dat/ ф╗еф╕ЛуБоуГХуВбуВдуГл(уГЗуГХуВйуГлуГИуБоцдЬч┤вхЕИ) */
+		ROOT= 2, /* уВ▓уГ╝уГауБоуВдуГ│уВ╣уГИуГ╝уГлуГЗуВгуГмуВпуГИуГк */
 		PDT = 3, /* default: PDT/ */
 		SCN = 4, /* default: DAT/SEEN.TXT */
 		ANM = 5, /* default: DAT/ALLANM.ANL */
@@ -85,46 +85,46 @@ public:
 	};
 	enum ARCTYPE {ATYPE_DIR, ATYPE_ARC, ATYPE_SCN2k};
 private:
-	/* InitRoot() д╬╗■┼└д╟╜щ┤№▓╜д╡дьды╩╤┐Ї */
+	/* InitRoot() уБоцЩВчВ╣уБзхИЭцЬЯхМЦуБХуВМуВЛхдЙцХ░ */
 	DIRFILE* root_dir;
 	DIRFILE* dat_dir;
 	ARCFILE* searcher[TYPEMAX];
-	/* е╒ебедеыд╬┬╕║▀░╠├╓д╬ information */
+	/* уГХуВбуВдуГлуБохнШхЬиф╜Нч╜оуБо information */
 	ARCTYPE is_archived[TYPEMAX];
 	char* filenames[TYPEMAX];
-	/* е╟е╒ейеые╚д╬ information */
+	/* уГЗуГХуВйуГлуГИуБо information */
 	static ARCTYPE default_is_archived[TYPEMAX];
 	static char* default_dirnames[TYPEMAX];
 public:
 	FILESEARCH(void);
 	~FILESEARCH();
-	/* ╜щдсд╦е▓б╝ерд╬е╟б╝е┐дмдвдые╟егеьепе╚еъдЄ└▀─ъд╣ды╔м═╫дмдвды */
+	/* хИЭуВБуБлуВ▓уГ╝уГауБоуГЗуГ╝уВ┐уБМуБВуВЛуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЩуВЛх┐ЕшжБуБМуБВуВЛ */
 	int InitRoot(char* root);
-	/* е╒ебедеыд╬╖┐д┤д╚д╬╛Ё╩єдЄе╗е├е╚д╣ды */
+	/* уГХуВбуВдуГлуБохЮЛуБФуБиуБоцГЕха▒уВТуВ╗уГГуГИуБЩуВЛ */
 	void SetFileInformation(FILETYPE type, ARCTYPE is_arc,
 		char* filename);
-	/* ╩г┐Їд╬е╒ебедеыдЄ░ьд─д╬╖┐д╦┤╪╧вд┼д▒ды */
+	/* шдЗцХ░уБоуГХуВбуВдуГлуВТф╕АуБдуБохЮЛуБлщЦвщАгуБеуБСуВЛ */
 	void AppendFileInformation(FILETYPE type, ARCTYPE is_arc,
 		char* filename);
 	ARCFILE* MakeARCFILE(ARCTYPE tp, char* filename);
-	/* fname д╟╗╪─ъд╡дьд┐╠╛┴░д╬е╒ебедеыдЄ╕б║ў */
+	/* fname уБзцМЗхоЪуБХуВМуБЯхРНхЙНуБоуГХуВбуВдуГлуВТцдЬч┤в */
 	ARCINFO* Find(FILETYPE type, const char* fname, const char* ext=0);
-	/* двды╝я╬рд╬е╒ебедеыдЄд╣д┘д╞еъе╣е╚еве├е╫
-	** ╦Ў╚°д╧ NULL pointer
+	/* уБВуВЛчиощбЮуБоуГХуВбуВдуГлуВТуБЩуБ╣уБжуГкуВ╣уГИуВвуГГуГЧ
+	** цЬлх░╛уБп NULL pointer
 	*/
 	char** ListAll(FILETYPE type);
 };
 
 class ARCINFO {
 protected:
-	/* е╒ебедеыд╜д╬дтд╬д╬╛Ё╩є */
+	/* уГХуВбуВдуГлуБЭуБоуВВуБоуБоцГЕха▒ */
 	ARCFILE_ATOM& info;
 	char* arcfile;
-	/* mmap д╖д╞ддды╛ь╣чбвд╜д╬╛Ё╩є */
+	/* mmap уБЧуБжуБДуВЛха┤хРИуАБуБЭуБоцГЕха▒ */
 	bool use_mmap;
 	char* mmapped_memory;
 	int fd;
-	/* е╒ебедеы╞т═╞д╬╞■д├д╞дддые╨е├е╒еб */
+	/* уГХуВбуВдуГлхЖЕхо╣уБохЕеуБгуБжуБДуВЛуГРуГГуГХуВб */
 	const char* data;
 
 protected:
@@ -134,18 +134,18 @@ protected:
 
 	virtual bool ExecExtract(void);
 public:
-	/* dest д╧256byte ─°┼┘д╬═╛═╡дмдвдыд│д╚ */
+	/* dest уБп256byte чиЛх║жуБоф╜ЩшгХуБМуБВуВЛуБУуБи */
 	static void Extract(char*& dest, char*& src, char* destend, char* srcend);
 	static void Extract2k(char*& dest, char*& src, char* destend, char* srcend);
 	virtual ~ARCINFO();
-	/* ╔м═╫д╩дщ Read ┴░д╦╕╞д╓д│д╚д╟╜ш═¤дЄ╩м│фд╟днды */
+	/* х┐ЕшжБуБкуВЙ Read хЙНуБлхС╝уБ╢уБУуБиуБзхЗжчРЖуВТхИЖхЙ▓уБзуБНуВЛ */
 	int Size(void) const;
-	char* CopyRead(void); /* Read() д╖д╞╞т═╞д╬е│е╘б╝дЄ╩╓д╣ */
+	char* CopyRead(void); /* Read() уБЧуБжхЖЕхо╣уБоуВ│уГФуГ╝уВТш┐ФуБЩ */
 	const char* Read(void);
-	/* е╒ебедеыдм regular file д╬╛ь╣чбве╒ебедеы╠╛дЄ╡вд╣ */
-	/* д╜джд╟д╩ддд╩дщ 0 дЄ╡вд╣ */
+	/* уГХуВбуВдуГлуБМ regular file уБоха┤хРИуАБуГХуВбуВдуГлхРНуВТх╕░уБЩ */
+	/* уБЭуБЖуБзуБкуБДуБкуВЙ 0 уВТх╕░уБЩ */
 	const char* Path(void) const;
-	FILE* OpenFile(int* length=0) const; /* ╕▀┤╣└нд╬д┐дсбзraw file д╬╛ь╣чбве╒ебедеыдЄ│лдп */
+	FILE* OpenFile(int* length=0) const; /* ф║ТцПЫцАзуБоуБЯуВБя╝Ъraw file уБоха┤хРИуАБуГХуВбуВдуГлуВТщЦЛуБП */
 };
 
 class GRPCONV {
