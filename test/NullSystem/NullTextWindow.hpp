@@ -44,13 +44,13 @@ public:
   virtual void render(RLMachine& machine) {}
 
   // To implement
-  virtual void clearWin() {}
+  virtual void clearWin();
   virtual bool displayChar(RLMachine& machine, const std::string& current,
-                           const std::string& next) { return true; }
+                           const std::string& next);
   virtual void setName(RLMachine& machine, const std::string& utf8name, 
-                       const std::string& nextChar) {}
+                       const std::string& nextChar);
 
-  virtual void hardBrake() {}
+  virtual void hardBrake();
   virtual void resetIndentation() {}
 
   virtual void markRubyBegin() {}

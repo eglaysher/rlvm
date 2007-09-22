@@ -32,9 +32,11 @@ TEST_FILES[] =
   Module_Mem_TUT
   Module_Sys_TUT
   ExpressionTest_TUT
+  TextSystem_TUT
   Gameexe_TUT
   LazyArray_TUT
   NullSystem/NullTextSystem
+  NullSystem/NullTextWindow
   NullSystem/NullGraphicsSystem
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))

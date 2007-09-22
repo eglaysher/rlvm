@@ -24,8 +24,10 @@
 #define __TextWindow_hpp__
 
 #include <vector>
+#include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 
 class RLMachine;
 class Gameexe;
