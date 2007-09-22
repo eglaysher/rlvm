@@ -523,6 +523,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Modules\Module_Sys_Syscom.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Modules\Module_Sys_Timer.cpp"
 						>
 					</File>
@@ -1103,6 +1107,10 @@
 				</File>
 				<File
 					RelativePath=".\Modules\Module_Sys_Save.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Modules\Module_Sys_Syscom.hpp"
 					>
 				</File>
 				<File

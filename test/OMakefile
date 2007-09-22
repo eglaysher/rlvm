@@ -2,7 +2,7 @@ if $(not $(defined-env VERBOSE))
   OMakeFlags(-S --progress)
   export
 
-if $(or $(equal $(OSTYPE), WIN32), $(equal $(OSTYPE), WindowsNT))
+if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   CXXFLAGS += -EHsc -W3 -wd4800 -wd4819 -wd4996 -U__STRICT_ANSI__ /J $(if $(defined-env DEBUG), -Od, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
   export
 else
@@ -14,7 +14,7 @@ else
 .SUBDIRS: NullSystem Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN
 
 INCLUDES += ../src
-if $(or $(equal $(OSTYPE), WIN32), $(equal $(OSTYPE), WindowsNT))
+if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   LDOUT = /Fo
   LDFLAGS += /link $(if $(defined-env DEBUG), /DEBUG, /RELEASE) ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs) $(PLATFORMLIBS) SDL.lib SDL_image.lib SDL_ttf.lib
   export
