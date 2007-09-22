@@ -60,7 +60,7 @@ struct TextSystem_data
 
   NullTextWindow& getTextWindow(int twn)
   {
-    return dynamic_cast<NullTextWindow&>(system.text().textWindow(rlmachine, 0));
+    return dynamic_cast<NullTextWindow&>(system.text().textWindow(rlmachine, twn));
   }
 };
 
