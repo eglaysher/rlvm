@@ -81,7 +81,8 @@ namespace {
  */
 int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) 
 {
-  const char* location = gotoElement.get_param(0).c_str();
+  string tmpval = gotoElement.get_param(0);
+  const char* location = tmpval.c_str();
       
   auto_ptr<ExpressionPiece> condition(get_expression(location));
   int value = condition->integerValue(machine);
@@ -236,7 +237,9 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
  */
 struct Jmp_goto_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const char* location = gotoElement.get_param(0).c_str();
+    // use a temporary object so that it is only destroyed at end of scope! --RT
+    string tmpval = gotoElement.get_param(0);
+    const char* location = tmpval.c_str();
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
 
@@ -296,7 +299,8 @@ struct Jmp_gosub : public RLOp_SpecialCase {
  */
 struct Jmp_gosub_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const char* location = gotoElement.get_param(0).c_str();
+    string tmpval = gotoElement.get_param(0);
+    const char* location = tmpval.c_str();
     auto_ptr<ExpressionPiece> condition(get_expression(location));
       
     if(condition->integerValue(machine)) 
