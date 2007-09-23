@@ -57,16 +57,21 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = m_currentPosition;
-  m_currentCodepoint = utf8::next(tmp, m_utf8string.end());
-  m_currentChar = string(m_currentPosition, tmp);
-  m_currentPosition = tmp;
+  if(tmp == m_utf8string.end())
+  {
+    m_currentChar = "";
+  }
+  else
+  {
+    m_currentCodepoint = utf8::next(tmp, m_utf8string.end());
+    m_currentChar = string(m_currentPosition, tmp);
+    m_currentPosition = tmp;
+  }
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
   if(machine.system().text().currentPage(machine).inRubyGloss())
     m_noWait = true;
-
-//  cerr << "UTF: " << m_utf8string << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -199,7 +204,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       if(page.isFull())
       {
         paused = true;
-        machine.system().graphics().markScreenAsDirty();
+        machine.system().graphics().markScreenForRefresh();
         machine.pushLongOperation(
           new NewPageAfterLongop(new PauseLongOperation(machine)));
       }

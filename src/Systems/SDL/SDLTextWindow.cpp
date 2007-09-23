@@ -156,65 +156,71 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
   setVisible(true);
 
-  SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
-  int curCodepoint = codepoint(current);
-  int nextCodepoint = codepoint(next);
+  if(current != "")
+  {
+    SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
+    int curCodepoint = codepoint(current);
+    int nextCodepoint = codepoint(next);
 
 //   cerr << current << "(" << isKinsoku(curCodepoint) << ") : " << next
 //        << "(" << isKinsoku(nextCodepoint) << ")" << endl;
 
-  // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
-  // LENTICULAR BRACKET) should be handled before this
-  // function. Otherwise, it's an error.
-  if(curCodepoint == 0x3010 || curCodepoint == 0x3011)
-  {
-    throw SystemError(
-      "Bug in parser; \\{name} construct should be handled before displayChar");
+    // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
+    // LENTICULAR BRACKET) should be handled before this
+    // function. Otherwise, it's an error.
+    if(curCodepoint == 0x3010 || curCodepoint == 0x3011)
+    {
+      throw SystemError(
+        "Bug in parser; \\{name} construct should be handled before displayChar");
+    }
+
+    SDL_Surface* tmp =
+      TTF_RenderUTF8_Blended(m_font.get(), current.c_str(), color);
+
+    // If the width of this glyph plus the spacing will put us over the
+    // edge of the window, then line increment.
+    //
+    // If the current character will fit on this line, and it is NOT
+    // in this set, then we should additionally check the next
+    // character.  If that IS in this set and will not fit on the
+    // current line, then we break the line before the current
+    // character instead, to prevent the next character being stranded
+    // at the start of a line.
+    //
+    bool charWillFitOnLine = m_insertionPointX + tmp->w + m_xSpacing <=
+      textWindowWidth();
+    bool nextCharWillFitOnLine = m_insertionPointX + 2*(tmp->w + m_xSpacing) <=
+      textWindowWidth();
+    if(!charWillFitOnLine || 
+       (charWillFitOnLine && !isKinsoku(curCodepoint) &&
+        !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
+    {
+      hardBrake();
+
+      if(isFull())
+        return false;
+    }
+
+    // Render glyph to surface
+    int w = tmp->w;
+    int h = tmp->h;
+    m_surface->blitFROMSurface(
+      tmp, 0, 0, w, h,
+      m_insertionPointX, m_insertionPointY,
+      m_insertionPointX + w, m_insertionPointY + h,
+      255);
+
+    // Move the insertion point forward one character
+    m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
+
   }
-
-  SDL_Surface* tmp =
-    TTF_RenderUTF8_Blended(m_font.get(), current.c_str(), color);
-
-  // If the width of this glyph plus the spacing will put us over the
-  // edge of the window, then line increment.
-  //
-  // If the current character will fit on this line, and it is NOT
-  // in this set, then we should additionally check the next
-  // character.  If that IS in this set and will not fit on the
-  // current line, then we break the line before the current
-  // character instead, to prevent the next character being stranded
-  // at the start of a line.
-  //
-  bool charWillFitOnLine = m_insertionPointX + tmp->w + m_xSpacing <=
-    textWindowWidth();
-  bool nextCharWillFitOnLine = m_insertionPointX + 2*(tmp->w + m_xSpacing) <=
-    textWindowWidth();
-  if(!charWillFitOnLine || 
-     (charWillFitOnLine && !isKinsoku(curCodepoint) &&
-      !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
-  {
-    hardBrake();
-
-    if(isFull())
-      return false;
-  }
-
-  // Render glyph to surface
-  int w = tmp->w;
-  int h = tmp->h;
-  m_surface->blitFROMSurface(
-    tmp, 0, 0, w, h,
-    m_insertionPointX, m_insertionPointY,
-    m_insertionPointX + w, m_insertionPointY + h,
-    255);
-
-  // Move the insertion point forward one character
-  m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
 
   // When we aren't rendering a piece of text with a ruby gloss, mark
   // the screen as dirty so that this character renders.
   if(m_rubyBeginPoint == -1)
-    machine.system().graphics().markScreenAsDirty();
+  {
+    machine.system().graphics().markScreenForRefresh();
+  }
 
   return true;
 }
@@ -457,7 +463,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
       widthStart + w, heightLocation + h,
       255);
 
-    machine.system().graphics().markScreenAsDirty();
+    machine.system().graphics().markScreenForRefresh();
 
     m_rubyBeginPoint = -1;
   }
