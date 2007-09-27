@@ -106,10 +106,39 @@ void object::test<1>()
 
 // -----------------------------------------------------------------------
 
-/*
+/**
+ * Tests integer built-in functions.
+ */
 template<>
 template<>
 void object::test<2>()
+{
+  libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));
+  NullSystem system;
+  RLMachine rlmachine(system, arc);
+  rlmachine.attachModule(new SysModule(system));
+  rlmachine.executeUntilHalted();
+
+  int values[6];
+  for(int i = 0; i < sizeof(values) / sizeof(values[0]); ++i)
+    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
+
+  // 5.6.1  Integer built-ins
+  ensure_equals("Incorrect value for intA[0]", values[0], 0);
+  ensure       ("Incorrect value for intA[1]", values[1] == 0 || values[1] == -1);
+  ensure_equals("Incorrect value for intA[2]", values[2], -1);
+  ensure       ("Incorrect value for intA[3]", -10 <= values[3] && values[3] < 0 );
+  ensure       ("Incorrect value for intA[4]", -10 <= values[4] && values[4] <= 10 );
+  ensure       ("Incorrect value for intA[5]", -10 <= values[5] && values[5] <= 10 );
+}
+
+
+// -----------------------------------------------------------------------
+
+/*
+template<>
+template<>
+void object::test<3>()
 {
   
 }
