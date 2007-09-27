@@ -116,7 +116,8 @@ struct Complex3_T {
   {
     const libReallive::ComplexExpressionPiece& sp = 
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-    return boost::tuple<typename A::type, typename B::type>(
+
+    return type(
       A::getData(machine, sp.getContainedPieces(), 0), 
       B::getData(machine, sp.getContainedPieces(), 1),
       C::getData(machine, sp.getContainedPieces(), 2));

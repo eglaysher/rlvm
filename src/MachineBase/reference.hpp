@@ -64,6 +64,8 @@ public:
   IntAccessor& operator=(const IntAccessor& rhs);
 };
 
+// -----------------------------------------------------------------------
+
 /** 
  * Accessor class passed back to user when the iterator is
  * dereferenced. Each StringAcessor will (probably) be a short-lived
@@ -113,12 +115,14 @@ private:
   friend class IntAccessor;
 
 public:
+  MemoryReferenceIterator();
+
   // Explicit reference creation
   MemoryReferenceIterator(RLMachine* inMachine, const int inType, 
                           const int inLocation);
 
-  int type() const { return type; }
-  int location() const { return location; }
+  int type() const { return m_type; }
+  int location() const { return m_location; }
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*()     { return ACCESS(this); }
   
@@ -164,6 +168,13 @@ public:
     return ! operator==(rhs);
   }
 };
+
+// -----------------------------------------------------------------------
+
+template<typename ACCESS>
+MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
+  : m_machine(NULL), m_type(-1), m_location(0)
+{ }
 
 // -----------------------------------------------------------------------
 

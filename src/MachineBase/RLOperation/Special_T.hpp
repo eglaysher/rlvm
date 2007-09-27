@@ -30,6 +30,9 @@
 #include "libReallive/expression.h"
 #include "libReallive/expression_pieces.h"
 
+#include <sstream>
+#include <iostream>
+
 /** 
  * Type definition that implements the special parameter concept; the
  * way to expect multiple different types in a parameter slot. 
@@ -52,30 +55,56 @@ struct Special_T {
   /// Export our internal struct as our external type
   typedef Parameter type;
 
+  /// Special<Complex, Complex, ...> requires a special construct...
+  template<typename TYPE>
+  static typename TYPE::type getDataFor(
+    RLMachine& machine, 
+    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    unsigned int position, 
+    const libReallive::SpecialExpressionPiece& sp)
+  {
+    if(TYPE::isComplex)
+      return TYPE::getData(machine, p, position);
+    else
+      return TYPE::getData(machine, sp.getContainedPieces(), 0);
+  }
+
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, 
+  static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
+    if(position >= p.size())
+    {
+      std::ostringstream oss;
+      oss << "Illegal position in Special_T: " << position << " (Size of p: "
+          << p.size() << ")";
+      throw std::runtime_error(oss.str());
+    }
+
     const libReallive::SpecialExpressionPiece& sp = 
       static_cast<const libReallive::SpecialExpressionPiece&>(p[position]);
+
+    if(sp.getContainedPieces().size() == 0)
+      throw rlvm::Exception("Empty special construct in Special_T");
+
     Parameter par;
     par.type = sp.getOverloadTag();
     switch(par.type) {
     case 0:
-      par.first = A::getData(machine, sp.getContainedPieces(), 0);
+      par.first = getDataFor<A>(machine, p, position, sp);
       break;
     case 1:
-      par.second = B::getData(machine, sp.getContainedPieces(), 0);
+      par.second = getDataFor<B>(machine, p, position, sp);
       break;
     case 2:
-      par.third = C::getData(machine, sp.getContainedPieces(), 0);
+      par.third = getDataFor<C>(machine, p, position, sp);
       break;
     case 3:
-      par.fourth = D::getData(machine, sp.getContainedPieces(), 0);
+      par.fourth = getDataFor<D>(machine, p, position, sp);
       break;
     case 4:
-      par.fifth = E::getData(machine, sp.getContainedPieces(), 0);
+      par.fifth = getDataFor<E>(machine, p, position, sp);
       break;
     default:
       throw rlvm::Exception("Illegal overload in Special2_T::getData()");

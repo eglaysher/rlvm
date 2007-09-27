@@ -28,10 +28,14 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Special_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
+#include "libReallive/intmemref.h"
 
 #include <iostream>
 #include <boost/filesystem/path.hpp>
@@ -39,6 +43,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
 
 #include "json/value.h"
 #include "json/reader.h"
@@ -48,9 +53,11 @@
 #include "Modules/cp932toUnicode.hpp"
 
 using namespace std;
+using namespace libReallive;
 using boost::lexical_cast;
 using boost::starts_with;
 using boost::ends_with;
+using boost::bind;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -247,6 +254,125 @@ struct Sys_SaveInfo : public RLOp_Store_10<
 
 // -----------------------------------------------------------------------
 
+typedef Argc_T<
+  Special_T<
+    Complex3_T<IntReference_T, IntReference_T, IntConstant_T>,
+    Complex3_T<StrReference_T, StrReference_T, IntConstant_T> > >
+GetSaveFlagList;
+
+/**
+ * Retrieves the values of variables from saved games. If slot is
+ * empty, returns 0 and does nothing further; if slot contains a saved
+ * game, returns 1 and processes the list of structures. For each
+ * entry in the list, count values are copied to a block of variables
+ * starting with dst, reading from src: the values copied are those
+ * that are stored in the saved game in slot.
+ *
+ * For example, an RPG that stored the player's level in F[100], the
+ * player's hit points in F[101], and the name of the player's class
+ * in S[10], could retrieve these values from saved games to display
+ * them in a custom load menu as follows:
+ *
+ * @code
+ * str menu_line[10]
+ * for (int i = 0) (i < length(menu_line)) (i += 1): 
+ *   int (block) level, hp 
+ *   str class 
+ *   GetSaveFlag(i, {intF[100], level, 2}, {strS[10], class, 1})
+ *   menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
+ * @endcode
+ */
+struct Sys_GetSaveFlag : public RLOp_Store_2<
+  IntConstant_T, GetSaveFlagList>
+{
+  /// Retrieves a string from the JSON save file and code it.
+  void getString(RLMachine& machine, 
+                 Json::Value& root,
+                 StringReferenceIterator src,
+                 StringReferenceIterator dst,
+                 int numBlocksToCopy)
+  {
+    for(int i = 0; i < numBlocksToCopy; ++i, ++src, ++dst)
+    {
+      int type = src.type();
+      if(type == STRS_LOCATION)
+      {
+        *dst = root["strS"][src.location()].asString();
+      }
+      else
+      {
+        throw rlvm::Exception("Invalid source type in GetSaveFlag");
+      }
+    }
+  }
+
+  /// Retrieves an int from the JSON save file
+  void getInt(RLMachine& machine,
+              Json::Value& root,
+              IntReferenceIterator src, 
+              IntReferenceIterator dst,
+              int numBlocksToCopy)
+  {
+    for(int i = 0; i < numBlocksToCopy; ++i, ++src, ++dst)
+    {
+      string intBank = "int";
+      
+      IntegerBank_t::const_iterator it = 
+        find_if(LOCAL_INTEGER_BANKS.begin(), LOCAL_INTEGER_BANKS.end(),
+                bind(&IntegerBank_t::value_type::first, _1) == src.type());
+      if(it != LOCAL_INTEGER_BANKS.end())
+      {
+        intBank += it->second;
+      }
+      else  
+      {
+        // We don't support nibble or bit access yet.
+        throw rlvm::Exception("Invalid source intager bank in GetSaveFlag");
+      }
+
+      *dst = root[intBank][src.location()].asInt();
+    }
+  }
+
+  /// Main operation
+  int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList)
+  {
+	int fileExists = Sys_SaveExists()(machine, slot);
+	if(!fileExists)
+      return 0;
+
+    Json::Value root;
+    loadJsonFile(machine, slot, root);
+    
+    for(GetSaveFlagList::type::iterator it = flagList.begin(); 
+        it != flagList.end(); ++it)
+    {
+      switch(it->type)
+      {
+      case 0:
+       getInt(machine, root, it->first.get<0>(),
+                 it->first.get<1>(), it->first.get<2>());
+        break;
+      case 1:
+       getString(machine, root, it->second.get<0>(),
+                 it->second.get<1>(), it->second.get<2>());
+        break;
+      default:
+        throw rlvm::Exception("Illegal value in Special_T in GetSaveFlag");
+        break;
+      }
+    }
+
+    return 1;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * Returns the slot most recently saved to, or −1 if no games have
+ * been saved.
+ */
 struct Sys_LatestSave : public RLOp_Store_Void
 {
   int operator()(RLMachine& machine)
@@ -288,7 +414,7 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
 	machine.saveGame(slot);
   }
 };
-
+ 
 // -----------------------------------------------------------------------
 
 struct Sys_load : public RLOp_Void_1< IntConstant_T >
@@ -324,7 +450,8 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(1411, 0, "SaveTime", new Sys_SaveTime);
   m.addOpcode(1412, 0, "SaveDateTime", new Sys_SaveDateTime);
   m.addOpcode(1413, 0, "SaveInfo", new Sys_SaveInfo);
-  m.addUnsupportedOpcode(1414, 0, "GetSaveFlag");
+//  m.addUnsupportedOpcode(1414, 0, "GetSaveFlag");
+  m.addOpcode(1414, 0, "GetSaveFlag", new Sys_GetSaveFlag);
   m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
 
   m.addUnsupportedOpcode(3000, 0, "menu_save");
