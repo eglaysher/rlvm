@@ -201,16 +201,16 @@ struct Sys_PauseCursor : public RLOp_Void_1< IntConstant_T > {
 // -----------------------------------------------------------------------
 
 struct Sys_rnd_0 : public RLOp_Store_1< IntConstant_T > {
-  int operator()(RLMachine& machine, int var1) {
-    return rand() % var1;
+  int operator()(RLMachine& machine, int maxVal) {
+    return (int)( double(maxVal) * rand()/(RAND_MAX + 1.0));
   }
 };
 
 // -----------------------------------------------------------------------
 
 struct Sys_rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
-  int operator()(RLMachine& machine, int var1, int var2) {
-    return rand() % (var2 - var1) + var1;
+  int operator()(RLMachine& machine, int minVal, int maxVal) {
+    return minVal + (int)( double(maxVal - minVal) * rand()/(RAND_MAX + 1.0));
   }
 };
 
