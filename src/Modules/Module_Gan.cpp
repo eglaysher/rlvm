@@ -118,6 +118,8 @@ void addGanOperationsTo(RLModule& m, int layer)
   m.addOpcode(1007, 0, "ganPlayOnceEx",
               new Gan_ganPlay(true, layer, AnimatedObjectData::AFTER_CLEAR));
 
+  m.addUnsupportedOpcode(2001, 0, "objLoop");
+
   m.addOpcode(3001, 0, "ganLoop2",
               new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_LOOP));
   m.addOpcode(3003, 0, "ganPlay2", 
