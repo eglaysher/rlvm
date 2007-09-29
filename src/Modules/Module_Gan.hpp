@@ -25,9 +25,14 @@
 
 #include "MachineBase/RLModule.hpp"
 
-class GanModule : public RLModule {
+class GanFgModule : public RLModule {
 public:
-  GanModule();
+  GanFgModule();
+};
+
+class GanBgModule : public RLModule {
+public:
+  GanBgModule();
 };
 
 #endif

@@ -68,5 +68,6 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new RefreshModule);
   rlmachine.attachModule(new ScrModule(rlmachine.system().graphics()));
   rlmachine.attachModule(new DebugModule);
-  rlmachine.attachModule(new GanModule);
+  rlmachine.attachModule(new GanFgModule);
+  rlmachine.attachModule(new GanBgModule);
 }

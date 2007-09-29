@@ -52,12 +52,14 @@ Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
     m_startTime(machine.system().event().getTicks()),
     m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
 {
+  machine.system().graphics().setIsResponsibleForUpdate(false);
 }
 
 // -----------------------------------------------------------------------
 
 Effect::~Effect()
 {
+  m_machine.system().graphics().setIsResponsibleForUpdate(true);
 }
 
 // -----------------------------------------------------------------------

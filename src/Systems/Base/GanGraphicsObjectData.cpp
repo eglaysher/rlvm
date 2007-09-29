@@ -51,6 +51,7 @@
 #include <fstream>
 
 // -----------------------------------------------------------------------
+
 using libReallive::read_i32;
 using boost::scoped_array;
 using boost::shared_ptr;
@@ -342,6 +343,11 @@ void GanGraphicsObjectData::endAnimation()
   case AFTER_CLEAR:
     if(ownedBy())
       ownedBy()->deleteObject();
+    break;
+  case AFTER_LOOP:
+    // Reset from the beginning
+    m_currentlyPlaying = true;
+    m_currentFrame = 0;
     break;
   }
 }

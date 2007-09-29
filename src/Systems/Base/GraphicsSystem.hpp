@@ -98,6 +98,11 @@ private:
   /// Current screen update mode
   DCScreenUpdateMode m_screenUpdateMode;
 
+  /// Whether it is the Graphics system's responsibility to redraw the
+  /// screen. Some LongOperations temporarily take this responsibility
+  /// to implement pretty fades and wipes
+  bool m_isResponsibleForUpdate;
+
   /// Whether we should try to append m_subtitle in the window
   /// titlebar
   bool m_displaySubtitle;
@@ -120,6 +125,9 @@ private:
 public:
   GraphicsSystem(Gameexe& gameexe);
   virtual ~GraphicsSystem();
+
+  bool isResponsibleForUpdate() const { return m_isResponsibleForUpdate; }
+  void setIsResponsibleForUpdate(bool in) { m_isResponsibleForUpdate = in; }
 
   void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }
   const std::string& defaultGrpName() const { return m_defaultGrpName; }

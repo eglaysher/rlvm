@@ -354,8 +354,9 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 //  cerr << "executeGraphicsSystm()" << endl;
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-  if(m_screenNeedsRefresh || 
-     (screenUpdateMode() != SCREENUPDATEMODE_MANUAL && m_screenDirty))
+  if(isResponsibleForUpdate() &&
+     (m_screenNeedsRefresh || 
+      (screenUpdateMode() != SCREENUPDATEMODE_MANUAL && m_screenDirty)))
   {
     refresh(machine);
     m_screenNeedsRefresh = false;

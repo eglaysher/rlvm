@@ -122,6 +122,7 @@ const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsF
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
   : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
+    m_isResponsibleForUpdate(true),
 	m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
 	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
 	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),

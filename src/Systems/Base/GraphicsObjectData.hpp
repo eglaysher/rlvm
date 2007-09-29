@@ -63,7 +63,8 @@ class AnimatedObjectData : public GraphicsObjectData
 public:
   enum AfterAnimation {
     AFTER_NONE,
-    AFTER_CLEAR
+    AFTER_CLEAR,
+    AFTER_LOOP
   };
 
 private:
