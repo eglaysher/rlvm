@@ -104,52 +104,53 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                  bool pressed)
 {
   GraphicsSystem& graphics = machine.system().graphics();
+  EventSystem& es = machine.system().event();
 
-  if(graphics.interfaceHidden())
-    graphics.toggleInterfaceHidden();
-  else
+  TextSystem& text = machine.system().text();
+
+  switch(mouseButton)
   {
-    EventSystem& es = machine.system().event();
-    TextSystem& text = machine.system().text();
-
-    switch(mouseButton)
+  case MOUSE_LEFT:
+  {
+    int x, y;
+    es.getCursorPos(x, y);
+    // Only unhide the interface on release of the left mouse button
+    if(graphics.interfaceHidden())
     {
-    case MOUSE_LEFT:
+      if(!pressed)
+        graphics.toggleInterfaceHidden();
+    }
+    else if(!machine.system().text().handleMouseClick(machine, x, y, pressed))
     {
-      int x, y;
-      es.getCursorPos(x, y);
-      if(!machine.system().text().handleMouseClick(machine, x, y, pressed))
+      if(pressed)
       {
-        if(pressed)
+        if(text.isReadingBacklog())
         {
-          if(text.isReadingBacklog())
-          {
-            // Move back to the main page.
-            text.stopReadingBacklog();
-          }
-          else
-          {
-            m_isDone = true;
-          }
+          // Move back to the main page.
+          text.stopReadingBacklog();
+        }
+        else
+        {
+          m_isDone = true;
         }
       }
-      break;
     }
-    case MOUSE_RIGHT:
-      if(pressed)
-        handleSyscomCall();
-      break;
-    case MOUSE_WHEELUP:
-      if(pressed)
-        text.backPage(machine);
-      break;
-    case MOUSE_WHEELDOWN:
-      if(pressed)
-        text.forwardPage(machine);
-      break;
-    default:
-      break;
-    }
+    break;
+  }
+  case MOUSE_RIGHT:
+    if(pressed)
+      handleSyscomCall();
+    break;
+  case MOUSE_WHEELUP:
+    if(pressed)
+      text.backPage(machine);
+    break;
+  case MOUSE_WHEELDOWN:
+    if(pressed)
+      text.forwardPage(machine);
+    break;
+  default:
+    break;
   }
 }
 

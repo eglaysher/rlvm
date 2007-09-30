@@ -207,6 +207,31 @@ void TextWindowButton::render(RLMachine& machine,
   }
 }
 
+
+// -----------------------------------------------------------------------
+// ActionTextWindowButton
+// -----------------------------------------------------------------------
+
+ActionTextWindowButton::ActionTextWindowButton(
+  bool use, GameexeInterpretObject locationBox,
+  CallbackFunction action)
+  : TextWindowButton(use, locationBox), m_action(action)
+{
+}
+
+// -----------------------------------------------------------------------
+
+ActionTextWindowButton::~ActionTextWindowButton()
+{
+}
+
+// -----------------------------------------------------------------------
+
+void ActionTextWindowButton::buttonReleased()
+{
+  m_action();
+}
+
 // -----------------------------------------------------------------------
 // ActivationTextWindowButton
 // -----------------------------------------------------------------------

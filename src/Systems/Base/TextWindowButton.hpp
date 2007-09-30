@@ -76,6 +76,24 @@ public:
 
 // -----------------------------------------------------------------------
 
+class ActionTextWindowButton : public TextWindowButton
+{
+public:
+  typedef boost::function<void(void)> CallbackFunction;
+
+private:
+  CallbackFunction m_action;
+
+public:
+  ActionTextWindowButton(bool use, GameexeInterpretObject locationBox,
+                         CallbackFunction action);
+  ~ActionTextWindowButton();
+
+  virtual void buttonReleased();
+};
+
+// -----------------------------------------------------------------------
+
 class ActivationTextWindowButton : public TextWindowButton
 {
 public:

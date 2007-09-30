@@ -104,7 +104,7 @@ void TextWindow::execute(RLMachine& machine)
 {
   using namespace boost;
 
-  if(isVisible())
+  if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
     for_each(m_buttonMap.begin(), m_buttonMap.end(),  
              bind(&TextWindowButton::execute, _1));
@@ -344,6 +344,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
   setWakuButton(machine, waku("BTN"));
 
   TextSystem& ts = machine.system().text();
+  GraphicsSystem& gs = machine.system().graphics();
   m_buttonMap.clear();
   // Translation: Boost ptr_map is retarded.
   string key = "MOVE_BOX";
@@ -351,7 +352,9 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                      new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
   key = string("CLEAR_BOX");
   m_buttonMap.insert(key,
-                     new TextWindowButton(ts.windowClearUse(), waku("CLEAR_BOX")));
+                     new ActionTextWindowButton(
+                       ts.windowClearUse(), waku("CLEAR_BOX"),
+                       bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
   key = string("READJUMP_BOX");
   m_buttonMap.insert(key,
                      new ActivationTextWindowButton(
@@ -429,7 +432,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y,
 {
   using namespace boost;
 
-  if(isVisible())
+  if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
     return find_if(m_buttonMap.begin(), m_buttonMap.end(),   
                    bind(&TextWindowButton::handleMouseClick, _1, 

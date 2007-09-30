@@ -365,9 +365,13 @@ void SDLTextWindow::render(RLMachine& machine)
  * @todo Move the offset magic numbers into constants, and make that a
  *       member of TextWindowButton; this function because a trivial
  *       iteration then.
+ * @todo Push this logic up to TextWindow; This is logic, not an
+ *       implementation detail.
  */
 void SDLTextWindow::renderButtons(RLMachine& machine)
 {
+  m_buttonMap["CLEAR_BOX"].render(machine, *this, m_wakuButton, 8);
+
   m_buttonMap["MSGBKLEFT_BOX"].render(machine, *this, m_wakuButton, 24);
   m_buttonMap["MSGBKRIGHT_BOX"].render(machine, *this, m_wakuButton, 32);
 
