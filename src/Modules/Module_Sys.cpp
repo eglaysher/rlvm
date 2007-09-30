@@ -504,7 +504,8 @@ struct Sys_MenuReturn : public RLOp_Void_Void
     shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
 
     // Clear everything
-    graphics.clearAllObjectsAndDCs();
+    graphics.clearAllObjects();
+    graphics.clearAllDCs();
     machine.system().text().reset();
 
     shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);

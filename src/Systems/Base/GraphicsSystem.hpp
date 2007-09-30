@@ -32,7 +32,7 @@
 #define __GraphicsSystem_hpp__
 
 #include <string>
-
+#include "LazyArray.hpp"
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -121,6 +121,41 @@ private:
 
   struct GraphicsObjectSettings;
   boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
+
+protected:
+  /// Foreground objects
+  LazyArray<GraphicsObject> foregroundObjects;
+
+  /// Background objects
+  LazyArray<GraphicsObject> backgroundObjects;
+
+protected:
+
+  /**
+   * @name Iterated access to GraphicsObjects
+   * 
+   * Provide a set of iterators for subclasses of GraphicsSystem to
+   * access the actual GraphicsObjects, in addition to the normal
+   * checked interfaced.
+   *
+   * @{
+   */
+
+
+
+//   FullIterator fg_full_begin() { return foregroundObjects.full_begin(); }
+//   FullIterator fg_full_end() { return foregroundObjects.full_end(); }
+//   FullIterator bg_full_begin() { return backgroundObjects.full_begin(); }
+//   FullIterator bg_full_end() { return backgroundObjects.full_end(); }
+
+//   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
+
+//   FullIterator fg_full_begin() { return foregroundObjects.full_begin(); }
+//   FullIterator fg_full_end() { return foregroundObjects.full_end(); }
+//   FullIterator bg_full_begin() { return backgroundObjects.full_begin(); }
+//   FullIterator bg_full_end() { return backgroundObjects.full_end(); }
+
+  /// @}
 
 public:
   GraphicsSystem(Gameexe& gameexe);
@@ -281,18 +316,45 @@ public:
 
 
   // ----------------------------------- [ Object getter/factory functions ]
-  virtual void promoteObjects() = 0;
-  virtual void clearAndPromoteObjects() = 0;
+  /**
+   * @name Graphics Object operations
+   * 
+   * @{
+   */
+
+  /** 
+   * Takes the current background object in each slot and puts it in
+   * the foreground slot.
+   *
+   * @todo Rewrite this to not needlessly copy the data.
+   */
+  void promoteObjects();
+
+  /**
+   * Clears and promotes objects.
+   */
+  void clearAndPromoteObjects();
+
+  /** 
+   * Calls render() on all foreground objects that need to be
+   * rendered.
+   * 
+   * @param machine RLMachine context.
+   */
+  void renderObjects(RLMachine& machine);
 
   virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
                                              const std::string& filename) = 0;
 
   /// Object getters
   /// layer == 0 for fg, layer == 1 for bg.
-  virtual GraphicsObject& getObject(int layer, int objNumber) = 0;
-  virtual void setObject(int layer, int objNumber, GraphicsObject& object) {}
+  GraphicsObject& getObject(int layer, int objNumber);
+  void setObject(int layer, int objNumber, GraphicsObject& object);
+  void clearAllObjects();
 
-  virtual void clearAllObjectsAndDCs() { }
+  /// @}
+
+  virtual void clearAllDCs() { }
 
   /** 
    * Reset the system. Should clear all state for when a user loads a
@@ -307,3 +369,4 @@ const static int OBJ_BG_LAYER = 1;
 const int OBJECTS_IN_A_LAYER = 256;
 
 #endif
+

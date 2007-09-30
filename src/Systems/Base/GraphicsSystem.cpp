@@ -25,11 +25,13 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
 #include "Modules/Module_Grp.hpp"
+#include "Utilities.h"
 
 #include <vector>
 #include <list>
@@ -128,7 +130,9 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
 	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
     m_showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
     m_hideInterface(false),
-	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe))
+	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
+    foregroundObjects(256), 
+    backgroundObjects(256)
 {
 }
 
@@ -284,6 +288,7 @@ void GraphicsSystem::loadGameValues(RLMachine& machine,
                                     const Json::Value& graphicsSys)
 {
   replayGraphicsStack(machine, graphicsSys["stack"]);
+//  loadObjectState(machine, graphicsSys["objects"]);
 }
 
 // -----------------------------------------------------------------------
@@ -296,3 +301,143 @@ void GraphicsSystem::reset()
   m_subtitle = "";
   m_hideInterface = false;
 }
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::promoteObjects()
+{
+  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
+
+  FullIterator bg = backgroundObjects.full_begin();
+  FullIterator bgEnd = backgroundObjects.full_end();
+  FullIterator fg = foregroundObjects.full_begin();
+  FullIterator fgEnd = foregroundObjects.full_end();
+  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
+  {
+    if(bg.valid())
+    {
+      *fg = *bg;
+      bg->deleteObject();
+    }
+  }  
+}
+
+// -----------------------------------------------------------------------
+
+/// @todo The looping constructs here totally defeat the purpose of
+///       LazyArray, and make it a bit worse.
+void GraphicsSystem::clearAndPromoteObjects()
+{
+  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;  
+
+  FullIterator bg = backgroundObjects.full_begin();
+  FullIterator bgEnd = backgroundObjects.full_end();
+  FullIterator fg = foregroundObjects.full_begin();
+  FullIterator fgEnd = foregroundObjects.full_end();
+  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
+  {
+    if(fg.valid() && !fg->wipeCopy())
+    {
+      fg->deleteObject();
+    }
+
+    if(bg.valid())
+    {
+      *fg = *bg;
+      bg->deleteObject();
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsObject& GraphicsSystem::getObject(int layer, int objNumber)
+{
+  if(layer < 0 || layer > 1)
+    throw rlvm::Exception("Invalid layer number");
+  
+  if(layer == OBJ_BG_LAYER)
+    return backgroundObjects[objNumber];
+  else
+    return foregroundObjects[objNumber];
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
+{
+  if(layer < 0 || layer > 1)
+    throw rlvm::Exception("Invalid layer number");
+
+  if(layer == OBJ_BG_LAYER)
+    backgroundObjects[objNumber] = obj;
+  else
+    foregroundObjects[objNumber] = obj;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::clearAllObjects()
+{
+  foregroundObjects.clear();
+  backgroundObjects.clear();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::renderObjects(RLMachine& machine)
+{
+  // Render all visible foreground objects
+  AllocatedLazyArrayIterator<GraphicsObject> it = 
+	foregroundObjects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end = 
+	foregroundObjects.allocated_end();
+  for(; it != end; ++it)
+  {
+	const ObjectSettings& settings = getObjectSettings(it.pos());
+    if(settings.objOnOff == 1 && showObject1() == false)
+      continue;
+    else if(settings.objOnOff == 2 && showObject2() == false)
+      continue;
+    else if(settings.weatherOnOff && showWeather() == false)
+      continue;
+    else if(settings.spaceKey && interfaceHidden())
+      continue;
+
+	it->render(machine);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+/*
+void GraphicsSystem::saveObjectState(RLMachine& machine,
+                                     Json::Value& objects)
+{
+  AllocatedLazyArrayIterator<GraphicsObject> it = 
+	foregroundObjects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end = 
+	foregroundObjects.allocated_end();
+  for(; it != end; ++it)
+  {
+    Json::Value object(Json::objectValue);
+    it->serializeTo(object);
+    
+    objects[lexical_cast<string>(objNum)] = object;
+  }
+}
+*/
+// -----------------------------------------------------------------------
+ /*
+void GraphicsSystem::loadObjectState(RLMachine& machine,
+                                     const Json::Value& objectHash)
+{
+  // Iterate over graphics state hash entries
+  using namespace Json;
+
+  for(Value::iterator it = objectHash.begin(); it != objectHash.end(); ++it)
+  {
+    
+  }
+}
+ */

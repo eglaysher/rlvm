@@ -141,30 +141,6 @@ void SDLGraphicsSystem::beginFrame()
   ShowGLErrors();
 }
 
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::renderObjects(RLMachine& machine)
-{
-  // Render all visible foreground objects
-  AllocatedLazyArrayIterator<GraphicsObject> it = 
-	foregroundObjects.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end = 
-	foregroundObjects.allocated_end();
-  for(; it != end; ++it)
-  {
-	const ObjectSettings& settings = getObjectSettings(it.pos());
-    if(settings.objOnOff == 1 && showObject1() == false)
-      continue;
-    else if(settings.objOnOff == 2 && showObject2() == false)
-      continue;
-    else if(settings.weatherOnOff && showWeather() == false)
-      continue;
-    else if(settings.spaceKey && interfaceHidden())
-      continue;
-
-	it->render(machine);
-  }
-}
 
 // -----------------------------------------------------------------------
 
@@ -234,7 +210,6 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   : GraphicsSystem(gameexe), 
 	m_screenDirty(false), m_screenNeedsRefresh(false),
-    foregroundObjects(256), backgroundObjects(256),
     m_displayDataInTitlebar(false), m_lastSeenNumber(0), 
     m_lastLineNumber(0)
 {
@@ -506,32 +481,6 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& SDLGraphicsSystem::getObject(int layer, int objNumber)
-{
-  if(layer < 0 || layer > 1)
-    throw rlvm::Exception("Invalid layer number");
-
-  if(layer == OBJ_BG_LAYER)
-    return backgroundObjects[objNumber];
-  else
-    return foregroundObjects[objNumber];
-}
-
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
-{
-  if(layer < 0 || layer > 1)
-    throw rlvm::Exception("Invalid layer number");
-
-  if(layer == OBJ_BG_LAYER)
-    backgroundObjects[objNumber] = obj;
-  else
-    foregroundObjects[objNumber] = obj;
-}
-
-// -----------------------------------------------------------------------
-
 typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 
 // Note to self: These describe the byte order IN THE RAW G00 DATA!
@@ -722,52 +671,6 @@ public:
   }
 };
 
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::promoteObjects()
-{
-  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
-
-  FullIterator bg = backgroundObjects.full_begin();
-  FullIterator bgEnd = backgroundObjects.full_end();
-  FullIterator fg = foregroundObjects.full_begin();
-  FullIterator fgEnd = foregroundObjects.full_end();
-  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
-  {
-    if(bg.valid())
-    {
-      *fg = *bg;
-      bg->deleteObject();
-    }
-  }  
-}
-
-// -----------------------------------------------------------------------
-
-/// @todo The looping constructs here totally defeat the purpose of
-///       LazyArray, and make it a bit worse.
-void SDLGraphicsSystem::clearAndPromoteObjects()
-{
-  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
-
-  FullIterator bg = backgroundObjects.full_begin();
-  FullIterator bgEnd = backgroundObjects.full_end();
-  FullIterator fg = foregroundObjects.full_begin();
-  FullIterator fgEnd = foregroundObjects.full_end();
-  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
-  {
-    if(fg.valid() && !fg->wipeCopy())
-    {
-      fg->deleteObject();
-    }
-
-    if(bg.valid())
-    {
-      *fg = *bg;
-      bg->deleteObject();
-    }
-  }
-}
 
 // -----------------------------------------------------------------------
 
@@ -793,22 +696,20 @@ GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::clearAllObjectsAndDCs()
+void SDLGraphicsSystem::clearAllDCs()
 {
   getDC(0)->fill(0, 0, 0, 255);
   
   for(int i = 1; i < 16; ++i)
     freeDC(i);
-
-  foregroundObjects.clear();
-  backgroundObjects.clear();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::reset()
 {
-  clearAllObjectsAndDCs();
+  clearAllObjects();
+  clearAllDCs();
 
   m_lastSeenNumber = 0;
   m_lastLineNumber = 0;

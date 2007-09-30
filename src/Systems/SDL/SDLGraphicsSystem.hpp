@@ -25,7 +25,6 @@
 
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "LazyArray.hpp"
 
 struct SDL_Surface;
 class SDLSurface;
@@ -63,12 +62,6 @@ private:
 
   /// Flag set to redraw the screen NOW
   bool m_screenNeedsRefresh;
-
-  /// Foreground objects
-  LazyArray<GraphicsObject> foregroundObjects;
-
-  /// Background objects
-  LazyArray<GraphicsObject> backgroundObjects;
 
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool m_displayDataInTitlebar;
@@ -122,8 +115,6 @@ private:
 
   void setWindowTitle();
 
-
-  void renderObjects(RLMachine& machine);
 
 public:
   SDLGraphicsSystem(Gameexe& gameexe);
@@ -184,16 +175,9 @@ public:
   virtual void setWindowSubtitle(const std::string& cp932str,
                                  int textEncoding);
 
-  // Object related functions
-  virtual void promoteObjects();
-  virtual void clearAndPromoteObjects();
-
   virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename);
 
-  virtual GraphicsObject& getObject(int layer, int objNumber);
-  virtual void setObject(int layer, int objNumber, GraphicsObject& object);
-
-  virtual void clearAllObjectsAndDCs();
+  virtual void clearAllDCs();
 
   /** 
    * Reset the system. Should clear all state for when a user loads a
