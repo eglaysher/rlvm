@@ -67,6 +67,9 @@ private:
 
   void addPath(GameexeInterpretObject gio);
 
+  /// Whether we should put up a yes/no dialog box when saving/loading.
+  bool m_confirmSaveLoad;
+
 protected:
   boost::filesystem::path getHomeDirectory();
 
@@ -137,7 +140,8 @@ public:
 
   /// @}
 
-
+  bool confirmSaveLoad() const { return m_confirmSaveLoad; }
+  void setConfirmSaveLoad(const bool in) { m_confirmSaveLoad = in; }
 
   const std::vector<std::string>& getSearchPaths();
 

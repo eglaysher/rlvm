@@ -56,6 +56,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 System::System()
+  : m_confirmSaveLoad(1)
 {
   fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
@@ -184,6 +185,8 @@ void System::saveGlobals(Json::Value& root)
 {
   Json::Value system(Json::objectValue);
 
+  system["confirmSaveLoad"] = m_confirmSaveLoad;
+
   graphics().saveGlobals(system["graphics"]);
   event().saveGlobals(system["event"]);
   text().saveGlobals(system["text"]);
@@ -196,6 +199,8 @@ void System::saveGlobals(Json::Value& root)
 void System::loadGlobals(Json::Value& root)
 {
   Json::Value system = root["system"];
+
+  m_confirmSaveLoad = system["confirmSaveLoad"].asInt();
 
   graphics().loadGlobals(system["graphics"]);
   event().loadGlobals(system["event"]);

@@ -25,6 +25,7 @@
 
 class RLMachine;
 class RLModule;
+class System;
 
 /** 
  * Public access to the frame counter operations. Meant to be called
@@ -32,6 +33,6 @@ class RLModule;
  * 
  * @see SysModule
  */
-void addSysSaveOpcodes(RLModule& module);
+void addSysSaveOpcodes(RLModule& module, System& system);
 
 #endif

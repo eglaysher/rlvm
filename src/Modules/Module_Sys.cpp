@@ -639,8 +639,6 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(2001, 0, "SkipAnimations");
   addUnsupportedOpcode(2052, 0, "SetLowPriority");
   addUnsupportedOpcode(2002, 0, "LowPriority");
-  addUnsupportedOpcode(2053, 0, "SetConfirmSaveLoad");
-  addUnsupportedOpcode(2003, 0, "ConfirmSaveLoad");
 
   addOpcode(2223, 0, "SetMessageSpeed",
             setToIncomingInt(text, &TextSystem::setMessageSpeed));
@@ -764,6 +762,6 @@ SysModule::SysModule(System& system)
   // what they do.
   addSysTimerOpcodes(*this);
   addSysFrameOpcodes(*this);
-  addSysSaveOpcodes(*this);
+  addSysSaveOpcodes(*this, system);
   addSysSyscomOpcodes(*this, system);
 }
