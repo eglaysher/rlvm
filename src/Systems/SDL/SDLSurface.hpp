@@ -152,6 +152,8 @@ public:
   /// invalid and notifies SDLGraphicsSystem when appropriate.
   void markWrittenTo();
 
+  virtual int numPatterns() const;
+
   /// Returns pattern information.
   virtual const GrpRect& getPattern(int pattNo) const;
 

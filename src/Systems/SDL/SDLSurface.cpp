@@ -144,6 +144,11 @@ SDLSurface::~SDLSurface()
 
 // -----------------------------------------------------------------------
 
+int SDLSurface::width() const { return m_surface->w; }
+int SDLSurface::height() const { return m_surface->h; }
+
+// -----------------------------------------------------------------------
+
 void SDLSurface::dump()
 {
   static int count = 0;
@@ -636,6 +641,13 @@ void SDLSurface::markWrittenTo()
 
   // Mark that the texture needs reuploading
   m_textureIsValid = false;
+}
+
+// -----------------------------------------------------------------------
+
+int SDLSurface::numPatterns() const
+{
+  return m_regionTable.size();
 }
 
 // -----------------------------------------------------------------------

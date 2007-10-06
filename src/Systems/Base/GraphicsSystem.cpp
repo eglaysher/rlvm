@@ -26,26 +26,34 @@
 
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Systems/Base/GraphicsStackFrame.hpp"
+#include "Systems/Base/ObjectSettings.hpp"
+#include "Systems/Base/AnmGraphicsObjectData.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
 #include "Modules/Module_Grp.hpp"
 #include "Utilities.h"
 
+#include <sstream>
 #include <vector>
 #include <list>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "json/value.h"
 #include <iostream>
 
 using std::cout;
 using std::endl;
+using boost::iends_with;
 using boost::lexical_cast;
 using std::fill;
 using std::vector;
+using std::ostringstream;
 
 // -----------------------------------------------------------------------
 // GraphicsSystem::GraphicsObjectSettings
@@ -407,6 +415,29 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 	it->render(machine);
   }
 }
+
+// -----------------------------------------------------------------------
+
+GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine, 
+                                                   const std::string& filename)
+{
+  string fullPath = findFile(machine, filename);
+  if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
+  {
+    return new GraphicsObjectOfFile(*this, fullPath);
+  }
+  else if(iends_with(fullPath, "anm"))
+  {
+    return new AnmGraphicsObjectData(machine, fullPath);
+  }
+  else
+  {
+    ostringstream oss;
+    oss << "Don't know how to handle object file: \"" << fullPath << "\"";
+    throw rlvm::Exception(oss.str());
+  }
+}
+
 
 // -----------------------------------------------------------------------
 

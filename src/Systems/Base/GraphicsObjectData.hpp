@@ -33,9 +33,51 @@ class GraphicsObject;
  * store image or text data that need to be associated with a
  * GraphicsObject.
  */
-class GraphicsObjectData {
+class GraphicsObjectData 
+{
 public:
+  enum AfterAnimation {
+    AFTER_NONE,
+    AFTER_CLEAR,
+    AFTER_LOOP
+  };
+
+private:
+  AfterAnimation m_afterAnimation;
+  GraphicsObject* m_ownedBy;
+
+  bool m_currentlyPlaying;
+
+protected:
+
+  /** 
+   * Function called after animation ends when this object has been
+   * set up to loop.
+   * 
+   * Default implementation does nothing.
+   */
+  virtual void loopAnimation() { }
+
+  /** 
+   * Takes the specified action when we've reached the last frame of
+   * animation.
+   */
+  void endAnimation();
+
+public:
+  GraphicsObjectData();
+  GraphicsObjectData(const GraphicsObjectData& obj);
   virtual ~GraphicsObjectData();
+
+  AfterAnimation afterAnimation() const { return m_afterAnimation; }
+  void setAfterAction(AfterAnimation after) { m_afterAnimation = after; }
+
+  void setOwnedBy(GraphicsObject& godata) { m_ownedBy = &godata; }
+  GraphicsObject* ownedBy() const { return m_ownedBy; }
+
+  void setCurrentlyPlaying(bool in) { m_currentlyPlaying = in; }
+  bool currentlyPlaying() const { return m_currentlyPlaying; }
+
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties) = 0;
   
@@ -47,46 +89,9 @@ public:
   virtual GraphicsObjectData* clone() const = 0;
 
   virtual void execute(RLMachine& machine) { }
-  virtual void setOwnedBy(GraphicsObject& godata) { }
 
   virtual bool isAnimation() const;
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Describes additional data and methods needed by objects that
- * represent animations.
- */
-class AnimatedObjectData : public GraphicsObjectData 
-{
-public:
-  enum AfterAnimation {
-    AFTER_NONE,
-    AFTER_CLEAR,
-    AFTER_LOOP
-  };
-
-private:
-  AfterAnimation m_afterAnimation;
-  GraphicsObject* m_objectToCleanupOn;
-
-public:
-  AnimatedObjectData();
-  ~AnimatedObjectData();
-
-  AfterAnimation afterAnimation() const { return m_afterAnimation; }
-  void setAfterAction(AfterAnimation after) { m_afterAnimation = after; }
-
-  virtual void setOwnedBy(GraphicsObject& godata) 
-  { m_objectToCleanupOn = &godata; }
-  GraphicsObject* ownedBy() const { return m_objectToCleanupOn; }
-
-  virtual bool isAnimation() const;
-
-  virtual bool isPlaying() const = 0;
-
-  virtual void playSet(RLMachine& machine, int set) = 0;
+  virtual void playSet(RLMachine& machine, int set) { }
 };
 
 // -----------------------------------------------------------------------

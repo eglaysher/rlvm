@@ -41,7 +41,7 @@ class GraphicsObject;
  * In-memory representation of a GAN file. Responsible for reading in,
  * storing, and rendering GAN data as a GraphicsObjectData.
  */
-class GanGraphicsObjectData : public AnimatedObjectData
+class GanGraphicsObjectData : public GraphicsObjectData
 {
 private:
   struct Frame {
@@ -55,8 +55,6 @@ private:
 
   typedef std::vector< std::vector<Frame> > AnimationSets;
   AnimationSets animationSets;
-
-  bool m_currentlyPlaying;
 
   int m_currentSet;
   int m_currentFrame;
@@ -76,7 +74,9 @@ private:
   void throwBadFormat(
     const std::string& filename, const std::string& error);
 
-  void endAnimation();
+protected:
+
+  virtual void loopAnimation();
 
 public:
   GanGraphicsObjectData(RLMachine& machine, const std::string& file,
@@ -94,8 +94,7 @@ public:
   virtual GraphicsObjectData* clone() const;  
   virtual void execute(RLMachine& machine);
 
-  // ------------------------------------ [ AnimatedObjectData interface ]
-  virtual bool isPlaying() const;
+  virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
 };
 

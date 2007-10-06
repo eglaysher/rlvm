@@ -38,9 +38,6 @@ public:
   virtual void promoteObjects() { }
   virtual void clearAndPromoteObjects() { }
 
-  virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename)
-  { return NULL; }
-
   virtual GraphicsObject& getObject(int layer, int objNumber);
 
   // Make a null Surface object?

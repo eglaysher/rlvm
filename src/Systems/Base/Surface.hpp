@@ -49,6 +49,7 @@ public:
   virtual void renderToScreenAsObject(const GraphicsObject& rp, 
                                       const GraphicsObjectOverride& override) {}
 
+  virtual int numPatterns() const { return 1; }
   virtual const GrpRect& getPattern(int pattNo) const 
   {
     static GrpRect rect;

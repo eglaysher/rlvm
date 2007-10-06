@@ -68,7 +68,7 @@ using std::vector;
 GanGraphicsObjectData::GanGraphicsObjectData(
   RLMachine& machine, const std::string& ganFile, 
   const shared_ptr<Surface>& incomingImage)
-  : m_currentlyPlaying(false), m_currentFrame(-1), 
+  : m_currentFrame(-1), 
     image(incomingImage)
 {
   ifstream ifs(ganFile.c_str(), ifstream::in | ifstream::binary);
@@ -306,7 +306,7 @@ GraphicsObjectData* GanGraphicsObjectData::clone() const
 
 void GanGraphicsObjectData::execute(RLMachine& machine)
 {
-  if(m_currentlyPlaying && m_currentFrame >= 0)
+  if(currentlyPlaying() && m_currentFrame >= 0)
   {
     unsigned int currentTime = machine.system().event().getTicks();
     unsigned int timeSinceLastFrameChange = 
@@ -331,38 +331,16 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::endAnimation()
+void GanGraphicsObjectData::loopAnimation()
 {
-  // Set first, because we may deallocate this by one of our actions
-  m_currentlyPlaying = false;
-
-  switch(afterAnimation())
-  {
-  case AFTER_NONE:
-    break;
-  case AFTER_CLEAR:
-    if(ownedBy())
-      ownedBy()->deleteObject();
-    break;
-  case AFTER_LOOP:
-    // Reset from the beginning
-    m_currentlyPlaying = true;
-    m_currentFrame = 0;
-    break;
-  }
-}
-
-// ------------------------------------ [ AnimatedObjectData interface ]
-bool GanGraphicsObjectData::isPlaying() const 
-{
-  return m_currentlyPlaying;
+  m_currentFrame = 0;
 }
 
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::playSet(RLMachine& machine, int set) 
 {
-  m_currentlyPlaying = true;
+  setCurrentlyPlaying(true);
   m_currentSet = set;
   m_currentFrame = 0;
   m_timeAtLastFrameChange = machine.system().event().getTicks();

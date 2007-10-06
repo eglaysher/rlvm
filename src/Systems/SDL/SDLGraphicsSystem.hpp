@@ -175,8 +175,6 @@ public:
   virtual void setWindowSubtitle(const std::string& cp932str,
                                  int textEncoding);
 
-  virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, const std::string& filename);
-
   virtual void clearAllDCs();
 
   /** 

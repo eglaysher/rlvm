@@ -61,12 +61,9 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
       if(obj.hasObjectData())
       {
-        AnimatedObjectData* data = 
-          dynamic_cast<AnimatedObjectData*>(&(obj.objectData()));
-        if(data)
-        {
-          return !data->isPlaying();
-        }
+        GraphicsObjectData& data = obj.objectData();
+        if(data.isAnimation())
+          return !data.currentlyPlaying();
         else
           return true;
       }
@@ -77,10 +74,10 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
   bool m_block;
   int m_layer;
-  AnimatedObjectData::AfterAnimation m_afterEffect;
+  GraphicsObjectData::AfterAnimation m_afterEffect;
 
   Gan_ganPlay(bool block, int layer,
-              AnimatedObjectData::AfterAnimation after) 
+              GraphicsObjectData::AfterAnimation after) 
     : m_block(block), m_layer(layer), m_afterEffect(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet)
@@ -89,12 +86,11 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
     if(obj.hasObjectData())
     {
-      AnimatedObjectData* data = 
-        dynamic_cast<AnimatedObjectData*>(&(obj.objectData()));
-      if(data)
+      GraphicsObjectData& data = obj.objectData();
+      if(data.isAnimation())
       {
-        data->playSet(machine, animationSet);
-        data->setAfterAction(m_afterEffect);
+        data.playSet(machine, animationSet);
+        data.setAfterAction(m_afterEffect);
 
         if(m_block)
           machine.pushLongOperation(new WaitForGanToFinish(m_layer, buf));
@@ -107,25 +103,30 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
 void addGanOperationsTo(RLModule& m, int layer)
 {
-  m.addOpcode(1001, 0, "ganLoop",
-              new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_LOOP));
-  m.addOpcode(1003, 0, "ganPlay",
-              new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_NONE));
-  m.addOpcode(1005, 0, "ganPlayOnce",
-              new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_CLEAR));
-  m.addOpcode(1006, 0, "ganPlayEx",
-              new Gan_ganPlay(true, layer, AnimatedObjectData::AFTER_NONE));
-  m.addOpcode(1007, 0, "ganPlayOnceEx",
-              new Gan_ganPlay(true, layer, AnimatedObjectData::AFTER_CLEAR));
+  m.addUnsupportedOpcode(1000, 0, "objStop");
+  m.addUnsupportedOpcode(1000, 1, "objStop");
 
-  m.addUnsupportedOpcode(2001, 0, "objLoop");
+  m.addOpcode(1001, 0, "ganLoop",
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
+  m.addOpcode(1003, 0, "ganPlay",
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_NONE));
+  m.addOpcode(1005, 0, "ganPlayOnce",
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_CLEAR));
+  m.addOpcode(1006, 0, "ganPlayEx",
+              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_NONE));
+  m.addOpcode(1007, 0, "ganPlayOnceEx",
+              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_CLEAR));
+
+  m.addOpcode(2001, 0, "objLoop",
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
+  m.addUnsupportedOpcode(2003, 0, "objPlay");
 
   m.addOpcode(3001, 0, "ganLoop2",
-              new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_LOOP));
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
   m.addOpcode(3003, 0, "ganPlay2", 
-              new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_NONE));
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3005, 0, "ganPlayOnce2",
-              new Gan_ganPlay(false, layer, AnimatedObjectData::AFTER_CLEAR));
+              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_CLEAR));
 }
 
 // -----------------------------------------------------------------------

@@ -53,8 +53,6 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/AnmGraphicsObjectData.hpp"
-#include "Systems/Base/ObjectSettings.hpp"
 
 #include "libReallive/gameexe.h"
 #include "file.h"
@@ -623,77 +621,6 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
   return m_displayContexts[dc];
 }
                                 
-int SDLSurface::width() const { return m_surface->w; }
-int SDLSurface::height() const { return m_surface->h; }
-
-// -----------------------------------------------------------------------
-
-class SDLGraphicsObjectOfFile : public GraphicsObjectData
-{
-private:
-  shared_ptr<SDLSurface> surface;
-
-  // Private copying constructor
-  SDLGraphicsObjectOfFile(shared_ptr<SDLSurface> inSurface)
-    : surface(inSurface)
-  {}
-
-public:
-  SDLGraphicsObjectOfFile(SDLGraphicsSystem& graphics, 
-                          const std::string& filename)
-    : surface(static_pointer_cast<SDLSurface>(
-                graphics.loadSurfaceFromFile(filename)))
-  {  
-  }
-
-  virtual void render(RLMachine& machine, const GraphicsObject& rp)
-  {
-    surface->renderToScreenAsObject(rp);
-  }
-
-  virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp)
-  {
-    const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
-    int width = rect.x2 - rect.x1;
-    return int((rp.width() / 100.0f) * width);
-  }
-
-  virtual int pixelHeight(RLMachine& machine, const GraphicsObject& rp)
-  {
-    const SDLSurface::GrpRect& rect = surface->getPattern(rp.pattNo());
-    int height = rect.y2 - rect.y1;
-    return int((rp.height() / 100.0f) * height);
-  }
-
-  GraphicsObjectData* clone() const 
-  {
-    return new SDLGraphicsObjectOfFile(surface);
-  }
-};
-
-
-// -----------------------------------------------------------------------
-
-GraphicsObjectData* SDLGraphicsSystem::buildObjOfFile(RLMachine& machine, 
-                                                      const std::string& filename)
-{
-  string fullPath = findFile(machine, filename);
-  if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
-  {
-    return new SDLGraphicsObjectOfFile(*this, fullPath);
-  }
-  else if(iends_with(fullPath, "anm"))
-  {
-    return new AnmGraphicsObjectData(machine, fullPath);
-  }
-  else
-  {
-    ostringstream oss;
-    oss << "Don't know how to handle object file: \"" << fullPath << "\"";
-    throw rlvm::Exception(oss.str());
-  }
-}
-
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::clearAllDCs()

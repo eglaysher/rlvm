@@ -26,6 +26,7 @@ LIBRLVMFILES[] =
   Systems/Base/GraphicsSystem
   Systems/Base/GraphicsObject
   Systems/Base/GraphicsObjectData
+  Systems/Base/GraphicsObjectOfFile
   Systems/Base/GraphicsTextObject
   Systems/Base/GraphicsStackFrame
   Systems/Base/ObjectSettings

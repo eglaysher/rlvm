@@ -33,7 +33,7 @@
 class Surface;
 class RLMachine;
 
-class AnmGraphicsObjectData : public AnimatedObjectData
+class AnmGraphicsObjectData : public GraphicsObjectData
 {
 private:
   /// Note: This internal structure is heavily based off of xkanon's
@@ -113,8 +113,7 @@ public:
   virtual GraphicsObjectData* clone() const;  
   virtual void execute(RLMachine& machine);
 
-  // ------------------------------------ [ AnimatedObjectData interface ]
-  virtual bool isPlaying() const;
+  virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
 };
 

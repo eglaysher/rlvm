@@ -24,39 +24,59 @@
 
 // -----------------------------------------------------------------------
 
+#include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include <iostream>
+
+using namespace std;
 
 // -----------------------------------------------------------------------
 // GraphicsObjectData
+// -----------------------------------------------------------------------
+
+GraphicsObjectData::GraphicsObjectData()
+  : m_afterAnimation(AFTER_NONE), m_ownedBy(NULL), m_currentlyPlaying(false)
+{}
+
+// -----------------------------------------------------------------------
+
+GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
+  : m_afterAnimation(obj.m_afterAnimation), m_ownedBy(NULL), 
+    m_currentlyPlaying(obj.m_currentlyPlaying)
+{}
+
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::~GraphicsObjectData() { }
 
 // -----------------------------------------------------------------------
 
-bool GraphicsObjectData::isAnimation() const
-{   
-  return false; 
+void GraphicsObjectData::endAnimation()
+{
+  // Set first, because we may deallocate this by one of our actions
+  m_currentlyPlaying = false;
+
+  switch(afterAnimation())
+  {
+  case AFTER_NONE:
+    break;
+  case AFTER_CLEAR:
+    if(ownedBy())
+      ownedBy()->deleteObject();
+    break;
+  case AFTER_LOOP:
+    // Reset from the beginning
+    m_currentlyPlaying = true;
+    loopAnimation();
+    break;
+  }
 }
 
 // -----------------------------------------------------------------------
-// AnimatedObjectData
-// -----------------------------------------------------------------------
 
-AnimatedObjectData::AnimatedObjectData()
-  : m_afterAnimation(AFTER_NONE), m_objectToCleanupOn(NULL)
-{}
-
-// -----------------------------------------------------------------------
-
-AnimatedObjectData::~AnimatedObjectData()
-{}
-
-// -----------------------------------------------------------------------
-
-bool AnimatedObjectData::isAnimation() const
-{
-  return true;
+bool GraphicsObjectData::isAnimation() const
+{   
+  return false; 
 }
 
 // -----------------------------------------------------------------------

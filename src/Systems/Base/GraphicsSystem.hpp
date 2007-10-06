@@ -343,8 +343,8 @@ public:
    */
   void renderObjects(RLMachine& machine);
 
-  virtual GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
-                                             const std::string& filename) = 0;
+  GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
+                                     const std::string& filename);
 
   /// Object getters
   /// layer == 0 for fg, layer == 1 for bg.

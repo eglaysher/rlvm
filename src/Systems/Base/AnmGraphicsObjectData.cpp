@@ -81,7 +81,6 @@ static const char ANM_MAGIC[ANM_MAGIC_SIZE] =
 
 AnmGraphicsObjectData::AnmGraphicsObjectData(
   RLMachine& machine, const std::string& file)
-  : m_currentlyPlaying(false)
 {
   ifstream ifs(file.c_str(), ifstream::in | ifstream::binary);
   if(!ifs)
@@ -217,7 +216,7 @@ void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height)
 
 void AnmGraphicsObjectData::execute(RLMachine& machine)
 {
-  if(m_currentlyPlaying)
+  if(currentlyPlaying())
   {
     advanceFrame(machine);
   }
@@ -255,7 +254,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
     machine.system().event().getTicks() - m_timeAtLastFrameChange;
   bool done = false;
 
-  while(m_currentlyPlaying && !done)
+  while(currentlyPlaying() && !done)
   {
     if(timeSinceLastFrameChange > frames[m_currentFrame].time)
     {
@@ -268,7 +267,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
       {
         m_curFrameSet++;
         if(m_curFrameSet == m_curFrameSetEnd)
-          m_currentlyPlaying = false;
+          setCurrentlyPlaying(false);
         else
         {
           m_curFrame = framelist.at(*m_curFrameSet).begin();
@@ -315,16 +314,9 @@ GraphicsObjectData* AnmGraphicsObjectData::clone() const
 
 // -----------------------------------------------------------------------
 
-bool AnmGraphicsObjectData::isPlaying() const
-{ 
-  return m_currentlyPlaying;
-}
-
-// -----------------------------------------------------------------------
-
 void AnmGraphicsObjectData::playSet(RLMachine& machine, int set)
 {
-  m_currentlyPlaying = true;
+  setCurrentlyPlaying(true);
   m_timeAtLastFrameChange = machine.system().event().getTicks();
 
   m_curFrameSet = animationSet.at(set).begin();
