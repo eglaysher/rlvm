@@ -1,0 +1,65 @@
+Haeleth writes:
+-------------------------------------------------------------------------
+
+Apologies for the rambling nature of what follows: it's a brain dump,
+not a technical paper.  :)
+
+Technically speaking, you can't ignore the lenticular brackets whatever
+#WINDOW.n.NAME_MOD is set to.  Instead, you have to store the name they
+enclose.
+
+NAME_MOD affects only how the name is displayed, and there are three cases:
+
+ 0 - the name is displayed inline
+ 1 - the name is displayed in a separate window
+ 2 - the name is hidden
+
+An example of a game that uses case 2 is Planetarian, IIRC.
+
+Even in case 0, you cannot ignore the lenticular brackets, though,
+because they're critical to indentation.  Indentation takes place
+automatically in two cases: after one of 「『（ at the start of a line,
+OR after a name enclosed in lenticular brackets.
+
+In case 2, what happens is that the first character for display after
+the 】 is checked.  If it's one of 「『（, it's printed; otherwise, an
+implicit wide space is printed.  Then the indentation is set at the new
+offset position, then the remainder of the text is displayed as usual.
+
+Indentation is retained until either it's reset explicitly (e.g. with
+par(), or with pause() when #WINDOW.n.R_COMMAND_MOD is 1) or until the
+end of a page of text (page(), or pause() when R_COMMAND_MOD is 0).
+
+Two things that _don't_ appear to reset indentation are closing quotes
+of any sort, or the end of a _screen_ of text.  Instead, if text runs
+past the end of a screen, an implicit pause is inserted.  When the
+player clicks to proceed, the screen is cleared - and, if NAME_MOD is 0,
+the name is printed again, followed by a wide space, followed by the
+continuation of the text.  (This won't necessarily be indented the same
+as it was on the previous screen... see pathological case below!)
+
+Finally, the "current name" variable, which is set by enclosing a name
+in lenticular brackets, is used for a number of other things: one
+example I know of is per-character text colouring (I believe ALMA uses
+this feature).
+
+As if all that wasn't complicated enough, the parsing of text within
+lenticular brackets also has a few complications.  For example, it's one
+of the places where the ###PRINT() syntax for variable interpolation is
+recognised (instead of using strout and intout as elsewhere).  :)
+
+For an interesting pathological case, consider the following code:
+
+ '\{Foo}「Indents\nnest.\{Bar}『Yes,\nreally.』」 Set your window \
+  up so that this text runs off the screen... then guess how far it \
+  will be indented!'
+
+Yep, RealLive is seriously bizarre.
+
+Since it was very relevant to what I was doing with RealLive, I have
+fairly extensive notes on the way RealLive line-wrapping and indentation
+work.  Unfortunately they take the form of some of the ugliest source
+code I ever wrote.  However, you may nonetheless be able to glean some
+useful information from $RLDEV/lib/textout.kh and to a lesser extent
+from rlBabel's textout.cpp -- if you can keep them from turning your
+brain to rice pudding.
