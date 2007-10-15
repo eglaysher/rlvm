@@ -147,4 +147,26 @@ void object::test<4>()
                 "");
 }
 
+// -----------------------------------------------------------------------
+
+/**
+ * Test printing a simple string
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  auto_ptr<TextoutLongOperation> tolo(
+    new TextoutLongOperation(rlmachine, "A simple string"));
+  tolo->setNoWait();
+  while(!(*tolo)(rlmachine));
+
+  // Make sure all the data was printed correctly
+  ensure_equals("Data was printed correctly!",
+                getTextWindow(0).currentContents(),
+                "A simple string");  
+}
+
+// -----------------------------------------------------------------------
+
 };
