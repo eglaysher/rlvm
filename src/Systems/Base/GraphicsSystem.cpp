@@ -128,16 +128,29 @@ const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsF
 }
 
 // -----------------------------------------------------------------------
+
+// -----------------------------------------------------------------------
+// GraphicsSystemGlobals
+// -----------------------------------------------------------------------
+GraphicsSystemGlobals::GraphicsSystemGlobals()
+  : showObject1(false), showObject2(false), showWeather(false)
+{}
+
+GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
+  :	showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
+	showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
+    showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1)
+{}
+
+// -----------------------------------------------------------------------
 // GraphicsSystem
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
   : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
     m_isResponsibleForUpdate(true),
 	m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
-	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
-	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
-    m_showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
     m_hideInterface(false),
+    m_globals(gameexe),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
     foregroundObjects(256), 
     backgroundObjects(256)
@@ -198,21 +211,21 @@ const std::string& GraphicsSystem::windowSubtitle() const
 
 void GraphicsSystem::setShowObject1(const int in)
 {
-  m_showObject1 = in;
+  m_globals.showObject1 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowObject2(const int in)
 {
-  m_showObject2 = in;
+  m_globals.showObject2 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowWeather(const int in)
 {
-  m_showWeather = in;
+  m_globals.showWeather = in;
 }
 
 // -----------------------------------------------------------------------
@@ -256,18 +269,18 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
 
 void GraphicsSystem::saveGlobals(Json::Value& graphics)
 {
-  graphics["showObject1"] = showObject1();
-  graphics["showObject2"] = showObject2();
-  graphics["showWeather"] = showWeather();
+//   graphics["showObject1"] = showObject1();
+//   graphics["showObject2"] = showObject2();
+//   graphics["showWeather"] = showWeather();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::loadGlobals(const Json::Value& textSys)
 {
-  setShowObject1(textSys["showObject1"].asInt());
-  setShowObject2(textSys["showObject2"].asInt());
-  setShowWeather(textSys["showWeather"].asInt());
+//   setShowObject1(textSys["showObject1"].asInt());
+//   setShowObject2(textSys["showObject2"].asInt());
+//   setShowWeather(textSys["showWeather"].asInt());
 }
 
 // -----------------------------------------------------------------------

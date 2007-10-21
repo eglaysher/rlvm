@@ -255,7 +255,7 @@ void object::test<7>()
 	}
 
 	for(int i = 0; i < 2000; ++i)
-	  saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(count));
+	  saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
 
 	saveMachine.saveGlobalMemoryTo(ss);
   }
@@ -270,7 +270,7 @@ void object::test<7>()
 		  GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
 		++it)
 	{
-	  for(int i = 0; i < 2000; ++i)	  
+	  for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)	  
 	  {
 		ensure_equals("Didn't read memory correctly!",
 					  loadMachine.getIntValue(IntMemRef(it->second, i)), count);
@@ -278,10 +278,10 @@ void object::test<7>()
 	  }
 	}
 
-	for(int i = 0; i < 2000; ++i)
+	for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)
 	  ensure_equals("Didn't save string memory correctly!",
 					loadMachine.getStringValue(STRM_LOCATION, i),
-					lexical_cast<string>(count));
+					lexical_cast<string>(i));
   }
 }
 

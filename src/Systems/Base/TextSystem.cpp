@@ -50,32 +50,43 @@ using boost::bind;
 using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
+// TextSystemGlobals
+// -----------------------------------------------------------------------
+TextSystemGlobals::TextSystemGlobals()
+  : autoModeBaseTime(100), autoModeCharTime(100), messageSpeed(30)
+{}
+
+// -----------------------------------------------------------------------
+
+TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
+  : autoModeBaseTime(100), autoModeCharTime(100), 
+    messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30))
+{
+  GameexeInterpretObject inWindowAttr(gexe("WINDOW_ATTR"));
+  if(inWindowAttr.exists())
+    windowAttr = inWindowAttr;
+//setDefaultWindowAttr(windowAttr);
+}
+
+// -----------------------------------------------------------------------
 // TextSystem
 // -----------------------------------------------------------------------
 TextSystem::TextSystem(Gameexe& gexe)
-  : m_autoMode(false),  m_autoModeBaseTime(1000), m_autoModeCharTime(100),
-
+  : m_autoMode(false),
     m_ctrlKeySkip(true), m_fastTextMode(false),
     m_messageNoWait(false),
-    m_messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30)), 
     m_activeWindow(0), m_isReadingBacklog(false),
-
     m_currentPageset(new PageSet),
-
     m_inPauseState(false),
-
     // #WINDOW_*_USE
     m_moveUse(false), m_clearUse(false), m_readJumpUse(false),
     m_automodeUse(false), m_msgbkUse(false), m_msgbkleftUse(false),
-    m_msgbkrightUse(false), m_exbtnUse(false)
+    m_msgbkrightUse(false), m_exbtnUse(false),
+    m_globals(gexe)
 {
   GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
   if(ctrlUse.exists())
     m_ctrlKeySkip = ctrlUse;
-
-  GameexeInterpretObject windowAttr(gexe("WINDOW_ATTR"));
-  if(windowAttr.exists())
-    setDefaultWindowAttr(windowAttr);
 
   checkAndSetBool(gexe, "WINDOW_MOVE_USE", m_moveUse);
   checkAndSetBool(gexe, "WINDOW_CLEAR_USE", m_clearUse);
@@ -231,7 +242,7 @@ void TextSystem::stopReadingBacklog()
 
 int TextSystem::getAutoTime(int numChars)
 {
-  return m_autoModeBaseTime + m_autoModeCharTime * numChars;
+  return m_globals.autoModeBaseTime + m_globals.autoModeCharTime * numChars;
 }
 
 // -----------------------------------------------------------------------
@@ -249,36 +260,36 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
-  m_windowAttr = attr;
+  m_globals.windowAttr = attr;
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::saveGlobals(Json::Value& text)
 {
-  text["autoBaseTime"] = autoBaseTime();
-  text["autoCharTime"] = autoCharTime();
+//   text["autoBaseTime"] = autoBaseTime();
+//   text["autoCharTime"] = autoCharTime();
   
-  text["messageSpeed"] = messageSpeed();
+//   text["messageSpeed"] = messageSpeed();
 
-  Json::Value windowAttr(Json::arrayValue);
-  copy(m_windowAttr.begin(), m_windowAttr.end(), back_inserter(windowAttr));
-  text["windowAttr"] = windowAttr;
+//   Json::Value windowAttr(Json::arrayValue);
+//   copy(m_windowAttr.begin(), m_windowAttr.end(), back_inserter(windowAttr));
+//   text["windowAttr"] = windowAttr;
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::loadGlobals(const Json::Value& textSys)
 {
-  setAutoBaseTime(textSys["autoBaseTime"].asInt());
-  setAutoCharTime(textSys["autoCharTime"].asInt());
-  setMessageSpeed(textSys["messageSpeed"].asInt());
+//   setAutoBaseTime(textSys["autoBaseTime"].asInt());
+//   setAutoCharTime(textSys["autoCharTime"].asInt());
+//   setMessageSpeed(textSys["messageSpeed"].asInt());
 
-  vector<int> attr;
-  Json::Value windowAttr = textSys["windowAttr"];
-  for(unsigned int i = 0; i < windowAttr.size(); ++i)
-	attr.push_back(windowAttr[i].asInt());
-  setDefaultWindowAttr(attr);
+//   vector<int> attr;
+//   Json::Value windowAttr = textSys["windowAttr"];
+//   for(unsigned int i = 0; i < windowAttr.size(); ++i)
+// 	attr.push_back(windowAttr[i].asInt());
+//   setDefaultWindowAttr(attr);
 }
 
 // -----------------------------------------------------------------------

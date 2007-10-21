@@ -66,7 +66,7 @@ if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   LDFLAGS += /link $(if $(defined-env DEBUG), /DEBUG, /RELEASE) -LIBPATH:$(SRCTOP) -LIBPATH:$(SRCTOP)\..\vendor librlvm$(EXT_LIB) $(shell sdl-config --libs) $(PLATFORMLIBS) SDL.lib SDL_image.lib SDL_ttf.lib
   export
 else
-  LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --libs) $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_program_options -lboost_filesystem
+  LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --libs) $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_program_options -lboost_serialization -lboost_filesystem
   export
 
 .DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)

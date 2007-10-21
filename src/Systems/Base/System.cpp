@@ -54,9 +54,18 @@ using boost::replace_all;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
+// SystemGlobals
+// -----------------------------------------------------------------------
+
+SystemGlobals::SystemGlobals()
+  : m_confirmSaveLoad(true)
+{}
+
+// -----------------------------------------------------------------------
+// System
+// -----------------------------------------------------------------------
 
 System::System()
-  : m_confirmSaveLoad(1)
 {
   fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
@@ -185,7 +194,7 @@ void System::saveGlobals(Json::Value& root)
 {
   Json::Value system(Json::objectValue);
 
-  system["confirmSaveLoad"] = m_confirmSaveLoad;
+//  system["confirmSaveLoad"] = m_confirmSaveLoad;
 
   graphics().saveGlobals(system["graphics"]);
   event().saveGlobals(system["event"]);
@@ -200,7 +209,7 @@ void System::loadGlobals(Json::Value& root)
 {
   Json::Value system = root["system"];
 
-  m_confirmSaveLoad = system["confirmSaveLoad"].asInt();
+//  m_confirmSaveLoad = system["confirmSaveLoad"].asInt();
 
   graphics().loadGlobals(system["graphics"]);
   event().loadGlobals(system["event"]);

@@ -42,6 +42,7 @@
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/Serialization.hpp"
 
 #include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
@@ -149,7 +150,7 @@ struct RLMachine::StackFrame
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
-  : m_halted(false), m_haltOnException(true), archive(inArchive), 
+  : m_halted(false), m_haltOnException(true), m_archive(inArchive), 
     m_system(inSystem), m_markSavepoints(true)
 {
   // Search in the Gameexe for #SEEN_START and place us there
@@ -167,7 +168,7 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
   if(scenario == NULL)
   {
     // if SEEN_START is undefined, then just grab the first SEEN.
-    scenario = inArchive.scenario(archive.begin()->first);
+    scenario = inArchive.scenario(m_archive.begin()->first);
   }
 
   if(scenario == 0)
@@ -402,14 +403,15 @@ void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks,
 
 void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
 {
-  Json::Value root(Json::objectValue);
-  saveStringBank(strM, 'M', root);
-  saveIntegerBanksTo(GLOBAL_INTEGER_BANKS, root);
+  Serialization::saveGlobalMemoryTo(ofs, *this);
+//   Json::Value root(Json::objectValue);
+//   saveStringBank(strM, 'M', root);
+//   saveIntegerBanksTo(GLOBAL_INTEGER_BANKS, root);
 
-  m_system.saveGlobals(root);
+//   m_system.saveGlobals(root);
 
-  Json::StyledWriter writer;
-  ofs << writer.write( root );
+//   Json::StyledWriter writer;
+//   ofs << writer.write( root );
 }
 
 // -----------------------------------------------------------------------
@@ -432,30 +434,31 @@ void RLMachine::loadGlobalMemory()
 
 void RLMachine::loadGlobalMemoryFrom(std::istream& iss)
 {
-  string memoryContents;
-  string line;
-  while(getline(iss, line))
-  {
-	memoryContents += line;
-	memoryContents += "\n";
-  }
+  Serialization::loadGlobalMemoryFrom(iss, *this);
+//   string memoryContents;
+//   string line;
+//   while(getline(iss, line))
+//   {
+// 	memoryContents += line;
+// 	memoryContents += "\n";
+//   }
 
-  Json::Value root;
-  Json::Reader reader;
-  if(!reader.parse(memoryContents, root))
-  {
-	ostringstream oss;
-	oss << "Failed to read global memory file for game \""
-		<< m_system.gameexe()("REGNAME").to_string() << "\": "
-		<< reader.getFormatedErrorMessages();
+//   Json::Value root;
+//   Json::Reader reader;
+//   if(!reader.parse(memoryContents, root))
+//   {
+// 	ostringstream oss;
+// 	oss << "Failed to read global memory file for game \""
+// 		<< m_system.gameexe()("REGNAME").to_string() << "\": "
+// 		<< reader.getFormatedErrorMessages();
 
-	throw rlvm::Exception(oss.str());
-  }
+// 	throw rlvm::Exception(oss.str());
+//   }
 
-  loadStringBank(strM, 'M', root);
-  loadIntegerBanksFrom(GLOBAL_INTEGER_BANKS, root);
+//   loadStringBank(strM, 'M', root);
+//   loadIntegerBanksFrom(GLOBAL_INTEGER_BANKS, root);
 
-  m_system.loadGlobals(root);  
+//   m_system.loadGlobals(root);  
 }
 
 // -----------------------------------------------------------------------
@@ -601,7 +604,7 @@ void RLMachine::loadGameFrom(std::istream& iss)
       int offset = (*it)[1u].asInt();
       int type = (*it)[2u].asInt();
 
-      libReallive::Scenario const* scenario = archive.scenario(scenarioNum);
+      libReallive::Scenario const* scenario = m_archive.scenario(scenarioNum);
       if(scenario == NULL)
       {
         ostringstream oss;
@@ -694,7 +697,7 @@ void RLMachine::advanceInstructionPointer()
 
 const std::string& RLMachine::getStringValue(int type, int location) 
 {
-  if(location > 1999)
+  if(location > (SIZE_OF_MEM_BANK -1))
       throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
@@ -712,7 +715,7 @@ const std::string& RLMachine::getStringValue(int type, int location)
 // -----------------------------------------------------------------------
 
 void RLMachine::setStringValue(int type, int number, const std::string& value) {
-  if(number > 1999)
+  if(number > (SIZE_OF_MEM_BANK -1))
       throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
 
   switch(type) {
@@ -752,7 +755,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
 void RLMachine::jump(int scenarioNum, int entrypoint) 
 {
   // Check to make sure it's a valid scenario
-  libReallive::Scenario* scenario = archive.scenario(scenarioNum);
+  libReallive::Scenario* scenario = m_archive.scenario(scenarioNum);
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
@@ -764,7 +767,7 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
 
 void RLMachine::farcall(int scenarioNum, int entrypoint) 
 {
-  libReallive::Scenario* scenario = archive.scenario(scenarioNum);
+  libReallive::Scenario* scenario = m_archive.scenario(scenarioNum);
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 

@@ -36,6 +36,8 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
+// -----------------------------------------------------------------------
+
 class Surface;
 class RLMachine;
 class GraphicsObject;
@@ -47,6 +49,25 @@ struct ObjectSettings;
 namespace Json {
 class Value;
 }
+
+// -----------------------------------------------------------------------
+
+/**
+ * Variables and configuration data that are global across all save
+ * game files in a game.
+ */
+struct GraphicsSystemGlobals
+{
+  GraphicsSystemGlobals();
+  GraphicsSystemGlobals(Gameexe& gameexe);
+
+  /// ShowObject flags
+  int showObject1, showObject2;
+
+  int showWeather;
+};
+
+// -----------------------------------------------------------------------
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -110,16 +131,16 @@ private:
   /// cp932 encoded subtitle string
   std::string m_subtitle;
 
-  /// ShowObject flags
-  int m_showObject1, m_showObject2;
-
-  int m_showWeather;
-
   /// Controls whether we render the interface (this can be
   /// temporarily toggled by the user at runtime)
   bool m_hideInterface;
 
+  /// Mutable global data to be saved in the globals file
+  GraphicsSystemGlobals m_globals;
+
+  /// Immutable
   struct GraphicsObjectSettings;
+  /// Immutable global data that's constructed from the Gameexe.ini file.
   boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
 
 protected:
@@ -220,6 +241,7 @@ public:
    * 
    * @{
    */
+  GraphicsSystemGlobals& globals() { return m_globals; }
   virtual void saveGlobals(Json::Value& system);
   virtual void loadGlobals(const Json::Value& system);
   /// @}
@@ -246,10 +268,10 @@ public:
    * @{
    */
   void setShowObject1(const int in);
-  int showObject1() const { return m_showObject1; }
+  int showObject1() const { return m_globals.showObject1; }
 
   void setShowObject2(const int in);
-  int showObject2() const { return m_showObject1; }
+  int showObject2() const { return m_globals.showObject1; }
   /// @}
 
   /**
@@ -258,7 +280,7 @@ public:
    * @{
    */
   void setShowWeather(const int in);
-  int showWeather() const { return m_showWeather; }
+  int showWeather() const { return m_globals.showWeather; }
 
   /**
    * Toggles whether the interface is shown. Called by

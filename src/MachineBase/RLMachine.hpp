@@ -54,24 +54,27 @@ class LongOperation;
 class System;
   const int NUMBER_OF_INT_LOCATIONS = 9;
 
+const int SIZE_OF_MEM_BANK = 2000;
 
 typedef std::vector<std::pair<int, char> > IntegerBank_t;
 extern const IntegerBank_t LOCAL_INTEGER_BANKS;
 extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
 
+namespace boost { namespace serialization { } } 
+
 /**
  * The RealLive virtual machine implementation.
  */
 class RLMachine {
-private:
+public:
   /// Integer variables. There is a 9 x 2000 integer memory bank. 
-  int intVar[NUMBER_OF_INT_LOCATIONS][2000];
+  int intVar[NUMBER_OF_INT_LOCATIONS][SIZE_OF_MEM_BANK];
 
   /// First string bank. 
-  std::string strS[1999];
+  std::string strS[SIZE_OF_MEM_BANK];
 
   /// Second string bank
-  std::string strM[1999];
+  std::string strM[SIZE_OF_MEM_BANK];
 
   std::string strK[3];
 
@@ -92,7 +95,7 @@ private:
   bool m_haltOnException;
 
   /// The SEEN.TXT the machine is currently executing.
-  libReallive::Archive& archive;
+  libReallive::Archive& m_archive;
 
   /** Describes a stack frame. Stack frames are added by two
    * mechanisms: gosubs and farcalls. gosubs move the instruction
@@ -455,6 +458,10 @@ public:
    */
   int lineNumber() const { return m_line; }
 
+  /** 
+   * Returns the current Archive we are attached to.
+   */
+  const libReallive::Archive& archive() const { return m_archive; }
   // @}
 
   // -----------------------------------------------------------------------

@@ -46,6 +46,21 @@ const int SYSCOM_INVISIBLE = 0;
 const int SYSCOM_VISIBLE = 1;
 const int SYSCOM_GREYED_OUT = 2;
 
+// -----------------------------------------------------------------------
+
+/**
+ * Struct containing the global memory to get serialized to disk with
+ */
+struct SystemGlobals
+{
+  SystemGlobals();
+
+  /// Whether we should put up a yes/no dialog box when saving/loading.
+  bool m_confirmSaveLoad;
+};
+
+// -----------------------------------------------------------------------
+
 /**
  * The system class provides a generalized interface to all the
  * components that make up a local system that may need to be
@@ -67,8 +82,7 @@ private:
 
   void addPath(GameexeInterpretObject gio);
 
-  /// Whether we should put up a yes/no dialog box when saving/loading.
-  bool m_confirmSaveLoad;
+  SystemGlobals m_globals;
 
 protected:
   boost::filesystem::path getHomeDirectory();
@@ -140,8 +154,8 @@ public:
 
   /// @}
 
-  bool confirmSaveLoad() const { return m_confirmSaveLoad; }
-  void setConfirmSaveLoad(const bool in) { m_confirmSaveLoad = in; }
+  bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
+  void setConfirmSaveLoad(const bool in) { m_globals.m_confirmSaveLoad = in; }
 
   const std::vector<std::string>& getSearchPaths();
 
@@ -163,6 +177,9 @@ public:
    */
   virtual void saveGlobals(Json::Value& root);
   virtual void loadGlobals(Json::Value& root);
+
+  /// Returns the global state for saving/restoring
+  SystemGlobals& globals() { return m_globals; }
 
   /**
    * Save the game state.
