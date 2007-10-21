@@ -190,34 +190,6 @@ void System::reset()
 
 // -----------------------------------------------------------------------
 
-void System::saveGlobals(Json::Value& root)
-{
-  Json::Value system(Json::objectValue);
-
-//  system["confirmSaveLoad"] = m_confirmSaveLoad;
-
-  graphics().saveGlobals(system["graphics"]);
-  event().saveGlobals(system["event"]);
-  text().saveGlobals(system["text"]);
-
-  root["system"] = system;
-}
-
-// -----------------------------------------------------------------------
-
-void System::loadGlobals(Json::Value& root)
-{
-  Json::Value system = root["system"];
-
-//  m_confirmSaveLoad = system["confirmSaveLoad"].asInt();
-
-  graphics().loadGlobals(system["graphics"]);
-  event().loadGlobals(system["event"]);
-  text().loadGlobals(system["text"]);
-}
-
-// -----------------------------------------------------------------------
-
 void System::saveGameValues(Json::Value& root)
 {
   Json::Value system(Json::objectValue);

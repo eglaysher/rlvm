@@ -242,8 +242,6 @@ public:
    * @{
    */
   GraphicsSystemGlobals& globals() { return m_globals; }
-  virtual void saveGlobals(Json::Value& system);
-  virtual void loadGlobals(const Json::Value& system);
   /// @}
 
   virtual void saveGameValues(Json::Value& system);

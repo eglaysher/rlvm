@@ -265,35 +265,6 @@ void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::saveGlobals(Json::Value& text)
-{
-//   text["autoBaseTime"] = autoBaseTime();
-//   text["autoCharTime"] = autoCharTime();
-  
-//   text["messageSpeed"] = messageSpeed();
-
-//   Json::Value windowAttr(Json::arrayValue);
-//   copy(m_windowAttr.begin(), m_windowAttr.end(), back_inserter(windowAttr));
-//   text["windowAttr"] = windowAttr;
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::loadGlobals(const Json::Value& textSys)
-{
-//   setAutoBaseTime(textSys["autoBaseTime"].asInt());
-//   setAutoCharTime(textSys["autoCharTime"].asInt());
-//   setMessageSpeed(textSys["messageSpeed"].asInt());
-
-//   vector<int> attr;
-//   Json::Value windowAttr = textSys["windowAttr"];
-//   for(unsigned int i = 0; i < windowAttr.size(); ++i)
-// 	attr.push_back(windowAttr[i].asInt());
-//   setDefaultWindowAttr(attr);
-}
-
-// -----------------------------------------------------------------------
-
 void TextSystem::saveGameValues(Json::Value& text)
 {
   text["activeWindow"] = activeWindow();

@@ -186,8 +186,6 @@ public:
   // -----------------------------------------------------------------------
 
   EventSystemGlobals& globals() { return m_globals; }
-  virtual void saveGlobals(Json::Value& root);
-  virtual void loadGlobals(const Json::Value& root);
 };
 
 #endif

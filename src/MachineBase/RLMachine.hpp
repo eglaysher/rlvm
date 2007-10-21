@@ -166,26 +166,10 @@ public:
   void saveGlobalMemory();
 
   /**
-   * Writes the contents of memory to a stream.
-   *
-   * @note This function is used by saveGlobalMemory(), but is exposed
-   *       publicly for unit testing.
-   */
-  void saveGlobalMemoryTo(std::ostream& oss);
-
-  /**
    * Reads the contents of global memory to the default global memory
    * file for this game.
    */
   void loadGlobalMemory();
-
-  /**
-   * Reads global memory from a stream.
-   * 
-   * @note This function is used by saveGlobalMemory(), but is exposed
-   *       publicly for unit testing.
-   */
-  void loadGlobalMemoryFrom(std::istream& oss);
 
   /**
    * Writes out the current game state to save game slot @c slot .

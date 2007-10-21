@@ -213,7 +213,7 @@ void RLMachine::attachModule(RLModule* module)
 
 void RLMachine::saveGlobalMemory()
 {
-  fs::path home = m_system.gameSaveDirectory() / "global.jsn";
+  fs::path home = m_system.gameSaveDirectory() / "global.sav";
   fs::ofstream file(home);
   if(!file)
   {
@@ -222,7 +222,7 @@ void RLMachine::saveGlobalMemory()
 	throw rlvm::Exception(oss.str());
   }
 
-  saveGlobalMemoryTo(file);
+  Serialization::saveGlobalMemoryTo(file, *this);
 }
 
 // -----------------------------------------------------------------------
@@ -401,21 +401,6 @@ void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks,
 
 // -----------------------------------------------------------------------
 
-void RLMachine::saveGlobalMemoryTo(std::ostream& ofs)
-{
-  Serialization::saveGlobalMemoryTo(ofs, *this);
-//   Json::Value root(Json::objectValue);
-//   saveStringBank(strM, 'M', root);
-//   saveIntegerBanksTo(GLOBAL_INTEGER_BANKS, root);
-
-//   m_system.saveGlobals(root);
-
-//   Json::StyledWriter writer;
-//   ofs << writer.write( root );
-}
-
-// -----------------------------------------------------------------------
-
 void RLMachine::loadGlobalMemory()
 {
   fs::path home = m_system.gameSaveDirectory() / "global.jsn";
@@ -426,39 +411,8 @@ void RLMachine::loadGlobalMemory()
   // this certain game and it may not exist yet.
   if(file)
   {
-	loadGlobalMemoryFrom(file);
+    Serialization::loadGlobalMemoryFrom(file, *this);
   }
-}
-
-// -----------------------------------------------------------------------
-
-void RLMachine::loadGlobalMemoryFrom(std::istream& iss)
-{
-  Serialization::loadGlobalMemoryFrom(iss, *this);
-//   string memoryContents;
-//   string line;
-//   while(getline(iss, line))
-//   {
-// 	memoryContents += line;
-// 	memoryContents += "\n";
-//   }
-
-//   Json::Value root;
-//   Json::Reader reader;
-//   if(!reader.parse(memoryContents, root))
-//   {
-// 	ostringstream oss;
-// 	oss << "Failed to read global memory file for game \""
-// 		<< m_system.gameexe()("REGNAME").to_string() << "\": "
-// 		<< reader.getFormatedErrorMessages();
-
-// 	throw rlvm::Exception(oss.str());
-//   }
-
-//   loadStringBank(strM, 'M', root);
-//   loadIntegerBanksFrom(GLOBAL_INTEGER_BANKS, root);
-
-//   m_system.loadGlobals(root);  
 }
 
 // -----------------------------------------------------------------------

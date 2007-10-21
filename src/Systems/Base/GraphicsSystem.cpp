@@ -267,24 +267,6 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::saveGlobals(Json::Value& graphics)
-{
-//   graphics["showObject1"] = showObject1();
-//   graphics["showObject2"] = showObject2();
-//   graphics["showWeather"] = showWeather();
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::loadGlobals(const Json::Value& textSys)
-{
-//   setShowObject1(textSys["showObject1"].asInt());
-//   setShowObject2(textSys["showObject2"].asInt());
-//   setShowWeather(textSys["showWeather"].asInt());
-}
-
-// -----------------------------------------------------------------------
-
 void GraphicsSystem::saveGameValues(Json::Value& graphicsSys)
 {
   Json::Value graphicsValue(Json::arrayValue);

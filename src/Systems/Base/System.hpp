@@ -172,12 +172,6 @@ public:
    */
   virtual void reset();
 
-  /**
-   * Save the global configuration.
-   */
-  virtual void saveGlobals(Json::Value& root);
-  virtual void loadGlobals(Json::Value& root);
-
   /// Returns the global state for saving/restoring
   SystemGlobals& globals() { return m_globals; }
 

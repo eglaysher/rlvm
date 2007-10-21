@@ -130,16 +130,3 @@ void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
 
 // -----------------------------------------------------------------------
 
-void EventSystem::saveGlobals(Json::Value& event)
-{
-//  event["generic1"] = generic1();
-//  event["generic2"] = generic2();
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::loadGlobals(const Json::Value& event)
-{
-//  setGeneric1(event["generic1"].asInt());
-//  setGeneric2(event["generic2"].asInt());
-}
