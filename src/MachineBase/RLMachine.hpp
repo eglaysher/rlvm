@@ -33,6 +33,7 @@
  */
 
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/scenario.h"
@@ -52,13 +53,7 @@ class IntMemRef;
 class RLModule;
 class LongOperation;
 class System;
-  const int NUMBER_OF_INT_LOCATIONS = 9;
-
-const int SIZE_OF_MEM_BANK = 2000;
-
-typedef std::vector<std::pair<int, char> > IntegerBank_t;
-extern const IntegerBank_t LOCAL_INTEGER_BANKS;
-extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
+class Memory;
 
 namespace boost { namespace serialization { } } 
 
@@ -67,16 +62,8 @@ namespace boost { namespace serialization { } }
  */
 class RLMachine {
 public:
-  /// Integer variables. There is a 9 x 2000 integer memory bank. 
-  int intVar[NUMBER_OF_INT_LOCATIONS][SIZE_OF_MEM_BANK];
-
-  /// First string bank. 
-  std::string strS[SIZE_OF_MEM_BANK];
-
-  /// Second string bank
-  std::string strM[SIZE_OF_MEM_BANK];
-
-  std::string strK[3];
+  /// The Reallive VM's integer and string memory
+  boost::scoped_ptr<Memory> m_memory;
 
   /// The RealLive machine's single result register
   int storeRegister;
@@ -202,8 +189,8 @@ public:
    */
 //  void markSavepoint();
 
-  void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
-  void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
+//  void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
+//  void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
 
   /** 
    * Serializes an individual bank of strings
@@ -286,7 +273,9 @@ public:
 
   /**
    * @name MemoryManip 
-   * Memory Manipulation Functions
+   *
+   * Memory Manipulation Functions. These are bridge methods to the
+   * accessors in the class Memory.
    */
   // @{
 
@@ -340,6 +329,14 @@ public:
    */
   int getStoreRegisterValue() const { return storeRegister; }
 
+  /** 
+   * Returns the internal memory object for raw access to the machine
+   * object's memory.
+   * 
+   * @note This should only be used during serialization or complex
+   *       memory operations involving overlays.
+   */
+  Memory& memory() { return *m_memory; }
   //@}
 
   // -----------------------------------------------------------------------

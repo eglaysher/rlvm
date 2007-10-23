@@ -33,6 +33,7 @@
 
 #include "Utilities.h"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Memory.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -107,13 +108,21 @@ void serialize(Archive& ar, TextSystemGlobals& g, const unsigned int version)
 }
 
 // -----------------------------------------------------------------------
+// GlobalMemory
+// -----------------------------------------------------------------------
+template<class Archive>
+inline void serialize(Archive & ar, GlobalMemory& memory, unsigned int version)
+{
+  ar & memory.intG & memory.intZ & memory.strM;
+}
+
+// -----------------------------------------------------------------------
 // RLMachine
 // -----------------------------------------------------------------------
 template<class Archive>
 inline void serialize(Archive & ar, RLMachine& machine, unsigned int version)
 {
-  ar & machine.strM & machine.intVar[INTG_LOCATION] 
-    & machine.intVar[INTZ_LOCATION];
+  ar & machine.memory().global();
 }
 
 } // namespace serialization

@@ -43,6 +43,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Serialization.hpp"
+#include "MachineBase/Memory.hpp"
 
 #include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
@@ -82,19 +83,6 @@ using namespace libReallive;
 
 using boost::bind;
 using boost::assign::list_of;
-
-const IntegerBank_t LOCAL_INTEGER_BANKS =
-  list_of(make_pair(INTB_LOCATION, 'A'))
-  (make_pair(INTB_LOCATION, 'B'))
-  (make_pair(INTC_LOCATION, 'C'))
-  (make_pair(INTD_LOCATION, 'D'))
-  (make_pair(INTE_LOCATION, 'E'))
-  (make_pair(INTF_LOCATION, 'F'));
-
-const IntegerBank_t GLOBAL_INTEGER_BANKS =
-  list_of(make_pair(INTG_LOCATION, 'G'))
-  (make_pair(INTZ_LOCATION, 'Z'));
-
 
 // -----------------------------------------------------------------------
 // Stack Frame
@@ -150,8 +138,8 @@ struct RLMachine::StackFrame
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
-  : m_halted(false), m_haltOnException(true), m_archive(inArchive), 
-    m_system(inSystem), m_markSavepoints(true)
+  : m_memory(new Memory), m_halted(false), m_haltOnException(true), 
+    m_archive(inArchive), m_system(inSystem), m_markSavepoints(true)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();
@@ -174,9 +162,6 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario file");
   pushStackFrame(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
-
-  // Initialize the big memory block to zero
-  memset(intVar, 0, sizeof(intVar));
 
   // Initial value of the savepoint
   markSavepoint();
@@ -227,6 +212,34 @@ void RLMachine::saveGlobalMemory()
 
 // -----------------------------------------------------------------------
 
+int RLMachine::getIntValue(const libReallive::IntMemRef& ref)
+{
+  return m_memory->getIntValue(ref);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setIntValue(const libReallive::IntMemRef& ref, int value)
+{
+  m_memory->setIntValue(ref, value);
+}
+
+// -----------------------------------------------------------------------
+
+const std::string& RLMachine::getStringValue(int type, int location)
+{
+  return m_memory->getStringValue(type, location);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setStringValue(int type, int number, const std::string& value)
+{
+  m_memory->setStringValue(type, number, value);
+}
+
+// -----------------------------------------------------------------------
+
 namespace {
 
 Json::Value buildFromString(const std::string& str)
@@ -254,22 +267,22 @@ string RLMachine::makeSaveGameName(int slot)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::saveIntegerBanksTo(const IntegerBank_t& banks, 
-								   Json::Value& root)
-{
-  for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
-	  ++it)
-  {
-	Json::Value intArray;
-	transform(intVar[it->first], intVar[it->first] + 2000,
-			  back_inserter(intArray),
-			  buildFromInt);
+// void RLMachine::saveIntegerBanksTo(const IntegerBank_t& banks, 
+// 								   Json::Value& root)
+// {
+//   for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
+// 	  ++it)
+//   {
+// 	Json::Value intArray;
+// 	transform(intVar[it->first], intVar[it->first] + 2000,
+// 			  back_inserter(intArray),
+// 			  buildFromInt);
 
-	ostringstream oss;
-	oss << "int" << it->second;
-	root[oss.str()] = intArray;
-  }
-}
+// 	ostringstream oss;
+// 	oss << "int" << it->second;
+// 	root[oss.str()] = intArray;
+//   }
+// }
 
 // -----------------------------------------------------------------------
 
@@ -383,27 +396,27 @@ bool RLMachine::shouldSetSeentopSavepoint() const
 
 // -----------------------------------------------------------------------
 
-void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks, 
-									 Json::Value& root)
-{
-  for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
-	  ++it)
-  {
-	ostringstream oss;
-	oss << "int" << it->second;
-	const Json::Value& intMem = root[oss.str()];
+// void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks, 
+// 									 Json::Value& root)
+// {
+//   for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
+// 	  ++it)
+//   {
+// 	ostringstream oss;
+// 	oss << "int" << it->second;
+// 	const Json::Value& intMem = root[oss.str()];
 
-	transform(intMem.begin(), intMem.end(), 
-			  intVar[it->first], 
-			  bind(&Json::Value::asInt, _1));
-  }
-}
+// 	transform(intMem.begin(), intMem.end(), 
+// 			  intVar[it->first], 
+// 			  bind(&Json::Value::asInt, _1));
+//               }
+// }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::loadGlobalMemory()
 {
-  fs::path home = m_system.gameSaveDirectory() / "global.jsn";
+  fs::path home = m_system.gameSaveDirectory() / "global.sav";
   fs::ifstream file(home);
 
   // If we were able to open the file for reading, load it. Don't
@@ -437,8 +450,8 @@ void RLMachine::saveGameTo(std::ostream& ofs)
 {
   Json::Value root(Json::objectValue);
 
-  saveIntegerBanksTo(LOCAL_INTEGER_BANKS, root);
-  saveStringBank(strS, 'S', root);
+//  saveIntegerBanksTo(LOCAL_INTEGER_BANKS, root);
+//  saveStringBank(strS, 'S', root);
 
   root["title"] = system().graphics().windowSubtitle();
 
@@ -544,8 +557,8 @@ void RLMachine::loadGameFrom(std::istream& iss)
 	throw rlvm::Exception(oss.str());
   }
 
-  loadIntegerBanksFrom(LOCAL_INTEGER_BANKS, root);
-  loadStringBank(strS, 'S', root);
+//  loadIntegerBanksFrom(LOCAL_INTEGER_BANKS, root);
+//  loadStringBank(strS, 'S', root);
 
   clearCallstack();
   const Value saveCallStack = root["callStack"];
@@ -647,49 +660,6 @@ void RLMachine::advanceInstructionPointer()
   }
 }
 
-// -----------------------------------------------------------------------
-
-const std::string& RLMachine::getStringValue(int type, int location) 
-{
-  if(location > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
-
-  switch(type) {
-  case STRK_LOCATION:
-    if(location > 2)
-      throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
-    return strK[location];
-  case STRM_LOCATION: return strM[location];
-  case STRS_LOCATION: return strS[location];
-  default:
-    throw rlvm::Exception("Invalid type in RLMachine::getStringValue");
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void RLMachine::setStringValue(int type, int number, const std::string& value) {
-  if(number > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
-
-  switch(type) {
-  case STRK_LOCATION:
-    if(number > 2)
-      throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
-    strK[number] = value;
-    break;
-  case STRM_LOCATION:
-    strM[number] = value;
-    break;
-  case STRS_LOCATION: 
-    strS[number] = value;
-    break;
-  default:
-    throw rlvm::Exception("Invalid type in RLMachine::setStringValue");
-  }     
-}
-
-// -----------------------------------------------------------------------
 
 void RLMachine::executeCommand(const CommandElement& f) {
 //   cerr << "About to execute opcode<" << f.modtype() << ":" << f.module() << ":" 

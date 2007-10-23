@@ -285,55 +285,6 @@ GetSaveFlagList;
 struct Sys_GetSaveFlag : public RLOp_Store_2<
   IntConstant_T, GetSaveFlagList>
 {
-  /// Retrieves a string from the JSON save file and code it.
-  void getString(RLMachine& machine, 
-                 Json::Value& root,
-                 StringReferenceIterator src,
-                 StringReferenceIterator dst,
-                 int numBlocksToCopy)
-  {
-    for(int i = 0; i < numBlocksToCopy; ++i, ++src, ++dst)
-    {
-      int type = src.type();
-      if(type == STRS_LOCATION)
-      {
-        *dst = root["strS"][src.location()].asString();
-      }
-      else
-      {
-        throw rlvm::Exception("Invalid source type in GetSaveFlag");
-      }
-    }
-  }
-
-  /// Retrieves an int from the JSON save file
-  void getInt(RLMachine& machine,
-              Json::Value& root,
-              IntReferenceIterator src, 
-              IntReferenceIterator dst,
-              int numBlocksToCopy)
-  {
-    for(int i = 0; i < numBlocksToCopy; ++i, ++src, ++dst)
-    {
-      string intBank = "int";
-      
-      IntegerBank_t::const_iterator it = 
-        find_if(LOCAL_INTEGER_BANKS.begin(), LOCAL_INTEGER_BANKS.end(),
-                bind(&IntegerBank_t::value_type::first, _1) == src.type());
-      if(it != LOCAL_INTEGER_BANKS.end())
-      {
-        intBank += it->second;
-      }
-      else  
-      {
-        // We don't support nibble or bit access yet.
-        throw rlvm::Exception("Invalid source intager bank in GetSaveFlag");
-      }
-
-      *dst = root[intBank][src.location()].asInt();
-    }
-  }
-
   /// Main operation
   int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList)
   {
@@ -350,12 +301,12 @@ struct Sys_GetSaveFlag : public RLOp_Store_2<
       switch(it->type)
       {
       case 0:
-       getInt(machine, root, it->first.get<0>(),
-                 it->first.get<1>(), it->first.get<2>());
+//       getInt(machine, root, it->first.get<0>(),
+//                 it->first.get<1>(), it->first.get<2>());
         break;
       case 1:
-       getString(machine, root, it->second.get<0>(),
-                 it->second.get<1>(), it->second.get<2>());
+//       getString(machine, root, it->second.get<0>(),
+//                 it->second.get<1>(), it->second.get<2>());
         break;
       default:
         throw rlvm::Exception("Illegal value in Special_T in GetSaveFlag");
@@ -445,14 +396,14 @@ struct Sys_DisableAutoSavepoints : public RLOp_Void_Void
 
 void addSysSaveOpcodes(RLModule& m, System& system)
 {
-  m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
-  m.addOpcode(1410, 0, "SaveDate", new Sys_SaveDate);
-  m.addOpcode(1411, 0, "SaveTime", new Sys_SaveTime);
-  m.addOpcode(1412, 0, "SaveDateTime", new Sys_SaveDateTime);
-  m.addOpcode(1413, 0, "SaveInfo", new Sys_SaveInfo);
-//  m.addUnsupportedOpcode(1414, 0, "GetSaveFlag");
-  m.addOpcode(1414, 0, "GetSaveFlag", new Sys_GetSaveFlag);
-  m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
+//   m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
+//   m.addOpcode(1410, 0, "SaveDate", new Sys_SaveDate);
+//   m.addOpcode(1411, 0, "SaveTime", new Sys_SaveTime);
+//   m.addOpcode(1412, 0, "SaveDateTime", new Sys_SaveDateTime);
+//   m.addOpcode(1413, 0, "SaveInfo", new Sys_SaveInfo);
+// //  m.addUnsupportedOpcode(1414, 0, "GetSaveFlag");
+//   m.addOpcode(1414, 0, "GetSaveFlag", new Sys_GetSaveFlag);
+//   m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
 
   m.addOpcode(2053, 0, "SetConfirmSaveLoad",
               setToIncomingInt(system, &System::setConfirmSaveLoad));
@@ -462,11 +413,11 @@ void addSysSaveOpcodes(RLModule& m, System& system)
   m.addUnsupportedOpcode(3000, 0, "menu_save");
   m.addUnsupportedOpcode(3001, 0, "menu_load");
 
-  m.addOpcode(3007, 0, "save", new Sys_save);
-  m.addOpcode(3107, 0, "save_always", new Sys_save);
+//   m.addOpcode(3007, 0, "save", new Sys_save);
+//   m.addOpcode(3107, 0, "save_always", new Sys_save);
 
-  m.addOpcode(3009, 0, "load", new Sys_load);
-  m.addOpcode(3109, 0, "load_always", new Sys_load);
+//   m.addOpcode(3009, 0, "load", new Sys_load);
+//   m.addOpcode(3109, 0, "load_always", new Sys_load);
 
   m.addOpcode(3501, 0, "EnableAutoSavepoints", 
               new Sys_EnableAutoSavepoints);

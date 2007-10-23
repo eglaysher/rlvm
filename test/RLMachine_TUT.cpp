@@ -25,6 +25,7 @@
 #include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
+#include "MachineBase/Memory.hpp"
 
 #include "NullSystem/NullSystem.hpp"
 
