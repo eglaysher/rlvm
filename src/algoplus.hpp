@@ -33,4 +33,21 @@ OutputIterator copy_if(InputIterator first, InputIterator last,
   return dest;
 }
 
+// -----------------------------------------------------------------------
+
+// Copies until the predicate is true
+template<typename InIt, typename OutIt, typename Pred>
+OutIt copy_until(InIt first, InIt end, OutIt x, Pred pred)
+{
+  for(; first != end; ++first, ++x)
+  {
+    if(pred(*first))
+    {
+      return x;
+    }
+    *x = *first;
+  }
+  return x;
+}
+
 #endif

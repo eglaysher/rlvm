@@ -25,30 +25,32 @@
 //  
 // -----------------------------------------------------------------------
 
+#ifndef __SaveGameHeader_hpp__
+#define __SaveGameHeader_hpp__
 
-#ifndef __Serialization_hpp__
-#define __Serialization_hpp__
+#include <string>
 
-#include "MachineBase/SaveGameHeader.hpp"
-
-// -----------------------------------------------------------------------
-
-class RLMachine;
+//include all types plus i/o
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 // -----------------------------------------------------------------------
 
-namespace Serialization {
+/** 
+ * Header structure written to and read from the start of each save
+ * game file. This structure is at the top of the file since it is
+ * what gets queried by SaveDate, SaveTime, et cetera.
+ */
+struct SaveGameHeader
+{
+  SaveGameHeader();
+  SaveGameHeader(const std::string& inTitle);
+  ~SaveGameHeader();
 
-void saveGlobalMemory(RLMachine& machine);
-void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine);
+  // The title of the current saved game
+  std::string title;
 
-void loadGlobalMemory(RLMachine& machine);
-void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine);
-
-
-SaveGameHeader loadHeaderFrom(std::istream& iss);
-
-}
-
+  // The time the save file was created.
+  boost::posix_time::ptime saveTime;
+};
 
 #endif

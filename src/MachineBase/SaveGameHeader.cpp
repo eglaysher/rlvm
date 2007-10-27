@@ -26,29 +26,27 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Serialization_hpp__
-#define __Serialization_hpp__
-
 #include "MachineBase/SaveGameHeader.hpp"
 
-// -----------------------------------------------------------------------
-
-class RLMachine;
+using namespace boost::posix_time;
 
 // -----------------------------------------------------------------------
-
-namespace Serialization {
-
-void saveGlobalMemory(RLMachine& machine);
-void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine);
-
-void loadGlobalMemory(RLMachine& machine);
-void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine);
-
-
-SaveGameHeader loadHeaderFrom(std::istream& iss);
-
+// SaveGameHeader
+// -----------------------------------------------------------------------
+SaveGameHeader::SaveGameHeader()
+  : title(), saveTime(microsec_clock::local_time())
+{
 }
 
+// -----------------------------------------------------------------------
 
-#endif
+SaveGameHeader::SaveGameHeader(const std::string& inTitle)
+  : title(inTitle), saveTime(microsec_clock::local_time())
+{
+}
+
+// -----------------------------------------------------------------------
+
+SaveGameHeader::~SaveGameHeader()
+{}
+

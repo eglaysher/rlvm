@@ -25,30 +25,38 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "MachineBase/StackFrame.hpp"
+#include "MachineBase/LongOperation.hpp"
 
-#ifndef __Serialization_hpp__
-#define __Serialization_hpp__
-
-#include "MachineBase/SaveGameHeader.hpp"
+// -----------------------------------------------------------------------
+// StackFrame
+// -----------------------------------------------------------------------
+StackFrame::StackFrame(libReallive::Scenario const* s,
+                       const libReallive::Scenario::const_iterator& i,
+                       FrameType t) 
+  : scenario(s), ip(i), saveGameFrame(false), frameType(t)
+{}
 
 // -----------------------------------------------------------------------
 
-class RLMachine;
+StackFrame::StackFrame(libReallive::Scenario const* s,
+                       const libReallive::Scenario::const_iterator& i,
+                       LongOperation* op)
+  : scenario(s), ip(i), longOp(op), saveGameFrame(false),
+    frameType(TYPE_LONGOP) 
+{}
 
 // -----------------------------------------------------------------------
 
-namespace Serialization {
-
-void saveGlobalMemory(RLMachine& machine);
-void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine);
-
-void loadGlobalMemory(RLMachine& machine);
-void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine);
-
-
-SaveGameHeader loadHeaderFrom(std::istream& iss);
-
+StackFrame::~StackFrame()
+{
 }
 
+// -----------------------------------------------------------------------
 
-#endif
+void StackFrame::setSaveGameAsIP()
+{
+  if(saveGameFrame)
+    ip = savePoint;
+}
+

@@ -27,6 +27,7 @@
 #include "libReallive/reallive.h"
 #include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Modules/Modules.hpp"
@@ -336,7 +337,7 @@ int main(int argc, char* argv[])
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
 
-	rlmachine.loadGlobalMemory();
+    Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);
 
     while(!rlmachine.halted()) {
@@ -348,7 +349,7 @@ int main(int argc, char* argv[])
       rlmachine.executeNextInstruction();
     }
 
-	rlmachine.saveGlobalMemory();
+	Serialization::saveGlobalMemory(rlmachine);
   }
   catch (rlvm::Exception& e) {
     cerr << "Fatal RLVM error: " << e.what() << endl;

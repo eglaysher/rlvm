@@ -38,6 +38,7 @@
 
 const int NUMBER_OF_INT_LOCATIONS = 9;
 const int SIZE_OF_MEM_BANK = 2000;
+const int SIZE_OF_INT_PASSING_MEM = 40;
 
 typedef std::vector<std::pair<int, char> > IntegerBank_t;
 extern const IntegerBank_t LOCAL_INTEGER_BANKS;
@@ -72,7 +73,7 @@ struct LocalMemory
   std::string strS[SIZE_OF_MEM_BANK];
 
   /// Parameter passing integer bank
-  int intL[SIZE_OF_MEM_BANK];
+  int intL[SIZE_OF_INT_PASSING_MEM];
 
   /// Parameter passing string bank
   std::string strK[3];
@@ -144,7 +145,9 @@ public:
 
 
   GlobalMemory& global() { return *m_global; }
+  const GlobalMemory& global() const { return *m_global; }
   LocalMemory& local() { return m_local; }
+  const LocalMemory& local() const { return m_local; }
 };	// end of class Memory
 
 

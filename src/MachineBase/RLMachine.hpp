@@ -47,13 +47,13 @@ class Value;
 namespace  libReallive {
 class Archive;
 class IntMemRef;
-//class Scenario;
 };
 
 class RLModule;
 class LongOperation;
 class System;
 class Memory;
+class StackFrame;
 
 namespace boost { namespace serialization { } } 
 
@@ -83,13 +83,6 @@ public:
 
   /// The SEEN.TXT the machine is currently executing.
   libReallive::Archive& m_archive;
-
-  /** Describes a stack frame. Stack frames are added by two
-   * mechanisms: gosubs and farcalls. gosubs move the instruction
-   * pointer within one Scenario, while farcalls move the instruction
-   * pointer between Scenarios.
-   */
-  struct StackFrame;
 
   /// The actual call stack.
   std::vector<StackFrame> callStack;
@@ -150,13 +143,13 @@ public:
    * Writes the contents of global memory to the default global memory
    * file for this game.
    */
-  void saveGlobalMemory();
+//  void saveGlobalMemory();
 
   /**
    * Reads the contents of global memory to the default global memory
    * file for this game.
    */
-  void loadGlobalMemory();
+//  void loadGlobalMemory();
 
   /**
    * Writes out the current game state to save game slot @c slot .
@@ -337,6 +330,7 @@ public:
    *       memory operations involving overlays.
    */
   Memory& memory() { return *m_memory; }
+  const Memory& memory() const { return *m_memory; }
   //@}
 
   // -----------------------------------------------------------------------

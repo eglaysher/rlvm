@@ -11,7 +11,10 @@ LRLFILES[] =
   RLModule
   RLOperation
   SerializationGlobal
+  SerializationLocal
   Memory
+  StackFrame
+  SaveGameHeader
 
 StaticCObject(libMachineBase, $(LRLFILES))
 

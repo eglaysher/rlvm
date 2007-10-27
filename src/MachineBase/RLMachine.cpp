@@ -44,6 +44,7 @@
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/Memory.hpp"
+#include "MachineBase/StackFrame.hpp"
 
 #include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
@@ -83,55 +84,6 @@ using namespace libReallive;
 
 using boost::bind;
 using boost::assign::list_of;
-
-// -----------------------------------------------------------------------
-// Stack Frame
-// -----------------------------------------------------------------------
-
-/**
- * Internally used type that represents a stack frame in RLMachine's
- * call stack.
- */
-struct RLMachine::StackFrame 
-{
-  /// The scenario in the SEEN file for this stack frame.
-  libReallive::Scenario const* scenario;
-    
-  /// The instruction pointer in the stack frame.
-  libReallive::Scenario::const_iterator ip;
-
-  /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
-  boost::shared_ptr<LongOperation> longOp;
-
-  /// Whether this frame has save game information.
-  bool saveGameFrame;
-
-  /// The last save point hit (from this stack frame). 
-  libReallive::Scenario::const_iterator savePoint;
-
-  /**
-   * The function that pushed the current frame onto the
-   * stack. Used in error checking.
-   */
-  enum FrameType {
-    TYPE_ROOT,    /**< Added by the Machine's constructor */
-    TYPE_GOSUB,   /**< Added by a call by gosub */
-    TYPE_FARCALL, /**< Added by a call by farcall */
-    TYPE_LONGOP   /**< Added by pushLongOperation() */
-  } frameType;
-
-  /// Default constructor
-  StackFrame(libReallive::Scenario const* s,
-             const libReallive::Scenario::const_iterator& i,
-             FrameType t) 
-    : scenario(s), ip(i), saveGameFrame(false), frameType(t) {}
-
-  StackFrame(libReallive::Scenario const* s,
-             const libReallive::Scenario::const_iterator& i,
-             LongOperation* op)
-    : scenario(s), ip(i), longOp(op), saveGameFrame(false),
-      frameType(TYPE_LONGOP) {}
-};
 
 // -----------------------------------------------------------------------
 // RLMachine
@@ -196,19 +148,19 @@ void RLMachine::attachModule(RLModule* module)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::saveGlobalMemory()
-{
-  fs::path home = m_system.gameSaveDirectory() / "global.sav";
-  fs::ofstream file(home);
-  if(!file)
-  {
-	ostringstream oss;
-	oss << "Could not open global memory file.";
-	throw rlvm::Exception(oss.str());
-  }
+// void RLMachine::saveGlobalMemory()
+// {
+//   fs::path home = m_system.gameSaveDirectory() / "global.sav";
+//   fs::ofstream file(home);
+//   if(!file)
+//   {
+// 	ostringstream oss;
+// 	oss << "Could not open global memory file.";
+// 	throw rlvm::Exception(oss.str());
+//   }
 
-  Serialization::saveGlobalMemoryTo(file, *this);
-}
+//   Serialization::saveGlobalMemoryTo(file, *this);
+// }
 
 // -----------------------------------------------------------------------
 
@@ -414,19 +366,19 @@ bool RLMachine::shouldSetSeentopSavepoint() const
 
 // -----------------------------------------------------------------------
 
-void RLMachine::loadGlobalMemory()
-{
-  fs::path home = m_system.gameSaveDirectory() / "global.sav";
-  fs::ifstream file(home);
+// void RLMachine::loadGlobalMemory()
+// {
+//   fs::path home = m_system.gameSaveDirectory() / "global.sav";
+//   fs::ifstream file(home);
 
-  // If we were able to open the file for reading, load it. Don't
-  // complain if we're unable to, since this may be the first run on
-  // this certain game and it may not exist yet.
-  if(file)
-  {
-    Serialization::loadGlobalMemoryFrom(file, *this);
-  }
-}
+//   // If we were able to open the file for reading, load it. Don't
+//   // complain if we're unable to, since this may be the first run on
+//   // this certain game and it may not exist yet.
+//   if(file)
+//   {
+//     Serialization::loadGlobalMemoryFrom(file, *this);
+//   }
+// }
 
 // -----------------------------------------------------------------------
 
