@@ -36,9 +36,7 @@
 #include "../MachineBase/RLModule.hpp"
 #include <string>
 
-namespace Json {
-class Value;
-}
+class GraphicsStackFrame;
 
 // -----------------------------------------------------------------------
 
@@ -71,8 +69,10 @@ public:
  * stackTrunc on load.
  * 
  * @param machine Machine to replay on
- * @param serializedStack Serialized JSON array of the graphics stack
+ * @param serializedStack Thawed frames to replay
  */
-void replayGraphicsStack(RLMachine& machine, const Json::Value& serializedStack);
+void replayGraphicsStackVector(
+  RLMachine& machine, 
+  const std::vector<GraphicsStackFrame>& serializedStack);
 
 #endif

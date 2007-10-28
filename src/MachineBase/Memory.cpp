@@ -26,6 +26,7 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/Memory.hpp"
+#include "MachineBase/RLMachine.hpp"
 #include "libReallive/intmemref.h"
 #include "Utilities.h"
 #include <boost/assign/list_of.hpp>
@@ -73,10 +74,37 @@ LocalMemory::LocalMemory()
 }
 
 // -----------------------------------------------------------------------
+
+LocalMemory::LocalMemory(dont_initialize)
+{
+}
+
+// -----------------------------------------------------------------------
 // Memory
 // -----------------------------------------------------------------------
 Memory::Memory()
   : m_global(new GlobalMemory), m_local()
+{
+  connectIntVarPointers();
+}
+
+// -----------------------------------------------------------------------
+
+Memory::Memory(RLMachine& machine, int slot)
+  : m_global(machine.memory().m_global), m_local(dont_initialize())
+{
+  connectIntVarPointers();
+}
+
+// -----------------------------------------------------------------------
+
+Memory::~Memory()
+{
+}
+
+// -----------------------------------------------------------------------
+
+void Memory::connectIntVarPointers()
 {
   intVar[0] = m_local.intA;
   intVar[1] = m_local.intB;
@@ -87,12 +115,6 @@ Memory::Memory()
   intVar[6] = m_global->intG;
   intVar[7] = m_global->intZ;
   intVar[8] = m_local.intL;
-}
-
-// -----------------------------------------------------------------------
-
-Memory::~Memory()
-{
 }
 
 // -----------------------------------------------------------------------

@@ -30,10 +30,12 @@
 #define __Serialization_hpp__
 
 #include "MachineBase/SaveGameHeader.hpp"
+#include <boost/filesystem/path.hpp>
 
 // -----------------------------------------------------------------------
 
 class RLMachine;
+class Memory;
 
 // -----------------------------------------------------------------------
 
@@ -45,8 +47,19 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine);
 void loadGlobalMemory(RLMachine& machine);
 void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine);
 
+boost::filesystem::path buildSaveGameFilename(RLMachine& machine, int slot);
 
+void saveGameForSlot(RLMachine& machine, int slot);
+void saveGameTo(std::ostream& oss, RLMachine& machine);
+
+SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot);
 SaveGameHeader loadHeaderFrom(std::istream& iss);
+
+void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory);
+void loadLocalMemoryFrom(std::istream& iss, Memory& memory);
+
+void loadGameForSlot(RLMachine& machine, int slot);
+void loadGameFrom(std::istream& iss, RLMachine& machine);
 
 }
 

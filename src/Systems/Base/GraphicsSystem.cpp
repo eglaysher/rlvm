@@ -44,7 +44,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "json/value.h"
 #include <iostream>
 
 using std::cout;
@@ -172,6 +171,13 @@ GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(const std::string& nam
 
 // -----------------------------------------------------------------------
 
+vector<GraphicsStackFrame>& GraphicsSystem::graphicsStack()
+{
+  return m_graphicsObjectSettings->graphicsStack;
+}
+
+// -----------------------------------------------------------------------
+
 int GraphicsSystem::stackSize() const
 {
   return m_graphicsObjectSettings->graphicsStack.size();
@@ -190,6 +196,17 @@ void GraphicsSystem::stackPop(int items)
 {
   for(int i = 0; i < items; ++i)
     m_graphicsObjectSettings->graphicsStack.pop_back();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
+{
+  vector<GraphicsStackFrame> stackToReplay;
+  stackToReplay.swap(m_graphicsObjectSettings->graphicsStack);
+
+  // 
+  replayGraphicsStackVector(machine, stackToReplay);
 }
 
 // -----------------------------------------------------------------------
@@ -264,35 +281,6 @@ void GraphicsSystem::endFrame() { }
 boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
   RLMachine& machine, boost::shared_ptr<Surface> bg) 
 { return boost::shared_ptr<Surface>(); }
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::saveGameValues(Json::Value& graphicsSys)
-{
-  Json::Value graphicsValue(Json::arrayValue);
-  
-  std::vector<GraphicsStackFrame>::iterator it = 
-    m_graphicsObjectSettings->graphicsStack.begin();
-  std::vector<GraphicsStackFrame>::iterator end = 
-    m_graphicsObjectSettings->graphicsStack.end();
-  for(; it != end; ++it) 
-  { 
-    Json::Value frame(Json::objectValue);
-    it->serializeTo(frame);
-    graphicsValue.push_back(frame);
-  }
-
-  graphicsSys["stack"] = graphicsValue;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::loadGameValues(RLMachine& machine,
-                                    const Json::Value& graphicsSys)
-{
-  replayGraphicsStack(machine, graphicsSys["stack"]);
-//  loadObjectState(machine, graphicsSys["objects"]);
-}
 
 // -----------------------------------------------------------------------
 
@@ -432,38 +420,3 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
     throw rlvm::Exception(oss.str());
   }
 }
-
-
-// -----------------------------------------------------------------------
-
-/*
-void GraphicsSystem::saveObjectState(RLMachine& machine,
-                                     Json::Value& objects)
-{
-  AllocatedLazyArrayIterator<GraphicsObject> it = 
-	foregroundObjects.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end = 
-	foregroundObjects.allocated_end();
-  for(; it != end; ++it)
-  {
-    Json::Value object(Json::objectValue);
-    it->serializeTo(object);
-    
-    objects[lexical_cast<string>(objNum)] = object;
-  }
-}
-*/
-// -----------------------------------------------------------------------
- /*
-void GraphicsSystem::loadObjectState(RLMachine& machine,
-                                     const Json::Value& objectHash)
-{
-  // Iterate over graphics state hash entries
-  using namespace Json;
-
-  for(Value::iterator it = objectHash.begin(); it != objectHash.end(); ++it)
-  {
-    
-  }
-}
- */

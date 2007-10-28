@@ -31,6 +31,7 @@
 #ifndef __GraphicsSystem_hpp__
 #define __GraphicsSystem_hpp__
 
+#include <vector>
 #include <string>
 #include "LazyArray.hpp"
 #include <boost/scoped_ptr.hpp>
@@ -45,10 +46,6 @@ class GraphicsObjectData;
 class GraphicsStackFrame;
 class Gameexe;
 struct ObjectSettings;
-
-namespace Json {
-class Value;
-}
 
 // -----------------------------------------------------------------------
 
@@ -150,34 +147,6 @@ protected:
   /// Background objects
   LazyArray<GraphicsObject> backgroundObjects;
 
-protected:
-
-  /**
-   * @name Iterated access to GraphicsObjects
-   * 
-   * Provide a set of iterators for subclasses of GraphicsSystem to
-   * access the actual GraphicsObjects, in addition to the normal
-   * checked interfaced.
-   *
-   * @{
-   */
-
-
-
-//   FullIterator fg_full_begin() { return foregroundObjects.full_begin(); }
-//   FullIterator fg_full_end() { return foregroundObjects.full_end(); }
-//   FullIterator bg_full_begin() { return backgroundObjects.full_begin(); }
-//   FullIterator bg_full_end() { return backgroundObjects.full_end(); }
-
-//   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
-
-//   FullIterator fg_full_begin() { return foregroundObjects.full_begin(); }
-//   FullIterator fg_full_end() { return foregroundObjects.full_end(); }
-//   FullIterator bg_full_begin() { return backgroundObjects.full_begin(); }
-//   FullIterator bg_full_end() { return backgroundObjects.full_end(); }
-
-  /// @}
-
 public:
   GraphicsSystem(Gameexe& gameexe);
   virtual ~GraphicsSystem();
@@ -200,10 +169,16 @@ public:
    */
   GraphicsStackFrame& addGraphicsStackFrame(const std::string& name);
 
+  std::vector<GraphicsStackFrame>& graphicsStack();
+
   int stackSize() const;
   void clearStack();
 
   void stackPop(int numItems);
+
+  /// Replays the graphics stack. This is called after we've reloaded
+  /// a saved game.
+  void replayGraphicsStack(RLMachine& machine);
   /// @}
 
 
@@ -243,9 +218,6 @@ public:
    */
   GraphicsSystemGlobals& globals() { return m_globals; }
   /// @}
-
-  virtual void saveGameValues(Json::Value& system);
-  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
 
   /**
    * @name Show Object flags

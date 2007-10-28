@@ -190,96 +190,6 @@ void RLMachine::setStringValue(int type, int number, const std::string& value)
   m_memory->setStringValue(type, number, value);
 }
 
-// -----------------------------------------------------------------------
-
-namespace {
-
-Json::Value buildFromString(const std::string& str)
-{
-  return Json::Value(str);
-}
-
-// -----------------------------------------------------------------------
-
-Json::Value buildFromInt(const int val)
-{
-  return Json::Value(val);
-}
-
-}
-
-// -----------------------------------------------------------------------
-
-string RLMachine::makeSaveGameName(int slot)
-{
-  ostringstream oss;
-  oss << "save" << setw(3) << setfill('0') << slot << ".jsn";
-  return oss.str();
-}
-
-// -----------------------------------------------------------------------
-
-// void RLMachine::saveIntegerBanksTo(const IntegerBank_t& banks, 
-// 								   Json::Value& root)
-// {
-//   for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
-// 	  ++it)
-//   {
-// 	Json::Value intArray;
-// 	transform(intVar[it->first], intVar[it->first] + 2000,
-// 			  back_inserter(intArray),
-// 			  buildFromInt);
-
-// 	ostringstream oss;
-// 	oss << "int" << it->second;
-// 	root[oss.str()] = intArray;
-//   }
-// }
-
-// -----------------------------------------------------------------------
-
-void RLMachine::saveStringBank(const std::string* strPtr,
-							   char bankName, 
-							   Json::Value& root)
-{
-  ostringstream oss;
-  oss << "str" << bankName;
-
-  Json::Value strBank(Json::arrayValue);
-  transform(strPtr, strPtr + 2000, back_inserter(strBank),
-			buildFromString);
-  root[oss.str()] = strBank;
-}
-
-// -----------------------------------------------------------------------
-
-void RLMachine::loadStringBank(std::string* strPtr,
-							   char bankName, 
-							   Json::Value& root)
-{
-  ostringstream oss;
-  oss << "str" << bankName;
-
-  if(!root.isMember(oss.str()))
-  {
-	ostringstream err;
-	err << "No " << oss.str() << " memory bank in global file!";
-	throw rlvm::Exception(err.str());
-  }
-
-  const Json::Value& strBank = root[oss.str()];
-  if(strBank.size() != 2000)
-  {
-	ostringstream err;
-	err << oss.str() << " memory bank.size() != 2000";
-	throw rlvm::Exception(err.str());
-  }
-
-  transform(strBank.begin(), strBank.end(),
-			strPtr, bind(&Json::Value::asString, _1));
-}
-
-// -----------------------------------------------------------------------
 
 void RLMachine::markSavepoint()
 {
@@ -348,209 +258,175 @@ bool RLMachine::shouldSetSeentopSavepoint() const
 
 // -----------------------------------------------------------------------
 
-// void RLMachine::loadIntegerBanksFrom(const IntegerBank_t& banks, 
-// 									 Json::Value& root)
+// void RLMachine::saveGame(int slot)
 // {
-//   for(IntegerBank_t::const_iterator it = banks.begin(); it != banks.end(); 
-// 	  ++it)
+//   fs::path home = m_system.gameSaveDirectory() / makeSaveGameName(slot);
+//   fs::ofstream file(home);
+//   if(!file)
 //   {
 // 	ostringstream oss;
-// 	oss << "int" << it->second;
-// 	const Json::Value& intMem = root[oss.str()];
-
-// 	transform(intMem.begin(), intMem.end(), 
-// 			  intVar[it->first], 
-// 			  bind(&Json::Value::asInt, _1));
-//               }
-// }
-
-// -----------------------------------------------------------------------
-
-// void RLMachine::loadGlobalMemory()
-// {
-//   fs::path home = m_system.gameSaveDirectory() / "global.sav";
-//   fs::ifstream file(home);
-
-//   // If we were able to open the file for reading, load it. Don't
-//   // complain if we're unable to, since this may be the first run on
-//   // this certain game and it may not exist yet.
-//   if(file)
-//   {
-//     Serialization::loadGlobalMemoryFrom(file, *this);
+// 	oss << "Could not open save game file " << home.string();
+// 	throw rlvm::Exception(oss.str());
 //   }
+
+//   saveGameTo(file);
 // }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::saveGame(int slot)
-{
-  fs::path home = m_system.gameSaveDirectory() / makeSaveGameName(slot);
-  fs::ofstream file(home);
-  if(!file)
-  {
-	ostringstream oss;
-	oss << "Could not open save game file " << home.string();
-	throw rlvm::Exception(oss.str());
-  }
+// void RLMachine::saveGameTo(std::ostream& ofs)
+// {
+//   Json::Value root(Json::objectValue);
 
-  saveGameTo(file);
-}
+// //  saveIntegerBanksTo(LOCAL_INTEGER_BANKS, root);
+// //  saveStringBank(strS, 'S', root);
 
-// -----------------------------------------------------------------------
+//   root["title"] = system().graphics().windowSubtitle();
 
-void RLMachine::saveGameTo(std::ostream& ofs)
-{
-  Json::Value root(Json::objectValue);
+//   // Build the save game time
+//   Json::Value saveTime(Json::arrayValue);
+//   using namespace datetime;
+//   saveTime.append(Json::Value(getYear()));
+//   saveTime.append(Json::Value(getMonth()));
+//   saveTime.append(Json::Value(getDay()));
+//   saveTime.append(Json::Value(getDayOfWeek()));
+//   saveTime.append(Json::Value(getHour()));
+//   saveTime.append(Json::Value(getMinute()));
+//   saveTime.append(Json::Value(getSecond()));
+//   saveTime.append(Json::Value(getMs()));
+//   root["saveTime"] = saveTime;
 
-//  saveIntegerBanksTo(LOCAL_INTEGER_BANKS, root);
-//  saveStringBank(strS, 'S', root);
+//   cerr << "Stack: ";
+//   Json::Value saveCallStack(Json::arrayValue);
+//   for(vector<StackFrame>::const_iterator it = callStack.begin();
+//       it != callStack.end(); ++it)
+//   {
+//     if(it->frameType == StackFrame::TYPE_LONGOP)
+//     {
+//       break;
+//     }
+//     else
+//     {
+//       Json::Value frame(Json::arrayValue);
 
-  root["title"] = system().graphics().windowSubtitle();
+//       int position = 0;
+//       vector<StackFrame>::const_iterator next = boost::next(it);
 
-  // Build the save game time
-  Json::Value saveTime(Json::arrayValue);
-  using namespace datetime;
-  saveTime.append(Json::Value(getYear()));
-  saveTime.append(Json::Value(getMonth()));
-  saveTime.append(Json::Value(getDay()));
-  saveTime.append(Json::Value(getDayOfWeek()));
-  saveTime.append(Json::Value(getHour()));
-  saveTime.append(Json::Value(getMinute()));
-  saveTime.append(Json::Value(getSecond()));
-  saveTime.append(Json::Value(getMs()));
-  root["saveTime"] = saveTime;
+//       if(it->saveGameFrame && 
+//          (next == callStack.end() || next->frameType == StackFrame::TYPE_LONGOP))
+//       {
+//         cerr << "SP";
+//         position = distance(it->scenario->begin(), it->savePoint);
+//       }
+//       else
+//       {
+//         cerr << "N";
+//         position = distance(it->scenario->begin(), it->ip);
+//       }
 
-  cerr << "Stack: ";
-  Json::Value saveCallStack(Json::arrayValue);
-  for(vector<StackFrame>::const_iterator it = callStack.begin();
-      it != callStack.end(); ++it)
-  {
-    if(it->frameType == StackFrame::TYPE_LONGOP)
-    {
-      break;
-    }
-    else
-    {
-      Json::Value frame(Json::arrayValue);
+//       cerr << position << "(" << it->scenario << "), ";
 
-      int position = 0;
-      vector<StackFrame>::const_iterator next = boost::next(it);
+//       frame.push_back(Json::Value(it->scenario->sceneNumber()));
+//       frame.push_back(Json::Value(position));
+//       frame.push_back(Json::Value(it->frameType));
 
-      if(it->saveGameFrame && 
-         (next == callStack.end() || next->frameType == StackFrame::TYPE_LONGOP))
-      {
-        cerr << "SP";
-        position = distance(it->scenario->begin(), it->savePoint);
-      }
-      else
-      {
-        cerr << "N";
-        position = distance(it->scenario->begin(), it->ip);
-      }
+//       saveCallStack.push_back(frame);
+//     }
+//   }
 
-      cerr << position << "(" << it->scenario << "), ";
+//   cerr << endl;
 
-      frame.push_back(Json::Value(it->scenario->sceneNumber()));
-      frame.push_back(Json::Value(position));
-      frame.push_back(Json::Value(it->frameType));
+//   root["callStack"] = saveCallStack;
 
-      saveCallStack.push_back(frame);
-    }
-  }
+//   m_system.saveGameValues(root);
 
-  cerr << endl;
-
-  root["callStack"] = saveCallStack;
-
-  m_system.saveGameValues(root);
-
-  Json::StyledWriter writer;
-  ofs << writer.write( root );
-}
+//   Json::StyledWriter writer;
+//   ofs << writer.write( root );
+// }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::loadGame(const int slot)
-{
-  fs::path home = m_system.gameSaveDirectory() / makeSaveGameName(slot);
-  fs::ifstream file(home);
-  if(!file)
-  {
-	ostringstream oss;
-	oss << "Could not open save game file " << home.string();
-	throw rlvm::Exception(oss.str());
-  }
+// void RLMachine::loadGame(const int slot)
+// {
+//   fs::path home = m_system.gameSaveDirectory() / makeSaveGameName(slot);
+//   fs::ifstream file(home);
+//   if(!file)
+//   {
+// 	ostringstream oss;
+// 	oss << "Could not open save game file " << home.string();
+// 	throw rlvm::Exception(oss.str());
+//   }
 
-  loadGameFrom(file);
-}
+//   loadGameFrom(file);
+// }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::loadGameFrom(std::istream& iss)
-{
-  using namespace Json;
+// void RLMachine::loadGameFrom(std::istream& iss)
+// {
+//   using namespace Json;
 
-  string memoryContents;
-  string line;
-  while(getline(iss, line))
-  {
-	memoryContents += line;
-	memoryContents += "\n";
-  }
+//   string memoryContents;
+//   string line;
+//   while(getline(iss, line))
+//   {
+// 	memoryContents += line;
+// 	memoryContents += "\n";
+//   }
 
-  Value root;
-  Reader reader;
-  if(!reader.parse(memoryContents, root))
-  {
-	ostringstream oss;
-	oss << "Failed to read saved game \": "
-		<< reader.getFormatedErrorMessages();
+//   Value root;
+//   Reader reader;
+//   if(!reader.parse(memoryContents, root))
+//   {
+// 	ostringstream oss;
+// 	oss << "Failed to read saved game \": "
+// 		<< reader.getFormatedErrorMessages();
 
-	throw rlvm::Exception(oss.str());
-  }
+// 	throw rlvm::Exception(oss.str());
+//   }
 
-//  loadIntegerBanksFrom(LOCAL_INTEGER_BANKS, root);
-//  loadStringBank(strS, 'S', root);
+// //  loadIntegerBanksFrom(LOCAL_INTEGER_BANKS, root);
+// //  loadStringBank(strS, 'S', root);
 
-  clearCallstack();
-  const Value saveCallStack = root["callStack"];
-  for(ValueConstIterator it = saveCallStack.begin(); 
-      it != saveCallStack.end(); ++it)
-  {
-    if((*it).type() == arrayValue)
-    {
-      int scenarioNum = (*it)[0u].asInt();
-      int offset = (*it)[1u].asInt();
-      int type = (*it)[2u].asInt();
+//   clearCallstack();
+//   const Value saveCallStack = root["callStack"];
+//   for(ValueConstIterator it = saveCallStack.begin(); 
+//       it != saveCallStack.end(); ++it)
+//   {
+//     if((*it).type() == arrayValue)
+//     {
+//       int scenarioNum = (*it)[0u].asInt();
+//       int offset = (*it)[1u].asInt();
+//       int type = (*it)[2u].asInt();
 
-      libReallive::Scenario const* scenario = m_archive.scenario(scenarioNum);
-      if(scenario == NULL)
-      {
-        ostringstream oss;
-        oss << "Unknown SEEN #" << scenarioNum << " in save file!";
-        throw rlvm::Exception(oss.str());
-      }
+//       libReallive::Scenario const* scenario = m_archive.scenario(scenarioNum);
+//       if(scenario == NULL)
+//       {
+//         ostringstream oss;
+//         oss << "Unknown SEEN #" << scenarioNum << " in save file!";
+//         throw rlvm::Exception(oss.str());
+//       }
 
-      if(offset > distance(scenario->begin(), scenario->end()))
-      {
-        ostringstream oss;
-        oss << offset << " is an illegal bytecode offset for SEEN #" 
-            << scenarioNum << " in save file!";
-        throw rlvm::Exception(oss.str());
-      }
+//       if(offset > distance(scenario->begin(), scenario->end()))
+//       {
+//         ostringstream oss;
+//         oss << offset << " is an illegal bytecode offset for SEEN #" 
+//             << scenarioNum << " in save file!";
+//         throw rlvm::Exception(oss.str());
+//       }
 
-      Scenario::const_iterator positionIt = scenario->begin();
-      advance(positionIt, offset);
+//       Scenario::const_iterator positionIt = scenario->begin();
+//       advance(positionIt, offset);
 
-      pushStackFrame(
-        StackFrame(scenario, positionIt, StackFrame::FrameType(type)));
-    }
-    else
-      throw rlvm::Exception("Unknown token in callStack in save file!");
-  }
+//       pushStackFrame(
+//         StackFrame(scenario, positionIt, StackFrame::FrameType(type)));
+//     }
+//     else
+//       throw rlvm::Exception("Unknown token in callStack in save file!");
+//   }
 
-  m_system.loadGameValues(*this, root);
-}
+//   m_system.loadGameValues(*this, root);
+// }
 
 // -----------------------------------------------------------------------
 

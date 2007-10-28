@@ -199,7 +199,7 @@ void System::saveGameValues(Json::Value& root)
   system["text"] = txt;
 
   Json::Value graphicsValue(Json::objectValue);
-  graphics().saveGameValues(graphicsValue);
+  //graphics().saveGameValues(graphicsValue);
   system["graphics"] = graphicsValue;
 
   root["system"] = system;
@@ -213,7 +213,7 @@ void System::loadGameValues(RLMachine& machine, const Json::Value& root)
 
   Json::Value system = root["system"];
 
-  graphics().loadGameValues(machine, system["graphics"]);
+//  graphics().loadGameValues(machine, system["graphics"]);
   text().loadGameValues(machine, system["text"]);
 
   // @todo Move this into graphics

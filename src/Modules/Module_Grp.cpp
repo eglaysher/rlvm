@@ -1248,32 +1248,28 @@ void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
 
 // -----------------------------------------------------------------------
 
-void replayGraphicsStack(RLMachine& machine, const Json::Value& serializedStack)
+void replayGraphicsStackVector(
+  RLMachine& machine, 
+  const std::vector<GraphicsStackFrame>& gstack)
 {
-  using namespace Json;
   cerr << "REPLAYING GRAPHICS STACK" << endl;
 
-  for(Value::iterator it = serializedStack.begin(); it != serializedStack.end();
-      ++it)
+  for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin(); 
+      it != gstack.end(); ++it)
   {
-    GraphicsStackFrame frame(*it);
-
-    if(frame.name() == GRP_LOAD)
+    if(it->name() == GRP_LOAD)
     {
-      if(frame.hasTargetCoordinates())
+      if(it->hasTargetCoordinates())
       {
         cerr << "Ignoring because we are dumb!" << endl;
       }
       else
-        Grp_load_1(true)(machine, frame.filename(), frame.targetDC(),
-                         frame.opacity());
+        Grp_load_1(true)(machine, it->filename(), it->targetDC(),
+                         it->opacity());
     }
-    else if(frame.name() == GRP_OPENBG)
+    else if(it->name() == GRP_OPENBG)
     {
-      replayOpenBg(machine, frame);
+      replayOpenBg(machine, *it);
     }
   }
-
-  // Now force a screen refresh
-  machine.system().graphics().markScreenForRefresh();
 }

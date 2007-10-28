@@ -103,15 +103,6 @@ inline void serialize(Archive & ar, GlobalMemory& memory, unsigned int version)
   ar & memory.intG & memory.intZ & memory.strM;
 }
 
-// -----------------------------------------------------------------------
-// RLMachine
-// -----------------------------------------------------------------------
-template<class Archive>
-inline void serialize(Archive & ar, RLMachine& machine, unsigned int version)
-{
-  ar & machine.memory().global();
-}
-
 } // namespace serialization
 } // namespace boost
 
@@ -141,7 +132,7 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine)
 {
   text_oarchive oa(oss);
   System& sys = machine.system();
-  oa << const_cast<const RLMachine&>(machine)
+  oa << const_cast<const GlobalMemory&>(machine.memory().global())
      << const_cast<const SystemGlobals&>(sys.globals())
      << const_cast<const GraphicsSystemGlobals&>(sys.graphics().globals())
      << const_cast<const EventSystemGlobals&>(sys.event().globals())
@@ -170,7 +161,7 @@ void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine)
 {
   text_iarchive ia(iss);
   System& sys = machine.system();
-  ia >> machine
+  ia >> machine.memory().global()
      >> sys.globals()
      >> sys.graphics().globals()
      >> sys.event().globals()

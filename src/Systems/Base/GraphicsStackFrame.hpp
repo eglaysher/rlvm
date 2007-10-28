@@ -33,12 +33,6 @@
 
 // -----------------------------------------------------------------------
 
-namespace Json {
-class Value;
-}
-
-// -----------------------------------------------------------------------
-
 /**
  * Represents one frame in the graphics stack. 
  */
@@ -73,7 +67,6 @@ private:
 
 public: 
   GraphicsStackFrame();
-  GraphicsStackFrame(const Json::Value& frame);
   GraphicsStackFrame(const std::string& name);
   ~GraphicsStackFrame();
 
@@ -120,10 +113,6 @@ public:
   bool hasMask() const { return m_hasMask; }
   bool mask() const { return m_mask; }
   GraphicsStackFrame& setMask(bool in);
-
-  // Size (??)
-
-  void serializeTo(Json::Value& frame);
 };	// end of class GraphicsStackFrame
 
 

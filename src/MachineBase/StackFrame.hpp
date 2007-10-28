@@ -74,6 +74,11 @@ struct StackFrame
     TYPE_LONGOP   /**< Added by pushLongOperation() */
   } frameType;
 
+  /** 
+   * Default constructor. Only used during serialization.
+   */
+  StackFrame();
+
   /**
    * Constructor for normal stack frames added by RealLive code.
    */
@@ -96,5 +101,8 @@ struct StackFrame
    */
   void setSaveGameAsIP();
 };
+
+std::ostream& operator<<(std::ostream& os, const StackFrame& frame);
+
 
 #endif

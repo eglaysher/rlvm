@@ -135,74 +135,28 @@ public:
    */
 
   /**
-   * Builds the save file name.
-   */
-  std::string makeSaveGameName(int slot);
-
-  /**
-   * Writes the contents of global memory to the default global memory
-   * file for this game.
-   */
-//  void saveGlobalMemory();
-
-  /**
-   * Reads the contents of global memory to the default global memory
-   * file for this game.
-   */
-//  void loadGlobalMemory();
-
-  /**
    * Writes out the current game state to save game slot @c slot .
    * 
    * Then, it saves the state of the global memory.
    */
-  void saveGame(int slot);
+//  void saveGame(int slot);
 
   /**
    * Writes out the saved game to the stream.
    */
-  void saveGameTo(std::ostream& oss);
+//  void saveGameTo(std::ostream& oss);
 
   /**
    * Reads in and overwrites the current game state with the data from
    * save game slot @c slot .
    */
-  void loadGame(const int slot);
+//  void loadGame(const int slot);
 
   /**
    * Reads in the save game data from the stream and overwrites
    * current memory.
    */
-  void loadGameFrom(std::istream& iss);
-
-  /** 
-   * Copies the current instruction pointer to the save pointer on the
-   * topmost stackframe. 
-   * 
-   */
-//  void markSavepoint();
-
-//  void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
-//  void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
-
-  /** 
-   * Serializes an individual bank of strings
-   * 
-   * @param strPtr Pointer to the beginning of a string[2000] array.
-   * @param bankName single character name for the string bank
-   * @param root JSON tree root to save to
-   */
-  void saveStringBank(const std::string* strPtr, char bankName, 
-					  Json::Value& root);
-
-  /** 
-   * Serializes an individual bank of strings
-   * 
-   * @param strPtr Pointer to the beginning of a string[2000] array.
-   * @param bankName single character name for the string bank
-   * @param root JSON tree root to read from
-   */
-  void loadStringBank(std::string* strPtr, char bankName, Json::Value& root);
+//  void loadGameFrom(std::istream& iss);
   /// @}
 
   // -----------------------------------------------------------------------
@@ -436,7 +390,7 @@ public:
   /** 
    * Returns the current Archive we are attached to.
    */
-  const libReallive::Archive& archive() const { return m_archive; }
+  libReallive::Archive& archive() { return m_archive; }
   // @}
 
   // -----------------------------------------------------------------------

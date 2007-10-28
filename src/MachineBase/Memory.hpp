@@ -46,6 +46,10 @@ extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
 
 // -----------------------------------------------------------------------
 
+class RLMachine;
+
+// -----------------------------------------------------------------------
+
 struct GlobalMemory
 {
   GlobalMemory();
@@ -58,9 +62,17 @@ struct GlobalMemory
 
 // -----------------------------------------------------------------------
 
+struct dont_initialize { };
+
 struct LocalMemory
 {
   LocalMemory();
+
+  /**
+   * Constructor that prevents the memory banks from being memset
+   * (since they'll be overwritten entirely by the thawing process.
+   */
+  LocalMemory(dont_initialize);
 
   int intA[SIZE_OF_MEM_BANK];
   int intB[SIZE_OF_MEM_BANK];
@@ -103,8 +115,30 @@ private:
   /// local memory without copying global memory.
   int* intVar[NUMBER_OF_INT_LOCATIONS];
 
+  /** 
+   * Connects the memory banks in m_local and in m_global into intVar.
+   */
+  void connectIntVarPointers();
+
 public: 
+  /**
+   * Default constructor; creates a Memory object which owns its own
+   * GlobalMemory.
+   */
   Memory();
+
+  /**
+   * Creates an overlayed memory object. An overlay takes another
+   * Memory's global memory.
+   *
+   * @param machine Machine to overlay memory from.
+   * @param slot Save game slot to read local memory from.
+   *
+   * @warning Local integer memory isn't initialized; it isn't even
+   *          memset zeroed out.
+   */
+  Memory(RLMachine& machine, int slot);
+
   ~Memory();
 
   /** 
@@ -148,6 +182,9 @@ public:
   const GlobalMemory& global() const { return *m_global; }
   LocalMemory& local() { return m_local; }
   const LocalMemory& local() const { return m_local; }
+
+
+
 };	// end of class Memory
 
 

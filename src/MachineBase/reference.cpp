@@ -33,6 +33,7 @@
  */
 
 #include "MachineBase/reference.hpp"
+#include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/intmemref.h"
 
@@ -60,7 +61,7 @@ IntAccessor::~IntAccessor()
  */
 IntAccessor::operator int() const
 {
-  return it->m_machine->getIntValue(IntMemRef(it->m_type, it->m_location));
+  return it->m_memory->getIntValue(IntMemRef(it->m_type, it->m_location));
 }
 
 // -----------------------------------------------------------------------
@@ -72,7 +73,7 @@ IntAccessor::operator int() const
  * @return Self
  */
 IntAccessor& IntAccessor::operator=(const int newValue) { 
-  it->m_machine->setIntValue(IntMemRef(it->m_type, it->m_location), newValue);
+  it->m_memory->setIntValue(IntMemRef(it->m_type, it->m_location), newValue);
   return *this;
 } 
 
@@ -113,7 +114,7 @@ StringAccessor::~StringAccessor()
  */
 StringAccessor::operator std::string() const
 {
-  return it->m_machine->getStringValue(it->m_type, it->m_location);
+  return it->m_memory->getStringValue(it->m_type, it->m_location);
 }
 
 // -----------------------------------------------------------------------
@@ -125,7 +126,7 @@ StringAccessor::operator std::string() const
  * @return Self
  */
 StringAccessor& StringAccessor::operator=(const std::string& newValue) {
-  it->m_machine->setStringValue(it->m_type, it->m_location, newValue);
+  it->m_memory->setStringValue(it->m_type, it->m_location, newValue);
   return *this;
 }
 
@@ -148,4 +149,11 @@ bool StringAccessor::operator==(const std::string& rhs) {
 StringAccessor& StringAccessor::operator=(const StringAccessor& rhs)
 {
   return operator=(rhs.operator std::string());
+}
+
+// -----------------------------------------------------------------------
+
+void setMemoryFromRLMachine(Memory*& memory, RLMachine* machine)
+{
+  memory = &machine->memory();
 }

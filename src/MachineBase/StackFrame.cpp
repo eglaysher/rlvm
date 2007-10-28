@@ -31,6 +31,12 @@
 // -----------------------------------------------------------------------
 // StackFrame
 // -----------------------------------------------------------------------
+StackFrame::StackFrame()
+  : scenario(NULL), ip(), saveGameFrame(false), frameType()
+{}
+
+// -----------------------------------------------------------------------
+
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t) 
@@ -56,7 +62,16 @@ StackFrame::~StackFrame()
 
 void StackFrame::setSaveGameAsIP()
 {
-  if(saveGameFrame)
-    ip = savePoint;
+//  if(saveGameFrame)
+//    ip = savePoint;
 }
 
+// -----------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
+{
+  os << "{seen=" << frame.scenario->sceneNumber() << ", offset=" 
+     << distance(frame.scenario->begin(), frame.ip) << "}";
+
+  return os;
+}
