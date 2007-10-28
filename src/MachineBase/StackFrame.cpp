@@ -28,11 +28,15 @@
 #include "MachineBase/StackFrame.hpp"
 #include "MachineBase/LongOperation.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 // -----------------------------------------------------------------------
 // StackFrame
 // -----------------------------------------------------------------------
 StackFrame::StackFrame()
-  : scenario(NULL), ip(), saveGameFrame(false), frameType()
+  : m_saveGameFrame(false), m_scenario(NULL), ip(), frameType()
 {}
 
 // -----------------------------------------------------------------------
@@ -40,7 +44,7 @@ StackFrame::StackFrame()
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t) 
-  : scenario(s), ip(i), saveGameFrame(false), frameType(t)
+  : m_saveGameFrame(false), m_scenario(s), ip(i), frameType(t)
 {}
 
 // -----------------------------------------------------------------------
@@ -48,7 +52,7 @@ StackFrame::StackFrame(libReallive::Scenario const* s,
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        LongOperation* op)
-  : scenario(s), ip(i), longOp(op), saveGameFrame(false),
+  : m_saveGameFrame(false), m_scenario(s), ip(i), longOp(op), 
     frameType(TYPE_LONGOP) 
 {}
 
@@ -62,16 +66,32 @@ StackFrame::~StackFrame()
 
 void StackFrame::setSaveGameAsIP()
 {
-//  if(saveGameFrame)
-//    ip = savePoint;
+  if(m_saveGameFrame)
+    ip = savePoint;
+}
+
+// -----------------------------------------------------------------------
+
+void StackFrame::markSavepoint()
+{
+  m_saveGameFrame = true;
+  savePoint = ip;
+}
+
+// -----------------------------------------------------------------------
+
+void StackFrame::setScenario(libReallive::Scenario const* s)
+{
+  m_saveGameFrame = false;
+  m_scenario = s;
 }
 
 // -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
 {
-  os << "{seen=" << frame.scenario->sceneNumber() << ", offset=" 
-     << distance(frame.scenario->begin(), frame.ip) << "}";
+  os << "{seen=" << frame.scenario()->sceneNumber() << ", offset=" 
+     << distance(frame.scenario()->begin(), frame.ip) << "}";
 
   return os;
 }

@@ -190,11 +190,11 @@ void RLMachine::setStringValue(int type, int number, const std::string& value)
   m_memory->setStringValue(type, number, value);
 }
 
+// -----------------------------------------------------------------------
 
 void RLMachine::markSavepoint()
 {
-  callStack.back().saveGameFrame = true;
-  callStack.back().savePoint = callStack.back().ip;
+  callStack.back().markSavepoint();
 }
 
 // -----------------------------------------------------------------------
@@ -457,7 +457,7 @@ void RLMachine::executeNextInstruction()
         advanceInstructionPointer();
       }
 
-      cout << "(SEEN" << callStack.back().scenario->sceneNumber() 
+      cout << "(SEEN" << callStack.back().scenario()->sceneNumber() 
            << ")(Line " << m_line << "):  " << e.what() << endl;
     }
   }
@@ -483,11 +483,12 @@ void RLMachine::advanceInstructionPointer()
   if(it != callStack.rend())
   {
     it->ip++;
-    if(it->ip == it->scenario->end())
+    if(it->ip == it->scenario()->end())
       m_halted = true;
   }
 }
 
+// -----------------------------------------------------------------------
 
 void RLMachine::executeCommand(const CommandElement& f) {
 //   cerr << "About to execute opcode<" << f.modtype() << ":" << f.module() << ":" 
@@ -511,7 +512,7 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
-  callStack.back().scenario = scenario;
+  callStack.back().setScenario(scenario);
   callStack.back().ip = scenario->findEntrypoint(entrypoint);
 }
 
@@ -554,7 +555,7 @@ void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
 
 void RLMachine::gosub(BytecodeList::iterator newLocation) 
 {
-  pushStackFrame(StackFrame(callStack.back().scenario, newLocation, 
+  pushStackFrame(StackFrame(callStack.back().scenario(), newLocation, 
                             StackFrame::TYPE_GOSUB));
 }
 
@@ -574,7 +575,7 @@ void RLMachine::returnFromGosub()
 
 void RLMachine::pushLongOperation(LongOperation* longOperation)
 {
-  pushStackFrame(StackFrame(callStack.back().scenario, callStack.back().ip,
+  pushStackFrame(StackFrame(callStack.back().scenario(), callStack.back().ip,
                             longOperation));
 }
 
@@ -618,14 +619,14 @@ void RLMachine::clearCallstack()
 
 int RLMachine::sceneNumber() const
 {
-  return callStack.back().scenario->sceneNumber();
+  return callStack.back().scenario()->sceneNumber();
 }
 
 // -----------------------------------------------------------------------
 
 const Scenario& RLMachine::scenario() const
 {
-  return *callStack.back().scenario;
+  return *callStack.back().scenario();
 }
 
 // -----------------------------------------------------------------------
@@ -640,7 +641,7 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 
 int RLMachine::getTextEncoding() const
 {
-  return callStack.back().scenario->encoding();
+  return callStack.back().scenario()->encoding();
 }
 
 // -----------------------------------------------------------------------

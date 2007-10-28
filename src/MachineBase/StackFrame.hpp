@@ -48,17 +48,20 @@ class LongOperation;
  */
 struct StackFrame 
 {
+private:
+  /// Whether this frame has save game information.
+  bool m_saveGameFrame;
+
   /// The scenario in the SEEN file for this stack frame.
-  libReallive::Scenario const* scenario;
+  libReallive::Scenario const* m_scenario;
+
+public:
     
   /// The instruction pointer in the stack frame.
   libReallive::Scenario::const_iterator ip;
 
   /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
   boost::shared_ptr<LongOperation> longOp;
-
-  /// Whether this frame has save game information.
-  bool saveGameFrame;
 
   /// The last save point hit (from this stack frame). 
   libReallive::Scenario::const_iterator savePoint;
@@ -100,6 +103,17 @@ struct StackFrame
    * instruction pointer.
    */
   void setSaveGameAsIP();
+
+  /** 
+   * Marks a savepoint. In a stack frame, we carry an additional
+   * instruction pointer
+   */
+  void markSavepoint();
+
+  const bool isSaveGameFrame() const { return m_saveGameFrame; }
+
+  libReallive::Scenario const* scenario() const { return m_scenario; }
+  void setScenario(libReallive::Scenario const* s);
 };
 
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame);

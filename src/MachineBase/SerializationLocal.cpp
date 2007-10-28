@@ -142,8 +142,8 @@ template<class Archive>
 void save(Archive & ar, const StackFrame& frame, unsigned int version)
 {
   cerr << "Frame: " << frame << endl;
-  int sceneNumber = frame.scenario->sceneNumber();
-  int position = distance(frame.scenario->begin(), frame.ip);
+  int sceneNumber = frame.scenario()->sceneNumber();
+  int position = distance(frame.scenario()->begin(), frame.ip);
   ar << sceneNumber << position << frame.frameType;
 }
 
