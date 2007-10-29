@@ -35,10 +35,12 @@
 
 /**
  * Represents one frame in the graphics stack. 
+ *
+ * @todo Move the serialization code into this class
  */
 class GraphicsStackFrame
 {
-private:
+public:
   std::string m_commandName;
 
   bool m_hasFilename;

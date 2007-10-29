@@ -268,7 +268,8 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
   oa << header
      << const_cast<const LocalMemory&>(machine.memory().local())
      << const_cast<const RLMachine&>(machine)
-     << const_cast<const System&>(machine.system());
+     << const_cast<const System&>(machine.system())
+     << const_cast<const GraphicsSystem&>(machine.system().graphics());
 
   g_currentMachine = NULL;
 }
@@ -353,7 +354,8 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
     ia >> header
        >> machine.memory().local()
        >> machine
-       >> machine.system();
+       >> machine.system()
+       >> machine.system().graphics();
 
     machine.system().graphics().replayGraphicsStack(machine);
 

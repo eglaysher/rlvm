@@ -1257,6 +1257,8 @@ void replayGraphicsStackVector(
   for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin(); 
       it != gstack.end(); ++it)
   {
+    cerr << "Name: " << it->name() << endl;
+
     if(it->name() == GRP_LOAD)
     {
       if(it->hasTargetCoordinates())
