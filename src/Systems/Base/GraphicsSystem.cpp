@@ -151,8 +151,8 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
     m_hideInterface(false),
     m_globals(gameexe),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
-    foregroundObjects(256), 
-    backgroundObjects(256)
+    m_foregroundObjects(256), 
+    m_backgroundObjects(256)
 {
 }
 
@@ -299,10 +299,10 @@ void GraphicsSystem::promoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
 
-  FullIterator bg = backgroundObjects.full_begin();
-  FullIterator bgEnd = backgroundObjects.full_end();
-  FullIterator fg = foregroundObjects.full_begin();
-  FullIterator fgEnd = foregroundObjects.full_end();
+  FullIterator bg = m_backgroundObjects.full_begin();
+  FullIterator bgEnd = m_backgroundObjects.full_end();
+  FullIterator fg = m_foregroundObjects.full_begin();
+  FullIterator fgEnd = m_foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(bg.valid())
@@ -321,10 +321,10 @@ void GraphicsSystem::clearAndPromoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;  
 
-  FullIterator bg = backgroundObjects.full_begin();
-  FullIterator bgEnd = backgroundObjects.full_end();
-  FullIterator fg = foregroundObjects.full_begin();
-  FullIterator fgEnd = foregroundObjects.full_end();
+  FullIterator bg = m_backgroundObjects.full_begin();
+  FullIterator bgEnd = m_backgroundObjects.full_end();
+  FullIterator fg = m_foregroundObjects.full_begin();
+  FullIterator fgEnd = m_foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(fg.valid() && !fg->wipeCopy())
@@ -348,9 +348,9 @@ GraphicsObject& GraphicsSystem::getObject(int layer, int objNumber)
     throw rlvm::Exception("Invalid layer number");
   
   if(layer == OBJ_BG_LAYER)
-    return backgroundObjects[objNumber];
+    return m_backgroundObjects[objNumber];
   else
-    return foregroundObjects[objNumber];
+    return m_foregroundObjects[objNumber];
 }
 
 // -----------------------------------------------------------------------
@@ -361,17 +361,17 @@ void GraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    backgroundObjects[objNumber] = obj;
+    m_backgroundObjects[objNumber] = obj;
   else
-    foregroundObjects[objNumber] = obj;
+    m_foregroundObjects[objNumber] = obj;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllObjects()
 {
-  foregroundObjects.clear();
-  backgroundObjects.clear();
+  m_foregroundObjects.clear();
+  m_backgroundObjects.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -380,9 +380,9 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it = 
-	foregroundObjects.allocated_begin();
+	m_foregroundObjects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = 
-	foregroundObjects.allocated_end();
+	m_foregroundObjects.allocated_end();
   for(; it != end; ++it)
   {
 	const ObjectSettings& settings = getObjectSettings(it.pos());

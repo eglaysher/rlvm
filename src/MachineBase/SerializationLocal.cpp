@@ -85,26 +85,26 @@ namespace boost {
 namespace serialization {
 
 // -----------------------------------------------------------------------
-// GraphicsStackFrame
+// TextSystem
 // -----------------------------------------------------------------------
 template<class Archive>
-void serialize(Archive& ar, GraphicsStackFrame& f, unsigned int version)
+void load(Archive& ar, TextSystem& sys, unsigned int version)
 {
-  ar & f.m_commandName & f.m_hasFilename & f.m_fileName & f.m_hasSourceDC 
-    & f.m_sourceDC & f.m_hasSourceCoordinates & f.m_sourceX & f.m_sourceY 
-    & f.m_sourceX2 & f.m_sourceY2 & f.m_hasTargetDC & f.m_targetDC 
-    & f.m_hasTargetCoordinates & f.m_targetX & f.m_targetY & f.m_targetX2 
-    & f.m_targetY2 & f.m_hasRGB & f.m_r & f.m_g & f.m_b & f.m_hasOpacity 
-    & f.m_opacity & f.m_hasMask & f.m_mask;
+  int activeWin, cursorNum;
+  ar >> activeWin >> cursorNum;
+
+  sys.setActiveWindow(activeWin);
+  sys.setKeyCursor(*g_currentMachine, cursorNum);
 }
 
 // -----------------------------------------------------------------------
-// System
-// -----------------------------------------------------------------------
+
 template<class Archive>
-void serialize(Archive& ar, System& sys, unsigned int version)
+void save(Archive& ar, const TextSystem& sys, unsigned int version)
 {
-  // For now, does nothing
+  int activeWindow = sys.activeWindow();
+  int cursorNum = sys.cursorNumber();
+  ar << activeWindow << cursorNum;
 }
 
 // -----------------------------------------------------------------------
@@ -114,25 +114,7 @@ template<class Archive>
 void serialize(Archive& ar, GraphicsSystem& sys, unsigned int version)
 {
   ar & sys.graphicsStack();
-}
-
-// -----------------------------------------------------------------------
-// SaveGameHeader
-// -----------------------------------------------------------------------
-template<class Archive>
-void serialize(Archive& ar, SaveGameHeader& header, unsigned int version)
-{
-  ar & header.title & header.saveTime;
-}
-
-// -----------------------------------------------------------------------
-// GlobalMemory
-// -----------------------------------------------------------------------
-template<class Archive>
-inline void serialize(Archive & ar, LocalMemory& memory, unsigned int version)
-{
-  ar & memory.intA & memory.intB & memory.intC & memory.intD & memory.intE
-    & memory.intF & memory.strS & memory.intL & memory.strK;
+// & sys.backgroundObjects() & sys.foregroundObjects();
 }
 
 // -----------------------------------------------------------------------
@@ -223,6 +205,7 @@ void load(Archive & ar, RLMachine& machine, unsigned int version)
 
 BOOST_SERIALIZATION_SPLIT_FREE(RLMachine);
 BOOST_SERIALIZATION_SPLIT_FREE(StackFrame);
+BOOST_SERIALIZATION_SPLIT_FREE(TextSystem);
 
 // -----------------------------------------------------------------------
 
@@ -269,7 +252,8 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
      << const_cast<const LocalMemory&>(machine.memory().local())
      << const_cast<const RLMachine&>(machine)
      << const_cast<const System&>(machine.system())
-     << const_cast<const GraphicsSystem&>(machine.system().graphics());
+     << const_cast<const GraphicsSystem&>(machine.system().graphics())
+     << const_cast<const TextSystem&>(machine.system().text());
 
   g_currentMachine = NULL;
 }
@@ -355,7 +339,8 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
        >> machine.memory().local()
        >> machine
        >> machine.system()
-       >> machine.system().graphics();
+       >> machine.system().graphics()
+       >> machine.system().text();
 
     machine.system().graphics().replayGraphicsStack(machine);
 

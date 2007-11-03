@@ -46,11 +46,18 @@ struct SaveGameHeader
   SaveGameHeader(const std::string& inTitle);
   ~SaveGameHeader();
 
-  // The title of the current saved game
+  /// The title of the current saved game
   std::string title;
 
-  // The time the save file was created.
+  /// The time the save file was created.
   boost::posix_time::ptime saveTime;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    ar & title & saveTime;
+  }
 };
 
 #endif

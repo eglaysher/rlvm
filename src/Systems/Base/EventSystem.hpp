@@ -35,10 +35,6 @@ class Gameexe;
 class FrameCounter;
 class EventHandler;
 
-namespace Json {
-class Value;
-}
-
 // -----------------------------------------------------------------------
 
 struct EventSystemGlobals
@@ -49,6 +45,13 @@ struct EventSystemGlobals
   /// The two generic values that the reallive game has control over
   /// with the Generic1 and Generic2 functions.
   int generic1, generic2;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & generic1 & generic2;
+  }
 };
 
 // -----------------------------------------------------------------------

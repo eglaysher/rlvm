@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <string>
+#include <boost/serialization/access.hpp>
 
 class GraphicsSystem;
 class EventSystem;
@@ -32,10 +33,6 @@ class TextSystem;
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
-
-namespace Json {
-class Value;
-}
 
 namespace boost { namespace filesystem { class path; } }
 
@@ -57,6 +54,13 @@ struct SystemGlobals
 
   /// Whether we should put up a yes/no dialog box when saving/loading.
   bool m_confirmSaveLoad;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & m_confirmSaveLoad;
+  }
 };
 
 // -----------------------------------------------------------------------
@@ -83,6 +87,15 @@ private:
   void addPath(GameexeInterpretObject gio);
 
   SystemGlobals m_globals;
+
+  friend class boost::serialization::access;
+
+  /// boost::serialization
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    // For now, does nothing
+  }
 
 protected:
   boost::filesystem::path getHomeDirectory();
@@ -174,12 +187,6 @@ public:
 
   /// Returns the global state for saving/restoring
   SystemGlobals& globals() { return m_globals; }
-
-  /**
-   * Save the game state.
-   */
-  virtual void saveGameValues(Json::Value& system);
-  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
 
   /**
    * Returns a boost::filesystem object which points to the directory

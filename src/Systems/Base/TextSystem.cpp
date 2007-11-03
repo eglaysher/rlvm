@@ -258,35 +258,19 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 
 // -----------------------------------------------------------------------
 
+int TextSystem::cursorNumber() const
+{
+  if(m_textKeyCursor)
+    return m_textKeyCursor->cursorNumber();
+  else
+    return -1;
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
   m_globals.windowAttr = attr;
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::saveGameValues(Json::Value& text)
-{
-  text["activeWindow"] = activeWindow();
-
-  if(m_textKeyCursor)
-    text["keyCursor"] = m_textKeyCursor->cursorNumber();
-  else
-    text["keyCursor"] = -1;
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::loadGameValues(RLMachine& machine, const Json::Value& textSys)
-{
-  setActiveWindow(textSys["activeWindow"].asInt());
-
-  int curNum = textSys["keyCursor"].asInt();
-  cerr << "Saved cur: " << curNum << endl;
-  if(curNum != -1)
-    m_textKeyCursor.reset(new TextKeyCursor(machine, curNum));
-  else
-    m_textKeyCursor.reset();
 }
 
 // -----------------------------------------------------------------------

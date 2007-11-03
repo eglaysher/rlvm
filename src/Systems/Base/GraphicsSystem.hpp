@@ -62,6 +62,13 @@ struct GraphicsSystemGlobals
   int showObject1, showObject2;
 
   int showWeather;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & showObject1 & showObject2 & showWeather;
+  }
 };
 
 // -----------------------------------------------------------------------
@@ -142,10 +149,10 @@ private:
 
 protected:
   /// Foreground objects
-  LazyArray<GraphicsObject> foregroundObjects;
+  LazyArray<GraphicsObject> m_foregroundObjects;
 
   /// Background objects
-  LazyArray<GraphicsObject> backgroundObjects;
+  LazyArray<GraphicsObject> m_backgroundObjects;
 
 public:
   GraphicsSystem(Gameexe& gameexe);
@@ -344,6 +351,8 @@ public:
   void setObject(int layer, int objNumber, GraphicsObject& object);
   void clearAllObjects();
 
+  LazyArray<GraphicsObject>& backgroundObjects() { return m_backgroundObjects; }
+  LazyArray<GraphicsObject>& foregroundObjects() { return m_foregroundObjects; }
   /// @}
 
   virtual void clearAllDCs() { }

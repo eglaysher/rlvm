@@ -54,60 +54,6 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-namespace boost {
-namespace serialization {
-
-// -----------------------------------------------------------------------
-// SystemGlobals
-// -----------------------------------------------------------------------
-template<class Archive>
-void serialize(Archive & ar, SystemGlobals & g, const unsigned int version)
-{
-  ar & g.m_confirmSaveLoad;
-}
-
-// -----------------------------------------------------------------------
-// GraphicsSystemGlobals
-// -----------------------------------------------------------------------
-template<class Archive>
-void serialize(Archive& ar, GraphicsSystemGlobals& g, const unsigned int version)
-{
-  ar & g.showObject1 & g.showObject2 & g.showWeather;
-}
-
-// -----------------------------------------------------------------------
-// EventSytemGlobals
-// -----------------------------------------------------------------------
-template<class Archive>
-void serialize(Archive& ar, EventSystemGlobals& g, const unsigned int version)
-{
-  ar & g.generic1 & g.generic2;
-}
-
-// -----------------------------------------------------------------------
-// TextSystemGlobals
-// -----------------------------------------------------------------------
-template<class Archive>
-void serialize(Archive& ar, TextSystemGlobals& g, const unsigned int version)
-{
-  ar & g.autoModeBaseTime & g.autoModeCharTime & g.messageSpeed
-    & g.windowAttr;
-}
-
-// -----------------------------------------------------------------------
-// GlobalMemory
-// -----------------------------------------------------------------------
-template<class Archive>
-inline void serialize(Archive & ar, GlobalMemory& memory, unsigned int version)
-{
-  ar & memory.intG & memory.intZ & memory.strM;
-}
-
-} // namespace serialization
-} // namespace boost
-
-// -----------------------------------------------------------------------
-
 namespace Serialization {
 
 // -----------------------------------------------------------------------

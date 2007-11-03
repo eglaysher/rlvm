@@ -36,10 +36,6 @@ class TextPage;
 class TextKeyCursor;
 class Surface;
 
-namespace Json {
-class Value;
-}
-
 // -----------------------------------------------------------------------
 
 struct TextSystemGlobals
@@ -55,6 +51,14 @@ struct TextSystemGlobals
 
   /// The default \#WINDOW_ATTR. This is what is changed by the 
   std::vector<int> windowAttr;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & autoModeBaseTime & autoModeCharTime & messageSpeed
+      & windowAttr;
+  }
 };
 
 // -----------------------------------------------------------------------
@@ -224,6 +228,13 @@ public:
 
   void setKeyCursor(RLMachine& machine, int newCursor);
 
+  /** 
+   * Returns the key cursor index.
+   * 
+   * @return The key cursor number (or -1 if no key cursor).
+   */
+  int cursorNumber() const;
+
   void setCtrlKeySkip(int i) { m_ctrlKeySkip = i; }
   int ctrlKeySkip() const { return m_ctrlKeySkip; }
 
@@ -292,9 +303,6 @@ public:
   /// @}
 
   TextSystemGlobals& globals() { return m_globals; }
-
-  virtual void saveGameValues(Json::Value& system);
-  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
 
   /**
    * Resets non-configuration values (so we can load games).

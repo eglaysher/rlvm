@@ -58,6 +58,13 @@ struct GlobalMemory
   int intZ[SIZE_OF_MEM_BANK];
 
   std::string strM[SIZE_OF_MEM_BANK];
+
+  /// boost::serialization
+  template<class Archive>
+  void serialize(Archive & ar, unsigned int version)
+  {
+    ar & intG & intZ & strM;
+  }
 };
 
 // -----------------------------------------------------------------------
@@ -69,7 +76,7 @@ struct LocalMemory
   LocalMemory();
 
   /**
-   * Constructor that prevents the memory banks from being memset
+   * Constructor that prevents the memory banks from being marmoset
    * (since they'll be overwritten entirely by the thawing process.
    */
   LocalMemory(dont_initialize);
@@ -89,6 +96,13 @@ struct LocalMemory
 
   /// Parameter passing string bank
   std::string strK[3];
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive & ar, unsigned int version)
+  {
+    ar & intA & intB & intC & intD & intE & intF & strS & intL & strK;
+  }
 };
 
 // -----------------------------------------------------------------------

@@ -30,6 +30,7 @@
 #define __GraphicsStackFrame_hpp__
 
 #include <string>
+#include <boost/serialization/access.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -40,7 +41,21 @@
  */
 class GraphicsStackFrame
 {
-public:
+private:
+  friend class boost::serialization::access;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    ar & m_commandName & m_hasFilename & m_fileName & m_hasSourceDC 
+      & m_sourceDC & m_hasSourceCoordinates & m_sourceX & m_sourceY 
+      & m_sourceX2 & m_sourceY2 & m_hasTargetDC & m_targetDC 
+      & m_hasTargetCoordinates & m_targetX & m_targetY & m_targetX2 
+      & m_targetY2 & m_hasRGB & m_r & m_g & m_b & m_hasOpacity 
+      & m_opacity & m_hasMask & m_mask;
+  }
+
   std::string m_commandName;
 
   bool m_hasFilename;
