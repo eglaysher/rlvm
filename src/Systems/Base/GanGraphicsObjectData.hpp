@@ -84,12 +84,12 @@ public:
   ~GanGraphicsObjectData();
 
   virtual void render(RLMachine& machine, 
-                      GraphicsObject& renderingProperties);
+                      const GraphicsObject& renderingProperties);
   
   virtual int pixelWidth(RLMachine& machine, 
-                         GraphicsObject& renderingProperties);
+						 const GraphicsObject& renderingProperties);
   virtual int pixelHeight(RLMachine& machine, 
-                          GraphicsObject& renderingProperties);
+						  const GraphicsObject& renderingProperties);
 
   virtual GraphicsObjectData* clone() const;  
   virtual void execute(RLMachine& machine);

@@ -79,12 +79,12 @@ public:
   bool currentlyPlaying() const { return m_currentlyPlaying; }
 
   virtual void render(RLMachine& machine, 
-                      GraphicsObject& renderingProperties) = 0;
+                      const GraphicsObject& renderingProperties) = 0;
   
   virtual int pixelWidth(RLMachine& machine,
-						 GraphicsObject& renderingProperties) = 0;
+						 const GraphicsObject& renderingProperties) = 0;
   virtual int pixelHeight(RLMachine& machine,
-						  GraphicsObject& renderingProperties) = 0;
+						  const GraphicsObject& renderingProperties) = 0;
 
   virtual GraphicsObjectData* clone() const = 0;
 

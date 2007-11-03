@@ -34,12 +34,23 @@
 
 using namespace std;
 
+const int DEFAULT_TEXT_SIZE = 14;
+const int DEFAULT_TEXT_XSPACE = 0;
+const int DEFAULT_TEXT_YSPACE = 0;
+const int DEFAULT_TEXT_VERTICAL = 0;
+const int DEFAULT_TEXT_COLOUR = 0;
+const int DEFAULT_TEXT_SHADOWCOLOUR = 0;
+
 // -----------------------------------------------------------------------
 // GraphicsObject::TextProperties
 // -----------------------------------------------------------------------
 GraphicsObject::TextProperties::TextProperties()
-  : textSize(14), xspace(0), yspace(0), vertical(0), colour(0),
-    shadowColour(0)
+  : textSize(DEFAULT_TEXT_SIZE), 
+    xspace(DEFAULT_TEXT_XSPACE), 
+    yspace(DEFAULT_TEXT_YSPACE), 
+    vertical(DEFAULT_TEXT_VERTICAL),
+    colour(DEFAULT_TEXT_COLOUR),
+    shadowColour(DEFAULT_TEXT_SHADOWCOLOUR)
 {
 }
 
@@ -197,7 +208,7 @@ int GraphicsObject::yAdjustmentSum() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelWidth(RLMachine& machine)
+int GraphicsObject::pixelWidth(RLMachine& machine) const
 {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
@@ -217,7 +228,7 @@ void GraphicsObject::setAlpha(const int alpha)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelHeight(RLMachine& machine)
+int GraphicsObject::pixelHeight(RLMachine& machine) const
 {
   if(hasObjectData())
     return m_objectData->pixelHeight(machine, *this);
@@ -253,51 +264,67 @@ void GraphicsObject::setTextText(const std::string& utf8str) {
 
 // -----------------------------------------------------------------------
 
-const std::string& GraphicsObject::textText() { 
-  makeSureHaveTextProperties();
-  return m_textProperties->value; 
+const std::string& GraphicsObject::textText() const { 
+  static const std::string empty = "";
+
+  if(m_textProperties)
+    return m_textProperties->value; 
+  else
+    return empty;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textSize() {
-  makeSureHaveTextProperties();
-  return m_textProperties->textSize; 
+int GraphicsObject::textSize() const {
+  if(m_textProperties)
+    return m_textProperties->textSize; 
+  else
+    return DEFAULT_TEXT_SIZE;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textXSpace() {
-  makeSureHaveTextProperties();
-  return m_textProperties->xspace; 
+int GraphicsObject::textXSpace() const {
+  if(m_textProperties)
+    return m_textProperties->xspace; 
+  else
+    return DEFAULT_TEXT_XSPACE;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textYSpace() {
-  makeSureHaveTextProperties();
-  return m_textProperties->yspace; 
+int GraphicsObject::textYSpace() const {
+  if(m_textProperties)
+    return m_textProperties->yspace; 
+  else
+    return DEFAULT_TEXT_YSPACE;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textVertical() {
-  makeSureHaveTextProperties();
-  return m_textProperties->vertical; 
+int GraphicsObject::textVertical() const {
+  if(m_textProperties)
+    return m_textProperties->vertical; 
+  else
+    return DEFAULT_TEXT_VERTICAL;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textColour() {
-  makeSureHaveTextProperties();
-  return m_textProperties->colour; 
+int GraphicsObject::textColour() const {
+  if(m_textProperties)
+    return m_textProperties->colour; 
+  else
+    return DEFAULT_TEXT_COLOUR;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textShadowColour() {
-  makeSureHaveTextProperties();
-  return m_textProperties->shadowColour; 
+int GraphicsObject::textShadowColour() const {
+  if(m_textProperties)
+    return m_textProperties->shadowColour; 
+  else
+    return DEFAULT_TEXT_SHADOWCOLOUR;
 }
 
 // -----------------------------------------------------------------------

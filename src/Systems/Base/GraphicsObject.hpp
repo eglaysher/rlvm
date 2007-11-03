@@ -93,8 +93,8 @@ public:
   int height() const { return m_height; }
   void setHeight(const int in) { m_height = in; }
 
-  int pixelWidth(RLMachine& machine);
-  int pixelHeight(RLMachine& machine);
+  int pixelWidth(RLMachine& machine) const;
+  int pixelHeight(RLMachine& machine) const;
 
   int rotation() const { return m_rotation; }
   void setRotation(const int in) { m_rotation = in; }
@@ -194,16 +194,16 @@ public:
    * @{
    */
   void setTextText(const std::string& utf8str);
-  const std::string& textText();
+  const std::string& textText() const;
  
   void setTextOps(int size, int xspace, int yspace, int vertical, int colour, 
 				  int shadow);
-  int textSize();
-  int textXSpace();
-  int textYSpace();
-  int textVertical();
-  int textColour();
-  int textShadowColour();
+  int textSize() const;
+  int textXSpace() const;
+  int textYSpace() const;
+  int textVertical() const;
+  int textColour() const;
+  int textShadowColour() const;
   // @}  
 
 private:

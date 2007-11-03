@@ -226,7 +226,7 @@ void AnmGraphicsObjectData::execute(RLMachine& machine)
 
 void AnmGraphicsObjectData::render(
   RLMachine& machine, 
-  GraphicsObject& renderingProperties)
+  const GraphicsObject& renderingProperties)
 {
   // If we have a current frame, then let's render it.
   if(m_currentFrame != -1)
@@ -288,7 +288,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 /// I am not entirely sure these methods even make sense given the
 /// context...
 int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
-                                      GraphicsObject& rp) 
+									  const GraphicsObject& rp) 
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int width = rect.x2 - rect.x1;
@@ -298,7 +298,7 @@ int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 int AnmGraphicsObjectData::pixelHeight(RLMachine& machine,
-									   GraphicsObject& rp)
+									   const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int height = rect.y2 - rect.y1;

@@ -71,9 +71,9 @@ protected:
 public:
   GraphicsObjectOfFile(GraphicsSystem& graphics, const std::string& filename);
 
-  virtual void render(RLMachine& machine, GraphicsObject& rp);
-  virtual int pixelWidth(RLMachine& machine, GraphicsObject& rp);
-  virtual int pixelHeight(RLMachine& machine, GraphicsObject& rp);
+  virtual void render(RLMachine& machine, const GraphicsObject& rp);
+  virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp);
+  virtual int pixelHeight(RLMachine& machine, const GraphicsObject& rp);
   virtual GraphicsObjectData* clone() const;
 
   virtual void execute(RLMachine& machine);
