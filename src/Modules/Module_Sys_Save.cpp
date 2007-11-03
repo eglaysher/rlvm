@@ -49,10 +49,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 
-#include "json/value.h"
-#include "json/reader.h"
-#include "json/writer.h"
-
 #include "utf8.h"
 #include "Modules/cp932toUnicode.hpp"
 

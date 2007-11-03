@@ -39,8 +39,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "json/value.h"
-
 using std::endl;
 using std::cerr;
 using std::back_inserter;

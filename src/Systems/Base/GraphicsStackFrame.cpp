@@ -31,8 +31,6 @@
 
 #include "Systems/Base/GraphicsStackFrame.hpp"
 
-#include "json/value.h"
-
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame::GraphicsStackFrame() 

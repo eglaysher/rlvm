@@ -52,7 +52,6 @@
 #include "Modules/ZoomLongOperation.hpp"
 
 #include "libReallive/gameexe.h"
-#include "json/value.h"
 
 #include <iostream>
 

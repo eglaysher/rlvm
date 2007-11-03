@@ -40,10 +40,6 @@
 
 #include <vector>
 
-namespace Json {
-class Value;
-}
-
 namespace  libReallive {
 class Archive;
 class IntMemRef;
