@@ -35,6 +35,15 @@
 using namespace std;
 
 // -----------------------------------------------------------------------
+// GraphicsObject::TextProperties
+// -----------------------------------------------------------------------
+GraphicsObject::TextProperties::TextProperties()
+  : textSize(14), xspace(0), yspace(0), vertical(0), colour(0),
+    shadowColour(0)
+{
+}
+
+// -----------------------------------------------------------------------
 // GraphicsObject
 // -----------------------------------------------------------------------
 
@@ -60,10 +69,6 @@ GraphicsObject::GraphicsObject()
     m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255),
     m_compositeMode(0),
 
-	m_text_textSize(14), m_text_xspace(0), m_text_yspace(0),
-	m_text_vertical(0),
-	m_text_colour(0),
-	m_text_shadowColour(0),
     m_wipeCopy(0)
 {
   // Regretfully, we can't do this in the initializer list.
@@ -91,15 +96,11 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
     m_scrollRateX(rhs.m_scrollRateX),
     m_scrollRateY(rhs.m_scrollRateY), 
 
-	m_text_textSize(rhs.m_text_textSize), 
-	m_text_xspace(rhs.m_text_xspace), 
-	m_text_yspace(rhs.m_text_yspace),
-	m_text_vertical(rhs.m_text_vertical),
-	m_text_colour(rhs.m_text_colour),
-	m_text_shadowColour(rhs.m_text_shadowColour),
-
 	m_wipeCopy(0)
 {   
+  if(rhs.m_textProperties)
+    m_textProperties.reset(new TextProperties(*rhs.m_textProperties));
+
   if(rhs.m_objectData)
     m_objectData.reset(rhs.m_objectData->clone());
 
@@ -156,12 +157,8 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
     m_scrollRateX = rhs.m_scrollRateX;
     m_scrollRateY = rhs.m_scrollRateY;
 
-	m_text_textSize = rhs.m_text_textSize; 
-	m_text_xspace = rhs.m_text_xspace; 
-	m_text_yspace = rhs.m_text_yspace;
-	m_text_vertical = rhs.m_text_vertical;
-	m_text_colour = rhs.m_text_colour;
-	m_text_shadowColour = rhs.m_text_shadowColour;
+    if(rhs.m_textProperties)
+      m_textProperties.reset(new TextProperties(*rhs.m_textProperties));
 
     m_wipeCopy = rhs.m_wipeCopy;
       
@@ -200,7 +197,7 @@ int GraphicsObject::yAdjustmentSum() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelWidth(RLMachine& machine) const
+int GraphicsObject::pixelWidth(RLMachine& machine)
 {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
@@ -220,7 +217,7 @@ void GraphicsObject::setAlpha(const int alpha)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelHeight(RLMachine& machine) const
+int GraphicsObject::pixelHeight(RLMachine& machine)
 {
   if(hasObjectData())
     return m_objectData->pixelHeight(machine, *this);
@@ -249,15 +246,80 @@ GraphicsObjectData* GraphicsObject::objectDataPtr() const
 
 // -----------------------------------------------------------------------
 
+void GraphicsObject::setTextText(const std::string& utf8str) {
+  makeSureHaveTextProperties();
+  m_textProperties->value = utf8str; 
+}
+
+// -----------------------------------------------------------------------
+
+const std::string& GraphicsObject::textText() { 
+  makeSureHaveTextProperties();
+  return m_textProperties->value; 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textSize() {
+  makeSureHaveTextProperties();
+  return m_textProperties->textSize; 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textXSpace() {
+  makeSureHaveTextProperties();
+  return m_textProperties->xspace; 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textYSpace() {
+  makeSureHaveTextProperties();
+  return m_textProperties->yspace; 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textVertical() {
+  makeSureHaveTextProperties();
+  return m_textProperties->vertical; 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textColour() {
+  makeSureHaveTextProperties();
+  return m_textProperties->colour; 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textShadowColour() {
+  makeSureHaveTextProperties();
+  return m_textProperties->shadowColour; 
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::makeSureHaveTextProperties()
+{
+  if(!m_textProperties)
+    m_textProperties.reset(new TextProperties());
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsObject::setTextOps(
   int size, int xspace, int yspace, int vertical, int colour, int shadow)
 {
-  m_text_textSize = size;
-  m_text_xspace = xspace;
-  m_text_yspace = yspace;
-  m_text_vertical = vertical;
-  m_text_colour = colour;
-  m_text_shadowColour = shadow;
+  makeSureHaveTextProperties();
+  m_textProperties->textSize = size;
+  m_textProperties->xspace = xspace;
+  m_textProperties->yspace = yspace;
+  m_textProperties->vertical = vertical;
+  m_textProperties->colour = colour;
+  m_textProperties->shadowColour = shadow;
 }
 
 // -----------------------------------------------------------------------

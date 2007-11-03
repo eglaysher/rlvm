@@ -93,8 +93,8 @@ public:
   int height() const { return m_height; }
   void setHeight(const int in) { m_height = in; }
 
-  int pixelWidth(RLMachine& machine) const;
-  int pixelHeight(RLMachine& machine) const;
+  int pixelWidth(RLMachine& machine);
+  int pixelHeight(RLMachine& machine);
 
   int rotation() const { return m_rotation; }
   void setRotation(const int in) { m_rotation = in; }
@@ -193,18 +193,17 @@ public:
    * 
    * @{
    */
-  void setTextText(const std::string& utf8str) { m_text_value = utf8str; }
-  const std::string& textText() const { return m_text_value; }
+  void setTextText(const std::string& utf8str);
+  const std::string& textText();
  
   void setTextOps(int size, int xspace, int yspace, int vertical, int colour, 
 				  int shadow);
-  int textSize() const { return m_text_textSize; }
-  int textXSpace() const { return m_text_xspace; }
-  int textYSpace() const { return m_text_yspace; }
-  int textVertical() const { return m_text_vertical; }
-  int textColour() const { return m_text_colour; }
-  int textShadowColour() const { return m_text_shadowColour; }
-
+  int textSize();
+  int textXSpace();
+  int textYSpace();
+  int textVertical();
+  int textColour();
+  int textShadowColour();
   // @}  
 
 private:
@@ -305,14 +304,23 @@ private:
    * 
    * @{
    */
-  std::string m_text_value;
+  struct TextProperties
+  {
+    TextProperties();
 
-  int m_text_textSize, m_text_xspace, m_text_yspace;
+    std::string value;
 
-  // Figure this out later.
-  int m_text_vertical;
-  int m_text_colour;
-  int m_text_shadowColour;
+    int textSize, xspace, yspace;
+
+    // Figure this out later.
+    int vertical;
+    int colour;
+    int shadowColour;    
+  };
+
+  void makeSureHaveTextProperties();
+  boost::scoped_ptr<TextProperties> m_textProperties;
+
   /// @}
 
   /// The wipeCopy bit

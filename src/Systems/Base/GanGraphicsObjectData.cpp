@@ -231,7 +231,7 @@ void GanGraphicsObjectData::throwBadFormat(
 
 void GanGraphicsObjectData::render(
   RLMachine& machine, 
-  const GraphicsObject& go)
+  GraphicsObject& go)
 {
   if(m_currentSet != -1 && m_currentFrame != -1)
   {
@@ -257,7 +257,7 @@ void GanGraphicsObjectData::render(
   
 int GanGraphicsObjectData::pixelWidth(
   RLMachine& machine,
-  const GraphicsObject& renderingProperties)
+  GraphicsObject& renderingProperties)
 {
   if(m_currentSet != -1 && m_currentFrame != -1)
   {
@@ -278,7 +278,7 @@ int GanGraphicsObjectData::pixelWidth(
 
 int GanGraphicsObjectData::pixelHeight(
   RLMachine& machine, 
-  const GraphicsObject& renderingProperties)
+  GraphicsObject& renderingProperties)
 {
   if(m_currentSet != -1 && m_currentFrame != -1)
   {

@@ -61,7 +61,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
+void GraphicsObjectOfFile::render(RLMachine& machine, GraphicsObject& rp)
 {
   if(currentlyPlaying())
   {
@@ -78,7 +78,7 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = m_surface->getPattern(rp.pattNo());
   int width = rect.x2 - rect.x1;
@@ -87,7 +87,7 @@ int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& r
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelHeight(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsObjectOfFile::pixelHeight(RLMachine& machine, GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = m_surface->getPattern(rp.pattNo());
   int height = rect.y2 - rect.y1;

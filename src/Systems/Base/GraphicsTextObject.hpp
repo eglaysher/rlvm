@@ -45,9 +45,9 @@ private:
    * Redraw m_surface.
    */
   void updateSurface(RLMachine& machine,
-					 const GraphicsObject& rp);
+                     GraphicsObject& rp);
 
-  bool needsUpdate(const GraphicsObject& renderingProperties);
+  bool needsUpdate(GraphicsObject& renderingProperties);
 
 public:
   GraphicsTextObject(RLMachine& machine);
@@ -55,12 +55,12 @@ public:
 
   // ------------------------------------ [ GraphicsObjectData interface ]
   virtual void render(RLMachine& machine, 
-                      const GraphicsObject& renderingProperties);
+                      GraphicsObject& renderingProperties);
   
   virtual int pixelWidth(RLMachine& machine, 
-                         const GraphicsObject& renderingProperties);
+                         GraphicsObject& renderingProperties);
   virtual int pixelHeight(RLMachine& machine,
-                          const GraphicsObject& renderingProperties);
+                          GraphicsObject& renderingProperties);
 
   virtual GraphicsObjectData* clone() const;
 };

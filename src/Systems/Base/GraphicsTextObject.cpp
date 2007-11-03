@@ -47,7 +47,7 @@ GraphicsTextObject::~GraphicsTextObject()
 // -----------------------------------------------------------------------
 
 void GraphicsTextObject::updateSurface(RLMachine& machine,
-                                       const GraphicsObject& rp)
+                                       GraphicsObject& rp)
 {
   m_cachedUtf8str = rp.textText();
   m_surface = machine.system().text().renderText(
@@ -57,7 +57,7 @@ void GraphicsTextObject::updateSurface(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
+bool GraphicsTextObject::needsUpdate(GraphicsObject& rp)
 {
   return !m_surface || rp.textText() != m_cachedUtf8str;
 }
@@ -65,7 +65,7 @@ bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
 // -----------------------------------------------------------------------
 
 void GraphicsTextObject::render(RLMachine& machine, 
-                                const GraphicsObject& rp)
+                                GraphicsObject& rp)
 {
   if(needsUpdate(rp))
 	updateSurface(machine, rp);
@@ -75,7 +75,7 @@ void GraphicsTextObject::render(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsTextObject::pixelWidth(RLMachine& machine, GraphicsObject& rp)
 {
   if(needsUpdate(rp))
     updateSurface(machine, rp);
@@ -85,7 +85,7 @@ int GraphicsTextObject::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelHeight(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsTextObject::pixelHeight(RLMachine& machine, GraphicsObject& rp)
 {
   if(needsUpdate(rp))
     updateSurface(machine, rp);

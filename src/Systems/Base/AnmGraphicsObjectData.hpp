@@ -103,12 +103,12 @@ public:
   ~AnmGraphicsObjectData();
 
   virtual void render(RLMachine& machine, 
-                      const GraphicsObject& renderingProperties);
+                      GraphicsObject& renderingProperties);
   
   virtual int pixelWidth(RLMachine& machine,
-						 const GraphicsObject& renderingProperties);
+                         GraphicsObject& renderingProperties);
   virtual int pixelHeight(RLMachine& machine,
-						  const GraphicsObject& renderingProperties);
+						  GraphicsObject& renderingProperties);
 
   virtual GraphicsObjectData* clone() const;  
   virtual void execute(RLMachine& machine);
