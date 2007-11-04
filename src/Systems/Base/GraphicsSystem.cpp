@@ -36,6 +36,7 @@
 
 #include "Modules/Module_Grp.hpp"
 #include "Utilities.h"
+#include "LazyArray.hpp"
 
 #include <sstream>
 #include <vector>
@@ -43,7 +44,7 @@
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-
+#include <iterator>
 #include <iostream>
 
 using std::cout;
@@ -142,6 +143,26 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
 {}
 
 // -----------------------------------------------------------------------
+// GraphicsObjectImpl
+// -----------------------------------------------------------------------
+struct GraphicsSystem::GraphicsObjectImpl
+{
+  GraphicsObjectImpl();
+
+  /// Foreground objects
+  LazyArray<GraphicsObject> m_foregroundObjects;
+
+  /// Background objects
+  LazyArray<GraphicsObject> m_backgroundObjects;
+};
+
+// -----------------------------------------------------------------------
+
+GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
+  : m_foregroundObjects(256), m_backgroundObjects(256)
+{}
+
+// -----------------------------------------------------------------------
 // GraphicsSystem
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
@@ -151,8 +172,7 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
     m_hideInterface(false),
     m_globals(gameexe),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
-    m_foregroundObjects(256), 
-    m_backgroundObjects(256)
+    m_graphicsObjectImpl(new GraphicsObjectImpl)
 {
 }
 
@@ -299,10 +319,10 @@ void GraphicsSystem::promoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
 
-  FullIterator bg = m_backgroundObjects.full_begin();
-  FullIterator bgEnd = m_backgroundObjects.full_end();
-  FullIterator fg = m_foregroundObjects.full_begin();
-  FullIterator fgEnd = m_foregroundObjects.full_end();
+  FullIterator bg = m_graphicsObjectImpl->m_backgroundObjects.full_begin();
+  FullIterator bgEnd = m_graphicsObjectImpl->m_backgroundObjects.full_end();
+  FullIterator fg = m_graphicsObjectImpl->m_foregroundObjects.full_begin();
+  FullIterator fgEnd = m_graphicsObjectImpl->m_foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(bg.valid())
@@ -321,10 +341,10 @@ void GraphicsSystem::clearAndPromoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;  
 
-  FullIterator bg = m_backgroundObjects.full_begin();
-  FullIterator bgEnd = m_backgroundObjects.full_end();
-  FullIterator fg = m_foregroundObjects.full_begin();
-  FullIterator fgEnd = m_foregroundObjects.full_end();
+  FullIterator bg = m_graphicsObjectImpl->m_backgroundObjects.full_begin();
+  FullIterator bgEnd = m_graphicsObjectImpl->m_backgroundObjects.full_end();
+  FullIterator fg = m_graphicsObjectImpl->m_foregroundObjects.full_begin();
+  FullIterator fgEnd = m_graphicsObjectImpl->m_foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(fg.valid() && !fg->wipeCopy())
@@ -348,9 +368,9 @@ GraphicsObject& GraphicsSystem::getObject(int layer, int objNumber)
     throw rlvm::Exception("Invalid layer number");
   
   if(layer == OBJ_BG_LAYER)
-    return m_backgroundObjects[objNumber];
+    return m_graphicsObjectImpl->m_backgroundObjects[objNumber];
   else
-    return m_foregroundObjects[objNumber];
+    return m_graphicsObjectImpl->m_foregroundObjects[objNumber];
 }
 
 // -----------------------------------------------------------------------
@@ -361,17 +381,31 @@ void GraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    m_backgroundObjects[objNumber] = obj;
+    m_graphicsObjectImpl->m_backgroundObjects[objNumber] = obj;
   else
-    m_foregroundObjects[objNumber] = obj;
+    m_graphicsObjectImpl->m_foregroundObjects[objNumber] = obj;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllObjects()
 {
-  m_foregroundObjects.clear();
-  m_backgroundObjects.clear();
+  m_graphicsObjectImpl->m_foregroundObjects.clear();
+  m_graphicsObjectImpl->m_backgroundObjects.clear();
+}
+
+// -----------------------------------------------------------------------
+
+LazyArray<GraphicsObject>& GraphicsSystem::backgroundObjects() 
+{
+  return m_graphicsObjectImpl->m_backgroundObjects; 
+}
+
+// -----------------------------------------------------------------------
+
+LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() 
+{
+  return m_graphicsObjectImpl->m_foregroundObjects; 
 }
 
 // -----------------------------------------------------------------------
@@ -380,9 +414,9 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it = 
-	m_foregroundObjects.allocated_begin();
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = 
-	m_foregroundObjects.allocated_end();
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
   for(; it != end; ++it)
   {
 	const ObjectSettings& settings = getObjectSettings(it.pos());
@@ -419,4 +453,15 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
     oss << "Don't know how to handle object file: \"" << fullPath << "\"";
     throw rlvm::Exception(oss.str());
   }
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsSystem::foregroundAllocated()
+{
+  AllocatedLazyArrayIterator<GraphicsObject> it = 
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end = 
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
+  return std::distance(it, end);
 }

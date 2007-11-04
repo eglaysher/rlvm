@@ -33,6 +33,7 @@
 #include "Modules/Modules.hpp"
 #include "Utilities.h"
 
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 //#include "Systems/Base/AnmGraphicsObjectData.hpp"
 
@@ -350,6 +351,9 @@ int main(int argc, char* argv[])
     }
 
 	Serialization::saveGlobalMemory(rlmachine);
+
+//    cerr << "We ended with " << sdlSystem.graphics().foregroundAllocated() 
+//         << " allocated fg objects!" << endl;
   }
   catch (rlvm::Exception& e) {
     cerr << "Fatal RLVM error: " << e.what() << endl;

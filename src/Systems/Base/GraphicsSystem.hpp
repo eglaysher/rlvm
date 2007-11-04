@@ -33,7 +33,6 @@
 
 #include <vector>
 #include <string>
-#include "LazyArray.hpp"
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -46,6 +45,8 @@ class GraphicsObjectData;
 class GraphicsStackFrame;
 class Gameexe;
 struct ObjectSettings;
+
+template<typename T> class LazyArray;
 
 // -----------------------------------------------------------------------
 
@@ -147,12 +148,8 @@ private:
   /// Immutable global data that's constructed from the Gameexe.ini file.
   boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
 
-protected:
-  /// Foreground objects
-  LazyArray<GraphicsObject> m_foregroundObjects;
-
-  /// Background objects
-  LazyArray<GraphicsObject> m_backgroundObjects;
+  struct GraphicsObjectImpl;
+  boost::scoped_ptr<GraphicsObjectImpl> m_graphicsObjectImpl;
 
 public:
   GraphicsSystem(Gameexe& gameexe);
@@ -351,8 +348,8 @@ public:
   void setObject(int layer, int objNumber, GraphicsObject& object);
   void clearAllObjects();
 
-  LazyArray<GraphicsObject>& backgroundObjects() { return m_backgroundObjects; }
-  LazyArray<GraphicsObject>& foregroundObjects() { return m_foregroundObjects; }
+  LazyArray<GraphicsObject>& backgroundObjects();
+  LazyArray<GraphicsObject>& foregroundObjects();
   /// @}
 
   virtual void clearAllDCs() { }
@@ -362,6 +359,8 @@ public:
    * game.
    */
   virtual void reset();
+
+  int foregroundAllocated();
 };
 
 const static int OBJ_FG_LAYER = 0;

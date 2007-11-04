@@ -57,6 +57,7 @@
 #include "libReallive/gameexe.h"
 #include "file.h"
 #include "Utilities.h"
+#include "LazyArray.hpp"
 
 #include "Modules/cp932toUnicode.hpp"
 
