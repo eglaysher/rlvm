@@ -438,19 +438,20 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine, 
                                                    const std::string& filename)
 {
+  // Get the path to get the file type (which won't be in filename)
   string fullPath = findFile(machine, filename);
   if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
   {
-    return new GraphicsObjectOfFile(*this, fullPath);
+    return new GraphicsObjectOfFile(machine, filename);
   }
   else if(iends_with(fullPath, "anm"))
   {
-    return new AnmGraphicsObjectData(machine, fullPath);
+    return new AnmGraphicsObjectData(machine, filename);
   }
   else
   {
     ostringstream oss;
-    oss << "Don't know how to handle object file: \"" << fullPath << "\"";
+    oss << "Don't know how to handle object file: \"" << filename << "\"";
     throw rlvm::Exception(oss.str());
   }
 }

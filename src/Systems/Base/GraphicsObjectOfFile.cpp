@@ -35,14 +35,26 @@
 #include <boost/shared_ptr.hpp>
 #include <string>
 #include <iostream>
+#include "Utilities.h"
 
 using namespace std;
+
+// -----------------------------------------------------------------------
+
+GraphicsObjectOfFile::GraphicsObjectOfFile()
+  : m_filename(""),
+    m_frameTime(0),
+    m_currentFrame(0),
+    m_timeAtLastFrameChange(0)
+{
+}
 
 // -----------------------------------------------------------------------
 
 GraphicsObjectOfFile::GraphicsObjectOfFile(
   const GraphicsObjectOfFile& obj)
   : GraphicsObjectData(obj),
+    m_filename(obj.m_filename),
     m_surface(obj.m_surface), 
     m_frameTime(obj.m_frameTime),
     m_currentFrame(obj.m_currentFrame),
@@ -52,12 +64,22 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 // -----------------------------------------------------------------------
 
 GraphicsObjectOfFile::GraphicsObjectOfFile(
-  GraphicsSystem& graphics, const std::string& filename)
-  : m_surface(graphics.loadSurfaceFromFile(filename)), 
+  RLMachine& machine, const std::string& filename)
+  : m_filename(filename),
     m_frameTime(0),
     m_currentFrame(0),
     m_timeAtLastFrameChange(0)
-{}
+{
+  loadFile(machine);
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObjectOfFile::loadFile(RLMachine& machine)
+{
+  string fullPath = findFile(machine, m_filename);
+  m_surface = machine.system().graphics().loadSurfaceFromFile(fullPath);
+}
 
 // -----------------------------------------------------------------------
 

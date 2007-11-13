@@ -23,6 +23,10 @@
 #ifndef __AnimationObjectData_hpp__
 #define __AnimationObjectData_hpp__
 
+#include <boost/serialization/access.hpp>
+
+// -----------------------------------------------------------------------
+
 class RLMachine;
 class GraphicsObject;
 
@@ -48,8 +52,18 @@ private:
 
   bool m_currentlyPlaying;
 
-protected:
+  friend class boost::serialization::access;
 
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    // boost::serialization should take care of the swizzling of
+    // m_ownedBy.
+    ar & m_afterAnimation & m_ownedBy & m_currentlyPlaying;
+  }
+
+protected:
   /** 
    * Function called after animation ends when this object has been
    * set up to loop.

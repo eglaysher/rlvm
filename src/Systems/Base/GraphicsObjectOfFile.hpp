@@ -48,6 +48,9 @@ class RLMachine;
 class GraphicsObjectOfFile : public GraphicsObjectData
 {
 private:
+  /// The name of the graphics file that was loaded.
+  std::string m_filename;
+
   /// The encapsulated surface to render
   boost::shared_ptr<Surface> m_surface;
 
@@ -69,7 +72,10 @@ protected:
   virtual void loopAnimation();
 
 public:
-  GraphicsObjectOfFile(GraphicsSystem& graphics, const std::string& filename);
+  GraphicsObjectOfFile();
+  GraphicsObjectOfFile(RLMachine& machine, const std::string& filename);
+
+  void loadFile(RLMachine& machine);
 
   virtual void render(RLMachine& machine, const GraphicsObject& rp);
   virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp);

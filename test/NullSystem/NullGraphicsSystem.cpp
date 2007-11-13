@@ -26,7 +26,6 @@
 
 // -----------------------------------------------------------------------
 
-
 NullGraphicsSystem::NullGraphicsSystem(Gameexe& gexe)
   : GraphicsSystem(gexe)
 {

@@ -65,17 +65,40 @@ using std::vector;
 // -----------------------------------------------------------------------
 // GanGraphicsObjectData
 // -----------------------------------------------------------------------
+
+GanGraphicsObjectData::GanGraphicsObjectData()
+  : m_currentFrame(-1)
+{}
+
+// -----------------------------------------------------------------------
+
 GanGraphicsObjectData::GanGraphicsObjectData(
   RLMachine& machine, const std::string& ganFile, 
-  const shared_ptr<Surface>& incomingImage)
-  : m_currentFrame(-1), 
-    image(incomingImage)
+  const std::string& imgFile)
+  : m_ganFilename(ganFile), m_imgFilename(imgFile), m_currentFrame(-1)
 {
-  ifstream ifs(ganFile.c_str(), ifstream::in | ifstream::binary);
+  load(machine);
+}
+
+// -----------------------------------------------------------------------
+
+GanGraphicsObjectData::~GanGraphicsObjectData()
+{}
+
+// -----------------------------------------------------------------------
+
+void GanGraphicsObjectData::load(RLMachine& machine)
+{
+  string imgFilePath = findFile(machine, m_imgFilename, IMAGE_FILETYPES);
+  string ganFilePath = findFile(machine, m_ganFilename, GAN_FILETYPES);
+
+  image = machine.system().graphics().loadSurfaceFromFile(imgFilePath);
+
+  ifstream ifs(ganFilePath.c_str(), ifstream::in | ifstream::binary);
   if(!ifs)
   {
     ostringstream oss;
-    oss << "Could not open file \"" << ganFile << "\".";
+    oss << "Could not open file \"" << ganFilePath << "\".";
     throw rlvm::Exception(oss.str());
   }
 
@@ -84,18 +107,13 @@ GanGraphicsObjectData::GanGraphicsObjectData(
   if(loadFileData(ifs, ganData, fileSize))
   {
     ostringstream oss;
-    oss << "Could not read the contents of \"" << ganFile << "\"";
+    oss << "Could not read the contents of \"" << ganFilePath << "\"";
     throw rlvm::Exception(oss.str());
   }
 
-  testFileMagic(ganFile, ganData, fileSize);
-  readData(machine, ganFile, ganData, fileSize);
+  testFileMagic(ganFilePath, ganData, fileSize);
+  readData(machine, ganFilePath, ganData, fileSize);  
 }
-
-// -----------------------------------------------------------------------
-
-GanGraphicsObjectData::~GanGraphicsObjectData()
-{}
 
 // -----------------------------------------------------------------------
 

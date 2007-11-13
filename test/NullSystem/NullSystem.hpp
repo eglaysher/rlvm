@@ -45,21 +45,15 @@ private:
   NullTextSystem nullTextSystem;
 
 public:
-  NullSystem(const std::string& pathToGameexe)
-    : m_gameexe(pathToGameexe), nullGraphicsSystem(m_gameexe),
-	  nullEventSystem(m_gameexe), 
-      nullTextSystem(m_gameexe) {}
+  NullSystem(const std::string& pathToGameexe);
+  NullSystem();
 
-  NullSystem() : m_gameexe(), nullGraphicsSystem(m_gameexe),
-				 nullEventSystem(m_gameexe), 
-                 nullTextSystem(m_gameexe) {}
+  virtual void run(RLMachine& machine);
 
-  virtual void run(RLMachine& machine) { /* do nothing */ }
-
-  virtual GraphicsSystem& graphics() { return nullGraphicsSystem; }
-  virtual EventSystem& event() { return nullEventSystem; }
-  virtual Gameexe& gameexe() { return m_gameexe; }
-  virtual TextSystem& text() { return nullTextSystem; }
+  virtual GraphicsSystem& graphics();
+  virtual EventSystem& event();
+  virtual Gameexe& gameexe();
+  virtual TextSystem& text();
 };
 
 #endif

@@ -56,6 +56,9 @@ private:
   typedef std::vector< std::vector<Frame> > AnimationSets;
   AnimationSets animationSets;
 
+  std::string m_ganFilename;
+  std::string m_imgFilename;
+
   int m_currentSet;
   int m_currentFrame;
   int m_timeAtLastFrameChange;
@@ -79,9 +82,12 @@ protected:
   virtual void loopAnimation();
 
 public:
-  GanGraphicsObjectData(RLMachine& machine, const std::string& file,
-                        const boost::shared_ptr<Surface>& incomingImage);
+  GanGraphicsObjectData();
+  GanGraphicsObjectData(RLMachine& machine, const std::string& ganfile,
+                        const std::string& imgfile);
   ~GanGraphicsObjectData();
+
+  void load(RLMachine& machine);
 
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties);

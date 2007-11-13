@@ -25,16 +25,17 @@
 //  
 // -----------------------------------------------------------------------
 
-
-
 // include headers that implement a archive in simple text format
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/export.hpp>
 #include <boost/date_time/posix_time/time_serialize.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+
 
 #include "Utilities.h"
 
@@ -44,10 +45,15 @@
 #include "MachineBase/SaveGameHeader.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "algoplus.hpp"
+#include "LazyArray.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsStackFrame.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectOfFile.hpp"
+#include "Systems/Base/AnmGraphicsObjectData.hpp"
+#include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "libReallive/intmemref.h"
@@ -81,8 +87,107 @@ RLMachine* g_currentMachine = NULL;
 
 // -----------------------------------------------------------------------
 
+BOOST_CLASS_EXPORT(GraphicsObjectOfFile);
+BOOST_CLASS_EXPORT(AnmGraphicsObjectData);
+BOOST_CLASS_EXPORT(GanGraphicsObjectData);
+
+// -----------------------------------------------------------------------
+
 namespace boost {
 namespace serialization {
+
+// -----------------------------------------------------------------------
+// GanGraphicsObjectData
+// -----------------------------------------------------------------------
+template<class Archive>
+void load(Archive& ar, GanGraphicsObjectData& obj, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(obj)
+    & obj.m_ganFilename & obj.m_imgFilename & obj.m_currentSet
+    & obj.m_currentFrame & obj.m_timeAtLastFrameChange;
+
+  obj.load(*g_currentMachine);
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void save(Archive& ar, GanGraphicsObjectData& obj, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(obj)
+    & obj.m_ganFilename & obj.m_imgFilename & obj.m_currentSet
+    & obj.m_currentFrame & obj.m_timeAtLastFrameChange;
+}
+
+// -----------------------------------------------------------------------
+// AnmGraphicsObjectData
+// -----------------------------------------------------------------------
+template<class Archive>
+void load(Archive& ar, AnmGraphicsObjectData& obj, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(obj);
+
+  ar & obj.m_filename;
+
+  // Reconstruct the ANM data from whatever file was linked.
+  obj.loadAnmFile(*g_currentMachine);
+
+  // Now load the rest of the data.
+  ar & obj.m_currentlyPlaying & obj.m_currentSet;
+
+  // Reconstruct the m_cur* variables from their 
+  int curFrameSet, curFrame;
+  ar & curFrameSet & curFrame;
+
+  obj.m_curFrameSet = 
+    std::advance(obj.animationSet.at(obj.m_currentSet).begin(),
+                 curFrameSet);
+  obj.m_curFrameSetEnd = obj.animationSet.at(obj.m_currentSet).end();
+  obj.m_curFrame = std::advance(obj.framelist.at(*obj.m_curFrameSet).begin(),
+                                curFrame);
+  obj.m_curFrameEnd = obj.framelist.at(*obj.m_curFrameSet).end();
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void save(Archive& ar, AnmGraphicsObjectData& obj, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(obj);
+  ar & obj.m_filename & obj.m_currentlyPlaying & obj.m_currentSet;
+  
+  // Figure out what set we're playing, which
+  int curFrameSet = distance(obj.animationSet.at(obj.m_currentSet).begin(),
+                             obj.m_curFrameSet);
+  int currentFrame = distance(obj.framelist.at(*obj.m_curFrameSet).begin(),
+                              obj.m_curFrame);
+
+  ar & curFrameSet & currentFrame;
+}
+
+// -----------------------------------------------------------------------
+// GraphicsObjectOfFile
+// -----------------------------------------------------------------------
+template<class Archive>
+void load(Archive& ar, GraphicsObjectOfFile& obj, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(obj)
+    & obj.m_filename & obj.m_frameTime & obj.m_currentFrame 
+    & obj.m_timeAtLastFrameChange;
+
+  obj.loadFile(g_currentMachine->system().graphics());
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void save(Archive& ar, GraphicsObjectOfFile& obj, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(obj);
+
+  ar & obj.m_filename & obj.m_frameTime & obj.m_currentFrame &
+    obj.m_timeAtLastFrameChange;
+}
 
 // -----------------------------------------------------------------------
 // TextSystem
@@ -113,8 +218,10 @@ void save(Archive& ar, const TextSystem& sys, unsigned int version)
 template<class Archive>
 void serialize(Archive& ar, GraphicsSystem& sys, unsigned int version)
 {
-  ar & sys.graphicsStack();
-// & sys.backgroundObjects() & sys.foregroundObjects();
+  ar & sys.graphicsStack() 
+     & sys.backgroundObjects() 
+     & sys.foregroundObjects()
+    ;
 }
 
 // -----------------------------------------------------------------------
@@ -123,7 +230,6 @@ void serialize(Archive& ar, GraphicsSystem& sys, unsigned int version)
 template<class Archive>
 void save(Archive & ar, const StackFrame& frame, unsigned int version)
 {
-  cerr << "Frame: " << frame << endl;
   int sceneNumber = frame.scenario()->sceneNumber();
   int position = distance(frame.scenario()->begin(), frame.ip);
   ar << sceneNumber << position << frame.frameType;

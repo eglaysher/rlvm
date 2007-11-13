@@ -39,6 +39,8 @@ private:
   /// Note: This internal structure is heavily based off of xkanon's
   /// ANM file implementation, but has been changed to be all C++ like.
 
+  std::string m_filename;
+
   /**
    * @name Animation Data
    * 
@@ -68,6 +70,8 @@ private:
    * @{
    */
   bool m_currentlyPlaying;
+
+  int m_currentSet;
 
   std::vector<int>::iterator m_curFrameSet;
   std::vector<int>::iterator m_curFrameSetEnd;
@@ -99,8 +103,11 @@ private:
   /// @}
 
 public:
+  AnmGraphicsObjectData();
   AnmGraphicsObjectData(RLMachine& machine, const std::string& file);
   ~AnmGraphicsObjectData();
+
+  void loadAnmFile(RLMachine& machine);
 
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties);

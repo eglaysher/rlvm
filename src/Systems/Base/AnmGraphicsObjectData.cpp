@@ -79,9 +79,37 @@ static const char ANM_MAGIC[ANM_MAGIC_SIZE] =
 
 // -----------------------------------------------------------------------
 
+AnmGraphicsObjectData::AnmGraphicsObjectData()
+  : m_currentSet(-1)
+{}
+
+// -----------------------------------------------------------------------
+
 AnmGraphicsObjectData::AnmGraphicsObjectData(
   RLMachine& machine, const std::string& file)
+  : m_filename(file), m_currentSet(-1)
 {
+  loadAnmFile(machine);
+}
+
+// -----------------------------------------------------------------------
+
+AnmGraphicsObjectData::~AnmGraphicsObjectData()
+{}
+
+// -----------------------------------------------------------------------
+
+bool AnmGraphicsObjectData::testFileMagic(scoped_array<char>& anmData)
+{
+  return memcmp(anmData.get(), ANM_MAGIC, ANM_MAGIC_SIZE) != 0;
+}
+
+// -----------------------------------------------------------------------
+
+void AnmGraphicsObjectData::loadAnmFile(RLMachine& machine)
+{
+  string file = findFile(machine, m_filename);
+
   ifstream ifs(file.c_str(), ifstream::in | ifstream::binary);
   if(!ifs)
   {
@@ -107,18 +135,6 @@ AnmGraphicsObjectData::AnmGraphicsObjectData(
   }
 
   loadAnmFileFromData(machine, anmData);
-}
-
-// -----------------------------------------------------------------------
-
-AnmGraphicsObjectData::~AnmGraphicsObjectData()
-{}
-
-// -----------------------------------------------------------------------
-
-bool AnmGraphicsObjectData::testFileMagic(scoped_array<char>& anmData)
-{
-  return memcmp(anmData.get(), ANM_MAGIC, ANM_MAGIC_SIZE) != 0;
 }
 
 // -----------------------------------------------------------------------
