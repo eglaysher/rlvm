@@ -25,6 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+
 #include "Modules/Module_Str.hpp"
 #include "libReallive/archive.h"
 #include "libReallive/intmemref.h"
@@ -81,6 +85,19 @@ void object::test<1>()
 {
   scoped_ptr<GraphicsObjectData> inputObjOfFile(
     new GraphicsObjectOfFile(rlmachine, "doesntmatter"));
+
+  stringstream ss;
+
+  {
+    const scoped_ptr<GraphicsObjectData> goOut;
+    boost::archive::text_oarchive oa(ss);
+    oa << goOut;
+  }
+
+  {
+    boost::archive::text_iarchive ia(ss);
+    ia >> inputObjOfFile;
+  }
 }
 
 // -----------------------------------------------------------------------
