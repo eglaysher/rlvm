@@ -30,6 +30,7 @@
 
 #include "libReallive/scenario.h"
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 class LongOperation;
 
@@ -114,6 +115,14 @@ public:
 
   libReallive::Scenario const* scenario() const { return m_scenario; }
   void setScenario(libReallive::Scenario const* s);
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame);

@@ -32,6 +32,7 @@
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 class Surface;
 class RLMachine;
@@ -86,6 +87,15 @@ public:
 
   virtual bool isAnimation() const;
   virtual void playSet(RLMachine& machine, int set);
+
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

@@ -32,6 +32,7 @@
  * constants.
  */
 
+#include <boost/serialization/split_member.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -488,6 +489,15 @@ public:
    * Returns the current System that this RLMachine outputs to.
    */
   System& system() { return m_system; }
+
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

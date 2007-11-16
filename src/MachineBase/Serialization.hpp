@@ -41,6 +41,19 @@ class Memory;
 
 namespace Serialization {
 
+/**
+ * Pointer to the machine that is having its data
+ * serialized. boost::serialization doesn't allow passing something
+ * like a closure around, which is frustrating because many pieces of
+ * data rely on looking things up on the machine.
+ *
+ * @warning We're using what is essentially a piece of static data
+ *          here; this is a likely location for errors
+ */
+extern RLMachine* g_currentMachine;
+
+// -----------------------------------------------------------------------
+
 void saveGlobalMemory(RLMachine& machine);
 void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine);
 

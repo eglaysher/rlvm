@@ -24,6 +24,7 @@
 #define __AnmGraphicsObjectData_hpp__
 
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include <boost/serialization/split_member.hpp>
 
 #include <vector>
 #include <string>
@@ -73,11 +74,11 @@ private:
 
   int m_currentSet;
 
-  std::vector<int>::iterator m_curFrameSet;
-  std::vector<int>::iterator m_curFrameSetEnd;
+  std::vector<int>::const_iterator m_curFrameSet;
+  std::vector<int>::const_iterator m_curFrameSetEnd;
 
-  std::vector<int>::iterator m_curFrame;
-  std::vector<int>::iterator m_curFrameEnd;
+  std::vector<int>::const_iterator m_curFrame;
+  std::vector<int>::const_iterator m_curFrameEnd;
 
   int m_currentFrame;
 
@@ -122,6 +123,14 @@ public:
 
   virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 

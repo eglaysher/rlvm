@@ -24,6 +24,11 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
@@ -34,6 +39,7 @@
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
+#include "MachineBase/StackFrame.hpp"
 #include "Modules/Module_Grp.hpp"
 #include "Utilities.h"
 #include "LazyArray.hpp"
@@ -466,3 +472,21 @@ int GraphicsSystem::foregroundAllocated()
 	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
   return std::distance(it, end);
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsSystem::serialize(Archive& ar, unsigned int version)
+{
+  ar & graphicsStack() 
+     & backgroundObjects() 
+     & foregroundObjects()
+    ;
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsSystem::serialize<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+template void GraphicsSystem::serialize<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);

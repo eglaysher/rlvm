@@ -361,6 +361,9 @@ public:
   virtual void reset();
 
   int foregroundAllocated();
+
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int file_version);
 };
 
 const static int OBJ_FG_LAYER = 0;

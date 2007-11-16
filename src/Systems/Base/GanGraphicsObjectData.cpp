@@ -36,12 +36,17 @@
  * representation), found at rldev/src/rlxml/gan.ml.
  */
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "MachineBase/Serialization.hpp"
 
 #include "Utilities.h"
 #include "libReallive/defs.h"
@@ -49,6 +54,8 @@
 #include "MachineBase/RLMachine.hpp"
 
 #include <fstream>
+
+#include <boost/serialization/export.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -364,3 +371,40 @@ void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
   m_timeAtLastFrameChange = machine.system().event().getTicks();
   machine.system().graphics().markScreenForRefresh();
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GanGraphicsObjectData::load(Archive& ar, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
+    & m_ganFilename & m_imgFilename & m_currentSet
+    & m_currentFrame & m_timeAtLastFrameChange;
+
+  load(*Serialization::g_currentMachine);
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GanGraphicsObjectData::save(Archive& ar, unsigned int version) const
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
+    & m_ganFilename & m_imgFilename & m_currentSet
+    & m_currentFrame & m_timeAtLastFrameChange;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void GanGraphicsObjectData::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void GanGraphicsObjectData::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
+// -----------------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(GanGraphicsObjectData);

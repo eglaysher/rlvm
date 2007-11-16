@@ -25,6 +25,11 @@
 //  
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/export.hpp>
+
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/System.hpp"
@@ -32,6 +37,7 @@
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include <boost/shared_ptr.hpp>
 #include <string>
 #include <iostream>
@@ -175,3 +181,38 @@ void GraphicsObjectOfFile::playSet(RLMachine& machine, int frameTime)
   machine.system().graphics().markScreenForRefresh();
 }
 
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
+    & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
+
+  loadFile(*Serialization::g_currentMachine);
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsObjectOfFile::save(Archive& ar, unsigned int version) const
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+
+  ar & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
+}
+
+// -----------------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(GraphicsObjectOfFile);
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void GraphicsObjectOfFile::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void GraphicsObjectOfFile::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);

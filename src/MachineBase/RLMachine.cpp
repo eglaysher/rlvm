@@ -33,6 +33,10 @@
  * 
  */
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include "libReallive/archive.h"
 #include "libReallive/bytecode.h"
 #include "libReallive/scenario.h"
@@ -61,6 +65,7 @@
 #include "Modules/PauseLongOperation.hpp"
 
 #include "dateUtil.hpp"
+#include "algoplus.hpp"
 
 #include <string>
 #include <sstream>
@@ -535,3 +540,49 @@ void RLMachine::setLineNumber(const int i)
 //  cerr << "On line " << i << endl;
   m_line = i;
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void RLMachine::save(Archive & ar, unsigned int version) const
+{
+  int lineNum = lineNumber();
+  ar & lineNum;
+
+  // Copy all elements of the stack up to the first LongOperation.
+  vector<StackFrame> prunedStack;
+  copy_until(callStack.begin(), callStack.end(),
+             back_inserter(prunedStack),
+             bind(&StackFrame::frameType, _1) == StackFrame::TYPE_LONGOP);
+  
+  for_each(prunedStack.begin(), prunedStack.end(),
+           bind(&StackFrame::setSaveGameAsIP, _1));
+
+  ar & prunedStack;
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void RLMachine::load(Archive & ar, unsigned int version)
+{
+  cerr << "Loading RLMachine!" << endl;
+  ar >> m_line;
+
+  // Just thaw the callStack; all preprocessing was done at freeze
+  // time.
+  callStack.clear();
+  ar >> callStack;
+}
+
+// -----------------------------------------------------------------------
+
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void RLMachine::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void RLMachine::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);

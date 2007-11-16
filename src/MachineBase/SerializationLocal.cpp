@@ -30,8 +30,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/vector.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/export.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
 #include <boost/date_time/posix_time/time_serialize.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -45,7 +45,6 @@
 #include "MachineBase/SaveGameHeader.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "algoplus.hpp"
-#include "LazyArray.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -70,248 +69,11 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-namespace {
+namespace Serialization {
 
-/**
- * Pointer to the machine that is having its data
- * serialized. boost::serialization doesn't allow passing something
- * like a closure around, which is frustrating because many pieces of
- * data rely on looking things up on the machine.
- *
- * @warning We're using what is essentially a piece of static data
- *          here; this is a likely location for errors
- */
 RLMachine* g_currentMachine = NULL;
 
-}  // close annonymous namespace
-
-// -----------------------------------------------------------------------
-
-BOOST_CLASS_EXPORT(GraphicsObjectOfFile);
-BOOST_CLASS_EXPORT(AnmGraphicsObjectData);
-BOOST_CLASS_EXPORT(GanGraphicsObjectData);
-
-// -----------------------------------------------------------------------
-
-namespace boost {
-namespace serialization {
-
-// -----------------------------------------------------------------------
-// GanGraphicsObjectData
-// -----------------------------------------------------------------------
-template<class Archive>
-void load(Archive& ar, GanGraphicsObjectData& obj, unsigned int version)
-{
-  ar & boost::serialization::base_object<GraphicsObjectData>(obj)
-    & obj.m_ganFilename & obj.m_imgFilename & obj.m_currentSet
-    & obj.m_currentFrame & obj.m_timeAtLastFrameChange;
-
-  obj.load(*g_currentMachine);
 }
-
-// -----------------------------------------------------------------------
-
-template<class Archive>
-void save(Archive& ar, GanGraphicsObjectData& obj, unsigned int version)
-{
-  ar & boost::serialization::base_object<GraphicsObjectData>(obj)
-    & obj.m_ganFilename & obj.m_imgFilename & obj.m_currentSet
-    & obj.m_currentFrame & obj.m_timeAtLastFrameChange;
-}
-
-// -----------------------------------------------------------------------
-// AnmGraphicsObjectData
-// -----------------------------------------------------------------------
-template<class Archive>
-void load(Archive& ar, AnmGraphicsObjectData& obj, unsigned int version)
-{
-  ar & boost::serialization::base_object<GraphicsObjectData>(obj);
-
-  ar & obj.m_filename;
-
-  // Reconstruct the ANM data from whatever file was linked.
-  obj.loadAnmFile(*g_currentMachine);
-
-  // Now load the rest of the data.
-  ar & obj.m_currentlyPlaying & obj.m_currentSet;
-
-  // Reconstruct the m_cur* variables from their 
-  int curFrameSet, curFrame;
-  ar & curFrameSet & curFrame;
-
-  obj.m_curFrameSet = 
-    std::advance(obj.animationSet.at(obj.m_currentSet).begin(),
-                 curFrameSet);
-  obj.m_curFrameSetEnd = obj.animationSet.at(obj.m_currentSet).end();
-  obj.m_curFrame = std::advance(obj.framelist.at(*obj.m_curFrameSet).begin(),
-                                curFrame);
-  obj.m_curFrameEnd = obj.framelist.at(*obj.m_curFrameSet).end();
-}
-
-// -----------------------------------------------------------------------
-
-template<class Archive>
-void save(Archive& ar, AnmGraphicsObjectData& obj, unsigned int version)
-{
-  ar & boost::serialization::base_object<GraphicsObjectData>(obj);
-  ar & obj.m_filename & obj.m_currentlyPlaying & obj.m_currentSet;
-  
-  // Figure out what set we're playing, which
-  int curFrameSet = distance(obj.animationSet.at(obj.m_currentSet).begin(),
-                             obj.m_curFrameSet);
-  int currentFrame = distance(obj.framelist.at(*obj.m_curFrameSet).begin(),
-                              obj.m_curFrame);
-
-  ar & curFrameSet & currentFrame;
-}
-
-// -----------------------------------------------------------------------
-// GraphicsObjectOfFile
-// -----------------------------------------------------------------------
-template<class Archive>
-void load(Archive& ar, GraphicsObjectOfFile& obj, unsigned int version)
-{
-  ar & boost::serialization::base_object<GraphicsObjectData>(obj)
-    & obj.m_filename & obj.m_frameTime & obj.m_currentFrame 
-    & obj.m_timeAtLastFrameChange;
-
-  obj.loadFile(g_currentMachine->system().graphics());
-}
-
-// -----------------------------------------------------------------------
-
-template<class Archive>
-void save(Archive& ar, GraphicsObjectOfFile& obj, unsigned int version)
-{
-  ar & boost::serialization::base_object<GraphicsObjectData>(obj);
-
-  ar & obj.m_filename & obj.m_frameTime & obj.m_currentFrame &
-    obj.m_timeAtLastFrameChange;
-}
-
-// -----------------------------------------------------------------------
-// TextSystem
-// -----------------------------------------------------------------------
-template<class Archive>
-void load(Archive& ar, TextSystem& sys, unsigned int version)
-{
-  int activeWin, cursorNum;
-  ar >> activeWin >> cursorNum;
-
-  sys.setActiveWindow(activeWin);
-  sys.setKeyCursor(*g_currentMachine, cursorNum);
-}
-
-// -----------------------------------------------------------------------
-
-template<class Archive>
-void save(Archive& ar, const TextSystem& sys, unsigned int version)
-{
-  int activeWindow = sys.activeWindow();
-  int cursorNum = sys.cursorNumber();
-  ar << activeWindow << cursorNum;
-}
-
-// -----------------------------------------------------------------------
-// GraphicsSystem
-// -----------------------------------------------------------------------
-template<class Archive>
-void serialize(Archive& ar, GraphicsSystem& sys, unsigned int version)
-{
-  ar & sys.graphicsStack() 
-     & sys.backgroundObjects() 
-     & sys.foregroundObjects()
-    ;
-}
-
-// -----------------------------------------------------------------------
-// StackFrame
-// -----------------------------------------------------------------------
-template<class Archive>
-void save(Archive & ar, const StackFrame& frame, unsigned int version)
-{
-  int sceneNumber = frame.scenario()->sceneNumber();
-  int position = distance(frame.scenario()->begin(), frame.ip);
-  ar << sceneNumber << position << frame.frameType;
-}
-
-// -----------------------------------------------------------------------
-
-template<class Archive>
-void load(Archive & ar, StackFrame& frame, unsigned int version)
-{
-  int sceneNumber, offset;
-  StackFrame::FrameType type;
-  ar >> sceneNumber >> offset >> type;
-
-  libReallive::Scenario const* scenario = 
-    g_currentMachine->archive().scenario(sceneNumber);
-  if(scenario == NULL)
-  {
-    ostringstream oss;
-    oss << "Unknown SEEN #" << sceneNumber << " in save file!";
-    throw rlvm::Exception(oss.str());
-  }
-
-  if(offset > distance(scenario->begin(), scenario->end()) || offset < 0)
-  {
-    ostringstream oss;
-    oss << offset << " is an illegal bytecode offset for SEEN #" 
-        << sceneNumber << " in save file!";
-    throw rlvm::Exception(oss.str());
-  }
-
-  Scenario::const_iterator positionIt = scenario->begin();
-  advance(positionIt, offset);
-
-  frame = StackFrame(scenario, positionIt, type);
-}
-
-// -----------------------------------------------------------------------
-// RLMachine
-// -----------------------------------------------------------------------
-template<class Archive>
-void save(Archive & ar, const RLMachine& machine, unsigned int version)
-{
-  int lineNum = machine.lineNumber();
-  ar & lineNum;
-
-  // Copy all elements of the stack up to the first LongOperation.
-  vector<StackFrame> prunedStack;
-  copy_until(machine.callStack.begin(), machine.callStack.end(),
-             back_inserter(prunedStack),
-             bind(&StackFrame::frameType, _1) == StackFrame::TYPE_LONGOP);
-  
-  for_each(prunedStack.begin(), prunedStack.end(),
-           bind(&StackFrame::setSaveGameAsIP, _1));
-
-  ar & prunedStack;
-}
-
-// -----------------------------------------------------------------------
-
-template<class Archive>
-void load(Archive & ar, RLMachine& machine, unsigned int version)
-{
-  cerr << "Loading RLMachine!" << endl;
-  ar >> machine.m_line;
-
-  // Just thaw the callStack; all preprocessing was done at freeze
-  // time.
-  machine.callStack.clear();
-  ar >> machine.callStack;
-}
-
-// -----------------------------------------------------------------------
-
-} // namespace serialization
-} // namespace boost
-
-// -----------------------------------------------------------------------
-
-BOOST_SERIALIZATION_SPLIT_FREE(RLMachine);
-BOOST_SERIALIZATION_SPLIT_FREE(StackFrame);
-BOOST_SERIALIZATION_SPLIT_FREE(TextSystem);
 
 // -----------------------------------------------------------------------
 
@@ -454,6 +216,5 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
   }
   g_currentMachine = NULL;
 }
-
 
 }

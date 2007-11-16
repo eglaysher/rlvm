@@ -39,8 +39,14 @@
  *       against the length of the array if we're going to do that.
  */
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/export.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+
 #include "Utilities.h"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
@@ -61,14 +67,7 @@ using boost::shared_ptr;
 
 using libReallive::read_i32;
 
-using std::cerr;
-using std::endl;
-using std::ostream_iterator;
-using std::ios;
-using std::ifstream;
-using std::ostringstream;
-using std::string;
-using std::vector;
+using namespace std;
 
 // -----------------------------------------------------------------------
 
@@ -343,3 +342,62 @@ void AnmGraphicsObjectData::playSet(RLMachine& machine, int set)
 
   machine.system().graphics().markScreenForRefresh();
 }
+
+// -----------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------
+// AnmGraphicsObjectData
+// -----------------------------------------------------------------------
+template<class Archive>
+void AnmGraphicsObjectData::load(Archive& ar, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+
+  ar & m_filename;
+
+  // Reconstruct the ANM data from whatever file was linked.
+  loadAnmFile(*Serialization::g_currentMachine);
+
+  // Now load the rest of the data.
+  ar & m_currentlyPlaying & m_currentSet;
+
+  // Reconstruct the m_cur* variables from their 
+  int curFrameSet, currentFrame;
+  ar & curFrameSet & currentFrame;
+
+  m_curFrameSet = animationSet.at(m_currentSet).begin();
+  advance(m_curFrameSet, curFrameSet);
+  m_curFrameSetEnd = animationSet.at(m_currentSet).end();
+
+  m_curFrame = framelist.at(*m_curFrameSet).begin();
+  advance(m_curFrame, currentFrame);
+  m_curFrameEnd = framelist.at(*m_curFrameSet).end();
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void AnmGraphicsObjectData::save(Archive& ar, unsigned int version) const
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar & m_filename & m_currentlyPlaying & m_currentSet;
+  
+  // Figure out what set we're playing, which
+  int curFrameSet = distance(animationSet.at(m_currentSet).begin(),
+                             m_curFrameSet);
+  int currentFrame = distance(framelist.at(*m_curFrameSet).begin(),
+                              m_curFrame);
+
+  ar & curFrameSet & currentFrame;
+}
+
+// -----------------------------------------------------------------------
+
+template void AnmGraphicsObjectData::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void AnmGraphicsObjectData::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
+BOOST_CLASS_EXPORT(AnmGraphicsObjectData);

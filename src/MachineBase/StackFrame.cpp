@@ -25,8 +25,17 @@
 //  
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/StackFrame.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "MachineBase/LongOperation.hpp"
+
+#include "libReallive/Archive.h"
+
+#include "Utilities.h"
 
 #include <iostream>
 
@@ -95,3 +104,57 @@ std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
 
   return os;
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void StackFrame::save(Archive & ar, unsigned int version) const
+{
+  int sceneNumber = scenario()->sceneNumber();
+  int position = distance(scenario()->begin(), ip);
+  ar & sceneNumber & position & frameType;
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void StackFrame::load(Archive & ar, unsigned int version)
+{
+  int sceneNumber, offset;
+  FrameType type;
+  ar & sceneNumber & offset & type;
+
+  libReallive::Scenario const* scenario = 
+    Serialization::g_currentMachine->archive().scenario(sceneNumber);
+  if(scenario == NULL)
+  {
+    ostringstream oss;
+    oss << "Unknown SEEN #" << sceneNumber << " in save file!";
+    throw rlvm::Exception(oss.str());
+  }
+
+  if(offset > distance(scenario->begin(), scenario->end()) || offset < 0)
+  {
+    ostringstream oss;
+    oss << offset << " is an illegal bytecode offset for SEEN #" 
+        << sceneNumber << " in save file!";
+    throw rlvm::Exception(oss.str());
+  }
+
+  libReallive::Scenario::const_iterator positionIt = scenario->begin();
+  advance(positionIt, offset);
+
+  *this = StackFrame(scenario, positionIt, type);
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void StackFrame::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void StackFrame::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+

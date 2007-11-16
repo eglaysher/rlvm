@@ -24,12 +24,16 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 
+#include "MachineBase/Serialization.hpp"
 #include "libReallive/gameexe.h"
 #include "Utilities.h"
 
@@ -281,3 +285,37 @@ void TextSystem::reset()
   m_previousPageSets.clear();
   m_previousPageIt = m_previousPageSets.end();
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void TextSystem::load(Archive& ar, unsigned int version)
+{
+  int win, cursorNum;
+  ar & win & cursorNum;
+
+  setActiveWindow(win);
+  setKeyCursor(*Serialization::g_currentMachine, cursorNum);
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void TextSystem::save(Archive& ar, unsigned int version) const
+{
+  int win = activeWindow();
+  int cursorNum = cursorNumber();
+  ar & win & cursorNum;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void TextSystem::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void TextSystem::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
