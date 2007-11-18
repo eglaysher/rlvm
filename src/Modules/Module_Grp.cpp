@@ -1251,12 +1251,10 @@ void replayGraphicsStackVector(
   RLMachine& machine, 
   const std::vector<GraphicsStackFrame>& gstack)
 {
-  cerr << "REPLAYING GRAPHICS STACK" << endl;
-
   for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin(); 
       it != gstack.end(); ++it)
   {
-    cerr << "Name: " << it->name() << endl;
+//    cerr << "Name: " << it->name() << endl;
 
     if(it->name() == GRP_LOAD)
     {

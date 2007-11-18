@@ -566,13 +566,12 @@ void RLMachine::save(Archive & ar, unsigned int version) const
 template<class Archive>
 void RLMachine::load(Archive & ar, unsigned int version)
 {
-  cerr << "Loading RLMachine!" << endl;
-  ar >> m_line;
+  ar & m_line;
 
   // Just thaw the callStack; all preprocessing was done at freeze
   // time.
   callStack.clear();
-  ar >> callStack;
+  ar & callStack;
 }
 
 // -----------------------------------------------------------------------

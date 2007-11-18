@@ -78,6 +78,8 @@ public:
 
   void loadFile(RLMachine& machine);
 
+  const std::string& filename() const { return m_filename; }
+
   virtual void render(RLMachine& machine, const GraphicsObject& rp);
   virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp);
   virtual int pixelHeight(RLMachine& machine, const GraphicsObject& rp);

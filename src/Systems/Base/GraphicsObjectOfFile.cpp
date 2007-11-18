@@ -197,9 +197,8 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
 template<class Archive>
 void GraphicsObjectOfFile::save(Archive& ar, unsigned int version) const
 {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
-
-  ar & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
+    & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
 }
 
 // -----------------------------------------------------------------------

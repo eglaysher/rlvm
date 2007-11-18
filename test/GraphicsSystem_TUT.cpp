@@ -38,6 +38,7 @@
 
 #include "NullSystem/NullSystem.hpp"
 #include "NullSystem/NullGraphicsSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 
 #include "Utilities.h"
@@ -49,11 +50,14 @@
 using namespace boost;
 using namespace std;
 using namespace libReallive;
+using namespace Serialization;
 
 // -----------------------------------------------------------------------
 
 namespace tut
 {
+
+const string FILE_NAME = "doesntmatter";
 
 struct GraphicsSystem_data
 {
@@ -83,20 +87,128 @@ template<>
 template<>
 void object::test<1>()
 {
-  scoped_ptr<GraphicsObjectData> inputObjOfFile(
-    new GraphicsObjectOfFile(rlmachine, "doesntmatter"));
-
   stringstream ss;
+  Serialization::g_currentMachine = &rlmachine;
 
   {
-    const scoped_ptr<GraphicsObjectData> goOut;
+    const scoped_ptr<GraphicsObjectData> inputObjOfFile(
+      new GraphicsObjectOfFile(rlmachine, FILE_NAME));
     boost::archive::text_oarchive oa(ss);
-    oa << goOut;
+    oa << inputObjOfFile;
   }
 
   {
+    scoped_ptr<GraphicsObjectData> dst;
     boost::archive::text_iarchive ia(ss);
-    ia >> inputObjOfFile;
+    ia >> dst;
+
+    GraphicsObjectOfFile& obj = dynamic_cast<GraphicsObjectOfFile&>(*dst);
+    ensure_equals("Preserved file name", obj.filename(), FILE_NAME);
+  }
+
+  Serialization::g_currentMachine = NULL;
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Try it again, this time wrapped in the GraphicsObject
+ */
+template<>
+template<>
+void object::test<2>()
+{
+  stringstream ss;
+  Serialization::g_currentMachine = &rlmachine;
+  
+  {
+    const scoped_ptr<GraphicsObject> obj(new GraphicsObject());
+    obj->setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
+
+    boost::archive::text_oarchive oa(ss);
+    oa << obj;
+  }
+
+  {
+    scoped_ptr<GraphicsObject> dst;
+    boost::archive::text_iarchive ia(ss);
+    ia >> dst;
+
+    GraphicsObjectOfFile& obj = 
+      dynamic_cast<GraphicsObjectOfFile&>(dst->objectData());
+
+    // Now query invariants.
+    ensure_equals("Didn't preserve filename", obj.filename(), FILE_NAME);
+  }
+
+  Serialization::g_currentMachine = NULL;
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Serialize the entire graphics system. ;_; I'm getting desperate on
+ * this bug here...
+ */
+template<>
+template<>
+void object::test<3>()
+{
+  stringstream ss;
+  Serialization::g_currentMachine = &rlmachine;
+  
+  {
+    GraphicsObject obj;
+    obj.setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
+    system.graphics().setObject(OBJ_FG_LAYER, 1, obj);
+
+    boost::archive::text_oarchive oa(ss);
+    oa << const_cast<const GraphicsSystem&>(system.graphics());
+  }
+
+  {
+    NullSystem sys;
+    boost::archive::text_iarchive ia(ss);
+    ia >> sys.graphics();
+
+    GraphicsObjectOfFile& obj = 
+      dynamic_cast<GraphicsObjectOfFile&>(
+        sys.graphics().getObject(OBJ_FG_LAYER, 1).objectData());
+
+    // Now query invariants.
+    ensure_equals("Didn't preserve filename", obj.filename(), FILE_NAME);
+  }
+
+  Serialization::g_currentMachine = NULL;
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * 
+ */
+template<>
+template<>
+void object::test<4>()
+{
+  // Try serializing the whole damn thing.
+  stringstream ss;
+  GraphicsObject obj;
+  obj.setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
+  system.graphics().setObject(OBJ_FG_LAYER, 1, obj);
+  saveGameTo(ss, rlmachine);
+
+  {
+    NullSystem otherSys;
+    RLMachine omachine(otherSys, arc);
+    loadGameFrom(ss, omachine);
+
+    GraphicsObjectOfFile& obj = 
+      dynamic_cast<GraphicsObjectOfFile&>(
+        omachine.system().graphics().getObject(OBJ_FG_LAYER, 1).objectData());
+
+    // Now query invariants.
+    ensure_equals("Didn't preserve filename", obj.filename(), FILE_NAME);
   }
 }
 

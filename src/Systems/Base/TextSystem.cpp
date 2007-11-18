@@ -251,7 +251,11 @@ int TextSystem::getAutoTime(int numChars)
 
 void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 {
-  if(!m_textKeyCursor || 
+  if(newCursor == -1)
+  {
+    m_textKeyCursor.reset();
+  }
+  else if(!m_textKeyCursor || 
      m_textKeyCursor->cursorNumber() != newCursor)
   {
     m_textKeyCursor.reset(new TextKeyCursor(machine, newCursor));
