@@ -32,6 +32,7 @@
  * 
  */
 
+#include <iostream>
 #include <stdexcept>
 #include <boost/utility.hpp>
 #include <boost/scoped_array.hpp>
@@ -87,8 +88,12 @@ private:
     ar & m_size;
     m_array.reset(new T*[m_size]);
 
+    std::cerr << "LazyArray::load. Size=" << m_size << std::endl;
     for(int i = 0; i < m_size; ++i)
+    {
+      std::cerr << " loading item " << i << std::endl;
       ar & m_array[i];
+    }
   }
   
   /// boost::serialization saving
@@ -97,9 +102,13 @@ private:
   {
     /// Place the total allocated size
     ar & m_size;
+    std::cerr << "LazyArray::save. Size=" << m_size << std::endl;
 
     for(int i = 0; i < m_size; ++i)
+    {
+      std::cerr << " saving item " << i << std::endl;
       ar & m_array[i];
+    }
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

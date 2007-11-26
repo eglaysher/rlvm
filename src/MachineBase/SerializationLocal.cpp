@@ -60,6 +60,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <exception>
+#include <stdexcept>
 #include <boost/bind.hpp>
 
 using namespace std;
@@ -114,14 +116,25 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
 
   g_currentMachine = &machine;
 
-  text_oarchive oa(oss);
-//  System& sys = machine.system();
-  oa << header
-     << const_cast<const LocalMemory&>(machine.memory().local())
-     << const_cast<const RLMachine&>(machine)
-     << const_cast<const System&>(machine.system())
-     << const_cast<const GraphicsSystem&>(machine.system().graphics())
-     << const_cast<const TextSystem&>(machine.system().text());
+  try
+  {
+
+    text_oarchive oa(oss);
+    oa << header
+       << const_cast<const LocalMemory&>(machine.memory().local())
+       << const_cast<const RLMachine&>(machine)
+       << const_cast<const System&>(machine.system())
+       << const_cast<const GraphicsSystem&>(machine.system().graphics())
+       << const_cast<const TextSystem&>(machine.system().text());
+  }
+  catch(std::exception& e)
+  {
+    cerr << "--- WARNING: ERROR DURING SAVING FILE: " << e.what() << " ---"
+         << endl;
+
+    g_currentMachine = NULL;
+    throw e;
+  }
 
   g_currentMachine = NULL;
 }
@@ -198,6 +211,8 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
   SaveGameHeader header;
 
   g_currentMachine = &machine;
+
+  try
   {
     machine.system().reset();
 
@@ -214,6 +229,15 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
 
     machine.system().graphics().markScreenForRefresh();
   }
+  catch(std::exception& e)
+  {
+    cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what() << " ---"
+         << endl;
+
+    g_currentMachine = NULL;
+    throw e;
+  }
+
   g_currentMachine = NULL;
 }
 

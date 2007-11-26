@@ -23,7 +23,9 @@
 #ifndef __GraphicsTextObject_hpp__
 #define __GraphicsTextObject_hpp__
 
+#include <string>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
@@ -50,6 +52,8 @@ private:
   bool needsUpdate(const GraphicsObject& renderingProperties);
 
 public:
+  GraphicsTextObject();
+
   GraphicsTextObject(RLMachine& machine);
   ~GraphicsTextObject();
 
@@ -63,6 +67,14 @@ public:
                           const GraphicsObject& renderingProperties);
 
   virtual GraphicsObjectData* clone() const;
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

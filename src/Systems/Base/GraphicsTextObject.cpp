@@ -24,6 +24,11 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/export.hpp>
+
 #include "GraphicsTextObject.hpp"
 
 #include "MachineBase/RLMachine.hpp"
@@ -32,6 +37,12 @@
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Utilities.h"
+
+
+// -----------------------------------------------------------------------
+
+GraphicsTextObject::GraphicsTextObject()
+{}
 
 // -----------------------------------------------------------------------
 
@@ -99,3 +110,38 @@ GraphicsObjectData* GraphicsTextObject::clone() const
 {
   return new GraphicsTextObject(*this);
 }
+
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsTextObject::load(Archive& ar, unsigned int version)
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+
+  m_cachedUtf8str = "";
+  m_surface.reset();
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsTextObject::save(Archive& ar, unsigned int version) const
+{
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+}
+
+// -----------------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(GraphicsTextObject);
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void GraphicsTextObject::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void GraphicsTextObject::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);

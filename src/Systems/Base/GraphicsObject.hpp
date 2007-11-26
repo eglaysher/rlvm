@@ -23,6 +23,8 @@
 #ifndef __GraphicObject_hpp__
 #define __GraphicObject_hpp__
 
+#include <iostream>
+#include <typeinfo>
 #include <boost/scoped_ptr.hpp>
 #include <boost/serialization/access.hpp>
 
@@ -344,6 +346,9 @@ private:
   template<class Archive>
   void serialize(Archive& ar, unsigned int version)
   {
+    if(m_objectData)
+      std::cerr << "serialize type " << typeid(*m_objectData).name() << std::endl;
+
     ar & m_visible & m_x & m_y & m_whateverAdjustVertOperatesOn &
       m_originX & m_originY & m_repOriginX & m_repOriginY &
       m_width & m_height & m_rotation & m_pattNo & m_alpha &
@@ -352,6 +357,8 @@ private:
       m_colourLevel & m_compositeMode & m_textProperties & m_wipeCopy
 // ;
       & m_objectData;
+
+
   }
 };
 
