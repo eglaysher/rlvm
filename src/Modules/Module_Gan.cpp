@@ -61,7 +61,7 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
       if(obj.hasObjectData())
       {
-        GraphicsObjectData& data = obj.objectData();
+        const GraphicsObjectData& data = obj.objectData();
         if(data.isAnimation())
           return !data.currentlyPlaying();
         else

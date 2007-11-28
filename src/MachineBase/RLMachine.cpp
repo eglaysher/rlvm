@@ -196,6 +196,7 @@ void RLMachine::setStringValue(int type, int number, const std::string& value)
 void RLMachine::markSavepoint()
 {
   callStack.back().markSavepoint();
+  system().graphics().takeSavepointSnapshot();
 }
 
 // -----------------------------------------------------------------------

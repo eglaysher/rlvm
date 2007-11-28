@@ -119,6 +119,8 @@ public:
 
   void clear();
 
+  void copyTo(LazyArray<T>& otherArray);
+
   // Iterate across all items, allocated or not. It is the users
   // responsibility to call the isValid() method on the iterator
   // before trying to use the contents.
@@ -315,6 +317,35 @@ void LazyArray<T>::clear()
   {
     boost::checked_delete<T>(m_array[i]);
     m_array[i] = NULL;
+  }
+}
+
+// -----------------------------------------------------------------------
+
+template<typename T>
+void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
+{
+  if(otherArray.m_size < m_size)
+    throw std::runtime_error(
+      "Not enough space in target array in LazyArray::copyTo");
+
+  otherArray.m_size = m_size;
+  for(int i = 0; i < m_size; ++i)
+  {
+    T* srcEntry = rawDeref(i);
+    T* dstEntry = otherArray.rawDeref(i);
+
+    if(srcEntry && !dstEntry)
+      otherArray.m_array[i] = new T(*srcEntry);
+    else if(!srcEntry && dstEntry)
+    {
+      boost::checked_delete<T>(otherArray.m_array[i]);      
+      otherArray.m_array[i] = NULL;
+    }
+    else if(srcEntry && dstEntry)
+    {
+      *dstEntry = *srcEntry;
+    }
   }
 }
 

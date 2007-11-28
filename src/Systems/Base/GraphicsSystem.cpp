@@ -160,12 +160,19 @@ struct GraphicsSystem::GraphicsObjectImpl
 
   /// Background objects
   LazyArray<GraphicsObject> m_backgroundObjects;
+
+  /// Foreground objects (at the time of the last save)
+  LazyArray<GraphicsObject> m_savedForegroundObjects;
+
+  /// Background objects (at the time of the last save)
+  LazyArray<GraphicsObject> m_savedBackgroundObjects;
 };
 
 // -----------------------------------------------------------------------
 
 GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
-  : m_foregroundObjects(256), m_backgroundObjects(256)
+  : m_foregroundObjects(256), m_backgroundObjects(256),
+    m_savedForegroundObjects(256), m_savedBackgroundObjects(256)
 {}
 
 // -----------------------------------------------------------------------
@@ -416,6 +423,14 @@ LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects()
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::takeSavepointSnapshot()
+{
+  foregroundObjects().copyTo(m_graphicsObjectImpl->m_savedForegroundObjects);
+  backgroundObjects().copyTo(m_graphicsObjectImpl->m_savedBackgroundObjects);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
@@ -476,17 +491,27 @@ int GraphicsSystem::foregroundAllocated()
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GraphicsSystem::serialize(Archive& ar, unsigned int version)
+void GraphicsSystem::save(Archive& ar, unsigned int version) const
 {
-  ar & graphicsStack() 
-     & backgroundObjects() 
-     & foregroundObjects()
-    ;
+  ar & m_graphicsObjectSettings->graphicsStack
+    & m_graphicsObjectImpl->m_savedBackgroundObjects
+    & m_graphicsObjectImpl->m_savedForegroundObjects;
 }
 
 // -----------------------------------------------------------------------
 
-template void GraphicsSystem::serialize<boost::archive::text_iarchive>(
+
+template<class Archive>
+void GraphicsSystem::load(Archive& ar, unsigned int version)
+{
+  ar & graphicsStack() 
+    & m_graphicsObjectImpl->m_backgroundObjects
+    & m_graphicsObjectImpl->m_foregroundObjects;
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsSystem::load<boost::archive::text_iarchive>(
   boost::archive::text_iarchive & ar, unsigned int version);
-template void GraphicsSystem::serialize<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version);
+template void GraphicsSystem::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;

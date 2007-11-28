@@ -35,6 +35,7 @@
 #include <string>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -350,6 +351,8 @@ public:
 
   LazyArray<GraphicsObject>& backgroundObjects();
   LazyArray<GraphicsObject>& foregroundObjects();
+
+  void takeSavepointSnapshot();
   /// @}
 
   virtual void clearAllDCs() { }
@@ -362,8 +365,15 @@ public:
 
   int foregroundAllocated();
 
+  // boost::serialization forward declaration
   template<class Archive>
-  void serialize(Archive& ar, const unsigned int file_version);
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 const static int OBJ_FG_LAYER = 0;
