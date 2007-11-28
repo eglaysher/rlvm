@@ -216,7 +216,6 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
   {
     machine.system().reset();
 
-    // Only load the header
     text_iarchive ia(iss);
     ia >> header
        >> machine.memory().local()

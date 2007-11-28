@@ -346,19 +346,13 @@ private:
   template<class Archive>
   void serialize(Archive& ar, unsigned int version)
   {
-    if(m_objectData)
-      std::cerr << "serialize type " << typeid(*m_objectData).name() << std::endl;
-
     ar & m_visible & m_x & m_y & m_whateverAdjustVertOperatesOn &
       m_originX & m_originY & m_repOriginX & m_repOriginY &
       m_width & m_height & m_rotation & m_pattNo & m_alpha &
       m_clipX1 & m_clipY1 & m_clipX2 & m_clipY2 & m_mono & m_invert &
       m_tintR & m_tintG & m_tintB & m_colourR & m_colourG & m_colourB &
-      m_colourLevel & m_compositeMode & m_textProperties & m_wipeCopy
-// ;
-      & m_objectData;
-
-
+      m_colourLevel & m_compositeMode & m_textProperties & m_wipeCopy &
+      m_objectData;
   }
 };
 

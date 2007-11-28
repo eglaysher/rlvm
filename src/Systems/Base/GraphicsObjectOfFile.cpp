@@ -189,7 +189,6 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
 
-  cerr << "Loading file " << m_filename << endl;
   loadFile(*Serialization::g_currentMachine);
 }
 
