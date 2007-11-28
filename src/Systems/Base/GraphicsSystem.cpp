@@ -39,6 +39,8 @@
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "MachineBase/StackFrame.hpp"
 #include "Modules/Module_Grp.hpp"
 #include "Utilities.h"
@@ -493,7 +495,9 @@ int GraphicsSystem::foregroundAllocated()
 template<class Archive>
 void GraphicsSystem::save(Archive& ar, unsigned int version) const
 {
-  ar & m_graphicsObjectSettings->graphicsStack
+  ar
+    & m_subtitle
+    & m_graphicsObjectSettings->graphicsStack
     & m_graphicsObjectImpl->m_savedBackgroundObjects
     & m_graphicsObjectImpl->m_savedForegroundObjects;
 }
@@ -504,9 +508,14 @@ void GraphicsSystem::save(Archive& ar, unsigned int version) const
 template<class Archive>
 void GraphicsSystem::load(Archive& ar, unsigned int version)
 {
-  ar & graphicsStack() 
+  ar
+    & m_subtitle
+    & graphicsStack() 
     & m_graphicsObjectImpl->m_backgroundObjects
     & m_graphicsObjectImpl->m_foregroundObjects;
+
+  // Now alert all subclasses that we've set the subtitle
+  setWindowSubtitle(m_subtitle, Serialization::g_currentMachine->getTextEncoding());
 }
 
 // -----------------------------------------------------------------------
