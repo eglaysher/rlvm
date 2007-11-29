@@ -151,81 +151,13 @@ void object::test<2>()
 // -----------------------------------------------------------------------
 
 /**
- * Serialize the entire graphics system. ;_; I'm getting desperate on
- * this bug here...
- */
-template<>
-template<>
-void object::test<3>()
-{
-  stringstream ss;
-  Serialization::g_currentMachine = &rlmachine;
-  
-  {
-    GraphicsObject obj;
-    obj.setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
-    system.graphics().setObject(OBJ_FG_LAYER, 1, obj);
-
-    boost::archive::text_oarchive oa(ss);
-    oa << const_cast<const GraphicsSystem&>(system.graphics());
-  }
-
-  {
-    NullSystem sys;
-    boost::archive::text_iarchive ia(ss);
-    ia >> sys.graphics();
-
-    GraphicsObjectOfFile& obj = 
-      dynamic_cast<GraphicsObjectOfFile&>(
-        sys.graphics().getObject(OBJ_FG_LAYER, 1).objectData());
-
-    // Now query invariants.
-    ensure_equals("Didn't preserve filename", obj.filename(), FILE_NAME);
-  }
-
-  Serialization::g_currentMachine = NULL;
-}
-
-// -----------------------------------------------------------------------
-
-/**
- * 
- */
-template<>
-template<>
-void object::test<4>()
-{
-  // Try serializing the whole damn thing.
-  stringstream ss;
-  GraphicsObject obj;
-  obj.setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
-  system.graphics().setObject(OBJ_FG_LAYER, 1, obj);
-  saveGameTo(ss, rlmachine);
-
-  {
-    NullSystem otherSys;
-    RLMachine omachine(otherSys, arc);
-    loadGameFrom(ss, omachine);
-
-    GraphicsObjectOfFile& obj = 
-      dynamic_cast<GraphicsObjectOfFile&>(
-        omachine.system().graphics().getObject(OBJ_FG_LAYER, 1).objectData());
-
-    // Now query invariants.
-    ensure_equals("Didn't preserve filename", obj.filename(), FILE_NAME);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-/**
  * Tests to make sure that calling a mutating method on a
  * GraphicsObject instance will force the copy-on-write semantics to
  * kick in.
  */
 template<>
 template<>
-void object::test<5>()
+void object::test<3>()
 {
   // Automatable ones
   typedef boost::tuple<
