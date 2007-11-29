@@ -209,6 +209,12 @@ public:
   int textShadowColour() const;
   // @}  
 
+  /** 
+   * Returns the number of GraphicsObject instances sharing the
+   * internal copy-on-write object.
+   */
+  long referenceCount() const { return m_impl.use_count(); }
+
 private:
   /** 
    * Makes the ineternal copy for our copy-on-write semantics. This

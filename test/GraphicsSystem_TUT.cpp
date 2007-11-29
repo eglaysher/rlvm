@@ -28,6 +28,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include "Modules/Module_Str.hpp"
 #include "libReallive/archive.h"
@@ -45,9 +47,11 @@
 #include "testUtils.hpp"
 #include "tut.hpp"
 #include <boost/scoped_ptr.hpp>
+#include <boost/function.hpp>
 #include <iostream>
 
 using namespace boost;
+using namespace boost::assign;
 using namespace std;
 using namespace libReallive;
 using namespace Serialization;
@@ -213,5 +217,82 @@ void object::test<4>()
 }
 
 // -----------------------------------------------------------------------
+
+/**
+ * Tests to make sure that calling a mutating method on a
+ * GraphicsObject instance will force the copy-on-write semantics to
+ * kick in.
+ */
+template<>
+template<>
+void object::test<5>()
+{
+  // Automatable ones
+  typedef boost::tuple<
+    boost::function<void(GraphicsObject&, const int)>,
+    boost::function<int(const GraphicsObject&)> > TupleT;
+
+  typedef vector<TupleT> SetterVec;
+  SetterVec setters = 
+    tuple_list_of(&GraphicsObject::setVisible, &GraphicsObject::visible)
+    (&GraphicsObject::setX, &GraphicsObject::x)
+    (&GraphicsObject::setY, &GraphicsObject::y)
+    (&GraphicsObject::setVert, &GraphicsObject::vert)
+    (&GraphicsObject::setXOrigin, &GraphicsObject::xOrigin)
+    (&GraphicsObject::setYOrigin, &GraphicsObject::yOrigin)
+    (&GraphicsObject::setWidth, &GraphicsObject::width)
+    (&GraphicsObject::setHeight, &GraphicsObject::height)
+    (&GraphicsObject::setRotation, &GraphicsObject::rotation)
+    (&GraphicsObject::setPattNo, &GraphicsObject::pattNo)
+    (&GraphicsObject::setInvert, &GraphicsObject::invert)
+    (&GraphicsObject::setLight, &GraphicsObject::light)
+    (&GraphicsObject::setTintR, &GraphicsObject::tintR)
+    (&GraphicsObject::setTintG, &GraphicsObject::tintG)
+    (&GraphicsObject::setTintB, &GraphicsObject::tintB)
+    (&GraphicsObject::setColourR, &GraphicsObject::colourR)
+    (&GraphicsObject::setColourG, &GraphicsObject::colourG)
+    (&GraphicsObject::setColourB, &GraphicsObject::colourB)
+    (&GraphicsObject::setColourLevel, &GraphicsObject::colourLevel)
+    (&GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode)
+    (&GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX)
+    (&GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY)
+    (&GraphicsObject::setAlpha, &GraphicsObject::alpha)
+    (&GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy);
+
+  for(SetterVec::iterator it = setters.begin(); it != setters.end(); ++it)
+  {
+    GraphicsObject obj;
+    GraphicsObject objCopy(obj);
+
+    ensure_equals("Both objects have the same internal object",
+                  obj.referenceCount(), 2);
+    ensure_equals("Both objects have the same internal object",
+                  objCopy.referenceCount(), 2);
+
+    // Call the getter method (ignoring the result). We expect that
+    // this won't force a copy-on-write.
+    (it->get<1>())(objCopy);
+
+    ensure_equals("Both objects have the same internal object",
+                  obj.referenceCount(), 2);
+    ensure_equals("Both objects have the same internal object",
+                  objCopy.referenceCount(), 2);
+
+    // Call this setter function. This should force the copy-on-write
+    // code to trigger.
+    (it->get<0>())(objCopy, 1);
+
+    ensure_equals("Both objects have different internal object",
+                  obj.referenceCount(), 1);
+    ensure_equals("Both objects have different internal object",
+                  objCopy.referenceCount(), 1);
+
+    // Make sure we get the right value back
+  }
+
+  // OTHER: setXAdjustment, setYAdjustment, clearClip, setClip
+
+}
+
 
 };
