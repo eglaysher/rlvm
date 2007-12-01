@@ -271,7 +271,11 @@ void GanGraphicsObjectData::render(
       GraphicsObjectOverride overrideData;
       overrideData.setOverrideSource(rect.x1, rect.y1, rect.x2, rect.y2);
       overrideData.setDestOffset(frame.x, frame.y);
-      overrideData.setAlphaOverride(frame.alpha);
+
+      // Calculate the combination of our frame alpha with the current
+      // object alpha
+      overrideData.setAlphaOverride(
+        int(((frame.alpha/256.0f) * (go.alpha() / 256.0f)) * 256));
 
       image->renderToScreenAsObject(go, overrideData);
     }
