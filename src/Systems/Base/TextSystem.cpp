@@ -24,12 +24,16 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 
+#include "MachineBase/Serialization.hpp"
 #include "libReallive/gameexe.h"
 #include "Utilities.h"
 
@@ -38,8 +42,6 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
-
-#include "json/value.h"
 
 using std::endl;
 using std::cerr;
@@ -50,32 +52,43 @@ using boost::bind;
 using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
+// TextSystemGlobals
+// -----------------------------------------------------------------------
+TextSystemGlobals::TextSystemGlobals()
+  : autoModeBaseTime(100), autoModeCharTime(100), messageSpeed(30)
+{}
+
+// -----------------------------------------------------------------------
+
+TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
+  : autoModeBaseTime(100), autoModeCharTime(100), 
+    messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30))
+{
+  GameexeInterpretObject inWindowAttr(gexe("WINDOW_ATTR"));
+  if(inWindowAttr.exists())
+    windowAttr = inWindowAttr;
+//setDefaultWindowAttr(windowAttr);
+}
+
+// -----------------------------------------------------------------------
 // TextSystem
 // -----------------------------------------------------------------------
 TextSystem::TextSystem(Gameexe& gexe)
-  : m_autoMode(false),  m_autoModeBaseTime(1000), m_autoModeCharTime(100),
-
+  : m_autoMode(false),
     m_ctrlKeySkip(true), m_fastTextMode(false),
     m_messageNoWait(false),
-    m_messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30)), 
     m_activeWindow(0), m_isReadingBacklog(false),
-
     m_currentPageset(new PageSet),
-
     m_inPauseState(false),
-
     // #WINDOW_*_USE
     m_moveUse(false), m_clearUse(false), m_readJumpUse(false),
     m_automodeUse(false), m_msgbkUse(false), m_msgbkleftUse(false),
-    m_msgbkrightUse(false), m_exbtnUse(false)
+    m_msgbkrightUse(false), m_exbtnUse(false),
+    m_globals(gexe)
 {
   GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
   if(ctrlUse.exists())
     m_ctrlKeySkip = ctrlUse;
-
-  GameexeInterpretObject windowAttr(gexe("WINDOW_ATTR"));
-  if(windowAttr.exists())
-    setDefaultWindowAttr(windowAttr);
 
   checkAndSetBool(gexe, "WINDOW_MOVE_USE", m_moveUse);
   checkAndSetBool(gexe, "WINDOW_CLEAR_USE", m_clearUse);
@@ -231,14 +244,18 @@ void TextSystem::stopReadingBacklog()
 
 int TextSystem::getAutoTime(int numChars)
 {
-  return m_autoModeBaseTime + m_autoModeCharTime * numChars;
+  return m_globals.autoModeBaseTime + m_globals.autoModeCharTime * numChars;
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 {
-  if(!m_textKeyCursor || 
+  if(newCursor == -1)
+  {
+    m_textKeyCursor.reset();
+  }
+  else if(!m_textKeyCursor || 
      m_textKeyCursor->cursorNumber() != newCursor)
   {
     m_textKeyCursor.reset(new TextKeyCursor(machine, newCursor));
@@ -247,64 +264,19 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 
 // -----------------------------------------------------------------------
 
+int TextSystem::cursorNumber() const
+{
+  if(m_textKeyCursor)
+    return m_textKeyCursor->cursorNumber();
+  else
+    return -1;
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
-  m_windowAttr = attr;
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::saveGlobals(Json::Value& text)
-{
-  text["autoBaseTime"] = autoBaseTime();
-  text["autoCharTime"] = autoCharTime();
-  
-  text["messageSpeed"] = messageSpeed();
-
-  Json::Value windowAttr(Json::arrayValue);
-  copy(m_windowAttr.begin(), m_windowAttr.end(), back_inserter(windowAttr));
-  text["windowAttr"] = windowAttr;
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::loadGlobals(const Json::Value& textSys)
-{
-  setAutoBaseTime(textSys["autoBaseTime"].asInt());
-  setAutoCharTime(textSys["autoCharTime"].asInt());
-  setMessageSpeed(textSys["messageSpeed"].asInt());
-
-  vector<int> attr;
-  Json::Value windowAttr = textSys["windowAttr"];
-  for(unsigned int i = 0; i < windowAttr.size(); ++i)
-	attr.push_back(windowAttr[i].asInt());
-  setDefaultWindowAttr(attr);
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::saveGameValues(Json::Value& text)
-{
-  text["activeWindow"] = activeWindow();
-
-  if(m_textKeyCursor)
-    text["keyCursor"] = m_textKeyCursor->cursorNumber();
-  else
-    text["keyCursor"] = -1;
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::loadGameValues(RLMachine& machine, const Json::Value& textSys)
-{
-  setActiveWindow(textSys["activeWindow"].asInt());
-
-  int curNum = textSys["keyCursor"].asInt();
-  cerr << "Saved cur: " << curNum << endl;
-  if(curNum != -1)
-    m_textKeyCursor.reset(new TextKeyCursor(machine, curNum));
-  else
-    m_textKeyCursor.reset();
+  m_globals.windowAttr = attr;
 }
 
 // -----------------------------------------------------------------------
@@ -317,3 +289,37 @@ void TextSystem::reset()
   m_previousPageSets.clear();
   m_previousPageIt = m_previousPageSets.end();
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void TextSystem::load(Archive& ar, unsigned int version)
+{
+  int win, cursorNum;
+  ar & win & cursorNum;
+
+  setActiveWindow(win);
+  setKeyCursor(*Serialization::g_currentMachine, cursorNum);
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void TextSystem::save(Archive& ar, unsigned int version) const
+{
+  int win = activeWindow();
+  int cursorNum = cursorNumber();
+  ar & win & cursorNum;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void TextSystem::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void TextSystem::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+

@@ -20,6 +20,11 @@
 //  
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/export.hpp>
+#include <boost/serialization/tracking.hpp>
+
 #include "LazyArray.hpp"
 
 #include "testUtils.hpp"
@@ -36,12 +41,78 @@ namespace tut
 
 struct LazyArray_data
 {
+  // Helper class because boost::serialization doesn't like the
+  // concept of serializing an int*
+  class IntWrapper
+  {
+  private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+      ar & num;
+    }
 
+    int num;
+
+  public:
+    IntWrapper() : num(0) {}
+
+    IntWrapper& operator=(int in) {
+      num = in;
+    }
+
+    operator int() const {
+      return num;
+    }
+  };
+
+  template<typename T>
+  void populateIntArray(T& lazyArray)
+  {
+    // Set each even slot to its number 
+    for(int i = 0; i < SIZE; ++i)
+      if(i % 2 == 0)
+        lazyArray[i] = i;
+  }
+
+  template<typename T>
+  void checkArray(LazyArray<T>& in)
+  {
+    // iterating across everything; every other cell should report
+    // being unallocated
+    FullLazyArrayIterator<T> it = in.full_begin();
+    FullLazyArrayIterator<T> end = in.full_end();
+    for(int i = 0; it != end && i < SIZE; ++it, ++i)
+    {
+      if(it.pos() % 2 == 0)
+      {
+        ensure("Invalid in valid position", it.valid());
+        ensure_equals("Pointing to correct item", it.pos(), i);
+        ensure_equals("Correct value", *it, i);
+      }
+      else
+        ensure("Valid in invalid position", !it.valid());
+    }
+  }
 };
 
 typedef test_group<LazyArray_data> tf;
 typedef tf::object object;
 tf lazy_array_group("LazzyArray");
+
+}
+
+// -----------------------------------------------------------------------
+
+
+BOOST_CLASS_EXPORT(tut::LazyArray_data::IntWrapper);
+BOOST_CLASS_TRACKING(tut::LazyArray_data::IntWrapper, 
+                     boost::serialization::track_always);
+
+// -----------------------------------------------------------------------
+
+namespace tut {
 
 // -----------------------------------------------------------------------
 
@@ -74,29 +145,10 @@ template<>
 template<>
 void object::test<2>()
 {
-  // Allocate even objects and then these 
   LazyArray<int> lazyArray(SIZE);
   ensure_equals("Lazy Array didn't remember its size", lazyArray.size(), SIZE);
-
-  // Set each even slot to its number 
-  for(int i = 0; i < SIZE; ++i)
-    if(i % 2 == 0)
-      lazyArray[i] = i;
-
-  // iterating across everything; each cell should report being unallocated
-  FullLazyArrayIterator<int> it = lazyArray.full_begin();
-  FullLazyArrayIterator<int> end = lazyArray.full_end();
-  for(int i = 0; it != end && i < SIZE; ++it, ++i)
-  {
-    if(it.pos() % 2 == 0)
-    {
-      ensure("Invalid in valid position", it.valid());
-      ensure_equals("Pointing to correct item", it.pos(), i);
-      ensure_equals("Correct value", *it, i);
-    }
-    else
-      ensure("Valid in invalid position", !it.valid());
-  }
+  populateIntArray(lazyArray);
+  checkArray(lazyArray);
 
   // Test to make sure that when we use AllocatedLazyArrayIterator, we
   // only stop on items that are valid.
@@ -142,5 +194,36 @@ void object::test<3>()
     ensure_equals("Correct value in position", *ait, i);
   }
 }
+
+// -----------------------------------------------------------------------
+
+/**
+ * 
+ */
+template<>
+template<>
+void object::test<4>()
+{
+  stringstream ss;
+
+  LazyArray<IntWrapper> lazyArray(SIZE);
+  ensure_equals("Lazy Array didn't remember its size", lazyArray.size(), SIZE);
+  populateIntArray(lazyArray);
+
+  {
+    boost::archive::text_oarchive oa(ss);
+    oa << const_cast<const LazyArray<IntWrapper>&>(lazyArray);
+  }
+
+  {
+    // Thaw the data that was saved into a different LazyArray and
+    // make sure that it's the same data.
+    LazyArray<IntWrapper> newArray(SIZE);
+    boost::archive::text_iarchive ia(ss);
+    ia >> newArray;
+    checkArray(newArray);
+  }
+}
+
 
 }

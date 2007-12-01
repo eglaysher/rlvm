@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <string>
+#include <boost/serialization/access.hpp>
 
 class GraphicsSystem;
 class EventSystem;
@@ -32,10 +33,6 @@ class TextSystem;
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
-
-namespace Json {
-class Value;
-}
 
 namespace boost { namespace filesystem { class path; } }
 
@@ -45,6 +42,28 @@ const int NUM_SYSCOM_ENTRIES = 32;
 const int SYSCOM_INVISIBLE = 0;
 const int SYSCOM_VISIBLE = 1;
 const int SYSCOM_GREYED_OUT = 2;
+
+// -----------------------------------------------------------------------
+
+/**
+ * Struct containing the global memory to get serialized to disk with
+ */
+struct SystemGlobals
+{
+  SystemGlobals();
+
+  /// Whether we should put up a yes/no dialog box when saving/loading.
+  bool m_confirmSaveLoad;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & m_confirmSaveLoad;
+  }
+};
+
+// -----------------------------------------------------------------------
 
 /**
  * The system class provides a generalized interface to all the
@@ -67,8 +86,16 @@ private:
 
   void addPath(GameexeInterpretObject gio);
 
-  /// Whether we should put up a yes/no dialog box when saving/loading.
-  bool m_confirmSaveLoad;
+  SystemGlobals m_globals;
+
+  friend class boost::serialization::access;
+
+  /// boost::serialization
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    // For now, does nothing
+  }
 
 protected:
   boost::filesystem::path getHomeDirectory();
@@ -140,8 +167,8 @@ public:
 
   /// @}
 
-  bool confirmSaveLoad() const { return m_confirmSaveLoad; }
-  void setConfirmSaveLoad(const bool in) { m_confirmSaveLoad = in; }
+  bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
+  void setConfirmSaveLoad(const bool in) { m_globals.m_confirmSaveLoad = in; }
 
   const std::vector<std::string>& getSearchPaths();
 
@@ -158,17 +185,8 @@ public:
    */
   virtual void reset();
 
-  /**
-   * Save the global configuration.
-   */
-  virtual void saveGlobals(Json::Value& root);
-  virtual void loadGlobals(Json::Value& root);
-
-  /**
-   * Save the game state.
-   */
-  virtual void saveGameValues(Json::Value& system);
-  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
+  /// Returns the global state for saving/restoring
+  SystemGlobals& globals() { return m_globals; }
 
   /**
    * Returns a boost::filesystem object which points to the directory

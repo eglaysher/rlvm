@@ -28,6 +28,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/serialization/split_member.hpp>
 
 class Gameexe;
 class RLMachine;
@@ -36,9 +37,30 @@ class TextPage;
 class TextKeyCursor;
 class Surface;
 
-namespace Json {
-class Value;
-}
+// -----------------------------------------------------------------------
+
+struct TextSystemGlobals
+{
+  TextSystemGlobals();
+  TextSystemGlobals(Gameexe& gexe);
+
+  int autoModeBaseTime;
+  int autoModeCharTime;
+
+  /// Message speed; range from 0 to 255
+  char messageSpeed;
+
+  /// The default \#WINDOW_ATTR. This is what is changed by the 
+  std::vector<int> windowAttr;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & autoModeBaseTime & autoModeCharTime & messageSpeed
+      & windowAttr;
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -57,8 +79,8 @@ protected:
   /// Whether Auto mode is enabled
   bool m_autoMode;
 
-  int m_autoModeBaseTime;
-  int m_autoModeCharTime;
+
+
 
   /// @}
 
@@ -70,9 +92,6 @@ protected:
 
   /// Internal 'no wait' flag
   bool m_messageNoWait;
-
-  /// Message speed; range from 0 to 255
-  char m_messageSpeed;
 
   /// Sets which window is the current active window.
   int m_activeWindow;
@@ -109,9 +128,6 @@ protected:
 
   boost::shared_ptr<TextKeyCursor> m_textKeyCursor;
 
-  /// The default \#WINDOW_ATTR. This is what is changed by the 
-  std::vector<int> m_windowAttr;
-
   /**
    * @name Global Window Button Toggles
    * 
@@ -122,6 +138,8 @@ protected:
 
   void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
   /// @}
+
+  TextSystemGlobals m_globals;
 
 public:
   TextSystem(Gameexe& gexe);
@@ -200,16 +218,23 @@ public:
   void setAutoMode(int i) { m_autoMode = i; }
   int autoMode() const { return m_autoMode; }
 
-  void setAutoBaseTime(int i) { m_autoModeBaseTime = i; }
-  int autoBaseTime() const { return m_autoModeBaseTime; }
+  void setAutoBaseTime(int i) { m_globals.autoModeBaseTime = i; }
+  int autoBaseTime() const { return m_globals.autoModeBaseTime; }
 
-  void setAutoCharTime(int i) { m_autoModeCharTime = i; }
-  int autoCharTime() const { return m_autoModeCharTime; }
+  void setAutoCharTime(int i) { m_globals.autoModeCharTime = i; }
+  int autoCharTime() const { return m_globals.autoModeCharTime; }
 
   int getAutoTime(int numChars);
   /// @}
 
   void setKeyCursor(RLMachine& machine, int newCursor);
+
+  /** 
+   * Returns the key cursor index.
+   * 
+   * @return The key cursor number (or -1 if no key cursor).
+   */
+  int cursorNumber() const;
 
   void setCtrlKeySkip(int i) { m_ctrlKeySkip = i; }
   int ctrlKeySkip() const { return m_ctrlKeySkip; }
@@ -220,8 +245,8 @@ public:
   void setMessageNoWait(int i) { m_messageNoWait = i; }
   int messageNoWait() const { return m_messageNoWait; }
 
-  void setMessageSpeed(int i) { m_messageSpeed = i; }
-  int messageSpeed() const { return m_messageSpeed; }
+  void setMessageSpeed(int i) { m_globals.messageSpeed = i; }
+  int messageSpeed() const { return m_globals.messageSpeed; }
 
   /**
    * @name Window Attr Related functions
@@ -233,19 +258,19 @@ public:
    * @{
    */
   virtual void setDefaultWindowAttr(const std::vector<int>& attr);
-  std::vector<int> windowAttr() const { return m_windowAttr; }
+  std::vector<int> windowAttr() const { return m_globals.windowAttr; }
 
-  int windowAttrR() const { return m_windowAttr.at(0); }
-  int windowAttrG() const { return m_windowAttr.at(1); }
-  int windowAttrB() const { return m_windowAttr.at(2); }
-  int windowAttrA() const { return m_windowAttr.at(3); }
-  int windowAttrF() const { return m_windowAttr.at(4); }
+  int windowAttrR() const { return m_globals.windowAttr.at(0); }
+  int windowAttrG() const { return m_globals.windowAttr.at(1); }
+  int windowAttrB() const { return m_globals.windowAttr.at(2); }
+  int windowAttrA() const { return m_globals.windowAttr.at(3); }
+  int windowAttrF() const { return m_globals.windowAttr.at(4); }
 
-  virtual void setWindowAttrR(int i) { m_windowAttr.at(0) = i; }
-  virtual void setWindowAttrG(int i) { m_windowAttr.at(1) = i; }
-  virtual void setWindowAttrB(int i) { m_windowAttr.at(2) = i; }
-  virtual void setWindowAttrA(int i) { m_windowAttr.at(3) = i; }
-  virtual void setWindowAttrF(int i) { m_windowAttr.at(4) = i; }
+  virtual void setWindowAttrR(int i) { m_globals.windowAttr.at(0) = i; }
+  virtual void setWindowAttrG(int i) { m_globals.windowAttr.at(1) = i; }
+  virtual void setWindowAttrB(int i) { m_globals.windowAttr.at(2) = i; }
+  virtual void setWindowAttrA(int i) { m_globals.windowAttr.at(3) = i; }
+  virtual void setWindowAttrF(int i) { m_globals.windowAttr.at(4) = i; }
   /// @}
 
   /**
@@ -278,16 +303,21 @@ public:
 	int yspace, int colour) = 0;
   /// @}
 
-  virtual void saveGlobals(Json::Value& system);
-  virtual void loadGlobals(const Json::Value& system);
-
-  virtual void saveGameValues(Json::Value& system);
-  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
+  TextSystemGlobals& globals() { return m_globals; }
 
   /**
    * Resets non-configuration values (so we can load games).
    */
   virtual void reset();
+
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

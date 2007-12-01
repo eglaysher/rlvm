@@ -43,8 +43,6 @@
 #include <string>
 #include <iostream>
 
-#include "json/value.h"
-
 #include "Utilities.h"
 
 using namespace std;
@@ -54,9 +52,18 @@ using boost::replace_all;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
+// SystemGlobals
+// -----------------------------------------------------------------------
+
+SystemGlobals::SystemGlobals()
+  : m_confirmSaveLoad(true)
+{}
+
+// -----------------------------------------------------------------------
+// System
+// -----------------------------------------------------------------------
 
 System::System()
-  : m_confirmSaveLoad(1)
 {
   fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
@@ -177,69 +184,6 @@ void System::reset()
   graphics().reset();
 //  event().reset();
   text().reset();
-}
-
-// -----------------------------------------------------------------------
-
-void System::saveGlobals(Json::Value& root)
-{
-  Json::Value system(Json::objectValue);
-
-  system["confirmSaveLoad"] = m_confirmSaveLoad;
-
-  graphics().saveGlobals(system["graphics"]);
-  event().saveGlobals(system["event"]);
-  text().saveGlobals(system["text"]);
-
-  root["system"] = system;
-}
-
-// -----------------------------------------------------------------------
-
-void System::loadGlobals(Json::Value& root)
-{
-  Json::Value system = root["system"];
-
-  m_confirmSaveLoad = system["confirmSaveLoad"].asInt();
-
-  graphics().loadGlobals(system["graphics"]);
-  event().loadGlobals(system["event"]);
-  text().loadGlobals(system["text"]);
-}
-
-// -----------------------------------------------------------------------
-
-void System::saveGameValues(Json::Value& root)
-{
-  Json::Value system(Json::objectValue);
-
-  Json::Value txt(Json::objectValue);
-  text().saveGameValues(txt);
-  system["text"] = txt;
-
-  Json::Value graphicsValue(Json::objectValue);
-  graphics().saveGameValues(graphicsValue);
-  system["graphics"] = graphicsValue;
-
-  root["system"] = system;
-}
-
-// -----------------------------------------------------------------------
-
-void System::loadGameValues(RLMachine& machine, const Json::Value& root)
-{
-  reset();
-
-  Json::Value system = root["system"];
-
-  graphics().loadGameValues(machine, system["graphics"]);
-  text().loadGameValues(machine, system["text"]);
-
-  // @todo Move this into graphics
-  graphics().setWindowSubtitle(root["title"].asString(), 
-                               machine.getTextEncoding());
-
-  graphics().markScreenForRefresh();
 }
 
 // -----------------------------------------------------------------------

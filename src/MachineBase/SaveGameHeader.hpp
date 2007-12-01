@@ -1,8 +1,13 @@
+// -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+// vi:tw=80:et:ts=2:sts=2
+//
+// -----------------------------------------------------------------------
+//
 // This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006, 2007 Elliot Glaysher
+// Copyright (C) 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,32 +25,39 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "NullGraphicsSystem.hpp"
+#ifndef __SaveGameHeader_hpp__
+#define __SaveGameHeader_hpp__
+
+#include <string>
+
+//include all types plus i/o
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 // -----------------------------------------------------------------------
 
-NullGraphicsSystem::NullGraphicsSystem(Gameexe& gexe)
-  : GraphicsSystem(gexe)
+/** 
+ * Header structure written to and read from the start of each save
+ * game file. This structure is at the top of the file since it is
+ * what gets queried by SaveDate, SaveTime, et cetera.
+ */
+struct SaveGameHeader
 {
+  SaveGameHeader();
+  SaveGameHeader(const std::string& inTitle);
+  ~SaveGameHeader();
 
-}
+  /// The title of the current saved game
+  std::string title;
 
-// -----------------------------------------------------------------------
+  /// The time the save file was created.
+  boost::posix_time::ptime saveTime;
 
-GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber) 
-{ 
-  static GraphicsObject x; return x;
-}
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    ar & title & saveTime;
+  }
+};
 
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
-  const std::string& filename) 
-{ return boost::shared_ptr<Surface>(); }
-
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc) 
-{ return boost::shared_ptr<Surface>(); }
+#endif

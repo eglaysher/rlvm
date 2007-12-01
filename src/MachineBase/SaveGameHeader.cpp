@@ -1,3 +1,8 @@
+// -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+// vi:tw=80:et:ts=2:sts=2
+//
+// -----------------------------------------------------------------------
+//
 // This file is part of RLVM, a RealLive virtual machine clone.
 //
 // -----------------------------------------------------------------------
@@ -20,40 +25,28 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __NullSystem_hpp__
-#define __NullSystem_hpp__
 
-#include "Systems/Base/System.hpp"
-#include "NullSystem/NullGraphicsSystem.hpp"
-#include "NullSystem/NullEventSystem.hpp"
-#include "NullSystem/NullTextSystem.hpp"
-#include "libReallive/gameexe.h"
+#include "MachineBase/SaveGameHeader.hpp"
 
-/** 
- * The Null system contains absolutely no input/ouput 
- * 
- * 
- * @return 
- */
-class NullSystem : public System
+using namespace boost::posix_time;
+
+// -----------------------------------------------------------------------
+// SaveGameHeader
+// -----------------------------------------------------------------------
+SaveGameHeader::SaveGameHeader()
+  : title(), saveTime(microsec_clock::local_time())
 {
-private:
-  Gameexe m_gameexe;
+}
 
-  NullGraphicsSystem nullGraphicsSystem;
-  NullEventSystem nullEventSystem;
-  NullTextSystem nullTextSystem;
+// -----------------------------------------------------------------------
 
-public:
-  NullSystem(const std::string& pathToGameexe);
-  NullSystem();
+SaveGameHeader::SaveGameHeader(const std::string& inTitle)
+  : title(inTitle), saveTime(microsec_clock::local_time())
+{
+}
 
-  virtual void run(RLMachine& machine);
+// -----------------------------------------------------------------------
 
-  virtual GraphicsSystem& graphics();
-  virtual EventSystem& event();
-  virtual Gameexe& gameexe();
-  virtual TextSystem& text();
-};
+SaveGameHeader::~SaveGameHeader()
+{}
 
-#endif

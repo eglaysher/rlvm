@@ -24,6 +24,7 @@
 #define __AnmGraphicsObjectData_hpp__
 
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include <boost/serialization/split_member.hpp>
 
 #include <vector>
 #include <string>
@@ -38,6 +39,8 @@ class AnmGraphicsObjectData : public GraphicsObjectData
 private:
   /// Note: This internal structure is heavily based off of xkanon's
   /// ANM file implementation, but has been changed to be all C++ like.
+
+  std::string m_filename;
 
   /**
    * @name Animation Data
@@ -69,11 +72,13 @@ private:
    */
   bool m_currentlyPlaying;
 
-  std::vector<int>::iterator m_curFrameSet;
-  std::vector<int>::iterator m_curFrameSetEnd;
+  int m_currentSet;
 
-  std::vector<int>::iterator m_curFrame;
-  std::vector<int>::iterator m_curFrameEnd;
+  std::vector<int>::const_iterator m_curFrameSet;
+  std::vector<int>::const_iterator m_curFrameSetEnd;
+
+  std::vector<int>::const_iterator m_curFrame;
+  std::vector<int>::const_iterator m_curFrameEnd;
 
   int m_currentFrame;
 
@@ -99,8 +104,11 @@ private:
   /// @}
 
 public:
+  AnmGraphicsObjectData();
   AnmGraphicsObjectData(RLMachine& machine, const std::string& file);
   ~AnmGraphicsObjectData();
+
+  void loadAnmFile(RLMachine& machine);
 
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties);
@@ -115,6 +123,14 @@ public:
 
   virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 

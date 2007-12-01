@@ -45,7 +45,7 @@
 
 // -----------------------------------------------------------------------
 
-#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Memory.hpp"
 #include "libReallive/intmemref.h"
 #include "Utilities.h"
 #include <sstream>
@@ -78,7 +78,7 @@ static void throwIllegalIndex(const IntMemRef& ref,
  * @note This method was plagarized from xclannad.
  * @todo Does this allow for access like intL4[]? I don't think it does...
  */
-int RLMachine::getIntValue(const IntMemRef& ref) 
+int Memory::getIntValue(const IntMemRef& ref) 
 {
   int type = ref.type();
   int index = ref.bank();
@@ -111,7 +111,7 @@ int RLMachine::getIntValue(const IntMemRef& ref)
  *
  * @note This method was plagarized from xclannad.
  */
-void RLMachine::setIntValue(const IntMemRef& ref, int value) 
+void Memory::setIntValue(const IntMemRef& ref, int value) 
 {
   int type = ref.type();
   int index = ref.bank();

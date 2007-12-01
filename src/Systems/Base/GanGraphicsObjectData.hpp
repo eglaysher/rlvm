@@ -30,6 +30,7 @@
 #include <iosfwd>
 #include <boost/scoped_array.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 class Surface;
 class RLMachine;
@@ -56,6 +57,9 @@ private:
   typedef std::vector< std::vector<Frame> > AnimationSets;
   AnimationSets animationSets;
 
+  std::string m_ganFilename;
+  std::string m_imgFilename;
+
   int m_currentSet;
   int m_currentFrame;
   int m_timeAtLastFrameChange;
@@ -79,9 +83,12 @@ protected:
   virtual void loopAnimation();
 
 public:
-  GanGraphicsObjectData(RLMachine& machine, const std::string& file,
-                        const boost::shared_ptr<Surface>& incomingImage);
+  GanGraphicsObjectData();
+  GanGraphicsObjectData(RLMachine& machine, const std::string& ganfile,
+                        const std::string& imgfile);
   ~GanGraphicsObjectData();
+
+  void load(RLMachine& machine);
 
   virtual void render(RLMachine& machine, 
                       const GraphicsObject& renderingProperties);
@@ -96,6 +103,16 @@ public:
 
   virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

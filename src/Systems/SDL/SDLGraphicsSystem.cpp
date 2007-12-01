@@ -57,6 +57,7 @@
 #include "libReallive/gameexe.h"
 #include "file.h"
 #include "Utilities.h"
+#include "LazyArray.hpp"
 
 #include "Modules/cp932toUnicode.hpp"
 
@@ -338,8 +339,8 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
     
   // Check to see if any of the graphics objects are reporting that
   // they want to force a redraw
-  for_each(foregroundObjects.allocated_begin(),
-           foregroundObjects.allocated_end(),
+  for_each(foregroundObjects().allocated_begin(),
+           foregroundObjects().allocated_end(),
            bind(&GraphicsObject::execute, _1, ref(machine)));
 
   // Update the seen.

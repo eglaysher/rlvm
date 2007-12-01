@@ -23,9 +23,21 @@
 #ifndef __LazyArray_hpp__
 #define __LazyArray_hpp__
 
+/**
+ * @file   LazyArray.hpp
+ * @author Elliot Glaysher
+ * @date   Sun Nov  4 09:30:31 2007
+ * 
+ * @brief  Contains the LazyArray class.
+ * 
+ */
+
+#include <iostream>
 #include <stdexcept>
 #include <boost/utility.hpp>
+#include <boost/scoped_array.hpp>
 #include <boost/iterator/iterator_facade.hpp>
+#include <boost/serialization/split_member.hpp>
 
 // Forward declaration
 template<typename T>
@@ -44,6 +56,10 @@ class FullLazyArrayIterator;
  * use all 256 object slots? It's much more efficient use of memory to
  * lazily allocate the 
  *
+ * Testing with CLANNAD shows use of 90 objects allocated in the
+ * foreground layer at exit. Planetarian leaves 3 objects
+ * allocated. Kanon leaves 10.
+ *
  * @todo Think about caching firstEntry for the iterators...
  */
 template<typename T>
@@ -55,13 +71,43 @@ public:
 
 private:
   int m_size;
-  mutable T** m_array;
+  mutable boost::scoped_array<T*> m_array;
 
   template<class> friend class FullLazyArrayIterator;
   template<class> friend class AllocatedLazyArrayIterator;
 
   T* rawDeref(int pos);
 
+  friend class boost::serialization::access;
+
+  /// boost::serialization loading
+  template<class Archive>
+  void load(Archive& ar, unsigned int version)
+  {
+    // Allocate our new array
+    ar & m_size;
+    m_array.reset(new T*[m_size]);
+
+    for(int i = 0; i < m_size; ++i)
+    {
+      ar & m_array[i];
+    }
+  }
+  
+  /// boost::serialization saving
+  template<class Archive>
+  void save(Archive& ar, unsigned int version) const
+  {
+    /// Place the total allocated size
+    ar & m_size;
+
+    for(int i = 0; i < m_size; ++i)
+    {
+      ar & m_array[i];
+    }
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 public:
   LazyArray(int size);
   ~LazyArray();
@@ -72,6 +118,8 @@ public:
   int size() const { return m_size; }
 
   void clear();
+
+  void copyTo(LazyArray<T>& otherArray);
 
   // Iterate across all items, allocated or not. It is the users
   // responsibility to call the isValid() method on the iterator
@@ -217,8 +265,7 @@ LazyArray<T>::LazyArray(int size)
 template<typename T>
 LazyArray<T>::~LazyArray()
 {
-  std::for_each(m_array, m_array + m_size, boost::checked_deleter<T>());
-  delete [] m_array;
+  std::for_each(m_array.get(), m_array.get() + m_size, boost::checked_deleter<T>());
 }
 
 // -----------------------------------------------------------------------
@@ -270,6 +317,35 @@ void LazyArray<T>::clear()
   {
     boost::checked_delete<T>(m_array[i]);
     m_array[i] = NULL;
+  }
+}
+
+// -----------------------------------------------------------------------
+
+template<typename T>
+void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
+{
+  if(otherArray.m_size < m_size)
+    throw std::runtime_error(
+      "Not enough space in target array in LazyArray::copyTo");
+
+  otherArray.m_size = m_size;
+  for(int i = 0; i < m_size; ++i)
+  {
+    T* srcEntry = rawDeref(i);
+    T* dstEntry = otherArray.rawDeref(i);
+
+    if(srcEntry && !dstEntry)
+      otherArray.m_array[i] = new T(*srcEntry);
+    else if(!srcEntry && dstEntry)
+    {
+      boost::checked_delete<T>(otherArray.m_array[i]);      
+      otherArray.m_array[i] = NULL;
+    }
+    else if(srcEntry && dstEntry)
+    {
+      *dstEntry = *srcEntry;
+    }
   }
 }
 

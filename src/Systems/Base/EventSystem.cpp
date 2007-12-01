@@ -31,18 +31,31 @@
 
 #include <iostream>
 
-#include "json/value.h"
-
 using namespace std;
 using namespace boost;
 
 // -----------------------------------------------------------------------
+// EventSystemGlobals
+// -----------------------------------------------------------------------
 
+EventSystemGlobals::EventSystemGlobals()
+  : generic1(false), generic2(false)
+{}
+
+// -----------------------------------------------------------------------
+
+EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
+  : generic1(gexe("INIT_ORIGINALSETING1_MOD").to_int(0)), 
+    generic2(gexe("INIT_ORIGINALSETING2_MOD").to_int(0))
+{}
+ 
+// -----------------------------------------------------------------------
+// EventSystem
+// -----------------------------------------------------------------------
 EventSystem::EventSystem(Gameexe& gexe) 
-  : m_numberOfRealtimeTasks(0), m_numberOfNiceAfterEachTaskItems(0)
+  : m_numberOfRealtimeTasks(0), m_numberOfNiceAfterEachTaskItems(0),
+    m_globals(gexe)
 {
-  m_generic1 = gexe("INIT_ORIGINALSETING1_MOD").to_int(0);
-  m_generic2 = gexe("INIT_ORIGINALSETING2_MOD").to_int(0);
 }
 
 // -----------------------------------------------------------------------
@@ -115,16 +128,3 @@ void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
 
 // -----------------------------------------------------------------------
 
-void EventSystem::saveGlobals(Json::Value& event)
-{
-  event["generic1"] = generic1();
-  event["generic2"] = generic2();
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::loadGlobals(const Json::Value& event)
-{
-  setGeneric1(event["generic1"].asInt());
-  setGeneric2(event["generic2"].asInt());
-}

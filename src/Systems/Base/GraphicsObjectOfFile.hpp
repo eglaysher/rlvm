@@ -32,6 +32,7 @@
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 class Surface;
 class RLMachine;
@@ -48,6 +49,9 @@ class RLMachine;
 class GraphicsObjectOfFile : public GraphicsObjectData
 {
 private:
+  /// The name of the graphics file that was loaded.
+  std::string m_filename;
+
   /// The encapsulated surface to render
   boost::shared_ptr<Surface> m_surface;
 
@@ -69,7 +73,12 @@ protected:
   virtual void loopAnimation();
 
 public:
-  GraphicsObjectOfFile(GraphicsSystem& graphics, const std::string& filename);
+  GraphicsObjectOfFile();
+  GraphicsObjectOfFile(RLMachine& machine, const std::string& filename);
+
+  void loadFile(RLMachine& machine);
+
+  const std::string& filename() const { return m_filename; }
 
   virtual void render(RLMachine& machine, const GraphicsObject& rp);
   virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp);
@@ -80,6 +89,15 @@ public:
 
   virtual bool isAnimation() const;
   virtual void playSet(RLMachine& machine, int set);
+
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

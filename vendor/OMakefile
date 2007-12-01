@@ -23,7 +23,6 @@ LRLFILES[] =
   glew
   file
   alphablit
-  json/libjsoncpp
 
 if $(not $(equal $(OSTYPE), Win32))
   if $(not $(equal $(OSTYPE), WindowsNT))
@@ -35,7 +34,7 @@ StaticCObject(libVendorLibs, $(LRLFILES))
 ########
 
 LIBS += -L/opt/local/lib
-.SUBDIRS: json
+.SUBDIRS: 
 .DEFAULT: libVendorLibs$(EXT_OBJ)
 
 clean:

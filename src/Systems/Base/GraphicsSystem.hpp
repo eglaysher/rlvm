@@ -31,10 +31,13 @@
 #ifndef __GraphicsSystem_hpp__
 #define __GraphicsSystem_hpp__
 
+#include <vector>
 #include <string>
-#include "LazyArray.hpp"
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
+
+// -----------------------------------------------------------------------
 
 class Surface;
 class RLMachine;
@@ -44,9 +47,33 @@ class GraphicsStackFrame;
 class Gameexe;
 struct ObjectSettings;
 
-namespace Json {
-class Value;
-}
+template<typename T> class LazyArray;
+
+// -----------------------------------------------------------------------
+
+/**
+ * Variables and configuration data that are global across all save
+ * game files in a game.
+ */
+struct GraphicsSystemGlobals
+{
+  GraphicsSystemGlobals();
+  GraphicsSystemGlobals(Gameexe& gameexe);
+
+  /// ShowObject flags
+  int showObject1, showObject2;
+
+  int showWeather;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & showObject1 & showObject2 & showWeather;
+  }
+};
+
+// -----------------------------------------------------------------------
 
 /** 
  * Abstract interface to a graphics system. Specialize this class for
@@ -110,52 +137,20 @@ private:
   /// cp932 encoded subtitle string
   std::string m_subtitle;
 
-  /// ShowObject flags
-  int m_showObject1, m_showObject2;
-
-  int m_showWeather;
-
   /// Controls whether we render the interface (this can be
   /// temporarily toggled by the user at runtime)
   bool m_hideInterface;
 
+  /// Mutable global data to be saved in the globals file
+  GraphicsSystemGlobals m_globals;
+
+  /// Immutable
   struct GraphicsObjectSettings;
+  /// Immutable global data that's constructed from the Gameexe.ini file.
   boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
 
-protected:
-  /// Foreground objects
-  LazyArray<GraphicsObject> foregroundObjects;
-
-  /// Background objects
-  LazyArray<GraphicsObject> backgroundObjects;
-
-protected:
-
-  /**
-   * @name Iterated access to GraphicsObjects
-   * 
-   * Provide a set of iterators for subclasses of GraphicsSystem to
-   * access the actual GraphicsObjects, in addition to the normal
-   * checked interfaced.
-   *
-   * @{
-   */
-
-
-
-//   FullIterator fg_full_begin() { return foregroundObjects.full_begin(); }
-//   FullIterator fg_full_end() { return foregroundObjects.full_end(); }
-//   FullIterator bg_full_begin() { return backgroundObjects.full_begin(); }
-//   FullIterator bg_full_end() { return backgroundObjects.full_end(); }
-
-//   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
-
-//   FullIterator fg_full_begin() { return foregroundObjects.full_begin(); }
-//   FullIterator fg_full_end() { return foregroundObjects.full_end(); }
-//   FullIterator bg_full_begin() { return backgroundObjects.full_begin(); }
-//   FullIterator bg_full_end() { return backgroundObjects.full_end(); }
-
-  /// @}
+  struct GraphicsObjectImpl;
+  boost::scoped_ptr<GraphicsObjectImpl> m_graphicsObjectImpl;
 
 public:
   GraphicsSystem(Gameexe& gameexe);
@@ -179,10 +174,16 @@ public:
    */
   GraphicsStackFrame& addGraphicsStackFrame(const std::string& name);
 
+  std::vector<GraphicsStackFrame>& graphicsStack();
+
   int stackSize() const;
   void clearStack();
 
   void stackPop(int numItems);
+
+  /// Replays the graphics stack. This is called after we've reloaded
+  /// a saved game.
+  void replayGraphicsStack(RLMachine& machine);
   /// @}
 
 
@@ -220,12 +221,8 @@ public:
    * 
    * @{
    */
-  virtual void saveGlobals(Json::Value& system);
-  virtual void loadGlobals(const Json::Value& system);
+  GraphicsSystemGlobals& globals() { return m_globals; }
   /// @}
-
-  virtual void saveGameValues(Json::Value& system);
-  virtual void loadGameValues(RLMachine& machine, const Json::Value& system);
 
   /**
    * @name Show Object flags
@@ -246,10 +243,10 @@ public:
    * @{
    */
   void setShowObject1(const int in);
-  int showObject1() const { return m_showObject1; }
+  int showObject1() const { return m_globals.showObject1; }
 
   void setShowObject2(const int in);
-  int showObject2() const { return m_showObject1; }
+  int showObject2() const { return m_globals.showObject1; }
   /// @}
 
   /**
@@ -258,7 +255,7 @@ public:
    * @{
    */
   void setShowWeather(const int in);
-  int showWeather() const { return m_showWeather; }
+  int showWeather() const { return m_globals.showWeather; }
 
   /**
    * Toggles whether the interface is shown. Called by
@@ -352,6 +349,10 @@ public:
   void setObject(int layer, int objNumber, GraphicsObject& object);
   void clearAllObjects();
 
+  LazyArray<GraphicsObject>& backgroundObjects();
+  LazyArray<GraphicsObject>& foregroundObjects();
+
+  void takeSavepointSnapshot();
   /// @}
 
   virtual void clearAllDCs() { }
@@ -361,6 +362,18 @@ public:
    * game.
    */
   virtual void reset();
+
+  int foregroundAllocated();
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 const static int OBJ_FG_LAYER = 0;

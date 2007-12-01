@@ -32,48 +32,35 @@
  * constants.
  */
 
+#include <boost/serialization/split_member.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/scenario.h"
 
 #include <vector>
 
-namespace Json {
-class Value;
-}
-
 namespace  libReallive {
 class Archive;
 class IntMemRef;
-//class Scenario;
 };
 
 class RLModule;
 class LongOperation;
 class System;
-  const int NUMBER_OF_INT_LOCATIONS = 9;
+class Memory;
+class StackFrame;
 
-
-typedef std::vector<std::pair<int, char> > IntegerBank_t;
-extern const IntegerBank_t LOCAL_INTEGER_BANKS;
-extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
+namespace boost { namespace serialization { } } 
 
 /**
  * The RealLive virtual machine implementation.
  */
 class RLMachine {
-private:
-  /// Integer variables. There is a 9 x 2000 integer memory bank. 
-  int intVar[NUMBER_OF_INT_LOCATIONS][2000];
-
-  /// First string bank. 
-  std::string strS[1999];
-
-  /// Second string bank
-  std::string strM[1999];
-
-  std::string strK[3];
+public:
+  /// The Reallive VM's integer and string memory
+  boost::scoped_ptr<Memory> m_memory;
 
   /// The RealLive machine's single result register
   int storeRegister;
@@ -92,14 +79,7 @@ private:
   bool m_haltOnException;
 
   /// The SEEN.TXT the machine is currently executing.
-  libReallive::Archive& archive;
-
-  /** Describes a stack frame. Stack frames are added by two
-   * mechanisms: gosubs and farcalls. gosubs move the instruction
-   * pointer within one Scenario, while farcalls move the instruction
-   * pointer between Scenarios.
-   */
-  struct StackFrame;
+  libReallive::Archive& m_archive;
 
   /// The actual call stack.
   std::vector<StackFrame> callStack;
@@ -152,90 +132,28 @@ public:
    */
 
   /**
-   * Builds the save file name.
-   */
-  std::string makeSaveGameName(int slot);
-
-  /**
-   * Writes the contents of global memory to the default global memory
-   * file for this game.
-   */
-  void saveGlobalMemory();
-
-  /**
-   * Writes the contents of memory to a stream.
-   *
-   * @note This function is used by saveGlobalMemory(), but is exposed
-   *       publicly for unit testing.
-   */
-  void saveGlobalMemoryTo(std::ostream& oss);
-
-  /**
-   * Reads the contents of global memory to the default global memory
-   * file for this game.
-   */
-  void loadGlobalMemory();
-
-  /**
-   * Reads global memory from a stream.
-   * 
-   * @note This function is used by saveGlobalMemory(), but is exposed
-   *       publicly for unit testing.
-   */
-  void loadGlobalMemoryFrom(std::istream& oss);
-
-  /**
    * Writes out the current game state to save game slot @c slot .
    * 
    * Then, it saves the state of the global memory.
    */
-  void saveGame(int slot);
+//  void saveGame(int slot);
 
   /**
    * Writes out the saved game to the stream.
    */
-  void saveGameTo(std::ostream& oss);
+//  void saveGameTo(std::ostream& oss);
 
   /**
    * Reads in and overwrites the current game state with the data from
    * save game slot @c slot .
    */
-  void loadGame(const int slot);
+//  void loadGame(const int slot);
 
   /**
    * Reads in the save game data from the stream and overwrites
    * current memory.
    */
-  void loadGameFrom(std::istream& iss);
-
-  /** 
-   * Copies the current instruction pointer to the save pointer on the
-   * topmost stackframe. 
-   * 
-   */
-//  void markSavepoint();
-
-  void saveIntegerBanksTo(const IntegerBank_t& banks, Json::Value& value);
-  void loadIntegerBanksFrom(const IntegerBank_t& banks, Json::Value& value);
-
-  /** 
-   * Serializes an individual bank of strings
-   * 
-   * @param strPtr Pointer to the beginning of a string[2000] array.
-   * @param bankName single character name for the string bank
-   * @param root JSON tree root to save to
-   */
-  void saveStringBank(const std::string* strPtr, char bankName, 
-					  Json::Value& root);
-
-  /** 
-   * Serializes an individual bank of strings
-   * 
-   * @param strPtr Pointer to the beginning of a string[2000] array.
-   * @param bankName single character name for the string bank
-   * @param root JSON tree root to read from
-   */
-  void loadStringBank(std::string* strPtr, char bankName, Json::Value& root);
+//  void loadGameFrom(std::istream& iss);
   /// @}
 
   // -----------------------------------------------------------------------
@@ -299,7 +217,9 @@ public:
 
   /**
    * @name MemoryManip 
-   * Memory Manipulation Functions
+   *
+   * Memory Manipulation Functions. These are bridge methods to the
+   * accessors in the class Memory.
    */
   // @{
 
@@ -353,6 +273,15 @@ public:
    */
   int getStoreRegisterValue() const { return storeRegister; }
 
+  /** 
+   * Returns the internal memory object for raw access to the machine
+   * object's memory.
+   * 
+   * @note This should only be used during serialization or complex
+   *       memory operations involving overlays.
+   */
+  Memory& memory() { return *m_memory; }
+  const Memory& memory() const { return *m_memory; }
   //@}
 
   // -----------------------------------------------------------------------
@@ -455,6 +384,10 @@ public:
    */
   int lineNumber() const { return m_line; }
 
+  /** 
+   * Returns the current Archive we are attached to.
+   */
+  libReallive::Archive& archive() { return m_archive; }
   // @}
 
   // -----------------------------------------------------------------------
@@ -556,6 +489,15 @@ public:
    * Returns the current System that this RLMachine outputs to.
    */
   System& system() { return m_system; }
+
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 #endif

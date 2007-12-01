@@ -35,7 +35,7 @@
 
 template<typename T>
 class MemoryReferenceIterator;
-
+class Memory;
 class RLMachine;
 
 /** 
@@ -106,7 +106,7 @@ template<typename ACCESS>
 class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
 private:
-  RLMachine* m_machine;
+  Memory* m_memory;
   int m_type;
   int m_location;
 
@@ -116,6 +116,10 @@ private:
 
 public:
   MemoryReferenceIterator();
+
+  // Explicit reference creation
+  MemoryReferenceIterator(Memory* inMachine, const int inType, 
+                          const int inLocation);
 
   // Explicit reference creation
   MemoryReferenceIterator(RLMachine* inMachine, const int inType, 
@@ -160,12 +164,16 @@ public:
   }
 
   bool operator==(const MemoryReferenceIterator<ACCESS>& rhs) const {
-    return m_machine == rhs.m_machine && m_type == rhs.m_type && 
+    return m_memory == rhs.m_memory && m_type == rhs.m_type && 
       m_location == rhs.m_location;
   }
 
   bool operator!=(const MemoryReferenceIterator<ACCESS>& rhs) const {
     return ! operator==(rhs);
+  }
+
+  MemoryReferenceIterator<ACCESS> changeMemoryTo(Memory* newMemObj) const {
+    return MemoryReferenceIterator<ACCESS>(newMemObj, m_type, m_location);
   }
 };
 
@@ -173,16 +181,29 @@ public:
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
-  : m_machine(NULL), m_type(-1), m_location(0)
+  : m_memory(NULL), m_type(-1), m_location(0)
 { }
 
 // -----------------------------------------------------------------------
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
-  RLMachine* inMachine, const int inType, const int inLocation)
-  : m_machine(inMachine), m_type(inType), m_location(inLocation)
+  Memory* memory, const int inType, const int inLocation)
+  : m_memory(memory), m_type(inType), m_location(inLocation)
 { }
+
+// -----------------------------------------------------------------------
+
+// Helper function
+void setMemoryFromRLMachine(Memory*& memory, RLMachine* machine);
+
+template<typename ACCESS>
+MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
+  RLMachine* inMachine, const int inType, const int inLocation)
+  : m_memory(NULL), m_type(inType), m_location(inLocation)
+{ 
+  setMemoryFromRLMachine(m_memory, inMachine);
+}
 
 // -----------------------------------------------------------------------
 

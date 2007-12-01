@@ -24,6 +24,11 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
@@ -34,8 +39,12 @@
 #include "Systems/Base/ObjectSettings.hpp"
 #include "libReallive/gameexe.h"
 
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "MachineBase/StackFrame.hpp"
 #include "Modules/Module_Grp.hpp"
 #include "Utilities.h"
+#include "LazyArray.hpp"
 
 #include <sstream>
 #include <vector>
@@ -43,8 +52,7 @@
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-
-#include "json/value.h"
+#include <iterator>
 #include <iostream>
 
 using std::cout;
@@ -128,19 +136,58 @@ const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsF
 }
 
 // -----------------------------------------------------------------------
+
+// -----------------------------------------------------------------------
+// GraphicsSystemGlobals
+// -----------------------------------------------------------------------
+GraphicsSystemGlobals::GraphicsSystemGlobals()
+  : showObject1(false), showObject2(false), showWeather(false)
+{}
+
+GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
+  :	showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
+	showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
+    showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1)
+{}
+
+// -----------------------------------------------------------------------
+// GraphicsObjectImpl
+// -----------------------------------------------------------------------
+struct GraphicsSystem::GraphicsObjectImpl
+{
+  GraphicsObjectImpl();
+
+  /// Foreground objects
+  LazyArray<GraphicsObject> m_foregroundObjects;
+
+  /// Background objects
+  LazyArray<GraphicsObject> m_backgroundObjects;
+
+  /// Foreground objects (at the time of the last save)
+  LazyArray<GraphicsObject> m_savedForegroundObjects;
+
+  /// Background objects (at the time of the last save)
+  LazyArray<GraphicsObject> m_savedBackgroundObjects;
+};
+
+// -----------------------------------------------------------------------
+
+GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
+  : m_foregroundObjects(256), m_backgroundObjects(256),
+    m_savedForegroundObjects(256), m_savedBackgroundObjects(256)
+{}
+
+// -----------------------------------------------------------------------
 // GraphicsSystem
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
   : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
     m_isResponsibleForUpdate(true),
 	m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
-	m_showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
-	m_showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
-    m_showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
     m_hideInterface(false),
+    m_globals(gameexe),
 	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
-    foregroundObjects(256), 
-    backgroundObjects(256)
+    m_graphicsObjectImpl(new GraphicsObjectImpl)
 {
 }
 
@@ -155,6 +202,13 @@ GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(const std::string& nam
 {
   m_graphicsObjectSettings->graphicsStack.push_back(GraphicsStackFrame(name));
   return m_graphicsObjectSettings->graphicsStack.back();
+}
+
+// -----------------------------------------------------------------------
+
+vector<GraphicsStackFrame>& GraphicsSystem::graphicsStack()
+{
+  return m_graphicsObjectSettings->graphicsStack;
 }
 
 // -----------------------------------------------------------------------
@@ -181,6 +235,17 @@ void GraphicsSystem::stackPop(int items)
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
+{
+  vector<GraphicsStackFrame> stackToReplay;
+  stackToReplay.swap(m_graphicsObjectSettings->graphicsStack);
+
+  // 
+  replayGraphicsStackVector(machine, stackToReplay);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::setWindowSubtitle(const std::string& cp932str,
                                        int textEncoding)
 {
@@ -198,21 +263,21 @@ const std::string& GraphicsSystem::windowSubtitle() const
 
 void GraphicsSystem::setShowObject1(const int in)
 {
-  m_showObject1 = in;
+  m_globals.showObject1 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowObject2(const int in)
 {
-  m_showObject2 = in;
+  m_globals.showObject2 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowWeather(const int in)
 {
-  m_showWeather = in;
+  m_globals.showWeather = in;
 }
 
 // -----------------------------------------------------------------------
@@ -254,53 +319,6 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::saveGlobals(Json::Value& graphics)
-{
-  graphics["showObject1"] = showObject1();
-  graphics["showObject2"] = showObject2();
-  graphics["showWeather"] = showWeather();
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::loadGlobals(const Json::Value& textSys)
-{
-  setShowObject1(textSys["showObject1"].asInt());
-  setShowObject2(textSys["showObject2"].asInt());
-  setShowWeather(textSys["showWeather"].asInt());
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::saveGameValues(Json::Value& graphicsSys)
-{
-  Json::Value graphicsValue(Json::arrayValue);
-  
-  std::vector<GraphicsStackFrame>::iterator it = 
-    m_graphicsObjectSettings->graphicsStack.begin();
-  std::vector<GraphicsStackFrame>::iterator end = 
-    m_graphicsObjectSettings->graphicsStack.end();
-  for(; it != end; ++it) 
-  { 
-    Json::Value frame(Json::objectValue);
-    it->serializeTo(frame);
-    graphicsValue.push_back(frame);
-  }
-
-  graphicsSys["stack"] = graphicsValue;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::loadGameValues(RLMachine& machine,
-                                    const Json::Value& graphicsSys)
-{
-  replayGraphicsStack(machine, graphicsSys["stack"]);
-//  loadObjectState(machine, graphicsSys["objects"]);
-}
-
-// -----------------------------------------------------------------------
-
 void GraphicsSystem::reset()
 {
   m_defaultGrpName = "";
@@ -316,10 +334,10 @@ void GraphicsSystem::promoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
 
-  FullIterator bg = backgroundObjects.full_begin();
-  FullIterator bgEnd = backgroundObjects.full_end();
-  FullIterator fg = foregroundObjects.full_begin();
-  FullIterator fgEnd = foregroundObjects.full_end();
+  FullIterator bg = m_graphicsObjectImpl->m_backgroundObjects.full_begin();
+  FullIterator bgEnd = m_graphicsObjectImpl->m_backgroundObjects.full_end();
+  FullIterator fg = m_graphicsObjectImpl->m_foregroundObjects.full_begin();
+  FullIterator fgEnd = m_graphicsObjectImpl->m_foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(bg.valid())
@@ -338,10 +356,10 @@ void GraphicsSystem::clearAndPromoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;  
 
-  FullIterator bg = backgroundObjects.full_begin();
-  FullIterator bgEnd = backgroundObjects.full_end();
-  FullIterator fg = foregroundObjects.full_begin();
-  FullIterator fgEnd = foregroundObjects.full_end();
+  FullIterator bg = m_graphicsObjectImpl->m_backgroundObjects.full_begin();
+  FullIterator bgEnd = m_graphicsObjectImpl->m_backgroundObjects.full_end();
+  FullIterator fg = m_graphicsObjectImpl->m_foregroundObjects.full_begin();
+  FullIterator fgEnd = m_graphicsObjectImpl->m_foregroundObjects.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(fg.valid() && !fg->wipeCopy())
@@ -365,9 +383,9 @@ GraphicsObject& GraphicsSystem::getObject(int layer, int objNumber)
     throw rlvm::Exception("Invalid layer number");
   
   if(layer == OBJ_BG_LAYER)
-    return backgroundObjects[objNumber];
+    return m_graphicsObjectImpl->m_backgroundObjects[objNumber];
   else
-    return foregroundObjects[objNumber];
+    return m_graphicsObjectImpl->m_foregroundObjects[objNumber];
 }
 
 // -----------------------------------------------------------------------
@@ -378,17 +396,39 @@ void GraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    backgroundObjects[objNumber] = obj;
+    m_graphicsObjectImpl->m_backgroundObjects[objNumber] = obj;
   else
-    foregroundObjects[objNumber] = obj;
+    m_graphicsObjectImpl->m_foregroundObjects[objNumber] = obj;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllObjects()
 {
-  foregroundObjects.clear();
-  backgroundObjects.clear();
+  m_graphicsObjectImpl->m_foregroundObjects.clear();
+  m_graphicsObjectImpl->m_backgroundObjects.clear();
+}
+
+// -----------------------------------------------------------------------
+
+LazyArray<GraphicsObject>& GraphicsSystem::backgroundObjects() 
+{
+  return m_graphicsObjectImpl->m_backgroundObjects; 
+}
+
+// -----------------------------------------------------------------------
+
+LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() 
+{
+  return m_graphicsObjectImpl->m_foregroundObjects; 
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::takeSavepointSnapshot()
+{
+  foregroundObjects().copyTo(m_graphicsObjectImpl->m_savedForegroundObjects);
+  backgroundObjects().copyTo(m_graphicsObjectImpl->m_savedBackgroundObjects);
 }
 
 // -----------------------------------------------------------------------
@@ -397,9 +437,9 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it = 
-	foregroundObjects.allocated_begin();
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = 
-	foregroundObjects.allocated_end();
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
   for(; it != end; ++it)
   {
 	const ObjectSettings& settings = getObjectSettings(it.pos());
@@ -421,54 +461,66 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine, 
                                                    const std::string& filename)
 {
+  // Get the path to get the file type (which won't be in filename)
   string fullPath = findFile(machine, filename);
   if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
   {
-    return new GraphicsObjectOfFile(*this, fullPath);
+    return new GraphicsObjectOfFile(machine, filename);
   }
   else if(iends_with(fullPath, "anm"))
   {
-    return new AnmGraphicsObjectData(machine, fullPath);
+    return new AnmGraphicsObjectData(machine, filename);
   }
   else
   {
     ostringstream oss;
-    oss << "Don't know how to handle object file: \"" << fullPath << "\"";
+    oss << "Don't know how to handle object file: \"" << filename << "\"";
     throw rlvm::Exception(oss.str());
   }
 }
 
-
 // -----------------------------------------------------------------------
 
-/*
-void GraphicsSystem::saveObjectState(RLMachine& machine,
-                                     Json::Value& objects)
+int GraphicsSystem::foregroundAllocated()
 {
   AllocatedLazyArrayIterator<GraphicsObject> it = 
-	foregroundObjects.allocated_begin();
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = 
-	foregroundObjects.allocated_end();
-  for(; it != end; ++it)
-  {
-    Json::Value object(Json::objectValue);
-    it->serializeTo(object);
-    
-    objects[lexical_cast<string>(objNum)] = object;
-  }
+	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
+  return std::distance(it, end);
 }
-*/
-// -----------------------------------------------------------------------
- /*
-void GraphicsSystem::loadObjectState(RLMachine& machine,
-                                     const Json::Value& objectHash)
-{
-  // Iterate over graphics state hash entries
-  using namespace Json;
 
-  for(Value::iterator it = objectHash.begin(); it != objectHash.end(); ++it)
-  {
-    
-  }
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsSystem::save(Archive& ar, unsigned int version) const
+{
+  ar
+    & m_subtitle
+    & m_graphicsObjectSettings->graphicsStack
+    & m_graphicsObjectImpl->m_savedBackgroundObjects
+    & m_graphicsObjectImpl->m_savedForegroundObjects;
 }
- */
+
+// -----------------------------------------------------------------------
+
+
+template<class Archive>
+void GraphicsSystem::load(Archive& ar, unsigned int version)
+{
+  ar
+    & m_subtitle
+    & graphicsStack() 
+    & m_graphicsObjectImpl->m_backgroundObjects
+    & m_graphicsObjectImpl->m_foregroundObjects;
+
+  // Now alert all subclasses that we've set the subtitle
+  setWindowSubtitle(m_subtitle, Serialization::g_currentMachine->getTextEncoding());
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsSystem::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+template void GraphicsSystem::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;

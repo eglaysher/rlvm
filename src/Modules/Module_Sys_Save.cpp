@@ -33,10 +33,14 @@
 #include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "MachineBase/SaveGameHeader.hpp"
+#include "MachineBase/Memory.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
 #include "libReallive/intmemref.h"
 
+#include <algorithm>
 #include <iostream>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -45,12 +49,12 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 
-#include "json/value.h"
-#include "json/reader.h"
-#include "json/writer.h"
-
 #include "utf8.h"
 #include "Modules/cp932toUnicode.hpp"
+
+// For copy_n, which isn't part of the C++ standard and doesn't come on
+// OSX.
+#include <boost/multi_array/algorithm.hpp>
 
 using namespace std;
 using namespace libReallive;
@@ -62,61 +66,11 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-namespace {
-
-void getSaveTime(Json::Value& value, int& y, int& m, int& d, int& wd, 
-				 int& hh, int& mm, int& ss, int& ms)
-{
-  const Json::Value& intMem = value["saveTime"];
-  y = intMem[0u].asInt();
-  m = intMem[1u].asInt();
-  d = intMem[2u].asInt();
-  wd = intMem[3u].asInt();
-  hh = intMem[4u].asInt();
-  mm = intMem[5u].asInt();
-  ss = intMem[6u].asInt();
-  ms = intMem[7u].asInt();
-}
-
-// -----------------------------------------------------------------------
-
-void loadJsonFile(RLMachine& machine, int slotNum, Json::Value& root)
-{
-  fs::path saveFile = machine.system().gameSaveDirectory() / 
-	machine.makeSaveGameName(slotNum);
-  fs::ifstream file(saveFile);
-  if(!file)
-  {
-	ostringstream oss;
-	oss << "Couldn't read save file " << saveFile.string();
-	throw rlvm::Exception(oss.str());
-  }
-
-  string memoryContents;
-  string line;
-  while(getline(file, line))
-  {
-	memoryContents += line;
-	memoryContents += "\n";
-  }
-
-  Json::Reader reader;
-  if(!reader.parse(memoryContents, root))
-  {
-	throw rlvm::Exception("Json::Reader failed");
-  }
-}
-
-}
-
-// -----------------------------------------------------------------------
-
 struct Sys_SaveExists : public RLOp_Store_1< IntConstant_T >
 {
   int operator()(RLMachine& machine, int slot)
   {
-	fs::path saveFile = machine.system().gameSaveDirectory() / 
-	  machine.makeSaveGameName(slot);
+	fs::path saveFile = Serialization::buildSaveGameFilename(machine, slot);
 	return fs::exists(saveFile) ? 1 : 0;
   }
 };
@@ -134,15 +88,12 @@ struct Sys_SaveDate : public RLOp_Store_5<
 
 	if(fileExists)
 	{
-	  Json::Value root;
-	  loadJsonFile(machine, slot, root);
+      SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  int y, m, d, wd, hh, mm, ss, ms;
-	  getSaveTime(root, y, m, d, wd, hh, mm, ss, ms);
-	  *yIt = y;
-	  *mIt = m;
-	  *dIt = d;
-	  *wdIt = wd;
+	  *yIt = header.saveTime.date().year();
+	  *mIt = header.saveTime.date().month();
+	  *dIt = header.saveTime.date().day();
+	  *wdIt = header.saveTime.date().day_of_week();
 	}
 
 	return fileExists;
@@ -162,15 +113,12 @@ struct Sys_SaveTime : public RLOp_Store_5<
 
 	if(fileExists)
 	{
-	  Json::Value root;
-	  loadJsonFile(machine, slot, root);
+      SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  int y, m, d, wd, hh, mm, ss, ms;
-	  getSaveTime(root, y, m, d, wd, hh, mm, ss, ms);
-	  *hhIt = hh;
-	  *mmIt = mm;
-	  *ssIt = ss;
-	  *msIt = ms;
+	  *hhIt = header.saveTime.time_of_day().hours();
+	  *mmIt = header.saveTime.time_of_day().minutes();
+	  *ssIt = header.saveTime.time_of_day().seconds();
+	  *msIt = header.saveTime.time_of_day().fractional_seconds();
 	}
 
 	return fileExists;
@@ -193,19 +141,16 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
 
 	if(fileExists)
 	{
-	  Json::Value root;
-	  loadJsonFile(machine, slot, root);
+      SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  int y, m, d, wd, hh, mm, ss, ms;
-	  getSaveTime(root, y, m, d, wd, hh, mm, ss, ms);
-	  *yIt = y;
-	  *mIt = m;
-	  *dIt = d;
-	  *wdIt = wd;
-	  *hhIt = hh;
-	  *mmIt = mm;
-	  *ssIt = ss;
-	  *msIt = ms;
+	  *yIt = header.saveTime.date().year();
+	  *mIt = header.saveTime.date().month();
+	  *dIt = header.saveTime.date().day();
+	  *wdIt = header.saveTime.date().day_of_week();
+	  *hhIt = header.saveTime.time_of_day().hours();
+	  *mmIt = header.saveTime.time_of_day().minutes();
+	  *ssIt = header.saveTime.time_of_day().seconds();
+	  *msIt = header.saveTime.time_of_day().fractional_seconds();
 	}
 
 	return fileExists;
@@ -230,22 +175,19 @@ struct Sys_SaveInfo : public RLOp_Store_10<
 
 	if(fileExists)
 	{
-	  Json::Value root;
-	  loadJsonFile(machine, slot, root);
+      SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  int y, m, d, wd, hh, mm, ss, ms;
-	  getSaveTime(root, y, m, d, wd, hh, mm, ss, ms);
-	  *yIt = y;
-	  *mIt = m;
-	  *dIt = d;
-	  *wdIt = wd;
-	  *hhIt = hh;
-	  *mmIt = mm;
-	  *ssIt = ss;
-	  *msIt = ms;
+	  *yIt = header.saveTime.date().year();
+	  *mIt = header.saveTime.date().month();
+	  *dIt = header.saveTime.date().day();
+	  *wdIt = header.saveTime.date().day_of_week();
+	  *hhIt = header.saveTime.time_of_day().hours();
+	  *mmIt = header.saveTime.time_of_day().minutes();
+	  *ssIt = header.saveTime.time_of_day().seconds();
+	  *msIt = header.saveTime.time_of_day().fractional_seconds();
 
 	  // Convert the UTF-8 string to the memory internal CP932
-	  *titleIt = root["title"].asString();
+	  *titleIt = header.title;
 	}
 
 	return fileExists;
@@ -285,55 +227,6 @@ GetSaveFlagList;
 struct Sys_GetSaveFlag : public RLOp_Store_2<
   IntConstant_T, GetSaveFlagList>
 {
-  /// Retrieves a string from the JSON save file and code it.
-  void getString(RLMachine& machine, 
-                 Json::Value& root,
-                 StringReferenceIterator src,
-                 StringReferenceIterator dst,
-                 int numBlocksToCopy)
-  {
-    for(int i = 0; i < numBlocksToCopy; ++i, ++src, ++dst)
-    {
-      int type = src.type();
-      if(type == STRS_LOCATION)
-      {
-        *dst = root["strS"][src.location()].asString();
-      }
-      else
-      {
-        throw rlvm::Exception("Invalid source type in GetSaveFlag");
-      }
-    }
-  }
-
-  /// Retrieves an int from the JSON save file
-  void getInt(RLMachine& machine,
-              Json::Value& root,
-              IntReferenceIterator src, 
-              IntReferenceIterator dst,
-              int numBlocksToCopy)
-  {
-    for(int i = 0; i < numBlocksToCopy; ++i, ++src, ++dst)
-    {
-      string intBank = "int";
-      
-      IntegerBank_t::const_iterator it = 
-        find_if(LOCAL_INTEGER_BANKS.begin(), LOCAL_INTEGER_BANKS.end(),
-                bind(&IntegerBank_t::value_type::first, _1) == src.type());
-      if(it != LOCAL_INTEGER_BANKS.end())
-      {
-        intBank += it->second;
-      }
-      else  
-      {
-        // We don't support nibble or bit access yet.
-        throw rlvm::Exception("Invalid source intager bank in GetSaveFlag");
-      }
-
-      *dst = root[intBank][src.location()].asInt();
-    }
-  }
-
   /// Main operation
   int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList)
   {
@@ -341,22 +234,29 @@ struct Sys_GetSaveFlag : public RLOp_Store_2<
 	if(!fileExists)
       return 0;
 
-    Json::Value root;
-    loadJsonFile(machine, slot, root);
-    
+    Memory overlayedMemory(machine, slot);
+    Serialization::loadLocalMemoryForSlot(machine, slot, overlayedMemory);
+
+    using boost::detail::multi_array::copy_n;
     for(GetSaveFlagList::type::iterator it = flagList.begin(); 
         it != flagList.end(); ++it)
     {
       switch(it->type)
       {
       case 0:
-       getInt(machine, root, it->first.get<0>(),
-                 it->first.get<1>(), it->first.get<2>());
+      {
+        IntReferenceIterator jt = it->first.get<0>()
+          .changeMemoryTo(&overlayedMemory);
+        copy_n(jt, it->first.get<2>(), it->first.get<1>());
         break;
+      }
       case 1:
-       getString(machine, root, it->second.get<0>(),
-                 it->second.get<1>(), it->second.get<2>());
+      {
+        StringReferenceIterator jt = it->second.get<0>()
+          .changeMemoryTo(&overlayedMemory);
+        copy_n(jt, it->second.get<2>(), it->second.get<1>());
         break;
+      }
       default:
         throw rlvm::Exception("Illegal value in Special_T in GetSaveFlag");
         break;
@@ -411,7 +311,8 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
   void operator()(RLMachine& machine, int slot)
   {
 	cerr << "SAVING TO SLOT " << slot << endl;
-	machine.saveGame(slot);
+	Serialization::saveGlobalMemory(machine);
+    Serialization::saveGameForSlot(machine, slot);
   }
 };
  
@@ -423,7 +324,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
 
   void operator()(RLMachine& machine, int slot)
   {
-	machine.loadGame(slot);
+    Serialization::loadGameForSlot(machine, slot);
   }
 };
 

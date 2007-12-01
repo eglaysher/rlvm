@@ -58,19 +58,15 @@ void setObjectDataToGan(
   string& imgFilename, 
   const string& ganFilename)
 {
-  GraphicsSystem& gs = machine.system().graphics();
+//  GraphicsSystem& gs = machine.system().graphics();
 
   /// @todo This is a hack and probably a source of errors. Figure
   ///       out what '???' means when used as the first parameter to
   ///       objOfFileGan.
   if(imgFilename == "???")
     imgFilename = ganFilename;
-  string imgFilePath = findFile(machine, imgFilename, IMAGE_FILETYPES);
-  shared_ptr<Surface> img(gs.loadSurfaceFromFile(imgFilePath));
-
-  string ganFilePath = findFile(machine, ganFilename, GAN_FILETYPES);
   obj.setObjectData(
-    new GanGraphicsObjectData(machine, ganFilePath, img));
+    new GanGraphicsObjectData(machine, ganFilename, imgFilename));
 }
 
 // -----------------------------------------------------------------------

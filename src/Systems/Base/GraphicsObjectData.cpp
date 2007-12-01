@@ -65,10 +65,12 @@ void GraphicsObjectData::endAnimation()
       ownedBy()->deleteObject();
     break;
   case AFTER_LOOP:
+  {
     // Reset from the beginning
     m_currentlyPlaying = true;
     loopAnimation();
     break;
+  }
   }
 }
 

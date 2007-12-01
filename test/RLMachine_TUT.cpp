@@ -24,6 +24,8 @@
 #include "libReallive/archive.h"
 #include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "MachineBase/Memory.hpp"
 
 #include "NullSystem/NullSystem.hpp"
 
@@ -255,22 +257,22 @@ void object::test<7>()
 	}
 
 	for(int i = 0; i < 2000; ++i)
-	  saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(count));
+	  saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
 
-	saveMachine.saveGlobalMemoryTo(ss);
+	Serialization::saveGlobalMemoryTo(ss, saveMachine);
   }
 
   // Load data
   {
 	RLMachine loadMachine(system, arc);
-	loadMachine.loadGlobalMemoryFrom(ss);
+	Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 
 	int count = 0;
 	for(vector<pair<int, char> >::const_iterator it = 
 		  GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
 		++it)
 	{
-	  for(int i = 0; i < 2000; ++i)	  
+	  for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)	  
 	  {
 		ensure_equals("Didn't read memory correctly!",
 					  loadMachine.getIntValue(IntMemRef(it->second, i)), count);
@@ -278,10 +280,10 @@ void object::test<7>()
 	  }
 	}
 
-	for(int i = 0; i < 2000; ++i)
+	for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)
 	  ensure_equals("Didn't save string memory correctly!",
 					loadMachine.getStringValue(STRM_LOCATION, i),
-					lexical_cast<string>(count));
+					lexical_cast<string>(i));
   }
 }
 

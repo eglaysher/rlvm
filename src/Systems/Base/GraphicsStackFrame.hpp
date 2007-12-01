@@ -30,21 +30,32 @@
 #define __GraphicsStackFrame_hpp__
 
 #include <string>
-
-// -----------------------------------------------------------------------
-
-namespace Json {
-class Value;
-}
+#include <boost/serialization/access.hpp>
 
 // -----------------------------------------------------------------------
 
 /**
  * Represents one frame in the graphics stack. 
+ *
+ * @todo Move the serialization code into this class
  */
 class GraphicsStackFrame
 {
 private:
+  friend class boost::serialization::access;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    ar & m_commandName & m_hasFilename & m_fileName & m_hasSourceDC 
+      & m_sourceDC & m_hasSourceCoordinates & m_sourceX & m_sourceY 
+      & m_sourceX2 & m_sourceY2 & m_hasTargetDC & m_targetDC 
+      & m_hasTargetCoordinates & m_targetX & m_targetY & m_targetX2 
+      & m_targetY2 & m_hasRGB & m_r & m_g & m_b & m_hasOpacity 
+      & m_opacity & m_hasMask & m_mask;
+  }
+
   std::string m_commandName;
 
   bool m_hasFilename;
@@ -73,7 +84,6 @@ private:
 
 public: 
   GraphicsStackFrame();
-  GraphicsStackFrame(const Json::Value& frame);
   GraphicsStackFrame(const std::string& name);
   ~GraphicsStackFrame();
 
@@ -120,10 +130,6 @@ public:
   bool hasMask() const { return m_hasMask; }
   bool mask() const { return m_mask; }
   GraphicsStackFrame& setMask(bool in);
-
-  // Size (??)
-
-  void serializeTo(Json::Value& frame);
 };	// end of class GraphicsStackFrame
 
 
