@@ -132,6 +132,8 @@ void SDLSurface::buildRegionTable(int width, int height)
   rect.y1 = 0;
   rect.x2 = width;
   rect.y2 = height;
+  rect.originX = 0;
+  rect.originY = 0;
   m_regionTable.push_back(rect);
 }
 

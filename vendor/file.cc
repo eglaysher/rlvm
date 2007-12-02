@@ -1535,6 +1535,8 @@ bool G00CONV::Read_Type2(char* image) {
 		region_table[i].y1 = read_little_endian_int(head+4);
 		region_table[i].x2 = read_little_endian_int(head+8);
 		region_table[i].y2 = read_little_endian_int(head+12);
+        region_table[i].origin_x = read_little_endian_int(head+16);
+        region_table[i].origin_y = read_little_endian_int(head+20);
 		region_table[i].Fix(width, height);
 		head += 24;
 	}

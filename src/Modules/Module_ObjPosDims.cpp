@@ -37,6 +37,8 @@
 #include <iostream>
 using namespace std;
 
+// -----------------------------------------------------------------------
+
 /**
  * Theoretically implements objGetPos. People don't actually
  * understand what's going on in this module (more so then anything

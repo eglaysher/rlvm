@@ -151,7 +151,8 @@ public:
 class GRPCONV {
 public:
 	struct REGION {
-		int x1, y1, x2, y2;
+      int x1, y1, x2, y2;
+      int origin_x, origin_y;
 		int Width() { return x2-x1+1;}
 		int Height() { return y2-y1+1;}
 		void FixVar(int& v, int& w) {

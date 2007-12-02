@@ -602,6 +602,8 @@ void Texture::renderToScreenAsObject(
   int ySrc1 = surface.getPattern(pattNo).y1;
   int xSrc2 = surface.getPattern(pattNo).x2;
   int ySrc2 = surface.getPattern(pattNo).y2;
+  int xOrigin = surface.getPattern(pattNo).originX;
+  int yOrigin = surface.getPattern(pattNo).originY;
 
   if(overrides.overrideSource)
   {
@@ -620,8 +622,8 @@ void Texture::renderToScreenAsObject(
   }
   else
   {
-    xPos1 = go.x() + go.xAdjustmentSum();
-    yPos1 = go.y() + go.yAdjustmentSum();
+    xPos1 = go.x() + go.xAdjustmentSum() - xOrigin;
+    yPos1 = go.y() + go.yAdjustmentSum() - yOrigin;
 
     if(overrides.hasDestOffset)
     {

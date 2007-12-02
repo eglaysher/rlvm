@@ -523,6 +523,8 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
   rect.y1 = region.y1;
   rect.x2 = region.x2 + 1;
   rect.y2 = region.y2 + 1;
+  rect.originX = region.origin_x;
+  rect.originY = region.origin_y;
   return rect;
 }
 
@@ -608,6 +610,8 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
     rect.y1 = 0;
     rect.x2 = conv->Width();
     rect.y2 = conv->Height();
+    rect.originX = 0;
+    rect.originY = 0;
     region_table.push_back(rect);
   }
 
