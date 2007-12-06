@@ -625,6 +625,13 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
   verifySurfaceExists(dc, "SDLGraphicsSystem::getDC");
   return m_displayContexts[dc];
 }
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(int w, int h)
+{
+  return shared_ptr<Surface>(new SDLSurface(w, h));
+}
                                 
 // -----------------------------------------------------------------------
 

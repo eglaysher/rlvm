@@ -169,7 +169,7 @@ public:
     const std::string& filename);
 
   virtual boost::shared_ptr<Surface> getDC(int dc);
-
+  virtual boost::shared_ptr<Surface> buildSurface(int w, int h);
   // -----------------------------------------------------------------------
 
   virtual void setWindowSubtitle(const std::string& cp932str,

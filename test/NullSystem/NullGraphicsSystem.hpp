@@ -43,6 +43,7 @@ public:
   // Make a null Surface object?
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const std::string& filename);
   virtual boost::shared_ptr<Surface> getDC(int dc);
+  virtual boost::shared_ptr<Surface> buildSurface(int w, int h);
 
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,

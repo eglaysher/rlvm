@@ -311,6 +311,7 @@ public:
 
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 
+  virtual boost::shared_ptr<Surface> buildSurface(int w, int h) = 0;
 
   // ----------------------------------- [ Object getter/factory functions ]
   /**

@@ -49,3 +49,8 @@ boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
 
 boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc) 
 { return boost::shared_ptr<Surface>(); }
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(int w, int h)
+{ return boost::shared_ptr<Surface>(); }

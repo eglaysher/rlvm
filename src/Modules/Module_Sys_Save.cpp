@@ -33,12 +33,18 @@
 #include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/SaveGameHeader.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "libReallive/intmemref.h"
+
+#include <boost/shared_ptr.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -51,6 +57,7 @@
 
 #include "utf8.h"
 #include "Modules/cp932toUnicode.hpp"
+#include "Modules/FadeEffect.hpp"
 
 // For copy_n, which isn't part of the C++ standard and doesn't come on
 // OSX.
@@ -62,6 +69,7 @@ using boost::lexical_cast;
 using boost::starts_with;
 using boost::ends_with;
 using boost::bind;
+using boost::shared_ptr;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -318,13 +326,81 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
  
 // -----------------------------------------------------------------------
 
+/** 
+ * Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
+ * from a save game slot.
+ *
+ * Internally, load is fairly complex, consisting of several
+ * LongOperations because we can't rely on normal flow control because
+ * we're going to nuke the call stack and system memory in
+ * LoadingGame.
+ */
 struct Sys_load : public RLOp_Void_1< IntConstant_T >
 {
   bool advanceInstructionPointer() { return false; }
 
+  struct LoadingGame : public LongOperation
+  {
+    int m_slot;
+    LoadingGame(int slot) : m_slot(slot) {}
+
+    bool operator()(RLMachine& machine)
+    {
+      Serialization::loadGameForSlot(machine, m_slot);
+
+      // Render the current state of the screen
+      GraphicsSystem& graphics = machine.system().graphics();
+
+      shared_ptr<Surface> dc0 = graphics.getDC(0);
+      shared_ptr<Surface> currentWindow = 
+        graphics.renderToSurfaceWithBg(machine, dc0);
+      int w = currentWindow->width();
+      int h = currentWindow->height();
+      
+      // Blank dc0 (because we won't be using it anyway) for the image
+      // we're going to render to
+      shared_ptr<Surface> blankScreen = graphics.buildSurface(w, h);
+      blankScreen->fill(0, 0, 0, 255);
+
+      machine.pushLongOperation(
+        new FadeEffect(machine, currentWindow, blankScreen, w, h, 250));
+
+      // At this point, the stack has been nuked, and this current
+      // object has already been deleted, leaving an invalid
+      // *this. Returning false is the correct thing to do since
+      // *returning true will pop an unrelated stack frame.
+      return false;
+    }
+  };
+
+  /** 
+   * Main entrypoint into the load command. Simply sets the callstack
+   * up so that we will fade to black, clear the screen and render,
+   * and then enter the next stage, the LongOperation LoadingGame.
+   */
   void operator()(RLMachine& machine, int slot)
   {
-    Serialization::loadGameForSlot(machine, slot);
+    machine.pushLongOperation(new LoadingGame(slot));
+
+    // Render the current state of the screen
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    shared_ptr<Surface> dc0 = graphics.getDC(0);
+    shared_ptr<Surface> currentWindow = 
+      graphics.renderToSurfaceWithBg(machine, dc0);
+    int w = currentWindow->width();
+    int h = currentWindow->height();
+
+    // Force a system clear for the visual elements
+    machine.system().graphics().reset();
+    machine.system().text().reset();
+
+    // Blank dc0 (because we won't be using it anyway) for the image
+    // we're going to render to
+    dc0->fill(0, 0, 0, 255);
+
+    machine.pushLongOperation(
+      new FadeEffect(machine, dc0, currentWindow, w, h, 250));
   }
 };
 
