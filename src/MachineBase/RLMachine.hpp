@@ -84,6 +84,9 @@ public:
   /// The actual call stack.
   std::vector<StackFrame> callStack;
 
+  /// The state of the call stack the last time a savepoint was called
+  std::vector<StackFrame> savepointCallStack;
+
   /// The most recent line marker we've come across
   int m_line;
 

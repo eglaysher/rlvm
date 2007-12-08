@@ -195,7 +195,7 @@ void RLMachine::setStringValue(int type, int number, const std::string& value)
 
 void RLMachine::markSavepoint()
 {
-  callStack.back().markSavepoint();
+  savepointCallStack = callStack;
   system().graphics().takeSavepointSnapshot();
 }
 
@@ -550,16 +550,8 @@ void RLMachine::save(Archive & ar, unsigned int version) const
   int lineNum = lineNumber();
   ar & lineNum;
 
-  // Copy all elements of the stack up to the first LongOperation.
-  vector<StackFrame> prunedStack;
-  copy_until(callStack.begin(), callStack.end(),
-             back_inserter(prunedStack),
-             bind(&StackFrame::frameType, _1) == StackFrame::TYPE_LONGOP);
-  
-  for_each(prunedStack.begin(), prunedStack.end(),
-           bind(&StackFrame::setSaveGameAsIP, _1));
-
-  ar & prunedStack;
+  /// Save the state of the stack when the last save point was hit
+  ar & savepointCallStack;
 }
 
 // -----------------------------------------------------------------------
