@@ -241,7 +241,8 @@ void RLMachine::setMarkSavepoints(const int in)
 
 bool RLMachine::shouldSetMessageSavepoint() const
 {
-  return savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
+  return 
+    savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
 }
 
 // -----------------------------------------------------------------------
@@ -494,14 +495,14 @@ void RLMachine::performTextout(const TextoutElement& e)
 
 // -----------------------------------------------------------------------
 
-/// @todo Only markSavepoint() if the current screen is empty.
 void RLMachine::setKidokuMarker(int kidokuNumber)
 {
   // Check to see if we mark savepoints on textout
-  if(shouldSetMessageSavepoint())
+  if(shouldSetMessageSavepoint() &&
+     m_system.text().currentPage(*this).numberOfCharsOnPage() == 0)
+  {
     markSavepoint();
-  else
-    cerr << "Shouldn't set message savepoint!" << endl;  
+  }
 }
 
 // -----------------------------------------------------------------------
