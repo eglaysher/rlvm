@@ -84,7 +84,8 @@ TextSystem::TextSystem(Gameexe& gexe)
     m_moveUse(false), m_clearUse(false), m_readJumpUse(false),
     m_automodeUse(false), m_msgbkUse(false), m_msgbkleftUse(false),
     m_msgbkrightUse(false), m_exbtnUse(false),
-    m_globals(gexe)
+    m_globals(gexe),
+    m_systemVisible(true)
 {
   GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
   if(ctrlUse.exists())

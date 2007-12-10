@@ -97,18 +97,21 @@ void SDLTextSystem::executeTextSystem(RLMachine& machine)
 
 void SDLTextSystem::render(RLMachine& machine)
 {
-  for_each(m_textWindow.begin(), m_textWindow.end(), 
-           bind(&TextWindow::render, _1, ref(machine)));
-
-  WindowMap::iterator it = m_textWindow.find(m_activeWindow);
-
-  if(it != m_textWindow.end() && it->isVisible() && 
-     m_inPauseState && !isReadingBacklog())
+  if(systemVisible())
   {
-    if(!m_textKeyCursor)
-      setKeyCursor(machine, 0);
+    for_each(m_textWindow.begin(), m_textWindow.end(), 
+             bind(&TextWindow::render, _1, ref(machine)));
 
-    m_textKeyCursor->render(machine, *it);
+    WindowMap::iterator it = m_textWindow.find(m_activeWindow);
+
+    if(it != m_textWindow.end() && it->isVisible() && 
+       m_inPauseState && !isReadingBacklog())
+    {
+      if(!m_textKeyCursor)
+        setKeyCursor(machine, 0);
+
+      m_textKeyCursor->render(machine, *it);
+    }
   }
 }
 
@@ -228,9 +231,16 @@ void SDLTextSystem::setMousePosition(RLMachine& machine, int x, int y)
 bool SDLTextSystem::handleMouseClick(RLMachine& machine, int x, int y, 
                                      bool pressed)
 {
-  return find_if(m_textWindow.begin(), m_textWindow.end(),    
-           bind(&SDLTextWindow::handleMouseClick, _1, 
-                ref(machine), x, y, pressed)) != m_textWindow.end();
+  if(systemVisible())
+  {
+    return find_if(m_textWindow.begin(), m_textWindow.end(),    
+                   bind(&SDLTextWindow::handleMouseClick, _1, 
+                        ref(machine), x, y, pressed)) != m_textWindow.end();
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // -----------------------------------------------------------------------

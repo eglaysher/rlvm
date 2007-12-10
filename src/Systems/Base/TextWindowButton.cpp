@@ -26,11 +26,13 @@
 
 #include "Systems/Base/TextWindowButton.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 
 #include <stdexcept>
@@ -348,9 +350,25 @@ ExbtnWindowButton::~ExbtnWindowButton()
 
 // -----------------------------------------------------------------------
 
+struct RestoreTextSystemVisibility : public LongOperation
+{
+  bool operator()(RLMachine& machine)
+  {
+    machine.system().text().setSystemVisible(true);    
+    return true;
+  }
+};
+
+// -----------------------------------------------------------------------
+
 void ExbtnWindowButton::buttonReleased()
 {
-//  cerr << "Would execute farcall(" << m_scenario << ", " << m_entrypoint 
-//       << ") if we had this implemented." << endl;
+  /// Hide all text boxes when entering an Exbtn 
+  m_machine.system().text().setSystemVisible(false);
+
+  /// Push a LongOperation onto the stack which will restore
+  /// visibility when we return from this Exbtn call
+  m_machine.pushLongOperation(new RestoreTextSystemVisibility);
+
   m_machine.farcall(m_scenario, m_entrypoint);
 }

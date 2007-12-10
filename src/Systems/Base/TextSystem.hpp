@@ -141,9 +141,22 @@ protected:
 
   TextSystemGlobals m_globals;
 
+  bool m_systemVisible;
+
 public:
   TextSystem(Gameexe& gexe);
   virtual ~TextSystem();
+
+  /** 
+   * @name Master visibility control
+   *
+   * Controls whether the text system is rendered at all. 
+   *
+   * @{
+   */
+  void setSystemVisible(bool in) { m_systemVisible = in; }
+  bool systemVisible() const { return m_systemVisible; }
+  /// @}
 
   /**
    * @name Implementation detail interface
