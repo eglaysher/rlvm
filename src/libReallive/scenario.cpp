@@ -98,13 +98,15 @@ Script::Script(const Header& hdr, const char* data, const size_t length)
 
   // Decompress data
   const size_t dlen = read_i32(data + 0x24);
-  std::auto_ptr<char> uncompressed = std::auto_ptr<char>(new char[dlen]);
+
+  /// @todo Removed auto_ptr because of new[] / delete mismatch
+  char* uncompressed = new char[dlen];
   Compression::decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),
-                          uncompressed.get(),
+                          uncompressed,
                           dlen);
   // Read bytecode
-  const char* stream = uncompressed.get();
+  const char* stream = uncompressed;
   size_t pos = 0;
   while (pos < dlen) {
     // Read element
@@ -133,6 +135,8 @@ Script::Script(const Header& hdr, const char* data, const size_t length)
       for (Pointers::iterator pit = ptrs->begin(); pit != ptrs->end(); ++pit) 
         labels[*pit].push_back(it);
   }
+
+    delete [] uncompressed;
 }
 
 void
