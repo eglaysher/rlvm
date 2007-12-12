@@ -65,7 +65,13 @@ GraphicsObject::GraphicsObject()
 
 GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
   : m_impl(rhs.m_impl)
-{}
+{
+  if(rhs.m_objectData)
+  {
+    m_objectData.reset(rhs.m_objectData->clone());
+    m_objectData->setOwnedBy(*this);
+  }
+}
 
 // -----------------------------------------------------------------------
 
@@ -76,15 +82,12 @@ GraphicsObject::~GraphicsObject()
 
 GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj)
 {
-  if(m_impl != obj.m_impl)
-  {
-    m_impl = obj.m_impl;
+  m_impl = obj.m_impl;
 
-    if(obj.m_objectData)
-    {
-      m_objectData.reset(obj.m_objectData->clone());
-      m_objectData->setOwnedBy(*this);
-    }
+  if(obj.m_objectData)
+  {
+    m_objectData.reset(obj.m_objectData->clone());
+    m_objectData->setOwnedBy(*this);
   }
 
   return *this;
@@ -421,7 +424,9 @@ void GraphicsObject::makeImplUnique()
 
 void GraphicsObject::render(RLMachine& machine)
 {
-  if(m_objectData && visible()) {
+  if(m_objectData && visible())
+  {
+    cerr << "Rendering object to {" << x() << ", " << y() << "}" << endl;
     m_objectData->render(machine, *this);
   }
 }
