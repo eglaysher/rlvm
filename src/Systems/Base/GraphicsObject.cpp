@@ -44,7 +44,7 @@ const int DEFAULT_TEXT_SHADOWCOLOUR = 0;
 // -----------------------------------------------------------------------
 // GraphicsObject::TextProperties
 // -----------------------------------------------------------------------
-GraphicsObject::Impl::TextProperties::TextProperties()
+GraphicsObject::TextProperties::TextProperties()
   : textSize(DEFAULT_TEXT_SIZE), 
     xspace(DEFAULT_TEXT_XSPACE), 
     yspace(DEFAULT_TEXT_YSPACE), 
@@ -57,409 +57,8 @@ GraphicsObject::Impl::TextProperties::TextProperties()
 // -----------------------------------------------------------------------
 // GraphicsObject
 // -----------------------------------------------------------------------
+
 GraphicsObject::GraphicsObject()
-  : m_impl(new GraphicsObject::Impl)
-{}
-
-// -----------------------------------------------------------------------
-
-GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
-  : m_impl(rhs.m_impl)
-{
-  if(rhs.m_objectData)
-  {
-    m_objectData.reset(rhs.m_objectData->clone());
-    m_objectData->setOwnedBy(*this);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-GraphicsObject::~GraphicsObject()
-{}
-
-// -----------------------------------------------------------------------
-
-GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj)
-{
-  m_impl = obj.m_impl;
-
-  if(obj.m_objectData)
-  {
-    m_objectData.reset(obj.m_objectData->clone());
-    m_objectData->setOwnedBy(*this);
-  }
-
-  return *this;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setObjectData(GraphicsObjectData* obj)
-{
-  m_objectData.reset(obj);
-  m_objectData->setOwnedBy(*this);
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setVisible(const int in) 
-{
-  makeImplUnique();
-  m_impl->m_visible = in;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setX(const int x) 
-{
-  makeImplUnique();
-  m_impl->m_x = x;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setY(const int y)
-{ 
-  makeImplUnique();
-  m_impl->m_y = y;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::xAdjustmentSum() const 
-{
-  return std::accumulate(m_impl->m_adjustX, m_impl->m_adjustX + 8, 0);
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setXAdjustment(int idx, int x) 
-{ 
-  makeImplUnique();
-  m_impl->m_adjustX[idx] = x; 
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::yAdjustmentSum() const
-{ 
-  return std::accumulate(m_impl->m_adjustY, m_impl->m_adjustY + 8, 0); 
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setYAdjustment(int idx, int y) 
-{ 
-  makeImplUnique();
-  m_impl->m_adjustY[idx] = y;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setVert(const int vert) 
-{ 
-  makeImplUnique(); 
-  m_impl->m_whateverAdjustVertOperatesOn = vert; 
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setXOrigin(const int x) 
-{ 
-  makeImplUnique(); 
-  m_impl->m_originX = x; 
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setYOrigin(const int y)
-{
-  makeImplUnique(); 
-  m_impl->m_originY = y; 
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setWidth(const int in)
-{ 
-  makeImplUnique(); 
-  m_impl->m_width = in;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setHeight(const int in) 
-{ 
-  makeImplUnique(); 
-  m_impl->m_height = in; 
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setRotation(const int in)
-{
-  makeImplUnique(); 
-  m_impl->m_rotation = in; 
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::pixelWidth(RLMachine& machine) const
-{
-  // Calculate out the pixel width of the current object taking in the
-  // width() scaling.
-  if(hasObjectData())
-    return m_objectData->pixelWidth(machine, *this);
-  else
-    return 0;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::pixelHeight(RLMachine& machine) const
-{
-  if(hasObjectData())
-    return m_objectData->pixelHeight(machine, *this);
-  else
-    return 0;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setPattNo(const int in) 
-{ makeImplUnique(); m_impl->m_pattNo = in; }
-void GraphicsObject::setMono(const int in)
-{ makeImplUnique(); m_impl->m_mono = in; }
-void GraphicsObject::setInvert(const int in)
-{ makeImplUnique(); m_impl->m_invert = in; }
-void GraphicsObject::setLight(const int in)
-{ makeImplUnique(); m_impl->m_light = in; }
-void GraphicsObject::setTintR(const int in)
-{ makeImplUnique(); m_impl->m_tintR = in; }
-void GraphicsObject::setTintG(const int in)
-{ makeImplUnique(); m_impl->m_tintG = in; }
-void GraphicsObject::setTintB(const int in)
-{ makeImplUnique(); m_impl->m_tintB = in; }
-void GraphicsObject::setColourR(const int in)
-{ makeImplUnique(); m_impl->m_colourR = in; }
-void GraphicsObject::setColourG(const int in)
-{ makeImplUnique(); m_impl->m_colourG = in; }
-void GraphicsObject::setColourB(const int in)
-{ makeImplUnique(); m_impl->m_colourB = in; }
-void GraphicsObject::setColourLevel(const int in)
-{ makeImplUnique(); m_impl->m_colourLevel = in; }
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setCompositeMode(const int in) 
-{ 
-  makeImplUnique();
-  m_impl->m_compositeMode = in; 
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setScrollRateX(const int x) 
-{ makeImplUnique(); m_impl->m_scrollRateX = x; }
-void GraphicsObject::setScrollRateY(const int y)
-{ makeImplUnique(); m_impl->m_scrollRateY = y; }
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setAlpha(const int alpha)
-{   
-  makeImplUnique();
-  m_impl->m_alpha = alpha;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::clearClip()
-{ 
-  makeImplUnique();
-  m_impl->m_clipX2 = -1; 
-  m_impl->m_clipY2 = -1;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setClip(const int x1, const int y1, const int x2, const int y2)
-{
-  makeImplUnique();
-  m_impl->m_clipX1 = x1;
-  m_impl->m_clipY1 = y1; 
-  m_impl->m_clipX2 = x2;
-  m_impl->m_clipY2 = y2;
-}
-
-// -----------------------------------------------------------------------
-
-GraphicsObjectData& GraphicsObject::objectData()
-{
-  if(m_objectData)
-    return *m_objectData;
-  else
-  {
-    throw rlvm::Exception("null object data");
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setWipeCopy(const int wipeCopy) 
-{ 
-  makeImplUnique();
-  m_impl->m_wipeCopy = wipeCopy;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setTextText(const std::string& utf8str) 
-{
-  makeImplUnique();
-  m_impl->makeSureHaveTextProperties();
-  m_impl->m_textProperties->value = utf8str; 
-}
-
-// -----------------------------------------------------------------------
-
-const std::string& GraphicsObject::textText() const
-{ 
-  static const std::string empty = "";
-
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->value; 
-  else
-    return empty;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::textSize() const
-{
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->textSize; 
-  else
-    return DEFAULT_TEXT_SIZE;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::textXSpace() const
-{
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->xspace; 
-  else
-    return DEFAULT_TEXT_XSPACE;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::textYSpace() const
-{
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->yspace; 
-  else
-    return DEFAULT_TEXT_YSPACE;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::textVertical() const
-{
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->vertical; 
-  else
-    return DEFAULT_TEXT_VERTICAL;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::textColour() const
-{
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->colour; 
-  else
-    return DEFAULT_TEXT_COLOUR;
-}
-
-// -----------------------------------------------------------------------
-
-int GraphicsObject::textShadowColour() const
-{
-  if(m_impl->m_textProperties)
-    return m_impl->m_textProperties->shadowColour; 
-  else
-    return DEFAULT_TEXT_SHADOWCOLOUR;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::setTextOps(
-  int size, int xspace, int yspace, int vertical, int colour, int shadow)
-{
-  makeImplUnique();
-
-  m_impl->makeSureHaveTextProperties();
-  m_impl->m_textProperties->textSize = size;
-  m_impl->m_textProperties->xspace = xspace;
-  m_impl->m_textProperties->yspace = yspace;
-  m_impl->m_textProperties->vertical = vertical;
-  m_impl->m_textProperties->colour = colour;
-  m_impl->m_textProperties->shadowColour = shadow;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::makeImplUnique()
-{
-  if(!m_impl.unique())
-  {
-    m_impl.reset(new Impl(*m_impl));
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::render(RLMachine& machine)
-{
-  if(m_objectData && visible())
-  {
-    cerr << "Rendering object to {" << x() << ", " << y() << "}" << endl;
-    m_objectData->render(machine, *this);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::deleteObject()
-{
-  m_objectData.reset();
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::clearObject()
-{
-  m_impl.reset(new Impl);
-  m_objectData.reset();
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObject::execute(RLMachine& machine)
-{
-  if(m_objectData)
-  {
-    m_objectData->execute(machine);
-  }
-}
-
-// -----------------------------------------------------------------------
-// GraphicsObject::Impl
-// -----------------------------------------------------------------------
-GraphicsObject::Impl::Impl()
   : m_visible(false), 
     m_x(0), m_y(0), 
     m_whateverAdjustVertOperatesOn(0),
@@ -490,7 +89,7 @@ GraphicsObject::Impl::Impl()
 
 // -----------------------------------------------------------------------
 
-GraphicsObject::Impl::Impl(const Impl& rhs)
+GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
   : m_visible(rhs.m_visible), m_x(rhs.m_x), m_y(rhs.m_y),
     m_whateverAdjustVertOperatesOn(rhs.m_whateverAdjustVertOperatesOn),
     m_originX(rhs.m_originX), m_originY(rhs.m_originY), 
@@ -507,10 +106,14 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     m_compositeMode(rhs.m_compositeMode),
     m_scrollRateX(rhs.m_scrollRateX),
     m_scrollRateY(rhs.m_scrollRateY), 
+
 	m_wipeCopy(0)
 {   
   if(rhs.m_textProperties)
     m_textProperties.reset(new TextProperties(*rhs.m_textProperties));
+
+  if(rhs.m_objectData)
+    m_objectData.reset(rhs.m_objectData->clone());
 
   copy(rhs.m_adjustX, rhs.m_adjustX + 8, m_adjustX);
   copy(rhs.m_adjustY, rhs.m_adjustY + 8, m_adjustY);
@@ -518,16 +121,17 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
 
 // -----------------------------------------------------------------------
 
-GraphicsObject::Impl::~Impl()
+GraphicsObject::~GraphicsObject()
 {}
 
 // -----------------------------------------------------------------------
 
-GraphicsObject::Impl& GraphicsObject::Impl::operator=(
-  const GraphicsObject::Impl& rhs)
+GraphicsObject& GraphicsObject::operator=(const GraphicsObject& rhs)
 {
   if(this != &rhs)
   {
+//    cerr << "Copying graphics object!" << endl;
+
     m_visible = rhs.m_visible;
     m_x = rhs.m_x;
     m_y = rhs.m_y;
@@ -568,6 +172,12 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
       m_textProperties.reset(new TextProperties(*rhs.m_textProperties));
 
     m_wipeCopy = rhs.m_wipeCopy;
+      
+    if(rhs.m_objectData)
+    {
+      m_objectData.reset(rhs.m_objectData->clone());
+      m_objectData->setOwnedBy(*this);
+    }
   }
 
   return *this;
@@ -575,13 +185,224 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::Impl::makeSureHaveTextProperties()
+void GraphicsObject::setObjectData(GraphicsObjectData* obj)
 {
-  if(!m_textProperties)
+  m_objectData.reset(obj);
+  m_objectData->setOwnedBy(*this);
+}
+
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::xAdjustmentSum() const 
+{
+  return std::accumulate(m_adjustX, m_adjustX + 8, 0);
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::yAdjustmentSum() const
+{ 
+  return std::accumulate(m_adjustY, m_adjustY + 8, 0); 
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::pixelWidth(RLMachine& machine) const
+{
+  // Calculate out the pixel width of the current object taking in the
+  // width() scaling.
+  if(hasObjectData())
+    return m_objectData->pixelWidth(machine, *this);
+  else
+    return 0;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setAlpha(const int alpha)
+{   
+//  cerr << "m_alpha: " << alpha << endl;
+  m_alpha = alpha;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::pixelHeight(RLMachine& machine) const
+{
+  if(hasObjectData())
+    return m_objectData->pixelHeight(machine, *this);
+  else
+    return 0;
+}
+
+// -----------------------------------------------------------------------
+
+GraphicsObjectData& GraphicsObject::objectData() const 
+{
+  if(m_objectData)
+    return *m_objectData;
+  else
   {
-    m_textProperties.reset(new Impl::TextProperties());
+    throw rlvm::Exception("null object data");
   }
 }
 
 // -----------------------------------------------------------------------
 
+GraphicsObjectData* GraphicsObject::objectDataPtr() const 
+{
+  return m_objectData.get();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setTextText(const std::string& utf8str) {
+  makeSureHaveTextProperties();
+  m_textProperties->value = utf8str; 
+}
+
+// -----------------------------------------------------------------------
+
+const std::string& GraphicsObject::textText() const { 
+  static const std::string empty = "";
+
+  if(m_textProperties)
+    return m_textProperties->value; 
+  else
+    return empty;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textSize() const {
+  if(m_textProperties)
+    return m_textProperties->textSize; 
+  else
+    return DEFAULT_TEXT_SIZE;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textXSpace() const {
+  if(m_textProperties)
+    return m_textProperties->xspace; 
+  else
+    return DEFAULT_TEXT_XSPACE;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textYSpace() const {
+  if(m_textProperties)
+    return m_textProperties->yspace; 
+  else
+    return DEFAULT_TEXT_YSPACE;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textVertical() const {
+  if(m_textProperties)
+    return m_textProperties->vertical; 
+  else
+    return DEFAULT_TEXT_VERTICAL;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textColour() const {
+  if(m_textProperties)
+    return m_textProperties->colour; 
+  else
+    return DEFAULT_TEXT_COLOUR;
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObject::textShadowColour() const {
+  if(m_textProperties)
+    return m_textProperties->shadowColour; 
+  else
+    return DEFAULT_TEXT_SHADOWCOLOUR;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::makeSureHaveTextProperties()
+{
+  if(!m_textProperties)
+    m_textProperties.reset(new TextProperties());
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setTextOps(
+  int size, int xspace, int yspace, int vertical, int colour, int shadow)
+{
+  makeSureHaveTextProperties();
+  m_textProperties->textSize = size;
+  m_textProperties->xspace = xspace;
+  m_textProperties->yspace = yspace;
+  m_textProperties->vertical = vertical;
+  m_textProperties->colour = colour;
+  m_textProperties->shadowColour = shadow;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::render(RLMachine& machine)
+{
+//  bool needNewline = false;
+  
+//   if(m_objectData) {
+//     cerr << "Has object data...";
+//     needNewline = true;
+//   }
+
+//   if(visible()) {
+//     cerr << "Is visible...";
+//     needNewline = true;
+//   }
+
+//   if(needNewline)
+//     cerr << endl;
+      
+  if(m_objectData && visible()) {
+//    cerr << "Rendering object!" << endl;
+    m_objectData->render(machine, *this);
+  }
+//  else {
+//    cerr << "NOT rendering object!" << endl;
+//  }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::deleteObject()
+{
+  m_objectData.reset();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::clearObject()
+{
+  *this = GraphicsObject();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::execute(RLMachine& machine)
+{
+  if(m_objectData) {
+    m_objectData->execute(machine);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setCompositeMode(const int in) 
+{ 
+  m_compositeMode = in; 
+}
