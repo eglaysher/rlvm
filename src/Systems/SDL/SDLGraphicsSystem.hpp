@@ -26,6 +26,8 @@
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
 
+#include "lru_cache.hpp"
+
 struct SDL_Surface;
 class SDLSurface;
 class Texture;
@@ -83,6 +85,16 @@ private:
 
   /// Window icon
   SDL_Surface* m_icon;
+
+  /** 
+   * LRU cache filled with the last fifteen accessed images. 
+   * 
+   * This cache's contents are assumed to be immutable. 
+   *
+   * @todo Think about enforcing the immutability by adding 'const' to
+   *       half the program.
+   */
+  LRUCache<std::string, boost::shared_ptr<Surface> > m_imageCache;
 
   // ---------------------------------------------------------------------
 

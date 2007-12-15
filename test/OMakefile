@@ -19,7 +19,7 @@ if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   LDFLAGS += /link $(if $(defined-env DEBUG), /DEBUG, /RELEASE) ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs) $(PLATFORMLIBS) SDL.lib SDL_image.lib SDL_ttf.lib
   export
 else
-  LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_filesystem -lboost_serialization -lboost_date_time
+  LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_filesystem -lboost_serialization -lboost_date_time  -lboost_thread
   export
 
 

@@ -210,7 +210,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   : GraphicsSystem(gameexe), 
 	m_screenDirty(false), m_screenNeedsRefresh(false),
     m_displayDataInTitlebar(false), m_lastSeenNumber(0), 
-    m_lastLineNumber(0)
+    m_lastLineNumber(0), m_imageCache(10)
 {
   for(int i = 0; i < 16; ++i)
     m_displayContexts[i].reset(new SDLSurface);
@@ -530,10 +530,13 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
 
 /** 
  * @author Jagarl
+ * @author Elliot Glaysher
  *
  * Loads a file from disk into a Surface object. The file loaded
- * should be a type 0 or type 1 g00 bitmap. We don't handle PDT files
- * (yet).
+ * should be a type 0 or type 1 g00 bitmap. 
+ *
+ * Jagarl's original implementation used an inline, intrusive caching
+ * system. I've substituted this with an LRU cache class.
  * 
  * @param filename File to load (a full filename, not the basename)
  * @return A Surface object with the data from this file
@@ -543,9 +546,21 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
  * simply because I'll find out that this doesn't do what I think it does.
  *
  * @warning This function probably isn't basic exception safe.
+ *
+ * @assumption The surface returned by this function will never be
+ * modified; it will either be put in an object, which is immutable,
+ * or it will be copied into the DC.
  */
 shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
 {
+  // First check to see if this surface is already in our internal cache
+  shared_ptr<Surface> cachedSurface = m_imageCache.fetch(filename);
+  if(cachedSurface)
+  {
+    cerr << "Cache hit for " << filename << endl;
+    return cachedSurface;
+  }
+
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.c_str(), "rb");
   if(!file)
@@ -615,7 +630,9 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
     region_table.push_back(rect);
   }
 
-  return shared_ptr<Surface>(new SDLSurface(s, region_table));
+  shared_ptr<Surface> surfaceToRet(new SDLSurface(s, region_table));
+  m_imageCache.insert(filename, surfaceToRet);
+  return surfaceToRet;
 }
 
 // -----------------------------------------------------------------------
