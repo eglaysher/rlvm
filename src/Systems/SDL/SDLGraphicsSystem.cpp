@@ -557,7 +557,6 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
   shared_ptr<Surface> cachedSurface = m_imageCache.fetch(filename);
   if(cachedSurface)
   {
-    cerr << "Cache hit for " << filename << endl;
     return cachedSurface;
   }
 
