@@ -74,7 +74,7 @@ using std::vector;
 // -----------------------------------------------------------------------
 
 GanGraphicsObjectData::GanGraphicsObjectData()
-  : m_currentFrame(-1)
+  : m_currentSet(-1), m_currentFrame(-1), m_timeAtLastFrameChange(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -82,7 +82,8 @@ GanGraphicsObjectData::GanGraphicsObjectData()
 GanGraphicsObjectData::GanGraphicsObjectData(
   RLMachine& machine, const std::string& ganFile, 
   const std::string& imgFile)
-  : m_ganFilename(ganFile), m_imgFilename(imgFile), m_currentFrame(-1)
+  : m_ganFilename(ganFile), m_imgFilename(imgFile), m_currentSet(-1),
+    m_currentFrame(-1), m_timeAtLastFrameChange(0)
 {
   load(machine);
 }
