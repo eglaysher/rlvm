@@ -1,0 +1,9 @@
+*.omc
+.omakedb*
+gmon.out
+.gdb_history
+TAGS
+*.bmp
+*.mshark
+*.log
+svn-commit.tmp*

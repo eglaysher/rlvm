@@ -1,0 +1,12 @@
+.omakedb*
+.gdb_history
+rlvm
+librlvm.a
+alldefs.h.gch
+OMakefile.omc
+Precompiled.hpp.gch
+SEEN*.*
+rlas_*
+semantic.cache
+*.mshark
+*.diff
