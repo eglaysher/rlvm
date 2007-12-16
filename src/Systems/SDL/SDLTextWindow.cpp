@@ -213,6 +213,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     // Move the insertion point forward one character
     m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
 
+    SDL_FreeSurface(tmp);
   }
 
   // When we aren't rendering a piece of text with a ruby gloss, mark
@@ -466,6 +467,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
       widthStart, heightLocation,
       widthStart + w, heightLocation + h,
       255);
+    SDL_FreeSurface(tmp);
 
     machine.system().graphics().markScreenForRefresh();
 

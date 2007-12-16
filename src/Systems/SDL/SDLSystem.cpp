@@ -63,6 +63,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
 
 SDLSystem::~SDLSystem()
 {
+  SDL_Quit();
 }
 
 void SDLSystem::run(RLMachine& machine)
