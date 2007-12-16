@@ -109,16 +109,36 @@ private:
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 public:
+  /** 
+   * Creates an empty LazyArray with a static size.
+   * 
+   * @param size Size of the array
+   */
   LazyArray(int size);
   ~LazyArray();
 
   T& operator[](int pos);
   const T& operator[](int pos) const;
 
+  /** 
+   * Returns the size of the array.
+   */
   int size() const { return m_size; }
 
+  /** 
+   * Go through each item in the array, and deletes it. The array's
+   * size is maintained.
+   */
   void clear();
 
+  /** 
+   * Copies the contents of one LazyArray to another. This method will
+   * reuse already allocated objects in otherArray (and simply calling
+   * T::operator=(const T&) on them), but will allocate a new object
+   * if otherArray[i] == NULL.
+   * 
+   * @param otherArray Target LazyArray
+   */
   void copyTo(LazyArray<T>& otherArray);
 
   // Iterate across all items, allocated or not. It is the users
@@ -322,7 +342,6 @@ void LazyArray<T>::clear()
 
 // -----------------------------------------------------------------------
 
-// Theory: This is what's causing the problems by 
 template<typename T>
 void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
 {
@@ -357,7 +376,7 @@ AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin()
 {
   // Find the first 
   int firstEntry = 0;
-  while(m_array[firstEntry] == NULL && firstEntry < m_size)
+  while(firstEntry < m_size && m_array[firstEntry] == NULL)
     firstEntry++;
 
   return AllocatedLazyArrayIterator<T>(firstEntry, this);
