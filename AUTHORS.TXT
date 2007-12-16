@@ -1,2 +1,21 @@
-Elliot Glaysher
+Primary development by:
+-------------------------------------------------------------------------
+Elliot Glaysher <glaysher@umich.edu>
 
+Other code by:
+-------------------------------------------------------------------------
+Rasqual Twilight 
+- Provided Win32 build files and bugfixes
+
+Haeleth
+- Wrote the original libReallive; rlvm is built on top of it
+- Wrote the kprl/rlc toolchain; used to compile the test cases
+- Wrote several features
+
+Libraries used (and included in the distribution)
+-------------------------------------------------------------------------
+TUT C++ Templated Unit Tests - http://tut-framework.sourceforge.net/
+GLEW - http://glew.sourceforge.net/
+UTF8-CPP - http://utfcpp.sourceforge.net/
+SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
+C++ LRU Cache - http://lifelines.blackcat.ca/lifeline/query.php/tag=LRU_CACHE
