@@ -92,7 +92,8 @@ using boost::assign::list_of;
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
   : m_memory(new Memory), m_halted(false), m_haltOnException(true), 
-    m_archive(inArchive), m_system(inSystem), m_markSavepoints(true)
+    m_archive(inArchive), m_line(0), m_system(inSystem), 
+    m_markSavepoints(true)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();
