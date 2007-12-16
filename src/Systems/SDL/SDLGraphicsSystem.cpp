@@ -570,8 +570,8 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
   }
 
   fseek(file, 0, SEEK_END);
-  int size = ftell(file);
-  scoped_array<char> d(new char[size]);
+  size_t size = ftell(file);
+  scoped_array<char> d(new char[size + 1]);
   fseek(file, 0, SEEK_SET);
   fread(d.get(), size, 1, file);
   fclose(file);
