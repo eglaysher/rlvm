@@ -7,3 +7,6 @@ TAGS
 *.mshark
 *.log
 svn-commit.tmp*
+*.o
+*~
+*.la
