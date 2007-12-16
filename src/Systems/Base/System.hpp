@@ -26,6 +26,7 @@
 #include <vector>
 #include <string>
 #include <boost/serialization/access.hpp>
+#include <boost/filesystem/path.hpp>
 
 class GraphicsSystem;
 class EventSystem;
@@ -33,8 +34,6 @@ class TextSystem;
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
-
-namespace boost { namespace filesystem { class path; } }
 
 
 const int NUM_SYSCOM_ENTRIES = 32;

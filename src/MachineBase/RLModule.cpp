@@ -110,7 +110,7 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
 {
   OpcodeMap::iterator it = storedOperations.find(packOpcodeNumber(f.opcode(), f.overload()));
   if(it != storedOperations.end()) {
-    it->dispatchFunction(machine, f);
+    it->second->dispatchFunction(machine, f);
   } else {
     ostringstream ss;
     ss << "Undefined opcode<" << f.modtype() << ":" << f.module() << ":" 

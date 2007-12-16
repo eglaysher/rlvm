@@ -33,7 +33,7 @@
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/LongOperation.hpp"
 
-#include "libReallive/Archive.h"
+#include "libReallive/archive.h"
 
 #include "Utilities.h"
 

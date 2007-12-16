@@ -79,7 +79,7 @@ void SDLTextSystem::executeTextSystem(RLMachine& machine)
 {
   // Check to see if the cursor is displayed
   WindowMap::iterator it = m_textWindow.find(m_activeWindow);
-  if(it != m_textWindow.end() && it->isVisible() && 
+  if(it != m_textWindow.end() && it->second->isVisible() && 
      m_inPauseState && !isReadingBacklog())
   {
     if(!m_textKeyCursor)
@@ -89,8 +89,10 @@ void SDLTextSystem::executeTextSystem(RLMachine& machine)
   }
 
   // Let each window update any TextWindowButton s.
-  for_each(m_textWindow.begin(), m_textWindow.end(),
-           bind(&TextWindow::execute, _1, ref(machine)));
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->execute(machine);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -99,18 +101,20 @@ void SDLTextSystem::render(RLMachine& machine)
 {
   if(systemVisible())
   {
-    for_each(m_textWindow.begin(), m_textWindow.end(), 
-             bind(&TextWindow::render, _1, ref(machine)));
+    for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+    {
+      it->second->render(machine);
+    }
 
     WindowMap::iterator it = m_textWindow.find(m_activeWindow);
 
-    if(it != m_textWindow.end() && it->isVisible() && 
+    if(it != m_textWindow.end() && it->second->isVisible() && 
        m_inPauseState && !isReadingBacklog())
     {
       if(!m_textKeyCursor)
         setKeyCursor(machine, 0);
 
-      m_textKeyCursor->render(machine, *it);
+      m_textKeyCursor->render(machine, *it->second);
     }
   }
 }
@@ -122,7 +126,7 @@ void SDLTextSystem::hideTextWindow(int winNumber)
   WindowMap::iterator it = m_textWindow.find(winNumber);
   if(it != m_textWindow.end())
   {
-    it->setVisible(0);
+    it->second->setVisible(0);
   }
 }
 
@@ -130,16 +134,20 @@ void SDLTextSystem::hideTextWindow(int winNumber)
 
 void SDLTextSystem::hideAllTextWindows()
 {
-  for_each(m_textWindow.begin(), m_textWindow.end(), 
-           bind(&TextWindow::setVisible, _1, 0));
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->setVisible(0);
+  }
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextSystem::clearAllTextWindows()
 {
-  for_each(m_textWindow.begin(), m_textWindow.end(), 
-           bind(&TextWindow::clearWin, _1));
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->clearWin();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -153,7 +161,7 @@ TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
       textWindow, new SDLTextWindow(machine, textWindow)).first;
   }
 
-  return *it;
+  return *it->second;
 }
 
 // -----------------------------------------------------------------------
@@ -164,8 +172,8 @@ void SDLTextSystem::updateWindowsForChangeToWindowAttr()
   for(WindowMap::iterator it = m_textWindow.begin(); 
       it != m_textWindow.end(); ++it)
   {
-    if(!it->windowAttrMod())
-      it->setRGBAF(windowAttr());
+    if(!it->second->windowAttrMod())
+      it->second->setRGBAF(windowAttr());
   }
 }
 
@@ -221,9 +229,14 @@ void SDLTextSystem::setWindowAttrF(int i)
 
 void SDLTextSystem::setMousePosition(RLMachine& machine, int x, int y)
 {
-  for_each(m_textWindow.begin(), m_textWindow.end(),    
-           bind(&SDLTextWindow::setMousePosition, _1, 
-                ref(machine), x, y));
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->setMousePosition(machine, x, y);
+  }
+
+//   for_each(m_textWindow.begin(), m_textWindow.end(),    
+//            bind(&SDLTextWindow::setMousePosition, _1, 
+//                 ref(machine), x, y));
 }
 
 // -----------------------------------------------------------------------
@@ -233,9 +246,14 @@ bool SDLTextSystem::handleMouseClick(RLMachine& machine, int x, int y,
 {
   if(systemVisible())
   {
-    return find_if(m_textWindow.begin(), m_textWindow.end(),    
-                   bind(&SDLTextWindow::handleMouseClick, _1, 
-                        ref(machine), x, y, pressed)) != m_textWindow.end();
+    for(WindowMap::iterator it = m_textWindow.begin(); 
+        it != m_textWindow.end(); ++it)
+    {
+      if(it->second->handleMouseClick(machine, x, y, pressed))
+        return true;
+    }
+
+    return false;
   }
   else
   {

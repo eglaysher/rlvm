@@ -106,8 +106,11 @@ void TextWindow::execute(RLMachine& machine)
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
-    for_each(m_buttonMap.begin(), m_buttonMap.end(),  
-             bind(&TextWindowButton::execute, _1));
+    for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
+        ++it)
+    {
+      it->second->execute();
+    }
   }
 }
 
@@ -419,10 +422,11 @@ void TextWindow::setMousePosition(RLMachine& machine, int x, int y)
 {
   using namespace boost;
 
-  // Update buttons
-  for_each(m_buttonMap.begin(), m_buttonMap.end(),
-           bind(&TextWindowButton::setMousePosition, _1, ref(machine), 
-                ref(*this), x, y));
+  for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
+      ++it)
+  {
+    it->second->setMousePosition(machine, *this, x, y);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -434,10 +438,12 @@ bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y,
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
-    return find_if(m_buttonMap.begin(), m_buttonMap.end(),   
-                   bind(&TextWindowButton::handleMouseClick, _1, 
-                        ref(machine), ref(*this), x, y, pressed))
-      != m_buttonMap.end();
+    for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
+        ++it)
+    {
+      if(it->second->handleMouseClick(machine, *this, x, y, pressed))
+        return true;
+    }
   }
   
   return false;

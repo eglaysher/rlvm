@@ -136,7 +136,7 @@ void RLMachine::attachModule(RLModule* module)
   ModuleMap::iterator it = modules.find(packedModule);
   if(it != modules.end())
   {
-    RLModule& curMod = *it;
+    RLModule& curMod = *it->second;
     ostringstream ss;
     ss << "Module identification clash: tyring to overwrite "
        << curMod << " with " << *module << endl;
@@ -326,7 +326,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
 //        << f.opcode() << ", " << f.overload() << ">" << endl;
   ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
   if(it != modules.end()) {
-    it->dispatchFunction(*this, f);
+    it->second->dispatchFunction(*this, f);
   } else {
     ostringstream ss;
     ss << "Undefined module<" << f.modtype() << ":" << f.module() << ">";

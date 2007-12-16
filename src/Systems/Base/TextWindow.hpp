@@ -167,7 +167,8 @@ protected:
    * 
    * @{
    */
-  boost::ptr_map<std::string, TextWindowButton> m_buttonMap;
+  typedef boost::ptr_map<std::string, TextWindowButton> ButtonMap;
+  ButtonMap m_buttonMap;
   /// @}
 
   /**

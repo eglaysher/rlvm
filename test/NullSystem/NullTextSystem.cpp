@@ -43,7 +43,7 @@ TextWindow& NullTextSystem::textWindow(RLMachine& machine, int textWindowNum)
       textWindowNum, new NullTextWindow(machine, textWindowNum)).first;
   }
 
-  return *it;
+  return *it->second;
 }
 
 

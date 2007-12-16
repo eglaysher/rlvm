@@ -322,6 +322,7 @@ void LazyArray<T>::clear()
 
 // -----------------------------------------------------------------------
 
+// Theory: This is what's causing the problems by 
 template<typename T>
 void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
 {

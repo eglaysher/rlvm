@@ -135,7 +135,7 @@ vector<int> TextSystem::activeWindows()
   for(PageSet::iterator it = m_currentPageset->begin(); 
       it != m_currentPageset->end(); ++it)
   {
-    tmp.push_back(it.key());
+    tmp.push_back(it->first);
   }
   return tmp;
 }
@@ -172,7 +172,7 @@ TextPage& TextSystem::currentPage(RLMachine& machine)
     it = m_currentPageset->insert(
       m_activeWindow, new TextPage(machine, m_activeWindow)).first;
 
-  return *it;
+  return *it->second;
 }
 
 // -----------------------------------------------------------------------
@@ -218,8 +218,10 @@ void TextSystem::forwardPage(RLMachine& machine)
 
 void TextSystem::replayPageSet(PageSet& set, bool isCurrentPage)
 {
-  for_each(set.begin(), set.end(),
-           bind(&TextPage::replay, _1, isCurrentPage));           
+  for(PageSet::iterator it = set.begin(); it != set.end(); ++it)
+  {
+    it->second->replay(isCurrentPage);
+  }
 }
 
 // -----------------------------------------------------------------------

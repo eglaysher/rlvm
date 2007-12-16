@@ -43,9 +43,6 @@ else
     export
   export
 
-# CCACHE_FOUND = $(CheckProg ccache)
-# CXX = $(if $(CCACHE_FOUND), ccache g++, g++)
-
 .SUBDIRS: vendor src test
 .PHONY: tags docs
 
