@@ -60,14 +60,14 @@ static char xor_mask[256] = {
 void
 apply_mask(char* array, size_t len)
 {
-	char i = 0;
-	while (len--) *array++ ^= xor_mask[i++];
+  unsigned char i = 0;
+  while (len--) *array++ ^= xor_mask[i++];
 }
 
 void 
 apply_mask(string& array, size_t start)
 {
-	char i = 0;
+  unsigned char i = 0;
 	size_t j = start;
 	size_t len = array.size() - start;
 	while (len--) array[j++] ^= xor_mask[i++];
@@ -82,7 +82,7 @@ decompress(const char* src, size_t src_len, char* dst, size_t dst_len)
 	char* dststart = dst;
 	char* dstend = dst + dst_len;
 	src += 8;
-	char mask = 8;
+	unsigned char mask = 8;
 	char flag = *src++ ^ xor_mask[mask++];
 	while (src < srcend && dst < dstend) {
 		if (bit == 256) {
@@ -118,7 +118,7 @@ compress(char* arr, size_t len)
 	append_i32(*rv, cmp.Length());
 	append_i32(*rv, len);
 	rv->append(cmp.Data(), cmp.Length());
-	char m = 0;
+	unsigned char m = 0;
 	for (unsigned int i = 0; i < rv->size(); ++i) (*rv)[i] ^= xor_mask[m++];
 	return rv;
 }
