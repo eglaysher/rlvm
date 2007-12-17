@@ -209,8 +209,8 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   : GraphicsSystem(gameexe), 
 	m_screenDirty(false), m_screenNeedsRefresh(false),
-    m_displayDataInTitlebar(false), m_lastSeenNumber(0), 
-    m_lastLineNumber(0), m_imageCache(10)
+    m_displayDataInTitlebar(false), m_timeOfLastTitlebarUpdate(0),
+    m_lastSeenNumber(0), m_lastLineNumber(0), m_imageCache(10)
 {
   for(int i = 0; i < 16; ++i)
     m_displayContexts[i].reset(new SDLSurface);
