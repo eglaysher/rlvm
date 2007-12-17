@@ -80,7 +80,9 @@ bool init_end=false;
 # endif
 #else
 # include <dirent.h>
-# define PATH_MAX 1024
+# ifndef PATH_MAX
+#   define PATH_MAX 1024
+# endif
 #endif
 
 # define NAMLEN(dirent) strlen((dirent)->d_name)
