@@ -298,9 +298,14 @@ public:
 class UndefinedFunction : public RLOp_SpecialCase {
 private:
   std::string m_name;
+  int m_modtype;
+  int m_module;
+  int m_opcode;
+  int m_overload;
 
 public:
-  UndefinedFunction(const std::string& name);
+  UndefinedFunction(const std::string& name,
+                    int modtype, int module, int opcode, int overload);
 
   virtual void operator()(RLMachine&, const libReallive::CommandElement&);
 };

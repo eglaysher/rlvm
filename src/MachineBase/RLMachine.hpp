@@ -76,6 +76,10 @@ public:
   /// won't execute more instructions)
   bool m_halted;
 
+  /// Whether we should print an error to stderr when we encounter an
+  /// undefined opcode.
+  bool m_printUndefinedOpcodes;
+
   /// States whether the machine should halt if an unhandled exception
   /// is thrown
   bool m_haltOnException;
@@ -448,6 +452,13 @@ public:
    * bytecode, and theoretically, the program.
    */
   void halt();
+
+  /** 
+   * Whether we report to stderr when we hit an undefined opcode.
+   * 
+   * @param in New value
+   */
+  void setPrintUndefinedOpcodes(bool in);
 
   /** 
    * Sets whether the RLMachine will be put into the halt state if an

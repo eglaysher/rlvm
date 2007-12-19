@@ -277,6 +277,31 @@ Exception::Exception(std::string what)
 
 Exception::~Exception() throw() {}
 
+// -----------------------------------------------------------------------
+
+UnimplementedOpcode::UnimplementedOpcode(
+  const std::string& funName,
+  int modtype, int module, int opcode, int overload)
+  : Exception("")
+{
+  ostringstream oss;
+  oss << "Undefined opcode \"" << funName << "\", opcode<" << modtype
+      << ":" << module << ":" << opcode << ", " << overload << ">";
+  description = oss.str();
 }
 
+// -----------------------------------------------------------------------
 
+UnimplementedOpcode::UnimplementedOpcode(
+  int modtype, int module, int opcode, int overload)
+  : Exception("")
+{
+  ostringstream oss;
+  oss << "Undefined opcode<" << modtype << ":" << module << ":" 
+      << opcode << ", " << overload << ">";
+  description = oss.str();
+}
+
+// -----------------------------------------------------------------------
+
+}

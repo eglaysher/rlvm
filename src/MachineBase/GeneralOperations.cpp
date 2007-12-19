@@ -100,8 +100,11 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
 
 // ------------------------------------------------- [ UndefinedFunction ]
 
-UndefinedFunction::UndefinedFunction(const std::string& name)
-  : m_name(name)
+UndefinedFunction::UndefinedFunction(
+  const std::string& name,
+  int modtype, int module, int opcode, int overload)
+  : m_name(name), m_modtype(modtype), m_module(module), m_opcode(opcode),
+    m_overload(overload)
 {}
 
 // -----------------------------------------------------------------------
@@ -109,7 +112,6 @@ UndefinedFunction::UndefinedFunction(const std::string& name)
 void UndefinedFunction::operator()(RLMachine&, 
                                    const libReallive::CommandElement&)
 {
-  ostringstream oss;
-  oss << "Undefined function " << m_name;
-  throw rlvm::Exception(oss.str());
+  throw rlvm::UnimplementedOpcode(
+    m_name, m_modtype, m_module, m_opcode, m_overload);
 }

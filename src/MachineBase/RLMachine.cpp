@@ -91,8 +91,9 @@ using boost::assign::list_of;
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
-  : m_memory(new Memory), m_halted(false), m_haltOnException(true), 
-    m_archive(inArchive), m_system(inSystem), m_markSavepoints(true)
+  : m_memory(new Memory), m_halted(false), m_printUndefinedOpcodes(false),
+    m_haltOnException(true), m_archive(inArchive), m_system(inSystem), 
+    m_markSavepoints(true)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();
@@ -279,7 +280,18 @@ void RLMachine::executeNextInstruction()
       else
         callStack.back().ip->runOnMachine(*this);
     }
-    catch(std::exception& e) {
+    catch(rlvm::UnimplementedOpcode& e)
+    {
+      advanceInstructionPointer();
+
+      if(m_printUndefinedOpcodes)
+      {
+        cout << "(SEEN" << callStack.back().scenario()->sceneNumber() 
+             << ")(Line " << m_line << "):  " << e.what() << endl;
+      }
+    }
+    catch(std::exception& e) 
+    {
       if(m_haltOnException) {
         m_halted = true;
       } else {
@@ -321,16 +333,14 @@ void RLMachine::advanceInstructionPointer()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::executeCommand(const CommandElement& f) {
-//   cerr << "About to execute opcode<" << f.modtype() << ":" << f.module() << ":" 
-//        << f.opcode() << ", " << f.overload() << ">" << endl;
+void RLMachine::executeCommand(const CommandElement& f)
+{
   ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
   if(it != modules.end()) {
     it->dispatchFunction(*this, f);
   } else {
-    ostringstream ss;
-    ss << "Undefined module<" << f.modtype() << ":" << f.module() << ">";
-    throw rlvm::Exception(ss.str());
+    throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
+                                    f.overload());
   }
 }
 
@@ -526,6 +536,13 @@ void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype
 void RLMachine::halt() 
 {
   m_halted = true; 
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::setPrintUndefinedOpcodes(bool in)
+{
+  m_printUndefinedOpcodes = in;
 }
 
 // -----------------------------------------------------------------------

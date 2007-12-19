@@ -139,12 +139,20 @@ namespace rlvm {
 
 class Exception : public std::exception
 {
-private:
+protected:
   std::string description;
 public:
   virtual const char* what() const throw();
   Exception(std::string what);
   virtual ~Exception() throw();
+};
+
+class UnimplementedOpcode : public Exception
+{
+public:
+  UnimplementedOpcode(const std::string& funName,
+                      int modtype, int module, int opcode, int overload);
+  UnimplementedOpcode(int modtype, int module, int opcode, int overload);
 };
 
 }
