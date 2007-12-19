@@ -80,8 +80,6 @@ struct Obj_objGetDims
                   IntReferenceIterator heightIt, int unknown)
   {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, objNum);
-//    cerr << "Graphics Obj data: " << objNum << ", " << obj.pixelWidth()
-//         << ", " << obj.pixelHeight() << endl;
     *widthIt = obj.pixelWidth(machine);
     *heightIt = obj.pixelHeight(machine);
   }

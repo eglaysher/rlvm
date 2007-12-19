@@ -242,7 +242,6 @@ ExpressionPiece* get_expr_term(const char*& src)
     ExpressionPiece* p = get_expr_bool(src);
     if(src[0] != ')') {
       ostringstream ss;
-      cerr << "Src: '" << src << "'" << endl;
       ss << "Unexpected character '" << src[0] << "' in get_expr_term"
          << " (')' expected)";
       throw Error(ss.str());
@@ -536,7 +535,6 @@ std::string printableToParsableString(const std::string& src)
 // ----------------------------------------------------------------------
 
 ExpressionPiece::~ExpressionPiece() {
-//  cerr << "Destroying expression piece " << this << endl;
 }
 bool ExpressionPiece::isMemoryReference() const  { return false; }
 bool ExpressionPiece::isOperator() const         { return false; }
@@ -770,7 +768,6 @@ AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
 
 AssignmentExpressionOperator::~AssignmentExpressionOperator()
 {
-//  cerr << "Destroying AssignmentExpressionOperator(" << this << ")" << endl;
 }
 
 int AssignmentExpressionOperator::integerValue(RLMachine& machine) const 

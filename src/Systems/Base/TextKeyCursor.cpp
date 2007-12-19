@@ -46,8 +46,6 @@ TextKeyCursor::TextKeyCursor(RLMachine& machine, int inCurosrNumber)
   : m_cursorNumber(inCurosrNumber), m_currentFrame(0), 
     m_lastTimeFrameIncremented(machine.system().event().getTicks())
 {
-  cerr << "Setting key cursor to " << inCurosrNumber << endl;
-
   Gameexe& gexe = machine.system().gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", inCurosrNumber);
 
@@ -66,13 +64,10 @@ TextKeyCursor::~TextKeyCursor()
 
 void TextKeyCursor::execute(RLMachine& machine)
 {
-//  cerr << "Executing key cursor~!" << endl;
   unsigned int curTime = machine.system().event().getTicks();
-//   cerr << m_lastTimeFrameIncremented << " + " << m_frameSpeed << " > "
-//        << curTime << endl;
+
   if(m_lastTimeFrameIncremented + m_frameSpeed < curTime)
   {
-//    cerr << "Updating frame!" << endl;
     m_lastTimeFrameIncremented = curTime;
 
     machine.system().graphics().markScreenForRefresh();

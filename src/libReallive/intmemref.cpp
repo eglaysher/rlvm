@@ -19,8 +19,6 @@ IntMemRef::IntMemRef(int bytecodeRep, int location)
 	memoryBank = INTZ_LOCATION;
   else if(memoryBank == INTL_LOCATION_IN_BYTECODE)
 	memoryBank = INTL_LOCATION;
-
-//  cerr << "#1 Built " << *this << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -28,7 +26,6 @@ IntMemRef::IntMemRef(int bytecodeRep, int location)
 IntMemRef::IntMemRef(int bank, int type, int location)
   : memoryBank(bank), accessType(type), loc(location)
 {
-//  cerr << "#2 Built " << *this << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -44,8 +41,6 @@ IntMemRef::IntMemRef(char bankName, int location)
 	memoryBank = INTL_LOCATION;
   else
 	throw std::runtime_error("Invalid memory bank name.");
-
-//  cerr << "#3 Built " << *this << endl;
 }
 
 // -----------------------------------------------------------------------

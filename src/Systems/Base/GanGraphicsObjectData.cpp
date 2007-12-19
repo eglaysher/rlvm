@@ -178,7 +178,6 @@ void GanGraphicsObjectData::readData(
     if(frameCount < 0)
       throwBadFormat(fileName, 
                      "Expected animation to contain at least one frame");
-//    cerr << "Number of frames in the first set: " << frameCount << endl;
     data += 4;
 
     vector<Frame> animationSet;

@@ -260,7 +260,6 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   // Naively render. Ignore most of the arguments for now
   if(utf8str.size())
   {
-	cerr << "Rendering \"" << utf8str << "\" with size " << size << endl;
 	SDL_Surface* tmp =
 	  TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), color);
 	if(tmp == NULL)

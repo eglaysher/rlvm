@@ -89,8 +89,6 @@ void SelectionElement::setMousePosition(RLMachine& machine, int x, int y)
 bool SelectionElement::handleMouseClick(
   RLMachine& machine, int x, int y, bool pressed)
 {
-  cerr << "Selection mouse click!" << endl;
-
   if(pressed == false && isHighlighted(x, y))
   {
     // Released within the button

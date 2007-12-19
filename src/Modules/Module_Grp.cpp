@@ -1242,7 +1242,6 @@ void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
     f.targetX1(), f.targetY1(), f.opacity(), false);
 
   blitDC1toDC0(machine);
-  cerr << "Finished replaying grpOpenBg" << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -1254,8 +1253,6 @@ void replayGraphicsStackVector(
   for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin(); 
       it != gstack.end(); ++it)
   {
-//    cerr << "Name: " << it->name() << endl;
-
     if(it->name() == GRP_LOAD)
     {
       if(it->hasTargetCoordinates())

@@ -92,7 +92,6 @@ bool System::isSyscomEnabled(int syscom)
 
 void System::hideSyscom()
 {
-//  cerr << "Hiding all syscom!" << endl;
   fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_INVISIBLE);
 }
 
@@ -100,7 +99,6 @@ void System::hideSyscom()
 
 void System::hideSyscom(int syscom)
 {
-//  cerr << "Hiding syscom" << syscom << "!" << endl;
   checkSyscomIndex(syscom, "System::hideSystem");
   m_syscomStatus[syscom] = SYSCOM_INVISIBLE;
 }
@@ -109,7 +107,6 @@ void System::hideSyscom(int syscom)
 
 void System::enableSyscom()
 {
-//  cerr << "Enabling all syscom!" << endl;
   fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
@@ -117,7 +114,6 @@ void System::enableSyscom()
 
 void System::enableSyscom(int syscom)
 {
-//  cerr << "Enabling syscom" << syscom << "!" << endl;
   checkSyscomIndex(syscom, "System::enableSystem");
   m_syscomStatus[syscom] = SYSCOM_VISIBLE; 
 }

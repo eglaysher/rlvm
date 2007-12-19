@@ -325,7 +325,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
 
 void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 {
-//  cerr << "executeGraphicsSystm()" << endl;
   // For now, nothing, but later, we need to put all code each cycle
   // here.
   if(isResponsibleForUpdate() &&
@@ -605,8 +604,6 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
     s = newSurfaceFromRGBAData(conv->Width(), conv->Height(), mem, is_mask);
   }
   free(mem);
-
-//  cerr << "Converter table size: " << conv->region_table.size() << endl;
 
   // Grab the Type-2 information out of the converter or create one
   // default region if none exist

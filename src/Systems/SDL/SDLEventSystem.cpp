@@ -301,7 +301,6 @@ void SDLEventSystem::getCursorPos(int& xPos, int& yPos)
 void SDLEventSystem::getCursorPos(int& xPos, int& yPos, int& button1, 
                                   int& button2)
 {
-//  cerr << "Mouse pos: {" << m_mouseXPos << ", " << m_mouseYPos << "}" << endl;
   xPos = m_mouseXPos;
   yPos = m_mouseYPos;
   button1 = m_button1State;

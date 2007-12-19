@@ -150,10 +150,6 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   if(animationSet_len < 0)
     throw rlvm::Exception("Impossible value for animationSet_len in ANM file.");
 
-//   cerr << "animationSet_len: " << animationSet_len << endl
-//        << "framelist_len: " << framelist_len << endl
-//        << "frames_len: " << frames_len << endl;
-
   // Read the corresponding image file we read from, and load the image.
   string rawFileName = data + 0x1c;
   string fileName = findFile(machine, rawFileName, IMAGE_FILETYPES);
