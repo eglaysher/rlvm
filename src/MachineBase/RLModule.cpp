@@ -95,14 +95,10 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
 void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload, 
                                     const std::string& name)
 {
-  ostringstream oss;
-  oss << "\"" << name << "\", " << "opcode<" << m_moduleType << ":" 
-      << m_moduleName
-      << "(" << m_moduleNumber << "):" << opcode << ", " << (int)overload << ">";
-
-  addOpcode(opcode, overload, new UndefinedFunction(oss.str()));
+  addOpcode(opcode, overload, 
+            new UndefinedFunction(name, m_moduleType, m_moduleNumber, opcode, 
+                                  (int)overload));
 }
-
 
 // -----------------------------------------------------------------------
 
@@ -112,10 +108,8 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
   if(it != storedOperations.end()) {
     it->second->dispatchFunction(machine, f);
   } else {
-    ostringstream ss;
-    ss << "Undefined opcode<" << f.modtype() << ":" << f.module() << ":" 
-       << f.opcode() << ", " << f.overload() << ">";
-    throw rlvm::Exception(ss.str());
+    throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
+                                    f.overload());
   }
 }
 

@@ -121,6 +121,14 @@ void clamp(float& var, float min, float max);
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Reads the entire contents of a file into character array.
+ * 
+ * @param[in] ifs Ifstream opened for binary mode
+ * @param[out] anmData Array to allocate and write data to 
+ * @param[out] fileSize Size of anmData
+ * @return True if there were no problems reading the file
+ */
 bool loadFileData(std::ifstream& ifs, 
                   boost::scoped_array<char>& anmData, 
                   int& fileSize);
@@ -131,12 +139,20 @@ namespace rlvm {
 
 class Exception : public std::exception
 {
-private:
+protected:
   std::string description;
 public:
   virtual const char* what() const throw();
   Exception(std::string what);
   virtual ~Exception() throw();
+};
+
+class UnimplementedOpcode : public Exception
+{
+public:
+  UnimplementedOpcode(const std::string& funName,
+                      int modtype, int module, int opcode, int overload);
+  UnimplementedOpcode(int modtype, int module, int opcode, int overload);
 };
 
 }

@@ -223,24 +223,31 @@ int main(int argc, char* argv[])
   // Declare the supported options.
   po::options_description opts("Options");
   opts.add_options()
-    ("help", "produce help message")
+    ("help", "Produce help message")
+    ("help-debug", "Print help message for people working on rlvm")
     ("version", "display version and license information")
+    ;
+
+  po::options_description debugOpts("Debugging Options");
+  debugOpts.add_options()
     ("gameexe", po::value<string>(), "Override location of Gameexe.ini")
     ("seen", po::value<string>(), "Override location of SEEN.TXT")
     ("start-seen", po::value<int>(), "Force start at SEEN#")
     ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
+    ("undefined-opcodes", "Display a message on undefined opcodes")
     ;
 
   // Declare the final option to be game-root
   po::options_description hidden("Hidden");
   hidden.add_options()
     ("game-root", po::value<string>(), "Location of game root");
+
   po::positional_options_description p;
   p.add("game-root", -1);
 
   // Use these on the command line
   po::options_description commandLineOpts;
-  commandLineOpts.add(opts).add(hidden);
+  commandLineOpts.add(opts).add(hidden).add(debugOpts);
 
   po::variables_map vm;
   po::store(po::basic_command_line_parser<char>(argc, argv).
@@ -249,12 +256,23 @@ int main(int argc, char* argv[])
   po::notify(vm);
 
   // -----------------------------------------------------------------------
+
+  po::options_description allOpts("Allowed options");
+  allOpts.add(opts).add(debugOpts);
+
+  // -----------------------------------------------------------------------
   // Process command line options
   string gamerootPath, gameexePath, seenPath;
 
   if(vm.count("help"))
   {
     printUsage(argv[0], opts);
+    return 0;
+  }
+
+  if(vm.count("help-debug"))
+  {
+    printUsage(argv[0], allOpts);
     return 0;
   }
 
@@ -337,6 +355,9 @@ int main(int argc, char* argv[])
     libReallive::Archive arc(seenPath);
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
+
+    if(vm.count("undefined-opcodes"))
+      rlmachine.setPrintUndefinedOpcodes(true);
 
     Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);

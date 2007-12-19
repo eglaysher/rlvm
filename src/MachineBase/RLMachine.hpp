@@ -55,7 +55,9 @@ class StackFrame;
 namespace boost { namespace serialization { } } 
 
 /**
- * The RealLive virtual machine implementation.
+ * The RealLive virtual machine implementation. This class is the main
+ * user facing class which contains all state regarding integer/string
+ * memory, flow control, and other execution issues. 
  */
 class RLMachine {
 public:
@@ -73,6 +75,10 @@ public:
   /// States whether the RLMachine is in the halted state (and thus
   /// won't execute more instructions)
   bool m_halted;
+
+  /// Whether we should print an error to stderr when we encounter an
+  /// undefined opcode.
+  bool m_printUndefinedOpcodes;
 
   /// States whether the machine should halt if an unhandled exception
   /// is thrown
@@ -125,39 +131,6 @@ public:
    * attachModule.
    */
   void attachModule(RLModule* module);
-
-  // -----------------------------------------------------------------------
-
-  /**
-   * @name Saving/Loading Games and Global Memory
-   * 
-   * @{
-   */
-
-  /**
-   * Writes out the current game state to save game slot @c slot .
-   * 
-   * Then, it saves the state of the global memory.
-   */
-//  void saveGame(int slot);
-
-  /**
-   * Writes out the saved game to the stream.
-   */
-//  void saveGameTo(std::ostream& oss);
-
-  /**
-   * Reads in and overwrites the current game state with the data from
-   * save game slot @c slot .
-   */
-//  void loadGame(const int slot);
-
-  /**
-   * Reads in the save game data from the stream and overwrites
-   * current memory.
-   */
-//  void loadGameFrom(std::istream& iss);
-  /// @}
 
   // -----------------------------------------------------------------------
 
@@ -375,7 +348,6 @@ public:
    */
   int sceneNumber() const;
 
-
   /**
    * Returns the actual Scenario on the top top of the call stack.
    */
@@ -408,7 +380,7 @@ public:
   /** 
    * Sets the current line number
    * 
-   * @param i 
+   * @param i The current line number
    */
   void setLineNumber(const int i);
 
@@ -480,6 +452,13 @@ public:
    * bytecode, and theoretically, the program.
    */
   void halt();
+
+  /** 
+   * Whether we report to stderr when we hit an undefined opcode.
+   * 
+   * @param in New value
+   */
+  void setPrintUndefinedOpcodes(bool in);
 
   /** 
    * Sets whether the RLMachine will be put into the halt state if an
