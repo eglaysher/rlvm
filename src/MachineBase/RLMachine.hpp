@@ -55,7 +55,9 @@ class StackFrame;
 namespace boost { namespace serialization { } } 
 
 /**
- * The RealLive virtual machine implementation.
+ * The RealLive virtual machine implementation. This class is the main
+ * user facing class which contains all state regarding integer/string
+ * memory, flow control, and other execution issues. 
  */
 class RLMachine {
 public:
@@ -125,39 +127,6 @@ public:
    * attachModule.
    */
   void attachModule(RLModule* module);
-
-  // -----------------------------------------------------------------------
-
-  /**
-   * @name Saving/Loading Games and Global Memory
-   * 
-   * @{
-   */
-
-  /**
-   * Writes out the current game state to save game slot @c slot .
-   * 
-   * Then, it saves the state of the global memory.
-   */
-//  void saveGame(int slot);
-
-  /**
-   * Writes out the saved game to the stream.
-   */
-//  void saveGameTo(std::ostream& oss);
-
-  /**
-   * Reads in and overwrites the current game state with the data from
-   * save game slot @c slot .
-   */
-//  void loadGame(const int slot);
-
-  /**
-   * Reads in the save game data from the stream and overwrites
-   * current memory.
-   */
-//  void loadGameFrom(std::istream& iss);
-  /// @}
 
   // -----------------------------------------------------------------------
 
@@ -375,7 +344,6 @@ public:
    */
   int sceneNumber() const;
 
-
   /**
    * Returns the actual Scenario on the top top of the call stack.
    */
@@ -408,7 +376,7 @@ public:
   /** 
    * Sets the current line number
    * 
-   * @param i 
+   * @param i The current line number
    */
   void setLineNumber(const int i);
 

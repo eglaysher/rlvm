@@ -121,6 +121,14 @@ void clamp(float& var, float min, float max);
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Reads the entire contents of a file into character array.
+ * 
+ * @param[in] ifs Ifstream opened for binary mode
+ * @param[out] anmData Array to allocate and write data to 
+ * @param[out] fileSize Size of anmData
+ * @return True if there were no problems reading the file
+ */
 bool loadFileData(std::ifstream& ifs, 
                   boost::scoped_array<char>& anmData, 
                   int& fileSize);
