@@ -33,8 +33,6 @@
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Utilities.h"
 
-#include <iostream>
-#include <algorithm>
 #include <numeric>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
