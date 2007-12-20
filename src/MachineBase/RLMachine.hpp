@@ -25,11 +25,11 @@
 
 /**
  * @file   RLMachine.hpp
+ * @brief Declaration of the main RLMachine class, with supporting
+ * constants.
  * @author Elliot Glaysher
  * @date   Sat Oct  7 10:54:55 2006
  * 
- * @brief Declaration of the main RLMachine class, with supporting
- * constants.
  */
 
 #include <boost/serialization/split_member.hpp>
