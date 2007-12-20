@@ -123,6 +123,47 @@ struct Sys_GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
 
 // -----------------------------------------------------------------------
 
+struct Sys_GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
+                                         IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine, IntReferenceIterator hh, 
+                  IntReferenceIterator mm, IntReferenceIterator ss,
+                  IntReferenceIterator ms) {
+    *hh = (int)Sys_GetHour()(machine);
+    *mm = (int)Sys_GetMinute()(machine);
+    *ss = (int)Sys_GetSecond()(machine);
+    *ms = (int)Sys_GetMs()(machine);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/**
+ * @bug A random thought. Could these present a weird race condition
+ *      it the call between any two calls flips the counter?
+ */
+struct Sys_GetDateTime : public RLOp_Void_8<
+  IntReference_T, IntReference_T, IntReference_T, IntReference_T,
+  IntReference_T, IntReference_T, IntReference_T, IntReference_T> 
+{
+  void operator()(RLMachine& machine, 
+                  IntReferenceIterator y, IntReferenceIterator m, 
+                  IntReferenceIterator d, IntReferenceIterator wd,
+                  IntReferenceIterator hh, IntReferenceIterator mm, 
+                  IntReferenceIterator ss, IntReferenceIterator ms) 
+  {
+    *y = (int)Sys_GetYear()(machine);
+    *m = (int)Sys_GetMonth()(machine);
+    *d = (int)Sys_GetDay()(machine);
+    *wd = (int)Sys_GetDayOfWeek()(machine);
+    *hh = (int)Sys_GetHour()(machine);
+    *mm = (int)Sys_GetMinute()(machine);
+    *ss = (int)Sys_GetSecond()(machine);
+    *ms = (int)Sys_GetMs()(machine);    
+  }
+};
+
+// -----------------------------------------------------------------------
+
 void addSysDateOpcodes(RLModule& m)
 {
   m.addOpcode(1100, 0, new Sys_GetYear);
@@ -134,6 +175,6 @@ void addSysDateOpcodes(RLModule& m)
   m.addOpcode(1106, 0, new Sys_GetSecond);
   m.addOpcode(1107, 0, new Sys_GetMs);
   m.addOpcode(1110, 0, new Sys_GetDate);
-//  m.addOpcode(1111, 0, new Sys_GetTime);
-//  m.addOpcode(1112, 0, new Sys_GetDateTime);
+  m.addOpcode(1111, 0, new Sys_GetTime);
+  m.addOpcode(1112, 0, new Sys_GetDateTime);
 }
