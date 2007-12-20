@@ -139,6 +139,10 @@ struct LocalMemory
  * memory. Multiple instances of this class will probably exist if
  * save games are used.
  *
+ * @note Because I use BSD code from xclannad in some of the methods
+ *       in this class, for licensing purposes, that code is separated
+ *       into RLMachine_intmem.cpp.
+ *
  * @see RLMachine
  * @see Sys_GetSaveFlag
  */
@@ -193,6 +197,7 @@ public:
    * @param type The memory bank/access method to access from
    * @param location The offset into that memory bank
    * @return The integer value
+   * @note This method was plagarized from xclannad.
    */
   int getIntValue(const libReallive::IntMemRef& ref);    
 
@@ -202,6 +207,7 @@ public:
    * @param type The memory bank/access method to access from
    * @param number The offset into that memory bank
    * @param value The new value
+   * @note This method was plagarized from xclannad.
    */
   void setIntValue(const libReallive::IntMemRef& ref, int value);
 

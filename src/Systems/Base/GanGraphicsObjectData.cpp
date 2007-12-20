@@ -127,7 +127,7 @@ void GanGraphicsObjectData::load(RLMachine& machine)
 
 void GanGraphicsObjectData::testFileMagic(
   const std::string& fileName,
-  scoped_array<char>& ganData, int fileSize)
+  boost::scoped_array<char>& ganData, int fileSize)
 {
   const char* data = ganData.get();
   int a = read_i32(data);
@@ -143,7 +143,7 @@ void GanGraphicsObjectData::testFileMagic(
 void GanGraphicsObjectData::readData(
   RLMachine& machine,
   const std::string& fileName,
-  scoped_array<char>& ganData, int fileSize)
+  boost::scoped_array<char>& ganData, int fileSize)
 {
   const char* data = ganData.get();
   int fileNameLength = read_i32(data + 0xc);

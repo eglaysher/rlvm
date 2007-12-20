@@ -304,7 +304,7 @@ void SDLTextWindow::resetIndentation()
 // -----------------------------------------------------------------------
 
 /** 
- * @todo Make this pass the #WINDOW_ATTR color off wile rendering the
+ * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
  *       wakuBacking.
  */
 void SDLTextWindow::render(RLMachine& machine)

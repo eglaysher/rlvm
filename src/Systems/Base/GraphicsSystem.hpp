@@ -231,7 +231,7 @@ public:
    * disabling interface elements from the menu. If an object's
    * `ObjectOnOff' property is set to 1 or 2, it will be shown or
    * hidden depending on the corresponding `show object' flag. This is
-   * one of the properties controlled by the #OBJECT variables in
+   * one of the properties controlled by the \#OBJECT variables in
    * gameexe.ini.
    *
    * In Clannad, ShowObject1 is used to control display of the date

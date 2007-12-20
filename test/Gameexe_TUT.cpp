@@ -99,7 +99,7 @@ void object::test<2>()
 // -----------------------------------------------------------------------
 
 /** 
- * Make sure #RANDOM_KEY doesn't exist.
+ * Make sure \#RANDOM_KEY doesn't exist.
  */
 template<>
 template<>

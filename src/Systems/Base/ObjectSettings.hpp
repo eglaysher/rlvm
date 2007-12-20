@@ -54,7 +54,7 @@ struct ObjectSettings
    * ObjOnOff determines whether an object can be toggled on and off
    * independently by the player.  Valid values are 0, 1, and 2.
    * Values of 1 and 2 correspond to [Set]ShowObject1() and
-   * [Set]ShowObject2(), and to #SYSCOMs 18 and 19 respectively.
+   * [Set]ShowObject2(), and to \#SYSCOMs 18 and 19 respectively.
    */
   int objOnOff;
 
@@ -70,7 +70,7 @@ struct ObjectSettings
   /**
    * WeatherOnOff determines whether the object is considered a
    * weather effect object or not; if it's non-zero, the object will
-   * be shown and hidden with [Set]ShowWeather(), #SYSCOM 17.
+   * be shown and hidden with [Set]ShowWeather(), \#SYSCOM 17.
    */
   int weatherOnOff;
 };

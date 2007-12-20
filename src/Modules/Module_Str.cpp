@@ -153,6 +153,7 @@ inline char ToLower(char x) { return tolower(x); }
  * 
  * @param number The number to convert
  * @param length The number of fill characters
+ * @param fill Character to fill empty space with
  * @return The converted string
  */
 string rl_itoa_implementation(int number, int length, char fill)

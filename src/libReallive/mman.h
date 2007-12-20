@@ -40,7 +40,7 @@
 // Modified 2006-5-23 by Haeleth for use in libreallive.
 
 
-/** \file sys/mman.h
+/** @file mman.h
  *
  * Contains the declarations for the mmap() API.
  */

@@ -452,7 +452,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
 /**
  * This fallback does not accurately render the scene according to
  * standard RealLive. This only negatively shades according to the
- * alpha value, ignoring the rest of the #WINDOW_ATTR color.
+ * alpha value, ignoring the rest of the \#WINDOW_ATTR color.
  * 
  * This will probably only occur with mesa software and people with
  * graphics cards > 5 years old.

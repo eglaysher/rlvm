@@ -115,34 +115,18 @@ public:
    */
   virtual bool advanceInstructionPointer();
 
-  /** The type checker is called by the Module to make sure the parameters read in
-   * are of the expected type.
-   */
-//   virtual bool checkTypes(RLMachine& machine, 
-//                           const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
-
   /** The dispatch function is implemented on a per type basis and is called by the
    * Module, after checking to make sure that the 
    */
-  virtual void dispatch(RLMachine& machine, 
-                        const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
-
-  /** 
-   * Takes a raw, unparsed parameter string, parses it, and places the
-   * result in outputParameters
-   * 
-   * @param parameter The input, unparsed parameter string
-   * @param outputParameters The output ptr_vector to place the 
-   * resulting ExpressionPieces
-   */
-//  void addParameterTo(const std::string& parameter, 
-//                      const boost::ptr_vector<libReallive::ExpressionPiece>& outputParameters);
+  virtual void dispatch(
+    RLMachine& machine, 
+    const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) = 0;
 
   /** 
    * Parses the parameters in the CommandElement passed in into an
    * output ptr_vector that contains parsed ExpressionPieces for each 
    * 
-   * @param ff The incoming CommandElement
+   * @param input The incoming CommandElement
    * @param output The output ptr_vector, filled with the parsed parameters
    */
   virtual void parseParameters(const std::vector<std::string>& input,

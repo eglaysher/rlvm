@@ -97,11 +97,11 @@ inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
 // -----------------------------------------------------------------------
 
 /** 
- * Will search for a #SEL.selNum (and translate from grp to rec
- * coordinates), or #SELR.selNum if a #SEL version isn't found in the
+ * Will search for a \#SEL.selNum (and translate from grp to rec
+ * coordinates), or \#SELR.selNum if a #SEL version isn't found in the
  * gameexe.ini file.
  * 
- * @return #SEL in rec coordinates
+ * @return \#SEL in rec coordinates
  */
 std::vector<int> getSELEffect(RLMachine& machine, int selNum);
 

@@ -151,16 +151,20 @@ public:
    */
   void markSavepoint();
 
-  /// Checks to see if we should set a savepoint on the start of a
-  /// textout when all text windows are empty (aka, when a message starts)
+  /** Checks to see if we should set a savepoint on the start of a
+   * textout when all text windows are empty (aka, when a message starts)
+   */
   bool shouldSetMessageSavepoint() const;
 
-  /// Checks to see if we should set a savepoint on the start of a
-  /// user selection choice
+  /** Checks to see if we should set a savepoint on the start of a
+   * user selection choice.
+   */
   bool shouldSetSelcomSavepoint() const;
 
-  /// Do we set a savepoint when we enter the top of a seen. (This may
-  /// be on every farcall, or it may mean #entrypoint 0. We're not sure.)
+  /**
+   * Do we set a savepoint when we enter the top of a seen. (This may
+   * be on every farcall, or it may mean \#entrypoint 0. We're not sure.)
+   */
   bool shouldSetSeentopSavepoint() const;
 
   typedef long(libReallive::Scenario::*AttributeFunction)() const;
@@ -202,8 +206,7 @@ public:
   /** 
    * Returns the integer value of a certain memory location
    * 
-   * @param type The memory bank/access method to access from
-   * @param location The offset into that memory bank
+   * @param ref The location to read
    * @return The integer value
    */
   int getIntValue(const libReallive::IntMemRef& ref);    
@@ -211,8 +214,7 @@ public:
   /** 
    * Sets the value of a certain memory location
    * 
-   * @param type The memory bank/access method to access from
-   * @param number The offset into that memory bank
+   * @param ref The location to write to
    * @param value The new value
    */
   void setIntValue(const libReallive::IntMemRef& ref, int value);

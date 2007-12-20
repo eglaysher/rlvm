@@ -117,8 +117,8 @@ public:
    * 
    * RealLive provides a context menu system to handle most actions
    * and configuration settings. The system command menu is configured
-   * with the #SYSCOM variables in gameexe.ini. It can be disabled by
-   * setting #SYSCOM_USE to 0, and if a #CANCELCALL hook is defined it
+   * with the \#SYSCOM variables in gameexe.ini. It can be disabled by
+   * setting \#SYSCOM_USE to 0, and if a \#CANCELCALL hook is defined it
    * will never be used at all (Clannad does this, although it uses
    * the internal flags associated with the system command menu to
    * control its own menu system).
@@ -132,7 +132,7 @@ public:
   /** 
    * Checks the visibility of a single syscom command.
    * 
-   * @param num The syscom number to check
+   * @param syscom The syscom number to check
    * @return Returns 0 if the given system command is invisible, 1 if
    *         it is visible, and 2 if it is visible but disabled
    *         (greyed out).

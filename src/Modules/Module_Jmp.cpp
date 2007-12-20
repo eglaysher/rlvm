@@ -75,7 +75,7 @@ namespace {
  * Finds which case should be used in the *_case functions.
  * 
  * @param machine RLMachine reference
- * @param f       Bytecode element being evalutated
+ * @param gotoElement Bytecode element being evalutated
  * @return Which pointer we should follow.
  * @exception Exception Throws on malformed bytecode
  */
@@ -130,7 +130,8 @@ typedef Argc_T< Special_T< IntConstant_T, StrConstant_T> >::type ParamVector;
  * for parameters in gosub_with and farcall_with calls, strK[] (0a)
  * and intL[] (0b).
  * 
- * @param machine 
+ * @param machine RLMachine to operate on
+ * @param f Parameters to store into call variables
  */
 void storeData(RLMachine& machine, const ParamVector& f)
 {

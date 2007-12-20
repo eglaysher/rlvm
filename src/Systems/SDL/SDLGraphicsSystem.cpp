@@ -540,7 +540,7 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
  *
  * @warning This function probably isn't basic exception safe.
  *
- * @assumption The surface returned by this function will never be
+ * @note The surface returned by this function will never be
  * modified; it will either be put in an object, which is immutable,
  * or it will be copied into the DC.
  */

@@ -99,7 +99,7 @@ protected:
 
   int m_currentIndentationInPixels;
 
-  /// The default color. Initialized to #COLOR_TABLE.000, but can be
+  /// The default color. Initialized to \#COLOR_TABLE.000, but can be
   /// changed with the SetFontColour() command
   int m_defaultRed, m_defaultGreen, m_defaultBlue;
 

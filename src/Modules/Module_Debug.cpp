@@ -46,7 +46,7 @@ using namespace std;
  * @ingroup ModulesOpcodes 
  *
  * Module that defines runtime debugging operations. The following
- * operations are only executed when #MEMORY is defined in the
+ * operations are only executed when \#MEMORY is defined in the
  * incoming Gameexe file.
  * 
  * @{

@@ -121,6 +121,7 @@ void blitDC1toDC0(RLMachine& machine)
  * @param dx Destination X coordinate
  * @param dy Destination Y coordinate
  * @param opacity Opacity in range from 0 - 255
+ * @param useAlpha Whether to use the alpha
  */
 void loadImageToDC1(GraphicsSystem& graphics,
                     const std::string& fileName,
@@ -1052,7 +1053,7 @@ struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiComma
  *
  * At minimum, we need to get these functions working for Kanon:
  *
- * [elliot@Kotori:~/Projects/Kanon] $  grep grp *.ke -h | cut -f 1 -d " " | sort | uniq  
+ * $  grep grp *.ke -h | cut -f 1 -d " " | sort | uniq  
  * grpBuffer
  * grpCopy
  * grpFill
@@ -1060,7 +1061,7 @@ struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiComma
  * grpMaskOpen
  * grpMulti
  * grpOpenBg
- * [elliot@Kotori:~/Projects/Kanon] $  grep rec *.ke -h | cut -f 1 -d " " | sort | uniq
+ * $  grep rec *.ke -h | cut -f 1 -d " " | sort | uniq
  * recCopy
  * recFill
  * recOpen
