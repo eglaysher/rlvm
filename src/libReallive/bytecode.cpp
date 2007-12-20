@@ -151,7 +151,6 @@ read_function(const char* stream, ConstructionData& cdata)
 
 void BytecodeElement::runOnMachine(RLMachine& machine) const
 {
-//  std::cerr << "Warning, running empty bytecode!?" << std::endl;
   machine.advanceInstructionPointer();
 }
 

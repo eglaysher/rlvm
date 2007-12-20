@@ -169,7 +169,6 @@ Texture::Texture(render_to_texture, int width, int height)
 Texture::~Texture()
 {
   glDeleteTextures(1, &m_textureID);
-//  cerr << "Deleteing texture with texid " << m_textureID << endl;
 
   if(m_backTextureID)
     glDeleteTextures(1, &m_backTextureID);

@@ -27,7 +27,7 @@
  *                                                                         *
  ***************************************************************************/
 /**
- * @file lru_cache.h Template cache with an LRU removal policy
+ * @file lru_cache.hpp Template cache with an LRU removal policy
  * @author Patrick Audley
  * @version 1.1
  * @date March 2006

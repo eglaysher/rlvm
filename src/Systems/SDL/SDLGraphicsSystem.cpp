@@ -26,21 +26,15 @@
 
 /**
  * @file   SDLGraphicsSystem.cpp
+ * @brief  Exposed interface for the SDL Graphics system.
  * @author Elliot Glaysher
  * @date   Fri Oct  6 13:34:08 2006
  * 
- * @brief  Exposed interface for the SDL Graphics system.
- * 
- * While there are other 
- * 
- * @todo Make the constructor take the Gameexe.ini, and read the
- * initial window size from it.
  */
 
 #include "glew.h"
 
 #include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
@@ -325,7 +319,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
 
 void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 {
-//  cerr << "executeGraphicsSystm()" << endl;
   // For now, nothing, but later, we need to put all code each cycle
   // here.
   if(isResponsibleForUpdate() &&
@@ -605,8 +598,6 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
     s = newSurfaceFromRGBAData(conv->Width(), conv->Height(), mem, is_mask);
   }
   free(mem);
-
-//  cerr << "Converter table size: " << conv->region_table.size() << endl;
 
   // Grab the Type-2 information out of the converter or create one
   // default region if none exist

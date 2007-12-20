@@ -318,7 +318,6 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
 {
   void operator()(RLMachine& machine, int slot)
   {
-	cerr << "SAVING TO SLOT " << slot << endl;
 	Serialization::saveGlobalMemory(machine);
     Serialization::saveGameForSlot(machine, slot);
   }

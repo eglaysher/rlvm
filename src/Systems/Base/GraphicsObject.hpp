@@ -23,8 +23,6 @@
 #ifndef __GraphicObject_hpp__
 #define __GraphicObject_hpp__
 
-#include <iostream>
-#include <typeinfo>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
