@@ -28,6 +28,19 @@
 #ifndef __Memory_hpp__
 #define __Memory_hpp__
 
+/**
+ * @file   Memory.hpp
+ * @author Elliot Glaysher
+ * @date   Wed Dec 19 19:34:33 2007
+ * 
+ * @brief  Classes that contain local and global memory
+ * 
+ * Classes that contain local and global memory, with abstractions for
+ * serializing them (and doing other cool things)
+ */
+
+// -----------------------------------------------------------------------
+
 #include <string>
 #include <vector>
 #include <map>
@@ -50,6 +63,13 @@ class RLMachine;
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Struct that represents Global Memory. In any one rlvm process, there
+ * should only be one GlobalMemory struct existing, as it will be
+ * shared over all the Memory objects in the process.
+ *
+ * @see Memory
+ */
 struct GlobalMemory
 {
   GlobalMemory();
@@ -71,6 +91,13 @@ struct GlobalMemory
 
 struct dont_initialize { };
 
+/** 
+ * Struct that represents Local Memory. In any one rlvm process, lots
+ * of these things will be created, because there are commands 
+ * 
+ * @see Sys_GetSaveFlag
+ * @see Memory
+ */
 struct LocalMemory
 {
   LocalMemory();
@@ -108,7 +135,12 @@ struct LocalMemory
 // -----------------------------------------------------------------------
 
 /**
- * Class that encapsulates access to memory.
+ * Class that encapsulates access to all integer and string
+ * memory. Multiple instances of this class will probably exist if
+ * save games are used.
+ *
+ * @see RLMachine
+ * @see Sys_GetSaveFlag
  */
 class Memory
 {
@@ -191,14 +223,16 @@ public:
    */
   void setStringValue(int type, int number, const std::string& value);
 
-
+  /**
+   * @name Accessors
+   * 
+   * @{
+   */
   GlobalMemory& global() { return *m_global; }
   const GlobalMemory& global() const { return *m_global; }
   LocalMemory& local() { return m_local; }
   const LocalMemory& local() const { return m_local; }
-
-
-
+  /// @}
 };	// end of class Memory
 
 
