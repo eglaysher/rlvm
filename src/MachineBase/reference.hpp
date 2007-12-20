@@ -25,10 +25,9 @@
 
 /**
  * @file   reference.hpp
+ * @brief  Declares the iterated interface to integer and string memory
  * @author Elliot Glaysher
  * @date   Sat Oct  7 11:16:10 2006
- * 
- * @brief  Declares the iterated interface to RLMachine's memory
  */
 
 #include <iterator>
@@ -36,7 +35,6 @@
 template<typename T>
 class MemoryReferenceIterator;
 class Memory;
-class RLMachine;
 
 /** 
  * Accessor class passed back to user when the iterator is
@@ -121,10 +119,6 @@ public:
   MemoryReferenceIterator(Memory* inMachine, const int inType, 
                           const int inLocation);
 
-  // Explicit reference creation
-  MemoryReferenceIterator(RLMachine* inMachine, const int inType, 
-                          const int inLocation);
-
   int type() const { return m_type; }
   int location() const { return m_location; }
   // -------------------------------------------------------- Iterated Interface
@@ -191,19 +185,6 @@ MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
   Memory* memory, const int inType, const int inLocation)
   : m_memory(memory), m_type(inType), m_location(inLocation)
 { }
-
-// -----------------------------------------------------------------------
-
-// Helper function
-void setMemoryFromRLMachine(Memory*& memory, RLMachine* machine);
-
-template<typename ACCESS>
-MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
-  RLMachine* inMachine, const int inType, const int inLocation)
-  : m_memory(NULL), m_type(inType), m_location(inLocation)
-{ 
-  setMemoryFromRLMachine(m_memory, inMachine);
-}
 
 // -----------------------------------------------------------------------
 

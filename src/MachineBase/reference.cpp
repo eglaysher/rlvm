@@ -26,15 +26,14 @@
 
 /**
  * @file   reference.cpp
+ * @brief  Defines the iterator interface to integer and string memory
  * @author Elliot Glaysher
  * @date   Sat Oct  7 11:15:37 2006
  * 
- * @brief  Defines the iterator interface to RLMachine's memory
  */
 
 #include "MachineBase/reference.hpp"
 #include "MachineBase/Memory.hpp"
-#include "MachineBase/RLMachine.hpp"
 #include "libReallive/intmemref.h"
 
 using libReallive::IntMemRef;
@@ -151,9 +150,3 @@ StringAccessor& StringAccessor::operator=(const StringAccessor& rhs)
   return operator=(rhs.operator std::string());
 }
 
-// -----------------------------------------------------------------------
-
-void setMemoryFromRLMachine(Memory*& memory, RLMachine* machine)
-{
-  memory = &machine->memory();
-}

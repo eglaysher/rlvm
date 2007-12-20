@@ -637,7 +637,7 @@ IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& mac
     throw Error("Request to getIntegerReferenceIterator() on a string reference!");
   }
 
-  return IntReferenceIterator(&machine, type, location->integerValue(machine));
+  return IntReferenceIterator(&machine.memory(), type, location->integerValue(machine));
 }
 
 StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& machine) const {
@@ -646,7 +646,7 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& m
     throw Error("Request to getStringReferenceIterator() on an integer reference!");
   }
 
-  return StringReferenceIterator(&machine, type, location->integerValue(machine));
+  return StringReferenceIterator(&machine.memory(), type, location->integerValue(machine));
 }
 
 ExpressionPiece* MemoryReference::clone() const 
