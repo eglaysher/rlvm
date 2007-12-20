@@ -53,8 +53,6 @@
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
-
-#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
 #include "Modules/FadeEffect.hpp"
