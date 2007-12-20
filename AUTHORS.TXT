@@ -19,3 +19,9 @@ GLEW - http://glew.sourceforge.net/
 UTF8-CPP - http://utfcpp.sourceforge.net/
 SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
 C++ LRU Cache - http://lifelines.blackcat.ca/lifeline/query.php/tag=LRU_CACHE
+
+Libraries depended on (and are not included)
+-------------------------------------------------------------------------
+boost (version 1.34.1 or newer) - http://www.boost.org
+SDL - http://www.libsdl.org
+Freetype
