@@ -42,6 +42,7 @@
 #include "Modules/Module_Sys_Timer.hpp"
 #include "Modules/Module_Sys_Save.hpp"
 #include "Modules/Module_Sys_Syscom.hpp"
+#include "Modules/Module_Sys_Date.hpp"
 #include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
@@ -58,7 +59,6 @@
 
 #include "Modules/FadeEffect.hpp"
 
-#include "dateUtil.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -311,90 +311,6 @@ struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntCon
   }
 };
 
-// ----------------------------------------------------------- Date & Time Functions
-
-/** 
- * Implements op<1:Sys:01100, 0>, fun GetYear().
- * 
- * Returns the current four digit year.
- */
-struct Sys_GetYear : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getYear();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetMonth : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getMonth();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetDay : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getDay();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetDayOfWeek : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getDayOfWeek();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetHour : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getHour();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetMinute : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getMinute();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetSecond : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getSecond();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetMs : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-	return datetime::getMs();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
-                                         IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator y, 
-                  IntReferenceIterator m, IntReferenceIterator d,
-                  IntReferenceIterator wd) {
-    *y = (int)Sys_GetYear()(machine);
-    *m = (int)Sys_GetMonth()(machine);
-    *d = (int)Sys_GetDay()(machine);
-    *wd = (int)Sys_GetDayOfWeek()(machine);
-  }
-};
-
-
 // -----------------------------------------------------------------------
 
 struct Sys_SceneNum : public RLOp_Store_Void {
@@ -593,17 +509,6 @@ SysModule::SysModule(System& system)
   // (unknown) 01012
   // (unknown) 01013
 
-  addOpcode(1100, 0, new Sys_GetYear);
-  addOpcode(1101, 0, new Sys_GetMonth);
-  addOpcode(1102, 0, new Sys_GetDay);
-  addOpcode(1103, 0, new Sys_GetDayOfWeek);
-  addOpcode(1104, 0, new Sys_GetHour);
-  addOpcode(1105, 0, new Sys_GetMinute);
-  addOpcode(1106, 0, new Sys_GetSecond);
-  addOpcode(1107, 0, new Sys_GetMs);
-//  addOpcode(1110, 0, new Sys_GetDate);
-//  addOpcode(1111, 0, new Sys_GetTime);
-//  addOpcode(1112, 0, new Sys_GetDateTime);
 
   addOpcode(1120, 0, "SceneNum", new Sys_SceneNum);
 
@@ -764,4 +669,5 @@ SysModule::SysModule(System& system)
   addSysFrameOpcodes(*this);
   addSysSaveOpcodes(*this, system);
   addSysSyscomOpcodes(*this, system);
+  addSysDateOpcodes(*this);
 }
