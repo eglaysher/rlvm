@@ -24,6 +24,11 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+// -----------------------------------------------------------------------
+
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Utilities.h"
@@ -31,6 +36,8 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 
 using namespace std;
 
@@ -457,6 +464,22 @@ void GraphicsObject::execute(RLMachine& machine)
 }
 
 // -----------------------------------------------------------------------
+
+template<class Archive>
+void GraphicsObject::serialize(Archive& ar, unsigned int version)
+{
+  ar & m_impl & m_objectData;
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsObject::serialize<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);
+
+template void GraphicsObject::serialize<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
+// -----------------------------------------------------------------------
 // GraphicsObject::Impl
 // -----------------------------------------------------------------------
 GraphicsObject::Impl::Impl()
@@ -587,3 +610,47 @@ void GraphicsObject::Impl::makeSureHaveTextProperties()
 
 // -----------------------------------------------------------------------
 
+/// boost::serialization support
+template<class Archive>
+void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version)
+{
+  ar & m_visible & m_x & m_y & m_whateverAdjustVertOperatesOn &
+    m_originX & m_originY & m_repOriginX & m_repOriginY &
+    m_width & m_height & m_rotation & m_pattNo & m_alpha &
+    m_clipX1 & m_clipY1 & m_clipX2 & m_clipY2 & m_mono & m_invert &
+    m_tintR & m_tintG & m_tintB & m_colourR & m_colourG & m_colourB &
+    m_colourLevel & m_compositeMode & m_textProperties & m_wipeCopy;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void GraphicsObject::Impl::serialize<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);
+
+template void GraphicsObject::Impl::serialize<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
+// -----------------------------------------------------------------------
+// GraphicsObject::Impl::TextProperties
+// -----------------------------------------------------------------------
+template<class Archive>
+void GraphicsObject::Impl::TextProperties::serialize(
+  Archive& ar, unsigned int version)
+{
+  ar & value & textSize & xspace & yspace & vertical & colour & 
+    shadowColour;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void GraphicsObject::Impl::TextProperties::serialize<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);
+
+template void GraphicsObject::Impl::TextProperties::serialize<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);

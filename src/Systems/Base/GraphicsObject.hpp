@@ -26,8 +26,6 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
-#include <boost/serialization/shared_ptr.hpp>
 
 class RLMachine;
 class GraphicsObject;
@@ -345,11 +343,7 @@ private:
 
       /// boost::serialization support
       template<class Archive>
-      void serialize(Archive& ar, unsigned int version)
-      {
-        ar & value & textSize & xspace & yspace & vertical & colour & 
-          shadowColour;
-      }
+      void serialize(Archive& ar, unsigned int version);
     };
 
     void makeSureHaveTextProperties();
@@ -364,15 +358,7 @@ private:
 
     /// boost::serialization support
     template<class Archive>
-    void serialize(Archive& ar, unsigned int version)
-    {
-      ar & m_visible & m_x & m_y & m_whateverAdjustVertOperatesOn &
-        m_originX & m_originY & m_repOriginX & m_repOriginY &
-        m_width & m_height & m_rotation & m_pattNo & m_alpha &
-        m_clipX1 & m_clipY1 & m_clipX2 & m_clipY2 & m_mono & m_invert &
-        m_tintR & m_tintG & m_tintB & m_colourR & m_colourG & m_colourB &
-        m_colourLevel & m_compositeMode & m_textProperties & m_wipeCopy;
-    }
+    void serialize(Archive& ar, unsigned int version);
   };
 
   /// Our actual implementation data
@@ -385,10 +371,7 @@ private:
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
-    ar & m_impl & m_objectData;
-  }
+  void serialize(Archive& ar, unsigned int version);
 };
 
 #endif 
