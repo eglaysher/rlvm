@@ -29,6 +29,10 @@
 #include "Modules/Module_Mem.hpp"
 #include "Modules/Module_Grp.hpp"
 #include "Modules/Module_Msg.hpp"
+#include "Modules/Module_Bgm.hpp"
+#include "Modules/Module_Pcm.hpp"
+#include "Modules/Module_Se.hpp"
+#include "Modules/Module_Koe.hpp"
 #include "Modules/Module_ObjPosDims.hpp"
 #include "Modules/Module_ObjCreation.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
@@ -54,6 +58,10 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new MemModule);
   rlmachine.attachModule(new MsgModule);
   rlmachine.attachModule(new GrpModule);
+  rlmachine.attachModule(new BgmModule);
+  rlmachine.attachModule(new PcmModule);
+  rlmachine.attachModule(new SeModule);
+  rlmachine.attachModule(new KoeModule);
   rlmachine.attachModule(new ObjCopyFgToBg);
   rlmachine.attachModule(new ObjFgPosDimsModule);
   rlmachine.attachModule(new ObjBgPosDimsModule);
