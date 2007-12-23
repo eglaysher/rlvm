@@ -101,7 +101,32 @@ private:
 
 public: 
   SoundSystem(Gameexe& gexe);
-  ~SoundSystem();
+  virtual ~SoundSystem();
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * @name Sound Effect functions
+   * 
+   * @{
+   */
+  /**
+   * Sets whether we should have interface sound effects
+   */
+  void setSeEnabled(const int in);
+
+  /**
+   * Returns whether (interface) sound effects are enabled
+   */
+  int seEnabled() const;
+  
+  /** 
+   * Plays an interface sound effect.
+   * 
+   * @param seNum Index into the \#SE table 
+   */
+  virtual void playSe(const int seNum) = 0;
+  /// @}
 };	// end of class SoundSystem
 
 #endif
