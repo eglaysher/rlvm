@@ -45,7 +45,11 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     string rawNumber = it->key().substr(it->key().find_first_of(".") + 1);
     int entryNumber = lexical_cast<int>(rawNumber);
 
-//    string fileName = it->
-    
+    string fileName = it->getStringAt(0);
+    int targetChannel = it->getIntAt(1);
+
+    m_seTable[entryNumber] = make_pair(fileName, targetChannel);
   }
 }
+
+// -----------------------------------------------------------------------

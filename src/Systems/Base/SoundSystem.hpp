@@ -102,7 +102,6 @@ private:
 public: 
   SoundSystem(Gameexe& gexe);
   ~SoundSystem();
-
 };	// end of class SoundSystem
 
 #endif
