@@ -54,6 +54,7 @@ public:
   virtual EventSystem& event();
   virtual Gameexe& gameexe();
   virtual TextSystem& text();
+  virtual SoundSystem& sound();
 };
 
 #endif

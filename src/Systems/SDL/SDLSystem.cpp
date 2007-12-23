@@ -40,6 +40,7 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "Systems/SDL/SDLTextSystem.hpp"
+#include "Systems/SDL/SDLSoundSystem.hpp"
 
 #include <SDL/SDL.h>
 
@@ -48,6 +49,8 @@
 
 using namespace std;
 using namespace libReallive;
+
+// -----------------------------------------------------------------------
 
 SDLSystem::SDLSystem(Gameexe& gameexe)
   : System(), m_gameexe(gameexe), m_lastTimePaused(0)
@@ -64,7 +67,10 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   graphicsSystem.reset(new SDLGraphicsSystem(gameexe));
   eventSystem.reset(new SDLEventSystem(gameexe));
   textSystem.reset(new SDLTextSystem(gameexe));
+  soundSystem.reset(new SDLSoundSystem(gameexe));
 }
+
+// -----------------------------------------------------------------------
 
 SDLSystem::~SDLSystem()
 {
@@ -76,6 +82,8 @@ SDLSystem::~SDLSystem()
 
   SDL_Quit();
 }
+
+// -----------------------------------------------------------------------
 
 void SDLSystem::run(RLMachine& machine)
 {
@@ -96,22 +104,37 @@ void SDLSystem::run(RLMachine& machine)
   }
 }
 
+// -----------------------------------------------------------------------
+
 GraphicsSystem& SDLSystem::graphics()
 {
   return *graphicsSystem;
 }
+
+// -----------------------------------------------------------------------
 
 EventSystem& SDLSystem::event()
 {
   return *eventSystem;
 }
 
+// -----------------------------------------------------------------------
+
 Gameexe& SDLSystem::gameexe()
 {
   return m_gameexe;
 }
 
+// -----------------------------------------------------------------------
+
 TextSystem& SDLSystem::text()
 {
   return *textSystem;
+}
+
+// -----------------------------------------------------------------------
+
+SoundSystem& SDLSystem::sound()
+{
+  return *soundSystem;
 }

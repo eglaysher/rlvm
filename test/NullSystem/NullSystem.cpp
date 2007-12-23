@@ -29,6 +29,8 @@
 #include "testUtils.hpp"
 #include <iostream>
 
+#include "Systems/Base/SystemError.hpp"
+
 using namespace std;
 
 // -----------------------------------------------------------------------
@@ -59,3 +61,6 @@ GraphicsSystem& NullSystem::graphics() { return nullGraphicsSystem; }
 EventSystem& NullSystem::event() { return nullEventSystem; }
 Gameexe& NullSystem::gameexe() { return m_gameexe; }
 TextSystem& NullSystem::text() { return nullTextSystem; }
+
+SoundSystem& NullSystem::sound() 
+{ throw SystemError("No SoundSystem in NullSystem"); }

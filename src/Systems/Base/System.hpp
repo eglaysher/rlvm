@@ -36,12 +36,12 @@
 class GraphicsSystem;
 class EventSystem;
 class TextSystem;
+class SoundSystem;
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
 
 const int NUM_SYSCOM_ENTRIES = 32;
-
 const int SYSCOM_INVISIBLE = 0;
 const int SYSCOM_VISIBLE = 1;
 const int SYSCOM_GREYED_OUT = 2;
@@ -118,7 +118,7 @@ public:
   virtual EventSystem& event() = 0;
   virtual Gameexe& gameexe() = 0;
   virtual TextSystem& text() = 0;
-//  virtual SoundSystem& soundSystem() = 0;
+  virtual SoundSystem& sound() = 0;
 
   /**
    * @name Syscom related functions
@@ -132,7 +132,7 @@ public:
    * control its own menu system).
    *
    * These functions are used to manipulate the visibility, change the
-   * values of, and invoke standard dialogs for 
+   * values of, and invoke standard dialogs for various SYSCOM elements.
    *
    * @{
    */

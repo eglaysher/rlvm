@@ -25,38 +25,48 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/SoundSystem.hpp"
-#include "libReallive/gameexe.h"
-#include <boost/lexical_cast.hpp>
+#include "Precompiled.hpp"
 
 // -----------------------------------------------------------------------
 
-using boost::lexical_cast;
-using namespace std;
+#include "Systems/SDL/SDLSoundSystem.hpp"
+#include "Systems/Base/SystemError.hpp"
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 
 // -----------------------------------------------------------------------
 
-SoundSystem::SoundSystem(Gameexe& gexe)
+SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
+  : SoundSystem(gexe)
 {
-  // Read the #SE.xxx entries from the Gameexe
-  GameexeFilteringIterator it = gexe.filtering_begin("SE.");
-  GameexeFilteringIterator end = gexe.filtering_end();
-  for(; it != end; ++it)
-  {
-    string rawNumber = it->key().substr(it->key().find_first_of(".") + 1);
-    int entryNumber = lexical_cast<int>(rawNumber);
+  SDL_InitSubSystem(SDL_INIT_AUDIO);
 
-    string fileName = it->getStringAt(0);
-    int targetChannel = it->getIntAt(1);
+  /* We're going to be requesting certain things from our audio
+     device, so we set them up beforehand */
+  int audio_rate = 22050;
+  Uint16 audio_format = AUDIO_S16; /* 16-bit stereo */
+  int audio_channels = 2;
+  int audio_buffers = 4096;
 
-    m_seTable[entryNumber] = make_pair(fileName, targetChannel);
+  /* This is where we open up our audio device.  Mix_OpenAudio takes
+     as its parameters the audio format we'd /like/ to have. */
+  if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
+    throw SystemError("Couldn't initialize audio");
   }
 }
 
 // -----------------------------------------------------------------------
 
-SoundSystem::~SoundSystem()
-{}
+SDLSoundSystem::~SDLSoundSystem()
+{
+  Mix_CloseAudio();
+  SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
 
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::playSe(const int seNum)
+{
+
+}

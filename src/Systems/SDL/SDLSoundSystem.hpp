@@ -25,38 +25,26 @@
 //  
 // -----------------------------------------------------------------------
 
+
+#ifndef __SDLSoundSystem_hpp__
+#define __SDLSoundSystem_hpp__
+
 #include "Systems/Base/SoundSystem.hpp"
-#include "libReallive/gameexe.h"
-#include <boost/lexical_cast.hpp>
 
 // -----------------------------------------------------------------------
 
-using boost::lexical_cast;
-using namespace std;
-
-// -----------------------------------------------------------------------
-
-SoundSystem::SoundSystem(Gameexe& gexe)
+/**
+ *
+ */
+class SDLSoundSystem : public SoundSystem
 {
-  // Read the #SE.xxx entries from the Gameexe
-  GameexeFilteringIterator it = gexe.filtering_begin("SE.");
-  GameexeFilteringIterator end = gexe.filtering_end();
-  for(; it != end; ++it)
-  {
-    string rawNumber = it->key().substr(it->key().find_first_of(".") + 1);
-    int entryNumber = lexical_cast<int>(rawNumber);
+private:
+  
+public: 
+  SDLSoundSystem(Gameexe& gexe);
+  ~SDLSoundSystem();
 
-    string fileName = it->getStringAt(0);
-    int targetChannel = it->getIntAt(1);
+  virtual void playSe(const int seNum);  
+};	// end of class SDLSoundSystem
 
-    m_seTable[entryNumber] = make_pair(fileName, targetChannel);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-SoundSystem::~SoundSystem()
-{}
-
-// -----------------------------------------------------------------------
-
+#endif
