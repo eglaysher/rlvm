@@ -273,6 +273,13 @@ const int GameexeInterpretObject::to_int() const {
 
 // -----------------------------------------------------------------------
 
+int GameexeInterpretObject::getIntAt(int index) const
+{
+  return m_objectToLookupOn.getIntAt(m_key, index);
+}
+
+// -----------------------------------------------------------------------
+
 const std::string GameexeInterpretObject::to_string(
   const std::string& defaultValue) const
 {
@@ -301,6 +308,13 @@ const std::string GameexeInterpretObject::to_string() const
 
   // Shut the -Wall up
   return "";
+}
+
+// -----------------------------------------------------------------------
+
+const std::string GameexeInterpretObject::getStringAt(int index) const
+{
+  return m_objectToLookupOn.getStringAt(m_key, index);
 }
 
 // -----------------------------------------------------------------------

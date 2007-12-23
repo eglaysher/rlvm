@@ -46,6 +46,7 @@ LIBRLVMFILES[] =
   Systems/Base/GanGraphicsObjectData
   Systems/Base/AnmGraphicsObjectData
   Systems/Base/SelectionElement
+  Systems/Base/SoundSystem
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities

@@ -92,9 +92,7 @@ private:
    */
   GameexeInterpretObject(const std::string& key, Gameexe& objectToLookupOn)
     : m_key(key), m_objectToLookupOn(objectToLookupOn)
-  {
-    
-  }
+  {}
 
 public:
 
@@ -128,6 +126,9 @@ public:
     return to_int();
   }
 
+  /// Returns a specific piece of data at index as an int
+  int getIntAt(int index) const;
+
   /** 
    * Finds a string value, throwing if non-existant.
    * 
@@ -148,6 +149,9 @@ public:
   operator std::string() const {
     return to_string();
   }
+
+  /// Returns a piece of data at a certain location as a string.
+  const std::string getStringAt(int index) const;
 
   /** 
    * Finds a vector of ints, throwing if non-existant.
@@ -225,8 +229,7 @@ public:
   Gameexe(const boost::filesystem::path& filename);
 
   /**
-   * Constructor
-   * 
+   * Destructor
    */
   ~Gameexe();
 
