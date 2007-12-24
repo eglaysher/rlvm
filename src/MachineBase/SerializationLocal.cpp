@@ -25,6 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 // include headers that implement a archive in simple text format
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>

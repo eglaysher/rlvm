@@ -25,6 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/intmemref.h"
@@ -36,6 +40,8 @@
 using boost::assign::list_of;
 using namespace std;
 using namespace libReallive;
+
+// -----------------------------------------------------------------------
 
 const IntegerBank_t LOCAL_INTEGER_BANKS =
   list_of(make_pair(INTB_LOCATION, 'A'))

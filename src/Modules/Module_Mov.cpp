@@ -30,7 +30,7 @@
 // -----------------------------------------------------------------------
 
 MovModule::MovModule()
-  : RLModule("Mov", 1, 22)
+  : RLModule("Mov", 1, 26)
 {
   addUnsupportedOpcode(0, 0, "movPlay");
   addUnsupportedOpcode(1, 0, "movPlayEx");

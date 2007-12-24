@@ -25,6 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "MachineBase/Serialization.hpp"
 
 // include headers that implement a archive in simple text format
