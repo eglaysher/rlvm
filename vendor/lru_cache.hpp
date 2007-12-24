@@ -20,6 +20,9 @@
 //  
 // -----------------------------------------------------------------------
 
+#ifndef __lru_cache_hpp__
+#define __lru_cache_hpp__
+
 /***************************************************************************
  *   Copyright (C) 2004-2006 by Patrick Audley                             *
  *   paudley@blackcat.ca                                                   *
@@ -249,3 +252,5 @@ template<class Key,class Data> class LRUCache {
 			_index.erase( miter );
 		}
 };
+
+#endif
