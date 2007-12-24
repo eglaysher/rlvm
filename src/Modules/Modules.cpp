@@ -24,6 +24,7 @@
 
 #include "Modules/Module_Jmp.hpp"
 #include "Modules/Module_EventLoop.hpp"
+#include "Modules/Module_Mov.hpp"
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Str.hpp"
 #include "Modules/Module_Mem.hpp"
@@ -54,6 +55,7 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new EventLoopModule);
   rlmachine.attachModule(new SelModule);
   rlmachine.attachModule(new SysModule(rlmachine.system()));
+  rlmachine.attachModule(new MovModule);
   rlmachine.attachModule(new StrModule);
   rlmachine.attachModule(new MemModule);
   rlmachine.attachModule(new MsgModule);

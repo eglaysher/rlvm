@@ -6,6 +6,7 @@
 LRLFILES[] =
   Modules
   Module_EventLoop
+  Module_Mov
   Module_Bgm
   Module_Pcm
   Module_Se
