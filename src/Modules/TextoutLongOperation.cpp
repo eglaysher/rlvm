@@ -120,7 +120,7 @@ bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine)
  * Extract a name and send it to the text system as an automic
  * operation.
  *
- * @todo Right now, this doesn't deal with ###PRINT() syntax in the
+ * @todo Right now, this doesn't deal with \#\#\#PRINT() syntax in the
  *       name, even though character names are one of the places where
  *       that's evaluated.
  */

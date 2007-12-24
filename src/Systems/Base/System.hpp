@@ -76,7 +76,9 @@ struct SystemGlobals
  * graphics, filesystem et cetera.
  *
  * The base System class is an abstract base class that is meant to be
- * specialized by the 
+ * specialized.
+ *
+ * @todo Write InvokeSyscom
  */
 class System
 {
@@ -161,10 +163,6 @@ public:
 
   /// Disables the syscom entry @c syscom
   void disableSyscom(int syscom);
-
-
-
-  /// @todo Write InvokeSyscom
 
   /// Reads the corresponding value for syscom number @c syscom
   int readSyscom(int syscom);

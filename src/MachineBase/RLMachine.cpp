@@ -392,14 +392,14 @@ void RLMachine::returnFromFarcall()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::gotoLocation(BytecodeList::iterator newLocation) {
+void RLMachine::gotoLocation(libReallive::BytecodeList::iterator newLocation) {
   // Modify the current frame of the call stack so that it's 
   callStack.back().ip = newLocation;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::gosub(BytecodeList::iterator newLocation) 
+void RLMachine::gosub(libReallive::BytecodeList::iterator newLocation) 
 {
   pushStackFrame(StackFrame(callStack.back().scenario(), newLocation, 
                             StackFrame::TYPE_GOSUB));

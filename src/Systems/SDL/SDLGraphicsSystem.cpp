@@ -161,8 +161,8 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
-  RLMachine& machine, shared_ptr<Surface> bg)
+boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
+  RLMachine& machine, boost::shared_ptr<Surface> bg)
 {
   beginFrame();
 

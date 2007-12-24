@@ -54,7 +54,7 @@ MultiDispatch::~MultiDispatch()
 
 void MultiDispatch::parseParameters(
   const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output)
+  boost::ptr_vector<ExpressionPiece>& output)
 {
   for(vector<string>::const_iterator it = input.begin(); it != input.end();
       ++it)

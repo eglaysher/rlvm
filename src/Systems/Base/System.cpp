@@ -140,10 +140,6 @@ void System::disableSyscom(int syscom)
 
 // -----------------------------------------------------------------------
 
-  /// @todo Write InvokeSyscom
-
-// -----------------------------------------------------------------------
-
 int System::readSyscom(int syscom)
 {
   throw rlvm::Exception("ReadSyscom unimplemented!");

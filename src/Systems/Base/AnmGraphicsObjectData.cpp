@@ -103,7 +103,7 @@ AnmGraphicsObjectData::~AnmGraphicsObjectData()
 
 // -----------------------------------------------------------------------
 
-bool AnmGraphicsObjectData::testFileMagic(scoped_array<char>& anmData)
+bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anmData)
 {
   return memcmp(anmData.get(), ANM_MAGIC, ANM_MAGIC_SIZE) != 0;
 }
@@ -144,7 +144,7 @@ void AnmGraphicsObjectData::loadAnmFile(RLMachine& machine)
 // -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::loadAnmFileFromData(
-  RLMachine& machine, scoped_array<char>& anmData)
+  RLMachine& machine, boost::scoped_array<char>& anmData)
 {
   const char* data = anmData.get();
 

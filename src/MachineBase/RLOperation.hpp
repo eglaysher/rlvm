@@ -26,7 +26,7 @@
 // -----------------------------------------------------------------------
 
 /** 
- * @file
+ * @file RLOperation.hpp
  * @ingroup RLOperationGroup
  * @brief Defines all the base RLOperations and their type checking structs.
  */
@@ -98,6 +98,7 @@
  */
 struct RLOperation {
 private:
+  /// The human readable name for this operation
   std::string m_name;
 
 public:
@@ -160,8 +161,6 @@ public:
  * subclass, and should not be used directly. It should only be used
  * as a template parameter to one of those classes, or of another type
  * definition struct.
- *
- * The
  */
 struct IntConstant_T {
   /// The output type of this type struct

@@ -190,7 +190,9 @@ protected:
   /// @}
 
 protected:
-  /// Internal calculations stuff
+  /**
+   * Accessor for the m_selectionCallback for TextWindow subclasses
+   */
   const boost::function<void(int)>& selectionCallback();
 
 public:
