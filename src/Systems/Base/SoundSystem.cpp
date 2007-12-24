@@ -28,9 +28,11 @@
 #include "Systems/Base/SoundSystem.hpp"
 #include "libReallive/gameexe.h"
 #include <boost/lexical_cast.hpp>
+#include <iostream>
 
 // -----------------------------------------------------------------------
 
+using namespace std;
 using boost::lexical_cast;
 using namespace std;
 

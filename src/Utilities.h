@@ -64,6 +64,7 @@ boost::filesystem::path correctPathCase(boost::filesystem::path Path);
 extern const std::vector<std::string> ALL_FILETYPES;
 extern const std::vector<std::string> IMAGE_FILETYPES;
 extern const std::vector<std::string> GAN_FILETYPES;
+extern const std::vector<std::string> SOUND_FILETYPES;
 /// @}
 
 /** 

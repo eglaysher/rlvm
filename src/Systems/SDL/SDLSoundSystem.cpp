@@ -31,14 +31,20 @@
 
 #include "Systems/SDL/SDLSoundSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Utilities.h"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
+#include <sstream>
+
+using boost::shared_ptr;
+using namespace std;
+namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
-  : SoundSystem(gexe)
+  : SoundSystem(gexe), m_soundCache(5)
 {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
@@ -66,7 +72,33 @@ SDLSoundSystem::~SDLSoundSystem()
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::playSe(const int seNum)
+void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
 {
+  SeTable::const_iterator it = seTable().find(seNum);
+  if(it == seTable().end())
+  {
+    ostringstream oss;
+    oss << "No #SE entry found for sound effect number " << seNum;
+    throw rlvm::Exception(oss.str());
+  }
 
+  const string& fileName = it->second.first;
+  int channel = it->second.second;
+
+  fs::path filePath = findFile(machine, fileName, SOUND_FILETYPES);
+
+  // Make sure there isn't anything playing on the current channel
+  Mix_HaltChannel(channel);
+
+  Mix_Chunk* sample = m_soundCache.fetch(filePath);
+  if(sample == NULL)
+  {
+    sample = Mix_LoadWAV(filePath.external_file_string().c_str());
+    m_soundCache.insert(filePath, sample);
+  }
+
+  if(Mix_PlayChannel(channel, sample, 0) == -1) 
+  {
+    
+  }
 }

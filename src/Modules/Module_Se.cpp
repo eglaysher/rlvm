@@ -27,10 +27,26 @@
 
 #include "Modules/Module_Se.hpp"
 
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+
+// -----------------------------------------------------------------------
+
+struct Se_sePlay : public RLOp_Void_1<IntConstant_T>
+{
+  void operator()(RLMachine& machine, int effectNum)
+  {
+    machine.system().sound().playSe(machine, effectNum);
+  }
+};
+
 // -----------------------------------------------------------------------
 
 SeModule::SeModule()
   : RLModule("Se", 1, 22)
 {
-  addUnsupportedOpcode(0, 0, "sePlay");
+  addOpcode(0, 0, "sePlay", new Se_sePlay);
 }

@@ -38,6 +38,7 @@
 #include "Modules/Modules.hpp"
 #include "Utilities.h"
 
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 //#include "Systems/Base/AnmGraphicsObjectData.hpp"
@@ -187,7 +188,6 @@ void printUsage(const string& name, po::options_description& opts)
 
 // -----------------------------------------------------------------------
 
-
 int main(int argc, char* argv[])
 {
   srand(time(NULL));
@@ -297,7 +297,7 @@ int main(int argc, char* argv[])
   // --gameexe
   if(vm.count("gameexe"))
   {
-    gameexePath = correctPathCase(vm["gameexe"].as<string>());
+     gameexePath = correctPathCase(vm["gameexe"].as<string>());
   }
   else
   {
@@ -362,7 +362,6 @@ int main(int argc, char* argv[])
            << "3) Specify an alternate font with the --font option." << endl;
       return -2;
     }
-
 
     if(vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);

@@ -36,6 +36,7 @@
 // -----------------------------------------------------------------------
 
 class Gameexe;
+class RLMachine;
 
 // -----------------------------------------------------------------------
 
@@ -95,9 +96,13 @@ private:
    * Parsed \#SE.index entries. Maps a sound effect number to the
    * filename to play and the channel to play it on.
    */
-  std::map<int, std::pair<std::string, int> > m_seTable;
+  typedef std::map<int, std::pair<std::string, int> > SeTable;
+  SeTable m_seTable;
 
   /// @}
+
+protected:
+  SeTable& seTable() { return m_seTable; }
 
 public: 
   SoundSystem(Gameexe& gexe);
@@ -125,7 +130,7 @@ public:
    * 
    * @param seNum Index into the \#SE table 
    */
-  virtual void playSe(const int seNum) = 0;
+  virtual void playSe(RLMachine& machine, const int seNum) = 0;
   /// @}
 };	// end of class SoundSystem
 

@@ -30,8 +30,15 @@
 #define __SDLSoundSystem_hpp__
 
 #include "Systems/Base/SoundSystem.hpp"
+#include <boost/shared_ptr.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include "lru_cache.hpp"
+#include <string>
 
 // -----------------------------------------------------------------------
+
+extern "C" struct Mix_Chunk;
 
 /**
  *
@@ -39,12 +46,13 @@
 class SDLSoundSystem : public SoundSystem
 {
 private:
-  
+  LRUCache<boost::filesystem::path, Mix_Chunk*> m_soundCache;
+
 public: 
   SDLSoundSystem(Gameexe& gexe);
   ~SDLSoundSystem();
 
-  virtual void playSe(const int seNum);  
+  virtual void playSe(RLMachine& machine, const int seNum);  
 };	// end of class SDLSoundSystem
 
 #endif
