@@ -31,8 +31,8 @@
 
 /**
  * @namespace libReallive
- * @author Haeleth
  * @brief libReallive, a library for manipulating Reallive bytecode
+ * @author Haeleth
  * 
  * libReallive is a library for manipulating Reallive bytecode. It was
  * orriginally written by Haeleth, and was copy/pasted into
@@ -41,9 +41,43 @@
  * expression.cpp, et cetera), 99% of this code was written by
  * Haeleth.
  *
- * In this namespace, you will find classses and function for reading
- * and manipulating Reallive SEEN files. This module is not documented
- * as well, since it is a third party library.
+ * @section Archive The Archive and Scenario access
+ *
+ * We start with the main class that represents the SEEN.TXT file,
+ * libReallive::Archive. A SEEN.TXT file contains all of the executed
+ * code in a Reallive game (barring DLL extensions to the Reallive
+ * system). A SEEN.TXT file contains number identified Scenarios,
+ * which represents small pieces of bytecode which are executed in our
+ * virtual machine. When we construct an Archive, we pass in the
+ * path to a SEEN.TXT file to load. Currently, the only thing done on
+ * startup is the parsing of the TOC, which defines which Scenarios
+ * are in the SEEN.TXT archive.
+ *
+ * From the Archive, we can access libReallive::Scenarios using the
+ * libReallive::Archive::scenario() member. This method will return
+ * the Scenario relating to the passed in number. Archive has other
+ * members for manipulating and rewriting the data, but these aren't
+ * used in RLVM.
+ *
+ * @section Scenario The Scenario
+ *
+ * The libReallive::Scenario class represents a Scenario, a sequence
+ * of commands and other metadata. It is divided into the
+ * libReallive::Header and libReallive::Script. The header contains:
+ *
+ * - Debug information
+ * - "Misc settings"
+ * - A list of actors that appear in the scene (referred to as the {@em
+ *   dramatic personae} table, which is used for debugging
+ * - Metadata which can be added by Haeleth's <a
+ *   href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler.
+ *
+ * The Script contains:
+ *
+ * - A sequence of semi-parsed/tokenized bytecode elements, which are
+ *   the elements that RLMachine executes.
+ * - A list of entrypoints into the scenario
+ * - A list of pointers (for goto, et cetera)
  */
 
 #include "defs.h"     

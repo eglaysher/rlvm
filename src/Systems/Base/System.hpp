@@ -40,7 +40,6 @@ class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
 
-
 const int NUM_SYSCOM_ENTRIES = 32;
 
 const int SYSCOM_INVISIBLE = 0;
@@ -51,6 +50,7 @@ const int SYSCOM_GREYED_OUT = 2;
 
 /**
  * Struct containing the global memory to get serialized to disk with
+ * global memory.
  */
 struct SystemGlobals
 {
@@ -79,6 +79,7 @@ struct SystemGlobals
  * specialized.
  *
  * @todo Write InvokeSyscom
+ * @see SystemGlobals
  */
 class System
 {

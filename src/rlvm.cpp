@@ -76,8 +76,7 @@ namespace fs = boost::filesystem;
  * The documentation is divided into the following sections.
  *
  * - @subpage theProblemDomainOfVisualNovels "The problem Domain of Visual Novels"
- * - @subpage dataIntoMachine "Reading SEEN files into the Machine"
- * - @subpage virtualMachine "The Virtual Machine and its support classes"
+ * - @subpage architectureReview "RLVM Architecture"
  */
 
 // -----------------------------------------------------------------------
@@ -122,64 +121,30 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 /**
- * @page dataIntoMachine Reading SEEN files into the Machine
- *
- * @section Overview
- *
- * There are several classes that represent the SEEN.TXT file in
- * memory; most of this code is stolen from Haeleth in the namespace
- * libReallive. This page describes the reading of SEEN files from the
- * file to memory.
- *
- * @section Archive "The Archive and Scenario access"
- *
- * We start with the main class that represents the SEEN.TXT file,
- * libReallive::Archive. A SEEN.TXT file contains all of the executed
- * code in a Reallive game (barring DLL extensions to the Reallive
- * system). A SEEN.TXT file contains number identified Scenarios,
- * which represents small pieces of bytecode which are executed in our
- * virtual machine. When we construct an Archive, we pass in the
- * path to a SEEN.TXT file to load. Currently, the only thing done on
- * startup is the parsing of the TOC, which defines which Scenarios
- * are in the SEEN.TXT archive.
- *
- * From the Archive, we can access libReallive::Scenarios using the
- * libReallive::Archive::scenario() member. This method will return
- * the Scenario relating to the passed in number. Archive has other
- * members for manipulating and rewriting the data, but these aren't
- * used in RLVM.
- *
- * @section Scenario "The Scenario"
- *
- * The libReallive::Scenario class represents a Scenario, a sequence
- * of commands and other metadata. It is divided into the
- * libReallive::Header and libReallive::Script. The header contains:
- *
- * - Debug information
- * - "Misc settings"
- * - A list of actors that appear in the scene (referred to as the {@em
- *   dramatic personae} table, which is used for debugging
- * - Metadata which can be added by Haeleth's <a
- *   href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler.
- *
- * The Script contains:
- *
- * - A sequence of semi-parsed/tokenized bytecode elements, which are
- *   the elements that RLMachine executes.
- * - A list of entrypoints into the scenario
- * - A list of pointers (for goto, et cetera)
- */
-
-// -----------------------------------------------------------------------
-
-/**
- * @page virtualMachine The Virtual Machine and its support classes
- *
- * @section Overview 
- *
- * To begin, we have our main virtual machine class
- * RLMachine. RLMachine is responsible for owning the passed in
+ * @page architectureReview RLVM Architecture
  * 
+ * RLVM is divided into five basic parts:
+ *
+ * - A modified version of Haeleth's @c libReallive, which is
+ *   responsible for reading and parsing the SEEN.TXT file and
+ *   creating the corresponding object representation. There is also a
+ *   class Gameexe which parses the Gameexe.ini file in every RealLive
+ *   game.
+ * - The Opcode Definitions / Modules, which can be found in the
+ *   subidrectory @c src/Modules/ . These files contain the
+ *   definitions for the individual Opcodes.
+ * - The core of the virtual machine found in @c src/MachineBase/ :
+ *   - RLMachine: the main class which contains all execution state
+ *   - RLOperation: the base class of every opcode definition.
+ *   - LongOperation: the base class for all operations that persist
+ *     for multiple cycles through the game loop.
+ * - The Base System classes found in @c src/Systems/Base , which
+ *   define the generalized interface for system dependent operations
+ *   like sound and graphics.
+ * - The System subclasses, such as @c src/Systems/SDL , which
+ *   implement the Base System interface for SDL. Additional
+ *   subclasses could be written for DirectX, or some other game
+ *   interface.
  */
 
 // -----------------------------------------------------------------------

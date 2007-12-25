@@ -31,10 +31,10 @@
 
 /**
  * @file   SDLTextSystem.cpp
+ * @brief  SDL specialization of the text system
  * @author Elliot Glaysher
  * @date   Wed Mar  7 22:04:25 2007
  * 
- * @brief  SDL specialization of the text system
  */
 
 #include "MachineBase/RLMachine.hpp"
