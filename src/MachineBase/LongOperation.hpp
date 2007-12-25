@@ -46,6 +46,7 @@ class RLMachine;
 class LongOperation 
 {
 public:
+  LongOperation();
   virtual ~LongOperation();
 
   /** 
@@ -64,14 +65,14 @@ public:
    * @invariant The next method call to this object after looseFocus()
    * will either be gainFocus() or the destructor.
    */
-  virtual void looseFocus() {}
+  virtual void looseFocus();
 
   /**
    * Method called after the stack frame immediately above this one
    * has been popped of the stack, meaning this LongOperation will
    * continue running.
    */
-  virtual void gainFocus() {}
+  virtual void gainFocus();
 };
 
 // -----------------------------------------------------------------------
