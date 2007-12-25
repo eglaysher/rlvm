@@ -45,6 +45,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 using namespace boost;
 using namespace std;
@@ -205,6 +206,18 @@ void Gameexe::setIntAt(const std::string& key, const int value)
   vec_type toStore;
   toStore.push_back(value);
   data_[key] = toStore;
+}
+
+// -----------------------------------------------------------------------
+
+void Gameexe::addToStream(const std::string& x, std::ostringstream& ss) {
+  ss << x;
+}
+
+// -----------------------------------------------------------------------
+
+void Gameexe::addToStream(const int& x, std::ostringstream& ss) {
+  ss << std::setw(3) << std::setfill('0') << x;
 }
 
 // -----------------------------------------------------------------------

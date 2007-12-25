@@ -38,7 +38,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <iomanip>
+#include <boost/iterator/iterator_facade.hpp>
 
 #ifdef __GNUC__
 //// Can't read STL error messages.
@@ -50,8 +50,6 @@
 #include <hash_map>
 using stdext::hash_map;
 #endif
-
-#include "libReallive/defs.h"
 
 class Gameexe;
 class GameexeFilteringIterator;
@@ -313,16 +311,12 @@ private:
    * Regrettable artifact of hack to get all integers in streams to
    * have setw(3).
    */
-  void addToStream(const std::string& x, std::ostringstream& ss) {
-    ss << x;
-  }
+  void addToStream(const std::string& x, std::ostringstream& ss);
 
   /** 
    * Hack to get all integers in streams to have setw(3).
    */
-  void addToStream(const int& x, std::ostringstream& ss) {
-    ss << std::setw(3) << std::setfill('0') << x;
-  }
+  void addToStream(const int& x, std::ostringstream& ss);
 
   void throwUnknownKey(const std::string& key);
 };

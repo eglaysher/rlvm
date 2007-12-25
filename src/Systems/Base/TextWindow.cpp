@@ -44,6 +44,7 @@
 
 #include <vector>
 #include <boost/bind.hpp>
+#include <iomanip>
 
 using std::cerr;
 using std::endl;
