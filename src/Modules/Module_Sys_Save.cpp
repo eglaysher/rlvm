@@ -62,7 +62,7 @@
 
 #include "utf8.h"
 #include "Modules/cp932toUnicode.hpp"
-#include "Modules/FadeEffect.hpp"
+#include "Effects/FadeEffect.hpp"
 
 // For copy_n, which isn't part of the C++ standard and doesn't come on
 // OSX.

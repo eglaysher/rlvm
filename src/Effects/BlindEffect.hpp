@@ -37,7 +37,7 @@
 #ifndef __BlindEffect_hpp__
 #define __BlindEffect_hpp__
 
-#include "Modules/Effect.hpp"
+#include "Effects/Effect.hpp"
 
 /**
  * Base class for implementing \#SEL transition style \#10, Blind.

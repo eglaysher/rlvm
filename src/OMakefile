@@ -15,13 +15,14 @@ else
 #CXXFLAGS += -DWIN32
 
 .PHONY: clean
-.SUBDIRS: libReallive Modules MachineBase Systems
+.SUBDIRS: libReallive Effects Modules MachineBase Systems
 ########
 
 LIBRLVMFILES[] = 
   MachineBase/libMachineBase
   MachineBase/GeneralOperations
   Modules/libModules
+  Effects/libEffects
   Systems/Base/System
   Systems/Base/GraphicsSystem
   Systems/Base/GraphicsObject

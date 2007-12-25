@@ -37,7 +37,7 @@
 #ifndef __WipeEffect_hpp__
 #define __WipeEffect_hpp__
 
-#include "Modules/Effect.hpp"
+#include "Effects/Effect.hpp"
 
 #include <boost/shared_ptr.hpp>
 

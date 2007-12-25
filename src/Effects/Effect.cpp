@@ -37,7 +37,7 @@
  * @brief  Base LongOperation for all transition effects on DCs.
  */
 
-#include "Modules/Effect.hpp"  
+#include "Effects/Effect.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

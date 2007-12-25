@@ -37,7 +37,7 @@
  * @brief  Implements a bunch of \#SEL transitions.
  */
 
-#include "ScrollOnScrollOff.hpp"
+#include "Effects/ScrollOnScrollOff.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

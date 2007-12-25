@@ -26,12 +26,6 @@ LRLFILES[] =
   Module_Sys_Date
   Module_Gan
   cp932toUnicode
-  Effect
-  FadeEffect
-  WipeEffect
-  ScrollOnScrollOff
-  BlindEffect
-  EffectFactory
   Module_Obj
   Module_ObjFgBg
   Module_ObjCreation

@@ -60,7 +60,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include "Modules/FadeEffect.hpp"
+#include "Effects/FadeEffect.hpp"
 
 #include <cmath>
 #include <iostream>

@@ -28,7 +28,7 @@
 #ifndef __FadeEffect_hpp__
 #define __FadeEffect_hpp__
 
-#include "Modules/Effect.hpp"
+#include "Effects/Effect.hpp"
 
 /**
  * Simple fade in.

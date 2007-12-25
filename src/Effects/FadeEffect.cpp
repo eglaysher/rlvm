@@ -38,7 +38,7 @@
  * @brief  Fade transition Effect
  */
 
-#include "FadeEffect.hpp"
+#include "Effects/FadeEffect.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

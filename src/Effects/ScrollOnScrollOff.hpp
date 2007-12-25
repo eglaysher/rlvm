@@ -36,7 +36,7 @@
 #ifndef __ScrollOnScrollOff_hpp__
 #define __ScrollOnScrollOff_hpp__
 
-#include "Modules/Effect.hpp"
+#include "Effects/Effect.hpp"
 
 class GraphicsSystem;
 class ScrollSquashSlideDrawer;

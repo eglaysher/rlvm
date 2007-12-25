@@ -39,11 +39,11 @@
 
 #include "Systems/Base/SystemError.hpp"
 
-#include "Modules/EffectFactory.hpp"
-#include "Modules/FadeEffect.hpp"
-#include "Modules/WipeEffect.hpp"
-#include "Modules/ScrollOnScrollOff.hpp"
-#include "Modules/BlindEffect.hpp"
+#include "Effects/EffectFactory.hpp"
+#include "Effects/FadeEffect.hpp"
+#include "Effects/WipeEffect.hpp"
+#include "Effects/ScrollOnScrollOff.hpp"
+#include "Effects/BlindEffect.hpp"
 
 #include <iostream>
 #include <sstream>

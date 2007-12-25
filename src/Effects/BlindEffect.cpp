@@ -38,7 +38,7 @@
  * @brief  Implements \#SEL transition style \#10, Blind.
  */
 
-#include "Modules/BlindEffect.hpp"
+#include "Effects/BlindEffect.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

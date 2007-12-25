@@ -199,8 +199,6 @@ public:
 void decorateEffectWithBlit(LongOperation*& lop, 
                             boost::shared_ptr<Surface> src,
                             boost::shared_ptr<Surface> dst);
-                        
-
 // @}
 
 #endif

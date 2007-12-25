@@ -52,8 +52,8 @@
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
-#include "Modules/Effect.hpp"
-#include "Modules/EffectFactory.hpp"
+#include "Effects/Effect.hpp"
+#include "Effects/EffectFactory.hpp"
 #include "Modules/ZoomLongOperation.hpp"
 
 #include "libReallive/gameexe.h"

@@ -39,7 +39,7 @@
  */
 
 
-#include "WipeEffect.hpp"
+#include "Effects/WipeEffect.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
