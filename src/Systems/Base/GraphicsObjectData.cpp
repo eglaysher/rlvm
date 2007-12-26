@@ -56,6 +56,10 @@ GraphicsObjectData::~GraphicsObjectData() { }
 
 // -----------------------------------------------------------------------
 
+void GraphicsObjectData::loopAnimation() { }
+
+// -----------------------------------------------------------------------
+
 void GraphicsObjectData::endAnimation()
 {
   // Set first, because we may deallocate this by one of our actions
@@ -81,10 +85,18 @@ void GraphicsObjectData::endAnimation()
 
 // -----------------------------------------------------------------------
 
+void GraphicsObjectData::execute(RLMachine& machine) { }
+
+// -----------------------------------------------------------------------
+
 bool GraphicsObjectData::isAnimation() const
 {   
   return false; 
 }
+
+// -----------------------------------------------------------------------
+
+void GraphicsObjectData::playSet(RLMachine& machine, int set) { }
 
 // -----------------------------------------------------------------------
 // GraphicsObjectOverride

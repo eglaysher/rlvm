@@ -75,7 +75,7 @@ protected:
    * 
    * Default implementation does nothing.
    */
-  virtual void loopAnimation() { }
+  virtual void loopAnimation();
 
   /** 
    * Takes the specified action when we've reached the last frame of
@@ -107,10 +107,10 @@ public:
 
   virtual GraphicsObjectData* clone() const = 0;
 
-  virtual void execute(RLMachine& machine) { }
+  virtual void execute(RLMachine& machine);
 
   virtual bool isAnimation() const;
-  virtual void playSet(RLMachine& machine, int set) { }
+  virtual void playSet(RLMachine& machine, int set);
 };
 
 // -----------------------------------------------------------------------
