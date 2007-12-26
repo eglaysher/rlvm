@@ -379,5 +379,8 @@ private:
   void serialize(Archive& ar, unsigned int version);
 };
 
+const static int OBJ_FG_LAYER = 0;
+const static int OBJ_BG_LAYER = 1;
+
 #endif 
 

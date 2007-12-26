@@ -382,9 +382,6 @@ public:
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-const static int OBJ_FG_LAYER = 0;
-const static int OBJ_BG_LAYER = 1;
-
 const int OBJECTS_IN_A_LAYER = 256;
 
 #endif

@@ -38,7 +38,7 @@
  *         replaying the graohics stack.
  */
 
-#include "../MachineBase/RLModule.hpp"
+#include "MachineBase/RLModule.hpp"
 #include <string>
 
 class GraphicsStackFrame;

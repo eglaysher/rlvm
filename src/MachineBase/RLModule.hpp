@@ -39,8 +39,6 @@
 #include <boost/utility.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include <map>
-
 namespace libReallive {
 class FunctionElement;
 class CommandElement;

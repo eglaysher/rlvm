@@ -48,8 +48,6 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"

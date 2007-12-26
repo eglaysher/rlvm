@@ -37,7 +37,6 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
-#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
 #include <boost/utility.hpp>

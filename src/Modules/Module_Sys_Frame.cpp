@@ -36,7 +36,6 @@
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Complex_T.hpp"
 
-
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/GeneralOperations.hpp"

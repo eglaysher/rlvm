@@ -34,7 +34,6 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
-#include "MachineBase/LongOperation.hpp"
 
 #include "dateUtil.hpp"
 
