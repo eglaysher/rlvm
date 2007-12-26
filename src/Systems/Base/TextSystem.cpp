@@ -32,7 +32,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
@@ -40,7 +39,6 @@
 
 #include "MachineBase/Serialization.hpp"
 #include "libReallive/gameexe.h"
-#include "Utilities.h"
 
 #include <boost/bind.hpp>
 
