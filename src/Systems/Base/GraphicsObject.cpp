@@ -51,6 +51,10 @@ const int DEFAULT_TEXT_VERTICAL = 0;
 const int DEFAULT_TEXT_COLOUR = 0;
 const int DEFAULT_TEXT_SHADOWCOLOUR = 0;
 
+//boost::shared_ptr<GraphicsObject::Impl> g_constantBaseObj( 
+const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_emptyImpl(
+  new GraphicsObject::Impl);
+
 // -----------------------------------------------------------------------
 // GraphicsObject::TextProperties
 // -----------------------------------------------------------------------
@@ -68,7 +72,8 @@ GraphicsObject::Impl::TextProperties::TextProperties()
 // GraphicsObject
 // -----------------------------------------------------------------------
 GraphicsObject::GraphicsObject()
-  : m_impl(new GraphicsObject::Impl)
+  : m_impl(s_emptyImpl)
+//  : m_impl(new GraphicsObject::Impl)
 {}
 
 // -----------------------------------------------------------------------
@@ -451,9 +456,8 @@ void GraphicsObject::deleteObject()
 
 void GraphicsObject::clearObject()
 {
-  *this = GraphicsObject();
-//  m_impl.reset(new Impl);
-//  m_objectData.reset();
+  m_impl = s_emptyImpl;
+  m_objectData.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -535,7 +539,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     m_compositeMode(rhs.m_compositeMode),
     m_scrollRateX(rhs.m_scrollRateX),
     m_scrollRateY(rhs.m_scrollRateY), 
-	m_wipeCopy(0)
+    m_wipeCopy(0)
 {   
   if(rhs.m_textProperties)
     m_textProperties.reset(new TextProperties(*rhs.m_textProperties));

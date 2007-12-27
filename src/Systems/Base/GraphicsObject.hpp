@@ -366,6 +366,13 @@ private:
     void serialize(Archive& ar, unsigned int version);
   };
 
+  /** 
+   * Default empty GraphicsObject::Impl. This variable is allocated
+   * once, and then is used as the initial value of m_impl, where it
+   * is cloned on write.
+   */
+  static const boost::shared_ptr<GraphicsObject::Impl> s_emptyImpl;
+
   /// Our actual implementation data
   boost::shared_ptr<GraphicsObject::Impl> m_impl;
 
