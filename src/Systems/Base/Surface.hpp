@@ -50,49 +50,45 @@ public:
   virtual int width() const = 0;
   virtual int height() const = 0;
 
-  virtual void dump() {}
+  virtual void dump();
 
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
                              int srcX, int srcY, int srcWidth, int srcHeight,
                              int destX, int destY, int destWidth, int destHeight,
-                             int alpha = 255, bool useSrcAlpha = true) { }
+                             int alpha = 255, bool useSrcAlpha = true) = 0;
 
   virtual void renderToScreen(
                      int srcX, int srcY, int srcWidth, int srcHeight,
                      int destX, int destY, int destWidth, int destHeight,
-                     int alpha = 255) { }
+                     int alpha = 255) = 0;
 
   virtual void renderToScreenAsColorMask(
                      int srcX1, int srcY1, int srcX2, int srcY2,
                      int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha, int filter) { }
+                     int r, int g, int b, int alpha, int filter) = 0;
 
   virtual void renderToScreen(
     int srcX1, int srcY1, int srcX2, int srcY2,
     int destX1, int destY1, int destX2, int destY2,
-    const int opacity[4]) { }
+    const int opacity[4]) = 0;
 
-  virtual void renderToScreenAsObject(const GraphicsObject& rp) {}
+  virtual void renderToScreenAsObject(const GraphicsObject& rp) = 0;
   virtual void renderToScreenAsObject(const GraphicsObject& rp, 
-                                      const GraphicsObjectOverride& override) {}
+                                      const GraphicsObjectOverride& override) = 0;
 
-  virtual int numPatterns() const { return 1; }
-  virtual const GrpRect& getPattern(int pattNo) const 
-  {
-    static GrpRect rect;
-    return rect;
-  };
+  virtual int numPatterns() const;
+  virtual const GrpRect& getPattern(int pattNo) const;
 
   virtual void rawRenderQuad(const int srcCoords[8], 
                              const int destCoords[8],
-                             const int opacity[4]) { }
+                             const int opacity[4]) = 0;
 
   virtual void fill(int r, int g, int b, int alpha) = 0;
   virtual void fill(int r, int g, int b, int alpha, int x, int y, 
                     int width, int height) = 0;
 
-  virtual void getDCPixel(int x, int y, int& r, int& g, int& b) { }
+  virtual void getDCPixel(int x, int y, int& r, int& g, int& b) = 0;
 
   virtual Surface* clone() const = 0;
 };

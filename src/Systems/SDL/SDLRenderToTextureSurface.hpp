@@ -65,6 +65,15 @@ public:
                      int destX, int destY, int destWidth, int destHeight,
                      const int opacity[4]);
 
+  virtual void renderToScreenAsColorMask(
+    int srcX1, int srcY1, int srcX2, int srcY2,
+    int destX1, int destY1, int destX2, int destY2,
+    int r, int g, int b, int alpha, int filter);
+
+  virtual void renderToScreenAsObject(const GraphicsObject& rp);
+  virtual void renderToScreenAsObject(const GraphicsObject& rp, 
+                                      const GraphicsObjectOverride& override);
+
   virtual void rawRenderQuad(const int srcCoords[8], 
                              const int destCoords[8],
                              const int opacity[4]);
@@ -72,6 +81,8 @@ public:
   virtual void fill(int r, int g, int b, int alpha);
   virtual void fill(int r, int g, int b, int alpha, int x, int y, 
                     int width, int height);
+
+  virtual void getDCPixel(int x, int y, int& r, int& g, int& b);
 
   virtual int width() const;
   virtual int height() const;

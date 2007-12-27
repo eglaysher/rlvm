@@ -40,6 +40,8 @@
 
 #include <sstream>
 
+#include "Utilities.h"
+
 using namespace std;
 
 // -----------------------------------------------------------------------
@@ -103,6 +105,35 @@ void SDLRenderToTextureSurface::renderToScreen(
 
 // -----------------------------------------------------------------------
 
+void SDLRenderToTextureSurface::renderToScreenAsColorMask(
+    int srcX1, int srcY1, int srcX2, int srcY2,
+    int destX1, int destY1, int destX2, int destY2,
+    int r, int g, int b, int alpha, int filter)
+{
+  throw rlvm::Exception(
+    "SDLRenderToTextureSurface::renderToScreenAsColorMask unimplemented");
+}
+
+// -----------------------------------------------------------------------
+
+void SDLRenderToTextureSurface::renderToScreenAsObject(const GraphicsObject& rp)
+{
+  throw rlvm::Exception(
+    "SDLRenderToTextureSurface::renderToScreenAsObject unimplemented");
+}
+
+// -----------------------------------------------------------------------
+
+void SDLRenderToTextureSurface::renderToScreenAsObject(
+  const GraphicsObject& rp, 
+  const GraphicsObjectOverride& override)
+{
+  throw rlvm::Exception(
+    "SDLRenderToTextureSurface::renderToScreenAsObject unimplemented");
+}
+
+// -----------------------------------------------------------------------
+
 void SDLRenderToTextureSurface::rawRenderQuad(const int srcCoords[8], 
                                const int destCoords[8],
                                const int opacity[4])
@@ -121,6 +152,13 @@ void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha)
 
 void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha, int x, int y, 
                       int width, int height)
+{
+  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+}
+
+// -----------------------------------------------------------------------
+
+void SDLRenderToTextureSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
 {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }

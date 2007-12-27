@@ -25,8 +25,8 @@
 //  
 // -----------------------------------------------------------------------
 
-
 #include "Systems/Base/Surface.hpp"
+#include "Utilities.h"
 
 // -----------------------------------------------------------------------
 
@@ -35,3 +35,23 @@ Surface::Surface() { }
 // -----------------------------------------------------------------------
 
 Surface::~Surface() { }
+
+// -----------------------------------------------------------------------
+
+void Surface::dump() 
+{
+  throw rlvm::Exception("Unimplemented function Surface::dump()"); 
+}
+
+// -----------------------------------------------------------------------
+
+int Surface::numPatterns() const
+{ return 1; }
+
+// -----------------------------------------------------------------------
+
+const Surface::GrpRect& Surface::getPattern(int pattNo) const 
+{
+  static GrpRect rect;
+  return rect;
+}
