@@ -35,6 +35,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 
 #include "MachineBase/Serialization.hpp"
@@ -111,6 +112,59 @@ TextSystem::TextSystem(Gameexe& gexe)
 TextSystem::~TextSystem()
 {
   
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::executeTextSystem(RLMachine& machine)
+{
+  // Check to see if the cursor is displayed
+  WindowMap::iterator it = m_textWindow.find(m_activeWindow);
+  if(it != m_textWindow.end() && it->second->isVisible() && 
+     m_inPauseState && !isReadingBacklog())
+  {
+    if(!m_textKeyCursor)
+      setKeyCursor(machine, 0);
+
+    m_textKeyCursor->execute(machine);
+  }
+
+  // Let each window update any TextWindowButton s.
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->execute(machine);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::hideTextWindow(int winNumber)
+{
+  WindowMap::iterator it = m_textWindow.find(winNumber);
+  if(it != m_textWindow.end())
+  {
+    it->second->setVisible(0);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::hideAllTextWindows()
+{
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->setVisible(0);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::clearAllTextWindows()
+{
+  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  {
+    it->second->clearWin();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -294,6 +348,8 @@ void TextSystem::reset()
   m_currentPageset = std::auto_ptr<PageSet>(new PageSet);
   m_previousPageSets.clear();
   m_previousPageIt = m_previousPageSets.end();
+
+  m_textWindow.clear();
 }
 
 // -----------------------------------------------------------------------

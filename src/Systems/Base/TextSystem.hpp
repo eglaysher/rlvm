@@ -98,8 +98,20 @@ protected:
   /// Internal 'no wait' flag
   bool m_messageNoWait;
 
+  /** 
+   * @name Textwindow Management
+   * 
+   * @{
+   */
   /// Sets which window is the current active window.
   int m_activeWindow;
+
+  /// Type of the Window storage
+  typedef boost::ptr_map<int, TextWindow> WindowMap;
+
+  /// Storage of active windows
+  WindowMap m_textWindow;
+  /// @}
 
   /**
    * @name Backlog Management
@@ -169,12 +181,12 @@ public:
    * @{
    */
 
-  virtual void executeTextSystem(RLMachine& machine) = 0;
+  void executeTextSystem(RLMachine& machine);
 
   virtual void render(RLMachine& machine) = 0;
-  virtual void hideTextWindow(int winNumber) = 0;
-  virtual void hideAllTextWindows() = 0;
-  virtual void clearAllTextWindows() = 0;
+  void hideTextWindow(int winNumber);
+  void hideAllTextWindows();
+  void clearAllTextWindows();
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber) = 0;
   TextWindow& currentWindow(RLMachine& machine);
 
@@ -327,7 +339,6 @@ public:
    * Resets non-configuration values (so we can load games).
    */
   virtual void reset();
-
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

@@ -41,10 +41,6 @@ class SDLTextWindow;
 class SDLTextSystem : public TextSystem
 {
 private:
-  /// Window dispatch
-  typedef boost::ptr_map<int, SDLTextWindow> WindowMap;
-  WindowMap m_textWindow;
-
   /** 
    * @name Font storage
    * 
@@ -60,12 +56,7 @@ public:
   SDLTextSystem(Gameexe& gameexe);
   ~SDLTextSystem();
 
-  virtual void executeTextSystem(RLMachine& machine);
-
   virtual void render(RLMachine& machine);
-  virtual void hideTextWindow(int winNumber);
-  virtual void hideAllTextWindows();
-  virtual void clearAllTextWindows();
   virtual TextWindow& textWindow(RLMachine&, int textWindowNumber);
 
   virtual void setDefaultWindowAttr(const std::vector<int>& attr);
@@ -86,8 +77,6 @@ public:
 
   /// Danger Will Robinson! This should be pushed down to SDLTextSystem! 
   boost::shared_ptr<TTF_Font> getFontOfSize(int size);
-
-  virtual void reset();
 };
 
 #endif

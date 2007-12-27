@@ -80,28 +80,6 @@ SDLTextSystem::~SDLTextSystem()
 
 // -----------------------------------------------------------------------
 
-void SDLTextSystem::executeTextSystem(RLMachine& machine)
-{
-  // Check to see if the cursor is displayed
-  WindowMap::iterator it = m_textWindow.find(m_activeWindow);
-  if(it != m_textWindow.end() && it->second->isVisible() && 
-     m_inPauseState && !isReadingBacklog())
-  {
-    if(!m_textKeyCursor)
-      setKeyCursor(machine, 0);
-
-    m_textKeyCursor->execute(machine);
-  }
-
-  // Let each window update any TextWindowButton s.
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
-  {
-    it->second->execute(machine);
-  }
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextSystem::render(RLMachine& machine)
 {
   if(systemVisible())
@@ -121,37 +99,6 @@ void SDLTextSystem::render(RLMachine& machine)
 
       m_textKeyCursor->render(machine, *it->second);
     }
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::hideTextWindow(int winNumber)
-{
-  WindowMap::iterator it = m_textWindow.find(winNumber);
-  if(it != m_textWindow.end())
-  {
-    it->second->setVisible(0);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::hideAllTextWindows()
-{
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
-  {
-    it->second->setVisible(0);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::clearAllTextWindows()
-{
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
-  {
-    it->second->clearWin();
   }
 }
 
@@ -238,10 +185,6 @@ void SDLTextSystem::setMousePosition(RLMachine& machine, int x, int y)
   {
     it->second->setMousePosition(machine, x, y);
   }
-
-//   for_each(m_textWindow.begin(), m_textWindow.end(),    
-//            bind(&SDLTextWindow::setMousePosition, _1, 
-//                 ref(machine), x, y));
 }
 
 // -----------------------------------------------------------------------
@@ -283,20 +226,20 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   // Naively render. Ignore most of the arguments for now
   if(utf8str.size())
   {
-	SDL_Surface* tmp =
-	  TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), color);
-	if(tmp == NULL)
-	{
-	  ostringstream oss;
-	  oss << "Error printing \"" << utf8str << "\" in font size " << size;
-	  throw rlvm::Exception(oss.str());
-	}
-	return shared_ptr<Surface>(new SDLSurface(tmp));
+    SDL_Surface* tmp =
+      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), color);
+    if(tmp == NULL)
+    {
+      ostringstream oss;
+      oss << "Error printing \"" << utf8str << "\" in font size " << size;
+      throw rlvm::Exception(oss.str());
+    }
+    return shared_ptr<Surface>(new SDLSurface(tmp));
   }
   else
   {
-	// Allocate a 1x1 SDL_Surface
-	return shared_ptr<Surface>(new SDLSurface(buildNewSurface(1, 1)));
+    // Allocate a 1x1 SDL_Surface
+    return shared_ptr<Surface>(new SDLSurface(buildNewSurface(1, 1)));
   }
 }
 
@@ -328,12 +271,4 @@ boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size)
   {
     return it->second;
   }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::reset()
-{
-  m_textWindow.clear();
-  TextSystem::reset();
 }
