@@ -44,13 +44,13 @@ class TextWindowButton;
  * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
  * and rendered in conjunction with @c GraphicsSystem.
  *
- * TextWindows usually have their state maintained in @c TextPage ,
- * though there are some notable exceptions, specifically 
- * @c Select_LongOperation .
+ * Sets of TextWindows should be reconstructable by the state in @c
+ * TextPage , though there are some notable exceptions, specifically
+ * @c Select_LongOperation . 
  *
  * This class has all sorts of complex, rarely used text rendering
- * options, including several co-ordinate systems, which I'm sure was
- * done to give me a headache.
+ * options, including multiple co-ordinate systems, which I'm sure was
+ * done to give reverse engineers a headache.
  */
 class TextWindow
 {
@@ -70,15 +70,25 @@ protected:
   int m_windowPositionY;
   /// @}
 
-  /** @name Insertion point 
+  /** 
+   * @name Insertion point 
+   *
    * The text insertion point. These two numbers are relative to the
-   * text window location. 
+   * text window location and represent the top left corner of where
+   * the next piece of text should be inserted.
    *
    * @{
    */
   int m_textInsertionPointX;
   int m_textInsertionPointY;
+
+  /// The line number in this text window; used to detect whether we
+  /// have filled this text box
   int m_currentLineNumber;
+
+  /// The initial value of m_textInsertionPointY on new lines.
+  int m_currentIndentationInPixels;
+
   /// @}
 
   /**
@@ -101,8 +111,6 @@ protected:
 
   /// Whether to indent (INDENT_USE)
   int m_useIndentation;
-
-  int m_currentIndentationInPixels;
 
   /// The default color. Initialized to \#COLOR_TABLE.000, but can be
   /// changed with the SetFontColour() command
@@ -170,6 +178,12 @@ protected:
   /**
    * @name Buttons in this text box
    * 
+   * Attached action buttons defined in the
+   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
+   * things such as moving the text box, clearing the text box, moving
+   * forward or backwards in message history, and farcall()-ing a
+   * custom handler (EXBTN_index_BOX).
+   *
    * @{
    */
   typedef boost::ptr_map<std::string, TextWindowButton> ButtonMap;
@@ -179,13 +193,21 @@ protected:
   /**
    * @name Selection mode data
    * 
+   * Text boxes can be in selection mode, in which case a
+   * Select_LongOperation is on the top of the RLMachine's call stack
+   * and has
+   *
    * @{
    */
+  /// Whether this text box currently contains
   bool m_inSelectionMode;
 
-  /// Callback function for when item is selected.
+  /// Callback function for when item is selected; usually will call a
+  /// specific method on Select_LongOperation
   boost::function<void(int)> m_selectionCallback;
-
+  
+  /// Used to assign a zero based index to all selection elements
+  /// added by addSelectionItem().
   int m_nextId;
   /// @}
 

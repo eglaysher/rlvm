@@ -69,10 +69,6 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-//void doFunc(Gameexe& gexe, int window, 
-
-// -----------------------------------------------------------------------
-
 SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   : TextWindow(machine, windowNum), m_rubyBeginPoint(-1)
 {
@@ -478,9 +474,6 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 //  else
 //    throw rlvm::Exception("No staring call to markRubyBegin()! Bad bytecode?");
 }
-
-// -----------------------------------------------------------------------
-
 
 // -----------------------------------------------------------------------
 

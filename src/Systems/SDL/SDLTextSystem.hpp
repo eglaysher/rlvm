@@ -75,7 +75,6 @@ public:
     RLMachine& machine, const std::string& utf8str, int size, int xspace,
     int yspace, int colour);
 
-  /// Danger Will Robinson! This should be pushed down to SDLTextSystem! 
   boost::shared_ptr<TTF_Font> getFontOfSize(int size);
 };
 
