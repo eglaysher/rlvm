@@ -378,23 +378,6 @@ void addObjectFunctions(RLModule& m, int layer)
 }
 
 // -----------------------------------------------------------------------
-
-// @todo Make this reflect the normal ones. I've let this fall out of
-//       sync with the previous function.
-void addRangeObjectFunctions(RLModule& m, int layer)
-{
-//  m.addOpcode(1000, 0, new ObjRangeAdapter<Obj_move<LAYER> >( new Obj_move<LAYER> ));
-  m.addOpcode(1001, 0, new ObjRangeAdapter( 
-                new Obj_SetOneIntOnObj(layer, &GraphicsObject::setX) ));
-  m.addOpcode(1002, 0, new ObjRangeAdapter( 
-                new Obj_SetOneIntOnObj(layer, &GraphicsObject::setY) ));
-  m.addOpcode(1003, 0, new ObjRangeAdapter( 
-                new Obj_SetOneIntOnObj(layer, &GraphicsObject::setAlpha) ));
-  m.addOpcode(1004, 0, new ObjRangeAdapter( 
-                new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVisible) ));
-}
-
-// -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
@@ -414,16 +397,23 @@ ObjBgModule::ObjBgModule()
 
 // -----------------------------------------------------------------------
 
-ObjRangeFgModule::ObjRangeFgModule()
-  : RLModule("ObjRangeFg", 1, 90)
+RLOperation* rangeMappingFun(RLOperation* op)
 {
-  addRangeObjectFunctions(*this, OBJ_FG_LAYER);
+  return new ObjRangeAdapter(op);
+}
+
+// -----------------------------------------------------------------------
+
+ObjRangeFgModule::ObjRangeFgModule()
+  : MappedRLModule(rangeMappingFun, "ObjRangeFg", 1, 90)
+{
+  addObjectFunctions(*this, OBJ_FG_LAYER);
 }
 
 // -----------------------------------------------------------------------
 
 ObjRangeBgModule::ObjRangeBgModule()
-  : RLModule("ObjRangeBg", 1, 91)
+  : MappedRLModule(rangeMappingFun, "ObjRangeBg", 1, 91)
 {
-  addRangeObjectFunctions(*this, OBJ_BG_LAYER);
+  addObjectFunctions(*this, OBJ_BG_LAYER);
 }

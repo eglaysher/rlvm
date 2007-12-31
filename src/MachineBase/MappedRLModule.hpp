@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,49 +25,43 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_ObjFgBg_hpp__
-#define __Module_ObjFgBg_hpp__
 
-/**
- * @file    Module_ObjFgBg.hpp
- * @ingroup ModuleObj
- * @brief   Contains definitions for string handling functions.
- */
+#ifndef __MappedRLModule_hpp__
+#define __MappedRLModule_hpp__
 
 #include "MachineBase/RLModule.hpp"
-#include "MachineBase/MappedRLModule.hpp"
+#include <boost/function.hpp>
 
 // -----------------------------------------------------------------------
 
 /**
- * Contains functions for mod<1:10>, Obj.
- * 
- * @ingroup ModuleObj
+ * Special case RLModule where each opcode added is transformed with a
+ * mapping function.
  */
-class ObjFgModule : public RLModule {
+class MappedRLModule : public RLModule
+{
 public:
-  ObjFgModule();
-};
+  typedef boost::function<RLOperation*(RLOperation* op)> MappingFunction;
 
-// -----------------------------------------------------------------------
+private:
+  MappingFunction m_mapFunction;
 
-class ObjBgModule : public RLModule {
-public:
-  ObjBgModule();
-};
+protected:
+  MappedRLModule(const MappingFunction& fun, const std::string& inModuleName, 
+                 int inModuleType, int inModuleNumber);
+  ~MappedRLModule();
 
-// -----------------------------------------------------------------------
-
-class ObjRangeFgModule : public MappedRLModule {
-public:
-  ObjRangeFgModule();
-};
-
-// -----------------------------------------------------------------------
-
-class ObjRangeBgModule : public MappedRLModule {
-public:
-  ObjRangeBgModule();
+  /** Adds a m_mapFunction(op) to this modules set of opcodes.
+   *
+   * @note The RLModule class takes ownership of any RLOperation
+   * objects passed in this way.
+   *
+   * @param opcode The opcode number of this operation
+   * @param overload The overload number of this operation
+   * @param op An RLOperation functor which represents the
+   *           implementation of this operation.
+   */
+  virtual void addOpcode(int opcode, unsigned char overload, RLOperation* op);
 };
 
 

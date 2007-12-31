@@ -124,7 +124,7 @@ public:
    * @param op An RLOperation functor which represents the
    *           implementation of this operation.
    */
-  void addOpcode(int opcode, unsigned char overload, RLOperation* op);
+  virtual void addOpcode(int opcode, unsigned char overload, RLOperation* op);
 
   /** 
    * Convenience function to allow a function name to be embeded in
@@ -159,7 +159,9 @@ public:
   void dispatchFunction(RLMachine& machine, const libReallive::CommandElement& f);
 };
 
-
 std::ostream& operator<<(std::ostream&, const RLModule& module);
+
+
+// -----------------------------------------------------------------------
 
 #endif

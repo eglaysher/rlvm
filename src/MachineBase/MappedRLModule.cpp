@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2007 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,50 +25,34 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __Module_ObjFgBg_hpp__
-#define __Module_ObjFgBg_hpp__
+#include "Precompiled.hpp"
 
-/**
- * @file    Module_ObjFgBg.hpp
- * @ingroup ModuleObj
- * @brief   Contains definitions for string handling functions.
- */
+// -----------------------------------------------------------------------
 
-#include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
 
 // -----------------------------------------------------------------------
 
-/**
- * Contains functions for mod<1:10>, Obj.
- * 
- * @ingroup ModuleObj
- */
-class ObjFgModule : public RLModule {
-public:
-  ObjFgModule();
-};
+// -----------------------------------------------------------------------
+// MappedRLModule
+// -----------------------------------------------------------------------
+MappedRLModule::MappedRLModule(
+  const MappingFunction& fun, const std::string& inModuleName, 
+  int inModuleType, int inModuleNumber)
+  : RLModule(inModuleName, inModuleType, inModuleNumber),
+    m_mapFunction(fun)
+{
+
+}
 
 // -----------------------------------------------------------------------
 
-class ObjBgModule : public RLModule {
-public:
-  ObjBgModule();
-};
+MappedRLModule::~MappedRLModule()
+{}
 
 // -----------------------------------------------------------------------
 
-class ObjRangeFgModule : public MappedRLModule {
-public:
-  ObjRangeFgModule();
-};
-
-// -----------------------------------------------------------------------
-
-class ObjRangeBgModule : public MappedRLModule {
-public:
-  ObjRangeBgModule();
-};
-
-
-#endif
+void MappedRLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
+{
+  RLModule::addOpcode(opcode, overload, m_mapFunction(op));
+}
