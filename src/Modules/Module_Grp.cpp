@@ -105,7 +105,7 @@ void blitDC1toDC0(RLMachine& machine)
     0, 0, dst->width(), dst->height(), 255);
 
   // Now force a screen refresh
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
 }
 
 // -----------------------------------------------------------------------

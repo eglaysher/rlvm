@@ -218,7 +218,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   // the screen as dirty so that this character renders.
   if(m_rubyBeginPoint == -1)
   {
-    machine.system().graphics().markScreenForRefresh();
+    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
 
   return true;
@@ -467,7 +467,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
       255);
     SDL_FreeSurface(tmp);
 
-    machine.system().graphics().markScreenForRefresh();
+    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
     m_rubyBeginPoint = -1;
   }

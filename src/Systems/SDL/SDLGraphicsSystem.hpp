@@ -63,10 +63,6 @@ private:
 
   int m_width, m_height;
   
-  /// Flag set to indicate that the screen needs a redraw (usually
-  /// because of a blit to DC0)
-  bool m_screenDirty;
-
   /// Flag set to redraw the screen NOW
   bool m_screenNeedsRefresh;
 
@@ -144,13 +140,13 @@ public:
    * manual, which deals with the behaviour of screen updates, and the
    * various modes.
    */
-  virtual void markScreenAsDirty();
+  virtual void markScreenAsDirty(GraphicsUpdateType type);
 
   /** 
    * Forces a refresh of the screen the next time the graphics system
    * executes.
    */
-  virtual void markScreenForRefresh();
+  virtual void forceRefresh();
 
   virtual void beginFrame();
 

@@ -75,7 +75,7 @@ void TextKeyCursor::execute(RLMachine& machine)
   {
     m_lastTimeFrameIncremented = curTime;
 
-    machine.system().graphics().markScreenForRefresh();
+    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
     m_currentFrame++;
     if(m_currentFrame >= m_frameCount)

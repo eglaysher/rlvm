@@ -248,7 +248,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       break;
     case SDL_VIDEOEXPOSE:
     {
-      machine.system().graphics().markScreenForRefresh();
+      machine.system().graphics().forceRefresh();
       break;
     }
     }
@@ -286,7 +286,7 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
       break;
     case SDL_VIDEOEXPOSE:
     {
-      machine.system().graphics().markScreenForRefresh();
+      machine.system().graphics().forceRefresh();
       break;
     }
     }

@@ -276,7 +276,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
     {
       timeSinceLastFrameChange -= frames[m_currentFrame].time;
       m_timeAtLastFrameChange += frames[m_currentFrame].time;
-      machine.system().graphics().markScreenForRefresh();
+      machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 
       m_curFrame++;
       if(m_curFrame == m_curFrameEnd)
@@ -341,7 +341,7 @@ void AnmGraphicsObjectData::playSet(RLMachine& machine, int set)
   m_curFrameEnd = framelist.at(*m_curFrameSet).end();
   m_currentFrame = *m_curFrame;
 
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------

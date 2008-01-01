@@ -208,7 +208,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       if(page.isFull())
       {
         paused = true;
-        machine.system().graphics().markScreenForRefresh();
+        machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
         machine.pushLongOperation(
           new NewPageAfterLongop(new PauseLongOperation(machine)));
       }

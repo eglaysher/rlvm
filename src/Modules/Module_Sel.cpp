@@ -79,7 +79,7 @@ Sel_LongOperation::Sel_LongOperation(
     textWindow.addSelectionItem(machine, utf8str);
   }
   cerr << "---------" << endl;
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 
 // -----------------------------------------------------------------------

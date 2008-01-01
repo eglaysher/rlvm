@@ -86,7 +86,7 @@ void SelectionElement::setMousePosition(RLMachine& machine, int x, int y)
   m_isHighlighted = isHighlighted(x, y);
 
   if(startValue != m_isHighlighted)
-    machine.system().graphics().markScreenForRefresh();
+    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 
 // -----------------------------------------------------------------------

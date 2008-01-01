@@ -115,7 +115,7 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
                               m_dstX, m_dstY, m_dstWidth, m_dstHeight, 255);
 
   // Now force a screen refresh
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().forceRefresh();
 }
 
 // -----------------------------------------------------------------------

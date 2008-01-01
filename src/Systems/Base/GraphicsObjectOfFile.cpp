@@ -154,7 +154,7 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
 
       m_timeAtLastFrameChange += m_frameTime;
       timeSinceLastFrameChange = currentTime - m_timeAtLastFrameChange;
-      machine.system().graphics().markScreenForRefresh();
+      machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
 }
@@ -182,7 +182,7 @@ void GraphicsObjectOfFile::playSet(RLMachine& machine, int frameTime)
   m_currentFrame = 0;
 
   m_timeAtLastFrameChange = machine.system().event().getTicks();
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------

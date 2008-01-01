@@ -54,7 +54,7 @@ struct Refresh : public RLOp_Void_Void
 {
   void operator()(RLMachine& machine)
   {
-    machine.system().graphics().markScreenForRefresh();
+    machine.system().graphics().forceRefresh();
   }
 };
 

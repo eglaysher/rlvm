@@ -643,7 +643,7 @@ void SDLSurface::markWrittenTo()
 {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
   if(m_graphicsSystem) {
-    m_graphicsSystem->markScreenAsDirty();
+    m_graphicsSystem->markScreenAsDirty(GUT_DRAW_DC0);
   }
 
   // Mark that the texture needs reuploading

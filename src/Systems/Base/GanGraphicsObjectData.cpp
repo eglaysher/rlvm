@@ -358,7 +358,7 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
       }
 
       m_timeAtLastFrameChange = currentTime;
-      machine.system().graphics().markScreenForRefresh();
+      machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
 }
@@ -378,7 +378,7 @@ void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
   m_currentSet = set;
   m_currentFrame = 0;
   m_timeAtLastFrameChange = machine.system().event().getTicks();
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------

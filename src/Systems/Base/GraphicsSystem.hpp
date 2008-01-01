@@ -81,6 +81,18 @@ struct GraphicsSystemGlobals
 // -----------------------------------------------------------------------
 
 /** 
+ * When marking the screen as dirty, we need to know what kind of
+ * operation was done 
+ */
+enum GraphicsUpdateType {
+  GUT_DRAW_DC0,
+  GUT_DISPLAY_OBJ,
+  GUT_TEXTSYS
+};
+
+// -----------------------------------------------------------------------
+
+/** 
  * Abstract interface to a graphics system. Specialize this class for
  * each system you plan on running RLVM on. For now, there's only one
  * derived class; SDLGraphicsSystem.
@@ -280,11 +292,11 @@ public:
 
   // Marks the screen as dirty; something is done about this if we are
   // in automatic mode.
-  virtual void markScreenAsDirty();
+  virtual void markScreenAsDirty(GraphicsUpdateType type);
 
   // Marks the screen for refresh; we refresh the screen the next time
   // the graphics system is executed.
-  virtual void markScreenForRefresh();
+  virtual void forceRefresh();
 
   virtual void beginFrame();
   virtual void refresh(RLMachine& machine) = 0;

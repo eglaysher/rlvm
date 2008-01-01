@@ -311,8 +311,8 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
 // Default implementations for some functions (which probably have
 // default implementations because I'm lazy, and these really should
 // be pure virtual)
-void GraphicsSystem::markScreenAsDirty() { }
-void GraphicsSystem::markScreenForRefresh() { }
+void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) { }
+void GraphicsSystem::forceRefresh() { }
 void GraphicsSystem::beginFrame() { }
 void GraphicsSystem::endFrame() { }
 

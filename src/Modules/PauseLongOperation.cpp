@@ -61,7 +61,7 @@ PauseLongOperation::PauseLongOperation(RLMachine& imachine)
   m_automodeTime = text.getAutoTime(numChars);
   m_startTime = event.getTicks();
 
-  machine.system().graphics().markScreenForRefresh();
+  machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
   // We undo this in the destructor
   text.setInPauseState(true);

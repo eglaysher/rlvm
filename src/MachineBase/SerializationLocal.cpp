@@ -230,7 +230,7 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
 
     machine.system().graphics().replayGraphicsStack(machine);
 
-    machine.system().graphics().markScreenForRefresh();
+    machine.system().graphics().forceRefresh();
   }
   catch(std::exception& e)
   {
