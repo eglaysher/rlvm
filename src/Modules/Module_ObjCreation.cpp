@@ -230,6 +230,11 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addUnsupportedOpcode(1003, 3, "objOfFileGan");
   m.addUnsupportedOpcode(1003, 4, "objOfFileGan");
 
+  m.addUnsupportedOpcode(1101, 0, "objOfRect");
+  m.addUnsupportedOpcode(1101, 1, "objOfRect");
+  m.addUnsupportedOpcode(1101, 2, "objOfRect");
+  m.addUnsupportedOpcode(1101, 3, "objOfRect");
+
   m.addOpcode(1200, 0, new Obj_objGeneric_0(layer, objOfTextBuilder));
   m.addOpcode(1200, 1, new Obj_objGeneric_1(layer, objOfTextBuilder));
   m.addOpcode(1200, 2, new Obj_objGeneric_2(layer, objOfTextBuilder));
@@ -239,6 +244,11 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addUnsupportedOpcode(1300, 1, "objDriftOfFile");
   m.addUnsupportedOpcode(1300, 2, "objDriftOfFile");
   m.addUnsupportedOpcode(1300, 3, "objDriftOfFile");
+
+  m.addUnsupportedOpcode(1400, 0, "objOfDigits");
+  m.addUnsupportedOpcode(1400, 1, "objOfDigits");
+  m.addUnsupportedOpcode(1400, 2, "objOfDigits");
+  m.addUnsupportedOpcode(1400, 3, "objOfDigits");
 }
 
 // -----------------------------------------------------------------------

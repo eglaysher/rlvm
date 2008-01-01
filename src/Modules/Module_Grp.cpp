@@ -1176,6 +1176,10 @@ GrpModule::GrpModule()
   addOpcode(403, 6, "grpFade", new Grp_fade_7(GRP));
   addOpcode(403, 7, "grpFade", new Grp_fade_7(GRP));
 
+  addUnsupportedOpcode(601, 0, "grpMaskAdd");
+  addUnsupportedOpcode(601, 1, "grpMaskAdd");
+  addUnsupportedOpcode(601, 2, "grpMaskAdd");
+  addUnsupportedOpcode(601, 3, "grpMaskAdd");
 
   // -----------------------------------------------------------------------
   
@@ -1223,6 +1227,12 @@ GrpModule::GrpModule()
   addOpcode(1201, 2, "recFill", new Grp_fill_3(REC));
   addOpcode(1201, 3, "recFill", new Grp_fill_3(REC));
 
+  addUnsupportedOpcode(1400, 0, "recSwap");
+  addUnsupportedOpcode(1400, 1, "recSwap");
+
+  addUnsupportedOpcode(1401, 0, "recStretchBlt");
+  addUnsupportedOpcode(1401, 1, "recStretchBlt");
+
   addOpcode(1402, 0, "recZoom", new Grp_zoom(REC));
 
   addOpcode(1403, 0, "recFade", new Grp_fade_1);
@@ -1233,6 +1243,17 @@ GrpModule::GrpModule()
   addOpcode(1403, 5, "recFade", new Grp_fade_5(REC));
   addOpcode(1403, 6, "recFade", new Grp_fade_7(REC));
   addOpcode(1403, 7, "recFade", new Grp_fade_7(REC));
+
+  addUnsupportedOpcode(1404, 0, "recFlash");
+  addUnsupportedOpcode(1404, 1, "recFlash");
+  addUnsupportedOpcode(1404, 2, "recFlash");
+  addUnsupportedOpcode(1404, 3, "recFlash");
+
+  addUnsupportedOpcode(1406, 0, "recPan");
+  addUnsupportedOpcode(1407, 0, "recShift");
+  addUnsupportedOpcode(1408, 0, "recSlide");
+  addUnsupportedOpcode(1409, 0, "recMaskStretchBlt");
+  addUnsupportedOpcode(1409, 1, "recMaskStretchBlt");
 }
 
 // @}
