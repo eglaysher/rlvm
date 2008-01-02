@@ -196,27 +196,29 @@ void object::test<3>()
     GraphicsObject obj;
     GraphicsObject objCopy(obj);
 
+    // At this step, it is equal to three because they all share the
+    // empty object
     ensure_equals("Both objects have the same internal object",
-                  obj.referenceCount(), 2);
+                  obj.referenceCount(), 3);
     ensure_equals("Both objects have the same internal object",
-                  objCopy.referenceCount(), 2);
+                  objCopy.referenceCount(), 3);
 
     // Call the getter method (ignoring the result). We expect that
     // this won't force a copy-on-write.
     (it->get<1>())(objCopy);
 
     ensure_equals("Both objects have the same internal object",
-                  obj.referenceCount(), 2);
+                  obj.referenceCount(), 3);
     ensure_equals("Both objects have the same internal object",
-                  objCopy.referenceCount(), 2);
+                  objCopy.referenceCount(), 3);
 
     // Call this setter function. This should force the copy-on-write
     // code to trigger.
     (it->get<0>())(objCopy, 1);
 
-    ensure_equals("Both objects have different internal object",
-                  obj.referenceCount(), 1);
-    ensure_equals("Both objects have different internal object",
+    ensure_equals("Untouched object still points to empty",
+                  obj.referenceCount(), 2);
+    ensure_equals("Modified object has its own impl",
                   objCopy.referenceCount(), 1);
 
     // Make sure we get the right value back
