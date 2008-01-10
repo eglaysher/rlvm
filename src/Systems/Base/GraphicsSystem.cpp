@@ -509,7 +509,6 @@ void GraphicsSystem::save(Archive& ar, unsigned int version) const
 
 // -----------------------------------------------------------------------
 
-
 template<class Archive>
 void GraphicsSystem::load(Archive& ar, unsigned int version)
 {

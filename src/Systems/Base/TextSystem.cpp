@@ -350,6 +350,9 @@ void TextSystem::reset()
   m_previousPageIt = m_previousPageSets.end();
 
   m_textWindow.clear();
+
+  m_systemVisible = true;
+  m_inPauseState = false;
 }
 
 // -----------------------------------------------------------------------
