@@ -182,7 +182,7 @@ public:
   const std::string& defaultBgrName() const { return m_defaultBgrName; }
 
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
-  void setScreenUpdateMode(DCScreenUpdateMode u) { m_screenUpdateMode = u; }
+  void setScreenUpdateMode(DCScreenUpdateMode u);
 
   /**
    * @name Graphics Stack

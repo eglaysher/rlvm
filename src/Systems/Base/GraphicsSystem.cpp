@@ -60,6 +60,7 @@
 #include <iterator>
 #include <iostream>
 
+using std::cerr;
 using std::cout;
 using std::endl;
 using boost::iends_with;
@@ -203,6 +204,14 @@ GraphicsSystem::~GraphicsSystem()
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u)
+{
+  m_screenUpdateMode = u; 
+  cerr << "Setting update mode to " << u << endl;
+}
+
+// -----------------------------------------------------------------------
+
 GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(const std::string& name)
 {
   m_graphicsObjectSettings->graphicsStack.push_back(GraphicsStackFrame(name));
@@ -290,6 +299,7 @@ void GraphicsSystem::setShowWeather(const int in)
 void GraphicsSystem::toggleInterfaceHidden()
 {
   m_hideInterface = !m_hideInterface;
+//  cerr << "Setting interface hidden to " << m_hideInterface << endl;
 }
 
 // -----------------------------------------------------------------------
