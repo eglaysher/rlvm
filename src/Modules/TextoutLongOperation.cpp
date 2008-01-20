@@ -39,6 +39,8 @@
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
+#include "Utilities.h"
+
 #include <boost/utility.hpp>
 
 #include <string>
@@ -229,6 +231,10 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
 
 bool TextoutLongOperation::operator()(RLMachine& machine)
 {
+  // Check to make sure we're not trying to do a textout (impossible!)
+  if(!machine.system().text().systemVisible())
+    throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
+
   if(m_noWait)
     return displayAsMuchAsWeCanThenPause(machine);
   else
