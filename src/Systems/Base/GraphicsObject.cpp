@@ -86,6 +86,8 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
     m_objectData.reset(rhs.m_objectData->clone());
     m_objectData->setOwnedBy(*this);
   }
+  else
+    m_objectData.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -104,6 +106,8 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj)
     m_objectData.reset(obj.m_objectData->clone());
     m_objectData->setOwnedBy(*this);
   }
+  else
+    m_objectData.reset();
 
   return *this;
 }
