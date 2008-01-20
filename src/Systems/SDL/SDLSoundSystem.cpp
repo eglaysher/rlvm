@@ -85,6 +85,13 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
   const string& fileName = it->second.first;
   int channel = it->second.second;
 
+  if(fileName == "")
+  {
+    // Just stop a channel in case of an empty file name.
+    Mix_HaltChannel(channel);
+    return;
+  }
+
   fs::path filePath = findFile(machine, fileName, SOUND_FILETYPES);
 
   // Make sure there isn't anything playing on the current channel
