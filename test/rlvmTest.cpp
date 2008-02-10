@@ -28,8 +28,8 @@
 /* tut.cpp: main() for all unit testing.  *
  */
  
-#include "tut.hpp"
-#include "tut_reporter.hpp"
+#include "tut/tut.hpp"
+#include "tut/tut_reporter.hpp"
 
 namespace tut
 {

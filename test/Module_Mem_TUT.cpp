@@ -42,7 +42,7 @@
 #include "NullSystem/NullSystem.hpp"
 
 #include "testUtils.hpp"
-#include "tut.hpp"
+#include "tut/tut.hpp"
 
 #include <iostream>
 using namespace std;

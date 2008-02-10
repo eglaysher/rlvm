@@ -45,7 +45,7 @@
 
 #include "Utilities.h"
 #include "testUtils.hpp"
-#include "tut.hpp"
+#include "tut/tut.hpp"
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 #include <iostream>

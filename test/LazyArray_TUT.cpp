@@ -33,7 +33,7 @@
 #include "LazyArray.hpp"
 
 #include "testUtils.hpp"
-#include "tut.hpp"
+#include "tut/tut.hpp"
 
 #include <iostream>
 #include <algorithm>

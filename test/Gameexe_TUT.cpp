@@ -36,7 +36,7 @@
 #include "libReallive/gameexe.h"
 
 #include "testUtils.hpp"
-#include "tut.hpp"
+#include "tut/tut.hpp"
 
 #include <iostream>
 using namespace std;

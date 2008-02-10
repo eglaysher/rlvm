@@ -44,10 +44,7 @@
 #include "NullSystem/NullSystem.hpp"
 
 #include "testUtils.hpp"
-#include "tut.hpp"
-
-//#include "SDLSystem.hpp"
-//#include "SDLGraphicsSystem.hpp"
+#include "tut/tut.hpp"
 
 #include <iostream>
 using namespace std;
