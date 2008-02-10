@@ -31,24 +31,15 @@
 
 #include "Modules/Module_EventLoop.hpp"
 #include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-
-/** 
- * Copy/pasted Jmp_rtl. There may be a difference, but it appears to
- * behave identically.
- */
-struct EL_rtl : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.returnFromFarcall();
-  }
-};
+#include "MachineBase/GeneralOperations.hpp"
 
 // -----------------------------------------------------------------------
 
 EventLoopModule::EventLoopModule()
   : RLModule("EventLoop", 0, 4)
 {
-  addOpcode(300, 0, new EL_rtl());
-  addOpcode(301, 0, new EL_rtl());
-  addOpcode(302, 0, new EL_rtl());
+  /// Theoretically the same as rtl, but we don't really know.
+  addOpcode(300, 0, callFunction(&RLMachine::returnFromFarcall));
+  addOpcode(301, 0, callFunction(&RLMachine::returnFromFarcall));
+  addOpcode(302, 0, callFunction(&RLMachine::returnFromFarcall));
 }

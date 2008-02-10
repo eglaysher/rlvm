@@ -39,6 +39,7 @@
 
 #include "Modules/Module_Grp.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLOperation/Special_T.hpp"
@@ -276,20 +277,6 @@ struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                                          IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
     machine.system().graphics().allocateDC(dc, width, height);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-/** 
- * Implements op<1:Grp:00016, 0>, fun freeDC('DC').
- * 
- * Frees dc, releasing the memory allocated to it. DC may not be 0; if
- * it is 1, DC 1 will be blanked, but not released.
- */
-struct Grp_freeDC : public RLOp_Void_1< IntConstant_T > {
-  void operator()(RLMachine& machine, int dc) {
-    machine.system().graphics().freeDC(dc);
   }
 };
 
@@ -1079,7 +1066,7 @@ GrpModule::GrpModule()
   SPACE& REC = REC_SPACE::get();
 
   addOpcode(15, 0, "allocDC", new Grp_allocDC);
-  addOpcode(16, 0, "freeDC", new Grp_freeDC);
+  addOpcode(16, 0, "freeDC", setToIncomingInt(&GraphicsSystem::freeDC));
 
   addUnsupportedOpcode(20, 0, "grpLoadMask");
   // addOpcode(30, 0, new Grp_grpTextout);

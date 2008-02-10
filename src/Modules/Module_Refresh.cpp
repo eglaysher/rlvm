@@ -40,8 +40,7 @@
 #include "Modules/Module_Refresh.hpp"
 
 #include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "Systems/Base/System.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
 #include <iostream>
@@ -50,18 +49,8 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-struct Refresh : public RLOp_Void_Void
-{
-  void operator()(RLMachine& machine)
-  {
-    machine.system().graphics().forceRefresh();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 RefreshModule::RefreshModule()
   : RLModule("Refresh", 1, 31)
 {
-  addOpcode(0, 0, new Refresh);
+  addOpcode(0, 0, callFunction(&GraphicsSystem::forceRefresh));
 }

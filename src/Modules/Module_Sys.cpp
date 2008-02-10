@@ -153,14 +153,6 @@ struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_FlushClick : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.system().event().flushMouseClicks();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 struct Sys_GetCursorPos_gc1 
   : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T, 
 						IntReference_T>
@@ -324,14 +316,6 @@ struct Sys_SceneNum : public RLOp_Store_Void {
 
 // -----------------------------------------------------------------------
 
-struct Sys_end : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.halt();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 /** 
  * Implements op<0:Sys:01203, 0>, ReturnMenu.
  * 
@@ -450,7 +434,7 @@ SysModule::SysModule()
   addOpcode( 100, 0, "wait", new Sys_wait(false));
   addOpcode( 101, 0, "waitC", new Sys_wait(true));
 
-  addOpcode( 130, 0, "FlushClick", new Sys_FlushClick);
+  addOpcode( 130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
   addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
 
   addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
@@ -508,10 +492,9 @@ SysModule::SysModule()
   // (unknown) 01012
   // (unknown) 01013
 
+  addOpcode(1120, 0, "SceneNum", returnIntValue(&RLMachine::sceneNumber));
 
-  addOpcode(1120, 0, "SceneNum", new Sys_SceneNum);
-
-  addOpcode(1200, 0, "end", new Sys_end);
+  addOpcode(1200, 0, "end", callFunction(&RLMachine::halt));
   addOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
   addOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
