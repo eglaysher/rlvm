@@ -308,14 +308,6 @@ struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntCon
 
 // -----------------------------------------------------------------------
 
-struct Sys_SceneNum : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return machine.sceneNumber();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 /** 
  * Implements op<0:Sys:01203, 0>, ReturnMenu.
  * 

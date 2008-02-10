@@ -410,20 +410,6 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
 
 // -----------------------------------------------------------------------
 
-struct Sys_EnableAutoSavepoints : public RLOp_Void_Void
-{
-  void operator()(RLMachine& machine) { machine.setMarkSavepoints(1); }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_DisableAutoSavepoints : public RLOp_Void_Void
-{
-  void operator()(RLMachine& machine) { machine.setMarkSavepoints(0); }
-};
-
-// -----------------------------------------------------------------------
-
 void addSysSaveOpcodes(RLModule& m)
 {
   m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
@@ -431,7 +417,6 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(1411, 0, "SaveTime", new Sys_SaveTime);
   m.addOpcode(1412, 0, "SaveDateTime", new Sys_SaveDateTime);
   m.addOpcode(1413, 0, "SaveInfo", new Sys_SaveInfo);
-//  m.addUnsupportedOpcode(1414, 0, "GetSaveFlag");
   m.addOpcode(1414, 0, "GetSaveFlag", new Sys_GetSaveFlag);
   m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
 
@@ -450,7 +435,7 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(3109, 0, "load_always", new Sys_load);
 
   m.addOpcode(3501, 0, "EnableAutoSavepoints", 
-              new Sys_EnableAutoSavepoints);
+              setToConstant(&RLMachine::setMarkSavepoints, 1));
   m.addOpcode(3502, 0, "DisableAutoSavepoints", 
-              new Sys_DisableAutoSavepoints);
+              setToConstant(&RLMachine::setMarkSavepoints, 0));
 }
