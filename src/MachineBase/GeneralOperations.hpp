@@ -39,6 +39,44 @@
 
 // -----------------------------------------------------------------------
 
+class System;
+class EventSystem;
+class GraphicsSystem;
+class TextSystem;
+
+// -----------------------------------------------------------------------
+
+/**
+ * Contains details on 
+ */
+namespace getSystemObjImpl
+{
+
+template<typename RETTYPE>
+RETTYPE& getSystemObj(RLMachine& machine);
+
+template<>
+inline RLMachine& getSystemObj(RLMachine& machine)
+{
+  return machine;
+}
+
+template<>
+System& getSystemObj(RLMachine& machine);
+
+template<>
+EventSystem& getSystemObj(RLMachine& machine);
+
+template<>
+GraphicsSystem& getSystemObj(RLMachine& machine);
+
+template<>
+TextSystem& getSystemObj(RLMachine& machine);
+
+};
+
+// -----------------------------------------------------------------------
+
 /** 
  * Binds setting an internal variable to a passed in value in from a
  * running Reallive script. 
@@ -46,9 +84,6 @@
 template<typename OBJTYPE, typename RETTYPE>
 class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
 private:
-  /// The object we are going to operate on when called.
-  OBJTYPE& reference;
-
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(RETTYPE);
 
@@ -57,22 +92,22 @@ private:
   Setter setter;
 
 public:
-  Op_SetToIncomingInt(OBJTYPE& ref, Setter s)
-    : reference(ref), setter(s) 
+  Op_SetToIncomingInt(Setter s)
+    : setter(s) 
   {}
 
   void operator()(RLMachine& machine, int incoming) 
   {
-    (reference.*setter)(incoming);
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
   }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename RETTYPE>
-RLOperation* setToIncomingInt(OBJTYPE& ref, void(OBJTYPE::*s)(RETTYPE))
+RLOperation* setToIncomingInt(void(OBJTYPE::*s)(RETTYPE))
 {
-  return new Op_SetToIncomingInt<OBJTYPE, RETTYPE>(ref, s);
+  return new Op_SetToIncomingInt<OBJTYPE, RETTYPE>(s);
 }
 
 
@@ -85,9 +120,6 @@ RLOperation* setToIncomingInt(OBJTYPE& ref, void(OBJTYPE::*s)(RETTYPE))
 template<typename OBJTYPE>
 class Op_SetToIncomingString : public RLOp_Void_1< StrConstant_T > {
 private:
-  /// The object we are going to operate on when called.
-  OBJTYPE& reference;
-
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(const std::string&);
 
@@ -96,22 +128,22 @@ private:
   Setter setter;
 
 public:
-  Op_SetToIncomingString(OBJTYPE& ref, Setter s)
-    : reference(ref), setter(s) 
+  Op_SetToIncomingString(Setter s)
+    : setter(s) 
   {}
 
   void operator()(RLMachine& machine, std::string incoming) 
   {
-    (reference.*setter)(incoming);
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
   }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
-RLOperation* setToIncomingString(OBJTYPE& ref, void(OBJTYPE::*s)(const std::string&))
+RLOperation* setToIncomingString(void(OBJTYPE::*s)(const std::string&))
 {
-  return new Op_SetToIncomingString<OBJTYPE>(ref, s);
+  return new Op_SetToIncomingString<OBJTYPE>(s);
 }
 
 // -----------------------------------------------------------------------
@@ -123,30 +155,28 @@ RLOperation* setToIncomingString(OBJTYPE& ref, void(OBJTYPE::*s)(const std::stri
 template<typename OBJTYPE, typename VALTYPE>
 class Op_SetToConstant : public RLOp_Void_Void {
 private:
-  OBJTYPE& reference;
-
   typedef void(OBJTYPE::*Setter)(VALTYPE);
   Setter setter;
 
   VALTYPE value;
 
 public:
-  Op_SetToConstant(OBJTYPE& ref, Setter s, VALTYPE inVal)
-    : reference(ref), setter(s), value(inVal)
+  Op_SetToConstant(Setter s, VALTYPE inVal)
+    : setter(s), value(inVal)
   {}
 
   void operator()(RLMachine& machine) 
   {
-    (reference.*setter)(value);
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(value);
   }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename VALTYPE>
-RLOperation* setToConstant(OBJTYPE& ref, void(OBJTYPE::*s)(VALTYPE), VALTYPE val)
+RLOperation* setToConstant(void(OBJTYPE::*s)(VALTYPE), VALTYPE val)
 {
-  return new Op_SetToConstant<OBJTYPE, VALTYPE>(ref, s, val);
+  return new Op_SetToConstant<OBJTYPE, VALTYPE>(s, val);
 }
 
 // -----------------------------------------------------------------------
@@ -158,28 +188,26 @@ RLOperation* setToConstant(OBJTYPE& ref, void(OBJTYPE::*s)(VALTYPE), VALTYPE val
 template<typename OBJTYPE, typename RETTYPE>
 class Op_ReturnIntValue : public RLOp_Store_Void {
 private:
-  OBJTYPE& reference;
-
   typedef RETTYPE(OBJTYPE::*Getter)() const;
   Getter getter;
 
 public:
-  Op_ReturnIntValue(OBJTYPE& ref, Getter g) 
-    : reference(ref), getter(g) 
+  Op_ReturnIntValue(Getter g) 
+    : getter(g) 
   {}
 
   int operator()(RLMachine& machine) 
   {
-    return (reference.*getter)();
+    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)();
   }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(OBJTYPE& ref, RETTYPE(OBJTYPE::*s)() const)
+RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)() const)
 {
-  return new Op_ReturnIntValue<OBJTYPE, RETTYPE>(ref, s);
+  return new Op_ReturnIntValue<OBJTYPE, RETTYPE>(s);
 }
 
 // -----------------------------------------------------------------------
@@ -191,31 +219,28 @@ RLOperation* returnIntValue(OBJTYPE& ref, RETTYPE(OBJTYPE::*s)() const)
 template<typename OBJTYPE>
 class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
 private:
-  /// The object on which we want to call the getter function
-  OBJTYPE& reference;
-
   /// The signature of a string getter function
   typedef const std::string&(OBJTYPE::*Getter)() const;
   /// The string getter function to call
   Getter getter;
 
 public:
-  Op_ReturnStringValue(OBJTYPE& ref, Getter g) 
-    : reference(ref), getter(g) 
+  Op_ReturnStringValue(Getter g) 
+    : getter(g) 
   {}
 
   void operator()(RLMachine& machine, StringReferenceIterator dest) 
   {
-    *dest = (reference.*getter)();
+    *dest = (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)();
   }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
-RLOperation* returnStringValue(OBJTYPE& ref, const std::string&(OBJTYPE::*s)() const)
+RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const)
 {
-  return new Op_ReturnStringValue<OBJTYPE>(ref, s);
+  return new Op_ReturnStringValue<OBJTYPE>(s);
 }
 
 // -----------------------------------------------------------------------
@@ -223,30 +248,27 @@ RLOperation* returnStringValue(OBJTYPE& ref, const std::string&(OBJTYPE::*s)() c
 template<typename OBJTYPE>
 class Op_CallFunction : public RLOp_Void_Void {
 private:
-  /// The object on which we want to call the getter function
-  OBJTYPE& reference;
-
   /// The string getter function to call
   typedef void(OBJTYPE::*FUNCTYPE)();
   FUNCTYPE func;
 
 public:
-  Op_CallFunction(OBJTYPE& ref, FUNCTYPE f) 
-    : reference(ref), func(f) 
+  Op_CallFunction(FUNCTYPE f) 
+    : func(f) 
   {}
 
   void operator()(RLMachine& machine) 
   {
-    (reference.*func)();
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*func)();
   }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
-RLOperation* callFunction(OBJTYPE& ref, void(OBJTYPE::*s)())
+RLOperation* callFunction(void(OBJTYPE::*s)())
 {
-  return new Op_CallFunction<OBJTYPE>(ref, s);
+  return new Op_CallFunction<OBJTYPE>(s);
 }
 
 // -----------------------------------------------------------------------

@@ -41,6 +41,38 @@ using namespace std;
 using namespace boost;
 using namespace libReallive;
 
+
+namespace getSystemObjImpl
+{
+
+template<>
+System& getSystemObj(RLMachine& machine)
+{
+  return machine.system();
+}
+
+template<>
+EventSystem& getSystemObj(RLMachine& machine)
+{
+  return machine.system().event();
+}
+
+template<>
+GraphicsSystem& getSystemObj(RLMachine& machine)
+{
+  return machine.system().graphics();
+}
+
+template<>
+TextSystem& getSystemObj(RLMachine& machine)
+{
+  return machine.system().text();
+}
+
+}
+
+// -----------------------------------------------------------------------
+
 MultiDispatch::MultiDispatch(RLOperation* op) 
   : handler(op)
 {}

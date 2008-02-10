@@ -38,6 +38,6 @@ class System;
  * 
  * @see SysModule
  */
-void addSysSaveOpcodes(RLModule& module, System& system);
+void addSysSaveOpcodes(RLModule& module);
 
 #endif

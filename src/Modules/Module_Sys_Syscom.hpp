@@ -38,6 +38,6 @@ class System;
  * 
  * @see SysModule
  */
-void addSysSyscomOpcodes(RLModule& module, System& system);
+void addSysSyscomOpcodes(RLModule& module);
 
 #endif

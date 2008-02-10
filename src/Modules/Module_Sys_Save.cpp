@@ -424,7 +424,7 @@ struct Sys_DisableAutoSavepoints : public RLOp_Void_Void
 
 // -----------------------------------------------------------------------
 
-void addSysSaveOpcodes(RLModule& m, System& system)
+void addSysSaveOpcodes(RLModule& m)
 {
   m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
   m.addOpcode(1410, 0, "SaveDate", new Sys_SaveDate);
@@ -436,9 +436,9 @@ void addSysSaveOpcodes(RLModule& m, System& system)
   m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
 
   m.addOpcode(2053, 0, "SetConfirmSaveLoad",
-              setToIncomingInt(system, &System::setConfirmSaveLoad));
+              setToIncomingInt(&System::setConfirmSaveLoad));
   m.addOpcode(2003, 0, "ConfirmSaveLoad",
-              returnIntValue(system, &System::confirmSaveLoad));
+              returnIntValue(&System::confirmSaveLoad));
 
   m.addUnsupportedOpcode(3000, 0, "menu_save");
   m.addUnsupportedOpcode(3001, 0, "menu_load");

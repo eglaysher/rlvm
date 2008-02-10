@@ -38,8 +38,6 @@
 
 #include "MachineBase/RLModule.hpp"
 
-class System;
-
 /**
  * Contains functions for mod<1:4>, Sys.
  * 
@@ -47,7 +45,7 @@ class System;
  */
 class SysModule : public RLModule {
 public:
-  SysModule(System& system);
+  SysModule();
 };
 
 #endif

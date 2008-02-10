@@ -443,13 +443,9 @@ struct Sys_MenuReturn : public RLOp_Void_Void
 
 // -----------------------------------------------------------------------
 
-SysModule::SysModule(System& system)
+SysModule::SysModule()
   : RLModule("Sys", 1, 004)
 {
-  GraphicsSystem& graphics = system.graphics();
-  EventSystem& event = system.event();
-  TextSystem& text = system.text();
-
   addOpcode(   0, 0, "title", new Sys_title);
   addOpcode( 100, 0, "wait", new Sys_wait(false));
   addOpcode( 101, 0, "waitC", new Sys_wait(true));
@@ -469,15 +465,15 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(334, 0, "ClearLocalSkipMode");
 
   addOpcode( 350, 0, "CtrlKeyShip", 
-             returnIntValue(text, &TextSystem::ctrlKeySkip));
+             returnIntValue(&TextSystem::ctrlKeySkip));
   addOpcode( 351, 0, "CtrlKeySkipOn",
-             setToConstant(text, &TextSystem::setCtrlKeySkip, 1));
+             setToConstant(&TextSystem::setCtrlKeySkip, 1));
   addOpcode( 352, 0, "CtrlKeySkipOff",
-             setToConstant(text, &TextSystem::setCtrlKeySkip, 0));
+             setToConstant(&TextSystem::setCtrlKeySkip, 0));
   addOpcode( 353, 0, "CtrlPressed",
-             returnIntValue(event, &EventSystem::ctrlPressed));
+             returnIntValue(&EventSystem::ctrlPressed));
   addOpcode( 354, 0, "ShiftPressed",
-             returnIntValue(event, &EventSystem::shiftPressed));
+             returnIntValue(&EventSystem::shiftPressed));
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
 
@@ -524,13 +520,13 @@ SysModule::SysModule(System& system)
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
 
   addOpcode(1130, 0, "DefaultGrp", 
-            returnStringValue(graphics, &GraphicsSystem::defaultGrpName));
+            returnStringValue(&GraphicsSystem::defaultGrpName));
   addOpcode(1131, 0, "SetDefaultGrp", 
-            setToIncomingString(graphics, &GraphicsSystem::setDefaultGrpName));
+            setToIncomingString(&GraphicsSystem::setDefaultGrpName));
   addOpcode(1132, 0, "DefaultBgr", 
-            returnStringValue(graphics, &GraphicsSystem::defaultBgrName));
+            returnStringValue(&GraphicsSystem::defaultBgrName));
   addOpcode(1133, 0, "SetDefaultBgr",
-            setToIncomingString(graphics, &GraphicsSystem::setDefaultBgrName));
+            setToIncomingString(&GraphicsSystem::setDefaultBgrName));
 
   addUnsupportedOpcode(1300, 0, "GetName");
   addUnsupportedOpcode(1301, 0, "SetName");
@@ -549,20 +545,20 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(2002, 0, "LowPriority");
 
   addOpcode(2223, 0, "SetMessageSpeed",
-            setToIncomingInt(text, &TextSystem::setMessageSpeed));
+            setToIncomingInt(&TextSystem::setMessageSpeed));
   addOpcode(2323, 0, "MessageSpeed",
-            returnIntValue(text, &TextSystem::messageSpeed));
+            returnIntValue(&TextSystem::messageSpeed));
   addOpcode(2600, 0, "DefaultMessageSpeed",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 30));
 
   addOpcode(2224, 0, "SetMessageNoWait",
-            setToIncomingInt(text, &TextSystem::setMessageNoWait));
+            setToIncomingInt(&TextSystem::setMessageNoWait));
   addOpcode(2250, 0, "SetAutoMode",
-            setToIncomingInt(text, &TextSystem::setAutoMode));
+            setToIncomingInt(&TextSystem::setAutoMode));
   addOpcode(2251, 0, "SetAutoCharTime",
-            setToIncomingInt(text, &TextSystem::setAutoCharTime));
+            setToIncomingInt(&TextSystem::setAutoCharTime));
   addOpcode(2252, 0, "SetAutoBaseTime",
-            setToIncomingInt(text, &TextSystem::setAutoCharTime));
+            setToIncomingInt(&TextSystem::setAutoCharTime));
 
   addUnsupportedOpcode(2225, 0, "SetKoeMode");
   addUnsupportedOpcode(2325, 0, "KoeMode");
@@ -595,28 +591,28 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(2009, 0, "SoundQuality");
 
   addOpcode(2221, 0, "SetGeneric1",
-            setToIncomingInt(event, &EventSystem::setGeneric1));
+            setToIncomingInt(&EventSystem::setGeneric1));
   addOpcode(2620, 0, "DefGeneric1",
             new ReturnGameexeInt("INIT_ORIGINALSETING1_MOD", 0));
   addOpcode(2321, 0, "Generic1",
-            returnIntValue(event, &EventSystem::generic1));
+            returnIntValue(&EventSystem::generic1));
   addOpcode(2222, 0, "SetGeneric2",
-            setToIncomingInt(event, &EventSystem::setGeneric2));
+            setToIncomingInt(&EventSystem::setGeneric2));
   addOpcode(2621, 0, "DefGeneric2",
             new ReturnGameexeInt("INIT_ORIGINALSETING2_MOD", 0));
   addOpcode(2322, 0, "Generic2",
-            returnIntValue(event, &EventSystem::generic2));
+            returnIntValue(&EventSystem::generic2));
 
   addOpcode(2260, 0, "SetWindowAttrR",
-            setToIncomingInt(text, &TextSystem::setWindowAttrR));
+            setToIncomingInt(&TextSystem::setWindowAttrR));
   addOpcode(2261, 0, "SetWindowAttrG",
-            setToIncomingInt(text, &TextSystem::setWindowAttrG));
+            setToIncomingInt(&TextSystem::setWindowAttrG));
   addOpcode(2262, 0, "SetWindowAttrB",
-            setToIncomingInt(text, &TextSystem::setWindowAttrB));
+            setToIncomingInt(&TextSystem::setWindowAttrB));
   addOpcode(2263, 0, "SetWindowAttrA",
-            setToIncomingInt(text, &TextSystem::setWindowAttrA));
+            setToIncomingInt(&TextSystem::setWindowAttrA));
   addOpcode(2264, 0, "SetWindowAttrF",
-            setToIncomingInt(text, &TextSystem::setWindowAttrF));
+            setToIncomingInt(&TextSystem::setWindowAttrF));
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
 
@@ -628,17 +624,17 @@ SysModule::SysModule(System& system)
   addUnsupportedOpcode(2375, 0, "ScreenMode");
 
   addOpcode(2350, 0, "AutoMode",
-            returnIntValue(text, &TextSystem::autoMode));
+            returnIntValue(&TextSystem::autoMode));
   addOpcode(2351, 0, "AutoCharTime",
-            returnIntValue(text, &TextSystem::autoCharTime));
+            returnIntValue(&TextSystem::autoCharTime));
   addOpcode(2352, 0, "AutoBaseTime",
-            returnIntValue(text, &TextSystem::autoBaseTime));
+            returnIntValue(&TextSystem::autoBaseTime));
 
-  addOpcode(2360, 0, returnIntValue(text, &TextSystem::windowAttrR));
-  addOpcode(2361, 0, returnIntValue(text, &TextSystem::windowAttrG));
-  addOpcode(2362, 0, returnIntValue(text, &TextSystem::windowAttrB));
-  addOpcode(2363, 0, returnIntValue(text, &TextSystem::windowAttrA));
-  addOpcode(2364, 0, returnIntValue(text, &TextSystem::windowAttrF));
+  addOpcode(2360, 0, returnIntValue(&TextSystem::windowAttrR));
+  addOpcode(2361, 0, returnIntValue(&TextSystem::windowAttrG));
+  addOpcode(2362, 0, returnIntValue(&TextSystem::windowAttrB));
+  addOpcode(2363, 0, returnIntValue(&TextSystem::windowAttrA));
+  addOpcode(2364, 0, returnIntValue(&TextSystem::windowAttrF));
 
   addOpcode(2367, 0, new Sys_GetWindowAttr);
 
@@ -651,26 +647,26 @@ SysModule::SysModule(System& system)
   addOpcode(2617, 0, new Sys_DefWindowAttr);
 
   addOpcode(2270, 0, "SetShowObject1", 
-			setToIncomingInt(graphics, &GraphicsSystem::setShowObject1));
+			setToIncomingInt(&GraphicsSystem::setShowObject1));
   addOpcode(2370, 0, "ShowObject1",
-			returnIntValue(graphics, &GraphicsSystem::showObject1));
+			returnIntValue(&GraphicsSystem::showObject1));
   addOpcode(2271, 0, "SetShowObject2", 
-			setToIncomingInt(graphics, &GraphicsSystem::setShowObject2));
+			setToIncomingInt(&GraphicsSystem::setShowObject2));
   addOpcode(2371, 0, "ShowObject2",
-			returnIntValue(graphics, &GraphicsSystem::showObject2));
+			returnIntValue(&GraphicsSystem::showObject2));
   addOpcode(2272, 0, "SetShowWeather",
-            setToIncomingInt(graphics, &GraphicsSystem::setShowWeather));
+            setToIncomingInt(&GraphicsSystem::setShowWeather));
   addOpcode(2372, 0, "ShowWeather",
-            returnIntValue(graphics, &GraphicsSystem::showWeather));
+            returnIntValue(&GraphicsSystem::showWeather));
 
-  addOpcode(2324, 0, returnIntValue(text, &TextSystem::messageNoWait));
-  addOpcode(2350, 0, returnIntValue(text, &TextSystem::autoMode));
+  addOpcode(2324, 0, returnIntValue(&TextSystem::messageNoWait));
+  addOpcode(2350, 0, returnIntValue(&TextSystem::autoMode));
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
   addSysTimerOpcodes(*this);
   addSysFrameOpcodes(*this);
-  addSysSaveOpcodes(*this, system);
-  addSysSyscomOpcodes(*this, system);
+  addSysSaveOpcodes(*this);
+  addSysSyscomOpcodes(*this);
   addSysDateOpcodes(*this);
 }

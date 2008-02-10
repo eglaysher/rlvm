@@ -58,7 +58,7 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new JmpModule);
   rlmachine.attachModule(new EventLoopModule);
   rlmachine.attachModule(new SelModule);
-  rlmachine.attachModule(new SysModule(rlmachine.system()));
+  rlmachine.attachModule(new SysModule);
   rlmachine.attachModule(new MovModule);
   rlmachine.attachModule(new StrModule);
   rlmachine.attachModule(new MemModule);
@@ -80,7 +80,7 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new ObjFgManagement);
   rlmachine.attachModule(new ObjBgManagement);
   rlmachine.attachModule(new RefreshModule);
-  rlmachine.attachModule(new ScrModule(rlmachine.system().graphics()));
+  rlmachine.attachModule(new ScrModule);
   rlmachine.attachModule(new DebugModule);
   rlmachine.attachModule(new GanFgModule);
   rlmachine.attachModule(new GanBgModule);

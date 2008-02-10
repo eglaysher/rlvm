@@ -51,22 +51,22 @@ struct Sys_SyscomEnabled : public RLOp_Store_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-void addSysSyscomOpcodes(RLModule& m, System& system)
+void addSysSyscomOpcodes(RLModule& m)
 {
   m.addUnsupportedOpcode(1210, 0, "ContextMenu");
 
   m.addOpcode(1211, 0, "EnableSyscom",
-              setToIncomingInt(system, &System::enableSyscom));
+              setToIncomingInt(&System::enableSyscom));
   m.addOpcode(1211, 1, "EnableSyscom",
-              callFunction(system, &System::enableSyscom));
+              callFunction(&System::enableSyscom));
 
   m.addOpcode(1212, 0, "HideSyscom",
-              setToIncomingInt(system, &System::hideSyscom));
+              setToIncomingInt(&System::hideSyscom));
   m.addOpcode(1212, 1, "HideSyscom",
-              callFunction(system, &System::hideSyscom));
+              callFunction(&System::hideSyscom));
 
   m.addOpcode(1213, 0, "DisableSyscom",
-              callFunction(system, &System::disableSyscom));
+              callFunction(&System::disableSyscom));
 
   m.addOpcode(1214, 0, "SyscomEnabled", new Sys_SyscomEnabled);
 

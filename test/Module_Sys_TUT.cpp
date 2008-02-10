@@ -96,7 +96,7 @@ void object::test<1>()
   libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum/SEEN.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new SysModule(system));
+  rlmachine.attachModule(new SysModule);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
@@ -121,7 +121,7 @@ void object::test<2>()
   libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new SysModule(system));
+  rlmachine.attachModule(new SysModule);
   rlmachine.executeUntilHalted();
 
   int values[6];

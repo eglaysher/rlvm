@@ -43,9 +43,6 @@
 
 // -----------------------------------------------------------------------
 
-class GraphicsSystem;
-
-
 /**
  * Contains functions for mod<1:30>, Scr.
  * 
@@ -53,7 +50,7 @@ class GraphicsSystem;
  */
 class ScrModule : public RLModule {
 public:
-  ScrModule(GraphicsSystem& sys);
+  ScrModule();
 };
 
 #endif
