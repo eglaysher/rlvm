@@ -270,7 +270,7 @@ struct Obj_objTextOpts
  * function, alowing us to just use this adapter with the already
  * defined operations.
  *
- * @todo Convert this up to the new parameter style.
+ * @see rangeMappingFun
  */
 struct ObjRangeAdapter : RLOp_SpecialCase {
   /// Keep a copy of the operation that we wrap
@@ -397,6 +397,16 @@ ObjBgModule::ObjBgModule()
 
 // -----------------------------------------------------------------------
 
+/** 
+ * Mapping function for a MappedRLModule which turns operation op into
+ * a ranged operation.
+ *
+ * The wrapper takes ownership of the incoming op pointer, and the
+ * caller takes ownership of the resultant RLOperation.
+ * 
+ * @param op Incoming RLOperation
+ * @return op in an ObjRangeAdapter
+ */
 RLOperation* rangeMappingFun(RLOperation* op)
 {
   return new ObjRangeAdapter(op);
