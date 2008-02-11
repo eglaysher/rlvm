@@ -52,20 +52,20 @@ void SDLEventSystem::handleKeyDown(SDL_Event& e)
 {
   switch(e.key.keysym.sym)
   {
-    case SDLK_LSHIFT:
-    case SDLK_RSHIFT:
-    {
-      m_shiftPressed = true;
-      break;
-    }
-    case SDLK_LCTRL:
-    case SDLK_RCTRL:
-    {
-      m_ctrlPressed = true;
-      break;
-    }
+  case SDLK_LSHIFT:
+  case SDLK_RSHIFT:
+  {
+    m_shiftPressed = true;
+    break;
+  }
+  case SDLK_LCTRL:
+  case SDLK_RCTRL:
+  {
+    m_ctrlPressed = true;
+    break;
+  }
   default:
-	break;
+    break;
   }
 }
 
@@ -75,20 +75,20 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 {
   switch(e.key.keysym.sym)
   {
-    case SDLK_LSHIFT:
-    case SDLK_RSHIFT:
-    {
-      m_shiftPressed = false;
-      break;
-    }
-    case SDLK_LCTRL:
-    case SDLK_RCTRL:
-    {
-      m_ctrlPressed = false;
-      break;
-    }
+  case SDLK_LSHIFT:
+  case SDLK_RSHIFT:
+  {
+    m_shiftPressed = false;
+    break;
+  }
+  case SDLK_LCTRL:
+  case SDLK_RCTRL:
+  {
+    m_ctrlPressed = false;
+    break;
+  }
   default:
-	break;
+    break;
   }
 }
 
@@ -127,7 +127,7 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
   : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false),
     m_unaccessedItems(false), m_mouseXPos(0), m_mouseYPos(0),
-	m_button1State(0), m_button2State(0)
+    m_button1State(0), m_button2State(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -233,8 +233,8 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       case SDL_BUTTON_WHEELDOWN:
         button = MOUSE_WHEELDOWN;
         break;
-	  default:
-		break;
+      default:
+        break;
       }
 
       for_each(handlers_begin(), handlers_end(),

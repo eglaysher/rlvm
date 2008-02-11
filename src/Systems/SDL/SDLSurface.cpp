@@ -54,15 +54,15 @@ SDL_Surface* buildNewSurface(int width, int height)
   // Create an empty surface
   Uint32 rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
+  rmask = 0xff000000;
+  gmask = 0x00ff0000;
+  bmask = 0x0000ff00;
+  amask = 0x000000ff;
 #else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
+  rmask = 0x000000ff;
+  gmask = 0x0000ff00;
+  bmask = 0x00ff0000;
+  amask = 0xff000000;
 #endif
 
   SDL_Surface* tmp = 
@@ -493,7 +493,7 @@ void SDLSurface::uploadTextureIfNeeded()
       {
         m_textures.push_back(
           new Texture(m_surface,
-            xOffset, yOffset, *it, *jt,  bytesPerPixel, byteOrder, byteType));
+                      xOffset, yOffset, *it, *jt,  bytesPerPixel, byteOrder, byteType));
 
         yOffset += *jt;
       }
@@ -508,9 +508,9 @@ void SDLSurface::uploadTextureIfNeeded()
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreen(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     int alpha)
+  int srcX1, int srcY1, int srcX2, int srcY2,
+  int destX1, int destY1, int destX2, int destY2,
+  int alpha)
 {
   uploadTextureIfNeeded();
 
@@ -526,9 +526,9 @@ void SDLSurface::renderToScreen(
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsColorMask(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha, int filter)
+  int srcX1, int srcY1, int srcX2, int srcY2,
+  int destX1, int destY1, int destX2, int destY2,
+  int r, int g, int b, int alpha, int filter)
 {
   uploadTextureIfNeeded();
 
@@ -544,9 +544,9 @@ void SDLSurface::renderToScreenAsColorMask(
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreen(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     const int opacity[4])
+  int srcX1, int srcY1, int srcX2, int srcY2,
+  int destX1, int destY1, int destX2, int destY2,
+  const int opacity[4])
 {
   uploadTextureIfNeeded();
 
@@ -677,7 +677,7 @@ Surface* SDLSurface::clone() const
   // Disable alpha blending because we're copying onto a blank (and
   // blank alpha!) surface
   if(SDL_SetAlpha(m_surface, 0, 0))
-      reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
+    reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
 
   if(SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL))
     reportSDLError("SDL_BlitSurface", "SDLSurface::clone()");

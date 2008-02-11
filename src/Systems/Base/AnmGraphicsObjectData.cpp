@@ -233,9 +233,7 @@ void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height)
 void AnmGraphicsObjectData::execute(RLMachine& machine)
 {
   if(currentlyPlaying())
-  {
     advanceFrame(machine);
-  }
 }
 
 // -----------------------------------------------------------------------
@@ -304,7 +302,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 /// I am not entirely sure these methods even make sense given the
 /// context...
 int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
-									  const GraphicsObject& rp) 
+                                      const GraphicsObject& rp) 
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int width = rect.x2 - rect.x1;
@@ -314,7 +312,7 @@ int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 int AnmGraphicsObjectData::pixelHeight(RLMachine& machine,
-									   const GraphicsObject& rp)
+                                       const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int height = rect.y2 - rect.y1;

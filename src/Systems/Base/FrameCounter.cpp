@@ -286,7 +286,7 @@ int DeceleratingFrameCounter::readFrame(EventSystem& eventSystem)
     float interval = (0.9f + curTime*0.2f) * baseInterval;
 
     return readNormalFrameWithChangeInterval(eventSystem, interval,
-                                           m_timeAtLastCheck);
+                                             m_timeAtLastCheck);
   }
 
   return int(m_value);

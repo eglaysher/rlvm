@@ -128,13 +128,11 @@ void SDLGraphicsSystem::beginFrame()
   ShowGLErrors();
  	
   glMatrixMode(GL_PROJECTION);
-//  glPushMatrix();
   glLoadIdentity();
   glOrtho(0.0, (GLdouble)m_width, (GLdouble)m_height, 0.0, 0.0, 1.0);
   ShowGLErrors();
  	
   glMatrixMode(GL_MODELVIEW);
-//  glPushMatrix();
   glLoadIdentity();
   ShowGLErrors();
 }
@@ -241,13 +239,13 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   
   /* This checks to see if surfaces can be stored in memory */
   if ( info->hw_available )
-	videoFlags |= SDL_HWSURFACE;
+    videoFlags |= SDL_HWSURFACE;
   else
-	videoFlags |= SDL_SWSURFACE;
+    videoFlags |= SDL_SWSURFACE;
 
   /* This checks if hardware blits can be done */
   if ( info->blit_hw )
-	videoFlags |= SDL_HWACCEL;
+    videoFlags |= SDL_HWACCEL;
 
   /* Sets up OpenGL double buffering */
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );

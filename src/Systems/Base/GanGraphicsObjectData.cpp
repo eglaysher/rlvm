@@ -160,11 +160,6 @@ void GanGraphicsObjectData::readData(
     throwBadFormat(fileName, "Incorrect filename length in GAN header");
   data++;
 
-  // Now that we have the filename, load that file (restricting things
-  // so that it only search
-//   string filePath = findFile(machine, rawFileName, IMAGE_FILETYPES);
-//   image.reset(machine.system().graphics().loadSurfaceFromFile(filePath));
-
   int twentyThousand = read_i32(data);
   if(twentyThousand != 20000)
     throwBadFormat(fileName, "Expected start of GAN data section");
@@ -300,8 +295,8 @@ int GanGraphicsObjectData::pixelWidth(
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
 
-	  return rect.x2 - rect.x1;
-	}
+      return rect.x2 - rect.x1;
+    }
   }
 
   // return the width of the first set, first frame
@@ -321,8 +316,8 @@ int GanGraphicsObjectData::pixelHeight(
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
 
-	  return rect.y2 - rect.y1;
-	}
+      return rect.y2 - rect.y1;
+    }
   }
 
   // return the width of the first set, first frame

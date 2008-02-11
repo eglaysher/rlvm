@@ -108,17 +108,17 @@ void SDLTextWindow::setMousePosition(RLMachine& machine, int x, int y)
 bool SDLTextWindow::handleMouseClick(RLMachine& machine, int x, int y, 
                                      bool pressed)
 {
-   if(inSelectionMode())
-   {
-     bool found =
-       find_if(m_selections.begin(), m_selections.end(),
-               bind(&SelectionElement::handleMouseClick, _1, 
-                        ref(machine), x, y, pressed))
-       != m_selections.end();
+  if(inSelectionMode())
+  {
+    bool found =
+      find_if(m_selections.begin(), m_selections.end(),
+              bind(&SelectionElement::handleMouseClick, _1, 
+                   ref(machine), x, y, pressed))
+      != m_selections.end();
 
-     if(found)
-       return true;
-   }
+    if(found)
+      return true;
+  }
 
   return TextWindow::handleMouseClick(machine, x, y, pressed);
 }
@@ -471,8 +471,6 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 
     m_rubyBeginPoint = -1;
   }
-//  else
-//    throw rlvm::Exception("No staring call to markRubyBegin()! Bad bytecode?");
 }
 
 // -----------------------------------------------------------------------
