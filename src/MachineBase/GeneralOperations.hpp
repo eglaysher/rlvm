@@ -47,7 +47,8 @@ class TextSystem;
 // -----------------------------------------------------------------------
 
 /**
- * Contains details on 
+ * Contains details on how to get a certain object from an input
+ * RLMachine. Templates are specialized in the cpp file.
  */
 namespace getSystemObjImpl
 {
