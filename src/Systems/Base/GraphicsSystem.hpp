@@ -142,6 +142,9 @@ private:
   /// Current screen update mode
   DCScreenUpdateMode m_screenUpdateMode;
 
+  /// Flag set to redraw the screen NOW
+  bool m_screenNeedsRefresh;
+
   /// Whether it is the Graphics system's responsibility to redraw the
   /// screen. Some LongOperations temporarily take this responsibility
   /// to implement pretty fades and wipes
@@ -289,14 +292,32 @@ public:
   ObjectSettings getObjectSettings(const int objNum);
   /// @}
 
+  /**
+   * @name Screen refreshing
+   * 
+   * @{
+   */
 
-  // Marks the screen as dirty; something is done about this if we are
-  // in automatic mode.
+  /** 
+   * Should be called by any of the drawing functions the screen is
+   * invalidated.
+   * 
+   * For more information, please see section 5.10.4 of the RLDev
+   * manual, which deals with the behaviour of screen updates, and the
+   * various modes.
+   */
   virtual void markScreenAsDirty(GraphicsUpdateType type);
 
-  // Marks the screen for refresh; we refresh the screen the next time
-  // the graphics system is executed.
+  /** 
+   * Forces a refresh of the screen the next time the graphics system
+   * executes.
+   */
   virtual void forceRefresh();
+
+  bool screenNeedsRefresh() const { return m_screenNeedsRefresh; }
+
+  void screenRefreshed() { m_screenNeedsRefresh = false; }
+  /// @}
 
   virtual void beginFrame();
   virtual void refresh(RLMachine& machine) = 0;

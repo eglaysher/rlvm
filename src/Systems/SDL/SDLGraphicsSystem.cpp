@@ -82,40 +82,6 @@ using namespace libReallive;
 // Private Interface
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
-{
-  switch(screenUpdateMode())
-  {
-  case SCREENUPDATEMODE_AUTOMATIC:
-  case SCREENUPDATEMODE_SEMIAUTOMATIC:
-  {
-    // Perform a blit of DC0 to the screen, and update it.
-    m_screenNeedsRefresh = true;
-    break;
-  }
-  case SCREENUPDATEMODE_MANUAL:
-  {
-    // Don't really do anything.
-    break;
-  }
-  default:
-  {
-    ostringstream oss;
-    oss << "Invalid screen update mode value: " << screenUpdateMode();
-    throw SystemError(oss.str());
-  }
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::forceRefresh()
-{
-  m_screenNeedsRefresh = true;
-}
-
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::beginFrame()
 {
   glClearColor(0,0,0, 0);
@@ -204,7 +170,7 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
-  : GraphicsSystem(gameexe), m_screenNeedsRefresh(false),
+  : GraphicsSystem(gameexe),
     m_displayDataInTitlebar(false), m_timeOfLastTitlebarUpdate(0),
     m_lastSeenNumber(0), m_lastLineNumber(0), m_imageCache(10)
 {
@@ -323,10 +289,10 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 {
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-  if(isResponsibleForUpdate() && m_screenNeedsRefresh)
+  if(isResponsibleForUpdate() && screenNeedsRefresh())
   {
     refresh(machine);
-    m_screenNeedsRefresh = false;
+    screenRefreshed();
   }
     
   // Check to see if any of the graphics objects are reporting that

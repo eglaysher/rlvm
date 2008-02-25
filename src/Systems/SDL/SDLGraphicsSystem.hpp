@@ -63,9 +63,6 @@ private:
 
   int m_width, m_height;
   
-  /// Flag set to redraw the screen NOW
-  bool m_screenNeedsRefresh;
-
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool m_displayDataInTitlebar;
 
@@ -131,22 +128,6 @@ private:
 
 public:
   SDLGraphicsSystem(Gameexe& gameexe);
-
-  /** 
-   * Should be called by any of the drawing functions the screen is
-   * invalidated.
-   * 
-   * For more information, please see section 5.10.4 of the RLDev
-   * manual, which deals with the behaviour of screen updates, and the
-   * various modes.
-   */
-  virtual void markScreenAsDirty(GraphicsUpdateType type);
-
-  /** 
-   * Forces a refresh of the screen the next time the graphics system
-   * executes.
-   */
-  virtual void forceRefresh();
 
   virtual void beginFrame();
 

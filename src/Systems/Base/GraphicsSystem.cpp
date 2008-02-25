@@ -42,6 +42,7 @@
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
+#include "Systems/Base/SystemError.hpp"
 #include "libReallive/gameexe.h"
 
 #include "MachineBase/RLMachine.hpp"
@@ -188,11 +189,12 @@ GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
   : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
+    m_screenNeedsRefresh(false),
     m_isResponsibleForUpdate(true),
-	m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
+    m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
     m_hideInterface(false),
     m_globals(gameexe),
-	m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
+    m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
     m_graphicsObjectImpl(new GraphicsObjectImpl)
 {
 }
@@ -201,6 +203,40 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
 
 GraphicsSystem::~GraphicsSystem()
 {}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
+{
+  switch(screenUpdateMode())
+  {
+  case SCREENUPDATEMODE_AUTOMATIC:
+  case SCREENUPDATEMODE_SEMIAUTOMATIC:
+  {
+    // Perform a blit of DC0 to the screen, and update it.
+    m_screenNeedsRefresh = true;
+    break;
+  }
+  case SCREENUPDATEMODE_MANUAL:
+  {
+    // Don't really do anything.
+    break;
+  }
+  default:
+  {
+    ostringstream oss;
+    oss << "Invalid screen update mode value: " << screenUpdateMode();
+    throw SystemError(oss.str());
+  }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::forceRefresh()
+{
+  m_screenNeedsRefresh = true;
+}
 
 // -----------------------------------------------------------------------
 
@@ -321,8 +357,6 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
 // Default implementations for some functions (which probably have
 // default implementations because I'm lazy, and these really should
 // be pure virtual)
-void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) { }
-void GraphicsSystem::forceRefresh() { }
 void GraphicsSystem::beginFrame() { }
 void GraphicsSystem::endFrame() { }
 
