@@ -78,6 +78,11 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
   // all. Render the entire gloss!
   if(machine.system().text().currentPage(machine).inRubyGloss())
     m_noWait = true;
+
+  // Force the renderer into a draw mode where we'll display the text
+  // (this corrects an issue in Planetarian's preset bookmarks)
+  machine.system().graphics()
+    .setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
 }
 
 // -----------------------------------------------------------------------

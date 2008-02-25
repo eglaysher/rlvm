@@ -243,7 +243,6 @@ void GraphicsSystem::forceRefresh()
 void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u)
 {
   m_screenUpdateMode = u; 
-  cerr << "Setting update mode to " << u << endl;
 }
 
 // -----------------------------------------------------------------------
