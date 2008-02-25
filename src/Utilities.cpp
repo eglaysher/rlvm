@@ -130,11 +130,11 @@ std::string findFontFile(const std::string& fileName)
   char* rootptr = getenv("SYSTEMROOT");
   path home;
   if (homeptr != 0) {
-	  home = homeptr;
+    home = homeptr;
   }
   else if (rootptr != 0) {
-	  home = rootptr;
-	  home /= "Fonts";
+    home = rootptr;
+    home /= "Fonts";
   }
   return (home / fileName).string();
 }
