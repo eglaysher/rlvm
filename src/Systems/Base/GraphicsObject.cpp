@@ -297,6 +297,8 @@ void GraphicsObject::setAlpha(const int alpha)
 void GraphicsObject::clearClip()
 { 
   makeImplUnique();
+  m_impl->m_clipX1 = 0;
+  m_impl->m_clipY1 = 0;
   m_impl->m_clipX2 = -1; 
   m_impl->m_clipY2 = -1;
 }
