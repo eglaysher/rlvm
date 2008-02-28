@@ -661,11 +661,11 @@ void Texture::renderToScreenAsObject(
     }
     if (xPos2 >= go.clipX2()) {
       xSrc2 -= xPos2 - go.clipX2();
-      xPos2 = go.clipX2() + 1; // Yeah, more inclusive ranges. Hurray!
+      xPos2 = go.clipX2();
     }
     if (yPos2 >= go.clipY2()) {
       ySrc2 -= yPos2 - go.clipY2();
-      yPos2 = go.clipY2() + 1;
+      yPos2 = go.clipY2();
     }
   }
   
