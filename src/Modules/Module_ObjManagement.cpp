@@ -84,6 +84,9 @@ struct Obj_objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int m_layer;
   Obj_objClear_1(int layer) : m_layer(layer) {}
 
+  // I highly suspect that this has range semantics like
+  // Obj_setWipeCopyTo_1, but none of the games I own use this
+  // function.
   void operator()(RLMachine& machine, int min, int max) {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;
@@ -136,6 +139,7 @@ struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T >
     getGraphicsObject(machine, m_layer, buf).setWipeCopy(m_val);
   }
 };
+
 // -----------------------------------------------------------------------
 
 struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
@@ -145,10 +149,10 @@ struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
   Obj_setWipeCopyTo_1(int layer, int value) 
     : m_layer(layer), m_val(value) {}
 
-  void operator()(RLMachine& machine, int min, int max)
+  void operator()(RLMachine& machine, int min, int numObjsToSet)
   {
-    max++;
-    for(int i = min; i < max; ++i) {
+    int maxObj = min + numObjsToSet;
+    for(int i = min; i < maxObj; ++i) {
       getGraphicsObject(machine, m_layer, i).setWipeCopy(m_val);
     }
   }
