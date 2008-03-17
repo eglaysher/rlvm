@@ -17,14 +17,9 @@ Kanon SE ALL
 Planetarian CD
 --------------
 - Planetarian is playable through the end, with the following caveats:
-  - In the intro, and immediately following the iconic climax scene of
-    Planetarian, some functions regarding Haikei are used. The Haikei
+  - In the intro, some functions regarding Haikei are used. The Haikei
     functions, and the corresponding HIK file format have not been
     reverse engineered. 
-  - There are many small issues where some backgrounds refuse to
-    display correctly. (This needs investigation)
-  - In the save/load menu, tooltips display immediately, instead of
-    requiring a short hovering period.
   - There are minor issues with indentation that need to be worked out.
 
 CLANNAD

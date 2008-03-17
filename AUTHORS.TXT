@@ -1,14 +1,14 @@
 Primary development by:
 -------------------------------------------------------------------------
-Elliot Glaysher <glaysher@umich.edu>
+Elliot Glaysher <glaysher at umich dot edu>
 
 Other code by:
 -------------------------------------------------------------------------
 Rasqual Twilight 
-- Provided Win32 build files and bugfixes
+- Provided Win32 build files and several small bugfixes
 
 Haeleth
-- Wrote the original libReallive; rlvm is built on top of it
+- Wrote the original libReallive (rlvm is built on top of it)
 - Wrote the kprl/rlc toolchain; used to compile the test cases
 - Wrote several features
 
@@ -24,4 +24,5 @@ Libraries depended on (and are not included)
 -------------------------------------------------------------------------
 boost (version 1.34.1 or newer) - http://www.boost.org
 SDL - http://www.libsdl.org
-Freetype
+SDL_image - http://www.libsdl.org/projects/SDL_image/
+Freetype - http://www.freetype.org
