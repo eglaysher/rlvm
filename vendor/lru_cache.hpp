@@ -35,16 +35,6 @@
  * This cache is thread safe if compiled with the _REENTRANT defined.  It
  * uses the BOOST scientific computing library to provide the thread safety
  * mutexes.
- *
- * @note ERG: This code was orriginally downloaded from
- *       http://lifelines.blackcat.ca/lifeline/query.php/tag=LRU_CACHE
- *       with the note that it is GPLv2. I have gone ahead and added
- *       the GPLv2 lilcense block above.
- *
- *       The original package contained unit tests which were mostly
- *       made of macros and had some odd sort of global state,
- *       including set up of the next unit test...in the previous unit
- *       test; they were not ported over to the TUT system.
  */
 #include <map>
 #include <list>
