@@ -1,0 +1,7 @@
+(For full history, please see the internal git changelog)
+-------------------------------------------------------------------------
+
+Version 0.1: (The first one!)
+- Initial public release
+- Planetarian is playable through the end.
+- Missing sound support and HIK animation support
