@@ -1,25 +1,30 @@
 /*********************************************************
- *  lzcomp.h : AVG32 ‚Ì PDT / ‘ŒÉƒtƒ@ƒCƒ‹‚ğì¬‚·‚é‚½‚ß‚Ì
- *             ˆê”Ê“I‚ÈLZ77ˆ³kƒ‹[ƒ`ƒ“
- *             “K“–‚Éƒeƒ“ƒvƒŒ[ƒg‰»‚µ‚Ä PDT, PDTƒ}ƒXƒNA‘ŒÉ‚ğ
- *             ˆê‚Â‚ÌƒNƒ‰ƒX‚Å‚â‚Á‚Ä‚¢‚éB
- *             ƒ\[ƒX‚ÍƒXƒNƒ‰ƒbƒ`‚©‚ç‘‚¢‚Ä‚¢‚é‚ªA
- *             ƒAƒ‹ƒSƒŠƒYƒ€‚Í ‘S–Ê“I‚É zlib 1.1.3 ‚ğ
- *             ‚Ü‚Ë‚Ä‚¢‚éB’è”Aƒƒ\ƒbƒh‚Ì–¼‘O‚à
- *             ‚Å‚«‚é‚¾‚¯—‚½‚à‚Ì‚É‚µ‚Ä‚¢‚éB
+ *  lzcomp.h : AVG32 ã® PDT / æ›¸åº«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œæˆã™ã‚‹ãŸã‚ã®
+ *             ä¸€èˆ¬çš„ãªLZ77åœ§ç¸®ãƒ«ãƒ¼ãƒãƒ³
+ *             é©å½“ã«ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆåŒ–ã—ã¦ PDT, PDTãƒã‚¹ã‚¯ã€æ›¸åº«ã‚’
+ *             ä¸€ã¤ã®ã‚¯ãƒ©ã‚¹ã§ã‚„ã£ã¦ã„ã‚‹ã€‚
+ *             ã‚½ãƒ¼ã‚¹ã¯ã‚¹ã‚¯ãƒ©ãƒƒãƒã‹ã‚‰æ›¸ã„ã¦ã„ã‚‹ãŒã€
+ *             ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã¯ å…¨é¢çš„ã« zlib 1.1.3 ã‚’
+ *             ã¾ã­ã¦ã„ã‚‹ã€‚å®šæ•°ã€ãƒ¡ã‚½ãƒƒãƒ‰ã®åå‰ã‚‚
+ *             ã§ãã‚‹ã ã‘ä¼¼ãŸã‚‚ã®ã«ã—ã¦ã„ã‚‹ã€‚
  *
- *                zlib 1.1.3 ‚Ì copyright :
+ *                zlib 1.1.3 ã® copyright :
  *                 (C) 1995-1998 Jean-loup Gailly and Mark Adler
  *
  *                      Jean-loup Gailly        Mark Adler
  *                       jloup@gzip.org          madler@alumni.caltech.edu
  *
- *                ”z•zŒ³Fhttp://www.cdrom.com/pub/infozip/zlib/
+ *                é…å¸ƒå…ƒï¼šhttp://www.cdrom.com/pub/infozip/zlib/
  *
  ***********************************************************
 */
 
 /*
+  Elliot's changelog:
+
+  2008-3-24:
+    Change the encoding to UTF8.
+
   Haeleth's changelog:
 
   2003-5-2:
@@ -49,48 +54,48 @@
 
 /***********************************************************
 **
-** ˆ³k—p‚ÌƒNƒ‰ƒX LZComp ‚Æˆ³k‚Ì‚½‚ß‚Ìî•ñ‚ğŠi”[‚µ‚½ CInfo ƒNƒ‰ƒX
-** ‚ğg‚Á‚ÄLZ77ˆ³k‚ğs‚¤B
+** åœ§ç¸®ç”¨ã®ã‚¯ãƒ©ã‚¹ LZComp ã¨åœ§ç¸®ã®ãŸã‚ã®æƒ…å ±ã‚’æ ¼ç´ã—ãŸ CInfo ã‚¯ãƒ©ã‚¹
+** ã‚’ä½¿ã£ã¦LZ77åœ§ç¸®ã‚’è¡Œã†ã€‚
 **
-** CInfo ƒNƒ‰ƒX‚ÍLZˆ³k‚ÌÅ¬ / Å‘åˆê’v’·(Min/MaxMatch)‚â
-** ˆê’v‚ğŒŸo‚·‚éÅ‘å‹——£‚È‚Ç‚Ìî•ñ‚ğ static ‚Èƒƒ\ƒbƒh‚Ì•Ô‚è’l‚Æ‚µ‚Ä
-** ‚à‚ÂB‚Ü‚½Apixel ’PˆÊ‚Ìˆ³k‚Æ byte ’PˆÊ‚Ìˆ³k‚ğ‚Æ‚à‚É
-** s‚¤‚½‚ßADataSize ‚â Hash ‚Æ‚¢‚Á‚½ƒƒ\ƒbƒh‚ğ‚ÂB
+** CInfo ã‚¯ãƒ©ã‚¹ã¯LZåœ§ç¸®ã®æœ€å° / æœ€å¤§ä¸€è‡´é•·(Min/MaxMatch)ã‚„
+** ä¸€è‡´ã‚’æ¤œå‡ºã™ã‚‹æœ€å¤§è·é›¢ãªã©ã®æƒ…å ±ã‚’ static ãªãƒ¡ã‚½ãƒƒãƒ‰ã®è¿”ã‚Šå€¤ã¨ã—ã¦
+** ã‚‚ã¤ã€‚ã¾ãŸã€pixel å˜ä½ã®åœ§ç¸®ã¨ byte å˜ä½ã®åœ§ç¸®ã‚’ã¨ã‚‚ã«
+** è¡Œã†ãŸã‚ã€DataSize ã‚„ Hash ã¨ã„ã£ãŸãƒ¡ã‚½ãƒƒãƒ‰ã‚’æŒã¤ã€‚
 **
-** LZComp ƒNƒ‰ƒX‚ÍCInfo ƒNƒ‰ƒX‚É’è‹`‚³‚ê‚½ƒƒ\ƒbƒh‚ğ‚à‚ÂƒNƒ‰ƒX‚ğ
-** ƒeƒ“ƒvƒŒ[ƒg‚Æ‚µ‚Ä‚ÂƒNƒ‰ƒX‚Æ‚µ‚Ä’è‹`‚³‚ê‚éB
+** LZComp ã‚¯ãƒ©ã‚¹ã¯CInfo ã‚¯ãƒ©ã‚¹ã«å®šç¾©ã•ã‚ŒãŸãƒ¡ã‚½ãƒƒãƒ‰ã‚’ã‚‚ã¤ã‚¯ãƒ©ã‚¹ã‚’
+** ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã¨ã—ã¦æŒã¤ã‚¯ãƒ©ã‚¹ã¨ã—ã¦å®šç¾©ã•ã‚Œã‚‹ã€‚
 **
-** LZComp ƒNƒ‰ƒX‚ğ‰Šú‰»‚·‚é‚½‚ß‚É‚ÍAˆ³kŒã‚Ìƒf[ƒ^‚ğo—Í‚·‚é‚½‚ß‚Ì
-** WriteInterface ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ª•K—v‚Æ‚È‚éBWriteInterface‚Í
-** ˆ³k‚³‚ê‚È‚¢î•ñ‚ğo—Í‚·‚é‚½‚ß‚ÌWriteCompRaw ƒƒ\ƒbƒh‚Æ
-** ˆ³kî•ñ‚ğo—Í‚·‚é‚½‚ß‚Ì WriteCompData ƒƒ\ƒbƒh‚ğ‚ÂB
-** ‚È‚¨ALZComp ƒNƒ‰ƒX‚Ì‰Šú‰»‚ÌÛ‚É‚Í NULL ‚ğƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚µ‚Ä
-** ‚ ‚½‚¦A‚ ‚Æ‚Å LZComp::SetOutputInteface ƒƒ\ƒbƒh‚Å’è‹`‚µ’¼‚·‚±‚Æ‚à
-** ‰Â”\B‚½‚¾‚µAƒf[ƒ^o—Í‚É NULL ‚©‚Ç‚¤‚©‚Ìƒ`ƒFƒbƒN‚Ís‚Á‚Ä‚¢‚È‚¢‚Ì‚Å
-** ’ˆÓB
+** LZComp ã‚¯ãƒ©ã‚¹ã‚’åˆæœŸåŒ–ã™ã‚‹ãŸã‚ã«ã¯ã€åœ§ç¸®å¾Œã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡ºåŠ›ã™ã‚‹ãŸã‚ã®
+** WriteInterface ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒå¿…è¦ã¨ãªã‚‹ã€‚WriteInterfaceã¯
+** åœ§ç¸®ã•ã‚Œãªã„æƒ…å ±ã‚’å‡ºåŠ›ã™ã‚‹ãŸã‚ã®WriteCompRaw ãƒ¡ã‚½ãƒƒãƒ‰ã¨
+** åœ§ç¸®æƒ…å ±ã‚’å‡ºåŠ›ã™ã‚‹ãŸã‚ã® WriteCompData ãƒ¡ã‚½ãƒƒãƒ‰ã‚’æŒã¤ã€‚
+** ãªãŠã€LZComp ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–ã®éš›ã«ã¯ NULL ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã—ã¦
+** ã‚ãŸãˆã€ã‚ã¨ã§ LZComp::SetOutputInteface ãƒ¡ã‚½ãƒƒãƒ‰ã§å®šç¾©ã—ç›´ã™ã“ã¨ã‚‚
+** å¯èƒ½ã€‚ãŸã ã—ã€ãƒ‡ãƒ¼ã‚¿å‡ºåŠ›æ™‚ã« NULL ã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯ã¯è¡Œã£ã¦ã„ãªã„ã®ã§
+** æ³¨æ„ã€‚
 **
-** –¢ˆ³k‚Ìƒf[ƒ^‚ğ LZComp::WriteData() ƒƒ\ƒbƒh‚É“n‚µA
-** LZComp::Deflate() ƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·‚±‚Æ‚Åˆ³k‚ªs‚í‚ê‚éB
-** ‚·‚×‚Ä‚Ìƒf[ƒ^‚ğo—Í‚µ‚½‚ç LZComp::WriteDataEnd() ƒƒ\ƒbƒh‚ğŒÄ‚Ño‚µA
-** ‚à‚¤ˆê“x LZComp::Deflate() ƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·‚±‚ÆB
+** æœªåœ§ç¸®ã®ãƒ‡ãƒ¼ã‚¿ã‚’ LZComp::WriteData() ãƒ¡ã‚½ãƒƒãƒ‰ã«æ¸¡ã—ã€
+** LZComp::Deflate() ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™ã“ã¨ã§åœ§ç¸®ãŒè¡Œã‚ã‚Œã‚‹ã€‚
+** ã™ã¹ã¦ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡ºåŠ›ã—ãŸã‚‰ LZComp::WriteDataEnd() ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã—ã€
+** ã‚‚ã†ä¸€åº¦ LZComp::Deflate() ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™ã“ã¨ã€‚
 **
-** ‚à‚¤­‚µŠÈ’P‚Éo—Íƒf[ƒ^‚Ì•ÛA WriteInterface A LZComp ‚ğŒ‹‡‚µ‚½
-** Compress ƒNƒ‰ƒX‚ª’ñ‹Ÿ‚³‚ê‚Ä‚¢‚éB‚±‚ÌƒNƒ‰ƒX‚Ío—ÍŒ`®‚Æ‚µ‚Ä
-** AVG32 ‚Åg—p‚³‚ê‚Ä‚¢‚éƒtƒ@ƒCƒ‹‚ÌŒ`®‚ğg‚¢Aƒƒ‚ƒŠã‚Éˆ³k‚³‚ê‚½
-** ƒf[ƒ^‚ğ•Û‚·‚éB‚±‚ê‚ğg‚¤‚ÆA‚½‚Æ‚¦‚Îƒf[ƒ^‚ğˆ³k‚µA
-** w’è‚³‚ê‚½ƒXƒgƒŠ[ƒ€‚É‘‚«‚Ş‚Æ‚¢‚¤ŠÖ”‚ÍˆÈ‰º‚Ì‚æ‚¤‚É‘‚¯‚é
+** ã‚‚ã†å°‘ã—ç°¡å˜ã«å‡ºåŠ›ãƒ‡ãƒ¼ã‚¿ã®ä¿æŒã€ WriteInterface ã€ LZComp ã‚’çµåˆã—ãŸ
+** Compress ã‚¯ãƒ©ã‚¹ãŒæä¾›ã•ã‚Œã¦ã„ã‚‹ã€‚ã“ã®ã‚¯ãƒ©ã‚¹ã¯å‡ºåŠ›å½¢å¼ã¨ã—ã¦
+** AVG32 ã§ä½¿ç”¨ã•ã‚Œã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®å½¢å¼ã‚’ä½¿ã„ã€ãƒ¡ãƒ¢ãƒªä¸Šã«åœ§ç¸®ã•ã‚ŒãŸ
+** ãƒ‡ãƒ¼ã‚¿ã‚’ä¿æŒã™ã‚‹ã€‚ã“ã‚Œã‚’ä½¿ã†ã¨ã€ãŸã¨ãˆã°ãƒ‡ãƒ¼ã‚¿ã‚’åœ§ç¸®ã—ã€
+** æŒ‡å®šã•ã‚ŒãŸã‚¹ãƒˆãƒªãƒ¼ãƒ ã«æ›¸ãè¾¼ã‚€ã¨ã„ã†é–¢æ•°ã¯ä»¥ä¸‹ã®ã‚ˆã†ã«æ›¸ã‘ã‚‹
 **
 **   void LZtoFile(const char* data, int datalen, FILE* out) {
 **        Compress<CInfoArc, Container::DataContainer> comp;
-**        comp.WriteData(data, datalen); // ƒCƒ“ƒXƒ^ƒ“ƒX‚Éƒf[ƒ^‘‚«‚İ
+**        comp.WriteData(data, datalen); // ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«ãƒ‡ãƒ¼ã‚¿æ›¸ãè¾¼ã¿
 **        comp.WriteDataEnd();
-**        comp.Deflate(); // ˆ³k
-**        comp.Flush(); // o—Íƒoƒbƒtƒ@‚ğI’[
+**        comp.Deflate(); // åœ§ç¸®
+**        comp.Flush(); // å‡ºåŠ›ãƒãƒƒãƒ•ã‚¡ã‚’çµ‚ç«¯
 **        fwrite(comp.Data(), comp.Length(), 1, out);
 **   }
 **
-**  ã‚Ì CInfoArc ‚ğ CInfoPDT ‚â CInfoMask‚É‚·‚é‚±‚Æ‚ÅAˆ³kŒ`®‚ğ
-**  ‘I‘ğ‚Å‚«‚éB
+**  ä¸Šã® CInfoArc ã‚’ CInfoPDT ã‚„ CInfoMaskã«ã™ã‚‹ã“ã¨ã§ã€åœ§ç¸®å½¢å¼ã‚’
+**  é¸æŠã§ãã‚‹ã€‚
 ********************************************************************
 */
 
@@ -129,12 +134,12 @@ template <typename T> inline T max(const T& a, const T& b) { return a > b ? a : 
 
 const int NIL=-1;
 /*************************
-** ‘O‚Éˆê’v‚·‚éƒf[ƒ^‚Ìî•ñ‚ğ•\‚·B
-** ƒf[ƒ^‘‚«‚İ‚ÌÛ‚Éˆê’vƒf[ƒ^‚Í
-** ‚±‚Ì\‘¢‘Ì‚ÌŒ`®‚Å“n‚³‚ê‚é
+** å‰ã«ä¸€è‡´ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã®æƒ…å ±ã‚’è¡¨ã™ã€‚
+** ãƒ‡ãƒ¼ã‚¿æ›¸ãè¾¼ã¿ã®éš›ã«ä¸€è‡´ãƒ‡ãƒ¼ã‚¿ã¯
+** ã“ã®æ§‹é€ ä½“ã®å½¢å¼ã§æ¸¡ã•ã‚Œã‚‹
 **/
 struct Match {
-	int prev_match_length; /* prev_match_length ‚ª\•ª‚É’·‚¯‚ê‚Î¡‰ñ‚Ì’Tõ‚Í“K“–‚É‚â‚é */
+	int prev_match_length; /* prev_match_length ãŒååˆ†ã«é•·ã‘ã‚Œã°ä»Šå›ã®æ¢ç´¢ã¯é©å½“ã«ã‚„ã‚‹ */
 	int prev_match_pos;
 	int match_length;
 	int match_pos;
@@ -161,10 +166,10 @@ struct Match {
 };
 
 /*********************
-** ƒf[ƒ^o—Í—p‚ÌƒNƒ‰ƒX
-** ‚±‚ÌƒNƒ‰ƒX‚ğ“K“–‚ÉŠg’£‚µ‚Ä
-** Š’è‚Ìƒf[ƒ^Œ`®‚Åƒf[ƒ^‚ğ
-** Ši”[‚Å‚«‚é‚æ‚¤‚É‚·‚é
+** ãƒ‡ãƒ¼ã‚¿å‡ºåŠ›ç”¨ã®ã‚¯ãƒ©ã‚¹
+** ã“ã®ã‚¯ãƒ©ã‚¹ã‚’é©å½“ã«æ‹¡å¼µã—ã¦
+** æ‰€å®šã®ãƒ‡ãƒ¼ã‚¿å½¢å¼ã§ãƒ‡ãƒ¼ã‚¿ã‚’
+** æ ¼ç´ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
 */
 class WriteInterface {
 public:
@@ -174,51 +179,51 @@ public:
 };
 
 /**********************
-** ˆ³k–@‚ÉŠÖ‚·‚éî•ñB DataSize ‚Æ Hash ‚Í
-** “K“–‚ÉÄ’è‹`‚·‚é‚±‚ÆB ‚Ü‚½AMaxMatch, MaxDist
-** “™‚à•K—v‚É‰‚¶‚ÄÄ’è‹`‚·‚é‚±‚Æ
+** åœ§ç¸®æ³•ã«é–¢ã™ã‚‹æƒ…å ±ã€‚ DataSize ã¨ Hash ã¯
+** é©å½“ã«å†å®šç¾©ã™ã‚‹ã“ã¨ã€‚ ã¾ãŸã€MaxMatch, MaxDist
+** ç­‰ã‚‚å¿…è¦ã«å¿œã˜ã¦å†å®šç¾©ã™ã‚‹ã“ã¨
 */
 class CInfo {
 public:
-	/* ‚±‚Ì“ñ‚Â‚Í“K“–‚ÉÄ’è‹`‚·‚é‚±‚Æ */
+	/* ã“ã®äºŒã¤ã¯é©å½“ã«å†å®šç¾©ã™ã‚‹ã“ã¨ */
 	static int DataSize(void) { return 1;}
 	static unsigned char Hash(char* data) {
 		return *(unsigned char*)data;
 	}
-	/* GoodLength ˆÈ‰º‚Ìƒf[ƒ^‚ªŒ©‚Â‚©‚Á‚Ä‚¢‚ê‚Î
-	** Ÿ‚Ìƒf[ƒ^‚ğ’²‚×‚é’·‚³‚ğ1/4‚É‚·‚é
+	/* GoodLength ä»¥ä¸‹ã®ãƒ‡ãƒ¼ã‚¿ãŒè¦‹ã¤ã‹ã£ã¦ã„ã‚Œã°
+	** æ¬¡ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª¿ã¹ã‚‹é•·ã•ã‚’1/4ã«ã™ã‚‹
 	*/
 	static int GoodLength(void) { return 4;}
-	/* MaxLazy ˆÈã‚Ìˆê’vƒf[ƒ^‚ªŒ©‚Â‚©‚ê‚Î
-	** Ÿ‚Ìƒf[ƒ^‚ğ’²‚×‚¸‚Éƒf[ƒ^‚ªˆê’v‚µ‚½‚Æ‚·‚é
+	/* MaxLazy ä»¥ä¸Šã®ä¸€è‡´ãƒ‡ãƒ¼ã‚¿ãŒè¦‹ã¤ã‹ã‚Œã°
+	** æ¬¡ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª¿ã¹ãšã«ãƒ‡ãƒ¼ã‚¿ãŒä¸€è‡´ã—ãŸã¨ã™ã‚‹
 	*/
 	static int MaxLazy(void) { return 4;}
-	/* Å‘å MaxDist ‚Ì‹——£‚Ü‚Å’²‚×‚é */
+	/* æœ€å¤§ MaxDist ã®è·é›¢ã¾ã§èª¿ã¹ã‚‹ */
 	static int MaxDist(void) { return 4096;}
-	/* ˆê’v’·ŒŸõ‚Í MaxChan ŒÂ‚Ìƒf[ƒ^‚É‚Â‚¢‚Äs‚¤ */
+	/* ä¸€è‡´é•·æ¤œç´¢ã¯ MaxChan å€‹ã®ãƒ‡ãƒ¼ã‚¿ã«ã¤ã„ã¦è¡Œã† */
 	static int MaxChain(void) { return 16;}
 	/* minimum and maximum match lengths */
 	static int MinMatch(void) { return 3; }
 	static int MaxMatch(void) { return 258; }
 	/* hash parameter */
-	/* hash ‚ÍXV‚³‚ê‚é‚½‚Ñ‚É HashShift ‚·‚éB‚·‚È‚í‚¿A
-	** hash ‚Í MinMatch ‰ñ‚Ìƒf[ƒ^‚ÉˆË‘¶‚·‚é
-	** HashBits ‚ğ•Ï‚¦‚éê‡Ac‚è‚Ì’è‹`‚àÊ‚·‚±‚Æ
+	/* hash ã¯æ›´æ–°ã•ã‚Œã‚‹ãŸã³ã« HashShift ã™ã‚‹ã€‚ã™ãªã‚ã¡ã€
+	** hash ã¯ MinMatch å›ã®ãƒ‡ãƒ¼ã‚¿ã«ä¾å­˜ã™ã‚‹
+	** HashBits ã‚’å¤‰ãˆã‚‹å ´åˆã€æ®‹ã‚Šã®å®šç¾©ã‚‚å†™ã™ã“ã¨
 	*/
 	static int HashBits(void) { return 15; /* 8+7 */}
 	static int HashSize(void) { return 1<<HashBits(); }
 	static int HashMask(void) { return HashSize() - 1; }
 	static int HashShift(void) { return (HashBits() + MinMatch() - 1) / MinMatch();}
 	/* window parameter */
-	/* WindowSize > DataSize * MaxMatch * 2 ‚Å‚È‚¯‚ê‚Î‚È‚ç‚È‚¢
-	** —\Šú‚¹‚ÊƒoƒO‚ğ–h‚®‚½‚ß‚É‚Í‘å‚«‚¢•û‚ª—Ç‚¢
+	/* WindowSize > DataSize * MaxMatch * 2 ã§ãªã‘ã‚Œã°ãªã‚‰ãªã„
+	** äºˆæœŸã›ã¬ãƒã‚°ã‚’é˜²ããŸã‚ã«ã¯å¤§ãã„æ–¹ãŒè‰¯ã„
 	*/
 	static int WindowBits(void) { return 14; }
 	static int WindowSize(void) { return 1<<WindowBits(); }
 	static int WindowMask(void) { return WindowSize() - 1; }
 	/* lookahead */
 	static int MinLookahead(void) { return (MaxMatch() + MinMatch() + 1)*DataSize(); }
-	/* “K“–‚Écc */
+	/* é©å½“ã«â€¦â€¦ */
 	int seed;
 	int Rand(void) {
 		seed = seed*6331+817;
@@ -227,40 +232,40 @@ public:
 };
 
 /***********************
-** ˆ³k—p‚ÌƒNƒ‰ƒX
+** åœ§ç¸®ç”¨ã®ã‚¯ãƒ©ã‚¹
 **   WriteData() -> Deflate() -> WriteData() -> Deflate()
 **   ... -> WriteData() -> WriteDataEnd() -> Deflate()
-**   ‚Å WriteData() ‚µ‚½ƒf[ƒ^‚ªˆ³k‚³‚ê‚é
+**   ã§ WriteData() ã—ãŸãƒ‡ãƒ¼ã‚¿ãŒåœ§ç¸®ã•ã‚Œã‚‹
 */
 template <class CInfo> class LZComp {
 	int hash;
-	int window_top; /* window ‚Ì top ‚ÌˆÊ’u */
-	int dust_top; /* ƒSƒ~ƒf[ƒ^‚Ìæ“ª */
-	int window_datalen; /* —LŒø‚È window ‚Ì‘å‚«‚³ */
+	int window_top; /* window ã® top ã®ä½ç½® */
+	int dust_top; /* ã‚´ãƒŸãƒ‡ãƒ¼ã‚¿ã®å…ˆé ­ */
+	int window_datalen; /* æœ‰åŠ¹ãª window ã®å¤§ãã• */
 	char* window;
-	int hash_pos; /* ’¼‘O‚ÉInsertString‚µ‚½ƒf[ƒ^‚Ì«‘’†‚ÌˆÊ’u */
-	int* prev; /* hash chain. info.WindowSize() ‚Ì‘å‚«‚³‚ğ‚Â */
-	int* head; /* hash ƒŠƒXƒgBinfo.HashSize() ‚Ì‘å‚«‚³‚ğ‚Â */
+	int hash_pos; /* ç›´å‰ã«InsertStringã—ãŸãƒ‡ãƒ¼ã‚¿ã®è¾æ›¸ä¸­ã®ä½ç½® */
+	int* prev; /* hash chain. info.WindowSize() ã®å¤§ãã•ã‚’æŒã¤ */
+	int* head; /* hash ãƒªã‚¹ãƒˆã€‚info.HashSize() ã®å¤§ãã•ã‚’æŒã¤ */
 	WriteInterface* dataout;
 
 	CInfo info;
 	void UpdateHash(char* data) {
 		hash = (((hash<<5)&0xffe0) | (info.Hash(data)&0x1f)) & info.HashMask();
 	}
-	/* «‘‚Éƒf[ƒ^‚ğ‘}“ü‚µAhash_head ‚ğ‘O‚Éˆê’v‚µ‚½«‘‚ÌˆÊ’u‚ÉƒZƒbƒg */
+	/* è¾æ›¸ã«ãƒ‡ãƒ¼ã‚¿ã‚’æŒ¿å…¥ã—ã€hash_head ã‚’å‰ã«ä¸€è‡´ã—ãŸè¾æ›¸ã®ä½ç½®ã«ã‚»ãƒƒãƒˆ */
 	void InsertString(int pos) {
 		UpdateHash(window + (pos-window_top) + info.DataSize()*2);
 		prev[pos & info.WindowMask()] = hash_pos = head[hash];
 		head[hash] = pos;
 	}
-	/* hash / prev ‚ğ‰Šú‰» */
+	/* hash / prev ã‚’åˆæœŸåŒ– */
 	void ClearHash(void) {
 		int i;
 		for (i=0; i<info.HashSize(); i++) head[i] = NIL;
 		for (i=0; i<info.WindowSize(); i++) prev[i] = NIL;
 	}
 	void FillDust(void) {
-		/* window ‚Ìg‚í‚ê‚Ä‚È‚¢•”•ª‚É—”‚ğƒRƒs[ */
+		/* window ã®ä½¿ã‚ã‚Œã¦ãªã„éƒ¨åˆ†ã«ä¹±æ•°ã‚’ã‚³ãƒ”ãƒ¼ */
 		int dust_len = info.WindowSize() - window_datalen;
 		if (dust_len > 256) dust_len = 256;
 		memcpy(window+window_datalen, window+info.WindowSize(), dust_len);
@@ -273,30 +278,30 @@ private:
 	char* data_pool;
 	int deflate_pos;
 	int is_data_pool_end;
-	/* ˆ³k—p‚Éƒf[ƒ^‚ğ‘‚«‚Ş */
+	/* åœ§ç¸®ç”¨ã«ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ãè¾¼ã‚€ */
 public:
 	void WriteData(const char* new_data, int new_data_length);
-	/* ˆ³k—pƒf[ƒ^‚ªI—¹‚µ‚½ */
+	/* åœ§ç¸®ç”¨ãƒ‡ãƒ¼ã‚¿ãŒçµ‚äº†ã—ãŸ */
 	void WriteDataEnd(void) {
 		is_data_pool_end = 1;
 	}
 private:
-	/* ˆ³k—pƒf[ƒ^‚ğ window ‚É“Ç‚İ‚Ş */
-	/* 1 : ¬Œ÷
-	** 0 : ƒf[ƒ^‚ÍI—¹‚µ‚Ä‚¢‚é
+	/* åœ§ç¸®ç”¨ãƒ‡ãƒ¼ã‚¿ã‚’ window ã«èª­ã¿è¾¼ã‚€ */
+	/* 1 : æˆåŠŸ
+	** 0 : ãƒ‡ãƒ¼ã‚¿ã¯çµ‚äº†ã—ã¦ã„ã‚‹
 	*/
 	int FillWindow(void);
-	/* Å’·ˆê’v‚·‚éˆÊ’u‚ğ’T‚· */
-	/* WriteDataEnd() ‚µ‚Ä‚È‚¢ê‡Aƒf[ƒ^‚Ì“Ç‚İ‚İ¸”s‚µ‚½‚ç
-	** 0 ‚ğ‹A‚·Bˆê”Ê‚É‚Í 1 ‚ğ‹A‚·
+	/* æœ€é•·ä¸€è‡´ã™ã‚‹ä½ç½®ã‚’æ¢ã™ */
+	/* WriteDataEnd() ã—ã¦ãªã„å ´åˆã€ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿å¤±æ•—ã—ãŸã‚‰
+	** 0 ã‚’å¸°ã™ã€‚ä¸€èˆ¬ã«ã¯ 1 ã‚’å¸°ã™
 	*/
 private:
 	int LongestMatch(int pos, Match& match);
 public:
-	/* ˆ³k‚ğs‚¤ */
+	/* åœ§ç¸®ã‚’è¡Œã† */
 	/* WriteData -> Deflate() -> WriteData() -> Deflate
-	** ‚Æ‚â‚Á‚Ä‚¢‚«AÅŒã‚É WriteDataEnd() -> Deflate()
-	** ‚ÅI—¹
+	** ã¨ã‚„ã£ã¦ã„ãã€æœ€å¾Œã« WriteDataEnd() -> Deflate()
+	** ã§çµ‚äº†
 	*/
 	void Deflate(void);
 public:
@@ -305,18 +310,18 @@ public:
 	}
 	LZComp(WriteInterface* _dataout) {
 		dataout = _dataout;
-		/* hash ‚Ì‰Šú‰» */
+		/* hash ã®åˆæœŸåŒ– */
 		head = new int[info.HashSize()];
 		prev = new int[info.WindowSize()];
-		/* window ‚Ì‰Šú‰» */
+		/* window ã®åˆæœŸåŒ– */
 		window = new char[info.WindowSize()+256];
 		window_datalen = 0;
-		/* ÅŒã‚ÉƒSƒ~‚ğ‘‚­ */
-		/* ƒƒ‚ƒŠˆá”½‚ğo‚³‚È‚¢‚½‚ß‚Ì”Ôl */
+		/* æœ€å¾Œã«ã‚´ãƒŸã‚’æ›¸ã */
+		/* ãƒ¡ãƒ¢ãƒªé•åã‚’å‡ºã•ãªã„ãŸã‚ã®ç•ªäºº */
 		int i; for (i=0; i<256; i++)
 			window[info.WindowSize()+i] = info.Rand()>>5;
 		dust_top = 0;
-		/* data pool ‚Ì‰Šú‰» */
+		/* data pool ã®åˆæœŸåŒ– */
 		data_pool = new char[128];
 		data_pool_length = 0;
 		data_pool_capacity = 128;
@@ -358,7 +363,7 @@ template<class CInfo> void LZComp<CInfo>::WriteData(const char* new_data, int ne
 	data_pool_top = 0;
 #endif
 	if (is_data_pool_end == 1 && data_pool_length > info.MinMatch()*info.DataSize()) {
-		/* ƒnƒbƒVƒ…‚ğ‰Šú‰»‚µAÅ‰‚Ìƒf[ƒ^‚ğ‚µ‚ç‚×‚Ä‚¨‚­ */
+		/* ãƒãƒƒã‚·ãƒ¥ã‚’åˆæœŸåŒ–ã—ã€æœ€åˆã®ãƒ‡ãƒ¼ã‚¿ã‚’ã—ã‚‰ã¹ã¦ãŠã */
 		is_data_pool_end = 0;
 		ClearHash();
 		hash = 0;
@@ -368,23 +373,23 @@ template<class CInfo> void LZComp<CInfo>::WriteData(const char* new_data, int ne
 	}
 }
 template<class CInfo> int LZComp<CInfo>::FillWindow(void) {
-	/* window “à‚Ìƒf[ƒ^‚ğƒRƒs[ */
+	/* window å†…ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼ */
 	if (data_pool_length == 0) {
 		if (is_data_pool_end) return 0;
 		if (dust_top != window_datalen) FillDust();
 		return 1;
 	}
-	/* Œ´‘¥‚Æ‚µ‚Ä WindowSize / 2 ‚¾‚¯ˆÚ“®‚·‚é */
+	/* åŸå‰‡ã¨ã—ã¦ WindowSize / 2 ã ã‘ç§»å‹•ã™ã‚‹ */
 	if (window_datalen > info.WindowSize()/2+info.MinLookahead()) {
 		memmove(window, window+info.WindowSize()/2, info.WindowSize()-info.WindowSize()/2);
 		window_top += info.WindowSize()/2;
 		window_datalen -= info.WindowSize()/2;
 	}
-	/* ƒRƒs[‚Å‚«‚È‚¢ */
+	/* ã‚³ãƒ”ãƒ¼ã§ããªã„ */
 	if (window_datalen == info.WindowSize()) {
 		return 1;
 	}
-	/* ƒf[ƒ^‚ğƒRƒs[ */
+	/* ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼ */
 	int copy_length = info.WindowSize() - info.WindowSize()/2;
 	if (copy_length > data_pool_length) copy_length = data_pool_length;
 	if (copy_length > info.WindowSize()-window_datalen) copy_length = info.WindowSize()-window_datalen;
@@ -400,15 +405,15 @@ template<class CInfo> int LZComp<CInfo>::LongestMatch(int pos, Match& match) {
 	int search_length = info.MaxChain();
 	if (match.prev_match_length >= info.GoodLength()) search_length >>= 2;
 	int cmp_pos = hash_pos;
-	/* ’Tõ‚É\•ª‚Èƒf[ƒ^‚ğŠm•Û‚·‚é */
+	/* æ¢ç´¢ã«ååˆ†ãªãƒ‡ãƒ¼ã‚¿ã‚’ç¢ºä¿ã™ã‚‹ */
 	if (window_datalen < pos-window_top+info.MinLookahead()) {
-		if (FillWindow() && window_datalen < pos+info.MinLookahead()) return 0; /* ƒf[ƒ^æ“¾¸”s */
+		if (FillWindow() && window_datalen < pos+info.MinLookahead()) return 0; /* ãƒ‡ãƒ¼ã‚¿å–å¾—å¤±æ•— */
 	}
 	int window_first = window_top;
 	if (window_first < pos-info.MaxDist()) window_first = pos-info.MaxDist();
 //	int window_last = pos;
 	int i; for (i=0; i<search_length; i++) {
-		if (cmp_pos < window_first || cmp_pos >= pos) break; /* hash link ‚ª”ÍˆÍŠO‚É‚È‚Á‚½ */
+		if (cmp_pos < window_first || cmp_pos >= pos) break; /* hash link ãŒç¯„å›²å¤–ã«ãªã£ãŸ */
 		char* d = window + (pos-window_top);
 		char* cmp_d = window + (cmp_pos-window_top);
 		char* d_end = window + (window_datalen > pos-window_top+info.MinLookahead() ? pos-window_top+info.MinLookahead() : window_datalen);
@@ -423,33 +428,33 @@ template<class CInfo> int LZComp<CInfo>::LongestMatch(int pos, Match& match) {
 		if (cur_match_len/info.DataSize() > match.match_length) {
 			match.match_length = cur_match_len/info.DataSize();
 			match.match_pos = cmp_pos;
-			if (d >= d_end) break; /* •K—v‚È‚¢‚Æ‚±‚ë‚Ü‚ÅŒŸõ‚·‚é‚­‚ç‚¢ˆê’v‚·‚ê‚ÎI—¹ */
+			if (d >= d_end) break; /* å¿…è¦ãªã„ã¨ã“ã‚ã¾ã§æ¤œç´¢ã™ã‚‹ãã‚‰ã„ä¸€è‡´ã™ã‚Œã°çµ‚äº† */
 		}
 		cmp_pos = prev[cmp_pos & info.WindowMask()];
 	}
-	/* match_length ‚ÌŒŸ¸ */
+	/* match_length ã®æ¤œæŸ» */
 	if (match.match_length > info.MaxMatch()) match.match_length = info.MaxMatch();
 	if (match.match_length > window_datalen/info.DataSize()) match.match_length = window_datalen/info.DataSize();
 	return 1;
 }
 template<class CInfo> void LZComp<CInfo>::Deflate(void) {
-	/* ƒf[ƒ^‚ª­‚È‚·‚¬‚éê‡ */
+	/* ãƒ‡ãƒ¼ã‚¿ãŒå°‘ãªã™ãã‚‹å ´åˆ */
 	if (is_data_pool_end == 1 && data_pool_length <= info.MinMatch()*info.DataSize()) {
-		/* data_pool ‚Éƒf[ƒ^‚ª‚ ‚ê‚Î‘‚«‚ñ‚Å‚¨‚­ */
+		/* data_pool ã«ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Œã°æ›¸ãè¾¼ã‚“ã§ãŠã */
 		int i; for (i=data_pool_top; i<data_pool_length; i+=info.DataSize()) {
 			dataout->WriteCompRaw(data_pool + i);
 		}
 		return;
 	}
-	/* ˆê‰ñŒã‚Ì LongestMatch‚Æ¡‰ñ‚ğ”ä‚×A
-	** ¡‰ñ‚Ì•û‚ª—Ç‚¢‚©“¯‚¶ê‡‚Ì‚İˆ³k‚ğ
-	** ‚¨‚±‚È‚¤‚±‚Æ‚ÅAŒø—¦‚ğŒüã‚µ‚Ä‚¢‚é
+	/* ä¸€å›å¾Œã® LongestMatchã¨ä»Šå›ã‚’æ¯”ã¹ã€
+	** ä»Šå›ã®æ–¹ãŒè‰¯ã„ã‹åŒã˜å ´åˆã®ã¿åœ§ç¸®ã‚’
+	** ãŠã“ãªã†ã“ã¨ã§ã€åŠ¹ç‡ã‚’å‘ä¸Šã—ã¦ã„ã‚‹
 	*/
 	int pos = deflate_pos;
 	Match match;
 	FillWindow();
 	InsertString(pos);
-	/* ƒf[ƒ^‚ª‚È‚­‚È‚Á‚½‚çI—¹ */
+	/* ãƒ‡ãƒ¼ã‚¿ãŒãªããªã£ãŸã‚‰çµ‚äº† */
 	if (LongestMatch(pos, match) == 0) return;
 	while(1) {
 		InsertString(pos+info.DataSize());
@@ -461,30 +466,30 @@ template<class CInfo> void LZComp<CInfo>::Deflate(void) {
 			break;
 		}
 		if (match.prev_match_length >= match.match_length && match.prev_match_length >= info.MinMatch()) {
-			/* ˆ³kƒf[ƒ^‚ğ•Û‘¶ */
+			/* åœ§ç¸®ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ */
 			dataout->WriteCompData(pos, match);
-			/* hash ‚ğ“o˜^ */
+			/* hash ã‚’ç™»éŒ² */
 			pos += info.DataSize()*2;
 			int i; for (i=0; i<match.prev_match_length-2; i++) {
 				InsertString(pos);
 				pos += info.DataSize();
 			}
-			/* pos ‚ªƒf[ƒ^‚ÌÅŒã‚È‚çI—¹ */
+			/* pos ãŒãƒ‡ãƒ¼ã‚¿ã®æœ€å¾Œãªã‚‰çµ‚äº† */
 			if (pos >= window_top + window_datalen - info.DataSize() && is_data_pool_end) {
-				if (pos < window_top+window_datalen) { /* ÅŒã‚Ìƒf[ƒ^‚ğ‘‚©‚È‚¢‚Æ‚¢‚¯‚È‚¢ */
+				if (pos < window_top+window_datalen) { /* æœ€å¾Œã®ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ã‹ãªã„ã¨ã„ã‘ãªã„ */
 					dataout->WriteCompRaw(window+(pos-window_top));
 					pos += info.DataSize();
 				}
 				break;
 			}
-			/* Ÿ‚Ìƒf[ƒ^‚Ìˆ×‚É LongestMatch ‚µ‚Ä‚¨‚­ */
+			/* æ¬¡ã®ãƒ‡ãƒ¼ã‚¿ã®ç‚ºã« LongestMatch ã—ã¦ãŠã */
 			InsertString(pos);
 			match.Clear();
 			if (LongestMatch(pos, match) == 0) break;
 		} else {
-			/* ƒf[ƒ^‚ğ•Û‘¶ */
+			/* ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ */
 			dataout->WriteCompRaw(window+(pos-window_top));
-			/* Ÿ‚Ìƒf[ƒ^‚ÅI‚í‚è‚È‚çI—¹ */
+			/* æ¬¡ã®ãƒ‡ãƒ¼ã‚¿ã§çµ‚ã‚ã‚Šãªã‚‰çµ‚äº† */
 			pos += info.DataSize();
 			if (pos >= window_top + window_datalen && is_data_pool_end) break;
 		}
@@ -494,11 +499,11 @@ template<class CInfo> void LZComp<CInfo>::Deflate(void) {
 }
 
 /*****************************************
-** PDT “™‚Ìˆ³k‚ğs‚¤‚½‚ß‚ÌƒNƒ‰ƒX’è‹`
+** PDT ç­‰ã®åœ§ç¸®ã‚’è¡Œã†ãŸã‚ã®ã‚¯ãƒ©ã‚¹å®šç¾©
 */
 namespace Container { /* LZComp::Container */
 
-static unsigned char reverse_bits[] = { /* RealLive—p */
+static unsigned char reverse_bits[] = { /* RealLiveç”¨ */
   0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70, 0xf0,
   0x08, 0x88, 0x48, 0xc8, 0x28, 0xa8, 0x68, 0xe8, 0x18, 0x98, 0x58, 0xd8, 0x38, 0xb8, 0x78, 0xf8,
   0x04, 0x84, 0x44, 0xc4, 0x24, 0xa4, 0x64, 0xe4, 0x14, 0x94, 0x54, 0xd4, 0x34, 0xb4, 0x74, 0xf4,
