@@ -10,10 +10,10 @@ Table of Contents:
 
 1) INTRODUCTION:
 -------------------------------------------------------------------------
-rlvm is a Free Software reimplementation of the RealLive interpreter,
-produced by VisualArt's KK. It is meant to provide Linux and Apple
-users with a compatible, portable interpreter to play VisualArts
-games, specifically those released by Key. It is licensed to you under
+rlvm is a Free Software reimplementation of the VisualArt's KK's
+RealLive interpreter. It is meant to provide Linux and Apple users
+with a compatible, portable interpreter to play VisualArts games,
+specifically those released by Key. It is licensed to you under
 "version 2 or later" of the GNU General Public License as published by
 the Free Software Foundation. (Later versions may explicitly be
 licensed under GPLv3).
