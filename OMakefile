@@ -43,7 +43,14 @@ else
     export
   export
 
-.SUBDIRS: vendor src test
+# Detect whether we should build the tests
+if $(or $(defined-env RLVM_NO_TEST), $(not $(CheckProg rlc)))
+  .SUBDIRS: vendor src
+  export
+else
+  .SUBDIRS: vendor src test
+  export
+
 .PHONY: tags docs
 
 tags:
