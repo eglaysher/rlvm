@@ -14,9 +14,8 @@ rlvm is a Free Software reimplementation of the VisualArt's KK's
 RealLive interpreter. It is meant to provide Linux and Apple users
 with a compatible, portable interpreter to play VisualArts games,
 specifically those released by Key. It is licensed to you under
-"version 2 or later" of the GNU General Public License as published by
-the Free Software Foundation. (Later versions may explicitly be
-licensed under GPLv3).
+version 3 or later of the GNU General Public License as published by
+the Free Software Foundation.
 
 rlvm is meant to be a compatibility utility; it is not an excuse for
 copyright infringement. Please do not acquire games from bittorrent /
@@ -28,7 +27,7 @@ decoding their file formats, to Haeleth for creating rldev along with
 answering all my dumb questions about the internal workings of the
 RealLive system, and to my current roomate for goading me on by
 claiming I'd abandon this project a week after I started. (He claimed
-this two and half years ago.)
+this one and a half years ago.)
 
 2) STATUS
 -------------------------------------------------------------------------
@@ -50,10 +49,12 @@ other games have been tested at this time.
 You will need the following libraries/utilities:
 
 - The omake build system
-- Haeleth's rldev package (which also needs omake)
 - boost 1.34.1
 - SDL and SDL_image
 - freetype
+
+Optionally, you may want:
+- Haeleth's rldev package (which builds the unit tests)
 
 Make sure that freetype-config and sdl-config are in your $PATH. The
 current OMakefiles are fairly naive and may need editing to point to
