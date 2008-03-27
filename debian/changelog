@@ -1,0 +1,6 @@
+rlvm (0.1) unstable; urgency=low
+
+  * Initial Release.
+  * Compatible with Planetarian.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Wed, 26 Mar 2008 22:07:06 -0700
