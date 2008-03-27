@@ -1,6 +1,6 @@
 
 rlvm, in aggregate is licensed under the GNU General Public License
-version 2 (or later). Some portions of the codebase have been
+version 3 (or later). Some portions of the codebase have been
 incorporated from other open source projects and are listed below with
 their respective licenses.
 
