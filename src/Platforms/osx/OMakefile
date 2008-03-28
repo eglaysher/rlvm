@@ -1,0 +1,16 @@
+
+.PHONY: clean
+
+########
+
+LRLFILES[] =
+  SDLMain
+
+StaticCObject(libRlvmOsx, $(LRLFILES))
+
+########
+
+.DEFAULT: libRlvmOsx$(EXT_OBJ)
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc

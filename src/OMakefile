@@ -15,7 +15,7 @@ else
 #CXXFLAGS += -DWIN32
 
 .PHONY: clean
-.SUBDIRS: libReallive Effects Modules MachineBase Systems
+.SUBDIRS: libReallive Effects Modules MachineBase Systems Platforms
 ########
 
 LIBRLVMFILES[] = 

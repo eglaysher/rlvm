@@ -1,0 +1,29 @@
+
+.PHONY: clean
+
+# Make it so we only build the correct os hook.
+if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT)))
+  .SUBDIRS:
+  .DEFAULT:
+  export
+else
+  switch $(shell uname -s)
+  case Darwin
+    .SUBDIRS: osx
+    .DEFAULT: osx
+    export
+  default
+    .SUBDIRS:
+    .DEFAULT:
+    export
+  export
+
+.SUBDIRS: osx
+.DEFAULT: osx
+
+########
+
+LIBS += -L/opt/local/lib
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc
