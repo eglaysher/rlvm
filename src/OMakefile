@@ -8,13 +8,14 @@ if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   CXXFLAGS = -EHsc -W3 -wd4800 -wd4819 -wd4996 -U__STRICT_ANSI__ /J -I$(SRCTOP) -I$(SRCTOP)/../vendor $(if $(defined-env DEBUG), -Od, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE -DSDL_main=main
   export
 else
-  CXXFLAGS = --ansi -Wall -U__STRICT_ANSI__ -funsigned-char -I$(SRCTOP) -I$(SRCTOP)/../vendor $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -D_THREAD_SAFE
+  INCLUDES = -I$(SRCTOP) -I$(SRCTOP)/../vendor $(shell sdl-config --cflags)
+  CXXFLAGS = --ansi -Wall -U__STRICT_ANSI__ -funsigned-char $(INCLUDES) $(if $(defined-env DEBUG), -g, -O2) $(PLATFORMFLAGS) -D_THREAD_SAFE
   export
 
 # for testing
 #CXXFLAGS += -DWIN32
 
-.PHONY: clean
+.PHONY: clean bundle
 .SUBDIRS: libReallive Effects Modules MachineBase Systems Platforms
 ########
 
@@ -69,6 +70,7 @@ if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   export
 else
   LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --libs) $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_program_options -lboost_serialization -lboost_filesystem -lboost_date_time -lboost_thread
+#  LDFLAGS += librlvm$(EXT_LIB) $(shell sdl-config --static-libs) /usr/local/lib/libfreetype.a /sw/lib/libSDL_image.a -lz $(PLATFORMLIBS) /sw/lib/libboost_program_options.a /sw/lib/libboost_serialization.a /sw/lib/libboost_filesystem.a /sw/lib/libboost_date_time.a /sw/lib/libboost_thread-mt.a
   export
 
 .DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)
@@ -76,3 +78,24 @@ rlvm$(EXE): librlvm$(EXT_LIB)
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvm$(EXE) rlvm$(EXE).stackdump
+  $(RM) -Rf rlvm.app/
+
+#########################################################################
+
+# Apple specific rule. These section is probably very Elliot's OSX
+# laptop specific; I'm not sure how I'd do this generically.
+section
+  # Filter out the default libSDLmain. Instead, we're going to use the 
+  # hacked up copy in Platforms/osx/ which will prompt the user for a 
+  # game folder with a cocoa library.
+  STATICSDLLIBS = $(filter-out %libSDLmain.a, $(shell sdl-config --static-libs))
+
+  LDFLAGS = Platforms/osx/libRlvmOsx.a librlvm$(EXT_LIB) $(STATICSDLLIBS) /usr/local/lib/libfreetype.a /sw/lib/libSDL_image.a -lz $(PLATFORMLIBS) /sw/lib/libboost_program_options.a /sw/lib/libboost_serialization.a /sw/lib/libboost_filesystem.a /sw/lib/libboost_date_time.a /sw/lib/libboost_thread-mt.a
+  CXXProgram(rlvm-osx-static, rlvm)
+
+  rlvm-osx-static: Platforms/osx/libRlvmOsx$(EXT_LIB) librlvm$(EXT_LIB)
+
+bundle: rlvm-osx-static
+  mkdir -p rlvm.app/Contents/MacOS
+  cp rlvm-osx-static rlvm.app/Contents/MacOS/rlvm
+  cp Platforms/osx/Info.plist.in rlvm.app/Contents/Info.plist

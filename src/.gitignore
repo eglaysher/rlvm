@@ -1,6 +1,9 @@
 .omakedb*
 .gdb_history
+.DS_Store
 rlvm
+rlvm-static
+rlvm.app
 librlvm.a
 alldefs.h.gch
 OMakefile.omc
@@ -10,3 +13,4 @@ rlas_*
 semantic.cache
 *.mshark
 *.diff
+*.a

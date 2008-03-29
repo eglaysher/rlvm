@@ -10,6 +10,8 @@
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
+#import <AppKit/NSPanel.h>
+
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
  it ourselves here. */
@@ -235,7 +237,7 @@ static void CustomApplicationMain (int argc, char **argv)
 #endif
 
 
-void setIncomingFilename(NSString* filename)
+BOOL setIncomingFilename(NSString* filename)
 {
   const char *temparg;
   size_t arglen;
@@ -284,9 +286,7 @@ void setIncomingFilename(NSString* filename)
     if (gCalledAppMainline)  /* app has started, ignore this document. */
         return FALSE;
 
-    setIncomingFilename(filename);
-
-    return TRUE;
+    return setIncomingFilename(filename);
 }
 
 
@@ -305,12 +305,14 @@ void setIncomingFilename(NSString* filename)
 
     /* If we were called from the Finder and we weren't given a file, 
        pop up a native modal dialog to select the file */
-    if(gFinderLaunch)
+    if(gArgc == 1)
     {
       NSOpenPanel *oPanel = [NSOpenPanel openPanel];
       [oPanel setAllowsMultipleSelection:NO];
-      [oPanel canChooseFiles:NO];
-      [oPanel canChooseDirectories:YES];
+      [oPanel setCanChooseFiles:NO];
+      [oPanel setCanChooseDirectories:YES];
+      [oPanel setTitle:@"Select game folder..."];
+      [oPanel setPrompt:@"Play"];
 
       int status = [oPanel runModal];
       if(status == NSCancelButton)
