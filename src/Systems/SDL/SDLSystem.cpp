@@ -68,6 +68,12 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
 
 SDLSystem::~SDLSystem()
 {
+  // Force the deletion of the various systems before we shut down
+  // SDL.
+  graphicsSystem.reset();
+  eventSystem.reset();
+  textSystem.reset();
+
   SDL_Quit();
 }
 
