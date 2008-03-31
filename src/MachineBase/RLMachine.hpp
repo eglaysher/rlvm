@@ -55,7 +55,7 @@ class RLModule;
 class LongOperation;
 class System;
 class Memory;
-class StackFrame;
+struct StackFrame;
 
 namespace boost { namespace serialization { } } 
 
