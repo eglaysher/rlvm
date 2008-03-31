@@ -235,6 +235,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Systems\Base\GraphicsObjectOfFile.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Systems\Base\GraphicsStackFrame.cpp"
 						>
 					</File>
@@ -273,6 +277,26 @@
 					<File
 						RelativePath=".\Systems\Base\SelectionElement.cpp"
 						>
+					</File>
+					<File
+						RelativePath=".\Systems\Base\Surface.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\Systems\Base\System.cpp"
@@ -391,6 +415,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\MachineBase\MappedRLModule.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MachineBase\Memory.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\MachineBase\reference.cpp"
 						>
 					</File>
@@ -410,6 +442,38 @@
 						RelativePath=".\MachineBase\RLOperation.cpp"
 						>
 					</File>
+					<File
+						RelativePath=".\MachineBase\SaveGameHeader.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\MachineBase\SerializationGlobal.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MachineBase\SerializationLocal.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MachineBase\StackFrame.cpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="&lt;GeneralOperations&gt;"
@@ -427,24 +491,28 @@
 					Name="&lt;libModules&gt;"
 					>
 					<File
-						RelativePath=".\Modules\BlindEffect.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\Modules\cp932toUnicode.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\Modules\Effect.cpp"
+						RelativePath=".\Modules\Module_Bgm.cpp"
 						>
-					</File>
-					<File
-						RelativePath=".\Modules\EffectFactory.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Modules\FadeEffect.cpp"
-						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\Modules\Module_Debug.cpp"
@@ -467,8 +535,48 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Modules\Module_Koe.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath=".\Modules\Module_Mem.cpp"
 						>
+					</File>
+					<File
+						RelativePath=".\Modules\Module_Mov.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\Modules\Module_Msg.cpp"
@@ -495,12 +603,52 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Modules\Module_Pcm.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath=".\Modules\Module_Refresh.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\Modules\Module_Scr.cpp"
 						>
+					</File>
+					<File
+						RelativePath=".\Modules\Module_Se.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\Modules\Module_Sel.cpp"
@@ -512,6 +660,10 @@
 					</File>
 					<File
 						RelativePath=".\Modules\Module_Sys.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Modules\Module_Sys_Date.cpp"
 						>
 					</File>
 					<File
@@ -555,15 +707,7 @@
 						>
 					</File>
 					<File
-						RelativePath=".\Modules\ScrollOnScrollOff.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\Modules\TextoutLongOperation.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Modules\WipeEffect.cpp"
 						>
 					</File>
 					<File
@@ -856,80 +1000,38 @@
 							/>
 						</FileConfiguration>
 					</File>
-					<Filter
-						Name="json"
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Effects"
+				>
+				<Filter
+					Name="&lt;libEffects&gt;"
+					>
+					<File
+						RelativePath=".\Effects\BlindEffect.cpp"
 						>
-						<Filter
-							Name="&lt;libjsoncpp&gt;"
-							>
-							<File
-								RelativePath="..\vendor\json\json_reader.cpp"
-								>
-								<FileConfiguration
-									Name="Debug|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										AdditionalIncludeDirectories="&quot;$(ProjectDir)vendor\json&quot;"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										AdditionalIncludeDirectories="&quot;$(ProjectDir)vendor\json&quot;"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\vendor\json\json_value.cpp"
-								>
-								<FileConfiguration
-									Name="Debug|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										AdditionalIncludeDirectories="&quot;$(ProjectDir)vendor\json&quot;"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										AdditionalIncludeDirectories="&quot;$(ProjectDir)vendor\json&quot;"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\vendor\json\json_writer.cpp"
-								>
-								<FileConfiguration
-									Name="Debug|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										AdditionalIncludeDirectories="&quot;$(ProjectDir)vendor\json&quot;"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										AdditionalIncludeDirectories="&quot;$(ProjectDir)vendor\json&quot;"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-							</File>
-						</Filter>
-					</Filter>
+					</File>
+					<File
+						RelativePath=".\Effects\Effect.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Effects\EffectFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Effects\FadeEffect.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Effects\ScrollOnScrollOff.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Effects\WipeEffect.cpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
@@ -944,6 +1046,10 @@
 			</File>
 			<File
 				RelativePath=".\dateUtil.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LazyArray.hpp"
 				>
 			</File>
 			<File
@@ -966,6 +1072,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\MachineBase\MappedRLModule.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MachineBase\Memory.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\MachineBase\reference.hpp"
 					>
 				</File>
@@ -979,6 +1093,18 @@
 				</File>
 				<File
 					RelativePath=".\MachineBase\RLOperation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MachineBase\SaveGameHeader.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MachineBase\Serialization.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MachineBase\StackFrame.hpp"
 					>
 				</File>
 				<Filter
@@ -1014,23 +1140,11 @@
 				Name="Modules"
 				>
 				<File
-					RelativePath=".\Modules\BlindEffect.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Modules\cp932toUnicode.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Modules\Effect.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Modules\EffectFactory.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Modules\FadeEffect.hpp"
+					RelativePath=".\Modules\Module_Bgm.hpp"
 					>
 				</File>
 				<File
@@ -1054,7 +1168,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Modules\Module_Koe.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Modules\Module_Mem.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Modules\Module_Mov.hpp"
 					>
 				</File>
 				<File
@@ -1082,11 +1204,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Modules\Module_Pcm.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Modules\Module_Refresh.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\Modules\Module_Scr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Modules\Module_Se.hpp"
 					>
 				</File>
 				<File
@@ -1099,6 +1229,10 @@
 				</File>
 				<File
 					RelativePath=".\Modules\Module_Sys.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Modules\Module_Sys_Date.hpp"
 					>
 				</File>
 				<File
@@ -1126,15 +1260,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Modules\ScrollOnScrollOff.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Modules\TextoutLongOperation.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Modules\WipeEffect.hpp"
 					>
 				</File>
 				<File
@@ -1174,6 +1300,10 @@
 					</File>
 					<File
 						RelativePath=".\Systems\Base\GraphicsObjectData.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Systems\Base\GraphicsObjectOfFile.hpp"
 						>
 					</File>
 					<File
@@ -1339,6 +1469,90 @@
 				</File>
 				<File
 					RelativePath=".\libReallive\scenario_internals.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="../vendor"
+				>
+				<Filter
+					Name="&lt;libVendorLibs&gt;"
+					>
+					<File
+						RelativePath="..\vendor\alphablit.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\dirent_impl.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\file.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\file_impl.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\glew.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\glxew.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\lru_cache.hpp"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\SDL_ttf.h"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\vendor\utf8.h"
+						>
+					</File>
+					<File
+						RelativePath="..\vendor\wglew.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Effects"
+				>
+				<File
+					RelativePath=".\Effects\BlindEffect.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Effects\Effect.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Effects\EffectFactory.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Effects\FadeEffect.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Effects\ScrollOnScrollOff.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Effects\WipeEffect.hpp"
 					>
 				</File>
 			</Filter>

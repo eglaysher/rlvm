@@ -65,6 +65,7 @@ struct LazyArray_data
 
     IntWrapper& operator=(int in) {
       num = in;
+	  return *this;
     }
 
     operator int() const {

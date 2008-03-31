@@ -50,6 +50,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
 
 // -----------------------------------------------------------------------
 

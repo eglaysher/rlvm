@@ -46,7 +46,7 @@ bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
 void NullTextWindow::setName(RLMachine& machine, const std::string& utf8name, 
                              const std::string& nextChar)
 {
-  m_currentContents += "\{" + utf8name + "}";
+  m_currentContents += "\\{" + utf8name + "}";
 }
 
 // -----------------------------------------------------------------------
