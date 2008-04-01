@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9.00"
 	Name="tests"
 	ProjectGUID="{54FC71E0-5D46-46D8-A85A-7D461525F26E}"
 	RootNamespace="tests"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -40,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\vendor&quot;;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)test&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Program Files\boost\boost_1_34_1&quot;;C:\cygwin\home\Elliot\libraries\include;&quot;$(SolutionDir)..\vendor&quot;;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)test&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC;SDL_main=main"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -69,6 +70,8 @@
 				GenerateDebugInformation="true"
 				OptimizeReferences="1"
 				EnableCOMDATFolding="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -88,9 +91,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -144,6 +144,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="OpenGL32.lib GlU32.lib SDL.lib SDL_image.lib SDL_ttf.lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)objs\$(ConfigurationName)&quot;;&quot;$(SolutionDir)libs&quot;"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -162,9 +164,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

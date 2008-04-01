@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "librlvm", "src\librlvm.vcproj", "{9D133B45-1C77-453D-A44C-887619407513}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rlvm", "src\rlvm.vcproj", "{E89AF197-6E99-4E1C-A698-D5784A1F04B9}"
