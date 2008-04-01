@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\boost\boost_1_34_1&quot;;C:\cygwin\home\Elliot\libraries\include;&quot;$(ProjectDir)..\vendor&quot;;&quot;$(ProjectDir)&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Boost\include\boost-1_34_1&quot;;C:\cygwin\home\Elliot\libraries\include;&quot;$(ProjectDir)..\vendor&quot;;&quot;$(ProjectDir)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC;SDL_main=main"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,6 +65,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_34_1\lib&quot;;C:\cygwin\home\Elliot\libraries\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
