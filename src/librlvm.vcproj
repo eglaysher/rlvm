@@ -107,7 +107,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\vendor&quot;;&quot;$(ProjectDir)&quot;"
+				AdditionalIncludeDirectories="C:\cygwin\home\Elliot\libraries\include;&quot;C:\Boost\include\boost-1_34_1&quot;;&quot;$(ProjectDir)..\vendor&quot;;&quot;$(ProjectDir)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC;SDL_main=main"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
@@ -129,6 +129,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalLibraryDirectories="C:\Boost\lib;C:\cygwin\home\Elliot\libraries\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

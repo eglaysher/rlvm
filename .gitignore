@@ -10,3 +10,4 @@ svn-commit.tmp*
 *.o
 *~
 *.la
+objs
