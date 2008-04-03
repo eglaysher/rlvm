@@ -151,22 +151,30 @@ namespace fs = boost::filesystem;
 
 void printVersionInformation()
 {
-  const string svnRevision = "$Rev$";
-  string number = svnRevision.substr(6);
-  stringstream ss;
-  ss << number;
-  int ver;
-  ss >> ver;
-
   cout
-    << "rlvm (svn revision #" << ver << ")" << endl
-    << "Copyright (C) 2006,2007 Elliot Glaysher, Haeleth, et all." << endl
-    << "This is free software.  You may redistribute copies of it under the terms of"
+    << "rlvm (version 0.1)" << endl
+    << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, et all."
+    << endl << endl
+    << "This program is free software: you can redistribute it and/or modify"
     << endl
-    << "the GNU General Public License <http://www.gnu.org/licenses/gpl.html>."
+    << "it under the terms of the GNU General Public License as published by"
     << endl
-    << "There is NO WARRANTY, to the extent permitted by law."
-    << endl;
+    << "the Free Software Foundation, either version 3 of the License, or"
+    << endl
+    << "(at your option) any later version."
+    << endl << endl
+    << "This program is distributed in the hope that it will be useful,"
+    << endl
+    << "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+    << endl
+    << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+    << endl
+    << "GNU General Public License for more details."
+    << endl << endl
+    << "You should have received a copy of the GNU General Public License"
+    << endl
+    << "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+    << endl << endl;
 }
 
 // -----------------------------------------------------------------------

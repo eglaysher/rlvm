@@ -87,16 +87,16 @@ clean:
 section
   # Filter out the default libSDLmain. Instead, we're going to use the 
   # hacked up copy in Platforms/osx/ which will prompt the user for a 
-  # game folder with a cocoa library.
+  # game folder with a cocoa file selector.
   STATICSDLLIBS = $(filter-out %libSDLmain.a, $(shell sdl-config --static-libs))
 
-  LDFLAGS = Platforms/osx/libRlvmOsx.a librlvm$(EXT_LIB) $(STATICSDLLIBS) /usr/local/lib/libfreetype.a /sw/lib/libSDL_image.a -lz $(PLATFORMLIBS) /sw/lib/libboost_program_options.a /sw/lib/libboost_serialization.a /sw/lib/libboost_filesystem.a /sw/lib/libboost_date_time.a /sw/lib/libboost_thread-mt.a
+  LDFLAGS = Platforms/osx/libRlvmOsx$(EXT_LIB) librlvm$(EXT_LIB) $(STATICSDLLIBS) /usr/local/lib/libfreetype.a /sw/lib/libSDL_image.a -lz $(PLATFORMLIBS) /sw/lib/libboost_program_options.a /sw/lib/libboost_serialization.a /sw/lib/libboost_filesystem.a /sw/lib/libboost_date_time.a /sw/lib/libboost_thread-mt.a
   CXXProgram(rlvm-osx-static, rlvm)
 
   rlvm-osx-static: Platforms/osx/libRlvmOsx$(EXT_LIB) librlvm$(EXT_LIB)
 
-bundle: rlvm-osx-static
-  mkdir -p rlvm.app/Contents/MacOS
-  cp rlvm-osx-static rlvm.app/Contents/MacOS/rlvm
-  strip rlvm.app/Contents/MacOS/rlvm
-  cp Platforms/osx/Info.plist.in rlvm.app/Contents/Info.plist
+  bundle: rlvm-osx-static Platforms/osx/Info.plist.in
+    mkdir -p rlvm.app/Contents/MacOS
+    cp rlvm-osx-static rlvm.app/Contents/MacOS/rlvm
+    strip rlvm.app/Contents/MacOS/rlvm
+    cp Platforms/osx/Info.plist.in rlvm.app/Contents/Info.plist
