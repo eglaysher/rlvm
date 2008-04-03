@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;C:\Boost\include\boost-1_34_1&quot;;C:\cygwin\home\Elliot\libraries\include;&quot;$(ProjectDir)..\vendor&quot;;&quot;$(ProjectDir)&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC;SDL_main=main"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -123,7 +123,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;C:\Boost\include\boost-1_34_1&quot;;C:\cygwin\home\Elliot\libraries\include;&quot;$(ProjectDir)..\vendor&quot;;&quot;$(ProjectDir)&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC;SDL_main=main"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NOMINMAX;_THREAD_SAFE;GLEW_STATIC"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
 				UsePrecompiledHeader="2"
@@ -206,6 +206,22 @@
 			<File
 				RelativePath=".\Platforms\win32\SDL_win32_main.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

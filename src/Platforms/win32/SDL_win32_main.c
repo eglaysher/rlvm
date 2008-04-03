@@ -244,10 +244,21 @@ int console_main(int argc, char *argv[])
 
     /* erg:04/02/08: If we weren't passed any arguments, show a dialog
 	   to the user to select the game folder. */
-	if (1) 
+/*	if (argc == 1) 
 	{
+      // We weren't given a 
+	  char* locationName = 
 
-	}
+      // Build the new argc/argv
+	  char* new_argv[] = {
+		  argv[0],
+		  locationName,
+		  NULL
+	  };
+
+	  argc = 2;
+	  argv = new_argv;
+	}*/
 
 	/* Run the application main() code */
 	status = SDL_main(argc, argv);
