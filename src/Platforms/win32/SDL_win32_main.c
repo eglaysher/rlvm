@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WIN32_LEAN_AND_MEAN
+/*#define WIN32_LEAN_AND_MEAN*/
 #include <windows.h>
 
 #ifdef _WIN32_WCE
@@ -199,12 +199,93 @@ static void cleanup_output(void)
 #define console_main main
 #endif
 
+/* Opens a file. */
+char* openFile()
+{
+  char* outPathName = (char*)malloc(MAX_PATH * 10);
+  char* title = (char*)malloc(MAX_PATH * 10);
+  int error;
+  char* msg;
+  OPENFILENAME ofn;
+  int pathNameLen;
+
+  outPathName[0] = '\0';
+  title[0] = '\0';
+
+  ofn.lStructSize = sizeof(OPENFILENAME);
+  ofn.hwndOwner = NULL;
+  ofn.hInstance = NULL;
+  ofn.lpstrFilter = "Gameexe Control File\0Gameexe.ini\0\0";
+  ofn.lpstrCustomFilter = NULL;
+  ofn.nMaxCustFilter = 0;
+  ofn.nFilterIndex = 0;
+  ofn.lpstrFile = outPathName;
+  ofn.nMaxFile = MAX_PATH * 10;
+  ofn.lpstrFileTitle = title;
+  ofn.nMaxFileTitle = MAX_PATH * 10;
+  ofn.lpstrInitialDir = NULL; /* Eventually, we should be smart about this. */
+  ofn.lpstrTitle = "Open RealLive Game...";
+  ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+  ofn.nFileOffset = 0;
+  ofn.nFileExtension = 0;
+  ofn.lpstrDefExt = NULL;
+  ofn.lpfnHook = NULL;
+  ofn.lpTemplateName = NULL;
+
+  if(GetOpenFileName(&ofn)) {
+    /* Chop off the worthless Gameexe.ini file */
+	pathNameLen = strlen(ofn.lpstrFile);
+	if(pathNameLen > 11)
+      ofn.lpstrFile[pathNameLen - 11] = '\0';
+    return ofn.lpstrFile;
+  } else {
+    error = CommDlgExtendedError();
+
+	/* No error; user canceled. */
+	if(error == 0)
+	  return NULL;
+
+    msg = "Unknown";
+    switch (error)
+    {
+        case CDERR_FINDRESFAILURE: msg = "CDERR_FINDRESFAILURE"; break;
+        case CDERR_INITIALIZATION: msg = "CDERR_INITIALIZATION"; break;
+        case CDERR_LOADRESFAILURE: msg = "CDERR_LOADRESFAILURE"; break;
+        case CDERR_LOADSTRFAILURE: msg = "CDERR_LOADSTRFAILURE"; break;
+        case CDERR_LOCKRESFAILURE: msg = "CDERR_LOCKRESFAILURE"; break;
+        case CDERR_MEMALLOCFAILURE: msg = "CDERR_MEMALLOCFAILURE"; break;
+        case CDERR_MEMLOCKFAILURE: msg = "CDERR_MEMLOCKFAILURE"; break;
+        case CDERR_NOHINSTANCE: msg = "CDERR_NOHINSTANCE"; break;
+        case CDERR_NOHOOK: msg = "CDERR_NOHOOK"; break;
+        case CDERR_NOTEMPLATE: msg = "CDERR_NOTEMPLATE"; break;
+        case CDERR_STRUCTSIZE: msg = "CDERR_STRUCTSIZE"; break;
+        case  PDERR_RETDEFFAILURE: msg = "PDERR_RETDEFFAILURE"; break;
+        case  PDERR_PRINTERNOTFOUND: msg = "PDERR_PRINTERNOTFOUND"; break;
+        case  PDERR_PARSEFAILURE: msg = "PDERR_PARSEFAILURE"; break;
+        case  PDERR_NODEVICES: msg = "PDERR_NODEVICES"; break;
+        case  PDERR_NODEFAULTPRN: msg = "PDERR_NODEFAULTPRN"; break;
+        case  PDERR_LOADDRVFAILURE: msg = "PDERR_LOADDRVFAILURE"; break;
+        case  PDERR_INITFAILURE: msg = "PDERR_INITFAILURE"; break;
+        case  PDERR_GETDEVMODEFAIL: msg = "PDERR_GETDEVMODEFAIL"; break;
+        case  PDERR_DNDMMISMATCH: msg = "PDERR_DNDMMISMATCH"; break;
+        case  PDERR_DEFAULTDIFFERENT: msg = "PDERR_DEFAULTDIFFERENT"; break;
+        case  PDERR_CREATEICFAILURE: msg = "PDERR_CREATEICFAILURE"; break;
+        default: break;
+    }
+
+	fprintf(stderr, "Couldn't bring up open box: %s (%d)\n", msg, error);
+
+    return NULL;
+  }
+}
+
 /* This is where execution begins [console apps] */
 int console_main(int argc, char *argv[])
 {
 	size_t n;
 	char *bufp, *appname;
 	int status;
+	char* new_argv[3];
 
 	/* Get the class name from argv[0] */
 	appname = argv[0];
@@ -244,21 +325,21 @@ int console_main(int argc, char *argv[])
 
     /* erg:04/02/08: If we weren't passed any arguments, show a dialog
 	   to the user to select the game folder. */
-/*	if (argc == 1) 
+	if (argc == 1)
 	{
-      // We weren't given a 
-	  char* locationName = 
+      /* We weren't given a file. Select one. */
+	  char* locationName = openFile();
 
-      // Build the new argc/argv
-	  char* new_argv[] = {
-		  argv[0],
-		  locationName,
-		  NULL
-	  };
+	  if(locationName == NULL)
+		  exit(-1);
+
+      new_argv[0] = argv[0];
+	  new_argv[1] = locationName;
+	  new_argv[2] = NULL;
 
 	  argc = 2;
 	  argv = new_argv;
-	}*/
+	}
 
 	/* Run the application main() code */
 	status = SDL_main(argc, argv);
