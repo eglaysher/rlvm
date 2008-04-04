@@ -509,7 +509,8 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
  * modified; it will either be put in an object, which is immutable,
  * or it will be copied into the DC.
  */
-shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& filename)
+shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
+  const boost::filesystem::path& filename)
 {
   // First check to see if this surface is already in our internal cache
   shared_ptr<Surface> cachedSurface = m_imageCache.fetch(filename);
@@ -519,7 +520,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
   }
 
   // Glue code to allow my stuff to work with Jagarl's loader
-  FILE* file = fopen(filename.c_str(), "rb");
+  FILE* file = fopen(filename.file_string().c_str(), "rb");
   if(!file)
   {
     ostringstream oss;
@@ -546,8 +547,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(const std::string& fi
   SDL_Surface* s = 0;
   if (conv->Read(mem)) {
     MaskType is_mask = conv->IsMask() ? ALPHA_MASK : NO_MASK;
-    if (is_mask == ALPHA_MASK) { // alpha ¤¬¤¹¤Ù¤Æ 0xff ¤Ê¤é¥Þ¥¹¥¯Ìµ¤·¤È¤¹¤ë
-//      cerr << "Loading alpha mask..." << endl;
+    if (is_mask == ALPHA_MASK) { // alpha ¤¬¤¹¤Ù¤Æ 0xff ¤Ê¤é¥Þ¥¹¥¯Ìµ¤·¤È¤¹¤E//      cerr << "Loading alpha mask..." << endl;
       int len = conv->Width()*conv->Height();
       unsigned int* d = (unsigned int*)mem;
       int i; for (i=0; i<len; i++) {

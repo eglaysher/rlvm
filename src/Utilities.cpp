@@ -61,16 +61,17 @@ using std::ifstream;
 using std::ios;
 using std::ostream_iterator;
 
+namespace fs = boost::filesystem;
+
 // -----------------------------------------------------------------------
 
-string correctPathCase(const string& fileName)
+fs::path correctPathCase(const fs::path& Path)
 {
   using namespace boost::filesystem;  
-  path Path(fileName);
-
+ 
 #ifndef CASE_SENSITIVE_FILESYSTEM
-  if(!exists(Path)) return "";
-  return fileName;
+  if(!exists(Path)) return path();
+  return Path;
 #else
   // If the path is OK as it stands, do nothing.
   if (exists(Path)) return fileName;
@@ -152,8 +153,9 @@ const std::vector<std::string> GAN_FILETYPES =
  * @todo This function is a hack and needs to be completely rewritten
  *       to use the \#FOLDNAME table in the Gameexe.ini file.
  */
-string findFile(RLMachine& machine, const string& fileName,
-                const vector<string>& extensions)
+boost::filesystem::path findFile(RLMachine& machine, 
+								 const std::string& fileName,
+							     const vector<string>& extensions)
 {
   using namespace boost;
 
@@ -163,15 +165,16 @@ string findFile(RLMachine& machine, const string& fileName,
     string(fileName.begin(), find(fileName.begin(), fileName.end(), '?'));
 
   // Iterate across the search paths in the order they were specified.
-  const vector<string>& blah = machine.system().getSearchPaths();
-  for(vector<string>::const_iterator it = blah.begin(); it != blah.end(); ++it)
+  const vector<boost::filesystem::path>& blah = machine.system().getSearchPaths();
+  for(vector<boost::filesystem::path>::const_iterator it = blah.begin(); it != blah.end(); ++it)
   {
     for(vector<string>::const_iterator ext = extensions.begin();
         ext != extensions.end(); ++ext)
     {
-      string file = *it + "/" + newName + "." + *ext;
-      string correctFile = correctPathCase(file);
-      if(correctFile != "")
+	  string fileWithExt = newName + "." + *ext;
+	  fs::path path = *it / fileWithExt;
+	  fs::path correctFile = correctPathCase(path);
+      if(!correctFile.empty())
       {
         return correctFile;
       }

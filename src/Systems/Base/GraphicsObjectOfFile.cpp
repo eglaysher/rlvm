@@ -48,6 +48,7 @@
 #include "Utilities.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
@@ -87,7 +88,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 void GraphicsObjectOfFile::loadFile(RLMachine& machine)
 {
-  string fullPath = findFile(machine, m_filename);
+  fs::path fullPath = findFile(machine, m_filename);
   m_surface = machine.system().graphics().loadSurfaceFromFile(fullPath);
 }
 

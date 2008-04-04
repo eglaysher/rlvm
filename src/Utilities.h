@@ -33,6 +33,7 @@
 #include <iosfwd>
 
 #include <boost/scoped_array.hpp>
+#include <boost/filesystem.hpp>
 
 class RLMachine;
 class Gameexe;
@@ -47,7 +48,7 @@ class Gameexe;
  *         returns a copy of the input with correct case, or the empty
  *         string if no solution could be found.
  */
-std::string correctPathCase(const std::string& fileName);
+boost::filesystem::path correctPathCase(const boost::filesystem::path& Path);
 
 // -----------------------------------------------------------------------
 
@@ -71,8 +72,9 @@ extern const std::vector<std::string> GAN_FILETYPES;
  * @param fileName The filename given in the source code.
  * @return The full path of the file
  */
-std::string findFile(RLMachine& machine, const std::string& fileName,
-                     const std::vector<std::string>& extensions = ALL_FILETYPES);
+boost::filesystem::path findFile(RLMachine& machine, 
+								 const std::string& fileName,
+								 const std::vector<std::string>& extensions = ALL_FILETYPES);
 
 // -----------------------------------------------------------------------
 

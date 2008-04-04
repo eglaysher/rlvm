@@ -68,7 +68,7 @@ public:
   virtual GraphicsObject& getObject(int layer, int objNumber);
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const std::string& filename);
+  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const boost::filesystem::path& filename);
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(int w, int h);
 

@@ -92,7 +92,7 @@ private:
    * @todo Think about enforcing the immutability by adding 'const' to
    *       half the program.
    */
-  LRUCache<std::string, boost::shared_ptr<Surface> > m_imageCache;
+  LRUCache<boost::filesystem::path, boost::shared_ptr<Surface> > m_imageCache;
 
   // ---------------------------------------------------------------------
 
@@ -160,7 +160,7 @@ public:
   virtual void freeDC(int dc);
 
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-    const std::string& filename);
+    const boost::filesystem::path& filename);
 
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(int w, int h);

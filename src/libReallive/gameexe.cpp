@@ -42,6 +42,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -49,6 +50,7 @@
 
 using namespace boost;
 using namespace std;
+namespace fs = boost::filesystem;
 
 #define is_space(c) (c == '\r' || c == '\n' || c == ' ' || c == '\t')
 #define is_num(c)   (c == '-' || (c >= '0' && c <= '9'))
@@ -100,12 +102,16 @@ Gameexe::Gameexe()
 
 // -----------------------------------------------------------------------
 
-Gameexe::Gameexe(const std::string& gameexefile)
+Gameexe::Gameexe(const fs::path& gameexefile)
   : data_(), cdata_()
 {
-  ifstream ifs(gameexefile.c_str());
+  fs::ifstream ifs(gameexefile);
   if(!ifs)
-    throw libReallive::Error("Could not find Gameexe.ini file!");
+  {
+    ostringstream oss;
+    oss << "Could not find Gameexe.ini file! (Looking in " << gameexefile << ")";
+    throw libReallive::Error(oss.str());
+  }
 
   string line;
   while(getline(ifs, line))

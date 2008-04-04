@@ -41,6 +41,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/filesystem/path.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -345,7 +346,7 @@ public:
 
   // ----------------------------------------- [ Surface loading functions ]
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-    const std::string& filename) = 0;
+	  const boost::filesystem::path& filename) = 0;
 
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 

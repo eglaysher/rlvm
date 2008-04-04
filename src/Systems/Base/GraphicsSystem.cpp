@@ -70,6 +70,8 @@ using std::fill;
 using std::vector;
 using std::ostringstream;
 
+namespace fs = boost::filesystem;
+
 // -----------------------------------------------------------------------
 // GraphicsSystem::GraphicsObjectSettings
 // -----------------------------------------------------------------------
@@ -510,12 +512,13 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
                                                    const std::string& filename)
 {
   // Get the path to get the file type (which won't be in filename)
-  string fullPath = findFile(machine, filename);
-  if(iends_with(fullPath, "g00") || iends_with(fullPath, "pdt"))
+  fs::path fullPath = findFile(machine, filename);
+  string fileStr = fullPath.file_string();
+  if(iends_with(fileStr, "g00") || iends_with(fileStr, "pdt"))
   {
     return new GraphicsObjectOfFile(machine, filename);
   }
-  else if(iends_with(fullPath, "anm"))
+  else if(iends_with(fileStr, "anm"))
   {
     return new AnmGraphicsObjectData(machine, filename);
   }

@@ -58,9 +58,8 @@
 
 #include "MachineBase/RLMachine.hpp"
 
-#include <fstream>
-
 #include <boost/serialization/export.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -73,6 +72,8 @@ using std::ostringstream;
 using std::cerr;
 using std::endl;
 using std::vector;
+
+namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 // GanGraphicsObjectData
@@ -102,12 +103,12 @@ GanGraphicsObjectData::~GanGraphicsObjectData()
 
 void GanGraphicsObjectData::load(RLMachine& machine)
 {
-  string imgFilePath = findFile(machine, m_imgFilename, IMAGE_FILETYPES);
-  string ganFilePath = findFile(machine, m_ganFilename, GAN_FILETYPES);
+  fs::path imgFilePath = findFile(machine, m_imgFilename, IMAGE_FILETYPES);
+  fs::path ganFilePath = findFile(machine, m_ganFilename, GAN_FILETYPES);
 
   image = machine.system().graphics().loadSurfaceFromFile(imgFilePath);
 
-  ifstream ifs(ganFilePath.c_str(), ifstream::in | ifstream::binary);
+  fs::ifstream ifs(ganFilePath, ifstream::in | ifstream::binary);
   if(!ifs)
   {
     ostringstream oss;
@@ -124,8 +125,8 @@ void GanGraphicsObjectData::load(RLMachine& machine)
     throw rlvm::Exception(oss.str());
   }
 
-  testFileMagic(ganFilePath, ganData, fileSize);
-  readData(machine, ganFilePath, ganData, fileSize);  
+  testFileMagic(m_ganFilename, ganData, fileSize);
+  readData(machine, m_ganFilename, ganData, fileSize);  
 }
 
 // -----------------------------------------------------------------------

@@ -68,6 +68,8 @@
 using namespace std;
 using namespace boost;
 
+namespace fs = boost::filesystem;
+
 const int SEL_SIZE = 16;
 
 /**
@@ -130,7 +132,7 @@ void blitDC1toDC0(RLMachine& machine)
  * @param useAlpha Whether to use the alpha
  */
 void loadImageToDC1(GraphicsSystem& graphics,
-                    const std::string& fileName,
+					const fs::path& fileName,
                     int x, int y, int width, int height,
                     int dx, int dy, int opacity, bool useAlpha)
 {
@@ -192,9 +194,9 @@ void handleOpenBgFileName(
   if(fileName != "?")
   {
     if(fileName == "???") fileName = graphics.defaultGrpName();
-    fileName = findFile(machine, fileName);
+	fs::path filePath = findFile(machine, fileName);
     
-    loadImageToDC1(graphics, fileName, x1, y1, x2, y2, dx, dy, 
+    loadImageToDC1(graphics, filePath, x1, y1, x2, y2, dx, dy, 
                    opacity, useAlpha);
   }
 }
@@ -318,8 +320,8 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     graphics.addGraphicsStackFrame(GRP_LOAD)
       .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
 
-    filename = findFile(machine, filename);
-    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+	fs::path filepath = findFile(machine, filename);
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filepath));
 
     if(dc != 0 && dc != 1)
       graphics.allocateDC(dc,
@@ -355,9 +357,9 @@ struct Grp_load_3 : public RLOp_Void_9<
 
   void operator()(RLMachine& machine, string filename, int dc,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
-    filename = findFile(machine, filename);
+	fs::path filepath = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filename));
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filepath));
     m_space.translateToRec(x1, y1, x2, y2);
 
     if(dc != 0 && dc != 1)
@@ -482,9 +484,9 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
-    filename = findFile(machine, filename);
+    fs::path filepath = findFile(machine, filename);
 
-    loadImageToDC1(graphics, filename,
+    loadImageToDC1(graphics, filepath,
                    selEffect[0], selEffect[1], selEffect[2], selEffect[3],
                    selEffect[4], selEffect[5], opacity, m_useAlpha);
 
@@ -535,10 +537,10 @@ struct Grp_open_3 : public RLOp_Void_9<
   {
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
-    filename = findFile(machine, filename);
+	fs::path filepath = findFile(machine, filename);
 
     m_space.translateToRec(x1, y1, x2, y2);
-    loadImageToDC1(graphics, filename, x1, y1, x2, y2, dx, dy, opacity, m_useAlpha);
+    loadImageToDC1(graphics, filepath, x1, y1, x2, y2, dx, dy, opacity, m_useAlpha);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);

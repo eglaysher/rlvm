@@ -66,6 +66,7 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <boost/filesystem/fstream.hpp>
 
 using boost::scoped_array;
 using boost::shared_ptr;
@@ -73,6 +74,7 @@ using boost::shared_ptr;
 using libReallive::read_i32;
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
@@ -112,9 +114,9 @@ bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anmData)
 
 void AnmGraphicsObjectData::loadAnmFile(RLMachine& machine)
 {
-  string file = findFile(machine, m_filename);
+  fs::path file = findFile(machine, m_filename);
 
-  ifstream ifs(file.c_str(), ifstream::in | ifstream::binary);
+  fs::ifstream ifs(file, ifstream::in | ifstream::binary);
   if(!ifs)
   {
     ostringstream oss;
@@ -157,8 +159,8 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
 
   // Read the corresponding image file we read from, and load the image.
   string rawFileName = data + 0x1c;
-  string fileName = findFile(machine, rawFileName, IMAGE_FILETYPES);
-  image = machine.system().graphics().loadSurfaceFromFile(fileName);
+  fs::path filePath = findFile(machine, rawFileName, IMAGE_FILETYPES);
+  image = machine.system().graphics().loadSurfaceFromFile(filePath);
   
   // Read the frame list
   const char* buf = data + 0xb8;

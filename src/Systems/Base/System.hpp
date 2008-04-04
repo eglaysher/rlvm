@@ -89,7 +89,7 @@ private:
 
   void checkSyscomIndex(int index, const char* function);
 
-  std::vector<std::string> cachedSearchPaths;
+  std::vector<boost::filesystem::path> cachedSearchPaths;
 
   void addPath(GameexeInterpretObject gio);
 
@@ -173,7 +173,7 @@ public:
   bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
   void setConfirmSaveLoad(const bool in) { m_globals.m_confirmSaveLoad = in; }
 
-  const std::vector<std::string>& getSearchPaths();
+  const std::vector<boost::filesystem::path>& getSearchPaths();
 
   /**
    * Resets the present values of the system; this doesn't clear user

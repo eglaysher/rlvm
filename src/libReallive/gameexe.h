@@ -39,6 +39,7 @@
 #include <string>
 #include <sstream>
 #include <boost/iterator/iterator_facade.hpp>
+#include <boost/filesystem/path.hpp>
 
 #ifdef __GNUC__
 //// Can't read STL error messages.
@@ -221,7 +222,7 @@ public:
    * Create a Gameexe based off the configuration data in the incoming
    * file.
    */
-  Gameexe(const std::string& filename);
+  Gameexe(const boost::filesystem::path& filename);
 
   /**
    * Constructor
@@ -294,7 +295,7 @@ public:
   /** 
    * Returns the number of keys in the Gameexe.ini file.
    */
-  int size() const {
+  size_t size() const {
     return data_.size();
   }
 

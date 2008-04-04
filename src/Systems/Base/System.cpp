@@ -149,14 +149,14 @@ int System::readSyscom(int syscom)
 
 void System::addPath(GameexeInterpretObject gio)
 {
-  string gamepath = gameexe()("__GAMEPATH").to_string();
-  gamepath += gio.to_string();
+  boost::filesystem::path gamepath(gameexe()("__GAMEPATH").to_string());
+  gamepath /= gio.to_string();
   cachedSearchPaths.push_back(gamepath);
 }
 
 // -----------------------------------------------------------------------
 
-const std::vector<std::string>& System::getSearchPaths()
+const std::vector<boost::filesystem::path>& System::getSearchPaths()
 {
   if(cachedSearchPaths.size() == 0)
   {

@@ -245,8 +245,8 @@ public:
    * 
    * @{
    */
-  void setAutoMode(int i) { m_autoMode = i; }
-  int autoMode() const { return m_autoMode; }
+  void setAutoMode(int i) { m_autoMode = (bool)i; }
+  int autoMode() const { return (int)m_autoMode; }
 
   void setAutoBaseTime(int i) { m_globals.autoModeBaseTime = i; }
   int autoBaseTime() const { return m_globals.autoModeBaseTime; }

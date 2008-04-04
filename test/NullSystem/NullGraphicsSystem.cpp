@@ -47,7 +47,7 @@ GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
-  const std::string& filename) 
+  const boost::filesystem::path& filename)
 { return boost::shared_ptr<Surface>(); }
 
 // -----------------------------------------------------------------------

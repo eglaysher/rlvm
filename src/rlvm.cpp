@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
 
   // -----------------------------------------------------------------------
   // Process command line options
-  string gamerootPath, gameexePath, seenPath;
+  fs::path gamerootPath, gameexePath, seenPath;
 
   if(vm.count("help"))
   {
@@ -269,20 +269,20 @@ int main(int argc, char* argv[])
       cerr << "ERROR: Path '" << gamerootPath << "' does not exist." << endl;
       return -1;
     }
+
     if(!fs::is_directory(gamerootPath))
     {
       cerr << "ERROR: Path '" << gamerootPath << "' is not a directory." << endl;
       return -1;
     }
-    if (gamerootPath[gamerootPath.size() - 1] != '/') gamerootPath += "/";
 
     // Some games hide data in a lower subdirectory.  A little hack to
     // make these behave as expected...
-    if (correctPathCase(gamerootPath + "Gameexe.ini") == "") {
-      if (correctPathCase(gamerootPath + "KINETICDATA/Gameexe.ini") != "")
-        gamerootPath += "KINETICDATA/";
-      else if (correctPathCase(gamerootPath + "REALLIVEDATA/Gameexe.ini") != "")
-        gamerootPath += "REALLIVEDATA/";
+    if (!correctPathCase(gamerootPath / "Gameexe.ini").empty()) {
+      if (!correctPathCase(gamerootPath / "KINETICDATA" / "Gameexe.ini").empty())
+        gamerootPath /= "KINETICDATA/";
+      else if (!correctPathCase(gamerootPath / "REALLIVEDATA" / "Gameexe.ini").empty())
+        gamerootPath /= "REALLIVEDATA/";
       else
         cerr << "WARNING: Path '" << gamerootPath << "' may not contain a RealLive game." << endl;
     }
@@ -296,27 +296,27 @@ int main(int argc, char* argv[])
   // --gameexe
   if(vm.count("gameexe"))
   {
-    gameexePath = vm["gameexe"].as<string>();
+    gameexePath = correctPathCase(vm["gameexe"].as<string>());
   }
   else
   {
-    gameexePath = correctPathCase(gamerootPath + "Gameexe.ini");
-    cerr << "gameexePath: " << gameexePath << endl;
+    gameexePath = correctPathCase(gamerootPath / "Gameexe.ini");
   }
 
   // --seen
   if(vm.count("seen"))
   {
-    seenPath = vm["seen"].as<string>();
+    seenPath = correctPathCase(vm["seen"].as<string>());
   }
   else
   {
-    seenPath = correctPathCase(gamerootPath + "Seen.txt");
+    seenPath = correctPathCase(gamerootPath / "Seen.txt");
   }
 
   try {
+    cerr << "gameexePath: " << gameexePath << endl;
     Gameexe gameexe(gameexePath);
-    gameexe("__GAMEPATH") = gamerootPath;
+    gameexe("__GAMEPATH") = gamerootPath.file_string();
 
     // Possibly force starting at a different seen
     if(vm.count("start-seen"))
@@ -330,7 +330,7 @@ int main(int argc, char* argv[])
     }
 
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(seenPath);
+    libReallive::Archive arc(seenPath.file_string());
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
 
