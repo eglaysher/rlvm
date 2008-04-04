@@ -234,8 +234,8 @@ char* openFile()
 
   if(GetOpenFileName(&ofn)) {
     /* Chop off the worthless Gameexe.ini file */
-	pathNameLen = strlen(ofn.lpstrFile);
-	if(pathNameLen > 11)
+    pathNameLen = strlen(ofn.lpstrFile);
+    if(pathNameLen > 11)
       ofn.lpstrFile[pathNameLen - 11] = '\0';
     return ofn.lpstrFile;
   } else {
