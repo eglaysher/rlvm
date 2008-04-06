@@ -2,7 +2,7 @@
 .gdb_history
 .DS_Store
 rlvm
-rlvm-static
+rlvm-osx-static
 rlvm.app
 librlvm.a
 alldefs.h.gch
