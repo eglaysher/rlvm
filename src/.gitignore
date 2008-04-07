@@ -14,3 +14,9 @@ semantic.cache
 *.mshark
 *.diff
 *.a
+Debug
+Release
+librlvm.vcproj.*
+rlvm_Debug
+rlvm_Release
+rlvm.vcproj.*

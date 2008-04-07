@@ -11,3 +11,5 @@ svn-commit.tmp*
 *~
 *.la
 objs
+rlvm.suo
+rlvm.ncb
