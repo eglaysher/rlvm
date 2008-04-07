@@ -65,7 +65,7 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-fs::path correctPathCase(const fs::path& Path)
+fs::path correctPathCase(fs::path Path)
 {
   using namespace boost::filesystem;  
  
@@ -74,7 +74,7 @@ fs::path correctPathCase(const fs::path& Path)
   return Path;
 #else
   // If the path is OK as it stands, do nothing.
-  if (exists(Path)) return fileName;
+  if (exists(Path)) return Path;
   // If the path doesn't seem to be OK, track backwards through it
   // looking for the point at which the problem first arises.  Path
   // will contain the parts of the path that exist on the current

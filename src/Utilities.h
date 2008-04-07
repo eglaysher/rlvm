@@ -48,7 +48,7 @@ class Gameexe;
  *         returns a copy of the input with correct case, or the empty
  *         string if no solution could be found.
  */
-boost::filesystem::path correctPathCase(const boost::filesystem::path& Path);
+boost::filesystem::path correctPathCase(boost::filesystem::path Path);
 
 // -----------------------------------------------------------------------
 
