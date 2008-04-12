@@ -1,8 +1,4 @@
 * RLVM
-** Rip out the pausing code in SDLSystem.
-*** Turn the code in SDLGraphicsSystem::executeGraphicsSystem() that makes something 
-*** Rip out NiceLongOperation, and all supporting code.
-
 ** Redo the graphics layer so graphics data lives on the graphics
   card. As is, we have an SDL_Surface in main memory, which uploads
   its data to the graphics card. And then hangs around to be blitted
