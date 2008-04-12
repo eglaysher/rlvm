@@ -18,8 +18,8 @@ version 3 or later of the GNU General Public License as published by
 the Free Software Foundation.
 
 rlvm is meant to be a compatibility utility; it is not an excuse for
-copyright infringement. Please do not acquire games from bittorrent /
-Share / {insert name of popular P2P app in your locale}. 
+copyright infringement. Please do not acquire games from BitTorrent /
+Share / {insert name of popular P2P app in your locale}.
 
 Special thanks to Jagarl for the first work on reverse engineering the
 RealLive interpreter and for Free software licensed source code for
@@ -48,24 +48,28 @@ other games have been tested at this time.
 -------------------------------------------------------------------------
 You will need the following libraries/utilities:
 
-- The omake build system
-- boost 1.34.1
+- The omake build system when building under Linux or OSX
+- boost 1.34.1 or higher
 - SDL and SDL_image
 - freetype
 
 Optionally, you may want:
 - Haeleth's rldev package (which builds the unit tests)
 
+3a) Compiling under Linux
+-------------------------------------------------------------------------
+
 Make sure that freetype-config and sdl-config are in your $PATH. The
 current OMakefiles are fairly naive and may need editing to point to
 the correct location of some header files. Future versions will have
 the build system refined. You should be able to type:
 
-$ omake
+ $ omake
 
-in the root and have a complete build. The unit tests can be run by typing
+in the root and have a complete build. If you have rldev installed,
+the unit tests will automatically be built and can be run by typing:
 
-$ test/rlvmTest 
+ $ test/rlvmTest 
 
 They should all pass.
 
@@ -73,13 +77,52 @@ You should copy the contents of the Planetarian CD to a directory on
 your hard drive for speed reasons. Playing directly from the CD is
 discouraged. Once done, you should be able to run:
 
-$ src/rlvm /path/to/PlanetarianCopy
+ $ src/rlvm /path/to/PlanetarianCopy
 
 rlvm is currently not meant to be installed to /usr/bin, and should be
 run out of the unpacked source folder.
 
-Future versions may transition to CMake to provide native build files
-for whichever system. rlvm will most likely never use GNU autoconf.
+3b) Compiling under OSX
+-------------------------------------------------------------------------
+In addition to freetype-config and sdl-config needing to be in your
+$PATH, (like when compiling under Linux), the OMakefiles assume you
+use fink to manage your unix programs and that fink is installed at
+/sw/. If you are using Darwin Ports or are just compiling libraries
+manually and installing them into /usr/local/, you will need to edit
+the paths in the apple specific section at the end of src/Omakefile.
+
+To build an OSX application, type:
+
+ $ omake bundle
+
+which will build rlvm.app in the src directory. The resulting OSX
+application will ask you for the location of the game with a native
+dialog.
+
+You can also build rlvm as a command line program, as in Linux:
+
+ $ omake
+
+The result is run like this:
+
+ $ src/rlvm /path/to/PlanetarianCopy
+
+3c) Compiling under Windows
+-------------------------------------------------------------------------
+rlvm works under Windows with a caveat. While paths with characters
+other then lower ASCII are correctly handled under Linux and OSX,
+windows will refuse to handle them correctly. I am not entirely sure
+of why this is. Patches are welcome; I wrote rlvm in part to get away
+from Windows problems and have already lost a week trying to figure
+out Windows nonstandard behaviour. 
+
+Unlike Linux and OSX, rlvm is built with Microsoft Visual Studio under
+Windows. Solution and vcproj files are provided. You will most likely
+need to adjust the include and lib paths in the various vcproj files
+for your local system.
+
+(Note: If compiling with MSVC++ v8.0, you will probably need to build
+boost from source. I couldn't find any prebuilt binary packages.)
 
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
