@@ -78,7 +78,7 @@ void Texture::SetScreenSize(unsigned int width, unsigned int height)
 // Texture
 // -----------------------------------------------------------------------
 Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h, 
-                 GLenum bytesPerPixel, GLint byteOrder, GLint byteType)
+                 unsigned int bytesPerPixel, int byteOrder, int byteType)
   : m_xOffset(x), m_yOffset(y), m_logicalWidth(w), m_logicalHeight(h),
     m_totalWidth(surface->w), m_totalHeight(surface->h),     
     m_textureWidth(SafeSize(m_logicalWidth)), 

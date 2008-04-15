@@ -97,7 +97,7 @@ public:
 
 public:
   Texture(SDL_Surface* surface, int x, int y, int w, int h,
-          GLenum bytesPerPixel, GLint byteOrder, GLint byteType);
+          unsigned int bytesPerPixel, int byteOrder, int byteType);
   Texture(render_to_texture, int screenWidth, int screenHeight);
   ~Texture();
 
