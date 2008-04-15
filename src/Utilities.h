@@ -78,10 +78,26 @@ boost::filesystem::path findFile(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-/**
- * Attempts to find the file fileName in the home directory
+/** 
+ * Hack. Finds msgothic.ttc which is the only font file we support
+ * right now. Once I go in and allow the selection of arbitrary fonts,
+ * this method and the other findFontFile need to go away.
  */
-std::string findFontFile(const std::string& fileName);
+boost::filesystem::path findFontFile(RLMachine& machine);
+
+// -----------------------------------------------------------------------
+
+/**
+ * Attempts to find the file fileName in the home directory. Returns a
+ * non-empty fs::path object on success.
+ *
+ * @todo This method contains an ugly hack to make things better for
+ *       the user while I've not wrotten correct font support; the
+ *       Gameexe can have a key "__FONTFOLDER" which will first be
+ *       checked for the incoming file name.
+ */
+boost::filesystem::path findFontFile(
+  Gameexe& gexe, const std::string& fileName);
 
 // -----------------------------------------------------------------------
 

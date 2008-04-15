@@ -77,8 +77,8 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
-  m_font = text.getFontOfSize(fontSizeInPixels());
-  m_rubyFont = text.getFontOfSize(rubyTextSize());
+  m_font = text.getFontOfSize(machine, fontSizeInPixels());
+  m_rubyFont = text.getFontOfSize(machine, rubyTextSize());
 
   clearWin();
 }

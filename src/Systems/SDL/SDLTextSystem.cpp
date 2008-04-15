@@ -181,7 +181,8 @@ void SDLTextSystem::setWindowAttrF(int i)
 
 void SDLTextSystem::setMousePosition(RLMachine& machine, int x, int y)
 {
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  for(WindowMap::iterator it = m_textWindow.begin(); 
+      it != m_textWindow.end(); ++it)
   {
     it->second->setMousePosition(machine, x, y);
   }
@@ -216,7 +217,7 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   int yspace, int colour)
 {
   // Pick the correct font
-  shared_ptr<TTF_Font> font = getFontOfSize(size);
+  shared_ptr<TTF_Font> font = getFontOfSize(machine, size);
 
   // Pick the correct font colour
   Gameexe& gexe = machine.system().gameexe();
@@ -245,12 +246,13 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size)
+boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(
+  RLMachine& machine, int size)
 {
   FontSizeMap::iterator it = m_map.find(size);
   if(it == m_map.end())
   {
-    string filename = findFontFile("msgothic.ttc");
+    string filename = findFontFile(machine).external_file_string();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
     if(f == NULL)
     {

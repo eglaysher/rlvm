@@ -124,12 +124,37 @@ fs::path correctPathCase(fs::path Path)
 
 // -----------------------------------------------------------------------
 
-std::string findFontFile(const std::string& fileName)
+fs::path findFontFile(RLMachine& machine)
 {
-  using namespace boost::filesystem;  
+  return findFontFile(machine.system().gameexe(), "msgothic.ttc");
+}
+
+// -----------------------------------------------------------------------
+
+fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
+{
+  // HACK: If the user has overridden the __GAMEFONT, use it instead.
+  if(gexe("__GAMEFONT"))
+  {
+    std::string gamefontstr = gexe("__GAMEFONT");
+    fs::path gameFont = fs::path(gamefontstr);
+    cerr << "Using font \"" << gameFont << "\"" << endl;
+    if(fs::exists(gameFont))
+      return gameFont;
+  }
+
+  // HACK: Look for the font in the game
+  if(gexe("__GAMEPATH"))
+  {
+    std::string gamepath = gexe("__GAMEPATH");
+    fs::path gamePathFont = fs::path(gamepath) / fileName;
+    if(fs::exists(gamePathFont))
+      return gamePathFont;
+  }
+
   char* homeptr = getenv("HOME");
   char* rootptr = getenv("SYSTEMROOT");
-  path home;
+  fs::path home;
   if (homeptr != 0) {
     home = homeptr;
   }
@@ -137,7 +162,11 @@ std::string findFontFile(const std::string& fileName)
     home = rootptr;
     home /= "Fonts";
   }
-  return (home / fileName).string();
+
+  if(fs::exists(fileName))
+    return home / fileName;
+  else
+    return fs::path();
 }
 
 // -----------------------------------------------------------------------

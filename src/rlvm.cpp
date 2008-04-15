@@ -203,7 +203,8 @@ int main(int argc, char* argv[])
   opts.add_options()
     ("help", "Produce help message")
     ("help-debug", "Print help message for people working on rlvm")
-    ("version", "display version and license information")
+    ("version", "Display version and license information")
+    ("font", po::value<string>(), "Specifies TrueType font to use.")
     ;
 
   po::options_description debugOpts("Debugging Options");
@@ -317,6 +318,11 @@ int main(int argc, char* argv[])
     cerr << "gameexePath: " << gameexePath << endl;
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath.file_string();
+    
+    if(vm.count("font"))
+    {
+      gameexe("__GAMEFONT") = vm["font"].as<string>();
+    }
 
     // Possibly force starting at a different seen
     if(vm.count("start-seen"))

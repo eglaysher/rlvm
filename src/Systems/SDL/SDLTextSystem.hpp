@@ -75,7 +75,8 @@ public:
     RLMachine& machine, const std::string& utf8str, int size, int xspace,
     int yspace, int colour);
 
-  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
+  boost::shared_ptr<TTF_Font> getFontOfSize(RLMachine& machine, int size);
 };
 
 #endif
+
