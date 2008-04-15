@@ -23,11 +23,7 @@ LRLFILES[] =
   glew
   file
   alphablit
-
-if $(not $(equal $(OSTYPE), Win32))
-  if $(not $(equal $(OSTYPE), WindowsNT))
-    LRLFILES[] += SDL_ttf
-    export
+  SDL_ttf
 
 StaticCObject(libVendorLibs, $(LRLFILES))
 

@@ -34,7 +34,13 @@ else
   switch $(shell uname -s)
   case Darwin
     PLATFORMLIBS = -framework Cocoa -framework OpenGL
-    PLATFORMFLAGS = -I/sw/include
+    PLATFORMFLAGS =
+    if $(file-exists /sw/include)
+      PLATFORMFLAGS += -I/sw/include
+      export
+    if $(file-exists /opt/local/include)
+      PLATFORMFLAGS += -I/opt/local/include
+      export
     export
   default
     # Correct for GNU/Linux, and probably other POSIX-a-likes
