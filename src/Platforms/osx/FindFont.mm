@@ -42,14 +42,25 @@ extern "C" int findFontName(const char** fontName, const char* gamePath)
   if(pathToMsgothic.empty())
   {
     /* Couldn't find a copy of msgothic.ttc in either the home
-     * directory nor in the game. Try to use the fallback: */
-    NSString* font1 = @"/Library/Fonts/ヒラギノ角ゴ Pro W3.otf";
+     * directory nor in the game. Try to use a fallback: */
+    NSString* leopardFont = 
+      [NSString stringWithUTF8String:"/Library/Fonts/ヒラギノ角ゴ Pro W3.otf"];
+    NSString* tigerFont = 
+      [NSString stringWithUTF8String:"/System/Library/Fonts/ヒラギノ角ゴ Pro W3.otf"];
+
     NSFileManager *fm = [NSFileManager defaultManager];
-    if([fm fileExistsAtPath:font1]) {
-      *fontName = [font1 fileSystemRepresentation];
+    if([fm fileExistsAtPath:leopardFont]) 
+    {
+      *fontName = [leopardFont fileSystemRepresentation];
       return true;
     }
-    else {
+    else if([fm fileExistsAtPath:tigerFont]) 
+    {
+      *fontName = [tigerFont fileSystemRepresentation];
+      return true;
+    }
+    else 
+    {
       NSAlert* alert = [[NSAlert alloc] init];
       [alert setMessageText:@"Couldn't find msgothic.ttc or a suitable fallback font."];
       [alert setInformativeText:@"Please place a copy of msgothic.ttc in either your home directory or in the game path."];
