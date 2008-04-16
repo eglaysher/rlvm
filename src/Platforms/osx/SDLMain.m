@@ -7,6 +7,7 @@
 
 #import "SDL.h"
 #import "SDLMain.h"
+#import "FindFont.h"
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
@@ -237,15 +238,13 @@ static void CustomApplicationMain (int argc, char **argv)
 #endif
 
 
-BOOL setIncomingFilename(NSString* filename)
+BOOL pushArg(const char* newArg)
 {
-  const char *temparg;
   size_t arglen;
   char *arg;
   char **newargv;
 
-  temparg = [filename UTF8String];
-  arglen = SDL_strlen(temparg) + 1;
+  arglen = SDL_strlen(newArg) + 1;
   arg = (char *) SDL_malloc(arglen);
   if (arg == NULL)
     return FALSE;
@@ -258,9 +257,14 @@ BOOL setIncomingFilename(NSString* filename)
   }
   gArgv = newargv;
 
-  SDL_strlcpy(arg, temparg, arglen);
+  SDL_strlcpy(arg, newArg, arglen);
   gArgv[gArgc++] = arg;
   gArgv[gArgc] = NULL;
+}
+
+BOOL setIncomingFilename(NSString* filename)
+{
+  return pushArg([filename UTF8String]);
 }
 
 /*
@@ -322,6 +326,14 @@ BOOL setIncomingFilename(NSString* filename)
       NSString* filename = [filenames objectAtIndex:0];
       if(filename == NULL)
         exit(-2);
+
+      /* Check for font issues */
+      const char* fontName = NULL;
+      if(findFontName(&fontName, [filename fileSystemRepresentation]))
+      {
+        pushArg("--font");
+        pushArg(fontName);
+      }
 
       setIncomingFilename(filename);
     }

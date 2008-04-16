@@ -8,9 +8,13 @@
 
 LRLFILES[] =
   SDLMain
+  FindFont
 
 SDLMain.o: SDLMain.m
 	$(CC) $(INCLUDES) $(PREFIXED_INCLUDES) -c $(CCOUT)$@ $<
+
+FindFont.o: FindFont.mm
+	$(CC) -x objective-c++ $(CXXFLAGS) $(INCLUDES) $(PREFIXED_INCLUDES) -c $(CCOUT)$@ $<
 
 section
   StaticCLibrary(libRlvmOsx, $(LRLFILES))
