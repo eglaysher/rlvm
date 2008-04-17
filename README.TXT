@@ -77,10 +77,14 @@ You should copy the contents of the Planetarian CD to a directory on
 your hard drive for speed reasons. Playing directly from the CD is
 discouraged. Once done, you should be able to run:
 
- $ src/rlvm /path/to/PlanetarianCopy
+ $ src/rlvm [--font=/path/to/JapaneseTTF] /path/to/PlanetarianCopy
 
 rlvm is currently not meant to be installed to /usr/bin, and should be
 run out of the unpacked source folder.
+
+If you don't have the file "msgothic.ttc" in either the game directory
+nor your home directory, please specify a Japanese font on the command
+line with --font.
 
 3b) Compiling under OSX
 -------------------------------------------------------------------------
