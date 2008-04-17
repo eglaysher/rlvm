@@ -138,7 +138,6 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
   {
     std::string gamefontstr = gexe("__GAMEFONT");
     fs::path gameFont = fs::path(gamefontstr);
-    cerr << "Using font \"" << gameFont << "\"" << endl;
     if(fs::exists(gameFont))
       return gameFont;
   }
@@ -163,8 +162,10 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
     home /= "Fonts";
   }
 
-  if(fs::exists(fileName))
-    return home / fileName;
+  fs::path filePath = home / fileName;
+
+  if(fs::exists(filePath))
+    return filePath;
   else
     return fs::path();
 }

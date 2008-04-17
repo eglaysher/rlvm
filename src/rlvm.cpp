@@ -321,7 +321,17 @@ int main(int argc, char* argv[])
     
     if(vm.count("font"))
     {
-      gameexe("__GAMEFONT") = vm["font"].as<string>();
+      string font = vm["font"].as<string>();
+      if(fs::exists(font))
+      {
+        gameexe("__GAMEFONT") = font; 
+        cerr << "Using custom font " << vm["font"].as<string>() << endl;
+      }
+      else 
+      {
+        cerr << "Couldn't open font file \"" << font << "\"" << endl;
+        return -1;
+      }
     }
 
     // Possibly force starting at a different seen
@@ -339,6 +349,20 @@ int main(int argc, char* argv[])
     libReallive::Archive arc(seenPath.file_string());
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
+
+    // Validate our font file
+    fs::path fontFile = findFontFile(rlmachine);
+    if(fontFile.empty() || !fs::exists(fontFile))
+    {
+      cerr << "Could not open font file. Please either: " << endl
+           << endl
+           << "1) Place a copy of msgothic.ttc in your home directory." << endl
+           << "2) Place a copy of msgothic.ttc in \""
+           << gamerootPath.file_string() << "\"" << endl
+           << "3) Specify an alternate font with the --font option." << endl;
+      return -2;
+    }
+
 
     if(vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);
