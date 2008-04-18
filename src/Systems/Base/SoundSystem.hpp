@@ -124,6 +124,19 @@ public:
    * Returns whether (interface) sound effects are enabled
    */
   int seEnabled() const;
+
+  /** 
+   * Sets the volume of interface sound effects relative to other
+   * sound playback.
+   * 
+   * @param in Sound Effect volume (0-255)
+   */
+  virtual void setSeVolume(const int in);
+
+  /** 
+   * Gets the current sound effect volume.
+   */
+  int seVolume() const;
   
   /** 
    * Plays an interface sound effect.

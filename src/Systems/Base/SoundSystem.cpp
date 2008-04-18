@@ -39,6 +39,11 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 SoundSystem::SoundSystem(Gameexe& gexe)
+  : m_bgmEnabled(true),
+    m_bgmVolume(255),
+    m_bgmStatus(0),
+    m_seEnabled(true),
+    m_seVolume(255)
 {
   // Read the #SE.xxx entries from the Gameexe
   GameexeFilteringIterator it = gexe.filtering_begin("SE.");
@@ -74,3 +79,23 @@ int SoundSystem::seEnabled() const
   return m_seEnabled;
 }
 
+// -----------------------------------------------------------------------
+
+void SoundSystem::setSeVolume(const int in)
+{
+  if(in < 0 || in > 255)
+  {
+    ostringstream oss;
+    oss << "Invalid Se Volume " << in << ". Valid values are 0-255.";
+    throw std::runtime_error(oss.str());
+  }
+
+  m_seVolume = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::seVolume() const
+{
+  return m_seVolume;
+}

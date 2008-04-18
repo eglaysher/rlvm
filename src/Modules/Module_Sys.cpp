@@ -550,8 +550,10 @@ SysModule::SysModule()
   addUnsupportedOpcode(2331, 0, "KoeVolMod");
   addUnsupportedOpcode(2232, 0, "SetPcmVolMod");
   addUnsupportedOpcode(2332, 0, "PcmVolMod");
-  addUnsupportedOpcode(2233, 0, "SetSeVolMod");
-  addUnsupportedOpcode(2333, 0, "SeVolMod");
+  addOpcode(2233, 0, "SetSeVolMod",
+            setToIncomingInt(&SoundSystem::setSeVolume));
+  addOpcode(2333, 0, "SeVolMod",
+            returnIntValue(&SoundSystem::seVolume));
   addUnsupportedOpcode(2240, 0, "SetBgmEnabled");
   addUnsupportedOpcode(2340, 0, "BgmEnabled");
   addUnsupportedOpcode(2241, 0, "SetKoeEnabled");
