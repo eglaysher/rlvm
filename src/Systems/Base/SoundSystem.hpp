@@ -118,7 +118,7 @@ public:
   /**
    * Sets whether we should have interface sound effects
    */
-  void setSeEnabled(const int in);
+  virtual void setSeEnabled(const int in);
 
   /**
    * Returns whether (interface) sound effects are enabled

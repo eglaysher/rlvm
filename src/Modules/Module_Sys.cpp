@@ -58,6 +58,7 @@
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
 #include "Effects/FadeEffect.hpp"
@@ -557,8 +558,10 @@ SysModule::SysModule()
   addUnsupportedOpcode(2341, 0, "KoeEnabled");
   addUnsupportedOpcode(2242, 0, "SetPcmEnabled");
   addUnsupportedOpcode(2342, 0, "PcmEnabled");
-  addUnsupportedOpcode(2243, 0, "SetSeEnabled");
-  addUnsupportedOpcode(2343, 0, "SeEnabled");
+  addOpcode(2243, 0, "SetSeEnabled",
+            setToIncomingInt(&SoundSystem::setSeEnabled));
+  addOpcode(2343, 0, "SeEnabled",
+            returnIntValue(&SoundSystem::seEnabled));
 
   addUnsupportedOpcode(2054, 0, "SetReduceDistortion");
   addUnsupportedOpcode(2004, 0, "ReduceDistortion");

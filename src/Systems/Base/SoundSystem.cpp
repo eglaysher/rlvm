@@ -62,3 +62,15 @@ SoundSystem::~SoundSystem()
 
 // -----------------------------------------------------------------------
 
+void SoundSystem::setSeEnabled(const int in)
+{
+  m_seEnabled = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::seEnabled() const
+{
+  return m_seEnabled;
+}
+

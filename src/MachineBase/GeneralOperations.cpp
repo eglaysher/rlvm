@@ -69,6 +69,12 @@ TextSystem& getSystemObj(RLMachine& machine)
   return machine.system().text();
 }
 
+template<>
+SoundSystem& getSystemObj(RLMachine& machine)
+{
+  return machine.system().sound();
+}
+
 }
 
 // -----------------------------------------------------------------------
