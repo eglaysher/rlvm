@@ -39,6 +39,9 @@
 // -----------------------------------------------------------------------
 
 extern "C" struct Mix_Chunk;
+class SDLSoundChunk;
+
+// -----------------------------------------------------------------------
 
 /**
  *
@@ -46,7 +49,10 @@ extern "C" struct Mix_Chunk;
 class SDLSoundSystem : public SoundSystem
 {
 private:
-  LRUCache<boost::filesystem::path, Mix_Chunk*> m_seCache;
+  typedef LRUCache<boost::filesystem::path, 
+                   boost::shared_ptr<SDLSoundChunk> > SoundChunkCache;
+
+  SoundChunkCache m_seCache;
 
 public: 
   SDLSoundSystem(Gameexe& gexe);
@@ -54,16 +60,5 @@ public:
 
   virtual void playSe(RLMachine& machine, const int seNum);  
 };	// end of class SDLSoundSystem
-
-/**
- * Changes an incoming RealLive volume to the range SDL_Mixer expects.
- *
- * @param inVol RealLive volume (ranged 0-256)
- * @return SDL_Mixer volume (ranged 0-128)
- */
-inline int realLiveVolumeToSDLMixerVolume(int inVol)
-{
-  return inVol / 2;
-}
 
 #endif

@@ -30,6 +30,7 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/SDL/SDLSoundSystem.hpp"
+#include "Systems/SDL/SDLSoundChunk.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Utilities.h"
 
@@ -61,7 +62,7 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
     throw SystemError("Couldn't initialize audio");
   }
 
-//  Mix_ChannelFinished( );
+  Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
 }
 
 // -----------------------------------------------------------------------
@@ -99,17 +100,13 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
   // Make sure there isn't anything playing on the current channel
   Mix_HaltChannel(channel);
 
-  Mix_Chunk* sample = m_seCache.fetch(filePath);
+  shared_ptr<SDLSoundChunk> sample = m_seCache.fetch(filePath);
   if(sample == NULL)
   {
-    sample = Mix_LoadWAV(filePath.external_file_string().c_str());
+    sample.reset(new SDLSoundChunk(filePath));
     m_seCache.insert(filePath, sample);
   }
 
-  Mix_VolumeChunk(sample, realLiveVolumeToSDLMixerVolume(seVolume()));
-
-  if(Mix_PlayChannel(channel, sample, 0) == -1) 
-  {
-    
-  }
+  sample->setVolume(seVolume());
+  sample->playChunkOn(channel, 0);
 }
