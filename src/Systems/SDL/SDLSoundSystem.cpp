@@ -44,7 +44,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
-  : SoundSystem(gexe), m_soundCache(5)
+  : SoundSystem(gexe), m_seCache(5)
 {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
@@ -60,6 +60,8 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
   if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
     throw SystemError("Couldn't initialize audio");
   }
+
+//  Mix_ChannelFinished( );
 }
 
 // -----------------------------------------------------------------------
@@ -97,12 +99,14 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
   // Make sure there isn't anything playing on the current channel
   Mix_HaltChannel(channel);
 
-  Mix_Chunk* sample = m_soundCache.fetch(filePath);
+  Mix_Chunk* sample = m_seCache.fetch(filePath);
   if(sample == NULL)
   {
     sample = Mix_LoadWAV(filePath.external_file_string().c_str());
-    m_soundCache.insert(filePath, sample);
+    m_seCache.insert(filePath, sample);
   }
+
+  Mix_VolumeChunk(sample, realLiveVolumeToSDLMixerVolume(seVolume()));
 
   if(Mix_PlayChannel(channel, sample, 0) == -1) 
   {
