@@ -34,9 +34,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/operations.hpp>
 
-// -----------------------------------------------------------------------
-
-extern "C" struct Mix_Chunk;
+#include <SDL/SDL_mixer.h>
 
 // -----------------------------------------------------------------------
 

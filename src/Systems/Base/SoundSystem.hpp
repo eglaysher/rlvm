@@ -52,6 +52,9 @@ struct MusicTrack
  */
 class SoundSystem
 {
+protected:
+  typedef std::map<int, std::pair<std::string, int> > SeTable;
+
 private:
   /**
    * @name Background Music data
@@ -96,7 +99,6 @@ private:
    * Parsed \#SE.index entries. Maps a sound effect number to the
    * filename to play and the channel to play it on.
    */
-  typedef std::map<int, std::pair<std::string, int> > SeTable;
   SeTable m_seTable;
 
   /// @}
