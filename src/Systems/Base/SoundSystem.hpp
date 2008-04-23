@@ -82,6 +82,23 @@ private:
   // ---------------------------------------------------------------------
 
   /**
+   * @name PCM/Wave sound effect data
+   * 
+   * @{
+   */
+  /// Whether the Wav functions are enabled
+  bool m_pcmEnabled;
+
+  /**
+   * Volume of wave files relative to other sound playback.
+   */
+  unsigned char m_pcmVolume;
+
+  /// @}
+
+  // ---------------------------------------------------------------------
+
+  /**
    * @name Interface sound effect data
    * 
    * @{
@@ -109,6 +126,25 @@ protected:
 public: 
   SoundSystem(Gameexe& gexe);
   virtual ~SoundSystem();
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * @name PCM/Wave functions
+   * 
+   * @{
+   */
+  /// Sets whether the wav* functions play
+  virtual void setPcmEnabled(const int in);
+
+  /// Whether the wav* functions play
+  int pcmEnabled() const;
+
+  virtual void setPcmVolume(const int in);
+
+  int pcmVolume() const;
+
+  /// @}
 
   // ---------------------------------------------------------------------
 

@@ -42,6 +42,8 @@ SoundSystem::SoundSystem(Gameexe& gexe)
   : m_bgmEnabled(true),
     m_bgmVolume(255),
     m_bgmStatus(0),
+    m_pcmEnabled(true),
+    m_pcmVolume(255),
     m_seEnabled(true),
     m_seVolume(255)
 {
@@ -64,6 +66,34 @@ SoundSystem::SoundSystem(Gameexe& gexe)
 
 SoundSystem::~SoundSystem()
 {}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setPcmEnabled(const int in)
+{
+  m_pcmEnabled = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::pcmEnabled() const
+{
+  return m_pcmEnabled;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setPcmVolume(const int in)
+{
+  m_pcmVolume = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::pcmVolume() const
+{
+  return m_pcmVolume;
+}
 
 // -----------------------------------------------------------------------
 
