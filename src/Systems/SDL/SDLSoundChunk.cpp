@@ -25,6 +25,7 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/SDL/SDLSoundChunk.hpp"
 
 #include <SDL/SDL_mixer.h>
@@ -75,6 +76,7 @@ void SDLSoundChunk::playChunkOn(int channel, int loops)
 
 // -----------------------------------------------------------------------
 
+// static
 void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
 {
   // Decrease the refcount of the SDLSoundChunk that just finished
@@ -83,3 +85,16 @@ void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
 }
 
 // -----------------------------------------------------------------------
+
+// static
+int SDLSoundChunk::FindNextFreeExtraChannel()
+{
+  for(int i = NUM_BASE_CHANNELS; 
+      i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i)
+  {
+    if(s_playingTable[i].get() == 0)
+      return i;
+  }
+
+  return -1;
+}

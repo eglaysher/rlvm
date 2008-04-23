@@ -45,7 +45,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
-  : SoundSystem(gexe), m_seCache(5)
+  : SoundSystem(gexe), m_seCache(5), m_wavCache(5)
 {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
@@ -62,6 +62,8 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
     throw SystemError("Couldn't initialize audio");
   }
 
+  Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS);
+
   Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
 }
 
@@ -71,6 +73,31 @@ SDLSoundSystem::~SDLSoundSystem()
 {
   Mix_CloseAudio();
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
+{
+  fs::path filePath = findFile(machine, wavFile, SOUND_FILETYPES);
+  
+  // Find the next free channel
+  shared_ptr<SDLSoundChunk> sample = m_wavCache.fetch(filePath);
+  if(sample == NULL)
+  {
+    sample.reset(new SDLSoundChunk(filePath));
+    m_seCache.insert(filePath, sample);
+  }
+
+  int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
+  if(channelNumber == -1)
+  {
+    ostringstream oss;
+    oss << "Couldn't find a free channel for wavPlay()";
+    throw std::runtime_error(oss.str());
+  }
+
+  sample->playChunkOn(channelNumber, 0);
 }
 
 // -----------------------------------------------------------------------
@@ -110,3 +137,5 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
   sample->setVolume(seVolume());
   sample->playChunkOn(channel, 0);
 }
+
+// -----------------------------------------------------------------------

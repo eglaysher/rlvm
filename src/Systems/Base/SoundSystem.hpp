@@ -40,10 +40,8 @@ class RLMachine;
 
 // -----------------------------------------------------------------------
 
-struct MusicTrack
-{
-  
-};
+const int NUM_BASE_CHANNELS = 16;
+const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
 
 // -----------------------------------------------------------------------
 
@@ -141,8 +139,13 @@ public:
   int pcmEnabled() const;
 
   virtual void setPcmVolume(const int in);
-
   int pcmVolume() const;
+
+  
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile) = 0;
+//  virtual void wavPlay(const fs::path& wavFile, const int channel) = 0;
+//  virtual void wavPlay(const fs::path& wavFile, const int channel,
+//                       const int fadeinMs) = 0;
 
   /// @}
 

@@ -51,11 +51,13 @@ private:
                    boost::shared_ptr<SDLSoundChunk> > SoundChunkCache;
 
   SoundChunkCache m_seCache;
+  SoundChunkCache m_wavCache;
 
 public: 
   SDLSoundSystem(Gameexe& gexe);
   ~SDLSoundSystem();
 
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile);
   virtual void playSe(RLMachine& machine, const int seNum);  
 };	// end of class SDLSoundSystem
 

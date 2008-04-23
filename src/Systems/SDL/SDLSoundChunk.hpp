@@ -86,6 +86,8 @@ public:
    * @param channel Channel that just finished playing.
    */
   static void SoundChunkFinishedPlayback(int channel);
+
+  static int FindNextFreeExtraChannel();
 };
 
 #endif

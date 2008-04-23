@@ -26,13 +26,24 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Pcm.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavPlay : public RLOp_Void_1<StrConstant_T> {
+  void operator()(RLMachine& machine, std::string fileName) {
+    machine.system().sound().wavPlay(machine, fileName);
+  }
+};
 
 // -----------------------------------------------------------------------
 
 PcmModule::PcmModule()
   : RLModule("Pcm", 1, 21)
 {
-  addUnsupportedOpcode(0, 0, "wavPlay");
+  addOpcode(0, 0, "wavPlay", new Pcm_wavPlay);
   addUnsupportedOpcode(0, 1, "wavPlay");
   addUnsupportedOpcode(0, 2, "wavPlay");
 
