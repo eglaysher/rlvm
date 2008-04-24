@@ -77,6 +77,14 @@ SDLSoundSystem::~SDLSoundSystem()
 
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::setChannelVolume(const int channel, const int level)
+{
+  int adjustedVolume = computeChannelVolume(channel, pcmVolume());
+  Mix_Volume(realLiveVolumeToSDLMixerVolume(adjustedVolume), level);
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
 {
   fs::path filePath = findFile(machine, wavFile, SOUND_FILETYPES);
@@ -97,6 +105,7 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
     throw std::runtime_error(oss.str());
   }
 
+  Mix_Volume(channelNumber, realLiveVolumeToSDLMixerVolume(pcmVolume()));
   sample->playChunkOn(channelNumber, 0);
 }
 
@@ -134,7 +143,8 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
     m_seCache.insert(filePath, sample);
   }
 
-  sample->setVolume(seVolume());
+  // SE chunks have no per channel volume...
+  Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
   sample->playChunkOn(channel, 0);
 }
 

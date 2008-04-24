@@ -40,6 +40,65 @@ struct Pcm_wavPlay : public RLOp_Void_1<StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
+struct Pcm_wavVolume : public RLOp_Store_1<IntConstant_T> {
+  int operator()(RLMachine& machine, int channel) {
+    return machine.system().sound().channelVolume(channel);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int channel, int level) {
+    machine.system().sound().setChannelVolume(channel, level);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/// We ignore fadein because we'll never get that effect with the
+/// current mixing library.
+struct Pcm_wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T, 
+                                               IntConstant_T> {
+  void operator()(RLMachine& machine, int channel, int level, int fadeInMs) {
+    machine.system().sound().setChannelVolume(machine, channel, level, fadeInMs);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavUnMute_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int channel) {
+    machine.system().sound().setChannelVolume(channel, 255);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int channel, int fadein) {
+    machine.system().sound().setChannelVolume(machine, channel, 255, fadein);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavMute_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int channel) {
+    machine.system().sound().setChannelVolume(channel, 0);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int channel, int fadein) {
+    machine.system().sound().setChannelVolume(machine, channel, 0, fadein);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 PcmModule::PcmModule()
   : RLModule("Pcm", 1, 21)
 {
@@ -63,16 +122,16 @@ PcmModule::PcmModule()
   addUnsupportedOpcode(8, 0, "wavRewind");
   addUnsupportedOpcode(9, 0, "wavStop3");
   addUnsupportedOpcode(10, 0, "wavStop4");
-  addUnsupportedOpcode(11, 0, "wavVolume");
+  addOpcode(11, 0, "wavVolume", new Pcm_wavVolume);
 
-  addUnsupportedOpcode(12, 0, "wavSetVolume");
-  addUnsupportedOpcode(12, 1, "wavSetVolume");
+  addOpcode(12, 0, "wavSetVolume", new Pcm_wavSetVolume_0);
+  addOpcode(12, 1, "wavSetVolume", new Pcm_wavSetVolume_1);
 
-  addUnsupportedOpcode(13, 0, "wavUnMute");
-  addUnsupportedOpcode(13, 1, "wavUnMute");
+  addOpcode(13, 0, "wavUnMute", new Pcm_wavUnMute_0);
+  addOpcode(13, 1, "wavUnMute", new Pcm_wavUnMute_1);
 
-  addUnsupportedOpcode(14, 0, "wavMute");
-  addUnsupportedOpcode(14, 1, "wavMute");
+  addOpcode(14, 0, "wavMute", new Pcm_wavMute_0);
+  addOpcode(14, 1, "wavMute", new Pcm_wavMute_0);
 
   addUnsupportedOpcode(20, 0, "wavStopAll");
 

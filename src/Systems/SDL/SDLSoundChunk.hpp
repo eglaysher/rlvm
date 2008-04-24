@@ -62,13 +62,6 @@ public:
   SDLSoundChunk(const boost::filesystem::path& path);
 
   /** 
-   * Sets the sound chunk's volume. Wraps Mix_VolumeChunk.
-   * 
-   * @param realLiveVol A RealLive volume (range 0-255).
-   */
-  void setVolume(int realLiveVol);
-
-  /** 
    * Plays the chunk on the given channel. Wraps Mix_PlayChannel.
    * 
    * @param channel Channel number to use.
@@ -89,5 +82,18 @@ public:
 
   static int FindNextFreeExtraChannel();
 };
+
+// -----------------------------------------------------------------------
+
+/**
+ * Changes an incoming RealLive volume to the range SDL_Mixer expects.
+ *
+ * @param inVol RealLive volume (ranged 0-256)
+ * @return SDL_Mixer volume (ranged 0-128)
+ */
+inline int realLiveVolumeToSDLMixerVolume(int inVol)
+{
+  return inVol / 2;
+}
 
 #endif

@@ -32,19 +32,6 @@
 
 // -----------------------------------------------------------------------
 
-/**
- * Changes an incoming RealLive volume to the range SDL_Mixer expects.
- *
- * @param inVol RealLive volume (ranged 0-256)
- * @return SDL_Mixer volume (ranged 0-128)
- */
-inline int realLiveVolumeToSDLMixerVolume(int inVol)
-{
-  return inVol / 2;
-}
-
-// -----------------------------------------------------------------------
-
 SDLSoundChunk::PlayingTable SDLSoundChunk::s_playingTable;
 
 // -----------------------------------------------------------------------
@@ -53,13 +40,6 @@ SDLSoundChunk::PlayingTable SDLSoundChunk::s_playingTable;
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
   : m_sample(Mix_LoadWAV(path.external_file_string().c_str()))
 {
-}
-
-// -----------------------------------------------------------------------
-
-void SDLSoundChunk::setVolume(int realLiveVol)
-{
-  Mix_VolumeChunk(m_sample, realLiveVolumeToSDLMixerVolume(realLiveVol));
 }
 
 // -----------------------------------------------------------------------

@@ -25,7 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "libReallive/gameexe.h"
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -37,7 +40,59 @@ using boost::lexical_cast;
 using namespace std;
 
 // -----------------------------------------------------------------------
+// Error handling methods
+// -----------------------------------------------------------------------
+namespace {
 
+void checkChannel(int channel, const char* functionName) {
+  if(channel < 0 || channel > NUM_BASE_CHANNELS)
+  {
+    ostringstream oss;
+    oss << "Invalid channel number " << channel << " in " << functionName;
+    throw std::runtime_error(oss.str());
+  }
+}
+
+void checkVolume(int level, const char* functionName) {
+  if(level < 0 || level > 255)
+  {
+    ostringstream oss;
+    oss << "Invalid volume \"" << level << "\". Valid values are 0-255.";
+    throw std::runtime_error(oss.str());
+  }
+}
+
+}
+
+// -----------------------------------------------------------------------
+// SoundSystem::VolumeAdjustTask
+// -----------------------------------------------------------------------
+SoundSystem::VolumeAdjustTask::VolumeAdjustTask(
+  unsigned int currentTime, int inStartVolume, int inFinalVolume,
+  int fadeTimeInMs)
+  : startTime(currentTime), endTime(currentTime + fadeTimeInMs),
+    startVolume(inStartVolume), finalVolume(inFinalVolume)
+{
+}
+
+int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int inTime)
+{
+  int endOffset = endTime - startTime;
+  int curOffset = inTime - startTime;
+  double percent = double(curOffset) / endOffset;
+
+  int candidateVol = startVolume + (percent * (finalVolume - startVolume));
+  if(candidateVol < startVolume)
+    candidateVol = startVolume;
+  else if(candidateVol > finalVolume)
+    candidateVol = finalVolume;
+
+  return candidateVol;
+}
+
+// -----------------------------------------------------------------------
+// SoundSystem
+// -----------------------------------------------------------------------
 SoundSystem::SoundSystem(Gameexe& gexe)
   : m_bgmEnabled(true),
     m_bgmVolume(255),
@@ -47,6 +102,8 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     m_seEnabled(true),
     m_seVolume(255)
 {
+  std::fill_n(m_channelVolume, NUM_BASE_CHANNELS, 255);
+
   // Read the #SE.xxx entries from the Gameexe
   GameexeFilteringIterator it = gexe.filtering_begin("SE.");
   GameexeFilteringIterator end = gexe.filtering_end();
@@ -66,6 +123,29 @@ SoundSystem::SoundSystem(Gameexe& gexe)
 
 SoundSystem::~SoundSystem()
 {}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::executeSoundSystem(RLMachine& machine)
+{
+  unsigned int curTime = machine.system().event().getTicks();
+
+  ChannelAdjustmentMap::iterator it = m_pcmAdjustmentTasks.begin();
+  while(it != m_pcmAdjustmentTasks.end())
+  {
+    if(curTime >= it->second.endTime) 
+    {
+      setChannelVolume(it->first, it->second.finalVolume);
+      m_pcmAdjustmentTasks.erase(it++);
+    }
+    else
+    {
+      int volume = it->second.calculateVolumeFor(curTime);
+      setChannelVolume(it->first, volume);
+      ++it;
+    }
+  }
+}
 
 // -----------------------------------------------------------------------
 
@@ -97,6 +177,39 @@ int SoundSystem::pcmVolume() const
 
 // -----------------------------------------------------------------------
 
+void SoundSystem::setChannelVolume(const int channel, const int level)
+{
+  checkChannel(channel, "setChannelVolume");
+  checkVolume(level, "setChannelVolume");
+
+  m_channelVolume[channel] = level; 
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setChannelVolume(
+  RLMachine& machine, const int channel, const int level, 
+  const int fadeTimeInMs)
+{
+  checkChannel(channel, "setChannelVolume");
+  checkVolume(level, "setChannelVolume");
+
+  unsigned int curTime = machine.system().event().getTicks();
+
+  m_pcmAdjustmentTasks.insert(
+    make_pair(channel, VolumeAdjustTask(curTime, m_channelVolume[channel], level, fadeTimeInMs)));
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::channelVolume(const int channel)
+{
+  checkChannel(channel, "channelVolume");
+  return m_channelVolume[channel];
+}
+
+// -----------------------------------------------------------------------
+
 void SoundSystem::setSeEnabled(const int in)
 {
   m_seEnabled = in;
@@ -111,16 +224,10 @@ int SoundSystem::seEnabled() const
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setSeVolume(const int in)
+void SoundSystem::setSeVolume(const int level)
 {
-  if(in < 0 || in > 255)
-  {
-    ostringstream oss;
-    oss << "Invalid Se Volume " << in << ". Valid values are 0-255.";
-    throw std::runtime_error(oss.str());
-  }
-
-  m_seVolume = in;
+  checkVolume(level, "setSeVolume");
+  m_seVolume = level;
 }
 
 // -----------------------------------------------------------------------

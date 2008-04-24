@@ -53,6 +53,22 @@ class SoundSystem
 protected:
   typedef std::map<int, std::pair<std::string, int> > SeTable;
 
+  struct VolumeAdjustTask {
+    VolumeAdjustTask(unsigned int currentTime, int inStartVolume, 
+                     int inFinalVolume, int fadeTimeInMs);
+
+    unsigned int startTime;
+    unsigned int endTime;
+
+    int startVolume;
+    int finalVolume;
+
+    /// Calculate the volume for inTime
+    int calculateVolumeFor(unsigned int inTime);
+  };
+
+  typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
+
 private:
   /**
    * @name Background Music data
@@ -92,6 +108,19 @@ private:
    */
   unsigned char m_pcmVolume;
 
+  /// Per channel volume
+  unsigned char m_channelVolume[NUM_BASE_CHANNELS];
+
+  /**
+   * Open tasks that adjust the volume of a wave channel. We do this
+   * because SDL_mixer doesn't provide this functionality and I'm
+   * guessing other mixers don't either.
+   *
+   * @note Depending on features in other systems, I may push this
+   *       down to SDLSoundSystem later.
+   */
+  ChannelAdjustmentMap m_pcmAdjustmentTasks;
+
   /// @}
 
   // ---------------------------------------------------------------------
@@ -121,9 +150,25 @@ private:
 protected:
   SeTable& seTable() { return m_seTable; }
 
+  /** 
+   * Computes the actual volume for a channel based on the per channel
+   * and the per system volume.
+   */
+  int computeChannelVolume(const int channelVolume, const int systemVolume) {
+    return (channelVolume * systemVolume) / 255;
+  }
+
 public: 
   SoundSystem(Gameexe& gexe);
   virtual ~SoundSystem();
+
+  /**
+   * Gives the sound system a chance to run; done once per game loop.
+   *
+   * @note Overriders MUST call SoundSystem::executeSoundSystem
+   *       because we rely on it to handle volume adjustment tasks.
+   */
+  virtual void executeSoundSystem(RLMachine& machine);
 
   // ---------------------------------------------------------------------
 
@@ -141,6 +186,16 @@ public:
   virtual void setPcmVolume(const int in);
   int pcmVolume() const;
 
+  /// Sets an individual channel volume
+  virtual void setChannelVolume(const int channel, const int level);
+
+  /// Change the volume smoothly; the change from the current volume
+  /// to level will take fadeTimeInMs
+  void setChannelVolume(RLMachine& machine, const int channel, 
+                        const int level, const int fadeTimeInMs);
+
+  /// Fetches an individual channel volume
+  int channelVolume(const int channel);
   
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile) = 0;
 //  virtual void wavPlay(const fs::path& wavFile, const int channel) = 0;

@@ -57,6 +57,8 @@ public:
   SDLSoundSystem(Gameexe& gexe);
   ~SDLSoundSystem();
 
+  virtual void setChannelVolume(const int channel, const int level);
+
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile);
   virtual void playSe(RLMachine& machine, const int seNum);  
 };	// end of class SDLSoundSystem
