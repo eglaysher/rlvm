@@ -87,6 +87,22 @@ void SDLSoundSystem::setChannelVolume(const int channel, const int level)
 
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
 {
+  int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
+  if(channelNumber == -1)
+  {
+    ostringstream oss;
+    oss << "Couldn't find a free channel for wavPlay()";
+    throw std::runtime_error(oss.str());
+  }
+
+  wavPlay(machine, wavFile, channelNumber);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
+                             const int channel)
+{
   fs::path filePath = findFile(machine, wavFile, SOUND_FILETYPES);
   
   // Find the next free channel
@@ -97,16 +113,27 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
     m_seCache.insert(filePath, sample);
   }
 
-  int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
-  if(channelNumber == -1)
+  Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
+  sample->playChunkOn(channel, 0);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
+                             const int channel, const int fadeinMs)
+{
+  fs::path filePath = findFile(machine, wavFile, SOUND_FILETYPES);
+  
+  // Find the next free channel
+  shared_ptr<SDLSoundChunk> sample = m_wavCache.fetch(filePath);
+  if(sample == NULL)
   {
-    ostringstream oss;
-    oss << "Couldn't find a free channel for wavPlay()";
-    throw std::runtime_error(oss.str());
+    sample.reset(new SDLSoundChunk(filePath));
+    m_seCache.insert(filePath, sample);
   }
 
-  Mix_Volume(channelNumber, realLiveVolumeToSDLMixerVolume(pcmVolume()));
-  sample->playChunkOn(channelNumber, 0);
+  Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
+  sample->fadeInChunkOn(channel, 0, fadeinMs);
 }
 
 // -----------------------------------------------------------------------

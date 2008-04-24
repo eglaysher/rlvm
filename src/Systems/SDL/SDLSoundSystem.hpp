@@ -60,7 +60,13 @@ public:
   virtual void setChannelVolume(const int channel, const int level);
 
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile);
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+                       const int channel);
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+                       const int channel, const int fadeinMs);
+
   virtual void playSe(RLMachine& machine, const int seNum);  
+
 };	// end of class SDLSoundSystem
 
 #endif

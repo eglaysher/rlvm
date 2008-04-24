@@ -36,10 +36,16 @@ SDLSoundChunk::PlayingTable SDLSoundChunk::s_playingTable;
 
 // -----------------------------------------------------------------------
 
-
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
   : m_sample(Mix_LoadWAV(path.external_file_string().c_str()))
 {
+}
+
+// -----------------------------------------------------------------------
+
+SDLSoundChunk::~SDLSoundChunk()
+{
+  Mix_FreeChunk(m_sample);
 }
 
 // -----------------------------------------------------------------------
@@ -48,7 +54,19 @@ void SDLSoundChunk::playChunkOn(int channel, int loops)
 {
   s_playingTable[channel] = shared_from_this();
 
-  if(Mix_PlayChannel(channel, m_sample, 0) == -1) 
+  if(Mix_PlayChannel(channel, m_sample, loops) == -1) 
+  {
+    // TODO: Throw something here.
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
+{
+  s_playingTable[channel] = shared_from_this();
+
+  if(Mix_FadeInChannel(channel, m_sample, loops, ms) == -1) 
   {
     // TODO: Throw something here.
   }

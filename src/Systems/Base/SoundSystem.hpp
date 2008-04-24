@@ -198,9 +198,10 @@ public:
   int channelVolume(const int channel);
   
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile) = 0;
-//  virtual void wavPlay(const fs::path& wavFile, const int channel) = 0;
-//  virtual void wavPlay(const fs::path& wavFile, const int channel,
-//                       const int fadeinMs) = 0;
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+                       const int channel) = 0;
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+                       const int channel, const int fadeinMs) = 0;
 
   /// @}
 

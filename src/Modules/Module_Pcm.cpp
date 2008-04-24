@@ -32,9 +32,27 @@
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlay : public RLOp_Void_1<StrConstant_T> {
+struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
     machine.system().sound().wavPlay(machine, fileName);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, std::string fileName, int channel) {
+    machine.system().sound().wavPlay(machine, fileName, channel);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T, 
+                                          IntConstant_T> {
+  void operator()(RLMachine& machine, std::string fileName, int channel, 
+                  int fadein) {
+    machine.system().sound().wavPlay(machine, fileName, channel, fadein);
   }
 };
 
@@ -102,9 +120,9 @@ struct Pcm_wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 PcmModule::PcmModule()
   : RLModule("Pcm", 1, 21)
 {
-  addOpcode(0, 0, "wavPlay", new Pcm_wavPlay);
-  addUnsupportedOpcode(0, 1, "wavPlay");
-  addUnsupportedOpcode(0, 2, "wavPlay");
+  addOpcode(0, 0, "wavPlay", new Pcm_wavPlay_0);
+  addOpcode(0, 1, "wavPlay", new Pcm_wavPlay_1);
+  addOpcode(0, 2, "wavPlay", new Pcm_wavPlay_2);
 
   addUnsupportedOpcode(1, 0, "wavPlayEx");
   addUnsupportedOpcode(1, 1, "wavPlayEx");

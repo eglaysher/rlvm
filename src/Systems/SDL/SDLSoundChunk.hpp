@@ -60,18 +60,31 @@ private:
 
 public:
   SDLSoundChunk(const boost::filesystem::path& path);
-
+  ~SDLSoundChunk();
+ 
   /** 
    * Plays the chunk on the given channel. Wraps Mix_PlayChannel.
    * 
    * @param channel Channel number to use.
-   * @param loops 
+   * @param loops Number of loops, -1 is infinite loops. Passing one
+   *              here plays the sample twice (1 loop).
    * @note This method should always be used instead of
    *       Mix_PlayChannel with a raw Mix_Chunk because we do
    *       additional bookkeeping to handle memory deallocation for
    *       when a chunk finishes.
    */
   void playChunkOn(int channel, int loops);
+
+  /** 
+   * Fades a chunk in.
+   * 
+   * @param channel Channel number to use.
+   * @param loops Number of loops, -1 is infinite loops. Passing one
+   *              here plays the sample twice (1 loop).
+   * @param ms Milliseconds over which to fade from nothing to current
+   *           channel volume.
+   */
+  void fadeInChunkOn(int channel, int loops, int ms);
 
   /** 
    * SDL_Mixer callback function passed in to Mix_ChannelFinished().
