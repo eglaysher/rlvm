@@ -44,6 +44,28 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
+struct RealLiveSoundQualities {
+  int rate;
+  Uint16 format;
+};
+
+/**
+ * A maping between SoundQualities() and the values need to be passed
+ * to Mix_OpenAudio()
+ */
+static RealLiveSoundQualities s_realLiveSoundQualities[] = {
+  {11025, AUDIO_S8},    // 11 kHz, 8 bit stereo
+  {11025, AUDIO_S16},   // 11 kHz, 16 bit stereo
+  {22050, AUDIO_S8},    // 22 kHz, 8 bit stereo
+  {22050, AUDIO_S16},   // 22 kHz, 16 bit stereo
+  {44100, AUDIO_S8},    // 44 kHz, 8 bit stereo
+  {44100, AUDIO_S16},   // 44 kHz, 16 bit stereo
+  {48000, AUDIO_S8},    // 48 kHz, 8 bit stereo
+  {48000, AUDIO_S16}    // 48 hKz, 16 bit stereo
+};
+
+// -----------------------------------------------------------------------
+
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
   : SoundSystem(gexe), m_seCache(5), m_wavCache(5)
 {
@@ -51,8 +73,9 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
 
   /* We're going to be requesting certain things from our audio
      device, so we set them up beforehand */
-  int audio_rate = 22050;
-  Uint16 audio_format = AUDIO_S16; /* 16-bit stereo */
+
+  int audio_rate = s_realLiveSoundQualities[soundQuality()].rate;
+  Uint16 audio_format = s_realLiveSoundQualities[soundQuality()].format;
   int audio_channels = 2;
   int audio_buffers = 4096;
 

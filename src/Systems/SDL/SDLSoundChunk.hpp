@@ -55,7 +55,7 @@ private:
   typedef std::map<int, boost::shared_ptr<SDLSoundChunk> > PlayingTable;
   static PlayingTable s_playingTable;
 
-  /// Sample
+  /// Wrapped chunk
   Mix_Chunk* m_sample;
 
 public:

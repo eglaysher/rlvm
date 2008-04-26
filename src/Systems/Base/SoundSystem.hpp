@@ -70,6 +70,22 @@ protected:
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
 
 private:
+
+  /**
+   * Number passed in from RealLive that represents the 
+   *
+   * 0 	          	11 kHz 	          	8 bit
+   * 1 	          	11 kHz 	          	16 bit
+   * 2 	          	22 kHz 	          	8 bit
+   * 3 	          	22 kHz 	          	16 bit
+   * 4 	          	44 kHz 	          	8 bit
+   * 5 	          	44 kHz 	          	16 bit
+   * 6 	          	48 kHz 	          	8 bit
+   * 7 	          	48 hKz 	          	16 bit
+   * 
+   */
+  int m_soundQuality;
+
   /**
    * @name Background Music data
    * 
@@ -169,6 +185,16 @@ public:
    *       because we rely on it to handle volume adjustment tasks.
    */
   virtual void executeSoundSystem(RLMachine& machine);
+
+  // ---------------------------------------------------------------------
+  
+  /**
+   * Sets how much sound hertz.
+   */
+  virtual void setSoundQuality(const int quality) 
+  { m_soundQuality = quality; }
+
+  int soundQuality() const { return m_soundQuality; }
 
   // ---------------------------------------------------------------------
 

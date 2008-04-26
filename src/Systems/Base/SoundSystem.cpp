@@ -94,7 +94,8 @@ int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int inTime)
 // SoundSystem
 // -----------------------------------------------------------------------
 SoundSystem::SoundSystem(Gameexe& gexe)
-  : m_bgmEnabled(true),
+  : m_soundQuality(5),
+    m_bgmEnabled(true),
     m_bgmVolume(255),
     m_bgmStatus(0),
     m_pcmEnabled(true),
