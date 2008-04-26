@@ -125,6 +125,34 @@ void SoundSystem::executeSoundSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+void SoundSystem::setBgmEnabled(const int in)
+{
+  m_bgmEnabled = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::bgmEnabled() const
+{
+  return m_bgmEnabled;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setBgmVolume(const int in)
+{
+  m_bgmVolume = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::bgmVolume() const
+{
+  return m_bgmVolume;
+}
+
+// -----------------------------------------------------------------------
+
 void SoundSystem::setPcmEnabled(const int in)
 {
   m_pcmEnabled = in;

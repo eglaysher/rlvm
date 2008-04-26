@@ -200,6 +200,20 @@ public:
   int soundQuality() const { return m_soundQuality; }
 
   // ---------------------------------------------------------------------
+  /**
+   * @name BGM functions
+   * 
+   * @{
+   */
+  virtual void setBgmEnabled(const int in);
+  
+  int bgmEnabled() const;
+  virtual void setBgmVolume(const int in);
+  int bgmVolume() const;
+
+  /// @}
+
+  // ---------------------------------------------------------------------
 
   /**
    * @name PCM/Wave functions

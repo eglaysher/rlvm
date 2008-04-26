@@ -544,8 +544,10 @@ SysModule::SysModule()
   addUnsupportedOpcode(2227, 0, "SetBgmKoeFade");
   addUnsupportedOpcode(2327, 0, "BgmKoeFade");
   addUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
-  addUnsupportedOpcode(2230, 0, "SetBgmVolMod");
-  addUnsupportedOpcode(2330, 0, "BgmVolMod");
+  addOpcode(2230, 0, "SetBgmVolMod",
+            setToIncomingInt(&SoundSystem::setBgmVolume));
+  addOpcode(2330, 0, "BgmVolMod",
+            returnIntValue(&SoundSystem::bgmVolume));
   addUnsupportedOpcode(2231, 0, "SetKoeVolMod");
   addUnsupportedOpcode(2331, 0, "KoeVolMod");
   addOpcode(2232, 0, "SetPcmVolMod",
@@ -556,8 +558,10 @@ SysModule::SysModule()
             setToIncomingInt(&SoundSystem::setSeVolume));
   addOpcode(2333, 0, "SeVolMod",
             returnIntValue(&SoundSystem::seVolume));
-  addUnsupportedOpcode(2240, 0, "SetBgmEnabled");
-  addUnsupportedOpcode(2340, 0, "BgmEnabled");
+  addOpcode(2240, 0, "SetBgmEnabled",
+            setToIncomingInt(&SoundSystem::setBgmEnabled));
+  addOpcode(2340, 0, "BgmEnabled",
+            returnIntValue(&SoundSystem::bgmEnabled));
   addUnsupportedOpcode(2241, 0, "SetKoeEnabled");
   addUnsupportedOpcode(2341, 0, "KoeEnabled");
   addOpcode(2242, 0, "SetPcmEnabled",
