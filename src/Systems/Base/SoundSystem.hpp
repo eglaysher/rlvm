@@ -174,6 +174,9 @@ protected:
     return (channelVolume * systemVolume) / 255;
   }
 
+  static void checkChannel(int channel, const char* functionName);
+  static void checkVolume(int level, const char* functionName);
+
 public: 
   SoundSystem(Gameexe& gexe);
   virtual ~SoundSystem();

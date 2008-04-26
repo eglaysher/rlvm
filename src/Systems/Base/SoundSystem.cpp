@@ -40,31 +40,6 @@ using boost::lexical_cast;
 using namespace std;
 
 // -----------------------------------------------------------------------
-// Error handling methods
-// -----------------------------------------------------------------------
-namespace {
-
-void checkChannel(int channel, const char* functionName) {
-  if(channel < 0 || channel > NUM_BASE_CHANNELS)
-  {
-    ostringstream oss;
-    oss << "Invalid channel number " << channel << " in " << functionName;
-    throw std::runtime_error(oss.str());
-  }
-}
-
-void checkVolume(int level, const char* functionName) {
-  if(level < 0 || level > 255)
-  {
-    ostringstream oss;
-    oss << "Invalid volume \"" << level << "\". Valid values are 0-255.";
-    throw std::runtime_error(oss.str());
-  }
-}
-
-}
-
-// -----------------------------------------------------------------------
 // SoundSystem::VolumeAdjustTask
 // -----------------------------------------------------------------------
 SoundSystem::VolumeAdjustTask::VolumeAdjustTask(
@@ -236,4 +211,30 @@ void SoundSystem::setSeVolume(const int level)
 int SoundSystem::seVolume() const
 {
   return m_seVolume;
+}
+
+// -----------------------------------------------------------------------
+
+// static
+void SoundSystem::checkChannel(int channel, const char* functionName) 
+{
+  if(channel < 0 || channel > NUM_BASE_CHANNELS)
+  {
+    ostringstream oss;
+    oss << "Invalid channel number " << channel << " in " << functionName;
+    throw std::runtime_error(oss.str());
+  }
+}
+
+// -----------------------------------------------------------------------
+
+// static
+void SoundSystem::checkVolume(int level, const char* functionName)
+{
+  if(level < 0 || level > 255)
+  {
+    ostringstream oss;
+    oss << "Invalid volume \"" << level << "\". Valid values are 0-255.";
+    throw std::runtime_error(oss.str());
+  }
 }

@@ -43,7 +43,8 @@ using namespace std;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
-
+// RealLive Sound Qualities table
+// -----------------------------------------------------------------------
 struct RealLiveSoundQualities {
   int rate;
   Uint16 format;
@@ -64,8 +65,40 @@ static RealLiveSoundQualities s_realLiveSoundQualities[] = {
   {48000, AUDIO_S16}    // 48 hKz, 16 bit stereo
 };
 
+
+// -----------------------------------------------------------------------
+// SDLSoundSystem (private)
+// -----------------------------------------------------------------------
+SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
+  RLMachine& machine, const std::string& fileName, SoundChunkCache& cache)
+{
+  fs::path filePath = findFile(machine, fileName, SOUND_FILETYPES);
+  SDLSoundChunkPtr sample = cache.fetch(filePath);
+  if(sample == NULL)
+  {
+    sample.reset(new SDLSoundChunk(filePath));
+    cache.insert(filePath, sample);
+  }
+
+  return sample;
+}
+
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::wavPlayImpl(
+  RLMachine& machine, const std::string& wavFile, const int channel)
+{
+  if(pcmEnabled())
+  {
+    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, m_wavCache);
+    Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
+    sample->playChunkOn(channel, 0);
+  }  
+}
+
+// -----------------------------------------------------------------------
+// SDLSoundSystem
+// -----------------------------------------------------------------------
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
   : SoundSystem(gexe), m_seCache(5), m_wavCache(5)
 {
@@ -110,18 +143,15 @@ void SDLSoundSystem::setChannelVolume(const int channel, const int level)
 
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
 {
-  if(pcmEnabled())
+  int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
+  if(channelNumber == -1)
   {
-    int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
-    if(channelNumber == -1)
-    {
-      ostringstream oss;
-      oss << "Couldn't find a free channel for wavPlay()";
-      throw std::runtime_error(oss.str());
-    }
-
-    wavPlay(machine, wavFile, channelNumber);
+    ostringstream oss;
+    oss << "Couldn't find a free channel for wavPlay()";
+    throw std::runtime_error(oss.str());
   }
+
+  wavPlayImpl(machine, wavFile, channelNumber);
 }
 
 // -----------------------------------------------------------------------
@@ -129,21 +159,8 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
                              const int channel)
 {
-  if(pcmEnabled())
-  {
-    fs::path filePath = findFile(machine, wavFile, SOUND_FILETYPES);
-  
-    // Find the next free channel
-    shared_ptr<SDLSoundChunk> sample = m_wavCache.fetch(filePath);
-    if(sample == NULL)
-    {
-      sample.reset(new SDLSoundChunk(filePath));
-      m_seCache.insert(filePath, sample);
-    }
-
-    Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
-    sample->playChunkOn(channel, 0);
-  }
+  checkChannel(channel, "SDLSoundSystem::wavPlay");
+  wavPlayImpl(machine, wavFile, channel);
 }
 
 // -----------------------------------------------------------------------
@@ -151,18 +168,11 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
                              const int channel, const int fadeinMs)
 {
+  checkChannel(channel, "SDLSoundSystem::wavPlay");
+
   if(pcmEnabled())
   {
-    fs::path filePath = findFile(machine, wavFile, SOUND_FILETYPES);
-  
-    // Find the next free channel
-    shared_ptr<SDLSoundChunk> sample = m_wavCache.fetch(filePath);
-    if(sample == NULL)
-    {
-      sample.reset(new SDLSoundChunk(filePath));
-      m_seCache.insert(filePath, sample);
-    }
-
+    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, m_wavCache);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
     sample->fadeInChunkOn(channel, 0, fadeinMs);
   }
@@ -185,24 +195,16 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
     const string& fileName = it->second.first;
     int channel = it->second.second;
 
-    if(fileName == "")
-    {
-      // Just stop a channel in case of an empty file name.
-      Mix_HaltChannel(channel);
-      return;
-    }
-
-    fs::path filePath = findFile(machine, fileName, SOUND_FILETYPES);
-
     // Make sure there isn't anything playing on the current channel
     Mix_HaltChannel(channel);
 
-    shared_ptr<SDLSoundChunk> sample = m_seCache.fetch(filePath);
-    if(sample == NULL)
+    if(fileName == "")
     {
-      sample.reset(new SDLSoundChunk(filePath));
-      m_seCache.insert(filePath, sample);
+      // Just stop a channel in case of an empty file name.
+      return;
     }
+
+    SDLSoundChunkPtr sample = getSoundChunk(machine, fileName, m_wavCache);
 
     // SE chunks have no per channel volume...
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));

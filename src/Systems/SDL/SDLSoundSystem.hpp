@@ -47,11 +47,40 @@ class SDLSoundChunk;
 class SDLSoundSystem : public SoundSystem
 {
 private:
+  typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
+
   typedef LRUCache<boost::filesystem::path, 
-                   boost::shared_ptr<SDLSoundChunk> > SoundChunkCache;
+                   SDLSoundChunkPtr> SoundChunkCache;
 
   SoundChunkCache m_seCache;
   SoundChunkCache m_wavCache;
+
+  /** 
+   * Retrieves a sound chunk from the passed in cache (or loads it if
+   * it's not in the cache and then stuffs it into the cache.)
+   * 
+   * @param machine Current machine context
+   * @param fileName Name of the file (minus extension)
+   * @param cache Which cache to check (and store) the 
+   * @return The loaded sound chunk
+   */
+  static SDLSoundChunkPtr getSoundChunk(
+    RLMachine& machine, 
+    const std::string& fileName, 
+    SoundChunkCache& cache);
+
+  /** 
+   * Implementation to play a wave file. Two wavPlay() versions use
+   * this underlying implementation, which is split out so the one
+   * that takes a raw channel can verify its input.
+   * 
+   * @param machine Current machine context
+   * @param wavFile Name of the file (minux extension)
+   * @param channel Channel to play on (both NUM_BASE_CHANNELS and
+   *                NUM_EXTRA_WAVPLAY_CHANNELS are legal here.)
+   */
+  void wavPlayImpl(RLMachine& machine, const std::string& wavFile,
+                   const int channel);
 
 public: 
   SDLSoundSystem(Gameexe& gexe);
