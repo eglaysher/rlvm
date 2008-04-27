@@ -252,6 +252,8 @@ public:
   virtual void setBgmVolume(const int in);
   int bgmVolume() const;
 
+  int bgmStatus() const;
+
   /// @}
 
   // ---------------------------------------------------------------------

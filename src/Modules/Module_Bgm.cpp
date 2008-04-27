@@ -27,6 +27,22 @@
 
 #include "Modules/Module_Bgm.hpp"
 
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmPlaying : public RLOp_Store_Void
+{
+  int operator()(RLMachine& machine) {
+    return machine.system().sound().bgmStatus() == 1;
+  }
+};
+
 // -----------------------------------------------------------------------
 
 BgmModule::BgmModule()
@@ -46,10 +62,10 @@ BgmModule::BgmModule()
   addUnsupportedOpcode(2, 2, "bgmPlay");
 
   addUnsupportedOpcode(3, 0, "bgmWait");
-  addUnsupportedOpcode(4, 0, "bgmPlaying");
+  addOpcode(4, 0, "bgmPlaying", new Bgm_bgmPlaying);
   addUnsupportedOpcode(5, 0, "bgmStop");
   addUnsupportedOpcode(6, 0, "bgmStop2");
-  addUnsupportedOpcode(7, 0, "bgmStatus");
+  addOpcode(7, 0, "bgmStatus", returnIntValue(&SoundSystem::bgmStatus));
   addUnsupportedOpcode(8, 0, "bgmRewind");
   addUnsupportedOpcode(9, 0, "bgmStop3");
   addUnsupportedOpcode(10, 0, "bgmStop4");

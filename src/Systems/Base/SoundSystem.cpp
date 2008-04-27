@@ -211,6 +211,13 @@ int SoundSystem::bgmVolume() const
 
 // -----------------------------------------------------------------------
 
+int SoundSystem::bgmStatus() const
+{
+  return m_bgmStatus;
+}
+
+// -----------------------------------------------------------------------
+
 void SoundSystem::setPcmEnabled(const int in)
 {
   m_pcmEnabled = in;
@@ -259,7 +266,8 @@ void SoundSystem::setChannelVolume(
   unsigned int curTime = machine.system().event().getTicks();
 
   m_pcmAdjustmentTasks.insert(
-    make_pair(channel, VolumeAdjustTask(curTime, m_channelVolume[channel], level, fadeTimeInMs)));
+    make_pair(channel, VolumeAdjustTask(curTime, m_channelVolume[channel], 
+                                        level, fadeTimeInMs)));
 }
 
 // -----------------------------------------------------------------------
