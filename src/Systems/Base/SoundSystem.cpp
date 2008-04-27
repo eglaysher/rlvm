@@ -66,6 +66,39 @@ int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int inTime)
 }
 
 // -----------------------------------------------------------------------
+// SoundSystem::DSTrack
+// -----------------------------------------------------------------------
+SoundSystem::DSTrack::DSTrack()
+  : name(""), file(""), from(-1), to(-1), loop(-1)
+{
+}
+
+// -----------------------------------------------------------------------
+
+SoundSystem::DSTrack::DSTrack(
+  const std::string inName, const std::string inFile, int inFrom, 
+  int inTo, int inLoop)
+  : name(inName), file(inFile), from(inFrom), to(inTo), loop(inLoop)
+{
+}
+
+// -----------------------------------------------------------------------
+// SoundSystem::CDTrack
+// -----------------------------------------------------------------------
+SoundSystem::CDTrack::CDTrack()
+  : name(""), from(-1), to(-1), loop(-1)
+{
+}
+
+// -----------------------------------------------------------------------
+
+SoundSystem::CDTrack::CDTrack(
+  const std::string inName, int inFrom, int inTo, int inLoop)
+  : name(inName), from(inFrom), to(inTo), loop(inLoop)
+{
+}
+
+// -----------------------------------------------------------------------
 // SoundSystem
 // -----------------------------------------------------------------------
 SoundSystem::SoundSystem(Gameexe& gexe)
@@ -80,19 +113,44 @@ SoundSystem::SoundSystem(Gameexe& gexe)
 {
   std::fill_n(m_channelVolume, NUM_BASE_CHANNELS, 255);
 
-  // Read the #SE.xxx entries from the Gameexe
-  GameexeFilteringIterator it = gexe.filtering_begin("SE.");
+  // Read the \#SE.xxx entries from the Gameexe
+  GameexeFilteringIterator se = gexe.filtering_begin("SE.");
   GameexeFilteringIterator end = gexe.filtering_end();
-  for(; it != end; ++it)
+  for(; se != end; ++se)
   {
-    string rawNumber = it->key().substr(it->key().find_first_of(".") + 1);
+    string rawNumber = se->key().substr(se->key().find_first_of(".") + 1);
     int entryNumber = lexical_cast<int>(rawNumber);
 
-    string fileName = it->getStringAt(0);
-    int targetChannel = it->getIntAt(1);
+    string fileName = se->getStringAt(0);
+    int targetChannel = se->getIntAt(1);
 
     m_seTable[entryNumber] = make_pair(fileName, targetChannel);
   }
+
+  // Read the \#DSTRACK entries
+  GameexeFilteringIterator dstrack = gexe.filtering_begin("DSTRACK");
+  for(; dstrack != end; ++dstrack)
+  {
+    int from = dstrack->getIntAt(0);
+    int to = dstrack->getIntAt(1);
+    int loop = dstrack->getIntAt(2);
+    const std::string& file = dstrack->getStringAt(3);
+    const std::string& name = dstrack->getStringAt(4);
+
+    m_dstTracks[name] = DSTrack(name, file, from, to, loop);
+  }
+
+  // Read the \#CDTRACK entries
+  GameexeFilteringIterator cdtrack = gexe.filtering_begin("CDTRACK");
+  for(; cdtrack != end; ++cdtrack)
+  {
+    int from = cdtrack->getIntAt(0);
+    int to = cdtrack->getIntAt(1);
+    int loop = cdtrack->getIntAt(2);
+    const std::string& name = cdtrack->getStringAt(3);
+
+    m_cdTracks[name] = CDTrack(name, from, to, loop);
+  }  
 }
 
 // -----------------------------------------------------------------------

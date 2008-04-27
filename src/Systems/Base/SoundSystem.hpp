@@ -51,8 +51,13 @@ const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
 class SoundSystem
 {
 protected:
+  /// Type for a parsed \#SE table.
   typedef std::map<int, std::pair<std::string, int> > SeTable;
 
+  /** 
+   * Stores data about an ongoing volume adjustment (such as those
+   * started by fun wavSetVolume(int, int, int).)
+   */
   struct VolumeAdjustTask {
     VolumeAdjustTask(unsigned int currentTime, int inStartVolume, 
                      int inFinalVolume, int fadeTimeInMs);
@@ -68,6 +73,36 @@ protected:
   };
 
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
+
+  /**
+   * Defines a piece of background music who's backed by a file,
+   * usually VisualArt's nwa format.
+   */
+  struct DSTrack {
+    DSTrack();
+    DSTrack(const std::string name, const std::string file,
+            int from, int to, int loop);
+
+    std::string name;
+    std::string file;
+    int from;
+    int to;
+    int loop;
+  };
+
+  /**
+   * Defines a piece of background music who's backed by a cd audio
+   * track.
+   */
+  struct CDTrack {
+    CDTrack();
+    CDTrack(const std::string name, int from, int to, int loop);
+
+    std::string name;
+    int from;
+    int to;
+    int loop;
+  };
 
 private:
 
@@ -106,6 +141,12 @@ private:
    * - 2 Fading out music
    */
   int m_bgmStatus;
+
+  /// Defined music tracks (files)
+  std::map<std::string, DSTrack> m_dstTracks;
+
+  /// Defined music tracks (cd tracks)
+  std::map<std::string, CDTrack> m_cdTracks;
 
   /// @}
 
