@@ -41,19 +41,42 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/filesystem/path.hpp>
 
-#ifdef __GNUC__
-//// Can't read STL error messages.
-//#include <ext/hash_map>
-//using namespace __gnu_cxx;
+// #ifdef __GNUC__
+// // Can't read STL error messages.
+// #include <ext/hash_map>
+// using namespace __gnu_cxx;
+
+// // How many programers have written this exact piece of code?
+// // namespace __gnu_cxx {
+// // template<>
+// // struct hash<std::string> {
+// //   size_t operator()(const std::string s) const { 
+// //     return __stl_hash_string(s.c_str()); 
+// //   }
+// // };
+// // }
+
+// // #include <map>
+// // #define hash_map std::map
+// #else
+// #include <hash_map>
+// using stdext::hash_map;
+// #endif
+
 #include <map>
-#define hash_map std::map
-#else
-#include <hash_map>
-using stdext::hash_map;
-#endif
 
 class Gameexe;
 class GameexeFilteringIterator;
+
+// -----------------------------------------------------------------------
+
+/**
+ * Storage backend for the Gameexe
+ */
+typedef std::vector<int> Gameexe_vec_type;
+typedef std::multimap<std::string, Gameexe_vec_type> GameexeData_t;
+
+// -----------------------------------------------------------------------
 
 /**
  * Encapsulates a line of the Gameexe file that's passed to the
@@ -85,14 +108,16 @@ private:
   friend class GameexeFilteringIterator;
 
   const std::string m_key;
+  GameexeData_t::const_iterator m_iterator;
   Gameexe& m_objectToLookupOn;
 
   /** 
    * Private; only allow construction by Gameexe
    */
-  GameexeInterpretObject(const std::string& key, Gameexe& objectToLookupOn)
-    : m_key(key), m_objectToLookupOn(objectToLookupOn)
-  {}
+  GameexeInterpretObject(const std::string& key, Gameexe& objectToLookupOn);
+  GameexeInterpretObject(const std::string& key, 
+                         GameexeData_t::const_iterator it, 
+                         Gameexe& objectToLookupOn);
 
 public:
 
@@ -210,9 +235,7 @@ private:
    * really a vector of ints, unless you want a string in which case
    * that int is an index into a vector of strings on the side.
    */
-  typedef std::vector<int> vec_type;
-  typedef hash_map<std::string, vec_type> data_t;
-  data_t data_;
+  GameexeData_t data_;
   std::vector<std::string> cdata_;
   /// @}
 
@@ -286,9 +309,9 @@ public:
   /**
    * Raw interface for 
    */
-  const std::vector<int>& getIntArray(const std::string& key);
+  const std::vector<int>& getIntArray(GameexeData_t::const_iterator key);
 
-  int getIntAt(const std::string& key, int index);
+  int getIntAt(GameexeData_t::const_iterator key, int index);
 
   /** 
    * Returns whether key exists in the stored data
@@ -305,12 +328,20 @@ public:
   /** 
    * Internal function that returns an array of int values.
    */
-  std::string getStringAt(const std::string& key, int index);
+  std::string getStringAt(GameexeData_t::const_iterator key, int index);
+
   void setStringAt(const std::string& key, const std::string& value);
   void setIntAt(const std::string& key, const int value);
   /// @}
 
 private:
+  /** 
+   * Returns an iterator for the incoming key. May not be valid. This
+   * is a function only for tight coupling with
+   * GameexeInterpretObject.
+   */
+  GameexeData_t::const_iterator find(const std::string& key);
+
   /** 
    * Regrettable artifact of hack to get all integers in streams to
    * have setw(3).
@@ -382,7 +413,7 @@ class GameexeFilteringIterator
 public:
   explicit GameexeFilteringIterator(const std::string& inFilterKeys,
                                     Gameexe& inGexe,
-                                    Gameexe::data_t::const_iterator it)
+                                    GameexeData_t::const_iterator it)
     : filterKeys(inFilterKeys), gexe(inGexe), currentKey(it)
   {
     incrementUntilValid();
@@ -412,14 +443,14 @@ private:
 
   GameexeInterpretObject dereference() const
   {
-    return GameexeInterpretObject(currentKey->first, gexe);
+    return GameexeInterpretObject(currentKey->first, currentKey, gexe);
   }
 
   void incrementUntilValid();
 
   const std::string filterKeys;
   Gameexe& gexe;
-  Gameexe::data_t::const_iterator currentKey;
+  GameexeData_t::const_iterator currentKey;
 };
 
 // -----------------------------------------------------------------------

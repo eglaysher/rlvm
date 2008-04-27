@@ -128,7 +128,7 @@ Gameexe::Gameexe(const fs::path& gameexefile)
       trim(key);
       trim(value);
 
-      vec_type vec;
+      Gameexe_vec_type vec;
 
       // Extract all numeric and data values from the value
       typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
@@ -146,7 +146,7 @@ Gameexe::Gameexe(const fs::path& gameexefile)
         else if(tok != "-")
           vec.push_back(lexical_cast<int>(tok));
       }
-      data_[key] = vec;
+      data_.insert(make_pair(key, vec));
     }
   }
 }
@@ -157,27 +157,25 @@ Gameexe::~Gameexe()
 
 // -----------------------------------------------------------------------
 
-const std::vector<int>& Gameexe::getIntArray(const std::string& key)
+const std::vector<int>& Gameexe::getIntArray(GameexeData_t::const_iterator key)
 {
-  data_t::const_iterator it = data_.find(key);
-  if(it == data_.end())
+  if(key == data_.end())
   {
     static std::vector<int> falseVector;
     return falseVector;
   }
 
-  return it->second;
+  return key->second;
 }
 
 // -----------------------------------------------------------------------
 
-int Gameexe::getIntAt(const std::string& key, int index)
+int Gameexe::getIntAt(GameexeData_t::const_iterator key, int index)
 {
-  data_t::const_iterator it = data_.find(key);
-  if(it == data_.end()) 
-    throwUnknownKey(key);
+  if(key == data_.end()) 
+    throwUnknownKey("TMP");
 
-  return it->second.at(index);
+  return key->second.at(index);
 }
 
 // -----------------------------------------------------------------------
@@ -189,7 +187,7 @@ bool Gameexe::exists(const std::string& key)
 
 // -----------------------------------------------------------------------
 
-std::string Gameexe::getStringAt(const std::string& key, int index) 
+std::string Gameexe::getStringAt(GameexeData_t::const_iterator key, int index) 
 {
   int cindex = getIntAt(key, index);
   return cdata_.at(cindex);
@@ -199,19 +197,26 @@ std::string Gameexe::getStringAt(const std::string& key, int index)
 
 void Gameexe::setStringAt(const std::string& key, const std::string& value) 
 {
-  vec_type toStore;
+  Gameexe_vec_type toStore;
   cdata_.push_back(value);
   toStore.push_back(cdata_.size() - 1);
-  data_[key] = toStore;
+  data_.insert(make_pair(key, toStore));
 }
 
 // -----------------------------------------------------------------------
 
 void Gameexe::setIntAt(const std::string& key, const int value) 
 {
-  vec_type toStore;
+  Gameexe_vec_type toStore;
   toStore.push_back(value);
-  data_[key] = toStore;
+  data_.insert(make_pair(key, toStore));
+}
+
+// -----------------------------------------------------------------------
+
+GameexeData_t::const_iterator Gameexe::find(const std::string& key)
+{
+  return data_.find(key);
 }
 
 // -----------------------------------------------------------------------
@@ -252,9 +257,24 @@ GameexeFilteringIterator Gameexe::filtering_end()
 // -----------------------------------------------------------------------
 // GameexeInterpretObject
 // -----------------------------------------------------------------------
+GameexeInterpretObject::GameexeInterpretObject(
+  const std::string& key, Gameexe& objectToLookupOn)
+  : m_key(key), m_iterator(objectToLookupOn.find(key)), 
+    m_objectToLookupOn(objectToLookupOn)
+{}
+
+// -----------------------------------------------------------------------
+
+GameexeInterpretObject::GameexeInterpretObject(
+  const std::string& key, GameexeData_t::const_iterator it, 
+  Gameexe& objectToLookupOn)
+  : m_key(key), m_iterator(it), m_objectToLookupOn(objectToLookupOn)
+{}
+
+// -----------------------------------------------------------------------
 
 const int GameexeInterpretObject::to_int(const int defaultValue) const {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_iterator);
   if(ints.size() == 0)
     return defaultValue;
 
@@ -264,7 +284,7 @@ const int GameexeInterpretObject::to_int(const int defaultValue) const {
 // -----------------------------------------------------------------------
 
 const int GameexeInterpretObject::to_int() const {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_iterator);
   if(ints.size() == 0)
     m_objectToLookupOn.throwUnknownKey(m_key);
 
@@ -275,7 +295,7 @@ const int GameexeInterpretObject::to_int() const {
 
 int GameexeInterpretObject::getIntAt(int index) const
 {
-  return m_objectToLookupOn.getIntAt(m_key, index);
+  return m_objectToLookupOn.getIntAt(m_iterator, index);
 }
 
 // -----------------------------------------------------------------------
@@ -285,7 +305,7 @@ const std::string GameexeInterpretObject::to_string(
 {
   try 
   {
-    return m_objectToLookupOn.getStringAt(m_key, 0);
+    return m_objectToLookupOn.getStringAt(m_iterator, 0);
   } 
   catch(...) 
   {
@@ -299,7 +319,7 @@ const std::string GameexeInterpretObject::to_string() const
 {
   try 
   {
-    return m_objectToLookupOn.getStringAt(m_key, 0);
+    return m_objectToLookupOn.getStringAt(m_iterator, 0);
   } 
   catch(...) 
   {
@@ -314,14 +334,14 @@ const std::string GameexeInterpretObject::to_string() const
 
 const std::string GameexeInterpretObject::getStringAt(int index) const
 {
-  return m_objectToLookupOn.getStringAt(m_key, index);
+  return m_objectToLookupOn.getStringAt(m_iterator, index);
 }
 
 // -----------------------------------------------------------------------
 
 const std::vector<int>& GameexeInterpretObject::to_intVector() const
 {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_key);
+  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_iterator);
   if(ints.size() == 0)
     m_objectToLookupOn.throwUnknownKey(m_key);
 
