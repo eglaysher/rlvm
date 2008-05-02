@@ -173,13 +173,15 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
 // -----------------------------------------------------------------------
 
 const std::vector<std::string> ALL_FILETYPES = 
-  list_of("g00")("pdt")("anm")("gan")("wav")("ogg")("nwa");
+  list_of("g00")("pdt")("anm")("gan")("wav")("ogg")("nwa")("mp3");
 const std::vector<std::string> IMAGE_FILETYPES = 
   list_of("g00")("pdt");
 const std::vector<std::string> GAN_FILETYPES =
   list_of("gan");
 const std::vector<std::string> SOUND_FILETYPES =
-  list_of("wav")("ogg")("nwa");
+  list_of("wav")("ogg")("nwa")("mp3");
+
+// -----------------------------------------------------------------------
 
 /**
  * @todo This function is a hack and needs to be completely rewritten
