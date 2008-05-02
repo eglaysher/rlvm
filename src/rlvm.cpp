@@ -154,7 +154,7 @@ void printVersionInformation()
 {
   cout
     << "rlvm (version 0.1)" << endl
-    << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, et all."
+    << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, Jagarl, et all."
     << endl << endl
     << "This program is free software: you can redistribute it and/or modify"
     << endl
