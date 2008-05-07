@@ -151,7 +151,7 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 		int cur_vol =
       SDL_MIX_MAXVOLUME * (count_total - music->m_fadeCount) /
       count_total;
-		char* stream_dup = new char[len];
+		char stream_dup[len];
 		memcpy(stream_dup, stream, len);
 		memset(stream, 0, len);
 		SDL_MixAudio(stream, (Uint8*)stream_dup, len, cur_vol);
