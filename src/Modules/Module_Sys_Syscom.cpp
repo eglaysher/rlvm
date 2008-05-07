@@ -56,17 +56,17 @@ void addSysSyscomOpcodes(RLModule& m)
   m.addUnsupportedOpcode(1210, 0, "ContextMenu");
 
   m.addOpcode(1211, 0, "EnableSyscom",
-              setToIncomingInt(&System::enableSyscom));
+              callFunction(&System::enableSyscomEntry));
   m.addOpcode(1211, 1, "EnableSyscom",
               callFunction(&System::enableSyscom));
 
   m.addOpcode(1212, 0, "HideSyscom",
-              setToIncomingInt(&System::hideSyscom));
+              callFunction(&System::hideSyscomEntry));
   m.addOpcode(1212, 1, "HideSyscom",
               callFunction(&System::hideSyscom));
 
   m.addOpcode(1213, 0, "DisableSyscom",
-              callFunction(&System::disableSyscom));
+              callFunction(&System::disableSyscomEntry));
 
   m.addOpcode(1214, 0, "SyscomEnabled", new Sys_SyscomEnabled);
 

@@ -86,18 +86,18 @@ SoundSystem& getSystemObj(RLMachine& machine);
  * Binds setting an internal variable to a passed in value in from a
  * running Reallive script. 
  */
-template<typename OBJTYPE, typename RETTYPE>
-class Op_SetToIncomingInt : public RLOp_Void_1< IntConstant_T > {
+template<typename OBJTYPE>
+class Op_CallWithInt : public RLOp_Void_1< IntConstant_T > {
 private:
   /// The function signature for the setter function
-  typedef void(OBJTYPE::*Setter)(RETTYPE);
+  typedef void(OBJTYPE::*Setter)(const int);
 
   /// The setter function to call on Op_SetToIncoming::reference when
   /// called.
   Setter setter;
 
 public:
-  Op_SetToIncomingInt(Setter s)
+  Op_CallWithInt(Setter s)
     : setter(s) 
   {}
 
@@ -109,12 +109,30 @@ public:
 
 // -----------------------------------------------------------------------
 
-template<typename OBJTYPE, typename RETTYPE>
-RLOperation* setToIncomingInt(void(OBJTYPE::*s)(RETTYPE))
-{
-  return new Op_SetToIncomingInt<OBJTYPE, RETTYPE>(s);
-}
+/** 
+ * Binds setting an internal variable to a passed in value in from a
+ * running Reallive script. 
+ */
+template<typename OBJTYPE>
+class Op_CallWithIntInt : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+private:
+  /// The function signature for the setter function
+  typedef void(OBJTYPE::*Setter)(const int, const int);
 
+  /// The setter function to call on Op_SetToIncoming::reference when
+  /// called.
+  Setter setter;
+
+public:
+  Op_CallWithIntInt(Setter s)
+    : setter(s) 
+  {}
+
+  void operator()(RLMachine& machine, int incoming1, int incoming2) 
+  {
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming1, incoming2);
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -123,17 +141,17 @@ RLOperation* setToIncomingInt(void(OBJTYPE::*s)(RETTYPE))
  * running Reallive script. 
  */
 template<typename OBJTYPE>
-class Op_SetToIncomingString : public RLOp_Void_1< StrConstant_T > {
+class Op_CallWithString : public RLOp_Void_1< StrConstant_T > {
 private:
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(const std::string&);
 
-  /// The setter function to call on Op_SetToIncomingString::reference
+  /// The setter function to call on Op_CallWithString::reference
   /// when called.
   Setter setter;
 
 public:
-  Op_SetToIncomingString(Setter s)
+  Op_CallWithString(Setter s)
     : setter(s) 
   {}
 
@@ -142,13 +160,56 @@ public:
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
   }
 };
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+class Op_CallMethod : public RLOp_Void_Void {
+private:
+  /// The string getter function to call
+  typedef void(OBJTYPE::*FUNCTYPE)();
+  FUNCTYPE func;
+
+public:
+  Op_CallMethod(FUNCTYPE f) 
+    : func(f) 
+  {}
+
+  void operator()(RLMachine& machine) 
+  {
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*func)();
+  }
+};
 
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
-RLOperation* setToIncomingString(void(OBJTYPE::*s)(const std::string&))
+RLOperation* callFunction(void(OBJTYPE::*s)(const int))
 {
-  return new Op_SetToIncomingString<OBJTYPE>(s);
+  return new Op_CallWithInt<OBJTYPE>(s);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+RLOperation* callFunction(void(OBJTYPE::*s)(const int, const int))
+{
+  return new Op_CallWithIntInt<OBJTYPE>(s);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+RLOperation* callFunction(void(OBJTYPE::*s)(const std::string&))
+{
+  return new Op_CallWithString<OBJTYPE>(s);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+RLOperation* callFunction(void(OBJTYPE::*s)())
+{
+  return new Op_CallMethod<OBJTYPE>(s);
 }
 
 // -----------------------------------------------------------------------
@@ -246,34 +307,6 @@ template<typename OBJTYPE>
 RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const)
 {
   return new Op_ReturnStringValue<OBJTYPE>(s);
-}
-
-// -----------------------------------------------------------------------
-
-template<typename OBJTYPE>
-class Op_CallFunction : public RLOp_Void_Void {
-private:
-  /// The string getter function to call
-  typedef void(OBJTYPE::*FUNCTYPE)();
-  FUNCTYPE func;
-
-public:
-  Op_CallFunction(FUNCTYPE f) 
-    : func(f) 
-  {}
-
-  void operator()(RLMachine& machine) 
-  {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*func)();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)())
-{
-  return new Op_CallFunction<OBJTYPE>(s);
 }
 
 // -----------------------------------------------------------------------

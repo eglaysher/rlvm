@@ -421,7 +421,7 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
 
   m.addOpcode(2053, 0, "SetConfirmSaveLoad",
-              setToIncomingInt(&System::setConfirmSaveLoad));
+              callFunction(&System::setConfirmSaveLoad));
   m.addOpcode(2003, 0, "ConfirmSaveLoad",
               returnIntValue(&System::confirmSaveLoad));
 

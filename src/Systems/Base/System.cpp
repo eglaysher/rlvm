@@ -102,7 +102,7 @@ void System::hideSyscom()
 
 // -----------------------------------------------------------------------
 
-void System::hideSyscom(int syscom)
+void System::hideSyscomEntry(int syscom)
 {
   checkSyscomIndex(syscom, "System::hideSystem");
   m_syscomStatus[syscom] = SYSCOM_INVISIBLE;
@@ -117,7 +117,7 @@ void System::enableSyscom()
 
 // -----------------------------------------------------------------------
 
-void System::enableSyscom(int syscom)
+void System::enableSyscomEntry(int syscom)
 {
   checkSyscomIndex(syscom, "System::enableSystem");
   m_syscomStatus[syscom] = SYSCOM_VISIBLE; 
@@ -132,7 +132,7 @@ void System::disableSyscom()
 
 // -----------------------------------------------------------------------
 
-void System::disableSyscom(int syscom)
+void System::disableSyscomEntry(int syscom)
 {
   checkSyscomIndex(syscom, "System::disableSystem");
   m_syscomStatus[syscom] = SYSCOM_GREYED_OUT;

@@ -498,11 +498,11 @@ SysModule::SysModule()
   addOpcode(1130, 0, "DefaultGrp", 
             returnStringValue(&GraphicsSystem::defaultGrpName));
   addOpcode(1131, 0, "SetDefaultGrp", 
-            setToIncomingString(&GraphicsSystem::setDefaultGrpName));
+            callFunction(&GraphicsSystem::setDefaultGrpName));
   addOpcode(1132, 0, "DefaultBgr", 
             returnStringValue(&GraphicsSystem::defaultBgrName));
   addOpcode(1133, 0, "SetDefaultBgr",
-            setToIncomingString(&GraphicsSystem::setDefaultBgrName));
+            callFunction(&GraphicsSystem::setDefaultBgrName));
 
   addUnsupportedOpcode(1300, 0, "GetName");
   addUnsupportedOpcode(1301, 0, "SetName");
@@ -521,20 +521,20 @@ SysModule::SysModule()
   addUnsupportedOpcode(2002, 0, "LowPriority");
 
   addOpcode(2223, 0, "SetMessageSpeed",
-            setToIncomingInt(&TextSystem::setMessageSpeed));
+            callFunction(&TextSystem::setMessageSpeed));
   addOpcode(2323, 0, "MessageSpeed",
             returnIntValue(&TextSystem::messageSpeed));
   addOpcode(2600, 0, "DefaultMessageSpeed",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 30));
 
   addOpcode(2224, 0, "SetMessageNoWait",
-            setToIncomingInt(&TextSystem::setMessageNoWait));
+            callFunction(&TextSystem::setMessageNoWait));
   addOpcode(2250, 0, "SetAutoMode",
-            setToIncomingInt(&TextSystem::setAutoMode));
+            callFunction(&TextSystem::setAutoMode));
   addOpcode(2251, 0, "SetAutoCharTime",
-            setToIncomingInt(&TextSystem::setAutoCharTime));
+            callFunction(&TextSystem::setAutoCharTime));
   addOpcode(2252, 0, "SetAutoBaseTime",
-            setToIncomingInt(&TextSystem::setAutoCharTime));
+            callFunction(&TextSystem::setAutoCharTime));
 
   addUnsupportedOpcode(2225, 0, "SetKoeMode");
   addUnsupportedOpcode(2325, 0, "KoeMode");
@@ -545,31 +545,31 @@ SysModule::SysModule()
   addUnsupportedOpcode(2327, 0, "BgmKoeFade");
   addUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
   addOpcode(2230, 0, "SetBgmVolMod",
-            setToIncomingInt(&SoundSystem::setBgmVolume));
+            callFunction(&SoundSystem::setBgmVolume));
   addOpcode(2330, 0, "BgmVolMod",
             returnIntValue(&SoundSystem::bgmVolume));
   addUnsupportedOpcode(2231, 0, "SetKoeVolMod");
   addUnsupportedOpcode(2331, 0, "KoeVolMod");
   addOpcode(2232, 0, "SetPcmVolMod",
-            setToIncomingInt(&SoundSystem::setPcmVolume));
+            callFunction(&SoundSystem::setPcmVolume));
   addOpcode(2332, 0, "PcmVolMod",
             returnIntValue(&SoundSystem::pcmVolume));
   addOpcode(2233, 0, "SetSeVolMod",
-            setToIncomingInt(&SoundSystem::setSeVolume));
+            callFunction(&SoundSystem::setSeVolume));
   addOpcode(2333, 0, "SeVolMod",
             returnIntValue(&SoundSystem::seVolume));
   addOpcode(2240, 0, "SetBgmEnabled",
-            setToIncomingInt(&SoundSystem::setBgmEnabled));
+            callFunction(&SoundSystem::setBgmEnabled));
   addOpcode(2340, 0, "BgmEnabled",
             returnIntValue(&SoundSystem::bgmEnabled));
   addUnsupportedOpcode(2241, 0, "SetKoeEnabled");
   addUnsupportedOpcode(2341, 0, "KoeEnabled");
   addOpcode(2242, 0, "SetPcmEnabled",
-            setToIncomingInt(&SoundSystem::setPcmEnabled));
+            callFunction(&SoundSystem::setPcmEnabled));
   addOpcode(2342, 0, "PcmEnabled",
             returnIntValue(&SoundSystem::pcmEnabled));
   addOpcode(2243, 0, "SetSeEnabled",
-            setToIncomingInt(&SoundSystem::setSeEnabled));
+            callFunction(&SoundSystem::setSeEnabled));
   addOpcode(2343, 0, "SeEnabled",
             returnIntValue(&SoundSystem::seEnabled));
 
@@ -579,28 +579,28 @@ SysModule::SysModule()
   addUnsupportedOpcode(2009, 0, "SoundQuality");
 
   addOpcode(2221, 0, "SetGeneric1",
-            setToIncomingInt(&EventSystem::setGeneric1));
+            callFunction(&EventSystem::setGeneric1));
   addOpcode(2620, 0, "DefGeneric1",
             new ReturnGameexeInt("INIT_ORIGINALSETING1_MOD", 0));
   addOpcode(2321, 0, "Generic1",
             returnIntValue(&EventSystem::generic1));
   addOpcode(2222, 0, "SetGeneric2",
-            setToIncomingInt(&EventSystem::setGeneric2));
+            callFunction(&EventSystem::setGeneric2));
   addOpcode(2621, 0, "DefGeneric2",
             new ReturnGameexeInt("INIT_ORIGINALSETING2_MOD", 0));
   addOpcode(2322, 0, "Generic2",
             returnIntValue(&EventSystem::generic2));
 
   addOpcode(2260, 0, "SetWindowAttrR",
-            setToIncomingInt(&TextSystem::setWindowAttrR));
+            callFunction(&TextSystem::setWindowAttrR));
   addOpcode(2261, 0, "SetWindowAttrG",
-            setToIncomingInt(&TextSystem::setWindowAttrG));
+            callFunction(&TextSystem::setWindowAttrG));
   addOpcode(2262, 0, "SetWindowAttrB",
-            setToIncomingInt(&TextSystem::setWindowAttrB));
+            callFunction(&TextSystem::setWindowAttrB));
   addOpcode(2263, 0, "SetWindowAttrA",
-            setToIncomingInt(&TextSystem::setWindowAttrA));
+            callFunction(&TextSystem::setWindowAttrA));
   addOpcode(2264, 0, "SetWindowAttrF",
-            setToIncomingInt(&TextSystem::setWindowAttrF));
+            callFunction(&TextSystem::setWindowAttrF));
 
   addOpcode(2267, 0, new Sys_SetWindowAttr);
 
@@ -635,15 +635,15 @@ SysModule::SysModule()
   addOpcode(2617, 0, new Sys_DefWindowAttr);
 
   addOpcode(2270, 0, "SetShowObject1", 
-			setToIncomingInt(&GraphicsSystem::setShowObject1));
+			callFunction(&GraphicsSystem::setShowObject1));
   addOpcode(2370, 0, "ShowObject1",
 			returnIntValue(&GraphicsSystem::showObject1));
   addOpcode(2271, 0, "SetShowObject2", 
-			setToIncomingInt(&GraphicsSystem::setShowObject2));
+			callFunction(&GraphicsSystem::setShowObject2));
   addOpcode(2371, 0, "ShowObject2",
 			returnIntValue(&GraphicsSystem::showObject2));
   addOpcode(2272, 0, "SetShowWeather",
-            setToIncomingInt(&GraphicsSystem::setShowWeather));
+            callFunction(&GraphicsSystem::setShowWeather));
   addOpcode(2372, 0, "ShowWeather",
             returnIntValue(&GraphicsSystem::showWeather));
 

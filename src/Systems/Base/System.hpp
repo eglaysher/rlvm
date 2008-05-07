@@ -151,19 +151,19 @@ public:
   void hideSyscom();
 
   /// Hides the syscom entry @c syscom
-  void hideSyscom(int syscom);
+  void hideSyscomEntry(int syscom);
 
   /// Enables all syscom entries
   void enableSyscom();
 
   /// Enables the syscom entry @c syscom
-  void enableSyscom(int syscom);
+  void enableSyscomEntry(int syscom);
 
   /// Disables all syscom entries
   void disableSyscom();
 
   /// Disables the syscom entry @c syscom
-  void disableSyscom(int syscom);
+  void disableSyscomEntry(int syscom);
 
   /// Reads the corresponding value for syscom number @c syscom
   int readSyscom(int syscom);
@@ -171,7 +171,7 @@ public:
   /// @}
 
   bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
-  void setConfirmSaveLoad(const bool in) { m_globals.m_confirmSaveLoad = in; }
+  void setConfirmSaveLoad(const int in) { m_globals.m_confirmSaveLoad = in; }
 
   const std::vector<boost::filesystem::path>& getSearchPaths();
 

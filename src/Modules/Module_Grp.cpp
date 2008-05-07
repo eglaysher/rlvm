@@ -1068,7 +1068,7 @@ GrpModule::GrpModule()
   SPACE& REC = REC_SPACE::get();
 
   addOpcode(15, 0, "allocDC", new Grp_allocDC);
-  addOpcode(16, 0, "freeDC", setToIncomingInt(&GraphicsSystem::freeDC));
+  addOpcode(16, 0, "freeDC", callFunction(&GraphicsSystem::freeDC));
 
   addUnsupportedOpcode(20, 0, "grpLoadMask");
   // addOpcode(30, 0, new Grp_grpTextout);
