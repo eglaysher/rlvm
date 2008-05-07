@@ -151,8 +151,8 @@ PcmModule::PcmModule()
   addUnsupportedOpcode(3, 0, "wavWait");
   addUnsupportedOpcode(4, 0, "wavPlaying");
 
-  addUnsupportedOpcode(5, 0, "wavStop");
-  addUnsupportedOpcode(5, 1, "wavStop");
+  addOpcode(5, 0, "wavStop", setToIncomingInt(&SoundSystem::wavStop));
+  addOpcode(5, 1, "wavStop", callFunction(&SoundSystem::wavStopAll));
 
   addUnsupportedOpcode(7, 0, "wavPlaying2");
   addUnsupportedOpcode(8, 0, "wavRewind");

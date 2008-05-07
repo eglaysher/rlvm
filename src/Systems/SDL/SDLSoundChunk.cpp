@@ -96,3 +96,18 @@ int SDLSoundChunk::FindNextFreeExtraChannel()
 
   return -1;
 }
+
+// -----------------------------------------------------------------------
+
+// static
+void SDLSoundChunk::StopChannel(int channel)
+{
+  Mix_HaltChannel(channel);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundChunk::StopAllChannels()
+{
+  Mix_HaltChannel(-1);
+}

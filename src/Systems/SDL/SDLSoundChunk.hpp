@@ -94,6 +94,9 @@ public:
   static void SoundChunkFinishedPlayback(int channel);
 
   static int FindNextFreeExtraChannel();
+
+  static void StopChannel(int channel);
+  static void StopAllChannels();
 };
 
 // -----------------------------------------------------------------------

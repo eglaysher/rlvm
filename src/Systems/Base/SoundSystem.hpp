@@ -305,6 +305,8 @@ public:
                        bool loop, const int channel) = 0;
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
                        bool loop, const int channel, const int fadeinMs) = 0;
+  virtual void wavStop(const int channel) = 0;
+  virtual void wavStopAll() = 0;
 
   /// @}
 

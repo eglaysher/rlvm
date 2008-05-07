@@ -238,6 +238,26 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
 
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::wavStop(const int channel)
+{
+  if(pcmEnabled())
+  {
+    SDLSoundChunk::StopChannel(channel);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::wavStopAll()
+{
+  if(pcmEnabled())
+  {
+    SDLSoundChunk::StopAllChannels();
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
 {
   if(seEnabled())
