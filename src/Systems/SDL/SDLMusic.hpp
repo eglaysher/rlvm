@@ -80,6 +80,9 @@ private:
   /// The currently playing track.
   static boost::shared_ptr<SDLMusic> s_currentlyPlaying;
 
+  /// Whether we should even be playing music.
+  static bool s_bgmEnabled;
+
   /** 
    * Callback function to Mix_HookMusic.
    * 
@@ -143,6 +146,9 @@ public:
 
   /// Whether music is currently playing.
   static bool IsCurrentlyPlaying() { return s_currentlyPlaying; }
+
+  /// Whether we should output music.
+  static void SetBgmEnabled(const int in) { s_bgmEnabled = in; }
 };
 
 // -----------------------------------------------------------------------

@@ -181,6 +181,14 @@ void SDLSoundSystem::executeSoundSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::setBgmEnabled(const int in)
+{
+  SDLMusic::SetBgmEnabled(in);
+  SoundSystem::setBgmEnabled(in);
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::setChannelVolume(const int channel, const int level)
 {
   int adjustedVolume = computeChannelVolume(channel, pcmVolume());

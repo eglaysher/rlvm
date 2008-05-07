@@ -107,6 +107,7 @@ public:
 
   virtual void executeSoundSystem(RLMachine& machine);
 
+  virtual void setBgmEnabled(const int in);
   virtual void setChannelVolume(const int channel, const int level);
 
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop);

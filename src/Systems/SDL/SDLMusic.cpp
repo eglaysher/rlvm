@@ -51,7 +51,7 @@ const int STOP_NOW = -2;
 
 
 boost::shared_ptr<SDLMusic> SDLMusic::s_currentlyPlaying;
-
+bool SDLMusic::s_bgmEnabled = true;
 
 // -----------------------------------------------------------------------
 // SDLMusic
@@ -124,7 +124,9 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
   SDLMusic* music = (SDLMusic*)udata;
 
 	int count;
-	if (music->m_loopPoint == STOP_NOW) { // We are done.
+	if (!s_bgmEnabled || 
+      music->m_loopPoint == STOP_NOW) 
+  {
 		memset(stream, 0, len);
 		return;
 	}
