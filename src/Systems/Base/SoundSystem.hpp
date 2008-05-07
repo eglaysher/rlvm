@@ -50,30 +50,7 @@ const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
  */
 class SoundSystem
 {
-protected:
-  /// Type for a parsed \#SE table.
-  typedef std::map<int, std::pair<std::string, int> > SeTable;
-
-  /** 
-   * Stores data about an ongoing volume adjustment (such as those
-   * started by fun wavSetVolume(int, int, int).)
-   */
-  struct VolumeAdjustTask {
-    VolumeAdjustTask(unsigned int currentTime, int inStartVolume, 
-                     int inFinalVolume, int fadeTimeInMs);
-
-    unsigned int startTime;
-    unsigned int endTime;
-
-    int startVolume;
-    int finalVolume;
-
-    /// Calculate the volume for inTime
-    int calculateVolumeFor(unsigned int inTime);
-  };
-
-  typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
-
+public:
   /**
    * Defines a piece of background music who's backed by a file,
    * usually VisualArt's nwa format.
@@ -103,6 +80,36 @@ protected:
     int to;
     int loop;
   };
+
+protected:
+  /// Type for a parsed \#SE table.
+  typedef std::map<int, std::pair<std::string, int> > SeTable;
+
+  /// Type for parsed \#DSTRACK entries.
+  typedef std::map<std::string, DSTrack> DSTable;
+
+  /// Type for parsed \#CDTRACK entries.
+  typedef std::map<std::string, CDTrack> CDTable;
+
+  /** 
+   * Stores data about an ongoing volume adjustment (such as those
+   * started by fun wavSetVolume(int, int, int).)
+   */
+  struct VolumeAdjustTask {
+    VolumeAdjustTask(unsigned int currentTime, int inStartVolume, 
+                     int inFinalVolume, int fadeTimeInMs);
+
+    unsigned int startTime;
+    unsigned int endTime;
+
+    int startVolume;
+    int finalVolume;
+
+    /// Calculate the volume for inTime
+    int calculateVolumeFor(unsigned int inTime);
+  };
+
+  typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
 
 private:
 
@@ -143,10 +150,10 @@ private:
   int m_bgmStatus;
 
   /// Defined music tracks (files)
-  std::map<std::string, DSTrack> m_dstTracks;
+  DSTable m_dsTracks;
 
   /// Defined music tracks (cd tracks)
-  std::map<std::string, CDTrack> m_cdTracks;
+  CDTable m_cdTracks;
 
   /// @}
 
@@ -206,6 +213,8 @@ private:
 
 protected:
   SeTable& seTable() { return m_seTable; }
+  const DSTable& getDSTable() { return m_dsTracks; }
+  const CDTable& getCDTable() { return m_cdTracks; }
 
   /** 
    * Computes the actual volume for a channel based on the per channel

@@ -137,7 +137,7 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     const std::string& file = dstrack->getStringAt(3);
     const std::string& name = dstrack->getStringAt(4);
 
-    m_dstTracks[name] = DSTrack(name, file, from, to, loop);
+    m_dsTracks[name] = DSTrack(name, file, from, to, loop);
   }
 
   // Read the \#CDTRACK entries
