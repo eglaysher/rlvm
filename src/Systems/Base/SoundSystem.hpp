@@ -292,11 +292,12 @@ public:
   /// Fetches an individual channel volume
   int channelVolume(const int channel);
   
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile) = 0;
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, 
+                       bool loop) = 0;
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
-                       const int channel) = 0;
+                       bool loop, const int channel) = 0;
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
-                       const int channel, const int fadeinMs) = 0;
+                       bool loop, const int channel, const int fadeinMs) = 0;
 
   /// @}
 

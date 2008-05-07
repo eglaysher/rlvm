@@ -34,7 +34,7 @@
 
 struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
-    machine.system().sound().wavPlay(machine, fileName);
+    machine.system().sound().wavPlay(machine, fileName, false);
   }
 };
 
@@ -42,7 +42,7 @@ struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
 
 struct Pcm_wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
-    machine.system().sound().wavPlay(machine, fileName, channel);
+    machine.system().sound().wavPlay(machine, fileName, false, channel);
   }
 };
 
@@ -52,7 +52,25 @@ struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel, 
                   int fadein) {
-    machine.system().sound().wavPlay(machine, fileName, channel, fadein);
+    machine.system().sound().wavPlay(machine, fileName, false, channel, fadein);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, std::string fileName, int channel) {
+    machine.system().sound().wavPlay(machine, fileName, true, channel);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T, 
+                                          IntConstant_T> {
+  void operator()(RLMachine& machine, std::string fileName, int channel, 
+                  int fadein) {
+    machine.system().sound().wavPlay(machine, fileName, true, channel, fadein);
   }
 };
 
@@ -127,8 +145,8 @@ PcmModule::PcmModule()
   addUnsupportedOpcode(1, 0, "wavPlayEx");
   addUnsupportedOpcode(1, 1, "wavPlayEx");
 
-  addUnsupportedOpcode(2, 0, "wavLoop");
-  addUnsupportedOpcode(2, 1, "wavLoop");
+  addOpcode(2, 0, "wavLoop", new Pcm_wavLoop_0);
+  addOpcode(2, 1, "wavLoop", new Pcm_wavLoop_1);
 
   addUnsupportedOpcode(3, 0, "wavWait");
   addUnsupportedOpcode(4, 0, "wavPlaying");

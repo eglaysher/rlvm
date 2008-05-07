@@ -78,9 +78,10 @@ private:
    * @param wavFile Name of the file (minux extension)
    * @param channel Channel to play on (both NUM_BASE_CHANNELS and
    *                NUM_EXTRA_WAVPLAY_CHANNELS are legal here.)
+   * @param loop    Whether to loop this sound endlessly
    */
   void wavPlayImpl(RLMachine& machine, const std::string& wavFile,
-                   const int channel);
+                   const int channel, bool loop);
 
 public: 
   SDLSoundSystem(Gameexe& gexe);
@@ -88,10 +89,10 @@ public:
 
   virtual void setChannelVolume(const int channel, const int level);
 
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile);
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop);
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop,
                        const int channel);
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop,
                        const int channel, const int fadeinMs);
 
   virtual void playSe(RLMachine& machine, const int seNum);  

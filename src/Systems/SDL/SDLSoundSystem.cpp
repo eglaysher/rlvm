@@ -86,13 +86,14 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::wavPlayImpl(
-  RLMachine& machine, const std::string& wavFile, const int channel)
+  RLMachine& machine, const std::string& wavFile, const int channel, bool loop)
 {
   if(pcmEnabled())
   {
     SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, m_wavCache);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
-    sample->playChunkOn(channel, 0);
+    int loopNum = loop ? -1 : 0;
+    sample->playChunkOn(channel, loopNum);
   }  
 }
 
@@ -141,7 +142,7 @@ void SDLSoundSystem::setChannelVolume(const int channel, const int level)
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile, bool loop)
 {
   int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
   if(channelNumber == -1)
@@ -151,22 +152,22 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile)
     throw std::runtime_error(oss.str());
   }
 
-  wavPlayImpl(machine, wavFile, channelNumber);
+  wavPlayImpl(machine, wavFile, channelNumber, loop);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
-                             const int channel)
+                             bool loop, const int channel)
 {
   checkChannel(channel, "SDLSoundSystem::wavPlay");
-  wavPlayImpl(machine, wavFile, channel);
+  wavPlayImpl(machine, wavFile, channel, loop);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
-                             const int channel, const int fadeinMs)
+                             bool loop, const int channel, const int fadeinMs)
 {
   checkChannel(channel, "SDLSoundSystem::wavPlay");
 
@@ -174,7 +175,9 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
   {
     SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, m_wavCache);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
-    sample->fadeInChunkOn(channel, 0, fadeinMs);
+
+    int loopNum = loop ? -1 : 0;
+    sample->fadeInChunkOn(channel, loopNum, fadeinMs);
   }
 }
 
