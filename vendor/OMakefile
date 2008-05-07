@@ -24,6 +24,7 @@ LRLFILES[] =
   file
   endian
   wavfile
+  nwatowav
   alphablit
   SDL_ttf
 

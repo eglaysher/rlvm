@@ -1,5 +1,5 @@
 /*
- * wavfile.h  WAV file´ØÏ¢
+ * wavfile.h  WAV fileé–¢é€£
  *
  *  Copyright: wavfile.c (c) Erik de Castro Lopo  erikd@zip.com.au
  *
@@ -93,7 +93,7 @@ struct NWAFILE : WAVFILE {
 	int block_size;
 	int data_len;
 
-	NWAFILE(FILE* stream);
+    NWAFILE(FILE* stream, int size);
 	~NWAFILE();
 	void Seek(int count);
 	int Read(char* buf, int blksize, int blklen);

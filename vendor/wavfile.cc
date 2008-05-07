@@ -32,6 +32,7 @@
 #include  	<string.h>
 #include        "wavfile.h"
 #include "endian.hpp"
+#include <stdexcept>
 
 #include <SDL/SDL_mixer.h>
 
@@ -247,9 +248,9 @@ WAVFILE::WAVFILE(void) {
 }
 
 int WAVFILE_Stream::Read(char* in_buf, int blksize, int length) {
-	/* ¥Õ¥¡¥¤¥ë¤ÎÆÉ¤ß¹ş¤ß */
+	/* ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ */
 	if (data_length == 0 && stream_length == 0) return -1;
-	/* wf->data ¤Ë¥Ç¡¼¥¿¤Î»Ä¤ê¤¬¤¢¤ì¤Ğ¤½¤ì¤âÆÉ¤ß¹ş¤à */
+	/* wf->data ã«ãƒ‡ãƒ¼ã‚¿ã®æ®‹ã‚ŠãŒã‚ã‚Œã°ãã‚Œã‚‚èª­ã¿è¾¼ã‚€ */
 	if (data_length > blksize*length) {
 		memcpy(in_buf, data, blksize*length);
 		data += blksize * length;
@@ -274,7 +275,7 @@ int WAVFILE_Stream::Read(char* in_buf, int blksize, int length) {
 }
 void WAVFILE_Stream::Seek(int count) {
         int blksize = 1;
-        /* block size ¤ÎÀßÄê */
+        /* block size ã®è¨­å®š */
 	blksize *= wavinfo.Channels * (wavinfo.DataBits/8);
 	data_length = 0;
 	stream_length = stream_length_orig - stream_top - count*blksize;
@@ -324,7 +325,7 @@ WAVFILE* WAVFILE::MakeConverter(WAVFILE* new_reader) {
 		need = true;
 	}
 	if (!need) return new_reader;
-	/* ÊÑ´¹¤â¤È¤Î¥Õ¥©¡¼¥Ş¥Ã¥È¤òÆÀ¤ë */
+	/* å¤‰æ›ã‚‚ã¨ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’å¾—ã‚‹ */
 	int from_format;
 	if (new_reader->wavinfo.DataBits == 8) from_format = AUDIO_S8;
 	else from_format = AUDIO_S16;
@@ -374,9 +375,9 @@ int WAVFILE_Converter::Read(char* buf, int blksize, int blklen) {
 			}
 			cvt->len = cnt;
 			SDL_ConvertAudio(cvt);
-			if (freq < original->wavinfo.SamplingRate) { // rate conversion ¤Ï SDL_ConvertAudio ¤Ç¤Ï¤¦¤Ş¤¯¹Ô¤«¤Ê¤¤
-				// 48000Hz -> 44100Hz or 22050Hz ¤Ê¤É¤òÁÛÄê
-				// Ä¹¤µ¤ÏÃ»¤¯¤Ê¤ë¤Ï¤º¤Ê¤Î¤Ç¡¢ÆÃ¤Ë½èÍı¤Ï¤Ê¤·
+			if (freq < original->wavinfo.SamplingRate) { // rate conversion ã¯ SDL_ConvertAudio ã§ã¯ã†ã¾ãè¡Œã‹ãªã„
+				// 48000Hz -> 44100Hz or 22050Hz ãªã©ã‚’æƒ³å®š
+				// é•·ã•ã¯çŸ­ããªã‚‹ã¯ãšãªã®ã§ã€ç‰¹ã«å‡¦ç†ã¯ãªã—
 				cvt->len = conv_wave_rate( (short*)(cvt->buf), cvt->len_cvt/4, original->wavinfo.SamplingRate, freq, tmpbuf);
 				cvt->len *= 4;
 			} else {
@@ -397,8 +398,8 @@ int WAVFILE_Converter::Read(char* buf, int blksize, int blklen) {
 	}
 	return copied_length / blksize;
 }
-/* format ¤Ï signed, 16bit, little endian, stereo ¤È·è¤á¤¦¤Á
-** ¾ì¹ç¤Ë¤è¤Ã¤Æ¤¤¤Ï big endian ¤Ë¤Ê¤ë¤³¤È¤â¤¢¤ë¤«¤â¡£
+/* format ã¯ signed, 16bit, little endian, stereo ã¨æ±ºã‚ã†ã¡
+** å ´åˆã«ã‚ˆã£ã¦ã„ã¯ big endian ã«ãªã‚‹ã“ã¨ã‚‚ã‚ã‚‹ã‹ã‚‚ã€‚
 */
 static int conv_wave_rate(short* in_buf, int length, int in_rate, int out_rate, char* tmpbuf) {
 	int input_rate = in_rate;
@@ -410,13 +411,13 @@ static int conv_wave_rate(short* in_buf, int length, int in_rate, int out_rate, 
 
 	if (input_rate == output_rate) return length;
 	if (length <= 0) return 0;
-	/* °ìÈÌ¤Î¼şÇÈ¿ôÊÑ´¹¡§Àş·¿Êä´° */
+	/* ä¸€èˆ¬ã®å‘¨æ³¢æ•°å¤‰æ›ï¼šç·šå‹è£œå®Œ */
 	int& first_flag = *(int*)(tmpbuf);
 	int& prev_time = *(int*)(tmpbuf+4);
 	int& prev_sample1 = *(int*)(tmpbuf+8);
 	int& prev_sample2 = *(int*)(tmpbuf+12);
 	out = (short*)(tmpbuf+16);
-	/* ½é¤á¤Æ¤Ê¤é¥Ç¡¼¥¿¤ò½é´ü²½ */
+	/* åˆã‚ã¦ãªã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’åˆæœŸåŒ– */
 	if (first_flag == 0) {
 		first_flag = 1;
 		prev_time = 0;
@@ -424,7 +425,7 @@ static int conv_wave_rate(short* in_buf, int length, int in_rate, int out_rate, 
 		prev_sample2 = short(read_little_endian_short((char*)(in_buf++)));
 		length--;
 	}
-	/* º£²óºîÀ®¤¹¤ë¥Ç¡¼¥¿ÎÌ¤òÆÀ¤ë */
+	/* ä»Šå›ä½œæˆã™ã‚‹ãƒ‡ãƒ¼ã‚¿é‡ã‚’å¾—ã‚‹ */
 	dtime = prev_time + length * output_rate_d;
 	outlen = (int)(dtime / input_rate_d);
 	out_orig = out;
@@ -434,14 +435,14 @@ static int conv_wave_rate(short* in_buf, int length, int in_rate, int out_rate, 
 		write_little_endian_short((char*)out, prev_sample2);
 		out++;
 	}
-	dtime -= input_rate_d*outlen; /* ¼¡¤Î prev_time */
+	dtime -= input_rate_d*outlen; /* æ¬¡ã® prev_time */
 
 	time=0;
 	next_sample1 = short(read_little_endian_short((char*)(in_buf++)));
 	next_sample2 = short(read_little_endian_short((char*)(in_buf++)));
 	for (i=0; i<outlen; i++) {
-		/* double ¤Ç·×»»¤·¤Æ¤ß¤¿¤±¤É¤½¤¦´ÊÃ±¤Ë¤Ï¹âÂ®²½¤ÏÌµÍı¤é¤·¤¤ */
-		/* ¤Ê¤ª¡¢ÊÑ´¹¤Ï 1Ê¬¤Î¥Ç¡¼¥¿¤Ë1ÉÃÄøÅÙ¤«¤«¤ë(Celeron 700MHz) */
+		/* double ã§è¨ˆç®—ã—ã¦ã¿ãŸã‘ã©ãã†ç°¡å˜ã«ã¯é«˜é€ŸåŒ–ã¯ç„¡ç†ã‚‰ã—ã„ */
+		/* ãªãŠã€å¤‰æ›ã¯ 1åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã«1ç§’ç¨‹åº¦ã‹ã‹ã‚‹(Celeron 700MHz) */
 		time += input_rate;
 		while(time-prev_time>output_rate) {
 			prev_sample1 = next_sample1;
@@ -669,7 +670,7 @@ enum mad_flow MP3FILE_impl::callback_write_impl(struct mad_pcm *pcm)
 	if (write_pointer + nsamples * nchannels * 2 > write_data_len) {
 		nsamples = (write_data_len - write_pointer) / nchannels / 2;
 	}
-	write_data_len &= ~(nchannels*2-1);	/* write_data_len ¤Ï¤¢¤é¤«¤¸¤á´İ¤á¤Æ¤ª¤¯ */
+	write_data_len &= ~(nchannels*2-1);	/* write_data_len ã¯ã‚ã‚‰ã‹ã˜ã‚ä¸¸ã‚ã¦ãŠã */
 	src_pointer += nsamples;
 	if (write_data == 0) { // skip data write
 		write_pointer += nsamples*2*2;
@@ -802,7 +803,9 @@ void MP3FILE::Seek(int count) {
 	return;
 }
 #else /* SMPEG */
-MP3FILE::MP3FILE(FILE* stream, int len) {pimpl = 0;}
+MP3FILE::MP3FILE(FILE* stream, int len) {
+  throw std::runtime_error("MP3 support not compiled in!");
+}
 MP3FILE::~MP3FILE(){}
 void MP3FILE::Seek(int count){}
 int MP3FILE::Read(char* buf, int blksize, int blklen){return -1;}

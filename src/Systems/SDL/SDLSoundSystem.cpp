@@ -31,6 +31,7 @@
 
 #include "Systems/SDL/SDLSoundSystem.hpp"
 #include "Systems/SDL/SDLSoundChunk.hpp"
+#include "Systems/SDL/SDLMusic.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Utilities.h"
 
@@ -98,6 +99,31 @@ void SDLSoundSystem::wavPlayImpl(
 }
 
 // -----------------------------------------------------------------------
+
+boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
+  RLMachine& machine, const std::string& bgmName)
+{
+  const DSTable& dsTable = getDSTable();
+  DSTable::const_iterator dsIt = dsTable.find(bgmName);
+  if(dsIt != dsTable.end())
+    return SDLMusic::CreateMusic(machine, dsIt->second);
+
+  const CDTable& cdTable = getCDTable();
+  CDTable::const_iterator cdIt = cdTable.find(bgmName);
+  if(cdIt != cdTable.end())
+  {
+    ostringstream oss;
+    oss << "CD music not supported yet. Could not play track \"" 
+        << bgmName << "\"";
+    throw std::runtime_error(oss.str());
+  }
+
+  ostringstream oss;
+  oss << "Could not find music track \"" << bgmName << "\"";
+  throw std::runtime_error(oss.str());
+}
+
+// -----------------------------------------------------------------------
 // SDLSoundSystem
 // -----------------------------------------------------------------------
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
@@ -119,6 +145,14 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
     throw SystemError("Couldn't initialize audio");
   }
 
+  // Jagarl's sound system wants information on the audio settings.
+	int freq, channels; Uint16 format;
+	if(Mix_QuerySpec(&freq, &format, &channels) ) {
+		WAVFILE::freq = freq;
+		WAVFILE::format = format;
+		WAVFILE::channels = channels;
+	}
+
   Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS);
 
   Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
@@ -130,6 +164,19 @@ SDLSoundSystem::~SDLSoundSystem()
 {
   Mix_CloseAudio();
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::executeSoundSystem(RLMachine& machine)
+{
+  SoundSystem::executeSoundSystem(machine);
+
+  if(m_queuedMusic && !SDLMusic::IsCurrentlyPlaying())
+  {
+    m_queuedMusic->fadeIn(m_queuedMusicLoop, m_queuedMusicFadein);
+    m_queuedMusic.reset();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -216,3 +263,39 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
 }
 
 // -----------------------------------------------------------------------
+
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName, 
+                             bool loop)
+{
+  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgmName);
+  bgm->play(loop);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
+                             bool loop, int fadeInMs)
+{
+  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgmName);
+  bgm->fadeIn(loop, fadeInMs);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
+                             bool loop, int fadeInMs, int fadeOutMs)
+{
+  m_queuedMusic = LoadMusic(machine, bgmName);
+  m_queuedMusicLoop = loop;
+  m_queuedMusicFadein = fadeInMs;
+  
+  bgmFadeOut(fadeOutMs);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::bgmFadeOut(int fadeOutMs) {
+  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
+  if(currentlyPlaying) 
+    currentlyPlaying->fadeOut(fadeOutMs);
+}

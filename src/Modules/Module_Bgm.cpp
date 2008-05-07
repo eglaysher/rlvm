@@ -36,10 +36,69 @@
 
 // -----------------------------------------------------------------------
 
-struct Bgm_bgmPlaying : public RLOp_Store_Void
-{
+struct Bgm_bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
+  void operator()(RLMachine& machine, string filename) {
+    machine.system().sound().bgmPlay(machine, filename, true);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, string filename, int fadein) {
+    machine.system().sound().bgmPlay(machine, filename, true, fadein);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+                                          IntConstant_T> {
+  void operator()(RLMachine& machine, string filename, int fadein, 
+                  int fadeout) {
+    machine.system().sound().bgmPlay(machine, filename, true, fadein, fadeout);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
+  void operator()(RLMachine& machine, string filename) {
+    machine.system().sound().bgmPlay(machine, filename, false);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, string filename, int fadein) {
+    machine.system().sound().bgmPlay(machine, filename, false, fadein);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+                                          IntConstant_T> {
+  void operator()(RLMachine& machine, string filename, int fadein, 
+                  int fadeout) {
+    machine.system().sound().bgmPlay(machine, filename, false, fadein, fadeout);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmPlaying : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return machine.system().sound().bgmStatus() == 1;
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Bgm_bgmFadeOut : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int fadetime) {
+    machine.system().sound().bgmFadeOut(fadetime);
   }
 };
 
@@ -49,17 +108,17 @@ BgmModule::BgmModule()
   : RLModule("Bgm", 1, 20)
 {
   // fun \\([A-Za-z0-9]+\\) +<1:Bgm:\\([0-9]+\\), \\([0-9]+\\).*$
-  addUnsupportedOpcode(0, 0, "bgmLoop");
-  addUnsupportedOpcode(0, 1, "bgmLoop");
-  addUnsupportedOpcode(0, 2, "bgmLoop");
+  addOpcode(0, 0, "bgmLoop", new Bgm_bgmLoop_0);
+  addOpcode(0, 1, "bgmLoop", new Bgm_bgmLoop_1);
+  addOpcode(0, 2, "bgmLoop", new Bgm_bgmLoop_2);
 
   addUnsupportedOpcode(1, 0, "bgmPlayEx");
   addUnsupportedOpcode(1, 1, "bgmPlayEx");
   addUnsupportedOpcode(1, 2, "bgmPlayEx");
 
-  addUnsupportedOpcode(2, 0, "bgmPlay");
-  addUnsupportedOpcode(2, 1, "bgmPlay");
-  addUnsupportedOpcode(2, 2, "bgmPlay");
+  addOpcode(2, 0, "bgmPlay", new Bgm_bgmPlay_0);
+  addOpcode(2, 1, "bgmPlay", new Bgm_bgmPlay_1);
+  addOpcode(2, 2, "bgmPlay", new Bgm_bgmPlay_2);
 
   addUnsupportedOpcode(3, 0, "bgmWait");
   addOpcode(4, 0, "bgmPlaying", new Bgm_bgmPlaying);
@@ -78,7 +137,7 @@ BgmModule::BgmModule()
   addUnsupportedOpcode(14, 0, "bgmMute");
   addUnsupportedOpcode(14, 1, "bgmMute");
 
-  addUnsupportedOpcode(105, 0, "bgmFadeOut");
+  addOpcode(105, 0, "bgmFadeOut", new Bgm_bgmFadeOut);
 
   addUnsupportedOpcode(106, 0, "bgmFadeOutEx");
   addUnsupportedOpcode(106, 1, "bgmFadeOutEx");

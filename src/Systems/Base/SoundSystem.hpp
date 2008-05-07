@@ -263,6 +263,13 @@ public:
 
   int bgmStatus() const;
 
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop) = 0;
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
+                       int fadeInMs) = 0;
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
+                       int fadeInMs, int fadeOutMs) = 0;
+  virtual void bgmFadeOut(int fadeOutMs) = 0;
+
   /// @}
 
   // ---------------------------------------------------------------------

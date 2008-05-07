@@ -739,7 +739,7 @@ void NWAFILE::Seek(int count) {
 	data_len = 0;
 	skip_count = count;
 }
-NWAFILE::NWAFILE(FILE* _stream) {
+NWAFILE::NWAFILE(FILE* _stream, int size) {
 	skip_count = 0;
 	data = 0;
 	stream = _stream;
@@ -837,6 +837,7 @@ char* NWAFILE::ReadAll(FILE* in, int& total_size) {
 	return d;
 }
 
+/*
 #include"music.h"
 
 char* decode_koe_nwa(AvgKoeInfo info, int* data_len) {
@@ -862,5 +863,6 @@ char* decode_koe_nwa(AvgKoeInfo info, int* data_len) {
 	}
 	return d;
 }
+*/
 
 #endif

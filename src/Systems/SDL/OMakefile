@@ -9,6 +9,7 @@ LRLFILES[] =
   SDLSurface
   SDLSoundSystem
   SDLSoundChunk
+  SDLMusic
   SDLEventSystem
   SDLUtils
   SDLRenderToTextureSurface

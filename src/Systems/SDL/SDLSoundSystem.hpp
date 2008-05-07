@@ -38,6 +38,7 @@
 // -----------------------------------------------------------------------
 
 class SDLSoundChunk;
+class SDLMusic;
 
 // -----------------------------------------------------------------------
 
@@ -48,12 +49,22 @@ class SDLSoundSystem : public SoundSystem
 {
 private:
   typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
+  typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
 
   typedef LRUCache<boost::filesystem::path, 
                    SDLSoundChunkPtr> SoundChunkCache;
 
   SoundChunkCache m_seCache;
   SoundChunkCache m_wavCache;
+
+  /// The 
+  SDLMusicPtr m_queuedMusic;
+
+  /// Whether the next piece of music loops
+  bool m_queuedMusicLoop;
+
+  /// The fadein time for queued piece of music
+  int m_queuedMusicFadein;
 
   /** 
    * Retrieves a sound chunk from the passed in cache (or loads it if
@@ -83,9 +94,18 @@ private:
   void wavPlayImpl(RLMachine& machine, const std::string& wavFile,
                    const int channel, bool loop);
 
+  /** 
+   * Creates an SDLMusic object from a name. Throws if the bgm isn't
+   * found.
+   */
+  boost::shared_ptr<SDLMusic> LoadMusic(
+    RLMachine& machine, const std::string& bgmName);
+
 public: 
   SDLSoundSystem(Gameexe& gexe);
   ~SDLSoundSystem();
+
+  virtual void executeSoundSystem(RLMachine& machine);
 
   virtual void setChannelVolume(const int channel, const int level);
 
@@ -97,6 +117,12 @@ public:
 
   virtual void playSe(RLMachine& machine, const int seNum);  
 
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop);
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
+                       int fadeInMs);
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
+                       int fadeInMs, int fadeOutMs);
+  virtual void bgmFadeOut(int fadeOutMs);
 };	// end of class SDLSoundSystem
 
 #endif
