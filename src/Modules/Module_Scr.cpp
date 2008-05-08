@@ -54,14 +54,6 @@
 
 // -----------------------------------------------------------------------
 
-struct Scr_stackClear : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.system().graphics().clearStack();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 struct Scr_stackNop : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int numberOfNops) {
     GraphicsSystem& sys = machine.system().graphics();
@@ -69,14 +61,6 @@ struct Scr_stackNop : public RLOp_Void_1< IntConstant_T > {
     for(int i = 0; i < numberOfNops; ++i) {
       sys.addGraphicsStackFrame("Nop");
     }
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Scr_stackPop : public RLOp_Void_1< IntConstant_T > {
-  void operator()(RLMachine& machine, int count) {
-    machine.system().graphics().stackPop(count);
   }
 };
 
@@ -112,9 +96,9 @@ struct Scr_GetDCPixel : public RLOp_Void_6<
 ScrModule::ScrModule()
   : RLModule("Scr", 1, 30)
 {
-  addOpcode(0, 0, "stackClear", new Scr_stackClear);
+  addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
   addOpcode(1, 0, "stackNop", new Scr_stackNop);
-  addOpcode(2, 0, "stackPop", new Scr_stackPop);
+  addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));
   addOpcode(3, 0, "stackSize", returnIntValue(&GraphicsSystem::stackSize));
   addOpcode(4, 0, "stackTrunc", new Scr_stackTrunc);
 
