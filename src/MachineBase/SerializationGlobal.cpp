@@ -46,6 +46,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "libReallive/intmemref.h"
 #include <fstream>
 #include <sstream>
@@ -59,6 +60,10 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 namespace Serialization {
+
+// -----------------------------------------------------------------------
+
+const int CURRENT_VERSION = 2;
 
 // -----------------------------------------------------------------------
 
@@ -82,11 +87,14 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine)
 {
   text_oarchive oa(oss);
   System& sys = machine.system();
-  oa << const_cast<const GlobalMemory&>(machine.memory().global())
+
+  oa << CURRENT_VERSION 
+     << const_cast<const GlobalMemory&>(machine.memory().global())
      << const_cast<const SystemGlobals&>(sys.globals())
      << const_cast<const GraphicsSystemGlobals&>(sys.graphics().globals())
      << const_cast<const EventSystemGlobals&>(sys.event().globals())
-     << const_cast<const TextSystemGlobals&>(sys.text().globals());
+     << const_cast<const TextSystemGlobals&>(sys.text().globals())
+     << const_cast<const SoundSystemGlobals&>(sys.sound().globals());
 }
 
 // -----------------------------------------------------------------------
@@ -111,11 +119,15 @@ void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine)
 {
   text_iarchive ia(iss);
   System& sys = machine.system();
+  int version;
+  ia >> version;
+
   ia >> machine.memory().global()
      >> sys.globals()
      >> sys.graphics().globals()
      >> sys.event().globals()
-     >> sys.text().globals();
+     >> sys.text().globals()
+     >> sys.sound().globals();
 }
 
 // -----------------------------------------------------------------------

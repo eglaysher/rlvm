@@ -45,6 +45,61 @@ const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
 
 // -----------------------------------------------------------------------
 
+struct SoundSystemGlobals
+{
+  SoundSystemGlobals();
+  SoundSystemGlobals(Gameexe& gexe);
+
+  /**
+   * Number passed in from RealLive that represents what we want the
+   * sound system to do. Right now is fairly securely set to 5 since I
+   * have no idea how to change this property at runtime.
+   *
+   * 0 	          	11 kHz 	          	8 bit
+   * 1 	          	11 kHz 	          	16 bit
+   * 2 	          	22 kHz 	          	8 bit
+   * 3 	          	22 kHz 	          	16 bit
+   * 4 	          	44 kHz 	          	8 bit
+   * 5 	          	44 kHz 	          	16 bit
+   * 6 	          	48 kHz 	          	8 bit
+   * 7 	          	48 hKz 	          	16 bit
+   * 
+   */
+  int soundQuality;
+
+  /// Whether music playback is enabled
+  bool bgmEnabled;
+
+  /// Volume for the music
+  int bgmVolume;
+
+  /// Whether the Wav functions are enabled
+  bool pcmEnabled;
+
+  /**
+   * Volume of wave files relative to other sound playback.
+   */
+  int pcmVolume;
+
+  /// Whether the Se functions are enabled
+  bool seEnabled;
+
+  /** Volume of interface sound effects relative to other sound
+   * playback.
+   */
+  int seVolume;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & soundQuality & bgmEnabled & bgmVolume & pcmEnabled &
+      pcmVolume & seEnabled & seVolume;
+  }
+};
+
+// -----------------------------------------------------------------------
+
 /**
  *
  */
@@ -114,32 +169,10 @@ protected:
 private:
 
   /**
-   * Number passed in from RealLive that represents the 
-   *
-   * 0 	          	11 kHz 	          	8 bit
-   * 1 	          	11 kHz 	          	16 bit
-   * 2 	          	22 kHz 	          	8 bit
-   * 3 	          	22 kHz 	          	16 bit
-   * 4 	          	44 kHz 	          	8 bit
-   * 5 	          	44 kHz 	          	16 bit
-   * 6 	          	48 kHz 	          	8 bit
-   * 7 	          	48 hKz 	          	16 bit
-   * 
-   */
-  int m_soundQuality;
-
-  /**
    * @name Background Music data
    * 
    * @{
    */
-  
-  /// Whether music playback is enabled
-  bool m_bgmEnabled;
-
-  /// Volume for the music
-  unsigned char m_bgmVolume;
-
   /**
    * Status of the music subsystem
    *
@@ -164,14 +197,6 @@ private:
    * 
    * @{
    */
-  /// Whether the Wav functions are enabled
-  bool m_pcmEnabled;
-
-  /**
-   * Volume of wave files relative to other sound playback.
-   */
-  unsigned char m_pcmVolume;
-
   /// Per channel volume
   unsigned char m_channelVolume[NUM_BASE_CHANNELS];
 
@@ -195,14 +220,6 @@ private:
    * @{
    */
 
-  /// Whether the Se functions are enabled
-  bool m_seEnabled;
-
-  /** Volume of interface sound effects relative to other sound
-   * playback.
-   */
-  unsigned char m_seVolume;
-
   /**
    * Parsed \#SE.index entries. Maps a sound effect number to the
    * filename to play and the channel to play it on.
@@ -210,6 +227,8 @@ private:
   SeTable m_seTable;
 
   /// @}
+
+  SoundSystemGlobals m_globals;
 
 protected:
   SeTable& seTable() { return m_seTable; }
@@ -245,9 +264,11 @@ public:
    * Sets how much sound hertz.
    */
   virtual void setSoundQuality(const int quality) 
-  { m_soundQuality = quality; }
+  { m_globals.soundQuality = quality; }
 
-  int soundQuality() const { return m_soundQuality; }
+  int soundQuality() const { return m_globals.soundQuality; }
+
+  SoundSystemGlobals& globals() { return m_globals; }
 
   // ---------------------------------------------------------------------
   /**

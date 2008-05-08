@@ -40,6 +40,24 @@ using boost::lexical_cast;
 using namespace std;
 
 // -----------------------------------------------------------------------
+// SoundSystemGlobals
+// -----------------------------------------------------------------------
+SoundSystemGlobals::SoundSystemGlobals() 
+  : soundQuality(5), bgmEnabled(true), bgmVolume(255), pcmEnabled(true),
+    pcmVolume(255), seEnabled(true), seVolume(255)
+{
+  
+}
+
+// -----------------------------------------------------------------------
+
+SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
+  : soundQuality(gexe("SOUND_DEFAULT").to_int(5)),
+    bgmEnabled(true), bgmVolume(255), pcmEnabled(true),
+    pcmVolume(255), seEnabled(true), seVolume(255)
+{}
+
+// -----------------------------------------------------------------------
 // SoundSystem::VolumeAdjustTask
 // -----------------------------------------------------------------------
 SoundSystem::VolumeAdjustTask::VolumeAdjustTask(
@@ -102,14 +120,8 @@ SoundSystem::CDTrack::CDTrack(
 // SoundSystem
 // -----------------------------------------------------------------------
 SoundSystem::SoundSystem(Gameexe& gexe)
-  : m_soundQuality(5),
-    m_bgmEnabled(true),
-    m_bgmVolume(255),
-    m_bgmStatus(0),
-    m_pcmEnabled(true),
-    m_pcmVolume(255),
-    m_seEnabled(true),
-    m_seVolume(255)
+  : m_bgmStatus(0),
+    m_globals(gexe)
 {
   std::fill_n(m_channelVolume, NUM_BASE_CHANNELS, 255);
 
@@ -185,28 +197,28 @@ void SoundSystem::executeSoundSystem(RLMachine& machine)
 
 void SoundSystem::setBgmEnabled(const int in)
 {
-  m_bgmEnabled = in;
+  m_globals.bgmEnabled = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::bgmEnabled() const
 {
-  return m_bgmEnabled;
+  return m_globals.bgmEnabled;
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setBgmVolume(const int in)
 {
-  m_bgmVolume = in;
+  m_globals.bgmVolume = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::bgmVolume() const
 {
-  return m_bgmVolume;
+  return m_globals.bgmVolume;
 }
 
 // -----------------------------------------------------------------------
@@ -220,28 +232,28 @@ int SoundSystem::bgmStatus() const
 
 void SoundSystem::setPcmEnabled(const int in)
 {
-  m_pcmEnabled = in;
+  m_globals.pcmEnabled = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::pcmEnabled() const
 {
-  return m_pcmEnabled;
+  return m_globals.pcmEnabled;
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setPcmVolume(const int in)
 {
-  m_pcmVolume = in;
+  m_globals.pcmVolume = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::pcmVolume() const
 {
-  return m_pcmVolume;
+  return m_globals.pcmVolume;
 }
 
 // -----------------------------------------------------------------------
@@ -282,14 +294,14 @@ int SoundSystem::channelVolume(const int channel)
 
 void SoundSystem::setSeEnabled(const int in)
 {
-  m_seEnabled = in;
+  m_globals.seEnabled = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::seEnabled() const
 {
-  return m_seEnabled;
+  return m_globals.seEnabled;
 }
 
 // -----------------------------------------------------------------------
@@ -297,14 +309,14 @@ int SoundSystem::seEnabled() const
 void SoundSystem::setSeVolume(const int level)
 {
   checkVolume(level, "setSeVolume");
-  m_seVolume = level;
+  m_globals.seVolume = level;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::seVolume() const
 {
-  return m_seVolume;
+  return m_globals.seVolume;
 }
 
 // -----------------------------------------------------------------------
