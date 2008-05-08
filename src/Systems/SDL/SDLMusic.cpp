@@ -91,6 +91,8 @@ void SDLMusic::play(bool loop)
 void SDLMusic::stop()
 {
   Mix_HookMusic(NULL, NULL);
+  if(s_currentlyPlaying.get() == this)
+    s_currentlyPlaying.reset();
 }
 
 // -----------------------------------------------------------------------

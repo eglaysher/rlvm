@@ -126,6 +126,7 @@ public:
                        int fadeInMs);
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
                        int fadeInMs, int fadeOutMs);
+  virtual void bgmStop();
   virtual void bgmFadeOut(int fadeOutMs);
 };	// end of class SDLSoundSystem
 

@@ -122,12 +122,12 @@ BgmModule::BgmModule()
 
   addUnsupportedOpcode(3, 0, "bgmWait");
   addOpcode(4, 0, "bgmPlaying", new Bgm_bgmPlaying);
-  addUnsupportedOpcode(5, 0, "bgmStop");
-  addUnsupportedOpcode(6, 0, "bgmStop2");
+  addOpcode(5, 0, "bgmStop", callFunction(&SoundSystem::bgmStop));
+  addOpcode(6, 0, "bgmStop2", callFunction(&SoundSystem::bgmStop));
   addOpcode(7, 0, "bgmStatus", returnIntValue(&SoundSystem::bgmStatus));
   addUnsupportedOpcode(8, 0, "bgmRewind");
-  addUnsupportedOpcode(9, 0, "bgmStop3");
-  addUnsupportedOpcode(10, 0, "bgmStop4");
+  addOpcode(9, 0, "bgmStop3", callFunction(&SoundSystem::bgmStop));
+  addOpcode(10, 0, "bgmStop4", callFunction(&SoundSystem::bgmStop));
   addUnsupportedOpcode(11, 0, "bgmVolume");
 
   addUnsupportedOpcode(12, 0, "bgmSetVolume");
