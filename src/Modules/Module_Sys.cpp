@@ -402,6 +402,7 @@ struct Sys_MenuReturn : public RLOp_Void_Void
     // Clear everything
     graphics.clearAllObjects();
     graphics.clearAllDCs();
+    machine.system().sound().reset();
     machine.system().text().reset();
 
     shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);

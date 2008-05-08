@@ -349,6 +349,8 @@ public:
    */
   virtual void playSe(RLMachine& machine, const int seNum) = 0;
   /// @}
+
+  virtual void reset();
 };	// end of class SoundSystem
 
 #endif

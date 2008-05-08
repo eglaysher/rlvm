@@ -348,3 +348,12 @@ void SDLSoundSystem::bgmFadeOut(int fadeOutMs) {
   if(currentlyPlaying) 
     currentlyPlaying->fadeOut(fadeOutMs);
 }
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::reset() {
+  bgmStop();
+  wavStopAll();
+
+  SoundSystem::reset();
+}

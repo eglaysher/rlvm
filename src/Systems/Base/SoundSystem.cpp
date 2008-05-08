@@ -309,6 +309,13 @@ int SoundSystem::seVolume() const
 
 // -----------------------------------------------------------------------
 
+void SoundSystem::reset()
+{
+  // empty
+}
+
+// -----------------------------------------------------------------------
+
 // static
 void SoundSystem::checkChannel(int channel, const char* functionName) 
 {

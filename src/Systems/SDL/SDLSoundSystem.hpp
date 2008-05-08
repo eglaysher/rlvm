@@ -128,6 +128,8 @@ public:
                        int fadeInMs, int fadeOutMs);
   virtual void bgmStop();
   virtual void bgmFadeOut(int fadeOutMs);
+
+  virtual void reset();
 };	// end of class SDLSoundSystem
 
 #endif
