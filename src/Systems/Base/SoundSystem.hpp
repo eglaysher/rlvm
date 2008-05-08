@@ -307,6 +307,7 @@ public:
                        bool loop, const int channel, const int fadeinMs) = 0;
   virtual void wavStop(const int channel) = 0;
   virtual void wavStopAll() = 0;
+  virtual void wavFadeOut(const int channel, const int fadetime) = 0;
 
   /// @}
 

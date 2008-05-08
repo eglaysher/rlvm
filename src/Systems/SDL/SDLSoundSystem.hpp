@@ -117,6 +117,7 @@ public:
                        const int channel, const int fadeinMs);
   virtual void wavStop(const int channel);
   virtual void wavStopAll();
+  virtual void wavFadeOut(const int channel, const int fadetime);
 
   virtual void playSe(RLMachine& machine, const int seNum);  
 

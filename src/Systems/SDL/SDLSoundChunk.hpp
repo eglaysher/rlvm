@@ -97,6 +97,8 @@ public:
 
   static void StopChannel(int channel);
   static void StopAllChannels();
+
+  static void FadeOut(const int channel, const int fadetime);
 };
 
 // -----------------------------------------------------------------------

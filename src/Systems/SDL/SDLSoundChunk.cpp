@@ -111,3 +111,10 @@ void SDLSoundChunk::StopAllChannels()
 {
   Mix_HaltChannel(-1);
 }
+
+// -----------------------------------------------------------------------
+
+void SDLSoundChunk::FadeOut(const int channel, const int fadetime)
+{
+  Mix_FadeOutChannel(channel, fadetime);
+}

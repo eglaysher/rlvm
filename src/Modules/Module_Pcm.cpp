@@ -171,7 +171,7 @@ PcmModule::PcmModule()
 
   addUnsupportedOpcode(20, 0, "wavStopAll");
 
-  addUnsupportedOpcode(105, 0, "wavFadeOut");
+  addOpcode(105, 0, "wavFadeOut", callFunction(&SoundSystem::wavFadeOut));
   addUnsupportedOpcode(106, 0, "wavFadeOut2");
   addUnsupportedOpcode(106, 1, "wavFadeOut2");
 

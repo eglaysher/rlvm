@@ -240,6 +240,8 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
 
 void SDLSoundSystem::wavStop(const int channel)
 {
+  checkChannel(channel, "SDLSoundSystem::wavStop");
+
   if(pcmEnabled())
   {
     SDLSoundChunk::StopChannel(channel);
@@ -254,6 +256,16 @@ void SDLSoundSystem::wavStopAll()
   {
     SDLSoundChunk::StopAllChannels();
   }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::wavFadeOut(const int channel, const int fadetime)
+{
+  checkChannel(channel, "SDLSoundSystem::wavFadeOut");
+
+  if(pcmEnabled())
+    SDLSoundChunk::FadeOut(channel, fadetime);
 }
 
 // -----------------------------------------------------------------------
