@@ -82,7 +82,7 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
   setFontSizeInPixels(window("MOJI_SIZE"));
   setWindowSizeInCharacters(window("MOJI_CNT"));
   setSpacingBetweenCharacters(window("MOJI_REP"));
-  setRubyTextSize(window("LUBY_SIZE"));
+  setRubyTextSize(window("LUBY_SIZE").to_int(0));
   setTextboxPadding(window("MOJI_POS"));
 
   setWindowPosition(window("POS"));
