@@ -63,7 +63,7 @@ namespace Serialization {
 
 // -----------------------------------------------------------------------
 
-const int CURRENT_VERSION = 2;
+const int CURRENT_GLOBAL_VERSION = 2;
 
 // -----------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine)
   text_oarchive oa(oss);
   System& sys = machine.system();
 
-  oa << CURRENT_VERSION 
+  oa << CURRENT_GLOBAL_VERSION 
      << const_cast<const GlobalMemory&>(machine.memory().global())
      << const_cast<const SystemGlobals&>(sys.globals())
      << const_cast<const GraphicsSystemGlobals&>(sys.graphics().globals())

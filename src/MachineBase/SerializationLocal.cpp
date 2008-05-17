@@ -79,6 +79,10 @@ namespace Serialization {
 
 RLMachine* g_currentMachine = NULL;
 
+// -----------------------------------------------------------------------
+
+const int CURRENT_LOCAL_VERSION = 2;
+
 }
 
 // -----------------------------------------------------------------------
@@ -124,7 +128,8 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
   {
 
     text_oarchive oa(oss);
-    oa << header
+    oa << CURRENT_LOCAL_VERSION
+       << header
        << const_cast<const LocalMemory&>(machine.memory().local())
        << const_cast<const RLMachine&>(machine)
        << const_cast<const System&>(machine.system())
@@ -167,11 +172,12 @@ SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot)
 
 SaveGameHeader loadHeaderFrom(std::istream& iss)
 {
+  int version;
   SaveGameHeader header;
 
   // Only load the header
   text_iarchive ia(iss);
-  ia >> header;
+  ia >> version >> header;
 
   return header;
 }
@@ -190,11 +196,13 @@ void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory)
 
 void loadLocalMemoryFrom(std::istream& iss, Memory& memory)
 {
+  int version;
   SaveGameHeader header;
 
   // Only load the header
   text_iarchive ia(iss);
-  ia >> header
+  ia >> version
+     >> header
      >> memory.local();
 }
 
@@ -212,6 +220,7 @@ void loadGameForSlot(RLMachine& machine, int slot)
 
 void loadGameFrom(std::istream& iss, RLMachine& machine)
 {
+  int version;
   SaveGameHeader header;
 
   g_currentMachine = &machine;
@@ -221,7 +230,8 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
     machine.system().reset();
 
     text_iarchive ia(iss);
-    ia >> header
+    ia >> version
+       >> header
        >> machine.memory().local()
        >> machine
        >> machine.system()
