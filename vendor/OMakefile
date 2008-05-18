@@ -30,11 +30,23 @@ LRLFILES[] =
 
 StaticCObject(libVendorLibs, $(LRLFILES))
 
+# Build jagarl's standalone nwatowav binary.
+section 
+  NWAFILES[] =
+    endian
+    nwatowav-main
+
+  nwatowav-main.o: nwatowav.cc
+    $(CXX) $(CXXFLAGS) $(PREFIXED_INCLUDES) -DUSE_MAIN -c $(CCOUT)$@ $<
+
+  CXXProgram(nwatowav, $(NWAFILES))
+
 ########
 
 LIBS += -L/opt/local/lib
 .SUBDIRS: 
 .DEFAULT: libVendorLibs$(EXT_OBJ)
 
+
 clean:
-  $(RM) *.o *.gch *$(EXT_LIB) *.omc
+  $(RM) *.o *.gch *$(EXT_LIB) nwatowav *.omc
