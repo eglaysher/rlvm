@@ -92,6 +92,28 @@ void EventSystem::removeEventHandler(EventHandler* handler)
 
 // -----------------------------------------------------------------------
 
+void EventSystem::addMouseListener(MouseListener* listener)
+{
+  MouseListeners::iterator it = 
+    std::find(m_mouseListeners.begin(), m_mouseListeners.end(), listener);
+
+  if(it == m_mouseListeners.end())
+    m_mouseListeners.push_back(listener);
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::removeMouseListener(MouseListener* listener)
+{
+  MouseListeners::iterator it = 
+    std::find(m_mouseListeners.begin(), m_mouseListeners.end(), listener);
+
+  if(it != m_mouseListeners.end())
+    m_mouseListeners.erase(it);
+}
+
+// -----------------------------------------------------------------------
+
 void EventSystem::setFrameCounter(int layer, int frameCounter, FrameCounter* counter)
 {
   checkLayerAndCounter(layer, frameCounter);

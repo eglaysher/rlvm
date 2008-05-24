@@ -43,6 +43,9 @@
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/MouseCursor.hpp"
 #include "libReallive/gameexe.h"
 
 #include "MachineBase/RLMachine.hpp"
@@ -155,7 +158,7 @@ GraphicsSystemGlobals::GraphicsSystemGlobals()
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
   :	showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
-	showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
+    showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
     showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1)
 {}
 
@@ -197,14 +200,23 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
     m_hideInterface(false),
     m_globals(gameexe),
     m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
-    m_graphicsObjectImpl(new GraphicsObjectImpl)
-{
-}
+    m_graphicsObjectImpl(new GraphicsObjectImpl),
+    m_useCustomMouseCursor(gameexe("MOUSE_CURSOR").exists()),
+    m_showCurosr(true),
+    m_cursor(gameexe("MOUSE_CURSOR").to_int(0))
+{}
 
 // -----------------------------------------------------------------------
 
 GraphicsSystem::~GraphicsSystem()
 {}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::setIsResponsibleForUpdate(bool in)
+{ 
+  m_isResponsibleForUpdate = in; 
+}
 
 // -----------------------------------------------------------------------
 
@@ -245,6 +257,14 @@ void GraphicsSystem::forceRefresh()
 void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u)
 {
   m_screenUpdateMode = u; 
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
+{
+  m_cursor = cursor;
+  m_mouseCursor.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -359,7 +379,7 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
 // default implementations because I'm lazy, and these really should
 // be pure virtual)
 void GraphicsSystem::beginFrame() { }
-void GraphicsSystem::endFrame() { }
+void GraphicsSystem::endFrame(RLMachine& machine) { }
 
 // -----------------------------------------------------------------------
 
@@ -487,12 +507,12 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it = 
-	m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
+    m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = 
-	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
+    m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
   for(; it != end; ++it)
   {
-	const ObjectSettings& settings = getObjectSettings(it.pos());
+    const ObjectSettings& settings = getObjectSettings(it.pos());
     if(settings.objOnOff == 1 && showObject1() == false)
       continue;
     else if(settings.objOnOff == 2 && showObject2() == false)
@@ -502,8 +522,44 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
     else if(settings.spaceKey && interfaceHidden())
       continue;
 
-	it->render(machine);
+    it->render(machine);
   }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::renderCursor(RLMachine& machine)
+{
+  if(m_useCustomMouseCursor && !m_mouseCursor)
+  {
+    MouseCursorCache::iterator it = m_cursorCache.find(m_cursor);
+    if(it != m_cursorCache.end())
+      m_mouseCursor = it->second;
+    else 
+    {
+      string cursorName = machine.system().gameexe()("MOUSE_CURSOR", 
+                                                     m_cursor, "NAME");
+      fs::path cursorPath = findFile(machine, cursorName, PDT_IMAGE_FILETYPES);
+      boost::shared_ptr<Surface> cursorSurface = loadSurfaceFromFile(cursorPath);
+      m_mouseCursor.reset(new MouseCursor(cursorSurface));
+      m_cursorCache[m_cursor] = m_mouseCursor;
+    }
+  }
+
+  if(m_mouseCursor && m_showCurosr) 
+  {
+    int mouseX, mouseY;
+    machine.system().event().getCursorPos(mouseX, mouseY);    
+    m_mouseCursor->renderHotspotAt(machine, mouseX, mouseY);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::mouseMotion(int x, int y)
+{
+  if(m_useCustomMouseCursor && m_showCurosr)
+    markScreenAsDirty(GUT_MOUSE_MOTION);
 }
 
 // -----------------------------------------------------------------------

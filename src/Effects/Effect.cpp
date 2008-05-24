@@ -98,7 +98,7 @@ bool Effect::operator()(RLMachine& machine)
 
     performEffectForTime(machine, currentFrame);
 
-    graphics.endFrame();
+    graphics.endFrame(machine);
     return false;
   }
 }

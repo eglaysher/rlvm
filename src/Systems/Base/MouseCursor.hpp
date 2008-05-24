@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2007 Elliot Glaysher
+// Copyright (C) 2008 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,42 +25,39 @@
 //  
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/Surface.hpp"
-#include "Utilities.h"
+#ifndef __MouseCursor_hpp__
+#define __MouseCursor_hpp__
 
-// -----------------------------------------------------------------------
+#include <boost/shared_ptr.hpp>
 
-Surface::Surface() { }
+class Surface;
+class RLMachine;
 
-// -----------------------------------------------------------------------
-
-Surface::~Surface() { }
-
-// -----------------------------------------------------------------------
-
-void Surface::dump() 
+/**
+ * Represents a mouse cursor on screen.
+ */
+class MouseCursor
 {
-  throw rlvm::Exception("Unimplemented function Surface::dump()"); 
-}
+public:
+  MouseCursor(const boost::shared_ptr<Surface>& cursorSurface);
+  ~MouseCursor();
 
-// -----------------------------------------------------------------------
+  /**
+   * Renders the cursor to the screen, taking the hotspot offset into
+   * account.
+   */
+  void renderHotspotAt(RLMachine& machine, int x, int y);
 
-int Surface::numPatterns() const
-{ return 1; }
+private:
+  /// Sets m_hotspot[XY] to the white pixel in the 
+  void findHotspot();
 
-// -----------------------------------------------------------------------
+  /// The raw image read from the PDT.
+  boost::shared_ptr<Surface> m_cursorSurface;
+  
+  /// The hotspot location.
+  int m_hotspotX, m_hotspotY;
+};	// end of class MouseCursor
 
-const Surface::GrpRect& Surface::getPattern(int pattNo) const 
-{
-  static GrpRect rect;
-  return rect;
-}
 
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<Surface> Surface::clipAsColorMask(
-  int x, int y, int width, int height, 
-  int r, int g, int b)
-{
-  throw rlvm::Exception("Unimplemented function Surface::clipAsColorMask()");
-}
+#endif

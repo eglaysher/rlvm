@@ -747,3 +747,46 @@ void SDLSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
   g = color.g;
   b = color.b;
 }
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
+  int x, int y, int width, int height, 
+  int r, int g, int b)
+{
+  const char* functionName = "SDLGraphicsSystem::clipAsColorMask()";
+
+  // TODO: This needs to be made exception safe and so does the rest
+  // of this file.
+  SDL_Surface* tmpSurface = 
+    SDL_CreateRGBSurface(m_surface->flags & ~SDL_SRCALPHA,
+                         m_surface->w, m_surface->h, 
+                         m_surface->format->BitsPerPixel,
+                         m_surface->format->Rmask, m_surface->format->Gmask,
+                         m_surface->format->Bmask, 0);
+  if(!tmpSurface)
+    reportSDLError("SDL_CreateRGBSurface", functionName);
+
+  if(SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL))
+    reportSDLError("SDL_BlitSurface", functionName);
+
+  Uint32 color = SDL_MapRGB(tmpSurface->format, r, g, b);
+  if(SDL_SetColorKey(tmpSurface, SDL_SRCCOLORKEY, color))
+    reportSDLError("SDL_SetAlpha", functionName);
+
+  // The OpenGL pieces don't know what to do an image formatted to
+  // (FF0000, FF00, FF, 0), so convert it to a standard RGBA image
+  // (and clip to the desired rectangle)
+  SDL_Surface* surface = buildNewSurface(width, height);
+  SDL_Rect srcrect;
+  srcrect.x = x;
+  srcrect.y = y;
+  srcrect.w = width;
+  srcrect.h = height;
+  if(SDL_BlitSurface(tmpSurface, &srcrect, surface, NULL))
+    reportSDLError("SDL_BlitSurface", functionName);
+
+  SDL_FreeSurface(tmpSurface);
+
+  return boost::shared_ptr<Surface>(new SDLSurface(surface));
+}

@@ -120,7 +120,7 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   if(!interfaceHidden())
     machine.system().text().render(machine);
 
-  endFrame();
+  endFrame(machine);
 }
 
 // -----------------------------------------------------------------------
@@ -145,8 +145,10 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::endFrame()
+void SDLGraphicsSystem::endFrame(RLMachine& machine)
 {
+  renderCursor(machine);
+
   glFlush();
   
   // Swap the buffers
@@ -451,8 +453,7 @@ typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data, 
                                            MaskType with_mask)
 {
-//  int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
-  int amask = DefaultAmask;
+  int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
   SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
     DefaultBmask, amask);
@@ -604,7 +605,15 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(int w, int h)
 {
   return shared_ptr<Surface>(new SDLSurface(w, h));
 }
-                                
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::renderCursor(RLMachine& machine)
+{
+  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
+  GraphicsSystem::renderCursor(machine);
+}
+
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::clearAllDCs()

@@ -39,6 +39,7 @@ class RLMachine;
 class Gameexe;
 class FrameCounter;
 class EventHandler;
+class MouseListener;
 
 // -----------------------------------------------------------------------
 
@@ -74,6 +75,7 @@ class EventSystem
 {
 protected:
   typedef std::vector<EventHandler*> Handlers;
+  typedef std::vector<MouseListener*> MouseListeners;
 
 private:
   boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
@@ -90,6 +92,7 @@ private:
   void checkLayerAndCounter(int layer, int counter);
 
   Handlers m_eventHandlers;
+  MouseListeners m_mouseListeners;
 
   EventSystemGlobals m_globals;
 
@@ -97,6 +100,8 @@ protected:
   Handlers::iterator handlers_begin() { return m_eventHandlers.begin(); }
   Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
 
+  MouseListeners::iterator listeners_begin() { return m_mouseListeners.begin(); }
+  MouseListeners::iterator listeners_end() { return m_mouseListeners.end(); }
 public:
   EventSystem(Gameexe& gexe);
   virtual ~EventSystem();
@@ -105,6 +110,9 @@ public:
 
   virtual void addEventHandler(EventHandler* handler);
   virtual void removeEventHandler(EventHandler* handler);
+
+  virtual void addMouseListener(MouseListener* listener);
+  virtual void removeMouseListener(MouseListener* listener);
 
   /** 
    * Returns whether shift is currently pressed.

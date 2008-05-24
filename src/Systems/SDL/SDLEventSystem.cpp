@@ -96,6 +96,12 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 
 void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 {
+  // Handle this somehow.
+  int x = event.motion.x;
+  int y = event.motion.y;
+  for_each(listeners_begin(), listeners_end(),
+           bind(&MouseListener::mouseMotion, _1, x, y));
+
   m_mouseXPos = event.motion.x;
   m_mouseYPos = event.motion.y;
 }

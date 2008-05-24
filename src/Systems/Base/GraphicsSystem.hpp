@@ -36,6 +36,9 @@
 #ifndef __GraphicsSystem_hpp__
 #define __GraphicsSystem_hpp__
 
+#include "Systems/Base/EventHandler.hpp"
+
+#include <map>
 #include <vector>
 #include <string>
 #include <boost/scoped_ptr.hpp>
@@ -51,6 +54,7 @@ class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
 class Gameexe;
+class MouseCursor;
 struct ObjectSettings;
 
 template<typename T> class LazyArray;
@@ -88,7 +92,8 @@ struct GraphicsSystemGlobals
 enum GraphicsUpdateType {
   GUT_DRAW_DC0,
   GUT_DISPLAY_OBJ,
-  GUT_TEXTSYS
+  GUT_TEXTSYS,
+  GUT_MOUSE_MOTION
 };
 
 // -----------------------------------------------------------------------
@@ -106,7 +111,7 @@ enum GraphicsUpdateType {
  * and then copy it onto DC0 with some sort of fancy transition
  * effect.)
  */
-class GraphicsSystem
+class GraphicsSystem : public MouseListener
 {
 public:
   /** 
@@ -173,12 +178,34 @@ private:
   struct GraphicsObjectImpl;
   boost::scoped_ptr<GraphicsObjectImpl> m_graphicsObjectImpl;
 
+  /** Whether we should use a custom mouse cursor. Set while parsing
+   * the Gameexe file, and then left unchanged. We only use a custom
+   * mouse cursor if \#MOUSE_CURSOR is set in the Gameexe 
+   */
+  bool m_useCustomMouseCursor;
+
+  /// Whether we should render any cursor. Controller by the bytecode.
+  bool m_showCurosr;
+
+  /** Current cursor id. Initially set to \#MOUSE_CURSOR if the key
+   * exists.
+   */
+  int m_cursor;
+
+  /// Current mouse cursor
+  boost::shared_ptr<MouseCursor> m_mouseCursor;
+
+  /// MouseCursor construction is nontrivial so cache everything we
+  /// build:
+  typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
+  MouseCursorCache m_cursorCache;
+
 public:
   GraphicsSystem(Gameexe& gameexe);
   virtual ~GraphicsSystem();
 
   bool isResponsibleForUpdate() const { return m_isResponsibleForUpdate; }
-  void setIsResponsibleForUpdate(bool in) { m_isResponsibleForUpdate = in; }
+  void setIsResponsibleForUpdate(bool in);
 
   void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }
   const std::string& defaultGrpName() const { return m_defaultGrpName; }
@@ -186,7 +213,23 @@ public:
   const std::string& defaultBgrName() const { return m_defaultBgrName; }
 
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
-  void setScreenUpdateMode(DCScreenUpdateMode u);
+  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
+
+  /**
+   * @name Mouse Cursor Management
+   * 
+   * @{
+   */
+  int useCustomCursor() const { return m_useCustomMouseCursor; }
+
+  /// 
+  void setCursor(RLMachine& machine, int cursor);
+
+  /// 
+  int cursor() const { return m_cursor; }
+
+  void setShowCursor(const int in) { m_showCurosr = in; }
+  /// @}
 
   /**
    * @name Graphics Stack
@@ -322,7 +365,7 @@ public:
 
   virtual void beginFrame();
   virtual void refresh(RLMachine& machine) = 0;
-  virtual void endFrame();
+  virtual void endFrame(RLMachine& machine);
 
   virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);
@@ -380,6 +423,8 @@ public:
    */
   void renderObjects(RLMachine& machine);
 
+  virtual void renderCursor(RLMachine& machine);
+
   GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
                                      const std::string& filename);
 
@@ -396,6 +441,16 @@ public:
   /// @}
 
   virtual void clearAllDCs() { }
+
+
+  /**
+   * @name Overridden from MouseMotionListener:
+   * 
+   * @{
+   */
+  virtual void mouseMotion(int x, int y);
+  /// @}
+
 
   /** 
    * Reset the system. Should clear all state for when a user loads a

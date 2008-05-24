@@ -28,6 +28,8 @@
 #ifndef __Surface_hpp__
 #define __Surface_hpp__
 
+#include <boost/shared_ptr.hpp>
+
 class GraphicsObject;
 struct GraphicsObjectOverride;
 
@@ -89,6 +91,10 @@ public:
                     int width, int height) = 0;
 
   virtual void getDCPixel(int x, int y, int& r, int& g, int& b) = 0;
+
+  virtual boost::shared_ptr<Surface> clipAsColorMask(
+    int x, int y, int width, int height, 
+    int r, int g, int b);
 
   virtual Surface* clone() const = 0;
 };

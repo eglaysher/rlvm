@@ -175,6 +175,9 @@ public:
 
 
   virtual void getDCPixel(int x, int y, int& r, int& g, int& b);
+  virtual boost::shared_ptr<Surface> clipAsColorMask(
+    int x, int y, int width, int height, 
+    int r, int g, int b);
 
   virtual Surface* clone() const;
 

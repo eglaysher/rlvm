@@ -28,6 +28,8 @@
 #ifndef __EventHandler_hpp__
 #define __EventHandler_hpp__
 
+class RLMachine;
+
 enum MouseButton
 {
   MOUSE_NONE = 0,
@@ -297,7 +299,24 @@ enum KeyCode {
 	RLKEY_UNDO		= 322,		/* Atari keyboard has Undo */
 };
 
-class EventHandler
+/** 
+ * Interface to receive information from the Event system when the
+ * mouse is moved. Used where we don't have an RLMachine and we don't
+ * want the autoregistering and removal features of EventHandler.
+ */
+class MouseListener
+{
+public:
+  virtual void mouseMotion(int x, int y) { }
+  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed) {}
+};
+
+/** 
+ * Base class for most . Deriving from EventHandler will automatically
+ * register/unregister your subclass with the event system on
+ * construction/deconstruction.
+ */
+class EventHandler : public MouseListener
 {
 private:
   RLMachine& m_machine;
@@ -306,8 +325,6 @@ public:
   EventHandler(RLMachine& machine);
   virtual ~EventHandler();
 
-  virtual void mouseMotion(int x, int y) {}
-  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed) {}
   virtual void keyStateChanged(KeyCode keyCode, bool pressed) {}
 };
 

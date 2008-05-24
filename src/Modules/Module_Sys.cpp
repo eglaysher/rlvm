@@ -433,8 +433,10 @@ SysModule::SysModule()
 
   addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
 
-  addUnsupportedOpcode(204, 0, "ShowCursor");
-  addUnsupportedOpcode(205, 0, "HideCursor");
+  addOpcode(204, 0, "ShowCursor", setToConstant(&GraphicsSystem::setShowCursor, 1));
+  addOpcode(205, 0, "HideCursor", setToConstant(&GraphicsSystem::setShowCursor, 0));
+  addOpcode(206, 0, "GetMouseCursor", returnIntValue(&GraphicsSystem::cursor));
+  addOpcode(207, 0, "MouseCursor", callFunction(&GraphicsSystem::setCursor));
 
   addUnsupportedOpcode(330, 0, "EnableSkipMode");
   addUnsupportedOpcode(331, 0, "DisableSkipMode");

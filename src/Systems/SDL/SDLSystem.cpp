@@ -68,12 +68,16 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   eventSystem.reset(new SDLEventSystem(gameexe));
   textSystem.reset(new SDLTextSystem(gameexe));
   soundSystem.reset(new SDLSoundSystem(gameexe));
+
+  eventSystem->addMouseListener(graphicsSystem.get());
 }
 
 // -----------------------------------------------------------------------
 
 SDLSystem::~SDLSystem()
 {
+  eventSystem->removeMouseListener(graphicsSystem.get());
+
   // Force the deletion of the various systems before we shut down
   // SDL.
   graphicsSystem.reset();

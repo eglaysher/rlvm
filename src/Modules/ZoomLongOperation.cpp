@@ -107,7 +107,7 @@ bool ZoomLongOperation::operator()(RLMachine& machine)
                      m_dx, m_dy, m_dx + m_dwidth, m_dy + m_dheight,
                      255);
 
-    graphics.endFrame();
+    graphics.endFrame(machine);
     return false;
   }
 }

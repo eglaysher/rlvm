@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2007 Elliot Glaysher
+// Copyright (C) 2008 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,42 +25,73 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/Surface.hpp"
-#include "Utilities.h"
+
+const int CURSOR_X_OFFSET = 8;
+const int CURSOR_Y_OFFSET = 8;
+const int CURSOR_SIZE = 32;
+const int HOTSPOTMASK_X_OFFSET = 8;
+const int HOTSPOTMASK_Y_OFFSET = 48;
+
+using namespace std;
 
 // -----------------------------------------------------------------------
-
-Surface::Surface() { }
-
+// MouseCursor (public)
 // -----------------------------------------------------------------------
-
-Surface::~Surface() { }
-
-// -----------------------------------------------------------------------
-
-void Surface::dump() 
+MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursorSurface)
+  : m_cursorSurface(cursorSurface)
 {
-  throw rlvm::Exception("Unimplemented function Surface::dump()"); 
+  findHotspot();
+
+  int alphaR, alphaG, alphaB;
+  cursorSurface->getDCPixel(0, 0, alphaR, alphaG, alphaB);
+
+  m_cursorSurface = 
+    cursorSurface->clipAsColorMask(
+      CURSOR_X_OFFSET, CURSOR_Y_OFFSET,
+      CURSOR_X_OFFSET + CURSOR_SIZE, CURSOR_Y_OFFSET + CURSOR_SIZE,
+      alphaR, alphaG, alphaB);
 }
 
 // -----------------------------------------------------------------------
 
-int Surface::numPatterns() const
-{ return 1; }
+MouseCursor::~MouseCursor() {}
 
 // -----------------------------------------------------------------------
 
-const Surface::GrpRect& Surface::getPattern(int pattNo) const 
+void MouseCursor::renderHotspotAt(RLMachine& machine, int x, int y) 
 {
-  static GrpRect rect;
-  return rect;
+  int baseX = x - m_hotspotX;
+  int baseY = y - m_hotspotY;
+
+  m_cursorSurface->renderToScreen(
+    0, 0, CURSOR_SIZE, CURSOR_SIZE,
+    baseX, baseY, baseX + CURSOR_SIZE, baseY + CURSOR_SIZE);
 }
 
 // -----------------------------------------------------------------------
+// MouseCursor (private)
+// -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> Surface::clipAsColorMask(
-  int x, int y, int width, int height, 
-  int r, int g, int b)
+void MouseCursor::findHotspot()
 {
-  throw rlvm::Exception("Unimplemented function Surface::clipAsColorMask()");
+  int r, g, b;
+
+  for(int x = HOTSPOTMASK_X_OFFSET; x < HOTSPOTMASK_X_OFFSET + CURSOR_SIZE;
+      ++x)
+  {
+    for(int y = HOTSPOTMASK_Y_OFFSET; y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE;
+        ++y)
+    {
+      m_cursorSurface->getDCPixel(x, y, r, g, b);
+
+      if(r == 255 && g == 255 && b == 255)
+      {
+        m_hotspotX = x - HOTSPOTMASK_X_OFFSET;
+        m_hotspotY = y - HOTSPOTMASK_Y_OFFSET;
+        break;
+      }
+    }
+  }
 }

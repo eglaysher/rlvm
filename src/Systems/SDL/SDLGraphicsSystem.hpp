@@ -144,8 +144,9 @@ public:
    */
   virtual void refresh(RLMachine& machine);
 
-  virtual void endFrame();
+  virtual void endFrame(RLMachine& machine);
 
+  virtual void renderCursor(RLMachine& machine);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);
