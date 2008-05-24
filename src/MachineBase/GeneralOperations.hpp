@@ -114,6 +114,33 @@ public:
  * running Reallive script. 
  */
 template<typename OBJTYPE>
+class Op_CallWithMachineInt : public RLOp_Void_1< IntConstant_T > {
+private:
+  /// The function signature for the setter function
+  typedef void(OBJTYPE::*Setter)(RLMachine&, const int);
+
+  /// The setter function to call on Op_SetToIncoming::reference when
+  /// called.
+  Setter setter;
+
+public:
+  Op_CallWithMachineInt(Setter s)
+    : setter(s) 
+  {}
+
+  void operator()(RLMachine& machine, int incoming) 
+  {
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(machine, incoming);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+/** 
+ * Binds setting an internal variable to a passed in value in from a
+ * running Reallive script. 
+ */
+template<typename OBJTYPE>
 class Op_CallWithIntInt : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 private:
   /// The function signature for the setter function
@@ -186,6 +213,14 @@ template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)(const int))
 {
   return new Op_CallWithInt<OBJTYPE>(s);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE>
+RLOperation* callFunction(void(OBJTYPE::*s)(RLMachine&, const int))
+{
+  return new Op_CallWithMachineInt<OBJTYPE>(s);
 }
 
 // -----------------------------------------------------------------------
