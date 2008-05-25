@@ -41,6 +41,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 
@@ -72,13 +73,20 @@ struct LongOp_time : public LongOperation, public EventHandler
   const bool m_cancelOnClick;
 
   int m_buttonPressed;
+  bool m_mouseMoved;
   
   LongOp_time(RLMachine& machine, int layer, int counter, int time,
               bool cancelOnClick)
     : EventHandler(machine),
       m_layer(layer), m_counter(counter), m_targetTime(time),
-      m_cancelOnClick(cancelOnClick), m_buttonPressed(0)
+      m_cancelOnClick(cancelOnClick), m_buttonPressed(0),
+      m_mouseMoved(false)
   {}
+
+  void mouseMotion(int x, int y)
+  {
+    m_mouseMoved = true;
+  }
 
   /** 
    * Listen for mouseclicks (provided by EventHandler).
@@ -98,6 +106,12 @@ struct LongOp_time : public LongOperation, public EventHandler
   {
     EventSystem& es = machine.system().event();
     bool done = false;
+
+    if(m_mouseMoved)
+    {
+      machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+      m_mouseMoved = false;
+    }
 
     // First check to see if we're done because of time.
     if(es.getTimer(m_layer, m_counter).read(es) > m_targetTime)

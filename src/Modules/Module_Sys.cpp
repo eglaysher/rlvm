@@ -90,13 +90,21 @@ struct LongOp_wait : public LongOperation, public EventHandler
   bool m_ctrlPressed;
   bool m_breakOnCtrlPressed;
 
+  bool m_mouseMoved;
+
   LongOp_wait(RLMachine& machine, int time, bool breakOnClicks)
     : EventHandler(machine),
       m_targetTime(machine.system().event().getTicks() + time),
       m_breakOnClicks(breakOnClicks), m_buttonPressed(0),
       m_ctrlPressed(false), 
-      m_breakOnCtrlPressed(machine.system().text().ctrlKeySkip())
+      m_breakOnCtrlPressed(machine.system().text().ctrlKeySkip()),
+      m_mouseMoved(false)
   {}
+
+  void mouseMotion(int x, int y) 
+  {
+    m_mouseMoved = true;
+  }
 
   /** 
    * Listen for mouseclicks (provided by EventHandler).
@@ -123,6 +131,12 @@ struct LongOp_wait : public LongOperation, public EventHandler
   {
     bool done = machine.system().event().getTicks() > m_targetTime ||
       m_ctrlPressed;
+
+    if(m_mouseMoved)
+    {
+      machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+      m_mouseMoved = false;
+    }
 
     if(m_breakOnClicks)
     {

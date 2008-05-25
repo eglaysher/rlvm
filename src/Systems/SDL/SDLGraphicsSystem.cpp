@@ -103,7 +103,6 @@ void SDLGraphicsSystem::beginFrame()
   ShowGLErrors();
 }
 
-
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::refresh(RLMachine& machine) 
@@ -121,6 +120,17 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
     machine.system().text().render(machine);
 
   endFrame(machine);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
+{
+  if (isResponsibleForUpdate() && screenUpdateMode() == SCREENUPDATEMODE_MANUAL &&
+      type == GUT_MOUSE_MOTION)
+    m_redrawLastFrame = true;
+  else
+    GraphicsSystem::markScreenAsDirty(type);
 }
 
 // -----------------------------------------------------------------------
@@ -172,7 +182,7 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  * @pre SDL is initialized.
  */
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
-  : GraphicsSystem(gameexe),
+  : GraphicsSystem(gameexe), m_redrawLastFrame(false),
     m_displayDataInTitlebar(false), m_timeOfLastTitlebarUpdate(0),
     m_lastSeenNumber(0), m_lastLineNumber(0), m_imageCache(10)
 {
@@ -291,7 +301,12 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 {
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-  if(isResponsibleForUpdate() && screenNeedsRefresh())
+  if(isResponsibleForUpdate() && m_redrawLastFrame)
+  {
+    endFrame(machine);
+    m_redrawLastFrame = false;
+  }
+  else if(isResponsibleForUpdate() && screenNeedsRefresh())
   {
     refresh(machine);
     screenRefreshed();

@@ -61,6 +61,8 @@ private:
   
   boost::shared_ptr<SDLSurface> m_displayContexts[16];
 
+  bool m_redrawLastFrame;
+
   int m_width, m_height;
   
   /// Whether to display (SEEN####)(Line ###) in the title bar
@@ -143,6 +145,7 @@ public:
    * them. For now, only blit DC0.
    */
   virtual void refresh(RLMachine& machine);
+  virtual void markScreenAsDirty(GraphicsUpdateType type);
 
   virtual void endFrame(RLMachine& machine);
 
