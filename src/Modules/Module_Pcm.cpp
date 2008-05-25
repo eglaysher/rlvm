@@ -76,6 +76,14 @@ struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
+struct Pcm_wavPlaying : public RLOp_Store_1<IntConstant_T> {
+  int operator()(RLMachine& machine, int channel) {
+    return machine.system().sound().wavPlaying(machine, channel);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Pcm_wavVolume : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
     return machine.system().sound().channelVolume(channel);
@@ -149,7 +157,7 @@ PcmModule::PcmModule()
   addOpcode(2, 1, "wavLoop", new Pcm_wavLoop_1);
 
   addUnsupportedOpcode(3, 0, "wavWait");
-  addUnsupportedOpcode(4, 0, "wavPlaying");
+  addOpcode(4, 0, "wavPlaying", new Pcm_wavPlaying);
 
   addOpcode(5, 0, "wavStop", callFunction(&SoundSystem::wavStop));
   addOpcode(5, 1, "wavStop", callFunction(&SoundSystem::wavStopAll));

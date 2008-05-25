@@ -238,6 +238,14 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
 
 // -----------------------------------------------------------------------
 
+bool SDLSoundSystem::wavPlaying(RLMachine& machine, const int channel)
+{
+  checkChannel(channel, "SDLSoundSystem::wavPlaying");
+  return Mix_Playing(channel);
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::wavStop(const int channel)
 {
   checkChannel(channel, "SDLSoundSystem::wavStop");

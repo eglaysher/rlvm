@@ -115,6 +115,7 @@ public:
                        const int channel);
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop,
                        const int channel, const int fadeinMs);
+  virtual bool wavPlaying(RLMachine& machine, const int channel);
   virtual void wavStop(const int channel);
   virtual void wavStopAll();
   virtual void wavFadeOut(const int channel, const int fadetime);
