@@ -100,8 +100,7 @@ void PauseLongOperation::handleSyscomCall()
 void PauseLongOperation::mouseMotion(const Point& p)
 {
   // Tell the text system about the move
-  // POINT
-  machine.system().text().setMousePosition(machine, p.x(), p.y());
+  machine.system().text().setMousePosition(machine, p);
 }
 
 // -----------------------------------------------------------------------
@@ -118,15 +117,14 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   {
   case MOUSE_LEFT:
   {
-    int x, y;
-    es.getCursorPos(x, y);
+    Point pos = es.getCursorPos();
     // Only unhide the interface on release of the left mouse button
     if(graphics.interfaceHidden())
     {
       if(!pressed)
         graphics.toggleInterfaceHidden();
     }
-    else if(!machine.system().text().handleMouseClick(machine, x, y, pressed))
+    else if(!machine.system().text().handleMouseClick(machine, pos, pressed))
     {
       if(pressed)
       {

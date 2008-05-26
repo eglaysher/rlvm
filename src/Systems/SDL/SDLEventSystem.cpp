@@ -295,19 +295,17 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::getCursorPos(int& xPos, int& yPos)
+Point SDLEventSystem::getCursorPos()
 {
-  xPos = m_mousePos.x();
-  yPos = m_mousePos.y();
+  return m_mousePos;
 }
 
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::getCursorPos(int& xPos, int& yPos, int& button1, 
+void SDLEventSystem::getCursorPos(Point& position, int& button1, 
                                   int& button2)
 {
-  xPos = m_mousePos.x();
-  yPos = m_mousePos.y();
+  position = m_mousePos;
   button1 = m_button1State;
   button2 = m_button2State;
 

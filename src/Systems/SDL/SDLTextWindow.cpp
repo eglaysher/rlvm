@@ -91,21 +91,21 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::setMousePosition(RLMachine& machine, int x, int y)
+void SDLTextWindow::setMousePosition(RLMachine& machine, const Point& pos)
 {
   if(inSelectionMode())
   {
     for_each(m_selections.begin(), m_selections.end(),
              bind(&SelectionElement::setMousePosition, _1,
-                  ref(machine), x, y));
+                  ref(machine), pos));
   }
   
-  TextWindow::setMousePosition(machine, x, y);
+  TextWindow::setMousePosition(machine, pos);
 }
 
 // -----------------------------------------------------------------------
 
-bool SDLTextWindow::handleMouseClick(RLMachine& machine, int x, int y, 
+bool SDLTextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
                                      bool pressed)
 {
   if(inSelectionMode())
@@ -113,14 +113,14 @@ bool SDLTextWindow::handleMouseClick(RLMachine& machine, int x, int y,
     bool found =
       find_if(m_selections.begin(), m_selections.end(),
               bind(&SelectionElement::handleMouseClick, _1, 
-                   ref(machine), x, y, pressed))
+                   ref(machine), pos, pressed))
       != m_selections.end();
 
     if(found)
       return true;
   }
 
-  return TextWindow::handleMouseClick(machine, x, y, pressed);
+  return TextWindow::handleMouseClick(machine, pos, pressed);
 }
 
 // -----------------------------------------------------------------------

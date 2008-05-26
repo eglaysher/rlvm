@@ -32,6 +32,7 @@
 
 class RLMachine;
 class Surface;
+class Point;
 
 /**
  * Represents a clickable 
@@ -47,6 +48,7 @@ private:
   int m_id;
 
   // Location of the button
+  // POINT
   int m_x, m_y;
 
   boost::shared_ptr<Surface> m_normalImage;
@@ -66,8 +68,8 @@ public:
 
   void setSelectionCallback(const boost::function<void(int)>& func);
 
-  void setMousePosition(RLMachine& machine, int x, int y);
-  bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
+  void setMousePosition(RLMachine& machine, const Point& pos);
+  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
   void render();
 };

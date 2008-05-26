@@ -34,6 +34,7 @@
 #include <boost/function.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
+class Point;
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
@@ -291,8 +292,8 @@ public:
 
   /// @}
 
-  virtual void setMousePosition(RLMachine& machine, int x, int y);
-  virtual bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
+  virtual void setMousePosition(RLMachine& machine, const Point& pos);
+  virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
   /**
    * @name Name window settings

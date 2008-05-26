@@ -39,6 +39,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <stdexcept>
 #include <iostream>
@@ -127,7 +128,7 @@ bool TextWindowButton::isValid() const
 // -----------------------------------------------------------------------
 
 void TextWindowButton::setMousePosition(
-  RLMachine& machine, TextWindow& window, int x, int y)
+  RLMachine& machine, TextWindow& window, const Point& pos)
 {
   if(isValid())
   {
@@ -138,7 +139,8 @@ void TextWindowButton::setMousePosition(
     int y1 = yLocation(window);
     int y2 = y1 + m_location.at(4);
 
-    bool inBox = x >= x1 && x < x2 && y >= y1 && y < y2;
+    // POINT (make intersection code in Rect and share w/ handleMouseClick)
+    bool inBox = pos.x() >= x1 && pos.x() < x2 && pos.y() >= y1 && pos.y() < y2;
 
     if(inBox && m_state == BUTTONSTATE_NORMAL)
       m_state = BUTTONSTATE_HIGHLIGHTED;
@@ -155,7 +157,7 @@ void TextWindowButton::setMousePosition(
 // -----------------------------------------------------------------------
 
 bool TextWindowButton::handleMouseClick(
-  RLMachine& machine, TextWindow& window, int x, int y, bool pressed)
+  RLMachine& machine, TextWindow& window, const Point& pos, bool pressed)
 {
   if(isValid())
   {
@@ -164,7 +166,8 @@ bool TextWindowButton::handleMouseClick(
     int y1 = yLocation(window);
     int y2 = y1 + m_location.at(4);
 
-    bool inBox = x >= x1 && x < x2 && y >= y1 && y < y2;
+    // POINT
+    bool inBox = pos.x() >= x1 && pos.x() < x2 && pos.y() >= y1 && pos.y() < y2;
 
     if(inBox)
     {
@@ -201,6 +204,7 @@ void TextWindowButton::render(RLMachine& machine,
     Surface::GrpRect rect = buttons->getPattern(basePattern + m_state);
     if(!(rect.x1 == 0 && rect.y1 == 0 && rect.x2 == 0 && rect.y2 == 0))
     {
+      // POINT
       int destX = xLocation(window);
       int destY = yLocation(window);
       int width = rect.x2 - rect.x1;

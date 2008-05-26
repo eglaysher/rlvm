@@ -41,6 +41,7 @@ class TextWindow;
 class TextPage;
 class TextKeyCursor;
 class Surface;
+class Point;
 
 // -----------------------------------------------------------------------
 
@@ -314,8 +315,8 @@ public:
   bool windowExbtnUse() const { return m_exbtnUse; }
 
   /// Update the mouse cursor.
-  virtual void setMousePosition(RLMachine& machine, int x, int y) = 0;
-  virtual bool handleMouseClick(RLMachine& machine, int x, int y,
+  virtual void setMousePosition(RLMachine& machine, const Point& pos) = 0;
+  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed) = 0;
   /// @}
 

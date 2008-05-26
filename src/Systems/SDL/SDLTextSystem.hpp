@@ -37,6 +37,7 @@
 class RLMachine;
 class TextWindow;
 class SDLTextWindow;
+class Point;
 
 class SDLTextSystem : public TextSystem
 {
@@ -67,8 +68,8 @@ public:
   virtual void setWindowAttrA(int i);
   virtual void setWindowAttrF(int i);
 
-  virtual void setMousePosition(RLMachine& machine, int x, int y);
-  virtual bool handleMouseClick(RLMachine& machine, int x, int y, 
+  virtual void setMousePosition(RLMachine& machine, const Point& pos);
+  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed);
 
   virtual boost::shared_ptr<Surface> renderText(

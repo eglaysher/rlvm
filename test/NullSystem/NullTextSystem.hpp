@@ -47,8 +47,8 @@ public:
   TextWindow& textWindow(RLMachine& machine, int textWindowNumber);
 
   // We can safely ignore mouse clicks...for now.
-  void setMousePosition(RLMachine& machine, int x, int y) { }
-  bool handleMouseClick(RLMachine& machine, int x, int y,
+  void setMousePosition(RLMachine& machine, const Point& pos) { }
+  bool handleMouseClick(RLMachine& machine, const Point& pos,
                         bool pressed) { return false; }
 
   boost::shared_ptr<Surface> renderText(

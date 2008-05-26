@@ -176,10 +176,11 @@ struct Sys_GetCursorPos_gc1
 				  IntReferenceIterator xit, IntReferenceIterator yit,
                   IntReferenceIterator button1It, IntReferenceIterator button2It) 
   {
-    int x, y, button1, button2;
-    machine.system().event().getCursorPos(x, y, button1, button2);
-    *xit = x;
-    *yit = y;
+    Point pos;
+    int button1, button2;
+    machine.system().event().getCursorPos(pos, button1, button2);
+    *xit = pos.x();
+    *yit = pos.y();
     *button1It = button1;
     *button2It = button2;
   }
@@ -192,10 +193,9 @@ struct Sys_GetCursorPos_gc2
 {
   void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit)
   {
-    int x, y;
-    machine.system().event().getCursorPos(x, y);
-    *xit = x;
-    *yit = y;
+    Point pos = machine.system().event().getCursorPos();
+    *xit = pos.x();
+    *yit = pos.y();
   }
 };
 

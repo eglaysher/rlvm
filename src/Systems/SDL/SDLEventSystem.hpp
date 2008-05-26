@@ -77,8 +77,8 @@ public:
   virtual bool shiftPressed() const { return m_shiftPressed; }
   virtual bool ctrlPressed() const  { return m_ctrlPressed;  }
 
-  virtual void getCursorPos(int& xPos, int& yPos);
-  virtual void getCursorPos(int& xPos, int& yPos, int& button1, int& button2);
+  virtual Point getCursorPos();
+  virtual void getCursorPos(Point& position, int& button1, int& button2);
 
   /** 
    * Resets the state of the mouse buttons.

@@ -110,11 +110,10 @@ bool Sel_LongOperation::operator()(RLMachine& machine)
 }
 
 // -------------------------------------------- [ EventHandler interface ]
-void Sel_LongOperation::mouseMotion(const Point& p)
+void Sel_LongOperation::mouseMotion(const Point& pos)
 {
   // Tell the text system about the move
-  // POINT
-  m_machine.system().text().setMousePosition(m_machine, p.x(), p.y());
+  m_machine.system().text().setMousePosition(m_machine, pos);
 }
 
 // -----------------------------------------------------------------------
@@ -128,16 +127,15 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   {
   case MOUSE_LEFT:
   {
-    int x, y;
-    es.getCursorPos(x, y);
-    m_machine.system().text().handleMouseClick(m_machine, x, y, pressed);
+    Point pos = es.getCursorPos();
+    m_machine.system().text().handleMouseClick(m_machine, pos, pressed);
     break;
+  }
   case MOUSE_RIGHT:
     cerr << "Doesn't handle syscom!" << endl;
     break;
   default:
 	break;
-  }
   }
 }
  

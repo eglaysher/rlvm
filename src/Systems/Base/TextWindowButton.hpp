@@ -34,6 +34,7 @@
 
 #include "libReallive/gameexe.h"
 
+class Point;
 class RLMachine;
 class TextWindow;
 class Surface;
@@ -58,10 +59,10 @@ public:
 
   /// Track the mouse position to see if we need to alter our state
   void setMousePosition(RLMachine& machine, TextWindow& window, 
-                        int x, int y);
+                        const Point& pos);
 
   bool handleMouseClick(RLMachine& machine, TextWindow& window, 
-                        int x, int y, bool pressed);
+                        const Point& pos, bool pressed);
 
   // 
   void render(RLMachine& machine, TextWindow& window,

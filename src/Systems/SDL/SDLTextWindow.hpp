@@ -76,8 +76,8 @@ public:
 
   void setCurrentText(RLMachine& machine, const std::string& tex);
 
-  virtual void setMousePosition(RLMachine& machine, int x, int y);
-  virtual bool handleMouseClick(RLMachine& machine, int x, int y, bool pressed);
+  virtual void setMousePosition(RLMachine& machine, const Point& pos);
+  virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
   virtual void render(RLMachine& machine);
 

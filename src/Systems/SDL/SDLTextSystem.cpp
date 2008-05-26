@@ -45,6 +45,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include "libReallive/gameexe.h"
 
@@ -179,18 +180,18 @@ void SDLTextSystem::setWindowAttrF(int i)
 
 // -----------------------------------------------------------------------
 
-void SDLTextSystem::setMousePosition(RLMachine& machine, int x, int y)
+void SDLTextSystem::setMousePosition(RLMachine& machine, const Point& pos)
 {
   for(WindowMap::iterator it = m_textWindow.begin(); 
       it != m_textWindow.end(); ++it)
   {
-    it->second->setMousePosition(machine, x, y);
+    it->second->setMousePosition(machine, pos);
   }
 }
 
 // -----------------------------------------------------------------------
 
-bool SDLTextSystem::handleMouseClick(RLMachine& machine, int x, int y, 
+bool SDLTextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
                                      bool pressed)
 {
   if(systemVisible())
@@ -198,7 +199,7 @@ bool SDLTextSystem::handleMouseClick(RLMachine& machine, int x, int y,
     for(WindowMap::iterator it = m_textWindow.begin(); 
         it != m_textWindow.end(); ++it)
     {
-      if(it->second->handleMouseClick(machine, x, y, pressed))
+      if(it->second->handleMouseClick(machine, pos, pressed))
         return true;
     }
 

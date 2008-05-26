@@ -34,6 +34,7 @@
 #include "Systems/Base/SelectionElement.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <iostream>
 
@@ -74,16 +75,17 @@ void SelectionElement::setSelectionCallback(
 
 bool SelectionElement::isHighlighted(int x, int y)
 {
+  // POINT (more intersection code)
   return x >= m_x && x <= m_x + m_normalImage->width() &&
     y >= m_y && y <= m_y + m_normalImage->height();
 }
 
 // -----------------------------------------------------------------------
 
-void SelectionElement::setMousePosition(RLMachine& machine, int x, int y)
+void SelectionElement::setMousePosition(RLMachine& machine, const Point& pos)
 {
   bool startValue = m_isHighlighted;
-  m_isHighlighted = isHighlighted(x, y);
+  m_isHighlighted = isHighlighted(pos.x(), pos.y());
 
   if(startValue != m_isHighlighted)
     machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -92,9 +94,9 @@ void SelectionElement::setMousePosition(RLMachine& machine, int x, int y)
 // -----------------------------------------------------------------------
 
 bool SelectionElement::handleMouseClick(
-  RLMachine& machine, int x, int y, bool pressed)
+  RLMachine& machine, const Point& pos, bool pressed)
 {
-  if(pressed == false && isHighlighted(x, y))
+  if(pressed == false && isHighlighted(pos.x(), pos.y()))
   {
     // Released within the button
     if(m_selectionCallback)

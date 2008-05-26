@@ -424,20 +424,20 @@ void TextWindow::setRGBAF(const vector<int>& attr)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setMousePosition(RLMachine& machine, int x, int y)
+void TextWindow::setMousePosition(RLMachine& machine, const Point& pos)
 {
   using namespace boost;
 
   for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
       ++it)
   {
-    it->second->setMousePosition(machine, *this, x, y);
+    it->second->setMousePosition(machine, *this, pos);
   }
 }
 
 // -----------------------------------------------------------------------
 
-bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y, 
+bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
                                   bool pressed)
 {
   using namespace boost;
@@ -447,7 +447,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, int x, int y,
     for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
         ++it)
     {
-      if(it->second->handleMouseClick(machine, *this, x, y, pressed))
+      if(it->second->handleMouseClick(machine, *this, pos, pressed))
         return true;
     }
   }

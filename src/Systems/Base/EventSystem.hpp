@@ -33,6 +33,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "Systems/Base/RLTimer.hpp"
+#include "Systems/Base/Rect.hpp"
 
 class RLMachine;
 
@@ -167,7 +168,7 @@ public:
    * 
    * @{
    */
-  virtual void getCursorPos(int& xPos, int& yPos) {}
+  virtual Point getCursorPos() { return Point(); }
 
   /** 
    * Gets the location of the mouse cursor and the button states.
@@ -177,7 +178,7 @@ public:
    * - 1 if being pressed
    * - 2 if pressed and released.
    */
-  virtual void getCursorPos(int& xPos, int& yPos, int& button1, int& button2) {}
+  virtual void getCursorPos(Point& position, int& button1, int& button2) {}
 
   /** 
    * Resets the state of the mouse buttons.
