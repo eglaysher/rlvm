@@ -458,7 +458,7 @@ public:
    * 
    * @{
    */
-  virtual void mouseMotion(int x, int y);
+  virtual void mouseMotion(const Point& newLocation);
   /// @}
 
 

@@ -97,13 +97,9 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 {
   // Handle this somehow.
-  int x = event.motion.x;
-  int y = event.motion.y;
+  m_mousePos = Point(event.motion.x, event.motion.y);
   for_each(listeners_begin(), listeners_end(),
-           bind(&MouseListener::mouseMotion, _1, x, y));
-
-  m_mouseXPos = event.motion.x;
-  m_mouseYPos = event.motion.y;
+           bind(&MouseListener::mouseMotion, _1, m_mousePos));
 }
 
 // -----------------------------------------------------------------------
@@ -132,7 +128,7 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
   : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false),
-    m_unaccessedItems(false), m_mouseXPos(0), m_mouseYPos(0),
+    m_unaccessedItems(false), m_mousePos(),
     m_button1State(0), m_button2State(0)
 {}
 
@@ -209,11 +205,9 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
     case SDL_MOUSEMOTION:
     {
       // Handle this somehow.
-      int x = event.motion.x;
-      int y = event.motion.y;
+      Point p = Point(event.motion.x, event.motion.y);
       for_each(handlers_begin(), handlers_end(),
-               bind(&EventHandler::mouseMotion, _1,
-                    x, y));
+               bind(&EventHandler::mouseMotion, _1, p));
       handleMouseMotion(event);
       break;
     }
@@ -303,8 +297,8 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
 
 void SDLEventSystem::getCursorPos(int& xPos, int& yPos)
 {
-  xPos = m_mouseXPos;
-  yPos = m_mouseYPos;
+  xPos = m_mousePos.x();
+  yPos = m_mousePos.y();
 }
 
 // -----------------------------------------------------------------------
@@ -312,8 +306,8 @@ void SDLEventSystem::getCursorPos(int& xPos, int& yPos)
 void SDLEventSystem::getCursorPos(int& xPos, int& yPos, int& button1, 
                                   int& button2)
 {
-  xPos = m_mouseXPos;
-  yPos = m_mouseYPos;
+  xPos = m_mousePos.x();
+  yPos = m_mousePos.y();
   button1 = m_button1State;
   button2 = m_button2State;
 

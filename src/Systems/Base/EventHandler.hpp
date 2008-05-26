@@ -29,6 +29,7 @@
 #define __EventHandler_hpp__
 
 class RLMachine;
+class Point;
 
 enum MouseButton
 {
@@ -307,7 +308,7 @@ enum KeyCode {
 class MouseListener
 {
 public:
-  virtual void mouseMotion(int x, int y) { }
+  virtual void mouseMotion(const Point& newLocation) { }
   virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed) {}
 };
 

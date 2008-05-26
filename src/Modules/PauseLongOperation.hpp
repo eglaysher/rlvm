@@ -62,7 +62,7 @@ public:
   ~PauseLongOperation();
 
   // ------------------------------------------ [ EventHandler interface ]
-  void mouseMotion(int x, int y);
+  void mouseMotion(const Point&);
   void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
   void keyStateChanged(KeyCode keyCode, bool pressed);
 

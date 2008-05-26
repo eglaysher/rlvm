@@ -29,6 +29,7 @@
 #define __SDLEventSystem_hpp__
 
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <SDL/SDL_events.h>
 
@@ -43,7 +44,7 @@ private:
 
   bool m_unaccessedItems;
 
-  int m_mouseXPos, m_mouseYPos;
+  Point m_mousePos;
 
   int m_button1State, m_button2State;
 

@@ -97,10 +97,11 @@ void PauseLongOperation::handleSyscomCall()
 }
 
 // -------------------------------------------- [ EventHandler interface ]
-void PauseLongOperation::mouseMotion(int x, int y)
+void PauseLongOperation::mouseMotion(const Point& p)
 {
   // Tell the text system about the move
-  machine.system().text().setMousePosition(machine, x, y);
+  // POINT
+  machine.system().text().setMousePosition(machine, p.x(), p.y());
 }
 
 // -----------------------------------------------------------------------

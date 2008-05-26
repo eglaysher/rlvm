@@ -101,7 +101,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
       m_mouseMoved(false)
   {}
 
-  void mouseMotion(int x, int y) 
+  void mouseMotion(const Point&)
   {
     m_mouseMoved = true;
   }

@@ -66,7 +66,7 @@ public:
   // ----------------------------------------------- [ NiceLongOperation ]
   virtual bool operator()(RLMachine& machine);
 
-  virtual void mouseMotion(int x, int y);
+  virtual void mouseMotion(const Point&);
   virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
 };
 

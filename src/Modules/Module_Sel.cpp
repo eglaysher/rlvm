@@ -110,10 +110,11 @@ bool Sel_LongOperation::operator()(RLMachine& machine)
 }
 
 // -------------------------------------------- [ EventHandler interface ]
-void Sel_LongOperation::mouseMotion(int x, int y)
+void Sel_LongOperation::mouseMotion(const Point& p)
 {
   // Tell the text system about the move
-  m_machine.system().text().setMousePosition(m_machine, x, y);
+  // POINT
+  m_machine.system().text().setMousePosition(m_machine, p.x(), p.y());
 }
 
 // -----------------------------------------------------------------------
