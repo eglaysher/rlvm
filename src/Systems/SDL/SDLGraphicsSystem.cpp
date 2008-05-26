@@ -158,23 +158,23 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
 
 void SDLGraphicsSystem::endFrame(RLMachine& machine)
 {
-  int hotspotX = cursorXpos();
-  int hotspotY = cursorYpos();
+  Point hotspot = cursorPos();
   int dx1 = -1;
   int dy1 = -1;
 
   boost::shared_ptr<MouseCursor> cursor = currentCursor(machine);
   if (cursor)
   {
-    cursor->getTopLeftForHotspotAt(hotspotX, hotspotY, dx1, dy1);
+    Point renderLoc = cursor->getTopLeftForHotspotAt(hotspot);
+    dx1 = renderLoc.x();
+    dy1 = renderLoc.y();
 
     // Copy the area behind the cursor to 
     glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
                         dx1, m_height - dy1 - 32, 32, 32);
 
-    //
-    cursor->renderHotspotAt(machine, hotspotX, hotspotY);
+    cursor->renderHotspotAt(machine, hotspot);
   }
 
   glFlush();

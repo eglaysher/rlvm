@@ -37,6 +37,7 @@
 #define __GraphicsSystem_hpp__
 
 #include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <map>
 #include <vector>
@@ -194,7 +195,7 @@ private:
   int m_cursor;
 
   /// Location of the cursor's hotspot
-  int m_cursorXpos, m_cursorYpos;
+  Point m_cursorPos;
 
   /// Current mouse cursor
   boost::shared_ptr<MouseCursor> m_mouseCursor;
@@ -205,8 +206,7 @@ private:
   MouseCursorCache m_cursorCache;
 
 protected:
-  int cursorXpos() const { return m_cursorXpos; }
-  int cursorYpos() const { return m_cursorYpos; }
+  const Point& cursorPos() const { return m_cursorPos; }
 
   boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
 

@@ -29,6 +29,7 @@
 #define __MouseCursor_hpp__
 
 #include <boost/shared_ptr.hpp>
+#include "Systems/Base/Rect.hpp"
 
 class Surface;
 class RLMachine;
@@ -46,15 +47,14 @@ public:
    * Renders the cursor to the screen, taking the hotspot offset into
    * account.
    */
-  void renderHotspotAt(RLMachine& machine, int x, int y);
+  void renderHotspotAt(RLMachine& machine, const Point& mousePt);
 
   /** 
    * Returns (renderX, renderY) which is the upper left corner of
    * where the cursor is to be rendered for the incoming mouse
    * location (mouseX, mouseY).
    */
-  void getTopLeftForHotspotAt(int mouseX, int mouseY, 
-                              int& renderX, int& renderY);
+  Point getTopLeftForHotspotAt(const Point& mouseLocation);
 
 private:
   /// Sets m_hotspot[XY] to the white pixel in the 
@@ -64,7 +64,7 @@ private:
   boost::shared_ptr<Surface> m_cursorSurface;
   
   /// The hotspot location.
-  int m_hotspotX, m_hotspotY;
+  Point m_hotspotLocation;
 };	// end of class MouseCursor
 
 

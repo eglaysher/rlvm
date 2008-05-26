@@ -202,8 +202,7 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
     m_graphicsObjectImpl(new GraphicsObjectImpl),
     m_useCustomMouseCursor(gameexe("MOUSE_CURSOR").exists()),
     m_showCurosr(true),
-    m_cursor(gameexe("MOUSE_CURSOR").to_int(0)),
-    m_cursorXpos(0), m_cursorYpos(0)
+    m_cursor(gameexe("MOUSE_CURSOR").to_int(0))
 {}
 
 // -----------------------------------------------------------------------
@@ -559,8 +558,7 @@ void GraphicsSystem::mouseMotion(int x, int y)
   if(m_useCustomMouseCursor && m_showCurosr)
     markScreenAsDirty(GUT_MOUSE_MOTION);
 
-  m_cursorXpos = x;
-  m_cursorYpos = y;
+  m_cursorPos = Point(x, y);
 }
 
 // -----------------------------------------------------------------------

@@ -60,23 +60,21 @@ MouseCursor::~MouseCursor() {}
 
 // -----------------------------------------------------------------------
 
-void MouseCursor::renderHotspotAt(RLMachine& machine, int x, int y) 
+void MouseCursor::renderHotspotAt(RLMachine& machine, 
+                                  const Point& mouseLocation)
 {
-  int renderX, renderY;
-  getTopLeftForHotspotAt(x, y, renderX, renderY);
+  Point render = getTopLeftForHotspotAt(mouseLocation);
 
   m_cursorSurface->renderToScreen(
     0, 0, CURSOR_SIZE, CURSOR_SIZE,
-    renderX, renderY, renderX + CURSOR_SIZE, renderY + CURSOR_SIZE);
+    render.x(), render.y(), render.x() + CURSOR_SIZE, render.y() + CURSOR_SIZE);
 }
 
 // -----------------------------------------------------------------------
 
-void MouseCursor::getTopLeftForHotspotAt(int mouseX, int mouseY, 
-                                         int& renderX, int& renderY)
+Point MouseCursor::getTopLeftForHotspotAt(const Point& mouseLocation)
 {
-  renderX = mouseX - m_hotspotX;
-  renderY = mouseY - m_hotspotY;
+  return mouseLocation - m_hotspotLocation;
 }
 
 // -----------------------------------------------------------------------
@@ -97,8 +95,8 @@ void MouseCursor::findHotspot()
 
       if(r == 255 && g == 255 && b == 255)
       {
-        m_hotspotX = x - HOTSPOTMASK_X_OFFSET;
-        m_hotspotY = y - HOTSPOTMASK_Y_OFFSET;
+        m_hotspotLocation = 
+          Point(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
         break;
       }
     }
