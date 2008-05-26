@@ -64,7 +64,7 @@ using libReallive::IntMemRef;
  * @see RLMachine::getIntValue
  */
 static void throwIllegalIndex(const IntMemRef& ref,
-							  const std::string& function)
+                              const std::string& function)
 {
   ostringstream ss;
   ss << "Invalid memory access " << ref << " in " << function;
@@ -109,7 +109,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value)
   int location = ref.location();
 
   if (index < 0 || index > NUMBER_OF_INT_LOCATIONS) {
-	throwIllegalIndex(ref, "RLMachine::setIntValue()");
+    throwIllegalIndex(ref, "RLMachine::setIntValue()");
   }
   if (type == 0) {
     // A[]..G[], Z[] を直に書く

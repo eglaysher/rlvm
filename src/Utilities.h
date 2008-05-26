@@ -75,8 +75,8 @@ extern const std::vector<std::string> SOUND_FILETYPES;
  * @return The full path of the file
  */
 boost::filesystem::path findFile(RLMachine& machine, 
-								 const std::string& fileName,
-								 const std::vector<std::string>& extensions = ALL_FILETYPES);
+                                 const std::string& fileName,
+                                 const std::vector<std::string>& extensions = ALL_FILETYPES);
 
 // -----------------------------------------------------------------------
 

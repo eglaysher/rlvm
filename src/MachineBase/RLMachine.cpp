@@ -155,22 +155,6 @@ void RLMachine::attachModule(RLModule* module)
 
 // -----------------------------------------------------------------------
 
-// void RLMachine::saveGlobalMemory()
-// {
-//   fs::path home = m_system.gameSaveDirectory() / "global.sav";
-//   fs::ofstream file(home);
-//   if(!file)
-//   {
-// 	ostringstream oss;
-// 	oss << "Could not open global memory file.";
-// 	throw rlvm::Exception(oss.str());
-//   }
-
-//   Serialization::saveGlobalMemoryTo(file, *this);
-// }
-
-// -----------------------------------------------------------------------
-
 int RLMachine::getIntValue(const libReallive::IntMemRef& ref)
 {
   return m_memory->getIntValue(ref);
@@ -430,7 +414,7 @@ void RLMachine::pushLongOperation(LongOperation* longOperation)
 void RLMachine::pushStackFrame(const StackFrame& frame)
 {
   if(callStack.size() && callStack.back().frameType == StackFrame::TYPE_LONGOP)
-	callStack.back().longOp->looseFocus();
+    callStack.back().longOp->looseFocus();
 
   callStack.push_back(frame);
 }
@@ -442,7 +426,7 @@ void RLMachine::popStackFrame()
   callStack.pop_back();  
 
   if(callStack.size() && callStack.back().frameType == StackFrame::TYPE_LONGOP)
-	callStack.back().longOp->gainFocus();
+    callStack.back().longOp->gainFocus();
 }
 
 // -----------------------------------------------------------------------

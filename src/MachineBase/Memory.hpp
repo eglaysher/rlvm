@@ -239,7 +239,7 @@ public:
   LocalMemory& local() { return m_local; }
   const LocalMemory& local() const { return m_local; }
   /// @}
-};	// end of class Memory
+};  // end of class Memory
 
 
 #endif

@@ -72,71 +72,71 @@ namespace libReallive {
 
 size_t next_token(const char* src)
 {
-	if (*src++ != '$') return 0;
-	if (*src++ == 0xff) return 6;
-	if (*src++ != '[') return 2;
-	return 4 + next_expr(src);
+  if (*src++ != '$') return 0;
+  if (*src++ == 0xff) return 6;
+  if (*src++ != '[') return 2;
+  return 4 + next_expr(src);
 }
 
 size_t next_term(const char* src)
 {
-	if (*src == '(') return 2 + next_expr(src + 1);
-	if (*src == '\\') return 2 + next_term(src + 2);
-	return next_token(src);
+  if (*src == '(') return 2 + next_expr(src + 1);
+  if (*src == '\\') return 2 + next_term(src + 2);
+  return next_token(src);
 }
 
 size_t next_arith(const char* src)
 {
-	size_t lhs = next_term(src);
-	return (src[lhs] == '\\') ? lhs + 2 + next_arith(src + lhs + 2) : lhs;
+  size_t lhs = next_term(src);
+  return (src[lhs] == '\\') ? lhs + 2 + next_arith(src + lhs + 2) : lhs;
 }
 
 size_t next_cond(const char* src)
 {
-	size_t lhs = next_arith(src);
-	return (src[lhs] == '\\' && src[lhs + 1] >= 0x28 && src[lhs + 1] <= 0x2d) ?
-          lhs + 2 + next_arith(src + lhs + 2) : lhs;
+  size_t lhs = next_arith(src);
+  return (src[lhs] == '\\' && src[lhs + 1] >= 0x28 && src[lhs + 1] <= 0x2d) ?
+    lhs + 2 + next_arith(src + lhs + 2) : lhs;
 }
 
 size_t next_and(const char* src)
 {
-	size_t lhs = next_cond(src);
-	return (src[lhs] == '\\' && src[lhs + 1] == '<') ? 
-          lhs + 2 + next_and(src + lhs + 2) : lhs;
+  size_t lhs = next_cond(src);
+  return (src[lhs] == '\\' && src[lhs + 1] == '<') ? 
+    lhs + 2 + next_and(src + lhs + 2) : lhs;
 }
 
 size_t next_expr(const char* src)
 {
-	size_t lhs = next_and(src);
-	return (src[lhs] == '\\' && src[lhs + 1] == '=') ?
-          lhs + 2 + next_expr(src + lhs + 2) : lhs;
+  size_t lhs = next_and(src);
+  return (src[lhs] == '\\' && src[lhs + 1] == '=') ?
+    lhs + 2 + next_expr(src + lhs + 2) : lhs;
 }
 
 size_t next_string(const char* src)
 {
-	bool quoted = false;
-	const char* end = src;
-	while (true) {
-		if (quoted) {
-			quoted = *end != '"';
-		}
-		else {
-			quoted = *end == '"';
-	    	if (strcmp(end, "###PRINT(") == 0) {
-	    		end += 9;
-	    		end += 1 + next_expr(end);
-	    		continue;
-	    	}
-			if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)
-			   || (*end >= 'A'  && *end <= 'Z')  || (*end >= '0'  && *end <= '9')
-			   || *end == '?' || *end == '_' || *end == '"')) break;
-		}
-		if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)) 
-			end += 2;
-		else
-			++end;
-	}
-	return end - src;
+  bool quoted = false;
+  const char* end = src;
+  while (true) {
+    if (quoted) {
+      quoted = *end != '"';
+    }
+    else {
+      quoted = *end == '"';
+      if (strcmp(end, "###PRINT(") == 0) {
+        end += 9;
+        end += 1 + next_expr(end);
+        continue;
+      }
+      if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)
+            || (*end >= 'A'  && *end <= 'Z')  || (*end >= '0'  && *end <= '9')
+            || *end == '?' || *end == '_' || *end == '"')) break;
+    }
+    if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)) 
+      end += 2;
+    else
+      ++end;
+  }
+  return end - src;
 }
 
 /**
@@ -147,29 +147,29 @@ size_t next_string(const char* src)
  */
 size_t next_data(const char* src)
 {
-	if (*src == ',')
-		return 1 + next_data(src + 1);
-	if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
-        || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
-	    || *src == '?' || *src == '_' || *src == '"' 
-        || strcmp(src, "###PRINT(") == 0)
-	    return next_string(src);
-	if (*src == 'a' || *src == '(') {
-		const char* end = src;
-		if (*end++ == 'a') {
-			++end;
-			if (*end != '(') {
-              end += next_data(end);
-              return end - src;
-            } else end++;
-		}
-		while (*end != ')') end += next_data(end);
-        end++;
-        if(*end == '\\')
-          end += next_expr(end);
-		return end - src;
-	}
-	else return next_expr(src);
+  if (*src == ',')
+    return 1 + next_data(src + 1);
+  if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
+      || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
+      || *src == '?' || *src == '_' || *src == '"' 
+      || strcmp(src, "###PRINT(") == 0)
+    return next_string(src);
+  if (*src == 'a' || *src == '(') {
+    const char* end = src;
+    if (*end++ == 'a') {
+      ++end;
+      if (*end != '(') {
+        end += next_data(end);
+        return end - src;
+      } else end++;
+    }
+    while (*end != ')') end += next_data(end);
+    end++;
+    if(*end == '\\')
+      end += next_expr(end);
+    return end - src;
+  }
+  else return next_expr(src);
 }
 
 //@}
@@ -409,11 +409,10 @@ ExpressionPiece* get_data(const char*& src)
             || (*src >= 0xe0 && *src <= 0xef)
             || (*src >= 'A'  && *src <= 'Z')
             || (*src >= '0'  && *src <= '9')
-	    || *src == '?' || *src == '_' || *src == '"' 
+            || *src == '?' || *src == '_' || *src == '"' 
             || strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
   } else if(*src == 'a') {
-// || *src == '(') {
     // @todo Cleanup below.
     const char* end = src;
     auto_ptr<ComplexExpressionPiece> cep;
@@ -622,7 +621,7 @@ ExpressionValueType MemoryReference::expressionValueType() const {
 
 void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) { 
   return machine.setIntValue(IntMemRef(type, location->integerValue(machine)),
-							 rvalue); 
+                             rvalue); 
 }
 int MemoryReference::integerValue(RLMachine& machine) const {
   return machine.getIntValue(IntMemRef(type, location->integerValue(machine))); 

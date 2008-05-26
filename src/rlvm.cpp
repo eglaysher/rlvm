@@ -378,10 +378,7 @@ int main(int argc, char* argv[])
       rlmachine.executeNextInstruction();
     }
 
-	Serialization::saveGlobalMemory(rlmachine);
-
-//    cerr << "We ended with " << sdlSystem.graphics().foregroundAllocated() 
-//         << " allocated fg objects!" << endl;
+    Serialization::saveGlobalMemory(rlmachine);
   }
   catch (rlvm::Exception& e) {
     cerr << "Fatal RLVM error: " << e.what() << endl;

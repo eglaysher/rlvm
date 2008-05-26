@@ -4,14 +4,14 @@
 //Performs f() on any element elem in [first, last) where pred(elem) is true
 template<typename InputIterator, typename Predicate, typename UnaryFunction>
 UnaryFunction for_each_if(InputIterator first, InputIterator last, 
-						  Predicate pred, UnaryFunction f)
+                          Predicate pred, UnaryFunction f)
 {
   for(;first != last; ++first)
   {
-	if (pred(*first))
-	{
-	  f(*first);
-	}
+    if (pred(*first))
+    {
+      f(*first);
+    }
   }
   return f;
 }
@@ -20,15 +20,15 @@ UnaryFunction for_each_if(InputIterator first, InputIterator last,
 
 template <typename InputIterator, typename OutputIterator, typename Predicate>
 OutputIterator copy_if(InputIterator first, InputIterator last, 
-					   OutputIterator dest, Predicate p)
+                       OutputIterator dest, Predicate p)
 {
   for (; first != last; ++first)
   {
-	if (p(*first))
-	{
-	  *dest = *first;
-	  ++dest;
-	}
+    if (p(*first))
+    {
+      *dest = *first;
+      ++dest;
+    }
   }
   return dest;
 }

@@ -190,8 +190,8 @@ const std::vector<std::string> SOUND_FILETYPES =
  *       to use the \#FOLDNAME table in the Gameexe.ini file.
  */
 boost::filesystem::path findFile(RLMachine& machine, 
-								 const std::string& fileName,
-							     const vector<string>& extensions)
+                                 const std::string& fileName,
+                                 const vector<string>& extensions)
 {
   using namespace boost;
 
@@ -207,9 +207,9 @@ boost::filesystem::path findFile(RLMachine& machine,
     for(vector<string>::const_iterator ext = extensions.begin();
         ext != extensions.end(); ++ext)
     {
-	  string fileWithExt = newName + "." + *ext;
-	  fs::path path = *it / fileWithExt;
-	  fs::path correctFile = correctPathCase(path);
+      string fileWithExt = newName + "." + *ext;
+      fs::path path = *it / fileWithExt;
+      fs::path correctFile = correctPathCase(path);
       if(!correctFile.empty())
       {
         return correctFile;
