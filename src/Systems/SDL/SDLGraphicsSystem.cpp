@@ -52,6 +52,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/MouseCursor.hpp"
 
 #include "libReallive/gameexe.h"
 #include "file.h"
@@ -157,13 +158,55 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
 
 void SDLGraphicsSystem::endFrame(RLMachine& machine)
 {
-  renderCursor(machine);
+  int hotspotX = cursorXpos();
+  int hotspotY = cursorYpos();
+  int dx1 = -1;
+  int dy1 = -1;
+
+  boost::shared_ptr<MouseCursor> cursor = currentCursor(machine);
+  if (cursor)
+  {
+    cursor->getTopLeftForHotspotAt(hotspotX, hotspotY, dx1, dy1);
+
+    // Copy the area behind the cursor to 
+    glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+                        dx1, m_height - dy1 - 32, 32, 32);
+
+    //
+    cursor->renderHotspotAt(machine, hotspotX, hotspotY);
+  }
 
   glFlush();
   
   // Swap the buffers
   SDL_GL_SwapBuffers();
   ShowGLErrors();
+
+  if (cursor)
+  {
+    // Now that the double buffer has been flipped, render the texture
+    // that contains what's 
+
+    glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
+    glBegin(GL_QUADS);
+    {
+      int dx2 = dx1 + 32;
+      int dy2 = dy1 + 32;
+
+      glColor4ub(255, 255, 255, 255);
+      glTexCoord2f(0, 1);
+      glVertex2i(dx1, dy1);
+      glTexCoord2f(1, 1);
+      glVertex2i(dx2, dy1);
+      glTexCoord2f(1, 0);
+      glVertex2i(dx2, dy2);        
+      glTexCoord2f(0, 0);
+      glVertex2i(dx1, dy2);
+    }
+    glEnd();
+
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -286,6 +329,16 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   m_displayContexts[0]->allocate(m_width, m_height, this);
   m_displayContexts[1]->allocate(m_width, m_height);
 
+  // Create a small 32x32 texture for storing what's behind the mouse
+  // cursor.
+  glGenTextures(1, &m_behindCursorTexture);
+  glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+               32, 32, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  ShowGLErrors();
+
   setWindowTitle();
 
   // When debug is set, display trace data in the titlebar
@@ -293,6 +346,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   {
     m_displayDataInTitlebar = true;
   }
+
+  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
 }
 
 // -----------------------------------------------------------------------
@@ -619,14 +674,6 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(int w, int h)
 {
   return shared_ptr<Surface>(new SDLSurface(w, h));
-}
-
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::renderCursor(RLMachine& machine)
-{
-  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
-  GraphicsSystem::renderCursor(machine);
 }
 
 // -----------------------------------------------------------------------

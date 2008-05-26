@@ -48,6 +48,14 @@ public:
    */
   void renderHotspotAt(RLMachine& machine, int x, int y);
 
+  /** 
+   * Returns (renderX, renderY) which is the upper left corner of
+   * where the cursor is to be rendered for the incoming mouse
+   * location (mouseX, mouseY).
+   */
+  void getTopLeftForHotspotAt(int mouseX, int mouseY, 
+                              int& renderX, int& renderY);
+
 private:
   /// Sets m_hotspot[XY] to the white pixel in the 
   void findHotspot();

@@ -44,7 +44,6 @@
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
-#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/MouseCursor.hpp"
 #include "libReallive/gameexe.h"
 
@@ -203,7 +202,8 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
     m_graphicsObjectImpl(new GraphicsObjectImpl),
     m_useCustomMouseCursor(gameexe("MOUSE_CURSOR").exists()),
     m_showCurosr(true),
-    m_cursor(gameexe("MOUSE_CURSOR").to_int(0))
+    m_cursor(gameexe("MOUSE_CURSOR").to_int(0)),
+    m_cursorXpos(0), m_cursorYpos(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -528,8 +528,11 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::renderCursor(RLMachine& machine)
+boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
 {
+  if (!m_useCustomMouseCursor || !m_showCurosr)
+    return boost::shared_ptr<MouseCursor>();
+
   if(m_useCustomMouseCursor && !m_mouseCursor)
   {
     MouseCursorCache::iterator it = m_cursorCache.find(m_cursor);
@@ -546,12 +549,7 @@ void GraphicsSystem::renderCursor(RLMachine& machine)
     }
   }
 
-  if(m_mouseCursor && m_showCurosr) 
-  {
-    int mouseX, mouseY;
-    machine.system().event().getCursorPos(mouseX, mouseY);    
-    m_mouseCursor->renderHotspotAt(machine, mouseX, mouseY);
-  }
+  return m_mouseCursor;
 }
 
 // -----------------------------------------------------------------------
@@ -560,6 +558,9 @@ void GraphicsSystem::mouseMotion(int x, int y)
 {
   if(m_useCustomMouseCursor && m_showCurosr)
     markScreenAsDirty(GUT_MOUSE_MOTION);
+
+  m_cursorXpos = x;
+  m_cursorYpos = y;
 }
 
 // -----------------------------------------------------------------------

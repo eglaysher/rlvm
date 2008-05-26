@@ -62,12 +62,21 @@ MouseCursor::~MouseCursor() {}
 
 void MouseCursor::renderHotspotAt(RLMachine& machine, int x, int y) 
 {
-  int baseX = x - m_hotspotX;
-  int baseY = y - m_hotspotY;
+  int renderX, renderY;
+  getTopLeftForHotspotAt(x, y, renderX, renderY);
 
   m_cursorSurface->renderToScreen(
     0, 0, CURSOR_SIZE, CURSOR_SIZE,
-    baseX, baseY, baseX + CURSOR_SIZE, baseY + CURSOR_SIZE);
+    renderX, renderY, renderX + CURSOR_SIZE, renderY + CURSOR_SIZE);
+}
+
+// -----------------------------------------------------------------------
+
+void MouseCursor::getTopLeftForHotspotAt(int mouseX, int mouseY, 
+                                         int& renderX, int& renderY)
+{
+  renderX = mouseX - m_hotspotX;
+  renderY = mouseY - m_hotspotY;
 }
 
 // -----------------------------------------------------------------------

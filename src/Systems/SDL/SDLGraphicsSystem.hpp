@@ -86,6 +86,12 @@ private:
   /// Window icon
   SDL_Surface* m_icon;
 
+  /**
+   * Texture used to temporarily store what's behind the cursor while
+   * we render this frame.
+   */
+  unsigned int m_behindCursorTexture;
+
   /** 
    * LRU cache filled with the last fifteen accessed images. 
    * 
@@ -148,8 +154,6 @@ public:
   virtual void markScreenAsDirty(GraphicsUpdateType type);
 
   virtual void endFrame(RLMachine& machine);
-
-  virtual void renderCursor(RLMachine& machine);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);

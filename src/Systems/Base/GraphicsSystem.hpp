@@ -111,6 +111,7 @@ enum GraphicsUpdateType {
  * and then copy it onto DC0 with some sort of fancy transition
  * effect.)
  */
+
 class GraphicsSystem : public MouseListener
 {
 public:
@@ -192,6 +193,9 @@ private:
    */
   int m_cursor;
 
+  /// Location of the cursor's hotspot
+  int m_cursorXpos, m_cursorYpos;
+
   /// Current mouse cursor
   boost::shared_ptr<MouseCursor> m_mouseCursor;
 
@@ -199,6 +203,12 @@ private:
   /// build:
   typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
   MouseCursorCache m_cursorCache;
+
+protected:
+  int cursorXpos() const { return m_cursorXpos; }
+  int cursorYpos() const { return m_cursorYpos; }
+
+  boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
 
 public:
   GraphicsSystem(Gameexe& gameexe);
@@ -229,6 +239,8 @@ public:
   int cursor() const { return m_cursor; }
 
   void setShowCursor(const int in) { m_showCurosr = in; }
+
+  void cursorRenerLocation(int& renderX, int& renderY);
   /// @}
 
   /**
@@ -422,8 +434,6 @@ public:
    * @param machine RLMachine context.
    */
   void renderObjects(RLMachine& machine);
-
-  virtual void renderCursor(RLMachine& machine);
 
   GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
                                      const std::string& filename);
