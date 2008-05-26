@@ -98,17 +98,25 @@ private:
 class Rect
 {
 public: 
-  Rect();
-  Rect(const Point& point1, const Point& point2);
-  Rect(const Point& point, const Size& size);
-  ~Rect();
+  Rect() {}
+//  Rect(const Point& point1, const Point& point2);
+  Rect(const Point& origin, const Size& size) : origin_(origin), size_(size) {}
 
   int x() const { return origin_.x(); }
   int y() const { return origin_.y(); }
+  const Point& origin() { return origin_; }
+
+  int x2() const { return origin_.x() + size_.width(); }
+  int y2() const { return origin_.y() + size_.height(); }
 
   int width() const { return size_.width(); }
   int height() const { return size_.height(); }
   const Size& size() const { return size_; }
+
+  /**
+   * Whether loc is inside this Rect.
+   */
+  bool contains(const Point& loc);
 
 private:
   Point origin_;

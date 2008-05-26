@@ -90,27 +90,15 @@ TextWindowButton::~TextWindowButton()
 
 // -----------------------------------------------------------------------
 
-int TextWindowButton::xLocation(TextWindow& window)
+Rect TextWindowButton::location(TextWindow& window)
 {
   int type = m_location.at(0);
   switch(type)
   {
   case 0:
-    return window.boxX1() + m_location.at(1);
-  default:
-    throw SystemError("Unsupported coordinate system"); 
-  }
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindowButton::yLocation(TextWindow& window)
-{
-  int type = m_location.at(0);
-  switch(type)
-  {
-  case 0:
-    return window.boxY1() + m_location.at(2);
+    return Rect(Point(window.boxX1() + m_location.at(1),
+                      window.boxY1() + m_location.at(2)),
+                Size(m_location.at(3), m_location.at(4)));
   default:
     throw SystemError("Unsupported coordinate system"); 
   }
@@ -133,14 +121,7 @@ void TextWindowButton::setMousePosition(
   if(isValid())
   {
     int origState = m_state;
-    
-    int x1 = xLocation(window);
-    int x2 = x1 + m_location.at(3);
-    int y1 = yLocation(window);
-    int y2 = y1 + m_location.at(4);
-
-    // POINT (make intersection code in Rect and share w/ handleMouseClick)
-    bool inBox = pos.x() >= x1 && pos.x() < x2 && pos.y() >= y1 && pos.y() < y2;
+    bool inBox = location(window).contains(pos);
 
     if(inBox && m_state == BUTTONSTATE_NORMAL)
       m_state = BUTTONSTATE_HIGHLIGHTED;
@@ -161,13 +142,7 @@ bool TextWindowButton::handleMouseClick(
 {
   if(isValid())
   {
-    int x1 = xLocation(window);
-    int x2 = x1 + m_location.at(3);
-    int y1 = yLocation(window);
-    int y2 = y1 + m_location.at(4);
-
-    // POINT
-    bool inBox = pos.x() >= x1 && pos.x() < x2 && pos.y() >= y1 && pos.y() < y2;
+    bool inBox = location(window).contains(pos);
 
     if(inBox)
     {
@@ -205,8 +180,9 @@ void TextWindowButton::render(RLMachine& machine,
     if(!(rect.x1 == 0 && rect.y1 == 0 && rect.x2 == 0 && rect.y2 == 0))
     {
       // POINT
-      int destX = xLocation(window);
-      int destY = yLocation(window);
+      Point dest = location(window).origin();
+      int destX = dest.x();
+      int destY = dest.y();
       int width = rect.x2 - rect.x1;
       int height = rect.y2 - rect.y1;
 

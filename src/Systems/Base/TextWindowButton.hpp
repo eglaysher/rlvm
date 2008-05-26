@@ -34,6 +34,7 @@
 
 #include "libReallive/gameexe.h"
 
+class Rect;
 class Point;
 class RLMachine;
 class TextWindow;
@@ -51,8 +52,7 @@ public:
   virtual ~TextWindowButton();
 
   /// Returns the absolute screen coordinate of this button.
-  int xLocation(TextWindow& window);
-  int yLocation(TextWindow& window);
+  Rect location(TextWindow& window);
 
   /// Checks to see if this is a valid, used button
   bool isValid() const;
