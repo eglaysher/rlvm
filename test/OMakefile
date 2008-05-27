@@ -40,6 +40,8 @@ TEST_FILES[] =
   NullSystem/NullTextSystem
   NullSystem/NullTextWindow
   NullSystem/NullGraphicsSystem
+  NullSystem/NullSurface
+  NullSystem/MockLog
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
 rlvmTest$(EXE): ../src/librlvm$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN

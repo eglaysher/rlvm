@@ -32,30 +32,80 @@
 // -----------------------------------------------------------------------
 
 NullGraphicsSystem::NullGraphicsSystem(Gameexe& gexe)
-  : GraphicsSystem(gexe)
+  : GraphicsSystem(gexe), graphics_system_log_("NullGraphicsSystem")
 {
 
 }
 
 // -----------------------------------------------------------------------
 
+void NullGraphicsSystem::allocateDC(int dc, int width, int height) { 
+  graphics_system_log_.recordFunction("allocateDC", dc, width, height);
+}
+
+// -----------------------------------------------------------------------
+
+void NullGraphicsSystem::freeDC(int dc) { 
+  graphics_system_log_.recordFunction("freeDC", dc);
+}
+
+// -----------------------------------------------------------------------
+
+void NullGraphicsSystem::promoteObjects() { 
+  graphics_system_log_.recordFunction("promoteObjects");
+}
+
+// -----------------------------------------------------------------------
+
+void NullGraphicsSystem::clearAndPromoteObjects() { 
+  graphics_system_log_.recordFunction("clearAndPromoteObjects");
+}
+
+// -----------------------------------------------------------------------
+
 GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber) 
 { 
-  static GraphicsObject x; return x;
+  static GraphicsObject x; 
+  graphics_system_log_.recordFunction("getObject", layer, objNumber);
+  return x;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
   const boost::filesystem::path& filename)
-{ return boost::shared_ptr<Surface>(); }
+{ 
+  graphics_system_log_.recordFunction("loadSurfaceFromFile", filename);
+  
+  // Make this a real surface so we can track what's done with it
+  return boost::shared_ptr<Surface>();
+}
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc) 
-{ return boost::shared_ptr<Surface>(); }
+{ 
+  graphics_system_log_.recordFunction("getDC", dc);
+  return boost::shared_ptr<Surface>(); 
+}
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(int w, int h)
-{ return boost::shared_ptr<Surface>(); }
+{
+  graphics_system_log_.recordFunction("getDC", w, h);
+  return boost::shared_ptr<Surface>(); 
+}
+
+// -----------------------------------------------------------------------
+
+void NullGraphicsSystem::blitSurfaceToDC(
+  Surface& sourceObj, int targetDC, 
+  int srcX, int srcY, int srcWidth, int srcHeight,
+  int destX, int destY, int destWidth, int destHeight,
+  int alpha) {
+  graphics_system_log_.recordFunction(
+    "blitSurfaceToDC", targetDC, srcX, srcY, srcWidth, srcHeight, 
+    destX, destY, destWidth, destHeight, alpha);
+  // TODO
+}

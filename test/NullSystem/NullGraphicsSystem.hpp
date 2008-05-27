@@ -31,21 +31,9 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
+#include "NullSystem/MockLog.hpp"
+
 #include <boost/shared_ptr.hpp>
-
-class NullSurface : public Surface
-{
-  virtual int width() const { return 0; }
-  virtual int height() const { return 0; }
-
-  virtual void fill(int r, int g, int b, int alpha) { }
-  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
-                    int width, int height) { }
-
-  virtual Surface* clone() const { return 0; }
-};
-
-// -----------------------------------------------------------------------
 
 class NullGraphicsSystem : public GraphicsSystem
 {
@@ -56,14 +44,14 @@ public:
 
   virtual void executeGraphicsSystem(RLMachine&) { }
 
-  virtual int screenWidth() const { return 0; }
-  virtual int screenHeight() const { return 0; }
+  virtual int screenWidth() const { return 640; }
+  virtual int screenHeight() const { return 480; }
 
-  virtual void allocateDC(int dc, int width, int height) { }
-  virtual void freeDC(int dc) { }
+  virtual void allocateDC(int dc, int width, int height);
+  virtual void freeDC(int dc);
 
-  virtual void promoteObjects() { }
-  virtual void clearAndPromoteObjects() { }
+  virtual void promoteObjects();
+  virtual void clearAndPromoteObjects();
 
   virtual GraphicsObject& getObject(int layer, int objNumber);
 
@@ -75,7 +63,11 @@ public:
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,
                                int destX, int destY, int destWidth, int destHeight,
-                               int alpha = 255) { }
+                               int alpha = 255);
+
+private:
+  /// Record all method calls here
+  MockLog graphics_system_log_;
 };
 
 #endif
