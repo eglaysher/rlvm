@@ -63,23 +63,23 @@ namespace tut
 
 const string FILE_NAME = "doesntmatter";
 
-struct GraphicsSystem_data
+struct GraphicsObject_data
 {
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
   NullSystem system;
   RLMachine rlmachine;
 
-  GraphicsSystem_data()
+  GraphicsObject_data()
 	: arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
 	  system(),
 	  rlmachine(system, arc)
   {}
 };
 
-typedef test_group<GraphicsSystem_data> tf;
+typedef test_group<GraphicsObject_data> tf;
 typedef tf::object object;
-tf GraphicsSystem_data("GraphicsSystem");
+tf GraphicsObject_data("GraphicsObject");
 
 // -----------------------------------------------------------------------
 
