@@ -37,21 +37,12 @@ class NullTextWindow;
 
 class NullTextSystem : public TextSystem
 {
-private:
-  /// Window dispatch
-  typedef boost::ptr_map<int, NullTextWindow> WindowMap;
-  WindowMap m_textWindow;
-
 public:
   NullTextSystem(Gameexe& gexe);
   ~NullTextSystem();
 
   void executeTextSystem(RLMachine& machine) { }
-
   void render(RLMachine& machine) { }
-  void hideTextWindow(int winNumber) { }
-  void hideAllTextWindows() { }
-  void clearAllTextWindows() { }
 
   TextWindow& textWindow(RLMachine& machine, int textWindowNumber);
 

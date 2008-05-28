@@ -16,7 +16,11 @@
 class NullSurface : public Surface
 {
 public:
+  NullSurface(const std::string& surface_name);
   NullSurface(const std::string& surface_name, int width, int height);
+
+  void allocate(int width, int height);
+  void deallocate();
 
   virtual int width() const;
   virtual int height() const;
@@ -67,6 +71,9 @@ public:
 private:
   /// Unique name of this surface.
   std::string surface_name_;
+
+  /// Whether we are allocated.
+  bool allocated_;
 
   /// Supposed size of this surface.
   int width_, height_;

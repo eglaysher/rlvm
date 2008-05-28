@@ -35,6 +35,12 @@
 
 #include <boost/shared_ptr.hpp>
 
+// -----------------------------------------------------------------------
+
+class NullSurface;
+
+// -----------------------------------------------------------------------
+
 class NullGraphicsSystem : public GraphicsSystem
 {
 public:
@@ -68,6 +74,9 @@ public:
 private:
   /// Record all method calls here
   MockLog graphics_system_log_;
+
+  /// Map between device contexts number and their surface.
+  boost::shared_ptr<NullSurface> m_displayContexts[16];
 };
 
 #endif

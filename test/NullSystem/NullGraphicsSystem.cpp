@@ -27,26 +27,72 @@
 
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
-#include "NullGraphicsSystem.hpp"
+
+#include "NullSystem/NullGraphicsSystem.hpp"
+#include "NullSystem/NullSurface.hpp"
+
+#include "Utilities.h"
+
+#include <sstream>
+
+using namespace std;
 
 // -----------------------------------------------------------------------
 
 NullGraphicsSystem::NullGraphicsSystem(Gameexe& gexe)
   : GraphicsSystem(gexe), graphics_system_log_("NullGraphicsSystem")
 {
+  for (int i = 0; i < 16; ++i) {
+    ostringstream oss;
+    oss << "DC #" << i;
+    m_displayContexts[i].reset(new NullSurface(oss.str()));
+  }
 
+  m_displayContexts[0]->allocate(screenWidth(), screenHeight());
+  m_displayContexts[1]->allocate(screenWidth(), screenHeight());
 }
 
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::allocateDC(int dc, int width, int height) { 
   graphics_system_log_.recordFunction("allocateDC", dc, width, height);
+  
+  if(dc >= 16)
+    throw rlvm::Exception("Invalid DC number in NullGrpahicsSystem::allocateDC");
+
+  // We can't reallocate the screen!
+  if(dc == 0)
+    throw rlvm::Exception("Attempting to reallocate DC 0!");
+
+  // DC 1 is a special case and must always be at least the size of
+  // the screen.
+  if(dc == 1)
+  {
+    boost::shared_ptr<NullSurface> dc0 = m_displayContexts[0];
+    if(width < dc0->width())
+      width = dc0->width();
+    if(height < dc0->height())
+      height = dc0->height();
+  }
+
+  // Allocate a new obj.
+  m_displayContexts[dc]->allocate(width, height); 
 }
 
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::freeDC(int dc) { 
   graphics_system_log_.recordFunction("freeDC", dc);
+
+  if(dc == 0)
+    throw rlvm::Exception("Attempt to deallocate DC[0]");
+  else if(dc == 1)
+  {
+    // DC[1] never gets freed; it only gets blanked
+    m_displayContexts[1]->fill(0, 0, 0, 255);
+  }
+  else
+    m_displayContexts[dc]->deallocate();
 }
 
 // -----------------------------------------------------------------------
@@ -78,7 +124,8 @@ boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
   graphics_system_log_.recordFunction("loadSurfaceFromFile", filename);
   
   // Make this a real surface so we can track what's done with it
-  return boost::shared_ptr<Surface>();
+  return boost::shared_ptr<Surface>(
+    new NullSurface(filename.external_file_string(), 50, 50));
 }
 
 // -----------------------------------------------------------------------
@@ -86,7 +133,7 @@ boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
 boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc) 
 { 
   graphics_system_log_.recordFunction("getDC", dc);
-  return boost::shared_ptr<Surface>(); 
+  return m_displayContexts[dc];
 }
 
 // -----------------------------------------------------------------------
@@ -94,7 +141,11 @@ boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
 boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(int w, int h)
 {
   graphics_system_log_.recordFunction("getDC", w, h);
-  return boost::shared_ptr<Surface>(); 
+  static int surfaceNum = 0;
+  ostringstream oss;
+  oss << "Built Surface #" << surfaceNum++;
+
+  return boost::shared_ptr<Surface>(new NullSurface(oss.str(), w, h));
 }
 
 // -----------------------------------------------------------------------

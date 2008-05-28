@@ -83,10 +83,6 @@ protected:
    */
   /// Whether Auto mode is enabled
   bool m_autoMode;
-
-
-
-
   /// @}
 
   /// Whether holding down the control key will skip text.
@@ -223,7 +219,7 @@ public:
    */
 
   /**
-   * Cleares the screen, moves back one page and renders it.
+   * Clears the screen, moves back one page and renders it.
    */
   void backPage(RLMachine& machine);
   void forwardPage(RLMachine& machine);

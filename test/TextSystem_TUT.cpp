@@ -53,14 +53,35 @@ struct TextSystem_data
   RLMachine rlmachine;
 
   TextSystem_data()
-	: arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-	  system(locateTestCase("Gameexe_data/Gameexe.ini")),
-	  rlmachine(system, arc)
-  {}
+    : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
+      system(locateTestCase("Gameexe_data/Gameexe.ini")),
+      rlmachine(system, arc)
+  {
+    system.text().setActiveWindow(0);
+  }
 
   NullTextWindow& getTextWindow(int twn)
   {
     return dynamic_cast<NullTextWindow&>(system.text().textWindow(rlmachine, twn));
+  }
+
+  void writeString(const std::string& text, bool nowait)
+  {
+    auto_ptr<TextoutLongOperation> tolo(
+      new TextoutLongOperation(rlmachine, text));
+
+    if(nowait)
+      tolo->setNoWait();
+
+    while(!(*tolo)(rlmachine));
+  }
+
+  void snapshotAndClear() 
+  {
+    TextSystem& text = rlmachine.system().text();
+    text.snapshot(rlmachine);
+    text.textWindow(rlmachine, 0).clearWin();
+    text.newPageOnWindow(rlmachine, 0);
   }
 };
 
@@ -76,9 +97,7 @@ template<>
 template<>
 void object::test<1>()
 {
-  auto_ptr<TextoutLongOperation> tolo(
-    new TextoutLongOperation(rlmachine, "A text string."));
-  while(!(*tolo)(rlmachine));
+  writeString("A text string.", false);
 
   // Make sure all the data was printed correctly
   ensure_equals("Data was printed correctly!",
@@ -95,10 +114,7 @@ template<>
 template<>
 void object::test<2>()
 {
-  auto_ptr<TextoutLongOperation> tolo(
-    new TextoutLongOperation(rlmachine, "A text string."));
-  tolo->setNoWait();
-  while(!(*tolo)(rlmachine));
+  writeString("A text string.", true);
 
   // Make sure all the data was printed correctly
   ensure_equals("Data was printed correctly!",
@@ -116,9 +132,7 @@ template<>
 template<>
 void object::test<3>()
 {
-  auto_ptr<TextoutLongOperation> tolo(
-    new TextoutLongOperation(rlmachine, ""));
-  while(!(*tolo)(rlmachine));
+  writeString("", false);
 
   // Make sure all the data was printed correctly
   ensure_equals("Data was printed correctly!",
@@ -136,10 +150,7 @@ template<>
 template<>
 void object::test<4>()
 {
-  auto_ptr<TextoutLongOperation> tolo(
-    new TextoutLongOperation(rlmachine, ""));
-  tolo->setNoWait();
-  while(!(*tolo)(rlmachine));
+  writeString("", true);
 
   // Make sure all the data was printed correctly
   ensure_equals("Data was printed correctly!",
@@ -150,21 +161,59 @@ void object::test<4>()
 // -----------------------------------------------------------------------
 
 /**
- * Test printing a simple string
+ * Check the functionality of the backlog.
  */
 template<>
 template<>
 void object::test<5>()
 {
-  auto_ptr<TextoutLongOperation> tolo(
-    new TextoutLongOperation(rlmachine, "A simple string"));
-  tolo->setNoWait();
-  while(!(*tolo)(rlmachine));
+  TextSystem& text = rlmachine.system().text();
 
-  // Make sure all the data was printed correctly
-  ensure_equals("Data was printed correctly!",
+  writeString("Page one.", true);
+  snapshotAndClear();
+  writeString("Page two.", true);
+  snapshotAndClear();
+  writeString("Page three.", true);
+  snapshotAndClear();
+  writeString("Page four.", true);
+  
+  ensure_equals("We're on the final page!", getTextWindow(0).currentContents(),
+                "Page four.");
+  ensure_equals("We're not reading the backlog.", text.isReadingBacklog(), false);
+
+  // Reply our way back to the front
+  text.backPage(rlmachine);
+  ensure_equals("We're on the 3rd page!", getTextWindow(0).currentContents(),
+                "Page three.");
+  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+
+  text.backPage(rlmachine);
+  ensure_equals("We're on the 2nd page!", getTextWindow(0).currentContents(),
+                "Page two.");
+  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+
+  text.backPage(rlmachine);
+  ensure_equals("We're on the 1st page!", getTextWindow(0).currentContents(),
+                "Page one.");
+  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+
+  // Trying to go back past the first page doesn't do anything.
+  text.backPage(rlmachine);
+  ensure_equals("We're still on the 1st page!", getTextWindow(0).currentContents(),
+                "Page one.");
+  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+
+  text.forwardPage(rlmachine);
+  ensure_equals("We're back to the 2nd page!", getTextWindow(0).currentContents(),
+                "Page two.");
+  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+
+  text.stopReadingBacklog();
+  ensure_equals("We're back to the current page!", 
                 getTextWindow(0).currentContents(),
-                "A simple string");  
+                "Page four.");
+  ensure_equals("We're no longer reading the backlog.", 
+                text.isReadingBacklog(), false);
 }
 
 // -----------------------------------------------------------------------

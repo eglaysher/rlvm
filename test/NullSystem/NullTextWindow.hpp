@@ -43,22 +43,20 @@ public:
   virtual void setWakuButton(RLMachine& machine, const std::string& name) {}
   virtual void render(RLMachine& machine) {}
 
-  // To implement
-  virtual void clearWin();
   virtual bool displayChar(RLMachine& machine, const std::string& current,
                            const std::string& next);
+  virtual void clearWin();
   virtual void setName(RLMachine& machine, const std::string& utf8name, 
                        const std::string& nextChar);
 
   virtual void hardBrake();
-  virtual void resetIndentation() {}
 
+  // To implement
+  virtual void resetIndentation() {}
   virtual void markRubyBegin() {}
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) {}
 
-
   virtual bool isFull() const { return false; }
-
 
   std::string currentContents() const { return m_currentContents; }
 

@@ -30,10 +30,34 @@
 // -----------------------------------------------------------------------
 // NullSurface
 // -----------------------------------------------------------------------
-NullSurface::NullSurface(const std::string& surface_name, int width, int height) 
-  : surface_name_(surface_name), width_(width), height_(height), 
+NullSurface::NullSurface(const std::string& surface_name) 
+  : surface_name_(surface_name), allocated_(false), width_(-1), height_(-1), 
     surface_log_(surface_name)
 {
+}
+
+// -----------------------------------------------------------------------
+
+NullSurface::NullSurface(const std::string& surface_name, int width, int height) 
+  : surface_name_(surface_name), allocated_(true), width_(width), height_(height), 
+    surface_log_(surface_name)
+{
+}
+
+// -----------------------------------------------------------------------
+
+void NullSurface::allocate(int width, int height) {
+  surface_log_.recordFunction("allocate", width, height);
+  allocated_ = true;
+  width_ = width;
+  height_ = height;
+}
+ 
+// -----------------------------------------------------------------------
+
+void NullSurface::deallocate() {
+  surface_log_.recordFunction("deallocate");
+  allocated_ = false;
 }
 
 // -----------------------------------------------------------------------
