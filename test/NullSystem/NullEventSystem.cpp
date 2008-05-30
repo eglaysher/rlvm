@@ -38,8 +38,9 @@ NullEventSystem::NullEventSystem(Gameexe& gexe)
 
 // -----------------------------------------------------------------------
 
-void NullEventSystem::setMockHandler(EventSystemMockHandler* handler) {
-  event_system_mock_.reset(handler);
+void NullEventSystem::setMockHandler(
+  const boost::shared_ptr<EventSystemMockHandler>& handler) {
+  event_system_mock_ = handler;
 }
 
 // -----------------------------------------------------------------------

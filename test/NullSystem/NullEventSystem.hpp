@@ -31,6 +31,10 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "NullSystem/MockLog.hpp"
 
+#include <boost/shared_ptr.hpp>
+
+// -----------------------------------------------------------------------
+
 /** 
  * Provides behaviour for the NullEventSystem.
  */
@@ -51,7 +55,7 @@ class NullEventSystem : public EventSystem
 {
 public:
   NullEventSystem(Gameexe& gexe);
-  void setMockHandler(EventSystemMockHandler* handler);
+  void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
 
   virtual void executeEventSystem(RLMachine& machine);
   virtual bool shiftPressed() const;
@@ -61,7 +65,7 @@ public:
 
 private:
   /// Defines test specific behaviour for the NullEventSystem
-  boost::scoped_ptr<EventSystemMockHandler> event_system_mock_;
+  boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 
   /// Log of which methods have been called.
   mutable MockLog mock_log_;
