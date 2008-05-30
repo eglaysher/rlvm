@@ -33,7 +33,7 @@
 #include <vector>
 
 /**
- * 
+ * Keeps track of methods called and asserts that certain events happened.
  */
 class MockLog
 {
@@ -42,6 +42,8 @@ public:
     Record(const std::string& name, const std::string& arg);
     std::string function_name_;
     std::string argument_str_;
+
+    bool operator==(const Record& rhs) const;
   };
 
 public: 
@@ -126,6 +128,10 @@ public:
                       const F& six, const G& seven, const H& eight,
                       const I& nine, const J& ten, const K& eleven, 
                       const L& twelve, const M& thirteen);
+
+  /// Checks to see if a function was called.
+  /// TODO: Make this a set of n templates like recordFunction...
+  bool called(const std::string& name, const std::string& arguments) const;
 
 private:
   // Records the 
