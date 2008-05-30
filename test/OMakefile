@@ -37,6 +37,7 @@ TEST_FILES[] =
   LazyArray_TUT
   GraphicsObject_TUT
   NullSystem/NullSystem
+  NullSystem/NullEventSystem
   NullSystem/NullTextSystem
   NullSystem/NullTextWindow
   NullSystem/NullGraphicsSystem
