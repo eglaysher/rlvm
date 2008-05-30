@@ -36,6 +36,7 @@ TEST_FILES[] =
   Gameexe_TUT
   LazyArray_TUT
   GraphicsObject_TUT
+  Effect_TUT
   NullSystem/NullSystem
   NullSystem/NullEventSystem
   NullSystem/NullTextSystem
