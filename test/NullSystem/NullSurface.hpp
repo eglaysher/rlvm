@@ -68,6 +68,8 @@ public:
 
   virtual Surface* clone() const;
 
+  MockLog& log() { return surface_log_; }
+
 private:
   /// Unique name of this surface.
   std::string surface_name_;

@@ -28,6 +28,7 @@
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Effects/Effect.hpp"
+#include "Effects/BlindEffect.hpp"
 #include "NullSystem/NullSystem.hpp"
 #include "NullSystem/NullEventSystem.hpp"
 #include "NullSystem/NullSurface.hpp"
@@ -35,10 +36,12 @@
 #include "Utilities.h"
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
-
+#include <boost/assign/list_of.hpp>
 #include <memory>
+#include <set>
 
 using namespace std;
+using namespace boost::assign;
 using boost::shared_ptr;
 
 namespace tut {
@@ -65,11 +68,15 @@ struct Effect_data {
   NullEventSystem& event;
   RLMachine rlmachine;
 
+  shared_ptr<EffectEventSystemTest> event_system_impl;
+
   Effect_data()
     : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
       system(locateTestCase("Gameexe_data/Gameexe.ini")),
       event(dynamic_cast<NullEventSystem&>(system.event())),
+      event_system_impl(new EffectEventSystemTest),
       rlmachine(system, arc) {
+    event.setMockHandler(event_system_impl);
   }
 };
 
@@ -121,9 +128,6 @@ template<>
 template<>
 void object::test<1>()
 {
-  shared_ptr<EffectEventSystemTest> event_system_impl(new EffectEventSystemTest);    
-  event.setMockHandler(event_system_impl);
-
   shared_ptr<Surface> src(new NullSurface("src"));
   shared_ptr<Surface> dst(new NullSurface("dst"));
 
@@ -135,16 +139,125 @@ void object::test<1>()
   for (int i = 0; i < 2; ++i) {
     retVal = (*effect)(rlmachine);
     ensure_not("Didn't prematurely quit", retVal);
-
-    ostringstream str;
-    str << i;
-    ensure("Callid", effect->log().called("performEffectForTime", str.str()));
+    effect->log().ensure("performEffectForTime", i);
 
     event_system_impl->setTicks(i + 1);
   }
 
   retVal = (*effect)(rlmachine);
   ensure("Quit at the right time", retVal);
+}
+
+// -----------------------------------------------------------------------
+
+class BlindTopToBottomWithLog : public BlindTopToBottomEffect {
+public:
+  BlindTopToBottomWithLog(RLMachine& machine, boost::shared_ptr<Surface> src,
+                          boost::shared_ptr<Surface> dst, 
+                          int width, int height, int time, int blindSize) 
+    : BlindTopToBottomEffect(machine, src, dst, width, height, time, blindSize),
+      log_("BlindTopToBottomEffect") {
+  }
+
+  virtual void performEffectForTime(RLMachine& machine, int currentTime) {
+    log_.recordFunction("performEffectForTime", currentTime);
+    BlindTopToBottomEffect::performEffectForTime(machine, currentTime);
+  }
+
+  virtual void renderPolygon(int polyStart, int polyEnd) {
+    log_.recordFunction("renderPolygon", polyStart, polyEnd);
+    BlindTopToBottomEffect::renderPolygon(polyStart, polyEnd);
+  }
+
+  MockLog& log() { return log_; }
+
+private:
+  mutable MockLog log_;
+};
+
+/**
+ * Tests BlindTopToBottomEffect.
+ */
+template<>
+template<>
+void object::test<2>()
+{
+  shared_ptr<NullSurface> src(new NullSurface("src"));
+  shared_ptr<NullSurface> dst(new NullSurface("dst"));
+
+  const int DURATION = 100;
+  const int BLIND_SIZE = 50;
+  const int HEIGHT = 480;
+  auto_ptr<BlindTopToBottomWithLog> effect(
+    new BlindTopToBottomWithLog(
+      rlmachine, src, dst, 640, HEIGHT, DURATION, BLIND_SIZE));
+
+  int numBlinds = (HEIGHT / BLIND_SIZE) + 1;
+
+  bool retVal = false;
+
+  // Test at 0
+  retVal = (*effect)(rlmachine);
+  ensure_not("Prematurely quit", retVal);
+  effect->log().ensure("renderPolygon", 0, 0);
+  effect->log().clear();
+
+  // Test at 25
+  event_system_impl->setTicks(25);
+  retVal = (*effect)(rlmachine);
+  ensure_not("Prematurely quit", retVal);
+  effect->log().ensure("renderPolygon", 0, 15);
+  effect->log().ensure("renderPolygon", 50, 64);
+  effect->log().ensure("renderPolygon", 100, 113);
+  effect->log().ensure("renderPolygon", 150, 162);
+  effect->log().ensure("renderPolygon", 200, 211);
+  effect->log().ensure("renderPolygon", 250, 260);
+  effect->log().ensure("renderPolygon", 300, 309);
+  effect->log().ensure("renderPolygon", 350, 358);
+  effect->log().ensure("renderPolygon", 400, 407);
+  effect->log().ensure("renderPolygon", 450, 456);
+  effect->log().clear();
+
+  // Test at 50
+  event_system_impl->setTicks(50);
+  retVal = (*effect)(rlmachine);
+  ensure_not("Prematurely quit", retVal);
+  effect->log().ensure("renderPolygon", 0, 30);
+  effect->log().ensure("renderPolygon", 50, 79);
+  effect->log().ensure("renderPolygon", 100, 128);
+  effect->log().ensure("renderPolygon", 150, 177);
+  effect->log().ensure("renderPolygon", 200, 226);
+  effect->log().ensure("renderPolygon", 250, 275);
+  effect->log().ensure("renderPolygon", 300, 324);
+  effect->log().ensure("renderPolygon", 350, 373);
+  effect->log().ensure("renderPolygon", 400, 422);
+  effect->log().ensure("renderPolygon", 450, 471);
+  effect->log().clear();
+
+  // Test at 75 
+  event_system_impl->setTicks(75);
+  retVal = (*effect)(rlmachine);
+  ensure_not("Prematurely quit", retVal);
+  effect->log().ensure("renderPolygon", 0, 45);
+  effect->log().ensure("renderPolygon", 50, 94);
+  effect->log().ensure("renderPolygon", 100, 143);
+  effect->log().ensure("renderPolygon", 150, 192);
+  effect->log().ensure("renderPolygon", 200, 241);
+  effect->log().ensure("renderPolygon", 250, 290);
+  effect->log().ensure("renderPolygon", 300, 339);
+  effect->log().ensure("renderPolygon", 350, 388);
+  effect->log().ensure("renderPolygon", 400, 437);
+  effect->log().ensure("renderPolygon", 450, 486);
+  effect->log().clear();
+
+  // TODO: test at the end?
+//  (98, pair_list_of(0, 50)(50, 100)(100, 150)(150, 200)(200, 250)(250, 300)
+//   (300, 350)(350, 400)(400, 450)(450, 499));
+
+  // Test at the end
+  event_system_impl->setTicks(100);
+  retVal = (*effect)(rlmachine);
+  ensure("We quit", retVal);
 }
 
 // -----------------------------------------------------------------------

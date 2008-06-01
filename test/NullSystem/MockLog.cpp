@@ -26,6 +26,7 @@
 // -----------------------------------------------------------------------
 
 #include "MockLog.hpp"
+#include "tut/tut.hpp"
 #include <algorithm>
 
 using namespace std;
@@ -64,9 +65,21 @@ void MockLog::recordFunction(const std::string& name) {
 
 // -----------------------------------------------------------------------
 
-bool MockLog::called(const std::string& name, const std::string& arguments) const {
+/// Records a function with no arguments.
+void MockLog::ensure(const std::string& name) {
+  ensureInternal(name, "");
+}
+
+// -----------------------------------------------------------------------
+
+void MockLog::ensureInternal(const std::string& name, const std::string& arguments) const {
   Record r(name, arguments);
-  return std::find(records_.begin(), records_.end(), r) != records_.end();
+  bool found = std::find(records_.begin(), records_.end(), r) != records_.end();
+
+  ostringstream oss;
+  oss << "Didn't find an instance of " << name << "(" << arguments << ") in "
+      << *this;
+  tut::ensure(oss.str(), found);
 }
 
 // -----------------------------------------------------------------------

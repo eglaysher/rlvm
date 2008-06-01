@@ -56,9 +56,9 @@ protected:
 
   const int blindSize() const { return m_blindSize; }
 
-  void computeGrowing(
+  virtual void computeGrowing(
     RLMachine& machine, int maxSize, int currentTime);
-  void computeDecreasing(
+  virtual void computeDecreasing(
     RLMachine& machine, int maxSize, int currentTime);
 
   virtual void renderPolygon(int polyStart, int polyEnd) = 0;
