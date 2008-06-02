@@ -67,7 +67,7 @@ protected:
 public:
   WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst, 
-             int width, int height, int time, int interpolation);
+             const Size& screenSize, int time, int interpolation);
 };
 
 // -----------------------------------------------------------------------
@@ -85,7 +85,7 @@ protected:
 public:
   WipeTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst, 
-                        int width, int height, int time,
+                        const Size& screenSize, int time,
                         int interpolation);
 };
 
@@ -104,8 +104,7 @@ protected:
 public:
   WipeBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst, 
-                        int width, 
-                        int height, int time,
+                        const Size& screenSize, int time,
                         int interpolation);
 };
 
@@ -124,7 +123,7 @@ protected:
 public:
   WipeLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst, 
-                        int width, int height, int time,
+                        const Size& screenSize, int time,
                         int interpolation);
 };
 
@@ -143,7 +142,7 @@ protected:
 public:
   WipeRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst, 
-                        int width, int height, int time,
+                        const Size& screenSize, int time,
                         int interpolation);
 };
 

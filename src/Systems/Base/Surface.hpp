@@ -28,7 +28,10 @@
 #ifndef __Surface_hpp__
 #define __Surface_hpp__
 
+#include "Systems/Base/Rect.hpp"
+
 #include <boost/shared_ptr.hpp>
+
 
 class GraphicsObject;
 struct GraphicsObjectOverride;
@@ -40,8 +43,10 @@ class Surface
 {
 public:
   struct GrpRect {
-    int x1, y1, x2, y2;
+    Rect rect;
 
+    /// Describes an offset to rect. Why VisualArts threw this in is
+    /// unknown.
     int originX, originY;
   };
 
@@ -49,30 +54,26 @@ public:
   Surface();
   virtual ~Surface();
 
-  virtual int width() const = 0;
-  virtual int height() const = 0;
+  virtual Size size() const = 0;
+  Rect rect() const;
 
   virtual void dump();
 
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
-                             int srcX, int srcY, int srcWidth, int srcHeight,
-                             int destX, int destY, int destWidth, int destHeight,
+                             const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true) = 0;
 
   virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     int alpha = 255) = 0;
+    const Rect& src, const Rect& dst,
+    int alpha = 255) = 0;
 
   virtual void renderToScreenAsColorMask(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha, int filter) = 0;
+    const Rect& src, const Rect& dst,
+    int r, int g, int b, int alpha, int filter) = 0;
 
   virtual void renderToScreen(
-    int srcX1, int srcY1, int srcX2, int srcY2,
-    int destX1, int destY1, int destX2, int destY2,
+    const Rect& src, const Rect& dst,
     const int opacity[4]) = 0;
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp) = 0;
@@ -87,14 +88,12 @@ public:
                              const int opacity[4]) = 0;
 
   virtual void fill(int r, int g, int b, int alpha) = 0;
-  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
-                    int width, int height) = 0;
+  virtual void fill(int r, int g, int b, int alpha, const Rect& area) = 0;
 
-  virtual void getDCPixel(int x, int y, int& r, int& g, int& b) = 0;
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) = 0;
 
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    int x, int y, int width, int height, 
-    int r, int g, int b);
+    const Rect& clipRect, int r, int g, int b);
 
   virtual Surface* clone() const = 0;
 };

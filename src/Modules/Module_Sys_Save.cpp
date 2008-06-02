@@ -358,16 +358,15 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
       shared_ptr<Surface> dc0 = graphics.getDC(0);
       shared_ptr<Surface> currentWindow = 
         graphics.renderToSurfaceWithBg(machine, dc0);
-      int w = currentWindow->width();
-      int h = currentWindow->height();
+      Size s = currentWindow->size();
       
       // Blank dc0 (because we won't be using it anyway) for the image
       // we're going to render to
-      shared_ptr<Surface> blankScreen = graphics.buildSurface(w, h);
+      shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
       blankScreen->fill(0, 0, 0, 255);
 
       machine.pushLongOperation(
-        new FadeEffect(machine, currentWindow, blankScreen, w, h, 250));
+        new FadeEffect(machine, currentWindow, blankScreen, s, 250));
 
       // At this point, the stack has been nuked, and this current
       // object has already been deleted, leaving an invalid
@@ -392,8 +391,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> currentWindow = 
       graphics.renderToSurfaceWithBg(machine, dc0);
-    int w = currentWindow->width();
-    int h = currentWindow->height();
+    Size s = currentWindow->size();
 
     // Force a system clear for the visual elements
     machine.system().graphics().reset();
@@ -404,7 +402,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
     dc0->fill(0, 0, 0, 255);
 
     machine.pushLongOperation(
-      new FadeEffect(machine, dc0, currentWindow, w, h, 250));
+      new FadeEffect(machine, dc0, currentWindow, s, 250));
   }
 };
 

@@ -84,7 +84,7 @@ struct Scr_GetDCPixel : public RLOp_Void_6<
                   IntReferenceIterator b)
   {
     int rval, gval, bval;
-    machine.system().graphics().getDC(dc)->getDCPixel(x, y, rval, gval, bval);
+    machine.system().graphics().getDC(dc)->getDCPixel(Point(x, y), rval, gval, bval);
     *r = rval;
     *g = gval;
     *b = bval;

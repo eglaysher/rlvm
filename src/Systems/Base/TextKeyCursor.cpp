@@ -88,15 +88,13 @@ void TextKeyCursor::execute(RLMachine& machine)
 void TextKeyCursor::render(RLMachine& machine, TextWindow& textWindow)
 {
   // Get the location to render from textWindow
-  int keycurX = textWindow.keycursorX();
-  int keycurY = textWindow.keycursorY();
+  Point keycur = textWindow.keycursorPosition();
 
+  // POINT
   m_cursorImage->renderToScreen(
-    m_currentFrame * m_frameXSize,
-    0,
-    (m_currentFrame + 1) * m_frameXSize,
-    m_frameYSize,
-    keycurX, keycurY, keycurX + m_frameXSize, keycurY + m_frameYSize,
+    Rect(Point(m_currentFrame * m_frameXSize, 0),
+         Size(m_frameXSize, m_frameYSize)),
+    Rect(keycur, Size(m_frameXSize, m_frameYSize)),
     255);
 }
 

@@ -100,8 +100,10 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
   {
     const Surface::GrpRect& rect = m_surface->getPattern(m_currentFrame);
 
+    // POINT
     GraphicsObjectOverride overrideData;
-    overrideData.setOverrideSource(rect.x1, rect.y1, rect.x2, rect.y2);
+    overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(), rect.rect.x2(),
+                                   rect.rect.y2());
 
     m_surface->renderToScreenAsObject(rp, overrideData);
   }
@@ -114,7 +116,7 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
 int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = m_surface->getPattern(rp.pattNo());
-  int width = rect.x2 - rect.x1;
+  int width = rect.rect.width();
   return int((rp.width() / 100.0f) * width);
 }
 
@@ -123,7 +125,7 @@ int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& r
 int GraphicsObjectOfFile::pixelHeight(RLMachine& machine, const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = m_surface->getPattern(rp.pattNo());
-  int height = rect.y2 - rect.y1;
+  int height = rect.rect.height();
   return int((rp.height() / 100.0f) * height);
 }
 

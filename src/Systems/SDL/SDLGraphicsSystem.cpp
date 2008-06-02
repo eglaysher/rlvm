@@ -112,9 +112,7 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   beginFrame();
 
   // Display DC0
-  m_displayContexts[0]->renderToScreen(
-    0, 0, m_screenSize.width(), m_screenSize.height(), 
-    0, 0, m_screenSize.width(), m_screenSize.height(), 255);
+  m_displayContexts[0]->renderToScreen(m_screenRect, m_screenRect, 255);
 
   renderObjects(machine);
 
@@ -144,8 +142,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   beginFrame();
 
   // Display DC0
-  bg->renderToScreen(0, 0, m_screenSize.width(), m_screenSize.height(), 
-                     0, 0, m_screenSize.width(), m_screenSize.height(), 255);
+  bg->renderToScreen(m_screenRect, m_screenRect, 255);
 
   renderObjects(machine);
 
@@ -215,8 +212,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
 
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
-  return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_screenSize.width(),
-                                                           m_screenSize.height()));
+  return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_screenSize));
 }
 
 // -----------------------------------------------------------------------
@@ -245,8 +241,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   }
 
   m_screenSize = getScreenSize(gameexe);
-  // POINT
-  Texture::SetScreenSize(m_screenSize.width(), m_screenSize.height());
+  m_screenRect = Rect(Point(0, 0), m_screenSize);
+  Texture::SetScreenSize(m_screenSize);
 
   int bpp = info->vfmt->BitsPerPixel;
 
@@ -279,9 +275,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
   // Set the video mode
-  if((m_screen =
-      SDL_SetVideoMode( m_screenSize.width(), m_screenSize.height(), bpp, 
-                        videoFlags)) == 0 )
+  if((m_screen = SDL_SetVideoMode(
+        m_screenSize.width(), m_screenSize.height(), bpp, videoFlags)) == 0 )
   {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -331,8 +326,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
 
   // Now we allocate the first two display contexts with equal size to
   // the display
-  m_displayContexts[0]->allocate(m_screenSize.width(), m_screenSize.height(), this);
-  m_displayContexts[1]->allocate(m_screenSize.width(), m_screenSize.height());
+  m_displayContexts[0]->allocate(m_screenSize, this);
+  m_displayContexts[1]->allocate(m_screenSize);
 
   // Create a small 32x32 texture for storing what's behind the mouse
   // cursor.
@@ -428,21 +423,15 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
 
 // -----------------------------------------------------------------------
 
-int SDLGraphicsSystem::screenWidth() const
+Size SDLGraphicsSystem::screenSize() const
 {
-  return m_screenSize.width();
+  return m_screenSize;
+
 }
 
 // -----------------------------------------------------------------------
 
-int SDLGraphicsSystem::screenHeight() const 
-{
-  return m_screenSize.height();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
+void SDLGraphicsSystem::allocateDC(int dc, Size size)
 {
   if(dc >= 16)
     throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocateDC");
@@ -456,14 +445,14 @@ void SDLGraphicsSystem::allocateDC(int dc, int width, int height)
   if(dc == 1)
   {
     SDL_Surface* dc0 = *(m_displayContexts[0]);
-    if(width < dc0->w)
-      width = dc0->w;
-    if(height < dc0->h)
-      height = dc0->h;
+    if(size.width() < dc0->w)
+      size.setWidth(dc0->w);
+    if(size.height() < dc0->h)
+      size.setHeight(dc0->h);
   }
 
   // Allocate a new obj.
-  m_displayContexts[dc]->allocate(width, height);
+  m_displayContexts[dc]->allocate(size);
 }
 
 // -----------------------------------------------------------------------
@@ -553,10 +542,8 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
 SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
 {
   SDLSurface::GrpRect rect;
-  rect.x1 = region.x1;
-  rect.y1 = region.y1;
-  rect.x2 = region.x2 + 1;
-  rect.y2 = region.y2 + 1;
+  rect.rect = Rect(Point(region.x1, region.y1),
+                   Point(region.x2 + 1, region.y2 + 1));
   rect.originX = region.origin_x;
   rect.originY = region.origin_y;
   return rect;
@@ -652,10 +639,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   else
   {
     SDLSurface::GrpRect rect;
-    rect.x1 = 0;
-    rect.y1 = 0;
-    rect.x2 = conv->Width();
-    rect.y2 = conv->Height();
+    rect.rect = Rect(Point(0, 0), Size(conv->Width(), conv->Height()));
     rect.originX = 0;
     rect.originY = 0;
     region_table.push_back(rect);
@@ -676,9 +660,9 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(int w, int h)
+boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
 {
-  return shared_ptr<Surface>(new SDLSurface(w, h));
+  return shared_ptr<Surface>(new SDLSurface(size));
 }
 
 // -----------------------------------------------------------------------

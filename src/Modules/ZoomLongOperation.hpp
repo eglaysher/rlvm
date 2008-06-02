@@ -31,6 +31,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
+#include "Systems/Base/Rect.hpp"
 
 class RLMachine;
 class Surface;
@@ -43,18 +44,9 @@ private:
   boost::shared_ptr<Surface> m_origSurface;
   boost::shared_ptr<Surface> m_srcSurface;
 
-  const int m_fx; 
-  const int m_fy; 
-  const int m_fwidth; 
-  const int m_fheight;
-  const int m_tx; 
-  const int m_ty; 
-  const int m_twidth; 
-  const int m_theight; 
-  const int m_dx;
-  const int m_dy; 
-  const int m_dwidth; 
-  const int m_dheight; 
+  const Rect m_frect;
+  const Rect m_trect;
+  const Rect m_drect;
   const unsigned int m_duration;
 
   unsigned int m_startTime;
@@ -64,10 +56,8 @@ public:
     RLMachine& machine,
     const boost::shared_ptr<Surface>& m_origSurface,
     const boost::shared_ptr<Surface>& m_srcSurface,
-    const int fx, const int fy, const int fwidth, const int fheight, 
-    const int tx, const int ty, const int twidth, const int theight,
-    const int dx, const int dy, const int dwidth, 
-    const int dheight,  const int time);
+    const Rect& m_frect, const Rect& m_trect, const Rect& m_drect,
+    const int time);
   ~ZoomLongOperation();
 
   virtual bool operator()(RLMachine& machine);

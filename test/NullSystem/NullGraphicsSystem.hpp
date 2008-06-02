@@ -50,10 +50,10 @@ public:
 
   virtual void executeGraphicsSystem(RLMachine&) { }
 
-  virtual int screenWidth() const { return 640; }
-  virtual int screenHeight() const { return 480; }
-
-  virtual void allocateDC(int dc, int width, int height);
+  int screenWidth() const { return 640; }
+  int screenHeight() const { return 480; }
+  virtual Size screenSize() const { return Size(640, 480); }
+  virtual void allocateDC(int dc, Size s);
   virtual void freeDC(int dc);
 
   virtual void promoteObjects();
@@ -64,7 +64,7 @@ public:
   // Make a null Surface object?
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const boost::filesystem::path& filename);
   virtual boost::shared_ptr<Surface> getDC(int dc);
-  virtual boost::shared_ptr<Surface> buildSurface(int w, int h);
+  virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
 
   virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC, 
                                int srcX, int srcY, int srcWidth, int srcHeight,

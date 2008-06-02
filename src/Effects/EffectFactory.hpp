@@ -40,6 +40,7 @@
 
 class RLMachine;
 
+class Size;
 class Surface;
 class Effect;
 class ScrollSquashSlideDrawer;
@@ -111,12 +112,12 @@ private:
   static Effect* buildWipeEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src, 
     boost::shared_ptr<Surface> dst,
-    int width, int height, int time, int direction, int interpolation);
+    const Size& screenSize, int time, int direction, int interpolation);
 
   static Effect* buildBlindEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
-    int width, int height, int time, 
+    const Size& screenSize, int time, 
     int direction, int xsize, int ysize);
 
   static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(

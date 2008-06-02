@@ -94,9 +94,9 @@ class EffectPreconditionTest : public Effect {
 public:
   EffectPreconditionTest(RLMachine& machine, boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         int width, int height, int time,
+                         Size size, int time,
                          bool blit_original_image)
-    : Effect(machine, src, dst, width, height, time),
+    : Effect(machine, src, dst, size, time),
       blit_original_image_(blit_original_image),
       log_("EffectLog") {
   }
@@ -132,7 +132,7 @@ void object::test<1>()
   shared_ptr<Surface> dst(new NullSurface("dst"));
 
   auto_ptr<EffectPreconditionTest> effect(
-    new EffectPreconditionTest(rlmachine, src, dst, 640, 480, 2, false));
+    new EffectPreconditionTest(rlmachine, src, dst, Size(640, 480), 2, false));
 
   // First loop through (with 
   bool retVal = false;
@@ -155,7 +155,7 @@ public:
   BlindTopToBottomWithLog(RLMachine& machine, boost::shared_ptr<Surface> src,
                           boost::shared_ptr<Surface> dst, 
                           int width, int height, int time, int blindSize) 
-    : BlindTopToBottomEffect(machine, src, dst, width, height, time, blindSize),
+    : BlindTopToBottomEffect(machine, src, dst, Size(width, height), time, blindSize),
       log_("BlindTopToBottomEffect") {
   }
 

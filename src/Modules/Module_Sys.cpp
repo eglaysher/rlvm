@@ -428,7 +428,7 @@ struct Sys_MenuReturn : public RLOp_Void_Void
     // Now we push a LongOperation on top of the stack; when this
     // ends, we'll be at SEEN_MENU.
     LongOperation* effect = 
-      new FadeEffect(machine, after, before, after->width(), after->height(), 1000);
+      new FadeEffect(machine, after, before, after->size(), 1000);
     machine.pushLongOperation(effect);
   }
 };

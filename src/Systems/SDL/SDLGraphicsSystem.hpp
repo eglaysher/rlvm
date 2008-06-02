@@ -64,6 +64,9 @@ private:
   bool m_redrawLastFrame;
 
   Size m_screenSize;
+
+  /// Rectangle representing the screen.
+  Rect m_screenRect;
   
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool m_displayDataInTitlebar;
@@ -161,17 +164,16 @@ public:
 
   virtual void executeGraphicsSystem(RLMachine& machine);
 
-  virtual int screenWidth() const;
-  virtual int screenHeight() const;
+  virtual Size screenSize() const;
 
-  virtual void allocateDC(int dc, int width, int height);
+  virtual void allocateDC(int dc, Size screenSize);
   virtual void freeDC(int dc);
 
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
     const boost::filesystem::path& filename);
 
   virtual boost::shared_ptr<Surface> getDC(int dc);
-  virtual boost::shared_ptr<Surface> buildSurface(int w, int h);
+  virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
   // -----------------------------------------------------------------------
 
   virtual void setWindowSubtitle(const std::string& cp932str,

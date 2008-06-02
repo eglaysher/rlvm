@@ -96,7 +96,7 @@ int GraphicsTextObject::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
   if(needsUpdate(rp))
     updateSurface(machine, rp);
 
-  return int((rp.width() / 100.0f) * m_surface->width());
+  return int((rp.width() / 100.0f) * m_surface->size().width());
 }
 
 // -----------------------------------------------------------------------
@@ -106,7 +106,7 @@ int GraphicsTextObject::pixelHeight(RLMachine& machine, const GraphicsObject& rp
   if(needsUpdate(rp))
     updateSurface(machine, rp);
 
-  return int((rp.height() / 100.0f) * m_surface->height());  
+  return int((rp.height() / 100.0f) * m_surface->size().height());  
 }
 
 // -----------------------------------------------------------------------

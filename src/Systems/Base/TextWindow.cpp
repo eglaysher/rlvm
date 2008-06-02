@@ -178,18 +178,12 @@ void TextWindow::setWindowPosition(const vector<int>& posData)
 
 // -----------------------------------------------------------------------
 
-int TextWindow::textWindowWidth() const
+Size TextWindow::textWindowSize() const
 {
-  return (m_xWindowSizeInChars * 
-          (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding;
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindow::textWindowHeight() const
-{
-  return (m_yWindowSizeInChars * 
-          (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + m_lowerBoxPadding;
+  return Size((m_xWindowSizeInChars * 
+               (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding,
+              (m_yWindowSizeInChars * 
+               (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + m_lowerBoxPadding);
 }
 
 // -----------------------------------------------------------------------
@@ -203,7 +197,7 @@ int TextWindow::boxX1() const
     return m_xDistanceFromOrigin;
   case 1:
   case 3:
-    return m_screenWidth - m_xDistanceFromOrigin - textWindowWidth() -
+    return m_screenWidth - m_xDistanceFromOrigin - textWindowSize().width() -
       m_leftBoxPadding;
   default:
     throw SystemError("Invalid origin");
@@ -221,7 +215,7 @@ int TextWindow::boxY1() const
     return m_yDistanceFromOrigin;
   case 2: // Bottom and left
   case 3: // Bottom and right
-    return m_screenHeight - m_yDistanceFromOrigin - textWindowHeight() - 
+    return m_screenHeight - m_yDistanceFromOrigin - textWindowSize().height() - 
       m_upperBoxPadding;
   default:
     throw SystemError("Invalid origin");  
@@ -239,7 +233,7 @@ int TextWindow::textX1() const
     return m_xDistanceFromOrigin + m_leftBoxPadding;
   case 1: // Top and right
   case 3: // Bottom and right
-    return m_screenWidth - m_xDistanceFromOrigin - textWindowWidth();
+    return m_screenWidth - m_xDistanceFromOrigin - textWindowSize().width();
   default:
     throw SystemError("Invalid origin");
   };
@@ -256,7 +250,7 @@ int TextWindow::textY1() const
     return m_yDistanceFromOrigin + m_upperBoxPadding;
   case 2: // Bottom and left
   case 3: // Bottom and right
-    return m_screenHeight - m_yDistanceFromOrigin - textWindowHeight();
+    return m_screenHeight - m_yDistanceFromOrigin - textWindowSize().height();
   default:
     throw SystemError("Invalid origin");
   }
@@ -266,14 +260,14 @@ int TextWindow::textY1() const
 
 int TextWindow::textX2() const
 {
-  return textX1() + textWindowWidth();
+  return textX1() + textWindowSize().width();
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::textY2() const
 {
-  return textY1() + textWindowHeight();
+  return textY1() + textWindowSize().height();
 }
 
 // -----------------------------------------------------------------------
@@ -281,41 +275,23 @@ int TextWindow::textY2() const
 void TextWindow::setKeycurMod(const vector<int>& keycur)
 {
   m_keycursorType = keycur.at(0);
-  m_keycursorX = keycur.at(1);
-  m_keycursorY = keycur.at(2);
+  m_keycursorPos = Point(keycur.at(1), keycur.at(2));
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::keycursorX() const
+Point TextWindow::keycursorPosition() const
 {
   switch(m_keycursorType)
   {
   case 0:
-    return textX2();
+    return Point(textX2(), textY2());
   case 1:
-    return m_textInsertionPointX;
+    return Point(m_textInsertionPointX, m_textInsertionPointY);
   case 2:
-    return textX1() + m_keycursorX;
+    return Point(textX1(), textY1()) + m_keycursorPos;
   default:
     throw SystemError("Invalid keycursor type");    
-  }
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindow::keycursorY() const
-{
-  switch(m_keycursorType)
-  {
-  case 0:
-    return textY2();
-  case 1:
-    return m_textInsertionPointY;
-  case 2:
-    return textY1() + m_keycursorY;
-  default:
-    throw SystemError("Invalid keycursor type");
   }
 }
 

@@ -48,8 +48,8 @@ using namespace std;
 // SDLRenderToTextureSurface
 // -----------------------------------------------------------------------
 
-SDLRenderToTextureSurface::SDLRenderToTextureSurface(int w, int h)
-  : m_texture(new Texture(render_to_texture(), w, h))
+SDLRenderToTextureSurface::SDLRenderToTextureSurface(const Size& size)
+  : m_texture(new Texture(render_to_texture(), size.width(), size.height()))
 {}
 
 // -----------------------------------------------------------------------
@@ -72,9 +72,8 @@ void SDLRenderToTextureSurface::dump()
  *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
  */
 void SDLRenderToTextureSurface::blitToSurface(Surface& destSurface,
-                               int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight,
-                               int alpha, bool useSrcAlpha)
+                                              const Rect& src, const Rect& dst,
+                                              int alpha, bool useSrcAlpha)
 {
   throw SystemError("Unsupported operation blitToSurface on SDLRenderToTextureSurface!");
 }
@@ -82,33 +81,24 @@ void SDLRenderToTextureSurface::blitToSurface(Surface& destSurface,
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     int opacity)
+  const Rect& src, const Rect& dst, int opacity)
 {
-  m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
-                            destX1, destY1, destX2, destY2,
-                            opacity);
+  m_texture->renderToScreen(src, dst, opacity);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     const int opacity[4])
+  const Rect& src, const Rect& dst, const int opacity[4])
 {
-  m_texture->renderToScreen(srcX1, srcY1, srcX2, srcY2,
-                            destX1, destY1, destX2, destY2,
-                            opacity);
+  m_texture->renderToScreen(src, dst, opacity);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreenAsColorMask(
-    int srcX1, int srcY1, int srcX2, int srcY2,
-    int destX1, int destY1, int destX2, int destY2,
-    int r, int g, int b, int alpha, int filter)
+  const Rect& src, const Rect& dst,
+  int r, int g, int b, int alpha, int filter)
 {
   throw rlvm::Exception(
     "SDLRenderToTextureSurface::renderToScreenAsColorMask unimplemented");
@@ -150,31 +140,24 @@ void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha)
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha, int x, int y, 
-                      int width, int height)
+void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha, 
+                                     const Rect& rect)
 {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
+void SDLRenderToTextureSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
 {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-int SDLRenderToTextureSurface::width() const
+Size SDLRenderToTextureSurface::size() const
 {
-  return m_texture->width();
-}
-
-// -----------------------------------------------------------------------
-
-int SDLRenderToTextureSurface::height() const
-{
-  return m_texture->height();
+  return Size(m_texture->width(), m_texture->height());
 }
 
 // -----------------------------------------------------------------------

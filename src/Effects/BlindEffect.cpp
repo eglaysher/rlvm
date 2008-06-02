@@ -64,9 +64,9 @@ bool BlindEffect::blitOriginalImage() const
 
 BlindEffect::BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         int width, int height, int time, 
+                         const Size& screenSize, int time, 
                          int blindSize)
-  : Effect(machine, src, dst, width, height, time), 
+  : Effect(machine, src, dst, screenSize, time),
     m_blindSize(blindSize)
 {
 }
@@ -130,9 +130,8 @@ void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
 BlindTopToBottomEffect::BlindTopToBottomEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, width, height, time, 
-                blindSize)
+  const Size& screenSize, int time, int blindSize)
+  : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {}
 
 // -----------------------------------------------------------------------
@@ -147,8 +146,8 @@ void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
 
 void BlindTopToBottomEffect::renderPolygon(int polyStart, int polyEnd)
 {
-  srcSurface().renderToScreen(0, polyStart, width(), polyEnd,
-                              0, polyStart, width(), polyEnd,
+  srcSurface().renderToScreen(Rect(Point(0, polyStart), Point(width(), polyEnd)),
+                              Rect(Point(0, polyStart), Point(width(), polyEnd)),
                               255);
 }
 
@@ -159,9 +158,8 @@ void BlindTopToBottomEffect::renderPolygon(int polyStart, int polyEnd)
 BlindBottomToTopEffect::BlindBottomToTopEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, width, height, time, 
-                blindSize)
+  const Size& screenSize, int time, int blindSize)
+  : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {}
 
 // -----------------------------------------------------------------------
@@ -178,8 +176,8 @@ void BlindBottomToTopEffect::renderPolygon(int polyStart, int polyEnd)
 {
   // Render polygon
   srcSurface().
-    renderToScreen(0, polyEnd, width(), polyStart,
-                   0, polyEnd, width(), polyStart,
+    renderToScreen(Rect(Point(0, polyEnd), Point(width(), polyStart)),
+                   Rect(Point(0, polyEnd), Point(width(), polyStart)),
                    255);      
 }
 
@@ -190,9 +188,8 @@ void BlindBottomToTopEffect::renderPolygon(int polyStart, int polyEnd)
 BlindLeftToRightEffect::BlindLeftToRightEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, width, height, time, 
-                blindSize)
+  const Size& screenSize, int time, int blindSize)
+  : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {
 }
 
@@ -208,8 +205,8 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
 
 void BlindLeftToRightEffect::renderPolygon(int polyStart, int polyEnd)
 {
-  srcSurface().renderToScreen(polyStart, 0, polyEnd, height(),
-                              polyStart, 0, polyEnd, height(),
+  srcSurface().renderToScreen(Rect(Point(polyStart, 0), Point(polyEnd, height())),
+                              Rect(Point(polyStart, 0), Point(polyEnd, height())),
                               255);
 }
 
@@ -220,9 +217,8 @@ void BlindLeftToRightEffect::renderPolygon(int polyStart, int polyEnd)
 BlindRightToLeftEffect::BlindRightToLeftEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, 
-  int width, int height, int time, int blindSize)
-  : BlindEffect(machine, src, dst, width, height, time, 
-                blindSize)
+  const Size& screenSize, int time, int blindSize)
+  : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {}
 
 // -----------------------------------------------------------------------
@@ -238,9 +234,7 @@ void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
 void BlindRightToLeftEffect::renderPolygon(int polyStart, int polyEnd)
 {
       srcSurface().
-        renderToScreen(polyEnd, 0,
-                       polyStart, height(),
-                       polyEnd, 0,
-                       polyStart, height(),
+        renderToScreen(Rect(Point(polyEnd, 0), Point(polyStart, height())),
+                       Rect(Point(polyEnd, 0), Point(polyStart, height())),
                        255);      
 }

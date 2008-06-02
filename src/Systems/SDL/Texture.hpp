@@ -48,6 +48,10 @@ struct render_to_texture { };
  * Contains one or more OpenGL textures, representing a single image,
  * and provides a logical interface to working with them.
  */
+// POINT
+
+// TODO: The entire Texture class's internals need to be transitioned
+// to the Point and Rect classes.
 class Texture
 {
 private:
@@ -73,27 +77,25 @@ private:
   /// Is this texture upside down? (Because it's a screenshot, et cetera.)
   bool m_isUpsideDown;
 
+  // TODO: Dead code?
   static unsigned int s_screenWidth;
   static unsigned int s_screenHeight;
 
   void renderToScreenAsColorMask_subtractive_glsl(
-    int x1, int y1, int x2, int y2,
-    int dx1, int dy1, int dx2, int dy2,
+    const Rect& src, const Rect& dst,
     int r, int g, int b, int alpha);
   void renderToScreenAsColorMask_subtractive_fallback(
-    int x1, int y1, int x2, int y2,
-    int dx1, int dy1, int dx2, int dy2,
+    const Rect& src, const Rect& dst,
     int r, int g, int b, int alpha);
   void renderToScreenAsColorMask_additive(
-    int x1, int y1, int x2, int y2,
-    int dx1, int dy1, int dx2, int dy2,
+    const Rect& src, const Rect& dst,
     int r, int g, int b, int alpha);
 
   bool filterCoords(int& x1, int& y1, int& x2, int& y2, 
                     float& dx1, float& dy1, float& dx2, float& dy2);
 
 public:
-  static void SetScreenSize(unsigned int screenWidth, unsigned int screenHeight);
+  static void SetScreenSize(const Size& s);
 
 public:
   Texture(SDL_Surface* surface, int x, int y, int w, int h,
@@ -110,17 +112,13 @@ public:
     SDLSurface& surface,
     const GraphicsObjectOverride& overrides);
 
-  void renderToScreen(int x1, int y1, int x2, int y2,
-                      int dx1, int dy1, int dx2, int dy2,
-                      int opacity);
+  void renderToScreen(const Rect& src, const Rect& dst, int opacity);
 
   void renderToScreenAsColorMask(
-    int x1, int y1, int x2, int y2,
-    int dx1, int dy1, int dx2, int dy2,
+    const Rect& src, const Rect& dst,
     int r, int g, int b, int alpha, int filter);
 
-  void renderToScreen(int x1, int y1, int x2, int y2,
-                      int dx1, int dy1, int dx2, int dy2,
+  void renderToScreen(const Rect& src, const Rect& dst,
                       const int opacity[4]);
 
   void rawRenderQuad(const int srcCoords[8], 

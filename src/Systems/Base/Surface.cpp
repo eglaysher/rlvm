@@ -28,6 +28,9 @@
 #include "Systems/Base/Surface.hpp"
 #include "Utilities.h"
 
+#include <iostream>
+using namespace std;
+
 // -----------------------------------------------------------------------
 
 Surface::Surface() { }
@@ -35,6 +38,12 @@ Surface::Surface() { }
 // -----------------------------------------------------------------------
 
 Surface::~Surface() { }
+
+// -----------------------------------------------------------------------
+
+Rect Surface::rect() const {
+  return Rect(Point(0, 0), size());
+}
 
 // -----------------------------------------------------------------------
 
@@ -59,8 +68,7 @@ const Surface::GrpRect& Surface::getPattern(int pattNo) const
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> Surface::clipAsColorMask(
-  int x, int y, int width, int height, 
-  int r, int g, int b)
+  const Rect& clipRect, int r, int g, int b)
 {
   throw rlvm::Exception("Unimplemented function Surface::clipAsColorMask()");
 }

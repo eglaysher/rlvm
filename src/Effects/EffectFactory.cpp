@@ -86,8 +86,7 @@ Effect* EffectFactory::build(
   int direction, int interpolation, int xsize, int ysize, int a, int b,
   int c)
 {
-  int width = machine.system().graphics().screenWidth();
-  int height = machine.system().graphics().screenHeight();
+  Size screenSize = machine.system().graphics().screenSize();
 
   // There is a completely ridiculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so
@@ -95,7 +94,7 @@ Effect* EffectFactory::build(
   switch(style)
   {
   case 10:
-    return buildWipeEffect(machine, src, dst, width, height, time, 
+    return buildWipeEffect(machine, src, dst, screenSize, time, 
                            direction, interpolation);
   // We have the bunch of similar effects that are all implemented by
   // ScrollSquashSlideBaseEffect
@@ -109,15 +108,15 @@ Effect* EffectFactory::build(
     ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
     ScrollSquashSlideEffectTypeBase* effect = buildScrollSquashSlideTypeBase(style);
     return new ScrollSquashSlideBaseEffect(machine, src, dst, drawer, effect,
-                                           width, height, time);
+                                           screenSize, time);
   }
   case 120:
-    return buildBlindEffect(machine, src, dst, width, height, time,
+    return buildBlindEffect(machine, src, dst, screenSize, time,
                             direction, xsize, ysize);
   case 0:
   case 50:
   default:
-    return new FadeEffect(machine, src, dst, width, height, time);
+    return new FadeEffect(machine, src, dst, screenSize, time);
   }
 
   ostringstream ss;
@@ -144,29 +143,28 @@ enum ScreenDirection {
  */
 Effect* EffectFactory::buildWipeEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
-  boost::shared_ptr<Surface> dst,
-  int width, int height, int time, 
+  boost::shared_ptr<Surface> dst, const Size& screenSize, int time, 
   int direction, int interpolation)
 {
   switch(direction)
   {
   case TOP_TO_BOTTOM:
-    return new WipeTopToBottomEffect(machine, src, dst, width, height, 
+    return new WipeTopToBottomEffect(machine, src, dst, screenSize, 
                                      time, interpolation);
   case BOTTOM_TO_TOP:
-    return new WipeBottomToTopEffect(machine, src, dst, width, height, 
+    return new WipeBottomToTopEffect(machine, src, dst, screenSize, 
                                      time, interpolation);
   case LEFT_TO_RIGHT:
-    return new WipeLeftToRightEffect(machine, src, dst, width, height,
+    return new WipeLeftToRightEffect(machine, src, dst, screenSize,
                                      time, interpolation);
   case RIGHT_TO_LEFT:
-    return new WipeRightToLeftEffect(machine, src, dst, width, height,
+    return new WipeRightToLeftEffect(machine, src, dst, screenSize,
                                      time, interpolation);
   default:
     cerr << "WARNING! Unsupported direction " << direction 
          << " in EffectFactory::buildWipeEffect. Returning Top to"
          << " Bottom effect." << endl;
-    return new WipeTopToBottomEffect(machine, src, dst, width, height, 
+    return new WipeTopToBottomEffect(machine, src, dst, screenSize, 
                                      time, interpolation);
   };
 }
@@ -180,8 +178,7 @@ Effect* EffectFactory::buildWipeEffect(
  */
 Effect* EffectFactory::buildBlindEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
-  boost::shared_ptr<Surface> dst,
-  int width, int height, int time, 
+  boost::shared_ptr<Surface> dst, const Size& screenSize, int time, 
   int direction, int xsize, int ysize)
 {
   switch(direction)
@@ -189,22 +186,22 @@ Effect* EffectFactory::buildBlindEffect(
   case TOP_TO_BOTTOM:
     if(xsize == 0 && ysize > 0)
       xsize = ysize;
-    return new BlindTopToBottomEffect(machine, src, dst, width, height, 
+    return new BlindTopToBottomEffect(machine, src, dst, screenSize, 
                                       time, xsize);
   case BOTTOM_TO_TOP:
     if(xsize == 0 && ysize > 0)
       xsize = ysize;
-    return new BlindBottomToTopEffect(machine, src, dst, width, height, 
+    return new BlindBottomToTopEffect(machine, src, dst, screenSize, 
                                       time, xsize);
   case LEFT_TO_RIGHT:
     if(ysize == 0 && xsize > 0)
       ysize = xsize;
-    return new BlindLeftToRightEffect(machine, src, dst, width, height, 
+    return new BlindLeftToRightEffect(machine, src, dst, screenSize, 
                                       time, ysize);
   case RIGHT_TO_LEFT:
     if(ysize == 0 && xsize > 0)
       ysize = xsize;
-    return new BlindRightToLeftEffect(machine, src, dst, width, height, 
+    return new BlindRightToLeftEffect(machine, src, dst, screenSize, 
                                       time, ysize);
 
   default:
@@ -213,7 +210,7 @@ Effect* EffectFactory::buildBlindEffect(
          << " Bottom effect." << endl;
     if(xsize == 0 && ysize > 0)
       xsize = ysize;
-    return new BlindTopToBottomEffect(machine, src, dst, width, height, 
+    return new BlindTopToBottomEffect(machine, src, dst, screenSize, 
                                      time, xsize);
   };
 }

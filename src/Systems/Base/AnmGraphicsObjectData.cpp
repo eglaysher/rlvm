@@ -165,8 +165,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   // Read the frame list
   const char* buf = data + 0xb8;
   // POINT
-  Size screenSize;
-  screenSize = getScreenSize(machine.system().gameexe());
+  Size screenSize = getScreenSize(machine.system().gameexe());
   for(int i = 0; i < frames_len; ++i)
   {
     Frame f;
@@ -308,7 +307,7 @@ int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
                                       const GraphicsObject& rp) 
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
-  int width = rect.x2 - rect.x1;
+  int width = rect.rect.width();
   return int((rp.width() / 100.0f) * width);
 }
 
@@ -318,7 +317,7 @@ int AnmGraphicsObjectData::pixelHeight(RLMachine& machine,
                                        const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
-  int height = rect.y2 - rect.y1;
+  int height = rect.rect.height();
   return int((rp.height() / 100.0f) * height);
 }
 

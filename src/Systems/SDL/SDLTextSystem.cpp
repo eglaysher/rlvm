@@ -241,7 +241,7 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   else
   {
     // Allocate a 1x1 SDL_Surface
-    return shared_ptr<Surface>(new SDLSurface(buildNewSurface(1, 1)));
+    return shared_ptr<Surface>(new SDLSurface(buildNewSurface(Size(1, 1))));
   }
 }
 

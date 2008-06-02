@@ -28,6 +28,8 @@
 #ifndef __TextWindow_hpp__
 #define __TextWindow_hpp__
 
+#include "Systems/Base/Rect.hpp"
+
 #include <vector>
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -159,7 +161,8 @@ protected:
   /// 0 or 1.)
   ///
   /// @{
-  int m_keycursorType, m_keycursorX, m_keycursorY;
+  int m_keycursorType;
+  Point m_keycursorPos;
   /// @}
 
   /** 
@@ -279,8 +282,7 @@ public:
    */
   void setWindowPosition(const std::vector<int>& posData);
 
-  int textWindowWidth() const;
-  int textWindowHeight() const;
+  Size textWindowSize() const;
 
   int boxX1() const;
   int boxY1() const;
@@ -322,8 +324,7 @@ public:
    */
   void setKeycurMod(const std::vector<int>& keycur);
 
-  int keycursorX() const;
-  int keycursorY() const;
+  Point keycursorPosition() const;
   /// @}
 
   /**

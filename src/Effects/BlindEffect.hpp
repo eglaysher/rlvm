@@ -66,7 +66,7 @@ protected:
 public:
   BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst, 
-             int width, int height, int time, int blindSize);
+             const Size& screenSize, int time, int blindSize);
 
   ~BlindEffect();
 };
@@ -85,7 +85,7 @@ protected:
 public:
   BlindTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst, 
-             int width, int height, int time, int blindSize);
+             const Size& screenSize, int time, int blindSize);
 };
 
 // -----------------------------------------------------------------------
@@ -102,7 +102,7 @@ protected:
 public:
   BlindBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst, 
-             int width, int height, int time, int blindSize);
+             const Size& screenSize, int time, int blindSize);
 };
 
 // -----------------------------------------------------------------------
@@ -119,7 +119,7 @@ protected:
 public:
   BlindLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst, 
-             int width, int height, int time, int blindSize);
+             const Size& screenSize, int time, int blindSize);
 };
 
 // -----------------------------------------------------------------------
@@ -136,7 +136,7 @@ protected:
 public:
   BlindRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst, 
-             int width, int height, int time, int blindSize);
+             const Size& screenSize, int time, int blindSize);
 };
 
 #endif

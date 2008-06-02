@@ -96,7 +96,7 @@ public:
                               boost::shared_ptr<Surface> dst,
                               ScrollSquashSlideDrawer* drawer,
                               ScrollSquashSlideEffectTypeBase* effectType,
-                              int width, int height, int time);
+                              const Size& s, int time);
 
   virtual ~ScrollSquashSlideBaseEffect();
 };

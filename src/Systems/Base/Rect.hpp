@@ -1,9 +1,37 @@
 // -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi:tw=80:et:ts=2:sts=2
 //
+// -----------------------------------------------------------------------
+//
+// This file is part of RLVM, a RealLive virtual machine clone.
+//
+// -----------------------------------------------------------------------
+//
+// Copyright (C) 2008 Elliot Glaysher
+//  
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//  
+// -----------------------------------------------------------------------
 
 #ifndef __Rect_hpp__
 #define __Rect_hpp__
+
+#include <boost/serialization/access.hpp>
+#include <iosfwd>
+
+class Size;
 
 class Point
 {
@@ -13,6 +41,8 @@ public:
 
   int x() const { return x_; }
   int y() const { return y_; }
+
+  bool isEmpty() const { return x_ == 0 && y_ == 0; }
 
   Point& operator+=(const Point& rhs) {
     x_ += rhs.x_;
@@ -30,9 +60,10 @@ public:
     return Point(x_ + rhs.x_, y_ + rhs.y_);
   }
 
-  Point operator-(const Point& rhs) const {
-    return Point(x_ - rhs.x_, y_ - rhs.y_);
-  }
+  Point operator+(const Size& rhs) const;
+  Point operator-(const Size& rhs) const;
+
+  Size operator-(const Point& rhs) const;
 
   bool operator==(const Point& rhs) const {
     return x_ == rhs.x_ && y_ == rhs.y_;
@@ -45,6 +76,13 @@ public:
 private:
   int x_;
   int y_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    ar & x_ & y_;
+  }
 };
 
 /**
@@ -58,6 +96,11 @@ public:
 
   int width() const { return width_; }
   int height() const { return height_; }
+
+  void setWidth(const int width) { width_ = width; }
+  void setHeight(const int height) { height_ = height; }
+
+  bool isEmpty() const { return width_ == 0 && height_ == 0; }
 
   Size& operator+=(const Size& rhs) {
     width_ += rhs.width_;
@@ -79,6 +122,11 @@ public:
     return Size(width_ - rhs.width_, height_ - rhs.height_);
   }
 
+  Size operator*(float factor) const {
+    return Size(static_cast<int>(width_ * factor), 
+                static_cast<int>(height_ * factor));
+  }
+
   bool operator==(const Size& rhs) const {
     return width_ == rhs.width_ && height_ == rhs.height_;
   }
@@ -87,9 +135,19 @@ public:
     return width_ != rhs.width_ && height_ != rhs.height_;
   }
 
+  /// Returns a size that is the max of both size's widths and heights.
+  Size sizeUnion(const Size& rhs) const;
+
 private:
   int width_;
   int height_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    ar & width_ & height_;
+  }
 };
 
 /**
@@ -99,12 +157,17 @@ class Rect
 {
 public: 
   Rect() {}
-//  Rect(const Point& point1, const Point& point2);
+  Rect(const Point& point1, const Point& point2)
+    : origin_(point1), size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
   Rect(const Point& origin, const Size& size) : origin_(origin), size_(size) {}
+  Rect(const int x, const int y, const int width, const int height)
+    : origin_(x, y), size_(width, height) {}
+  Rect(const int x, const int y, const Size& size)
+    : origin_(x, y), size_(size) {}
 
   int x() const { return origin_.x(); }
   int y() const { return origin_.y(); }
-  const Point& origin() { return origin_; }
+  const Point& origin() const { return origin_; }
 
   int x2() const { return origin_.x() + size_.width(); }
   int y2() const { return origin_.y() + size_.height(); }
@@ -112,6 +175,8 @@ public:
   int width() const { return size_.width(); }
   int height() const { return size_.height(); }
   const Size& size() const { return size_; }
+
+  bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }  
 
   /**
    * Whether loc is inside this Rect.
@@ -121,7 +186,33 @@ public:
 private:
   Point origin_;
   Size size_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    ar & origin_ & size_;
+  }
 };	// end of class Rect
 
+// -----------------------------------------------------------------------
+
+inline Point Point::operator+(const Size& rhs) const {
+  return Point(x_ + rhs.width(), y_ + rhs.height());
+}
+
+inline Point Point::operator-(const Size& rhs) const {
+  return Point(x_ - rhs.width(), y_ - rhs.height());
+}
+
+inline Size Point::operator-(const Point& rhs) const {
+  return Size(x_ - rhs.x_, y_ - rhs.y_);
+}
+
+// -----------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& os, const Size& s);
+std::ostream& operator<<(std::ostream& os, const Point& p);
+std::ostream& operator<<(std::ostream& os, const Rect& r);
 
 #endif

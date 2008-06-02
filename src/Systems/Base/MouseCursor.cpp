@@ -27,10 +27,12 @@
 
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/Surface.hpp"
+#include <iostream>
 
-const int CURSOR_X_OFFSET = 8;
-const int CURSOR_Y_OFFSET = 8;
-const int CURSOR_SIZE = 32;
+const int CURSOR_SIZE_INT = 32;
+const Size CURSOR_SIZE = Size(CURSOR_SIZE_INT, CURSOR_SIZE_INT);
+const Rect CURSOR_RECT = Rect(8, 8, CURSOR_SIZE);
+
 const int HOTSPOTMASK_X_OFFSET = 8;
 const int HOTSPOTMASK_Y_OFFSET = 48;
 
@@ -45,13 +47,10 @@ MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursorSurface)
   findHotspot();
 
   int alphaR, alphaG, alphaB;
-  cursorSurface->getDCPixel(0, 0, alphaR, alphaG, alphaB);
+  cursorSurface->getDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
 
   m_cursorSurface = 
-    cursorSurface->clipAsColorMask(
-      CURSOR_X_OFFSET, CURSOR_Y_OFFSET,
-      CURSOR_X_OFFSET + CURSOR_SIZE, CURSOR_Y_OFFSET + CURSOR_SIZE,
-      alphaR, alphaG, alphaB);
+    cursorSurface->clipAsColorMask(CURSOR_RECT, alphaR, alphaG, alphaB);
 }
 
 // -----------------------------------------------------------------------
@@ -63,18 +62,17 @@ MouseCursor::~MouseCursor() {}
 void MouseCursor::renderHotspotAt(RLMachine& machine, 
                                   const Point& mouseLocation)
 {
-  Point render = getTopLeftForHotspotAt(mouseLocation);
-
+  Point renderPoint = getTopLeftForHotspotAt(mouseLocation);
   m_cursorSurface->renderToScreen(
-    0, 0, CURSOR_SIZE, CURSOR_SIZE,
-    render.x(), render.y(), render.x() + CURSOR_SIZE, render.y() + CURSOR_SIZE);
+    Rect(0, 0, CURSOR_SIZE),
+    Rect(renderPoint, CURSOR_SIZE));
 }
 
 // -----------------------------------------------------------------------
 
 Point MouseCursor::getTopLeftForHotspotAt(const Point& mouseLocation)
 {
-  return mouseLocation - m_hotspotLocation;
+  return mouseLocation - m_hotspotOffset;
 }
 
 // -----------------------------------------------------------------------
@@ -85,18 +83,18 @@ void MouseCursor::findHotspot()
 {
   int r, g, b;
 
-  for(int x = HOTSPOTMASK_X_OFFSET; x < HOTSPOTMASK_X_OFFSET + CURSOR_SIZE;
+  for(int x = HOTSPOTMASK_X_OFFSET; x < HOTSPOTMASK_X_OFFSET + CURSOR_SIZE_INT;
       ++x)
   {
-    for(int y = HOTSPOTMASK_Y_OFFSET; y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE;
+    for(int y = HOTSPOTMASK_Y_OFFSET; y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE_INT;
         ++y)
     {
-      m_cursorSurface->getDCPixel(x, y, r, g, b);
+      m_cursorSurface->getDCPixel(Point(x, y), r, g, b);
 
       if(r == 255 && g == 255 && b == 255)
       {
-        m_hotspotLocation = 
-          Point(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
+        m_hotspotOffset = 
+          Size(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
         break;
       }
     }

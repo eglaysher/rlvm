@@ -29,6 +29,8 @@
 #ifndef __GraphicsStackFrame_hpp__
 #define __GraphicsStackFrame_hpp__
 
+#include "Systems/Base/Rect.hpp"
+
 #include <string>
 #include <boost/serialization/access.hpp>
 
@@ -49,10 +51,10 @@ private:
   void serialize(Archive& ar, unsigned int version)
   {
     ar & m_commandName & m_hasFilename & m_fileName & m_hasSourceDC 
-      & m_sourceDC & m_hasSourceCoordinates & m_sourceX & m_sourceY 
-      & m_sourceX2 & m_sourceY2 & m_hasTargetDC & m_targetDC 
-      & m_hasTargetCoordinates & m_targetX & m_targetY & m_targetX2 
-      & m_targetY2 & m_hasRGB & m_r & m_g & m_b & m_hasOpacity 
+      & m_sourceDC & m_hasSourceCoordinates & m_sourceRect 
+      & m_hasTargetDC & m_targetDC 
+      & m_hasTargetCoordinates & m_targetPoint 
+      & m_hasRGB & m_r & m_g & m_b & m_hasOpacity
       & m_opacity & m_hasMask & m_mask;
   }
 
@@ -65,13 +67,13 @@ private:
   int m_sourceDC;
 
   bool m_hasSourceCoordinates;
-  int m_sourceX, m_sourceY, m_sourceX2, m_sourceY2;
+  Rect m_sourceRect;
 
   bool m_hasTargetDC;
   int m_targetDC;
 
   bool m_hasTargetCoordinates;
-  int m_targetX, m_targetY, m_targetX2, m_targetY2;
+  Point m_targetPoint;
 
   bool m_hasRGB;
   int m_r, m_g, m_b;
@@ -99,23 +101,16 @@ public:
   GraphicsStackFrame& setSourceDC(int in);
 
   bool hasSourceCoordinates() const { return m_hasSourceCoordinates; }
-  int sourceX1() const { return m_sourceX; }
-  int sourceY1() const { return m_sourceY; }
-  int sourceX2() const { return m_sourceX2; }
-  int sourceY2() const { return m_sourceY2; }
-  GraphicsStackFrame& setSourceCoordinates(int x1, int y1, int x2, int y2);
+  Rect sourceRect() const { return m_sourceRect; }
+  GraphicsStackFrame& setSourceCoordinates(const Rect& in);
 
   bool hasTargetDC() const { return m_hasTargetDC; }
   int targetDC() const { return m_targetDC; }
   GraphicsStackFrame& setTargetDC(int in);
 
   bool hasTargetCoordinates() const { return m_hasTargetCoordinates; }
-  int targetX1() const { return m_targetX; }
-  int targetY1() const { return m_targetY; }
-  int targetX2() const { return m_targetX2; }
-  int targetY2() const { return m_targetY2; }
-  GraphicsStackFrame& setTargetCoordinates(int x1, int y1);
-  GraphicsStackFrame& setTargetCoordinates(int x1, int y1, int x2, int y2);
+  Point targetPoint() const { return m_targetPoint; }
+  GraphicsStackFrame& setTargetCoordinates(const Point& targetPoint);
 
   bool hasRGB() const { return m_hasRGB; }
   int r() const { return m_r; }

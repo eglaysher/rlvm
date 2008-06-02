@@ -140,7 +140,7 @@ void SDLTextWindow::clearWin()
   m_fontBlue = m_defaultBlue;
 
   // Allocate the text window surface
-  m_surface.reset(new SDLSurface(textWindowWidth(), textWindowHeight()));
+  m_surface.reset(new SDLSurface(textWindowSize()));
   m_surface->fill(0, 0, 0, 0);
 }
 
@@ -186,9 +186,9 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     // at the start of a line.
     //
     bool charWillFitOnLine = m_insertionPointX + tmp->w + m_xSpacing <=
-      textWindowWidth();
+      textWindowSize().width();
     bool nextCharWillFitOnLine = m_insertionPointX + 2*(tmp->w + m_xSpacing) <=
-      textWindowWidth();
+      textWindowSize().width();
     if(!charWillFitOnLine || 
        (charWillFitOnLine && !isKinsoku(curCodepoint) &&
         !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
@@ -200,12 +200,11 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     }
 
     // Render glyph to surface
-    int w = tmp->w;
-    int h = tmp->h;
+    Size s(tmp->w,tmp->h);
     m_surface->blitFROMSurface(
-      tmp, 0, 0, w, h,
-      m_insertionPointX, m_insertionPointY,
-      m_insertionPointX + w, m_insertionPointY + h,
+      tmp, 
+      Rect(Point(0, 0), s),
+      Rect(Point(m_insertionPointX, m_insertionPointY), s),
       255);
 
     // Move the insertion point forward one character
@@ -312,29 +311,26 @@ void SDLTextWindow::render(RLMachine& machine)
 {
   if(m_surface && isVisible())
   {
-    int width = m_surface->width();
-    int height = m_surface->height();
+    Size surfaceSize = m_surface->size();
 
+    // POINT
     int boxX = boxX1();
     int boxY = boxY1();
 
     if(m_wakuBacking)
     {
-      int backingWidth = m_wakuBacking->width();
-      int backingHeight = m_wakuBacking->height();
-      m_wakuBacking->renderToScreenAsColorMask(0, 0, backingWidth, backingHeight,
-                                               boxX, boxY, boxX + backingWidth,
-                                               boxY + backingHeight,
-                                               m_r, m_g, m_b, m_alpha, m_filter);
+      Size backingSize = m_wakuBacking->size();
+      m_wakuBacking->renderToScreenAsColorMask(
+        Rect(Point(0, 0), backingSize),
+        Rect(Point(boxX, boxY), backingSize),
+        m_r, m_g, m_b, m_alpha, m_filter);
     }
 
     if(m_wakuMain)
     {
-      int mainWidth = m_wakuMain->width();
-      int mainHeight = m_wakuMain->height();
-      m_wakuMain->renderToScreen(0, 0, mainWidth, mainHeight,
-                                 boxX, boxY, boxX + mainWidth,
-                                 boxY + mainHeight, 255);
+      Size mainSize = m_wakuMain->size();
+      m_wakuMain->renderToScreen(
+        Rect(Point(0, 0), mainSize), Rect(Point(boxX, boxY), mainSize), 255);
     }
 
     if(m_wakuButton)
@@ -351,8 +347,8 @@ void SDLTextWindow::render(RLMachine& machine)
     else
     {
       m_surface->renderToScreen(
-        0, 0, width, height,
-        x, y, x + width, y + height, 
+        Rect(Point(0, 0), surfaceSize),
+        Rect(Point(x, y), surfaceSize),
         255);
     }
   }
@@ -461,9 +457,9 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
       int(m_rubyBeginPoint + ((endPoint - m_rubyBeginPoint) * 0.5f) - 
           (w * 0.5f));
     m_surface->blitFROMSurface(
-      tmp, 0, 0, w, h,
-      widthStart, heightLocation,
-      widthStart + w, heightLocation + h,
+      tmp, 
+      Rect(Point(0, 0), Size(w, h)),
+      Rect(Point(widthStart, heightLocation), Size(w, h)),
       255);
     SDL_FreeSurface(tmp);
 
@@ -487,11 +483,12 @@ void SDLTextWindow::addSelectionItem(
   SDL_Surface* inverted = AlphaInvert(normal);
 
   // Figure out xpos and ypos
+  // POINT
   SelectionElement* element = new SelectionElement(
     shared_ptr<Surface>(new SDLSurface(normal)),
     shared_ptr<Surface>(new SDLSurface(inverted)),
     selectionCallback(), getNextSelectionID(),
-    textX1() + m_insertionPointX, textY1() + m_insertionPointY);
+    Point(textX1() + m_insertionPointX, textY1() + m_insertionPointY));
   
   m_insertionPointY += (m_fontSizeInPixels + m_ySpacing + m_rubySize);
   m_selections.push_back(element);

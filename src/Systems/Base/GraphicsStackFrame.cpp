@@ -74,13 +74,10 @@ GraphicsStackFrame& GraphicsStackFrame::setSourceDC(int in)
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame& GraphicsStackFrame::setSourceCoordinates(
-  int x1, int y1, int x2, int y2)
+  const Rect& srcRect)
 {
   m_hasSourceCoordinates = true;
-  m_sourceX = x1;
-  m_sourceY = y1;
-  m_sourceX2 = x2;
-  m_sourceY2 = y2;
+  m_sourceRect = srcRect;
   return *this;
 }
 
@@ -95,26 +92,11 @@ GraphicsStackFrame& GraphicsStackFrame::setTargetDC(int in)
 
 // -----------------------------------------------------------------------
 
-GraphicsStackFrame& GraphicsStackFrame::setTargetCoordinates(int x1, int y1)
-{
-  m_hasTargetCoordinates = true;
-  m_targetX = x1;
-  m_targetY = y1;
-  m_targetX2 = -1;
-  m_targetY2 = -1;
-  return *this;
-}
-
-// -----------------------------------------------------------------------
-
 GraphicsStackFrame& GraphicsStackFrame::setTargetCoordinates(
-  int x1, int y1, int x2, int y2)
+  const Point& targetPoint)
 {
   m_hasTargetCoordinates = true;
-  m_targetX = x1;
-  m_targetY = y1;
-  m_targetX2 = x2;
-  m_targetY2 = y2;
+  m_targetPoint = targetPoint;
   return *this;
 }
 

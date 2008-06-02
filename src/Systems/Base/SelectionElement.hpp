@@ -47,9 +47,8 @@ private:
 
   int m_id;
 
-  // Location of the button
-  // POINT
-  int m_x, m_y;
+  // Upper right location of the button
+  Point m_pos;
 
   boost::shared_ptr<Surface> m_normalImage;
   boost::shared_ptr<Surface> m_highlightedImage;
@@ -57,13 +56,13 @@ private:
   /// Callback function for when item is selected.
   boost::function<void(int)> m_selectionCallback;
 
-  bool isHighlighted(int x, int y);
+  bool isHighlighted(const Point& p);
 
 public:
   SelectionElement(const boost::shared_ptr<Surface>& normalImage, 
                    const boost::shared_ptr<Surface>& highlightedImage,
                    const boost::function<void(int)>& selectionCallback,
-                   int id, int x, int y);
+                   int id, const Point& pos);
   ~SelectionElement();
 
   void setSelectionCallback(const boost::function<void(int)>& func);

@@ -48,8 +48,8 @@ SelectionElement::SelectionElement(
   const boost::shared_ptr<Surface>& normalImage, 
   const boost::shared_ptr<Surface>& highlightedImage,
   const boost::function<void(int)>& selectionCallback,
-  int id, int xpos, int ypos)
-  : m_isHighlighted(false), m_id(id), m_x(xpos), m_y(ypos),
+  int id, const Point& pos)
+  : m_isHighlighted(false), m_id(id), m_pos(pos),
     m_normalImage(normalImage),
     m_highlightedImage(highlightedImage),
     m_selectionCallback(selectionCallback)
@@ -73,11 +73,9 @@ void SelectionElement::setSelectionCallback(
 
 // -----------------------------------------------------------------------
 
-bool SelectionElement::isHighlighted(int x, int y)
+bool SelectionElement::isHighlighted(const Point& p)
 {
-  // POINT (more intersection code)
-  return x >= m_x && x <= m_x + m_normalImage->width() &&
-    y >= m_y && y <= m_y + m_normalImage->height();
+  return Rect(m_pos, m_normalImage->size()).contains(p);
 }
 
 // -----------------------------------------------------------------------
@@ -85,7 +83,7 @@ bool SelectionElement::isHighlighted(int x, int y)
 void SelectionElement::setMousePosition(RLMachine& machine, const Point& pos)
 {
   bool startValue = m_isHighlighted;
-  m_isHighlighted = isHighlighted(pos.x(), pos.y());
+  m_isHighlighted = isHighlighted(pos);
 
   if(startValue != m_isHighlighted)
     machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -96,7 +94,7 @@ void SelectionElement::setMousePosition(RLMachine& machine, const Point& pos)
 bool SelectionElement::handleMouseClick(
   RLMachine& machine, const Point& pos, bool pressed)
 {
-  if(pressed == false && isHighlighted(pos.x(), pos.y()))
+  if(pressed == false && isHighlighted(pos))
   {
     // Released within the button
     if(m_selectionCallback)
@@ -119,10 +117,8 @@ void SelectionElement::render()
   else
     target = m_normalImage;
 
-  int width = target->width();
-  int height = target->height();
+  Size s = target->size();
 
-  target->renderToScreen(
-    0, 0, width, height,
-    m_x, m_y, m_x + width, m_y + height, 255);
+  // POINT
+  target->renderToScreen(Rect(Point(0, 0), s), Rect(m_pos, s), 255);
 }

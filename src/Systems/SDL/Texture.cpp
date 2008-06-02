@@ -66,10 +66,10 @@ unsigned int Texture::s_screenHeight = 0;
 
 // -----------------------------------------------------------------------
 
-void Texture::SetScreenSize(unsigned int width, unsigned int height)
+void Texture::SetScreenSize(const Size& s)
 {
-  s_screenWidth = width;
-  s_screenHeight = height;
+  s_screenWidth = s.width();
+  s_screenHeight = s.height();
 }
 
 // -----------------------------------------------------------------------
@@ -270,11 +270,10 @@ void Texture::buildShader()
 // -----------------------------------------------------------------------
 
 // This is really broken and brain dead.
-void Texture::renderToScreen(int x1, int y1, int x2, int y2,
-                             int dx1, int dy1, int dx2, int dy2,
-                             int opacity)
+void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
 {
-  float fdx1 = dx1, fdy1 = dy1, fdx2 = dx2, fdy2 = dy2;
+  int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
+  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -285,18 +284,15 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
   float thisx2 = float(x2) / m_textureWidth;
   float thisy2 = float(y2) / m_textureHeight;
 
-   if(m_isUpsideDown)
-   {
-     thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
-     thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
-   }
+  if(m_isUpsideDown)
+  {
+    thisy1 = float(m_logicalHeight - y1) / m_textureHeight;
+    thisy2 = float(m_logicalHeight - y2) / m_textureHeight;
+  }
 
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
-  // Blend when we have less opacity
-//  if(opacity < 255)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glBegin(GL_QUADS);
   {
     glColor4ub(255, 255, 255, opacity);
@@ -322,8 +318,7 @@ void Texture::renderToScreen(int x1, int y1, int x2, int y2,
  *       cstrs over to the new exception class.
  */
 void Texture::renderToScreenAsColorMask(
-  int x1, int y1, int x2, int y2,
-  int dx1, int dy1, int dx2, int dy2,
+  const Rect& src, const Rect& dst,
   int r, int g, int b, int alpha, int filter)
 {
   if(filter == 0)
@@ -331,32 +326,28 @@ void Texture::renderToScreenAsColorMask(
     if(GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
     {
       renderToScreenAsColorMask_subtractive_glsl(
-        x1, y1, x2, y2,
-        dx1, dy1, dx2, dy2, r, g, b, alpha);
+        src, dst, r, g, b, alpha);
     }
     else
     {
       renderToScreenAsColorMask_subtractive_fallback(
-        x1, y1, x2, y2,
-        dx1, dy1, dx2, dy2, r, g, b, alpha);
+        src, dst, r, g, b, alpha);
     }
   }
   else
   {
     renderToScreenAsColorMask_additive(
-        x1, y1, x2, y2,
-        dx1, dy1, dx2, dy2, r, g, b, alpha);      
+      src, dst, r, g, b, alpha);      
   }
 }
 
 // -----------------------------------------------------------------------
 
 void Texture::renderToScreenAsColorMask_subtractive_glsl(
-  int x1, int y1, int x2, int y2,
-  int dx1, int dy1, int dx2, int dy2,
-  int r, int g, int b, int alpha)
+  const Rect& src, const Rect& dst, int r, int g, int b, int alpha)
 {
-  float fdx1 = dx1, fdy1 = dy1, fdx2 = dx2, fdy2 = dy2;
+  int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
+  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -467,11 +458,10 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
  * graphics cards > 5 years old.
  */
 void Texture::renderToScreenAsColorMask_subtractive_fallback(
-  int x1, int y1, int x2, int y2,
-  int dx1, int dy1, int dx2, int dy2,
-  int r, int g, int b, int alpha)
+  const Rect& src, const Rect& dst, int r, int g, int b, int alpha)
 {
-  float fdx1 = dx1, fdy1 = dy1, fdx2 = dx2, fdy2 = dy2;
+  int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
+  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -515,11 +505,10 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
 // -----------------------------------------------------------------------
 
 void Texture::renderToScreenAsColorMask_additive(
-  int x1, int y1, int x2, int y2,
-  int dx1, int dy1, int dx2, int dy2,
-  int r, int g, int b, int alpha)
+  const Rect& src, const Rect& dst, int r, int g, int b, int alpha)
 {
-  float fdx1 = dx1, fdy1 = dy1, fdx2 = dx2, fdy2 = dy2;
+  int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
+  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -557,12 +546,12 @@ void Texture::renderToScreenAsColorMask_additive(
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreen(int x1, int y1, int x2, int y2,
-                             int dx1, int dy1, int dx2, int dy2,
+void Texture::renderToScreen(const Rect& src, const Rect& dst,
                              const int opacity[4])
 {
   // For the time being, we are dumb and assume that it's one texture
-  float fdx1 = dx1, fdy1 = dy1, fdx2 = dx2, fdy2 = dy2;
+  int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
+  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
   
@@ -606,15 +595,16 @@ void Texture::renderToScreenAsObject(
 {
   // Figure out the source to clip out of the image
   int pattNo = go.pattNo();
-  int xSrc1 = surface.getPattern(pattNo).x1;
-  int ySrc1 = surface.getPattern(pattNo).y1;
-  int xSrc2 = surface.getPattern(pattNo).x2;
-  int ySrc2 = surface.getPattern(pattNo).y2;
+  int xSrc1 = surface.getPattern(pattNo).rect.x();
+  int ySrc1 = surface.getPattern(pattNo).rect.y();
+  int xSrc2 = surface.getPattern(pattNo).rect.x2();
+  int ySrc2 = surface.getPattern(pattNo).rect.y2();
   int xOrigin = surface.getPattern(pattNo).originX;
   int yOrigin = surface.getPattern(pattNo).originY;
 
   if(overrides.overrideSource)
   {
+    // POINT
     xSrc1 = overrides.srcX1;
     ySrc1 = overrides.srcY1;
     xSrc2 = overrides.srcX2;
@@ -786,6 +776,7 @@ void Texture::rawRenderQuad(const int srcCoords[8],
 bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2, 
                            float& dx1, float& dy1, float& dx2, float& dy2)
 {
+  // POINT
   using std::max;
   using std::min;
 
@@ -793,10 +784,7 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
   // Output: false if this doesn't intersect with the texture piece we hold.
   //         true otherwise, and set the local coordinates
   int w1 = x2 - x1;
-//  int w2 = m_logicalWidth;
-
   int h1 = y2 - y1;
-//  int h2 = m_logicalHeight;
 
   // First thing we do is an intersection test to see if this input
   // range intersects the virtual range this Texture object holds.

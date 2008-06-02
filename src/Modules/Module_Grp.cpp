@@ -104,8 +104,8 @@ void blitDC1toDC0(RLMachine& machine)
   // Blit DC1 onto DC0, with full opacity, and end the operation
   src->blitToSurface(
     *dst,
-    0, 0, src->width(), src->height(),
-    0, 0, dst->width(), dst->height(), 255);
+    Rect(0, 0, src->size()),
+    Rect(0, 0, dst->size()), 255);
 
   // Now force a screen refresh
   machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
@@ -132,27 +132,24 @@ void blitDC1toDC0(RLMachine& machine)
  * @param useAlpha Whether to use the alpha
  */
 void loadImageToDC1(GraphicsSystem& graphics,
-					const fs::path& fileName,
-                    int x, int y, int width, int height,
-                    int dx, int dy, int opacity, bool useAlpha)
+                    const fs::path& fileName,
+                    const Rect& srcRect, 
+                    const Point& dest,
+                    int opacity, bool useAlpha)
 {
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> dc1 = graphics.getDC(1);
 
   // Inclusive ranges are a monstrosity to computer people
-  width++;
-  height++;
+  Size size = srcRect.size() + Size(1, 1);
 
-  dc0->blitToSurface(*dc1,
-                     0, 0, dc0->width(), dc0->height(),
-                     0, 0, dc0->width(), dc0->height(),
-                     255);
+  dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
 
   // Load the section of the image file on top of dc1
   shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(fileName));
   surface->blitToSurface(*graphics.getDC(1),
-                         x, y, width, height,
-                         dx, dy, width, height,
+                         Rect(srcRect.origin(), size),
+                         Rect(dest, size),
                          opacity, useAlpha);
 }
 
@@ -160,24 +157,21 @@ void loadImageToDC1(GraphicsSystem& graphics,
 
 void loadDCToDC1(GraphicsSystem& graphics,
                  int srcDc,
-                 int x, int y, int width, int height,
-                 int dx, int dy, int opacity)
+                 const Rect& srcRect, 
+                 const Point& dest,
+                 int opacity)
 {
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> dc1 = graphics.getDC(1);
   shared_ptr<Surface> src = graphics.getDC(srcDc);
 
   // Inclusive ranges are a monstrosity to computer people
-  width++;
-  height++;
+  Size size = srcRect.size() + Size(1, 1);
 
-  dc0->blitToSurface(*dc1,
-                     0, 0, dc0->width(), dc0->height(),
-                     0, 0, dc0->width(), dc0->height(),
-                     255);
+  dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
   src->blitToSurface(*dc1,
-                     x, y, width, height,
-                     dx, dy, width, height,
+                     Rect(srcRect.origin(), size),
+                     Rect(dest, size),
                      opacity, false);
 }
 
@@ -186,17 +180,16 @@ void loadDCToDC1(GraphicsSystem& graphics,
 void handleOpenBgFileName(
   RLMachine& machine,
   std::string fileName,
-  int x1, int y1, int x2, int y2,
-  int dx, int dy, int opacity, bool useAlpha)
+  const Rect& srcRect, const Point& dest, int opacity, bool useAlpha)
 {
   GraphicsSystem& graphics = machine.system().graphics();
 
   if(fileName != "?")
   {
     if(fileName == "???") fileName = graphics.defaultGrpName();
-	fs::path filePath = findFile(machine, fileName);
+    fs::path filePath = findFile(machine, fileName);
     
-    loadImageToDC1(graphics, filePath, x1, y1, x2, y2, dx, dy, 
+    loadImageToDC1(graphics, filePath, srcRect, dest,
                    opacity, useAlpha);
   }
 }
@@ -211,7 +204,7 @@ void handleOpenBgFileName(
  */
 struct SPACE {
   virtual ~SPACE() {}
-  virtual void translateToRec(int x1, int y1, int& x2, int& y2) = 0;
+  virtual Rect makeRect(int x1, int y1, int x2, int y2) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -236,10 +229,9 @@ struct GRP_SPACE : public SPACE {
    * @param x2 X2. In place changed to width.
    * @param y2 Y2. In place changed to height.
    */
-  virtual void translateToRec(int x1, int y1, int& x2, int& y2)
+  virtual Rect makeRect(int x1, int y1, int x2, int y2)
   {
-    x2 = x2 - x1;
-    y2 = y2 - y1;
+    return Rect(Point(x1, x2), Size(x2 - x1, y2 - y1));
   }
 
   static SPACE& get() {
@@ -254,8 +246,9 @@ struct REC_SPACE : public SPACE {
   /** 
    * Don't do anything; leave the incoming coordinates as they are.
    */
-  virtual void translateToRec(int x1, int y1, int& x2, int& y2)
+  virtual Rect makeRect(int x1, int y1, int x2, int y2)
   {
+    return Rect(Point(x1, y1), Size(x2, y2));
   }
 
   static SPACE& get() {
@@ -278,7 +271,7 @@ struct REC_SPACE : public SPACE {
 struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                                          IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
-    machine.system().graphics().allocateDC(dc, width, height);
+    machine.system().graphics().allocateDC(dc, Size(width, height));
   }
 };
 
@@ -320,17 +313,16 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     graphics.addGraphicsStackFrame(GRP_LOAD)
       .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
 
-	fs::path filepath = findFile(machine, filename);
+    fs::path filepath = findFile(machine, filename);
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filepath));
 
-    if(dc != 0 && dc != 1)
-      graphics.allocateDC(dc,
-                          max(surface->width(), graphics.screenWidth()),
-                          max(surface->height(), graphics.screenHeight()));
+    if(dc != 0 && dc != 1) {
+      Size maxSize = graphics.screenSize().sizeUnion(surface->size());
+      graphics.allocateDC(dc, maxSize);
+    }
 
     surface->blitToSurface(*graphics.getDC(dc),
-                           0, 0, surface->width(), surface->height(),
-                           0, 0, surface->width(), surface->height(),
+                           surface->rect(), surface->rect(),
                            opacity, m_useAlpha);
 
   }
@@ -360,15 +352,16 @@ struct Grp_load_3 : public RLOp_Void_9<
 	fs::path filepath = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filepath));
-    m_space.translateToRec(x1, y1, x2, y2);
+    Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
+    Rect destRect = Rect(dx, dy, srcRect.size());
 
-    if(dc != 0 && dc != 1)
-      graphics.allocateDC(dc,
-                          max(surface->width(), graphics.screenWidth()),
-                          max(surface->height(), graphics.screenHeight()));
+    if(dc != 0 && dc != 1) {
+      Size maxSize = graphics.screenSize().sizeUnion(surface->size());
+      graphics.allocateDC(dc, maxSize);
+    }
 
-    surface->blitToSurface(*graphics.getDC(dc),
-                           x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);    
+    surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
+                           opacity, m_useAlpha);    
   }
 };
 
@@ -385,8 +378,9 @@ struct Grp_display_1
 
     GraphicsSystem& graphics = machine.system().graphics();
     loadDCToDC1(graphics, dc,
-                selEffect[0], selEffect[1], selEffect[2], selEffect[3],
-                selEffect[4], selEffect[5], opacity);
+                Rect(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
+                Point(selEffect[4], selEffect[5]),
+                opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -422,14 +416,13 @@ struct Grp_display_3 : public RLOp_Void_9<
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    m_space.translateToRec(x1, y1, x2, y2);
-    loadDCToDC1(graphics, dc, x1, y1, x2, y2, dx, dy, opacity);
+    Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
+    loadDCToDC1(graphics, dc, srcRect, Point(dx, dy), opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-//    LongOperation* lop = m_space.buildEffectFrom(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
   }
@@ -487,8 +480,9 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     fs::path filepath = findFile(machine, filename);
 
     loadImageToDC1(graphics, filepath,
-                   selEffect[0], selEffect[1], selEffect[2], selEffect[3],
-                   selEffect[4], selEffect[5], opacity, m_useAlpha);
+                   Rect(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
+                   Point(selEffect[4], selEffect[5]),
+                   opacity, m_useAlpha);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -537,10 +531,10 @@ struct Grp_open_3 : public RLOp_Void_9<
   {
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
-	fs::path filepath = findFile(machine, filename);
+    fs::path filepath = findFile(machine, filename);
 
-    m_space.translateToRec(x1, y1, x2, y2);
-    loadImageToDC1(graphics, filepath, x1, y1, x2, y2, dx, dy, opacity, m_useAlpha);
+    Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
+    loadImageToDC1(graphics, filepath, srcRect, Point(dx, dy), opacity, m_useAlpha);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -602,13 +596,13 @@ struct Grp_open_4 : public RLOp_Void_17<
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    m_space.translateToRec(x1, y1, x2, y2);
+    Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = 
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, x1, y1, x2, y2, dx, dy, 
+    handleOpenBgFileName(machine, fileName, srcRect, Point(dx, dy), 
                          opacity, m_useAlpha);
 
     // Promote the objects 
@@ -636,21 +630,21 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   {
     GraphicsSystem& graphics = machine.system().graphics();
     vector<int> selEffect = getSELEffect(machine, effectNum);
+    Rect srcRect(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
+    Point destPoint(selEffect[4], selEffect[5]);
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
-      .setSourceCoordinates(selEffect[0], selEffect[1], 
-                            selEffect[2], selEffect[3])
-      .setTargetCoordinates(selEffect[4], selEffect[5])
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(destPoint)
       .setOpacity(opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = 
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, selEffect[0], selEffect[1], 
-                         selEffect[2], selEffect[3], selEffect[4], 
-                         selEffect[5], opacity, false);
+    handleOpenBgFileName(
+      machine, fileName, srcRect, destPoint, opacity, false);
 
     // Promote the objects 
     graphics.clearAndPromoteObjects();
@@ -695,20 +689,20 @@ struct Grp_openBg_4 : public RLOp_Void_17<
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    m_space.translateToRec(x1, y1, x2, y2);
+    Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
+    Point destPt(dx, dy);
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
-      .setSourceCoordinates(x1, y1, x2, y2)
-      .setTargetCoordinates(dx, dy)
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(destPt)
       .setOpacity(opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = 
-      graphics.renderToSurfaceWithBg(machine, 
-                                     graphics.getDC(0));
+      graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, x1, y1, x2, y2, dx, dy, 
+    handleOpenBgFileName(machine, fileName, srcRect, destPt, 
                          opacity, m_useAlpha);
 
     // Promote the objects 
@@ -753,11 +747,11 @@ struct Grp_copy_3 : public RLOp_Void_9<
 //    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
     // @todo allocateDC?
 
-    m_space.translateToRec(x1, y1, x2, y2);
+    Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
 
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
-      x1, y1, x2, y2, dx, dy, x2, y2, opacity, m_useAlpha);
+      srcRect, Rect(dx, dy, srcRect.size()), opacity, m_useAlpha);
   }
 };
 
@@ -777,18 +771,13 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
-    // Reallocate the destination so that it's the same size as the first.
-//     if(dst != 0)
-//       graphics.allocateDC(dst, sourceSurface->width(), sourceSurface->height());
-    if(dst != 0 && dst != 1)
-      graphics.allocateDC(dst,
-                          max(sourceSurface->width(), graphics.screenWidth()),
-                          max(sourceSurface->height(), graphics.screenHeight()));
+    if(dst != 0 && dst != 1) {
+      Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
+      graphics.allocateDC(dst, maxSize);
+    }
 
     sourceSurface->blitToSurface(
-      *graphics.getDC(dst),
-      0, 0, sourceSurface->width(), sourceSurface->height(),
-      0, 0, sourceSurface->width(), sourceSurface->height(),
+      *graphics.getDC(dst), sourceSurface->rect(), sourceSurface->rect(),
       opacity, m_useAlpha);
   }
 };
@@ -817,8 +806,8 @@ struct Grp_fill_3 : public RLOp_Void_9<
 
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int dc, int r, int g, int b, int alpha) {
-    m_space.translateToRec(x1, y1, x2, y2);
-    machine.system().graphics().getDC(dc)->fill(r, g, b, alpha, x1, y1, x2, y2);
+    Rect destRect = m_space.makeRect(x1, y1, x2, y2);
+    machine.system().graphics().getDC(dc)->fill(r, g, b, alpha, destRect);
   }
 };
 
@@ -835,19 +824,18 @@ struct Grp_fade_7 : public RLOp_Void_8<
 
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2, 
                   int r, int g, int b, int time) {
-    m_space.translateToRec(x1, y1, x2, y2);
+    Rect rect = m_space.makeRect(x1, y1, x2, y2);
     GraphicsSystem& graphics = machine.system().graphics();
     if (time == 0) {
-      graphics.getDC(0)->fill(r, g, b, 255, x1, y1, x2, y2);
+      graphics.getDC(0)->fill(r, g, b, 255, rect);
     }
     else {
       // FIXME: this needs checking for sanity of implementation, lack
       // of memory leaks, correct functioning in the presence of
       // objects, etc.
-      m_space.translateToRec(x1, y1, x2, y2);
       shared_ptr<Surface> dc0 = graphics.getDC(0);
       shared_ptr<Surface> tmp(dc0->clone());
-      tmp->fill(r, g, b, 255, x1, y1, x2, y2);
+      tmp->fill(r, g, b, 255, rect);
       LongOperation* lop = 
         EffectFactory::build(machine, tmp, dc0, time, 0, 0, 
                              0, 0, 0, 0, 0, 0);
@@ -880,8 +868,8 @@ struct Grp_fade_3 : public RLOp_Void_4<
   Grp_fade_3() : m_delegate(REC_SPACE::get()) {}
 
   void operator()(RLMachine& machine, int r, int g, int b, int time) {
-    GraphicsSystem& graphics = machine.system().graphics();
-    m_delegate(machine, 0, 0, graphics.screenWidth(), graphics.screenHeight(),
+    Size screenSize = machine.system().graphics().screenSize();
+    m_delegate(machine, 0, 0, screenSize.width(), screenSize.height(),
                r, g, b, time);
   }
 };
@@ -893,10 +881,10 @@ struct Grp_fade_1 : public RLOp_Void_2<
   Grp_fade_1() : m_delegate(REC_SPACE::get()) {}
 
   void operator()(RLMachine& machine, int color_num, int time) {
-    GraphicsSystem& graphics = machine.system().graphics();
+    Size screenSize = machine.system().graphics().screenSize();
     Gameexe& gexe = machine.system().gameexe();
     const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
-    m_delegate(machine, 0, 0, graphics.screenWidth(), graphics.screenHeight(),
+    m_delegate(machine, 0, 0, screenSize.width(), screenSize.height(),
                rgb[0], rgb[1], rgb[2], time);
   }
 };
@@ -916,21 +904,19 @@ struct Grp_zoom : public RLOp_Void_14<
                   int dy, int dwidth, int dheight, int time)
   {
     GraphicsSystem& gs = machine.system().graphics();
-    m_space.translateToRec(fx, fy, fwidth, fheight);
-    m_space.translateToRec(tx, ty, twidth, theight);
-    m_space.translateToRec(dx, dy, dwidth, dheight);
+    Rect frect = m_space.makeRect(fx, fy, fwidth, fheight);
+    Rect trect = m_space.makeRect(tx, ty, twidth, theight);
+    Rect drect = m_space.makeRect(dx, dy, dwidth, dheight);
 
     LongOperation* zoomOp =
       new ZoomLongOperation(
         machine, gs.getDC(0), gs.getDC(srcDC),
-        fx, fy, fwidth, fheight, tx, ty, twidth, theight, dx, dy, 
-        dwidth, dheight, time);
+        frect, trect, drect, time);
     BlitAfterEffectFinishes* blitOp = 
       new BlitAfterEffectFinishes(
         zoomOp, 
         gs.getDC(srcDC), gs.getDC(0), /* order? */
-        tx, ty, twidth, theight,
-        dx, dy, dwidth, dheight);
+        trect, drect);
     machine.pushLongOperation(blitOp);
   }
 };
@@ -1253,9 +1239,7 @@ GrpModule::GrpModule()
 void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
 { 
   handleOpenBgFileName(
-    machine, f.filename(), 
-    f.sourceX1(), f.sourceY1(), f.sourceX2(), f.sourceY2(),
-    f.targetX1(), f.targetY1(), f.opacity(), false);
+    machine, f.filename(), f.sourceRect(), f.targetPoint(), f.opacity(), false);
 
   blitDC1toDC0(machine);
 }

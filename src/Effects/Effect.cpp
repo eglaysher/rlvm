@@ -52,8 +52,8 @@ using namespace std;
 
 Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
                boost::shared_ptr<Surface> dst,
-               int width, int height, int time)
-  : m_width(width), m_height(height), m_duration(time), 
+               Size size, int time)
+  : m_screenSize(size), m_duration(time), 
     m_startTime(machine.system().event().getTicks()),
     m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
 {
@@ -91,8 +91,8 @@ bool Effect::operator()(RLMachine& machine)
     if(blitOriginalImage())
     {
       dstSurface().
-        renderToScreen(0, 0, width(), height(),
-                       0, 0, width(), height(),
+        renderToScreen(Rect(Point(0, 0), size()),
+                       Rect(Point(0, 0), size()),
                        255);
     }
 
@@ -111,8 +111,7 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
 {
   // Blit DC1 onto DC0, with full opacity, and end the operation
   m_srcSurface->blitToSurface(*m_dstSurface,
-                              m_srcX, m_srcY, m_srcWidth, m_srcHeight,
-                              m_dstX, m_dstY, m_dstWidth, m_dstHeight, 255);
+                              m_srcRect, m_destRect, 255);
 
   // Now force a screen refresh
   machine.system().graphics().forceRefresh();
@@ -122,11 +121,9 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
 
 BlitAfterEffectFinishes::BlitAfterEffectFinishes(
   LongOperation* in, boost::shared_ptr<Surface> src, boost::shared_ptr<Surface> dst,
-  int srcX, int srcY, int srcWidth, int srcHeight,
-  int dstX, int dstY, int dstWidth, int dstHeight)
+  const Rect& srcRect, const Rect& destRect)
   : PerformAfterLongOperationDecorator(in), m_srcSurface(src), m_dstSurface(dst),
-    m_srcX(srcX), m_srcY(srcY), m_srcWidth(srcWidth), m_srcHeight(srcHeight),
-    m_dstX(dstX), m_dstY(dstY), m_dstWidth(dstWidth), m_dstHeight(dstHeight)
+    m_srcRect(srcRect), m_destRect(destRect)
 {}
 
 // -----------------------------------------------------------------------
@@ -141,8 +138,6 @@ void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> dst)
 {
   BlitAfterEffectFinishes* blit =
-    new BlitAfterEffectFinishes(lop, src, dst, 
-                                0, 0, src->width(), src->height(),
-                                0, 0, src->width(), src->height());
+    new BlitAfterEffectFinishes(lop, src, dst, src->rect(), src->rect());
   lop = blit;
 }

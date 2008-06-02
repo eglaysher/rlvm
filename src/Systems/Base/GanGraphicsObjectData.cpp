@@ -270,7 +270,9 @@ void GanGraphicsObjectData::render(
 
       // Groan. Now I can't really test this.
       GraphicsObjectOverride overrideData;
-      overrideData.setOverrideSource(rect.x1, rect.y1, rect.x2, rect.y2);
+      // POINT
+      overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(), 
+                                     rect.rect.x2(), rect.rect.y2());
       overrideData.setDestOffset(frame.x, frame.y);
 
       // Calculate the combination of our frame alpha with the current
@@ -295,8 +297,7 @@ int GanGraphicsObjectData::pixelWidth(
     if(frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
-
-      return rect.x2 - rect.x1;
+      return rect.rect.width();
     }
   }
 
@@ -316,8 +317,7 @@ int GanGraphicsObjectData::pixelHeight(
     if(frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
-
-      return rect.y2 - rect.y1;
+      return rect.rect.height();
     }
   }
 

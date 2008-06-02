@@ -41,7 +41,7 @@ class GraphicsObject;
 /**
  * Helper function. Used throughout the SDL system.
  */
-SDL_Surface* buildNewSurface(int width, int height);
+SDL_Surface* buildNewSurface(const Size& size);
 
 
 /** 
@@ -96,19 +96,19 @@ public:
              const std::vector<SDLSurface::GrpRect>& region_table);
 
   /// Surface created with a specified width and height
-  SDLSurface(int width, int height);
+  SDLSurface(const Size& size);
   ~SDLSurface();
 
   void setIsMask(const bool is) { m_isMask = is; }
 
-  void buildRegionTable(int width, int height);
+  void buildRegionTable(const Size& size);
 
   void dump();
 
   /// allocate a surface
-  void allocate(int width, int height);
+  void allocate(const Size& size);
 
-  void allocate(int width, int height, SDLGraphicsSystem* in);
+  void allocate(const Size& size, SDLGraphicsSystem* in);
   
   /// Deallocate
   void deallocate();
@@ -120,29 +120,22 @@ public:
 
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
+                             const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true);
 
   void blitFROMSurface(SDL_Surface* srcSurface,
-                       int srcX, int srcY, int srcWidth, int srcHeight,
-                       int destX, int destY, int destWidth, int destHeight,
+                       const Rect& src, const Rect& dst,
                        int alpha = 255, bool useSrcAlpha = true);
 
   virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     int alpha = 255);
+    const Rect& src, const Rect& dst, int alpha = 255);
 
   virtual void renderToScreenAsColorMask(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha, int filter);
+    const Rect& src, const Rect& dst,
+    int r, int g, int b, int alpha, int filter);
 
   virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     const int opacity[4]);
+    const Rect& src, const Rect& dst, const int opacity[4]);
 
   virtual void rawRenderQuad(const int srcCoords[8], 
                              const int destCoords[8],
@@ -164,20 +157,17 @@ public:
 
   // -----------------------------------------------------------------------
 
-  int width() const;
-  int height() const;
+  virtual Size size() const;
 
   virtual void fill(int r, int g, int b, int alpha);
-  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
-                    int width, int height);
+  virtual void fill(int r, int g, int b, int alpha, const Rect& area);
 
   SDL_Surface* surface() { return m_surface; }
 
 
-  virtual void getDCPixel(int x, int y, int& r, int& g, int& b);
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    int x, int y, int width, int height, 
-    int r, int g, int b);
+    const Rect& clipRect, int r, int g, int b);
 
   virtual Surface* clone() const;
 

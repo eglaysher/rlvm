@@ -598,6 +598,13 @@ int GraphicsSystem::foregroundAllocated()
 
 // -----------------------------------------------------------------------
 
+Rect GraphicsSystem::screenRect() const
+{
+  return Rect(Point(0, 0), screenSize());
+}
+
+// -----------------------------------------------------------------------
+
 template<class Archive>
 void GraphicsSystem::save(Archive& ar, unsigned int version) const
 {

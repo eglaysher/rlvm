@@ -64,7 +64,7 @@ private:
   boost::shared_ptr<Surface> m_cursorSurface;
   
   /// The hotspot location.
-  Point m_hotspotLocation;
+  Size m_hotspotOffset;
 };	// end of class MouseCursor
 
 

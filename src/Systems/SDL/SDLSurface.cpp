@@ -29,6 +29,8 @@
 
 // -----------------------------------------------------------------------
 
+#include <SDL/SDL.h>
+
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
@@ -37,7 +39,6 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
-#include <SDL/SDL.h>
 #include "alphablit.h"
 
 #include <iostream>
@@ -49,7 +50,7 @@ using boost::ptr_vector;
 
 // -----------------------------------------------------------------------
 
-SDL_Surface* buildNewSurface(int width, int height)
+SDL_Surface* buildNewSurface(const Size& size)
 {
   // Create an empty surface
   Uint32 rmask, gmask, bmask, amask;
@@ -66,9 +67,9 @@ SDL_Surface* buildNewSurface(int width, int height)
 #endif
 
   SDL_Surface* tmp = 
-    SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, width, height, 
-                         32, 
-                         rmask, gmask, bmask, amask);
+    SDL_CreateRGBSurface(
+      SDL_HWSURFACE | SDL_SRCALPHA, size.width(), size.height(), 
+      32, rmask, gmask, bmask, amask);
 
   if(tmp == NULL)
   {
@@ -100,7 +101,7 @@ SDLSurface::SDLSurface(SDL_Surface* surf)
   : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL),
     m_isMask(false)
 {
-  buildRegionTable(surf->w, surf->h);
+  buildRegionTable(Size(surf->w, surf->h));
 }
 
 // -----------------------------------------------------------------------
@@ -115,28 +116,25 @@ SDLSurface::SDLSurface(SDL_Surface* surf,
 
 // -----------------------------------------------------------------------
 
-SDLSurface::SDLSurface(int width, int height)
+SDLSurface::SDLSurface(const Size& size)
   : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
     m_isMask(false)
 {
-  allocate(width, height);
-  buildRegionTable(width, height);
+  allocate(size);
+  buildRegionTable(size);
 }
 
 // -----------------------------------------------------------------------
 
 /// Constructor helper function
-void SDLSurface::buildRegionTable(int width, int height)
+void SDLSurface::buildRegionTable(const Size& size)
 {
   // Build a region table with one entry the size of the surface (This
   // should never need to be used with objects created with this
   // constructor, but let's make sure everything is initialized since
   // it'll happen somehow.)
   SDLSurface::GrpRect rect;
-  rect.x1 = 0;
-  rect.y1 = 0;
-  rect.x2 = width;
-  rect.y2 = height;
+  rect.rect = Rect(Point(0, 0), size);
   rect.originX = 0;
   rect.originY = 0;
   m_regionTable.push_back(rect);
@@ -151,8 +149,7 @@ SDLSurface::~SDLSurface()
 
 // -----------------------------------------------------------------------
 
-int SDLSurface::width() const { return m_surface->w; }
-int SDLSurface::height() const { return m_surface->h; }
+Size SDLSurface::size() const { return Size(m_surface->w, m_surface->h); }
 
 // -----------------------------------------------------------------------
 
@@ -167,21 +164,21 @@ void SDLSurface::dump()
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::allocate(int width, int height)
+void SDLSurface::allocate(const Size& size)
 {
   deallocate();
 
-  m_surface = buildNewSurface(width, height);
+  m_surface = buildNewSurface(size);
 
   fill(0, 0, 0, 255);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::allocate(int width, int height, SDLGraphicsSystem* sys)
+void SDLSurface::allocate(const Size& size, SDLGraphicsSystem* sys)
 {
   m_graphicsSystem = sys;
-  allocate(width, height);
+  allocate(size);
 }
 
 // -----------------------------------------------------------------------
@@ -300,31 +297,23 @@ static void stretch(SDL_Surface *src, SDL_Surface *dst)
  * @todo Make this only upload the changed parts of the texture!
  */
 void SDLSurface::blitToSurface(Surface& destSurface,
-                               int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight,
+                               const Rect& src, const Rect& dst,
                                int alpha, bool useSrcAlpha)
 {
-  SDLSurface& dest = dynamic_cast<SDLSurface&>(destSurface);
+  SDLSurface& dest_surface = dynamic_cast<SDLSurface&>(destSurface);
 
   SDL_Rect srcRect, destRect;
-  srcRect.x = srcX;
-  srcRect.y = srcY;
-  srcRect.w = srcWidth;
-  srcRect.h = srcHeight;
+  RectToSDLRect(src, &srcRect);
+  RectToSDLRect(dst, &destRect);
 
-  destRect.x = destX;
-  destRect.y = destY;
-  destRect.w = destWidth;
-  destRect.h = destHeight;
-
-  if(srcWidth != destWidth || srcHeight != destHeight)
+  if(src.size() != dst.size())
   {
     // Blit the source rectangle into its own image.
-    SDL_Surface* srcImage = buildNewSurface(srcWidth, srcHeight);
+    SDL_Surface* srcImage = buildNewSurface(src.size());
     if(pygame_AlphaBlit(m_surface, &srcRect, srcImage, NULL))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
-    SDL_Surface* tmp = buildNewSurface(destWidth, destHeight);
+    SDL_Surface* tmp = buildNewSurface(dst.size());
     stretch(srcImage, tmp);
 
     if(useSrcAlpha) 
@@ -338,7 +327,7 @@ void SDLSurface::blitToSurface(Surface& destSurface,
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
     }
 
-    if(SDL_BlitSurface(tmp, NULL, dest.surface(), &destRect))
+    if(SDL_BlitSurface(tmp, NULL, dest_surface.surface(), &destRect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
     SDL_FreeSurface(tmp);
@@ -357,11 +346,11 @@ void SDLSurface::blitToSurface(Surface& destSurface,
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
     }
 
-    if(SDL_BlitSurface(m_surface, &srcRect, dest.surface(), &destRect))
+    if(SDL_BlitSurface(m_surface, &srcRect, dest_surface.surface(), &destRect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
   }
-  dest.markWrittenTo();
+  dest_surface.markWrittenTo();
 }
 
 // -----------------------------------------------------------------------
@@ -371,28 +360,15 @@ void SDLSurface::blitToSurface(Surface& destSurface,
  * this function later.
  */
 void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
-                                 int srcX, int srcY, int srcWidth, int srcHeight,
-                                 int destX, int destY, int destWidth, int destHeight,
+                                 const Rect& src, const Rect& dst,
                                  int alpha, bool useSrcAlpha)
 {
   SDL_Rect srcRect, destRect;
-  srcRect.x = srcX;
-  srcRect.y = srcY;
-  srcRect.w = srcWidth;
-  srcRect.h = srcHeight;
-
-  destRect.x = destX;
-  destRect.y = destY;
-  destRect.w = destWidth;
-  destRect.h = destHeight;
+  RectToSDLRect(src, &srcRect);
+  RectToSDLRect(dst, &destRect);
 
   if(useSrcAlpha) 
   {
-//     if(SDL_SetAlpha(srcSurface, SDL_SRCALPHA, alpha))
-//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
-//     if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
-//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
-
     if(pygame_AlphaBlit(srcSurface, &srcRect, m_surface, &destRect))
       reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
@@ -400,9 +376,6 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
   {
     if(SDL_BlitSurface(srcSurface, &srcRect, m_surface, &destRect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
-
-//     if(SDL_SetAlpha(srcSurface, 0, 0))
-//       reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
 
   markWrittenTo();
@@ -507,27 +480,21 @@ void SDLSurface::uploadTextureIfNeeded()
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(
-  int srcX1, int srcY1, int srcX2, int srcY2,
-  int destX1, int destY1, int destX2, int destY2,
-  int alpha)
+void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha)
 {
   uploadTextureIfNeeded();
 
   for(ptr_vector<Texture>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreen(srcX1, srcY1, srcX2, srcY2,
-                       destX1, destY1, destX2, destY2,
-                       alpha);
+    it->renderToScreen(src, dst, alpha);
   }
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsColorMask(
-  int srcX1, int srcY1, int srcX2, int srcY2,
-  int destX1, int destY1, int destX2, int destY2,
+  const Rect& src, const Rect& dst,
   int r, int g, int b, int alpha, int filter)
 {
   uploadTextureIfNeeded();
@@ -535,27 +502,22 @@ void SDLSurface::renderToScreenAsColorMask(
   for(ptr_vector<Texture>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreenAsColorMask(srcX1, srcY1, srcX2, srcY2,
-                                  destX1, destY1, destX2, destY2, 
+    it->renderToScreenAsColorMask(src, dst,
                                   r, g, b, alpha, filter);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(
-  int srcX1, int srcY1, int srcX2, int srcY2,
-  int destX1, int destY1, int destX2, int destY2,
-  const int opacity[4])
+void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
+                                const int opacity[4])
 {
   uploadTextureIfNeeded();
 
   for(ptr_vector<Texture>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreen(srcX1, srcY1, srcX2, srcY2,
-                       destX1, destY1, destX2, destY2,
-                       opacity);
+    it->renderToScreen(src, dst, opacity);
   }
 }
 
@@ -618,17 +580,13 @@ void SDLSurface::fill(int r, int g, int b, int alpha)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(int r, int g, int b, int alpha, int x, int y, 
-                      int width, int height)
+void SDLSurface::fill(int r, int g, int b, int alpha, const Rect& area)
 {
   // Fill the entire surface with the incoming color
   Uint32 color = SDL_MapRGBA(m_surface->format, r, g, b, alpha);
 
   SDL_Rect rect;
-  rect.x = x;
-  rect.y = y;
-  rect.w = width;
-  rect.h = height;
+  RectToSDLRect(area, &rect);
 
   if(SDL_FillRect(m_surface, &rect, color))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
@@ -723,7 +681,7 @@ vector<int> SDLSurface::segmentPicture(int sizeRemainging)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
+void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
 {
   SDL_Color color;
   Uint32 col = 0 ;
@@ -732,10 +690,10 @@ void SDLSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
   char* pPosition = ( char* ) m_surface->pixels ;
 
   //offset by y
-  pPosition += ( m_surface->pitch * y ) ;
+  pPosition += ( m_surface->pitch * pos.y() ) ;
 
   //offset by x
-  pPosition += ( m_surface->format->BytesPerPixel * x ) ;
+  pPosition += ( m_surface->format->BytesPerPixel * pos.x() ) ;
 
   //copy pixel data
   memcpy ( &col , pPosition , m_surface->format->BytesPerPixel ) ;
@@ -751,8 +709,7 @@ void SDLSurface::getDCPixel(int x, int y, int& r, int& g, int& b)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
-  int x, int y, int width, int height, 
-  int r, int g, int b)
+  const Rect& clipRect, int r, int g, int b)
 {
   const char* functionName = "SDLGraphicsSystem::clipAsColorMask()";
 
@@ -777,12 +734,9 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
   // The OpenGL pieces don't know what to do an image formatted to
   // (FF0000, FF00, FF, 0), so convert it to a standard RGBA image
   // (and clip to the desired rectangle)
-  SDL_Surface* surface = buildNewSurface(width, height);
+  SDL_Surface* surface = buildNewSurface(clipRect.size());
   SDL_Rect srcrect;
-  srcrect.x = x;
-  srcrect.y = y;
-  srcrect.w = width;
-  srcrect.h = height;
+  RectToSDLRect(clipRect, &srcrect);
   if(SDL_BlitSurface(tmpSurface, &srcrect, surface, NULL))
     reportSDLError("SDL_BlitSurface", functionName);
 

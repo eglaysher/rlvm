@@ -17,33 +17,27 @@ class NullSurface : public Surface
 {
 public:
   NullSurface(const std::string& surface_name);
-  NullSurface(const std::string& surface_name, int width, int height);
+  NullSurface(const std::string& surface_name, const Size& size);
 
-  void allocate(int width, int height);
+  void allocate(const Size& size);
   void deallocate();
 
-  virtual int width() const;
-  virtual int height() const;
+  virtual Size size() const;
 
   virtual void blitToSurface(Surface& surface, 
-                             int srcX, int srcY, int srcWidth, int srcHeight,
-                             int destX, int destY, int destWidth, int destHeight,
+                             const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true);
 
   virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     int alpha = 255);
+    const Rect& src, const Rect& dst,
+    int alpha = 255);
 
   virtual void renderToScreenAsColorMask(
-                     int srcX1, int srcY1, int srcX2, int srcY2,
-                     int destX1, int destY1, int destX2, int destY2,
-                     int r, int g, int b, int alpha, int filter);
+    const Rect& src, const Rect& dst,
+    int r, int g, int b, int alpha, int filter);
 
   virtual void renderToScreen(
-    int srcX1, int srcY1, int srcX2, int srcY2,
-    int destX1, int destY1, int destX2, int destY2,
-    const int opacity[4]);
+    const Rect& src, const Rect& dst, const int opacity[4]);
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp);
   virtual void renderToScreenAsObject(const GraphicsObject& rp, 
@@ -57,14 +51,12 @@ public:
                              const int opacity[4]);
 
   virtual void fill(int r, int g, int b, int alpha);
-  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
-                    int width, int height);
+  virtual void fill(int r, int g, int b, int alpha, const Rect& rect);
 
-  virtual void getDCPixel(int x, int y, int& r, int& g, int& b);
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
 
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    int x, int y, int width, int height, 
-    int r, int g, int b);
+    const Rect& rect, int r, int g, int b);
 
   virtual Surface* clone() const;
 
@@ -78,7 +70,7 @@ private:
   bool allocated_;
 
   /// Supposed size of this surface.
-  int width_, height_;
+  Size size_;
 
   /// The region table
   std::vector<GrpRect> m_regionTable;

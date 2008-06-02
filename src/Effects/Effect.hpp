@@ -41,6 +41,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
+#include "Systems/Base/Rect.hpp"
 
 class Surface;
 class RLMachine;
@@ -76,7 +77,7 @@ class Effect : public LongOperation
 {
 private:
   /// Defines the size of the screen; since effects update the entire screen.
-  int m_width, m_height;
+  Size m_screenSize;
 
   /// Defines the duration of in milliseconds
   unsigned int m_duration;
@@ -100,8 +101,9 @@ private:
   boost::shared_ptr<Surface> m_dstSurface;
 
 protected:
-  int width() const { return m_width; }
-  int height() const { return m_height; }
+  Size size() const { return m_screenSize; }
+  int width() const { return m_screenSize.width(); }
+  int height() const { return m_screenSize.height(); }
   int duration() const { return m_duration; }
 
   /** 
@@ -124,7 +126,7 @@ public:
    */
   Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
          boost::shared_ptr<Surface> dst,
-         int width, int height, int time);
+         Size size, int time);
 
   virtual ~Effect();
 
@@ -165,14 +167,7 @@ private:
   /// The destination surface (previously known as DC0)
   boost::shared_ptr<Surface> m_dstSurface;
 
-  int m_srcX;
-  int m_srcY;
-  int m_srcWidth;
-  int m_srcHeight;
-  int m_dstX;
-  int m_dstY;
-  int m_dstWidth;
-  int m_dstHeight;
+  Rect m_srcRect, m_destRect;
 
   virtual void performAfterLongOperation(RLMachine& machine);
 
@@ -180,8 +175,7 @@ public:
   BlitAfterEffectFinishes(LongOperation* in,
                           boost::shared_ptr<Surface> src, 
                           boost::shared_ptr<Surface> dst,
-                          int srcX, int srcY, int srcWidth, int srcHeight,
-                          int dstX, int dstY, int dstWidth, int dstHeight);
+                          const Rect& srcRect, const Rect& destRect);
 
   ~BlitAfterEffectFinishes();
 };

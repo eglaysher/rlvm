@@ -177,19 +177,12 @@ void TextWindowButton::render(RLMachine& machine,
   if(isValid())
   {
     Surface::GrpRect rect = buttons->getPattern(basePattern + m_state);
-    if(!(rect.x1 == 0 && rect.y1 == 0 && rect.x2 == 0 && rect.y2 == 0))
+    if(!(rect.rect.isEmpty()))
     {
-      // POINT
-      Point dest = location(window).origin();
-      int destX = dest.x();
-      int destY = dest.y();
-      int width = rect.x2 - rect.x1;
-      int height = rect.y2 - rect.y1;
+      Rect dest = Rect(location(window).origin(),
+                       rect.rect.size());
 
-      buttons->renderToScreen(
-        rect.x1, rect.y1, rect.x2, rect.y2,
-        destX, destY, destX + width, destY + height,
-        255);
+      buttons->renderToScreen(rect.rect, dest, 255);
     }
   }
 }

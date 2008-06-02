@@ -47,7 +47,7 @@ protected:
 public:
   FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src, 
              boost::shared_ptr<Surface> dst,
-             int width, int height, int time);
+             const Size& screenSize, int time);
 };
 
 

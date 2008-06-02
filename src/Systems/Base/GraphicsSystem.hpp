@@ -49,6 +49,7 @@
 
 // -----------------------------------------------------------------------
 
+class Size;
 class Surface;
 class RLMachine;
 class GraphicsObject;
@@ -389,10 +390,10 @@ public:
    */
   virtual void executeGraphicsSystem(RLMachine& machine) = 0;
 
-  virtual int screenWidth() const = 0;
-  virtual int screenHeight() const = 0;
+  virtual Size screenSize() const = 0;
+  Rect screenRect() const;
 
-  virtual void allocateDC(int dc, int width, int height) = 0;
+  virtual void allocateDC(int dc, Size size) = 0;
   virtual void freeDC(int dc) = 0;
 
 /*
@@ -405,7 +406,7 @@ public:
 
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 
-  virtual boost::shared_ptr<Surface> buildSurface(int w, int h) = 0;
+  virtual boost::shared_ptr<Surface> buildSurface(const Size& size) = 0;
 
   // ----------------------------------- [ Object getter/factory functions ]
   /**

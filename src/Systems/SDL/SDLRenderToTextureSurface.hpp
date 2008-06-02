@@ -44,30 +44,23 @@ private:
   boost::scoped_ptr<Texture> m_texture;
 
 public:
-  SDLRenderToTextureSurface(int w, int h);
+  SDLRenderToTextureSurface(const Size& size);
   ~SDLRenderToTextureSurface();
 
   virtual void dump();
 
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface, 
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
+                             const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true);
 
-  virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     int alpha = 255);
+  virtual void renderToScreen(const Rect& src, const Rect& dst, int alpha = 255);
 
-  virtual void renderToScreen(
-                     int srcX, int srcY, int srcWidth, int srcHeight,
-                     int destX, int destY, int destWidth, int destHeight,
-                     const int opacity[4]);
+  virtual void renderToScreen(const Rect& src, const Rect& dst, 
+                              const int opacity[4]);
 
   virtual void renderToScreenAsColorMask(
-    int srcX1, int srcY1, int srcX2, int srcY2,
-    int destX1, int destY1, int destX2, int destY2,
+    const Rect& src, const Rect& dst,
     int r, int g, int b, int alpha, int filter);
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp);
@@ -79,13 +72,11 @@ public:
                              const int opacity[4]);
 
   virtual void fill(int r, int g, int b, int alpha);
-  virtual void fill(int r, int g, int b, int alpha, int x, int y, 
-                    int width, int height);
+  virtual void fill(int r, int g, int b, int alpha, const Rect& rect);
 
-  virtual void getDCPixel(int x, int y, int& r, int& g, int& b);
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
 
-  virtual int width() const;
-  virtual int height() const;
+  virtual Size size() const;
 
   virtual Surface* clone() const;
 };
