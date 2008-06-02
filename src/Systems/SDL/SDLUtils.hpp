@@ -29,6 +29,9 @@
 #define __SDLUtils_hpp__
 
 #include <string>
+#include <SDL/SDL.h>
+
+class Rect;
 
 void ShowGLErrors(void);
 void reportSDLError(const std::string& sdlName,
@@ -37,5 +40,7 @@ int SafeSize(int i);
 
 struct SDL_Surface;
 SDL_Surface* AlphaInvert(SDL_Surface* inSurface);
+
+void RectToSDLRect(const Rect& rect, SDL_Rect* out);
 
 #endif

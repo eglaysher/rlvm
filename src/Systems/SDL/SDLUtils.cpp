@@ -29,8 +29,9 @@
 
 // -----------------------------------------------------------------------
 
-#include "SDLUtils.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
@@ -120,4 +121,14 @@ SDL_Surface* AlphaInvert(SDL_Surface* inSurface)
   if(SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
 
   return dst;
+}
+
+// -----------------------------------------------------------------------
+
+void RectToSDLRect(const Rect& rect, SDL_Rect* out)
+{
+  out->x = rect.x();
+  out->y = rect.y();
+  out->w = rect.width();
+  out->h = rect.height();
 }
