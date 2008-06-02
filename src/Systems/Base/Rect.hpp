@@ -160,10 +160,16 @@ public:
   Rect(const Point& point1, const Point& point2)
     : origin_(point1), size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
   Rect(const Point& origin, const Size& size) : origin_(origin), size_(size) {}
-  Rect(const int x, const int y, const int width, const int height)
-    : origin_(x, y), size_(width, height) {}
   Rect(const int x, const int y, const Size& size)
     : origin_(x, y), size_(size) {}
+
+  static Rect GRP(const int x1, const int y1, const int x2, const int y2) {
+    return Rect(Point(x1, y1), Point(x2, y2));
+  }
+
+  static Rect REC(const int x, const int y, const int width, const int height) {
+    return Rect(Point(x, y), Size(width, height));
+  }
 
   int x() const { return origin_.x(); }
   int y() const { return origin_.y(); }

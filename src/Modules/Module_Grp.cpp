@@ -378,7 +378,7 @@ struct Grp_display_1
 
     GraphicsSystem& graphics = machine.system().graphics();
     loadDCToDC1(graphics, dc,
-                Rect(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
+                Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
                 Point(selEffect[4], selEffect[5]),
                 opacity);
 
@@ -480,7 +480,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     fs::path filepath = findFile(machine, filename);
 
     loadImageToDC1(graphics, filepath,
-                   Rect(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
+                   Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
                    Point(selEffect[4], selEffect[5]),
                    opacity, m_useAlpha);
 
@@ -630,7 +630,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   {
     GraphicsSystem& graphics = machine.system().graphics();
     vector<int> selEffect = getSELEffect(machine, effectNum);
-    Rect srcRect(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
+    Rect srcRect = Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
     Point destPoint(selEffect[4], selEffect[5]);
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)

@@ -124,8 +124,8 @@ void TopToBottomDrawer::scrollOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
    effect.dstSurface().
-     renderToScreen(Rect(0, 0, width, height - amountVisible),
-                    Rect(0, amountVisible, width, height), 255);
+     renderToScreen(Rect::GRP(0, 0, width, height - amountVisible),
+                    Rect::GRP(0, amountVisible, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -135,8 +135,8 @@ void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect(0, height - amountVisible, width, height),
-                   Rect(0, 0, width, amountVisible), 255);
+    renderToScreen(Rect::GRP(0, height - amountVisible, width, height),
+                   Rect::GRP(0, 0, width, amountVisible), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -146,8 +146,8 @@ void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
-    renderToScreen(Rect(0, 0, width, height),
-                   Rect(0, amountVisible, width, height), 255);
+    renderToScreen(Rect::GRP(0, 0, width, height),
+                   Rect::GRP(0, amountVisible, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -157,8 +157,8 @@ void TopToBottomDrawer::squashOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect(0, 0, width, height),
-                   Rect(0, 0, width, amountVisible), 255);
+    renderToScreen(Rect::GRP(0, 0, width, height),
+                   Rect::GRP(0, 0, width, amountVisible), 255);
 }
 
 // ------------------------------------------------- [ BottomToTopDrawer ]
@@ -175,8 +175,8 @@ void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
    effect.srcSurface().
-     renderToScreen(Rect(0, 0, width, amountVisible),
-                    Rect(0, height - amountVisible, width, height), 255);
+     renderToScreen(Rect::GRP(0, 0, width, amountVisible),
+                    Rect::GRP(0, height - amountVisible, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -186,8 +186,8 @@ void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
    effect.dstSurface().
-     renderToScreen(Rect(0, amountVisible, width, height),
-                    Rect(0, 0, width, height - amountVisible), 255);
+     renderToScreen(Rect::GRP(0, amountVisible, width, height),
+                    Rect::GRP(0, 0, width, height - amountVisible), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -197,8 +197,8 @@ void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
    effect.srcSurface().
-     renderToScreen(Rect(0, 0, width, height),
-                    Rect(0, height - amountVisible, width, height), 255);
+     renderToScreen(Rect::GRP(0, 0, width, height),
+                    Rect::GRP(0, height - amountVisible, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -208,8 +208,8 @@ void BottomToTopDrawer::squashOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
-    renderToScreen(Rect(0, 0, width, height),
-                   Rect(0, 0, width, height - amountVisible), 255);
+    renderToScreen(Rect::GRP(0, 0, width, height),
+                   Rect::GRP(0, 0, width, height - amountVisible), 255);
 }
 
 // ------------------------------------------------- [ LeftToRightDrawer ]
@@ -226,8 +226,8 @@ void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect(width - amountVisible, 0, width, height),
-                   Rect(0, 0, amountVisible, height), 255);
+    renderToScreen(Rect::GRP(width - amountVisible, 0, width, height),
+                   Rect::GRP(0, 0, amountVisible, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -237,8 +237,8 @@ void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
-    renderToScreen(Rect(0, 0, width - amountVisible, height),
-                   Rect(amountVisible, 0, width, height), 255);
+    renderToScreen(Rect::GRP(0, 0, width - amountVisible, height),
+                   Rect::GRP(amountVisible, 0, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -248,8 +248,8 @@ void LeftToRightDrawer::squashOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect(0, 0, width, height), 
-                   Rect(0, 0, amountVisible, height), 255);
+    renderToScreen(Rect::GRP(0, 0, width, height), 
+                   Rect::GRP(0, 0, amountVisible, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -259,8 +259,8 @@ void LeftToRightDrawer::squashOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
-    renderToScreen(Rect(0, 0, width, height),
-                   Rect(amountVisible, 0, width, height), 255);
+    renderToScreen(Rect::GRP(0, 0, width, height),
+                   Rect::GRP(amountVisible, 0, width, height), 255);
 }
 
 // ------------------------------------------------- [ RightToLeftDrawer ]
@@ -277,8 +277,8 @@ void RightToLeftDrawer::scrollOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
-    renderToScreen(Rect(amountVisible, 0, width, height),
-                   Rect(0, 0, width - amountVisible, height), 255);
+    renderToScreen(Rect::GRP(amountVisible, 0, width, height),
+                   Rect::GRP(0, 0, width - amountVisible, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -288,8 +288,8 @@ void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect(0, 0, amountVisible, height),
-                   Rect(width - amountVisible, 0, width, height), 255);
+    renderToScreen(Rect::GRP(0, 0, amountVisible, height),
+                   Rect::GRP(width - amountVisible, 0, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -299,8 +299,8 @@ void RightToLeftDrawer::squashOff(GraphicsSystem& graphics,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
-    renderToScreen(Rect(0, 0, width, height),
-                   Rect(0, 0, width - amountVisible, height), 255);
+    renderToScreen(Rect::GRP(0, 0, width, height),
+                   Rect::GRP(0, 0, width - amountVisible, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -310,8 +310,8 @@ void RightToLeftDrawer::squashOn(GraphicsSystem& graphics,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect(0, 0, width, height),
-                   Rect(width - amountVisible, 0, width, height), 255);  
+    renderToScreen(Rect::GRP(0, 0, width, height),
+                   Rect::GRP(width - amountVisible, 0, width, height), 255);  
 }
 
 // -----------------------------------------------------------------------
