@@ -90,11 +90,9 @@ void TextKeyCursor::render(RLMachine& machine, TextWindow& textWindow)
   // Get the location to render from textWindow
   Point keycur = textWindow.keycursorPosition();
 
-  // POINT
   m_cursorImage->renderToScreen(
-    Rect(Point(m_currentFrame * m_frameXSize, 0),
-         Size(m_frameXSize, m_frameYSize)),
-    Rect(keycur, Size(m_frameXSize, m_frameYSize)),
+    Rect(Point(m_currentFrame * m_frameSize.width(), 0), m_frameSize),
+    Rect(keycur, m_frameSize),
     255);
 }
 
@@ -117,8 +115,7 @@ void TextKeyCursor::setCursorImage(RLMachine& machine,
 
 void TextKeyCursor::setCursorSize(const std::vector<int>& imageSize)
 {
-  m_frameXSize = imageSize.at(0);
-  m_frameYSize = imageSize.at(1);
+  m_frameSize = Size(imageSize.at(0), imageSize.at(1));
 }
 
 // -----------------------------------------------------------------------

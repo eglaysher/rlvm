@@ -28,6 +28,8 @@
 #ifndef __TextKeyCursor_hpp__
 #define __TextKeyCursor_hpp__
 
+#include "Systems/Base/Rect.hpp"
+
 #include <boost/shared_ptr.hpp>
 
 class RLMachine;
@@ -36,7 +38,6 @@ class TextWindow;
 
 /**
  * Represents a key cursor. 
- * 
  */
 class TextKeyCursor
 {
@@ -48,7 +49,7 @@ private:
   boost::shared_ptr<Surface> m_cursorImage;
 
   /// The size of the cursor 
-  int m_frameXSize, m_frameYSize;
+  Size m_frameSize;
 
   /// Number of frames in this cursor
   int m_frameCount;
