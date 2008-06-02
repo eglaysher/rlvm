@@ -37,6 +37,7 @@
 
 class RLMachine;
 class Gameexe;
+class Size;
 
 /**
  * Takes the full path to a file, and adjusts its case so that it
@@ -135,7 +136,7 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum);
 /**
  * Gets the size of the screen and sets it in width/height.
  */
-void getScreenSize(Gameexe& gameexe, int& width, int& height);
+Size getScreenSize(Gameexe& gameexe);
 
 // -----------------------------------------------------------------------
 

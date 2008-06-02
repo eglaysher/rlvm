@@ -96,7 +96,8 @@ void SDLGraphicsSystem::beginFrame()
  	
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0.0, (GLdouble)m_width, (GLdouble)m_height, 0.0, 0.0, 1.0);
+  glOrtho(0.0, (GLdouble)m_screenSize.width(), (GLdouble)m_screenSize.height(),
+          0.0, 0.0, 1.0);
   ShowGLErrors();
  	
   glMatrixMode(GL_MODELVIEW);
@@ -111,8 +112,9 @@ void SDLGraphicsSystem::refresh(RLMachine& machine)
   beginFrame();
 
   // Display DC0
-  m_displayContexts[0]->renderToScreen(0, 0, m_width, m_height, 
-                                       0, 0, m_width, m_height, 255);
+  m_displayContexts[0]->renderToScreen(
+    0, 0, m_screenSize.width(), m_screenSize.height(), 
+    0, 0, m_screenSize.width(), m_screenSize.height(), 255);
 
   renderObjects(machine);
 
@@ -142,8 +144,8 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   beginFrame();
 
   // Display DC0
-  bg->renderToScreen(0, 0, m_width, m_height, 
-                     0, 0, m_width, m_height, 255);
+  bg->renderToScreen(0, 0, m_screenSize.width(), m_screenSize.height(), 
+                     0, 0, m_screenSize.width(), m_screenSize.height(), 255);
 
   renderObjects(machine);
 
@@ -172,7 +174,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
     // Copy the area behind the cursor to 
     glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-                        dx1, m_height - dy1 - 32, 32, 32);
+                        dx1, m_screenSize.height() - dy1 - 32, 32, 32);
 
     cursor->renderHotspotAt(machine, hotspot);
   }
@@ -213,7 +215,8 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
 
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
-  return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_width, m_height));
+  return shared_ptr<Surface>(new SDLRenderToTextureSurface(m_screenSize.width(),
+                                                           m_screenSize.height()));
 }
 
 // -----------------------------------------------------------------------
@@ -241,8 +244,9 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
     throw SystemError(ss.str());
   }
 
-  getScreenSize(gameexe, m_width, m_height);
-  Texture::SetScreenSize(m_width, m_height);
+  m_screenSize = getScreenSize(gameexe);
+  // POINT
+  Texture::SetScreenSize(m_screenSize.width(), m_screenSize.height());
 
   int bpp = info->vfmt->BitsPerPixel;
 
@@ -276,7 +280,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
 
   // Set the video mode
   if((m_screen =
-      SDL_SetVideoMode( m_width, m_height, bpp, videoFlags)) == 0 )
+      SDL_SetVideoMode( m_screenSize.width(), m_screenSize.height(), bpp, 
+                        videoFlags)) == 0 )
   {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -326,8 +331,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
 
   // Now we allocate the first two display contexts with equal size to
   // the display
-  m_displayContexts[0]->allocate(m_width, m_height, this);
-  m_displayContexts[1]->allocate(m_width, m_height);
+  m_displayContexts[0]->allocate(m_screenSize.width(), m_screenSize.height(), this);
+  m_displayContexts[1]->allocate(m_screenSize.width(), m_screenSize.height());
 
   // Create a small 32x32 texture for storing what's behind the mouse
   // cursor.
@@ -425,14 +430,14 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
 
 int SDLGraphicsSystem::screenWidth() const
 {
-  return m_width;
+  return m_screenSize.width();
 }
 
 // -----------------------------------------------------------------------
 
 int SDLGraphicsSystem::screenHeight() const 
 {
-  return m_height;
+  return m_screenSize.height();
 }
 
 // -----------------------------------------------------------------------

@@ -164,8 +164,9 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   
   // Read the frame list
   const char* buf = data + 0xb8;
-  int width, height;
-  getScreenSize(machine.system().gameexe(), width, height);
+  // POINT
+  Size screenSize;
+  screenSize = getScreenSize(machine.system().gameexe());
   for(int i = 0; i < frames_len; ++i)
   {
     Frame f;
@@ -176,7 +177,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
     f.dest_x = read_i32(buf+16);
     f.dest_y = read_i32(buf+20);
     f.time = read_i32(buf+0x38);
-    fixAxis(f, width, height);
+    fixAxis(f, screenSize.width(), screenSize.height());
     frames.push_back(f);
 
     buf += 0x60;

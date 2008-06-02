@@ -63,7 +63,7 @@ private:
 
   bool m_redrawLastFrame;
 
-  int m_width, m_height;
+  Size m_screenSize;
   
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool m_displayDataInTitlebar;

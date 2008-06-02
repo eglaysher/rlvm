@@ -35,6 +35,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/Rect.hpp"
 #include "libReallive/gameexe.h"
 
 #include <fstream>
@@ -254,18 +255,16 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum)
 
 // -----------------------------------------------------------------------
 
-void getScreenSize(Gameexe& gameexe, int& width, int& height)
+Size getScreenSize(Gameexe& gameexe)
 {
   int graphicsMode = gameexe("SCREENSIZE_MOD");
   if(graphicsMode == 0)
   {
-    width = 640;
-    height = 480;
+    return Size(640, 480);
   }
   else if(graphicsMode == 1)
   {
-    width = 800;
-    height = 600;
+    return Size(800, 600);
   }
   else
   {

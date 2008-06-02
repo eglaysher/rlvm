@@ -65,7 +65,10 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
 {
   Gameexe& gexe = machine.system().gameexe();
 
-  getScreenSize(gexe, m_screenWidth, m_screenHeight);
+  // POINT
+  Size size = getScreenSize(gexe);
+  m_screenWidth = size.width();
+  m_screenHeight = size.height();
 
   // Base form for everything to follow.
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
