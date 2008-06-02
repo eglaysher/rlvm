@@ -231,7 +231,7 @@ struct GRP_SPACE : public SPACE {
    */
   virtual Rect makeRect(int x1, int y1, int x2, int y2)
   {
-    return Rect(Point(x1, x2), Size(x2 - x1, y2 - y1));
+    return Rect::GRP(x1, y1, x2, y2);
   }
 
   static SPACE& get() {
@@ -248,7 +248,7 @@ struct REC_SPACE : public SPACE {
    */
   virtual Rect makeRect(int x1, int y1, int x2, int y2)
   {
-    return Rect(Point(x1, y1), Size(x2, y2));
+    return Rect::REC(x1, y1, x2, y2);
   }
 
   static SPACE& get() {
@@ -915,7 +915,7 @@ struct Grp_zoom : public RLOp_Void_14<
     BlitAfterEffectFinishes* blitOp = 
       new BlitAfterEffectFinishes(
         zoomOp, 
-        gs.getDC(srcDC), gs.getDC(0), /* order? */
+        gs.getDC(srcDC), gs.getDC(0), 
         trect, drect);
     machine.pushLongOperation(blitOp);
   }

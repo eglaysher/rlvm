@@ -146,9 +146,9 @@ void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
 
 void BlindTopToBottomEffect::renderPolygon(int polyStart, int polyEnd)
 {
-  srcSurface().renderToScreen(Rect(Point(0, polyStart), Point(width(), polyEnd)),
-                              Rect(Point(0, polyStart), Point(width(), polyEnd)),
-                              255);
+  srcSurface().renderToScreen(
+    Rect::GRP(0, polyStart, width(), polyEnd),
+    Rect::GRP(0, polyStart, width(), polyEnd), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -176,9 +176,9 @@ void BlindBottomToTopEffect::renderPolygon(int polyStart, int polyEnd)
 {
   // Render polygon
   srcSurface().
-    renderToScreen(Rect(Point(0, polyEnd), Point(width(), polyStart)),
-                   Rect(Point(0, polyEnd), Point(width(), polyStart)),
-                   255);      
+    renderToScreen(
+      Rect::GRP(0, polyEnd, width(), polyStart),
+      Rect::GRP(0, polyEnd, width(), polyStart), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -205,9 +205,9 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
 
 void BlindLeftToRightEffect::renderPolygon(int polyStart, int polyEnd)
 {
-  srcSurface().renderToScreen(Rect(Point(polyStart, 0), Point(polyEnd, height())),
-                              Rect(Point(polyStart, 0), Point(polyEnd, height())),
-                              255);
+  srcSurface().renderToScreen(
+    Rect::GRP(polyStart, 0, polyEnd, height()),
+    Rect::GRP(polyStart, 0, polyEnd, height()), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -233,8 +233,8 @@ void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
 
 void BlindRightToLeftEffect::renderPolygon(int polyStart, int polyEnd)
 {
-      srcSurface().
-        renderToScreen(Rect(Point(polyEnd, 0), Point(polyStart, height())),
-                       Rect(Point(polyEnd, 0), Point(polyStart, height())),
-                       255);      
+  srcSurface().
+    renderToScreen(
+      Rect::GRP(polyEnd, 0, polyStart, height()),
+      Rect::GRP(polyEnd, 0, polyStart, height()), 255);      
 }
