@@ -87,11 +87,10 @@ void NullSurface::renderToScreen(
 // -----------------------------------------------------------------------
 
 void NullSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst,
-  int r, int g, int b, int alpha, int filter)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   surface_log_.recordFunction(
-    "renderToScreenAsColorMask", src, dst, r, g, b, alpha, filter);
+    "renderToScreenAsColorMask", src, dst, rgba, filter);
 }
 
 // -----------------------------------------------------------------------

@@ -52,6 +52,7 @@
 #include "Systems/SDL/SDLUtils.hpp"
 
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/Colour.hpp"
 
 #include "alphablit.h"
 
@@ -318,33 +319,31 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
  *       cstrs over to the new exception class.
  */
 void Texture::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst,
-  int r, int g, int b, int alpha, int filter)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   if(filter == 0)
   {
     if(GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
     {
-      renderToScreenAsColorMask_subtractive_glsl(
-        src, dst, r, g, b, alpha);
+      renderToScreenAsColorMask_subtractive_glsl(src, dst, rgba);
     }
     else
     {
       renderToScreenAsColorMask_subtractive_fallback(
-        src, dst, r, g, b, alpha);
+        src, dst, rgba);
     }
   }
   else
   {
     renderToScreenAsColorMask_additive(
-      src, dst, r, g, b, alpha);      
+      src, dst, rgba);
   }
 }
 
 // -----------------------------------------------------------------------
 
 void Texture::renderToScreenAsColorMask_subtractive_glsl(
-  const Rect& src, const Rect& dst, int r, int g, int b, int alpha)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
@@ -422,7 +421,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
 
   glBegin(GL_QUADS);
   {
-    glColor4ub(r, g, b, alpha);
+    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx1, thisy2);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
@@ -458,7 +457,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
  * graphics cards > 5 years old.
  */
 void Texture::renderToScreenAsColorMask_subtractive_fallback(
-  const Rect& src, const Rect& dst, int r, int g, int b, int alpha)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
@@ -487,7 +486,7 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
 
   glBegin(GL_QUADS);
   {
-    glColor4ub(r, g, b, alpha);
+    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
     glTexCoord2f(thisx2, thisy1);
@@ -505,7 +504,7 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
 // -----------------------------------------------------------------------
 
 void Texture::renderToScreenAsColorMask_additive(
-  const Rect& src, const Rect& dst, int r, int g, int b, int alpha)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
@@ -529,7 +528,7 @@ void Texture::renderToScreenAsColorMask_additive(
 
   glBegin(GL_QUADS);
   {
-    glColor4ub(r, g, b, alpha);
+    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
     glTexCoord2f(thisx2, thisy1);

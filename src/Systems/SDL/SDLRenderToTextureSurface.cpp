@@ -97,8 +97,7 @@ void SDLRenderToTextureSurface::renderToScreen(
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst,
-  int r, int g, int b, int alpha, int filter)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   throw rlvm::Exception(
     "SDLRenderToTextureSurface::renderToScreenAsColorMask unimplemented");

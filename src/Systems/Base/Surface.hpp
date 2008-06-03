@@ -70,8 +70,7 @@ public:
     int alpha = 255) = 0;
 
   virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst,
-    int r, int g, int b, int alpha, int filter) = 0;
+    const Rect& src, const Rect& dst, const RGBAColour& colour, int filter) = 0;
 
   virtual void renderToScreen(
     const Rect& src, const Rect& dst,

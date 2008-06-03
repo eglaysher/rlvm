@@ -131,8 +131,7 @@ public:
     const Rect& src, const Rect& dst, int alpha = 255);
 
   virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst,
-    int r, int g, int b, int alpha, int filter);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
 
   virtual void renderToScreen(
     const Rect& src, const Rect& dst, const int opacity[4]);

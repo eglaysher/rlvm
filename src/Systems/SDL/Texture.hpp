@@ -82,14 +82,11 @@ private:
   static unsigned int s_screenHeight;
 
   void renderToScreenAsColorMask_subtractive_glsl(
-    const Rect& src, const Rect& dst,
-    int r, int g, int b, int alpha);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba);
   void renderToScreenAsColorMask_subtractive_fallback(
-    const Rect& src, const Rect& dst,
-    int r, int g, int b, int alpha);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba);
   void renderToScreenAsColorMask_additive(
-    const Rect& src, const Rect& dst,
-    int r, int g, int b, int alpha);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba);
 
   bool filterCoords(int& x1, int& y1, int& x2, int& y2, 
                     float& dx1, float& dy1, float& dx2, float& dy2);
@@ -115,8 +112,7 @@ public:
   void renderToScreen(const Rect& src, const Rect& dst, int opacity);
 
   void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst,
-    int r, int g, int b, int alpha, int filter);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
 
   void renderToScreen(const Rect& src, const Rect& dst,
                       const int opacity[4]);

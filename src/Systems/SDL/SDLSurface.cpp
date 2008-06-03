@@ -495,16 +495,14 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha)
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst,
-  int r, int g, int b, int alpha, int filter)
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   uploadTextureIfNeeded();
 
   for(ptr_vector<Texture>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreenAsColorMask(src, dst,
-                                  r, g, b, alpha, filter);
+    it->renderToScreenAsColorMask(src, dst, rgba, filter);
   }
 }
 
