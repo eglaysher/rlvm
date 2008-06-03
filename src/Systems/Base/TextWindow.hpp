@@ -29,6 +29,7 @@
 #define __TextWindow_hpp__
 
 #include "Systems/Base/Rect.hpp"
+#include "Systems/Base/Colour.hpp"
 
 #include <vector>
 #include <string>
@@ -116,12 +117,12 @@ protected:
   int m_useIndentation;
 
   /// The default color. Initialized to \#COLOR_TABLE.000, but can be
-  /// changed with the SetFontColour() command
-  int m_defaultRed, m_defaultGreen, m_defaultBlue;
+  /// changed with the SetFontColour() command.
+  RGBColour m_defaultColor;
 
   /// The current color. Initialized to the default color on every
   /// clearWin() call. 
-  int m_fontRed, m_fontGreen, m_fontBlue;
+  RGBColour m_fontColour;
 
   /// @}
 

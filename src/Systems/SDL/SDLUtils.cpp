@@ -32,6 +32,7 @@
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/Rect.hpp"
+#include "Systems/Base/Colour.hpp"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
@@ -131,4 +132,13 @@ void RectToSDLRect(const Rect& rect, SDL_Rect* out)
   out->y = rect.y();
   out->w = rect.width();
   out->h = rect.height();
+}
+
+// -----------------------------------------------------------------------
+
+void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out)
+{
+  out->r = in.r();
+  out->g = in.g();
+  out->b = in.b();
 }

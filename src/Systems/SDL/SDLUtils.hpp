@@ -32,6 +32,7 @@
 #include <SDL/SDL.h>
 
 class Rect;
+class RGBColour;
 
 void ShowGLErrors(void);
 void reportSDLError(const std::string& sdlName,
@@ -42,5 +43,7 @@ struct SDL_Surface;
 SDL_Surface* AlphaInvert(SDL_Surface* inSurface);
 
 void RectToSDLRect(const Rect& rect, SDL_Rect* out);
+
+void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out);
 
 #endif

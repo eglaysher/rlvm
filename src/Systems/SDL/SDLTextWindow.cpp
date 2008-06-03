@@ -135,9 +135,8 @@ void SDLTextWindow::clearWin()
   m_rubyBeginPoint = -1;
 
   // Reset the color
-  m_fontRed = m_defaultRed;
-  m_fontGreen = m_defaultGreen;
-  m_fontBlue = m_defaultBlue;
+  // COLOUR
+  m_fontColour = m_defaultColor;
 
   // Allocate the text window surface
   m_surface.reset(new SDLSurface(textWindowSize()));
@@ -159,7 +158,8 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
   if(current != "")
   {
-    SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
+    SDL_Color color;
+    RGBColourToSDLColor(m_fontColour, &color);
     int curCodepoint = codepoint(current);
     int nextCodepoint = codepoint(next);
 
@@ -445,7 +445,8 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
       throw rlvm::Exception("We don't handle ruby across line breaks yet!");
     }
 
-    SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
+    SDL_Color color;
+    RGBColourToSDLColor(m_fontColour, &color);
     SDL_Surface* tmp =
       TTF_RenderUTF8_Blended(m_rubyFont.get(), utf8str.c_str(), color);
 
@@ -475,7 +476,8 @@ void SDLTextWindow::addSelectionItem(
   RLMachine& machine, const std::string& utf8str)
 {
   // Render the incoming string for both selected and not-selected.
-  SDL_Color color = {m_fontRed, m_fontGreen, m_fontBlue };
+  SDL_Color color;
+  RGBColourToSDLColor(m_fontColour, &color);
   SDL_Surface* normal =
     TTF_RenderUTF8_Blended(m_font.get(), utf8str.c_str(), color);
 

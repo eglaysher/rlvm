@@ -137,18 +137,14 @@ void TextWindow::setTextboxPadding(const vector<int>& posData)
 
 void TextWindow::setDefaultTextColor(const vector<int>& colorData)
 {
-  m_defaultRed = colorData.at(0);
-  m_defaultGreen = colorData.at(1);
-  m_defaultBlue = colorData.at(2);
+  m_defaultColor = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setFontColor(const vector<int>& colorData)
 {
-  m_fontRed = colorData.at(0);
-  m_fontGreen = colorData.at(1);
-  m_fontBlue = colorData.at(2);
+  m_fontColour = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
 }
 
 // -----------------------------------------------------------------------
