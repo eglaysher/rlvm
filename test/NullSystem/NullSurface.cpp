@@ -26,6 +26,7 @@
 // -----------------------------------------------------------------------
 
 #include "NullSystem/NullSurface.hpp"
+#include "Systems/Base/Colour.hpp"
 
 // -----------------------------------------------------------------------
 // NullSurface
@@ -138,14 +139,14 @@ void NullSurface::rawRenderQuad(const int srcCoords[8],
 
 // -----------------------------------------------------------------------
 
-void NullSurface::fill(int r, int g, int b, int alpha) {
-  surface_log_.recordFunction("fill", r, g, b, alpha);
+void NullSurface::fill(const RGBAColour& colour) {
+  surface_log_.recordFunction("fill", colour);
 }
 
 // -----------------------------------------------------------------------
 
-void NullSurface::fill(int r, int g, int b, int alpha, const Rect& rect) {
-  surface_log_.recordFunction("fill", r, g, b, alpha, rect);
+void NullSurface::fill(const RGBAColour& colour, const Rect& rect) {
+  surface_log_.recordFunction("fill", colour, rect);
 }
 
 // -----------------------------------------------------------------------

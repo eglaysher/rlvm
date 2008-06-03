@@ -36,6 +36,7 @@
 #include "Systems/SDL/Texture.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
+#include "Systems/Base/Colour.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
@@ -170,7 +171,7 @@ void SDLSurface::allocate(const Size& size)
 
   m_surface = buildNewSurface(size);
 
-  fill(0, 0, 0, 255);
+  fill(RGBAColour::Black());
 }
 
 // -----------------------------------------------------------------------
@@ -566,10 +567,10 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(int r, int g, int b, int alpha)
+void SDLSurface::fill(const RGBAColour& colour)
 {
   // Fill the entire surface with the incoming color
-  Uint32 color = SDL_MapRGBA(m_surface->format, r, g, b, alpha);
+  Uint32 color = MapRGBA(m_surface->format, colour);
 
   if(SDL_FillRect(m_surface, NULL, color))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
@@ -580,10 +581,10 @@ void SDLSurface::fill(int r, int g, int b, int alpha)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(int r, int g, int b, int alpha, const Rect& area)
+void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
 {
   // Fill the entire surface with the incoming color
-  Uint32 color = SDL_MapRGBA(m_surface->format, r, g, b, alpha);
+  Uint32 color = MapRGBA(m_surface->format, colour);
 
   SDL_Rect rect;
   RectToSDLRect(area, &rect);

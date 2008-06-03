@@ -71,8 +71,8 @@ public:
                              const int destCoords[8],
                              const int opacity[4]);
 
-  virtual void fill(int r, int g, int b, int alpha);
-  virtual void fill(int r, int g, int b, int alpha, const Rect& rect);
+  virtual void fill(const RGBAColour& colour);
+  virtual void fill(const RGBAColour& colour, const Rect& rect);
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
 

@@ -52,6 +52,7 @@
 #include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/Colour.hpp"
 
 #include "Effects/Effect.hpp"
 #include "Effects/EffectFactory.hpp"
@@ -285,7 +286,7 @@ struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
 struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
                                       IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    machine.system().graphics().getDC(dc)->fill(r, g, b, 255);
+    machine.system().graphics().getDC(dc)->fill(RGBAColour(RGBAColour(r, g, b)));
   }
 };
 
@@ -790,7 +791,7 @@ struct Grp_fill_1 : public RLOp_Void_5<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
   DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
-    machine.system().graphics().getDC(dc)->fill(r, g, b, alpha);
+    machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha));
   }
 };
 
@@ -807,7 +808,7 @@ struct Grp_fill_3 : public RLOp_Void_9<
   void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int dc, int r, int g, int b, int alpha) {
     Rect destRect = m_space.makeRect(x1, y1, x2, y2);
-    machine.system().graphics().getDC(dc)->fill(r, g, b, alpha, destRect);
+    machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha), destRect);
   }
 };
 
@@ -827,7 +828,7 @@ struct Grp_fade_7 : public RLOp_Void_8<
     Rect rect = m_space.makeRect(x1, y1, x2, y2);
     GraphicsSystem& graphics = machine.system().graphics();
     if (time == 0) {
-      graphics.getDC(0)->fill(r, g, b, 255, rect);
+      graphics.getDC(0)->fill(RGBAColour(r, g, b), rect);
     }
     else {
       // FIXME: this needs checking for sanity of implementation, lack
@@ -835,7 +836,7 @@ struct Grp_fade_7 : public RLOp_Void_8<
       // objects, etc.
       shared_ptr<Surface> dc0 = graphics.getDC(0);
       shared_ptr<Surface> tmp(dc0->clone());
-      tmp->fill(r, g, b, 255, rect);
+      tmp->fill(RGBAColour(r, g, b), rect);
       LongOperation* lop = 
         EffectFactory::build(machine, tmp, dc0, time, 0, 0, 
                              0, 0, 0, 0, 0, 0);

@@ -53,6 +53,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/MouseCursor.hpp"
+#include "Systems/Base/Colour.hpp"
 
 #include "libReallive/gameexe.h"
 #include "file.h"
@@ -464,7 +465,7 @@ void SDLGraphicsSystem::freeDC(int dc)
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
-    getDC(1)->fill(0, 0, 0, 255);
+    getDC(1)->fill(RGBAColour::Black());
   }
   else
     m_displayContexts[dc]->deallocate();
@@ -669,7 +670,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
 
 void SDLGraphicsSystem::clearAllDCs()
 {
-  getDC(0)->fill(0, 0, 0, 255);
+  getDC(0)->fill(RGBAColour::Black());
   
   for(int i = 1; i < 16; ++i)
     freeDC(i);

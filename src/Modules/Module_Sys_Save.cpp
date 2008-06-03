@@ -47,6 +47,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/Colour.hpp"
 #include "libReallive/intmemref.h"
 
 #include <boost/shared_ptr.hpp>
@@ -363,7 +364,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
       // Blank dc0 (because we won't be using it anyway) for the image
       // we're going to render to
       shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
-      blankScreen->fill(0, 0, 0, 255);
+      blankScreen->fill(RGBAColour::Black());
 
       machine.pushLongOperation(
         new FadeEffect(machine, currentWindow, blankScreen, s, 250));
@@ -399,7 +400,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
 
     // Blank dc0 (because we won't be using it anyway) for the image
     // we're going to render to
-    dc0->fill(0, 0, 0, 255);
+    dc0->fill(RGBAColour::Black());
 
     machine.pushLongOperation(
       new FadeEffect(machine, dc0, currentWindow, s, 250));

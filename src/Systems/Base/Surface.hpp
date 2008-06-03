@@ -32,7 +32,8 @@
 
 #include <boost/shared_ptr.hpp>
 
-
+class RGBColour;
+class RGBAColour;
 class GraphicsObject;
 struct GraphicsObjectOverride;
 
@@ -87,8 +88,8 @@ public:
                              const int destCoords[8],
                              const int opacity[4]) = 0;
 
-  virtual void fill(int r, int g, int b, int alpha) = 0;
-  virtual void fill(int r, int g, int b, int alpha, const Rect& area) = 0;
+  virtual void fill(const RGBAColour& colour) = 0;
+  virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) = 0;
 

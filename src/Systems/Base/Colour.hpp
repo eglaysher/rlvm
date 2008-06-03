@@ -28,6 +28,8 @@
 #ifndef __Colour_hpp__
 #define __Colour_hpp__
 
+#include <iosfwd>
+
 /**
  *
  */
@@ -60,6 +62,7 @@ class RGBAColour
 {
 public: 
   RGBAColour() : rgb_(0, 0, 0), alpha_(0) { } 
+  RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { } 
   RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { } 
 
   int r() const { return rgb_.r(); }
@@ -72,11 +75,19 @@ public:
   int a() const { return alpha_; }
   float a_float() const { return float(alpha_) / 256; }
 
+  // Colour constants
+  static RGBAColour Clear() { return RGBAColour(0, 0, 0, 0); }
+  static RGBAColour Black() { return RGBAColour(0, 0, 0, 255); }
+  static RGBAColour White() { return RGBAColour(255, 255, 255, 255); }
+
 private:
   RGBColour rgb_;
 
   int alpha_;
 };  // end of class RGBA
 
+
+std::ostream& operator<<(std::ostream& os, const RGBColour& rgb);
+std::ostream& operator<<(std::ostream& os, const RGBAColour& rgba);
 
 #endif

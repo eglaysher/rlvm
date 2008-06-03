@@ -25,6 +25,7 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
@@ -89,7 +90,7 @@ void NullGraphicsSystem::freeDC(int dc) {
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
-    m_displayContexts[1]->fill(0, 0, 0, 255);
+    m_displayContexts[1]->fill(RGBAColour::Black());
   }
   else
     m_displayContexts[dc]->deallocate();

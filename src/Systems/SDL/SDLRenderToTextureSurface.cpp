@@ -133,15 +133,14 @@ void SDLRenderToTextureSurface::rawRenderQuad(const int srcCoords[8],
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha)
+void SDLRenderToTextureSurface::fill(const RGBAColour& colour)
 {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::fill(int r, int g, int b, int alpha, 
-                                     const Rect& rect)
+void SDLRenderToTextureSurface::fill(const RGBAColour& colour, const Rect& rect)
 {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }

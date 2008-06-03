@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006 Elliot Glaysher
+// Copyright (C) 2008 Elliot Glaysher
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,27 +25,24 @@
 //  
 // -----------------------------------------------------------------------
 
-#ifndef __SDLUtils_hpp__
-#define __SDLUtils_hpp__
+#include "Systems/Base/Colour.hpp"
+#include <iostream>
 
-#include <string>
-#include <SDL/SDL.h>
+// -----------------------------------------------------------------------
+// RGBColour
+// -----------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& os, const RGBColour& rgb) {
+  os << "RGB(" << rgb.r() << ", " << rgb.g() << ", " << rgb.b() << ")";
 
-class Rect;
-class RGBColour;
-class RGBAColour;
+  return os;
+}
 
-void ShowGLErrors(void);
-void reportSDLError(const std::string& sdlName,
-                    const std::string& functionName);
-int SafeSize(int i);
+// -----------------------------------------------------------------------
+// RGBAColour
+// -----------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& os, const RGBAColour& rgba) {
+  os << "RGBA(" << rgba.r() << ", " << rgba.g() << ", " << rgba.b()
+     << ", " << rgba.a() << ")";
 
-struct SDL_Surface;
-SDL_Surface* AlphaInvert(SDL_Surface* inSurface);
-
-void RectToSDLRect(const Rect& rect, SDL_Rect* out);
-
-void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out);
-Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in);
-
-#endif
+  return os;
+}

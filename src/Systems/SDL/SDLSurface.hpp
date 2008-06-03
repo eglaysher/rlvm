@@ -159,8 +159,8 @@ public:
 
   virtual Size size() const;
 
-  virtual void fill(int r, int g, int b, int alpha);
-  virtual void fill(int r, int g, int b, int alpha, const Rect& area);
+  virtual void fill(const RGBAColour& colour);
+  virtual void fill(const RGBAColour& colour, const Rect& area);
 
   SDL_Surface* surface() { return m_surface; }
 

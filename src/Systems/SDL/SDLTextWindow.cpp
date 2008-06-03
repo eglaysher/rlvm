@@ -140,7 +140,7 @@ void SDLTextWindow::clearWin()
 
   // Allocate the text window surface
   m_surface.reset(new SDLSurface(textWindowSize()));
-  m_surface->fill(0, 0, 0, 0);
+  m_surface->fill(RGBAColour::Clear());
 }
 
 // -----------------------------------------------------------------------
