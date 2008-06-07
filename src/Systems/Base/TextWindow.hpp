@@ -146,7 +146,8 @@ protected:
 
   /// The default window background color.
   /// @{
-  int m_r, m_g, m_b, m_alpha, m_filter;
+  RGBAColour m_colour;
+  int m_filter;
   /// @}
 
   int m_isVisible;
@@ -367,17 +368,17 @@ public:
   void setWindowAttrMod(int i) { m_windowAttrMod = i; }
   int windowAttrMod() const { return m_windowAttrMod; }
 
-  void setR(int i) { m_r = i; }
-  void setG(int i) { m_g = i; }
-  void setB(int i) { m_b = i; }
-  void setAlpha(int i) { m_alpha = i; }
+  void setR(int i) { m_colour.setRed(i); }
+  void setG(int i) { m_colour.setGreen(i); }
+  void setB(int i) { m_colour.setBlue(i); }
+  void setAlpha(int i) { m_colour.setAlpha(i); }
   void setFilter(int i) { m_filter = i; }
   void setRGBAF(const std::vector<int>& rgbaValues);
   
-  int r() const { return m_r; }
-  int g() const { return m_g; }
-  int b() const { return m_b; }
-  int alpha() const { return m_alpha; }
+  int r() const { return m_colour.r(); }
+  int g() const { return m_colour.g(); }
+  int b() const { return m_colour.b(); }
+  int alpha() const { return m_colour.a(); }
   int filter() const { return m_filter; }
   /// @}
 

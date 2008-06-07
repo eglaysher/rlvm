@@ -324,7 +324,7 @@ void SDLTextWindow::render(RLMachine& machine)
       m_wakuBacking->renderToScreenAsColorMask(
         Rect(Point(0, 0), backingSize),
         Rect(Point(boxX, boxY), backingSize),
-        RGBAColour(m_r, m_g, m_b, m_alpha), m_filter);
+        m_colour, m_filter);
     }
 
     if(m_wakuMain)

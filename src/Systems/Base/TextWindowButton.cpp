@@ -126,7 +126,7 @@ void TextWindowButton::setMousePosition(
     if(inBox && m_state == BUTTONSTATE_NORMAL)
       m_state = BUTTONSTATE_HIGHLIGHTED;
     else if(!inBox && m_state == BUTTONSTATE_HIGHLIGHTED)
-        m_state = BUTTONSTATE_NORMAL;
+      m_state = BUTTONSTATE_NORMAL;
     else if(!inBox && m_state == BUTTONSTATE_PRESSED)
       m_state = BUTTONSTATE_NORMAL;
 
@@ -179,9 +179,7 @@ void TextWindowButton::render(RLMachine& machine,
     Surface::GrpRect rect = buttons->getPattern(basePattern + m_state);
     if(!(rect.rect.isEmpty()))
     {
-      Rect dest = Rect(location(window).origin(),
-                       rect.rect.size());
-
+      Rect dest = Rect(location(window).origin(), rect.rect.size());
       buttons->renderToScreen(rect.rect, dest, 255);
     }
   }

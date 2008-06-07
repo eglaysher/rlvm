@@ -46,6 +46,10 @@ public:
   float g_float() const { return float(g_) / 256; }
   float b_float() const { return float(b_) / 256; }
 
+  void setRed(const int in) { r_ = in; }
+  void setGreen(const int in) { g_ = in; }
+  void setBlue(const int in) { b_ = in; }
+
 private:
   int r_, g_, b_;
 };  // end of class RGB
@@ -74,6 +78,11 @@ public:
 
   int a() const { return alpha_; }
   float a_float() const { return float(alpha_) / 256; }
+
+  void setRed(const int in) { rgb_.setRed(in); }
+  void setGreen(const int in) { rgb_.setGreen(in); }
+  void setBlue(const int in) { rgb_.setBlue(in); }
+  void setAlpha(const int in) { alpha_ = in; }
 
   // Colour constants
   static RGBAColour Clear() { return RGBAColour(0, 0, 0, 0); }

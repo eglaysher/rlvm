@@ -59,8 +59,7 @@ using std::vector;
 
 TextWindow::TextWindow(RLMachine& machine, int windowNum)
   : m_currentLineNumber(0), m_currentIndentationInPixels(0), 
-    m_useIndentation(0), 
-    m_r(0), m_g(0), m_b(0), m_alpha(0), m_filter(0), m_isVisible(0),
+    m_useIndentation(0), m_colour(), m_filter(0), m_isVisible(0),
     m_inSelectionMode(0), m_nextId(0)
 {
   Gameexe& gexe = machine.system().gameexe();
@@ -390,10 +389,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
 void TextWindow::setRGBAF(const vector<int>& attr)
 {
-  setR(attr.at(0)); 
-  setG(attr.at(1)); 
-  setB(attr.at(2));
-  setAlpha(attr.at(3));
+  m_colour = RGBAColour(attr.at(0), attr.at(1), attr.at(2), attr.at(3));
   setFilter(attr.at(4));
 }
 
