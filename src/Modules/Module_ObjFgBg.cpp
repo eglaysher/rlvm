@@ -118,7 +118,7 @@ struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setClip(x1, y1, x2, y2);
+    obj.setClip(Rect::GRP(x1, y1, x2, y2));
   }
 };
 
@@ -132,7 +132,7 @@ struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setClip(x, y, x + w, y + h);
+    obj.setClip(Rect::REC(x, y, w, h));
   }
 };
 
@@ -146,7 +146,7 @@ struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, int buf, int x, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setClip(0, 0, x, y);
+    obj.setClip(Rect::GRP(0, 0, x, y));
   }
 };
 

@@ -51,6 +51,8 @@ const int DEFAULT_TEXT_VERTICAL = 0;
 const int DEFAULT_TEXT_COLOUR = 0;
 const int DEFAULT_TEXT_SHADOWCOLOUR = 0;
 
+const Rect EMPTY_CLIP = Rect(Point(0, 0), Size(-1, -1));
+
 //boost::shared_ptr<GraphicsObject::Impl> g_constantBaseObj( 
 const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_emptyImpl(
   new GraphicsObject::Impl);
@@ -297,21 +299,15 @@ void GraphicsObject::setAlpha(const int alpha)
 void GraphicsObject::clearClip()
 { 
   makeImplUnique();
-  m_impl->m_clipX1 = 0;
-  m_impl->m_clipY1 = 0;
-  m_impl->m_clipX2 = -1; 
-  m_impl->m_clipY2 = -1;
+  m_impl->m_clip = EMPTY_CLIP;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setClip(const int x1, const int y1, const int x2, const int y2)
+void GraphicsObject::setClip(const Rect& rect)
 {
   makeImplUnique();
-  m_impl->m_clipX1 = x1;
-  m_impl->m_clipY1 = y1; 
-  m_impl->m_clipX2 = x2;
-  m_impl->m_clipY2 = y2;
+  m_impl->m_clip = rect;
 }
 
 // -----------------------------------------------------------------------
@@ -509,7 +505,7 @@ GraphicsObject::Impl::Impl()
 
     m_pattNo(0), m_alpha(255),
 
-    m_clipX1(0), m_clipY1(0), m_clipX2(-1), m_clipY2(-1),
+    m_clip(EMPTY_CLIP),
 
     m_mono(0), m_invert(0), m_light(0),
     // Do the rest later.
@@ -535,8 +531,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     m_width(rhs.m_width), m_height(rhs.m_height),
     m_rotation(rhs.m_rotation),
     m_pattNo(rhs.m_pattNo), m_alpha(rhs.m_alpha),
-    m_clipX1(rhs.m_clipX1), m_clipY1(rhs.m_clipY1),
-    m_clipX2(rhs.m_clipX2), m_clipY2(rhs.m_clipY2),
+    m_clip(rhs.m_clip),
     m_mono(rhs.m_mono), m_invert(rhs.m_invert),
     m_light(rhs.m_light), m_tint(rhs.m_tint), m_colour(rhs.m_colour),
     m_compositeMode(rhs.m_compositeMode),
@@ -581,8 +576,7 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
 
     m_pattNo = rhs.m_pattNo;
     m_alpha = rhs.m_alpha;
-    m_clipX1 = rhs.m_clipX1; m_clipY1 = rhs.m_clipY1;
-    m_clipX2 = rhs.m_clipX2; m_clipY2 = rhs.m_clipY2;
+    m_clip = rhs.m_clip;
     m_mono = rhs.m_mono;
     m_invert = rhs.m_invert;
     m_light = rhs.m_light;
@@ -622,7 +616,7 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version)
   ar & m_visible & m_x & m_y & m_whateverAdjustVertOperatesOn &
     m_originX & m_originY & m_repOriginX & m_repOriginY &
     m_width & m_height & m_rotation & m_pattNo & m_alpha &
-    m_clipX1 & m_clipY1 & m_clipX2 & m_clipY2 & m_mono & m_invert &
+    m_clip & m_mono & m_invert &
     m_tint & m_colour & m_compositeMode & m_textProperties & m_wipeCopy;
 }
 

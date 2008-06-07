@@ -640,6 +640,8 @@ void Texture::renderToScreenAsObject(
       return;
     }
     // Otherwise, adjust coordinates to present only the visible area.
+    // POINT
+    // TODO: Move this logic into an intersection of rectangles.
     if (xPos1 < go.clipX1()) {
       xSrc1 += go.clipX1() - xPos1;
       xPos1 = go.clipX1();

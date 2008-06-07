@@ -29,6 +29,7 @@
 #define __GraphicObject_hpp__
 
 #include "Systems/Base/Colour.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
@@ -159,13 +160,15 @@ public:
   int alpha() const { return m_impl->m_alpha; }
   void setAlpha(const int alpha);
 
-  bool hasClip() const { return m_impl->m_clipX2 >= 0 || m_impl->m_clipY2 >= 0; }
+  bool hasClip() const { 
+    return m_impl->m_clip.width() >= 0 || m_impl->m_clip.height() >= 0;
+  }
   void clearClip();
-  void setClip(const int x1, const int y1, const int x2, const int y2);
-  int clipX1() const { return m_impl->m_clipX1; }
-  int clipY1() const { return m_impl->m_clipY1; }
-  int clipX2() const { return m_impl->m_clipX2; }
-  int clipY2() const { return m_impl->m_clipY2; }
+  void setClip(const Rect& rec);
+  int clipX1() const { return m_impl->m_clip.x(); }
+  int clipY1() const { return m_impl->m_clip.y(); }
+  int clipX2() const { return m_impl->m_clip.x2(); }
+  int clipY2() const { return m_impl->m_clip.y2(); }
   
   bool hasObjectData() const { return m_objectData; }
 
@@ -293,7 +296,7 @@ private:
     int m_alpha;
 
     /// The clipping region for this image
-    int m_clipX1, m_clipY1, m_clipX2, m_clipY2;
+    Rect m_clip;
 
     /// The monochrome transformation
     int m_mono;
