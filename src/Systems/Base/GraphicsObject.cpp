@@ -256,6 +256,8 @@ void GraphicsObject::setInvert(const int in)
 { makeImplUnique(); m_impl->m_invert = in; }
 void GraphicsObject::setLight(const int in)
 { makeImplUnique(); m_impl->m_light = in; }
+void GraphicsObject::setTint(const RGBColour& color) 
+{ makeImplUnique(); m_impl->m_tint = color; }
 void GraphicsObject::setTintR(const int in)
 { makeImplUnique(); m_impl->m_tint.setRed(in); }
 void GraphicsObject::setTintG(const int in)

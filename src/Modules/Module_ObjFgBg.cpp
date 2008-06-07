@@ -198,9 +198,7 @@ struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setTintR(r);
-    obj.setTintG(g);
-    obj.setTintB(b);
+    obj.setTint(RGBColour(r, g, b));
   }
 };
 

@@ -130,11 +130,9 @@ public:
   void setLight(const int in);
 
   const RGBColour tint() const { return m_impl->m_tint; }
-  int tintR() const { return m_impl->m_tint.r(); }
+  void setTint(const RGBColour& color);
   void setTintR(const int in);
-  int tintG() const { return m_impl->m_tint.g(); }
   void setTintG(const int in);
-  int tintB() const { return m_impl->m_tint.b(); }
   void setTintB(const int in);
 
   int colourR() const { return m_impl->m_colour.r(); }

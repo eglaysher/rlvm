@@ -178,9 +178,6 @@ void object::test<3>()
     (&GraphicsObject::setPattNo, &GraphicsObject::pattNo)
     (&GraphicsObject::setInvert, &GraphicsObject::invert)
     (&GraphicsObject::setLight, &GraphicsObject::light)
-    (&GraphicsObject::setTintR, &GraphicsObject::tintR)
-    (&GraphicsObject::setTintG, &GraphicsObject::tintG)
-    (&GraphicsObject::setTintB, &GraphicsObject::tintB)
     (&GraphicsObject::setColourR, &GraphicsObject::colourR)
     (&GraphicsObject::setColourG, &GraphicsObject::colourG)
     (&GraphicsObject::setColourB, &GraphicsObject::colourB)
@@ -224,7 +221,8 @@ void object::test<3>()
     // Make sure we get the right value back
   }
 
-  // OTHER: setXAdjustment, setYAdjustment, clearClip, setClip
+  // OTHER: setXAdjustment, setYAdjustment, clearClip, setClip, 
+  // setTint[RGB]?
 
 }
 
