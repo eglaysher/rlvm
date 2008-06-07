@@ -264,6 +264,8 @@ void GraphicsObject::setTintG(const int in)
 { makeImplUnique(); m_impl->m_tint.setGreen(in); }
 void GraphicsObject::setTintB(const int in)
 { makeImplUnique(); m_impl->m_tint.setBlue(in); }
+void GraphicsObject::setColour(const RGBAColour& colour)
+{ makeImplUnique(); m_impl->m_colour = colour; }
 void GraphicsObject::setColourR(const int in)
 { makeImplUnique(); m_impl->m_colour.setRed(in); }
 void GraphicsObject::setColourG(const int in)

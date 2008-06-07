@@ -178,10 +178,6 @@ void object::test<3>()
     (&GraphicsObject::setPattNo, &GraphicsObject::pattNo)
     (&GraphicsObject::setInvert, &GraphicsObject::invert)
     (&GraphicsObject::setLight, &GraphicsObject::light)
-    (&GraphicsObject::setColourR, &GraphicsObject::colourR)
-    (&GraphicsObject::setColourG, &GraphicsObject::colourG)
-    (&GraphicsObject::setColourB, &GraphicsObject::colourB)
-    (&GraphicsObject::setColourLevel, &GraphicsObject::colourLevel)
     (&GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode)
     (&GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX)
     (&GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY)
@@ -222,8 +218,7 @@ void object::test<3>()
   }
 
   // OTHER: setXAdjustment, setYAdjustment, clearClip, setClip, 
-  // setTint[RGB]?
-
+  // setTint[RGB]?, setColour[RGB]?
 }
 
 // -----------------------------------------------------------------------

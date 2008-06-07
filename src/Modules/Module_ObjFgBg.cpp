@@ -211,10 +211,7 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
-    obj.setColourR(r);
-    obj.setColourG(g);
-    obj.setColourB(b);
-    obj.setColourLevel(level);
+    obj.setColour(RGBAColour(r, g, b, level));
   }
 };
 

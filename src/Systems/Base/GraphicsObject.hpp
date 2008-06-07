@@ -129,19 +129,17 @@ public:
   int light() const { return m_impl->m_light; }
   void setLight(const int in);
 
-  const RGBColour tint() const { return m_impl->m_tint; }
+  const RGBColour& tint() const { return m_impl->m_tint; }
   void setTint(const RGBColour& color);
   void setTintR(const int in);
   void setTintG(const int in);
   void setTintB(const int in);
 
-  int colourR() const { return m_impl->m_colour.r(); }
+  const RGBAColour& colour() const { return m_impl->m_colour; }
+  void setColour(const RGBAColour& color);
   void setColourR(const int in);
-  int colourG() const { return m_impl->m_colour.g(); }
   void setColourG(const int in);
-  int colourB() const { return m_impl->m_colour.b(); }
   void setColourB(const int in);
-  int colourLevel() const { return m_impl->m_colour.a(); }
   void setColourLevel(const int in);
 
   int compositeMode() const { return m_impl->m_compositeMode; }
