@@ -28,6 +28,8 @@
 #ifndef __GraphicObject_hpp__
 #define __GraphicObject_hpp__
 
+#include "Systems/Base/Colour.hpp"
+
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
@@ -126,20 +128,21 @@ public:
   int light() const { return m_impl->m_light; }
   void setLight(const int in);
 
-  int tintR() const { return m_impl->m_tintR; }
+  const RGBColour tint() const { return m_impl->m_tint; }
+  int tintR() const { return m_impl->m_tint.r(); }
   void setTintR(const int in);
-  int tintG() const { return m_impl->m_tintG; }
+  int tintG() const { return m_impl->m_tint.g(); }
   void setTintG(const int in);
-  int tintB() const { return m_impl->m_tintB; }
+  int tintB() const { return m_impl->m_tint.b(); }
   void setTintB(const int in);
 
-  int colourR() const { return m_impl->m_colourR; }
+  int colourR() const { return m_impl->m_colour.r(); }
   void setColourR(const int in);
-  int colourG() const { return m_impl->m_colourG; }
+  int colourG() const { return m_impl->m_colour.g(); }
   void setColourG(const int in);
-  int colourB() const { return m_impl->m_colourB; }
+  int colourB() const { return m_impl->m_colour.b(); }
   void setColourB(const int in);
-  int colourLevel() const { return m_impl->m_colourLevel; }
+  int colourLevel() const { return m_impl->m_colour.a(); }
   void setColourLevel(const int in);
 
   int compositeMode() const { return m_impl->m_compositeMode; }
@@ -300,9 +303,11 @@ private:
 
     int m_light;
 
-    int m_tintR, m_tintG, m_tintB;
+    RGBColour m_tint;
 
-    int m_colourR, m_colourG, m_colourB, m_colourLevel;
+    /// Applies a colour to the object by blending it directly at the
+    /// alpha components opacity.
+    RGBAColour m_colour;
 
     int m_compositeMode;
   

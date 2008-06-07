@@ -28,6 +28,7 @@
 #ifndef __Colour_hpp__
 #define __Colour_hpp__
 
+#include <boost/serialization/access.hpp>
 #include <iosfwd>
 
 /**
@@ -50,8 +51,19 @@ public:
   void setGreen(const int in) { g_ = in; }
   void setBlue(const int in) { b_ = in; }
 
+  // Colour constants
+  static RGBColour Black() { return RGBColour(0, 0, 0); }
+  static RGBColour White() { return RGBColour(255, 255, 255); }
+
 private:
   int r_, g_, b_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    ar & r_ & g_ & b_;
+  }
 };  // end of class RGB
 
 // -----------------------------------------------------------------------
@@ -93,6 +105,13 @@ private:
   RGBColour rgb_;
 
   int alpha_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    ar & rgb_ & alpha_;
+  }
 };  // end of class RGBA
 
 

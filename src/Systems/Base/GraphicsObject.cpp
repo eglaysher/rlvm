@@ -255,19 +255,19 @@ void GraphicsObject::setInvert(const int in)
 void GraphicsObject::setLight(const int in)
 { makeImplUnique(); m_impl->m_light = in; }
 void GraphicsObject::setTintR(const int in)
-{ makeImplUnique(); m_impl->m_tintR = in; }
+{ makeImplUnique(); m_impl->m_tint.setRed(in); }
 void GraphicsObject::setTintG(const int in)
-{ makeImplUnique(); m_impl->m_tintG = in; }
+{ makeImplUnique(); m_impl->m_tint.setGreen(in); }
 void GraphicsObject::setTintB(const int in)
-{ makeImplUnique(); m_impl->m_tintB = in; }
+{ makeImplUnique(); m_impl->m_tint.setBlue(in); }
 void GraphicsObject::setColourR(const int in)
-{ makeImplUnique(); m_impl->m_colourR = in; }
+{ makeImplUnique(); m_impl->m_colour.setRed(in); }
 void GraphicsObject::setColourG(const int in)
-{ makeImplUnique(); m_impl->m_colourG = in; }
+{ makeImplUnique(); m_impl->m_colour.setGreen(in); }
 void GraphicsObject::setColourB(const int in)
-{ makeImplUnique(); m_impl->m_colourB = in; }
+{ makeImplUnique(); m_impl->m_colour.setBlue(in); }
 void GraphicsObject::setColourLevel(const int in)
-{ makeImplUnique(); m_impl->m_colourLevel = in; }
+{ makeImplUnique(); m_impl->m_colour.setAlpha(in); }
 
 // -----------------------------------------------------------------------
 
@@ -513,8 +513,8 @@ GraphicsObject::Impl::Impl()
 
     m_mono(0), m_invert(0), m_light(0),
     // Do the rest later.
-    m_tintR(255), m_tintG(255), m_tintB(255), 
-    m_colourR(255), m_colourG(255), m_colourB(255), m_colourLevel(255),
+    m_tint(RGBColour::White()),
+    m_colour(RGBAColour::White()),
     m_compositeMode(0),
     m_scrollRateX(0),
     m_scrollRateY(0),
@@ -538,10 +538,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     m_clipX1(rhs.m_clipX1), m_clipY1(rhs.m_clipY1),
     m_clipX2(rhs.m_clipX2), m_clipY2(rhs.m_clipY2),
     m_mono(rhs.m_mono), m_invert(rhs.m_invert),
-    m_light(rhs.m_light), m_tintR(rhs.m_tintR),
-    m_tintG(rhs.m_tintG), m_tintB(rhs.m_tintB),
-    m_colourR(rhs.m_colourR), m_colourG(rhs.m_colourG),
-    m_colourB(rhs.m_colourB), m_colourLevel(rhs.m_colourLevel),
+    m_light(rhs.m_light), m_tint(rhs.m_tint), m_colour(rhs.m_colour),
     m_compositeMode(rhs.m_compositeMode),
     m_scrollRateX(rhs.m_scrollRateX),
     m_scrollRateY(rhs.m_scrollRateY), 
@@ -589,14 +586,9 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
     m_mono = rhs.m_mono;
     m_invert = rhs.m_invert;
     m_light = rhs.m_light;
-    m_tintR = rhs.m_tintR;
-    m_tintG = rhs.m_tintG;
-    m_tintB = rhs.m_tintB;
+    m_tint = rhs.m_tint;
 
-    m_colourR = rhs.m_colourR;
-    m_colourG = rhs.m_colourG;
-    m_colourB = rhs.m_colourB;
-    m_colourLevel = rhs.m_colourLevel;
+    m_colour = rhs.m_colour;
 
     m_compositeMode = rhs.m_compositeMode;
     m_scrollRateX = rhs.m_scrollRateX;
@@ -631,8 +623,7 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version)
     m_originX & m_originY & m_repOriginX & m_repOriginY &
     m_width & m_height & m_rotation & m_pattNo & m_alpha &
     m_clipX1 & m_clipY1 & m_clipX2 & m_clipY2 & m_mono & m_invert &
-    m_tintR & m_tintG & m_tintB & m_colourR & m_colourG & m_colourB &
-    m_colourLevel & m_compositeMode & m_textProperties & m_wipeCopy;
+    m_tint & m_colour & m_compositeMode & m_textProperties & m_wipeCopy;
 }
 
 // -----------------------------------------------------------------------
