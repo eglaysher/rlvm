@@ -421,7 +421,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
 
   glBegin(GL_QUADS);
   {
-    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
+    glColorRGBA(rgba);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx1, thisy2);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
@@ -486,7 +486,7 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
 
   glBegin(GL_QUADS);
   {
-    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
+    glColorRGBA(rgba);
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
     glTexCoord2f(thisx2, thisy1);
@@ -528,7 +528,7 @@ void Texture::renderToScreenAsColorMask_additive(
 
   glBegin(GL_QUADS);
   {
-    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
+    glColorRGBA(rgba);
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
     glTexCoord2f(thisx2, thisy1);
@@ -712,7 +712,7 @@ void Texture::renderToScreenAsObject(
 
     glBegin(GL_QUADS);
     {
-      glColor4ub(go.tintR(), go.tintG(), go.tintB(), alpha);
+      glColorRGBA(RGBAColour(go.tint(), alpha));
       glTexCoord2f(thisx1, thisy1);
       glVertex2f(fdx1, fdy1);
       glTexCoord2f(thisx2, thisy1);

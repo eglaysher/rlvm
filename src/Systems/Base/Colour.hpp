@@ -80,6 +80,7 @@ public:
   RGBAColour() : rgb_(0, 0, 0), alpha_(0) { } 
   RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { } 
   RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { } 
+  RGBAColour(const RGBColour& colour, int a) : rgb_(colour), alpha_(a) { }
 
   int r() const { return rgb_.r(); }
   int g() const { return rgb_.g(); }

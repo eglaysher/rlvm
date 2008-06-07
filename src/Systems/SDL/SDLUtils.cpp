@@ -149,3 +149,10 @@ Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in)
 {
   return SDL_MapRGBA(fmt, in.r(), in.g(), in.b(), in.a());
 }
+
+// -----------------------------------------------------------------------
+
+void glColorRGBA(const RGBAColour& rgba)
+{
+    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
+}

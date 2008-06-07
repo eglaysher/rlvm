@@ -48,4 +48,6 @@ void RectToSDLRect(const Rect& rect, SDL_Rect* out);
 void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out);
 Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in);
 
+void glColorRGBA(const RGBAColour& rgba);
+
 #endif
