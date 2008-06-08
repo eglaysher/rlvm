@@ -312,6 +312,22 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
 
 // -----------------------------------------------------------------------
 
+int SDLSoundSystem::bgmStatus() const
+{
+  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
+  if(currentlyPlaying) 
+  {
+    if (currentlyPlaying->isFading())
+      return 2;
+    else
+      return 1;
+  }
+  else
+    return 0;
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName, 
                              bool loop)
 {

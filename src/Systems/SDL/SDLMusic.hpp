@@ -118,6 +118,8 @@ private:
 public:
   ~SDLMusic();
 
+  bool isFading() const;
+
   // TODO: Now that I understand wtf is going on, redo this part here.
   void play(bool loop);
   void stop();

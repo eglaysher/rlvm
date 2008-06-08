@@ -122,6 +122,7 @@ public:
 
   virtual void playSe(RLMachine& machine, const int seNum);  
 
+  virtual int bgmStatus() const;
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop);
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
                        int fadeInMs);

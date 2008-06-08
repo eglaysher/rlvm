@@ -120,8 +120,7 @@ SoundSystem::CDTrack::CDTrack(
 // SoundSystem
 // -----------------------------------------------------------------------
 SoundSystem::SoundSystem(Gameexe& gexe)
-  : m_bgmStatus(0),
-    m_globals(gexe)
+  : m_globals(gexe)
 {
   std::fill_n(m_channelVolume, NUM_BASE_CHANNELS, 255);
 
@@ -219,13 +218,6 @@ void SoundSystem::setBgmVolume(const int in)
 int SoundSystem::bgmVolume() const
 {
   return m_globals.bgmVolume;
-}
-
-// -----------------------------------------------------------------------
-
-int SoundSystem::bgmStatus() const
-{
-  return m_bgmStatus;
 }
 
 // -----------------------------------------------------------------------

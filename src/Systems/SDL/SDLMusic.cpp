@@ -79,6 +79,13 @@ SDLMusic::~SDLMusic()
 
 // -----------------------------------------------------------------------
 
+bool SDLMusic::isFading() const
+{
+  return m_fadetimeTotal > 0;
+}
+
+// -----------------------------------------------------------------------
+
 void SDLMusic::play(bool loop)
 {
   setLoopPoint(loop);

@@ -173,15 +173,6 @@ private:
    * 
    * @{
    */
-  /**
-   * Status of the music subsystem
-   *
-   * - 0 Idle
-   * - 1 Playing music
-   * - 2 Fading out music
-   */
-  int m_bgmStatus;
-
   /// Defined music tracks (files)
   DSTable m_dsTracks;
 
@@ -282,7 +273,14 @@ public:
   virtual void setBgmVolume(const int in);
   int bgmVolume() const;
 
-  int bgmStatus() const;
+  /**
+   * Status of the music subsystem
+   *
+   * - 0 Idle
+   * - 1 Playing music
+   * - 2 Fading out music
+   */
+  virtual int bgmStatus() const = 0;
 
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop) = 0;
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
