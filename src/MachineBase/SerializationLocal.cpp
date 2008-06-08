@@ -59,6 +59,7 @@
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "libReallive/intmemref.h"
 #include "libReallive/archive.h"
 #include <fstream>
@@ -134,7 +135,8 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
        << const_cast<const RLMachine&>(machine)
        << const_cast<const System&>(machine.system())
        << const_cast<const GraphicsSystem&>(machine.system().graphics())
-       << const_cast<const TextSystem&>(machine.system().text());
+       << const_cast<const TextSystem&>(machine.system().text())
+       << const_cast<const SoundSystem&>(machine.system().sound());
   }
   catch(std::exception& e)
   {
@@ -236,7 +238,8 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
        >> machine
        >> machine.system()
        >> machine.system().graphics()
-       >> machine.system().text();
+       >> machine.system().text()
+       >> machine.system().sound();
 
     machine.system().graphics().replayGraphicsStack(machine);
 

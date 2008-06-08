@@ -32,6 +32,7 @@
 
 #include <map>
 #include <string>
+#include <boost/serialization/split_member.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -290,6 +291,7 @@ public:
   virtual void bgmStop() = 0;
   virtual void bgmFadeOut(int fadeOutMs) = 0;
 
+  virtual std::string bgmName() const = 0;
   /// @}
 
   // ---------------------------------------------------------------------
@@ -371,6 +373,15 @@ public:
   /// @}
 
   virtual void reset();
+
+
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };	// end of class SoundSystem
 
 #endif

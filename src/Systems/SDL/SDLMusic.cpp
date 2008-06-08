@@ -124,6 +124,13 @@ void SDLMusic::fadeOut(int fadeOutMs)
 
 // -----------------------------------------------------------------------
 
+std::string SDLMusic::name() const
+{
+  return m_track.name;
+}
+
+// -----------------------------------------------------------------------
+
 // static
 void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 {

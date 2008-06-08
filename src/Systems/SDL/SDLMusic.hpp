@@ -126,6 +126,8 @@ public:
   void fadeIn(bool loop, int fadeInMs);
   void fadeOut(int fadeOutMs);
 
+  std::string name() const;
+
   /** 
    * Creates a MusicImpl object from the incoming description of the
    * music.

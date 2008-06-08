@@ -130,6 +130,7 @@ public:
                        int fadeInMs, int fadeOutMs);
   virtual void bgmStop();
   virtual void bgmFadeOut(int fadeOutMs);
+  virtual std::string bgmName() const;
 
   virtual void reset();
 };	// end of class SDLSoundSystem

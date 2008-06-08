@@ -25,7 +25,15 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+ 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -343,3 +351,42 @@ void SoundSystem::checkVolume(int level, const char* functionName)
     throw std::runtime_error(oss.str());
   }
 }
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void SoundSystem::load(Archive& ar, unsigned int version)
+{
+  std::string trackName;
+  bool looping;
+  ar & trackName & looping;
+
+  if(trackName != "") 
+    bgmPlay(*Serialization::g_currentMachine, trackName, looping);
+}
+
+// -----------------------------------------------------------------------
+
+template<class Archive>
+void SoundSystem::save(Archive& ar, unsigned int version) const
+{
+  std::string trackName;
+  bool looping = false;
+
+  if (bgmStatus() == 1)
+    trackName = bgmName();
+ 
+  ar & trackName & looping;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void SoundSystem::save<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version) const;
+
+template void SoundSystem::load<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+

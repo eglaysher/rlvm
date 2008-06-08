@@ -375,6 +375,16 @@ void SDLSoundSystem::bgmFadeOut(int fadeOutMs) {
 
 // -----------------------------------------------------------------------
 
+std::string SDLSoundSystem::bgmName() const {
+  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
+  if(currentlyPlaying)
+    return currentlyPlaying->name();
+  else
+    return "";
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::reset() {
   bgmStop();
   wavStopAll();

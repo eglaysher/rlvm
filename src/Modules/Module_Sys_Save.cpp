@@ -46,6 +46,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "libReallive/intmemref.h"
@@ -395,6 +396,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
     Size s = currentWindow->size();
 
     // Force a system clear for the visual elements
+    machine.system().sound().reset();
     machine.system().graphics().reset();
     machine.system().text().reset();
 

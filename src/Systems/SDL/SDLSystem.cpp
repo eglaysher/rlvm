@@ -80,6 +80,7 @@ SDLSystem::~SDLSystem()
 
   // Force the deletion of the various systems before we shut down
   // SDL.
+  soundSystem.reset();
   graphicsSystem.reset();
   eventSystem.reset();
   textSystem.reset();
