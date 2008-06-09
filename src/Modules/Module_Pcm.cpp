@@ -25,6 +25,10 @@
 //  
 // -----------------------------------------------------------------------
 
+#include "Precompiled.hpp"
+
+// -----------------------------------------------------------------------
+
 #include "Modules/Module_Pcm.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
