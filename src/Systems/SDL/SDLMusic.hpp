@@ -77,6 +77,9 @@ private:
   /// The starting loop point.
   int m_loopPoint;
 
+  /// Whether the music is currently paused.
+  bool m_musicPaused;
+
   /// The currently playing track.
   static boost::shared_ptr<SDLMusic> s_currentlyPlaying;
 
@@ -125,8 +128,15 @@ public:
   void stop();
   void fadeIn(bool loop, int fadeInMs);
   void fadeOut(int fadeOutMs);
-
+  void pause();
+  void unpause();
   std::string name() const;
+
+  /**
+   * Returns the current playing status of the current track. Uses the
+   * same return codes as SoundSystem::bgmStatus().
+   */
+  int bgmStatus() const;
 
   /** 
    * Creates a MusicImpl object from the incoming description of the

@@ -62,7 +62,7 @@ bool SDLMusic::s_bgmEnabled = true;
 // -----------------------------------------------------------------------
 
 SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
-  : m_file(wav), m_track(track), m_fadetimeTotal(0)
+  : m_file(wav), m_track(track), m_fadetimeTotal(0), m_musicPaused(false)
 {
   // Advance the audio stream to the starting point
   if(track.from > 0)
@@ -128,9 +128,35 @@ void SDLMusic::fadeOut(int fadeOutMs)
 
 // -----------------------------------------------------------------------
 
+void SDLMusic::pause()
+{
+  m_musicPaused = true;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLMusic::unpause()
+{
+  m_musicPaused = false;
+}
+
+// -----------------------------------------------------------------------
+
 std::string SDLMusic::name() const
 {
   return m_track.name;
+}
+
+// -----------------------------------------------------------------------
+
+int SDLMusic::bgmStatus() const
+{
+  if (m_musicPaused)
+    return 0;
+  else if (isFading())
+    return 2;
+  else
+    return 1;
 }
 
 // -----------------------------------------------------------------------
@@ -144,7 +170,8 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
   SDLMusic* music = (SDLMusic*)udata;
 
 	int count;
-	if (!s_bgmEnabled || 
+	if (!s_bgmEnabled ||
+      music->m_musicPaused ||
       music->m_loopPoint == STOP_NOW) 
   {
 		memset(stream, 0, len);
@@ -180,13 +207,6 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 		music->m_fadeCount += len/4;
 	}
 }
-
-// -----------------------------------------------------------------------
-
-// void SDLMusic::MusicFinishedHook()
-// {
-//   s_currentlyPlaying.reset();
-// }
 
 // -----------------------------------------------------------------------
 

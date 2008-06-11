@@ -289,6 +289,8 @@ public:
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
                        int fadeInMs, int fadeOutMs) = 0;
   virtual void bgmStop() = 0;
+  virtual void bgmPause() = 0;
+  virtual void bgmUnPause() = 0;
   virtual void bgmFadeOut(int fadeOutMs) = 0;
 
   virtual std::string bgmName() const = 0;

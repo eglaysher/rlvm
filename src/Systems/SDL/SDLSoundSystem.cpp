@@ -317,10 +317,7 @@ int SDLSoundSystem::bgmStatus() const
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
   if(currentlyPlaying) 
   {
-    if (currentlyPlaying->isFading())
-      return 2;
-    else
-      return 1;
+    return currentlyPlaying->bgmStatus();
   }
   else
     return 0;
@@ -363,6 +360,24 @@ void SDLSoundSystem::bgmStop()
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
   if(currentlyPlaying) 
     currentlyPlaying->stop();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::bgmPause()
+{
+  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
+  if(currentlyPlaying) 
+    currentlyPlaying->pause();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::bgmUnPause()
+{
+  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
+  if(currentlyPlaying) 
+    currentlyPlaying->unpause();
 }
 
 // -----------------------------------------------------------------------
