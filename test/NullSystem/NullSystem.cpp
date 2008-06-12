@@ -39,7 +39,8 @@ using namespace std;
 NullSystem::NullSystem(const std::string& pathToGameexe)
   : m_gameexe(pathToGameexe), nullGraphicsSystem(m_gameexe),
     nullEventSystem(m_gameexe), 
-    nullTextSystem(m_gameexe)
+    nullTextSystem(m_gameexe),
+    nullSoundSystem(m_gameexe)
 {}
 
 // -----------------------------------------------------------------------
@@ -47,7 +48,8 @@ NullSystem::NullSystem(const std::string& pathToGameexe)
 NullSystem::NullSystem() 
   : m_gameexe(), nullGraphicsSystem(m_gameexe),
     nullEventSystem(m_gameexe), 
-    nullTextSystem(m_gameexe)
+    nullTextSystem(m_gameexe),
+    nullSoundSystem(m_gameexe)
 {
   m_gameexe("__GAMEPATH") = locateTestCase("Gameroot") + "/";
   m_gameexe("FOLDNAME.G00") = "G00";
@@ -61,6 +63,4 @@ GraphicsSystem& NullSystem::graphics() { return nullGraphicsSystem; }
 EventSystem& NullSystem::event() { return nullEventSystem; }
 Gameexe& NullSystem::gameexe() { return m_gameexe; }
 TextSystem& NullSystem::text() { return nullTextSystem; }
-
-SoundSystem& NullSystem::sound() 
-{ throw SystemError("No SoundSystem in NullSystem"); }
+SoundSystem& NullSystem::sound() { return nullSoundSystem; }

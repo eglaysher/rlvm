@@ -42,6 +42,7 @@ TEST_FILES[] =
   NullSystem/NullTextSystem
   NullSystem/NullTextWindow
   NullSystem/NullGraphicsSystem
+  NullSystem/NullSoundSystem
   NullSystem/NullSurface
   NullSystem/MockLog
 

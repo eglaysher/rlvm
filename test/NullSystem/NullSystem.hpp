@@ -27,6 +27,7 @@
 #include "NullSystem/NullGraphicsSystem.hpp"
 #include "NullSystem/NullEventSystem.hpp"
 #include "NullSystem/NullTextSystem.hpp"
+#include "NullSystem/NullSoundSystem.hpp"
 #include "libReallive/gameexe.h"
 
 /** 
@@ -43,6 +44,7 @@ private:
   NullGraphicsSystem nullGraphicsSystem;
   NullEventSystem nullEventSystem;
   NullTextSystem nullTextSystem;
+  NullSoundSystem nullSoundSystem;
 
 public:
   NullSystem(const std::string& pathToGameexe);
