@@ -184,6 +184,13 @@ void GraphicsObjectOfFile::playSet(RLMachine& machine, int frameTime)
   m_frameTime = frameTime;
   m_currentFrame = 0;
 
+  if (m_frameTime == 0) {
+    cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
+         << " this is probably going to cause a graphical glitch..." 
+         << endl;
+    m_frameTime = 10;
+  }
+
   m_timeAtLastFrameChange = machine.system().event().getTicks();
   machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
