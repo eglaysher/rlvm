@@ -257,7 +257,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
   videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
   videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
-  videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
   
   /* This checks to see if surfaces can be stored in memory */
   if ( info->hw_available )
