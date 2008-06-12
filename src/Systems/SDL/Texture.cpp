@@ -188,6 +188,51 @@ Texture::~Texture()
 
 // -----------------------------------------------------------------------
 
+void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h, 
+                       unsigned int bytesPerPixel, int byteOrder, int byteType)
+{
+  glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+  if(w == m_totalWidth && h == m_totalHeight)
+  {
+    SDL_LockSurface(surface);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
+                    byteOrder, byteType, surface->pixels);
+    ShowGLErrors();
+
+    SDL_UnlockSurface(surface);
+  }
+  else
+  {
+    // Cut out the current piece
+    scoped_array<char> pixelData(new char[surface->format->BytesPerPixel * w * h]);
+    char* curDstPtr = pixelData.get();
+
+    SDL_LockSurface(surface);
+    {
+      char* curSrcPtr = (char*) surface->pixels;
+      curSrcPtr += surface->pitch * y;
+
+      int rowStart = surface->format->BytesPerPixel * x;
+      int subrowSize = surface->format->BytesPerPixel * w;
+      for(int currentRow = 0; currentRow < h; ++currentRow)
+      {
+        memcpy(curDstPtr, curSrcPtr + rowStart, subrowSize);
+        curDstPtr += subrowSize;
+        curSrcPtr += surface->pitch;
+      }
+    }
+    SDL_UnlockSurface(surface);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
+                    byteOrder, byteType, pixelData.get());            
+    ShowGLErrors();
+  }
+}
+
+// -----------------------------------------------------------------------
+
 std::string readTextFile(const std::string& file)
 {
   ifstream ifs(file.c_str());

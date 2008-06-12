@@ -44,9 +44,10 @@
 
 #include <iostream>
 #include <sstream>
+#include <boost/bind.hpp>
 
 using namespace std;
-
+using boost::bind;
 using boost::ptr_vector;
 
 // -----------------------------------------------------------------------
@@ -86,6 +87,25 @@ SDL_Surface* buildNewSurface(const Size& size)
   return out;
 }
 
+// -----------------------------------------------------------------------
+// SDLSurface::TextureRecord
+// -----------------------------------------------------------------------
+SDLSurface::TextureRecord::TextureRecord(
+  SDL_Surface* surface,
+  int _x, int _y, int _w, int _h, unsigned int _bytesPerPixel, 
+  int _byteOrder, int _byteType)
+  : texture(new Texture(surface, _x, _y, _w, _h, _bytesPerPixel, _byteOrder,
+                        _byteType)),
+    x(_x), y(_y), w(_w), h(_h), bytesPerPixel(_bytesPerPixel),
+    byteOrder(_byteOrder), byteType(_byteType)
+{}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::TextureRecord::reupload(SDL_Surface* surface)
+{
+  texture->reupload(surface, x, y, w, h, bytesPerPixel, byteOrder, byteType);
+}
 
 // -----------------------------------------------------------------------
 // SDLSurface
@@ -384,95 +404,114 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
 
 // -----------------------------------------------------------------------
 
+static void determineProperties(
+  SDL_Surface* surface, bool isMask,
+  GLenum& bytesPerPixel, GLint& byteOrder, GLint& byteType)
+{
+  SDL_LockSurface(surface);
+  {
+    bytesPerPixel = surface->format->BytesPerPixel;
+    byteOrder = GL_RGBA;
+    byteType = GL_UNSIGNED_BYTE;
+
+    // Determine the byte order of the surface
+    SDL_PixelFormat* format = surface->format;
+    if(bytesPerPixel == 4)
+    {
+      // If the order is RGBA...
+      if(format->Rmask == 0xFF000000 && format->Amask == 0xFF)
+        byteOrder = GL_RGBA;
+      // OSX's crazy ARGB pixel format
+      else if(format->Amask == 0xFF000000 && format->Rmask == 0xFF0000 &&
+              format->Gmask == 0xFF00 && format->Bmask == 0xFF)
+      {
+        // This is an insane hack to get around OSX's crazy byte order
+        // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
+        // need to specify BGRA and then tell the byte type to be
+        // reversed order.
+        //
+        // 20070303: Whoah! Is this the internal format on all
+        // platforms!?
+        byteOrder = GL_BGRA;
+        byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
+      }
+      else 
+      {
+        ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
+        cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
+             << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
+        cerr.flags(f);
+      }
+    }
+    else if(bytesPerPixel == 3)
+    {
+      // For now, just assume RGB.
+      byteOrder = GL_RGB;
+      cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
+           << endl;
+    }
+    else
+    {
+      ostringstream oss;
+      oss << "Error loading texture: bytesPerPixel == " << int(bytesPerPixel)
+          << " and we only handle 3 or 4.";
+      throw SystemError(oss.str());
+    }
+
+  }
+  SDL_UnlockSurface(surface);
+
+  if(isMask)
+  {
+    // Compile shader for use:
+    bytesPerPixel = GL_ALPHA;
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSurface::uploadTextureIfNeeded()
 {
   if(!m_textureIsValid)
   {
-    m_textures.clear();
-
-    GLenum bytesPerPixel;
-    GLint byteOrder, byteType;
-    SDL_LockSurface(m_surface);
+    if(m_textures.size() == 0)
     {
-      bytesPerPixel = m_surface->format->BytesPerPixel;
-      byteOrder = GL_RGBA;
-      byteType = GL_UNSIGNED_BYTE;
+      GLenum bytesPerPixel;
+      GLint byteOrder, byteType;
+      determineProperties(m_surface, m_isMask, bytesPerPixel, byteOrder, 
+                          byteType);
 
-      // Determine the byte order of the surface
-      SDL_PixelFormat* format = m_surface->format;
-      if(bytesPerPixel == 4)
-      {
-        // If the order is RGBA...
-        if(format->Rmask == 0xFF000000 && format->Amask == 0xFF)
-          byteOrder = GL_RGBA;
-        // OSX's crazy ARGB pixel format
-        else if(format->Amask == 0xFF000000 && format->Rmask == 0xFF0000 &&
-                format->Gmask == 0xFF00 && format->Bmask == 0xFF)
-        {
-          // This is an insane hack to get around OSX's crazy byte order
-          // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
-          // need to specify BGRA and then tell the byte type to be
-          // reversed order.
-          //
-          // 20070303: Whoah! Is this the internal format on all
-          // platforms!?
-          byteOrder = GL_BGRA;
-          byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
-        }
-        else 
-        {
-          ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
-          cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
-               << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
-          cerr.flags(f);
-        }
-      }
-      else if(bytesPerPixel == 3)
-      {
-        // For now, just assume RGB.
-        byteOrder = GL_RGB;
-        cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
-             << endl;
-      }
-      else
-      {
-        ostringstream oss;
-        oss << "Error loading texture: bytesPerPixel == " << int(bytesPerPixel)
-            << " and we only handle 3 or 4.";
-        throw SystemError(oss.str());
-      }
+      // ---------------------------------------------------------------------
 
-      if(m_isMask)
+      // Figure out the optimal way of splitting up the image.
+      vector<int> xPieces, yPieces;
+      xPieces = segmentPicture(m_surface->w);
+      yPieces = segmentPicture(m_surface->h);
+
+      int xOffset = 0;
+      for(vector<int>::const_iterator it = xPieces.begin();
+          it != xPieces.end(); ++it)
       {
-        // Compile shader for use:
-        bytesPerPixel = GL_ALPHA;
+        int yOffset = 0;
+        for(vector<int>::const_iterator jt = yPieces.begin();
+            jt != yPieces.end(); ++jt)
+        {
+          TextureRecord record(
+            m_surface, xOffset, yOffset, *it, *jt,  bytesPerPixel,
+            byteOrder, byteType);
+          m_textures.push_back(record);
+
+          yOffset += *jt;
+        }
+
+        xOffset += *it;
       }
     }
-    SDL_UnlockSurface(m_surface);
-
-    // ---------------------------------------------------------------------
-
-    // Figure out the optimal way of splitting up the image.
-    vector<int> xPieces, yPieces;
-    xPieces = segmentPicture(m_surface->w);
-    yPieces = segmentPicture(m_surface->h);
-
-    int xOffset = 0;
-    for(vector<int>::const_iterator it = xPieces.begin(); 
-        it != xPieces.end(); ++it)
+    else
     {
-      int yOffset = 0;
-      for(vector<int>::const_iterator jt = yPieces.begin();
-          jt != yPieces.end(); ++jt)
-      {
-        m_textures.push_back(
-          new Texture(m_surface,
-                      xOffset, yOffset, *it, *jt,  bytesPerPixel, byteOrder, byteType));
-
-        yOffset += *jt;
-      }
-
-      xOffset += *it;
+      // Reupload the textures without reallocating them.
+      for_each(m_textures.begin(), m_textures.end(),
+               bind(&TextureRecord::reupload, _1, m_surface));
     }
 
     m_textureIsValid = true;
@@ -485,10 +524,10 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha)
 {
   uploadTextureIfNeeded();
 
-  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+  for(vector<TextureRecord>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreen(src, dst, alpha);
+    it->texture->renderToScreen(src, dst, alpha);
   }
 }
 
@@ -499,10 +538,10 @@ void SDLSurface::renderToScreenAsColorMask(
 {
   uploadTextureIfNeeded();
 
-  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+  for(vector<TextureRecord>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreenAsColorMask(src, dst, rgba, filter);
+    it->texture->renderToScreenAsColorMask(src, dst, rgba, filter);
   }
 }
 
@@ -513,10 +552,10 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
 {
   uploadTextureIfNeeded();
 
-  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+  for(vector<TextureRecord>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreen(src, dst, opacity);
+    it->texture->renderToScreen(src, dst, opacity);
   }
 }
 
@@ -527,10 +566,10 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
   static const GraphicsObjectOverride overrideData;
   uploadTextureIfNeeded();
 
-  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+  for(vector<TextureRecord>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreenAsObject(rp, *this, overrideData);
+    it->texture->renderToScreenAsObject(rp, *this, overrideData);
   }
 }
 
@@ -541,10 +580,10 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
 {
   uploadTextureIfNeeded();
 
-  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+  for(vector<TextureRecord>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->renderToScreenAsObject(rp, *this, override);
+    it->texture->renderToScreenAsObject(rp, *this, override);
   }  
 }
 
@@ -556,10 +595,10 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
 {
   uploadTextureIfNeeded();
 
-  for(ptr_vector<Texture>::iterator it = m_textures.begin();
+  for(vector<TextureRecord>::iterator it = m_textures.begin();
       it != m_textures.end(); ++it)
   {
-    it->rawRenderQuad(srcCoords, destCoords, opacity);
+    it->texture->rawRenderQuad(srcCoords, destCoords, opacity);
   }
 }
 

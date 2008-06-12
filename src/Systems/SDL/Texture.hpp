@@ -100,6 +100,9 @@ public:
   Texture(render_to_texture, int screenWidth, int screenHeight);
   ~Texture();
 
+  void reupload(SDL_Surface* surface, int x, int y, int w, int h, 
+                unsigned int bytesPerPixel, int byteOrder, int byteType);
+
   int width() { return m_logicalWidth; }
   int height() { return m_logicalHeight; }
   GLuint textureId() { return m_textureID; }

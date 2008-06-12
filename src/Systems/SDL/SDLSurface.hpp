@@ -55,6 +55,35 @@ SDL_Surface* buildNewSurface(const Size& size);
 class SDLSurface : public Surface
 {
 private:
+  /** 
+   * Keeps track of a texture and the information about which region
+   * of the current surface this Texture is. We keep track of this
+   * information so we can reupload a certain part of the Texture
+   * without allocating a new opengl texture. glGenTexture()/
+   * glTexImage2D() is SLOW and should never be done in a loop.)
+   */
+  struct TextureRecord {
+    /** 
+     * Builds the texture and 
+     */
+    TextureRecord(SDL_Surface* surface,
+                  int x, int y, int w, int h, unsigned int bytesPerPixel, 
+                  int byteOrder, int byteType);
+
+    /**
+     * Reuploads this current piece of surface from the supplied
+     * surface without allocating a new texture.
+     */
+    void reupload(SDL_Surface* surface);
+
+    /// 
+    boost::shared_ptr<Texture> texture;
+
+    int x, y, w, h;
+    unsigned int bytesPerPixel;
+    int byteOrder, byteType;
+  };
+
   /// The SDL_Surface that contains the software version of the bitmap.
   SDL_Surface* m_surface;
 
@@ -62,7 +91,7 @@ private:
   std::vector<GrpRect> m_regionTable;
 
   /// The SDLTexture which wraps one or more OpenGL textures
-  boost::ptr_vector<Texture> m_textures;
+  std::vector<TextureRecord> m_textures;
 
   /// Whether m_texture represents the contents of m_surface. Blits
   /// from surfaces to surfaces invalidate the target surfaces's
