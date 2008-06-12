@@ -169,7 +169,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
     dx1 = renderLoc.x();
     dy1 = renderLoc.y();
 
-    // Copy the area behind the cursor to 
+    // Copy the area behind the cursor to the temporary buffer
     glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
                         dx1, m_screenSize.height() - dy1 - 32, 32, 32);
@@ -186,7 +186,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
   if (cursor)
   {
     // Now that the double buffer has been flipped, render the texture
-    // that contains what's 
+    // that contains what's behind the mouse cursor.
 
     glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
     glBegin(GL_QUADS);
@@ -227,7 +227,7 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
   : GraphicsSystem(gameexe), m_redrawLastFrame(false),
     m_displayDataInTitlebar(false), m_timeOfLastTitlebarUpdate(0),
-    m_lastSeenNumber(0), m_lastLineNumber(0), m_imageCache(10)
+    m_lastSeenNumber(0), m_lastLineNumber(0), m_imageCache(20)
 {
   for(int i = 0; i < 16; ++i)
     m_displayContexts[i].reset(new SDLSurface);
