@@ -39,7 +39,8 @@
 #include <boost/date_time/posix_time/time_serialize.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
-
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/zlib.hpp>
 
 #include "Utilities.h"
 
@@ -114,7 +115,13 @@ void saveGameForSlot(RLMachine& machine, int slot)
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ofstream file(path);
   checkInFileOpened(file, path);
-  return saveGameTo(file, machine);
+
+  using namespace boost::iostreams;
+  filtering_stream<output> filteredOutput;
+  filteredOutput.push(zlib_compressor());
+  filteredOutput.push(file);
+
+  return saveGameTo(filteredOutput, machine);
 }
 
 // -----------------------------------------------------------------------
@@ -127,7 +134,6 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
 
   try
   {
-
     text_oarchive oa(oss);
     oa << CURRENT_LOCAL_VERSION
        << header
@@ -155,7 +161,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
 fs::path buildSaveGameFilename(RLMachine& machine, int slot)
 {
   ostringstream oss;
-  oss << "save" << setw(3) << setfill('0') << slot << ".sav";
+  oss << "save" << setw(3) << setfill('0') << slot << ".sav.gz";
 
   return machine.system().gameSaveDirectory() / oss.str();
 }
@@ -167,7 +173,13 @@ SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot)
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ifstream file(path);
   checkInFileOpened(file, path);
-  return loadHeaderFrom(file);
+
+  using namespace boost::iostreams;
+  filtering_stream<input> filteredInput;
+  filteredInput.push(zlib_decompressor());
+  filteredInput.push(file);  
+
+  return loadHeaderFrom(filteredInput);
 }
 
 // -----------------------------------------------------------------------
@@ -191,7 +203,13 @@ void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory)
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ifstream file(path);
   checkInFileOpened(file, path);
-  loadLocalMemoryFrom(file, memory);
+
+  using namespace boost::iostreams;
+  filtering_stream<input> filteredInput;
+  filteredInput.push(zlib_decompressor());
+  filteredInput.push(file);  
+
+  loadLocalMemoryFrom(filteredInput, memory);
 } 
 
 // -----------------------------------------------------------------------
@@ -215,7 +233,13 @@ void loadGameForSlot(RLMachine& machine, int slot)
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ifstream file(path);
   checkInFileOpened(file, path);
-  loadGameFrom(file, machine);
+
+  using namespace boost::iostreams;
+  filtering_stream<input> filteredInput;
+  filteredInput.push(zlib_decompressor());
+  filteredInput.push(file);  
+
+  loadGameFrom(filteredInput, machine);
 } 
 
 // -----------------------------------------------------------------------

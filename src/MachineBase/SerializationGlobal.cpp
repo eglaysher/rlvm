@@ -38,6 +38,8 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/zlib.hpp>
 
 #include "Utilities.h"
 #include "MachineBase/RLMachine.hpp"
@@ -67,9 +69,16 @@ const int CURRENT_GLOBAL_VERSION = 2;
 
 // -----------------------------------------------------------------------
 
+fs::path buildGlobalMemoryFilename(RLMachine& machine) 
+{
+  return machine.system().gameSaveDirectory() / "global.sav.gz";
+}
+
+// -----------------------------------------------------------------------
+
 void saveGlobalMemory(RLMachine& machine)
 {
-  fs::path home = machine.system().gameSaveDirectory() / "global.sav";
+  fs::path home = buildGlobalMemoryFilename(machine);
   fs::ofstream file(home);
   if(!file)
   {
@@ -78,7 +87,12 @@ void saveGlobalMemory(RLMachine& machine)
     throw rlvm::Exception(oss.str());
   }
 
-  saveGlobalMemoryTo(file, machine);
+  using namespace boost::iostreams;
+  filtering_stream<output> filteredOutput;
+  filteredOutput.push(zlib_compressor());
+  filteredOutput.push(file);
+
+  saveGlobalMemoryTo(filteredOutput, machine);
 }
 
 // -----------------------------------------------------------------------
@@ -101,7 +115,7 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine)
 
 void loadGlobalMemory(RLMachine& machine)
 {
-  fs::path home = machine.system().gameSaveDirectory() / "global.sav";
+  fs::path home = buildGlobalMemoryFilename(machine);
   fs::ifstream file(home);
 
   // If we were able to open the file for reading, load it. Don't
@@ -109,7 +123,12 @@ void loadGlobalMemory(RLMachine& machine)
   // this certain game and it may not exist yet.
   if(file)
   {
-    loadGlobalMemoryFrom(file, machine);
+    using namespace boost::iostreams;
+    filtering_stream<input> filteredInput;
+    filteredInput.push(zlib_decompressor());
+    filteredInput.push(file);
+
+    loadGlobalMemoryFrom(filteredInput, machine);
   }
 }
 
