@@ -25,4 +25,5 @@ Libraries depended on (and are not included)
 boost (version 1.34.1 or newer) - http://www.boost.org
 SDL - http://www.libsdl.org
 SDL_image - http://www.libsdl.org/projects/SDL_image/
+SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
 Freetype - http://www.freetype.org

@@ -7,6 +7,7 @@ Table of Contents:
 2) STATUS
 3) COMPILING RLVM
 4) KNOWN ISSUES
+5) GETTING INVOLVED
 
 1) INTRODUCTION:
 -------------------------------------------------------------------------
@@ -25,9 +26,7 @@ Special thanks to Jagarl for the first work on reverse engineering the
 RealLive interpreter and for Free software licensed source code for
 decoding their file formats, to Haeleth for creating rldev along with
 answering all my dumb questions about the internal workings of the
-RealLive system, and to my current roomate for goading me on by
-claiming I'd abandon this project a week after I started. (He claimed
-this one and a half years ago.)
+RealLive system.
 
 2) STATUS
 -------------------------------------------------------------------------
@@ -36,9 +35,9 @@ edition[1]. Planetarian is playable through the end, though rlvm
 currently doesn't implement all features used in the game (see known
 issues).
 
-This is the first public release of rlvm. Please report bugs and
-discrepancies in Planetarian (other then the opening scene not showing
-and the lack of sound) to <glaysher at umich dot edu>.
+This is the second public release of rlvm. Please report bugs and
+discrepancies in Planetarian (other then the opening scene not
+showing) to <glaysher at umich dot edu>.
 
 The games CLANNAD and Kanon SE are not playable through the
 end. Haeleth's unofficial "ONE" demo does not render correctly. No
@@ -50,7 +49,7 @@ You will need the following libraries/utilities:
 
 - The omake build system when building under Linux or OSX
 - boost 1.34.1 or higher
-- SDL and SDL_image
+- SDL, SDL_image, and SDL_mixer
 - freetype
 
 Optionally, you may want:
@@ -137,7 +136,7 @@ The interpreter currently lacks the following features:
  - TCC shading data used to give character images a certain tint in
    some scenes. To my knowledge, the file format has not been reverse
    engineered.
- - Sound
+ - Koe / Narration
  - Right click configuration menus / most SYSCOM commands.
 
 In addition, the current indentation system is extremely naive and
@@ -166,6 +165,31 @@ rlvm does not contain an implementation of Haeleth's rlBabel and
 Textout extensions. Fan translations that use something other than the
 lower ASCII set, specifically Chinese or Korean ones, will not work.
 
+5) GETTING INVOLVED
+-------------------------------------------------------------------------
+rlvm needs several file formats reverse engineered:
+
+- rlvm contains jagarl's nwatowav, which doesn't currently decode the
+  NWK voice files included with the Planetarian CD edition. I need a
+  working decoding library before I can start work on voice support
+  and I'm sure jagarl would like nwatowav to be able to read even more
+  files.
+- The HIK file format hasn't been reverse engineered at all. Nothing
+  is known about this format, except that the commands to display and
+  manipulate these files are in module<1:40>. These files are used in
+  Planetarian to control the opening animation.
+- The TCC file format hasn't been reverse engineered. TCC files
+  (called "tonecurve" files in the GAMEEXE file) are tint definitions
+  that are applied to graphics objects. Tones are applied to objects
+  by loading "filename?[integer]" where [integer] appears to be an
+  index. Any information about this file format would be appreciated.
+
+rlvm needs a few RealLive commands documented more thouroughly:
+
+- index_series: The rldev documentation acknowledges that it is
+  incomplete for the most common case, which is needed to support
+  Kanon. This is the current blocker for Kanon support.
+
 -------------------------------------------------------------------------
 
 [1]  The Planetarian download edition is not supported and never
@@ -173,3 +197,4 @@ lower ASCII set, specifically Chinese or Korean ones, will not work.
      download edition or other DRMed Kinetic games because of the
      anticircumvention provisions of the United States Digital
      Millennium Copyright Act.)
+

@@ -1,6 +1,19 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.2:
+- WARNING: rlvm 0.2 breaks compatibility with version 0.1's save
+  files! rlvm 0.2 will write save files in a different location.
+- Support for background music and sound effects
+  - Note: Character voices are still unsupported.
+- Support for custom cursors
+- Users can no longer resize the screen. Users could previously shrink
+  the screen and not display all the contents, or they could enlarge it
+  and have a large black empty area.
+- Internal code cleanups.
+
+-------------------------------------------------------------------------
+
 Version 0.1: (The first one!)
 - Initial public release
 - Planetarian is playable through the end.
