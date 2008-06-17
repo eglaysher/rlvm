@@ -40,8 +40,6 @@
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GanGraphicsObjectData.hpp"
-//#include "Systems/Base/AnmGraphicsObjectData.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem/operations.hpp>
