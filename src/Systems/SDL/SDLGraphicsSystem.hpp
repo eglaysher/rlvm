@@ -33,6 +33,8 @@
 
 #include "lru_cache.hpp"
 
+#include <SDL/SDL_opengl.h>
+
 struct SDL_Surface;
 class SDLSurface;
 class Texture;
@@ -93,7 +95,7 @@ private:
    * Texture used to temporarily store what's behind the cursor while
    * we render this frame.
    */
-  unsigned int m_behindCursorTexture;
+  GLuint m_behindCursorTexture;
 
   /** 
    * LRU cache filled with the last fifteen accessed images. 
