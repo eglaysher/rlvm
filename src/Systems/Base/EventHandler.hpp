@@ -308,8 +308,9 @@ enum KeyCode {
 class MouseListener
 {
 public:
-  virtual void mouseMotion(const Point& newLocation) { }
-  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed) {}
+  virtual ~MouseListener();
+  virtual void mouseMotion(const Point& newLocation);
+  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
 };
 
 /** 
