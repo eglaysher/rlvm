@@ -169,6 +169,7 @@
 #include<sys/stat.h>
 #include<string.h>
 
+#include "endian.hpp"
 
 #ifdef WORDS_BIGENDIAN
 #error Sorry, This program does not support BIG-ENDIAN system yet.
@@ -178,21 +179,6 @@
 */
 #endif
 
-inline int read_little_endian_int(const char* buf) {
-	return *(int*)buf;
-}
-
-inline int read_little_endian_short(const char* buf) {
-	return *(short*)buf;
-}
-
-inline int write_little_endian_int(char* buf, int number) {
-	int c = *(int*)buf; *(int*)buf = number; return c;
-}
-
-inline int write_little_endian_short(char* buf, int number) {
-	int c = *(short*)buf; *(short*)buf = number; return c;
-}
 inline int getbits(const char*& data, int& shift, int bits) {
 	if (shift > 8) { data++; shift-=8;}
 	int ret = read_little_endian_short(data)>>shift;
