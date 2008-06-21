@@ -96,30 +96,51 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 
 void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 {
-  // Handle this somehow.
-  m_mousePos = Point(event.motion.x, event.motion.y);
-  for_each(listeners_begin(), listeners_end(),
-           bind(&MouseListener::mouseMotion, _1, m_mousePos));
+  if(m_mouseInsideWindow) 
+  {
+    // Handle this somehow.
+    m_mousePos = Point(event.motion.x, event.motion.y);
+    for_each(listeners_begin(), listeners_end(),
+             bind(&MouseListener::mouseMotion, _1, m_mousePos));
+  }
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::handleMouseButtonDown(SDL_Event& event)
 {
-  if(event.button.button == SDL_BUTTON_LEFT)
-    m_button1State = 1;
-  else if(event.button.button == SDL_BUTTON_RIGHT)
-    m_button2State = 1;
+  if(m_mouseInsideWindow)
+  {
+    if(event.button.button == SDL_BUTTON_LEFT)
+      m_button1State = 1;
+    else if(event.button.button == SDL_BUTTON_RIGHT)
+      m_button2State = 1;
+  }
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 {
-  if(event.button.button == SDL_BUTTON_LEFT)
-    m_button1State = 2;
-  else if(event.button.button == SDL_BUTTON_RIGHT)
-    m_button2State = 2;
+  if(m_mouseInsideWindow)
+  {
+    if(event.button.button == SDL_BUTTON_LEFT)
+      m_button1State = 2;
+    else if(event.button.button == SDL_BUTTON_RIGHT)
+      m_button2State = 2;
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event)
+{
+  if(event.active.state == SDL_APPMOUSEFOCUS) {
+    m_mouseInsideWindow = event.active.gain == 1;
+
+    // Force a mouse refresh:
+    machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -128,6 +149,7 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
   : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false),
+    m_mouseInsideWindow(true),
     m_unaccessedItems(false), m_mousePos(),
     m_button1State(0), m_button2State(0)
 {}
@@ -246,6 +268,9 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
     case SDL_QUIT:
       machine.halt();
       break;
+    case SDL_ACTIVEEVENT:
+      handleActiveEvent(machine, event);
+      break;
     case SDL_VIDEOEXPOSE:
     {
       machine.system().graphics().forceRefresh();
@@ -283,6 +308,9 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
       break;
     case SDL_QUIT:
       machine.halt();
+      break;
+    case SDL_ACTIVEEVENT:
+      handleActiveEvent(machine, event);
       break;
     case SDL_VIDEOEXPOSE:
     {

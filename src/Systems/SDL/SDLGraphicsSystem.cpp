@@ -42,6 +42,7 @@
 #include "MachineBase/RLMachine.hpp"
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLEventSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
@@ -162,8 +163,10 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
   int dx1 = -1;
   int dy1 = -1;
 
-  boost::shared_ptr<MouseCursor> cursor = currentCursor(machine);
-  if (cursor)
+  boost::shared_ptr<MouseCursor> cursor;
+  if(static_cast<SDLEventSystem&>(machine.system().event()).mouseInsideWindow())
+    cursor = currentCursor(machine);
+  if(cursor)
   {
     Point renderLoc = cursor->getTopLeftForHotspotAt(hotspot);
     dx1 = renderLoc.x();

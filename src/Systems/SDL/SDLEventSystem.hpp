@@ -41,6 +41,8 @@ class SDLEventSystem : public EventSystem
 private:
   bool m_shiftPressed, m_ctrlPressed;
 
+  /// Whether the mouse cursor is currently inside the window bounds.
+  bool m_mouseInsideWindow;
 
   bool m_unaccessedItems;
 
@@ -60,6 +62,7 @@ private:
   void handleMouseMotion(SDL_Event& e);
   void handleMouseButtonUp(SDL_Event& event);
   void handleMouseButtonDown(SDL_Event& event);
+  void handleActiveEvent(RLMachine& machine, SDL_Event& event);
   void executeRealLiveEventSystem(RLMachine& machine);
   /// @}
 
@@ -68,6 +71,10 @@ private:
 
 public:
   SDLEventSystem(Gameexe& gexe);
+
+  /// We provide this accessor to let the Graphics system querry what
+  /// to do when redrawing the mouse.
+  bool mouseInsideWindow() const { return m_mouseInsideWindow; }
 
   virtual void executeEventSystem(RLMachine& machine);
 
@@ -87,6 +94,7 @@ public:
 
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
+
 
 //  virtual void setTitle(const  title) const;
 };
