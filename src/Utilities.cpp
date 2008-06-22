@@ -125,54 +125,6 @@ fs::path correctPathCase(fs::path Path)
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(RLMachine& machine)
-{
-  return findFontFile(machine.system().gameexe(), "msgothic.ttc");
-}
-
-// -----------------------------------------------------------------------
-
-fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
-{
-  // HACK: If the user has overridden the __GAMEFONT, use it instead.
-  if(gexe.exists("__GAMEFONT"))
-  {
-    std::string gamefontstr = gexe("__GAMEFONT");
-    fs::path gameFont = fs::path(gamefontstr);
-    if(fs::exists(gameFont))
-      return gameFont;
-  }
-
-  // HACK: Look for the font in the game
-  if(gexe.exists("__GAMEPATH"))
-  {
-    std::string gamepath = gexe("__GAMEPATH");
-    fs::path gamePathFont = fs::path(gamepath) / fileName;
-    if(fs::exists(gamePathFont))
-      return gamePathFont;
-  }
-
-  char* homeptr = getenv("HOME");
-  char* rootptr = getenv("SYSTEMROOT");
-  fs::path home;
-  if (homeptr != 0) {
-    home = homeptr;
-  }
-  else if (rootptr != 0) {
-    home = rootptr;
-    home /= "Fonts";
-  }
-
-  fs::path filePath = home / fileName;
-
-  if(fs::exists(filePath))
-    return filePath;
-  else
-    return fs::path();
-}
-
-// -----------------------------------------------------------------------
-
 const std::vector<std::string> ALL_FILETYPES = 
   list_of("g00")("pdt")("anm")("gan")("wav")("ogg")("nwa")("mp3");
 const std::vector<std::string> IMAGE_FILETYPES = 

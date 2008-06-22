@@ -53,6 +53,7 @@ LIBRLVMFILES[] =
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities
+  findFontFile
   dateUtil
   ../vendor/libVendorLibs
 
@@ -93,14 +94,31 @@ section
   # game folder with a cocoa file selector.
   STATICSDLLIBS = $(filter-out %libSDLmain.a, $(shell sdl-config --static-libs))
 
-  LDFLAGS = Platforms/osx/libRlvmOsx$(EXT_LIB) librlvm$(EXT_LIB) $(STATICSDLLIBS) -lz $(PLATFORMLIBS)
+  LDFLAGS = -lz $(PLATFORMLIBS)
+
+  COMMON_LIBRARIES[] =
+    libboost_program_options.a
+    libboost_serialization.a
+    libboost_iostreams.a
+    libboost_filesystem.a
+    libboost_date_time.a
+    libboost_thread-mt.a
+    libvorbisfile.a
+    libvorbis.a
+    libogg.a
+    libsmpeg.a
+    libSDL_mixer.a
+    libSDL_image.a
+
   if $(file-exists /sw/lib)
-    LDFLAGS += /usr/local/lib/libfreetype.a /sw/lib/libSDL_image.a /sw/lib/libboost_program_options.a /sw/lib/libboost_serialization.a /sw/lib/libboost_filesystem.a /sw/lib/libboost_date_time.a /sw/lib/libboost_thread-mt.a
+    LDFLAGS += /usr/local/lib/libfreetype.a $(addprefix /sw/lib/, $(COMMON_LIBRARIES))
     export LDFLAGS
 
   if $(file-exists /opt/local/lib)
-    LDFLAGS += /opt/local/lib/libfreetype.a /opt/local/lib/libSDL_image.a /opt/local/lib/libboost_program_options.a /opt/local/lib/libboost_serialization.a /opt/local/lib/libboost_filesystem.a /opt/local/lib/libboost_date_time.a /opt/local/lib/libboost_thread-mt.a
+    LDFLAGS += /opt/local/lib/libfreetype.a $(addprefix /opt/local/lib/, $(COMMON_LIBRARIES))
     export LDFLAGS
+
+  LDFLAGS += Platforms/osx/libRlvmOsx$(EXT_LIB) librlvm$(EXT_LIB) $(STATICSDLLIBS)
 
   CXXProgram(rlvm-osx-static, rlvm)
 

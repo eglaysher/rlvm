@@ -240,7 +240,6 @@ static char* WavGetInfo(WAVFILE* wfile, char *data) {
 **	WAVFILE stream reader
 */
 
-#include<SDL_mixer.h>
 WAVFILE::WAVFILE(void) {
 	wavinfo.SamplingRate=0;
 	wavinfo.Channels=1;

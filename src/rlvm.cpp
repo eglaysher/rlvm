@@ -37,6 +37,7 @@
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Modules/Modules.hpp"
 #include "Utilities.h"
+#include "findFontFile.h"
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

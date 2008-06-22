@@ -51,6 +51,7 @@
 
 #include "algoplus.hpp"
 #include "Utilities.h"
+#include "findFontFile.h"
 
 #include <boost/bind.hpp>
 #include "SDL_ttf.h"
