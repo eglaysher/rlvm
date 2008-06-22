@@ -6,6 +6,8 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>rlvm</string>
+    <key>CFBundleIdentifier</key>
+    <string>org.elliotglaysher.rlvm</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -13,12 +15,14 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1</string>
+	<string>0.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright © 2006-2008 Elliot Glaysher, Haeleth, Jagarl, et all.</string>
 </dict>
 </plist>

@@ -126,6 +126,8 @@ section
 
   bundle: rlvm-osx-static Platforms/osx/Info.plist.in
     mkdir -p rlvm.app/Contents/MacOS
+    mkdir -p rlvm.app/Contents/Resources
     cp rlvm-osx-static rlvm.app/Contents/MacOS/rlvm
+    cp ../README.TXT ../COPYING.TXT ../GPL.TXT rlvm.app/Contents/Resources
     strip rlvm.app/Contents/MacOS/rlvm
     cp Platforms/osx/Info.plist.in rlvm.app/Contents/Info.plist

@@ -79,6 +79,29 @@ static NSString *getApplicationName(void)
     event.type = SDL_QUIT;
     SDL_PushEvent(&event);
 }
+
+
+-(void)showREADME:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
+		pathForResource:@"README"
+				 ofType:@"TXT"]];
+}
+
+-(void)showCopying:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
+		pathForResource:@"COPYING"
+				 ofType:@"TXT"]];
+}
+
+-(void)showGPL:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
+		pathForResource:@"GPL"
+				 ofType:@"TXT"]];
+}
+
 @end
 
 /* The main class of the application, the application's delegate */
@@ -199,6 +222,55 @@ static void setupWindowMenu(void)
     [windowMenuItem release];
 }
 
+/* Custom menu to place the README and COPYTING files from. */
+static void setupHelpMenu()
+{
+    NSMenu      *helpMenu;
+    NSMenuItem  *helpMenuItem;
+    NSMenuItem  *menuItem;
+
+    helpMenu = [[NSMenu alloc] initWithTitle:@"Help"];
+
+    /* "rlvm Readme" */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Readme" 
+                                   action:@selector(showREADME:)
+                                   keyEquivalent:@""];
+    [menuItem setTarget:NSApp];
+    [helpMenu addItem:menuItem];
+    [menuItem release];
+
+    /* ----------- */
+    menuItem = [NSMenuItem separatorItem];
+    [helpMenu addItem:menuItem];
+    [menuItem release];
+
+    /* COPYING */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Copying" 
+                                   action:@selector(showCopying:)
+                                   keyEquivalent:@""];
+    [menuItem setTarget:NSApp];
+    [helpMenu addItem:menuItem];
+    [menuItem release];
+
+    /* GNU General Public License v3 */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"GNU General Public License v3" 
+                                   action:@selector(showGPL:)
+                                   keyEquivalent:@""];
+    [menuItem setTarget:NSApp];
+    [helpMenu addItem:menuItem];
+    [menuItem release];
+
+    /* Put the helpMenu into the menubar */
+    helpMenuItem = [[NSMenuItem alloc] initWithTitle:@"Help" action:nil keyEquivalent:@""];
+    [helpMenuItem setSubmenu:helpMenu];
+    [[NSApp mainMenu] addItem:helpMenuItem];
+
+    /* Finally give up our references to the objects */
+    [helpMenu release];
+    [helpMenuItem release];
+}
+
+
 /* Replacement for NSApplicationMain */
 static void CustomApplicationMain (int argc, char **argv)
 {
@@ -223,6 +295,7 @@ static void CustomApplicationMain (int argc, char **argv)
     [NSApp setMainMenu:[[NSMenu alloc] init]];
     setApplicationMenu();
     setupWindowMenu();
+    setupHelpMenu();
 
     /* Create SDLMain and make it the app delegate */
     sdlMain = [[SDLMain alloc] init];
