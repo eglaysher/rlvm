@@ -135,7 +135,12 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event)
 {
-  if(event.active.state == SDL_APPMOUSEFOCUS) {
+  if(event.active.state & SDL_APPINPUTFOCUS) {
+    m_mouseInsideWindow = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
+
+    machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+  }
+  else if(event.active.state & SDL_APPMOUSEFOCUS) {
     m_mouseInsideWindow = event.active.gain == 1;
 
     // Force a mouse refresh:
