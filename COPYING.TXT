@@ -17,6 +17,7 @@ I) Code incorporated directly into rlvm
  b) xclannad image loading code
  c) xkanon animation loading code
  d) mman (part of libReallive)
+ e) nwatowav
 
 II) Libraries included unmodified in the rlvm distribution:
  a) SDL_ttf
@@ -30,7 +31,8 @@ III) Libraries linked against by rlvm (but not included in the distribution)
  a) boost.org license
  b) SDL
  c) SDL_image
- d) freetype
+ d) SDL_mixer
+ e) freetype
 
 ------------------------------------------------------------------------
 Part I: Code incorporated directly into rlvm
@@ -112,7 +114,35 @@ modification, are permitted provided that the following conditions are met:
   any contributors may be used to endorse or promote products derived from
   this software without specific prior written permission.
 
+-------------------------------------------------------------[ nwatowav ]
 
+Copyright 2001-2007  jagarl / Kazunori Ueno <jagarl@creator.club.ne.jp>
+All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted.
+
+このプログラムの作者は jagarl です。
+
+このプログラム、及びコンパイルによって生成したバイナリは
+プログラムを変更する、しないにかかわらず再配布可能です。
+その際、上記 Copyright 表示を保持するなどの条件は課しま
+せん。対応が面倒なのでバグ報告を除き、メールで連絡をする
+などの必要もありません。ソースの一部を流用することを含め、
+ご自由にお使いください。
+
+THIS SOFTWARE IS PROVIDED BY KAZUNORI 'jagarl' UENO ``AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL KAZUNORI UENO BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
 
 -------------------------------------------------------------------------
 Part II: Libraries included unmodified in the rlvm distribution
@@ -319,6 +349,25 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+------------------------------------------------------------[ SDL_mixer ]
+
+SDL_mixer:  An audio mixer library based on the SDL library
+Copyright (C) 1997-2004 Sam Lantinga
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 -------------------------------------------------------------[ freetype ]
 
