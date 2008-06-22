@@ -532,7 +532,11 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   // :This is silly! --RT
   //tmp->flags &= ~SDL_PREALLOC;
 
-  SDL_Surface* surf = SDL_DisplayFormatAlpha(tmp);
+  SDL_Surface* surf;
+  if (with_mask == ALPHA_MASK)
+    surf = SDL_DisplayFormatAlpha(tmp);
+  else
+    surf = SDL_DisplayFormat(tmp);
   SDL_FreeSurface(tmp);
   return surf;
 };

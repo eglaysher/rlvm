@@ -422,7 +422,8 @@ static void determineProperties(
       if(format->Rmask == 0xFF000000 && format->Amask == 0xFF)
         byteOrder = GL_RGBA;
       // OSX's crazy ARGB pixel format
-      else if(format->Amask == 0xFF000000 && format->Rmask == 0xFF0000 &&
+      else if((format->Amask == 0x0 || format->Amask == 0xFF000000) &&
+              format->Rmask == 0xFF0000 &&
               format->Gmask == 0xFF00 && format->Bmask == 0xFF)
       {
         // This is an insane hack to get around OSX's crazy byte order
