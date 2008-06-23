@@ -81,6 +81,20 @@ private:
   static unsigned int s_screenWidth;
   static unsigned int s_screenHeight;
 
+  // The size of s_uploadBuffer. Initialized to 0.
+  static unsigned int s_uploadBufferSize;
+
+  // To prevent new-ing in a loop, save the dynamically allocated
+  // buffer used to upload data into.
+  static boost::scoped_array<char> s_uploadBuffer;
+
+  // Returns a shared buffer of at least size. This is not thread safe
+  // or reenterant in the least; it is merely meant to prevent
+  // allocations. This is the proper way to access s_uploadBuffer,
+  // since it will automatically reallocate it for you if it isn't
+  // large enough.
+  static char* uploadBuffer(unsigned int size);
+
   void renderToScreenAsColorMask_subtractive_glsl(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
   void renderToScreenAsColorMask_subtractive_fallback(

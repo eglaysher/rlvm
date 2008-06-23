@@ -65,6 +65,9 @@ GLuint Texture::m_programObjectID = 0;
 unsigned int Texture::s_screenWidth = 0;
 unsigned int Texture::s_screenHeight = 0;
 
+unsigned int Texture::s_uploadBufferSize = 0;
+boost::scoped_array<char> Texture::s_uploadBuffer;
+
 // -----------------------------------------------------------------------
 
 void Texture::SetScreenSize(const Size& s)
@@ -112,8 +115,8 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   else
   {
     // Cut out the current piece
-    scoped_array<char> pixelData(new char[surface->format->BytesPerPixel * w * h]);
-    char* curDstPtr = pixelData.get();
+    char* pixelData = uploadBuffer(surface->format->BytesPerPixel * w * h);
+    char* curDstPtr = pixelData;
 
     SDL_LockSurface(surface);
     {
@@ -138,7 +141,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     ShowGLErrors();
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
-                    byteOrder, byteType, pixelData.get());            
+                    byteOrder, byteType, pixelData);
     ShowGLErrors();
   }
 }
@@ -188,6 +191,18 @@ Texture::~Texture()
 
 // -----------------------------------------------------------------------
 
+char* Texture::uploadBuffer(unsigned int size)
+{
+  if(!s_uploadBuffer || size > s_uploadBufferSize) {
+    s_uploadBuffer.reset(new char[size]);
+    s_uploadBufferSize = size;
+  }
+
+  return s_uploadBuffer.get();
+}
+
+// -----------------------------------------------------------------------
+
 void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h, 
                        unsigned int bytesPerPixel, int byteOrder, int byteType)
 {
@@ -206,8 +221,8 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
   else
   {
     // Cut out the current piece
-    scoped_array<char> pixelData(new char[surface->format->BytesPerPixel * w * h]);
-    char* curDstPtr = pixelData.get();
+    char* pixelData = uploadBuffer(surface->format->BytesPerPixel * w * h);
+    char* curDstPtr = pixelData;
 
     SDL_LockSurface(surface);
     {
@@ -226,7 +241,7 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
     SDL_UnlockSurface(surface);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
-                    byteOrder, byteType, pixelData.get());            
+                    byteOrder, byteType, pixelData);
     ShowGLErrors();
   }
 }
