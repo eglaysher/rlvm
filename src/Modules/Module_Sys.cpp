@@ -48,6 +48,7 @@
 #include "Modules/Module_Sys_Save.hpp"
 #include "Modules/Module_Sys_Syscom.hpp"
 #include "Modules/Module_Sys_Date.hpp"
+#include "Modules/Module_Sys_Name.hpp"
 #include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
@@ -521,12 +522,9 @@ SysModule::SysModule()
   addOpcode(1133, 0, "SetDefaultBgr",
             callFunction(&GraphicsSystem::setDefaultBgrName));
 
-  addUnsupportedOpcode(1300, 0, "GetName");
-  addUnsupportedOpcode(1301, 0, "SetName");
+
   addUnsupportedOpcode(1302, 0, "nwSingle");
   addUnsupportedOpcode(1303, 0, "nwMulti");
-  addUnsupportedOpcode(1310, 0, "GetLocalName");
-  addUnsupportedOpcode(1311, 0, "SetLocalName");
   addUnsupportedOpcode(1312, 0, "nwSingleLocal");
   addUnsupportedOpcode(1313, 0, "nwMultiLocal");
 
@@ -674,4 +672,5 @@ SysModule::SysModule()
   addSysSaveOpcodes(*this);
   addSysSyscomOpcodes(*this);
   addSysDateOpcodes(*this);
+  addSysNameOpcodes(*this);
 }
