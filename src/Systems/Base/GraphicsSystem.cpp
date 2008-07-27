@@ -191,7 +191,7 @@ GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
 // -----------------------------------------------------------------------
 // GraphicsSystem
 // -----------------------------------------------------------------------
-GraphicsSystem::GraphicsSystem(Gameexe& gameexe) 
+GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe) 
   : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
     m_screenNeedsRefresh(false),
     m_isResponsibleForUpdate(true),
@@ -202,7 +202,8 @@ GraphicsSystem::GraphicsSystem(Gameexe& gameexe)
     m_graphicsObjectImpl(new GraphicsObjectImpl),
     m_useCustomMouseCursor(gameexe("MOUSE_CURSOR").exists()),
     m_showCurosr(true),
-    m_cursor(gameexe("MOUSE_CURSOR").to_int(0))
+    m_cursor(gameexe("MOUSE_CURSOR").to_int(0)),
+    m_system(system)
 {}
 
 // -----------------------------------------------------------------------
@@ -539,8 +540,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
       m_mouseCursor = it->second;
     else 
     {
-      string cursorName = machine.system().gameexe()("MOUSE_CURSOR", 
-                                                     m_cursor, "NAME");
+      string cursorName = system().gameexe()("MOUSE_CURSOR", m_cursor, "NAME");
       fs::path cursorPath = findFile(machine, cursorName, PDT_IMAGE_FILETYPES);
       boost::shared_ptr<Surface> cursorSurface = loadSurfaceFromFile(cursorPath);
       m_mouseCursor.reset(new MouseCursor(cursorSurface));

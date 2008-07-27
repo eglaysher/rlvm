@@ -39,6 +39,7 @@ struct SDL_Surface;
 class SDLSurface;
 class Texture;
 class SDLGraphicsSystem;
+class System;
 class GraphicsObject;
 class Gameexe;
 
@@ -140,7 +141,7 @@ private:
 
 
 public:
-  SDLGraphicsSystem(Gameexe& gameexe);
+  SDLGraphicsSystem(System& system, Gameexe& gameexe);
 
   virtual void beginFrame();
 

@@ -37,7 +37,8 @@ using namespace std;
 // NullSystem
 // -----------------------------------------------------------------------
 NullSystem::NullSystem(const std::string& pathToGameexe)
-  : m_gameexe(pathToGameexe), nullGraphicsSystem(m_gameexe),
+  : m_gameexe(pathToGameexe),
+    nullGraphicsSystem(*this, m_gameexe),
     nullEventSystem(m_gameexe), 
     nullTextSystem(m_gameexe),
     nullSoundSystem(m_gameexe)
@@ -46,7 +47,8 @@ NullSystem::NullSystem(const std::string& pathToGameexe)
 // -----------------------------------------------------------------------
 
 NullSystem::NullSystem() 
-  : m_gameexe(), nullGraphicsSystem(m_gameexe),
+  : m_gameexe(), 
+    nullGraphicsSystem(*this, m_gameexe),
     nullEventSystem(m_gameexe), 
     nullTextSystem(m_gameexe),
     nullSoundSystem(m_gameexe)

@@ -49,6 +49,7 @@
 
 // -----------------------------------------------------------------------
 
+class System;
 class Size;
 class Surface;
 class RLMachine;
@@ -206,13 +207,16 @@ private:
   typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
   MouseCursorCache m_cursorCache;
 
+  /// Our parent system object.
+  System& m_system;
+
 protected:
   const Point& cursorPos() const { return m_cursorPos; }
 
   boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
 
 public:
-  GraphicsSystem(Gameexe& gameexe);
+  GraphicsSystem(System& system, Gameexe& gameexe);
   virtual ~GraphicsSystem();
 
   bool isResponsibleForUpdate() const { return m_isResponsibleForUpdate; }
@@ -225,6 +229,8 @@ public:
 
   DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
   virtual void setScreenUpdateMode(DCScreenUpdateMode u);
+
+  System& system() { return m_system; }
 
   /**
    * @name Mouse Cursor Management

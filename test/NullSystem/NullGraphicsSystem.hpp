@@ -37,6 +37,7 @@
 
 // -----------------------------------------------------------------------
 
+class System;
 class NullSurface;
 
 // -----------------------------------------------------------------------
@@ -44,7 +45,7 @@ class NullSurface;
 class NullGraphicsSystem : public GraphicsSystem
 {
 public:
-  NullGraphicsSystem(Gameexe& gexe);
+  NullGraphicsSystem(System& system, Gameexe& gexe);
 
   virtual void refresh(RLMachine&) { }
 

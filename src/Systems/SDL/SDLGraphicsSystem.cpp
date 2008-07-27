@@ -164,7 +164,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
   int dy1 = -1;
 
   boost::shared_ptr<MouseCursor> cursor;
-  if(static_cast<SDLEventSystem&>(machine.system().event()).mouseInsideWindow())
+  if(static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
     cursor = currentCursor(machine);
   if(cursor)
   {
@@ -227,8 +227,8 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
  *
  * @pre SDL is initialized.
  */
-SDLGraphicsSystem::SDLGraphicsSystem(Gameexe& gameexe)
-  : GraphicsSystem(gameexe), m_redrawLastFrame(false),
+SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
+  : GraphicsSystem(system, gameexe), m_redrawLastFrame(false),
     m_displayDataInTitlebar(false), m_timeOfLastTitlebarUpdate(0),
     m_lastSeenNumber(0), m_lastLineNumber(0), m_imageCache(20)
 {

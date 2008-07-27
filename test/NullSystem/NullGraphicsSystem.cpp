@@ -40,8 +40,8 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-NullGraphicsSystem::NullGraphicsSystem(Gameexe& gexe)
-  : GraphicsSystem(gexe), graphics_system_log_("NullGraphicsSystem")
+NullGraphicsSystem::NullGraphicsSystem(System& system, Gameexe& gexe)
+  : GraphicsSystem(system, gexe), graphics_system_log_("NullGraphicsSystem")
 {
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
