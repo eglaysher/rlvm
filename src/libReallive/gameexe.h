@@ -201,6 +201,11 @@ public:
     return m_key;
   }
 
+  /**
+   * Returns the key splitted on periods.
+   */
+  const std::vector<std::string> key_parts() const;
+
   /** 
    * Assign a value. Unlike all the other methods, we can safely
    * templatize this since the functions it calls can be overloaded.

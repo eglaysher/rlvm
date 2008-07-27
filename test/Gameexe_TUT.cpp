@@ -182,4 +182,24 @@ void object::test<7>()
   }
 }
 
+// -----------------------------------------------------------------------
+
+/**
+ * Make sure we get the right values back from key_parts().
+ */
+template<>
+template<>
+void object::test<8>()
+{
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));  
+  GameexeInterpretObject gio = ini("WINDOW.000.ATTR_MOD");
+  vector<string> pieces = gio.key_parts();
+  ensure_equals(pieces.size(), 3);
+  ensure_equals(pieces[0], "WINDOW");
+  ensure_equals(pieces[1], "000");
+  ensure_equals(pieces[2], "ATTR_MOD");
+}
+
+// -----------------------------------------------------------------------
+
 }

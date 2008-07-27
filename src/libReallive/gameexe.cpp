@@ -357,6 +357,15 @@ bool GameexeInterpretObject::exists() const
 
 // -----------------------------------------------------------------------
 
+const std::vector<std::string> GameexeInterpretObject::key_parts() const
+{
+  vector<string> keyparts;
+  boost::split(keyparts, m_key, is_any_of("."));
+  return keyparts;
+}
+
+// -----------------------------------------------------------------------
+
 GameexeInterpretObject& GameexeInterpretObject::operator=(const std::string& value)
 {
   // Set the key to incoming int

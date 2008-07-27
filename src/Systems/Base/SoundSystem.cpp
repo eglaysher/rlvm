@@ -137,7 +137,7 @@ SoundSystem::SoundSystem(Gameexe& gexe)
   GameexeFilteringIterator end = gexe.filtering_end();
   for(; se != end; ++se)
   {
-    string rawNumber = se->key().substr(se->key().find_first_of(".") + 1);
+    string rawNumber = se->key_parts().at(1);
     int entryNumber = lexical_cast<int>(rawNumber);
 
     string fileName = se->getStringAt(0);
