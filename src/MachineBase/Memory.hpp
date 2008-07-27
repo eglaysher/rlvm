@@ -47,11 +47,14 @@
 #include "libReallive/intmemref.h"
 #include <boost/shared_ptr.hpp>
 
+#include <boost/serialization/version.hpp>
+
 // -----------------------------------------------------------------------
 
 const int NUMBER_OF_INT_LOCATIONS = 9;
 const int SIZE_OF_MEM_BANK = 2000;
 const int SIZE_OF_INT_PASSING_MEM = 40;
+const int SIZE_OF_NAME_BANK = 702;
 
 typedef std::vector<std::pair<int, char> > IntegerBank_t;
 extern const IntegerBank_t LOCAL_INTEGER_BANKS;
@@ -79,13 +82,21 @@ struct GlobalMemory
 
   std::string strM[SIZE_OF_MEM_BANK];
 
+  std::string globalNames[SIZE_OF_NAME_BANK];
+
   /// boost::serialization
   template<class Archive>
   void serialize(Archive & ar, unsigned int version)
   {
     ar & intG & intZ & strM;
+
+    // Starting in version 1, \#NAME variable storage were added.
+    if (version > 0)
+      ar & globalNames;
   }
 };
+
+BOOST_CLASS_VERSION(GlobalMemory, 1)
 
 // -----------------------------------------------------------------------
 
@@ -103,7 +114,7 @@ struct LocalMemory
   LocalMemory();
 
   /**
-   * Constructor that prevents the memory banks from being marmoset
+   * Constructor that prevents the memory banks from being memset
    * (since they'll be overwritten entirely by the thawing process.
    */
   LocalMemory(dont_initialize);
@@ -124,13 +135,21 @@ struct LocalMemory
   /// Parameter passing string bank
   std::string strK[3];
 
+  std::string localNames[SIZE_OF_NAME_BANK];
+
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive & ar, unsigned int version)
   {
     ar & intA & intB & intC & intD & intE & intF & strS & intL & strK;
+
+    // Starting in version 1, \#LOCALNAME variable storage were added.
+    if (version > 0)
+      ar & localNames;
   }
 };
+
+BOOST_CLASS_VERSION(LocalMemory, 1)
 
 // -----------------------------------------------------------------------
 
@@ -169,6 +188,11 @@ private:
    * Connects the memory banks in m_local and in m_global into intVar.
    */
   void connectIntVarPointers();
+
+  /**
+   * Input validating function to the {get,set}(Local)?Name set of functions.
+   */
+  void checkNameIndex(int index, const std::string& name) const;
 
 public: 
   /**
@@ -228,6 +252,26 @@ public:
    * @param value The new string value to assign
    */
   void setStringValue(int type, int number, const std::string& value);
+
+  /**
+   * Sets the local name slot index to name.
+   */
+  void setName(int index, const std::string& name);
+
+  /**
+   * Returns the local name slot index.
+   */
+  const std::string& getName(int index) const;
+
+  /**
+   * Sets the local name slot index to name.
+   */
+  void setLocalName(int index, const std::string& name);
+
+  /**
+   * Returns the local name slot index.
+   */
+  const std::string& getLocalName(int index) const;
 
   /**
    * @name Accessors

@@ -168,4 +168,43 @@ void Memory::setStringValue(int type, int number, const std::string& value)
 
 // -----------------------------------------------------------------------
 
+void Memory::checkNameIndex(int index, const std::string& name) const
+{
+  if(index > (SIZE_OF_NAME_BANK - 1)) {
+    ostringstream oss;
+    oss << "Invalid index " << index << " in " << name;
+    throw rlvm::Exception(oss.str());
+  }
+}
 
+// -----------------------------------------------------------------------
+
+void Memory::setName(int index, const std::string& name) 
+{
+  checkNameIndex(index, "Memory::setName");
+  m_global->globalNames[index] = name;
+}
+
+// -----------------------------------------------------------------------
+
+const std::string& Memory::getName(int index) const
+{
+  checkNameIndex(index, "Memory::getName");
+  return m_global->globalNames[index];
+}
+
+// -----------------------------------------------------------------------
+
+void Memory::setLocalName(int index, const std::string& name)
+{
+  checkNameIndex(index, "Memory::setLocalName");
+  m_local.localNames[index] = name;
+}
+
+// -----------------------------------------------------------------------
+
+const std::string& Memory::getLocalName(int index) const
+{
+  checkNameIndex(index, "Memory::setLocalName");
+  return m_local.localNames[index];
+}
