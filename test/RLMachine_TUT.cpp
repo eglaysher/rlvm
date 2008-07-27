@@ -71,9 +71,9 @@ struct RLMachine_data
   RLMachine rlmachine;
 
   RLMachine_data()
-	: arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-	  system(),
-	  rlmachine(system, arc)
+    : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
+      system(locateTestCase("Gameexe_data/Gameexe.ini")),
+      rlmachine(system, arc)
   {}
 };
 
@@ -113,9 +113,9 @@ void object::test<2>()
 {
   for(int i = 0; i < 10; ++i)
   {
-	rlmachine.setStoreRegister(i);
-	ensure_equals("Store register remember value", i, 
-				  rlmachine.getStoreRegisterValue());
+    rlmachine.setStoreRegister(i);
+    ensure_equals("Store register remember value", i, 
+                  rlmachine.getStoreRegisterValue());
   }
 }
 
@@ -132,11 +132,11 @@ void object::test<3>()
 
   for(vector<int>::const_iterator it = types.begin(); it != types.end(); ++it)
   {
-	const string str = "Stored at " + lexical_cast<string>(*it);
+    const string str = "Stored at " + lexical_cast<string>(*it);
 
-	rlmachine.setStringValue(*it, 0, str);
-	ensure_equals("RLMachine remembered the string", 
-				  rlmachine.getStringValue(*it, 0), str);
+    rlmachine.setStringValue(*it, 0, str);
+    ensure_equals("RLMachine remembered the string", 
+                  rlmachine.getStringValue(*it, 0), str);
   }
 }
 
@@ -150,23 +150,23 @@ template<>
 void object::test<4>()
 {
   try {
-	rlmachine.setStringValue(STRK_LOCATION, 3, "Blah");
-	fail("Did not catch out of bound exception on set for strK");
+    rlmachine.setStringValue(STRK_LOCATION, 3, "Blah");
+    fail("Did not catch out of bound exception on set for strK");
   } catch(rlvm::Exception) {}
 
   try {
-	rlmachine.setStringValue(STRM_LOCATION, 2000, "Blah");
-	fail("Did not catch out of bound exception on set for strM/strS");
+    rlmachine.setStringValue(STRM_LOCATION, 2000, "Blah");
+    fail("Did not catch out of bound exception on set for strM/strS");
   } catch(rlvm::Exception) {}
 
   try {
-	rlmachine.getStringValue(STRK_LOCATION, 3);
-	fail("Did not catch out of bound exception on get for strK");
+    rlmachine.getStringValue(STRK_LOCATION, 3);
+    fail("Did not catch out of bound exception on get for strK");
   } catch(rlvm::Exception) {}
 
   try {
-	rlmachine.getStringValue(STRM_LOCATION, 2000);
-	fail("Did not catch out of bound exception on get for strM/strS");
+    rlmachine.getStringValue(STRM_LOCATION, 2000);
+    fail("Did not catch out of bound exception on get for strM/strS");
   } catch(rlvm::Exception) {}
 }
 
@@ -195,23 +195,23 @@ void object::test<5>()
 
   for(vector<char>::const_iterator it = banks.begin(); it != banks.end(); ++it)
   {
-	IntMemRef wordRef(*it, 0);
-	rlmachine.setIntValue(wordRef, base);
-	ensure_equals("Didn't record full value", 
-				  rlmachine.getIntValue(wordRef), base);
+    IntMemRef wordRef(*it, 0);
+    rlmachine.setIntValue(wordRef, base);
+    ensure_equals("Didn't record full value", 
+                  rlmachine.getIntValue(wordRef), base);
 
-	for(int i = 0; i < 4; ++i)
-	{
-	  IntMemRef comp(*it, "8b", i);
-	  ensure_equals("Could get partial value", 
-					rlmachine.getIntValue(comp),
-					in8b[3 - i]);
+    for(int i = 0; i < 4; ++i)
+    {
+      IntMemRef comp(*it, "8b", i);
+      ensure_equals("Could get partial value", 
+                    rlmachine.getIntValue(comp),
+                    in8b[3 - i]);
 
-	  rlmachine.setIntValue(comp, rc);
-	}
+      rlmachine.setIntValue(comp, rc);
+    }
 
-	ensure_equals("Changing the components didn't change the full value!",
-				  rlmachine.getIntValue(wordRef), final);
+    ensure_equals("Changing the components didn't change the full value!",
+                  rlmachine.getIntValue(wordRef), final);
   }
 }
 
@@ -225,70 +225,102 @@ template<>
 void object::test<6>()
 {
   try { 
-	rlmachine.getIntValue(IntMemRef(10, 0, 0)); 
-	fail("Allowed access to a non-existant memory bank");
+    rlmachine.getIntValue(IntMemRef(10, 0, 0)); 
+    fail("Allowed access to a non-existant memory bank");
   } catch(rlvm::Exception) {}
 
   rlmachine.getIntValue(IntMemRef('A', 1999));
   try { 
-	rlmachine.getIntValue(IntMemRef('A', 2000)); 
-	fail("Allowed access to memory past the end of the bank");
+    rlmachine.getIntValue(IntMemRef('A', 2000)); 
+    fail("Allowed access to memory past the end of the bank");
   } catch(rlvm::Exception) {}
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Test conversion of letter indexies to integers.
+ */
+template<>
+template<>
+void object::test<7>()
+{
+  ensure_equals(Memory::ConvertLetterIndexToInt("A"), 0);
+  ensure_equals(Memory::ConvertLetterIndexToInt("Z"), 25);
+  ensure_equals(Memory::ConvertLetterIndexToInt("AA"), 26);
+  ensure_equals(Memory::ConvertLetterIndexToInt("BA"), 52);
+  ensure_equals(Memory::ConvertLetterIndexToInt("ZZ"), 701);
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Test the initialization of the \#NAME and \#LOCLANAME variables.
+ */
+template<>
+template<>
+void object::test<8>()
+{
+  ensure_equals(
+    rlmachine.memory().getName(Memory::ConvertLetterIndexToInt("A")), "Bob");
+  ensure_equals(
+    rlmachine.memory().getLocalName(Memory::ConvertLetterIndexToInt("AB")),
+    "Alice");
 }
 
 // -----------------------------------------------------------------------
 
 template<>
 template<>
-void object::test<7>()
+void object::test<9>()
 {
   stringstream ss;
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
 
   // Save data
   {
-	RLMachine saveMachine(system, arc);
+    RLMachine saveMachine(system, arc);
 
-	int count = 0;
-	for(vector<pair<int, char> >::const_iterator it = 
-		  GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
-		++it)
-	{
-	  for(int i = 0; i < 2000; ++i)	  
-	  {
-		saveMachine.setIntValue(IntMemRef(it->second, i), count);
-		count++;
-	  }
-	}
+    int count = 0;
+    for(vector<pair<int, char> >::const_iterator it = 
+          GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+        ++it)
+    {
+      for(int i = 0; i < 2000; ++i)	  
+      {
+        saveMachine.setIntValue(IntMemRef(it->second, i), count);
+        count++;
+      }
+    }
 
-	for(int i = 0; i < 2000; ++i)
-	  saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
+    for(int i = 0; i < 2000; ++i)
+      saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
 
-	Serialization::saveGlobalMemoryTo(ss, saveMachine);
+    Serialization::saveGlobalMemoryTo(ss, saveMachine);
   }
 
   // Load data
   {
-	RLMachine loadMachine(system, arc);
-	Serialization::loadGlobalMemoryFrom(ss, loadMachine);
+    RLMachine loadMachine(system, arc);
+    Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 
-	int count = 0;
-	for(vector<pair<int, char> >::const_iterator it = 
-		  GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
-		++it)
-	{
-	  for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)	  
-	  {
-		ensure_equals("Didn't read memory correctly!",
-					  loadMachine.getIntValue(IntMemRef(it->second, i)), count);
-		count++;
-	  }
-	}
+    int count = 0;
+    for(vector<pair<int, char> >::const_iterator it = 
+          GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+        ++it)
+    {
+      for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)	  
+      {
+        ensure_equals("Didn't read memory correctly!",
+                      loadMachine.getIntValue(IntMemRef(it->second, i)), count);
+        count++;
+      }
+    }
 
-	for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)
-	  ensure_equals("Didn't save string memory correctly!",
-					loadMachine.getStringValue(STRM_LOCATION, i),
-					lexical_cast<string>(i));
+    for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)
+      ensure_equals("Didn't save string memory correctly!",
+                    loadMachine.getStringValue(STRM_LOCATION, i),
+                    lexical_cast<string>(i));
   }
 }
 

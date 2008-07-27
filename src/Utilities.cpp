@@ -66,6 +66,19 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
+std::string removeQuotes(const std::string& quotedString)
+{
+  string output = quotedString;
+  if (output.size() && output[0] == '\"')
+    output = output.substr(1);
+  if (output.size() && output[output.size() - 1] == '\"')
+    output = output.substr(0, output.size() - 2);
+
+  return output;
+}
+
+// -----------------------------------------------------------------------
+
 fs::path correctPathCase(fs::path Path)
 {
   using namespace boost::filesystem;  

@@ -97,7 +97,8 @@ using boost::assign::list_of;
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive) 
-  : m_memory(new Memory), m_halted(false), m_printUndefinedOpcodes(false),
+  : m_memory(new Memory(inSystem.gameexe())),
+    m_halted(false), m_printUndefinedOpcodes(false),
     m_haltOnException(true), m_archive(inArchive), m_line(0), 
     m_system(inSystem), m_markSavepoints(true)
 {

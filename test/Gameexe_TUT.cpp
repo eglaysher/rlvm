@@ -83,7 +83,7 @@ template<>
 void object::test<1>()
 {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
-  ensure_equals("Wrong number of keys", ini.size(), 24);
+  ensure_equals("Wrong number of keys", ini.size(), 26);
 }
 
 // -----------------------------------------------------------------------

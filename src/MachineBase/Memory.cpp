@@ -32,6 +32,7 @@
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/intmemref.h"
+#include "libReallive/gameexe.h"
 #include "Utilities.h"
 #include <boost/assign/list_of.hpp>
 
@@ -88,10 +89,12 @@ LocalMemory::LocalMemory(dont_initialize)
 // -----------------------------------------------------------------------
 // Memory
 // -----------------------------------------------------------------------
-Memory::Memory()
+Memory::Memory(Gameexe& gameexe)
   : m_global(new GlobalMemory), m_local()
 {
   connectIntVarPointers();
+
+  initializeDefaultValues(gameexe);
 }
 
 // -----------------------------------------------------------------------
@@ -207,4 +210,52 @@ const std::string& Memory::getLocalName(int index) const
 {
   checkNameIndex(index, "Memory::setLocalName");
   return m_local.localNames[index];
+}
+
+// -----------------------------------------------------------------------
+
+/* static */
+int Memory::ConvertLetterIndexToInt(const std::string& value) {
+  int total = 0;
+
+  if (value.size() == 1) {
+    total += (value[0] - 'A');
+  } else if (value.size() == 2) {
+    total += 26 * ((value[0] - 'A') + 1);
+    total += (value[1] - 'A');
+  } else {
+    throw rlvm::Exception("Invalid value in convertNameVar!");
+  }
+
+  return total;
+}
+
+// -----------------------------------------------------------------------
+
+void Memory::initializeDefaultValues(Gameexe& gameexe)
+{
+  // Note: We ignore the \#NAME_MAXLEN variable because manual allocation is
+  // error prone and for losers.
+  GameexeFilteringIterator end = gameexe.filtering_end();
+  for(GameexeFilteringIterator it = gameexe.filtering_begin("NAME.");
+      it != end; ++it)
+  {
+    try {
+      setName(ConvertLetterIndexToInt(it->key_parts().at(1)),
+              removeQuotes(it->to_string()));
+    } catch(...) {
+      cerr << "WARNING: Invalid format for key " << it->key() << endl;
+    }
+  }
+
+  for(GameexeFilteringIterator it = gameexe.filtering_begin("LOCALNAME."); 
+      it != end; ++it)
+  {
+    try {
+      setLocalName(ConvertLetterIndexToInt(it->key_parts().at(1)),
+                   removeQuotes(it->to_string()));
+    } catch(...) {
+      cerr << "WARNING: Invalid format for key " << it->key() << endl;
+    }
+  }
 }

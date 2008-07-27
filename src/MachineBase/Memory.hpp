@@ -63,6 +63,7 @@ extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
 // -----------------------------------------------------------------------
 
 class RLMachine;
+class Gameexe;
 
 // -----------------------------------------------------------------------
 
@@ -194,12 +195,22 @@ private:
    */
   void checkNameIndex(int index, const std::string& name) const;
 
+  /** 
+   * Reads in default memory values from the passed in Gameexe, such as \#NAME
+   * and \#LOCALNAME values.
+   */
+  void initializeDefaultValues(Gameexe& gameexe);
+
 public: 
   /**
    * Default constructor; creates a Memory object which owns its own
-   * GlobalMemory.
+   * GlobalMemory. Initial memory values are read from the passed in Gameexe
+   * object.
+   *
+   * @note For now, we only read \#NAME and \#LOCALNAME variables, skipping any
+   *       declaration of the form \#intvar[index] or \#strvar[index].
    */
-  Memory();
+  Memory(Gameexe& gamexe);
 
   /**
    * Creates an overlayed memory object. An overlay takes another
@@ -283,6 +294,12 @@ public:
   LocalMemory& local() { return m_local; }
   const LocalMemory& local() const { return m_local; }
   /// @}
+
+  /** 
+   * Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
+   * equivalent. These letter indexies are used in \#NAME definitions.
+   */
+  static int ConvertLetterIndexToInt(const std::string& value);
 };  // end of class Memory
 
 

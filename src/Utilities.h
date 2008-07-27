@@ -39,6 +39,11 @@ class RLMachine;
 class Gameexe;
 class Size;
 
+/** 
+ * Removes quotes from the beginning and end of the string.
+ */
+std::string removeQuotes(const std::string& quotedString);
+
 /**
  * Takes the full path to a file, and adjusts its case so that it
  * points to an existing file if possible.
