@@ -216,6 +216,66 @@ struct Obj_objOfFileGan_0
 
 // -----------------------------------------------------------------------
 
+struct Obj_objOfFileGan_1
+  : public RLOp_Void_4<IntConstant_T, StrConstant_T, StrConstant_T, 
+                       IntConstant_T>
+{
+  int m_layer;
+  Obj_objOfFileGan_1(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, string imgFilename, 
+                  string ganFilename, int visible) 
+  { 
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    setObjectDataToGan(machine, obj, imgFilename, ganFilename);
+    obj.setVisible(visible);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Obj_objOfFileGan_2
+  : public RLOp_Void_6<IntConstant_T, StrConstant_T, StrConstant_T, 
+                       IntConstant_T, IntConstant_T, IntConstant_T>
+{
+  int m_layer;
+  Obj_objOfFileGan_2(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, string imgFilename, 
+                  string ganFilename, int visible, int x, int y) 
+  { 
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    setObjectDataToGan(machine, obj, imgFilename, ganFilename);
+    obj.setVisible(visible);
+    obj.setX(x);
+    obj.setY(y);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Obj_objOfFileGan_3
+  : public RLOp_Void_7<IntConstant_T, StrConstant_T, StrConstant_T, 
+                       IntConstant_T, IntConstant_T, IntConstant_T,
+                       IntConstant_T>
+{
+  int m_layer;
+  Obj_objOfFileGan_3(int layer) : m_layer(layer) {}
+
+  void operator()(RLMachine& machine, int buf, string imgFilename, 
+                  string ganFilename, int visible, int x, int y, int pattern) 
+  { 
+    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    setObjectDataToGan(machine, obj, imgFilename, ganFilename);
+    obj.setVisible(visible);
+    obj.setX(x);
+    obj.setY(y);
+    obj.setPattNo(pattern);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 void addObjectCreationFunctions(RLModule& m, int layer)
 {
   m.addOpcode(1000, 0, new Obj_objGeneric_0(layer, objOfFileLoader));
@@ -225,9 +285,9 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addOpcode(1000, 4, new Obj_objGeneric_4(layer, objOfFileLoader));
 
   m.addOpcode(1003, 0, "objOfFileGan", new Obj_objOfFileGan_0(layer));
-  m.addUnsupportedOpcode(1003, 1, "objOfFileGan");
-  m.addUnsupportedOpcode(1003, 2, "objOfFileGan");
-  m.addUnsupportedOpcode(1003, 3, "objOfFileGan");
+  m.addOpcode(1003, 1, "objOfFileGan", new Obj_objOfFileGan_1(layer));
+  m.addOpcode(1003, 2, "objOfFileGan", new Obj_objOfFileGan_2(layer));
+  m.addOpcode(1003, 3, "objOfFileGan", new Obj_objOfFileGan_3(layer));
   m.addUnsupportedOpcode(1003, 4, "objOfFileGan");
 
   m.addUnsupportedOpcode(1101, 0, "objOfRect");
