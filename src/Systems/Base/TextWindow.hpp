@@ -444,7 +444,7 @@ public:
   bool inSelectionMode() { return m_inSelectionMode; }
   int getNextSelectionID() { return m_nextId++; }
 
-  virtual void addSelectionItem(RLMachine& machine, const std::string& utf8str) = 0;
+  virtual void addSelectionItem(const std::string& utf8str) = 0;
   virtual void setSelectionCallback(const boost::function<void(int)>& func);
 
   virtual void endSelectionMode();

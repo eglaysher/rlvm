@@ -76,7 +76,7 @@ Sel_LongOperation::Sel_LongOperation(
     std::string utf8str = cp932toUTF8(params[i].text, 
                                       machine.getTextEncoding());
     cerr << i << ": " << utf8str << endl;
-    textWindow.addSelectionItem(machine, utf8str);
+    textWindow.addSelectionItem(utf8str);
   }
   cerr << "---------" << endl;
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);

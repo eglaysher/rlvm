@@ -473,8 +473,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::addSelectionItem(
-  RLMachine& machine, const std::string& utf8str)
+void SDLTextWindow::addSelectionItem(const std::string& utf8str)
 {
   // Render the incoming string for both selected and not-selected.
   SDL_Color color;

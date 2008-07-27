@@ -102,7 +102,7 @@ public:
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
 
 
-  virtual void addSelectionItem(RLMachine& machine, const std::string& utf8str);
+  virtual void addSelectionItem(const std::string& utf8str);
   virtual void endSelectionMode();
 };
 
