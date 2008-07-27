@@ -22,6 +22,7 @@ else
 LIBRLVMFILES[] = 
   MachineBase/libMachineBase
   MachineBase/GeneralOperations
+  MachineBase/OpcodeLog
   Modules/libModules
   Effects/libEffects
   Systems/Base/System

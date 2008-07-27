@@ -213,6 +213,8 @@ int main(int argc, char* argv[])
     ("start-seen", po::value<int>(), "Force start at SEEN#")
     ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
     ("undefined-opcodes", "Display a message on undefined opcodes")
+    ("count-undefined",
+     "On exit, present a summary table about how many times each undefined opcode was called")
     ;
 
   // Declare the final option to be game-root
@@ -364,6 +366,9 @@ int main(int argc, char* argv[])
 
     if(vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);
+
+    if(vm.count("count-undefined"))
+      rlmachine.recordUndefinedOpcodeCounts();
 
     Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);

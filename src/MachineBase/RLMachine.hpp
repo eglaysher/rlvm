@@ -55,14 +55,15 @@ class RLModule;
 class LongOperation;
 class System;
 class Memory;
+class OpcodeLog;
 struct StackFrame;
 
 namespace boost { namespace serialization { } } 
 
 /**
- * The RealLive virtual machine implementation. This class is the main
- * user facing class which contains all state regarding integer/string
- * memory, flow control, and other execution issues. 
+ * The RealLive virtual machine implementation. This class is the main user
+ * facing class which contains all state regarding integer/string memory, flow
+ * control, and other execution issues.
  */
 class RLMachine {
 public:
@@ -77,16 +78,15 @@ public:
   /// Mapping between the module_type:module pair and the module implementation
   ModuleMap modules;
 
-  /// States whether the RLMachine is in the halted state (and thus
-  /// won't execute more instructions)
+  /// States whether the RLMachine is in the halted state (and thus won't
+  /// execute more instructions)
   bool m_halted;
 
-  /// Whether we should print an error to stderr when we encounter an
-  /// undefined opcode.
+  /// Whether we should print an error to stderr when we encounter an undefined
+  /// opcode.
   bool m_printUndefinedOpcodes;
 
-  /// States whether the machine should halt if an unhandled exception
-  /// is thrown
+  /// States whether the machine should halt if an unhandled exception is thrown
   bool m_haltOnException;
 
   /// The SEEN.TXT the machine is currently executing.
@@ -101,9 +101,13 @@ public:
   /// The most recent line marker we've come across
   int m_line;
 
-  /// The RLMachine carried around a reference to the local system, to
-  /// keep it from being a Singleton so we can do proper unit testing.
+  /// The RLMachine carried around a reference to the local system, to keep it
+  /// from being a Singleton so we can do proper unit testing.
   System& m_system;
+
+  /// (Optional) A structure that keeps track of how many times we encountered
+  /// undefined opcodes.
+  boost::scoped_ptr<OpcodeLog> m_undefinedLog;
 
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, 
@@ -143,8 +147,8 @@ public:
    * @name Implicit savepoint management
    * 
    * RealLive will save the latest savepoint for the topmost stack
-   * frame. Savepoints can be manually set (with the "Savepoint"
-   * command), but are usually implicit.
+   * frame. Savepoints can be manually set (with the "Savepoint" command), but
+   * are usually implicit.
    *
    * @{
    */
@@ -455,17 +459,26 @@ public:
   // ---------------------------------------------------------------------
 
   /** 
-   * Force the machine to halt. This should terminate the execution of
-   * bytecode, and theoretically, the program.
-   */
-  void halt();
-
-  /** 
    * Whether we report to stderr when we hit an undefined opcode.
    * 
    * @param in New value
    */
   void setPrintUndefinedOpcodes(bool in);
+
+  /** 
+   * Starts logging opcodes that we don't handle. Over very long runs, this is
+   * easier to deal with than setPrintUndefinedOpcodes. Will print the results
+   * to stderr on machine destruction.
+   */
+  void recordUndefinedOpcodeCounts();
+
+  // ---------------------------------------------------------------------
+
+  /** 
+   * Force the machine to halt. This should terminate the execution of
+   * bytecode, and theoretically, the program.
+   */
+  void halt();
 
   /** 
    * Sets whether the RLMachine will be put into the halt state if an

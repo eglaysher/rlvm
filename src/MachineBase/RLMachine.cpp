@@ -54,6 +54,7 @@
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/StackFrame.hpp"
+#include "MachineBase/OpcodeLog.hpp"
 
 #include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
@@ -129,7 +130,10 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
 // -----------------------------------------------------------------------
 
 RLMachine::~RLMachine()
-{}
+{
+  if(m_undefinedLog)
+    cerr << *m_undefinedLog;
+}
 
 // -----------------------------------------------------------------------
 
@@ -277,6 +281,11 @@ void RLMachine::executeNextInstruction()
       {
         cout << "(SEEN" << callStack.back().scenario()->sceneNumber() 
              << ")(Line " << m_line << "):  " << e.what() << endl;
+      }
+
+      if(m_undefinedLog)
+      {
+        m_undefinedLog->increment(e.opcodeName());
       }
     }
     catch(std::exception& e) 
@@ -522,16 +531,23 @@ void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype
 
 // -----------------------------------------------------------------------
 
-void RLMachine::halt() 
+void RLMachine::setPrintUndefinedOpcodes(bool in)
 {
-  m_halted = true; 
+  m_printUndefinedOpcodes = in;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setPrintUndefinedOpcodes(bool in)
+void RLMachine::recordUndefinedOpcodeCounts()
 {
-  m_printUndefinedOpcodes = in;
+  m_undefinedLog.reset(new OpcodeLog);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::halt() 
+{
+  m_halted = true; 
 }
 
 // -----------------------------------------------------------------------
