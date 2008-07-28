@@ -16,7 +16,7 @@ else
 #CXXFLAGS += -DWIN32
 
 .PHONY: clean bundle
-.SUBDIRS: libReallive Effects Modules MachineBase Systems Platforms
+.SUBDIRS: libReallive Effects Modules MachineBase Systems Platforms Utilities
 ########
 
 LIBRLVMFILES[] = 
@@ -53,6 +53,7 @@ LIBRLVMFILES[] =
   Systems/Base/MouseCursor
   Systems/SDL/libSDLSystem
   libReallive/libReallive
+  Utilities/StringUtilities
   Utilities
   findFontFile
   dateUtil

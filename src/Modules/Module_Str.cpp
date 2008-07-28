@@ -40,7 +40,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
-
+#include "Utilities/StringUtilities.hpp"
 #include <cmath>
 #include <iostream>
 #include <iomanip>
@@ -62,57 +62,6 @@ using namespace libReallive;
 
 namespace {
 
-/** 
- * Checks to see if the byte c is the first byte of a two byte
- * character. RealLive encodes its strings in Shift_JIS, so we have to
- * deal with this character encoding.
- */
-inline bool is_lead_byte(const unsigned char c)
-{
-  return (c >= 0x81 && c <= 0xa0) || (c >= 0xe0 && c <= 0xef);
-}
-
-// -----------------------------------------------------------------------
-
-/** 
- * Advanced the Shift_JIS character string c by one char. 
- * 
- * @param c Pointer to the current character in the string
- */
-void advanceOneChar(const unsigned char*& c)
-{
-  if(is_lead_byte(c[0]))
-  {
-    if(c[1] == '\0')
-      throw rlvm::Exception("Malformed Shift_JIS string!");
-    else
-      c += 2;
-  }
-  else
-    c += 1;
-}
-
-/** 
- * Copies a single Shift_JIS character into output and advances the string.
- * 
- * @param str The input character string
- * @param output The output std::string
- */
-void copyOneShiftJisCharacter(const unsigned char*& str, std::string& output)
-{
-  if(is_lead_byte(str[0]))
-  {
-    if(str[1] == '\0')
-      throw rlvm::Exception("Malformed Shift_JIS string!");
-    else {
-      output += *str++;
-      output += *str++;
-    }
-  }
-  else
-    output += *str++;
-}
-
 // -----------------------------------------------------------------------
 
 /** 
@@ -128,7 +77,7 @@ size_t strcharlen(const unsigned char* string)
   size_t result = 0;
   while (*string) {
     ++result;
-    advanceOneChar(string);
+    advanceOneShiftJISChar(string);
   } 
   return result;
 }
@@ -294,7 +243,7 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
       if(str[0] == '\0')
         throw rlvm::Exception("Error in strsub: offset is greater then string length");
 
-      advanceOneChar(str);
+      advanceOneShiftJISChar(str);
       offset--;
     }
 
@@ -329,7 +278,7 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
       if(*str == '\0')
         throw rlvm::Exception("Error in strsub: offset is greater then string length");
 
-      advanceOneChar(str);
+      advanceOneShiftJISChar(str);
       offset--;
     }
 

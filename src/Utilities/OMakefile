@@ -1,0 +1,10 @@
+
+.PHONY: clean
+
+########
+
+.DEFAULT: 
+#libSystems$(EXT_LIB)
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc
