@@ -488,8 +488,11 @@ int RLMachine::getTextEncoding() const
 
 void RLMachine::performTextout(const TextoutElement& e)
 {
-  std::string utf8str = cp932toUTF8(e.text(), getTextEncoding());
-
+  std::string nameParsedText;
+  parseNames(*m_memory, e.text(), nameParsedText);
+  
+  std::string utf8str = cp932toUTF8(nameParsedText, getTextEncoding());
+//  cerr << "utf8str: " << utf8str << endl;
   TextSystem& ts = system().text();
 
   // Display UTF-8 characters

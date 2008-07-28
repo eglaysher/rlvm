@@ -39,14 +39,17 @@
 #include "Systems/Base/TextKeyCursor.hpp"
 
 #include "MachineBase/Serialization.hpp"
+#include "MachineBase/Memory.hpp"
 #include "libReallive/gameexe.h"
-
+#include "Utilities.h"
+#include "Utilities/StringUtilities.hpp"
 #include <boost/bind.hpp>
 
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 
+using std::string;
 using std::endl;
 using std::cerr;
 using std::back_inserter;
@@ -388,3 +391,37 @@ template void TextSystem::save<boost::archive::text_oarchive>(
 template void TextSystem::load<boost::archive::text_iarchive>(
   boost::archive::text_iarchive & ar, unsigned int version);
 
+// -----------------------------------------------------------------------
+
+void parseNames(const Memory& memory, const std::string& input, 
+                std::string& output) 
+{
+  const unsigned char* cur = (const unsigned char*)input.c_str();
+
+  const unsigned char LOWER_BYTE_FULLWIDTH_ASTERISK = 0x96;
+  const unsigned char LOWER_BYTE_FULLWIDTH_PERCENT = 0x93;
+
+  while (*cur) {
+    if (cur[0] == 0x81 && (cur[1] == LOWER_BYTE_FULLWIDTH_ASTERISK || 
+                           cur[1] == LOWER_BYTE_FULLWIDTH_PERCENT)) {
+      unsigned char type = cur[1];
+      cur += 2;
+
+      string strindex;
+      if(readFullwidthLatinLetter(cur, strindex)) {
+        // Try to read a second character. We don't care if it fails.
+        readFullwidthLatinLetter(cur, strindex);
+      } else {
+        throw rlvm::Exception("Malformed name construct in bytecode!");
+      }
+
+      int index = Memory::ConvertLetterIndexToInt(strindex);
+      if (type == LOWER_BYTE_FULLWIDTH_ASTERISK)
+        output += memory.getName(index);
+      else
+        output += memory.getLocalName(index);
+    } else {
+      copyOneShiftJisCharacter(cur, output);      
+    }
+  }
+}

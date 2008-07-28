@@ -42,6 +42,7 @@ class TextPage;
 class TextKeyCursor;
 class Surface;
 class Point;
+class Memory;
 
 // -----------------------------------------------------------------------
 
@@ -346,7 +347,19 @@ public:
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
+// -----------------------------------------------------------------------
+
+int convertNameVar(const std::string& value);
+
+/** 
+ * Name parser. Takes a raw, local machine encoded string and replaces name
+ * variable placeholders with the names from Memory.
+ * 
+ * @note This function assumes that text is in CP932 encoding, and will need to
+ *       be generalized when we try to support other hacks on top of cp932.
+ * @relates TextSystem
+ */
+void parseNames(const Memory& memory, const std::string& input, 
+                std::string& output);
+
 #endif
-
-
-
