@@ -532,8 +532,10 @@ SysModule::SysModule()
   addUnsupportedOpcode(2000, 0, "CursorMono");
   addUnsupportedOpcode(2051, 0, "SetSkipAnimations");
   addUnsupportedOpcode(2001, 0, "SkipAnimations");
-  addUnsupportedOpcode(2052, 0, "SetLowPriority");
-  addUnsupportedOpcode(2002, 0, "LowPriority");
+  addOpcode(2052, 0, "SetLowPriority",
+            callFunction(&System::setLowPriority));
+  addOpcode(2002, 0, "LowPriority",
+            returnIntValue(&System::lowPriority));
 
   addOpcode(2223, 0, "SetMessageSpeed",
             callFunction(&TextSystem::setMessageSpeed));

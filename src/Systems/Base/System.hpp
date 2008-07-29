@@ -31,6 +31,7 @@
 #include <vector>
 #include <string>
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/version.hpp>
 #include <boost/filesystem/path.hpp>
 
 class GraphicsSystem;
@@ -59,13 +60,31 @@ struct SystemGlobals
   /// Whether we should put up a yes/no dialog box when saving/loading.
   bool m_confirmSaveLoad;
 
+  /** 
+   * From the rldev documentation:
+   * 
+   * "This flag is described in the default menu as 'make this program run
+   * slower so that other programs will run smoothly'. Its effect is unclear;
+   * it does not lower the process priority, but it might cause RealLive to
+   * yield control to other processes more frequently."
+   *
+   * I suspect that this is a placebo. I'll track the value, but I don't think
+   * it's relevant to anything.
+   */
+  bool m_lowPriority;
+
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
   {
     ar & m_confirmSaveLoad;
+
+    if (version > 0)
+      ar & m_lowPriority;
   }
 };
+
+BOOST_CLASS_VERSION(SystemGlobals, 1)
 
 // -----------------------------------------------------------------------
 
@@ -170,8 +189,17 @@ public:
 
   /// @}
 
+  /**
+   * @name Variables we track here
+   * 
+   * @{
+   */
   bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
   void setConfirmSaveLoad(const int in) { m_globals.m_confirmSaveLoad = in; }
+
+  bool lowPriority() const { return m_globals.m_lowPriority; }
+  void setLowPriority(const int in) { m_globals.m_lowPriority = in; }
+  /// @}
 
   const std::vector<boost::filesystem::path>& getSearchPaths();
 

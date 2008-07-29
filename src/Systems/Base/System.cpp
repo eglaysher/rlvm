@@ -61,7 +61,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 SystemGlobals::SystemGlobals()
-  : m_confirmSaveLoad(true)
+  : m_confirmSaveLoad(true), m_lowPriority(false)
 {}
 
 // -----------------------------------------------------------------------
