@@ -130,6 +130,10 @@ void addGanOperationsTo(RLModule& m, int layer)
               new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3005, 0, "ganPlayOnce2",
               new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_CLEAR));
+  m.addOpcode(3006, 0, "ganPlayEx2",
+              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_NONE));
+  m.addOpcode(3007, 0, "ganPlayOnceEx2",
+              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_CLEAR));  
 }
 
 // -----------------------------------------------------------------------
