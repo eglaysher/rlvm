@@ -36,18 +36,29 @@
 // -----------------------------------------------------------------------
 
 #include "archive.h"
+#include "compression.h"
 #include "string.h"
 
 namespace libReallive {
 
-Archive::Archive(string filename) : name(filename), info(filename, Read)
+Archive::Archive(const string& filename)
+  : name(filename), info(filename, Read), second_level_xor_key_(NULL)
 {
-	// Read TOC
-	const char* idx = info.get();
-	for (int i = 0; i < 10000; ++i, idx += 8) {
-		const int offs = read_i32(idx);
-		if (offs) scenarios[i] = FilePos(info.get() + offs, read_i32(idx + 4));
-	}
+  readTOC();
+}
+
+Archive::Archive(const string& filename, const std::string& regname)
+  : name(filename), info(filename, Read), second_level_xor_key_(NULL)
+{
+  readTOC();
+
+  if (regname == "KEY\\CLANNAD_FV")
+    second_level_xor_key_ = 
+      libReallive::Compression::clannad_full_voice_xor_mask_2;
+  // WARNING: JUST A GUESS. I DON'T OWN A COPY OF LITTLE BUSTERS.
+  else if (regname == "KEY\\LITTLE_BUSTERS")
+    second_level_xor_key_ =
+      libReallive::Compression::little_busters_xor_mask_2;
 }
 
 Archive::~Archive()
@@ -55,12 +66,24 @@ Archive::~Archive()
 	for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it) delete it->second;
 }
 
+void Archive::readTOC() {
+	const char* idx = info.get();
+	for (int i = 0; i < 10000; ++i, idx += 8) {
+		const int offs = read_i32(idx);
+		if (offs)
+      scenarios[i] = FilePos(info.get() + offs, read_i32(idx + 4));
+	}
+}
+
 Scenario*
 Archive::scenario(int index) {
 	accessed_t::const_iterator at = accessed.find(index);
-	if (at != accessed.end()) return at->second;
+	if (at != accessed.end())
+    return at->second;
 	scenarios_t::const_iterator st = scenarios.find(index);
-	if (st != scenarios.end()) return accessed[index] = new Scenario(st->second, index);
+	if (st != scenarios.end())
+    return accessed[index] = 
+      new Scenario(st->second, index, second_level_xor_key_);
 	return NULL;
 }
 

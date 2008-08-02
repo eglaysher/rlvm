@@ -347,7 +347,7 @@ int main(int argc, char* argv[])
     }
 
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(seenPath.file_string());
+    libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
 

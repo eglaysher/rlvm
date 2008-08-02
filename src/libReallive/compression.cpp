@@ -61,6 +61,18 @@ static char xor_mask[256] = {
   0xb0, 0x43, 0x00, 0x85, 0xff, 0x76, 0x49, 0x81, 0xff, 0x00, 0x00, 0x04, 0x00, 0x6a, 0x00, 0x76
 };
 
+/* In some new titles, a second round of XORing is performed on a block of
+ * uncompressed bytecode. The keys appear to be on a game-by-game basis. */
+const char little_busters_xor_mask_2[] = {
+  0xa8, 0x28, 0xfd, 0x66, 0xa0, 0x23, 0x77, 0x69, 0xf9, 0x45, 0xf8, 0x2c, 0x7c,
+  0x00, 0xad, 0xf4
+};
+
+const char clannad_full_voice_xor_mask_2[] = {
+  0xAF, 0x2F, 0xFB, 0x6B, 0xAF, 0x30, 0x77, 0x17, 0x87, 0x48, 0xFE, 0x2C, 0x68,
+  0x1A, 0xB9, 0xF0
+};
+
 // "Encrypt"/"decrypt" a file.
 void
 apply_mask(char* array, size_t len)
@@ -84,7 +96,8 @@ apply_mask(string& array, size_t start)
 
 // Decompress an archived file.
 void
-decompress(const char* src, size_t src_len, char* dst, size_t dst_len)
+decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
+           const char* per_game_xor_key)
 {
   int bit = 1;
   const char* srcend = src + src_len;
@@ -112,6 +125,11 @@ decompress(const char* src, size_t src_len, char* dst, size_t dst_len)
         *dst++ = *repeat++;
     }
     bit <<= 1;
+  }
+
+  if (per_game_xor_key) {
+    dst = dststart + 256;
+    for (int i = 0; i < 257; ++i) *dst++ ^= per_game_xor_key[i % 16];
   }
 }
 

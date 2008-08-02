@@ -44,15 +44,34 @@ namespace libReallive {
  * Interface to a loaded SEEN.TXT file.
  * 
  */
-  class Archive {
+class Archive {
   typedef std::map<int, FilePos> scenarios_t;
   typedef std::map<int, Scenario*> accessed_t;
   scenarios_t scenarios;
   accessed_t accessed;
   string name;
   Mapping info;
+
+  /**
+   * Now that VisualArts is using per game xor keys, this is equivalent to the
+   * game's second level xor key.
+   */
+  const char* second_level_xor_key_;
+
+  void readTOC();
+
 public:
-  Archive(string filename);
+  /// Read an archive, assuming no per-game xor key. (Used in unit testing).
+  Archive(const string& filename);
+
+  /** 
+   * Creates an interface to a SEEN.TXT file.
+   * 
+   * @param filename path to the SEEN.TXT file.
+   * @param regname The \#REGNAME key from the game's Gameexe.ini file. Required
+   *                to lookup per-game xor key for newer games.
+   */
+  Archive(const string& filename, const string& regname);
   ~Archive();
   
   typedef std::map<int, FilePos>::const_iterator const_iterator;
@@ -68,10 +87,6 @@ public:
   Scenario* scenario(int index);
   
   void reset();
-//  void commit();
-  
-  /// Rewrites an optimized form of 
-//  void write_to(string filename);
 };
 
 }

@@ -46,8 +46,9 @@ class Scenario {
   Script script;
   int scenarioNum;
 public:
-  Scenario(const char* data, const size_t length, int scenarioNum);
-  Scenario(const FilePos& fp, int scenarioNum);
+  Scenario(const char* data, const size_t length, int scenarioNum, 
+           const char* second_level_xor_key);
+  Scenario(const FilePos& fp, int scenarioNum, const char* second_level_xor_key);
 
   // Get the scenario number
   int sceneNumber() const { return scenarioNum; }
@@ -92,14 +93,17 @@ public:
 // Inline definitions for Scenario
 
 inline
-Scenario::Scenario(const char* data, const size_t length, int sn) 
-  : header(data, length), script(header, data, length), scenarioNum(sn)
+Scenario::Scenario(const char* data, const size_t length, int sn,
+                   const char* second_level_xor_key)
+  : header(data, length), script(header, data, length, second_level_xor_key),
+    scenarioNum(sn)
 {
 }
 
 inline
-Scenario::Scenario(const FilePos& fp, int sn) 
-  : header(fp.data, fp.length), script(header, fp.data, fp.length),
+Scenario::Scenario(const FilePos& fp, int sn, const char* second_level_xor_key)
+  : header(fp.data, fp.length), script(header, fp.data, fp.length, 
+                                       second_level_xor_key),
     scenarioNum(sn)
 {
 }

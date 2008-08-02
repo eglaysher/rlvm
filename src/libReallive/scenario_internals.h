@@ -49,6 +49,10 @@ class Header {
   friend class Scenario;
   Header(const char* data, const size_t length);
 public:
+  /// Starting around the release of Little Busters!, scenario files has a
+  /// second round of xor done to them. When will they learn?
+  bool use_xor_2;
+
   long zminusone, zminustwo, savepoint_message,
        savepoint_selcom, savepoint_seentop;
   std::vector<string> dramatis_personae;
@@ -71,7 +75,8 @@ private:
   BytecodeList elts;
   bool strip;
 
-  Script(const Header& hdr, const char* data, const size_t length);
+  Script(const Header& hdr, const char* data, const size_t length,
+         const char* second_level_xor_key);
 
   void recalculate(const bool force = false);
 

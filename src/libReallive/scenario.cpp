@@ -59,8 +59,23 @@ Metadata::assign(const char* input)
   
 Header::Header(const char* data, const size_t length)
 {
-  if (length < 0x1d0 || read_i32(data + 4) != 10002)
+  if (length < 0x1d0)
     throw Error("not a RealLive bytecode file");
+
+  string compiler = string(data, 4);
+
+  // Check the version of the 
+  if(read_i32(data + 4) == 10002)
+    use_xor_2 = false;
+  else if(read_i32(data + 4) == 110002)
+    use_xor_2 = true;
+  else {
+    // New xor key?
+    ostringstream oss;
+    oss << "Unsupported compiler version: " << read_i32(data + 4);
+    throw Error(oss.str());
+  }
+
   if (read_i32(data) != 0x1d0)
     throw Error("unsupported bytecode version");
 
@@ -91,7 +106,8 @@ Header::Header(const char* data, const size_t length)
     rldev_metadata.assign(data + offs);
 }
 
-Script::Script(const Header& hdr, const char* data, const size_t length)
+Script::Script(const Header& hdr, const char* data, const size_t length,
+               const char* second_level_xor_key)
   : uptodate(true), strip(false)
 {
   // Kidoku/entrypoint table
@@ -109,7 +125,8 @@ Script::Script(const Header& hdr, const char* data, const size_t length)
   Compression::decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),
                           uncompressed,
-                          dlen);
+                          dlen,
+                          second_level_xor_key);
   // Read bytecode
   const char* stream = uncompressed;
   size_t pos = 0;

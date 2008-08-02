@@ -37,7 +37,12 @@ namespace Compression {
 
 typedef AVG32Comp::Compress<AVG32Comp::CInfoRealLive, AVG32Comp::Container::RLDataContainer> RealliveCompressor;
 
-void decompress(const char* src, size_t src_len, char* dst, size_t dst_len);
+// Per game xor keys to be passed to decompress.
+extern const char little_busters_xor_mask_2[];
+extern const char clannad_full_voice_xor_mask_2[];
+
+void decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
+                const char* per_game_xor_key);
 string* compress(char* arr, size_t len);
 void apply_mask(char* array, size_t len);
 void apply_mask(string& array, size_t start = 0);
