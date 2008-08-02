@@ -322,9 +322,9 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
   GameexeInterpretObject waku(gexe("WAKU", wakuNo, 0));
 
-  setWakuMain(machine, waku("NAME"));
-  setWakuBacking(machine, waku("BACK"));
-  setWakuButton(machine, waku("BTN"));
+  setWakuMain(machine, waku("NAME").to_string(""));
+  setWakuBacking(machine, waku("BACK").to_string(""));
+  setWakuButton(machine, waku("BTN").to_string(""));
 
   TextSystem& ts = machine.system().text();
   GraphicsSystem& gs = machine.system().graphics();
