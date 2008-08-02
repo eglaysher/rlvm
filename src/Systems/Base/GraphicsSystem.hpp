@@ -237,10 +237,16 @@ public:
    * 
    * @{
    */
-  int useCustomCursor() const { return m_useCustomMouseCursor; }
+  
+  /**
+   * Whether we are using a custom cursor. Verifies that there was a
+   * \#MOUSE_CURSOR entry in the Gameexe.ini file, and that the currently
+   * selected cursor exists.
+   */
+  int useCustomCursor();
 
-  /// 
-  void setCursor(RLMachine& machine, int cursor);
+  /// Sets the cursor to the incoming cursor index.
+  virtual void setCursor(RLMachine& machine, int cursor);
 
   /// 
   int cursor() const { return m_cursor; }

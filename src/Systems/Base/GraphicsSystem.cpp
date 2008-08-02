@@ -261,6 +261,13 @@ void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u)
 
 // -----------------------------------------------------------------------
 
+int GraphicsSystem::useCustomCursor() {
+  return m_useCustomMouseCursor && 
+    system().gameexe()("MOUSE_CURSOR", m_cursor, "NAME").exists();
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
 {
   m_cursor = cursor;
@@ -540,11 +547,20 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
       m_mouseCursor = it->second;
     else 
     {
-      string cursorName = system().gameexe()("MOUSE_CURSOR", m_cursor, "NAME");
-      fs::path cursorPath = findFile(machine, cursorName, PDT_IMAGE_FILETYPES);
-      boost::shared_ptr<Surface> cursorSurface = loadSurfaceFromFile(cursorPath);
-      m_mouseCursor.reset(new MouseCursor(cursorSurface));
-      m_cursorCache[m_cursor] = m_mouseCursor;
+      boost::shared_ptr<Surface> cursorSurface;
+      GameexeInterpretObject cursorKey = 
+        system().gameexe()("MOUSE_CURSOR", m_cursor, "NAME");
+
+      if (cursorKey.exists())
+      {
+        string cursorName = cursorKey;
+        fs::path cursorPath = findFile(machine, cursorName, IMAGE_FILETYPES);
+        cursorSurface = loadSurfaceFromFile(cursorPath);
+        m_mouseCursor.reset(new MouseCursor(cursorSurface));
+        m_cursorCache[m_cursor] = m_mouseCursor;
+      }
+      else 
+        m_mouseCursor.reset();
     }
   }
 
