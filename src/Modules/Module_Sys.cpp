@@ -49,6 +49,7 @@
 #include "Modules/Module_Sys_Syscom.hpp"
 #include "Modules/Module_Sys_Date.hpp"
 #include "Modules/Module_Sys_Name.hpp"
+#include "Modules/Module_Sys_index_series.hpp"
 #include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
@@ -472,8 +473,6 @@ SysModule::SysModule()
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
 
-  addUnsupportedOpcode(800, 0, "index_series");
-  
   addUnsupportedOpcode(460, 0, "EnableWindowAnm");
   addUnsupportedOpcode(461, 0, "DisableWindowAnm");
   addUnsupportedOpcode(462, 0, "GetOpenAnmMod");
@@ -675,4 +674,5 @@ SysModule::SysModule()
   addSysSyscomOpcodes(*this);
   addSysDateOpcodes(*this);
   addSysNameOpcodes(*this);
+  addIndexSeriesOpcode(*this);
 }
