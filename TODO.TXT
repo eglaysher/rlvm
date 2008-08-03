@@ -1,3 +1,15 @@
+For 0.3:
+* Fullscreen switching
+* Support the movie commands used by CLANNAD
+* All those random grp commands that I don't support yet. (grpInvert, et cetera)
+  * Refactor the hell out of the graphics system?
+  * grpMulti?
+* Investigate the theoretically memory leak in the music system
+* Support the cgm files and the viewed CG system
+
+-------------------------------------------------------------------------
+
+
 * RLVM
 ** Redo the graphics layer so graphics data lives on the graphics
   card. As is, we have an SDL_Surface in main memory, which uploads
@@ -11,4 +23,3 @@
 **** Remove SDL_Surface from the system. Make loadSurfaceFromFile
       take the raw data and upload it to the graphics card. 
 **** Switch from the SDL_Surface based SDL_ttf to the OpenGL ftgl.
-** Write index_series

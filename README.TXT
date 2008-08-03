@@ -150,11 +150,6 @@ Many graphics manipulation commands not required by Planetarian are
 currently unimplemented. Kanon SE, Haeleth's unofficial ONE demo and
 CLANNAD are not playable/do not render correctly because of this.
 
-rlvm will enter an infinite loop while interpreting Kanon SE's opening
-movie because the command index_series is currently unimplemented and
-not enough is known about what it does. For more information, see
-section 5.6.1 of Haeleth's rldev manual.
-
 User selection code has not been rigoursly tested; I've only tried the
 first few decision points in CLANNAD. While holding control down to
 see if I could get to the ending in CLANNAD, I noticed that the
@@ -183,12 +178,6 @@ rlvm needs several file formats reverse engineered:
   that are applied to graphics objects. Tones are applied to objects
   by loading "filename?[integer]" where [integer] appears to be an
   index. Any information about this file format would be appreciated.
-
-rlvm needs a few RealLive commands documented more thouroughly:
-
-- index_series: The rldev documentation acknowledges that it is
-  incomplete for the most common case, which is needed to support
-  Kanon. This is the current blocker for Kanon support.
 
 -------------------------------------------------------------------------
 

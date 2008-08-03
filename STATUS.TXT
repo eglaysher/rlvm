@@ -8,11 +8,11 @@ Kanon SE ALL
 - Main menu works except for load
   - Clicking load has RLVM complain about <1:Sys:03001> (menu_load) not being 
     implemented.
-- Playable through the prologue. 
-- Gets through most of Last Regrets, but glitches right after the part
-  with Ayu getting wings. Theoretically caused by index_series.
-  - Small graphics glitch: vertical blind transition effect doesn't
-    clear the screen after each character portrait
+- Mostly playable
+  - ...without graphics. Kanon's main hammer is grpMulti, which isn't
+    implemented.
+  - Something really weird happens with objects; some graphicsobjects are
+    missing from Last Regrets and in the main game.
 
 Planetarian CD
 --------------
@@ -33,6 +33,10 @@ CLANNAD
     selection; Clicking on one of the items (which highlighted on
     mouse over properly) would not advance. Needs investigation.
 - In game menu mostly works.
+
+CLANNAD FULL VOICE
+------------------
+- Doesn't even get to the main menu.
 
 UNOFFICIAL "ONE" DEMO
 ---------------------
