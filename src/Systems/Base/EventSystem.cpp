@@ -58,8 +58,7 @@ EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
 // EventSystem
 // -----------------------------------------------------------------------
 EventSystem::EventSystem(Gameexe& gexe) 
-  : m_numberOfRealtimeTasks(0), m_numberOfNiceAfterEachTaskItems(0),
-    m_globals(gexe)
+  : m_globals(gexe)
 {
 }
 

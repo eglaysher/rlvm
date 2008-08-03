@@ -314,9 +314,9 @@ public:
 };
 
 /** 
- * Base class for most . Deriving from EventHandler will automatically
- * register/unregister your subclass with the event system on
- * construction/deconstruction.
+ * Base class for most tasks that need to respond to user input. Deriving from
+ * EventHandler will automatically register/unregister your subclass with the
+ * event system on construction/deconstruction.
  */
 class EventHandler : public MouseListener
 {

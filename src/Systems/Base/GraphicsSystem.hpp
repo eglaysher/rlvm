@@ -140,81 +140,6 @@ public:
     SCREENUPDATEMODE_MANUAL
   };
 
-private:
-  /// Default grp name (used in grp* and rec* functions where filename
-  /// is '???')
-  std::string m_defaultGrpName;
-
-  /// Default bgr name (used in bgr* functions where filename is
-  /// '???')
-  std::string m_defaultBgrName;
-
-  /// Current screen update mode
-  DCScreenUpdateMode m_screenUpdateMode;
-
-  /// Flag set to redraw the screen NOW
-  bool m_screenNeedsRefresh;
-
-  /// Whether it is the Graphics system's responsibility to redraw the
-  /// screen. Some LongOperations temporarily take this responsibility
-  /// to implement pretty fades and wipes
-  bool m_isResponsibleForUpdate;
-
-  /// Whether we should try to append m_subtitle in the window
-  /// titlebar
-  bool m_displaySubtitle;
-
-  /// cp932 encoded subtitle string
-  std::string m_subtitle;
-
-  /// Controls whether we render the interface (this can be
-  /// temporarily toggled by the user at runtime)
-  bool m_hideInterface;
-
-  /// Mutable global data to be saved in the globals file
-  GraphicsSystemGlobals m_globals;
-
-  /// Immutable
-  struct GraphicsObjectSettings;
-  /// Immutable global data that's constructed from the Gameexe.ini file.
-  boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
-
-  struct GraphicsObjectImpl;
-  boost::scoped_ptr<GraphicsObjectImpl> m_graphicsObjectImpl;
-
-  /** Whether we should use a custom mouse cursor. Set while parsing
-   * the Gameexe file, and then left unchanged. We only use a custom
-   * mouse cursor if \#MOUSE_CURSOR is set in the Gameexe 
-   */
-  bool m_useCustomMouseCursor;
-
-  /// Whether we should render any cursor. Controller by the bytecode.
-  bool m_showCurosr;
-
-  /** Current cursor id. Initially set to \#MOUSE_CURSOR if the key
-   * exists.
-   */
-  int m_cursor;
-
-  /// Location of the cursor's hotspot
-  Point m_cursorPos;
-
-  /// Current mouse cursor
-  boost::shared_ptr<MouseCursor> m_mouseCursor;
-
-  /// MouseCursor construction is nontrivial so cache everything we
-  /// build:
-  typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
-  MouseCursorCache m_cursorCache;
-
-  /// Our parent system object.
-  System& m_system;
-
-protected:
-  const Point& cursorPos() const { return m_cursorPos; }
-
-  boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
-
 public:
   GraphicsSystem(System& system, Gameexe& gameexe);
   virtual ~GraphicsSystem();
@@ -248,12 +173,11 @@ public:
   /// Sets the cursor to the incoming cursor index.
   virtual void setCursor(RLMachine& machine, int cursor);
 
-  /// 
+  /// Returns the current index.
   int cursor() const { return m_cursor; }
 
+  /// Whether we display a cursor at all
   void setShowCursor(const int in) { m_showCurosr = in; }
-
-  void cursorRenerLocation(int& renderX, int& renderY);
   /// @}
 
   /**
@@ -402,15 +326,19 @@ public:
    */
   virtual void executeGraphicsSystem(RLMachine& machine) = 0;
 
+  /** 
+   * Returns the size of the window in pixels.  
+   */
   virtual Size screenSize() const = 0;
+
+  /** 
+   * Returns a rectangle with an origin of (0,0) and a size returned by
+   * screenSize().
+   */
   Rect screenRect() const;
 
   virtual void allocateDC(int dc, Size size) = 0;
   virtual void freeDC(int dc) = 0;
-
-/*
-  virtual void getDCPixel(int x, int y, int dc, int& r, int& g, int& b) = 0;
-*/
 
   // ----------------------------------------- [ Surface loading functions ]
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
@@ -448,6 +376,11 @@ public:
    */
   void renderObjects(RLMachine& machine);
 
+  /** 
+   * Creates rendering data for a graphics object from a G00, PDT or ANM file.
+   *
+   * Does not deal with GAN files. Those are built with a separate function.
+   */
   GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
                                      const std::string& filename);
 
@@ -455,11 +388,24 @@ public:
   /// layer == 0 for fg, layer == 1 for bg.
   GraphicsObject& getObject(int layer, int objNumber);
   void setObject(int layer, int objNumber, GraphicsObject& object);
+
+  /** 
+   * Deallocates all graphics objects.
+   */
   void clearAllObjects();
 
   LazyArray<GraphicsObject>& backgroundObjects();
   LazyArray<GraphicsObject>& foregroundObjects();
 
+  /** 
+   * Takes a snapshot of the current object state. This snapshot is saved
+   * instead of the current state of the graphics, since RealLive is a savepoint
+   * based system.
+   *
+   * (This operation isn't exceptionally expensive; internally GraphicsObject
+   * has multiple copy-on-write data structs to make this and object promotion a
+   * relativly cheap operation.)
+   */
   void takeSavepointSnapshot();
   /// @}
 
@@ -471,17 +417,15 @@ public:
    * 
    * @{
    */
+  /// Listen to the mouse's location so we can possibly draw a cursor there.
   virtual void mouseMotion(const Point& newLocation);
   /// @}
-
 
   /** 
    * Reset the system. Should clear all state for when a user loads a
    * game.
    */
   virtual void reset();
-
-  int foregroundAllocated();
 
   // boost::serialization forward declaration
   template<class Archive>
@@ -492,6 +436,81 @@ public:
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+protected:
+  const Point& cursorPos() const { return m_cursorPos; }
+
+  boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
+
+private:
+  /// Default grp name (used in grp* and rec* functions where filename
+  /// is '???')
+  std::string m_defaultGrpName;
+
+  /// Default bgr name (used in bgr* functions where filename is
+  /// '???')
+  std::string m_defaultBgrName;
+
+  /// Current screen update mode
+  DCScreenUpdateMode m_screenUpdateMode;
+
+  /// Flag set to redraw the screen NOW
+  bool m_screenNeedsRefresh;
+
+  /// Whether it is the Graphics system's responsibility to redraw the
+  /// screen. Some LongOperations temporarily take this responsibility
+  /// to implement pretty fades and wipes
+  bool m_isResponsibleForUpdate;
+
+  /// Whether we should try to append m_subtitle in the window
+  /// titlebar
+  bool m_displaySubtitle;
+
+  /// cp932 encoded subtitle string
+  std::string m_subtitle;
+
+  /// Controls whether we render the interface (this can be
+  /// temporarily toggled by the user at runtime)
+  bool m_hideInterface;
+
+  /// Mutable global data to be saved in the globals file
+  GraphicsSystemGlobals m_globals;
+
+  /// Immutable
+  struct GraphicsObjectSettings;
+  /// Immutable global data that's constructed from the Gameexe.ini file.
+  boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
+
+  struct GraphicsObjectImpl;
+  boost::scoped_ptr<GraphicsObjectImpl> m_graphicsObjectImpl;
+
+  /** Whether we should use a custom mouse cursor. Set while parsing
+   * the Gameexe file, and then left unchanged. We only use a custom
+   * mouse cursor if \#MOUSE_CURSOR is set in the Gameexe 
+   */
+  bool m_useCustomMouseCursor;
+
+  /// Whether we should render any cursor. Controller by the bytecode.
+  bool m_showCurosr;
+
+  /** Current cursor id. Initially set to \#MOUSE_CURSOR if the key
+   * exists.
+   */
+  int m_cursor;
+
+  /// Location of the cursor's hotspot
+  Point m_cursorPos;
+
+  /// Current mouse cursor
+  boost::shared_ptr<MouseCursor> m_mouseCursor;
+
+  /// MouseCursor construction is nontrivial so cache everything we
+  /// build:
+  typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
+  MouseCursorCache m_cursorCache;
+
+  /// Our parent system object.
+  System& m_system;
 };
 
 const int OBJECTS_IN_A_LAYER = 256;

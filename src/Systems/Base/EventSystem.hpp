@@ -74,72 +74,18 @@ struct EventSystemGlobals
  */
 class EventSystem
 {
-protected:
-  typedef std::vector<EventHandler*> Handlers;
-  typedef std::vector<MouseListener*> MouseListeners;
-
-private:
-  boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
-  RLTimer m_timers[255][2];
-
-  /// Counter for the number of things that require realtime
-  /// speed. Whenever this is zero, the system will wait 10ms between
-  /// rendering frames to be nice to the user and the OS.
-  int m_numberOfRealtimeTasks;
-
-  int m_numberOfNiceAfterEachTaskItems;
-
-  /// Helper function that verifies input
-  void checkLayerAndCounter(int layer, int counter);
-
-  Handlers m_eventHandlers;
-  MouseListeners m_mouseListeners;
-
-  EventSystemGlobals m_globals;
-
-protected:
-  Handlers::iterator handlers_begin() { return m_eventHandlers.begin(); }
-  Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
-
-  MouseListeners::iterator listeners_begin() { return m_mouseListeners.begin(); }
-  MouseListeners::iterator listeners_end() { return m_mouseListeners.end(); }
 public:
   EventSystem(Gameexe& gexe);
   virtual ~EventSystem();
 
+  /// Run once per cycle through the game loop to process events.
   virtual void executeEventSystem(RLMachine& machine) = 0;
-
-  virtual void addEventHandler(EventHandler* handler);
-  virtual void removeEventHandler(EventHandler* handler);
-
-  virtual void addMouseListener(MouseListener* listener);
-  virtual void removeMouseListener(MouseListener* listener);
-
-  /** 
-   * Returns whether shift is currently pressed.
-   * 
-   * @return 
-   */
-  virtual bool shiftPressed() const = 0;
-
-  /** 
-   * Returns whether ctrl has been presed since the last invocation of
-   * ctrlPresesd().
-   *
-   * @todo Do I have to keep track of if the key was pressed between
-   * two ctrlPressed() invocations?
-   */
-  virtual bool ctrlPressed() const = 0;
 
   /** 
    * Returns the number of milliseconds since the program
    * started. Used for timing things.
    */
   virtual unsigned int getTicks() const = 0;
-
-  void setFrameCounter(int layer, int frameCounter, FrameCounter* counter);
-  FrameCounter& getFrameCounter(int layer, int frameCounter);
-  bool frameCounterExists(int layer, int frameCounter);
 
   RLTimer& getTimer(int layer, int counter) 
   { return m_timers[layer][counter]; }
@@ -153,20 +99,73 @@ public:
 
   // -----------------------------------------------------------------------
 
+  /** 
+   * @name Frame Counters
+   * 
+   * "Frame counters are designed to make it simple to ensure events happen at a
+   * constant speed regardless of the host system's specifications. Once a frame
+   * counter has been initialised, it will count from one arbitrary number to
+   * another, over a given length of time. The counter can be queried at any
+   * point to get its current value."
+   *
+   * Valid values for layer are 0 and 1. Valid values for frameCounter are 0
+   * through 255.
+   *
+   * @{
+   */
+  void setFrameCounter(int layer, int frameCounter, FrameCounter* counter);
+  FrameCounter& getFrameCounter(int layer, int frameCounter);
+  bool frameCounterExists(int layer, int frameCounter);
+  /// @}
+
+  // -----------------------------------------------------------------------
+
   /**
    * @name Keyboard and Mouse Input (Event Handler style)
    * 
+   * rlvm event handling works by registering objects that received input
+   * notifications from the EventSystem.
+   * 
+   * There is usually only one EventHandler at a time, though there can be
+   * multiple MouseListeners.
+   *
    * @{
    */
+  virtual void addEventHandler(EventHandler* handler);
+  virtual void removeEventHandler(EventHandler* handler);
 
-
+  virtual void addMouseListener(MouseListener* listener);
+  virtual void removeMouseListener(MouseListener* listener);
   /// @}
-
 
   /**
    * @name Keyboard and Mouse Input (Reallive style)
    * 
+   * RealLive applications poll for input, with all the problems that sort of
+   * event handeling has. We therefore provide an interface for polling. 
+   *
+   * Don't use it. This interface is provided for RealLive
+   * bytecode. EventHandlers and MouseListeners should be used within rlvm code,
+   * instead.
+   *
    * @{
+   */
+  /** 
+   * Returns whether shift is currently pressed.
+   */
+  virtual bool shiftPressed() const = 0;
+
+  /** 
+   * Returns whether ctrl has been presed since the last invocation of
+   * ctrlPresesd().
+   *
+   * @todo Do I have to keep track of if the key was pressed between
+   * two ctrlPressed() invocations?
+   */
+  virtual bool ctrlPressed() const = 0;
+
+  /** 
+   * Returns the current cursor hotspot.
    */
   virtual Point getCursorPos() { return Point(); }
 
@@ -192,6 +191,15 @@ public:
   /**
    * @name Generic values
    * 
+   * These values should have, from the beginning, been placed somewhere
+   * else. They will remain here till the end of time for save game file
+   * compatibility, though.
+   *
+   * "RealLive provides two generic settings to permit games using the standard
+   * system command menu to include custom options in it. The meaning of each
+   * generic flag is left up to the programmer. Valid values are 0 to 4."
+   *
+   * @{
    */
   void setGeneric1(const int in) { m_globals.generic1 = in; }
   int generic1() const { return m_globals.generic1; }
@@ -203,6 +211,28 @@ public:
   // -----------------------------------------------------------------------
 
   EventSystemGlobals& globals() { return m_globals; }
+
+protected:
+  typedef std::vector<EventHandler*> Handlers;
+  typedef std::vector<MouseListener*> MouseListeners;
+
+  Handlers::iterator handlers_begin() { return m_eventHandlers.begin(); }
+  Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
+
+  MouseListeners::iterator listeners_begin() { return m_mouseListeners.begin(); }
+  MouseListeners::iterator listeners_end() { return m_mouseListeners.end(); }
+
+private:
+  boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
+  RLTimer m_timers[255][2];
+
+  /// Helper function that verifies input
+  void checkLayerAndCounter(int layer, int counter);
+
+  Handlers m_eventHandlers;
+  MouseListeners m_mouseListeners;
+
+  EventSystemGlobals m_globals;
 };
 
 #endif

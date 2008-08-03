@@ -117,7 +117,8 @@ protected:
 class SimpleFrameCounter : public FrameCounter
 {
 public:
-  SimpleFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  SimpleFrameCounter(EventSystem& es, int frameMin, int frameMax,
+                     int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
 
@@ -129,12 +130,14 @@ private:
 // -----------------------------------------------------------------------
 
 /**
- * Loop frame counter that counts from frameMin to frameMax.
+ * Loop frame counter that counts from frameMin to frameMax, starting over at
+ * frameMin.
  */
 class LoopFrameCounter : public FrameCounter
 {
 public:
-  LoopFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  LoopFrameCounter(EventSystem& es, int frameMin, int frameMax,
+                   int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
   virtual void finished(EventSystem& eventSystem);
@@ -147,12 +150,14 @@ private:
 // -----------------------------------------------------------------------
 
 /**
- * Turn frame counter that counts from frameMin to frameMax.
+ * Turn frame counter that counts from frameMin to frameMax and then counts back
+ * down to frameMin.
  */
 class TurnFrameCounter : public FrameCounter
 {
 public:
-  TurnFrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  TurnFrameCounter(EventSystem& es, int frameMin, int frameMax,
+                   int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
 
@@ -165,7 +170,7 @@ private:
 // -----------------------------------------------------------------------
 
 /**
- * Simple frame counter that counts from frameMin to frameMax.
+ * Frame counter that counts from frameMin to frameMax, speeding up as it goes.
  */
 class AcceleratingFrameCounter : public FrameCounter
 {
@@ -184,7 +189,7 @@ public:
 
 
 /**
- * Simple frame counter that counts from frameMin to frameMax.
+ * Frame counter that counts from frameMin to frameMax, slowing down as it goes.
  */
 class DeceleratingFrameCounter : public FrameCounter
 {

@@ -603,17 +603,6 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int GraphicsSystem::foregroundAllocated()
-{
-  AllocatedLazyArrayIterator<GraphicsObject> it = 
-	m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end = 
-	m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
-  return std::distance(it, end);
-}
-
-// -----------------------------------------------------------------------
-
 Rect GraphicsSystem::screenRect() const
 {
   return Rect(Point(0, 0), screenSize());
