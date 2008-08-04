@@ -45,6 +45,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/MouseCursor.hpp"
+#include "Systems/Base/CGMTable.hpp"
 #include "libReallive/gameexe.h"
 
 #include "MachineBase/RLMachine.hpp"
@@ -203,6 +204,7 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     m_useCustomMouseCursor(gameexe("MOUSE_CURSOR").exists()),
     m_showCurosr(true),
     m_cursor(gameexe("MOUSE_CURSOR").to_int(0)),
+    cg_table_(new CGMTable(gameexe)),
     m_system(system)
 {}
 

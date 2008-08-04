@@ -58,6 +58,7 @@ class GraphicsObjectData;
 class GraphicsStackFrame;
 class Gameexe;
 class MouseCursor;
+class CGMTable;
 struct ObjectSettings;
 
 template<typename T> class LazyArray;
@@ -508,6 +509,9 @@ private:
   /// build:
   typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
   MouseCursorCache m_cursorCache;
+
+  /// CG Table
+  boost::scoped_ptr<CGMTable> cg_table_;
 
   /// Our parent system object.
   System& m_system;
