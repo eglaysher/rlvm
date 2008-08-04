@@ -81,7 +81,7 @@
 #include <boost/bind.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
-
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/assign.hpp>
 
 namespace fs = boost::filesystem;
@@ -91,6 +91,22 @@ using namespace libReallive;
 
 using boost::bind;
 using boost::assign::list_of;
+
+// -----------------------------------------------------------------------
+
+/// Seen files are terminated with the string "SeenEnd", which isn't NULL
+/// terminated and has a bunch of random garbage after it.
+static const char seen_end[] = {
+  130, 114, // S
+  130, 133, // e
+  130, 133, // e
+  130, 142, // n
+  130, 100, // E
+  130, 142, // n
+  130, 132  // d
+};
+
+static const std::string SeenEnd(seen_end, 14);
 
 // -----------------------------------------------------------------------
 // RLMachine
@@ -488,11 +504,23 @@ int RLMachine::getTextEncoding() const
 
 void RLMachine::performTextout(const TextoutElement& e)
 {
+  std::string unparsedText = e.text();
+  if (boost::starts_with(unparsedText, SeenEnd)) {
+    unparsedText = SeenEnd;
+    halt();
+  }
+
   std::string nameParsedText;
-  parseNames(*m_memory, e.text(), nameParsedText);
+  try {
+    parseNames(*m_memory, unparsedText, nameParsedText);
+  } catch(rlvm::Exception& e) {
+    // WEIRD: Sometimes rldev (and the official compiler?) will generate strings
+    // that aren't valid shift_jis. Fall back while I figure out how to handle
+    // this.
+    nameParsedText = unparsedText;
+  }
   
   std::string utf8str = cp932toUTF8(nameParsedText, getTextEncoding());
-//  cerr << "utf8str: " << utf8str << endl;
   TextSystem& ts = system().text();
 
   // Display UTF-8 characters
