@@ -29,10 +29,10 @@
 #define __TextSystem_hpp__
 
 #include <string>
-
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/ptr_container/ptr_list.hpp>
 #include <boost/serialization/split_member.hpp>
 
 class Gameexe;
@@ -128,13 +128,13 @@ protected:
 
   /// Previous Text Pages. The TextSystem owns the list of previous
   /// pages because multiple windows can be displayed in one text page.
-  boost::ptr_vector<PageSet> m_previousPageSets;
+  boost::ptr_list<PageSet> m_previousPageSets;
 
   /// When m_previousPageIt == m_previousPages.end(), m_activePage is
   /// currently being rendered to the screen. When it is any valid
   /// iterator pointing into m_previousPages, that is the current page
   /// being rendered.
-  boost::ptr_vector<PageSet>::iterator m_previousPageIt;
+  boost::ptr_list<PageSet>::iterator m_previousPageIt;
 
   /// Whether we are in a state where the interpreter is pause()d.
   bool m_inPauseState;
@@ -157,6 +157,12 @@ protected:
   TextSystemGlobals m_globals;
 
   bool m_systemVisible;
+
+  /** 
+   * Reduces the number of page snapshots in m_previousPageSets down to a
+   * manageable constant number.
+   */
+  void expireOldPages();
 
 public:
   TextSystem(Gameexe& gexe);

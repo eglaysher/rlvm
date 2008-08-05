@@ -58,6 +58,8 @@ using std::ostringstream;
 using boost::bind;
 using boost::shared_ptr;
 
+const unsigned int MAX_PAGE_HISTORY = 100;
+
 // -----------------------------------------------------------------------
 // TextSystemGlobals
 // -----------------------------------------------------------------------
@@ -189,6 +191,13 @@ void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
 
 // -----------------------------------------------------------------------
 
+void TextSystem::expireOldPages() {
+  while(m_previousPageSets.size() > MAX_PAGE_HISTORY)
+    m_previousPageSets.pop_front();
+}
+
+// -----------------------------------------------------------------------
+
 vector<int> TextSystem::activeWindows()
 {
   vector<int> tmp;
@@ -205,6 +214,7 @@ vector<int> TextSystem::activeWindows()
 void TextSystem::snapshot(RLMachine& machine)
 {
   m_previousPageSets.push_back(m_currentPageset->clone().release());
+  expireOldPages();
 }
 
 // -----------------------------------------------------------------------
@@ -220,6 +230,7 @@ void TextSystem::newPageOnWindow(RLMachine& machine, int window)
 
   m_previousPageIt = m_previousPageSets.end();
   m_currentPageset->insert(window, new TextPage(machine, window));
+  expireOldPages();
 } 
 
 // -----------------------------------------------------------------------
