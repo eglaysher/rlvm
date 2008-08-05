@@ -100,8 +100,12 @@ TextTextPageElement::TextTextPageElement()
 
 void TextTextPageElement::replayElement(TextPage& page, bool isActivePage)
 {
-  printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
-                      m_listOfCharsToPrint, m_nextChar);
+  // Sometimes there are empty TextTextPageElements. I hypothesize these happen
+  // because of empty strings which just set the speaker's name.
+  if (m_listOfCharsToPrint.size()) {
+    printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
+                        m_listOfCharsToPrint, m_nextChar);
+  }
 }
 
 // -----------------------------------------------------------------------
