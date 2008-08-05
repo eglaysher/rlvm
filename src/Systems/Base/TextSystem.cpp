@@ -278,9 +278,17 @@ void TextSystem::forwardPage(RLMachine& machine)
 
 void TextSystem::replayPageSet(PageSet& set, bool isCurrentPage)
 {
-  for(PageSet::iterator it = set.begin(); it != set.end(); ++it)
-  {
-    it->second->replay(isCurrentPage);
+  for(PageSet::iterator it = set.begin(); it != set.end(); ++it) {
+    try {
+      it->second->replay(isCurrentPage);
+    }
+    catch(rlvm::Exception& e) {
+      // Currently, the text system can throw on a few unimplemented situations,
+      // such as ruby across lines.
+      
+      // Ignore what would normally be an ignored command when encoutered from
+      // the main loop.
+    }
   }
 }
 
