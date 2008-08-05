@@ -39,26 +39,26 @@
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/Rect.hpp"
 
-#include <map>
-#include <vector>
-#include <string>
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/serialization/split_member.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/shared_ptr.hpp>
+#include <map>
+#include <string>
+#include <vector>
 
 // -----------------------------------------------------------------------
 
-class System;
-class Size;
-class Surface;
-class RLMachine;
+class CGMTable;
+class Gameexe;
 class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
-class Gameexe;
 class MouseCursor;
-class CGMTable;
+class RLMachine;
+class Size;
+class Surface;
+class System;
 struct ObjectSettings;
 
 template<typename T> class LazyArray;

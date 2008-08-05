@@ -29,49 +29,48 @@
 
 // -----------------------------------------------------------------------
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
-#include <boost/serialization/vector.hpp>
-
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsObjectData.hpp"
-#include "Systems/Base/GraphicsObjectOfFile.hpp"
-#include "Systems/Base/GraphicsStackFrame.hpp"
-#include "Systems/Base/ObjectSettings.hpp"
-#include "Systems/Base/AnmGraphicsObjectData.hpp"
-#include "Systems/Base/ObjectSettings.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/MouseCursor.hpp"
-#include "Systems/Base/CGMTable.hpp"
-#include "libReallive/gameexe.h"
 
+#include "LazyArray.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/StackFrame.hpp"
 #include "Modules/Module_Grp.hpp"
+#include "Systems/Base/AnmGraphicsObjectData.hpp"
+#include "Systems/Base/CGMTable.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsObjectOfFile.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
+#include "Systems/Base/MouseCursor.hpp"
+#include "Systems/Base/ObjectSettings.hpp"
+#include "Systems/Base/ObjectSettings.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SystemError.hpp"
 #include "Utilities.h"
-#include "LazyArray.hpp"
+#include "libReallive/gameexe.h"
 
+#include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/vector.hpp>
+#include <iostream>
+#include <iterator>
+#include <list>
 #include <sstream>
 #include <vector>
-#include <list>
-#include <algorithm>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
-#include <iterator>
-#include <iostream>
 
+using boost::iends_with;
+using boost::lexical_cast;
 using std::cerr;
 using std::cout;
 using std::endl;
-using boost::iends_with;
-using boost::lexical_cast;
 using std::fill;
-using std::vector;
 using std::ostringstream;
+using std::vector;
 
 namespace fs = boost::filesystem;
 
@@ -101,41 +100,42 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   // First we populate everything with the special value
   fill(position, position + OBJECTS_IN_A_LAYER, 0);
   if(gameexe.exists("OBJECT.999"))
-	data.push_back(ObjectSettings(gameexe("OBJECT.999")));
+    data.push_back(ObjectSettings(gameexe("OBJECT.999")));
   else
-	data.push_back(ObjectSettings());
+    data.push_back(ObjectSettings());
 
   // Read the #OBJECT.xxx entries from the Gameexe
   GameexeFilteringIterator it = gameexe.filtering_begin("OBJECT.");
   GameexeFilteringIterator end = gameexe.filtering_end();
   for(; it != end; ++it)
   {
-  string s = it->key().substr(it->key().find_first_of(".") + 1);
-  std::list<int> object_nums;
-  string::size_type poscolon = s.find_first_of(":");
-  if ( poscolon != string::npos )
-  {
-    int objNumFirst = lexical_cast<int>(s.substr(0, poscolon));
-    int objNumLast = lexical_cast<int>(s.substr(poscolon + 1));
-    while ( objNumFirst <= objNumLast )
+    string s = it->key().substr(it->key().find_first_of(".") + 1);
+    std::list<int> object_nums;
+    string::size_type poscolon = s.find_first_of(":");
+    if ( poscolon != string::npos )
     {
-      object_nums.push_back(objNumFirst++);
+      int objNumFirst = lexical_cast<int>(s.substr(0, poscolon));
+      int objNumLast = lexical_cast<int>(s.substr(poscolon + 1));
+      while ( objNumFirst <= objNumLast )
+      {
+        object_nums.push_back(objNumFirst++);
+      }
     }
-  }
-  else
-  {
-    object_nums.push_back(lexical_cast<int>(s));
-  }
+    else
+    {
+      object_nums.push_back(lexical_cast<int>(s));
+    }
   
-  for ( std::list<int>::const_iterator intit = object_nums.begin(); intit != object_nums.end(); ++intit )
-  {
-    int objNum = *intit;
-	if(objNum != 999 && objNum < OBJECTS_IN_A_LAYER)
-	{
-	  position[objNum] = data.size();
-	  data.push_back(ObjectSettings(*it));
-	}	
-  }
+    for( std::list<int>::const_iterator intit = object_nums.begin(); 
+         intit != object_nums.end(); ++intit )
+    {
+      int objNum = *intit;
+      if(objNum != 999 && objNum < OBJECTS_IN_A_LAYER)
+      {
+        position[objNum] = data.size();
+        data.push_back(ObjectSettings(*it));
+      }	
+    }
   }
 }
 
@@ -278,7 +278,8 @@ void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
 
 // -----------------------------------------------------------------------
 
-GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(const std::string& name)
+GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(
+  const std::string& name)
 {
   m_graphicsObjectSettings->graphicsStack.push_back(GraphicsStackFrame(name));
   return m_graphicsObjectSettings->graphicsStack.back();
@@ -634,7 +635,8 @@ void GraphicsSystem::load(Archive& ar, unsigned int version)
     & m_graphicsObjectImpl->m_foregroundObjects;
 
   // Now alert all subclasses that we've set the subtitle
-  setWindowSubtitle(m_subtitle, Serialization::g_currentMachine->getTextEncoding());
+  setWindowSubtitle(m_subtitle, 
+                    Serialization::g_currentMachine->getTextEncoding());
 }
 
 // -----------------------------------------------------------------------
