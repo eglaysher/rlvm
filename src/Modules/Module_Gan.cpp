@@ -30,13 +30,16 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Gan.hpp"
-#include "Modules/Module_Obj.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLModule.hpp"
+
 #include "MachineBase/LongOperation.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "Modules/Module_Obj.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/System.hpp"
 
 #include <boost/shared_ptr.hpp>
 
@@ -50,28 +53,48 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 {
   struct WaitForGanToFinish : public LongOperation
   {
+    /**
+     * Save the screen update mode and change it to automatic when entering a
+     * blocking animation, restoring when we leave.
+     *
+     * When I actually started paying attention to DrawManual()/DrawAuto(), I
+     * stopped forcing a refresh of the screen on each and instead obeyed the
+     * DCScreenUpdateMode, I broke the OP of Kanon.
+     *
+     * I don't know if this is the correct solution. If this breaks things, the
+     * solution is that things like AnmGraphicsObjectData force screen
+     * refreshes, ignoring whatever the current screen update mode is.
+     */
+    GraphicsSystem& system_;
+    GraphicsSystem::DCScreenUpdateMode mode_;
+
     int m_layer;
     int m_buf;
-    WaitForGanToFinish(int inLayer, int inBuf) 
-      : m_layer(inLayer), m_buf(inBuf) {}
+    WaitForGanToFinish(GraphicsSystem& system, int inLayer, int inBuf) 
+      : system_(system),
+        mode_(system_.screenUpdateMode()),
+        m_layer(inLayer), m_buf(inBuf) {
+      system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
+    }
 
     bool operator()(RLMachine& machine)
     {
       GraphicsObject& obj = getGraphicsObject(machine, m_layer, m_buf);
-
-      if(!obj.visible())
-        cerr << "WARNING, OBJECT INVISIBLE!" << endl;
+      bool done = true;
 
       if(obj.hasObjectData())
       {
         const GraphicsObjectData& data = obj.objectData();
         if(data.isAnimation())
-          return !data.currentlyPlaying();
-        else
-          return true;
+          done = !data.currentlyPlaying();
       }
-      else
-        return true;
+
+      if (done) {
+        // Restore whatever mode we were in before.
+        system_.setScreenUpdateMode(mode_);
+      }
+
+      return done;
     }
   };
 
@@ -96,7 +119,9 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
         data.setAfterAction(m_afterEffect);
 
         if(m_block)
-          machine.pushLongOperation(new WaitForGanToFinish(m_layer, buf));
+          machine.pushLongOperation(new WaitForGanToFinish(
+                                      machine.system().graphics(),
+                                      m_layer, buf));
       }
     }
   }
