@@ -44,6 +44,7 @@ class EventSystem;
 class GraphicsSystem;
 class TextSystem;
 class SoundSystem;
+class CGMTable;
 
 // -----------------------------------------------------------------------
 
@@ -77,6 +78,9 @@ TextSystem& getSystemObj(RLMachine& machine);
 
 template<>
 SoundSystem& getSystemObj(RLMachine& machine);
+
+template<>
+CGMTable& getSystemObj(RLMachine& machine);
 
 };
 

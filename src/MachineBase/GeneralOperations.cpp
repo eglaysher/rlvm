@@ -30,6 +30,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -73,6 +74,12 @@ template<>
 SoundSystem& getSystemObj(RLMachine& machine)
 {
   return machine.system().sound();
+}
+
+template<>
+CGMTable& getSystemObj(RLMachine& machine)
+{
+  return machine.system().graphics().cgTable();
 }
 
 }
