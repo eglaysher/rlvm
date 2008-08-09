@@ -4,6 +4,7 @@
 ########
 
 LRLFILES[] =
+  SDLAudioLocker
   SDLSystem
   SDLGraphicsSystem
   SDLSurface

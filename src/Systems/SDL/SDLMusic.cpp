@@ -30,6 +30,8 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/SDL/SDLMusic.hpp"
+
+#include "Systems/SDL/SDLAudioLocker.hpp"
 #include "Utilities.h"
 
 #include <vector>
@@ -75,16 +77,20 @@ SDLMusic::~SDLMusic()
 {
   Mix_HookMusic(NULL, NULL);
 
-  delete file_;
+  {
+    SDLAudioLocker locker;
+    delete file_;
 
-  if(s_currently_playing.get() == this)
-    s_currently_playing.reset();
+    if(s_currently_playing.get() == this)
+      s_currently_playing.reset();
+  }
 }
 
 // -----------------------------------------------------------------------
 
 bool SDLMusic::isFading() const
 {
+  SDLAudioLocker locker;
   return fadetime_total_ > 0;
 }
 
@@ -92,8 +98,12 @@ bool SDLMusic::isFading() const
 
 void SDLMusic::play(bool loop)
 {
-  setLoopPoint(loop);
-  s_currently_playing = shared_from_this();
+  {
+    SDLAudioLocker locker;
+    setLoopPoint(loop);
+    s_currently_playing = shared_from_this();
+  }
+
 	Mix_HookMusic(&SDLMusic::MixMusic, this);
 }
 
@@ -102,8 +112,12 @@ void SDLMusic::play(bool loop)
 void SDLMusic::stop()
 {
   Mix_HookMusic(NULL, NULL);
-  if(s_currently_playing.get() == this)
-    s_currently_playing.reset();
+
+  {
+    SDLAudioLocker locker;
+    if(s_currently_playing.get() == this)
+      s_currently_playing.reset();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -120,6 +134,7 @@ void SDLMusic::fadeIn(bool loop, int fade_in_ms)
 
 void SDLMusic::fadeOut(int fade_out_ms)
 {
+  SDLAudioLocker locker;
   fade_count_ = 0;
   if(fade_out_ms <= 0)
     fade_out_ms = 1;
@@ -130,6 +145,7 @@ void SDLMusic::fadeOut(int fade_out_ms)
 
 void SDLMusic::pause()
 {
+  SDLAudioLocker locker;
   music_paused_ = true;
 }
 
@@ -137,6 +153,7 @@ void SDLMusic::pause()
 
 void SDLMusic::unpause()
 {
+  SDLAudioLocker locker;
   music_paused_ = false;
 }
 
@@ -144,6 +161,7 @@ void SDLMusic::unpause()
 
 std::string SDLMusic::name() const
 {
+  SDLAudioLocker locker;
   return track_.name;
 }
 
@@ -151,6 +169,8 @@ std::string SDLMusic::name() const
 
 int SDLMusic::bgmStatus() const
 {
+  SDLAudioLocker locker;
+
   if (music_paused_)
     return 0;
   else if (isFading())
@@ -164,6 +184,8 @@ int SDLMusic::bgmStatus() const
 // static
 void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 {
+  // Inside an SDL_LockAudio() section set up by SDL_Mixer! Don't lock here!
+
   // TODO: Make the done states reset s_currently_playing. Or go back
   // with a finish hook (and copy the finishing logic from either
   // xclannad or the official SDL_Mixer)
@@ -263,6 +285,8 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 // -----------------------------------------------------------------------
 void SDLMusic::setLoopPoint(bool loop)
 {
+  SDLAudioLocker locker;
+
   if(loop)
     loop_point_ = track_.loop;
   else
