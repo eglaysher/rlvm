@@ -62,6 +62,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/CGMTable.hpp"
 
 #include "Effects/FadeEffect.hpp"
 
@@ -526,6 +527,12 @@ SysModule::SysModule()
   addUnsupportedOpcode(1303, 0, "nwMulti");
   addUnsupportedOpcode(1312, 0, "nwSingleLocal");
   addUnsupportedOpcode(1313, 0, "nwMultiLocal");
+
+  addOpcode(1500, 0, "cgGetTotal", returnIntValue(&CGMTable::getTotal));
+  addOpcode(1501, 0, "cgGetViewed", returnIntValue(&CGMTable::getViewed));
+  addOpcode(1502, 0, "cgGetViewedPcnt", returnIntValue(&CGMTable::getPercent));
+  addOpcode(1503, 0, "cgGetFlag", returnIntValue(&CGMTable::getFlag));
+  addOpcode(1504, 0, "cgStatus", returnIntValue(&CGMTable::getStatus));
 
   addUnsupportedOpcode(2050, 0, "SetCursorMono");
   addUnsupportedOpcode(2000, 0, "CursorMono");

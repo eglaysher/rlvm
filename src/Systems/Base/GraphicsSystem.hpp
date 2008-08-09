@@ -428,6 +428,9 @@ public:
    */
   virtual void reset();
 
+  /// Access to the cgtable for the cg* functions.
+  CGMTable& cgTable() { return *cg_table_; }
+
   // boost::serialization forward declaration
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;
