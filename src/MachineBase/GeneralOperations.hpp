@@ -310,9 +310,36 @@ public:
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename RETTYPE>
+class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
+private:
+  typedef RETTYPE(OBJTYPE::*Getter)(const std::string&) const;
+  Getter getter;
+
+public:
+  Op_ReturnIntValueWithString(Getter g)
+    : getter(g)
+  {}
+
+  int operator()(RLMachine& machine, string one)
+  {
+    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)(one);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE, typename RETTYPE>
 RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)() const)
 {
   return new Op_ReturnIntValue<OBJTYPE, RETTYPE>(s);
+}
+
+// -----------------------------------------------------------------------
+
+template<typename OBJTYPE, typename RETTYPE>
+RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(const std::string&) const)
+{
+  return new Op_ReturnIntValueWithString<OBJTYPE, RETTYPE>(s);
 }
 
 // -----------------------------------------------------------------------
