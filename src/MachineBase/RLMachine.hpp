@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __RLMachine_hpp__
@@ -34,7 +34,7 @@
  * constants.
  * @author Elliot Glaysher
  * @date   Sat Oct  7 10:54:55 2006
- * 
+ *
  */
 
 #include <boost/serialization/split_member.hpp>
@@ -58,7 +58,7 @@ class Memory;
 class OpcodeLog;
 struct StackFrame;
 
-namespace boost { namespace serialization { } } 
+namespace boost { namespace serialization { } }
 
 /**
  * The RealLive virtual machine implementation. This class is the main user
@@ -110,7 +110,7 @@ public:
   boost::scoped_ptr<OpcodeLog> m_undefinedLog;
 
   unsigned int packModuleNumber(int modtype, int module);
-  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype, 
+  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype,
                           int& module);
 
   /**
@@ -136,16 +136,16 @@ public:
    * different functions registered as one unit.
    *
    * @param module Module to attach to the RLMachine
-   * @note RLMachine takes ownership of any RLModule object passed in through 
+   * @note RLMachine takes ownership of any RLModule object passed in through
    * attachModule.
    */
   void attachModule(RLModule* module);
 
   // -----------------------------------------------------------------------
 
-  /** 
+  /**
    * @name Implicit savepoint management
-   * 
+   *
    * RealLive will save the latest savepoint for the topmost stack
    * frame. Savepoints can be manually set (with the "Savepoint" command), but
    * are usually implicit.
@@ -180,7 +180,7 @@ public:
 
   /**
    * Implementation function for shouldSet*Savepoint().
-   * 
+   *
    * - If automatic savepoints have been explicitly disabled with
    *   DisableAutoSavepoints, return false. Otherwise...
    * - The current Scenario is checked; in the bytecode header, there
@@ -189,13 +189,13 @@ public:
    *   return. On any other value, we fall through to...
    * - Check a Gameexe key, which has the final say.
    */
-  bool savepointDecide(AttributeFunction func, 
+  bool savepointDecide(AttributeFunction func,
                        const std::string& gameexeKey) const;
 
   /**
    * Whether the DisableAutoSavepoints override is on. This is
    * triggered purely from bytecode.
-   * 
+   *
    * @param in The new value. 0 is the override for false. 1 is normal
    *           and will consult the rest of the values.
    */
@@ -205,65 +205,65 @@ public:
   // -----------------------------------------------------------------------
 
   /**
-   * @name MemoryManip 
+   * @name MemoryManip
    *
    * Memory Manipulation Functions. These are bridge methods to the
    * accessors in the class Memory.
    */
   // @{
 
-  /** 
+  /**
    * Returns the integer value of a certain memory location
-   * 
+   *
    * @param ref The location to read
    * @return The integer value
    */
-  int getIntValue(const libReallive::IntMemRef& ref);    
+  int getIntValue(const libReallive::IntMemRef& ref);
 
-  /** 
+  /**
    * Sets the value of a certain memory location
-   * 
+   *
    * @param ref The location to write to
    * @param value The new value
    */
   void setIntValue(const libReallive::IntMemRef& ref, int value);
 
-  /** 
+  /**
    * Returns the string value of a string memory bank
-   * 
+   *
    * @param type The memory bank to access from
    * @param location The offset into that memory bank
    * @return The string in that location
    */
   const std::string& getStringValue(int type, int location);
 
-  /** 
+  /**
    * Sets the string value of one of the string banks
-   * 
+   *
    * @param type The memory bank to set to
    * @param number The offset into that memory bank
    * @param value The new string value to assign
    */
   void setStringValue(int type, int number, const std::string& value);
 
-  /** 
+  /**
    * Sets the store register
-   * 
+   *
    * @param newValue New value of the store register
    */
   void setStoreRegister(int newValue) { storeRegister = newValue; }
 
-  /** 
+  /**
    * Returns the current value of the store register
-   * 
+   *
    * @return The value of the store register
    */
   int getStoreRegisterValue() const { return storeRegister; }
 
-  /** 
+  /**
    * Returns the internal memory object for raw access to the machine
    * object's memory.
-   * 
+   *
    * @note This should only be used during serialization or complex
    *       memory operations involving overlays.
    */
@@ -288,17 +288,17 @@ public:
    */
   void jump(int scenario, int entrypoint = 0);
 
-  /** 
-   * Push a new stack frame onto the call stack 
-   * 
+  /**
+   * Push a new stack frame onto the call stack
+   *
    * @param scenario SEEN number to jump to
    * @param entrypoint Entrypoint number to that SEEN to jump to
    */
   void farcall(int scenario, int entrypoint = 0);
 
-  /** 
+  /**
    * Return from the most recent farcall().
-   * 
+   *
    * @throw Error Throws an error when there's a mismatch in the
    * script between farcall()/rtl() gosub()/ret() pairs
    */
@@ -311,29 +311,29 @@ public:
    * @param newLocation New location of the instruction pointer.
    */
   void gotoLocation(libReallive::BytecodeList::iterator newLocation);
-  
-  /** 
+
+  /**
    * Pushes a new stack frame onto the call stack, saving the current
    * location. The new frame contains the current SEEN with
    * newLocation as the instruction pointer.
-   * 
+   *
    * @param newLocation New location of the instruction pointer.
    */
   void gosub(libReallive::BytecodeList::iterator newLocation);
 
-  /** 
-   * Returns from the most recent gosub call. 
-   * 
+  /**
+   * Returns from the most recent gosub call.
+   *
    * @throw Error Throws an error when there's a mismatch in the
    * script between farcall()/rtl() gosub()/ret() pairs.
    */
   void returnFromGosub();
 
-  /** 
+  /**
    * Pushes a long operation onto the function stack. Control will be
    * passed to this LongOperation instead of normal bytecode passing
    * until the LongOperation gives control up.
-   * 
+   *
    * @param longOperation LongOperation to take control
    * @warning Never call pushLongOperation from a LongOperation that
    *          is about to return true. The operation you just pushed
@@ -344,16 +344,16 @@ public:
 
   /**
    * Returns whether the top of the call stack is a LongOperation.
-   * 
+   *
    */
   bool inLongOperation() const;
 
-  /** 
+  /**
    * Clears the callstack, properly freeing any LongOperations.
    */
   void clearCallstack();
 
-  /** 
+  /**
    * Returns the current scene number for the Scenario on the top of
    * the call stack.
    */
@@ -364,13 +364,13 @@ public:
    */
   const libReallive::Scenario& scenario() const;
 
-  /** 
+  /**
    * Returns the value of the most recent line MetadataElement, which
    * should correspond with the line in the source file.
    */
   int lineNumber() const { return m_line; }
 
-  /** 
+  /**
    * Returns the current Archive we are attached to.
    */
   libReallive::Archive& archive() { return m_archive; }
@@ -380,17 +380,17 @@ public:
 
   /**
    * @name Execution interface
-   * 
+   *
    * Normally, executeNextInstruction will call runOnMachine() on
    * whatever BytecodeElement is currently pointed to by the
-   * instruction pointer. 
+   * instruction pointer.
    *
    * @{
    */
 
-  /** 
+  /**
    * Sets the current line number
-   * 
+   *
    * @param i The current line number
    */
   void setLineNumber(const int i);
@@ -405,14 +405,14 @@ public:
    * Where a scenario was not compiled with RLdev, always returns 0.
    */
   int getTextEncoding() const;
-  
+
   void executeCommand(const libReallive::CommandElement& f);
   void executeExpression(const libReallive::ExpressionElement& e);
   void performTextout(const libReallive::TextoutElement& e);
 
-  /** 
+  /**
    * Marks a kidoku marker as visited.
-   * 
+   *
    * @param kidokuNumber Kidoku number in the current scene to set to
    *                     true
    * @todo This function is half implemented; it will set savepoints,
@@ -424,14 +424,14 @@ public:
 
   // -----------------------------------------------------------------------
 
-  /** 
-   * Executes the next instruction in the bytecode in 
-   * 
+  /**
+   * Executes the next instruction in the bytecode in
+   *
    * @see halted()
    */
   void executeNextInstruction();
 
-  /** 
+  /**
    * Call executeNextInstruction() repeatedly until the RLMachine is
    * halted. This function is used in unit testing, and would never be
    * called during real usage of an RLMachine instance since other
@@ -440,32 +440,32 @@ public:
    */
   void executeUntilHalted();
 
-  /** 
+  /**
    * Increments the stack pointer in the current frame. If we have run
    * off the end of the current scenario, set the halted bit.
    */
   void advanceInstructionPointer();
 
-  /** 
+  /**
    * Returns whether the machine is halted. When the machine is
    * halted, no more instruction may be executed, either because it
    * ran off the end of a scenario, or because the end() or halt()
    * instruction was called explicitly in the code.
-   * 
+   *
    * @return Whether the machine is halted
    */
   bool halted() const { return m_halted; }
 
   // ---------------------------------------------------------------------
 
-  /** 
+  /**
    * Whether we report to stderr when we hit an undefined opcode.
-   * 
+   *
    * @param in New value
    */
   void setPrintUndefinedOpcodes(bool in);
 
-  /** 
+  /**
    * Starts logging opcodes that we don't handle. Over very long runs, this is
    * easier to deal with than setPrintUndefinedOpcodes. Will print the results
    * to stderr on machine destruction.
@@ -474,20 +474,20 @@ public:
 
   // ---------------------------------------------------------------------
 
-  /** 
+  /**
    * Force the machine to halt. This should terminate the execution of
    * bytecode, and theoretically, the program.
    */
   void halt();
 
-  /** 
+  /**
    * Sets whether the RLMachine will be put into the halt state if an
    * exception is thrown while executing an instruction. By default,
    * it will.
    */
   void setHaltOnException(bool haltOnException);
 
-  /** 
+  /**
    * Returns the current System that this RLMachine outputs to.
    */
   System& system() { return m_system; }

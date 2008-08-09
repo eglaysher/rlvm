@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -70,12 +70,12 @@ GlobalMemory::GlobalMemory()
 // -----------------------------------------------------------------------
 LocalMemory::LocalMemory()
 {
-  memset(intA, 0, sizeof(intA));  
-  memset(intB, 0, sizeof(intB));  
-  memset(intC, 0, sizeof(intC));  
-  memset(intD, 0, sizeof(intD));  
-  memset(intE, 0, sizeof(intE));  
-  memset(intF, 0, sizeof(intF));  
+  memset(intA, 0, sizeof(intA));
+  memset(intB, 0, sizeof(intB));
+  memset(intC, 0, sizeof(intC));
+  memset(intD, 0, sizeof(intD));
+  memset(intE, 0, sizeof(intE));
+  memset(intF, 0, sizeof(intF));
 
   memset(intL, 0, sizeof(intL));
 }
@@ -128,7 +128,7 @@ void Memory::connectIntVarPointers()
 
 // -----------------------------------------------------------------------
 
-const std::string& Memory::getStringValue(int type, int location) 
+const std::string& Memory::getStringValue(int type, int location)
 {
   if(location > (SIZE_OF_MEM_BANK -1))
       throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
@@ -147,7 +147,7 @@ const std::string& Memory::getStringValue(int type, int location)
 
 // -----------------------------------------------------------------------
 
-void Memory::setStringValue(int type, int number, const std::string& value) 
+void Memory::setStringValue(int type, int number, const std::string& value)
 {
   if(number > (SIZE_OF_MEM_BANK -1))
       throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
@@ -161,12 +161,12 @@ void Memory::setStringValue(int type, int number, const std::string& value)
   case STRM_LOCATION:
     m_global->strM[number] = value;
     break;
-  case STRS_LOCATION: 
+  case STRS_LOCATION:
     m_local.strS[number] = value;
     break;
   default:
     throw rlvm::Exception("Invalid type in RLMachine::setStringValue");
-  }     
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -182,7 +182,7 @@ void Memory::checkNameIndex(int index, const std::string& name) const
 
 // -----------------------------------------------------------------------
 
-void Memory::setName(int index, const std::string& name) 
+void Memory::setName(int index, const std::string& name)
 {
   checkNameIndex(index, "Memory::setName");
   m_global->globalNames[index] = name;
@@ -248,7 +248,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe)
     }
   }
 
-  for(GameexeFilteringIterator it = gameexe.filtering_begin("LOCALNAME."); 
+  for(GameexeFilteringIterator it = gameexe.filtering_begin("LOCALNAME.");
       it != end; ++it)
   {
     try {

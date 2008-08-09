@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
@@ -105,7 +105,7 @@ public:
 
 /**
  * @name Drawer Behavior classes
- * 
+ *
  * These classess implement drawing for directions; They are used by
  * child classes of ScrollOnScrollOff to perform the requested
  * operation in a certain direction.
@@ -198,22 +198,22 @@ public:
 
 /**
  * @name Effect Types
- * 
+ *
  * Each EffectType that derives from ScrollSquashSlideEffectTypeBase
  * represents one of the SEL effects.
  */
 ///@{
 
 /**
- * Base class that defines the interface 
- * 
+ * Base class that defines the interface
+ *
  * @ingroup TransitionEffects
  */
 class ScrollSquashSlideEffectTypeBase
 {
 public:
   virtual ~ScrollSquashSlideEffectTypeBase();
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible) = 0;
@@ -221,16 +221,16 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Behavioural class that defines the high level behaviour for SEL
  * #15, Scroll On/Scroll Off.
- * 
+ *
  * @ingroup TransitionEffects
  */
 class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
@@ -238,16 +238,16 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Behavioural class that defines the high level behaviour for SEL
  * #16, Scroll On/Squash Off.
- * 
+ *
  * @ingroup TransitionEffects
  */
 class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
@@ -255,16 +255,16 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Behavioural class that defines the high level behaviour for SEL
  * #17, Squash On/Scroll Off.
- * 
+ *
  * @ingroup TransitionEffects
  */
 class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
@@ -273,16 +273,16 @@ public:
 // -----------------------------------------------------------------------
 
 
-/** 
+/**
  * Behavioural class that defines the high level behaviour for SEL
  * #18, Squash On/Squash Off.
- * 
+ *
  * @ingroup TransitionEffects
  */
 class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
@@ -290,15 +290,15 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Behavioural class that defines the high level behaviour for SEL
  * #20, Slide On.
- * 
+ *
  */
 class SlideOn : public ScrollSquashSlideEffectTypeBase
 {
 public:
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);
@@ -306,16 +306,16 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Behavioural class that defines the high level behaviour for SEL
  * #21, Slide Off.
- * 
+ *
  * @ingroup TransitionEffects
  */
 class SlideOff : public ScrollSquashSlideEffectTypeBase
 {
 public:
-  virtual void composeEffectsFor(GraphicsSystem& system, 
+  virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amountVisible);

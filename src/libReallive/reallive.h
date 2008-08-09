@@ -1,5 +1,5 @@
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006 Peter Jolly
@@ -33,7 +33,7 @@
  * @namespace libReallive
  * @brief libReallive, a library for manipulating Reallive bytecode
  * @author Haeleth
- * 
+ *
  * libReallive is a library for manipulating Reallive bytecode. It was
  * orriginally written by Haeleth, and was copy/pasted into
  * RLVM. While I've modified it to suit my needs (for example, adding
@@ -80,9 +80,9 @@
  * - A list of pointers (for goto, et cetera)
  */
 
-#include "defs.h"     
-#include "bytecode.h" 
-#include "scenario.h" 
+#include "defs.h"
+#include "bytecode.h"
+#include "scenario.h"
 #include "archive.h"
 
 #endif

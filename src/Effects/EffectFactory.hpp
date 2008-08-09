@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
@@ -56,12 +56,12 @@ class ScrollSquashSlideEffectTypeBase;
 class EffectFactory
 {
 public:
-  /** 
+  /**
    * Builds an Effect based off the \#SEL.selnum line in the
    * Gameexe.ini file. The coordinates, which are in grp* format (x1,
    * y1, x2, y2), are converted to rec* format and then based to the
    * build() method.
-   * 
+   *
    * @param machine  Machine to read Gameexe from
    * @param selnum   \#SEL to read
    * @throw Error selnum is not a valid \#SEL number, Gameexe file is
@@ -69,17 +69,17 @@ public:
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */
-  static Effect* buildFromSEL(RLMachine& machine, 
-                              boost::shared_ptr<Surface> src, 
+  static Effect* buildFromSEL(RLMachine& machine,
+                              boost::shared_ptr<Surface> src,
                               boost::shared_ptr<Surface> dst,
                               int selnum);
 
-  /** 
+  /**
    * Returns a constructed LongOperation with the following properties
    * to perform a transition. Note: Effect's external interface work on
    * the rec* coordinate system (x, y, width, height) instead of the
    * grp* coordinate system (x1, y1, x2, y2) .
-   * 
+   *
    * @param machine       Machine to construct with
    * @param time          Length of transition, in ms.
    * @param style         The style of transition. This factory does a
@@ -97,12 +97,12 @@ public:
    * @param a             Unknown
    * @param b             Unknown
    * @param c             Unknown
-   * 
+   *
    * @return A LongOperation which will perform the following transition
    *         and then exit.
    */
   static Effect* build(
-    RLMachine& machine, boost::shared_ptr<Surface> src, 
+    RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
     int time, int style,
     int direction, int interpolation, int xsize, int ysize, int a, int b,
@@ -110,14 +110,14 @@ public:
 
 private:
   static Effect* buildWipeEffect(
-    RLMachine& machine, boost::shared_ptr<Surface> src, 
+    RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
     const Size& screenSize, int time, int direction, int interpolation);
 
   static Effect* buildBlindEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time, 
+    const Size& screenSize, int time,
     int direction, int xsize, int ysize);
 
   static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(

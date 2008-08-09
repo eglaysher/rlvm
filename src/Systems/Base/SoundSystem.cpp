@@ -8,27 +8,27 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
 
 // -----------------------------------------------------------------------
- 
+
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
@@ -37,7 +37,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/System.hpp" 
+#include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -53,11 +53,11 @@ using namespace std;
 // -----------------------------------------------------------------------
 // SoundSystemGlobals
 // -----------------------------------------------------------------------
-SoundSystemGlobals::SoundSystemGlobals() 
+SoundSystemGlobals::SoundSystemGlobals()
   : soundQuality(5), bgmEnabled(true), bgmVolume(255), pcmEnabled(true),
     pcmVolume(255), seEnabled(true), seVolume(255)
 {
-  
+
 }
 
 // -----------------------------------------------------------------------
@@ -105,7 +105,7 @@ SoundSystem::DSTrack::DSTrack()
 // -----------------------------------------------------------------------
 
 SoundSystem::DSTrack::DSTrack(
-  const std::string inName, const std::string inFile, int inFrom, 
+  const std::string inName, const std::string inFile, int inFrom,
   int inTo, int inLoop)
   : name(inName), file(inFile), from(inFrom), to(inTo), loop(inLoop)
 {
@@ -174,7 +174,7 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     boost::to_lower(name);
 
     m_cdTracks[name] = CDTrack(name, from, to, loop);
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -191,7 +191,7 @@ void SoundSystem::executeSoundSystem(RLMachine& machine)
   ChannelAdjustmentMap::iterator it = m_pcmAdjustmentTasks.begin();
   while(it != m_pcmAdjustmentTasks.end())
   {
-    if(curTime >= it->second.endTime) 
+    if(curTime >= it->second.endTime)
     {
       setChannelVolume(it->first, it->second.finalVolume);
       m_pcmAdjustmentTasks.erase(it++);
@@ -268,13 +268,13 @@ void SoundSystem::setChannelVolume(const int channel, const int level)
   checkChannel(channel, "setChannelVolume");
   checkVolume(level, "setChannelVolume");
 
-  m_channelVolume[channel] = level; 
+  m_channelVolume[channel] = level;
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setChannelVolume(
-  RLMachine& machine, const int channel, const int level, 
+  RLMachine& machine, const int channel, const int level,
   const int fadeTimeInMs)
 {
   checkChannel(channel, "setChannelVolume");
@@ -283,7 +283,7 @@ void SoundSystem::setChannelVolume(
   unsigned int curTime = machine.system().event().getTicks();
 
   m_pcmAdjustmentTasks.insert(
-    make_pair(channel, VolumeAdjustTask(curTime, m_channelVolume[channel], 
+    make_pair(channel, VolumeAdjustTask(curTime, m_channelVolume[channel],
                                         level, fadeTimeInMs)));
 }
 
@@ -334,7 +334,7 @@ void SoundSystem::reset()
 // -----------------------------------------------------------------------
 
 // static
-void SoundSystem::checkChannel(int channel, const char* functionName) 
+void SoundSystem::checkChannel(int channel, const char* functionName)
 {
   if(channel < 0 || channel > NUM_BASE_CHANNELS)
   {
@@ -366,7 +366,7 @@ void SoundSystem::load(Archive& ar, unsigned int version)
   bool looping;
   ar & trackName & looping;
 
-  if(trackName != "") 
+  if(trackName != "")
     bgmPlay(*Serialization::g_currentMachine, trackName, looping);
 }
 
@@ -380,7 +380,7 @@ void SoundSystem::save(Archive& ar, unsigned int version) const
 
   if (bgmStatus() == 1)
     trackName = bgmName();
- 
+
   ar & trackName & looping;
 }
 

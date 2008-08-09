@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef INTMEMREF_H
@@ -56,9 +56,9 @@ const int STRS_LOCATION = 0x12;
 
 // -----------------------------------------------------------------------
 
-inline bool isStringLocation(const int type) 
+inline bool isStringLocation(const int type)
 {
-  return type == STRS_LOCATION || type == STRK_LOCATION || 
+  return type == STRS_LOCATION || type == STRK_LOCATION ||
 	type == STRM_LOCATION;
 }
 
@@ -73,16 +73,16 @@ private:
   /// Which piece of memory to operate on.
   int memoryBank;
 
-  /// How to access 
+  /// How to access
   int accessType;
 
-  /// The memory location to 
+  /// The memory location to
   int loc;
 
 public:
   IntMemRef(int bytecodeRep, int location);
   IntMemRef(int bank, int type, int location);
-  
+
   IntMemRef(char bankName, int location);
   IntMemRef(char bankName, const char* accessStr, int location);
   ~IntMemRef();

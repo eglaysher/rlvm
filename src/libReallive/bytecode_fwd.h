@@ -1,5 +1,5 @@
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006 Peter Jolly
@@ -33,12 +33,12 @@
 namespace libReallive {
 
 // A nasty-hacky (but simple and efficient) form of RTTI.
-enum ElementType { 
-  Unspecified, Data, 
-  Line, Kidoku, Entrypoint, 
-  Textout, Expression, 
+enum ElementType {
+  Unspecified, Data,
+  Line, Kidoku, Entrypoint,
+  Textout, Expression,
   // Everything after this point must be a CommandElement or subtype.
-  Command, Select, Function, 
+  Command, Select, Function,
   // Everything after this point must be a PointerElement or subtype.
   Goto, GotoCase, GotoOn
 };

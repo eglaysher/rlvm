@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -66,7 +66,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
   const GraphicsObjectOfFile& obj)
   : GraphicsObjectData(obj),
     m_filename(obj.m_filename),
-    m_surface(obj.m_surface), 
+    m_surface(obj.m_surface),
     m_frameTime(obj.m_frameTime),
     m_currentFrame(obj.m_currentFrame),
     m_timeAtLastFrameChange(obj.m_timeAtLastFrameChange)
@@ -131,7 +131,7 @@ int GraphicsObjectOfFile::pixelHeight(RLMachine& machine, const GraphicsObject& 
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsObjectOfFile::clone() const 
+GraphicsObjectData* GraphicsObjectOfFile::clone() const
 {
   return new GraphicsObjectOfFile(*this);
 }
@@ -143,7 +143,7 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
   if(currentlyPlaying())
   {
     unsigned int currentTime = machine.system().event().getTicks();
-    unsigned int timeSinceLastFrameChange = 
+    unsigned int timeSinceLastFrameChange =
       currentTime - m_timeAtLastFrameChange;
 
     while(timeSinceLastFrameChange > m_frameTime)
@@ -186,7 +186,7 @@ void GraphicsObjectOfFile::playSet(RLMachine& machine, int frameTime)
 
   if (m_frameTime == 0) {
     cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
-         << " this is probably going to cause a graphical glitch..." 
+         << " this is probably going to cause a graphical glitch..."
          << endl;
     m_frameTime = 10;
   }

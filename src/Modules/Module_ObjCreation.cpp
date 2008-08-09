@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -42,7 +42,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
-  
+
 #include "Modules/cp932toUnicode.hpp"
 
 #include <cmath>
@@ -60,7 +60,7 @@ namespace {
 void setObjectDataToGan(
   RLMachine& machine,
   GraphicsObject& obj,
-  string& imgFilename, 
+  string& imgFilename,
   const string& ganFilename)
 {
 //  GraphicsSystem& gs = machine.system().graphics();
@@ -103,7 +103,7 @@ void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj, const string& val
 struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   int m_layer;
   DataFunction m_dataFun;
-  Obj_objGeneric_0(int layer, const DataFunction& fun) 
+  Obj_objGeneric_0(int layer, const DataFunction& fun)
 	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename) {
@@ -114,12 +114,12 @@ struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T, 
-											 IntConstant_T> 
+struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
+											 IntConstant_T>
 {
   int m_layer;
   DataFunction m_dataFun;
-  Obj_objGeneric_1(int layer, const DataFunction& fun) 
+  Obj_objGeneric_1(int layer, const DataFunction& fun)
 	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
@@ -131,13 +131,13 @@ struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_objGeneric_2 
-  : public RLOp_Void_5<IntConstant_T, StrConstant_T, IntConstant_T, 
-					   IntConstant_T, IntConstant_T> 
+struct Obj_objGeneric_2
+  : public RLOp_Void_5<IntConstant_T, StrConstant_T, IntConstant_T,
+					   IntConstant_T, IntConstant_T>
 {
   int m_layer;
   DataFunction m_dataFun;
-  Obj_objGeneric_2(int layer, const DataFunction& fun) 
+  Obj_objGeneric_2(int layer, const DataFunction& fun)
 	: m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
@@ -152,13 +152,13 @@ struct Obj_objGeneric_2
 
 // -----------------------------------------------------------------------
 
-struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T, 
+struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T,
-                                          IntConstant_T, IntConstant_T> 
+                                          IntConstant_T, IntConstant_T>
 {
   int m_layer;
   DataFunction m_dataFun;
-  Obj_objGeneric_3(int layer, const DataFunction& fun) 
+  Obj_objGeneric_3(int layer, const DataFunction& fun)
     : m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
@@ -180,7 +180,7 @@ struct Obj_objGeneric_4 : public RLOp_Void_8<
 {
   int m_layer;
   DataFunction m_dataFun;
-  Obj_objGeneric_4(int layer, const DataFunction& fun) 
+  Obj_objGeneric_4(int layer, const DataFunction& fun)
     : m_layer(layer), m_dataFun(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
@@ -199,15 +199,15 @@ struct Obj_objGeneric_4 : public RLOp_Void_8<
 
 // -----------------------------------------------------------------------
 
-struct Obj_objOfFileGan_0 
+struct Obj_objOfFileGan_0
   : public RLOp_Void_3<IntConstant_T, StrConstant_T, StrConstant_T>
 {
   int m_layer;
   Obj_objOfFileGan_0(int layer) : m_layer(layer) {}
 
-  void operator()(RLMachine& machine, int buf, string imgFilename, 
-                  string ganFilename) 
-  { 
+  void operator()(RLMachine& machine, int buf, string imgFilename,
+                  string ganFilename)
+  {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(true);
@@ -217,15 +217,15 @@ struct Obj_objOfFileGan_0
 // -----------------------------------------------------------------------
 
 struct Obj_objOfFileGan_1
-  : public RLOp_Void_4<IntConstant_T, StrConstant_T, StrConstant_T, 
+  : public RLOp_Void_4<IntConstant_T, StrConstant_T, StrConstant_T,
                        IntConstant_T>
 {
   int m_layer;
   Obj_objOfFileGan_1(int layer) : m_layer(layer) {}
 
-  void operator()(RLMachine& machine, int buf, string imgFilename, 
-                  string ganFilename, int visible) 
-  { 
+  void operator()(RLMachine& machine, int buf, string imgFilename,
+                  string ganFilename, int visible)
+  {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -235,15 +235,15 @@ struct Obj_objOfFileGan_1
 // -----------------------------------------------------------------------
 
 struct Obj_objOfFileGan_2
-  : public RLOp_Void_6<IntConstant_T, StrConstant_T, StrConstant_T, 
+  : public RLOp_Void_6<IntConstant_T, StrConstant_T, StrConstant_T,
                        IntConstant_T, IntConstant_T, IntConstant_T>
 {
   int m_layer;
   Obj_objOfFileGan_2(int layer) : m_layer(layer) {}
 
-  void operator()(RLMachine& machine, int buf, string imgFilename, 
-                  string ganFilename, int visible, int x, int y) 
-  { 
+  void operator()(RLMachine& machine, int buf, string imgFilename,
+                  string ganFilename, int visible, int x, int y)
+  {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -255,16 +255,16 @@ struct Obj_objOfFileGan_2
 // -----------------------------------------------------------------------
 
 struct Obj_objOfFileGan_3
-  : public RLOp_Void_7<IntConstant_T, StrConstant_T, StrConstant_T, 
+  : public RLOp_Void_7<IntConstant_T, StrConstant_T, StrConstant_T,
                        IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T>
 {
   int m_layer;
   Obj_objOfFileGan_3(int layer) : m_layer(layer) {}
 
-  void operator()(RLMachine& machine, int buf, string imgFilename, 
-                  string ganFilename, int visible, int x, int y, int pattern) 
-  { 
+  void operator()(RLMachine& machine, int buf, string imgFilename,
+                  string ganFilename, int visible, int x, int y, int pattern)
+  {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -323,6 +323,6 @@ ObjFgCreationModule::ObjFgCreationModule()
 
 ObjBgCreationModule::ObjBgCreationModule()
   : RLModule("ObjBgCreation", 1, 72)
-{   
+{
   addObjectCreationFunctions(*this, OBJ_BG_LAYER);
 }

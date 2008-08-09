@@ -4,7 +4,7 @@ if $(not $(defined-env VERBOSE))
 
 .PHONY: clean
 
-.DEFAULT: 
+.DEFAULT:
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
@@ -30,7 +30,7 @@
  * @author Elliot Glaysher
  * @date   Sat Sep 16 14:22:35 2006
  * @ingroup TestCase
- * 
+ *
  * Test cases for the string module
  */
 
@@ -67,7 +67,7 @@ namespace tut
  * of test result, so any cleanup work should be located in destructor.
  */
 struct Module_Str_data
-{ 
+{
 
 };
 
@@ -108,9 +108,9 @@ void object::test<1>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strcpy_1, which should copy the first 2 chracters into strS[0].
- * 
+ *
  * Corresponding kepago listing:
  * @code
  * strcpy(strS[0], "valid", 2)
@@ -132,9 +132,9 @@ void object::test<2>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strclear_0, which should clear the value of a string.
- * 
+ *
  * Corresponding kepago listing:
  * @code
  * strS[0] = "valid"
@@ -164,9 +164,9 @@ void object::test<3>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strclear_1, which should clear out a whole range of values.
- * 
+ *
  * @code
  * strS[0] = "valid"
  * strS[1] = "valid"
@@ -248,7 +248,7 @@ void object::test<6>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strcmp; make sure that it gives the same values as normal strcmp.
  *
  * Corresponding kepago listing:
@@ -285,7 +285,7 @@ void object::test<7>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * First strsub_0 test. Make sure it works on ASCII strings.
  */
 template<>
@@ -305,7 +305,7 @@ void object::test<8>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Second strsub_0 test. Make sure it works on Shift_JIS strings.
  *
  * @code
@@ -330,9 +330,9 @@ void object::test<9>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * First strsub_1 test. Make sure it deals with ASCII.
- * 
+ *
  * @code
  * strS[0] = "valid"
  * strS[1] = strsub(strS[0], 1, 2)
@@ -355,7 +355,7 @@ void object::test<10>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Second strsub_1 test. Make sure it works on Shift_JIS strings.
  *
  * @code
@@ -380,11 +380,11 @@ void object::test<11>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Strrsub test. (We don't need to test this on Shift_JIS since this
  * calls the same code path as strsub, with just a different offset
  * method.)
- * 
+ *
  * @code
  * strS[0] = "valid"
  * strS[1] = strrsub(strS[0], 2)
@@ -402,14 +402,14 @@ void object::test<12>()
 
   ensure_equals("strrsub returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 1),
-                "id"); 
+                "id");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Strrsub test.
- * 
+ *
  * @code
  * strS[0] = "valid"
  * strS[1] = strrsub(strS[0], 2, 1)
@@ -427,14 +427,14 @@ void object::test<13>()
 
   ensure_equals("strrsub returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 1),
-                "i"); 
+                "i");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * strcharlen test on ASCII strings
- * 
+ *
  * @code
  * strS[0] = "valid"
  * intA[0] = strcharlen(strS[0])
@@ -457,9 +457,9 @@ void object::test<14>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * strcharlen test on Shift_JIS strings
- * 
+ *
  * @code
  * strS[0] = "わたしの名前、まだ覚えてる？"
  * intA[0] = strcharlen(strS[0])
@@ -482,9 +482,9 @@ void object::test<15>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * strstrunc test on ASCII characters
- * 
+ *
  * @code
  * strS[0] = "valid"
  * strtrunc(strS[0], 2)
@@ -502,14 +502,14 @@ void object::test<16>()
 
   ensure_equals("strtrunc returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 0),
-                "va"); 
+                "va");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * strstrunc test on ASCII characters
- * 
+ *
  * @todo comment is wrong; recopy the code
  * @code
  * strS[0] = "valid"
@@ -528,14 +528,14 @@ void object::test<17>()
 
   ensure_equals("strtrunc returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 0),
-                "\x82\xED\x82\xBD\x82\xB5"); 
+                "\x82\xED\x82\xBD\x82\xB5");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test hantozen() on ASCII numbers
- * 
+ *
  * @code
  * strS[0] = "12345"
  * strS[0] = hantozen()
@@ -558,10 +558,10 @@ void object::test<18>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test hantozen() on half width katakana; should convert them to full
  * width katakana.
- * 
+ *
  * @code
  * strS[0] = "ﾜﾀｼﾉﾅﾏｴ"
  * strS[0] = hantozen()
@@ -584,9 +584,9 @@ void object::test<19>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests zentohan on fullwidth ASCII characters.
- * 
+ *
  * @code
  * strS[0] = "１２３４５"
  * strS[0] = zentohan()
@@ -609,9 +609,9 @@ void object::test<20>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests zentohan on fullwidth katakana characters.
- * 
+ *
  * @code
  * strS[0] = "ワタシノナマエ"
  * strS[0] = zentohan()
@@ -632,9 +632,9 @@ void object::test<21>()
                 "\xDC\xC0\xBC\xC9\xC5\xCF\xB4");
 }
 
-/** 
+/**
  * Test Uppercase_0
- * 
+ *
  * @code
  * strS[0] = "Valid"
  * // This syntax hurts my brain
@@ -653,14 +653,14 @@ void object::test<22>()
 
   ensure_equals("Uppercase returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 0),
-                "VALID"); 
+                "VALID");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test Uppercase_1
- * 
+ *
  * @code
  * strS[0] = "Valid"
  * // This syntax hurts my brain
@@ -679,17 +679,17 @@ void object::test<23>()
 
   ensure_equals("Uppercase touched strS[0]",
                 rlmachine.getStringValue(STRS_LOCATION, 0),
-                "Valid"); 
+                "Valid");
   ensure_equals("Uppercase returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 1),
-                "VALID"); 
+                "VALID");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test Lowercase_0
- * 
+ *
  * @code
  * strS[0] = "Valid"
  * // This syntax hurts my brain
@@ -708,14 +708,14 @@ void object::test<24>()
 
   ensure_equals("Lowercase returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 0),
-                "valid"); 
+                "valid");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test Lowercase_1.
- * 
+ *
  * @code
  * strS[0] = "Valid"
  * // This syntax hurts my brain
@@ -734,17 +734,17 @@ void object::test<25>()
 
   ensure_equals("Lowercase touched strS[0]",
                 rlmachine.getStringValue(STRS_LOCATION, 0),
-                "Valid"); 
+                "Valid");
   ensure_equals("Lowercase returned wrong value",
                 rlmachine.getStringValue(STRS_LOCATION, 1),
-                "valid"); 
+                "valid");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test itoa_ws's various stuff
- * 
+ *
  * @code
  * strS[0] = itoa_ws(-1)
  * strS[1] = itoa_ws(-1, 3)
@@ -767,21 +767,21 @@ void object::test<26>()
                 "\x81\x7C\x82\x50");
   ensure_equals("itoa_ws set wrong value for strS[1]",
                 rlmachine.getStringValue(STRS_LOCATION, 1),
-                "\x81\x7C\x81\x40\x81\x40\x82\x50"); 
+                "\x81\x7C\x81\x40\x81\x40\x82\x50");
   ensure_equals("itoa_ws set wrong value for strS[2]",
                 rlmachine.getStringValue(STRS_LOCATION, 2),
-                "\x82\x52"); 
+                "\x82\x52");
   ensure_equals("itoa_ws set wrong value for strS[3]",
                 rlmachine.getStringValue(STRS_LOCATION, 3),
-                "\x81\x40\x81\x40\x82\x50"); 
+                "\x81\x40\x81\x40\x82\x50");
 
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test itoa_s, which shouldn't be as hard to write as itoa_ws. -_-
- * 
+ *
  * @code
  * strS[0] = itoa_s(-1)
  * strS[1] = itoa_s(-1, 3)
@@ -804,20 +804,20 @@ void object::test<27>()
                 "-1");
   ensure_equals("itoa_s set wrong value for strS[1]",
                 rlmachine.getStringValue(STRS_LOCATION, 1),
-                "-  1"); 
+                "-  1");
   ensure_equals("itoa_s set wrong value for strS[2]",
                 rlmachine.getStringValue(STRS_LOCATION, 2),
-                "3"); 
+                "3");
   ensure_equals("itoa_s set wrong value for strS[3]",
                 rlmachine.getStringValue(STRS_LOCATION, 3),
-                "  1"); 
+                "  1");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test itoa_s, which shouldn't be as hard to write as itoa_ws. -_-
- * 
+ *
  * @code
  * strS[0] = itoa_w(-1)
  * strS[1] = itoa_w(-1, 3)
@@ -843,18 +843,18 @@ void object::test<28>()
                 "\x81\x7C\x82\x4F\x82\x4F\x82\x50");
   ensure_equals("itoa_w set wrong value for strS[2]",
                 rlmachine.getStringValue(STRS_LOCATION, 2),
-                "\x82\x52"); 
+                "\x82\x52");
   ensure_equals("itoa_w set wrong value for strS[3]",
                 rlmachine.getStringValue(STRS_LOCATION, 3),
                 "\x82\x4F\x82\x4F\x82\x50");
-//                "  1"); 
+//                "  1");
 }
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test itoa
- * 
+ *
  * @code
  * strS[0] = itoa(-1)
  * strS[1] = itoa(-1, 3)
@@ -880,7 +880,7 @@ void object::test<29>()
                 "-001");
   ensure_equals("itoa set wrong value for strS[2]",
                 rlmachine.getStringValue(STRS_LOCATION, 2),
-                "3"); 
+                "3");
   ensure_equals("itoa set wrong value for strS[3]",
                 rlmachine.getStringValue(STRS_LOCATION, 3),
                 "001");
@@ -888,7 +888,7 @@ void object::test<29>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests atoi.
  *
  * @code
@@ -928,7 +928,7 @@ void object::test<30>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests digits.
  *
  * @code
@@ -960,7 +960,7 @@ void object::test<31>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests digits.
  *
  * @code
@@ -1001,9 +1001,9 @@ void object::test<32>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strpos.
- * 
+ *
  * @code
  * intA[0] = strpos("equal", "equal")
  * intA[1] = strpos("This is the the repitition test.", "the")
@@ -1033,9 +1033,9 @@ void object::test<33>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strlpos.
- * 
+ *
  * @code
  * intA[0] = strlpos("equal", "equal")
  * intA[1] = strlpos("This is the the repitition test.", "the")
@@ -1065,9 +1065,9 @@ void object::test<34>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests strused.
- * 
+ *
  * @code
  * strS[1] = "Used"
  * intA[0] = strused(strS[0])

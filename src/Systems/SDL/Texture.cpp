@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -81,11 +81,11 @@ void Texture::SetScreenSize(const Size& s)
 // -----------------------------------------------------------------------
 // Texture
 // -----------------------------------------------------------------------
-Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h, 
+Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
                  unsigned int bytesPerPixel, int byteOrder, int byteType)
   : m_xOffset(x), m_yOffset(y), m_logicalWidth(w), m_logicalHeight(h),
-    m_totalWidth(surface->w), m_totalHeight(surface->h),     
-    m_textureWidth(SafeSize(m_logicalWidth)), 
+    m_totalWidth(surface->w), m_totalHeight(surface->h),
+    m_textureWidth(SafeSize(m_logicalWidth)),
     m_textureHeight(SafeSize(m_logicalHeight)),
     m_backTextureID(0), m_isUpsideDown(false)
 {
@@ -102,7 +102,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     SDL_LockSurface(surface);
     glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
                  m_textureWidth, m_textureHeight,
-                 0, 
+                 0,
                  byteOrder, byteType, NULL);
     ShowGLErrors();
 
@@ -136,7 +136,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
 
     glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
                  m_textureWidth, m_textureHeight,
-                 0, 
+                 0,
                  byteOrder, byteType, NULL);
     ShowGLErrors();
 
@@ -150,8 +150,8 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
 
 Texture::Texture(render_to_texture, int width, int height)
   : m_xOffset(0), m_yOffset(0),
-    m_logicalWidth(width), m_logicalHeight(height), 
-    m_totalWidth(width), m_totalHeight(height),     
+    m_logicalWidth(width), m_logicalHeight(height),
+    m_totalWidth(width), m_totalHeight(height),
     m_textureWidth(0), m_textureHeight(0), m_textureID(0),
     m_backTextureID(0), m_isUpsideDown(true)
 {
@@ -172,7 +172,7 @@ Texture::Texture(render_to_texture, int width, int height)
                0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   ShowGLErrors();
 
-  glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_logicalWidth, 
+  glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_logicalWidth,
                       m_logicalHeight);
   ShowGLErrors();
 }
@@ -203,7 +203,7 @@ char* Texture::uploadBuffer(unsigned int size)
 
 // -----------------------------------------------------------------------
 
-void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h, 
+void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
                        unsigned int bytesPerPixel, int byteOrder, int byteType)
 {
   glBindTexture(GL_TEXTURE_2D, m_textureID);
@@ -339,7 +339,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
     return;
 
   // For the time being, we are dumb and assume that it's one texture
-  
+
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
@@ -362,7 +362,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
     glTexCoord2f(thisx2, thisy1);
     glVertex2f(fdx2, fdy1);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);        
+    glVertex2f(fdx2, fdy2);
     glTexCoord2f(thisx1, thisy2);
     glVertex2f(fdx1, fdy2);
   }
@@ -372,7 +372,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * @todo A function of this hairiness needs super more amounts of
  *       documentation.
  * @todo When I merge back to trunk, make sure to change the throw
@@ -412,7 +412,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
 
   if(m_shaderObjectID == 0)
     buildShader();
-  
+
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
@@ -425,7 +425,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   }
 
   // If we haven't already, allocate video memory for the back
-  // texture. 
+  // texture.
   //
   // NOTE: Does this code deal with changing the dimensions of the
   // text box? Does it matter?
@@ -448,9 +448,9 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   glBindTexture(GL_TEXTURE_2D, m_backTextureID);
   int ystart = int(s_screenHeight - fdy1 - (fdy2 - fdy1));
   int idx1 = int(fdx1);
-  glCopyTexSubImage2D(GL_TEXTURE_2D, 
+  glCopyTexSubImage2D(GL_TEXTURE_2D,
                       0,
-                      0, 0, 
+                      0, 0,
                       idx1, ystart, m_textureWidth, m_textureHeight);
   ShowGLErrors();
 
@@ -490,7 +490,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
     glVertex2f(fdx2, fdy1);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx2, thisy1);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);        
+    glVertex2f(fdx2, fdy2);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx1, thisy1);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx1, thisy2);
     glVertex2f(fdx1, fdy2);
@@ -512,7 +512,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
  * This fallback does not accurately render the scene according to
  * standard RealLive. This only negatively shades according to the
  * alpha value, ignoring the rest of the \#WINDOW_ATTR color.
- * 
+ *
  * This will probably only occur with mesa software and people with
  * graphics cards > 5 years old.
  */
@@ -552,7 +552,7 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
     glTexCoord2f(thisx2, thisy1);
     glVertex2f(fdx2, fdy1);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);        
+    glVertex2f(fdx2, fdy2);
     glTexCoord2f(thisx1, thisy2);
     glVertex2f(fdx1, fdy2);
   }
@@ -594,7 +594,7 @@ void Texture::renderToScreenAsColorMask_additive(
     glTexCoord2f(thisx2, thisy1);
     glVertex2f(fdx2, fdy1);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);        
+    glVertex2f(fdx2, fdy2);
     glTexCoord2f(thisx1, thisy2);
     glVertex2f(fdx1, fdy2);
   }
@@ -613,7 +613,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
-  
+
   float thisx1 = float(x1) / m_textureWidth;
   float thisy1 = float(y1) / m_textureHeight;
   float thisx2 = float(x2) / m_textureWidth;
@@ -622,7 +622,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
   // Blend when we have less opacity
-  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255)) 
+  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
      != opacity + 4)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -636,7 +636,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
     glVertex2f(fdx2, fdy1);
     glColor4ub(255, 255, 255, opacity[2]);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);        
+    glVertex2f(fdx2, fdy2);
     glColor4ub(255, 255, 255, opacity[3]);
     glTexCoord2f(thisx1, thisy2);
     glVertex2f(fdx1, fdy2);
@@ -648,7 +648,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
 // -----------------------------------------------------------------------
 
 void Texture::renderToScreenAsObject(
-  const GraphicsObject& go, 
+  const GraphicsObject& go,
   SDLSurface& surface,
   const GraphicsObjectOverride& overrides)
 {
@@ -719,9 +719,9 @@ void Texture::renderToScreenAsObject(
       yPos2 = go.clipY2();
     }
   }
-  
+
   float fdx1 = xPos1, fdy1 = yPos1, fdx2 = xPos2, fdy2 = yPos2;
-  if(!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2, 
+  if(!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2,
                    fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -778,7 +778,7 @@ void Texture::renderToScreenAsObject(
       glTexCoord2f(thisx2, thisy1);
       glVertex2f(fdx2, fdy1);
       glTexCoord2f(thisx2, thisy2);
-      glVertex2f(fdx2, fdy2);        
+      glVertex2f(fdx2, fdy2);
       glTexCoord2f(thisx1, thisy2);
       glVertex2f(fdx1, fdy2);
     }
@@ -793,7 +793,7 @@ void Texture::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
-void Texture::rawRenderQuad(const int srcCoords[8], 
+void Texture::rawRenderQuad(const int srcCoords[8],
                             const int destCoords[8],
                             const int opacity[4])
 {
@@ -812,7 +812,7 @@ void Texture::rawRenderQuad(const int srcCoords[8],
   glBindTexture(GL_TEXTURE_2D, m_textureID);
 
   // Blend when we have less opacity
-  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255)) 
+  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
      != opacity + 4)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -834,7 +834,7 @@ void Texture::rawRenderQuad(const int srcCoords[8],
 
 // -----------------------------------------------------------------------
 
-bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2, 
+bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
                            float& dx1, float& dy1, float& dx2, float& dy2)
 {
   // POINT

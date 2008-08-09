@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -76,7 +76,7 @@ const int SEL_SIZE = 16;
 /**
  * @defgroup ModuleGrp The Graphics Module (mod<1:33>)
  * @ingroup ModulesOpcodes
- * 
+ *
  * Module that describes various graphics commands that operate on the DCs.
  *
  * @{
@@ -114,13 +114,13 @@ void blitDC1toDC0(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Performs half the grunt work of a recOpen command; Copies DC0 to
  * DC1, loads a graphics file, and then composites that file to DC1.
- * 
+ *
  * Note that it works in rec coordinate space; grp commands must
  * convert from grp coordinate space.
- * 
+ *
  * @param graphics The graphics system to composite on
  * @param fileName The full filename (as returned by findFile)
  * @param x Source X coordinate
@@ -134,7 +134,7 @@ void blitDC1toDC0(RLMachine& machine)
  */
 void loadImageToDC1(GraphicsSystem& graphics,
                     const fs::path& fileName,
-                    const Rect& srcRect, 
+                    const Rect& srcRect,
                     const Point& dest,
                     int opacity, bool useAlpha)
 {
@@ -158,7 +158,7 @@ void loadImageToDC1(GraphicsSystem& graphics,
 
 void loadDCToDC1(GraphicsSystem& graphics,
                  int srcDc,
-                 const Rect& srcRect, 
+                 const Rect& srcRect,
                  const Point& dest,
                  int opacity)
 {
@@ -189,7 +189,7 @@ void handleOpenBgFileName(
   {
     if(fileName == "???") fileName = graphics.defaultGrpName();
     fs::path filePath = findFile(machine, fileName);
-    
+
     loadImageToDC1(graphics, filePath, srcRect, dest,
                    opacity, useAlpha);
   }
@@ -199,7 +199,7 @@ void handleOpenBgFileName(
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Abstract interface for a space. Taken as a parameter to most Grp
  * classes.
  */
@@ -215,16 +215,16 @@ struct SPACE {
  * written in a generic way so that they can be done in either rec or
  * grp coordinate space. GRP_SPACE or REC_SPACE are passed as
  * parameters to these operations.
- * 
+ *
  * @see REC_SPACE
  * @see Grp_open_0
  */
 struct GRP_SPACE : public SPACE {
-  /** 
+  /**
    * Changes the coordinate types. All operations internally are done in
    * rec coordinates, (x, y, width, height). The GRP functions pass
    * parameters of the format (x1, y1, x2, y2).
-   * 
+   *
    * @param x1 X coordinate. Not changed by this function
    * @param y1 Y coordinate. Not changed by this function
    * @param x2 X2. In place changed to width.
@@ -244,7 +244,7 @@ struct GRP_SPACE : public SPACE {
 // -----------------------------------------------------------------------
 
 struct REC_SPACE : public SPACE {
-  /** 
+  /**
    * Don't do anything; leave the incoming coordinates as they are.
    */
   virtual Rect makeRect(int x1, int y1, int x2, int y2)
@@ -261,9 +261,9 @@ struct REC_SPACE : public SPACE {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
- * 
+ *
  * Allocates a blank width × height bitmap in dc. Any DC apart from DC
  * 0 may be allocated thus, although DC 1 is never given a size
  * smaller than the screen resolution. Any previous contents of dc are
@@ -278,9 +278,9 @@ struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<1:Grp:00031, 0>, fun wipe('DC', 'r', 'g', 'b')
- * 
+ *
  * Fills dc with the colour indicated by the given RGB triplet.
  */
 struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
@@ -297,13 +297,13 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 /**
  * Implements the {grp,rec}(Mask)?Load family of functions.
  *
- * Loads filename into dc; note that filename may not be '???'. 
+ * Loads filename into dc; note that filename may not be '???'.
  *
  * @note Since this function deals with the entire screen (and
  * therefore doesn't need to worry about the difference between
  * grp/rec coordinate space), we write one function for both versions.
  */
-struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
+struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                         DefaultIntValue_T<255> > {
   bool m_useAlpha;
   Grp_load_1(bool in) : m_useAlpha(in) {}
@@ -339,10 +339,10 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
  * this form, the given area of the bitmap is loaded at the given
  * location.
  */
-struct Grp_load_3 : public RLOp_Void_9< 
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Grp_load_3 : public RLOp_Void_9<
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> > 
+  DefaultIntValue_T<255> >
 {
   bool m_useAlpha;
   SPACE& m_space;
@@ -362,7 +362,7 @@ struct Grp_load_3 : public RLOp_Void_9<
     }
 
     surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
-                           opacity, m_useAlpha);    
+                           opacity, m_useAlpha);
   }
 };
 
@@ -371,9 +371,9 @@ struct Grp_load_3 : public RLOp_Void_9<
 // -----------------------------------------------------------------------
 
 struct Grp_display_1
-  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > 
+  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T >
 {
-  void operator()(RLMachine& machine, int dc, int effectNum, int opacity) 
+  void operator()(RLMachine& machine, int dc, int effectNum, int opacity)
   {
     vector<int> selEffect = getSELEffect(machine, effectNum);
 
@@ -405,15 +405,15 @@ struct Grp_display_0 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Grp_display_3 : public RLOp_Void_9< 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Grp_display_3 : public RLOp_Void_9<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T>
 {
   SPACE& m_space;
   Grp_display_3(SPACE& space) : m_space(space) {}
 
-  void operator()(RLMachine& machine, int dc, int effectNum, 
+  void operator()(RLMachine& machine, int dc, int effectNum,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
@@ -431,21 +431,21 @@ struct Grp_display_3 : public RLOp_Void_9<
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * @todo Finish documentation
  */
-struct Grp_display_2 : public RLOp_Void_8< 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Grp_display_2 : public RLOp_Void_8<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   Grp_display_3 delegate;
   Grp_display_2(SPACE& space) : delegate(space) {}
 
-  void operator()(RLMachine& machine, int dc, int effectNum, 
+  void operator()(RLMachine& machine, int dc, int effectNum,
                   int x1, int y1, int x2, int y2, int dx, int dy)
   {
     int opacity = getSELEffect(machine, effectNum).at(14);
-    delegate(machine, dc, effectNum, x1, y1, x2, y2, dx, dy, 
+    delegate(machine, dc, effectNum, x1, y1, x2, y2, dx, dy,
              opacity);
   }
 };
@@ -455,9 +455,9 @@ struct Grp_display_2 : public RLOp_Void_8<
 // {grp,rec}Open
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
- * 
+ *
  * Load and display a bitmap. @em filename is loaded into DC1 with
  * opacity @em opacity, and then is passed off to whatever transition
  * effect, which will perform some intermediary steps and then render
@@ -465,13 +465,13 @@ struct Grp_display_2 : public RLOp_Void_8<
  *
  * @todo factor out the common code between grpOpens!
  */
-struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T, 
+struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                         IntConstant_T > {
   SPACE& m_space;
   bool m_useAlpha;
   Grp_open_1(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum, 
+  void operator()(RLMachine& machine, string filename, int effectNum,
                   int opacity)
   {
     vector<int> selEffect = getSELEffect(machine, effectNum);
@@ -497,9 +497,9 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<1:Grp:00076, 0>, fun grpOpen(strC 'filename', '\#SEL').
- * 
+ *
  * Load and display a bitmap. @em filename is loaded into DC1, and
  * then is passed off to whatever transition effect, which will
  * perform some intermediary steps and then render DC1 to DC0.
@@ -507,7 +507,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   SPACE& m_space;
   Grp_open_1 m_delegate;
-  Grp_open_0(bool in, SPACE& space) 
+  Grp_open_0(bool in, SPACE& space)
     : m_space(space), m_delegate(in, space) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
@@ -518,8 +518,8 @@ struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Grp_open_3 : public RLOp_Void_9< 
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Grp_open_3 : public RLOp_Void_9<
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T>
 {
@@ -527,7 +527,7 @@ struct Grp_open_3 : public RLOp_Void_9<
   bool m_useAlpha;
   Grp_open_3(bool in, SPACE& space) : m_space(space), m_useAlpha(in) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum, 
+  void operator()(RLMachine& machine, string filename, int effectNum,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
@@ -549,9 +549,9 @@ struct Grp_open_3 : public RLOp_Void_9<
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
- * 
+ *
  * Load and display a bitmap. @em filename is loaded into DC1 with
  * opacity @em opacity, and then is passed off to whatever transition
  * effect, which will perform some intermediary steps and then render
@@ -559,25 +559,25 @@ struct Grp_open_3 : public RLOp_Void_9<
  *
  * @todo Finish documentation
  */
-struct Grp_open_2 : public RLOp_Void_8< 
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Grp_open_2 : public RLOp_Void_8<
+  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   Grp_open_3 m_delegate;
   Grp_open_2(bool in, SPACE& space) : m_delegate(in, space) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum, 
+  void operator()(RLMachine& machine, string filename, int effectNum,
                   int x1, int y1, int x2, int y2, int dx, int dy)
   {
     int opacity = getSELEffect(machine, effectNum).at(14);
-    m_delegate(machine, filename, effectNum, x1, y1, x2, y2, 
+    m_delegate(machine, filename, effectNum, x1, y1, x2, y2,
                dx, dy, opacity);
   }
 };
 
 // -----------------------------------------------------------------------
 
-//(strC 'filename', 'x1', 'y1', 'x2', 'y2', 
+//(strC 'filename', 'x1', 'y1', 'x2', 'y2',
 // 'dx', 'dy', 'steps', 'effect', 'direction',
 // 'interpolation', 'density', 'speed', '?', '?',
 // 'alpha', '?')
@@ -600,21 +600,21 @@ struct Grp_open_4 : public RLOp_Void_17<
     Rect srcRect = m_space.makeRect(x1, y1, x2, y2);
 
     // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = 
+    shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, srcRect, Point(dx, dy), 
+    handleOpenBgFileName(machine, fileName, srcRect, Point(dx, dy),
                          opacity, m_useAlpha);
 
-    // Promote the objects 
+    // Promote the objects
     graphics.promoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
-    LongOperation* lop = 
-      EffectFactory::build(machine, tmp, dc0, time, style, direction, 
+    LongOperation* lop =
+      EffectFactory::build(machine, tmp, dc0, time, style, direction,
                            interpolation, xsize, ysize, a, b, c);
     decorateEffectWithBlit(lop, dc1, graphics.getDC(0));
     machine.pushLongOperation(lop);
@@ -641,17 +641,17 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
       .setOpacity(opacity);
 
     // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = 
+    shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
     handleOpenBgFileName(
       machine, fileName, srcRect, destPoint, opacity, false);
 
-    // Promote the objects 
+    // Promote the objects
     graphics.clearAndPromoteObjects();
 
-    // Render the screen to a temporary 
-    shared_ptr<Surface> dc1 = graphics.getDC(1);    
+    // Render the screen to a temporary
+    shared_ptr<Surface> dc1 = graphics.getDC(1);
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
     LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
@@ -665,7 +665,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
 struct Grp_openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   Grp_openBg_1 m_delegate;
-  
+
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = getSELEffect(machine, effectNum);
     m_delegate(machine, filename, effectNum, selEffect[14]);
@@ -700,20 +700,20 @@ struct Grp_openBg_4 : public RLOp_Void_17<
       .setOpacity(opacity);
 
     // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = 
+    shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, srcRect, destPt, 
+    handleOpenBgFileName(machine, fileName, srcRect, destPt,
                          opacity, m_useAlpha);
 
-    // Promote the objects 
+    // Promote the objects
     graphics.clearAndPromoteObjects();
 
-    // Render the screen to a temporary 
-    shared_ptr<Surface> dc1 = graphics.getDC(1);    
+    // Render the screen to a temporary
+    shared_ptr<Surface> dc1 = graphics.getDC(1);
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
 
-    LongOperation* effect = EffectFactory::build(machine, tmp, dc0, time, 
+    LongOperation* effect = EffectFactory::build(machine, tmp, dc0, time,
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
@@ -729,7 +729,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
 struct Grp_copy_3 : public RLOp_Void_9<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> > 
+  DefaultIntValue_T<255> >
 {
   SPACE& m_space;
   bool m_useAlpha;
@@ -758,8 +758,8 @@ struct Grp_copy_3 : public RLOp_Void_9<
 
 // -----------------------------------------------------------------------
 
-struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T, 
-                                       DefaultIntValue_T<255> > 
+struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
+                                       DefaultIntValue_T<255> >
 {
   bool m_useAlpha;
   Grp_copy_1(bool in) : m_useAlpha(in) {}
@@ -788,7 +788,7 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 struct Grp_fill_1 : public RLOp_Void_5<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
     machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha));
@@ -798,9 +798,9 @@ struct Grp_fill_1 : public RLOp_Void_5<
 // -----------------------------------------------------------------------
 
 struct Grp_fill_3 : public RLOp_Void_9<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
-  DefaultIntValue_T<255> > 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  DefaultIntValue_T<255> >
 {
   SPACE& m_space;
   Grp_fill_3(SPACE& space) : m_space(space) {}
@@ -823,7 +823,7 @@ struct Grp_fade_7 : public RLOp_Void_8<
   SPACE& m_space;
   Grp_fade_7(SPACE& space) : m_space(space) {}
 
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2, 
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int r, int g, int b, int time) {
     Rect rect = m_space.makeRect(x1, y1, x2, y2);
     GraphicsSystem& graphics = machine.system().graphics();
@@ -837,8 +837,8 @@ struct Grp_fade_7 : public RLOp_Void_8<
       shared_ptr<Surface> dc0 = graphics.getDC(0);
       shared_ptr<Surface> tmp(dc0->clone());
       tmp->fill(RGBAColour(r, g, b), rect);
-      LongOperation* lop = 
-        EffectFactory::build(machine, tmp, dc0, time, 0, 0, 
+      LongOperation* lop =
+        EffectFactory::build(machine, tmp, dc0, time, 0, 0,
                              0, 0, 0, 0, 0, 0);
       decorateEffectWithBlit(lop, tmp, dc0);
       machine.pushLongOperation(lop);
@@ -847,14 +847,14 @@ struct Grp_fade_7 : public RLOp_Void_8<
 };
 
 struct Grp_fade_5 : public RLOp_Void_6<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, DefaultIntValue_T<0> >
 {
   SPACE& m_space;
   Grp_fade_7 m_delegate;
   Grp_fade_5(SPACE& space) : m_space(space), m_delegate(space) {}
 
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2, 
+  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
                   int color_num, int time) {
     Gameexe& gexe = machine.system().gameexe();
     const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
@@ -913,10 +913,10 @@ struct Grp_zoom : public RLOp_Void_14<
       new ZoomLongOperation(
         machine, gs.getDC(0), gs.getDC(srcDC),
         frect, trect, drect, time);
-    BlitAfterEffectFinishes* blitOp = 
+    BlitAfterEffectFinishes* blitOp =
       new BlitAfterEffectFinishes(
-        zoomOp, 
-        gs.getDC(srcDC), gs.getDC(0), 
+        zoomOp,
+        gs.getDC(srcDC), gs.getDC(0),
         trect, drect);
     machine.pushLongOperation(blitOp);
   }
@@ -930,18 +930,18 @@ struct Grp_zoom : public RLOp_Void_14<
  * defines the fairly complex parameter definition for the list of
  * functions to call in a {grp,rec}Multi command.
  */
-typedef Argc_T< 
+typedef Argc_T<
   Special_T<
     StrConstant_T, // 0:copy
     Complex2_T<StrConstant_T, IntConstant_T>, // 1:copy
     Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>, // 2:copy
     // 3:area
     Complex7_T<StrConstant_T, IntConstant_T, IntConstant_T,
-               IntConstant_T, IntConstant_T, IntConstant_T, 
+               IntConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T>,
     // 4:area
     Complex8_T<StrConstant_T, IntConstant_T, IntConstant_T,
-               IntConstant_T, IntConstant_T, IntConstant_T, 
+               IntConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T, IntConstant_T>
     > >  MultiCommand;
 
@@ -955,14 +955,14 @@ typedef Argc_T<
  * In the end, this operation struct simply dispatches the
  * Special/Complex commands to functions and other operation structs
  * that are clearer in purpose.
- * 
+ *
  * @todo Finish this operation; it's in an incomplete, but compiling
  *       state.
  * @see MultiCommand
  */
 //template<typename SPACE>
 /*
-struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T, 
+struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
                                         IntConstant_T, MultiCommand>
 {
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
@@ -971,7 +971,7 @@ struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
 //    Grp_load_0(false)(machine, filename, effect);
 
     for(MultiCommand::type::iterator it = commands.begin(); it != commands.end();
-        it++) 
+        it++)
     {
       switch(it->type)
       {
@@ -987,7 +987,7 @@ struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
 
         break;
       case 3:
-        Grp_load_3<SPACE>(true)(machine, it->fourth.get<0>(), 
+        Grp_load_3<SPACE>(true)(machine, it->fourth.get<0>(),
                                 it->fourth.get<1>(),
                                 it->fourth.get<2>(),
                                 it->fourth.get<3>(),
@@ -997,7 +997,7 @@ struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
                                 255);
         break;
       case 4:
-        Grp_load_3<SPACE>(true)(machine, it->fifth.get<0>(), 
+        Grp_load_3<SPACE>(true)(machine, it->fifth.get<0>(),
                                 it->fifth.get<1>(),
                                 it->fifth.get<2>(),
                                 it->fifth.get<3>(),
@@ -1020,21 +1020,21 @@ struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
 template<typename SPACE>
 struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand>
 {
-  void operator()(RLMachine& machine, string dc, int effect, 
+  void operator()(RLMachine& machine, string dc, int effect,
                   MultiCommand::type commands)
   {
     Grp_multi_1<SPACE>()(machine, dc, effect, 255, commands);
-  }     
+  }
 };
-*/     
-                                                                 
+*/
+
 // -----------------------------------------------------------------------
 
 /**
  *
  * At minimum, we need to get these functions working for Kanon:
  *
- * $  grep grp *.ke -h | cut -f 1 -d " " | sort | uniq  
+ * $  grep grp *.ke -h | cut -f 1 -d " " | sort | uniq
  * grpBuffer
  * grpCopy
  * grpFill
@@ -1158,7 +1158,7 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(601, 3, "grpMaskAdd");
 
   // -----------------------------------------------------------------------
-  
+
   addOpcode(1050, 0, "recLoad", new Grp_load_1(false));
   addOpcode(1050, 1, "recLoad", new Grp_load_1(false));
   addOpcode(1050, 2, "recLoad", new Grp_load_3(false, REC));
@@ -1238,7 +1238,7 @@ GrpModule::GrpModule()
 // -----------------------------------------------------------------------
 
 void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
-{ 
+{
   handleOpenBgFileName(
     machine, f.filename(), f.sourceRect(), f.targetPoint(), f.opacity(), false);
 
@@ -1248,10 +1248,10 @@ void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
 // -----------------------------------------------------------------------
 
 void replayGraphicsStackVector(
-  RLMachine& machine, 
+  RLMachine& machine,
   const std::vector<GraphicsStackFrame>& gstack)
 {
-  for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin(); 
+  for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
       it != gstack.end(); ++it)
   {
     if(it->name() == GRP_LOAD)

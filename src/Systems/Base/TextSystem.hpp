@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __TextSystem_hpp__
@@ -57,7 +57,7 @@ struct TextSystemGlobals
   /// Message speed; range from 0 to 255
   char messageSpeed;
 
-  /// The default \#WINDOW_ATTR. This is what is changed by the 
+  /// The default \#WINDOW_ATTR. This is what is changed by the
   std::vector<int> windowAttr;
 
   /// boost::serialization support
@@ -80,7 +80,7 @@ protected:
 
   /**
    * @name Auto mode (variables)
-   * 
+   *
    * @{
    */
   /// Whether Auto mode is enabled
@@ -96,9 +96,9 @@ protected:
   /// Internal 'no wait' flag
   bool m_messageNoWait;
 
-  /** 
+  /**
    * @name Textwindow Management
-   * 
+   *
    * @{
    */
   /// Sets which window is the current active window.
@@ -113,14 +113,14 @@ protected:
 
   /**
    * @name Backlog Management
-   * 
+   *
    * @{
    */
 
   /// Whether we are reading the backlog
   bool m_isReadingBacklog;
 
-  /// Internal structure used to keep track of the state of 
+  /// Internal structure used to keep track of the state of
   typedef boost::ptr_map<int, TextPage> PageSet;
 
   /// The current page set. Represents what is on the screen right now.
@@ -145,7 +145,7 @@ protected:
 
   /**
    * @name Global Window Button Toggles
-   * 
+   *
    * @{
    */
   bool m_moveUse, m_clearUse, m_readJumpUse, m_automodeUse, m_msgbkUse,
@@ -158,7 +158,7 @@ protected:
 
   bool m_systemVisible;
 
-  /** 
+  /**
    * Reduces the number of page snapshots in m_previousPageSets down to a
    * manageable constant number.
    */
@@ -168,10 +168,10 @@ public:
   TextSystem(Gameexe& gexe);
   virtual ~TextSystem();
 
-  /** 
+  /**
    * @name Master visibility control
    *
-   * Controls whether the text system is rendered at all. 
+   * Controls whether the text system is rendered at all.
    *
    * @{
    */
@@ -181,7 +181,7 @@ public:
 
   /**
    * @name Implementation detail interface
-   * 
+   *
    * @{
    */
 
@@ -203,18 +203,18 @@ public:
 
   std::vector<int> activeWindows();
 
-  /** 
+  /**
    * Take a snapshot of the current window state, with their
    * respective TextPages, and add it to the backlog.
    */
   void snapshot(RLMachine& machine);
 
-  /** 
+  /**
    * Resets the text page in the currentSet
    */
   void newPageOnWindow(RLMachine& machine, int window);
 
-  /** 
+  /**
    * Get the active page. This function will return
    * m_windows[m_activeWindow].page().
    */
@@ -222,7 +222,7 @@ public:
 
   /**
    * @name Backlog management
-   * 
+   *
    * @{
    */
 
@@ -241,12 +241,12 @@ public:
 
   /**
    * @name Auto mode
-   * 
+   *
    * It is possible to set the interpreter up to advance text
    * automatically instead of waiting for player input after each
    * screen is displayed; the `auto mode' controls permit this
    * behaviour to be customised.
-   * 
+   *
    * @{
    */
   void setAutoMode(int i) { m_autoMode = (bool)i; }
@@ -263,9 +263,9 @@ public:
 
   void setKeyCursor(RLMachine& machine, int newCursor);
 
-  /** 
+  /**
    * Returns the key cursor index.
-   * 
+   *
    * @return The key cursor number (or -1 if no key cursor).
    */
   int cursorNumber() const;
@@ -309,7 +309,7 @@ public:
 
   /**
    * @name Window button state
-   * 
+   *
    * @{
    */
   bool windowMoveUse() const { return m_moveUse; }
@@ -329,7 +329,7 @@ public:
 
   /**
    * @name Font Management and Text Rendering
-   * 
+   *
    * @{
    */
    virtual boost::shared_ptr<Surface> renderText(
@@ -357,15 +357,15 @@ public:
 
 int convertNameVar(const std::string& value);
 
-/** 
+/**
  * Name parser. Takes a raw, local machine encoded string and replaces name
  * variable placeholders with the names from Memory.
- * 
+ *
  * @note This function assumes that text is in CP932 encoding, and will need to
  *       be generalized when we try to support other hacks on top of cp932.
  * @relates TextSystem
  */
-void parseNames(const Memory& memory, const std::string& input, 
+void parseNames(const Memory& memory, const std::string& input,
                 std::string& output);
 
 #endif

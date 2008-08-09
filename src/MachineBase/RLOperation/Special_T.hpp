@@ -3,21 +3,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Special_T_hpp__
@@ -33,14 +33,14 @@
 #include <sstream>
 #include <iostream>
 
-/** 
+/**
  * Type definition that implements the special parameter concept; the
- * way to expect multiple different types in a parameter slot. 
+ * way to expect multiple different types in a parameter slot.
  */
-template<typename A, typename B = Empty_T, typename C = Empty_T, 
+template<typename A, typename B = Empty_T, typename C = Empty_T,
          typename D = Empty_T, typename E = Empty_T>
 struct Special_T {
-  /// Internal unionish structure which we pass in to the 
+  /// Internal unionish structure which we pass in to the
   struct Parameter {
     // 0 = A, 1 = B
     int type;
@@ -58,9 +58,9 @@ struct Special_T {
   /// Special<Complex, Complex, ...> requires a special construct...
   template<typename TYPE>
   static typename TYPE::type getDataFor(
-    RLMachine& machine, 
+    RLMachine& machine,
     const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-    unsigned int position, 
+    unsigned int position,
     const libReallive::SpecialExpressionPiece& sp)
   {
     if(TYPE::isComplex)
@@ -82,7 +82,7 @@ struct Special_T {
       throw std::runtime_error(oss.str());
     }
 
-    const libReallive::SpecialExpressionPiece& sp = 
+    const libReallive::SpecialExpressionPiece& sp =
       static_cast<const libReallive::SpecialExpressionPiece&>(p[position]);
 
     if(sp.getContainedPieces().size() == 0)

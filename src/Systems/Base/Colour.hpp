@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Colour_hpp__
@@ -36,7 +36,7 @@
  */
 class RGBColour
 {
-public: 
+public:
   RGBColour() : r_(0), g_(0), b_(0) {}
   RGBColour(int r, int g, int b) : r_(r), g_(g), b_(b) {}
 
@@ -76,10 +76,10 @@ private:
  */
 class RGBAColour
 {
-public: 
-  RGBAColour() : rgb_(0, 0, 0), alpha_(0) { } 
-  RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { } 
-  RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { } 
+public:
+  RGBAColour() : rgb_(0, 0, 0), alpha_(0) { }
+  RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { }
+  RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { }
   RGBAColour(const RGBColour& colour, int a) : rgb_(colour), alpha_(a) { }
 
   int r() const { return rgb_.r(); }

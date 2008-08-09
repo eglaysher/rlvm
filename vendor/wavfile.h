@@ -72,7 +72,7 @@ struct WAVFILE_Converter : WAVFILE {
 };
 
 struct WAVFILE_Stream : WAVFILE{
-	char *data;                             /* real data */ 
+	char *data;                             /* real data */
 	char *data_orig;
 	int data_length;
 	FILE* stream;

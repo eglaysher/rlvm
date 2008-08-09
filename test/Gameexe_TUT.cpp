@@ -8,29 +8,29 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
  * @file   Gameexe_TUT.cpp
  * @author Elliot Glaysher
  * @date   Tue Oct  3 13:59:24 2006
- * 
- * @brief  Tests the Gamexe interface. 
+ *
+ * @brief  Tests the Gamexe interface.
  */
 
 #include "libReallive/gameexe.h"
@@ -58,7 +58,7 @@ namespace tut
  * of test result, so any cleanup work should be located in destructor.
  */
 struct Gameexe_data
-{ 
+{
 
 };
 
@@ -88,7 +88,7 @@ void object::test<1>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Make sure #CAPTION exists and that we read its value correctly.
  */
 template<>
@@ -103,7 +103,7 @@ void object::test<2>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Make sure \#RANDOM_KEY doesn't exist.
  */
 template<>
@@ -191,7 +191,7 @@ template<>
 template<>
 void object::test<8>()
 {
-  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));  
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   GameexeInterpretObject gio = ini("WINDOW.000.ATTR_MOD");
   vector<string> pieces = gio.key_parts();
   ensure_equals(pieces.size(), 3);

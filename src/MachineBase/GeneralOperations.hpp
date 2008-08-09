@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 
@@ -86,9 +86,9 @@ CGMTable& getSystemObj(RLMachine& machine);
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Binds setting an internal variable to a passed in value in from a
- * running Reallive script. 
+ * running Reallive script.
  */
 template<typename OBJTYPE>
 class Op_CallWithInt : public RLOp_Void_1< IntConstant_T > {
@@ -102,10 +102,10 @@ private:
 
 public:
   Op_CallWithInt(Setter s)
-    : setter(s) 
+    : setter(s)
   {}
 
-  void operator()(RLMachine& machine, int incoming) 
+  void operator()(RLMachine& machine, int incoming)
   {
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
   }
@@ -113,9 +113,9 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Binds setting an internal variable to a passed in value in from a
- * running Reallive script. 
+ * running Reallive script.
  */
 template<typename OBJTYPE>
 class Op_CallWithMachineInt : public RLOp_Void_1< IntConstant_T > {
@@ -129,10 +129,10 @@ private:
 
 public:
   Op_CallWithMachineInt(Setter s)
-    : setter(s) 
+    : setter(s)
   {}
 
-  void operator()(RLMachine& machine, int incoming) 
+  void operator()(RLMachine& machine, int incoming)
   {
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(machine, incoming);
   }
@@ -140,9 +140,9 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Binds setting an internal variable to a passed in value in from a
- * running Reallive script. 
+ * running Reallive script.
  */
 template<typename OBJTYPE>
 class Op_CallWithIntInt : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
@@ -156,10 +156,10 @@ private:
 
 public:
   Op_CallWithIntInt(Setter s)
-    : setter(s) 
+    : setter(s)
   {}
 
-  void operator()(RLMachine& machine, int incoming1, int incoming2) 
+  void operator()(RLMachine& machine, int incoming1, int incoming2)
   {
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming1, incoming2);
   }
@@ -167,9 +167,9 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Binds setting an internal variable to a passed in value in from a
- * running Reallive script. 
+ * running Reallive script.
  */
 template<typename OBJTYPE>
 class Op_CallWithString : public RLOp_Void_1< StrConstant_T > {
@@ -183,10 +183,10 @@ private:
 
 public:
   Op_CallWithString(Setter s)
-    : setter(s) 
+    : setter(s)
   {}
 
-  void operator()(RLMachine& machine, std::string incoming) 
+  void operator()(RLMachine& machine, std::string incoming)
   {
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
   }
@@ -201,11 +201,11 @@ private:
   FUNCTYPE func;
 
 public:
-  Op_CallMethod(FUNCTYPE f) 
-    : func(f) 
+  Op_CallMethod(FUNCTYPE f)
+    : func(f)
   {}
 
-  void operator()(RLMachine& machine) 
+  void operator()(RLMachine& machine)
   {
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*func)();
   }
@@ -253,7 +253,7 @@ RLOperation* callFunction(void(OBJTYPE::*s)())
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Sets an internal variable to a specific value set at compile time,
  * and exposes this as an operation to Reallive scripts.
  */
@@ -270,7 +270,7 @@ public:
     : setter(s), value(inVal)
   {}
 
-  void operator()(RLMachine& machine) 
+  void operator()(RLMachine& machine)
   {
     (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(value);
   }
@@ -286,7 +286,7 @@ RLOperation* setToConstant(void(OBJTYPE::*s)(VALTYPE), VALTYPE val)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Reads the value of an internal variable in a generic way using an
  * arbitrary getter function and places it in the store register.
  */
@@ -297,11 +297,11 @@ private:
   Getter getter;
 
 public:
-  Op_ReturnIntValue(Getter g) 
-    : getter(g) 
+  Op_ReturnIntValue(Getter g)
+    : getter(g)
   {}
 
-  int operator()(RLMachine& machine) 
+  int operator()(RLMachine& machine)
   {
     return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)();
   }
@@ -344,7 +344,7 @@ RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(const std::string&) const)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Reads the value of an internal variable in a generic way using an
  * arbitrary getter function and places it in the store register.
  */
@@ -357,11 +357,11 @@ private:
   Getter getter;
 
 public:
-  Op_ReturnStringValue(Getter g) 
-    : getter(g) 
+  Op_ReturnStringValue(Getter g)
+    : getter(g)
   {}
 
-  void operator()(RLMachine& machine, StringReferenceIterator dest) 
+  void operator()(RLMachine& machine, StringReferenceIterator dest)
   {
     *dest = (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)();
   }

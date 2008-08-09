@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "libReallive/archive.h"
@@ -55,7 +55,7 @@ public:
   void setTicks(unsigned int in) { ticks = in; }
   virtual unsigned int getTicks() const { return ticks; }
 private:
-  /// 
+  ///
   unsigned int ticks;
 };
 
@@ -86,7 +86,7 @@ tf Effect_data("Effect");
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Testing code used by test<1> to test the actual code in the base
  * Effect class.
  */
@@ -104,7 +104,7 @@ public:
   MockLog& log() { return log_; }
 
 protected:
-  virtual void performEffectForTime(RLMachine& machine, 
+  virtual void performEffectForTime(RLMachine& machine,
                                     int currentTime) {
     log_.recordFunction("performEffectForTime", currentTime);
   }
@@ -115,13 +115,13 @@ private:
     return blit_original_image_;
   }
 
-  // What we should return 
+  // What we should return
   bool blit_original_image_;
 
   mutable MockLog log_;
 };
 
-/** 
+/**
  * Tests the base
  */
 template<>
@@ -134,7 +134,7 @@ void object::test<1>()
   auto_ptr<EffectPreconditionTest> effect(
     new EffectPreconditionTest(rlmachine, src, dst, Size(640, 480), 2, false));
 
-  // First loop through (with 
+  // First loop through (with
   bool retVal = false;
   for (int i = 0; i < 2; ++i) {
     retVal = (*effect)(rlmachine);
@@ -153,8 +153,8 @@ void object::test<1>()
 class BlindTopToBottomWithLog : public BlindTopToBottomEffect {
 public:
   BlindTopToBottomWithLog(RLMachine& machine, boost::shared_ptr<Surface> src,
-                          boost::shared_ptr<Surface> dst, 
-                          int width, int height, int time, int blindSize) 
+                          boost::shared_ptr<Surface> dst,
+                          int width, int height, int time, int blindSize)
     : BlindTopToBottomEffect(machine, src, dst, Size(width, height), time, blindSize),
       log_("BlindTopToBottomEffect") {
   }
@@ -234,7 +234,7 @@ void object::test<2>()
   effect->log().ensure("renderPolygon", 450, 471);
   effect->log().clear();
 
-  // Test at 75 
+  // Test at 75
   event_system_impl->setTicks(75);
   retVal = (*effect)(rlmachine);
   ensure_not("Prematurely quit", retVal);

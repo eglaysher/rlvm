@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -33,9 +33,9 @@
  * @file   GanGraphicsObjectData.cpp
  * @author Elliot Glaysher
  * @date   Sun Jun 10 11:21:51 2007
- * 
+ *
  * @brief  In memory representation of a GAN animation file.
- * 
+ *
  * This code is heavily based off Haeleth's O'caml implementation
  * (which translates binary GAN files to and from an XML
  * representation), found at rldev/src/rlxml/gan.ml.
@@ -86,7 +86,7 @@ GanGraphicsObjectData::GanGraphicsObjectData()
 // -----------------------------------------------------------------------
 
 GanGraphicsObjectData::GanGraphicsObjectData(
-  RLMachine& machine, const std::string& ganFile, 
+  RLMachine& machine, const std::string& ganFile,
   const std::string& imgFile)
   : m_ganFilename(ganFile), m_imgFilename(imgFile), m_currentSet(-1),
     m_currentFrame(-1), m_timeAtLastFrameChange(0)
@@ -126,7 +126,7 @@ void GanGraphicsObjectData::load(RLMachine& machine)
   }
 
   testFileMagic(m_ganFilename, ganData, fileSize);
-  readData(machine, m_ganFilename, ganData, fileSize);  
+  readData(machine, m_ganFilename, ganData, fileSize);
 }
 
 // -----------------------------------------------------------------------
@@ -168,17 +168,17 @@ void GanGraphicsObjectData::readData(
 
   int numberOfSets = read_i32(data);
   data += 4;
-  
+
   for(int i = 0; i < numberOfSets; ++i)
   {
     int startOfGANset = read_i32(data);
     if(startOfGANset != 0x7530)
       throwBadFormat(fileName, "Expected start of GAN set");
-    
+
     data += 4;
     int frameCount = read_i32(data);
     if(frameCount < 0)
-      throwBadFormat(fileName, 
+      throwBadFormat(fileName,
                      "Expected animation to contain at least one frame");
     data += 4;
 
@@ -191,8 +191,8 @@ void GanGraphicsObjectData::readData(
 
 // -----------------------------------------------------------------------
 
-GanGraphicsObjectData::Frame 
-GanGraphicsObjectData::readSetFrame(const std::string& fileName, 
+GanGraphicsObjectData::Frame
+GanGraphicsObjectData::readSetFrame(const std::string& fileName,
                                     const char*& data)
 {
   GanGraphicsObjectData::Frame frame;
@@ -256,7 +256,7 @@ void GanGraphicsObjectData::throwBadFormat(
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::render(
-  RLMachine& machine, 
+  RLMachine& machine,
   const GraphicsObject& go)
 {
   if(m_currentSet != -1 && m_currentFrame != -1)
@@ -271,7 +271,7 @@ void GanGraphicsObjectData::render(
       // Groan. Now I can't really test this.
       GraphicsObjectOverride overrideData;
       // POINT
-      overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(), 
+      overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(),
                                      rect.rect.x2(), rect.rect.y2());
       overrideData.setDestOffset(frame.x, frame.y);
 
@@ -286,7 +286,7 @@ void GanGraphicsObjectData::render(
 }
 
 // -----------------------------------------------------------------------
-  
+
 int GanGraphicsObjectData::pixelWidth(
   RLMachine& machine,
   const GraphicsObject& renderingProperties)
@@ -308,7 +308,7 @@ int GanGraphicsObjectData::pixelWidth(
 // -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelHeight(
-  RLMachine& machine, 
+  RLMachine& machine,
   const GraphicsObject& renderingProperties)
 {
   if(m_currentSet != -1 && m_currentFrame != -1)
@@ -339,7 +339,7 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
   if(currentlyPlaying() && m_currentFrame >= 0)
   {
     unsigned int currentTime = machine.system().event().getTicks();
-    unsigned int timeSinceLastFrameChange = 
+    unsigned int timeSinceLastFrameChange =
       currentTime - m_timeAtLastFrameChange;
 
     const vector<Frame>& currentSet = animationSets.at(m_currentSet);
@@ -368,7 +368,7 @@ void GanGraphicsObjectData::loopAnimation()
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::playSet(RLMachine& machine, int set) 
+void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
 {
   setCurrentlyPlaying(true);
   m_currentSet = set;

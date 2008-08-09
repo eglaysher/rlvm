@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -33,7 +33,7 @@
  * @file   Module_Sys.cpp
  * @author Elliot Glaysher
  * @date   Tue Nov 14 19:35:15 2006
- * 
+ *
  * @brief  Implements various commands that don't fit in other modules.
  *
  * VisualArts appears to have used this as a dumping ground for any
@@ -99,7 +99,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
     : EventHandler(machine),
       m_targetTime(machine.system().event().getTicks() + time),
       m_breakOnClicks(breakOnClicks), m_buttonPressed(0),
-      m_ctrlPressed(false), 
+      m_ctrlPressed(false),
       m_breakOnCtrlPressed(machine.system().text().ctrlKeySkip()),
       m_mouseMoved(false)
   {}
@@ -109,7 +109,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
     m_mouseMoved = true;
   }
 
-  /** 
+  /**
    * Listen for mouseclicks (provided by EventHandler).
    */
   void mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
@@ -125,7 +125,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
 
   void keyStateChanged(KeyCode keyCode, bool pressed)
   {
-    if(pressed && m_breakOnCtrlPressed && 
+    if(pressed && m_breakOnCtrlPressed &&
        (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
       m_ctrlPressed = true;
   }
@@ -171,13 +171,13 @@ struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetCursorPos_gc1 
-  : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T, 
+struct Sys_GetCursorPos_gc1
+  : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T,
 						IntReference_T>
 {
-  void operator()(RLMachine& machine, 
+  void operator()(RLMachine& machine,
 				  IntReferenceIterator xit, IntReferenceIterator yit,
-                  IntReferenceIterator button1It, IntReferenceIterator button2It) 
+                  IntReferenceIterator button1It, IntReferenceIterator button2It)
   {
     Point pos;
     int button1, button2;
@@ -279,7 +279,7 @@ struct Sys_sin_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
 
 struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T > {
-  int operator()(RLMachine& machine, int var1, int var2, 
+  int operator()(RLMachine& machine, int var1, int var2,
                  int var3, int var4) {
     return int( float(var1 - var3) / float(var2 - var4) );
   }
@@ -289,7 +289,7 @@ struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
 
 struct Sys_angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
                                         IntConstant_T, IntConstant_T > {
-  int operator()(RLMachine& machine, int var1, int var2, 
+  int operator()(RLMachine& machine, int var1, int var2,
                  int var3, int var4) {
     return int( float(var1 - var3) / float(var2 - var4) );
   }
@@ -319,16 +319,16 @@ struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntCon
       return var1;
     else if(var2 > var3)
       return var3;
-    else 
+    else
       return var2;
   }
 };
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<0:Sys:01203, 0>, ReturnMenu.
- * 
+ *
  * Jumps the instruction pointer to the begining of the scenario
  * defined in the Gameexe key \#SEEN_MENU.
  */
@@ -344,13 +344,13 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 // -----------------------------------------------------------------------
 
 struct Sys_SetWindowAttr : public RLOp_Void_5<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, 
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T>
 {
   void operator()(RLMachine& machine, int r, int g, int b, int a, int f)
   {
     vector<int> attr(5);
-    attr[0] = r; 
+    attr[0] = r;
     attr[1] = g;
     attr[2] = b;
     attr[3] = a;
@@ -430,7 +430,7 @@ struct Sys_MenuReturn : public RLOp_Void_Void
 
     // Now we push a LongOperation on top of the stack; when this
     // ends, we'll be at SEEN_MENU.
-    LongOperation* effect = 
+    LongOperation* effect =
       new FadeEffect(machine, after, before, after->size(), 1000);
     machine.pushLongOperation(effect);
   }
@@ -461,7 +461,7 @@ SysModule::SysModule()
   addUnsupportedOpcode(333, 0, "SetLocalSkipMode");
   addUnsupportedOpcode(334, 0, "ClearLocalSkipMode");
 
-  addOpcode( 350, 0, "CtrlKeyShip", 
+  addOpcode( 350, 0, "CtrlKeyShip",
              returnIntValue(&TextSystem::ctrlKeySkip));
   addOpcode( 351, 0, "CtrlKeySkipOn",
              setToConstant(&TextSystem::setCtrlKeySkip, 1));
@@ -513,11 +513,11 @@ SysModule::SysModule()
   addUnsupportedOpcode(1205, 0, "ReturnPrevSelect2");
   addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
 
-  addOpcode(1130, 0, "DefaultGrp", 
+  addOpcode(1130, 0, "DefaultGrp",
             returnStringValue(&GraphicsSystem::defaultGrpName));
-  addOpcode(1131, 0, "SetDefaultGrp", 
+  addOpcode(1131, 0, "SetDefaultGrp",
             callFunction(&GraphicsSystem::setDefaultGrpName));
-  addOpcode(1132, 0, "DefaultBgr", 
+  addOpcode(1132, 0, "DefaultBgr",
             returnStringValue(&GraphicsSystem::defaultBgrName));
   addOpcode(1133, 0, "SetDefaultBgr",
             callFunction(&GraphicsSystem::setDefaultBgrName));
@@ -657,11 +657,11 @@ SysModule::SysModule()
 
   addOpcode(2617, 0, new Sys_DefWindowAttr);
 
-  addOpcode(2270, 0, "SetShowObject1", 
+  addOpcode(2270, 0, "SetShowObject1",
 			callFunction(&GraphicsSystem::setShowObject1));
   addOpcode(2370, 0, "ShowObject1",
 			returnIntValue(&GraphicsSystem::showObject1));
-  addOpcode(2271, 0, "SetShowObject2", 
+  addOpcode(2271, 0, "SetShowObject2",
 			callFunction(&GraphicsSystem::setShowObject2));
   addOpcode(2371, 0, "ShowObject2",
 			returnIntValue(&GraphicsSystem::showObject2));

@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -40,13 +40,13 @@
 namespace libReallive {
 
 #include "scenario_internals.h"
-  
+
 class Scenario {
   Header header;
   Script script;
   int scenarioNum;
 public:
-  Scenario(const char* data, const size_t length, int scenarioNum, 
+  Scenario(const char* data, const size_t length, int scenarioNum,
            const char* second_level_xor_key);
   Scenario(const FilePos& fp, int scenarioNum, const char* second_level_xor_key);
 
@@ -55,21 +55,21 @@ public:
 
   // Get the text encoding used for this scenario
   int encoding() const { return header.rldev_metadata.text_encoding(); }
-  
+
   // Strip a scenario of non-essential metadata.
   Scenario& strip();
-  
+
   // Run a peephole optimisation pass.
   Scenario& optimise();
-  
+
   // Rebuild a scenario to bytecode, optionally removing unnecessary
   // debugging metadata at the same time.
   const string* rebuild();
-  
+
   // Access to script
   typedef BytecodeList::const_iterator const_iterator;
   typedef BytecodeList::iterator iterator;
-  
+
   // Access to metadata in the script
   long savepointMessage() const { return header.savepoint_message; }
   long savepointSelcom()  const { return header.savepoint_selcom;  }
@@ -77,7 +77,7 @@ public:
 
   /// Locate the entrypoint
   const_iterator findEntrypoint(int entrypoint) const;
-  
+
   iterator begin();
   iterator end();
   const_iterator begin() const;
@@ -102,13 +102,13 @@ Scenario::Scenario(const char* data, const size_t length, int sn,
 
 inline
 Scenario::Scenario(const FilePos& fp, int sn, const char* second_level_xor_key)
-  : header(fp.data, fp.length), script(header, fp.data, fp.length, 
+  : header(fp.data, fp.length), script(header, fp.data, fp.length,
                                        second_level_xor_key),
     scenarioNum(sn)
 {
 }
 
-inline Scenario& 
+inline Scenario&
 Scenario::strip()
 {
   script.invalidate();
@@ -119,48 +119,48 @@ Scenario::strip()
 inline Scenario::iterator
 Scenario::begin()
 {
-  return script.elts.begin(); 
+  return script.elts.begin();
 }
 
 inline Scenario::iterator
 Scenario::end()
-{ 
-  return script.elts.end(); 
+{
+  return script.elts.end();
 }
 
 inline Scenario::const_iterator
 Scenario::begin() const
-{ 
-  return script.elts.begin(); 
+{
+  return script.elts.begin();
 }
 
 inline Scenario::const_iterator
 Scenario::end() const
-{ 
-  return script.elts.end(); 
+{
+  return script.elts.end();
 }
 
 inline const size_t
 Scenario::size() const
-{ 
+{
   return script.elts.size();
 }
 
 inline Scenario::iterator
 Scenario::insert(iterator pos, BytecodeElement* elt)
-{ 
-  return script.elts.insert(pos, elt); 
+{
+  return script.elts.insert(pos, elt);
 }
 
 inline void
 Scenario::erase(Scenario::iterator first, Scenario::iterator last)
-{ 
-  if (first != last) do { erase(--last); } while (first != last); 
+{
+  if (first != last) do { erase(--last); } while (first != last);
 }
 
 inline Scenario::iterator
 Scenario::erase(Scenario::iterator pos)
-{ 
+{
   Pointers* ptrs = pos->get_pointers();
   if (ptrs)
     for (Pointers::iterator it = ptrs->begin(); it != ptrs->end(); ++it)

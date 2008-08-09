@@ -9,21 +9,21 @@
 //
 // Copyright (C) 2007 Elliot Glaysher
 // Copyright (C) 2000 Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -33,9 +33,9 @@
 /**
  * @file   AnmGraphicsObjectData.cpp
  * @date   Sun Jun  3 13:04:19 2007
- * 
+ *
  * @brief  In memory representation of an ANM file.
- * 
+ *
  * The code in this file has been modified from the file anm.cc in
  * Jagarl's xkanon project.
  *
@@ -80,7 +80,7 @@ namespace fs = boost::filesystem;
 
 // Constants
 static const int ANM_MAGIC_SIZE = 12;
-static const char ANM_MAGIC[ANM_MAGIC_SIZE] = 
+static const char ANM_MAGIC[ANM_MAGIC_SIZE] =
 {'A','N','M','3','2',0,0,0,0,1,0,0};
 
 // -----------------------------------------------------------------------
@@ -161,7 +161,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   string rawFileName = data + 0x1c;
   fs::path filePath = findFile(machine, rawFileName, IMAGE_FILETYPES);
   image = machine.system().graphics().loadSurfaceFromFile(filePath);
-  
+
   // Read the frame list
   const char* buf = data + 0xb8;
   // POINT
@@ -241,7 +241,7 @@ void AnmGraphicsObjectData::execute(RLMachine& machine)
 // -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::render(
-  RLMachine& machine, 
+  RLMachine& machine,
   const GraphicsObject& renderingProperties)
 {
   // If we have a current frame, then let's render it.
@@ -266,7 +266,7 @@ void AnmGraphicsObjectData::render(
 void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 {
   // Do things that advance the state
-  int timeSinceLastFrameChange = 
+  int timeSinceLastFrameChange =
     machine.system().event().getTicks() - m_timeAtLastFrameChange;
   bool done = false;
 
@@ -296,7 +296,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
     }
     else
       done = true;
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -304,7 +304,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 /// I am not entirely sure these methods even make sense given the
 /// context...
 int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
-                                      const GraphicsObject& rp) 
+                                      const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int width = rect.rect.width();
@@ -363,7 +363,7 @@ void AnmGraphicsObjectData::load(Archive& ar, unsigned int version)
   // Now load the rest of the data.
   ar & m_currentlyPlaying & m_currentSet;
 
-  // Reconstruct the m_cur* variables from their 
+  // Reconstruct the m_cur* variables from their
   int curFrameSet, currentFrame;
   ar & curFrameSet & currentFrame;
 
@@ -383,7 +383,7 @@ void AnmGraphicsObjectData::save(Archive& ar, unsigned int version) const
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
   ar & m_filename & m_currentlyPlaying & m_currentSet;
-  
+
   // Figure out what set we're playing, which
   int curFrameSet = distance(animationSet.at(m_currentSet).begin(),
                              m_curFrameSet);

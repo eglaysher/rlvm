@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 
@@ -81,27 +81,27 @@ public:
   /// Run once per cycle through the game loop to process events.
   virtual void executeEventSystem(RLMachine& machine) = 0;
 
-  /** 
+  /**
    * Returns the number of milliseconds since the program
    * started. Used for timing things.
    */
   virtual unsigned int getTicks() const = 0;
 
-  RLTimer& getTimer(int layer, int counter) 
+  RLTimer& getTimer(int layer, int counter)
   { return m_timers[layer][counter]; }
 
-  /** 
+  /**
    * Idles the program for a certain amount of time in milliseconds.
-   * 
+   *
    * @param milliseconds Time
    */
   virtual void wait(unsigned int milliseconds) const = 0;
 
   // -----------------------------------------------------------------------
 
-  /** 
+  /**
    * @name Frame Counters
-   * 
+   *
    * "Frame counters are designed to make it simple to ensure events happen at a
    * constant speed regardless of the host system's specifications. Once a frame
    * counter has been initialised, it will count from one arbitrary number to
@@ -122,10 +122,10 @@ public:
 
   /**
    * @name Keyboard and Mouse Input (Event Handler style)
-   * 
+   *
    * rlvm event handling works by registering objects that received input
    * notifications from the EventSystem.
-   * 
+   *
    * There is usually only one EventHandler at a time, though there can be
    * multiple MouseListeners.
    *
@@ -140,9 +140,9 @@ public:
 
   /**
    * @name Keyboard and Mouse Input (Reallive style)
-   * 
+   *
    * RealLive applications poll for input, with all the problems that sort of
-   * event handeling has. We therefore provide an interface for polling. 
+   * event handeling has. We therefore provide an interface for polling.
    *
    * Don't use it. This interface is provided for RealLive
    * bytecode. EventHandlers and MouseListeners should be used within rlvm code,
@@ -150,12 +150,12 @@ public:
    *
    * @{
    */
-  /** 
+  /**
    * Returns whether shift is currently pressed.
    */
   virtual bool shiftPressed() const = 0;
 
-  /** 
+  /**
    * Returns whether ctrl has been presed since the last invocation of
    * ctrlPresesd().
    *
@@ -164,14 +164,14 @@ public:
    */
   virtual bool ctrlPressed() const = 0;
 
-  /** 
+  /**
    * Returns the current cursor hotspot.
    */
   virtual Point getCursorPos() { return Point(); }
 
-  /** 
+  /**
    * Gets the location of the mouse cursor and the button states.
-   * 
+   *
    * The following values are used to indicate a button's status:
    * - 0 if unpressed
    * - 1 if being pressed
@@ -179,7 +179,7 @@ public:
    */
   virtual void getCursorPos(Point& position, int& button1, int& button2) {}
 
-  /** 
+  /**
    * Resets the state of the mouse buttons.
    */
   virtual void flushMouseClicks() {}
@@ -190,7 +190,7 @@ public:
 
   /**
    * @name Generic values
-   * 
+   *
    * These values should have, from the beginning, been placed somewhere
    * else. They will remain here till the end of time for save game file
    * compatibility, though.

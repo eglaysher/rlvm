@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006 Peter Jolly
@@ -46,7 +46,7 @@ using namespace std;
 namespace libReallive {
 
 Metadata::Metadata() : encoding(0) {}
-  
+
 void
 Metadata::assign(const char* input)
 {
@@ -56,7 +56,7 @@ Metadata::assign(const char* input)
   as_string.assign(input, meta_len);
   encoding = input[id_len + 16];
 }
-  
+
 Header::Header(const char* data, const size_t length)
 {
   if (length < 0x1d0)
@@ -64,7 +64,7 @@ Header::Header(const char* data, const size_t length)
 
   string compiler = string(data, 4);
 
-  // Check the version of the 
+  // Check the version of the
   if(read_i32(data + 4) == 10002)
     use_xor_2 = false;
   else if(read_i32(data + 4) == 110002)
@@ -83,7 +83,7 @@ Header::Header(const char* data, const size_t length)
   zminusone = read_i32(data + 0x2c);
   zminustwo = read_i32(data + 0x30);
 
-  // Misc settings	
+  // Misc settings
   savepoint_message = read_i32(data + 0x1c4);
   savepoint_selcom  = read_i32(data + 0x1c8);
   savepoint_seentop = read_i32(data + 0x1cc);
@@ -114,7 +114,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
   const int kidoku_offs = read_i32(data + 0x08);
   const size_t kidoku_length = read_i32(data + 0x0c);
   ConstructionData cdat(kidoku_length, elts.end());
-  for (size_t i = 0; i < kidoku_length; ++i) 
+  for (size_t i = 0; i < kidoku_length; ++i)
     cdat.kidoku_table[i] =  read_i32(data + kidoku_offs + i * 4);
 
   // Decompress data
@@ -136,7 +136,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
     pointer_t it = elts.end();
     cdat.offsets[pos] = --it;
     it->offset_ = pos;
-      
+
     // Keep track of the entrypoints
     if(it->type() == Entrypoint) {
       entrypointAssociations.insert(make_pair(it->entrypoint(), it));
@@ -154,7 +154,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
     it->set_pointers(cdat);
     Pointers* ptrs = it->get_pointers();
     if (ptrs)
-      for (Pointers::iterator pit = ptrs->begin(); pit != ptrs->end(); ++pit) 
+      for (Pointers::iterator pit = ptrs->begin(); pit != ptrs->end(); ++pit)
         labels[*pit].push_back(it);
   }
 
@@ -233,14 +233,14 @@ Scenario::rebuild()
   // Initialise
   string* rv = new string(0x1d0, 0);
   script.recalculate(true);
-      
+
   // Create new header
   insert_i32(*rv, 0x00, 0x1d0);
   insert_i32(*rv, 0x04, 10002);
   insert_i32(*rv, 0x08, 0x1d0);
   std::vector<long> kidoku_table;
   std::vector<long> entrypoints(100, -1);
-      
+
   // Build and compress scenario
   Compression::RealliveCompressor comp;
   size_t offset = 0;
@@ -273,7 +273,7 @@ Scenario::rebuild()
   for (int i = 1; i < 100; ++i)
     if (entrypoints[i] == -1)
       entrypoints[i] = entrypoints[i - 1];
-      
+
   // Fill in header
   int dramatis_length = script.strip ? 0 : header.dramatis_length();
   rv->reserve(kidoku_table.size() * 4 + 0x1d0 + dramatis_length);
@@ -291,15 +291,15 @@ Scenario::rebuild()
   insert_i32(*rv, 0x1c4, header.savepoint_message);
   insert_i32(*rv, 0x1c8, header.savepoint_selcom);
   insert_i32(*rv, 0x1cc, header.savepoint_seentop);
-      
+
   // Write kidoku, dramatis personae, and metadata (if any)
   for (std::vector<long>::const_iterator it = kidoku_table.begin();
        it != kidoku_table.end(); ++it)
     append_i32(*rv, *it);
   if (!script.strip) {
     for (std::vector<string>::const_iterator it =
-           header.dramatis_personae.begin(); 
-         it != header.dramatis_personae.end(); ++it) 
+           header.dramatis_personae.begin();
+         it != header.dramatis_personae.end(); ++it)
     {
       append_i32(*rv, it->size() + 1);
       rv->append(*it);
@@ -307,7 +307,7 @@ Scenario::rebuild()
     }
   }
   rv->append(header.rldev_metadata.to_string());
-      
+
   // Append and encrypt data
   size_t data_offset = rv->size();
   insert_i32(*rv, 0x20, data_offset);
@@ -315,7 +315,7 @@ Scenario::rebuild()
   append_i32(*rv, script.size());
   rv->append(comp.Data(), comp.Length() + 8);
   Compression::apply_mask(*rv, data_offset);
-      
+
   // Return rebuilt scenario
   return rv;
 }
@@ -356,9 +356,9 @@ does_not_return(const pointer_t& it)
       || op == 100017 // ret_with
       || op == 100019 // rtl_with
       || op == 401200 // end
-      || op == 401201 // MenuReturn	    
-      || op == 401202 // MenuReturn2	    
-      || op == 401203 // ReturnMenu	    
+      || op == 401201 // MenuReturn
+      || op == 401202 // MenuReturn2
+      || op == 401203 // ReturnMenu
       || op == 500001 // goto (Kinetic)
       || op == 500010 // ret (Kinetic)
       || op == 500011 // jump (Kinetic)
@@ -381,7 +381,7 @@ Scenario::optimise()
     // number, it's redundant; we can safely remove it.
     if (next(it) != end() && is_line(it) && is_line(next(it)))
       script.remove_elt(it);
-      	
+
     // Various optimisations are possible for pointers.
     if (it->type() >= Goto) {
       Pointers& ptrs = *it->get_pointers();
@@ -400,7 +400,7 @@ Scenario::optimise()
           script.labels[*pt].push_back(it);
         }
       }
-      	
+
       // Further optimisations are possible for gotos.
       if (it->type() == Goto) {
         // Gotos to the next statement can be removed.
@@ -409,7 +409,7 @@ Scenario::optimise()
         pointer_t seek(it);
         do {
           ++seek;
-        } while (seek != end() && seek != dest 
+        } while (seek != end() && seek != dest
                  && (seek->type() == Line || seek->type() == Kidoku
                      || seek->type() == Entrypoint));
         if (seek == dest) {
@@ -423,7 +423,7 @@ Scenario::optimise()
           const GotoElement::Case taken = elt.taken();
           if (taken == GotoElement::Always) {
             elt.make_unconditional();
-          }				
+          }
           // Likewise, conditional jumps that are never taken can be
           // deleted.
           else if (taken == GotoElement::Never) {
@@ -442,7 +442,7 @@ Scenario::optimise()
         }
       }
     }
-      	
+
     // For unconditional jumps and returns, we can delete any
     // following commands, up to the next entrypoint or pointer
     // destination, as dead code.
@@ -455,7 +455,7 @@ Scenario::optimise()
       }
       continue;
     }
-      	
+
     // Nothing else interesting: proceed.
     ++it;
   }

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -70,7 +70,7 @@ TextSystemGlobals::TextSystemGlobals()
 // -----------------------------------------------------------------------
 
 TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
-  : autoModeBaseTime(100), autoModeCharTime(100), 
+  : autoModeBaseTime(100), autoModeCharTime(100),
     messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30))
 {
   GameexeInterpretObject inWindowAttr(gexe("WINDOW_ATTR"));
@@ -116,7 +116,7 @@ TextSystem::TextSystem(Gameexe& gexe)
 
 TextSystem::~TextSystem()
 {
-  
+
 }
 
 // -----------------------------------------------------------------------
@@ -125,7 +125,7 @@ void TextSystem::executeTextSystem(RLMachine& machine)
 {
   // Check to see if the cursor is displayed
   WindowMap::iterator it = m_textWindow.find(m_activeWindow);
-  if(it != m_textWindow.end() && it->second->isVisible() && 
+  if(it != m_textWindow.end() && it->second->isVisible() &&
      m_inPauseState && !isReadingBacklog())
   {
     if(!m_textKeyCursor)
@@ -201,7 +201,7 @@ void TextSystem::expireOldPages() {
 vector<int> TextSystem::activeWindows()
 {
   vector<int> tmp;
-  for(PageSet::iterator it = m_currentPageset->begin(); 
+  for(PageSet::iterator it = m_currentPageset->begin();
       it != m_currentPageset->end(); ++it)
   {
     tmp.push_back(it->first);
@@ -231,7 +231,7 @@ void TextSystem::newPageOnWindow(RLMachine& machine, int window)
   m_previousPageIt = m_previousPageSets.end();
   m_currentPageset->insert(window, new TextPage(machine, window));
   expireOldPages();
-} 
+}
 
 // -----------------------------------------------------------------------
 
@@ -257,8 +257,8 @@ void TextSystem::backPage(RLMachine& machine)
     m_previousPageIt = boost::prior(m_previousPageIt);
 
     // Clear all windows
-    clearAllTextWindows();      
-    hideAllTextWindows();       
+    clearAllTextWindows();
+    hideAllTextWindows();
 
     replayPageSet(*m_previousPageIt, false);
   }
@@ -296,7 +296,7 @@ void TextSystem::replayPageSet(PageSet& set, bool isCurrentPage)
     catch(rlvm::Exception& e) {
       // Currently, the text system can throw on a few unimplemented situations,
       // such as ruby across lines.
-      
+
       // Ignore what would normally be an ignored command when encoutered from
       // the main loop.
     }
@@ -318,7 +318,7 @@ void TextSystem::stopReadingBacklog()
 
   // Clear all windows
   clearAllTextWindows();
-  hideAllTextWindows();  
+  hideAllTextWindows();
   replayPageSet(*m_currentPageset, true);
 }
 
@@ -337,7 +337,7 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
   {
     m_textKeyCursor.reset();
   }
-  else if(!m_textKeyCursor || 
+  else if(!m_textKeyCursor ||
      m_textKeyCursor->cursorNumber() != newCursor)
   {
     m_textKeyCursor.reset(new TextKeyCursor(machine, newCursor));
@@ -412,8 +412,8 @@ template void TextSystem::load<boost::archive::text_iarchive>(
 
 // -----------------------------------------------------------------------
 
-void parseNames(const Memory& memory, const std::string& input, 
-                std::string& output) 
+void parseNames(const Memory& memory, const std::string& input,
+                std::string& output)
 {
   const unsigned char* cur = (const unsigned char*)input.c_str();
 
@@ -421,7 +421,7 @@ void parseNames(const Memory& memory, const std::string& input,
   const unsigned char LOWER_BYTE_FULLWIDTH_PERCENT = 0x93;
 
   while (*cur) {
-    if (cur[0] == 0x81 && (cur[1] == LOWER_BYTE_FULLWIDTH_ASTERISK || 
+    if (cur[0] == 0x81 && (cur[1] == LOWER_BYTE_FULLWIDTH_ASTERISK ||
                            cur[1] == LOWER_BYTE_FULLWIDTH_PERCENT)) {
       unsigned char type = cur[1];
       cur += 2;
@@ -440,7 +440,7 @@ void parseNames(const Memory& memory, const std::string& input,
       else
         output += memory.getLocalName(index);
     } else {
-      copyOneShiftJisCharacter(cur, output);      
+      copyOneShiftJisCharacter(cur, output);
     }
   }
 }

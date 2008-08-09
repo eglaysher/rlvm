@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -96,7 +96,7 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 
 void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 {
-  if(m_mouseInsideWindow) 
+  if(m_mouseInsideWindow)
   {
     // Handle this somehow.
     m_mousePos = Point(event.motion.x, event.motion.y);
@@ -214,7 +214,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
                bind(&EventHandler::keyStateChanged, _1,
                     code, true));
 
-      // Still keep track of what keys are held down      
+      // Still keep track of what keys are held down
       handleKeyDown(event);
       break;
     }
@@ -245,7 +245,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       MouseButton button = MOUSE_NONE;
       switch(event.button.button)
       {
-      case SDL_BUTTON_LEFT: 
+      case SDL_BUTTON_LEFT:
         button = MOUSE_LEFT;
         break;
       case SDL_BUTTON_RIGHT:
@@ -282,7 +282,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       break;
     }
     }
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -335,7 +335,7 @@ Point SDLEventSystem::getCursorPos()
 
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::getCursorPos(Point& position, int& button1, 
+void SDLEventSystem::getCursorPos(Point& position, int& button1,
                                   int& button2)
 {
   position = m_mousePos;

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -33,7 +33,7 @@
  * @file   Module_Msg.cpp
  * @author Elliot Glaysher
  * @date   Sun Oct  1 22:18:39 2006
- * 
+ *
  * @brief  Implements many textout related operations.
  */
 
@@ -73,7 +73,7 @@ struct Msg_par : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<0:Msg:17, 0>, fun pause().
  *
  */
@@ -171,7 +171,7 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
     vector<int> activeWindows = text.activeWindows();
     int activeWindow = text.activeWindow();
 
-    for(vector<int>::const_iterator it = activeWindows.begin(); 
+    for(vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it)
     {
       text.textWindow(machine, activeWindow).clearWin();
@@ -184,7 +184,7 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
 
 struct Msg_br : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.system().text().currentPage(machine).hardBrake();    
+    machine.system().text().currentPage(machine).hardBrake();
   }
 };
 

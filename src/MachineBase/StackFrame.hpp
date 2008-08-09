@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __StackFrame_hpp__
@@ -47,14 +47,14 @@ class LongOperation;
  *
  * StackFrames can also be added to represent LongOperations.
  */
-struct StackFrame 
+struct StackFrame
 {
 private:
   /// The scenario in the SEEN file for this stack frame.
   libReallive::Scenario const* m_scenario;
 
 public:
-    
+
   /// The instruction pointer in the stack frame.
   libReallive::Scenario::const_iterator ip;
 
@@ -72,7 +72,7 @@ public:
     TYPE_LONGOP   /**< Added by pushLongOperation() */
   } frameType;
 
-  /** 
+  /**
    * Default constructor. Only used during serialization.
    */
   StackFrame();

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -68,9 +68,9 @@ struct Pcm_wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T, 
+struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
-  void operator()(RLMachine& machine, std::string fileName, int channel, 
+  void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(machine, fileName, false, channel, fadein);
   }
@@ -87,9 +87,9 @@ struct Pcm_wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T, 
+struct Pcm_wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                             IntConstant_T> {
-  void operator()(RLMachine& machine, std::string fileName, int channel, 
+  void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(machine, fileName, false, channel, fadein);
     machine.pushLongOperation(new LongOp_pcmWait(channel));
@@ -106,9 +106,9 @@ struct Pcm_wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T, 
+struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
-  void operator()(RLMachine& machine, std::string fileName, int channel, 
+  void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(machine, fileName, true, channel, fadein);
   }
@@ -151,7 +151,7 @@ struct Pcm_wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 /// We ignore fadein because we'll never get that effect with the
 /// current mixing library.
-struct Pcm_wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T, 
+struct Pcm_wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                                IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level, int fadeInMs) {
     machine.system().sound().setChannelVolume(machine, channel, level, fadeInMs);

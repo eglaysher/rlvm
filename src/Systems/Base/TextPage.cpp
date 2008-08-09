@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -85,7 +85,7 @@ private:
 public:
   TextTextPageElement();
   virtual bool isTextElement() { return true; }
-  virtual void replayElement(TextPage& page, bool isActivePage);  
+  virtual void replayElement(TextPage& page, bool isActivePage);
   void append(const string& c, const string& nextChar);
 
   virtual TextPageElement* clone() const { return new TextTextPageElement(*this); }
@@ -110,10 +110,10 @@ void TextTextPageElement::replayElement(TextPage& page, bool isActivePage)
 
 // -----------------------------------------------------------------------
 
-void TextTextPageElement::append(const string& c, 
+void TextTextPageElement::append(const string& c,
                                  const string& nextChar)
 {
-  m_listOfCharsToPrint.append(c); 
+  m_listOfCharsToPrint.append(c);
   m_nextChar = nextChar;
 }
 
@@ -164,7 +164,7 @@ public:
     page.hardBrake_impl();
   }
 
-  virtual TextPageElement* clone() const 
+  virtual TextPageElement* clone() const
   { return new ResetIndentationElement(*this); }
 };
 
@@ -185,8 +185,8 @@ public:
     page.fontColour_impl(color);
   }
 
-  virtual TextPageElement* clone() const { 
-    return new FontColourElement(*this); 
+  virtual TextPageElement* clone() const {
+    return new FontColourElement(*this);
   }
 };
 
@@ -201,8 +201,8 @@ public:
     page.setToRightStartingColor_impl(isActivePage);
   }
 
-  virtual TextPageElement* clone() const { 
-    return new SetToRightStartingColorElement(*this); 
+  virtual TextPageElement* clone() const {
+    return new SetToRightStartingColorElement(*this);
   }
 };
 
@@ -218,8 +218,8 @@ public:
     page.markRubyBegin_impl();
   }
 
-  virtual TextPageElement* clone() const { 
-    return new MarkRubyBeginElement(*this); 
+  virtual TextPageElement* clone() const {
+    return new MarkRubyBeginElement(*this);
   }
 };
 
@@ -241,8 +241,8 @@ public:
     page.displayRubyText_impl(m_name);
   }
 
-  virtual TextPageElement* clone() const { 
-    return new DisplayRubyTextElement(*this); 
+  virtual TextPageElement* clone() const {
+    return new DisplayRubyTextElement(*this);
   }
 };
 
@@ -260,8 +260,8 @@ TextPage::TextPage(RLMachine& machine, int windowNum)
 // -----------------------------------------------------------------------
 
 TextPage::TextPage(const TextPage& rhs)
-  : m_machine(rhs.m_machine), m_windowNum(rhs.m_windowNum), 
-    m_numberOfCharsOnPage(rhs.m_numberOfCharsOnPage), 
+  : m_machine(rhs.m_machine), m_windowNum(rhs.m_windowNum),
+    m_numberOfCharsOnPage(rhs.m_numberOfCharsOnPage),
     m_inRubyGloss(rhs.m_inRubyGloss)
 {
   m_elementsToReplay.insert(
@@ -300,7 +300,7 @@ void TextPage::swap(TextPage& rhs)
 void TextPage::replay(bool isActivePage)
 {
   for_each(m_elementsToReplay.begin(), m_elementsToReplay.end(),
-           bind(&TextPageElement::replayElement, _1, ref(*this), 
+           bind(&TextPageElement::replayElement, _1, ref(*this),
                 isActivePage));
 }
 
@@ -312,7 +312,7 @@ bool TextPage::character(const string& current, const string& next)
 
   if(rendered)
   {
-    if(m_elementsToReplay.size() == 0 || 
+    if(m_elementsToReplay.size() == 0 ||
        !m_elementsToReplay.back().isTextElement())
       m_elementsToReplay.push_back(new TextTextPageElement);
 
@@ -383,7 +383,7 @@ void TextPage::addSetToRightStartingColorElement()
 
 // -----------------------------------------------------------------------
 
-bool TextPage::character_impl(const string& c, 
+bool TextPage::character_impl(const string& c,
                               const string& nextChar)
 {
   return m_machine->system().text().textWindow(*m_machine, m_windowNum)
@@ -392,7 +392,7 @@ bool TextPage::character_impl(const string& c,
 
 // -----------------------------------------------------------------------
 
-void TextPage::name_impl(const string& name, 
+void TextPage::name_impl(const string& name,
                          const string& nextChar)
 {
   m_machine->system().text().textWindow(*m_machine, m_windowNum)

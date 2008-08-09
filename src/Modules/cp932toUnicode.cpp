@@ -13,21 +13,21 @@
 //
 // Transition tables are probably Copyright (C) 2001-2005, 2007 SADAHIRO
 // Tomoyuki.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -37,7 +37,7 @@
 /**
  * @file   cp932toUnicode.cpp
  * @date   Sun Sep 17 14:10:35 2006
- * 
+ *
  * Contains two stolen lookup tables from ShiftJIS::CP932::MapUTF,
  * another free software project, along with two methods using them to
  * convert to and from RealLive's native CP932 to Unicode and back.
@@ -5615,9 +5615,9 @@ struct leading fmcp932_tbl [] = {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Converts a given Unicode wstring to CP932 stored in a std::string
- * 
+ *
  * @param line Unicode string
  * @return CP932 string
  */
@@ -5626,7 +5626,7 @@ string unicodetocp932(const std::wstring& line)
   const wchar_t* c = line.c_str();
   string ret;
 
-  while(*c) 
+  while(*c)
   {
     unsigned short* t = *c < 0x10000 ? tocp932_tbl[*c >> 8] : NULL;
     wchar_t j = t ? t[*c & 0xff] : 0;
@@ -5639,14 +5639,14 @@ string unicodetocp932(const std::wstring& line)
     else {
       ret += (char)(j & 0xff);
     }
-    
+
     c++;
-  } 
+  }
 
   return ret;
 }
 
-/** 
+/**
  * Converts a CP932/Shift_JIS string into a wstring with Unicode
  * characters.
  *
@@ -5666,12 +5666,12 @@ string unicodetocp932(const std::wstring& line)
  * least two CP936 transformations used by the Key Fans Club and
  * possibly one or more other CP949 transformations, but details of
  * these are not publicly available.
- * 
+ *
  * @param line Input string in CP932 encoding
  * @param transformation Additional encoding transformation
  * @return Equivalent string in Unicode
  */
-wstring cp932toUnicode(const std::string& line, int transformation) 
+wstring cp932toUnicode(const std::string& line, int transformation)
 {
   const unsigned char* c = (const unsigned char*)line.c_str();
   wstring ret;
@@ -5682,8 +5682,8 @@ wstring cp932toUnicode(const std::string& line, int transformation)
     // for low-memory platforms.  For now, however, just die.
     throw SystemError("RLdev text transformations are not implemented.");
   }
-  
-  while(*c) 
+
+  while(*c)
   {
     wchar_t uv;
 
@@ -5693,7 +5693,7 @@ wstring cp932toUnicode(const std::string& line, int transformation)
       uv = lb.tbl[c[1]];
       c += 2;
     }
-    else 
+    else
     {
       uv = lb.sbc;
       c++;
@@ -5707,26 +5707,26 @@ wstring cp932toUnicode(const std::string& line, int transformation)
 
 // -----------------------------------------------------------------------
 
-// All hankaku characters are <U+FF??>, 
+// All hankaku characters are <U+FF??>,
 // while all zenkaku characters are <U+30??>
 //
 // hankaku characters that need translation are in the range 0xFF65 to
 // 0x9F inclusive and continuous, so this table starts at 0xFF65.
 char han2zen_table[] = {
   0xFB,   0xF2,   0xA1,   0xA3,   0xA5,   0xA7,   0xA9,   0xE3,
-  0xE5,   0xE7,   0xC3,   0xFC,   0xA2,   0xA4,   0xA6,   0xA8,   
-  0xAA,   0xAB,   0xAD,   0xAF,   0xB1,   0xB3,   0xB5,   0xB7,   
-  0xB9,   0xBB,   0xBD,   0xBF,   0xC1,   0xC4,   0xC6,   0xC8,   
-  0xCA,   0xCB,   0xCC,   0xCD,   0xCE,   0xCF,   0xD2,   0xD5,   
-  0xD8,   0xDB,   0xDE,   0xDF,   0xE0,   0xE1,   0xE2,   0xE4,   
-  0xE6,   0xE8,   0xE9,   0xEA,   0xEB,   0xEC,   0xED,   0xEF,   
+  0xE5,   0xE7,   0xC3,   0xFC,   0xA2,   0xA4,   0xA6,   0xA8,
+  0xAA,   0xAB,   0xAD,   0xAF,   0xB1,   0xB3,   0xB5,   0xB7,
+  0xB9,   0xBB,   0xBD,   0xBF,   0xC1,   0xC4,   0xC6,   0xC8,
+  0xCA,   0xCB,   0xCC,   0xCD,   0xCE,   0xCF,   0xD2,   0xD5,
+  0xD8,   0xDB,   0xDE,   0xDF,   0xE0,   0xE1,   0xE2,   0xE4,
+  0xE6,   0xE8,   0xE9,   0xEA,   0xEB,   0xEC,   0xED,   0xEF,
   0xF3,   0x9B,   0x0C
 };
 
-/** 
+/**
  * Converts a single half-width unicode character to its full-width
  * equivalent.
- * 
+ *
  * @param input Input character
  * @return Converted character (or input character if no translation
  * neccessary).
@@ -5743,7 +5743,7 @@ wchar_t hantozen_wchar(wchar_t input)
   }
   // Need to build a conversion by reading the cp932 ucm file, and then building
   // a mapping between "^KATAKANA X" and "^HALFWIDTH KATAKANA X"
-  else if(input >= 0xFF65 && input <= 0xFF9F) 
+  else if(input >= 0xFF65 && input <= 0xFF9F)
   {
     input = (0x30 << 8) | han2zen_table[input - 0xFF65];
   }
@@ -5753,14 +5753,14 @@ wchar_t hantozen_wchar(wchar_t input)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Converts half-width ASCII and katakana characters to their
  * full-width equivalents in a CP932 string.
- * 
+ *
  * @param string Input strin
  * @return Output string with full-width characters.
  */
-string hantozen_cp932(const std::string& string) 
+string hantozen_cp932(const std::string& string)
 {
   // First convert the string to unicode so handling is easier.
   // (We can ignore any subsidiary transformation at this stage,
@@ -5771,7 +5771,7 @@ string hantozen_cp932(const std::string& string)
 }
 
 // -----------------------------------------------------------------------
-// All hankaku characters are <U+FF??>, 
+// All hankaku characters are <U+FF??>,
 // while all zenkaku characters are <U+30??>
 char zen2han_table[] = {
  0x9E,  0x00,  0x00,  0x00,  0x00,  0x00,  0x67,  0x71,
@@ -5785,14 +5785,14 @@ char zen2han_table[] = {
  0x8E,  0x00,  0x00,  0x8F,  0x90,  0x91,  0x92,  0x93,
  0x6C,  0x94,  0x6D,  0x95,  0x6E,  0x96,  0x97,  0x98,
  0x99,  0x9A,  0x9B,  0x00,  0x9C,  0x00,  0x00,  0x66,
- 0x9D,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00, 
+ 0x9D,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,
  0x65,  0x70
 };
 
-/** 
+/**
  * Converts a single full-width unicode character to its half-width
  * equivalent.
- * 
+ *
  * @param input Input character
  * @return Converted character (or input character if no translation
  * neccessary).
@@ -5810,10 +5810,10 @@ wchar_t zentohan_wchar(wchar_t input)
   // Need to build a conversion by reading the cp932 ucm file, and then building
   // a mapping between "^KATAKANA X" and "^HALFWIDTH KATAKANA X"
   // d12443 - d12541
-  else if(input >= 0x309B && input <= 0x30FC) 
+  else if(input >= 0x309B && input <= 0x30FC)
   {
     char han = zen2han_table[input - 0x309B];
-    if(han) 
+    if(han)
       input = (0xFF << 8) | han;
   }
 
@@ -5834,7 +5834,7 @@ string zentohan_cp932(const std::string& string)
 std::string unicodeToUTF8(const std::wstring& widestring)
 {
   string out;
-  utf8::utf16to8(widestring.begin(), widestring.end(), 
+  utf8::utf16to8(widestring.begin(), widestring.end(),
                  back_inserter(out));
 
   return out;
@@ -5842,7 +5842,7 @@ std::string unicodeToUTF8(const std::wstring& widestring)
 
 // -----------------------------------------------------------------------
 
-std::string cp932toUTF8(const std::string& line, int transformation) 
+std::string cp932toUTF8(const std::string& line, int transformation)
 {
   std::wstring ws = cp932toUnicode(line, transformation);
   return unicodeToUTF8(ws);

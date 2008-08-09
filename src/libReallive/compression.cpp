@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -83,7 +83,7 @@ apply_mask(char* array, size_t len)
 
 // -----------------------------------------------------------------------
 
-void 
+void
 apply_mask(string& array, size_t start)
 {
   unsigned char i = 0;

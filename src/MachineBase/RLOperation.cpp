@@ -8,28 +8,28 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * @file
  * @ingroup RLOperationGroup
  * @brief Defines all the base RLOperations and their type checking structs.
@@ -59,13 +59,13 @@ RLOperation::~RLOperation()
 // -----------------------------------------------------------------------
 
 bool RLOperation::advanceInstructionPointer()
-{ 
+{
   return true;
 }
 
 // -----------------------------------------------------------------------
 
-void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) 
+void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
 {
   if(!ff.areParametersParsed())
   {
@@ -89,7 +89,7 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
 
 // -----------------------------------------------------------------------
 
-void RLOperation::throw_unimplemented() 
+void RLOperation::throw_unimplemented()
 {
   throw rlvm::Exception("Unimplemented function");
 }
@@ -99,7 +99,7 @@ void RLOperation::throw_unimplemented()
 // Implementation for IntConstant_T
 IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
                                            const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                                           unsigned int position) 
+                                           unsigned int position)
 {
   return p[position].integerValue(machine);
 }
@@ -125,8 +125,8 @@ void IntConstant_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
-IntReference_T::type IntReference_T::getData(RLMachine& machine, 
-                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+IntReference_T::type IntReference_T::getData(RLMachine& machine,
+                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position) {
   return static_cast<const libReallive::MemoryReference&>(p[position]).
     getIntegerReferenceIterator(machine);
@@ -152,7 +152,7 @@ void IntReference_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
-StrConstant_T::type StrConstant_T::getData(RLMachine& machine, 
+StrConstant_T::type StrConstant_T::getData(RLMachine& machine,
                                            const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
 {
@@ -165,7 +165,7 @@ void StrConstant_T::parseParameters(
   unsigned int position,
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
-{ 
+{
   const char* data = input.at(position).c_str();
   auto_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -179,9 +179,9 @@ void StrConstant_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
-StrReference_T::type StrReference_T::getData(RLMachine& machine, 
-                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
-                      unsigned int position) 
+StrReference_T::type StrReference_T::getData(RLMachine& machine,
+                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      unsigned int position)
 {
   return static_cast<const libReallive::MemoryReference&>(p[position]).
     getStringReferenceIterator(machine);
@@ -209,9 +209,9 @@ void StrReference_T::parseParameters(
 // Empty_T
 // -----------------------------------------------------------------------
 
-Empty_T::type Empty_T::getData(RLMachine& machine, 
+Empty_T::type Empty_T::getData(RLMachine& machine,
                                const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) 
+                      unsigned int position)
 {
   return emptyStruct();
 }
@@ -228,8 +228,8 @@ void Empty_T::parseParameters(
 // -----------------------------------------------------------------------
 
 void RLOp_SpecialCase::dispatch(
-  RLMachine& machine, 
-  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) 
+  RLMachine& machine,
+  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters)
 {}
 
 // -----------------------------------------------------------------------
@@ -248,7 +248,7 @@ void RLOp_SpecialCase::parseParameters(
 
 // -----------------------------------------------------------------------
 
-void RLOp_SpecialCase::dispatchFunction(RLMachine& machine, 
+void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
                                         const libReallive::CommandElement& ff)
 {
   // First try to run the default parseParameters if we can.

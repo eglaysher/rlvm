@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 #ifndef __SDLSurface_hpp__
 #define __SDLSurface_hpp__
@@ -44,7 +44,7 @@ class GraphicsObject;
 SDL_Surface* buildNewSurface(const Size& size);
 
 
-/** 
+/**
  * Wrapper around an OpenGL texture; meant to be passed out of the
  * graphics system.
  *
@@ -55,7 +55,7 @@ SDL_Surface* buildNewSurface(const Size& size);
 class SDLSurface : public Surface
 {
 private:
-  /** 
+  /**
    * Keeps track of a texture and the information about which region
    * of the current surface this Texture is. We keep track of this
    * information so we can reupload a certain part of the Texture
@@ -63,11 +63,11 @@ private:
    * glTexImage2D() is SLOW and should never be done in a loop.)
    */
   struct TextureRecord {
-    /** 
-     * Builds the texture and 
+    /**
+     * Builds the texture and
      */
     TextureRecord(SDL_Surface* surface,
-                  int x, int y, int w, int h, unsigned int bytesPerPixel, 
+                  int x, int y, int w, int h, unsigned int bytesPerPixel,
                   int byteOrder, int byteType);
 
     /**
@@ -76,7 +76,7 @@ private:
      */
     void reupload(SDL_Surface* surface);
 
-    /// 
+    ///
     boost::shared_ptr<Texture> texture;
 
     int x, y, w, h;
@@ -102,7 +102,7 @@ private:
   /// that this Surface is the special DC0.
   SDLGraphicsSystem* m_graphicsSystem;
 
-  /** 
+  /**
    * Makes sure that m_texture is a valid object and that it's
    * updated. This method should be called before doing anything with
    * m_texture.
@@ -121,7 +121,7 @@ public:
   SDLSurface(SDL_Surface* sruf);
 
   /// Surface that takes ownership of an externally created surface.
-  SDLSurface(SDL_Surface* surf, 
+  SDLSurface(SDL_Surface* surf,
              const std::vector<SDLSurface::GrpRect>& region_table);
 
   /// Surface created with a specified width and height
@@ -138,7 +138,7 @@ public:
   void allocate(const Size& size);
 
   void allocate(const Size& size, SDLGraphicsSystem* in);
-  
+
   /// Deallocate
   void deallocate();
 
@@ -148,7 +148,7 @@ public:
   }
 
   /// Blits to another surface
-  virtual void blitToSurface(Surface& surface, 
+  virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true);
 
@@ -165,13 +165,13 @@ public:
   virtual void renderToScreen(
     const Rect& src, const Rect& dst, const int opacity[4]);
 
-  virtual void rawRenderQuad(const int srcCoords[8], 
+  virtual void rawRenderQuad(const int srcCoords[8],
                              const int destCoords[8],
                              const int opacity[4]);
 
   // Used internally; not exposed to the general graphics system
   virtual void renderToScreenAsObject(const GraphicsObject& rp);
-  virtual void renderToScreenAsObject(const GraphicsObject& rp, 
+  virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const GraphicsObjectOverride& override);
 
   /// Called after each change to m_surface. Marks the texture as
@@ -205,4 +205,4 @@ public:
 };
 
 
-#endif 
+#endif

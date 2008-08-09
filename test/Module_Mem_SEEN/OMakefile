@@ -5,7 +5,7 @@
 RLC = rlc
 KPRL = kprl
 
-.PHONY: clean 
+.PHONY: clean
 
 KEPAGOFILES = $(glob *.ke)
 

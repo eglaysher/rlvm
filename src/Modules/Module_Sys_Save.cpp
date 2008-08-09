@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -96,7 +96,7 @@ struct Sys_SaveDate : public RLOp_Store_5<
   IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T>
 {
   int operator()(RLMachine& machine, int slot,
-				 IntReferenceIterator yIt, IntReferenceIterator mIt, 
+				 IntReferenceIterator yIt, IntReferenceIterator mIt,
 				 IntReferenceIterator dIt, IntReferenceIterator wdIt)
   {
 	int fileExists = Sys_SaveExists()(machine, slot);
@@ -121,7 +121,7 @@ struct Sys_SaveTime : public RLOp_Store_5<
   IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T>
 {
   int operator()(RLMachine& machine, int slot,
-				 IntReferenceIterator hhIt, IntReferenceIterator mmIt, 
+				 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
 				 IntReferenceIterator ssIt, IntReferenceIterator msIt)
   {
 	int fileExists = Sys_SaveExists()(machine, slot);
@@ -147,9 +147,9 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T >
 {
   int operator()(RLMachine& machine, int slot,
-				 IntReferenceIterator yIt, IntReferenceIterator mIt, 
+				 IntReferenceIterator yIt, IntReferenceIterator mIt,
 				 IntReferenceIterator dIt, IntReferenceIterator wdIt,
-				 IntReferenceIterator hhIt, IntReferenceIterator mmIt, 
+				 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
 				 IntReferenceIterator ssIt, IntReferenceIterator msIt)
   {
 	int fileExists = Sys_SaveExists()(machine, slot);
@@ -180,9 +180,9 @@ struct Sys_SaveInfo : public RLOp_Store_10<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T, StrReference_T >
 {
   int operator()(RLMachine& machine, int slot,
-				 IntReferenceIterator yIt, IntReferenceIterator mIt, 
+				 IntReferenceIterator yIt, IntReferenceIterator mIt,
 				 IntReferenceIterator dIt, IntReferenceIterator wdIt,
-				 IntReferenceIterator hhIt, IntReferenceIterator mmIt, 
+				 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
 				 IntReferenceIterator ssIt, IntReferenceIterator msIt,
 				 StringReferenceIterator titleIt)
   {
@@ -232,9 +232,9 @@ GetSaveFlagList;
  *
  * @code
  * str menu_line[10]
- * for (int i = 0) (i < length(menu_line)) (i += 1): 
- *   int (block) level, hp 
- *   str class 
+ * for (int i = 0) (i < length(menu_line)) (i += 1):
+ *   int (block) level, hp
+ *   str class
  *   GetSaveFlag(i, {intF[100], level, 2}, {strS[10], class, 1})
  *   menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
  * @endcode
@@ -253,7 +253,7 @@ struct Sys_GetSaveFlag : public RLOp_Store_2<
     Serialization::loadLocalMemoryForSlot(machine, slot, overlayedMemory);
 
     using boost::detail::multi_array::copy_n;
-    for(GetSaveFlagList::type::iterator it = flagList.begin(); 
+    for(GetSaveFlagList::type::iterator it = flagList.begin();
         it != flagList.end(); ++it)
     {
       switch(it->type)
@@ -299,7 +299,7 @@ struct Sys_LatestSave : public RLOp_Store_Void
 	if(fs::exists(saveDir))
 	{
 	  fs::directory_iterator end;
-	  for(fs::directory_iterator it(saveDir); it != end; ++it) 
+	  for(fs::directory_iterator it(saveDir); it != end; ++it)
 	  {
 		string filename = it->leaf();
 		if(starts_with(filename, "save") && ends_with(filename, ".jsn"))
@@ -329,10 +329,10 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
     Serialization::saveGameForSlot(machine, slot);
   }
 };
- 
+
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
  * from a save game slot.
  *
@@ -358,10 +358,10 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
       GraphicsSystem& graphics = machine.system().graphics();
 
       shared_ptr<Surface> dc0 = graphics.getDC(0);
-      shared_ptr<Surface> currentWindow = 
+      shared_ptr<Surface> currentWindow =
         graphics.renderToSurfaceWithBg(machine, dc0);
       Size s = currentWindow->size();
-      
+
       // Blank dc0 (because we won't be using it anyway) for the image
       // we're going to render to
       shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
@@ -378,7 +378,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
     }
   };
 
-  /** 
+  /**
    * Main entrypoint into the load command. Simply sets the callstack
    * up so that we will fade to black, clear the screen and render,
    * and then enter the next stage, the LongOperation LoadingGame.
@@ -391,7 +391,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
     GraphicsSystem& graphics = machine.system().graphics();
 
     shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> currentWindow = 
+    shared_ptr<Surface> currentWindow =
       graphics.renderToSurfaceWithBg(machine, dc0);
     Size s = currentWindow->size();
 
@@ -435,8 +435,8 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(3009, 0, "load", new Sys_load);
   m.addOpcode(3109, 0, "load_always", new Sys_load);
 
-  m.addOpcode(3501, 0, "EnableAutoSavepoints", 
+  m.addOpcode(3501, 0, "EnableAutoSavepoints",
               setToConstant(&RLMachine::setMarkSavepoints, 1));
-  m.addOpcode(3502, 0, "DisableAutoSavepoints", 
+  m.addOpcode(3502, 0, "DisableAutoSavepoints",
               setToConstant(&RLMachine::setMarkSavepoints, 0));
 }

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __FrameCounter_hpp__
@@ -45,22 +45,22 @@ public:
 
   virtual ~FrameCounter();
 
-  /** 
+  /**
    * Returns the current value of this frame counter, a value between
-   * 
-   * @return 
+   *
+   * @return
    */
   virtual int readFrame(EventSystem& eventSystem) = 0;
 
-  /** 
+  /**
    * The converse is setting the value, which should be done after the
    * frame counter has been turned off.
-   * 
+   *
    * @param value New value for the frame counter
    */
   void setValue(int value) { m_value = value; }
 
-  /** 
+  /**
    * When a timer starts, we need to tell the EventSystem that we now
    * have a near realtime event going on and to stop being nice to the
    * operating system.
@@ -69,7 +69,7 @@ public:
    */
   void beginTimer(EventSystem& eventSystem);
 
-  /** 
+  /**
    * When a timer ends, there's no need to be so harsh on the
    * system. Tell the eventSystem that we no longer require near
    * realtime event handling.
@@ -84,9 +84,9 @@ public:
   bool checkIfFinished(float newValue);
   void updateTimeValue(float numTicks);
 
-  
+
   int readNormalFrameWithChangeInterval(
-    EventSystem& eventSystem, float changeInterval, 
+    EventSystem& eventSystem, float changeInterval,
     float& timeAtLastCheck);
 
   /**
@@ -179,7 +179,7 @@ private:
   float m_timeAtLastCheck;
 
 public:
-  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, 
+  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax,
                            int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);
@@ -198,7 +198,7 @@ private:
   float m_timeAtLastCheck;
 
 public:
-  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax, 
+  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax,
                            int milliseconds);
 
   virtual int readFrame(EventSystem& eventSystem);

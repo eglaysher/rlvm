@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __System_hpp__
@@ -60,9 +60,9 @@ struct SystemGlobals
   /// Whether we should put up a yes/no dialog box when saving/loading.
   bool m_confirmSaveLoad;
 
-  /** 
+  /**
    * From the rldev documentation:
-   * 
+   *
    * "This flag is described in the default menu as 'make this program run
    * slower so that other programs will run smoothly'. Its effect is unclear;
    * it does not lower the process priority, but it might cause RealLive to
@@ -141,7 +141,7 @@ public:
 
   /**
    * @name Syscom related functions
-   * 
+   *
    * RealLive provides a context menu system to handle most actions
    * and configuration settings. The system command menu is configured
    * with the \#SYSCOM variables in gameexe.ini. It can be disabled by
@@ -155,10 +155,10 @@ public:
    *
    * @{
    */
-  
-  /** 
+
+  /**
    * Checks the visibility of a single syscom command.
-   * 
+   *
    * @param syscom The syscom number to check
    * @return Returns 0 if the given system command is invisible, 1 if
    *         it is visible, and 2 if it is visible but disabled
@@ -191,7 +191,7 @@ public:
 
   /**
    * @name Variables we track here
-   * 
+   *
    * @{
    */
   bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
@@ -206,7 +206,7 @@ public:
   /**
    * Resets the present values of the system; this doesn't clear user
    * settings, but clears things like the current graphics state and
-   * the status of all the text windows. 
+   * the status of all the text windows.
    *
    * This method is called when the user loads a game or resets the
    * machine.

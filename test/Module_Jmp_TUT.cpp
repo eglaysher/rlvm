@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
@@ -30,7 +30,7 @@
  * @author Elliot Glaysher
  * @date   Tue Sep 19 21:27:49 2006
  * @ingroup TestCase
- * 
+ *
  * Test cases for the flow control module.
  */
 
@@ -67,7 +67,7 @@ namespace tut
  * of test result, so any cleanup work should be located in destructor.
  */
 struct Module_Jmp_data
-{ 
+{
 
 };
 
@@ -280,7 +280,7 @@ void object::test<5>()
  * @a
  * intA[0] = 0
  * goto @end
- * 
+ *
  * @b
  * intA[0] = 1
  * goto @end
@@ -297,7 +297,7 @@ template<>
 void object::test<6>()
 {
   // Repeat this test to hit each label
-  for(int i = 0; i < 3; ++i) 
+  for(int i = 0; i < 3; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
     NullSystem system;
@@ -326,7 +326,7 @@ void object::test<6>()
  * @a
  * intA[0] = 0
  * goto @end
- * 
+ *
  * @b
  * intA[0] = 1
  * goto @end
@@ -348,8 +348,8 @@ void object::test<7>()
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 7);
   rlmachine.executeUntilHalted();
-  
-  ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+  ensure_equals("We jumped somewhere unexpected on a bad value!",
                 rlmachine.getIntValue(IntMemRef('A', 0)),
                 -1);
 }
@@ -366,7 +366,7 @@ void object::test<7>()
  * @a
  * intA[0] = 0
  * goto @end
- * 
+ *
  * @b
  * intA[0] = 1
  * goto @end
@@ -385,7 +385,7 @@ template<>
 template<>
 void object::test<8>()
 {
-  for(int i = 0; i < 3; ++i) 
+  for(int i = 0; i < 3; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
     NullSystem system;
@@ -393,8 +393,8 @@ void object::test<8>()
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
-  
-    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+    ensure_equals("We jumped somewhere unexpected on a bad value!",
                   rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
@@ -406,8 +406,8 @@ void object::test<8>()
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 29);
   rlmachine.executeUntilHalted();
-  
-  ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+  ensure_equals("We jumped somewhere unexpected on a bad value!",
                 rlmachine.getIntValue(IntMemRef(0, 0)),
                 3);
 }
@@ -570,11 +570,11 @@ void object::test<12>()
  * gosub_unless(intB[0]) @sub
  * intA[2] = 1
  * goto @end
- * 
+ *
  * @sub
  * intA[1] = 1
  * ret()
- * 
+ *
  * // If we fall through, reset the flag
  * intA[1] = 0
  * @end
@@ -612,11 +612,11 @@ void object::test<13>()
  * gosub_unless(intB[0]) @sub
  * intA[2] = 1
  * goto @end
- * 
+ *
  * @sub
  * intA[1] = 1
  * ret()
- * 
+ *
  * // If we fall through, reset the flag
  * intA[1] = 0
  * @end
@@ -657,7 +657,7 @@ void object::test<14>()
  * @a
  * intA[0] = 0
  * goto @end
- * 
+ *
  * @b
  * intA[0] = 1
  * goto @end
@@ -676,7 +676,7 @@ template<>
 template<>
 void object::test<15>()
 {
-  for(int i = 0; i < 3; ++i) 
+  for(int i = 0; i < 3; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
     NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
@@ -684,8 +684,8 @@ void object::test<15>()
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
-  
-    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+    ensure_equals("We jumped somewhere unexpected on a bad value!",
                   rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
@@ -697,8 +697,8 @@ void object::test<15>()
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 29);
   rlmachine.executeUntilHalted();
-  
-  ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+  ensure_equals("We jumped somewhere unexpected on a bad value!",
                 rlmachine.getIntValue(IntMemRef('A', 0)),
                 3);
 }
@@ -716,7 +716,7 @@ void object::test<15>()
  * #ENTRYPOINT 1
  * intA[0] = 1
  * goto @end
- * 
+ *
  * #ENTRYPOINT 2
  * intA[0] = 2
  * goto @end
@@ -732,7 +732,7 @@ template<>
 template<>
 void object::test<16>()
 {
-  for(int i = 1; i < 4; ++i) 
+  for(int i = 1; i < 4; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
     NullSystem system;
@@ -740,8 +740,8 @@ void object::test<16>()
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
-  
-    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+    ensure_equals("We jumped somewhere unexpected on a bad value!",
                   rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
@@ -749,8 +749,8 @@ void object::test<16>()
 
 // -----------------------------------------------------------------------
 
-/** 
- * 
+/**
+ *
  * @code
  * // ------------- In seen00001
  * jump(2, intB[0])
@@ -759,7 +759,7 @@ void object::test<16>()
  * #ENTRYPOINT 1
  * intA[0] = 1
  * goto @end
- * 
+ *
  * #ENTRYPOINT 2
  * intA[0] = 2
  * goto @end
@@ -775,7 +775,7 @@ template<>
 template<>
 void object::test<17>()
 {
-  for(int i = 1; i < 4; ++i) 
+  for(int i = 1; i < 4; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest/SEEN.TXT"));
     NullSystem system;
@@ -783,8 +783,8 @@ void object::test<17>()
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
-  
-    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+
+    ensure_equals("We jumped somewhere unexpected on a bad value!",
                   rlmachine.getIntValue(IntMemRef('A', 0)),
                   i);
   }
@@ -793,8 +793,8 @@ void object::test<17>()
 // -----------------------------------------------------------------------
 
 
-/** 
- * 
+/**
+ *
  * @code
  * // ------------- In seen00001
  * intA[0] = 1
@@ -805,7 +805,7 @@ void object::test<17>()
  * #ENTRYPOINT 1
  * intA[1] = 1
  * ret
- * 
+ *
  * #ENTRYPOINT 2
  * intA[1] = 2
  * ret
@@ -819,7 +819,7 @@ template<>
 template<>
 void object::test<18>()
 {
-  for(int i = 1; i < 4; ++i) 
+  for(int i = 1; i < 4; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcallTest_0/SEEN.TXT"));
     NullSystem system;
@@ -827,11 +827,11 @@ void object::test<18>()
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
-  
+
     ensure_equals("Precondition not set! (!?!?!?!)",
                   rlmachine.getIntValue(IntMemRef('A', 0)),
                   1);
-    ensure_equals("We jumped somewhere unexpected on a bad value!", 
+    ensure_equals("We jumped somewhere unexpected on a bad value!",
                   rlmachine.getIntValue(IntMemRef('A', 1)),
                   i);
     ensure_equals("Postcondition not set! (We didn't return correctly!)",
@@ -842,8 +842,8 @@ void object::test<18>()
 
 // -----------------------------------------------------------------------
 
-/** 
- * 
+/**
+ *
  * @code
  * #version 1.3
  *
@@ -881,7 +881,7 @@ void object::test<19>()
   rlmachine.executeUntilHalted();
 
   // @nextaction Continue writing the test case from here.
-  
+
   // Original states that shouldn't be modified
   ensure_equals("Precondition not set! (!?!?!?!) (intB[0])",
                 rlmachine.getIntValue(IntMemRef('B', 0)),
@@ -917,7 +917,7 @@ void object::test<19>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Recursive C implementation of fibonaci. Doesn't have all the weird
  * stack maitanance of the Reallive one I wrote, so this should help
  * test it. Used in test<20>
@@ -930,10 +930,10 @@ static int recFib(int input) {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests the most complex test regarding goto_with and the stack:
  * calculate fibonacci numbers.
- * 
+ *
  * @code
  * #version 1.3
  *
@@ -955,13 +955,13 @@ static int recFib(int input) {
  * if intL[0] == 0 ret_with(0)
  * if intL[0] == 1 ret_with(1)
  *
- * // Copy the incoming data onto the stack, and 
+ * // Copy the incoming data onto the stack, and
  * // increment the pointer.
  * intB[intA[0]] = intL[0] - 1
  * intA[0] += 1
  * intB[intA[0]] = intL[0] - 2
  * intA[0] += 1
- * 
+ *
  * intB[intA[0] - 2] = gosub_with(intB[intA[0] - 2]) @fib
  * intB[intA[0] - 1] = gosub_with(intB[intA[0] - 1]) @fib
  *
@@ -978,7 +978,7 @@ template<>
 template<>
 void object::test<20>()
 {
-  for(int i = 0; i < 10; ++i) 
+  for(int i = 0; i < 10; ++i)
   {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
     NullSystem system;
@@ -998,9 +998,9 @@ void object::test<20>()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Tests farcall_with()/rtl_with().
- * 
+ *
  * @code
  * // ---------------------------- SEEN00001
  * #version 1.3
@@ -1028,7 +1028,7 @@ void object::test<21>()
 {
   for(int offset = 0; offset < 2; ++offset)
   {
-    for(int entrypoint = 1; entrypoint < 4; ++entrypoint) 
+    for(int entrypoint = 1; entrypoint < 4; ++entrypoint)
     {
       libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcall_withTest/SEEN.TXT"));
       NullSystem system;

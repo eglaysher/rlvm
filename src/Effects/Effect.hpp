@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
@@ -48,7 +48,7 @@ class RLMachine;
 
 /**
  * @defgroup TransitionEffects SEL/SELR transition effects
- * 
+ *
  * recOpen/grpOpen use a large number of transition effects when
  * compositing DC1 to DC0. These effects are created either based of
  * the \#SEL/\#SELR entries in the Gameexe.ini file, or based off of
@@ -67,7 +67,7 @@ class RLMachine;
 
 /**
  * Transition effect on DCs.
- * 
+ *
  * Effect is the base class from which all transition effects defined
  * on \#SELs derive from. These effects are all implemented as
  * LongOperations on the RLMachine, as they are all long and blocking
@@ -106,19 +106,19 @@ protected:
   int height() const { return m_screenSize.height(); }
   int duration() const { return m_duration; }
 
-  /** 
+  /**
    * Implements the effect. Usually, this is all that needs to be
    * overriden, other then the public constructor.
-   * 
+   *
    * @param machine Machine to run on
    * @param currentTime A value [0, m_duration) reprsenting the
    *                    current time of the effect.
    */
-  virtual void performEffectForTime(RLMachine& machine, 
+  virtual void performEffectForTime(RLMachine& machine,
                                     int currentTime) = 0;
 
 public:
-  /** 
+  /**
    * Sets up all other variables
    *
    * Note that we add 1 to both width and height; RL is the only
@@ -130,7 +130,7 @@ public:
 
   virtual ~Effect();
 
-  /** 
+  /**
    * Implements the LongOperation calling interface. This simply keeps
    * track of the current time and calls performEffectForTime() until
    * time > m_duration, when the default implementation simply sets
@@ -173,24 +173,24 @@ private:
 
 public:
   BlitAfterEffectFinishes(LongOperation* in,
-                          boost::shared_ptr<Surface> src, 
+                          boost::shared_ptr<Surface> src,
                           boost::shared_ptr<Surface> dst,
                           const Rect& srcRect, const Rect& destRect);
 
   ~BlitAfterEffectFinishes();
 };
 
-/** 
+/**
  * Takes a normal Effect and decorates it with the
  * BlitAfterEffectFinishes, so that after the Effect has run, it will
  * do the final blit.
  *
  * @relates BlitAfterEffectFinishes
  * @param[in,out] lop LongOperation to decorate
- * @param src 
- * @param dst 
+ * @param src
+ * @param dst
  */
-void decorateEffectWithBlit(LongOperation*& lop, 
+void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> src,
                             boost::shared_ptr<Surface> dst);
 // @}

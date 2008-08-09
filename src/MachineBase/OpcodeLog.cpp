@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -57,7 +57,7 @@ static bool nameLessThan(const OpcodeLog::Storage::value_type& lhs,
 // -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
-  int maxFunctionNameLen = 
+  int maxFunctionNameLen =
     max_element(log.begin(), log.end(), nameLessThan)->first.size();
 
   os << setw(maxFunctionNameLen) << left << "Name" << "  " << "Count" << endl;
@@ -68,7 +68,7 @@ std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
   os << "  " << "-----" << endl;
 
   for(OpcodeLog::Storage::const_iterator it = log.begin(); it != log.end();
-      ++it) 
+      ++it)
   {
     os << setw(maxFunctionNameLen) << left <<  it->first << "  " << it->second
        << endl;

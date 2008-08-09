@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __SDLGraphicsSystem_hpp_
@@ -61,7 +61,7 @@ class SDLGraphicsSystem : public GraphicsSystem
 {
 private:
   SDL_Surface* m_screen;
-  
+
   boost::shared_ptr<SDLSurface> m_displayContexts[16];
 
   bool m_redrawLastFrame;
@@ -70,7 +70,7 @@ private:
 
   /// Rectangle representing the screen.
   Rect m_screenRect;
-  
+
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool m_displayDataInTitlebar;
 
@@ -98,10 +98,10 @@ private:
    */
   GLuint m_behindCursorTexture;
 
-  /** 
-   * LRU cache filled with the last fifteen accessed images. 
-   * 
-   * This cache's contents are assumed to be immutable. 
+  /**
+   * LRU cache filled with the last fifteen accessed images.
+   *
+   * This cache's contents are assumed to be immutable.
    *
    * @todo Think about enforcing the immutability by adding 'const' to
    *       half the program.
@@ -110,9 +110,9 @@ private:
 
   // ---------------------------------------------------------------------
 
-  /** 
+  /**
    * @name Internal Error Checking Methods
-   * 
+   *
    * These methods are used internally to seperate out commonly used
    * error checking and parameter validation code from the rest of the
    * class.
@@ -120,15 +120,15 @@ private:
    * @{
    */
 
-  /** 
+  /**
    * Makes sure that a passed in dc number is valid.
-   * 
+   *
    * @exception Error Throws when dc is greater then the maximum.
    * @exception Error Throws when dc is unallocated.
    */
   void verifySurfaceExists(int dc, const std::string& caller);
 
-  /** 
+  /**
    * Makes sure that a surface we just allocated was, in fact,
    * allocated.
    */
@@ -142,8 +142,8 @@ private:
 
 public:
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
-  
-  /** 
+
+  /**
    * When the cursor is changed, also make sure that it exists so that we can
    * switch on/off the operating system cursor when the cursor index is invalid.
    */
@@ -151,7 +151,7 @@ public:
 
   virtual void beginFrame();
 
-  /** 
+  /**
    * Performs a full redraw of the screen; blitting dc0 to the screen,
    * then blitting all the visible objects, and then blitting all the
    * visible text windows.
@@ -190,7 +190,7 @@ public:
 
   virtual void clearAllDCs();
 
-  /** 
+  /**
    * Reset the system. Should clear all state for when a user loads a
    * game.
    */

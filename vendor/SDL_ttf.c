@@ -388,7 +388,7 @@ static void Flush_Glyph( c_glyph* glyph )
 	}
 	glyph->cached = 0;
 }
-	
+
 static void Flush_Cache( TTF_Font* font )
 {
 	int i;
@@ -458,7 +458,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			cached->yoffset = 0;
 			cached->advance = FT_CEIL(metrics->horiAdvance);
 		}
-		
+
 		/* Adjust for bold and italic text */
 		if( font->style & TTF_STYLE_BOLD ) {
 			cached->maxx += font->glyph_overhang;
@@ -570,7 +570,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 					 * shades of gray.  Instead, it
 					 * returns a black and white surface
 					 * and we have to translate it back
-					 * to a 256 gray shaded surface. 
+					 * to a 256 gray shaded surface.
 					 * */
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
@@ -886,8 +886,8 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 
 		/* handle kerning */
 		if ( use_kerning && prev_index && glyph->index ) {
-			FT_Vector delta; 
-			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			FT_Vector delta;
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			x += delta.x >> 6;
 		}
 
@@ -907,10 +907,10 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		 * work out correctly.
 		 * */
 			z -= glyph->minx;
-			
+
 		}
 #endif
-		
+
 		z = x + glyph->minx;
 		if ( minx > z ) {
 			minx = z;
@@ -1055,7 +1055,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 
 	/* check kerning */
 	use_kerning = FT_HAS_KERNING( font->face );
-	
+
 	/* Load and render each character */
 	xstart = 0;
 	swapped = TTF_byteswapped;
@@ -1094,15 +1094,15 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 		}
 		/* do kerning, if possible AC-Patch */
 		if ( use_kerning && prev_index && glyph->index ) {
-			FT_Vector delta; 
-			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			FT_Vector delta;
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			xstart += delta.x >> 6;
 		}
 		/* Compensate for wrap around bug with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;
 		}
-		
+
 		for( row = 0; row < current->rows; ++row ) {
 			/* Make sure we don't go either over, or under the
 			 * limit */
@@ -1317,7 +1317,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 
 	/* check kerning */
 	use_kerning = FT_HAS_KERNING( font->face );
-	
+
 	/* Load and render each character */
 	xstart = 0;
 	swapped = TTF_byteswapped;
@@ -1355,15 +1355,15 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		}
 		/* do kerning, if possible AC-Patch */
 		if ( use_kerning && prev_index && glyph->index ) {
-			FT_Vector delta; 
-			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			FT_Vector delta;
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			xstart += delta.x >> 6;
 		}
 		/* Compensate for the wrap around with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;
 		}
-		
+
 		current = &glyph->pixmap;
 		for( row = 0; row < current->rows; ++row ) {
 			/* Make sure we don't go either over, or under the
@@ -1565,7 +1565,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 
 	/* check kerning */
 	use_kerning = FT_HAS_KERNING( font->face );
-	
+
 	/* Load and render each character */
 	xstart = 0;
 	swapped = TTF_byteswapped;
@@ -1607,11 +1607,11 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 
 		/* do kerning, if possible AC-Patch */
 		if ( use_kerning && prev_index && glyph->index ) {
-			FT_Vector delta; 
-			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			FT_Vector delta;
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			xstart += delta.x >> 6;
 		}
-		
+
 		/* Compensate for the wrap around bug with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;

@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -52,21 +52,21 @@ class Mapping {
 	void* mem;
 	bool mapped;
 	size_t len;
-	
+
 	string fn_;
 	Mode mode_;
 	off_t msz_;
-	
+
 	void mopen();
 	void mclose();
 public:
 	// Return a pointer to the internal memory.
 	char* get() { return (char*)mem; }
-	
+
 	// Close the file, delete it, rename a new file to the old
 	// file's name, and reopen it.
 	void replace(string newfilename);
-	
+
 	Mapping(string filename, Mode mode, off_t min_size = 0);
 	~Mapping();
 };

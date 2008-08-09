@@ -1,5 +1,5 @@
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -35,7 +35,7 @@
 
 namespace libReallive {
 
-/** 
+/**
  * Represents the store register in an Expression (both as an lvalue
  * and rvlaue).
  */
@@ -54,7 +54,7 @@ public:
   virtual ExpressionPiece* clone() const;
 };
 
-/** 
+/**
  * Represents a constant integer in an Expression.
  */
 class IntegerConstant : public ExpressionPiece {
@@ -87,7 +87,7 @@ public:
 // -----------------------------------------------------------------------
 
 /**
- * Reference to a piece of memory in an RLMachine. Noe that this 
+ * Reference to a piece of memory in an RLMachine. Noe that this
  */
 class MemoryReference : public ExpressionPiece {
 private:
@@ -127,7 +127,7 @@ public:
 
 // ----------------------------------------------------------------------
 
-/** 
+/**
  * Represents an operation on one ExpressionPiece, i.e. unary
  * negative, et cetera.
  */
@@ -139,10 +139,10 @@ private:
   /// Which operation we are to perform.
   char operation;
 
-  /** 
+  /**
    * Performs operation on the passed in parameter, and returns the
    * value.
-   * 
+   *
    * @param x Number to operate on.
    * @return The result of the operation
    */
@@ -192,13 +192,13 @@ public:
 
 // ----------------------------------------------------------------------
 
-/** 
+/**
  * Operation that modies a given memory location, sucha as +=, -=, /=,
  * et cetera.
  */
 class AssignmentExpressionOperator : public BinaryExpressionOperator {
 public:
-  AssignmentExpressionOperator(char operation, ExpressionPiece* lhs, 
+  AssignmentExpressionOperator(char operation, ExpressionPiece* lhs,
                                ExpressionPiece* rhs);
   ~AssignmentExpressionOperator();
 
@@ -227,7 +227,7 @@ public:
 
   void addContainedPiece(ExpressionPiece* piece);
 
-  const boost::ptr_vector<ExpressionPiece>& getContainedPieces() const 
+  const boost::ptr_vector<ExpressionPiece>& getContainedPieces() const
     { return containedPieces; }
 
   virtual ExpressionPiece* clone() const;
@@ -235,9 +235,9 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
- * Represents a Special parameter; a type that can be multiple types. 
- * 
+/**
+ * Represents a Special parameter; a type that can be multiple types.
+ *
  * In both Haeleth's code and my study of the bytecode, Special
  * parameters seem to be types of Complex expressions. Even if they
  * weren't, we need to maintain this relationships to make Special_T

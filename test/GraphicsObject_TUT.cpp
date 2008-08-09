@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include <boost/archive/text_iarchive.hpp>
@@ -83,7 +83,7 @@ tf GraphicsObject_data("GraphicsObject");
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Test the serialization of an individual GraphicsObjectOfFile
  * object.
  */
@@ -124,7 +124,7 @@ void object::test<2>()
 {
   stringstream ss;
   Serialization::g_currentMachine = &rlmachine;
-  
+
   {
     const scoped_ptr<GraphicsObject> obj(new GraphicsObject());
     obj->setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
@@ -138,7 +138,7 @@ void object::test<2>()
     boost::archive::text_iarchive ia(ss);
     ia >> dst;
 
-    GraphicsObjectOfFile& obj = 
+    GraphicsObjectOfFile& obj =
       dynamic_cast<GraphicsObjectOfFile&>(dst->objectData());
 
     // Now query invariants.
@@ -165,7 +165,7 @@ void object::test<3>()
     boost::function<int(const GraphicsObject&)> > TupleT;
 
   typedef vector<TupleT> SetterVec;
-  SetterVec setters = 
+  SetterVec setters =
     tuple_list_of(&GraphicsObject::setVisible, &GraphicsObject::visible)
     (&GraphicsObject::setX, &GraphicsObject::x)
     (&GraphicsObject::setY, &GraphicsObject::y)
@@ -217,7 +217,7 @@ void object::test<3>()
     // Make sure we get the right value back
   }
 
-  // OTHER: setXAdjustment, setYAdjustment, clearClip, setClip, 
+  // OTHER: setXAdjustment, setYAdjustment, clearClip, setClip,
   // setTint[RGB]?, setColour[RGB]?
 }
 

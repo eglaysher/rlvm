@@ -16,7 +16,7 @@ else
 INCLUDES += ../../src
 INCLUDES += ..
 
-.DEFAULT: 
+.DEFAULT:
 #$(CXXProgram rlvmTest, $(TEST_FILES))
 
 clean:

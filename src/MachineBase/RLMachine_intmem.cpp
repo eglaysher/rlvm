@@ -57,9 +57,9 @@ using libReallive::IntMemRef;
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Helper function that throws errors for illegal memory access
- * 
+ *
  * @param location The illegal index that was accessed
  * @see RLMachine::getIntValue
  */
@@ -73,18 +73,18 @@ static void throwIllegalIndex(const IntMemRef& ref,
 
 // -----------------------------------------------------------------------
 
-int Memory::getIntValue(const IntMemRef& ref) 
+int Memory::getIntValue(const IntMemRef& ref)
 {
   int type = ref.type();
   int index = ref.bank();
   int location = ref.location();
 
-  if(index > NUMBER_OF_INT_LOCATIONS) 
+  if(index > NUMBER_OF_INT_LOCATIONS)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
   if (type == 0) {
    // A[]..G[], Z[] を直に読む
-    if ((unsigned int)(location) >= 2000) 
+    if ((unsigned int)(location) >= 2000)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return intVar[index][location];
@@ -92,7 +92,7 @@ int Memory::getIntValue(const IntMemRef& ref)
    // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
-    if ((unsigned int)(location) >= (64000u / factor)) 
+    if ((unsigned int)(location) >= (64000u / factor))
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return (intVar[index][location / eltsize] >>
@@ -102,7 +102,7 @@ int Memory::getIntValue(const IntMemRef& ref)
 
 // -----------------------------------------------------------------------
 
-void Memory::setIntValue(const IntMemRef& ref, int value) 
+void Memory::setIntValue(const IntMemRef& ref, int value)
 {
   int type = ref.type();
   int index = ref.bank();
@@ -113,7 +113,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value)
   }
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
-    if ((unsigned int)(location) >= 2000) 
+    if ((unsigned int)(location) >= 2000)
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
     intVar[index][location] = value;
   } else {
@@ -122,7 +122,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value)
     int eltsize = 32 / factor;
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
-    if ((unsigned int)(location) >= (64000u / factor)) 
+    if ((unsigned int)(location) >= (64000u / factor))
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
 
     intVar[index][location / eltsize] =

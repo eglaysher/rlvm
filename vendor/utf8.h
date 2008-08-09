@@ -34,12 +34,12 @@ DEALINGS IN THE SOFTWARE.
 namespace utf8
 {
     // The typedefs for 8-bit, 16-bit and 32-bit unsigned integers
-    // You may need to change them to match your system. 
+    // You may need to change them to match your system.
     // These typedefs have the same names as ones from cstdint, or boost/cstdint
     typedef unsigned char   uint8_t;
     typedef unsigned short  uint16_t;
     typedef unsigned int    uint32_t;
-    
+
     // Exceptions that may be thrown from the library functions.
     class invalid_code_point : public std::exception {
         uint32_t cp;
@@ -74,7 +74,7 @@ namespace utf8
 
 // Helper code - not intended to be directly called by the library users. May be changed at any time
 namespace internal
-{    
+{
     // Unicode constants
     // Leading (high) surrogates: 0xd800 - 0xdbff
     // Trailing (low) surrogates: 0xdc00 - 0xdfff
@@ -114,14 +114,14 @@ namespace internal
     inline bool is_code_point_valid(u32 cp)
     {
         return (cp <= CODE_POINT_MAX && !is_surrogate(cp) && cp != 0xfffe && cp != 0xffff);
-    }  
+    }
 
     template <typename octet_iterator>
     inline typename std::iterator_traits<octet_iterator>::difference_type
     sequence_length(octet_iterator lead_it)
     {
         uint8_t lead = mask8(*lead_it);
-        if (lead < 0x80) 
+        if (lead < 0x80)
             return 1;
         else if ((lead >> 5) == 0x6)
             return 2;
@@ -129,7 +129,7 @@ namespace internal
             return 3;
         else if ((lead >> 3) == 0x1e)
             return 4;
-        else 
+        else
             return 0;
     }
 
@@ -155,17 +155,17 @@ namespace internal
                 return NOT_ENOUGH_ROOM;
         }
 
-        // Do we have enough memory?     
+        // Do we have enough memory?
         if (end - it < length)
             return NOT_ENOUGH_ROOM;
-        
+
         // Check trail octets and calculate the code point
         switch (length) {
             case 0:
                 return INVALID_LEAD;
                 break;
             case 2:
-                if (is_trail(*(++it))) { 
+                if (is_trail(*(++it))) {
                     cp = ((cp << 6) & 0x7ff) + ((*it) & 0x3f);
                 }
                 else {
@@ -180,7 +180,7 @@ namespace internal
                         cp += (*it) & 0x3f;
                     }
                     else {
-                        --it; --it; 
+                        --it; --it;
                         return INCOMPLETE_SEQUENCE;
                     }
                 }
@@ -191,11 +191,11 @@ namespace internal
             break;
             case 4:
                 if (is_trail(*(++it))) {
-                    cp = ((cp << 18) & 0x1fffff) + ((mask8(*it) << 12) & 0x3ffff);                
+                    cp = ((cp << 18) & 0x1fffff) + ((mask8(*it) << 12) & 0x3ffff);
                     if (is_trail(*(++it))) {
                         cp += (mask8(*it) << 6) & 0xfff;
                         if (is_trail(*(++it))) {
-                            cp += (*it) & 0x3f; 
+                            cp += (*it) & 0x3f;
                         }
                         else {
                             --it; --it; --it;
@@ -215,14 +215,14 @@ namespace internal
         }
         // Is the code point valid?
         if (!is_code_point_valid(cp)) {
-            for (octet_difference_type i = 0; i < length - 1; ++i) 
+            for (octet_difference_type i = 0; i < length - 1; ++i)
                 --it;
             return INVALID_CODE_POINT;
         }
-            
+
         if (code_point)
             *code_point = cp;
-            
+
         if (cp < 0x80) {
             if (length != 1) {
                 for (octet_difference_type i = 0; i < length - 1; ++i)
@@ -244,17 +244,17 @@ namespace internal
                 return OVERLONG_SEQUENCE;
             }
         }
-           
+
         ++it;
-        return OK;    
+        return OK;
     }
 
-} // namespace internal 
-    
+} // namespace internal
+
     /// The library API - functions intended to be called by the users
- 
+
     // Byte order mark
-    const uint8_t bom[] = {0xef, 0xbb, 0xbf}; 
+    const uint8_t bom[] = {0xef, 0xbb, 0xbf};
 
     template <typename octet_iterator>
     octet_iterator find_invalid(octet_iterator start, octet_iterator end)
@@ -286,11 +286,11 @@ namespace internal
     template <typename octet_iterator>
     octet_iterator append(uint32_t cp, octet_iterator result)
     {
-        if (!internal::is_code_point_valid(cp)) 
+        if (!internal::is_code_point_valid(cp))
             throw invalid_code_point(cp);
 
         if (cp < 0x80)                        // one octet
-            *(result++) = static_cast<uint8_t>(cp);  
+            *(result++) = static_cast<uint8_t>(cp);
         else if (cp < 0x800) {                // two octets
             *(result++) = static_cast<uint8_t>((cp >> 6)            | 0xc0);
             *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
@@ -329,14 +329,14 @@ namespace internal
             case internal::INVALID_CODE_POINT :
                 throw invalid_code_point(cp);
         }
-        return cp;        
+        return cp;
     }
 
     template <typename octet_iterator>
     uint32_t prior(octet_iterator& it, octet_iterator start)
     {
         octet_iterator end = it;
-        while (internal::is_trail(*(--it))) 
+        while (internal::is_trail(*(--it)))
             if (it < start)
                 throw invalid_utf8(*it); // error - no lead byte in the sequence
         octet_iterator temp = it;
@@ -348,7 +348,7 @@ namespace internal
     uint32_t previous(octet_iterator& it, octet_iterator pass_start)
     {
         octet_iterator end = it;
-        while (internal::is_trail(*(--it))) 
+        while (internal::is_trail(*(--it)))
             if (it == pass_start)
                 throw invalid_utf8(*it); // error - no lead byte in the sequence
         octet_iterator temp = it;
@@ -367,14 +367,14 @@ namespace internal
     distance (octet_iterator first, octet_iterator last)
     {
         typename std::iterator_traits<octet_iterator>::difference_type dist;
-        for (dist = 0; first < last; ++dist) 
+        for (dist = 0; first < last; ++dist)
             next(first, last);
         return dist;
     }
 
     template <typename u16bit_iterator, typename octet_iterator>
     octet_iterator utf16to8 (u16bit_iterator start, u16bit_iterator end, octet_iterator result)
-    {       
+    {
         while (start != end) {
             uint32_t cp = internal::mask16(*start++);
             // Take care of surrogate pairs first
@@ -382,17 +382,17 @@ namespace internal
                 if (start != end) {
                     uint32_t trail_surrogate = internal::mask16(*start++);
                     if (trail_surrogate >= internal::TRAIL_SURROGATE_MIN && trail_surrogate <= internal::TRAIL_SURROGATE_MAX)
-                        cp = (cp << 10) + trail_surrogate + internal::SURROGATE_OFFSET;                    
-                    else 
+                        cp = (cp << 10) + trail_surrogate + internal::SURROGATE_OFFSET;
+                    else
                         throw invalid_utf16(static_cast<uint16_t>(trail_surrogate));
                 }
-                else 
+                else
                     throw invalid_utf16(static_cast<uint16_t>(*start));
-            
+
             }
             result = append(cp, result);
         }
-        return result;        
+        return result;
     }
 
     template <typename u16bit_iterator, typename octet_iterator>
@@ -428,13 +428,13 @@ namespace internal
         return result;
     }
 
-    namespace unchecked 
+    namespace unchecked
     {
         template <typename octet_iterator>
         octet_iterator append(uint32_t cp, octet_iterator result)
         {
             if (cp < 0x80)                        // one octet
-                *(result++) = static_cast<uint8_t>(cp);  
+                *(result++) = static_cast<uint8_t>(cp);
             else if (cp < 0x800) {                // two octets
                 *(result++) = static_cast<uint8_t>((cp >> 6)          | 0xc0);
                 *(result++) = static_cast<uint8_t>((cp & 0x3f)        | 0x80);
@@ -465,22 +465,22 @@ namespace internal
                     cp = ((cp << 6) & 0x7ff) + ((*it) & 0x3f);
                     break;
                 case 3:
-                    ++it; 
+                    ++it;
                     cp = ((cp << 12) & 0xffff) + ((internal::mask8(*it) << 6) & 0xfff);
                     ++it;
                     cp += (*it) & 0x3f;
                     break;
                 case 4:
                     ++it;
-                    cp = ((cp << 18) & 0x1fffff) + ((internal::mask8(*it) << 12) & 0x3ffff);                
+                    cp = ((cp << 18) & 0x1fffff) + ((internal::mask8(*it) << 12) & 0x3ffff);
                     ++it;
                     cp += (internal::mask8(*it) << 6) & 0xfff;
                     ++it;
-                    cp += (*it) & 0x3f; 
+                    cp += (*it) & 0x3f;
                     break;
             }
             ++it;
-            return cp;        
+            return cp;
         }
 
         template <typename octet_iterator>
@@ -497,7 +497,7 @@ namespace internal
         {
             return prior(it);
         }
-        
+
         template <typename octet_iterator, typename distance_type>
         void advance (octet_iterator& it, distance_type n)
         {
@@ -510,14 +510,14 @@ namespace internal
         distance (octet_iterator first, octet_iterator last)
         {
             typename std::iterator_traits<octet_iterator>::difference_type dist;
-            for (dist = 0; first < last; ++dist) 
+            for (dist = 0; first < last; ++dist)
                 next(first);
             return dist;
         }
 
         template <typename u16bit_iterator, typename octet_iterator>
         octet_iterator utf16to8 (u16bit_iterator start, u16bit_iterator end, octet_iterator result)
-        {       
+        {
             while (start != end) {
                 uint32_t cp = internal::mask16(*start++);
             // Take care of surrogate pairs first
@@ -527,7 +527,7 @@ namespace internal
                 }
                 result = append(cp, result);
             }
-            return result;         
+            return result;
         }
 
         template <typename u16bit_iterator, typename octet_iterator>
@@ -564,6 +564,6 @@ namespace internal
         }
 
     } // namespace utf8::unchecked
-} // namespace utf8 
+} // namespace utf8
 
 #endif // header guard

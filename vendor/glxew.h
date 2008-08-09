@@ -4,24 +4,24 @@
 ** Copyright (C) 2002-2007, Marcelo E. Magallon <mmagallo[]debian org>
 ** Copyright (C) 2002, Lev Povalahev
 ** All rights reserved.
-** 
-** Redistribution and use in source and binary forms, with or without 
+**
+** Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are met:
-** 
-** * Redistributions of source code must retain the above copyright notice, 
+**
+** * Redistributions of source code must retain the above copyright notice,
 **   this list of conditions and the following disclaimer.
-** * Redistributions in binary form must reproduce the above copyright notice, 
-**   this list of conditions and the following disclaimer in the documentation 
+** * Redistributions in binary form must reproduce the above copyright notice,
+**   this list of conditions and the following disclaimer in the documentation
 **   and/or other materials provided with the distribution.
-** * The name of the author may be used to endorse or promote products 
+** * The name of the author may be used to endorse or promote products
 **   derived from this software without specific prior written permission.
 **
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-** ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-** LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+** ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+** LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 ** SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 ** INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 ** CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
@@ -230,21 +230,21 @@ typedef XID GLXPbuffer;
 typedef struct __GLXFBConfigRec *GLXFBConfig;
 
 typedef struct {
-  int event_type; 
-  int draw_type; 
-  unsigned long serial; 
-  Bool send_event; 
-  Display *display; 
-  GLXDrawable drawable; 
-  unsigned int buffer_mask; 
-  unsigned int aux_buffer; 
-  int x, y; 
-  int width, height; 
-  int count; 
+  int event_type;
+  int draw_type;
+  unsigned long serial;
+  Bool send_event;
+  Display *display;
+  GLXDrawable drawable;
+  unsigned int buffer_mask;
+  unsigned int aux_buffer;
+  int x, y;
+  int width, height;
+  int count;
 } GLXPbufferClobberEvent;
 typedef union __GLXEvent {
-  GLXPbufferClobberEvent glxpbufferclobber; 
-  long pad[24]; 
+  GLXPbufferClobberEvent glxpbufferclobber;
+  long pad[24];
 } GLXEvent;
 
 typedef GLXFBConfig* ( * PFNGLXCHOOSEFBCONFIGPROC) (Display *dpy, int screen, const int *attrib_list, int *nelements);
@@ -747,32 +747,32 @@ typedef XVisualInfo* ( * PFNGLXGETVISUALFROMFBCONFIGSGIXPROC) (Display *dpy, GLX
 #define GLX_HYPERPIPE_ID_SGIX 0x8030
 
 typedef struct {
-  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]; 
-  int  networkId; 
+  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+  int  networkId;
 } GLXHyperpipeNetworkSGIX;
 typedef struct {
-  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]; 
-  int XOrigin; 
-  int YOrigin; 
-  int maxHeight; 
-  int maxWidth; 
+  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+  int XOrigin;
+  int YOrigin;
+  int maxHeight;
+  int maxWidth;
 } GLXPipeRectLimits;
 typedef struct {
-  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]; 
-  int channel; 
-  unsigned int participationType; 
-  int timeSlice; 
+  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+  int channel;
+  unsigned int participationType;
+  int timeSlice;
 } GLXHyperpipeConfigSGIX;
 typedef struct {
-  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]; 
-  int srcXOrigin; 
-  int srcYOrigin; 
-  int srcWidth; 
-  int srcHeight; 
-  int destXOrigin; 
-  int destYOrigin; 
-  int destWidth; 
-  int destHeight; 
+  char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+  int srcXOrigin;
+  int srcYOrigin;
+  int srcWidth;
+  int srcHeight;
+  int destXOrigin;
+  int destYOrigin;
+  int destWidth;
+  int destHeight;
 } GLXPipeRect;
 
 typedef int ( * PFNGLXBINDHYPERPIPESGIXPROC) (Display *dpy, int hpId);

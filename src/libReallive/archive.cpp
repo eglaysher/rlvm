@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -53,7 +53,7 @@ Archive::Archive(const string& filename, const std::string& regname)
   readTOC();
 
   if (regname == "KEY\\CLANNAD_FV")
-    second_level_xor_key_ = 
+    second_level_xor_key_ =
       libReallive::Compression::clannad_full_voice_xor_mask_2;
   // WARNING: JUST A GUESS. I DON'T OWN A COPY OF LITTLE BUSTERS.
   else if (regname == "KEY\\LITTLE_BUSTERS")
@@ -82,7 +82,7 @@ Archive::scenario(int index) {
     return at->second;
 	scenarios_t::const_iterator st = scenarios.find(index);
 	if (st != scenarios.end())
-    return accessed[index] = 
+    return accessed[index] =
       new Scenario(st->second, index, second_level_xor_key_);
 	return NULL;
 }
@@ -94,7 +94,7 @@ Archive::scenario(int index) {
 // 	if (filename == name) {
 // 		commit();
 // 		return;
-// 	}	
+// 	}
 // 	// Get length of output file.
 // 	size_t outlen = 80000;
 // 	std::map<int, const string*> compressed;
@@ -153,7 +153,7 @@ Archive::reset()
 // 		if ((f = fopen(tmpfile, "r")))
 // 		{
 // 		  fclose(f);
-// 		} 
+// 		}
 // 		else
 // 		{
 // 		  break;

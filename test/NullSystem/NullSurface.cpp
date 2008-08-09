@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "NullSystem/NullSurface.hpp"
@@ -31,7 +31,7 @@
 // -----------------------------------------------------------------------
 // NullSurface
 // -----------------------------------------------------------------------
-NullSurface::NullSurface(const std::string& surface_name) 
+NullSurface::NullSurface(const std::string& surface_name)
   : surface_name_(surface_name), allocated_(false), size_(-1, -1),
     surface_log_(surface_name)
 {
@@ -52,7 +52,7 @@ void NullSurface::allocate(const Size& size) {
   allocated_ = true;
   size_ = size;
 }
- 
+
 // -----------------------------------------------------------------------
 
 void NullSurface::deallocate() {
@@ -67,7 +67,7 @@ Size NullSurface::size() const { return size_; }
 // -----------------------------------------------------------------------
 
 void NullSurface::blitToSurface(
-  Surface& surface, 
+  Surface& surface,
   const Rect& src, const Rect& dst,
   int alpha, bool useSrcAlpha)
 {
@@ -110,7 +110,7 @@ void NullSurface::renderToScreenAsObject(const GraphicsObject& rp) {
 
 // -----------------------------------------------------------------------
 
-void NullSurface::renderToScreenAsObject(const GraphicsObject& rp, 
+void NullSurface::renderToScreenAsObject(const GraphicsObject& rp,
                                          const GraphicsObjectOverride& override) {
   surface_log_.recordFunction("renderToScreenAsObject");
 }
@@ -130,7 +130,7 @@ const Surface::GrpRect& NullSurface::getPattern(int pattNo) const {
 
 // -----------------------------------------------------------------------
 
-void NullSurface::rawRenderQuad(const int srcCoords[8], 
+void NullSurface::rawRenderQuad(const int srcCoords[8],
                                 const int destCoords[8],
                                 const int opacity[4]) {
   surface_log_.recordFunction("rawRenderQuad");

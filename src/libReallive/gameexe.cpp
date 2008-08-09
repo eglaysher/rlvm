@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -35,7 +35,7 @@
 #include "Precompiled.hpp"
 
 // -----------------------------------------------------------------------
-  
+
 #include "gameexe.h"
 #include "defs.h"
 
@@ -68,7 +68,7 @@ public:
   template<typename InputIterator, typename Token>
   bool operator()(InputIterator& next, InputIterator end, Token& tok)
   {
-    tok = Token();    
+    tok = Token();
     // Advance to the next data character
     for(; next != end && ( !is_data(*next) ); ++next);
 
@@ -86,7 +86,7 @@ public:
     }
     else
     {
-      // Eat the current character and all 
+      // Eat the current character and all
       for(; next != end && is_num(*next); ++next)
         tok += *next;
     }
@@ -133,7 +133,7 @@ Gameexe::Gameexe(const fs::path& gameexefile)
       // Extract all numeric and data values from the value
       typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
       ValueTokenizer tokenizer(value);
-      for(ValueTokenizer::iterator it = tokenizer.begin(); 
+      for(ValueTokenizer::iterator it = tokenizer.begin();
           it != tokenizer.end(); ++it)
       {
         const string& tok = *it;
@@ -172,7 +172,7 @@ const std::vector<int>& Gameexe::getIntArray(GameexeData_t::const_iterator key)
 
 int Gameexe::getIntAt(GameexeData_t::const_iterator key, int index)
 {
-  if(key == data_.end()) 
+  if(key == data_.end())
     throwUnknownKey("TMP");
 
   return key->second.at(index);
@@ -180,14 +180,14 @@ int Gameexe::getIntAt(GameexeData_t::const_iterator key, int index)
 
 // -----------------------------------------------------------------------
 
-bool Gameexe::exists(const std::string& key) 
+bool Gameexe::exists(const std::string& key)
 {
   return data_.find(key) != data_.end();
 }
 
 // -----------------------------------------------------------------------
 
-std::string Gameexe::getStringAt(GameexeData_t::const_iterator key, int index) 
+std::string Gameexe::getStringAt(GameexeData_t::const_iterator key, int index)
 {
   int cindex = getIntAt(key, index);
   return cdata_.at(cindex);
@@ -195,7 +195,7 @@ std::string Gameexe::getStringAt(GameexeData_t::const_iterator key, int index)
 
 // -----------------------------------------------------------------------
 
-void Gameexe::setStringAt(const std::string& key, const std::string& value) 
+void Gameexe::setStringAt(const std::string& key, const std::string& value)
 {
   Gameexe_vec_type toStore;
   cdata_.push_back(value);
@@ -205,7 +205,7 @@ void Gameexe::setStringAt(const std::string& key, const std::string& value)
 
 // -----------------------------------------------------------------------
 
-void Gameexe::setIntAt(const std::string& key, const int value) 
+void Gameexe::setIntAt(const std::string& key, const int value)
 {
   Gameexe_vec_type toStore;
   toStore.push_back(value);
@@ -233,7 +233,7 @@ void Gameexe::addToStream(const int& x, std::ostringstream& ss) {
 
 // -----------------------------------------------------------------------
 
-void Gameexe::throwUnknownKey(const std::string& key) 
+void Gameexe::throwUnknownKey(const std::string& key)
 {
   std::ostringstream ss;
   ss << "Unknown Gameexe key '" << key << "'";
@@ -259,14 +259,14 @@ GameexeFilteringIterator Gameexe::filtering_end()
 // -----------------------------------------------------------------------
 GameexeInterpretObject::GameexeInterpretObject(
   const std::string& key, Gameexe& objectToLookupOn)
-  : m_key(key), m_iterator(objectToLookupOn.find(key)), 
+  : m_key(key), m_iterator(objectToLookupOn.find(key)),
     m_objectToLookupOn(objectToLookupOn)
 {}
 
 // -----------------------------------------------------------------------
 
 GameexeInterpretObject::GameexeInterpretObject(
-  const std::string& key, GameexeData_t::const_iterator it, 
+  const std::string& key, GameexeData_t::const_iterator it,
   Gameexe& objectToLookupOn)
   : m_key(key), m_iterator(it), m_objectToLookupOn(objectToLookupOn)
 {}
@@ -303,11 +303,11 @@ int GameexeInterpretObject::getIntAt(int index) const
 const std::string GameexeInterpretObject::to_string(
   const std::string& defaultValue) const
 {
-  try 
+  try
   {
     return m_objectToLookupOn.getStringAt(m_iterator, 0);
-  } 
-  catch(...) 
+  }
+  catch(...)
   {
     return defaultValue;
   }
@@ -317,11 +317,11 @@ const std::string GameexeInterpretObject::to_string(
 
 const std::string GameexeInterpretObject::to_string() const
 {
-  try 
+  try
   {
     return m_objectToLookupOn.getStringAt(m_iterator, 0);
-  } 
-  catch(...) 
+  }
+  catch(...)
   {
     m_objectToLookupOn.throwUnknownKey(m_key);
   }
@@ -345,7 +345,7 @@ const std::vector<int>& GameexeInterpretObject::to_intVector() const
   if(ints.size() == 0)
     m_objectToLookupOn.throwUnknownKey(m_key);
 
-  return ints;    
+  return ints;
 }
 
 // -----------------------------------------------------------------------

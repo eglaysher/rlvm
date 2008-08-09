@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __SDLMusic_hpp__
@@ -38,11 +38,11 @@
 
 #include "wavfile.h"
 
-/** 
- * Encapsulates access to a 
+/**
+ * Encapsulates access to a
  *
  * @section SDLMusic_WHY The "Why" of this system.
- * 
+ *
  * This system is the way it is for a good reason. The first shot of
  * this had two subclasses of SDLMusic, one which implemented formats
  * (ogg, mp3, wav, etc.), the other which mucks about with SDL_Mixer's
@@ -54,7 +54,7 @@
  * ends. This is why ripped NWA files end so abruptly if you play them
  * in a music player: they're designed to be looped forever and you
  * can't get that effect with built ins.
- * 
+ *
  * So instead of taking just jagarl's nwatowav.cc, I'm also stealing
  * wavfile.{cc,h}, and some binding code.
  */
@@ -71,7 +71,7 @@ private:
   /// No idea.
   int m_fadeCount;
 
-  /// Number of milliseconds left to fade out the 
+  /// Number of milliseconds left to fade out the
   int m_fadetimeTotal;
 
   /// The starting loop point.
@@ -86,9 +86,9 @@ private:
   /// Whether we should even be playing music.
   static bool s_bgmEnabled;
 
-  /** 
+  /**
    * Callback function to Mix_HookMusic.
-   * 
+   *
    * @param udata Closure; points to an instance of MusicImpl to be
    *              used as a this pointer.
    * @param stream Audio buffer to be filled with len bytes
@@ -100,20 +100,20 @@ private:
    */
   static void MixMusic(void *udata, Uint8 *stream, int len);
 
-  /** 
+  /**
    * Builds an SDLMusic object.
-   * 
+   *
    * @param track Track data (Name, looping, et cetera)
    * @param wav Generic access to music data; this is one of
    *            xclannad's objects.
    */
   SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav);
 
-  /** 
+  /**
    * Initializes the m_loopPoint variable to either the looping point
    * for the track or a value which signals that we don't want to
    * loop.
-   * 
+   *
    * @param loop Whether we should loop endlessly.
    */
   void setLoopPoint(bool loop);
@@ -138,10 +138,10 @@ public:
    */
   int bgmStatus() const;
 
-  /** 
+  /**
    * Creates a MusicImpl object from the incoming description of the
    * music.
-   * 
+   *
    * @param machine RLMachine context
    * @param track Description of the music
    * @return MusicImpl object
@@ -151,7 +151,7 @@ public:
   static boost::shared_ptr<SDLMusic> CreateMusic(
     RLMachine& machine, const SoundSystem::DSTrack& track);
 
-  /** 
+  /**
    * Returns the currently playing SDLMusic object. Returns NULL if no
    * music is currently playing.
    */

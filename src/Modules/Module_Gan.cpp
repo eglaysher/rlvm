@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -70,7 +70,7 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
     int m_layer;
     int m_buf;
-    WaitForGanToFinish(GraphicsSystem& system, int inLayer, int inBuf) 
+    WaitForGanToFinish(GraphicsSystem& system, int inLayer, int inBuf)
       : system_(system),
         mode_(system_.screenUpdateMode()),
         m_layer(inLayer), m_buf(inBuf) {
@@ -103,7 +103,7 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
   GraphicsObjectData::AfterAnimation m_afterEffect;
 
   Gan_ganPlay(bool block, int layer,
-              GraphicsObjectData::AfterAnimation after) 
+              GraphicsObjectData::AfterAnimation after)
     : m_block(block), m_layer(layer), m_afterEffect(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet)
@@ -151,14 +151,14 @@ void addGanOperationsTo(RLModule& m, int layer)
 
   m.addOpcode(3001, 0, "ganLoop2",
               new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(3003, 0, "ganPlay2", 
+  m.addOpcode(3003, 0, "ganPlay2",
               new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3005, 0, "ganPlayOnce2",
               new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_CLEAR));
   m.addOpcode(3006, 0, "ganPlayEx2",
               new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3007, 0, "ganPlayOnceEx2",
-              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_CLEAR));  
+              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_CLEAR));
 }
 
 // -----------------------------------------------------------------------

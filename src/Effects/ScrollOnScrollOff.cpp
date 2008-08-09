@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -54,7 +54,7 @@ using namespace std;
 
 bool ScrollSquashSlideBaseEffect::blitOriginalImage() const
 {
-  return false; 
+  return false;
 }
 
 // -----------------------------------------------------------------------
@@ -70,7 +70,7 @@ void ScrollSquashSlideBaseEffect::performEffectForTime(
   RLMachine& machine, int currentTime)
 {
   GraphicsSystem& graphics = machine.system().graphics();
-  int amountVisible = calculateAmountVisible(currentTime,  
+  int amountVisible = calculateAmountVisible(currentTime,
                                              m_drawer->getMaxSize(graphics));
   m_effectType->composeEffectsFor(graphics, *this, *m_drawer, amountVisible);
 }
@@ -84,7 +84,7 @@ ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
   ScrollSquashSlideDrawer* drawer,
   ScrollSquashSlideEffectTypeBase* effectType,
   const Size& s, int time)
-  : Effect(machine, src, dst, s, time), 
+  : Effect(machine, src, dst, s, time),
     m_drawer(drawer), m_effectType(effectType)
 {
 }
@@ -181,8 +181,8 @@ void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
 
 // -----------------------------------------------------------------------
 
-void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics, 
-                                  ScrollSquashSlideBaseEffect& effect, 
+void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics,
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
    effect.dstSurface().
@@ -204,7 +204,7 @@ void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void BottomToTopDrawer::squashOff(GraphicsSystem& graphics,
-                                  ScrollSquashSlideBaseEffect& effect, 
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
@@ -222,7 +222,7 @@ int LeftToRightDrawer::getMaxSize(GraphicsSystem& gs)
 // -----------------------------------------------------------------------
 
 void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics,
-                                 ScrollSquashSlideBaseEffect& effect, 
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
@@ -233,7 +233,7 @@ void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics,
-                                  ScrollSquashSlideBaseEffect& effect, 
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
@@ -244,18 +244,18 @@ void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void LeftToRightDrawer::squashOn(GraphicsSystem& graphics,
-                                 ScrollSquashSlideBaseEffect& effect, 
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
-    renderToScreen(Rect::GRP(0, 0, width, height), 
+    renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(0, 0, amountVisible, height), 255);
 }
 
 // -----------------------------------------------------------------------
 
 void LeftToRightDrawer::squashOff(GraphicsSystem& graphics,
-                                  ScrollSquashSlideBaseEffect& effect, 
+                                  ScrollSquashSlideBaseEffect& effect,
                                   int amountVisible, int width, int height)
 {
   effect.dstSurface().
@@ -284,7 +284,7 @@ void RightToLeftDrawer::scrollOff(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics,
-                                 ScrollSquashSlideBaseEffect& effect, 
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
@@ -306,12 +306,12 @@ void RightToLeftDrawer::squashOff(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void RightToLeftDrawer::squashOn(GraphicsSystem& graphics,
-                                 ScrollSquashSlideBaseEffect& effect, 
+                                 ScrollSquashSlideBaseEffect& effect,
                                  int amountVisible, int width, int height)
 {
   effect.srcSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
-                   Rect::GRP(width - amountVisible, 0, width, height), 255);  
+                   Rect::GRP(width - amountVisible, 0, width, height), 255);
 }
 
 // -----------------------------------------------------------------------
@@ -324,8 +324,8 @@ ScrollSquashSlideEffectTypeBase::~ScrollSquashSlideEffectTypeBase()
 // -----------------------------------------------------------------------
 
 void ScrollOnScrollOff::composeEffectsFor(
-  GraphicsSystem& system,                                
-  ScrollSquashSlideBaseEffect& effect, 
+  GraphicsSystem& system,
+  ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
@@ -337,8 +337,8 @@ void ScrollOnScrollOff::composeEffectsFor(
 // -----------------------------------------------------------------------
 
 void ScrollOnSquashOff::composeEffectsFor(
-  GraphicsSystem& system, 
-  ScrollSquashSlideBaseEffect& effect, 
+  GraphicsSystem& system,
+  ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
@@ -351,7 +351,7 @@ void ScrollOnSquashOff::composeEffectsFor(
 
 void SquashOnScrollOff::composeEffectsFor(
   GraphicsSystem& system,
-  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
@@ -363,8 +363,8 @@ void SquashOnScrollOff::composeEffectsFor(
 // -----------------------------------------------------------------------
 
 void SquashOnSquashOff::composeEffectsFor(
-  GraphicsSystem& system, 
-  ScrollSquashSlideBaseEffect& effect, 
+  GraphicsSystem& system,
+  ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
@@ -377,7 +377,7 @@ void SquashOnSquashOff::composeEffectsFor(
 
 void SlideOn::composeEffectsFor(
   GraphicsSystem& system,
-  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {
@@ -395,7 +395,7 @@ void SlideOn::composeEffectsFor(
 
 void SlideOff::composeEffectsFor(
   GraphicsSystem& system,
-  ScrollSquashSlideBaseEffect& effect, 
+  ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
   int amountVisible)
 {

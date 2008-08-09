@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -121,7 +121,7 @@ void SDLMusic::fadeIn(bool loop, int fadeInMs)
 void SDLMusic::fadeOut(int fadeOutMs)
 {
   m_fadeCount = 0;
-  if(fadeOutMs <= 0) 
+  if(fadeOutMs <= 0)
     fadeOutMs = 1;
   m_fadetimeTotal = fadeOutMs;
 }
@@ -172,7 +172,7 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 	int count;
 	if (!s_bgmEnabled ||
       music->m_musicPaused ||
-      music->m_loopPoint == STOP_NOW) 
+      music->m_loopPoint == STOP_NOW)
   {
 		memset(stream, 0, len);
 		return;
@@ -190,7 +190,7 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 	}
 	if (music->m_fadetimeTotal) {
 		int count_total = music->m_fadetimeTotal*(WAVFILE::freq/1000);
-		if (music->m_fadeCount > count_total || 
+		if (music->m_fadeCount > count_total ||
         music->m_fadetimeTotal == 1) {
 			music->m_loopPoint = STOP_NOW;
 			memset(stream, 0, len);
@@ -222,7 +222,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
   RLMachine& machine, const SoundSystem::DSTrack& track)
 {
   typedef vector<pair<string, function<WAVFILE*(FILE*, int)> > > FileTypes;
-  static FileTypes types = 
+  static FileTypes types =
     map_list_of
     ("wav", &buildMusicImplementation<WAVFILE_Stream>)
     ("nwa", &buildMusicImplementation<NWAFILE>)

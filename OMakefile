@@ -25,7 +25,7 @@
 #
 
 if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
-  PLATFORMLIBS = OpenGL32.lib GlU32.lib 
+  PLATFORMLIBS = OpenGL32.lib GlU32.lib
   PLATFORMFLAGS = -DWIN32 $(if $(defined-env DEBUG), -MDd -Zi, -MD) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DNOMINMAX -DGLEW_STATIC
   LD = lib /nologo
   LDOUT = /out:

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
@@ -41,7 +41,7 @@
 
 /**
  * Base class for implementing \#SEL transition style \#10, Blind.
- * 
+ *
  * @ingroup TransitionEffects
  */
 class BlindEffect : public Effect
@@ -65,7 +65,7 @@ protected:
 
 public:
   BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst, 
+             boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
 
   ~BlindEffect();
@@ -84,7 +84,7 @@ protected:
 
 public:
   BlindTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst, 
+             boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
 };
 
@@ -101,7 +101,7 @@ protected:
 
 public:
   BlindBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst, 
+             boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
 };
 
@@ -118,7 +118,7 @@ protected:
 
 public:
   BlindLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst, 
+             boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
 };
 
@@ -135,7 +135,7 @@ protected:
 
 public:
   BlindRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst, 
+             boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
 };
 

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -58,7 +58,7 @@ using std::vector;
 // -----------------------------------------------------------------------
 
 TextWindow::TextWindow(RLMachine& machine, int windowNum)
-  : m_currentLineNumber(0), m_currentIndentationInPixels(0), 
+  : m_currentLineNumber(0), m_currentIndentationInPixels(0),
     m_useIndentation(0), m_colour(), m_filter(0), m_isVisible(0),
     m_inSelectionMode(0), m_nextId(0)
 {
@@ -129,7 +129,7 @@ void TextWindow::setTextboxPadding(const vector<int>& posData)
   m_upperBoxPadding = posData.at(0);
   m_lowerBoxPadding = posData.at(1);
   m_leftBoxPadding = posData.at(2);
-  m_rightBoxPadding = posData.at(3);  
+  m_rightBoxPadding = posData.at(3);
 }
 
 // -----------------------------------------------------------------------
@@ -175,9 +175,9 @@ void TextWindow::setWindowPosition(const vector<int>& posData)
 
 Size TextWindow::textWindowSize() const
 {
-  return Size((m_xWindowSizeInChars * 
+  return Size((m_xWindowSizeInChars *
                (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding,
-              (m_yWindowSizeInChars * 
+              (m_yWindowSizeInChars *
                (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + m_lowerBoxPadding);
 }
 
@@ -197,7 +197,7 @@ int TextWindow::boxX1() const
   default:
     throw SystemError("Invalid origin");
   };
-}   
+}
 
 // -----------------------------------------------------------------------
 
@@ -210,10 +210,10 @@ int TextWindow::boxY1() const
     return m_yDistanceFromOrigin;
   case 2: // Bottom and left
   case 3: // Bottom and right
-    return m_screenHeight - m_yDistanceFromOrigin - textWindowSize().height() - 
+    return m_screenHeight - m_yDistanceFromOrigin - textWindowSize().height() -
       m_upperBoxPadding;
   default:
-    throw SystemError("Invalid origin");  
+    throw SystemError("Invalid origin");
   }
 }
 
@@ -286,7 +286,7 @@ Point TextWindow::keycursorPosition() const
   case 2:
     return Point(textX1(), textY1()) + m_keycursorPos;
   default:
-    throw SystemError("Invalid keycursor type");    
+    throw SystemError("Invalid keycursor type");
   }
 }
 
@@ -356,15 +356,15 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
   key = string("MSGBKLEFT_BOX");
   m_buttonMap.insert(key,
                      new RepeatActionWhileHoldingWindowButton(
-                       ts.windowMsgbkleftUse(), 
+                       ts.windowMsgbkleftUse(),
                        waku("MSGBKLEFT_BOX"),
-                       machine, 
+                       machine,
                        bind(&TextSystem::backPage, ref(ts), ref(machine)),
                        250));
   key = string("MSGBKRIGHT_BOX");
   m_buttonMap.insert(key,
                      new RepeatActionWhileHoldingWindowButton(
-                       ts.windowMsgbkrightUse(), 
+                       ts.windowMsgbkrightUse(),
                        waku("MSGBKRIGHT_BOX"),
                        machine,
                        bind(&TextSystem::forwardPage, ref(ts), ref(machine)),
@@ -377,10 +377,10 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
     key = oss.str();
-    m_buttonMap.insert(key, 
+    m_buttonMap.insert(key,
                        new ExbtnWindowButton(machine,
                          ts.windowExbtnUse(),
-                         waku(oss.str()), 
+                         waku(oss.str()),
                          wbcall));
   }
 }
@@ -422,7 +422,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
         return true;
     }
   }
-  
+
   return false;
 }
 

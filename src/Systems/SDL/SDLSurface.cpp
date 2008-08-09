@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -68,9 +68,9 @@ SDL_Surface* buildNewSurface(const Size& size)
   amask = 0xff000000;
 #endif
 
-  SDL_Surface* tmp = 
+  SDL_Surface* tmp =
     SDL_CreateRGBSurface(
-      SDL_HWSURFACE | SDL_SRCALPHA, size.width(), size.height(), 
+      SDL_HWSURFACE | SDL_SRCALPHA, size.width(), size.height(),
       32, rmask, gmask, bmask, amask);
 
   if(tmp == NULL)
@@ -92,7 +92,7 @@ SDL_Surface* buildNewSurface(const Size& size)
 // -----------------------------------------------------------------------
 SDLSurface::TextureRecord::TextureRecord(
   SDL_Surface* surface,
-  int _x, int _y, int _w, int _h, unsigned int _bytesPerPixel, 
+  int _x, int _y, int _w, int _h, unsigned int _bytesPerPixel,
   int _byteOrder, int _byteType)
   : texture(new Texture(surface, _x, _y, _w, _h, _bytesPerPixel, _byteOrder,
                         _byteType)),
@@ -128,7 +128,7 @@ SDLSurface::SDLSurface(SDL_Surface* surf)
 // -----------------------------------------------------------------------
 
 /// Surface that takes ownership of an externally created surface.
-SDLSurface::SDLSurface(SDL_Surface* surf, 
+SDLSurface::SDLSurface(SDL_Surface* surf,
                        const vector<SDLSurface::GrpRect>& region_table)
   : m_surface(surf), m_regionTable(region_table),
     m_textureIsValid(false), m_graphicsSystem(NULL),
@@ -216,7 +216,7 @@ void SDLSurface::deallocate()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Stretches out an image.
  *
  * @author Pete Shinners, Taken from pygame
@@ -225,7 +225,7 @@ void SDLSurface::deallocate()
 static void stretch(SDL_Surface *src, SDL_Surface *dst)
 {
 	int looph, loopw;
-	
+
 	Uint8* srcrow = (Uint8*)src->pixels;
 	Uint8* dstrow = (Uint8*)dst->pixels;
 
@@ -337,7 +337,7 @@ void SDLSurface::blitToSurface(Surface& destSurface,
     SDL_Surface* tmp = buildNewSurface(dst.size());
     stretch(srcImage, tmp);
 
-    if(useSrcAlpha) 
+    if(useSrcAlpha)
     {
       if(SDL_SetAlpha(tmp, SDL_SRCALPHA, alpha))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
@@ -356,7 +356,7 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   }
   else
   {
-    if(useSrcAlpha) 
+    if(useSrcAlpha)
     {
       if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
@@ -388,7 +388,7 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
   RectToSDLRect(src, &srcRect);
   RectToSDLRect(dst, &destRect);
 
-  if(useSrcAlpha) 
+  if(useSrcAlpha)
   {
     if(pygame_AlphaBlit(srcSurface, &srcRect, m_surface, &destRect))
       reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
@@ -400,7 +400,7 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
   }
 
   markWrittenTo();
-}                                 
+}
 
 // -----------------------------------------------------------------------
 
@@ -436,7 +436,7 @@ static void determineProperties(
         byteOrder = GL_BGRA;
         byteType = GL_UNSIGNED_INT_8_8_8_8_REV;
       }
-      else 
+      else
       {
         ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
         cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
@@ -479,7 +479,7 @@ void SDLSurface::uploadTextureIfNeeded()
     {
       GLenum bytesPerPixel;
       GLint byteOrder, byteType;
-      determineProperties(m_surface, m_isMask, bytesPerPixel, byteOrder, 
+      determineProperties(m_surface, m_isMask, bytesPerPixel, byteOrder,
                           byteType);
 
       // ---------------------------------------------------------------------
@@ -576,7 +576,7 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp, 
+void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
                                         const GraphicsObjectOverride& override)
 {
   uploadTextureIfNeeded();
@@ -585,12 +585,12 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
       it != m_textures.end(); ++it)
   {
     it->texture->renderToScreenAsObject(rp, *this, override);
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::rawRenderQuad(const int srcCoords[8], 
+void SDLSurface::rawRenderQuad(const int srcCoords[8],
                                const int destCoords[8],
                                const int opacity[4])
 {
@@ -665,8 +665,8 @@ const SDLSurface::GrpRect& SDLSurface::getPattern(int pattNo) const
 
 Surface* SDLSurface::clone() const
 {
-  SDL_Surface* tmpSurface = 
-    SDL_CreateRGBSurface(m_surface->flags, m_surface->w, m_surface->h, 
+  SDL_Surface* tmpSurface =
+    SDL_CreateRGBSurface(m_surface->flags, m_surface->w, m_surface->h,
                          m_surface->format->BitsPerPixel,
                          m_surface->format->Rmask, m_surface->format->Gmask,
                          m_surface->format->Bmask, m_surface->format->Amask);
@@ -684,7 +684,7 @@ Surface* SDLSurface::clone() const
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * @todo This scheme may be entirely suboptimal. Needs field testing.
  */
 vector<int> SDLSurface::segmentPicture(int sizeRemainging)
@@ -694,7 +694,7 @@ vector<int> SDLSurface::segmentPicture(int sizeRemainging)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 
   vector<int> output;
-  while(sizeRemainging > maxTextureSize) 
+  while(sizeRemainging > maxTextureSize)
   {
     output.push_back(maxTextureSize);
     sizeRemainging -= maxTextureSize;
@@ -754,9 +754,9 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
 
   // TODO: This needs to be made exception safe and so does the rest
   // of this file.
-  SDL_Surface* tmpSurface = 
+  SDL_Surface* tmpSurface =
     SDL_CreateRGBSurface(m_surface->flags & ~SDL_SRCALPHA,
-                         m_surface->w, m_surface->h, 
+                         m_surface->w, m_surface->h,
                          m_surface->format->BitsPerPixel,
                          m_surface->format->Rmask, m_surface->format->Gmask,
                          m_surface->format->Bmask, 0);

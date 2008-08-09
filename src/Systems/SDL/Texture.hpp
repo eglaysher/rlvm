@@ -8,28 +8,28 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
  * @file   Texture.hpp
  * @author Elliot Glaysher
  * @date   Sat Feb 17 20:21:59 2007
- * 
+ *
  * @brief  Contains an OpenGL texture and some metadata.
  */
 
@@ -102,7 +102,7 @@ private:
   void renderToScreenAsColorMask_additive(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
 
-  bool filterCoords(int& x1, int& y1, int& x2, int& y2, 
+  bool filterCoords(int& x1, int& y1, int& x2, int& y2,
                     float& dx1, float& dy1, float& dx2, float& dy2);
 
 public:
@@ -114,7 +114,7 @@ public:
   Texture(render_to_texture, int screenWidth, int screenHeight);
   ~Texture();
 
-  void reupload(SDL_Surface* surface, int x, int y, int w, int h, 
+  void reupload(SDL_Surface* surface, int x, int y, int w, int h,
                 unsigned int bytesPerPixel, int byteOrder, int byteType);
 
   int width() { return m_logicalWidth; }
@@ -122,7 +122,7 @@ public:
   GLuint textureId() { return m_textureID; }
 
   void renderToScreenAsObject(
-    const GraphicsObject& go, 
+    const GraphicsObject& go,
     SDLSurface& surface,
     const GraphicsObjectOverride& overrides);
 
@@ -134,7 +134,7 @@ public:
   void renderToScreen(const Rect& src, const Rect& dst,
                       const int opacity[4]);
 
-  void rawRenderQuad(const int srcCoords[8], 
+  void rawRenderQuad(const int srcCoords[8],
                      const int destCoords[8],
                      const int opacity[4]);
 

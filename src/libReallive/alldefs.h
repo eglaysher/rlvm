@@ -1,5 +1,5 @@
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006 Peter Jolly
@@ -62,14 +62,14 @@ insert_i32(char* dest, const int i32)
 	*dest   = (i32 >> 24) & 0xff;
 }
 
-inline void 
+inline void
 append_i16(string& dest, const int i16)
 {
 	size_t dpos = dest.size();
 	dest.resize(dpos + 2, i16 & 0xff);
 	dest[++dpos] = (i16 >> 8) & 0xff;
 }
-inline void 
+inline void
 append_i32(string& dest, const int i32)
 {
 	size_t dpos = dest.size();
@@ -108,5 +108,5 @@ public:
   	virtual ~Error() throw() {}
 };
 
-                              
-}                              
+
+}

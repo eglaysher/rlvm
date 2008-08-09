@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __SoundSystem_hpp__
@@ -64,7 +64,7 @@ struct SoundSystemGlobals
    * 5 	          	44 kHz 	          	16 bit
    * 6 	          	48 kHz 	          	8 bit
    * 7 	          	48 hKz 	          	16 bit
-   * 
+   *
    */
   int soundQuality;
 
@@ -147,12 +147,12 @@ protected:
   /// Type for parsed \#CDTRACK entries.
   typedef std::map<std::string, CDTrack> CDTable;
 
-  /** 
+  /**
    * Stores data about an ongoing volume adjustment (such as those
    * started by fun wavSetVolume(int, int, int).)
    */
   struct VolumeAdjustTask {
-    VolumeAdjustTask(unsigned int currentTime, int inStartVolume, 
+    VolumeAdjustTask(unsigned int currentTime, int inStartVolume,
                      int inFinalVolume, int fadeTimeInMs);
 
     unsigned int startTime;
@@ -171,7 +171,7 @@ private:
 
   /**
    * @name Background Music data
-   * 
+   *
    * @{
    */
   /// Defined music tracks (files)
@@ -186,7 +186,7 @@ private:
 
   /**
    * @name PCM/Wave sound effect data
-   * 
+   *
    * @{
    */
   /// Per channel volume
@@ -208,7 +208,7 @@ private:
 
   /**
    * @name Interface sound effect data
-   * 
+   *
    * @{
    */
 
@@ -227,7 +227,7 @@ protected:
   const DSTable& getDSTable() { return m_dsTracks; }
   const CDTable& getCDTable() { return m_cdTracks; }
 
-  /** 
+  /**
    * Computes the actual volume for a channel based on the per channel
    * and the per system volume.
    */
@@ -238,7 +238,7 @@ protected:
   static void checkChannel(int channel, const char* functionName);
   static void checkVolume(int level, const char* functionName);
 
-public: 
+public:
   SoundSystem(Gameexe& gexe);
   virtual ~SoundSystem();
 
@@ -251,11 +251,11 @@ public:
   virtual void executeSoundSystem(RLMachine& machine);
 
   // ---------------------------------------------------------------------
-  
+
   /**
    * Sets how much sound hertz.
    */
-  virtual void setSoundQuality(const int quality) 
+  virtual void setSoundQuality(const int quality)
   { m_globals.soundQuality = quality; }
 
   int soundQuality() const { return m_globals.soundQuality; }
@@ -265,11 +265,11 @@ public:
   // ---------------------------------------------------------------------
   /**
    * @name BGM functions
-   * 
+   *
    * @{
    */
   virtual void setBgmEnabled(const int in);
-  
+
   int bgmEnabled() const;
   virtual void setBgmVolume(const int in);
   int bgmVolume() const;
@@ -300,7 +300,7 @@ public:
 
   /**
    * @name PCM/Wave functions
-   * 
+   *
    * @{
    */
   /// Sets whether the wav* functions play
@@ -317,13 +317,13 @@ public:
 
   /// Change the volume smoothly; the change from the current volume
   /// to level will take fadeTimeInMs
-  void setChannelVolume(RLMachine& machine, const int channel, 
+  void setChannelVolume(RLMachine& machine, const int channel,
                         const int level, const int fadeTimeInMs);
 
   /// Fetches an individual channel volume
   int channelVolume(const int channel);
-  
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, 
+
+  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
                        bool loop) = 0;
   virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
                        bool loop, const int channel) = 0;
@@ -340,7 +340,7 @@ public:
 
   /**
    * @name Sound Effect functions
-   * 
+   *
    * @{
    */
   /**
@@ -353,23 +353,23 @@ public:
    */
   int seEnabled() const;
 
-  /** 
+  /**
    * Sets the volume of interface sound effects relative to other
    * sound playback.
-   * 
+   *
    * @param in Sound Effect volume (0-255)
    */
   virtual void setSeVolume(const int in);
 
-  /** 
+  /**
    * Gets the current sound effect volume.
    */
   int seVolume() const;
-  
-  /** 
+
+  /**
    * Plays an interface sound effect.
-   * 
-   * @param seNum Index into the \#SE table 
+   *
+   * @param seNum Index into the \#SE table
    */
   virtual void playSe(RLMachine& machine, const int seNum) = 0;
   /// @}

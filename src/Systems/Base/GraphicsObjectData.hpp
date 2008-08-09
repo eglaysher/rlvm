@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __AnimationObjectData_hpp__
@@ -42,7 +42,7 @@ class GraphicsObject;
  * store image or text data that need to be associated with a
  * GraphicsObject.
  */
-class GraphicsObjectData 
+class GraphicsObjectData
 {
 public:
   enum AfterAnimation {
@@ -69,15 +69,15 @@ private:
   }
 
 protected:
-  /** 
+  /**
    * Function called after animation ends when this object has been
    * set up to loop.
-   * 
+   *
    * Default implementation does nothing.
    */
   virtual void loopAnimation();
 
-  /** 
+  /**
    * Takes the specified action when we've reached the last frame of
    * animation.
    */
@@ -97,9 +97,9 @@ public:
   void setCurrentlyPlaying(bool in) { m_currentlyPlaying = in; }
   bool currentlyPlaying() const { return m_currentlyPlaying; }
 
-  virtual void render(RLMachine& machine, 
+  virtual void render(RLMachine& machine,
                       const GraphicsObject& renderingProperties) = 0;
-  
+
   virtual int pixelWidth(RLMachine& machine,
 						 const GraphicsObject& renderingProperties) = 0;
   virtual int pixelHeight(RLMachine& machine,

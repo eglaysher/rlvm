@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -44,8 +44,8 @@ using namespace std;
 
 FrameCounter::FrameCounter(EventSystem& eventSystem, int frameMin,
                            int frameMax, int milliseconds)
-  : m_eventSystem(eventSystem), m_value(frameMin), m_minValue(frameMin), 
-    m_maxValue(frameMax), m_isActive(true), 
+  : m_eventSystem(eventSystem), m_value(frameMin), m_minValue(frameMin),
+    m_maxValue(frameMax), m_isActive(true),
     m_timeAtStart(eventSystem.getTicks()),
     m_totalTime(milliseconds)
 {
@@ -92,18 +92,18 @@ bool FrameCounter::checkIfFinished(float newValue)
 
 void FrameCounter::updateTimeValue(float numTicks)
 {
-  // Update the value 
+  // Update the value
   if(m_maxValue > m_minValue)
     m_value += numTicks;
-  else 
+  else
     m_value -= numTicks;
 }
 
 // -----------------------------------------------------------------------
 
 int FrameCounter::readNormalFrameWithChangeInterval(
-  EventSystem& eventSystem, float changeInterval, 
-  float& timeAtLastCheck) 
+  EventSystem& eventSystem, float changeInterval,
+  float& timeAtLastCheck)
 {
   if(m_isActive)
   {
@@ -149,7 +149,7 @@ SimpleFrameCounter::SimpleFrameCounter(
 
 // -----------------------------------------------------------------------
 
-int SimpleFrameCounter::readFrame(EventSystem& eventSystem) 
+int SimpleFrameCounter::readFrame(EventSystem& eventSystem)
 {
   return readNormalFrameWithChangeInterval(eventSystem, m_changeInterval,
                                            m_timeAtLastCheck);
@@ -169,7 +169,7 @@ LoopFrameCounter::LoopFrameCounter(
 
 // -----------------------------------------------------------------------
 
-int LoopFrameCounter::readFrame(EventSystem& eventSystem) 
+int LoopFrameCounter::readFrame(EventSystem& eventSystem)
 {
   return readNormalFrameWithChangeInterval(eventSystem, m_changeInterval,
                                            m_timeAtLastCheck);
@@ -250,7 +250,7 @@ AcceleratingFrameCounter::AcceleratingFrameCounter(
 
 // -----------------------------------------------------------------------
 
-int AcceleratingFrameCounter::readFrame(EventSystem& eventSystem) 
+int AcceleratingFrameCounter::readFrame(EventSystem& eventSystem)
 {
   if(m_isActive)
   {

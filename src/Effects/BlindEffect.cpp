@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -33,7 +33,7 @@
  * @file   BlindEffect.cpp
  * @author Elliot Glaysher
  * @date   Tue Feb 27 21:11:04 2007
- * 
+ *
  * @ingroup TransitionEffects
  * @brief  Implements \#SEL transition style \#10, Blind.
  */
@@ -64,7 +64,7 @@ bool BlindEffect::blitOriginalImage() const
 
 BlindEffect::BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize, int time, 
+                         const Size& screenSize, int time,
                          int blindSize)
   : Effect(machine, src, dst, screenSize, time),
     m_blindSize(blindSize)
@@ -82,7 +82,7 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
                                  int currentTime)
 {
   int numBlinds = maxSize / blindSize() + 1;
-  int rowsToDisplay = int((float(currentTime) / duration()) * 
+  int rowsToDisplay = int((float(currentTime) / duration()) *
                           (blindSize() + numBlinds));
 
   for(int currentBlind = 0; currentBlind < numBlinds; ++currentBlind)
@@ -101,7 +101,7 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
 
 // -----------------------------------------------------------------------
 
-void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize, 
+void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
                                     int currentTime)
 {
   int numBlinds = maxSize / blindSize() + 1;
@@ -129,14 +129,14 @@ void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
 
 BlindTopToBottomEffect::BlindTopToBottomEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
-  boost::shared_ptr<Surface> dst, 
+  boost::shared_ptr<Surface> dst,
   const Size& screenSize, int time, int blindSize)
   : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {}
 
 // -----------------------------------------------------------------------
 
-void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine, 
+void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime)
 {
   computeGrowing(machine, height(), currentTime);
@@ -157,14 +157,14 @@ void BlindTopToBottomEffect::renderPolygon(int polyStart, int polyEnd)
 
 BlindBottomToTopEffect::BlindBottomToTopEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
-  boost::shared_ptr<Surface> dst, 
+  boost::shared_ptr<Surface> dst,
   const Size& screenSize, int time, int blindSize)
   : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {}
 
 // -----------------------------------------------------------------------
 
-void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine, 
+void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime)
 {
   computeDecreasing(machine, height(), currentTime);
@@ -187,7 +187,7 @@ void BlindBottomToTopEffect::renderPolygon(int polyStart, int polyEnd)
 
 BlindLeftToRightEffect::BlindLeftToRightEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
-  boost::shared_ptr<Surface> dst, 
+  boost::shared_ptr<Surface> dst,
   const Size& screenSize, int time, int blindSize)
   : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {
@@ -195,7 +195,7 @@ BlindLeftToRightEffect::BlindLeftToRightEffect(
 
 // -----------------------------------------------------------------------
 
-void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine, 
+void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime)
 {
   computeGrowing(machine, width(), currentTime);
@@ -216,14 +216,14 @@ void BlindLeftToRightEffect::renderPolygon(int polyStart, int polyEnd)
 
 BlindRightToLeftEffect::BlindRightToLeftEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
-  boost::shared_ptr<Surface> dst, 
+  boost::shared_ptr<Surface> dst,
   const Size& screenSize, int time, int blindSize)
   : BlindEffect(machine, src, dst, screenSize, time, blindSize)
 {}
 
 // -----------------------------------------------------------------------
 
-void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine, 
+void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime)
 {
   computeDecreasing(machine, width(), currentTime);
@@ -236,5 +236,5 @@ void BlindRightToLeftEffect::renderPolygon(int polyStart, int polyEnd)
   srcSurface().
     renderToScreen(
       Rect::GRP(polyEnd, 0, polyStart, height()),
-      Rect::GRP(polyEnd, 0, polyStart, height()), 255);      
+      Rect::GRP(polyEnd, 0, polyStart, height()), 255);
 }

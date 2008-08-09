@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "intmemref.h"
@@ -93,7 +93,7 @@ IntMemRef::IntMemRef(char bankName, const char* accessStr, int location)
     accessType = 3;
   else if(strcmp(accessStr, "8b") == 0)
     accessType = 4;
-  else 
+  else
     throw std::runtime_error("Invalid access type string.");
 }
 
@@ -119,7 +119,7 @@ std::ostream& operator<<(std::ostream& oss, const libReallive::IntMemRef& memref
     oss << 'Z';
   else if(bank == INTL_LOCATION)
     oss << 'L';
-  else 
+  else
     oss << "{Invalid bank# " << bank << "}";
 
   if(bank == 0)

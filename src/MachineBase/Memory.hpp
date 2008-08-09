@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Memory_hpp__
@@ -32,9 +32,9 @@
  * @file   Memory.hpp
  * @author Elliot Glaysher
  * @date   Wed Dec 19 19:34:33 2007
- * 
+ *
  * @brief  Classes that contain local and global memory
- * 
+ *
  * Classes that contain local and global memory, with abstractions for
  * serializing them (and doing other cool things)
  */
@@ -67,7 +67,7 @@ class Gameexe;
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Struct that represents Global Memory. In any one rlvm process, there
  * should only be one GlobalMemory struct existing, as it will be
  * shared over all the Memory objects in the process.
@@ -103,10 +103,10 @@ BOOST_CLASS_VERSION(GlobalMemory, 1)
 
 struct dont_initialize { };
 
-/** 
+/**
  * Struct that represents Local Memory. In any one rlvm process, lots
- * of these things will be created, because there are commands 
- * 
+ * of these things will be created, because there are commands
+ *
  * @see Sys_GetSaveFlag
  * @see Memory
  */
@@ -179,13 +179,13 @@ private:
 
   /// Local memory to a save file
   LocalMemory m_local;
-  
+
   /// Integer variable pointers. This redirect into Global and local
   /// memory (as the case may be) allows us to overlay new views of
   /// local memory without copying global memory.
   int* intVar[NUMBER_OF_INT_LOCATIONS];
 
-  /** 
+  /**
    * Connects the memory banks in m_local and in m_global into intVar.
    */
   void connectIntVarPointers();
@@ -195,13 +195,13 @@ private:
    */
   void checkNameIndex(int index, const std::string& name) const;
 
-  /** 
+  /**
    * Reads in default memory values from the passed in Gameexe, such as \#NAME
    * and \#LOCALNAME values.
    */
   void initializeDefaultValues(Gameexe& gameexe);
 
-public: 
+public:
   /**
    * Default constructor; creates a Memory object which owns its own
    * GlobalMemory. Initial memory values are read from the passed in Gameexe
@@ -226,19 +226,19 @@ public:
 
   ~Memory();
 
-  /** 
+  /**
    * Returns the integer value of a certain memory location
-   * 
+   *
    * @param type The memory bank/access method to access from
    * @param location The offset into that memory bank
    * @return The integer value
    * @note This method was plagarized from xclannad.
    */
-  int getIntValue(const libReallive::IntMemRef& ref);    
+  int getIntValue(const libReallive::IntMemRef& ref);
 
-  /** 
+  /**
    * Sets the value of a certain memory location
-   * 
+   *
    * @param type The memory bank/access method to access from
    * @param number The offset into that memory bank
    * @param value The new value
@@ -246,18 +246,18 @@ public:
    */
   void setIntValue(const libReallive::IntMemRef& ref, int value);
 
-  /** 
+  /**
    * Returns the string value of a string memory bank
-   * 
+   *
    * @param type The memory bank to access from
    * @param location The offset into that memory bank
    * @return The string in that location
    */
   const std::string& getStringValue(int type, int location);
 
-  /** 
+  /**
    * Sets the string value of one of the string banks
-   * 
+   *
    * @param type The memory bank to set to
    * @param number The offset into that memory bank
    * @param value The new string value to assign
@@ -286,7 +286,7 @@ public:
 
   /**
    * @name Accessors
-   * 
+   *
    * @{
    */
   GlobalMemory& global() { return *m_global; }
@@ -295,7 +295,7 @@ public:
   const LocalMemory& local() const { return m_local; }
   /// @}
 
-  /** 
+  /**
    * Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
    * equivalent. These letter indexies are used in \#NAME definitions.
    */

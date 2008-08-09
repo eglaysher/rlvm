@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -31,7 +31,7 @@
 // SOFTWARE.
 //
 // -----------------------------------------------------------------------
-  
+
 #ifndef GAMEEXE_H
 #define GAMEEXE_H
 
@@ -50,8 +50,8 @@
 // // namespace __gnu_cxx {
 // // template<>
 // // struct hash<std::string> {
-// //   size_t operator()(const std::string s) const { 
-// //     return __stl_hash_string(s.c_str()); 
+// //   size_t operator()(const std::string s) const {
+// //     return __stl_hash_string(s.c_str());
 // //   }
 // // };
 // // }
@@ -81,7 +81,7 @@ typedef std::multimap<std::string, Gameexe_vec_type> GameexeData_t;
 /**
  * Encapsulates a line of the Gameexe file that's passed to the
  * user. This is a temporary class, which should hopefully be inlined
- * away from the target implementation. 
+ * away from the target implementation.
  *
  * This allows us to write code like this:
  *
@@ -111,17 +111,17 @@ private:
   GameexeData_t::const_iterator m_iterator;
   Gameexe& m_objectToLookupOn;
 
-  /** 
+  /**
    * Private; only allow construction by Gameexe
    */
   GameexeInterpretObject(const std::string& key, Gameexe& objectToLookupOn);
-  GameexeInterpretObject(const std::string& key, 
-                         GameexeData_t::const_iterator it, 
+  GameexeInterpretObject(const std::string& key,
+                         GameexeData_t::const_iterator it,
                          Gameexe& objectToLookupOn);
 
 public:
 
-  /** 
+  /**
    * Extend a key by one key piece
    */
   template<typename A>
@@ -130,17 +130,17 @@ public:
     return m_objectToLookupOn(m_key, nextKey);
   }
 
-  /** 
+  /**
    * Finds an int value, returning a default if non-existant.
-   * 
+   *
    * @param defaultValue Default integer value to return if key not found
-   * @return 
+   * @return
    */
   const int to_int(const int defaultValue) const;
 
-  /** 
+  /**
    * Finds an int value, throwing if non-existant.
-   * 
+   *
    * @return The first int value from the Gameexe in the row key
    * @throw Error if the key doesn't exist
    */
@@ -154,17 +154,17 @@ public:
   /// Returns a specific piece of data at index as an int
   int getIntAt(int index) const;
 
-  /** 
+  /**
    * Finds a string value, throwing if non-existant.
-   * 
+   *
    * @return The first string value from the Gameexe in that row
    * @throw Error if the key doesn't exist
    */
   const std::string to_string(const std::string& defaultValue) const;
 
-  /** 
+  /**
    * Finds a string value, throwing if non-existant.
-   * 
+   *
    * @return The first string value from the Gameexe in that row
    * @throw Error if the key doesn't exist
    */
@@ -178,9 +178,9 @@ public:
   /// Returns a piece of data at a certain location as a string.
   const std::string getStringAt(int index) const;
 
-  /** 
+  /**
    * Finds a vector of ints, throwing if non-existant.
-   * 
+   *
    * @return The full row in the Gameexe (if it's an int row)
    * @throw Error if the key doesn't exist
    */
@@ -190,9 +190,9 @@ public:
     return to_intVector();
   }
 
-  /** 
+  /**
    * Checks to see if the key exists.
-   * 
+   *
    * @return True if exists, false otherwise
    */
   bool exists() const;
@@ -206,10 +206,10 @@ public:
    */
   const std::vector<std::string> key_parts() const;
 
-  /** 
+  /**
    * Assign a value. Unlike all the other methods, we can safely
    * templatize this since the functions it calls can be overloaded.
-   * 
+   *
    * @param value Incoming value
    * @return self
    */
@@ -233,7 +233,7 @@ private:
   /// @{
   /**
    * @name Data storage
-   * 
+   *
    * Implementation detail of how parsed Gameexe.ini data is stored in
    * the class. This was stolen directly from Haeleth's parser in
    * rlBabel. Eventually, this should be redone, since everything is
@@ -264,24 +264,24 @@ public:
   /// @{
   /**
    * @name Streamlined Interface for data access
-   * 
+   *
    * This is the interface intended for common use. It seperates the
    * construction of the key from the intended type, and default value.
    */
 
-  /** 
+  /**
    * Access the key "firstKey"
    */
   template<typename A>
   GameexeInterpretObject operator()(const A& firstKey);
 
-  /** 
+  /**
    * Access the key "firstKey"."secondKey"
    */
   template<typename A, typename B>
   GameexeInterpretObject operator()(const A& firstKey, const B& secondKey);
 
-  /** 
+  /**
    * Access the key "firstKey"."secondKey"
    */
   template<typename A, typename B, typename C>
@@ -295,7 +295,7 @@ public:
    *
    * This interface gives filtering iterators that filter on a
    * possible value.
-   * 
+   *
    * @{
    */
   GameexeFilteringIterator filtering_begin(const std::string& filter);
@@ -305,32 +305,32 @@ public:
   /// @{
   /**
    * @name Raw interface for Gameexe.ini data access
-   * 
+   *
    * This is the internal interface used by GameexeInterpretObject,
    * but it is exposed to the user for the handfull of cases where
    * integer and string data are mixed in the same line.
    */
 
   /**
-   * Raw interface for 
+   * Raw interface for
    */
   const std::vector<int>& getIntArray(GameexeData_t::const_iterator key);
 
   int getIntAt(GameexeData_t::const_iterator key, int index);
 
-  /** 
+  /**
    * Returns whether key exists in the stored data
    */
   bool exists(const std::string& key);
 
-  /** 
+  /**
    * Returns the number of keys in the Gameexe.ini file.
    */
   size_t size() const {
     return data_.size();
   }
 
-  /** 
+  /**
    * Internal function that returns an array of int values.
    */
   std::string getStringAt(GameexeData_t::const_iterator key, int index);
@@ -340,20 +340,20 @@ public:
   /// @}
 
 private:
-  /** 
+  /**
    * Returns an iterator for the incoming key. May not be valid. This
    * is a function only for tight coupling with
    * GameexeInterpretObject.
    */
   GameexeData_t::const_iterator find(const std::string& key);
 
-  /** 
+  /**
    * Regrettable artifact of hack to get all integers in streams to
    * have setw(3).
    */
   void addToStream(const std::string& x, std::ostringstream& ss);
 
-  /** 
+  /**
    * Hack to get all integers in streams to have setw(3).
    */
   void addToStream(const int& x, std::ostringstream& ss);
@@ -409,7 +409,7 @@ GameexeInterpretObject Gameexe::operator()(
 
 // -----------------------------------------------------------------------
 
-class GameexeFilteringIterator 
+class GameexeFilteringIterator
   : public boost::iterator_facade<
   GameexeFilteringIterator,
   GameexeInterpretObject,
@@ -425,7 +425,7 @@ public:
   }
 
   GameexeFilteringIterator(GameexeFilteringIterator const& other)
-    : filterKeys(other.filterKeys), gexe(other.gexe), 
+    : filterKeys(other.filterKeys), gexe(other.gexe),
       currentKey(other.currentKey)
   {}
 
@@ -436,7 +436,7 @@ private:
   bool equal(GameexeFilteringIterator const& other) const
   {
     // It is deliberate that we only compare the current keys. This
-    // means you don't need to 
+    // means you don't need to
     return currentKey == other.currentKey;
   }
 

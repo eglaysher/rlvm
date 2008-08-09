@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include <boost/archive/text_iarchive.hpp>
@@ -76,7 +76,7 @@ struct LazyArray_data
   template<typename T>
   void populateIntArray(T& lazyArray)
   {
-    // Set each even slot to its number 
+    // Set each even slot to its number
     for(int i = 0; i < SIZE; ++i)
       if(i % 2 == 0)
         lazyArray[i] = i;
@@ -113,7 +113,7 @@ tf lazy_array_group("LazzyArray");
 
 
 BOOST_CLASS_EXPORT(tut::LazyArray_data::IntWrapper);
-BOOST_CLASS_TRACKING(tut::LazyArray_data::IntWrapper, 
+BOOST_CLASS_TRACKING(tut::LazyArray_data::IntWrapper,
                      boost::serialization::track_always);
 
 // -----------------------------------------------------------------------
@@ -176,7 +176,7 @@ template<>
 template<>
 void object::test<3>()
 {
-  // Allocate even objects and then these 
+  // Allocate even objects and then these
   LazyArray<int> lazyArray(SIZE);
   ensure_equals("Lazy Array didn't remember its size", lazyArray.size(), SIZE);
 
@@ -190,7 +190,7 @@ void object::test<3>()
     *it = i;
     ensure("Position ends up valid after writing.", it.valid());
   }
-  
+
   // Now we should be able to iterate across all the items with
   // AllocatedLazyArrayIterator, and make sure their values are correct.
   AllocatedLazyArrayIterator<int> ait = lazyArray.allocated_begin();
@@ -204,7 +204,7 @@ void object::test<3>()
 // -----------------------------------------------------------------------
 
 /**
- * 
+ *
  */
 template<>
 template<>

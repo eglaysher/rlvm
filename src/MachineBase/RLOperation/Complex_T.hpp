@@ -3,21 +3,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Complex_T_hpp__
@@ -30,7 +30,7 @@
 #include "libReallive/expression.h"
 #include "libReallive/expression_pieces.h"
 
-/** 
+/**
  * Type definition that implements the complex parameter concept.
  *
  * It really should have been called tuple, but the name's stuck
@@ -45,24 +45,24 @@ struct Complex2_T {
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position) {
-    const libReallive::ComplexExpressionPiece& sp = 
+    const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
-      A::getData(machine, sp.getContainedPieces(), 0), 
+      A::getData(machine, sp.getContainedPieces(), 0),
       B::getData(machine, sp.getContainedPieces(), 1));
   }
 
-  /// Takes a type and makes sure that 
+  /// Takes a type and makes sure that
 /*
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
     // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the 
+    // make sure all the
     bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter(); 
+    typeOK = typeOK && p[position].isComplexParameter();
     if(typeOK) {
-      const libReallive::ComplexExpressionPiece& sp = 
+      const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
@@ -97,7 +97,7 @@ struct Complex2_T {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Type definition that implements the complex parameter concept.
  *
  * It really should have been called tuple, but the name's stuck
@@ -106,34 +106,34 @@ struct Complex2_T {
 template<typename A, typename B, typename C>
 struct Complex3_T {
   /// The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type, 
+  typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, 
+  static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
-    const libReallive::ComplexExpressionPiece& sp = 
+    const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
 
     return type(
-      A::getData(machine, sp.getContainedPieces(), 0), 
+      A::getData(machine, sp.getContainedPieces(), 0),
       B::getData(machine, sp.getContainedPieces(), 1),
       C::getData(machine, sp.getContainedPieces(), 2));
   }
 
-  /// Takes a type and makes sure that 
+  /// Takes a type and makes sure that
 /*
   static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
     // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the 
+    // make sure all the
     bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter(); 
+    typeOK = typeOK && p[position].isComplexParameter();
     if(typeOK) {
-      const libReallive::ComplexExpressionPiece& sp = 
+      const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
@@ -169,7 +169,7 @@ struct Complex3_T {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Type definition that implements the complex parameter concept.
  *
  * It really should have been called tuple, but the name's stuck
@@ -178,34 +178,34 @@ struct Complex3_T {
 template<typename A, typename B, typename C, typename D>
 struct Complex4_T {
   /// The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type, 
+  typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type, typename D::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, 
+  static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
-    const libReallive::ComplexExpressionPiece& sp = 
+    const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return type(
-      A::getData(machine, sp.getContainedPieces(), 0), 
+      A::getData(machine, sp.getContainedPieces(), 0),
       B::getData(machine, sp.getContainedPieces(), 1),
       C::getData(machine, sp.getContainedPieces(), 2),
       D::getData(machine, sp.getContainedPieces(), 3));
   }
 
 /*
-  /// Takes a type and makes sure that 
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+  /// Takes a type and makes sure that
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
     // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the 
+    // make sure all the
     bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter(); 
+    typeOK = typeOK && p[position].isComplexParameter();
     if(typeOK) {
-      const libReallive::ComplexExpressionPiece& sp = 
+      const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
@@ -243,7 +243,7 @@ struct Complex4_T {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Type definition that implements the complex parameter concept.
  *
  * It really should have been called tuple, but the name's stuck
@@ -253,20 +253,20 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
 struct Complex7_T {
   /// The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type, 
+  typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type, typename D::type,
                        typename E::type, typename F::type,
                        typename G::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, 
+  static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
-    const libReallive::ComplexExpressionPiece& sp = 
+    const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
-      A::getData(machine, sp.getContainedPieces(), 0), 
+      A::getData(machine, sp.getContainedPieces(), 0),
       B::getData(machine, sp.getContainedPieces(), 1),
       C::getData(machine, sp.getContainedPieces(), 2),
       D::getData(machine, sp.getContainedPieces(), 3),
@@ -276,16 +276,16 @@ struct Complex7_T {
   }
 
 /*
-  /// Takes a type and makes sure that 
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+  /// Takes a type and makes sure that
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
     // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the 
+    // make sure all the
     bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter(); 
+    typeOK = typeOK && p[position].isComplexParameter();
     if(typeOK) {
-      const libReallive::ComplexExpressionPiece& sp = 
+      const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
@@ -327,7 +327,7 @@ struct Complex7_T {
 // -----------------------------------------------------------------------
 
 
-/** 
+/**
  * Type definition that implements the complex parameter concept.
  *
  * It really should have been called tuple, but the name's stuck
@@ -337,20 +337,20 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
 struct Complex8_T {
   /// The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type, 
+  typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type, typename D::type,
                        typename E::type, typename F::type,
                        typename G::type, typename H::type> type;
 
   /// Convert the incoming parameter objects into the resulting type.
-  static type getData(RLMachine& machine, 
+  static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
   {
-    const libReallive::ComplexExpressionPiece& sp = 
+    const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
     return boost::tuple<typename A::type, typename B::type>(
-      A::getData(machine, sp.getContainedPieces(), 0), 
+      A::getData(machine, sp.getContainedPieces(), 0),
       B::getData(machine, sp.getContainedPieces(), 1),
       C::getData(machine, sp.getContainedPieces(), 2),
       D::getData(machine, sp.getContainedPieces(), 3),
@@ -378,17 +378,17 @@ struct Complex8_T {
 //    throw rlvm::Exception("Unimplemented");
   }
 
-  /// Takes a type and makes sure that 
+  /// Takes a type and makes sure that
 /*
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p, 
+  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                          unsigned int position)
   {
     // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the 
+    // make sure all the
     bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter(); 
+    typeOK = typeOK && p[position].isComplexParameter();
     if(typeOK) {
-      const libReallive::ComplexExpressionPiece& sp = 
+      const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
       typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
       typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);

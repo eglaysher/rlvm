@@ -3,8 +3,8 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM. 
-// 
+// This file is part of libReallive, a dependency of RLVM.
+//
 // -----------------------------------------------------------------------
 //
 // Copyright (c) 2006, 2007 Peter Jolly
@@ -38,7 +38,7 @@
 
 /**
  * @file   expression.cpp
- * 
+ *
  * @brief Defines functions and structures for representing
  * expressions in Reallive byte code.
  */
@@ -101,7 +101,7 @@ size_t next_cond(const char* src)
 size_t next_and(const char* src)
 {
   size_t lhs = next_cond(src);
-  return (src[lhs] == '\\' && src[lhs + 1] == '<') ? 
+  return (src[lhs] == '\\' && src[lhs + 1] == '<') ?
     lhs + 2 + next_and(src + lhs + 2) : lhs;
 }
 
@@ -131,7 +131,7 @@ size_t next_string(const char* src)
             || (*end >= 'A'  && *end <= 'Z')  || (*end >= '0'  && *end <= '9')
             || *end == '?' || *end == '_' || *end == '"')) break;
     }
-    if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)) 
+    if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef))
       end += 2;
     else
       ++end;
@@ -151,7 +151,7 @@ size_t next_data(const char* src)
     return 1 + next_data(src + 1);
   if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
       || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
-      || *src == '?' || *src == '_' || *src == '"' 
+      || *src == '?' || *src == '_' || *src == '"'
       || strcmp(src, "###PRINT(") == 0)
     return next_string(src);
   if (*src == 'a' || *src == '(') {
@@ -176,7 +176,7 @@ size_t next_data(const char* src)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * @name Expression Parsing
  *
  * @author Elliot, but really Haeleth.
@@ -230,7 +230,7 @@ ExpressionPiece* get_expr_token(const char*& src)
   }
 }
 
-ExpressionPiece* get_expr_term(const char*& src)        
+ExpressionPiece* get_expr_term(const char*& src)
 {
   if(src[0] == '$') {
     src++;
@@ -262,7 +262,7 @@ ExpressionPiece* get_expr_term(const char*& src)
   }
 }
 
-static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src, 
+static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
                                                     ExpressionPiece* tok)
 {
   if(src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
@@ -331,7 +331,7 @@ static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece*
   if(src[0] == '\\' && src[1] == '=') {
     src += 2;
     ExpressionPiece* innerTerm = get_expr_cond(src);
-    ExpressionPiece* rhs = get_expr_bool_loop_and(src, innerTerm);    
+    ExpressionPiece* rhs = get_expr_bool_loop_and(src, innerTerm);
     return get_expr_bool_loop_or(src, new BinaryExpressionOperator(0x3d, tok, rhs));
   } else {
     return tok;
@@ -348,9 +348,9 @@ ExpressionPiece* get_expression(const char*& src)
   return get_expr_bool(src);
 }
 
-/** 
+/**
  * Parses an expression of the form [dest] = [source expression];
- * 
+ *
  * @param src Current location in string to parse
  * @return The parsed ExpressionPiece
  */
@@ -367,9 +367,9 @@ ExpressionPiece* get_assignment(const char*& src)
   }
 }
 
-/** 
+/**
  * Parses a string in the parameter list.
- * 
+ *
  * @param src Current location in input string to parse
  * @return A StringConstant ExpressionPiece* containg the string.
  */
@@ -382,7 +382,7 @@ static ExpressionPiece* get_string(const char*& src)
   // Check to see if the string is quoted;
   if(src[0] == '"')
     s = string(src + 1, src + length - 1);
-  else 
+  else
     s = string(src, src + length);
 
   // Increment the source by that many characters
@@ -391,12 +391,12 @@ static ExpressionPiece* get_string(const char*& src)
   return new StringConstant(s);
 }
 
-/** 
+/**
  * Parses a parameter in the parameter list. This is the only method
  * of all the get_*(const char*& src) functions that can parse
  * strings. It also deals with things like special and complex
  * parameters.
- * 
+ *
  * @param src Current location in string to parse
  * @return The parsed ExpressionPiece
  */
@@ -405,11 +405,11 @@ ExpressionPiece* get_data(const char*& src)
   if(*src == ',') {
     ++src;
     return get_data(src);
-  } else if((*src >= 0x81 && *src <= 0x9f) 
+  } else if((*src >= 0x81 && *src <= 0x9f)
             || (*src >= 0xe0 && *src <= 0xef)
             || (*src >= 'A'  && *src <= 'Z')
             || (*src >= '0'  && *src <= '9')
-            || *src == '?' || *src == '_' || *src == '"' 
+            || *src == '?' || *src == '_' || *src == '"'
             || strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
   } else if(*src == 'a') {
@@ -421,7 +421,7 @@ ExpressionPiece* get_data(const char*& src)
       int tag = *end++;
       cep.reset(new SpecialExpressionPiece(tag));
 
-      if (*end != '(') 
+      if (*end != '(')
       {
         // We have a single parameter in this special expression;
         cep->addContainedPiece(get_data(end));
@@ -465,10 +465,10 @@ ExpressionPiece* get_complex_param(const char*& src)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Converts a parameter string (as read from the binary SEEN.TXT file)
  * into a human readable (and printable) format.
- * 
+ *
  * @param src Raw string to turn into a printable string
  * @return Printable string
  */
@@ -477,7 +477,7 @@ std::string parsableToPrintableString(const std::string& src)
   string output;
 
   bool firstToken = true;
-  for(string::const_iterator it = src.begin(); it != src.end(); ++it) 
+  for(string::const_iterator it = src.begin(); it != src.end(); ++it)
   {
     if(firstToken)
       firstToken = false;
@@ -485,7 +485,7 @@ std::string parsableToPrintableString(const std::string& src)
     {
       output += " ";
     }
-    
+
     char tok = *it;
     if(tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']')
       output.push_back(tok);
@@ -502,11 +502,11 @@ std::string parsableToPrintableString(const std::string& src)
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Converts a printable string (i.e., "$ 05 [ $ FF EE 03 00 00 ]")
  * into one that can be parsed by all the get_expr family of functions.
- * 
- * @param src Printable string 
+ *
+ * @param src Printable string
  * @return Parsable string
  */
 std::string printableToParsableString(const std::string& src)
@@ -530,7 +530,7 @@ std::string printableToParsableString(const std::string& src)
       output.push_back(charToAdd);
     }
   }
-  
+
   return output;
 }
 
@@ -547,16 +547,16 @@ bool ExpressionPiece::isSpecialParamater() const { return false; }
 
 ExpressionValueType ExpressionPiece::expressionValueType() const {
   return ValueTypeInteger;
-}       
+}
 
 /// A default implementation is provided since not everything will have assign
 /// semantics.
 void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
-int ExpressionPiece::integerValue(RLMachine& machine) const 
+int ExpressionPiece::integerValue(RLMachine& machine) const
 { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
-const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const 
+const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const
 { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
 // -----------------------------------------------------------------------
@@ -569,7 +569,7 @@ int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
 }
 
-ExpressionPiece* StoreRegisterExpressionPiece::clone() const 
+ExpressionPiece* StoreRegisterExpressionPiece::clone() const
 {
   return new StoreRegisterExpressionPiece;
 }
@@ -582,7 +582,7 @@ IntegerConstant::~IntegerConstant() {}
 
 int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
 
-ExpressionPiece* IntegerConstant::clone() const 
+ExpressionPiece* IntegerConstant::clone() const
 {
   return new IntegerConstant(constant);
 }
@@ -591,13 +591,13 @@ ExpressionPiece* IntegerConstant::clone() const
 
 // StringConstant
 StringConstant::StringConstant(const std::string& in) : constant(in) {}
-ExpressionValueType StringConstant::expressionValueType() const 
+ExpressionValueType StringConstant::expressionValueType() const
 { return ValueTypeString; }
 const std::string& StringConstant::getStringValue(RLMachine& machine) const {
-  return constant; 
+  return constant;
 }
 
-ExpressionPiece* StringConstant::clone() const 
+ExpressionPiece* StringConstant::clone() const
 {
   return new StringConstant(constant);
 }
@@ -605,13 +605,13 @@ ExpressionPiece* StringConstant::clone() const
 // -----------------------------------------------------------------------
 
 // MemoryReference
-MemoryReference::MemoryReference(int inType, ExpressionPiece* target) 
+MemoryReference::MemoryReference(int inType, ExpressionPiece* target)
   : type(inType), location(target) {}
 MemoryReference::~MemoryReference() {}
 
 bool MemoryReference::isMemoryReference() const { return true; }
 ExpressionValueType MemoryReference::expressionValueType() const {
-  if(isStringLocation(type)) 
+  if(isStringLocation(type))
   {
     return ValueTypeString;
   } else {
@@ -619,15 +619,15 @@ ExpressionValueType MemoryReference::expressionValueType() const {
   }
 }
 
-void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) { 
+void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) {
   return machine.setIntValue(IntMemRef(type, location->integerValue(machine)),
-                             rvalue); 
+                             rvalue);
 }
 int MemoryReference::integerValue(RLMachine& machine) const {
-  return machine.getIntValue(IntMemRef(type, location->integerValue(machine))); 
+  return machine.getIntValue(IntMemRef(type, location->integerValue(machine)));
 }
 
-void MemoryReference::assignStringValue(RLMachine& machine, 
+void MemoryReference::assignStringValue(RLMachine& machine,
                                         const std::string& rvalue) {
   return machine.setStringValue(type, location->integerValue(machine), rvalue);
 }
@@ -653,14 +653,14 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& m
   return StringReferenceIterator(&machine.memory(), type, location->integerValue(machine));
 }
 
-ExpressionPiece* MemoryReference::clone() const 
+ExpressionPiece* MemoryReference::clone() const
 {
   return new MemoryReference(type, location->clone());
 }
 
 // ----------------------------------------------------------------------
 
-UniaryExpressionOperator::UniaryExpressionOperator(char inOperation, 
+UniaryExpressionOperator::UniaryExpressionOperator(char inOperation,
                                                    ExpressionPiece* inOperand)
   : operand(inOperand), operation(inOperation) {}
 
@@ -684,7 +684,7 @@ int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
   return performOperationOn(operand->integerValue(machine));
 }
 
-ExpressionPiece* UniaryExpressionOperator::clone() const 
+ExpressionPiece* UniaryExpressionOperator::clone() const
 {
   return new UniaryExpressionOperator(operation, operand->clone());
 }
@@ -693,7 +693,7 @@ ExpressionPiece* UniaryExpressionOperator::clone() const
 
 BinaryExpressionOperator::BinaryExpressionOperator(char inOperation,
                                                    ExpressionPiece* lhs,
-                                                   ExpressionPiece* rhs) 
+                                                   ExpressionPiece* rhs)
   : operation(inOperation), leftOperand(lhs), rightOperand(rhs)
 {}
 
@@ -704,7 +704,7 @@ BinaryExpressionOperator::~BinaryExpressionOperator()
 int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
 {
   switch(operation) {
-  case 0: 
+  case 0:
   case 20:
     return lhs + rhs;
   case 1:
@@ -713,13 +713,13 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
   case 2:
   case 22:
     return lhs * rhs;
-  case 3: 
+  case 3:
   case 23:
     return rhs != 0 ? lhs / rhs : lhs;
-  case 4: 
+  case 4:
   case 24:
     return rhs != 0 ? lhs % rhs : lhs;
-  case 5: 
+  case 5:
   case 25:
     return lhs & rhs;
   case 6:
@@ -728,7 +728,7 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
   case 7:
   case 27:
     return lhs ^ rhs;
-  case 8: 
+  case 8:
   case 28:
     return lhs << rhs;
   case 9:
@@ -754,11 +754,11 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
 int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
   return performOperationOn(leftOperand->integerValue(machine),
                             rightOperand->integerValue(machine));
-}     
+}
 
-ExpressionPiece* BinaryExpressionOperator::clone() const 
+ExpressionPiece* BinaryExpressionOperator::clone() const
 {
-  return new BinaryExpressionOperator(operation, leftOperand->clone(), 
+  return new BinaryExpressionOperator(operation, leftOperand->clone(),
                                       rightOperand->clone());
 }
 
@@ -774,12 +774,12 @@ AssignmentExpressionOperator::~AssignmentExpressionOperator()
 {
 }
 
-int AssignmentExpressionOperator::integerValue(RLMachine& machine) const 
+int AssignmentExpressionOperator::integerValue(RLMachine& machine) const
 {
   if(operation == 30) {
     int value = rightOperand->integerValue(machine);
     leftOperand->assignIntValue(machine, value);
-    return value;    
+    return value;
   } else {
     int value = performOperationOn(leftOperand->integerValue(machine),
                                    rightOperand->integerValue(machine));
@@ -788,9 +788,9 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const
   }
 }
 
-ExpressionPiece* AssignmentExpressionOperator::clone() const 
+ExpressionPiece* AssignmentExpressionOperator::clone() const
 {
-  return new AssignmentExpressionOperator(operation, leftOperand->clone(), 
+  return new AssignmentExpressionOperator(operation, leftOperand->clone(),
                                           rightOperand->clone());
 }
 
@@ -804,11 +804,11 @@ bool ComplexExpressionPiece::isComplexParameter() const
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Adds an ExpressionPiece to this complex expressionPiece. This
  * instance of ComplexExpressionPiece takes ownership of any
  * ExpressionPiece passed in this way.
- * 
+ *
  * @param piece Piece to pass take ownership of
  */
 void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece)
@@ -818,7 +818,7 @@ void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece)
 
 // -----------------------------------------------------------------------
 
-ExpressionPiece* ComplexExpressionPiece::clone() const 
+ExpressionPiece* ComplexExpressionPiece::clone() const
 {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
   cep->containedPieces = containedPieces.clone();
@@ -837,7 +837,7 @@ bool SpecialExpressionPiece::isSpecialParamater() const {
   return true;
 }
 
-ExpressionPiece* SpecialExpressionPiece::clone() const 
+ExpressionPiece* SpecialExpressionPiece::clone() const
 {
   SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
   cep->containedPieces = containedPieces.clone();

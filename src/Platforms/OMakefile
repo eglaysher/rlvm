@@ -3,7 +3,7 @@
 
 # Make it so we only build the correct os hook.
 if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
-  DOSUBDIR = 
+  DOSUBDIR =
   export
 else
   switch $(shell uname -s)
@@ -11,7 +11,7 @@ else
     DOSUBDIR = osx
     export
   default
-    DOSUBDIR = 
+    DOSUBDIR =
     export
   export
 

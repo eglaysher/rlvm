@@ -31,32 +31,32 @@ struct tut_error : public std::exception
         : err_msg(msg)
     {
     }
-    
+
     ~tut_error() throw()
     {
     }
-    
+
     const char* what() const throw()
     {
         return err_msg.c_str();
     }
-    
+
 private:
 
     std::string err_msg;
 };
 
 /**
- * Exception to be throwed when attempted to execute 
+ * Exception to be throwed when attempted to execute
  * missed test by number.
  */
 struct no_such_test : public tut_error
 {
-    no_such_test() 
+    no_such_test()
         : tut_error("no such test")
     {
     }
-    
+
     ~no_such_test() throw()
     {
     }
@@ -72,7 +72,7 @@ struct beyond_last_test : public no_such_test
     beyond_last_test()
     {
     }
-    
+
     ~beyond_last_test() throw()
     {
     }
@@ -83,18 +83,18 @@ struct beyond_last_test : public no_such_test
  */
 struct no_such_group : public tut_error
 {
-    no_such_group(const std::string& grp) 
+    no_such_group(const std::string& grp)
         : tut_error(grp)
     {
     }
-    
+
     ~no_such_group() throw()
     {
     }
 };
 
 /**
- * Internal exception to be throwed when 
+ * Internal exception to be throwed when
  * no more tests left in group or journal.
  */
 struct no_more_tests
@@ -102,23 +102,23 @@ struct no_more_tests
     no_more_tests()
     {
     }
-    
+
     ~no_more_tests() throw()
     {
     }
 };
 
 /**
- * Internal exception to be throwed when 
+ * Internal exception to be throwed when
  * test constructor has failed.
  */
 struct bad_ctor : public tut_error
 {
-    bad_ctor(const std::string& msg) 
+    bad_ctor(const std::string& msg)
         : tut_error(msg)
     {
     }
-    
+
     ~bad_ctor() throw()
     {
     }
@@ -129,11 +129,11 @@ struct bad_ctor : public tut_error
  */
 struct failure : public tut_error
 {
-    failure(const std::string& msg) 
+    failure(const std::string& msg)
         : tut_error(msg)
     {
     }
-    
+
     ~failure() throw()
     {
     }
@@ -144,11 +144,11 @@ struct failure : public tut_error
  */
 struct warning : public tut_error
 {
-    warning(const std::string& msg) 
+    warning(const std::string& msg)
         : tut_error(msg)
     {
     }
-    
+
     ~warning() throw()
     {
     }
@@ -159,11 +159,11 @@ struct warning : public tut_error
  */
 struct seh : public tut_error
 {
-    seh(const std::string& msg) 
+    seh(const std::string& msg)
         : tut_error(msg)
     {
     }
-    
+
     ~seh() throw()
     {
     }
@@ -200,15 +200,15 @@ struct test_result
      * term - test forced test application to terminate abnormally
      */
     enum result_type
-    { 
-        ok, 
-        fail, 
-        ex, 
-        warn, 
-        term, 
-        ex_ctor 
+    {
+        ok,
+        fail,
+        ex,
+        warn,
+        term,
+        ex_ctor
     };
-    
+
     result_type result;
 
     /**
@@ -231,9 +231,9 @@ struct test_result
      */
     test_result(const std::string& grp, int pos,
                 const std::string& test_name, result_type res)
-        : group(grp), 
-          test(pos), 
-          name(test_name), 
+        : group(grp),
+          test(pos),
+          name(test_name),
           result(res)
     {
     }
@@ -244,9 +244,9 @@ struct test_result
     test_result(const std::string& grp,int pos,
                 const std::string& test_name, result_type res,
                 const std::exception& ex)
-        : group(grp), 
-          test(pos), 
-          name(test_name), 
+        : group(grp),
+          test(pos),
+          name(test_name),
           result(res),
           message(ex.what()),
           exception_typeid(typeid(ex).name())
@@ -275,8 +275,8 @@ struct group_base
 /**
  * Test runner callback interface.
  * Can be implemented by caller to update
- * tests results in real-time. User can implement 
- * any of callback methods, and leave unused 
+ * tests results in real-time. User can implement
+ * any of callback methods, and leave unused
  * in default implementation.
  */
 struct callback
@@ -339,11 +339,11 @@ class test_runner
 {
 
 public:
-    
+
     /**
      * Constructor
      */
-    test_runner() 
+    test_runner()
         : callback_(&default_callback_)
     {
     }
@@ -498,7 +498,7 @@ public:
     }
 
 protected:
-    
+
     typedef std::map<std::string, group_base*> groups;
     typedef groups::iterator iterator;
     typedef groups::const_iterator const_iterator;
@@ -545,8 +545,8 @@ public:
 extern test_runner_singleton runner;
 
 /**
- * Test object. Contains data test run upon and default test method 
- * implementation. Inherited from Data to allow tests to  
+ * Test object. Contains data test run upon and default test method
+ * implementation. Inherited from Data to allow tests to
  * access test data as members.
  */
 template <class Data>
@@ -655,11 +655,11 @@ void ensure_equals(const char* msg, const Q& actual, const T& expected)
     if (expected != actual)
     {
         std::stringstream ss;
-        ss << (msg ? msg : "") 
-            << (msg ? ":" : "") 
-            << " expected '" 
-            << expected 
-            << "' actual '" 
+        ss << (msg ? msg : "")
+            << (msg ? ":" : "")
+            << " expected '"
+            << expected
+            << "' actual '"
             << actual
             << '\'';
         throw failure(ss.str().c_str());
@@ -688,13 +688,13 @@ void ensure_distance(const char* msg, const T& actual, const T& expected,
     if (expected-distance >= actual || expected+distance <= actual)
     {
         std::stringstream ss;
-        ss << (msg ? msg : "") 
-            << (msg? ":" : "") 
-            << " expected (" 
-            << expected-distance 
+        ss << (msg ? msg : "")
+            << (msg? ":" : "")
+            << " expected ("
+            << expected-distance
             << " - "
-            << expected+distance 
-            << ") actual '" 
+            << expected+distance
+            << ") actual '"
             << actual
             << '\'';
         throw failure(ss.str().c_str());
@@ -741,7 +741,7 @@ struct tests_registerer<Test, Group, 0>
 
 /**
  * Test group; used to recreate test object instance for
- * each new test since we have to have reinitialized 
+ * each new test since we have to have reinitialized
  * Data base class.
  */
 template <class Data, int MaxTestsInGroup = 50>
@@ -773,7 +773,7 @@ class test_group : public group_base
         safe_holder& operator=(const safe_holder&);
 
     public:
-        safe_holder() 
+        safe_holder()
             : p_(0),
               permit_throw_in_dtor(false)
         {
@@ -788,7 +788,7 @@ class test_group : public group_base
         {
             return p_;
         }
-        
+
         T* get() const
         {
             return p_;
@@ -805,7 +805,7 @@ class test_group : public group_base
         }
 
         /**
-         * Specially treats exceptions in test object destructor; 
+         * Specially treats exceptions in test object destructor;
          * if test itself failed, exceptions in destructor
          * are ignored; if test was successful and destructor failed,
          * warning exception throwed.
@@ -900,7 +900,7 @@ public:
         another_runner.register_group(name_, this);
 
         // register all tests
-        tests_registerer<test_object<Data>, test_group, 
+        tests_registerer<test_object<Data>, test_group,
             MaxTestsInGroup>::reg(*this);
     };
 
@@ -957,7 +957,7 @@ public:
         {
             throw beyond_last_test();
         }
-        
+
         if (tests_.rbegin()->first < n)
         {
             throw beyond_last_test();
@@ -979,7 +979,7 @@ private:
     /**
      * VC allows only one exception handling type per function,
      * so I have to split the method.
-     * 
+     *
      * TODO: refactoring needed!
      */
     test_result run_test_(const tests_iterator& ti, safe_holder<object>& obj)
@@ -1003,7 +1003,7 @@ private:
             {
                 current_test_name = obj->get_test_name();
             }
-            test_result tr(name_,ti->first, current_test_name, 
+            test_result tr(name_,ti->first, current_test_name,
                 test_result::warn, ex);
             return tr;
         }
@@ -1014,7 +1014,7 @@ private:
             {
                 current_test_name = obj->get_test_name();
             }
-            test_result tr(name_,ti->first, current_test_name, 
+            test_result tr(name_,ti->first, current_test_name,
                 test_result::fail, ex);
             return tr;
         }
@@ -1025,7 +1025,7 @@ private:
             {
                 current_test_name = obj->get_test_name();
             }
-            test_result tr(name_, ti->first, current_test_name, 
+            test_result tr(name_, ti->first, current_test_name,
                 test_result::term, ex);
             return tr;
         }
@@ -1036,7 +1036,7 @@ private:
             {
                 current_test_name = obj->get_test_name();
             }
-            test_result tr(name_, ti->first, current_test_name, 
+            test_result tr(name_, ti->first, current_test_name,
                 test_result::ex_ctor, ex);
             return tr;
         }
@@ -1047,7 +1047,7 @@ private:
             {
                 current_test_name = obj->get_test_name();
             }
-            test_result tr(name_, ti->first, current_test_name, 
+            test_result tr(name_, ti->first, current_test_name,
                 test_result::ex, ex);
             return tr;
         }
@@ -1058,7 +1058,7 @@ private:
             {
                 current_test_name = obj->get_test_name();
             }
-            test_result tr(name_, ti->first, current_test_name, 
+            test_result tr(name_, ti->first, current_test_name,
                 test_result::ex);
             return tr;
         }
@@ -1071,7 +1071,7 @@ private:
     /**
      * Runs one under SEH if platform supports it.
      */
-    bool run_test_seh_(testmethod tm, safe_holder<object>& obj, 
+    bool run_test_seh_(testmethod tm, safe_holder<object>& obj,
         std::string& current_test_name)
     {
 #if defined(TUT_USE_SEH)
@@ -1082,7 +1082,7 @@ private:
         {
             reset_holder_(obj);
         }
-            
+
         obj->called_method_was_a_dummy_test_ = false;
 
 #if defined(TUT_USE_SEH)

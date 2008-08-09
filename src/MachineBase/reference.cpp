@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -34,7 +34,7 @@
  * @brief  Defines the iterator interface to integer and string memory
  * @author Elliot Glaysher
  * @date   Sat Oct  7 11:15:37 2006
- * 
+ *
  */
 
 #include "MachineBase/reference.hpp"
@@ -47,8 +47,8 @@ using libReallive::IntMemRef;
 // IntAccessor
 // -----------------------------------------------------------------------
 
-IntAccessor::IntAccessor(MemoryReferenceIterator<IntAccessor>* i) 
-  : it(i) 
+IntAccessor::IntAccessor(MemoryReferenceIterator<IntAccessor>* i)
+  : it(i)
 {}
 
 // -----------------------------------------------------------------------
@@ -58,9 +58,9 @@ IntAccessor::~IntAccessor()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Read from the memory location, and return the value.
- * 
+ *
  * @return The integer value of the memory location.
  */
 IntAccessor::operator int() const
@@ -70,24 +70,24 @@ IntAccessor::operator int() const
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Assign a new value to the memory location.
- * 
+ *
  * @param newValue New value to set.
  * @return Self
  */
-IntAccessor& IntAccessor::operator=(const int newValue) { 
+IntAccessor& IntAccessor::operator=(const int newValue) {
   it->m_memory->setIntValue(IntMemRef(it->m_type, it->m_location), newValue);
   return *this;
-} 
+}
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Assigns to this accessor from another IntAccessor. This allows us
  * to use the "*dest = *src" mechanic since normally, that would call
  * the default copy operator, which would copy rhs.it onto it.
- * 
+ *
  * @param rhs IntAccessor to read from
  * @return Self
  */
@@ -100,8 +100,8 @@ IntAccessor& IntAccessor::operator=(const IntAccessor& rhs)
 // StringAccessor
 // -----------------------------------------------------------------------
 
-StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i) 
-  : it(i) 
+StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i)
+  : it(i)
 {}
 
 // -----------------------------------------------------------------------
@@ -111,9 +111,9 @@ StringAccessor::~StringAccessor()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Read from the memory location, and return the value.
- * 
+ *
  * @return The string value of the memory location.
  */
 StringAccessor::operator std::string() const
@@ -123,9 +123,9 @@ StringAccessor::operator std::string() const
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Assign a new value to the memory location.
- * 
+ *
  * @param newValue New value to set.
  * @return Self
  */
@@ -142,11 +142,11 @@ bool StringAccessor::operator==(const std::string& rhs) {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Assigns to this accessor from another StringAccessor. This allows
  * us to use the "*dest = *src" mechanic since normally, that would
  * call the default copy operator, which would copy rhs.it onto it.
- * 
+ *
  * @param rhs StringAccessor to read from
  * @return Self
  */

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Rect_hpp__
@@ -123,7 +123,7 @@ public:
   }
 
   Size operator*(float factor) const {
-    return Size(static_cast<int>(width_ * factor), 
+    return Size(static_cast<int>(width_ * factor),
                 static_cast<int>(height_ * factor));
   }
 
@@ -155,7 +155,7 @@ private:
  */
 class Rect
 {
-public: 
+public:
   Rect() {}
   Rect(const Point& point1, const Point& point2)
     : origin_(point1), size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
@@ -182,7 +182,7 @@ public:
   int height() const { return size_.height(); }
   const Size& size() const { return size_; }
 
-  bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }  
+  bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }
 
   /**
    * Whether loc is inside this Rect.

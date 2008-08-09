@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -48,13 +48,13 @@
 using namespace std;
 
 template<typename FRAMECLASS>
-struct Sys_InitFrame 
+struct Sys_InitFrame
   : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
   const int m_layer;
   Sys_InitFrame(int layer) : m_layer(layer) {}
 
-  void operator()(RLMachine& machine, int counter, int frameMin, int frameMax, 
+  void operator()(RLMachine& machine, int counter, int frameMin, int frameMax,
                   int time)
   {
     EventSystem& es = machine.system().event();
@@ -106,9 +106,9 @@ struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    for(int i = 0; i < 255; ++i) 
+    for(int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(m_layer, counter) && 
+      if(es.frameCounterExists(m_layer, counter) &&
          es.getFrameCounter(m_layer, counter).isActive())
       {
         return 1;
@@ -225,7 +225,7 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
       else
         *(it->get<1>()) = 0;
     }
-    
+
     return storeValue;
   }
 };
@@ -263,7 +263,7 @@ void addSysFrameOpcodes(RLModule& m)
   m.addOpcode(534, 1, "ClearAllExFrames", new Sys_ClearAllFrames_1(1));
 
   // Multiple dispatch operations on normal frame counters
-  m.addOpcode(600, 0, "InitFrames", 
+  m.addOpcode(600, 0, "InitFrames",
               new MultiDispatch(new Sys_InitFrame<SimpleFrameCounter>(0)));
   m.addOpcode(601, 0, "InitFramesLoop",
               new MultiDispatch(new Sys_InitFrame<LoopFrameCounter>(0)));
@@ -276,7 +276,7 @@ void addSysFrameOpcodes(RLModule& m)
   m.addOpcode(610, 0, "ReadFrames", new Sys_ReadFrames(0));
 
   // Multiple dispatch operations on normal frame counters
-  m.addOpcode(620, 0, "InitExFrames", 
+  m.addOpcode(620, 0, "InitExFrames",
               new MultiDispatch(new Sys_InitFrame<SimpleFrameCounter>(1)));
   m.addOpcode(621, 0, "InitExFramesLoop",
               new MultiDispatch(new Sys_InitFrame<LoopFrameCounter>(1)));

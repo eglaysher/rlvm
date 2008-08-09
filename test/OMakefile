@@ -23,7 +23,7 @@ else
   export
 
 
-TEST_FILES[] = 
+TEST_FILES[] =
   rlvmTest
   testUtils
   RLMachine_TUT

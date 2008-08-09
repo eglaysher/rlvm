@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __RLModule_hpp__
@@ -32,8 +32,8 @@
  * @file   RLModule.hpp
  * @author Elliot Glaysher
  * @date   Sat Oct  7 10:57:36 2006
- * 
- * @brief  Declares the base class RLModule 
+ *
+ * @brief  Declares the base class RLModule
  */
 
 #include <boost/utility.hpp>
@@ -42,14 +42,14 @@
 namespace libReallive {
 class FunctionElement;
 class CommandElement;
-};      
+};
 
 struct RLOperation;
 class RLMachine;
 
 /**
  * @defgroup ModulesOpcodes Modules and Opcode Definitions
- * 
+ *
  * Contains definitions for each operation that RLVM executes based
  * off of an instruction in the SEEN.TXT file.
  *
@@ -100,7 +100,7 @@ private:
   int m_moduleNumber;
   std::string m_moduleName;
 
-  // Store functions. 
+  // Store functions.
   typedef boost::ptr_map<int, RLOperation> OpcodeMap;
   OpcodeMap storedOperations;
 
@@ -126,7 +126,7 @@ public:
    */
   virtual void addOpcode(int opcode, unsigned char overload, RLOperation* op);
 
-  /** 
+  /**
    * Convenience function to allow a function name to be embeded in
    * the declaration.
    */
@@ -136,7 +136,7 @@ public:
   /**
    * Adds an UndefinedFunction object to this module.
    */
-  void addUnsupportedOpcode(int opcode, unsigned char overload, 
+  void addUnsupportedOpcode(int opcode, unsigned char overload,
                             const std::string& name);
 
   /// Accessor that returns this module's type number
@@ -148,11 +148,11 @@ public:
   /// Accessor that returns this module's mnemonic nmae
   const std::string& moduleName() const { return m_moduleName; }
 
-  /** 
+  /**
    * Using the bytecode element CommandElement f, try to find an
    * RLOperation implementation of the instruction in this module, and
    * execute it.
-   * 
+   *
    * @param machine The RLMachine we are operating with
    * @param f The bytecode element that we are trying to execute
    */

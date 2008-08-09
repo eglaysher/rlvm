@@ -19,10 +19,10 @@
 
 namespace tut
 {
-    
+
 namespace util
 {
-    
+
 /**
  * Escapes non-alphabetical characters in string.
  */
@@ -191,8 +191,8 @@ public:
      * @param dir Directory where to search/put log and journal files
      */
     restartable_wrapper(const std::string& dir = ".")
-        : runner_(runner.get()), 
-          callback_(0), 
+        : runner_(runner.get()),
+          callback_(0),
           dir_(dir)
     {
         // dozen: it works, but it would be better to use system path separator

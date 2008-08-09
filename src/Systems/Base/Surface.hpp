@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Surface_hpp__
@@ -37,7 +37,7 @@ class RGBAColour;
 class GraphicsObject;
 struct GraphicsObjectOverride;
 
-/** 
+/**
  * Abstract concept of a surface.
  */
 class Surface
@@ -61,7 +61,7 @@ public:
   virtual void dump();
 
   /// Blits to another surface
-  virtual void blitToSurface(Surface& surface, 
+  virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true) = 0;
 
@@ -77,13 +77,13 @@ public:
     const int opacity[4]) = 0;
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp) = 0;
-  virtual void renderToScreenAsObject(const GraphicsObject& rp, 
+  virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const GraphicsObjectOverride& override) = 0;
 
   virtual int numPatterns() const;
   virtual const GrpRect& getPattern(int pattNo) const;
 
-  virtual void rawRenderQuad(const int srcCoords[8], 
+  virtual void rawRenderQuad(const int srcCoords[8],
                              const int destCoords[8],
                              const int opacity[4]) = 0;
 
@@ -98,4 +98,4 @@ public:
   virtual Surface* clone() const = 0;
 };
 
-#endif 
+#endif

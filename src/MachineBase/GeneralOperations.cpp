@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007, 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -86,7 +86,7 @@ CGMTable& getSystemObj(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-MultiDispatch::MultiDispatch(RLOperation* op) 
+MultiDispatch::MultiDispatch(RLOperation* op)
   : handler(op)
 {}
 
@@ -113,13 +113,13 @@ void MultiDispatch::parseParameters(
 
 /// @todo Port this up to the new expression handling code
 void MultiDispatch::operator()(
-  RLMachine& machine, 
-  const libReallive::CommandElement& ff) 
+  RLMachine& machine,
+  const libReallive::CommandElement& ff)
 {
   const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
 
   for(unsigned int i = 0; i < parameterPieces.size(); ++i) {
-    const ptr_vector<ExpressionPiece>& element = 
+    const ptr_vector<ExpressionPiece>& element =
       dynamic_cast<const ComplexExpressionPiece&>(parameterPieces[i]).getContainedPieces();
 
     // @todo Do whatever is needed to get this part working...
@@ -136,12 +136,12 @@ void MultiDispatch::operator()(
 // -------------------------------------------------- [ ReturnGameexeInt ]
 
 ReturnGameexeInt::ReturnGameexeInt(const std::string& fullKey, int en)
-  : fullKeyName(fullKey), entry(en) 
+  : fullKeyName(fullKey), entry(en)
 {}
 
 // -----------------------------------------------------------------------
 
-int ReturnGameexeInt::operator()(RLMachine& machine) 
+int ReturnGameexeInt::operator()(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> values = gexe(fullKeyName);
@@ -159,7 +159,7 @@ UndefinedFunction::UndefinedFunction(
 
 // -----------------------------------------------------------------------
 
-void UndefinedFunction::operator()(RLMachine&, 
+void UndefinedFunction::operator()(RLMachine&,
                                    const libReallive::CommandElement&)
 {
   throw rlvm::UnimplementedOpcode(

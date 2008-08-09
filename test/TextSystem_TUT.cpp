@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "libReallive/archive.h"
@@ -76,7 +76,7 @@ struct TextSystem_data
     while(!(*tolo)(rlmachine));
   }
 
-  void snapshotAndClear() 
+  void snapshotAndClear()
   {
     TextSystem& text = rlmachine.system().text();
     text.snapshot(rlmachine);
@@ -119,7 +119,7 @@ void object::test<2>()
   // Make sure all the data was printed correctly
   ensure_equals("Data was printed correctly!",
                 getTextWindow(0).currentContents(),
-                "A text string.");  
+                "A text string.");
 }
 
 // -----------------------------------------------------------------------
@@ -176,7 +176,7 @@ void object::test<5>()
   writeString("Page three.", true);
   snapshotAndClear();
   writeString("Page four.", true);
-  
+
   ensure_equals("We're on the final page!", getTextWindow(0).currentContents(),
                 "Page four.");
   ensure_equals("We're not reading the backlog.", text.isReadingBacklog(), false);
@@ -209,10 +209,10 @@ void object::test<5>()
   ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
 
   text.stopReadingBacklog();
-  ensure_equals("We're back to the current page!", 
+  ensure_equals("We're back to the current page!",
                 getTextWindow(0).currentContents(),
                 "Page four.");
-  ensure_equals("We're no longer reading the backlog.", 
+  ensure_equals("We're no longer reading the backlog.",
                 text.isReadingBacklog(), false);
 }
 

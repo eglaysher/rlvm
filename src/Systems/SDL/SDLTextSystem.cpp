@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -34,7 +34,7 @@
  * @brief  SDL specialization of the text system
  * @author Elliot Glaysher
  * @date   Wed Mar  7 22:04:25 2007
- * 
+ *
  */
 
 #include "MachineBase/RLMachine.hpp"
@@ -93,7 +93,7 @@ void SDLTextSystem::render(RLMachine& machine)
 
     WindowMap::iterator it = m_textWindow.find(m_activeWindow);
 
-    if(it != m_textWindow.end() && it->second->isVisible() && 
+    if(it != m_textWindow.end() && it->second->isVisible() &&
        m_inPauseState && !isReadingBacklog())
     {
       if(!m_textKeyCursor)
@@ -123,7 +123,7 @@ TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
 void SDLTextSystem::updateWindowsForChangeToWindowAttr()
 {
   // Check each text window to see if it needs updating
-  for(WindowMap::iterator it = m_textWindow.begin(); 
+  for(WindowMap::iterator it = m_textWindow.begin();
       it != m_textWindow.end(); ++it)
   {
     if(!it->second->windowAttrMod())
@@ -183,7 +183,7 @@ void SDLTextSystem::setWindowAttrF(int i)
 
 void SDLTextSystem::setMousePosition(RLMachine& machine, const Point& pos)
 {
-  for(WindowMap::iterator it = m_textWindow.begin(); 
+  for(WindowMap::iterator it = m_textWindow.begin();
       it != m_textWindow.end(); ++it)
   {
     it->second->setMousePosition(machine, pos);
@@ -197,7 +197,7 @@ bool SDLTextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
 {
   if(systemVisible())
   {
-    for(WindowMap::iterator it = m_textWindow.begin(); 
+    for(WindowMap::iterator it = m_textWindow.begin();
         it != m_textWindow.end(); ++it)
     {
       if(it->second->handleMouseClick(machine, pos, pressed))

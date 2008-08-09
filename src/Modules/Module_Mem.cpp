@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -67,15 +67,15 @@ using namespace boost;
  * @{
  */
 
-/** 
+/**
  * Implement op<1:Mem:00000, 0>, fun setarray(int, intC+).
- * 
+ *
  * Sets a block of integers, starting with origin, to the given
  * values. values is an arbitrary number of integer expressions, each
  * of which is assigned in turn to the next variable.
  */
 struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T > > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin, 
+  void operator()(RLMachine& machine, IntReferenceIterator origin,
                   vector<int> values) {
     copy(values.begin(), values.end(), origin);
   }
@@ -83,9 +83,9 @@ struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T >
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00001, 0>, fun setrng(int, int).
- * 
+ *
  * Set block of integers to zero.
  */
 struct Mem_setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
@@ -98,12 +98,12 @@ struct Mem_setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00001, 1>, fun setrng(int, int, intC).
- * 
+ *
  * Set block of integers to the constant passed in.
  */
-struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T, 
+struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last, int value) {
@@ -114,13 +114,13 @@ struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T,
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00002, 0>, fun(int, intC, intC).
  *
  * Copies a block of values of length count from source to dest. The
  * function appears to succeed even if the ranges overlap.
  *
- * @note copy_n is not part of the C++ standard, and while it's part of 
+ * @note copy_n is not part of the C++ standard, and while it's part of
  * STL on the machines at work, it doesn't exist on OSX's implementation,
  * so grab a copy that boost includes.
  */
@@ -136,15 +136,15 @@ struct Mem_cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00003, 0>, fun setarray_stepped(int, int, intC+).
- * 
+ *
  * Sets every stepth memory block starting at origin with the sequence
  * of passed in values.
  */
-struct Mem_setarray_stepped 
+struct Mem_setarray_stepped
   : public RLOp_Void_3< IntReference_T, IntConstant_T, Argc_T<IntConstant_T > > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin, 
+  void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, vector<int> values) {
     // Sigh. No more simple STL statements
     for(vector<int>::iterator it = values.begin(); it != values.end(); ++it) {
@@ -156,15 +156,15 @@ struct Mem_setarray_stepped
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00004, 0>, fun setrng_stepped(int, intC, intC).
- * 
+ *
  * Sets count number of memory locations to zero, starting at origin
  * and going forward step.
  */
 struct Mem_setrng_stepped_0
   : public RLOp_Void_3< IntReference_T, IntConstant_T, IntConstant_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin, 
+  void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, int count) {
     for(int i = 0; i < count; ++i) {
       *origin = 0;
@@ -175,16 +175,16 @@ struct Mem_setrng_stepped_0
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00004, 1>, fun setrng_stepped(int, intC, intC, intC).
- * 
+ *
  * Sets count number of memory locations to the passed in constant,
  * starting at origin and going forward step.
  */
 struct Mem_setrng_stepped_1
   : public RLOp_Void_4< IntReference_T, IntConstant_T, IntConstant_T,
                         IntConstant_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin, 
+  void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, int count, int value) {
     for(int i = 0; i < count; ++i) {
       *origin = value;
@@ -199,29 +199,29 @@ struct Mem_setrng_stepped_1
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00006, 0>, fun cpyvars(int, intC, int+).
- * 
+ *
  * I'm not even going to try for this one. See RLDev.
  */
 struct Mem_cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
                                          Argc_T< IntReference_T > > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin, 
+  void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int offset, vector<IntReferenceIterator> values) {
-    for(vector<IntReferenceIterator>::iterator it = values.begin(); 
+    for(vector<IntReferenceIterator>::iterator it = values.begin();
         it != values.end(); ++it) {
       IntReferenceIterator irIt = *it;
       advance(irIt, offset);
       *origin++ = *irIt;
-    }    
+    }
   }
 };
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00100, 0>, fun sum(int, int).
- * 
+ *
  * Returns the sum of all the numbers in the given memory range.
  */
 struct Mem_sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
@@ -234,14 +234,14 @@ struct Mem_sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implement op<1:Mem:00101, 0>, fun sums((int, int)+).
- * 
+ *
  * Returns the sum of all the numbers in all the given memory ranges.
  */
 struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
                                                          IntReference_T > > >{
-  int operator()(RLMachine& machine, 
+  int operator()(RLMachine& machine,
                  vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
     int total = 0;
     for(vector<tuple<IntReferenceIterator, IntReferenceIterator> >::iterator it =

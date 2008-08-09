@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __TextWindow_hpp__
@@ -50,7 +50,7 @@ class TextWindowButton;
  *
  * Sets of TextWindows should be reconstructable by the state in @c
  * TextPage , though there are some notable exceptions, specifically
- * @c Select_LongOperation . 
+ * @c Select_LongOperation .
  *
  * This class has all sorts of complex, rarely used text rendering
  * options, including multiple co-ordinate systems, which I'm sure was
@@ -66,7 +66,7 @@ protected:
   /**
    * @name Text window Origin
    * Describes the origin point of the window
-   * 
+   *
    * @{
    */
   int m_windowPositionOrigin;
@@ -74,8 +74,8 @@ protected:
   int m_windowPositionY;
   /// @}
 
-  /** 
-   * @name Insertion point 
+  /**
+   * @name Insertion point
    *
    * The text insertion point. These two numbers are relative to the
    * text window location and represent the top left corner of where
@@ -97,7 +97,7 @@ protected:
 
   /**
    * @name Text output properties
-   * 
+   *
    * @{
    */
 
@@ -121,7 +121,7 @@ protected:
   RGBColour m_defaultColor;
 
   /// The current color. Initialized to the default color on every
-  /// clearWin() call. 
+  /// clearWin() call.
   RGBColour m_fontColour;
 
   /// @}
@@ -132,7 +132,7 @@ protected:
 
   /**
    * @name Positional data
-   * 
+   *
    * @{
    */
   int m_origin, m_xDistanceFromOrigin, m_yDistanceFromOrigin;
@@ -167,9 +167,9 @@ protected:
   Point m_keycursorPos;
   /// @}
 
-  /** 
+  /**
    * @name Name display options
-   * 
+   *
    * Options related to the display of the current speaker's name.
    */
 
@@ -183,7 +183,7 @@ protected:
 
   /**
    * @name Buttons in this text box
-   * 
+   *
    * Attached action buttons defined in the
    * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
    * things such as moving the text box, clearing the text box, moving
@@ -198,7 +198,7 @@ protected:
 
   /**
    * @name Selection mode data
-   * 
+   *
    * Text boxes can be in selection mode, in which case a
    * Select_LongOperation is on the top of the RLMachine's call stack
    * and has
@@ -211,7 +211,7 @@ protected:
   /// Callback function for when item is selected; usually will call a
   /// specific method on Select_LongOperation
   boost::function<void(int)> m_selectionCallback;
-  
+
   /// Used to assign a zero based index to all selection elements
   /// added by addSelectionItem().
   int m_nextId;
@@ -231,9 +231,9 @@ public:
 
   /**
    * @name Text size and location
-   * 
+   *
    * Accessors dealing with the size and location of the text
-   * window. 
+   * window.
    *
    * @{
    */
@@ -262,7 +262,7 @@ public:
   void setRubyTextSize(const int i) { m_rubySize = i; }
   int rubyTextSize() const { return m_rubySize; }
 
-  /** 
+  /**
    * Sets the size of the font. Reprsented by \#WINDOW.xxx.MOJI.SIZE.
    */
   void setFontSizeInPixels(int i) { m_fontSizeInPixels = i; }
@@ -278,8 +278,8 @@ public:
   /// @}
 
   /**
-   * @name Window Positional 
-   * 
+   * @name Window Positional
+   *
    * @{
    */
   void setWindowPosition(const std::vector<int>& posData);
@@ -301,7 +301,7 @@ public:
 
   /**
    * @name Name window settings
-   * 
+   *
    * @{
    */
 
@@ -313,7 +313,7 @@ public:
 
   /**
    * @name Keycursor settings
-   * 
+   *
    * Set and access the position of the animated icon that appears
    * when waiting for user input. The TextWindow only owns the
    * position which is queried by the TextKeyCursor object which owns
@@ -331,7 +331,7 @@ public:
 
   /**
    * @name Waku (Window decoration) Handling Functions
-   * 
+   *
    * @{
    */
 
@@ -340,7 +340,7 @@ public:
 
   virtual void setWakuMain(RLMachine& machine, const std::string& name) = 0;
 
-  /** 
+  /**
    * Loads the graphics file name as the mask for represents the areas
    * of the text window that should be shaded.
    */
@@ -348,16 +348,16 @@ public:
 
   /**
    * Loads the graphics file name as the image with all the button
-   * images used when drawing 
+   * images used when drawing
    */
-  virtual void setWakuButton(RLMachine& machine, const std::string& name) = 0;  
+  virtual void setWakuButton(RLMachine& machine, const std::string& name) = 0;
 
   /// @}
 
 
   /**
    * @name Window Background Color Attributes
-   * 
+   *
    * Accessors regarding the background color of the window.
    *
    * Represents the data parsed from \#WINDOW_ATTR,
@@ -374,7 +374,7 @@ public:
   void setAlpha(int i) { m_colour.setAlpha(i); }
   void setFilter(int i) { m_filter = i; }
   void setRGBAF(const std::vector<int>& rgbaValues);
-  
+
   int r() const { return m_colour.r(); }
   int g() const { return m_colour.g(); }
   int b() const { return m_colour.b(); }
@@ -391,7 +391,7 @@ public:
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine) = 0;
 
-  /** 
+  /**
    * Clears the text window of all text and resets the insertion
    * point.
    */
@@ -412,16 +412,16 @@ public:
    */
   virtual bool isFull() const = 0;
 
- 
-  /** 
+
+  /**
    *  Write this later.
    */
  //  virtual void resetName() = 0;
- 
+
   /**
    * Sets (and displays, if appropriate) the name of the current speaker.
    */
-  virtual void setName(RLMachine& machine, const std::string& utf8name, 
+  virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& nextChar) = 0;
 
   virtual void hardBrake() = 0;
@@ -433,7 +433,7 @@ public:
 
   /**
    * @name Selection Mode
-   * 
+   *
    * Text Windows are responsible for presenting the questions from
    * select() and select_s() calls. (select_w() is not done here.)
    *

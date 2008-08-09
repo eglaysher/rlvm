@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -42,7 +42,7 @@
 
 typedef IntConstant_T ValOnly;
 typedef Complex3_T< IntConstant_T, IntConstant_T, IntConstant_T > StartEndval;
-typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T, 
+typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T,
                     IntConstant_T > StartEndvalMode;
 typedef Argc_T< Special_T< ValOnly, StartEndval, StartEndvalMode > > IndexList;
 
@@ -55,7 +55,7 @@ struct Sys_index_series
     index = index + offset;
     int value = init;
 
-    for(IndexList::type::iterator it = index_list.begin(); 
+    for(IndexList::type::iterator it = index_list.begin();
         it != index_list.end(); ++it)
     {
       switch(it->type)
@@ -80,11 +80,11 @@ struct Sys_index_series
         int end = it->third.get<1>();
         int endval = it->third.get<2>();
         if (it->third.get<3>() == 0) {
-          fprintf(stderr, "(%d, {%d, %d, %d}, %d, %d)\n", 
+          fprintf(stderr, "(%d, {%d, %d, %d}, %d, %d)\n",
                   index, start, end, endval, value, init);
           mode0(index, start, end, endval, value, init);
         }
-        else 
+        else
           throw rlvm::Exception(
             "Don't know how to handle type 2 index_series statements");
       }
@@ -101,7 +101,7 @@ struct Sys_index_series
       int amount = endval - init;
       value = init + (percentage * amount);
     }
-    // Finally, if we're over the value, set 
+    // Finally, if we're over the value, set
     else if (index > end) {
       value = endval;
       init = endval;

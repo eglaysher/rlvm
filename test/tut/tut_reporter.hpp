@@ -11,7 +11,7 @@
  */
 namespace
 {
-    
+
 std::ostream& operator<<(std::ostream& os, const tut::test_result& tr)
 {
     switch(tr.result)
@@ -62,13 +62,13 @@ public:
     int terminations_count;
     int warnings_count;
 
-    reporter() 
+    reporter()
         : os(std::cout)
     {
         init();
     }
 
-    reporter(std::ostream& out) 
+    reporter(std::ostream& out)
         : os(out)
     {
         init();
@@ -167,12 +167,12 @@ public:
                 {
                     if (tr.result == test_result::fail)
                     {
-                        os << "     failed assertion: \"" << tr.message << "\"" 
+                        os << "     failed assertion: \"" << tr.message << "\""
                             << std::endl;
                     }
                     else
                     {
-                        os << "     message: \"" << tr.message << "\"" 
+                        os << "     message: \"" << tr.message << "\""
                             << std::endl;
                     }
                 }

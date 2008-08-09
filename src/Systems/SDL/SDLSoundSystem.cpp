@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -96,7 +96,7 @@ void SDLSoundSystem::wavPlayImpl(
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
     int loopNum = loop ? -1 : 0;
     sample->playChunkOn(channel, loopNum);
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -114,7 +114,7 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
   if(cdIt != cdTable.end())
   {
     ostringstream oss;
-    oss << "CD music not supported yet. Could not play track \"" 
+    oss << "CD music not supported yet. Could not play track \""
         << bgmName << "\"";
     throw std::runtime_error(oss.str());
   }
@@ -316,7 +316,7 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
 int SDLSoundSystem::bgmStatus() const
 {
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying) 
+  if(currentlyPlaying)
   {
     return currentlyPlaying->bgmStatus();
   }
@@ -326,7 +326,7 @@ int SDLSoundSystem::bgmStatus() const
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName, 
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
                              bool loop)
 {
   boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgmName);
@@ -350,7 +350,7 @@ void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
   m_queuedMusic = LoadMusic(machine, bgmName);
   m_queuedMusicLoop = loop;
   m_queuedMusicFadein = fadeInMs;
-  
+
   bgmFadeOut(fadeOutMs);
 }
 
@@ -359,7 +359,7 @@ void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
 void SDLSoundSystem::bgmStop()
 {
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying) 
+  if(currentlyPlaying)
     currentlyPlaying->stop();
 }
 
@@ -368,7 +368,7 @@ void SDLSoundSystem::bgmStop()
 void SDLSoundSystem::bgmPause()
 {
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying) 
+  if(currentlyPlaying)
     currentlyPlaying->pause();
 }
 
@@ -377,7 +377,7 @@ void SDLSoundSystem::bgmPause()
 void SDLSoundSystem::bgmUnPause()
 {
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying) 
+  if(currentlyPlaying)
     currentlyPlaying->unpause();
 }
 
@@ -385,7 +385,7 @@ void SDLSoundSystem::bgmUnPause()
 
 void SDLSoundSystem::bgmFadeOut(int fadeOutMs) {
   boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying) 
+  if(currentlyPlaying)
     currentlyPlaying->fadeOut(fadeOutMs);
 }
 

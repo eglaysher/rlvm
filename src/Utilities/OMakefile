@@ -3,7 +3,7 @@
 
 ########
 
-.DEFAULT: 
+.DEFAULT:
 #libSystems$(EXT_LIB)
 
 clean:

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -72,7 +72,7 @@ namespace fs = boost::filesystem;
  * the really hard reverse engineering work that I'd rather not do.
  *
  * @section Table Table of Contents
- * 
+ *
  * The documentation is divided into the following sections.
  *
  * - @subpage theProblemDomainOfVisualNovels "The problem Domain of Visual Novels"
@@ -83,7 +83,7 @@ namespace fs = boost::filesystem;
 
 /**
  * @page theProblemDomainOfVisualNovels The problem Domain of Visual Novels
- * 
+ *
  * @section Overview
  *
  * Visual Novels (referred to as NVL, AVG or ADV games in Japanese) are
@@ -93,7 +93,7 @@ namespace fs = boost::filesystem;
  * wise, they are comparable to a large slide show with text, images
  * and sound, and can be thought of as massive, more serious, mature
  * versions of the Choose-Your-Own-Adventure series of children's books.
- * 
+ *
  * @section IsAndIsnt What RLVM is and isn't
  *
  * RLVM is a clone of a specific visual novel interpreter, the
@@ -122,7 +122,7 @@ namespace fs = boost::filesystem;
 
 /**
  * @page architectureReview RLVM Architecture
- * 
+ *
  * RLVM is divided into five basic parts:
  *
  * - A modified version of Haeleth's @c libReallive, which is
@@ -319,16 +319,16 @@ int main(int argc, char* argv[])
     cerr << "gameexePath: " << gameexePath << endl;
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath.file_string();
-    
+
     if(vm.count("font"))
     {
       string font = vm["font"].as<string>();
       if(fs::exists(font))
       {
-        gameexe("__GAMEFONT") = font; 
+        gameexe("__GAMEFONT") = font;
         cerr << "Using custom font " << vm["font"].as<string>() << endl;
       }
-      else 
+      else
       {
         cerr << "Couldn't open font file \"" << font << "\"" << endl;
         return -1;
@@ -394,7 +394,7 @@ int main(int argc, char* argv[])
   }
   catch(SystemError& e) {
     cerr << "Fatal local system error: " << e.what() << endl;
-    return 1;    
+    return 1;
   }
   catch(std::exception& e) {
     cout << "Uncaught exception: " << e.what() << endl;
@@ -402,7 +402,7 @@ int main(int argc, char* argv[])
   }
   catch(const char* e) {
     cout << "Uncaught exception: " << e << endl;
-    return 1;    
+    return 1;
   }
 
   return 0;

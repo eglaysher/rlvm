@@ -19,7 +19,7 @@ else
 .SUBDIRS: libReallive Effects Modules MachineBase Systems Platforms Utilities
 ########
 
-LIBRLVMFILES[] = 
+LIBRLVMFILES[] =
   MachineBase/libMachineBase
   MachineBase/GeneralOperations
   MachineBase/OpcodeLog
@@ -81,7 +81,7 @@ else
   export
 
 .DEFAULT: librlvm$(EXT_LIB) $(CXXProgram rlvm, rlvm)
-rlvm$(EXE): librlvm$(EXT_LIB) 
+rlvm$(EXE): librlvm$(EXT_LIB)
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvm$(EXE) rlvm$(EXE).stackdump
@@ -92,8 +92,8 @@ clean:
 # Apple specific rule. These section is probably very Elliot's OSX
 # laptop specific; I'm not sure how I'd do this generically.
 section
-  # Filter out the default libSDLmain. Instead, we're going to use the 
-  # hacked up copy in Platforms/osx/ which will prompt the user for a 
+  # Filter out the default libSDLmain. Instead, we're going to use the
+  # hacked up copy in Platforms/osx/ which will prompt the user for a
   # game folder with a cocoa file selector.
   STATICSDLLIBS = $(filter-out %libSDLmain.a, $(shell sdl-config --static-libs))
 

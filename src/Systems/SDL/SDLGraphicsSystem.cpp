@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -34,7 +34,7 @@
  * @brief  Exposed interface for the SDL Graphics system.
  * @author Elliot Glaysher
  * @date   Fri Oct  6 13:34:08 2006
- * 
+ *
  */
 
 #include "glew.h"
@@ -88,7 +88,7 @@ using namespace libReallive;
 void SDLGraphicsSystem::setCursor(RLMachine& machine, int cursor) {
   GraphicsSystem::setCursor(machine, cursor);
 
-  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);  
+  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
 }
 
 void SDLGraphicsSystem::beginFrame()
@@ -101,13 +101,13 @@ void SDLGraphicsSystem::beginFrame()
   glDisable(GL_CULL_FACE);
   glDisable(GL_LIGHTING);
   ShowGLErrors();
- 	
+
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0, (GLdouble)m_screenSize.width(), (GLdouble)m_screenSize.height(),
           0.0, 0.0, 1.0);
   ShowGLErrors();
- 	
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   ShowGLErrors();
@@ -115,7 +115,7 @@ void SDLGraphicsSystem::beginFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::refresh(RLMachine& machine) 
+void SDLGraphicsSystem::refresh(RLMachine& machine)
 {
   beginFrame();
 
@@ -180,14 +180,14 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
 
     // Copy the area behind the cursor to the temporary buffer
     glBindTexture(GL_TEXTURE_2D, m_behindCursorTexture);
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
                         dx1, m_screenSize.height() - dy1 - 32, 32, 32);
 
     cursor->renderHotspotAt(machine, hotspot);
   }
 
   glFlush();
-  
+
   // Swap the buffers
   SDL_GL_SwapBuffers();
   ShowGLErrors();
@@ -209,7 +209,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
       glTexCoord2f(1, 1);
       glVertex2i(dx2, dy1);
       glTexCoord2f(1, 0);
-      glVertex2i(dx2, dy2);        
+      glVertex2i(dx2, dy2);
       glTexCoord2f(0, 0);
       glVertex2i(dx1, dy2);
     }
@@ -229,7 +229,7 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 // Public Interface
 // -----------------------------------------------------------------------
 
-/** 
+/**
  *
  * @pre SDL is initialized.
  */
@@ -243,7 +243,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo( );
-  
+
   if( !info ) {
     ostringstream ss;
     ss << "Video query failed: " << SDL_GetError();
@@ -266,7 +266,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
   videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
   videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
-  
+
   /* This checks to see if surfaces can be stored in memory */
   if ( info->hw_available )
     videoFlags |= SDL_HWSURFACE;
@@ -293,7 +293,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     ostringstream ss;
     ss << "Video mode set failed: " << SDL_GetError();
     throw SystemError(ss.str());
-  }	
+  }
 
   // Initialize glew
   GLenum err = glewInit();
@@ -375,7 +375,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
     refresh(machine);
     screenRefreshed();
   }
-    
+
   // Check to see if any of the graphics objects are reporting that
   // they want to force a redraw
   for_each(foregroundObjects().allocated_begin(),
@@ -383,7 +383,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
            bind(&GraphicsObject::execute, _1, ref(machine)));
 
   // Update the seen.
-  int currentTime = machine.system().event().getTicks();  
+  int currentTime = machine.system().event().getTicks();
   if((currentTime - m_timeOfLastTitlebarUpdate) > 60)
   {
     m_timeOfLastTitlebarUpdate = currentTime;
@@ -409,10 +409,10 @@ void SDLGraphicsSystem::setWindowTitle()
   {
     oss << ": " << m_subtitle;
   }
-  
+
   if(m_displayDataInTitlebar)
   {
-    oss << " - (SEEN" << m_lastSeenNumber << ")(Line " 
+    oss << " - (SEEN" << m_lastSeenNumber << ")(Line "
         << m_lastLineNumber << ")";
   }
 
@@ -505,7 +505,7 @@ void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
   if(m_displayContexts[dc] == NULL)
   {
     ostringstream ss;
-    ss << "Couldn't allocate DC[" << dc << "] in " << caller 
+    ss << "Couldn't allocate DC[" << dc << "] in " << caller
        << ": " << SDL_GetError();
     throw SystemError(ss.str());
   }
@@ -523,12 +523,12 @@ typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 #define DefaultAmask 0xff000000
 #define DefaultBpp 32
 
-static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data, 
+static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
                                            MaskType with_mask)
 {
   int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
   SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
-    data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask, 
+    data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask,
     DefaultBmask, amask);
 
   // This is the perfect example of why I need to come back and
@@ -549,7 +549,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Helper function for loadSurfaceFromFile; invoked in a stl loop.
  */
 SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
@@ -562,16 +562,16 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
   return rect;
 }
 
-/** 
+/**
  * @author Jagarl
  * @author Elliot Glaysher
  *
  * Loads a file from disk into a Surface object. The file loaded
- * should be a type 0 or type 1 g00 bitmap. 
+ * should be a type 0 or type 1 g00 bitmap.
  *
  * Jagarl's original implementation used an inline, intrusive caching
  * system. I've substituted this with an LRU cache class.
- * 
+ *
  * @param filename File to load (a full filename, not the basename)
  * @return A Surface object with the data from this file
  *
@@ -615,7 +615,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   // call the image loading methods stolen from xclannad. The
   // following code is stolen verbatim from picture.cc in xclannad.
   scoped_ptr<GRPCONV> conv(GRPCONV::AssignConverter(d.get(), size, "???"));
-  if (conv == 0) { 
+  if (conv == 0) {
     throw SystemError("Failure in GRPCONV.");
   }
   // do not free until SDL_FreeSurface() is called on the surface using it
@@ -683,7 +683,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
 void SDLGraphicsSystem::clearAllDCs()
 {
   getDC(0)->fill(RGBAColour::Black());
-  
+
   for(int i = 1; i < 16; ++i)
     freeDC(i);
 }

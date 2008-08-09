@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Reference_hpp__
@@ -41,7 +41,7 @@ template<typename T>
 class MemoryReferenceIterator;
 class Memory;
 
-/** 
+/**
  * Accessor class passed back to user when the iterator is
  * dereferenced. Each IntAcessor will (probably) be a short-lived
  * temporary object which is immediatly casted to an int, or it may
@@ -69,7 +69,7 @@ public:
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Accessor class passed back to user when the iterator is
  * dereferenced. Each StringAcessor will (probably) be a short-lived
  * temporary object which is immediatly casted to an string, or it may
@@ -97,7 +97,7 @@ public:
   bool operator==(const std::string& rhs);
 };
 
-/** 
+/**
  * MemoryReferenceIterator represents iterators into an RLMachine's
  * memory.  Since changing the RLMachine's memory can change the
  * pointed memory address of a MemoryReference, we create iterators
@@ -121,28 +121,28 @@ public:
   MemoryReferenceIterator();
 
   // Explicit reference creation
-  MemoryReferenceIterator(Memory* inMachine, const int inType, 
+  MemoryReferenceIterator(Memory* inMachine, const int inType,
                           const int inLocation);
 
   int type() const { return m_type; }
   int location() const { return m_location; }
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*()     { return ACCESS(this); }
-  
+
   MemoryReferenceIterator& operator++()   { ++m_location; return *this; }
   MemoryReferenceIterator& operator--()   { --m_location; return *this; }
   MemoryReferenceIterator& operator+=(int step) { m_location += step; return *this; }
   MemoryReferenceIterator& operator-=(int step) { m_location -= step; return *this; }
 
-  MemoryReferenceIterator operator++(int) { 
+  MemoryReferenceIterator operator++(int) {
     MemoryReferenceIterator tmp(*this);
-    ++m_location; 
-    return tmp; 
+    ++m_location;
+    return tmp;
   }
   MemoryReferenceIterator operator--(int) {
     MemoryReferenceIterator tmp(*this);
-    --m_location; 
-    return tmp; 
+    --m_location;
+    return tmp;
   }
 
   MemoryReferenceIterator operator+(int step) {
@@ -163,7 +163,7 @@ public:
   }
 
   bool operator==(const MemoryReferenceIterator<ACCESS>& rhs) const {
-    return m_memory == rhs.m_memory && m_type == rhs.m_type && 
+    return m_memory == rhs.m_memory && m_type == rhs.m_type &&
       m_location == rhs.m_location;
   }
 

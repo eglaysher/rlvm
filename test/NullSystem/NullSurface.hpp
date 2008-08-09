@@ -24,7 +24,7 @@ public:
 
   virtual Size size() const;
 
-  virtual void blitToSurface(Surface& surface, 
+  virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
                              int alpha = 255, bool useSrcAlpha = true);
 
@@ -39,13 +39,13 @@ public:
     const Rect& src, const Rect& dst, const int opacity[4]);
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp);
-  virtual void renderToScreenAsObject(const GraphicsObject& rp, 
+  virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const GraphicsObjectOverride& override);
 
   virtual int numPatterns() const;
   virtual const GrpRect& getPattern(int pattNo) const;
 
-  virtual void rawRenderQuad(const int srcCoords[8], 
+  virtual void rawRenderQuad(const int srcCoords[8],
                              const int destCoords[8],
                              const int opacity[4]);
 

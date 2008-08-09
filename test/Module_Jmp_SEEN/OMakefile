@@ -5,7 +5,7 @@
 RLC = rlc
 KPRL = kprl
 
-.PHONY: clean 
+.PHONY: clean
 .SUBDIRS: jumpTest farcallTest_0 farcall_withTest
 
 KEPAGOFILES = $(glob *.ke)

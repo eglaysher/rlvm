@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -58,7 +58,7 @@ struct Bgm_bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 struct Bgm_bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
-  void operator()(RLMachine& machine, string filename, int fadein, 
+  void operator()(RLMachine& machine, string filename, int fadein,
                   int fadeout) {
     machine.system().sound().bgmPlay(machine, filename, true, fadein, fadeout);
   }
@@ -84,7 +84,7 @@ struct Bgm_bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 struct Bgm_bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
-  void operator()(RLMachine& machine, string filename, int fadein, 
+  void operator()(RLMachine& machine, string filename, int fadein,
                   int fadeout) {
     machine.system().sound().bgmPlay(machine, filename, false, fadein, fadeout);
   }

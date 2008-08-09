@@ -45,7 +45,7 @@
     version.
     Added support for G00 compression.
     Tweaked MaxMatch again for CInfoArc and CInfoRealLive.
-    
+
   2006-5-21:
   	Adjusted data pool handling to increase efficiency (use exponential
   	reallocation when necessary, instead of reallocating on every write).
@@ -129,7 +129,7 @@
 #include <string.h>
 
 namespace AVG32Comp {
-	
+
 template <typename T> inline T max(const T& a, const T& b) { return a > b ? a : b; }
 
 const int NIL=-1;

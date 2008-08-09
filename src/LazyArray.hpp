@@ -3,21 +3,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __LazyArray_hpp__
@@ -27,9 +27,9 @@
  * @file   LazyArray.hpp
  * @author Elliot Glaysher
  * @date   Sun Nov  4 09:30:31 2007
- * 
+ *
  * @brief  Contains the LazyArray class.
- * 
+ *
  */
 
 #include <iostream>
@@ -54,7 +54,7 @@ class FullLazyArrayIterator;
  *
  * For example, is the user (in the average case) *really* going to
  * use all 256 object slots? It's much more efficient use of memory to
- * lazily allocate the 
+ * lazily allocate the
  *
  * Testing with CLANNAD shows use of 90 objects allocated in the
  * foreground layer at exit. Planetarian leaves 3 objects
@@ -93,7 +93,7 @@ private:
       ar & m_array[i];
     }
   }
-  
+
   /// boost::serialization saving
   template<class Archive>
   void save(Archive& ar, unsigned int version) const
@@ -109,9 +109,9 @@ private:
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 public:
-  /** 
+  /**
    * Creates an empty LazyArray with a static size.
-   * 
+   *
    * @param size Size of the array
    */
   LazyArray(int size);
@@ -120,23 +120,23 @@ public:
   T& operator[](int pos);
   const T& operator[](int pos) const;
 
-  /** 
+  /**
    * Returns the size of the array.
    */
   int size() const { return m_size; }
 
-  /** 
+  /**
    * Go through each item in the array, and deletes it. The array's
    * size is maintained.
    */
   void clear();
 
-  /** 
+  /**
    * Copies the contents of one LazyArray to another. This method will
    * reuse already allocated objects in otherArray (and simply calling
    * T::operator=(const T&) on them), but will allocate a new object
    * if otherArray[i] == NULL.
-   * 
+   *
    * @param otherArray Target LazyArray
    */
   void copyTo(LazyArray<T>& otherArray);
@@ -151,14 +151,14 @@ public:
 
   // Iterate across the already allocated items
   AllocatedLazyArrayIterator<T> allocated_begin();
-  AllocatedLazyArrayIterator<T> allocated_end() 
+  AllocatedLazyArrayIterator<T> allocated_end()
   { return AllocatedLazyArrayIterator<T>(m_size, this); }
 };
 
 // -----------------------------------------------------------------------
 
 template<typename Value>
-class FullLazyArrayIterator 
+class FullLazyArrayIterator
   : public boost::iterator_facade<
         FullLazyArrayIterator<Value>
       , Value
@@ -174,7 +174,7 @@ public:
 
   template<class OtherValue>
   FullLazyArrayIterator(FullLazyArrayIterator<OtherValue> const& other)
-    : m_currentPosition(other.m_currentPosition), 
+    : m_currentPosition(other.m_currentPosition),
       m_array(other.m_array)
   {}
 
@@ -216,7 +216,7 @@ private:
 // -----------------------------------------------------------------------
 
 template<typename Value>
-class AllocatedLazyArrayIterator 
+class AllocatedLazyArrayIterator
   : public boost::iterator_facade<
         AllocatedLazyArrayIterator<Value>
       , Value
@@ -232,7 +232,7 @@ public:
 
   template<class OtherValue>
   AllocatedLazyArrayIterator(AllocatedLazyArrayIterator<OtherValue> const& other)
-    : m_currentPosition(other.m_currentPosition), 
+    : m_currentPosition(other.m_currentPosition),
       m_array(other.m_array)
   {}
 
@@ -308,7 +308,7 @@ T& LazyArray<T>::operator[](int pos)
   {
     m_array[pos] = new T();
   }
-  
+
   return *(m_array[pos]);
 }
 
@@ -324,7 +324,7 @@ const T& LazyArray<T>::operator[](int pos) const
   {
     m_array[pos] = new T();
   }
-  
+
   return *(m_array[pos]);
 }
 
@@ -359,7 +359,7 @@ void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
       otherArray.m_array[i] = new T(*srcEntry);
     else if(!srcEntry && dstEntry)
     {
-      boost::checked_delete<T>(otherArray.m_array[i]);      
+      boost::checked_delete<T>(otherArray.m_array[i]);
       otherArray.m_array[i] = NULL;
     }
     else if(srcEntry && dstEntry)
@@ -374,7 +374,7 @@ void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
 template<typename T>
 AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin()
 {
-  // Find the first 
+  // Find the first
   int firstEntry = 0;
   while(firstEntry < m_size && m_array[firstEntry] == NULL)
     firstEntry++;

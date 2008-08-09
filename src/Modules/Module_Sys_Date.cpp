@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -39,9 +39,9 @@
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Implements op<1:Sys:01100, 0>, fun GetYear().
- * 
+ *
  * Returns the current four digit year.
  */
 struct Sys_GetYear : public RLOp_Store_Void {
@@ -110,7 +110,7 @@ struct Sys_GetMs : public RLOp_Store_Void {
 
 struct Sys_GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
                                          IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator y, 
+  void operator()(RLMachine& machine, IntReferenceIterator y,
                   IntReferenceIterator m, IntReferenceIterator d,
                   IntReferenceIterator wd) {
     *y = (int)Sys_GetYear()(machine);
@@ -124,7 +124,7 @@ struct Sys_GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
 
 struct Sys_GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
                                          IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator hh, 
+  void operator()(RLMachine& machine, IntReferenceIterator hh,
                   IntReferenceIterator mm, IntReferenceIterator ss,
                   IntReferenceIterator ms) {
     *hh = (int)Sys_GetHour()(machine);
@@ -142,13 +142,13 @@ struct Sys_GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
  */
 struct Sys_GetDateTime : public RLOp_Void_8<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T, IntReference_T, IntReference_T, IntReference_T> 
+  IntReference_T, IntReference_T, IntReference_T, IntReference_T>
 {
-  void operator()(RLMachine& machine, 
-                  IntReferenceIterator y, IntReferenceIterator m, 
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator y, IntReferenceIterator m,
                   IntReferenceIterator d, IntReferenceIterator wd,
-                  IntReferenceIterator hh, IntReferenceIterator mm, 
-                  IntReferenceIterator ss, IntReferenceIterator ms) 
+                  IntReferenceIterator hh, IntReferenceIterator mm,
+                  IntReferenceIterator ss, IntReferenceIterator ms)
   {
     *y = (int)Sys_GetYear()(machine);
     *m = (int)Sys_GetMonth()(machine);
@@ -157,7 +157,7 @@ struct Sys_GetDateTime : public RLOp_Void_8<
     *hh = (int)Sys_GetHour()(machine);
     *mm = (int)Sys_GetMinute()(machine);
     *ss = (int)Sys_GetSecond()(machine);
-    *ms = (int)Sys_GetMs()(machine);    
+    *ms = (int)Sys_GetMs()(machine);
   }
 };
 

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2008 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __SDLSoundSystem_hpp__
@@ -51,13 +51,13 @@ private:
   typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
   typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
 
-  typedef LRUCache<boost::filesystem::path, 
+  typedef LRUCache<boost::filesystem::path,
                    SDLSoundChunkPtr> SoundChunkCache;
 
   SoundChunkCache m_seCache;
   SoundChunkCache m_wavCache;
 
-  /// The 
+  /// The
   SDLMusicPtr m_queuedMusic;
 
   /// Whether the next piece of music loops
@@ -66,25 +66,25 @@ private:
   /// The fadein time for queued piece of music
   int m_queuedMusicFadein;
 
-  /** 
+  /**
    * Retrieves a sound chunk from the passed in cache (or loads it if
    * it's not in the cache and then stuffs it into the cache.)
-   * 
+   *
    * @param machine Current machine context
    * @param fileName Name of the file (minus extension)
-   * @param cache Which cache to check (and store) the 
+   * @param cache Which cache to check (and store) the
    * @return The loaded sound chunk
    */
   static SDLSoundChunkPtr getSoundChunk(
-    RLMachine& machine, 
-    const std::string& fileName, 
+    RLMachine& machine,
+    const std::string& fileName,
     SoundChunkCache& cache);
 
-  /** 
+  /**
    * Implementation to play a wave file. Two wavPlay() versions use
    * this underlying implementation, which is split out so the one
    * that takes a raw channel can verify its input.
-   * 
+   *
    * @param machine Current machine context
    * @param wavFile Name of the file (minux extension)
    * @param channel Channel to play on (both NUM_BASE_CHANNELS and
@@ -94,14 +94,14 @@ private:
   void wavPlayImpl(RLMachine& machine, const std::string& wavFile,
                    const int channel, bool loop);
 
-  /** 
+  /**
    * Creates an SDLMusic object from a name. Throws if the bgm isn't
    * found.
    */
   boost::shared_ptr<SDLMusic> LoadMusic(
     RLMachine& machine, const std::string& bgmName);
 
-public: 
+public:
   SDLSoundSystem(Gameexe& gexe);
   ~SDLSoundSystem();
 
@@ -120,7 +120,7 @@ public:
   virtual void wavStopAll();
   virtual void wavFadeOut(const int channel, const int fadetime);
 
-  virtual void playSe(RLMachine& machine, const int seNum);  
+  virtual void playSe(RLMachine& machine, const int seNum);
 
   virtual int bgmStatus() const;
   virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop);

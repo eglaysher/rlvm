@@ -3,30 +3,30 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __Argc_T_hpp__
 #define __Argc_T_hpp__
 
-/** 
+/**
  * @ingroup RLOperationGroup
  *
- * Type struct that implements the argc concept. 
+ * Type struct that implements the argc concept.
  *
  * This type struct can only be used as the last element in a type
  * definition. (This is not checked for at runtime; I'm not even sure
@@ -40,9 +40,9 @@ struct Argc_T {
   typedef typename std::vector<typename CON::type> type;
 
   /** Convert the incoming parameter objects into the resulting type.
-   * Passes each parameter down to 
+   * Passes each parameter down to
    */
-  static type getData(RLMachine& machine, 
+  static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position);
 
@@ -61,7 +61,7 @@ struct Argc_T {
 
 template<typename CON>
 typename Argc_T<CON>::type Argc_T<CON>::
-getData(RLMachine& machine, 
+getData(RLMachine& machine,
                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                      unsigned int position) {
   type returnVector;

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Str.hpp"
@@ -64,7 +64,7 @@ namespace tut
  * of test result, so any cleanup work should be located in destructor.
  */
 struct RLMachine_data
-{ 
+{
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
   NullSystem system;
@@ -114,7 +114,7 @@ void object::test<2>()
   for(int i = 0; i < 10; ++i)
   {
     rlmachine.setStoreRegister(i);
-    ensure_equals("Store register remember value", i, 
+    ensure_equals("Store register remember value", i,
                   rlmachine.getStoreRegisterValue());
   }
 }
@@ -135,7 +135,7 @@ void object::test<3>()
     const string str = "Stored at " + lexical_cast<string>(*it);
 
     rlmachine.setStringValue(*it, 0, str);
-    ensure_equals("RLMachine remembered the string", 
+    ensure_equals("RLMachine remembered the string",
                   rlmachine.getStringValue(*it, 0), str);
   }
 }
@@ -197,13 +197,13 @@ void object::test<5>()
   {
     IntMemRef wordRef(*it, 0);
     rlmachine.setIntValue(wordRef, base);
-    ensure_equals("Didn't record full value", 
+    ensure_equals("Didn't record full value",
                   rlmachine.getIntValue(wordRef), base);
 
     for(int i = 0; i < 4; ++i)
     {
       IntMemRef comp(*it, "8b", i);
-      ensure_equals("Could get partial value", 
+      ensure_equals("Could get partial value",
                     rlmachine.getIntValue(comp),
                     in8b[3 - i]);
 
@@ -224,14 +224,14 @@ template<>
 template<>
 void object::test<6>()
 {
-  try { 
-    rlmachine.getIntValue(IntMemRef(10, 0, 0)); 
+  try {
+    rlmachine.getIntValue(IntMemRef(10, 0, 0));
     fail("Allowed access to a non-existant memory bank");
   } catch(rlvm::Exception) {}
 
   rlmachine.getIntValue(IntMemRef('A', 1999));
-  try { 
-    rlmachine.getIntValue(IntMemRef('A', 2000)); 
+  try {
+    rlmachine.getIntValue(IntMemRef('A', 2000));
     fail("Allowed access to memory past the end of the bank");
   } catch(rlvm::Exception) {}
 }
@@ -282,11 +282,11 @@ void object::test<9>()
     RLMachine saveMachine(system, arc);
 
     int count = 0;
-    for(vector<pair<int, char> >::const_iterator it = 
-          GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+    for(vector<pair<int, char> >::const_iterator it =
+          GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end();
         ++it)
     {
-      for(int i = 0; i < 2000; ++i)	  
+      for(int i = 0; i < 2000; ++i)
       {
         saveMachine.setIntValue(IntMemRef(it->second, i), count);
         count++;
@@ -305,11 +305,11 @@ void object::test<9>()
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 
     int count = 0;
-    for(vector<pair<int, char> >::const_iterator it = 
-          GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end(); 
+    for(vector<pair<int, char> >::const_iterator it =
+          GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end();
         ++it)
     {
-      for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)	  
+      for(int i = 0; i < SIZE_OF_MEM_BANK; ++i)
       {
         ensure_equals("Didn't read memory correctly!",
                       loadMachine.getIntValue(IntMemRef(it->second, i)), count);

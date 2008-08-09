@@ -8,28 +8,28 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 /**
  * @file   GraphicsSystem.hpp
  * @author Elliot Glaysher
  * @date   Sun Oct 15 15:07:23 2006
- * 
+ *
  * @brief  Defines the abstract interface to the Graphics system.
  */
 
@@ -89,9 +89,9 @@ struct GraphicsSystemGlobals
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * When marking the screen as dirty, we need to know what kind of
- * operation was done 
+ * operation was done
  */
 enum GraphicsUpdateType {
   GUT_DRAW_DC0,
@@ -102,7 +102,7 @@ enum GraphicsUpdateType {
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Abstract interface to a graphics system. Specialize this class for
  * each system you plan on running RLVM on. For now, there's only one
  * derived class; SDLGraphicsSystem.
@@ -119,11 +119,11 @@ enum GraphicsUpdateType {
 class GraphicsSystem : public MouseListener
 {
 public:
-  /** 
+  /**
    * The current display context drawing mode. The Reallive system
    * will update the screen after certain events in user code
    * regarding DCs.
-   * 
+   *
    * Note that these are not the only times when the screen will be
    * updated. Most functions that deal with text windows will trigger
    * screen updates. (Object manipulation functions *don't*.) Having
@@ -132,7 +132,7 @@ public:
    */
   enum DCScreenUpdateMode {
     /// The screen will be redrawn after every load or blit to DC 0.
-    SCREENUPDATEMODE_AUTOMATIC,   
+    SCREENUPDATEMODE_AUTOMATIC,
     /// We currently don't understand how this differs from automatic
     /// mode. We declare it anyway for compatibility and the hope that
     /// someday we will.
@@ -160,10 +160,10 @@ public:
 
   /**
    * @name Mouse Cursor Management
-   * 
+   *
    * @{
    */
-  
+
   /**
    * Whether we are using a custom cursor. Verifies that there was a
    * \#MOUSE_CURSOR entry in the Gameexe.ini file, and that the currently
@@ -183,7 +183,7 @@ public:
 
   /**
    * @name Graphics Stack
-   * 
+   *
    * @{
    */
   GraphicsStackFrame& addGraphicsStackFrame(const std::string& name);
@@ -203,7 +203,7 @@ public:
 
   /**
    * @name Title management
-   * 
+   *
    * We put this here since there's no good place to put it in
    * general. (And it was here before I figured out what I was doing)
    *
@@ -220,9 +220,9 @@ public:
    */
   virtual void setWindowSubtitle(const std::string& cp932str, int textEncoding);
 
-  /** 
+  /**
    * Returns the current window subtitle.
-   * 
+   *
    * @return The current window subtitle in cp932 encoding.
    */
   const std::string& windowSubtitle() const;
@@ -232,7 +232,7 @@ public:
 
   /**
    * @name Saving Global Values
-   * 
+   *
    * @{
    */
   GraphicsSystemGlobals& globals() { return m_globals; }
@@ -240,7 +240,7 @@ public:
 
   /**
    * @name Show Object flags
-   * 
+   *
    * The `show object' flags are used to provide a way of enabling or
    * disabling interface elements from the menu. If an object's
    * `ObjectOnOff' property is set to 1 or 2, it will be shown or
@@ -250,7 +250,7 @@ public:
    *
    * In Clannad, ShowObject1 is used to control display of the date
    * marker at the top left of the screen (object 84).
-   * 
+   *
    * @note { @b A value of 0 from these functions means that data is
    *       visible by default and a value of 1 means thaey are invisible. }
    *
@@ -265,7 +265,7 @@ public:
 
   /**
    * @name Other object display settings
-   * 
+   *
    * @{
    */
   void setShowWeather(const int in);
@@ -288,21 +288,21 @@ public:
 
   /**
    * @name Screen refreshing
-   * 
+   *
    * @{
    */
 
-  /** 
+  /**
    * Should be called by any of the drawing functions the screen is
    * invalidated.
-   * 
+   *
    * For more information, please see section 5.10.4 of the RLDev
    * manual, which deals with the behaviour of screen updates, and the
    * various modes.
    */
   virtual void markScreenAsDirty(GraphicsUpdateType type);
 
-  /** 
+  /**
    * Forces a refresh of the screen the next time the graphics system
    * executes.
    */
@@ -321,18 +321,18 @@ public:
     RLMachine& machine, boost::shared_ptr<Surface> bg);
 
 
-  /** 
+  /**
    * Called from the game loop; Does everything that's needed to keep
    * things up.
    */
   virtual void executeGraphicsSystem(RLMachine& machine) = 0;
 
-  /** 
-   * Returns the size of the window in pixels.  
+  /**
+   * Returns the size of the window in pixels.
    */
   virtual Size screenSize() const = 0;
 
-  /** 
+  /**
    * Returns a rectangle with an origin of (0,0) and a size returned by
    * screenSize().
    */
@@ -352,11 +352,11 @@ public:
   // ----------------------------------- [ Object getter/factory functions ]
   /**
    * @name Graphics Object operations
-   * 
+   *
    * @{
    */
 
-  /** 
+  /**
    * Takes the current background object in each slot and puts it in
    * the foreground slot.
    *
@@ -369,20 +369,20 @@ public:
    */
   void clearAndPromoteObjects();
 
-  /** 
+  /**
    * Calls render() on all foreground objects that need to be
    * rendered.
-   * 
+   *
    * @param machine RLMachine context.
    */
   void renderObjects(RLMachine& machine);
 
-  /** 
+  /**
    * Creates rendering data for a graphics object from a G00, PDT or ANM file.
    *
    * Does not deal with GAN files. Those are built with a separate function.
    */
-  GraphicsObjectData* buildObjOfFile(RLMachine& machine, 
+  GraphicsObjectData* buildObjOfFile(RLMachine& machine,
                                      const std::string& filename);
 
   /// Object getters
@@ -390,7 +390,7 @@ public:
   GraphicsObject& getObject(int layer, int objNumber);
   void setObject(int layer, int objNumber, GraphicsObject& object);
 
-  /** 
+  /**
    * Deallocates all graphics objects.
    */
   void clearAllObjects();
@@ -398,7 +398,7 @@ public:
   LazyArray<GraphicsObject>& backgroundObjects();
   LazyArray<GraphicsObject>& foregroundObjects();
 
-  /** 
+  /**
    * Takes a snapshot of the current object state. This snapshot is saved
    * instead of the current state of the graphics, since RealLive is a savepoint
    * based system.
@@ -415,14 +415,14 @@ public:
 
   /**
    * @name Overridden from MouseMotionListener:
-   * 
+   *
    * @{
    */
   /// Listen to the mouse's location so we can possibly draw a cursor there.
   virtual void mouseMotion(const Point& newLocation);
   /// @}
 
-  /** 
+  /**
    * Reset the system. Should clear all state for when a user loads a
    * game.
    */
@@ -490,7 +490,7 @@ private:
 
   /** Whether we should use a custom mouse cursor. Set while parsing
    * the Gameexe file, and then left unchanged. We only use a custom
-   * mouse cursor if \#MOUSE_CURSOR is set in the Gameexe 
+   * mouse cursor if \#MOUSE_CURSOR is set in the Gameexe
    */
   bool m_useCustomMouseCursor;
 

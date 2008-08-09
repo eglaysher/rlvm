@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __LongOperation_hpp__
@@ -32,7 +32,7 @@
 
 class RLMachine;
 
-/** 
+/**
  * A LongOperation is a non-trivial command that requires multiple
  * passes through the game loop to complete.
  *
@@ -43,15 +43,15 @@ class RLMachine;
  * telling the RLMachine to delete the current LongOperation and
  * resume normal operations.
  */
-class LongOperation 
+class LongOperation
 {
 public:
   LongOperation();
   virtual ~LongOperation();
 
-  /** 
+  /**
    * Executes the current LongOperation.
-   * 
+   *
    * @return Returns true if the command has completed, and normal
    * interpretation should be resumed. Returns false if the command is
    * still running.
@@ -80,7 +80,7 @@ public:
 /**
  * LongOperator decorator that simply invokes the included
  * LongOperation and when that LongOperation finishes, performs an
- * arbitrary action. 
+ * arbitrary action.
  */
 class PerformAfterLongOperationDecorator : public LongOperation
 {

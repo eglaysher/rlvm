@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/Colour.hpp"
@@ -55,9 +55,9 @@ NullGraphicsSystem::NullGraphicsSystem(System& system, Gameexe& gexe)
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::allocateDC(int dc, Size size) { 
+void NullGraphicsSystem::allocateDC(int dc, Size size) {
   graphics_system_log_.recordFunction("allocateDC", dc, size.width(), size.height());
-  
+
   if(dc >= 16)
     throw rlvm::Exception("Invalid DC number in NullGrpahicsSystem::allocateDC");
 
@@ -77,12 +77,12 @@ void NullGraphicsSystem::allocateDC(int dc, Size size) {
   }
 
   // Allocate a new obj.
-  m_displayContexts[dc]->allocate(size); 
+  m_displayContexts[dc]->allocate(size);
 }
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::freeDC(int dc) { 
+void NullGraphicsSystem::freeDC(int dc) {
   graphics_system_log_.recordFunction("freeDC", dc);
 
   if(dc == 0)
@@ -98,21 +98,21 @@ void NullGraphicsSystem::freeDC(int dc) {
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::promoteObjects() { 
+void NullGraphicsSystem::promoteObjects() {
   graphics_system_log_.recordFunction("promoteObjects");
 }
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::clearAndPromoteObjects() { 
+void NullGraphicsSystem::clearAndPromoteObjects() {
   graphics_system_log_.recordFunction("clearAndPromoteObjects");
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber) 
-{ 
-  static GraphicsObject x; 
+GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber)
+{
+  static GraphicsObject x;
   graphics_system_log_.recordFunction("getObject", layer, objNumber);
   return x;
 }
@@ -121,9 +121,9 @@ GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber)
 
 boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
   const boost::filesystem::path& filename)
-{ 
+{
   graphics_system_log_.recordFunction("loadSurfaceFromFile", filename);
-  
+
   // Make this a real surface so we can track what's done with it
   return boost::shared_ptr<Surface>(
     new NullSurface(filename.external_file_string(), Size(50, 50)));
@@ -131,8 +131,8 @@ boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc) 
-{ 
+boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
+{
   graphics_system_log_.recordFunction("getDC", dc);
   return m_displayContexts[dc];
 }
@@ -152,12 +152,12 @@ boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(const Size& s)
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::blitSurfaceToDC(
-  Surface& sourceObj, int targetDC, 
+  Surface& sourceObj, int targetDC,
   int srcX, int srcY, int srcWidth, int srcHeight,
   int destX, int destY, int destWidth, int destHeight,
   int alpha) {
   graphics_system_log_.recordFunction(
-    "blitSurfaceToDC", targetDC, srcX, srcY, srcWidth, srcHeight, 
+    "blitSurfaceToDC", targetDC, srcX, srcY, srcWidth, srcHeight,
     destX, destY, destWidth, destHeight, alpha);
   // TODO
 }

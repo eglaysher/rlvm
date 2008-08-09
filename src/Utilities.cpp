@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -81,8 +81,8 @@ std::string removeQuotes(const std::string& quotedString)
 
 fs::path correctPathCase(fs::path Path)
 {
-  using namespace boost::filesystem;  
- 
+  using namespace boost::filesystem;
+
 #ifndef CASE_SENSITIVE_FILESYSTEM
   if(!exists(Path)) return path();
   return Path;
@@ -138,9 +138,9 @@ fs::path correctPathCase(fs::path Path)
 
 // -----------------------------------------------------------------------
 
-const std::vector<std::string> ALL_FILETYPES = 
+const std::vector<std::string> ALL_FILETYPES =
   list_of("g00")("pdt")("anm")("gan")("wav")("ogg")("nwa")("mp3");
-const std::vector<std::string> IMAGE_FILETYPES = 
+const std::vector<std::string> IMAGE_FILETYPES =
   list_of("g00")("pdt");
 const std::vector<std::string> PDT_IMAGE_FILETYPES =
   list_of("pdt");
@@ -155,7 +155,7 @@ const std::vector<std::string> SOUND_FILETYPES =
  * @todo This function is a hack and needs to be completely rewritten
  *       to use the \#FOLDNAME table in the Gameexe.ini file.
  */
-boost::filesystem::path findFile(RLMachine& machine, 
+boost::filesystem::path findFile(RLMachine& machine,
                                  const std::string& fileName,
                                  const vector<string>& extensions)
 {
@@ -163,7 +163,7 @@ boost::filesystem::path findFile(RLMachine& machine,
 
   // Hack to get around fileNames like "REALNAME?010", where we only
   // want REALNAME.
-  string newName = 
+  string newName =
     string(fileName.begin(), find(fileName.begin(), fileName.end(), '?'));
 
   // Iterate across the search paths in the order they were specified.
@@ -185,7 +185,7 @@ boost::filesystem::path findFile(RLMachine& machine,
 
   ostringstream oss;
   oss << "Could not open file: \"" << newName << "\" looking for types: {";
-  copy(extensions.begin(), extensions.end(), 
+  copy(extensions.begin(), extensions.end(),
        ostream_iterator<string>(oss, ","));
   oss << "}";
 
@@ -202,7 +202,7 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum)
   if(gexe("SEL", selNum).exists())
   {
     selEffect = gexe("SEL", selNum).to_intVector();
-    grpToRecCoordinates(selEffect[0], selEffect[1], 
+    grpToRecCoordinates(selEffect[0], selEffect[1],
                         selEffect[2], selEffect[3]);
   }
   else if(gexe("SELR", selNum).exists())
@@ -254,7 +254,7 @@ void clamp(float& var, float min, float max)
 bool loadFileData(ifstream& ifs, scoped_array<char>& anmData, int& fileSize)
 {
   ifs.seekg(0, ios::end);
-  fileSize = ifs.tellg();  
+  fileSize = ifs.tellg();
   ifs.seekg(0, ios::beg);
 
   anmData.reset(new char[fileSize]);
@@ -272,13 +272,13 @@ namespace rlvm {
 
 const char* Exception::what() const throw()
 {
-  return description.c_str(); 
+  return description.c_str();
 }
 
 // -----------------------------------------------------------------------
 
-Exception::Exception(std::string what) 
-  : description(what) 
+Exception::Exception(std::string what)
+  : description(what)
 {}
 
 // -----------------------------------------------------------------------
@@ -293,7 +293,7 @@ UnimplementedOpcode::UnimplementedOpcode(
   : Exception("")
 {
   ostringstream oss;
-  oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode 
+  oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">)";
   m_name = oss.str();
   setDescription();
@@ -306,7 +306,7 @@ UnimplementedOpcode::UnimplementedOpcode(
   : Exception("")
 {
   ostringstream oss;
-  oss << "opcode<" << modtype << ":" << module << ":" << opcode 
+  oss << "opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">";
   m_name = oss.str();
   setDescription();

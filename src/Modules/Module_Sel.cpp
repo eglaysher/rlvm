@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -61,7 +61,7 @@ using libReallive::CommandElement;
 Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
-  : EventHandler(machine), m_machine(machine), 
+  : EventHandler(machine), m_machine(machine),
     textWindow(machine.system().text().currentWindow(machine)),
     m_returnValue(-1)
 {
@@ -73,7 +73,7 @@ Sel_LongOperation::Sel_LongOperation(
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
   for(unsigned int i = 0; i < params.size(); ++i)
   {
-    std::string utf8str = cp932toUTF8(params[i].text, 
+    std::string utf8str = cp932toUTF8(params[i].text,
                                       machine.getTextEncoding());
     cerr << i << ": " << utf8str << endl;
     textWindow.addSelectionItem(utf8str);
@@ -98,14 +98,14 @@ void Sel_LongOperation::selected(int num)
 
 // -----------------------------------------------------------------------
 
-bool Sel_LongOperation::operator()(RLMachine& machine) 
+bool Sel_LongOperation::operator()(RLMachine& machine)
 {
   if(m_returnValue != -1)
   {
     machine.setStoreRegister(m_returnValue);
     return true;
   }
-  else 
+  else
     return false;
 }
 
@@ -118,7 +118,7 @@ void Sel_LongOperation::mouseMotion(const Point& pos)
 
 // -----------------------------------------------------------------------
 
-void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton, 
+void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed)
 {
   EventSystem& es = m_machine.system().event();
@@ -138,7 +138,7 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 	break;
   }
 }
- 
+
 // -----------------------------------------------------------------------
 
 struct Sel_select : public RLOp_SpecialCase

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -52,7 +52,7 @@ using namespace std;
 enum ButtonState
 {
   BUTTONSTATE_BUTTON_NOT_USED = -1,
-  BUTTONSTATE_NORMAL = 0,   
+  BUTTONSTATE_NORMAL = 0,
   BUTTONSTATE_HIGHLIGHTED = 1,
   BUTTONSTATE_PRESSED = 2,
   BUTTONSTATE_ACTIVATED = 4,
@@ -64,7 +64,7 @@ enum ButtonState
 // -----------------------------------------------------------------------
 
 TextWindowButton::TextWindowButton()
-  : m_state(BUTTONSTATE_BUTTON_NOT_USED)  
+  : m_state(BUTTONSTATE_BUTTON_NOT_USED)
 {
 }
 
@@ -100,7 +100,7 @@ Rect TextWindowButton::location(TextWindow& window)
                       window.boxY1() + m_location.at(2)),
                 Size(m_location.at(3), m_location.at(4)));
   default:
-    throw SystemError("Unsupported coordinate system"); 
+    throw SystemError("Unsupported coordinate system");
   }
 }
 
@@ -146,7 +146,7 @@ bool TextWindowButton::handleMouseClick(
 
     if(inBox)
     {
-      // Perform any activation 
+      // Perform any activation
       if(pressed)
       {
         m_state = BUTTONSTATE_PRESSED;
@@ -169,7 +169,7 @@ bool TextWindowButton::handleMouseClick(
 
 // -----------------------------------------------------------------------
 
-void TextWindowButton::render(RLMachine& machine, 
+void TextWindowButton::render(RLMachine& machine,
                               TextWindow& window,
                               const boost::shared_ptr<Surface>& buttons,
                               int basePattern)
@@ -330,7 +330,7 @@ struct RestoreTextSystemVisibility : public LongOperation
 {
   bool operator()(RLMachine& machine)
   {
-    machine.system().text().setSystemVisible(true);    
+    machine.system().text().setSystemVisible(true);
     return true;
   }
 };
@@ -339,7 +339,7 @@ struct RestoreTextSystemVisibility : public LongOperation
 
 void ExbtnWindowButton::buttonReleased()
 {
-  /// Hide all text boxes when entering an Exbtn 
+  /// Hide all text boxes when entering an Exbtn
   m_machine.system().text().setSystemVisible(false);
 
   /// Push a LongOperation onto the stack which will restore

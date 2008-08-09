@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #include "Precompiled.hpp"
@@ -153,7 +153,7 @@ struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T > {
   int m_layer;
   Obj_adjust(int layer) : m_layer(layer) {}
@@ -191,7 +191,7 @@ struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T> {
   int m_layer;
   Obj_tint(int layer) : m_layer(layer) {}
@@ -204,7 +204,7 @@ struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T, 
+struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
   int m_layer;
   Obj_colour(int layer) : m_layer(layer) {}
@@ -217,7 +217,7 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_objSetText 
+struct Obj_objSetText
   : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T>
 {
   int m_layer;
@@ -235,13 +235,13 @@ struct Obj_objSetText
 
 struct Obj_objTextOpts
   : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
-                       IntConstant_T, IntConstant_T, IntConstant_T, 
+                       IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T>
 {
   int m_layer;
   Obj_objTextOpts(int layer) : m_layer(layer) {}
 
-  void operator()(RLMachine& machine, int buf, int size, int xspace, 
+  void operator()(RLMachine& machine, int buf, int size, int xspace,
                   int yspace, int vert, int colour, int shadow)
   {
     GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
@@ -254,7 +254,7 @@ struct Obj_objTextOpts
 /**
  * Special adapter to make any of obj* and objBg* operation structs
  * into an objRange* or objRangeBg* struct.
- * 
+ *
  * We extract the first two expression pieces from the incoming
  * command and assume that they are integers and are the bounds on the
  * object number. We then construct a set of parameters to pass to the
@@ -277,7 +277,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
     const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
 
     // Range check the data
-    if(allParameters.size() < 2) 
+    if(allParameters.size() < 2)
       throw rlvm::Exception("Less then two arguments to an objRange function!");
 
     // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
@@ -288,7 +288,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
     int upperRange = allParameters[1].integerValue(machine);
     for(int i = lowerRange; i <= upperRange; ++i) {
       // Create a new list of expression pieces that contain the
-      // current object we're dealing with and 
+      // current object we're dealing with and
       ptr_vector<ExpressionPiece> currentInstantiation;
       currentInstantiation.push_back(new IntegerConstant(i));
 
@@ -314,7 +314,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 void addObjectFunctions(RLModule& m, int layer)
 {
   m.addOpcode(1000, 0, "objMove", new Obj_SetTwoIntOnObj(layer,
-                &GraphicsObject::setX, 
+                &GraphicsObject::setX,
                 &GraphicsObject::setY));
   m.addOpcode(1001, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setX));
   m.addOpcode(1002, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setY));
@@ -351,7 +351,7 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1034, 1, new Obj_dispRect_1(layer));
   m.addOpcode(1035, 0, new Obj_dispArea_0(layer)); //dispCorner_0 == dispArea_0
   m.addOpcode(1035, 1, new Obj_dispCorner_1(layer));
-  
+
   m.addOpcode(1036, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVert));
   m.addOpcode(1039, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setPattNo));
 
@@ -377,7 +377,7 @@ void addObjectFunctions(RLModule& m, int layer)
 // -----------------------------------------------------------------------
 
 ObjFgModule::ObjFgModule()
-  : RLModule("ObjFg", 1, 81) 
+  : RLModule("ObjFg", 1, 81)
 {
   addObjectFunctions(*this, OBJ_FG_LAYER);
 }
@@ -392,13 +392,13 @@ ObjBgModule::ObjBgModule()
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * Mapping function for a MappedRLModule which turns operation op into
  * a ranged operation.
  *
  * The wrapper takes ownership of the incoming op pointer, and the
  * caller takes ownership of the resultant RLOperation.
- * 
+ *
  * @param op Incoming RLOperation
  * @return op in an ObjRangeAdapter
  */

@@ -8,21 +8,21 @@
 // -----------------------------------------------------------------------
 //
 // Copyright (C) 2006, 2007 Elliot Glaysher
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
-//  
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//  
+//
 // -----------------------------------------------------------------------
 
 #ifndef __GraphicObject_hpp__
@@ -55,19 +55,19 @@ public:
   GraphicsObject(const GraphicsObject& obj);
   ~GraphicsObject();
 
-  /** 
+  /**
    * Copy operator.
-   * 
-   * @param obj 
+   *
+   * @param obj
    */
   GraphicsObject& operator=(const GraphicsObject& obj);
 
   /**
    * @name Object Position Accessors
-   * 
+   *
    * @{
    */
-  
+
   /// This code, while a boolean, uses an int so that we can get rid
   /// of one template parameter in one of the generic operation
   /// functors.
@@ -79,7 +79,7 @@ public:
 
   int y() const { return m_impl->m_y; }
   void setY(const int y);
-  
+
   int xAdjustment(int idx) const { return m_impl->m_adjustX[idx]; }
   int xAdjustmentSum() const;
   void setXAdjustment(int idx, int x);
@@ -113,7 +113,7 @@ public:
 
   /**
    * @name Object attribute accessors
-   * 
+   *
    * @{
    */
 
@@ -156,7 +156,7 @@ public:
   int alpha() const { return m_impl->m_alpha; }
   void setAlpha(const int alpha);
 
-  bool hasClip() const { 
+  bool hasClip() const {
     return m_impl->m_clip.width() >= 0 || m_impl->m_clip.height() >= 0;
   }
   void clearClip();
@@ -165,7 +165,7 @@ public:
   int clipY1() const { return m_impl->m_clip.y(); }
   int clipX2() const { return m_impl->m_clip.x2(); }
   int clipY2() const { return m_impl->m_clip.y2(); }
-  
+
   bool hasObjectData() const { return m_objectData; }
 
   GraphicsObjectData& objectData();
@@ -174,12 +174,12 @@ public:
   /// Render!
   void render(RLMachine& machine);
 
-  /** 
+  /**
    * Deletes the object data. Corresponds to the RLAPI command objDelete.
    */
   void deleteObject();
 
-  /** 
+  /**
    * Deletes the object data and resets all values in this
    * GraphicsObject. Corresponds to the RLAPI command objClear.
    */
@@ -196,13 +196,13 @@ public:
 
   /**
    * @name Text Object accessors
-   * 
+   *
    * @{
    */
   void setTextText(const std::string& utf8str);
   const std::string& textText() const;
- 
-  void setTextOps(int size, int xspace, int yspace, int vertical, int colour, 
+
+  void setTextOps(int size, int xspace, int yspace, int vertical, int colour,
 				  int shadow);
   int textSize() const;
   int textXSpace() const;
@@ -210,26 +210,26 @@ public:
   int textVertical() const;
   int textColour() const;
   int textShadowColour() const;
-  // @}  
+  // @}
 
-  /** 
+  /**
    * Returns the number of GraphicsObject instances sharing the
    * internal copy-on-write object.
    */
   long referenceCount() const { return m_impl.use_count(); }
 
 private:
-  /** 
+  /**
    * Makes the ineternal copy for our copy-on-write semantics. This
    * function checks to see if our Impl object has only one reference
    * to it. If it doesn't, a local copy is made.
    */
   void makeImplUnique();
 
-  /** 
+  /**
    * Implementation data structure. GraphicsObject::Impl is the
-   * internal data store for GraphicsObjects' copy-on-write semantics. It is 
-   * 
+   * internal data store for GraphicsObjects' copy-on-write semantics. It is
+   *
    */
   struct Impl
   {
@@ -241,10 +241,10 @@ private:
 
     /**
      * @name Object Position Variables
-     * 
+     *
      * Describes various properties as defined in section 5.12.3 of the
      * RLDev manual.
-     * 
+     *
      * @{
      */
 
@@ -281,7 +281,7 @@ private:
 
     /**
      * @name Object attributes.
-     * 
+     *
      * @{
      */
 
@@ -309,7 +309,7 @@ private:
     RGBAColour m_colour;
 
     int m_compositeMode;
-  
+
     int m_scrollRateX, m_scrollRateY;
 
     /// @}
@@ -318,7 +318,7 @@ private:
 
     /**
      * @name Animation state
-     * 
+     *
      * Certain pieces of state from Animated objects are cached on the
      * GraphicsObject to implement the delete-after-play semantics of
      * ganPlayOnce, et all.
@@ -334,7 +334,7 @@ private:
 
     /**
      * @name Text Object properties
-     * 
+     *
      * @{
      */
     struct TextProperties
@@ -348,7 +348,7 @@ private:
       // Figure this out later.
       int vertical;
       int colour;
-      int shadowColour;    
+      int shadowColour;
 
       /// boost::serialization support
       template<class Archive>
@@ -370,7 +370,7 @@ private:
     void serialize(Archive& ar, unsigned int version);
   };
 
-  /** 
+  /**
    * Default empty GraphicsObject::Impl. This variable is allocated
    * once, and then is used as the initial value of m_impl, where it
    * is cloned on write.
@@ -393,5 +393,5 @@ private:
 const static int OBJ_FG_LAYER = 0;
 const static int OBJ_BG_LAYER = 1;
 
-#endif 
+#endif
 
