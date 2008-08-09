@@ -96,9 +96,9 @@ class RLMachine;
  */
 class RLModule : public boost::noncopyable {
 private:
-  int m_moduleType;
-  int m_moduleNumber;
-  std::string m_moduleName;
+  int module_type_;
+  int module_number_;
+  std::string module_name_;
 
   // Store functions.
   typedef boost::ptr_map<int, RLOperation> OpcodeMap;
@@ -140,13 +140,13 @@ public:
                             const std::string& name);
 
   /// Accessor that returns this module's type number
-  int moduleType() const { return m_moduleType; }
+  int moduleType() const { return module_type_; }
 
   /// Accessor that returns this modules's identification number
-  int moduleNumber() const { return m_moduleNumber; }
+  int moduleNumber() const { return module_number_; }
 
   /// Accessor that returns this module's mnemonic nmae
-  const std::string& moduleName() const { return m_moduleName; }
+  const std::string& moduleName() const { return module_name_; }
 
   /**
    * Using the bytecode element CommandElement f, try to find an

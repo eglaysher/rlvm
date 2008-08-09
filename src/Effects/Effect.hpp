@@ -77,13 +77,13 @@ class Effect : public LongOperation
 {
 private:
   /// Defines the size of the screen; since effects update the entire screen.
-  Size m_screenSize;
+  Size screen_size_;
 
   /// Defines the duration of in milliseconds
-  unsigned int m_duration;
+  unsigned int duration_;
 
   /// The time since startup when this effect started (in milliseconds)
-  unsigned int m_startTime;
+  unsigned int start_time_;
 
   /// Whether the orriginal dc0 should be blitted onto the target
   /// surface before we pass control to the effect
@@ -91,27 +91,27 @@ private:
 
   /// Keep track of what machine we're running on so we can send an
   /// appropriate endRealtimeTask() to the eventsystem on destruction
-  RLMachine& m_machine;
+  RLMachine& machine_;
 
   /// The source surface (previously known as DC1, before I realized
   /// that temporary surfaces could in fact be part of effects)
-  boost::shared_ptr<Surface> m_srcSurface;
+  boost::shared_ptr<Surface> src_surface_;
 
   /// The destination surface (previously known as DC0)
-  boost::shared_ptr<Surface> m_dstSurface;
+  boost::shared_ptr<Surface> dst_surface_;
 
 protected:
-  Size size() const { return m_screenSize; }
-  int width() const { return m_screenSize.width(); }
-  int height() const { return m_screenSize.height(); }
-  int duration() const { return m_duration; }
+  Size size() const { return screen_size_; }
+  int width() const { return screen_size_.width(); }
+  int height() const { return screen_size_.height(); }
+  int duration() const { return duration_; }
 
   /**
    * Implements the effect. Usually, this is all that needs to be
    * overriden, other then the public constructor.
    *
    * @param machine Machine to run on
-   * @param currentTime A value [0, m_duration) reprsenting the
+   * @param currentTime A value [0, duration_) reprsenting the
    *                    current time of the effect.
    */
   virtual void performEffectForTime(RLMachine& machine,
@@ -133,7 +133,7 @@ public:
   /**
    * Implements the LongOperation calling interface. This simply keeps
    * track of the current time and calls performEffectForTime() until
-   * time > m_duration, when the default implementation simply sets
+   * time > duration_, when the default implementation simply sets
    * the current dc0 to the original dc0, then blits dc1 onto it.
    */
   virtual bool operator()(RLMachine& machine);
@@ -142,8 +142,8 @@ public:
    * Accessors for which surfaces we're composing. These are public as
    * an ugly hack for ScrollOnScrollOff.cpp.
    */
-  Surface& srcSurface() { return *m_srcSurface; }
-  Surface& dstSurface() { return *m_dstSurface; }
+  Surface& srcSurface() { return *src_surface_; }
+  Surface& dstSurface() { return *dst_surface_; }
 };
 
 // -----------------------------------------------------------------------
@@ -162,12 +162,12 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator
 private:
   /// The source surface (previously known as DC1, before I realized
   /// that temporary surfaces could in fact be part of effects)
-  boost::shared_ptr<Surface> m_srcSurface;
+  boost::shared_ptr<Surface> src_surface_;
 
   /// The destination surface (previously known as DC0)
-  boost::shared_ptr<Surface> m_dstSurface;
+  boost::shared_ptr<Surface> dst_surface_;
 
-  Rect m_srcRect, m_destRect;
+  Rect src_rect_, dest_rect_;
 
   virtual void performAfterLongOperation(RLMachine& machine);
 

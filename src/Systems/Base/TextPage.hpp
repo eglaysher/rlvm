@@ -54,17 +54,17 @@ private:
   friend class MarkRubyBeginElement;
   friend class DisplayRubyTextElement;
 
-  boost::ptr_vector<TextPageElement> m_elementsToReplay;
+  boost::ptr_vector<TextPageElement> elements_to_replay_;
 
-  RLMachine* m_machine;
+  RLMachine* machine_;
 
   /// Current window that this page is rendering into
-  int m_windowNum;
+  int window_num_;
 
   /// Number of characters on this page (used in automode)
-  int m_numberOfCharsOnPage;
+  int number_of_chars_on_page_;
 
-  bool m_inRubyGloss;
+  bool in_ruby_gloss_;
 
   /**
    * @name Private implementations
@@ -101,7 +101,7 @@ public:
 
   void replay(bool isActivePage);
 
-  int numberOfCharsOnPage() const { return m_numberOfCharsOnPage; }
+  int numberOfCharsOnPage() const { return number_of_chars_on_page_; }
 
   /**
    * @name Public operations
@@ -175,7 +175,7 @@ public:
    * Queries to see if there has been an invocation of
    * markRubyBegin(), but not the closing displayRubyText().
    */
-  bool inRubyGloss() const { return m_inRubyGloss; }
+  bool inRubyGloss() const { return in_ruby_gloss_; }
 };
 
 #endif

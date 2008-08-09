@@ -29,7 +29,7 @@
 class NullTextWindow : public TextWindow
 {
 private:
-  std::string m_currentContents;
+  std::string current_contents_;
 
 public:
   NullTextWindow(RLMachine& machine, int x) : TextWindow(machine, x) {}
@@ -58,7 +58,7 @@ public:
 
   virtual bool isFull() const { return false; }
 
-  std::string currentContents() const { return m_currentContents; }
+  std::string currentContents() const { return current_contents_; }
 
   virtual void addSelectionItem(const std::string& utf8str) {}
 };

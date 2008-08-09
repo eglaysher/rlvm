@@ -51,7 +51,7 @@ struct StackFrame
 {
 private:
   /// The scenario in the SEEN file for this stack frame.
-  libReallive::Scenario const* m_scenario;
+  libReallive::Scenario const* scenario_;
 
 public:
 
@@ -93,7 +93,7 @@ public:
 
   ~StackFrame();
 
-  libReallive::Scenario const* scenario() const { return m_scenario; }
+  libReallive::Scenario const* scenario() const { return scenario_; }
   void setScenario(libReallive::Scenario const* s);
 
   template<class Archive>

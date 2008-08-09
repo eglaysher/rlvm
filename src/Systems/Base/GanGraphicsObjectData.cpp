@@ -80,7 +80,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 GanGraphicsObjectData::GanGraphicsObjectData()
-  : m_currentSet(-1), m_currentFrame(-1), m_timeAtLastFrameChange(0)
+  : current_set_(-1), current_frame_(-1), time_at_last_frame_change_(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -88,8 +88,8 @@ GanGraphicsObjectData::GanGraphicsObjectData()
 GanGraphicsObjectData::GanGraphicsObjectData(
   RLMachine& machine, const std::string& ganFile,
   const std::string& imgFile)
-  : m_ganFilename(ganFile), m_imgFilename(imgFile), m_currentSet(-1),
-    m_currentFrame(-1), m_timeAtLastFrameChange(0)
+  : gan_filename_(ganFile), img_filename_(imgFile), current_set_(-1),
+    current_frame_(-1), time_at_last_frame_change_(0)
 {
   load(machine);
 }
@@ -103,8 +103,8 @@ GanGraphicsObjectData::~GanGraphicsObjectData()
 
 void GanGraphicsObjectData::load(RLMachine& machine)
 {
-  fs::path imgFilePath = findFile(machine, m_imgFilename, IMAGE_FILETYPES);
-  fs::path ganFilePath = findFile(machine, m_ganFilename, GAN_FILETYPES);
+  fs::path imgFilePath = findFile(machine, img_filename_, IMAGE_FILETYPES);
+  fs::path ganFilePath = findFile(machine, gan_filename_, GAN_FILETYPES);
 
   image = machine.system().graphics().loadSurfaceFromFile(imgFilePath);
 
@@ -125,8 +125,8 @@ void GanGraphicsObjectData::load(RLMachine& machine)
     throw rlvm::Exception(oss.str());
   }
 
-  testFileMagic(m_ganFilename, ganData, fileSize);
-  readData(machine, m_ganFilename, ganData, fileSize);
+  testFileMagic(gan_filename_, ganData, fileSize);
+  readData(machine, gan_filename_, ganData, fileSize);
 }
 
 // -----------------------------------------------------------------------
@@ -259,9 +259,9 @@ void GanGraphicsObjectData::render(
   RLMachine& machine,
   const GraphicsObject& go)
 {
-  if(m_currentSet != -1 && m_currentFrame != -1)
+  if(current_set_ != -1 && current_frame_ != -1)
   {
-    const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);
+    const Frame& frame = animationSets.at(current_set_).at(current_frame_);
 
     // First, we figure out the pattern to get the image source
     if(frame.pattern != -1)
@@ -291,9 +291,9 @@ int GanGraphicsObjectData::pixelWidth(
   RLMachine& machine,
   const GraphicsObject& renderingProperties)
 {
-  if(m_currentSet != -1 && m_currentFrame != -1)
+  if(current_set_ != -1 && current_frame_ != -1)
   {
-    const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);
+    const Frame& frame = animationSets.at(current_set_).at(current_frame_);
     if(frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
@@ -311,9 +311,9 @@ int GanGraphicsObjectData::pixelHeight(
   RLMachine& machine,
   const GraphicsObject& renderingProperties)
 {
-  if(m_currentSet != -1 && m_currentFrame != -1)
+  if(current_set_ != -1 && current_frame_ != -1)
   {
-    const Frame& frame = animationSets.at(m_currentSet).at(m_currentFrame);
+    const Frame& frame = animationSets.at(current_set_).at(current_frame_);
     if(frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
@@ -336,24 +336,24 @@ GraphicsObjectData* GanGraphicsObjectData::clone() const
 
 void GanGraphicsObjectData::execute(RLMachine& machine)
 {
-  if(currentlyPlaying() && m_currentFrame >= 0)
+  if(currentlyPlaying() && current_frame_ >= 0)
   {
     unsigned int currentTime = machine.system().event().getTicks();
     unsigned int timeSinceLastFrameChange =
-      currentTime - m_timeAtLastFrameChange;
+      currentTime - time_at_last_frame_change_;
 
-    const vector<Frame>& currentSet = animationSets.at(m_currentSet);
-    unsigned int frameTime = (unsigned int)(currentSet[m_currentFrame].time);
+    const vector<Frame>& currentSet = animationSets.at(current_set_);
+    unsigned int frameTime = (unsigned int)(currentSet[current_frame_].time);
     if(timeSinceLastFrameChange > frameTime)
     {
-      m_currentFrame++;
-      if(size_t(m_currentFrame) == currentSet.size())
+      current_frame_++;
+      if(size_t(current_frame_) == currentSet.size())
       {
-        m_currentFrame--;
+        current_frame_--;
         endAnimation();
       }
 
-      m_timeAtLastFrameChange = currentTime;
+      time_at_last_frame_change_ = currentTime;
       machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
@@ -363,7 +363,7 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
 
 void GanGraphicsObjectData::loopAnimation()
 {
-  m_currentFrame = 0;
+  current_frame_ = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -371,9 +371,9 @@ void GanGraphicsObjectData::loopAnimation()
 void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
 {
   setCurrentlyPlaying(true);
-  m_currentSet = set;
-  m_currentFrame = 0;
-  m_timeAtLastFrameChange = machine.system().event().getTicks();
+  current_set_ = set;
+  current_frame_ = 0;
+  time_at_last_frame_change_ = machine.system().event().getTicks();
   machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
@@ -383,8 +383,8 @@ template<class Archive>
 void GanGraphicsObjectData::load(Archive& ar, unsigned int version)
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-    & m_ganFilename & m_imgFilename & m_currentSet
-    & m_currentFrame & m_timeAtLastFrameChange;
+    & gan_filename_ & img_filename_ & current_set_
+    & current_frame_ & time_at_last_frame_change_;
 
   load(*Serialization::g_currentMachine);
 }
@@ -395,8 +395,8 @@ template<class Archive>
 void GanGraphicsObjectData::save(Archive& ar, unsigned int version) const
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-    & m_ganFilename & m_imgFilename & m_currentSet
-    & m_currentFrame & m_timeAtLastFrameChange;
+    & gan_filename_ & img_filename_ & current_set_
+    & current_frame_ & time_at_last_frame_change_;
 }
 
 // -----------------------------------------------------------------------

@@ -71,8 +71,8 @@ void ScrollSquashSlideBaseEffect::performEffectForTime(
 {
   GraphicsSystem& graphics = machine.system().graphics();
   int amountVisible = calculateAmountVisible(currentTime,
-                                             m_drawer->getMaxSize(graphics));
-  m_effectType->composeEffectsFor(graphics, *this, *m_drawer, amountVisible);
+                                             drawer_->getMaxSize(graphics));
+  effect_type_->composeEffectsFor(graphics, *this, *drawer_, amountVisible);
 }
 
 // -----------------------------------------------------------------------
@@ -85,7 +85,7 @@ ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
   ScrollSquashSlideEffectTypeBase* effectType,
   const Size& s, int time)
   : Effect(machine, src, dst, s, time),
-    m_drawer(drawer), m_effectType(effectType)
+    drawer_(drawer), effect_type_(effectType)
 {
 }
 

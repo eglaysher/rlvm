@@ -48,13 +48,13 @@ class SelectElement;
 class Sel_LongOperation : public LongOperation, public EventHandler
 {
 private:
-  RLMachine& m_machine;
+  RLMachine& machine_;
 
   std::vector<std::string> options;
 
   TextWindow& textWindow;
 
-  int m_returnValue;
+  int return_value_;
 
 public:
   Sel_LongOperation(RLMachine& machine,

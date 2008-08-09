@@ -113,10 +113,10 @@ static const std::string SeenEnd(seen_end, 14);
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& inSystem, Archive& inArchive)
-  : m_memory(new Memory(inSystem.gameexe())),
-    m_halted(false), m_printUndefinedOpcodes(false),
-    m_haltOnException(true), m_archive(inArchive), m_line(0),
-    m_system(inSystem), m_markSavepoints(true)
+  : memory_(new Memory(inSystem.gameexe())),
+    halted_(false), print_undefined_opcodes_(false),
+    halt_on_exception_(true), archive_(inArchive), line_(0),
+    system_(inSystem), mark_savepoints_(true)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = inSystem.gameexe();
@@ -133,7 +133,7 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
   if(scenario == NULL)
   {
     // if SEEN_START is undefined, then just grab the first SEEN.
-    scenario = inArchive.scenario(m_archive.begin()->first);
+    scenario = inArchive.scenario(archive_.begin()->first);
   }
 
   if(scenario == 0)
@@ -148,8 +148,8 @@ RLMachine::RLMachine(System& inSystem, Archive& inArchive)
 
 RLMachine::~RLMachine()
 {
-  if(m_undefinedLog)
-    cerr << *m_undefinedLog;
+  if(undefined_log_)
+    cerr << *undefined_log_;
 }
 
 // -----------------------------------------------------------------------
@@ -178,28 +178,28 @@ void RLMachine::attachModule(RLModule* module)
 
 int RLMachine::getIntValue(const libReallive::IntMemRef& ref)
 {
-  return m_memory->getIntValue(ref);
+  return memory_->getIntValue(ref);
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::setIntValue(const libReallive::IntMemRef& ref, int value)
 {
-  m_memory->setIntValue(ref, value);
+  memory_->setIntValue(ref, value);
 }
 
 // -----------------------------------------------------------------------
 
 const std::string& RLMachine::getStringValue(int type, int location)
 {
-  return m_memory->getStringValue(type, location);
+  return memory_->getStringValue(type, location);
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::setStringValue(int type, int number, const std::string& value)
 {
-  m_memory->setStringValue(type, number, value);
+  memory_->setStringValue(type, number, value);
 }
 
 // -----------------------------------------------------------------------
@@ -216,7 +216,7 @@ bool RLMachine::savepointDecide(AttributeFunction func,
                                 const std::string& gameexeKey) const
 {
   //
-  if(!m_markSavepoints)
+  if(!mark_savepoints_)
     return false;
 
   long attribute = (scenario().*func)();
@@ -227,7 +227,7 @@ bool RLMachine::savepointDecide(AttributeFunction func,
 
   //
   // check Gameexe key
-  Gameexe& gexe = m_system.gameexe();
+  Gameexe& gexe = system_.gameexe();
   if(gexe.exists(gameexeKey))
   {
     int value = gexe(gameexeKey);
@@ -245,7 +245,7 @@ bool RLMachine::savepointDecide(AttributeFunction func,
 
 void RLMachine::setMarkSavepoints(const int in)
 {
-  m_markSavepoints = in;
+  mark_savepoints_ = in;
 }
 
 // -----------------------------------------------------------------------
@@ -294,21 +294,21 @@ void RLMachine::executeNextInstruction()
     {
       advanceInstructionPointer();
 
-      if(m_printUndefinedOpcodes)
+      if(print_undefined_opcodes_)
       {
         cout << "(SEEN" << callStack.back().scenario()->sceneNumber()
-             << ")(Line " << m_line << "):  " << e.what() << endl;
+             << ")(Line " << line_ << "):  " << e.what() << endl;
       }
 
-      if(m_undefinedLog)
+      if(undefined_log_)
       {
-        m_undefinedLog->increment(e.opcodeName());
+        undefined_log_->increment(e.opcodeName());
       }
     }
     catch(std::exception& e)
     {
-      if(m_haltOnException) {
-        m_halted = true;
+      if(halt_on_exception_) {
+        halted_ = true;
       } else {
         // Advance the instruction pointer so as to prevent infinite
         // loops where we throw an exception, and then try again.
@@ -316,7 +316,7 @@ void RLMachine::executeNextInstruction()
       }
 
       cout << "(SEEN" << callStack.back().scenario()->sceneNumber()
-           << ")(Line " << m_line << "):  " << e.what() << endl;
+           << ")(Line " << line_ << "):  " << e.what() << endl;
     }
   }
 }
@@ -342,7 +342,7 @@ void RLMachine::advanceInstructionPointer()
   {
     it->ip++;
     if(it->ip == it->scenario()->end())
-      m_halted = true;
+      halted_ = true;
   }
 }
 
@@ -364,7 +364,7 @@ void RLMachine::executeCommand(const CommandElement& f)
 void RLMachine::jump(int scenarioNum, int entrypoint)
 {
   // Check to make sure it's a valid scenario
-  libReallive::Scenario* scenario = m_archive.scenario(scenarioNum);
+  libReallive::Scenario* scenario = archive_.scenario(scenarioNum);
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
@@ -376,7 +376,7 @@ void RLMachine::jump(int scenarioNum, int entrypoint)
 
 void RLMachine::farcall(int scenarioNum, int entrypoint)
 {
-  libReallive::Scenario* scenario = m_archive.scenario(scenarioNum);
+  libReallive::Scenario* scenario = archive_.scenario(scenarioNum);
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
@@ -512,7 +512,7 @@ void RLMachine::performTextout(const TextoutElement& e)
 
   std::string nameParsedText;
   try {
-    parseNames(*m_memory, unparsedText, nameParsedText);
+    parseNames(*memory_, unparsedText, nameParsedText);
   } catch(rlvm::Exception& e) {
     // WEIRD: Sometimes rldev (and the official compiler?) will generate strings
     // that aren't valid shift_jis. Fall back while I figure out how to handle
@@ -539,7 +539,7 @@ void RLMachine::setKidokuMarker(int kidokuNumber)
 {
   // Check to see if we mark savepoints on textout
   if(shouldSetMessageSavepoint() &&
-     m_system.text().currentPage(*this).numberOfCharsOnPage() == 0)
+     system_.text().currentPage(*this).numberOfCharsOnPage() == 0)
   {
     markSavepoint();
   }
@@ -565,35 +565,35 @@ void RLMachine::unpackModuleNumber(unsigned int packedModuleNumber, int& modtype
 
 void RLMachine::setPrintUndefinedOpcodes(bool in)
 {
-  m_printUndefinedOpcodes = in;
+  print_undefined_opcodes_ = in;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::recordUndefinedOpcodeCounts()
 {
-  m_undefinedLog.reset(new OpcodeLog);
+  undefined_log_.reset(new OpcodeLog);
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::halt()
 {
-  m_halted = true;
+  halted_ = true;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::setHaltOnException(bool haltOnException)
 {
-  m_haltOnException = haltOnException;
+  halt_on_exception_ = haltOnException;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::setLineNumber(const int i)
 {
-  m_line = i;
+  line_ = i;
 }
 
 // -----------------------------------------------------------------------
@@ -613,7 +613,7 @@ void RLMachine::save(Archive & ar, unsigned int version) const
 template<class Archive>
 void RLMachine::load(Archive & ar, unsigned int version)
 {
-  ar & m_line;
+  ar & line_;
 
   // Just thaw the callStack; all preprocessing was done at freeze
   // time.

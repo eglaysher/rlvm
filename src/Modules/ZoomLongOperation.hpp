@@ -39,24 +39,24 @@ class Surface;
 class ZoomLongOperation : public LongOperation
 {
 private:
-  RLMachine& m_machine;
+  RLMachine& machine_;
 
-  boost::shared_ptr<Surface> m_origSurface;
-  boost::shared_ptr<Surface> m_srcSurface;
+  boost::shared_ptr<Surface> orig_surface_;
+  boost::shared_ptr<Surface> src_surface_;
 
-  const Rect m_frect;
-  const Rect m_trect;
-  const Rect m_drect;
-  const unsigned int m_duration;
+  const Rect frect_;
+  const Rect trect_;
+  const Rect drect_;
+  const unsigned int duration_;
 
-  unsigned int m_startTime;
+  unsigned int start_time_;
 
 public:
   ZoomLongOperation(
     RLMachine& machine,
-    const boost::shared_ptr<Surface>& m_origSurface,
-    const boost::shared_ptr<Surface>& m_srcSurface,
-    const Rect& m_frect, const Rect& m_trect, const Rect& m_drect,
+    const boost::shared_ptr<Surface>& orig_surface_,
+    const boost::shared_ptr<Surface>& src_surface_,
+    const Rect& frect_, const Rect& trect_, const Rect& drect_,
     const int time);
   ~ZoomLongOperation();
 

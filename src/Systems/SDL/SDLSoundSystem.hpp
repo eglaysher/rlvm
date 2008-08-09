@@ -54,17 +54,17 @@ private:
   typedef LRUCache<boost::filesystem::path,
                    SDLSoundChunkPtr> SoundChunkCache;
 
-  SoundChunkCache m_seCache;
-  SoundChunkCache m_wavCache;
+  SoundChunkCache se_cache_;
+  SoundChunkCache wav_cache_;
 
   /// The
-  SDLMusicPtr m_queuedMusic;
+  SDLMusicPtr queued_music_;
 
   /// Whether the next piece of music loops
-  bool m_queuedMusicLoop;
+  bool queued_music_loop_;
 
   /// The fadein time for queued piece of music
-  int m_queuedMusicFadein;
+  int queued_music_fadein_;
 
   /**
    * Retrieves a sound chunk from the passed in cache (or loads it if

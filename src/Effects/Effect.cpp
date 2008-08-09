@@ -53,9 +53,9 @@ using namespace std;
 Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
                boost::shared_ptr<Surface> dst,
                Size size, int time)
-  : m_screenSize(size), m_duration(time),
-    m_startTime(machine.system().event().getTicks()),
-    m_machine(machine), m_srcSurface(src), m_dstSurface(dst)
+  : screen_size_(size), duration_(time),
+    start_time_(machine.system().event().getTicks()),
+    machine_(machine), src_surface_(src), dst_surface_(dst)
 {
   machine.system().graphics().setIsResponsibleForUpdate(false);
 }
@@ -64,7 +64,7 @@ Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
 
 Effect::~Effect()
 {
-  m_machine.system().graphics().setIsResponsibleForUpdate(true);
+  machine_.system().graphics().setIsResponsibleForUpdate(true);
 }
 
 // -----------------------------------------------------------------------
@@ -74,11 +74,11 @@ Effect::~Effect()
 bool Effect::operator()(RLMachine& machine)
 {
   unsigned int time = machine.system().event().getTicks();
-  unsigned int currentFrame = time - m_startTime;
+  unsigned int currentFrame = time - start_time_;
 
   bool ctrlPressed = machine.system().event().ctrlPressed();
 
-  if(currentFrame >= m_duration || ctrlPressed)
+  if(currentFrame >= duration_ || ctrlPressed)
   {
     return true;
   }
@@ -110,8 +110,8 @@ bool Effect::operator()(RLMachine& machine)
 void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
 {
   // Blit DC1 onto DC0, with full opacity, and end the operation
-  m_srcSurface->blitToSurface(*m_dstSurface,
-                              m_srcRect, m_destRect, 255);
+  src_surface_->blitToSurface(*dst_surface_,
+                              src_rect_, dest_rect_, 255);
 
   // Now force a screen refresh
   machine.system().graphics().forceRefresh();
@@ -122,8 +122,8 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
 BlitAfterEffectFinishes::BlitAfterEffectFinishes(
   LongOperation* in, boost::shared_ptr<Surface> src, boost::shared_ptr<Surface> dst,
   const Rect& srcRect, const Rect& destRect)
-  : PerformAfterLongOperationDecorator(in), m_srcSurface(src), m_dstSurface(dst),
-    m_srcRect(srcRect), m_destRect(destRect)
+  : PerformAfterLongOperationDecorator(in), src_surface_(src), dst_surface_(dst),
+    src_rect_(srcRect), dest_rect_(destRect)
 {}
 
 // -----------------------------------------------------------------------

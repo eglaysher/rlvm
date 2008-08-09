@@ -321,7 +321,7 @@ public:
 class EventHandler : public MouseListener
 {
 private:
-  RLMachine& m_machine;
+  RLMachine& machine_;
 
 public:
   EventHandler(RLMachine& machine);

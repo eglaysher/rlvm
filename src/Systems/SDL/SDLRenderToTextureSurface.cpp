@@ -49,7 +49,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 SDLRenderToTextureSurface::SDLRenderToTextureSurface(const Size& size)
-  : m_texture(new Texture(render_to_texture(), size.width(), size.height()))
+  : texture_(new Texture(render_to_texture(), size.width(), size.height()))
 {}
 
 // -----------------------------------------------------------------------
@@ -83,7 +83,7 @@ void SDLRenderToTextureSurface::blitToSurface(Surface& destSurface,
 void SDLRenderToTextureSurface::renderToScreen(
   const Rect& src, const Rect& dst, int opacity)
 {
-  m_texture->renderToScreen(src, dst, opacity);
+  texture_->renderToScreen(src, dst, opacity);
 }
 
 // -----------------------------------------------------------------------
@@ -91,7 +91,7 @@ void SDLRenderToTextureSurface::renderToScreen(
 void SDLRenderToTextureSurface::renderToScreen(
   const Rect& src, const Rect& dst, const int opacity[4])
 {
-  m_texture->renderToScreen(src, dst, opacity);
+  texture_->renderToScreen(src, dst, opacity);
 }
 
 // -----------------------------------------------------------------------
@@ -127,7 +127,7 @@ void SDLRenderToTextureSurface::rawRenderQuad(const int srcCoords[8],
                                const int destCoords[8],
                                const int opacity[4])
 {
-  m_texture->rawRenderQuad(srcCoords, destCoords, opacity);
+  texture_->rawRenderQuad(srcCoords, destCoords, opacity);
 }
 
 // -----------------------------------------------------------------------
@@ -155,7 +155,7 @@ void SDLRenderToTextureSurface::getDCPixel(const Point& pos, int& r, int& g, int
 
 Size SDLRenderToTextureSurface::size() const
 {
-  return Size(m_texture->width(), m_texture->height());
+  return Size(texture_->width(), texture_->height());
 }
 
 // -----------------------------------------------------------------------

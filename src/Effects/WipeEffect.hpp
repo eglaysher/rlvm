@@ -53,8 +53,8 @@ class GraphicsSystem;
 class WipeEffect : public Effect
 {
 private:
-  int m_interpolation;
-  int m_interpolationInPixels;
+  int interpolation_;
+  int interpolation_in_pixels_;
 
   virtual bool blitOriginalImage() const;
 

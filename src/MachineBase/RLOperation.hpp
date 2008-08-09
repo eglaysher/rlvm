@@ -99,7 +99,7 @@
 struct RLOperation {
 private:
   /// The human readable name for this operation
-  std::string m_name;
+  std::string name_;
 
 public:
   /// Default constructor
@@ -108,8 +108,8 @@ public:
   /// Destructor
   virtual ~RLOperation();
 
-  void setName(const std::string& name) { m_name = name; }
-  const std::string& name() const { return m_name; }
+  void setName(const std::string& name) { name_ = name; }
+  const std::string& name() const { return name_; }
 
   /**
    * Check made as to whether the instruction pointer should be

@@ -118,7 +118,7 @@ void NullSurface::renderToScreenAsObject(const GraphicsObject& rp,
 // -----------------------------------------------------------------------
 
 int NullSurface::numPatterns() const {
-  return m_regionTable.size();
+  return region_table_.size();
 }
 
 // -----------------------------------------------------------------------

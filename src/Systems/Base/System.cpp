@@ -61,7 +61,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 SystemGlobals::SystemGlobals()
-  : m_confirmSaveLoad(true), m_lowPriority(false)
+  : confirm_save_load_(true), low_priority_(false)
 {}
 
 // -----------------------------------------------------------------------
@@ -70,7 +70,7 @@ SystemGlobals::SystemGlobals()
 
 System::System()
 {
-  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
+  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
 // -----------------------------------------------------------------------
@@ -90,14 +90,14 @@ void System::checkSyscomIndex(int index, const char* function)
 bool System::isSyscomEnabled(int syscom)
 {
   checkSyscomIndex(syscom, "System::isSyscomEnabled");
-  return m_syscomStatus[syscom];
+  return syscom_status_[syscom];
 }
 
 // -----------------------------------------------------------------------
 
 void System::hideSyscom()
 {
-  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_INVISIBLE);
+  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_INVISIBLE);
 }
 
 // -----------------------------------------------------------------------
@@ -105,14 +105,14 @@ void System::hideSyscom()
 void System::hideSyscomEntry(int syscom)
 {
   checkSyscomIndex(syscom, "System::hideSystem");
-  m_syscomStatus[syscom] = SYSCOM_INVISIBLE;
+  syscom_status_[syscom] = SYSCOM_INVISIBLE;
 }
 
 // -----------------------------------------------------------------------
 
 void System::enableSyscom()
 {
-  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
+  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
 // -----------------------------------------------------------------------
@@ -120,14 +120,14 @@ void System::enableSyscom()
 void System::enableSyscomEntry(int syscom)
 {
   checkSyscomIndex(syscom, "System::enableSystem");
-  m_syscomStatus[syscom] = SYSCOM_VISIBLE;
+  syscom_status_[syscom] = SYSCOM_VISIBLE;
 }
 
 // -----------------------------------------------------------------------
 
 void System::disableSyscom()
 {
-  fill(m_syscomStatus, m_syscomStatus + NUM_SYSCOM_ENTRIES, SYSCOM_GREYED_OUT);
+  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_GREYED_OUT);
 }
 
 // -----------------------------------------------------------------------
@@ -135,7 +135,7 @@ void System::disableSyscom()
 void System::disableSyscomEntry(int syscom)
 {
   checkSyscomIndex(syscom, "System::disableSystem");
-  m_syscomStatus[syscom] = SYSCOM_GREYED_OUT;
+  syscom_status_[syscom] = SYSCOM_GREYED_OUT;
 }
 
 // -----------------------------------------------------------------------

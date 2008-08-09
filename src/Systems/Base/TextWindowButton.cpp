@@ -64,7 +64,7 @@ enum ButtonState
 // -----------------------------------------------------------------------
 
 TextWindowButton::TextWindowButton()
-  : m_state(BUTTONSTATE_BUTTON_NOT_USED)
+  : state_(BUTTONSTATE_BUTTON_NOT_USED)
 {
 }
 
@@ -72,13 +72,13 @@ TextWindowButton::TextWindowButton()
 
 TextWindowButton::TextWindowButton(bool useThisButton,
                                    GameexeInterpretObject locationBox)
-  : m_state(BUTTONSTATE_BUTTON_NOT_USED)
+  : state_(BUTTONSTATE_BUTTON_NOT_USED)
 {
   if(useThisButton && locationBox.exists())
   {
     std::vector<int> z = locationBox;
-    m_location = locationBox;
-    m_state = BUTTONSTATE_NORMAL;
+    location_ = locationBox;
+    state_ = BUTTONSTATE_NORMAL;
   }
 }
 
@@ -92,13 +92,13 @@ TextWindowButton::~TextWindowButton()
 
 Rect TextWindowButton::location(TextWindow& window)
 {
-  int type = m_location.at(0);
+  int type = location_.at(0);
   switch(type)
   {
   case 0:
-    return Rect(Point(window.boxX1() + m_location.at(1),
-                      window.boxY1() + m_location.at(2)),
-                Size(m_location.at(3), m_location.at(4)));
+    return Rect(Point(window.boxX1() + location_.at(1),
+                      window.boxY1() + location_.at(2)),
+                Size(location_.at(3), location_.at(4)));
   default:
     throw SystemError("Unsupported coordinate system");
   }
@@ -108,9 +108,9 @@ Rect TextWindowButton::location(TextWindow& window)
 
 bool TextWindowButton::isValid() const
 {
-  return m_state != BUTTONSTATE_BUTTON_NOT_USED && m_location.size() == 5 &&
-    !(m_location[0] == 0 && m_location[1] == 0 && m_location[2] == 0 &&
-      m_location[3] == 0 && m_location[4] == 0);
+  return state_ != BUTTONSTATE_BUTTON_NOT_USED && location_.size() == 5 &&
+    !(location_[0] == 0 && location_[1] == 0 && location_[2] == 0 &&
+      location_[3] == 0 && location_[4] == 0);
 }
 
 // -----------------------------------------------------------------------
@@ -120,17 +120,17 @@ void TextWindowButton::setMousePosition(
 {
   if(isValid())
   {
-    int origState = m_state;
+    int origState = state_;
     bool inBox = location(window).contains(pos);
 
-    if(inBox && m_state == BUTTONSTATE_NORMAL)
-      m_state = BUTTONSTATE_HIGHLIGHTED;
-    else if(!inBox && m_state == BUTTONSTATE_HIGHLIGHTED)
-      m_state = BUTTONSTATE_NORMAL;
-    else if(!inBox && m_state == BUTTONSTATE_PRESSED)
-      m_state = BUTTONSTATE_NORMAL;
+    if(inBox && state_ == BUTTONSTATE_NORMAL)
+      state_ = BUTTONSTATE_HIGHLIGHTED;
+    else if(!inBox && state_ == BUTTONSTATE_HIGHLIGHTED)
+      state_ = BUTTONSTATE_NORMAL;
+    else if(!inBox && state_ == BUTTONSTATE_PRESSED)
+      state_ = BUTTONSTATE_NORMAL;
 
-    if(origState != m_state)
+    if(origState != state_)
       machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
 }
@@ -149,12 +149,12 @@ bool TextWindowButton::handleMouseClick(
       // Perform any activation
       if(pressed)
       {
-        m_state = BUTTONSTATE_PRESSED;
+        state_ = BUTTONSTATE_PRESSED;
         buttonPressed();
       }
       else
       {
-        m_state = BUTTONSTATE_HIGHLIGHTED;
+        state_ = BUTTONSTATE_HIGHLIGHTED;
         buttonReleased();
       }
 
@@ -176,7 +176,7 @@ void TextWindowButton::render(RLMachine& machine,
 {
   if(isValid())
   {
-    Surface::GrpRect rect = buttons->getPattern(basePattern + m_state);
+    Surface::GrpRect rect = buttons->getPattern(basePattern + state_);
     if(!(rect.rect.isEmpty()))
     {
       Rect dest = Rect(location(window).origin(), rect.rect.size());
@@ -193,7 +193,7 @@ void TextWindowButton::render(RLMachine& machine,
 ActionTextWindowButton::ActionTextWindowButton(
   bool use, GameexeInterpretObject locationBox,
   CallbackFunction action)
-  : TextWindowButton(use, locationBox), m_action(action)
+  : TextWindowButton(use, locationBox), action_(action)
 {
 }
 
@@ -207,7 +207,7 @@ ActionTextWindowButton::~ActionTextWindowButton()
 
 void ActionTextWindowButton::buttonReleased()
 {
-  m_action();
+  action_();
 }
 
 // -----------------------------------------------------------------------
@@ -218,8 +218,8 @@ ActivationTextWindowButton::ActivationTextWindowButton(
   bool use, GameexeInterpretObject locationBox,
   CallbackFunction start,
   CallbackFunction end)
-  : TextWindowButton(use, locationBox), m_onStart(start), m_onEnd(end),
-    m_on(false)
+  : TextWindowButton(use, locationBox), on_start_(start), on_end_(end),
+    on_(false)
 {
 }
 
@@ -233,17 +233,17 @@ ActivationTextWindowButton::~ActivationTextWindowButton()
 
 void ActivationTextWindowButton::buttonReleased()
 {
-  if(m_on)
+  if(on_)
   {
-    m_onEnd();
-    m_on = false;
-    m_state = BUTTONSTATE_NORMAL;
+    on_end_();
+    on_ = false;
+    state_ = BUTTONSTATE_NORMAL;
   }
   else
   {
-    m_onStart();
-    m_on = true;
-    m_state = BUTTONSTATE_ACTIVATED;
+    on_start_();
+    on_ = true;
+    state_ = BUTTONSTATE_ACTIVATED;
   }
 }
 
@@ -254,9 +254,9 @@ void ActivationTextWindowButton::buttonReleased()
 RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
   bool use, GameexeInterpretObject locationBox, RLMachine& machine,
   CallbackFunction callback, unsigned int timeBetweenInvocations)
-  : TextWindowButton(use, locationBox), m_machine(machine),
-    m_callback(callback), m_heldDown(false),
-    m_timeBetweenInvocations(timeBetweenInvocations)
+  : TextWindowButton(use, locationBox), machine_(machine),
+    callback_(callback), held_down_(false),
+    time_between_invocations_(timeBetweenInvocations)
 {
 }
 
@@ -270,24 +270,24 @@ RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton()
 
 void RepeatActionWhileHoldingWindowButton::buttonPressed()
 {
-  m_heldDown = true;
+  held_down_ = true;
 
-  m_callback();
-  m_lastInvocation = m_machine.system().event().getTicks();
+  callback_();
+  last_invocation_ = machine_.system().event().getTicks();
 }
 
 // -----------------------------------------------------------------------
 
 void RepeatActionWhileHoldingWindowButton::execute()
 {
-  if(m_heldDown)
+  if(held_down_)
   {
-    unsigned int curTime = m_machine.system().event().getTicks();
+    unsigned int curTime = machine_.system().event().getTicks();
 
-    if(m_lastInvocation + m_timeBetweenInvocations > curTime)
+    if(last_invocation_ + time_between_invocations_ > curTime)
     {
-      m_callback();
-      m_lastInvocation = curTime;
+      callback_();
+      last_invocation_ = curTime;
     }
   }
 }
@@ -296,7 +296,7 @@ void RepeatActionWhileHoldingWindowButton::execute()
 
 void RepeatActionWhileHoldingWindowButton::buttonReleased()
 {
-  m_heldDown = false;
+  held_down_ = false;
 }
 
 // -----------------------------------------------------------------------
@@ -307,14 +307,14 @@ ExbtnWindowButton::ExbtnWindowButton(
   RLMachine& machine,
   bool use, GameexeInterpretObject locationBox,
   GameexeInterpretObject toCall)
-  : TextWindowButton(use, locationBox), m_machine(machine),
-    m_scenario(0), m_entrypoint(0)
+  : TextWindowButton(use, locationBox), machine_(machine),
+    scenario_(0), entrypoint_(0)
 {
   if(locationBox.exists() && toCall.exists())
   {
     vector<int> farcall = toCall;
-    m_scenario = farcall.at(0);
-    m_entrypoint = farcall.at(1);
+    scenario_ = farcall.at(0);
+    entrypoint_ = farcall.at(1);
   }
 }
 
@@ -340,11 +340,11 @@ struct RestoreTextSystemVisibility : public LongOperation
 void ExbtnWindowButton::buttonReleased()
 {
   /// Hide all text boxes when entering an Exbtn
-  m_machine.system().text().setSystemVisible(false);
+  machine_.system().text().setSystemVisible(false);
 
   /// Push a LongOperation onto the stack which will restore
   /// visibility when we return from this Exbtn call
-  m_machine.pushLongOperation(new RestoreTextSystemVisibility);
+  machine_.pushLongOperation(new RestoreTextSystemVisibility);
 
-  m_machine.farcall(m_scenario, m_entrypoint);
+  machine_.farcall(scenario_, entrypoint_);
 }

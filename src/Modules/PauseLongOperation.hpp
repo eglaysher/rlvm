@@ -39,7 +39,7 @@ struct PauseLongOperation : public LongOperation, public EventHandler
 private:
   RLMachine& machine;
 
-  bool m_isDone;
+  bool is_done_;
 
   /**
    * @name Automode Related Variables
@@ -48,11 +48,11 @@ private:
    */
   /// Keeps track of when PauseLongOperation was constructed (in ticks from
   /// start)
-  unsigned int m_startTime;
+  unsigned int start_time_;
 
-  /// How long after m_startTime to automatically break out of this
+  /// How long after start_time_ to automatically break out of this
   /// Longoperation if auto mode is enabled
-  unsigned int m_automodeTime;
+  unsigned int automode_time_;
   /// @}
 
   void handleSyscomCall();

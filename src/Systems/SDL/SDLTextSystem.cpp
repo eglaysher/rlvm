@@ -86,20 +86,20 @@ void SDLTextSystem::render(RLMachine& machine)
 {
   if(systemVisible())
   {
-    for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+    for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
     {
       it->second->render(machine);
     }
 
-    WindowMap::iterator it = m_textWindow.find(m_activeWindow);
+    WindowMap::iterator it = text_window_.find(active_window_);
 
-    if(it != m_textWindow.end() && it->second->isVisible() &&
-       m_inPauseState && !isReadingBacklog())
+    if(it != text_window_.end() && it->second->isVisible() &&
+       in_pause_state_ && !isReadingBacklog())
     {
-      if(!m_textKeyCursor)
+      if(!text_key_cursor_)
         setKeyCursor(machine, 0);
 
-      m_textKeyCursor->render(machine, *it->second);
+      text_key_cursor_->render(machine, *it->second);
     }
   }
 }
@@ -108,10 +108,10 @@ void SDLTextSystem::render(RLMachine& machine)
 
 TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
 {
-  WindowMap::iterator it = m_textWindow.find(textWindow);
-  if(it == m_textWindow.end())
+  WindowMap::iterator it = text_window_.find(textWindow);
+  if(it == text_window_.end())
   {
-    it = m_textWindow.insert(
+    it = text_window_.insert(
       textWindow, new SDLTextWindow(machine, textWindow)).first;
   }
 
@@ -123,8 +123,8 @@ TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
 void SDLTextSystem::updateWindowsForChangeToWindowAttr()
 {
   // Check each text window to see if it needs updating
-  for(WindowMap::iterator it = m_textWindow.begin();
-      it != m_textWindow.end(); ++it)
+  for(WindowMap::iterator it = text_window_.begin();
+      it != text_window_.end(); ++it)
   {
     if(!it->second->windowAttrMod())
       it->second->setRGBAF(windowAttr());
@@ -183,8 +183,8 @@ void SDLTextSystem::setWindowAttrF(int i)
 
 void SDLTextSystem::setMousePosition(RLMachine& machine, const Point& pos)
 {
-  for(WindowMap::iterator it = m_textWindow.begin();
-      it != m_textWindow.end(); ++it)
+  for(WindowMap::iterator it = text_window_.begin();
+      it != text_window_.end(); ++it)
   {
     it->second->setMousePosition(machine, pos);
   }
@@ -197,8 +197,8 @@ bool SDLTextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
 {
   if(systemVisible())
   {
-    for(WindowMap::iterator it = m_textWindow.begin();
-        it != m_textWindow.end(); ++it)
+    for(WindowMap::iterator it = text_window_.begin();
+        it != text_window_.end(); ++it)
     {
       if(it->second->handleMouseClick(machine, pos, pressed))
         return true;
@@ -251,8 +251,8 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(
   RLMachine& machine, int size)
 {
-  FontSizeMap::iterator it = m_map.find(size);
-  if(it == m_map.end())
+  FontSizeMap::iterator it = map_.find(size);
+  if(it == map_.end())
   {
     string filename = findFontFile(machine).external_file_string();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
@@ -268,7 +268,7 @@ boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(
     // Build a smart_ptr to own this font, and set a deleter function.
     shared_ptr<TTF_Font> font(f, TTF_CloseFont);
 
-    m_map[size] = font;
+    map_[size] = font;
     return font;
   }
   else

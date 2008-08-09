@@ -39,18 +39,18 @@
 class SDLEventSystem : public EventSystem
 {
 private:
-  bool m_shiftPressed, m_ctrlPressed;
+  bool shift_pressed_, ctrl_pressed_;
 
   /// Whether the mouse cursor is currently inside the window bounds.
-  bool m_mouseInsideWindow;
+  bool mouse_inside_window_;
 
-  bool m_unaccessedItems;
+  bool unaccessed_items_;
 
-  Point m_mousePos;
+  Point mouse_pos_;
 
   int m_button1State, m_button2State;
 
-  std::queue<boost::function<void(void)> > m_queuedActions;
+  std::queue<boost::function<void(void)> > queued_actions_;
 
   /**
    * @name RealLive event system commands
@@ -74,15 +74,15 @@ public:
 
   /// We provide this accessor to let the Graphics system querry what
   /// to do when redrawing the mouse.
-  bool mouseInsideWindow() const { return m_mouseInsideWindow; }
+  bool mouseInsideWindow() const { return mouse_inside_window_; }
 
   virtual void executeEventSystem(RLMachine& machine);
 
   virtual void addEventHandler(EventHandler* handler);
   virtual void removeEventHandler(EventHandler* handler);
 
-  virtual bool shiftPressed() const { return m_shiftPressed; }
-  virtual bool ctrlPressed() const  { return m_ctrlPressed;  }
+  virtual bool shiftPressed() const { return shift_pressed_; }
+  virtual bool ctrlPressed() const  { return ctrl_pressed_;  }
 
   virtual Point getCursorPos();
   virtual void getCursorPos(Point& position, int& button1, int& button2);

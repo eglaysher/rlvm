@@ -49,7 +49,7 @@ using namespace std;
 // StackFrame
 // -----------------------------------------------------------------------
 StackFrame::StackFrame()
-  : m_scenario(NULL), ip(), frameType()
+  : scenario_(NULL), ip(), frameType()
 {}
 
 // -----------------------------------------------------------------------
@@ -57,7 +57,7 @@ StackFrame::StackFrame()
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t)
-  : m_scenario(s), ip(i), frameType(t)
+  : scenario_(s), ip(i), frameType(t)
 {}
 
 // -----------------------------------------------------------------------
@@ -65,7 +65,7 @@ StackFrame::StackFrame(libReallive::Scenario const* s,
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        LongOperation* op)
-  : m_scenario(s), ip(i), longOp(op), frameType(TYPE_LONGOP)
+  : scenario_(s), ip(i), longOp(op), frameType(TYPE_LONGOP)
 {}
 
 // -----------------------------------------------------------------------
@@ -78,7 +78,7 @@ StackFrame::~StackFrame()
 
 void StackFrame::setScenario(libReallive::Scenario const* s)
 {
-  m_scenario = s;
+  scenario_ = s;
 }
 
 // -----------------------------------------------------------------------

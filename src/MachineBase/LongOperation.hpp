@@ -85,7 +85,7 @@ public:
 class PerformAfterLongOperationDecorator : public LongOperation
 {
 private:
-  boost::scoped_ptr<LongOperation> m_operation;
+  boost::scoped_ptr<LongOperation> operation_;
 
   /// Payload of decorator implemented by subclasses
   virtual void performAfterLongOperation(RLMachine& machine) = 0;

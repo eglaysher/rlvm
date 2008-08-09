@@ -88,7 +88,7 @@ public:
   virtual unsigned int getTicks() const = 0;
 
   RLTimer& getTimer(int layer, int counter)
-  { return m_timers[layer][counter]; }
+  { return timers_[layer][counter]; }
 
   /**
    * Idles the program for a certain amount of time in milliseconds.
@@ -201,38 +201,38 @@ public:
    *
    * @{
    */
-  void setGeneric1(const int in) { m_globals.generic1 = in; }
-  int generic1() const { return m_globals.generic1; }
+  void setGeneric1(const int in) { globals_.generic1 = in; }
+  int generic1() const { return globals_.generic1; }
 
-  void setGeneric2(const int in) { m_globals.generic2 = in; }
-  int generic2() const { return m_globals.generic2; }
+  void setGeneric2(const int in) { globals_.generic2 = in; }
+  int generic2() const { return globals_.generic2; }
   /// @}
 
   // -----------------------------------------------------------------------
 
-  EventSystemGlobals& globals() { return m_globals; }
+  EventSystemGlobals& globals() { return globals_; }
 
 protected:
   typedef std::vector<EventHandler*> Handlers;
   typedef std::vector<MouseListener*> MouseListeners;
 
-  Handlers::iterator handlers_begin() { return m_eventHandlers.begin(); }
-  Handlers::iterator handlers_end() { return m_eventHandlers.end(); }
+  Handlers::iterator handlers_begin() { return event_handlers_.begin(); }
+  Handlers::iterator handlers_end() { return event_handlers_.end(); }
 
-  MouseListeners::iterator listeners_begin() { return m_mouseListeners.begin(); }
-  MouseListeners::iterator listeners_end() { return m_mouseListeners.end(); }
+  MouseListeners::iterator listeners_begin() { return mouse_listeners_.begin(); }
+  MouseListeners::iterator listeners_end() { return mouse_listeners_.end(); }
 
 private:
-  boost::scoped_ptr<FrameCounter> m_frameCounters[255][2];
-  RLTimer m_timers[255][2];
+  boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
+  RLTimer timers_[255][2];
 
   /// Helper function that verifies input
   void checkLayerAndCounter(int layer, int counter);
 
-  Handlers m_eventHandlers;
-  MouseListeners m_mouseListeners;
+  Handlers event_handlers_;
+  MouseListeners mouse_listeners_;
 
-  EventSystemGlobals m_globals;
+  EventSystemGlobals globals_;
 };
 
 #endif

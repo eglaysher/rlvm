@@ -49,7 +49,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 PauseLongOperation::PauseLongOperation(RLMachine& imachine)
-  : EventHandler(imachine), machine(imachine), m_isDone(false)
+  : EventHandler(imachine), machine(imachine), is_done_(false)
 {
   TextSystem& text = machine.system().text();
   EventSystem& event = machine.system().event();
@@ -58,8 +58,8 @@ PauseLongOperation::PauseLongOperation(RLMachine& imachine)
   // activated)
   int numChars =
     text.currentPage(machine).numberOfCharsOnPage();
-  m_automodeTime = text.getAutoTime(numChars);
-  m_startTime = event.getTicks();
+  automode_time_ = text.getAutoTime(numChars);
+  start_time_ = event.getTicks();
 
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
@@ -135,7 +135,7 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
         }
         else
         {
-          m_isDone = true;
+          is_done_ = true;
         }
       }
     }
@@ -178,7 +178,7 @@ void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
       if(ctrlKeySkips &&
          (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
       {
-        m_isDone = true;
+        is_done_ = true;
       }
       else if(keyCode == RLKEY_SPACE)
         graphics.toggleInterfaceHidden();
@@ -187,7 +187,7 @@ void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
       else if(keyCode == RLKEY_DOWN)
         text.forwardPage(machine);
       else if(keyCode == RLKEY_RETURN)
-        m_isDone = true;
+        is_done_ = true;
     }
   }
 }
@@ -200,11 +200,11 @@ bool PauseLongOperation::operator()(RLMachine& machine)
   if(machine.system().text().autoMode())
   {
     unsigned int curTime = machine.system().event().getTicks();
-    if(m_startTime + m_automodeTime < curTime)
-      m_isDone = true;
+    if(start_time_ + automode_time_ < curTime)
+      is_done_ = true;
   }
 
-  return m_isDone;
+  return is_done_;
 }
 
 // -----------------------------------------------------------------------

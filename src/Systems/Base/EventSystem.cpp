@@ -58,7 +58,7 @@ EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
 // EventSystem
 // -----------------------------------------------------------------------
 EventSystem::EventSystem(Gameexe& gexe)
-  : m_globals(gexe)
+  : globals_(gexe)
 {
 }
 
@@ -72,10 +72,10 @@ EventSystem::~EventSystem()
 void EventSystem::addEventHandler(EventHandler* handler)
 {
   Handlers::iterator it =
-    std::find(m_eventHandlers.begin(), m_eventHandlers.end(), handler);
+    std::find(event_handlers_.begin(), event_handlers_.end(), handler);
 
-  if(it == m_eventHandlers.end())
-    m_eventHandlers.push_back(handler);
+  if(it == event_handlers_.end())
+    event_handlers_.push_back(handler);
 }
 
 // -----------------------------------------------------------------------
@@ -83,10 +83,10 @@ void EventSystem::addEventHandler(EventHandler* handler)
 void EventSystem::removeEventHandler(EventHandler* handler)
 {
   Handlers::iterator it =
-    std::find(m_eventHandlers.begin(), m_eventHandlers.end(), handler);
+    std::find(event_handlers_.begin(), event_handlers_.end(), handler);
 
-  if(it != m_eventHandlers.end())
-    m_eventHandlers.erase(it);
+  if(it != event_handlers_.end())
+    event_handlers_.erase(it);
 }
 
 // -----------------------------------------------------------------------
@@ -94,10 +94,10 @@ void EventSystem::removeEventHandler(EventHandler* handler)
 void EventSystem::addMouseListener(MouseListener* listener)
 {
   MouseListeners::iterator it =
-    std::find(m_mouseListeners.begin(), m_mouseListeners.end(), listener);
+    std::find(mouse_listeners_.begin(), mouse_listeners_.end(), listener);
 
-  if(it == m_mouseListeners.end())
-    m_mouseListeners.push_back(listener);
+  if(it == mouse_listeners_.end())
+    mouse_listeners_.push_back(listener);
 }
 
 // -----------------------------------------------------------------------
@@ -105,10 +105,10 @@ void EventSystem::addMouseListener(MouseListener* listener)
 void EventSystem::removeMouseListener(MouseListener* listener)
 {
   MouseListeners::iterator it =
-    std::find(m_mouseListeners.begin(), m_mouseListeners.end(), listener);
+    std::find(mouse_listeners_.begin(), mouse_listeners_.end(), listener);
 
-  if(it != m_mouseListeners.end())
-    m_mouseListeners.erase(it);
+  if(it != mouse_listeners_.end())
+    mouse_listeners_.erase(it);
 }
 
 // -----------------------------------------------------------------------
@@ -116,7 +116,7 @@ void EventSystem::removeMouseListener(MouseListener* listener)
 void EventSystem::setFrameCounter(int layer, int frameCounter, FrameCounter* counter)
 {
   checkLayerAndCounter(layer, frameCounter);
-  m_frameCounters[layer][frameCounter].reset(counter);
+  frame_counters_[layer][frameCounter].reset(counter);
 }
 
 // -----------------------------------------------------------------------
@@ -125,7 +125,7 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frameCounter)
 {
   checkLayerAndCounter(layer, frameCounter);
 
-  scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
+  scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frameCounter];
   if(counter.get() == NULL)
     throw rlvm::Exception("Trying to get an uninitialized frame counter!");
 
@@ -137,7 +137,7 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frameCounter)
 bool EventSystem::frameCounterExists(int layer, int frameCounter)
 {
   checkLayerAndCounter(layer, frameCounter);
-  scoped_ptr<FrameCounter>& counter = m_frameCounters[layer][frameCounter];
+  scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frameCounter];
   return counter.get() != NULL;
 }
 

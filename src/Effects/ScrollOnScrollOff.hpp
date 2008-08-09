@@ -76,10 +76,10 @@ class ScrollSquashSlideBaseEffect : public Effect
 {
 private:
   /// Drawer behavior class
-  boost::scoped_ptr<ScrollSquashSlideDrawer> m_drawer;
+  boost::scoped_ptr<ScrollSquashSlideDrawer> drawer_;
 
   /// Effect type behavior class
-  boost::scoped_ptr<ScrollSquashSlideEffectTypeBase> m_effectType;
+  boost::scoped_ptr<ScrollSquashSlideEffectTypeBase> effect_type_;
 
   /// Don't blit the original image.
   virtual bool blitOriginalImage() const;

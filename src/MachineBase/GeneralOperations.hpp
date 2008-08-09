@@ -428,11 +428,11 @@ public:
  */
 class UndefinedFunction : public RLOp_SpecialCase {
 private:
-  std::string m_name;
-  int m_modtype;
-  int m_module;
-  int m_opcode;
-  int m_overload;
+  std::string name_;
+  int modtype_;
+  int module_;
+  int opcode_;
+  int overload_;
 
 public:
   UndefinedFunction(const std::string& name,

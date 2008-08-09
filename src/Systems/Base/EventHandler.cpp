@@ -52,7 +52,7 @@ void MouseListener::mouseButtonStateChanged(MouseButton mouseButton, bool presse
 // -----------------------------------------------------------------------
 
 EventHandler::EventHandler(RLMachine& machine)
-  : m_machine(machine)
+  : machine_(machine)
 {
   machine.system().event().addEventHandler(this);
 }
@@ -61,5 +61,5 @@ EventHandler::EventHandler(RLMachine& machine)
 
 EventHandler::~EventHandler()
 {
-  m_machine.system().event().removeEventHandler(this);
+  machine_.system().event().removeEventHandler(this);
 }

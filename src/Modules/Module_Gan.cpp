@@ -68,18 +68,18 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
     GraphicsSystem& system_;
     GraphicsSystem::DCScreenUpdateMode mode_;
 
-    int m_layer;
-    int m_buf;
+    int layer_;
+    int buf_;
     WaitForGanToFinish(GraphicsSystem& system, int inLayer, int inBuf)
       : system_(system),
         mode_(system_.screenUpdateMode()),
-        m_layer(inLayer), m_buf(inBuf) {
+        layer_(inLayer), buf_(inBuf) {
       system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
     }
 
     bool operator()(RLMachine& machine)
     {
-      GraphicsObject& obj = getGraphicsObject(machine, m_layer, m_buf);
+      GraphicsObject& obj = getGraphicsObject(machine, layer_, buf_);
       bool done = true;
 
       if(obj.hasObjectData())
@@ -98,17 +98,17 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
     }
   };
 
-  bool m_block;
-  int m_layer;
-  GraphicsObjectData::AfterAnimation m_afterEffect;
+  bool block_;
+  int layer_;
+  GraphicsObjectData::AfterAnimation after_effect_;
 
   Gan_ganPlay(bool block, int layer,
               GraphicsObjectData::AfterAnimation after)
-    : m_block(block), m_layer(layer), m_afterEffect(after) {}
+    : block_(block), layer_(layer), after_effect_(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet)
   {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
 
     if(obj.hasObjectData())
     {
@@ -116,12 +116,12 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
       if(data.isAnimation())
       {
         data.playSet(machine, animationSet);
-        data.setAfterAction(m_afterEffect);
+        data.setAfterAction(after_effect_);
 
-        if(m_block)
+        if(block_)
           machine.pushLongOperation(new WaitForGanToFinish(
                                       machine.system().graphics(),
-                                      m_layer, buf));
+                                      layer_, buf));
       }
     }
   }

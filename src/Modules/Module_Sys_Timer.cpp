@@ -53,13 +53,13 @@ using boost::numeric_cast;
 
 struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
-  const int m_layer;
-  Sys_ResetTimer(const int in) : m_layer(in) {}
+  const int layer_;
+  Sys_ResetTimer(const int in) : layer_(in) {}
 
   void operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    es.getTimer(m_layer, counter).set(es);
+    es.getTimer(layer_, counter).set(es);
   }
 };
 
@@ -67,25 +67,25 @@ struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 struct LongOp_time : public LongOperation, public EventHandler
 {
-  const int m_layer;
-  const int m_counter;
-  const unsigned int m_targetTime;
-  const bool m_cancelOnClick;
+  const int layer_;
+  const int counter_;
+  const unsigned int target_time_;
+  const bool cancel_on_click_;
 
-  int m_buttonPressed;
-  bool m_mouseMoved;
+  int button_pressed_;
+  bool mouse_moved_;
 
   LongOp_time(RLMachine& machine, int layer, int counter, int time,
               bool cancelOnClick)
     : EventHandler(machine),
-      m_layer(layer), m_counter(counter), m_targetTime(time),
-      m_cancelOnClick(cancelOnClick), m_buttonPressed(0),
-      m_mouseMoved(false)
+      layer_(layer), counter_(counter), target_time_(time),
+      cancel_on_click_(cancelOnClick), button_pressed_(0),
+      mouse_moved_(false)
   {}
 
   void mouseMotion(const Point&)
   {
-    m_mouseMoved = true;
+    mouse_moved_ = true;
   }
 
   /**
@@ -96,9 +96,9 @@ struct LongOp_time : public LongOperation, public EventHandler
     if(pressed)
     {
       if(mouseButton == MOUSE_LEFT)
-        m_buttonPressed = 1;
+        button_pressed_ = 1;
       else if(mouseButton == MOUSE_RIGHT)
-        m_buttonPressed = -1;
+        button_pressed_ = -1;
     }
   }
 
@@ -107,24 +107,24 @@ struct LongOp_time : public LongOperation, public EventHandler
     EventSystem& es = machine.system().event();
     bool done = false;
 
-    if(m_mouseMoved)
+    if(mouse_moved_)
     {
       machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
-      m_mouseMoved = false;
+      mouse_moved_ = false;
     }
 
     // First check to see if we're done because of time.
-    if(es.getTimer(m_layer, m_counter).read(es) > m_targetTime)
+    if(es.getTimer(layer_, counter_).read(es) > target_time_)
       done = true;
 
-    if(m_cancelOnClick)
+    if(cancel_on_click_)
     {
       // The underlying timeC returns a value. Manually set that
       // value here.
-      if(m_buttonPressed)
+      if(button_pressed_)
       {
         done = true;
-        machine.setStoreRegister(m_buttonPressed);
+        machine.setStoreRegister(button_pressed_);
       }
       else if(done)
         machine.setStoreRegister(0);
@@ -138,18 +138,18 @@ struct LongOp_time : public LongOperation, public EventHandler
 
 struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > >
 {
-  const int m_layer;
-  const bool m_inTimeC;
-  Sys_time(const int in, const bool timeC) : m_layer(in), m_inTimeC(timeC) {}
+  const int layer_;
+  const bool in_time_c_;
+  Sys_time(const int in, const bool timeC) : layer_(in), in_time_c_(timeC) {}
 
   void operator()(RLMachine& machine, int time, int counter)
   {
     EventSystem& es = machine.system().event();
 
-    if(es.getTimer(m_layer, counter).read(es) < numeric_cast<unsigned int>(time))
+    if(es.getTimer(layer_, counter).read(es) < numeric_cast<unsigned int>(time))
     {
-      machine.pushLongOperation(new LongOp_time(machine, m_layer, counter,
-                                                time, m_inTimeC));
+      machine.pushLongOperation(new LongOp_time(machine, layer_, counter,
+                                                time, in_time_c_));
     }
   }
 };
@@ -158,13 +158,13 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > >
 
 struct Sys_Timer : public RLOp_Store_1< DefaultIntValue_T<0> >
 {
-  const int m_layer;
-  Sys_Timer(const int in) : m_layer(in) {}
+  const int layer_;
+  Sys_Timer(const int in) : layer_(in) {}
 
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    return es.getTimer(m_layer, counter).read(es);
+    return es.getTimer(layer_, counter).read(es);
   }
 };
 
@@ -172,13 +172,13 @@ struct Sys_Timer : public RLOp_Store_1< DefaultIntValue_T<0> >
 
 struct Sys_CmpTimer : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> >
 {
-  const int m_layer;
-  Sys_CmpTimer(const int in) : m_layer(in) {}
+  const int layer_;
+  Sys_CmpTimer(const int in) : layer_(in) {}
 
   int operator()(RLMachine& machine, int val, int counter)
   {
     EventSystem& es = machine.system().event();
-    return es.getTimer(m_layer, counter).read(es) > numeric_cast<unsigned int>(val);
+    return es.getTimer(layer_, counter).read(es) > numeric_cast<unsigned int>(val);
   }
 };
 
@@ -186,13 +186,13 @@ struct Sys_CmpTimer : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> >
 
 struct Sys_SetTimer : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T<0> >
 {
-  const int m_layer;
-  Sys_SetTimer(const int in) : m_layer(in) {}
+  const int layer_;
+  Sys_SetTimer(const int in) : layer_(in) {}
 
   void operator()(RLMachine& machine, int val, int counter)
   {
     EventSystem& es = machine.system().event();
-    es.getTimer(m_layer, counter).set(es, val);
+    es.getTimer(layer_, counter).set(es, val);
   }
 };
 

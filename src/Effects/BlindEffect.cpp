@@ -67,7 +67,7 @@ BlindEffect::BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                          const Size& screenSize, int time,
                          int blindSize)
   : Effect(machine, src, dst, screenSize, time),
-    m_blindSize(blindSize)
+    blind_size_(blindSize)
 {
 }
 

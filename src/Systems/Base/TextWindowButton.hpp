@@ -43,8 +43,8 @@ class Surface;
 class TextWindowButton : public boost::noncopyable
 {
 protected:
-  std::vector<int> m_location;
-  int m_state;
+  std::vector<int> location_;
+  int state_;
 
 public:
   TextWindowButton();
@@ -88,7 +88,7 @@ public:
   typedef boost::function<void(void)> CallbackFunction;
 
 private:
-  CallbackFunction m_action;
+  CallbackFunction action_;
 
 public:
   ActionTextWindowButton(bool use, GameexeInterpretObject locationBox,
@@ -106,9 +106,9 @@ public:
   typedef boost::function<void(void)> CallbackFunction;
 
 private:
-  CallbackFunction m_onStart;
-  CallbackFunction m_onEnd;
-  bool m_on;
+  CallbackFunction on_start_;
+  CallbackFunction on_end_;
+  bool on_;
 
 public:
   ActivationTextWindowButton(bool use, GameexeInterpretObject locationBox,
@@ -127,11 +127,11 @@ public:
   typedef boost::function<void(void)> CallbackFunction;
 
 private:
-  RLMachine& m_machine;
-  CallbackFunction m_callback;
-  bool m_heldDown;
-  unsigned int m_lastInvocation;
-  unsigned int m_timeBetweenInvocations;
+  RLMachine& machine_;
+  CallbackFunction callback_;
+  bool held_down_;
+  unsigned int last_invocation_;
+  unsigned int time_between_invocations_;
 
 public:
   RepeatActionWhileHoldingWindowButton(
@@ -151,10 +151,10 @@ public:
 class ExbtnWindowButton : public TextWindowButton
 {
 private:
-  RLMachine& m_machine;
+  RLMachine& machine_;
 
-  int m_scenario;
-  int m_entrypoint;
+  int scenario_;
+  int entrypoint_;
 
 public:
   ExbtnWindowButton(RLMachine& machine,

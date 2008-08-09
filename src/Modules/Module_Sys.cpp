@@ -86,27 +86,27 @@ struct Sys_title : public RLOp_Void_1< StrConstant_T > {
 
 struct LongOp_wait : public LongOperation, public EventHandler
 {
-  const unsigned int m_targetTime;
-  const bool m_breakOnClicks;
-  int m_buttonPressed;
+  const unsigned int target_time_;
+  const bool break_on_clicks_;
+  int button_pressed_;
 
-  bool m_ctrlPressed;
-  bool m_breakOnCtrlPressed;
+  bool ctrl_pressed_;
+  bool break_on_ctrl_pressed_;
 
-  bool m_mouseMoved;
+  bool mouse_moved_;
 
   LongOp_wait(RLMachine& machine, int time, bool breakOnClicks)
     : EventHandler(machine),
-      m_targetTime(machine.system().event().getTicks() + time),
-      m_breakOnClicks(breakOnClicks), m_buttonPressed(0),
-      m_ctrlPressed(false),
-      m_breakOnCtrlPressed(machine.system().text().ctrlKeySkip()),
-      m_mouseMoved(false)
+      target_time_(machine.system().event().getTicks() + time),
+      break_on_clicks_(breakOnClicks), button_pressed_(0),
+      ctrl_pressed_(false),
+      break_on_ctrl_pressed_(machine.system().text().ctrlKeySkip()),
+      mouse_moved_(false)
   {}
 
   void mouseMotion(const Point&)
   {
-    m_mouseMoved = true;
+    mouse_moved_ = true;
   }
 
   /**
@@ -114,39 +114,39 @@ struct LongOp_wait : public LongOperation, public EventHandler
    */
   void mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
   {
-    if(pressed && m_breakOnClicks)
+    if(pressed && break_on_clicks_)
     {
       if(mouseButton == MOUSE_LEFT)
-        m_buttonPressed = 1;
+        button_pressed_ = 1;
       else if(mouseButton == MOUSE_RIGHT)
-        m_buttonPressed = -1;
+        button_pressed_ = -1;
     }
   }
 
   void keyStateChanged(KeyCode keyCode, bool pressed)
   {
-    if(pressed && m_breakOnCtrlPressed &&
+    if(pressed && break_on_ctrl_pressed_ &&
        (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
-      m_ctrlPressed = true;
+      ctrl_pressed_ = true;
   }
 
   bool operator()(RLMachine& machine)
   {
-    bool done = machine.system().event().getTicks() > m_targetTime ||
-      m_ctrlPressed;
+    bool done = machine.system().event().getTicks() > target_time_ ||
+      ctrl_pressed_;
 
-    if(m_mouseMoved)
+    if(mouse_moved_)
     {
       machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
-      m_mouseMoved = false;
+      mouse_moved_ = false;
     }
 
-    if(m_breakOnClicks)
+    if(break_on_clicks_)
     {
-      if(m_buttonPressed)
+      if(button_pressed_)
       {
         done = true;
-        machine.setStoreRegister(m_buttonPressed);
+        machine.setStoreRegister(button_pressed_);
       }
       else if(done)
         machine.setStoreRegister(0);
@@ -159,13 +159,13 @@ struct LongOp_wait : public LongOperation, public EventHandler
 // -----------------------------------------------------------------------
 
 struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
-  const bool m_cancelable;
+  const bool cancelable_;
 
-  Sys_wait(bool cancelable) : m_cancelable(cancelable) {}
+  Sys_wait(bool cancelable) : cancelable_(cancelable) {}
 
   /// Simply set the long operation
   void operator()(RLMachine& machine, int time) {
-    machine.pushLongOperation(new LongOp_wait(machine, time, m_cancelable));
+    machine.pushLongOperation(new LongOp_wait(machine, time, cancelable_));
   }
 };
 

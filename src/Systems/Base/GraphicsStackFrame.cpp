@@ -34,19 +34,19 @@
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame::GraphicsStackFrame()
-  : m_commandName(""), m_hasFilename(false), m_hasSourceDC(false),
-    m_hasSourceCoordinates(false), m_hasTargetDC(false),
-    m_hasTargetCoordinates(false), m_hasRGB(false), m_hasOpacity(false),
-    m_hasMask(false)
+  : command_name_(""), has_filename_(false), has_source_dc_(false),
+    has_source_coordinates_(false), has_target_dc_(false),
+    has_target_coordinates_(false), has_rgb_(false), has_opacity_(false),
+    has_mask_(false)
 {}
 
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame::GraphicsStackFrame(const std::string& name)
-  : m_commandName(name), m_hasFilename(false), m_hasSourceDC(false),
-    m_hasSourceCoordinates(false), m_hasTargetDC(false),
-    m_hasTargetCoordinates(false), m_hasRGB(false), m_hasOpacity(false),
-    m_hasMask(false)
+  : command_name_(name), has_filename_(false), has_source_dc_(false),
+    has_source_coordinates_(false), has_target_dc_(false),
+    has_target_coordinates_(false), has_rgb_(false), has_opacity_(false),
+    has_mask_(false)
 {}
 
 // -----------------------------------------------------------------------
@@ -57,8 +57,8 @@ GraphicsStackFrame::~GraphicsStackFrame() {}
 
 GraphicsStackFrame& GraphicsStackFrame::setFilename(const std::string& filename)
 {
-  m_hasFilename = true;
-  m_fileName = filename;
+  has_filename_ = true;
+  file_name_ = filename;
   return *this;
 }
 
@@ -66,8 +66,8 @@ GraphicsStackFrame& GraphicsStackFrame::setFilename(const std::string& filename)
 
 GraphicsStackFrame& GraphicsStackFrame::setSourceDC(int in)
 {
-  m_hasSourceDC = true;
-  m_sourceDC = in;
+  has_source_dc_ = true;
+  source_dc_ = in;
   return *this;
 }
 
@@ -76,8 +76,8 @@ GraphicsStackFrame& GraphicsStackFrame::setSourceDC(int in)
 GraphicsStackFrame& GraphicsStackFrame::setSourceCoordinates(
   const Rect& srcRect)
 {
-  m_hasSourceCoordinates = true;
-  m_sourceRect = srcRect;
+  has_source_coordinates_ = true;
+  source_rect_ = srcRect;
   return *this;
 }
 
@@ -85,8 +85,8 @@ GraphicsStackFrame& GraphicsStackFrame::setSourceCoordinates(
 
 GraphicsStackFrame& GraphicsStackFrame::setTargetDC(int in)
 {
-  m_hasTargetDC = true;
-  m_targetDC = in;
+  has_target_dc_ = true;
+  target_dc_ = in;
   return *this;
 }
 
@@ -95,8 +95,8 @@ GraphicsStackFrame& GraphicsStackFrame::setTargetDC(int in)
 GraphicsStackFrame& GraphicsStackFrame::setTargetCoordinates(
   const Point& targetPoint)
 {
-  m_hasTargetCoordinates = true;
-  m_targetPoint = targetPoint;
+  has_target_coordinates_ = true;
+  target_point_ = targetPoint;
   return *this;
 }
 
@@ -104,10 +104,10 @@ GraphicsStackFrame& GraphicsStackFrame::setTargetCoordinates(
 
 GraphicsStackFrame& GraphicsStackFrame::setRGB(int r, int g, int b)
 {
-  m_hasRGB = true;
-  m_r = r;
-  m_g = g;
-  m_b = b;
+  has_rgb_ = true;
+  r_ = r;
+  g_ = g;
+  b_ = b;
   return *this;
 }
 
@@ -115,8 +115,8 @@ GraphicsStackFrame& GraphicsStackFrame::setRGB(int r, int g, int b)
 
 GraphicsStackFrame& GraphicsStackFrame::setOpacity(int in)
 {
-  m_hasOpacity = true;
-  m_opacity = in;
+  has_opacity_ = true;
+  opacity_ = in;
   return *this;
 }
 
@@ -124,7 +124,7 @@ GraphicsStackFrame& GraphicsStackFrame::setOpacity(int in)
 
 GraphicsStackFrame& GraphicsStackFrame::setMask(bool in)
 {
-  m_hasMask = true;
-  m_mask = in;
+  has_mask_ = true;
+  mask_ = in;
   return *this;
 }

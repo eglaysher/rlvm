@@ -70,8 +70,8 @@ public:
   typedef AllocatedLazyArrayIterator<T> allocIterator;
 
 private:
-  int m_size;
-  mutable boost::scoped_array<T*> m_array;
+  int size_;
+  mutable boost::scoped_array<T*> array_;
 
   template<class> friend class FullLazyArrayIterator;
   template<class> friend class AllocatedLazyArrayIterator;
@@ -85,12 +85,12 @@ private:
   void load(Archive& ar, unsigned int version)
   {
     // Allocate our new array
-    ar & m_size;
-    m_array.reset(new T*[m_size]);
+    ar & size_;
+    array_.reset(new T*[size_]);
 
-    for(int i = 0; i < m_size; ++i)
+    for(int i = 0; i < size_; ++i)
     {
-      ar & m_array[i];
+      ar & array_[i];
     }
   }
 
@@ -99,11 +99,11 @@ private:
   void save(Archive& ar, unsigned int version) const
   {
     /// Place the total allocated size
-    ar & m_size;
+    ar & size_;
 
-    for(int i = 0; i < m_size; ++i)
+    for(int i = 0; i < size_; ++i)
     {
-      ar & m_array[i];
+      ar & array_[i];
     }
   }
 
@@ -123,7 +123,7 @@ public:
   /**
    * Returns the size of the array.
    */
-  int size() const { return m_size; }
+  int size() const { return size_; }
 
   /**
    * Go through each item in the array, and deletes it. The array's
@@ -147,12 +147,12 @@ public:
   FullLazyArrayIterator<T> full_begin()
   { return FullLazyArrayIterator<T>(0, this); }
   FullLazyArrayIterator<T> full_end()
-  { return FullLazyArrayIterator<T>(m_size, this); }
+  { return FullLazyArrayIterator<T>(size_, this); }
 
   // Iterate across the already allocated items
   AllocatedLazyArrayIterator<T> allocated_begin();
   AllocatedLazyArrayIterator<T> allocated_end()
-  { return AllocatedLazyArrayIterator<T>(m_size, this); }
+  { return AllocatedLazyArrayIterator<T>(size_, this); }
 };
 
 // -----------------------------------------------------------------------
@@ -167,25 +167,25 @@ class FullLazyArrayIterator
 {
 public:
   FullLazyArrayIterator()
-    : m_currentPosition(0), m_array(0) {}
+    : current_position_(0), array_(0) {}
 
   explicit FullLazyArrayIterator(int pos, LazyArray<Value>* array)
-    : m_currentPosition(pos), m_array(array) {}
+    : current_position_(pos), array_(array) {}
 
   template<class OtherValue>
   FullLazyArrayIterator(FullLazyArrayIterator<OtherValue> const& other)
-    : m_currentPosition(other.m_currentPosition),
-      m_array(other.m_array)
+    : current_position_(other.current_position_),
+      array_(other.array_)
   {}
 
   /// Test to see if this item has been allocated yet, allowing the
   /// user to skip
   bool valid() const
   {
-    return m_array->rawDeref(m_currentPosition) != NULL;
+    return array_->rawDeref(current_position_) != NULL;
   }
 
-  size_t pos() const { return m_currentPosition; }
+  size_t pos() const { return current_position_; }
 
 private:
   friend class boost::iterator_core_access;
@@ -195,22 +195,22 @@ private:
   template<typename OtherValue>
   bool equal(FullLazyArrayIterator<OtherValue> const& other) const
   {
-    return m_currentPosition == other.m_currentPosition &&
-      m_array == other.m_array;
+    return current_position_ == other.current_position_ &&
+      array_ == other.array_;
   }
 
   void increment()
   {
-    m_currentPosition++;
+    current_position_++;
   }
 
   Value& dereference() const
   {
-    return (*m_array)[m_currentPosition];
+    return (*array_)[current_position_];
   }
 
-  int m_currentPosition;
-  LazyArray<Value>* m_array;
+  int current_position_;
+  LazyArray<Value>* array_;
 };
 
 // -----------------------------------------------------------------------
@@ -225,18 +225,18 @@ class AllocatedLazyArrayIterator
 {
 public:
   AllocatedLazyArrayIterator()
-    : m_currentPosition(0), m_array(0) {}
+    : current_position_(0), array_(0) {}
 
   explicit AllocatedLazyArrayIterator(int pos, LazyArray<Value>* array)
-    : m_currentPosition(pos), m_array(array) {}
+    : current_position_(pos), array_(array) {}
 
   template<class OtherValue>
   AllocatedLazyArrayIterator(AllocatedLazyArrayIterator<OtherValue> const& other)
-    : m_currentPosition(other.m_currentPosition),
-      m_array(other.m_array)
+    : current_position_(other.current_position_),
+      array_(other.array_)
   {}
 
-  size_t pos() const { return m_currentPosition; }
+  size_t pos() const { return current_position_; }
 
 private:
   friend class boost::iterator_core_access;
@@ -246,25 +246,25 @@ private:
   template<typename OtherValue>
   bool equal(AllocatedLazyArrayIterator<OtherValue> const& other) const
   {
-    return m_currentPosition == other.m_currentPosition &&
-      m_array == other.m_array;
+    return current_position_ == other.current_position_ &&
+      array_ == other.array_;
   }
 
   void increment()
   {
-    m_currentPosition++;
-    while(m_currentPosition < m_array->size() &&
-          m_array->rawDeref(m_currentPosition) == NULL)
-      m_currentPosition++;
+    current_position_++;
+    while(current_position_ < array_->size() &&
+          array_->rawDeref(current_position_) == NULL)
+      current_position_++;
   }
 
   Value& dereference() const
   {
-    return *(m_array->rawDeref(m_currentPosition));
+    return *(array_->rawDeref(current_position_));
   }
 
-  int m_currentPosition;
-  LazyArray<Value>* m_array;
+  int current_position_;
+  LazyArray<Value>* array_;
 };
 
 // -----------------------------------------------------------------------
@@ -273,11 +273,11 @@ private:
 
 template<typename T>
 LazyArray<T>::LazyArray(int size)
-  : m_size(size), m_array(new T*[size])
+  : size_(size), array_(new T*[size])
 {
-  for(int i = 0; i < m_size; ++i)
-    m_array[i] = NULL;
-//  std::fill(m_array, m_array + m_size, NULL);
+  for(int i = 0; i < size_; ++i)
+    array_[i] = NULL;
+//  std::fill(array_, array_ + size_, NULL);
 }
 
 // -----------------------------------------------------------------------
@@ -285,7 +285,7 @@ LazyArray<T>::LazyArray(int size)
 template<typename T>
 LazyArray<T>::~LazyArray()
 {
-  std::for_each(m_array.get(), m_array.get() + m_size, boost::checked_deleter<T>());
+  std::for_each(array_.get(), array_.get() + size_, boost::checked_deleter<T>());
 }
 
 // -----------------------------------------------------------------------
@@ -293,7 +293,7 @@ LazyArray<T>::~LazyArray()
 template<typename T>
 T* LazyArray<T>::rawDeref(int pos)
 {
-  return m_array[pos];
+  return array_[pos];
 }
 
 // -----------------------------------------------------------------------
@@ -301,15 +301,15 @@ T* LazyArray<T>::rawDeref(int pos)
 template<typename T>
 T& LazyArray<T>::operator[](int pos)
 {
-  if(pos < 0 || pos >= m_size)
+  if(pos < 0 || pos >= size_)
     throw std::out_of_range("LazyArray::operator[]");
 
-  if(m_array[pos] == NULL)
+  if(array_[pos] == NULL)
   {
-    m_array[pos] = new T();
+    array_[pos] = new T();
   }
 
-  return *(m_array[pos]);
+  return *(array_[pos]);
 }
 
 // -----------------------------------------------------------------------
@@ -317,15 +317,15 @@ T& LazyArray<T>::operator[](int pos)
 template<typename T>
 const T& LazyArray<T>::operator[](int pos) const
 {
-  if(pos < 0 || pos >= m_size)
+  if(pos < 0 || pos >= size_)
     throw std::out_of_range("LazyArray::operator[]");
 
-  if(m_array[pos] == NULL)
+  if(array_[pos] == NULL)
   {
-    m_array[pos] = new T();
+    array_[pos] = new T();
   }
 
-  return *(m_array[pos]);
+  return *(array_[pos]);
 }
 
 // -----------------------------------------------------------------------
@@ -333,10 +333,10 @@ const T& LazyArray<T>::operator[](int pos) const
 template<typename T>
 void LazyArray<T>::clear()
 {
-  for(int i = 0; i < m_size; ++i)
+  for(int i = 0; i < size_; ++i)
   {
-    boost::checked_delete<T>(m_array[i]);
-    m_array[i] = NULL;
+    boost::checked_delete<T>(array_[i]);
+    array_[i] = NULL;
   }
 }
 
@@ -345,22 +345,22 @@ void LazyArray<T>::clear()
 template<typename T>
 void LazyArray<T>::copyTo(LazyArray<T>& otherArray)
 {
-  if(otherArray.m_size < m_size)
+  if(otherArray.size_ < size_)
     throw std::runtime_error(
       "Not enough space in target array in LazyArray::copyTo");
 
-  otherArray.m_size = m_size;
-  for(int i = 0; i < m_size; ++i)
+  otherArray.size_ = size_;
+  for(int i = 0; i < size_; ++i)
   {
     T* srcEntry = rawDeref(i);
     T* dstEntry = otherArray.rawDeref(i);
 
     if(srcEntry && !dstEntry)
-      otherArray.m_array[i] = new T(*srcEntry);
+      otherArray.array_[i] = new T(*srcEntry);
     else if(!srcEntry && dstEntry)
     {
-      boost::checked_delete<T>(otherArray.m_array[i]);
-      otherArray.m_array[i] = NULL;
+      boost::checked_delete<T>(otherArray.array_[i]);
+      otherArray.array_[i] = NULL;
     }
     else if(srcEntry && dstEntry)
     {
@@ -376,7 +376,7 @@ AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin()
 {
   // Find the first
   int firstEntry = 0;
-  while(firstEntry < m_size && m_array[firstEntry] == NULL)
+  while(firstEntry < size_ && array_[firstEntry] == NULL)
     firstEntry++;
 
   return AllocatedLazyArrayIterator<T>(firstEntry, this);

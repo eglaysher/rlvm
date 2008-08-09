@@ -65,7 +65,7 @@ IntAccessor::~IntAccessor()
  */
 IntAccessor::operator int() const
 {
-  return it->m_memory->getIntValue(IntMemRef(it->m_type, it->m_location));
+  return it->memory_->getIntValue(IntMemRef(it->type_, it->location_));
 }
 
 // -----------------------------------------------------------------------
@@ -77,7 +77,7 @@ IntAccessor::operator int() const
  * @return Self
  */
 IntAccessor& IntAccessor::operator=(const int newValue) {
-  it->m_memory->setIntValue(IntMemRef(it->m_type, it->m_location), newValue);
+  it->memory_->setIntValue(IntMemRef(it->type_, it->location_), newValue);
   return *this;
 }
 
@@ -118,7 +118,7 @@ StringAccessor::~StringAccessor()
  */
 StringAccessor::operator std::string() const
 {
-  return it->m_memory->getStringValue(it->m_type, it->m_location);
+  return it->memory_->getStringValue(it->type_, it->location_);
 }
 
 // -----------------------------------------------------------------------
@@ -130,7 +130,7 @@ StringAccessor::operator std::string() const
  * @return Self
  */
 StringAccessor& StringAccessor::operator=(const std::string& newValue) {
-  it->m_memory->setStringValue(it->m_type, it->m_location, newValue);
+  it->memory_->setStringValue(it->type_, it->location_, newValue);
   return *this;
 }
 

@@ -92,7 +92,7 @@ void SDLSoundSystem::wavPlayImpl(
 {
   if(pcmEnabled())
   {
-    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, m_wavCache);
+    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
     int loopNum = loop ? -1 : 0;
     sample->playChunkOn(channel, loopNum);
@@ -128,7 +128,7 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
 // SDLSoundSystem
 // -----------------------------------------------------------------------
 SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
-  : SoundSystem(gexe), m_seCache(5), m_wavCache(5)
+  : SoundSystem(gexe), se_cache_(5), wav_cache_(5)
 {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
@@ -173,10 +173,10 @@ void SDLSoundSystem::executeSoundSystem(RLMachine& machine)
 {
   SoundSystem::executeSoundSystem(machine);
 
-  if(m_queuedMusic && !SDLMusic::IsCurrentlyPlaying())
+  if(queued_music_ && !SDLMusic::IsCurrentlyPlaying())
   {
-    m_queuedMusic->fadeIn(m_queuedMusicLoop, m_queuedMusicFadein);
-    m_queuedMusic.reset();
+    queued_music_->fadeIn(queued_music_loop_, queued_music_fadein_);
+    queued_music_.reset();
   }
 }
 
@@ -229,7 +229,7 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
 
   if(pcmEnabled())
   {
-    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, m_wavCache);
+    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
 
     int loopNum = loop ? -1 : 0;
@@ -303,7 +303,7 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
       return;
     }
 
-    SDLSoundChunkPtr sample = getSoundChunk(machine, fileName, m_wavCache);
+    SDLSoundChunkPtr sample = getSoundChunk(machine, fileName, wav_cache_);
 
     // SE chunks have no per channel volume...
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(seVolume()));
@@ -347,9 +347,9 @@ void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
 void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
                              bool loop, int fadeInMs, int fadeOutMs)
 {
-  m_queuedMusic = LoadMusic(machine, bgmName);
-  m_queuedMusicLoop = loop;
-  m_queuedMusicFadein = fadeInMs;
+  queued_music_ = LoadMusic(machine, bgmName);
+  queued_music_loop_ = loop;
+  queued_music_fadein_ = fadeInMs;
 
   bgmFadeOut(fadeOutMs);
 }

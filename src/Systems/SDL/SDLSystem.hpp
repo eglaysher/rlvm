@@ -46,9 +46,9 @@ private:
   boost::scoped_ptr<SDLEventSystem> eventSystem;
   boost::scoped_ptr<SDLTextSystem> textSystem;
   boost::scoped_ptr<SDLSoundSystem> soundSystem;
-  Gameexe& m_gameexe;
+  Gameexe& gameexe_;
 
-  unsigned int m_lastTimePaused;
+  unsigned int last_time_paused_;
 
 public:
   SDLSystem(Gameexe& gameexe);

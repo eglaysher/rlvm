@@ -48,7 +48,7 @@ private:
    * @{
    */
   typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
-  FontSizeMap m_map;
+  FontSizeMap map_;
   /// @}
 
   void updateWindowsForChangeToWindowAttr();

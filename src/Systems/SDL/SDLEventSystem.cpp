@@ -55,13 +55,13 @@ void SDLEventSystem::handleKeyDown(SDL_Event& e)
   case SDLK_LSHIFT:
   case SDLK_RSHIFT:
   {
-    m_shiftPressed = true;
+    shift_pressed_ = true;
     break;
   }
   case SDLK_LCTRL:
   case SDLK_RCTRL:
   {
-    m_ctrlPressed = true;
+    ctrl_pressed_ = true;
     break;
   }
   default:
@@ -78,13 +78,13 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
   case SDLK_LSHIFT:
   case SDLK_RSHIFT:
   {
-    m_shiftPressed = false;
+    shift_pressed_ = false;
     break;
   }
   case SDLK_LCTRL:
   case SDLK_RCTRL:
   {
-    m_ctrlPressed = false;
+    ctrl_pressed_ = false;
     break;
   }
   default:
@@ -96,12 +96,12 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
 
 void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 {
-  if(m_mouseInsideWindow)
+  if(mouse_inside_window_)
   {
     // Handle this somehow.
-    m_mousePos = Point(event.motion.x, event.motion.y);
+    mouse_pos_ = Point(event.motion.x, event.motion.y);
     for_each(listeners_begin(), listeners_end(),
-             bind(&MouseListener::mouseMotion, _1, m_mousePos));
+             bind(&MouseListener::mouseMotion, _1, mouse_pos_));
   }
 }
 
@@ -109,7 +109,7 @@ void SDLEventSystem::handleMouseMotion(SDL_Event& event)
 
 void SDLEventSystem::handleMouseButtonDown(SDL_Event& event)
 {
-  if(m_mouseInsideWindow)
+  if(mouse_inside_window_)
   {
     if(event.button.button == SDL_BUTTON_LEFT)
       m_button1State = 1;
@@ -122,7 +122,7 @@ void SDLEventSystem::handleMouseButtonDown(SDL_Event& event)
 
 void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 {
-  if(m_mouseInsideWindow)
+  if(mouse_inside_window_)
   {
     if(event.button.button == SDL_BUTTON_LEFT)
       m_button1State = 2;
@@ -136,12 +136,12 @@ void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event)
 {
   if(event.active.state & SDL_APPINPUTFOCUS) {
-    m_mouseInsideWindow = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
+    mouse_inside_window_ = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
 
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   }
   else if(event.active.state & SDL_APPMOUSEFOCUS) {
-    m_mouseInsideWindow = event.active.gain == 1;
+    mouse_inside_window_ = event.active.gain == 1;
 
     // Force a mouse refresh:
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
@@ -153,9 +153,9 @@ void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event)
 // -----------------------------------------------------------------------
 
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
-  : EventSystem(gexe), m_shiftPressed(false), m_ctrlPressed(false),
-    m_mouseInsideWindow(true),
-    m_unaccessedItems(false), m_mousePos(),
+  : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
+    mouse_inside_window_(true),
+    unaccessed_items_(false), mouse_pos_(),
     m_button1State(0), m_button2State(0)
 {}
 
@@ -175,9 +175,9 @@ void SDLEventSystem::addEventHandler(EventHandler* handler)
 {
   EventSystem::addEventHandler(handler);
 
-  if(m_ctrlPressed)
+  if(ctrl_pressed_)
   {
-    m_queuedActions.push(
+    queued_actions_.push(
       bind(&EventHandler::keyStateChanged, handler, RLKEY_LCTRL, true));
   }
 }
@@ -188,18 +188,18 @@ void SDLEventSystem::removeEventHandler(EventHandler* handler)
 {
   EventSystem::removeEventHandler(handler);
 
-  while(m_queuedActions.size())
-    m_queuedActions.pop();
+  while(queued_actions_.size())
+    queued_actions_.pop();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
 {
-  while(m_queuedActions.size())
+  while(queued_actions_.size())
   {
-    m_queuedActions.front()();
-    m_queuedActions.pop();
+    queued_actions_.front()();
+    queued_actions_.pop();
   }
 
   SDL_Event event;
@@ -267,7 +267,7 @@ void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
       for_each(handlers_begin(), handlers_end(),
                bind(&EventHandler::mouseButtonStateChanged, _1,
                     button, pressed));
-      m_unaccessedItems = true;
+      unaccessed_items_ = true;
       break;
     }
     case SDL_QUIT:
@@ -305,11 +305,11 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
       break;
     case SDL_MOUSEBUTTONDOWN:
       handleMouseButtonDown(event);
-      m_unaccessedItems = true;
+      unaccessed_items_ = true;
       break;
     case SDL_MOUSEBUTTONUP:
       handleMouseButtonUp(event);
-      m_unaccessedItems = true;
+      unaccessed_items_ = true;
       break;
     case SDL_QUIT:
       machine.halt();
@@ -330,7 +330,7 @@ void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
 
 Point SDLEventSystem::getCursorPos()
 {
-  return m_mousePos;
+  return mouse_pos_;
 }
 
 // -----------------------------------------------------------------------
@@ -338,22 +338,22 @@ Point SDLEventSystem::getCursorPos()
 void SDLEventSystem::getCursorPos(Point& position, int& button1,
                                   int& button2)
 {
-  position = m_mousePos;
+  position = mouse_pos_;
   button1 = m_button1State;
   button2 = m_button2State;
 
-  m_unaccessedItems = false;
+  unaccessed_items_ = false;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::flushMouseClicks()
 {
-  if(!m_unaccessedItems)
+  if(!unaccessed_items_)
   {
     m_button1State = 0;
     m_button2State = 0;
-    m_unaccessedItems = false;
+    unaccessed_items_ = false;
   }
 }
 

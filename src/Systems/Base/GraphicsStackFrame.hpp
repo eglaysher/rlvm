@@ -50,80 +50,80 @@ private:
   template<class Archive>
   void serialize(Archive& ar, unsigned int version)
   {
-    ar & m_commandName & m_hasFilename & m_fileName & m_hasSourceDC
-      & m_sourceDC & m_hasSourceCoordinates & m_sourceRect
-      & m_hasTargetDC & m_targetDC
-      & m_hasTargetCoordinates & m_targetPoint
-      & m_hasRGB & m_r & m_g & m_b & m_hasOpacity
-      & m_opacity & m_hasMask & m_mask;
+    ar & command_name_ & has_filename_ & file_name_ & has_source_dc_
+      & source_dc_ & has_source_coordinates_ & source_rect_
+      & has_target_dc_ & target_dc_
+      & has_target_coordinates_ & target_point_
+      & has_rgb_ & r_ & g_ & b_ & has_opacity_
+      & opacity_ & has_mask_ & mask_;
   }
 
-  std::string m_commandName;
+  std::string command_name_;
 
-  bool m_hasFilename;
-  std::string m_fileName;
+  bool has_filename_;
+  std::string file_name_;
 
-  bool m_hasSourceDC;
-  int m_sourceDC;
+  bool has_source_dc_;
+  int source_dc_;
 
-  bool m_hasSourceCoordinates;
-  Rect m_sourceRect;
+  bool has_source_coordinates_;
+  Rect source_rect_;
 
-  bool m_hasTargetDC;
-  int m_targetDC;
+  bool has_target_dc_;
+  int target_dc_;
 
-  bool m_hasTargetCoordinates;
-  Point m_targetPoint;
+  bool has_target_coordinates_;
+  Point target_point_;
 
-  bool m_hasRGB;
-  int m_r, m_g, m_b;
+  bool has_rgb_;
+  int r_, g_, b_;
 
-  bool m_hasOpacity;
-  int m_opacity;
+  bool has_opacity_;
+  int opacity_;
 
-  bool m_hasMask;
-  int m_mask;
+  bool has_mask_;
+  int mask_;
 
 public:
   GraphicsStackFrame();
   GraphicsStackFrame(const std::string& name);
   ~GraphicsStackFrame();
 
-  const std::string& name() const { return m_commandName; }
+  const std::string& name() const { return command_name_; }
 
-  bool hasFilename() const { return m_hasFilename; }
-  const std::string& filename() const { return m_fileName; }
+  bool hasFilename() const { return has_filename_; }
+  const std::string& filename() const { return file_name_; }
   GraphicsStackFrame& setFilename(const std::string& filename);
 
   // source stuff
-  bool hasSourceDC() const { return m_hasSourceDC; }
-  int sourceDC() const { return m_sourceDC; }
+  bool hasSourceDC() const { return has_source_dc_; }
+  int sourceDC() const { return source_dc_; }
   GraphicsStackFrame& setSourceDC(int in);
 
-  bool hasSourceCoordinates() const { return m_hasSourceCoordinates; }
-  Rect sourceRect() const { return m_sourceRect; }
+  bool hasSourceCoordinates() const { return has_source_coordinates_; }
+  Rect sourceRect() const { return source_rect_; }
   GraphicsStackFrame& setSourceCoordinates(const Rect& in);
 
-  bool hasTargetDC() const { return m_hasTargetDC; }
-  int targetDC() const { return m_targetDC; }
+  bool hasTargetDC() const { return has_target_dc_; }
+  int targetDC() const { return target_dc_; }
   GraphicsStackFrame& setTargetDC(int in);
 
-  bool hasTargetCoordinates() const { return m_hasTargetCoordinates; }
-  Point targetPoint() const { return m_targetPoint; }
+  bool hasTargetCoordinates() const { return has_target_coordinates_; }
+  Point targetPoint() const { return target_point_; }
   GraphicsStackFrame& setTargetCoordinates(const Point& targetPoint);
 
-  bool hasRGB() const { return m_hasRGB; }
-  int r() const { return m_r; }
-  int g() const { return m_g; }
-  int b() const { return m_b; }
+  bool hasRGB() const { return has_rgb_; }
+  int r() const { return r_; }
+  int g() const { return g_; }
+  int b() const { return b_; }
   GraphicsStackFrame& setRGB(int r, int g, int b);
 
-  bool hasOpacity() const { return m_hasOpacity; }
-  int opacity() const { return m_opacity; }
+  bool hasOpacity() const { return has_opacity_; }
+  int opacity() const { return opacity_; }
   GraphicsStackFrame& setOpacity(int in);
 
-  bool hasMask() const { return m_hasMask; }
-  bool mask() const { return m_mask; }
+  bool hasMask() const { return has_mask_; }
+  bool mask() const { return mask_; }
   GraphicsStackFrame& setMask(bool in);
 };	// end of class GraphicsStackFrame
 

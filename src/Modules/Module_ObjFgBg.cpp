@@ -101,11 +101,11 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 struct Obj_dispArea_0 : RLOp_Void_1< IntConstant_T > {
-  int m_layer;
-  Obj_dispArea_0(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_dispArea_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.clearClip();
   }
 };
@@ -113,11 +113,11 @@ struct Obj_dispArea_0 : RLOp_Void_1< IntConstant_T > {
 struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
-  int m_layer;
-  Obj_dispArea_1(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_dispArea_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setClip(Rect::GRP(x1, y1, x2, y2));
   }
 };
@@ -127,11 +127,11 @@ struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
-  int m_layer;
-  Obj_dispRect_1(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_dispRect_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setClip(Rect::REC(x, y, w, h));
   }
 };
@@ -141,11 +141,11 @@ struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 
 struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
-  int m_layer;
-  Obj_dispCorner_1(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_dispCorner_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int x, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setClip(Rect::GRP(0, 0, x, y));
   }
 };
@@ -155,11 +155,11 @@ struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T > {
-  int m_layer;
-  Obj_adjust(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_adjust(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setXAdjustment(idx, x);
     obj.setYAdjustment(idx, y);
   }
@@ -168,11 +168,11 @@ struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
-  int m_layer;
-  Obj_adjustX(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_adjustX(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int idx, int x) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setXAdjustment(idx, x);
   }
 };
@@ -180,11 +180,11 @@ struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
-  int m_layer;
-  Obj_adjustY(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_adjustY(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int idx, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setYAdjustment(idx, y);
   }
 };
@@ -193,11 +193,11 @@ struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 
 struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T> {
-  int m_layer;
-  Obj_tint(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_tint(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setTint(RGBColour(r, g, b));
   }
 };
@@ -206,11 +206,11 @@ struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 
 struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
-  int m_layer;
-  Obj_colour(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_colour(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setColour(RGBAColour(r, g, b, level));
   }
 };
@@ -220,12 +220,12 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
 struct Obj_objSetText
   : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T>
 {
-  int m_layer;
-  Obj_objSetText(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objSetText(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, string val)
   {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
 	std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
 	obj.setTextText(utf8str);
   }
@@ -238,13 +238,13 @@ struct Obj_objTextOpts
                        IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T>
 {
-  int m_layer;
-  Obj_objTextOpts(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objTextOpts(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf, int size, int xspace,
                   int yspace, int vert, int colour, int shadow)
   {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.setTextOps(size, xspace, yspace, vert, colour, shadow);
   }
 };

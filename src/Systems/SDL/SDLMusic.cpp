@@ -62,7 +62,7 @@ bool SDLMusic::s_bgmEnabled = true;
 // -----------------------------------------------------------------------
 
 SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
-  : m_file(wav), m_track(track), m_fadetimeTotal(0), m_musicPaused(false)
+  : file_(wav), track_(track), fadetime_total_(0), music_paused_(false)
 {
   // Advance the audio stream to the starting point
   if(track.from > 0)
@@ -75,7 +75,7 @@ SDLMusic::~SDLMusic()
 {
   Mix_HookMusic(NULL, NULL);
 
-  delete m_file;
+  delete file_;
 
   if(s_currentlyPlaying.get() == this)
     s_currentlyPlaying.reset();
@@ -85,7 +85,7 @@ SDLMusic::~SDLMusic()
 
 bool SDLMusic::isFading() const
 {
-  return m_fadetimeTotal > 0;
+  return fadetime_total_ > 0;
 }
 
 // -----------------------------------------------------------------------
@@ -120,38 +120,38 @@ void SDLMusic::fadeIn(bool loop, int fadeInMs)
 
 void SDLMusic::fadeOut(int fadeOutMs)
 {
-  m_fadeCount = 0;
+  fade_count_ = 0;
   if(fadeOutMs <= 0)
     fadeOutMs = 1;
-  m_fadetimeTotal = fadeOutMs;
+  fadetime_total_ = fadeOutMs;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLMusic::pause()
 {
-  m_musicPaused = true;
+  music_paused_ = true;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLMusic::unpause()
 {
-  m_musicPaused = false;
+  music_paused_ = false;
 }
 
 // -----------------------------------------------------------------------
 
 std::string SDLMusic::name() const
 {
-  return m_track.name;
+  return track_.name;
 }
 
 // -----------------------------------------------------------------------
 
 int SDLMusic::bgmStatus() const
 {
-  if (m_musicPaused)
+  if (music_paused_)
     return 0;
   else if (isFading())
     return 2;
@@ -171,40 +171,40 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 
 	int count;
 	if (!s_bgmEnabled ||
-      music->m_musicPaused ||
-      music->m_loopPoint == STOP_NOW)
+      music->music_paused_ ||
+      music->loop_point_ == STOP_NOW)
   {
 		memset(stream, 0, len);
 		return;
 	}
-	count = music->m_file->Read( (char*)stream, 4, len/4);
+	count = music->file_->Read( (char*)stream, 4, len/4);
 
 	if (count != len/4) {
 		memset(stream+count*4, 0, len-count*4);
-		if (music->m_loopPoint == STOP_AT_END) {
-			music->m_loopPoint = STOP_NOW;
+		if (music->loop_point_ == STOP_AT_END) {
+			music->loop_point_ = STOP_NOW;
 		} else {
-			music->m_file->Seek(music->m_loopPoint);
-			music->m_file->Read( (char*)(stream+count*4), 4, len/4-count);
+			music->file_->Seek(music->loop_point_);
+			music->file_->Read( (char*)(stream+count*4), 4, len/4-count);
 		}
 	}
-	if (music->m_fadetimeTotal) {
-		int count_total = music->m_fadetimeTotal*(WAVFILE::freq/1000);
-		if (music->m_fadeCount > count_total ||
-        music->m_fadetimeTotal == 1) {
-			music->m_loopPoint = STOP_NOW;
+	if (music->fadetime_total_) {
+		int count_total = music->fadetime_total_*(WAVFILE::freq/1000);
+		if (music->fade_count_ > count_total ||
+        music->fadetime_total_ == 1) {
+			music->loop_point_ = STOP_NOW;
 			memset(stream, 0, len);
 			return;
 		}
 
 		int cur_vol =
-      SDL_MIX_MAXVOLUME * (count_total - music->m_fadeCount) /
+      SDL_MIX_MAXVOLUME * (count_total - music->fade_count_) /
       count_total;
 		char stream_dup[len];
 		memcpy(stream_dup, stream, len);
 		memset(stream, 0, len);
 		SDL_MixAudio(stream, (Uint8*)stream_dup, len, cur_vol);
-		music->m_fadeCount += len/4;
+		music->fade_count_ += len/4;
 	}
 }
 
@@ -264,7 +264,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 void SDLMusic::setLoopPoint(bool loop)
 {
   if(loop)
-    m_loopPoint = m_track.loop;
+    loop_point_ = track_.loop;
   else
-    m_loopPoint = STOP_AT_END;
+    loop_point_ = STOP_AT_END;
 }

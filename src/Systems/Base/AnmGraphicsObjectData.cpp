@@ -86,14 +86,14 @@ static const char ANM_MAGIC[ANM_MAGIC_SIZE] =
 // -----------------------------------------------------------------------
 
 AnmGraphicsObjectData::AnmGraphicsObjectData()
-  : m_currentSet(-1)
+  : current_set_(-1)
 {}
 
 // -----------------------------------------------------------------------
 
 AnmGraphicsObjectData::AnmGraphicsObjectData(
   RLMachine& machine, const std::string& file)
-  : m_filename(file), m_currentSet(-1)
+  : filename_(file), current_set_(-1)
 {
   loadAnmFile(machine);
 }
@@ -114,7 +114,7 @@ bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anmData)
 
 void AnmGraphicsObjectData::loadAnmFile(RLMachine& machine)
 {
-  fs::path file = findFile(machine, m_filename);
+  fs::path file = findFile(machine, filename_);
 
   fs::ifstream ifs(file, ifstream::in | ifstream::binary);
   if(!ifs)
@@ -245,9 +245,9 @@ void AnmGraphicsObjectData::render(
   const GraphicsObject& renderingProperties)
 {
   // If we have a current frame, then let's render it.
-  if(m_currentFrame != -1)
+  if(current_frame_ != -1)
   {
-    const Frame& frame = frames.at(m_currentFrame);
+    const Frame& frame = frames.at(current_frame_);
 
     GraphicsObjectOverride overrideData;
     overrideData.setOverrideSource(frame.src_x1, frame.src_y1,
@@ -267,32 +267,32 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 {
   // Do things that advance the state
   int timeSinceLastFrameChange =
-    machine.system().event().getTicks() - m_timeAtLastFrameChange;
+    machine.system().event().getTicks() - time_at_last_frame_change_;
   bool done = false;
 
   while(currentlyPlaying() && !done)
   {
-    if(timeSinceLastFrameChange > frames[m_currentFrame].time)
+    if(timeSinceLastFrameChange > frames[current_frame_].time)
     {
-      timeSinceLastFrameChange -= frames[m_currentFrame].time;
-      m_timeAtLastFrameChange += frames[m_currentFrame].time;
+      timeSinceLastFrameChange -= frames[current_frame_].time;
+      time_at_last_frame_change_ += frames[current_frame_].time;
       machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 
-      m_curFrame++;
-      if(m_curFrame == m_curFrameEnd)
+      cur_frame_++;
+      if(cur_frame_ == cur_frame_end_)
       {
-        m_curFrameSet++;
-        if(m_curFrameSet == m_curFrameSetEnd)
+        cur_frame_set_++;
+        if(cur_frame_set_ == cur_frame_set_end_)
           setCurrentlyPlaying(false);
         else
         {
-          m_curFrame = framelist.at(*m_curFrameSet).begin();
-          m_curFrameEnd = framelist.at(*m_curFrameSet).end();
-          m_currentFrame = *m_curFrame;
+          cur_frame_ = framelist.at(*cur_frame_set_).begin();
+          cur_frame_end_ = framelist.at(*cur_frame_set_).end();
+          current_frame_ = *cur_frame_;
         }
       }
       else
-        m_currentFrame = *m_curFrame;
+        current_frame_ = *cur_frame_;
     }
     else
       done = true;
@@ -333,13 +333,13 @@ GraphicsObjectData* AnmGraphicsObjectData::clone() const
 void AnmGraphicsObjectData::playSet(RLMachine& machine, int set)
 {
   setCurrentlyPlaying(true);
-  m_timeAtLastFrameChange = machine.system().event().getTicks();
+  time_at_last_frame_change_ = machine.system().event().getTicks();
 
-  m_curFrameSet = animationSet.at(set).begin();
-  m_curFrameSetEnd = animationSet.at(set).end();
-  m_curFrame = framelist.at(*m_curFrameSet).begin();
-  m_curFrameEnd = framelist.at(*m_curFrameSet).end();
-  m_currentFrame = *m_curFrame;
+  cur_frame_set_ = animationSet.at(set).begin();
+  cur_frame_set_end_ = animationSet.at(set).end();
+  cur_frame_ = framelist.at(*cur_frame_set_).begin();
+  cur_frame_end_ = framelist.at(*cur_frame_set_).end();
+  current_frame_ = *cur_frame_;
 
   machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
@@ -355,25 +355,25 @@ void AnmGraphicsObjectData::load(Archive& ar, unsigned int version)
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
 
-  ar & m_filename;
+  ar & filename_;
 
   // Reconstruct the ANM data from whatever file was linked.
   loadAnmFile(*Serialization::g_currentMachine);
 
   // Now load the rest of the data.
-  ar & m_currentlyPlaying & m_currentSet;
+  ar & currently_playing_ & current_set_;
 
-  // Reconstruct the m_cur* variables from their
+  // Reconstruct the cur_* variables from their
   int curFrameSet, currentFrame;
   ar & curFrameSet & currentFrame;
 
-  m_curFrameSet = animationSet.at(m_currentSet).begin();
-  advance(m_curFrameSet, curFrameSet);
-  m_curFrameSetEnd = animationSet.at(m_currentSet).end();
+  cur_frame_set_ = animationSet.at(current_set_).begin();
+  advance(cur_frame_set_, curFrameSet);
+  cur_frame_set_end_ = animationSet.at(current_set_).end();
 
-  m_curFrame = framelist.at(*m_curFrameSet).begin();
-  advance(m_curFrame, currentFrame);
-  m_curFrameEnd = framelist.at(*m_curFrameSet).end();
+  cur_frame_ = framelist.at(*cur_frame_set_).begin();
+  advance(cur_frame_, currentFrame);
+  cur_frame_end_ = framelist.at(*cur_frame_set_).end();
 }
 
 // -----------------------------------------------------------------------
@@ -382,13 +382,13 @@ template<class Archive>
 void AnmGraphicsObjectData::save(Archive& ar, unsigned int version) const
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
-  ar & m_filename & m_currentlyPlaying & m_currentSet;
+  ar & filename_ & currently_playing_ & current_set_;
 
   // Figure out what set we're playing, which
-  int curFrameSet = distance(animationSet.at(m_currentSet).begin(),
-                             m_curFrameSet);
-  int currentFrame = distance(framelist.at(*m_curFrameSet).begin(),
-                              m_curFrame);
+  int curFrameSet = distance(animationSet.at(current_set_).begin(),
+                             cur_frame_set_);
+  int currentFrame = distance(framelist.at(*cur_frame_set_).begin(),
+                              cur_frame_);
 
   ar & curFrameSet & currentFrame;
 }

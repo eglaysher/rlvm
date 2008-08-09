@@ -53,10 +53,10 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 GraphicsObjectOfFile::GraphicsObjectOfFile()
-  : m_filename(""),
-    m_frameTime(0),
-    m_currentFrame(0),
-    m_timeAtLastFrameChange(0)
+  : filename_(""),
+    frame_time_(0),
+    current_frame_(0),
+    time_at_last_frame_change_(0)
 {
 }
 
@@ -65,21 +65,21 @@ GraphicsObjectOfFile::GraphicsObjectOfFile()
 GraphicsObjectOfFile::GraphicsObjectOfFile(
   const GraphicsObjectOfFile& obj)
   : GraphicsObjectData(obj),
-    m_filename(obj.m_filename),
-    m_surface(obj.m_surface),
-    m_frameTime(obj.m_frameTime),
-    m_currentFrame(obj.m_currentFrame),
-    m_timeAtLastFrameChange(obj.m_timeAtLastFrameChange)
+    filename_(obj.filename_),
+    surface_(obj.surface_),
+    frame_time_(obj.frame_time_),
+    current_frame_(obj.current_frame_),
+    time_at_last_frame_change_(obj.time_at_last_frame_change_)
 {}
 
 // -----------------------------------------------------------------------
 
 GraphicsObjectOfFile::GraphicsObjectOfFile(
   RLMachine& machine, const std::string& filename)
-  : m_filename(filename),
-    m_frameTime(0),
-    m_currentFrame(0),
-    m_timeAtLastFrameChange(0)
+  : filename_(filename),
+    frame_time_(0),
+    current_frame_(0),
+    time_at_last_frame_change_(0)
 {
   loadFile(machine);
 }
@@ -88,8 +88,8 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 void GraphicsObjectOfFile::loadFile(RLMachine& machine)
 {
-  fs::path fullPath = findFile(machine, m_filename);
-  m_surface = machine.system().graphics().loadSurfaceFromFile(fullPath);
+  fs::path fullPath = findFile(machine, filename_);
+  surface_ = machine.system().graphics().loadSurfaceFromFile(fullPath);
 }
 
 // -----------------------------------------------------------------------
@@ -98,24 +98,24 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
 {
   if(currentlyPlaying())
   {
-    const Surface::GrpRect& rect = m_surface->getPattern(m_currentFrame);
+    const Surface::GrpRect& rect = surface_->getPattern(current_frame_);
 
     // POINT
     GraphicsObjectOverride overrideData;
     overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(), rect.rect.x2(),
                                    rect.rect.y2());
 
-    m_surface->renderToScreenAsObject(rp, overrideData);
+    surface_->renderToScreenAsObject(rp, overrideData);
   }
   else
-    m_surface->renderToScreenAsObject(rp);
+    surface_->renderToScreenAsObject(rp);
 }
 
 // -----------------------------------------------------------------------
 
 int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
 {
-  const Surface::GrpRect& rect = m_surface->getPattern(rp.pattNo());
+  const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
   int width = rect.rect.width();
   return int((rp.width() / 100.0f) * width);
 }
@@ -124,7 +124,7 @@ int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& r
 
 int GraphicsObjectOfFile::pixelHeight(RLMachine& machine, const GraphicsObject& rp)
 {
-  const Surface::GrpRect& rect = m_surface->getPattern(rp.pattNo());
+  const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
   int height = rect.rect.height();
   return int((rp.height() / 100.0f) * height);
 }
@@ -144,19 +144,19 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
   {
     unsigned int currentTime = machine.system().event().getTicks();
     unsigned int timeSinceLastFrameChange =
-      currentTime - m_timeAtLastFrameChange;
+      currentTime - time_at_last_frame_change_;
 
-    while(timeSinceLastFrameChange > m_frameTime)
+    while(timeSinceLastFrameChange > frame_time_)
     {
-      m_currentFrame++;
-      if(m_currentFrame == m_surface->numPatterns())
+      current_frame_++;
+      if(current_frame_ == surface_->numPatterns())
       {
-        m_currentFrame--;
+        current_frame_--;
         endAnimation();
       }
 
-      m_timeAtLastFrameChange += m_frameTime;
-      timeSinceLastFrameChange = currentTime - m_timeAtLastFrameChange;
+      time_at_last_frame_change_ += frame_time_;
+      timeSinceLastFrameChange = currentTime - time_at_last_frame_change_;
       machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
@@ -166,14 +166,14 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
 
 bool GraphicsObjectOfFile::isAnimation() const
 {
-  return m_surface->numPatterns();
+  return surface_->numPatterns();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsObjectOfFile::loopAnimation()
 {
-  m_currentFrame = 0;
+  current_frame_ = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -181,17 +181,17 @@ void GraphicsObjectOfFile::loopAnimation()
 void GraphicsObjectOfFile::playSet(RLMachine& machine, int frameTime)
 {
   setCurrentlyPlaying(true);
-  m_frameTime = frameTime;
-  m_currentFrame = 0;
+  frame_time_ = frameTime;
+  current_frame_ = 0;
 
-  if (m_frameTime == 0) {
+  if (frame_time_ == 0) {
     cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
          << " this is probably going to cause a graphical glitch..."
          << endl;
-    m_frameTime = 10;
+    frame_time_ = 10;
   }
 
-  m_timeAtLastFrameChange = machine.system().event().getTicks();
+  time_at_last_frame_change_ = machine.system().event().getTicks();
   machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
@@ -201,7 +201,7 @@ template<class Archive>
 void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-    & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
+    & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 
   loadFile(*Serialization::g_currentMachine);
 }
@@ -212,7 +212,7 @@ template<class Archive>
 void GraphicsObjectOfFile::save(Archive& ar, unsigned int version) const
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-    & m_filename & m_frameTime & m_currentFrame & m_timeAtLastFrameChange;
+    & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 }
 
 // -----------------------------------------------------------------------

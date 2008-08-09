@@ -46,10 +46,10 @@ class GraphicsTextObject : public GraphicsObjectData
 private:
   std::string m_cachedUtf8str;
 
-  boost::shared_ptr<Surface> m_surface;
+  boost::shared_ptr<Surface> surface_;
 
   /**
-   * Redraw m_surface.
+   * Redraw surface_.
    */
   void updateSurface(RLMachine& machine,
 					 const GraphicsObject& rp);

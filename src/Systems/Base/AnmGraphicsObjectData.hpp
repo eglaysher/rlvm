@@ -45,7 +45,7 @@ private:
   /// Note: This internal structure is heavily based off of xkanon's
   /// ANM file implementation, but has been changed to be all C++ like.
 
-  std::string m_filename;
+  std::string filename_;
 
   /**
    * @name Animation Data
@@ -75,19 +75,19 @@ private:
    *
    * @{
    */
-  bool m_currentlyPlaying;
+  bool currently_playing_;
 
-  int m_currentSet;
+  int current_set_;
 
-  std::vector<int>::const_iterator m_curFrameSet;
-  std::vector<int>::const_iterator m_curFrameSetEnd;
+  std::vector<int>::const_iterator cur_frame_set_;
+  std::vector<int>::const_iterator cur_frame_set_end_;
 
-  std::vector<int>::const_iterator m_curFrame;
-  std::vector<int>::const_iterator m_curFrameEnd;
+  std::vector<int>::const_iterator cur_frame_;
+  std::vector<int>::const_iterator cur_frame_end_;
 
-  int m_currentFrame;
+  int current_frame_;
 
-  unsigned int m_timeAtLastFrameChange;
+  unsigned int time_at_last_frame_change_;
 
   // @}
 

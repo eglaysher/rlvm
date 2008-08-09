@@ -41,12 +41,12 @@ class TextoutLongOperation : public LongOperation, public EventHandler
 private:
   std::string m_utf8string;
 
-  int m_currentCodepoint;
-  std::string m_currentChar;
-  std::string::iterator m_currentPosition;
+  int current_codepoint_;
+  std::string current_char_;
+  std::string::iterator current_position_;
 
   /// Sets whether we should display as much text as we can immediately.
-  bool m_noWait;
+  bool no_wait_;
 
   bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
 
@@ -57,7 +57,7 @@ public:
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
   ~TextoutLongOperation();
 
-  void setNoWait(bool in = true) { m_noWait = in; }
+  void setNoWait(bool in = true) { no_wait_ = in; }
 
   virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
   virtual void keyStateChanged(KeyCode keyCode, bool pressed);

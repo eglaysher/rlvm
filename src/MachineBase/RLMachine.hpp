@@ -68,7 +68,7 @@ namespace boost { namespace serialization { } }
 class RLMachine {
 public:
   /// The Reallive VM's integer and string memory
-  boost::scoped_ptr<Memory> m_memory;
+  boost::scoped_ptr<Memory> memory_;
 
   /// The RealLive machine's single result register
   int storeRegister;
@@ -80,17 +80,17 @@ public:
 
   /// States whether the RLMachine is in the halted state (and thus won't
   /// execute more instructions)
-  bool m_halted;
+  bool halted_;
 
   /// Whether we should print an error to stderr when we encounter an undefined
   /// opcode.
-  bool m_printUndefinedOpcodes;
+  bool print_undefined_opcodes_;
 
   /// States whether the machine should halt if an unhandled exception is thrown
-  bool m_haltOnException;
+  bool halt_on_exception_;
 
   /// The SEEN.TXT the machine is currently executing.
-  libReallive::Archive& m_archive;
+  libReallive::Archive& archive_;
 
   /// The actual call stack.
   std::vector<StackFrame> callStack;
@@ -99,15 +99,15 @@ public:
   std::vector<StackFrame> savepointCallStack;
 
   /// The most recent line marker we've come across
-  int m_line;
+  int line_;
 
   /// The RLMachine carried around a reference to the local system, to keep it
   /// from being a Singleton so we can do proper unit testing.
-  System& m_system;
+  System& system_;
 
   /// (Optional) A structure that keeps track of how many times we encountered
   /// undefined opcodes.
-  boost::scoped_ptr<OpcodeLog> m_undefinedLog;
+  boost::scoped_ptr<OpcodeLog> undefined_log_;
 
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype,
@@ -126,7 +126,7 @@ public:
   void popStackFrame();
 
   /// Override defaults
-  bool m_markSavepoints;
+  bool mark_savepoints_;
 
 public:
   RLMachine(System& inSystem, libReallive::Archive& inArchive);
@@ -199,7 +199,7 @@ public:
    * @param in The new value. 0 is the override for false. 1 is normal
    *           and will consult the rest of the values.
    */
-  void setMarkSavepoints(const int in); // m_markSavepoints
+  void setMarkSavepoints(const int in); // mark_savepoints_
   /// @}
 
   // -----------------------------------------------------------------------
@@ -267,8 +267,8 @@ public:
    * @note This should only be used during serialization or complex
    *       memory operations involving overlays.
    */
-  Memory& memory() { return *m_memory; }
-  const Memory& memory() const { return *m_memory; }
+  Memory& memory() { return *memory_; }
+  const Memory& memory() const { return *memory_; }
   //@}
 
   // -----------------------------------------------------------------------
@@ -368,12 +368,12 @@ public:
    * Returns the value of the most recent line MetadataElement, which
    * should correspond with the line in the source file.
    */
-  int lineNumber() const { return m_line; }
+  int lineNumber() const { return line_; }
 
   /**
    * Returns the current Archive we are attached to.
    */
-  libReallive::Archive& archive() { return m_archive; }
+  libReallive::Archive& archive() { return archive_; }
   // @}
 
   // -----------------------------------------------------------------------
@@ -454,7 +454,7 @@ public:
    *
    * @return Whether the machine is halted
    */
-  bool halted() const { return m_halted; }
+  bool halted() const { return halted_; }
 
   // ---------------------------------------------------------------------
 
@@ -490,7 +490,7 @@ public:
   /**
    * Returns the current System that this RLMachine outputs to.
    */
-  System& system() { return m_system; }
+  System& system() { return system_; }
 
 
   template<class Archive>

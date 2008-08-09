@@ -295,7 +295,7 @@ UnimplementedOpcode::UnimplementedOpcode(
   ostringstream oss;
   oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">)";
-  m_name = oss.str();
+  name_ = oss.str();
   setDescription();
 }
 
@@ -308,7 +308,7 @@ UnimplementedOpcode::UnimplementedOpcode(
   ostringstream oss;
   oss << "opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">";
-  m_name = oss.str();
+  name_ = oss.str();
   setDescription();
 }
 
@@ -321,7 +321,7 @@ UnimplementedOpcode::~UnimplementedOpcode() throw() {
 
 void UnimplementedOpcode::setDescription() {
   ostringstream oss;
-  oss << "Undefined: " << m_name;
+  oss << "Undefined: " << name_;
   description = oss.str();
 }
 

@@ -52,10 +52,10 @@ public:
   };
 
 private:
-  AfterAnimation m_afterAnimation;
-  GraphicsObject* m_ownedBy;
+  AfterAnimation after_animation_;
+  GraphicsObject* owned_by_;
 
-  bool m_currentlyPlaying;
+  bool currently_playing_;
 
   friend class boost::serialization::access;
 
@@ -64,8 +64,8 @@ private:
   void serialize(Archive& ar, unsigned int version)
   {
     // boost::serialization should take care of the swizzling of
-    // m_ownedBy.
-    ar & m_afterAnimation & m_ownedBy & m_currentlyPlaying;
+    // owned_by_.
+    ar & after_animation_ & owned_by_ & currently_playing_;
   }
 
 protected:
@@ -88,14 +88,14 @@ public:
   GraphicsObjectData(const GraphicsObjectData& obj);
   virtual ~GraphicsObjectData();
 
-  AfterAnimation afterAnimation() const { return m_afterAnimation; }
-  void setAfterAction(AfterAnimation after) { m_afterAnimation = after; }
+  AfterAnimation afterAnimation() const { return after_animation_; }
+  void setAfterAction(AfterAnimation after) { after_animation_ = after; }
 
-  void setOwnedBy(GraphicsObject& godata) { m_ownedBy = &godata; }
-  GraphicsObject* ownedBy() const { return m_ownedBy; }
+  void setOwnedBy(GraphicsObject& godata) { owned_by_ = &godata; }
+  GraphicsObject* ownedBy() const { return owned_by_; }
 
-  void setCurrentlyPlaying(bool in) { m_currentlyPlaying = in; }
-  bool currentlyPlaying() const { return m_currentlyPlaying; }
+  void setCurrentlyPlaying(bool in) { currently_playing_ = in; }
+  bool currentlyPlaying() const { return currently_playing_; }
 
   virtual void render(RLMachine& machine,
                       const GraphicsObject& renderingProperties) = 0;

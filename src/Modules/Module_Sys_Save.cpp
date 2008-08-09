@@ -347,12 +347,12 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
 
   struct LoadingGame : public LongOperation
   {
-    int m_slot;
-    LoadingGame(int slot) : m_slot(slot) {}
+    int slot_;
+    LoadingGame(int slot) : slot_(slot) {}
 
     bool operator()(RLMachine& machine)
     {
-      Serialization::loadGameForSlot(machine, m_slot);
+      Serialization::loadGameForSlot(machine, slot_);
 
       // Render the current state of the screen
       GraphicsSystem& graphics = machine.system().graphics();

@@ -90,7 +90,7 @@ LocalMemory::LocalMemory(dont_initialize)
 // Memory
 // -----------------------------------------------------------------------
 Memory::Memory(Gameexe& gameexe)
-  : m_global(new GlobalMemory), m_local()
+  : global_(new GlobalMemory), local_()
 {
   connectIntVarPointers();
 
@@ -100,7 +100,7 @@ Memory::Memory(Gameexe& gameexe)
 // -----------------------------------------------------------------------
 
 Memory::Memory(RLMachine& machine, int slot)
-  : m_global(machine.memory().m_global), m_local(dont_initialize())
+  : global_(machine.memory().global_), local_(dont_initialize())
 {
   connectIntVarPointers();
 }
@@ -115,15 +115,15 @@ Memory::~Memory()
 
 void Memory::connectIntVarPointers()
 {
-  intVar[0] = m_local.intA;
-  intVar[1] = m_local.intB;
-  intVar[2] = m_local.intC;
-  intVar[3] = m_local.intD;
-  intVar[4] = m_local.intE;
-  intVar[5] = m_local.intF;
-  intVar[6] = m_global->intG;
-  intVar[7] = m_global->intZ;
-  intVar[8] = m_local.intL;
+  intVar[0] = local_.intA;
+  intVar[1] = local_.intB;
+  intVar[2] = local_.intC;
+  intVar[3] = local_.intD;
+  intVar[4] = local_.intE;
+  intVar[5] = local_.intF;
+  intVar[6] = global_->intG;
+  intVar[7] = global_->intZ;
+  intVar[8] = local_.intL;
 }
 
 // -----------------------------------------------------------------------
@@ -137,9 +137,9 @@ const std::string& Memory::getStringValue(int type, int location)
   case STRK_LOCATION:
     if(location > 2)
       throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
-    return m_local.strK[location];
-  case STRM_LOCATION: return m_global->strM[location];
-  case STRS_LOCATION: return m_local.strS[location];
+    return local_.strK[location];
+  case STRM_LOCATION: return global_->strM[location];
+  case STRS_LOCATION: return local_.strS[location];
   default:
     throw rlvm::Exception("Invalid type in RLMachine::getStringValue");
   }
@@ -156,13 +156,13 @@ void Memory::setStringValue(int type, int number, const std::string& value)
   case STRK_LOCATION:
     if(number > 2)
       throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
-    m_local.strK[number] = value;
+    local_.strK[number] = value;
     break;
   case STRM_LOCATION:
-    m_global->strM[number] = value;
+    global_->strM[number] = value;
     break;
   case STRS_LOCATION:
-    m_local.strS[number] = value;
+    local_.strS[number] = value;
     break;
   default:
     throw rlvm::Exception("Invalid type in RLMachine::setStringValue");
@@ -185,7 +185,7 @@ void Memory::checkNameIndex(int index, const std::string& name) const
 void Memory::setName(int index, const std::string& name)
 {
   checkNameIndex(index, "Memory::setName");
-  m_global->globalNames[index] = name;
+  global_->globalNames[index] = name;
 }
 
 // -----------------------------------------------------------------------
@@ -193,7 +193,7 @@ void Memory::setName(int index, const std::string& name)
 const std::string& Memory::getName(int index) const
 {
   checkNameIndex(index, "Memory::getName");
-  return m_global->globalNames[index];
+  return global_->globalNames[index];
 }
 
 // -----------------------------------------------------------------------
@@ -201,7 +201,7 @@ const std::string& Memory::getName(int index) const
 void Memory::setLocalName(int index, const std::string& name)
 {
   checkNameIndex(index, "Memory::setLocalName");
-  m_local.localNames[index] = name;
+  local_.localNames[index] = name;
 }
 
 // -----------------------------------------------------------------------
@@ -209,7 +209,7 @@ void Memory::setLocalName(int index, const std::string& name)
 const std::string& Memory::getLocalName(int index) const
 {
   checkNameIndex(index, "Memory::setLocalName");
-  return m_local.localNames[index];
+  return local_.localNames[index];
 }
 
 // -----------------------------------------------------------------------

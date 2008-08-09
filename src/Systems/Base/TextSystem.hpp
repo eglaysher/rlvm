@@ -84,17 +84,17 @@ protected:
    * @{
    */
   /// Whether Auto mode is enabled
-  bool m_autoMode;
+  bool auto_mode_;
   /// @}
 
   /// Whether holding down the control key will skip text.
-  bool m_ctrlKeySkip;
+  bool ctrl_key_skip_;
 
   /// Fast text mode
-  bool m_fastTextMode;
+  bool fast_text_mode_;
 
   /// Internal 'no wait' flag
-  bool m_messageNoWait;
+  bool message_no_wait_;
 
   /**
    * @name Textwindow Management
@@ -102,13 +102,13 @@ protected:
    * @{
    */
   /// Sets which window is the current active window.
-  int m_activeWindow;
+  int active_window_;
 
   /// Type of the Window storage
   typedef boost::ptr_map<int, TextWindow> WindowMap;
 
   /// Storage of active windows
-  WindowMap m_textWindow;
+  WindowMap text_window_;
   /// @}
 
   /**
@@ -118,48 +118,48 @@ protected:
    */
 
   /// Whether we are reading the backlog
-  bool m_isReadingBacklog;
+  bool is_reading_backlog_;
 
   /// Internal structure used to keep track of the state of
   typedef boost::ptr_map<int, TextPage> PageSet;
 
   /// The current page set. Represents what is on the screen right now.
-  std::auto_ptr<PageSet> m_currentPageset;
+  std::auto_ptr<PageSet> current_pageset_;
 
   /// Previous Text Pages. The TextSystem owns the list of previous
   /// pages because multiple windows can be displayed in one text page.
-  boost::ptr_list<PageSet> m_previousPageSets;
+  boost::ptr_list<PageSet> previous_page_sets_;
 
-  /// When m_previousPageIt == m_previousPages.end(), m_activePage is
+  /// When previous_page_it_ == previous_pages_.end(), active_page_ is
   /// currently being rendered to the screen. When it is any valid
-  /// iterator pointing into m_previousPages, that is the current page
+  /// iterator pointing into previous_pages_, that is the current page
   /// being rendered.
-  boost::ptr_list<PageSet>::iterator m_previousPageIt;
+  boost::ptr_list<PageSet>::iterator previous_page_it_;
 
   /// Whether we are in a state where the interpreter is pause()d.
-  bool m_inPauseState;
+  bool in_pause_state_;
 
   /// @}
 
-  boost::shared_ptr<TextKeyCursor> m_textKeyCursor;
+  boost::shared_ptr<TextKeyCursor> text_key_cursor_;
 
   /**
    * @name Global Window Button Toggles
    *
    * @{
    */
-  bool m_moveUse, m_clearUse, m_readJumpUse, m_automodeUse, m_msgbkUse,
-    m_msgbkleftUse, m_msgbkrightUse, m_exbtnUse;
+  bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
+    msgbkleft_use_, msgbkright_use_, exbtn_use_;
 
   void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
   /// @}
 
-  TextSystemGlobals m_globals;
+  TextSystemGlobals globals_;
 
-  bool m_systemVisible;
+  bool system_visible_;
 
   /**
-   * Reduces the number of page snapshots in m_previousPageSets down to a
+   * Reduces the number of page snapshots in previous_page_sets_ down to a
    * manageable constant number.
    */
   void expireOldPages();
@@ -175,8 +175,8 @@ public:
    *
    * @{
    */
-  void setSystemVisible(bool in) { m_systemVisible = in; }
-  bool systemVisible() const { return m_systemVisible; }
+  void setSystemVisible(bool in) { system_visible_ = in; }
+  bool systemVisible() const { return system_visible_; }
   /// @}
 
   /**
@@ -196,10 +196,10 @@ public:
 
   /// @}
 
-  void setInPauseState(bool in) { m_inPauseState = in; }
+  void setInPauseState(bool in) { in_pause_state_ = in; }
 
-  int activeWindow() const { return m_activeWindow; }
-  void setActiveWindow(int window) { m_activeWindow = window; }
+  int activeWindow() const { return active_window_; }
+  void setActiveWindow(int window) { active_window_ = window; }
 
   std::vector<int> activeWindows();
 
@@ -216,7 +216,7 @@ public:
 
   /**
    * Get the active page. This function will return
-   * m_windows[m_activeWindow].page().
+   * windows_[active_window_].page().
    */
   TextPage& currentPage(RLMachine& machine);
 
@@ -249,14 +249,14 @@ public:
    *
    * @{
    */
-  void setAutoMode(int i) { m_autoMode = (bool)i; }
-  int autoMode() const { return (int)m_autoMode; }
+  void setAutoMode(int i) { auto_mode_ = (bool)i; }
+  int autoMode() const { return (int)auto_mode_; }
 
-  void setAutoBaseTime(int i) { m_globals.autoModeBaseTime = i; }
-  int autoBaseTime() const { return m_globals.autoModeBaseTime; }
+  void setAutoBaseTime(int i) { globals_.autoModeBaseTime = i; }
+  int autoBaseTime() const { return globals_.autoModeBaseTime; }
 
-  void setAutoCharTime(int i) { m_globals.autoModeCharTime = i; }
-  int autoCharTime() const { return m_globals.autoModeCharTime; }
+  void setAutoCharTime(int i) { globals_.autoModeCharTime = i; }
+  int autoCharTime() const { return globals_.autoModeCharTime; }
 
   int getAutoTime(int numChars);
   /// @}
@@ -270,17 +270,17 @@ public:
    */
   int cursorNumber() const;
 
-  void setCtrlKeySkip(int i) { m_ctrlKeySkip = i; }
-  int ctrlKeySkip() const { return m_ctrlKeySkip; }
+  void setCtrlKeySkip(int i) { ctrl_key_skip_ = i; }
+  int ctrlKeySkip() const { return ctrl_key_skip_; }
 
-  void setFastTextMode(int i) { m_fastTextMode = i; }
-  int fastTextMode() const { return m_fastTextMode; }
+  void setFastTextMode(int i) { fast_text_mode_ = i; }
+  int fastTextMode() const { return fast_text_mode_; }
 
-  void setMessageNoWait(int i) { m_messageNoWait = i; }
-  int messageNoWait() const { return m_messageNoWait; }
+  void setMessageNoWait(int i) { message_no_wait_ = i; }
+  int messageNoWait() const { return message_no_wait_; }
 
-  void setMessageSpeed(int i) { m_globals.messageSpeed = i; }
-  int messageSpeed() const { return m_globals.messageSpeed; }
+  void setMessageSpeed(int i) { globals_.messageSpeed = i; }
+  int messageSpeed() const { return globals_.messageSpeed; }
 
   /**
    * @name Window Attr Related functions
@@ -292,19 +292,19 @@ public:
    * @{
    */
   virtual void setDefaultWindowAttr(const std::vector<int>& attr);
-  std::vector<int> windowAttr() const { return m_globals.windowAttr; }
+  std::vector<int> windowAttr() const { return globals_.windowAttr; }
 
-  int windowAttrR() const { return m_globals.windowAttr.at(0); }
-  int windowAttrG() const { return m_globals.windowAttr.at(1); }
-  int windowAttrB() const { return m_globals.windowAttr.at(2); }
-  int windowAttrA() const { return m_globals.windowAttr.at(3); }
-  int windowAttrF() const { return m_globals.windowAttr.at(4); }
+  int windowAttrR() const { return globals_.windowAttr.at(0); }
+  int windowAttrG() const { return globals_.windowAttr.at(1); }
+  int windowAttrB() const { return globals_.windowAttr.at(2); }
+  int windowAttrA() const { return globals_.windowAttr.at(3); }
+  int windowAttrF() const { return globals_.windowAttr.at(4); }
 
-  virtual void setWindowAttrR(int i) { m_globals.windowAttr.at(0) = i; }
-  virtual void setWindowAttrG(int i) { m_globals.windowAttr.at(1) = i; }
-  virtual void setWindowAttrB(int i) { m_globals.windowAttr.at(2) = i; }
-  virtual void setWindowAttrA(int i) { m_globals.windowAttr.at(3) = i; }
-  virtual void setWindowAttrF(int i) { m_globals.windowAttr.at(4) = i; }
+  virtual void setWindowAttrR(int i) { globals_.windowAttr.at(0) = i; }
+  virtual void setWindowAttrG(int i) { globals_.windowAttr.at(1) = i; }
+  virtual void setWindowAttrB(int i) { globals_.windowAttr.at(2) = i; }
+  virtual void setWindowAttrA(int i) { globals_.windowAttr.at(3) = i; }
+  virtual void setWindowAttrF(int i) { globals_.windowAttr.at(4) = i; }
   /// @}
 
   /**
@@ -312,14 +312,14 @@ public:
    *
    * @{
    */
-  bool windowMoveUse() const { return m_moveUse; }
-  bool windowClearUse() const { return m_clearUse; }
-  bool windowReadJumpUse() const { return m_readJumpUse; }
-  bool windowAutomodeUse() const { return m_automodeUse; }
-  bool windowMsgbkUse() const { return m_msgbkUse; }
-  bool windowMsgbkleftUse() const { return m_msgbkleftUse; }
-  bool windowMsgbkrightUse() const { return m_msgbkrightUse; }
-  bool windowExbtnUse() const { return m_exbtnUse; }
+  bool windowMoveUse() const { return move_use_; }
+  bool windowClearUse() const { return clear_use_; }
+  bool windowReadJumpUse() const { return read_jump_use_; }
+  bool windowAutomodeUse() const { return automode_use_; }
+  bool windowMsgbkUse() const { return msgbk_use_; }
+  bool windowMsgbkleftUse() const { return msgbkleft_use_; }
+  bool windowMsgbkrightUse() const { return msgbkright_use_; }
+  bool windowExbtnUse() const { return exbtn_use_; }
 
   /// Update the mouse cursor.
   virtual void setMousePosition(RLMachine& machine, const Point& pos) = 0;
@@ -337,7 +337,7 @@ public:
 	int yspace, int colour) = 0;
   /// @}
 
-  TextSystemGlobals& globals() { return m_globals; }
+  TextSystemGlobals& globals() { return globals_; }
 
   /**
    * Resets non-configuration values (so we can load games).

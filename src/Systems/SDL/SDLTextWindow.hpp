@@ -41,28 +41,28 @@ class SDLTextWindow : public TextWindow
 {
 private:
   ///
-  std::string m_currentValue;
+  std::string current_value_;
 
   /// Converted surface for uploading.
-  boost::shared_ptr<SDLSurface> m_surface;
+  boost::shared_ptr<SDLSurface> surface_;
 
   /// Font being used.
-  boost::shared_ptr<TTF_Font> m_font;
-  boost::shared_ptr<TTF_Font> m_rubyFont;
+  boost::shared_ptr<TTF_Font> font_;
+  boost::shared_ptr<TTF_Font> ruby_font_;
 
   /// Insertion point for text.
-  int m_insertionPointX, m_insertionPointY;
+  int insertion_point_x_, insertion_point_y_;
 
   /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
   /// been called)
-  int m_rubyBeginPoint;
+  int ruby_begin_point_;
 
-  boost::shared_ptr<SDLSurface> m_wakuMain;
-  boost::shared_ptr<SDLSurface> m_wakuBacking;
-  boost::shared_ptr<SDLSurface> m_wakuButton;
+  boost::shared_ptr<SDLSurface> waku_main_;
+  boost::shared_ptr<SDLSurface> waku_backing_;
+  boost::shared_ptr<SDLSurface> waku_button_;
 
   typedef boost::ptr_vector<SelectionElement> Selections;
-  Selections m_selections;
+  Selections selections_;
 
   void setIndentation();
 

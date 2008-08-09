@@ -66,7 +66,7 @@ void GraphicsTextObject::updateSurface(RLMachine& machine,
                                        const GraphicsObject& rp)
 {
   m_cachedUtf8str = rp.textText();
-  m_surface = machine.system().text().renderText(
+  surface_ = machine.system().text().renderText(
     machine, m_cachedUtf8str, rp.textSize(), rp.textXSpace(),
 	rp.textYSpace(), rp.textColour());
 }
@@ -75,7 +75,7 @@ void GraphicsTextObject::updateSurface(RLMachine& machine,
 
 bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
 {
-  return !m_surface || rp.textText() != m_cachedUtf8str;
+  return !surface_ || rp.textText() != m_cachedUtf8str;
 }
 
 // -----------------------------------------------------------------------
@@ -86,7 +86,7 @@ void GraphicsTextObject::render(RLMachine& machine,
   if(needsUpdate(rp))
 	updateSurface(machine, rp);
 
-  m_surface->renderToScreenAsObject(rp);
+  surface_->renderToScreenAsObject(rp);
 }
 
 // -----------------------------------------------------------------------
@@ -96,7 +96,7 @@ int GraphicsTextObject::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
   if(needsUpdate(rp))
     updateSurface(machine, rp);
 
-  return int((rp.width() / 100.0f) * m_surface->size().width());
+  return int((rp.width() / 100.0f) * surface_->size().width());
 }
 
 // -----------------------------------------------------------------------
@@ -106,7 +106,7 @@ int GraphicsTextObject::pixelHeight(RLMachine& machine, const GraphicsObject& rp
   if(needsUpdate(rp))
     updateSurface(machine, rp);
 
-  return int((rp.height() / 100.0f) * m_surface->size().height());
+  return int((rp.height() / 100.0f) * surface_->size().height());
 }
 
 // -----------------------------------------------------------------------
@@ -125,7 +125,7 @@ void GraphicsTextObject::load(Archive& ar, unsigned int version)
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
 
   m_cachedUtf8str = "";
-  m_surface.reset();
+  surface_.reset();
 }
 
 // -----------------------------------------------------------------------

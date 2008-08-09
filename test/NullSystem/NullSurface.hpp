@@ -72,7 +72,7 @@ private:
   Size size_;
 
   /// The region table
-  std::vector<GrpRect> m_regionTable;
+  std::vector<GrpRect> region_table_;
 
   mutable MockLog surface_log_;
 };

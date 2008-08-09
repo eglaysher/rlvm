@@ -40,7 +40,7 @@ MappedRLModule::MappedRLModule(
   const MappingFunction& fun, const std::string& inModuleName,
   int inModuleType, int inModuleNumber)
   : RLModule(inModuleName, inModuleType, inModuleNumber),
-    m_mapFunction(fun)
+    map_function_(fun)
 {
 
 }
@@ -54,5 +54,5 @@ MappedRLModule::~MappedRLModule()
 
 void MappedRLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
 {
-  RLModule::addOpcode(opcode, overload, m_mapFunction(op));
+  RLModule::addOpcode(opcode, overload, map_function_(op));
 }

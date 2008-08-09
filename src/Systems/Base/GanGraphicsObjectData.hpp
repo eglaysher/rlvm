@@ -62,12 +62,12 @@ private:
   typedef std::vector< std::vector<Frame> > AnimationSets;
   AnimationSets animationSets;
 
-  std::string m_ganFilename;
-  std::string m_imgFilename;
+  std::string gan_filename_;
+  std::string img_filename_;
 
-  int m_currentSet;
-  int m_currentFrame;
-  int m_timeAtLastFrameChange;
+  int current_set_;
+  int current_frame_;
+  int time_at_last_frame_change_;
 
   /// The image the above coordinates map into.
   boost::shared_ptr<Surface> image;

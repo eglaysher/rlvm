@@ -107,9 +107,9 @@ private:
   friend class Gameexe;
   friend class GameexeFilteringIterator;
 
-  const std::string m_key;
-  GameexeData_t::const_iterator m_iterator;
-  Gameexe& m_objectToLookupOn;
+  const std::string key_;
+  GameexeData_t::const_iterator iterator_;
+  Gameexe& object_to_lookup_on_;
 
   /**
    * Private; only allow construction by Gameexe
@@ -127,7 +127,7 @@ public:
   template<typename A>
   GameexeInterpretObject operator()(const A& nextKey)
   {
-    return m_objectToLookupOn(m_key, nextKey);
+    return object_to_lookup_on_(key_, nextKey);
   }
 
   /**
@@ -198,7 +198,7 @@ public:
   bool exists() const;
 
   const std::string& key() const {
-    return m_key;
+    return key_;
   }
 
   /**

@@ -58,7 +58,7 @@ struct SystemGlobals
   SystemGlobals();
 
   /// Whether we should put up a yes/no dialog box when saving/loading.
-  bool m_confirmSaveLoad;
+  bool confirm_save_load_;
 
   /**
    * From the rldev documentation:
@@ -71,16 +71,16 @@ struct SystemGlobals
    * I suspect that this is a placebo. I'll track the value, but I don't think
    * it's relevant to anything.
    */
-  bool m_lowPriority;
+  bool low_priority_;
 
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
   {
-    ar & m_confirmSaveLoad;
+    ar & confirm_save_load_;
 
     if (version > 0)
-      ar & m_lowPriority;
+      ar & low_priority_;
   }
 };
 
@@ -104,7 +104,7 @@ class System
 {
 private:
   /// The visibility status for all syscom entries
-  int m_syscomStatus[NUM_SYSCOM_ENTRIES];
+  int syscom_status_[NUM_SYSCOM_ENTRIES];
 
   void checkSyscomIndex(int index, const char* function);
 
@@ -112,7 +112,7 @@ private:
 
   void addPath(GameexeInterpretObject gio);
 
-  SystemGlobals m_globals;
+  SystemGlobals globals_;
 
   friend class boost::serialization::access;
 
@@ -194,11 +194,11 @@ public:
    *
    * @{
    */
-  bool confirmSaveLoad() const { return m_globals.m_confirmSaveLoad; }
-  void setConfirmSaveLoad(const int in) { m_globals.m_confirmSaveLoad = in; }
+  bool confirmSaveLoad() const { return globals_.confirm_save_load_; }
+  void setConfirmSaveLoad(const int in) { globals_.confirm_save_load_ = in; }
 
-  bool lowPriority() const { return m_globals.m_lowPriority; }
-  void setLowPriority(const int in) { m_globals.m_lowPriority = in; }
+  bool lowPriority() const { return globals_.low_priority_; }
+  void setLowPriority(const int in) { globals_.low_priority_ = in; }
   /// @}
 
   const std::vector<boost::filesystem::path>& getSearchPaths();
@@ -217,7 +217,7 @@ public:
   virtual void reset();
 
   /// Returns the global state for saving/restoring
-  SystemGlobals& globals() { return m_globals; }
+  SystemGlobals& globals() { return globals_; }
 
   /**
    * Returns a boost::filesystem object which points to the directory

@@ -63,22 +63,22 @@ class SDLMusic : public boost::noncopyable,
 {
 private:
   /// Underlying data stream. (These classes stolen from xclannad.)
-  WAVFILE* m_file;
+  WAVFILE* file_;
 
   /// The underlying track information
-  const SoundSystem::DSTrack& m_track;
+  const SoundSystem::DSTrack& track_;
 
   /// No idea.
-  int m_fadeCount;
+  int fade_count_;
 
   /// Number of milliseconds left to fade out the
-  int m_fadetimeTotal;
+  int fadetime_total_;
 
   /// The starting loop point.
-  int m_loopPoint;
+  int loop_point_;
 
   /// Whether the music is currently paused.
-  bool m_musicPaused;
+  bool music_paused_;
 
   /// The currently playing track.
   static boost::shared_ptr<SDLMusic> s_currentlyPlaying;
@@ -110,7 +110,7 @@ private:
   SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav);
 
   /**
-   * Initializes the m_loopPoint variable to either the looping point
+   * Initializes the loop_point_ variable to either the looping point
    * for the track or a value which signals that we don't want to
    * loop.
    *

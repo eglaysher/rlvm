@@ -85,31 +85,31 @@ private:
   };
 
   /// The SDL_Surface that contains the software version of the bitmap.
-  SDL_Surface* m_surface;
+  SDL_Surface* surface_;
 
   /// The region table
-  std::vector<GrpRect> m_regionTable;
+  std::vector<GrpRect> region_table_;
 
   /// The SDLTexture which wraps one or more OpenGL textures
-  std::vector<TextureRecord> m_textures;
+  std::vector<TextureRecord> textures_;
 
-  /// Whether m_texture represents the contents of m_surface. Blits
+  /// Whether texture_ represents the contents of surface_. Blits
   /// from surfaces to surfaces invalidate the target surfaces's
   /// texture.
-  bool m_textureIsValid;
+  bool texture_is_valid_;
 
   /// A pointer to the graphicsSystem. This item being non-NULL means
   /// that this Surface is the special DC0.
-  SDLGraphicsSystem* m_graphicsSystem;
+  SDLGraphicsSystem* graphics_system_;
 
   /**
-   * Makes sure that m_texture is a valid object and that it's
+   * Makes sure that texture_ is a valid object and that it's
    * updated. This method should be called before doing anything with
-   * m_texture.
+   * texture_.
    */
   void uploadTextureIfNeeded();
 
-  bool m_isMask;
+  bool is_mask_;
 
   static std::vector<int> segmentPicture(int sizeRemainging);
 
@@ -128,7 +128,7 @@ public:
   SDLSurface(const Size& size);
   ~SDLSurface();
 
-  void setIsMask(const bool is) { m_isMask = is; }
+  void setIsMask(const bool is) { is_mask_ = is; }
 
   void buildRegionTable(const Size& size);
 
@@ -144,7 +144,7 @@ public:
 
   operator SDL_Surface*()
   {
-    return m_surface;
+    return surface_;
   }
 
   /// Blits to another surface
@@ -174,7 +174,7 @@ public:
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const GraphicsObjectOverride& override);
 
-  /// Called after each change to m_surface. Marks the texture as
+  /// Called after each change to surface_. Marks the texture as
   /// invalid and notifies SDLGraphicsSystem when appropriate.
   void markWrittenTo();
 
@@ -190,7 +190,7 @@ public:
   virtual void fill(const RGBAColour& colour);
   virtual void fill(const RGBAColour& colour, const Rect& area);
 
-  SDL_Surface* surface() { return m_surface; }
+  SDL_Surface* surface() { return surface_; }
 
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);

@@ -70,7 +70,7 @@ public:
   void set(EventSystem& events, unsigned int value = 0);
 
 private:
-  unsigned int m_timeAtLastSet;
+  unsigned int time_at_last_set_;
 };
 
 #endif

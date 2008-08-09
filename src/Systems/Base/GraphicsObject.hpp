@@ -71,39 +71,39 @@ public:
   /// This code, while a boolean, uses an int so that we can get rid
   /// of one template parameter in one of the generic operation
   /// functors.
-  int visible() const { return m_impl->m_visible; }
+  int visible() const { return impl_->visible_; }
   void setVisible(const int in);
 
-  int x() const { return m_impl->m_x; }
+  int x() const { return impl_->x_; }
   void setX(const int x);
 
-  int y() const { return m_impl->m_y; }
+  int y() const { return impl_->y_; }
   void setY(const int y);
 
-  int xAdjustment(int idx) const { return m_impl->m_adjustX[idx]; }
+  int xAdjustment(int idx) const { return impl_->adjust_x_[idx]; }
   int xAdjustmentSum() const;
   void setXAdjustment(int idx, int x);
 
-  int yAdjustment(int idx) const { return m_impl->m_adjustY[idx]; }
+  int yAdjustment(int idx) const { return impl_->adjust_y_[idx]; }
   int yAdjustmentSum() const;
   void setYAdjustment(int idx, int y);
 
-  int vert() const { return m_impl->m_whateverAdjustVertOperatesOn; }
+  int vert() const { return impl_->whatever_adjust_vert_operates_on_; }
   void setVert(const int vert);
 
-  int xOrigin() const { return m_impl->m_originX; }
+  int xOrigin() const { return impl_->origin_x_; }
   void setXOrigin(const int x);
 
-  int yOrigin() const { return m_impl->m_originY; }
+  int yOrigin() const { return impl_->origin_y_; }
   void setYOrigin(const int y);
 
-  int width() const { return m_impl->m_width; }
+  int width() const { return impl_->width_; }
   void setWidth(const int in);
 
-  int height() const { return m_impl->m_height; }
+  int height() const { return impl_->height_; }
   void setHeight(const int in);
 
-  int rotation() const { return m_impl->m_rotation; }
+  int rotation() const { return impl_->rotation_; }
   void setRotation(const int in);
 
   int pixelWidth(RLMachine& machine) const;
@@ -117,56 +117,56 @@ public:
    * @{
    */
 
-  int pattNo() const { return m_impl->m_pattNo; }
+  int pattNo() const { return impl_->patt_no_; }
   void setPattNo(const int in);
 
-  int mono() const { return m_impl->m_mono; }
+  int mono() const { return impl_->mono_; }
   void setMono(const int in);
 
-  int invert() const { return m_impl->m_invert; }
+  int invert() const { return impl_->invert_; }
   void setInvert(const int in);
 
-  int light() const { return m_impl->m_light; }
+  int light() const { return impl_->light_; }
   void setLight(const int in);
 
-  const RGBColour& tint() const { return m_impl->m_tint; }
+  const RGBColour& tint() const { return impl_->tint_; }
   void setTint(const RGBColour& color);
   void setTintR(const int in);
   void setTintG(const int in);
   void setTintB(const int in);
 
-  const RGBAColour& colour() const { return m_impl->m_colour; }
+  const RGBAColour& colour() const { return impl_->colour_; }
   void setColour(const RGBAColour& color);
   void setColourR(const int in);
   void setColourG(const int in);
   void setColourB(const int in);
   void setColourLevel(const int in);
 
-  int compositeMode() const { return m_impl->m_compositeMode; }
+  int compositeMode() const { return impl_->composite_mode_; }
   void setCompositeMode(const int in);
 
-  int scrollRateX() const { return m_impl->m_scrollRateX; }
+  int scrollRateX() const { return impl_->scroll_rate_x_; }
   void setScrollRateX(const int x);
 
-  int scrollRateY() const { return m_impl->m_scrollRateY; }
+  int scrollRateY() const { return impl_->scroll_rate_y_; }
   void setScrollRateY(const int y);
 
   /// @}
 
-  int alpha() const { return m_impl->m_alpha; }
+  int alpha() const { return impl_->alpha_; }
   void setAlpha(const int alpha);
 
   bool hasClip() const {
-    return m_impl->m_clip.width() >= 0 || m_impl->m_clip.height() >= 0;
+    return impl_->clip_.width() >= 0 || impl_->clip_.height() >= 0;
   }
   void clearClip();
   void setClip(const Rect& rec);
-  int clipX1() const { return m_impl->m_clip.x(); }
-  int clipY1() const { return m_impl->m_clip.y(); }
-  int clipX2() const { return m_impl->m_clip.x2(); }
-  int clipY2() const { return m_impl->m_clip.y2(); }
+  int clipX1() const { return impl_->clip_.x(); }
+  int clipY1() const { return impl_->clip_.y(); }
+  int clipX2() const { return impl_->clip_.x2(); }
+  int clipY2() const { return impl_->clip_.y2(); }
 
-  bool hasObjectData() const { return m_objectData; }
+  bool hasObjectData() const { return object_data_; }
 
   GraphicsObjectData& objectData();
   void setObjectData(GraphicsObjectData* obj);
@@ -185,7 +185,7 @@ public:
    */
   void clearObject();
 
-  int wipeCopy() const { return m_impl->m_wipeCopy; }
+  int wipeCopy() const { return impl_->wipe_copy_; }
   void setWipeCopy(const int wipeCopy);
 
   /**
@@ -216,7 +216,7 @@ public:
    * Returns the number of GraphicsObject instances sharing the
    * internal copy-on-write object.
    */
-  long referenceCount() const { return m_impl.use_count(); }
+  long referenceCount() const { return impl_.use_count(); }
 
 private:
   /**
@@ -249,31 +249,31 @@ private:
      */
 
     /// Visiblitiy. Different from whether an object is in the bg or fg layer
-    bool m_visible;
+    bool visible_;
 
     /// The positional coordinates of the object
-    int m_x, m_y;
+    int x_, y_;
 
     /// Eight additional parameters that are added to x and y during
     /// rendering. (WTF?!)
-    int m_adjustX[8], m_adjustY[8];
+    int adjust_x_[8], adjust_y_[8];
 
     /// Whatever objAdjustVert operates on; what's this used for?
-    int m_whateverAdjustVertOperatesOn;
+    int whatever_adjust_vert_operates_on_;
 
     /// The origin
-    int m_originX, m_originY;
+    int origin_x_, origin_y_;
 
     /// "Rep" origin. This second origin is added to the normal origin
     /// only in cases of rotating and scaling.
-    int m_repOriginX, m_repOriginY;
+    int rep_origin_x_, rep_origin_y_;
 
     /// The size of the object, given in integer percentages of [0,
     /// 100]. Used for scaling.
-    int m_width, m_height;
+    int width_, height_;
 
     /// The rotation degree / 10
-    int m_rotation;
+    int rotation_;
 
     /// @}
 
@@ -286,31 +286,31 @@ private:
      */
 
     /// The region ("pattern") in g00 bitmaps
-    int m_pattNo;
+    int patt_no_;
 
     /// The source alpha for this image
-    int m_alpha;
+    int alpha_;
 
     /// The clipping region for this image
-    Rect m_clip;
+    Rect clip_;
 
     /// The monochrome transformation
-    int m_mono;
+    int mono_;
 
     /// The invert transformation
-    int m_invert;
+    int invert_;
 
-    int m_light;
+    int light_;
 
-    RGBColour m_tint;
+    RGBColour tint_;
 
     /// Applies a colour to the object by blending it directly at the
     /// alpha components opacity.
-    RGBAColour m_colour;
+    RGBAColour colour_;
 
-    int m_compositeMode;
+    int composite_mode_;
 
-    int m_scrollRateX, m_scrollRateY;
+    int scroll_rate_x_, scroll_rate_y_;
 
     /// @}
 
@@ -356,12 +356,12 @@ private:
     };
 
     void makeSureHaveTextProperties();
-    boost::scoped_ptr<TextProperties> m_textProperties;
+    boost::scoped_ptr<TextProperties> text_properties_;
 
     /// @}
 
     /// The wipeCopy bit
-    int m_wipeCopy;
+    int wipe_copy_;
 
     friend class boost::serialization::access;
 
@@ -372,16 +372,16 @@ private:
 
   /**
    * Default empty GraphicsObject::Impl. This variable is allocated
-   * once, and then is used as the initial value of m_impl, where it
+   * once, and then is used as the initial value of impl_, where it
    * is cloned on write.
    */
   static const boost::shared_ptr<GraphicsObject::Impl> s_emptyImpl;
 
   /// Our actual implementation data
-  boost::shared_ptr<GraphicsObject::Impl> m_impl;
+  boost::shared_ptr<GraphicsObject::Impl> impl_;
 
   /// The actual data used to render the object
-  boost::scoped_ptr<GraphicsObjectData> m_objectData;
+  boost::scoped_ptr<GraphicsObjectData> object_data_;
 
   friend class boost::serialization::access;
 

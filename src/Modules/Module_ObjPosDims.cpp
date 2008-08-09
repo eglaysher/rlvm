@@ -54,13 +54,13 @@ using namespace std;
 struct Obj_objGetPos
   : public RLOp_Void_3< IntConstant_T, IntReference_T, IntReference_T >
 {
-  int m_layer;
-  Obj_objGetPos(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objGetPos(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int objNum, IntReferenceIterator xIt,
                   IntReferenceIterator yIt)
   {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, objNum);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, objNum);
     *xIt = obj.x();
     *yIt = obj.y();
   }
@@ -77,13 +77,13 @@ struct Obj_objGetDims
   : public RLOp_Void_4< IntConstant_T, IntReference_T, IntReference_T,
                         DefaultIntValue_T<4> >
 {
-  int m_layer;
-  Obj_objGetDims(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objGetDims(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int objNum, IntReferenceIterator widthIt,
                   IntReferenceIterator heightIt, int unknown)
   {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, objNum);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, objNum);
     *widthIt = obj.pixelWidth(machine);
     *heightIt = obj.pixelHeight(machine);
   }

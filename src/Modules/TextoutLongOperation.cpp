@@ -58,26 +58,26 @@ using namespace std;
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
   : EventHandler(machine),
-    m_utf8string(utf8string), m_currentCodepoint(0),
-    m_currentPosition(m_utf8string.begin()), m_noWait(false)
+    m_utf8string(utf8string), current_codepoint_(0),
+    current_position_(m_utf8string.begin()), no_wait_(false)
 {
   // Retrieve the first character (prime the loop in operator())
-  string::iterator tmp = m_currentPosition;
+  string::iterator tmp = current_position_;
   if(tmp == m_utf8string.end())
   {
-    m_currentChar = "";
+    current_char_ = "";
   }
   else
   {
-    m_currentCodepoint = utf8::next(tmp, m_utf8string.end());
-    m_currentChar = string(m_currentPosition, tmp);
-    m_currentPosition = tmp;
+    current_codepoint_ = utf8::next(tmp, m_utf8string.end());
+    current_char_ = string(current_position_, tmp);
+    current_position_ = tmp;
   }
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
   if(machine.system().text().currentPage(machine).inRubyGloss())
-    m_noWait = true;
+    no_wait_ = true;
 
   // Force the renderer into a draw mode where we'll display the text
   // (this corrects an issue in Planetarian's preset bookmarks)
@@ -97,7 +97,7 @@ void TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed)
 {
   if(pressed && mouseButton == MOUSE_LEFT)
-    m_noWait = true;
+    no_wait_ = true;
 }
 
 // -----------------------------------------------------------------------
@@ -105,7 +105,7 @@ void TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 void TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
   if(pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL))
-    m_noWait = true;
+    no_wait_ = true;
 }
 
 // -----------------------------------------------------------------------
@@ -133,7 +133,7 @@ bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine)
 bool TextoutLongOperation::displayName(RLMachine& machine)
 {
   // Ignore the starting bracket
-  string::iterator it = m_currentPosition;
+  string::iterator it = current_position_;
   string::iterator curend = it;
   string::iterator strend = m_utf8string.end();
   int codepoint = utf8::next(it, strend);
@@ -150,20 +150,20 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
                       " but missing closing bracket.");
 
   // Grab the name
-  string name(m_currentPosition, curend);
+  string name(current_position_, curend);
 
   // Consume the next character
-  m_currentPosition = it;
+  current_position_ = it;
 
   if(it != strend)
   {
-    m_currentCodepoint = utf8::next(it, strend);
-    m_currentChar = string(m_currentPosition, it);
-    m_currentPosition = it;
+    current_codepoint_ = utf8::next(it, strend);
+    current_char_ = string(current_position_, it);
+    current_position_ = it;
   }
 
   TextPage& page = machine.system().text().currentPage(machine);
-  page.name(name, m_currentChar);
+  page.name(name, current_char_);
 
   // Stop if this was the end of input
   return it == strend;
@@ -174,7 +174,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
 bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
                                                    bool& paused)
 {
-  if(m_currentCodepoint == 0x3010)
+  if(current_codepoint_ == 0x3010)
   {
     // The current character is the opening character for a name. We
     // treat names as a single display operation
@@ -183,7 +183,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
   else
   {
     // Isolate the next character
-    string::iterator it = m_currentPosition;
+    string::iterator it = current_position_;
     string::iterator strend = m_utf8string.end();
 
     if(it != strend)
@@ -192,23 +192,23 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       TextPage& page = machine.system().text().currentPage(machine);
       if(codepoint)
       {
-        string nextChar(m_currentPosition, it);
-        bool rendered = page.character(m_currentChar, nextChar);
+        string nextChar(current_position_, it);
+        bool rendered = page.character(current_char_, nextChar);
 
         // Check to see if this character was rendered to the screen. If
         // this is false, then the page is probably full and the check
         // later on will do something about that.
         if(rendered)
         {
-          m_currentChar = nextChar;
-          m_currentPosition = it;
+          current_char_ = nextChar;
+          current_position_ = it;
         }
       }
       else
       {
         // advance to the next character if we've somehow hit an
         // embedded NULL that isn't the end of the string
-        m_currentPosition = it;
+        current_position_ = it;
       }
 
       // Call the pause operation if we've filled up the current page.
@@ -225,7 +225,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
     else
     {
       machine.system().text().currentPage(machine).
-        character(m_currentChar, "");
+        character(current_char_, "");
 
       return true;
     }
@@ -240,7 +240,7 @@ bool TextoutLongOperation::operator()(RLMachine& machine)
   if(!machine.system().text().systemVisible())
     throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
 
-  if(m_noWait)
+  if(no_wait_)
     return displayAsMuchAsWeCanThenPause(machine);
   else
   {

@@ -60,43 +60,43 @@ class Gameexe;
 class SDLGraphicsSystem : public GraphicsSystem
 {
 private:
-  SDL_Surface* m_screen;
+  SDL_Surface* screen_;
 
-  boost::shared_ptr<SDLSurface> m_displayContexts[16];
+  boost::shared_ptr<SDLSurface> display_contexts_[16];
 
-  bool m_redrawLastFrame;
+  bool redraw_last_frame_;
 
-  Size m_screenSize;
+  Size screen_size_;
 
   /// Rectangle representing the screen.
-  Rect m_screenRect;
+  Rect screen_rect_;
 
   /// Whether to display (SEEN####)(Line ###) in the title bar
-  bool m_displayDataInTitlebar;
+  bool display_data_in_titlebar_;
 
   /// The last time the titlebar was updated (in getTicks())
-  unsigned int m_timeOfLastTitlebarUpdate;
+  unsigned int time_of_last_titlebar_update_;
 
   /// The last seen number;
-  int m_lastSeenNumber;
+  int last_seen_number_;
 
   /// The last line number;
-  int m_lastLineNumber;
+  int last_line_number_;
 
   /// utf8 encoded title string
-  std::string m_captionTitle;
+  std::string caption_title_;
 
   /// utf8 encoded subtitle
-  std::string m_subtitle;
+  std::string subtitle_;
 
   /// Window icon
-  SDL_Surface* m_icon;
+  SDL_Surface* icon_;
 
   /**
    * Texture used to temporarily store what's behind the cursor while
    * we render this frame.
    */
-  GLuint m_behindCursorTexture;
+  GLuint behind_cursor_texture_;
 
   /**
    * LRU cache filled with the last fifteen accessed images.
@@ -106,7 +106,7 @@ private:
    * @todo Think about enforcing the immutability by adding 'const' to
    *       half the program.
    */
-  LRUCache<boost::filesystem::path, boost::shared_ptr<Surface> > m_imageCache;
+  LRUCache<boost::filesystem::path, boost::shared_ptr<Surface> > image_cache_;
 
   // ---------------------------------------------------------------------
 

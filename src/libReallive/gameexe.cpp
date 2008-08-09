@@ -259,8 +259,8 @@ GameexeFilteringIterator Gameexe::filtering_end()
 // -----------------------------------------------------------------------
 GameexeInterpretObject::GameexeInterpretObject(
   const std::string& key, Gameexe& objectToLookupOn)
-  : m_key(key), m_iterator(objectToLookupOn.find(key)),
-    m_objectToLookupOn(objectToLookupOn)
+  : key_(key), iterator_(objectToLookupOn.find(key)),
+    object_to_lookup_on_(objectToLookupOn)
 {}
 
 // -----------------------------------------------------------------------
@@ -268,13 +268,13 @@ GameexeInterpretObject::GameexeInterpretObject(
 GameexeInterpretObject::GameexeInterpretObject(
   const std::string& key, GameexeData_t::const_iterator it,
   Gameexe& objectToLookupOn)
-  : m_key(key), m_iterator(it), m_objectToLookupOn(objectToLookupOn)
+  : key_(key), iterator_(it), object_to_lookup_on_(objectToLookupOn)
 {}
 
 // -----------------------------------------------------------------------
 
 const int GameexeInterpretObject::to_int(const int defaultValue) const {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_iterator);
+  const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
   if(ints.size() == 0)
     return defaultValue;
 
@@ -284,9 +284,9 @@ const int GameexeInterpretObject::to_int(const int defaultValue) const {
 // -----------------------------------------------------------------------
 
 const int GameexeInterpretObject::to_int() const {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_iterator);
+  const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
   if(ints.size() == 0)
-    m_objectToLookupOn.throwUnknownKey(m_key);
+    object_to_lookup_on_.throwUnknownKey(key_);
 
   return ints[0];
 }
@@ -295,7 +295,7 @@ const int GameexeInterpretObject::to_int() const {
 
 int GameexeInterpretObject::getIntAt(int index) const
 {
-  return m_objectToLookupOn.getIntAt(m_iterator, index);
+  return object_to_lookup_on_.getIntAt(iterator_, index);
 }
 
 // -----------------------------------------------------------------------
@@ -305,7 +305,7 @@ const std::string GameexeInterpretObject::to_string(
 {
   try
   {
-    return m_objectToLookupOn.getStringAt(m_iterator, 0);
+    return object_to_lookup_on_.getStringAt(iterator_, 0);
   }
   catch(...)
   {
@@ -319,11 +319,11 @@ const std::string GameexeInterpretObject::to_string() const
 {
   try
   {
-    return m_objectToLookupOn.getStringAt(m_iterator, 0);
+    return object_to_lookup_on_.getStringAt(iterator_, 0);
   }
   catch(...)
   {
-    m_objectToLookupOn.throwUnknownKey(m_key);
+    object_to_lookup_on_.throwUnknownKey(key_);
   }
 
   // Shut the -Wall up
@@ -334,16 +334,16 @@ const std::string GameexeInterpretObject::to_string() const
 
 const std::string GameexeInterpretObject::getStringAt(int index) const
 {
-  return m_objectToLookupOn.getStringAt(m_iterator, index);
+  return object_to_lookup_on_.getStringAt(iterator_, index);
 }
 
 // -----------------------------------------------------------------------
 
 const std::vector<int>& GameexeInterpretObject::to_intVector() const
 {
-  const std::vector<int>& ints = m_objectToLookupOn.getIntArray(m_iterator);
+  const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
   if(ints.size() == 0)
-    m_objectToLookupOn.throwUnknownKey(m_key);
+    object_to_lookup_on_.throwUnknownKey(key_);
 
   return ints;
 }
@@ -352,7 +352,7 @@ const std::vector<int>& GameexeInterpretObject::to_intVector() const
 
 bool GameexeInterpretObject::exists() const
 {
-  return m_objectToLookupOn.exists(m_key);
+  return object_to_lookup_on_.exists(key_);
 }
 
 // -----------------------------------------------------------------------
@@ -360,7 +360,7 @@ bool GameexeInterpretObject::exists() const
 const std::vector<std::string> GameexeInterpretObject::key_parts() const
 {
   vector<string> keyparts;
-  boost::split(keyparts, m_key, is_any_of("."));
+  boost::split(keyparts, key_, is_any_of("."));
   return keyparts;
 }
 
@@ -369,7 +369,7 @@ const std::vector<std::string> GameexeInterpretObject::key_parts() const
 GameexeInterpretObject& GameexeInterpretObject::operator=(const std::string& value)
 {
   // Set the key to incoming int
-  m_objectToLookupOn.setStringAt(m_key, value);
+  object_to_lookup_on_.setStringAt(key_, value);
   return *this;
 }
 
@@ -378,7 +378,7 @@ GameexeInterpretObject& GameexeInterpretObject::operator=(const std::string& val
 GameexeInterpretObject& GameexeInterpretObject::operator=(const int value)
 {
   // Set the key to incoming int
-  m_objectToLookupOn.setIntAt(m_key, value);
+  object_to_lookup_on_.setIntAt(key_, value);
   return *this;
 }
 

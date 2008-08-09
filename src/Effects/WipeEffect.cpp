@@ -67,13 +67,13 @@ bool WipeEffect::blitOriginalImage() const
  * Calculates the size of the interpolation and main polygons.
  *
  * There are 3 possible stages:
- * - [0, m_interpolationInPixels) - Draw only the
+ * - [0, interpolation_in_pixels_) - Draw only the
  *   transition. (sizeOfMainPolygon == 0, sizeOfInterpolation ==
  *   amountVisible)
- * - [m_interpolationInPixels, sizeOfScreen) - Draw both
+ * - [interpolation_in_pixels_, sizeOfScreen) - Draw both
  *   polygons. (sizeOfMainPolygon == amountVisible -
- *   m_interpolationInPixels, sizeOfInterpolation == amountVisible)
- * - [height, height + m_interpolationInPixels) - Draw both
+ *   interpolation_in_pixels_, sizeOfInterpolation == amountVisible)
+ * - [height, height + interpolation_in_pixels_) - Draw both
  *   polygons, flooring the height of the transition to
  *
  * @param[in] currentTime The current number of ms since the Effect started
@@ -89,20 +89,20 @@ void WipeEffect::calculateSizes(int currentTime,
                                 int sizeOfScreen)
 {
   int amountVisible = int((float(currentTime) / duration()) *
-                          (sizeOfScreen + m_interpolationInPixels));
-  if(amountVisible < m_interpolationInPixels)
+                          (sizeOfScreen + interpolation_in_pixels_));
+  if(amountVisible < interpolation_in_pixels_)
   {
     sizeOfInterpolation = amountVisible;
     sizeOfMainPolygon = 0;
   }
   else if(amountVisible < sizeOfScreen)
   {
-    sizeOfInterpolation = m_interpolationInPixels;
-    sizeOfMainPolygon = amountVisible - m_interpolationInPixels;
+    sizeOfInterpolation = interpolation_in_pixels_;
+    sizeOfMainPolygon = amountVisible - interpolation_in_pixels_;
   }
-  else if(amountVisible < sizeOfScreen + m_interpolationInPixels)
+  else if(amountVisible < sizeOfScreen + interpolation_in_pixels_)
   {
-    sizeOfMainPolygon = amountVisible - m_interpolationInPixels;
+    sizeOfMainPolygon = amountVisible - interpolation_in_pixels_;
     sizeOfInterpolation = sizeOfScreen - sizeOfMainPolygon;
   }
 }
@@ -114,11 +114,11 @@ WipeEffect::WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                        const Size& screenSize, int time,
                        int interpolation)
   : Effect(machine, src, dst, screenSize, time),
-    m_interpolation(interpolation),
-    m_interpolationInPixels(0)
+    interpolation_(interpolation),
+    interpolation_in_pixels_(0)
 {
-  if(m_interpolation)
-    m_interpolationInPixels = int(pow(float(2), interpolation) * 2.5);
+  if(interpolation_)
+    interpolation_in_pixels_ = int(pow(float(2), interpolation) * 2.5);
 }
 
 // -----------------------------------------------------------------------

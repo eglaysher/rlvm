@@ -83,33 +83,33 @@ TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
 // TextSystem
 // -----------------------------------------------------------------------
 TextSystem::TextSystem(Gameexe& gexe)
-  : m_autoMode(false),
-    m_ctrlKeySkip(true), m_fastTextMode(false),
-    m_messageNoWait(false),
-    m_activeWindow(0), m_isReadingBacklog(false),
-    m_currentPageset(new PageSet),
-    m_inPauseState(false),
+  : auto_mode_(false),
+    ctrl_key_skip_(true), fast_text_mode_(false),
+    message_no_wait_(false),
+    active_window_(0), is_reading_backlog_(false),
+    current_pageset_(new PageSet),
+    in_pause_state_(false),
     // #WINDOW_*_USE
-    m_moveUse(false), m_clearUse(false), m_readJumpUse(false),
-    m_automodeUse(false), m_msgbkUse(false), m_msgbkleftUse(false),
-    m_msgbkrightUse(false), m_exbtnUse(false),
-    m_globals(gexe),
-    m_systemVisible(true)
+    move_use_(false), clear_use_(false), read_jump_use_(false),
+    automode_use_(false), msgbk_use_(false), msgbkleft_use_(false),
+    msgbkright_use_(false), exbtn_use_(false),
+    globals_(gexe),
+    system_visible_(true)
 {
   GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
   if(ctrlUse.exists())
-    m_ctrlKeySkip = ctrlUse;
+    ctrl_key_skip_ = ctrlUse;
 
-  checkAndSetBool(gexe, "WINDOW_MOVE_USE", m_moveUse);
-  checkAndSetBool(gexe, "WINDOW_CLEAR_USE", m_clearUse);
-  checkAndSetBool(gexe, "WINDOW_READJUMP_USE", m_readJumpUse);
-  checkAndSetBool(gexe, "WINDOW_AUTOMODE_USE", m_automodeUse);
-  checkAndSetBool(gexe, "WINDOW_MSGBK_USE", m_msgbkUse);
-  checkAndSetBool(gexe, "WINDOW_MSGBKLEFT_USE", m_msgbkleftUse);
-  checkAndSetBool(gexe, "WINDOW_MSGBKRIGHT_USE", m_msgbkrightUse);
-  checkAndSetBool(gexe, "WINDOW_EXBTN_USE", m_exbtnUse);
+  checkAndSetBool(gexe, "WINDOW_MOVE_USE", move_use_);
+  checkAndSetBool(gexe, "WINDOW_CLEAR_USE", clear_use_);
+  checkAndSetBool(gexe, "WINDOW_READJUMP_USE", read_jump_use_);
+  checkAndSetBool(gexe, "WINDOW_AUTOMODE_USE", automode_use_);
+  checkAndSetBool(gexe, "WINDOW_MSGBK_USE", msgbk_use_);
+  checkAndSetBool(gexe, "WINDOW_MSGBKLEFT_USE", msgbkleft_use_);
+  checkAndSetBool(gexe, "WINDOW_MSGBKRIGHT_USE", msgbkright_use_);
+  checkAndSetBool(gexe, "WINDOW_EXBTN_USE", exbtn_use_);
 
-  m_previousPageIt = m_previousPageSets.end();
+  previous_page_it_ = previous_page_sets_.end();
 }
 
 // -----------------------------------------------------------------------
@@ -124,18 +124,18 @@ TextSystem::~TextSystem()
 void TextSystem::executeTextSystem(RLMachine& machine)
 {
   // Check to see if the cursor is displayed
-  WindowMap::iterator it = m_textWindow.find(m_activeWindow);
-  if(it != m_textWindow.end() && it->second->isVisible() &&
-     m_inPauseState && !isReadingBacklog())
+  WindowMap::iterator it = text_window_.find(active_window_);
+  if(it != text_window_.end() && it->second->isVisible() &&
+     in_pause_state_ && !isReadingBacklog())
   {
-    if(!m_textKeyCursor)
+    if(!text_key_cursor_)
       setKeyCursor(machine, 0);
 
-    m_textKeyCursor->execute(machine);
+    text_key_cursor_->execute(machine);
   }
 
   // Let each window update any TextWindowButton s.
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
   {
     it->second->execute(machine);
   }
@@ -145,8 +145,8 @@ void TextSystem::executeTextSystem(RLMachine& machine)
 
 void TextSystem::hideTextWindow(int winNumber)
 {
-  WindowMap::iterator it = m_textWindow.find(winNumber);
-  if(it != m_textWindow.end())
+  WindowMap::iterator it = text_window_.find(winNumber);
+  if(it != text_window_.end())
   {
     it->second->setVisible(0);
   }
@@ -156,7 +156,7 @@ void TextSystem::hideTextWindow(int winNumber)
 
 void TextSystem::hideAllTextWindows()
 {
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
   {
     it->second->setVisible(0);
   }
@@ -166,7 +166,7 @@ void TextSystem::hideAllTextWindows()
 
 void TextSystem::clearAllTextWindows()
 {
-  for(WindowMap::iterator it = m_textWindow.begin(); it != m_textWindow.end(); ++it)
+  for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
   {
     it->second->clearWin();
   }
@@ -176,7 +176,7 @@ void TextSystem::clearAllTextWindows()
 
 TextWindow& TextSystem::currentWindow(RLMachine& machine)
 {
-  return textWindow(machine, m_activeWindow);
+  return textWindow(machine, active_window_);
 }
 
 // -----------------------------------------------------------------------
@@ -192,8 +192,8 @@ void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
 // -----------------------------------------------------------------------
 
 void TextSystem::expireOldPages() {
-  while(m_previousPageSets.size() > MAX_PAGE_HISTORY)
-    m_previousPageSets.pop_front();
+  while(previous_page_sets_.size() > MAX_PAGE_HISTORY)
+    previous_page_sets_.pop_front();
 }
 
 // -----------------------------------------------------------------------
@@ -201,8 +201,8 @@ void TextSystem::expireOldPages() {
 vector<int> TextSystem::activeWindows()
 {
   vector<int> tmp;
-  for(PageSet::iterator it = m_currentPageset->begin();
-      it != m_currentPageset->end(); ++it)
+  for(PageSet::iterator it = current_pageset_->begin();
+      it != current_pageset_->end(); ++it)
   {
     tmp.push_back(it->first);
   }
@@ -213,7 +213,7 @@ vector<int> TextSystem::activeWindows()
 
 void TextSystem::snapshot(RLMachine& machine)
 {
-  m_previousPageSets.push_back(m_currentPageset->clone().release());
+  previous_page_sets_.push_back(current_pageset_->clone().release());
   expireOldPages();
 }
 
@@ -222,14 +222,14 @@ void TextSystem::snapshot(RLMachine& machine)
 void TextSystem::newPageOnWindow(RLMachine& machine, int window)
 {
   // Erase the current instance of this window if it exists
-  PageSet::iterator it = m_currentPageset->find(window);
-  if(it != m_currentPageset->end())
+  PageSet::iterator it = current_pageset_->find(window);
+  if(it != current_pageset_->end())
   {
-    m_currentPageset->erase(it);
+    current_pageset_->erase(it);
   }
 
-  m_previousPageIt = m_previousPageSets.end();
-  m_currentPageset->insert(window, new TextPage(machine, window));
+  previous_page_it_ = previous_page_sets_.end();
+  current_pageset_->insert(window, new TextPage(machine, window));
   expireOldPages();
 }
 
@@ -238,10 +238,10 @@ void TextSystem::newPageOnWindow(RLMachine& machine, int window)
 TextPage& TextSystem::currentPage(RLMachine& machine)
 {
   // Check to see if the active window has a current page.
-  PageSet::iterator it = m_currentPageset->find(m_activeWindow);
-  if(it == m_currentPageset->end())
-    it = m_currentPageset->insert(
-      m_activeWindow, new TextPage(machine, m_activeWindow)).first;
+  PageSet::iterator it = current_pageset_->find(active_window_);
+  if(it == current_pageset_->end())
+    it = current_pageset_->insert(
+      active_window_, new TextPage(machine, active_window_)).first;
 
   return *it->second;
 }
@@ -250,17 +250,17 @@ TextPage& TextSystem::currentPage(RLMachine& machine)
 
 void TextSystem::backPage(RLMachine& machine)
 {
-  m_isReadingBacklog = true;
+  is_reading_backlog_ = true;
 
-  if(m_previousPageIt != m_previousPageSets.begin())
+  if(previous_page_it_ != previous_page_sets_.begin())
   {
-    m_previousPageIt = boost::prior(m_previousPageIt);
+    previous_page_it_ = boost::prior(previous_page_it_);
 
     // Clear all windows
     clearAllTextWindows();
     hideAllTextWindows();
 
-    replayPageSet(*m_previousPageIt, false);
+    replayPageSet(*previous_page_it_, false);
   }
 }
 
@@ -268,20 +268,20 @@ void TextSystem::backPage(RLMachine& machine)
 
 void TextSystem::forwardPage(RLMachine& machine)
 {
-  m_isReadingBacklog = true;
+  is_reading_backlog_ = true;
 
-  if(m_previousPageIt != m_previousPageSets.end())
+  if(previous_page_it_ != previous_page_sets_.end())
   {
-    m_previousPageIt = boost::next(m_previousPageIt);
+    previous_page_it_ = boost::next(previous_page_it_);
 
     // Clear all windows
     clearAllTextWindows();
     hideAllTextWindows();
 
-    if(m_previousPageIt != m_previousPageSets.end())
-      replayPageSet(*m_previousPageIt, false);
+    if(previous_page_it_ != previous_page_sets_.end())
+      replayPageSet(*previous_page_it_, false);
     else
-      replayPageSet(*m_currentPageset, false);
+      replayPageSet(*current_pageset_, false);
   }
 }
 
@@ -307,26 +307,26 @@ void TextSystem::replayPageSet(PageSet& set, bool isCurrentPage)
 
 bool TextSystem::isReadingBacklog() const
 {
-  return m_isReadingBacklog;
+  return is_reading_backlog_;
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::stopReadingBacklog()
 {
-  m_isReadingBacklog = false;
+  is_reading_backlog_ = false;
 
   // Clear all windows
   clearAllTextWindows();
   hideAllTextWindows();
-  replayPageSet(*m_currentPageset, true);
+  replayPageSet(*current_pageset_, true);
 }
 
 // -----------------------------------------------------------------------
 
 int TextSystem::getAutoTime(int numChars)
 {
-  return m_globals.autoModeBaseTime + m_globals.autoModeCharTime * numChars;
+  return globals_.autoModeBaseTime + globals_.autoModeCharTime * numChars;
 }
 
 // -----------------------------------------------------------------------
@@ -335,12 +335,12 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 {
   if(newCursor == -1)
   {
-    m_textKeyCursor.reset();
+    text_key_cursor_.reset();
   }
-  else if(!m_textKeyCursor ||
-     m_textKeyCursor->cursorNumber() != newCursor)
+  else if(!text_key_cursor_ ||
+     text_key_cursor_->cursorNumber() != newCursor)
   {
-    m_textKeyCursor.reset(new TextKeyCursor(machine, newCursor));
+    text_key_cursor_.reset(new TextKeyCursor(machine, newCursor));
   }
 }
 
@@ -348,8 +348,8 @@ void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
 
 int TextSystem::cursorNumber() const
 {
-  if(m_textKeyCursor)
-    return m_textKeyCursor->cursorNumber();
+  if(text_key_cursor_)
+    return text_key_cursor_->cursorNumber();
   else
     return -1;
 }
@@ -358,23 +358,23 @@ int TextSystem::cursorNumber() const
 
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
-  m_globals.windowAttr = attr;
+  globals_.windowAttr = attr;
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::reset()
 {
-  m_isReadingBacklog = false;
+  is_reading_backlog_ = false;
 
-  m_currentPageset = std::auto_ptr<PageSet>(new PageSet);
-  m_previousPageSets.clear();
-  m_previousPageIt = m_previousPageSets.end();
+  current_pageset_ = std::auto_ptr<PageSet>(new PageSet);
+  previous_page_sets_.clear();
+  previous_page_it_ = previous_page_sets_.end();
 
-  m_textWindow.clear();
+  text_window_.clear();
 
-  m_systemVisible = true;
-  m_inPauseState = false;
+  system_visible_ = true;
+  in_pause_state_ = false;
 }
 
 // -----------------------------------------------------------------------

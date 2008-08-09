@@ -31,7 +31,7 @@
 
 void NullTextWindow::clearWin()
 {
-  m_currentContents = "";
+  current_contents_ = "";
 }
 
 // -----------------------------------------------------------------------
@@ -39,7 +39,7 @@ void NullTextWindow::clearWin()
 bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
                                  const std::string& next)
 {
-  m_currentContents += current;
+  current_contents_ += current;
   return true;
 }
 
@@ -48,12 +48,12 @@ bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
 void NullTextWindow::setName(RLMachine& machine, const std::string& utf8name,
                              const std::string& nextChar)
 {
-  m_currentContents += "\\{" + utf8name + "}";
+  current_contents_ += "\\{" + utf8name + "}";
 }
 
 // -----------------------------------------------------------------------
 
 void NullTextWindow::hardBrake()
 {
-  m_currentContents += "\n";
+  current_contents_ += "\n";
 }

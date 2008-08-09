@@ -39,7 +39,7 @@
 class NullSystem : public System
 {
 private:
-  Gameexe m_gameexe;
+  Gameexe gameexe_;
 
   NullGraphicsSystem nullGraphicsSystem;
   NullEventSystem nullEventSystem;

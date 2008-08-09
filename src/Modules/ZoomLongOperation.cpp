@@ -52,10 +52,10 @@ ZoomLongOperation::ZoomLongOperation(
   const boost::shared_ptr<Surface>& srcSurface,
   const Rect& frect, const Rect& trect, const Rect& drect,
   const int time)
-  : m_machine(machine), m_origSurface(origSurface),
-    m_srcSurface(srcSurface),
-    m_frect(frect), m_trect(trect), m_drect(drect), m_duration(time),
-    m_startTime(machine.system().event().getTicks())
+  : machine_(machine), orig_surface_(origSurface),
+    src_surface_(srcSurface),
+    frect_(frect), trect_(trect), drect_(drect), duration_(time),
+    start_time_(machine.system().event().getTicks())
 {
 }
 
@@ -70,11 +70,11 @@ ZoomLongOperation::~ZoomLongOperation()
 bool ZoomLongOperation::operator()(RLMachine& machine)
 {
   unsigned int time = machine.system().event().getTicks();
-  unsigned int currentFrame = time - m_startTime;
+  unsigned int currentFrame = time - start_time_;
 
   bool ctrlPressed = machine.system().event().ctrlPressed();
 
-  if(currentFrame >= m_duration || ctrlPressed)
+  if(currentFrame >= duration_ || ctrlPressed)
   {
     return true;
   }
@@ -85,16 +85,16 @@ bool ZoomLongOperation::operator()(RLMachine& machine)
     graphics.beginFrame();
 
     // First blit the original dc0 to the screen
-    m_origSurface->
-      renderToScreen(m_origSurface->rect(), m_origSurface->rect(), 255);
+    orig_surface_->
+      renderToScreen(orig_surface_->rect(), orig_surface_->rect(), 255);
 
     // figure out the new coordinates for the zoom.
-    float ratio = currentFrame / float(m_duration);
-    Point zPt = m_frect.origin() + ((m_trect.origin() - m_frect.origin()) * ratio);
-    Size zSize = m_frect.size() + ((m_trect.size() - m_frect.size()) * ratio);
+    float ratio = currentFrame / float(duration_);
+    Point zPt = frect_.origin() + ((trect_.origin() - frect_.origin()) * ratio);
+    Size zSize = frect_.size() + ((trect_.size() - frect_.size()) * ratio);
 
-    m_srcSurface->
-      renderToScreen(Rect(zPt, zSize), m_drect, 255);
+    src_surface_->
+      renderToScreen(Rect(zPt, zSize), drect_, 255);
 
     graphics.endFrame(machine);
     return false;

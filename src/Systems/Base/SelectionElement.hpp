@@ -43,18 +43,18 @@ class Point;
 class SelectionElement
 {
 private:
-  bool m_isHighlighted;
+  bool is_highlighted_;
 
-  int m_id;
+  int id_;
 
   // Upper right location of the button
-  Point m_pos;
+  Point pos_;
 
-  boost::shared_ptr<Surface> m_normalImage;
-  boost::shared_ptr<Surface> m_highlightedImage;
+  boost::shared_ptr<Surface> normal_image_;
+  boost::shared_ptr<Surface> highlighted_image_;
 
   /// Callback function for when item is selected.
-  boost::function<void(int)> m_selectionCallback;
+  boost::function<void(int)> selection_callback_;
 
   bool isHighlighted(const Point& p);
 

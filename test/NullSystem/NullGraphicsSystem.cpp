@@ -46,11 +46,11 @@ NullGraphicsSystem::NullGraphicsSystem(System& system, Gameexe& gexe)
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
-    m_displayContexts[i].reset(new NullSurface(oss.str()));
+    display_contexts_[i].reset(new NullSurface(oss.str()));
   }
 
-  m_displayContexts[0]->allocate(screenSize());
-  m_displayContexts[1]->allocate(screenSize());
+  display_contexts_[0]->allocate(screenSize());
+  display_contexts_[1]->allocate(screenSize());
 }
 
 // -----------------------------------------------------------------------
@@ -69,7 +69,7 @@ void NullGraphicsSystem::allocateDC(int dc, Size size) {
   // the screen.
   if(dc == 1)
   {
-    boost::shared_ptr<NullSurface> dc0 = m_displayContexts[0];
+    boost::shared_ptr<NullSurface> dc0 = display_contexts_[0];
     if(size.width() < dc0->size().width())
       size.setWidth(dc0->size().width());
     if(size.height() < dc0->size().height())
@@ -77,7 +77,7 @@ void NullGraphicsSystem::allocateDC(int dc, Size size) {
   }
 
   // Allocate a new obj.
-  m_displayContexts[dc]->allocate(size);
+  display_contexts_[dc]->allocate(size);
 }
 
 // -----------------------------------------------------------------------
@@ -90,10 +90,10 @@ void NullGraphicsSystem::freeDC(int dc) {
   else if(dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
-    m_displayContexts[1]->fill(RGBAColour::Black());
+    display_contexts_[1]->fill(RGBAColour::Black());
   }
   else
-    m_displayContexts[dc]->deallocate();
+    display_contexts_[dc]->deallocate();
 }
 
 // -----------------------------------------------------------------------
@@ -134,7 +134,7 @@ boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
 boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
 {
   graphics_system_log_.recordFunction("getDC", dc);
-  return m_displayContexts[dc];
+  return display_contexts_[dc];
 }
 
 // -----------------------------------------------------------------------

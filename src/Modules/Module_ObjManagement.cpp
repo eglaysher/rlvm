@@ -57,23 +57,23 @@ struct Obj_objCopyFgToBg : public RLOp_Void_1<IntConstant_T>
 // -----------------------------------------------------------------------
 
 struct Obj_objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  int m_fromLayer, m_toLayer;
-  Obj_objCopy(int from, int to) : m_fromLayer(from), m_toLayer(to) {}
+  int from_layer_, to_layer_;
+  Obj_objCopy(int from, int to) : from_layer_(from), to_layer_(to) {}
 
   void operator()(RLMachine& machine, int sbuf, int dbuf) {
-    GraphicsObject& go = getGraphicsObject(machine, m_fromLayer, sbuf);
-    setGraphicsObject(machine, m_toLayer, dbuf, go);
+    GraphicsObject& go = getGraphicsObject(machine, from_layer_, sbuf);
+    setGraphicsObject(machine, to_layer_, dbuf, go);
   }
 };
 
 // -----------------------------------------------------------------------
 
 struct Obj_objClear_0 : public RLOp_Void_1<IntConstant_T> {
-  int m_layer;
-  Obj_objClear_0(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objClear_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.clearObject();
   }
 };
@@ -81,8 +81,8 @@ struct Obj_objClear_0 : public RLOp_Void_1<IntConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  int m_layer;
-  Obj_objClear_1(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objClear_1(int layer) : layer_(layer) {}
 
   // I highly suspect that this has range semantics like
   // Obj_setWipeCopyTo_1, but none of the games I own use this
@@ -92,7 +92,7 @@ struct Obj_objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     max++;
 
     for(int i = min; i < max; ++i) {
-      getGraphicsObject(machine, m_layer, i).clearObject();
+      getGraphicsObject(machine, layer_, i).clearObject();
     }
   }
 };
@@ -100,11 +100,11 @@ struct Obj_objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_objDelete_0 : public RLOp_Void_1<IntConstant_T> {
-  int m_layer;
-  Obj_objDelete_0(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objDelete_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, m_layer, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
     obj.deleteObject();
   }
 };
@@ -112,15 +112,15 @@ struct Obj_objDelete_0 : public RLOp_Void_1<IntConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  int m_layer;
-  Obj_objDelete_1(int layer) : m_layer(layer) {}
+  int layer_;
+  Obj_objDelete_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int min, int max) {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;
 
     for(int i = min; i < max; ++i) {
-      getGraphicsObject(machine, m_layer, i).deleteObject();
+      getGraphicsObject(machine, layer_, i).deleteObject();
     }
   }
 };
@@ -129,14 +129,14 @@ struct Obj_objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T >
 {
-  int m_layer;
-  int m_val;
+  int layer_;
+  int val_;
   Obj_setWipeCopyTo_0(int layer, int value)
-    : m_layer(layer), m_val(value) {}
+    : layer_(layer), val_(value) {}
 
   void operator()(RLMachine& machine, int buf)
   {
-    getGraphicsObject(machine, m_layer, buf).setWipeCopy(m_val);
+    getGraphicsObject(machine, layer_, buf).setWipeCopy(val_);
   }
 };
 
@@ -144,16 +144,16 @@ struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T >
 
 struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
 {
-  int m_layer;
-  int m_val;
+  int layer_;
+  int val_;
   Obj_setWipeCopyTo_1(int layer, int value)
-    : m_layer(layer), m_val(value) {}
+    : layer_(layer), val_(value) {}
 
   void operator()(RLMachine& machine, int min, int numObjsToSet)
   {
     int maxObj = min + numObjsToSet;
     for(int i = min; i < maxObj; ++i) {
-      getGraphicsObject(machine, m_layer, i).setWipeCopy(m_val);
+      getGraphicsObject(machine, layer_, i).setWipeCopy(val_);
     }
   }
 };

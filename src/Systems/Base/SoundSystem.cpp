@@ -131,9 +131,9 @@ SoundSystem::CDTrack::CDTrack(
 // SoundSystem
 // -----------------------------------------------------------------------
 SoundSystem::SoundSystem(Gameexe& gexe)
-  : m_globals(gexe)
+  : globals_(gexe)
 {
-  std::fill_n(m_channelVolume, NUM_BASE_CHANNELS, 255);
+  std::fill_n(channel_volume_, NUM_BASE_CHANNELS, 255);
 
   // Read the \#SE.xxx entries from the Gameexe
   GameexeFilteringIterator se = gexe.filtering_begin("SE.");
@@ -146,7 +146,7 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     string fileName = se->getStringAt(0);
     int targetChannel = se->getIntAt(1);
 
-    m_seTable[entryNumber] = make_pair(fileName, targetChannel);
+    se_table_[entryNumber] = make_pair(fileName, targetChannel);
   }
 
   // Read the \#DSTRACK entries
@@ -160,7 +160,7 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     std::string name = dstrack->getStringAt(4);
     boost::to_lower(name);
 
-    m_dsTracks[name] = DSTrack(name, file, from, to, loop);
+    ds_tracks_[name] = DSTrack(name, file, from, to, loop);
   }
 
   // Read the \#CDTRACK entries
@@ -173,7 +173,7 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     std::string name = cdtrack->getStringAt(3);
     boost::to_lower(name);
 
-    m_cdTracks[name] = CDTrack(name, from, to, loop);
+    cd_tracks_[name] = CDTrack(name, from, to, loop);
   }
 }
 
@@ -188,13 +188,13 @@ void SoundSystem::executeSoundSystem(RLMachine& machine)
 {
   unsigned int curTime = machine.system().event().getTicks();
 
-  ChannelAdjustmentMap::iterator it = m_pcmAdjustmentTasks.begin();
-  while(it != m_pcmAdjustmentTasks.end())
+  ChannelAdjustmentMap::iterator it = pcm_adjustment_tasks_.begin();
+  while(it != pcm_adjustment_tasks_.end())
   {
     if(curTime >= it->second.endTime)
     {
       setChannelVolume(it->first, it->second.finalVolume);
-      m_pcmAdjustmentTasks.erase(it++);
+      pcm_adjustment_tasks_.erase(it++);
     }
     else
     {
@@ -209,56 +209,56 @@ void SoundSystem::executeSoundSystem(RLMachine& machine)
 
 void SoundSystem::setBgmEnabled(const int in)
 {
-  m_globals.bgmEnabled = in;
+  globals_.bgmEnabled = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::bgmEnabled() const
 {
-  return m_globals.bgmEnabled;
+  return globals_.bgmEnabled;
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setBgmVolume(const int in)
 {
-  m_globals.bgmVolume = in;
+  globals_.bgmVolume = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::bgmVolume() const
 {
-  return m_globals.bgmVolume;
+  return globals_.bgmVolume;
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setPcmEnabled(const int in)
 {
-  m_globals.pcmEnabled = in;
+  globals_.pcmEnabled = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::pcmEnabled() const
 {
-  return m_globals.pcmEnabled;
+  return globals_.pcmEnabled;
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setPcmVolume(const int in)
 {
-  m_globals.pcmVolume = in;
+  globals_.pcmVolume = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::pcmVolume() const
 {
-  return m_globals.pcmVolume;
+  return globals_.pcmVolume;
 }
 
 // -----------------------------------------------------------------------
@@ -268,7 +268,7 @@ void SoundSystem::setChannelVolume(const int channel, const int level)
   checkChannel(channel, "setChannelVolume");
   checkVolume(level, "setChannelVolume");
 
-  m_channelVolume[channel] = level;
+  channel_volume_[channel] = level;
 }
 
 // -----------------------------------------------------------------------
@@ -282,8 +282,8 @@ void SoundSystem::setChannelVolume(
 
   unsigned int curTime = machine.system().event().getTicks();
 
-  m_pcmAdjustmentTasks.insert(
-    make_pair(channel, VolumeAdjustTask(curTime, m_channelVolume[channel],
+  pcm_adjustment_tasks_.insert(
+    make_pair(channel, VolumeAdjustTask(curTime, channel_volume_[channel],
                                         level, fadeTimeInMs)));
 }
 
@@ -292,21 +292,21 @@ void SoundSystem::setChannelVolume(
 int SoundSystem::channelVolume(const int channel)
 {
   checkChannel(channel, "channelVolume");
-  return m_channelVolume[channel];
+  return channel_volume_[channel];
 }
 
 // -----------------------------------------------------------------------
 
 void SoundSystem::setSeEnabled(const int in)
 {
-  m_globals.seEnabled = in;
+  globals_.seEnabled = in;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::seEnabled() const
 {
-  return m_globals.seEnabled;
+  return globals_.seEnabled;
 }
 
 // -----------------------------------------------------------------------
@@ -314,14 +314,14 @@ int SoundSystem::seEnabled() const
 void SoundSystem::setSeVolume(const int level)
 {
   checkVolume(level, "setSeVolume");
-  m_globals.seVolume = level;
+  globals_.seVolume = level;
 }
 
 // -----------------------------------------------------------------------
 
 int SoundSystem::seVolume() const
 {
-  return m_globals.seVolume;
+  return globals_.seVolume;
 }
 
 // -----------------------------------------------------------------------

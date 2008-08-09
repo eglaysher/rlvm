@@ -170,42 +170,42 @@ struct GraphicsSystem::GraphicsObjectImpl
   GraphicsObjectImpl();
 
   /// Foreground objects
-  LazyArray<GraphicsObject> m_foregroundObjects;
+  LazyArray<GraphicsObject> foreground_objects_;
 
   /// Background objects
-  LazyArray<GraphicsObject> m_backgroundObjects;
+  LazyArray<GraphicsObject> background_objects_;
 
   /// Foreground objects (at the time of the last save)
-  LazyArray<GraphicsObject> m_savedForegroundObjects;
+  LazyArray<GraphicsObject> saved_foreground_objects_;
 
   /// Background objects (at the time of the last save)
-  LazyArray<GraphicsObject> m_savedBackgroundObjects;
+  LazyArray<GraphicsObject> saved_background_objects_;
 };
 
 // -----------------------------------------------------------------------
 
 GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
-  : m_foregroundObjects(256), m_backgroundObjects(256),
-    m_savedForegroundObjects(256), m_savedBackgroundObjects(256)
+  : foreground_objects_(256), background_objects_(256),
+    saved_foreground_objects_(256), saved_background_objects_(256)
 {}
 
 // -----------------------------------------------------------------------
 // GraphicsSystem
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
-  : m_screenUpdateMode(SCREENUPDATEMODE_AUTOMATIC),
-    m_screenNeedsRefresh(false),
-    m_isResponsibleForUpdate(true),
-    m_displaySubtitle(gameexe("SUBTITLE").to_int(0)),
-    m_hideInterface(false),
-    m_globals(gameexe),
-    m_graphicsObjectSettings(new GraphicsObjectSettings(gameexe)),
-    m_graphicsObjectImpl(new GraphicsObjectImpl),
-    m_useCustomMouseCursor(gameexe("MOUSE_CURSOR").exists()),
-    m_showCurosr(true),
-    m_cursor(gameexe("MOUSE_CURSOR").to_int(0)),
+  : screen_update_mode_(SCREENUPDATEMODE_AUTOMATIC),
+    screen_needs_refresh_(false),
+    is_responsible_for_update_(true),
+    display_subtitle_(gameexe("SUBTITLE").to_int(0)),
+    hide_interface_(false),
+    globals_(gameexe),
+    graphics_object_settings_(new GraphicsObjectSettings(gameexe)),
+    graphics_object_impl_(new GraphicsObjectImpl),
+    use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
+    show_curosr_(true),
+    cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
     cg_table_(new CGMTable(gameexe)),
-    m_system(system)
+    system_(system)
 {}
 
 // -----------------------------------------------------------------------
@@ -217,7 +217,7 @@ GraphicsSystem::~GraphicsSystem()
 
 void GraphicsSystem::setIsResponsibleForUpdate(bool in)
 {
-  m_isResponsibleForUpdate = in;
+  is_responsible_for_update_ = in;
 }
 
 // -----------------------------------------------------------------------
@@ -230,7 +230,7 @@ void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
   case SCREENUPDATEMODE_SEMIAUTOMATIC:
   {
     // Perform a blit of DC0 to the screen, and update it.
-    m_screenNeedsRefresh = true;
+    screen_needs_refresh_ = true;
     break;
   }
   case SCREENUPDATEMODE_MANUAL:
@@ -251,29 +251,29 @@ void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
 
 void GraphicsSystem::forceRefresh()
 {
-  m_screenNeedsRefresh = true;
+  screen_needs_refresh_ = true;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u)
 {
-  m_screenUpdateMode = u;
+  screen_update_mode_ = u;
 }
 
 // -----------------------------------------------------------------------
 
 int GraphicsSystem::useCustomCursor() {
-  return m_useCustomMouseCursor &&
-    system().gameexe()("MOUSE_CURSOR", m_cursor, "NAME").exists();
+  return use_custom_mouse_cursor_ &&
+    system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").exists();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
 {
-  m_cursor = cursor;
-  m_mouseCursor.reset();
+  cursor_ = cursor;
+  mouse_cursor_.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -281,29 +281,29 @@ void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
 GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(
   const std::string& name)
 {
-  m_graphicsObjectSettings->graphicsStack.push_back(GraphicsStackFrame(name));
-  return m_graphicsObjectSettings->graphicsStack.back();
+  graphics_object_settings_->graphicsStack.push_back(GraphicsStackFrame(name));
+  return graphics_object_settings_->graphicsStack.back();
 }
 
 // -----------------------------------------------------------------------
 
 vector<GraphicsStackFrame>& GraphicsSystem::graphicsStack()
 {
-  return m_graphicsObjectSettings->graphicsStack;
+  return graphics_object_settings_->graphicsStack;
 }
 
 // -----------------------------------------------------------------------
 
 int GraphicsSystem::stackSize() const
 {
-  return m_graphicsObjectSettings->graphicsStack.size();
+  return graphics_object_settings_->graphicsStack.size();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearStack()
 {
-  m_graphicsObjectSettings->graphicsStack.clear();
+  graphics_object_settings_->graphicsStack.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -311,7 +311,7 @@ void GraphicsSystem::clearStack()
 void GraphicsSystem::stackPop(int items)
 {
   for(int i = 0; i < items; ++i)
-    m_graphicsObjectSettings->graphicsStack.pop_back();
+    graphics_object_settings_->graphicsStack.pop_back();
 }
 
 // -----------------------------------------------------------------------
@@ -319,7 +319,7 @@ void GraphicsSystem::stackPop(int items)
 void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
 {
   vector<GraphicsStackFrame> stackToReplay;
-  stackToReplay.swap(m_graphicsObjectSettings->graphicsStack);
+  stackToReplay.swap(graphics_object_settings_->graphicsStack);
 
   //
   replayGraphicsStackVector(machine, stackToReplay);
@@ -330,57 +330,57 @@ void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
 void GraphicsSystem::setWindowSubtitle(const std::string& cp932str,
                                        int textEncoding)
 {
-  m_subtitle = cp932str;
+  subtitle_ = cp932str;
 }
 
 // -----------------------------------------------------------------------
 
 const std::string& GraphicsSystem::windowSubtitle() const
 {
-  return m_subtitle;
+  return subtitle_;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowObject1(const int in)
 {
-  m_globals.showObject1 = in;
+  globals_.showObject1 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowObject2(const int in)
 {
-  m_globals.showObject2 = in;
+  globals_.showObject2 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowWeather(const int in)
 {
-  m_globals.showWeather = in;
+  globals_.showWeather = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::toggleInterfaceHidden()
 {
-  m_hideInterface = !m_hideInterface;
-//  cerr << "Setting interface hidden to " << m_hideInterface << endl;
+  hide_interface_ = !hide_interface_;
+//  cerr << "Setting interface hidden to " << hide_interface_ << endl;
 }
 
 // -----------------------------------------------------------------------
 
 bool GraphicsSystem::interfaceHidden()
 {
-  return m_hideInterface;
+  return hide_interface_;
 }
 
 // -----------------------------------------------------------------------
 
 ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
 {
-  return m_graphicsObjectSettings->getObjectSettingsFor(objNum);
+  return graphics_object_settings_->getObjectSettingsFor(objNum);
 }
 
 // -----------------------------------------------------------------------
@@ -401,11 +401,11 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
 
 void GraphicsSystem::reset()
 {
-  m_defaultGrpName = "";
-  m_defaultBgrName = "";
-  m_screenUpdateMode = SCREENUPDATEMODE_AUTOMATIC;
-  m_subtitle = "";
-  m_hideInterface = false;
+  default_grp_name_ = "";
+  default_bgr_name_ = "";
+  screen_update_mode_ = SCREENUPDATEMODE_AUTOMATIC;
+  subtitle_ = "";
+  hide_interface_ = false;
 }
 
 // -----------------------------------------------------------------------
@@ -414,10 +414,10 @@ void GraphicsSystem::promoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
 
-  FullIterator bg = m_graphicsObjectImpl->m_backgroundObjects.full_begin();
-  FullIterator bgEnd = m_graphicsObjectImpl->m_backgroundObjects.full_end();
-  FullIterator fg = m_graphicsObjectImpl->m_foregroundObjects.full_begin();
-  FullIterator fgEnd = m_graphicsObjectImpl->m_foregroundObjects.full_end();
+  FullIterator bg = graphics_object_impl_->background_objects_.full_begin();
+  FullIterator bgEnd = graphics_object_impl_->background_objects_.full_end();
+  FullIterator fg = graphics_object_impl_->foreground_objects_.full_begin();
+  FullIterator fgEnd = graphics_object_impl_->foreground_objects_.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(bg.valid())
@@ -436,10 +436,10 @@ void GraphicsSystem::clearAndPromoteObjects()
 {
   typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
 
-  FullIterator bg = m_graphicsObjectImpl->m_backgroundObjects.full_begin();
-  FullIterator bgEnd = m_graphicsObjectImpl->m_backgroundObjects.full_end();
-  FullIterator fg = m_graphicsObjectImpl->m_foregroundObjects.full_begin();
-  FullIterator fgEnd = m_graphicsObjectImpl->m_foregroundObjects.full_end();
+  FullIterator bg = graphics_object_impl_->background_objects_.full_begin();
+  FullIterator bgEnd = graphics_object_impl_->background_objects_.full_end();
+  FullIterator fg = graphics_object_impl_->foreground_objects_.full_begin();
+  FullIterator fgEnd = graphics_object_impl_->foreground_objects_.full_end();
   for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
   {
     if(fg.valid() && !fg->wipeCopy())
@@ -463,9 +463,9 @@ GraphicsObject& GraphicsSystem::getObject(int layer, int objNumber)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    return m_graphicsObjectImpl->m_backgroundObjects[objNumber];
+    return graphics_object_impl_->background_objects_[objNumber];
   else
-    return m_graphicsObjectImpl->m_foregroundObjects[objNumber];
+    return graphics_object_impl_->foreground_objects_[objNumber];
 }
 
 // -----------------------------------------------------------------------
@@ -476,39 +476,39 @@ void GraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    m_graphicsObjectImpl->m_backgroundObjects[objNumber] = obj;
+    graphics_object_impl_->background_objects_[objNumber] = obj;
   else
-    m_graphicsObjectImpl->m_foregroundObjects[objNumber] = obj;
+    graphics_object_impl_->foreground_objects_[objNumber] = obj;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllObjects()
 {
-  m_graphicsObjectImpl->m_foregroundObjects.clear();
-  m_graphicsObjectImpl->m_backgroundObjects.clear();
+  graphics_object_impl_->foreground_objects_.clear();
+  graphics_object_impl_->background_objects_.clear();
 }
 
 // -----------------------------------------------------------------------
 
 LazyArray<GraphicsObject>& GraphicsSystem::backgroundObjects()
 {
-  return m_graphicsObjectImpl->m_backgroundObjects;
+  return graphics_object_impl_->background_objects_;
 }
 
 // -----------------------------------------------------------------------
 
 LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects()
 {
-  return m_graphicsObjectImpl->m_foregroundObjects;
+  return graphics_object_impl_->foreground_objects_;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::takeSavepointSnapshot()
 {
-  foregroundObjects().copyTo(m_graphicsObjectImpl->m_savedForegroundObjects);
-  backgroundObjects().copyTo(m_graphicsObjectImpl->m_savedBackgroundObjects);
+  foregroundObjects().copyTo(graphics_object_impl_->saved_foreground_objects_);
+  backgroundObjects().copyTo(graphics_object_impl_->saved_background_objects_);
 }
 
 // -----------------------------------------------------------------------
@@ -517,9 +517,9 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it =
-    m_graphicsObjectImpl->m_foregroundObjects.allocated_begin();
+    graphics_object_impl_->foreground_objects_.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
-    m_graphicsObjectImpl->m_foregroundObjects.allocated_end();
+    graphics_object_impl_->foreground_objects_.allocated_end();
   for(; it != end; ++it)
   {
     const ObjectSettings& settings = getObjectSettings(it.pos());
@@ -540,44 +540,44 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 
 boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
 {
-  if (!m_useCustomMouseCursor || !m_showCurosr)
+  if (!use_custom_mouse_cursor_ || !show_curosr_)
     return boost::shared_ptr<MouseCursor>();
 
-  if(m_useCustomMouseCursor && !m_mouseCursor)
+  if(use_custom_mouse_cursor_ && !mouse_cursor_)
   {
-    MouseCursorCache::iterator it = m_cursorCache.find(m_cursor);
-    if(it != m_cursorCache.end())
-      m_mouseCursor = it->second;
+    MouseCursorCache::iterator it = cursor_cache_.find(cursor_);
+    if(it != cursor_cache_.end())
+      mouse_cursor_ = it->second;
     else
     {
       boost::shared_ptr<Surface> cursorSurface;
       GameexeInterpretObject cursorKey =
-        system().gameexe()("MOUSE_CURSOR", m_cursor, "NAME");
+        system().gameexe()("MOUSE_CURSOR", cursor_, "NAME");
 
       if (cursorKey.exists())
       {
         string cursorName = cursorKey;
         fs::path cursorPath = findFile(machine, cursorName, IMAGE_FILETYPES);
         cursorSurface = loadSurfaceFromFile(cursorPath);
-        m_mouseCursor.reset(new MouseCursor(cursorSurface));
-        m_cursorCache[m_cursor] = m_mouseCursor;
+        mouse_cursor_.reset(new MouseCursor(cursorSurface));
+        cursor_cache_[cursor_] = mouse_cursor_;
       }
       else
-        m_mouseCursor.reset();
+        mouse_cursor_.reset();
     }
   }
 
-  return m_mouseCursor;
+  return mouse_cursor_;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::mouseMotion(const Point& newLocation)
 {
-  if(m_useCustomMouseCursor && m_showCurosr)
+  if(use_custom_mouse_cursor_ && show_curosr_)
     markScreenAsDirty(GUT_MOUSE_MOTION);
 
-  m_cursorPos = newLocation;
+  cursor_pos_ = newLocation;
 }
 
 // -----------------------------------------------------------------------
@@ -617,10 +617,10 @@ template<class Archive>
 void GraphicsSystem::save(Archive& ar, unsigned int version) const
 {
   ar
-    & m_subtitle
-    & m_graphicsObjectSettings->graphicsStack
-    & m_graphicsObjectImpl->m_savedBackgroundObjects
-    & m_graphicsObjectImpl->m_savedForegroundObjects;
+    & subtitle_
+    & graphics_object_settings_->graphicsStack
+    & graphics_object_impl_->saved_background_objects_
+    & graphics_object_impl_->saved_foreground_objects_;
 }
 
 // -----------------------------------------------------------------------
@@ -629,13 +629,13 @@ template<class Archive>
 void GraphicsSystem::load(Archive& ar, unsigned int version)
 {
   ar
-    & m_subtitle
+    & subtitle_
     & graphicsStack()
-    & m_graphicsObjectImpl->m_backgroundObjects
-    & m_graphicsObjectImpl->m_foregroundObjects;
+    & graphics_object_impl_->background_objects_
+    & graphics_object_impl_->foreground_objects_;
 
   // Now alert all subclasses that we've set the subtitle
-  setWindowSubtitle(m_subtitle,
+  setWindowSubtitle(subtitle_,
                     Serialization::g_currentMachine->getTextEncoding());
 }
 

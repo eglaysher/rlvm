@@ -61,7 +61,7 @@ class TextWindow
 protected:
   /// We cache the size of the screen so we don't need the machine in
   /// some accessors.
-  int m_screenWidth, m_screenHeight;
+  int screen_width_, screen_height_;
 
   /**
    * @name Text window Origin
@@ -69,9 +69,9 @@ protected:
    *
    * @{
    */
-  int m_windowPositionOrigin;
-  int m_windowPositionX;
-  int m_windowPositionY;
+  int window_position_origin_;
+  int window_position_x_;
+  int window_position_y_;
   /// @}
 
   /**
@@ -83,15 +83,15 @@ protected:
    *
    * @{
    */
-  int m_textInsertionPointX;
-  int m_textInsertionPointY;
+  int text_insertion_point_x_;
+  int text_insertion_point_y_;
 
   /// The line number in this text window; used to detect whether we
   /// have filled this text box
-  int m_currentLineNumber;
+  int current_line_number_;
 
-  /// The initial value of m_textInsertionPointY on new lines.
-  int m_currentIndentationInPixels;
+  /// The initial value of text_insertion_point_y_ on new lines.
+  int current_indentation_in_pixels_;
 
   /// @}
 
@@ -102,55 +102,55 @@ protected:
    */
 
   /// The current size of the font
-  int m_fontSizeInPixels;
+  int font_size_in_pixels_;
 
   /// The current size of the ruby text in pixels
-  int m_rubySize;
+  int ruby_size_;
 
   /// Size of the window in characters
-  int m_xWindowSizeInChars, m_yWindowSizeInChars;
+  int x_window_size_in_chars_, y_window_size_in_chars_;
 
   /// Spacing between characters
-  int m_xSpacing, m_ySpacing;
+  int x_spacing_, y_spacing_;
 
   /// Whether to indent (INDENT_USE)
-  int m_useIndentation;
+  int use_indentation_;
 
   /// The default color. Initialized to \#COLOR_TABLE.000, but can be
   /// changed with the SetFontColour() command.
-  RGBColour m_defaultColor;
+  RGBColour default_color_;
 
   /// The current color. Initialized to the default color on every
   /// clearWin() call.
-  RGBColour m_fontColour;
+  RGBColour font_colour_;
 
   /// @}
 
   /// Determines how the window will react to pause()
   /// calls. Initialized to \#WINDOW.x.R_COMMAND_MOD.
-  int m_actionOnPause;
+  int action_on_pause_;
 
   /**
    * @name Positional data
    *
    * @{
    */
-  int m_origin, m_xDistanceFromOrigin, m_yDistanceFromOrigin;
+  int origin_, x_distance_from_origin_, y_distance_from_origin_;
 
   /// @}
 
-  int m_upperBoxPadding, m_lowerBoxPadding, m_leftBoxPadding, m_rightBoxPadding;
+  int upper_box_padding_, lower_box_padding_, left_box_padding_, right_box_padding_;
 
-  /// Whether m_r, etc is a per-window color.
-  int m_windowAttrMod;
+  /// Whether r_, etc is a per-window color.
+  int window_attr_mod_;
 
   /// The default window background color.
   /// @{
-  RGBAColour m_colour;
-  int m_filter;
+  RGBAColour colour_;
+  int filter_;
   /// @}
 
-  int m_isVisible;
+  int is_visible_;
 
   /// Determines the position of the keycursor (the animated cursor
   /// that appears when the game is waiting for a click to move to the
@@ -163,8 +163,8 @@ protected:
   /// 0 or 1.)
   ///
   /// @{
-  int m_keycursorType;
-  Point m_keycursorPos;
+  int keycursor_type_;
+  Point keycursor_pos_;
   /// @}
 
   /**
@@ -177,7 +177,7 @@ protected:
   /// - 0: Display names inline (default)
   /// - 1: Display names in a seperate window
   /// - 2: Do not display names
-  int m_nameMod;
+  int name_mod_;
 
   /// @}
 
@@ -193,7 +193,7 @@ protected:
    * @{
    */
   typedef boost::ptr_map<std::string, TextWindowButton> ButtonMap;
-  ButtonMap m_buttonMap;
+  ButtonMap button_map_;
   /// @}
 
   /**
@@ -206,20 +206,20 @@ protected:
    * @{
    */
   /// Whether this text box currently contains
-  bool m_inSelectionMode;
+  bool in_selection_mode_;
 
   /// Callback function for when item is selected; usually will call a
   /// specific method on Select_LongOperation
-  boost::function<void(int)> m_selectionCallback;
+  boost::function<void(int)> selection_callback_;
 
   /// Used to assign a zero based index to all selection elements
   /// added by addSelectionItem().
-  int m_nextId;
+  int next_id_;
   /// @}
 
 protected:
   /**
-   * Accessor for the m_selectionCallback for TextWindow subclasses
+   * Accessor for the selection_callback_ for TextWindow subclasses
    */
   const boost::function<void(int)>& selectionCallback();
 
@@ -243,34 +243,34 @@ public:
    * \#WINDOW.xxx.MOJI_CNT.
    */
   void setWindowSizeInCharacters(const std::vector<int>& posData);
-  int xWindowSizeInChars() const { return m_xWindowSizeInChars; }
-  int yWindowSizeInChars() const { return m_yWindowSizeInChars; }
+  int xWindowSizeInChars() const { return x_window_size_in_chars_; }
+  int yWindowSizeInChars() const { return y_window_size_in_chars_; }
 
   /**
    * Sets the size of the spacing between characters. Reprsented by
    * \#WINDOW.xxx.MOJI_REP.
    */
   void setSpacingBetweenCharacters(const std::vector<int>& posData);
-  int xSpacing() const { return m_xSpacing; }
-  int ySpacing() const { return m_ySpacing; }
+  int xSpacing() const { return x_spacing_; }
+  int ySpacing() const { return y_spacing_; }
 
   /**
    * Sets the size of the ruby (furigana; pronounciation guide) text
    * in pixels. If zero, ruby text is disabled in this
    * window. Represented by \#WINDOW.xxx.LUBY_SIZE.
    */
-  void setRubyTextSize(const int i) { m_rubySize = i; }
-  int rubyTextSize() const { return m_rubySize; }
+  void setRubyTextSize(const int i) { ruby_size_ = i; }
+  int rubyTextSize() const { return ruby_size_; }
 
   /**
    * Sets the size of the font. Reprsented by \#WINDOW.xxx.MOJI.SIZE.
    */
-  void setFontSizeInPixels(int i) { m_fontSizeInPixels = i; }
-  int fontSizeInPixels() const { return m_fontSizeInPixels; }
+  void setFontSizeInPixels(int i) { font_size_in_pixels_ = i; }
+  int fontSizeInPixels() const { return font_size_in_pixels_; }
 
   void setTextboxPadding(const std::vector<int>& posData);
 
-  void setUseIndentation(const int i) { m_useIndentation = i; }
+  void setUseIndentation(const int i) { use_indentation_ = i; }
 
   void setDefaultTextColor(const std::vector<int>& colorData);
   void setFontColor(const std::vector<int>& colorData);
@@ -306,8 +306,8 @@ public:
    */
 
   /// Sets how the name is displayed
-  /// @see m_nameMod
-  void setNameMod(const int in) { m_nameMod = in; }
+  /// @see name_mod_
+  void setNameMod(const int in) { name_mod_ = in; }
 
   /// @}
 
@@ -365,28 +365,28 @@ public:
    *
    * @{
    */
-  void setWindowAttrMod(int i) { m_windowAttrMod = i; }
-  int windowAttrMod() const { return m_windowAttrMod; }
+  void setWindowAttrMod(int i) { window_attr_mod_ = i; }
+  int windowAttrMod() const { return window_attr_mod_; }
 
-  void setR(int i) { m_colour.setRed(i); }
-  void setG(int i) { m_colour.setGreen(i); }
-  void setB(int i) { m_colour.setBlue(i); }
-  void setAlpha(int i) { m_colour.setAlpha(i); }
-  void setFilter(int i) { m_filter = i; }
+  void setR(int i) { colour_.setRed(i); }
+  void setG(int i) { colour_.setGreen(i); }
+  void setB(int i) { colour_.setBlue(i); }
+  void setAlpha(int i) { colour_.setAlpha(i); }
+  void setFilter(int i) { filter_ = i; }
   void setRGBAF(const std::vector<int>& rgbaValues);
 
-  int r() const { return m_colour.r(); }
-  int g() const { return m_colour.g(); }
-  int b() const { return m_colour.b(); }
-  int alpha() const { return m_colour.a(); }
-  int filter() const { return m_filter; }
+  int r() const { return colour_.r(); }
+  int g() const { return colour_.g(); }
+  int b() const { return colour_.b(); }
+  int alpha() const { return colour_.a(); }
+  int filter() const { return filter_; }
   /// @}
 
-  void setVisible(int in) { m_isVisible = in; }
-  bool isVisible() const { return m_isVisible; }
+  void setVisible(int in) { is_visible_ = in; }
+  bool isVisible() const { return is_visible_; }
 
-  void setActionOnPause(const int i) { m_actionOnPause = i; }
-  bool actionOnPause() const { return m_actionOnPause; }
+  void setActionOnPause(const int i) { action_on_pause_ = i; }
+  bool actionOnPause() const { return action_on_pause_; }
 
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine) = 0;
@@ -441,8 +441,8 @@ public:
    */
   virtual void startSelectionMode();
 
-  bool inSelectionMode() { return m_inSelectionMode; }
-  int getNextSelectionID() { return m_nextId++; }
+  bool inSelectionMode() { return in_selection_mode_; }
+  int getNextSelectionID() { return next_id_++; }
 
   virtual void addSelectionItem(const std::string& utf8str) = 0;
   virtual void setSelectionCallback(const boost::function<void(int)>& func);

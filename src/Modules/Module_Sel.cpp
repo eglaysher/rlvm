@@ -61,9 +61,9 @@ using libReallive::CommandElement;
 Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
-  : EventHandler(machine), m_machine(machine),
+  : EventHandler(machine), machine_(machine),
     textWindow(machine.system().text().currentWindow(machine)),
-    m_returnValue(-1)
+    return_value_(-1)
 {
   textWindow.startSelectionMode();
   textWindow.setSelectionCallback(
@@ -93,16 +93,16 @@ Sel_LongOperation::~Sel_LongOperation()
 
 void Sel_LongOperation::selected(int num)
 {
-  m_returnValue = num;
+  return_value_ = num;
 }
 
 // -----------------------------------------------------------------------
 
 bool Sel_LongOperation::operator()(RLMachine& machine)
 {
-  if(m_returnValue != -1)
+  if(return_value_ != -1)
   {
-    machine.setStoreRegister(m_returnValue);
+    machine.setStoreRegister(return_value_);
     return true;
   }
   else
@@ -113,7 +113,7 @@ bool Sel_LongOperation::operator()(RLMachine& machine)
 void Sel_LongOperation::mouseMotion(const Point& pos)
 {
   // Tell the text system about the move
-  m_machine.system().text().setMousePosition(m_machine, pos);
+  machine_.system().text().setMousePosition(machine_, pos);
 }
 
 // -----------------------------------------------------------------------
@@ -121,14 +121,14 @@ void Sel_LongOperation::mouseMotion(const Point& pos)
 void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed)
 {
-  EventSystem& es = m_machine.system().event();
+  EventSystem& es = machine_.system().event();
 
   switch(mouseButton)
   {
   case MOUSE_LEFT:
   {
     Point pos = es.getCursorPos();
-    m_machine.system().text().handleMouseClick(m_machine, pos, pressed);
+    machine_.system().text().handleMouseClick(machine_, pos, pressed);
     break;
   }
   case MOUSE_RIGHT:

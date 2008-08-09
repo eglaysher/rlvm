@@ -54,8 +54,8 @@ using namespace libReallive;
 
 RLModule::RLModule(const std::string& inModuleName, int inModuleType,
                    int inModuleNumber)
-  : m_moduleType(inModuleType), m_moduleNumber(inModuleNumber),
-    m_moduleName(inModuleName)
+  : module_type_(inModuleType), module_number_(inModuleNumber),
+    module_name_(inModuleName)
 {}
 
 // -----------------------------------------------------------------------
@@ -83,7 +83,7 @@ void RLModule::unpackOpcodeNumber(int packedOpcode, int& opcode, unsigned char& 
 void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
 {
   ostringstream oss;
-  oss << "opcode<" << m_moduleType << ":" << m_moduleNumber << ":"
+  oss << "opcode<" << module_type_ << ":" << module_number_ << ":"
       << opcode << ", " << overload << ">";
 
   addOpcode(opcode, overload, oss.str(), op);
@@ -105,7 +105,7 @@ void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload,
                                     const std::string& name)
 {
   addOpcode(opcode, overload,
-            new UndefinedFunction(name, m_moduleType, m_moduleNumber, opcode,
+            new UndefinedFunction(name, module_type_, module_number_, opcode,
                                   (int)overload));
 }
 

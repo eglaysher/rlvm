@@ -41,10 +41,10 @@ NullTextSystem::~NullTextSystem() { }
 
 TextWindow& NullTextSystem::textWindow(RLMachine& machine, int textWindowNum)
 {
-  WindowMap::iterator it = m_textWindow.find(textWindowNum);
-  if(it == m_textWindow.end())
+  WindowMap::iterator it = text_window_.find(textWindowNum);
+  if(it == text_window_.end())
   {
-    it = m_textWindow.insert(
+    it = text_window_.insert(
       textWindowNum, new NullTextWindow(machine, textWindowNum)).first;
   }
 

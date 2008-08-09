@@ -175,10 +175,10 @@ private:
    * @{
    */
   /// Defined music tracks (files)
-  DSTable m_dsTracks;
+  DSTable ds_tracks_;
 
   /// Defined music tracks (cd tracks)
-  CDTable m_cdTracks;
+  CDTable cd_tracks_;
 
   /// @}
 
@@ -190,7 +190,7 @@ private:
    * @{
    */
   /// Per channel volume
-  unsigned char m_channelVolume[NUM_BASE_CHANNELS];
+  unsigned char channel_volume_[NUM_BASE_CHANNELS];
 
   /**
    * Open tasks that adjust the volume of a wave channel. We do this
@@ -200,7 +200,7 @@ private:
    * @note Depending on features in other systems, I may push this
    *       down to SDLSoundSystem later.
    */
-  ChannelAdjustmentMap m_pcmAdjustmentTasks;
+  ChannelAdjustmentMap pcm_adjustment_tasks_;
 
   /// @}
 
@@ -216,16 +216,16 @@ private:
    * Parsed \#SE.index entries. Maps a sound effect number to the
    * filename to play and the channel to play it on.
    */
-  SeTable m_seTable;
+  SeTable se_table_;
 
   /// @}
 
-  SoundSystemGlobals m_globals;
+  SoundSystemGlobals globals_;
 
 protected:
-  SeTable& seTable() { return m_seTable; }
-  const DSTable& getDSTable() { return m_dsTracks; }
-  const CDTable& getCDTable() { return m_cdTracks; }
+  SeTable& seTable() { return se_table_; }
+  const DSTable& getDSTable() { return ds_tracks_; }
+  const CDTable& getCDTable() { return cd_tracks_; }
 
   /**
    * Computes the actual volume for a channel based on the per channel
@@ -256,11 +256,11 @@ public:
    * Sets how much sound hertz.
    */
   virtual void setSoundQuality(const int quality)
-  { m_globals.soundQuality = quality; }
+  { globals_.soundQuality = quality; }
 
-  int soundQuality() const { return m_globals.soundQuality; }
+  int soundQuality() const { return globals_.soundQuality; }
 
-  SoundSystemGlobals& globals() { return m_globals; }
+  SoundSystemGlobals& globals() { return globals_; }
 
   // ---------------------------------------------------------------------
   /**

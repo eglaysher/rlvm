@@ -58,7 +58,7 @@ public:
    *
    * @param value New value for the frame counter
    */
-  void setValue(int value) { m_value = value; }
+  void setValue(int value) { value_ = value; }
 
   /**
    * When a timer starts, we need to tell the EventSystem that we now
@@ -78,8 +78,8 @@ public:
    */
   void endTimer(EventSystem& eventSystem);
 
-  bool isActive() const { return m_isActive; }
-  void setActive(bool active) { m_isActive = active; }
+  bool isActive() const { return is_active_; }
+  void setActive(bool active) { is_active_ = active; }
 
   bool checkIfFinished(float newValue);
   void updateTimeValue(float numTicks);
@@ -98,15 +98,15 @@ public:
 
 // Give these accessors later?
 protected:
-  EventSystem& m_eventSystem;
+  EventSystem& event_system_;
 
-  float m_value;
-  int m_minValue;
-  int m_maxValue;
-  bool m_isActive;
+  float value_;
+  int min_value_;
+  int max_value_;
+  bool is_active_;
 
-  unsigned int m_timeAtStart;
-  unsigned int m_totalTime;
+  unsigned int time_at_start_;
+  unsigned int total_time_;
 };
 
 // -----------------------------------------------------------------------
@@ -123,8 +123,8 @@ public:
   virtual int readFrame(EventSystem& eventSystem);
 
 private:
-  float m_changeInterval;
-  float m_timeAtLastCheck;
+  float change_interval_;
+  float time_at_last_check_;
 };
 
 // -----------------------------------------------------------------------
@@ -143,8 +143,8 @@ public:
   virtual void finished(EventSystem& eventSystem);
 
 private:
-  float m_changeInterval;
-  float m_timeAtLastCheck;
+  float change_interval_;
+  float time_at_last_check_;
 };
 
 // -----------------------------------------------------------------------
@@ -162,9 +162,9 @@ public:
   virtual int readFrame(EventSystem& eventSystem);
 
 private:
-  bool m_goingForward;
-  unsigned int m_changeInterval;
-  unsigned int m_timeAtLastCheck;
+  bool going_forward_;
+  unsigned int change_interval_;
+  unsigned int time_at_last_check_;
 };
 
 // -----------------------------------------------------------------------
@@ -175,8 +175,8 @@ private:
 class AcceleratingFrameCounter : public FrameCounter
 {
 private:
-  unsigned int m_startTime;
-  float m_timeAtLastCheck;
+  unsigned int start_time_;
+  float time_at_last_check_;
 
 public:
   AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax,
@@ -194,8 +194,8 @@ public:
 class DeceleratingFrameCounter : public FrameCounter
 {
 private:
-  unsigned int m_startTime;
-  float m_timeAtLastCheck;
+  unsigned int start_time_;
+  float time_at_last_check_;
 
 public:
   DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax,

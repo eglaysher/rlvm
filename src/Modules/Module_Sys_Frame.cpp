@@ -51,14 +51,14 @@ template<typename FRAMECLASS>
 struct Sys_InitFrame
   : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
 {
-  const int m_layer;
-  Sys_InitFrame(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_InitFrame(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter, int frameMin, int frameMax,
                   int time)
   {
     EventSystem& es = machine.system().event();
-    es.setFrameCounter(m_layer, counter, new FRAMECLASS(es, frameMin, frameMax, time));
+    es.setFrameCounter(layer_, counter, new FRAMECLASS(es, frameMin, frameMax, time));
   }
 };
 
@@ -66,14 +66,14 @@ struct Sys_InitFrame
 
 struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
 {
-  const int m_layer;
-  Sys_ReadFrame(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_ReadFrame(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    if(es.frameCounterExists(m_layer, counter))
-      return es.getFrameCounter(m_layer, counter).readFrame(es);
+    if(es.frameCounterExists(layer_, counter))
+      return es.getFrameCounter(layer_, counter).readFrame(es);
     else
       return 0;
   }
@@ -83,14 +83,14 @@ struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
 
 struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
 {
-  const int m_layer;
-  Sys_FrameActive(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_FrameActive(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    if(es.frameCounterExists(m_layer, counter))
-      return es.getFrameCounter(m_layer, counter).isActive();
+    if(es.frameCounterExists(layer_, counter))
+      return es.getFrameCounter(layer_, counter).isActive();
     else
       return 0;
   }
@@ -100,16 +100,16 @@ struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
 
 struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
 {
-  const int m_layer;
-  Sys_AnyFrameActive(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_AnyFrameActive(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
     for(int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(m_layer, counter) &&
-         es.getFrameCounter(m_layer, counter).isActive())
+      if(es.frameCounterExists(layer_, counter) &&
+         es.getFrameCounter(layer_, counter).isActive())
       {
         return 1;
       }
@@ -123,13 +123,13 @@ struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
 
 struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T>
 {
-  const int m_layer;
-  Sys_ClearFrame_0(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_ClearFrame_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    es.setFrameCounter(m_layer, counter, NULL);
+    es.setFrameCounter(layer_, counter, NULL);
   }
 };
 
@@ -137,12 +137,12 @@ struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T>
 
 struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 {
-  const int m_layer;
-  Sys_ClearFrame_1(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_ClearFrame_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter, int newValue)
   {
-    FrameCounter& fc = machine.system().event().getFrameCounter(m_layer, counter);
+    FrameCounter& fc = machine.system().event().getFrameCounter(layer_, counter);
     fc.setActive(false);
     fc.setValue(newValue);
   }
@@ -152,8 +152,8 @@ struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
 struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
 {
-  const int m_layer;
-  Sys_ClearAllFrames_0(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_ClearAllFrames_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int newValue)
   {
@@ -161,9 +161,9 @@ struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
 
     for(int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(m_layer, i))
+      if(es.frameCounterExists(layer_, i))
       {
-        FrameCounter& fc = es.getFrameCounter(m_layer, i);
+        FrameCounter& fc = es.getFrameCounter(layer_, i);
         fc.setActive(false);
         fc.setValue(newValue);
       }
@@ -175,8 +175,8 @@ struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
 
 struct Sys_ClearAllFrames_1 : public RLOp_Void_Void
 {
-  const int m_layer;
-  Sys_ClearAllFrames_1(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_ClearAllFrames_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine)
   {
@@ -184,9 +184,9 @@ struct Sys_ClearAllFrames_1 : public RLOp_Void_Void
 
     for(int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(m_layer, i))
+      if(es.frameCounterExists(layer_, i))
       {
-        es.setFrameCounter(m_layer, i, NULL);
+        es.setFrameCounter(layer_, i, NULL);
       }
     }
   }
@@ -198,8 +198,8 @@ typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
 struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
 {
-  const int m_layer;
-  Sys_ReadFrames(int layer) : m_layer(layer) {}
+  const int layer_;
+  Sys_ReadFrames(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, vector<FrameDataInReadFrames::type> frames)
   {
@@ -214,12 +214,12 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
     {
       int counter = it->get<0>();
 
-      if(es.frameCounterExists(m_layer, counter))
+      if(es.frameCounterExists(layer_, counter))
       {
-        int val = es.getFrameCounter(m_layer, counter).readFrame(es);
+        int val = es.getFrameCounter(layer_, counter).readFrame(es);
         *(it->get<1>()) = val;
 
-        if(es.getFrameCounter(m_layer, counter).isActive())
+        if(es.getFrameCounter(layer_, counter).isActive())
           storeValue = true;
       }
       else

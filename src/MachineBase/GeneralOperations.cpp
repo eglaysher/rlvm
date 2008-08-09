@@ -153,8 +153,8 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
 UndefinedFunction::UndefinedFunction(
   const std::string& name,
   int modtype, int module, int opcode, int overload)
-  : m_name(name), m_modtype(modtype), m_module(module), m_opcode(opcode),
-    m_overload(overload)
+  : name_(name), modtype_(modtype), module_(module), opcode_(opcode),
+    overload_(overload)
 {}
 
 // -----------------------------------------------------------------------
@@ -163,5 +163,5 @@ void UndefinedFunction::operator()(RLMachine&,
                                    const libReallive::CommandElement&)
 {
   throw rlvm::UnimplementedOpcode(
-    m_name, m_modtype, m_module, m_opcode, m_overload);
+    name_, modtype_, module_, opcode_, overload_);
 }

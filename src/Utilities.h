@@ -160,7 +160,7 @@ class UnimplementedOpcode : public Exception
 private:
   /// Printable name of the opcode. Either "funname (opcode<W:X:Y:Z>)"
   /// or "opcode<W:X:Y:Z>".
-  std::string m_name;
+  std::string name_;
 
   void setDescription();
 
@@ -171,7 +171,7 @@ public:
   ~UnimplementedOpcode() throw();
 
   /// Returns the name of the function that wasn't implemented.
-  const std::string& opcodeName() const { return m_name; }
+  const std::string& opcodeName() const { return name_; }
 };
 
 }

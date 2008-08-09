@@ -192,7 +192,7 @@ class ExpressionElement : public DataElement {
 private:
   /// Storage for the parsed expression so we only have to calculate
   /// it once (and so we can return it by const reference)
-  mutable boost::scoped_ptr<ExpressionPiece> m_parsedExpression;
+  mutable boost::scoped_ptr<ExpressionPiece> parsed_expression_;
 
 public:
   virtual const ElementType type() const;
@@ -218,8 +218,8 @@ public:
 
 class CommandElement : public DataElement {
 protected:
-  mutable std::vector<std::string> m_unparsedParameters;
-  mutable boost::ptr_vector<libReallive::ExpressionPiece> m_parsedParameters;
+  mutable std::vector<std::string> unparsed_parameters_;
+  mutable boost::ptr_vector<libReallive::ExpressionPiece> parsed_parameters_;
 
 public:
   virtual const ElementType type() const;

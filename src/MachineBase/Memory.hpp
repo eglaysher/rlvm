@@ -175,10 +175,10 @@ private:
    * GetSaveFlag), we don't really need to duplicate this data
    * structure and can simply pass a pointer to it.
    */
-  boost::shared_ptr<GlobalMemory> m_global;
+  boost::shared_ptr<GlobalMemory> global_;
 
   /// Local memory to a save file
-  LocalMemory m_local;
+  LocalMemory local_;
 
   /// Integer variable pointers. This redirect into Global and local
   /// memory (as the case may be) allows us to overlay new views of
@@ -186,7 +186,7 @@ private:
   int* intVar[NUMBER_OF_INT_LOCATIONS];
 
   /**
-   * Connects the memory banks in m_local and in m_global into intVar.
+   * Connects the memory banks in local_ and in global_ into intVar.
    */
   void connectIntVarPointers();
 
@@ -289,10 +289,10 @@ public:
    *
    * @{
    */
-  GlobalMemory& global() { return *m_global; }
-  const GlobalMemory& global() const { return *m_global; }
-  LocalMemory& local() { return m_local; }
-  const LocalMemory& local() const { return m_local; }
+  GlobalMemory& global() { return *global_; }
+  const GlobalMemory& global() const { return *global_; }
+  LocalMemory& local() { return local_; }
+  const LocalMemory& local() const { return local_; }
   /// @}
 
   /**

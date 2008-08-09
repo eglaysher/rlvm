@@ -43,25 +43,25 @@ class TextKeyCursor
 {
 private:
   /// Keep track of which cursor we are as an optimization
-  int m_cursorNumber;
+  int cursor_number_;
 
   /// The surface containing the cursor
-  boost::shared_ptr<Surface> m_cursorImage;
+  boost::shared_ptr<Surface> cursor_image_;
 
   /// The size of the cursor
-  Size m_frameSize;
+  Size frame_size_;
 
   /// Number of frames in this cursor
-  int m_frameCount;
+  int frame_count_;
 
   /// Current frame being displayed
-  int m_currentFrame;
+  int current_frame_;
 
   /// How long an individual frame should be displayed
-  int m_frameSpeed;
+  int frame_speed_;
 
-  /// The last time m_currentFrame was incremented in ticks
-  unsigned int m_lastTimeFrameIncremented;
+  /// The last time current_frame_ was incremented in ticks
+  unsigned int last_time_frame_incremented_;
 
 public:
   /**
@@ -91,7 +91,7 @@ public:
    *
    * @{
    */
-  int cursorNumber() const { return m_cursorNumber; }
+  int cursorNumber() const { return cursor_number_; }
   // @}
 
 

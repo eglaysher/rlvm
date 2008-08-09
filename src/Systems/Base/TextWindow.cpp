@@ -58,23 +58,23 @@ using std::vector;
 // -----------------------------------------------------------------------
 
 TextWindow::TextWindow(RLMachine& machine, int windowNum)
-  : m_currentLineNumber(0), m_currentIndentationInPixels(0),
-    m_useIndentation(0), m_colour(), m_filter(0), m_isVisible(0),
-    m_inSelectionMode(0), m_nextId(0)
+  : current_line_number_(0), current_indentation_in_pixels_(0),
+    use_indentation_(0), colour_(), filter_(0), is_visible_(0),
+    in_selection_mode_(0), next_id_(0)
 {
   Gameexe& gexe = machine.system().gameexe();
 
   // POINT
   Size size = getScreenSize(gexe);
-  m_screenWidth = size.width();
-  m_screenHeight = size.height();
+  screen_width_ = size.width();
+  screen_height_ = size.height();
 
   // Base form for everything to follow.
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
 
   // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
-  m_windowAttrMod = window("ATTR_MOD");
-  if(m_windowAttrMod == 0)
+  window_attr_mod_ = window("ATTR_MOD");
+  if(window_attr_mod_ == 0)
   {
     setRGBAF(machine.system().text().windowAttr());
   }
@@ -114,7 +114,7 @@ void TextWindow::execute(RLMachine& machine)
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
-    for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
+    for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
         ++it)
     {
       it->second->execute();
@@ -126,74 +126,74 @@ void TextWindow::execute(RLMachine& machine)
 
 void TextWindow::setTextboxPadding(const vector<int>& posData)
 {
-  m_upperBoxPadding = posData.at(0);
-  m_lowerBoxPadding = posData.at(1);
-  m_leftBoxPadding = posData.at(2);
-  m_rightBoxPadding = posData.at(3);
+  upper_box_padding_ = posData.at(0);
+  lower_box_padding_ = posData.at(1);
+  left_box_padding_ = posData.at(2);
+  right_box_padding_ = posData.at(3);
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setDefaultTextColor(const vector<int>& colorData)
 {
-  m_defaultColor = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
+  default_color_ = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setFontColor(const vector<int>& colorData)
 {
-  m_fontColour = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
+  font_colour_ = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setWindowSizeInCharacters(const vector<int>& posData)
 {
-  m_xWindowSizeInChars = posData.at(0);
-  m_yWindowSizeInChars = posData.at(1);
+  x_window_size_in_chars_ = posData.at(0);
+  y_window_size_in_chars_ = posData.at(1);
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setSpacingBetweenCharacters(const vector<int>& posData)
 {
-  m_xSpacing = posData.at(0);
-  m_ySpacing = posData.at(1);
+  x_spacing_ = posData.at(0);
+  y_spacing_ = posData.at(1);
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setWindowPosition(const vector<int>& posData)
 {
-  m_origin = posData.at(0);
-  m_xDistanceFromOrigin = posData.at(1);
-  m_yDistanceFromOrigin = posData.at(2);
+  origin_ = posData.at(0);
+  x_distance_from_origin_ = posData.at(1);
+  y_distance_from_origin_ = posData.at(2);
 }
 
 // -----------------------------------------------------------------------
 
 Size TextWindow::textWindowSize() const
 {
-  return Size((m_xWindowSizeInChars *
-               (m_fontSizeInPixels + m_xSpacing)) + m_rightBoxPadding,
-              (m_yWindowSizeInChars *
-               (m_fontSizeInPixels + m_ySpacing + m_rubySize)) + m_lowerBoxPadding);
+  return Size((x_window_size_in_chars_ *
+               (font_size_in_pixels_ + x_spacing_)) + right_box_padding_,
+              (y_window_size_in_chars_ *
+               (font_size_in_pixels_ + y_spacing_ + ruby_size_)) + lower_box_padding_);
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::boxX1() const
 {
-  switch(m_origin)
+  switch(origin_)
   {
   case 0:
   case 2:
-    return m_xDistanceFromOrigin;
+    return x_distance_from_origin_;
   case 1:
   case 3:
-    return m_screenWidth - m_xDistanceFromOrigin - textWindowSize().width() -
-      m_leftBoxPadding;
+    return screen_width_ - x_distance_from_origin_ - textWindowSize().width() -
+      left_box_padding_;
   default:
     throw SystemError("Invalid origin");
   };
@@ -203,15 +203,15 @@ int TextWindow::boxX1() const
 
 int TextWindow::boxY1() const
 {
-  switch(m_origin)
+  switch(origin_)
   {
   case 0: // Top and left
   case 1: // Top and right
-    return m_yDistanceFromOrigin;
+    return y_distance_from_origin_;
   case 2: // Bottom and left
   case 3: // Bottom and right
-    return m_screenHeight - m_yDistanceFromOrigin - textWindowSize().height() -
-      m_upperBoxPadding;
+    return screen_height_ - y_distance_from_origin_ - textWindowSize().height() -
+      upper_box_padding_;
   default:
     throw SystemError("Invalid origin");
   }
@@ -221,14 +221,14 @@ int TextWindow::boxY1() const
 
 int TextWindow::textX1() const
 {
-  switch(m_origin)
+  switch(origin_)
   {
   case 0: // Top and left
   case 2: // Bottom and left
-    return m_xDistanceFromOrigin + m_leftBoxPadding;
+    return x_distance_from_origin_ + left_box_padding_;
   case 1: // Top and right
   case 3: // Bottom and right
-    return m_screenWidth - m_xDistanceFromOrigin - textWindowSize().width();
+    return screen_width_ - x_distance_from_origin_ - textWindowSize().width();
   default:
     throw SystemError("Invalid origin");
   };
@@ -238,14 +238,14 @@ int TextWindow::textX1() const
 
 int TextWindow::textY1() const
 {
-  switch(m_origin)
+  switch(origin_)
   {
   case 0: // Top and left
   case 1: // Top and right
-    return m_yDistanceFromOrigin + m_upperBoxPadding;
+    return y_distance_from_origin_ + upper_box_padding_;
   case 2: // Bottom and left
   case 3: // Bottom and right
-    return m_screenHeight - m_yDistanceFromOrigin - textWindowSize().height();
+    return screen_height_ - y_distance_from_origin_ - textWindowSize().height();
   default:
     throw SystemError("Invalid origin");
   }
@@ -269,22 +269,22 @@ int TextWindow::textY2() const
 
 void TextWindow::setKeycurMod(const vector<int>& keycur)
 {
-  m_keycursorType = keycur.at(0);
-  m_keycursorPos = Point(keycur.at(1), keycur.at(2));
+  keycursor_type_ = keycur.at(0);
+  keycursor_pos_ = Point(keycur.at(1), keycur.at(2));
 }
 
 // -----------------------------------------------------------------------
 
 Point TextWindow::keycursorPosition() const
 {
-  switch(m_keycursorType)
+  switch(keycursor_type_)
   {
   case 0:
     return Point(textX2(), textY2());
   case 1:
-    return Point(m_textInsertionPointX, m_textInsertionPointY);
+    return Point(text_insertion_point_x_, text_insertion_point_y_);
   case 2:
-    return Point(textX1(), textY1()) + m_keycursorPos;
+    return Point(textX1(), textY1()) + keycursor_pos_;
   default:
     throw SystemError("Invalid keycursor type");
   }
@@ -328,33 +328,33 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
   TextSystem& ts = machine.system().text();
   GraphicsSystem& gs = machine.system().graphics();
-  m_buttonMap.clear();
+  button_map_.clear();
   // Translation: Boost ptr_map is retarded.
   string key = "MOVE_BOX";
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
   key = string("CLEAR_BOX");
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new ActionTextWindowButton(
                        ts.windowClearUse(), waku("CLEAR_BOX"),
                        bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
   key = string("READJUMP_BOX");
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new ActivationTextWindowButton(
                        ts.windowReadJumpUse(), waku("READJUMP_BOX"),
                        &readjumpTurnsOn, &readjumpTurnsOff));
   key = string("AUTOMODE_BOX");
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new ActivationTextWindowButton(
                        ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
                        bind(&TextSystem::setAutoMode, ref(ts), true),
                        bind(&TextSystem::setAutoMode, ref(ts), false)));
 
   key = string("MSGBK_BOX");
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
   key = string("MSGBKLEFT_BOX");
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new RepeatActionWhileHoldingWindowButton(
                        ts.windowMsgbkleftUse(),
                        waku("MSGBKLEFT_BOX"),
@@ -362,7 +362,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                        bind(&TextSystem::backPage, ref(ts), ref(machine)),
                        250));
   key = string("MSGBKRIGHT_BOX");
-  m_buttonMap.insert(key,
+  button_map_.insert(key,
                      new RepeatActionWhileHoldingWindowButton(
                        ts.windowMsgbkrightUse(),
                        waku("MSGBKRIGHT_BOX"),
@@ -377,7 +377,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
     key = oss.str();
-    m_buttonMap.insert(key,
+    button_map_.insert(key,
                        new ExbtnWindowButton(machine,
                          ts.windowExbtnUse(),
                          waku(oss.str()),
@@ -389,7 +389,7 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
 void TextWindow::setRGBAF(const vector<int>& attr)
 {
-  m_colour = RGBAColour(attr.at(0), attr.at(1), attr.at(2), attr.at(3));
+  colour_ = RGBAColour(attr.at(0), attr.at(1), attr.at(2), attr.at(3));
   setFilter(attr.at(4));
 }
 
@@ -399,7 +399,7 @@ void TextWindow::setMousePosition(RLMachine& machine, const Point& pos)
 {
   using namespace boost;
 
-  for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
+  for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
       ++it)
   {
     it->second->setMousePosition(machine, *this, pos);
@@ -415,7 +415,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
-    for(ButtonMap::iterator it = m_buttonMap.begin(); it != m_buttonMap.end();
+    for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
         ++it)
     {
       if(it->second->handleMouseClick(machine, *this, pos, pressed))
@@ -430,28 +430,28 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
 void TextWindow::startSelectionMode()
 {
-  m_inSelectionMode = true;
-  m_nextId = 0;
+  in_selection_mode_ = true;
+  next_id_ = 0;
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setSelectionCallback(const boost::function<void(int)>& in)
 {
-  m_selectionCallback = in;
+  selection_callback_ = in;
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::endSelectionMode()
 {
-  m_inSelectionMode = false;
-  m_selectionCallback.clear();
+  in_selection_mode_ = false;
+  selection_callback_.clear();
 }
 
 // -----------------------------------------------------------------------
 
 const boost::function<void(int)>& TextWindow::selectionCallback()
 {
-  return m_selectionCallback;
+  return selection_callback_;
 }

@@ -57,14 +57,14 @@ public:
   Point getTopLeftForHotspotAt(const Point& mouseLocation);
 
 private:
-  /// Sets m_hotspot[XY] to the white pixel in the
+  /// Sets hotspot_[XY] to the white pixel in the
   void findHotspot();
 
   /// The raw image read from the PDT.
-  boost::shared_ptr<Surface> m_cursorSurface;
+  boost::shared_ptr<Surface> cursor_surface_;
 
   /// The hotspot location.
-  Size m_hotspotOffset;
+  Size hotspot_offset_;
 };	// end of class MouseCursor
 
 

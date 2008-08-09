@@ -47,14 +47,14 @@
 class BlindEffect : public Effect
 {
 private:
-  int m_blindSize;
+  int blind_size_;
 
   virtual bool blitOriginalImage() const;
 
 protected:
   // We'll probably need some utility stuff here.
 
-  const int blindSize() const { return m_blindSize; }
+  const int blindSize() const { return blind_size_; }
 
   virtual void computeGrowing(
     RLMachine& machine, int maxSize, int currentTime);

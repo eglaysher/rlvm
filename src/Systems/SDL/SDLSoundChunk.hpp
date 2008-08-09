@@ -56,7 +56,7 @@ private:
   static PlayingTable s_playingTable;
 
   /// Wrapped chunk
-  Mix_Chunk* m_sample;
+  Mix_Chunk* sample_;
 
 public:
   SDLSoundChunk(const boost::filesystem::path& path);

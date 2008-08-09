@@ -41,7 +41,7 @@ class SDLRenderToTextureSurface : public Surface
 {
 private:
   /// The SDLTexture which wraps one or more OpenGL textures
-  boost::scoped_ptr<Texture> m_texture;
+  boost::scoped_ptr<Texture> texture_;
 
 public:
   SDLRenderToTextureSurface(const Size& size);

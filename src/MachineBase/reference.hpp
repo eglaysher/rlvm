@@ -109,9 +109,9 @@ template<typename ACCESS>
 class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
 private:
-  Memory* m_memory;
-  int m_type;
-  int m_location;
+  Memory* memory_;
+  int type_;
+  int location_;
 
   // Can this be templated?
   friend class StringAccessor;
@@ -124,24 +124,24 @@ public:
   MemoryReferenceIterator(Memory* inMachine, const int inType,
                           const int inLocation);
 
-  int type() const { return m_type; }
-  int location() const { return m_location; }
+  int type() const { return type_; }
+  int location() const { return location_; }
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*()     { return ACCESS(this); }
 
-  MemoryReferenceIterator& operator++()   { ++m_location; return *this; }
-  MemoryReferenceIterator& operator--()   { --m_location; return *this; }
-  MemoryReferenceIterator& operator+=(int step) { m_location += step; return *this; }
-  MemoryReferenceIterator& operator-=(int step) { m_location -= step; return *this; }
+  MemoryReferenceIterator& operator++()   { ++location_; return *this; }
+  MemoryReferenceIterator& operator--()   { --location_; return *this; }
+  MemoryReferenceIterator& operator+=(int step) { location_ += step; return *this; }
+  MemoryReferenceIterator& operator-=(int step) { location_ -= step; return *this; }
 
   MemoryReferenceIterator operator++(int) {
     MemoryReferenceIterator tmp(*this);
-    ++m_location;
+    ++location_;
     return tmp;
   }
   MemoryReferenceIterator operator--(int) {
     MemoryReferenceIterator tmp(*this);
-    --m_location;
+    --location_;
     return tmp;
   }
 
@@ -155,16 +155,16 @@ public:
   }
 
   int operator-(const MemoryReferenceIterator& rhs) {
-    return m_location - rhs.m_location;
+    return location_ - rhs.location_;
   }
 
   bool operator<(const MemoryReferenceIterator& rhs) {
-    return m_location < rhs.m_location;
+    return location_ < rhs.location_;
   }
 
   bool operator==(const MemoryReferenceIterator<ACCESS>& rhs) const {
-    return m_memory == rhs.m_memory && m_type == rhs.m_type &&
-      m_location == rhs.m_location;
+    return memory_ == rhs.memory_ && type_ == rhs.type_ &&
+      location_ == rhs.location_;
   }
 
   bool operator!=(const MemoryReferenceIterator<ACCESS>& rhs) const {
@@ -172,7 +172,7 @@ public:
   }
 
   MemoryReferenceIterator<ACCESS> changeMemoryTo(Memory* newMemObj) const {
-    return MemoryReferenceIterator<ACCESS>(newMemObj, m_type, m_location);
+    return MemoryReferenceIterator<ACCESS>(newMemObj, type_, location_);
   }
 };
 
@@ -180,7 +180,7 @@ public:
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
-  : m_memory(NULL), m_type(-1), m_location(0)
+  : memory_(NULL), type_(-1), location_(0)
 { }
 
 // -----------------------------------------------------------------------
@@ -188,7 +188,7 @@ MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
   Memory* memory, const int inType, const int inLocation)
-  : m_memory(memory), m_type(inType), m_location(inLocation)
+  : memory_(memory), type_(inType), location_(inLocation)
 { }
 
 // -----------------------------------------------------------------------

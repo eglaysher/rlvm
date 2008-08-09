@@ -112,15 +112,15 @@ void SDLSurface::TextureRecord::reupload(SDL_Surface* surface)
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface()
-  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
-    m_isMask(false)
+  : surface_(NULL), texture_is_valid_(false), graphics_system_(NULL),
+    is_mask_(false)
 {}
 
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(SDL_Surface* surf)
-  : m_surface(surf), m_textureIsValid(false), m_graphicsSystem(NULL),
-    m_isMask(false)
+  : surface_(surf), texture_is_valid_(false), graphics_system_(NULL),
+    is_mask_(false)
 {
   buildRegionTable(Size(surf->w, surf->h));
 }
@@ -130,16 +130,16 @@ SDLSurface::SDLSurface(SDL_Surface* surf)
 /// Surface that takes ownership of an externally created surface.
 SDLSurface::SDLSurface(SDL_Surface* surf,
                        const vector<SDLSurface::GrpRect>& region_table)
-  : m_surface(surf), m_regionTable(region_table),
-    m_textureIsValid(false), m_graphicsSystem(NULL),
-    m_isMask(false)
+  : surface_(surf), region_table_(region_table),
+    texture_is_valid_(false), graphics_system_(NULL),
+    is_mask_(false)
 {}
 
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(const Size& size)
-  : m_surface(NULL), m_textureIsValid(false), m_graphicsSystem(NULL),
-    m_isMask(false)
+  : surface_(NULL), texture_is_valid_(false), graphics_system_(NULL),
+    is_mask_(false)
 {
   allocate(size);
   buildRegionTable(size);
@@ -158,7 +158,7 @@ void SDLSurface::buildRegionTable(const Size& size)
   rect.rect = Rect(Point(0, 0), size);
   rect.originX = 0;
   rect.originY = 0;
-  m_regionTable.push_back(rect);
+  region_table_.push_back(rect);
 }
 
 // -----------------------------------------------------------------------
@@ -170,7 +170,7 @@ SDLSurface::~SDLSurface()
 
 // -----------------------------------------------------------------------
 
-Size SDLSurface::size() const { return Size(m_surface->w, m_surface->h); }
+Size SDLSurface::size() const { return Size(surface_->w, surface_->h); }
 
 // -----------------------------------------------------------------------
 
@@ -180,7 +180,7 @@ void SDLSurface::dump()
   ostringstream ss;
   ss << "dump_" << count << ".bmp";
   count++;
-  SDL_SaveBMP(m_surface, ss.str().c_str());
+  SDL_SaveBMP(surface_, ss.str().c_str());
 }
 
 // -----------------------------------------------------------------------
@@ -189,7 +189,7 @@ void SDLSurface::allocate(const Size& size)
 {
   deallocate();
 
-  m_surface = buildNewSurface(size);
+  surface_ = buildNewSurface(size);
 
   fill(RGBAColour::Black());
 }
@@ -198,7 +198,7 @@ void SDLSurface::allocate(const Size& size)
 
 void SDLSurface::allocate(const Size& size, SDLGraphicsSystem* sys)
 {
-  m_graphicsSystem = sys;
+  graphics_system_ = sys;
   allocate(size);
 }
 
@@ -206,11 +206,11 @@ void SDLSurface::allocate(const Size& size, SDLGraphicsSystem* sys)
 
 void SDLSurface::deallocate()
 {
-  m_textures.clear();
-  if(m_surface)
+  textures_.clear();
+  if(surface_)
   {
-    SDL_FreeSurface(m_surface);
-    m_surface = NULL;
+    SDL_FreeSurface(surface_);
+    surface_ = NULL;
   }
 }
 
@@ -331,7 +331,7 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   {
     // Blit the source rectangle into its own image.
     SDL_Surface* srcImage = buildNewSurface(src.size());
-    if(pygame_AlphaBlit(m_surface, &srcRect, srcImage, NULL))
+    if(pygame_AlphaBlit(surface_, &srcRect, srcImage, NULL))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
     SDL_Surface* tmp = buildNewSurface(dst.size());
@@ -358,16 +358,16 @@ void SDLSurface::blitToSurface(Surface& destSurface,
   {
     if(useSrcAlpha)
     {
-      if(SDL_SetAlpha(m_surface, SDL_SRCALPHA, alpha))
+      if(SDL_SetAlpha(surface_, SDL_SRCALPHA, alpha))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
     }
     else
     {
-      if(SDL_SetAlpha(m_surface, 0, 0))
+      if(SDL_SetAlpha(surface_, 0, 0))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
     }
 
-    if(SDL_BlitSurface(m_surface, &srcRect, dest_surface.surface(), &destRect))
+    if(SDL_BlitSurface(surface_, &srcRect, dest_surface.surface(), &destRect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
 
   }
@@ -390,12 +390,12 @@ void SDLSurface::blitFROMSurface(SDL_Surface* srcSurface,
 
   if(useSrcAlpha)
   {
-    if(pygame_AlphaBlit(srcSurface, &srcRect, m_surface, &destRect))
+    if(pygame_AlphaBlit(srcSurface, &srcRect, surface_, &destRect))
       reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
   else
   {
-    if(SDL_BlitSurface(srcSurface, &srcRect, m_surface, &destRect))
+    if(SDL_BlitSurface(srcSurface, &srcRect, surface_, &destRect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
 
@@ -473,21 +473,21 @@ static void determineProperties(
 
 void SDLSurface::uploadTextureIfNeeded()
 {
-  if(!m_textureIsValid)
+  if(!texture_is_valid_)
   {
-    if(m_textures.size() == 0)
+    if(textures_.size() == 0)
     {
       GLenum bytesPerPixel;
       GLint byteOrder, byteType;
-      determineProperties(m_surface, m_isMask, bytesPerPixel, byteOrder,
+      determineProperties(surface_, is_mask_, bytesPerPixel, byteOrder,
                           byteType);
 
       // ---------------------------------------------------------------------
 
       // Figure out the optimal way of splitting up the image.
       vector<int> xPieces, yPieces;
-      xPieces = segmentPicture(m_surface->w);
-      yPieces = segmentPicture(m_surface->h);
+      xPieces = segmentPicture(surface_->w);
+      yPieces = segmentPicture(surface_->h);
 
       int xOffset = 0;
       for(vector<int>::const_iterator it = xPieces.begin();
@@ -498,9 +498,9 @@ void SDLSurface::uploadTextureIfNeeded()
             jt != yPieces.end(); ++jt)
         {
           TextureRecord record(
-            m_surface, xOffset, yOffset, *it, *jt,  bytesPerPixel,
+            surface_, xOffset, yOffset, *it, *jt,  bytesPerPixel,
             byteOrder, byteType);
-          m_textures.push_back(record);
+          textures_.push_back(record);
 
           yOffset += *jt;
         }
@@ -511,11 +511,11 @@ void SDLSurface::uploadTextureIfNeeded()
     else
     {
       // Reupload the textures without reallocating them.
-      for_each(m_textures.begin(), m_textures.end(),
-               bind(&TextureRecord::reupload, _1, m_surface));
+      for_each(textures_.begin(), textures_.end(),
+               bind(&TextureRecord::reupload, _1, surface_));
     }
 
-    m_textureIsValid = true;
+    texture_is_valid_ = true;
   }
 }
 
@@ -525,8 +525,8 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha)
 {
   uploadTextureIfNeeded();
 
-  for(vector<TextureRecord>::iterator it = m_textures.begin();
-      it != m_textures.end(); ++it)
+  for(vector<TextureRecord>::iterator it = textures_.begin();
+      it != textures_.end(); ++it)
   {
     it->texture->renderToScreen(src, dst, alpha);
   }
@@ -539,8 +539,8 @@ void SDLSurface::renderToScreenAsColorMask(
 {
   uploadTextureIfNeeded();
 
-  for(vector<TextureRecord>::iterator it = m_textures.begin();
-      it != m_textures.end(); ++it)
+  for(vector<TextureRecord>::iterator it = textures_.begin();
+      it != textures_.end(); ++it)
   {
     it->texture->renderToScreenAsColorMask(src, dst, rgba, filter);
   }
@@ -553,8 +553,8 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
 {
   uploadTextureIfNeeded();
 
-  for(vector<TextureRecord>::iterator it = m_textures.begin();
-      it != m_textures.end(); ++it)
+  for(vector<TextureRecord>::iterator it = textures_.begin();
+      it != textures_.end(); ++it)
   {
     it->texture->renderToScreen(src, dst, opacity);
   }
@@ -567,8 +567,8 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
   static const GraphicsObjectOverride overrideData;
   uploadTextureIfNeeded();
 
-  for(vector<TextureRecord>::iterator it = m_textures.begin();
-      it != m_textures.end(); ++it)
+  for(vector<TextureRecord>::iterator it = textures_.begin();
+      it != textures_.end(); ++it)
   {
     it->texture->renderToScreenAsObject(rp, *this, overrideData);
   }
@@ -581,8 +581,8 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
 {
   uploadTextureIfNeeded();
 
-  for(vector<TextureRecord>::iterator it = m_textures.begin();
-      it != m_textures.end(); ++it)
+  for(vector<TextureRecord>::iterator it = textures_.begin();
+      it != textures_.end(); ++it)
   {
     it->texture->renderToScreenAsObject(rp, *this, override);
   }
@@ -596,8 +596,8 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
 {
   uploadTextureIfNeeded();
 
-  for(vector<TextureRecord>::iterator it = m_textures.begin();
-      it != m_textures.end(); ++it)
+  for(vector<TextureRecord>::iterator it = textures_.begin();
+      it != textures_.end(); ++it)
   {
     it->texture->rawRenderQuad(srcCoords, destCoords, opacity);
   }
@@ -608,9 +608,9 @@ void SDLSurface::rawRenderQuad(const int srcCoords[8],
 void SDLSurface::fill(const RGBAColour& colour)
 {
   // Fill the entire surface with the incoming color
-  Uint32 color = MapRGBA(m_surface->format, colour);
+  Uint32 color = MapRGBA(surface_->format, colour);
 
-  if(SDL_FillRect(m_surface, NULL, color))
+  if(SDL_FillRect(surface_, NULL, color))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
@@ -622,12 +622,12 @@ void SDLSurface::fill(const RGBAColour& colour)
 void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
 {
   // Fill the entire surface with the incoming color
-  Uint32 color = MapRGBA(m_surface->format, colour);
+  Uint32 color = MapRGBA(surface_->format, colour);
 
   SDL_Rect rect;
   RectToSDLRect(area, &rect);
 
-  if(SDL_FillRect(m_surface, &rect, color))
+  if(SDL_FillRect(surface_, &rect, color))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
@@ -639,26 +639,26 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
 void SDLSurface::markWrittenTo()
 {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
-  if(m_graphicsSystem) {
-    m_graphicsSystem->markScreenAsDirty(GUT_DRAW_DC0);
+  if(graphics_system_) {
+    graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
   }
 
   // Mark that the texture needs reuploading
-  m_textureIsValid = false;
+  texture_is_valid_ = false;
 }
 
 // -----------------------------------------------------------------------
 
 int SDLSurface::numPatterns() const
 {
-  return m_regionTable.size();
+  return region_table_.size();
 }
 
 // -----------------------------------------------------------------------
 
 const SDLSurface::GrpRect& SDLSurface::getPattern(int pattNo) const
 {
-  return m_regionTable.at(pattNo);
+  return region_table_.at(pattNo);
 }
 
 // -----------------------------------------------------------------------
@@ -666,20 +666,20 @@ const SDLSurface::GrpRect& SDLSurface::getPattern(int pattNo) const
 Surface* SDLSurface::clone() const
 {
   SDL_Surface* tmpSurface =
-    SDL_CreateRGBSurface(m_surface->flags, m_surface->w, m_surface->h,
-                         m_surface->format->BitsPerPixel,
-                         m_surface->format->Rmask, m_surface->format->Gmask,
-                         m_surface->format->Bmask, m_surface->format->Amask);
+    SDL_CreateRGBSurface(surface_->flags, surface_->w, surface_->h,
+                         surface_->format->BitsPerPixel,
+                         surface_->format->Rmask, surface_->format->Gmask,
+                         surface_->format->Bmask, surface_->format->Amask);
 
   // Disable alpha blending because we're copying onto a blank (and
   // blank alpha!) surface
-  if(SDL_SetAlpha(m_surface, 0, 0))
+  if(SDL_SetAlpha(surface_, 0, 0))
     reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
 
-  if(SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL))
+  if(SDL_BlitSurface(surface_, NULL, tmpSurface, NULL))
     reportSDLError("SDL_BlitSurface", "SDLSurface::clone()");
 
-  return new SDLSurface(tmpSurface, m_regionTable);
+  return new SDLSurface(tmpSurface, region_table_);
 }
 
 // -----------------------------------------------------------------------
@@ -726,20 +726,20 @@ void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
   Uint32 col = 0 ;
 
   //determine position
-  char* pPosition = ( char* ) m_surface->pixels ;
+  char* pPosition = ( char* ) surface_->pixels ;
 
   //offset by y
-  pPosition += ( m_surface->pitch * pos.y() ) ;
+  pPosition += ( surface_->pitch * pos.y() ) ;
 
   //offset by x
-  pPosition += ( m_surface->format->BytesPerPixel * pos.x() ) ;
+  pPosition += ( surface_->format->BytesPerPixel * pos.x() ) ;
 
   //copy pixel data
-  memcpy ( &col , pPosition , m_surface->format->BytesPerPixel ) ;
+  memcpy ( &col , pPosition , surface_->format->BytesPerPixel ) ;
 
   // Before someone tries to simplify the following four lines,
   // remember that sizeof(int) != sizeof(Uint8).
-  SDL_GetRGB ( col , m_surface->format , &color.r , &color.g , &color.b ) ;
+  SDL_GetRGB ( col , surface_->format , &color.r , &color.g , &color.b ) ;
   r = color.r;
   g = color.g;
   b = color.b;
@@ -755,15 +755,15 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
   // TODO: This needs to be made exception safe and so does the rest
   // of this file.
   SDL_Surface* tmpSurface =
-    SDL_CreateRGBSurface(m_surface->flags & ~SDL_SRCALPHA,
-                         m_surface->w, m_surface->h,
-                         m_surface->format->BitsPerPixel,
-                         m_surface->format->Rmask, m_surface->format->Gmask,
-                         m_surface->format->Bmask, 0);
+    SDL_CreateRGBSurface(surface_->flags & ~SDL_SRCALPHA,
+                         surface_->w, surface_->h,
+                         surface_->format->BitsPerPixel,
+                         surface_->format->Rmask, surface_->format->Gmask,
+                         surface_->format->Bmask, 0);
   if(!tmpSurface)
     reportSDLError("SDL_CreateRGBSurface", functionName);
 
-  if(SDL_BlitSurface(m_surface, NULL, tmpSurface, NULL))
+  if(SDL_BlitSurface(surface_, NULL, tmpSurface, NULL))
     reportSDLError("SDL_BlitSurface", functionName);
 
   Uint32 color = SDL_MapRGB(tmpSurface->format, r, g, b);

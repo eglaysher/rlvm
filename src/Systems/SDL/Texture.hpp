@@ -55,27 +55,27 @@ struct render_to_texture { };
 class Texture
 {
 private:
-  int m_xOffset;
-  int m_yOffset;
+  int x_offset_;
+  int y_offset_;
 
-  int m_logicalWidth;
-  int m_logicalHeight;
+  int logical_width_;
+  int logical_height_;
 
-  int m_totalWidth;
-  int m_totalHeight;
+  int total_width_;
+  int total_height_;
 
-  unsigned int m_textureWidth;
-  unsigned int m_textureHeight;
+  unsigned int texture_width_;
+  unsigned int texture_height_;
 
-  GLuint m_textureID;
+  GLuint texture_id_;
 
-  GLuint m_backTextureID;
+  GLuint back_texture_id_;
 
-  static GLuint m_shaderObjectID;
-  static GLuint m_programObjectID;
+  static GLuint shader_object_id_;
+  static GLuint program_object_id_;
 
   /// Is this texture upside down? (Because it's a screenshot, et cetera.)
-  bool m_isUpsideDown;
+  bool is_upside_down_;
 
   // TODO: Dead code?
   static unsigned int s_screenWidth;
@@ -117,9 +117,9 @@ public:
   void reupload(SDL_Surface* surface, int x, int y, int w, int h,
                 unsigned int bytesPerPixel, int byteOrder, int byteType);
 
-  int width() { return m_logicalWidth; }
-  int height() { return m_logicalHeight; }
-  GLuint textureId() { return m_textureID; }
+  int width() { return logical_width_; }
+  int height() { return logical_height_; }
+  GLuint textureId() { return texture_id_; }
 
   void renderToScreenAsObject(
     const GraphicsObject& go,

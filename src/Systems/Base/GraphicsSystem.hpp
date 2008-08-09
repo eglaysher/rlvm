@@ -145,18 +145,18 @@ public:
   GraphicsSystem(System& system, Gameexe& gameexe);
   virtual ~GraphicsSystem();
 
-  bool isResponsibleForUpdate() const { return m_isResponsibleForUpdate; }
+  bool isResponsibleForUpdate() const { return is_responsible_for_update_; }
   void setIsResponsibleForUpdate(bool in);
 
-  void setDefaultGrpName(const std::string& name) { m_defaultGrpName = name; }
-  const std::string& defaultGrpName() const { return m_defaultGrpName; }
-  void setDefaultBgrName(const std::string& name) { m_defaultBgrName = name; }
-  const std::string& defaultBgrName() const { return m_defaultBgrName; }
+  void setDefaultGrpName(const std::string& name) { default_grp_name_ = name; }
+  const std::string& defaultGrpName() const { return default_grp_name_; }
+  void setDefaultBgrName(const std::string& name) { default_bgr_name_ = name; }
+  const std::string& defaultBgrName() const { return default_bgr_name_; }
 
-  DCScreenUpdateMode screenUpdateMode() const { return m_screenUpdateMode; }
+  DCScreenUpdateMode screenUpdateMode() const { return screen_update_mode_; }
   virtual void setScreenUpdateMode(DCScreenUpdateMode u);
 
-  System& system() { return m_system; }
+  System& system() { return system_; }
 
   /**
    * @name Mouse Cursor Management
@@ -175,10 +175,10 @@ public:
   virtual void setCursor(RLMachine& machine, int cursor);
 
   /// Returns the current index.
-  int cursor() const { return m_cursor; }
+  int cursor() const { return cursor_; }
 
   /// Whether we display a cursor at all
-  void setShowCursor(const int in) { m_showCurosr = in; }
+  void setShowCursor(const int in) { show_curosr_ = in; }
   /// @}
 
   /**
@@ -227,7 +227,7 @@ public:
    */
   const std::string& windowSubtitle() const;
 
-  bool displaySubtitle() const { return m_displaySubtitle; }
+  bool displaySubtitle() const { return display_subtitle_; }
   /// @}
 
   /**
@@ -235,7 +235,7 @@ public:
    *
    * @{
    */
-  GraphicsSystemGlobals& globals() { return m_globals; }
+  GraphicsSystemGlobals& globals() { return globals_; }
   /// @}
 
   /**
@@ -257,10 +257,10 @@ public:
    * @{
    */
   void setShowObject1(const int in);
-  int showObject1() const { return m_globals.showObject1; }
+  int showObject1() const { return globals_.showObject1; }
 
   void setShowObject2(const int in);
-  int showObject2() const { return m_globals.showObject1; }
+  int showObject2() const { return globals_.showObject1; }
   /// @}
 
   /**
@@ -269,7 +269,7 @@ public:
    * @{
    */
   void setShowWeather(const int in);
-  int showWeather() const { return m_globals.showWeather; }
+  int showWeather() const { return globals_.showWeather; }
 
   /**
    * Toggles whether the interface is shown. Called by
@@ -308,9 +308,9 @@ public:
    */
   virtual void forceRefresh();
 
-  bool screenNeedsRefresh() const { return m_screenNeedsRefresh; }
+  bool screenNeedsRefresh() const { return screen_needs_refresh_; }
 
-  void screenRefreshed() { m_screenNeedsRefresh = false; }
+  void screenRefreshed() { screen_needs_refresh_ = false; }
   /// @}
 
   virtual void beginFrame();
@@ -442,82 +442,82 @@ public:
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 
 protected:
-  const Point& cursorPos() const { return m_cursorPos; }
+  const Point& cursorPos() const { return cursor_pos_; }
 
   boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
 
 private:
   /// Default grp name (used in grp* and rec* functions where filename
   /// is '???')
-  std::string m_defaultGrpName;
+  std::string default_grp_name_;
 
   /// Default bgr name (used in bgr* functions where filename is
   /// '???')
-  std::string m_defaultBgrName;
+  std::string default_bgr_name_;
 
   /// Current screen update mode
-  DCScreenUpdateMode m_screenUpdateMode;
+  DCScreenUpdateMode screen_update_mode_;
 
   /// Flag set to redraw the screen NOW
-  bool m_screenNeedsRefresh;
+  bool screen_needs_refresh_;
 
   /// Whether it is the Graphics system's responsibility to redraw the
   /// screen. Some LongOperations temporarily take this responsibility
   /// to implement pretty fades and wipes
-  bool m_isResponsibleForUpdate;
+  bool is_responsible_for_update_;
 
-  /// Whether we should try to append m_subtitle in the window
+  /// Whether we should try to append subtitle_ in the window
   /// titlebar
-  bool m_displaySubtitle;
+  bool display_subtitle_;
 
   /// cp932 encoded subtitle string
-  std::string m_subtitle;
+  std::string subtitle_;
 
   /// Controls whether we render the interface (this can be
   /// temporarily toggled by the user at runtime)
-  bool m_hideInterface;
+  bool hide_interface_;
 
   /// Mutable global data to be saved in the globals file
-  GraphicsSystemGlobals m_globals;
+  GraphicsSystemGlobals globals_;
 
   /// Immutable
   struct GraphicsObjectSettings;
   /// Immutable global data that's constructed from the Gameexe.ini file.
-  boost::scoped_ptr<GraphicsObjectSettings> m_graphicsObjectSettings;
+  boost::scoped_ptr<GraphicsObjectSettings> graphics_object_settings_;
 
   struct GraphicsObjectImpl;
-  boost::scoped_ptr<GraphicsObjectImpl> m_graphicsObjectImpl;
+  boost::scoped_ptr<GraphicsObjectImpl> graphics_object_impl_;
 
   /** Whether we should use a custom mouse cursor. Set while parsing
    * the Gameexe file, and then left unchanged. We only use a custom
    * mouse cursor if \#MOUSE_CURSOR is set in the Gameexe
    */
-  bool m_useCustomMouseCursor;
+  bool use_custom_mouse_cursor_;
 
   /// Whether we should render any cursor. Controller by the bytecode.
-  bool m_showCurosr;
+  bool show_curosr_;
 
   /** Current cursor id. Initially set to \#MOUSE_CURSOR if the key
    * exists.
    */
-  int m_cursor;
+  int cursor_;
 
   /// Location of the cursor's hotspot
-  Point m_cursorPos;
+  Point cursor_pos_;
 
   /// Current mouse cursor
-  boost::shared_ptr<MouseCursor> m_mouseCursor;
+  boost::shared_ptr<MouseCursor> mouse_cursor_;
 
   /// MouseCursor construction is nontrivial so cache everything we
   /// build:
   typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
-  MouseCursorCache m_cursorCache;
+  MouseCursorCache cursor_cache_;
 
   /// CG Table
   boost::scoped_ptr<CGMTable> cg_table_;
 
   /// Our parent system object.
-  System& m_system;
+  System& system_;
 };
 
 const int OBJECTS_IN_A_LAYER = 256;

@@ -70,15 +70,15 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
-  : TextWindow(machine, windowNum), m_rubyBeginPoint(-1)
+  : TextWindow(machine, windowNum), ruby_begin_point_(-1)
 {
   Gameexe& gexe = machine.system().gameexe();
   GameexeInterpretObject window(gexe("WINDOW", windowNum));
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
-  m_font = text.getFontOfSize(machine, fontSizeInPixels());
-  m_rubyFont = text.getFontOfSize(machine, rubyTextSize());
+  font_ = text.getFontOfSize(machine, fontSizeInPixels());
+  ruby_font_ = text.getFontOfSize(machine, rubyTextSize());
 
   clearWin();
 }
@@ -95,7 +95,7 @@ void SDLTextWindow::setMousePosition(RLMachine& machine, const Point& pos)
 {
   if(inSelectionMode())
   {
-    for_each(m_selections.begin(), m_selections.end(),
+    for_each(selections_.begin(), selections_.end(),
              bind(&SelectionElement::setMousePosition, _1,
                   ref(machine), pos));
   }
@@ -111,10 +111,10 @@ bool SDLTextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
   if(inSelectionMode())
   {
     bool found =
-      find_if(m_selections.begin(), m_selections.end(),
+      find_if(selections_.begin(), selections_.end(),
               bind(&SelectionElement::handleMouseClick, _1,
                    ref(machine), pos, pressed))
-      != m_selections.end();
+      != selections_.end();
 
     if(found)
       return true;
@@ -127,20 +127,20 @@ bool SDLTextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
 void SDLTextWindow::clearWin()
 {
-  m_insertionPointX = 0;
-  m_insertionPointY = rubyTextSize();
-  m_currentIndentationInPixels = 0;
-  m_currentLineNumber = 0;
+  insertion_point_x_ = 0;
+  insertion_point_y_ = rubyTextSize();
+  current_indentation_in_pixels_ = 0;
+  current_line_number_ = 0;
 
-  m_rubyBeginPoint = -1;
+  ruby_begin_point_ = -1;
 
   // Reset the color
   // COLOUR
-  m_fontColour = m_defaultColor;
+  font_colour_ = default_color_;
 
   // Allocate the text window surface
-  m_surface.reset(new SDLSurface(textWindowSize()));
-  m_surface->fill(RGBAColour::Clear());
+  surface_.reset(new SDLSurface(textWindowSize()));
+  surface_->fill(RGBAColour::Clear());
 }
 
 // -----------------------------------------------------------------------
@@ -159,7 +159,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   if(current != "")
   {
     SDL_Color color;
-    RGBColourToSDLColor(m_fontColour, &color);
+    RGBColourToSDLColor(font_colour_, &color);
     int curCodepoint = codepoint(current);
     int nextCodepoint = codepoint(next);
 
@@ -173,7 +173,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     }
 
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(m_font.get(), current.c_str(), color);
+      TTF_RenderUTF8_Blended(font_.get(), current.c_str(), color);
 
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
@@ -185,9 +185,9 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     // character instead, to prevent the next character being stranded
     // at the start of a line.
     //
-    bool charWillFitOnLine = m_insertionPointX + tmp->w + m_xSpacing <=
+    bool charWillFitOnLine = insertion_point_x_ + tmp->w + x_spacing_ <=
       textWindowSize().width();
-    bool nextCharWillFitOnLine = m_insertionPointX + 2*(tmp->w + m_xSpacing) <=
+    bool nextCharWillFitOnLine = insertion_point_x_ + 2*(tmp->w + x_spacing_) <=
       textWindowSize().width();
     if(!charWillFitOnLine ||
        (charWillFitOnLine && !isKinsoku(curCodepoint) &&
@@ -201,21 +201,21 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
     // Render glyph to surface
     Size s(tmp->w,tmp->h);
-    m_surface->blitFROMSurface(
+    surface_->blitFROMSurface(
       tmp,
       Rect(Point(0, 0), s),
-      Rect(Point(m_insertionPointX, m_insertionPointY), s),
+      Rect(Point(insertion_point_x_, insertion_point_y_), s),
       255);
 
     // Move the insertion point forward one character
-    m_insertionPointX += m_fontSizeInPixels + m_xSpacing;
+    insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
 
     SDL_FreeSurface(tmp);
   }
 
   // When we aren't rendering a piece of text with a ruby gloss, mark
   // the screen as dirty so that this character renders.
-  if(m_rubyBeginPoint == -1)
+  if(ruby_begin_point_ == -1)
   {
     machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
@@ -227,14 +227,14 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
 bool SDLTextWindow::isFull() const
 {
-  return m_currentLineNumber >= m_yWindowSizeInChars;
+  return current_line_number_ >= y_window_size_in_chars_;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::setIndentation()
 {
-  m_currentIndentationInPixels = m_insertionPointX;
+  current_indentation_in_pixels_ = insertion_point_x_;
 }
 
 // -----------------------------------------------------------------------
@@ -242,7 +242,7 @@ void SDLTextWindow::setIndentation()
 void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
                             const std::string& nextChar)
 {
-  if(m_nameMod == 0)
+  if(name_mod_ == 0)
   {
     // Display the name in one pass
     printTextToFunction(bind(&SDLTextWindow::displayChar, ref(*this),
@@ -252,11 +252,11 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
 
     setIndentationIfNextCharIsOpeningQuoteMark(nextChar);
   }
-  else if(m_nameMod == 1)
+  else if(name_mod_ == 1)
   {
     throw SystemError("NAME_MOD=1 is unsupported.");
   }
-  else if(m_nameMod == 2)
+  else if(name_mod_ == 2)
   {
     // This doesn't actually fix the problem in Planetarian because
     // the call to set the name and the actual quotetext are in two
@@ -280,8 +280,8 @@ void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
   if(nextCodepoint == 0x300C || nextCodepoint == 0x300E ||
      nextCodepoint == 0xFF08)
   {
-    m_currentIndentationInPixels = m_insertionPointX + m_fontSizeInPixels +
-      m_xSpacing;
+    current_indentation_in_pixels_ = insertion_point_x_ + font_size_in_pixels_ +
+      x_spacing_;
   }
 }
 
@@ -289,16 +289,16 @@ void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
 
 void SDLTextWindow::hardBrake()
 {
-  m_insertionPointX = m_currentIndentationInPixels;
-  m_insertionPointY += (m_fontSizeInPixels + m_ySpacing + m_rubySize);
-  m_currentLineNumber++;
+  insertion_point_x_ = current_indentation_in_pixels_;
+  insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
+  current_line_number_++;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::resetIndentation()
 {
-  m_currentIndentationInPixels = 0;
+  current_indentation_in_pixels_ = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -309,32 +309,32 @@ void SDLTextWindow::resetIndentation()
  */
 void SDLTextWindow::render(RLMachine& machine)
 {
-  if(m_surface && isVisible())
+  if(surface_ && isVisible())
   {
-    Size surfaceSize = m_surface->size();
+    Size surfaceSize = surface_->size();
 
     // POINT
     int boxX = boxX1();
     int boxY = boxY1();
 
-    if(m_wakuBacking)
+    if(waku_backing_)
     {
-      Size backingSize = m_wakuBacking->size();
+      Size backingSize = waku_backing_->size();
       // COLOUR
-      m_wakuBacking->renderToScreenAsColorMask(
+      waku_backing_->renderToScreenAsColorMask(
         Rect(Point(0, 0), backingSize),
         Rect(Point(boxX, boxY), backingSize),
-        m_colour, m_filter);
+        colour_, filter_);
     }
 
-    if(m_wakuMain)
+    if(waku_main_)
     {
-      Size mainSize = m_wakuMain->size();
-      m_wakuMain->renderToScreen(
+      Size mainSize = waku_main_->size();
+      waku_main_->renderToScreen(
         Rect(Point(0, 0), mainSize), Rect(Point(boxX, boxY), mainSize), 255);
     }
 
-    if(m_wakuButton)
+    if(waku_button_)
       renderButtons(machine);
 
     int x = textX1();
@@ -342,12 +342,12 @@ void SDLTextWindow::render(RLMachine& machine)
 
     if(inSelectionMode())
     {
-      for_each(m_selections.begin(), m_selections.end(),
+      for_each(selections_.begin(), selections_.end(),
                bind(&SelectionElement::render, _1));
     }
     else
     {
-      m_surface->renderToScreen(
+      surface_->renderToScreen(
         Rect(Point(0, 0), surfaceSize),
         Rect(Point(x, y), surfaceSize),
         255);
@@ -366,17 +366,17 @@ void SDLTextWindow::render(RLMachine& machine)
  */
 void SDLTextWindow::renderButtons(RLMachine& machine)
 {
-  m_buttonMap["CLEAR_BOX"].render(machine, *this, m_wakuButton, 8);
+  button_map_["CLEAR_BOX"].render(machine, *this, waku_button_, 8);
 
-  m_buttonMap["MSGBKLEFT_BOX"].render(machine, *this, m_wakuButton, 24);
-  m_buttonMap["MSGBKRIGHT_BOX"].render(machine, *this, m_wakuButton, 32);
+  button_map_["MSGBKLEFT_BOX"].render(machine, *this, waku_button_, 24);
+  button_map_["MSGBKRIGHT_BOX"].render(machine, *this, waku_button_, 32);
 
-  m_buttonMap["EXBTN_000_BOX"].render(machine, *this, m_wakuButton, 40);
-  m_buttonMap["EXBTN_001_BOX"].render(machine, *this, m_wakuButton, 48);
-  m_buttonMap["EXBTN_002_BOX"].render(machine, *this, m_wakuButton, 56);
+  button_map_["EXBTN_000_BOX"].render(machine, *this, waku_button_, 40);
+  button_map_["EXBTN_001_BOX"].render(machine, *this, waku_button_, 48);
+  button_map_["EXBTN_002_BOX"].render(machine, *this, waku_button_, 56);
 
-  m_buttonMap["READJUMP_BOX"].render(machine, *this, m_wakuButton, 104);
-  m_buttonMap["AUTOMODE_BOX"].render(machine, *this, m_wakuButton, 112);
+  button_map_["READJUMP_BOX"].render(machine, *this, waku_button_, 104);
+  button_map_["AUTOMODE_BOX"].render(machine, *this, waku_button_, 112);
 }
 
 // -----------------------------------------------------------------------
@@ -386,12 +386,12 @@ void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
   if(name != "")
   {
     GraphicsSystem& gs = machine.system().graphics();
-    m_wakuMain =
+    waku_main_ =
       dynamic_pointer_cast<SDLSurface>(
         gs.loadSurfaceFromFile(findFile(machine, name)));
   }
   else
-    m_wakuMain.reset();
+    waku_main_.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -404,10 +404,10 @@ void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
     shared_ptr<SDLSurface> s = dynamic_pointer_cast<SDLSurface>(
       gs.loadSurfaceFromFile(findFile(machine, name)));
     s->setIsMask(true);
-    m_wakuBacking = s;
+    waku_backing_ = s;
   }
   else
-    m_wakuBacking.reset();
+    waku_backing_.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -417,18 +417,18 @@ void SDLTextWindow::setWakuButton(RLMachine& machine, const std::string& name)
   if(name != "")
   {
     GraphicsSystem& gs = machine.system().graphics();
-    m_wakuButton = dynamic_pointer_cast<SDLSurface>(
+    waku_button_ = dynamic_pointer_cast<SDLSurface>(
       gs.loadSurfaceFromFile(findFile(machine, name)));
   }
   else
-    m_wakuButton.reset();
+    waku_button_.reset();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::markRubyBegin()
 {
-  m_rubyBeginPoint = m_insertionPointX;
+  ruby_begin_point_ = insertion_point_x_;
 }
 
 // -----------------------------------------------------------------------
@@ -436,29 +436,29 @@ void SDLTextWindow::markRubyBegin()
 void SDLTextWindow::displayRubyText(RLMachine& machine,
                                     const std::string& utf8str)
 {
-  if(m_rubyBeginPoint != -1)
+  if(ruby_begin_point_ != -1)
   {
-    int endPoint = m_insertionPointX - m_xSpacing;
+    int endPoint = insertion_point_x_ - x_spacing_;
 
-    if(m_rubyBeginPoint > endPoint)
+    if(ruby_begin_point_ > endPoint)
     {
-      m_rubyBeginPoint = -1;
+      ruby_begin_point_ = -1;
       throw rlvm::Exception("We don't handle ruby across line breaks yet!");
     }
 
     SDL_Color color;
-    RGBColourToSDLColor(m_fontColour, &color);
+    RGBColourToSDLColor(font_colour_, &color);
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(m_rubyFont.get(), utf8str.c_str(), color);
+      TTF_RenderUTF8_Blended(ruby_font_.get(), utf8str.c_str(), color);
 
     // Render glyph to surface
     int w = tmp->w;
     int h = tmp->h;
-    int heightLocation = m_insertionPointY - rubyTextSize();
+    int heightLocation = insertion_point_y_ - rubyTextSize();
     int widthStart =
-      int(m_rubyBeginPoint + ((endPoint - m_rubyBeginPoint) * 0.5f) -
+      int(ruby_begin_point_ + ((endPoint - ruby_begin_point_) * 0.5f) -
           (w * 0.5f));
-    m_surface->blitFROMSurface(
+    surface_->blitFROMSurface(
       tmp,
       Rect(Point(0, 0), Size(w, h)),
       Rect(Point(widthStart, heightLocation), Size(w, h)),
@@ -467,7 +467,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 
     machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
-    m_rubyBeginPoint = -1;
+    ruby_begin_point_ = -1;
   }
 }
 
@@ -477,9 +477,9 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str)
 {
   // Render the incoming string for both selected and not-selected.
   SDL_Color color;
-  RGBColourToSDLColor(m_fontColour, &color);
+  RGBColourToSDLColor(font_colour_, &color);
   SDL_Surface* normal =
-    TTF_RenderUTF8_Blended(m_font.get(), utf8str.c_str(), color);
+    TTF_RenderUTF8_Blended(font_.get(), utf8str.c_str(), color);
 
   // Copy and invert the surface for whatever.
   SDL_Surface* inverted = AlphaInvert(normal);
@@ -490,17 +490,17 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str)
     shared_ptr<Surface>(new SDLSurface(normal)),
     shared_ptr<Surface>(new SDLSurface(inverted)),
     selectionCallback(), getNextSelectionID(),
-    Point(textX1() + m_insertionPointX, textY1() + m_insertionPointY));
+    Point(textX1() + insertion_point_x_, textY1() + insertion_point_y_));
 
-  m_insertionPointY += (m_fontSizeInPixels + m_ySpacing + m_rubySize);
-  m_selections.push_back(element);
+  insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
+  selections_.push_back(element);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::endSelectionMode()
 {
-  m_selections.clear();
+  selections_.clear();
   TextWindow::endSelectionMode();
 
   clearWin();

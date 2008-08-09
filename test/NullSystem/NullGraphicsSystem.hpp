@@ -77,7 +77,7 @@ private:
   MockLog graphics_system_log_;
 
   /// Map between device contexts number and their surface.
-  boost::shared_ptr<NullSurface> m_displayContexts[16];
+  boost::shared_ptr<NullSurface> display_contexts_[16];
 };
 
 #endif

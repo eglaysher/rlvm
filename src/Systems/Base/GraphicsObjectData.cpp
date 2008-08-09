@@ -40,14 +40,14 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::GraphicsObjectData()
-  : m_afterAnimation(AFTER_NONE), m_ownedBy(NULL), m_currentlyPlaying(false)
+  : after_animation_(AFTER_NONE), owned_by_(NULL), currently_playing_(false)
 {}
 
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
-  : m_afterAnimation(obj.m_afterAnimation), m_ownedBy(NULL),
-    m_currentlyPlaying(obj.m_currentlyPlaying)
+  : after_animation_(obj.after_animation_), owned_by_(NULL),
+    currently_playing_(obj.currently_playing_)
 {}
 
 // -----------------------------------------------------------------------
@@ -63,7 +63,7 @@ void GraphicsObjectData::loopAnimation() { }
 void GraphicsObjectData::endAnimation()
 {
   // Set first, because we may deallocate this by one of our actions
-  m_currentlyPlaying = false;
+  currently_playing_ = false;
 
   switch(afterAnimation())
   {
@@ -76,7 +76,7 @@ void GraphicsObjectData::endAnimation()
   case AFTER_LOOP:
   {
     // Reset from the beginning
-    m_currentlyPlaying = true;
+    currently_playing_ = true;
     loopAnimation();
     break;
   }

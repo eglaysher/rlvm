@@ -50,21 +50,21 @@ class GraphicsObjectOfFile : public GraphicsObjectData
 {
 private:
   /// The name of the graphics file that was loaded.
-  std::string m_filename;
+  std::string filename_;
 
   /// The encapsulated surface to render
-  boost::shared_ptr<Surface> m_surface;
+  boost::shared_ptr<Surface> surface_;
 
   /// Number of miliseconds to spend on a single frame in the
   /// animation
-  unsigned int m_frameTime;
+  unsigned int frame_time_;
 
   /// Current frame displayed (when animating)
-  int m_currentFrame;
+  int current_frame_;
 
   /// While currentlyPlaying() is true, this variable is used to store
   /// the time when the frame was switched last
-  unsigned int m_timeAtLastFrameChange;
+  unsigned int time_at_last_frame_change_;
 
   // Private constructor for cloning
   GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
@@ -78,7 +78,7 @@ public:
 
   void loadFile(RLMachine& machine);
 
-  const std::string& filename() const { return m_filename; }
+  const std::string& filename() const { return filename_; }
 
   virtual void render(RLMachine& machine, const GraphicsObject& rp);
   virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp);

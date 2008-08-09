@@ -402,7 +402,7 @@ const ElementType ExpressionElement::type() const
 // -----------------------------------------------------------------------
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-  : DataElement(rhs), m_parsedExpression(NULL)
+  : DataElement(rhs), parsed_expression_(NULL)
 {
 }
 
@@ -415,12 +415,12 @@ ExpressionElement* ExpressionElement::clone() const {
 // -----------------------------------------------------------------------
 
 const ExpressionPiece& ExpressionElement::parsedExpression() const {
-  if(m_parsedExpression.get() == 0) {
+  if(parsed_expression_.get() == 0) {
     const char* location = repr.c_str();
-    m_parsedExpression.reset(get_assignment(location));
+    parsed_expression_.reset(get_assignment(location));
   }
 
-  return *m_parsedExpression;
+  return *parsed_expression_;
 }
 
 // -----------------------------------------------------------------------
@@ -456,7 +456,7 @@ CommandElement::CommandElement(const char* src) {
 // -----------------------------------------------------------------------
 
 CommandElement::CommandElement(const CommandElement& ce)
-  : m_parsedParameters()
+  : parsed_parameters_()
 {
 }
 
@@ -474,22 +474,22 @@ const ElementType CommandElement::type() const { return Command; }
 const vector<string>& CommandElement::getUnparsedParameters() const
 {
   size_t numberOfParameters = param_count();
-  if(numberOfParameters != m_unparsedParameters.size())
+  if(numberOfParameters != unparsed_parameters_.size())
   {
-    m_unparsedParameters.clear();
+    unparsed_parameters_.clear();
 
     for(size_t i = 0; i < numberOfParameters; ++i)
-      m_unparsedParameters.push_back(get_param(i));
+      unparsed_parameters_.push_back(get_param(i));
   }
 
-  return m_unparsedParameters;
+  return unparsed_parameters_;
 }
 
 // -----------------------------------------------------------------------
 
 bool CommandElement::areParametersParsed() const
 {
-  return param_count() == m_parsedParameters.size();
+  return param_count() == parsed_parameters_.size();
 }
 
 // -----------------------------------------------------------------------
@@ -499,8 +499,8 @@ bool CommandElement::areParametersParsed() const
 void CommandElement::setParsedParameters(
   boost::ptr_vector<libReallive::ExpressionPiece>& parsedParameters) const
 {
-  m_parsedParameters.clear();
-  m_parsedParameters.transfer( m_parsedParameters.end(),
+  parsed_parameters_.clear();
+  parsed_parameters_.transfer( parsed_parameters_.end(),
                                parsedParameters.begin(),
                                parsedParameters.end(),
                                parsedParameters);
@@ -511,7 +511,7 @@ void CommandElement::setParsedParameters(
 const boost::ptr_vector<libReallive::ExpressionPiece>&
 CommandElement::getParameters() const
 {
-  return m_parsedParameters;
+  return parsed_parameters_;
 }
 
 // -----------------------------------------------------------------------
