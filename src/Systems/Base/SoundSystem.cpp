@@ -32,12 +32,15 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#include "Systems/Base/SoundSystem.hpp"
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/System.hpp" 
 #include "libReallive/gameexe.h"
+
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
@@ -154,7 +157,8 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     int to = dstrack->getIntAt(1);
     int loop = dstrack->getIntAt(2);
     const std::string& file = dstrack->getStringAt(3);
-    const std::string& name = dstrack->getStringAt(4);
+    std::string name = dstrack->getStringAt(4);
+    boost::to_lower(name);
 
     m_dsTracks[name] = DSTrack(name, file, from, to, loop);
   }
@@ -166,7 +170,8 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     int from = cdtrack->getIntAt(0);
     int to = cdtrack->getIntAt(1);
     int loop = cdtrack->getIntAt(2);
-    const std::string& name = cdtrack->getStringAt(3);
+    std::string name = cdtrack->getStringAt(3);
+    boost::to_lower(name);
 
     m_cdTracks[name] = CDTrack(name, from, to, loop);
   }  

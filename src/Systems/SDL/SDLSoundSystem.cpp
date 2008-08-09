@@ -37,6 +37,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <sstream>
 
 using boost::shared_ptr;
@@ -104,12 +105,12 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
   RLMachine& machine, const std::string& bgmName)
 {
   const DSTable& dsTable = getDSTable();
-  DSTable::const_iterator dsIt = dsTable.find(bgmName);
+  DSTable::const_iterator dsIt = dsTable.find(boost::to_lower_copy(bgmName));
   if(dsIt != dsTable.end())
     return SDLMusic::CreateMusic(machine, dsIt->second);
 
   const CDTable& cdTable = getCDTable();
-  CDTable::const_iterator cdIt = cdTable.find(bgmName);
+  CDTable::const_iterator cdIt = cdTable.find(boost::to_lower_copy(bgmName));
   if(cdIt != cdTable.end())
   {
     ostringstream oss;
