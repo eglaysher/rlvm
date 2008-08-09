@@ -52,6 +52,9 @@ public:
   /// Returns the total number of images designated as CGs.
   int getTotal() const;
 
+  /// Returns the number of CG entries viewed.
+  int getViewed() const;
+
   /// Returns the percentage of CG images that have been viewed.
   int getPercent() const;
 

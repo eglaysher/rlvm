@@ -152,6 +152,12 @@ int CGMTable::getTotal() const {
 
 // -----------------------------------------------------------------------
 
+int CGMTable::getViewed() const {
+  return cgm_data_.size();
+}
+
+// -----------------------------------------------------------------------
+
 int CGMTable::getPercent() const {
   // Prevent divide by zero
   if (cgm_data_.size())
