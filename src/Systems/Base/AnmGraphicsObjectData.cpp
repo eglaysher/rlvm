@@ -114,7 +114,7 @@ bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anm_data)
 
 void AnmGraphicsObjectData::loadAnmFile(RLMachine& machine)
 {
-  fs::path file = findFile(machine, filename_);
+  fs::path file = findFile(machine, filename_, ANM_FILETYPES);
 
   fs::ifstream ifs(file, ifstream::in | ifstream::binary);
   if(!ifs)
