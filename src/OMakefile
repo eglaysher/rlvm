@@ -55,9 +55,9 @@ LIBRLVMFILES[] =
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities/StringUtilities
+  Utilities/findFontFile
+  Utilities/dateUtil
   Utilities
-  findFontFile
-  dateUtil
   ../vendor/libVendorLibs
 
 # Build our precompiled headers

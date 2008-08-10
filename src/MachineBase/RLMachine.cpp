@@ -70,8 +70,8 @@
 #include "Modules/TextoutLongOperation.hpp"
 #include "Modules/PauseLongOperation.hpp"
 
-#include "dateUtil.hpp"
-#include "algoplus.hpp"
+#include "Utilities/dateUtil.hpp"
+#include "Utilities/algoplus.hpp"
 
 #include <string>
 #include <sstream>

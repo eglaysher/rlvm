@@ -49,7 +49,7 @@
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/SaveGameHeader.hpp"
 #include "MachineBase/Serialization.hpp"
-#include "algoplus.hpp"
+#include "Utilities/algoplus.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

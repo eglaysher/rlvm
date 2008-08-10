@@ -49,9 +49,9 @@
 
 #include "libReallive/gameexe.h"
 
-#include "algoplus.hpp"
+#include "Utilities/algoplus.hpp"
+#include "Utilities/findFontFile.h"
 #include "Utilities.h"
-#include "findFontFile.h"
 
 #include <boost/bind.hpp>
 #include "SDL_ttf.h"
