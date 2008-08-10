@@ -47,6 +47,7 @@
 #include "Modules/Module_ObjCreation.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
 #include "Modules/Module_ObjManagement.hpp"
+#include "Modules/Module_Os.hpp"
 #include "Modules/Module_Refresh.hpp"
 #include "Modules/Module_Scr.hpp"
 #include "Modules/Module_Debug.hpp"
@@ -83,6 +84,7 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new ObjBgCreationModule);
   rlmachine.attachModule(new ObjFgManagement);
   rlmachine.attachModule(new ObjBgManagement);
+  rlmachine.attachModule(new OsModule);
   rlmachine.attachModule(new RefreshModule);
   rlmachine.attachModule(new ScrModule);
   rlmachine.attachModule(new DebugModule);

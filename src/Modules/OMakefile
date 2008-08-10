@@ -15,6 +15,7 @@ LRLFILES[] =
   Module_Jmp
   Module_Mem
   Module_Msg
+  Module_Os
   Module_Scr
   Module_Sel
   Module_Str
