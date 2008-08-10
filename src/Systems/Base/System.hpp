@@ -108,7 +108,7 @@ private:
 
   void checkSyscomIndex(int index, const char* function);
 
-  std::vector<boost::filesystem::path> cachedSearchPaths;
+  std::vector<boost::filesystem::path> cached_search_paths;
 
   void addPath(GameexeInterpretObject gio);
 

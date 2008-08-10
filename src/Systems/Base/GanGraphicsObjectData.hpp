@@ -60,7 +60,7 @@ private:
   };
 
   typedef std::vector< std::vector<Frame> > AnimationSets;
-  AnimationSets animationSets;
+  AnimationSets animation_sets;
 
   std::string gan_filename_;
   std::string img_filename_;
@@ -72,12 +72,12 @@ private:
   /// The image the above coordinates map into.
   boost::shared_ptr<Surface> image;
 
-  void testFileMagic(const std::string& fileName,
-                     boost::scoped_array<char>& ganData, int fileSize);
+  void testFileMagic(const std::string& file_name,
+                     boost::scoped_array<char>& gan_data, int file_size);
   void readData(
     RLMachine& machine,
-    const std::string& fileName,
-    boost::scoped_array<char>& ganData, int fileSize);
+    const std::string& file_name,
+    boost::scoped_array<char>& gan_data, int file_size);
   Frame readSetFrame(const std::string& filename, const char*& data);
 
   void throwBadFormat(
@@ -96,12 +96,12 @@ public:
   void load(RLMachine& machine);
 
   virtual void render(RLMachine& machine,
-                      const GraphicsObject& renderingProperties);
+                      const GraphicsObject& rendering_properties);
 
   virtual int pixelWidth(RLMachine& machine,
-						 const GraphicsObject& renderingProperties);
+						 const GraphicsObject& rendering_properties);
   virtual int pixelHeight(RLMachine& machine,
-						  const GraphicsObject& renderingProperties);
+						  const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
   virtual void execute(RLMachine& machine);

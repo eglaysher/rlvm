@@ -62,18 +62,18 @@ using namespace boost;
 GLuint Texture::shader_object_id_ = 0;
 GLuint Texture::program_object_id_ = 0;
 
-unsigned int Texture::s_screenWidth = 0;
-unsigned int Texture::s_screenHeight = 0;
+unsigned int Texture::s_screen_width = 0;
+unsigned int Texture::s_screen_height = 0;
 
-unsigned int Texture::s_uploadBufferSize = 0;
-boost::scoped_array<char> Texture::s_uploadBuffer;
+unsigned int Texture::s_upload_buffer_size = 0;
+boost::scoped_array<char> Texture::s_upload_buffer;
 
 // -----------------------------------------------------------------------
 
 void Texture::SetScreenSize(const Size& s)
 {
-  s_screenWidth = s.width();
-  s_screenHeight = s.height();
+  s_screen_width = s.width();
+  s_screen_height = s.height();
 }
 
 // -----------------------------------------------------------------------
@@ -82,7 +82,7 @@ void Texture::SetScreenSize(const Size& s)
 // Texture
 // -----------------------------------------------------------------------
 Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
-                 unsigned int bytesPerPixel, int byteOrder, int byteType)
+                 unsigned int bytes_per_pixel, int byte_order, int byte_type)
   : x_offset_(x), y_offset_(y), logical_width_(w), logical_height_(h),
     total_width_(surface->w), total_height_(surface->h),
     texture_width_(SafeSize(logical_width_)),
@@ -100,14 +100,14 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   if(w == total_width_ && h == total_height_)
   {
     SDL_LockSurface(surface);
-    glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
+    glTexImage2D(GL_TEXTURE_2D, 0, bytes_per_pixel,
                  texture_width_, texture_height_,
                  0,
-                 byteOrder, byteType, NULL);
+                 byte_order, byte_type, NULL);
     ShowGLErrors();
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
-                    byteOrder, byteType, surface->pixels);
+                    byte_order, byte_type, surface->pixels);
     ShowGLErrors();
 
     SDL_UnlockSurface(surface);
@@ -115,33 +115,33 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   else
   {
     // Cut out the current piece
-    char* pixelData = uploadBuffer(surface->format->BytesPerPixel * w * h);
-    char* curDstPtr = pixelData;
+    char* pixel_data = uploadBuffer(surface->format->BytesPerPixel * w * h);
+    char* cur_dst_ptr = pixel_data;
 
     SDL_LockSurface(surface);
     {
-      char* curSrcPtr = (char*) surface->pixels;
-      curSrcPtr += surface->pitch * y;
+      char* cur_src_ptr = (char*) surface->pixels;
+      cur_src_ptr += surface->pitch * y;
 
-      int rowStart = surface->format->BytesPerPixel * x;
-      int subrowSize = surface->format->BytesPerPixel * w;
-      for(int currentRow = 0; currentRow < h; ++currentRow)
+      int row_start = surface->format->BytesPerPixel * x;
+      int subrow_size = surface->format->BytesPerPixel * w;
+      for(int current_row = 0; current_row < h; ++current_row)
       {
-        memcpy(curDstPtr, curSrcPtr + rowStart, subrowSize);
-        curDstPtr += subrowSize;
-        curSrcPtr += surface->pitch;
+        memcpy(cur_dst_ptr, cur_src_ptr + row_start, subrow_size);
+        cur_dst_ptr += subrow_size;
+        cur_src_ptr += surface->pitch;
       }
     }
     SDL_UnlockSurface(surface);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, bytesPerPixel,
+    glTexImage2D(GL_TEXTURE_2D, 0, bytes_per_pixel,
                  texture_width_, texture_height_,
                  0,
-                 byteOrder, byteType, NULL);
+                 byte_order, byte_type, NULL);
     ShowGLErrors();
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
-                    byteOrder, byteType, pixelData);
+                    byte_order, byte_type, pixel_data);
     ShowGLErrors();
   }
 }
@@ -193,18 +193,18 @@ Texture::~Texture()
 
 char* Texture::uploadBuffer(unsigned int size)
 {
-  if(!s_uploadBuffer || size > s_uploadBufferSize) {
-    s_uploadBuffer.reset(new char[size]);
-    s_uploadBufferSize = size;
+  if(!s_upload_buffer || size > s_upload_buffer_size) {
+    s_upload_buffer.reset(new char[size]);
+    s_upload_buffer_size = size;
   }
 
-  return s_uploadBuffer.get();
+  return s_upload_buffer.get();
 }
 
 // -----------------------------------------------------------------------
 
 void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
-                       unsigned int bytesPerPixel, int byteOrder, int byteType)
+                       unsigned int bytes_per_pixel, int byte_order, int byte_type)
 {
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
@@ -213,7 +213,7 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
     SDL_LockSurface(surface);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
-                    byteOrder, byteType, surface->pixels);
+                    byte_order, byte_type, surface->pixels);
     ShowGLErrors();
 
     SDL_UnlockSurface(surface);
@@ -221,27 +221,27 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
   else
   {
     // Cut out the current piece
-    char* pixelData = uploadBuffer(surface->format->BytesPerPixel * w * h);
-    char* curDstPtr = pixelData;
+    char* pixel_data = uploadBuffer(surface->format->BytesPerPixel * w * h);
+    char* cur_dst_ptr = pixel_data;
 
     SDL_LockSurface(surface);
     {
-      char* curSrcPtr = (char*) surface->pixels;
-      curSrcPtr += surface->pitch * y;
+      char* cur_src_ptr = (char*) surface->pixels;
+      cur_src_ptr += surface->pitch * y;
 
-      int rowStart = surface->format->BytesPerPixel * x;
-      int subrowSize = surface->format->BytesPerPixel * w;
-      for(int currentRow = 0; currentRow < h; ++currentRow)
+      int row_start = surface->format->BytesPerPixel * x;
+      int subrow_size = surface->format->BytesPerPixel * w;
+      for(int current_row = 0; current_row < h; ++current_row)
       {
-        memcpy(curDstPtr, curSrcPtr + rowStart, subrowSize);
-        curDstPtr += subrowSize;
-        curSrcPtr += surface->pitch;
+        memcpy(cur_dst_ptr, cur_src_ptr + row_start, subrow_size);
+        cur_dst_ptr += subrow_size;
+        cur_src_ptr += surface->pitch;
       }
     }
     SDL_UnlockSurface(surface);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
-                    byteOrder, byteType, pixelData);
+                    byte_order, byte_type, pixel_data);
     ShowGLErrors();
   }
 }
@@ -286,14 +286,14 @@ void printARBLog(GLhandleARB obj)
 string Texture::getSubtractiveShaderString()
 {
   string x =
-    "uniform sampler2D currentValues, mask;"
+    "uniform sampler2D current_values, mask;"
     ""
     "void main()"
     "{"
-    "vec4 bgColor = texture2D(currentValues, gl_TexCoord[0].st);"
-    "vec4 maskVector = texture2D(mask, gl_TexCoord[1].st);"
-    "float maskColor = clamp(maskVector.a * gl_Color.a, 0.0, 1.0);"
-    "gl_FragColor = clamp(bgColor - maskColor + gl_Color * maskColor, 0.0, 1.0);"
+    "vec4 bg_color = texture2D(current_values, gl_TexCoord[0].st);"
+    "vec4 mask_vector = texture2D(mask, gl_TexCoord[1].st);"
+    "float mask_color = clamp(mask_vector.a * gl_Color.a, 0.0, 1.0);"
+    "gl_FragColor = clamp(bg_color - mask_color + gl_Color * mask_color, 0.0, 1.0);"
     "}";
 
   return x;
@@ -385,24 +385,24 @@ void Texture::renderToScreenAsColorMask(
   {
     if(GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
     {
-      renderToScreenAsColorMask_subtractive_glsl(src, dst, rgba);
+      render_to_screen_as_color_mask_subtractive_glsl(src, dst, rgba);
     }
     else
     {
-      renderToScreenAsColorMask_subtractive_fallback(
+      render_to_screen_as_color_mask_subtractive_fallback(
         src, dst, rgba);
     }
   }
   else
   {
-    renderToScreenAsColorMask_additive(
+    render_to_screen_as_color_mask_additive(
       src, dst, rgba);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreenAsColorMask_subtractive_glsl(
+void Texture::render_to_screen_as_color_mask_subtractive_glsl(
   const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
@@ -446,7 +446,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
   // Copy the current value of the region where we're going to render
   // to a texture for input to the shader
   glBindTexture(GL_TEXTURE_2D, back_texture_id_);
-  int ystart = int(s_screenHeight - fdy1 - (fdy2 - fdy1));
+  int ystart = int(s_screen_height - fdy1 - (fdy2 - fdy1));
   int idx1 = int(fdx1);
   glCopyTexSubImage2D(GL_TEXTURE_2D,
                       0,
@@ -456,26 +456,26 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
 
   glUseProgramObjectARB(program_object_id_);
 
-  // Put the backTexture in texture slot zero and set this to be the
-  // texture "currentValues" in the above shader program.
+  // Put the back_texture in texture slot zero and set this to be the
+  // texture "current_values" in the above shader program.
   glActiveTextureARB(GL_TEXTURE0_ARB);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, back_texture_id_);
-  GLint currentValuesLoc = glGetUniformLocationARB(program_object_id_,
-                                                   "currentValues");
-  if(currentValuesLoc == -1)
+  GLint current_values_loc = glGetUniformLocationARB(program_object_id_,
+                                                   "current_values");
+  if(current_values_loc == -1)
     throw SystemError("Bad uniform value");
-  glUniform1iARB(currentValuesLoc, 0);
+  glUniform1iARB(current_values_loc, 0);
 
   // Put the mask in texture slot one and set this to be the
   // texture "mask" in the above shader program.
   glActiveTextureARB(GL_TEXTURE1_ARB);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
-  GLint maskLoc = glGetUniformLocationARB(program_object_id_, "mask");
-  if(maskLoc == -1)
+  GLint mask_loc = glGetUniformLocationARB(program_object_id_, "mask");
+  if(mask_loc == -1)
     throw SystemError("Bad uniform value");
-  glUniform1iARB(maskLoc, 1);
+  glUniform1iARB(mask_loc, 1);
 
   glDisable(GL_BLEND);
 
@@ -516,7 +516,7 @@ void Texture::renderToScreenAsColorMask_subtractive_glsl(
  * This will probably only occur with mesa software and people with
  * graphics cards > 5 years old.
  */
-void Texture::renderToScreenAsColorMask_subtractive_fallback(
+void Texture::render_to_screen_as_color_mask_subtractive_fallback(
   const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
@@ -538,7 +538,7 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
   // First draw the mask
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
-  /// SERIOUS WTF: glBlendFuncSeparate causes a segmentation fault
+  /// SERIOUS WTF: gl_blend_func_separate causes a segmentation fault
   /// under the current i810 driver for linux.
 //  glBlendFuncSeparate(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA,
 //                      GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -563,7 +563,7 @@ void Texture::renderToScreenAsColorMask_subtractive_fallback(
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreenAsColorMask_additive(
+void Texture::render_to_screen_as_color_mask_additive(
   const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
@@ -653,15 +653,15 @@ void Texture::renderToScreenAsObject(
   const GraphicsObjectOverride& overrides)
 {
   // Figure out the source to clip out of the image
-  int pattNo = go.pattNo();
-  int xSrc1 = surface.getPattern(pattNo).rect.x();
-  int ySrc1 = surface.getPattern(pattNo).rect.y();
-  int xSrc2 = surface.getPattern(pattNo).rect.x2();
-  int ySrc2 = surface.getPattern(pattNo).rect.y2();
-  int xOrigin = surface.getPattern(pattNo).originX;
-  int yOrigin = surface.getPattern(pattNo).originY;
+  int patt_no = go.pattNo();
+  int xSrc1 = surface.getPattern(patt_no).rect.x();
+  int ySrc1 = surface.getPattern(patt_no).rect.y();
+  int xSrc2 = surface.getPattern(patt_no).rect.x2();
+  int ySrc2 = surface.getPattern(patt_no).rect.y2();
+  int x_origin = surface.getPattern(patt_no).originX;
+  int y_origin = surface.getPattern(patt_no).originY;
 
-  if(overrides.overrideSource)
+  if(overrides.override_source)
   {
     // POINT
     xSrc1 = overrides.srcX1;
@@ -672,17 +672,17 @@ void Texture::renderToScreenAsObject(
 
   // Figure out position to display on the screen
   int xPos1, yPos1, xPos2, yPos2;
-  if(overrides.overrideDest)
+  if(overrides.override_dest)
   {
     xPos1 = overrides.dstX1; yPos1 = overrides.dstY1;
     xPos2 = overrides.dstX2; yPos2 = overrides.dstY2;
   }
   else
   {
-    xPos1 = go.x() + go.xAdjustmentSum() - xOrigin;
-    yPos1 = go.y() + go.yAdjustmentSum() - yOrigin;
+    xPos1 = go.x() + go.xAdjustmentSum() - x_origin;
+    yPos1 = go.y() + go.yAdjustmentSum() - y_origin;
 
-    if(overrides.hasDestOffset)
+    if(overrides.has_dest_offset)
     {
       xPos1 += overrides.dstX;
       yPos1 += overrides.dstY;
@@ -749,7 +749,7 @@ void Texture::renderToScreenAsObject(
   default:
   {
     ostringstream oss;
-    oss << "Invalid compositeMode in render: " << go.compositeMode();
+    oss << "Invalid composite_mode in render: " << go.compositeMode();
     throw SystemError(oss.str());
   }
   }
@@ -757,7 +757,7 @@ void Texture::renderToScreenAsObject(
   // @todo Double and triple check to see that the light it being
   // added in against the gold standard when I get home.
   int alpha = go.alpha();
-  if(overrides.hasAlphaOverride)
+  if(overrides.has_alpha_override)
   {
     alpha = overrides.alpha;
   }
@@ -793,8 +793,8 @@ void Texture::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
-void Texture::rawRenderQuad(const int srcCoords[8],
-                            const int destCoords[8],
+void Texture::rawRenderQuad(const int src_coords[8],
+                            const int dest_coords[8],
                             const int opacity[4])
 {
   /// @bug FIXME!
@@ -802,11 +802,11 @@ void Texture::rawRenderQuad(const int srcCoords[8],
 //    return;
 
   // For the time being, we are dumb and assume that it's one texture
-  float textureCoords[8];
+  float texture_coords[8];
   for(int i = 0; i < 8; i += 2)
   {
-    textureCoords[i] = float(srcCoords[i]) / texture_width_;
-    textureCoords[i + 1] = float(srcCoords[i + 1]) / texture_height_;
+    texture_coords[i] = float(src_coords[i]) / texture_width_;
+    texture_coords[i + 1] = float(src_coords[i + 1]) / texture_height_;
   }
 
   glBindTexture(GL_TEXTURE_2D, texture_id_);
@@ -822,10 +822,10 @@ void Texture::rawRenderQuad(const int srcCoords[8],
     {
       glColor4ub(255, 255, 255, opacity[i]);
 
-      int firstIndex = i * 2;
-      int secondIndex = firstIndex + 1;
-      glTexCoord2f(srcCoords[firstIndex], srcCoords[secondIndex]);
-      glVertex2i(destCoords[firstIndex], destCoords[secondIndex]);
+      int first_index = i * 2;
+      int second_index = first_index + 1;
+      glTexCoord2f(src_coords[first_index], src_coords[second_index]);
+      glVertex2i(dest_coords[first_index], dest_coords[second_index]);
     }
   }
   glEnd();
@@ -861,16 +861,16 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
     int h = min(y1+h1, y_offset_ + logical_height_) - max(y1, y_offset_);
 
     // Adjust the destination coordinates
-    float dxWidth = dx2 - dx1;
-    float dyHeight = dy2 - dy1;
+    float dx_width = dx2 - dx1;
+    float dy_height = dy2 - dy1;
     float dx1Off = (virX - x1) / float(w1);
-    dx1 = dx1 + (dxWidth * dx1Off);
+    dx1 = dx1 + (dx_width * dx1Off);
     float dx2Off = w / float(w1);
-    dx2 = dx1 + (dxWidth * dx2Off);
+    dx2 = dx1 + (dx_width * dx2Off);
     float dy1Off = (virY - y1) / float(h1);
-    dy1 = dy1 + (dyHeight * dy1Off);
+    dy1 = dy1 + (dy_height * dy1Off);
     float dy2Off = h / float(h1);
-    dy2 = dy1 + (dyHeight * dy2Off);
+    dy2 = dy1 + (dy_height * dy2Off);
 
     // Output the source intersection in real (instead of
     // virtual) coordinates

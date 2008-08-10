@@ -36,12 +36,12 @@ class RGBColour;
 class RGBAColour;
 
 void ShowGLErrors(void);
-void reportSDLError(const std::string& sdlName,
-                    const std::string& functionName);
+void reportSDLError(const std::string& sdl_name,
+                    const std::string& function_name);
 int SafeSize(int i);
 
 struct SDL_Surface;
-SDL_Surface* AlphaInvert(SDL_Surface* inSurface);
+SDL_Surface* AlphaInvert(SDL_Surface* in_surface);
 
 void RectToSDLRect(const Rect& rect, SDL_Rect* out);
 

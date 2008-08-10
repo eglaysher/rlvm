@@ -33,14 +33,14 @@ using namespace boost::posix_time;
 // SaveGameHeader
 // -----------------------------------------------------------------------
 SaveGameHeader::SaveGameHeader()
-  : title(), saveTime(microsec_clock::local_time())
+  : title(), save_time(microsec_clock::local_time())
 {
 }
 
 // -----------------------------------------------------------------------
 
-SaveGameHeader::SaveGameHeader(const std::string& inTitle)
-  : title(inTitle), saveTime(microsec_clock::local_time())
+SaveGameHeader::SaveGameHeader(const std::string& in_title)
+  : title(in_title), save_time(microsec_clock::local_time())
 {
 }
 

@@ -47,7 +47,7 @@ public:
                            const std::string& next);
   virtual void clearWin();
   virtual void setName(RLMachine& machine, const std::string& utf8name,
-                       const std::string& nextChar);
+                       const std::string& next_char);
 
   virtual void hardBrake();
 

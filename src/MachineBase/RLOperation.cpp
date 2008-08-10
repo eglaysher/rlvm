@@ -75,10 +75,10 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
     ff.setParsedParameters(output);
   }
 
-  const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
+  const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
 
   // Now dispatch based on these parameters.
-  dispatch(machine, parameterPieces);
+  dispatch(machine, parameter_pieces);
 
   // By default, we advacne the instruction pointer on any instruction we
   // perform. Weird special cases all derive from RLOp_SpecialCase, which
@@ -106,7 +106,7 @@ IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-// Was working to change the verifyType to parseParameters.
+// Was working to change the verify_type to parse_parameters.
 void IntConstant_T::parseParameters(
   unsigned int position,
   const std::vector<std::string>& input,
@@ -213,7 +213,7 @@ Empty_T::type Empty_T::getData(RLMachine& machine,
                                const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position)
 {
-  return emptyStruct();
+  return empty_struct();
 }
 
 // -----------------------------------------------------------------------
@@ -251,7 +251,7 @@ void RLOp_SpecialCase::parseParameters(
 void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
                                         const libReallive::CommandElement& ff)
 {
-  // First try to run the default parseParameters if we can.
+  // First try to run the default parse_parameters if we can.
   if(!ff.areParametersParsed())
   {
     const vector<string>& unparsed = ff.getUnparsedParameters();

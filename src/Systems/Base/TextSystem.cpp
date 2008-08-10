@@ -64,19 +64,18 @@ const unsigned int MAX_PAGE_HISTORY = 100;
 // TextSystemGlobals
 // -----------------------------------------------------------------------
 TextSystemGlobals::TextSystemGlobals()
-  : autoModeBaseTime(100), autoModeCharTime(100), messageSpeed(30)
+  : auto_mode_base_time(100), auto_mode_char_time(100), message_speed(30)
 {}
 
 // -----------------------------------------------------------------------
 
 TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
-  : autoModeBaseTime(100), autoModeCharTime(100),
-    messageSpeed(gexe("INIT_MESSAGE_SPEED").to_int(30))
+  : auto_mode_base_time(100), auto_mode_char_time(100),
+    message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30))
 {
-  GameexeInterpretObject inWindowAttr(gexe("WINDOW_ATTR"));
-  if(inWindowAttr.exists())
-    windowAttr = inWindowAttr;
-//setDefaultWindowAttr(windowAttr);
+  GameexeInterpretObject in_window_attr(gexe("WINDOW_ATTR"));
+  if(in_window_attr.exists())
+    window_attr = in_window_attr;
 }
 
 // -----------------------------------------------------------------------
@@ -96,9 +95,9 @@ TextSystem::TextSystem(Gameexe& gexe)
     globals_(gexe),
     system_visible_(true)
 {
-  GameexeInterpretObject ctrlUse(gexe("CTRL_USE"));
-  if(ctrlUse.exists())
-    ctrl_key_skip_ = ctrlUse;
+  GameexeInterpretObject ctrl_use(gexe("CTRL_USE"));
+  if(ctrl_use.exists())
+    ctrl_key_skip_ = ctrl_use;
 
   checkAndSetBool(gexe, "WINDOW_MOVE_USE", move_use_);
   checkAndSetBool(gexe, "WINDOW_CLEAR_USE", clear_use_);
@@ -143,9 +142,9 @@ void TextSystem::executeTextSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::hideTextWindow(int winNumber)
+void TextSystem::hideTextWindow(int win_number)
 {
-  WindowMap::iterator it = text_window_.find(winNumber);
+  WindowMap::iterator it = text_window_.find(win_number);
   if(it != text_window_.end())
   {
     it->second->setVisible(0);
@@ -184,9 +183,9 @@ TextWindow& TextSystem::currentWindow(RLMachine& machine)
 void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
                                  bool& out)
 {
-  GameexeInterpretObject keyObj(gexe(key));
-  if(keyObj.exists())
-    out = keyObj.to_int();
+  GameexeInterpretObject key_obj(gexe(key));
+  if(key_obj.exists())
+    out = key_obj.to_int();
 }
 
 // -----------------------------------------------------------------------
@@ -287,11 +286,11 @@ void TextSystem::forwardPage(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::replayPageSet(PageSet& set, bool isCurrentPage)
+void TextSystem::replayPageSet(PageSet& set, bool is_current_page)
 {
   for(PageSet::iterator it = set.begin(); it != set.end(); ++it) {
     try {
-      it->second->replay(isCurrentPage);
+      it->second->replay(is_current_page);
     }
     catch(rlvm::Exception& e) {
       // Currently, the text system can throw on a few unimplemented situations,
@@ -324,23 +323,23 @@ void TextSystem::stopReadingBacklog()
 
 // -----------------------------------------------------------------------
 
-int TextSystem::getAutoTime(int numChars)
+int TextSystem::getAutoTime(int num_chars)
 {
-  return globals_.autoModeBaseTime + globals_.autoModeCharTime * numChars;
+  return globals_.auto_mode_base_time + globals_.auto_mode_char_time * num_chars;
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setKeyCursor(RLMachine& machine, int newCursor)
+void TextSystem::setKeyCursor(RLMachine& machine, int new_cursor)
 {
-  if(newCursor == -1)
+  if(new_cursor == -1)
   {
     text_key_cursor_.reset();
   }
   else if(!text_key_cursor_ ||
-     text_key_cursor_->cursorNumber() != newCursor)
+     text_key_cursor_->cursorNumber() != new_cursor)
   {
-    text_key_cursor_.reset(new TextKeyCursor(machine, newCursor));
+    text_key_cursor_.reset(new TextKeyCursor(machine, new_cursor));
   }
 }
 
@@ -358,7 +357,7 @@ int TextSystem::cursorNumber() const
 
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
-  globals_.windowAttr = attr;
+  globals_.window_attr = attr;
 }
 
 // -----------------------------------------------------------------------
@@ -382,11 +381,11 @@ void TextSystem::reset()
 template<class Archive>
 void TextSystem::load(Archive& ar, unsigned int version)
 {
-  int win, cursorNum;
-  ar & win & cursorNum;
+  int win, cursor_num;
+  ar & win & cursor_num;
 
   setActiveWindow(win);
-  setKeyCursor(*Serialization::g_currentMachine, cursorNum);
+  setKeyCursor(*Serialization::g_current_machine, cursor_num);
 }
 
 // -----------------------------------------------------------------------
@@ -395,8 +394,8 @@ template<class Archive>
 void TextSystem::save(Archive& ar, unsigned int version) const
 {
   int win = activeWindow();
-  int cursorNum = cursorNumber();
-  ar & win & cursorNum;
+  int cursor_num = cursorNumber();
+  ar & win & cursor_num;
 }
 
 // -----------------------------------------------------------------------

@@ -52,7 +52,7 @@ public:
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
-                             int alpha = 255, bool useSrcAlpha = true);
+                             int alpha = 255, bool use_src_alpha = true);
 
   virtual void renderToScreen(const Rect& src, const Rect& dst, int alpha = 255);
 
@@ -66,8 +66,8 @@ public:
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const GraphicsObjectOverride& override);
 
-  virtual void rawRenderQuad(const int srcCoords[8],
-                             const int destCoords[8],
+  virtual void rawRenderQuad(const int src_coords[8],
+                             const int dest_coords[8],
                              const int opacity[4]);
 
   virtual void fill(const RGBAColour& colour);

@@ -48,7 +48,7 @@ class Gameexe;
 /// These are function pointers to OpenGL extensions that we use in
 /// fragment shaders, which we do to get the closest blending to how
 /// RealLive does it.
-//extern glCreateShaderObjectARBProcPtr glCreateShaderObject;
+//extern gl_create_shader_object_arbproc_ptr gl_create_shader_object;
 
 // -----------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ public:
 
   virtual Size screenSize() const;
 
-  virtual void allocateDC(int dc, Size screenSize);
+  virtual void allocateDC(int dc, Size screen_size);
   virtual void freeDC(int dc);
 
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
@@ -186,7 +186,7 @@ public:
   // -----------------------------------------------------------------------
 
   virtual void setWindowSubtitle(const std::string& cp932str,
-                                 int textEncoding);
+                                 int text_encoding);
 
   virtual void clearAllDCs();
 

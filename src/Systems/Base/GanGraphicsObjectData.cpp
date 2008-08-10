@@ -86,9 +86,9 @@ GanGraphicsObjectData::GanGraphicsObjectData()
 // -----------------------------------------------------------------------
 
 GanGraphicsObjectData::GanGraphicsObjectData(
-  RLMachine& machine, const std::string& ganFile,
-  const std::string& imgFile)
-  : gan_filename_(ganFile), img_filename_(imgFile), current_set_(-1),
+  RLMachine& machine, const std::string& gan_file,
+  const std::string& img_file)
+  : gan_filename_(gan_file), img_filename_(img_file), current_set_(-1),
     current_frame_(-1), time_at_last_frame_change_(0)
 {
   load(machine);
@@ -103,96 +103,96 @@ GanGraphicsObjectData::~GanGraphicsObjectData()
 
 void GanGraphicsObjectData::load(RLMachine& machine)
 {
-  fs::path imgFilePath = findFile(machine, img_filename_, IMAGE_FILETYPES);
-  fs::path ganFilePath = findFile(machine, gan_filename_, GAN_FILETYPES);
+  fs::path img_file_path = findFile(machine, img_filename_, IMAGE_FILETYPES);
+  fs::path gan_file_path = findFile(machine, gan_filename_, GAN_FILETYPES);
 
-  image = machine.system().graphics().loadSurfaceFromFile(imgFilePath);
+  image = machine.system().graphics().loadSurfaceFromFile(img_file_path);
 
-  fs::ifstream ifs(ganFilePath, ifstream::in | ifstream::binary);
+  fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
   if(!ifs)
   {
     ostringstream oss;
-    oss << "Could not open file \"" << ganFilePath << "\".";
+    oss << "Could not open file \"" << gan_file_path << "\".";
     throw rlvm::Exception(oss.str());
   }
 
-  int fileSize = 0;
-  scoped_array<char> ganData;
-  if(loadFileData(ifs, ganData, fileSize))
+  int file_size = 0;
+  scoped_array<char> gan_data;
+  if(loadFileData(ifs, gan_data, file_size))
   {
     ostringstream oss;
-    oss << "Could not read the contents of \"" << ganFilePath << "\"";
+    oss << "Could not read the contents of \"" << gan_file_path << "\"";
     throw rlvm::Exception(oss.str());
   }
 
-  testFileMagic(gan_filename_, ganData, fileSize);
-  readData(machine, gan_filename_, ganData, fileSize);
+  testFileMagic(gan_filename_, gan_data, file_size);
+  readData(machine, gan_filename_, gan_data, file_size);
 }
 
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::testFileMagic(
-  const std::string& fileName,
-  boost::scoped_array<char>& ganData, int fileSize)
+  const std::string& file_name,
+  boost::scoped_array<char>& gan_data, int file_size)
 {
-  const char* data = ganData.get();
+  const char* data = gan_data.get();
   int a = read_i32(data);
   int b = read_i32(data + 0x04);
   int c = read_i32(data + 0x08);
 
   if(a != 10000 || b != 10000 || c != 10100)
-    throwBadFormat(fileName, "Incorrect GAN file magic");
+    throwBadFormat(file_name, "Incorrect GAN file magic");
 }
 
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::readData(
   RLMachine& machine,
-  const std::string& fileName,
-  boost::scoped_array<char>& ganData, int fileSize)
+  const std::string& file_name,
+  boost::scoped_array<char>& gan_data, int file_size)
 {
-  const char* data = ganData.get();
-  int fileNameLength = read_i32(data + 0xc);
-  string rawFileName = data + 0x10;
+  const char* data = gan_data.get();
+  int file_name_length = read_i32(data + 0xc);
+  string raw_file_name = data + 0x10;
 
   // Strings should be NULL terminated.
-  data = data + 0x10 + fileNameLength - 1;
+  data = data + 0x10 + file_name_length - 1;
   if(*data != 0)
-    throwBadFormat(fileName, "Incorrect filename length in GAN header");
+    throwBadFormat(file_name, "Incorrect filename length in GAN header");
   data++;
 
-  int twentyThousand = read_i32(data);
-  if(twentyThousand != 20000)
-    throwBadFormat(fileName, "Expected start of GAN data section");
+  int twenty_thousand = read_i32(data);
+  if(twenty_thousand != 20000)
+    throwBadFormat(file_name, "Expected start of GAN data section");
   data += 4;
 
-  int numberOfSets = read_i32(data);
+  int number_of_sets = read_i32(data);
   data += 4;
 
-  for(int i = 0; i < numberOfSets; ++i)
+  for(int i = 0; i < number_of_sets; ++i)
   {
-    int startOfGANset = read_i32(data);
-    if(startOfGANset != 0x7530)
-      throwBadFormat(fileName, "Expected start of GAN set");
+    int start_of_ganset = read_i32(data);
+    if(start_of_ganset != 0x7530)
+      throwBadFormat(file_name, "Expected start of GAN set");
 
     data += 4;
-    int frameCount = read_i32(data);
-    if(frameCount < 0)
-      throwBadFormat(fileName,
+    int frame_count = read_i32(data);
+    if(frame_count < 0)
+      throwBadFormat(file_name,
                      "Expected animation to contain at least one frame");
     data += 4;
 
-    vector<Frame> animationSet;
-    for(int j = 0; j < frameCount; ++j)
-      animationSet.push_back(readSetFrame(fileName, data));
-    animationSets.push_back(animationSet);
+    vector<Frame> animation_set;
+    for(int j = 0; j < frame_count; ++j)
+      animation_set.push_back(readSetFrame(file_name, data));
+    animation_sets.push_back(animation_set);
   }
 }
 
 // -----------------------------------------------------------------------
 
 GanGraphicsObjectData::Frame
-GanGraphicsObjectData::readSetFrame(const std::string& fileName,
+GanGraphicsObjectData::readSetFrame(const std::string& file_name,
                                     const char*& data)
 {
   GanGraphicsObjectData::Frame frame;
@@ -228,7 +228,7 @@ GanGraphicsObjectData::readSetFrame(const std::string& fileName,
     {
       ostringstream oss;
       oss << "Unknown GAN frame tag: " << tag;
-      throwBadFormat(fileName, oss.str());
+      throwBadFormat(file_name, oss.str());
     }
     }
 
@@ -242,10 +242,10 @@ GanGraphicsObjectData::readSetFrame(const std::string& fileName,
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::throwBadFormat(
-  const std::string& fileName, const std::string& error)
+  const std::string& file_name, const std::string& error)
 {
   ostringstream oss;
-  oss << "File \"" << fileName
+  oss << "File \"" << file_name
       << "\" does not appear to be in GAN format: "
       << error;
   throw rlvm::Exception(oss.str());
@@ -261,7 +261,7 @@ void GanGraphicsObjectData::render(
 {
   if(current_set_ != -1 && current_frame_ != -1)
   {
-    const Frame& frame = animationSets.at(current_set_).at(current_frame_);
+    const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
 
     // First, we figure out the pattern to get the image source
     if(frame.pattern != -1)
@@ -269,18 +269,18 @@ void GanGraphicsObjectData::render(
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
 
       // Groan. Now I can't really test this.
-      GraphicsObjectOverride overrideData;
+      GraphicsObjectOverride override_data;
       // POINT
-      overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(),
+      override_data.setOverrideSource(rect.rect.x(), rect.rect.y(),
                                      rect.rect.x2(), rect.rect.y2());
-      overrideData.setDestOffset(frame.x, frame.y);
+      override_data.setDestOffset(frame.x, frame.y);
 
       // Calculate the combination of our frame alpha with the current
       // object alpha
-      overrideData.setAlphaOverride(
+      override_data.setAlphaOverride(
         int(((frame.alpha/256.0f) * (go.alpha() / 256.0f)) * 256));
 
-      image->renderToScreenAsObject(go, overrideData);
+      image->renderToScreenAsObject(go, override_data);
     }
   }
 }
@@ -289,11 +289,11 @@ void GanGraphicsObjectData::render(
 
 int GanGraphicsObjectData::pixelWidth(
   RLMachine& machine,
-  const GraphicsObject& renderingProperties)
+  const GraphicsObject& rendering_properties)
 {
   if(current_set_ != -1 && current_frame_ != -1)
   {
-    const Frame& frame = animationSets.at(current_set_).at(current_frame_);
+    const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if(frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
@@ -309,11 +309,11 @@ int GanGraphicsObjectData::pixelWidth(
 
 int GanGraphicsObjectData::pixelHeight(
   RLMachine& machine,
-  const GraphicsObject& renderingProperties)
+  const GraphicsObject& rendering_properties)
 {
   if(current_set_ != -1 && current_frame_ != -1)
   {
-    const Frame& frame = animationSets.at(current_set_).at(current_frame_);
+    const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if(frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
@@ -338,22 +338,22 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
 {
   if(currentlyPlaying() && current_frame_ >= 0)
   {
-    unsigned int currentTime = machine.system().event().getTicks();
-    unsigned int timeSinceLastFrameChange =
-      currentTime - time_at_last_frame_change_;
+    unsigned int current_time = machine.system().event().getTicks();
+    unsigned int time_since_last_frame_change =
+      current_time - time_at_last_frame_change_;
 
-    const vector<Frame>& currentSet = animationSets.at(current_set_);
-    unsigned int frameTime = (unsigned int)(currentSet[current_frame_].time);
-    if(timeSinceLastFrameChange > frameTime)
+    const vector<Frame>& current_set = animation_sets.at(current_set_);
+    unsigned int frame_time = (unsigned int)(current_set[current_frame_].time);
+    if(time_since_last_frame_change > frame_time)
     {
       current_frame_++;
-      if(size_t(current_frame_) == currentSet.size())
+      if(size_t(current_frame_) == current_set.size())
       {
         current_frame_--;
         endAnimation();
       }
 
-      time_at_last_frame_change_ = currentTime;
+      time_at_last_frame_change_ = current_time;
       machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
@@ -386,7 +386,7 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version)
     & gan_filename_ & img_filename_ & current_set_
     & current_frame_ & time_at_last_frame_change_;
 
-  load(*Serialization::g_currentMachine);
+  load(*Serialization::g_current_machine);
 }
 
 // -----------------------------------------------------------------------

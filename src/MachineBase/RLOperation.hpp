@@ -177,8 +177,8 @@ struct IntConstant_T {
                               boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
-    isRealTypestruct = true,
-    isComplex = false
+    is_real_typestruct = true,
+    is_complex = false
   };
 };
 
@@ -208,8 +208,8 @@ struct StrConstant_T {
                               boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
-    isRealTypestruct = true,
-    isComplex = false
+    is_real_typestruct = true,
+    is_complex = false
   };
 };
 
@@ -217,11 +217,11 @@ struct StrConstant_T {
 
 // -----------------------------------------------------------------------
 
-struct emptyStruct { };
+struct empty_struct { };
 
 /// Defines a null type for the Special parameter.
 struct Empty_T {
-  typedef emptyStruct type;
+  typedef empty_struct type;
 
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -235,8 +235,8 @@ struct Empty_T {
 
 
   enum {
-    isRealTypestruct = false,
-    isComplex = false
+    is_real_typestruct = false,
+    is_complex = false
   };
 };
 
@@ -256,7 +256,7 @@ struct Empty_T {
  * FunctionElements. Meaning the Gotos and Select. Also, you get to do
  * weird tricks with the
  *
- * @todo Make this invoke parseParameters
+ * @todo Make this invoke parse_parameters
  *
  * @see JmpModule
  */
@@ -316,7 +316,7 @@ private:
   void addTypeTo(int position, const std::vector<std::string>& input,
                  boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-    if(TYPE::isRealTypestruct)
+    if(TYPE::is_real_typestruct)
     {
       TYPE::parseParameters(position, input, output);
     }
@@ -355,7 +355,7 @@ public:
   }
 };
 
-// Partial specialization for RLOp_Normal::checkTypes for when
+// Partial specialization for RLOp_Normal::check_types for when
 // everything is empty (aka an operation that takes no parameters)
 template<>
 inline void RLOp_NormalOperation<

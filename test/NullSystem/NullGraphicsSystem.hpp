@@ -60,16 +60,16 @@ public:
   virtual void promoteObjects();
   virtual void clearAndPromoteObjects();
 
-  virtual GraphicsObject& getObject(int layer, int objNumber);
+  virtual GraphicsObject& getObject(int layer, int obj_number);
 
   // Make a null Surface object?
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(const boost::filesystem::path& filename);
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
 
-  virtual void blitSurfaceToDC(Surface& sourceObj, int targetDC,
-                               int srcX, int srcY, int srcWidth, int srcHeight,
-                               int destX, int destY, int destWidth, int destHeight,
+  virtual void blitSurfaceToDC(Surface& source_obj, int target_dc,
+                               int srcX, int srcY, int src_width, int src_height,
+                               int destX, int destY, int dest_width, int dest_height,
                                int alpha = 255);
 
 private:

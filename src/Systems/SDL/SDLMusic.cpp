@@ -54,8 +54,8 @@ const int STOP_AT_END = -1;
 const int STOP_NOW = -2;
 
 
-boost::shared_ptr<SDLMusic> SDLMusic::s_currentlyPlaying;
-bool SDLMusic::s_bgmEnabled = true;
+boost::shared_ptr<SDLMusic> SDLMusic::s_currently_playing;
+bool SDLMusic::s_bgm_enabled = true;
 
 // -----------------------------------------------------------------------
 // SDLMusic
@@ -77,8 +77,8 @@ SDLMusic::~SDLMusic()
 
   delete file_;
 
-  if(s_currentlyPlaying.get() == this)
-    s_currentlyPlaying.reset();
+  if(s_currently_playing.get() == this)
+    s_currently_playing.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -93,7 +93,7 @@ bool SDLMusic::isFading() const
 void SDLMusic::play(bool loop)
 {
   setLoopPoint(loop);
-  s_currentlyPlaying = shared_from_this();
+  s_currently_playing = shared_from_this();
 	Mix_HookMusic(&SDLMusic::MixMusic, this);
 }
 
@@ -102,28 +102,28 @@ void SDLMusic::play(bool loop)
 void SDLMusic::stop()
 {
   Mix_HookMusic(NULL, NULL);
-  if(s_currentlyPlaying.get() == this)
-    s_currentlyPlaying.reset();
+  if(s_currently_playing.get() == this)
+    s_currently_playing.reset();
 }
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::fadeIn(bool loop, int fadeInMs)
+void SDLMusic::fadeIn(bool loop, int fade_in_ms)
 {
   // Set up, then just play normally.
-  cerr << "Doesn't deal with fadeIn properly yet..." << endl;
+  cerr << "Doesn't deal with fade_in properly yet..." << endl;
 
   play(loop);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::fadeOut(int fadeOutMs)
+void SDLMusic::fadeOut(int fade_out_ms)
 {
   fade_count_ = 0;
-  if(fadeOutMs <= 0)
-    fadeOutMs = 1;
-  fadetime_total_ = fadeOutMs;
+  if(fade_out_ms <= 0)
+    fade_out_ms = 1;
+  fadetime_total_ = fade_out_ms;
 }
 
 // -----------------------------------------------------------------------
@@ -164,13 +164,13 @@ int SDLMusic::bgmStatus() const
 // static
 void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 {
-  // TODO: Make the done states reset s_currentlyPlaying. Or go back
+  // TODO: Make the done states reset s_currently_playing. Or go back
   // with a finish hook (and copy the finishing logic from either
   // xclannad or the official SDL_Mixer)
   SDLMusic* music = (SDLMusic*)udata;
 
 	int count;
-	if (!s_bgmEnabled ||
+	if (!s_bgm_enabled ||
       music->music_paused_ ||
       music->loop_point_ == STOP_NOW)
   {
@@ -227,19 +227,19 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     ("wav", &buildMusicImplementation<WAVFILE_Stream>)
     ("nwa", &buildMusicImplementation<NWAFILE>)
     ("mp3", &buildMusicImplementation<MP3FILE>);
-//    ("ogg", &buildMusicImplementationWithImpl<OggFILE>);
+//    ("ogg", &build_music_implementation_with_impl<OggFILE>);
 
-  fs::path filePath = findFile(machine, track.file, SOUND_FILETYPES);
-  const string& rawPath = filePath.external_file_string();
+  fs::path file_path = findFile(machine, track.file, SOUND_FILETYPES);
+  const string& raw_path = file_path.external_file_string();
   for(FileTypes::const_iterator it = types.begin(); it != types.end(); ++it)
   {
-    if(iends_with(rawPath, it->first))
+    if(iends_with(raw_path, it->first))
     {
-      FILE* f = fopen(rawPath.c_str(), "r");
+      FILE* f = fopen(raw_path.c_str(), "r");
       if(f == 0)
       {
         ostringstream oss;
-        oss << "Could not open \"" << filePath << "\" for reading.";
+        oss << "Could not open \"" << file_path << "\" for reading.";
         throw std::runtime_error(oss.str());
       }
 
@@ -254,7 +254,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
   }
 
   ostringstream oss;
-  oss << "Unsupported music file: \"" << filePath << "\"";
+  oss << "Unsupported music file: \"" << file_path << "\"";
   throw std::runtime_error(oss.str());
 }
 

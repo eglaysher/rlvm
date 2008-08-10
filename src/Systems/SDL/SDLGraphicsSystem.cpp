@@ -174,9 +174,9 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
     cursor = currentCursor(machine);
   if(cursor)
   {
-    Point renderLoc = cursor->getTopLeftForHotspotAt(hotspot);
-    dx1 = renderLoc.x();
-    dy1 = renderLoc.y();
+    Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
+    dx1 = render_loc.x();
+    dy1 = render_loc.y();
 
     // Copy the area behind the cursor to the temporary buffer
     glBindTexture(GL_TEXTURE_2D, behind_cursor_texture_);
@@ -262,20 +262,20 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   caption_title_ = cp932toUTF8(cp932caption, name_enc);
 
   /* the flags to pass to SDL_SetVideoMode */
-  int videoFlags;
-  videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
-  videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-  videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
+  int video_flags;
+  video_flags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
+  video_flags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
+  video_flags |= SDL_HWPALETTE;       /* Store the palette in hardware */
 
   /* This checks to see if surfaces can be stored in memory */
   if ( info->hw_available )
-    videoFlags |= SDL_HWSURFACE;
+    video_flags |= SDL_HWSURFACE;
   else
-    videoFlags |= SDL_SWSURFACE;
+    video_flags |= SDL_SWSURFACE;
 
   /* This checks if hardware blits can be done */
   if ( info->blit_hw )
-    videoFlags |= SDL_HWACCEL;
+    video_flags |= SDL_HWACCEL;
 
   /* Sets up OpenGL double buffering */
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
@@ -285,7 +285,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
   // Set the video mode
   if((screen_ = SDL_SetVideoMode(
-        screen_size_.width(), screen_size_.height(), bpp, videoFlags)) == 0 )
+        screen_size_.width(), screen_size_.height(), bpp, video_flags)) == 0 )
   {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -383,10 +383,10 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
            bind(&GraphicsObject::execute, _1, ref(machine)));
 
   // Update the seen.
-  int currentTime = machine.system().event().getTicks();
-  if((currentTime - time_of_last_titlebar_update_) > 60)
+  int current_time = machine.system().event().getTicks();
+  if((current_time - time_of_last_titlebar_update_) > 60)
   {
-    time_of_last_titlebar_update_ = currentTime;
+    time_of_last_titlebar_update_ = current_time;
 
     if(machine.sceneNumber() != last_seen_number_ ||
        machine.lineNumber() != last_line_number_)
@@ -422,12 +422,12 @@ void SDLGraphicsSystem::setWindowTitle()
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
-                                          int textEncoding)
+                                          int text_encoding)
 {
   // @todo Still not restoring title correctly!
-  subtitle_ = cp932toUTF8(cp932str, textEncoding);
+  subtitle_ = cp932toUTF8(cp932str, text_encoding);
 
-  GraphicsSystem::setWindowSubtitle(cp932str, textEncoding);
+  GraphicsSystem::setWindowSubtitle(cp932str, text_encoding);
 }
 
 // -----------------------------------------------------------------------
@@ -443,7 +443,7 @@ Size SDLGraphicsSystem::screenSize() const
 void SDLGraphicsSystem::allocateDC(int dc, Size size)
 {
   if(dc >= 16)
-    throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocateDC");
+    throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
   if(dc == 0)
@@ -550,7 +550,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
 // -----------------------------------------------------------------------
 
 /**
- * Helper function for loadSurfaceFromFile; invoked in a stl loop.
+ * Helper function for load_surface_from_file; invoked in a stl loop.
  */
 SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
 {
@@ -589,10 +589,10 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   const boost::filesystem::path& filename)
 {
   // First check to see if this surface is already in our internal cache
-  shared_ptr<Surface> cachedSurface = image_cache_.fetch(filename);
-  if(cachedSurface)
+  shared_ptr<Surface> cached_surface = image_cache_.fetch(filename);
+  if(cached_surface)
   {
-    return cachedSurface;
+    return cached_surface;
   }
 
   // Glue code to allow my stuff to work with Jagarl's loader
@@ -658,16 +658,16 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
     region_table.push_back(rect);
   }
 
-  shared_ptr<Surface> surfaceToRet(new SDLSurface(s, region_table));
-  image_cache_.insert(filename, surfaceToRet);
-  return surfaceToRet;
+  shared_ptr<Surface> surface_to_ret(new SDLSurface(s, region_table));
+  image_cache_.insert(filename, surface_to_ret);
+  return surface_to_ret;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 {
-  verifySurfaceExists(dc, "SDLGraphicsSystem::getDC");
+  verifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
   return display_contexts_[dc];
 }
 

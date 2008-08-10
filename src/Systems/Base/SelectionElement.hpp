@@ -59,9 +59,9 @@ private:
   bool isHighlighted(const Point& p);
 
 public:
-  SelectionElement(const boost::shared_ptr<Surface>& normalImage,
-                   const boost::shared_ptr<Surface>& highlightedImage,
-                   const boost::function<void(int)>& selectionCallback,
+  SelectionElement(const boost::shared_ptr<Surface>& normal_image,
+                   const boost::shared_ptr<Surface>& highlighted_image,
+                   const boost::function<void(int)>& selection_callback,
                    int id, const Point& pos);
   ~SelectionElement();
 

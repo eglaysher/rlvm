@@ -63,7 +63,7 @@ public:
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
-                             int alpha = 255, bool useSrcAlpha = true) = 0;
+                             int alpha = 255, bool use_src_alpha = true) = 0;
 
   virtual void renderToScreen(
     const Rect& src, const Rect& dst,
@@ -81,10 +81,10 @@ public:
                                       const GraphicsObjectOverride& override) = 0;
 
   virtual int numPatterns() const;
-  virtual const GrpRect& getPattern(int pattNo) const;
+  virtual const GrpRect& getPattern(int patt_no) const;
 
-  virtual void rawRenderQuad(const int srcCoords[8],
-                             const int destCoords[8],
+  virtual void rawRenderQuad(const int src_coords[8],
+                             const int dest_coords[8],
                              const int opacity[4]) = 0;
 
   virtual void fill(const RGBAColour& colour) = 0;
@@ -93,7 +93,7 @@ public:
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) = 0;
 
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    const Rect& clipRect, int r, int g, int b);
+    const Rect& clip_rect, int r, int g, int b);
 
   virtual Surface* clone() const = 0;
 };

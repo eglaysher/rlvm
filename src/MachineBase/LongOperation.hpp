@@ -91,7 +91,7 @@ private:
   virtual void performAfterLongOperation(RLMachine& machine) = 0;
 
 public:
-  PerformAfterLongOperationDecorator(LongOperation* inOp);
+  PerformAfterLongOperationDecorator(LongOperation* in_op);
   ~PerformAfterLongOperationDecorator();
 
   virtual bool operator()(RLMachine& machine);

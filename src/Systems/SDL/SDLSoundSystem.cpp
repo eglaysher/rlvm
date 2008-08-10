@@ -56,15 +56,15 @@ struct RealLiveSoundQualities {
  * A maping between SoundQualities() and the values need to be passed
  * to Mix_OpenAudio()
  */
-static RealLiveSoundQualities s_realLiveSoundQualities[] = {
-  {11025, AUDIO_S8},    // 11 kHz, 8 bit stereo
-  {11025, AUDIO_S16},   // 11 kHz, 16 bit stereo
-  {22050, AUDIO_S8},    // 22 kHz, 8 bit stereo
-  {22050, AUDIO_S16},   // 22 kHz, 16 bit stereo
-  {44100, AUDIO_S8},    // 44 kHz, 8 bit stereo
-  {44100, AUDIO_S16},   // 44 kHz, 16 bit stereo
-  {48000, AUDIO_S8},    // 48 kHz, 8 bit stereo
-  {48000, AUDIO_S16}    // 48 hKz, 16 bit stereo
+static RealLiveSoundQualities s_real_live_sound_qualities[] = {
+  {11025, AUDIO_S8},    // 11 k_hz, 8 bit stereo
+  {11025, AUDIO_S16},   // 11 k_hz, 16 bit stereo
+  {22050, AUDIO_S8},    // 22 k_hz, 8 bit stereo
+  {22050, AUDIO_S16},   // 22 k_hz, 16 bit stereo
+  {44100, AUDIO_S8},    // 44 k_hz, 8 bit stereo
+  {44100, AUDIO_S16},   // 44 k_hz, 16 bit stereo
+  {48000, AUDIO_S8},    // 48 k_hz, 8 bit stereo
+  {48000, AUDIO_S16}    // 48 h_kz, 16 bit stereo
 };
 
 
@@ -72,14 +72,14 @@ static RealLiveSoundQualities s_realLiveSoundQualities[] = {
 // SDLSoundSystem (private)
 // -----------------------------------------------------------------------
 SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
-  RLMachine& machine, const std::string& fileName, SoundChunkCache& cache)
+  RLMachine& machine, const std::string& file_name, SoundChunkCache& cache)
 {
-  fs::path filePath = findFile(machine, fileName, SOUND_FILETYPES);
-  SDLSoundChunkPtr sample = cache.fetch(filePath);
+  fs::path file_path = findFile(machine, file_name, SOUND_FILETYPES);
+  SDLSoundChunkPtr sample = cache.fetch(file_path);
   if(sample == NULL)
   {
-    sample.reset(new SDLSoundChunk(filePath));
-    cache.insert(filePath, sample);
+    sample.reset(new SDLSoundChunk(file_path));
+    cache.insert(file_path, sample);
   }
 
   return sample;
@@ -88,39 +88,39 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::wavPlayImpl(
-  RLMachine& machine, const std::string& wavFile, const int channel, bool loop)
+  RLMachine& machine, const std::string& wav_file, const int channel, bool loop)
 {
   if(pcmEnabled())
   {
-    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, wav_cache_);
+    SDLSoundChunkPtr sample = getSoundChunk(machine, wav_file, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
-    int loopNum = loop ? -1 : 0;
-    sample->playChunkOn(channel, loopNum);
+    int loop_num = loop ? -1 : 0;
+    sample->playChunkOn(channel, loop_num);
   }
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
-  RLMachine& machine, const std::string& bgmName)
+  RLMachine& machine, const std::string& bgm_name)
 {
-  const DSTable& dsTable = getDSTable();
-  DSTable::const_iterator dsIt = dsTable.find(boost::to_lower_copy(bgmName));
-  if(dsIt != dsTable.end())
-    return SDLMusic::CreateMusic(machine, dsIt->second);
+  const DSTable& ds_table = getDSTable();
+  DSTable::const_iterator ds_it = ds_table.find(boost::to_lower_copy(bgm_name));
+  if(ds_it != ds_table.end())
+    return SDLMusic::CreateMusic(machine, ds_it->second);
 
-  const CDTable& cdTable = getCDTable();
-  CDTable::const_iterator cdIt = cdTable.find(boost::to_lower_copy(bgmName));
-  if(cdIt != cdTable.end())
+  const CDTable& cd_table = getCDTable();
+  CDTable::const_iterator cd_it = cd_table.find(boost::to_lower_copy(bgm_name));
+  if(cd_it != cd_table.end())
   {
     ostringstream oss;
     oss << "CD music not supported yet. Could not play track \""
-        << bgmName << "\"";
+        << bgm_name << "\"";
     throw std::runtime_error(oss.str());
   }
 
   ostringstream oss;
-  oss << "Could not find music track \"" << bgmName << "\"";
+  oss << "Could not find music track \"" << bgm_name << "\"";
   throw std::runtime_error(oss.str());
 }
 
@@ -135,8 +135,8 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
   /* We're going to be requesting certain things from our audio
      device, so we set them up beforehand */
 
-  int audio_rate = s_realLiveSoundQualities[soundQuality()].rate;
-  Uint16 audio_format = s_realLiveSoundQualities[soundQuality()].format;
+  int audio_rate = s_real_live_sound_qualities[soundQuality()].rate;
+  Uint16 audio_format = s_real_live_sound_qualities[soundQuality()].format;
   int audio_channels = 2;
   int audio_buffers = 4096;
 
@@ -192,48 +192,48 @@ void SDLSoundSystem::setBgmEnabled(const int in)
 
 void SDLSoundSystem::setChannelVolume(const int channel, const int level)
 {
-  int adjustedVolume = computeChannelVolume(channel, pcmVolume());
-  Mix_Volume(realLiveVolumeToSDLMixerVolume(adjustedVolume), level);
+  int adjusted_volume = computeChannelVolume(channel, pcmVolume());
+  Mix_Volume(realLiveVolumeToSDLMixerVolume(adjusted_volume), level);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile, bool loop)
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file, bool loop)
 {
-  int channelNumber = SDLSoundChunk::FindNextFreeExtraChannel();
-  if(channelNumber == -1)
+  int channel_number = SDLSoundChunk::FindNextFreeExtraChannel();
+  if(channel_number == -1)
   {
     ostringstream oss;
     oss << "Couldn't find a free channel for wavPlay()";
     throw std::runtime_error(oss.str());
   }
 
-  wavPlayImpl(machine, wavFile, channelNumber, loop);
+  wavPlayImpl(machine, wav_file, channel_number, loop);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file,
                              bool loop, const int channel)
 {
-  checkChannel(channel, "SDLSoundSystem::wavPlay");
-  wavPlayImpl(machine, wavFile, channel, loop);
+  checkChannel(channel, "SDLSoundSystem::wav_play");
+  wavPlayImpl(machine, wav_file, channel, loop);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
-                             bool loop, const int channel, const int fadeinMs)
+void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file,
+                             bool loop, const int channel, const int fadein_ms)
 {
-  checkChannel(channel, "SDLSoundSystem::wavPlay");
+  checkChannel(channel, "SDLSoundSystem::wav_play");
 
   if(pcmEnabled())
   {
-    SDLSoundChunkPtr sample = getSoundChunk(machine, wavFile, wav_cache_);
+    SDLSoundChunkPtr sample = getSoundChunk(machine, wav_file, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
 
-    int loopNum = loop ? -1 : 0;
-    sample->fadeInChunkOn(channel, loopNum, fadeinMs);
+    int loop_num = loop ? -1 : 0;
+    sample->fadeInChunkOn(channel, loop_num, fadein_ms);
   }
 }
 
@@ -241,7 +241,7 @@ void SDLSoundSystem::wavPlay(RLMachine& machine, const std::string& wavFile,
 
 bool SDLSoundSystem::wavPlaying(RLMachine& machine, const int channel)
 {
-  checkChannel(channel, "SDLSoundSystem::wavPlaying");
+  checkChannel(channel, "SDLSoundSystem::wav_playing");
   return Mix_Playing(channel);
 }
 
@@ -249,7 +249,7 @@ bool SDLSoundSystem::wavPlaying(RLMachine& machine, const int channel)
 
 void SDLSoundSystem::wavStop(const int channel)
 {
-  checkChannel(channel, "SDLSoundSystem::wavStop");
+  checkChannel(channel, "SDLSoundSystem::wav_stop");
 
   if(pcmEnabled())
   {
@@ -271,7 +271,7 @@ void SDLSoundSystem::wavStopAll()
 
 void SDLSoundSystem::wavFadeOut(const int channel, const int fadetime)
 {
-  checkChannel(channel, "SDLSoundSystem::wavFadeOut");
+  checkChannel(channel, "SDLSoundSystem::wav_fade_out");
 
   if(pcmEnabled())
     SDLSoundChunk::FadeOut(channel, fadetime);
@@ -279,31 +279,31 @@ void SDLSoundSystem::wavFadeOut(const int channel, const int fadetime)
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
+void SDLSoundSystem::playSe(RLMachine& machine, const int se_num)
 {
   if(seEnabled())
   {
-    SeTable::const_iterator it = seTable().find(seNum);
+    SeTable::const_iterator it = seTable().find(se_num);
     if(it == seTable().end())
     {
       ostringstream oss;
-      oss << "No #SE entry found for sound effect number " << seNum;
+      oss << "No #SE entry found for sound effect number " << se_num;
       throw rlvm::Exception(oss.str());
     }
 
-    const string& fileName = it->second.first;
+    const string& file_name = it->second.first;
     int channel = it->second.second;
 
     // Make sure there isn't anything playing on the current channel
     Mix_HaltChannel(channel);
 
-    if(fileName == "")
+    if(file_name == "")
     {
       // Just stop a channel in case of an empty file name.
       return;
     }
 
-    SDLSoundChunkPtr sample = getSoundChunk(machine, fileName, wav_cache_);
+    SDLSoundChunkPtr sample = getSoundChunk(machine, file_name, wav_cache_);
 
     // SE chunks have no per channel volume...
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(seVolume()));
@@ -315,10 +315,10 @@ void SDLSoundSystem::playSe(RLMachine& machine, const int seNum)
 
 int SDLSoundSystem::bgmStatus() const
 {
-  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying)
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
   {
-    return currentlyPlaying->bgmStatus();
+    return currently_playing->bgmStatus();
   }
   else
     return 0;
@@ -326,75 +326,75 @@ int SDLSoundSystem::bgmStatus() const
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
                              bool loop)
 {
-  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgmName);
+  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgm_name);
   bgm->play(loop);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
-                             bool loop, int fadeInMs)
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
+                             bool loop, int fade_in_ms)
 {
-  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgmName);
-  bgm->fadeIn(loop, fadeInMs);
+  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgm_name);
+  bgm->fadeIn(loop, fade_in_ms);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgmName,
-                             bool loop, int fadeInMs, int fadeOutMs)
+void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
+                             bool loop, int fade_in_ms, int fade_out_ms)
 {
-  queued_music_ = LoadMusic(machine, bgmName);
+  queued_music_ = LoadMusic(machine, bgm_name);
   queued_music_loop_ = loop;
-  queued_music_fadein_ = fadeInMs;
+  queued_music_fadein_ = fade_in_ms;
 
-  bgmFadeOut(fadeOutMs);
+  bgmFadeOut(fade_out_ms);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::bgmStop()
 {
-  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying)
-    currentlyPlaying->stop();
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
+    currently_playing->stop();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::bgmPause()
 {
-  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying)
-    currentlyPlaying->pause();
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
+    currently_playing->pause();
 }
 
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::bgmUnPause()
 {
-  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying)
-    currentlyPlaying->unpause();
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
+    currently_playing->unpause();
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::bgmFadeOut(int fadeOutMs) {
-  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying)
-    currentlyPlaying->fadeOut(fadeOutMs);
+void SDLSoundSystem::bgmFadeOut(int fade_out_ms) {
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
+    currently_playing->fadeOut(fade_out_ms);
 }
 
 // -----------------------------------------------------------------------
 
 std::string SDLSoundSystem::bgmName() const {
-  boost::shared_ptr<SDLMusic> currentlyPlaying = SDLMusic::CurrnetlyPlaying();
-  if(currentlyPlaying)
-    return currentlyPlaying->name();
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
+    return currently_playing->name();
   else
     return "";
 }

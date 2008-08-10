@@ -96,22 +96,21 @@ struct Sys_SaveDate : public RLOp_Store_5<
   IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T>
 {
   int operator()(RLMachine& machine, int slot,
-				 IntReferenceIterator yIt, IntReferenceIterator mIt,
-				 IntReferenceIterator dIt, IntReferenceIterator wdIt)
+                 IntReferenceIterator yIt, IntReferenceIterator mIt,
+                 IntReferenceIterator dIt, IntReferenceIterator wdIt)
   {
-	int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = Sys_SaveExists()(machine, slot);
 
-	if(fileExists)
-	{
+    if(fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  *yIt = header.saveTime.date().year();
-	  *mIt = header.saveTime.date().month();
-	  *dIt = header.saveTime.date().day();
-	  *wdIt = header.saveTime.date().day_of_week();
-	}
+      *yIt = header.save_time.date().year();
+      *mIt = header.save_time.date().month();
+      *dIt = header.save_time.date().day();
+      *wdIt = header.save_time.date().day_of_week();
+    }
 
-	return fileExists;
+    return fileExists;
   }
 };
 
@@ -130,10 +129,10 @@ struct Sys_SaveTime : public RLOp_Store_5<
 	{
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  *hhIt = header.saveTime.time_of_day().hours();
-	  *mmIt = header.saveTime.time_of_day().minutes();
-	  *ssIt = header.saveTime.time_of_day().seconds();
-	  *msIt = header.saveTime.time_of_day().fractional_seconds();
+	  *hhIt = header.save_time.time_of_day().hours();
+	  *mmIt = header.save_time.time_of_day().minutes();
+	  *ssIt = header.save_time.time_of_day().seconds();
+	  *msIt = header.save_time.time_of_day().fractional_seconds();
 	}
 
 	return fileExists;
@@ -158,14 +157,14 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
 	{
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  *yIt = header.saveTime.date().year();
-	  *mIt = header.saveTime.date().month();
-	  *dIt = header.saveTime.date().day();
-	  *wdIt = header.saveTime.date().day_of_week();
-	  *hhIt = header.saveTime.time_of_day().hours();
-	  *mmIt = header.saveTime.time_of_day().minutes();
-	  *ssIt = header.saveTime.time_of_day().seconds();
-	  *msIt = header.saveTime.time_of_day().fractional_seconds();
+	  *yIt = header.save_time.date().year();
+	  *mIt = header.save_time.date().month();
+	  *dIt = header.save_time.date().day();
+	  *wdIt = header.save_time.date().day_of_week();
+	  *hhIt = header.save_time.time_of_day().hours();
+	  *mmIt = header.save_time.time_of_day().minutes();
+	  *ssIt = header.save_time.time_of_day().seconds();
+	  *msIt = header.save_time.time_of_day().fractional_seconds();
 	}
 
 	return fileExists;
@@ -180,32 +179,31 @@ struct Sys_SaveInfo : public RLOp_Store_10<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T, StrReference_T >
 {
   int operator()(RLMachine& machine, int slot,
-				 IntReferenceIterator yIt, IntReferenceIterator mIt,
-				 IntReferenceIterator dIt, IntReferenceIterator wdIt,
-				 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
-				 IntReferenceIterator ssIt, IntReferenceIterator msIt,
-				 StringReferenceIterator titleIt)
+                 IntReferenceIterator yIt, IntReferenceIterator mIt,
+                 IntReferenceIterator dIt, IntReferenceIterator wdIt,
+                 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
+                 IntReferenceIterator ssIt, IntReferenceIterator msIt,
+                 StringReferenceIterator titleIt)
   {
-	int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = Sys_SaveExists()(machine, slot);
 
-	if(fileExists)
-	{
+    if(fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
-	  *yIt = header.saveTime.date().year();
-	  *mIt = header.saveTime.date().month();
-	  *dIt = header.saveTime.date().day();
-	  *wdIt = header.saveTime.date().day_of_week();
-	  *hhIt = header.saveTime.time_of_day().hours();
-	  *mmIt = header.saveTime.time_of_day().minutes();
-	  *ssIt = header.saveTime.time_of_day().seconds();
-	  *msIt = header.saveTime.time_of_day().fractional_seconds();
+      *yIt = header.save_time.date().year();
+      *mIt = header.save_time.date().month();
+      *dIt = header.save_time.date().day();
+      *wdIt = header.save_time.date().day_of_week();
+      *hhIt = header.save_time.time_of_day().hours();
+      *mmIt = header.save_time.time_of_day().minutes();
+      *ssIt = header.save_time.time_of_day().seconds();
+      *msIt = header.save_time.time_of_day().fractional_seconds();
 
-	  // Convert the UTF-8 string to the memory internal CP932
-	  *titleIt = header.title;
-	}
+      // Convert the UTF-8 string to the memory internal CP932
+      *titleIt = header.title;
+    }
 
-	return fileExists;
+    return fileExists;
   }
 };
 

@@ -115,15 +115,15 @@ Memory::~Memory()
 
 void Memory::connectIntVarPointers()
 {
-  intVar[0] = local_.intA;
-  intVar[1] = local_.intB;
-  intVar[2] = local_.intC;
-  intVar[3] = local_.intD;
-  intVar[4] = local_.intE;
-  intVar[5] = local_.intF;
-  intVar[6] = global_->intG;
-  intVar[7] = global_->intZ;
-  intVar[8] = local_.intL;
+  int_var[0] = local_.intA;
+  int_var[1] = local_.intB;
+  int_var[2] = local_.intC;
+  int_var[3] = local_.intD;
+  int_var[4] = local_.intE;
+  int_var[5] = local_.intF;
+  int_var[6] = global_->intG;
+  int_var[7] = global_->intZ;
+  int_var[8] = local_.intL;
 }
 
 // -----------------------------------------------------------------------
@@ -131,17 +131,17 @@ void Memory::connectIntVarPointers()
 const std::string& Memory::getStringValue(int type, int location)
 {
   if(location > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
 
   switch(type) {
   case STRK_LOCATION:
     if(location > 2)
-      throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access on strK in RLMachine::set_string_value");
     return local_.strK[location];
   case STRM_LOCATION: return global_->strM[location];
   case STRS_LOCATION: return local_.strS[location];
   default:
-    throw rlvm::Exception("Invalid type in RLMachine::getStringValue");
+    throw rlvm::Exception("Invalid type in RLMachine::get_string_value");
   }
 }
 
@@ -150,12 +150,12 @@ const std::string& Memory::getStringValue(int type, int location)
 void Memory::setStringValue(int type, int number, const std::string& value)
 {
   if(number > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception("Invalid range access in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
 
   switch(type) {
   case STRK_LOCATION:
     if(number > 2)
-      throw rlvm::Exception("Invalid range access on strK in RLMachine::setStringValue");
+      throw rlvm::Exception("Invalid range access on strK in RLMachine::set_string_value");
     local_.strK[number] = value;
     break;
   case STRM_LOCATION:
@@ -165,7 +165,7 @@ void Memory::setStringValue(int type, int number, const std::string& value)
     local_.strS[number] = value;
     break;
   default:
-    throw rlvm::Exception("Invalid type in RLMachine::setStringValue");
+    throw rlvm::Exception("Invalid type in RLMachine::set_string_value");
   }
 }
 
@@ -184,32 +184,32 @@ void Memory::checkNameIndex(int index, const std::string& name) const
 
 void Memory::setName(int index, const std::string& name)
 {
-  checkNameIndex(index, "Memory::setName");
-  global_->globalNames[index] = name;
+  checkNameIndex(index, "Memory::set_name");
+  global_->global_names[index] = name;
 }
 
 // -----------------------------------------------------------------------
 
 const std::string& Memory::getName(int index) const
 {
-  checkNameIndex(index, "Memory::getName");
-  return global_->globalNames[index];
+  checkNameIndex(index, "Memory::get_name");
+  return global_->global_names[index];
 }
 
 // -----------------------------------------------------------------------
 
 void Memory::setLocalName(int index, const std::string& name)
 {
-  checkNameIndex(index, "Memory::setLocalName");
-  local_.localNames[index] = name;
+  checkNameIndex(index, "Memory::set_local_name");
+  local_.local_names[index] = name;
 }
 
 // -----------------------------------------------------------------------
 
 const std::string& Memory::getLocalName(int index) const
 {
-  checkNameIndex(index, "Memory::setLocalName");
-  return local_.localNames[index];
+  checkNameIndex(index, "Memory::set_local_name");
+  return local_.local_names[index];
 }
 
 // -----------------------------------------------------------------------
@@ -224,7 +224,7 @@ int Memory::ConvertLetterIndexToInt(const std::string& value) {
     total += 26 * ((value[0] - 'A') + 1);
     total += (value[1] - 'A');
   } else {
-    throw rlvm::Exception("Invalid value in convertNameVar!");
+    throw rlvm::Exception("Invalid value in convert_name_var!");
   }
 
   return total;

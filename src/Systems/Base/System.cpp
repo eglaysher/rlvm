@@ -89,7 +89,7 @@ void System::checkSyscomIndex(int index, const char* function)
 
 bool System::isSyscomEnabled(int syscom)
 {
-  checkSyscomIndex(syscom, "System::isSyscomEnabled");
+  checkSyscomIndex(syscom, "System::is_syscom_enabled");
   return syscom_status_[syscom];
 }
 
@@ -104,7 +104,7 @@ void System::hideSyscom()
 
 void System::hideSyscomEntry(int syscom)
 {
-  checkSyscomIndex(syscom, "System::hideSystem");
+  checkSyscomIndex(syscom, "System::hide_system");
   syscom_status_[syscom] = SYSCOM_INVISIBLE;
 }
 
@@ -119,7 +119,7 @@ void System::enableSyscom()
 
 void System::enableSyscomEntry(int syscom)
 {
-  checkSyscomIndex(syscom, "System::enableSystem");
+  checkSyscomIndex(syscom, "System::enable_system");
   syscom_status_[syscom] = SYSCOM_VISIBLE;
 }
 
@@ -134,7 +134,7 @@ void System::disableSyscom()
 
 void System::disableSyscomEntry(int syscom)
 {
-  checkSyscomIndex(syscom, "System::disableSystem");
+  checkSyscomIndex(syscom, "System::disable_system");
   syscom_status_[syscom] = SYSCOM_GREYED_OUT;
 }
 
@@ -151,14 +151,14 @@ void System::addPath(GameexeInterpretObject gio)
 {
   boost::filesystem::path gamepath(gameexe()("__GAMEPATH").to_string());
   gamepath /= gio.to_string();
-  cachedSearchPaths.push_back(gamepath);
+  cached_search_paths.push_back(gamepath);
 }
 
 // -----------------------------------------------------------------------
 
 const std::vector<boost::filesystem::path>& System::getSearchPaths()
 {
-  if(cachedSearchPaths.size() == 0)
+  if(cached_search_paths.size() == 0)
   {
     Gameexe& gexe = gameexe();
 
@@ -171,7 +171,7 @@ const std::vector<boost::filesystem::path>& System::getSearchPaths()
       addPath(*it);
   }
 
-  return cachedSearchPaths;
+  return cached_search_paths;
 }
 
 // -----------------------------------------------------------------------
@@ -225,8 +225,8 @@ boost::filesystem::path System::gameSaveDirectory()
   string regname = gexe("REGNAME");
   replace_all(regname, "\\", "_");
 
-  fs::path baseDir = getHomeDirectory() / ".rlvm" / regname;
-  fs::create_directories(baseDir);
+  fs::path base_dir = getHomeDirectory() / ".rlvm" / regname;
+  fs::create_directories(base_dir);
 
-  return baseDir;
+  return base_dir;
 }

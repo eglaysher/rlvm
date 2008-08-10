@@ -88,11 +88,11 @@ void saveGlobalMemory(RLMachine& machine)
   }
 
   using namespace boost::iostreams;
-  filtering_stream<output> filteredOutput;
-  filteredOutput.push(zlib_compressor());
-  filteredOutput.push(file);
+  filtering_stream<output> filtered_output;
+  filtered_output.push(zlib_compressor());
+  filtered_output.push(file);
 
-  saveGlobalMemoryTo(filteredOutput, machine);
+  saveGlobalMemoryTo(filtered_output, machine);
 }
 
 // -----------------------------------------------------------------------
@@ -124,11 +124,11 @@ void loadGlobalMemory(RLMachine& machine)
   if(file)
   {
     using namespace boost::iostreams;
-    filtering_stream<input> filteredInput;
-    filteredInput.push(zlib_decompressor());
-    filteredInput.push(file);
+    filtering_stream<input> filtered_input;
+    filtered_input.push(zlib_decompressor());
+    filtered_input.push(file);
 
-    loadGlobalMemoryFrom(filteredInput, machine);
+    loadGlobalMemoryFrom(filtered_input, machine);
   }
 }
 

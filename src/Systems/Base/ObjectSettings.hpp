@@ -48,7 +48,7 @@ struct ObjectSettings
    * temporarily if the player hides the text window to view the
    * picture properly (typically by pressing the space key).
    */
-  int spaceKey;
+  int space_key;
 
   /**
    * ObjOnOff determines whether an object can be toggled on and off
@@ -56,23 +56,23 @@ struct ObjectSettings
    * Values of 1 and 2 correspond to [Set]ShowObject1() and
    * [Set]ShowObject2(), and to \#SYSCOMs 18 and 19 respectively.
    */
-  int objOnOff;
+  int obj_on_off;
 
   /// Purpose Unknown
-  int timeMod;
+  int time_mod;
 
   /// Purpose Unknown
-  int dispSort;
+  int disp_sort;
 
   /// Purpose Unknown. (Set to 1 in objects 08[1234] in CLANNAD)
-  int initMod;
+  int init_mod;
 
   /**
    * WeatherOnOff determines whether the object is considered a
    * weather effect object or not; if it's non-zero, the object will
    * be shown and hidden with [Set]ShowWeather(), \#SYSCOM 17.
    */
-  int weatherOnOff;
+  int weather_on_off;
 };
 
 #endif

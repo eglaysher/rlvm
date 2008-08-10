@@ -53,7 +53,7 @@ private:
    * associate smart pointer.
    */
   typedef std::map<int, boost::shared_ptr<SDLSoundChunk> > PlayingTable;
-  static PlayingTable s_playingTable;
+  static PlayingTable s_playing_table;
 
   /// Wrapped chunk
   Mix_Chunk* sample_;
@@ -106,12 +106,12 @@ public:
 /**
  * Changes an incoming RealLive volume to the range SDL_Mixer expects.
  *
- * @param inVol RealLive volume (ranged 0-256)
+ * @param in_vol RealLive volume (ranged 0-256)
  * @return SDL_Mixer volume (ranged 0-128)
  */
-inline int realLiveVolumeToSDLMixerVolume(int inVol)
+inline int realLiveVolumeToSDLMixerVolume(int in_vol)
 {
-  return inVol / 2;
+  return in_vol / 2;
 }
 
 #endif

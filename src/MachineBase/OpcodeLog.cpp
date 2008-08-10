@@ -57,12 +57,12 @@ static bool nameLessThan(const OpcodeLog::Storage::value_type& lhs,
 // -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
-  int maxFunctionNameLen =
+  int max_function_name_len =
     max_element(log.begin(), log.end(), nameLessThan)->first.size();
 
-  os << setw(maxFunctionNameLen) << left << "Name" << "  " << "Count" << endl;
+  os << setw(max_function_name_len) << left << "Name" << "  " << "Count" << endl;
 
-  for(int i = 0; i < maxFunctionNameLen; ++i)
+  for(int i = 0; i < max_function_name_len; ++i)
     os << "-";
 
   os << "  " << "-----" << endl;
@@ -70,7 +70,7 @@ std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
   for(OpcodeLog::Storage::const_iterator it = log.begin(); it != log.end();
       ++it)
   {
-    os << setw(maxFunctionNameLen) << left <<  it->first << "  " << it->second
+    os << setw(max_function_name_len) << left <<  it->first << "  " << it->second
        << endl;
   }
 

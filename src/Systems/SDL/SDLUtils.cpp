@@ -46,13 +46,13 @@ using namespace std;
 void ShowGLErrors(void)
 {
   GLenum error;
-  const GLubyte* errStr;
+  const GLubyte* err_str;
   if ((error = glGetError()) != GL_NO_ERROR)
   {
-    errStr = gluErrorString(error);
+    err_str = gluErrorString(error);
     abort();
     ostringstream oss;
-    oss << "OpenGL Error: " << (char*)errStr;
+    oss << "OpenGL Error: " << (char*)err_str;
     throw SystemError(oss.str());
   }
 }
@@ -61,62 +61,62 @@ void ShowGLErrors(void)
 
 int SafeSize(int i)
 {
-  static GLint maxTextureSize = 0;
-  if(maxTextureSize == 0)
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+  static GLint max_texture_size = 0;
+  if(max_texture_size == 0)
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
   int p;
 
-  if (i > maxTextureSize) return maxTextureSize;
+  if (i > max_texture_size) return max_texture_size;
 
   for (p = 0; p < 24; p++)
     if (i <= (1<<p))
       return 1<<p;
 
-  return maxTextureSize;
+  return max_texture_size;
 }
 
 // -----------------------------------------------------------------------
 
-void reportSDLError(const std::string& sdlName,
-                    const std::string& functionName)
+void reportSDLError(const std::string& sdl_name,
+                    const std::string& function_name)
 {
   ostringstream ss;
-  ss << "Error while calling SDL function '" << sdlName << "' in "
-     << functionName << ": " << SDL_GetError();
+  ss << "Error while calling SDL function '" << sdl_name << "' in "
+     << function_name << ": " << SDL_GetError();
   throw SystemError(ss.str());
 }
 
 // -----------------------------------------------------------------------
 
 /// @todo This is not endian safe in any way.
-SDL_Surface* AlphaInvert(SDL_Surface* inSurface)
+SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
 {
-  SDL_PixelFormat* format = inSurface->format;
+  SDL_PixelFormat* format = in_surface->format;
 
   if(format->BitsPerPixel != 32)
     throw SystemError("AlphaInvert requires an alpha channel!");
 
   // Build a copy of the surface
   SDL_Surface* dst = SDL_AllocSurface(
-    inSurface->flags, inSurface->w, inSurface->h,
+    in_surface->flags, in_surface->w, in_surface->h,
     format->BitsPerPixel, format->Rmask,
     format->Gmask, format->Bmask, 0);
 
-  SDL_BlitSurface(inSurface, NULL, dst, NULL);
+  SDL_BlitSurface(in_surface, NULL, dst, NULL);
 
   // iterate over the copy and make the alpha value = 255 - alpha value.
   if(SDL_MUSTLOCK(dst)) SDL_LockSurface(dst);
   {
-    int numPixels = dst->h * dst->pitch;
-    char* pData = (char*)dst->pixels;
+    int num_pixels = dst->h * dst->pitch;
+    char* p_data = (char*)dst->pixels;
 
-    for(int i = 0; i < numPixels; i += 4)
+    for(int i = 0; i < num_pixels; i += 4)
     {
       // Invert the pixel here.
-      pData[i] = 255;
-      pData[i + 1] = 255;
-      pData[i + 2] = 255;
-      pData[i + 3] = 255 - pData[i +3];
+      p_data[i] = 255;
+      p_data[i + 1] = 255;
+      p_data[i + 2] = 255;
+      p_data[i + 3] = 255 - p_data[i +3];
     }
   }
   if(SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);

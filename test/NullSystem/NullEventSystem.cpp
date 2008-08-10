@@ -51,21 +51,21 @@ void NullEventSystem::executeEventSystem(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 bool NullEventSystem::shiftPressed() const {
-  mock_log_.recordFunction("shiftPressed");
+  mock_log_.recordFunction("shift_pressed");
   return event_system_mock_->shiftPressed();
 }
 
 // -----------------------------------------------------------------------
 
 bool NullEventSystem::ctrlPressed() const {
-  mock_log_.recordFunction("ctrlPressed");
+  mock_log_.recordFunction("ctrl_pressed");
   return event_system_mock_->ctrlPressed();
 }
 
 // -----------------------------------------------------------------------
 
 unsigned int NullEventSystem::getTicks() const {
-  mock_log_.recordFunction("getTicks");
+  mock_log_.recordFunction("get_ticks");
   return event_system_mock_->getTicks();
 }
 

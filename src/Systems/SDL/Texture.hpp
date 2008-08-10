@@ -78,28 +78,28 @@ private:
   bool is_upside_down_;
 
   // TODO: Dead code?
-  static unsigned int s_screenWidth;
-  static unsigned int s_screenHeight;
+  static unsigned int s_screen_width;
+  static unsigned int s_screen_height;
 
-  // The size of s_uploadBuffer. Initialized to 0.
-  static unsigned int s_uploadBufferSize;
+  // The size of s_upload_buffer. Initialized to 0.
+  static unsigned int s_upload_buffer_size;
 
   // To prevent new-ing in a loop, save the dynamically allocated
   // buffer used to upload data into.
-  static boost::scoped_array<char> s_uploadBuffer;
+  static boost::scoped_array<char> s_upload_buffer;
 
   // Returns a shared buffer of at least size. This is not thread safe
   // or reenterant in the least; it is merely meant to prevent
-  // allocations. This is the proper way to access s_uploadBuffer,
+  // allocations. This is the proper way to access s_upload_buffer,
   // since it will automatically reallocate it for you if it isn't
   // large enough.
   static char* uploadBuffer(unsigned int size);
 
-  void renderToScreenAsColorMask_subtractive_glsl(
+  void render_to_screen_as_color_mask_subtractive_glsl(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void renderToScreenAsColorMask_subtractive_fallback(
+  void render_to_screen_as_color_mask_subtractive_fallback(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void renderToScreenAsColorMask_additive(
+  void render_to_screen_as_color_mask_additive(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
 
   bool filterCoords(int& x1, int& y1, int& x2, int& y2,
@@ -110,12 +110,12 @@ public:
 
 public:
   Texture(SDL_Surface* surface, int x, int y, int w, int h,
-          unsigned int bytesPerPixel, int byteOrder, int byteType);
-  Texture(render_to_texture, int screenWidth, int screenHeight);
+          unsigned int bytes_per_pixel, int byte_order, int byte_type);
+  Texture(render_to_texture, int screen_width, int screen_height);
   ~Texture();
 
   void reupload(SDL_Surface* surface, int x, int y, int w, int h,
-                unsigned int bytesPerPixel, int byteOrder, int byteType);
+                unsigned int bytes_per_pixel, int byte_order, int byte_type);
 
   int width() { return logical_width_; }
   int height() { return logical_height_; }
@@ -134,8 +134,8 @@ public:
   void renderToScreen(const Rect& src, const Rect& dst,
                       const int opacity[4]);
 
-  void rawRenderQuad(const int srcCoords[8],
-                     const int destCoords[8],
+  void rawRenderQuad(const int src_coords[8],
+                     const int dest_coords[8],
                      const int opacity[4]);
 
   void buildShader();

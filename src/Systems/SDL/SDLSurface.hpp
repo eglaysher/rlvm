@@ -67,8 +67,8 @@ private:
      * Builds the texture and
      */
     TextureRecord(SDL_Surface* surface,
-                  int x, int y, int w, int h, unsigned int bytesPerPixel,
-                  int byteOrder, int byteType);
+                  int x, int y, int w, int h, unsigned int bytes_per_pixel,
+                  int byte_order, int byte_type);
 
     /**
      * Reuploads this current piece of surface from the supplied
@@ -79,9 +79,9 @@ private:
     ///
     boost::shared_ptr<Texture> texture;
 
-    int x, y, w, h;
-    unsigned int bytesPerPixel;
-    int byteOrder, byteType;
+    int x_, y_, w_, h_;
+    unsigned int bytes_per_pixel_;
+    int byte_order_, byte_type_;
   };
 
   /// The SDL_Surface that contains the software version of the bitmap.
@@ -98,7 +98,7 @@ private:
   /// texture.
   bool texture_is_valid_;
 
-  /// A pointer to the graphicsSystem. This item being non-NULL means
+  /// A pointer to the graphics_system. This item being non-NULL means
   /// that this Surface is the special DC0.
   SDLGraphicsSystem* graphics_system_;
 
@@ -111,7 +111,7 @@ private:
 
   bool is_mask_;
 
-  static std::vector<int> segmentPicture(int sizeRemainging);
+  static std::vector<int> segmentPicture(int size_remainging);
 
 public:
   SDLSurface();
@@ -150,11 +150,11 @@ public:
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
-                             int alpha = 255, bool useSrcAlpha = true);
+                             int alpha = 255, bool use_src_alpha = true);
 
-  void blitFROMSurface(SDL_Surface* srcSurface,
+  void blitFROMSurface(SDL_Surface* src_surface,
                        const Rect& src, const Rect& dst,
-                       int alpha = 255, bool useSrcAlpha = true);
+                       int alpha = 255, bool use_src_alpha = true);
 
   virtual void renderToScreen(
     const Rect& src, const Rect& dst, int alpha = 255);
@@ -165,8 +165,8 @@ public:
   virtual void renderToScreen(
     const Rect& src, const Rect& dst, const int opacity[4]);
 
-  virtual void rawRenderQuad(const int srcCoords[8],
-                             const int destCoords[8],
+  virtual void rawRenderQuad(const int src_coords[8],
+                             const int dest_coords[8],
                              const int opacity[4]);
 
   // Used internally; not exposed to the general graphics system
@@ -181,7 +181,7 @@ public:
   virtual int numPatterns() const;
 
   /// Returns pattern information.
-  virtual const GrpRect& getPattern(int pattNo) const;
+  virtual const GrpRect& getPattern(int patt_no) const;
 
   // -----------------------------------------------------------------------
 
@@ -195,7 +195,7 @@ public:
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    const Rect& clipRect, int r, int g, int b);
+    const Rect& clip_rect, int r, int g, int b);
 
   virtual Surface* clone() const;
 

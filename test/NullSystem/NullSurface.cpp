@@ -69,10 +69,10 @@ Size NullSurface::size() const { return size_; }
 void NullSurface::blitToSurface(
   Surface& surface,
   const Rect& src, const Rect& dst,
-  int alpha, bool useSrcAlpha)
+  int alpha, bool use_src_alpha)
 {
   surface_log_.recordFunction(
-    "blitToSurface", src, dst, alpha, useSrcAlpha);
+    "blit_to_surface", src, dst, alpha, use_src_alpha);
 }
 
 // -----------------------------------------------------------------------
@@ -81,7 +81,7 @@ void NullSurface::renderToScreen(
   const Rect& src, const Rect& dst, int alpha)
 {
   surface_log_.recordFunction(
-    "renderToScreen", src, dst, alpha);
+    "render_to_screen", src, dst, alpha);
 }
 
 // -----------------------------------------------------------------------
@@ -90,7 +90,7 @@ void NullSurface::renderToScreenAsColorMask(
   const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   surface_log_.recordFunction(
-    "renderToScreenAsColorMask", src, dst, rgba, filter);
+    "render_to_screen_as_color_mask", src, dst, rgba, filter);
 }
 
 // -----------------------------------------------------------------------
@@ -99,20 +99,20 @@ void NullSurface::renderToScreen(
   const Rect& src, const Rect& dst, const int opacity[4])
 {
   surface_log_.recordFunction(
-    "renderToScreen", src, dst);
+    "render_to_screen", src, dst);
 }
 
 // -----------------------------------------------------------------------
 
 void NullSurface::renderToScreenAsObject(const GraphicsObject& rp) {
-  surface_log_.recordFunction("renderToScreenAsObject");
+  surface_log_.recordFunction("render_to_screen_as_object");
 }
 
 // -----------------------------------------------------------------------
 
 void NullSurface::renderToScreenAsObject(const GraphicsObject& rp,
                                          const GraphicsObjectOverride& override) {
-  surface_log_.recordFunction("renderToScreenAsObject");
+  surface_log_.recordFunction("render_to_screen_as_object");
 }
 
 // -----------------------------------------------------------------------
@@ -123,17 +123,17 @@ int NullSurface::numPatterns() const {
 
 // -----------------------------------------------------------------------
 
-const Surface::GrpRect& NullSurface::getPattern(int pattNo) const {
+const Surface::GrpRect& NullSurface::getPattern(int patt_no) const {
   static Surface::GrpRect r;
   return r;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSurface::rawRenderQuad(const int srcCoords[8],
-                                const int destCoords[8],
+void NullSurface::rawRenderQuad(const int src_coords[8],
+                                const int dest_coords[8],
                                 const int opacity[4]) {
-  surface_log_.recordFunction("rawRenderQuad");
+  surface_log_.recordFunction("raw_render_quad");
 }
 
 // -----------------------------------------------------------------------
@@ -151,7 +151,7 @@ void NullSurface::fill(const RGBAColour& colour, const Rect& rect) {
 // -----------------------------------------------------------------------
 
 void NullSurface::getDCPixel(const Point& p, int& r, int& g, int& b) {
-  surface_log_.recordFunction("getDCPixel", p);
+  surface_log_.recordFunction("get_dcpixel", p);
   // This really doesn't work...
 }
 
@@ -159,7 +159,7 @@ void NullSurface::getDCPixel(const Point& p, int& r, int& g, int& b) {
 
 boost::shared_ptr<Surface> NullSurface::clipAsColorMask(
   const Rect& rect, int r, int g, int b) {
-  surface_log_.recordFunction("clipAsColorMask", rect, r, g, b);
+  surface_log_.recordFunction("clip_as_color_mask", rect, r, g, b);
 
   return boost::shared_ptr<Surface>(
     new NullSurface("Clip of " + surface_name_, rect.size()));

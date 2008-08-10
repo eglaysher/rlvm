@@ -42,11 +42,11 @@ MouseListener::~MouseListener() {}
 
 // -----------------------------------------------------------------------
 
-void MouseListener::mouseMotion(const Point& newLocation) { }
+void MouseListener::mouseMotion(const Point& new_location) { }
 
 // -----------------------------------------------------------------------
 
-void MouseListener::mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
+void MouseListener::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
 {}
 
 // -----------------------------------------------------------------------

@@ -113,19 +113,19 @@ void EventSystem::removeMouseListener(MouseListener* listener)
 
 // -----------------------------------------------------------------------
 
-void EventSystem::setFrameCounter(int layer, int frameCounter, FrameCounter* counter)
+void EventSystem::setFrameCounter(int layer, int frame_counter, FrameCounter* counter)
 {
-  checkLayerAndCounter(layer, frameCounter);
-  frame_counters_[layer][frameCounter].reset(counter);
+  checkLayerAndCounter(layer, frame_counter);
+  frame_counters_[layer][frame_counter].reset(counter);
 }
 
 // -----------------------------------------------------------------------
 
-FrameCounter& EventSystem::getFrameCounter(int layer, int frameCounter)
+FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter)
 {
-  checkLayerAndCounter(layer, frameCounter);
+  checkLayerAndCounter(layer, frame_counter);
 
-  scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frameCounter];
+  scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frame_counter];
   if(counter.get() == NULL)
     throw rlvm::Exception("Trying to get an uninitialized frame counter!");
 
@@ -134,21 +134,21 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frameCounter)
 
 // -----------------------------------------------------------------------
 
-bool EventSystem::frameCounterExists(int layer, int frameCounter)
+bool EventSystem::frameCounterExists(int layer, int frame_counter)
 {
-  checkLayerAndCounter(layer, frameCounter);
-  scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frameCounter];
+  checkLayerAndCounter(layer, frame_counter);
+  scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frame_counter];
   return counter.get() != NULL;
 }
 
 // -----------------------------------------------------------------------
 
-void EventSystem::checkLayerAndCounter(int layer, int frameCounter)
+void EventSystem::checkLayerAndCounter(int layer, int frame_counter)
 {
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Illegal frame counter layer!");
 
-  if(frameCounter < 0 || frameCounter > 255)
+  if(frame_counter < 0 || frame_counter > 255)
     throw rlvm::Exception("Frame Counter index out of range!");
 }
 

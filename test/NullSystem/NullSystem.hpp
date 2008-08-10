@@ -41,13 +41,13 @@ class NullSystem : public System
 private:
   Gameexe gameexe_;
 
-  NullGraphicsSystem nullGraphicsSystem;
-  NullEventSystem nullEventSystem;
-  NullTextSystem nullTextSystem;
-  NullSoundSystem nullSoundSystem;
+  NullGraphicsSystem null_graphics_system;
+  NullEventSystem null_event_system;
+  NullTextSystem null_text_system;
+  NullSoundSystem null_sound_system;
 
 public:
-  NullSystem(const std::string& pathToGameexe);
+  NullSystem(const std::string& path_to_gameexe);
   NullSystem();
 
   virtual void run(RLMachine& machine);

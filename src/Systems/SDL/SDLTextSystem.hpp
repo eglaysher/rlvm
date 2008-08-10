@@ -58,7 +58,7 @@ public:
   ~SDLTextSystem();
 
   virtual void render(RLMachine& machine);
-  virtual TextWindow& textWindow(RLMachine&, int textWindowNumber);
+  virtual TextWindow& textWindow(RLMachine&, int text_window_number);
 
   virtual void setDefaultWindowAttr(const std::vector<int>& attr);
 

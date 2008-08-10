@@ -103,8 +103,8 @@ void GraphicsObjectData::playSet(RLMachine& machine, int set) { }
 // -----------------------------------------------------------------------
 
 GraphicsObjectOverride::GraphicsObjectOverride()
-  : overrideSource(false), overrideDest(false),
-    hasDestOffset(false), hasAlphaOverride(false),
+  : override_source(false), override_dest(false),
+    has_dest_offset(false), has_alpha_override(false),
     srcX1(-1), srcY1(-1), srcX2(-1), srcY2(-1),
     dstX(-1), dstY(-1), alpha(-1)
 {
@@ -115,7 +115,7 @@ GraphicsObjectOverride::GraphicsObjectOverride()
 void GraphicsObjectOverride::setOverrideSource(
   int insrcX1, int insrcY1, int insrcX2, int insrcY2)
 {
-  overrideSource = true;
+  override_source = true;
   srcX1 = insrcX1; srcY1 = insrcY1; srcX2 = insrcX2; srcY2 = insrcY2;
 }
 
@@ -124,7 +124,7 @@ void GraphicsObjectOverride::setOverrideSource(
 void GraphicsObjectOverride::setOverrideDestination(
   int indstX1, int indstY1, int indstX2, int indstY2)
 {
-  overrideDest = true;
+  override_dest = true;
   dstX1 = indstX1; dstY1 = indstY1; dstX2 = indstX2; dstY2 = indstY2;
 }
 
@@ -132,7 +132,7 @@ void GraphicsObjectOverride::setOverrideDestination(
 
 void GraphicsObjectOverride::setDestOffset(int indstX, int indstY)
 {
-  hasDestOffset = true;
+  has_dest_offset = true;
   dstX = indstX; dstY = indstY;
 }
 
@@ -140,6 +140,6 @@ void GraphicsObjectOverride::setDestOffset(int indstX, int indstY)
 
 void GraphicsObjectOverride::setAlphaOverride(int inalpha)
 {
-  hasAlphaOverride = true;
+  has_alpha_override = true;
   alpha = inalpha;
 }

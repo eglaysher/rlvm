@@ -73,11 +73,11 @@ IntAccessor::operator int() const
 /**
  * Assign a new value to the memory location.
  *
- * @param newValue New value to set.
+ * @param new_value New value to set.
  * @return Self
  */
-IntAccessor& IntAccessor::operator=(const int newValue) {
-  it->memory_->setIntValue(IntMemRef(it->type_, it->location_), newValue);
+IntAccessor& IntAccessor::operator=(const int new_value) {
+  it->memory_->setIntValue(IntMemRef(it->type_, it->location_), new_value);
   return *this;
 }
 
@@ -126,11 +126,11 @@ StringAccessor::operator std::string() const
 /**
  * Assign a new value to the memory location.
  *
- * @param newValue New value to set.
+ * @param new_value New value to set.
  * @return Self
  */
-StringAccessor& StringAccessor::operator=(const std::string& newValue) {
-  it->memory_->setStringValue(it->type_, it->location_, newValue);
+StringAccessor& StringAccessor::operator=(const std::string& new_value) {
+  it->memory_->setStringValue(it->type_, it->location_, new_value);
   return *this;
 }
 

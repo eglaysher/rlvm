@@ -88,8 +88,8 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 void GraphicsObjectOfFile::loadFile(RLMachine& machine)
 {
-  fs::path fullPath = findFile(machine, filename_);
-  surface_ = machine.system().graphics().loadSurfaceFromFile(fullPath);
+  fs::path full_path = findFile(machine, filename_);
+  surface_ = machine.system().graphics().loadSurfaceFromFile(full_path);
 }
 
 // -----------------------------------------------------------------------
@@ -101,11 +101,11 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
     const Surface::GrpRect& rect = surface_->getPattern(current_frame_);
 
     // POINT
-    GraphicsObjectOverride overrideData;
-    overrideData.setOverrideSource(rect.rect.x(), rect.rect.y(), rect.rect.x2(),
+    GraphicsObjectOverride override_data;
+    override_data.setOverrideSource(rect.rect.x(), rect.rect.y(), rect.rect.x2(),
                                    rect.rect.y2());
 
-    surface_->renderToScreenAsObject(rp, overrideData);
+    surface_->renderToScreenAsObject(rp, override_data);
   }
   else
     surface_->renderToScreenAsObject(rp);
@@ -142,11 +142,11 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
 {
   if(currentlyPlaying())
   {
-    unsigned int currentTime = machine.system().event().getTicks();
-    unsigned int timeSinceLastFrameChange =
-      currentTime - time_at_last_frame_change_;
+    unsigned int current_time = machine.system().event().getTicks();
+    unsigned int time_since_last_frame_change =
+      current_time - time_at_last_frame_change_;
 
-    while(timeSinceLastFrameChange > frame_time_)
+    while(time_since_last_frame_change > frame_time_)
     {
       current_frame_++;
       if(current_frame_ == surface_->numPatterns())
@@ -156,7 +156,7 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
       }
 
       time_at_last_frame_change_ += frame_time_;
-      timeSinceLastFrameChange = currentTime - time_at_last_frame_change_;
+      time_since_last_frame_change = current_time - time_at_last_frame_change_;
       machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
@@ -178,10 +178,10 @@ void GraphicsObjectOfFile::loopAnimation()
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::playSet(RLMachine& machine, int frameTime)
+void GraphicsObjectOfFile::playSet(RLMachine& machine, int frame_time)
 {
   setCurrentlyPlaying(true);
-  frame_time_ = frameTime;
+  frame_time_ = frame_time;
   current_frame_ = 0;
 
   if (frame_time_ == 0) {
@@ -203,7 +203,7 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 
-  loadFile(*Serialization::g_currentMachine);
+  loadFile(*Serialization::g_current_machine);
 }
 
 // -----------------------------------------------------------------------

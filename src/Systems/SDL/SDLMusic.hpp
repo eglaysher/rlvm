@@ -81,10 +81,10 @@ private:
   bool music_paused_;
 
   /// The currently playing track.
-  static boost::shared_ptr<SDLMusic> s_currentlyPlaying;
+  static boost::shared_ptr<SDLMusic> s_currently_playing;
 
   /// Whether we should even be playing music.
-  static bool s_bgmEnabled;
+  static bool s_bgm_enabled;
 
   /**
    * Callback function to Mix_HookMusic.
@@ -126,8 +126,8 @@ public:
   // TODO: Now that I understand wtf is going on, redo this part here.
   void play(bool loop);
   void stop();
-  void fadeIn(bool loop, int fadeInMs);
-  void fadeOut(int fadeOutMs);
+  void fadeIn(bool loop, int fade_in_ms);
+  void fadeOut(int fade_out_ms);
   void pause();
   void unpause();
   std::string name() const;
@@ -156,13 +156,13 @@ public:
    * music is currently playing.
    */
   static boost::shared_ptr<SDLMusic> CurrnetlyPlaying()
-  { return s_currentlyPlaying; }
+  { return s_currently_playing; }
 
   /// Whether music is currently playing.
-  static bool IsCurrentlyPlaying() { return s_currentlyPlaying; }
+  static bool IsCurrentlyPlaying() { return s_currently_playing; }
 
   /// Whether we should output music.
-  static void SetBgmEnabled(const int in) { s_bgmEnabled = in; }
+  static void SetBgmEnabled(const int in) { s_bgm_enabled = in; }
 };
 
 // -----------------------------------------------------------------------

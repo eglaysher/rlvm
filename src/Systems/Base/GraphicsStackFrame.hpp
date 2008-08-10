@@ -110,7 +110,7 @@ public:
 
   bool hasTargetCoordinates() const { return has_target_coordinates_; }
   Point targetPoint() const { return target_point_; }
-  GraphicsStackFrame& setTargetCoordinates(const Point& targetPoint);
+  GraphicsStackFrame& setTargetCoordinates(const Point& target_point);
 
   bool hasRGB() const { return has_rgb_; }
   int r() const { return r_; }

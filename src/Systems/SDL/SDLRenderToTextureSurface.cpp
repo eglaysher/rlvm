@@ -68,14 +68,14 @@ void SDLRenderToTextureSurface::dump()
 // -----------------------------------------------------------------------
 
 /**
- * @todo This function doesn't ignore alpha blending when useSrcAlpha
- *       is false; thus, grpOpen and grpMaskOpen are really grpMaskOpen.
+ * @todo This function doesn't ignore alpha blending when use_src_alpha
+ *       is false; thus, grp_open and grp_mask_open are really grp_mask_open.
  */
-void SDLRenderToTextureSurface::blitToSurface(Surface& destSurface,
+void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,
                                               const Rect& src, const Rect& dst,
-                                              int alpha, bool useSrcAlpha)
+                                              int alpha, bool use_src_alpha)
 {
-  throw SystemError("Unsupported operation blitToSurface on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation blit_to_surface on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
@@ -100,7 +100,7 @@ void SDLRenderToTextureSurface::renderToScreenAsColorMask(
   const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   throw rlvm::Exception(
-    "SDLRenderToTextureSurface::renderToScreenAsColorMask unimplemented");
+    "SDLRenderToTextureSurface::render_to_screen_as_color_mask unimplemented");
 }
 
 // -----------------------------------------------------------------------
@@ -108,7 +108,7 @@ void SDLRenderToTextureSurface::renderToScreenAsColorMask(
 void SDLRenderToTextureSurface::renderToScreenAsObject(const GraphicsObject& rp)
 {
   throw rlvm::Exception(
-    "SDLRenderToTextureSurface::renderToScreenAsObject unimplemented");
+    "SDLRenderToTextureSurface::render_to_screen_as_object unimplemented");
 }
 
 // -----------------------------------------------------------------------
@@ -118,16 +118,16 @@ void SDLRenderToTextureSurface::renderToScreenAsObject(
   const GraphicsObjectOverride& override)
 {
   throw rlvm::Exception(
-    "SDLRenderToTextureSurface::renderToScreenAsObject unimplemented");
+    "SDLRenderToTextureSurface::render_to_screen_as_object unimplemented");
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::rawRenderQuad(const int srcCoords[8],
-                               const int destCoords[8],
+void SDLRenderToTextureSurface::rawRenderQuad(const int src_coords[8],
+                               const int dest_coords[8],
                                const int opacity[4])
 {
-  texture_->rawRenderQuad(srcCoords, destCoords, opacity);
+  texture_->rawRenderQuad(src_coords, dest_coords, opacity);
 }
 
 // -----------------------------------------------------------------------

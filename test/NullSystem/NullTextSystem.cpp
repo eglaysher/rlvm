@@ -39,13 +39,13 @@ NullTextSystem::~NullTextSystem() { }
 
 // -----------------------------------------------------------------------
 
-TextWindow& NullTextSystem::textWindow(RLMachine& machine, int textWindowNum)
+TextWindow& NullTextSystem::textWindow(RLMachine& machine, int text_window_num)
 {
-  WindowMap::iterator it = text_window_.find(textWindowNum);
+  WindowMap::iterator it = text_window_.find(text_window_num);
   if(it == text_window_.end())
   {
     it = text_window_.insert(
-      textWindowNum, new NullTextWindow(machine, textWindowNum)).first;
+      text_window_num, new NullTextWindow(machine, text_window_num)).first;
   }
 
   return *it->second;

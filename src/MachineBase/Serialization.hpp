@@ -50,7 +50,7 @@ namespace Serialization {
  * @warning We're using what is essentially a piece of static data
  *          here; this is a likely location for errors
  */
-extern RLMachine* g_currentMachine;
+extern RLMachine* g_current_machine;
 
 // -----------------------------------------------------------------------
 

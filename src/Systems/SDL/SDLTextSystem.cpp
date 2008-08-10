@@ -106,13 +106,13 @@ void SDLTextSystem::render(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int textWindow)
+TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int text_window)
 {
-  WindowMap::iterator it = text_window_.find(textWindow);
+  WindowMap::iterator it = text_window_.find(text_window);
   if(it == text_window_.end())
   {
     it = text_window_.insert(
-      textWindow, new SDLTextWindow(machine, textWindow)).first;
+      text_window, new SDLTextWindow(machine, text_window)).first;
   }
 
   return *it->second;
@@ -223,8 +223,8 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 
   // Pick the correct font colour
   Gameexe& gexe = machine.system().gameexe();
-  vector<int> colourVec = gexe("COLOR_TABLE", colour);
-  SDL_Color color = {colourVec.at(0), colourVec.at(1), colourVec.at(2)};
+  vector<int> colour_vec = gexe("COLOR_TABLE", colour);
+  SDL_Color color = {colour_vec.at(0), colour_vec.at(1), colour_vec.at(2)};
 
   // Naively render. Ignore most of the arguments for now
   if(utf8str.size())

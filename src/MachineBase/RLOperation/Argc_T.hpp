@@ -52,8 +52,8 @@ struct Argc_T {
                               boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
-    isRealTypestruct = true,
-    isComplex = false
+    is_real_typestruct = true,
+    is_complex = false
   };
 };
 
@@ -64,11 +64,11 @@ typename Argc_T<CON>::type Argc_T<CON>::
 getData(RLMachine& machine,
                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                      unsigned int position) {
-  type returnVector;
+  type return_vector;
   for(unsigned int i = position; i < p.size(); ++i)
-    returnVector.push_back(CON::getData(machine, p, i));
+    return_vector.push_back(CON::getData(machine, p, i));
 
-  return returnVector;
+  return return_vector;
 }
 
 // -----------------------------------------------------------------------

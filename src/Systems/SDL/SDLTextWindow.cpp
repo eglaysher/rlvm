@@ -69,11 +69,11 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-SDLTextWindow::SDLTextWindow(RLMachine& machine, int windowNum)
-  : TextWindow(machine, windowNum), ruby_begin_point_(-1)
+SDLTextWindow::SDLTextWindow(RLMachine& machine, int window_num)
+  : TextWindow(machine, window_num), ruby_begin_point_(-1)
 {
   Gameexe& gexe = machine.system().gameexe();
-  GameexeInterpretObject window(gexe("WINDOW", windowNum));
+  GameexeInterpretObject window(gexe("WINDOW", window_num));
   setWindowWaku(machine, gexe, window("WAKU_SETNO"));
 
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
@@ -160,16 +160,16 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   {
     SDL_Color color;
     RGBColourToSDLColor(font_colour_, &color);
-    int curCodepoint = codepoint(current);
-    int nextCodepoint = codepoint(next);
+    int cur_codepoint = codepoint(current);
+    int next_codepoint = codepoint(next);
 
     // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
     // LENTICULAR BRACKET) should be handled before this
     // function. Otherwise, it's an error.
-    if(curCodepoint == 0x3010 || curCodepoint == 0x3011)
+    if(cur_codepoint == 0x3010 || cur_codepoint == 0x3011)
     {
       throw SystemError(
-        "Bug in parser; \\{name} construct should be handled before displayChar");
+        "Bug in parser; \\{name} construct should be handled before display_char");
     }
 
     SDL_Surface* tmp =
@@ -185,13 +185,13 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     // character instead, to prevent the next character being stranded
     // at the start of a line.
     //
-    bool charWillFitOnLine = insertion_point_x_ + tmp->w + x_spacing_ <=
+    bool char_will_fit_on_line = insertion_point_x_ + tmp->w + x_spacing_ <=
       textWindowSize().width();
-    bool nextCharWillFitOnLine = insertion_point_x_ + 2*(tmp->w + x_spacing_) <=
+    bool next_char_will_fit_on_line = insertion_point_x_ + 2*(tmp->w + x_spacing_) <=
       textWindowSize().width();
-    if(!charWillFitOnLine ||
-       (charWillFitOnLine && !isKinsoku(curCodepoint) &&
-        !nextCharWillFitOnLine && isKinsoku(nextCodepoint)))
+    if(!char_will_fit_on_line ||
+       (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
+        !next_char_will_fit_on_line && isKinsoku(next_codepoint)))
     {
       hardBrake();
 
@@ -240,17 +240,17 @@ void SDLTextWindow::setIndentation()
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
-                            const std::string& nextChar)
+                            const std::string& next_char)
 {
   if(name_mod_ == 0)
   {
     // Display the name in one pass
     printTextToFunction(bind(&SDLTextWindow::displayChar, ref(*this),
                              ref(machine), _1, _2),
-                        utf8name, nextChar);
+                        utf8name, next_char);
     setIndentation();
 
-    setIndentationIfNextCharIsOpeningQuoteMark(nextChar);
+    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
   }
   else if(name_mod_ == 1)
   {
@@ -261,7 +261,7 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
     // This doesn't actually fix the problem in Planetarian because
     // the call to set the name and the actual quotetext are in two
     // different strings. This logic will need to be moved.
-//    setIndentationIfNextCharIsOpeningQuoteMark(nextChar);
+//    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
   }
   else
   {
@@ -272,13 +272,13 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
-  const std::string& nextChar)
+  const std::string& next_char)
 {
   // Check to see if we set the indentation after the
-  string::const_iterator it = nextChar.begin();
-  int nextCodepoint = utf8::next(it, nextChar.end());
-  if(nextCodepoint == 0x300C || nextCodepoint == 0x300E ||
-     nextCodepoint == 0xFF08)
+  string::const_iterator it = next_char.begin();
+  int next_codepoint = utf8::next(it, next_char.end());
+  if(next_codepoint == 0x300C || next_codepoint == 0x300E ||
+     next_codepoint == 0xFF08)
   {
     current_indentation_in_pixels_ = insertion_point_x_ + font_size_in_pixels_ +
       x_spacing_;
@@ -305,13 +305,13 @@ void SDLTextWindow::resetIndentation()
 
 /**
  * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
- *       wakuBacking.
+ *       waku_backing.
  */
 void SDLTextWindow::render(RLMachine& machine)
 {
   if(surface_ && isVisible())
   {
-    Size surfaceSize = surface_->size();
+    Size surface_size = surface_->size();
 
     // POINT
     int boxX = boxX1();
@@ -319,19 +319,19 @@ void SDLTextWindow::render(RLMachine& machine)
 
     if(waku_backing_)
     {
-      Size backingSize = waku_backing_->size();
+      Size backing_size = waku_backing_->size();
       // COLOUR
       waku_backing_->renderToScreenAsColorMask(
-        Rect(Point(0, 0), backingSize),
-        Rect(Point(boxX, boxY), backingSize),
+        Rect(Point(0, 0), backing_size),
+        Rect(Point(boxX, boxY), backing_size),
         colour_, filter_);
     }
 
     if(waku_main_)
     {
-      Size mainSize = waku_main_->size();
+      Size main_size = waku_main_->size();
       waku_main_->renderToScreen(
-        Rect(Point(0, 0), mainSize), Rect(Point(boxX, boxY), mainSize), 255);
+        Rect(Point(0, 0), main_size), Rect(Point(boxX, boxY), main_size), 255);
     }
 
     if(waku_button_)
@@ -348,8 +348,8 @@ void SDLTextWindow::render(RLMachine& machine)
     else
     {
       surface_->renderToScreen(
-        Rect(Point(0, 0), surfaceSize),
-        Rect(Point(x, y), surfaceSize),
+        Rect(Point(0, 0), surface_size),
+        Rect(Point(x, y), surface_size),
         255);
     }
   }
@@ -438,9 +438,9 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
 {
   if(ruby_begin_point_ != -1)
   {
-    int endPoint = insertion_point_x_ - x_spacing_;
+    int end_point = insertion_point_x_ - x_spacing_;
 
-    if(ruby_begin_point_ > endPoint)
+    if(ruby_begin_point_ > end_point)
     {
       ruby_begin_point_ = -1;
       throw rlvm::Exception("We don't handle ruby across line breaks yet!");
@@ -454,14 +454,14 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
     // Render glyph to surface
     int w = tmp->w;
     int h = tmp->h;
-    int heightLocation = insertion_point_y_ - rubyTextSize();
-    int widthStart =
-      int(ruby_begin_point_ + ((endPoint - ruby_begin_point_) * 0.5f) -
+    int height_location = insertion_point_y_ - rubyTextSize();
+    int width_start =
+      int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
           (w * 0.5f));
     surface_->blitFROMSurface(
       tmp,
       Rect(Point(0, 0), Size(w, h)),
-      Rect(Point(widthStart, heightLocation), Size(w, h)),
+      Rect(Point(width_start, height_location), Size(w, h)),
       255);
     SDL_FreeSurface(tmp);
 

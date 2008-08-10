@@ -44,7 +44,7 @@ public:
   void executeTextSystem(RLMachine& machine) { }
   void render(RLMachine& machine) { }
 
-  TextWindow& textWindow(RLMachine& machine, int textWindowNumber);
+  TextWindow& textWindow(RLMachine& machine, int text_window_number);
 
   // We can safely ignore mouse clicks...for now.
   void setMousePosition(RLMachine& machine, const Point& pos) { }

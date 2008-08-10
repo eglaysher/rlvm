@@ -62,9 +62,9 @@ class RLMachine;
  * Subclasses of RLModule are used to contain subclasses of
  * RLOperation; Each module should have a class derived from RLModule,
  * where, in the constructor, the modules two identification numbers
- * (@c moduleType and @c moduleNumber) are passed up to RLModule's
+ * (@c module_type and @c module_number) are passed up to RLModule's
  * constructor. The subclass constructor should then call
- * RLModule::addOpcode for each opcode/overload pair with the
+ * RLModule::add_opcode for each opcode/overload pair with the
  * RLOperation object that implements that operation.
  *
  * Example:
@@ -72,16 +72,16 @@ class RLMachine;
  * FakeModule::FakeModule()
  *   : RLModule("Fake", 0, 0)
  * {
- *   addOpcode(0, 0, new Fake_fakeOperation_0);
- *   addOpcode(0, 1, new Fake_fakeOperation_1);
+ *   addOpcode(0, 0, new Fake_fake_operation_0);
+ *   addOpcode(0, 1, new Fake_fake_operation_1);
  * }
  * @endcode
  *
  * An instance of this module can now be passed to
- * RLMachine::attachModule to expose these opcodes to an instance of RLMachine:
+ * RLMachine::attach_module to expose these opcodes to an instance of RLMachine:
  *
  * @code
- * RLMachine machine(someArchiveObject);
+ * RLMachine machine(some_archive_object);
  * machine.attachModule(new FakeModule);
  * @endcode
  *
@@ -102,13 +102,13 @@ private:
 
   // Store functions.
   typedef boost::ptr_map<int, RLOperation> OpcodeMap;
-  OpcodeMap storedOperations;
+  OpcodeMap stored_operations;
 
   int packOpcodeNumber(int opcode, unsigned char overload);
-  void unpackOpcodeNumber(int packedOpcode, int& opcode, unsigned char& overload);
+  void unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload);
 
 protected:
-  RLModule(const std::string& inModuleName, int inModuleType, int inModuleNumber);
+  RLModule(const std::string& in_module_name, int in_module_type, int in_module_number);
 
 public:
   virtual ~RLModule();

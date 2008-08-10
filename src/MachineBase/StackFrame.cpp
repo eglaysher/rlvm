@@ -49,7 +49,7 @@ using namespace std;
 // StackFrame
 // -----------------------------------------------------------------------
 StackFrame::StackFrame()
-  : scenario_(NULL), ip(), frameType()
+  : scenario(NULL), ip(), frame_type()
 {}
 
 // -----------------------------------------------------------------------
@@ -57,7 +57,7 @@ StackFrame::StackFrame()
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t)
-  : scenario_(s), ip(i), frameType(t)
+  : scenario(s), ip(i), frame_type(t)
 {}
 
 // -----------------------------------------------------------------------
@@ -65,7 +65,7 @@ StackFrame::StackFrame(libReallive::Scenario const* s,
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        LongOperation* op)
-  : scenario_(s), ip(i), longOp(op), frameType(TYPE_LONGOP)
+  : scenario(s), ip(i), long_op(op), frame_type(TYPE_LONGOP)
 {}
 
 // -----------------------------------------------------------------------
@@ -76,17 +76,10 @@ StackFrame::~StackFrame()
 
 // -----------------------------------------------------------------------
 
-void StackFrame::setScenario(libReallive::Scenario const* s)
-{
-  scenario_ = s;
-}
-
-// -----------------------------------------------------------------------
-
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
 {
-  os << "{seen=" << frame.scenario()->sceneNumber() << ", offset="
-     << distance(frame.scenario()->begin(), frame.ip) << "}";
+  os << "{seen=" << frame.scenario->sceneNumber() << ", offset="
+     << distance(frame.scenario->begin(), frame.ip) << "}";
 
   return os;
 }
@@ -96,9 +89,9 @@ std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
 template<class Archive>
 void StackFrame::save(Archive & ar, unsigned int version) const
 {
-  int sceneNumber = scenario()->sceneNumber();
-  int position = distance(scenario()->begin(), ip);
-  ar & sceneNumber & position & frameType;
+  int scene_number = scenario->sceneNumber();
+  int position = distance(scenario->begin(), ip);
+  ar & scene_number & position & frame_type;
 }
 
 // -----------------------------------------------------------------------
@@ -106,16 +99,16 @@ void StackFrame::save(Archive & ar, unsigned int version) const
 template<class Archive>
 void StackFrame::load(Archive & ar, unsigned int version)
 {
-  int sceneNumber, offset;
+  int scene_number, offset;
   FrameType type;
-  ar & sceneNumber & offset & type;
+  ar & scene_number & offset & type;
 
   libReallive::Scenario const* scenario =
-    Serialization::g_currentMachine->archive().scenario(sceneNumber);
+    Serialization::g_current_machine->archive().scenario(scene_number);
   if(scenario == NULL)
   {
     ostringstream oss;
-    oss << "Unknown SEEN #" << sceneNumber << " in save file!";
+    oss << "Unknown SEEN #" << scene_number << " in save file!";
     throw rlvm::Exception(oss.str());
   }
 
@@ -123,14 +116,14 @@ void StackFrame::load(Archive & ar, unsigned int version)
   {
     ostringstream oss;
     oss << offset << " is an illegal bytecode offset for SEEN #"
-        << sceneNumber << " in save file!";
+        << scene_number << " in save file!";
     throw rlvm::Exception(oss.str());
   }
 
-  libReallive::Scenario::const_iterator positionIt = scenario->begin();
-  advance(positionIt, offset);
+  libReallive::Scenario::const_iterator position_it = scenario->begin();
+  advance(position_it, offset);
 
-  *this = StackFrame(scenario, positionIt, type);
+  *this = StackFrame(scenario, position_it, type);
 }
 
 // -----------------------------------------------------------------------

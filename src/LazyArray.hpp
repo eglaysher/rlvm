@@ -66,8 +66,8 @@ template<typename T>
 class LazyArray
 {
 public:
-  typedef FullLazyArrayIterator<T> fullIterator;
-  typedef AllocatedLazyArrayIterator<T> allocIterator;
+  typedef FullLazyArrayIterator<T> full_iterator;
+  typedef AllocatedLazyArrayIterator<T> alloc_iterator;
 
 private:
   int size_;

@@ -56,46 +56,46 @@ struct SoundSystemGlobals
    * sound system to do. Right now is fairly securely set to 5 since I
    * have no idea how to change this property at runtime.
    *
-   * 0 	          	11 kHz 	          	8 bit
-   * 1 	          	11 kHz 	          	16 bit
-   * 2 	          	22 kHz 	          	8 bit
-   * 3 	          	22 kHz 	          	16 bit
-   * 4 	          	44 kHz 	          	8 bit
-   * 5 	          	44 kHz 	          	16 bit
-   * 6 	          	48 kHz 	          	8 bit
-   * 7 	          	48 hKz 	          	16 bit
+   * 0 	          	11 k_hz 	          	8 bit
+   * 1 	          	11 k_hz 	          	16 bit
+   * 2 	          	22 k_hz 	          	8 bit
+   * 3 	          	22 k_hz 	          	16 bit
+   * 4 	          	44 k_hz 	          	8 bit
+   * 5 	          	44 k_hz 	          	16 bit
+   * 6 	          	48 k_hz 	          	8 bit
+   * 7 	          	48 h_kz 	          	16 bit
    *
    */
-  int soundQuality;
+  int sound_quality;
 
   /// Whether music playback is enabled
-  bool bgmEnabled;
+  bool bgm_enabled;
 
   /// Volume for the music
-  int bgmVolume;
+  int bgm_volume;
 
   /// Whether the Wav functions are enabled
-  bool pcmEnabled;
+  bool pcm_enabled;
 
   /**
    * Volume of wave files relative to other sound playback.
    */
-  int pcmVolume;
+  int pcm_volume;
 
   /// Whether the Se functions are enabled
-  bool seEnabled;
+  bool se_enabled;
 
   /** Volume of interface sound effects relative to other sound
    * playback.
    */
-  int seVolume;
+  int se_volume;
 
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
   {
-    ar & soundQuality & bgmEnabled & bgmVolume & pcmEnabled &
-      pcmVolume & seEnabled & seVolume;
+    ar & sound_quality & bgm_enabled & bgm_volume & pcm_enabled &
+      pcm_volume & se_enabled & se_volume;
   }
 };
 
@@ -152,17 +152,17 @@ protected:
    * started by fun wavSetVolume(int, int, int).)
    */
   struct VolumeAdjustTask {
-    VolumeAdjustTask(unsigned int currentTime, int inStartVolume,
-                     int inFinalVolume, int fadeTimeInMs);
+    VolumeAdjustTask(unsigned int current_time, int in_start_volume,
+                     int in_final_volume, int fade_time_in_ms);
 
-    unsigned int startTime;
-    unsigned int endTime;
+    unsigned int start_time;
+    unsigned int end_time;
 
-    int startVolume;
-    int finalVolume;
+    int start_volume;
+    int final_volume;
 
-    /// Calculate the volume for inTime
-    int calculateVolumeFor(unsigned int inTime);
+    /// Calculate the volume for in_time
+    int calculateVolumeFor(unsigned int in_time);
   };
 
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
@@ -231,12 +231,12 @@ protected:
    * Computes the actual volume for a channel based on the per channel
    * and the per system volume.
    */
-  int computeChannelVolume(const int channelVolume, const int systemVolume) {
-    return (channelVolume * systemVolume) / 255;
+  int computeChannelVolume(const int channel_volume, const int system_volume) {
+    return (channel_volume * system_volume) / 255;
   }
 
-  static void checkChannel(int channel, const char* functionName);
-  static void checkVolume(int level, const char* functionName);
+  static void checkChannel(int channel, const char* function_name);
+  static void checkVolume(int level, const char* function_name);
 
 public:
   SoundSystem(Gameexe& gexe);
@@ -245,7 +245,7 @@ public:
   /**
    * Gives the sound system a chance to run; done once per game loop.
    *
-   * @note Overriders MUST call SoundSystem::executeSoundSystem
+   * @note Overriders MUST call SoundSystem::execute_sound_system
    *       because we rely on it to handle volume adjustment tasks.
    */
   virtual void executeSoundSystem(RLMachine& machine);
@@ -256,9 +256,9 @@ public:
    * Sets how much sound hertz.
    */
   virtual void setSoundQuality(const int quality)
-  { globals_.soundQuality = quality; }
+  { globals_.sound_quality = quality; }
 
-  int soundQuality() const { return globals_.soundQuality; }
+  int soundQuality() const { return globals_.sound_quality; }
 
   SoundSystemGlobals& globals() { return globals_; }
 
@@ -283,15 +283,15 @@ public:
    */
   virtual int bgmStatus() const = 0;
 
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop) = 0;
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
-                       int fadeInMs) = 0;
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
-                       int fadeInMs, int fadeOutMs) = 0;
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop) = 0;
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+                       int fade_in_ms) = 0;
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+                       int fade_in_ms, int fade_out_ms) = 0;
   virtual void bgmStop() = 0;
   virtual void bgmPause() = 0;
   virtual void bgmUnPause() = 0;
-  virtual void bgmFadeOut(int fadeOutMs) = 0;
+  virtual void bgmFadeOut(int fade_out_ms) = 0;
 
   virtual std::string bgmName() const = 0;
   /// @}
@@ -316,19 +316,19 @@ public:
   virtual void setChannelVolume(const int channel, const int level);
 
   /// Change the volume smoothly; the change from the current volume
-  /// to level will take fadeTimeInMs
+  /// to level will take fade_time_in_ms
   void setChannelVolume(RLMachine& machine, const int channel,
-                        const int level, const int fadeTimeInMs);
+                        const int level, const int fade_time_in_ms);
 
   /// Fetches an individual channel volume
   int channelVolume(const int channel);
 
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
                        bool loop) = 0;
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
+  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
                        bool loop, const int channel) = 0;
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile,
-                       bool loop, const int channel, const int fadeinMs) = 0;
+  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
+                       bool loop, const int channel, const int fadein_ms) = 0;
   virtual bool wavPlaying(RLMachine& machine, const int channel) = 0;
   virtual void wavStop(const int channel) = 0;
   virtual void wavStopAll() = 0;
@@ -369,9 +369,9 @@ public:
   /**
    * Plays an interface sound effect.
    *
-   * @param seNum Index into the \#SE table
+   * @param se_num Index into the \#SE table
    */
-  virtual void playSe(RLMachine& machine, const int seNum) = 0;
+  virtual void playSe(RLMachine& machine, const int se_num) = 0;
   /// @}
 
   virtual void reset();

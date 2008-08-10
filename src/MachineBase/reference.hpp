@@ -63,7 +63,7 @@ public:
 
   operator int() const;
 
-  IntAccessor& operator=(const int newValue);
+  IntAccessor& operator=(const int new_value);
   IntAccessor& operator=(const IntAccessor& rhs);
 };
 
@@ -91,8 +91,8 @@ public:
 
   operator std::string() const;
 
-  StringAccessor& operator=(const std::string& newValue);
-  StringAccessor& operator=(const StringAccessor& newValue);
+  StringAccessor& operator=(const std::string& new_value);
+  StringAccessor& operator=(const StringAccessor& new_value);
 
   bool operator==(const std::string& rhs);
 };
@@ -121,8 +121,8 @@ public:
   MemoryReferenceIterator();
 
   // Explicit reference creation
-  MemoryReferenceIterator(Memory* inMachine, const int inType,
-                          const int inLocation);
+  MemoryReferenceIterator(Memory* in_machine, const int in_type,
+                          const int in_location);
 
   int type() const { return type_; }
   int location() const { return location_; }
@@ -171,8 +171,8 @@ public:
     return ! operator==(rhs);
   }
 
-  MemoryReferenceIterator<ACCESS> changeMemoryTo(Memory* newMemObj) const {
-    return MemoryReferenceIterator<ACCESS>(newMemObj, type_, location_);
+  MemoryReferenceIterator<ACCESS> changeMemoryTo(Memory* new_mem_obj) const {
+    return MemoryReferenceIterator<ACCESS>(new_mem_obj, type_, location_);
   }
 };
 
@@ -187,8 +187,8 @@ MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
-  Memory* memory, const int inType, const int inLocation)
-  : memory_(memory), type_(inType), location_(inLocation)
+  Memory* memory, const int in_type, const int in_location)
+  : memory_(memory), type_(in_type), location_(in_location)
 { }
 
 // -----------------------------------------------------------------------

@@ -73,33 +73,33 @@ private:
    * screen, etc.
    */
 
-  bool character_impl(const std::string& c, const std::string& nextChar);
+  bool character_impl(const std::string& c, const std::string& next_char);
 
-  void name_impl(const std::string& name, const std::string& nextChar);
+  void name_impl(const std::string& name, const std::string& next_char);
 
-  void hardBrake_impl();
+  void hard_brake_impl();
 
-  void resetIndentation_impl();
+  void reset_indentation_impl();
 
-  void fontColour_impl(const int color);
+  void font_colour_impl(const int color);
 
-  void markRubyBegin_impl();
+  void mark_ruby_begin_impl();
 
-  void displayRubyText_impl(const std::string& utf8str);
+  void display_ruby_text_impl(const std::string& utf8str);
 
-  void setToRightStartingColor_impl(bool isActivePage);
+  void set_to_right_starting_color_impl(bool is_active_page);
 
   /// @}
 
 public:
-  TextPage(RLMachine& inSys, int windowNum);
+  TextPage(RLMachine& in_sys, int window_num);
   TextPage(const TextPage& rhs);
   ~TextPage();
 
   TextPage& operator=(const TextPage& rhs);
   void swap(TextPage& rhs);
 
-  void replay(bool isActivePage);
+  void replay(bool is_active_page);
 
   int numberOfCharsOnPage() const { return number_of_chars_on_page_; }
 
@@ -124,7 +124,7 @@ public:
    * Displays a name. This function will be called by the
    * TextoutLongOperation.
    */
-  void name(const std::string& name, const std::string& nextChar);
+  void name(const std::string& name, const std::string& next_char);
 
   /**
    * Forces a hard line brake.

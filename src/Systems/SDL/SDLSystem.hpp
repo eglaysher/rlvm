@@ -42,10 +42,10 @@ class SDLSoundSystem;
 class SDLSystem : public System
 {
 private:
-  boost::scoped_ptr<SDLGraphicsSystem> graphicsSystem;
-  boost::scoped_ptr<SDLEventSystem> eventSystem;
-  boost::scoped_ptr<SDLTextSystem> textSystem;
-  boost::scoped_ptr<SDLSoundSystem> soundSystem;
+  boost::scoped_ptr<SDLGraphicsSystem> graphics_system;
+  boost::scoped_ptr<SDLEventSystem> event_system;
+  boost::scoped_ptr<SDLTextSystem> text_system;
+  boost::scoped_ptr<SDLSoundSystem> sound_system;
   Gameexe& gameexe_;
 
   unsigned int last_time_paused_;

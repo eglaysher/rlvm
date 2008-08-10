@@ -36,7 +36,7 @@
 
 // -----------------------------------------------------------------------
 
-SDLSoundChunk::PlayingTable SDLSoundChunk::s_playingTable;
+SDLSoundChunk::PlayingTable SDLSoundChunk::s_playing_table;
 
 // -----------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ SDLSoundChunk::~SDLSoundChunk()
 
 void SDLSoundChunk::playChunkOn(int channel, int loops)
 {
-  s_playingTable[channel] = shared_from_this();
+  s_playing_table[channel] = shared_from_this();
 
   if(Mix_PlayChannel(channel, sample_, loops) == -1)
   {
@@ -68,7 +68,7 @@ void SDLSoundChunk::playChunkOn(int channel, int loops)
 
 void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
 {
-  s_playingTable[channel] = shared_from_this();
+  s_playing_table[channel] = shared_from_this();
 
   if(Mix_FadeInChannel(channel, sample_, loops, ms) == -1)
   {
@@ -83,7 +83,7 @@ void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
 {
   // Decrease the refcount of the SDLSoundChunk that just finished
   // playing.
-  s_playingTable[channel].reset();
+  s_playing_table[channel].reset();
 }
 
 // -----------------------------------------------------------------------
@@ -94,7 +94,7 @@ int SDLSoundChunk::FindNextFreeExtraChannel()
   for(int i = NUM_BASE_CHANNELS;
       i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i)
   {
-    if(s_playingTable[i].get() == 0)
+    if(s_playing_table[i].get() == 0)
       return i;
   }
 

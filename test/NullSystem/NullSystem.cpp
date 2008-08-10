@@ -36,22 +36,22 @@ using namespace std;
 // -----------------------------------------------------------------------
 // NullSystem
 // -----------------------------------------------------------------------
-NullSystem::NullSystem(const std::string& pathToGameexe)
-  : gameexe_(pathToGameexe),
-    nullGraphicsSystem(*this, gameexe_),
-    nullEventSystem(gameexe_),
-    nullTextSystem(gameexe_),
-    nullSoundSystem(gameexe_)
+NullSystem::NullSystem(const std::string& path_to_gameexe)
+  : gameexe_(path_to_gameexe),
+    null_graphics_system(*this, gameexe_),
+    null_event_system(gameexe_),
+    null_text_system(gameexe_),
+    null_sound_system(gameexe_)
 {}
 
 // -----------------------------------------------------------------------
 
 NullSystem::NullSystem()
   : gameexe_(),
-    nullGraphicsSystem(*this, gameexe_),
-    nullEventSystem(gameexe_),
-    nullTextSystem(gameexe_),
-    nullSoundSystem(gameexe_)
+    null_graphics_system(*this, gameexe_),
+    null_event_system(gameexe_),
+    null_text_system(gameexe_),
+    null_sound_system(gameexe_)
 {
   gameexe_("__GAMEPATH") = locateTestCase("Gameroot") + "/";
   gameexe_("FOLDNAME.G00") = "G00";
@@ -61,8 +61,8 @@ NullSystem::NullSystem()
 
 void NullSystem::run(RLMachine& machine) { /* do nothing */ }
 
-GraphicsSystem& NullSystem::graphics() { return nullGraphicsSystem; }
-EventSystem& NullSystem::event() { return nullEventSystem; }
+GraphicsSystem& NullSystem::graphics() { return null_graphics_system; }
+EventSystem& NullSystem::event() { return null_event_system; }
 Gameexe& NullSystem::gameexe() { return gameexe_; }
-TextSystem& NullSystem::text() { return nullTextSystem; }
-SoundSystem& NullSystem::sound() { return nullSoundSystem; }
+TextSystem& NullSystem::text() { return null_text_system; }
+SoundSystem& NullSystem::sound() { return null_sound_system; }

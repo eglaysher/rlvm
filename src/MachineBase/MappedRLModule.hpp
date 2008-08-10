@@ -47,8 +47,8 @@ private:
   MappingFunction map_function_;
 
 protected:
-  MappedRLModule(const MappingFunction& fun, const std::string& inModuleName,
-                 int inModuleType, int inModuleNumber);
+  MappedRLModule(const MappingFunction& fun, const std::string& in_module_name,
+                 int in_module_type, int in_module_number);
   ~MappedRLModule();
 
   /** Adds a map_function_(op) to this modules set of opcodes.

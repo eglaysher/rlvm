@@ -40,21 +40,21 @@ class RLMachine;
 class MouseCursor
 {
 public:
-  MouseCursor(const boost::shared_ptr<Surface>& cursorSurface);
+  MouseCursor(const boost::shared_ptr<Surface>& cursor_surface);
   ~MouseCursor();
 
   /**
    * Renders the cursor to the screen, taking the hotspot offset into
    * account.
    */
-  void renderHotspotAt(RLMachine& machine, const Point& mousePt);
+  void renderHotspotAt(RLMachine& machine, const Point& mouse_pt);
 
   /**
    * Returns (renderX, renderY) which is the upper left corner of
    * where the cursor is to be rendered for the incoming mouse
    * location (mouseX, mouseY).
    */
-  Point getTopLeftForHotspotAt(const Point& mouseLocation);
+  Point getTopLeftForHotspotAt(const Point& mouse_location);
 
 private:
   /// Sets hotspot_[XY] to the white pixel in the

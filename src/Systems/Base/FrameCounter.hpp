@@ -41,7 +41,7 @@ class EventSystem;
 class FrameCounter
 {
 public:
-  FrameCounter(EventSystem& es, int frameMin, int frameMax, int milliseconds);
+  FrameCounter(EventSystem& es, int frame_min, int frame_max, int milliseconds);
 
   virtual ~FrameCounter();
 
@@ -50,7 +50,7 @@ public:
    *
    * @return
    */
-  virtual int readFrame(EventSystem& eventSystem) = 0;
+  virtual int readFrame(EventSystem& event_system) = 0;
 
   /**
    * The converse is setting the value, which should be done after the
@@ -65,36 +65,36 @@ public:
    * have a near realtime event going on and to stop being nice to the
    * operating system.
    *
-   * @see endTimer
+   * @see end_timer
    */
-  void beginTimer(EventSystem& eventSystem);
+  void beginTimer(EventSystem& event_system);
 
   /**
    * When a timer ends, there's no need to be so harsh on the
-   * system. Tell the eventSystem that we no longer require near
+   * system. Tell the event_system that we no longer require near
    * realtime event handling.
    *
-   * @see beginTimer
+   * @see begin_timer
    */
-  void endTimer(EventSystem& eventSystem);
+  void endTimer(EventSystem& event_system);
 
   bool isActive() const { return is_active_; }
   void setActive(bool active) { is_active_ = active; }
 
-  bool checkIfFinished(float newValue);
-  void updateTimeValue(float numTicks);
+  bool checkIfFinished(float new_value);
+  void updateTimeValue(float num_ticks);
 
 
   int readNormalFrameWithChangeInterval(
-    EventSystem& eventSystem, float changeInterval,
-    float& timeAtLastCheck);
+    EventSystem& event_system, float change_interval,
+    float& time_at_last_check);
 
   /**
-   * Called from readNormalFrameWithChangeInterval when finished. This
+   * Called from read_normal_frame_with_change_interval when finished. This
    * method can be overloaded to control what happens when the timer
    * has reached its end.
    */
-  virtual void finished(EventSystem& eventSystem);
+  virtual void finished(EventSystem& event_system);
 
 // Give these accessors later?
 protected:
@@ -112,15 +112,15 @@ protected:
 // -----------------------------------------------------------------------
 
 /**
- * Simple frame counter that counts from frameMin to frameMax.
+ * Simple frame counter that counts from frame_min to frame_max.
  */
 class SimpleFrameCounter : public FrameCounter
 {
 public:
-  SimpleFrameCounter(EventSystem& es, int frameMin, int frameMax,
+  SimpleFrameCounter(EventSystem& es, int frame_min, int frame_max,
                      int milliseconds);
 
-  virtual int readFrame(EventSystem& eventSystem);
+  virtual int readFrame(EventSystem& event_system);
 
 private:
   float change_interval_;
@@ -130,17 +130,17 @@ private:
 // -----------------------------------------------------------------------
 
 /**
- * Loop frame counter that counts from frameMin to frameMax, starting over at
- * frameMin.
+ * Loop frame counter that counts from frame_min to frame_max, starting over at
+ * frame_min.
  */
 class LoopFrameCounter : public FrameCounter
 {
 public:
-  LoopFrameCounter(EventSystem& es, int frameMin, int frameMax,
+  LoopFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
 
-  virtual int readFrame(EventSystem& eventSystem);
-  virtual void finished(EventSystem& eventSystem);
+  virtual int readFrame(EventSystem& event_system);
+  virtual void finished(EventSystem& event_system);
 
 private:
   float change_interval_;
@@ -150,16 +150,16 @@ private:
 // -----------------------------------------------------------------------
 
 /**
- * Turn frame counter that counts from frameMin to frameMax and then counts back
- * down to frameMin.
+ * Turn frame counter that counts from frame_min to frame_max and then counts back
+ * down to frame_min.
  */
 class TurnFrameCounter : public FrameCounter
 {
 public:
-  TurnFrameCounter(EventSystem& es, int frameMin, int frameMax,
+  TurnFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
 
-  virtual int readFrame(EventSystem& eventSystem);
+  virtual int readFrame(EventSystem& event_system);
 
 private:
   bool going_forward_;
@@ -170,7 +170,7 @@ private:
 // -----------------------------------------------------------------------
 
 /**
- * Frame counter that counts from frameMin to frameMax, speeding up as it goes.
+ * Frame counter that counts from frame_min to frame_max, speeding up as it goes.
  */
 class AcceleratingFrameCounter : public FrameCounter
 {
@@ -179,17 +179,17 @@ private:
   float time_at_last_check_;
 
 public:
-  AcceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax,
+  AcceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
-  virtual int readFrame(EventSystem& eventSystem);
+  virtual int readFrame(EventSystem& event_system);
 };
 
 // -----------------------------------------------------------------------
 
 
 /**
- * Frame counter that counts from frameMin to frameMax, slowing down as it goes.
+ * Frame counter that counts from frame_min to frame_max, slowing down as it goes.
  */
 class DeceleratingFrameCounter : public FrameCounter
 {
@@ -198,10 +198,10 @@ private:
   float time_at_last_check_;
 
 public:
-  DeceleratingFrameCounter(EventSystem& es, int frameMin, int frameMax,
+  DeceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
-  virtual int readFrame(EventSystem& eventSystem);
+  virtual int readFrame(EventSystem& event_system);
 };
 
 

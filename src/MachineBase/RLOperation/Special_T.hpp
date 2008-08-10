@@ -63,7 +63,7 @@ struct Special_T {
     unsigned int position,
     const libReallive::SpecialExpressionPiece& sp)
   {
-    if(TYPE::isComplex)
+    if(TYPE::is_complex)
       return TYPE::getData(machine, p, position);
     else
       return TYPE::getData(machine, sp.getContainedPieces(), 0);
@@ -124,8 +124,8 @@ struct Special_T {
   }
 
   enum {
-    isRealTypestruct = true,
-    isComplex = false
+    is_real_typestruct = true,
+    is_complex = false
   };
 };
 

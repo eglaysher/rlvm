@@ -47,12 +47,12 @@ using namespace std;
 // -----------------------------------------------------------------------
 // TextKeyCursor
 // -----------------------------------------------------------------------
-TextKeyCursor::TextKeyCursor(RLMachine& machine, int inCurosrNumber)
-  : cursor_number_(inCurosrNumber), current_frame_(0),
+TextKeyCursor::TextKeyCursor(RLMachine& machine, int in_curosr_number)
+  : cursor_number_(in_curosr_number), current_frame_(0),
     last_time_frame_incremented_(machine.system().event().getTicks())
 {
   Gameexe& gexe = machine.system().gameexe();
-  GameexeInterpretObject cursor = gexe("CURSOR", inCurosrNumber);
+  GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
 
   setCursorImage(machine, cursor("NAME"));
   setCursorSize(cursor("SIZE"));
@@ -69,11 +69,11 @@ TextKeyCursor::~TextKeyCursor()
 
 void TextKeyCursor::execute(RLMachine& machine)
 {
-  unsigned int curTime = machine.system().event().getTicks();
+  unsigned int cur_time = machine.system().event().getTicks();
 
-  if(last_time_frame_incremented_ + frame_speed_ < curTime)
+  if(last_time_frame_incremented_ + frame_speed_ < cur_time)
   {
-    last_time_frame_incremented_ = curTime;
+    last_time_frame_incremented_ = cur_time;
 
     machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
@@ -85,11 +85,11 @@ void TextKeyCursor::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::render(RLMachine& machine, TextWindow& textWindow)
+void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window)
 {
   if(cursor_image_) {
-    // Get the location to render from textWindow
-    Point keycur = textWindow.keycursorPosition();
+    // Get the location to render from text_window
+    Point keycur = text_window.keycursorPosition();
 
     cursor_image_->renderToScreen(
       Rect(Point(current_frame_ * frame_size_.width(), 0), frame_size_),
@@ -115,16 +115,16 @@ void TextKeyCursor::setCursorImage(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorSize(const std::vector<int>& imageSize)
+void TextKeyCursor::setCursorSize(const std::vector<int>& image_size)
 {
-  frame_size_ = Size(imageSize.at(0), imageSize.at(1));
+  frame_size_ = Size(image_size.at(0), image_size.at(1));
 }
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorFrameCount(const int frameCount)
+void TextKeyCursor::setCursorFrameCount(const int frame_count)
 {
-  frame_count_ = frameCount;
+  frame_count_ = frame_count;
 }
 
 // -----------------------------------------------------------------------

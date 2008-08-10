@@ -309,8 +309,8 @@ class MouseListener
 {
 public:
   virtual ~MouseListener();
-  virtual void mouseMotion(const Point& newLocation);
-  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual void mouseMotion(const Point& new_location);
+  virtual void mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
 };
 
 /**
@@ -327,7 +327,7 @@ public:
   EventHandler(RLMachine& machine);
   virtual ~EventHandler();
 
-  virtual void keyStateChanged(KeyCode keyCode, bool pressed) {}
+  virtual void keyStateChanged(KeyCode key_code, bool pressed) {}
 };
 
 #endif

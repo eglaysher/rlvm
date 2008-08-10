@@ -64,26 +64,26 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   }
 
   // Initialize the various subsystems
-  graphicsSystem.reset(new SDLGraphicsSystem(*this, gameexe));
-  eventSystem.reset(new SDLEventSystem(gameexe));
-  textSystem.reset(new SDLTextSystem(gameexe));
-  soundSystem.reset(new SDLSoundSystem(gameexe));
+  graphics_system.reset(new SDLGraphicsSystem(*this, gameexe));
+  event_system.reset(new SDLEventSystem(gameexe));
+  text_system.reset(new SDLTextSystem(gameexe));
+  sound_system.reset(new SDLSoundSystem(gameexe));
 
-  eventSystem->addMouseListener(graphicsSystem.get());
+  event_system->addMouseListener(graphics_system.get());
 }
 
 // -----------------------------------------------------------------------
 
 SDLSystem::~SDLSystem()
 {
-  eventSystem->removeMouseListener(graphicsSystem.get());
+  event_system->removeMouseListener(graphics_system.get());
 
   // Force the deletion of the various systems before we shut down
   // SDL.
-  soundSystem.reset();
-  graphicsSystem.reset();
-  eventSystem.reset();
-  textSystem.reset();
+  sound_system.reset();
+  graphics_system.reset();
+  event_system.reset();
+  text_system.reset();
 
   SDL_Quit();
 }
@@ -93,19 +93,19 @@ SDLSystem::~SDLSystem()
 void SDLSystem::run(RLMachine& machine)
 {
   // Give the event handler a chance to run.
-  eventSystem->executeEventSystem(machine);
+  event_system->executeEventSystem(machine);
 
-  textSystem->executeTextSystem(machine);
+  text_system->executeTextSystem(machine);
 
   // Only run the graphics system every 5 ms.
-  graphicsSystem->executeGraphicsSystem(machine);
+  graphics_system->executeGraphicsSystem(machine);
 
   // My pausing model is wrong. Really wrong. For an example of just
   // how wrong it is, take a look at the performance under CLANNAD's menu.
 
   if(machine.inLongOperation())
   {
-    eventSystem->wait(10);
+    event_system->wait(10);
   }
 }
 
@@ -113,14 +113,14 @@ void SDLSystem::run(RLMachine& machine)
 
 GraphicsSystem& SDLSystem::graphics()
 {
-  return *graphicsSystem;
+  return *graphics_system;
 }
 
 // -----------------------------------------------------------------------
 
 EventSystem& SDLSystem::event()
 {
-  return *eventSystem;
+  return *event_system;
 }
 
 // -----------------------------------------------------------------------
@@ -134,12 +134,12 @@ Gameexe& SDLSystem::gameexe()
 
 TextSystem& SDLSystem::text()
 {
-  return *textSystem;
+  return *text_system;
 }
 
 // -----------------------------------------------------------------------
 
 SoundSystem& SDLSystem::sound()
 {
-  return *soundSystem;
+  return *sound_system;
 }

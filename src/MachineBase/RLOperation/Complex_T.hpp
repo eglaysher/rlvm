@@ -59,15 +59,15 @@ struct Complex2_T {
   {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the
-    bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter();
-    if(typeOK) {
+    bool type_ok = position < p.size();
+    type_ok = type_ok && p[position].isComplexParameter();
+    if(type_ok) {
       const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
-      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
+      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
+      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
     }
-    return typeOK;
+    return type_ok;
   }
 */
 
@@ -90,8 +90,8 @@ struct Complex2_T {
 
 
   enum {
-    isRealTypestruct = true,
-    isComplex = true
+    is_real_typestruct = true,
+    is_complex = true
   };
 };
 
@@ -130,16 +130,16 @@ struct Complex3_T {
   {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the
-    bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter();
-    if(typeOK) {
+    bool type_ok = position < p.size();
+    type_ok = type_ok && p[position].isComplexParameter();
+    if(type_ok) {
       const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
-      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
-      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
+      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
+      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
+      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
     }
-    return typeOK;
+    return type_ok;
   }
 */
 
@@ -162,8 +162,8 @@ struct Complex3_T {
 
 
   enum {
-    isRealTypestruct = true,
-    isComplex = true
+    is_real_typestruct = true,
+    is_complex = true
   };
 };
 
@@ -202,17 +202,17 @@ struct Complex4_T {
   {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the
-    bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter();
-    if(typeOK) {
+    bool type_ok = position < p.size();
+    type_ok = type_ok && p[position].isComplexParameter();
+    if(type_ok) {
       const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
-      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
-      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
-      typeOK = typeOK && D::verifyType(sp.getContainedPieces(), 3);
+      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
+      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
+      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
+      type_ok = type_ok && D::verifyType(sp.getContainedPieces(), 3);
     }
-    return typeOK;
+    return type_ok;
   }
 */
 
@@ -235,8 +235,8 @@ struct Complex4_T {
 
 
   enum {
-    isRealTypestruct = true,
-    isComplex = true
+    is_real_typestruct = true,
+    is_complex = true
   };
 };
 
@@ -282,20 +282,20 @@ struct Complex7_T {
   {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the
-    bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter();
-    if(typeOK) {
+    bool type_ok = position < p.size();
+    type_ok = type_ok && p[position].isComplexParameter();
+    if(type_ok) {
       const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
-      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
-      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
-      typeOK = typeOK && D::verifyType(sp.getContainedPieces(), 3);
-      typeOK = typeOK && E::verifyType(sp.getContainedPieces(), 4);
-      typeOK = typeOK && F::verifyType(sp.getContainedPieces(), 5);
-      typeOK = typeOK && G::verifyType(sp.getContainedPieces(), 6);
+      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
+      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
+      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
+      type_ok = type_ok && D::verifyType(sp.getContainedPieces(), 3);
+      type_ok = type_ok && E::verifyType(sp.getContainedPieces(), 4);
+      type_ok = type_ok && F::verifyType(sp.getContainedPieces(), 5);
+      type_ok = type_ok && G::verifyType(sp.getContainedPieces(), 6);
     }
-    return typeOK;
+    return type_ok;
   }
 */
 
@@ -319,8 +319,8 @@ struct Complex7_T {
 
 
   enum {
-    isRealTypestruct = true,
-    isComplex = true
+    is_real_typestruct = true,
+    is_complex = true
   };
 };
 
@@ -385,27 +385,27 @@ struct Complex8_T {
   {
     // Verify the size of the vector, that we have a special parameter, and then
     // make sure all the
-    bool typeOK = position < p.size();
-    typeOK = typeOK && p[position].isComplexParameter();
-    if(typeOK) {
+    bool type_ok = position < p.size();
+    type_ok = type_ok && p[position].isComplexParameter();
+    if(type_ok) {
       const libReallive::ComplexExpressionPiece& sp =
         static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      typeOK = typeOK && A::verifyType(sp.getContainedPieces(), 0);
-      typeOK = typeOK && B::verifyType(sp.getContainedPieces(), 1);
-      typeOK = typeOK && C::verifyType(sp.getContainedPieces(), 2);
-      typeOK = typeOK && D::verifyType(sp.getContainedPieces(), 3);
-      typeOK = typeOK && E::verifyType(sp.getContainedPieces(), 4);
-      typeOK = typeOK && F::verifyType(sp.getContainedPieces(), 5);
-      typeOK = typeOK && G::verifyType(sp.getContainedPieces(), 6);
-      typeOK = typeOK && H::verifyType(sp.getContainedPieces(), 7);
+      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
+      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
+      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
+      type_ok = type_ok && D::verifyType(sp.getContainedPieces(), 3);
+      type_ok = type_ok && E::verifyType(sp.getContainedPieces(), 4);
+      type_ok = type_ok && F::verifyType(sp.getContainedPieces(), 5);
+      type_ok = type_ok && G::verifyType(sp.getContainedPieces(), 6);
+      type_ok = type_ok && H::verifyType(sp.getContainedPieces(), 7);
     }
-    return typeOK;
+    return type_ok;
   }
 */
 
   enum {
-    isRealTypestruct = true,
-    isComplex = true
+    is_real_typestruct = true,
+    is_complex = true
   };
 };
 

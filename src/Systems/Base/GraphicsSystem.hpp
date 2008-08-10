@@ -75,15 +75,15 @@ struct GraphicsSystemGlobals
   GraphicsSystemGlobals(Gameexe& gameexe);
 
   /// ShowObject flags
-  int showObject1, showObject2;
+  int show_object_1, show_object_2;
 
-  int showWeather;
+  int show_weather;
 
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
   {
-    ar & showObject1 & showObject2 & showWeather;
+    ar & show_object_1 & show_object_2 & show_weather;
   }
 };
 
@@ -193,7 +193,7 @@ public:
   int stackSize() const;
   void clearStack();
 
-  void stackPop(int numItems);
+  void stackPop(int num_items);
 
   /// Replays the graphics stack. This is called after we've reloaded
   /// a saved game.
@@ -216,9 +216,9 @@ public:
    * their own internal copy.
    *
    * @param cp932str The subtitle (encoded in cp932 or similar)
-   * @param textEncoding The encoding type (as passed in to cp932toUTF8)
+   * @param text_encoding The encoding type (as passed in to cp932toUTF8)
    */
-  virtual void setWindowSubtitle(const std::string& cp932str, int textEncoding);
+  virtual void setWindowSubtitle(const std::string& cp932str, int text_encoding);
 
   /**
    * Returns the current window subtitle.
@@ -257,10 +257,10 @@ public:
    * @{
    */
   void setShowObject1(const int in);
-  int showObject1() const { return globals_.showObject1; }
+  int showObject1() const { return globals_.show_object_1; }
 
   void setShowObject2(const int in);
-  int showObject2() const { return globals_.showObject1; }
+  int showObject2() const { return globals_.show_object_2; }
   /// @}
 
   /**
@@ -269,7 +269,7 @@ public:
    * @{
    */
   void setShowWeather(const int in);
-  int showWeather() const { return globals_.showWeather; }
+  int showWeather() const { return globals_.show_weather; }
 
   /**
    * Toggles whether the interface is shown. Called by
@@ -279,11 +279,11 @@ public:
   bool interfaceHidden();
 
   /**
-   * Returns the ObjectSettings from the Gameexe for objNum. The data
+   * Returns the ObjectSettings from the Gameexe for obj_num. The data
    * from this method should be used by all subclasses of
    * GraphicsSystem when deciding whether to render an object or not.
    */
-  ObjectSettings getObjectSettings(const int objNum);
+  ObjectSettings getObjectSettings(const int obj_num);
   /// @}
 
   /**
@@ -387,8 +387,8 @@ public:
 
   /// Object getters
   /// layer == 0 for fg, layer == 1 for bg.
-  GraphicsObject& getObject(int layer, int objNumber);
-  void setObject(int layer, int objNumber, GraphicsObject& object);
+  GraphicsObject& getObject(int layer, int obj_number);
+  void setObject(int layer, int obj_number, GraphicsObject& object);
 
   /**
    * Deallocates all graphics objects.
@@ -419,7 +419,7 @@ public:
    * @{
    */
   /// Listen to the mouse's location so we can possibly draw a cursor there.
-  virtual void mouseMotion(const Point& newLocation);
+  virtual void mouseMotion(const Point& new_location);
   /// @}
 
   /**

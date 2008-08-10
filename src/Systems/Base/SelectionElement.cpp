@@ -45,14 +45,14 @@ using boost::shared_ptr;
 // SelectionElement
 // -----------------------------------------------------------------------
 SelectionElement::SelectionElement(
-  const boost::shared_ptr<Surface>& normalImage,
-  const boost::shared_ptr<Surface>& highlightedImage,
-  const boost::function<void(int)>& selectionCallback,
+  const boost::shared_ptr<Surface>& normal_image,
+  const boost::shared_ptr<Surface>& highlighted_image,
+  const boost::function<void(int)>& selection_callback,
   int id, const Point& pos)
   : is_highlighted_(false), id_(id), pos_(pos),
-    normal_image_(normalImage),
-    highlighted_image_(highlightedImage),
-    selection_callback_(selectionCallback)
+    normal_image_(normal_image),
+    highlighted_image_(highlighted_image),
+    selection_callback_(selection_callback)
 {
 
 }
@@ -82,10 +82,10 @@ bool SelectionElement::isHighlighted(const Point& p)
 
 void SelectionElement::setMousePosition(RLMachine& machine, const Point& pos)
 {
-  bool startValue = is_highlighted_;
+  bool start_value = is_highlighted_;
   is_highlighted_ = isHighlighted(pos);
 
-  if(startValue != is_highlighted_)
+  if(start_value != is_highlighted_)
     machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 

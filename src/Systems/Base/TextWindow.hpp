@@ -224,7 +224,7 @@ protected:
   const boost::function<void(int)>& selectionCallback();
 
 public:
-  TextWindow(RLMachine& machine, int windowNum);
+  TextWindow(RLMachine& machine, int window_num);
   virtual ~TextWindow();
 
   virtual void execute(RLMachine& machine);
@@ -242,7 +242,7 @@ public:
    * Sets the size of the text window in characters. Reprsented by
    * \#WINDOW.xxx.MOJI_CNT.
    */
-  void setWindowSizeInCharacters(const std::vector<int>& posData);
+  void setWindowSizeInCharacters(const std::vector<int>& pos_data);
   int xWindowSizeInChars() const { return x_window_size_in_chars_; }
   int yWindowSizeInChars() const { return y_window_size_in_chars_; }
 
@@ -250,7 +250,7 @@ public:
    * Sets the size of the spacing between characters. Reprsented by
    * \#WINDOW.xxx.MOJI_REP.
    */
-  void setSpacingBetweenCharacters(const std::vector<int>& posData);
+  void setSpacingBetweenCharacters(const std::vector<int>& pos_data);
   int xSpacing() const { return x_spacing_; }
   int ySpacing() const { return y_spacing_; }
 
@@ -268,12 +268,12 @@ public:
   void setFontSizeInPixels(int i) { font_size_in_pixels_ = i; }
   int fontSizeInPixels() const { return font_size_in_pixels_; }
 
-  void setTextboxPadding(const std::vector<int>& posData);
+  void setTextboxPadding(const std::vector<int>& pos_data);
 
   void setUseIndentation(const int i) { use_indentation_ = i; }
 
-  void setDefaultTextColor(const std::vector<int>& colorData);
-  void setFontColor(const std::vector<int>& colorData);
+  void setDefaultTextColor(const std::vector<int>& color_data);
+  void setFontColor(const std::vector<int>& color_data);
 
   /// @}
 
@@ -282,7 +282,7 @@ public:
    *
    * @{
    */
-  void setWindowPosition(const std::vector<int>& posData);
+  void setWindowPosition(const std::vector<int>& pos_data);
 
   Size textWindowSize() const;
 
@@ -335,7 +335,7 @@ public:
    * @{
    */
 
-  void setWindowWaku(RLMachine& machine, Gameexe& gexe, const int wakuNo);
+  void setWindowWaku(RLMachine& machine, Gameexe& gexe, const int waku_no);
 
 
   virtual void setWakuMain(RLMachine& machine, const std::string& name) = 0;
@@ -373,7 +373,7 @@ public:
   void setB(int i) { colour_.setBlue(i); }
   void setAlpha(int i) { colour_.setAlpha(i); }
   void setFilter(int i) { filter_ = i; }
-  void setRGBAF(const std::vector<int>& rgbaValues);
+  void setRGBAF(const std::vector<int>& rgba_values);
 
   int r() const { return colour_.r(); }
   int g() const { return colour_.g(); }
@@ -422,7 +422,7 @@ public:
    * Sets (and displays, if appropriate) the name of the current speaker.
    */
   virtual void setName(RLMachine& machine, const std::string& utf8name,
-                       const std::string& nextChar) = 0;
+                       const std::string& next_char) = 0;
 
   virtual void hardBrake() = 0;
   virtual void resetIndentation() = 0;

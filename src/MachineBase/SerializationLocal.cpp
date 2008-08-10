@@ -79,7 +79,7 @@ namespace fs = boost::filesystem;
 
 namespace Serialization {
 
-RLMachine* g_currentMachine = NULL;
+RLMachine* g_current_machine = NULL;
 
 // -----------------------------------------------------------------------
 
@@ -117,11 +117,11 @@ void saveGameForSlot(RLMachine& machine, int slot)
   checkInFileOpened(file, path);
 
   using namespace boost::iostreams;
-  filtering_stream<output> filteredOutput;
-  filteredOutput.push(zlib_compressor());
-  filteredOutput.push(file);
+  filtering_stream<output> filtered_output;
+  filtered_output.push(zlib_compressor());
+  filtered_output.push(file);
 
-  return saveGameTo(filteredOutput, machine);
+  return saveGameTo(filtered_output, machine);
 }
 
 // -----------------------------------------------------------------------
@@ -130,7 +130,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
 {
   const SaveGameHeader header(machine.system().graphics().windowSubtitle());
 
-  g_currentMachine = &machine;
+  g_current_machine = &machine;
 
   try
   {
@@ -149,11 +149,11 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
     cerr << "--- WARNING: ERROR DURING SAVING FILE: " << e.what() << " ---"
          << endl;
 
-    g_currentMachine = NULL;
+    g_current_machine = NULL;
     throw e;
   }
 
-  g_currentMachine = NULL;
+  g_current_machine = NULL;
 }
 
 // -----------------------------------------------------------------------
@@ -175,11 +175,11 @@ SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot)
   checkInFileOpened(file, path);
 
   using namespace boost::iostreams;
-  filtering_stream<input> filteredInput;
-  filteredInput.push(zlib_decompressor());
-  filteredInput.push(file);
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(file);
 
-  return loadHeaderFrom(filteredInput);
+  return loadHeaderFrom(filtered_input);
 }
 
 // -----------------------------------------------------------------------
@@ -205,11 +205,11 @@ void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory)
   checkInFileOpened(file, path);
 
   using namespace boost::iostreams;
-  filtering_stream<input> filteredInput;
-  filteredInput.push(zlib_decompressor());
-  filteredInput.push(file);
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(file);
 
-  loadLocalMemoryFrom(filteredInput, memory);
+  loadLocalMemoryFrom(filtered_input, memory);
 }
 
 // -----------------------------------------------------------------------
@@ -235,11 +235,11 @@ void loadGameForSlot(RLMachine& machine, int slot)
   checkInFileOpened(file, path);
 
   using namespace boost::iostreams;
-  filtering_stream<input> filteredInput;
-  filteredInput.push(zlib_decompressor());
-  filteredInput.push(file);
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(file);
 
-  loadGameFrom(filteredInput, machine);
+  loadGameFrom(filtered_input, machine);
 }
 
 // -----------------------------------------------------------------------
@@ -249,7 +249,7 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
   int version;
   SaveGameHeader header;
 
-  g_currentMachine = &machine;
+  g_current_machine = &machine;
 
   try
   {
@@ -274,11 +274,11 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
     cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what() << " ---"
          << endl;
 
-    g_currentMachine = NULL;
+    g_current_machine = NULL;
     throw e;
   }
 
-  g_currentMachine = NULL;
+  g_current_machine = NULL;
 }
 
 }

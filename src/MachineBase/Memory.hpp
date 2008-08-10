@@ -83,7 +83,7 @@ struct GlobalMemory
 
   std::string strM[SIZE_OF_MEM_BANK];
 
-  std::string globalNames[SIZE_OF_NAME_BANK];
+  std::string global_names[SIZE_OF_NAME_BANK];
 
   /// boost::serialization
   template<class Archive>
@@ -93,7 +93,7 @@ struct GlobalMemory
 
     // Starting in version 1, \#NAME variable storage were added.
     if (version > 0)
-      ar & globalNames;
+      ar & global_names;
   }
 };
 
@@ -136,7 +136,7 @@ struct LocalMemory
   /// Parameter passing string bank
   std::string strK[3];
 
-  std::string localNames[SIZE_OF_NAME_BANK];
+  std::string local_names[SIZE_OF_NAME_BANK];
 
   /// boost::serialization support
   template<class Archive>
@@ -146,7 +146,7 @@ struct LocalMemory
 
     // Starting in version 1, \#LOCALNAME variable storage were added.
     if (version > 0)
-      ar & localNames;
+      ar & local_names;
   }
 };
 
@@ -183,10 +183,10 @@ private:
   /// Integer variable pointers. This redirect into Global and local
   /// memory (as the case may be) allows us to overlay new views of
   /// local memory without copying global memory.
-  int* intVar[NUMBER_OF_INT_LOCATIONS];
+  int* int_var[NUMBER_OF_INT_LOCATIONS];
 
   /**
-   * Connects the memory banks in local_ and in global_ into intVar.
+   * Connects the memory banks in local_ and in global_ into int_var.
    */
   void connectIntVarPointers();
 

@@ -85,11 +85,11 @@ struct GraphicsSystem::GraphicsObjectSettings
 
   std::vector<ObjectSettings> data;
 
-  std::vector<GraphicsStackFrame> graphicsStack;
+  std::vector<GraphicsStackFrame> graphics_stack;
 
   GraphicsObjectSettings(Gameexe& gameexe);
 
-  const ObjectSettings& getObjectSettingsFor(int objNum);
+  const ObjectSettings& getObjectSettingsFor(int obj_num);
 };
 
 // -----------------------------------------------------------------------
@@ -114,11 +114,11 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     string::size_type poscolon = s.find_first_of(":");
     if ( poscolon != string::npos )
     {
-      int objNumFirst = lexical_cast<int>(s.substr(0, poscolon));
-      int objNumLast = lexical_cast<int>(s.substr(poscolon + 1));
-      while ( objNumFirst <= objNumLast )
+      int obj_num_first = lexical_cast<int>(s.substr(0, poscolon));
+      int obj_num_last = lexical_cast<int>(s.substr(poscolon + 1));
+      while ( obj_num_first <= obj_num_last )
       {
-        object_nums.push_back(objNumFirst++);
+        object_nums.push_back(obj_num_first++);
       }
     }
     else
@@ -129,10 +129,10 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     for( std::list<int>::const_iterator intit = object_nums.begin();
          intit != object_nums.end(); ++intit )
     {
-      int objNum = *intit;
-      if(objNum != 999 && objNum < OBJECTS_IN_A_LAYER)
+      int obj_num = *intit;
+      if(obj_num != 999 && obj_num < OBJECTS_IN_A_LAYER)
       {
-        position[objNum] = data.size();
+        position[obj_num] = data.size();
         data.push_back(ObjectSettings(*it));
       }
     }
@@ -142,9 +142,9 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
 // -----------------------------------------------------------------------
 
 const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsFor(
-  int objNum)
+  int obj_num)
 {
-  return data[position[objNum]];
+  return data[position[obj_num]];
 }
 
 // -----------------------------------------------------------------------
@@ -153,13 +153,13 @@ const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsF
 // GraphicsSystemGlobals
 // -----------------------------------------------------------------------
 GraphicsSystemGlobals::GraphicsSystemGlobals()
-  : showObject1(false), showObject2(false), showWeather(false)
+  : show_object_1(false), show_object_2(false), show_weather(false)
 {}
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
-  :	showObject1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
-    showObject2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
-    showWeather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1)
+  :	show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
+    show_object_2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
+    show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1)
 {}
 
 // -----------------------------------------------------------------------
@@ -170,23 +170,23 @@ struct GraphicsSystem::GraphicsObjectImpl
   GraphicsObjectImpl();
 
   /// Foreground objects
-  LazyArray<GraphicsObject> foreground_objects_;
+  LazyArray<GraphicsObject> foreground_objects;
 
   /// Background objects
-  LazyArray<GraphicsObject> background_objects_;
+  LazyArray<GraphicsObject> background_objects;
 
   /// Foreground objects (at the time of the last save)
-  LazyArray<GraphicsObject> saved_foreground_objects_;
+  LazyArray<GraphicsObject> saved_foreground_objects;
 
   /// Background objects (at the time of the last save)
-  LazyArray<GraphicsObject> saved_background_objects_;
+  LazyArray<GraphicsObject> saved_background_objects;
 };
 
 // -----------------------------------------------------------------------
 
 GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
-  : foreground_objects_(256), background_objects_(256),
-    saved_foreground_objects_(256), saved_background_objects_(256)
+  : foreground_objects(256), background_objects(256),
+    saved_foreground_objects(256), saved_background_objects(256)
 {}
 
 // -----------------------------------------------------------------------
@@ -281,29 +281,29 @@ void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
 GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(
   const std::string& name)
 {
-  graphics_object_settings_->graphicsStack.push_back(GraphicsStackFrame(name));
-  return graphics_object_settings_->graphicsStack.back();
+  graphics_object_settings_->graphics_stack.push_back(GraphicsStackFrame(name));
+  return graphics_object_settings_->graphics_stack.back();
 }
 
 // -----------------------------------------------------------------------
 
 vector<GraphicsStackFrame>& GraphicsSystem::graphicsStack()
 {
-  return graphics_object_settings_->graphicsStack;
+  return graphics_object_settings_->graphics_stack;
 }
 
 // -----------------------------------------------------------------------
 
 int GraphicsSystem::stackSize() const
 {
-  return graphics_object_settings_->graphicsStack.size();
+  return graphics_object_settings_->graphics_stack.size();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearStack()
 {
-  graphics_object_settings_->graphicsStack.clear();
+  graphics_object_settings_->graphics_stack.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -311,24 +311,24 @@ void GraphicsSystem::clearStack()
 void GraphicsSystem::stackPop(int items)
 {
   for(int i = 0; i < items; ++i)
-    graphics_object_settings_->graphicsStack.pop_back();
+    graphics_object_settings_->graphics_stack.pop_back();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
 {
-  vector<GraphicsStackFrame> stackToReplay;
-  stackToReplay.swap(graphics_object_settings_->graphicsStack);
+  vector<GraphicsStackFrame> stack_to_replay;
+  stack_to_replay.swap(graphics_object_settings_->graphics_stack);
 
   //
-  replayGraphicsStackVector(machine, stackToReplay);
+  replayGraphicsStackVector(machine, stack_to_replay);
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setWindowSubtitle(const std::string& cp932str,
-                                       int textEncoding)
+                                       int text_encoding)
 {
   subtitle_ = cp932str;
 }
@@ -344,21 +344,21 @@ const std::string& GraphicsSystem::windowSubtitle() const
 
 void GraphicsSystem::setShowObject1(const int in)
 {
-  globals_.showObject1 = in;
+  globals_.show_object_1 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowObject2(const int in)
 {
-  globals_.showObject2 = in;
+  globals_.show_object_2 = in;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setShowWeather(const int in)
 {
-  globals_.showWeather = in;
+  globals_.show_weather = in;
 }
 
 // -----------------------------------------------------------------------
@@ -366,7 +366,6 @@ void GraphicsSystem::setShowWeather(const int in)
 void GraphicsSystem::toggleInterfaceHidden()
 {
   hide_interface_ = !hide_interface_;
-//  cerr << "Setting interface hidden to " << hide_interface_ << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -378,9 +377,9 @@ bool GraphicsSystem::interfaceHidden()
 
 // -----------------------------------------------------------------------
 
-ObjectSettings GraphicsSystem::getObjectSettings(const int objNum)
+ObjectSettings GraphicsSystem::getObjectSettings(const int obj_num)
 {
-  return graphics_object_settings_->getObjectSettingsFor(objNum);
+  return graphics_object_settings_->getObjectSettingsFor(obj_num);
 }
 
 // -----------------------------------------------------------------------
@@ -412,13 +411,13 @@ void GraphicsSystem::reset()
 
 void GraphicsSystem::promoteObjects()
 {
-  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
+  typedef LazyArray<GraphicsObject>::full_iterator FullIterator;
 
-  FullIterator bg = graphics_object_impl_->background_objects_.full_begin();
-  FullIterator bgEnd = graphics_object_impl_->background_objects_.full_end();
-  FullIterator fg = graphics_object_impl_->foreground_objects_.full_begin();
-  FullIterator fgEnd = graphics_object_impl_->foreground_objects_.full_end();
-  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
+  FullIterator bg = graphics_object_impl_->background_objects.full_begin();
+  FullIterator bg_end = graphics_object_impl_->background_objects.full_end();
+  FullIterator fg = graphics_object_impl_->foreground_objects.full_begin();
+  FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
+  for(; bg != bg_end && fg != fg_end; bg++, fg++)
   {
     if(bg.valid())
     {
@@ -434,13 +433,13 @@ void GraphicsSystem::promoteObjects()
 ///       LazyArray, and make it a bit worse.
 void GraphicsSystem::clearAndPromoteObjects()
 {
-  typedef LazyArray<GraphicsObject>::fullIterator FullIterator;
+  typedef LazyArray<GraphicsObject>::full_iterator FullIterator;
 
-  FullIterator bg = graphics_object_impl_->background_objects_.full_begin();
-  FullIterator bgEnd = graphics_object_impl_->background_objects_.full_end();
-  FullIterator fg = graphics_object_impl_->foreground_objects_.full_begin();
-  FullIterator fgEnd = graphics_object_impl_->foreground_objects_.full_end();
-  for(; bg != bgEnd && fg != fgEnd; bg++, fg++)
+  FullIterator bg = graphics_object_impl_->background_objects.full_begin();
+  FullIterator bg_end = graphics_object_impl_->background_objects.full_end();
+  FullIterator fg = graphics_object_impl_->foreground_objects.full_begin();
+  FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
+  for(; bg != bg_end && fg != fg_end; bg++, fg++)
   {
     if(fg.valid() && !fg->wipeCopy())
     {
@@ -457,58 +456,58 @@ void GraphicsSystem::clearAndPromoteObjects()
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& GraphicsSystem::getObject(int layer, int objNumber)
+GraphicsObject& GraphicsSystem::getObject(int layer, int obj_number)
 {
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    return graphics_object_impl_->background_objects_[objNumber];
+    return graphics_object_impl_->background_objects[obj_number];
   else
-    return graphics_object_impl_->foreground_objects_[objNumber];
+    return graphics_object_impl_->foreground_objects[obj_number];
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::setObject(int layer, int objNumber, GraphicsObject& obj)
+void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj)
 {
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
   if(layer == OBJ_BG_LAYER)
-    graphics_object_impl_->background_objects_[objNumber] = obj;
+    graphics_object_impl_->background_objects[obj_number] = obj;
   else
-    graphics_object_impl_->foreground_objects_[objNumber] = obj;
+    graphics_object_impl_->foreground_objects[obj_number] = obj;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllObjects()
 {
-  graphics_object_impl_->foreground_objects_.clear();
-  graphics_object_impl_->background_objects_.clear();
+  graphics_object_impl_->foreground_objects.clear();
+  graphics_object_impl_->background_objects.clear();
 }
 
 // -----------------------------------------------------------------------
 
 LazyArray<GraphicsObject>& GraphicsSystem::backgroundObjects()
 {
-  return graphics_object_impl_->background_objects_;
+  return graphics_object_impl_->background_objects;
 }
 
 // -----------------------------------------------------------------------
 
 LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects()
 {
-  return graphics_object_impl_->foreground_objects_;
+  return graphics_object_impl_->foreground_objects;
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::takeSavepointSnapshot()
 {
-  foregroundObjects().copyTo(graphics_object_impl_->saved_foreground_objects_);
-  backgroundObjects().copyTo(graphics_object_impl_->saved_background_objects_);
+  foregroundObjects().copyTo(graphics_object_impl_->saved_foreground_objects);
+  backgroundObjects().copyTo(graphics_object_impl_->saved_background_objects);
 }
 
 // -----------------------------------------------------------------------
@@ -517,19 +516,19 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it =
-    graphics_object_impl_->foreground_objects_.allocated_begin();
+    graphics_object_impl_->foreground_objects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
-    graphics_object_impl_->foreground_objects_.allocated_end();
+    graphics_object_impl_->foreground_objects.allocated_end();
   for(; it != end; ++it)
   {
     const ObjectSettings& settings = getObjectSettings(it.pos());
-    if(settings.objOnOff == 1 && showObject1() == false)
+    if(settings.obj_on_off == 1 && showObject1() == false)
       continue;
-    else if(settings.objOnOff == 2 && showObject2() == false)
+    else if(settings.obj_on_off == 2 && showObject2() == false)
       continue;
-    else if(settings.weatherOnOff && showWeather() == false)
+    else if(settings.weather_on_off && showWeather() == false)
       continue;
-    else if(settings.spaceKey && interfaceHidden())
+    else if(settings.space_key && interfaceHidden())
       continue;
 
     it->render(machine);
@@ -550,16 +549,16 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
       mouse_cursor_ = it->second;
     else
     {
-      boost::shared_ptr<Surface> cursorSurface;
-      GameexeInterpretObject cursorKey =
+      boost::shared_ptr<Surface> cursor_surface;
+      GameexeInterpretObject cursor_key =
         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME");
 
-      if (cursorKey.exists())
+      if (cursor_key.exists())
       {
-        string cursorName = cursorKey;
-        fs::path cursorPath = findFile(machine, cursorName, IMAGE_FILETYPES);
-        cursorSurface = loadSurfaceFromFile(cursorPath);
-        mouse_cursor_.reset(new MouseCursor(cursorSurface));
+        string cursor_name = cursor_key;
+        fs::path cursor_path = findFile(machine, cursor_name, IMAGE_FILETYPES);
+        cursor_surface = loadSurfaceFromFile(cursor_path);
+        mouse_cursor_.reset(new MouseCursor(cursor_surface));
         cursor_cache_[cursor_] = mouse_cursor_;
       }
       else
@@ -572,12 +571,12 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::mouseMotion(const Point& newLocation)
+void GraphicsSystem::mouseMotion(const Point& new_location)
 {
   if(use_custom_mouse_cursor_ && show_curosr_)
     markScreenAsDirty(GUT_MOUSE_MOTION);
 
-  cursor_pos_ = newLocation;
+  cursor_pos_ = new_location;
 }
 
 // -----------------------------------------------------------------------
@@ -586,13 +585,13 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
                                                    const std::string& filename)
 {
   // Get the path to get the file type (which won't be in filename)
-  fs::path fullPath = findFile(machine, filename);
-  string fileStr = fullPath.file_string();
-  if(iends_with(fileStr, "g00") || iends_with(fileStr, "pdt"))
+  fs::path full_path = findFile(machine, filename);
+  string file_str = full_path.file_string();
+  if(iends_with(file_str, "g00") || iends_with(file_str, "pdt"))
   {
     return new GraphicsObjectOfFile(machine, filename);
   }
-  else if(iends_with(fileStr, "anm"))
+  else if(iends_with(file_str, "anm"))
   {
     return new AnmGraphicsObjectData(machine, filename);
   }
@@ -618,9 +617,9 @@ void GraphicsSystem::save(Archive& ar, unsigned int version) const
 {
   ar
     & subtitle_
-    & graphics_object_settings_->graphicsStack
-    & graphics_object_impl_->saved_background_objects_
-    & graphics_object_impl_->saved_foreground_objects_;
+    & graphics_object_settings_->graphics_stack
+    & graphics_object_impl_->saved_background_objects
+    & graphics_object_impl_->saved_foreground_objects;
 }
 
 // -----------------------------------------------------------------------
@@ -631,12 +630,12 @@ void GraphicsSystem::load(Archive& ar, unsigned int version)
   ar
     & subtitle_
     & graphicsStack()
-    & graphics_object_impl_->background_objects_
-    & graphics_object_impl_->foreground_objects_;
+    & graphics_object_impl_->background_objects
+    & graphics_object_impl_->foreground_objects;
 
   // Now alert all subclasses that we've set the subtitle
   setWindowSubtitle(subtitle_,
-                    Serialization::g_currentMachine->getTextEncoding());
+                    Serialization::g_current_machine->getTextEncoding());
 }
 
 // -----------------------------------------------------------------------

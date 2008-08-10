@@ -87,7 +87,7 @@ CGMTable& getSystemObj(RLMachine& machine)
 // -----------------------------------------------------------------------
 
 MultiDispatch::MultiDispatch(RLOperation* op)
-  : handler(op)
+  : handler_(op)
 {}
 
 // -----------------------------------------------------------------------
@@ -116,18 +116,18 @@ void MultiDispatch::operator()(
   RLMachine& machine,
   const libReallive::CommandElement& ff)
 {
-  const ptr_vector<ExpressionPiece>& parameterPieces = ff.getParameters();
+  const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
 
-  for(unsigned int i = 0; i < parameterPieces.size(); ++i) {
+  for(unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const ptr_vector<ExpressionPiece>& element =
-      dynamic_cast<const ComplexExpressionPiece&>(parameterPieces[i]).getContainedPieces();
+      dynamic_cast<const ComplexExpressionPiece&>(parameter_pieces[i]).getContainedPieces();
 
     // @todo Do whatever is needed to get this part working...
 //     if(!handler->checkTypes(machine, element)) {
 //       throw Error("Expected type mismatch in parameters in MultiDispatch.");
 //     }
 
-    handler->dispatch(machine, element);
+    handler_->dispatch(machine, element);
   }
 
   machine.advanceInstructionPointer();
@@ -135,8 +135,8 @@ void MultiDispatch::operator()(
 
 // -------------------------------------------------- [ ReturnGameexeInt ]
 
-ReturnGameexeInt::ReturnGameexeInt(const std::string& fullKey, int en)
-  : fullKeyName(fullKey), entry(en)
+ReturnGameexeInt::ReturnGameexeInt(const std::string& full_key, int en)
+  : full_key_name_(full_key), entry_(en)
 {}
 
 // -----------------------------------------------------------------------
@@ -144,8 +144,8 @@ ReturnGameexeInt::ReturnGameexeInt(const std::string& fullKey, int en)
 int ReturnGameexeInt::operator()(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
-  vector<int> values = gexe(fullKeyName);
-  return values.at(entry);
+  vector<int> values = gexe(full_key_name_);
+  return values.at(entry_);
 }
 
 // ------------------------------------------------- [ UndefinedFunction ]

@@ -56,10 +56,10 @@ NullGraphicsSystem::NullGraphicsSystem(System& system, Gameexe& gexe)
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::allocateDC(int dc, Size size) {
-  graphics_system_log_.recordFunction("allocateDC", dc, size.width(), size.height());
+  graphics_system_log_.recordFunction("allocate_dc", dc, size.width(), size.height());
 
   if(dc >= 16)
-    throw rlvm::Exception("Invalid DC number in NullGrpahicsSystem::allocateDC");
+    throw rlvm::Exception("Invalid DC number in NullGrpahicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
   if(dc == 0)
@@ -83,7 +83,7 @@ void NullGraphicsSystem::allocateDC(int dc, Size size) {
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::freeDC(int dc) {
-  graphics_system_log_.recordFunction("freeDC", dc);
+  graphics_system_log_.recordFunction("free_dc", dc);
 
   if(dc == 0)
     throw rlvm::Exception("Attempt to deallocate DC[0]");
@@ -99,21 +99,21 @@ void NullGraphicsSystem::freeDC(int dc) {
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::promoteObjects() {
-  graphics_system_log_.recordFunction("promoteObjects");
+  graphics_system_log_.recordFunction("promote_objects");
 }
 
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::clearAndPromoteObjects() {
-  graphics_system_log_.recordFunction("clearAndPromoteObjects");
+  graphics_system_log_.recordFunction("clear_and_promote_objects");
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber)
+GraphicsObject& NullGraphicsSystem::getObject(int layer, int obj_number)
 {
   static GraphicsObject x;
-  graphics_system_log_.recordFunction("getObject", layer, objNumber);
+  graphics_system_log_.recordFunction("get_object", layer, obj_number);
   return x;
 }
 
@@ -122,7 +122,7 @@ GraphicsObject& NullGraphicsSystem::getObject(int layer, int objNumber)
 boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
   const boost::filesystem::path& filename)
 {
-  graphics_system_log_.recordFunction("loadSurfaceFromFile", filename);
+  graphics_system_log_.recordFunction("load_surface_from_file", filename);
 
   // Make this a real surface so we can track what's done with it
   return boost::shared_ptr<Surface>(
@@ -133,7 +133,7 @@ boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
 
 boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
 {
-  graphics_system_log_.recordFunction("getDC", dc);
+  graphics_system_log_.recordFunction("get_dc", dc);
   return display_contexts_[dc];
 }
 
@@ -141,10 +141,10 @@ boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
 
 boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(const Size& s)
 {
-  graphics_system_log_.recordFunction("getDC", s);
-  static int surfaceNum = 0;
+  graphics_system_log_.recordFunction("get_dc", s);
+  static int surface_num = 0;
   ostringstream oss;
-  oss << "Built Surface #" << surfaceNum++;
+  oss << "Built Surface #" << surface_num++;
 
   return boost::shared_ptr<Surface>(new NullSurface(oss.str(), s));
 }
@@ -152,12 +152,12 @@ boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(const Size& s)
 // -----------------------------------------------------------------------
 
 void NullGraphicsSystem::blitSurfaceToDC(
-  Surface& sourceObj, int targetDC,
-  int srcX, int srcY, int srcWidth, int srcHeight,
-  int destX, int destY, int destWidth, int destHeight,
+  Surface& source_obj, int target_dc,
+  int srcX, int srcY, int src_width, int src_height,
+  int destX, int destY, int dest_width, int dest_height,
   int alpha) {
   graphics_system_log_.recordFunction(
-    "blitSurfaceToDC", targetDC, srcX, srcY, srcWidth, srcHeight,
-    destX, destY, destWidth, destHeight, alpha);
+    "blit_surface_to_dc", target_dc, srcX, srcY, src_width, src_height,
+    destX, destY, dest_width, dest_height, alpha);
   // TODO
 }

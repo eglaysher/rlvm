@@ -98,12 +98,12 @@ public:
   bool currentlyPlaying() const { return currently_playing_; }
 
   virtual void render(RLMachine& machine,
-                      const GraphicsObject& renderingProperties) = 0;
+                      const GraphicsObject& rendering_properties) = 0;
 
   virtual int pixelWidth(RLMachine& machine,
-						 const GraphicsObject& renderingProperties) = 0;
+						 const GraphicsObject& rendering_properties) = 0;
   virtual int pixelHeight(RLMachine& machine,
-						  const GraphicsObject& renderingProperties) = 0;
+						  const GraphicsObject& rendering_properties) = 0;
 
   virtual GraphicsObjectData* clone() const = 0;
 
@@ -131,10 +131,10 @@ struct GraphicsObjectOverride
   void setOverrideDestination(int indstX1, int indstY1, int indstX2, int indstY2);
   void setAlphaOverride(int inalpha);
 
-  bool overrideSource;
-  bool overrideDest;
-  bool hasDestOffset;
-  bool hasAlphaOverride;
+  bool override_source;
+  bool override_dest;
+  bool has_dest_offset;
+  bool has_alpha_override;
   int srcX1, srcY1, srcX2, srcY2;
   int dstX, dstY;
   int dstX1, dstY1, dstX2, dstY2;

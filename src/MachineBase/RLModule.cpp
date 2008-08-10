@@ -52,10 +52,10 @@ using namespace libReallive;
 // RLMoudle
 // -----------------------------------------------------------------------
 
-RLModule::RLModule(const std::string& inModuleName, int inModuleType,
-                   int inModuleNumber)
-  : module_type_(inModuleType), module_number_(inModuleNumber),
-    module_name_(inModuleName)
+RLModule::RLModule(const std::string& in_module_name, int in_module_type,
+                   int in_module_number)
+  : module_type_(in_module_type), module_number_(in_module_number),
+    module_name_(in_module_name)
 {}
 
 // -----------------------------------------------------------------------
@@ -72,10 +72,10 @@ int RLModule::packOpcodeNumber(int opcode, unsigned char overload)
 
 // -----------------------------------------------------------------------
 
-void RLModule::unpackOpcodeNumber(int packedOpcode, int& opcode, unsigned char& overload)
+void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload)
 {
-  opcode = (packedOpcode >> 8);
-  overload = packedOpcode & 0xFF;
+  opcode = (packed_opcode >> 8);
+  overload = packed_opcode & 0xFF;
 }
 
 // -----------------------------------------------------------------------
@@ -94,9 +94,9 @@ void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
 void RLModule::addOpcode(int opcode, unsigned char overload,
                          const std::string& name, RLOperation* op)
 {
-  int packedOpcode = packOpcodeNumber(opcode, overload);
+  int packed_opcode = packOpcodeNumber(opcode, overload);
   op->setName(name);
-  storedOperations.insert(packedOpcode, op);
+  stored_operations.insert(packed_opcode, op);
 }
 
 // -----------------------------------------------------------------------
@@ -113,8 +113,8 @@ void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload,
 
 void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
 {
-  OpcodeMap::iterator it = storedOperations.find(packOpcodeNumber(f.opcode(), f.overload()));
-  if(it != storedOperations.end()) {
+  OpcodeMap::iterator it = stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
+  if(it != stored_operations.end()) {
     it->second->dispatchFunction(machine, f);
   } else {
     throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),

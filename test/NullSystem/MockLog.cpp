@@ -34,8 +34,8 @@ using namespace std;
 // -----------------------------------------------------------------------
 // MockLog::Record
 // -----------------------------------------------------------------------
-MockLog::Record::Record(const std::string& name, const std::string& argStr)
-  : function_name_(name), argument_str_(argStr)
+MockLog::Record::Record(const std::string& name, const std::string& arg_str)
+  : function_name_(name), argument_str_(arg_str)
 {}
 
 // -----------------------------------------------------------------------

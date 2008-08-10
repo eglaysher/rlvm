@@ -266,8 +266,8 @@ private:
   VALTYPE value;
 
 public:
-  Op_SetToConstant(Setter s, VALTYPE inVal)
-    : setter(s), value(inVal)
+  Op_SetToConstant(Setter s, VALTYPE in_val)
+    : setter(s), value(in_val)
   {}
 
   void operator()(RLMachine& machine)
@@ -294,16 +294,16 @@ template<typename OBJTYPE, typename RETTYPE>
 class Op_ReturnIntValue : public RLOp_Store_Void {
 private:
   typedef RETTYPE(OBJTYPE::*Getter)() const;
-  Getter getter;
+  Getter getter_;
 
 public:
   Op_ReturnIntValue(Getter g)
-    : getter(g)
+    : getter_(g)
   {}
 
   int operator()(RLMachine& machine)
   {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)();
+    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)();
   }
 };
 
@@ -313,16 +313,16 @@ template<typename OBJTYPE, typename RETTYPE>
 class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
 private:
   typedef RETTYPE(OBJTYPE::*Getter)(const std::string&) const;
-  Getter getter;
+  Getter getter_;
 
 public:
   Op_ReturnIntValueWithString(Getter g)
-    : getter(g)
+    : getter_(g)
   {}
 
   int operator()(RLMachine& machine, string one)
   {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)(one);
+    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)(one);
   }
 };
 
@@ -354,16 +354,16 @@ private:
   /// The signature of a string getter function
   typedef const std::string&(OBJTYPE::*Getter)() const;
   /// The string getter function to call
-  Getter getter;
+  Getter getter_;
 
 public:
   Op_ReturnStringValue(Getter g)
-    : getter(g)
+    : getter_(g)
   {}
 
   void operator()(RLMachine& machine, StringReferenceIterator dest)
   {
-    *dest = (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter)();
+    *dest = (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)();
   }
 };
 
@@ -395,7 +395,7 @@ RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const)
  */
 class MultiDispatch : public RLOp_SpecialCase {
 private:
-  boost::scoped_ptr<RLOperation> handler;
+  boost::scoped_ptr<RLOperation> handler_;
 
 public:
   MultiDispatch(RLOperation* op);
@@ -411,11 +411,11 @@ public:
 
 class ReturnGameexeInt : public RLOp_Store_Void {
 private:
-  std::string fullKeyName;
-  int entry;
+  std::string full_key_name_;
+  int entry_;
 
 public:
-  ReturnGameexeInt(const std::string& fullKey, int en);
+  ReturnGameexeInt(const std::string& full_key, int en);
 
   int operator()(RLMachine& machine);
 };

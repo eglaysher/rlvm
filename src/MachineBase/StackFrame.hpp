@@ -49,17 +49,14 @@ class LongOperation;
  */
 struct StackFrame
 {
-private:
   /// The scenario in the SEEN file for this stack frame.
-  libReallive::Scenario const* scenario_;
-
-public:
+  libReallive::Scenario const* scenario;
 
   /// The instruction pointer in the stack frame.
   libReallive::Scenario::const_iterator ip;
 
   /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
-  boost::shared_ptr<LongOperation> longOp;
+  boost::shared_ptr<LongOperation> long_op;
 
   /**
    * The function that pushed the current frame onto the
@@ -70,7 +67,7 @@ public:
     TYPE_GOSUB,   /**< Added by a call by gosub */
     TYPE_FARCALL, /**< Added by a call by farcall */
     TYPE_LONGOP   /**< Added by pushLongOperation() */
-  } frameType;
+  } frame_type;
 
   /**
    * Default constructor. Only used during serialization.
@@ -92,9 +89,6 @@ public:
              LongOperation* op);
 
   ~StackFrame();
-
-  libReallive::Scenario const* scenario() const { return scenario_; }
-  void setScenario(libReallive::Scenario const* s);
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

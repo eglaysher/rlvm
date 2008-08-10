@@ -51,21 +51,21 @@ struct TextSystemGlobals
   TextSystemGlobals();
   TextSystemGlobals(Gameexe& gexe);
 
-  int autoModeBaseTime;
-  int autoModeCharTime;
+  int auto_mode_base_time;
+  int auto_mode_char_time;
 
   /// Message speed; range from 0 to 255
-  char messageSpeed;
+  char message_speed;
 
   /// The default \#WINDOW_ATTR. This is what is changed by the
-  std::vector<int> windowAttr;
+  std::vector<int> window_attr;
 
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
   {
-    ar & autoModeBaseTime & autoModeCharTime & messageSpeed
-      & windowAttr;
+    ar & auto_mode_base_time & auto_mode_char_time & message_speed
+      & window_attr;
   }
 };
 
@@ -188,10 +188,10 @@ public:
   void executeTextSystem(RLMachine& machine);
 
   virtual void render(RLMachine& machine) = 0;
-  void hideTextWindow(int winNumber);
+  void hideTextWindow(int win_number);
   void hideAllTextWindows();
   void clearAllTextWindows();
-  virtual TextWindow& textWindow(RLMachine&, int textWindowNumber) = 0;
+  virtual TextWindow& textWindow(RLMachine&, int text_window_number) = 0;
   TextWindow& currentWindow(RLMachine& machine);
 
   /// @}
@@ -210,7 +210,7 @@ public:
   void snapshot(RLMachine& machine);
 
   /**
-   * Resets the text page in the currentSet
+   * Resets the text page in the current_set
    */
   void newPageOnWindow(RLMachine& machine, int window);
 
@@ -232,7 +232,7 @@ public:
   void backPage(RLMachine& machine);
   void forwardPage(RLMachine& machine);
 
-  void replayPageSet(PageSet& set, bool isCurrentPage);
+  void replayPageSet(PageSet& set, bool is_current_page);
 
   bool isReadingBacklog() const;
   void stopReadingBacklog();
@@ -252,16 +252,16 @@ public:
   void setAutoMode(int i) { auto_mode_ = (bool)i; }
   int autoMode() const { return (int)auto_mode_; }
 
-  void setAutoBaseTime(int i) { globals_.autoModeBaseTime = i; }
-  int autoBaseTime() const { return globals_.autoModeBaseTime; }
+  void setAutoBaseTime(int i) { globals_.auto_mode_base_time = i; }
+  int autoBaseTime() const { return globals_.auto_mode_base_time; }
 
-  void setAutoCharTime(int i) { globals_.autoModeCharTime = i; }
-  int autoCharTime() const { return globals_.autoModeCharTime; }
+  void setAutoCharTime(int i) { globals_.auto_mode_char_time = i; }
+  int autoCharTime() const { return globals_.auto_mode_char_time; }
 
-  int getAutoTime(int numChars);
+  int getAutoTime(int num_chars);
   /// @}
 
-  void setKeyCursor(RLMachine& machine, int newCursor);
+  void setKeyCursor(RLMachine& machine, int new_cursor);
 
   /**
    * Returns the key cursor index.
@@ -279,8 +279,8 @@ public:
   void setMessageNoWait(int i) { message_no_wait_ = i; }
   int messageNoWait() const { return message_no_wait_; }
 
-  void setMessageSpeed(int i) { globals_.messageSpeed = i; }
-  int messageSpeed() const { return globals_.messageSpeed; }
+  void setMessageSpeed(int i) { globals_.message_speed = i; }
+  int messageSpeed() const { return globals_.message_speed; }
 
   /**
    * @name Window Attr Related functions
@@ -292,19 +292,19 @@ public:
    * @{
    */
   virtual void setDefaultWindowAttr(const std::vector<int>& attr);
-  std::vector<int> windowAttr() const { return globals_.windowAttr; }
+  std::vector<int> windowAttr() const { return globals_.window_attr; }
 
-  int windowAttrR() const { return globals_.windowAttr.at(0); }
-  int windowAttrG() const { return globals_.windowAttr.at(1); }
-  int windowAttrB() const { return globals_.windowAttr.at(2); }
-  int windowAttrA() const { return globals_.windowAttr.at(3); }
-  int windowAttrF() const { return globals_.windowAttr.at(4); }
+  int windowAttrR() const { return globals_.window_attr.at(0); }
+  int windowAttrG() const { return globals_.window_attr.at(1); }
+  int windowAttrB() const { return globals_.window_attr.at(2); }
+  int windowAttrA() const { return globals_.window_attr.at(3); }
+  int windowAttrF() const { return globals_.window_attr.at(4); }
 
-  virtual void setWindowAttrR(int i) { globals_.windowAttr.at(0) = i; }
-  virtual void setWindowAttrG(int i) { globals_.windowAttr.at(1) = i; }
-  virtual void setWindowAttrB(int i) { globals_.windowAttr.at(2) = i; }
-  virtual void setWindowAttrA(int i) { globals_.windowAttr.at(3) = i; }
-  virtual void setWindowAttrF(int i) { globals_.windowAttr.at(4) = i; }
+  virtual void setWindowAttrR(int i) { globals_.window_attr.at(0) = i; }
+  virtual void setWindowAttrG(int i) { globals_.window_attr.at(1) = i; }
+  virtual void setWindowAttrB(int i) { globals_.window_attr.at(2) = i; }
+  virtual void setWindowAttrA(int i) { globals_.window_attr.at(3) = i; }
+  virtual void setWindowAttrF(int i) { globals_.window_attr.at(4) = i; }
   /// @}
 
   /**

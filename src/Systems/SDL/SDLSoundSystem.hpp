@@ -71,13 +71,13 @@ private:
    * it's not in the cache and then stuffs it into the cache.)
    *
    * @param machine Current machine context
-   * @param fileName Name of the file (minus extension)
+   * @param file_name Name of the file (minus extension)
    * @param cache Which cache to check (and store) the
    * @return The loaded sound chunk
    */
   static SDLSoundChunkPtr getSoundChunk(
     RLMachine& machine,
-    const std::string& fileName,
+    const std::string& file_name,
     SoundChunkCache& cache);
 
   /**
@@ -86,12 +86,12 @@ private:
    * that takes a raw channel can verify its input.
    *
    * @param machine Current machine context
-   * @param wavFile Name of the file (minux extension)
+   * @param wav_file Name of the file (minux extension)
    * @param channel Channel to play on (both NUM_BASE_CHANNELS and
    *                NUM_EXTRA_WAVPLAY_CHANNELS are legal here.)
    * @param loop    Whether to loop this sound endlessly
    */
-  void wavPlayImpl(RLMachine& machine, const std::string& wavFile,
+  void wavPlayImpl(RLMachine& machine, const std::string& wav_file,
                    const int channel, bool loop);
 
   /**
@@ -99,7 +99,7 @@ private:
    * found.
    */
   boost::shared_ptr<SDLMusic> LoadMusic(
-    RLMachine& machine, const std::string& bgmName);
+    RLMachine& machine, const std::string& bgm_name);
 
 public:
   SDLSoundSystem(Gameexe& gexe);
@@ -110,28 +110,28 @@ public:
   virtual void setBgmEnabled(const int in);
   virtual void setChannelVolume(const int channel, const int level);
 
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop);
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop,
+  virtual void wavPlay(RLMachine& machine, const std::string& wav_file, bool loop);
+  virtual void wavPlay(RLMachine& machine, const std::string& wav_file, bool loop,
                        const int channel);
-  virtual void wavPlay(RLMachine& machine, const std::string& wavFile, bool loop,
-                       const int channel, const int fadeinMs);
+  virtual void wavPlay(RLMachine& machine, const std::string& wav_file, bool loop,
+                       const int channel, const int fadein_ms);
   virtual bool wavPlaying(RLMachine& machine, const int channel);
   virtual void wavStop(const int channel);
   virtual void wavStopAll();
   virtual void wavFadeOut(const int channel, const int fadetime);
 
-  virtual void playSe(RLMachine& machine, const int seNum);
+  virtual void playSe(RLMachine& machine, const int se_num);
 
   virtual int bgmStatus() const;
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop);
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
-                       int fadeInMs);
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgmName, bool loop,
-                       int fadeInMs, int fadeOutMs);
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop);
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+                       int fade_in_ms);
+  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+                       int fade_in_ms, int fade_out_ms);
   virtual void bgmStop();
   virtual void bgmPause();
   virtual void bgmUnPause();
-  virtual void bgmFadeOut(int fadeOutMs);
+  virtual void bgmFadeOut(int fade_out_ms);
   virtual std::string bgmName() const;
 
   virtual void reset();

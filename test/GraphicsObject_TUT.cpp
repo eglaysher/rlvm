@@ -92,7 +92,7 @@ template<>
 void object::test<1>()
 {
   stringstream ss;
-  Serialization::g_currentMachine = &rlmachine;
+  Serialization::g_current_machine = &rlmachine;
 
   {
     const scoped_ptr<GraphicsObjectData> inputObjOfFile(
@@ -110,7 +110,7 @@ void object::test<1>()
     ensure_equals("Preserved file name", obj.filename(), FILE_NAME);
   }
 
-  Serialization::g_currentMachine = NULL;
+  Serialization::g_current_machine = NULL;
 }
 
 // -----------------------------------------------------------------------
@@ -123,7 +123,7 @@ template<>
 void object::test<2>()
 {
   stringstream ss;
-  Serialization::g_currentMachine = &rlmachine;
+  Serialization::g_current_machine = &rlmachine;
 
   {
     const scoped_ptr<GraphicsObject> obj(new GraphicsObject());
@@ -145,7 +145,7 @@ void object::test<2>()
     ensure_equals("Didn't preserve filename", obj.filename(), FILE_NAME);
   }
 
-  Serialization::g_currentMachine = NULL;
+  Serialization::g_current_machine = NULL;
 }
 
 // -----------------------------------------------------------------------

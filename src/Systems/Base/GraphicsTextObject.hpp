@@ -38,8 +38,8 @@ class GraphicsObject;
 class Surface;
 
 /**
- * Represents the textual data made with commands such as objOfText,
- * objSetText, objTextOpts, et cetera.
+ * Represents the textual data made with commands such as obj_of_text,
+ * obj_set_text, obj_text_opts, et cetera.
  */
 class GraphicsTextObject : public GraphicsObjectData
 {
@@ -54,7 +54,7 @@ private:
   void updateSurface(RLMachine& machine,
 					 const GraphicsObject& rp);
 
-  bool needsUpdate(const GraphicsObject& renderingProperties);
+  bool needsUpdate(const GraphicsObject& rendering_properties);
 
 public:
   GraphicsTextObject();
@@ -64,12 +64,12 @@ public:
 
   // ------------------------------------ [ GraphicsObjectData interface ]
   virtual void render(RLMachine& machine,
-                      const GraphicsObject& renderingProperties);
+                      const GraphicsObject& rendering_properties);
 
   virtual int pixelWidth(RLMachine& machine,
-                         const GraphicsObject& renderingProperties);
+                         const GraphicsObject& rendering_properties);
   virtual int pixelHeight(RLMachine& machine,
-                          const GraphicsObject& renderingProperties);
+                          const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
 

@@ -45,16 +45,16 @@ using namespace std;
 // -----------------------------------------------------------------------
 // MouseCursor (public)
 // -----------------------------------------------------------------------
-MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursorSurface)
-  : cursor_surface_(cursorSurface)
+MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursor_surface)
+  : cursor_surface_(cursor_surface)
 {
   findHotspot();
 
   int alphaR, alphaG, alphaB;
-  cursorSurface->getDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
+  cursor_surface->getDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
 
   cursor_surface_ =
-    cursorSurface->clipAsColorMask(CURSOR_RECT, alphaR, alphaG, alphaB);
+    cursor_surface->clipAsColorMask(CURSOR_RECT, alphaR, alphaG, alphaB);
 }
 
 // -----------------------------------------------------------------------
@@ -64,19 +64,19 @@ MouseCursor::~MouseCursor() {}
 // -----------------------------------------------------------------------
 
 void MouseCursor::renderHotspotAt(RLMachine& machine,
-                                  const Point& mouseLocation)
+                                  const Point& mouse_location)
 {
-  Point renderPoint = getTopLeftForHotspotAt(mouseLocation);
+  Point render_point = getTopLeftForHotspotAt(mouse_location);
   cursor_surface_->renderToScreen(
     Rect(0, 0, CURSOR_SIZE),
-    Rect(renderPoint, CURSOR_SIZE));
+    Rect(render_point, CURSOR_SIZE));
 }
 
 // -----------------------------------------------------------------------
 
-Point MouseCursor::getTopLeftForHotspotAt(const Point& mouseLocation)
+Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location)
 {
-  return mouseLocation - hotspot_offset_;
+  return mouse_location - hotspot_offset_;
 }
 
 // -----------------------------------------------------------------------

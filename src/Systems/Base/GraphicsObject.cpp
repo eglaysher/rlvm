@@ -54,19 +54,19 @@ const int DEFAULT_TEXT_SHADOWCOLOUR = 0;
 const Rect EMPTY_CLIP = Rect(Point(0, 0), Size(-1, -1));
 
 //boost::shared_ptr<GraphicsObject::Impl> g_constantBaseObj(
-const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_emptyImpl(
+const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_empty_impl(
   new GraphicsObject::Impl);
 
 // -----------------------------------------------------------------------
 // GraphicsObject::TextProperties
 // -----------------------------------------------------------------------
 GraphicsObject::Impl::TextProperties::TextProperties()
-  : textSize(DEFAULT_TEXT_SIZE),
+  : text_size(DEFAULT_TEXT_SIZE),
     xspace(DEFAULT_TEXT_XSPACE),
     yspace(DEFAULT_TEXT_YSPACE),
     vertical(DEFAULT_TEXT_VERTICAL),
     colour(DEFAULT_TEXT_COLOUR),
-    shadowColour(DEFAULT_TEXT_SHADOWCOLOUR)
+    shadow_colour(DEFAULT_TEXT_SHADOWCOLOUR)
 {
 }
 
@@ -74,8 +74,7 @@ GraphicsObject::Impl::TextProperties::TextProperties()
 // GraphicsObject
 // -----------------------------------------------------------------------
 GraphicsObject::GraphicsObject()
-  : impl_(s_emptyImpl)
-//  : impl_(new GraphicsObject::Impl)
+  : impl_(s_empty_impl)
 {}
 
 // -----------------------------------------------------------------------
@@ -328,10 +327,10 @@ GraphicsObjectData& GraphicsObject::objectData()
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setWipeCopy(const int wipeCopy)
+void GraphicsObject::setWipeCopy(const int wipe_copy)
 {
   makeImplUnique();
-  impl_->wipe_copy_ = wipeCopy;
+  impl_->wipe_copy_ = wipe_copy;
 }
 
 // -----------------------------------------------------------------------
@@ -360,7 +359,7 @@ const std::string& GraphicsObject::textText() const
 int GraphicsObject::textSize() const
 {
   if(impl_->text_properties_)
-    return impl_->text_properties_->textSize;
+    return impl_->text_properties_->text_size;
   else
     return DEFAULT_TEXT_SIZE;
 }
@@ -410,7 +409,7 @@ int GraphicsObject::textColour() const
 int GraphicsObject::textShadowColour() const
 {
   if(impl_->text_properties_)
-    return impl_->text_properties_->shadowColour;
+    return impl_->text_properties_->shadow_colour;
   else
     return DEFAULT_TEXT_SHADOWCOLOUR;
 }
@@ -423,12 +422,12 @@ void GraphicsObject::setTextOps(
   makeImplUnique();
 
   impl_->makeSureHaveTextProperties();
-  impl_->text_properties_->textSize = size;
+  impl_->text_properties_->text_size = size;
   impl_->text_properties_->xspace = xspace;
   impl_->text_properties_->yspace = yspace;
   impl_->text_properties_->vertical = vertical;
   impl_->text_properties_->colour = colour;
-  impl_->text_properties_->shadowColour = shadow;
+  impl_->text_properties_->shadow_colour = shadow;
 }
 
 // -----------------------------------------------------------------------
@@ -462,7 +461,7 @@ void GraphicsObject::deleteObject()
 
 void GraphicsObject::clearObject()
 {
-  impl_ = s_emptyImpl;
+  impl_ = s_empty_impl;
   object_data_.reset();
 }
 
@@ -642,8 +641,8 @@ template<class Archive>
 void GraphicsObject::Impl::TextProperties::serialize(
   Archive& ar, unsigned int version)
 {
-  ar & value & textSize & xspace & yspace & vertical & colour &
-    shadowColour;
+  ar & value & text_size & xspace & yspace & vertical & colour &
+    shadow_colour;
 }
 
 // -----------------------------------------------------------------------

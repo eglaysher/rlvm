@@ -61,8 +61,8 @@ void LongOperation::gainFocus()
 // -----------------------------------------------------------------------
 
 PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
-  LongOperation* inOp)
-  : operation_(inOp)
+  LongOperation* in_op)
+  : operation_(in_op)
 {
 }
 
@@ -76,11 +76,11 @@ PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator()
 
 bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine)
 {
-  bool retVal = (*operation_)(machine);
-  if(retVal)
+  bool ret_val = (*operation_)(machine);
+  if(ret_val)
     performAfterLongOperation(machine);
 
-  return retVal;
+  return ret_val;
 }
 
 // -----------------------------------------------------------------------

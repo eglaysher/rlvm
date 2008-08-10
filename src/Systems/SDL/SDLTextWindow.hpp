@@ -68,7 +68,7 @@ private:
 
   void renderButtons(RLMachine& machine);
 
-  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& nextChar);
+  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
 
 public:
   SDLTextWindow(RLMachine& machine, int window);
@@ -94,7 +94,7 @@ public:
   virtual void setWakuButton(RLMachine& machine, const std::string& name);
 
   virtual void setName(RLMachine& machine, const std::string& utf8name,
-                       const std::string& nextChar);
+                       const std::string& next_char);
   virtual void hardBrake();
   virtual void resetIndentation();
 

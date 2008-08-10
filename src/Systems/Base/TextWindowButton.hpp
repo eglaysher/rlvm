@@ -48,7 +48,7 @@ protected:
 
 public:
   TextWindowButton();
-  TextWindowButton(bool use, GameexeInterpretObject locationBox);
+  TextWindowButton(bool use, GameexeInterpretObject location_box);
   virtual ~TextWindowButton();
 
   /// Returns the absolute screen coordinate of this button.
@@ -67,7 +67,7 @@ public:
   //
   void render(RLMachine& machine, TextWindow& window,
               const boost::shared_ptr<Surface>& buttons,
-              int basePattern);
+              int base_pattern);
 
   /// Called when the button is pressed
   virtual void buttonPressed() {}
@@ -91,7 +91,7 @@ private:
   CallbackFunction action_;
 
 public:
-  ActionTextWindowButton(bool use, GameexeInterpretObject locationBox,
+  ActionTextWindowButton(bool use, GameexeInterpretObject location_box,
                          CallbackFunction action);
   ~ActionTextWindowButton();
 
@@ -111,7 +111,7 @@ private:
   bool on_;
 
 public:
-  ActivationTextWindowButton(bool use, GameexeInterpretObject locationBox,
+  ActivationTextWindowButton(bool use, GameexeInterpretObject location_box,
                              CallbackFunction start,
                              CallbackFunction end);
   ~ActivationTextWindowButton();
@@ -135,10 +135,10 @@ private:
 
 public:
   RepeatActionWhileHoldingWindowButton(
-    bool use, GameexeInterpretObject locationBox,
+    bool use, GameexeInterpretObject location_box,
     RLMachine& machine,
     CallbackFunction callback,
-    unsigned int timeBetweenInvocations);
+    unsigned int time_between_invocations);
   ~RepeatActionWhileHoldingWindowButton();
 
   virtual void buttonPressed();
@@ -158,8 +158,8 @@ private:
 
 public:
   ExbtnWindowButton(RLMachine& machine,
-                    bool use, GameexeInterpretObject locationBox,
-                    GameexeInterpretObject toCall);
+                    bool use, GameexeInterpretObject location_box,
+                    GameexeInterpretObject to_call);
   ~ExbtnWindowButton();
 
   virtual void buttonReleased();

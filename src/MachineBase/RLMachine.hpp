@@ -71,7 +71,7 @@ public:
   boost::scoped_ptr<Memory> memory_;
 
   /// The RealLive machine's single result register
-  int storeRegister;
+  int store_register;
 
   /// Mapping between the module_type:module pair and the module implementation
   typedef boost::ptr_map<unsigned int, RLModule> ModuleMap;
@@ -93,10 +93,10 @@ public:
   libReallive::Archive& archive_;
 
   /// The actual call stack.
-  std::vector<StackFrame> callStack;
+  std::vector<StackFrame> call_stack;
 
   /// The state of the call stack the last time a savepoint was called
-  std::vector<StackFrame> savepointCallStack;
+  std::vector<StackFrame> savepoint_call_stack;
 
   /// The most recent line marker we've come across
   int line_;
@@ -110,7 +110,7 @@ public:
   boost::scoped_ptr<OpcodeLog> undefined_log_;
 
   unsigned int packModuleNumber(int modtype, int module);
-  void unpackModuleNumber(unsigned int packedModuleNumber, int& modtype,
+  void unpackModuleNumber(unsigned int packed_module_number, int& modtype,
                           int& module);
 
   /**
@@ -129,7 +129,7 @@ public:
   bool mark_savepoints_;
 
 public:
-  RLMachine(System& inSystem, libReallive::Archive& inArchive);
+  RLMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~RLMachine();
 
   /** Registers a given module with this RLMachine instance. A module is a set of
@@ -137,7 +137,7 @@ public:
    *
    * @param module Module to attach to the RLMachine
    * @note RLMachine takes ownership of any RLModule object passed in through
-   * attachModule.
+   * attach_module.
    */
   void attachModule(RLModule* module);
 
@@ -179,7 +179,7 @@ public:
   typedef long(libReallive::Scenario::*AttributeFunction)() const;
 
   /**
-   * Implementation function for shouldSet*Savepoint().
+   * Implementation function for should_set*Savepoint().
    *
    * - If automatic savepoints have been explicitly disabled with
    *   DisableAutoSavepoints, return false. Otherwise...
@@ -190,7 +190,7 @@ public:
    * - Check a Gameexe key, which has the final say.
    */
   bool savepointDecide(AttributeFunction func,
-                       const std::string& gameexeKey) const;
+                       const std::string& gameexe_key) const;
 
   /**
    * Whether the DisableAutoSavepoints override is on. This is
@@ -249,16 +249,16 @@ public:
   /**
    * Sets the store register
    *
-   * @param newValue New value of the store register
+   * @param new_value New value of the store register
    */
-  void setStoreRegister(int newValue) { storeRegister = newValue; }
+  void setStoreRegister(int new_value) { store_register = new_value; }
 
   /**
    * Returns the current value of the store register
    *
    * @return The value of the store register
    */
-  int getStoreRegisterValue() const { return storeRegister; }
+  int getStoreRegisterValue() const { return store_register; }
 
   /**
    * Returns the internal memory object for raw access to the machine
@@ -308,18 +308,18 @@ public:
    * Permanently moves the instruction pointer to the passed in
    * iterator in the current stack frame.
    *
-   * @param newLocation New location of the instruction pointer.
+   * @param new_location New location of the instruction pointer.
    */
-  void gotoLocation(libReallive::BytecodeList::iterator newLocation);
+  void gotoLocation(libReallive::BytecodeList::iterator new_location);
 
   /**
    * Pushes a new stack frame onto the call stack, saving the current
    * location. The new frame contains the current SEEN with
-   * newLocation as the instruction pointer.
+   * new_location as the instruction pointer.
    *
-   * @param newLocation New location of the instruction pointer.
+   * @param new_location New location of the instruction pointer.
    */
-  void gosub(libReallive::BytecodeList::iterator newLocation);
+  void gosub(libReallive::BytecodeList::iterator new_location);
 
   /**
    * Returns from the most recent gosub call.
@@ -334,13 +334,13 @@ public:
    * passed to this LongOperation instead of normal bytecode passing
    * until the LongOperation gives control up.
    *
-   * @param longOperation LongOperation to take control
-   * @warning Never call pushLongOperation from a LongOperation that
+   * @param long_operation LongOperation to take control
+   * @warning Never call push_long_operation from a LongOperation that
    *          is about to return true. The operation you just pushed
    *          will be removed instead of the current operation.
    * @see LongOperation
    */
-  void pushLongOperation(LongOperation* longOperation);
+  void pushLongOperation(LongOperation* long_operation);
 
   /**
    * Returns whether the top of the call stack is a LongOperation.
@@ -381,7 +381,7 @@ public:
   /**
    * @name Execution interface
    *
-   * Normally, executeNextInstruction will call runOnMachine() on
+   * Normally, execute_next_instruction will call runOnMachine() on
    * whatever BytecodeElement is currently pointed to by the
    * instruction pointer.
    *
@@ -413,12 +413,12 @@ public:
   /**
    * Marks a kidoku marker as visited.
    *
-   * @param kidokuNumber Kidoku number in the current scene to set to
+   * @param kidoku_number Kidoku number in the current scene to set to
    *                     true
    * @todo This function is half implemented; it will set savepoints,
    *       but it won't make a mark in the actual kidoku table.
    */
-  void setKidokuMarker(int kidokuNumber);
+  void setKidokuMarker(int kidoku_number);
 
   /// @}
 
@@ -467,7 +467,7 @@ public:
 
   /**
    * Starts logging opcodes that we don't handle. Over very long runs, this is
-   * easier to deal with than setPrintUndefinedOpcodes. Will print the results
+   * easier to deal with than set_print_undefined_opcodes. Will print the results
    * to stderr on machine destruction.
    */
   void recordUndefinedOpcodeCounts();
@@ -485,7 +485,7 @@ public:
    * exception is thrown while executing an instruction. By default,
    * it will.
    */
-  void setHaltOnException(bool haltOnException);
+  void setHaltOnException(bool halt_on_exception);
 
   /**
    * Returns the current System that this RLMachine outputs to.

@@ -108,14 +108,14 @@ public:
    * another, over a given length of time. The counter can be queried at any
    * point to get its current value."
    *
-   * Valid values for layer are 0 and 1. Valid values for frameCounter are 0
+   * Valid values for layer are 0 and 1. Valid values for frame_counter are 0
    * through 255.
    *
    * @{
    */
-  void setFrameCounter(int layer, int frameCounter, FrameCounter* counter);
-  FrameCounter& getFrameCounter(int layer, int frameCounter);
-  bool frameCounterExists(int layer, int frameCounter);
+  void setFrameCounter(int layer, int frame_counter, FrameCounter* counter);
+  FrameCounter& getFrameCounter(int layer, int frame_counter);
+  bool frameCounterExists(int layer, int frame_counter);
   /// @}
 
   // -----------------------------------------------------------------------

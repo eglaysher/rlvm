@@ -57,7 +57,7 @@ using std::vector;
 // TextWindow
 // -----------------------------------------------------------------------
 
-TextWindow::TextWindow(RLMachine& machine, int windowNum)
+TextWindow::TextWindow(RLMachine& machine, int window_num)
   : current_line_number_(0), current_indentation_in_pixels_(0),
     use_indentation_(0), colour_(), filter_(0), is_visible_(0),
     in_selection_mode_(0), next_id_(0)
@@ -70,7 +70,7 @@ TextWindow::TextWindow(RLMachine& machine, int windowNum)
   screen_height_ = size.height();
 
   // Base form for everything to follow.
-  GameexeInterpretObject window(gexe("WINDOW", windowNum));
+  GameexeInterpretObject window(gexe("WINDOW", window_num));
 
   // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
   window_attr_mod_ = window("ATTR_MOD");
@@ -124,51 +124,51 @@ void TextWindow::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setTextboxPadding(const vector<int>& posData)
+void TextWindow::setTextboxPadding(const vector<int>& pos_data)
 {
-  upper_box_padding_ = posData.at(0);
-  lower_box_padding_ = posData.at(1);
-  left_box_padding_ = posData.at(2);
-  right_box_padding_ = posData.at(3);
+  upper_box_padding_ = pos_data.at(0);
+  lower_box_padding_ = pos_data.at(1);
+  left_box_padding_ = pos_data.at(2);
+  right_box_padding_ = pos_data.at(3);
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setDefaultTextColor(const vector<int>& colorData)
+void TextWindow::setDefaultTextColor(const vector<int>& color_data)
 {
-  default_color_ = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
+  default_color_ = RGBColour(color_data.at(0), color_data.at(1), color_data.at(2));
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setFontColor(const vector<int>& colorData)
+void TextWindow::setFontColor(const vector<int>& color_data)
 {
-  font_colour_ = RGBColour(colorData.at(0), colorData.at(1), colorData.at(2));
+  font_colour_ = RGBColour(color_data.at(0), color_data.at(1), color_data.at(2));
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowSizeInCharacters(const vector<int>& posData)
+void TextWindow::setWindowSizeInCharacters(const vector<int>& pos_data)
 {
-  x_window_size_in_chars_ = posData.at(0);
-  y_window_size_in_chars_ = posData.at(1);
+  x_window_size_in_chars_ = pos_data.at(0);
+  y_window_size_in_chars_ = pos_data.at(1);
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setSpacingBetweenCharacters(const vector<int>& posData)
+void TextWindow::setSpacingBetweenCharacters(const vector<int>& pos_data)
 {
-  x_spacing_ = posData.at(0);
-  y_spacing_ = posData.at(1);
+  x_spacing_ = pos_data.at(0);
+  y_spacing_ = pos_data.at(1);
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowPosition(const vector<int>& posData)
+void TextWindow::setWindowPosition(const vector<int>& pos_data)
 {
-  origin_ = posData.at(0);
-  x_distance_from_origin_ = posData.at(1);
-  y_distance_from_origin_ = posData.at(2);
+  origin_ = pos_data.at(0);
+  x_distance_from_origin_ = pos_data.at(1);
+  y_distance_from_origin_ = pos_data.at(2);
 }
 
 // -----------------------------------------------------------------------
@@ -316,11 +316,11 @@ void automodeTurnsOff()
 
 
 void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
-                               const int wakuNo)
+                               const int waku_no)
 {
   using namespace boost;
 
-  GameexeInterpretObject waku(gexe("WAKU", wakuNo, 0));
+  GameexeInterpretObject waku(gexe("WAKU", waku_no, 0));
 
   setWakuMain(machine, waku("NAME").to_string(""));
   setWakuBacking(machine, waku("BACK").to_string(""));

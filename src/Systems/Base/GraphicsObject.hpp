@@ -175,18 +175,18 @@ public:
   void render(RLMachine& machine);
 
   /**
-   * Deletes the object data. Corresponds to the RLAPI command objDelete.
+   * Deletes the object data. Corresponds to the RLAPI command obj_delete.
    */
   void deleteObject();
 
   /**
    * Deletes the object data and resets all values in this
-   * GraphicsObject. Corresponds to the RLAPI command objClear.
+   * GraphicsObject. Corresponds to the RLAPI command obj_clear.
    */
   void clearObject();
 
   int wipeCopy() const { return impl_->wipe_copy_; }
-  void setWipeCopy(const int wipeCopy);
+  void setWipeCopy(const int wipe_copy);
 
   /**
    * Called each pass through the gameloop to see if this object needs
@@ -258,7 +258,7 @@ private:
     /// rendering. (WTF?!)
     int adjust_x_[8], adjust_y_[8];
 
-    /// Whatever objAdjustVert operates on; what's this used for?
+    /// Whatever obj_adjust_vert operates on; what's this used for?
     int whatever_adjust_vert_operates_on_;
 
     /// The origin
@@ -321,7 +321,7 @@ private:
      *
      * Certain pieces of state from Animated objects are cached on the
      * GraphicsObject to implement the delete-after-play semantics of
-     * ganPlayOnce, et all.
+     * gan_play_once, et all.
      *
      * @{
      */
@@ -343,12 +343,12 @@ private:
 
       std::string value;
 
-      int textSize, xspace, yspace;
+      int text_size, xspace, yspace;
 
       // Figure this out later.
       int vertical;
       int colour;
-      int shadowColour;
+      int shadow_colour;
 
       /// boost::serialization support
       template<class Archive>
@@ -360,7 +360,7 @@ private:
 
     /// @}
 
-    /// The wipeCopy bit
+    /// The wipe_copy bit
     int wipe_copy_;
 
     friend class boost::serialization::access;
@@ -375,7 +375,7 @@ private:
    * once, and then is used as the initial value of impl_, where it
    * is cloned on write.
    */
-  static const boost::shared_ptr<GraphicsObject::Impl> s_emptyImpl;
+  static const boost::shared_ptr<GraphicsObject::Impl> s_empty_impl;
 
   /// Our actual implementation data
   boost::shared_ptr<GraphicsObject::Impl> impl_;

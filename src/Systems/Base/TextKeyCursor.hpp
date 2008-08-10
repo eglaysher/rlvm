@@ -66,10 +66,10 @@ private:
 public:
   /**
    * Creates a Key Cursor object based off of the properties in
-   * \#CURSOR.curosrNumber. This will load all image files, and data
+   * \#CURSOR.curosr_number. This will load all image files, and data
    * from the Gameexe.
    */
-  TextKeyCursor(RLMachine& machine, int curosrNumber);
+  TextKeyCursor(RLMachine& machine, int curosr_number);
 
   ~TextKeyCursor();
 
@@ -84,7 +84,7 @@ public:
    * Render this key cursor to the specified window, which owns
    * positional information.
    */
-  void render(RLMachine& machine, TextWindow& textWindow);
+  void render(RLMachine& machine, TextWindow& text_window);
 
   /**
    * @name Accessors
@@ -104,9 +104,9 @@ public:
    * @{
    */
   void setCursorImage(RLMachine& machine, const std::string& file);
-  void setCursorSize(const std::vector<int>& imageSize);
-  void setCursorFrameCount(const int frameCount);
-  void setCursorFrameSpeed(const int frameSpeed);
+  void setCursorSize(const std::vector<int>& image_size);
+  void setCursorFrameCount(const int frame_count);
+  void setCursorFrameSpeed(const int frame_speed);
   /// @}
 
 };

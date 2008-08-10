@@ -61,7 +61,7 @@ using libReallive::IntMemRef;
  * Helper function that throws errors for illegal memory access
  *
  * @param location The illegal index that was accessed
- * @see RLMachine::getIntValue
+ * @see RLMachine::get_int_value
  */
 static void throwIllegalIndex(const IntMemRef& ref,
                               const std::string& function)
@@ -87,7 +87,7 @@ int Memory::getIntValue(const IntMemRef& ref)
     if ((unsigned int)(location) >= 2000)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
-    return intVar[index][location];
+    return int_var[index][location];
   } else {
    // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
@@ -95,7 +95,7 @@ int Memory::getIntValue(const IntMemRef& ref)
     if ((unsigned int)(location) >= (64000u / factor))
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
-    return (intVar[index][location / eltsize] >>
+    return (int_var[index][location / eltsize] >>
             ((location % eltsize) * factor)) & ((1 << factor) - 1);
   }
 }
@@ -115,7 +115,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value)
     // A[]..G[], Z[] を直に書く
     if ((unsigned int)(location) >= 2000)
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
-    intVar[index][location] = value;
+    int_var[index][location] = value;
   } else {
     // Ab[]..G4b[], Z8b[] などを書く
     int factor = 1 << (type - 1);
@@ -125,8 +125,8 @@ void Memory::setIntValue(const IntMemRef& ref, int value)
     if ((unsigned int)(location) >= (64000u / factor))
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
 
-    intVar[index][location / eltsize] =
-      (intVar[index][location / eltsize] & ~(eltmask << shift))
+    int_var[index][location / eltsize] =
+      (int_var[index][location / eltsize] & ~(eltmask << shift))
       | (value & eltmask) << shift;
   }
 }

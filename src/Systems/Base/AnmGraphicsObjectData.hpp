@@ -63,7 +63,7 @@ private:
 
   std::vector<Frame> frames;
   std::vector< std::vector<int> > framelist;
-  std::vector< std::vector<int> > animationSet;
+  std::vector< std::vector<int> > animation_set;
 
   /// The image the above coordinates map into.
   boost::shared_ptr<Surface> image;
@@ -99,12 +99,12 @@ private:
    *
    * @{
    */
-  bool testFileMagic(boost::scoped_array<char>& anmData);
+  bool testFileMagic(boost::scoped_array<char>& anm_data);
   void readIntegerList(
     const char* start, int offset, int iterations,
     std::vector< std::vector<int> >& dest);
   void loadAnmFileFromData(
-    RLMachine& machine, boost::scoped_array<char>& anmData);
+    RLMachine& machine, boost::scoped_array<char>& anm_data);
   void fixAxis(Frame& frame, int width, int height);
   /// @}
 
@@ -116,12 +116,12 @@ public:
   void loadAnmFile(RLMachine& machine);
 
   virtual void render(RLMachine& machine,
-                      const GraphicsObject& renderingProperties);
+                      const GraphicsObject& rendering_properties);
 
   virtual int pixelWidth(RLMachine& machine,
-						 const GraphicsObject& renderingProperties);
+						 const GraphicsObject& rendering_properties);
   virtual int pixelHeight(RLMachine& machine,
-						  const GraphicsObject& renderingProperties);
+						  const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
   virtual void execute(RLMachine& machine);
