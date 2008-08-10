@@ -352,7 +352,7 @@ public:
 
   // ----------------------------------------- [ Surface loading functions ]
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-	  const boost::filesystem::path& filename) = 0;
+    RLMachine& machine, const std::string& short_filename) = 0;
 
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 

@@ -179,7 +179,7 @@ public:
   virtual void freeDC(int dc);
 
   virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-    const boost::filesystem::path& filename);
+    RLMachine& machine, const std::string& short_filename);
 
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size);

@@ -159,8 +159,8 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
 
   // Read the corresponding image file we read from, and load the image.
   string raw_file_name = data + 0x1c;
-  fs::path file_path = findFile(machine, raw_file_name, IMAGE_FILETYPES);
-  image = machine.system().graphics().loadSurfaceFromFile(file_path);
+  image = machine.system().graphics().loadSurfaceFromFile(
+    machine, raw_file_name);
 
   // Read the frame list
   const char* buf = data + 0xb8;

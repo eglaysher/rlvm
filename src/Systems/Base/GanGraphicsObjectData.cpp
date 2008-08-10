@@ -103,11 +103,10 @@ GanGraphicsObjectData::~GanGraphicsObjectData()
 
 void GanGraphicsObjectData::load(RLMachine& machine)
 {
-  fs::path img_file_path = findFile(machine, img_filename_, IMAGE_FILETYPES);
+  image = machine.system().graphics().loadSurfaceFromFile(
+    machine, img_filename_);
+
   fs::path gan_file_path = findFile(machine, gan_filename_, GAN_FILETYPES);
-
-  image = machine.system().graphics().loadSurfaceFromFile(img_file_path);
-
   fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
   if(!ifs)
   {

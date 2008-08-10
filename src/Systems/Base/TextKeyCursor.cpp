@@ -100,15 +100,11 @@ void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window)
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorImage(RLMachine& machine,
-                                   const std::string& name)
+void TextKeyCursor::setCursorImage(RLMachine& machine, const std::string& name)
 {
   if(name != "")
-  {
-    GraphicsSystem& gs = machine.system().graphics();
-    cursor_image_ =
-      gs.loadSurfaceFromFile(findFile(machine, name));
-  }
+    cursor_image_ = machine.system().graphics().loadSurfaceFromFile(
+      machine, name);
   else
     cursor_image_.reset();
 }

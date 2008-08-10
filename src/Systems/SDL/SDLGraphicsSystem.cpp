@@ -39,29 +39,28 @@
 
 #include "glew.h"
 
-#include "MachineBase/RLMachine.hpp"
-
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
-#include "Systems/SDL/SDLEventSystem.hpp"
-#include "Systems/SDL/SDLSurface.hpp"
-#include "Systems/SDL/SDLRenderToTextureSurface.hpp"
-#include "Systems/SDL/SDLUtils.hpp"
-#include "Systems/SDL/Texture.hpp"
 
-#include "Systems/Base/System.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "Modules/cp932toUnicode.hpp"
+#include "Systems/Base/CGMTable.hpp"
+#include "Systems/Base/Colour.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/MouseCursor.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/MouseCursor.hpp"
-#include "Systems/Base/Colour.hpp"
-
+#include "Systems/SDL/SDLEventSystem.hpp"
+#include "Systems/SDL/SDLRenderToTextureSurface.hpp"
+#include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
+#include "Systems/SDL/Texture.hpp"
 #include "libReallive/gameexe.h"
+
 #include "file.h"
 #include "Utilities.h"
 #include "LazyArray.hpp"
-
-#include "Modules/cp932toUnicode.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -586,12 +585,17 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
  * or it will be copied into the DC.
  */
 shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
-  const boost::filesystem::path& filename)
+  RLMachine& machine, const std::string& short_filename)
 {
+  // Record that we viewed this CG.
+  cgTable().setViewed(machine, short_filename);
+
+  boost::filesystem::path filename =
+    findFile(machine, short_filename, IMAGE_FILETYPES);
+
   // First check to see if this surface is already in our internal cache
   shared_ptr<Surface> cached_surface = image_cache_.fetch(filename);
-  if(cached_surface)
-  {
+  if(cached_surface) {
     return cached_surface;
   }
 

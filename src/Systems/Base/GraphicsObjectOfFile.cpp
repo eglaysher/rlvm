@@ -88,8 +88,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 void GraphicsObjectOfFile::loadFile(RLMachine& machine)
 {
-  fs::path full_path = findFile(machine, filename_);
-  surface_ = machine.system().graphics().loadSurfaceFromFile(full_path);
+  surface_ = machine.system().graphics().loadSurfaceFromFile(machine, filename_);
 }
 
 // -----------------------------------------------------------------------

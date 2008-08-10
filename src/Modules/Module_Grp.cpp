@@ -132,12 +132,13 @@ void blitDC1toDC0(RLMachine& machine)
  * @param opacity Opacity in range from 0 - 255
  * @param useAlpha Whether to use the alpha
  */
-void loadImageToDC1(GraphicsSystem& graphics,
-                    const fs::path& fileName,
+void loadImageToDC1(RLMachine& machine,
+                    const std::string& name,
                     const Rect& srcRect,
                     const Point& dest,
                     int opacity, bool useAlpha)
 {
+  GraphicsSystem& graphics = machine.system().graphics();
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> dc1 = graphics.getDC(1);
 
@@ -147,7 +148,7 @@ void loadImageToDC1(GraphicsSystem& graphics,
   dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
 
   // Load the section of the image file on top of dc1
-  shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(fileName));
+  shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, name));
   surface->blitToSurface(*graphics.getDC(1),
                          Rect(srcRect.origin(), size),
                          Rect(dest, size),
@@ -187,11 +188,10 @@ void handleOpenBgFileName(
 
   if(fileName != "?")
   {
-    if(fileName == "???") fileName = graphics.defaultGrpName();
-    fs::path filePath = findFile(machine, fileName);
+    if(fileName == "???")
+      fileName = graphics.defaultGrpName();
 
-    loadImageToDC1(graphics, filePath, srcRect, dest,
-                   opacity, useAlpha);
+    loadImageToDC1(machine, fileName, srcRect, dest, opacity, useAlpha);
   }
 }
 
@@ -314,8 +314,7 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     graphics.addGraphicsStackFrame(GRP_LOAD)
       .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
 
-    fs::path filepath = findFile(machine, filename);
-    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filepath));
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
 
     if(dc != 0 && dc != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(surface->size());
@@ -350,9 +349,8 @@ struct Grp_load_3 : public RLOp_Void_9<
 
   void operator()(RLMachine& machine, string filename, int dc,
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
-	fs::path filepath = findFile(machine, filename);
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(filepath));
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
     Rect srcRect = space_.makeRect(x1, y1, x2, y2);
     Rect destRect = Rect(dx, dy, srcRect.size());
 
@@ -477,10 +475,10 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     vector<int> selEffect = getSELEffect(machine, effectNum);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename == "???") filename = graphics.defaultGrpName();
-    fs::path filepath = findFile(machine, filename);
+    if(filename == "???")
+      filename = graphics.defaultGrpName();
 
-    loadImageToDC1(graphics, filepath,
+    loadImageToDC1(machine, filename,
                    Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
                    Point(selEffect[4], selEffect[5]),
                    opacity, use_alpha_);
@@ -532,15 +530,16 @@ struct Grp_open_3 : public RLOp_Void_9<
   {
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
-    fs::path filepath = findFile(machine, filename);
 
     Rect srcRect = space_.makeRect(x1, y1, x2, y2);
-    loadImageToDC1(graphics, filepath, srcRect, Point(dx, dy), opacity, use_alpha_);
+    loadImageToDC1(machine, filename, srcRect, Point(dx, dy), opacity,
+                   use_alpha_);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
+    LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0,
+                                                     effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();

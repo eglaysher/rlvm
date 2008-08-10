@@ -556,9 +556,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
 
       if (cursor_key.exists())
       {
-        string cursor_name = cursor_key;
-        fs::path cursor_path = findFile(machine, cursor_name, IMAGE_FILETYPES);
-        cursor_surface = loadSurfaceFromFile(cursor_path);
+        cursor_surface = loadSurfaceFromFile(machine, cursor_key);
         mouse_cursor_.reset(new MouseCursor(cursor_surface));
         cursor_cache_[cursor_] = mouse_cursor_;
       }

@@ -120,13 +120,13 @@ GraphicsObject& NullGraphicsSystem::getObject(int layer, int obj_number)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
-  const boost::filesystem::path& filename)
+  RLMachine& machine, const std::string& short_filename)
 {
-  graphics_system_log_.recordFunction("load_surface_from_file", filename);
+  graphics_system_log_.recordFunction("load_surface_from_file", short_filename);
 
   // Make this a real surface so we can track what's done with it
   return boost::shared_ptr<Surface>(
-    new NullSurface(filename.external_file_string(), Size(50, 50)));
+    new NullSurface(short_filename, Size(50, 50)));
 }
 
 // -----------------------------------------------------------------------

@@ -385,10 +385,9 @@ void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
 {
   if(name != "")
   {
-    GraphicsSystem& gs = machine.system().graphics();
     waku_main_ =
       dynamic_pointer_cast<SDLSurface>(
-        gs.loadSurfaceFromFile(findFile(machine, name)));
+        machine.system().graphics().loadSurfaceFromFile(machine, name));
   }
   else
     waku_main_.reset();
@@ -400,9 +399,8 @@ void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
 {
   if(name != "")
   {
-    GraphicsSystem& gs = machine.system().graphics();
     shared_ptr<SDLSurface> s = dynamic_pointer_cast<SDLSurface>(
-      gs.loadSurfaceFromFile(findFile(machine, name)));
+      machine.system().graphics().loadSurfaceFromFile(machine, name));
     s->setIsMask(true);
     waku_backing_ = s;
   }
@@ -416,9 +414,8 @@ void SDLTextWindow::setWakuButton(RLMachine& machine, const std::string& name)
 {
   if(name != "")
   {
-    GraphicsSystem& gs = machine.system().graphics();
     waku_button_ = dynamic_pointer_cast<SDLSurface>(
-      gs.loadSurfaceFromFile(findFile(machine, name)));
+      machine.system().graphics().loadSurfaceFromFile(machine, name));
   }
   else
     waku_button_.reset();
