@@ -35,6 +35,7 @@
 #include <iosfwd>
 #include <boost/scoped_array.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 
 class Surface;
@@ -49,44 +50,6 @@ class GraphicsObject;
  */
 class GanGraphicsObjectData : public GraphicsObjectData
 {
-private:
-  struct Frame {
-    int pattern;
-    int x;
-    int y;
-    int time;
-    int alpha;
-    int other; ///< WTF?
-  };
-
-  typedef std::vector< std::vector<Frame> > AnimationSets;
-  AnimationSets animation_sets;
-
-  std::string gan_filename_;
-  std::string img_filename_;
-
-  int current_set_;
-  int current_frame_;
-  int time_at_last_frame_change_;
-
-  /// The image the above coordinates map into.
-  boost::shared_ptr<Surface> image;
-
-  void testFileMagic(const std::string& file_name,
-                     boost::scoped_array<char>& gan_data, int file_size);
-  void readData(
-    RLMachine& machine,
-    const std::string& file_name,
-    boost::scoped_array<char>& gan_data, int file_size);
-  Frame readSetFrame(const std::string& filename, const char*& data);
-
-  void throwBadFormat(
-    const std::string& filename, const std::string& error);
-
-protected:
-
-  virtual void loopAnimation();
-
 public:
   GanGraphicsObjectData();
   GanGraphicsObjectData(RLMachine& machine, const std::string& ganfile,
@@ -108,6 +71,47 @@ public:
 
   virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
+
+protected:
+  /// Resets to the first frame.
+  virtual void loopAnimation();
+
+private:
+  struct Frame {
+    int pattern;
+    int x;
+    int y;
+    int time;
+    int alpha;
+    int other; ///< No idea what this is.
+  };
+
+  typedef std::vector< std::vector<Frame> > AnimationSets;
+
+  void testFileMagic(const std::string& file_name,
+                     boost::scoped_array<char>& gan_data, int file_size);
+  void readData(
+    RLMachine& machine,
+    const std::string& file_name,
+    boost::scoped_array<char>& gan_data, int file_size);
+  Frame readSetFrame(const std::string& filename, const char*& data);
+
+  /// Throws an error on bad GAN files.
+  void throwBadFormat(const std::string& filename, const std::string& error);
+
+  AnimationSets animation_sets;
+
+  std::string gan_filename_;
+  std::string img_filename_;
+
+  int current_set_;
+  int current_frame_;
+  int time_at_last_frame_change_;
+
+  /// The image the above coordinates map into.
+  boost::shared_ptr<Surface> image;
+
+  friend class boost::serialization::access;
 
   // boost::serialization forward declaration
   template<class Archive>

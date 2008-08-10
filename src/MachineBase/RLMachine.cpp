@@ -160,8 +160,8 @@ void RLMachine::attachModule(RLModule* module)
   int module_number = module->moduleNumber();
   unsigned int packed_module = packModuleNumber(module_type, module_number);
 
-  ModuleMap::iterator it = modules.find(packed_module);
-  if(it != modules.end())
+  ModuleMap::iterator it = modules_.find(packed_module);
+  if(it != modules_.end())
   {
     RLModule& cur_mod = *it->second;
     ostringstream ss;
@@ -171,7 +171,7 @@ void RLMachine::attachModule(RLModule* module)
     throw rlvm::Exception(ss.str());
   }
 
-  modules.insert(packed_module, module);
+  modules_.insert(packed_module, module);
 }
 
 // -----------------------------------------------------------------------
@@ -206,7 +206,7 @@ void RLMachine::setStringValue(int type, int number, const std::string& value)
 
 void RLMachine::markSavepoint()
 {
-  savepoint_call_stack = call_stack;
+  savepoint_call_stack_ = call_stack_;
   system().graphics().takeSavepointSnapshot();
 }
 
@@ -281,14 +281,14 @@ void RLMachine::executeNextInstruction()
   {
     try
     {
-      if(call_stack.back().frame_type == StackFrame::TYPE_LONGOP)
+      if(call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
       {
-        bool ret_val = (*call_stack.back().long_op)(*this);
+        bool ret_val = (*call_stack_.back().long_op)(*this);
         if(ret_val)
           popStackFrame();
       }
       else
-        call_stack.back().ip->runOnMachine(*this);
+        call_stack_.back().ip->runOnMachine(*this);
     }
     catch(rlvm::UnimplementedOpcode& e)
     {
@@ -296,7 +296,7 @@ void RLMachine::executeNextInstruction()
 
       if(print_undefined_opcodes_)
       {
-        cout << "(SEEN" << call_stack.back().scenario->sceneNumber()
+        cout << "(SEEN" << call_stack_.back().scenario->sceneNumber()
              << ")(Line " << line_ << "):  " << e.what() << endl;
       }
 
@@ -315,7 +315,7 @@ void RLMachine::executeNextInstruction()
         advanceInstructionPointer();
       }
 
-      cout << "(SEEN" << call_stack.back().scenario->sceneNumber()
+      cout << "(SEEN" << call_stack_.back().scenario->sceneNumber()
            << ")(Line " << line_ << "):  " << e.what() << endl;
     }
   }
@@ -323,8 +323,7 @@ void RLMachine::executeNextInstruction()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::executeUntilHalted()
-{
+void RLMachine::executeUntilHalted() {
   while(!halted()) {
     executeNextInstruction();
   }
@@ -332,13 +331,12 @@ void RLMachine::executeUntilHalted()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::advanceInstructionPointer()
-{
+void RLMachine::advanceInstructionPointer() {
   std::vector<StackFrame>::reverse_iterator it =
-    find_if(call_stack.rbegin(), call_stack.rend(),
+    find_if(call_stack_.rbegin(), call_stack_.rend(),
             bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
-  if(it != call_stack.rend())
+  if(it != call_stack_.rend())
   {
     it->ip++;
     if(it->ip == it->scenario->end())
@@ -350,8 +348,8 @@ void RLMachine::advanceInstructionPointer()
 
 void RLMachine::executeCommand(const CommandElement& f)
 {
-  ModuleMap::iterator it = modules.find(packModuleNumber(f.modtype(), f.module()));
-  if(it != modules.end()) {
+  ModuleMap::iterator it = modules_.find(packModuleNumber(f.modtype(), f.module()));
+  if(it != modules_.end()) {
     it->second->dispatchFunction(*this, f);
   } else {
     throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
@@ -368,8 +366,8 @@ void RLMachine::jump(int scenario_num, int entrypoint)
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
-  call_stack.back().scenario = scenario;
-  call_stack.back().ip = scenario->findEntrypoint(entrypoint);
+  call_stack_.back().scenario = scenario;
+  call_stack_.back().ip = scenario->findEntrypoint(entrypoint);
 }
 
 // -----------------------------------------------------------------------
@@ -393,7 +391,7 @@ void RLMachine::farcall(int scenario_num, int entrypoint)
 void RLMachine::returnFromFarcall()
 {
   // Check to make sure the types match up.
-  if(call_stack.back().frame_type != StackFrame::TYPE_FARCALL) {
+  if(call_stack_.back().frame_type != StackFrame::TYPE_FARCALL) {
     throw rlvm::Exception("Callstack type mismatch in returnFromFarcall()");
   }
 
@@ -404,14 +402,14 @@ void RLMachine::returnFromFarcall()
 
 void RLMachine::gotoLocation(libReallive::BytecodeList::iterator new_location) {
   // Modify the current frame of the call stack so that it's
-  call_stack.back().ip = new_location;
+  call_stack_.back().ip = new_location;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::gosub(libReallive::BytecodeList::iterator new_location)
 {
-  pushStackFrame(StackFrame(call_stack.back().scenario, new_location,
+  pushStackFrame(StackFrame(call_stack_.back().scenario, new_location,
                             StackFrame::TYPE_GOSUB));
 }
 
@@ -420,7 +418,7 @@ void RLMachine::gosub(libReallive::BytecodeList::iterator new_location)
 void RLMachine::returnFromGosub()
 {
   // Check to make sure the types match up.
-  if(call_stack.back().frame_type != StackFrame::TYPE_GOSUB) {
+  if(call_stack_.back().frame_type != StackFrame::TYPE_GOSUB) {
     throw rlvm::Exception("Callstack type mismatch in returnFromGosub()");
   }
 
@@ -431,7 +429,7 @@ void RLMachine::returnFromGosub()
 
 void RLMachine::pushLongOperation(LongOperation* long_operation)
 {
-  pushStackFrame(StackFrame(call_stack.back().scenario, call_stack.back().ip,
+  pushStackFrame(StackFrame(call_stack_.back().scenario, call_stack_.back().ip,
                             long_operation));
 }
 
@@ -439,35 +437,37 @@ void RLMachine::pushLongOperation(LongOperation* long_operation)
 
 void RLMachine::pushStackFrame(const StackFrame& frame)
 {
-  if(call_stack.size() && call_stack.back().frame_type == StackFrame::TYPE_LONGOP)
-    call_stack.back().long_op->looseFocus();
+  if (call_stack_.size() &&
+      call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
+    call_stack_.back().long_op->looseFocus();
 
-  call_stack.push_back(frame);
+  call_stack_.push_back(frame);
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::popStackFrame()
 {
-  call_stack.pop_back();
+  call_stack_.pop_back();
 
-  if(call_stack.size() && call_stack.back().frame_type == StackFrame::TYPE_LONGOP)
-    call_stack.back().long_op->gainFocus();
+  if (call_stack_.size() &&
+      call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
+    call_stack_.back().long_op->gainFocus();
 }
 
 // -----------------------------------------------------------------------
 
 bool RLMachine::inLongOperation() const
 {
-  return call_stack.size() &&
-    call_stack.back().frame_type == StackFrame::TYPE_LONGOP;
+  return call_stack_.size() &&
+    call_stack_.back().frame_type == StackFrame::TYPE_LONGOP;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::clearCallstack()
 {
-  while(call_stack.size())
+  while(call_stack_.size())
     popStackFrame();
 }
 
@@ -475,14 +475,14 @@ void RLMachine::clearCallstack()
 
 int RLMachine::sceneNumber() const
 {
-  return call_stack.back().scenario->sceneNumber();
+  return call_stack_.back().scenario->sceneNumber();
 }
 
 // -----------------------------------------------------------------------
 
 const Scenario& RLMachine::scenario() const
 {
-  return *call_stack.back().scenario;
+  return *call_stack_.back().scenario;
 }
 
 // -----------------------------------------------------------------------
@@ -497,7 +497,7 @@ void RLMachine::executeExpression(const ExpressionElement& e)
 
 int RLMachine::getTextEncoding() const
 {
-  return call_stack.back().scenario->encoding();
+  return call_stack_.back().scenario->encoding();
 }
 
 // -----------------------------------------------------------------------
@@ -554,8 +554,8 @@ unsigned int RLMachine::packModuleNumber(int modtype, int module)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::unpackModuleNumber(unsigned int packed_module_number, int& modtype,
-                                   int& module)
+void RLMachine::unpackModuleNumber(unsigned int packed_module_number,
+                                   int& modtype, int& module)
 {
   modtype = packed_module_number >> 8;
   module = packed_module_number && 0xFF;
@@ -605,7 +605,7 @@ void RLMachine::save(Archive & ar, unsigned int version) const
   ar & line_num;
 
   /// Save the state of the stack when the last save point was hit
-  ar & savepoint_call_stack;
+  ar & savepoint_call_stack_;
 }
 
 // -----------------------------------------------------------------------
@@ -615,10 +615,10 @@ void RLMachine::load(Archive & ar, unsigned int version)
 {
   ar & line_;
 
-  // Just thaw the call_stack; all preprocessing was done at freeze
+  // Just thaw the call_stack_; all preprocessing was done at freeze
   // time.
-  call_stack.clear();
-  ar & call_stack;
+  call_stack_.clear();
+  ar & call_stack_;
 }
 
 // -----------------------------------------------------------------------

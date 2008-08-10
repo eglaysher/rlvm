@@ -52,11 +52,6 @@ class Memory;
  * this class.
  */
 class IntAccessor {
-private:
-  /// Pointer to the real memory reference that we work with whenever
-  /// we operate with an IntAccessor
-  MemoryReferenceIterator<IntAccessor>* it;
-
 public:
   IntAccessor(MemoryReferenceIterator<IntAccessor>* i);
   ~IntAccessor();
@@ -65,6 +60,11 @@ public:
 
   IntAccessor& operator=(const int new_value);
   IntAccessor& operator=(const IntAccessor& rhs);
+
+private:
+  /// Pointer to the real memory reference that we work with whenever
+  /// we operate with an IntAccessor
+  MemoryReferenceIterator<IntAccessor>* it;
 };
 
 // -----------------------------------------------------------------------
@@ -80,11 +80,6 @@ public:
  * this class.
  */
 class StringAccessor {
-private:
-  /// Pointer to the real memory reference that we work with whenever
-  /// we operate with an StringAccessor
-  MemoryReferenceIterator<StringAccessor>* it;
-
 public:
   StringAccessor(MemoryReferenceIterator<StringAccessor>* i);
   ~StringAccessor();
@@ -95,6 +90,11 @@ public:
   StringAccessor& operator=(const StringAccessor& new_value);
 
   bool operator==(const std::string& rhs);
+
+private:
+  /// Pointer to the real memory reference that we work with whenever
+  /// we operate with an StringAccessor.
+  MemoryReferenceIterator<StringAccessor>* it;
 };
 
 /**
@@ -108,15 +108,6 @@ public:
 template<typename ACCESS>
 class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
-private:
-  Memory* memory_;
-  int type_;
-  int location_;
-
-  // Can this be templated?
-  friend class StringAccessor;
-  friend class IntAccessor;
-
 public:
   MemoryReferenceIterator();
 
@@ -127,12 +118,18 @@ public:
   int type() const { return type_; }
   int location() const { return location_; }
   // -------------------------------------------------------- Iterated Interface
-  ACCESS operator*()     { return ACCESS(this); }
+  ACCESS operator*() { return ACCESS(this); }
 
-  MemoryReferenceIterator& operator++()   { ++location_; return *this; }
-  MemoryReferenceIterator& operator--()   { --location_; return *this; }
-  MemoryReferenceIterator& operator+=(int step) { location_ += step; return *this; }
-  MemoryReferenceIterator& operator-=(int step) { location_ -= step; return *this; }
+  MemoryReferenceIterator& operator++() { ++location_; return *this; }
+  MemoryReferenceIterator& operator--() { --location_; return *this; }
+  MemoryReferenceIterator& operator+=(int step) {
+    location_ += step;
+    return *this;
+  }
+  MemoryReferenceIterator& operator-=(int step) {
+    location_ -= step;
+    return *this;
+  }
 
   MemoryReferenceIterator operator++(int) {
     MemoryReferenceIterator tmp(*this);
@@ -174,6 +171,15 @@ public:
   MemoryReferenceIterator<ACCESS> changeMemoryTo(Memory* new_mem_obj) const {
     return MemoryReferenceIterator<ACCESS>(new_mem_obj, type_, location_);
   }
+
+private:
+  Memory* memory_;
+  int type_;
+  int location_;
+
+  // Can this be templated?
+  friend class StringAccessor;
+  friend class IntAccessor;
 };
 
 // -----------------------------------------------------------------------

@@ -51,38 +51,6 @@ public:
     AFTER_LOOP
   };
 
-private:
-  AfterAnimation after_animation_;
-  GraphicsObject* owned_by_;
-
-  bool currently_playing_;
-
-  friend class boost::serialization::access;
-
-  /// boost::serialization support
-  template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
-    // boost::serialization should take care of the swizzling of
-    // owned_by_.
-    ar & after_animation_ & owned_by_ & currently_playing_;
-  }
-
-protected:
-  /**
-   * Function called after animation ends when this object has been
-   * set up to loop.
-   *
-   * Default implementation does nothing.
-   */
-  virtual void loopAnimation();
-
-  /**
-   * Takes the specified action when we've reached the last frame of
-   * animation.
-   */
-  void endAnimation();
-
 public:
   GraphicsObjectData();
   GraphicsObjectData(const GraphicsObjectData& obj);
@@ -111,6 +79,39 @@ public:
 
   virtual bool isAnimation() const;
   virtual void playSet(RLMachine& machine, int set);
+
+protected:
+  /**
+   * Function called after animation ends when this object has been
+   * set up to loop.
+   *
+   * Default implementation does nothing.
+   */
+  virtual void loopAnimation();
+
+  /**
+   * Takes the specified action when we've reached the last frame of
+   * animation.
+   */
+  void endAnimation();
+
+private:
+  /// Policy of what to do after an animation is finished.
+  AfterAnimation after_animation_;
+
+  GraphicsObject* owned_by_;
+
+  bool currently_playing_;
+
+  friend class boost::serialization::access;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    // boost::serialization should take care of the swizzling of
+    // owned_by_.
+    ar & after_animation_ & owned_by_ & currently_playing_;
+  }
 };
 
 // -----------------------------------------------------------------------

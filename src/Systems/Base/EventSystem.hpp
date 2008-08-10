@@ -55,8 +55,7 @@ struct EventSystemGlobals
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, const unsigned int version)
-  {
+  void serialize(Archive& ar, const unsigned int version) {
     ar & generic1 & generic2;
   }
 };

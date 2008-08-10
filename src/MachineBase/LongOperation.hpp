@@ -84,12 +84,6 @@ public:
  */
 class PerformAfterLongOperationDecorator : public LongOperation
 {
-private:
-  boost::scoped_ptr<LongOperation> operation_;
-
-  /// Payload of decorator implemented by subclasses
-  virtual void performAfterLongOperation(RLMachine& machine) = 0;
-
 public:
   PerformAfterLongOperationDecorator(LongOperation* in_op);
   ~PerformAfterLongOperationDecorator();
@@ -98,6 +92,12 @@ public:
 
   virtual void looseFocus();
   virtual void gainFocus();
+
+private:
+  boost::scoped_ptr<LongOperation> operation_;
+
+  /// Payload of decorator implemented by subclasses
+  virtual void performAfterLongOperation(RLMachine& machine) = 0;
 };
 
 

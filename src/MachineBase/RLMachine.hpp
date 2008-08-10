@@ -67,68 +67,6 @@ namespace boost { namespace serialization { } }
  */
 class RLMachine {
 public:
-  /// The Reallive VM's integer and string memory
-  boost::scoped_ptr<Memory> memory_;
-
-  /// The RealLive machine's single result register
-  int store_register;
-
-  /// Mapping between the module_type:module pair and the module implementation
-  typedef boost::ptr_map<unsigned int, RLModule> ModuleMap;
-  /// Mapping between the module_type:module pair and the module implementation
-  ModuleMap modules;
-
-  /// States whether the RLMachine is in the halted state (and thus won't
-  /// execute more instructions)
-  bool halted_;
-
-  /// Whether we should print an error to stderr when we encounter an undefined
-  /// opcode.
-  bool print_undefined_opcodes_;
-
-  /// States whether the machine should halt if an unhandled exception is thrown
-  bool halt_on_exception_;
-
-  /// The SEEN.TXT the machine is currently executing.
-  libReallive::Archive& archive_;
-
-  /// The actual call stack.
-  std::vector<StackFrame> call_stack;
-
-  /// The state of the call stack the last time a savepoint was called
-  std::vector<StackFrame> savepoint_call_stack;
-
-  /// The most recent line marker we've come across
-  int line_;
-
-  /// The RLMachine carried around a reference to the local system, to keep it
-  /// from being a Singleton so we can do proper unit testing.
-  System& system_;
-
-  /// (Optional) A structure that keeps track of how many times we encountered
-  /// undefined opcodes.
-  boost::scoped_ptr<OpcodeLog> undefined_log_;
-
-  unsigned int packModuleNumber(int modtype, int module);
-  void unpackModuleNumber(unsigned int packed_module_number, int& modtype,
-                          int& module);
-
-  /**
-   * Pushes a stack frame onto the call stack, alerting possible
-   * LongOperations of this change if needed.
-   */
-  void pushStackFrame(const StackFrame& frame);
-
-  /**
-   * Pops a stack frame from the call stack, alerting possible
-   * LongOperations of this change if needed.
-   */
-  void popStackFrame();
-
-  /// Override defaults
-  bool mark_savepoints_;
-
-public:
   RLMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~RLMachine();
 
@@ -251,14 +189,14 @@ public:
    *
    * @param new_value New value of the store register
    */
-  void setStoreRegister(int new_value) { store_register = new_value; }
+  void setStoreRegister(int new_value) { store_register_ = new_value; }
 
   /**
    * Returns the current value of the store register
    *
    * @return The value of the store register
    */
-  int getStoreRegisterValue() const { return store_register; }
+  int getStoreRegisterValue() const { return store_register_; }
 
   /**
    * Returns the internal memory object for raw access to the machine
@@ -492,6 +430,70 @@ public:
    */
   System& system() { return system_; }
 
+private:
+  unsigned int packModuleNumber(int modtype, int module);
+  void unpackModuleNumber(unsigned int packed_module_number, int& modtype,
+                          int& module);
+
+  /**
+   * Pushes a stack frame onto the call stack, alerting possible
+   * LongOperations of this change if needed.
+   */
+  void pushStackFrame(const StackFrame& frame);
+
+  /**
+   * Pops a stack frame from the call stack, alerting possible
+   * LongOperations of this change if needed.
+   */
+  void popStackFrame();
+
+  /// The Reallive VM's integer and string memory
+  boost::scoped_ptr<Memory> memory_;
+
+  /// The RealLive machine's single result register
+  int store_register_;
+
+  /// Mapping between the module_type:module pair and the module implementation
+  typedef boost::ptr_map<unsigned int, RLModule> ModuleMap;
+  /// Mapping between the module_type:module pair and the module implementation
+  ModuleMap modules_;
+
+  /// States whether the RLMachine is in the halted state (and thus won't
+  /// execute more instructions)
+  bool halted_;
+
+  /// Whether we should print an error to stderr when we encounter an undefined
+  /// opcode.
+  bool print_undefined_opcodes_;
+
+  /// States whether the machine should halt if an unhandled exception is thrown
+  bool halt_on_exception_;
+
+  /// The SEEN.TXT the machine is currently executing.
+  libReallive::Archive& archive_;
+
+  /// The actual call stack.
+  std::vector<StackFrame> call_stack_;
+
+  /// The state of the call stack the last time a savepoint was called
+  std::vector<StackFrame> savepoint_call_stack_;
+
+  /// The most recent line marker we've come across
+  int line_;
+
+  /// The RLMachine carried around a reference to the local system, to keep it
+  /// from being a Singleton so we can do proper unit testing.
+  System& system_;
+
+  /// (Optional) A structure that keeps track of how many times we encountered
+  /// undefined opcodes.
+  boost::scoped_ptr<OpcodeLog> undefined_log_;
+
+  /// Override defaults
+  bool mark_savepoints_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

@@ -43,9 +43,6 @@ class MappedRLModule : public RLModule
 public:
   typedef boost::function<RLOperation*(RLOperation* op)> MappingFunction;
 
-private:
-  MappingFunction map_function_;
-
 protected:
   MappedRLModule(const MappingFunction& fun, const std::string& in_module_name,
                  int in_module_type, int in_module_number);
@@ -62,6 +59,13 @@ protected:
    *           implementation of this operation.
    */
   virtual void addOpcode(int opcode, unsigned char overload, RLOperation* op);
+
+private:
+  /**
+   * Function which takes an RLOperation and returns an RLOperation. Takes
+   * ownership of the incoming RLOperation.
+   */
+  MappingFunction map_function_;
 };
 
 

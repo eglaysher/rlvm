@@ -29,6 +29,7 @@
 #define __AnmGraphicsObjectData_hpp__
 
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 
 #include <vector>
@@ -39,18 +40,40 @@
 class Surface;
 class RLMachine;
 
-class AnmGraphicsObjectData : public GraphicsObjectData
-{
-private:
-  /// Note: This internal structure is heavily based off of xkanon's
-  /// ANM file implementation, but has been changed to be all C++ like.
+/**
+ * Executable, in-memory representation of an ANM file.
+ *
+ * @note This internal structure is heavily based off of xkanon's
+ *       ANM file implementation, but has been changed to be all C++ like.
+ */
+class AnmGraphicsObjectData : public GraphicsObjectData {
+public:
+  AnmGraphicsObjectData();
+  AnmGraphicsObjectData(RLMachine& machine, const std::string& file);
+  ~AnmGraphicsObjectData();
 
-  std::string filename_;
+  void loadAnmFile(RLMachine& machine);
+
+  virtual void render(RLMachine& machine,
+                      const GraphicsObject& rendering_properties);
+
+  virtual int pixelWidth(RLMachine& machine,
+						 const GraphicsObject& rendering_properties);
+  virtual int pixelHeight(RLMachine& machine,
+						  const GraphicsObject& rendering_properties);
+
+  virtual GraphicsObjectData* clone() const;
+  virtual void execute(RLMachine& machine);
+
+  virtual bool isAnimation() const { return true; }
+  virtual void playSet(RLMachine& machine, int set);
+
+private:
+  /// Advance the position in the animation.
+  void advanceFrame(RLMachine& machine);
 
   /**
-   * @name Animation Data
-   *
-   * (This structure was stolen from xkanon.)
+   * @name Data loading functions
    *
    * @{
    */
@@ -61,6 +84,25 @@ private:
     int time;
   };
 
+  bool testFileMagic(boost::scoped_array<char>& anm_data);
+  void readIntegerList(
+    const char* start, int offset, int iterations,
+    std::vector< std::vector<int> >& dest);
+  void loadAnmFileFromData(
+    RLMachine& machine, boost::scoped_array<char>& anm_data);
+  void fixAxis(Frame& frame, int width, int height);
+  /// @}
+
+  /// Raw, short name for the ANM file.
+  std::string filename_;
+
+  /**
+   * @name Animation Data
+   *
+   * (This structure was stolen from xkanon.)
+   *
+   * @{
+   */
   std::vector<Frame> frames;
   std::vector< std::vector<int> > framelist;
   std::vector< std::vector<int> > animation_set;
@@ -91,44 +133,7 @@ private:
 
   // @}
 
-  void advanceFrame(RLMachine& machine);
-
-
-  /**
-   * @name Data loading functions
-   *
-   * @{
-   */
-  bool testFileMagic(boost::scoped_array<char>& anm_data);
-  void readIntegerList(
-    const char* start, int offset, int iterations,
-    std::vector< std::vector<int> >& dest);
-  void loadAnmFileFromData(
-    RLMachine& machine, boost::scoped_array<char>& anm_data);
-  void fixAxis(Frame& frame, int width, int height);
-  /// @}
-
-public:
-  AnmGraphicsObjectData();
-  AnmGraphicsObjectData(RLMachine& machine, const std::string& file);
-  ~AnmGraphicsObjectData();
-
-  void loadAnmFile(RLMachine& machine);
-
-  virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties);
-
-  virtual int pixelWidth(RLMachine& machine,
-						 const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(RLMachine& machine,
-						  const GraphicsObject& rendering_properties);
-
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
-
-  virtual bool isAnimation() const { return true; }
-  virtual void playSet(RLMachine& machine, int set);
-
+  friend class boost::serialization::access;
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;
 

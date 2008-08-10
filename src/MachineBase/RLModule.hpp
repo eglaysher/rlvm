@@ -95,21 +95,6 @@ class RLMachine;
  * @ingroup ModulesOpcodes
  */
 class RLModule : public boost::noncopyable {
-private:
-  int module_type_;
-  int module_number_;
-  std::string module_name_;
-
-  // Store functions.
-  typedef boost::ptr_map<int, RLOperation> OpcodeMap;
-  OpcodeMap stored_operations;
-
-  int packOpcodeNumber(int opcode, unsigned char overload);
-  void unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload);
-
-protected:
-  RLModule(const std::string& in_module_name, int in_module_type, int in_module_number);
-
 public:
   virtual ~RLModule();
 
@@ -157,6 +142,21 @@ public:
    * @param f The bytecode element that we are trying to execute
    */
   void dispatchFunction(RLMachine& machine, const libReallive::CommandElement& f);
+
+protected:
+  RLModule(const std::string& in_module_name, int in_module_type, int in_module_number);
+
+  int packOpcodeNumber(int opcode, unsigned char overload);
+  void unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload);
+
+private:
+  int module_type_;
+  int module_number_;
+  std::string module_name_;
+
+  // Store functions.
+  typedef boost::ptr_map<int, RLOperation> OpcodeMap;
+  OpcodeMap stored_operations;
 };
 
 std::ostream& operator<<(std::ostream&, const RLModule& module);
