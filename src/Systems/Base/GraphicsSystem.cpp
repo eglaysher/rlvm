@@ -153,13 +153,15 @@ const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsF
 // GraphicsSystemGlobals
 // -----------------------------------------------------------------------
 GraphicsSystemGlobals::GraphicsSystemGlobals()
-  : show_object_1(false), show_object_2(false), show_weather(false)
+  : show_object_1(false), show_object_2(false), show_weather(false),
+    cg_table()
 {}
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
   :	show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
     show_object_2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
-    show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1)
+    show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
+    cg_table(gameexe)
 {}
 
 // -----------------------------------------------------------------------
@@ -204,7 +206,6 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
     show_curosr_(true),
     cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
-    cg_table_(new CGMTable(gameexe)),
     system_(system)
 {}
 

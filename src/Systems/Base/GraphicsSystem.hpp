@@ -38,10 +38,12 @@
 
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/Rect.hpp"
+#include "Systems/Base/CGMTable.hpp"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
 #include <map>
 #include <string>
@@ -49,7 +51,6 @@
 
 // -----------------------------------------------------------------------
 
-class CGMTable;
 class Gameexe;
 class GraphicsObject;
 class GraphicsObjectData;
@@ -79,13 +80,21 @@ struct GraphicsSystemGlobals
 
   int show_weather;
 
+  /// CG Table
+  CGMTable cg_table;
+
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
   {
     ar & show_object_1 & show_object_2 & show_weather;
+
+    if (version > 0)
+      ar & cg_table;
   }
 };
+
+BOOST_CLASS_VERSION(GraphicsSystemGlobals, 1)
 
 // -----------------------------------------------------------------------
 
@@ -429,7 +438,7 @@ public:
   virtual void reset();
 
   /// Access to the cgtable for the cg* functions.
-  CGMTable& cgTable() { return *cg_table_; }
+  CGMTable& cgTable() { return globals_.cg_table; }
 
   // boost::serialization forward declaration
   template<class Archive>
@@ -512,9 +521,6 @@ private:
   /// build:
   typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
   MouseCursorCache cursor_cache_;
-
-  /// CG Table
-  boost::scoped_ptr<CGMTable> cg_table_;
 
   /// Our parent system object.
   System& system_;
