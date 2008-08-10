@@ -80,8 +80,6 @@ struct Sys_index_series
         int end = it->third.get<1>();
         int endval = it->third.get<2>();
         if (it->third.get<3>() == 0) {
-          fprintf(stderr, "(%d, {%d, %d, %d}, %d, %d)\n",
-                  index, start, end, endval, value, init);
           mode0(index, start, end, endval, value, init);
         }
         else
