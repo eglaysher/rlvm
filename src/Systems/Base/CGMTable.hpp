@@ -28,9 +28,11 @@
 #ifndef __CGMTable_hpp__
 #define __CGMTable_hpp__
 
+#include <boost/serialization/access.hpp>
 #include <map>
 #include <set>
 
+class Gameexe;
 class RLMachine;
 
 /**
@@ -40,12 +42,19 @@ class RLMachine;
  * global memory array, where intZ[index] is 1 when a cg has been viewed. The
  * CGMTable class is responsible for loading the cgm data and providing an
  * interface to querrying whether a CG was viewed.
- *
- * The location of the CGM table is defined in \#CGTABLE_FILENAME gameexe key.
  */
 class CGMTable
 {
 public:
+  /**
+   * Initializes an empty CG table (for games that don't use this feature).
+   */
+  CGMTable();
+
+  /**
+   * Initializes the CG table with the CGM data file specified in the
+   * \#CGTABLE_FILENAME gameexe key.
+   */
   CGMTable(Gameexe& gameexe);
   ~CGMTable();
 
@@ -86,8 +95,14 @@ private:
   /// considered global and persists through interpreter invocations.
   std::set<int> cgm_data_;
 
-  // TODO: Add boost::serialization support
-
+  /// boost::serialization support
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    // We don't save |cgm_info_|. That will be the same during each run since
+    // it's read from a game data file.
+    ar & cgm_data_;
+  }
 };  // end of class CGMTable
 
 

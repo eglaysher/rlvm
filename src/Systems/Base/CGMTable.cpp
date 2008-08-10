@@ -89,6 +89,11 @@ static unsigned char cgm_xor_key[256] = {
 
 // -----------------------------------------------------------------------
 
+CGMTable::CGMTable() {
+}
+
+// -----------------------------------------------------------------------
+
 CGMTable::CGMTable(Gameexe& gameexe) {
   string cgtable = gameexe("CGTABLE_FILENAME").to_string("");
 
