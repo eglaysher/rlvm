@@ -11,8 +11,6 @@ Kanon SE ALL
 - Mostly playable
   - ...without graphics. Kanon's main hammer is grpMulti, which isn't
     implemented.
-  - Something really weird happens with objects; some graphicsobjects are
-    missing from Last Regrets and in the main game.
 
 Planetarian CD
 --------------

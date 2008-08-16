@@ -1,6 +1,22 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.3:
+- CLANNAD is playable through the end of Nagisa's route. CLANNAD Full Voice is
+  still not supported; it uses new opcodes in the new menu system.
+- Support for newer RealLive games that have individual XOR keys; CLANNAD Full
+  Voice edition now boots up (though does little else).
+- Replace name variables in text, such as '*A' as 'Tomoya' in CLANNAD.
+- index_series: The function is now partially implemented; Kanon SE no longer
+  enters an infinite loop during 'Last Regrets,' and CLANNAD Full Voice will
+  get past the copyright screen.
+- Reduce the memory footprint by keeping the last 100 pages of text in the
+  scrollback buffer. Previously, the scrollback buffer was unbounded.
+- Support CG commands; any game that includes a CGM file should now
+  automatically track which CG images were viewed.
+
+-------------------------------------------------------------------------
+
 Version 0.2:
 - WARNING: rlvm 0.2 breaks compatibility with version 0.1's save
   files! rlvm 0.2 will write save files in a different location.
