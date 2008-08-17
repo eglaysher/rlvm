@@ -931,9 +931,12 @@ struct Grp_zoom : public RLOp_Void_14<
  */
 typedef Argc_T<
   Special_T<
-    StrConstant_T, // 0:copy
-    Complex2_T<StrConstant_T, IntConstant_T>, // 1:copy
-    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>, // 2:copy
+    // 0:copy(strC 'filename')
+    StrConstant_T,
+    // 1:copy(strC 'filename', 'effect')
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 2:copy(strC 'filename', 'effect', 'alpha')
+    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>,
     // 3:area
     Complex7_T<StrConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T, IntConstant_T, IntConstant_T,
@@ -959,60 +962,57 @@ typedef Argc_T<
  *       state.
  * @see MultiCommand
  */
-//template<typename SPACE>
-/*
-struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
-                                        IntConstant_T, MultiCommand>
-{
-  void operator()(RLMachine& machine, string filename, int effect, int alpha,
-                  MultiCommand::type commands)
-  {
-//    Grp_load_0(false)(machine, filename, effect);
+struct Grp_multi_command {
+  void handleMultiCommands(MultiCommand::type commands);
+};
 
-    for(MultiCommand::type::iterator it = commands.begin(); it != commands.end();
-        it++)
-    {
-      switch(it->type)
-      {
-      case 0:
-//        Grp_load_0(true)(machine, it->first.get<0>(), it->first.get<1>(),
-//                         it->first.get<2>(), it->first.get<3>());
-        break;
-      case 1:
-//        Grp_load_1(true)(machine, it->second.get<0>(), it->second.get<1>(),
-//                         it->second.get<2>(), it->second.get<3>());
-        break;
-      case 2:
-
-        break;
-      case 3:
-        Grp_load_3<SPACE>(true)(machine, it->fourth.get<0>(),
-                                it->fourth.get<1>(),
-                                it->fourth.get<2>(),
-                                it->fourth.get<3>(),
-                                it->fourth.get<4>(),
-                                it->fourth.get<5>(),
-                                it->fourth.get<6>(),
-                                255);
-        break;
-      case 4:
-        Grp_load_3<SPACE>(true)(machine, it->fifth.get<0>(),
-                                it->fifth.get<1>(),
-                                it->fifth.get<2>(),
-                                it->fifth.get<3>(),
-                                it->fifth.get<4>(),
-                                it->fifth.get<5>(),
-                                it->fifth.get<6>(),
-                                it->fifth.get<7>());
-        break;
-      }
+void Grp_multi_command::handleMultiCommands(MultiCommand::type commands) {
+  for (MultiCommand::type::iterator it = commands.begin(); it != commands.end();
+       it++) {
+    switch(it->type) {
+    case 0:
+      Grp_load_0(true)(machine, it->first.get<0>(), it->first.get<1>(),
+                       it->first.get<2>(), it->first.get<3>());
+      break;
+    case 1:
+      Grp_load_1(true)(machine, it->second.get<0>(), it->second.get<1>(),
+                       it->second.get<2>(), it->second.get<3>());
+      break;
+    case 2:
+      cerr << "2?" << endl;
+      break;
+    case 3:
+      Grp_load_3<SPACE>(true)(
+        machine, it->fourth.get<0>(), it->fourth.get<1>(), it->fourth.get<2>(),
+        it->fourth.get<3>(), it->fourth.get<4>(), it->fourth.get<5>(),
+        it->fourth.get<6>(), 255);
+      break;
+    case 4:
+      Grp_load_3<SPACE>(true)(
+        machine, it->fifth.get<0>(), it->fifth.get<1>(), it->fifth.get<2>(),
+        it->fifth.get<3>(), it->fifth.get<4>(), it->fifth.get<5>(),
+        it->fifth.get<6>(), it->fifth.get<7>());
+      break;
     }
+  }
+}
+
+/**
+ * fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
+ */
+struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
+                                        IntConstant_T, MultiCommand>,
+                     public Grp_multi_command {
+  void operator()(RLMachine& machine, string filename, int effect, int alpha,
+                  MultiCommand::type commands) {
+    Grp_load_0(false)(machine, filename, effect);
+
+    handleMultiCommands(commands);
 
     // Does this work?
     Grp_display_0<SPACE>()(1, effect);
   }
 };
-*/
 
 // -----------------------------------------------------------------------
 /*
