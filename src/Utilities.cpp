@@ -196,21 +196,17 @@ boost::filesystem::path findFile(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-std::vector<int> getSELEffect(RLMachine& machine, int selNum)
-{
+std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> selEffect;
 
-  if(gexe("SEL", selNum).exists())
-  {
+  if (gexe("SEL", selNum).exists()) {
     selEffect = gexe("SEL", selNum).to_intVector();
     grpToRecCoordinates(selEffect[0], selEffect[1],
                         selEffect[2], selEffect[3]);
-  }
-  else if(gexe("SELR", selNum).exists())
+  } else if(gexe("SELR", selNum).exists()) {
     selEffect = gexe("SELR", selNum).to_intVector();
-  else
-  {
+  } else {
     ostringstream oss;
     oss << "Could not find either #SEL." << selNum << " or #SELR."
         << selNum;
@@ -222,19 +218,13 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum)
 
 // -----------------------------------------------------------------------
 
-Size getScreenSize(Gameexe& gameexe)
-{
+Size getScreenSize(Gameexe& gameexe) {
   int graphicsMode = gameexe("SCREENSIZE_MOD");
-  if(graphicsMode == 0)
-  {
+  if (graphicsMode == 0) {
     return Size(640, 480);
-  }
-  else if(graphicsMode == 1)
-  {
+  } else if(graphicsMode == 1) {
     return Size(800, 600);
-  }
-  else
-  {
+  } else {
     ostringstream oss;
     oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
     throw SystemError(oss.str());
