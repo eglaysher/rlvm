@@ -8,9 +8,12 @@ Kanon SE ALL
 - Main menu works except for load
   - Clicking load has RLVM complain about <1:Sys:03001> (menu_load) not being 
     implemented.
-- Mostly playable
-  - ...without graphics. Kanon's main hammer is grpMulti, which isn't
-    implemented.
+- Mostly playable. 
+  - The calendar in the upper left hand corner likes to randomly appear and
+    disappear.
+  - THERE IS NO SAVE/LOAD SUPPORT. This is the first game that I've worked with
+    that doesn't provide custom menus for accessing options and the save/load
+    functionality.
 
 Planetarian CD
 --------------

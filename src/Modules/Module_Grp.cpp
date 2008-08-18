@@ -170,7 +170,18 @@ void loadDCToDC1(GraphicsSystem& graphics,
   // Inclusive ranges are a monstrosity to computer people
   Size size = srcRect.size() + Size(1, 1);
 
-  dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
+  // TODO: The grp commands were some of the first modules I wrote and are also
+  // the single ugliest, hackish crap that I've written. Which brings us to the
+  // next line. I have no idea why it was written, but it's interfering with
+  // the grpMulti functions in Kanon. I am superstiously keeping this here as
+  // it might help with debugging in the future.
+  //
+  // When I disable this line, the crayon-like dates at the beginning of days
+  // no longer works. Something is obviously big and wrong with this file,
+  // which is even worse since it is almost 1400 lines long.
+  //
+  //  dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
+
   src->blitToSurface(*dc1,
                      Rect(srcRect.origin(), size),
                      Rect(dest, size),
@@ -937,11 +948,11 @@ typedef Argc_T<
     Complex2_T<StrConstant_T, IntConstant_T>,
     // 2:copy(strC 'filename', 'effect', 'alpha')
     Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>,
-    // 3:area
+    // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
     Complex7_T<StrConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T>,
-    // 4:area
+    // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
     Complex8_T<StrConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T, IntConstant_T, IntConstant_T,
                IntConstant_T, IntConstant_T>
@@ -962,37 +973,54 @@ typedef Argc_T<
  *       state.
  * @see MultiCommand
  */
+
+/// All work is applied to DC 1.
+const int MULTI_TARGET_DC = 1;
+
 struct Grp_multi_command {
-  void handleMultiCommands(MultiCommand::type commands);
+
+  /// All multi commands exist in a coordinate space
+  SPACE& space;
+
+  Grp_multi_command(SPACE& in) : space(in) {}
+
+  void handleMultiCommands(
+    RLMachine& machine, const MultiCommand::type& commands);
 };
 
-void Grp_multi_command::handleMultiCommands(MultiCommand::type commands) {
-  for (MultiCommand::type::iterator it = commands.begin(); it != commands.end();
-       it++) {
+void Grp_multi_command::handleMultiCommands(
+  RLMachine& machine, const MultiCommand::type& commands)
+{
+  for (MultiCommand::type::const_iterator it = commands.begin();
+       it != commands.end(); it++) {
     switch(it->type) {
     case 0:
-      Grp_load_0(true)(machine, it->first.get<0>(), it->first.get<1>(),
-                       it->first.get<2>(), it->first.get<3>());
+      // 0:copy(strC 'filename')
+      Grp_load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
       break;
-    case 1:
-      Grp_load_1(true)(machine, it->second.get<0>(), it->second.get<1>(),
-                       it->second.get<2>(), it->second.get<3>());
+    case 1: {
+      // 1:copy(strC 'filename', 'effect')
+      vector<int> selEffect = getSELEffect(machine, it->second.get<1>());
+
+      // Coordinates coming out of getSELEffect are in REC space.
+      Grp_load_3(true, REC_SPACE::get())
+        (machine, it->second.get<0>(), MULTI_TARGET_DC,
+         selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+         selEffect[4], selEffect[5], 255);
       break;
-    case 2:
-      cerr << "2?" << endl;
+    }
+    case 2: {
+      throw rlvm::Exception("2:copy(strC 'filename', 'effect', 'alpha') unhandled in grpMulti");
       break;
-    case 3:
-      Grp_load_3<SPACE>(true)(
-        machine, it->fourth.get<0>(), it->fourth.get<1>(), it->fourth.get<2>(),
-        it->fourth.get<3>(), it->fourth.get<4>(), it->fourth.get<5>(),
-        it->fourth.get<6>(), 255);
+    }
+    case 3: {
+      throw rlvm::Exception("3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy') unhandled in grpMulti");
       break;
-    case 4:
-      Grp_load_3<SPACE>(true)(
-        machine, it->fifth.get<0>(), it->fifth.get<1>(), it->fifth.get<2>(),
-        it->fifth.get<3>(), it->fifth.get<4>(), it->fifth.get<5>(),
-        it->fifth.get<6>(), it->fifth.get<7>());
+    }
+    case 4: {
+      throw rlvm::Exception("4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha') unhandled in grpMulti");
       break;
+    }
     }
   }
 }
@@ -1000,32 +1028,62 @@ void Grp_multi_command::handleMultiCommands(MultiCommand::type commands) {
 /**
  * fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
  */
-struct Grp_multi_1 : public RLOp_Void_4<StrConstant_T, IntConstant_T,
-                                        IntConstant_T, MultiCommand>,
-                     public Grp_multi_command {
+struct Grp_multi_str_1
+  : public RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T,
+                       MultiCommand>,
+    public Grp_multi_command {
+  Grp_multi_str_1(SPACE& space) : Grp_multi_command(space) {}
+
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
                   MultiCommand::type commands) {
-    Grp_load_0(false)(machine, filename, effect);
+    Grp_load_1(false)(machine, filename, effect, 255);
 
-    handleMultiCommands(commands);
-
-    // Does this work?
-    Grp_display_0<SPACE>()(1, effect);
+    handleMultiCommands(machine, commands);
+    Grp_display_0()(machine, 1, effect);
   }
 };
 
 // -----------------------------------------------------------------------
-/*
-template<typename SPACE>
-struct Grp_multi_0 : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand>
-{
-  void operator()(RLMachine& machine, string dc, int effect,
-                  MultiCommand::type commands)
-  {
-    Grp_multi_1<SPACE>()(machine, dc, effect, 255, commands);
+
+struct Grp_multi_str_0
+  : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
+  Grp_multi_str_1 delegate_;
+  Grp_multi_str_0(SPACE& space) : delegate_(space) {}
+
+  void operator()(RLMachine& machine, string filename, int effect,
+                  MultiCommand::type commands) {
+    delegate_(machine, filename, effect, 255, commands);
   }
 };
-*/
+
+// -----------------------------------------------------------------------
+
+struct Grp_multi_dc_1
+  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T,
+                       MultiCommand>,
+    public Grp_multi_command {
+  Grp_multi_dc_1(SPACE& space) : Grp_multi_command(space) {}
+
+  void operator()(RLMachine& machine, int dc, int effect, int alpha,
+                  MultiCommand::type commands) {
+    Grp_copy_1(false)(machine, dc, MULTI_TARGET_DC, 255);
+    handleMultiCommands(machine, commands);
+    Grp_display_0()(machine, 1, effect);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Grp_multi_dc_0
+  : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
+  Grp_multi_dc_1 delegate_;
+  Grp_multi_dc_0(SPACE& space) : delegate_(space) {}
+
+  void operator()(RLMachine& machine, int dc, int effect,
+                  MultiCommand::type commands) {
+    delegate_(machine, dc, effect, 255, commands);
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -1102,11 +1160,17 @@ GrpModule::GrpModule()
   addOpcode(74, 3, "grpMaskOpen", new Grp_open_3(true, GRP));
   addOpcode(74, 4, "grpMaskOpen", new Grp_open_4(true, GRP));
 
-  addUnsupportedOpcode(75, 0, "grpMulti");
-  addUnsupportedOpcode(75, 1, "grpMulti");
+  addOpcode(75, 0, "grpMulti", new Grp_multi_str_0(GRP));
+  addOpcode(75, 1, "grpMulti", new Grp_multi_str_1(GRP));
   addUnsupportedOpcode(75, 2, "grpMulti");
   addUnsupportedOpcode(75, 3, "grpMulti");
   addUnsupportedOpcode(75, 4, "grpMulti");
+
+  addOpcode(77, 0, "grpMulti", new Grp_multi_dc_0(GRP));
+  addOpcode(77, 1, "grpMulti", new Grp_multi_dc_1(GRP));
+  addUnsupportedOpcode(77, 2, "grpMulti");
+  addUnsupportedOpcode(77, 3, "grpMulti");
+  addUnsupportedOpcode(77, 4, "grpMulti");
 
   addOpcode(76, 0, "grpOpen", new Grp_open_0(false, GRP));
   addOpcode(76, 1, "grpOpen", new Grp_open_1(false, GRP));
@@ -1187,6 +1251,18 @@ GrpModule::GrpModule()
   addOpcode(1056, 2, "recOpen", new Grp_open_2(false, REC));
   addOpcode(1056, 3, "recOpen", new Grp_open_3(false, REC));
   addOpcode(1056, 4, "recOpen", new Grp_open_4(false, REC));
+
+  addOpcode(1055, 0, "recMulti", new Grp_multi_str_0(REC));
+  addOpcode(1055, 1, "recMulti", new Grp_multi_str_1(REC));
+  addUnsupportedOpcode(1055, 2, "recMulti");
+  addUnsupportedOpcode(1055, 3, "recMulti");
+  addUnsupportedOpcode(1055, 4, "recMulti");
+
+  addOpcode(1057, 0, "recMulti", new Grp_multi_dc_0(REC));
+  addOpcode(1057, 1, "recMulti", new Grp_multi_dc_1(REC));
+  addUnsupportedOpcode(1057, 2, "recMulti");
+  addUnsupportedOpcode(1057, 3, "recMulti");
+  addUnsupportedOpcode(1057, 4, "recMulti");
 
   addOpcode(1100, 0, "recCopy", new Grp_copy_1(false));
   addOpcode(1100, 1, "recCopy", new Grp_copy_1(false));
