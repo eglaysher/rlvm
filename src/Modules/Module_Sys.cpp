@@ -548,7 +548,7 @@ SysModule::SysModule()
   addOpcode(2323, 0, "MessageSpeed",
             returnIntValue(&TextSystem::messageSpeed));
   addOpcode(2600, 0, "DefaultMessageSpeed",
-            new ReturnGameexeInt("INIT_MESSAGE_SPEED", 30));
+            new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
 
   addOpcode(2224, 0, "SetMessageNoWait",
             callFunction(&TextSystem::setMessageNoWait));
