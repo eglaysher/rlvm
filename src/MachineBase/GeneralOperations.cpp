@@ -145,7 +145,14 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> values = gexe(full_key_name_);
-  return values.at(entry_);
+  if (entry_ < values.size())
+    return values[entry_];
+  else {
+    ostringstream oss;
+    oss << "Could not access piece " << entry_ << " in Gameexe key \""
+        << full_key_name_ << "\"";
+    throw std::runtime_error(oss.str());
+  }
 }
 
 // ------------------------------------------------- [ UndefinedFunction ]
