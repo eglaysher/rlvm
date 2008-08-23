@@ -543,6 +543,12 @@ void RLMachine::setKidokuMarker(int kidoku_number)
   {
     markSavepoint();
   }
+
+  // Mark if we've previously read this piece of text.
+  kidoku_read_ = memory().hasBeenRead(sceneNumber(), kidoku_number);
+
+  // Record the kidoku pair in global memory.
+  memory().recordKidoku(sceneNumber(), kidoku_number);
 }
 
 // -----------------------------------------------------------------------

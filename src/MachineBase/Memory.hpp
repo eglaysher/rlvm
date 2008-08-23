@@ -46,7 +46,7 @@
 #include <map>
 #include "libReallive/intmemref.h"
 #include <boost/shared_ptr.hpp>
-
+#include <boost/dynamic_bitset.hpp>
 #include <boost/serialization/version.hpp>
 
 // -----------------------------------------------------------------------
@@ -84,6 +84,12 @@ struct GlobalMemory
   std::string strM[SIZE_OF_MEM_BANK];
 
   std::string global_names[SIZE_OF_NAME_BANK];
+
+  /**
+   * A mapping from a scenario number to a dynamic bitset, where each bit
+   * represents a specific kidoku bit.
+   */
+  std::map<int, boost::dynamic_bitset<> > kidoku_data;
 
   /// boost::serialization
   template<class Archive>
@@ -265,6 +271,11 @@ public:
   void setStringValue(int type, int number, const std::string& value);
 
   /**
+   * @name Name tables
+   *
+   * @{
+   */
+  /**
    * Sets the local name slot index to name.
    */
   void setName(int index, const std::string& name);
@@ -283,9 +294,24 @@ public:
    * Returns the local name slot index.
    */
   const std::string& getLocalName(int index) const;
+  /// @}
 
   /**
-   * @name Accessors
+   * @name Kidoku Access
+   *
+   * Methods that record whether a piece of text has been read. RealLive
+   * scripts have a piece of metadata called a kidoku marker which signifies if
+   * the text between that and the next kidoku marker have been previously read.
+   *
+   * @{
+   */
+  bool hasBeenRead(int scenario, int kidoku) const;
+  void recordKidoku(int scenario, int kidoku);
+  /// @}
+
+
+  /**
+   * @name Accessors for serialization.
    *
    * @{
    */

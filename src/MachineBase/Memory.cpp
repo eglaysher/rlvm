@@ -131,7 +131,7 @@ void Memory::connectIntVarPointers()
 const std::string& Memory::getStringValue(int type, int location)
 {
   if(location > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
+    throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
 
   switch(type) {
   case STRK_LOCATION:
@@ -214,8 +214,34 @@ const std::string& Memory::getLocalName(int index) const
 
 // -----------------------------------------------------------------------
 
+bool Memory::hasBeenRead(int scenario, int kidoku) const
+{
+  std::map<int, boost::dynamic_bitset<> >::const_iterator it =
+    global_->kidoku_data.find(scenario);
+
+  if ((it != global_->kidoku_data.end()) &&
+      (static_cast<size_t>(kidoku) < it->second.size()))
+    return it->second.test(kidoku);
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+void Memory::recordKidoku(int scenario, int kidoku)
+{
+  boost::dynamic_bitset<>& bitset = global_->kidoku_data[scenario];
+  if (bitset.size() <= static_cast<size_t>(kidoku))
+    bitset.resize(kidoku + 1, false);
+
+  bitset[kidoku] = true;
+}
+
+// -----------------------------------------------------------------------
+
 /* static */
-int Memory::ConvertLetterIndexToInt(const std::string& value) {
+int Memory::ConvertLetterIndexToInt(const std::string& value)
+{
   int total = 0;
 
   if (value.size() == 1) {
