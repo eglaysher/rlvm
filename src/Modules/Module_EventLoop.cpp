@@ -38,8 +38,20 @@
 EventLoopModule::EventLoopModule()
   : RLModule("EventLoop", 0, 4)
 {
+  addUnsupportedOpcode(120, 0, "SetInterrupt");
+  addUnsupportedOpcode(121, 0, "ClearInterrupt");
+  addUnsupportedOpcode(303, 0, "yield");
+
   /// Theoretically the same as rtl, but we don't really know.
-  addOpcode(300, 0, callFunction(&RLMachine::returnFromFarcall));
-  addOpcode(301, 0, callFunction(&RLMachine::returnFromFarcall));
-  addOpcode(302, 0, callFunction(&RLMachine::returnFromFarcall));
+  addOpcode(300, 0, "rtlButton", callFunction(&RLMachine::returnFromFarcall));
+  addOpcode(301, 0, "rtlCancel", callFunction(&RLMachine::returnFromFarcall));
+  addOpcode(302, 0, "rtlSystem", callFunction(&RLMachine::returnFromFarcall));
+
+  addUnsupportedOpcode(1000, 0, "ShowBackground");
+  addUnsupportedOpcode(1100, 0, "SetSkipMode");
+  addUnsupportedOpcode(1101, 0, "ClearSkipMode");
+  addUnsupportedOpcode(1102, 0, "SkipMode");
+
+  // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
+  // system; no idea what they do.
 }
