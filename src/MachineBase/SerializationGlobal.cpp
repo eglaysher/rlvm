@@ -37,12 +37,14 @@
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/set.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 
 #include "Utilities.h"
+#include "Utilities/dynamic_bitset_serialize.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Memory.hpp"
 #include "Systems/Base/System.hpp"

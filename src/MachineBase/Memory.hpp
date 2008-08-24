@@ -41,6 +41,7 @@
 
 // -----------------------------------------------------------------------
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
@@ -98,8 +99,10 @@ struct GlobalMemory
     ar & intG & intZ & strM;
 
     // Starting in version 1, \#NAME variable storage were added.
-    if (version > 0)
+    if (version > 0) {
       ar & global_names;
+      ar & kidoku_data;
+    }
   }
 };
 

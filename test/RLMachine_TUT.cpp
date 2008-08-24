@@ -324,4 +324,42 @@ void object::test<9>()
   }
 }
 
+// -----------------------------------------------------------------------
+
+/**
+ * Tests serialization of the kidoku table.
+ */
+template<>
+template<>
+void object::test<10>()
+{
+  stringstream ss;
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+
+  // Save data
+  {
+    RLMachine saveMachine(system, arc);
+
+    for (int i = 0; i < 10; i += 2) {
+      saveMachine.memory().recordKidoku(5, i);
+    }
+
+    Serialization::saveGlobalMemoryTo(ss, saveMachine);
+  }
+
+  // Load data
+  {
+    RLMachine loadMachine(system, arc);
+    Serialization::loadGlobalMemoryFrom(ss, loadMachine);
+
+    for (int i = 0; i < 10; i++) {
+      ensure_equals("Didn't save kidoku table correctly!",
+                    loadMachine.memory().hasBeenRead(5, i),
+                    !(i % 2));
+    }
+  }
+}
+
+
+
 }
