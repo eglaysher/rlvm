@@ -70,16 +70,13 @@ Sel_LongOperation::Sel_LongOperation(
   textWindow.setSelectionCallback(
     bind(&Sel_LongOperation::selected, this, _1));
 
-  cerr << "---------" << endl;
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
-  for(unsigned int i = 0; i < params.size(); ++i)
-  {
+  for (unsigned int i = 0; i < params.size(); ++i) {
     std::string utf8str = cp932toUTF8(params[i].text,
                                       machine.getTextEncoding());
-    cerr << i << ": " << utf8str << endl;
     textWindow.addSelectionItem(utf8str);
   }
-  cerr << "---------" << endl;
+
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 
