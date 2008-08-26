@@ -32,6 +32,7 @@
 #include "Modules/Module_EventLoop.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/GeneralOperations.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 // -----------------------------------------------------------------------
 
@@ -48,9 +49,11 @@ EventLoopModule::EventLoopModule()
   addOpcode(302, 0, "rtlSystem", callFunction(&RLMachine::returnFromFarcall));
 
   addUnsupportedOpcode(1000, 0, "ShowBackground");
-  addUnsupportedOpcode(1100, 0, "SetSkipMode");
-  addUnsupportedOpcode(1101, 0, "ClearSkipMode");
-  addUnsupportedOpcode(1102, 0, "SkipMode");
+  addOpcode(1100, 0, "SetSkipMode",
+            setToConstant(&TextSystem::setSkipMode, 1));
+  addOpcode(1101, 0, "ClearSkipMode",
+            setToConstant(&TextSystem::setSkipMode, 0));
+  addOpcode(1102, 0, "SkipMode", returnIntValue(&TextSystem::skipMode));
 
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
   // system; no idea what they do.

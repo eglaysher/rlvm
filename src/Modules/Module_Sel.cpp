@@ -65,6 +65,7 @@ Sel_LongOperation::Sel_LongOperation(
     textWindow(machine.system().text().currentWindow(machine)),
     return_value_(-1)
 {
+  machine.system().text().setInSelectionMode(true);
   textWindow.startSelectionMode();
   textWindow.setSelectionCallback(
     bind(&Sel_LongOperation::selected, this, _1));
@@ -87,6 +88,7 @@ Sel_LongOperation::Sel_LongOperation(
 Sel_LongOperation::~Sel_LongOperation()
 {
   textWindow.endSelectionMode();
+  machine_.system().text().setInSelectionMode(false);
 }
 
 // -----------------------------------------------------------------------

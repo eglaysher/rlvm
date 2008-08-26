@@ -93,7 +93,10 @@ TextSystem::TextSystem(Gameexe& gexe)
     automode_use_(false), msgbk_use_(false), msgbkleft_use_(false),
     msgbkright_use_(false), exbtn_use_(false),
     globals_(gexe),
-    system_visible_(true)
+    system_visible_(true),
+    skip_mode_(false),
+    kidoku_read_(false),
+    in_selection_mode_(false)
 {
   GameexeInterpretObject ctrl_use(gexe("CTRL_USE"));
   if(ctrl_use.exists())
@@ -193,6 +196,30 @@ void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
 void TextSystem::expireOldPages() {
   while(previous_page_sets_.size() > MAX_PAGE_HISTORY)
     previous_page_sets_.pop_front();
+}
+
+// -----------------------------------------------------------------------
+
+bool TextSystem::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
+{
+  if (currentlySkipping() && !in_selection_mode_) {
+    skip_mode_ = false;
+    return true;
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+bool TextSystem::keyStateChanged(KeyCode key_code, bool pressed)
+{
+  if (currentlySkipping() && !in_selection_mode_) {
+    skip_mode_ = false;
+    return true;
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------
@@ -442,4 +469,11 @@ void parseNames(const Memory& memory, const std::string& input,
       copyOneShiftJisCharacter(cur, output);
     }
   }
+}
+
+// -----------------------------------------------------------------------
+
+bool TextSystem::currentlySkipping() const
+{
+  return kidoku_read_ && skipMode();
 }

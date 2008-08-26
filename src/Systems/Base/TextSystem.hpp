@@ -28,6 +28,8 @@
 #ifndef __TextSystem_hpp__
 #define __TextSystem_hpp__
 
+#include "Systems/Base/EventHandler.hpp"
+
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -71,7 +73,7 @@ struct TextSystemGlobals
 
 // -----------------------------------------------------------------------
 
-class TextSystem
+class TextSystem : public EventListener
 {
 protected:
   /// TextPage will call our internals since it actually does most of
@@ -158,11 +160,24 @@ protected:
 
   bool system_visible_;
 
+  /// Whether we skip text that we've already seen
+  bool skip_mode_;
+
+  /// Whether we are currently on a page of text that we've previously read.
+  bool kidoku_read_;
+
+  /// Whether we are currently paused at a user choice.
+  bool in_selection_mode_;
+
   /**
    * Reduces the number of page snapshots in previous_page_sets_ down to a
    * manageable constant number.
    */
   void expireOldPages();
+
+  // Overriden from EventListener
+  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 
 public:
   TextSystem(Gameexe& gexe);
@@ -343,6 +358,16 @@ public:
    * Resets non-configuration values (so we can load games).
    */
   virtual void reset();
+
+  bool kidokuRead() const { return kidoku_read_; }
+  void setKidokuRead(const int in) { kidoku_read_ = in; }
+
+  bool skipMode() const { return skip_mode_; }
+  void setSkipMode(const int in) { skip_mode_ = in; }
+
+  bool currentlySkipping() const;
+
+  void setInSelectionMode(const bool in) { in_selection_mode_ = in; }
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

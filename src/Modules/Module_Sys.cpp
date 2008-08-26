@@ -462,9 +462,11 @@ SysModule::SysModule()
 
   addUnsupportedOpcode(330, 0, "EnableSkipMode");
   addUnsupportedOpcode(331, 0, "DisableSkipMode");
-  addUnsupportedOpcode(332, 0, "LocalSkipMode");
-  addUnsupportedOpcode(333, 0, "SetLocalSkipMode");
-  addUnsupportedOpcode(334, 0, "ClearLocalSkipMode");
+  addOpcode(332, 0, "LocalSkipMode", returnIntValue(&TextSystem::skipMode));
+  addOpcode(333, 0, "SetLocalSkipMode",
+            setToConstant(&TextSystem::setSkipMode, 1));
+  addOpcode(334, 0, "ClearLocalSkipMode",
+            setToConstant(&TextSystem::setSkipMode, 0));
 
   addOpcode( 350, 0, "CtrlKeyShip",
              returnIntValue(&TextSystem::ctrlKeySkip));

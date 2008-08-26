@@ -213,12 +213,16 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 bool PauseLongOperation::operator()(RLMachine& machine)
 {
   // Check to see if we're done because of the auto mode timer
-  if(machine.system().text().autoMode())
-  {
+  if (machine.system().text().autoMode()) {
     unsigned int curTime = machine.system().event().getTicks();
-    if(start_time_ + automode_time_ < curTime)
+    if (start_time_ + automode_time_ < curTime)
       is_done_ = true;
   }
+
+  // Check to see if we're done because we're being asked to pause on a piece
+  // of text we've already hit.
+  if (machine.system().text().currentlySkipping())
+    is_done_ = true;
 
   return is_done_;
 }

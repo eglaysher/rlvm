@@ -526,7 +526,7 @@ void RLMachine::performTextout(const TextoutElement& e)
   // Display UTF-8 characters
   auto_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
 
-  if(ts.messageNoWait())
+  if (ts.currentlySkipping() || ts.messageNoWait())
     ptr->setNoWait();
 
   pushLongOperation(ptr.release());
@@ -545,7 +545,8 @@ void RLMachine::setKidokuMarker(int kidoku_number)
   }
 
   // Mark if we've previously read this piece of text.
-  kidoku_read_ = memory().hasBeenRead(sceneNumber(), kidoku_number);
+  system_.text().setKidokuRead(
+    memory().hasBeenRead(sceneNumber(), kidoku_number));
 
   // Record the kidoku pair in global memory.
   memory().recordKidoku(sceneNumber(), kidoku_number);

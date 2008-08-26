@@ -430,9 +430,6 @@ public:
    */
   System& system() { return system_; }
 
-  /// Whether we're on a block of text that we've read before.
-  bool kidokuRead() const { return kidoku_read_; }
-
 private:
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packed_module_number, int& modtype,
@@ -494,9 +491,6 @@ private:
 
   /// Override defaults
   bool mark_savepoints_;
-
-  /// Whether we are on a block of text that we've read before.
-  bool kidoku_read_;
 
   /// boost::serialization support
   friend class boost::serialization::access;
