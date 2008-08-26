@@ -59,8 +59,8 @@ public:
 
   void setNoWait(bool in = true) { no_wait_ = in; }
 
-  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  virtual void keyStateChanged(KeyCode keyCode, bool pressed);
+  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual bool keyStateChanged(KeyCode keyCode, bool pressed);
 
   virtual bool operator()(RLMachine& machine);
 };

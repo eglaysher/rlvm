@@ -63,8 +63,8 @@ public:
 
   // ------------------------------------------ [ EventHandler interface ]
   void mouseMotion(const Point&);
-  void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  void keyStateChanged(KeyCode keyCode, bool pressed);
+  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  bool keyStateChanged(KeyCode keyCode, bool pressed);
 
   // ----------------------------------------- [ LongOperation interface ]
   bool operator()(RLMachine& machine);

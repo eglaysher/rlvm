@@ -93,19 +93,27 @@ TextoutLongOperation::~TextoutLongOperation()
 
 // -----------------------------------------------------------------------
 
-void TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed)
 {
-  if(pressed && mouseButton == MOUSE_LEFT)
+  if(pressed && mouseButton == MOUSE_LEFT) {
     no_wait_ = true;
+    return true;
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
+bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
-  if(pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL))
+  if(pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
     no_wait_ = true;
+    return true;
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------

@@ -91,15 +91,19 @@ struct LongOp_time : public LongOperation, public EventHandler
   /**
    * Listen for mouseclicks (provided by EventHandler).
    */
-  void mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
+  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
   {
-    if(pressed)
-    {
-      if(mouseButton == MOUSE_LEFT)
+    if (pressed) {
+      if (mouseButton == MOUSE_LEFT) {
         button_pressed_ = 1;
-      else if(mouseButton == MOUSE_RIGHT)
+        return true;
+      } else if(mouseButton == MOUSE_RIGHT) {
         button_pressed_ = -1;
+        return true;
+      }
     }
+
+    return false;
   }
 
   bool operator()(RLMachine& machine)
@@ -107,27 +111,24 @@ struct LongOp_time : public LongOperation, public EventHandler
     EventSystem& es = machine.system().event();
     bool done = false;
 
-    if(mouse_moved_)
-    {
+    if (mouse_moved_) {
       machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
       mouse_moved_ = false;
     }
 
     // First check to see if we're done because of time.
-    if(es.getTimer(layer_, counter_).read(es) > target_time_)
+    if (es.getTimer(layer_, counter_).read(es) > target_time_)
       done = true;
 
-    if(cancel_on_click_)
-    {
+    if (cancel_on_click_) {
       // The underlying timeC returns a value. Manually set that
       // value here.
-      if(button_pressed_)
-      {
+      if (button_pressed_) {
         done = true;
         machine.setStoreRegister(button_pressed_);
-      }
-      else if(done)
+      } else if(done) {
         machine.setStoreRegister(0);
+      }
     }
 
     return done;

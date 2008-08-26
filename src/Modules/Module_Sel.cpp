@@ -118,7 +118,7 @@ void Sel_LongOperation::mouseMotion(const Point& pos)
 
 // -----------------------------------------------------------------------
 
-void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed)
 {
   EventSystem& es = machine_.system().event();
@@ -129,6 +129,7 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   {
     Point pos = es.getCursorPos();
     machine_.system().text().handleMouseClick(machine_, pos, pressed);
+    return true;
     break;
   }
   case MOUSE_RIGHT:
@@ -137,6 +138,8 @@ void Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   default:
 	break;
   }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------

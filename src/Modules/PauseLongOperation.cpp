@@ -105,7 +105,7 @@ void PauseLongOperation::mouseMotion(const Point& p)
 
 // -----------------------------------------------------------------------
 
-void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                  bool pressed)
 {
   GraphicsSystem& graphics = machine.system().graphics();
@@ -121,8 +121,10 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     // Only unhide the interface on release of the left mouse button
     if(graphics.interfaceHidden())
     {
-      if(!pressed)
+      if(!pressed) {
         graphics.toggleInterfaceHidden();
+        return true;
+      }
     }
     else if(!machine.system().text().handleMouseClick(machine, pos, pressed))
     {
@@ -137,59 +139,73 @@ void PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
         {
           is_done_ = true;
         }
+
+        return true;
       }
     }
     break;
   }
   case MOUSE_RIGHT:
-    if(pressed)
+    if (pressed) {
       handleSyscomCall();
+      return true;
+    }
     break;
   case MOUSE_WHEELUP:
-    if(pressed)
+    if (pressed) {
       text.backPage(machine);
+      return true;
+    }
     break;
   case MOUSE_WHEELDOWN:
-    if(pressed)
+    if (pressed) {
       text.forwardPage(machine);
+      return true;
+    }
     break;
   default:
     break;
   }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
+bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
   GraphicsSystem& graphics = machine.system().graphics();
   TextSystem& text = machine.system().text();
+  bool handled = false;
 
-  if(pressed)
-  {
-    if(graphics.interfaceHidden())
-    {
+  if(pressed) {
+    if(graphics.interfaceHidden()) {
       graphics.toggleInterfaceHidden();
-    }
-    else
-    {
+      handled = true;
+    } else {
       bool ctrlKeySkips = text.ctrlKeySkip();
 
       if(ctrlKeySkips &&
-         (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
-      {
+         (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
         is_done_ = true;
-      }
-      else if(keyCode == RLKEY_SPACE)
+        handled = true;
+      } else if(keyCode == RLKEY_SPACE) {
         graphics.toggleInterfaceHidden();
-      else if(keyCode == RLKEY_UP)
+        handled = true;
+      } else if(keyCode == RLKEY_UP) {
         text.backPage(machine);
-      else if(keyCode == RLKEY_DOWN)
+        handled = true;
+      } else if(keyCode == RLKEY_DOWN) {
         text.forwardPage(machine);
-      else if(keyCode == RLKEY_RETURN)
+        handled = true;
+      } else if(keyCode == RLKEY_RETURN) {
         is_done_ = true;
+        handled = true;
+      }
     }
   }
+
+  return handled;
 }
 
 // -----------------------------------------------------------------------

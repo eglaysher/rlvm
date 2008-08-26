@@ -35,20 +35,32 @@
 #include "MachineBase/RLMachine.hpp"
 
 // -----------------------------------------------------------------------
-// MouseListener
+// EventListener
 // -----------------------------------------------------------------------
 
-MouseListener::~MouseListener() {}
-
-// -----------------------------------------------------------------------
-
-void MouseListener::mouseMotion(const Point& new_location) { }
+EventListener::~EventListener() {}
 
 // -----------------------------------------------------------------------
 
-void MouseListener::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
-{}
+void EventListener::mouseMotion(const Point& new_location) { }
 
+// -----------------------------------------------------------------------
+
+bool EventListener::mouseButtonStateChanged(MouseButton mouse_button,
+                                            bool pressed)
+{
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+bool EventListener::keyStateChanged(KeyCode key_code, bool pressed)
+{
+  return false;
+}
+
+// -----------------------------------------------------------------------
+// EventHandler
 // -----------------------------------------------------------------------
 
 EventHandler::EventHandler(RLMachine& machine)

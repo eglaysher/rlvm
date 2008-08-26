@@ -125,7 +125,7 @@ enum GraphicsUpdateType {
  * effect.)
  */
 
-class GraphicsSystem : public MouseListener
+class GraphicsSystem : public EventListener
 {
 public:
   /**

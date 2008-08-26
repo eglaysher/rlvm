@@ -48,9 +48,49 @@ using boost::bind;
 // Private implementation
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::handleKeyDown(SDL_Event& e)
+void SDLEventSystem::dispatchEvent(
+  const boost::function<bool(EventListener&)>& event)
 {
-  switch(e.key.keysym.sym)
+  bool handled = false;
+
+  // Give the mostly passive listeners first shot at handling this event
+  EventListeners::iterator listenerIt = listeners_begin();
+  for (; !handled && listenerIt != listeners_end(); ++listenerIt) {
+    if (event(**listenerIt)) {
+      handled = true;
+    }
+  }
+
+  // Give the mostly passive listeners first shot at handling this event
+  Handlers::iterator handlerIt = handlers_begin();
+  for (; !handled && handlerIt != handlers_end(); ++handlerIt) {
+    if (event(**handlerIt)) {
+      handled = true;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::broadcastEvent(
+  const boost::function<void(EventListener&)>& event)
+{
+  EventListeners::iterator listenerIt = listeners_begin();
+  for (; listenerIt != listeners_end(); ++listenerIt) {
+    event(**listenerIt);
+  }
+
+  Handlers::iterator handlerIt = handlers_begin();
+  for (; handlerIt != handlers_end(); ++handlerIt) {
+    event(**handlerIt);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::handleKeyDown(SDL_Event& event)
+{
+  switch(event.key.keysym.sym)
   {
   case SDLK_LSHIFT:
   case SDLK_RSHIFT:
@@ -67,13 +107,16 @@ void SDLEventSystem::handleKeyDown(SDL_Event& e)
   default:
     break;
   }
+
+  KeyCode code = KeyCode(event.key.keysym.sym);
+  dispatchEvent(bind(&EventHandler::keyStateChanged, _1, code, true));
 }
 
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::handleKeyUp(SDL_Event& e)
+void SDLEventSystem::handleKeyUp(SDL_Event& event)
 {
-  switch(e.key.keysym.sym)
+  switch(event.key.keysym.sym)
   {
   case SDLK_LSHIFT:
   case SDLK_RSHIFT:
@@ -90,6 +133,9 @@ void SDLEventSystem::handleKeyUp(SDL_Event& e)
   default:
     break;
   }
+
+  KeyCode code = KeyCode(event.key.keysym.sym);
+  dispatchEvent(bind(&EventHandler::keyStateChanged, _1, code, false));
 }
 
 // -----------------------------------------------------------------------
@@ -100,34 +146,51 @@ void SDLEventSystem::handleMouseMotion(SDL_Event& event)
   {
     // Handle this somehow.
     mouse_pos_ = Point(event.motion.x, event.motion.y);
-    for_each(listeners_begin(), listeners_end(),
-             bind(&MouseListener::mouseMotion, _1, mouse_pos_));
+
+    // Handle this somehow.
+    broadcastEvent(bind(&EventHandler::mouseMotion, _1, mouse_pos_));
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::handleMouseButtonDown(SDL_Event& event)
+void SDLEventSystem::handleMouseButtonEvent(SDL_Event& event)
 {
   if(mouse_inside_window_)
   {
-    if(event.button.button == SDL_BUTTON_LEFT)
-      m_button1State = 1;
-    else if(event.button.button == SDL_BUTTON_RIGHT)
-      m_button2State = 1;
-  }
-}
+    bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
+    int press_code = pressed ? 1 : 2;
 
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::handleMouseButtonUp(SDL_Event& event)
-{
-  if(mouse_inside_window_)
-  {
     if(event.button.button == SDL_BUTTON_LEFT)
-      m_button1State = 2;
+      m_button1State = press_code;
     else if(event.button.button == SDL_BUTTON_RIGHT)
-      m_button2State = 2;
+      m_button2State = press_code;
+
+    MouseButton button = MOUSE_NONE;
+    switch(event.button.button)
+    {
+    case SDL_BUTTON_LEFT:
+      button = MOUSE_LEFT;
+      break;
+    case SDL_BUTTON_RIGHT:
+      button = MOUSE_RIGHT;
+      break;
+    case SDL_BUTTON_MIDDLE:
+      button = MOUSE_MIDDLE;
+      break;
+    case SDL_BUTTON_WHEELUP:
+      button = MOUSE_WHEELUP;
+      break;
+    case SDL_BUTTON_WHEELDOWN:
+      button = MOUSE_WHEELDOWN;
+      break;
+    default:
+      break;
+    }
+
+    dispatchEvent(bind(&EventHandler::mouseButtonStateChanged, _1,
+                         button, pressed));
+    unaccessed_items_ = true;
   }
 }
 
@@ -163,10 +226,51 @@ SDLEventSystem::SDLEventSystem(Gameexe& gexe)
 
 void SDLEventSystem::executeEventSystem(RLMachine& machine)
 {
-  if(handlers_begin() == handlers_end())
-    executeRealLiveEventSystem(machine);
-  else
-    executeEventHandlerSystem(machine);
+  while(queued_actions_.size())
+  {
+    queued_actions_.front()();
+    queued_actions_.pop();
+  }
+
+  SDL_Event event;
+  while(SDL_PollEvent(&event))
+  {
+    switch(event.type)
+    {
+    case SDL_KEYDOWN:
+    {
+      handleKeyDown(event);
+      break;
+    }
+    case SDL_KEYUP:
+    {
+      handleKeyUp(event);
+      break;
+    }
+    case SDL_MOUSEMOTION:
+    {
+      handleMouseMotion(event);
+      break;
+    }
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+    {
+      handleMouseButtonEvent(event);
+      break;
+    }
+    case SDL_QUIT:
+      machine.halt();
+      break;
+    case SDL_ACTIVEEVENT:
+      handleActiveEvent(machine, event);
+      break;
+    case SDL_VIDEOEXPOSE:
+    {
+      machine.system().graphics().forceRefresh();
+      break;
+    }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -190,140 +294,6 @@ void SDLEventSystem::removeEventHandler(EventHandler* handler)
 
   while(queued_actions_.size())
     queued_actions_.pop();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::executeEventHandlerSystem(RLMachine& machine)
-{
-  while(queued_actions_.size())
-  {
-    queued_actions_.front()();
-    queued_actions_.pop();
-  }
-
-  SDL_Event event;
-  while(SDL_PollEvent(&event))
-  {
-    switch(event.type)
-    {
-    case SDL_KEYDOWN:
-    {
-      KeyCode code = KeyCode(event.key.keysym.sym);
-      for_each(handlers_begin(), handlers_end(),
-               bind(&EventHandler::keyStateChanged, _1,
-                    code, true));
-
-      // Still keep track of what keys are held down
-      handleKeyDown(event);
-      break;
-    }
-    case SDL_KEYUP:
-    {
-      KeyCode code = KeyCode(event.key.keysym.sym);
-      for_each(handlers_begin(), handlers_end(),
-               bind(&EventHandler::keyStateChanged, _1,
-                    code, false));
-
-      // Still keep track of what keys are released
-      handleKeyUp(event);
-      break;
-    }
-    case SDL_MOUSEMOTION:
-    {
-      // Handle this somehow.
-      Point p = Point(event.motion.x, event.motion.y);
-      for_each(handlers_begin(), handlers_end(),
-               bind(&EventHandler::mouseMotion, _1, p));
-      handleMouseMotion(event);
-      break;
-    }
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP:
-    {
-      bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
-      MouseButton button = MOUSE_NONE;
-      switch(event.button.button)
-      {
-      case SDL_BUTTON_LEFT:
-        button = MOUSE_LEFT;
-        break;
-      case SDL_BUTTON_RIGHT:
-        button = MOUSE_RIGHT;
-        break;
-      case SDL_BUTTON_MIDDLE:
-        button = MOUSE_MIDDLE;
-        break;
-      case SDL_BUTTON_WHEELUP:
-        button = MOUSE_WHEELUP;
-        break;
-      case SDL_BUTTON_WHEELDOWN:
-        button = MOUSE_WHEELDOWN;
-        break;
-      default:
-        break;
-      }
-
-      for_each(handlers_begin(), handlers_end(),
-               bind(&EventHandler::mouseButtonStateChanged, _1,
-                    button, pressed));
-      unaccessed_items_ = true;
-      break;
-    }
-    case SDL_QUIT:
-      machine.halt();
-      break;
-    case SDL_ACTIVEEVENT:
-      handleActiveEvent(machine, event);
-      break;
-    case SDL_VIDEOEXPOSE:
-    {
-      machine.system().graphics().forceRefresh();
-      break;
-    }
-    }
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::executeRealLiveEventSystem(RLMachine& machine)
-{
-  SDL_Event event;
-  while(SDL_PollEvent(&event))
-  {
-    switch(event.type)
-    {
-    case SDL_KEYDOWN:
-      handleKeyDown(event);
-      break;
-    case SDL_KEYUP:
-      handleKeyUp(event);
-      break;
-    case SDL_MOUSEMOTION:
-      handleMouseMotion(event);
-      break;
-    case SDL_MOUSEBUTTONDOWN:
-      handleMouseButtonDown(event);
-      unaccessed_items_ = true;
-      break;
-    case SDL_MOUSEBUTTONUP:
-      handleMouseButtonUp(event);
-      unaccessed_items_ = true;
-      break;
-    case SDL_QUIT:
-      machine.halt();
-      break;
-    case SDL_ACTIVEEVENT:
-      handleActiveEvent(machine, event);
-      break;
-    case SDL_VIDEOEXPOSE:
-    {
-      machine.system().graphics().forceRefresh();
-      break;
-    }
-    }
-  }
 }
 
 // -----------------------------------------------------------------------

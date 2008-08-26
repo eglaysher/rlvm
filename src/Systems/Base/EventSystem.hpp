@@ -40,7 +40,7 @@ class RLMachine;
 class Gameexe;
 class FrameCounter;
 class EventHandler;
-class MouseListener;
+class EventListener;
 
 // -----------------------------------------------------------------------
 
@@ -133,8 +133,8 @@ public:
   virtual void addEventHandler(EventHandler* handler);
   virtual void removeEventHandler(EventHandler* handler);
 
-  virtual void addMouseListener(MouseListener* listener);
-  virtual void removeMouseListener(MouseListener* listener);
+  virtual void addMouseListener(EventListener* listener);
+  virtual void removeMouseListener(EventListener* listener);
   /// @}
 
   /**
@@ -213,13 +213,13 @@ public:
 
 protected:
   typedef std::vector<EventHandler*> Handlers;
-  typedef std::vector<MouseListener*> MouseListeners;
+  typedef std::vector<EventListener*> EventListeners;
 
   Handlers::iterator handlers_begin() { return event_handlers_.begin(); }
   Handlers::iterator handlers_end() { return event_handlers_.end(); }
 
-  MouseListeners::iterator listeners_begin() { return mouse_listeners_.begin(); }
-  MouseListeners::iterator listeners_end() { return mouse_listeners_.end(); }
+  EventListeners::iterator listeners_begin() { return event_listeners_.begin(); }
+  EventListeners::iterator listeners_end() { return event_listeners_.end(); }
 
 private:
   boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
@@ -229,7 +229,7 @@ private:
   void checkLayerAndCounter(int layer, int counter);
 
   Handlers event_handlers_;
-  MouseListeners mouse_listeners_;
+  EventListeners event_listeners_;
 
   EventSystemGlobals globals_;
 };

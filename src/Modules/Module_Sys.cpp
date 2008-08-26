@@ -112,22 +112,30 @@ struct LongOp_wait : public LongOperation, public EventHandler
   /**
    * Listen for mouseclicks (provided by EventHandler).
    */
-  void mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
+  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
   {
-    if(pressed && break_on_clicks_)
-    {
-      if(mouseButton == MOUSE_LEFT)
+    if (pressed && break_on_clicks_) {
+      if (mouseButton == MOUSE_LEFT) {
         button_pressed_ = 1;
-      else if(mouseButton == MOUSE_RIGHT)
+        return true;
+      } else if(mouseButton == MOUSE_RIGHT) {
         button_pressed_ = -1;
+        return true;
+      }
     }
+
+    return false;
   }
 
-  void keyStateChanged(KeyCode keyCode, bool pressed)
+  bool keyStateChanged(KeyCode keyCode, bool pressed)
   {
-    if(pressed && break_on_ctrl_pressed_ &&
-       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL))
+    if (pressed && break_on_ctrl_pressed_ &&
+        (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
       ctrl_pressed_ = true;
+      return true;
+    }
+
+    return false;
   }
 
   bool operator()(RLMachine& machine)
@@ -135,21 +143,18 @@ struct LongOp_wait : public LongOperation, public EventHandler
     bool done = machine.system().event().getTicks() > target_time_ ||
       ctrl_pressed_;
 
-    if(mouse_moved_)
-    {
+    if (mouse_moved_) {
       machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
       mouse_moved_ = false;
     }
 
-    if(break_on_clicks_)
-    {
-      if(button_pressed_)
-      {
+    if (break_on_clicks_) {
+      if (button_pressed_) {
         done = true;
         machine.setStoreRegister(button_pressed_);
-      }
-      else if(done)
+      } else if(done) {
         machine.setStoreRegister(0);
+      }
     }
 
     return done;

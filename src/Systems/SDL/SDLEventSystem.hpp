@@ -57,17 +57,19 @@ private:
    *
    * @{
    */
-  void handleKeyDown(SDL_Event& e);
-  void handleKeyUp(SDL_Event& e);
-  void handleMouseMotion(SDL_Event& e);
-  void handleMouseButtonUp(SDL_Event& event);
-  void handleMouseButtonDown(SDL_Event& event);
+  void handleKeyDown(SDL_Event& event);
+  void handleKeyUp(SDL_Event& event);
+  void handleMouseMotion(SDL_Event& event);
+  void handleMouseButtonEvent(SDL_Event& event);
   void handleActiveEvent(RLMachine& machine, SDL_Event& event);
-  void executeRealLiveEventSystem(RLMachine& machine);
   /// @}
 
-  void executeEventHandlerSystem(RLMachine& machine);
-
+  /**
+   * Calls a EventListener member function on all event listeners, and then
+   * event handlers, stopping when an object says they handled it.
+   */
+  void dispatchEvent(const boost::function<bool(EventListener&)>& event);
+  void broadcastEvent(const boost::function<void(EventListener&)>& event);
 
 public:
   SDLEventSystem(Gameexe& gexe);

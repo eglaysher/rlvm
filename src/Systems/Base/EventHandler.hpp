@@ -305,12 +305,29 @@ enum KeyCode {
  * mouse is moved. Used where we don't have an RLMachine and we don't
  * want the autoregistering and removal features of EventHandler.
  */
-class MouseListener
+class EventListener
 {
 public:
-  virtual ~MouseListener();
+  virtual ~EventListener();
+
+  /// Notifies of the new location of the mouse hotspot.
   virtual void mouseMotion(const Point& new_location);
-  virtual void mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+
+  /**
+   * A notification of a mouse or key press.
+   *
+   * @return True if this EventListener handled the message (and this message
+   *         shouldn't be dispatched to other EventListeners).
+   */
+  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+
+  /**
+   * A notification that a key was pressed or unpressed.
+   *
+   * @return True if this EventListener handled the message (and this message
+   *         shouldn't be dispatched to other EventListeners).
+   */
+  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 };
 
 /**
@@ -318,7 +335,7 @@ public:
  * EventHandler will automatically register/unregister your subclass with the
  * event system on construction/deconstruction.
  */
-class EventHandler : public MouseListener
+class EventHandler : public EventListener
 {
 private:
   RLMachine& machine_;
@@ -326,8 +343,6 @@ private:
 public:
   EventHandler(RLMachine& machine);
   virtual ~EventHandler();
-
-  virtual void keyStateChanged(KeyCode key_code, bool pressed) {}
 };
 
 #endif

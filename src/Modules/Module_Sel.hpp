@@ -67,7 +67,7 @@ public:
   virtual bool operator()(RLMachine& machine);
 
   virtual void mouseMotion(const Point&);
-  virtual void mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
 };
 
 // -----------------------------------------------------------------------
