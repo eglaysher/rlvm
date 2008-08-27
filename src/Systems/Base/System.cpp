@@ -147,6 +147,23 @@ int System::readSyscom(int syscom)
 
 // -----------------------------------------------------------------------
 
+void System::showSyscomMenu(RLMachine& machine)
+{
+  Gameexe& gexe = machine.system().gameexe();
+
+  if(gexe("CANCELCALL_MOD") == 1)
+  {
+    vector<int> cancelcall = gexe("CANCELCALL");
+    machine.farcall(cancelcall.at(0), cancelcall.at(1));
+  }
+  else
+  {
+    cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void System::addPath(GameexeInterpretObject gio)
 {
   boost::filesystem::path gamepath(gameexe()("__GAMEPATH").to_string());

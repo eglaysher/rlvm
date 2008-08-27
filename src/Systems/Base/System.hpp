@@ -187,6 +187,9 @@ public:
   /// Reads the corresponding value for syscom number @c syscom
   int readSyscom(int syscom);
 
+  /// Called by various LongOperations to show the right click menu.
+  void showSyscomMenu(RLMachine& machine);
+
   /// @}
 
   /**

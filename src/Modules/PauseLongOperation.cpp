@@ -74,28 +74,6 @@ PauseLongOperation::~PauseLongOperation()
   machine.system().text().setInPauseState(false);
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * @todo This code has some issues; we don't handle non custom SYSCOM
- *       calls, we don't disable parts of rendering (such as the key
- *       cursor). Still, for the most pat this works.
- */
-void PauseLongOperation::handleSyscomCall()
-{
-  Gameexe& gexe = machine.system().gameexe();
-
-  if(gexe("CANCELCALL_MOD") == 1)
-  {
-    vector<int> cancelcall = gexe("CANCELCALL");
-    machine.farcall(cancelcall.at(0), cancelcall.at(1));
-  }
-  else
-  {
-    cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
-  }
-}
-
 // -------------------------------------------- [ EventHandler interface ]
 void PauseLongOperation::mouseMotion(const Point& p)
 {
@@ -147,7 +125,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   }
   case MOUSE_RIGHT:
     if (pressed) {
-      handleSyscomCall();
+      machine.system().showSyscomMenu(machine);
       return true;
     }
     break;

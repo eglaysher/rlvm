@@ -55,8 +55,6 @@ private:
   unsigned int automode_time_;
   /// @}
 
-  void handleSyscomCall();
-
 public:
   PauseLongOperation(RLMachine& machine);
   ~PauseLongOperation();
