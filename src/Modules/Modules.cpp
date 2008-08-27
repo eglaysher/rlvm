@@ -53,6 +53,8 @@
 #include "Modules/Module_Debug.hpp"
 #include "Modules/Module_Gan.hpp"
 #include "Modules/Module_Sel.hpp"
+#include "Modules/Module_Shl.hpp"
+#include "Modules/Module_Shk.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -90,4 +92,6 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new DebugModule);
   rlmachine.attachModule(new GanFgModule);
   rlmachine.attachModule(new GanBgModule);
+  rlmachine.attachModule(new LayeredShakingModule);
+  rlmachine.attachModule(new ShakingModule);
 }

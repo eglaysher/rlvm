@@ -36,6 +36,8 @@ LRLFILES[] =
   Module_ObjPosDims
   Module_Refresh
   Module_Debug
+  Module_Shl
+  Module_Shk
   TextoutLongOperation
   PauseLongOperation
   ZoomLongOperation
