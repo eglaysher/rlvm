@@ -27,6 +27,7 @@ LRLFILES[] =
   Module_Sys_Date
   Module_Sys_Name
   Module_Sys_index_series
+  Module_Sys_Wait
   Module_Gan
   cp932toUnicode
   Module_Obj

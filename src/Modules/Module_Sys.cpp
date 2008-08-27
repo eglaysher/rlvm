@@ -50,14 +50,13 @@
 #include "Modules/Module_Sys_Date.hpp"
 #include "Modules/Module_Sys_Name.hpp"
 #include "Modules/Module_Sys_index_series.hpp"
+#include "Modules/Module_Sys_Wait.hpp"
 #include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
@@ -79,98 +78,6 @@ struct Sys_title : public RLOp_Void_1< StrConstant_T > {
   void operator()(RLMachine& machine, std::string subtitle) {
     machine.system().graphics().setWindowSubtitle(
       subtitle, machine.getTextEncoding());
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct LongOp_wait : public LongOperation, public EventHandler
-{
-  const unsigned int target_time_;
-  const bool break_on_clicks_;
-  int button_pressed_;
-
-  bool ctrl_pressed_;
-  bool break_on_ctrl_pressed_;
-
-  bool mouse_moved_;
-
-  LongOp_wait(RLMachine& machine, int time, bool breakOnClicks)
-    : EventHandler(machine),
-      target_time_(machine.system().event().getTicks() + time),
-      break_on_clicks_(breakOnClicks), button_pressed_(0),
-      ctrl_pressed_(false),
-      break_on_ctrl_pressed_(machine.system().text().ctrlKeySkip()),
-      mouse_moved_(false)
-  {}
-
-  void mouseMotion(const Point&)
-  {
-    mouse_moved_ = true;
-  }
-
-  /**
-   * Listen for mouseclicks (provided by EventHandler).
-   */
-  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
-  {
-    if (pressed && break_on_clicks_) {
-      if (mouseButton == MOUSE_LEFT) {
-        button_pressed_ = 1;
-        return true;
-      } else if(mouseButton == MOUSE_RIGHT) {
-        button_pressed_ = -1;
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  bool keyStateChanged(KeyCode keyCode, bool pressed)
-  {
-    if (pressed && break_on_ctrl_pressed_ &&
-        (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
-      ctrl_pressed_ = true;
-      return true;
-    }
-
-    return false;
-  }
-
-  bool operator()(RLMachine& machine)
-  {
-    bool done = machine.system().event().getTicks() > target_time_ ||
-      ctrl_pressed_;
-
-    if (mouse_moved_) {
-      machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
-      mouse_moved_ = false;
-    }
-
-    if (break_on_clicks_) {
-      if (button_pressed_) {
-        done = true;
-        machine.setStoreRegister(button_pressed_);
-      } else if(done) {
-        machine.setStoreRegister(0);
-      }
-    }
-
-    return done;
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
-  const bool cancelable_;
-
-  Sys_wait(bool cancelable) : cancelable_(cancelable) {}
-
-  /// Simply set the long operation
-  void operator()(RLMachine& machine, int time) {
-    machine.pushLongOperation(new LongOp_wait(machine, time, cancelable_));
   }
 };
 
@@ -447,8 +354,6 @@ SysModule::SysModule()
   : RLModule("Sys", 1, 004)
 {
   addOpcode(   0, 0, "title", new Sys_title);
-  addOpcode( 100, 0, "wait", new Sys_wait(false));
-  addOpcode( 101, 0, "waitC", new Sys_wait(true));
 
   addOpcode( 130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
   addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
@@ -682,6 +587,7 @@ SysModule::SysModule()
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
+  addWaitAndMouseOpcodes(*this);
   addSysTimerOpcodes(*this);
   addSysFrameOpcodes(*this);
   addSysSaveOpcodes(*this);
