@@ -31,6 +31,7 @@
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/SDL/SDLSoundChunk.hpp"
+#include "Systems/SDL/SDLAudioLocker.hpp"
 
 #include <SDL/SDL_mixer.h>
 
@@ -56,7 +57,10 @@ SDLSoundChunk::~SDLSoundChunk()
 
 void SDLSoundChunk::playChunkOn(int channel, int loops)
 {
-  s_playing_table[channel] = shared_from_this();
+  {
+    SDLAudioLocker locker;
+    s_playing_table[channel] = shared_from_this();
+  }
 
   if(Mix_PlayChannel(channel, sample_, loops) == -1)
   {
@@ -68,7 +72,10 @@ void SDLSoundChunk::playChunkOn(int channel, int loops)
 
 void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
 {
-  s_playing_table[channel] = shared_from_this();
+  {
+    SDLAudioLocker locker;
+    s_playing_table[channel] = shared_from_this();
+  }
 
   if(Mix_FadeInChannel(channel, sample_, loops, ms) == -1)
   {
@@ -81,6 +88,9 @@ void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
 // static
 void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
 {
+  // Don't need an SDLAudioLocker because we're in the audio callback right
+  // now.
+  //
   // Decrease the refcount of the SDLSoundChunk that just finished
   // playing.
   s_playing_table[channel].reset();
@@ -91,6 +101,8 @@ void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
 // static
 int SDLSoundChunk::FindNextFreeExtraChannel()
 {
+  SDLAudioLocker locker;
+
   for(int i = NUM_BASE_CHANNELS;
       i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i)
   {
