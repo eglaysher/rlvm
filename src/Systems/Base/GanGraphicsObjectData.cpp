@@ -349,11 +349,13 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
       if(size_t(current_frame_) == current_set.size())
       {
         current_frame_--;
+        // endAnimation() can delete this, so it needs to be the last thing
+        // done in this code path...
         endAnimation();
+      } else {
+        time_at_last_frame_change_ = current_time;
+        machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
       }
-
-      time_at_last_frame_change_ = current_time;
-      machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
 }

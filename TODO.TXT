@@ -17,38 +17,6 @@ Outstanding CLANNAD usability issues:
 
 -------------------------------------------------------------------------
 
-==8695== Invalid write of size 4
-==8695==    at 0x8177318: GanGraphicsObjectData::execute(RLMachine&) (GanGraphicsObjectData.cpp:355)
-==8695==    by 0x8155ECC: GraphicsObject::execute(RLMachine&) (GraphicsObject.cpp:474)
-==8695==    by 0x81A1CF4: boost::_mfi::mf1<void, GraphicsObject, RLMachine&>::operator()(GraphicsObject&, RLMachine&) const (mem_fn_template.hpp:181)
-==8695==    by 0x81A211D: void boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> >::operator()<boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list1<GraphicsObject&> >(boost::_bi::type<void>, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>&, boost::_bi::list1<GraphicsObject&>&, int) (bind.hpp:288)
-==8695==    by 0x81A2169: void boost::_bi::bind_t<void, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> > >::operator()<GraphicsObject>(GraphicsObject&) (bind_template.hpp:32)
-==8695==    by 0x81A3597: boost::_bi::bind_t<void, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> > > std::for_each<AllocatedLazyArrayIterator<GraphicsObject>, boost::_bi::bind_t<void, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> > > >(AllocatedLazyArrayIterator<GraphicsObject>, AllocatedLazyArrayIterator<GraphicsObject>, boost::_bi::bind_t<void, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> > >) (stl_algo.h:159)
-==8695==    by 0x818E4FE: SDLGraphicsSystem::executeGraphicsSystem(RLMachine&) (SDLGraphicsSystem.cpp:382)
-==8695==    by 0x818B9BE: SDLSystem::run(RLMachine&) (SDLSystem.cpp:103)
-==8695==    by 0x805A755: main (rlvm.cpp:379)
-==8695==  Address 0x4af4e9c is 44 bytes inside a block of size 56 free'd
-==8695==    at 0x40222EC: operator delete(void*) (vg_replace_malloc.c:342)
-==8695==    by 0x817758E: GanGraphicsObjectData::~GanGraphicsObjectData() (GanGraphicsObjectData.cpp:100)
-==8695==    by 0x8157D73: void boost::checked_delete<GraphicsObjectData>(GraphicsObjectData*) (checked_delete.hpp:34)
-==8695==    by 0x8157D88: boost::scoped_ptr<GraphicsObjectData>::~scoped_ptr() (scoped_ptr.hpp:77)
-==8695==    by 0x815AE0A: boost::scoped_ptr<GraphicsObjectData>::reset(GraphicsObjectData*) (scoped_ptr.hpp:83)
-==8695==    by 0x8155E89: GraphicsObject::deleteObject() (GraphicsObject.cpp:457)
-==8695==    by 0x8160D3B: GraphicsObjectData::endAnimation() (GraphicsObjectData.cpp:74)
-==8695==    by 0x8177311: GanGraphicsObjectData::execute(RLMachine&) (GanGraphicsObjectData.cpp:352)
-==8695==    by 0x8155ECC: GraphicsObject::execute(RLMachine&) (GraphicsObject.cpp:474)
-==8695==    by 0x81A1CF4: boost::_mfi::mf1<void, GraphicsObject, RLMachine&>::operator()(GraphicsObject&, RLMachine&) const (mem_fn_template.hpp:181)
-==8695==    by 0x81A211D: void boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> >::operator()<boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list1<GraphicsObject&> >(boost::_bi::type<void>, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>&, boost::_bi::list1<GraphicsObject&>&, int) (bind.hpp:288)
-==8695==    by 0x81A2169: void boost::_bi::bind_t<void, boost::_mfi::mf1<void, GraphicsObject, RLMachine&>, boost::_bi::list2<boost::arg<1> (*)(), boost::reference_wrapper<RLMachine> > >::operator()<GraphicsObject>(GraphicsObject&) (bind_template.hpp:32)
-
-
-
-
-
-
-
--------------------------------------------------------------------------
-
 * RLVM
 ** Redo the graphics layer so graphics data lives on the graphics
   card. As is, we have an SDL_Surface in main memory, which uploads
