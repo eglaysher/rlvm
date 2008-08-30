@@ -1,7 +1,6 @@
 For 0.3:
 * Support the movie commands used by CLANNAD
 * All those random grp commands that I don't support yet. (grpInvert, et cetera)
-* Investigate the theoretically memory leak in the music system
 * Memory errors!
 
 -------------------------------------------------------------------------
