@@ -1010,15 +1010,32 @@ void Grp_multi_command::handleMultiCommands(
       break;
     }
     case 2: {
-      throw rlvm::Exception("2:copy(strC 'filename', 'effect', 'alpha') unhandled in grpMulti");
+      // 2:copy(strC 'filename', 'effect', 'alpha')
+      vector<int> selEffect = getSELEffect(machine, it->third.get<1>());
+
+      // Coordinates coming out of getSELEffect are in REC space.
+      Grp_load_3(true, REC_SPACE::get())
+        (machine, it->third.get<0>(), MULTI_TARGET_DC,
+         selEffect[0], selEffect[1], selEffect[2], selEffect[3],
+         selEffect[4], selEffect[5], it->third.get<2>());
       break;
     }
     case 3: {
-      throw rlvm::Exception("3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy') unhandled in grpMulti");
+      // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
+      Grp_load_3(true, space)
+        (machine, it->fourth.get<0>(), MULTI_TARGET_DC,
+         it->fourth.get<1>(), it->fourth.get<2>(),
+         it->fourth.get<3>(), it->fourth.get<4>(),
+         it->fourth.get<5>(), it->fourth.get<6>(), 255);
       break;
     }
     case 4: {
-      throw rlvm::Exception("4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha') unhandled in grpMulti");
+      // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
+      Grp_load_3(true, space)
+        (machine, it->fifth.get<0>(), MULTI_TARGET_DC,
+         it->fifth.get<1>(), it->fifth.get<2>(),
+         it->fifth.get<3>(), it->fifth.get<4>(),
+         it->fifth.get<5>(), it->fifth.get<6>(), it->fifth.get<7>());
       break;
     }
     }
@@ -1036,10 +1053,9 @@ struct Grp_multi_str_1
 
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
                   MultiCommand::type commands) {
-    Grp_load_1(false)(machine, filename, effect, 255);
-
+    Grp_load_1(false)(machine, filename, MULTI_TARGET_DC, 255);
     handleMultiCommands(machine, commands);
-    Grp_display_0()(machine, 1, effect);
+    Grp_display_0()(machine, MULTI_TARGET_DC, effect);
   }
 };
 
@@ -1068,7 +1084,7 @@ struct Grp_multi_dc_1
                   MultiCommand::type commands) {
     Grp_copy_1(false)(machine, dc, MULTI_TARGET_DC, 255);
     handleMultiCommands(machine, commands);
-    Grp_display_0()(machine, 1, effect);
+    Grp_display_0()(machine, MULTI_TARGET_DC, effect);
   }
 };
 
