@@ -206,6 +206,20 @@ void SoundSystem::executeSoundSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+void SoundSystem::restoreFromGlobals()
+{
+  setBgmEnabled(bgmEnabled());
+  setBgmVolume(bgmVolume());
+
+  setPcmEnabled(pcmEnabled());
+  setPcmVolume(pcmVolume());
+
+  setSeEnabled(seEnabled());
+  setSeVolume(seVolume());
+}
+
+// -----------------------------------------------------------------------
+
 void SoundSystem::setBgmEnabled(const int in)
 {
   globals_.bgm_enabled = in;

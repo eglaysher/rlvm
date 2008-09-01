@@ -262,6 +262,13 @@ public:
 
   SoundSystemGlobals& globals() { return globals_; }
 
+  /**
+   * After loading global memory, there may be a mismatch between global state
+   * and what subclasses of SoundSystem think because they overloaded a setter,
+   * so set all values from the data in globals().
+   */
+  void restoreFromGlobals();
+
   // ---------------------------------------------------------------------
   /**
    * @name BGM functions
