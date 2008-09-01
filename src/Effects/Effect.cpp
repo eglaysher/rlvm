@@ -76,9 +76,9 @@ bool Effect::operator()(RLMachine& machine)
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - start_time_;
 
-  bool ctrlPressed = machine.system().event().ctrlPressed();
+  bool fastForward = machine.system().fastForward();
 
-  if(currentFrame >= duration_ || ctrlPressed)
+  if(currentFrame >= duration_ || fastForward)
   {
     return true;
   }

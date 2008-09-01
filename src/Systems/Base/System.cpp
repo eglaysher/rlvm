@@ -247,3 +247,10 @@ boost::filesystem::path System::gameSaveDirectory()
 
   return base_dir;
 }
+
+// -----------------------------------------------------------------------
+
+bool System::fastForward()
+{
+  return event().ctrlPressed() || text().currentlySkipping();
+}

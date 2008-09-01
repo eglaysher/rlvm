@@ -232,6 +232,13 @@ public:
    * Support/rlvm/#{REGNAME}/"
    */
   virtual boost::filesystem::path gameSaveDirectory();
+
+  /**
+   * Whether we are zooming through text and events quickly. Currently can be
+   * triggered by holding down the control key, or using skip previously read
+   * text.
+   */
+  bool fastForward();
 };
 
 #endif
