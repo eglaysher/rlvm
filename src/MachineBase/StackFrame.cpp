@@ -79,7 +79,12 @@ StackFrame::~StackFrame()
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
 {
   os << "{seen=" << frame.scenario->sceneNumber() << ", offset="
-     << distance(frame.scenario->begin(), frame.ip) << "}";
+     << distance(frame.scenario->begin(), frame.ip);
+
+  if (frame.long_op)
+    os << " [LONG OP]";
+
+  os << "}";
 
   return os;
 }

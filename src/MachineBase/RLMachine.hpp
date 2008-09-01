@@ -430,7 +430,6 @@ public:
    */
   System& system() { return system_; }
 
-private:
   unsigned int packModuleNumber(int modtype, int module);
   void unpackModuleNumber(unsigned int packed_module_number, int& modtype,
                           int& module);
@@ -447,6 +446,12 @@ private:
    */
   void popStackFrame();
 
+  /**
+   * Clears all call stacks and other data.
+   */
+  void reset();
+
+private:
   /// The Reallive VM's integer and string memory
   boost::scoped_ptr<Memory> memory_;
 

@@ -383,8 +383,6 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
    */
   void operator()(RLMachine& machine, int slot)
   {
-    machine.pushLongOperation(new LoadingGame(slot));
-
     // Render the current state of the screen
     GraphicsSystem& graphics = machine.system().graphics();
 
@@ -393,15 +391,11 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
       graphics.renderToSurfaceWithBg(machine, dc0);
     Size s = currentWindow->size();
 
-    // Force a system clear for the visual elements
-    machine.system().sound().reset();
-    machine.system().graphics().reset();
-    machine.system().text().reset();
-
     // Blank dc0 (because we won't be using it anyway) for the image
     // we're going to render to
     dc0->fill(RGBAColour::Black());
 
+    machine.pushLongOperation(new LoadingGame(slot));
     machine.pushLongOperation(
       new FadeEffect(machine, dc0, currentWindow, s, 250));
   }

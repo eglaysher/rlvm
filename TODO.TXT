@@ -1,19 +1,15 @@
 For 0.3:
 * Support the movie commands used by CLANNAD
 * All those random grp commands that I don't support yet. (grpInvert, et cetera)
-
 * Investigate the theoretically memory leak in the music system
 * Memory errors!
 
 -------------------------------------------------------------------------
 
 Outstanding CLANNAD usability issues:
-- Can't save at choices.
 - Name replacement isn't working during Nagisa's good end on May 1st? "*B"...
 - (SEEN9999)(Line 19):  Invalid DC number in SDLGrpahicsSystem::allocate_dc
 - Ending track doesn't play.
-- We can save during Sel_LongOperation, but we can't restore from that
-  save. Save may be corrupted, or load may be screwey....
 
 -------------------------------------------------------------------------
 

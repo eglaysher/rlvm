@@ -66,6 +66,7 @@ Sel_LongOperation::Sel_LongOperation(
     return_value_(-1)
 {
   machine.system().text().setInSelectionMode(true);
+  textWindow.setVisible(true);
   textWindow.startSelectionMode();
   textWindow.setSelectionCallback(
     bind(&Sel_LongOperation::selected, this, _1));
@@ -132,10 +133,15 @@ bool Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     break;
   }
   case MOUSE_RIGHT:
-    cerr << "Doesn't handle syscom!" << endl;
+  {
+    if (pressed) {
+      machine_.system().showSyscomMenu(machine_);
+      return true;
+    }
     break;
+  }
   default:
-	break;
+    break;
   }
 
   return false;

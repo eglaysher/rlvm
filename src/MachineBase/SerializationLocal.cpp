@@ -253,7 +253,9 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
 
   try
   {
-    machine.system().reset();
+    // Must clear the stack before reseting the System because LongOperations
+    // often hold references to objects in the System heiarchy.
+    machine.reset();
 
     text_iarchive ia(iss);
     ia >> version

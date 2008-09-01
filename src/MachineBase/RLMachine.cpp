@@ -457,6 +457,15 @@ void RLMachine::popStackFrame()
 
 // -----------------------------------------------------------------------
 
+void RLMachine::reset()
+{
+  call_stack_.clear();
+  savepoint_call_stack_.clear();
+  system().reset();
+}
+
+// -----------------------------------------------------------------------
+
 bool RLMachine::inLongOperation() const
 {
   return call_stack_.size() &&
@@ -624,7 +633,7 @@ void RLMachine::load(Archive & ar, unsigned int version)
 
   // Just thaw the call_stack_; all preprocessing was done at freeze
   // time.
-  call_stack_.clear();
+  // assert(call_stack_.size() == 0);
   ar & call_stack_;
 }
 
