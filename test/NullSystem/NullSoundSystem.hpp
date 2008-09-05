@@ -55,6 +55,7 @@ public:
   virtual void bgmUnPause();
   virtual void bgmFadeOut(int fade_out_ms);
   virtual std::string bgmName() const;
+  virtual bool bgmLooping() const;
 
   virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
                        bool loop);

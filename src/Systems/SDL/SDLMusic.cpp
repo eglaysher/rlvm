@@ -88,6 +88,14 @@ SDLMusic::~SDLMusic()
 
 // -----------------------------------------------------------------------
 
+bool SDLMusic::isLooping() const
+{
+  SDLAudioLocker locker;
+  return loop_point_ != STOP_AT_END;
+}
+
+// -----------------------------------------------------------------------
+
 bool SDLMusic::isFading() const
 {
   SDLAudioLocker locker;

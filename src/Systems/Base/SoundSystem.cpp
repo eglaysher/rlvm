@@ -391,8 +391,10 @@ void SoundSystem::save(Archive& ar, unsigned int version) const
   std::string track_name;
   bool looping = false;
 
-  if (bgmStatus() == 1)
+  if (bgmStatus() == 1) {
     track_name = bgmName();
+    looping = bgmLooping();
+  }
 
   ar & track_name & looping;
 }

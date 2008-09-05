@@ -133,6 +133,7 @@ public:
   virtual void bgmUnPause();
   virtual void bgmFadeOut(int fade_out_ms);
   virtual std::string bgmName() const;
+  virtual bool bgmLooping() const;
 
   virtual void reset();
 };	// end of class SDLSoundSystem

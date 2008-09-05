@@ -113,6 +113,14 @@ std::string NullSoundSystem::bgmName() const
 
 // -----------------------------------------------------------------------
 
+bool NullSoundSystem::bgmLooping() const
+{
+  sound_system_log_.recordFunction("bgm_looping");
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void NullSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file,
                               bool loop)
 {

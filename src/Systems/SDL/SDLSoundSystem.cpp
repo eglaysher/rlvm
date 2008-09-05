@@ -401,6 +401,16 @@ std::string SDLSoundSystem::bgmName() const {
 
 // -----------------------------------------------------------------------
 
+bool SDLSoundSystem::bgmLooping() const {
+  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  if(currently_playing)
+    return currently_playing->isLooping();
+  else
+    return false;
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::reset() {
   bgmStop();
   wavStopAll();

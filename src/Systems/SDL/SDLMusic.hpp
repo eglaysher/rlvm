@@ -121,6 +121,10 @@ private:
 public:
   ~SDLMusic();
 
+  /// Whether we were told to loop when we were play()ed.
+  bool isLooping() const;
+
+  /// Whether we are currently fading out.
   bool isFading() const;
 
   // TODO: Now that I understand wtf is going on, redo this part here.

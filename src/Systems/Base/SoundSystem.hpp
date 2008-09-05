@@ -301,6 +301,7 @@ public:
   virtual void bgmFadeOut(int fade_out_ms) = 0;
 
   virtual std::string bgmName() const = 0;
+  virtual bool bgmLooping() const = 0;
   /// @}
 
   // ---------------------------------------------------------------------
