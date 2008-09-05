@@ -74,12 +74,12 @@ static RealLiveSoundQualities s_real_live_sound_qualities[] = {
 SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
   RLMachine& machine, const std::string& file_name, SoundChunkCache& cache)
 {
-  fs::path file_path = findFile(machine, file_name, SOUND_FILETYPES);
-  SDLSoundChunkPtr sample = cache.fetch(file_path);
+  SDLSoundChunkPtr sample = cache.fetch(file_name);
   if(sample == NULL)
   {
+    fs::path file_path = findFile(machine, file_name, SOUND_FILETYPES);
     sample.reset(new SDLSoundChunk(file_path));
-    cache.insert(file_path, sample);
+    cache.insert(file_name, sample);
   }
 
   return sample;

@@ -51,8 +51,7 @@ private:
   typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
   typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
 
-  typedef LRUCache<boost::filesystem::path,
-                   SDLSoundChunkPtr> SoundChunkCache;
+  typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;
 
   SoundChunkCache se_cache_;
   SoundChunkCache wav_cache_;
