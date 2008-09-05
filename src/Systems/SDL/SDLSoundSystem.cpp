@@ -38,6 +38,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <sstream>
 
 using boost::shared_ptr;
@@ -329,8 +330,10 @@ int SDLSoundSystem::bgmStatus() const
 void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
                              bool loop)
 {
-  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgm_name);
-  bgm->play(loop);
+  if (!boost::iequals(bgmName(), bgm_name)) {
+    boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgm_name);
+    bgm->play(loop);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -338,8 +341,10 @@ void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
 void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
                              bool loop, int fade_in_ms)
 {
-  boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgm_name);
-  bgm->fadeIn(loop, fade_in_ms);
+  if (!boost::iequals(bgmName(), bgm_name)) {
+    boost::shared_ptr<SDLMusic> bgm = LoadMusic(machine, bgm_name);
+    bgm->fadeIn(loop, fade_in_ms);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -347,11 +352,13 @@ void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
 void SDLSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
                              bool loop, int fade_in_ms, int fade_out_ms)
 {
-  queued_music_ = LoadMusic(machine, bgm_name);
-  queued_music_loop_ = loop;
-  queued_music_fadein_ = fade_in_ms;
+  if (!boost::iequals(bgmName(), bgm_name)) {
+    queued_music_ = LoadMusic(machine, bgm_name);
+    queued_music_loop_ = loop;
+    queued_music_fadein_ = fade_in_ms;
 
-  bgmFadeOut(fade_out_ms);
+    bgmFadeOut(fade_out_ms);
+  }
 }
 
 // -----------------------------------------------------------------------
