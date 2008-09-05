@@ -587,17 +587,16 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
 shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   RLMachine& machine, const std::string& short_filename)
 {
+  // First check to see if this surface is already in our internal cache
+  shared_ptr<Surface> cached_surface = image_cache_.fetch(short_filename);
+  if (cached_surface)
+    return cached_surface;
+
   // Record that we viewed this CG.
   cgTable().setViewed(machine, short_filename);
 
   boost::filesystem::path filename =
     findFile(machine, short_filename, IMAGE_FILETYPES);
-
-  // First check to see if this surface is already in our internal cache
-  shared_ptr<Surface> cached_surface = image_cache_.fetch(filename);
-  if(cached_surface) {
-    return cached_surface;
-  }
 
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.file_string().c_str(), "rb");
@@ -663,7 +662,7 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   }
 
   shared_ptr<Surface> surface_to_ret(new SDLSurface(s, region_table));
-  image_cache_.insert(filename, surface_to_ret);
+  image_cache_.insert(short_filename, surface_to_ret);
   return surface_to_ret;
 }
 

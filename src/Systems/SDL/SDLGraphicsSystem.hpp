@@ -106,7 +106,7 @@ private:
    * @todo Think about enforcing the immutability by adding 'const' to
    *       half the program.
    */
-  LRUCache<boost::filesystem::path, boost::shared_ptr<Surface> > image_cache_;
+  LRUCache<std::string, boost::shared_ptr<Surface> > image_cache_;
 
   // ---------------------------------------------------------------------
 
