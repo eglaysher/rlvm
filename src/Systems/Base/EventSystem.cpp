@@ -71,44 +71,28 @@ EventSystem::~EventSystem()
 
 void EventSystem::addEventHandler(EventHandler* handler)
 {
-  Handlers::iterator it =
-    std::find(event_handlers_.begin(), event_handlers_.end(), handler);
-
-  if(it == event_handlers_.end())
-    event_handlers_.push_back(handler);
+  event_handlers_.insert(handler);
 }
 
 // -----------------------------------------------------------------------
 
 void EventSystem::removeEventHandler(EventHandler* handler)
 {
-  Handlers::iterator it =
-    std::find(event_handlers_.begin(), event_handlers_.end(), handler);
-
-  if(it != event_handlers_.end())
-    event_handlers_.erase(it);
+  event_handlers_.erase(handler);
 }
 
 // -----------------------------------------------------------------------
 
 void EventSystem::addMouseListener(EventListener* listener)
 {
-  EventListeners::iterator it =
-    std::find(event_listeners_.begin(), event_listeners_.end(), listener);
-
-  if(it == event_listeners_.end())
-    event_listeners_.push_back(listener);
+  event_listeners_.insert(listener);
 }
 
 // -----------------------------------------------------------------------
 
 void EventSystem::removeMouseListener(EventListener* listener)
 {
-  EventListeners::iterator it =
-    std::find(event_listeners_.begin(), event_listeners_.end(), listener);
-
-  if(it != event_listeners_.end())
-    event_listeners_.erase(it);
+  event_listeners_.erase(listener);
 }
 
 // -----------------------------------------------------------------------

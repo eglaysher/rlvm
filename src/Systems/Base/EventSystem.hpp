@@ -29,7 +29,7 @@
 #ifndef __EventSystem_hpp__
 #define __EventSystem_hpp__
 
-#include <vector>
+#include <set>
 #include <boost/scoped_ptr.hpp>
 
 #include "Systems/Base/RLTimer.hpp"
@@ -212,8 +212,8 @@ public:
   EventSystemGlobals& globals() { return globals_; }
 
 protected:
-  typedef std::vector<EventHandler*> Handlers;
-  typedef std::vector<EventListener*> EventListeners;
+  typedef std::set<EventHandler*> Handlers;
+  typedef std::set<EventListener*> EventListeners;
 
   Handlers::iterator handlers_begin() { return event_handlers_.begin(); }
   Handlers::iterator handlers_end() { return event_handlers_.end(); }
