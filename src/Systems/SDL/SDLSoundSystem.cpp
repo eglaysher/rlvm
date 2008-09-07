@@ -158,12 +158,16 @@ SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
   Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS);
 
   Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
+
+  setMusicHook(NULL);
 }
 
 // -----------------------------------------------------------------------
 
 SDLSoundSystem::~SDLSoundSystem()
 {
+  Mix_HookMusic(NULL, NULL);
+
   Mix_CloseAudio();
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
@@ -174,8 +178,7 @@ void SDLSoundSystem::executeSoundSystem(RLMachine& machine)
 {
   SoundSystem::executeSoundSystem(machine);
 
-  if(queued_music_ && !SDLMusic::IsCurrentlyPlaying())
-  {
+  if (queued_music_ && !SDLMusic::IsCurrentlyPlaying()) {
     queued_music_->fadeIn(queued_music_loop_, queued_music_fadein_);
     queued_music_.reset();
   }
@@ -423,4 +426,15 @@ void SDLSoundSystem::reset() {
   wavStopAll();
 
   SoundSystem::reset();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::setMusicHook(
+  void (*mix_func)(void *udata, Uint8 *stream, int len))
+{
+  if (!mix_func)
+    mix_func = &SDLMusic::MixMusic;
+
+  Mix_HookMusic(mix_func, NULL);
 }

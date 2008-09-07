@@ -96,17 +96,13 @@ void SDLSystem::run(RLMachine& machine)
 {
   // Give the event handler a chance to run.
   event_system->executeEventSystem(machine);
-
   text_system->executeTextSystem(machine);
-
-  // Only run the graphics system every 5 ms.
+  sound_system->executeSoundSystem(machine);
   graphics_system->executeGraphicsSystem(machine);
 
   // My pausing model is wrong. Really wrong. For an example of just
   // how wrong it is, take a look at the performance under CLANNAD's menu.
-
-  if(machine.inLongOperation())
-  {
+  if (machine.inLongOperation()) {
     event_system->wait(10);
   }
 }

@@ -7,7 +7,6 @@ For 0.3:
 
 Outstanding CLANNAD usability issues:
 - Name replacement isn't working during Nagisa's good end on May 1st? "*B"...
-- Ending track doesn't play.
 
 -------------------------------------------------------------------------
 

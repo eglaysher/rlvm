@@ -62,6 +62,9 @@ class SDLMusic : public boost::noncopyable,
                  public boost::enable_shared_from_this<SDLMusic>
 {
 private:
+  /// Strongly coupled because of access to SDLMusic::MixMusic.
+  friend class SDLSoundSystem;
+
   /// Underlying data stream. (These classes stolen from xclannad.)
   WAVFILE* file_;
 

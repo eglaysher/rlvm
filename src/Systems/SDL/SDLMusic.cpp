@@ -75,8 +75,6 @@ SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
 
 SDLMusic::~SDLMusic()
 {
-  Mix_HookMusic(NULL, NULL);
-
   {
     SDLAudioLocker locker;
     delete file_;
@@ -111,16 +109,12 @@ void SDLMusic::play(bool loop)
     setLoopPoint(loop);
     s_currently_playing = shared_from_this();
   }
-
-	Mix_HookMusic(&SDLMusic::MixMusic, this);
 }
 
 // -----------------------------------------------------------------------
 
 void SDLMusic::stop()
 {
-  Mix_HookMusic(NULL, NULL);
-
   {
     SDLAudioLocker locker;
     if(s_currently_playing.get() == this)
@@ -193,17 +187,10 @@ int SDLMusic::bgmStatus() const
 void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 {
   // Inside an SDL_LockAudio() section set up by SDL_Mixer! Don't lock here!
-
-  // TODO: Make the done states reset s_currently_playing. Or go back
-  // with a finish hook (and copy the finishing logic from either
-  // xclannad or the official SDL_Mixer)
-  SDLMusic* music = (SDLMusic*)udata;
+  SDLMusic* music = s_currently_playing.get();
 
 	int count;
-	if (!s_bgm_enabled ||
-      music->music_paused_ ||
-      music->loop_point_ == STOP_NOW)
-  {
+  if (!s_bgm_enabled || !music || music->music_paused_) {
 		memset(stream, 0, len);
 		return;
 	}
@@ -213,6 +200,7 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 		memset(stream+count*4, 0, len-count*4);
 		if (music->loop_point_ == STOP_AT_END) {
 			music->loop_point_ = STOP_NOW;
+      s_currently_playing.reset();
 		} else {
 			music->file_->Seek(music->loop_point_);
 			music->file_->Read( (char*)(stream+count*4), 4, len/4-count);
@@ -223,6 +211,7 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 		if (music->fade_count_ > count_total ||
         music->fadetime_total_ == 1) {
 			music->loop_point_ = STOP_NOW;
+      s_currently_playing.reset();
 			memset(stream, 0, len);
 			return;
 		}

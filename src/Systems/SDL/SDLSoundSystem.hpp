@@ -29,11 +29,12 @@
 #define __SDLSoundSystem_hpp__
 
 #include "Systems/Base/SoundSystem.hpp"
+#include "lru_cache.hpp"
+
+#include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
-
-#include "lru_cache.hpp"
-#include <string>
+#include <SDL/SDL.h>
 
 // -----------------------------------------------------------------------
 
@@ -135,6 +136,12 @@ public:
   virtual bool bgmLooping() const;
 
   virtual void reset();
+
+  /**
+   * Wrapper around SDL_mixer's hook function. We do this because we need to
+   * have our own default music mixing function which is set at startup.
+   */
+  void setMusicHook(void (*mix_func)(void *udata, Uint8 *stream, int len));
 };	// end of class SDLSoundSystem
 
 #endif
