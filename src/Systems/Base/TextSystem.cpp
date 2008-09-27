@@ -402,6 +402,7 @@ void TextSystem::reset()
   system_visible_ = true;
   in_pause_state_ = false;
   in_selection_mode_ = false;
+  skip_mode_ = false;
 }
 
 // -----------------------------------------------------------------------
