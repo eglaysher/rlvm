@@ -37,6 +37,7 @@
 #include "Systems/Base/TextSystem.hpp"
 
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/LongOperation.hpp"
 
 #include <boost/bind.hpp>
 #include <boost/filesystem/path.hpp>
@@ -69,6 +70,7 @@ SystemGlobals::SystemGlobals()
 // -----------------------------------------------------------------------
 
 System::System()
+  : in_menu_(false)
 {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
@@ -147,14 +149,36 @@ int System::readSyscom(int syscom)
 
 // -----------------------------------------------------------------------
 
+class MenuReseter : public LongOperation {
+public:
+  MenuReseter(System& sys) : sys_(sys) {}
+
+  bool operator()(RLMachine& machine) {
+    sys_.in_menu_ = false;
+    return true;
+  }
+
+private:
+  System& sys_;
+};
+
+// -----------------------------------------------------------------------
+
 void System::showSyscomMenu(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
 
   if(gexe("CANCELCALL_MOD") == 1)
   {
-    vector<int> cancelcall = gexe("CANCELCALL");
-    machine.farcall(cancelcall.at(0), cancelcall.at(1));
+    if (!in_menu_) {
+      // Multiple right clicks shouldn't spawn multiple copies of the menu
+      // system on top of each other.
+      in_menu_ = true;
+      machine.pushLongOperation(new MenuReseter(*this));
+
+      vector<int> cancelcall = gexe("CANCELCALL");
+      machine.farcall(cancelcall.at(0), cancelcall.at(1));
+    }
   }
   else
   {

@@ -106,6 +106,9 @@ private:
   /// The visibility status for all syscom entries
   int syscom_status_[NUM_SYSCOM_ENTRIES];
 
+  /// Whether the SYSCOM menu is currently being displayed.
+  bool in_menu_;
+
   void checkSyscomIndex(int index, const char* function);
 
   std::vector<boost::filesystem::path> cached_search_paths;
@@ -113,6 +116,9 @@ private:
   void addPath(GameexeInterpretObject gio);
 
   SystemGlobals globals_;
+
+  /// Implementation detail which resets in_menu_;
+  friend class MenuReseter;
 
   friend class boost::serialization::access;
 

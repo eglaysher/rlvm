@@ -51,6 +51,9 @@ using boost::bind;
 void SDLEventSystem::dispatchEvent(
   const boost::function<bool(EventListener&)>& event)
 {
+  // In addition to the handled variable, we need to add break statements to
+  // the loops since event can be any arbitrary code and may modify listeners
+  // or handlers. (i.e., System::showSyscomMenu)
   bool handled = false;
 
   // Give the mostly passive listeners first shot at handling this event
@@ -58,6 +61,7 @@ void SDLEventSystem::dispatchEvent(
   for (; !handled && listenerIt != listeners_end(); ++listenerIt) {
     if (event(**listenerIt)) {
       handled = true;
+      break;
     }
   }
 
@@ -66,6 +70,7 @@ void SDLEventSystem::dispatchEvent(
   for (; !handled && handlerIt != handlers_end(); ++handlerIt) {
     if (event(**handlerIt)) {
       handled = true;
+      break;
     }
   }
 }
