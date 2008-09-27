@@ -1134,7 +1134,7 @@ GrpModule::GrpModule()
   // addOpcode(30, 0, new Grp_grpTextout);
 
   addOpcode(31, 0, "wipe", new Grp_wipe);
-  // addOpcode(32, 0, new Grp_shake);
+  addUnsupportedOpcode(32, 0, "shake");
 
   addOpcode(50, 0, "grpLoad", new Grp_load_1(false));
   addOpcode(50, 1, "grpLoad", new Grp_load_1(false));
@@ -1216,6 +1216,11 @@ GrpModule::GrpModule()
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
   addOpcode(201, 2, "grpFill", new Grp_fill_3(GRP));
   addOpcode(201, 3, "grpFill", new Grp_fill_3(GRP));
+
+  addUnsupportedOpcode(300, 0, "grpInvert");
+  addUnsupportedOpcode(300, 1, "grpInvert");
+  addUnsupportedOpcode(300, 2, "grpInvert");
+  addUnsupportedOpcode(300, 3, "grpInvert");
 
   addUnsupportedOpcode(400, 0, "grpSwap");
   addUnsupportedOpcode(400, 1, "grpSwap");
