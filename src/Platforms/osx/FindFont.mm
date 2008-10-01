@@ -30,7 +30,7 @@
 #include <Cocoa/Cocoa.h>
 
 #include "libReallive/gameexe.h"
-#include "findFontFile.h"
+#include "Utilities/findFontFile.h"
 
 namespace fs = boost::filesystem;
 
