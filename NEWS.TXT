@@ -14,6 +14,11 @@ Version 0.3:
   scrollback buffer. Previously, the scrollback buffer was unbounded.
 - Support CG commands; any game that includes a CGM file should now
   automatically track which CG images were viewed.
+- Scrolling through previous pages of text no longer crashes Planetarian.
+- Support for skipping previously read text.
+- Fix performance on the CLANNAD main menu.
+- Fix rare race condition between the audio thread and the main thread by
+  grabbing the global SDL audio lock when 
 
 -------------------------------------------------------------------------
 

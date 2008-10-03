@@ -30,9 +30,6 @@ CLANNAD
   between invocations)
 - Main game may be playable until the end
   - Things *appear* to work (but I haven't tested things in depth)
-  - ctrl-ing through most of the game, I got a weird hang on a
-    selection; Clicking on one of the items (which highlighted on
-    mouse over properly) would not advance. Needs investigation.
 - In game menu mostly works.
 
 CLANNAD FULL VOICE

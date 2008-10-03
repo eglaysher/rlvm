@@ -24,24 +24,28 @@ Share / {insert name of popular P2P app in your locale}.
 
 Special thanks to Jagarl for the first work on reverse engineering the
 RealLive interpreter and for Free software licensed source code for
-decoding their file formats, to Haeleth for creating rldev along with
+decoding their file formats, and to Haeleth for creating rldev along with
 answering all my dumb questions about the internal workings of the
 RealLive system.
 
 2) STATUS
 -------------------------------------------------------------------------
-This beta is currently only compatible with the Planetarian CD
-edition[1]. Planetarian is playable through the end, though rlvm
-currently doesn't implement all features used in the game (see known
-issues).
 
-This is the second public release of rlvm. Please report bugs and
+This beta is currently only compatible with the Planetarian CD edition[1] and
+Nagisa's route of CLANNAD.  Planetarian is playable through the end, though
+rlvm currently doesn't implement all features used in the game (see known
+issues). Nagisa's route (at minimum) is playable, minus some problems with
+graphics and the Megumeru video not playing.
+
+This is the third public release of rlvm. Please report bugs and
 discrepancies in Planetarian (other then the opening scene not
 showing) to <glaysher at umich dot edu>.
 
-The games CLANNAD and Kanon SE are not playable through the
-end. Haeleth's unofficial "ONE" demo does not render correctly. No
-other games have been tested at this time.
+The rest of CLANNAD may or may not be playable through the end: I haven't
+tried. Kanon SE may or may not be playable through the end: the lack of default
+SYSCOM menus would make any attempt to play the game a frustrating experience.
+Haeleth's unofficial "ONE" demo does not render correctly. No other games have
+been tested at this time.
 
 3) COMPILING RLVM
 -------------------------------------------------------------------------
@@ -148,13 +152,7 @@ in the middle of words.
 
 Many graphics manipulation commands not required by Planetarian are
 currently unimplemented. Kanon SE, Haeleth's unofficial ONE demo and
-CLANNAD are not playable/do not render correctly because of this.
-
-User selection code has not been rigoursly tested; I've only tried the
-first few decision points in CLANNAD. While holding control down to
-see if I could get to the ending in CLANNAD, I noticed that the
-interpreter would randomly hang, both before and after a decision was
-presented to the user.
+CLANNAD are do not always render correctly because of this.
 
 rlvm does not contain an implementation of Haeleth's rlBabel and
 Textout extensions. Fan translations that use something other than the
@@ -185,5 +183,5 @@ rlvm needs several file formats reverse engineered:
      will be. I can not write, nor can I accept, code to run the
      download edition or other DRMed Kinetic games because of the
      anticircumvention provisions of the United States Digital
-     Millennium Copyright Act.)
+     Millennium Copyright Act.
 

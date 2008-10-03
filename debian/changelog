@@ -1,3 +1,17 @@
+rlvm (0.3) unstable; urgency=low
+
+  * CLANNAD is playable through the end of Nagisa's route.
+  * Replace name variables in text, such as '*A' as 'Tomoya' in CLANNAD.
+  * Kanon SE is now playable past "Last Regrets," but the lack of loading
+    or saving makes actual playing impracticle.
+  * Reduce the memory footprint by keeping the last 100 pages of text in the
+    scrollback buffer. Previously, the scrollback buffer was unbounded.
+  * Scrolling through previous pages of text no longer crashes Planetarian.
+  * Fix performance on the CLANNAD main menu.
+  * Fix multiple crashing bugs.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 04 Oct 2008 12:16:29 -0700
+
 rlvm (0.2) unstable; urgency=low
 
   * Adds background music and sound effect support.
