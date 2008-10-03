@@ -100,7 +100,7 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
   SDL_Surface* dst = SDL_AllocSurface(
     in_surface->flags, in_surface->w, in_surface->h,
     format->BitsPerPixel, format->Rmask,
-    format->Gmask, format->Bmask, 0);
+    format->Gmask, format->Bmask, format->Amask);
 
   SDL_BlitSurface(in_surface, NULL, dst, NULL);
 
@@ -113,10 +113,10 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
     for(int i = 0; i < num_pixels; i += 4)
     {
       // Invert the pixel here.
-      p_data[i] = 255;
-      p_data[i + 1] = 255;
-      p_data[i + 2] = 255;
-      p_data[i + 3] = 255 - p_data[i +3];
+      p_data[i] = 255 - p_data[i];
+      p_data[i + 1] = 255 - p_data[i + 1];
+      p_data[i + 2] = 255 - p_data[i + 2];
+      p_data[i + 3] = 255 - p_data[i + 3];
     }
   }
   if(SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
