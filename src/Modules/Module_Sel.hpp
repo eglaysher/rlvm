@@ -50,9 +50,9 @@ class Sel_LongOperation : public LongOperation, public EventHandler
 private:
   RLMachine& machine_;
 
-  std::vector<std::string> options;
+  std::vector<std::string> options_;
 
-  TextWindow& textWindow;
+  TextWindow& text_window_;
 
   int return_value_;
 
@@ -62,6 +62,11 @@ public:
   ~Sel_LongOperation();
 
   void selected(int num);
+
+  /// Selects by the string text. Returns true if successful.
+  bool selectOption(const std::string& str);
+
+  const std::vector<std::string>& options() const { return options_; }
 
   // ----------------------------------------------- [ NiceLongOperation ]
   virtual bool operator()(RLMachine& machine);

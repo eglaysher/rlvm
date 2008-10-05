@@ -278,7 +278,7 @@ public:
    *          will be removed instead of the current operation.
    * @see LongOperation
    */
-  void pushLongOperation(LongOperation* long_operation);
+  virtual void pushLongOperation(LongOperation* long_operation);
 
   /**
    * Returns whether the top of the call stack is a LongOperation.
@@ -331,7 +331,7 @@ public:
    *
    * @param i The current line number
    */
-  void setLineNumber(const int i);
+  virtual void setLineNumber(const int i);
 
   /**
    * Where the current scenario was compiled with RLdev, returns the text

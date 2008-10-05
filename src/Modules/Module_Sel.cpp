@@ -45,12 +45,13 @@
 
 #include <vector>
 #include <iostream>
-
+#include <iterator>
 #include <boost/bind.hpp>
 
 using boost::bind;
 using std::cin;
 using std::cerr;
+using std::distance;
 using std::endl;
 using std::vector;
 using libReallive::SelectElement;
@@ -62,20 +63,21 @@ Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
   : EventHandler(machine), machine_(machine),
-    textWindow(machine.system().text().currentWindow(machine)),
+    text_window_(machine.system().text().currentWindow(machine)),
     return_value_(-1)
 {
   machine.system().text().setInSelectionMode(true);
-  textWindow.setVisible(true);
-  textWindow.startSelectionMode();
-  textWindow.setSelectionCallback(
+  text_window_.setVisible(true);
+  text_window_.startSelectionMode();
+  text_window_.setSelectionCallback(
     bind(&Sel_LongOperation::selected, this, _1));
 
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
   for (unsigned int i = 0; i < params.size(); ++i) {
     std::string utf8str = cp932toUTF8(params[i].text,
                                       machine.getTextEncoding());
-    textWindow.addSelectionItem(utf8str);
+    options_.push_back(utf8str);
+    text_window_.addSelectionItem(utf8str);
   }
 
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -85,7 +87,7 @@ Sel_LongOperation::Sel_LongOperation(
 
 Sel_LongOperation::~Sel_LongOperation()
 {
-  textWindow.endSelectionMode();
+  text_window_.endSelectionMode();
   machine_.system().text().setInSelectionMode(false);
 }
 
@@ -94,6 +96,20 @@ Sel_LongOperation::~Sel_LongOperation()
 void Sel_LongOperation::selected(int num)
 {
   return_value_ = num;
+}
+
+// -----------------------------------------------------------------------
+
+bool Sel_LongOperation::selectOption(const std::string& str) {
+  std::vector<std::string>::iterator it =
+    find(options_.begin(), options_.end(), str);
+
+  if (it != options_.end()) {
+    selected(distance(options_.begin(), it));
+    return true;
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------

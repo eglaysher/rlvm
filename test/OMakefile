@@ -6,12 +6,12 @@ if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   CXXFLAGS += -EHsc -W3 -wd4800 -wd4819 -wd4996 -U__STRICT_ANSI__ /J $(if $(defined-env DEBUG), -Od, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
   export
 else
-  CXXFLAGS += --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE
+  CXXFLAGS += --ansi -U__STRICT_ANSI__ -funsigned-char $(if $(defined-env DEBUG), -g, -O2) $(shell sdl-config --cflags) $(PLATFORMFLAGS) -I../src -D_THREAD_SAFE -I/usr/include/lua50 $(shell sdl-config --cflags)
   export
 
 .PHONY: clean
 
-.SUBDIRS: NullSystem Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN
+.SUBDIRS: NullSystem Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN Module_Sys_SEEN ExpressionTest_SEEN ScriptMachine
 
 INCLUDES += ../src
 if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
@@ -19,12 +19,11 @@ if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
   LDFLAGS += /link $(if $(defined-env DEBUG), /DEBUG, /RELEASE) ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs) $(PLATFORMLIBS) SDL.lib SDL_image.lib SDL_ttf.lib
   export
 else
-  LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image $(PLATFORMLIBS) -lboost_filesystem -lboost_serialization -lboost_date_time -lboost_thread -lboost_iostreams
+  LDFLAGS += ../src/librlvm$(EXT_LIB) $(shell sdl-config --libs)  $(shell freetype-config --libs) -lSDL_image -lSDL_mixer $(PLATFORMLIBS) -lboost_program_options -lboost_filesystem -lboost_serialization -lboost_date_time -lboost_thread -lboost_iostreams  -llua50 -lluabind
   export
 
 
 TEST_FILES[] =
-  rlvmTest
   testUtils
   RLMachine_TUT
   Module_Jmp_TUT
@@ -45,8 +44,10 @@ TEST_FILES[] =
   NullSystem/NullSoundSystem
   NullSystem/NullSurface
   NullSystem/MockLog
+  ScriptMachine/ScriptWorld
+  ScriptMachine/ScriptMachine
 
-.DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES))
+.DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES) rlvmTest) $(CXXProgram luaRlvm, $(TEST_FILES) luaRlvm)
 rlvmTest$(EXE): ../src/librlvm$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
 
 clean:

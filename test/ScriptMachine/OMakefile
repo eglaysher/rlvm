@@ -1,0 +1,13 @@
+if $(not $(defined-env VERBOSE))
+  OMakeFlags(-S --progress)
+  export
+
+.PHONY: clean
+
+INCLUDES += ../../src
+INCLUDES += ..
+
+.DEFAULT:
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump

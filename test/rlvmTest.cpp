@@ -31,6 +31,22 @@
 #include "tut/tut.hpp"
 #include "tut/tut_reporter.hpp"
 
+/*
+
+  // Run all tests, unit and game
+  ./rlvmTest --all
+
+  ./rlvmTest --list
+
+  Unit Tests:
+    Effect
+    ExpressionTest
+
+  Game Tests:
+    CLANNAD
+
+ */
+
 namespace tut
 {
 test_runner_singleton runner;

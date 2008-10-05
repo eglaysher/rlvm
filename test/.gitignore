@@ -1,4 +1,5 @@
 rlvmTest
+luaRlvm
 *.omc
 .gdb_history
 tests_Debug
