@@ -109,6 +109,10 @@ private:
   /// Whether the SYSCOM menu is currently being displayed.
   bool in_menu_;
 
+  /// Whether we are being forced to fast forward through the game for testing
+  /// reasons.
+  bool force_fast_forward_;
+
   void checkSyscomIndex(int index, const char* function);
 
   std::vector<boost::filesystem::path> cached_search_paths;
@@ -245,6 +249,9 @@ public:
    * text.
    */
   bool fastForward();
+
+  /// Set in luaRlvm, to speed through the game with maximum speed!
+  void forceFastForward() { force_fast_forward_ = true; }
 };
 
 #endif

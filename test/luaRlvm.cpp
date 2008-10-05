@@ -212,6 +212,9 @@ int main(int argc, char* argv[])
     addAllModules(rlmachine);
     world.initializeMachine(rlmachine);
 
+    // Make sure we go as fast as possible:
+    sdlSystem.forceFastForward();
+
     if(vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);
 

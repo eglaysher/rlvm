@@ -70,7 +70,7 @@ SystemGlobals::SystemGlobals()
 // -----------------------------------------------------------------------
 
 System::System()
-  : in_menu_(false)
+  : in_menu_(false), force_fast_forward_(false)
 {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
@@ -276,5 +276,7 @@ boost::filesystem::path System::gameSaveDirectory()
 
 bool System::fastForward()
 {
-  return event().ctrlPressed() || text().currentlySkipping();
+  return (event().ctrlPressed() && text().ctrlKeySkip()) ||
+    text().currentlySkipping() ||
+    force_fast_forward_;
 }
