@@ -32,11 +32,6 @@
 #include <vector>
 #include <luabind/luabind.hpp>
 
-extern "C"
-{
-    #include "lua.h"
-}
-
 // -----------------------------------------------------------------------
 
 /**
@@ -51,10 +46,14 @@ public:
   /// Sets the decisions to take
   void setDecisionList(const std::vector<std::string>& decisions);
 
+  void setHandlers(
+    const std::map<std::pair<int, int>, luabind::object>& handlers);
+
   // Overloaded from RLMachine:
 
   /**
-   * ScriptMachine will also 
+   * ScriptMachine will run pieces of lua code at certain scene/line
+   * combinations.
    */
   virtual void setLineNumber(const int i);
 
@@ -66,6 +65,9 @@ public:
 private:
   typedef std::vector<std::string> Selections;
   Selections decisions_;
+
+  typedef std::map<std::pair<int, int>, luabind::object> Handlers;
+  Handlers handlers_;
 
   int current_decision_;
 };  // end of class ScriptMachine

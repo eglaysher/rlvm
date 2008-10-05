@@ -73,11 +73,14 @@ public:
   void initializeMachine(ScriptMachine& machine);
 
   void setDecisionList(luabind::object table);
+  void addHandler(int scene, int lineNo, luabind::object handler);
 
 private:
   static void InitializeLuabind(lua_State* L);
 
   std::vector<std::string> decisions_;
+
+  std::map<std::pair<int, int>, luabind::object> handlers_;
 
   std::string regname_;
   std::string game_root_;

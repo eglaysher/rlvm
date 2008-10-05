@@ -78,3 +78,11 @@ decisions = {
 
 World:setDecisionList(decisions)
 
+-- Write simple handlers to test functionality
+World:addHandler(9031, 100, function ()
+                               print("At copyright screen!")
+                         end)
+
+World:addHandler(9032, 944, function ()
+                               print("At main menu!")
+                         end)

@@ -62,8 +62,24 @@ void ScriptMachine::setDecisionList(
 
 // -----------------------------------------------------------------------
 
+void ScriptMachine::setHandlers(
+  const std::map<std::pair<int, int>, luabind::object>& handlers) {
+  handlers_ = handlers;
+}
+
+// -----------------------------------------------------------------------
+
 void ScriptMachine::setLineNumber(const int i) {
   // Intercept and see if there are any tests that need to be done here:
+  Handlers::iterator it = handlers_.find(make_pair(sceneNumber(), i));
+  if (it != handlers_.end()) {
+    try {
+      luabind::call_function<void>(it->second);
+    } catch(const luabind::error& e) {
+      lua_State* state = e.state();
+      std::cerr << lua_tostring( state, -1) << endl;
+    }
+  }
 
   RLMachine::setLineNumber(i);
 }

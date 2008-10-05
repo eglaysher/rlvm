@@ -84,8 +84,15 @@ void ScriptWorld::setDecisionList(luabind::object table) {
 
 // -----------------------------------------------------------------------
 
+void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
+  handlers_[make_pair(scene, lineNo)] = handler;
+}
+
+// -----------------------------------------------------------------------
+
 void ScriptWorld::initializeMachine(ScriptMachine& machine) {
   machine.setDecisionList(decisions_);
+  machine.setHandlers(handlers_);
   luabind::globals(L)["Machine"] = &machine;
 }
 
@@ -103,9 +110,7 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
     def("setRegname", &ScriptWorld::setRegname).
     def("gameRoot", &ScriptWorld::gameRoot).
     def("setGameRoot", &ScriptWorld::setGameRoot).
-    def("setDecisionList", &ScriptWorld::setDecisionList),
-
-    class_<ScriptMachine>("Machine").
-    def("sceneNumber", &RLMachine::sceneNumber)
+    def("setDecisionList", &ScriptWorld::setDecisionList).
+    def("addHandler", &ScriptWorld::addHandler)
   ];
 }
