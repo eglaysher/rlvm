@@ -151,7 +151,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
 
   bool operator()(RLMachine& machine)
   {
-    bool done = ctrl_pressed_;
+    bool done = ctrl_pressed_ || machine.system().fastForward();
 
     if (!done && wait_until_target_time_) {
       done = machine.system().event().getTicks() > target_time_;

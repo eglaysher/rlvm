@@ -535,7 +535,7 @@ void RLMachine::performTextout(const TextoutElement& e)
   // Display UTF-8 characters
   auto_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
 
-  if (ts.currentlySkipping() || ts.messageNoWait())
+  if (system().fastForward() || ts.messageNoWait())
     ptr->setNoWait();
 
   pushLongOperation(ptr.release());

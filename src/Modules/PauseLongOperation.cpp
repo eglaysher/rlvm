@@ -199,7 +199,7 @@ bool PauseLongOperation::operator()(RLMachine& machine)
 
   // Check to see if we're done because we're being asked to pause on a piece
   // of text we've already hit.
-  if (machine.system().text().currentlySkipping())
+  if (machine.system().fastForward())
     is_done_ = true;
 
   return is_done_;
