@@ -32,6 +32,15 @@
 #include "ScriptMachine/ScriptMachine.hpp"
 #include "Modules/Module_Sel.hpp"
 
+#include "Systems/Base/System.hpp"
+
+#include "ScriptMachine/luabind_Machine.hpp"
+#include "ScriptMachine/luabind_System.hpp"
+#include "ScriptMachine/luabind_EventSystem.hpp"
+#include "ScriptMachine/luabind_GraphicsSystem.hpp"
+#include "ScriptMachine/luabind_GraphicsObject.hpp"
+#include "ScriptMachine/luabind_utility.hpp"
+
 #include <iostream>
 #include <typeinfo>
 
@@ -52,6 +61,7 @@ using namespace luabind;
 ScriptWorld::ScriptWorld(const std::string& lua_file) {
   L = lua_open();
   luaopen_base(L);
+  luaopen_string(L);
   InitializeLuabind(L);
 
   luabind::globals(L)["World"] = this;
@@ -94,6 +104,7 @@ void ScriptWorld::initializeMachine(ScriptMachine& machine) {
   machine.setDecisionList(decisions_);
   machine.setHandlers(handlers_);
   luabind::globals(L)["Machine"] = &machine;
+  luabind::globals(L)["System"] = &(machine.system());
 }
 
 // -----------------------------------------------------------------------
@@ -105,12 +116,21 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
   open(L);
   module(L)
   [
+    // High level interface
     class_<ScriptWorld>("World").
     def("regname", &ScriptWorld::regname).
     def("setRegname", &ScriptWorld::setRegname).
     def("gameRoot", &ScriptWorld::gameRoot).
     def("setGameRoot", &ScriptWorld::setGameRoot).
     def("setDecisionList", &ScriptWorld::setDecisionList).
-    def("addHandler", &ScriptWorld::addHandler)
+    def("addHandler", &ScriptWorld::addHandler),
+
+    register_utility(),
+
+    register_machine(),
+    register_system(),
+    register_event_system(),
+    register_graphics_system(),
+    register_graphics_object()
   ];
 }

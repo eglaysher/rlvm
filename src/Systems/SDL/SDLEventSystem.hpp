@@ -97,8 +97,9 @@ public:
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
 
-
-//  virtual void setTitle(const  title) const;
+  virtual void injectMouseMovement(const Point& loc);
+  virtual void injectMouseDown();
+  virtual void injectMouseUp();
 };
 
 #endif

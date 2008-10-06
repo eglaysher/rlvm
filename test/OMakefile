@@ -46,9 +46,17 @@ TEST_FILES[] =
   NullSystem/MockLog
   ScriptMachine/ScriptWorld
   ScriptMachine/ScriptMachine
+  ScriptMachine/luabind_Machine
+  ScriptMachine/luabind_System
+  ScriptMachine/luabind_EventSystem
+  ScriptMachine/luabind_GraphicsSystem
+  ScriptMachine/luabind_GraphicsObject
+  ScriptMachine/luabind_utility
+
 
 .DEFAULT: $(CXXProgram rlvmTest, $(TEST_FILES) rlvmTest) $(CXXProgram luaRlvm, $(TEST_FILES) luaRlvm)
+# TODO: These dependencies are FUCKED.
 rlvmTest$(EXE): ../src/librlvm$(EXT_LIB) Module_Str_SEEN Module_Mem_SEEN Module_Jmp_SEEN
-
+luaRlvm$(EXE): ../src/librlvm$(EXT_LIB)
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc rlvmTest$(EXE) rlvmTest$(EXE).stackdump

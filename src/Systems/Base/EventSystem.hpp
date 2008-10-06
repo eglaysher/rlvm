@@ -30,6 +30,7 @@
 #define __EventSystem_hpp__
 
 #include <set>
+#include <boost/utility.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "Systems/Base/RLTimer.hpp"
@@ -71,7 +72,7 @@ struct EventSystemGlobals
  * side. One is exposed to Reallive and mimics what RealLive bytecode
  * expects. The other is based on event handlers and is sane.
  */
-class EventSystem
+class EventSystem : public boost::noncopyable
 {
 public:
   EventSystem(Gameexe& gexe);
@@ -205,6 +206,20 @@ public:
 
   void setGeneric2(const int in) { globals_.generic2 = in; }
   int generic2() const { return globals_.generic2; }
+  /// @}
+
+  // -----------------------------------------------------------------------
+
+  /**
+   * @name Testing
+   *
+   * Allows test systems like luaRlvm to inject mouse movement and clicks.
+   *
+   * @{
+   */
+  virtual void injectMouseMovement(const Point& loc) = 0;
+  virtual void injectMouseDown() = 0;
+  virtual void injectMouseUp() = 0;
   /// @}
 
   // -----------------------------------------------------------------------

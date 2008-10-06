@@ -345,3 +345,32 @@ void SDLEventSystem::wait(unsigned int milliseconds) const
 {
   SDL_Delay(milliseconds);
 }
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::injectMouseMovement(const Point& loc) {
+  mouse_pos_ = loc;
+  broadcastEvent(bind(&EventHandler::mouseMotion, _1, mouse_pos_));
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::injectMouseDown() {
+  m_button1State = 1;
+  m_button2State = 0;
+
+  dispatchEvent(bind(&EventHandler::mouseButtonStateChanged, _1,
+                     MOUSE_LEFT, 1));
+  unaccessed_items_ = true;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::injectMouseUp() {
+  m_button1State = 2;
+  m_button2State = 0;
+
+  dispatchEvent(bind(&EventHandler::mouseButtonStateChanged, _1,
+                     MOUSE_LEFT, 1));
+  unaccessed_items_ = true;
+}
