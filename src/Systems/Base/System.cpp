@@ -219,6 +219,8 @@ const std::vector<boost::filesystem::path>& System::getSearchPaths()
 
 void System::reset()
 {
+  in_menu_ = false;
+
   graphics().reset();
 //  event().reset();
   text().reset();
