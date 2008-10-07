@@ -525,7 +525,8 @@ void CommandElement::runOnMachine(RLMachine& machine) const
 // SelectElement
 // -----------------------------------------------------------------------
 
-SelectElement::SelectElement(const char* src) : CommandElement(src)
+SelectElement::SelectElement(const char* src)
+  : CommandElement(src), uselessjunk(0)
 {
   src += 8;
   if (*src == '(') {
@@ -561,6 +562,20 @@ SelectElement::SelectElement(const char* src) : CommandElement(src)
     src += 3;
     params.push_back(Param(cond, clen, text, tlen, lnum));
   }
+
+  // HACK?: In Kotomi's path in CLANNAD, there's a select with empty options
+  // outside the count specified by argc().
+  //
+  // There are comments inside of disassembler.ml that seem to indicate that
+  // NULL arguments are allowed. I am not sure if this is a hack or if this is
+  // the proper behaviour. Also, why the hell would the official RealLive
+  // compiler generate this bytecode. WTF?
+  while(*src == '\n') {
+    // The only thing allowed other than a 16 bit integer.
+    src += 3;
+    uselessjunk++;
+  }
+
   if (*src++ != '}') throw Error("SelectElement(): expected `}'");
 }
 
@@ -643,6 +658,7 @@ SelectElement::length() const
   size_t rv = repr.size() + 5;
   for (params_t::const_iterator it = params.begin(); it != params.end(); ++it)
     rv += it->cond.size() + it->text.size() + 3;
+  rv += (uselessjunk * 3);
   return rv;
 }
 

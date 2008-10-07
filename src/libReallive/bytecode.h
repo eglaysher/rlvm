@@ -278,6 +278,7 @@ public:
 private:
   params_t params;
   int firstline;
+  int uselessjunk;
 public:
   virtual const ElementType type() const;
   ExpressionElement window();
