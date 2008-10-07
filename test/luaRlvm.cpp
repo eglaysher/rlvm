@@ -115,13 +115,10 @@ int main(int argc, char* argv[])
     ("help", "Produce help message")
     ("version", "Display version and license information")
     ("font", po::value<string>(), "Specifies TrueType font to use.")
-    ;
-
-  po::options_description debugOpts("Debugging Options");
-  debugOpts.add_options()
     ("undefined-opcodes", "Display a message on undefined opcodes")
     ("count-undefined",
      "On exit, present a summary table about how many times each undefined opcode was called")
+    ("save-on-decision", po::value<int>(), "Automatically save the game on decision points to the specified save game slot. Useful while debugging crashes far into a game.")
     ;
 
   // Declare the final option to be game-root
@@ -134,18 +131,13 @@ int main(int argc, char* argv[])
 
   // Use these on the command line
   po::options_description commandLineOpts;
-  commandLineOpts.add(opts).add(hidden).add(debugOpts);
+  commandLineOpts.add(opts).add(hidden);
 
   po::variables_map vm;
   po::store(po::basic_command_line_parser<char>(argc, argv).
             options(commandLineOpts).positional(p).run(),
             vm);
   po::notify(vm);
-
-  // -----------------------------------------------------------------------
-
-  po::options_description allOpts("Allowed options");
-  allOpts.add(opts).add(debugOpts);
 
   // -----------------------------------------------------------------------
   // Process command line options
@@ -220,6 +212,11 @@ int main(int argc, char* argv[])
 
     if(vm.count("count-undefined"))
       rlmachine.recordUndefinedOpcodeCounts();
+
+    if(vm.count("save-on-decision")) {
+      int decision_num = vm["save-on-decision"].as<int>();
+      rlmachine.saveOnDecisions(decision_num);
+    }
 
     Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);

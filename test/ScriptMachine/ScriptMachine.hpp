@@ -49,6 +49,8 @@ public:
   void setHandlers(
     const std::map<std::pair<int, int>, luabind::object>& handlers);
 
+  void saveOnDecisions(int slot) { save_on_decision_slot_ = slot; }
+
   // Overloaded from RLMachine:
 
   /**
@@ -70,6 +72,10 @@ private:
   Handlers handlers_;
 
   int current_decision_;
+
+  /// Which game save slot to automatically save to when we automatically make
+  /// a decision, or -1 if disabled.
+  int save_on_decision_slot_;
 };  // end of class ScriptMachine
 
 #endif

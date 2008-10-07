@@ -30,6 +30,7 @@
 
 #include "ScriptMachine/ScriptMachine.hpp"
 #include "Modules/Module_Sel.hpp"
+#include "MachineBase/Serialization.hpp"
 
 #include <iostream>
 #include <typeinfo>
@@ -42,7 +43,8 @@ using namespace std;
 ScriptMachine::ScriptMachine(
   System& in_system, libReallive::Archive& in_archive)
   : RLMachine(in_system, in_archive),
-    current_decision_(0)
+    current_decision_(0),
+    save_on_decision_slot_(-1)
 {
 
 }
@@ -106,6 +108,12 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
       }
     } else {
       cerr << "Selected '" << to_select << "'" << endl;
+
+      if (save_on_decision_slot_ != -1) {
+        cerr << "(Automatically saving to slot " << save_on_decision_slot_
+             << ")" << endl;
+        Serialization::saveGameForSlot(*this, save_on_decision_slot_);
+      }
     }
 
     current_decision_++;
