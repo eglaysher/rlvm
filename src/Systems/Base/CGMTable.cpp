@@ -165,8 +165,8 @@ int CGMTable::getViewed() const {
 
 int CGMTable::getPercent() const {
   // Prevent divide by zero
-  if (cgm_data_.size())
-    return int(double(cgm_info_.size()) / cgm_data_.size());
+  if (getTotal())
+    return (getViewed() / double(getTotal())) * 100;
   else
     return 0;
 }
