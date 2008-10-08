@@ -671,6 +671,11 @@ shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
 boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 {
   verifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
+
+  // If requesting a DC that doesn't exist, allocate it first.
+  if (display_contexts_[dc]->rawSurface() == NULL)
+    allocateDC(dc, display_contexts_[0]->size());
+
   return display_contexts_[dc];
 }
 

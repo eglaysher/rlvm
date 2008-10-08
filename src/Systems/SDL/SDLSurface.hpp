@@ -147,6 +147,8 @@ public:
     return surface_;
   }
 
+  SDL_Surface* rawSurface() { return surface_; }
+
   /// Blits to another surface
   virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
