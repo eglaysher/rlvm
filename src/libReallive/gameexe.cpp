@@ -200,6 +200,7 @@ void Gameexe::setStringAt(const std::string& key, const std::string& value)
   Gameexe_vec_type toStore;
   cdata_.push_back(value);
   toStore.push_back(cdata_.size() - 1);
+  data_.erase(key);
   data_.insert(make_pair(key, toStore));
 }
 
@@ -209,6 +210,7 @@ void Gameexe::setIntAt(const std::string& key, const int value)
 {
   Gameexe_vec_type toStore;
   toStore.push_back(value);
+  data_.erase(key);
   data_.insert(make_pair(key, toStore));
 }
 
