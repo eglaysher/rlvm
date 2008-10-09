@@ -122,7 +122,7 @@ size_t next_string(const char* src)
     }
     else {
       quoted = *end == '"';
-      if (strcmp(end, "###PRINT(") == 0) {
+      if (strncmp(end, "###PRINT(", 9) == 0) {
         end += 9;
         end += 1 + next_expr(end);
         continue;
