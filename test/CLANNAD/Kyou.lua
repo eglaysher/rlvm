@@ -4,6 +4,10 @@
 World:setRegname("KEY_CLANNAD")
 World:setGameRoot("/home/elliot/GameImages/CLANNAD/")
 
+World:import("CLANNAD_lib.lua")
+CLANNAD:installMainMenuHandler()
+CLANNAD:clickOnCharactersBeingThrown()
+
 decisions = {
    -- April 14th
    "上書きで何か吹き込む",
@@ -64,21 +68,3 @@ decisions = {
 }
 
 World:setDecisionList(decisions)
-
--- TODO: Handle exiting the game once we're done with it.
-state = 0
-World:addHandler(9032, 944, function ()
-  -- Object 20 is the New Game button
-  if state == 0 then
-     origin = System:graphics():getFgObject(20):getClickPointHack()
-     System:event():injectMouseMovement(origin)
-     state = 1
-  elseif state == 1 then
-     System:event():injectMouseDown()
-     state = 2
-  elseif state == 2 then
-     System:event():injectMouseUp()
-     state = 3
-  end
-end)
-
