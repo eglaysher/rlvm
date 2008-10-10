@@ -4,11 +4,10 @@
 CLANNAD = { }
 
 function CLANNAD:installMainMenuHandler ()
-  -- TODO: Handle exiting the game once we're done with it.
   state = 0
   World:addHandler(9032, 944, function ()
-    -- Object 20 is the New Game button
     if state == 0 then
+      -- Object 20 is the New Game button
       origin = System:graphics():getFgObject(20):getClickPointHack()
       System:event():injectMouseMovement(origin)
       state = 1
@@ -18,13 +17,27 @@ function CLANNAD:installMainMenuHandler ()
     elseif state == 2 then
       System:event():injectMouseUp()
       state = 3
+    elseif state == 4 then
+      -- Object 27 is the Exit button
+      origin = System:graphics():getFgObject(27):getClickPointHack()
+      System:event():injectMouseMovement(origin)
+      state = 5
+    elseif state == 5 then
+      System:event():injectMouseDown()
+      state = 6
+    elseif state == 6 then
+      System:event():injectMouseUp()
+      state = 7
     end
   end)
 
   -- Once we've started a New Game, we shouldn't see the main menu until we are
   -- ready to exit.
-
-  --World:addHandler(
+  World:addHandler(6900, 17, function ()
+    if state == 3 then
+       state = 4
+    end
+  end)
 end
 
 -- Some paths have Sunohara and other characters being throw around... and will
