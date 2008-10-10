@@ -28,6 +28,7 @@
 #define __ScriptWorld_hpp__
 
 #include <vector>
+#include <boost/filesystem/path.hpp>
 #include <luabind/luabind.hpp>
 
 extern "C"
@@ -72,11 +73,17 @@ public:
    */
   void initializeMachine(ScriptMachine& machine);
 
+  /// Loads a lua script in the same directory as lua_file.
+  void import(const std::string& file_name);
+
   void setDecisionList(luabind::object table);
   void addHandler(int scene, int lineNo, luabind::object handler);
 
 private:
   static void InitializeLuabind(lua_State* L);
+
+  /// The directory containg the passed in |lua_file|. Used as a search path.
+  boost::filesystem::path script_dir_;
 
   std::vector<std::string> decisions_;
 

@@ -43,6 +43,7 @@
 
 #include <iostream>
 #include <typeinfo>
+#include <boost/filesystem/path.hpp>
 
 extern "C"
 {
@@ -55,10 +56,13 @@ extern "C"
 
 using namespace std;
 using namespace luabind;
+namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-ScriptWorld::ScriptWorld(const std::string& lua_file) {
+ScriptWorld::ScriptWorld(const std::string& lua_file)
+  : script_dir_(fs::path(lua_file).branch_path())
+{
   L = lua_open();
   luaopen_base(L);
   luaopen_string(L);
@@ -77,6 +81,24 @@ ScriptWorld::ScriptWorld(const std::string& lua_file) {
 
 ScriptWorld::~ScriptWorld() {
   lua_close(L);
+}
+
+// -----------------------------------------------------------------------
+
+void ScriptWorld::import(const std::string& file_name) {
+  fs::path script_path(script_dir_ / file_name);
+
+  if (!fs::exists(script_path)) {
+    ostringstream oss;
+    oss << "Could not read script file: " << script_path;
+    throw std::runtime_error(oss.str());
+  }
+
+  if (lua_dofile(L, script_path.file_string().c_str())) {
+    ostringstream oss;
+    oss << "Error while running script: " << script_path;
+    throw std::runtime_error(oss.str());
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -118,6 +140,7 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
   [
     // High level interface
     class_<ScriptWorld>("World").
+    def("import", &ScriptWorld::import).
     def("regname", &ScriptWorld::regname).
     def("setRegname", &ScriptWorld::setRegname).
     def("gameRoot", &ScriptWorld::gameRoot).
