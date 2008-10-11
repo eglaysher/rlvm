@@ -119,6 +119,7 @@ int main(int argc, char* argv[])
     ("count-undefined",
      "On exit, present a summary table about how many times each undefined opcode was called")
     ("save-on-decision", po::value<int>(), "Automatically save the game on decision points to the specified save game slot. Useful while debugging crashes far into a game.")
+    ("save-on-decision-counting-from", po::value<int>(), "Like --save-on-decision, but will increment the save number every time.")
     ;
 
   // Declare the final option to be game-root
@@ -216,6 +217,12 @@ int main(int argc, char* argv[])
     if(vm.count("save-on-decision")) {
       int decision_num = vm["save-on-decision"].as<int>();
       rlmachine.saveOnDecisions(decision_num);
+    }
+
+    if (vm.count("save-on-decision-counting-from")) {
+      int start_from = vm["save-on-decision-counting-from"].as<int>();
+      rlmachine.saveOnDecisions(start_from);
+      rlmachine.incrementOnSave();
     }
 
     Serialization::loadGlobalMemory(rlmachine);

@@ -64,6 +64,8 @@ public:
    */
   virtual void pushLongOperation(LongOperation* long_operation);
 
+  void incrementOnSave() { increment_on_save_ = true; }
+
 private:
   typedef std::vector<std::string> Selections;
   Selections decisions_;
@@ -76,6 +78,9 @@ private:
   /// Which game save slot to automatically save to when we automatically make
   /// a decision, or -1 if disabled.
   int save_on_decision_slot_;
+
+  /// Whether we increment |save_on_decision_slot_| every time we save.
+  bool increment_on_save_;
 };  // end of class ScriptMachine
 
 #endif

@@ -44,7 +44,8 @@ ScriptMachine::ScriptMachine(
   System& in_system, libReallive::Archive& in_archive)
   : RLMachine(in_system, in_archive),
     current_decision_(0),
-    save_on_decision_slot_(-1)
+    save_on_decision_slot_(-1),
+    increment_on_save_(false)
 {
 
 }
@@ -113,6 +114,14 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
         cerr << "(Automatically saving to slot " << save_on_decision_slot_
              << ")" << endl;
         Serialization::saveGameForSlot(*this, save_on_decision_slot_);
+
+        if (increment_on_save_) {
+          save_on_decision_slot_++;
+          if (save_on_decision_slot_ > 98) {
+            cerr << "Warning: Overflowing save count." << endl;
+            save_on_decision_slot_ = 0;
+          }
+        }
       }
     }
 
