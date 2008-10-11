@@ -139,7 +139,8 @@ void SDLTextWindow::clearWin()
   font_colour_ = default_color_;
 
   // Allocate the text window surface
-  surface_.reset(new SDLSurface(textWindowSize()));
+  if (!surface_)
+    surface_.reset(new SDLSurface(textWindowSize()));
   surface_->fill(RGBAColour::Clear());
 }
 
