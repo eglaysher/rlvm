@@ -167,6 +167,12 @@ bool Sel_LongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 struct Sel_select : public RLOp_SpecialCase
 {
+  // Prevent us from trying to parse the parameters to the CommandElement as
+  // RealLive expressions (because they are not).
+  virtual void parseParameters(
+    const std::vector<std::string>& input,
+    boost::ptr_vector<libReallive::ExpressionPiece>& output) {}
+
   void operator()(RLMachine& machine, const CommandElement& ce)
   {
     if(machine.shouldSetSelcomSavepoint())
@@ -184,4 +190,11 @@ SelModule::SelModule()
   : RLModule("Sel", 0, 2)
 {
   addOpcode(1, 0, new Sel_select);
+
+  // TODO: These are wrong! These have different implementations which do more
+  // graphical fun. Refer to the rldev manual once I get off my lazy ass to
+  // implement them!
+  addOpcode(0, 0, new Sel_select);
+  addOpcode(2, 0, new Sel_select);
+  addOpcode(3, 0, new Sel_select);
 }
