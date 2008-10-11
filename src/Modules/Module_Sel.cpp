@@ -74,8 +74,11 @@ Sel_LongOperation::Sel_LongOperation(
 
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
   for (unsigned int i = 0; i < params.size(); ++i) {
-    std::string utf8str = cp932toUTF8(params[i].text,
+    std::string evaluated_native =
+      libReallive::evaluatePRINT(machine, params[i].text);
+    std::string utf8str = cp932toUTF8(evaluated_native,
                                       machine.getTextEncoding());
+
     options_.push_back(utf8str);
     text_window_.addSelectionItem(utf8str);
   }

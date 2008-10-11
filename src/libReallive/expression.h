@@ -60,6 +60,8 @@ ExpressionPiece* get_assignment(const char*& src);
 ExpressionPiece* get_data(const char*& src);
 ExpressionPiece* get_complex_param(const char*& src);
 
+std::string evaluatePRINT(RLMachine& machine, const std::string& in);
+
 std::string parsableToPrintableString(const std::string& src);
 std::string printableToParsableString(const std::string& src);
 

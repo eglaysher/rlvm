@@ -462,6 +462,28 @@ ExpressionPiece* get_complex_param(const char*& src)
     return get_expression(src);
 }
 
+// -----------------------------------------------------------------------
+
+std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
+  // Currently, this doesn't evaluate the # commands inline. See 5.12.11 of the
+  // rldev manual.
+  if (boost::starts_with(in, "###PRINT(")) {
+    const char* expression_start = in.c_str() + 9;
+    auto_ptr<ExpressionPiece> piece(get_expression(expression_start));
+
+    if (*expression_start != ')') {
+      ostringstream ss;
+      ss << "Unexpected character '" << *expression_start
+         << "' in evaluatePRINT (')' expected)";
+      throw Error(ss.str());
+    }
+
+    return piece->getStringValue(machine);
+  } else {
+    /// Just a normal string we can ignore
+    return in;
+  }
+}
 
 // -----------------------------------------------------------------------
 
