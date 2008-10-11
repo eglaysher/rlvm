@@ -719,12 +719,11 @@ struct Str_strlpos : public RLOp_Store_2< StrConstant_T, StrConstant_T > {
  * Prints a string.
  *
  * @note This is usually called from within long text strings as \\s{intV}.
- * @todo For now, we print to cout, but once we have a display system,
- * this needs to be changed so we output to it.
  */
 struct Str_strout : public RLOp_Void_1< StrConstant_T > {
   void operator()(RLMachine& machine, string value) {
-    cout << value;
+    // Assumption: Text is in whatever native encoding for getTextEncoding().
+    machine.performTextout(value);
   }
 };
 
@@ -741,7 +740,9 @@ struct Str_strout : public RLOp_Void_1< StrConstant_T > {
  */
 struct Str_intout : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int value) {
-    cout << value;
+    // Assumption: Text is in whatever native encoding for getTextEncoding().
+    string converted = lexical_cast<string>(value);
+    machine.performTextout(converted);
   }
 };
 

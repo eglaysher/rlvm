@@ -519,14 +519,21 @@ void RLMachine::performTextout(const TextoutElement& e)
     halt();
   }
 
+  performTextout(unparsed_text);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::performTextout(const std::string& cp932str)
+{
   std::string name_parsed_text;
   try {
-    parseNames(*memory_, unparsed_text, name_parsed_text);
+    parseNames(*memory_, cp932str, name_parsed_text);
   } catch(rlvm::Exception& e) {
     // WEIRD: Sometimes rldev (and the official compiler?) will generate strings
     // that aren't valid shift_jis. Fall back while I figure out how to handle
     // this.
-    name_parsed_text = unparsed_text;
+    name_parsed_text = cp932str;
   }
 
   std::string utf8str = cp932toUTF8(name_parsed_text, getTextEncoding());
