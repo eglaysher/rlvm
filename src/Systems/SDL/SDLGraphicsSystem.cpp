@@ -661,16 +661,6 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::clearAllDCs()
-{
-  getDC(0)->fill(RGBAColour::Black());
-
-  for(int i = 1; i < 16; ++i)
-    freeDC(i);
-}
-
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::reset()
 {
   clearAllObjects();

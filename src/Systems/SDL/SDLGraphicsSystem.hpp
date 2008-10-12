@@ -169,8 +169,6 @@ public:
   virtual void setWindowSubtitle(const std::string& cp932str,
                                  int text_encoding);
 
-  virtual void clearAllDCs();
-
   /**
    * Reset the system. Should clear all state for when a user loads a
    * game.

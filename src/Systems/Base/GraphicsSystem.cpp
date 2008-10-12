@@ -536,6 +536,15 @@ void GraphicsSystem::takeSavepointSnapshot()
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::clearAllDCs() {
+  getDC(0)->fill(RGBAColour::Black());
+
+  for(int i = 1; i < 16; ++i)
+    freeDC(i);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::renderObjects(RLMachine& machine)
 {
   // Render all visible foreground objects

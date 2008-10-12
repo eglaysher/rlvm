@@ -437,8 +437,8 @@ public:
   void takeSavepointSnapshot();
   /// @}
 
-  virtual void clearAllDCs() { }
-
+  /// Sets DC0 to black and frees up DCs 1 through 16.
+  void clearAllDCs();
 
   /**
    * @name Overridden from MouseMotionListener:
