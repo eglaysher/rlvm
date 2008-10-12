@@ -2,7 +2,11 @@
 World:setRegname("KEY_KANON_SE_ALL")
 World:setGameRoot("/home/elliot/GameImages/KANON")
 
--- TODO: Build a menu automation like I do with CLANNAD.
+World:import("Kanon_lib.lua")
+Kanon:installMainMenuHandler()
+
+-- TODO for Nayuki's route:
+-- * Final text box isn't cleared before the ED.
 
 -- Nayuki's route
 decisions = {
