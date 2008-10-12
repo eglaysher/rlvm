@@ -66,11 +66,6 @@ private:
 
   bool redraw_last_frame_;
 
-  Size screen_size_;
-
-  /// Rectangle representing the screen.
-  Rect screen_rect_;
-
   /// Whether to display (SEEN####)(Line ###) in the title bar
   bool display_data_in_titlebar_;
 
@@ -151,18 +146,6 @@ public:
 
   virtual void beginFrame();
 
-  /**
-   * Performs a full redraw of the screen; blitting dc0 to the screen,
-   * then blitting all the visible objects, and then blitting all the
-   * visible text windows.
-   *
-   * The Reallive function refresh() simply calls this method, but
-   * this method is also used internally to perform the same task.
-   *
-   * @todo When we support Objects and TextWindows, make this blit
-   * them. For now, only blit DC0.
-   */
-  virtual void refresh(RLMachine& machine);
   virtual void markScreenAsDirty(GraphicsUpdateType type);
 
   virtual void endFrame(RLMachine& machine);
@@ -172,8 +155,6 @@ public:
   boost::shared_ptr<Surface> endFrameToSurface();
 
   virtual void executeGraphicsSystem(RLMachine& machine);
-
-  virtual Size screenSize() const;
 
   virtual void allocateDC(int dc, Size screen_size);
   virtual void freeDC(int dc);

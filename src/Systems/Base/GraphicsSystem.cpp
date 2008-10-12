@@ -45,8 +45,10 @@
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
 
@@ -391,6 +393,27 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int obj_num)
 void GraphicsSystem::beginFrame() { }
 void GraphicsSystem::endFrame(RLMachine& machine) { }
 
+void GraphicsSystem::refresh(RLMachine& machine) {
+  beginFrame();
+
+  // Display DC0
+  getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
+
+  renderObjects(machine);
+
+  // Render text
+  if(!interfaceHidden())
+    machine.system().text().render(machine);
+
+  endFrame(machine);
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::dumpRenderTree(std::ostream& tree) {
+  // TODO
+}
+
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
@@ -600,13 +623,6 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
     oss << "Don't know how to handle object file: \"" << filename << "\"";
     throw rlvm::Exception(oss.str());
   }
-}
-
-// -----------------------------------------------------------------------
-
-Rect GraphicsSystem::screenRect() const
-{
-  return Rect(Point(0, 0), screenSize());
 }
 
 // -----------------------------------------------------------------------

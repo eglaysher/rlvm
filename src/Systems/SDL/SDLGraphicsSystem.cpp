@@ -103,31 +103,13 @@ void SDLGraphicsSystem::beginFrame()
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0.0, (GLdouble)screen_size_.width(), (GLdouble)screen_size_.height(),
+  glOrtho(0.0, (GLdouble)screenSize().width(), (GLdouble)screenSize().height(),
           0.0, 0.0, 1.0);
   ShowGLErrors();
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   ShowGLErrors();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLGraphicsSystem::refresh(RLMachine& machine)
-{
-  beginFrame();
-
-  // Display DC0
-  display_contexts_[0]->renderToScreen(screen_rect_, screen_rect_, 255);
-
-  renderObjects(machine);
-
-  // Render text
-  if(!interfaceHidden())
-    machine.system().text().render(machine);
-
-  endFrame(machine);
 }
 
 // -----------------------------------------------------------------------
@@ -149,7 +131,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   beginFrame();
 
   // Display DC0
-  bg->renderToScreen(screen_rect_, screen_rect_, 255);
+  bg->renderToScreen(screenRect(), screenRect(), 255);
 
   renderObjects(machine);
 
@@ -180,7 +162,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
     // Copy the area behind the cursor to the temporary buffer
     glBindTexture(GL_TEXTURE_2D, behind_cursor_texture_);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-                        dx1, screen_size_.height() - dy1 - 32, 32, 32);
+                        dx1, screenSize().height() - dy1 - 32, 32, 32);
 
     cursor->renderHotspotAt(machine, hotspot);
   }
@@ -221,7 +203,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
 
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
-  return shared_ptr<Surface>(new SDLRenderToTextureSurface(screen_size_));
+  return shared_ptr<Surface>(new SDLRenderToTextureSurface(screenSize()));
 }
 
 // -----------------------------------------------------------------------
@@ -249,9 +231,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     throw SystemError(ss.str());
   }
 
-  screen_size_ = getScreenSize(gameexe);
-  screen_rect_ = Rect(Point(0, 0), screen_size_);
-  Texture::SetScreenSize(screen_size_);
+  setScreenSize(getScreenSize(gameexe));
+  Texture::SetScreenSize(screenSize());
 
   int bpp = info->vfmt->BitsPerPixel;
 
@@ -284,7 +265,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
   // Set the video mode
   if((screen_ = SDL_SetVideoMode(
-        screen_size_.width(), screen_size_.height(), bpp, video_flags)) == 0 )
+        screenSize().width(), screenSize().height(), bpp, video_flags)) == 0 )
   {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -334,8 +315,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
   // Now we allocate the first two display contexts with equal size to
   // the display
-  display_contexts_[0]->allocate(screen_size_, this);
-  display_contexts_[1]->allocate(screen_size_);
+  display_contexts_[0]->allocate(screenSize(), this);
+  display_contexts_[1]->allocate(screenSize());
 
   // Create a small 32x32 texture for storing what's behind the mouse
   // cursor.
@@ -427,14 +408,6 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
   subtitle_ = cp932toUTF8(cp932str, text_encoding);
 
   GraphicsSystem::setWindowSubtitle(cp932str, text_encoding);
-}
-
-// -----------------------------------------------------------------------
-
-Size SDLGraphicsSystem::screenSize() const
-{
-  return screen_size_;
-
 }
 
 // -----------------------------------------------------------------------

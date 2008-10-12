@@ -47,8 +47,6 @@ class NullGraphicsSystem : public GraphicsSystem
 public:
   NullGraphicsSystem(System& system, Gameexe& gexe);
 
-  virtual void refresh(RLMachine&) { }
-
   virtual void executeGraphicsSystem(RLMachine&) { }
 
   int screenWidth() const { return 640; }

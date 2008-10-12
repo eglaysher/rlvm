@@ -48,6 +48,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iosfwd>
 
 // -----------------------------------------------------------------------
 
@@ -323,8 +324,25 @@ public:
   /// @}
 
   virtual void beginFrame();
-  virtual void refresh(RLMachine& machine) = 0;
   virtual void endFrame(RLMachine& machine);
+
+  /**
+   * Performs a full redraw of the screen; blitting dc0 to the screen,
+   * then blitting all the visible objects, and then blitting all the
+   * visible text windows.
+   *
+   * The Reallive function refresh() simply calls this method, but
+   * this method is also used internally to perform the same task.
+   *
+   * @todo When we support Objects and TextWindows, make this blit
+   * them. For now, only blit DC0.
+   */
+  void refresh(RLMachine& machine);
+
+  /**
+   * Prints a textual representation of what SHOULD be on the screen right now.
+   */
+  void dumpRenderTree(std::ostream& tree);
 
   virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);
@@ -339,13 +357,13 @@ public:
   /**
    * Returns the size of the window in pixels.
    */
-  virtual Size screenSize() const = 0;
+  const Size& screenSize() const { return screen_size_; }
 
   /**
    * Returns a rectangle with an origin of (0,0) and a size returned by
    * screenSize().
    */
-  Rect screenRect() const;
+  const Rect& screenRect() const { return screen_rect_; }
 
   virtual void allocateDC(int dc, Size size) = 0;
   virtual void freeDC(int dc) = 0;
@@ -455,6 +473,11 @@ protected:
 
   boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
 
+  void setScreenSize(const Size& size) {
+    screen_size_ = size;
+    screen_rect_ = Rect(Point(0, 0), size);
+  }
+
 private:
   /// Default grp name (used in grp* and rec* functions where filename
   /// is '???')
@@ -488,6 +511,12 @@ private:
 
   /// Mutable global data to be saved in the globals file
   GraphicsSystemGlobals globals_;
+
+  /// Size of our display window.
+  Size screen_size_;
+
+  /// Rectangle of the screen.
+  Rect screen_rect_;
 
   /// Immutable
   struct GraphicsObjectSettings;
