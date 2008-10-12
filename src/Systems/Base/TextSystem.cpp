@@ -145,6 +145,30 @@ void TextSystem::executeTextSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+void TextSystem::render(RLMachine& machine)
+{
+  if(systemVisible())
+  {
+    for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
+    {
+      it->second->render(machine);
+    }
+
+    WindowMap::iterator it = text_window_.find(active_window_);
+
+    if(it != text_window_.end() && it->second->isVisible() &&
+       in_pause_state_ && !isReadingBacklog())
+    {
+      if(!text_key_cursor_)
+        setKeyCursor(machine, 0);
+
+      text_key_cursor_->render(machine, *it->second);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::hideTextWindow(int win_number)
 {
   WindowMap::iterator it = text_window_.find(win_number);
@@ -382,9 +406,91 @@ int TextSystem::cursorNumber() const
 
 // -----------------------------------------------------------------------
 
+void TextSystem::updateWindowsForChangeToWindowAttr()
+{
+  // Check each text window to see if it needs updating
+  for(WindowMap::iterator it = text_window_.begin();
+      it != text_window_.end(); ++it)
+  {
+    if(!it->second->windowAttrMod())
+      it->second->setRGBAF(windowAttr());
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
 {
   globals_.window_attr = attr;
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setWindowAttrR(int i) {
+  globals_.window_attr.at(0) = i;
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setWindowAttrG(int i) {
+  globals_.window_attr.at(1) = i;
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setWindowAttrB(int i) {
+  globals_.window_attr.at(2) = i;
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setWindowAttrA(int i) {
+  globals_.window_attr.at(3) = i;
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setWindowAttrF(int i) {
+  globals_.window_attr.at(4) = i;
+  updateWindowsForChangeToWindowAttr();
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setMousePosition(RLMachine& machine, const Point& pos)
+{
+  for(WindowMap::iterator it = text_window_.begin();
+      it != text_window_.end(); ++it)
+  {
+    it->second->setMousePosition(machine, pos);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
+                                  bool pressed)
+{
+  if(systemVisible())
+  {
+    for(WindowMap::iterator it = text_window_.begin();
+        it != text_window_.end(); ++it)
+    {
+      if(it->second->handleMouseClick(machine, pos, pressed))
+        return true;
+    }
+
+    return false;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // -----------------------------------------------------------------------

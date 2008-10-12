@@ -51,26 +51,11 @@ private:
   FontSizeMap map_;
   /// @}
 
-  void updateWindowsForChangeToWindowAttr();
-
 public:
   SDLTextSystem(Gameexe& gameexe);
   ~SDLTextSystem();
 
-  virtual void render(RLMachine& machine);
   virtual TextWindow& textWindow(RLMachine&, int text_window_number);
-
-  virtual void setDefaultWindowAttr(const std::vector<int>& attr);
-
-  virtual void setWindowAttrR(int i);
-  virtual void setWindowAttrG(int i);
-  virtual void setWindowAttrB(int i);
-  virtual void setWindowAttrA(int i);
-  virtual void setWindowAttrF(int i);
-
-  virtual void setMousePosition(RLMachine& machine, const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
-                                bool pressed);
 
   virtual boost::shared_ptr<Surface> renderText(
     RLMachine& machine, const std::string& utf8str, int size, int xspace,

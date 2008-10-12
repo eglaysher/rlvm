@@ -179,6 +179,9 @@ protected:
   virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 
+protected:
+  void updateWindowsForChangeToWindowAttr();
+
 public:
   TextSystem(Gameexe& gexe);
   virtual ~TextSystem();
@@ -202,7 +205,7 @@ public:
 
   void executeTextSystem(RLMachine& machine);
 
-  virtual void render(RLMachine& machine) = 0;
+  void render(RLMachine& machine);
   void hideTextWindow(int win_number);
   void hideAllTextWindows();
   void clearAllTextWindows();
@@ -306,7 +309,7 @@ public:
    *       the default window attr has changed.
    * @{
    */
-  virtual void setDefaultWindowAttr(const std::vector<int>& attr);
+  void setDefaultWindowAttr(const std::vector<int>& attr);
   std::vector<int> windowAttr() const { return globals_.window_attr; }
 
   int windowAttrR() const { return globals_.window_attr.at(0); }
@@ -315,11 +318,11 @@ public:
   int windowAttrA() const { return globals_.window_attr.at(3); }
   int windowAttrF() const { return globals_.window_attr.at(4); }
 
-  virtual void setWindowAttrR(int i) { globals_.window_attr.at(0) = i; }
-  virtual void setWindowAttrG(int i) { globals_.window_attr.at(1) = i; }
-  virtual void setWindowAttrB(int i) { globals_.window_attr.at(2) = i; }
-  virtual void setWindowAttrA(int i) { globals_.window_attr.at(3) = i; }
-  virtual void setWindowAttrF(int i) { globals_.window_attr.at(4) = i; }
+  void setWindowAttrR(int i);
+  void setWindowAttrG(int i);
+  void setWindowAttrB(int i);
+  void setWindowAttrA(int i);
+  void setWindowAttrF(int i);
   /// @}
 
   /**
@@ -337,9 +340,9 @@ public:
   bool windowExbtnUse() const { return exbtn_use_; }
 
   /// Update the mouse cursor.
-  virtual void setMousePosition(RLMachine& machine, const Point& pos) = 0;
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
-                                bool pressed) = 0;
+  void setMousePosition(RLMachine& machine, const Point& pos);
+  bool handleMouseClick(RLMachine& machine, const Point& pos,
+                        bool pressed);
   /// @}
 
   /**

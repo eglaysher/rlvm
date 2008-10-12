@@ -82,30 +82,6 @@ SDLTextSystem::~SDLTextSystem()
 
 // -----------------------------------------------------------------------
 
-void SDLTextSystem::render(RLMachine& machine)
-{
-  if(systemVisible())
-  {
-    for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
-    {
-      it->second->render(machine);
-    }
-
-    WindowMap::iterator it = text_window_.find(active_window_);
-
-    if(it != text_window_.end() && it->second->isVisible() &&
-       in_pause_state_ && !isReadingBacklog())
-    {
-      if(!text_key_cursor_)
-        setKeyCursor(machine, 0);
-
-      text_key_cursor_->render(machine, *it->second);
-    }
-  }
-}
-
-// -----------------------------------------------------------------------
-
 TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int text_window)
 {
   WindowMap::iterator it = text_window_.find(text_window);
@@ -116,100 +92,6 @@ TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int text_window)
   }
 
   return *it->second;
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::updateWindowsForChangeToWindowAttr()
-{
-  // Check each text window to see if it needs updating
-  for(WindowMap::iterator it = text_window_.begin();
-      it != text_window_.end(); ++it)
-  {
-    if(!it->second->windowAttrMod())
-      it->second->setRGBAF(windowAttr());
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
-{
-  TextSystem::setDefaultWindowAttr(attr);
-  updateWindowsForChangeToWindowAttr();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setWindowAttrR(int i)
-{
-  TextSystem::setWindowAttrR(i);
-  updateWindowsForChangeToWindowAttr();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setWindowAttrG(int i)
-{
-  TextSystem::setWindowAttrG(i);
-  updateWindowsForChangeToWindowAttr();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setWindowAttrB(int i)
-{
-  TextSystem::setWindowAttrB(i);
-  updateWindowsForChangeToWindowAttr();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setWindowAttrA(int i)
-{
-  TextSystem::setWindowAttrA(i);
-  updateWindowsForChangeToWindowAttr();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setWindowAttrF(int i)
-{
-  TextSystem::setWindowAttrF(i);
-  updateWindowsForChangeToWindowAttr();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextSystem::setMousePosition(RLMachine& machine, const Point& pos)
-{
-  for(WindowMap::iterator it = text_window_.begin();
-      it != text_window_.end(); ++it)
-  {
-    it->second->setMousePosition(machine, pos);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-bool SDLTextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
-                                     bool pressed)
-{
-  if(systemVisible())
-  {
-    for(WindowMap::iterator it = text_window_.begin();
-        it != text_window_.end(); ++it)
-    {
-      if(it->second->handleMouseClick(machine, pos, pressed))
-        return true;
-    }
-
-    return false;
-  }
-  else
-  {
-    return false;
-  }
 }
 
 // -----------------------------------------------------------------------
