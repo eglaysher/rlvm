@@ -43,6 +43,8 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Utilities.h"
 
+#include <iostream>
+using std::endl;
 
 // -----------------------------------------------------------------------
 
@@ -81,12 +83,17 @@ bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
 // -----------------------------------------------------------------------
 
 void GraphicsTextObject::render(RLMachine& machine,
-                                const GraphicsObject& rp)
+                                const GraphicsObject& rp,
+                                std::ostream* tree)
 {
   if(needsUpdate(rp))
-	updateSurface(machine, rp);
+    updateSurface(machine, rp);
 
   surface_->renderToScreenAsObject(rp);
+
+  if (tree) {
+    *tree << "  Text Object: \"" << rp.textText() << "\"" << endl;
+  }
 }
 
 // -----------------------------------------------------------------------

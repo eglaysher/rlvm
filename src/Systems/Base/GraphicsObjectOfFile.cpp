@@ -93,7 +93,8 @@ void GraphicsObjectOfFile::loadFile(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
+void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp,
+                                  std::ostream* tree)
 {
   if(currentlyPlaying())
   {
@@ -108,6 +109,11 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp)
   }
   else
     surface_->renderToScreenAsObject(rp);
+
+  if (tree) {
+    *tree << "  Graphics File: " << filename_ << ", Currently Playing: "
+          << currentlyPlaying() << endl;
+  }
 }
 
 // -----------------------------------------------------------------------

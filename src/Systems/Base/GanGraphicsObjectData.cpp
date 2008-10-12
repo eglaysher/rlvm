@@ -256,8 +256,10 @@ void GanGraphicsObjectData::throwBadFormat(
 
 void GanGraphicsObjectData::render(
   RLMachine& machine,
-  const GraphicsObject& go)
+  const GraphicsObject& go,
+  std::ostream* tree)
 {
+  bool playing = false;
   if(current_set_ != -1 && current_frame_ != -1)
   {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
@@ -280,7 +282,13 @@ void GanGraphicsObjectData::render(
         int(((frame.alpha/256.0f) * (go.alpha() / 256.0f)) * 256));
 
       image->renderToScreenAsObject(go, override_data);
+      playing = true;
     }
+  }
+
+  if (tree) {
+    *tree << "  GAN File: " << gan_filename_ << ", Image File: "
+          << img_filename_ << ", Currently Playing: " << playing;
   }
 }
 

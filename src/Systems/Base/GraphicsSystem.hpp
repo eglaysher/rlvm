@@ -336,8 +336,11 @@ public:
    *
    * @todo When we support Objects and TextWindows, make this blit
    * them. For now, only blit DC0.
+   *
+   * @param tree Optional parameter that will dump out a render tree to
+   *             the passed in ostream. Usually NULL.
    */
-  void refresh(RLMachine& machine);
+  void refresh(RLMachine& machine, std::ostream* tree);
 
   /**
    * Prints a textual representation of what SHOULD be on the screen right now.
@@ -401,8 +404,9 @@ public:
    * rendered.
    *
    * @param machine RLMachine context.
+   * @param tree Optional stream to write this piece of the render tree to.
    */
-  void renderObjects(RLMachine& machine);
+  void renderObjects(RLMachine& machine, std::ostream* tree);
 
   /**
    * Creates rendering data for a graphics object from a G00, PDT or ANM file.

@@ -66,7 +66,8 @@ public:
   bool currentlyPlaying() const { return currently_playing_; }
 
   virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties) = 0;
+                      const GraphicsObject& rendering_properties,
+                      std::ostream* tree) = 0;
 
   virtual int pixelWidth(RLMachine& machine,
 						 const GraphicsObject& rendering_properties) = 0;

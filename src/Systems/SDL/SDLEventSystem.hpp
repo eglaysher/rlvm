@@ -53,7 +53,7 @@ private:
    * @{
    */
   void handleKeyDown(SDL_Event& event);
-  void handleKeyUp(SDL_Event& event);
+  void handleKeyUp(RLMachine& machine, SDL_Event& event);
   void handleMouseMotion(SDL_Event& event);
   void handleMouseButtonEvent(SDL_Event& event);
   void handleActiveEvent(RLMachine& machine, SDL_Event& event);

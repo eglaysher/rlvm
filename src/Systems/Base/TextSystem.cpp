@@ -145,13 +145,22 @@ void TextSystem::executeTextSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::render(RLMachine& machine)
+void TextSystem::render(RLMachine& machine,
+                        std::ostream* tree)
 {
   if(systemVisible())
   {
+    if (tree) {
+      *tree << "Text System:" << endl;
+    }
+
     for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
     {
       it->second->render(machine);
+
+      if (tree) {
+        *tree << "  Text Window #" << it->first << endl;
+      }
     }
 
     WindowMap::iterator it = text_window_.find(active_window_);
@@ -163,6 +172,10 @@ void TextSystem::render(RLMachine& machine)
         setKeyCursor(machine, 0);
 
       text_key_cursor_->render(machine, *it->second);
+
+      if (tree) {
+        *tree << "  Key Cursor #" << text_key_cursor_->cursorNumber() << endl;
+      }
     }
   }
 }

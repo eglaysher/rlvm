@@ -133,11 +133,11 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   // Display DC0
   bg->renderToScreen(screenRect(), screenRect(), 255);
 
-  renderObjects(machine);
+  renderObjects(machine, NULL);
 
   // Render text
   if(!interfaceHidden())
-    machine.system().text().render(machine);
+    machine.system().text().render(machine, NULL);
 
   return endFrameToSurface();
 }
@@ -352,7 +352,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   }
   else if(isResponsibleForUpdate() && screenNeedsRefresh())
   {
-    refresh(machine);
+    refresh(machine, NULL);
     screenRefreshed();
   }
 

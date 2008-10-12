@@ -393,17 +393,20 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int obj_num)
 void GraphicsSystem::beginFrame() { }
 void GraphicsSystem::endFrame(RLMachine& machine) { }
 
-void GraphicsSystem::refresh(RLMachine& machine) {
+void GraphicsSystem::refresh(RLMachine& machine, std::ostream* tree) {
   beginFrame();
 
   // Display DC0
   getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
+  if (tree) {
+    *tree << "DC#0" << endl;
+  }
 
-  renderObjects(machine);
+  renderObjects(machine, tree);
 
   // Render text
   if(!interfaceHidden())
-    machine.system().text().render(machine);
+    machine.system().text().render(machine, tree);
 
   endFrame(machine);
 }
@@ -545,7 +548,7 @@ void GraphicsSystem::clearAllDCs() {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::renderObjects(RLMachine& machine)
+void GraphicsSystem::renderObjects(RLMachine& machine, std::ostream* tree)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it =
@@ -564,7 +567,7 @@ void GraphicsSystem::renderObjects(RLMachine& machine)
     else if(settings.space_key && interfaceHidden())
       continue;
 
-    it->render(machine);
+    it->render(machine, it.pos(), tree);
   }
 }
 

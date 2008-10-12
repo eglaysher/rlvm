@@ -48,6 +48,8 @@
 #include <algorithm>
 #include <string>
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 
 #include "Utilities.h"
 
@@ -281,4 +283,15 @@ bool System::fastForward()
   return (event().ctrlPressed() && text().ctrlKeySkip()) ||
     text().currentlySkipping() ||
     force_fast_forward_;
+}
+
+// -----------------------------------------------------------------------
+
+void System::dumpRenderTree(RLMachine& machine) {
+  ostringstream oss;
+  oss << "Dump_SEEN" << setw(4) << setfill('0') << machine.sceneNumber()
+      << "_Line" << machine.lineNumber() << ".txt";
+
+  ofstream tree(oss.str().c_str());
+  graphics().refresh(machine, &tree);
 }

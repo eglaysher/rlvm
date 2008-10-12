@@ -64,7 +64,8 @@ public:
 
   // ------------------------------------ [ GraphicsObjectData interface ]
   virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties);
+                      const GraphicsObject& rendering_properties,
+                      std::ostream* tree);
 
   virtual int pixelWidth(RLMachine& machine,
                          const GraphicsObject& rendering_properties);

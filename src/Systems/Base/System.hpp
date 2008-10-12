@@ -244,6 +244,12 @@ public:
   virtual boost::filesystem::path gameSaveDirectory();
 
   /**
+   * @name Testing and Debugging Tools
+   *
+   * @{
+   */
+
+  /**
    * Whether we are zooming through text and events quickly. Currently can be
    * triggered by holding down the control key, or using skip previously read
    * text.
@@ -252,6 +258,9 @@ public:
 
   /// Set in luaRlvm, to speed through the game with maximum speed!
   void forceFastForward() { force_fast_forward_ = true; }
+
+  void dumpRenderTree(RLMachine& machine);
+  /// @}
 };
 
 #endif

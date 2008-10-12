@@ -74,7 +74,7 @@ void SDLEventSystem::handleKeyDown(SDL_Event& event)
 
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::handleKeyUp(SDL_Event& event)
+void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event)
 {
   switch(event.key.keysym.sym)
   {
@@ -88,6 +88,11 @@ void SDLEventSystem::handleKeyUp(SDL_Event& event)
   case SDLK_RCTRL:
   {
     ctrl_pressed_ = false;
+    break;
+  }
+  case SDLK_F12:
+  {
+    machine.system().dumpRenderTree(machine);
     break;
   }
   default:
@@ -200,7 +205,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
     }
     case SDL_KEYUP:
     {
-      handleKeyUp(event);
+      handleKeyUp(machine, event);
       break;
     }
     case SDL_MOUSEMOTION:

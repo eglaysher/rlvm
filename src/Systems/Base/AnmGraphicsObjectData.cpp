@@ -242,7 +242,8 @@ void AnmGraphicsObjectData::execute(RLMachine& machine)
 
 void AnmGraphicsObjectData::render(
   RLMachine& machine,
-  const GraphicsObject& rendering_properties)
+  const GraphicsObject& rendering_properties,
+  std::ostream* tree)
 {
   // If we have a current frame, then let's render it.
   if(current_frame_ != -1)
@@ -258,6 +259,11 @@ void AnmGraphicsObjectData::render(
       frame.dest_y + (frame.src_y2 - frame.src_y1));
 
     image->renderToScreenAsObject(rendering_properties, override_data);
+  }
+
+  if (tree) {
+    *tree << "  Anm File: " << filename_ << ", Rendered: "
+          << (current_frame_ != -1) << endl;
   }
 }
 

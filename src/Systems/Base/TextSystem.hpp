@@ -205,7 +205,8 @@ public:
 
   void executeTextSystem(RLMachine& machine);
 
-  void render(RLMachine& machine);
+  void render(RLMachine& machine,
+              std::ostream* tree);
   void hideTextWindow(int win_number);
   void hideAllTextWindows();
   void clearAllTextWindows();

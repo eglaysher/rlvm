@@ -80,7 +80,8 @@ public:
 
   const std::string& filename() const { return filename_; }
 
-  virtual void render(RLMachine& machine, const GraphicsObject& rp);
+  virtual void render(RLMachine& machine, const GraphicsObject& rp,
+                      std::ostream* tree);
   virtual int pixelWidth(RLMachine& machine, const GraphicsObject& rp);
   virtual int pixelHeight(RLMachine& machine, const GraphicsObject& rp);
   virtual GraphicsObjectData* clone() const;
