@@ -30,10 +30,12 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
 
+#include <boost/bind.hpp>
 #include <iostream>
 
 using namespace std;
@@ -69,9 +71,24 @@ EventSystem::~EventSystem()
 
 // -----------------------------------------------------------------------
 
+void EventSystem::executeEventSystem(RLMachine& machine) {
+  while(queued_actions_.size()) {
+    queued_actions_.front()();
+    queued_actions_.pop();
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void EventSystem::addEventHandler(EventHandler* handler)
 {
   event_handlers_.insert(handler);
+
+  if(ctrlPressed())
+  {
+    queued_actions_.push(
+      bind(&EventHandler::keyStateChanged, handler, RLKEY_LCTRL, true));
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -79,6 +96,10 @@ void EventSystem::addEventHandler(EventHandler* handler)
 void EventSystem::removeEventHandler(EventHandler* handler)
 {
   event_handlers_.erase(handler);
+
+  // TODO: Only remove actions targeting this handler?
+  while(queued_actions_.size())
+    queued_actions_.pop();
 }
 
 // -----------------------------------------------------------------------
@@ -124,6 +145,50 @@ bool EventSystem::frameCounterExists(int layer, int frame_counter)
   checkLayerAndCounter(layer, frame_counter);
   scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frame_counter];
   return counter.get() != NULL;
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::dispatchEvent(
+  const boost::function<bool(EventListener&)>& event)
+{
+  // In addition to the handled variable, we need to add break statements to
+  // the loops since |event| can be any arbitrary code and may modify listeners
+  // or handlers. (i.e., System::showSyscomMenu)
+  bool handled = false;
+
+  // Give the mostly passive listeners first shot at handling this event
+  EventListeners::iterator listenerIt = listeners_begin();
+  for (; !handled && listenerIt != listeners_end(); ++listenerIt) {
+    if (event(**listenerIt)) {
+      handled = true;
+      break;
+    }
+  }
+
+  Handlers::iterator handlerIt = handlers_begin();
+  for (; !handled && handlerIt != handlers_end(); ++handlerIt) {
+    if (event(**handlerIt)) {
+      handled = true;
+      break;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void EventSystem::broadcastEvent(
+  const boost::function<void(EventListener&)>& event)
+{
+  EventListeners::iterator listenerIt = listeners_begin();
+  for (; listenerIt != listeners_end(); ++listenerIt) {
+    event(**listenerIt);
+  }
+
+  Handlers::iterator handlerIt = handlers_begin();
+  for (; handlerIt != handlers_end(); ++handlerIt) {
+    event(**handlerIt);
+  }
 }
 
 // -----------------------------------------------------------------------

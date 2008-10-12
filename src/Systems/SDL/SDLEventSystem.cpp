@@ -48,51 +48,6 @@ using boost::bind;
 // Private implementation
 // -----------------------------------------------------------------------
 
-void SDLEventSystem::dispatchEvent(
-  const boost::function<bool(EventListener&)>& event)
-{
-  // In addition to the handled variable, we need to add break statements to
-  // the loops since event can be any arbitrary code and may modify listeners
-  // or handlers. (i.e., System::showSyscomMenu)
-  bool handled = false;
-
-  // Give the mostly passive listeners first shot at handling this event
-  EventListeners::iterator listenerIt = listeners_begin();
-  for (; !handled && listenerIt != listeners_end(); ++listenerIt) {
-    if (event(**listenerIt)) {
-      handled = true;
-      break;
-    }
-  }
-
-  // Give the mostly passive listeners first shot at handling this event
-  Handlers::iterator handlerIt = handlers_begin();
-  for (; !handled && handlerIt != handlers_end(); ++handlerIt) {
-    if (event(**handlerIt)) {
-      handled = true;
-      break;
-    }
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::broadcastEvent(
-  const boost::function<void(EventListener&)>& event)
-{
-  EventListeners::iterator listenerIt = listeners_begin();
-  for (; listenerIt != listeners_end(); ++listenerIt) {
-    event(**listenerIt);
-  }
-
-  Handlers::iterator handlerIt = handlers_begin();
-  for (; handlerIt != handlers_end(); ++handlerIt) {
-    event(**handlerIt);
-  }
-}
-
-// -----------------------------------------------------------------------
-
 void SDLEventSystem::handleKeyDown(SDL_Event& event)
 {
   switch(event.key.keysym.sym)
@@ -231,11 +186,7 @@ SDLEventSystem::SDLEventSystem(Gameexe& gexe)
 
 void SDLEventSystem::executeEventSystem(RLMachine& machine)
 {
-  while(queued_actions_.size())
-  {
-    queued_actions_.front()();
-    queued_actions_.pop();
-  }
+  EventSystem::executeEventSystem(machine);
 
   SDL_Event event;
   while(SDL_PollEvent(&event))
@@ -276,29 +227,6 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
     }
     }
   }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::addEventHandler(EventHandler* handler)
-{
-  EventSystem::addEventHandler(handler);
-
-  if(ctrl_pressed_)
-  {
-    queued_actions_.push(
-      bind(&EventHandler::keyStateChanged, handler, RLKEY_LCTRL, true));
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::removeEventHandler(EventHandler* handler)
-{
-  EventSystem::removeEventHandler(handler);
-
-  while(queued_actions_.size())
-    queued_actions_.pop();
 }
 
 // -----------------------------------------------------------------------

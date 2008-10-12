@@ -33,9 +33,6 @@
 
 #include <SDL/SDL_events.h>
 
-#include <queue>
-#include <boost/function.hpp>
-
 class SDLEventSystem : public EventSystem
 {
 private:
@@ -50,8 +47,6 @@ private:
 
   int m_button1State, m_button2State;
 
-  std::queue<boost::function<void(void)> > queued_actions_;
-
   /**
    * @name RealLive event system commands
    *
@@ -64,13 +59,6 @@ private:
   void handleActiveEvent(RLMachine& machine, SDL_Event& event);
   /// @}
 
-  /**
-   * Calls a EventListener member function on all event listeners, and then
-   * event handlers, stopping when an object says they handled it.
-   */
-  void dispatchEvent(const boost::function<bool(EventListener&)>& event);
-  void broadcastEvent(const boost::function<void(EventListener&)>& event);
-
 public:
   SDLEventSystem(Gameexe& gexe);
 
@@ -79,9 +67,6 @@ public:
   bool mouseInsideWindow() const { return mouse_inside_window_; }
 
   virtual void executeEventSystem(RLMachine& machine);
-
-  virtual void addEventHandler(EventHandler* handler);
-  virtual void removeEventHandler(EventHandler* handler);
 
   virtual bool shiftPressed() const { return shift_pressed_; }
   virtual bool ctrlPressed() const  { return ctrl_pressed_;  }

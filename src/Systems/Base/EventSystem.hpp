@@ -30,6 +30,8 @@
 #define __EventSystem_hpp__
 
 #include <set>
+#include <queue>
+#include <boost/function.hpp>
 #include <boost/utility.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -79,7 +81,7 @@ public:
   virtual ~EventSystem();
 
   /// Run once per cycle through the game loop to process events.
-  virtual void executeEventSystem(RLMachine& machine) = 0;
+  virtual void executeEventSystem(RLMachine& machine);
 
   /**
    * Returns the number of milliseconds since the program
@@ -131,11 +133,11 @@ public:
    *
    * @{
    */
-  virtual void addEventHandler(EventHandler* handler);
-  virtual void removeEventHandler(EventHandler* handler);
+  void addEventHandler(EventHandler* handler);
+  void removeEventHandler(EventHandler* handler);
 
-  virtual void addMouseListener(EventListener* listener);
-  virtual void removeMouseListener(EventListener* listener);
+  void addMouseListener(EventListener* listener);
+  void removeMouseListener(EventListener* listener);
   /// @}
 
   /**
@@ -236,9 +238,23 @@ protected:
   EventListeners::iterator listeners_begin() { return event_listeners_.begin(); }
   EventListeners::iterator listeners_end() { return event_listeners_.end(); }
 
+  /**
+   * Calls a EventListener member function on all event listeners, and then
+   * event handlers, stopping when an object says they handled it.
+   */
+  void dispatchEvent(const boost::function<bool(EventListener&)>& event);
+  void broadcastEvent(const boost::function<void(EventListener&)>& event);
+
 private:
   boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
   RLTimer timers_[255][2];
+
+  /**
+   * Actions that need to be run the next time the EventSystem executes. We
+   * need to do this because EventHandlers aren't fully initialized when
+   * they're passed to us since that's done in the EventHandler's constructor.
+   */
+  std::queue<boost::function<void(void)> > queued_actions_;
 
   /// Helper function that verifies input
   void checkLayerAndCounter(int layer, int counter);
