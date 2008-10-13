@@ -85,7 +85,9 @@ const int SEL_SIZE = 16;
 // -----------------------------------------------------------------------
 
 namespace graphicsStack {
-const string GRP_LOAD = "grpLoad";
+const std::string GRP_ALLOC = "allocDC";
+const std::string GRP_WIPE = "wipe";
+const std::string GRP_LOAD = "grpLoad";
 const std::string GRP_OPENBG = "grpOpenBg";
 }
 
@@ -283,6 +285,8 @@ struct REC_SPACE : public SPACE {
 struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                                          IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int width, int height) {
+    machine.system().graphics().addGraphicsStackFrame(GRP_ALLOC)
+      .setTargetDC(dc).setTargetCoordinates(Point(width, height));
     machine.system().graphics().allocateDC(dc, Size(width, height));
   }
 };
@@ -297,6 +301,9 @@ struct Grp_allocDC : public RLOp_Void_3< IntConstant_T, IntConstant_T,
 struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
                                       IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
+    machine.system().graphics().addGraphicsStackFrame(GRP_WIPE)
+      .setTargetDC(dc).setRGB(r, g, b);
+
     machine.system().graphics().getDC(dc)->fill(RGBAColour(RGBAColour(r, g, b)));
   }
 };
@@ -362,6 +369,7 @@ struct Grp_load_3 : public RLOp_Void_9<
                   int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
+
     Rect srcRect = space_.makeRect(x1, y1, x2, y2);
     Rect destRect = Rect(dx, dy, srcRect.size());
 
@@ -1363,6 +1371,15 @@ void replayGraphicsStackVector(
     else if(it->name() == GRP_OPENBG)
     {
       replayOpenBg(machine, *it);
+    }
+    else if(it->name() == GRP_ALLOC)
+    {
+      Point target = it->targetPoint();
+      Grp_allocDC()(machine, it->targetDC(), target.x(), target.y());
+    }
+    else if(it->name() == GRP_WIPE)
+    {
+      Grp_wipe()(machine, it->targetDC(), it->r(), it->g(), it->b());
     }
   }
 }
