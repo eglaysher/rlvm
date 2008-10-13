@@ -128,3 +128,30 @@ GraphicsStackFrame& GraphicsStackFrame::setMask(bool in)
   mask_ = in;
   return *this;
 }
+
+// -----------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& os, const GraphicsStackFrame& frame) {
+  os << "{command=" << frame.name();
+
+  if (frame.hasFilename())
+    os << ", filename=" << frame.filename();
+  if (frame.hasSourceDC())
+    os << ", srcDC=" << frame.sourceDC();
+  if (frame.hasSourceCoordinates())
+    os << ", srcRect=" << frame.sourceRect();
+  if (frame.hasTargetDC())
+    os << ", dstDC=" << frame.targetDC();
+  if (frame.hasTargetCoordinates())
+    os << ", dstRect=" << frame.targetPoint();
+  if (frame.hasRGB())
+    os << ", rgb=[" << frame.r() << "," << frame.g() << "," << frame.b() << "]";
+  if (frame.hasOpacity())
+    os << ", opacity=" << frame.opacity();
+  if (frame.hasMask())
+    os << ", mask=" << frame.mask();
+
+  os << "}";
+
+  return os;
+}

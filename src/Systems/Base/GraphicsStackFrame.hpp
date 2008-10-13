@@ -31,6 +31,7 @@
 
 #include "Systems/Base/Rect.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <boost/serialization/access.hpp>
 
@@ -127,5 +128,8 @@ public:
   GraphicsStackFrame& setMask(bool in);
 };	// end of class GraphicsStackFrame
 
+// -----------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream&, const GraphicsStackFrame&);
 
 #endif

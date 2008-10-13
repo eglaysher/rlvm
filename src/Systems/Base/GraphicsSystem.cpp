@@ -399,7 +399,12 @@ void GraphicsSystem::refresh(RLMachine& machine, std::ostream* tree) {
   // Display DC0
   getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
   if (tree) {
-    *tree << "DC#0" << endl;
+    *tree << "Graphic Stack:" << endl;
+    const vector<GraphicsStackFrame>& gstack = graphicsStack();
+    for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
+         it != gstack.end(); ++it) {
+      *tree << "  " << *it << endl;
+    }
   }
 
   renderObjects(machine, tree);
