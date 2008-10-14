@@ -48,6 +48,9 @@ private:
   /// The surface containing the cursor
   boost::shared_ptr<Surface> cursor_image_;
 
+  /// The cursor image file
+  std::string cursor_image_file_;
+
   /// The size of the cursor
   Size frame_size_;
 
@@ -84,7 +87,8 @@ public:
    * Render this key cursor to the specified window, which owns
    * positional information.
    */
-  void render(RLMachine& machine, TextWindow& text_window);
+  void render(RLMachine& machine, TextWindow& text_window,
+              std::ostream* tree);
 
   /**
    * @name Accessors

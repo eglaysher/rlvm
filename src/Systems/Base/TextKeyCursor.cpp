@@ -85,7 +85,8 @@ void TextKeyCursor::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window)
+void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window,
+                           std::ostream* tree)
 {
   if(cursor_image_) {
     // Get the location to render from text_window
@@ -95,6 +96,12 @@ void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window)
       Rect(Point(current_frame_ * frame_size_.width(), 0), frame_size_),
       Rect(keycur, frame_size_),
       255);
+
+    if (tree) {
+      *tree << "  Key Cursor #" << cursor_number_ << endl
+            << "    Cursor name: " << cursor_image_file_ << endl
+            << "    Cursor location: " << Rect(keycur, frame_size_) << endl;
+    }
   }
 }
 
@@ -102,11 +109,14 @@ void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window)
 
 void TextKeyCursor::setCursorImage(RLMachine& machine, const std::string& name)
 {
-  if(name != "")
+  if(name != "") {
     cursor_image_ = machine.system().graphics().loadSurfaceFromFile(
       machine, name);
-  else
+    cursor_image_file_ = name;
+  } else {
     cursor_image_.reset();
+    cursor_image_file_ = "";
+  }
 }
 
 // -----------------------------------------------------------------------

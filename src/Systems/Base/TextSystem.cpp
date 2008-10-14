@@ -167,11 +167,7 @@ void TextSystem::render(RLMachine& machine,
       if(!text_key_cursor_)
         setKeyCursor(machine, 0);
 
-      text_key_cursor_->render(machine, *it->second);
-
-      if (tree) {
-        *tree << "  Key Cursor #" << text_key_cursor_->cursorNumber() << endl;
-      }
+      text_key_cursor_->render(machine, *it->second, tree);
     }
   }
 }
