@@ -63,6 +63,9 @@ protected:
   /// some accessors.
   int screen_width_, screen_height_;
 
+  /// Our numeric window identifier.
+  int window_num_;
+
   /**
    * @name Text window Origin
    * Describes the origin point of the window
@@ -389,7 +392,8 @@ public:
   bool actionOnPause() const { return action_on_pause_; }
 
   // ------------------------------------------------ [ Abstract interface ]
-  virtual void render(RLMachine& machine) = 0;
+  virtual void render(RLMachine& machine,
+                      std::ostream* tree) = 0;
 
   /**
    * Clears the text window of all text and resets the insertion

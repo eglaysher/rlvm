@@ -156,11 +156,7 @@ void TextSystem::render(RLMachine& machine,
 
     for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
     {
-      it->second->render(machine);
-
-      if (tree) {
-        *tree << "  Text Window #" << it->first << endl;
-      }
+      it->second->render(machine, tree);
     }
 
     WindowMap::iterator it = text_window_.find(active_window_);

@@ -79,7 +79,8 @@ public:
   virtual void setMousePosition(RLMachine& machine, const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
-  virtual void render(RLMachine& machine);
+  virtual void render(RLMachine& machine,
+                      std::ostream* tree);
 
   virtual void clearWin();
 

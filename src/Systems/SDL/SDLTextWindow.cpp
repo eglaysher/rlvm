@@ -308,7 +308,8 @@ void SDLTextWindow::resetIndentation()
  * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
  *       waku_backing.
  */
-void SDLTextWindow::render(RLMachine& machine)
+void SDLTextWindow::render(RLMachine& machine,
+                           std::ostream* tree)
 {
   if(surface_ && isVisible())
   {
@@ -318,6 +319,10 @@ void SDLTextWindow::render(RLMachine& machine)
     int boxX = boxX1();
     int boxY = boxY1();
 
+    if (tree) {
+      *tree << "  Text Window #" << window_num_ << endl;
+    }
+
     if(waku_backing_)
     {
       Size backing_size = waku_backing_->size();
@@ -326,6 +331,11 @@ void SDLTextWindow::render(RLMachine& machine)
         Rect(Point(0, 0), backing_size),
         Rect(Point(boxX, boxY), backing_size),
         colour_, filter_);
+
+      if (tree) {
+        *tree << "    Backing Area: " << Rect(Point(boxX, boxY), backing_size)
+              << endl;
+      }
     }
 
     if(waku_main_)
@@ -333,6 +343,11 @@ void SDLTextWindow::render(RLMachine& machine)
       Size main_size = waku_main_->size();
       waku_main_->renderToScreen(
         Rect(Point(0, 0), main_size), Rect(Point(boxX, boxY), main_size), 255);
+
+      if (tree) {
+        *tree << "    Main Area: " << Rect(Point(boxX, boxY), main_size)
+              << endl;
+      }
     }
 
     if(waku_button_)
@@ -352,6 +367,10 @@ void SDLTextWindow::render(RLMachine& machine)
         Rect(Point(0, 0), surface_size),
         Rect(Point(x, y), surface_size),
         255);
+
+      if (tree) {
+        *tree << "    Text Area: " << Rect(Point(x, y), surface_size) << endl;
+      }
     }
   }
 }
@@ -364,6 +383,7 @@ void SDLTextWindow::render(RLMachine& machine)
  *       iteration then.
  * @todo Push this logic up to TextWindow; This is logic, not an
  *       implementation detail.
+ * @todo This entire implementation needs to be changed.
  */
 void SDLTextWindow::renderButtons(RLMachine& machine)
 {

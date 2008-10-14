@@ -58,9 +58,9 @@ using std::vector;
 // -----------------------------------------------------------------------
 
 TextWindow::TextWindow(RLMachine& machine, int window_num)
-  : current_line_number_(0), current_indentation_in_pixels_(0),
-    use_indentation_(0), colour_(), filter_(0), is_visible_(0),
-    in_selection_mode_(0), next_id_(0)
+  : window_num_(window_num), current_line_number_(0),
+    current_indentation_in_pixels_(0), use_indentation_(0), colour_(),
+    filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0)
 {
   Gameexe& gexe = machine.system().gameexe();
 

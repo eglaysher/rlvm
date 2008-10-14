@@ -41,7 +41,7 @@ public:
   virtual void setWakuMain(RLMachine& machine, const std::string& name) {}
   virtual void setWakuBacking(RLMachine& machine, const std::string& name) {}
   virtual void setWakuButton(RLMachine& machine, const std::string& name) {}
-  virtual void render(RLMachine& machine) {}
+  virtual void render(RLMachine& machine, std::ostream* tree) {}
 
   virtual bool displayChar(RLMachine& machine, const std::string& current,
                            const std::string& next);
