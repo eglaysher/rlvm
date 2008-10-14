@@ -56,6 +56,34 @@ using std::setw;
 using std::vector;
 
 // -----------------------------------------------------------------------
+
+/**
+ * 
+ *
+ * Previously was using a map keyed on strings. In rendering code. With keys
+ * that had similar prefixes. WTF was I smoking...
+ */
+static struct ButtonInfo {
+  int index;
+  const char* button_name;
+  int waku_offset;
+} BUTTON_INFO[] = {
+  { 0, "CLEAR_BOX", 8},
+  { 1, "MSGBKLEFT_BOX", 24},
+  { 2, "MSGBKRIGHT_BOX", 32},
+  { 3, "EXBTN_000_BOX", 40},
+  { 4, "EXBTN_001_BOX", 48},
+  { 5, "EXBTN_002_BOX", 56},
+  { 6, "EXBTN_003_BOX", 64},
+  { 7, "EXBTN_004_BOX", 72},
+  { 8, "EXBTN_005_BOX", 80},
+  { 9, "EXBTN_006_BOX", 88},
+  {10, "READJUMP_BOX", 104},
+  {11, "AUTOMODE_BOX", 112},
+  {-1, NULL, -1}
+};
+
+// -----------------------------------------------------------------------
 // TextWindow
 // -----------------------------------------------------------------------
 
@@ -116,10 +144,10 @@ void TextWindow::execute(RLMachine& machine)
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
-    for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
-        ++it)
-    {
-      it->second->execute();
+    for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
+      if (button_map_[i]) {
+        button_map_[i]->execute();
+      }
     }
   }
 }
@@ -330,61 +358,53 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
   TextSystem& ts = machine.system().text();
   GraphicsSystem& gs = machine.system().graphics();
-  button_map_.clear();
-  // Translation: Boost ptr_map is retarded.
-  string key = "MOVE_BOX";
-  button_map_.insert(key,
-                     new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
-  key = string("CLEAR_BOX");
-  button_map_.insert(key,
-                     new ActionTextWindowButton(
-                       ts.windowClearUse(), waku("CLEAR_BOX"),
-                       bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
-  key = string("READJUMP_BOX");
-  button_map_.insert(key,
-                     new ActivationTextWindowButton(
-                       ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-                       &readjumpTurnsOn, &readjumpTurnsOff));
-  key = string("AUTOMODE_BOX");
-  button_map_.insert(key,
-                     new ActivationTextWindowButton(
-                       ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-                       bind(&TextSystem::setAutoMode, ref(ts), true),
-                       bind(&TextSystem::setAutoMode, ref(ts), false)));
 
-  key = string("MSGBK_BOX");
-  button_map_.insert(key,
-                     new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
-  key = string("MSGBKLEFT_BOX");
-  button_map_.insert(key,
-                     new RepeatActionWhileHoldingWindowButton(
-                       ts.windowMsgbkleftUse(),
-                       waku("MSGBKLEFT_BOX"),
-                       machine,
-                       bind(&TextSystem::backPage, ref(ts), ref(machine)),
-                       250));
-  key = string("MSGBKRIGHT_BOX");
-  button_map_.insert(key,
-                     new RepeatActionWhileHoldingWindowButton(
-                       ts.windowMsgbkrightUse(),
-                       waku("MSGBKRIGHT_BOX"),
-                       machine,
-                       bind(&TextSystem::forwardPage, ref(ts), ref(machine)),
-                       250));
+  button_map_[0].reset(
+    new ActionTextWindowButton(
+      ts.windowClearUse(), waku("CLEAR_BOX"),
+      bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
+  button_map_[1].reset(
+    new RepeatActionWhileHoldingWindowButton(
+      ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"), machine,
+      bind(&TextSystem::backPage, ref(ts), ref(machine)),
+      250));
+  button_map_[2].reset(
+    new RepeatActionWhileHoldingWindowButton(
+      ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"), machine,
+      bind(&TextSystem::forwardPage, ref(ts), ref(machine)),
+      250));
 
-  // Read the seven EXBTNs.
-  for(int i = 0; i < 7; ++i)
-  {
+  for(int i = 0; i < 7; ++i) {
     GameexeInterpretObject wbcall(gexe("WBCALL", i));
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
-    key = oss.str();
-    button_map_.insert(key,
-                       new ExbtnWindowButton(machine,
-                         ts.windowExbtnUse(),
-                         waku(oss.str()),
-                         wbcall));
+    button_map_[3 + i].reset(
+      new ExbtnWindowButton(
+        machine, ts.windowExbtnUse(), waku(oss.str()), wbcall));
   }
+
+  button_map_[10].reset(
+    new ActivationTextWindowButton(
+      ts.windowReadJumpUse(), waku("READJUMP_BOX"),
+      &readjumpTurnsOn, &readjumpTurnsOff));
+  button_map_[11].reset(
+    new ActivationTextWindowButton(
+      ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
+      bind(&TextSystem::setAutoMode, ref(ts), true),
+      bind(&TextSystem::setAutoMode, ref(ts), false)));
+
+  /*
+   * TODO: I didn't translate these to the new way of doing things. I don't
+   * seem to be rendering them. Must deal with this later.
+   *
+  string key = "MOVE_BOX";
+  button_map_.insert(
+    key, new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
+
+  key = string("MSGBK_BOX");
+  button_map_.insert(
+    key, new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
+  */
 }
 
 // -----------------------------------------------------------------------
@@ -430,6 +450,18 @@ void TextWindow::setWakuButton(RLMachine& machine, const std::string& name)
 
 // -----------------------------------------------------------------------
 
+void TextWindow::renderButtons(RLMachine& machine)
+{
+  for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
+    if (button_map_[i]) {
+      button_map_[i]->render(machine, *this, waku_button_,
+                             BUTTON_INFO[i].waku_offset);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextWindow::setRGBAF(const vector<int>& attr)
 {
   colour_ = RGBAColour(attr.at(0), attr.at(1), attr.at(2), attr.at(3));
@@ -449,10 +481,10 @@ void TextWindow::setMousePosition(RLMachine& machine, const Point& pos)
                   ref(machine), pos));
   }
 
-  for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
-      ++it)
-  {
-    it->second->setMousePosition(machine, *this, pos);
+  for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
+    if (button_map_[i]) {
+      button_map_[i]->setMousePosition(machine, *this, pos);
+    }
   }
 }
 
@@ -478,11 +510,11 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
-    for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
-        ++it)
-    {
-      if(it->second->handleMouseClick(machine, *this, pos, pressed))
-        return true;
+    for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
+      if (button_map_[i]) {
+        if(button_map_[i]->handleMouseClick(machine, *this, pos, pressed))
+          return true;
+      }
     }
   }
 

@@ -33,6 +33,7 @@
 
 #include <vector>
 #include <string>
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
@@ -202,8 +203,7 @@ protected:
    *
    * @{
    */
-  typedef boost::ptr_map<std::string, TextWindowButton> ButtonMap;
-  ButtonMap button_map_;
+  boost::scoped_ptr<TextWindowButton> button_map_[12];
   /// @}
 
   /**
@@ -406,6 +406,8 @@ public:
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine,
                       std::ostream* tree) = 0;
+
+  void renderButtons(RLMachine& machine);
 
   /**
    * Clears the text window of all text and resets the insertion

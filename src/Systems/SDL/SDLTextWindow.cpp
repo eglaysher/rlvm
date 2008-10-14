@@ -343,31 +343,6 @@ void SDLTextWindow::render(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-/**
- * @todo Move the offset magic numbers into constants, and make that a
- *       member of TextWindowButton; this function because a trivial
- *       iteration then.
- * @todo Push this logic up to TextWindow; This is logic, not an
- *       implementation detail.
- * @todo This entire implementation needs to be changed.
- */
-void SDLTextWindow::renderButtons(RLMachine& machine)
-{
-  button_map_["CLEAR_BOX"].render(machine, *this, waku_button_, 8);
-
-  button_map_["MSGBKLEFT_BOX"].render(machine, *this, waku_button_, 24);
-  button_map_["MSGBKRIGHT_BOX"].render(machine, *this, waku_button_, 32);
-
-  button_map_["EXBTN_000_BOX"].render(machine, *this, waku_button_, 40);
-  button_map_["EXBTN_001_BOX"].render(machine, *this, waku_button_, 48);
-  button_map_["EXBTN_002_BOX"].render(machine, *this, waku_button_, 56);
-
-  button_map_["READJUMP_BOX"].render(machine, *this, waku_button_, 104);
-  button_map_["AUTOMODE_BOX"].render(machine, *this, waku_button_, 112);
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextWindow::markRubyBegin()
 {
   ruby_begin_point_ = insertion_point_x_;

@@ -59,8 +59,6 @@ private:
 
   void setIndentation();
 
-  void renderButtons(RLMachine& machine);
-
   void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
 
 public:
