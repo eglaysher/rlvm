@@ -128,7 +128,7 @@ public:
   SDLSurface(const Size& size);
   ~SDLSurface();
 
-  void setIsMask(const bool is) { is_mask_ = is; }
+  virtual void setIsMask(const bool is) { is_mask_ = is; }
 
   void buildRegionTable(const Size& size);
 

@@ -35,7 +35,9 @@
 #include "Systems/Base/TextWindowButton.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/SelectionElement.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
@@ -387,6 +389,47 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
 // -----------------------------------------------------------------------
 
+void TextWindow::setWakuMain(RLMachine& machine, const std::string& name)
+{
+  if(name != "")
+  {
+    waku_main_ =
+      machine.system().graphics().loadSurfaceFromFile(machine, name);
+  }
+  else
+    waku_main_.reset();
+}
+
+// -----------------------------------------------------------------------
+
+
+void TextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
+{
+  if(name != "")
+  {
+    waku_backing_ =
+      machine.system().graphics().loadSurfaceFromFile(machine, name);
+    waku_backing_->setIsMask(true);
+  }
+  else
+    waku_backing_.reset();
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setWakuButton(RLMachine& machine, const std::string& name)
+{
+  if(name != "")
+  {
+    waku_button_ =
+      machine.system().graphics().loadSurfaceFromFile(machine, name);
+  }
+  else
+    waku_button_.reset();
+}
+
+// -----------------------------------------------------------------------
+
 void TextWindow::setRGBAF(const vector<int>& attr)
 {
   colour_ = RGBAColour(attr.at(0), attr.at(1), attr.at(2), attr.at(3));
@@ -398,6 +441,13 @@ void TextWindow::setRGBAF(const vector<int>& attr)
 void TextWindow::setMousePosition(RLMachine& machine, const Point& pos)
 {
   using namespace boost;
+
+  if(inSelectionMode())
+  {
+    for_each(selections_.begin(), selections_.end(),
+             bind(&SelectionElement::setMousePosition, _1,
+                  ref(machine), pos));
+  }
 
   for(ButtonMap::iterator it = button_map_.begin(); it != button_map_.end();
       ++it)
@@ -412,6 +462,19 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
                                   bool pressed)
 {
   using namespace boost;
+
+  if(inSelectionMode())
+  {
+    bool found =
+      find_if(selections_.begin(), selections_.end(),
+              bind(&SelectionElement::handleMouseClick, _1,
+                   ref(machine), pos, pressed))
+      != selections_.end();
+
+    if(found)
+      return true;
+  }
+
 
   if(isVisible() && ! machine.system().graphics().interfaceHidden())
   {
@@ -447,6 +510,8 @@ void TextWindow::endSelectionMode()
 {
   in_selection_mode_ = false;
   selection_callback_.clear();
+  selections_.clear();
+  clearWin();
 }
 
 // -----------------------------------------------------------------------

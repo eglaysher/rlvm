@@ -36,6 +36,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 class Point;
 class RLMachine;
@@ -43,6 +44,8 @@ class Gameexe;
 class GameexeInterpretObject;
 class GraphicsSystem;
 class TextWindowButton;
+class SelectionElement;
+class Surface;
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
@@ -65,6 +68,10 @@ protected:
 
   /// Our numeric window identifier.
   int window_num_;
+
+  boost::shared_ptr<Surface> waku_main_;
+  boost::shared_ptr<Surface> waku_backing_;
+  boost::shared_ptr<Surface> waku_button_;
 
   /**
    * @name Text window Origin
@@ -226,6 +233,10 @@ protected:
    */
   const boost::function<void(int)>& selectionCallback();
 
+  /// The actual selection items in this TextWindow.
+  typedef boost::ptr_vector<SelectionElement> Selections;
+  Selections selections_;
+
 public:
   TextWindow(RLMachine& machine, int window_num);
   virtual ~TextWindow();
@@ -299,6 +310,7 @@ public:
 
   /// @}
 
+  // TODO: What's setMousePosition and how does it differ from mouse listeners?
   virtual void setMousePosition(RLMachine& machine, const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
@@ -341,19 +353,19 @@ public:
   void setWindowWaku(RLMachine& machine, Gameexe& gexe, const int waku_no);
 
 
-  virtual void setWakuMain(RLMachine& machine, const std::string& name) = 0;
+  void setWakuMain(RLMachine& machine, const std::string& name);
 
   /**
    * Loads the graphics file name as the mask for represents the areas
    * of the text window that should be shaded.
    */
-  virtual void setWakuBacking(RLMachine& machine, const std::string& name) = 0;
+  void setWakuBacking(RLMachine& machine, const std::string& name);
 
   /**
    * Loads the graphics file name as the image with all the button
    * images used when drawing
    */
-  virtual void setWakuButton(RLMachine& machine, const std::string& name) = 0;
+  void setWakuButton(RLMachine& machine, const std::string& name);
 
   /// @}
 
@@ -451,7 +463,7 @@ public:
   virtual void addSelectionItem(const std::string& utf8str) = 0;
   virtual void setSelectionCallback(const boost::function<void(int)>& func);
 
-  virtual void endSelectionMode();
+  void endSelectionMode();
   /// @}
 };
 

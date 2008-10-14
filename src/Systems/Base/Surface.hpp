@@ -55,6 +55,8 @@ public:
   Surface();
   virtual ~Surface();
 
+  virtual void setIsMask(const bool is) { }
+
   virtual Size size() const = 0;
   Rect rect() const;
 

@@ -57,13 +57,6 @@ private:
   /// been called)
   int ruby_begin_point_;
 
-  boost::shared_ptr<SDLSurface> waku_main_;
-  boost::shared_ptr<SDLSurface> waku_backing_;
-  boost::shared_ptr<SDLSurface> waku_button_;
-
-  typedef boost::ptr_vector<SelectionElement> Selections;
-  Selections selections_;
-
   void setIndentation();
 
   void renderButtons(RLMachine& machine);
@@ -76,9 +69,6 @@ public:
 
   void setCurrentText(RLMachine& machine, const std::string& tex);
 
-  virtual void setMousePosition(RLMachine& machine, const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
-
   virtual void render(RLMachine& machine,
                       std::ostream* tree);
 
@@ -90,10 +80,6 @@ public:
 
   virtual bool isFull() const;
 
-  virtual void setWakuMain(RLMachine& machine, const std::string& name);
-  virtual void setWakuBacking(RLMachine& machine, const std::string& name);
-  virtual void setWakuButton(RLMachine& machine, const std::string& name);
-
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char);
   virtual void hardBrake();
@@ -104,7 +90,6 @@ public:
 
 
   virtual void addSelectionItem(const std::string& utf8str);
-  virtual void endSelectionMode();
 };
 
 

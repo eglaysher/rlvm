@@ -91,40 +91,6 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::setMousePosition(RLMachine& machine, const Point& pos)
-{
-  if(inSelectionMode())
-  {
-    for_each(selections_.begin(), selections_.end(),
-             bind(&SelectionElement::setMousePosition, _1,
-                  ref(machine), pos));
-  }
-
-  TextWindow::setMousePosition(machine, pos);
-}
-
-// -----------------------------------------------------------------------
-
-bool SDLTextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
-                                     bool pressed)
-{
-  if(inSelectionMode())
-  {
-    bool found =
-      find_if(selections_.begin(), selections_.end(),
-              bind(&SelectionElement::handleMouseClick, _1,
-                   ref(machine), pos, pressed))
-      != selections_.end();
-
-    if(found)
-      return true;
-  }
-
-  return TextWindow::handleMouseClick(machine, pos, pressed);
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextWindow::clearWin()
 {
   insertion_point_x_ = 0;
@@ -402,48 +368,6 @@ void SDLTextWindow::renderButtons(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::setWakuMain(RLMachine& machine, const std::string& name)
-{
-  if(name != "")
-  {
-    waku_main_ =
-      dynamic_pointer_cast<SDLSurface>(
-        machine.system().graphics().loadSurfaceFromFile(machine, name));
-  }
-  else
-    waku_main_.reset();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
-{
-  if(name != "")
-  {
-    shared_ptr<SDLSurface> s = dynamic_pointer_cast<SDLSurface>(
-      machine.system().graphics().loadSurfaceFromFile(machine, name));
-    s->setIsMask(true);
-    waku_backing_ = s;
-  }
-  else
-    waku_backing_.reset();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextWindow::setWakuButton(RLMachine& machine, const std::string& name)
-{
-  if(name != "")
-  {
-    waku_button_ = dynamic_pointer_cast<SDLSurface>(
-      machine.system().graphics().loadSurfaceFromFile(machine, name));
-  }
-  else
-    waku_button_.reset();
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextWindow::markRubyBegin()
 {
   ruby_begin_point_ = insertion_point_x_;
@@ -512,14 +436,4 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str)
 
   insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextWindow::endSelectionMode()
-{
-  selections_.clear();
-  TextWindow::endSelectionMode();
-
-  clearWin();
 }
