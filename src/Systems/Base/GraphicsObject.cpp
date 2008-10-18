@@ -225,22 +225,22 @@ void GraphicsObject::setRotation(const int in)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelWidth(RLMachine& machine) const
+int GraphicsObject::pixelWidth() const
 {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
   if(hasObjectData())
-    return object_data_->pixelWidth(machine, *this);
+    return object_data_->pixelWidth(*this);
   else
     return 0;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelHeight(RLMachine& machine) const
+int GraphicsObject::pixelHeight() const
 {
   if(hasObjectData())
-    return object_data_->pixelHeight(machine, *this);
+    return object_data_->pixelHeight(*this);
   else
     return 0;
 }

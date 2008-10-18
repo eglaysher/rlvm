@@ -106,8 +106,8 @@ public:
   int rotation() const { return impl_->rotation_; }
   void setRotation(const int in);
 
-  int pixelWidth(RLMachine& machine) const;
-  int pixelHeight(RLMachine& machine) const;
+  int pixelWidth() const;
+  int pixelHeight() const;
 
   /// @}
 

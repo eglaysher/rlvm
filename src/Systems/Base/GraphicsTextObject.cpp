@@ -48,12 +48,8 @@ using std::endl;
 
 // -----------------------------------------------------------------------
 
-GraphicsTextObject::GraphicsTextObject()
-{}
-
-// -----------------------------------------------------------------------
-
 GraphicsTextObject::GraphicsTextObject(RLMachine& machine)
+  : machine_(machine)
 {
 }
 
@@ -64,20 +60,19 @@ GraphicsTextObject::~GraphicsTextObject()
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::updateSurface(RLMachine& machine,
-                                       const GraphicsObject& rp)
+void GraphicsTextObject::updateSurface(const GraphicsObject& rp)
 {
-  m_cachedUtf8str = rp.textText();
-  surface_ = machine.system().text().renderText(
-    machine, m_cachedUtf8str, rp.textSize(), rp.textXSpace(),
-	rp.textYSpace(), rp.textColour());
+  cached_utf8_str_ = rp.textText();
+  surface_ = machine_.system().text().renderText(
+    machine_, cached_utf8_str_, rp.textSize(), rp.textXSpace(),
+    rp.textYSpace(), rp.textColour());
 }
 
 // -----------------------------------------------------------------------
 
 bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
 {
-  return !surface_ || rp.textText() != m_cachedUtf8str;
+  return !surface_ || rp.textText() != cached_utf8_str_;
 }
 
 // -----------------------------------------------------------------------
@@ -87,7 +82,7 @@ void GraphicsTextObject::render(RLMachine& machine,
                                 std::ostream* tree)
 {
   if(needsUpdate(rp))
-    updateSurface(machine, rp);
+    updateSurface(rp);
 
   surface_->renderToScreenAsObject(rp);
 
@@ -98,20 +93,20 @@ void GraphicsTextObject::render(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsTextObject::pixelWidth(const GraphicsObject& rp)
 {
   if(needsUpdate(rp))
-    updateSurface(machine, rp);
+    updateSurface(rp);
 
   return int((rp.width() / 100.0f) * surface_->size().width());
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelHeight(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsTextObject::pixelHeight(const GraphicsObject& rp)
 {
   if(needsUpdate(rp))
-    updateSurface(machine, rp);
+    updateSurface(rp);
 
   return int((rp.height() / 100.0f) * surface_->size().height());
 }
@@ -123,7 +118,6 @@ GraphicsObjectData* GraphicsTextObject::clone() const
   return new GraphicsTextObject(*this);
 }
 
-
 // -----------------------------------------------------------------------
 
 template<class Archive>
@@ -131,7 +125,7 @@ void GraphicsTextObject::load(Archive& ar, unsigned int version)
 {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
 
-  m_cachedUtf8str = "";
+  cached_utf8_str_ = "";
   surface_.reset();
 }
 

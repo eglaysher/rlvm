@@ -32,6 +32,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 
+#include "MachineBase/Serialization.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
 class GraphicsObject;
@@ -44,21 +45,21 @@ class Surface;
 class GraphicsTextObject : public GraphicsObjectData
 {
 private:
-  std::string m_cachedUtf8str;
+  /// Current machine context.
+  RLMachine& machine_;
+
+  std::string cached_utf8_str_;
 
   boost::shared_ptr<Surface> surface_;
 
   /**
    * Redraw surface_.
    */
-  void updateSurface(RLMachine& machine,
-					 const GraphicsObject& rp);
+  void updateSurface(const GraphicsObject& rp);
 
   bool needsUpdate(const GraphicsObject& rendering_properties);
 
 public:
-  GraphicsTextObject();
-
   GraphicsTextObject(RLMachine& machine);
   ~GraphicsTextObject();
 
@@ -67,10 +68,8 @@ public:
                       const GraphicsObject& rendering_properties,
                       std::ostream* tree);
 
-  virtual int pixelWidth(RLMachine& machine,
-                         const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(RLMachine& machine,
-                          const GraphicsObject& rendering_properties);
+  virtual int pixelWidth(const GraphicsObject& rendering_properties);
+  virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
 
@@ -82,5 +81,18 @@ public:
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
+
+/**
+ * We need help creating GraphicsTextObject s since they don't have a default
+ * constructor:
+ */
+namespace boost { namespace serialization {
+template<class Archive>
+inline void load_construct_data(
+  Archive & ar, GraphicsTextObject* t, const unsigned int file_version)
+{
+  ::new(t)GraphicsTextObject(*Serialization::g_current_machine);
+}
+  }}
 
 #endif

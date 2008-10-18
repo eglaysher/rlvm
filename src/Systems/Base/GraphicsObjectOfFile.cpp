@@ -118,7 +118,7 @@ void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp,
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsObjectOfFile::pixelWidth(const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
   int width = rect.rect.width();
@@ -127,7 +127,7 @@ int GraphicsObjectOfFile::pixelWidth(RLMachine& machine, const GraphicsObject& r
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelHeight(RLMachine& machine, const GraphicsObject& rp)
+int GraphicsObjectOfFile::pixelHeight(const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
   int height = rect.rect.height();

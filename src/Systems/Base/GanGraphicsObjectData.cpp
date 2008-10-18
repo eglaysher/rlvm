@@ -295,7 +295,6 @@ void GanGraphicsObjectData::render(
 // -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelWidth(
-  RLMachine& machine,
   const GraphicsObject& rendering_properties)
 {
   if(current_set_ != -1 && current_frame_ != -1)
@@ -308,14 +307,12 @@ int GanGraphicsObjectData::pixelWidth(
     }
   }
 
-  // return the width of the first set, first frame
   return 0;
 }
 
 // -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelHeight(
-  RLMachine& machine,
   const GraphicsObject& rendering_properties)
 {
   if(current_set_ != -1 && current_frame_ != -1)
@@ -328,7 +325,6 @@ int GanGraphicsObjectData::pixelHeight(
     }
   }
 
-  // return the width of the first set, first frame
   return 0;
 }
 

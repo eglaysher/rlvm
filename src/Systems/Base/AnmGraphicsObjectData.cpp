@@ -309,8 +309,7 @@ void AnmGraphicsObjectData::advanceFrame(RLMachine& machine)
 
 /// I am not entirely sure these methods even make sense given the
 /// context...
-int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
-                                      const GraphicsObject& rp)
+int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int width = rect.rect.width();
@@ -319,8 +318,7 @@ int AnmGraphicsObjectData::pixelWidth(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int AnmGraphicsObjectData::pixelHeight(RLMachine& machine,
-                                       const GraphicsObject& rp)
+int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int height = rect.rect.height();

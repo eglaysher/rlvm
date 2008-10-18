@@ -58,10 +58,8 @@ public:
                       const GraphicsObject& rendering_properties,
                       std::ostream* tree);
 
-  virtual int pixelWidth(RLMachine& machine,
-						 const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(RLMachine& machine,
-						  const GraphicsObject& rendering_properties);
+  virtual int pixelWidth(const GraphicsObject& rendering_properties);
+  virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
   virtual void execute(RLMachine& machine);
