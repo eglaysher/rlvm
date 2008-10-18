@@ -124,7 +124,8 @@ public:
   void renderToScreenAsObject(
     const GraphicsObject& go,
     SDLSurface& surface,
-    const GraphicsObjectOverride& overrides);
+    const Rect& srcRect, const Rect& dstRect,
+    int alpha);
 
   void renderToScreen(const Rect& src, const Rect& dst, int opacity);
 

@@ -104,14 +104,10 @@ void NullSurface::renderToScreen(
 
 // -----------------------------------------------------------------------
 
-void NullSurface::renderToScreenAsObject(const GraphicsObject& rp) {
-  surface_log_.recordFunction("render_to_screen_as_object");
-}
-
-// -----------------------------------------------------------------------
-
 void NullSurface::renderToScreenAsObject(const GraphicsObject& rp,
-                                         const GraphicsObjectOverride& override) {
+                                         const Rect& src,
+                                         const Rect& dst,
+                                         int alpha) {
   surface_log_.recordFunction("render_to_screen_as_object");
 }
 

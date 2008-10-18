@@ -77,18 +77,13 @@ bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::render(RLMachine& machine,
-                                const GraphicsObject& rp,
-                                std::ostream* tree)
+boost::shared_ptr<Surface> GraphicsTextObject::currentSurface(
+  const GraphicsObject& go)
 {
-  if(needsUpdate(rp))
-    updateSurface(rp);
+  if(needsUpdate(go))
+    updateSurface(go);
 
-  surface_->renderToScreenAsObject(rp);
-
-  if (tree) {
-    *tree << "  Text Object: \"" << rp.textText() << "\"" << endl;
-  }
+  return surface_;
 }
 
 // -----------------------------------------------------------------------

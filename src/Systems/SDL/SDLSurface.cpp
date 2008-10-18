@@ -38,6 +38,7 @@
 
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
 #include "alphablit.h"
@@ -564,29 +565,15 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp)
-{
-  static const GraphicsObjectOverride override_data;
-  uploadTextureIfNeeded();
-
-  for(vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it)
-  {
-    it->texture->renderToScreenAsObject(rp, *this, override_data);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
-                                        const GraphicsObjectOverride& override)
+void SDLSurface::renderToScreenAsObject(
+  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha)
 {
   uploadTextureIfNeeded();
 
   for(vector<TextureRecord>::iterator it = textures_.begin();
       it != textures_.end(); ++it)
   {
-    it->texture->renderToScreenAsObject(rp, *this, override);
+    it->texture->renderToScreenAsObject(rp, *this, src, dst, alpha);
   }
 }
 

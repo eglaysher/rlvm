@@ -29,11 +29,15 @@
 #define __AnimationObjectData_hpp__
 
 #include <boost/serialization/access.hpp>
+#include <boost/shared_ptr.hpp>
 
 // -----------------------------------------------------------------------
 
-class RLMachine;
 class GraphicsObject;
+class Point;
+class RLMachine;
+class Rect;
+class Surface;
 
 // -----------------------------------------------------------------------
 
@@ -65,9 +69,8 @@ public:
   void setCurrentlyPlaying(bool in) { currently_playing_ = in; }
   bool currentlyPlaying() const { return currently_playing_; }
 
-  virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties,
-                      std::ostream* tree) = 0;
+  void render(RLMachine& machine, const GraphicsObject& go,
+              std::ostream* tree);
 
   virtual int pixelWidth(const GraphicsObject& rendering_properties) = 0;
   virtual int pixelHeight(const GraphicsObject& rendering_properties) = 0;
@@ -94,6 +97,38 @@ protected:
    */
   void endAnimation();
 
+  /**
+   * Template method used during rendering to get the surface to render.
+   * Return a null shared_ptr to disable rendering.
+   */
+  virtual boost::shared_ptr<Surface> currentSurface(
+    const GraphicsObject& rp) = 0;
+
+  /**
+   * Returns the rectangle in currentSurface() to draw to the screen. Override
+   * to return custom rectangles in the case of a custom animation format.
+   */
+  virtual Rect srcRect(const GraphicsObject& go);
+
+  /**
+   * Returns the offset to the destination, which is set on a per surface
+   * basis. This template method can be ignored if you override dstRect().
+   */
+  virtual Point dstOrigin(const GraphicsObject& go);
+
+  /**
+   * Returns the destination rectangle on the screen to draw srcRect()
+   * to. Override to return custom rectangles in the case of a custom animation
+   * format.
+   */
+  virtual Rect dstRect(const GraphicsObject& go);
+
+  /**
+   * Controls the alpha during rendering. Default implementation just consults
+   * the GraphicsObject.
+   */
+  virtual int getRenderingAlpha(const GraphicsObject& go);
+
 private:
   /// Policy of what to do after an animation is finished.
   AfterAnimation after_animation_;
@@ -111,34 +146,6 @@ private:
     // owned_by_.
     ar & after_animation_ & owned_by_ & currently_playing_;
   }
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Some graphics objects override the position or other properties
- * from GraphicsObject while rendering. This struct permits the
- * optional passing of this data into Surface::renderToScreenAsObject().
- *
- * @see Surface
- */
-struct GraphicsObjectOverride
-{
-  GraphicsObjectOverride();
-
-  void setOverrideSource(int insrcX1, int insrcY1, int insrcX2, int insrcY2);
-  void setDestOffset(int indstX, int indstY);
-  void setOverrideDestination(int indstX1, int indstY1, int indstX2, int indstY2);
-  void setAlphaOverride(int inalpha);
-
-  bool override_source;
-  bool override_dest;
-  bool has_dest_offset;
-  bool has_alpha_override;
-  int srcX1, srcY1, srcX2, srcY2;
-  int dstX, dstY;
-  int dstX1, dstY1, dstX2, dstY2;
-  int alpha;
 };
 
 #endif

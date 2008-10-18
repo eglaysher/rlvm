@@ -58,16 +58,14 @@ private:
   void updateSurface(const GraphicsObject& rp);
 
   bool needsUpdate(const GraphicsObject& rendering_properties);
+protected:
+  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
 
 public:
   GraphicsTextObject(RLMachine& machine);
   ~GraphicsTextObject();
 
   // ------------------------------------ [ GraphicsObjectData interface ]
-  virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties,
-                      std::ostream* tree);
-
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 

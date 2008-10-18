@@ -38,9 +38,10 @@ public:
   virtual void renderToScreen(
     const Rect& src, const Rect& dst, const int opacity[4]);
 
-  virtual void renderToScreenAsObject(const GraphicsObject& rp);
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
-                                      const GraphicsObjectOverride& override);
+                                      const Rect& src,
+                                      const Rect& dst,
+                                      int alpha);
 
   virtual int numPatterns() const;
   virtual const GrpRect& getPattern(int patt_no) const;

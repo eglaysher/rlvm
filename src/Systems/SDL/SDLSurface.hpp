@@ -172,9 +172,10 @@ public:
                              const int opacity[4]);
 
   // Used internally; not exposed to the general graphics system
-  virtual void renderToScreenAsObject(const GraphicsObject& rp);
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
-                                      const GraphicsObjectOverride& override);
+                                      const Rect& src,
+                                      const Rect& dst,
+                                      int alpha);
 
   /// Called after each change to surface_. Marks the texture as
   /// invalid and notifies SDLGraphicsSystem when appropriate.

@@ -31,6 +31,8 @@
 
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/Rect.hpp"
 #include <iostream>
 
 using namespace std;
@@ -53,6 +55,54 @@ GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::~GraphicsObjectData() { }
+
+// -----------------------------------------------------------------------
+
+void GraphicsObjectData::render(RLMachine& machine, const GraphicsObject& go,
+                                std::ostream* tree)
+{
+  boost::shared_ptr<Surface> surface = currentSurface(go);
+  if (surface) {
+    Rect src = srcRect(go);
+    Rect dst = dstRect(go);
+    int alpha = getRenderingAlpha(go);
+
+    /*
+     * NEXT TODO: Move this code block here from
+     * Texture::renderToScreenAsObject.
+     * 
+  // If clipping is active for this object, take that into account too.
+  if (go.hasClip()) {
+    // Do nothing if object falls wholly outside clip area
+    if (xPos2 < go.clipX1() || xPos1 > go.clipX2() ||
+        yPos2 < go.clipY1() || yPos1 > go.clipY2()) {
+      return;
+    }
+    // Otherwise, adjust coordinates to present only the visible area.
+    // POINT
+    // TODO: Move this logic into an intersection of rectangles.
+    if (xPos1 < go.clipX1()) {
+      xSrc1 += go.clipX1() - xPos1;
+      xPos1 = go.clipX1();
+    }
+    if (yPos1 < go.clipY1()) {
+      ySrc1 += go.clipY1() - yPos1;
+      yPos1 = go.clipY1();
+    }
+    if (xPos2 >= go.clipX2()) {
+      xSrc2 -= xPos2 - go.clipX2();
+      xPos2 = go.clipX2();
+    }
+    if (yPos2 >= go.clipY2()) {
+      ySrc2 -= yPos2 - go.clipY2();
+      yPos2 = go.clipY2();
+    }
+  }
+     */
+
+    surface->renderToScreenAsObject(go, src, dst, alpha);
+  }
+}
 
 // -----------------------------------------------------------------------
 
@@ -85,6 +135,48 @@ void GraphicsObjectData::endAnimation()
 
 // -----------------------------------------------------------------------
 
+Rect GraphicsObjectData::srcRect(const GraphicsObject& go)
+{
+  return currentSurface(go)->getPattern(go.pattNo()).rect;
+}
+
+// -----------------------------------------------------------------------
+
+Point GraphicsObjectData::dstOrigin(const GraphicsObject& go)
+{
+  boost::shared_ptr<Surface> surface = currentSurface(go);
+  if (surface) {
+    return Point(surface->getPattern(go.pattNo()).originX,
+                 surface->getPattern(go.pattNo()).originY);
+  }
+
+  return Point();
+}
+
+// -----------------------------------------------------------------------
+
+Rect GraphicsObjectData::dstRect(const GraphicsObject& go)
+{
+  Point origin = dstOrigin(go);
+  Rect src = srcRect(go);
+
+  int xPos1 = go.x() + go.xAdjustmentSum() - origin.x();
+  int yPos1 = go.y() + go.yAdjustmentSum() - origin.y();
+  int xPos2 = int(xPos1 + src.width() * (go.width() / 100.0f));
+  int yPos2 = int(yPos1 + src.height() * (go.height() / 100.0f));
+
+  return Rect::GRP(xPos1, yPos1, xPos2, yPos2);
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
+{
+  return go.alpha();
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsObjectData::execute(RLMachine& machine) { }
 
 // -----------------------------------------------------------------------
@@ -97,49 +189,3 @@ bool GraphicsObjectData::isAnimation() const
 // -----------------------------------------------------------------------
 
 void GraphicsObjectData::playSet(RLMachine& machine, int set) { }
-
-// -----------------------------------------------------------------------
-// GraphicsObjectOverride
-// -----------------------------------------------------------------------
-
-GraphicsObjectOverride::GraphicsObjectOverride()
-  : override_source(false), override_dest(false),
-    has_dest_offset(false), has_alpha_override(false),
-    srcX1(-1), srcY1(-1), srcX2(-1), srcY2(-1),
-    dstX(-1), dstY(-1), alpha(-1)
-{
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObjectOverride::setOverrideSource(
-  int insrcX1, int insrcY1, int insrcX2, int insrcY2)
-{
-  override_source = true;
-  srcX1 = insrcX1; srcY1 = insrcY1; srcX2 = insrcX2; srcY2 = insrcY2;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObjectOverride::setOverrideDestination(
-  int indstX1, int indstY1, int indstX2, int indstY2)
-{
-  override_dest = true;
-  dstX1 = indstX1; dstY1 = indstY1; dstX2 = indstX2; dstY2 = indstY2;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObjectOverride::setDestOffset(int indstX, int indstY)
-{
-  has_dest_offset = true;
-  dstX = indstX; dstY = indstY;
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsObjectOverride::setAlphaOverride(int inalpha)
-{
-  has_alpha_override = true;
-  alpha = inalpha;
-}

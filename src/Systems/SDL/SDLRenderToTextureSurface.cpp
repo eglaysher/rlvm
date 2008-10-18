@@ -105,17 +105,8 @@ void SDLRenderToTextureSurface::renderToScreenAsColorMask(
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::renderToScreenAsObject(const GraphicsObject& rp)
-{
-  throw rlvm::Exception(
-    "SDLRenderToTextureSurface::render_to_screen_as_object unimplemented");
-}
-
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::renderToScreenAsObject(
-  const GraphicsObject& rp,
-  const GraphicsObjectOverride& override)
+  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha)
 {
   throw rlvm::Exception(
     "SDLRenderToTextureSurface::render_to_screen_as_object unimplemented");

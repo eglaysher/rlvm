@@ -2,6 +2,7 @@ For 0.3:
 * Support the movie commands used by CLANNAD
 * All those random grp commands that I don't support yet. (grpInvert, et cetera)
 * Memory errors!
+* Clear out all "POINT" todo notices.
 
 -------------------------------------------------------------------------
 

@@ -71,6 +71,8 @@ private:
 
 protected:
   virtual void loopAnimation();
+  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual Rect srcRect(const GraphicsObject& go);
 
 public:
   GraphicsObjectOfFile();
@@ -80,10 +82,9 @@ public:
 
   const std::string& filename() const { return filename_; }
 
-  virtual void render(RLMachine& machine, const GraphicsObject& rp,
-                      std::ostream* tree);
   virtual int pixelWidth(const GraphicsObject& rp);
   virtual int pixelHeight(const GraphicsObject& rp);
+
   virtual GraphicsObjectData* clone() const;
 
   virtual void execute(RLMachine& machine);

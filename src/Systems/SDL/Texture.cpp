@@ -650,47 +650,23 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
 void Texture::renderToScreenAsObject(
   const GraphicsObject& go,
   SDLSurface& surface,
-  const GraphicsObjectOverride& overrides)
+  const Rect& srcRect,
+  const Rect& dstRect,
+  int alpha)
 {
-  // Figure out the source to clip out of the image
-  int patt_no = go.pattNo();
-  int xSrc1 = surface.getPattern(patt_no).rect.x();
-  int ySrc1 = surface.getPattern(patt_no).rect.y();
-  int xSrc2 = surface.getPattern(patt_no).rect.x2();
-  int ySrc2 = surface.getPattern(patt_no).rect.y2();
-  int x_origin = surface.getPattern(patt_no).originX;
-  int y_origin = surface.getPattern(patt_no).originY;
+  // This all needs to be pushed up out of the rendering code and down into
+  // either GraphicsObject or the individual GraphicsObjectData subclasses.
 
-  if(overrides.override_source)
-  {
-    // POINT
-    xSrc1 = overrides.srcX1;
-    ySrc1 = overrides.srcY1;
-    xSrc2 = overrides.srcX2;
-    ySrc2 = overrides.srcY2;
-  }
-
-  // Figure out position to display on the screen
-  int xPos1, yPos1, xPos2, yPos2;
-  if(overrides.override_dest)
-  {
-    xPos1 = overrides.dstX1; yPos1 = overrides.dstY1;
-    xPos2 = overrides.dstX2; yPos2 = overrides.dstY2;
-  }
-  else
-  {
-    xPos1 = go.x() + go.xAdjustmentSum() - x_origin;
-    yPos1 = go.y() + go.yAdjustmentSum() - y_origin;
-
-    if(overrides.has_dest_offset)
-    {
-      xPos1 += overrides.dstX;
-      yPos1 += overrides.dstY;
-    }
-
-    xPos2 = int(xPos1 + (xSrc2 - xSrc1) * (go.width() / 100.0f));
-    yPos2 = int(yPos1 + (ySrc2 - ySrc1) * (go.height() / 100.0f));
-  }
+  // TODO: Temporary hack while I wait to convert all of this machinery to
+  // Rects.
+  int xSrc1 = srcRect.x();
+  int ySrc1 = srcRect.y();
+  int xSrc2 = srcRect.x2();
+  int ySrc2 = srcRect.y2();
+  int xPos1 = dstRect.x();
+  int yPos1 = dstRect.y();
+  int xPos2 = dstRect.x2();
+  int yPos2 = dstRect.y2();
 
   // If clipping is active for this object, take that into account too.
   if (go.hasClip()) {
@@ -752,14 +728,6 @@ void Texture::renderToScreenAsObject(
     oss << "Invalid composite_mode in render: " << go.compositeMode();
     throw SystemError(oss.str());
   }
-  }
-
-  // @todo Double and triple check to see that the light it being
-  // added in against the gold standard when I get home.
-  int alpha = go.alpha();
-  if(overrides.has_alpha_override)
-  {
-    alpha = overrides.alpha;
   }
 
   glPushMatrix();

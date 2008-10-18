@@ -58,10 +58,6 @@ public:
 
   void load(RLMachine& machine);
 
-  virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties,
-                      std::ostream* tree);
-
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
@@ -74,6 +70,11 @@ public:
 protected:
   /// Resets to the first frame.
   virtual void loopAnimation();
+
+  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual Rect srcRect(const GraphicsObject& go);
+  virtual Point dstOrigin(const GraphicsObject& go);
+  virtual int getRenderingAlpha(const GraphicsObject& go);
 
 private:
   struct Frame {

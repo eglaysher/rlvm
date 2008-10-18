@@ -164,7 +164,6 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
 
   // Read the frame list
   const char* buf = data + 0xb8;
-  // POINT
   Size screen_size = getScreenSize(machine.system().gameexe());
   for(int i = 0; i < frames_len; ++i)
   {
@@ -236,35 +235,6 @@ void AnmGraphicsObjectData::execute(RLMachine& machine)
 {
   if(currentlyPlaying())
     advanceFrame(machine);
-}
-
-// -----------------------------------------------------------------------
-
-void AnmGraphicsObjectData::render(
-  RLMachine& machine,
-  const GraphicsObject& rendering_properties,
-  std::ostream* tree)
-{
-  // If we have a current frame, then let's render it.
-  if(current_frame_ != -1)
-  {
-    const Frame& frame = frames.at(current_frame_);
-
-    GraphicsObjectOverride override_data;
-    override_data.setOverrideSource(frame.src_x1, frame.src_y1,
-                                   frame.src_x2, frame.src_y2);
-    override_data.setOverrideDestination(
-      frame.dest_x, frame.dest_y,
-      frame.dest_x + (frame.src_x2 - frame.src_x1),
-      frame.dest_y + (frame.src_y2 - frame.src_y1));
-
-    image->renderToScreenAsObject(rendering_properties, override_data);
-  }
-
-  if (tree) {
-    *tree << "  Anm File: " << filename_ << ", Rendered: "
-          << (current_frame_ != -1) << endl;
-  }
 }
 
 // -----------------------------------------------------------------------
@@ -350,6 +320,36 @@ void AnmGraphicsObjectData::playSet(RLMachine& machine, int set)
 
 // -----------------------------------------------------------------------
 
+boost::shared_ptr<Surface> AnmGraphicsObjectData::currentSurface(
+  const GraphicsObject& rp)
+{
+  return image;
+}
+
+// -----------------------------------------------------------------------
+
+Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go)
+{
+  if (current_frame_ != -1) {
+    const Frame& frame = frames.at(current_frame_);
+    return Rect::GRP(frame.src_x1, frame.src_y1, frame.src_x2, frame.src_y2);
+  }
+
+  return Rect();
+}
+
+// -----------------------------------------------------------------------
+
+Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go)
+{
+  if (current_frame_ != -1) {
+    const Frame& frame = frames.at(current_frame_);
+    return Rect::REC(frame.dest_x, frame.dest_y, (frame.src_x2 - frame.src_x1),
+                     (frame.src_y2 - frame.src_y1));
+  }
+
+  return Rect();
+}
 
 // -----------------------------------------------------------------------
 // AnmGraphicsObjectData

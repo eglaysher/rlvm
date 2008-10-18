@@ -54,10 +54,6 @@ public:
 
   void loadAnmFile(RLMachine& machine);
 
-  virtual void render(RLMachine& machine,
-                      const GraphicsObject& rendering_properties,
-                      std::ostream* tree);
-
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
@@ -66,6 +62,11 @@ public:
 
   virtual bool isAnimation() const { return true; }
   virtual void playSet(RLMachine& machine, int set);
+
+protected:
+  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual Rect srcRect(const GraphicsObject& go);
+  virtual Rect dstRect(const GraphicsObject& go);
 
 private:
   /// Advance the position in the animation.

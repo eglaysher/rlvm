@@ -254,46 +254,6 @@ void GanGraphicsObjectData::throwBadFormat(
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::render(
-  RLMachine& machine,
-  const GraphicsObject& go,
-  std::ostream* tree)
-{
-  bool playing = false;
-  if(current_set_ != -1 && current_frame_ != -1)
-  {
-    const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
-
-    // First, we figure out the pattern to get the image source
-    if(frame.pattern != -1)
-    {
-      const Surface::GrpRect& rect = image->getPattern(frame.pattern);
-
-      // Groan. Now I can't really test this.
-      GraphicsObjectOverride override_data;
-      // POINT
-      override_data.setOverrideSource(rect.rect.x(), rect.rect.y(),
-                                     rect.rect.x2(), rect.rect.y2());
-      override_data.setDestOffset(frame.x, frame.y);
-
-      // Calculate the combination of our frame alpha with the current
-      // object alpha
-      override_data.setAlphaOverride(
-        int(((frame.alpha/256.0f) * (go.alpha() / 256.0f)) * 256));
-
-      image->renderToScreenAsObject(go, override_data);
-      playing = true;
-    }
-  }
-
-  if (tree) {
-    *tree << "  GAN File: " << gan_filename_ << ", Image File: "
-          << img_filename_ << ", Currently Playing: " << playing;
-  }
-}
-
-// -----------------------------------------------------------------------
-
 int GanGraphicsObjectData::pixelWidth(
   const GraphicsObject& rendering_properties)
 {
@@ -369,6 +329,60 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
 void GanGraphicsObjectData::loopAnimation()
 {
   current_frame_ = 0;
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
+  const GraphicsObject& go)
+{
+  if(current_set_ != -1 && current_frame_ != -1)
+  {
+    const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
+
+    if(frame.pattern != -1) {
+      // We are currently rendering an animation AND the current frame says to
+      // render something to the screen.
+      return image;
+    }
+  }
+
+  return boost::shared_ptr<Surface>();
+}
+
+// -----------------------------------------------------------------------
+
+Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go)
+{
+  const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
+  if (frame.pattern != -1) {
+    return image->getPattern(frame.pattern).rect;
+  }
+
+  return Rect();
+}
+
+// -----------------------------------------------------------------------
+
+Point GanGraphicsObjectData::dstOrigin(const GraphicsObject& go)
+{
+  const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
+  return GraphicsObjectData::dstOrigin(go) - Size(frame.x, frame.y);
+}
+
+// -----------------------------------------------------------------------
+
+int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
+{
+  const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
+  if (frame.pattern != -1) {
+    // Calculate the combination of our frame alpha with the current object
+    // alpha.
+    return int(((frame.alpha/256.0f) * (go.alpha() / 256.0f)) * 256);
+  } else {
+    // Should never happen.
+    return go.alpha();
+  }
 }
 
 // -----------------------------------------------------------------------

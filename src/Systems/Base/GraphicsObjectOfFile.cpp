@@ -93,31 +93,6 @@ void GraphicsObjectOfFile::loadFile(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::render(RLMachine& machine, const GraphicsObject& rp,
-                                  std::ostream* tree)
-{
-  if(currentlyPlaying())
-  {
-    const Surface::GrpRect& rect = surface_->getPattern(current_frame_);
-
-    // POINT
-    GraphicsObjectOverride override_data;
-    override_data.setOverrideSource(rect.rect.x(), rect.rect.y(), rect.rect.x2(),
-                                   rect.rect.y2());
-
-    surface_->renderToScreenAsObject(rp, override_data);
-  }
-  else
-    surface_->renderToScreenAsObject(rp);
-
-  if (tree) {
-    *tree << "  Graphics File: " << filename_ << ", Currently Playing: "
-          << currentlyPlaying() << endl;
-  }
-}
-
-// -----------------------------------------------------------------------
-
 int GraphicsObjectOfFile::pixelWidth(const GraphicsObject& rp)
 {
   const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
@@ -179,6 +154,24 @@ bool GraphicsObjectOfFile::isAnimation() const
 void GraphicsObjectOfFile::loopAnimation()
 {
   current_frame_ = 0;
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> GraphicsObjectOfFile::currentSurface(
+  const GraphicsObject& rp)
+{
+  return surface_;
+}
+
+// -----------------------------------------------------------------------
+
+Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go)
+{
+  if(currentlyPlaying())
+    return surface_->getPattern(current_frame_).rect;
+
+  return GraphicsObjectData::srcRect(go);
 }
 
 // -----------------------------------------------------------------------

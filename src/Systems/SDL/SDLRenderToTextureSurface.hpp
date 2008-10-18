@@ -62,9 +62,10 @@ public:
   virtual void renderToScreenAsColorMask(
     const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
 
-  virtual void renderToScreenAsObject(const GraphicsObject& rp);
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
-                                      const GraphicsObjectOverride& override);
+                                      const Rect& src,
+                                      const Rect& dst,
+                                      int alpha);
 
   virtual void rawRenderQuad(const int src_coords[8],
                              const int dest_coords[8],
