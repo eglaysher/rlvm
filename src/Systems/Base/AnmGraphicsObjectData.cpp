@@ -352,6 +352,13 @@ Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go)
 }
 
 // -----------------------------------------------------------------------
+
+void AnmGraphicsObjectData::objectInfo(std::ostream& tree)
+{
+  tree << "  ANM file: " << filename_ << endl;
+}
+
+// -----------------------------------------------------------------------
 // AnmGraphicsObjectData
 // -----------------------------------------------------------------------
 template<class Archive>

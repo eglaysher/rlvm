@@ -176,6 +176,13 @@ Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
+void GraphicsObjectOfFile::objectInfo(std::ostream& tree)
+{
+  tree << "  Image: " << filename_ << endl;
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsObjectOfFile::playSet(RLMachine& machine, int frame_time)
 {
   setCurrentlyPlaying(true);

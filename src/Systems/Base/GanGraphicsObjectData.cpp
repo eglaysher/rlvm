@@ -387,6 +387,14 @@ int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
+void GanGraphicsObjectData::objectInfo(std::ostream& tree)
+{
+  tree << "  GAN file: " << gan_filename_ << " (Using image: "
+       << img_filename_ << ")" << endl;
+}
+
+// -----------------------------------------------------------------------
+
 void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
 {
   setCurrentlyPlaying(true);

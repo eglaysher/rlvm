@@ -129,6 +129,11 @@ protected:
    */
   virtual int getRenderingAlpha(const GraphicsObject& go);
 
+  /**
+   * Prints a description of this object for the RenderTree log.
+   */
+  virtual void objectInfo(std::ostream& tree) = 0;
+
 private:
   /// Policy of what to do after an animation is finished.
   AfterAnimation after_animation_;

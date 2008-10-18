@@ -88,6 +88,13 @@ boost::shared_ptr<Surface> GraphicsTextObject::currentSurface(
 
 // -----------------------------------------------------------------------
 
+void GraphicsTextObject::objectInfo(std::ostream& tree)
+{
+  tree << "  Text: \"" << cached_utf8_str_ << "\"" << endl;
+}
+
+// -----------------------------------------------------------------------
+
 int GraphicsTextObject::pixelWidth(const GraphicsObject& rp)
 {
   if(needsUpdate(rp))

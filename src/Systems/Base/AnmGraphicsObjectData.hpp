@@ -68,6 +68,8 @@ protected:
   virtual Rect srcRect(const GraphicsObject& go);
   virtual Rect dstRect(const GraphicsObject& go);
 
+  virtual void objectInfo(std::ostream& tree);
+
 private:
   /// Advance the position in the animation.
   void advanceFrame(RLMachine& machine);

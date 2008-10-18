@@ -75,6 +75,7 @@ protected:
   virtual Rect srcRect(const GraphicsObject& go);
   virtual Point dstOrigin(const GraphicsObject& go);
   virtual int getRenderingAlpha(const GraphicsObject& go);
+  virtual void objectInfo(std::ostream& tree);
 
 private:
   struct Frame {

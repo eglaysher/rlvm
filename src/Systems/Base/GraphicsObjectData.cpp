@@ -68,6 +68,7 @@ void GraphicsObjectData::render(RLMachine& machine, const GraphicsObject& go,
     int alpha = getRenderingAlpha(go);
 
     if (tree) {
+      objectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst;
       if (alpha != 255)
         *tree << " (alpha=" << alpha << ")";

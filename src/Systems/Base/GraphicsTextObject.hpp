@@ -60,6 +60,7 @@ private:
   bool needsUpdate(const GraphicsObject& rendering_properties);
 protected:
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual void objectInfo(std::ostream& tree);
 
 public:
   GraphicsTextObject(RLMachine& machine);

@@ -73,6 +73,7 @@ protected:
   virtual void loopAnimation();
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
+  virtual void objectInfo(std::ostream& tree);
 
 public:
   GraphicsObjectOfFile();
