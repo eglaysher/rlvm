@@ -67,38 +67,45 @@ void GraphicsObjectData::render(RLMachine& machine, const GraphicsObject& go,
     Rect dst = dstRect(go);
     int alpha = getRenderingAlpha(go);
 
-    /*
-     * NEXT TODO: Move this code block here from
-     * Texture::renderToScreenAsObject.
-     * 
-  // If clipping is active for this object, take that into account too.
-  if (go.hasClip()) {
-    // Do nothing if object falls wholly outside clip area
-    if (xPos2 < go.clipX1() || xPos1 > go.clipX2() ||
-        yPos2 < go.clipY1() || yPos1 > go.clipY2()) {
-      return;
+    if (tree) {
+      *tree << "  Rendering " << src << " to " << dst;
+      if (alpha != 255)
+        *tree << " (alpha=" << alpha << ")";
+      *tree << endl;
     }
-    // Otherwise, adjust coordinates to present only the visible area.
-    // POINT
-    // TODO: Move this logic into an intersection of rectangles.
-    if (xPos1 < go.clipX1()) {
-      xSrc1 += go.clipX1() - xPos1;
-      xPos1 = go.clipX1();
+
+    // Perform the object clipping.
+    if (go.hasClip()) {
+      // Do nothing if object falls wholly outside clip area
+      if (dst.x2() < go.clipX1() || dst.x() > go.clipX2() ||
+          dst.y2() < go.clipY1() || dst.y() > go.clipY2())
+        return;
+
+      // Otherwise, adjust coordinates to present only the visible area.
+      if (dst.x() < go.clipX1()) {
+        src.setX( src.x() + go.clipX1() - dst.x());
+        dst.setX(go.clipX1());
+      }
+      if (dst.y() < go.clipY1()) {
+        src.setY(src.y() + go.clipY1() - dst.y());
+        dst.setY(go.clipY1());
+      }
+      if (dst.x2() >= go.clipX2()) {
+        src.setX2(src.x2() - dst.x2() + go.clipX2());
+        dst.setX2(go.clipX2());
+      }
+      if (dst.y2() >= go.clipY2()) {
+        src.setY2(src.y2() - dst.y2() + go.clipY2());
+        dst.setY2(go.clipY2());
+      }
+
+      if (tree) {
+        *tree << "  After clipping rect, " << src << " to " << dst;
+        if (alpha != 255)
+          *tree << " (alpha=" << alpha << ")";
+        *tree << endl;
+      }
     }
-    if (yPos1 < go.clipY1()) {
-      ySrc1 += go.clipY1() - yPos1;
-      yPos1 = go.clipY1();
-    }
-    if (xPos2 >= go.clipX2()) {
-      xSrc2 -= xPos2 - go.clipX2();
-      xPos2 = go.clipX2();
-    }
-    if (yPos2 >= go.clipY2()) {
-      ySrc2 -= yPos2 - go.clipY2();
-      yPos2 = go.clipY2();
-    }
-  }
-     */
 
     surface->renderToScreenAsObject(go, src, dst, alpha);
   }
