@@ -154,6 +154,21 @@ struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 // -----------------------------------------------------------------------
 
+struct Msg_msgHideAll : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextSystem& text = machine.system().text();
+
+    vector<int> activeWindows = text.activeWindows();
+    for(vector<int>::const_iterator it = activeWindows.begin();
+        it != activeWindows.end(); ++it) {
+      text.hideTextWindow(*it);
+      text.newPageOnWindow(machine, *it);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Msg_msgClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
@@ -242,7 +257,7 @@ MsgModule::MsgModule()
   addOpcode(151, 0, "msgHide", new Msg_msgHide);
   addOpcode(152, 0, "msgClear", new Msg_msgClear);
 
-  addUnsupportedOpcode(161, 0, "msgHideAll");
+  addOpcode(161, 0, "msgHideAll", new Msg_msgHideAll);
   addOpcode(162, 0, "msgClearAll", new Msg_msgClearAll);
   addUnsupportedOpcode(170, 0, "msgHideAllTemp");
   addOpcode(201, 0, "br", new Msg_br);

@@ -7,9 +7,6 @@ Kanon:installMainMenuHandler()
 Kanon:skipLastRegrets()
 Kanon:ignoreBlackOnWhiteText()
 
--- TODO for Nayuki's route:
--- * Final text box isn't cleared before the ED.
-
 -- Nayuki's route
 decisions = {
    -- January 7th
