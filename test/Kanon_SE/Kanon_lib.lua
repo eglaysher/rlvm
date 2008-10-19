@@ -44,3 +44,42 @@ function Kanon:installMainMenuHandler ()
     end
   end)
 end
+
+function Kanon:skipLastRegrets ()
+   state = 0
+   World:addHandler(8502, 146, function ()
+      if state == 0 then
+         System:event():injectMouseDown()
+         state = 1
+      else
+         System:event():injectMouseUp()
+         state = 0
+      end
+   end)
+end
+
+function Kanon:ignoreBlackOnWhiteText ()
+   state = 0
+   World:addHandler(8501, 162, function ()
+      if state == 0 then
+         System:event():injectMouseDown()
+         state = 1
+      else
+         System:event():injectMouseUp()
+         state = 0
+      end
+   end)
+end
+
+function Kanon:clickAfterEndingCredits()
+   state = 0
+   World:addHandler(8504, 306, function ()
+      if state == 0 then
+         System:event():injectMouseDown()
+         state = 1
+      else
+         System:event():injectMouseUp()
+         state = 0
+      end
+   end)
+end

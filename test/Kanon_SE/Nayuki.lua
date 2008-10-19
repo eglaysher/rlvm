@@ -4,6 +4,8 @@ World:setGameRoot("/home/elliot/GameImages/KANON")
 
 World:import("Kanon_lib.lua")
 Kanon:installMainMenuHandler()
+Kanon:skipLastRegrets()
+Kanon:ignoreBlackOnWhiteText()
 
 -- TODO for Nayuki's route:
 -- * Final text box isn't cleared before the ED.
