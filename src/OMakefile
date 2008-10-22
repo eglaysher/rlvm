@@ -52,6 +52,7 @@ LIBRLVMFILES[] =
   Systems/Base/SoundSystem
   Systems/Base/MouseCursor
   Systems/Base/CGMTable
+  Systems/Base/Platform
   Systems/SDL/libSDLSystem
   libReallive/libReallive
   Utilities/StringUtilities

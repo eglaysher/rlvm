@@ -41,6 +41,7 @@ class SoundSystem;
 class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
+class Platform;
 
 const int NUM_SYSCOM_ENTRIES = 32;
 const int SYSCOM_INVISIBLE = 0;
@@ -114,6 +115,11 @@ public:
   virtual Gameexe& gameexe() = 0;
   virtual TextSystem& text() = 0;
   virtual SoundSystem& sound() = 0;
+
+  void setPlatform(const boost::shared_ptr<Platform>& platform) {
+    platform_ = platform;
+  }
+  boost::shared_ptr<Platform> platform() { return platform_; }
 
   /**
    * @name Syscom related functions
@@ -249,6 +255,9 @@ private:
   void addPath(GameexeInterpretObject gio);
 
   SystemGlobals globals_;
+
+  /// Native widget drawer. Can be NULL.
+  boost::shared_ptr<Platform> platform_;
 
   /// Implementation detail which resets in_menu_;
   friend class MenuReseter;

@@ -35,6 +35,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Platform.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities.h"
@@ -168,8 +169,7 @@ void System::showSyscomMenu(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
 
-  if(gexe("CANCELCALL_MOD") == 1)
-  {
+  if (gexe("CANCELCALL_MOD") == 1) {
     if (!in_menu_) {
       // Multiple right clicks shouldn't spawn multiple copies of the menu
       // system on top of each other.
@@ -179,9 +179,9 @@ void System::showSyscomMenu(RLMachine& machine)
       vector<int> cancelcall = gexe("CANCELCALL");
       machine.farcall(cancelcall.at(0), cancelcall.at(1));
     }
-  }
-  else
-  {
+  } else if (platform_) {
+    platform_->showNativeSyscomMenu(machine);
+  } else {
     cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
   }
 }
