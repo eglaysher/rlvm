@@ -40,57 +40,6 @@ class TextTextPageElement;
 
 class TextPage : public boost::noncopyable
 {
-private:
-  /// All subclasses of TextPageElement are friends of TextPage for
-  /// tight coupling.
-  friend class TextPageElement;
-  friend class SetWindowTextPageElement;
-  friend class TextTextPageElement;
-  friend class NamePageElement;
-  friend class HardBreakElement;
-  friend class ResetIndentationElement;
-  friend class FontColourElement;
-  friend class SetToRightStartingColorElement;
-  friend class MarkRubyBeginElement;
-  friend class DisplayRubyTextElement;
-
-  boost::ptr_vector<TextPageElement> elements_to_replay_;
-
-  RLMachine* machine_;
-
-  /// Current window that this page is rendering into
-  int window_num_;
-
-  /// Number of characters on this page (used in automode)
-  int number_of_chars_on_page_;
-
-  bool in_ruby_gloss_;
-
-  /**
-   * @name Private implementations
-   *
-   * These methods are what actually does things. They output to the
-   * screen, etc.
-   */
-
-  bool character_impl(const std::string& c, const std::string& next_char);
-
-  void name_impl(const std::string& name, const std::string& next_char);
-
-  void hard_brake_impl();
-
-  void reset_indentation_impl();
-
-  void font_colour_impl(const int color);
-
-  void mark_ruby_begin_impl();
-
-  void display_ruby_text_impl(const std::string& utf8str);
-
-  void set_to_right_starting_color_impl(bool is_active_page);
-
-  /// @}
-
 public:
   TextPage(RLMachine& in_sys, int window_num);
   TextPage(const TextPage& rhs);
@@ -161,9 +110,7 @@ public:
    * page and sets the color to the backlog color if we are.
    */
   void addSetToRightStartingColorElement();
-
- /// @}
-
+  /// @}
 
   /**
    * Queries the corresponding TextWindow to see if it is full. Used
@@ -176,6 +123,56 @@ public:
    * markRubyBegin(), but not the closing displayRubyText().
    */
   bool inRubyGloss() const { return in_ruby_gloss_; }
+
+private:
+  /// All subclasses of TextPageElement are friends of TextPage for
+  /// tight coupling.
+  friend class TextPageElement;
+  friend class SetWindowTextPageElement;
+  friend class TextTextPageElement;
+  friend class NamePageElement;
+  friend class HardBreakElement;
+  friend class ResetIndentationElement;
+  friend class FontColourElement;
+  friend class SetToRightStartingColorElement;
+  friend class MarkRubyBeginElement;
+  friend class DisplayRubyTextElement;
+
+  boost::ptr_vector<TextPageElement> elements_to_replay_;
+
+  RLMachine* machine_;
+
+  /// Current window that this page is rendering into
+  int window_num_;
+
+  /// Number of characters on this page (used in automode)
+  int number_of_chars_on_page_;
+
+  bool in_ruby_gloss_;
+
+  /**
+   * @name Private implementations
+   *
+   * These methods are what actually does things. They output to the
+   * screen, etc.
+   */
+
+  bool character_impl(const std::string& c, const std::string& next_char);
+
+  void name_impl(const std::string& name, const std::string& next_char);
+
+  void hard_brake_impl();
+
+  void reset_indentation_impl();
+
+  void font_colour_impl(const int color);
+
+  void mark_ruby_begin_impl();
+
+  void display_ruby_text_impl(const std::string& utf8str);
+
+  void set_to_right_starting_color_impl(bool is_active_page);
+  /// @}
 };
 
 #endif

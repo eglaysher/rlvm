@@ -54,57 +54,6 @@ struct render_to_texture { };
 // to the Point and Rect classes.
 class Texture
 {
-private:
-  int x_offset_;
-  int y_offset_;
-
-  int logical_width_;
-  int logical_height_;
-
-  int total_width_;
-  int total_height_;
-
-  unsigned int texture_width_;
-  unsigned int texture_height_;
-
-  GLuint texture_id_;
-
-  GLuint back_texture_id_;
-
-  static GLuint shader_object_id_;
-  static GLuint program_object_id_;
-
-  /// Is this texture upside down? (Because it's a screenshot, et cetera.)
-  bool is_upside_down_;
-
-  // TODO: Dead code?
-  static unsigned int s_screen_width;
-  static unsigned int s_screen_height;
-
-  // The size of s_upload_buffer. Initialized to 0.
-  static unsigned int s_upload_buffer_size;
-
-  // To prevent new-ing in a loop, save the dynamically allocated
-  // buffer used to upload data into.
-  static boost::scoped_array<char> s_upload_buffer;
-
-  // Returns a shared buffer of at least size. This is not thread safe
-  // or reenterant in the least; it is merely meant to prevent
-  // allocations. This is the proper way to access s_upload_buffer,
-  // since it will automatically reallocate it for you if it isn't
-  // large enough.
-  static char* uploadBuffer(unsigned int size);
-
-  void render_to_screen_as_color_mask_subtractive_glsl(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void render_to_screen_as_color_mask_subtractive_fallback(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void render_to_screen_as_color_mask_additive(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba);
-
-  bool filterCoords(int& x1, int& y1, int& x2, int& y2,
-                    float& dx1, float& dy1, float& dx2, float& dy2);
-
 public:
   static void SetScreenSize(const Size& s);
 
@@ -142,6 +91,56 @@ public:
   void buildShader();
   std::string getSubtractiveShaderString();
 
+private:
+  // Returns a shared buffer of at least size. This is not thread safe
+  // or reenterant in the least; it is merely meant to prevent
+  // allocations. This is the proper way to access s_upload_buffer,
+  // since it will automatically reallocate it for you if it isn't
+  // large enough.
+  static char* uploadBuffer(unsigned int size);
+
+  void render_to_screen_as_color_mask_subtractive_glsl(
+    const Rect& src, const Rect& dst, const RGBAColour& rgba);
+  void render_to_screen_as_color_mask_subtractive_fallback(
+    const Rect& src, const Rect& dst, const RGBAColour& rgba);
+  void render_to_screen_as_color_mask_additive(
+    const Rect& src, const Rect& dst, const RGBAColour& rgba);
+
+  bool filterCoords(int& x1, int& y1, int& x2, int& y2,
+                    float& dx1, float& dy1, float& dx2, float& dy2);
+
+  int x_offset_;
+  int y_offset_;
+
+  int logical_width_;
+  int logical_height_;
+
+  int total_width_;
+  int total_height_;
+
+  unsigned int texture_width_;
+  unsigned int texture_height_;
+
+  GLuint texture_id_;
+
+  GLuint back_texture_id_;
+
+  static GLuint shader_object_id_;
+  static GLuint program_object_id_;
+
+  /// Is this texture upside down? (Because it's a screenshot, et cetera.)
+  bool is_upside_down_;
+
+  // TODO: Dead code?
+  static unsigned int s_screen_width;
+  static unsigned int s_screen_height;
+
+  // The size of s_upload_buffer. Initialized to 0.
+  static unsigned int s_upload_buffer_size;
+
+  // To prevent new-ing in a loop, save the dynamically allocated
+  // buffer used to upload data into.
+  static boost::scoped_array<char> s_upload_buffer;
 };
 
 #endif

@@ -35,30 +35,6 @@
 
 class SDLEventSystem : public EventSystem
 {
-private:
-  bool shift_pressed_, ctrl_pressed_;
-
-  /// Whether the mouse cursor is currently inside the window bounds.
-  bool mouse_inside_window_;
-
-  bool unaccessed_items_;
-
-  Point mouse_pos_;
-
-  int m_button1State, m_button2State;
-
-  /**
-   * @name RealLive event system commands
-   *
-   * @{
-   */
-  void handleKeyDown(SDL_Event& event);
-  void handleKeyUp(RLMachine& machine, SDL_Event& event);
-  void handleMouseMotion(SDL_Event& event);
-  void handleMouseButtonEvent(SDL_Event& event);
-  void handleActiveEvent(RLMachine& machine, SDL_Event& event);
-  /// @}
-
 public:
   SDLEventSystem(Gameexe& gexe);
 
@@ -85,6 +61,30 @@ public:
   virtual void injectMouseMovement(const Point& loc);
   virtual void injectMouseDown();
   virtual void injectMouseUp();
+
+private:
+  /**
+   * @name RealLive event system commands
+   *
+   * @{
+   */
+  void handleKeyDown(SDL_Event& event);
+  void handleKeyUp(RLMachine& machine, SDL_Event& event);
+  void handleMouseMotion(SDL_Event& event);
+  void handleMouseButtonEvent(SDL_Event& event);
+  void handleActiveEvent(RLMachine& machine, SDL_Event& event);
+  /// @}
+
+  bool shift_pressed_, ctrl_pressed_;
+
+  /// Whether the mouse cursor is currently inside the window bounds.
+  bool mouse_inside_window_;
+
+  bool unaccessed_items_;
+
+  Point mouse_pos_;
+
+  int m_button1State, m_button2State;
 };
 
 #endif

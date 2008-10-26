@@ -61,66 +61,6 @@
 class SDLMusic : public boost::noncopyable,
                  public boost::enable_shared_from_this<SDLMusic>
 {
-private:
-  /// Strongly coupled because of access to SDLMusic::MixMusic.
-  friend class SDLSoundSystem;
-
-  /// Underlying data stream. (These classes stolen from xclannad.)
-  WAVFILE* file_;
-
-  /// The underlying track information
-  const SoundSystem::DSTrack& track_;
-
-  /// No idea.
-  int fade_count_;
-
-  /// Number of milliseconds left to fade out the
-  int fadetime_total_;
-
-  /// The starting loop point.
-  int loop_point_;
-
-  /// Whether the music is currently paused.
-  bool music_paused_;
-
-  /// The currently playing track.
-  static boost::shared_ptr<SDLMusic> s_currently_playing;
-
-  /// Whether we should even be playing music.
-  static bool s_bgm_enabled;
-
-  /**
-   * Callback function to Mix_HookMusic.
-   *
-   * @param udata Closure; points to an instance of MusicImpl to be
-   *              used as a this pointer.
-   * @param stream Audio buffer to be filled with len bytes
-   * @param len Number of bytes to copy to the audio buffer stream
-   *
-   * @note This function was ripped off almost verbatim from xclannad!
-   *       Specifically the static method WavChunk::callback in
-   *       music2/music.cc.
-   */
-  static void MixMusic(void *udata, Uint8 *stream, int len);
-
-  /**
-   * Builds an SDLMusic object.
-   *
-   * @param track Track data (Name, looping, et cetera)
-   * @param wav Generic access to music data; this is one of
-   *            xclannad's objects.
-   */
-  SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav);
-
-  /**
-   * Initializes the loop_point_ variable to either the looping point
-   * for the track or a value which signals that we don't want to
-   * loop.
-   *
-   * @param loop Whether we should loop endlessly.
-   */
-  void setLoopPoint(bool loop);
-
 public:
   ~SDLMusic();
 
@@ -170,6 +110,66 @@ public:
 
   /// Whether we should output music.
   static void SetBgmEnabled(const int in) { s_bgm_enabled = in; }
+
+private:
+  /**
+   * Builds an SDLMusic object.
+   *
+   * @param track Track data (Name, looping, et cetera)
+   * @param wav Generic access to music data; this is one of
+   *            xclannad's objects.
+   */
+  SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav);
+
+  /**
+   * Callback function to Mix_HookMusic.
+   *
+   * @param udata Closure; points to an instance of MusicImpl to be
+   *              used as a this pointer.
+   * @param stream Audio buffer to be filled with len bytes
+   * @param len Number of bytes to copy to the audio buffer stream
+   *
+   * @note This function was ripped off almost verbatim from xclannad!
+   *       Specifically the static method WavChunk::callback in
+   *       music2/music.cc.
+   */
+  static void MixMusic(void *udata, Uint8 *stream, int len);
+
+  /**
+   * Initializes the loop_point_ variable to either the looping point
+   * for the track or a value which signals that we don't want to
+   * loop.
+   *
+   * @param loop Whether we should loop endlessly.
+   */
+  void setLoopPoint(bool loop);
+
+  /// Strongly coupled because of access to SDLMusic::MixMusic.
+  friend class SDLSoundSystem;
+
+  /// Underlying data stream. (These classes stolen from xclannad.)
+  WAVFILE* file_;
+
+  /// The underlying track information
+  const SoundSystem::DSTrack& track_;
+
+  /// No idea.
+  int fade_count_;
+
+  /// Number of milliseconds left to fade out the
+  int fadetime_total_;
+
+  /// The starting loop point.
+  int loop_point_;
+
+  /// Whether the music is currently paused.
+  bool music_paused_;
+
+  /// The currently playing track.
+  static boost::shared_ptr<SDLMusic> s_currently_playing;
+
+  /// Whether we should even be playing music.
+  static bool s_bgm_enabled;
 };
 
 // -----------------------------------------------------------------------

@@ -36,12 +36,13 @@
 #include <SDL/SDL_opengl.h>
 
 struct SDL_Surface;
-class SDLSurface;
-class Texture;
-class SDLGraphicsSystem;
-class System;
-class GraphicsObject;
+
 class Gameexe;
+class GraphicsObject;
+class SDLGraphicsSystem;
+class SDLSurface;
+class System;
+class Texture;
 
 // -----------------------------------------------------------------------
 
@@ -59,7 +60,77 @@ class Gameexe;
  */
 class SDLGraphicsSystem : public GraphicsSystem
 {
+public:
+  SDLGraphicsSystem(System& system, Gameexe& gameexe);
+
+  /**
+   * When the cursor is changed, also make sure that it exists so that we can
+   * switch on/off the operating system cursor when the cursor index is invalid.
+   */
+  virtual void setCursor(RLMachine& machine, int cursor);
+
+  virtual void beginFrame();
+
+  virtual void markScreenAsDirty(GraphicsUpdateType type);
+
+  virtual void endFrame(RLMachine& machine);
+
+  boost::shared_ptr<Surface> renderToSurfaceWithBg(
+    RLMachine& machine, boost::shared_ptr<Surface> bg);
+  boost::shared_ptr<Surface> endFrameToSurface();
+
+  virtual void executeGraphicsSystem(RLMachine& machine);
+
+  virtual void allocateDC(int dc, Size screen_size);
+  virtual void freeDC(int dc);
+
+  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
+    RLMachine& machine, const std::string& short_filename);
+
+  virtual boost::shared_ptr<Surface> getDC(int dc);
+  virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
+  // -----------------------------------------------------------------------
+
+  virtual void setWindowSubtitle(const std::string& cp932str,
+                                 int text_encoding);
+
+  /**
+   * Reset the system. Should clear all state for when a user loads a
+   * game.
+   */
+  virtual void reset();
+
 private:
+  /**
+   * @name Internal Error Checking Methods
+   *
+   * These methods are used internally to seperate out commonly used
+   * error checking and parameter validation code from the rest of the
+   * class.
+   *
+   * @{
+   */
+
+  /**
+   * Makes sure that a passed in dc number is valid.
+   *
+   * @exception Error Throws when dc is greater then the maximum.
+   * @exception Error Throws when dc is unallocated.
+   */
+  void verifySurfaceExists(int dc, const std::string& caller);
+
+  /**
+   * Makes sure that a surface we just allocated was, in fact,
+   * allocated.
+   */
+  void verifyDCAllocation(int dc, const std::string& caller);
+
+  /// @}
+
+  void setWindowTitle();
+
+  // ---------------------------------------------------------------------
+
   SDL_Surface* screen_;
 
   boost::shared_ptr<SDLSurface> display_contexts_[16];
@@ -102,78 +173,6 @@ private:
    *       half the program.
    */
   LRUCache<std::string, boost::shared_ptr<Surface> > image_cache_;
-
-  // ---------------------------------------------------------------------
-
-  /**
-   * @name Internal Error Checking Methods
-   *
-   * These methods are used internally to seperate out commonly used
-   * error checking and parameter validation code from the rest of the
-   * class.
-   *
-   * @{
-   */
-
-  /**
-   * Makes sure that a passed in dc number is valid.
-   *
-   * @exception Error Throws when dc is greater then the maximum.
-   * @exception Error Throws when dc is unallocated.
-   */
-  void verifySurfaceExists(int dc, const std::string& caller);
-
-  /**
-   * Makes sure that a surface we just allocated was, in fact,
-   * allocated.
-   */
-  void verifyDCAllocation(int dc, const std::string& caller);
-
-  /// @}
-  // ---------------------------------------------------------------------
-
-  void setWindowTitle();
-
-
-public:
-  SDLGraphicsSystem(System& system, Gameexe& gameexe);
-
-  /**
-   * When the cursor is changed, also make sure that it exists so that we can
-   * switch on/off the operating system cursor when the cursor index is invalid.
-   */
-  virtual void setCursor(RLMachine& machine, int cursor);
-
-  virtual void beginFrame();
-
-  virtual void markScreenAsDirty(GraphicsUpdateType type);
-
-  virtual void endFrame(RLMachine& machine);
-
-  boost::shared_ptr<Surface> renderToSurfaceWithBg(
-    RLMachine& machine, boost::shared_ptr<Surface> bg);
-  boost::shared_ptr<Surface> endFrameToSurface();
-
-  virtual void executeGraphicsSystem(RLMachine& machine);
-
-  virtual void allocateDC(int dc, Size screen_size);
-  virtual void freeDC(int dc);
-
-  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-    RLMachine& machine, const std::string& short_filename);
-
-  virtual boost::shared_ptr<Surface> getDC(int dc);
-  virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
-  // -----------------------------------------------------------------------
-
-  virtual void setWindowSubtitle(const std::string& cp932str,
-                                 int text_encoding);
-
-  /**
-   * Reset the system. Should clear all state for when a user loads a
-   * game.
-   */
-  virtual void reset();
 };
 
 

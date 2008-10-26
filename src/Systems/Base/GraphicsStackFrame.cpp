@@ -32,7 +32,8 @@
 #include "Systems/Base/GraphicsStackFrame.hpp"
 
 // -----------------------------------------------------------------------
-
+// GraphicsStackFrame
+// -----------------------------------------------------------------------
 GraphicsStackFrame::GraphicsStackFrame()
   : command_name_(""), has_filename_(false), has_source_dc_(false),
     has_source_coordinates_(false), has_target_dc_(false),

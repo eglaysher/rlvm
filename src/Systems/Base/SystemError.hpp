@@ -28,8 +28,8 @@
 #ifndef __SystemError_hpp__
 #define __SystemError_hpp__
 
-#include <string>
 #include <exception>
+#include <string>
 
 /**
  * Kill the program Errors. This exception class should only be used

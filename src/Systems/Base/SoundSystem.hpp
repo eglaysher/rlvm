@@ -30,9 +30,10 @@
 
 // -----------------------------------------------------------------------
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <map>
 #include <string>
-#include <boost/serialization/split_member.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -166,77 +167,6 @@ protected:
   };
 
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
-
-private:
-
-  /**
-   * @name Background Music data
-   *
-   * @{
-   */
-  /// Defined music tracks (files)
-  DSTable ds_tracks_;
-
-  /// Defined music tracks (cd tracks)
-  CDTable cd_tracks_;
-
-  /// @}
-
-  // ---------------------------------------------------------------------
-
-  /**
-   * @name PCM/Wave sound effect data
-   *
-   * @{
-   */
-  /// Per channel volume
-  unsigned char channel_volume_[NUM_BASE_CHANNELS];
-
-  /**
-   * Open tasks that adjust the volume of a wave channel. We do this
-   * because SDL_mixer doesn't provide this functionality and I'm
-   * guessing other mixers don't either.
-   *
-   * @note Depending on features in other systems, I may push this
-   *       down to SDLSoundSystem later.
-   */
-  ChannelAdjustmentMap pcm_adjustment_tasks_;
-
-  /// @}
-
-  // ---------------------------------------------------------------------
-
-  /**
-   * @name Interface sound effect data
-   *
-   * @{
-   */
-
-  /**
-   * Parsed \#SE.index entries. Maps a sound effect number to the
-   * filename to play and the channel to play it on.
-   */
-  SeTable se_table_;
-
-  /// @}
-
-  SoundSystemGlobals globals_;
-
-protected:
-  SeTable& seTable() { return se_table_; }
-  const DSTable& getDSTable() { return ds_tracks_; }
-  const CDTable& getCDTable() { return cd_tracks_; }
-
-  /**
-   * Computes the actual volume for a channel based on the per channel
-   * and the per system volume.
-   */
-  int computeChannelVolume(const int channel_volume, const int system_volume) {
-    return (channel_volume * system_volume) / 255;
-  }
-
-  static void checkChannel(int channel, const char* function_name);
-  static void checkVolume(int level, const char* function_name);
 
 public:
   SoundSystem(Gameexe& gexe);
@@ -384,6 +314,79 @@ public:
 
   virtual void reset();
 
+protected:
+  SeTable& seTable() { return se_table_; }
+  const DSTable& getDSTable() { return ds_tracks_; }
+  const CDTable& getCDTable() { return cd_tracks_; }
+
+  /**
+   * Computes the actual volume for a channel based on the per channel
+   * and the per system volume.
+   */
+  int computeChannelVolume(const int channel_volume, const int system_volume) {
+    return (channel_volume * system_volume) / 255;
+  }
+
+  static void checkChannel(int channel, const char* function_name);
+  static void checkVolume(int level, const char* function_name);
+
+private:
+
+  /**
+   * @name Background Music data
+   *
+   * @{
+   */
+  /// Defined music tracks (files)
+  DSTable ds_tracks_;
+
+  /// Defined music tracks (cd tracks)
+  CDTable cd_tracks_;
+
+  /// @}
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * @name PCM/Wave sound effect data
+   *
+   * @{
+   */
+  /// Per channel volume
+  unsigned char channel_volume_[NUM_BASE_CHANNELS];
+
+  /**
+   * Open tasks that adjust the volume of a wave channel. We do this
+   * because SDL_mixer doesn't provide this functionality and I'm
+   * guessing other mixers don't either.
+   *
+   * @note Depending on features in other systems, I may push this
+   *       down to SDLSoundSystem later.
+   */
+  ChannelAdjustmentMap pcm_adjustment_tasks_;
+
+  /// @}
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * @name Interface sound effect data
+   *
+   * @{
+   */
+
+  /**
+   * Parsed \#SE.index entries. Maps a sound effect number to the
+   * filename to play and the channel to play it on.
+   */
+  SeTable se_table_;
+
+  /// @}
+
+  SoundSystemGlobals globals_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

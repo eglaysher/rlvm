@@ -44,20 +44,6 @@
  */
 class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk>
 {
-private:
-  /**
-   * Static table which deliberatly creates cycles. When a chunk
-   * starts playing, it's associated with its channel ID in this table
-   * to make sure that SDLSoundChunk object isn't deallocated. The
-   * SDL_mixer callback, SoundChunkFinishedPlayback(), will reset the
-   * associate smart pointer.
-   */
-  typedef std::map<int, boost::shared_ptr<SDLSoundChunk> > PlayingTable;
-  static PlayingTable s_playing_table;
-
-  /// Wrapped chunk
-  Mix_Chunk* sample_;
-
 public:
   SDLSoundChunk(const boost::filesystem::path& path);
   ~SDLSoundChunk();
@@ -99,6 +85,20 @@ public:
   static void StopAllChannels();
 
   static void FadeOut(const int channel, const int fadetime);
+
+private:
+  /**
+   * Static table which deliberatly creates cycles. When a chunk
+   * starts playing, it's associated with its channel ID in this table
+   * to make sure that SDLSoundChunk object isn't deallocated. The
+   * SDL_mixer callback, SoundChunkFinishedPlayback(), will reset the
+   * associate smart pointer.
+   */
+  typedef std::map<int, boost::shared_ptr<SDLSoundChunk> > PlayingTable;
+  static PlayingTable s_playing_table;
+
+  /// Wrapped chunk
+  Mix_Chunk* sample_;
 };
 
 // -----------------------------------------------------------------------

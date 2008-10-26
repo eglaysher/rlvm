@@ -30,6 +30,8 @@
 
 class EventSystem;
 
+// -----------------------------------------------------------------------
+
 /**
  * Frame counter used by RealLive code to ensure events happen at a
  * constant speed. Constant to all System implementations since it is

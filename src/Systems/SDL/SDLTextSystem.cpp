@@ -37,21 +37,19 @@
  *
  */
 
-#include "MachineBase/RLMachine.hpp"
-
 #include "Systems/SDL/SDLTextSystem.hpp"
-#include "Systems/SDL/SDLTextWindow.hpp"
-#include "Systems/SDL/SDLSurface.hpp"
+
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
-#include "Systems/Base/Rect.hpp"
-
-#include "libReallive/gameexe.h"
-
+#include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/SDLTextWindow.hpp"
+#include "Utilities.h"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/findFontFile.h"
-#include "Utilities.h"
+#include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>
 #include "SDL_ttf.h"

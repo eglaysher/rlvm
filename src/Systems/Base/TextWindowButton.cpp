@@ -30,16 +30,17 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/TextWindowButton.hpp"
-#include "MachineBase/RLMachine.hpp"
+
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Rect.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
-#include "Systems/Base/Rect.hpp"
 
 #include <stdexcept>
 #include <iostream>

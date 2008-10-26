@@ -30,23 +30,22 @@
 // -----------------------------------------------------------------------
 
 #include "libReallive/defs.h"
-
 #include "Systems/Base/TextWindow.hpp"
-#include "Systems/Base/TextWindowButton.hpp"
-#include "Systems/Base/TextSystem.hpp"
+
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/SelectionElement.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-
-#include "libReallive/gameexe.h"
+#include "Systems/Base/SelectionElement.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindowButton.hpp"
 #include "Utilities.h"
+#include "libReallive/gameexe.h"
 
-#include <vector>
 #include <boost/bind.hpp>
 #include <iomanip>
+#include <vector>
 
 using std::cerr;
 using std::endl;
@@ -58,7 +57,8 @@ using std::vector;
 // -----------------------------------------------------------------------
 
 /**
- * 
+ * Definitions for the location and Gameexe.ini keys describing various text
+ * window buttons.
  *
  * Previously was using a map keyed on strings. In rendering code. With keys
  * that had similar prefixes. WTF was I smoking...

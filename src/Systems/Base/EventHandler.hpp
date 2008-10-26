@@ -31,6 +31,8 @@
 class RLMachine;
 class Point;
 
+// -----------------------------------------------------------------------
+
 enum MouseButton
 {
   MOUSE_NONE = 0,
@@ -40,6 +42,8 @@ enum MouseButton
   MOUSE_WHEELUP,
   MOUSE_WHEELDOWN
 };
+
+// -----------------------------------------------------------------------
 
 /**
  * Note that this looks suspiciously like the SDLKey definition with
@@ -300,6 +304,8 @@ enum KeyCode {
 	RLKEY_UNDO		= 322,		/* Atari keyboard has Undo */
 };
 
+// -----------------------------------------------------------------------
+
 /**
  * Interface to receive information from the Event system when the
  * mouse is moved. Used where we don't have an RLMachine and we don't
@@ -329,6 +335,8 @@ public:
    */
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 };
+
+// -----------------------------------------------------------------------
 
 /**
  * Base class for most tasks that need to respond to user input. Deriving from

@@ -30,9 +30,11 @@
 #define __GraphicsObjectOfFile_hpp__
 
 #include "Systems/Base/GraphicsObjectData.hpp"
-#include <string>
-#include <boost/shared_ptr.hpp>
+
+#include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/shared_ptr.hpp>
+#include <string>
 
 class Surface;
 class RLMachine;
@@ -48,33 +50,6 @@ class RLMachine;
  */
 class GraphicsObjectOfFile : public GraphicsObjectData
 {
-private:
-  /// The name of the graphics file that was loaded.
-  std::string filename_;
-
-  /// The encapsulated surface to render
-  boost::shared_ptr<Surface> surface_;
-
-  /// Number of miliseconds to spend on a single frame in the
-  /// animation
-  unsigned int frame_time_;
-
-  /// Current frame displayed (when animating)
-  int current_frame_;
-
-  /// While currentlyPlaying() is true, this variable is used to store
-  /// the time when the frame was switched last
-  unsigned int time_at_last_frame_change_;
-
-  // Private constructor for cloning
-  GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
-
-protected:
-  virtual void loopAnimation();
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
-  virtual Rect srcRect(const GraphicsObject& go);
-  virtual void objectInfo(std::ostream& tree);
-
 public:
   GraphicsObjectOfFile();
   GraphicsObjectOfFile(RLMachine& machine, const std::string& filename);
@@ -93,6 +68,35 @@ public:
   virtual bool isAnimation() const;
   virtual void playSet(RLMachine& machine, int set);
 
+protected:
+  virtual void loopAnimation();
+  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual Rect srcRect(const GraphicsObject& go);
+  virtual void objectInfo(std::ostream& tree);
+
+private:
+  // Private constructor for cloning
+  GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
+
+  /// The name of the graphics file that was loaded.
+  std::string filename_;
+
+  /// The encapsulated surface to render
+  boost::shared_ptr<Surface> surface_;
+
+  /// Number of miliseconds to spend on a single frame in the
+  /// animation
+  unsigned int frame_time_;
+
+  /// Current frame displayed (when animating)
+  int current_frame_;
+
+  /// While currentlyPlaying() is true, this variable is used to store
+  /// the time when the frame was switched last
+  unsigned int time_at_last_frame_change_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

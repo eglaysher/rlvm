@@ -29,16 +29,16 @@
 
 // -----------------------------------------------------------------------
 
-#include "TextKeyCursor.hpp"
-#include "Utilities.h"
+#include "Systems/Base/TextKeyCursor.hpp"
 
-#include "libReallive/gameexe.h"
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
-#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWindow.hpp"
+#include "Utilities.h"
+#include "libReallive/gameexe.h"
 
 #include <string>
 

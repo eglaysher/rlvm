@@ -54,7 +54,6 @@ SelectionElement::SelectionElement(
     highlighted_image_(highlighted_image),
     selection_callback_(selection_callback)
 {
-
 }
 
 // -----------------------------------------------------------------------

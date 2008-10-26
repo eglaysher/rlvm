@@ -32,20 +32,20 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
+
+#include "MachineBase/Memory.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextWindow.hpp"
-#include "Systems/Base/TextKeyCursor.hpp"
-
-#include "MachineBase/Serialization.hpp"
-#include "MachineBase/Memory.hpp"
-#include "libReallive/gameexe.h"
 #include "Utilities.h"
 #include "Utilities/StringUtilities.hpp"
-#include <boost/bind.hpp>
+#include "libReallive/gameexe.h"
 
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <iostream>
 #include <sstream>
 

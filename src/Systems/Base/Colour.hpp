@@ -32,7 +32,7 @@
 #include <iosfwd>
 
 /**
- *
+ * A colour without an alpha channel.
  */
 class RGBColour
 {
@@ -115,6 +115,7 @@ private:
   }
 };  // end of class RGBA
 
+// -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const RGBColour& rgb);
 std::ostream& operator<<(std::ostream& os, const RGBAColour& rgba);

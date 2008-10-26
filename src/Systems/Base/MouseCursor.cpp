@@ -33,6 +33,8 @@
 #include "Systems/Base/Surface.hpp"
 #include <iostream>
 
+// -----------------------------------------------------------------------
+
 const int CURSOR_SIZE_INT = 32;
 const Size CURSOR_SIZE = Size(CURSOR_SIZE_INT, CURSOR_SIZE_INT);
 const Rect CURSOR_RECT = Rect(8, 8, CURSOR_SIZE);

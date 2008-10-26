@@ -31,9 +31,9 @@
 
 #include "Systems/Base/Rect.hpp"
 
+#include <boost/serialization/access.hpp>
 #include <iosfwd>
 #include <string>
-#include <boost/serialization/access.hpp>
 
 // -----------------------------------------------------------------------
 
@@ -44,47 +44,6 @@
  */
 class GraphicsStackFrame
 {
-private:
-  friend class boost::serialization::access;
-
-  /// boost::serialization support
-  template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
-    ar & command_name_ & has_filename_ & file_name_ & has_source_dc_
-      & source_dc_ & has_source_coordinates_ & source_rect_
-      & has_target_dc_ & target_dc_
-      & has_target_coordinates_ & target_point_
-      & has_rgb_ & r_ & g_ & b_ & has_opacity_
-      & opacity_ & has_mask_ & mask_;
-  }
-
-  std::string command_name_;
-
-  bool has_filename_;
-  std::string file_name_;
-
-  bool has_source_dc_;
-  int source_dc_;
-
-  bool has_source_coordinates_;
-  Rect source_rect_;
-
-  bool has_target_dc_;
-  int target_dc_;
-
-  bool has_target_coordinates_;
-  Point target_point_;
-
-  bool has_rgb_;
-  int r_, g_, b_;
-
-  bool has_opacity_;
-  int opacity_;
-
-  bool has_mask_;
-  int mask_;
-
 public:
   GraphicsStackFrame();
   GraphicsStackFrame(const std::string& name);
@@ -126,6 +85,47 @@ public:
   bool hasMask() const { return has_mask_; }
   bool mask() const { return mask_; }
   GraphicsStackFrame& setMask(bool in);
+
+private:
+  std::string command_name_;
+
+  bool has_filename_;
+  std::string file_name_;
+
+  bool has_source_dc_;
+  int source_dc_;
+
+  bool has_source_coordinates_;
+  Rect source_rect_;
+
+  bool has_target_dc_;
+  int target_dc_;
+
+  bool has_target_coordinates_;
+  Point target_point_;
+
+  bool has_rgb_;
+  int r_, g_, b_;
+
+  bool has_opacity_;
+  int opacity_;
+
+  bool has_mask_;
+  int mask_;
+
+  friend class boost::serialization::access;
+
+  /// boost::serialization support
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    ar & command_name_ & has_filename_ & file_name_ & has_source_dc_
+      & source_dc_ & has_source_coordinates_ & source_rect_
+      & has_target_dc_ & target_dc_
+      & has_target_coordinates_ & target_point_
+      & has_rgb_ & r_ & g_ & b_ & has_opacity_
+      & opacity_ & has_mask_ & mask_;
+  }
 };	// end of class GraphicsStackFrame
 
 // -----------------------------------------------------------------------

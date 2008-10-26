@@ -29,29 +29,27 @@
 
 // -----------------------------------------------------------------------
 
-#include "libReallive/gameexe.h"
 #include "Systems/Base/System.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/LongOperation.hpp"
-
-#include <boost/bind.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/algorithm/string.hpp>
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Utilities.h"
+#include "libReallive/gameexe.h"
 
 #include <algorithm>
-#include <string>
-#include <iostream>
-#include <iomanip>
+#include <boost/algorithm/string.hpp>
+#include <boost/bind.hpp>
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <fstream>
-
-#include "Utilities.h"
+#include <iomanip>
+#include <iostream>
+#include <string>
 
 using namespace std;
 using boost::bind;

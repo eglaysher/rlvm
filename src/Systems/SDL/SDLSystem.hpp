@@ -41,15 +41,6 @@ class SDLSoundSystem;
 
 class SDLSystem : public System
 {
-private:
-  boost::scoped_ptr<SDLGraphicsSystem> graphics_system;
-  boost::scoped_ptr<SDLEventSystem> event_system;
-  boost::scoped_ptr<SDLTextSystem> text_system;
-  boost::scoped_ptr<SDLSoundSystem> sound_system;
-  Gameexe& gameexe_;
-
-  unsigned int last_time_paused_;
-
 public:
   SDLSystem(Gameexe& gameexe);
   ~SDLSystem();
@@ -60,6 +51,15 @@ public:
   virtual Gameexe& gameexe();
   virtual TextSystem& text();
   virtual SoundSystem& sound();
+
+private:
+  boost::scoped_ptr<SDLGraphicsSystem> graphics_system_;
+  boost::scoped_ptr<SDLEventSystem> event_system_;
+  boost::scoped_ptr<SDLTextSystem> text_system_;
+  boost::scoped_ptr<SDLSoundSystem> sound_system_;
+  Gameexe& gameexe_;
+
+  unsigned int last_time_paused_;
 };
 
 #endif

@@ -30,21 +30,21 @@
 
 #include "Systems/Base/EventHandler.hpp"
 
+#include <boost/ptr_container/ptr_list.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/shared_ptr.hpp>
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
-#include <boost/ptr_container/ptr_list.hpp>
-#include <boost/serialization/split_member.hpp>
 
 class Gameexe;
-class RLMachine;
-class TextWindow;
-class TextPage;
-class TextKeyCursor;
-class Surface;
-class Point;
 class Memory;
+class Point;
+class RLMachine;
+class Surface;
+class TextKeyCursor;
+class TextPage;
+class TextWindow;
 
 // -----------------------------------------------------------------------
 
@@ -75,112 +75,9 @@ struct TextSystemGlobals
 
 class TextSystem : public EventListener
 {
-protected:
-  /// TextPage will call our internals since it actually does most of
-  /// the work while we hold state.
-  friend class TextPage;
-
-  /**
-   * @name Auto mode (variables)
-   *
-   * @{
-   */
-  /// Whether Auto mode is enabled
-  bool auto_mode_;
-  /// @}
-
-  /// Whether holding down the control key will skip text.
-  bool ctrl_key_skip_;
-
-  /// Fast text mode
-  bool fast_text_mode_;
-
-  /// Internal 'no wait' flag
-  bool message_no_wait_;
-
-  /**
-   * @name Textwindow Management
-   *
-   * @{
-   */
-  /// Sets which window is the current active window.
-  int active_window_;
-
-  /// Type of the Window storage
-  typedef boost::ptr_map<int, TextWindow> WindowMap;
-
-  /// Storage of active windows
-  WindowMap text_window_;
-  /// @}
-
-  /**
-   * @name Backlog Management
-   *
-   * @{
-   */
-
-  /// Whether we are reading the backlog
-  bool is_reading_backlog_;
-
+public:
   /// Internal structure used to keep track of the state of
   typedef boost::ptr_map<int, TextPage> PageSet;
-
-  /// The current page set. Represents what is on the screen right now.
-  std::auto_ptr<PageSet> current_pageset_;
-
-  /// Previous Text Pages. The TextSystem owns the list of previous
-  /// pages because multiple windows can be displayed in one text page.
-  boost::ptr_list<PageSet> previous_page_sets_;
-
-  /// When previous_page_it_ == previous_pages_.end(), active_page_ is
-  /// currently being rendered to the screen. When it is any valid
-  /// iterator pointing into previous_pages_, that is the current page
-  /// being rendered.
-  boost::ptr_list<PageSet>::iterator previous_page_it_;
-
-  /// Whether we are in a state where the interpreter is pause()d.
-  bool in_pause_state_;
-
-  /// @}
-
-  boost::shared_ptr<TextKeyCursor> text_key_cursor_;
-
-  /**
-   * @name Global Window Button Toggles
-   *
-   * @{
-   */
-  bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
-    msgbkleft_use_, msgbkright_use_, exbtn_use_;
-
-  void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
-  /// @}
-
-  TextSystemGlobals globals_;
-
-  bool system_visible_;
-
-  /// Whether we skip text that we've already seen
-  bool skip_mode_;
-
-  /// Whether we are currently on a page of text that we've previously read.
-  bool kidoku_read_;
-
-  /// Whether we are currently paused at a user choice.
-  bool in_selection_mode_;
-
-  /**
-   * Reduces the number of page snapshots in previous_page_sets_ down to a
-   * manageable constant number.
-   */
-  void expireOldPages();
-
-  // Overriden from EventListener
-  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
-  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
-
-protected:
-  void updateWindowsForChangeToWindowAttr();
 
 public:
   TextSystem(Gameexe& gexe);
@@ -372,6 +269,112 @@ public:
   bool currentlySkipping() const;
 
   void setInSelectionMode(const bool in) { in_selection_mode_ = in; }
+
+  // Overriden from EventListener
+  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+
+protected:
+  void updateWindowsForChangeToWindowAttr();
+
+  /// TextPage will call our internals since it actually does most of
+  /// the work while we hold state.
+  friend class TextPage;
+
+  /**
+   * @name Auto mode (variables)
+   *
+   * @{
+   */
+  /// Whether Auto mode is enabled
+  bool auto_mode_;
+  /// @}
+
+  /// Whether holding down the control key will skip text.
+  bool ctrl_key_skip_;
+
+  /// Fast text mode
+  bool fast_text_mode_;
+
+  /// Internal 'no wait' flag
+  bool message_no_wait_;
+
+  /**
+   * @name Textwindow Management
+   *
+   * @{
+   */
+  /// Sets which window is the current active window.
+  int active_window_;
+
+  /// Type of the Window storage
+  typedef boost::ptr_map<int, TextWindow> WindowMap;
+
+  /// Storage of active windows
+  WindowMap text_window_;
+  /// @}
+
+  /**
+   * @name Backlog Management
+   *
+   * @{
+   */
+
+  /// Whether we are reading the backlog
+  bool is_reading_backlog_;
+
+  /// The current page set. Represents what is on the screen right now.
+  std::auto_ptr<PageSet> current_pageset_;
+
+  /// Previous Text Pages. The TextSystem owns the list of previous
+  /// pages because multiple windows can be displayed in one text page.
+  boost::ptr_list<PageSet> previous_page_sets_;
+
+  /// When previous_page_it_ == previous_pages_.end(), active_page_ is
+  /// currently being rendered to the screen. When it is any valid
+  /// iterator pointing into previous_pages_, that is the current page
+  /// being rendered.
+  boost::ptr_list<PageSet>::iterator previous_page_it_;
+
+  /// Whether we are in a state where the interpreter is pause()d.
+  bool in_pause_state_;
+
+  /// @}
+
+  boost::shared_ptr<TextKeyCursor> text_key_cursor_;
+
+  /**
+   * @name Global Window Button Toggles
+   *
+   * @{
+   */
+  bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
+    msgbkleft_use_, msgbkright_use_, exbtn_use_;
+
+  void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
+  /// @}
+
+  TextSystemGlobals globals_;
+
+  bool system_visible_;
+
+  /// Whether we skip text that we've already seen
+  bool skip_mode_;
+
+  /// Whether we are currently on a page of text that we've previously read.
+  bool kidoku_read_;
+
+  /// Whether we are currently paused at a user choice.
+  bool in_selection_mode_;
+
+  /**
+   * Reduces the number of page snapshots in previous_page_sets_ down to a
+   * manageable constant number.
+   */
+  void expireOldPages();
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

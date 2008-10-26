@@ -29,16 +29,20 @@
 #define __AnmGraphicsObjectData_hpp__
 
 #include "Systems/Base/GraphicsObjectData.hpp"
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
 
 #include <vector>
 #include <string>
 #include <boost/scoped_array.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
+
+// -----------------------------------------------------------------------
 
 class Surface;
 class RLMachine;
+
+// -----------------------------------------------------------------------
 
 /**
  * Executable, in-memory representation of an ANM file.

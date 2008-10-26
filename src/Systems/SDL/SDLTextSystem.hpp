@@ -34,23 +34,13 @@
 
 #include "SDL_ttf.h"
 
-class RLMachine;
-class TextWindow;
-class SDLTextWindow;
 class Point;
+class RLMachine;
+class SDLTextWindow;
+class TextWindow;
 
 class SDLTextSystem : public TextSystem
 {
-private:
-  /**
-   * @name Font storage
-   *
-   * @{
-   */
-  typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
-  FontSizeMap map_;
-  /// @}
-
 public:
   SDLTextSystem(Gameexe& gameexe);
   ~SDLTextSystem();
@@ -62,6 +52,16 @@ public:
     int yspace, int colour);
 
   boost::shared_ptr<TTF_Font> getFontOfSize(RLMachine& machine, int size);
+
+private:
+  /**
+   * @name Font storage
+   *
+   * @{
+   */
+  typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
+  FontSizeMap map_;
+  /// @}
 };
 
 #endif

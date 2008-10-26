@@ -29,10 +29,11 @@
 
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/EventHandler.hpp"
+
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/System.hpp"
 
 // -----------------------------------------------------------------------
 // EventListener

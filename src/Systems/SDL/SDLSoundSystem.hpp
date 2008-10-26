@@ -48,59 +48,6 @@ class SDLMusic;
  */
 class SDLSoundSystem : public SoundSystem
 {
-private:
-  typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
-  typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
-
-  typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;
-
-  SoundChunkCache se_cache_;
-  SoundChunkCache wav_cache_;
-
-  /// The
-  SDLMusicPtr queued_music_;
-
-  /// Whether the next piece of music loops
-  bool queued_music_loop_;
-
-  /// The fadein time for queued piece of music
-  int queued_music_fadein_;
-
-  /**
-   * Retrieves a sound chunk from the passed in cache (or loads it if
-   * it's not in the cache and then stuffs it into the cache.)
-   *
-   * @param machine Current machine context
-   * @param file_name Name of the file (minus extension)
-   * @param cache Which cache to check (and store) the
-   * @return The loaded sound chunk
-   */
-  static SDLSoundChunkPtr getSoundChunk(
-    RLMachine& machine,
-    const std::string& file_name,
-    SoundChunkCache& cache);
-
-  /**
-   * Implementation to play a wave file. Two wavPlay() versions use
-   * this underlying implementation, which is split out so the one
-   * that takes a raw channel can verify its input.
-   *
-   * @param machine Current machine context
-   * @param wav_file Name of the file (minux extension)
-   * @param channel Channel to play on (both NUM_BASE_CHANNELS and
-   *                NUM_EXTRA_WAVPLAY_CHANNELS are legal here.)
-   * @param loop    Whether to loop this sound endlessly
-   */
-  void wavPlayImpl(RLMachine& machine, const std::string& wav_file,
-                   const int channel, bool loop);
-
-  /**
-   * Creates an SDLMusic object from a name. Throws if the bgm isn't
-   * found.
-   */
-  boost::shared_ptr<SDLMusic> LoadMusic(
-    RLMachine& machine, const std::string& bgm_name);
-
 public:
   SDLSoundSystem(Gameexe& gexe);
   ~SDLSoundSystem();
@@ -142,6 +89,58 @@ public:
    * have our own default music mixing function which is set at startup.
    */
   void setMusicHook(void (*mix_func)(void *udata, Uint8 *stream, int len));
+
+private:
+  typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
+  typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
+  typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;
+
+  /**
+   * Retrieves a sound chunk from the passed in cache (or loads it if
+   * it's not in the cache and then stuffs it into the cache.)
+   *
+   * @param machine Current machine context
+   * @param file_name Name of the file (minus extension)
+   * @param cache Which cache to check (and store) the
+   * @return The loaded sound chunk
+   */
+  static SDLSoundChunkPtr getSoundChunk(
+    RLMachine& machine,
+    const std::string& file_name,
+    SoundChunkCache& cache);
+
+  /**
+   * Implementation to play a wave file. Two wavPlay() versions use
+   * this underlying implementation, which is split out so the one
+   * that takes a raw channel can verify its input.
+   *
+   * @param machine Current machine context
+   * @param wav_file Name of the file (minux extension)
+   * @param channel Channel to play on (both NUM_BASE_CHANNELS and
+   *                NUM_EXTRA_WAVPLAY_CHANNELS are legal here.)
+   * @param loop    Whether to loop this sound endlessly
+   */
+  void wavPlayImpl(RLMachine& machine, const std::string& wav_file,
+                   const int channel, bool loop);
+
+  /**
+   * Creates an SDLMusic object from a name. Throws if the bgm isn't
+   * found.
+   */
+  boost::shared_ptr<SDLMusic> LoadMusic(
+    RLMachine& machine, const std::string& bgm_name);
+
+  SoundChunkCache se_cache_;
+  SoundChunkCache wav_cache_;
+
+  /// The
+  SDLMusicPtr queued_music_;
+
+  /// Whether the next piece of music loops
+  bool queued_music_loop_;
+
+  /// The fadein time for queued piece of music
+  int queued_music_fadein_;
 };	// end of class SDLSoundSystem
 
 #endif

@@ -150,8 +150,6 @@ const ObjectSettings& GraphicsSystem::GraphicsObjectSettings::getObjectSettingsF
 }
 
 // -----------------------------------------------------------------------
-
-// -----------------------------------------------------------------------
 // GraphicsSystemGlobals
 // -----------------------------------------------------------------------
 GraphicsSystemGlobals::GraphicsSystemGlobals()
@@ -321,10 +319,10 @@ void GraphicsSystem::stackPop(int items)
 
 void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
 {
+  // The actual act of replaying the graphics stack will recreate the graphics
+  // stack, so clear it.
   vector<GraphicsStackFrame> stack_to_replay;
   stack_to_replay.swap(graphics_object_settings_->graphics_stack);
-
-  //
   replayGraphicsStackVector(machine, stack_to_replay);
 }
 

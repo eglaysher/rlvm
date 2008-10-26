@@ -49,16 +49,16 @@
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 
-#include "Utilities.h"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/EventSystem.hpp"
+#include "Utilities.h"
 #include "libReallive/defs.h"
-#include "Systems/Base/GraphicsObject.hpp"
 
 #include <iterator>
 #include <fstream>

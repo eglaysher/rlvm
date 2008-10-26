@@ -29,22 +29,19 @@
 
 // -----------------------------------------------------------------------
 
+#include "MachineBase/RLMachine.hpp"
+#include "Modules/TextoutLongOperation.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
-
-#include "MachineBase/RLMachine.hpp"
-
-#include "utf8.h"
-#include "Modules/TextoutLongOperation.hpp"
-
 #include "libReallive/gameexe.h"
 
-#include <string>
-#include <iostream>
+#include "utf8.h"
 
 #include <boost/bind.hpp>
+#include <iostream>
+#include <string>
 
 using namespace std;
 using namespace boost;

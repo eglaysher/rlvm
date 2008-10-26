@@ -37,30 +37,10 @@
 class SDLSurface;
 class SelectionElement;
 
+// -----------------------------------------------------------------------
+
 class SDLTextWindow : public TextWindow
 {
-private:
-  ///
-  std::string current_value_;
-
-  /// Converted surface for uploading.
-  boost::shared_ptr<SDLSurface> surface_;
-
-  /// Font being used.
-  boost::shared_ptr<TTF_Font> font_;
-  boost::shared_ptr<TTF_Font> ruby_font_;
-
-  /// Insertion point for text.
-  int insertion_point_x_, insertion_point_y_;
-
-  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
-  /// been called)
-  int ruby_begin_point_;
-
-  void setIndentation();
-
-  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
-
 public:
   SDLTextWindow(RLMachine& machine, int window);
   ~SDLTextWindow();
@@ -88,6 +68,29 @@ public:
 
 
   virtual void addSelectionItem(const std::string& utf8str);
+
+private:
+
+  void setIndentation();
+
+  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
+
+  ///
+  std::string current_value_;
+
+  /// Converted surface for uploading.
+  boost::shared_ptr<SDLSurface> surface_;
+
+  /// Font being used.
+  boost::shared_ptr<TTF_Font> font_;
+  boost::shared_ptr<TTF_Font> ruby_font_;
+
+  /// Insertion point for text.
+  int insertion_point_x_, insertion_point_y_;
+
+  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
+  /// been called)
+  int ruby_begin_point_;
 };
 
 

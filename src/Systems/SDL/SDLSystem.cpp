@@ -64,28 +64,28 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   }
 
   // Initialize the various subsystems
-  graphics_system.reset(new SDLGraphicsSystem(*this, gameexe));
-  event_system.reset(new SDLEventSystem(gameexe));
-  text_system.reset(new SDLTextSystem(gameexe));
-  sound_system.reset(new SDLSoundSystem(gameexe));
+  graphics_system_.reset(new SDLGraphicsSystem(*this, gameexe));
+  event_system_.reset(new SDLEventSystem(gameexe));
+  text_system_.reset(new SDLTextSystem(gameexe));
+  sound_system_.reset(new SDLSoundSystem(gameexe));
 
-  event_system->addMouseListener(graphics_system.get());
-  event_system->addMouseListener(text_system.get());
+  event_system_->addMouseListener(graphics_system_.get());
+  event_system_->addMouseListener(text_system_.get());
 }
 
 // -----------------------------------------------------------------------
 
 SDLSystem::~SDLSystem()
 {
-  event_system->removeMouseListener(text_system.get());
-  event_system->removeMouseListener(graphics_system.get());
+  event_system_->removeMouseListener(text_system_.get());
+  event_system_->removeMouseListener(graphics_system_.get());
 
   // Force the deletion of the various systems before we shut down
   // SDL.
-  sound_system.reset();
-  graphics_system.reset();
-  event_system.reset();
-  text_system.reset();
+  sound_system_.reset();
+  graphics_system_.reset();
+  event_system_.reset();
+  text_system_.reset();
 
   SDL_Quit();
 }
@@ -95,15 +95,15 @@ SDLSystem::~SDLSystem()
 void SDLSystem::run(RLMachine& machine)
 {
   // Give the event handler a chance to run.
-  event_system->executeEventSystem(machine);
-  text_system->executeTextSystem(machine);
-  sound_system->executeSoundSystem(machine);
-  graphics_system->executeGraphicsSystem(machine);
+  event_system_->executeEventSystem(machine);
+  text_system_->executeTextSystem(machine);
+  sound_system_->executeSoundSystem(machine);
+  graphics_system_->executeGraphicsSystem(machine);
 
   // My pausing model is wrong. Really wrong. For an example of just
   // how wrong it is, take a look at the performance under CLANNAD's menu.
   if (machine.inLongOperation()) {
-    event_system->wait(10);
+    event_system_->wait(10);
   }
 }
 
@@ -111,14 +111,14 @@ void SDLSystem::run(RLMachine& machine)
 
 GraphicsSystem& SDLSystem::graphics()
 {
-  return *graphics_system;
+  return *graphics_system_;
 }
 
 // -----------------------------------------------------------------------
 
 EventSystem& SDLSystem::event()
 {
-  return *event_system;
+  return *event_system_;
 }
 
 // -----------------------------------------------------------------------
@@ -132,12 +132,12 @@ Gameexe& SDLSystem::gameexe()
 
 TextSystem& SDLSystem::text()
 {
-  return *text_system;
+  return *text_system_;
 }
 
 // -----------------------------------------------------------------------
 
 SoundSystem& SDLSystem::sound()
 {
-  return *sound_system;
+  return *sound_system_;
 }

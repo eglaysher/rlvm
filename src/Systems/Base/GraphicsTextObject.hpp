@@ -28,12 +28,12 @@
 #ifndef __GraphicsTextObject_hpp__
 #define __GraphicsTextObject_hpp__
 
+#include "MachineBase/Serialization.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
+
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
-
-#include "MachineBase/Serialization.hpp"
-#include "Systems/Base/GraphicsObjectData.hpp"
 
 class GraphicsObject;
 class Surface;
@@ -44,6 +44,20 @@ class Surface;
  */
 class GraphicsTextObject : public GraphicsObjectData
 {
+public:
+  GraphicsTextObject(RLMachine& machine);
+  ~GraphicsTextObject();
+
+  // ------------------------------------ [ GraphicsObjectData interface ]
+  virtual int pixelWidth(const GraphicsObject& rendering_properties);
+  virtual int pixelHeight(const GraphicsObject& rendering_properties);
+
+  virtual GraphicsObjectData* clone() const;
+
+protected:
+  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual void objectInfo(std::ostream& tree);
+
 private:
   /// Current machine context.
   RLMachine& machine_;
@@ -58,19 +72,9 @@ private:
   void updateSurface(const GraphicsObject& rp);
 
   bool needsUpdate(const GraphicsObject& rendering_properties);
-protected:
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
-  virtual void objectInfo(std::ostream& tree);
 
-public:
-  GraphicsTextObject(RLMachine& machine);
-  ~GraphicsTextObject();
-
-  // ------------------------------------ [ GraphicsObjectData interface ]
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
-
-  virtual GraphicsObjectData* clone() const;
+  /// boost::serialization support
+  friend class boost::serialization::access;
 
   template<class Archive>
   void save(Archive & ar, const unsigned int file_version) const;

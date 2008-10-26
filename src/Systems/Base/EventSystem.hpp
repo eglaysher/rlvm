@@ -29,14 +29,14 @@
 #ifndef __EventSystem_hpp__
 #define __EventSystem_hpp__
 
-#include <set>
-#include <queue>
-#include <boost/function.hpp>
-#include <boost/utility.hpp>
-#include <boost/scoped_ptr.hpp>
-
 #include "Systems/Base/RLTimer.hpp"
 #include "Systems/Base/Rect.hpp"
+
+#include <boost/function.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/utility.hpp>
+#include <queue>
+#include <set>
 
 class RLMachine;
 

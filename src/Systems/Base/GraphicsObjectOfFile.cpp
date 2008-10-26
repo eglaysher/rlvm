@@ -34,18 +34,20 @@
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/export.hpp>
 
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
-#include "Systems/Base/EventSystem.hpp"
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+#include "Utilities.h"
+
 #include <boost/shared_ptr.hpp>
 #include <string>
 #include <iostream>
-#include "Utilities.h"
 
 using namespace std;
 namespace fs = boost::filesystem;

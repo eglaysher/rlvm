@@ -42,6 +42,20 @@ class Point;
  */
 class SelectionElement
 {
+public:
+  SelectionElement(const boost::shared_ptr<Surface>& normal_image,
+                   const boost::shared_ptr<Surface>& highlighted_image,
+                   const boost::function<void(int)>& selection_callback,
+                   int id, const Point& pos);
+  ~SelectionElement();
+
+  void setSelectionCallback(const boost::function<void(int)>& func);
+
+  void setMousePosition(RLMachine& machine, const Point& pos);
+  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
+
+  void render();
+
 private:
   bool is_highlighted_;
 
@@ -57,20 +71,6 @@ private:
   boost::function<void(int)> selection_callback_;
 
   bool isHighlighted(const Point& p);
-
-public:
-  SelectionElement(const boost::shared_ptr<Surface>& normal_image,
-                   const boost::shared_ptr<Surface>& highlighted_image,
-                   const boost::function<void(int)>& selection_callback,
-                   int id, const Point& pos);
-  ~SelectionElement();
-
-  void setSelectionCallback(const boost::function<void(int)>& func);
-
-  void setMousePosition(RLMachine& machine, const Point& pos);
-  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
-
-  void render();
 };
 
 #endif

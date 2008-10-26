@@ -41,31 +41,6 @@ class TextWindow;
  */
 class TextKeyCursor
 {
-private:
-  /// Keep track of which cursor we are as an optimization
-  int cursor_number_;
-
-  /// The surface containing the cursor
-  boost::shared_ptr<Surface> cursor_image_;
-
-  /// The cursor image file
-  std::string cursor_image_file_;
-
-  /// The size of the cursor
-  Size frame_size_;
-
-  /// Number of frames in this cursor
-  int frame_count_;
-
-  /// Current frame being displayed
-  int current_frame_;
-
-  /// How long an individual frame should be displayed
-  int frame_speed_;
-
-  /// The last time current_frame_ was incremented in ticks
-  unsigned int last_time_frame_incremented_;
-
 public:
   /**
    * Creates a Key Cursor object based off of the properties in
@@ -73,7 +48,6 @@ public:
    * from the Gameexe.
    */
   TextKeyCursor(RLMachine& machine, int curosr_number);
-
   ~TextKeyCursor();
 
   /**
@@ -98,7 +72,6 @@ public:
   int cursorNumber() const { return cursor_number_; }
   // @}
 
-
   /**
    * @name Gameexe setters
    *
@@ -113,6 +86,30 @@ public:
   void setCursorFrameSpeed(const int frame_speed);
   /// @}
 
+private:
+  /// Keep track of which cursor we are as an optimization
+  int cursor_number_;
+
+  /// The surface containing the cursor
+  boost::shared_ptr<Surface> cursor_image_;
+
+  /// The cursor image file
+  std::string cursor_image_file_;
+
+  /// The size of the cursor
+  Size frame_size_;
+
+  /// Number of frames in this cursor
+  int frame_count_;
+
+  /// Current frame being displayed
+  int current_frame_;
+
+  /// How long an individual frame should be displayed
+  int frame_speed_;
+
+  /// The last time current_frame_ was incremented in ticks
+  unsigned int last_time_frame_incremented_;
 };
 
 #endif

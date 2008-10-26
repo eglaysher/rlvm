@@ -30,13 +30,13 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
-#include <vector>
-#include <string>
-#include <iosfwd>
 #include <boost/scoped_array.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/shared_ptr.hpp>
+#include <iosfwd>
+#include <string>
+#include <vector>
 
 class Surface;
 class RLMachine;

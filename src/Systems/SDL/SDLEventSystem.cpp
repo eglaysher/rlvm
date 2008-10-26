@@ -29,16 +29,17 @@
 
 // -----------------------------------------------------------------------
 
+#include "Systems/SDL/SDLEventSystem.hpp"
+
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/SDL/SDLEventSystem.hpp"
+
+#include <boost/bind.hpp>
+#include <iostream>
 
 #include <SDL/SDL.h>
-#include <boost/bind.hpp>
-
-#include <iostream>
 
 using namespace std;
 

@@ -36,12 +36,13 @@
 #ifndef __GraphicsSystem_hpp__
 #define __GraphicsSystem_hpp__
 
+#include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventHandler.hpp"
 #include "Systems/Base/Rect.hpp"
-#include "Systems/Base/CGMTable.hpp"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
@@ -462,16 +463,6 @@ public:
   /// Access to the cgtable for the cg* functions.
   CGMTable& cgTable() { return globals_.cg_table; }
 
-  // boost::serialization forward declaration
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
-
-  // boost::serialization forward declaration
-  template<class Archive>
-  void load(Archive& ar, const unsigned int file_version);
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
-
 protected:
   const Point& cursorPos() const { return cursor_pos_; }
 
@@ -557,6 +548,19 @@ private:
 
   /// Our parent system object.
   System& system_;
+
+  /// boost::serialization support
+  friend class boost::serialization::access;
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void save(Archive & ar, const unsigned int file_version) const;
+
+  // boost::serialization forward declaration
+  template<class Archive>
+  void load(Archive& ar, const unsigned int file_version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 const int OBJECTS_IN_A_LAYER = 256;

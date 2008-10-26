@@ -102,40 +102,6 @@ BOOST_CLASS_VERSION(SystemGlobals, 1)
  */
 class System
 {
-private:
-  /// The visibility status for all syscom entries
-  int syscom_status_[NUM_SYSCOM_ENTRIES];
-
-  /// Whether the SYSCOM menu is currently being displayed.
-  bool in_menu_;
-
-  /// Whether we are being forced to fast forward through the game for testing
-  /// reasons.
-  bool force_fast_forward_;
-
-  void checkSyscomIndex(int index, const char* function);
-
-  std::vector<boost::filesystem::path> cached_search_paths;
-
-  void addPath(GameexeInterpretObject gio);
-
-  SystemGlobals globals_;
-
-  /// Implementation detail which resets in_menu_;
-  friend class MenuReseter;
-
-  friend class boost::serialization::access;
-
-  /// boost::serialization
-  template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
-    // For now, does nothing
-  }
-
-protected:
-  boost::filesystem::path getHomeDirectory();
-
 public:
   System();
 
@@ -261,6 +227,40 @@ public:
 
   void dumpRenderTree(RLMachine& machine);
   /// @}
+
+protected:
+  boost::filesystem::path getHomeDirectory();
+
+private:
+  /// The visibility status for all syscom entries
+  int syscom_status_[NUM_SYSCOM_ENTRIES];
+
+  /// Whether the SYSCOM menu is currently being displayed.
+  bool in_menu_;
+
+  /// Whether we are being forced to fast forward through the game for testing
+  /// reasons.
+  bool force_fast_forward_;
+
+  void checkSyscomIndex(int index, const char* function);
+
+  std::vector<boost::filesystem::path> cached_search_paths;
+
+  void addPath(GameexeInterpretObject gio);
+
+  SystemGlobals globals_;
+
+  /// Implementation detail which resets in_menu_;
+  friend class MenuReseter;
+
+  friend class boost::serialization::access;
+
+  /// boost::serialization
+  template<class Archive>
+  void serialize(Archive& ar, unsigned int version)
+  {
+    // For now, does nothing
+  }
 };
 
 #endif

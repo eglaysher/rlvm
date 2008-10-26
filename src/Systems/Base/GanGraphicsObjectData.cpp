@@ -45,18 +45,17 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "MachineBase/Serialization.hpp"
-
-#include "Utilities.h"
-#include "libReallive/defs.h"
 
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+#include "Utilities.h"
+#include "libReallive/defs.h"
 
 #include <boost/serialization/export.hpp>
 #include <boost/filesystem/fstream.hpp>

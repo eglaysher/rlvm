@@ -31,8 +31,12 @@
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/Rect.hpp"
 
+// -----------------------------------------------------------------------
+
 class Surface;
 class RLMachine;
+
+// -----------------------------------------------------------------------
 
 /**
  * Represents a mouse cursor on screen.
