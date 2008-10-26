@@ -24,9 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef __gcnUtils_hpp__
 #define __gcnUtils_hpp__
+
+#include "Systems/Base/Rect.hpp"
 
 /**
  * Guichan

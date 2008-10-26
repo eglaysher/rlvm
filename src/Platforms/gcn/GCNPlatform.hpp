@@ -86,9 +86,14 @@ private:
   /// Deallocates the window on the top of the window stack.
   void popWindowFromStack();
 
-  /// Handles a syscom event from the user. Some of these affect the
-  /// |window_stack_|.
-  void handleSyscomEvent(const std::string& event);
+  /**
+   * @name Event Handling functions
+   *
+   * @{
+   */
+  static void QuitEvent(RLMachine& machine);
+  static void MenuReturnEvent(RLMachine& machine);
+  /// @}
 
   /// This is our LongOperation on the stack.
   GCNPlatformBlocker* blocker_;

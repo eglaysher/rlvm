@@ -32,12 +32,12 @@
 
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Modules/Module_Sys.hpp"
+#include "Platforms/gcn/SDLTrueTypeFont.hpp"
+#include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
-#include "Platforms/gcn/gcnUtils.hpp"
-#include "Platforms/gcn/SDLTrueTypeFont.hpp"
-
 #include "libReallive/gameexe.h"
 
 #include <iostream>
@@ -220,8 +220,11 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
   // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
 
-  // Now push the corresponding GCNWindow onto the stack.
-  blocker_->addTask(bind(&GCNPlatform::handleSyscomEvent, this, event));
+  if (event == SYSCOM_EVENTS[SYSCOM_EXIT_GAME])
+    blocker_->addMachineTask(bind(&GCNPlatform::QuitEvent, _1));
+  else if (event == SYSCOM_EVENTS[SYSCOM_MENU_RETURN])
+    blocker_->addMachineTask(bind(&GCNPlatform::MenuReturnEvent, _1));
+
 }
 
 // -----------------------------------------------------------------------
@@ -304,8 +307,16 @@ void GCNPlatform::popWindowFromStack()
 }
 
 // -----------------------------------------------------------------------
+// Event Handler Functions
+// -----------------------------------------------------------------------
 
-void GCNPlatform::handleSyscomEvent(const std::string& event)
-{
-  
+/* static */
+void GCNPlatform::QuitEvent(RLMachine& machine) {
+  machine.halt();
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::MenuReturnEvent(RLMachine& machine) {
+  // Simulate a MenuReturn.
 }
