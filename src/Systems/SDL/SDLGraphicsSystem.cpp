@@ -49,6 +49,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/Platform.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
@@ -146,6 +147,9 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
 
 void SDLGraphicsSystem::endFrame(RLMachine& machine)
 {
+  if (system().platform())
+    system().platform()->render(machine);
+
   Point hotspot = cursorPos();
   int dx1 = -1;
   int dy1 = -1;

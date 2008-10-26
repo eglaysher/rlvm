@@ -15,8 +15,8 @@ else
     export
   export
 
-.SUBDIRS: $(DOSUBDIR)
-.DEFAULT: $(DOSUBDIR)
+.SUBDIRS: $(DOSUBDIR) gcn
+.DEFAULT: $(DOSUBDIR) gcn
 
 ########
 

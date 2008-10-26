@@ -33,6 +33,15 @@
 
 #include <SDL/SDL_events.h>
 
+/**
+ * Hack to ferry SDL_Events over to something like Guichan which wants to take
+ * control of the input.
+ */
+class RawSDLInputHandler {
+public:
+  virtual void pushInput(SDL_Event event) = 0;
+};
+
 class SDLEventSystem : public EventSystem
 {
 public:
@@ -41,6 +50,10 @@ public:
   /// We provide this accessor to let the Graphics system querry what
   /// to do when redrawing the mouse.
   bool mouseInsideWindow() const { return mouse_inside_window_; }
+
+  void setRawSDLInputHandler(RawSDLInputHandler* handler) {
+    raw_handler_ = handler;
+  }
 
   virtual void executeEventSystem(RLMachine& machine);
 
@@ -85,6 +98,10 @@ private:
   Point mouse_pos_;
 
   int m_button1State, m_button2State;
+
+  /// Handles raw SDL events when appropriate. (Used for things like Guichan,
+  /// et cetera who want to suck raw SDL events).
+  RawSDLInputHandler* raw_handler_;
 };
 
 #endif

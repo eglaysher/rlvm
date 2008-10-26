@@ -1,0 +1,7 @@
+
+.PHONY: clean
+
+.DEFAULT: 
+
+clean:
+  $(RM) *.o *.gch *$(EXT_LIB) *.omc

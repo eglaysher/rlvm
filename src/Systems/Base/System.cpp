@@ -90,7 +90,7 @@ void System::checkSyscomIndex(int index, const char* function)
 
 // -----------------------------------------------------------------------
 
-bool System::isSyscomEnabled(int syscom)
+int System::isSyscomEnabled(int syscom)
 {
   checkSyscomIndex(syscom, "System::is_syscom_enabled");
   return syscom_status_[syscom];
