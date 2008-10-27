@@ -44,9 +44,9 @@ const int MENU_PADDING = 10;
 // -----------------------------------------------------------------------
 
 GCNMenu::GCNMenu(const vector<GCNMenuButton>& buttons_to_display,
-                 const Size& screen_size,
-                 GCNMenuListener* listener)
-  : listener_(listener) {
+                 GCNPlatform* platform)
+  : GCNWindow(platform)
+{
   int top_offset = MENU_PADDING;
   int max_button_size = 0;
 
@@ -79,7 +79,6 @@ GCNMenu::GCNMenu(const vector<GCNMenuButton>& buttons_to_display,
   }
 
   setSize((MENU_PADDING*2) + max_button_size, top_offset);
-  centerInWindow(screen_size);
 }
 
 // -----------------------------------------------------------------------
@@ -99,7 +98,7 @@ GCNMenu::~GCNMenu() {
 
 void GCNMenu::action(const gcn::ActionEvent& actionEvent) {
   if (actionEvent.getId() == EVENT_CANCEL)
-    listener_->windowCanceled(this);
+    platform_->windowCanceled(this);
   else
-    listener_->receiveGCNMenuEvent(this, actionEvent.getId());
+    platform_->receiveGCNMenuEvent(this, actionEvent.getId());
 }

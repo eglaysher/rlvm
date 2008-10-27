@@ -35,6 +35,27 @@
 
 using std::string;
 
+const char* ADDTIONAL_STRINGS_TO_LOAD[] = {
+  "SAVE_NODATA",
+  "SYSTEM_SAVELOADMESSAGE_STR",
+  "SAVEMESSAGE_TITLE_STR",
+  "SAVEMESSAGE_MESS_STR",
+  "SAVEMESSAGE_MESS2_STR",
+  "LOADMESSAGE_TITLE_STR",
+  "LOADMESSAGE_MESS_STR",
+  "LOADMESSAGE_MESS2_STR",
+  "DLGSAVEMESSAGE_TITLE_STR",
+  "DLGSAVEMESSAGE_OK_BUTTON_STR",
+  "DLGLOADMESSAGE_TITLE_STR",
+  "DLGLOADMESSAGE_OK_BUTTON_STR",
+  "SYSTEM_ANIME_STR",
+  "SELPOINT_RETURN_MESS_STR",
+  "VERSION_STR",
+  "MENU_RETURN_MESS_STR",
+  "GAME_END_MESS_STR",
+  NULL
+};
+
 // -----------------------------------------------------------------------
 // Platform
 // -----------------------------------------------------------------------
@@ -52,6 +73,11 @@ Platform::Platform(Gameexe& gameexe) {
                isdigit(key[5]) && isdigit(key[6])) {
       addSyscomStringFor(key, it->to_string());
     }
+  }
+
+  for (int i = 0; ADDTIONAL_STRINGS_TO_LOAD[i] != NULL; ++i) {
+    GameexeInterpretObject toload = gameexe(ADDTIONAL_STRINGS_TO_LOAD[i]);
+    addSyscomStringFor(toload.key(), toload.to_string());
   }
 }
 

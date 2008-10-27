@@ -32,6 +32,7 @@
 
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Sys.hpp"
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"
 #include "Platforms/gcn/gcnUtils.hpp"
@@ -220,11 +221,34 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
   // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
 
-  if (event == SYSCOM_EVENTS[SYSCOM_EXIT_GAME])
-    blocker_->addMachineTask(bind(&GCNPlatform::QuitEvent, _1));
+  if (event == SYSCOM_EVENTS[SYSCOM_SAVE])
+    blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
+  else if (event == SYSCOM_EVENTS[SYSCOM_LOAD])
+    blocker_->addMachineTask(bind(&GCNPlatform::MenuLoad, this, _1));
+  else if (event == SYSCOM_EVENTS[SYSCOM_EXIT_GAME])
+    blocker_->addMachineTask(bind(&GCNPlatform::QuitEvent, this, _1));
   else if (event == SYSCOM_EVENTS[SYSCOM_MENU_RETURN])
-    blocker_->addMachineTask(bind(&GCNPlatform::MenuReturnEvent, _1));
+    blocker_->addMachineTask(bind(&GCNPlatform::MenuReturnEvent, this, _1));
+}
 
+// -----------------------------------------------------------------------
+
+void GCNPlatform::saveEvent(int slot)
+{
+  // First, clear the window_stack_
+  blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
+
+  blocker_->addMachineTask(bind(&GCNPlatform::DoSave, this, _1, slot));
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::loadEvent(int slot)
+{
+  // First, clear the window_stack_
+  blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
+
+  cerr << "Should load from " << slot << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -282,9 +306,7 @@ void GCNPlatform::buildSyscomMenuFor(const int menu_items[], RLMachine& machine)
     buttons.push_back(button_definition);
   }
 
-  GCNMenu* menu = new GCNMenu(buttons, Size(640, 480), this);
-  window_stack_.push_back(menu);
-  toplevel_container_->add(menu);
+  pushWindowOntoStack(new GCNMenu(buttons, this));
 }
 
 // -----------------------------------------------------------------------
@@ -307,7 +329,43 @@ void GCNPlatform::popWindowFromStack()
 }
 
 // -----------------------------------------------------------------------
+
+void GCNPlatform::pushWindowOntoStack(GCNWindow* window)
+{
+  window->centerInWindow(Size(640, 480));
+  window_stack_.push_back(window);
+  toplevel_container_->add(window);
+}
+
+// -----------------------------------------------------------------------
 // Event Handler Functions
+// -----------------------------------------------------------------------
+
+void GCNPlatform::MenuSave(RLMachine& machine) {
+  pushWindowOntoStack(
+    new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_SAVE, this));
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::DoSave(RLMachine& machine, int slot) {
+  Serialization::saveGlobalMemory(machine);
+  Serialization::saveGameForSlot(machine, slot);
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::MenuLoad(RLMachine& machine) {
+  pushWindowOntoStack(
+    new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_LOAD, this));
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
+
+}
+
 // -----------------------------------------------------------------------
 
 /* static */

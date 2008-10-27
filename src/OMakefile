@@ -62,6 +62,7 @@ LIBRLVMFILES[] =
   Platforms/gcn/GCNPlatform
   Platforms/gcn/GCNMenu
   Platforms/gcn/GCNWindow
+  Platforms/gcn/GCNSaveLoadWindow
   Platforms/gcn/SDLTrueTypeFont
   ../vendor/libVendorLibs
 

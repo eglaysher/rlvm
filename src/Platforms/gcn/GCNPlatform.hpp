@@ -29,6 +29,8 @@
 
 #include "Systems/Base/Platform.hpp"
 #include "Platforms/gcn/GCNMenu.hpp"
+#include "Platforms/gcn/GCNWindow.hpp"
+#include "Platforms/gcn/GCNSaveLoadWindow.hpp"
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -54,23 +56,20 @@ extern const std::string EVENT_CANCEL;
  * Guichan GUI.
  */
 class GCNPlatform : public Platform,
-                    public GCNMenuListener,
                     public boost::enable_shared_from_this<GCNPlatform>
 {
 public:
   GCNPlatform(Gameexe& gameexe, const Rect& screen_size);
   ~GCNPlatform();
 
-  /// Overridden from Platform
-  virtual void run(RLMachine& machine);
-  virtual void render(RLMachine& machine);
-  virtual void showNativeSyscomMenu(RLMachine& machine);
-
-  // Overriden from GCNWindowListener (GCNMenuListener's base):
-  virtual void windowCanceled(GCNWindow* window);
-
-  // Overriden from GCNMenuListener:
-  virtual void receiveGCNMenuEvent(GCNMenu* menu, const std::string& event);
+  // Events from UI objects
+  void run(RLMachine& machine);
+  void render(RLMachine& machine);
+  void showNativeSyscomMenu(RLMachine& machine);
+  void windowCanceled(GCNWindow* window);
+  void receiveGCNMenuEvent(GCNMenu* menu, const std::string& event);
+  void saveEvent(int slot);
+  void loadEvent(int slot);
 
 private:
   /// Initializes all of the above.
@@ -86,13 +85,20 @@ private:
   /// Deallocates the window on the top of the window stack.
   void popWindowFromStack();
 
+  /// Displays a window.
+  void pushWindowOntoStack(GCNWindow* window);
+
   /**
    * @name Event Handling functions
    *
    * @{
    */
-  static void QuitEvent(RLMachine& machine);
-  static void MenuReturnEvent(RLMachine& machine);
+  void MenuSave(RLMachine& machine);
+  void DoSave(RLMachine& machine, int slot);
+  void MenuLoad(RLMachine& machine);
+  void DoLoad(RLMachine& machine, int slot);
+  void QuitEvent(RLMachine& machine);
+  void MenuReturnEvent(RLMachine& machine);
   /// @}
 
   /// This is our LongOperation on the stack.

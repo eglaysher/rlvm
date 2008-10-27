@@ -24,44 +24,57 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __GCNMenu_hpp__
-#define __GCNMenu_hpp__
+
+#ifndef __GCNSaveLoadWindow_hpp__
+#define __GCNSaveLoadWindow_hpp__
 
 #include "Platforms/gcn/GCNWindow.hpp"
 
-#include <guichan/actionlistener.hpp>
+#include <boost/scoped_ptr.hpp>
 
-class GCNMenu;
+#include <guichan/actionlistener.hpp>
+#include <guichan/widgets/listbox.hpp>
+#include <guichan/selectionlistener.hpp>
+#include <guichan/listmodel.hpp>
+#include <guichan/widgets/button.hpp>
+
+class RLMachine;
 
 // -----------------------------------------------------------------------
 
 /**
- * Input struct for a GCNMenu. GCNPlatform creates a vector of this struct.
+ *
  */
-struct GCNMenuButton {
-  GCNMenuButton() : enabled(false), separator(false) {}
-
-  std::string label;
-  std::string action;
-  bool enabled;
-  bool separator;
-};
-
-/**
- * A GCNMenu is a window that just auto-lays out a set of buttons.
- */
-class GCNMenu : public GCNWindow,
-                public gcn::ActionListener
+class GCNSaveLoadWindow : public GCNWindow,
+                          public gcn::ActionListener,
+                          public gcn::SelectionListener
 {
 public:
-  GCNMenu(const std::vector<GCNMenuButton>& buttons,
-          GCNPlatform* platform);
-  ~GCNMenu();
+  enum WindowType {
+    DO_SAVE,
+    DO_LOAD
+  };
+
+public:
+  GCNSaveLoadWindow(RLMachine& machine,
+                    WindowType type,
+                    GCNPlatform* platform_);
+  ~GCNSaveLoadWindow();
 
   // Overriden from gcn::ActionListener:
   virtual void action(const gcn::ActionEvent& actionEvent);
 
-};  // end of class GCNMenu
+  // Overriden from gcn::SelectionListener:
+  virtual void valueChanged(const gcn::SelectionEvent& event);
+
+private:
+  boost::scoped_ptr<gcn::ListModel> model_;
+
+  /// Either "Save" or "Load"
+  gcn::Button* action_button_;
+
+  gcn::ListBox* listbox_;
+};  // end of class GCNSaveLoadWindow
 
 
 #endif

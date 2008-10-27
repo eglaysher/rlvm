@@ -29,34 +29,24 @@
 
 #include <guichan/widgets/container.hpp>
 
+class GCNPlatform;
 class Size;
-class GCNWindow;
 
 /**
- * Callback interface for receiving messages from a GCNWindow.
- */
-class GCNWindowListener {
-public:
-  /**
-   * 
-   */
-  virtual void windowCanceled(GCNWindow* window) = 0;
-};
-
-/**
- *
+ * Base window. Later, this should be themed correctly. Default ugliness for
+ * now.
  */
 class GCNWindow : public gcn::Container
 {
 public:
-  GCNWindow();
+  GCNWindow(GCNPlatform* platform);
   ~GCNWindow();
 
   /// Centers this GCNWindow in the rlvm window.
   void centerInWindow(const Size& screen_size);
 
-private:
-
+protected:
+  GCNPlatform* platform_;
 };  // end of class GCNWindow
 
 
