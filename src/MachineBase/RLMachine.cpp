@@ -437,10 +437,6 @@ void RLMachine::pushLongOperation(LongOperation* long_operation)
 
 void RLMachine::pushStackFrame(const StackFrame& frame)
 {
-  if (call_stack_.size() &&
-      call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
-    call_stack_.back().long_op->looseFocus();
-
   call_stack_.push_back(frame);
 }
 
@@ -449,10 +445,6 @@ void RLMachine::pushStackFrame(const StackFrame& frame)
 void RLMachine::popStackFrame()
 {
   call_stack_.pop_back();
-
-  if (call_stack_.size() &&
-      call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
-    call_stack_.back().long_op->gainFocus();
 }
 
 // -----------------------------------------------------------------------
