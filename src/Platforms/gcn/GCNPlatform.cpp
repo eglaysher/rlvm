@@ -34,6 +34,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Sys.hpp"
+#include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"
 #include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -132,7 +133,7 @@ public:
     delayed_tasks_.push(task);
   }
 
-  void addMachineTask(const boost::function<bool(RLMachine&)>& task) {
+  void addMachineTask(const boost::function<void(RLMachine&)>& task) {
     delayed_rlmachine_tasks_.push(task);
   }
 
@@ -143,17 +144,9 @@ public:
       delayed_tasks_.pop();
     }
 
-    bool stack_is_gone = false;
     while (delayed_rlmachine_tasks_.size()) {
-      stack_is_gone |= delayed_rlmachine_tasks_.front()(machine);
+      delayed_rlmachine_tasks_.front()(machine);
       delayed_rlmachine_tasks_.pop();
-    }
-
-    if (stack_is_gone) {
-      // We've performed an action that has reset or otherwise modified
-      // ourselves off the stack. Don't remove the top item from the stack
-      // since it's no longer us.
-      return false;
     }
 
     return platform_->window_stack_.size() == 0;
@@ -169,7 +162,7 @@ private:
   boost::shared_ptr<GCNPlatform> platform_;
 
   std::queue<boost::function<void(void)> > delayed_tasks_;
-  std::queue<boost::function<bool(RLMachine&)> > delayed_rlmachine_tasks_;
+  std::queue<boost::function<void(RLMachine&)> > delayed_rlmachine_tasks_;
 };
 
 // -----------------------------------------------------------------------
@@ -243,9 +236,7 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
 
 void GCNPlatform::saveEvent(int slot)
 {
-  // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
-
   blocker_->addMachineTask(bind(&GCNPlatform::DoSave, this, _1, slot));
 }
 
@@ -253,10 +244,8 @@ void GCNPlatform::saveEvent(int slot)
 
 void GCNPlatform::loadEvent(int slot)
 {
-  // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
-
-  cerr << "Should load from " << slot << endl;
+  blocker_->addMachineTask(bind(&GCNPlatform::DoLoad, this, _1, slot));
 }
 
 // -----------------------------------------------------------------------
@@ -349,48 +338,41 @@ void GCNPlatform::pushWindowOntoStack(GCNWindow* window)
 // Event Handler Functions
 // -----------------------------------------------------------------------
 
-bool GCNPlatform::MenuSave(RLMachine& machine) {
+void GCNPlatform::MenuSave(RLMachine& machine) {
   pushWindowOntoStack(
     new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_SAVE, this));
-  return false;
 }
 
 // -----------------------------------------------------------------------
 
-bool GCNPlatform::DoSave(RLMachine& machine, int slot) {
+void GCNPlatform::DoSave(RLMachine& machine, int slot) {
   Serialization::saveGlobalMemory(machine);
   Serialization::saveGameForSlot(machine, slot);
-  return false;
 }
 
 // -----------------------------------------------------------------------
 
-bool GCNPlatform::MenuLoad(RLMachine& machine) {
+void GCNPlatform::MenuLoad(RLMachine& machine) {
   pushWindowOntoStack(
     new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_LOAD, this));
-
-  return false;
 }
 
 // -----------------------------------------------------------------------
 
-bool GCNPlatform::DoLoad(RLMachine& machine, int slot) {
-
-  return true;
+void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
+  machine.clearLongOperationsOffBackOfStack();
+  Sys_load()(machine, slot);
 }
 
 // -----------------------------------------------------------------------
 
-/* static */
-bool GCNPlatform::QuitEvent(RLMachine& machine) {
+void GCNPlatform::QuitEvent(RLMachine& machine) {
   machine.halt();
-
-  return false;
 }
 
 // -----------------------------------------------------------------------
 
-bool GCNPlatform::MenuReturnEvent(RLMachine& machine) {
+void GCNPlatform::MenuReturnEvent(RLMachine& machine) {
   // This is a hack since we probably have a bunch of crap on the stack.
   machine.clearLongOperationsOffBackOfStack();
 
@@ -408,6 +390,4 @@ Current stack:
 Returning true in this situation is just confusing and 
 
  */
-
-  return false;
 }

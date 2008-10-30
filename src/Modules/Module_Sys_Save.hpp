@@ -28,6 +28,9 @@
 #ifndef __Module_Sys_Save_hpp__
 #define __Module_Sys_Save_hpp__
 
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/LongOperation.hpp"
+
 class RLMachine;
 class RLModule;
 class System;
@@ -39,5 +42,37 @@ class System;
  * @see SysModule
  */
 void addSysSaveOpcodes(RLModule& module);
+
+// -----------------------------------------------------------------------
+
+
+/**
+ * Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
+ * from a save game slot.
+ *
+ * Internally, load is fairly complex, consisting of several
+ * LongOperations because we can't rely on normal flow control because
+ * we're going to nuke the call stack and system memory in
+ * LoadingGame.
+ */
+struct Sys_load : public RLOp_Void_1< IntConstant_T >
+{
+  bool advanceInstructionPointer() { return false; }
+
+  struct LoadingGame : public LongOperation
+  {
+    int slot_;
+    LoadingGame(int slot) : slot_(slot) {}
+
+    virtual bool operator()(RLMachine& machine);
+  };
+
+  /**
+   * Main entrypoint into the load command. Simply sets the callstack
+   * up so that we will fade to black, clear the screen and render,
+   * and then enter the next stage, the LongOperation LoadingGame.
+   */
+  virtual void operator()(RLMachine& machine, int slot);
+};
 
 #endif
