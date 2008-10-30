@@ -66,8 +66,19 @@ LIBRLVMFILES[] =
   Platforms/gcn/SDLTrueTypeFont
   ../vendor/libVendorLibs
 
+# WARNING: KEEP THIS LIST UP TO DATE WITH PRECOMPILED.HPP BECAUSE OTHERWISE THE
+# BUILD BREAKS!!!!!
+PRECOMPILED_HEADERS[] =
+  libReallive/gameexe.h
+  MachineBase/RLMachine.hpp
+  MachineBase/reference.hpp
+  MachineBase/RLOperation.hpp
+  MachineBase/RLOperation/Argc_T.hpp
+  MachineBase/RLOperation/RLOp_Store.hpp
+  MachineBase/RLOperation/References.hpp
+
 # Build our precompiled headers
-Precompiled.hpp.gch: Precompiled.hpp
+Precompiled.hpp.gch: Precompiled.hpp $(PRECOMPILED_HEADERS)
   if $(or $(equal $(OSTYPE), Win32), $(equal $(OSTYPE), WindowsNT))
     echo "tag" > $@
   else
