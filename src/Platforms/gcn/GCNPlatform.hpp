@@ -93,12 +93,12 @@ private:
    *
    * @{
    */
-  void MenuSave(RLMachine& machine);
-  void DoSave(RLMachine& machine, int slot);
-  void MenuLoad(RLMachine& machine);
-  void DoLoad(RLMachine& machine, int slot);
-  void QuitEvent(RLMachine& machine);
-  void MenuReturnEvent(RLMachine& machine);
+  bool MenuSave(RLMachine& machine);
+  bool DoSave(RLMachine& machine, int slot);
+  bool MenuLoad(RLMachine& machine);
+  bool DoLoad(RLMachine& machine, int slot);
+  bool QuitEvent(RLMachine& machine);
+  bool MenuReturnEvent(RLMachine& machine);
   /// @}
 
   /// This is our LongOperation on the stack.

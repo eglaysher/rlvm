@@ -38,6 +38,10 @@
 
 #include "MachineBase/RLModule.hpp"
 
+#include "MachineBase/RLOperation.hpp"
+
+class RLMachine;
+
 /**
  * Contains functions for mod<1:4>, Sys.
  *
@@ -48,4 +52,12 @@ public:
   SysModule();
 };
 
+// -----------------------------------------------------------------------
+
+struct Sys_MenuReturn : public RLOp_Void_Void
+{
+  /// Don't advance the instruction pointer when this returns
+  virtual bool advanceInstructionPointer() { return false; }
+  virtual void operator()(RLMachine& machine);
+};
 #endif

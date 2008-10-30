@@ -132,7 +132,7 @@ public:
     delayed_tasks_.push(task);
   }
 
-  void addMachineTask(const boost::function<void(RLMachine&)>& task) {
+  void addMachineTask(const boost::function<bool(RLMachine&)>& task) {
     delayed_rlmachine_tasks_.push(task);
   }
 
@@ -143,9 +143,17 @@ public:
       delayed_tasks_.pop();
     }
 
+    bool stack_is_gone = false;
     while (delayed_rlmachine_tasks_.size()) {
-      delayed_rlmachine_tasks_.front()(machine);
+      stack_is_gone |= delayed_rlmachine_tasks_.front()(machine);
       delayed_rlmachine_tasks_.pop();
+    }
+
+    if (stack_is_gone) {
+      // We've performed an action that has reset or otherwise modified
+      // ourselves off the stack. Don't remove the top item from the stack
+      // since it's no longer us.
+      return false;
     }
 
     return platform_->window_stack_.size() == 0;
@@ -161,7 +169,7 @@ private:
   boost::shared_ptr<GCNPlatform> platform_;
 
   std::queue<boost::function<void(void)> > delayed_tasks_;
-  std::queue<boost::function<void(RLMachine&)> > delayed_rlmachine_tasks_;
+  std::queue<boost::function<bool(RLMachine&)> > delayed_rlmachine_tasks_;
 };
 
 // -----------------------------------------------------------------------
@@ -341,40 +349,65 @@ void GCNPlatform::pushWindowOntoStack(GCNWindow* window)
 // Event Handler Functions
 // -----------------------------------------------------------------------
 
-void GCNPlatform::MenuSave(RLMachine& machine) {
+bool GCNPlatform::MenuSave(RLMachine& machine) {
   pushWindowOntoStack(
     new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_SAVE, this));
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::DoSave(RLMachine& machine, int slot) {
+bool GCNPlatform::DoSave(RLMachine& machine, int slot) {
   Serialization::saveGlobalMemory(machine);
   Serialization::saveGameForSlot(machine, slot);
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::MenuLoad(RLMachine& machine) {
+bool GCNPlatform::MenuLoad(RLMachine& machine) {
   pushWindowOntoStack(
     new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_LOAD, this));
+
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
+bool GCNPlatform::DoLoad(RLMachine& machine, int slot) {
 
+  return true;
 }
 
 // -----------------------------------------------------------------------
 
 /* static */
-void GCNPlatform::QuitEvent(RLMachine& machine) {
+bool GCNPlatform::QuitEvent(RLMachine& machine) {
   machine.halt();
+
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::MenuReturnEvent(RLMachine& machine) {
+bool GCNPlatform::MenuReturnEvent(RLMachine& machine) {
+  // This is a hack since we probably have a bunch of crap on the stack.
+  machine.clearLongOperationsOffBackOfStack();
+
   // Simulate a MenuReturn.
+  Sys_MenuReturn()(machine);
+
+/*
+Problem:
+Current stack:
+{seen=9032, offset=23}
+{seen=50, offset=27 [LONG OP=18NewPageAfterLongop]}
+{seen=50, offset=27 [LONG OP=18GCNPlatformBlocker]}
+{seen=50, offset=27 [LONG OP=10FadeEffect]}
+
+Returning true in this situation is just confusing and 
+
+ */
+
+  return false;
 }
