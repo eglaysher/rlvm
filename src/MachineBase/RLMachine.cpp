@@ -77,7 +77,6 @@
 #include <sstream>
 #include <iostream>
 #include <iterator>
-
 #include <boost/bind.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -89,8 +88,9 @@ namespace fs = boost::filesystem;
 using namespace std;
 using namespace libReallive;
 
-using boost::bind;
 using boost::assign::list_of;
+using boost::bind;
+using boost::function;
 
 // -----------------------------------------------------------------------
 
@@ -116,7 +116,8 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
   : memory_(new Memory(in_system.gameexe())),
     halted_(false), print_undefined_opcodes_(false),
     halt_on_exception_(true), archive_(in_archive), line_(0),
-    system_(in_system), mark_savepoints_(true)
+    system_(in_system), mark_savepoints_(true),
+    delay_stack_modifications_(false)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
@@ -283,9 +284,20 @@ void RLMachine::executeNextInstruction()
     {
       if(call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
       {
+        delay_stack_modifications_ = true;
         bool ret_val = (*call_stack_.back().long_op)(*this);
+        delay_stack_modifications_ = false;
+
         if(ret_val)
           popStackFrame();
+
+        // Now we can perform the queued actions
+        for (vector<function<void(void)> >::iterator it =
+               delayed_modifications_.begin();
+             it != delayed_modifications_.end(); ++it) {
+          (*it)();
+        }
+        delayed_modifications_.clear();
       }
       else
         call_stack_.back().ip->runOnMachine(*this);
@@ -366,8 +378,25 @@ void RLMachine::jump(int scenario_num, int entrypoint)
   if(scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
-  call_stack_.back().scenario = scenario;
-  call_stack_.back().ip = scenario->findEntrypoint(entrypoint);
+  if (call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
+    // TODO: For some reason this is slow; REALLY slow, so for now I'm trying
+    // to optimize the common case (no long operations on the back of the
+    // stack. I assume there's some weird speed issue with reverse_iterator?
+    //
+    // The lag is noticeable on the CLANNAD menu, without profiling tools.
+    std::vector<StackFrame>::reverse_iterator it =
+      find_if(call_stack_.rbegin(), call_stack_.rend(),
+              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+
+    if(it != call_stack_.rend())
+    {
+      it->scenario = scenario;
+      it->ip = scenario->findEntrypoint(entrypoint);
+    }
+  } else {
+    call_stack_.back().scenario = scenario;
+    call_stack_.back().ip = scenario->findEntrypoint(entrypoint);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -437,6 +466,12 @@ void RLMachine::pushLongOperation(LongOperation* long_operation)
 
 void RLMachine::pushStackFrame(const StackFrame& frame)
 {
+  if (delay_stack_modifications_) {
+    delayed_modifications_.push_back(
+      bind(&RLMachine::pushStackFrame, this, frame));
+    return;
+  }
+
   call_stack_.push_back(frame);
 }
 
@@ -444,7 +479,29 @@ void RLMachine::pushStackFrame(const StackFrame& frame)
 
 void RLMachine::popStackFrame()
 {
+  if (delay_stack_modifications_) {
+    delayed_modifications_.push_back(bind(&RLMachine::popStackFrame, this));
+    return;
+  }
+
   call_stack_.pop_back();
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::clearLongOperationsOffBackOfStack()
+{
+  if (delay_stack_modifications_) {
+    delayed_modifications_.push_back(
+      bind(&RLMachine::clearLongOperationsOffBackOfStack, this));
+    return;
+  }
+
+  // Need to do stuff here...
+  while (call_stack_.size() &&
+         call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
+    call_stack_.pop_back();
+  }
 }
 
 // -----------------------------------------------------------------------
