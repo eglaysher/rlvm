@@ -401,8 +401,8 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(2003, 0, "ConfirmSaveLoad",
               returnIntValue(&System::confirmSaveLoad));
 
-  m.addUnsupportedOpcode(3000, 0, "menu_save");
-  m.addUnsupportedOpcode(3001, 0, "menu_load");
+  m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
+  m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
 
   m.addOpcode(3007, 0, "save", new Sys_save);
   m.addOpcode(3107, 0, "save_always", new Sys_save);

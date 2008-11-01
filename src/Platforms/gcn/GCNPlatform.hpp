@@ -66,12 +66,16 @@ public:
   void run(RLMachine& machine);
   void render(RLMachine& machine);
   void showNativeSyscomMenu(RLMachine& machine);
+  void invokeSyscomStandardUI(RLMachine& machine, int syscom);
   void windowCanceled(GCNWindow* window);
   void receiveGCNMenuEvent(GCNMenu* menu, const std::string& event);
   void saveEvent(int slot);
   void loadEvent(int slot);
 
 private:
+  /// Blocks the world until we're done.
+  void pushBlocker(RLMachine& machine);
+
   /// Initializes all of the above.
   void initializeGuichan(const Rect& screen_size);
 
@@ -97,16 +101,11 @@ private:
   void DoSave(RLMachine& machine, int slot);
   void MenuLoad(RLMachine& machine);
   void DoLoad(RLMachine& machine, int slot);
-  void QuitEvent(RLMachine& machine);
-  void MenuReturnEvent(RLMachine& machine);
+  void InvokeSyscom(RLMachine& machine, int syscom);
   /// @}
 
   /// This is our LongOperation on the stack.
   GCNPlatformBlocker* blocker_;
-
-  /// We have to delay poping from the stack since most actions that would pop
-  /// the stack have call stack frames into those windows...
-  bool pop_stack_next_run_;
 
   /**
    * @name GUIchan syscom implementation

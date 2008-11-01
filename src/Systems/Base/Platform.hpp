@@ -69,6 +69,11 @@ public:
    */
   virtual void showNativeSyscomMenu(RLMachine& machine) = 0;
 
+  /**
+   * Invokes a standard dialog.
+   */
+  virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
+
 private:
   /// Strips quotes off of value and adds it to our internal strings database.
   void addSyscomStringFor(const std::string& key, const std::string& value);

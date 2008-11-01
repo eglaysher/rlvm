@@ -161,7 +161,7 @@ public:
    * It is possible to set the interpreter up to advance text
    * automatically instead of waiting for player input after each
    * screen is displayed; the `auto mode' controls permit this
-   * behaviour to be customised.
+   * behaviour to be customized.
    *
    * @{
    */

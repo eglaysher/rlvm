@@ -40,6 +40,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
+#include "Modules/Module_Sys.hpp"
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -184,6 +185,74 @@ void System::showSyscomMenu(RLMachine& machine)
   } else {
     cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
   }
+}
+
+// -----------------------------------------------------------------------
+
+void System::invokeSyscom(RLMachine& machine, int syscom)
+{
+  switch(syscom) {
+  case SYSCOM_SAVE:
+  case SYSCOM_LOAD:
+  case SYSCOM_MESSAGE_SPEED:
+  case SYSCOM_WINDOW_ATTRIBUTES:
+  case SYSCOM_VOLUME_SETTINGS:
+  case SYSCOM_MISCELLANEOUS_SETTINGS:
+  case SYSCOM_VOICE_SETTINGS:
+  case SYSCOM_FONT_SELECTION:
+  case SYSCOM_BGM_FADE:
+  case SYSCOM_BGM_SETTINGS:
+  case SYSCOM_AUTO_MODE_SETTINGS:
+  case SYSCOM_USE_KOE:
+  case SYSCOM_DISPLAY_VERSION: {
+    platform_->invokeSyscomStandardUI(machine, syscom);
+    break;
+  }
+  case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
+    cerr << "Implement return to previous selection later!" << endl;
+    break;
+  case SYSCOM_SHOW_WEATHER:
+    graphics().setShowWeather(!graphics().showWeather());
+    break;
+  case SYSCOM_SHOW_OBJECT_1:
+    graphics().setShowObject1(!graphics().showObject1());
+    break;
+  case SYSCOM_SHOW_OBJECT_2:
+    graphics().setShowObject2(!graphics().showObject2());
+    break;
+  case SYSCOM_CLASSIFY_TEXT:
+    cerr << "We have no idea what classifying text even means!" << endl;
+    break;
+  case SYSCOM_OPEN_MANUAL_PATH:
+    cerr << "Opening manual path..." << endl;
+    break;
+  case SYSCOM_SET_SKIP_MODE:
+    text().setSkipMode(1);
+    break;
+  case SYSCOM_AUTO_MODE:
+    text().setAutoMode(1);
+    break;
+  case SYSCOM_MENU_RETURN:
+    // This is a hack since we probably have a bunch of crap on the stack.
+    machine.clearLongOperationsOffBackOfStack();
+
+    // Simulate a MenuReturn.
+    Sys_MenuReturn()(machine);
+    break;
+  case SYSCOM_EXIT_GAME:
+    machine.halt();
+    break;
+  case SYSCOM_SHOW_BACKGROUND:
+    graphics().toggleInterfaceHidden();
+    break;
+  case SYSCOM_GENERIC_1:
+  case SYSCOM_GENERIC_2:
+  case SYSCOM_SCREEN_MODE:
+  case SYSCOM_WINDOW_DECORATION_STYLE:
+  case SYSCOM_HIDE_MENU:
+    cerr << "No idea what to do!" << endl;
+    break;
+  };
 }
 
 // -----------------------------------------------------------------------

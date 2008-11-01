@@ -33,12 +33,12 @@
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
-#include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"
 #include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "libReallive/gameexe.h"
 
@@ -170,7 +170,7 @@ private:
 // -----------------------------------------------------------------------
 
 GCNPlatform::GCNPlatform(Gameexe& gameexe, const Rect& screen_size)
-  : Platform(gameexe)
+  : Platform(gameexe), blocker_(NULL)
 {
   initializeGuichan(screen_size);
 }
@@ -206,12 +206,25 @@ void GCNPlatform::render(RLMachine& machine)
 
 void GCNPlatform::showNativeSyscomMenu(RLMachine& machine)
 {
-  // Block the world!
-  SDLEventSystem& system = dynamic_cast<SDLEventSystem&>(
-    machine.system().event());
-  machine.pushLongOperation(new GCNPlatformBlocker(system, shared_from_this()));
-
+  pushBlocker(machine);
   buildSyscomMenuFor(SYCOM_MAIN_MENU, machine);
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom)
+{
+  pushBlocker(machine);
+  if (syscom == SYSCOM_SAVE)
+    blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
+  else if (syscom == SYSCOM_LOAD)
+    blocker_->addMachineTask(bind(&GCNPlatform::MenuLoad, this, _1));
+//  else if (event == SYSCOM_EVENTS[SYSCOM_AUTO_MODE])
+//    blocker_->addMachineTask(bind(&GCNPlatform::DoAutoMode, this, _1));
+//  else if (event == SYSCOM_EVENTS[SYSCOM_MENU_RETURN])
+//    blocker_->addMachineTask(bind(&GCNPlatform::MenuReturnEvent, this, _1));
+//  else if (event == SYSCOM_EVENTS[SYSCOM_EXIT_GAME])
+//    blocker_->addMachineTask(bind(&GCNPlatform::QuitEvent, this, _1));
 }
 
 // -----------------------------------------------------------------------
@@ -228,14 +241,14 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
   // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
 
-  if (event == SYSCOM_EVENTS[SYSCOM_SAVE])
-    blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
-  else if (event == SYSCOM_EVENTS[SYSCOM_LOAD])
-    blocker_->addMachineTask(bind(&GCNPlatform::MenuLoad, this, _1));
-  else if (event == SYSCOM_EVENTS[SYSCOM_EXIT_GAME])
-    blocker_->addMachineTask(bind(&GCNPlatform::QuitEvent, this, _1));
-  else if (event == SYSCOM_EVENTS[SYSCOM_MENU_RETURN])
-    blocker_->addMachineTask(bind(&GCNPlatform::MenuReturnEvent, this, _1));
+  // TODO: These need to be redirected back to our owning system's invokeSyscom
+  // method instead.
+  for (int i = 0; i <= SYSCOM_SHOW_BACKGROUND; ++i) {
+    if (event == SYSCOM_EVENTS[i]) {
+      blocker_->addMachineTask(bind(&GCNPlatform::InvokeSyscom, this, _1, i));
+      break;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -256,6 +269,20 @@ void GCNPlatform::loadEvent(int slot)
 
 // -----------------------------------------------------------------------
 // Private
+// -----------------------------------------------------------------------
+
+void GCNPlatform::pushBlocker(RLMachine& machine)
+{
+  if (blocker_ == NULL) {
+    // Block the world!
+    SDLEventSystem& system = dynamic_cast<SDLEventSystem&>(
+      machine.system().event());
+    machine.pushLongOperation(new GCNPlatformBlocker(system,
+                                                     shared_from_this()));
+
+  }
+}
+
 // -----------------------------------------------------------------------
 
 void GCNPlatform::initializeGuichan(const Rect& screen_size)
@@ -372,28 +399,6 @@ void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::QuitEvent(RLMachine& machine) {
-  machine.halt();
-}
-
-// -----------------------------------------------------------------------
-
-void GCNPlatform::MenuReturnEvent(RLMachine& machine) {
-  // This is a hack since we probably have a bunch of crap on the stack.
-  machine.clearLongOperationsOffBackOfStack();
-
-  // Simulate a MenuReturn.
-  Sys_MenuReturn()(machine);
-
-/*
-Problem:
-Current stack:
-{seen=9032, offset=23}
-{seen=50, offset=27 [LONG OP=18NewPageAfterLongop]}
-{seen=50, offset=27 [LONG OP=18GCNPlatformBlocker]}
-{seen=50, offset=27 [LONG OP=10FadeEffect]}
-
-Returning true in this situation is just confusing and 
-
- */
+void GCNPlatform::InvokeSyscom(RLMachine& machine, int syscom) {
+  machine.system().invokeSyscom(machine, syscom);
 }

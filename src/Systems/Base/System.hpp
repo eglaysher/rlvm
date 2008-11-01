@@ -53,7 +53,7 @@ const int SYSCOM_LOAD = 1;
 const int SYSCOM_MESSAGE_SPEED = 2;
 const int SYSCOM_WINDOW_ATTRIBUTES = 3;
 const int SYSCOM_VOLUME_SETTINGS = 4;
-const int SYSCOM_DISPLAY_MODE = 5;
+const int SYSCOM_SCREEN_MODE = 5;
 const int SYSCOM_MISCELLANEOUS_SETTINGS = 6;
 // No 7?
 const int SYSCOM_VOICE_SETTINGS = 8;
@@ -131,7 +131,6 @@ BOOST_CLASS_VERSION(SystemGlobals, 1)
  * The base System class is an abstract base class that is meant to be
  * specialized.
  *
- * @todo Write InvokeSyscom
  * @see SystemGlobals
  */
 class System
@@ -204,6 +203,14 @@ public:
 
   /// Called by various LongOperations to show the right click menu.
   void showSyscomMenu(RLMachine& machine);
+
+  /// If there is a standard dialog box associated with syscom, it is
+  /// displayed; if there is a standard action, it is performed. The list of
+  /// menu commands in section 4.5 has details of which menu commands have
+  /// standard dialogs. The optional value is used for the setting where
+  /// relevant (for example, InvokeSyscom(5, val) is exactly equivalent to
+  /// SetScreenMode(val)).
+  void invokeSyscom(RLMachine& machine, int syscom);
 
   /// @}
 

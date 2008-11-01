@@ -145,7 +145,7 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> values = gexe(full_key_name_);
-  if (entry_ < values.size())
+  if (static_cast<size_t>(entry_) < values.size())
     return values[entry_];
   else {
     ostringstream oss;
@@ -153,6 +153,19 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
         << full_key_name_ << "\"";
     throw std::runtime_error(oss.str());
   }
+}
+
+// -------------------------------------------------- [ InvokeSyscomAsOp ]
+
+InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom)
+  : syscom_(syscom)
+{}
+
+// -----------------------------------------------------------------------
+
+void InvokeSyscomAsOp::operator()(RLMachine& machine)
+{
+  return machine.system().invokeSyscom(machine, syscom_);
 }
 
 // ------------------------------------------------- [ UndefinedFunction ]
