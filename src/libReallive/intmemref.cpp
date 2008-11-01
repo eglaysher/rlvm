@@ -27,11 +27,11 @@
 
 #include "intmemref.h"
 
+#include <cstring>
 #include <iostream>
 #include <stdexcept>
 
 using namespace std;
-using std::ostream;
 
 namespace libReallive {
 

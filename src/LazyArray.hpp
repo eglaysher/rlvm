@@ -32,6 +32,7 @@
  *
  */
 
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <boost/utility.hpp>

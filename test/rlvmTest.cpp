@@ -31,6 +31,8 @@
 #include "tut/tut.hpp"
 #include "tut/tut_reporter.hpp"
 
+#include <cstdlib>
+
 /*
 
   // Run all tests, unit and game
@@ -96,7 +98,7 @@ int main(int argc,const char* argv[])
     }
     else if( argc == 3 )
     {
-      tut::runner.get().run_test(argv[1],::atoi(argv[2]));
+      tut::runner.get().run_test(argv[1],std::atoi(argv[2]));
     }
   }
   catch( const std::exception& ex )
