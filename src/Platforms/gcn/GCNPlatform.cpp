@@ -194,6 +194,12 @@ void GCNPlatform::run(RLMachine& machine)
 void GCNPlatform::render(RLMachine& machine)
 {
   guichan_gui_->draw();
+
+  // HACK: Something is either really wrong with Guichan and/or the intel
+  // drivers in Intrepid Ibex. Probably both. Something guichan is
+  // doing/drivers haven't implemented is causing a whole bunch of invalid
+  // enumerant errors.
+  while (glGetError() != GL_NO_ERROR);
 }
 
 // -----------------------------------------------------------------------
