@@ -105,7 +105,20 @@ struct MenuSpec {
 
 const char* MENU_PREFERENCES_EVENT = "MENU_PREFERENCES_EVENT";
 const MenuSpec MENU_PREFERENCES_MENU[] = {
-
+  {SYSCOM_SCREEN_MODE, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {SYSCOM_VOLUME_SETTINGS, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {SYSCOM_WINDOW_ATTRIBUTES, NULL, NULL},
+  {SYSCOM_WINDOW_DECORATION_STYLE, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {SYSCOM_FONT_SELECTION, NULL, NULL},
+  {SYSCOM_MESSAGE_SPEED, NULL, NULL},
+  {SYSCOM_AUTO_MODE_SETTINGS, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {SYSCOM_SHOW_OBJECT_1, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {SYSCOM_MISCELLANEOUS_SETTINGS, NULL, NULL},
   {MENU_END, NULL, NULL}
 };
 
@@ -126,6 +139,7 @@ const MenuSpec EXIT_GAME_MENU[] = {
 // TODO: Things like SYSCOM_MENU_RETURN need to be turned into menu pointers in
 // their own right.
 const MenuSpec SYCOM_MAIN_MENU[] = {
+  {SYSCOM_SET_SKIP_MODE, NULL, NULL},
   {SYSCOM_AUTO_MODE, NULL, NULL},
   {SYSCOM_SHOW_BACKGROUND, NULL, NULL},
   {MENU_SEPARATOR, NULL, NULL},
@@ -274,7 +288,11 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
   }
 
   // Handle our own internal events
-  if (event == MENU_RETURN_MENU_EVENT) {
+  if (event == MENU_PREFERENCES_EVENT) {
+    blocker_->addMachineTask(
+      bind(&GCNPlatform::buildSyscomMenuFor, this,
+           "", MENU_PREFERENCES_MENU, _1));
+  } else if (event == MENU_RETURN_MENU_EVENT) {
     blocker_->addMachineTask(
       bind(&GCNPlatform::buildSyscomMenuFor, this,
            syscomString("MENU_RETURN_MESS_STR"), MENU_RETURN_MENU, _1));
