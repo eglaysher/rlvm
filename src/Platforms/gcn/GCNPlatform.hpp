@@ -45,10 +45,11 @@
 class Gameexe;
 class GCNPlatformBlocker;
 class Rect;
+struct MenuSpec;
 
 // -----------------------------------------------------------------------
 
-extern const std::string EVENT_CANCEL;
+extern const char* EVENT_CANCEL;
 
 // -----------------------------------------------------------------------
 
@@ -81,7 +82,8 @@ private:
 
   /// Builds the current syscom menu, based on the currently visisble syscom
   /// items, erasing the old one if necessary.
-  void buildSyscomMenuFor(const int menu_items[], RLMachine& machine);
+  void buildSyscomMenuFor(const std::string& label,
+                          const MenuSpec menu_items[], RLMachine& machine);
 
   /// Clears the window stack (unblocking the RLMachine).
   void clearWindowStack();

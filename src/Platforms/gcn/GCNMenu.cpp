@@ -43,15 +43,25 @@ const int MENU_PADDING = 10;
 // GCNMenu
 // -----------------------------------------------------------------------
 
-GCNMenu::GCNMenu(const vector<GCNMenuButton>& buttons_to_display,
+GCNMenu::GCNMenu(
+  const std::string& title,
+  const vector<GCNMenuButton>& buttons_to_display,
                  GCNPlatform* platform)
   : GCNWindow(platform)
 {
   int top_offset = MENU_PADDING;
   int max_button_size = 0;
 
-  vector<gcn::Button*> buttons;
+  // Create the optional title if needed.
+  gcn::Label* menu_title = NULL;
+  if (!title.empty()) {
+    menu_title = new gcn::Label(title);
+    Container::add(menu_title, MENU_PADDING, top_offset);
+    top_offset += menu_title->getHeight() + MENU_PADDING;
+    max_button_size = menu_title->getWidth();
+  }
 
+  vector<gcn::Button*> buttons;
   for (vector<GCNMenuButton>::const_iterator it = buttons_to_display.begin();
        it != buttons_to_display.end(); ++it) {
     if (it->separator) {
@@ -70,8 +80,13 @@ GCNMenu::GCNMenu(const vector<GCNMenuButton>& buttons_to_display,
     }
   }
 
-  // Now iterate through all the buttons and make them the same width as the
+  // Now gothrough all the controls and make them the same width as the
   // largest button, centering the text.
+  if (menu_title) {
+    menu_title->setWidth(max_button_size);
+    menu_title->setAlignment(gcn::Graphics::CENTER);
+  }
+
   for (vector<gcn::Button*>::iterator it = buttons.begin();
        it != buttons.end(); ++it) {
     (*it)->setWidth(max_button_size);
@@ -83,16 +98,7 @@ GCNMenu::GCNMenu(const vector<GCNMenuButton>& buttons_to_display,
 
 // -----------------------------------------------------------------------
 
-GCNMenu::~GCNMenu() {
-/*
-  Do we need this for ownership reasons?
-
-  for (vector<Button*>::iterator it = buttons_to_deallocate_.begin();
-       it != buttons_to_deallocate_.end(); ++it) {
-    it->removeActionListener(this);
-  }
-*/
-}
+GCNMenu::~GCNMenu() { }
 
 // -----------------------------------------------------------------------
 

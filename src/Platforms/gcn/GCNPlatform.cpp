@@ -49,7 +49,7 @@
 using namespace std;
 using boost::bind;
 
-const std::string EVENT_CANCEL = "EVENT_CANCEL";
+const char* EVENT_CANCEL = "EVENT_CANCEL";
 
 // A mapping from the SYSCOM_ integer constants to a string suitable for an
 // event name.
@@ -91,23 +91,53 @@ const char* SYSCOM_EVENTS[] = {
 
 const int MENU_END = -1;
 const int MENU_SEPARATOR = -2;
-const int MENU_PREFERENCES = -3;
+const int MENU = -3;
+
+struct MenuSpec {
+  /// Syscom id >= 0, or a MENU* thing.
+  short syscom_id;
+  /// User interface string key, or NULL for syscom default.
+  const char* label;
+  /// Event to send back if the button is pressed, or NULL for
+  /// SYSCOM_EVENTS[syscom_id]
+  const char* event_name;
+};
+
+const char* MENU_PREFERENCES_EVENT = "MENU_PREFERENCES_EVENT";
+const MenuSpec MENU_PREFERENCES_MENU[] = {
+
+  {MENU_END, NULL, NULL}
+};
+
+const char* MENU_RETURN_MENU_EVENT = "MENU_RETURN_MENU_EVENT";
+const MenuSpec MENU_RETURN_MENU[] = {
+  {SYSCOM_HIDE_MENU, "028.000", EVENT_CANCEL},
+  {SYSCOM_MENU_RETURN, "028.001", NULL},
+  {MENU_END, NULL, NULL}
+};
+
+const char* EXIT_GAME_MENU_EVENT = "EXIT_GAME_MENU_EVENT";
+const MenuSpec EXIT_GAME_MENU[] = {
+  {SYSCOM_HIDE_MENU, "029.000", EVENT_CANCEL},
+  {SYSCOM_EXIT_GAME, "029.001", NULL},
+  {MENU_END, NULL, NULL}
+};
 
 // TODO: Things like SYSCOM_MENU_RETURN need to be turned into menu pointers in
 // their own right.
-const int SYCOM_MAIN_MENU[] = {
-  SYSCOM_AUTO_MODE,
-  SYSCOM_SHOW_BACKGROUND,
-  MENU_SEPARATOR,
-  SYSCOM_SAVE,
-  SYSCOM_LOAD,
-  SYSCOM_RETURN_TO_PREVIOUS_SELECTION,
-  MENU_SEPARATOR,
-//  MENU_PREFERENCES,
-//  MENU_SEPARATOR,
-  SYSCOM_MENU_RETURN,
-  SYSCOM_EXIT_GAME,
-  MENU_END
+const MenuSpec SYCOM_MAIN_MENU[] = {
+  {SYSCOM_AUTO_MODE, NULL, NULL},
+  {SYSCOM_SHOW_BACKGROUND, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {SYSCOM_SAVE, NULL, NULL},
+  {SYSCOM_LOAD, NULL, NULL},
+  {SYSCOM_RETURN_TO_PREVIOUS_SELECTION, NULL, NULL},
+  {MENU_SEPARATOR, NULL, NULL},
+  {MENU, "", MENU_PREFERENCES_EVENT},
+  {MENU_SEPARATOR, 0},
+  {MENU, "028", MENU_RETURN_MENU_EVENT},
+  {MENU, "029", EXIT_GAME_MENU_EVENT},
+  {MENU_END, NULL, NULL}
 };
 
 // -----------------------------------------------------------------------
@@ -207,7 +237,7 @@ void GCNPlatform::render(RLMachine& machine)
 void GCNPlatform::showNativeSyscomMenu(RLMachine& machine)
 {
   pushBlocker(machine);
-  buildSyscomMenuFor(SYCOM_MAIN_MENU, machine);
+  buildSyscomMenuFor("", SYCOM_MAIN_MENU, machine);
 }
 
 // -----------------------------------------------------------------------
@@ -219,12 +249,6 @@ void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
   else if (syscom == SYSCOM_LOAD)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuLoad, this, _1));
-//  else if (event == SYSCOM_EVENTS[SYSCOM_AUTO_MODE])
-//    blocker_->addMachineTask(bind(&GCNPlatform::DoAutoMode, this, _1));
-//  else if (event == SYSCOM_EVENTS[SYSCOM_MENU_RETURN])
-//    blocker_->addMachineTask(bind(&GCNPlatform::MenuReturnEvent, this, _1));
-//  else if (event == SYSCOM_EVENTS[SYSCOM_EXIT_GAME])
-//    blocker_->addMachineTask(bind(&GCNPlatform::QuitEvent, this, _1));
 }
 
 // -----------------------------------------------------------------------
@@ -241,13 +265,23 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
   // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
 
-  // TODO: These need to be redirected back to our owning system's invokeSyscom
-  // method instead.
+  // Handle triggered syscom events
   for (int i = 0; i <= SYSCOM_SHOW_BACKGROUND; ++i) {
     if (event == SYSCOM_EVENTS[i]) {
       blocker_->addMachineTask(bind(&GCNPlatform::InvokeSyscom, this, _1, i));
-      break;
+      return;
     }
+  }
+
+  // Handle our own internal events
+  if (event == MENU_RETURN_MENU_EVENT) {
+    blocker_->addMachineTask(
+      bind(&GCNPlatform::buildSyscomMenuFor, this,
+           syscomString("MENU_RETURN_MESS_STR"), MENU_RETURN_MENU, _1));
+  } else if (event == EXIT_GAME_MENU_EVENT) {
+    blocker_->addMachineTask(
+      bind(&GCNPlatform::buildSyscomMenuFor, this,
+           syscomString("GAME_END_MESS_STR"), EXIT_GAME_MENU, _1));
   }
 }
 
@@ -312,31 +346,47 @@ void GCNPlatform::initializeGuichan(const Rect& screen_size)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::buildSyscomMenuFor(const int menu_items[], RLMachine& machine)
+void GCNPlatform::buildSyscomMenuFor(
+  const std::string& label, const MenuSpec menu_items[], RLMachine& machine)
 {
   System& sys = machine.system();
 
   std::vector<GCNMenuButton> buttons;
-  for (int i = 0; menu_items[i] != MENU_END; ++i) {
+  for (int i = 0; menu_items[i].syscom_id != MENU_END; ++i) {
     GCNMenuButton button_definition;
 
-    if (menu_items[i] == MENU_SEPARATOR) {
+    if (menu_items[i].syscom_id == MENU_SEPARATOR) {
       button_definition.separator = true;
+      buttons.push_back(button_definition);
+    } else if (menu_items[i].syscom_id == MENU) {
+      button_definition.label = syscomString(menu_items[i].label);
+      button_definition.action = menu_items[i].event_name;
+      button_definition.enabled = true;
+      buttons.push_back(button_definition);
     } else {
-      int enabled = sys.isSyscomEnabled(menu_items[i]);
+      int id = menu_items[i].syscom_id;
+      int enabled = sys.isSyscomEnabled(id);
       if (enabled != SYSCOM_INVISIBLE) {
         ostringstream labelss;
-        labelss << setw(3) << setfill('0') << menu_items[i];
-        button_definition.label = syscomString(labelss.str());
-        button_definition.action = SYSCOM_EVENTS[menu_items[i]];
+        labelss << setw(3) << setfill('0') << id;
+
+        if (menu_items[i].label == NULL)
+          button_definition.label = syscomString(labelss.str());
+        else
+          button_definition.label = syscomString(menu_items[i].label);
+
+        if (menu_items[i].event_name == NULL)
+          button_definition.action = SYSCOM_EVENTS[id];
+        else
+          button_definition.action = menu_items[i].event_name;
+
         button_definition.enabled = enabled != SYSCOM_GREYED_OUT;
+        buttons.push_back(button_definition);
       }
     }
-
-    buttons.push_back(button_definition);
   }
 
-  pushWindowOntoStack(new GCNMenu(buttons, this));
+  pushWindowOntoStack(new GCNMenu(label, buttons, this));
 }
 
 // -----------------------------------------------------------------------
