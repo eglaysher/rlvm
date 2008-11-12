@@ -43,6 +43,15 @@ class Gameexe;
 class GameexeInterpretObject;
 class Platform;
 
+// -----------------------------------------------------------------------
+
+/**
+ * @name Syscom Constants
+ *
+ * Associations between syscom integer values and their names.
+ *
+ * @{
+ */
 const int NUM_SYSCOM_ENTRIES = 32;
 const int SYSCOM_INVISIBLE = 0;
 const int SYSCOM_VISIBLE = 1;
@@ -80,6 +89,7 @@ const int SYSCOM_MENU_RETURN = 28;
 const int SYSCOM_EXIT_GAME = 29;
 const int SYSCOM_HIDE_MENU = 30;
 const int SYSCOM_SHOW_BACKGROUND = 31;
+/// @}
 
 // -----------------------------------------------------------------------
 

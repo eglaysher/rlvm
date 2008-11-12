@@ -72,6 +72,10 @@ GCNMenu::GCNMenu(
       button->addActionListener(this);
       button->setEnabled(it->enabled);
 
+      if (!it->enabled) {
+        button->setForegroundColor(gcn::Color(100, 100, 100));
+      }
+
       Container::add(button, MENU_PADDING, top_offset);
       buttons.push_back(button);
 

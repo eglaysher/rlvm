@@ -118,6 +118,5 @@ void SelectionElement::render()
 
   Size s = target->size();
 
-  // POINT
   target->renderToScreen(Rect(Point(0, 0), s), Rect(pos_, s), 255);
 }

@@ -94,6 +94,15 @@ void System::checkSyscomIndex(int index, const char* function)
 int System::isSyscomEnabled(int syscom)
 {
   checkSyscomIndex(syscom, "System::is_syscom_enabled");
+
+  // Special cases where state of the interpreter would override the
+  // programmatically set (or user set) values.
+  if (syscom == SYSCOM_SET_SKIP_MODE && !text().kidokuRead()) {
+    // Skip mode should be grayed out when there's no text to read
+    if (syscom_status_[syscom] == SYSCOM_VISIBLE)
+      return SYSCOM_GREYED_OUT;
+  }
+
   return syscom_status_[syscom];
 }
 
