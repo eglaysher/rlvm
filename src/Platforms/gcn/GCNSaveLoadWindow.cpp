@@ -30,6 +30,7 @@
 
 #include "Platforms/gcn/GCNSaveLoadWindow.hpp"
 
+#include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -128,7 +129,7 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
   setSize(540, 400);
 
   // Either the save/load button
-  action_button_ = new gcn::Button();
+  action_button_ = new GCNButton();
   if (type == DO_SAVE) {
     action_button_->setCaption(
       platform->syscomString("DLGSAVEMESSAGE_OK_BUTTON_STR"));
@@ -148,7 +149,7 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
   Container::add(action_button_, button_left, button_top);
 
   // 030 == CANCEL
-  gcn::Button* button = new gcn::Button(platform->syscomString("030"));
+  gcn::Button* button = new GCNButton(platform->syscomString("030"));
   button->setActionEventId(EVENT_CANCEL);
   button->addActionListener(this);
   button->setEnabled(true);

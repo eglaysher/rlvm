@@ -35,12 +35,15 @@
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"
+#include "Platforms/gcn/GCNGraphics.hpp"
 #include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "libReallive/gameexe.h"
+
+#include "Utilities.h"
 
 #include <iostream>
 #include <iomanip>
@@ -237,7 +240,13 @@ void GCNPlatform::run(RLMachine& machine)
 
 void GCNPlatform::render(RLMachine& machine)
 {
-  guichan_gui_->draw();
+  try {
+    guichan_gui_->draw();
+  } catch (gcn::Exception& e) {
+    ostringstream oss;
+    oss << "Guichan Exception at " << e.getFunction() << ": " << e.getMessage();
+    throw rlvm::Exception(oss.str());
+  }
 
   // HACK: Something is either really wrong with Guichan and/or the intel
   // drivers in Intrepid Ibex. Probably both. Something guichan is
@@ -344,8 +353,8 @@ void GCNPlatform::initializeGuichan(const Rect& screen_size)
 
   sdl_input_.reset(new gcn::SDLInput());
 
-  opengl_graphics_.reset(new gcn::OpenGLGraphics(screen_size.width(),
-                                                 screen_size.height()));
+  opengl_graphics_.reset(new GCNGraphics(screen_size.width(),
+                                         screen_size.height()));
 
   guichan_gui_.reset(new gcn::Gui);
   guichan_gui_->setTabbingEnabled(false); // Do I want this on?

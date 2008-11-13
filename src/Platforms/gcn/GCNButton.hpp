@@ -24,39 +24,44 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __GCNWindow_hpp__
-#define __GCNWindow_hpp__
 
-#include <guichan/widgets/container.hpp>
+#ifndef __GCNButton_hpp__
+#define __GCNButton_hpp__
+
+#include <guichan/widgets/button.hpp>
 
 #include "Platforms/gcn/GCNGraphics.hpp"
 
-class GCNPlatform;
-class Size;
-
 /**
- * Base window. Later, this should be themed correctly. Default ugliness for
- * now.
+ * Graphical button overriding the default GUIchan ugliness.
+ *
+ * Spiritual copy of The Mana World's Button class; the resource images are
+ * actual copies.
  */
-class GCNWindow : public gcn::Container
-{
+class GCNButton : public gcn::Button {
 public:
-  GCNWindow(GCNPlatform* platform);
-  ~GCNWindow();
+  /// Default constructor.
+  GCNButton();
 
-  /// Centers this GCNWindow in the rlvm window.
-  void centerInWindow(const Size& screen_size);
+  /// Initializes the button with a label.
+  GCNButton(const std::string& label);
 
-  // Override from gcn::Container:
+  /// Destructor
+  ~GCNButton();
+
+  // Override from gcn::Button:
   virtual void draw(gcn::Graphics* graphics);
 
-protected:
-  /// Our owning platform.
-  GCNPlatform* platform_;
+private:
+  void init();
 
-  /// The border that's put around a window
-  static ImageRect s_border;
-};  // end of class GCNWindow
+  ImageRect& currentButtonImage();
+
+  static ImageRect s_button;
+  static ImageRect s_buttonhi;
+  static ImageRect s_buttonpress;
+  static ImageRect s_button_disabled;
+};  // end of class GCNButton
 
 
 #endif

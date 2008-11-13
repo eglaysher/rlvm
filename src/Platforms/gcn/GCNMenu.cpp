@@ -30,6 +30,7 @@
 
 #include "Platforms/gcn/GCNMenu.hpp"
 
+#include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 
 #include <guichan/widgets/button.hpp>
@@ -67,7 +68,7 @@ GCNMenu::GCNMenu(
     if (it->separator) {
       top_offset += MENU_PADDING;
     } else {
-      gcn::Button* button = new gcn::Button(it->label);
+      gcn::Button* button = new GCNButton(it->label);
       button->setActionEventId(it->action);
       button->addActionListener(this);
       button->setEnabled(it->enabled);

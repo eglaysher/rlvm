@@ -35,12 +35,26 @@
 #include <iostream>
 using namespace std;
 
+ImageRect GCNWindow::s_border;
+
 // -----------------------------------------------------------------------
 // GCNWindow
 // -----------------------------------------------------------------------
 GCNWindow::GCNWindow(GCNPlatform* platform)
   : platform_(platform)
-{}
+{
+  if (s_border.image == NULL) {
+    s_border.image.reset(
+      gcn::Image::load("src/Platforms/gcn/vscroll_grey.png"));
+
+    // This used to work with the description below, but now it is broken with
+    // the setCoordinates() usage. Debug starting here.
+
+    static int xpos[] = {0, 4, 7, 11};
+    static int ypos[] = {0, 4, 15, 19};
+    s_border.setCoordinates(xpos, ypos);
+  }
+}
 
 // -----------------------------------------------------------------------
 
@@ -53,3 +67,14 @@ void GCNWindow::centerInWindow(const Size& screen_size)
   setPosition((screen_size.width() / 2) - (getWidth() / 2),
               (screen_size.height() / 2) - (getHeight() / 2));
 }
+
+// -----------------------------------------------------------------------
+
+void GCNWindow::draw(gcn::Graphics* graphics)
+{
+  GCNGraphics *g = static_cast<GCNGraphics*>(graphics);
+  g->drawImageRect(0, 0, getWidth(), getHeight(), s_border);
+
+  drawChildren(graphics);
+}
+

@@ -59,6 +59,8 @@ LIBRLVMFILES[] =
   Utilities/findFontFile
   Utilities/dateUtil
   Utilities
+  Platforms/gcn/GCNGraphics
+  Platforms/gcn/GCNButton
   Platforms/gcn/GCNPlatform
   Platforms/gcn/GCNMenu
   Platforms/gcn/GCNWindow
