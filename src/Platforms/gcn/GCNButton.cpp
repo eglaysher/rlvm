@@ -30,6 +30,8 @@
 
 #include "Platforms/gcn/GCNButton.hpp"
 
+#include "Platforms/gcn/gcnUtils.hpp"
+
 #include <guichan/exception.hpp>
 #include <guichan/font.hpp>
 
@@ -82,17 +84,15 @@ void GCNButton::draw(gcn::Graphics* graphics)
     textX = getWidth() - 4;
     break;
   default:
-    throw GCN_EXCEPTION("Button::draw. Unknown alignment.");
+    throw GCN_EXCEPTION("GCNButton::draw. Unknown alignment.");
   }
 
   graphics->setFont(getFont());
 
-  if (isPressed()) {
+  if (isPressed())
     graphics->drawText(getCaption(), textX + 1, textY + 1, getAlignment());
-  }
-  else {
+  else
     graphics->drawText(getCaption(), textX, textY, getAlignment());
-  }
 }
 
 // -----------------------------------------------------------------------
@@ -102,12 +102,10 @@ void GCNButton::init()
   setFrameSize(0);
 
   if (s_button.image == NULL) {
-    s_button.image.reset(gcn::Image::load("src/Platforms/gcn/button.png"));
-    s_buttonhi.image.reset(gcn::Image::load("src/Platforms/gcn/buttonhi.png"));
-    s_buttonpress.image.reset(
-      gcn::Image::load("src/Platforms/gcn/buttonpress.png"));
-    s_button_disabled.image.reset(
-      gcn::Image::load("src/Platforms/gcn/button_disabled.png"));
+    s_button.image.reset(getThemeImage("button.png"));
+    s_buttonhi.image.reset(getThemeImage("buttonhi.png"));
+    s_buttonpress.image.reset(getThemeImage("buttonpress.png"));
+    s_button_disabled.image.reset(getThemeImage("button_disabled.png"));
 
     static int xpos[] = {0, 9, 16, 26};
     static int ypos[] = {0, 4, 19, 24};

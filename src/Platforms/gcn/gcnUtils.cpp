@@ -24,18 +24,20 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __gcnUtils_hpp__
-#define __gcnUtils_hpp__
+#include "Precompiled.hpp"
 
-#include "Systems/Base/Rect.hpp"
+// -----------------------------------------------------------------------
+
+#include "Platforms/gcn/gcnUtils.hpp"
 
 #include <guichan/image.hpp>
-#include <guichan/rectangle.hpp>
+#include <string>
 
-gcn::Image* getThemeImage(const char* name);
+// -----------------------------------------------------------------------
 
-inline gcn::Rectangle rectConvert(const Rect& obj) {
-  return gcn::Rectangle(obj.x(), obj.y(), obj.x2(), obj.y2());
+gcn::Image* getThemeImage(const char* name) {
+  // HACK ALERT! This needs fixing with a real resouce system.
+  string base("src/Platforms/gcn/");
+  base += name;
+  return gcn::Image::load(base.c_str());
 }
-
-#endif

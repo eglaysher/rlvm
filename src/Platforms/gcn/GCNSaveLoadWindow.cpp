@@ -32,6 +32,7 @@
 
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
+#include "Platforms/gcn/GCNScrollArea.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Modules/cp932toUnicode.hpp"
@@ -111,7 +112,7 @@ int SaveGameListModel::getNumberOfElements()
 
 std::string SaveGameListModel::getElementAt(int i)
 {
-  if (i < titles_.size())
+  if (size_t(i) < titles_.size())
     return titles_[i];
   else
     // Control sometimes asks for impossible value.
@@ -164,10 +165,9 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
   listbox_->addActionListener(this);
   listbox_->addSelectionListener(this);
   listbox_->adjustSize();
-  listbox_->setWidth(500);
 
-  gcn::ScrollArea* area = new gcn::ScrollArea(
-    listbox_, gcn::ScrollArea::SHOW_NEVER, gcn::ScrollArea::SHOW_ALWAYS);
+  gcn::ScrollArea* area = new GCNScrollArea(listbox_);
+  area->setHorizontalScrollPolicy(gcn::ScrollArea::SHOW_NEVER);
   area->setSize(getWidth() - (2*PADDING), button_top - (2*PADDING));
 
   Container::add(area, PADDING, PADDING);
