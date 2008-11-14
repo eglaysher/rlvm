@@ -74,7 +74,7 @@ SDLTrueTypeFont::~SDLTrueTypeFont()
 int SDLTrueTypeFont::getWidth(const std::string& text) const
 {
   int w, h;
-  TTF_SizeText(mFont, text.c_str(), &w, &h);
+  TTF_SizeUTF8(mFont, text.c_str(), &w, &h);
 
   return w;
 }
