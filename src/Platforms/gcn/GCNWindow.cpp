@@ -47,9 +47,6 @@ GCNWindow::GCNWindow(GCNPlatform* platform)
     s_border.image.reset(
       gcn::Image::load("src/Platforms/gcn/vscroll_grey.png"));
 
-    // This used to work with the description below, but now it is broken with
-    // the setCoordinates() usage. Debug starting here.
-
     static int xpos[] = {0, 4, 7, 11};
     static int ypos[] = {0, 4, 15, 19};
     s_border.setCoordinates(xpos, ypos);

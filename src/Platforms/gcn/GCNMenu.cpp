@@ -73,13 +73,11 @@ GCNMenu::GCNMenu(
       button->addActionListener(this);
       button->setEnabled(it->enabled);
 
-      if (!it->enabled) {
+      if (!it->enabled)
         button->setForegroundColor(gcn::Color(100, 100, 100));
-      }
 
       Container::add(button, MENU_PADDING, top_offset);
       buttons.push_back(button);
-
       max_button_size = std::max(max_button_size, button->getWidth());
       top_offset += button->getHeight() + MENU_PADDING;
     }

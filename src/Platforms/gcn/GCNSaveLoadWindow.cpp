@@ -92,10 +92,6 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
 
     titles_.push_back(oss.str());
   }
-
-  // To fix a bug in GUIChan. For some reason, it crashes if I don't have a
-  // buffer extra item (which I exclude with getNumberOfElements()).
-  titles_.push_back("never displayed");
 }
 
 // -----------------------------------------------------------------------
@@ -108,15 +104,18 @@ SaveGameListModel::~SaveGameListModel()
 
 int SaveGameListModel::getNumberOfElements()
 {
-  // I suspect a bug in gcn::ListBox. :(
-  return titles_.size() - 1;
+  return titles_.size();
 }
 
 // -----------------------------------------------------------------------
 
 std::string SaveGameListModel::getElementAt(int i)
 {
-  return titles_.at(i);
+  if (i < titles_.size())
+    return titles_[i];
+  else
+    // Control sometimes asks for impossible value.
+    return "";
 }
 
 // -----------------------------------------------------------------------
@@ -144,15 +143,19 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
   action_button_->setForegroundColor(gcn::Color(100, 100, 100));
   action_button_->setEnabled(false);
 
-  int button_left = getWidth() - PADDING - action_button_->getWidth();
-  int button_top = getHeight() - PADDING - action_button_->getHeight();
-  Container::add(action_button_, button_left, button_top);
-
   // 030 == CANCEL
   gcn::Button* button = new GCNButton(platform->syscomString("030"));
   button->setActionEventId(EVENT_CANCEL);
   button->addActionListener(this);
   button->setEnabled(true);
+
+  int max_size = std::max(action_button_->getWidth(), button->getWidth());
+  action_button_->setWidth(max_size + (2*PADDING));
+  button->setWidth(max_size);
+
+  int button_left = getWidth() - PADDING - action_button_->getWidth();
+  int button_top = getHeight() - PADDING - action_button_->getHeight();
+  Container::add(action_button_, button_left, button_top);
   Container::add(button, button_left - PADDING - button->getWidth(),
                  button_top);
 
