@@ -1,7 +1,14 @@
 
+# Build the wxInclude binary needed to build resource_header
+LDFLAGS += -lboost_program_options -lboost_filesystem
+CXXProgram(wxInclude, wxInclude)
+
+resource_header.h: $(glob *.png) wxInclude
+  ./wxInclude --silent --wxnone --output-file=resource_header.h *.png
+
 .PHONY: clean
 
-.DEFAULT: 
+.DEFAULT:
 
 clean:
   $(RM) *.o *.gch *$(EXT_LIB) *.omc

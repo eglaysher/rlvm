@@ -30,6 +30,7 @@
 
 #include "Platforms/gcn/GCNWindow.hpp"
 
+#include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 
 #include <iostream>
@@ -44,8 +45,7 @@ GCNWindow::GCNWindow(GCNPlatform* platform)
   : platform_(platform)
 {
   if (s_border.image == NULL) {
-    s_border.image.reset(
-      gcn::Image::load("src/Platforms/gcn/vscroll_grey.png"));
+    s_border.image.reset(getThemeImage(IMG_VSCROLL_GREY));
 
     static int xpos[] = {0, 4, 7, 11};
     static int ypos[] = {0, 4, 15, 19};

@@ -102,10 +102,10 @@ void GCNButton::init()
   setFrameSize(0);
 
   if (s_button.image == NULL) {
-    s_button.image.reset(getThemeImage("button.png"));
-    s_buttonhi.image.reset(getThemeImage("buttonhi.png"));
-    s_buttonpress.image.reset(getThemeImage("buttonpress.png"));
-    s_button_disabled.image.reset(getThemeImage("button_disabled.png"));
+    s_button.image.reset(getThemeImage(IMG_BUTTON));
+    s_buttonhi.image.reset(getThemeImage(IMG_BUTTONHI));
+    s_buttonpress.image.reset(getThemeImage(IMG_BUTTONPRESS));
+    s_button_disabled.image.reset(getThemeImage(IMG_BUTTON_DISABLED));
 
     static int xpos[] = {0, 9, 16, 26};
     static int ypos[] = {0, 4, 19, 24};

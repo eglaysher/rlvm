@@ -133,26 +133,26 @@ void GCNScrollArea::drawFrame(gcn::Graphics *graphics)
 void GCNScrollArea::init()
 {
   if (s_background.image == NULL) {
-    s_background.image.reset(getThemeImage("deepbox.png"));
+    s_background.image.reset(getThemeImage(IMG_DEEPBOX));
     // TODO: +1 these values??
     int bggridx[] = {0, 3, 28, 31};
     int bggridy[] = {0, 3, 28, 31};
     s_background.setCoordinates(bggridx, bggridy);
 
-    s_vMarker.image.reset(getThemeImage("vscroll_grey.png"));
+    s_vMarker.image.reset(getThemeImage(IMG_VSCROLL_GREY));
     // TODO: +1 these values? Different +1 status then other set.
     int vsgridx[] = {0, 4, 7, 11};
     int vsgridy[] = {0, 4, 15, 19};
     s_vMarker.setCoordinates(vsgridx, vsgridy);
 
-    s_buttonImages[UP][0].reset(getThemeImage("vscroll_up_default.png"));
-    s_buttonImages[DOWN][0].reset(getThemeImage("vscroll_down_default.png"));
-    s_buttonImages[LEFT][0].reset(getThemeImage("hscroll_left_default.png"));
-    s_buttonImages[RIGHT][0].reset(getThemeImage("hscroll_right_default.png"));
-    s_buttonImages[UP][1].reset(getThemeImage("vscroll_up_pressed.png"));
-    s_buttonImages[DOWN][1].reset(getThemeImage("vscroll_down_pressed.png"));
-    s_buttonImages[LEFT][1].reset(getThemeImage("hscroll_left_pressed.png"));
-    s_buttonImages[RIGHT][1].reset(getThemeImage("hscroll_right_pressed.png"));
+    s_buttonImages[UP][0].reset(getThemeImage(IMG_VSCROLL_UP_DEFAULT));
+    s_buttonImages[DOWN][0].reset(getThemeImage(IMG_VSCROLL_DOWN_DEFAULT));
+    s_buttonImages[LEFT][0].reset(getThemeImage(IMG_HSCROLL_LEFT_DEFAULT));
+    s_buttonImages[RIGHT][0].reset(getThemeImage(IMG_HSCROLL_RIGHT_DEFAULT));
+    s_buttonImages[UP][1].reset(getThemeImage(IMG_VSCROLL_UP_PRESSED));
+    s_buttonImages[DOWN][1].reset(getThemeImage(IMG_VSCROLL_DOWN_PRESSED));
+    s_buttonImages[LEFT][1].reset(getThemeImage(IMG_HSCROLL_LEFT_PRESSED));
+    s_buttonImages[RIGHT][1].reset(getThemeImage(IMG_HSCROLL_RIGHT_PRESSED));
   }
 }
 

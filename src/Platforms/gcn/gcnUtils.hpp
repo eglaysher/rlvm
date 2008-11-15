@@ -32,7 +32,24 @@
 #include <guichan/image.hpp>
 #include <guichan/rectangle.hpp>
 
-gcn::Image* getThemeImage(const char* name);
+enum ThemeImage {
+  IMG_BUTTON_DISABLED = 0,
+  IMG_BUTTONHI,
+  IMG_BUTTON,
+  IMG_BUTTONPRESS,
+  IMG_DEEPBOX,
+  IMG_HSCROLL_LEFT_DEFAULT,
+  IMG_HSCROLL_LEFT_PRESSED,
+  IMG_HSCROLL_RIGHT_DEFAULT,
+  IMG_HSCROLL_RIGHT_PRESSED,
+  IMG_VSCROLL_DOWN_DEFAULT,
+  IMG_VSCROLL_DOWN_PRESSED,
+  IMG_VSCROLL_GREY,
+  IMG_VSCROLL_UP_DEFAULT,
+  IMG_VSCROLL_UP_PRESSED
+};
+
+gcn::Image* getThemeImage(enum ThemeImage img);
 
 inline gcn::Rectangle rectConvert(const Rect& obj) {
   return gcn::Rectangle(obj.x(), obj.y(), obj.x2(), obj.y2());
