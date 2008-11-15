@@ -77,6 +77,11 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
 {
   using namespace boost::posix_time;
 
+  // TODO: Can I make this faster instead of trying to see if every game
+  // exists?
+  int latestSlot = -1;
+  time_t latestTime = numeric_limits<time_t>::min();
+
   for (int slot = 0; slot < 100; ++slot) {
     fs::path saveFile = Serialization::buildSaveGameFilename(machine, slot);
 
@@ -87,11 +92,22 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
       oss << to_simple_string(header.save_time) << " - "
           << cp932toUTF8(header.title, machine.getTextEncoding());
+
+      time_t mtime = fs::last_write_time(saveFile);
+
+      if (mtime > latestTime) {
+        latestTime = mtime;
+        latestSlot = slot;
+      }
     } else {
       oss << no_data;
     }
 
     titles_.push_back(oss.str());
+  }
+
+  if (latestSlot != -1) {
+    titles_[latestSlot] = "[NEW] " + titles_[latestSlot];
   }
 }
 
