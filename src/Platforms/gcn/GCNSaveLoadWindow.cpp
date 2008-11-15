@@ -66,8 +66,11 @@ public:
   virtual int getNumberOfElements();
   virtual std::string getElementAt(int i);
 
+  /// Whether this save should enable the action button while loading.
+  bool getSaveExistsAt(int i);
+
 private:
-  std::vector<std::string> titles_;
+  std::vector<std::pair<std::string, bool> > titles_;
 };
 
 // -----------------------------------------------------------------------
@@ -88,7 +91,8 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
     ostringstream oss;
     oss << "[" << setw(3) << setfill('0') << slot << "] ";
 
-    if (fs::exists(saveFile)) {
+    bool file_exists = fs::exists(saveFile);
+    if (file_exists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
       oss << to_simple_string(header.save_time) << " - "
           << cp932toUTF8(header.title, machine.getTextEncoding());
@@ -103,11 +107,11 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
       oss << no_data;
     }
 
-    titles_.push_back(oss.str());
+    titles_.push_back(std::make_pair(oss.str(), file_exists));
   }
 
   if (latestSlot != -1) {
-    titles_[latestSlot] = "[NEW] " + titles_[latestSlot];
+    titles_[latestSlot].first = "[NEW] " + titles_[latestSlot].first;
   }
 }
 
@@ -129,10 +133,20 @@ int SaveGameListModel::getNumberOfElements()
 std::string SaveGameListModel::getElementAt(int i)
 {
   if (size_t(i) < titles_.size())
-    return titles_[i];
+    return titles_[i].first;
   else
     // Control sometimes asks for impossible value.
     return "";
+}
+
+// -----------------------------------------------------------------------
+
+bool SaveGameListModel::getSaveExistsAt(int i)
+{
+  if (size_t(i) < titles_.size())
+    return titles_[i].second;
+  else
+    return false;
 }
 
 // -----------------------------------------------------------------------
@@ -140,7 +154,9 @@ std::string SaveGameListModel::getElementAt(int i)
 // -----------------------------------------------------------------------
 GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
                                      GCNPlatform* platform)
-  : GCNWindow(platform), model_(new SaveGameListModel("NO DATA", machine))
+  : GCNWindow(platform),
+    model_(new SaveGameListModel("NO DATA", machine)),
+    type_(type)
 {
   setSize(540, 400);
 
@@ -214,6 +230,16 @@ void GCNSaveLoadWindow::action(const gcn::ActionEvent& actionEvent)
 void GCNSaveLoadWindow::valueChanged(const gcn::SelectionEvent& event)
 {
   // When we get a value from the list box, enable the action button.
-  action_button_->setEnabled(true);
-  action_button_->setForegroundColor(gcn::Color(0, 0, 0));
+  bool activate_button = true;
+  if (type_ == DO_LOAD) {
+    activate_button = model_->getSaveExistsAt(listbox_->getSelected());
+  }
+
+  action_button_->setEnabled(activate_button);
+
+  if (activate_button) {
+    action_button_->setForegroundColor(gcn::Color(0, 0, 0));
+  } else {
+    action_button_->setForegroundColor(gcn::Color(100, 100, 100));
+  }
 }

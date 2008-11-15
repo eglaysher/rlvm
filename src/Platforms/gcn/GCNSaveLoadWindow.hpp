@@ -39,6 +39,7 @@
 #include <guichan/widgets/button.hpp>
 
 class RLMachine;
+class SaveGameListModel;
 
 // -----------------------------------------------------------------------
 
@@ -68,7 +69,11 @@ public:
   virtual void valueChanged(const gcn::SelectionEvent& event);
 
 private:
-  boost::scoped_ptr<gcn::ListModel> model_;
+  /// Provides titles and whether a save exists in said slot.
+  boost::scoped_ptr<SaveGameListModel> model_;
+
+  /// The kind of dialog we're presenting.
+  WindowType type_;
 
   /// Either "Save" or "Load"
   gcn::Button* action_button_;
