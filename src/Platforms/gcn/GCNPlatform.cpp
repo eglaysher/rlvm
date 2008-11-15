@@ -40,6 +40,7 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "libReallive/gameexe.h"
 
@@ -195,6 +196,8 @@ public:
       delayed_rlmachine_tasks_.front()(machine);
       delayed_rlmachine_tasks_.pop();
     }
+
+    machine.system().graphics().forceRefresh();
 
     return platform_->window_stack_.size() == 0;
   }
