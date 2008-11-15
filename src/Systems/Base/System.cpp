@@ -101,6 +101,11 @@ int System::isSyscomEnabled(int syscom)
     // Skip mode should be grayed out when there's no text to read
     if (syscom_status_[syscom] == SYSCOM_VISIBLE)
       return SYSCOM_GREYED_OUT;
+  } else if (syscom == SYSCOM_RETURN_TO_PREVIOUS_SELECTION) {
+    // So far, we don't have an implementation for this, so grey it out all the
+    // time.
+    if (syscom_status_[syscom] == SYSCOM_VISIBLE)
+      return SYSCOM_GREYED_OUT;
   }
 
   return syscom_status_[syscom];
