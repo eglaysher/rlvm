@@ -77,7 +77,8 @@ Platform::Platform(Gameexe& gameexe) {
 
   for (int i = 0; ADDTIONAL_STRINGS_TO_LOAD[i] != NULL; ++i) {
     GameexeInterpretObject toload = gameexe(ADDTIONAL_STRINGS_TO_LOAD[i]);
-    addSyscomStringFor(toload.key(), toload.to_string());
+    if (toload.exists())
+      addSyscomStringFor(toload.key(), toload.to_string());
   }
 }
 
