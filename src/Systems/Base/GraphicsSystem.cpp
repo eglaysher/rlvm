@@ -253,6 +253,9 @@ void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
 void GraphicsSystem::forceRefresh()
 {
   screen_needs_refresh_ = true;
+
+  if (screen_update_mode_ == SCREENUPDATEMODE_MANUAL)
+    system().setForceWait(true);
 }
 
 // -----------------------------------------------------------------------

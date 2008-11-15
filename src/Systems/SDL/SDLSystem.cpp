@@ -104,10 +104,9 @@ void SDLSystem::run(RLMachine& machine)
   if (platform())
     platform()->run(machine);
 
-  // My pausing model is wrong. Really wrong. For an example of just
-  // how wrong it is, take a look at the performance under CLANNAD's menu.
-  if (machine.inLongOperation()) {
+  if (machine.inLongOperation() || forceWait()) {
     event_system_->wait(10);
+    setForceWait(false);
   }
 }
 

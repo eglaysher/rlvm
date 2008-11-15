@@ -284,6 +284,9 @@ public:
   void dumpRenderTree(RLMachine& machine);
   /// @}
 
+  bool forceWait() { return force_wait_; }
+  void setForceWait(bool in) { force_wait_ = in; }
+
 protected:
   boost::filesystem::path getHomeDirectory();
 
@@ -297,6 +300,10 @@ private:
   /// Whether we are being forced to fast forward through the game for testing
   /// reasons.
   bool force_fast_forward_;
+
+  /// Forces a 10ms sleep at the end of the System::run function. Used to lower
+  /// CPU usage during manual redrawing.
+  bool force_wait_;
 
   void checkSyscomIndex(int index, const char* function);
 
