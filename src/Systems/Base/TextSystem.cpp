@@ -232,7 +232,7 @@ void TextSystem::expireOldPages() {
 bool TextSystem::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
 {
   if (currentlySkipping() && !in_selection_mode_) {
-    skip_mode_ = false;
+    setSkipMode(false);
     return true;
   }
 
@@ -244,7 +244,7 @@ bool TextSystem::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
 bool TextSystem::keyStateChanged(KeyCode key_code, bool pressed)
 {
   if (currentlySkipping() && !in_selection_mode_) {
-    skip_mode_ = false;
+    setSkipMode(false);
     return true;
   }
 
@@ -375,6 +375,14 @@ void TextSystem::stopReadingBacklog()
   clearAllTextWindows();
   hideAllTextWindows();
   replayPageSet(*current_pageset_, true);
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setAutoMode(int i)
+{
+  auto_mode_ = (bool)i;
+  auto_mode_signal_(auto_mode_);
 }
 
 // -----------------------------------------------------------------------
@@ -513,7 +521,34 @@ void TextSystem::reset()
   system_visible_ = true;
   in_pause_state_ = false;
   in_selection_mode_ = false;
+  kidoku_read_ = false;
   skip_mode_ = false;
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setKidokuRead(const int in)
+{
+  bool value_changed = kidoku_read_ != in;
+
+  kidoku_read_ = in;
+  skip_mode_enabled_signal_(in);
+
+  if (value_changed && !kidoku_read_ && skip_mode_) {
+    // Auto leave skip mode when we stop reading previously read text.
+    setSkipMode(false);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setSkipMode(const int in)
+{
+  bool value_changed = skip_mode_ != in;
+  skip_mode_ = in;
+
+  if (value_changed)
+    skip_mode_signal_(in);
 }
 
 // -----------------------------------------------------------------------

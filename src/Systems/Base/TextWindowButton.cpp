@@ -119,11 +119,13 @@ bool TextWindowButton::isValid() const
 void TextWindowButton::setMousePosition(
   RLMachine& machine, TextWindow& window, const Point& pos)
 {
+  if (state_ == BUTTONSTATE_DISABLED)
+    return;
+
   if(isValid())
   {
     int orig_state = state_;
     bool in_box = location(window).contains(pos);
-
     if(in_box && state_ == BUTTONSTATE_NORMAL)
       state_ = BUTTONSTATE_HIGHLIGHTED;
     else if(!in_box && state_ == BUTTONSTATE_HIGHLIGHTED)
@@ -141,6 +143,9 @@ void TextWindowButton::setMousePosition(
 bool TextWindowButton::handleMouseClick(
   RLMachine& machine, TextWindow& window, const Point& pos, bool pressed)
 {
+  if (state_ == BUTTONSTATE_DISABLED)
+    return false;
+
   if(isValid())
   {
     bool in_box = location(window).contains(pos);
@@ -220,7 +225,7 @@ ActivationTextWindowButton::ActivationTextWindowButton(
   CallbackFunction start,
   CallbackFunction end)
   : TextWindowButton(use, location_box), on_start_(start), on_end_(end),
-    on_(false)
+    on_(false), enabled_(true)
 {
 }
 
@@ -234,18 +239,38 @@ ActivationTextWindowButton::~ActivationTextWindowButton()
 
 void ActivationTextWindowButton::buttonReleased()
 {
-  if(on_)
-  {
-    on_end_();
-    on_ = false;
-    state_ = BUTTONSTATE_NORMAL;
+  if (enabled_) {
+    if (on_)
+      on_end_();
+    else
+      on_start_();
   }
+}
+
+// -----------------------------------------------------------------------
+
+void ActivationTextWindowButton::setEnabled(bool enabled)
+{
+  enabled_ = enabled;
+  setState();
+}
+
+// -----------------------------------------------------------------------
+
+void ActivationTextWindowButton::setActivated(bool on)
+{
+  on_ = on;
+  setState();
+}
+
+// -----------------------------------------------------------------------
+
+void ActivationTextWindowButton::setState()
+{
+  if (enabled_)
+    state_ = on_ ? BUTTONSTATE_ACTIVATED : BUTTONSTATE_NORMAL;
   else
-  {
-    on_start_();
-    on_ = true;
-    state_ = BUTTONSTATE_ACTIVATED;
-  }
+    state_ = BUTTONSTATE_DISABLED;
 }
 
 // -----------------------------------------------------------------------

@@ -241,10 +241,10 @@ void System::invokeSyscom(RLMachine& machine, int syscom)
     cerr << "Opening manual path..." << endl;
     break;
   case SYSCOM_SET_SKIP_MODE:
-    text().setSkipMode(1);
+    text().setSkipMode(!text().skipMode());
     break;
   case SYSCOM_AUTO_MODE:
-    text().setAutoMode(1);
+    text().setAutoMode(!text().autoMode());
     break;
   case SYSCOM_MENU_RETURN:
     // This is a hack since we probably have a bunch of crap on the stack.

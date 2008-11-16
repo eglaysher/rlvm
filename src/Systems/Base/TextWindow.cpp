@@ -322,29 +322,6 @@ Point TextWindow::keycursorPosition() const
 
 // -----------------------------------------------------------------------
 
-void readjumpTurnsOn()
-{
-  cerr << "Readjump (falsly) turn on!" << endl;
-}
-
-void readjumpTurnsOff()
-{
-  cerr << "Readjump (falsly) turn off!" << endl;
-}
-
-void automodeTurnsOn()
-{
-  cerr << "Automode (falsly) turn on!" << endl;
-}
-
-void automodeTurnsOff()
-{
-  cerr << "Automode (falsly) turn off!" << endl;
-}
-
-// -----------------------------------------------------------------------
-
-
 void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
                                const int waku_no)
 {
@@ -383,15 +360,25 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
         machine, ts.windowExbtnUse(), waku(oss.str()), wbcall));
   }
 
-  button_map_[10].reset(
+  ActivationTextWindowButton* readjump_box =
     new ActivationTextWindowButton(
       ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-      &readjumpTurnsOn, &readjumpTurnsOff));
-  button_map_[11].reset(
+      bind(&TextSystem::setSkipMode, ref(ts), true),
+      bind(&TextSystem::setSkipMode, ref(ts), false));
+  button_map_[10].reset(readjump_box);
+  ts.skipModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
+                                   readjump_box, _1));
+  ts.skipModeEnabledSignal().connect(
+    bind(&ActivationTextWindowButton::setEnabled, readjump_box, _1));
+
+  ActivationTextWindowButton* automode_button =
     new ActivationTextWindowButton(
       ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
       bind(&TextSystem::setAutoMode, ref(ts), true),
-      bind(&TextSystem::setAutoMode, ref(ts), false)));
+      bind(&TextSystem::setAutoMode, ref(ts), false));
+  button_map_[11].reset(automode_button);
+  ts.autoModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
+                                   automode_button, _1));
 
   /*
    * TODO: I didn't translate these to the new way of doing things. I don't
