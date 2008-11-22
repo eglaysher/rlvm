@@ -3,44 +3,25 @@
 import shutil
 import sys
 
+Import('env')
+
 ########################################################## [ Root environment ]
-root_env = Environment(
+env.Append(
   LIBS = [
     "GL",
     "GLU",
     "SDL_image",
     "SDL_mixer",
-    "boost_program_options",
-    "boost_serialization",
-    "boost_iostreams",
-    "boost_filesystem",
-    "boost_date_time",
-    "boost_thread-mt",
-    "z"
   ],
 
   CPPDEFINES = [
     "CASE_SENSITIVE_FILESYSTEM",
-    "-D_THREAD_SAFE"
-  ],
-
-  CPPFLAGS = [
-    "--ansi",
-    "-Wall",
-    "-funsigned-char"
-  ],
-
-  CPPPATH = [
-    "#/src",
-    "#/vendor",
-  ],
+    "_THREAD_SAFE"
+  ]
 )
 
-root_env.ParseConfig("sdl-config --cflags --libs")
-root_env.ParseConfig("freetype-config --cflags --libs")
-
-# Use timestamps change, followed by MD5 for speed
-root_env.Decider('MD5-timestamp')
+env.ParseConfig("sdl-config --cflags --libs")
+env.ParseConfig("freetype-config --cflags --libs")
 
 librlvm_files = [
   "src/MachineBase/reference.cpp",
@@ -146,7 +127,7 @@ librlvm_files = [
   "vendor/nwatowav.cc"
 ]
 
-root_env.StaticLibrary('rlvm', librlvm_files)
+env.StaticLibrary('rlvm', librlvm_files)
 
 libsystemsdl_files = [
   "src/Systems/SDL/SDLAudioLocker.cpp",
@@ -167,6 +148,6 @@ libsystemsdl_files = [
   "vendor/SDL_ttf.c"
 ]
 
-root_env.StaticLibrary('system_sdl', libsystemsdl_files)
+env.StaticLibrary('system_sdl', libsystemsdl_files)
 
-root_env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a', 'librlvm.a'])
+env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a', 'librlvm.a'])

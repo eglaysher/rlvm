@@ -15,3 +15,6 @@ objs
 rlvm.ncb
 rlvm.suo
 svn-commit.tmp*
+/build/
+/.sconf_temp/
+/.sconsign.dblite
