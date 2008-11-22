@@ -151,3 +151,48 @@ libsystemsdl_files = [
 env.StaticLibrary('system_sdl', libsystemsdl_files)
 
 env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a', 'librlvm.a'])
+
+#########################################################################
+
+test_env = env.Clone()
+test_env.Append(CPPPATH = ["#/test"])
+
+test_case_files = [
+  "test/testUtils.cpp",
+  "test/RLMachine_TUT.cpp",
+  "test/Module_Jmp_TUT.cpp",
+  "test/Module_Str_TUT.cpp",
+  "test/Module_Mem_TUT.cpp",
+  "test/Module_Sys_TUT.cpp",
+  "test/ExpressionTest_TUT.cpp",
+  "test/TextSystem_TUT.cpp",
+  "test/Gameexe_TUT.cpp",
+  "test/LazyArray_TUT.cpp",
+  "test/GraphicsObject_TUT.cpp",
+  "test/Effect_TUT.cpp"
+]
+
+null_system_files = [
+  "test/NullSystem/NullSystem.cpp",
+  "test/NullSystem/NullEventSystem.cpp",
+  "test/NullSystem/NullTextSystem.cpp",
+  "test/NullSystem/NullTextWindow.cpp",
+  "test/NullSystem/NullGraphicsSystem.cpp",
+  "test/NullSystem/NullSoundSystem.cpp",
+  "test/NullSystem/NullSurface.cpp",
+  "test/NullSystem/MockLog.cpp"
+]
+
+script_machine_files = [
+  "test/ScriptMachine/ScriptWorld.cpp",
+  "test/ScriptMachine/ScriptMachine.cpp",
+  "test/ScriptMachine/luabind_Machine.cpp",
+  "test/ScriptMachine/luabind_System.cpp",
+  "test/ScriptMachine/luabind_EventSystem.cpp",
+  "test/ScriptMachine/luabind_GraphicsSystem.cpp",
+  "test/ScriptMachine/luabind_GraphicsObject.cpp",
+  "test/ScriptMachine/luabind_utility.cpp"
+]
+
+test_env.Program('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
+                               test_case_files, 'librlvm.a'])
