@@ -114,23 +114,6 @@ The result is run like this:
 
  $ src/rlvm /path/to/PlanetarianCopy
 
-3c) Compiling under Windows
--------------------------------------------------------------------------
-rlvm works under Windows with a caveat. While paths with characters
-other then lower ASCII are correctly handled under Linux and OSX,
-windows will refuse to handle them correctly. I am not entirely sure
-of why this is. Patches are welcome; I wrote rlvm in part to get away
-from Windows problems and have already lost a week trying to figure
-out Windows nonstandard behaviour. 
-
-Unlike Linux and OSX, rlvm is built with Microsoft Visual Studio under
-Windows. Solution and vcproj files are provided. You will most likely
-need to adjust the include and lib paths in the various vcproj files
-for your local system.
-
-(Note: If compiling with MSVC++ v8.0, you will probably need to build
-boost from source. I couldn't find any prebuilt binary packages.)
-
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
 The interpreter currently lacks the following features:
