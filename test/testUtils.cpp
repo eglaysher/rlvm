@@ -30,10 +30,12 @@
 #include <boost/assign/list_of.hpp> // for 'list_of()'
 #include <boost/filesystem/operations.hpp>
 #include <stdexcept>
+#include <sstream>
 
 using boost::assign::list_of;
 using std::string;
 using std::vector;
+using std::ostringstream;
 
 namespace fs = boost::filesystem;
 
@@ -52,5 +54,7 @@ string locateTestCase(const string& baseName)
       return testName;
   }
 
-  throw std::runtime_error("Could not locate data file in locateTestCase.");
+  ostringstream oss;
+  oss << "Could not locate data file '" << baseName << "' in locateTestCase.";
+  throw std::runtime_error(oss.str());
 }

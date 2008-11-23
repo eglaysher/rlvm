@@ -1,5 +1,6 @@
 # Main scons file
 
+import os
 import shutil
 import sys
 
@@ -17,6 +18,11 @@ env.Append(
   CPPDEFINES = [
     "CASE_SENSITIVE_FILESYSTEM",
     "_THREAD_SAFE"
+  ],
+
+  CPPFLAGS = [
+    "-g",
+    "-O0"
   ]
 )
 
@@ -154,8 +160,22 @@ env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a', 'librlvm.a'])
 
 #########################################################################
 
+def build_rlc_simple(target, source, env, for_signature):
+  target_build_directory = os.path.splitext(target[0].path)[0]
+  intermediate = target_build_directory + "/seen0001.TXT"
+  return env.Command(target, source,
+                     [Mkdir(target_build_directory),
+                      "rlc ${SOURCES[0]} -o seen0001 -d " + target_build_directory,
+                      "kprl -a ${TARGETS[0]} " + intermediate,
+                      Delete(target_build_directory)])
+
+builder_rlc = Builder(generator = build_rlc_simple,
+                      suffix = ".TXT",
+                      src_suffix = ".ke")
+
 test_env = env.Clone()
-test_env.Append(CPPPATH = ["#/test"])
+test_env.Append(CPPPATH = ["#/test"],
+                BUILDERS = {'RlcSimple' : builder_rlc})
 
 test_case_files = [
   "test/testUtils.cpp",
@@ -196,3 +216,77 @@ script_machine_files = [
 
 test_env.Program('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
                                test_case_files, 'librlvm.a'])
+
+simple_test_cases = [
+  'ExpressionTest_SEEN/basicOperators',
+  'ExpressionTest_SEEN/comparisonOperators',
+  'ExpressionTest_SEEN/logicalOperators',
+  'ExpressionTest_SEEN/previousErrors',
+  'Module_Jmp_SEEN/fibonacci',
+  'Module_Jmp_SEEN/gosub_0',
+  'Module_Jmp_SEEN/gosub_case_0',
+  'Module_Jmp_SEEN/gosub_if_0',
+  'Module_Jmp_SEEN/gosub_unless_0',
+  'Module_Jmp_SEEN/gosub_with_0',
+  'Module_Jmp_SEEN/goto_0',
+  'Module_Jmp_SEEN/goto_case_0',
+  'Module_Jmp_SEEN/goto_if_0',
+  'Module_Jmp_SEEN/goto_on_0',
+  'Module_Jmp_SEEN/goto_unless_0',
+  'Module_Jmp_SEEN/graphics',
+  'Module_Jmp_SEEN/graphics2',
+  'Module_Jmp_SEEN/jump_0',
+  "Module_Mem_SEEN/cpyrng_0",
+  "Module_Mem_SEEN/cpyvars_0",
+  "Module_Mem_SEEN/setarray_0",
+  "Module_Mem_SEEN/setarray_stepped_0",
+  "Module_Mem_SEEN/setrng_0",
+  "Module_Mem_SEEN/setrng_1",
+  "Module_Mem_SEEN/setrng_stepped_0",
+  "Module_Mem_SEEN/setrng_stepped_1",
+  "Module_Mem_SEEN/sum_0",
+  "Module_Mem_SEEN/sums_0",
+  "Module_Str_SEEN/atoi_0",
+  "Module_Str_SEEN/digit_0",
+  "Module_Str_SEEN/digits_0",
+  "Module_Str_SEEN/hantozen_0",
+  "Module_Str_SEEN/hantozen_1",
+  "Module_Str_SEEN/itoa_0",
+  "Module_Str_SEEN/itoa_s_0",
+  "Module_Str_SEEN/itoa_w_0",
+  "Module_Str_SEEN/itoa_ws_0",
+  "Module_Str_SEEN/lowercase_0",
+  "Module_Str_SEEN/lowercase_1",
+  "Module_Str_SEEN/strcat_0",
+  "Module_Str_SEEN/strcharlen_0",
+  "Module_Str_SEEN/strcharlen_1",
+  "Module_Str_SEEN/strclear_0",
+  "Module_Str_SEEN/strclear_1",
+  "Module_Str_SEEN/strcmp_0",
+  "Module_Str_SEEN/strcpy_0",
+  "Module_Str_SEEN/strcpy_1",
+  "Module_Str_SEEN/strlen_0",
+  "Module_Str_SEEN/strlpos_0",
+  "Module_Str_SEEN/strpos_0",
+  "Module_Str_SEEN/strrsub_0",
+  "Module_Str_SEEN/strrsub_1",
+  "Module_Str_SEEN/strsub_0",
+  "Module_Str_SEEN/strsub_1",
+  "Module_Str_SEEN/strsub_2",
+  "Module_Str_SEEN/strsub_3",
+  "Module_Str_SEEN/strtrunc_0",
+  "Module_Str_SEEN/strtrunc_1",
+  "Module_Str_SEEN/strused_0",
+  "Module_Str_SEEN/uppercase_0",
+  "Module_Str_SEEN/uppercase_1",
+  "Module_Str_SEEN/zentohan_0",
+  "Module_Str_SEEN/zentohan_1",
+  "Module_Sys_SEEN/builtins",
+  "Module_Sys_SEEN/dumb",
+]
+
+for test_case in simple_test_cases:
+  test_env.RlcSimple('test/' + test_case)
+
+test_env.Install("#/build/test", source = ["#/test/Gameroot",
+                                           "#/test/Gameexe_data"])
