@@ -38,6 +38,14 @@ env.SetOption('num_jobs', cpus + 1)
 # Use timestamps change, followed by MD5 for speed
 env.Decider('MD5-timestamp')
 
+if ARGUMENTS.get('VERBOSE') != '1':
+  env['CCCOMSTR'] = 'Compiling $TARGET ...'
+  env['CXXCOMSTR'] = 'Compiling $TARGET ...'
+  env['SHCCCOMSTR'] = 'Compiling $TARGET ...'
+  env['SHCXXCOMSTR'] = 'Compiling $TARGET ...'
+  env['LINKCOMSTR'] = 'Linking $TARGET ...'
+  env['SHLINKCOMSTR'] = 'Linking $TARGET ...'
+
 ############################################ [ Configuration (Think autoconf) ]
 
 def CheckBoost(context, version):
