@@ -164,18 +164,53 @@ def build_rlc_simple(target, source, env, for_signature):
   target_build_directory = os.path.splitext(target[0].path)[0]
   intermediate = target_build_directory + "/seen0001.TXT"
   return env.Command(target, source,
-                     [Mkdir(target_build_directory),
-                      "rlc ${SOURCES[0]} -o seen0001 -d " + target_build_directory,
-                      "kprl -a ${TARGETS[0]} " + intermediate,
-                      Delete(target_build_directory)])
+                     Action([Mkdir(target_build_directory),
+                             "rlc ${SOURCES[0]} -o seen0001 -d " + target_build_directory,
+                             "kprl -a ${TARGETS[0]} " + intermediate,
+                             Delete(target_build_directory)],
+                            "Building ${TARGET}..."))
+
+def build_rlc_complex(target, source, env, for_signature):
+  '''Builds all SEENXXXX.ke files in the source directory into a resulting .TXT
+  file.
+
+   TODO: I'm not sure this works with dependencies correctly.
+   source_scanner=DirScanner should work, but If I ever modify any of these
+   test cases' source files and things don't appear to be rebuilding properly
+   THIS IS THE FIRST PLACE TO LOOK!'''
+
+  target_build_directory = os.path.splitext(target[0].path)[0]
+
+  commands = [
+    Mkdir(target_build_directory)
+  ]
+
+  source_file_names = os.listdir(source[0].srcnode().path)
+  for file_name in source_file_names:
+    if os.path.splitext(file_name)[1] == ".ke":
+      input_path = os.path.join(source[0].srcnode().path, file_name)
+      base_name = os.path.splitext(os.path.basename(file_name))[0]
+      commands += ["rlc " + input_path + " -o " + base_name + " -d " +
+                   target_build_directory]
+  commands += [
+     "kprl -a ${TARGETS[0]} " + target_build_directory + "/*",
+     Delete(target_build_directory)
+  ]
+
+  return env.Command(target, source, Action(commands, "Building ${TARGET}..."))
 
 builder_rlc = Builder(generator = build_rlc_simple,
                       suffix = ".TXT",
                       src_suffix = ".ke")
+builder_rlc_complex = Builder(generator = build_rlc_complex,
+                              suffix = ".TXT",
+                              source_scanner=DirScanner,
+                              source_factory=Dir)
 
 test_env = env.Clone()
 test_env.Append(CPPPATH = ["#/test"],
-                BUILDERS = {'RlcSimple' : builder_rlc})
+                BUILDERS = {'RlcSimple' : builder_rlc,
+                            'RlcComplex' : builder_rlc_complex})
 
 test_case_files = [
   "test/testUtils.cpp",
@@ -288,5 +323,22 @@ simple_test_cases = [
 for test_case in simple_test_cases:
   test_env.RlcSimple('test/' + test_case)
 
-test_env.Install("#/build/test", source = ["#/test/Gameroot",
-                                           "#/test/Gameexe_data"])
+complex_test_cases = [
+  "Module_Jmp_SEEN/farcallTest_0",
+  "Module_Jmp_SEEN/farcall_withTest",
+  "Module_Jmp_SEEN/jumpTest",
+  "Module_Sys_SEEN/SceneNum"
+]
+
+for test_case in complex_test_cases:
+  test_env.RlcComplex('test/' + test_case)
+
+files_to_copy = [
+  "Gameexe_data/Gameexe.ini",
+  "Gameroot/g00/doesntmatter.g00"
+]
+
+for file_name in files_to_copy:
+  test_env.Command('#/build/test/' + file_name,
+                   '#/test/' + file_name,
+                   Copy('$TARGET', '$SOURCE'))

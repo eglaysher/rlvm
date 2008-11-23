@@ -93,7 +93,7 @@ template<>
 template<>
 void object::test<1>()
 {
-  libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum/SEEN.TXT"));
+  libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new SysModule);

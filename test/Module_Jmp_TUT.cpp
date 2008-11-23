@@ -777,7 +777,7 @@ void object::test<17>()
 {
   for(int i = 1; i < 4; ++i)
   {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest/SEEN.TXT"));
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -821,7 +821,7 @@ void object::test<18>()
 {
   for(int i = 1; i < 4; ++i)
   {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcallTest_0/SEEN.TXT"));
+    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcallTest_0.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -1030,7 +1030,7 @@ void object::test<21>()
   {
     for(int entrypoint = 1; entrypoint < 4; ++entrypoint)
     {
-      libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcall_withTest/SEEN.TXT"));
+      libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcall_withTest.TXT"));
       NullSystem system;
       RLMachine rlmachine(system, arc);
       rlmachine.attachModule(new JmpModule);
