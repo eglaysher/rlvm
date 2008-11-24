@@ -81,9 +81,9 @@ void EventSystem::executeEventSystem(RLMachine& machine) {
 
 // -----------------------------------------------------------------------
 
-void EventSystem::addEventHandler(EventHandler* handler)
+void EventSystem::pushEventHandler(EventHandler* handler)
 {
-  event_handlers_.insert(handler);
+  event_handlers_.push_back(handler);
 
   if(ctrlPressed())
   {
@@ -94,9 +94,15 @@ void EventSystem::addEventHandler(EventHandler* handler)
 
 // -----------------------------------------------------------------------
 
-void EventSystem::removeEventHandler(EventHandler* handler)
+void EventSystem::popEventHandler(EventHandler* handler)
 {
-  event_handlers_.erase(handler);
+  if (!event_handlers_.size() || event_handlers_.back() != handler) {
+    cerr << "WARNING: popEventHandler was called and it's not the back entry!"
+         << endl;
+    return;
+  }
+
+  event_handlers_.pop_back();
 
   // TODO: Only remove actions targeting this handler?
   while(queued_actions_.size())
@@ -167,12 +173,12 @@ void EventSystem::dispatchEvent(
     }
   }
 
-  Handlers::iterator handlerIt = handlers_begin();
-  for (; !handled && handlerIt != handlers_end(); ++handlerIt) {
-    if (event(**handlerIt)) {
-      handled = true;
-      break;
-    }
+  // Only give the most recent event handler a chance to handle the
+  // event. Otherwise, who cares? No one else can handle it.
+  if (event_handlers_.size()) {
+    // We don't care if it passed or failed; it's the actor of last resort
+    // here...
+    event(*event_handlers_.back());
   }
 }
 

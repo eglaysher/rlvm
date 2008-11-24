@@ -42,6 +42,7 @@
 #include "Utilities.h"
 
 #include <iostream>
+#include <typeinfo>
 
 using namespace std;
 
@@ -82,7 +83,7 @@ std::ostream& operator<<(std::ostream& os, const StackFrame& frame)
      << distance(frame.scenario->begin(), frame.ip);
 
   if (frame.long_op)
-    os << " [LONG OP]";
+    os << " [LONG OP=" << typeid(*frame.long_op).name() << "]";
 
   os << "}";
 

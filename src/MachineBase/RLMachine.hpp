@@ -37,9 +37,10 @@
  *
  */
 
-#include <boost/serialization/split_member.hpp>
+#include <boost/function.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/serialization/split_member.hpp>
 
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/scenario.h"
@@ -448,6 +449,11 @@ public:
   void popStackFrame();
 
   /**
+   * Clears all LongOperations from the back of the stack.
+   */
+  void clearLongOperationsOffBackOfStack();
+
+  /**
    * Clears all call stacks and other data.
    */
   void reset();
@@ -497,6 +503,13 @@ private:
 
   /// Override defaults
   bool mark_savepoints_;
+
+  /// Whether the stack was modified during the running of a
+  /// LongOperation. Used to decide how to procede if a 
+  bool delay_stack_modifications_;
+
+  /// The actions that were delayed when |delay_stack_modifications_| is on.
+  std::vector<boost::function<void(void)> > delayed_modifications_;
 
   /// boost::serialization support
   friend class boost::serialization::access;

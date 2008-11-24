@@ -35,10 +35,12 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Platform.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
+#include "Modules/Module_Sys.hpp"
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -89,9 +91,23 @@ void System::checkSyscomIndex(int index, const char* function)
 
 // -----------------------------------------------------------------------
 
-bool System::isSyscomEnabled(int syscom)
+int System::isSyscomEnabled(int syscom)
 {
   checkSyscomIndex(syscom, "System::is_syscom_enabled");
+
+  // Special cases where state of the interpreter would override the
+  // programmatically set (or user set) values.
+  if (syscom == SYSCOM_SET_SKIP_MODE && !text().kidokuRead()) {
+    // Skip mode should be grayed out when there's no text to read
+    if (syscom_status_[syscom] == SYSCOM_VISIBLE)
+      return SYSCOM_GREYED_OUT;
+  } else if (syscom == SYSCOM_RETURN_TO_PREVIOUS_SELECTION) {
+    // So far, we don't have an implementation for this, so grey it out all the
+    // time.
+    if (syscom_status_[syscom] == SYSCOM_VISIBLE)
+      return SYSCOM_GREYED_OUT;
+  }
+
   return syscom_status_[syscom];
 }
 
@@ -168,8 +184,7 @@ void System::showSyscomMenu(RLMachine& machine)
 {
   Gameexe& gexe = machine.system().gameexe();
 
-  if(gexe("CANCELCALL_MOD") == 1)
-  {
+  if (gexe("CANCELCALL_MOD") == 1) {
     if (!in_menu_) {
       // Multiple right clicks shouldn't spawn multiple copies of the menu
       // system on top of each other.
@@ -179,11 +194,79 @@ void System::showSyscomMenu(RLMachine& machine)
       vector<int> cancelcall = gexe("CANCELCALL");
       machine.farcall(cancelcall.at(0), cancelcall.at(1));
     }
-  }
-  else
-  {
+  } else if (platform_) {
+    platform_->showNativeSyscomMenu(machine);
+  } else {
     cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
   }
+}
+
+// -----------------------------------------------------------------------
+
+void System::invokeSyscom(RLMachine& machine, int syscom)
+{
+  switch(syscom) {
+  case SYSCOM_SAVE:
+  case SYSCOM_LOAD:
+  case SYSCOM_MESSAGE_SPEED:
+  case SYSCOM_WINDOW_ATTRIBUTES:
+  case SYSCOM_VOLUME_SETTINGS:
+  case SYSCOM_MISCELLANEOUS_SETTINGS:
+  case SYSCOM_VOICE_SETTINGS:
+  case SYSCOM_FONT_SELECTION:
+  case SYSCOM_BGM_FADE:
+  case SYSCOM_BGM_SETTINGS:
+  case SYSCOM_AUTO_MODE_SETTINGS:
+  case SYSCOM_USE_KOE:
+  case SYSCOM_DISPLAY_VERSION: {
+    platform_->invokeSyscomStandardUI(machine, syscom);
+    break;
+  }
+  case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
+    cerr << "Implement return to previous selection later!" << endl;
+    break;
+  case SYSCOM_SHOW_WEATHER:
+    graphics().setShowWeather(!graphics().showWeather());
+    break;
+  case SYSCOM_SHOW_OBJECT_1:
+    graphics().setShowObject1(!graphics().showObject1());
+    break;
+  case SYSCOM_SHOW_OBJECT_2:
+    graphics().setShowObject2(!graphics().showObject2());
+    break;
+  case SYSCOM_CLASSIFY_TEXT:
+    cerr << "We have no idea what classifying text even means!" << endl;
+    break;
+  case SYSCOM_OPEN_MANUAL_PATH:
+    cerr << "Opening manual path..." << endl;
+    break;
+  case SYSCOM_SET_SKIP_MODE:
+    text().setSkipMode(!text().skipMode());
+    break;
+  case SYSCOM_AUTO_MODE:
+    text().setAutoMode(!text().autoMode());
+    break;
+  case SYSCOM_MENU_RETURN:
+    // This is a hack since we probably have a bunch of crap on the stack.
+    machine.clearLongOperationsOffBackOfStack();
+
+    // Simulate a MenuReturn.
+    Sys_MenuReturn()(machine);
+    break;
+  case SYSCOM_EXIT_GAME:
+    machine.halt();
+    break;
+  case SYSCOM_SHOW_BACKGROUND:
+    graphics().toggleInterfaceHidden();
+    break;
+  case SYSCOM_GENERIC_1:
+  case SYSCOM_GENERIC_2:
+  case SYSCOM_SCREEN_MODE:
+  case SYSCOM_WINDOW_DECORATION_STYLE:
+  case SYSCOM_HIDE_MENU:
+    cerr << "No idea what to do!" << endl;
+    break;
+  };
 }
 
 // -----------------------------------------------------------------------

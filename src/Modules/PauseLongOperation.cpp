@@ -206,20 +206,6 @@ bool PauseLongOperation::operator()(RLMachine& machine)
 }
 
 // -----------------------------------------------------------------------
-
-void PauseLongOperation::looseFocus()
-{
-  machine.system().event().removeEventHandler(this);
-}
-
-// -----------------------------------------------------------------------
-
-void PauseLongOperation::gainFocus()
-{
-  machine.system().event().addEventHandler(this);
-}
-
-// -----------------------------------------------------------------------
 // NewPageAfterLongop
 // -----------------------------------------------------------------------
 NewPageAfterLongop::NewPageAfterLongop(LongOperation* inOp)

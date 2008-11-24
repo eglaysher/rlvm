@@ -31,6 +31,7 @@
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/utility.hpp>
+#include <boost/signals/trackable.hpp>
 
 #include "libReallive/gameexe.h"
 
@@ -102,7 +103,8 @@ private:
 
 // -----------------------------------------------------------------------
 
-class ActivationTextWindowButton : public TextWindowButton
+class ActivationTextWindowButton : public TextWindowButton,
+                                   public boost::signals::trackable
 {
 public:
   typedef boost::function<void(void)> CallbackFunction;
@@ -115,10 +117,16 @@ public:
 
   virtual void buttonReleased();
 
+  void setEnabled(bool on);
+  void setActivated(bool on);
+
 private:
+  void setState();
+
   CallbackFunction on_start_;
   CallbackFunction on_end_;
   bool on_;
+  bool enabled_;
 };
 
 // -----------------------------------------------------------------------

@@ -34,6 +34,7 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/signal.hpp>
 #include <string>
 #include <vector>
 
@@ -161,12 +162,13 @@ public:
    * It is possible to set the interpreter up to advance text
    * automatically instead of waiting for player input after each
    * screen is displayed; the `auto mode' controls permit this
-   * behaviour to be customised.
+   * behaviour to be customized.
    *
    * @{
    */
-  void setAutoMode(int i) { auto_mode_ = (bool)i; }
+  void setAutoMode(int i);
   int autoMode() const { return (int)auto_mode_; }
+  boost::signal<void(bool)>& autoModeSignal() { return auto_mode_signal_; }
 
   void setAutoBaseTime(int i) { globals_.auto_mode_base_time = i; }
   int autoBaseTime() const { return globals_.auto_mode_base_time; }
@@ -261,10 +263,14 @@ public:
   virtual void reset();
 
   bool kidokuRead() const { return kidoku_read_; }
-  void setKidokuRead(const int in) { kidoku_read_ = in; }
+  void setKidokuRead(const int in);
+  boost::signal<void(bool)>& skipModeEnabledSignal() {
+    return skip_mode_enabled_signal_;
+  }
 
   bool skipMode() const { return skip_mode_; }
-  void setSkipMode(const int in) { skip_mode_ = in; }
+  void setSkipMode(const int in);
+  boost::signal<void(bool)>& skipModeSignal() { return skip_mode_signal_; }
 
   bool currentlySkipping() const;
 
@@ -288,6 +294,9 @@ protected:
    */
   /// Whether Auto mode is enabled
   bool auto_mode_;
+
+  /// Signal to slots who are monitoring whether auto mode is enabled.
+  boost::signal<void(bool)> auto_mode_signal_;
   /// @}
 
   /// Whether holding down the control key will skip text.
@@ -361,8 +370,14 @@ protected:
   /// Whether we skip text that we've already seen
   bool skip_mode_;
 
+  /// Signal to slots who are monitoring whether skip mode is enabled.
+  boost::signal<void(bool)> skip_mode_signal_;
+
   /// Whether we are currently on a page of text that we've previously read.
   bool kidoku_read_;
+
+  /// Signal to slots who are monitoring whether skip mode is enabled.
+  boost::signal<void(bool)> skip_mode_enabled_signal_;
 
   /// Whether we are currently paused at a user choice.
   bool in_selection_mode_;

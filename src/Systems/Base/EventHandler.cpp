@@ -67,12 +67,12 @@ bool EventListener::keyStateChanged(KeyCode key_code, bool pressed)
 EventHandler::EventHandler(RLMachine& machine)
   : machine_(machine)
 {
-  machine.system().event().addEventHandler(this);
+  machine.system().event().pushEventHandler(this);
 }
 
 // -----------------------------------------------------------------------
 
 EventHandler::~EventHandler()
 {
-  machine_.system().event().removeEventHandler(this);
+  machine_.system().event().popEventHandler(this);
 }

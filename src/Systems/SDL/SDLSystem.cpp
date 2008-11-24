@@ -36,6 +36,7 @@
 
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/Platform.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
@@ -100,10 +101,12 @@ void SDLSystem::run(RLMachine& machine)
   sound_system_->executeSoundSystem(machine);
   graphics_system_->executeGraphicsSystem(machine);
 
-  // My pausing model is wrong. Really wrong. For an example of just
-  // how wrong it is, take a look at the performance under CLANNAD's menu.
-  if (machine.inLongOperation()) {
+  if (platform())
+    platform()->run(machine);
+
+  if (machine.inLongOperation() || forceWait()) {
     event_system_->wait(10);
+    setForceWait(false);
   }
 }
 

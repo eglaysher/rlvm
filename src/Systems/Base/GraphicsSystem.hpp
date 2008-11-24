@@ -68,6 +68,8 @@ template<typename T> class LazyArray;
 
 // -----------------------------------------------------------------------
 
+// Huh?
+
 /**
  * Variables and configuration data that are global across all save
  * game files in a game.

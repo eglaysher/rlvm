@@ -57,22 +57,6 @@ public:
    * still running.
    */
   virtual bool operator()(RLMachine& machine) = 0;
-
-  /**
-   * Method called when another LongOperation or RealLive stack frame
-   * has been placed on top of this one.
-   *
-   * @invariant The next method call to this object after looseFocus()
-   * will either be gainFocus() or the destructor.
-   */
-  virtual void looseFocus();
-
-  /**
-   * Method called after the stack frame immediately above this one
-   * has been popped of the stack, meaning this LongOperation will
-   * continue running.
-   */
-  virtual void gainFocus();
 };
 
 // -----------------------------------------------------------------------
@@ -89,9 +73,6 @@ public:
   ~PerformAfterLongOperationDecorator();
 
   virtual bool operator()(RLMachine& machine);
-
-  virtual void looseFocus();
-  virtual void gainFocus();
 
 private:
   boost::scoped_ptr<LongOperation> operation_;

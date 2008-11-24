@@ -133,8 +133,8 @@ public:
    *
    * @{
    */
-  void addEventHandler(EventHandler* handler);
-  void removeEventHandler(EventHandler* handler);
+  void pushEventHandler(EventHandler* handler);
+  void popEventHandler(EventHandler* handler);
 
   void addMouseListener(EventListener* listener);
   void removeMouseListener(EventListener* listener);
@@ -229,7 +229,7 @@ public:
   EventSystemGlobals& globals() { return globals_; }
 
 protected:
-  typedef std::set<EventHandler*> Handlers;
+  typedef std::vector<EventHandler*> Handlers;
   typedef std::set<EventListener*> EventListeners;
 
   Handlers::iterator handlers_begin() { return event_handlers_.begin(); }

@@ -422,6 +422,18 @@ public:
 
 // -----------------------------------------------------------------------
 
+class InvokeSyscomAsOp : public RLOp_Void_Void {
+private:
+  int syscom_;
+
+public:
+  InvokeSyscomAsOp(const int syscom);
+
+  virtual void operator()(RLMachine& machine);
+};
+
+// -----------------------------------------------------------------------
+
 /**
  * Class that exists simply to print out a prettier output message on
  * unimplemented functions.

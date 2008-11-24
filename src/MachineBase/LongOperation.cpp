@@ -47,16 +47,6 @@ LongOperation::~LongOperation()
 {}
 
 // -----------------------------------------------------------------------
-
-void LongOperation::looseFocus()
-{}
-
-// -----------------------------------------------------------------------
-
-void LongOperation::gainFocus()
-{}
-
-// -----------------------------------------------------------------------
 // PerformAfterLongOperationDecorator
 // -----------------------------------------------------------------------
 
@@ -81,18 +71,4 @@ bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine)
     performAfterLongOperation(machine);
 
   return ret_val;
-}
-
-// -----------------------------------------------------------------------
-
-void PerformAfterLongOperationDecorator::looseFocus()
-{
-  operation_->looseFocus();
-}
-
-// -----------------------------------------------------------------------
-
-void PerformAfterLongOperationDecorator::gainFocus()
-{
-  operation_->gainFocus();
 }

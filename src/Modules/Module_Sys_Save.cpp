@@ -339,67 +339,50 @@ struct Sys_save : public RLOp_Void_1< IntConstant_T >
  * we're going to nuke the call stack and system memory in
  * LoadingGame.
  */
-struct Sys_load : public RLOp_Void_1< IntConstant_T >
+bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
+  Serialization::loadGameForSlot(machine, slot_);
+
+  // Render the current state of the screen
+  GraphicsSystem& graphics = machine.system().graphics();
+
+  shared_ptr<Surface> dc0 = graphics.getDC(0);
+  shared_ptr<Surface> currentWindow =
+    graphics.renderToSurfaceWithBg(machine, dc0);
+  Size s = currentWindow->size();
+
+  // Blank dc0 (because we won't be using it anyway) for the image
+  // we're going to render to
+  shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
+  blankScreen->fill(RGBAColour::Black());
+
+  machine.pushLongOperation(
+    new FadeEffect(machine, currentWindow, blankScreen, s, 250));
+
+  // At this point, the stack has been nuked, and this current
+  // object has already been deleted, leaving an invalid
+  // *this. Returning false is the correct thing to do since
+  // *returning true will pop an unrelated stack frame.
+  return false;
+}
+
+void Sys_load::operator()(RLMachine& machine, int slot)
 {
-  bool advanceInstructionPointer() { return false; }
+  // Render the current state of the screen
+  GraphicsSystem& graphics = machine.system().graphics();
 
-  struct LoadingGame : public LongOperation
-  {
-    int slot_;
-    LoadingGame(int slot) : slot_(slot) {}
+  shared_ptr<Surface> dc0 = graphics.getDC(0);
+  shared_ptr<Surface> currentWindow =
+    graphics.renderToSurfaceWithBg(machine, dc0);
+  Size s = currentWindow->size();
 
-    bool operator()(RLMachine& machine)
-    {
-      Serialization::loadGameForSlot(machine, slot_);
+  // Blank dc0 (because we won't be using it anyway) for the image
+  // we're going to render to
+  dc0->fill(RGBAColour::Black());
 
-      // Render the current state of the screen
-      GraphicsSystem& graphics = machine.system().graphics();
-
-      shared_ptr<Surface> dc0 = graphics.getDC(0);
-      shared_ptr<Surface> currentWindow =
-        graphics.renderToSurfaceWithBg(machine, dc0);
-      Size s = currentWindow->size();
-
-      // Blank dc0 (because we won't be using it anyway) for the image
-      // we're going to render to
-      shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
-      blankScreen->fill(RGBAColour::Black());
-
-      machine.pushLongOperation(
-        new FadeEffect(machine, currentWindow, blankScreen, s, 250));
-
-      // At this point, the stack has been nuked, and this current
-      // object has already been deleted, leaving an invalid
-      // *this. Returning false is the correct thing to do since
-      // *returning true will pop an unrelated stack frame.
-      return false;
-    }
-  };
-
-  /**
-   * Main entrypoint into the load command. Simply sets the callstack
-   * up so that we will fade to black, clear the screen and render,
-   * and then enter the next stage, the LongOperation LoadingGame.
-   */
-  void operator()(RLMachine& machine, int slot)
-  {
-    // Render the current state of the screen
-    GraphicsSystem& graphics = machine.system().graphics();
-
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> currentWindow =
-      graphics.renderToSurfaceWithBg(machine, dc0);
-    Size s = currentWindow->size();
-
-    // Blank dc0 (because we won't be using it anyway) for the image
-    // we're going to render to
-    dc0->fill(RGBAColour::Black());
-
-    machine.pushLongOperation(new LoadingGame(slot));
-    machine.pushLongOperation(
-      new FadeEffect(machine, dc0, currentWindow, s, 250));
-  }
-};
+  machine.pushLongOperation(new LoadingGame(slot));
+  machine.pushLongOperation(
+    new FadeEffect(machine, dc0, currentWindow, s, 250));
+}
 
 // -----------------------------------------------------------------------
 
@@ -418,8 +401,8 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(2003, 0, "ConfirmSaveLoad",
               returnIntValue(&System::confirmSaveLoad));
 
-  m.addUnsupportedOpcode(3000, 0, "menu_save");
-  m.addUnsupportedOpcode(3001, 0, "menu_load");
+  m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
+  m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
 
   m.addOpcode(3007, 0, "save", new Sys_save);
   m.addOpcode(3107, 0, "save_always", new Sys_save);

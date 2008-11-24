@@ -315,38 +315,33 @@ struct Sys_DefWindowAttr : public RLOp_Void_5<
 
 // -----------------------------------------------------------------------
 
-struct Sys_MenuReturn : public RLOp_Void_Void
+void Sys_MenuReturn::operator()(RLMachine& machine)
 {
-  /// Don't advance the instruction pointer when this returns
-  virtual bool advanceInstructionPointer() { return false; }
+  GraphicsSystem& graphics = machine.system().graphics();
 
-  void operator()(RLMachine& machine)
-  {
-    GraphicsSystem& graphics = machine.system().graphics();
+  // Render the screen as is.
+  shared_ptr<Surface> dc0 = graphics.getDC(0);
+  shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
 
-    // Render the screen as is.
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
+  // Clear everything
+  graphics.clearAllObjects();
+  graphics.clearAllDCs();
+  machine.system().sound().reset();
+  machine.system().text().reset();
 
-    // Clear everything
-    graphics.clearAllObjects();
-    graphics.clearAllDCs();
-    machine.system().sound().reset();
-    machine.system().text().reset();
+  shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);
 
-    shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);
+  // First, we jump the instruction pointer to the new location.
+  int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
+  machine.jump(scenario);
 
-    // First, we jump the instruction pointer to the new location.
-    int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-    machine.jump(scenario);
+  // Now we push a LongOperation on top of the stack; when this
+  // ends, we'll be at SEEN_MENU.
+  LongOperation* effect =
+    new FadeEffect(machine, after, before, after->size(), 1000);
+  machine.pushLongOperation(effect);
+}
 
-    // Now we push a LongOperation on top of the stack; when this
-    // ends, we'll be at SEEN_MENU.
-    LongOperation* effect =
-      new FadeEffect(machine, after, before, after->size(), 1000);
-    machine.pushLongOperation(effect);
-  }
-};
 
 // -----------------------------------------------------------------------
 
