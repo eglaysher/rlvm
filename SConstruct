@@ -16,6 +16,8 @@ env = Environment(
     "z"
   ],
 
+  LOCAL_LIBS = [],
+
   CPPPATH = [
     "#/src",
     "#/vendor",
@@ -95,13 +97,13 @@ VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
 VerifyLibrary(config, 'lua5.1', 'lua5.1/lua.h')
 
-if config.CheckLibWithHeader("libluabind", "luabind/luabind.h", "cpp"):
-  env["SYSTEM_LUABIND"] = True
-
 env = config.Finish()
 
-if env["SYSTEM_LUABIND"] == False:
-  SConscript("vendor/luabind/SConscript", build_dir="build/luabind", duplicate=0,
-             exports='env')
+# Need to generalize these so that maybe we use them if they're installed on
+# the system. Then we could get rid of glew and SDL_ttf doing the same thing...
+SConscript("vendor/luabind/SConscript", build_dir="build/luabind", duplicate=0,
+           exports='env')
+SConscript("vendor/guichan/SConscript", build_dir="build/guichan", duplicate=0,
+           exports='env')
 
 SConscript("SConscript", build_dir="build", duplicate=0, exports='env')

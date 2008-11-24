@@ -103,6 +103,7 @@ librlvm_files = [
   "src/Systems/Base/EventSystem.cpp",
   "src/Systems/Base/EventHandler.cpp",
   "src/Systems/Base/RLTimer.cpp",
+  "src/Systems/Base/Platform.cpp",
   "src/Systems/Base/SystemError.cpp",
   "src/Systems/Base/TextWindow.cpp",
   "src/Systems/Base/TextWindowButton.cpp",
@@ -156,7 +157,24 @@ libsystemsdl_files = [
 
 env.StaticLibrary('system_sdl', libsystemsdl_files)
 
-env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a', 'librlvm.a'])
+guichan_platform = [
+  "src/Platforms/gcn/GCNButton.cpp",
+  "src/Platforms/gcn/GCNGraphics.cpp",
+  "src/Platforms/gcn/GCNMenu.cpp",
+  "src/Platforms/gcn/GCNPlatform.cpp",
+  "src/Platforms/gcn/GCNSaveLoadWindow.cpp",
+  "src/Platforms/gcn/GCNScrollArea.cpp",
+  "src/Platforms/gcn/gcnUtils.cpp",
+  "src/Platforms/gcn/GCNWindow.cpp",
+  "src/Platforms/gcn/SDLTrueTypeFont.cpp",
+  "src/Platforms/gcn/wxInclude.cpp"
+]
+
+env.StaticLibrary('guichan_platform', guichan_platform)
+
+env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a',
+                     'libguichan_platform.a', '#/build/guichan/libguichan.a',
+                     'librlvm.a'])
 
 #########################################################################
 
@@ -345,6 +363,7 @@ for file_name in files_to_copy:
 
 #########################################################################
 
-test_env.Program("luaRlvm", ['test/luaRlvm.cpp', 
-                             script_machine_files, 'luabind/libluabind.a', 
+test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
+                             script_machine_files,
+                             '#/build/luabind/libluabind.a',
                              'libsystem_sdl.a', 'librlvm.a'])

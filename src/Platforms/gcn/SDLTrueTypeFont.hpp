@@ -31,7 +31,7 @@
 #include <map>
 #include <string>
 
-#include <SDL/SDL_ttf.h>
+#include "SDL_ttf.h"
 
 #include "guichan/color.hpp"
 #include "guichan/font.hpp"

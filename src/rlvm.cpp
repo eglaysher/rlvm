@@ -41,7 +41,7 @@
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-//#include "Platforms/gcn/GCNPlatform.hpp"
+#include "Platforms/gcn/GCNPlatform.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -348,9 +348,9 @@ int main(int argc, char* argv[])
     }
 
     SDLSystem sdlSystem(gameexe);
-//     boost::shared_ptr<Platform> platform(
-//       new GCNPlatform(gameexe, sdlSystem.graphics().screenRect()));
-//     sdlSystem.setPlatform(platform);
+    boost::shared_ptr<Platform> platform(
+      new GCNPlatform(gameexe, sdlSystem.graphics().screenRect()));
+    sdlSystem.setPlatform(platform);
 
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
