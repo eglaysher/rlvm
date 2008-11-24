@@ -342,3 +342,9 @@ for file_name in files_to_copy:
   test_env.Command('#/build/test/' + file_name,
                    '#/test/' + file_name,
                    Copy('$TARGET', '$SOURCE'))
+
+#########################################################################
+
+test_env.Program("luaRlvm", ['test/luaRlvm.cpp', 
+                             script_machine_files, 'luabind/libluabind.a', 
+                             'libsystem_sdl.a', 'librlvm.a'])

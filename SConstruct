@@ -23,7 +23,9 @@ env = Environment(
   CPPFLAGS = [
     "--ansi",
     "-funsigned-char"
-  ]
+  ],
+
+  SYSTEM_LUABIND = False
 )
 
 Progress('$TARGET\r', overwrite=True, file=open('con', 'w'))
@@ -81,14 +83,24 @@ def VerifyLibrary(config, library, header):
 
 config = env.Configure(custom_tests = { 'CheckBoost' : CheckBoost },
                        config_h="build/config.h")
-VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
-VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
-VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
-VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
-VerifyLibrary(config, 'libvorbis', 'vorbis/vorbisfile.h')
 if not config.CheckBoost('1.35'):
   print "Boost version >= 1.35 needed to compile rlvm!"
   Exit(1)
 
+VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
+VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
+VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
+VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
+VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
+VerifyLibrary(config, 'lua5.1', 'lua5.1/lua.h')
+
+if config.CheckLibWithHeader("libluabind", "luabind/luabind.h", "cpp"):
+  env["SYSTEM_LUABIND"] = True
+
 env = config.Finish()
+
+if env["SYSTEM_LUABIND"] == False:
+  SConscript("vendor/luabind/SConscript", build_dir="build/luabind", duplicate=0,
+             exports='env')
+
 SConscript("SConscript", build_dir="build", duplicate=0, exports='env')

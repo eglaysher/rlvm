@@ -70,7 +70,7 @@ ScriptWorld::ScriptWorld(const std::string& lua_file)
 
   luabind::globals(L)["World"] = this;
 
-  if (lua_dofile(L, lua_file.c_str())) {
+  if (luaL_dofile(L, lua_file.c_str())) {
     ostringstream oss;
     oss << "Error while running script: " << lua_file;
     throw std::runtime_error(oss.str());
@@ -94,7 +94,7 @@ void ScriptWorld::import(const std::string& file_name) {
     throw std::runtime_error(oss.str());
   }
 
-  if (lua_dofile(L, script_path.file_string().c_str())) {
+  if (luaL_dofile(L, script_path.file_string().c_str())) {
     ostringstream oss;
     oss << "Error while running script: " << script_path;
     throw std::runtime_error(oss.str());
