@@ -1,7 +1,0 @@
-rlvmTest
-luaRlvm
-*.omc
-.gdb_history
-tests_Debug
-tests_Release
-tests.vcproj.*

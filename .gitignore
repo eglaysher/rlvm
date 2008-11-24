@@ -3,10 +3,8 @@
 *.log
 *.mshark
 *.o
-*.omc
 *~
 .gdb_history
-.omakedb*
 /build-stamp
 /configure-stamp
 TAGS
@@ -14,7 +12,6 @@ gmon.out
 objs
 rlvm.ncb
 rlvm.suo
-svn-commit.tmp*
 /build/
 /.sconf_temp/
 /.sconsign.dblite
