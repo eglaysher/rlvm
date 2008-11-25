@@ -117,7 +117,8 @@ void SDLGraphicsSystem::beginFrame()
 
 void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
 {
-  if (isResponsibleForUpdate() && screenUpdateMode() == SCREENUPDATEMODE_MANUAL &&
+  if (isResponsibleForUpdate() &&
+      screenUpdateMode() == SCREENUPDATEMODE_MANUAL &&
       type == GUT_MOUSE_MOTION)
     redraw_last_frame_ = true;
   else
@@ -150,43 +151,44 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
   if (system().platform())
     system().platform()->render(machine);
 
-  Point hotspot = cursorPos();
-  int dx1 = -1;
-  int dy1 = -1;
-
-  boost::shared_ptr<MouseCursor> cursor;
-  if(static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
-    cursor = currentCursor(machine);
-  if(cursor)
-  {
-    Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
-    dx1 = render_loc.x();
-    dy1 = render_loc.y();
-
-    // Copy the area behind the cursor to the temporary buffer
-    glBindTexture(GL_TEXTURE_2D, behind_cursor_texture_);
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-                        dx1, screenSize().height() - dy1 - 32, 32, 32);
-
-    cursor->renderHotspotAt(machine, hotspot);
+  if (screenUpdateMode() == SCREENUPDATEMODE_MANUAL) {
+    // Copy the area behind the cursor to the temporary buffer (drivers differ:
+    // the contents of the back buffer is undefined after SDL_GL_SwapBuffers()
+    // and I've just been lucky that the Intel i810 and whatever my Mac machine
+    // has have been doing things that way.)
+    glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,
+                        screenSize().width(), screenSize().height());
+    screen_contents_texture_valid_ = true;
+  } else {
+    screen_contents_texture_valid_ = false;
   }
 
-  glFlush();
+  drawCursor(machine);
 
   // Swap the buffers
+  glFlush();
   SDL_GL_SwapBuffers();
   ShowGLErrors();
+}
 
-  if (cursor)
-  {
-    // Now that the double buffer has been flipped, render the texture
-    // that contains what's behind the mouse cursor.
+// -----------------------------------------------------------------------
 
-    glBindTexture(GL_TEXTURE_2D, behind_cursor_texture_);
+void SDLGraphicsSystem::redrawLastFrame(RLMachine& machine)
+{
+  // We won't redraw the screen between when the DrawManual() command is issued
+  // by the bytecode and the first refresh() is called since we need a valid
+  // copy of the screen to work with and we only snapshot the screen during
+  // DrawManual() mode.
+  if (screen_contents_texture_valid_) {
+    // Redraw the screen
+    glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
     glBegin(GL_QUADS);
     {
-      int dx2 = dx1 + 32;
-      int dy2 = dy1 + 32;
+      int dx1 = 0;
+      int dx2 = screenSize().width();
+      int dy1 = 0;
+      int dy2 = screenSize().height();
 
       glColor4ub(255, 255, 255, 255);
       glTexCoord2f(0, 1);
@@ -200,6 +202,28 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
     }
     glEnd();
 
+    drawCursor(machine);
+
+    glFlush();
+
+    // Swap the buffers
+    SDL_GL_SwapBuffers();
+    ShowGLErrors();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::drawCursor(RLMachine& machine)
+{
+  boost::shared_ptr<MouseCursor> cursor;
+  if(static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
+    cursor = currentCursor(machine);
+  if(cursor)
+  {
+    Point hotspot = cursorPos();
+    Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
+    cursor->renderHotspotAt(machine, hotspot);
   }
 }
 
@@ -221,7 +245,8 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   : GraphicsSystem(system, gameexe), redraw_last_frame_(false),
     display_data_in_titlebar_(false), time_of_last_titlebar_update_(0),
-    last_seen_number_(0), last_line_number_(0), image_cache_(20)
+    last_seen_number_(0), last_line_number_(0),
+    screen_contents_texture_valid_(false), image_cache_(20)
 {
   for(int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface);
@@ -324,12 +349,13 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
   // Create a small 32x32 texture for storing what's behind the mouse
   // cursor.
-  glGenTextures(1, &behind_cursor_texture_);
-  glBindTexture(GL_TEXTURE_2D, behind_cursor_texture_);
+  glGenTextures(1, &screen_contents_texture_);
+  glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-               32, 32, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+               screenSize().width(), screenSize().height(), 0, GL_RGB,
+               GL_UNSIGNED_BYTE, NULL);
   ShowGLErrors();
 
   setWindowTitle();
@@ -349,15 +375,13 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 {
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-  if(isResponsibleForUpdate() && redraw_last_frame_)
-  {
-    endFrame(machine);
-    redraw_last_frame_ = false;
-  }
-  else if(isResponsibleForUpdate() && screenNeedsRefresh())
-  {
+  if (isResponsibleForUpdate() && screenNeedsRefresh()) {
     refresh(machine, NULL);
     screenRefreshed();
+    redraw_last_frame_ = false;
+  } else if (isResponsibleForUpdate() && redraw_last_frame_) {
+    redrawLastFrame(machine);
+    redraw_last_frame_ = false;
   }
 
   // Check to see if any of the graphics objects are reporting that

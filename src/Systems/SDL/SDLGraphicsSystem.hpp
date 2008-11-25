@@ -63,6 +63,8 @@ class SDLGraphicsSystem : public GraphicsSystem
 public:
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
 
+//  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
+
   /**
    * When the cursor is changed, also make sure that it exists so that we can
    * switch on/off the operating system cursor when the cursor index is invalid.
@@ -74,6 +76,9 @@ public:
   virtual void markScreenAsDirty(GraphicsUpdateType type);
 
   virtual void endFrame(RLMachine& machine);
+
+  void redrawLastFrame(RLMachine& machine);
+  void drawCursor(RLMachine& machine);
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);
@@ -159,10 +164,14 @@ private:
   SDL_Surface* icon_;
 
   /**
-   * Texture used to temporarily store what's behind the cursor while
-   * we render this frame.
+   * Texture used to store the contents of the screen while in DrawManual()
+   * mode. The stored image is then used if we need to redraw in the
+   * intervening time (expose events, mouse cursor moves, et cetera).
    */
-  GLuint behind_cursor_texture_;
+  GLuint screen_contents_texture_;
+
+  /// Whether |screen_contents_texture_| is valid to use.
+  bool screen_contents_texture_valid_;
 
   /**
    * LRU cache filled with the last fifteen accessed images.
