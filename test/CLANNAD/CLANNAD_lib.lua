@@ -47,4 +47,9 @@ function CLANNAD:clickOnCharactersBeingThrown ()
   World:addHandler(1, 137, function ()
     System:event():injectMouseDown()
   end)
+
+  -- Botan
+  World:addHandler(1, 215, function ()
+    System:event():injectMouseDown()
+  end)
 end
