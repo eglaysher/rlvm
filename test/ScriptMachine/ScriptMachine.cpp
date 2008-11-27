@@ -92,10 +92,37 @@ void ScriptMachine::setLineNumber(const int i) {
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
   if (typeid(*long_operation) == typeid(Sel_LongOperation)) {
-    std::string to_select = decisions_.at(current_decision_);
-
     Sel_LongOperation& sel = dynamic_cast<Sel_LongOperation&>(*long_operation);
-    bool optionFound = sel.selectOption(to_select);
+
+    bool optionFound = false;
+    int offset = 0;
+    for(; offset < 3; ++offset) {
+      std::string to_select = decisions_.at(current_decision_ + offset);
+      optionFound = sel.selectOption(to_select);
+
+      if (optionFound) {
+        cerr << "Selected '" << to_select << "'";
+        if (offset > 0)
+          cerr << "(Skipped " << offset << " selections)";
+        cerr << endl;
+
+        if (save_on_decision_slot_ != -1) {
+          cerr << "(Automatically saving to slot " << save_on_decision_slot_
+               << ")" << endl;
+          Serialization::saveGameForSlot(*this, save_on_decision_slot_);
+
+          if (increment_on_save_) {
+            save_on_decision_slot_++;
+            if (save_on_decision_slot_ > 98) {
+              cerr << "Warning: Overflowing save count." << endl;
+              save_on_decision_slot_ = 0;
+            }
+          }
+        }
+
+        break;
+      }
+    }
 
     if (!optionFound) {
       cerr << "WARNING! Couldn't call option " << current_decision_
@@ -107,25 +134,11 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
            it != options.end(); ++it) {
         cerr << "- \"" << *it << "\"" << endl;
       }
+
+      current_decision_++;
     } else {
-      cerr << "Selected '" << to_select << "'" << endl;
-
-      if (save_on_decision_slot_ != -1) {
-        cerr << "(Automatically saving to slot " << save_on_decision_slot_
-             << ")" << endl;
-        Serialization::saveGameForSlot(*this, save_on_decision_slot_);
-
-        if (increment_on_save_) {
-          save_on_decision_slot_++;
-          if (save_on_decision_slot_ > 98) {
-            cerr << "Warning: Overflowing save count." << endl;
-            save_on_decision_slot_ = 0;
-          }
-        }
-      }
+      current_decision_ += offset + 1;
     }
-
-    current_decision_++;
   }
 
   RLMachine::pushLongOperation(long_operation);
