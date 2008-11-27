@@ -142,6 +142,14 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     SDL_Surface* tmp =
       TTF_RenderUTF8_Blended(font_.get(), current.c_str(), color);
 
+    if (tmp == NULL) {
+      // Bug during Kyou's path. The string is printed "". Regression in parser?
+      cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the string \""
+           << current << "\". Hopefully continuing..." << endl;
+
+      return true;
+    }
+
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
     //
