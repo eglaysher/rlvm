@@ -107,7 +107,7 @@ typedef  struct
 
 
 static void waveFormatCopy( WAVEFORMAT* wav, char *ptr );
-static char*  findchunk (char* s1, char* s2, size_t n) ;
+static char*  findchunk (char* s1, const char* s2, size_t n) ;
 
 static int  WaveHeaderCheck  (char *wave_buf,int* channels, u_long* samplerate, int* samplebits, u_long* samples,u_long* datastart)
 {	
@@ -178,7 +178,7 @@ static int  WaveHeaderCheck  (char *wave_buf,int* channels, u_long* samplerate, 
 } ; /* WaveHeaderCheck*/
 
 
-static char* findchunk  (char* pstart, char* fourcc, size_t n)
+static char* findchunk  (char* pstart, const char* fourcc, size_t n)
 {	char	*pend ;
 	int		k, test ;
 

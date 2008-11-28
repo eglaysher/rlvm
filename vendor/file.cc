@@ -108,22 +108,6 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-
-FILESEARCH file_searcher;
-// #define delete fprintf(stderr,"file.cc: %d.",__LINE__), delete
-
-/* FILESEARCH class の default の振る舞い */
-FILESEARCH::ARCTYPE FILESEARCH::default_is_archived[TYPEMAX] = {
-	ATYPE_DIR, ATYPE_DIR, ATYPE_DIR, ATYPE_DIR,
-	ATYPE_ARC, ATYPE_ARC, ATYPE_ARC, ATYPE_ARC,
-	ATYPE_DIR, ATYPE_DIR, ATYPE_DIR, ATYPE_DIR,
-	ATYPE_DIR, ATYPE_DIR
-};
-char* FILESEARCH::default_dirnames[TYPEMAX] = {
-	0, 0, "", "pdt", 
-	"seen.txt", "allanm.anl", "allard.ard", "allcur.cur", 
-	0, 0, "koe", "bgm", "mov", "gan"};
-
 /*********************************************
 **  ARCFILE / DIRFILE:
 **	書庫ファイル、あるいはディレクトリの
@@ -140,7 +124,6 @@ ARCFILE::ARCFILE(char* aname) {
 	list_point = 0;
 	filenames_orig = 0;
 	next = 0;
-	if (aname[0] == '\0') {arcname=new char[1]; arcname[0]='\0';return;} // NULFILE
 	/* ディレクトリか否かのチェック */
 	if (stat(aname,&sb) == -1) { /* error */
 		perror("stat");
@@ -243,10 +226,6 @@ ARCINFO* ARCFILE::MakeARCINFO(ARCFILE_ATOM& atom) {
 		return new ARCINFO(arcname, atom);
 	else // 圧縮付
 		return new ARCINFO_AVG32(arcname, atom);
-}
-ARCINFO* NULFILE::MakeARCINFO(ARCFILE_ATOM& atom) {
-	fprintf(stderr,"NULFILE::MakeARCINFO is invalid call!\n");
-	return 0;
 }
 ARCINFO* SCN2kFILE::MakeARCINFO(ARCFILE_ATOM& atom) {
 	return new ARCINFO2k(arcname, atom);
@@ -460,18 +439,6 @@ void DIRFILE::ListupFiles(int fname_len) {
 	close(old_dir_fd);
 	return;
 }
-int NULFILE::CheckFileDeal(void) {
-	return 20;
-}
-void NULFILE::ListupFiles(int fname_len) {
-	char* s = new char[40];
-	ARCFILE_ATOM atom;
-	atom.offset = 0; atom.arcsize = 0; atom.filesize = 0;
-	strcpy(s, "** null dummy **");
-	atom.filename = s;
-	atom.filename_lower = s;
-	arc_atom.push_back(atom);
-}
 int SCN2kFILE::CheckFileDeal(void) {
 	/* ヘッダのチェック */
 	FILE* stream = fopen(arcname, "rb");
@@ -558,200 +525,6 @@ void SCN2kFILE::ListupFiles(int fname_len) {
 	}
 	fclose(stream);
 	return;
-}
-
-/********************************************************
-** FILESEARCH クラスの実装
-*/
-
-FILESEARCH::FILESEARCH(void) {
-	int i;
-	root_dir = 0; dat_dir = 0;
-	for (i=0; i<TYPEMAX; i++) {
-		searcher[i] = 0;
-		filenames[i] = default_dirnames[i];
-		is_archived[i] = default_is_archived[i];
-	}
-}
-FILESEARCH::~FILESEARCH(void) {
-	int i;
-	for (i=0; i<TYPEMAX; i++) {
-		if (filenames[i] != 0 && filenames[i] != default_dirnames[i]) delete[] filenames[i];
-		if (searcher[i] && searcher[i] != dat_dir && searcher[i] != root_dir) {
-			delete searcher[i];
-		}
-	}
-	if (dat_dir && dat_dir != root_dir) delete dat_dir;
-	if (root_dir) delete root_dir;
-}
-
-int FILESEARCH::InitRoot(char* root) {
-	/* 必要に応じて ~/ を展開 */
-	if (root[0] == '~' && root[1] == '/') {
-		char* home = getenv("HOME");
-		if (home != 0) {
-			char* new_root = new char[strlen(home)+strlen(root)];
-			strcpy(new_root, home);
-			strcat(new_root, root+1);
-			root = new_root;
-		}
-	}
-	/* 古いデータを消す */
-	int i;
-	for (i=0; i<TYPEMAX; i++) {
-		if (searcher[i] != 0 &&
-			searcher[i] != root_dir &&
-			searcher[i] != dat_dir) {
-				delete searcher[i];
-		}
-		searcher[i] = 0;
-	}
-	if (dat_dir && root_dir != dat_dir) delete dat_dir;
-	if (root_dir) delete root_dir;
-	dat_dir = 0;
-
-	/* 新しいディレクトリのもとで初期化 */
-	root_dir = new DIRFILE(root);
-	root_dir->Init();
-	/* dat/ を検索 */
-	char* dat_path = root_dir->SearchFile("dat");
-	if (dat_path == 0) {
-		/* 見つからなかったら root を dat の代わりにつかう */
-		dat_dir = root_dir;
-	} else {
-		dat_dir = new DIRFILE(dat_path);
-		dat_dir->Init();
-	}
-	searcher[ALL] = dat_dir;
-	searcher[ROOT] = root_dir;
-	return 0;
-}
-
-void FILESEARCH::SetFileInformation(FILETYPE tp, ARCTYPE is_arc, char* filename) {
-	int type = tp;
-	if (type < 0 || type >= TYPEMAX) return;
-	ARCFILE* next_arc = 0;
-	/* すでに searcher が存在すれば解放 */
-	if (searcher[type] != 0 &&
-	  searcher[type] != root_dir &&
-	  searcher[type] != dat_dir) {
-		next_arc = searcher[type]->Next();
-		delete searcher[type];
-	}
-	searcher[type] = 0;
-	/* 適当に初期化 */
-	if (filenames[type] != 0 &&
-		filenames[type] != default_dirnames[type]) delete[] filenames[type];
-	filenames[type] = new char[strlen(filename)+1];
-	strcpy(filenames[type], filename);
-	is_archived[type] = is_arc;
-	searcher[type] = MakeARCFILE(is_arc, filename);
-	if (searcher[type] && next_arc)
-		searcher[type]->SetNext(next_arc);
-	return;
-}
-void FILESEARCH::AppendFileInformation(FILETYPE tp, ARCTYPE is_arc, char* filename) {
-	int type = tp;
-	if (type < 0 || type >= TYPEMAX) return;
-	/* searcher がまだ割り当てられてない場合 */
-	if (searcher[type] == 0 ||
-	  searcher[type] == root_dir ||
-	  searcher[type] == dat_dir) {
-		searcher[type] = MakeARCFILE(is_archived[type], filenames[type]);
-		if (searcher[type] == 0) { /* 作成できなかった場合 */
-			/* この型情報を FileInformation とする */
-			SetFileInformation(tp, is_arc, filename);
-			return;
-		}
-	}
-	/* 初期化 */
-	ARCFILE* arc = MakeARCFILE(is_arc, filename);
-	/* append */
-	ARCFILE* cur;
-	for (cur=searcher[type]; cur->Next() != 0; cur = cur->Next()) ;
-	cur->SetNext(arc);
-	return;
-}
-
-ARCFILE* FILESEARCH::MakeARCFILE(ARCTYPE tp, char* filename) {
-	ARCFILE* arc = 0;
-	char* file;
-	if (filename == 0) goto err;
-	if (tp == ATYPE_DIR) {
-		file = root_dir->SearchFile(filename);
-	} else {
-		file = dat_dir->SearchFile(filename);
-		if (file == 0)
-			file = root_dir->SearchFile(filename);
-	}
-	if (file == 0) goto err;
-	switch(tp) {
-		case ATYPE_DIR: arc = new DIRFILE(file); break;
-		case ATYPE_SCN2k:
-		case ATYPE_ARC: {
-			FILE* f = fopen(file, "rb");
-			if (f == 0) goto err;
-			char header[32];
-			memset(header, 0, 32);
-			fread(header, 32, 1, f);
-			fclose(f);
-			char magic_raf[8] = {'C','A','P','F',1,0,0,0};
-			if (strncmp(header, "PACL", 4) == 0) arc = new ARCFILE(file);
-			else arc = new SCN2kFILE(file);
-			}
-			break;
-		default: fprintf(stderr,"FILESEARCH::MAKEARCFILE : invalid archive type; type %d name %s\n",tp,filename);
-			delete[] file;
-			goto err;
-	}
-	delete[] file;
-	return arc;
-err:
-	arc = new NULFILE;
-	return arc;
-	
-}
-
-ARCINFO* FILESEARCH::Find(FILETYPE type, const char* fname, const char* ext) {
-	if (searcher[type] == 0) {
-		/* searcher 作成 */
-		if (filenames[type] == 0) {
-			searcher[type] = dat_dir;
-		} else {
-			searcher[type] = MakeARCFILE(is_archived[type], filenames[type]);
-			if (searcher[type] == 0) {
-				fprintf(stderr,"FILESEARCH::Find : invalid archive type; type %d name %s\n",type,fname);
-				return 0;
-			}
-		}
-	}
-	return searcher[type]->Find(fname,ext);
-}
-
-char** FILESEARCH::ListAll(FILETYPE type) {
-	int i;
-	/* とりあえず searcher を初期化 */
-	Find(type, "THIS FILENAME MAY NOT EXIST IN THE FILE SYSTEM !!!");
-	if (searcher[type] == 0) return 0;
-	/* 全ファイルのリストアップ */
-	int deal = 0;
-	ARCFILE* file;
-	for (file = searcher[type]; file != 0; file = file->Next())
-		deal += file->Deal();
-	if (deal <= 0) return 0;
-	char** ret_list = new char*[deal+1];
-	int count = 0;
-	for (file = searcher[type]; file != 0; file = file->Next()) {
-		file->InitList();
-		char* f;
-		while( (f = file->ListItem() ) != 0) {
-			ret_list[count] = new char[strlen(f)+1];
-			strcpy(ret_list[count], f);
-			count++;
-		}
-	}
-	ret_list[count] = 0;
-	return ret_list;
 }
 
 ARCINFO::ARCINFO(const char* __arcname, ARCFILE_ATOM& atom) : info(atom) {

@@ -137,15 +137,6 @@ public:
 	virtual ~CattleyaFILE() {}
 };
 
-class NULFILE : public ARCFILE {
-protected:
-	virtual int CheckFileDeal(void);
-	virtual void ListupFiles(int fname_len);
-	virtual ARCINFO* MakeARCINFO(ARCFILE_ATOM& atom);
-public:
-	NULFILE() : ARCFILE("") {}
-	virtual ~NULFILE() {}
-};
 class DIRFILE : public ARCFILE {
 protected:
 	virtual int CheckFileDeal(void);

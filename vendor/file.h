@@ -1,6 +1,5 @@
 /*  file.h  : KANON の圧縮ファイル・PDT ファイル（画像ファイル）の展開の
  *            ためのクラス
- *     class FILESEARCH : ファイルの管理を行う
  *     class ARCINFO : 書庫ファイルの中の１つのファイルを扱うクラス
  *     class PDTCONV : PDT ファイルの展開を行う。
  */
@@ -64,56 +63,6 @@ class RaffresiaFILE;
 /* ARCINFO はファイルを読み込むために必要 */
 class ARCINFO;
 struct ARCFILE_ATOM;
-class FILESEARCH {
-public:
-#define TYPEMAX 14
-	enum FILETYPE {
-		/* 一応、0 - 15 まで reserved */
-		ALL = 1, /* dat/ 以下のファイル(デフォルトの検索先) */
-		ROOT= 2, /* ゲームのインストールディレクトリ */
-		PDT = 3, /* default: PDT/ */
-		SCN = 4, /* default: DAT/SEEN.TXT */
-		ANM = 5, /* default: DAT/ALLANM.ANL */
-		ARD = 6, /* default: DAT/ALLARD.ARD */
-		CUR = 7, /* default: DAT/ALLCUR.CUR */
-		MID = 8, /* default: ALL */
-		WAV = 9, /* default: ALL */
-		KOE = 10, /* default: KOE/ */
-		BGM = 11, /* default: BGM */
-		MOV = 12, /* default : MOV */
-		GAN = 13  /* default : MOV */
-	};
-	enum ARCTYPE {ATYPE_DIR, ATYPE_ARC, ATYPE_SCN2k};
-private:
-	/* InitRoot() の時点で初期化される変数 */
-	DIRFILE* root_dir;
-	DIRFILE* dat_dir;
-	ARCFILE* searcher[TYPEMAX];
-	/* ファイルの存在位置の information */
-	ARCTYPE is_archived[TYPEMAX];
-	char* filenames[TYPEMAX];
-	/* デフォルトの information */
-	static ARCTYPE default_is_archived[TYPEMAX];
-	static char* default_dirnames[TYPEMAX];
-public:
-	FILESEARCH(void);
-	~FILESEARCH();
-	/* 初めにゲームのデータがあるディレクトリを設定する必要がある */
-	int InitRoot(char* root);
-	/* ファイルの型ごとの情報をセットする */
-	void SetFileInformation(FILETYPE type, ARCTYPE is_arc,
-		char* filename);
-	/* 複数のファイルを一つの型に関連づける */
-	void AppendFileInformation(FILETYPE type, ARCTYPE is_arc,
-		char* filename);
-	ARCFILE* MakeARCFILE(ARCTYPE tp, char* filename);
-	/* fname で指定された名前のファイルを検索 */
-	ARCINFO* Find(FILETYPE type, const char* fname, const char* ext=0);
-	/* ある種類のファイルをすべてリストアップ
-	** 末尾は NULL pointer
-	*/
-	char** ListAll(FILETYPE type);
-};
 
 class ARCINFO {
 protected:
@@ -199,7 +148,5 @@ public:
 	void CopyRGBA_rev(char* image, const char* from);
 	void CopyRGB_rev(char* image, const char* from);
 };
-
-extern FILESEARCH file_searcher;
 
 #endif // !defined(__KANON_FILE_H__)
