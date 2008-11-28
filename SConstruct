@@ -19,6 +19,7 @@ env = Environment(
   LOCAL_LIBS = [],
 
   CPPPATH = [
+    "#/build",
     "#/src",
     "#/vendor",
   ],
@@ -26,6 +27,10 @@ env = Environment(
   CPPFLAGS = [
     "--ansi",
     "-funsigned-char"
+  ],
+
+  CPPDEFINES = [
+    "HAVE_CONFIG_H"
   ],
 
   SYSTEM_LUABIND = False
@@ -96,6 +101,12 @@ VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
 VerifyLibrary(config, 'lua5.1', 'lua5.1/lua.h')
+
+# Really optional libraries that jagarl's file loaders take advantage of if on
+# the system.
+config.CheckLibWithHeader('png', 'png.h', "cpp")
+config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
+config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 
 env = config.Finish()
 
