@@ -49,5 +49,6 @@ scope register_graphics_object()
 {
   return
     class_<GraphicsObject>("GraphicsObject").
-    def("getClickPointHack", &getClickPointHack);
+    def("getClickPointHack", &getClickPointHack).
+    def("visible", &GraphicsObject::visible);
 }

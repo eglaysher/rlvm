@@ -3,12 +3,24 @@
 -- Declare the CLANNAD function's namespace
 CLANNAD = { }
 
-function CLANNAD:installMainMenuHandler ()
+function CLANNAD:installMainMenuHandler (type)
   state = 0
   World:addHandler(9032, 944, function ()
     if state == 0 then
-      -- Object 20 is the New Game button
-      origin = System:graphics():getFgObject(20):getClickPointHack()
+      if type == "New Game" then
+        -- Object 20 is the New Game button
+        origin = System:graphics():getFgObject(20):getClickPointHack()
+      elseif type == "After Story" then
+        -- Object 22 is the After Story button
+        obj = System:graphics():getFgObject(22)
+
+        if obj:visible() == 0 then
+           World:error("After Story not unlocked yet!")
+        end
+
+        origin = obj:getClickPointHack()
+      end
+
       System:event():injectMouseMovement(origin)
       state = 1
     elseif state == 1 then
@@ -33,11 +45,21 @@ function CLANNAD:installMainMenuHandler ()
 
   -- Once we've started a New Game, we shouldn't see the main menu until we are
   -- ready to exit.
-  World:addHandler(6900, 17, function ()
-    if state == 3 then
-       state = 4
-    end
-  end)
+  if type == "New Game" then
+     World:addHandler(6900, 17, function ()
+       if state == 3 then
+         state = 4
+       end
+    end)
+  elseif type == "After Story" then
+     World:addHandler(6900, 1307, function ()
+       if state == 3 then
+         state = 4
+       end
+    end)
+  else
+     World:error("type passed to CLANNAD:installMainMenuHandler not valid")
+  end
 end
 
 -- Some paths have Sunohara and other characters being throw around... and will

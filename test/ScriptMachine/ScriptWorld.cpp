@@ -116,6 +116,17 @@ void ScriptWorld::setDecisionList(luabind::object table) {
 
 // -----------------------------------------------------------------------
 
+void ScriptWorld::error(const std::string& error_message) {
+  ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
+    luabind::globals(L)["Machine"]);
+  if (machine)
+    machine->halt();
+
+  cerr << "ERROR: " << error_message << endl;
+}
+
+// -----------------------------------------------------------------------
+
 void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
   handlers_[make_pair(scene, lineNo)] = handler;
 }
@@ -146,6 +157,7 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
     def("gameRoot", &ScriptWorld::gameRoot).
     def("setGameRoot", &ScriptWorld::setGameRoot).
     def("setDecisionList", &ScriptWorld::setDecisionList).
+    def("error", &ScriptWorld::error).
     def("addHandler", &ScriptWorld::addHandler),
 
     register_utility(),

@@ -97,6 +97,11 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
     bool optionFound = false;
     int offset = 0;
     for(; offset < 3; ++offset) {
+      if (current_decision_ + offset >= decisions_.size()) {
+        cerr << "WARNING! Ran out of options on decision list." << endl;
+        break;
+      }
+
       std::string to_select = decisions_.at(current_decision_ + offset);
       optionFound = sel.selectOption(to_select);
 

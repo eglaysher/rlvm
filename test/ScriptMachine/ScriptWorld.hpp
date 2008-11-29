@@ -77,6 +77,7 @@ public:
   void import(const std::string& file_name);
 
   void setDecisionList(luabind::object table);
+  void error(const std::string& error_message);
   void addHandler(int scene, int lineNo, luabind::object handler);
 
 private:
