@@ -908,6 +908,43 @@ struct Grp_fade_1 : public RLOp_Void_2<
   }
 };
 
+
+// -----------------------------------------------------------------------
+// {grp,rec}StretchBlit
+// -----------------------------------------------------------------------
+struct Grp_stretchBlit_1 : public RLOp_Void_11<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  DefaultIntValue_T<255> >
+{
+  SPACE& space_;
+  bool use_alpha_;
+  Grp_stretchBlit_1(bool in, SPACE& space) : use_alpha_(in), space_(space) {}
+
+  void operator()(RLMachine& machine, 
+                  int x, int y, int width, int height, int src,
+                  int dx, int dy, int dwidth, int dheight, int dst,
+                  int opacity) {
+    Rect src_rect = space_.makeRect(x, y, width, height);
+    Rect dst_rect = space_.makeRect(dx, dy, dwidth, dheight);
+
+    // Copying to self is a noop
+    if(src == dst)
+      return;
+
+    GraphicsSystem& graphics = machine.system().graphics();
+    shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+
+    if(dst != 0 && dst != 1) {
+      Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
+      graphics.allocateDC(dst, maxSize);
+    }
+
+    sourceSurface->blitToSurface(
+      *graphics.getDC(dst), src_rect, dst_rect, opacity, use_alpha_);
+  }
+};
+
 // -----------------------------------------------------------------------
 
 struct Grp_zoom : public RLOp_Void_14<
@@ -1233,6 +1270,9 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(400, 0, "grpSwap");
   addUnsupportedOpcode(400, 1, "grpSwap");
 
+  addOpcode(401, 0, "grpStretchBlt", new Grp_stretchBlit_1(false, GRP));
+  addOpcode(401, 1, "grpStretchBlt", new Grp_stretchBlit_1(false, GRP));
+
   addOpcode(402, 0, "grpZoom", new Grp_zoom(GRP));
 
   addOpcode(403, 0, "grpFade", new Grp_fade_1);
@@ -1243,6 +1283,9 @@ GrpModule::GrpModule()
   addOpcode(403, 5, "grpFade", new Grp_fade_5(GRP));
   addOpcode(403, 6, "grpFade", new Grp_fade_7(GRP));
   addOpcode(403, 7, "grpFade", new Grp_fade_7(GRP));
+
+  addOpcode(409, 0, "grpMaskStretchBlt", new Grp_stretchBlit_1(true, GRP));
+  addOpcode(409, 1, "grpMaskStretchBlt", new Grp_stretchBlit_1(true, GRP));
 
   addUnsupportedOpcode(601, 0, "grpMaskAdd");
   addUnsupportedOpcode(601, 1, "grpMaskAdd");
@@ -1310,8 +1353,8 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(1400, 0, "recSwap");
   addUnsupportedOpcode(1400, 1, "recSwap");
 
-  addUnsupportedOpcode(1401, 0, "recStretchBlt");
-  addUnsupportedOpcode(1401, 1, "recStretchBlt");
+  addOpcode(1401, 0, "recStretchBlt", new Grp_stretchBlit_1(false, REC));
+  addOpcode(1401, 1, "recStretchBlt", new Grp_stretchBlit_1(false, REC));
 
   addOpcode(1402, 0, "recZoom", new Grp_zoom(REC));
 
@@ -1332,8 +1375,8 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(1406, 0, "recPan");
   addUnsupportedOpcode(1407, 0, "recShift");
   addUnsupportedOpcode(1408, 0, "recSlide");
-  addUnsupportedOpcode(1409, 0, "recMaskStretchBlt");
-  addUnsupportedOpcode(1409, 1, "recMaskStretchBlt");
+  addOpcode(1409, 0, "recMaskStretchBlt", new Grp_stretchBlit_1(true, REC));
+  addOpcode(1409, 1, "recMaskStretchBlt", new Grp_stretchBlit_1(true, REC));
 }
 
 // @}
