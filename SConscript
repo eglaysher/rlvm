@@ -256,20 +256,6 @@ null_system_files = [
   "test/NullSystem/MockLog.cpp"
 ]
 
-script_machine_files = [
-  "test/ScriptMachine/ScriptWorld.cpp",
-  "test/ScriptMachine/ScriptMachine.cpp",
-  "test/ScriptMachine/luabind_Machine.cpp",
-  "test/ScriptMachine/luabind_System.cpp",
-  "test/ScriptMachine/luabind_EventSystem.cpp",
-  "test/ScriptMachine/luabind_GraphicsSystem.cpp",
-  "test/ScriptMachine/luabind_GraphicsObject.cpp",
-  "test/ScriptMachine/luabind_utility.cpp"
-]
-
-test_env.Program('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
-                               test_case_files, 'librlvm.a'])
-
 simple_test_cases = [
   'ExpressionTest_SEEN/basicOperators',
   'ExpressionTest_SEEN/comparisonOperators',
@@ -348,22 +334,38 @@ complex_test_cases = [
   "Module_Sys_SEEN/SceneNum"
 ]
 
-for test_case in complex_test_cases:
-  test_env.RlcComplex('test/' + test_case)
-
 files_to_copy = [
   "Gameexe_data/Gameexe.ini",
   "Gameroot/g00/doesntmatter.g00"
 ]
 
-for file_name in files_to_copy:
-  test_env.Command('#/build/test/' + file_name,
-                   '#/test/' + file_name,
-                   Copy('$TARGET', '$SOURCE'))
+if env['BUILD_RLC_TESTS']:
+  test_env.Program('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
+                                 test_case_files, 'librlvm.a'])
+
+  for test_case in complex_test_cases:
+    test_env.RlcComplex('test/' + test_case)
+
+  for file_name in files_to_copy:
+    test_env.Command('#/build/test/' + file_name,
+                     '#/test/' + file_name,
+                     Copy('$TARGET', '$SOURCE'))
 
 #########################################################################
 
-test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
-                             script_machine_files,
-                             '#/build/luabind/libluabind.a',
-                             'libsystem_sdl.a', 'librlvm.a'])
+script_machine_files = [
+  "test/ScriptMachine/ScriptWorld.cpp",
+  "test/ScriptMachine/ScriptMachine.cpp",
+  "test/ScriptMachine/luabind_Machine.cpp",
+  "test/ScriptMachine/luabind_System.cpp",
+  "test/ScriptMachine/luabind_EventSystem.cpp",
+  "test/ScriptMachine/luabind_GraphicsSystem.cpp",
+  "test/ScriptMachine/luabind_GraphicsObject.cpp",
+  "test/ScriptMachine/luabind_utility.cpp"
+]
+
+if env['BUILD_LUA_TESTS'] == True:
+  test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
+                               script_machine_files,
+                               '#/build/luabind/libluabind.a',
+                               'libsystem_sdl.a', 'librlvm.a'])

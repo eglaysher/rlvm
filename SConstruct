@@ -33,7 +33,11 @@ env = Environment(
     "HAVE_CONFIG_H"
   ],
 
-  SYSTEM_LUABIND = False
+  # Whether we build the tests that require rlc to compile them.
+  BUILD_RLC_TESTS = False,
+
+  # Whether we build the test binary that requires 
+  BUILD_LUA_TESTS = False
 )
 
 Progress('$TARGET\r', overwrite=True, file=open('con', 'w'))
@@ -100,7 +104,10 @@ VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
 VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
-VerifyLibrary(config, 'lua5.1', 'lua5.1/lua.h')
+
+# Building the luaRlvm test harness requires having lua installed; 
+if config.CheckLibWithHeader('lua5.1', 'lua5.1/lua.h', 'cpp'):
+  env['BUILD_LUA_TESTS'] = True
 
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
@@ -108,12 +115,19 @@ config.CheckLibWithHeader('png', 'png.h', "cpp")
 config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
 config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 
+if config.TryAction('rlc --version'):
+  env['BUILD_RLC_TESTS'] = True
+
 env = config.Finish()
+
+if env['BUILD_LUA_TESTS'] == True:
+  # Only build our internal copy of luabind if there's a copy of lua on the
+  # system.
+  SConscript("vendor/luabind/SConscript", build_dir="build/luabind",
+             duplicate=0, exports='env')
 
 # Need to generalize these so that maybe we use them if they're installed on
 # the system. Then we could get rid of glew and SDL_ttf doing the same thing...
-SConscript("vendor/luabind/SConscript", build_dir="build/luabind", duplicate=0,
-           exports='env')
 SConscript("vendor/guichan/SConscript", build_dir="build/guichan", duplicate=0,
            exports='env')
 
