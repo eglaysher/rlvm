@@ -42,14 +42,16 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::GraphicsObjectData()
-  : after_animation_(AFTER_NONE), owned_by_(NULL), currently_playing_(false)
+  : after_animation_(AFTER_NONE), owned_by_(NULL), currently_playing_(false),
+    animation_finished_(false)
 {}
 
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
   : after_animation_(obj.after_animation_), owned_by_(NULL),
-    currently_playing_(obj.currently_playing_)
+    currently_playing_(obj.currently_playing_),
+    animation_finished_(false)
 {}
 
 // -----------------------------------------------------------------------
@@ -126,6 +128,7 @@ void GraphicsObjectData::endAnimation()
   switch(afterAnimation())
   {
   case AFTER_NONE:
+    animation_finished_ = true;
     break;
   case AFTER_CLEAR:
     if(ownedBy())
@@ -197,3 +200,9 @@ bool GraphicsObjectData::isAnimation() const
 // -----------------------------------------------------------------------
 
 void GraphicsObjectData::playSet(RLMachine& machine, int set) { }
+
+// -----------------------------------------------------------------------
+
+bool GraphicsObjectData::animationFinished() const {
+  return animation_finished_;
+}

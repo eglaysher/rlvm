@@ -71,8 +71,9 @@ public:
   RLMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~RLMachine();
 
-  /** Registers a given module with this RLMachine instance. A module is a set of
-   * different functions registered as one unit.
+  /**
+   * Registers a given module with this RLMachine instance. A module is a set
+   * of different functions registered as one unit.
    *
    * @param module Module to attach to the RLMachine
    * @note RLMachine takes ownership of any RLModule object passed in through

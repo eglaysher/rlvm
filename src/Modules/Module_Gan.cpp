@@ -129,8 +129,68 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
 // -----------------------------------------------------------------------
 
+/**
+ * Returns true when an animation is completed.
+ *
+ * RATIONALE:
+ *
+ * This is a guess. I'm not entirely sure what this function does, but I'm
+ * trying to pick the meaning out of context. Here's a snippet of CLANNAD's
+ * SEEN9081, where it's used:
+ *
+ * @code
+ * #line 412
+ * ganPlay2 (3, 15)
+ *
+ * [...]
+ *
+ *   @62
+ * #line 416
+ * op<1:073:00003, 0> (3)
+ * intA[0] = store
+ * #line 417
+ * goto_unless (!intA[0]) @63
+ * #line 418
+ * intA[200] = 19
+ * #line 420
+ *
+ *   @63
+ * goto @64
+ * @endcode
+ *
+ * So it looks like it's trying to set some sort of sentinel value since
+ * intA[200] is checked later. It's checking SOMETHING about the gan object,
+ * and I'm assuming it's whether it's done animating.
+ *
+ * After implementing this, we no longer get stuck in an infinite loop during
+ * Ushio's birth so I'm assuming this is correct.
+ */
+class Gan_isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
+public:
+  Gan_isGanDonePlaying(int layer) : layer_(layer) {}
+
+  int operator()(RLMachine& machine, int gan_num) {
+    GraphicsObject& obj = getGraphicsObject(machine, layer_, gan_num);
+
+    if (obj.hasObjectData()) {
+      GraphicsObjectData& data = obj.objectData();
+      if (data.isAnimation() && data.animationFinished())
+        return 1;
+    }
+
+    return 0;
+  }
+
+private:
+  int layer_;
+};
+
+// -----------------------------------------------------------------------
+
 void addGanOperationsTo(RLModule& m, int layer)
 {
+  m.addOpcode(3, 0, "ganIsDonePlaying", new Gan_isGanDonePlaying(layer));
+
   m.addUnsupportedOpcode(1000, 0, "objStop");
   m.addUnsupportedOpcode(1000, 1, "objStop");
 

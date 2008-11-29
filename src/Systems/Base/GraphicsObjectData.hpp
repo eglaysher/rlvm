@@ -82,6 +82,10 @@ public:
   virtual bool isAnimation() const;
   virtual void playSet(RLMachine& machine, int set);
 
+  /// Returns when an animation has completed. (This only returns true when
+  /// afterAnimation() is set to AFTER_NONE.)
+  bool animationFinished() const;
+
 protected:
   /**
    * Function called after animation ends when this object has been
@@ -141,6 +145,9 @@ private:
   GraphicsObject* owned_by_;
 
   bool currently_playing_;
+
+  /// Whether we're on the final frame (and are in AFTER_NONE mode).
+  bool animation_finished_;
 
   friend class boost::serialization::access;
 
