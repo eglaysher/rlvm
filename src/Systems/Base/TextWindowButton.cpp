@@ -352,17 +352,6 @@ ExbtnWindowButton::~ExbtnWindowButton()
 
 // -----------------------------------------------------------------------
 
-struct RestoreTextSystemVisibility : public LongOperation
-{
-  bool operator()(RLMachine& machine)
-  {
-    machine.system().text().setSystemVisible(true);
-    return true;
-  }
-};
-
-// -----------------------------------------------------------------------
-
 void ExbtnWindowButton::buttonReleased()
 {
   /// Hide all text boxes when entering an Exbtn

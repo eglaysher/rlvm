@@ -625,3 +625,11 @@ bool TextSystem::currentlySkipping() const
 {
   return kidoku_read_ && skipMode();
 }
+
+// -----------------------------------------------------------------------
+
+bool RestoreTextSystemVisibility::operator()(RLMachine& machine)
+{
+  machine.system().text().setSystemVisible(true);
+  return true;
+}

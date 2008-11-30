@@ -208,7 +208,11 @@ void System::invokeSyscom(RLMachine& machine, int syscom)
 {
   switch(syscom) {
   case SYSCOM_SAVE:
+    invokeSaveOrLoad(machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
+    break;
   case SYSCOM_LOAD:
+    invokeSaveOrLoad(machine, syscom, "SYSTEMCALL_LOAD_MOD", "SYSTEMCALL_LOAD");
+    break;
   case SYSCOM_MESSAGE_SPEED:
   case SYSCOM_WINDOW_ATTRIBUTES:
   case SYSCOM_VOLUME_SETTINGS:
@@ -220,7 +224,8 @@ void System::invokeSyscom(RLMachine& machine, int syscom)
   case SYSCOM_AUTO_MODE_SETTINGS:
   case SYSCOM_USE_KOE:
   case SYSCOM_DISPLAY_VERSION: {
-    platform_->invokeSyscomStandardUI(machine, syscom);
+    if (platform_)
+      platform_->invokeSyscomStandardUI(machine, syscom);
     break;
   }
   case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
@@ -268,6 +273,29 @@ void System::invokeSyscom(RLMachine& machine, int syscom)
     cerr << "No idea what to do!" << endl;
     break;
   };
+}
+
+// -----------------------------------------------------------------------
+
+void System::invokeSaveOrLoad(RLMachine& machine,
+                              int syscom,
+                              const std::string& mod_key,
+                              const std::string& location)
+{
+  GameexeInterpretObject save_mod = gameexe()(mod_key);
+  GameexeInterpretObject save_loc = gameexe()(location);
+
+  if (save_mod.exists() && save_loc.exists() && save_mod == 1) {
+    vector<int> raw_ints = save_loc;
+    int scenario = raw_ints.at(0);
+    int entrypoint = raw_ints.at(1);
+
+    text().setSystemVisible(false);
+    machine.pushLongOperation(new RestoreTextSystemVisibility);
+    machine.farcall(scenario, entrypoint);
+  } else if (platform_) {
+    platform_->invokeSyscomStandardUI(machine, syscom);
+  }
 }
 
 // -----------------------------------------------------------------------

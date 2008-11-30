@@ -30,6 +30,8 @@
 
 #include "Systems/Base/EventHandler.hpp"
 
+#include "MachineBase/LongOperation.hpp"
+
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
@@ -414,5 +416,15 @@ int convertNameVar(const std::string& value);
  */
 void parseNames(const Memory& memory, const std::string& input,
                 std::string& output);
+
+// -----------------------------------------------------------------------
+
+/** 
+ * LongOperation which just calls text().setSystemVisible(true) and removes
+ * itself from the callstack.
+ */
+struct RestoreTextSystemVisibility : public LongOperation {
+  virtual bool operator()(RLMachine& machine);
+};
 
 #endif

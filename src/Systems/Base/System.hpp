@@ -291,6 +291,14 @@ protected:
   boost::filesystem::path getHomeDirectory();
 
 private:
+  /**
+   * Invokes a custom dialog or the standard one if none present.
+   */
+  void invokeSaveOrLoad(RLMachine& machine,
+                        int syscom,
+                        const std::string& mod_key,
+                        const std::string& location);
+
   /// The visibility status for all syscom entries
   int syscom_status_[NUM_SYSCOM_ENTRIES];
 
