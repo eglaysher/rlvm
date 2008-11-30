@@ -109,6 +109,9 @@ private:
   /// This is our LongOperation on the stack.
   GCNPlatformBlocker* blocker_;
 
+  /// Used to center dialogs in the window.
+  Rect screen_size_;
+
   /**
    * @name GUIchan syscom implementation
    *

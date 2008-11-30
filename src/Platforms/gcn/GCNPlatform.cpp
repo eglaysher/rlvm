@@ -220,7 +220,7 @@ private:
 // -----------------------------------------------------------------------
 
 GCNPlatform::GCNPlatform(Gameexe& gameexe, const Rect& screen_size)
-  : Platform(gameexe), blocker_(NULL)
+  : Platform(gameexe), blocker_(NULL), screen_size_(screen_size)
 {
   initializeGuichan(screen_size);
 }
@@ -442,7 +442,7 @@ void GCNPlatform::popWindowFromStack()
 
 void GCNPlatform::pushWindowOntoStack(GCNWindow* window)
 {
-  window->centerInWindow(Size(640, 480));
+  window->centerInWindow(screen_size_.size());
   window_stack_.push_back(window);
   toplevel_container_->add(window);
 }
