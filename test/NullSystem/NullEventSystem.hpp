@@ -65,9 +65,9 @@ public:
 
   // TODO: This needs to be done to get running luaRlvm with a
   // NullEventSystem. Among a lot of other things in this class...
-  virtual void injectMouseMovement(const Point& loc) {}
-  virtual void injectMouseDown() {}
-  virtual void injectMouseUp() {}
+  virtual void injectMouseMovement(RLMachine& machine, const Point& loc) {}
+  virtual void injectMouseDown(RLMachine& machine) {}
+  virtual void injectMouseUp(RLMachine& machine) {}
 
 private:
   /// Defines test specific behaviour for the NullEventSystem

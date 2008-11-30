@@ -49,7 +49,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 PauseLongOperation::PauseLongOperation(RLMachine& imachine)
-  : EventHandler(imachine), machine(imachine), is_done_(false)
+  : LongOperation(), machine(imachine), is_done_(false)
 {
   TextSystem& text = machine.system().text();
   EventSystem& event = machine.system().event();
@@ -74,7 +74,8 @@ PauseLongOperation::~PauseLongOperation()
   machine.system().text().setInPauseState(false);
 }
 
-// -------------------------------------------- [ EventHandler interface ]
+// -----------------------------------------------------------------------
+
 void PauseLongOperation::mouseMotion(const Point& p)
 {
   // Tell the text system about the move

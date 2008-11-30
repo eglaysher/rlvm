@@ -30,7 +30,7 @@
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/LongOperation.hpp"
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 
 #include <vector>
 #include <string>
@@ -45,7 +45,7 @@ class SelectElement;
 
 // -----------------------------------------------------------------------
 
-class Sel_LongOperation : public LongOperation, public EventHandler
+class Sel_LongOperation : public LongOperation
 {
 private:
   RLMachine& machine_;
@@ -68,11 +68,12 @@ public:
 
   const std::vector<std::string>& options() const { return options_; }
 
-  // ----------------------------------------------- [ NiceLongOperation ]
-  virtual bool operator()(RLMachine& machine);
-
+  // Overridden from EventListener:
   virtual void mouseMotion(const Point&);
   virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+
+  // Overridden from LongOperation:
+  virtual bool operator()(RLMachine& machine);
 };
 
 // -----------------------------------------------------------------------

@@ -46,6 +46,7 @@
 #include "libReallive/scenario.h"
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 namespace  libReallive {
 class Archive;
@@ -283,10 +284,10 @@ public:
   virtual void pushLongOperation(LongOperation* long_operation);
 
   /**
-   * Returns whether the top of the call stack is a LongOperation.
-   *
+   * Returns a pointer to the currently running LongOperation when the top of
+   * the call stack is a LongOperation. NULL otherwise.
    */
-  bool inLongOperation() const;
+  boost::shared_ptr<LongOperation> currentLongOperation() const;
 
   /**
    * Clears the callstack, properly freeing any LongOperations.

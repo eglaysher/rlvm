@@ -31,8 +31,10 @@
 
 #include "Systems/Base/EventSystem.hpp"
 
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/FrameCounter.hpp"
+#include "MachineBase/LongOperation.hpp"
+
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
 
@@ -73,40 +75,6 @@ EventSystem::~EventSystem()
 // -----------------------------------------------------------------------
 
 void EventSystem::executeEventSystem(RLMachine& machine) {
-  while(queued_actions_.size()) {
-    queued_actions_.front()();
-    queued_actions_.pop();
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::pushEventHandler(EventHandler* handler)
-{
-  event_handlers_.push_back(handler);
-
-  if(ctrlPressed())
-  {
-    queued_actions_.push(
-      bind(&EventHandler::keyStateChanged, handler, RLKEY_LCTRL, true));
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::popEventHandler(EventHandler* handler)
-{
-  if (!event_handlers_.size() || event_handlers_.back() != handler) {
-    cerr << "WARNING: popEventHandler was called and it's not the back entry!"
-         << endl;
-    return;
-  }
-
-  event_handlers_.pop_back();
-
-  // TODO: Only remove actions targeting this handler?
-  while(queued_actions_.size())
-    queued_actions_.pop();
 }
 
 // -----------------------------------------------------------------------
@@ -156,7 +124,7 @@ bool EventSystem::frameCounterExists(int layer, int frame_counter)
 
 // -----------------------------------------------------------------------
 
-void EventSystem::dispatchEvent(
+void EventSystem::dispatchEvent(RLMachine& machine,
   const boost::function<bool(EventListener&)>& event)
 {
   // In addition to the handled variable, we need to add break statements to
@@ -173,18 +141,15 @@ void EventSystem::dispatchEvent(
     }
   }
 
-  // Only give the most recent event handler a chance to handle the
-  // event. Otherwise, who cares? No one else can handle it.
-  if (event_handlers_.size()) {
-    // We don't care if it passed or failed; it's the actor of last resort
-    // here...
-    event(*event_handlers_.back());
-  }
+  // Try to pass the event on to the top of the call stack.
+  shared_ptr<LongOperation> current_op = machine.currentLongOperation();
+  if (current_op)
+    event(*current_op);
 }
 
 // -----------------------------------------------------------------------
 
-void EventSystem::broadcastEvent(
+void EventSystem::broadcastEvent(RLMachine& machine,
   const boost::function<void(EventListener&)>& event)
 {
   EventListeners::iterator listenerIt = listeners_begin();
@@ -192,10 +157,9 @@ void EventSystem::broadcastEvent(
     event(**listenerIt);
   }
 
-  Handlers::iterator handlerIt = handlers_begin();
-  for (; handlerIt != handlers_end(); ++handlerIt) {
-    event(**handlerIt);
-  }
+  shared_ptr<LongOperation> current_op = machine.currentLongOperation();
+  if (current_op)
+    event(*current_op);
 }
 
 // -----------------------------------------------------------------------

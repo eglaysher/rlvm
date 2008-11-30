@@ -62,7 +62,7 @@ using libReallive::CommandElement;
 Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
-  : EventHandler(machine), machine_(machine),
+  : machine_(machine),
     text_window_(machine.system().text().currentWindow(machine)),
     return_value_(-1)
 {
@@ -128,7 +128,6 @@ bool Sel_LongOperation::operator()(RLMachine& machine)
     return false;
 }
 
-// -------------------------------------------- [ EventHandler interface ]
 void Sel_LongOperation::mouseMotion(const Point& pos)
 {
   // Tell the text system about the move

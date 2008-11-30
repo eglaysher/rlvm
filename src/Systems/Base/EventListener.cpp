@@ -29,7 +29,7 @@
 
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -58,21 +58,4 @@ bool EventListener::mouseButtonStateChanged(MouseButton mouse_button,
 bool EventListener::keyStateChanged(KeyCode key_code, bool pressed)
 {
   return false;
-}
-
-// -----------------------------------------------------------------------
-// EventHandler
-// -----------------------------------------------------------------------
-
-EventHandler::EventHandler(RLMachine& machine)
-  : machine_(machine)
-{
-  machine.system().event().pushEventHandler(this);
-}
-
-// -----------------------------------------------------------------------
-
-EventHandler::~EventHandler()
-{
-  machine_.system().event().popEventHandler(this);
 }

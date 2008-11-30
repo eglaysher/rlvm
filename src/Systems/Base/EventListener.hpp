@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __EventHandler_hpp__
-#define __EventHandler_hpp__
+#ifndef __EventListener_hpp__
+#define __EventListener_hpp__
 
 class RLMachine;
 class Point;
@@ -308,8 +308,7 @@ enum KeyCode {
 
 /**
  * Interface to receive information from the Event system when the
- * mouse is moved. Used where we don't have an RLMachine and we don't
- * want the autoregistering and removal features of EventHandler.
+ * mouse is moved. 
  */
 class EventListener
 {
@@ -334,23 +333,6 @@ public:
    *         shouldn't be dispatched to other EventListeners).
    */
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Base class for most tasks that need to respond to user input. Deriving from
- * EventHandler will automatically register/unregister your subclass with the
- * event system on construction/deconstruction.
- */
-class EventHandler : public EventListener
-{
-private:
-  RLMachine& machine_;
-
-public:
-  EventHandler(RLMachine& machine);
-  virtual ~EventHandler();
 };
 
 #endif

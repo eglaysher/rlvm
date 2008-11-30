@@ -30,6 +30,8 @@
 
 #include <boost/scoped_ptr.hpp>
 
+#include "Systems/Base/EventListener.hpp"
+
 class RLMachine;
 
 /**
@@ -42,8 +44,12 @@ class RLMachine;
  * the user (ctrl or mouse click), returning true when it detects it,
  * telling the RLMachine to delete the current LongOperation and
  * resume normal operations.
+ *
+ * Since we are taking over normal event flow, we implement
+ * EventListener. LongOperations on the top of the callstack receive key/mouse
+ * events.
  */
-class LongOperation
+class LongOperation : public EventListener
 {
 public:
   LongOperation();
@@ -72,6 +78,13 @@ public:
   PerformAfterLongOperationDecorator(LongOperation* in_op);
   ~PerformAfterLongOperationDecorator();
 
+  // Overridden from EventListener:
+  // Forward all messages to our held operation
+  virtual void mouseMotion(const Point& new_location);
+  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+
+  // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);
 
 private:

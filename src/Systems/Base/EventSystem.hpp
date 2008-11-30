@@ -42,7 +42,6 @@ class RLMachine;
 
 class Gameexe;
 class FrameCounter;
-class EventHandler;
 class EventListener;
 
 // -----------------------------------------------------------------------
@@ -123,19 +122,19 @@ public:
   // -----------------------------------------------------------------------
 
   /**
-   * @name Keyboard and Mouse Input (Event Handler style)
+   * @name Keyboard and Mouse Input (Event Listener style)
    *
    * rlvm event handling works by registering objects that received input
-   * notifications from the EventSystem.
+   * notifications from the EventSystem. These objects are EventListeners,
+   * which passively listen for input and have a first chance grab at any click
+   * or keypress.
    *
-   * There is usually only one EventHandler at a time, though there can be
-   * multiple MouseListeners.
+   * If no EventListener claims the event, then we try to reinterpret the top
+   * of the RLMachine callstack as an EventListener. Otherwise, the events
+   * are handled RealLive style (see below).
    *
    * @{
    */
-  void pushEventHandler(EventHandler* handler);
-  void popEventHandler(EventHandler* handler);
-
   void addMouseListener(EventListener* listener);
   void removeMouseListener(EventListener* listener);
   /// @}
@@ -147,8 +146,7 @@ public:
    * event handeling has. We therefore provide an interface for polling.
    *
    * Don't use it. This interface is provided for RealLive
-   * bytecode. EventHandlers and MouseListeners should be used within rlvm code,
-   * instead.
+   * bytecode. EventListeners should be used within rlvm code, instead.
    *
    * @{
    */
@@ -219,9 +217,9 @@ public:
    *
    * @{
    */
-  virtual void injectMouseMovement(const Point& loc) = 0;
-  virtual void injectMouseDown() = 0;
-  virtual void injectMouseUp() = 0;
+  virtual void injectMouseMovement(RLMachine& machine, const Point& loc) = 0;
+  virtual void injectMouseDown(RLMachine& machine) = 0;
+  virtual void injectMouseUp(RLMachine& machine) = 0;
   /// @}
 
   // -----------------------------------------------------------------------
@@ -229,11 +227,7 @@ public:
   EventSystemGlobals& globals() { return globals_; }
 
 protected:
-  typedef std::vector<EventHandler*> Handlers;
   typedef std::set<EventListener*> EventListeners;
-
-  Handlers::iterator handlers_begin() { return event_handlers_.begin(); }
-  Handlers::iterator handlers_end() { return event_handlers_.end(); }
 
   EventListeners::iterator listeners_begin() { return event_listeners_.begin(); }
   EventListeners::iterator listeners_end() { return event_listeners_.end(); }
@@ -242,24 +236,18 @@ protected:
    * Calls a EventListener member function on all event listeners, and then
    * event handlers, stopping when an object says they handled it.
    */
-  void dispatchEvent(const boost::function<bool(EventListener&)>& event);
-  void broadcastEvent(const boost::function<void(EventListener&)>& event);
+  void dispatchEvent(RLMachine& machine,
+                     const boost::function<bool(EventListener&)>& event);
+  void broadcastEvent(RLMachine& machine,
+                      const boost::function<void(EventListener&)>& event);
 
 private:
   boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
   RLTimer timers_[255][2];
 
-  /**
-   * Actions that need to be run the next time the EventSystem executes. We
-   * need to do this because EventHandlers aren't fully initialized when
-   * they're passed to us since that's done in the EventHandler's constructor.
-   */
-  std::queue<boost::function<void(void)> > queued_actions_;
-
   /// Helper function that verifies input
   void checkLayerAndCounter(int layer, int counter);
 
-  Handlers event_handlers_;
   EventListeners event_listeners_;
 
   EventSystemGlobals globals_;

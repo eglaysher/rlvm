@@ -29,14 +29,14 @@
 #define __TextoutLongOperation_hpp__
 
 #include "MachineBase/LongOperation.hpp"
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 
 #include <boost/function.hpp>
 #include <string>
 
 class RLMachine;
 
-class TextoutLongOperation : public LongOperation, public EventHandler
+class TextoutLongOperation : public LongOperation
 {
 private:
   std::string m_utf8string;
@@ -59,9 +59,11 @@ public:
 
   void setNoWait(bool in = true) { no_wait_ = in; }
 
+  // Overriden from EventListener:
   virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
   virtual bool keyStateChanged(KeyCode keyCode, bool pressed);
 
+  // Overriden from LongOperation:
   virtual bool operator()(RLMachine& machine);
 };
 

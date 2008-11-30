@@ -29,13 +29,25 @@
 #define __PauseLongOperation_hpp__
 
 #include "MachineBase/LongOperation.hpp"
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 
 /**
  * Main pause function. Exported for TextoutLongOperation to abuse.
  */
-struct PauseLongOperation : public LongOperation, public EventHandler
+class PauseLongOperation : public LongOperation
 {
+public:
+  PauseLongOperation(RLMachine& machine);
+  ~PauseLongOperation();
+
+  // Overridden from EventListener:
+  virtual void mouseMotion(const Point& new_location);
+  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+
+  // Overridden from LongOperation:
+  virtual bool operator()(RLMachine& machine);
+
 private:
   RLMachine& machine;
 
@@ -54,18 +66,6 @@ private:
   /// Longoperation if auto mode is enabled
   unsigned int automode_time_;
   /// @}
-
-public:
-  PauseLongOperation(RLMachine& machine);
-  ~PauseLongOperation();
-
-  // ------------------------------------------ [ EventHandler interface ]
-  void mouseMotion(const Point&);
-  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  bool keyStateChanged(KeyCode keyCode, bool pressed);
-
-  // ----------------------------------------- [ LongOperation interface ]
-  bool operator()(RLMachine& machine);
 };
 
 // -----------------------------------------------------------------------
@@ -73,11 +73,12 @@ public:
 // -----------------------------------------------------------------------
 class NewPageAfterLongop : public PerformAfterLongOperationDecorator
 {
-private:
-  virtual void performAfterLongOperation(RLMachine& machine);
 public:
   NewPageAfterLongop(LongOperation* inOp);
   ~NewPageAfterLongop();
+
+private:
+  virtual void performAfterLongOperation(RLMachine& machine);
 };
 
 // -----------------------------------------------------------------------
@@ -85,11 +86,12 @@ public:
 // -----------------------------------------------------------------------
 class HardBrakeAfterLongop : public PerformAfterLongOperationDecorator
 {
-private:
-  virtual void performAfterLongOperation(RLMachine& machine);
 public:
   HardBrakeAfterLongop(LongOperation* inOp);
   ~HardBrakeAfterLongop();
+
+private:
+  virtual void performAfterLongOperation(RLMachine& machine);
 };
 
 #endif

@@ -28,7 +28,7 @@
 #ifndef __TextSystem_hpp__
 #define __TextSystem_hpp__
 
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 
 #include "MachineBase/LongOperation.hpp"
 

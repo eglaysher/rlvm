@@ -42,7 +42,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -65,7 +65,7 @@ struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 
 // -----------------------------------------------------------------------
 
-struct LongOp_time : public LongOperation, public EventHandler
+struct LongOp_time : public LongOperation
 {
   const int layer_;
   const int counter_;
@@ -77,8 +77,7 @@ struct LongOp_time : public LongOperation, public EventHandler
 
   LongOp_time(RLMachine& machine, int layer, int counter, int time,
               bool cancelOnClick)
-    : EventHandler(machine),
-      layer_(layer), counter_(counter), target_time_(time),
+    : layer_(layer), counter_(counter), target_time_(time),
       cancel_on_click_(cancelOnClick), button_pressed_(0),
       mouse_moved_(false)
   {}
@@ -88,16 +87,14 @@ struct LongOp_time : public LongOperation, public EventHandler
     mouse_moved_ = true;
   }
 
-  /**
-   * Listen for mouseclicks (provided by EventHandler).
-   */
-  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
+  // Overridden from EventListener:
+  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
   {
     if (pressed) {
       if (mouseButton == MOUSE_LEFT) {
         button_pressed_ = 1;
         return true;
-      } else if(mouseButton == MOUSE_RIGHT) {
+      } else if (mouseButton == MOUSE_RIGHT) {
         button_pressed_ = -1;
         return true;
       }
@@ -106,6 +103,7 @@ struct LongOp_time : public LongOperation, public EventHandler
     return false;
   }
 
+  // Overridden from LongOperation:
   bool operator()(RLMachine& machine)
   {
     EventSystem& es = machine.system().event();

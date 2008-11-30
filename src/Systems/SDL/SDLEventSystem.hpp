@@ -71,9 +71,9 @@ public:
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
 
-  virtual void injectMouseMovement(const Point& loc);
-  virtual void injectMouseDown();
-  virtual void injectMouseUp();
+  virtual void injectMouseMovement(RLMachine& machine, const Point& loc);
+  virtual void injectMouseDown(RLMachine& machine);
+  virtual void injectMouseUp(RLMachine& machine);
 
 private:
   /**
@@ -81,10 +81,10 @@ private:
    *
    * @{
    */
-  void handleKeyDown(SDL_Event& event);
+  void handleKeyDown(RLMachine& machine, SDL_Event& event);
   void handleKeyUp(RLMachine& machine, SDL_Event& event);
-  void handleMouseMotion(SDL_Event& event);
-  void handleMouseButtonEvent(SDL_Event& event);
+  void handleMouseMotion(RLMachine& machine, SDL_Event& event);
+  void handleMouseButtonEvent(RLMachine& machine, SDL_Event& event);
   void handleActiveEvent(RLMachine& machine, SDL_Event& event);
   /// @}
 

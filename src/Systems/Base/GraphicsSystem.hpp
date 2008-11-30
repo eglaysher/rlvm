@@ -37,7 +37,7 @@
 #define __GraphicsSystem_hpp__
 
 #include "Systems/Base/CGMTable.hpp"
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/Rect.hpp"
 
 #include <boost/filesystem/path.hpp>

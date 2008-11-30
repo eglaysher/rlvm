@@ -91,6 +91,7 @@ using namespace libReallive;
 using boost::assign::list_of;
 using boost::bind;
 using boost::function;
+using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
 
@@ -515,10 +516,14 @@ void RLMachine::reset()
 
 // -----------------------------------------------------------------------
 
-bool RLMachine::inLongOperation() const
+shared_ptr<LongOperation> RLMachine::currentLongOperation() const
 {
-  return call_stack_.size() &&
-    call_stack_.back().frame_type == StackFrame::TYPE_LONGOP;
+  if (call_stack_.size() &&
+      call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
+    return call_stack_.back().long_op;
+  }
+
+  return shared_ptr<LongOperation>();
 }
 
 // -----------------------------------------------------------------------

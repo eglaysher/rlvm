@@ -33,7 +33,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
-#include "Systems/Base/EventHandler.hpp"
+#include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -48,7 +48,7 @@
  * LongOperation that handles any combenation of waiting, and getting a mouse
  * click.
  */
-struct LongOp_wait : public LongOperation, public EventHandler
+struct LongOp_wait : public LongOperation
 {
   RLMachine& machine_;
 
@@ -68,8 +68,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
   IntReferenceIterator y_;
 
   LongOp_wait(RLMachine& machine)
-    : EventHandler(machine),
-      machine_(machine),
+    : machine_(machine),
       wait_until_target_time_(false),
       target_time_(0),
       break_on_clicks_(false), button_pressed_(0),
@@ -107,10 +106,8 @@ struct LongOp_wait : public LongOperation, public EventHandler
     mouse_moved_ = true;
   }
 
-  /**
-   * Listen for mouseclicks (provided by EventHandler).
-   */
-  bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
+  // Overridden from EventListener:
+  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed)
   {
     if (pressed && break_on_clicks_) {
       if (save_click_location_ &&
@@ -131,7 +128,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
     return false;
   }
 
-  bool keyStateChanged(KeyCode keyCode, bool pressed)
+  virtual bool keyStateChanged(KeyCode keyCode, bool pressed)
   {
     if (pressed && break_on_ctrl_pressed_ &&
         (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
@@ -149,6 +146,7 @@ struct LongOp_wait : public LongOperation, public EventHandler
     *y_ = location.y();
   }
 
+  // Overridden from LongOperation:
   bool operator()(RLMachine& machine)
   {
     bool done = ctrl_pressed_ || machine.system().fastForward();

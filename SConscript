@@ -101,7 +101,7 @@ librlvm_files = [
   "src/Systems/Base/ObjectSettings.cpp",
   "src/Systems/Base/FrameCounter.cpp",
   "src/Systems/Base/EventSystem.cpp",
-  "src/Systems/Base/EventHandler.cpp",
+  "src/Systems/Base/EventListener.cpp",
   "src/Systems/Base/RLTimer.cpp",
   "src/Systems/Base/Platform.cpp",
   "src/Systems/Base/SystemError.cpp",
@@ -166,8 +166,7 @@ guichan_platform = [
   "src/Platforms/gcn/GCNScrollArea.cpp",
   "src/Platforms/gcn/gcnUtils.cpp",
   "src/Platforms/gcn/GCNWindow.cpp",
-  "src/Platforms/gcn/SDLTrueTypeFont.cpp",
-  "src/Platforms/gcn/wxInclude.cpp"
+  "src/Platforms/gcn/SDLTrueTypeFont.cpp"
 ]
 
 env.StaticLibrary('guichan_platform', guichan_platform)

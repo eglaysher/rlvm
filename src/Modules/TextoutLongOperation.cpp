@@ -57,18 +57,14 @@ using namespace std;
 
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
-  : EventHandler(machine),
-    m_utf8string(utf8string), current_codepoint_(0),
+  : m_utf8string(utf8string), current_codepoint_(0),
     current_position_(m_utf8string.begin()), no_wait_(false)
 {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
-  if(tmp == m_utf8string.end())
-  {
+  if (tmp == m_utf8string.end()) {
     current_char_ = "";
-  }
-  else
-  {
+  } else {
     current_codepoint_ = utf8::next(tmp, m_utf8string.end());
     current_char_ = string(current_position_, tmp);
     current_position_ = tmp;
@@ -76,7 +72,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
-  if(machine.system().text().currentPage(machine).inRubyGloss())
+  if (machine.system().text().currentPage(machine).inRubyGloss())
     no_wait_ = true;
 
   // Force the renderer into a draw mode where we'll display the text

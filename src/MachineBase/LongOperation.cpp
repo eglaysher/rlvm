@@ -39,6 +39,7 @@
 // -----------------------------------------------------------------------
 
 LongOperation::LongOperation()
+  : EventListener()
 {}
 
 // -----------------------------------------------------------------------
@@ -60,6 +61,30 @@ PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
 
 PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator()
 {
+}
+
+// -----------------------------------------------------------------------
+
+void PerformAfterLongOperationDecorator::mouseMotion(
+  const Point& new_location)
+{
+  operation_->mouseMotion(new_location);
+}
+
+// -----------------------------------------------------------------------
+
+bool PerformAfterLongOperationDecorator::mouseButtonStateChanged(
+  MouseButton mouse_button, bool pressed)
+{
+  return operation_->mouseButtonStateChanged(mouse_button, pressed);
+}
+
+// -----------------------------------------------------------------------
+
+bool PerformAfterLongOperationDecorator::keyStateChanged(
+  KeyCode key_code, bool pressed)
+{
+  return operation_->keyStateChanged(key_code, pressed);
 }
 
 // -----------------------------------------------------------------------
