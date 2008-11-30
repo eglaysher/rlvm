@@ -436,6 +436,11 @@ void GraphicsSystem::reset()
   clearAllObjects();
   clearAllDCs();
 
+  // Reset the cursor
+  show_curosr_ = true;
+  cursor_ = system().gameexe()("MOUSE_CURSOR").to_int(0);
+  mouse_cursor_.reset();
+
   default_grp_name_ = "";
   default_bgr_name_ = "";
   screen_update_mode_ = SCREENUPDATEMODE_AUTOMATIC;

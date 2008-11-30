@@ -249,6 +249,7 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 
   void operator()(RLMachine& machine) {
     int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
+    machine.system().reset();
     machine.jump(scenario);
   }
 };
