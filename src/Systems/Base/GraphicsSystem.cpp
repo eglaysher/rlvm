@@ -455,7 +455,7 @@ void GraphicsSystem::promoteObjects()
     if(bg.valid())
     {
       *fg = *bg;
-      bg->deleteObject();
+      bg->clearObject();
     }
   }
 }
@@ -476,13 +476,13 @@ void GraphicsSystem::clearAndPromoteObjects()
   {
     if(fg.valid() && !fg->wipeCopy())
     {
-      fg->deleteObject();
+      fg->clearObject();
     }
 
     if(bg.valid())
     {
       *fg = *bg;
-      bg->deleteObject();
+      bg->clearObject();
     }
   }
 }
