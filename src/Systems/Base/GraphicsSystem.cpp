@@ -433,6 +433,9 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
 
 void GraphicsSystem::reset()
 {
+  clearAllObjects();
+  clearAllDCs();
+
   default_grp_name_ = "";
   default_bgr_name_ = "";
   screen_update_mode_ = SCREENUPDATEMODE_AUTOMATIC;

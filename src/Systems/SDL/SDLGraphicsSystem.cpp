@@ -691,9 +691,6 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
 
 void SDLGraphicsSystem::reset()
 {
-  clearAllObjects();
-  clearAllDCs();
-
   last_seen_number_ = 0;
   last_line_number_ = 0;
 

@@ -324,10 +324,7 @@ void Sys_MenuReturn::operator()(RLMachine& machine)
   shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
 
   // Clear everything
-  graphics.clearAllObjects();
-  graphics.clearAllDCs();
-  machine.system().sound().reset();
-  machine.system().text().reset();
+  machine.system().reset();
 
   shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);
 

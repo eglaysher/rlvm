@@ -33,14 +33,15 @@
 
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Modules/Module_Sys.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Platform.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
-#include "Modules/Module_Sys.hpp"
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -304,8 +305,10 @@ void System::reset()
 {
   in_menu_ = false;
 
+  enableSyscom();
+
+  sound().reset();
   graphics().reset();
-//  event().reset();
   text().reset();
 }
 
