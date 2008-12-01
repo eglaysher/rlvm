@@ -46,6 +46,7 @@ public:
 
   Storage::const_iterator begin() const { return storage_.begin(); }
   Storage::const_iterator end() const { return storage_.end(); }
+  size_t size() const { return storage_.size(); }
 
 private:
   /// Counts the instances of an opcode encountered.
