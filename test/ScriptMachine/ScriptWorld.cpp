@@ -80,6 +80,9 @@ ScriptWorld::ScriptWorld(const std::string& lua_file)
 // -----------------------------------------------------------------------
 
 ScriptWorld::~ScriptWorld() {
+  // Must manually destroy all lua objects before we close the L context.
+  handlers_.clear();
+
   lua_close(L);
 }
 
