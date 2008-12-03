@@ -29,6 +29,8 @@
 // -----------------------------------------------------------------------
 
 #include "ScriptMachine/ScriptMachine.hpp"
+
+#include "libReallive/intmemref.h"
 #include "Modules/Module_Sel.hpp"
 #include "MachineBase/Serialization.hpp"
 
@@ -36,6 +38,7 @@
 #include <typeinfo>
 
 using namespace std;
+using libReallive::IntMemRef;
 
 // -----------------------------------------------------------------------
 // ScriptMachine
@@ -147,4 +150,13 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   }
 
   RLMachine::pushLongOperation(long_operation);
+}
+
+// -----------------------------------------------------------------------
+
+int ScriptMachine::getInt(const std::string& bank, int position)
+{
+  char bchar = bank[0];
+
+  return getIntValue(IntMemRef(bchar, position));
 }

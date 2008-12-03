@@ -66,13 +66,15 @@ ScriptWorld::ScriptWorld(const std::string& lua_file)
   L = lua_open();
   luaopen_base(L);
   luaopen_string(L);
+  luaopen_table(L);
   InitializeLuabind(L);
 
   luabind::globals(L)["World"] = this;
 
   if (luaL_dofile(L, lua_file.c_str())) {
     ostringstream oss;
-    oss << "Error while running script: " << lua_file;
+    oss << "Error while running script: " << lua_file << " ("
+        << lua_tostring(L, -1) << ")";
     throw std::runtime_error(oss.str());
   }
 }

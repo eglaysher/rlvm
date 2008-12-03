@@ -1,7 +1,44 @@
--- Library functions for CLANNAD. 
+-- Library functions for CLANNAD.
 
 -- Declare the CLANNAD function's namespace
 CLANNAD = { }
+
+AfterStoryLights = {
+    [1] = "Nagisa",
+    [2] = "Fuuko",
+    [3] = "Tomoyo",
+    [4] = "Kyou",
+    [5] = "Kotomi",
+    [6] = "Yukine",
+    [9] = "Mei",
+    [12] = "Kappei",
+    [13] = "Misae",
+    [15] = "Koumura",
+    [30] = "Yukine (?)",
+    [31] = "Tomoyo (?)"
+}
+
+TrueEndLights = {
+    [14] = "Naoyuki Okazaki",
+    [33] = "Thirty-three (6802)",
+    [10] = "Ten (6802)",
+    [8]  = "Sanae",
+    [11] = "Yuusuke",
+    [7]  = "Akio"
+}
+
+-- Returns a string array of all routes still needed to open the After Story
+function CLANNAD:routesNeededFor (mapping)
+   routes = { }
+
+   for key,value in pairs(mapping) do
+      if Machine:getInt('G', key) == 0 then
+         table.insert(routes, value)
+      end
+   end
+
+   return routes
+end
 
 function CLANNAD:installMainMenuHandler (type)
   state = 0
@@ -15,7 +52,10 @@ function CLANNAD:installMainMenuHandler (type)
         obj = System:graphics():getFgObject(22)
 
         if obj:visible() == 0 then
-           World:error("After Story not unlocked yet!")
+           paths = CLANNAD:routesNeededFor(AfterStoryLights)
+          routes = table.concat(paths, ", ")
+          errmsg = "After Story not unlocked yet! Still need: " .. routes
+          World:error(errmsg)
         end
 
         origin = obj:getClickPointHack()

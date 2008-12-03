@@ -66,6 +66,9 @@ public:
 
   void incrementOnSave() { increment_on_save_ = true; }
 
+  // Memory accessor. (Maybe just translate this in luabind_Machine?)
+  int getInt(const std::string& bank, int position);
+
 private:
   typedef std::vector<std::string> Selections;
   Selections decisions_;
