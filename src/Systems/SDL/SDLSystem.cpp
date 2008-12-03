@@ -104,7 +104,7 @@ void SDLSystem::run(RLMachine& machine)
   if (platform())
     platform()->run(machine);
 
-  if (machine.currentLongOperation() || forceWait()) {
+  if (!forceFastForward() && (machine.currentLongOperation() || forceWait())) {
     event_system_->wait(10);
     setForceWait(false);
   }

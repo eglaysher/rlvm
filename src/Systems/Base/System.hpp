@@ -278,8 +278,12 @@ public:
    */
   bool fastForward();
 
+  /// Whether we're currently forcing fast forward (only used during game tests
+  /// to zoom through).
+  bool forceFastForward() { return force_fast_forward_; }
+
   /// Set in luaRlvm, to speed through the game with maximum speed!
-  void forceFastForward() { force_fast_forward_ = true; }
+  void setForceFastForward() { force_fast_forward_ = true; }
 
   void dumpRenderTree(RLMachine& machine);
   /// @}
