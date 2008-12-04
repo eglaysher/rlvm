@@ -57,6 +57,8 @@ extern const char* EVENT_CANCEL;
  * Guichan GUI.
  */
 class GCNPlatform : public Platform,
+                    public gcn::MouseListener,
+                    public gcn::KeyListener,
                     public boost::enable_shared_from_this<GCNPlatform>
 {
 public:
@@ -72,6 +74,12 @@ public:
   void receiveGCNMenuEvent(GCNMenu* menu, const std::string& event);
   void saveEvent(int slot);
   void loadEvent(int slot);
+
+  // Overridden from gcn::MouseListener:
+  virtual void mouseClicked(gcn::MouseEvent& mouseEvent);
+
+  // Overridden from gcn::KeyListener:
+  virtual void keyReleased(gcn::KeyEvent& keyEvent);
 
 private:
   /// Blocks the world until we're done.

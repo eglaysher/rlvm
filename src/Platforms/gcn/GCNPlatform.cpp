@@ -229,6 +229,9 @@ GCNPlatform::GCNPlatform(Gameexe& gameexe, const Rect& screen_size)
 
 GCNPlatform::~GCNPlatform()
 {
+  toplevel_container_->removeMouseListener(this);
+  guichan_gui_->removeGlobalKeyListener(this);
+
   clearWindowStack();
 }
 
@@ -332,6 +335,24 @@ void GCNPlatform::loadEvent(int slot)
 }
 
 // -----------------------------------------------------------------------
+
+void GCNPlatform::mouseClicked(gcn::MouseEvent& mouseEvent)
+{
+  if (mouseEvent.getSource() == toplevel_container_.get() &&
+      mouseEvent.getButton() == gcn::MouseEvent::RIGHT) {
+    blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::keyReleased(gcn::KeyEvent& keyEvent)
+{
+  if (keyEvent.getKey() == gcn::Key::ESCAPE)
+    blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
+}
+
+// -----------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------
 
@@ -363,11 +384,13 @@ void GCNPlatform::initializeGuichan(const Rect& screen_size)
   guichan_gui_->setTabbingEnabled(false); // Do I want this on?
   guichan_gui_->setGraphics(opengl_graphics_.get());
   guichan_gui_->setInput(sdl_input_.get());
+  guichan_gui_->addGlobalKeyListener(this);
 
   toplevel_container_.reset(new gcn::Container);
   toplevel_container_->setBaseColor(gcn::Color(0x000000));
   toplevel_container_->setOpaque(false);
   toplevel_container_->setDimension(rectConvert(screen_size));
+  toplevel_container_->addMouseListener(this);
   guichan_gui_->setTop(toplevel_container_.get());
 
   global_font_.reset(new SDLTrueTypeFont("/home/elliot/msgothic.ttc", 12));
