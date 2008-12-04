@@ -1,6 +1,5 @@
 # Main scons file
 
-import os
 import shutil
 import sys
 
@@ -19,11 +18,6 @@ env.Append(
     "CASE_SENSITIVE_FILESYSTEM",
     "_THREAD_SAFE"
   ],
-
-  CPPFLAGS = [
-    "-g",
-    "-O0"
-  ]
 )
 
 env.ParseConfig("sdl-config --cflags --libs")
@@ -172,62 +166,14 @@ guichan_platform = [
 env.StaticLibrary('guichan_platform', guichan_platform)
 
 env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a',
-                     'libguichan_platform.a', '#/build/guichan/libguichan.a',
+                     'libguichan_platform.a', 'libguichan.a',
                      'librlvm.a'])
+env.Install('$OUTPUT_DIR', 'rlvm')
 
 #########################################################################
 
-def build_rlc_simple(target, source, env, for_signature):
-  target_build_directory = os.path.splitext(target[0].path)[0]
-  intermediate = target_build_directory + "/seen0001.TXT"
-  return env.Command(target, source,
-                     Action([Mkdir(target_build_directory),
-                             "rlc ${SOURCES[0]} -o seen0001 -d " + target_build_directory,
-                             "kprl -a ${TARGETS[0]} " + intermediate,
-                             Delete(target_build_directory)],
-                            "Building ${TARGET}..."))
-
-def build_rlc_complex(target, source, env, for_signature):
-  '''Builds all SEENXXXX.ke files in the source directory into a resulting .TXT
-  file.
-
-   TODO: I'm not sure this works with dependencies correctly.
-   source_scanner=DirScanner should work, but If I ever modify any of these
-   test cases' source files and things don't appear to be rebuilding properly
-   THIS IS THE FIRST PLACE TO LOOK!'''
-
-  target_build_directory = os.path.splitext(target[0].path)[0]
-
-  commands = [
-    Mkdir(target_build_directory)
-  ]
-
-  source_file_names = os.listdir(source[0].srcnode().path)
-  for file_name in source_file_names:
-    if os.path.splitext(file_name)[1] == ".ke":
-      input_path = os.path.join(source[0].srcnode().path, file_name)
-      base_name = os.path.splitext(os.path.basename(file_name))[0]
-      commands += ["rlc " + input_path + " -o " + base_name + " -d " +
-                   target_build_directory]
-  commands += [
-     "kprl -a ${TARGETS[0]} " + target_build_directory + "/*",
-     Delete(target_build_directory)
-  ]
-
-  return env.Command(target, source, Action(commands, "Building ${TARGET}..."))
-
-builder_rlc = Builder(generator = build_rlc_simple,
-                      suffix = ".TXT",
-                      src_suffix = ".ke")
-builder_rlc_complex = Builder(generator = build_rlc_complex,
-                              suffix = ".TXT",
-                              source_scanner=DirScanner,
-                              source_factory=Dir)
-
 test_env = env.Clone()
-test_env.Append(CPPPATH = ["#/test"],
-                BUILDERS = {'RlcSimple' : builder_rlc,
-                            'RlcComplex' : builder_rlc_complex})
+test_env.Append(CPPPATH = ["#/test"])
 
 test_case_files = [
   "test/testUtils.cpp",
@@ -255,100 +201,10 @@ null_system_files = [
   "test/NullSystem/MockLog.cpp"
 ]
 
-simple_test_cases = [
-  'ExpressionTest_SEEN/basicOperators',
-  'ExpressionTest_SEEN/comparisonOperators',
-  'ExpressionTest_SEEN/logicalOperators',
-  'ExpressionTest_SEEN/previousErrors',
-  'Module_Jmp_SEEN/fibonacci',
-  'Module_Jmp_SEEN/gosub_0',
-  'Module_Jmp_SEEN/gosub_case_0',
-  'Module_Jmp_SEEN/gosub_if_0',
-  'Module_Jmp_SEEN/gosub_unless_0',
-  'Module_Jmp_SEEN/gosub_with_0',
-  'Module_Jmp_SEEN/goto_0',
-  'Module_Jmp_SEEN/goto_case_0',
-  'Module_Jmp_SEEN/goto_if_0',
-  'Module_Jmp_SEEN/goto_on_0',
-  'Module_Jmp_SEEN/goto_unless_0',
-  'Module_Jmp_SEEN/graphics',
-  'Module_Jmp_SEEN/graphics2',
-  'Module_Jmp_SEEN/jump_0',
-  "Module_Mem_SEEN/cpyrng_0",
-  "Module_Mem_SEEN/cpyvars_0",
-  "Module_Mem_SEEN/setarray_0",
-  "Module_Mem_SEEN/setarray_stepped_0",
-  "Module_Mem_SEEN/setrng_0",
-  "Module_Mem_SEEN/setrng_1",
-  "Module_Mem_SEEN/setrng_stepped_0",
-  "Module_Mem_SEEN/setrng_stepped_1",
-  "Module_Mem_SEEN/sum_0",
-  "Module_Mem_SEEN/sums_0",
-  "Module_Str_SEEN/atoi_0",
-  "Module_Str_SEEN/digit_0",
-  "Module_Str_SEEN/digits_0",
-  "Module_Str_SEEN/hantozen_0",
-  "Module_Str_SEEN/hantozen_1",
-  "Module_Str_SEEN/itoa_0",
-  "Module_Str_SEEN/itoa_s_0",
-  "Module_Str_SEEN/itoa_w_0",
-  "Module_Str_SEEN/itoa_ws_0",
-  "Module_Str_SEEN/lowercase_0",
-  "Module_Str_SEEN/lowercase_1",
-  "Module_Str_SEEN/strcat_0",
-  "Module_Str_SEEN/strcharlen_0",
-  "Module_Str_SEEN/strcharlen_1",
-  "Module_Str_SEEN/strclear_0",
-  "Module_Str_SEEN/strclear_1",
-  "Module_Str_SEEN/strcmp_0",
-  "Module_Str_SEEN/strcpy_0",
-  "Module_Str_SEEN/strcpy_1",
-  "Module_Str_SEEN/strlen_0",
-  "Module_Str_SEEN/strlpos_0",
-  "Module_Str_SEEN/strpos_0",
-  "Module_Str_SEEN/strrsub_0",
-  "Module_Str_SEEN/strrsub_1",
-  "Module_Str_SEEN/strsub_0",
-  "Module_Str_SEEN/strsub_1",
-  "Module_Str_SEEN/strsub_2",
-  "Module_Str_SEEN/strsub_3",
-  "Module_Str_SEEN/strtrunc_0",
-  "Module_Str_SEEN/strtrunc_1",
-  "Module_Str_SEEN/strused_0",
-  "Module_Str_SEEN/uppercase_0",
-  "Module_Str_SEEN/uppercase_1",
-  "Module_Str_SEEN/zentohan_0",
-  "Module_Str_SEEN/zentohan_1",
-  "Module_Sys_SEEN/builtins",
-  "Module_Sys_SEEN/dumb",
-]
-
-for test_case in simple_test_cases:
-  test_env.RlcSimple('test/' + test_case)
-
-complex_test_cases = [
-  "Module_Jmp_SEEN/farcallTest_0",
-  "Module_Jmp_SEEN/farcall_withTest",
-  "Module_Jmp_SEEN/jumpTest",
-  "Module_Sys_SEEN/SceneNum"
-]
-
-files_to_copy = [
-  "Gameexe_data/Gameexe.ini",
-  "Gameroot/g00/doesntmatter.g00"
-]
-
 if env['BUILD_RLC_TESTS']:
   test_env.Program('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
                                  test_case_files, 'librlvm.a'])
-
-  for test_case in complex_test_cases:
-    test_env.RlcComplex('test/' + test_case)
-
-  for file_name in files_to_copy:
-    test_env.Command('#/build/test/' + file_name,
-                     '#/test/' + file_name,
-                     Copy('$TARGET', '$SOURCE'))
+  test_env.Install('$OUTPUT_DIR', 'rlvmTests')
 
 #########################################################################
 
@@ -366,5 +222,6 @@ script_machine_files = [
 if env['BUILD_LUA_TESTS'] == True:
   test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
                                script_machine_files,
-                               '#/build/luabind/libluabind.a',
+                               'libluabind.a',
                                'libsystem_sdl.a', 'librlvm.a'])
+  test_env.Install('$OUTPUT_DIR', 'luaRlvm')

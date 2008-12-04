@@ -5,10 +5,6 @@ env.Append(
   CPPPATH = [
     "#/vendor/guichan/include"
   ],
-
-  CPPFLAGS = [
-    "-O2"
-  ]
 )
 
 env.ParseConfig("sdl-config --cflags")
@@ -65,3 +61,4 @@ libguichan_files = [
 ]
 
 env.StaticLibrary('libguichan', libguichan_files)
+env.Install('$BUILD_DIR', 'libguichan.a')

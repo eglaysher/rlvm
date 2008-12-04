@@ -6,10 +6,6 @@ env.Append(
     "#/vendor/luabind",
     "/usr/include/lua5.1"
   ],
-
-  CPPFLAGS = [
-    "-O2"
-  ]
 )
 
 libluabind_files = [
@@ -35,3 +31,4 @@ libluabind_files = [
 ]
 
 env.StaticLibrary('libluabind', libluabind_files)
+env.Install('$BUILD_DIR', 'libluabind.a')
