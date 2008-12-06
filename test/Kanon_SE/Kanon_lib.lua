@@ -3,10 +3,15 @@
 -- Kanon namespace
 Kanon = { }
 
--- TODOs:
--- * Need to generate a click when "Little Fragments" starts playing. Does this
---   happen with each ending?
--- * Returning to the main menu at the end is a blank screen... ???
+function Kanon:mashClickWithState(state)
+    if state == 0 then
+        System:event():injectMouseDown()
+        state = 1
+    else
+        System:event():injectMouseUp()
+        state = 0
+    end
+end
 
 function Kanon:installMainMenuHandler ()
    state = 0
@@ -45,41 +50,15 @@ function Kanon:installMainMenuHandler ()
   end)
 end
 
-function Kanon:skipLastRegrets ()
-   state = 0
-   World:addHandler(8502, 146, function ()
-      if state == 0 then
-         System:event():injectMouseDown()
-         state = 1
-      else
-         System:event():injectMouseUp()
-         state = 0
-      end
-   end)
-end
+function Kanon:skipEverything ()
+    state = 0
 
-function Kanon:ignoreBlackOnWhiteText ()
-   state = 0
-   World:addHandler(8501, 162, function ()
-      if state == 0 then
-         System:event():injectMouseDown()
-         state = 1
-      else
-         System:event():injectMouseUp()
-         state = 0
-      end
-   end)
-end
+    -- Skips the date display
+    World:addHandler(9070, 52, function() Kanon:mashClickWithState(state) end)
 
-function Kanon:clickAfterEndingCredits()
-   state = 0
-   World:addHandler(8504, 306, function ()
-      if state == 0 then
-         System:event():injectMouseDown()
-         state = 1
-      else
-         System:event():injectMouseUp()
-         state = 0
-      end
-   end)
+    -- Skips black on white text (everything but the last one)
+    World:addHandler(8501, 162, function() Kanon:mashClickWithState(state) end)
+
+    -- Inject the click after the end credits
+    World:addHandler(8504, 315, function() Kanon:mashClickWithState(state) end)
 end

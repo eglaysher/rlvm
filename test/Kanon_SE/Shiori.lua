@@ -4,9 +4,7 @@ World:setGameRoot("/home/elliot/GameImages/KANON")
 
 World:import("Kanon_lib.lua")
 Kanon:installMainMenuHandler()
-Kanon:skipLastRegrets()
-Kanon:ignoreBlackOnWhiteText()
-Kanon:clickAfterEndingCredits()
+Kanon:skipEverything()
 
 -- Shiori's route
 decisions = {
