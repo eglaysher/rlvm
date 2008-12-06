@@ -224,7 +224,7 @@ void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
 {
   TextSystem& text = machine.system().text();
   text.snapshot(machine);
-  text.currentWindow(machine).clearWin();
+  text.currentWindow(machine)->clearWin();
   text.newPageOnWindow(machine, text.activeWindow());
 }
 

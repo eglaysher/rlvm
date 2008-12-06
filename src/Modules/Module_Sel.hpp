@@ -34,6 +34,7 @@
 
 #include <vector>
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 class TextWindow;
 
@@ -52,7 +53,7 @@ private:
 
   std::vector<std::string> options_;
 
-  TextWindow& text_window_;
+  boost::shared_ptr<TextWindow> text_window_;
 
   int return_value_;
 

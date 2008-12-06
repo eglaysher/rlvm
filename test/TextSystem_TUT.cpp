@@ -62,7 +62,8 @@ struct TextSystem_data
 
   NullTextWindow& getTextWindow(int twn)
   {
-    return dynamic_cast<NullTextWindow&>(system.text().textWindow(rlmachine, twn));
+    return dynamic_cast<NullTextWindow&>(*system.text().textWindow(
+                                           rlmachine, twn));
   }
 
   void writeString(const std::string& text, bool nowait)
@@ -80,7 +81,7 @@ struct TextSystem_data
   {
     TextSystem& text = rlmachine.system().text();
     text.snapshot(rlmachine);
-    text.textWindow(rlmachine, 0).clearWin();
+    text.textWindow(rlmachine, 0)->clearWin();
     text.newPageOnWindow(rlmachine, 0);
   }
 };

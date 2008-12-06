@@ -28,6 +28,8 @@
 #include "NullTextSystem.hpp"
 #include "NullTextWindow.hpp"
 
+#include <boost/shared_ptr.hpp>
+
 // -----------------------------------------------------------------------
 
 NullTextSystem::NullTextSystem(Gameexe& gexe)
@@ -39,16 +41,18 @@ NullTextSystem::~NullTextSystem() { }
 
 // -----------------------------------------------------------------------
 
-TextWindow& NullTextSystem::textWindow(RLMachine& machine, int text_window_num)
+boost::shared_ptr<TextWindow> NullTextSystem::textWindow(
+  RLMachine& machine, int text_window_num)
 {
   WindowMap::iterator it = text_window_.find(text_window_num);
   if(it == text_window_.end())
   {
-    it = text_window_.insert(
-      text_window_num, new NullTextWindow(machine, text_window_num)).first;
+    it = text_window_.insert(std::make_pair(
+      text_window_num, boost::shared_ptr<TextWindow>(
+        new NullTextWindow(machine, text_window_num)))).first;
   }
 
-  return *it->second;
+  return it->second;
 }
 
 

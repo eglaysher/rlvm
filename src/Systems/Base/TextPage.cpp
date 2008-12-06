@@ -384,7 +384,7 @@ bool TextPage::character_impl(const string& c,
                               const string& next_char)
 {
   return machine_->system().text().textWindow(*machine_, window_num_)
-    .displayChar(*machine_, c, next_char);
+    ->displayChar(*machine_, c, next_char);
 }
 
 // -----------------------------------------------------------------------
@@ -393,7 +393,7 @@ void TextPage::name_impl(const string& name,
                          const string& next_char)
 {
   machine_->system().text().textWindow(*machine_, window_num_)
-    .setName(*machine_, name, next_char);
+    ->setName(*machine_, name, next_char);
 }
 
 // -----------------------------------------------------------------------
@@ -401,7 +401,7 @@ void TextPage::name_impl(const string& name,
 void TextPage::hard_brake_impl()
 {
   machine_->system().text().textWindow(*machine_, window_num_)
-    .hardBrake();
+    ->hardBrake();
 }
 
 // -----------------------------------------------------------------------
@@ -409,7 +409,7 @@ void TextPage::hard_brake_impl()
 void TextPage::reset_indentation_impl()
 {
   machine_->system().text().textWindow(*machine_, window_num_)
-    .resetIndentation();
+    ->resetIndentation();
 }
 
 // -----------------------------------------------------------------------
@@ -417,7 +417,7 @@ void TextPage::reset_indentation_impl()
 void TextPage::font_colour_impl(int color)
 {
   machine_->system().text().textWindow(*machine_, window_num_)
-    .setFontColor(machine_->system().gameexe()("COLOR_TABLE", color));
+    ->setFontColor(machine_->system().gameexe()("COLOR_TABLE", color));
 }
 
 // -----------------------------------------------------------------------
@@ -425,7 +425,7 @@ void TextPage::font_colour_impl(int color)
 void TextPage::mark_ruby_begin_impl()
 {
   machine_->system().text().textWindow(*machine_, window_num_)
-    .markRubyBegin();
+    ->markRubyBegin();
   in_ruby_gloss_ = true;
 }
 
@@ -434,7 +434,7 @@ void TextPage::mark_ruby_begin_impl()
 void TextPage::display_ruby_text_impl(const std::string& utf8str)
 {
   machine_->system().text().textWindow(*machine_, window_num_)
-    .displayRubyText(*machine_, utf8str);
+    ->displayRubyText(*machine_, utf8str);
   in_ruby_gloss_ = false;
 }
 
@@ -443,13 +443,13 @@ void TextPage::display_ruby_text_impl(const std::string& utf8str)
 void TextPage::set_to_right_starting_color_impl(bool is_active_page)
 {
   Gameexe& gexe = machine_->system().gameexe();
-  TextWindow& window = machine_->system().text().textWindow(
+  boost::shared_ptr<TextWindow> window = machine_->system().text().textWindow(
     *machine_, window_num_);
   if(!is_active_page)
   {
     GameexeInterpretObject color(gexe("COLOR_TABLE", 254));
     if(color.exists())
-      window.setFontColor(color);
+      window->setFontColor(color);
   }
 }
 
@@ -458,5 +458,5 @@ void TextPage::set_to_right_starting_color_impl(bool is_active_page)
 bool TextPage::isFull() const
 {
   return machine_->system().text().textWindow(*machine_, window_num_)
-    .isFull();
+    ->isFull();
 }

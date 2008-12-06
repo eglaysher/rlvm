@@ -205,7 +205,7 @@ void TextSystem::clearAllTextWindows()
 
 // -----------------------------------------------------------------------
 
-TextWindow& TextSystem::currentWindow(RLMachine& machine)
+boost::shared_ptr<TextWindow> TextSystem::currentWindow(RLMachine& machine)
 {
   return textWindow(machine, active_window_);
 }

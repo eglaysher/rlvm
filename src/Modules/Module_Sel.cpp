@@ -67,9 +67,9 @@ Sel_LongOperation::Sel_LongOperation(
     return_value_(-1)
 {
   machine.system().text().setInSelectionMode(true);
-  text_window_.setVisible(true);
-  text_window_.startSelectionMode();
-  text_window_.setSelectionCallback(
+  text_window_->setVisible(true);
+  text_window_->startSelectionMode();
+  text_window_->setSelectionCallback(
     bind(&Sel_LongOperation::selected, this, _1));
 
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
@@ -80,7 +80,7 @@ Sel_LongOperation::Sel_LongOperation(
                                       machine.getTextEncoding());
 
     options_.push_back(utf8str);
-    text_window_.addSelectionItem(utf8str);
+    text_window_->addSelectionItem(utf8str);
   }
 
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -90,7 +90,7 @@ Sel_LongOperation::Sel_LongOperation(
 
 Sel_LongOperation::~Sel_LongOperation()
 {
-  text_window_.endSelectionMode();
+  text_window_->endSelectionMode();
   machine_.system().text().setInSelectionMode(false);
 }
 

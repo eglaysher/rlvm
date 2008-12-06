@@ -80,16 +80,18 @@ SDLTextSystem::~SDLTextSystem()
 
 // -----------------------------------------------------------------------
 
-TextWindow& SDLTextSystem::textWindow(RLMachine& machine, int text_window)
+boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(
+  RLMachine& machine, int text_window)
 {
   WindowMap::iterator it = text_window_.find(text_window);
   if(it == text_window_.end())
   {
-    it = text_window_.insert(
-      text_window, new SDLTextWindow(machine, text_window)).first;
+    it = text_window_.insert(std::make_pair(
+      text_window, shared_ptr<TextWindow>(
+        new SDLTextWindow(machine, text_window)))).first;
   }
 
-  return *it->second;
+  return it->second;
 }
 
 // -----------------------------------------------------------------------

@@ -54,6 +54,8 @@
 
 #include "Modules/cp932toUnicode.hpp"
 
+#include <boost/shared_ptr.hpp>
+
 using namespace std;
 
 /**
@@ -83,9 +85,10 @@ struct Msg_pause : public RLOp_Void_Void
   {
     TextSystem& text = machine.system().text();
     int windowNum = text.activeWindow();
-    TextWindow& textWindow = text.textWindow(machine, windowNum);
+    boost::shared_ptr<TextWindow> textWindow =
+      text.textWindow(machine, windowNum);
 
-    if(textWindow.actionOnPause())
+    if(textWindow->actionOnPause())
     {
       machine.pushLongOperation(
         new HardBrakeAfterLongop(new PauseLongOperation(machine)));
@@ -173,7 +176,7 @@ struct Msg_msgClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int activeWindow = text.activeWindow();
-    text.textWindow(machine, activeWindow).clearWin();
+    text.textWindow(machine, activeWindow)->clearWin();
     text.newPageOnWindow(machine, activeWindow);
   }
 };
@@ -189,7 +192,7 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
     for(vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it)
     {
-      text.textWindow(machine, activeWindow).clearWin();
+      text.textWindow(machine, activeWindow)->clearWin();
       text.newPageOnWindow(machine, *it);
     }
   }

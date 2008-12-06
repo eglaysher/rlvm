@@ -110,8 +110,9 @@ public:
   void hideTextWindow(int win_number);
   void hideAllTextWindows();
   void clearAllTextWindows();
-  virtual TextWindow& textWindow(RLMachine&, int text_window_number) = 0;
-  TextWindow& currentWindow(RLMachine& machine);
+  virtual boost::shared_ptr<TextWindow> textWindow(
+    RLMachine&, int text_window_number) = 0;
+  boost::shared_ptr<TextWindow> currentWindow(RLMachine& machine);
 
   /// @}
 
@@ -319,7 +320,7 @@ protected:
   int active_window_;
 
   /// Type of the Window storage
-  typedef boost::ptr_map<int, TextWindow> WindowMap;
+  typedef std::map<int, boost::shared_ptr<TextWindow> > WindowMap;
 
   /// Storage of active windows
   WindowMap text_window_;
