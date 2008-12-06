@@ -382,6 +382,11 @@ void Sys_load::operator()(RLMachine& machine, int slot)
   machine.pushLongOperation(new LoadingGame(slot));
   machine.pushLongOperation(
     new FadeEffect(machine, dc0, currentWindow, s, 250));
+
+  // We have our before and after images to use as a transition now. Reset the
+  // system to prevent a brief flash of the previous contents of the screen for
+  // whatever number of user preceivable milliseconds.
+  machine.system().reset();
 }
 
 // -----------------------------------------------------------------------
