@@ -144,7 +144,6 @@ libsystemsdl_files = [
   "src/Systems/SDL/SDLTextSystem.cpp",
   "src/Systems/SDL/SDLTextWindow.cpp",
   "src/Systems/SDL/Texture.cpp",
-  "vendor/glew.c",
   "vendor/alphablit.cc",
   "vendor/SDL_ttf.c"
 ]
@@ -167,7 +166,7 @@ env.StaticLibrary('guichan_platform', guichan_platform)
 
 env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a',
                      'libguichan_platform.a', 'libguichan.a',
-                     'librlvm.a'])
+                     'librlvm.a', env["STATIC_SDL_LIBS"]])
 env.Install('$OUTPUT_DIR', 'rlvm')
 
 #########################################################################
@@ -223,5 +222,6 @@ if env['BUILD_LUA_TESTS'] == True:
   test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
                                script_machine_files,
                                'libluabind.a',
-                               'libsystem_sdl.a', 'librlvm.a'])
+                               'libsystem_sdl.a', 'librlvm.a',
+                               env["STATIC_SDL_LIBS"]])
   test_env.Install('$OUTPUT_DIR', 'luaRlvm')
