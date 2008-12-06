@@ -129,6 +129,9 @@ struct LocalMemory
    */
   LocalMemory(dont_initialize);
 
+  /// Zeros and clears all of local memory.
+  void reset();
+
   int intA[SIZE_OF_MEM_BANK];
   int intB[SIZE_OF_MEM_BANK];
   int intC[SIZE_OF_MEM_BANK];

@@ -516,6 +516,15 @@ void RLMachine::reset()
 
 // -----------------------------------------------------------------------
 
+void RLMachine::localReset()
+{
+  savepoint_call_stack_.clear();
+  memory_->local().reset();
+  system().reset();
+}
+
+// -----------------------------------------------------------------------
+
 shared_ptr<LongOperation> RLMachine::currentLongOperation() const
 {
   if (call_stack_.size() &&

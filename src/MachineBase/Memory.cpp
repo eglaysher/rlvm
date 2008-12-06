@@ -70,6 +70,19 @@ GlobalMemory::GlobalMemory()
 // -----------------------------------------------------------------------
 LocalMemory::LocalMemory()
 {
+  reset();
+}
+
+// -----------------------------------------------------------------------
+
+LocalMemory::LocalMemory(dont_initialize)
+{
+}
+
+// -----------------------------------------------------------------------
+
+void LocalMemory::reset()
+{
   memset(intA, 0, sizeof(intA));
   memset(intB, 0, sizeof(intB));
   memset(intC, 0, sizeof(intC));
@@ -78,12 +91,13 @@ LocalMemory::LocalMemory()
   memset(intF, 0, sizeof(intF));
 
   memset(intL, 0, sizeof(intL));
-}
 
-// -----------------------------------------------------------------------
-
-LocalMemory::LocalMemory(dont_initialize)
-{
+  for (int i = 0; i < SIZE_OF_MEM_BANK; ++i)
+    strS[i].clear();
+  for (int i = 0; i < 3; ++i)
+    strK[i].clear();
+  for (int i = 0; i < SIZE_OF_NAME_BANK; ++i)
+    local_names[i].clear();
 }
 
 // -----------------------------------------------------------------------

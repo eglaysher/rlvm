@@ -243,13 +243,16 @@ struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntCon
  *
  * Jumps the instruction pointer to the begining of the scenario
  * defined in the Gameexe key \#SEEN_MENU.
+ *
+ * This method also resets a LOT of the game state, though this isn't mentioned
+ * in the rldev manual.
  */
 struct Sys_ReturnMenu : public RLOp_Void_Void {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine) {
     int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-    machine.system().reset();
+    machine.localReset();
     machine.jump(scenario);
   }
 };
@@ -325,7 +328,7 @@ void Sys_MenuReturn::operator()(RLMachine& machine)
   shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
 
   // Clear everything
-  machine.system().reset();
+  machine.localReset();
 
   shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);
 

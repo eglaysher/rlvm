@@ -456,9 +456,16 @@ public:
   void clearLongOperationsOffBackOfStack();
 
   /**
-   * Clears all call stacks and other data.
+   * Clears all call stacks and other data. Does not clear any local memory, as
+   * this should only be called right before a load.
    */
   void reset();
+
+  /**
+   * Resets pieces of local memory. Correspondingly does NOT clear the call
+   * stack, though it does clear the shadow save stack.
+   */
+  void localReset();
 
 private:
   /// The Reallive VM's integer and string memory
