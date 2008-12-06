@@ -441,8 +441,10 @@ SysModule::SysModule()
 
   addUnsupportedOpcode(2050, 0, "SetCursorMono");
   addUnsupportedOpcode(2000, 0, "CursorMono");
-  addUnsupportedOpcode(2051, 0, "SetSkipAnimations");
-  addUnsupportedOpcode(2001, 0, "SkipAnimations");
+  addOpcode(2051, 0, "SetSkipAnimations",
+            callFunction(&GraphicsSystem::setSkipAnimations));
+  addOpcode(2001, 0, "SkipAnimations",
+            returnIntValue(&GraphicsSystem::skipAnimations));
   addOpcode(2052, 0, "SetLowPriority",
             callFunction(&System::setLowPriority));
   addOpcode(2002, 0, "LowPriority",

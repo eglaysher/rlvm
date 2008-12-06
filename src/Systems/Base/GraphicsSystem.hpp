@@ -84,6 +84,9 @@ struct GraphicsSystemGlobals
 
   int show_weather;
 
+  /// Whether we should skip animations (such as those made by Effect)
+  int skip_animations;
+
   /// CG Table
   CGMTable cg_table;
 
@@ -290,6 +293,12 @@ public:
    */
   void toggleInterfaceHidden();
   bool interfaceHidden();
+
+  /**
+   * Whether we should skip animations (such as all the Effect subclasses).
+   */
+  void setSkipAnimations(const int in) { globals_.skip_animations = in; }
+  int skipAnimations() const { return globals_.skip_animations; }
 
   /**
    * Returns the ObjectSettings from the Gameexe for obj_num. The data
