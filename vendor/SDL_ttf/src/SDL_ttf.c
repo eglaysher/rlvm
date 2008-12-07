@@ -46,7 +46,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_endian.h>
-#include "SDL_ttf.h"
+#include "SDL/SDL_ttf.h"
 
 /* FIXME: Right now we assume the gray-scale renderer Freetype is using
    supports 256 shades of gray, but we should instead key off of num_grays

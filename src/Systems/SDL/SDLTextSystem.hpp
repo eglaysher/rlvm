@@ -32,7 +32,7 @@
 
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include "SDL_ttf.h"
+#include <SDL/SDL_ttf.h>
 
 class Point;
 class RLMachine;

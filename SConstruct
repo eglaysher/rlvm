@@ -162,6 +162,11 @@ local_sdl_libraries = [
     "include"  : 'GL/glew.h',
     "library"  : 'GLEW',
     "function" : 'glewInit();'
+  },
+  {
+    'include'  : 'SDL/SDL_ttf.h',
+    'library'  : 'SDL_ttf',
+    'function' : 'TTF_Init();'
   }
 ]
 for library_dict in local_sdl_libraries:

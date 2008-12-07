@@ -32,7 +32,7 @@
 
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include "SDL_ttf.h"
+#include <SDL/SDL_ttf.h>
 
 class SDLSurface;
 class SelectionElement;

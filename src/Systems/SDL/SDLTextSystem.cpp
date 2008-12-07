@@ -52,7 +52,7 @@
 #include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>
-#include "SDL_ttf.h"
+#include <SDL/SDL_ttf.h>
 #include <sstream>
 #include <stdexcept>
 

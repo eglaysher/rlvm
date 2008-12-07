@@ -145,7 +145,6 @@ libsystemsdl_files = [
   "src/Systems/SDL/SDLTextWindow.cpp",
   "src/Systems/SDL/Texture.cpp",
   "vendor/alphablit.cc",
-  "vendor/SDL_ttf.c"
 ]
 
 env.StaticLibrary('system_sdl', libsystemsdl_files)
