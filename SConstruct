@@ -171,6 +171,7 @@ for library_dict in local_sdl_libraries:
 # Building the luaRlvm test harness requires having lua installed;
 if config.CheckLibWithHeader('lua5.1', 'lua5.1/lua.h', 'cpp'):
   env['BUILD_LUA_TESTS'] = True
+  subcomponents.append("luabind")
 
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
@@ -193,6 +194,9 @@ component_env.Append(
     "-O2"
   ]
 )
+
+# Subcomponents to always build
+subcomponents.append("guichan")
 
 for component in subcomponents:
   component_env.SConscript("vendor/" + component + "/SConscript",
@@ -235,22 +239,6 @@ else:
       "-O0"
     ]
   )
-
-
-if env['BUILD_LUA_TESTS'] == True:
-  # Only build our internal copy of luabind if there's a copy of lua on the
-  # system.
-  env.SConscript("vendor/luabind/SConscript",
-                 build_dir="$BUILD_DIR/luabind",
-                 duplicate=0,
-                 exports='env')
-
-# Need to generalize these so that maybe we use them if they're installed on
-# the system. Then we could get rid of glew and SDL_ttf doing the same thing...
-env.SConscript("vendor/guichan/SConscript",
-               build_dir="$BUILD_DIR/guichan",
-               duplicate=0,
-               exports='env')
 
 env.SConscript("SConscript",
                build_dir="$BUILD_DIR/",

@@ -1,13 +1,13 @@
 
-Import('env')
+Import('component_env')
 
-env.Append(
+component_env.Append(
   CPPPATH = [
     "#/vendor/guichan/include"
   ],
 )
 
-env.ParseConfig("sdl-config --cflags")
+component_env.ParseConfig("sdl-config --cflags")
 
 libguichan_files = [
   "src/sdl/sdlgraphics.cpp",
@@ -60,5 +60,5 @@ libguichan_files = [
   "src/widget.cpp"
 ]
 
-env.StaticLibrary('libguichan', libguichan_files)
-env.Install('$BUILD_DIR', 'libguichan.a')
+component_env.StaticLibrary('libguichan', libguichan_files)
+component_env.Install('$LIBRARY_DIR', 'libguichan.a')

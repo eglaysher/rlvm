@@ -165,7 +165,7 @@ guichan_platform = [
 env.StaticLibrary('guichan_platform', guichan_platform)
 
 env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a',
-                     'libguichan_platform.a', 'libguichan.a',
+                     'libguichan_platform.a', '$LIBRARY_DIR/libguichan.a',
                      'librlvm.a', env["STATIC_SDL_LIBS"]])
 env.Install('$OUTPUT_DIR', 'rlvm')
 
@@ -219,9 +219,11 @@ script_machine_files = [
 ]
 
 if env['BUILD_LUA_TESTS'] == True:
+  test_env.Append(CPPPATH = [ "/usr/include/lua5.1" ] )
+
   test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
                                script_machine_files,
-                               'libluabind.a',
+                               '$LIBRARY_DIR/libluabind.a',
                                'libsystem_sdl.a', 'librlvm.a',
                                env["STATIC_SDL_LIBS"]])
   test_env.Install('$OUTPUT_DIR', 'luaRlvm')

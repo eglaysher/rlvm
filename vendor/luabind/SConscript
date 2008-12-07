@@ -1,9 +1,9 @@
 
-Import('env')
+Import('component_env')
 
-env.Append(
+component_env.Append(
   CPPPATH = [
-    "#/vendor/luabind",
+    "#/vendor/luabind/include/",
     "/usr/include/lua5.1"
   ],
 )
@@ -30,5 +30,5 @@ libluabind_files = [
   "src/wrapper_base.cpp"
 ]
 
-env.StaticLibrary('libluabind', libluabind_files)
-env.Install('$BUILD_DIR', 'libluabind.a')
+component_env.StaticLibrary('libluabind', libluabind_files)
+component_env.Install('$LIBRARY_DIR', 'libluabind.a')
