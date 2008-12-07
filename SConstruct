@@ -34,7 +34,11 @@ env = Environment(
   ],
 
   CPPDEFINES = [
-    "HAVE_CONFIG_H"
+    "HAVE_CONFIG_H",
+
+    # This prevents conflicts between SDL and GLEW. I shouldn't have to do
+    # this, but the SDL_opengl.h and glew.h differ in const correctness...
+    "NO_SDL_GLEXT"
   ],
 
   # Where the final binaries should be put.
@@ -112,7 +116,7 @@ def VerifyLibrary(config, library, header):
       print "You need " + library + " to compile this program!"
     Exit(1)
 
-def CheckForSystemLibrary(context, library_dict, static_libraries,
+def CheckForSystemLibrary(config, library_dict, static_libraries,
                           componentlist):
   """
   Configure check to see if a certain library is installed, falling back on an
@@ -120,34 +124,18 @@ def CheckForSystemLibrary(context, library_dict, static_libraries,
   custom handling on build failure, where instead we add the source to the
   dependency graph instead.
   """
-  context.Message("Checking for library %s... " % library_dict['library'])
+  res = config.CheckLibWithHeader(library_dict['library'],
+                                  library_dict['include'],
+                                  'cpp',
+                                  call = library_dict['function'])
 
-  text = """
-#include "%s"
-int main() {
-  %s();
-  return 0;
-}
-""" % (library_dict['include'], library_dict['function'])
-
-  lib_name = library_dict['library']
-  l = [ lib_name ]
-  oldLIBS = context.AppendLIBS(l)
-  sym = "HAVE_LIB" + lib_name
-
-  ret = context.BuildProg(text, "cpp")
-
-  if ret:
-    context.SetLIBS(oldLIBS)
-    context.Message("(using included version)\n")
+  if not res:
+    lib_name = library_dict['library']
+    print "(Using included version of %s)" % lib_name
     static_libraries.append("#/build/libraries/lib" + lib_name + ".a")
     componentlist.append(lib_name)
-  else:
-    context.Message("yes\n");
-
-  config.Define(sym, 1,
-                "Define to 1 if you have the `%s' library." % lib_name)
-  return True
+    config.Define("HAVE_LIB" + lib_name, 1,
+                  "Define to 1 if you have the `%s' library." % lib_name)
 
 
 #########################################################################
@@ -156,8 +144,7 @@ int main() {
 subcomponents = [ ]
 static_sdl_libs = [ ]
 
-config = env.Configure(custom_tests = {'CheckBoost' : CheckBoost,
-                                       'CheckForSystemLibrary' : CheckForSystemLibrary},
+config = env.Configure(custom_tests = {'CheckBoost' : CheckBoost},
                        config_h="build/config.h")
 if not config.CheckBoost('1.35'):
   print "Boost version >= 1.35 needed to compile rlvm!"
@@ -170,16 +157,16 @@ VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
 VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
 
 # Libraries we need, but will use a local copy if not installed.
-local_sdl_libraries = {
-  "glew" : {
-    "include" : 'glew.h',
-    "library" : 'glew',
-    "function" : 'glewInit'
+local_sdl_libraries = [
+  {
+    "include"  : 'GL/glew.h',
+    "library"  : 'GLEW',
+    "function" : 'glewInit();'
   }
-}
-for library_key, library_dict in local_sdl_libraries.items():
-  config.CheckForSystemLibrary(library_dict, static_sdl_libs,
-                               subcomponents)
+]
+for library_dict in local_sdl_libraries:
+  CheckForSystemLibrary(config, library_dict, static_sdl_libs,
+                        subcomponents)
 
 # Building the luaRlvm test harness requires having lua installed;
 if config.CheckLibWithHeader('lua5.1', 'lua5.1/lua.h', 'cpp'):
@@ -200,6 +187,12 @@ env = config.Finish()
 ## Building subcomponent functions
 #########################################################################
 component_env = env.Clone()
+
+component_env.Append(
+  CPPFLAGS = [
+    "-O2"
+  ]
+)
 
 for component in subcomponents:
   component_env.SConscript("vendor/" + component + "/SConscript",

@@ -29,7 +29,7 @@
 
 // -----------------------------------------------------------------------
 
-#include "glew.h"
+#include "GL/glew.h"
 
 #include <boost/bind.hpp>
 #include <SDL/SDL.h>

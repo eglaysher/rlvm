@@ -37,7 +37,7 @@
  *
  */
 
-#include "glew.h"
+#include "GL/glew.h"
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 

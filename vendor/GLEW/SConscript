@@ -3,7 +3,7 @@ Import('component_env')
 
 component_env.Prepend(
   CPPPATH = [
-    "#/vendor/glew/include/",
+    "#/vendor/GLEW/include/",
   ],
 )
 
@@ -13,5 +13,5 @@ libglew_files = [
 
 component_env.ParseConfig("sdl-config --cflags --libs")
 
-component_env.StaticLibrary('libglew', libglew_files)
-component_env.Install('$LIBRARY_DIR', 'libglew.a')
+component_env.StaticLibrary('libGLEW', libglew_files)
+component_env.Install('$LIBRARY_DIR', 'libGLEW.a')
