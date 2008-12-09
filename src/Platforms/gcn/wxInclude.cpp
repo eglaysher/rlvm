@@ -288,6 +288,7 @@ int main(int argc, char* argv[])
 							std::cout << "Process: file '" << file << "'..." << std::endl;
 
 							/* Remove extension */
+                            file = inputpath.leaf();
 							boost::erase_last( file, fileext );
 
 							if ( !opt.count( "respectcase" ) )
