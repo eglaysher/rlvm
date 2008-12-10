@@ -31,28 +31,24 @@ RealLive system.
 2) STATUS
 -------------------------------------------------------------------------
 
-This beta is currently only compatible with the Planetarian CD edition[1] and
-Nagisa's route of CLANNAD.  Planetarian is playable through the end, though
-rlvm currently doesn't implement all features used in the game (see known
-issues). Nagisa's route (at minimum) is playable, minus some problems with
-graphics and the Megumeru video not playing.
+This beta is currently only compatible with the Planetarian CD edition[1], the
+non-voiced version of CLANNAD and the Standard Edition of Kanon. Planetarian is
+playable through the end, though rlvm currently doesn't implement all features
+used in the game (see known issues). All of the main routes necessary to get to
+the After Story True End work are playable, minus some problems with graphics
+and the Megumeru video not playing. Kanon SE is playable in its entirety, with
+slightly less minor graphical glitches than Planetarian or CLANNAD.
 
-This is the third public release of rlvm. Please report bugs and
+This is the fourth public release of rlvm. Please report bugs and
 discrepancies in Planetarian (other then the opening scene not
 showing) to <glaysher at umich dot edu>.
-
-The rest of CLANNAD may or may not be playable through the end: I haven't
-tried. Kanon SE may or may not be playable through the end: the lack of default
-SYSCOM menus would make any attempt to play the game a frustrating experience.
-Haeleth's unofficial "ONE" demo does not render correctly. No other games have
-been tested at this time.
 
 3) COMPILING RLVM
 -------------------------------------------------------------------------
 You will need the following libraries/utilities:
 
-- The omake build system when building under Linux or OSX
-- boost 1.34.1 or higher
+- The scons build system
+- boost 1.35 or higher
 - SDL, SDL_image, and SDL_mixer
 - freetype
 
@@ -67,12 +63,12 @@ current OMakefiles are fairly naive and may need editing to point to
 the correct location of some header files. Future versions will have
 the build system refined. You should be able to type:
 
- $ omake
+ $ scons
 
 in the root and have a complete build. If you have rldev installed,
 the unit tests will automatically be built and can be run by typing:
 
- $ test/rlvmTest 
+ $ cd build && rlvmTest 
 
 They should all pass.
 
@@ -80,10 +76,10 @@ You should copy the contents of the Planetarian CD to a directory on
 your hard drive for speed reasons. Playing directly from the CD is
 discouraged. Once done, you should be able to run:
 
- $ src/rlvm [--font=/path/to/JapaneseTTF] /path/to/PlanetarianCopy
+ $ build/rlvm [--font=/path/to/JapaneseTTF] /path/to/PlanetarianCopy
 
-rlvm is currently not meant to be installed to /usr/bin, and should be
-run out of the unpacked source folder.
+The rlvm binary should be self contained and movable anywhere, though the build
+system does not have an install target.
 
 If you don't have the file "msgothic.ttc" in either the game directory
 nor your home directory, please specify a Japanese font on the command
@@ -100,7 +96,7 @@ the paths in the apple specific section at the end of src/Omakefile.
 
 To build an OSX application, type:
 
- $ omake bundle
+ $ [Rewrite after updating to scons]
 
 which will build rlvm.app in the src directory. The resulting OSX
 application will ask you for the location of the game with a native
@@ -108,11 +104,11 @@ dialog.
 
 You can also build rlvm as a command line program, as in Linux:
 
- $ omake
+ $ scons
 
 The result is run like this:
 
- $ src/rlvm /path/to/PlanetarianCopy
+ $ build/rlvm /path/to/PlanetarianCopy
 
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
@@ -124,7 +120,6 @@ The interpreter currently lacks the following features:
    some scenes. To my knowledge, the file format has not been reverse
    engineered.
  - Koe / Narration
- - Right click configuration menus / most SYSCOM commands.
 
 In addition, the current indentation system is extremely naive and
 does not produce the same results as the official interpreter, though
@@ -135,11 +130,12 @@ in the middle of words.
 
 Many graphics manipulation commands not required by Planetarian are
 currently unimplemented. Kanon SE, Haeleth's unofficial ONE demo and
-CLANNAD are do not always render correctly because of this.
+CLANNAD do not always render correctly because of this.
 
-rlvm does not contain an implementation of Haeleth's rlBabel and
-Textout extensions. Fan translations that use something other than the
-lower ASCII set, specifically Chinese or Korean ones, will not work.
+rlvm does not contain an implementation of Haeleth's rlBabel and Textout
+extensions. Fan translations that use something other than the lower ASCII set,
+specifically Chinese or Korean ones, will not work and ones that are restricted
+to the lower ASCII set will look ugly.
 
 5) GETTING INVOLVED
 -------------------------------------------------------------------------

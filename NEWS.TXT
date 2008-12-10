@@ -1,6 +1,18 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.4:
+- CLANNAD is playable from a clean file to the end of After Story True End;
+  side routes and bad ends have not been tested.
+- All routes in Kanon SE ALL are playable.
+- There's now a partial default interface, allowing basic operations and a
+  default save/load interface in games that don't provide their own (such as
+  Kanon).
+- NOTE: There is still no support for rlBabel; text in translation patches
+  still won't display correctly.
+
+-------------------------------------------------------------------------
+
 Version 0.3:
 - CLANNAD is playable through the end of Nagisa's route. CLANNAD Full Voice is
   still not supported; it uses new opcodes in the new menu system.

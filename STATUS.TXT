@@ -3,17 +3,15 @@ GAME COMPATIBILITY STATUS
 
 Kanon SE ALL
 ------------
-- Starts
-- Fades Key logo in/out (snow effect unimplemented)
-- Main menu works except for load
-  - Clicking load has RLVM complain about <1:Sys:03001> (menu_load) not being 
-    implemented.
-- Mostly playable. 
-  - The calendar in the upper left hand corner likes to randomly appear and
-    disappear.
-  - THERE IS NO SAVE/LOAD SUPPORT. This is the first game that I've worked with
-    that doesn't provide custom menus for accessing options and the save/load
-    functionality.
+- All routes playable to the end
+- No screen shaking, no inversion, and other graphical glitches.
+
+CLANNAD
+-------
+- All routes playable to the end, from a clean file to After Story True End.
+- No screen shaking, no inversion, and other graphical glitches.
+- Several Fuuko selections which should have custom graphics are displayed like
+  any other selection.
 
 Planetarian CD
 --------------
@@ -22,15 +20,6 @@ Planetarian CD
     functions, and the corresponding HIK file format have not been
     reverse engineered. 
   - There are minor issues with indentation that need to be worked out.
-
-CLANNAD
--------
-- Main menu renders correctly; the option menu (for the most part)
-  works correctly; most options can be set (and will be remembered
-  between invocations)
-- Main game may be playable until the end
-  - Things *appear* to work (but I haven't tested things in depth)
-- In game menu mostly works.
 
 CLANNAD FULL VOICE
 ------------------

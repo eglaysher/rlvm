@@ -34,7 +34,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	omake
+	scons --release
 	#docbook-to-man debian/rlvm.sgml > rlvm.1
 
 	touch $@
@@ -45,7 +45,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-omake clean
+	-scons --clean
 
 	dh_clean 
 
@@ -56,7 +56,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/rlvm.
-	-install -o 0 -g 0 -p -m555 src/rlvm $(CURDIR)/debian/rlvm/usr/bin
+	-install -o 0 -g 0 -p -m555 build/release/rlvm $(CURDIR)/debian/rlvm/usr/bin
 
 
 # Build architecture-independent files here.

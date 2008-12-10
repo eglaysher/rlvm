@@ -19,6 +19,8 @@ GLEW - http://glew.sourceforge.net/
 UTF8-CPP - http://utfcpp.sourceforge.net/
 SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
 C++ LRU Cache - http://lifelines.blackcat.ca/lifeline/query.php/tag=LRU_CACHE
+luabind - http://www.rasterbar.com/products/luabind.html
+guichan - http://guichan.sourceforge.net/
 
 Libraries depended on (and are not included)
 -------------------------------------------------------------------------

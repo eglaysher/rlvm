@@ -1,3 +1,16 @@
+rlvm (0.4) unstable; urgency=low
+
+  * CLANNAD is now playable from a clean file to After Story True End. No
+    testing has been done on side routes, though they may be playable.
+  * All routes in Kanon Standard Edition are playable and have been tested.
+  * There's now a partial default interface, allowing basic operations and a
+    default save/load interface in games that don't provide their own (such as
+    Kanon).
+  * NOTE: There is still no support for rlBabel; text in translation
+    patches still won't display correctly.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Tue, 09 Dec 2008 19:55:00 -0800
+
 rlvm (0.3) unstable; urgency=low
 
   * CLANNAD is playable through the end of Nagisa's route.
