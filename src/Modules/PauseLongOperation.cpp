@@ -153,19 +153,20 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
-  GraphicsSystem& graphics = machine.system().graphics();
-  TextSystem& text = machine.system().text();
   bool handled = false;
 
-  if(pressed) {
-    if(graphics.interfaceHidden()) {
+  if (pressed) {
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    if (graphics.interfaceHidden()) {
       graphics.toggleInterfaceHidden();
       handled = true;
     } else {
+      TextSystem& text = machine.system().text();
       bool ctrlKeySkips = text.ctrlKeySkip();
 
-      if(ctrlKeySkips &&
-         (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
+      if (ctrlKeySkips &&
+          (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
         is_done_ = true;
         handled = true;
       } else if(keyCode == RLKEY_SPACE) {
@@ -178,7 +179,11 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
         text.forwardPage(machine);
         handled = true;
       } else if(keyCode == RLKEY_RETURN) {
-        is_done_ = true;
+        if (text.isReadingBacklog())
+          text.stopReadingBacklog();
+        else
+          is_done_ = true;
+
         handled = true;
       }
     }
