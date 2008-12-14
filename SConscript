@@ -7,21 +7,16 @@ Import('env')
 
 ########################################################## [ Root environment ]
 env.Append(
-  LIBS = [
-    "GL",
-    "GLU",
-    "SDL_image",
-    "SDL_mixer",
-  ],
-
   CPPDEFINES = [
     "CASE_SENSITIVE_FILESYSTEM",
     "_THREAD_SAFE"
   ],
 )
 
-env.ParseConfig("sdl-config --cflags --libs")
-env.ParseConfig("freetype-config --cflags --libs")
+if env['PLATFORM'] == 'darwin':
+  env.Append(FRAMEWORKS=["OpenGL"])
+else:
+  env.Append(LIBS=["GL", "GLU"])
 
 #########################################################################
 
@@ -197,9 +192,9 @@ guichan_platform = [
 
 env.StaticLibrary('guichan_platform', guichan_platform)
 
-env.Program('rlvm', ["src/rlvm.cpp", 'libsystem_sdl.a',
-                     'libguichan_platform.a', '$LIBRARY_DIR/libguichan.a',
-                     'librlvm.a', env["STATIC_SDL_LIBS"]])
+env.RlvmProgram('rlvm', ["src/rlvm.cpp"],
+                use_lib_set = ["SDL"],
+                rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
 env.Install('$OUTPUT_DIR', 'rlvm')
 
 #########################################################################
@@ -234,8 +229,10 @@ null_system_files = [
 ]
 
 if env['BUILD_RLC_TESTS']:
-  test_env.Program('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
-                                 test_case_files, 'librlvm.a'])
+  test_env.RlvmProgram('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
+                                     test_case_files],
+                       use_lib_set = [ ],
+                       rlvm_libs = ["rlvm"])
   test_env.Install('$OUTPUT_DIR', 'rlvmTests')
 
 #########################################################################
@@ -254,9 +251,7 @@ script_machine_files = [
 if env['BUILD_LUA_TESTS'] == True:
   test_env.Append(CPPPATH = [ "/usr/include/lua5.1" ] )
 
-  test_env.Program("luaRlvm", ['test/luaRlvm.cpp',
-                               script_machine_files,
-                               '$LIBRARY_DIR/libluabind.a',
-                               'libsystem_sdl.a', 'librlvm.a',
-                               env["STATIC_SDL_LIBS"]])
+  test_env.RlvmProgram("luaRlvm", ['test/luaRlvm.cpp', script_machine_files],
+                       use_lib_set = ["SDL", "LUA"],
+                       rlvm_libs = ["system_sdl", "rlvm"])
   test_env.Install('$OUTPUT_DIR', 'luaRlvm')

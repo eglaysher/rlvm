@@ -2,21 +2,29 @@
 import os
 from SCons.Conftest import *
 
+# 0.98.3 had a bug where it wasn't generating config.h files correctly. :(
+EnsureSConsVersion(0, 98, 5)
+
 ############################################################# [ World options ]
 
 AddOption('--release', action='store_true',
           help='Builds an optimized release for the platform.')
+AddOption('--fullstatic', action='store_true',
+          help='Builds a static binary, linking in all libraries.')
 
 # Set libraries used by all configurations and all binaries in rlvm.
 env = Environment(
+  tools = ["default", "rlvm"],
+
   LIBS = [
-    "boost_program_options",
-    "boost_serialization",
-    "boost_iostreams",
-    "boost_filesystem",
-    "boost_date_time",
-    "boost_signals",
+    "boost_program_options-mt",
+    "boost_serialization-mt",
+    "boost_iostreams-mt",
+    "boost_filesystem-mt",
+    "boost_date_time-mt",
+    "boost_signals-mt",
     "boost_thread-mt",
+    "boost_system-mt",
     "z"
   ],
 
@@ -59,10 +67,10 @@ env = Environment(
 
   # Whether we build the test binary that requires lua.
   BUILD_LUA_TESTS = False,
-
-  # Static libraries to link in because the user doesn't have these installed.
-  STATIC_SDL_LIBS = [ ]
 )
+
+if GetOption("fullstatic"):
+  env["FULL_STATIC_BUILD"] = True
 
 # Auto select the number of processors
 if os.path.exists('/proc'):
@@ -81,6 +89,25 @@ if ARGUMENTS.get('VERBOSE') != '1':
   env['SHCXXCOMSTR'] = 'Compiling $TARGET ...'
   env['LINKCOMSTR'] = 'Linking $TARGET ...'
   env['SHLINKCOMSTR'] = 'Linking $TARGET ...'
+
+#########################################################################
+## Platform Specific Locations
+#########################################################################
+if env['PLATFORM'] == "darwin":
+  # Fink based mac
+  if os.path.exists("/sw/"):
+    env['ENV']['PATH'] += ":/sw/bin"
+    env.Append(
+      CPPPATH = ["/sw/include/"],
+      LIBPATH = ["/sw/lib/"]
+    )
+  # Darwinports based mac
+  if os.path.exists("/opt/local"):
+    env['ENV']['PATH'] += ":/opt/local/bin"
+    env.Append(
+      CPPPATH = ["/opt/local/include/"],
+      LIBPATH = ["/opt/local/lib/"]
+    )
 
 #########################################################################
 ## CheckBoost
@@ -109,30 +136,31 @@ def CheckBoost(context, version):
   return ret
 
 def VerifyLibrary(config, library, header):
-  if not config.CheckLibWithHeader(library, header, "cpp"):
+  if not config.CheckLibWithHeader(library, header, "c"):
     if config.CheckLib(library):
       print "You have " + library + " installed, but the development headers aren't installed."
     else:
       print "You need " + library + " to compile this program!"
     Exit(1)
 
-def CheckForSystemLibrary(config, library_dict, static_libraries,
-                          componentlist):
+def CheckForSystemLibrary(config, library_dict, componentlist):
   """
   Configure check to see if a certain library is installed, falling back on an
   included version. Most of this check is ripped off from CheckLib, but with
   custom handling on build failure, where instead we add the source to the
   dependency graph instead.
   """
-  res = config.CheckLibWithHeader(library_dict['library'],
-                                  library_dict['include'],
-                                  'cpp',
-                                  call = library_dict['function'])
+
+  res = None
+  if not GetOption("fullstatic"):
+      res = config.CheckLibWithHeader(library_dict['library'],
+                                      library_dict['include'],
+                                      'cpp',
+                                      call = library_dict['function'])
 
   if not res:
     lib_name = library_dict['library']
     print "(Using included version of %s)" % lib_name
-    static_libraries.append("#/build/libraries/lib" + lib_name + ".a")
     componentlist.append(lib_name)
     config.Define("HAVE_LIB" + lib_name, 1,
                   "Define to 1 if you have the `%s' library." % lib_name)
@@ -150,11 +178,21 @@ if not config.CheckBoost('1.35'):
   print "Boost version >= 1.35 needed to compile rlvm!"
   Exit(1)
 
-VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
-VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
-VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
+
+# In short, we do this because the SCons configuration system doesn't give me
+# enough control over the test program. Even if the libraries are installed,
+# they won't compile because SCons outputs "int main()" instead of "int
+# main(int argc, char** argv)", which SDL macros into its own special SDL_main
+# entrypoint, and the CheckXXX tests don't allow me a way to inject "#undef
+# main" before I declare the main() function.
+if env['PLATFORM'] != 'darwin':
+  VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
+  VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
+  VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
+else:
+  print "Can't properly detect SDL under OSX. Assuming you have the libraries."
 
 # Libraries we need, but will use a local copy if not installed.
 local_sdl_libraries = [
@@ -170,8 +208,7 @@ local_sdl_libraries = [
   }
 ]
 for library_dict in local_sdl_libraries:
-  CheckForSystemLibrary(config, library_dict, static_sdl_libs,
-                        subcomponents)
+  CheckForSystemLibrary(config, library_dict, subcomponents)
 
 # Building the luaRlvm test harness requires having lua installed;
 if config.CheckLibWithHeader('lua5.1', 'lua5.1/lua.h', 'cpp'):
@@ -184,10 +221,25 @@ config.CheckLibWithHeader('png', 'png.h', "cpp")
 config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
 config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 
-if config.TryAction('rlc --version'):
+if config.TryAction('rlc --version')[0] == 1:
   env['BUILD_RLC_TESTS'] = True
 
 env = config.Finish()
+
+### HACK! Until I make my own version of CheckLibWithHeader, just assume that
+### we have the right libraries. This needs to be done after config.Finish() is
+### called or else we get a really confusing error.
+if env['PLATFORM'] == 'darwin':
+  env.Append(LIBS=["SDL", "SDL_image"])
+
+# Get the configuration from sdl and freetype
+env.ParseConfig("sdl-config --cflags")
+if env['FULL_STATIC_BUILD'] == True:
+  env.ParseConfig("sdl-config --static-libs")
+else:
+  env.ParseConfig("sdl-config --libs")
+
+env.ParseConfig("freetype-config --cflags --libs")
 
 #########################################################################
 ## Building subcomponent functions
@@ -207,12 +259,10 @@ for component in subcomponents:
   component_env.SConscript("vendor/" + component + "/SConscript",
                            build_dir="build/libraries/" + component,
                            duplicate=0,
-                           exports='component_env')
+                           exports=["component_env", "env"])
 
   # Make sure the main compilation can see the includes to these files
   env.Append(CPPPATH = [ "#vendor/" + component + "/include/" ])
-
-env["STATIC_SDL_LIBS"] = static_sdl_libs
 
 #########################################################################
 ## Building things

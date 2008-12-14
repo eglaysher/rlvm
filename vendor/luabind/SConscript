@@ -1,5 +1,5 @@
 
-Import('component_env')
+Import('component_env', 'env')
 
 component_env.Append(
   CPPPATH = [
@@ -32,3 +32,5 @@ libluabind_files = [
 
 component_env.StaticLibrary('libluabind', libluabind_files)
 component_env.Install('$LIBRARY_DIR', 'libluabind.a')
+
+env.AddStaticLibraryTo("luabind", "LUA")

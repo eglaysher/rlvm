@@ -1,5 +1,5 @@
 
-Import('component_env')
+Import('component_env', 'env')
 
 component_env.Append(
   CPPPATH = [
@@ -7,12 +7,11 @@ component_env.Append(
   ],
 )
 
-component_env.ParseConfig("sdl-config --cflags")
-component_env.ParseConfig("freetype-config --cflags --libs")
-
 libsdl_ttf_files = [
   "src/SDL_ttf.c"
 ]
 
 component_env.StaticLibrary('libSDL_ttf', libsdl_ttf_files)
 component_env.Install('$LIBRARY_DIR', 'libSDL_ttf.a')
+
+env.AddStaticLibraryTo("SDL_ttf", "SDL")

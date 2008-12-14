@@ -1,13 +1,11 @@
 
-Import('component_env')
+Import('component_env', 'env')
 
 component_env.Append(
   CPPPATH = [
     "#/vendor/guichan/include"
   ],
 )
-
-component_env.ParseConfig("sdl-config --cflags")
 
 libguichan_files = [
   "src/sdl/sdlgraphics.cpp",
@@ -62,3 +60,6 @@ libguichan_files = [
 
 component_env.StaticLibrary('libguichan', libguichan_files)
 component_env.Install('$LIBRARY_DIR', 'libguichan.a')
+
+# Register the library with the system
+env.AddStaticLibraryTo("guichan", "SDL")
