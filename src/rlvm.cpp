@@ -348,10 +348,6 @@ int main(int argc, char* argv[])
     }
 
     SDLSystem sdlSystem(gameexe);
-    boost::shared_ptr<Platform> platform(
-      new GCNPlatform(gameexe, sdlSystem.graphics().screenRect()));
-    sdlSystem.setPlatform(platform);
-
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
@@ -368,6 +364,12 @@ int main(int argc, char* argv[])
            << "3) Specify an alternate font with the --font option." << endl;
       return -2;
     }
+
+    // Initialize our platform dialogs (we have to do this after
+    // looking for a font because we use that font internally).
+    boost::shared_ptr<Platform> platform(
+      new GCNPlatform(rlmachine, sdlSystem.graphics().screenRect()));
+    sdlSystem.setPlatform(platform);
 
     if(vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);

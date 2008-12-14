@@ -45,13 +45,16 @@
 #include "libReallive/gameexe.h"
 
 #include "Utilities.h"
+#include "Utilities/findFontFile.h"
 
 #include <iostream>
 #include <iomanip>
 #include <boost/bind.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 using boost::bind;
+namespace fs = boost::filesystem;
 
 const char* EVENT_CANCEL = "EVENT_CANCEL";
 
@@ -219,10 +222,11 @@ private:
 // GCNPlatform
 // -----------------------------------------------------------------------
 
-GCNPlatform::GCNPlatform(Gameexe& gameexe, const Rect& screen_size)
-  : Platform(gameexe), blocker_(NULL), screen_size_(screen_size)
+GCNPlatform::GCNPlatform(RLMachine& machine, const Rect& screen_size)
+  : Platform(machine.system().gameexe()), blocker_(NULL),
+    screen_size_(screen_size)
 {
-  initializeGuichan(screen_size);
+  initializeGuichan(machine, screen_size);
 }
 
 // -----------------------------------------------------------------------
@@ -370,7 +374,7 @@ void GCNPlatform::pushBlocker(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::initializeGuichan(const Rect& screen_size)
+void GCNPlatform::initializeGuichan(RLMachine& machine, const Rect& screen_size)
 {
   sdl_image_loader_.reset(new gcn::OpenGLSDLImageLoader());
 	gcn::Image::setImageLoader(sdl_image_loader_.get());
@@ -393,7 +397,8 @@ void GCNPlatform::initializeGuichan(const Rect& screen_size)
   toplevel_container_->addMouseListener(this);
   guichan_gui_->setTop(toplevel_container_.get());
 
-  global_font_.reset(new SDLTrueTypeFont("/home/elliot/msgothic.ttc", 12));
+  fs::path font_file = findFontFile(machine);
+  global_font_.reset(new SDLTrueTypeFont(font_file.string().c_str(), 12));
 	gcn::Widget::setGlobalFont(global_font_.get());
 }
 
