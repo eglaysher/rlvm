@@ -190,7 +190,6 @@ VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
 if env['PLATFORM'] != 'darwin':
   VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
   VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
-  VerifyLibrary(config, 'SDL_mixer', 'SDL/SDL_mixer.h')
 else:
   print "Can't properly detect SDL under OSX. Assuming you have the libraries."
 
@@ -205,6 +204,11 @@ local_sdl_libraries = [
     'include'  : 'SDL/SDL_ttf.h',
     'library'  : 'SDL_ttf',
     'function' : 'TTF_Init();'
+  },
+  {
+    'include'  : 'SDL/SDL_mixer.h',
+    'library'  : 'SDL_mixer',
+    'function' : ''
   }
 ]
 for library_dict in local_sdl_libraries:
