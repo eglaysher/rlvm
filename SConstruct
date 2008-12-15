@@ -189,7 +189,6 @@ VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
 # main" before I declare the main() function.
 if env['PLATFORM'] != 'darwin':
   VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
-  VerifyLibrary(config, 'SDL_image', 'SDL/SDL_image.h')
 else:
   print "Can't properly detect SDL under OSX. Assuming you have the libraries."
 
@@ -208,6 +207,11 @@ local_sdl_libraries = [
   {
     'include'  : 'SDL/SDL_mixer.h',
     'library'  : 'SDL_mixer',
+    'function' : ''
+  },
+  {
+    'include'  : 'SDL/SDL_image.h',
+    'library'  : 'SDL_image',
     'function' : ''
   }
 ]
@@ -234,7 +238,7 @@ env = config.Finish()
 ### we have the right libraries. This needs to be done after config.Finish() is
 ### called or else we get a really confusing error.
 if env['PLATFORM'] == 'darwin':
-  env.Append(LIBS=["SDL", "SDL_image"])
+  env.Append(LIBS=["SDL"])
 
 # Get the configuration from sdl and freetype
 env.ParseConfig("sdl-config --cflags")
