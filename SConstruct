@@ -179,7 +179,8 @@ if not config.CheckBoost('1.35'):
   Exit(1)
 
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
-VerifyLibrary(config, 'vorbis', 'vorbis/vorbisfile.h')
+VerifyLibrary(config, 'vorbis', 'vorbis/codec.h')
+VerifyLibrary(config, 'vorbisfile', 'vorbis/vorbisfile.h')
 
 # In short, we do this because the SCons configuration system doesn't give me
 # enough control over the test program. Even if the libraries are installed,
@@ -242,11 +243,6 @@ if env['PLATFORM'] == 'darwin':
 
 # Get the configuration from sdl and freetype
 env.ParseConfig("sdl-config --cflags")
-if env['FULL_STATIC_BUILD'] == True:
-  env.ParseConfig("sdl-config --static-libs")
-else:
-  env.ParseConfig("sdl-config --libs")
-
 env.ParseConfig("freetype-config --cflags --libs")
 
 #########################################################################
@@ -308,3 +304,8 @@ env.SConscript("SConscript",
                duplicate=0,
                exports='env')
 
+if GetOption("fullstatic") and env['PLATFORM'] == 'darwin':
+  env.SConscript("SConscript.cocoa",
+                 build_dir="$BUILD_DIR/",
+                 duplicate=0,
+                 exports='env')

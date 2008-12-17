@@ -56,17 +56,19 @@ def RlvmProgram(env, prog_name, *args, **kwargs):
   objects.extend(args)
 
   # TODO: Deal with RLVM_LIBS in a shared objecty way
-  for lib_name in kwargs['rlvm_libs']:
-    objects.append(env['LIBPREFIX'] + lib_name + env['LIBSUFFIX'])
+  if kwargs.has_key('rlvm_libs'):
+    for lib_name in kwargs['rlvm_libs']:
+      objects.append(env['LIBPREFIX'] + lib_name + env['LIBSUFFIX'])
 
   # Add all static libraries from the various categories
-  for lib_set_name in kwargs['use_lib_set']:
-    lib_set = cloned_env[_MakeStaticName(lib_set_name)]
-    if lib_set:
-      objects.extend(lib_set)
+  if kwargs.has_key('use_lib_set'):
+    for lib_set_name in kwargs['use_lib_set']:
+      lib_set = cloned_env[_MakeStaticName(lib_set_name)]
+      if lib_set:
+        objects.extend(lib_set)
 
   # First, we need to see if this is a static build
-  if cloned_env['FULL_STATIC_BUILD'] == True:
+  if kwargs.has_key("full_static_build") and kwargs['full_static_build'] == True:
     # We must unpack each entry in LIBS and try to locate a static library to
     old_libs = cloned_env['LIBS']
     libpaths = cloned_env['LIBPATH']
@@ -102,12 +104,6 @@ def AddStaticLibraryTo(env, name, type):
 
 def generate(env, **kw):
   env.Append(
-    # Whether all libraries that CAN be linked in statically should
-    # be. Defaults to off. On OSX (and maybe Windows if I ever get rlvm working
-    # under cygwin), defaults to on because system libraries will NOT be in
-    # their correct locations.
-    FULL_STATIC_BUILD = False,
-
     # A list of absolute paths to static sdl libraries to make things that need
     # SDL work.
     STATIC_SDL_LIBS = [ ],
