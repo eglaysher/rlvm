@@ -45,7 +45,11 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-scons --clean
+	#
+	# It would be nice if we could just call scons --clean, but this angers
+	# fakeroot for some reason.
+	rm -Rf build/ .sconf_temp/ .sconsign.dblite config.log
+
 
 	dh_clean 
 

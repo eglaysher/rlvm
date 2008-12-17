@@ -18,6 +18,8 @@ TUT C++ Templated Unit Tests - http://tut-framework.sourceforge.net/
 GLEW - http://glew.sourceforge.net/
 UTF8-CPP - http://utfcpp.sourceforge.net/
 SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
+SDL_image - http://www.libsdl.org/projects/SDL_image/
+SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
 C++ LRU Cache - http://lifelines.blackcat.ca/lifeline/query.php/tag=LRU_CACHE
 luabind - http://www.rasterbar.com/products/luabind.html
 guichan - http://guichan.sourceforge.net/
@@ -26,6 +28,4 @@ Libraries depended on (and are not included)
 -------------------------------------------------------------------------
 boost (version 1.34.1 or newer) - http://www.boost.org
 SDL - http://www.libsdl.org
-SDL_image - http://www.libsdl.org/projects/SDL_image/
-SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
 Freetype - http://www.freetype.org
