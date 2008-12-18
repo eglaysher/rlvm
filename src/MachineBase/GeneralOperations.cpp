@@ -43,42 +43,35 @@ using namespace boost;
 using namespace libReallive;
 
 
-namespace getSystemObjImpl
-{
+namespace getSystemObjImpl {
 
 template<>
-System& getSystemObj(RLMachine& machine)
-{
+System& getSystemObj(RLMachine& machine) {
   return machine.system();
 }
 
 template<>
-EventSystem& getSystemObj(RLMachine& machine)
-{
+EventSystem& getSystemObj(RLMachine& machine) {
   return machine.system().event();
 }
 
 template<>
-GraphicsSystem& getSystemObj(RLMachine& machine)
-{
+GraphicsSystem& getSystemObj(RLMachine& machine) {
   return machine.system().graphics();
 }
 
 template<>
-TextSystem& getSystemObj(RLMachine& machine)
-{
+TextSystem& getSystemObj(RLMachine& machine) {
   return machine.system().text();
 }
 
 template<>
-SoundSystem& getSystemObj(RLMachine& machine)
-{
+SoundSystem& getSystemObj(RLMachine& machine) {
   return machine.system().sound();
 }
 
 template<>
-CGMTable& getSystemObj(RLMachine& machine)
-{
+CGMTable& getSystemObj(RLMachine& machine) {
   return machine.system().graphics().cgTable();
 }
 
@@ -87,22 +80,21 @@ CGMTable& getSystemObj(RLMachine& machine)
 // -----------------------------------------------------------------------
 
 MultiDispatch::MultiDispatch(RLOperation* op)
-  : handler_(op)
-{}
+    : handler_(op) {
+}
 
 // -----------------------------------------------------------------------
 
-MultiDispatch::~MultiDispatch()
-{}
+MultiDispatch::~MultiDispatch() {
+}
 
 // -----------------------------------------------------------------------
 
 void MultiDispatch::parseParameters(
-  const std::vector<std::string>& input,
-  boost::ptr_vector<ExpressionPiece>& output)
-{
-  for(vector<string>::const_iterator it = input.begin(); it != input.end();
-      ++it)
+    const std::vector<std::string>& input,
+    boost::ptr_vector<ExpressionPiece>& output) {
+  for (vector<string>::const_iterator it = input.begin(); it != input.end();
+       ++it)
   {
     const char* src = it->c_str();
     output.push_back(get_complex_param(src));
@@ -113,19 +105,20 @@ void MultiDispatch::parseParameters(
 
 /// @todo Port this up to the new expression handling code
 void MultiDispatch::operator()(
-  RLMachine& machine,
-  const libReallive::CommandElement& ff)
+    RLMachine& machine,
+    const libReallive::CommandElement& ff)
 {
   const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
 
   for(unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const ptr_vector<ExpressionPiece>& element =
-      dynamic_cast<const ComplexExpressionPiece&>(parameter_pieces[i]).getContainedPieces();
+        dynamic_cast<const ComplexExpressionPiece&>(parameter_pieces[i]).
+        getContainedPieces();
 
     // @todo Do whatever is needed to get this part working...
-//     if(!handler->checkTypes(machine, element)) {
-//       throw Error("Expected type mismatch in parameters in MultiDispatch.");
-//     }
+    //     if(!handler->checkTypes(machine, element)) {
+    //       throw Error("Expected type mismatch in parameters in MultiDispatch.");
+    //     }
 
     handler_->dispatch(machine, element);
   }
@@ -136,18 +129,17 @@ void MultiDispatch::operator()(
 // -------------------------------------------------- [ ReturnGameexeInt ]
 
 ReturnGameexeInt::ReturnGameexeInt(const std::string& full_key, int en)
-  : full_key_name_(full_key), entry_(en)
-{}
+    : full_key_name_(full_key), entry_(en) {
+}
 
 // -----------------------------------------------------------------------
 
-int ReturnGameexeInt::operator()(RLMachine& machine)
-{
+int ReturnGameexeInt::operator()(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> values = gexe(full_key_name_);
-  if (static_cast<size_t>(entry_) < values.size())
+  if (static_cast<size_t>(entry_) < values.size()) {
     return values[entry_];
-  else {
+  } else {
     ostringstream oss;
     oss << "Could not access piece " << entry_ << " in Gameexe key \""
         << full_key_name_ << "\"";
@@ -158,30 +150,27 @@ int ReturnGameexeInt::operator()(RLMachine& machine)
 // -------------------------------------------------- [ InvokeSyscomAsOp ]
 
 InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom)
-  : syscom_(syscom)
-{}
+    : syscom_(syscom) {
+}
 
 // -----------------------------------------------------------------------
 
-void InvokeSyscomAsOp::operator()(RLMachine& machine)
-{
+void InvokeSyscomAsOp::operator()(RLMachine& machine) {
   return machine.system().invokeSyscom(machine, syscom_);
 }
 
 // ------------------------------------------------- [ UndefinedFunction ]
 
 UndefinedFunction::UndefinedFunction(
-  const std::string& name,
-  int modtype, int module, int opcode, int overload)
-  : name_(name), modtype_(modtype), module_(module), opcode_(opcode),
-    overload_(overload)
-{}
+    const std::string& name,
+    int modtype, int module, int opcode, int overload)
+    : name_(name), modtype_(modtype), module_(module), opcode_(opcode),
+      overload_(overload) {
+}
 
 // -----------------------------------------------------------------------
 
 void UndefinedFunction::operator()(RLMachine&,
-                                   const libReallive::CommandElement&)
-{
-  throw rlvm::UnimplementedOpcode(
-    name_, modtype_, module_, opcode_, overload_);
+                                   const libReallive::CommandElement&) {
+  throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }

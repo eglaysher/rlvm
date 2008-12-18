@@ -68,7 +68,7 @@ namespace boost { namespace serialization { } }
  * control, and other execution issues.
  */
 class RLMachine {
-public:
+ public:
   RLMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~RLMachine();
 
@@ -467,7 +467,7 @@ public:
    */
   void localReset();
 
-private:
+ private:
   /// The Reallive VM's integer and string memory
   boost::scoped_ptr<Memory> memory_;
 
@@ -514,7 +514,8 @@ private:
   bool mark_savepoints_;
 
   /// Whether the stack was modified during the running of a
-  /// LongOperation. Used to decide how to procede if a 
+  /// LongOperation. Used to signal that any stack mutating functions should be
+  /// be placed in |delay_modifications_| for execution later.
   bool delay_stack_modifications_;
 
   /// The actions that were delayed when |delay_stack_modifications_| is on.

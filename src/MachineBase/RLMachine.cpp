@@ -114,33 +114,36 @@ static const std::string SeenEnd(seen_end, 14);
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& in_system, Archive& in_archive)
-  : memory_(new Memory(in_system.gameexe())),
-    halted_(false), print_undefined_opcodes_(false),
-    halt_on_exception_(true), archive_(in_archive), line_(0),
-    system_(in_system), mark_savepoints_(true),
-    delay_stack_modifications_(false)
+    : memory_(new Memory(in_system.gameexe())),
+      halted_(false),
+      print_undefined_opcodes_(false),
+      halt_on_exception_(true),
+      archive_(in_archive),
+      line_(0),
+      system_(in_system),
+      mark_savepoints_(true),
+      delay_stack_modifications_(false)
 {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libReallive::Scenario* scenario = NULL;
-  if(gameexe.exists("SEEN_START"))
-  {
+  if (gameexe.exists("SEEN_START")) {
     int first_seen = gameexe("SEEN_START").to_int();
     scenario = in_archive.scenario(first_seen);
 
-    if(scenario == NULL)
+    if (scenario == NULL)
       cerr << "WARNING: Invalid #SEEN_START in Gameexe" << endl;
   }
 
-  if(scenario == NULL)
-  {
+  if (scenario == NULL) {
     // if SEEN_START is undefined, then just grab the first SEEN.
     scenario = in_archive.scenario(archive_.begin()->first);
   }
 
-  if(scenario == 0)
+  if (scenario == 0)
     throw rlvm::Exception("Invalid scenario file");
-  pushStackFrame(StackFrame(scenario, scenario->begin(), StackFrame::TYPE_ROOT));
+  pushStackFrame(StackFrame(scenario, scenario->begin(),
+                            StackFrame::TYPE_ROOT));
 
   // Initial value of the savepoint
   markSavepoint();
@@ -148,9 +151,8 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
 
 // -----------------------------------------------------------------------
 
-RLMachine::~RLMachine()
-{
-  if(undefined_log_)
+RLMachine::~RLMachine() {
+  if (undefined_log_)
     cerr << *undefined_log_;
 }
 
@@ -163,8 +165,7 @@ void RLMachine::attachModule(RLModule* module)
   unsigned int packed_module = packModuleNumber(module_type, module_number);
 
   ModuleMap::iterator it = modules_.find(packed_module);
-  if(it != modules_.end())
-  {
+  if (it != modules_.end()) {
     RLModule& cur_mod = *it->second;
     ostringstream ss;
     ss << "Module identification clash: tyring to overwrite "
@@ -218,24 +219,23 @@ bool RLMachine::savepointDecide(AttributeFunction func,
                                 const std::string& gameexe_key) const
 {
   //
-  if(!mark_savepoints_)
+  if (!mark_savepoints_)
     return false;
 
   long attribute = (scenario().*func)();
-  if(attribute == 1)
+  if (attribute == 1)
     return true;
-  else if(attribute == 2)
+  else if (attribute == 2)
     return false;
 
   //
   // check Gameexe key
   Gameexe& gexe = system_.gameexe();
-  if(gexe.exists(gameexe_key))
-  {
+  if (gexe.exists(gameexe_key)) {
     int value = gexe(gameexe_key);
-    if(value == 0)
+    if (value == 0)
       return false;
-    else if(value == 1)
+    else if (value == 1)
       return true;
   }
 
@@ -252,75 +252,61 @@ void RLMachine::setMarkSavepoints(const int in)
 
 // -----------------------------------------------------------------------
 
-bool RLMachine::shouldSetMessageSavepoint() const
-{
+bool RLMachine::shouldSetMessageSavepoint() const {
   return
-    savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
+      savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
 }
 
 // -----------------------------------------------------------------------
 
-bool RLMachine::shouldSetSelcomSavepoint() const
-{
+bool RLMachine::shouldSetSelcomSavepoint() const {
   return savepointDecide(&Scenario::savepointSelcom, "SAVEPOINT_SELCOM");
 }
 
 // -----------------------------------------------------------------------
 
-bool RLMachine::shouldSetSeentopSavepoint() const
-{
+bool RLMachine::shouldSetSeentopSavepoint() const {
   return savepointDecide(&Scenario::savepointSeentop, "SAVEPOINT_SEENTOP");
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::executeNextInstruction()
-{
+void RLMachine::executeNextInstruction() {
   // Do not execute any more instructions if the machine is halted.
-  if(halted() == true)
+  if (halted() == true)
     return;
-  else
-  {
-    try
-    {
-      if(call_stack_.back().frame_type == StackFrame::TYPE_LONGOP)
-      {
+  else {
+    try {
+      if (call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
         delay_stack_modifications_ = true;
         bool ret_val = (*call_stack_.back().long_op)(*this);
         delay_stack_modifications_ = false;
 
-        if(ret_val)
+        if (ret_val)
           popStackFrame();
 
         // Now we can perform the queued actions
         for (vector<function<void(void)> >::iterator it =
-               delayed_modifications_.begin();
+                 delayed_modifications_.begin();
              it != delayed_modifications_.end(); ++it) {
           (*it)();
         }
         delayed_modifications_.clear();
-      }
-      else
+      } else {
         call_stack_.back().ip->runOnMachine(*this);
-    }
-    catch(rlvm::UnimplementedOpcode& e)
-    {
+      }
+    } catch(rlvm::UnimplementedOpcode& e) {
       advanceInstructionPointer();
 
-      if(print_undefined_opcodes_)
-      {
+      if (print_undefined_opcodes_) {
         cout << "(SEEN" << call_stack_.back().scenario->sceneNumber()
              << ")(Line " << line_ << "):  " << e.what() << endl;
       }
 
-      if(undefined_log_)
-      {
+      if (undefined_log_)
         undefined_log_->increment(e.opcodeName());
-      }
-    }
-    catch(std::exception& e)
-    {
-      if(halt_on_exception_) {
+    } catch(std::exception& e) {
+      if (halt_on_exception_) {
         halted_ = true;
       } else {
         // Advance the instruction pointer so as to prevent infinite
@@ -337,7 +323,7 @@ void RLMachine::executeNextInstruction()
 // -----------------------------------------------------------------------
 
 void RLMachine::executeUntilHalted() {
-  while(!halted()) {
+  while (!halted()) {
     executeNextInstruction();
   }
 }
@@ -346,13 +332,12 @@ void RLMachine::executeUntilHalted() {
 
 void RLMachine::advanceInstructionPointer() {
   std::vector<StackFrame>::reverse_iterator it =
-    find_if(call_stack_.rbegin(), call_stack_.rend(),
-            bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+      find_if(call_stack_.rbegin(), call_stack_.rend(),
+              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
-  if(it != call_stack_.rend())
-  {
+  if (it != call_stack_.rend()) {
     it->ip++;
-    if(it->ip == it->scenario->end())
+    if (it->ip == it->scenario->end())
       halted_ = true;
   }
 }
@@ -361,8 +346,9 @@ void RLMachine::advanceInstructionPointer() {
 
 void RLMachine::executeCommand(const CommandElement& f)
 {
-  ModuleMap::iterator it = modules_.find(packModuleNumber(f.modtype(), f.module()));
-  if(it != modules_.end()) {
+  ModuleMap::iterator it = modules_.find(packModuleNumber(f.modtype(),
+                                                          f.module()));
+  if (it != modules_.end()) {
     it->second->dispatchFunction(*this, f);
   } else {
     throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
@@ -376,7 +362,7 @@ void RLMachine::jump(int scenario_num, int entrypoint)
 {
   // Check to make sure it's a valid scenario
   libReallive::Scenario* scenario = archive_.scenario(scenario_num);
-  if(scenario == 0)
+  if (scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
   if (call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
@@ -386,11 +372,10 @@ void RLMachine::jump(int scenario_num, int entrypoint)
     //
     // The lag is noticeable on the CLANNAD menu, without profiling tools.
     std::vector<StackFrame>::reverse_iterator it =
-      find_if(call_stack_.rbegin(), call_stack_.rend(),
-              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+        find_if (call_stack_.rbegin(), call_stack_.rend(),
+                bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
-    if(it != call_stack_.rend())
-    {
+    if (it != call_stack_.rend()) {
       it->scenario = scenario;
       it->ip = scenario->findEntrypoint(entrypoint);
     }
@@ -402,15 +387,15 @@ void RLMachine::jump(int scenario_num, int entrypoint)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::farcall(int scenario_num, int entrypoint)
-{
+void RLMachine::farcall(int scenario_num, int entrypoint) {
   libReallive::Scenario* scenario = archive_.scenario(scenario_num);
-  if(scenario == 0)
+  if (scenario == 0)
     throw rlvm::Exception("Invalid scenario number in jump");
 
-  libReallive::Scenario::const_iterator it = scenario->findEntrypoint(entrypoint);
+  libReallive::Scenario::const_iterator it =
+      scenario->findEntrypoint(entrypoint);
 
-  if(entrypoint == 0 && shouldSetSeentopSavepoint())
+  if (entrypoint == 0 && shouldSetSeentopSavepoint())
     markSavepoint();
 
   pushStackFrame(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
@@ -418,10 +403,9 @@ void RLMachine::farcall(int scenario_num, int entrypoint)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::returnFromFarcall()
-{
+void RLMachine::returnFromFarcall() {
   // Check to make sure the types match up.
-  if(call_stack_.back().frame_type != StackFrame::TYPE_FARCALL) {
+  if (call_stack_.back().frame_type != StackFrame::TYPE_FARCALL) {
     throw rlvm::Exception("Callstack type mismatch in returnFromFarcall()");
   }
 
@@ -437,18 +421,16 @@ void RLMachine::gotoLocation(libReallive::BytecodeList::iterator new_location) {
 
 // -----------------------------------------------------------------------
 
-void RLMachine::gosub(libReallive::BytecodeList::iterator new_location)
-{
+void RLMachine::gosub(libReallive::BytecodeList::iterator new_location) {
   pushStackFrame(StackFrame(call_stack_.back().scenario, new_location,
                             StackFrame::TYPE_GOSUB));
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::returnFromGosub()
-{
+void RLMachine::returnFromGosub() {
   // Check to make sure the types match up.
-  if(call_stack_.back().frame_type != StackFrame::TYPE_GOSUB) {
+  if (call_stack_.back().frame_type != StackFrame::TYPE_GOSUB) {
     throw rlvm::Exception("Callstack type mismatch in returnFromGosub()");
   }
 
@@ -457,19 +439,17 @@ void RLMachine::returnFromGosub()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::pushLongOperation(LongOperation* long_operation)
-{
+void RLMachine::pushLongOperation(LongOperation* long_operation) {
   pushStackFrame(StackFrame(call_stack_.back().scenario, call_stack_.back().ip,
                             long_operation));
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::pushStackFrame(const StackFrame& frame)
-{
+void RLMachine::pushStackFrame(const StackFrame& frame) {
   if (delay_stack_modifications_) {
     delayed_modifications_.push_back(
-      bind(&RLMachine::pushStackFrame, this, frame));
+        bind(&RLMachine::pushStackFrame, this, frame));
     return;
   }
 
@@ -478,8 +458,7 @@ void RLMachine::pushStackFrame(const StackFrame& frame)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::popStackFrame()
-{
+void RLMachine::popStackFrame() {
   if (delay_stack_modifications_) {
     delayed_modifications_.push_back(bind(&RLMachine::popStackFrame, this));
     return;
@@ -490,11 +469,10 @@ void RLMachine::popStackFrame()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::clearLongOperationsOffBackOfStack()
-{
+void RLMachine::clearLongOperationsOffBackOfStack() {
   if (delay_stack_modifications_) {
     delayed_modifications_.push_back(
-      bind(&RLMachine::clearLongOperationsOffBackOfStack, this));
+        bind(&RLMachine::clearLongOperationsOffBackOfStack, this));
     return;
   }
 
@@ -507,8 +485,7 @@ void RLMachine::clearLongOperationsOffBackOfStack()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::reset()
-{
+void RLMachine::reset() {
   call_stack_.clear();
   savepoint_call_stack_.clear();
   system().reset();
@@ -516,8 +493,7 @@ void RLMachine::reset()
 
 // -----------------------------------------------------------------------
 
-void RLMachine::localReset()
-{
+void RLMachine::localReset() {
   savepoint_call_stack_.clear();
   memory_->local().reset();
   system().reset();
@@ -525,8 +501,7 @@ void RLMachine::localReset()
 
 // -----------------------------------------------------------------------
 
-shared_ptr<LongOperation> RLMachine::currentLongOperation() const
-{
+shared_ptr<LongOperation> RLMachine::currentLongOperation() const {
   if (call_stack_.size() &&
       call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
     return call_stack_.back().long_op;
@@ -537,45 +512,39 @@ shared_ptr<LongOperation> RLMachine::currentLongOperation() const
 
 // -----------------------------------------------------------------------
 
-void RLMachine::clearCallstack()
-{
+void RLMachine::clearCallstack() {
   while(call_stack_.size())
     popStackFrame();
 }
 
 // -----------------------------------------------------------------------
 
-int RLMachine::sceneNumber() const
-{
+int RLMachine::sceneNumber() const {
   return call_stack_.back().scenario->sceneNumber();
 }
 
 // -----------------------------------------------------------------------
 
-const Scenario& RLMachine::scenario() const
-{
+const Scenario& RLMachine::scenario() const {
   return *call_stack_.back().scenario;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::executeExpression(const ExpressionElement& e)
-{
+void RLMachine::executeExpression(const ExpressionElement& e) {
   e.parsedExpression().integerValue(*this);
   advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
 
-int RLMachine::getTextEncoding() const
-{
+int RLMachine::getTextEncoding() const {
   return call_stack_.back().scenario->encoding();
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::performTextout(const TextoutElement& e)
-{
+void RLMachine::performTextout(const TextoutElement& e) {
   std::string unparsed_text = e.text();
   if (boost::starts_with(unparsed_text, SeenEnd)) {
     unparsed_text = SeenEnd;
@@ -587,8 +556,7 @@ void RLMachine::performTextout(const TextoutElement& e)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::performTextout(const std::string& cp932str)
-{
+void RLMachine::performTextout(const std::string& cp932str) {
   std::string name_parsed_text;
   try {
     parseNames(*memory_, cp932str, name_parsed_text);
@@ -614,18 +582,15 @@ void RLMachine::performTextout(const std::string& cp932str)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setKidokuMarker(int kidoku_number)
-{
+void RLMachine::setKidokuMarker(int kidoku_number) {
   // Check to see if we mark savepoints on textout
-  if(shouldSetMessageSavepoint() &&
-     system_.text().currentPage(*this).numberOfCharsOnPage() == 0)
-  {
+  if (shouldSetMessageSavepoint() &&
+      system_.text().currentPage(*this).numberOfCharsOnPage() == 0)
     markSavepoint();
-  }
 
   // Mark if we've previously read this piece of text.
   system_.text().setKidokuRead(
-    memory().hasBeenRead(sceneNumber(), kidoku_number));
+      memory().hasBeenRead(sceneNumber(), kidoku_number));
 
   // Record the kidoku pair in global memory.
   memory().recordKidoku(sceneNumber(), kidoku_number);
@@ -633,60 +598,52 @@ void RLMachine::setKidokuMarker(int kidoku_number)
 
 // -----------------------------------------------------------------------
 
-unsigned int RLMachine::packModuleNumber(int modtype, int module)
-{
+unsigned int RLMachine::packModuleNumber(int modtype, int module) {
   return (modtype << 8) | module;
 }
 
 // -----------------------------------------------------------------------
 
 void RLMachine::unpackModuleNumber(unsigned int packed_module_number,
-                                   int& modtype, int& module)
-{
+                                   int& modtype, int& module) {
   modtype = packed_module_number >> 8;
   module = packed_module_number && 0xFF;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setPrintUndefinedOpcodes(bool in)
-{
+void RLMachine::setPrintUndefinedOpcodes(bool in) {
   print_undefined_opcodes_ = in;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::recordUndefinedOpcodeCounts()
-{
+void RLMachine::recordUndefinedOpcodeCounts() {
   undefined_log_.reset(new OpcodeLog);
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::halt()
-{
+void RLMachine::halt() {
   halted_ = true;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setHaltOnException(bool halt_on_exception)
-{
+void RLMachine::setHaltOnException(bool halt_on_exception) {
   halt_on_exception_ = halt_on_exception;
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setLineNumber(const int i)
-{
+void RLMachine::setLineNumber(const int i) {
   line_ = i;
 }
 
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void RLMachine::save(Archive & ar, unsigned int version) const
-{
+void RLMachine::save(Archive & ar, unsigned int version) const {
   int line_num = lineNumber();
   ar & line_num;
 
@@ -697,8 +654,7 @@ void RLMachine::save(Archive & ar, unsigned int version) const
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void RLMachine::load(Archive & ar, unsigned int version)
-{
+void RLMachine::load(Archive & ar, unsigned int version) {
   ar & line_;
 
   // Just thaw the call_stack_; all preprocessing was done at freeze
@@ -714,7 +670,7 @@ void RLMachine::load(Archive & ar, unsigned int version)
 // implementation)
 
 template void RLMachine::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive & ar, unsigned int version) const;
 
 template void RLMachine::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive & ar, unsigned int version);
