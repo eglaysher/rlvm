@@ -115,7 +115,7 @@ public:
    * Convenience function to allow a function name to be embeded in
    * the declaration.
    */
-  void addOpcode(int opcode, unsigned char overload, const std::string& name,
+  void addOpcode(int opcode, unsigned char overload, const char* name,
                  RLOperation* op);
 
   /**

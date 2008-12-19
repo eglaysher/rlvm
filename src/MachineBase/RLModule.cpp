@@ -82,17 +82,13 @@ void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char&
 
 void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
 {
-  ostringstream oss;
-  oss << "opcode<" << module_type_ << ":" << module_number_ << ":"
-      << opcode << ", " << overload << ">";
-
-  addOpcode(opcode, overload, oss.str(), op);
+  addOpcode(opcode, overload, "", op);
 }
 
 // -----------------------------------------------------------------------
 
 void RLModule::addOpcode(int opcode, unsigned char overload,
-                         const std::string& name, RLOperation* op)
+                         const char* name, RLOperation* op)
 {
   int packed_opcode = packOpcodeNumber(opcode, overload);
   op->setName(name);

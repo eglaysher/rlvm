@@ -106,8 +106,8 @@ public:
   /// Destructor
   virtual ~RLOperation();
 
-  void setName(const std::string& name) { name_ = name; }
-  const std::string& name() const { return name_; }
+  void setName(const char* name) { name_ = name; }
+  const char* name() const { return name_; }
 
   /**
    * Check made as to whether the instruction pointer should be
@@ -150,7 +150,7 @@ public:
 
 private:
   /// The human readable name for this operation
-  std::string name_;
+  const char* name_;
 };
 
 // -----------------------------------------------------------------------
