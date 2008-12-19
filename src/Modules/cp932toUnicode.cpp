@@ -5676,33 +5676,34 @@ wstring cp932toUnicode(const std::string& line, int transformation)
   const unsigned char* c = (const unsigned char*)line.c_str();
   wstring ret;
 
-  if (transformation) {
+  cerr << line << endl;
+
+  if (transformation == 0 ||
+      // Need to seperate this out and do cp1252 decoding!
+      transformation == 2) {
+    while (*c) {
+      wchar_t uv;
+
+      leading& lb = fmcp932_tbl[*c];
+      if (lb.tbl) {
+        uv = lb.tbl[c[1]];
+        c += 2;
+      } else {
+        uv = lb.sbc;
+        c++;
+      }
+
+      ret += uv;
+    }
+
+    return ret;
+  } else {
     // Some transformations require more big lookup tables; if we
     // implement transformations, we'll need a way to disable those
     // for low-memory platforms.  For now, however, just die.
-    throw SystemError("RLdev text transformations are not implemented.");
+    throw SystemError("RLdev text transformations are not implemented for this locale.");
   }
 
-  while(*c)
-  {
-    wchar_t uv;
-
-    leading& lb = fmcp932_tbl[*c];
-    if(lb.tbl)
-    {
-      uv = lb.tbl[c[1]];
-      c += 2;
-    }
-    else
-    {
-      uv = lb.sbc;
-      c++;
-    }
-
-    ret += uv;
-  }
-
-  return ret;
 }
 
 // -----------------------------------------------------------------------
