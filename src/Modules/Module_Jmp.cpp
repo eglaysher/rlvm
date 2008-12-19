@@ -606,7 +606,6 @@ struct Jmp_rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
  */
 struct Jmp_rtl_with_1 : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-//    machine.setStoreRegister(retVal);
     machine.returnFromFarcall();
   }
 };

@@ -76,6 +76,7 @@ librlvm_files = [
   "src/Modules/Module_Pcm.cpp",
   "src/Modules/Module_Se.cpp",
   "src/Modules/Module_Koe.cpp",
+  "src/Modules/Module_DLL.cpp",
   "src/Modules/Module_Grp.cpp",
   "src/Modules/Module_Jmp.cpp",
   "src/Modules/Module_Mem.cpp",
