@@ -39,18 +39,32 @@
 #include "compression.h"
 #include "string.h"
 
+#include <iostream>
+
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
+
+using namespace std;
+using boost::istarts_with;
+using boost::iends_with;
+using boost::lexical_cast;
+namespace fs = boost::filesystem;
+
 namespace libReallive {
 
 Archive::Archive(const string& filename)
   : name(filename), info(filename, Read), second_level_xor_key_(NULL)
 {
   readTOC();
+  readOverrides();
 }
 
 Archive::Archive(const string& filename, const std::string& regname)
   : name(filename), info(filename, Read), second_level_xor_key_(NULL)
 {
   readTOC();
+  readOverrides();
 
   if (regname == "KEY\\CLANNAD_FV")
     second_level_xor_key_ =
@@ -75,6 +89,30 @@ void Archive::readTOC() {
 	}
 }
 
+void Archive::readOverrides() {
+  // Iterate over all files in the directory and override the table of contents
+  // if there is a free SEENXXXX.TXT file.
+  fs::path seen_dir = fs::path(name).branch_path();
+  fs::directory_iterator end;
+  for (fs::directory_iterator it(seen_dir); it != end; ++it) {
+    string filename = it->leaf();
+    if (filename.size() == 12 &&
+        istarts_with(filename, "seen") &&
+        iends_with(filename, ".txt") &&
+        isdigit(filename[4]) &&
+        isdigit(filename[5]) &&
+        isdigit(filename[6]) &&
+        isdigit(filename[7])) {
+      Mapping* mapping = new Mapping((seen_dir / filename).string(), Read);
+      maps_to_delete_.push_back(mapping);
+
+      int index = lexical_cast<int>(filename.substr(4, 4));
+      scenarios[index] = FilePos(mapping->get(), mapping->size());
+    }
+  }
+
+}
+
 Scenario*
 Archive::scenario(int index) {
 	accessed_t::const_iterator at = accessed.find(index);
@@ -87,82 +125,11 @@ Archive::scenario(int index) {
 	return NULL;
 }
 
-// void
-// Archive::write_to(string filename)
-// {
-// 	// Handle the special case of writing to the input file.
-// 	if (filename == name) {
-// 		commit();
-// 		return;
-// 	}
-// 	// Get length of output file.
-// 	size_t outlen = 80000;
-// 	std::map<int, const string*> compressed;
-// 	for (scenarios_t::const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
-// 		accessed_t::const_iterator at = accessed.find(it->first);
-// 		if (at == accessed.end()) {
-// 			outlen += it->second.length;
-// 			compressed[it->first] = NULL;
-// 		}
-// 		else {
-// //printf("SEEN%04d\n", it->first);
-// 			const string* s = at->second->rebuild();
-// 			outlen += s->size();
-// 			compressed[it->first] = s;
-// 		}
-// 	}
-// 	// Write output.
-// 	Mapping out(filename, Write, outlen);
-// 	char* omem = out.get();
-// 	char* ptr = out.get() + 80000;
-// 	memset((void*) omem, 0, 80000);
-// 	for (scenarios_t::const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
-// 		char* idxpos = omem + it->first * 8;
-// 		insert_i32(idxpos, ptr - omem);
-// 		const string* s = compressed[it->first];
-// 		if (s == NULL) {
-// 			insert_i32(idxpos + 4, it->second.length);
-// 			memcpy(ptr, it->second.data, it->second.length);
-// 			ptr += it->second.length;
-// 		}
-// 		else {
-// 			insert_i32(idxpos + 4, s->size());
-// 			memcpy(ptr, s->data(), s->size());
-// 			ptr += s->size();
-// 			delete s;
-// 		}
-// 	}
-// }
-
 void
 Archive::reset()
 {
 	for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it) delete it->second;
 	accessed.clear();
 }
-
-// void
-// Archive::commit()
-// {
-// 	if (accessed.empty()) return;
-// 	// Get unique filename.
-// 	char tmpfile[256];
-// 	for (unsigned long i = 0; i < 0xffffffff; ++i) {
-// 		sprintf(tmpfile, "%s.%x", name.c_str(), i);
-// 		FILE* f;
-// 		if ((f = fopen(tmpfile, "r")))
-// 		{
-// 		  fclose(f);
-// 		}
-// 		else
-// 		{
-// 		  break;
-// 		}
-// 	}
-// 	// Output.
-// 	write_to(tmpfile);
-// 	reset();
-// 	info.replace(tmpfile);
-// }
 
 }

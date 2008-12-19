@@ -63,6 +63,8 @@ public:
 	// Return a pointer to the internal memory.
 	char* get() { return (char*)mem; }
 
+  size_t size() const { return len; }
+
 	// Close the file, delete it, rename a new file to the old
 	// file's name, and reopen it.
 	void replace(string newfilename);

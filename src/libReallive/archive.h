@@ -38,6 +38,8 @@
 #include "scenario.h"
 #include "filemap.h"
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 namespace libReallive {
 
 /**
@@ -52,6 +54,9 @@ class Archive {
   string name;
   Mapping info;
 
+  /// Mappings to unarchived SEEN\d{4}.TXT files on disk.
+  boost::ptr_vector<Mapping> maps_to_delete_;
+
   /**
    * Now that VisualArts is using per game xor keys, this is equivalent to the
    * game's second level xor key.
@@ -59,6 +64,8 @@ class Archive {
   const char* second_level_xor_key_;
 
   void readTOC();
+
+  void readOverrides();
 
 public:
   /// Read an archive, assuming no per-game xor key. (Used in unit testing).
