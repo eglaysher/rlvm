@@ -190,12 +190,15 @@ void SDLGraphicsSystem::redrawLastFrame(RLMachine& machine)
       int dy1 = 0;
       int dy2 = screenSize().height();
 
+      float x_cord = dx2 / float(screen_tex_width_);
+      float y_cord = dy2 / float(screen_tex_height_);
+
       glColor4ub(255, 255, 255, 255);
-      glTexCoord2f(0, 1);
+      glTexCoord2f(0, y_cord);
       glVertex2i(dx1, dy1);
-      glTexCoord2f(1, 1);
+      glTexCoord2f(x_cord, y_cord);
       glVertex2i(dx2, dy1);
-      glTexCoord2f(1, 0);
+      glTexCoord2f(x_cord, 0);
       glVertex2i(dx2, dy2);
       glTexCoord2f(0, 0);
       glVertex2i(dx1, dy2);
@@ -246,7 +249,10 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   : GraphicsSystem(system, gameexe), redraw_last_frame_(false),
     display_data_in_titlebar_(false), time_of_last_titlebar_update_(0),
     last_seen_number_(0), last_line_number_(0),
-    screen_contents_texture_valid_(false), image_cache_(20)
+    screen_contents_texture_valid_(false),
+    screen_tex_width_(0),
+    screen_tex_height_(0),
+    image_cache_(20)
 {
   for(int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface);
@@ -353,8 +359,10 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  screen_tex_width_ = SafeSize(screenSize().width());
+  screen_tex_height_ = SafeSize(screenSize().height());
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-               screenSize().width(), screenSize().height(), 0, GL_RGB,
+               screen_tex_width_, screen_tex_height_, 0, GL_RGB,
                GL_UNSIGNED_BYTE, NULL);
   ShowGLErrors();
 
