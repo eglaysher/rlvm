@@ -42,46 +42,42 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 
-#include "libReallive/archive.h"
-#include "libReallive/bytecode.h"
-#include "libReallive/scenario.h"
-#include "libReallive/expression.h"
-
+#include "MachineBase/LongOperation.hpp"
+#include "MachineBase/Memory.hpp"
+#include "MachineBase/OpcodeLog.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RealLiveDLL.hpp"
 #include "MachineBase/Serialization.hpp"
-#include "MachineBase/Memory.hpp"
 #include "MachineBase/StackFrame.hpp"
-#include "MachineBase/OpcodeLog.hpp"
-
-#include "libReallive/intmemref.h"
-#include "libReallive/gameexe.h"
-
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextPage.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-
-#include "Modules/cp932toUnicode.hpp"
-
-#include "Modules/TextoutLongOperation.hpp"
 #include "Modules/PauseLongOperation.hpp"
-
-#include "Utilities/dateUtil.hpp"
+#include "Modules/TextoutLongOperation.hpp"
+#include "Modules/cp932toUnicode.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Utilities/algoplus.hpp"
+#include "Utilities/dateUtil.hpp"
+#include "libReallive/archive.h"
+#include "libReallive/bytecode.h"
+#include "libReallive/expression.h"
+#include "libReallive/gameexe.h"
+#include "libReallive/intmemref.h"
+#include "libReallive/scenario.h"
 
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <iterator>
-#include <boost/bind.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assign.hpp>
+#include <boost/bind.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -91,6 +87,7 @@ using namespace libReallive;
 using boost::assign::list_of;
 using boost::bind;
 using boost::function;
+using boost::lexical_cast;
 using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
@@ -147,6 +144,21 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
 
   // Initial value of the savepoint
   markSavepoint();
+
+  // Load the "DLLs" required
+  GameexeFilteringIterator it = gameexe.filtering_begin("DLL.");
+  GameexeFilteringIterator end = gameexe.filtering_end();
+  for (; it != end; ++it) {
+    string index_str = it->key().substr(it->key().find_first_of(".") + 1);
+    int index = lexical_cast<int>(index_str);
+    const string& name = it->to_string("");
+    try {
+      loadDLL(index, name);
+    } catch(rlvm::Exception& e) {
+      cerr << "WARNING: Don't know what to do with DLL '" << name << "'"
+           << endl;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -594,6 +606,41 @@ void RLMachine::setKidokuMarker(int kidoku_number) {
 
   // Record the kidoku pair in global memory.
   memory().recordKidoku(sceneNumber(), kidoku_number);
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::loadDLL(int slot, const std::string& name) {
+  auto_ptr<RealLiveDLL> dll(RealLiveDLL::BuildDLLNamed(name));
+  if (dll.get()) {
+    loaded_dlls_.insert(slot, dll);
+  } else {
+    ostringstream oss;
+    oss << "Can't load emulated dll named '" << name << "'";
+    throw rlvm::Exception(oss.str());
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void RLMachine::unloadDLL(int slot) {
+  loaded_dlls_.erase(slot);
+}
+
+// -----------------------------------------------------------------------
+
+int RLMachine::callDLL(int slot, int one, int two, int three, int four,
+                       int five) {
+  DLLMap::iterator it = loaded_dlls_.find(slot);
+  if (it != loaded_dlls_.end()) {
+    return it->second->callDLL(*this, one, two, three, four, five);
+  } else {
+    ostringstream oss;
+    oss << "Attempt to callDLL(" << one << ", " << two << ", " << three
+        << ", " << four << ", " << five << ") on slot " << slot
+        << " when no DLL is loaded there!";
+    throw rlvm::Exception(oss.str());
+  }
 }
 
 // -----------------------------------------------------------------------

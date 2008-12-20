@@ -62,6 +62,7 @@ librlvm_files = [
   "src/MachineBase/RLModule.cpp",
   "src/MachineBase/MappedRLModule.cpp",
   "src/MachineBase/RLOperation.cpp",
+  "src/MachineBase/RealLiveDLL.cpp",
   "src/MachineBase/SerializationGlobal.cpp",
   "src/MachineBase/SerializationLocal.cpp",
   "src/MachineBase/Memory.cpp",

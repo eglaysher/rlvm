@@ -53,11 +53,12 @@ class Archive;
 class IntMemRef;
 };
 
-class RLModule;
 class LongOperation;
-class System;
 class Memory;
 class OpcodeLog;
+class RLModule;
+class RealLiveDLL;
+class System;
 struct StackFrame;
 
 namespace boost { namespace serialization { } }
@@ -367,6 +368,34 @@ class RLMachine {
   // -----------------------------------------------------------------------
 
   /**
+   * @name DLL Management
+   *
+   * RealLive has an extension system where a DLL can be loaded, and can be
+   * called from bytecode through a ridiculously underpowered interface. We
+   * couldn't support this even if we linked in winelib because the only way to
+   * get things done is for the DLL to poke around in the memory of the
+   * RealLive process. Haeleth (and insani?) have abused this for their own
+   * purposes.
+   *
+   * So instead, we present the interface, and have our own versions of popular
+   * DLLs compiled in. For now, that's just rlBabel.
+   *
+   * @{
+   */
+  /// Loads a "DLL" into the specified slot.
+  void loadDLL(int slot, const std::string& name);
+
+  /// Unloads the "DLL"
+  void unloadDLL(int slot);
+
+  /// Calls a DLL through the only interface we're given. (seriously, this is
+  /// it.)
+  int callDLL(int slot, int one, int two, int three, int four, int five);
+  /// @}
+
+  // -----------------------------------------------------------------------
+
+  /**
    * Executes the next instruction in the bytecode in
    *
    * @see halted()
@@ -520,6 +549,10 @@ class RLMachine {
 
   /// The actions that were delayed when |delay_stack_modifications_| is on.
   std::vector<boost::function<void(void)> > delayed_modifications_;
+
+  typedef boost::ptr_map<int, RealLiveDLL> DLLMap;
+  /// Currenlty loaded "DLLs".
+  DLLMap loaded_dlls_;
 
   /// boost::serialization support
   friend class boost::serialization::access;

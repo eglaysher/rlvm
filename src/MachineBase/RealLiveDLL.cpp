@@ -28,50 +28,33 @@
 
 // -----------------------------------------------------------------------
 
-#include "Modules/Module_DLL.hpp"
+#include "MachineBase/RealLiveDLL.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "Utilities.h"
 
-#include <iostream>
+#include <string>
+#include <sstream>
 
-using namespace std;
-using namespace libReallive;
+using std::ostringstream;
+using std::cerr;
+using std::endl;
 
 // -----------------------------------------------------------------------
+// RealLiveDLL
+// -----------------------------------------------------------------------
 
-struct Jmp_LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
-  void operator()(RLMachine& machine, int slot, string name) {
-    machine.loadDLL(slot, name);
+RealLiveDLL* RealLiveDLL::BuildDLLNamed(const std::string& name) {
+  if (name == "rlBabel") {
+    cerr << "stub" << endl;
+    return NULL;
+  } else {
+    ostringstream oss;
+    oss << "Unsupported DLL interface " << name << endl;
+    throw rlvm::Exception(oss.str());
   }
-};
+}
 
 // -----------------------------------------------------------------------
 
-struct Jmp_CallDLL : public RLOp_Store_6<
-  IntConstant_T,
-  DefaultIntValue_T<0>, DefaultIntValue_T<0>, DefaultIntValue_T<0>,
-  DefaultIntValue_T<0>, DefaultIntValue_T<0> > {
-  int operator()(RLMachine& machine, int index, int one, int two, int three,
-                 int four, int five) {
-    return machine.callDLL(index, one, two, three, four, five);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-DLLModule::DLLModule()
-  : RLModule("DLL", 2, 1)
-{
-  addOpcode(10, 0, new Jmp_LoadDLL);
-  addOpcode(11, 0, callFunction(&RLMachine::unloadDLL));
-
-  addOpcode(12, 0, new Jmp_CallDLL);
-  addOpcode(12, 1, new Jmp_CallDLL);
-  addOpcode(12, 2, new Jmp_CallDLL);
-  addOpcode(12, 3, new Jmp_CallDLL);
-  addOpcode(12, 4, new Jmp_CallDLL);
-  addOpcode(12, 5, new Jmp_CallDLL);
+RealLiveDLL::~RealLiveDLL() {
 }
