@@ -12,12 +12,29 @@
 <!-- End of IE fixes -->
 
 <!-- Highslide configuration -->
-<script type="text/javascript" src="highslide/highslide.js"></script>
+<script type="text/javascript" src="highslide/highslide-with-gallery.packed.js"></script>
 <link rel="stylesheet" type="text/css" href="highslide/highslide.css" />
 <script type="text/javascript">
     hs.graphicsDir = 'highslide/graphics/';
     hs.outlineType = 'rounded-white';
-    hs.captionEval = 'this.a.title';
+    hs.headingEval = 'this.a.title';
+	hs.align = 'center';
+	hs.transitions = ['expand', 'crossfade'];
+	hs.wrapperClassName = 'controls-in-heading';
+	hs.fadeInOut = true;
+
+    if (hs.addSlideshow) hs.addSlideshow({
+		interval: 5000,
+		repeat: false,
+		useControls: true,
+		fixedControls: false,
+		overlayOptions: {
+			opacity: 1,
+			position: 'top right',
+			hideOnMouseOut: false
+		}
+	});
+
 </script>
 
 </head>
@@ -25,6 +42,7 @@
 <div id="container">
   <div id="navigation">
 	<ul>
+      <li><a href="index.html">Main</a></li>
       <li><a href="screenshots.html">Screenshots</a></li>
       <li><a href="old.html">Old versions</a></li>
 	  <li><a href="mailto:glaysher@umich.edu">Contact Me</a></li>
@@ -38,7 +56,32 @@
 	<div id="content">
 	  <h1>Screenshots</h1>
       <p>CLANNAD</p>
-
+      <div class="highslide-gallery">
+        <a href="screenshots/clannad_main_menu.jpg"
+           class="highslide" onclick="return hs.expand(this)"
+           title="CLANNAD Main Menu running under OSX">
+	      <img src="screenshots/clannad_main_menu_thumb.jpg" alt="Highslide JS"
+		       title="Click to enlarge" />
+        </a>
+        <a href="screenshots/clannad_music_mode.jpg"
+           class="highslide" onclick="return hs.expand(this)"
+           title="CLANNAD Music Mode running under Linux">
+	      <img src="screenshots/clannad_music_mode_thumb.jpg" alt="Highslide JS"
+		       title="Click to enlarge" />
+        </a>
+        <a href="screenshots/clannad_prologue.jpg"
+           class="highslide" onclick="return hs.expand(this)"
+           title="CLANNAD running under OSX">
+	      <img src="screenshots/clannad_prologue_thumb.jpg" alt="Highslide JS"
+		       title="Click to enlarge" />
+        </a>
+        <a href="screenshots/clannad_after_story.jpg"
+           class="highslide" onclick="return hs.expand(this)"
+           title="CLANNAD After Story running under Linux">
+	      <img src="screenshots/clannad_after_story_thumb.jpg" alt="Highslide JS"
+		       title="Click to enlarge" />
+        </a>
+      </div>
     </div>
   </div>
   <div id="footer">

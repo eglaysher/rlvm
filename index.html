@@ -12,7 +12,7 @@
 <!-- End of IE fixes -->
 
 <!-- Highslide configuration -->
-<script type="text/javascript" src="highslide/highslide.js"></script>
+<script type="text/javascript" src="highslide/highslide-with-gallery.packed.js"></script>
 <link rel="stylesheet" type="text/css" href="highslide/highslide.css" />
 <script type="text/javascript">
     hs.graphicsDir = 'highslide/graphics/';
@@ -25,6 +25,8 @@
 <div id="container">
   <div id="navigation">
 	<ul>
+      <li><a href="index.html">Main</a></li>
+      <li><a href="screenshots.html">Screenshots</a></li>
       <li><a href="old.html">Old versions</a></li>
 	  <li><a href="mailto:glaysher@umich.edu">Contact Me</a></li>
 	</ul>
@@ -63,12 +65,16 @@
   </div>
   <div id="sidebar">
 	<h1>Screenshots</h1>
-    <a id="thumb1" href="screenshots/clannad_after_story.jpg"
-       class="highslide" onclick="return hs.expand(this)"
-       title="CLANNAD After Story running under Linux">
-	  <img src="screenshots/clannad_after_story_thumb.jpg" alt="Highslide JS"
-		   title="Click to enlarge" />
-    </a>
+    <div style="text-align: center;">
+      <a id="thumb1" href="screenshots/clannad_after_story.jpg"
+         class="highslide" onclick="return hs.expand(this)"
+         title="CLANNAD After Story running under Linux">
+	    <img src="screenshots/clannad_after_story_thumb.jpg" alt="Highslide JS"
+		     title="Click to enlarge" />
+      </a>
+      <br />
+      <a href="screenshots.html">More Screenshots...</a>
+    </div>
   </div>
   <div id="extra">
 	<h1>Downloads</h1>
