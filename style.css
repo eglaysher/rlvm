@@ -1,0 +1,176 @@
+/* 
+=======================================================
+Lemon CSS
+
+Released for OSWD and OWD.
+Coded by Anthony Yeung (http://smallpark.org)
+May 24 2005
+It would be nice if you could leave this here, thanks.
+=======================================================
+*/
+
+html,body {
+	margin:0;
+	padding:0;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	text-align:center;
+	margin-top: 20px;
+}
+
+div#content a, div#extra a, div#sidebar a {
+	color: #FFBA27;
+	font-weight: bold;
+	text-decoration: none;
+	background-color: #FAFAFA; 
+	border-bottom: 1px solid #F1F1F1; 
+	border-right: 1px solid #F1F1F1;
+	padding: 1px;
+}
+
+div#content a:hover , div#extra a:hover, div#sidebar a:hover {
+	color: #FFBA27;
+	font-weight: bold;
+	text-decoration: none;
+	background-color: #FAFAFA; 
+	border-bottom: 1px solid #CCC; 
+	border-right: 1px solid #CCC;
+	padding: 1px;
+}
+
+div#header {
+	padding-bottom: 5px;
+	border-bottom: 1px solid #EEE;
+}
+
+div#header h1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 25px;
+	font-weight: normal;
+	color: #FFBA27;
+	letter-spacing: -1px;
+}
+
+div#header h2 { /* The tagline thing */
+	margin: 0;
+	padding: 0;
+	font-size: 11px;
+	font-weight: normal;
+	color: #999;
+	padding-left: 20px;
+	margin-top: -15px;
+}
+
+#navigation {
+font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+float: right;
+}
+
+#navigation li {
+display: inline;
+padding-right: 20px;
+font-size: 11px;
+}
+
+#navigation li a {
+font-size: 11px;
+color: #666;
+font-weight: normal;
+padding: 4px;
+text-decoration: none;
+}
+
+#navigation li a:hover {
+text-decoration: underline;
+}
+
+div#container {
+text-align:left
+}
+
+div#content p, div#extra p, div#sidebar p {
+font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+font-size: 11px;
+color: #444;
+line-height:1.8em;
+}
+
+div#content h1, div#extra h1, div#sidebar h1 {
+font-size: 14px;
+font-weight: normal;
+color: #FFBA27; 
+text-decoration: none; 
+padding: 3px 6px; 
+background-color: #F9F9F9; 
+border-bottom: 1px solid #F1F1F1; 
+border-right: 1px solid #F1F1F1;
+}
+
+div#content h2 {
+font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+font-size: 11px;
+font-weight: bold;
+color: #444;
+margin: 0;
+padding: 0;
+}
+
+div#footer p {
+
+margin:0;padding:5px 10px;
+}
+
+div#container {
+width:700px;
+margin:0 auto;
+}
+
+div#sidebar {
+float:right;
+width:330px;
+padding-bottom: 10px;
+}
+
+div#extra {
+float:left;
+width:330px;
+}
+
+div#footer {
+margin-top: 10px;
+background-color: #333;
+color: #FFF;
+font-size: 11px;
+font-family: Tahoma, Arial, Helvetica, sans-serif;
+clear:both;
+width:100%;
+padding: 5px;
+}
+
+div#footer a, div#footer a:hover {
+margin-top: 10px;
+background-color: #333;
+color: #FFF;
+font-size: 11px;
+font-family: Tahoma, Arial, Helvetica, sans-serif;
+clear:both;
+width:100%;
+color: #FFBA27;
+font-weight: bold;
+text-decoration: none;
+border-bottom: 1px solid #333; 
+border-right: 1px solid #333;
+}
+
+/*
+
+ Would be nice if you could keep this credit below. Thanks.
+
+*/
+
+#design-by {
+float: right;
+display:inline;
+}
