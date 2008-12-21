@@ -243,6 +243,8 @@ public:
 
   virtual void execute(RLMachine& machine);
 
+  int windowNumber() const { return window_num_; }
+
   /**
    * @name Text size and location
    *
@@ -324,6 +326,7 @@ public:
   /// @see name_mod_
   void setNameMod(const int in) { name_mod_ = in; }
 
+  int nameMod() const { return name_mod_; }
   /// @}
 
   /**

@@ -29,6 +29,8 @@
 
 #include "MachineBase/RealLiveDLL.hpp"
 
+class TextWindow;
+
 /**
  * Possible commands sent to the rlBabel DLL from the code. These will be
  * passed in as the first integer argument (func) to RlBabelDLL::callDLL().
@@ -94,6 +96,10 @@ class RlBabelDLL : public RealLiveDLL {
   /// Transform one of rlBabel's integer addresses into an iterator to the
   /// corresponding piece of integer memory.
   StringReferenceIterator getSvar(RLMachine& machine, int addr);
+
+  /// Converts an incoming window id to text window instance. If |id| is a
+  /// negative number, returns the current window.
+  boost::shared_ptr<TextWindow> getWindow(RLMachine& machine, int id);
 };  // end of class RlBabelDll
 
 

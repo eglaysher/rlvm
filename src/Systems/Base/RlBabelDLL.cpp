@@ -31,6 +31,8 @@
 #include "Systems/Base/RlBabelDLL.hpp"
 
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindow.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"
 #include "libReallive/intmemref.h"
@@ -66,17 +68,15 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
       //      return StartNewScreen((char*) get_svar(arg1));
       return 0;
     case dllSetNameMod: {
-//       arg3 = interpreter->getNameMod(arg1);
-//       interpreter->setNameMod(arg1, arg2);
-//       return arg3;
-      return 0;
+      boost::shared_ptr<TextWindow> textWindow = getWindow(machine, arg1);
+      int original_mod = textWindow->nameMod();
+      textWindow->setNameMod(arg2);
+      return original_mod;
     }
     case dllGetNameMod:
-      return 0;
-      //      return interpreter->getNameMod(arg1);
+      return getWindow(machine, arg1)->nameMod();
     case dllGetTextWindow:
-      return 0;
-      //      return interpreter->getCurrentWindow();
+      return getWindow(machine, -1)->windowNumber();
     case dllSetWindowName:
       return 0;
 //       return SetCurrentWindowName(get_svar(arg1), endSetWindowName,
@@ -114,6 +114,8 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
 // -----------------------------------------------------------------------
 
 int RlBabelDLL::initialize(int dllno, int windname) {
+  // rlBabel hangs onto the dll index and uses it for something in his
+  // SetCurrentWindowName implementation.
   return 1;
 }
 
@@ -150,4 +152,16 @@ StringReferenceIterator RlBabelDLL::getSvar(RLMachine& machine, int addr) {
 
   // Error.
   return StringReferenceIterator(m, libReallive::STRS_LOCATION, 0);
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<TextWindow> RlBabelDLL::getWindow(RLMachine& machine,
+                                                    int id) {
+  TextSystem& text_system = machine.system().text();
+  if (id >= 0) {
+    return text_system.textWindow(machine, id);
+  } else {
+    return text_system.currentWindow(machine);
+  }
 }
