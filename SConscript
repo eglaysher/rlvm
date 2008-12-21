@@ -132,6 +132,7 @@ librlvm_files = [
   "src/Systems/Base/ObjectSettings.cpp",
   "src/Systems/Base/Platform.cpp",
   "src/Systems/Base/RLTimer.cpp",
+  "src/Systems/Base/RlBabelDLL.cpp",
   "src/Systems/Base/Rect.cpp",
   "src/Systems/Base/SelectionElement.cpp",
   "src/Systems/Base/SoundSystem.cpp",
