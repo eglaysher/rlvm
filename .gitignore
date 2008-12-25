@@ -13,6 +13,6 @@ gmon.out
 objs
 rlvm.ncb
 rlvm.suo
-/build/
-/.sconf_temp/
+/build
+/.sconf_temp
 /.sconsign.dblite
