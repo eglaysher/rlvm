@@ -38,6 +38,8 @@
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
 
+#include <boost/lexical_cast.hpp>
+
 using namespace std;
 using boost::lexical_cast;
 

@@ -44,6 +44,7 @@
 #include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>
+#include <iostream>
 #include <iomanip>
 #include <vector>
 

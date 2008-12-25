@@ -31,6 +31,8 @@
 #ifndef __Header_hpp__
 #define __Header_hpp__
 
+#ifdef USE_PRECOMPILED_HEADERS
+
 // C++ Standard Template Library
 #include <algorithm>
 #include <iostream>
@@ -70,5 +72,7 @@
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
+
+#endif  // USE_PRECOMPILED_HEADERS
 
 #endif

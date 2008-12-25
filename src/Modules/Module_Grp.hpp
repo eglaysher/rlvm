@@ -40,6 +40,7 @@
 
 #include "MachineBase/RLModule.hpp"
 #include <string>
+#include <vector>
 
 class GraphicsStackFrame;
 

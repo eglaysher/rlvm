@@ -36,6 +36,7 @@
 #ifndef __Texture_hpp__
 #define __Texture_hpp__
 
+#include <boost/scoped_array.hpp>
 #include <SDL/SDL_opengl.h>
 
 struct SDL_Surface;

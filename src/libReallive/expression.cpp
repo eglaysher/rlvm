@@ -53,6 +53,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/tokenizer.hpp>
 #include "defs.h"
 

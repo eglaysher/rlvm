@@ -28,6 +28,9 @@
 #define __RlBabelDLL_hpp__
 
 #include "MachineBase/RealLiveDLL.hpp"
+#include "MachineBase/reference.hpp"
+
+#include <boost/shared_ptr.hpp>
 
 class TextWindow;
 

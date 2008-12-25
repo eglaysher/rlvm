@@ -43,6 +43,7 @@
 
 #include <iostream>
 #include <boost/bind.hpp>
+#include <boost/function.hpp>
 
 using std::cerr;
 using std::endl;

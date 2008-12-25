@@ -28,6 +28,10 @@
 #ifndef __OpcodeLog_hpp__
 #define __OpcodeLog_hpp__
 
+#include <iosfwd>
+#include <map>
+#include <string>
+
 /// An optional component to an RLMachine that counts the number of instnaces of
 /// an opcode. An OpcodeLog can be used to count the number of times an opcode
 /// was run during the lifetime of a program, or the number of times an

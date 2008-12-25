@@ -31,6 +31,7 @@
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/Rect.hpp"
 
+#include <string>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>

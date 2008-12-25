@@ -36,6 +36,7 @@
 
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/Serialization.hpp"
+#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/Base/TextPage.hpp"

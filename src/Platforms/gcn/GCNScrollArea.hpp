@@ -32,6 +32,8 @@
 
 #include "Platforms/gcn/GCNGraphics.hpp"
 
+#include <boost/scoped_ptr.hpp>
+
 /**
  * Copy of TMW's ScrollArea class, adapted to my system.
  */

@@ -30,6 +30,8 @@
 #include "Platforms/gcn/GCNWindow.hpp"
 
 #include <guichan/actionlistener.hpp>
+#include <string>
+#include <vector>
 
 class GCNMenu;
 

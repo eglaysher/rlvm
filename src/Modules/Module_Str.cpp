@@ -45,6 +45,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 
 using namespace std;
 using namespace boost;

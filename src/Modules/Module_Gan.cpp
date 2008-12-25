@@ -35,6 +35,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "Modules/Module_Obj.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsObject.hpp"

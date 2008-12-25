@@ -34,6 +34,7 @@
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
 
 #include "Utilities.h"
 #include "libReallive/gameexe.h"

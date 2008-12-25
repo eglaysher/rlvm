@@ -24,12 +24,15 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef __RealLiveDLL_hpp__
 #define __RealLiveDLL_hpp__
 
+#include <string>
+
+class RLMachine;
+
 /**
- * Interface for common RealLive DLLs that are supported through 
+ * Interface for common RealLive DLLs which have support compiled into rlvm.
  */
 class RealLiveDLL
 {
