@@ -589,15 +589,15 @@ template void TextSystem::load<boost::archive::text_iarchive>(
 void parseNames(const Memory& memory, const std::string& input,
                 std::string& output)
 {
-  const unsigned char* cur = (const unsigned char*)input.c_str();
+  const char* cur = input.c_str();
 
-  const unsigned char LOWER_BYTE_FULLWIDTH_ASTERISK = 0x96;
-  const unsigned char LOWER_BYTE_FULLWIDTH_PERCENT = 0x93;
+  const char LOWER_BYTE_FULLWIDTH_ASTERISK = 0x96;
+  const char LOWER_BYTE_FULLWIDTH_PERCENT = 0x93;
 
   while (*cur) {
     if (cur[0] == 0x81 && (cur[1] == LOWER_BYTE_FULLWIDTH_ASTERISK ||
                            cur[1] == LOWER_BYTE_FULLWIDTH_PERCENT)) {
-      unsigned char type = cur[1];
+      char type = cur[1];
       cur += 2;
 
       string strindex;

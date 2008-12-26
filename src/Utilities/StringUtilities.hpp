@@ -35,9 +35,9 @@
  * character. RealLive encodes its strings in Shift_JIS, so we have to
  * deal with this character encoding.
  */
-inline bool shiftjis_lead_byte(const unsigned char c)
+inline bool shiftjis_lead_byte(const char c)
 {
-  return (c >= 0x81 && c <= 0xa0) || (c >= 0xe0 && c <= 0xef);
+  return (c >= 0x81 && c <= 0x9f) || (c >= 0xe0 && c <= 0xfc);
 }
 
 /**
@@ -45,7 +45,7 @@ inline bool shiftjis_lead_byte(const unsigned char c)
  *
  * @param c Pointer to the current character in the string
  */
-void advanceOneShiftJISChar(const unsigned char*& c);
+void advanceOneShiftJISChar(const char*& c);
 
 /**
  * Copies a single Shift_JIS character into output and advances the string.
@@ -53,13 +53,13 @@ void advanceOneShiftJISChar(const unsigned char*& c);
  * @param str The input character string
  * @param output The output std::string
  */
-void copyOneShiftJisCharacter(const unsigned char*& str, std::string& output);
+void copyOneShiftJisCharacter(const char*& str, std::string& output);
 
 /**
  * If there is currently a two byte fullwidth Latin capital letter at the
  * current point in str (a shift_jis string), then convert it to ASCII, copy it
  * to output and return true. Returns false otherwise.
  */
-bool readFullwidthLatinLetter(const unsigned char*& str, std::string& output);
+bool readFullwidthLatinLetter(const char*& str, std::string& output);
 
 #endif

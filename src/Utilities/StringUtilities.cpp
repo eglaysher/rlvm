@@ -34,7 +34,7 @@
 
 // -----------------------------------------------------------------------
 
-void advanceOneShiftJISChar(const unsigned char*& c)
+void advanceOneShiftJISChar(const char*& c)
 {
   if(shiftjis_lead_byte(c[0]))
   {
@@ -49,7 +49,7 @@ void advanceOneShiftJISChar(const unsigned char*& c)
 
 // -----------------------------------------------------------------------
 
-void copyOneShiftJisCharacter(const unsigned char*& str, std::string& output)
+void copyOneShiftJisCharacter(const char*& str, std::string& output)
 {
   if(shiftjis_lead_byte(str[0]))
   {
@@ -66,7 +66,7 @@ void copyOneShiftJisCharacter(const unsigned char*& str, std::string& output)
 
 // -----------------------------------------------------------------------
 
-bool readFullwidthLatinLetter(const unsigned char*& str, std::string& output)
+bool readFullwidthLatinLetter(const char*& str, std::string& output)
 {
   // The fullwidth uppercase latin characters are 0x8260 through 0x8279.
   if (str[0] == 0x82) {

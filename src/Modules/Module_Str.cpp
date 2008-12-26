@@ -71,7 +71,7 @@ namespace {
  * @param string The string to count
  * @return The length of the string in characters
  */
-size_t strcharlen(const unsigned char* string)
+size_t strcharlen(const char* string)
 {
   if (!string) return 0;
   size_t result = 0;
@@ -235,7 +235,7 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
                                          IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
                   int offset) {
-    const unsigned char* str = (const unsigned char*)source.c_str();
+    const char* str = source.c_str();
     string output;
 
     // Advance the string to the first
@@ -270,7 +270,7 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
                   int offset, int length) {
-    const unsigned char* str = (const unsigned char*)source.c_str();
+    const char* str = source.c_str();
     string output;
 
     // Advance the string to the first
@@ -301,8 +301,7 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
 struct Str_strrsub_0 : public Str_strsub_0 {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offsetFromBack) {
-    int offset = strcharlen((const unsigned char*)source.c_str()) -
-      offsetFromBack;
+    int offset = strcharlen(source.c_str()) - offsetFromBack;
     return Str_strsub_0::operator()(machine, dest, source, offset);
   }
 };
@@ -319,8 +318,7 @@ struct Str_strrsub_1 : public Str_strsub_1 {
     if(length > offsetFromBack)
       throw rlvm::Exception("strrsub: length of substring greater then offset in rsub");
 
-    int offset = strcharlen((const unsigned char*)source.c_str()) -
-      offsetFromBack;
+    int offset = strcharlen(source.c_str()) - offsetFromBack;
     return Str_strsub_1::operator()(machine, dest, source, offset, length);
   }
 };
@@ -334,7 +332,7 @@ struct Str_strrsub_1 : public Str_strsub_1 {
  */
 struct Str_strcharlen : public RLOp_Store_1< StrConstant_T > {
   int operator()(RLMachine& machine, string val) {
-    return strcharlen((const unsigned char*)val.c_str());
+    return strcharlen(val.c_str());
   }
 };
 
@@ -349,7 +347,7 @@ struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   int length) {
     string input = *dest;
-    const unsigned char* str = (const unsigned char*)input.c_str();
+    const char* str = input.c_str();
     string output;
     while(*str && length > 0) {
       copyOneShiftJisCharacter(str, output);
