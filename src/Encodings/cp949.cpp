@@ -35,22 +35,21 @@
 */
 
 #define DEBUG_ONLY
-#include "rlBabel.h" // for LOG(())
 
 #include "cp949.h"
 #include <algorithm> // for lower_bound()
 
 Cp949::Cp949()
 {
-	DesirableCharset = HANGUL_CHARSET;
+  //	DesirableCharset = HANGUL_CHARSET;
 	NoTransforms = false;
-	UseUnicode = GetSystemDefaultLangID() & 0x1ff != 0x12;
+  //	UseUnicode = GetSystemDefaultLangID() & 0x1ff != 0x12;
 }
 
 #ifndef NO_CP949_CONVERSION
 
 const size_t extras_length = 679;
-const USHORT extras[extras_length] =
+const unsigned short extras[extras_length] =
 	{ 0xa046, 0xa04f, 0xa057, 0xa059, 0xa06c, 0xa074, 0xa075, 0xa077, 0xa079, 0xa086,
 	  0xa089, 0xa08a, 0xa08b, 0xa092, 0xa095, 0xa097, 0xa09c, 0xa0a5, 0xa0a6, 0xa0ac,
 	  0xa0b1, 0xa0b2, 0xa0b3, 0xa0b4, 0xa0b8, 0xa0ba, 0xa0bb, 0xa0be, 0xa0c0, 0xa0c1,
@@ -120,7 +119,7 @@ const USHORT extras[extras_length] =
 	  0xc548, 0xc561, 0xc562, 0xc569, 0xc56a, 0xc570, 0xc575, 0xc579, 0xc581, 0xc586,
 	  0xc587, 0xc588, 0xc589, 0xc58e, 0xc597, 0xc643, 0xc64a, 0xc64c, 0xc64f };
 
-USHORT Cp949::JisDecode(USHORT ch) const
+unsigned short Cp949::JisDecode(unsigned short ch) const
 {
 	// Special cases
 	if (ch < 0x80)
@@ -161,7 +160,7 @@ USHORT Cp949::JisDecode(USHORT ch) const
 	}
 }
 
-void Cp949::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
+void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const
 {
 	int srclen = strlen(src), k = 0, j = 0;
 	while (k < srclen && j < buflen) {
@@ -170,7 +169,7 @@ void Cp949::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
 			buf[j++] = c1;
 		}
 		else {
-			USHORT ch = c1 << 8 | (unsigned char) src[k++];
+			unsigned short ch = c1 << 8 | (unsigned char) src[k++];
 			if (ch == 0xa1b8)
 				ch = 0x8175;
 			else if (ch == 0xa1ba)
@@ -197,7 +196,7 @@ void Cp949::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
 				buf[j++] = i % 255 + 1;
 			}
 			else {
-				const USHORT* p = std::lower_bound(extras, extras + extras_length, ch);
+				const unsigned short* p = std::lower_bound(extras, extras + extras_length, ch);
 				if (*p == ch) {
 					int i = p - extras;
 					buf[j++] = i / 255 + 0xe7;
@@ -213,7 +212,7 @@ void Cp949::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
 	buf[j] = 0;
 }
 
-const USHORT ksc_to_uni[] =
+const unsigned short ksc_to_uni[] =
 	{ 0xac02, 0xac03, 0xac05, 0xac06, 0xac0b, 0xac0c, 0xac0d, 0xac0e, 0xac0f, 0xac18,
 	  0xac1e, 0xac1f, 0xac21, 0xac22, 0xac23, 0xac25, 0xac26, 0xac27, 0xac28, 0xac29,
 	  0xac2a, 0xac2b, 0xac2e, 0xac32, 0xac33, 0xac34, 0x3000, 0x3000, 0x3000, 0x3000,
@@ -1583,52 +1582,51 @@ const USHORT ksc_to_uni[] =
 	  0xd759, 0xd760, 0xd761, 0xd763, 0xd765, 0xd769, 0xd76c, 0xd770, 0xd774, 0xd77c,
 	  0xd77d, 0xd781, 0xd788, 0xd789, 0xd78c, 0xd790, 0xd798, 0xd799, 0xd79b, 0xd79d };
 
-USHORT Cp949::Convert(USHORT ch) const
+unsigned short Cp949::Convert(unsigned short ch) const
 {
-	if (ch <= 0x7f) {
-		return ch;
-	}
-	else {
-		int c1 = ((ch >> 8) & 0xff) - 0x81;
-		int c2 = (ch & 0xff) - 0x41;
-		return ksc_to_uni[c1 * 190 + c2];
-	}
+  if (ch <= 0x7f) {
+    return ch;
+  }
+  else {
+    int c1 = ((ch >> 8) & 0xff) - 0x81;
+    int c2 = (ch & 0xff) - 0x41;
+    return ksc_to_uni[c1 * 190 + c2];
+  }
 }
 
-wchar_t* Cp949::ConvertString(const UCHAR* s) const
+std::wstring Cp949::ConvertString(const std::string& in_string) const
 {
-	wchar_t *rv = new wchar_t[strlen((char*) s) * 2 + 1];
-	size_t i = 0;
-	while (*s) {
-		if (*s < 0x80) rv[i++] = Convert(*s++);
-		else {
-			rv[i++] = Convert((s[0] << 8) | s[1]);
-			s += 2;
-		}
-	}
-	rv[i] = 0;
-	return rv;
+  std::wstring rv;
+  rv.reserve(in_string.size());
+
+  const char* s = in_string.c_str();
+  while (*s) {
+    if (*s < 0x80) {
+      rv += Convert(*s++);
+    } else {
+      rv += Convert((s[0] << 8) | s[1]);
+      s += 2;
+    }
+  }
+
+  return rv;
 }
 
 #else
 
-USHORT Cp949::JisDecode(USHORT ch) const
-{
+unsigned short Cp949::JisDecode(unsigned short ch) const {
 	return ch;
 }
 
-void Cp949::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
-{
+void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
 	strncpy(buf, src, buflen);
 }
 
-USHORT Cp949::Convert(USHORT ch) const
-{
+unsigned short Cp949::Convert(unsigned short ch) const {
 	return ch;
 }
 
-wchar_t* Cp949::ConvertString(const UCHAR* s) const
-{
+std::wstring Cp949::ConvertString(const std::string& s) const {
 	return NULL;
 }
 

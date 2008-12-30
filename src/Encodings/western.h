@@ -29,23 +29,23 @@
   invalidate any other reasons why the scenario file might be covered by the
   GNU Lesser General Public License.
 */
-  
+
 #ifndef WESTERN_H
+#define WESTERN_H
 
 #include "codepage.h"
 
 struct Cp1252 : public Codepage {
-	USHORT JisDecode(USHORT ch) const;
-	void JisEncodeString(LPCTSTR s, LPTSTR buf, size_t buflen) const;
-	USHORT Convert(USHORT ch) const;
-	wchar_t* ConvertString(const UCHAR* s) const;
-	bool DbcsDelim(UCHAR* str) const;
-	bool IsItalic(USHORT ch) const;
-	Cp1252();
+  unsigned short JisDecode(unsigned short ch) const;
+  void JisEncodeString(const char* s, char* buf, size_t buflen) const;
+  unsigned short Convert(unsigned short ch) const;
+  std::wstring ConvertString(const std::string& s) const;
+  bool DbcsDelim(char* str) const;
+  bool IsItalic(unsigned short ch) const;
+  Cp1252();
 };
 
-USHORT __stdcall GetItalic(USHORT ch);
-USHORT __stdcall Italicise(USHORT ch);
+unsigned short GetItalic(unsigned short ch);
+unsigned short Italicise(unsigned short ch);
 
-#define WESTERN_H
 #endif

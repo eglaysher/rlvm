@@ -37,7 +37,7 @@
 
 #include <string>
 
-std::string unicodetocp932(const std::wstring& line);
+//std::string unicodetocp932(const std::wstring& line);
 std::wstring cp932toUnicode(const std::string& line, int transformation);
 
 std::string hantozen_cp932(const std::string& string);

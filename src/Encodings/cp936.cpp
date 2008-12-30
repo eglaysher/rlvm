@@ -1,4 +1,4 @@
-/*
+ /*
   rlBabel: Simplified Chinese (CP936 / GBK) settings
 
   Copyright (c) 2006 Peter Jolly.
@@ -17,35 +17,35 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-  As a special exception to the GNU Lesser General Public License (LGPL), you 
-  may include a publicly distributed version of the library alongside a "work 
-  that uses the Library" to produce a composite work that includes the library, 
-  and distribute that work under terms of your choice, without any of the 
+  As a special exception to the GNU Lesser General Public License (LGPL), you
+  may include a publicly distributed version of the library alongside a "work
+  that uses the Library" to produce a composite work that includes the library,
+  and distribute that work under terms of your choice, without any of the
   additional requirements listed in clause 6 of the LGPL.
 
-  A "publicly distributed version of the library" means either an unmodified 
-  binary as distributed by Haeleth, or a modified version of the library that is 
-  distributed under the conditions defined in clause 2 of the LGPL, and a 
-  "composite work that includes the library" means a RealLive program which 
-  links to the library, either through the LoadDLL() interface or a #DLL 
+  A "publicly distributed version of the library" means either an unmodified
+  binary as distributed by Haeleth, or a modified version of the library that is
+  distributed under the conditions defined in clause 2 of the LGPL, and a
+  "composite work that includes the library" means a RealLive program which
+  links to the library, either through the LoadDLL() interface or a #DLL
   directive, and/or includes code from the library's Kepago header.
 
-  Note that this exception does not invalidate any other reasons why any part of 
+  Note that this exception does not invalidate any other reasons why any part of
   the work might be covered by the LGPL.
 */
-  
+
 #include "cp936.h"
 
 Cp936::Cp936()
-{	
-	DesirableCharset = GB2312_CHARSET;
+{
+  //	DesirableCharset = GB2312_CHARSET;
 	NoTransforms = false;
-	UseUnicode = GetSystemDefaultLangID() & 0x1ff != 0x04; // I hope... :/
+  //    UseUnicode = GetSystemDefaultLangID() & 0x1ff != 0x04; // I hope... :/
 }
 
 // We use a GBK <-> JIS transformation function based on, but subtly different
 // from, the one that the Key Fans Club used to use.
-USHORT Cp936::JisDecode(USHORT ch) const
+unsigned short Cp936::JisDecode(unsigned short ch) const
 {
 	// Special cases
 	if (ch < 0x80)
@@ -78,7 +78,7 @@ USHORT Cp936::JisDecode(USHORT ch) const
 	}
 }
 
-void Cp936::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
+void Cp936::JisEncodeString(const char* src, char* buf, size_t buflen) const
 {
 	int srclen = strlen(src), i = 0, j = 0;
 	while (i < srclen && j < buflen) {
@@ -89,7 +89,7 @@ void Cp936::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
 		else {
 			// Special cases
 			int c2 = c1 << 8 | (unsigned char) src[i++];
-			if (c2 == 0xa1b8) 
+			if (c2 == 0xa1b8)
 				c2 = 0xbba2;
 			else if (c2 == 0xa1ba)
 				c2 = 0xdda2;
@@ -125,7 +125,7 @@ void Cp936::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
 
 #ifndef NO_CP936_CONVERSION
 
-const USHORT gbk_to_uni[] =
+const unsigned short gbk_to_uni[] =
 	{ 0x4e02, 0x4e04, 0x4e05, 0x4e06, 0x4e0f, 0x4e12, 0x4e17, 0x4e1f,
 	  0x4e20, 0x4e21, 0x4e23, 0x4e26, 0x4e29, 0x4e2e, 0x4e2f, 0x4e31,
 	  0x4e33, 0x4e35, 0x4e37, 0x4e3c, 0x4e40, 0x4e41, 0x4e42, 0x4e44,
@@ -3136,7 +3136,7 @@ const USHORT gbk_to_uni[] =
 	  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
 	  0xffff, 0xffff };
 
-USHORT Cp936::Convert(USHORT ch) const
+unsigned short Cp936::Convert(unsigned short ch) const
 {
 	if (ch <= 0x7f) {
 		return ch;
@@ -3149,34 +3149,37 @@ USHORT Cp936::Convert(USHORT ch) const
 		int c1 = ((ch >> 8) & 0xff) - 0x81;
 		int c2 = (ch & 0xff) - 0x40;
 		return gbk_to_uni[c1 * (0xff - 0x40) + c2];
-	}	
+	}
 }
 
-wchar_t* Cp936::ConvertString(const UCHAR* s) const
+std::wstring Cp936::ConvertString(const std::string& in_string) const
 {
-	wchar_t *rv = new wchar_t[strlen((char*) s) * 2 + 1];
-	size_t i = 0;
-	while (*s) {
-		if (*s < 0x80) rv[i++] = Convert(*s++);
-		else {
-			rv[i++] = Convert((s[0] << 8) | s[1]);
-			s += 2;
-		}
-	}
-	rv[i] = 0;
-	return rv;
+  std::wstring rv;
+  rv.reserve(in_string.size());
+
+  const char* s = in_string.c_str();
+  while (*s) {
+    if (*s < 0x80) {
+      rv += Convert(*s++);
+    } else {
+      rv += Convert((s[0] << 8) | s[1]);
+      s += 2;
+    }
+  }
+
+  return rv;
 }
 
 #else
-
-USHORT Cp936::Convert(USHORT ch) const
+unsigned short Cp936::Convert(unsigned short ch) const
 {
 	return ch;
 }
 
-wchar_t* Cp936::ConvertString(const UCHAR* s) const
+std::wstring Cp936::ConvertString(const std::string& s) const
 {
-	return NULL;
+  return std::wstring();
 }
+
 
 #endif

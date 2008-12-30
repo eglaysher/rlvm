@@ -17,62 +17,54 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-  As a special exception to the GNU Lesser General Public License (LGPL), you 
-  may include a publicly distributed version of the library alongside a "work 
-  that uses the Library" to produce a composite work that includes the library, 
-  and distribute that work under terms of your choice, without any of the 
+  As a special exception to the GNU Lesser General Public License (LGPL), you
+  may include a publicly distributed version of the library alongside a "work
+  that uses the Library" to produce a composite work that includes the library,
+  and distribute that work under terms of your choice, without any of the
   additional requirements listed in clause 6 of the LGPL.
 
-  A "publicly distributed version of the library" means either an unmodified 
-  binary as distributed by Haeleth, or a modified version of the library that is 
-  distributed under the conditions defined in clause 2 of the LGPL, and a 
-  "composite work that includes the library" means a RealLive program which 
-  links to the library, either through the LoadDLL() interface or a #DLL 
+  A "publicly distributed version of the library" means either an unmodified
+  binary as distributed by Haeleth, or a modified version of the library that is
+  distributed under the conditions defined in clause 2 of the LGPL, and a
+  "composite work that includes the library" means a RealLive program which
+  links to the library, either through the LoadDLL() interface or a #DLL
   directive, and/or includes code from the library's Kepago header.
 
-  Note that this exception does not invalidate any other reasons why any part of 
+  Note that this exception does not invalidate any other reasons why any part of
   the work might be covered by the LGPL.
 */
-  
+
 #include "western.h"
 
-bool
-Cp1252::IsItalic(USHORT ch) const
-{
+bool Cp1252::IsItalic(unsigned short ch) const {
 	return (ch > 0x8300 && ch < 0x8900);
 }
 
-USHORT __stdcall
-GetItalic(USHORT ch)
-{
+unsigned short GetItalic(unsigned short ch) {
 	if (ch > 0x8700) return ch + 0x0200;
 	return ch - (ch >= 0x8380 ? 0x8320 : 0x831f);
 }
 
-USHORT __stdcall
-Italicise(USHORT ch)
-{
+unsigned short Italicise(unsigned short ch) {
 	if (ch == 0x20 || ch > 0xff) return ch;
 	if (ch > 0x8900) return ch - 0x0200;
 	return ch + (ch >= 0x60 ? 0x8320 : 0x831f);
 }
 
-Cp1252::Cp1252()
-{	
-	DesirableCharset = ANSI_CHARSET;
+Cp1252::Cp1252() {
+  //	DesirableCharset = ANSI_CHARSET;
 	NoTransforms = false;
-	LANGID SysLang = GetSystemDefaultLangID();
-	// For now, just bless some common European languages. (Wait, shouldn't I be checking system charset instead?)
-	UseUnicode = !(SysLang & 0x1ff == 0x07 || (SysLang & 0x1ff >= 0x09 && SysLang & 0x1ff <= 0x0c));
+// 	LANGID SysLang = GetSystemDefaultLangID();
+// 	// For now, just bless some common European languages. (Wait, shouldn't I be checking system charset instead?)
+// 	UseUnicode = !(SysLang & 0x1ff == 0x07 || (SysLang & 0x1ff >= 0x09 && SysLang & 0x1ff <= 0x0c));
 }
 
-bool Cp1252::DbcsDelim(UCHAR* str) const
-{
-	return str[0] == 0x89 && (str[1] == 0x82 || str[1] == 0x84 || str[1] == 0x91 || str[1] == 0x93);
+bool Cp1252::DbcsDelim(char* str) const {
+	return str[0] == 0x89 && (str[1] == 0x82 || str[1] == 0x84 ||
+                              str[1] == 0x91 || str[1] == 0x93);
 }
 
-USHORT Cp1252::JisDecode(USHORT ch) const
-{
+unsigned short Cp1252::JisDecode(unsigned short ch) const {
 	if (ch <= 0x7f)
 		return ch;
 	if (ch >= 0xa1 && ch <= 0xdf)
@@ -86,12 +78,11 @@ USHORT Cp1252::JisDecode(USHORT ch) const
 	return 0;
 }
 
-USHORT JisEncode(USHORT ch)
-{
+unsigned short JisEncode(unsigned short ch) {
 	if (ch <= 0x7f)
 		return ch;
 	if (ch >= 0x80 && ch <= 0xbf)
-		return ch | 0x8900; 
+		return ch | 0x8900;
 	if (ch >= 0xc0 && ch <= 0xfe)
 		return ch - 0x1f;
 	if (ch == 0xff)
@@ -99,10 +90,9 @@ USHORT JisEncode(USHORT ch)
 	return 0;
 }
 
-void Cp1252::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
-{
+void Cp1252::JisEncodeString(const char* src, char* buf, size_t buflen) const {
 	while (*src && buflen--) {
-		UINT ch = JisEncode(*src);
+		unsigned int ch = JisEncode(*src);
 		if (ch <= 0xff)
 			*buf++ = ch;
 		else {
@@ -113,22 +103,23 @@ void Cp1252::JisEncodeString(LPCTSTR src, LPTSTR buf, size_t buflen) const
 	}
 }
 
-const USHORT cp1252_to_uni[0x9f - 0x80 + 1] =
-	{ 0x20ac, 0xffff, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 
-	  0x2030, 0x0160, 0x2039, 0x0152, 0xffff, 0x017d, 0xffff, 0xffff, 0x2018, 
-	  0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161, 
+const unsigned short cp1252_to_uni[0x9f - 0x80 + 1] =
+	{ 0x20ac, 0xffff, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6,
+	  0x2030, 0x0160, 0x2039, 0x0152, 0xffff, 0x017d, 0xffff, 0xffff, 0x2018,
+	  0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161,
 	  0x203a, 0x0153, 0xffff, 0x017e, 0x0178 };
 
-USHORT Cp1252::Convert(USHORT ch) const
-{
+unsigned short Cp1252::Convert(unsigned short ch) const {
 	return ch >= 0x80 && ch <= 0x9f ? cp1252_to_uni[ch - 0x80] : ch;
 }
 
-wchar_t* Cp1252::ConvertString(const UCHAR* s) const
-{
-	wchar_t *rv = new wchar_t[strlen((char*) s) * 2 + 1];
-	size_t i = 0;
-	while (*s) rv[i++] = Convert(*s++);
-	rv[i] = 0;
-	return rv;
+std::wstring Cp1252::ConvertString(const std::string& in_string) const {
+  std::wstring rv;
+  rv.reserve(in_string.size());
+
+  const char* s = in_string.c_str();
+  while (*s)
+    rv += Convert(*s++);
+
+  return rv;
 }

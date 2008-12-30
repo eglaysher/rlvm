@@ -17,51 +17,52 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-  As a special exception to the GNU Lesser General Public License (LGPL), you 
-  may include a publicly distributed version of the library alongside a "work 
-  that uses the Library" to produce a composite work that includes the library, 
-  and distribute that work under terms of your choice, without any of the 
+  As a special exception to the GNU Lesser General Public License (LGPL), you
+  may include a publicly distributed version of the library alongside a "work
+  that uses the Library" to produce a composite work that includes the library,
+  and distribute that work under terms of your choice, without any of the
   additional requirements listed in clause 6 of the LGPL.
 
-  A "publicly distributed version of the library" means either an unmodified 
-  binary as distributed by Haeleth, or a modified version of the library that is 
-  distributed under the conditions defined in clause 2 of the LGPL, and a 
-  "composite work that includes the library" means a RealLive program which 
-  links to the library, either through the LoadDLL() interface or a #DLL 
+  A "publicly distributed version of the library" means either an unmodified
+  binary as distributed by Haeleth, or a modified version of the library that is
+  distributed under the conditions defined in clause 2 of the LGPL, and a
+  "composite work that includes the library" means a RealLive program which
+  links to the library, either through the LoadDLL() interface or a #DLL
   directive, and/or includes code from the library's Kepago header.
 
-  Note that this exception does not invalidate any other reasons why any part of 
+  Note that this exception does not invalidate any other reasons why any part of
   the work might be covered by the LGPL.
 */
-  
-#ifndef CODEPAGE_H
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#ifndef CODEPAGE_H
+#define CODEPAGE_H
+
+#include <string>
+#include <boost/scoped_ptr.hpp>
 
 struct Codepage {
-	int UseUnicode;
-	int DesirableCharset;
-	bool NoTransforms;
-	virtual USHORT JisDecode(USHORT ch) const;
-	virtual void JisDecodeString(LPCTSTR s, LPTSTR buf, size_t buflen) const;
-	virtual void JisEncodeString(LPCTSTR s, LPTSTR buf, size_t buflen) const;
-	virtual USHORT Convert(USHORT ch) const = 0;
-	virtual wchar_t* ConvertString(const UCHAR* s) const = 0;
-	virtual bool DbcsDelim(UCHAR* str) const;
-	virtual bool IsItalic(USHORT ch) const;
-	virtual ~Codepage();
+  virtual ~Codepage();
+  virtual unsigned short JisDecode(unsigned short ch) const;
+  virtual void JisDecodeString(const char* s, char* buf, size_t buflen) const;
+  virtual void JisEncodeString(const char* s, char* buf, size_t buflen) const;
+  virtual unsigned short Convert(unsigned short ch) const = 0;
+  virtual std::wstring ConvertString(const std::string& s) const = 0;
+  virtual bool DbcsDelim(char* str) const;
+  virtual bool IsItalic(unsigned short ch) const;
+
+  int UseUnicode;
+  int DesirableCharset;
+  bool NoTransforms;
 };
 
 class Cp {
-public:
-	// Singleton constructor
-	static Codepage& instance(int desired = -1);
-private:
-	static Codepage* instance_;
-	static int codepage;
-	static int scenario;
+ public:
+  // Singleton constructor
+  static Codepage& instance(int desired);
+ private:
+  static boost::scoped_ptr<Codepage> instance_;
+  static int codepage;
+  static int scenario;
 };
 
-#define CODEPAGE_H
 #endif
