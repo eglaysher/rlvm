@@ -32,14 +32,6 @@
 /**
  * @file   cp932toUnicode.cpp
  * @date   Sun Sep 17 14:10:35 2006
- *
- * Contains two stolen lookup tables from ShiftJIS::CP932::MapUTF,
- * another free software project, along with two methods using them to
- * convert to and from RealLive's native CP932 to Unicode and back.
- *
- * @todo These lookup tables could be shrunk a bit; the fmcp932 tables
- * all apear to not use the first 64 entries, so sizeof(short) * 64 * 45
- * is 5.6k, which could be significant when I do the DS port.
  */
 
 #include <string>
