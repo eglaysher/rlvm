@@ -29,12 +29,12 @@
 #define __TextPage_hpp__
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/function.hpp>
 
 class RLMachine;
 class TextPageElement;
 class SetWindowTextPageElement;
 class TextTextPageElement;
-
 
 // -----------------------------------------------------------------------
 
@@ -125,6 +125,9 @@ public:
   bool inRubyGloss() const { return in_ruby_gloss_; }
 
 private:
+  /// Performs the passed in action and then adds it to |elements_to_replay_|.
+  void addAction(const boost::function<void(TextPage&, bool)>& action);
+
   /// All subclasses of TextPageElement are friends of TextPage for
   /// tight coupling.
   ///
@@ -157,21 +160,24 @@ private:
    *
    * These methods are what actually does things. They output to the
    * screen, etc.
+   *
+   * @{
    */
 
   bool character_impl(const std::string& c, const std::string& next_char);
 
-  void name_impl(const std::string& name, const std::string& next_char);
+  void name_impl(const std::string& name, const std::string& next_char,
+                 bool is_active_page);
 
-  void hard_brake_impl();
+  void hard_brake_impl(bool is_active_page);
 
-  void reset_indentation_impl();
+  void reset_indentation_impl(bool is_active_page);
 
-  void font_colour_impl(const int color);
+  void font_colour_impl(const int color, bool is_active_page);
 
-  void mark_ruby_begin_impl();
+  void mark_ruby_begin_impl(bool is_active_page);
 
-  void display_ruby_text_impl(const std::string& utf8str);
+  void display_ruby_text_impl(const std::string& utf8str, bool is_active_page);
 
   void set_to_right_starting_color_impl(bool is_active_page);
   /// @}
