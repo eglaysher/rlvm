@@ -29,10 +29,28 @@
 
 // -----------------------------------------------------------------------
 
+NullTextWindow::NullTextWindow(RLMachine& machine, int x)
+    : TextWindow(machine, x), text_window_log_("NullTextWindow") {
+}
+
+// -----------------------------------------------------------------------
+
+NullTextWindow::~NullTextWindow() {}
+
+// -----------------------------------------------------------------------
+
 void NullTextWindow::clearWin()
 {
+  text_window_log_.recordFunction("clearWin");
   TextWindow::clearWin();
   current_contents_ = "";
+}
+
+// -----------------------------------------------------------------------
+
+void NullTextWindow::setFontColor(const std::vector<int>& color_data) {
+  text_window_log_.recordFunction("setFontColor");
+  TextWindow::setFontColor(color_data);
 }
 
 // -----------------------------------------------------------------------
@@ -40,6 +58,8 @@ void NullTextWindow::clearWin()
 bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
                                  const std::string& next)
 {
+  text_window_log_.recordFunction("displayChar", current, next);
+
   current_contents_ += current;
   return true;
 }
@@ -49,6 +69,8 @@ bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
 void NullTextWindow::setName(RLMachine& machine, const std::string& utf8name,
                              const std::string& next_char)
 {
+  text_window_log_.recordFunction("setName", utf8name, next_char);
+
   current_contents_ += "\\{" + utf8name + "}";
 }
 
@@ -56,5 +78,28 @@ void NullTextWindow::setName(RLMachine& machine, const std::string& utf8name,
 
 void NullTextWindow::hardBrake()
 {
+  text_window_log_.recordFunction("hardBrake");
   current_contents_ += "\n";
+  TextWindow::hardBrake();
+}
+
+// -----------------------------------------------------------------------
+
+void NullTextWindow::resetIndentation() {
+  text_window_log_.recordFunction("resetIndentation");
+  TextWindow::resetIndentation();
+}
+
+// -----------------------------------------------------------------------
+
+void NullTextWindow::markRubyBegin() {
+  text_window_log_.recordFunction("markRubyBegin");
+  TextWindow::markRubyBegin();
+}
+
+// -----------------------------------------------------------------------
+
+void NullTextWindow::displayRubyText(RLMachine& machine,
+                                     const std::string& utf8str) {
+  text_window_log_.recordFunction("displayRubyText", utf8str);
 }

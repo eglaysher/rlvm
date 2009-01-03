@@ -127,6 +127,8 @@ public:
 private:
   /// All subclasses of TextPageElement are friends of TextPage for
   /// tight coupling.
+  ///
+  /// TODO: These classes suck. Any way to get rid of them with a function<>?
   friend class TextPageElement;
   friend class SetWindowTextPageElement;
   friend class TextTextPageElement;

@@ -26,15 +26,16 @@
 #include <string>
 #include "Systems/Base/TextWindow.hpp"
 
+#include "NullSystem/MockLog.hpp"
+
 class NullTextWindow : public TextWindow
 {
-private:
-  std::string current_contents_;
-
 public:
-  NullTextWindow(RLMachine& machine, int x) : TextWindow(machine, x) {}
-  ~NullTextWindow() {}
+  NullTextWindow(RLMachine& machine, int x);
+  ~NullTextWindow();
   virtual void execute(RLMachine& machine) {}
+
+  virtual void setFontColor(const std::vector<int>& color_data);
 
   // We don't test graphics in the null system, so don't really
   // implement the waku parts.
@@ -51,15 +52,24 @@ public:
 
   virtual void hardBrake();
 
-  // To implement
-  virtual void resetIndentation() {}
-  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) {}
+  // To implement for real, instead of just recording in the mocklog.
+  virtual void resetIndentation();
+  virtual void markRubyBegin();
+  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
 
   virtual bool isFull() const { return false; }
 
   std::string currentContents() const { return current_contents_; }
 
   virtual void addSelectionItem(const std::string& utf8str) {}
+
+  MockLog& log() { return text_window_log_; }
+
+private:
+  std::string current_contents_;
+
+  /// Record all method calls here
+  MockLog text_window_log_;
 };
 
 #endif

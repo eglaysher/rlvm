@@ -25,20 +25,19 @@
 //
 // -----------------------------------------------------------------------
 
-#include "libReallive/archive.h"
-//#include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
-
 #include "Modules/TextoutLongOperation.hpp"
-
 #include "NullSystem/NullSystem.hpp"
 #include "NullSystem/NullTextWindow.hpp"
+#include "Systems/Base/TextPage.hpp"
+#include "libReallive/archive.h"
 
 #include "Utilities.h"
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
 
 #include <memory>
+#include <boost/assign/list_of.hpp>
 
 using namespace std;
 
@@ -60,10 +59,17 @@ struct TextSystem_data
     system.text().setActiveWindow(0);
   }
 
-  NullTextWindow& getTextWindow(int twn)
-  {
+  NullTextSystem& getTextSystem() {
+    return dynamic_cast<NullTextSystem&>(system.text());
+  }
+
+  NullTextWindow& getTextWindow(int twn) {
     return dynamic_cast<NullTextWindow&>(*system.text().textWindow(
                                            rlmachine, twn));
+  }
+
+  TextPage& currentPage() {
+    return system.text().currentPage(rlmachine);
   }
 
   void writeString(const std::string& text, bool nowait)
@@ -218,5 +224,108 @@ void object::test<5>()
 }
 
 // -----------------------------------------------------------------------
+
+/**
+ * Tests that the TextPage::name construct repeats correctly.
+ */
+template<>
+template<>
+void object::test<6>()
+{
+  NullTextSystem& sys = getTextSystem();
+  currentPage().name("Bob", "");
+  getTextWindow(0).log().ensure("setName", "Bob", "");
+  getTextWindow(0).log().clear();
+  snapshotAndClear();
+
+  // Replay it:
+  getTextSystem().backPage(rlmachine);
+  getTextWindow(0).log().ensure("setName", "Bob", "");
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests that the TextPgae::hardBreak construct repeats correctly.
+ */
+template<>
+template<>
+void object::test<7>()
+{
+  NullTextSystem& sys = getTextSystem();
+  currentPage().hardBrake();
+  getTextWindow(0).log().ensure("hardBrake");
+  getTextWindow(0).log().clear();
+  snapshotAndClear();
+
+  // Replay it:
+  getTextSystem().backPage(rlmachine);
+  getTextWindow(0).log().ensure("hardBrake");
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests that the TextPage::resetIndentation construct repeats correctly.
+ */
+template<>
+template<>
+void object::test<8>()
+{
+  NullTextSystem& sys = getTextSystem();
+  writeString("test", true);
+  currentPage().resetIndentation();
+  getTextWindow(0).log().ensure("resetIndentation");
+  getTextWindow(0).log().clear();
+  snapshotAndClear();
+
+  // Replay it:
+  getTextSystem().backPage(rlmachine);
+  getTextWindow(0).log().ensure("resetIndentation");
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests that the TextPage::fontColor construct repeats correctly.
+ */
+template<>
+template<>
+void object::test<9>()
+{
+  NullTextSystem& sys = getTextSystem();
+  currentPage().fontColour(0);
+  getTextWindow(0).log().ensure("setFontColor");
+  getTextWindow(0).log().clear();
+  snapshotAndClear();
+
+  // Replay it:
+  getTextSystem().backPage(rlmachine);
+  getTextWindow(0).log().ensure("setFontColor");
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * Tests that the ruby constructs repeat correctly.
+ */
+template<>
+template<>
+void object::test<10>()
+{
+  NullTextSystem& sys = getTextSystem();
+  currentPage().markRubyBegin();
+  writeString("With Ruby", true);
+  currentPage().displayRubyText("ruby");
+  getTextWindow(0).log().ensure("markRubyBegin");
+  getTextWindow(0).log().ensure("displayRubyText", "ruby");
+  getTextWindow(0).log().clear();
+  snapshotAndClear();
+
+  // Replay it:
+  getTextSystem().backPage(rlmachine);
+  getTextWindow(0).log().ensure("markRubyBegin");
+  getTextWindow(0).log().ensure("displayRubyText", "ruby");
+}
 
 };

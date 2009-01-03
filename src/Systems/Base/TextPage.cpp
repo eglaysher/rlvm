@@ -158,7 +158,7 @@ class ResetIndentationElement : public TextPageElement
 public:
   virtual void replayElement(TextPage& page, bool is_active_page)
   {
-    page.hard_brake_impl();
+    page.reset_indentation_impl();
   }
 
   virtual TextPageElement* clone() const

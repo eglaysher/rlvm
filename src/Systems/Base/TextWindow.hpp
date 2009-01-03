@@ -293,7 +293,7 @@ public:
   void setUseIndentation(const int i) { use_indentation_ = i; }
 
   void setDefaultTextColor(const std::vector<int>& color_data);
-  void setFontColor(const std::vector<int>& color_data);
+  virtual void setFontColor(const std::vector<int>& color_data);
 
   /// @}
 
@@ -447,10 +447,9 @@ public:
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char) = 0;
 
-  void hardBrake();
-  void resetIndentation();
-
-  void markRubyBegin();
+  virtual void hardBrake();
+  virtual void resetIndentation();
+  virtual void markRubyBegin();
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) = 0;
 
 
