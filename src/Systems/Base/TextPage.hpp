@@ -98,10 +98,15 @@ public:
   void markRubyBegin();
 
   /**
-   * Display the incoming phrase as ruby
-   *
+   * Display the incoming phrase as the rubytext for the text since
+   * markRubyBegin() was called.
    */
   void displayRubyText(const std::string& utf8str);
+
+  void setInsertionPointX(int x);
+  void setInsertionPointY(int y);
+  void offsetInsertionPointX(int offset);
+  void offsetInsertionPointY(int offset);
 
   /**
    * This is a hack to get the backlog color working. This adds a
@@ -178,6 +183,11 @@ private:
   void mark_ruby_begin_impl(bool is_active_page);
 
   void display_ruby_text_impl(const std::string& utf8str, bool is_active_page);
+
+  void set_insertion_point_x_impl(int x, bool is_active_page);
+  void set_insertion_point_y_impl(int y, bool is_active_page);
+  void offset_insertion_point_x_impl(int offset, bool is_active_page);
+  void offset_insertion_point_y_impl(int offset, bool is_active_page);
 
   void set_to_right_starting_color_impl(bool is_active_page);
   /// @}

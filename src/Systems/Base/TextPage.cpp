@@ -259,6 +259,30 @@ void TextPage::displayRubyText(const std::string& utf8str)
 
 // -----------------------------------------------------------------------
 
+void TextPage::setInsertionPointX(int x) {
+  addAction(bind(&TextPage::set_insertion_point_x_impl, _1, x, _2));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::setInsertionPointY(int y) {
+  addAction(bind(&TextPage::set_insertion_point_y_impl, _1, y, _2));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::offsetInsertionPointX(int offset) {
+  addAction(bind(&TextPage::offset_insertion_point_x_impl, _1, offset, _2));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::offsetInsertionPointY(int offset) {
+  addAction(bind(&TextPage::offset_insertion_point_y_impl, _1, offset, _2));
+}
+
+// -----------------------------------------------------------------------
+
 void TextPage::addSetToRightStartingColorElement()
 {
   elements_to_replay_.push_back(
@@ -334,6 +358,34 @@ void TextPage::display_ruby_text_impl(const std::string& utf8str,
   machine_->system().text().textWindow(*machine_, window_num_)
     ->displayRubyText(*machine_, utf8str);
   in_ruby_gloss_ = false;
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::set_insertion_point_x_impl(int x, bool is_active_page) {
+  machine_->system().text().textWindow(*machine_, window_num_)
+      ->setInsertionPointX(x);
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::set_insertion_point_y_impl(int y, bool is_active_page) {
+  machine_->system().text().textWindow(*machine_, window_num_)
+      ->setInsertionPointY(y);
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::offset_insertion_point_x_impl(int offset, bool is_active_page) {
+  machine_->system().text().textWindow(*machine_, window_num_)
+      ->offsetInsertionPointX(offset);
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::offset_insertion_point_y_impl(int offset, bool is_active_page) {
+  machine_->system().text().textWindow(*machine_, window_num_)
+      ->offsetInsertionPointY(offset);
 }
 
 // -----------------------------------------------------------------------

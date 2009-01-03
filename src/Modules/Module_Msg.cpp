@@ -57,6 +57,7 @@
 #include <boost/shared_ptr.hpp>
 
 using namespace std;
+using boost::shared_ptr;
 
 /**
  * @defgroup ModuleMessage The Message and Textout module (mod<0:3>).
@@ -225,6 +226,62 @@ struct Msg_page : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Msg_TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int x, int y) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.setInsertionPointX(x);
+    page.setInsertionPointY(y);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_TextPosX : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int x) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.setInsertionPointX(x);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_TextPosY : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int y) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.setInsertionPointY(y);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int x, int y) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.offsetInsertionPointX(x);
+    page.offsetInsertionPointY(y);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_TextOffsetX : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int x) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.offsetInsertionPointX(x);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_TextOffsetY : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int y) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.offsetInsertionPointY(y);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003)
 {
@@ -271,12 +328,12 @@ MsgModule::MsgModule()
   addUnsupportedOpcode(300, 0, "SetIndent");
   addUnsupportedOpcode(301, 0, "ClearIndent");
 
-  addUnsupportedOpcode(310, 0, "TextPos");
-  addUnsupportedOpcode(311, 0, "TextPosX");
-  addUnsupportedOpcode(312, 0, "TextPosY");
-  addUnsupportedOpcode(320, 0, "TextOffset");
-  addUnsupportedOpcode(321, 0, "TextOffsetX");
-  addUnsupportedOpcode(322, 0, "TextOffsetY");
+  addOpcode(310, 0, "TextPos", new Msg_TextPos);
+  addOpcode(311, 0, "TextPosX", new Msg_TextPosX);
+  addOpcode(312, 0, "TextPosY", new Msg_TextPosY);
+  addOpcode(320, 0, "TextOffset", new Msg_TextOffset);
+  addOpcode(321, 0, "TextOffsetX", new Msg_TextOffsetX);
+  addOpcode(322, 0, "TextOffsetY", new Msg_TextOffsetY);
 }
 
 // @}

@@ -410,6 +410,19 @@ public:
   void setActionOnPause(const int i) { action_on_pause_ = i; }
   bool actionOnPause() const { return action_on_pause_; }
 
+  /**
+   * @name Insertion point control
+   *
+   * @{
+   */
+  int insertionPointX() const { return text_insertion_point_x_; }
+  int insertionPointY() const { return text_insertion_point_y_; }
+  void offsetInsertionPointX(int offset) { text_insertion_point_x_ += offset; }
+  void offsetInsertionPointY(int offset) { text_insertion_point_y_ += offset; }
+  void setInsertionPointX(int x) { text_insertion_point_x_ = x; }
+  void setInsertionPointY(int y) { text_insertion_point_y_ = y; }
+  /// @}
+
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine, std::ostream* tree) = 0;
 
