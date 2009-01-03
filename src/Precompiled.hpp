@@ -31,6 +31,7 @@
 #ifndef __Header_hpp__
 #define __Header_hpp__
 
+#define USE_PRECOMPILED_HEADERS
 #ifdef USE_PRECOMPILED_HEADERS
 
 // C++ Standard Template Library

@@ -42,6 +42,7 @@
 #include "cp949.h"
 #include "western.h"
 
+#include <cstring>
 
 // -----------------------------------------------------------------------
 // Codepage
@@ -55,11 +56,11 @@ unsigned short Codepage::JisDecode(unsigned short ch) const {
 }
 
 void Codepage::JisEncodeString(const char* src, char* buf, size_t buflen) const {
-	strncpy((char*) buf, (const char*) src, buflen);
+  std::strncpy((char*) buf, (const char*) src, buflen);
 }
 
 void Codepage::JisDecodeString(const char* src, char* buf, size_t buflen) const {
-	int srclen = strlen(src), i = 0, j = 0;
+    int srclen = std::strlen(src), i = 0, j = 0;
 	while (i < srclen && j < buflen) {
 		unsigned int c1 = (unsigned char) src[i++];
 		if ((c1 >= 0x81 && c1 < 0xa0) || (c1 >= 0xe0 && c1 < 0xf0))

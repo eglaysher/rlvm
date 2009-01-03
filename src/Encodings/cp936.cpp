@@ -36,6 +36,8 @@
 
 #include "cp936.h"
 
+#include <cstring>
+
 Cp936::Cp936()
 {
   //	DesirableCharset = GB2312_CHARSET;
@@ -80,7 +82,7 @@ unsigned short Cp936::JisDecode(unsigned short ch) const
 
 void Cp936::JisEncodeString(const char* src, char* buf, size_t buflen) const
 {
-	int srclen = strlen(src), i = 0, j = 0;
+    int srclen = std::strlen(src), i = 0, j = 0;
 	while (i < srclen && j < buflen) {
 		int c1 = (unsigned char) src[i++];
 		if (c1 < 0x80) {

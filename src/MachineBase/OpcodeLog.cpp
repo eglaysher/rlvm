@@ -30,8 +30,10 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/OpcodeLog.hpp"
-#include <boost/bind.hpp>
+#include <algorithm>
+#include <iostream>
 #include <iomanip>
+#include <boost/bind.hpp>
 
 using namespace std;
 
@@ -59,7 +61,7 @@ static bool nameLessThan(const OpcodeLog::Storage::value_type& lhs,
 std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
   if (log.size()) {
     int max_function_name_len =
-      max_element(log.begin(), log.end(), nameLessThan)->first.size();
+        max_element(log.begin(), log.end(), nameLessThan)->first.size();
 
     os << setw(max_function_name_len) << left << "Name" << "  " << "Count" << endl;
 

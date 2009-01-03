@@ -38,6 +38,7 @@
 
 #include "cp949.h"
 #include <algorithm> // for lower_bound()
+#include <cstring>
 
 Cp949::Cp949()
 {
@@ -162,7 +163,7 @@ unsigned short Cp949::JisDecode(unsigned short ch) const
 
 void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const
 {
-	int srclen = strlen(src), k = 0, j = 0;
+    int srclen = std::strlen(src), k = 0, j = 0;
 	while (k < srclen && j < buflen) {
 		unsigned char c1 = (unsigned char) src[k++];
 		if (c1 < 0x80) {
@@ -1619,7 +1620,7 @@ unsigned short Cp949::JisDecode(unsigned short ch) const {
 }
 
 void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
-	strncpy(buf, src, buflen);
+    std::strncpy(buf, src, buflen);
 }
 
 unsigned short Cp949::Convert(unsigned short ch) const {
