@@ -44,9 +44,6 @@ class SDLTextWindow : public TextWindow
 public:
   SDLTextWindow(RLMachine& machine, int window);
   ~SDLTextWindow();
-
-  void setCurrentText(RLMachine& machine, const std::string& tex);
-
   virtual void render(RLMachine& machine,
                       std::ostream* tree);
 
@@ -56,14 +53,8 @@ public:
                            const std::string& current,
                            const std::string& next);
 
-  virtual bool isFull() const;
-
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char);
-  virtual void hardBrake();
-  virtual void resetIndentation();
-
-  virtual void markRubyBegin();
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
 
 
@@ -75,22 +66,12 @@ private:
 
   void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
 
-  ///
-  std::string current_value_;
-
   /// Converted surface for uploading.
   boost::shared_ptr<SDLSurface> surface_;
 
   /// Font being used.
   boost::shared_ptr<TTF_Font> font_;
   boost::shared_ptr<TTF_Font> ruby_font_;
-
-  /// Insertion point for text.
-  int insertion_point_x_, insertion_point_y_;
-
-  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
-  /// been called)
-  int ruby_begin_point_;
 };
 
 

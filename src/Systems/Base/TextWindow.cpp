@@ -89,9 +89,9 @@ static struct ButtonInfo {
 // -----------------------------------------------------------------------
 
 TextWindow::TextWindow(RLMachine& machine, int window_num)
-  : window_num_(window_num), current_line_number_(0),
-    current_indentation_in_pixels_(0), use_indentation_(0), colour_(),
-    filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0)
+    : window_num_(window_num), ruby_begin_point_(-1), current_line_number_(0),
+      current_indentation_in_pixels_(0), use_indentation_(0), colour_(),
+      filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0)
 {
   Gameexe& gexe = machine.system().gameexe();
 
@@ -131,6 +131,7 @@ TextWindow::TextWindow(RLMachine& machine, int window_num)
 
   setKeycurMod(window("KEYCUR_MOD"));
   setActionOnPause(window("R_COMMAND_MOD"));
+  setWindowWaku(machine, gexe, window("WAKU_SETNO").to_int(0));
 }
 
 // -----------------------------------------------------------------------
@@ -446,6 +447,48 @@ void TextWindow::renderButtons(RLMachine& machine)
                              BUTTON_INFO[i].waku_offset);
     }
   }
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::clearWin()
+{
+  text_insertion_point_x_ = 0;
+  text_insertion_point_y_ = rubyTextSize();
+  current_indentation_in_pixels_ = 0;
+  current_line_number_ = 0;
+  ruby_begin_point_ = -1;
+  font_colour_ = default_color_;
+}
+
+// -----------------------------------------------------------------------
+
+bool TextWindow::isFull() const
+{
+  return current_line_number_ >= y_window_size_in_chars_;
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::hardBrake()
+{
+  text_insertion_point_x_ = current_indentation_in_pixels_;
+  text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
+  current_line_number_++;
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::resetIndentation()
+{
+  current_indentation_in_pixels_ = 0;
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::markRubyBegin()
+{
+  ruby_begin_point_ = text_insertion_point_x_;
 }
 
 // -----------------------------------------------------------------------

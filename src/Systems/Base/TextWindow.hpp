@@ -97,6 +97,10 @@ protected:
   int text_insertion_point_x_;
   int text_insertion_point_y_;
 
+  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
+  /// been called)
+  int ruby_begin_point_;
+
   /// The line number in this text window; used to detect whether we
   /// have filled this text box
   int current_line_number_;
@@ -407,8 +411,7 @@ public:
   bool actionOnPause() const { return action_on_pause_; }
 
   // ------------------------------------------------ [ Abstract interface ]
-  virtual void render(RLMachine& machine,
-                      std::ostream* tree) = 0;
+  virtual void render(RLMachine& machine, std::ostream* tree) = 0;
 
   void renderButtons(RLMachine& machine);
 
@@ -416,7 +419,7 @@ public:
    * Clears the text window of all text and resets the insertion
    * point.
    */
-  virtual void clearWin() = 0;
+  virtual void clearWin();
 
   /**
    * Displays one character, and performs line breaking logic based on
@@ -431,8 +434,7 @@ public:
   /**
    * Returns whether another character can be placed on the screen.
    */
-  virtual bool isFull() const = 0;
-
+  bool isFull() const;
 
   /**
    *  Write this later.
@@ -445,10 +447,10 @@ public:
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char) = 0;
 
-  virtual void hardBrake() = 0;
-  virtual void resetIndentation() = 0;
+  void hardBrake();
+  void resetIndentation();
 
-  virtual void markRubyBegin() = 0;
+  void markRubyBegin();
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) = 0;
 
 

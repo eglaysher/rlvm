@@ -70,12 +70,8 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(RLMachine& machine, int window_num)
-  : TextWindow(machine, window_num), ruby_begin_point_(-1)
+  : TextWindow(machine, window_num)
 {
-  Gameexe& gexe = machine.system().gameexe();
-  GameexeInterpretObject window(gexe("WINDOW", window_num));
-  setWindowWaku(machine, gexe, window("WAKU_SETNO"));
-
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
   font_ = text.getFontOfSize(machine, fontSizeInPixels());
   ruby_font_ = text.getFontOfSize(machine, rubyTextSize());
@@ -91,18 +87,8 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::clearWin()
-{
-  insertion_point_x_ = 0;
-  insertion_point_y_ = rubyTextSize();
-  current_indentation_in_pixels_ = 0;
-  current_line_number_ = 0;
-
-  ruby_begin_point_ = -1;
-
-  // Reset the color
-  // COLOUR
-  font_colour_ = default_color_;
+void SDLTextWindow::clearWin() {
+  TextWindow::clearWin();
 
   // Allocate the text window surface
   if (!surface_)
@@ -160,9 +146,9 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     // character instead, to prevent the next character being stranded
     // at the start of a line.
     //
-    bool char_will_fit_on_line = insertion_point_x_ + tmp->w + x_spacing_ <=
+    bool char_will_fit_on_line = text_insertion_point_x_ + tmp->w + x_spacing_ <=
       textWindowSize().width();
-    bool next_char_will_fit_on_line = insertion_point_x_ + 2*(tmp->w + x_spacing_) <=
+    bool next_char_will_fit_on_line = text_insertion_point_x_ + 2*(tmp->w + x_spacing_) <=
       textWindowSize().width();
     if(!char_will_fit_on_line ||
        (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
@@ -179,11 +165,11 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
     surface_->blitFROMSurface(
       tmp,
       Rect(Point(0, 0), s),
-      Rect(Point(insertion_point_x_, insertion_point_y_), s),
+      Rect(Point(text_insertion_point_x_, text_insertion_point_y_), s),
       255);
 
     // Move the insertion point forward one character
-    insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
+    text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
 
     SDL_FreeSurface(tmp);
   }
@@ -200,16 +186,9 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool SDLTextWindow::isFull() const
-{
-  return current_line_number_ >= y_window_size_in_chars_;
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextWindow::setIndentation()
 {
-  current_indentation_in_pixels_ = insertion_point_x_;
+  current_indentation_in_pixels_ = text_insertion_point_x_;
 }
 
 // -----------------------------------------------------------------------
@@ -255,25 +234,9 @@ void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
   if(next_codepoint == 0x300C || next_codepoint == 0x300E ||
      next_codepoint == 0xFF08)
   {
-    current_indentation_in_pixels_ = insertion_point_x_ + font_size_in_pixels_ +
+    current_indentation_in_pixels_ = text_insertion_point_x_ + font_size_in_pixels_ +
       x_spacing_;
   }
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextWindow::hardBrake()
-{
-  insertion_point_x_ = current_indentation_in_pixels_;
-  insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
-  current_line_number_++;
-}
-
-// -----------------------------------------------------------------------
-
-void SDLTextWindow::resetIndentation()
-{
-  current_indentation_in_pixels_ = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -351,19 +314,12 @@ void SDLTextWindow::render(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::markRubyBegin()
-{
-  ruby_begin_point_ = insertion_point_x_;
-}
-
-// -----------------------------------------------------------------------
-
 void SDLTextWindow::displayRubyText(RLMachine& machine,
                                     const std::string& utf8str)
 {
   if(ruby_begin_point_ != -1)
   {
-    int end_point = insertion_point_x_ - x_spacing_;
+    int end_point = text_insertion_point_x_ - x_spacing_;
 
     if(ruby_begin_point_ > end_point)
     {
@@ -379,7 +335,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
     // Render glyph to surface
     int w = tmp->w;
     int h = tmp->h;
-    int height_location = insertion_point_y_ - rubyTextSize();
+    int height_location = text_insertion_point_y_ - rubyTextSize();
     int width_start =
       int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
           (w * 0.5f));
@@ -415,8 +371,8 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str)
     shared_ptr<Surface>(new SDLSurface(normal)),
     shared_ptr<Surface>(new SDLSurface(inverted)),
     selectionCallback(), getNextSelectionID(),
-    Point(textX1() + insertion_point_x_, textY1() + insertion_point_y_));
+    Point(textX1() + text_insertion_point_x_, textY1() + text_insertion_point_y_));
 
-  insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
+  text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);
 }

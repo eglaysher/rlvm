@@ -53,7 +53,6 @@ public:
 
   // To implement
   virtual void resetIndentation() {}
-  virtual void markRubyBegin() {}
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) {}
 
   virtual bool isFull() const { return false; }

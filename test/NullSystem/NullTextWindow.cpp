@@ -31,6 +31,7 @@
 
 void NullTextWindow::clearWin()
 {
+  TextWindow::clearWin();
   current_contents_ = "";
 }
 
