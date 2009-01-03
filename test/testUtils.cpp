@@ -42,7 +42,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 const std::vector<std::string> testPaths =
-  list_of("./")("./test/");
+    list_of("./")("./test/")("./build/test/");
 
 string locateTestCase(const string& baseName)
 {
