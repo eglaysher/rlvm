@@ -274,7 +274,7 @@ int GraphicsSystem::useCustomCursor() {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::setCursor(RLMachine& machine, int cursor)
+void GraphicsSystem::setCursor(int cursor)
 {
   cursor_ = cursor;
   mouse_cursor_.reset();

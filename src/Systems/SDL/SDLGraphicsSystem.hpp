@@ -69,7 +69,7 @@ public:
    * When the cursor is changed, also make sure that it exists so that we can
    * switch on/off the operating system cursor when the cursor index is invalid.
    */
-  virtual void setCursor(RLMachine& machine, int cursor);
+  virtual void setCursor(int cursor);
 
   virtual void beginFrame();
 

@@ -125,7 +125,7 @@ TextSystem::~TextSystem()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::executeTextSystem(RLMachine& machine)
+void TextSystem::executeTextSystem()
 {
   // Check to see if the cursor is displayed
   WindowMap::iterator it = text_window_.find(active_window_);
@@ -476,12 +476,12 @@ void TextSystem::setWindowAttrF(int i) {
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setMousePosition(RLMachine& machine, const Point& pos)
+void TextSystem::setMousePosition(const Point& pos)
 {
   for(WindowMap::iterator it = text_window_.begin();
       it != text_window_.end(); ++it)
   {
-    it->second->setMousePosition(machine, pos);
+    it->second->setMousePosition(pos);
   }
 }
 

@@ -131,7 +131,7 @@ bool Sel_LongOperation::operator()(RLMachine& machine)
 void Sel_LongOperation::mouseMotion(const Point& pos)
 {
   // Tell the text system about the move
-  machine_.system().text().setMousePosition(machine_, pos);
+  machine_.system().text().setMousePosition(pos);
 }
 
 // -----------------------------------------------------------------------

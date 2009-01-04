@@ -504,15 +504,14 @@ void TextWindow::setRGBAF(const vector<int>& attr)
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setMousePosition(RLMachine& machine, const Point& pos)
+void TextWindow::setMousePosition(const Point& pos)
 {
   using namespace boost;
 
   if(inSelectionMode())
   {
     for_each(selections_.begin(), selections_.end(),
-             bind(&SelectionElement::setMousePosition, _1,
-                  ref(machine), pos));
+             bind(&SelectionElement::setMousePosition, _1, pos));
   }
 
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
@@ -533,8 +532,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
   {
     bool found =
       find_if(selections_.begin(), selections_.end(),
-              bind(&SelectionElement::handleMouseClick, _1,
-                   ref(machine), pos, pressed))
+              bind(&SelectionElement::handleMouseClick, _1, pos, pressed))
       != selections_.end();
 
     if(found)

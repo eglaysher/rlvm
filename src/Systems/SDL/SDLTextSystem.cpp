@@ -39,7 +39,6 @@
 
 #include "Systems/SDL/SDLTextSystem.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"

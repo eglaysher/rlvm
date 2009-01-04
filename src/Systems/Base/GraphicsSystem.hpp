@@ -188,7 +188,7 @@ public:
   int useCustomCursor();
 
   /// Sets the cursor to the incoming cursor index.
-  virtual void setCursor(RLMachine& machine, int cursor);
+  virtual void setCursor(int cursor);
 
   /// Returns the current index.
   int cursor() const { return cursor_; }

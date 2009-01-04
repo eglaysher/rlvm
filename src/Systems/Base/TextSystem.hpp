@@ -104,7 +104,7 @@ public:
    * @{
    */
 
-  void executeTextSystem(RLMachine& machine);
+  void executeTextSystem();
 
   void render(std::ostream* tree);
   void hideTextWindow(int win_number);
@@ -242,9 +242,8 @@ public:
   bool windowExbtnUse() const { return exbtn_use_; }
 
   /// Update the mouse cursor.
-  void setMousePosition(RLMachine& machine, const Point& pos);
-  bool handleMouseClick(RLMachine& machine, const Point& pos,
-                        bool pressed);
+  void setMousePosition(const Point& pos);
+  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
   /// @}
 
   /**

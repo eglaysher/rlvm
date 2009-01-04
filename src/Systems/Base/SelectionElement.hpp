@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-class RLMachine;
+class GraphicsSystem;
 class Surface;
 class Point;
 
@@ -43,7 +43,8 @@ class Point;
 class SelectionElement
 {
 public:
-  SelectionElement(const boost::shared_ptr<Surface>& normal_image,
+  SelectionElement(GraphicsSystem& gs,
+                   const boost::shared_ptr<Surface>& normal_image,
                    const boost::shared_ptr<Surface>& highlighted_image,
                    const boost::function<void(int)>& selection_callback,
                    int id, const Point& pos);
@@ -51,8 +52,8 @@ public:
 
   void setSelectionCallback(const boost::function<void(int)>& func);
 
-  void setMousePosition(RLMachine& machine, const Point& pos);
-  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
+  void setMousePosition(const Point& pos);
+  bool handleMouseClick(const Point& pos, bool pressed);
 
   void render();
 
@@ -69,6 +70,8 @@ private:
 
   /// Callback function for when item is selected.
   boost::function<void(int)> selection_callback_;
+
+  GraphicsSystem& graphics_system_;
 
   bool isHighlighted(const Point& p);
 };

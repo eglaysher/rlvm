@@ -85,8 +85,8 @@ using namespace libReallive;
 // Private Interface
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setCursor(RLMachine& machine, int cursor) {
-  GraphicsSystem::setCursor(machine, cursor);
+void SDLGraphicsSystem::setCursor(int cursor) {
+  GraphicsSystem::setCursor(cursor);
 
   SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
 }

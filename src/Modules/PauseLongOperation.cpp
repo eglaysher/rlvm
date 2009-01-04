@@ -79,7 +79,7 @@ PauseLongOperation::~PauseLongOperation()
 void PauseLongOperation::mouseMotion(const Point& p)
 {
   // Tell the text system about the move
-  machine.system().text().setMousePosition(machine, p);
+  machine.system().text().setMousePosition(p);
 }
 
 // -----------------------------------------------------------------------

@@ -375,10 +375,12 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str)
   // Figure out xpos and ypos
   // POINT
   SelectionElement* element = new SelectionElement(
-    shared_ptr<Surface>(new SDLSurface(normal)),
-    shared_ptr<Surface>(new SDLSurface(inverted)),
-    selectionCallback(), getNextSelectionID(),
-    Point(textX1() + text_insertion_point_x_, textY1() + text_insertion_point_y_));
+      system().graphics(),
+      shared_ptr<Surface>(new SDLSurface(normal)),
+      shared_ptr<Surface>(new SDLSurface(inverted)),
+      selectionCallback(), getNextSelectionID(),
+      Point(textX1() + text_insertion_point_x_,
+            textY1() + text_insertion_point_y_));
 
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);

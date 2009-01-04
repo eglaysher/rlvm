@@ -333,7 +333,7 @@ public:
   /// @}
 
   // TODO: What's setMousePosition and how does it differ from mouse listeners?
-  virtual void setMousePosition(RLMachine& machine, const Point& pos);
+  virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
   /**

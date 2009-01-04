@@ -32,7 +32,6 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/SelectionElement.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"
 
@@ -45,14 +44,16 @@ using boost::shared_ptr;
 // SelectionElement
 // -----------------------------------------------------------------------
 SelectionElement::SelectionElement(
-  const boost::shared_ptr<Surface>& normal_image,
-  const boost::shared_ptr<Surface>& highlighted_image,
-  const boost::function<void(int)>& selection_callback,
-  int id, const Point& pos)
-  : is_highlighted_(false), id_(id), pos_(pos),
-    normal_image_(normal_image),
-    highlighted_image_(highlighted_image),
-    selection_callback_(selection_callback)
+    GraphicsSystem& gs,
+    const boost::shared_ptr<Surface>& normal_image,
+    const boost::shared_ptr<Surface>& highlighted_image,
+    const boost::function<void(int)>& selection_callback,
+    int id, const Point& pos)
+    : is_highlighted_(false), id_(id), pos_(pos),
+      normal_image_(normal_image),
+      highlighted_image_(highlighted_image),
+      selection_callback_(selection_callback),
+      graphics_system_(gs)
 {
 }
 
@@ -79,19 +80,17 @@ bool SelectionElement::isHighlighted(const Point& p)
 
 // -----------------------------------------------------------------------
 
-void SelectionElement::setMousePosition(RLMachine& machine, const Point& pos)
-{
+void SelectionElement::setMousePosition(const Point& pos) {
   bool start_value = is_highlighted_;
   is_highlighted_ = isHighlighted(pos);
 
-  if(start_value != is_highlighted_)
-    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+  if (start_value != is_highlighted_)
+    graphics_system_.markScreenAsDirty(GUT_TEXTSYS);
 }
 
 // -----------------------------------------------------------------------
 
-bool SelectionElement::handleMouseClick(
-  RLMachine& machine, const Point& pos, bool pressed)
+bool SelectionElement::handleMouseClick(const Point& pos, bool pressed)
 {
   if(pressed == false && isHighlighted(pos))
   {
