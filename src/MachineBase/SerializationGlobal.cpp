@@ -126,12 +126,30 @@ void loadGlobalMemory(RLMachine& machine)
   // this certain game and it may not exist yet.
   if(file)
   {
-    using namespace boost::iostreams;
-    filtering_stream<input> filtered_input;
-    filtered_input.push(zlib_decompressor());
-    filtered_input.push(file);
+    try {
+      using namespace boost::iostreams;
+      filtering_stream<input> filtered_input;
+      filtered_input.push(zlib_decompressor());
+      filtered_input.push(file);
 
-    loadGlobalMemoryFrom(filtered_input, machine);
+      loadGlobalMemoryFrom(filtered_input, machine);
+    } catch(...) {
+      // Swallow ALL exceptions during file reading. If loading the global
+      // memory file fails in any way, something is EXTREMELY wrong. Either
+      // we're trying to read an incompatible old version's files or the global
+      // data is corrupted. Either way, we can't safely do ANYTHING with this
+      // game's entire save data so move it out of the way.
+      fs::path save_dir = machine.system().gameSaveDirectory();
+      fs::path dest_save_dir = save_dir.branch_path() /
+                               (save_dir.leaf() + ".old_corrupted_data");
+
+      if (fs::exists(dest_save_dir))
+        fs::remove_all(dest_save_dir);
+      fs::rename(save_dir, dest_save_dir);
+
+      cerr << "WARNING: Unable to read saved global memory file. Moving "
+           << save_dir << " to " << dest_save_dir << endl;
+    }
   }
 }
 
