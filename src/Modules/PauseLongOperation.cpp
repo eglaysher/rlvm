@@ -107,7 +107,12 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     }
     else if(!machine.system().text().handleMouseClick(machine, pos, pressed))
     {
-      if(pressed)
+      // We *must* only respond on mouseups! This detail matters because in
+      // rlBabel, if glosses are enabled, an spause() is called and then the
+      // mouse button value returned by GetCursorPos needs to be "2" for the
+      // rest of the gloss implementation to work. If we respond on a
+      // mousedown, then it'll return "1" instead.
+      if(!pressed)
       {
         if(text.isReadingBacklog())
         {
@@ -125,7 +130,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     break;
   }
   case MOUSE_RIGHT:
-    if (pressed) {
+    if (!pressed) {
       machine.system().showSyscomMenu(machine);
       return true;
     }

@@ -30,6 +30,7 @@
 
 #include "MachineBase/RealLiveDLL.hpp"
 #include "MachineBase/reference.hpp"
+#include "Systems/Base/Rect.hpp"
 
 #include <boost/shared_ptr.hpp>
 
@@ -75,6 +76,31 @@ enum getcReturn {
   getcClearIndent = 6,
   getcBeginGloss  = 7
 };
+
+// -----------------------------------------------------------------------
+
+/**
+ * Clickable on screen areas that display a message.
+ */
+class Gloss
+{
+public:
+  Gloss(RLMachine& machine, const std::string& cp932_src,
+        int x1, int y1, int x2, int y2);
+
+  /// Whether the passed in point intersects with 
+  bool contains(const Point& point);
+
+  const std::string& text() const { return text_; }
+
+private:
+  /// Text displayed in the gloss.
+  std::string text_;
+
+  /// Clickable areas which trigger this gloss.
+  std::vector<Rect> link_areas_;
+};  // end of class Gloss
+
 
 // -----------------------------------------------------------------------
 
@@ -149,6 +175,21 @@ class RlBabelDLL : public RealLiveDLL {
   /// where it won't mess with our indentation rules.)
   int setCurrentWindowName(RLMachine& machine, StringReferenceIterator buffer);
 
+  /// Clears all on screen glosses.
+  int clearGlosses();
+
+  /// Mark where this gloss begins.
+  int newGloss(RLMachine& machine);
+
+  /// Create a gloss of the text since newGloss() with the glosstext of
+  /// |cp932_gloss_text|.
+  int addGloss(RLMachine& machine, const std::string& cp932_gloss_text);
+
+  /// Tests if (x, y) is inside any defined glosses. If so, return true and put
+  /// the glosstext in |text|.
+  int testGlosses(RLMachine& machine, int x, int y,
+                  StringReferenceIterator text, int globalwaku);
+
   // Helper functions:
 
   int getCharWidth(RLMachine& machine, unsigned short full_char, bool as_xmod);
@@ -178,10 +219,6 @@ class RlBabelDLL : public RealLiveDLL {
   /// corresponding piece of integer memory.
   StringReferenceIterator getSvar(RLMachine& machine, int addr);
 
-  /// Converts an incoming window id to text window instance. If |id| is a
-  /// negative number, returns the current window.
-  boost::shared_ptr<TextWindow> getWindow(RLMachine& machine, int id);
-
   /// Whether text being added is italicized.
   bool add_is_italic;
 
@@ -196,6 +233,12 @@ class RlBabelDLL : public RealLiveDLL {
 
   /// End of the current token being processed in |cp932_text_buffer|.
   std::string::size_type end_token_index;
+
+  /// Clickable on screen areas that display a message.
+  std::vector<Gloss> glosses_;
+
+  /// Marker set at the start of a gloss.
+  int gloss_start_x_, gloss_start_y_;
 };  // end of class RlBabelDll
 
 #endif

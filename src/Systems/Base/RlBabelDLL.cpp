@@ -58,6 +58,7 @@
 #include "libReallive/intmemref.h"
 #include "Utilities/StringUtilities.hpp"
 
+#include <algorithm>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -80,13 +81,52 @@ inline bool token_delimiter(char val) {
   return val < 6 || (val > 7 && val <= 32) || val == '-';
 }
 
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<TextWindow> getWindow(RLMachine& machine, int id) {
+  TextSystem& text_system = machine.system().text();
+  if (id >= 0) {
+    return text_system.textWindow(machine, id);
+  } else {
+    return text_system.currentWindow(machine);
+  }
+}
+
+} // anonymous namespace
+
+// -----------------------------------------------------------------------
+// Gloss
+// -----------------------------------------------------------------------
+Gloss::Gloss(RLMachine& machine, const std::string& cp932_src,
+             int x1, int y1, int x2, int y2)
+    : text_(cp932_src) {
+  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+
+  int line_height = window->lineHeight();
+  while (y1 < y2) {
+    // Special case for multi-line links.  Hopefully these will be rare...
+    link_areas_.push_back(Rect::GRP(x1, y1, window->textWindowSize().width(),
+                                    y1 + line_height));
+
+    y1 += line_height;
+    x1 = window->currentIndentation();
+  }
+
+  link_areas_.push_back(Rect::GRP(x1, y1, x2, y2 + line_height));
+}
+
+// -----------------------------------------------------------------------
+
+bool Gloss::contains(const Point& point) {
+  return std::find_if(link_areas_.begin(), link_areas_.end(),
+                      bind(&Rect::contains, _1, point)) != link_areas_.end();
 }
 
 // -----------------------------------------------------------------------
 // RlBabelDLL
 // -----------------------------------------------------------------------
 RlBabelDLL::RlBabelDLL()
-  : add_is_italic(false)
+    : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0)
 {}
 
 // -----------------------------------------------------------------------
@@ -130,17 +170,13 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
       return getcError;
     }
     case dllClearGlosses:
-//      return ClearGlosses();
-      return 0;
+      return clearGlosses();
     case dllNewGloss:
-//      return NewGloss();
-      return 0;
+      return newGloss(machine);
     case dllAddGloss:
-//       return AddGloss(get_svar(arg1));
-      return 0;
+      return addGloss(machine, *getSvar(machine, arg1));
     case dllTestGlosses:
-//       return TestGlosses(arg1, arg2, get_svar(arg3), arg4);
-      return 0;
+      return testGlosses(machine, arg1, arg2, getSvar(machine, arg3), arg4);
     case dllGetRCommandMod: {
       int window = getWindow(machine, arg1)->windowNumber();
       return machine.system().gameexe()("WINDOW")(window)("R_COMMAND_MOD");
@@ -515,6 +551,54 @@ int RlBabelDLL::setCurrentWindowName(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
+int RlBabelDLL::clearGlosses() {
+  glosses_.clear();
+  return 1;
+}
+
+// -----------------------------------------------------------------------
+
+int RlBabelDLL::newGloss(RLMachine& machine) {
+  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+  gloss_start_x_ = window->insertionPointX();
+  gloss_start_y_ = window->insertionPointY();
+  return 1;
+}
+
+// -----------------------------------------------------------------------
+
+int RlBabelDLL::addGloss(RLMachine& machine,
+                         const std::string& cp932_gloss_text) {
+  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+  glosses_.push_back(Gloss(machine,
+                           cp932_gloss_text, gloss_start_x_, gloss_start_y_,
+                           window->insertionPointX(),
+                           window->insertionPointY()));
+  return 1;
+}
+
+// -----------------------------------------------------------------------
+
+int RlBabelDLL::testGlosses(RLMachine& machine,
+                            int x, int y, StringReferenceIterator text,
+                            int globalwaku) {
+  // Does this handle all cases?
+  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+  x -= window->textX1();
+  y -= window->textY1();
+
+  std::vector<Gloss>::const_iterator it =
+      std::find_if(glosses_.begin(), glosses_.end(),
+                   bind(&Gloss::contains, _1, Point(x, y)));
+  if (it == glosses_.end())
+    return 0;
+
+  *text = it->text();
+  return 1;
+}
+
+// -----------------------------------------------------------------------
+
 int RlBabelDLL::getCharWidth(RLMachine& machine, unsigned short cp932_char,
                              bool as_xmod) {
   Codepage& cp = Cp::instance(machine.getTextEncoding());
@@ -642,16 +726,4 @@ StringReferenceIterator RlBabelDLL::getSvar(RLMachine& machine, int addr) {
 
   // Error.
   return StringReferenceIterator(m, libReallive::STRS_LOCATION, 0);
-}
-
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<TextWindow> RlBabelDLL::getWindow(RLMachine& machine,
-                                                    int id) {
-  TextSystem& text_system = machine.system().text();
-  if (id >= 0) {
-    return text_system.textWindow(machine, id);
-  } else {
-    return text_system.currentWindow(machine);
-  }
 }
