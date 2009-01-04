@@ -63,6 +63,12 @@ public:
    * still running.
    */
   virtual bool operator()(RLMachine& machine) = 0;
+
+  /**
+   * Whether we should sleep(10) every time we go through the
+   * gameloop. Defaults to true.
+   */
+  virtual bool sleepEveryTick();
 };
 
 // -----------------------------------------------------------------------

@@ -65,6 +65,7 @@ public:
 
   // Overriden from LongOperation:
   virtual bool operator()(RLMachine& machine);
+  virtual bool sleepEveryTick();
 };
 
 // -----------------------------------------------------------------------

@@ -104,7 +104,10 @@ void SDLSystem::run(RLMachine& machine)
   if (platform())
     platform()->run(machine);
 
-  if (!forceFastForward() && (machine.currentLongOperation() || forceWait())) {
+  boost::shared_ptr<LongOperation> longop = machine.currentLongOperation();
+
+  if (!forceFastForward() &&
+      ((longop && longop->sleepEveryTick()) || forceWait())) {
     event_system_->wait(10);
     setForceWait(false);
   }

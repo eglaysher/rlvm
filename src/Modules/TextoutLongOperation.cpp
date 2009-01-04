@@ -249,6 +249,12 @@ bool TextoutLongOperation::operator()(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+bool TextoutLongOperation::sleepEveryTick() {
+  return !no_wait_;
+}
+
+// -----------------------------------------------------------------------
+
 void printTextToFunction(
   boost::function<void(const std::string& c, const std::string& nextChar)> fun,
   const std::string& charsToPrint, const std::string& nextCharForFinal)
