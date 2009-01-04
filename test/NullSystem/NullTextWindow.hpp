@@ -46,9 +46,12 @@ public:
 
   virtual bool displayChar(RLMachine& machine, const std::string& current,
                            const std::string& next);
+  virtual int charWidth(unsigned short codepoint) const { return 0; }
+
   virtual void clearWin();
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char);
+  virtual void setNameWithoutDisplay(const std::string& utf8name) { }
 
   virtual void hardBrake();
 

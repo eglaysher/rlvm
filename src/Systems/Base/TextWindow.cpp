@@ -473,7 +473,7 @@ bool TextWindow::isFull() const
 void TextWindow::hardBrake()
 {
   text_insertion_point_x_ = current_indentation_in_pixels_;
-  text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
+  text_insertion_point_y_ += lineHeight();
   current_line_number_++;
 }
 

@@ -291,6 +291,9 @@ public:
   void setTextboxPadding(const std::vector<int>& pos_data);
 
   void setUseIndentation(const int i) { use_indentation_ = i; }
+  int useIndentation() const { return use_indentation_; }
+
+  int currentIndentation() const { return current_indentation_in_pixels_; }
 
   void setDefaultTextColor(const std::vector<int>& color_data);
   virtual void setFontColor(const std::vector<int>& color_data);
@@ -421,6 +424,10 @@ public:
   void offsetInsertionPointY(int offset) { text_insertion_point_y_ += offset; }
   void setInsertionPointX(int x) { text_insertion_point_x_ = x; }
   void setInsertionPointY(int y) { text_insertion_point_y_ = y; }
+
+  int lineHeight() const {
+    return font_size_in_pixels_ + y_spacing_ + ruby_size_;
+  }
   /// @}
 
   // ------------------------------------------------ [ Abstract interface ]
@@ -444,6 +451,9 @@ public:
   virtual bool displayChar(RLMachine& machine, const std::string& current,
                            const std::string& next) = 0;
 
+  /// Returns the width of the unicode codepoint stored in |character|.
+  virtual int charWidth(unsigned short codepoint) const = 0;
+
   /**
    * Returns whether another character can be placed on the screen.
    */
@@ -459,6 +469,7 @@ public:
    */
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char) = 0;
+  virtual void setNameWithoutDisplay(const std::string& utf8name) = 0;
 
   virtual void hardBrake();
   virtual void resetIndentation();

@@ -186,6 +186,15 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
+int SDLTextWindow::charWidth(unsigned short codepoint) const {
+  int minx, maxx, miny, maxy, advance;
+  TTF_GlyphMetrics(font_.get(), codepoint,
+                   &minx, &maxx, &miny, &maxy, &advance);
+  return advance;
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextWindow::setIndentation()
 {
   current_indentation_in_pixels_ = text_insertion_point_x_;
@@ -196,8 +205,7 @@ void SDLTextWindow::setIndentation()
 void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
                             const std::string& next_char)
 {
-  if(name_mod_ == 0)
-  {
+  if (name_mod_ == 0) {
     // Display the name in one pass
     printTextToFunction(bind(&SDLTextWindow::displayChar, ref(*this),
                              ref(machine), _1, _2),
@@ -205,20 +213,24 @@ void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
     setIndentation();
 
     setIndentationIfNextCharIsOpeningQuoteMark(next_char);
+  } else {
+    setNameWithoutDisplay(utf8name);
   }
-  else if(name_mod_ == 1)
-  {
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::setNameWithoutDisplay(const std::string& utf8name) {
+  if(name_mod_ == 0) {
+    // TODO: Save the name for some reason?
+  } else if(name_mod_ == 1) {
     throw SystemError("NAME_MOD=1 is unsupported.");
-  }
-  else if(name_mod_ == 2)
-  {
+  } else if(name_mod_ == 2) {
     // This doesn't actually fix the problem in Planetarian because
     // the call to set the name and the actual quotetext are in two
     // different strings. This logic will need to be moved.
 //    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
-  }
-  else
-  {
+  } else {
     throw SystemError("Invalid");
   }
 }

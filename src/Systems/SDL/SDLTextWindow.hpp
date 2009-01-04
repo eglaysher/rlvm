@@ -52,9 +52,11 @@ public:
   virtual bool displayChar(RLMachine& machine,
                            const std::string& current,
                            const std::string& next);
+  virtual int charWidth(unsigned short codepoint) const;
 
   virtual void setName(RLMachine& machine, const std::string& utf8name,
                        const std::string& next_char);
+  virtual void setNameWithoutDisplay(const std::string& utf8name);
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
 
 
