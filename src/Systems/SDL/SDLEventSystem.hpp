@@ -93,8 +93,6 @@ private:
   /// Whether the mouse cursor is currently inside the window bounds.
   bool mouse_inside_window_;
 
-  bool unaccessed_items_;
-
   Point mouse_pos_;
 
   int m_button1State, m_button2State;

@@ -158,7 +158,6 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
     dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
                                 button, pressed));
-    unaccessed_items_ = true;
   }
 }
 
@@ -186,7 +185,7 @@ void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event)
 SDLEventSystem::SDLEventSystem(Gameexe& gexe)
   : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
     mouse_inside_window_(true),
-    unaccessed_items_(false), mouse_pos_(),
+    mouse_pos_(),
     m_button1State(0), m_button2State(0), raw_handler_(NULL)
 {}
 
@@ -265,20 +264,14 @@ void SDLEventSystem::getCursorPos(Point& position, int& button1,
   position = mouse_pos_;
   button1 = m_button1State;
   button2 = m_button2State;
-
-  unaccessed_items_ = false;
 }
 
 // -----------------------------------------------------------------------
 
 void SDLEventSystem::flushMouseClicks()
 {
-  if(!unaccessed_items_)
-  {
-    m_button1State = 0;
-    m_button2State = 0;
-    unaccessed_items_ = false;
-  }
+  m_button1State = 0;
+  m_button2State = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -310,7 +303,6 @@ void SDLEventSystem::injectMouseDown(RLMachine& machine) {
 
   dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
                               MOUSE_LEFT, 1));
-  unaccessed_items_ = true;
 }
 
 // -----------------------------------------------------------------------
@@ -321,5 +313,4 @@ void SDLEventSystem::injectMouseUp(RLMachine& machine) {
 
   dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
                               MOUSE_LEFT, 1));
-  unaccessed_items_ = true;
 }
