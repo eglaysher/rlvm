@@ -139,7 +139,7 @@ string hantozen_cp932(const std::string& string)
   // since RealLive always does.)
   wstring tmp = cp932toUnicode(string, 0);
   transform(tmp.begin(), tmp.end(), tmp.begin(), hantozen_wchar);
-  assert(0);
+  throw rlvm::Exception("hantozen_cp932 unimplemented");
   //  return unicodetocp932(tmp);
 }
 
@@ -199,7 +199,7 @@ string zentohan_cp932(const std::string& string)
 {
   wstring tmp = cp932toUnicode(string, 0);
   transform(tmp.begin(), tmp.end(), tmp.begin(), zentohan_wchar);
-  assert(0);
+  throw rlvm::Exception("zentohan_cp932 unimplemented");
   //  return unicodetocp932(tmp);
 }
 
