@@ -70,6 +70,9 @@ protected:
   /// Our numeric window identifier.
   int window_num_;
 
+  /// The waku set number.
+  int waku_set_;
+
   boost::shared_ptr<Surface> waku_main_;
   boost::shared_ptr<Surface> waku_backing_;
   boost::shared_ptr<Surface> waku_button_;
@@ -248,6 +251,11 @@ public:
   virtual void execute(RLMachine& machine);
 
   int windowNumber() const { return window_num_; }
+
+  // TODO: This is nowhere near good enough and handling waku better needs to
+  // be put on the long term goal list. Should wakuSet() live on the
+  // TextWindow? O RLY?
+  int wakuSet() const { return waku_set_; }
 
   /**
    * @name Text size and location

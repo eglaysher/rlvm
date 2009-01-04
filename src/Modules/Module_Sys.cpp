@@ -59,6 +59,7 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/CGMTable.hpp"
@@ -120,6 +121,16 @@ struct Sys_PauseCursor : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int newCursor) {
     TextSystem& text = machine.system().text();
     text.setKeyCursor(machine, newCursor);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_GetWakuAll : public RLOp_Store_Void {
+  int operator()(RLMachine& machine) {
+    boost::shared_ptr<TextWindow> window =
+        machine.system().text().currentWindow(machine);
+    return window->wakuSet();
   }
 };
 
@@ -381,6 +392,8 @@ SysModule::SysModule()
              returnIntValue(&EventSystem::shiftPressed));
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
+
+  addOpcode( 410, 0, "GetWakuAll", new Sys_GetWakuAll);
 
   addUnsupportedOpcode(460, 0, "EnableWindowAnm");
   addUnsupportedOpcode(461, 0, "DisableWindowAnm");

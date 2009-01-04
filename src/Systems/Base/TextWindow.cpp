@@ -131,7 +131,8 @@ TextWindow::TextWindow(RLMachine& machine, int window_num)
 
   setKeycurMod(window("KEYCUR_MOD"));
   setActionOnPause(window("R_COMMAND_MOD"));
-  setWindowWaku(machine, gexe, window("WAKU_SETNO").to_int(0));
+  waku_set_ = window("WAKU_SETNO").to_int(0);
+  setWindowWaku(machine, gexe, waku_set_);
 }
 
 // -----------------------------------------------------------------------
