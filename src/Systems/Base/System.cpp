@@ -405,5 +405,5 @@ void System::dumpRenderTree(RLMachine& machine) {
       << "_Line" << machine.lineNumber() << ".txt";
 
   ofstream tree(oss.str().c_str());
-  graphics().refresh(machine, &tree);
+  graphics().refresh(&tree);
 }

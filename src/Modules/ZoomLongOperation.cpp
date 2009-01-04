@@ -96,7 +96,7 @@ bool ZoomLongOperation::operator()(RLMachine& machine)
     src_surface_->
       renderToScreen(Rect(zPt, zSize), drect_, 255);
 
-    graphics.endFrame(machine);
+    graphics.endFrame();
     return false;
   }
 }

@@ -133,22 +133,21 @@ void TextSystem::executeTextSystem(RLMachine& machine)
      in_pause_state_ && !isReadingBacklog())
   {
     if(!text_key_cursor_)
-      setKeyCursor(machine, 0);
+      setKeyCursor(0);
 
-    text_key_cursor_->execute(machine);
+    text_key_cursor_->execute();
   }
 
   // Let each window update any TextWindowButton s.
   for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
   {
-    it->second->execute(machine);
+    it->second->execute();
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::render(RLMachine& machine,
-                        std::ostream* tree)
+void TextSystem::render(std::ostream* tree)
 {
   if(systemVisible())
   {
@@ -158,7 +157,7 @@ void TextSystem::render(RLMachine& machine,
 
     for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
     {
-      it->second->render(machine, tree);
+      it->second->render(tree);
     }
 
     WindowMap::iterator it = text_window_.find(active_window_);
@@ -167,9 +166,9 @@ void TextSystem::render(RLMachine& machine,
        in_pause_state_ && !isReadingBacklog())
     {
       if(!text_key_cursor_)
-        setKeyCursor(machine, 0);
+        setKeyCursor(0);
 
-      text_key_cursor_->render(machine, *it->second, tree);
+      text_key_cursor_->render(*it->second, tree);
     }
   }
 }
@@ -396,7 +395,7 @@ int TextSystem::getAutoTime(int num_chars)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setKeyCursor(RLMachine& machine, int new_cursor)
+void TextSystem::setKeyCursor(int new_cursor)
 {
   if(new_cursor == -1)
   {
@@ -405,7 +404,7 @@ void TextSystem::setKeyCursor(RLMachine& machine, int new_cursor)
   else if(!text_key_cursor_ ||
      text_key_cursor_->cursorNumber() != new_cursor)
   {
-    text_key_cursor_.reset(new TextKeyCursor(machine, new_cursor));
+    text_key_cursor_.reset(new TextKeyCursor(system(), new_cursor));
   }
 }
 
@@ -562,7 +561,7 @@ void TextSystem::load(Archive& ar, unsigned int version)
   ar & win & cursor_num;
 
   setActiveWindow(win);
-  setKeyCursor(*Serialization::g_current_machine, cursor_num);
+  setKeyCursor(cursor_num);
 }
 
 // -----------------------------------------------------------------------

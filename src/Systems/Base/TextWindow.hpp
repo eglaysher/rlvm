@@ -253,7 +253,7 @@ public:
   TextWindow(System& system, int window_num);
   virtual ~TextWindow();
 
-  virtual void execute(RLMachine& machine);
+  virtual void execute();
 
   int windowNumber() const { return window_num_; }
 
@@ -444,7 +444,7 @@ public:
   /// @}
 
   // ------------------------------------------------ [ Abstract interface ]
-  virtual void render(RLMachine& machine, std::ostream* tree) = 0;
+  virtual void render(std::ostream* tree) = 0;
 
   void renderButtons();
 

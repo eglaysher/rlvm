@@ -619,7 +619,7 @@ struct Grp_open_4 : public RLOp_Void_17<
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
-      graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
+      graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
     handleOpenBgFileName(machine, fileName, srcRect, Point(dx, dy),
                          opacity, use_alpha_);
@@ -629,7 +629,7 @@ struct Grp_open_4 : public RLOp_Void_17<
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(dc1);
 
     LongOperation* lop =
       EffectFactory::build(machine, tmp, dc0, time, style, direction,
@@ -660,7 +660,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
-      graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
+      graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
     handleOpenBgFileName(
       machine, fileName, srcRect, destPoint, opacity, false);
@@ -670,7 +670,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     // Render the screen to a temporary
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(dc1);
 
     LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
@@ -719,7 +719,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
-      graphics.renderToSurfaceWithBg(machine, graphics.getDC(0));
+      graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
     handleOpenBgFileName(machine, fileName, srcRect, destPt,
                          opacity, use_alpha_);
@@ -729,7 +729,7 @@ struct Grp_openBg_4 : public RLOp_Void_17<
 
     // Render the screen to a temporary
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(machine, dc1);
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(dc1);
 
     LongOperation* effect = EffectFactory::build(machine, tmp, dc0, time,
                                           style, direction, interpolation,

@@ -173,7 +173,7 @@ public:
   void setObjectData(GraphicsObjectData* obj);
 
   /// Render!
-  void render(RLMachine& machine, int objNum, std::ostream* tree);
+  void render(int objNum, std::ostream* tree);
 
   /**
    * Deletes the object data. Corresponds to the RLAPI command obj_delete.

@@ -75,13 +75,13 @@ public:
 
   virtual void markScreenAsDirty(GraphicsUpdateType type);
 
-  virtual void endFrame(RLMachine& machine);
+  virtual void endFrame();
 
   void redrawLastFrame();
   void drawCursor();
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
-    RLMachine& machine, boost::shared_ptr<Surface> bg);
+      boost::shared_ptr<Surface> bg);
   boost::shared_ptr<Surface> endFrameToSurface();
 
   virtual void executeGraphicsSystem(RLMachine& machine);

@@ -67,7 +67,7 @@ public:
 
   // Events from UI objects
   void run(RLMachine& machine);
-  void render(RLMachine& machine);
+  void render();
   void showNativeSyscomMenu(RLMachine& machine);
   void invokeSyscomStandardUI(RLMachine& machine, int syscom);
   void windowCanceled(GCNWindow* window);

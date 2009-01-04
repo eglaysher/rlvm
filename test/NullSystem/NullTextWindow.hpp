@@ -33,13 +33,13 @@ class NullTextWindow : public TextWindow
 public:
   NullTextWindow(System& system, int x);
   ~NullTextWindow();
-  virtual void execute(RLMachine& machine) {}
+  virtual void execute() {}
 
   virtual void setFontColor(const std::vector<int>& color_data);
 
   // We don't test graphics in the null system, so don't really
   // implement the waku parts.
-  virtual void render(RLMachine& machine, std::ostream* tree) {}
+  virtual void render(std::ostream* tree) {}
 
   virtual bool displayChar(const std::string& current,
                            const std::string& next);

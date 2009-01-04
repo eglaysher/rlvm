@@ -142,11 +142,11 @@ TextWindow::~TextWindow() {}
 
 // -----------------------------------------------------------------------
 
-void TextWindow::execute(RLMachine& machine)
+void TextWindow::execute()
 {
   using namespace boost;
 
-  if(isVisible() && ! machine.system().graphics().interfaceHidden())
+  if(isVisible() && ! system_.graphics().interfaceHidden())
   {
     for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
       if (button_map_[i]) {

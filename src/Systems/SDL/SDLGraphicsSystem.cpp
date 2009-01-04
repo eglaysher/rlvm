@@ -128,28 +128,28 @@ void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
-  RLMachine& machine, boost::shared_ptr<Surface> bg)
+  boost::shared_ptr<Surface> bg)
 {
   beginFrame();
 
   // Display DC0
   bg->renderToScreen(screenRect(), screenRect(), 255);
 
-  renderObjects(machine, NULL);
+  renderObjects(NULL);
 
   // Render text
   if(!interfaceHidden())
-    machine.system().text().render(machine, NULL);
+    system().text().render(NULL);
 
   return endFrameToSurface();
 }
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::endFrame(RLMachine& machine)
+void SDLGraphicsSystem::endFrame()
 {
   if (system().platform())
-    system().platform()->render(machine);
+    system().platform()->render();
 
   if (screenUpdateMode() == SCREENUPDATEMODE_MANUAL) {
     // Copy the area behind the cursor to the temporary buffer (drivers differ:
@@ -384,7 +384,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   // For now, nothing, but later, we need to put all code each cycle
   // here.
   if (isResponsibleForUpdate() && screenNeedsRefresh()) {
-    refresh(machine, NULL);
+    refresh(NULL);
     screenRefreshed();
     redraw_last_frame_ = false;
   } else if (isResponsibleForUpdate() && redraw_last_frame_) {

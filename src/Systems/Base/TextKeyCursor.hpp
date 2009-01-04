@@ -34,8 +34,8 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-class RLMachine;
 class Surface;
+class System;
 class TextWindow;
 
 /**
@@ -49,7 +49,7 @@ public:
    * \#CURSOR.curosr_number. This will load all image files, and data
    * from the Gameexe.
    */
-  TextKeyCursor(RLMachine& machine, int curosr_number);
+  TextKeyCursor(System& system, int curosr_number);
   ~TextKeyCursor();
 
   /**
@@ -57,14 +57,13 @@ public:
    * phase. This should run once every game loop while a key cursor is
    * displayed on the screen.
    */
-  void execute(RLMachine& machine);
+  void execute();
 
   /**
    * Render this key cursor to the specified window, which owns
    * positional information.
    */
-  void render(RLMachine& machine, TextWindow& text_window,
-              std::ostream* tree);
+  void render(TextWindow& text_window, std::ostream* tree);
 
   /**
    * @name Accessors
@@ -82,7 +81,7 @@ public:
    *
    * @{
    */
-  void setCursorImage(RLMachine& machine, const std::string& file);
+  void setCursorImage(System& system, const std::string& file);
   void setCursorSize(const std::vector<int>& image_size);
   void setCursorFrameCount(const int frame_count);
   void setCursorFrameSpeed(const int frame_speed);
@@ -112,6 +111,8 @@ private:
 
   /// The last time current_frame_ was incremented in ticks
   unsigned int last_time_frame_incremented_;
+
+  System& system_;
 };
 
 #endif

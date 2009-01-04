@@ -119,8 +119,7 @@ struct Sys_GetCursorPos_gc2
 
 struct Sys_PauseCursor : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int newCursor) {
-    TextSystem& text = machine.system().text();
-    text.setKeyCursor(machine, newCursor);
+    machine.system().text().setKeyCursor(newCursor);
   }
 };
 
@@ -336,12 +335,12 @@ void Sys_MenuReturn::operator()(RLMachine& machine)
 
   // Render the screen as is.
   shared_ptr<Surface> dc0 = graphics.getDC(0);
-  shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(machine, dc0);
+  shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(dc0);
 
   // Clear everything
   machine.localReset();
 
-  shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(machine, dc0);
+  shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(dc0);
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").to_int();

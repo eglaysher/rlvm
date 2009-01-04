@@ -69,8 +69,7 @@ public:
   void setCurrentlyPlaying(bool in) { currently_playing_ = in; }
   bool currentlyPlaying() const { return currently_playing_; }
 
-  void render(RLMachine& machine, const GraphicsObject& go,
-              std::ostream* tree);
+  void render(const GraphicsObject& go, std::ostream* tree);
 
   virtual int pixelWidth(const GraphicsObject& rendering_properties) = 0;
   virtual int pixelHeight(const GraphicsObject& rendering_properties) = 0;

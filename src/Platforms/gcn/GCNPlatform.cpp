@@ -248,7 +248,7 @@ void GCNPlatform::run(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::render(RLMachine& machine)
+void GCNPlatform::render()
 {
   try {
     guichan_gui_->draw();

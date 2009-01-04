@@ -442,7 +442,7 @@ void GraphicsObject::makeImplUnique()
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::render(RLMachine& machine, int objNum, std::ostream* tree)
+void GraphicsObject::render(int objNum, std::ostream* tree)
 {
   if(object_data_ && visible())
   {
@@ -450,7 +450,7 @@ void GraphicsObject::render(RLMachine& machine, int objNum, std::ostream* tree)
       *tree << "Object #" << objNum << ":" << endl;
     }
 
-    object_data_->render(machine, *this, tree);
+    object_data_->render(*this, tree);
   }
 }
 

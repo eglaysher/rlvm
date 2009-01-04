@@ -44,8 +44,7 @@ class SDLTextWindow : public TextWindow
 public:
   SDLTextWindow(System& system, int window);
   ~SDLTextWindow();
-  virtual void render(RLMachine& machine,
-                      std::ostream* tree);
+  virtual void render(std::ostream* tree);
 
   virtual void clearWin();
 

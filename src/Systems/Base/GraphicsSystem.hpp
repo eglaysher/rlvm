@@ -336,7 +336,7 @@ public:
   /// @}
 
   virtual void beginFrame();
-  virtual void endFrame(RLMachine& machine);
+  virtual void endFrame();
 
   /**
    * Performs a full redraw of the screen; blitting dc0 to the screen,
@@ -346,13 +346,10 @@ public:
    * The Reallive function refresh() simply calls this method, but
    * this method is also used internally to perform the same task.
    *
-   * @todo When we support Objects and TextWindows, make this blit
-   * them. For now, only blit DC0.
-   *
    * @param tree Optional parameter that will dump out a render tree to
    *             the passed in ostream. Usually NULL.
    */
-  void refresh(RLMachine& machine, std::ostream* tree);
+  void refresh(std::ostream* tree);
 
   /**
    * Prints a textual representation of what SHOULD be on the screen right now.
@@ -360,7 +357,7 @@ public:
   void dumpRenderTree(std::ostream& tree);
 
   virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
-    RLMachine& machine, boost::shared_ptr<Surface> bg);
+    boost::shared_ptr<Surface> bg);
 
 
   /**
@@ -420,7 +417,7 @@ public:
    * @param machine RLMachine context.
    * @param tree Optional stream to write this piece of the render tree to.
    */
-  void renderObjects(RLMachine& machine, std::ostream* tree);
+  void renderObjects(std::ostream* tree);
 
   /**
    * Creates rendering data for a graphics object from a G00, PDT or ANM file.

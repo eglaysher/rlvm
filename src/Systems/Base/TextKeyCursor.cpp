@@ -31,7 +31,6 @@
 
 #include "Systems/Base/TextKeyCursor.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
@@ -47,14 +46,15 @@ using namespace std;
 // -----------------------------------------------------------------------
 // TextKeyCursor
 // -----------------------------------------------------------------------
-TextKeyCursor::TextKeyCursor(RLMachine& machine, int in_curosr_number)
+TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
   : cursor_number_(in_curosr_number), current_frame_(0),
-    last_time_frame_incremented_(machine.system().event().getTicks())
+    last_time_frame_incremented_(system.event().getTicks()),
+    system_(system)
 {
-  Gameexe& gexe = machine.system().gameexe();
+  Gameexe& gexe = system.gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
 
-  setCursorImage(machine, cursor("NAME"));
+  setCursorImage(system, cursor("NAME"));
   setCursorSize(cursor("SIZE"));
   setCursorFrameCount(cursor("CONT"));
   setCursorFrameSpeed(cursor("SPEED"));
@@ -67,15 +67,15 @@ TextKeyCursor::~TextKeyCursor()
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::execute(RLMachine& machine)
+void TextKeyCursor::execute()
 {
-  unsigned int cur_time = machine.system().event().getTicks();
+  unsigned int cur_time = system_.event().getTicks();
 
   if(last_time_frame_incremented_ + frame_speed_ < cur_time)
   {
     last_time_frame_incremented_ = cur_time;
 
-    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
 
     current_frame_++;
     if(current_frame_ >= frame_count_)
@@ -85,8 +85,7 @@ void TextKeyCursor::execute(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window,
-                           std::ostream* tree)
+void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree)
 {
   if(cursor_image_) {
     // Get the location to render from text_window
@@ -107,11 +106,10 @@ void TextKeyCursor::render(RLMachine& machine, TextWindow& text_window,
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorImage(RLMachine& machine, const std::string& name)
+void TextKeyCursor::setCursorImage(System& system, const std::string& name)
 {
   if(name != "") {
-    cursor_image_ = machine.system().graphics().loadSurfaceFromFile(
-      machine, name);
+    cursor_image_ = system.graphics().loadNonCGSurfaceFromFile(name);
     cursor_image_file_ = name;
   } else {
     cursor_image_.reset();

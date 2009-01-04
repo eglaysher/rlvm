@@ -47,7 +47,6 @@
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"
 
 #include <SDL/SDL_opengl.h>
@@ -255,8 +254,7 @@ void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
  * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
  *       waku_backing.
  */
-void SDLTextWindow::render(RLMachine& machine,
-                           std::ostream* tree)
+void SDLTextWindow::render(std::ostream* tree)
 {
   if(surface_ && isVisible())
   {

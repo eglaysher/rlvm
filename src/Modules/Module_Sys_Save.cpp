@@ -347,7 +347,7 @@ bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
 
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> currentWindow =
-    graphics.renderToSurfaceWithBg(machine, dc0);
+    graphics.renderToSurfaceWithBg(dc0);
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
@@ -372,7 +372,7 @@ void Sys_load::operator()(RLMachine& machine, int slot)
 
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> currentWindow =
-    graphics.renderToSurfaceWithBg(machine, dc0);
+    graphics.renderToSurfaceWithBg(dc0);
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image

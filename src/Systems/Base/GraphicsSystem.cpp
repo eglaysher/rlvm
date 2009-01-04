@@ -392,9 +392,9 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int obj_num)
 // default implementations because I'm lazy, and these really should
 // be pure virtual)
 void GraphicsSystem::beginFrame() { }
-void GraphicsSystem::endFrame(RLMachine& machine) { }
+void GraphicsSystem::endFrame() { }
 
-void GraphicsSystem::refresh(RLMachine& machine, std::ostream* tree) {
+void GraphicsSystem::refresh(std::ostream* tree) {
   beginFrame();
 
   // Display DC0
@@ -408,13 +408,13 @@ void GraphicsSystem::refresh(RLMachine& machine, std::ostream* tree) {
     }
   }
 
-  renderObjects(machine, tree);
+  renderObjects(tree);
 
   // Render text
   if(!interfaceHidden())
-    machine.system().text().render(machine, tree);
+    system().text().render(tree);
 
-  endFrame(machine);
+  endFrame();
 }
 
 // -----------------------------------------------------------------------
@@ -426,7 +426,7 @@ void GraphicsSystem::dumpRenderTree(std::ostream& tree) {
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
-  RLMachine& machine, boost::shared_ptr<Surface> bg)
+  boost::shared_ptr<Surface> bg)
 { return boost::shared_ptr<Surface>(); }
 
 // -----------------------------------------------------------------------
@@ -573,7 +573,7 @@ void GraphicsSystem::clearAllDCs() {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::renderObjects(RLMachine& machine, std::ostream* tree)
+void GraphicsSystem::renderObjects(std::ostream* tree)
 {
   // Render all visible foreground objects
   AllocatedLazyArrayIterator<GraphicsObject> it =
@@ -592,7 +592,7 @@ void GraphicsSystem::renderObjects(RLMachine& machine, std::ostream* tree)
     else if(settings.space_key && interfaceHidden())
       continue;
 
-    it->render(machine, it.pos(), tree);
+    it->render(it.pos(), tree);
   }
 }
 

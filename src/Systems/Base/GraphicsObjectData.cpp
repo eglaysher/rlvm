@@ -60,8 +60,7 @@ GraphicsObjectData::~GraphicsObjectData() { }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectData::render(RLMachine& machine, const GraphicsObject& go,
-                                std::ostream* tree)
+void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree)
 {
   boost::shared_ptr<Surface> surface = currentSurface(go);
   if (surface) {
