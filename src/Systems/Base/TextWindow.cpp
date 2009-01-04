@@ -479,6 +479,12 @@ void TextWindow::hardBrake()
 
 // -----------------------------------------------------------------------
 
+void TextWindow::setIndentation() {
+  current_indentation_in_pixels_ = text_insertion_point_x_;
+}
+
+// -----------------------------------------------------------------------
+
 void TextWindow::resetIndentation()
 {
   current_indentation_in_pixels_ = 0;

@@ -81,6 +81,11 @@ public:
   void hardBrake();
 
   /**
+   * Sets the indentation to the x part of the current insertion point.
+   */
+  void setIndentation();
+
+  /**
    * Resets the indentation.
    */
   void resetIndentation();
@@ -175,6 +180,8 @@ private:
                  bool is_active_page);
 
   void hard_brake_impl(bool is_active_page);
+
+  void set_indentation_impl(bool is_active_page);
 
   void reset_indentation_impl(bool is_active_page);
 

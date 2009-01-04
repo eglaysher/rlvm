@@ -231,6 +231,12 @@ void TextPage::hardBrake()
 
 // -----------------------------------------------------------------------
 
+void TextPage::setIndentation() {
+  addAction(bind(&TextPage::set_indentation_impl, _1, _2));
+}
+
+// -----------------------------------------------------------------------
+
 void TextPage::resetIndentation()
 {
   addAction(bind(&TextPage::reset_indentation_impl, _1, _2));
@@ -323,6 +329,14 @@ void TextPage::hard_brake_impl(bool is_active_page)
 {
   machine_->system().text().textWindow(*machine_, window_num_)
     ->hardBrake();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::set_indentation_impl(bool is_active_page)
+{
+  machine_->system().text().textWindow(*machine_, window_num_)
+    ->setIndentation();
 }
 
 // -----------------------------------------------------------------------

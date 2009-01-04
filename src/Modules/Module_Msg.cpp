@@ -226,6 +226,24 @@ struct Msg_page : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Msg_SetIndent : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.setIndentation();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Msg_ClearIndent : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    TextPage& page = machine.system().text().currentPage(machine);
+    page.resetIndentation();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Msg_TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().currentPage(machine);
@@ -325,8 +343,8 @@ MsgModule::MsgModule()
 
   addOpcode(210, 0, "page", new Msg_page);
 
-  addUnsupportedOpcode(300, 0, "SetIndent");
-  addUnsupportedOpcode(301, 0, "ClearIndent");
+  addOpcode(300, 0, "SetIndent", new Msg_SetIndent);
+  addOpcode(301, 0, "ClearIndent", new Msg_ClearIndent);
 
   addOpcode(310, 0, "TextPos", new Msg_TextPos);
   addOpcode(311, 0, "TextPosX", new Msg_TextPosX);

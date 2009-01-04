@@ -472,6 +472,7 @@ public:
   virtual void setNameWithoutDisplay(const std::string& utf8name) = 0;
 
   virtual void hardBrake();
+  virtual void setIndentation();
   virtual void resetIndentation();
   virtual void markRubyBegin();
   virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) = 0;
