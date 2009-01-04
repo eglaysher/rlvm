@@ -45,6 +45,7 @@ class Memory;
 class Point;
 class RLMachine;
 class Surface;
+class System;
 class TextKeyCursor;
 class TextPage;
 class TextWindow;
@@ -83,7 +84,7 @@ public:
   typedef boost::ptr_map<int, TextPage> PageSet;
 
 public:
-  TextSystem(Gameexe& gexe);
+  TextSystem(System& system, Gameexe& gexe);
   virtual ~TextSystem();
 
   /**
@@ -254,8 +255,8 @@ public:
    * @{
    */
    virtual boost::shared_ptr<Surface> renderText(
-	RLMachine& machine, const std::string& utf8str, int size, int xspace,
-	int yspace, int colour) = 0;
+       const std::string& utf8str, int size, int xspace,
+       int yspace, int colour) = 0;
   /// @}
 
   TextSystemGlobals& globals() { return globals_; }
@@ -282,6 +283,8 @@ public:
   // Overriden from EventListener
   virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+
+  System& system() { return system_; }
 
 protected:
   void updateWindowsForChangeToWindowAttr();
@@ -390,6 +393,9 @@ protected:
    * manageable constant number.
    */
   void expireOldPages();
+
+  /// Our parent system object.
+  System& system_;
 
   /// boost::serialization support
   friend class boost::serialization::access;

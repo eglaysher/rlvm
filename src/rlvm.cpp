@@ -326,7 +326,7 @@ int main(int argc, char* argv[]) {
     addAllModules(rlmachine);
 
     // Validate our font file
-    fs::path fontFile = findFontFile(rlmachine);
+    fs::path fontFile = findFontFile(sdlSystem);
     if (fontFile.empty() || !fs::exists(fontFile)) {
       cerr << "Could not open font file. Please either: " << endl
            << endl
@@ -340,7 +340,7 @@ int main(int argc, char* argv[]) {
     // Initialize our platform dialogs (we have to do this after
     // looking for a font because we use that font internally).
     boost::shared_ptr<Platform> platform(
-        new GCNPlatform(rlmachine, sdlSystem.graphics().screenRect()));
+        new GCNPlatform(sdlSystem, sdlSystem.graphics().screenRect()));
     sdlSystem.setPlatform(platform);
 
     if (vm.count("undefined-opcodes"))

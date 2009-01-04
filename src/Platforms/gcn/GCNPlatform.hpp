@@ -62,7 +62,7 @@ class GCNPlatform : public Platform,
                     public boost::enable_shared_from_this<GCNPlatform>
 {
 public:
-  GCNPlatform(RLMachine& machine, const Rect& screen_size);
+  GCNPlatform(System& system, const Rect& screen_size);
   ~GCNPlatform();
 
   // Events from UI objects
@@ -86,7 +86,7 @@ private:
   void pushBlocker(RLMachine& machine);
 
   /// Initializes all of the above.
-  void initializeGuichan(RLMachine& machine, const Rect& screen_size);
+  void initializeGuichan(System& system, const Rect& screen_size);
 
   /// Builds the current syscom menu, based on the currently visisble syscom
   /// items, erasing the old one if necessary.

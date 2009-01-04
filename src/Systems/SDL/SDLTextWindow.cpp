@@ -73,8 +73,8 @@ SDLTextWindow::SDLTextWindow(RLMachine& machine, int window_num)
   : TextWindow(machine, window_num)
 {
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
-  font_ = text.getFontOfSize(machine, fontSizeInPixels());
-  ruby_font_ = text.getFontOfSize(machine, rubyTextSize());
+  font_ = text.getFontOfSize(fontSizeInPixels());
+  ruby_font_ = text.getFontOfSize(rubyTextSize());
 
   clearWin();
 }

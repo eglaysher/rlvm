@@ -38,6 +38,7 @@
 class RLMachine;
 class Gameexe;
 class Size;
+class System;
 
 /**
  * Removes quotes from the beginning and end of the string.
@@ -82,6 +83,9 @@ extern const std::vector<std::string> SOUND_FILETYPES;
  * @return The full path of the file
  */
 boost::filesystem::path findFile(RLMachine& machine,
+                                 const std::string& fileName,
+                                 const std::vector<std::string>& extensions = ALL_FILETYPES);
+boost::filesystem::path findFile(System& system,
                                  const std::string& fileName,
                                  const std::vector<std::string>& extensions = ALL_FILETYPES);
 

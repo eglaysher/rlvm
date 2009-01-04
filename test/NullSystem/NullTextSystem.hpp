@@ -38,7 +38,7 @@ class NullTextWindow;
 class NullTextSystem : public TextSystem
 {
 public:
-  NullTextSystem(Gameexe& gexe);
+  NullTextSystem(System& system, Gameexe& gexe);
   ~NullTextSystem();
 
   void executeTextSystem(RLMachine& machine) { }
@@ -53,8 +53,8 @@ public:
                         bool pressed) { return false; }
 
   boost::shared_ptr<Surface> renderText(
-	RLMachine& machine, const std::string& utf8str, int size, int xspace,
-	int yspace, int colour) { return boost::shared_ptr<Surface>(); }
+      const std::string& utf8str, int size, int xspace,
+      int yspace, int colour) { return boost::shared_ptr<Surface>(); }
 };
 
 #endif

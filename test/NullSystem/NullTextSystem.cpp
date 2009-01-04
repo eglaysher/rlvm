@@ -32,8 +32,8 @@
 
 // -----------------------------------------------------------------------
 
-NullTextSystem::NullTextSystem(Gameexe& gexe)
-  : TextSystem(gexe) {}
+NullTextSystem::NullTextSystem(System& system, Gameexe& gexe)
+    : TextSystem(system, gexe) {}
 
 // -----------------------------------------------------------------------
 

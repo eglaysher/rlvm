@@ -27,7 +27,6 @@
 
 #include "findFontFile.h"
 
-#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
 
@@ -37,9 +36,9 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(RLMachine& machine)
+fs::path findFontFile(System& system)
 {
-  return findFontFile(machine.system().gameexe(), "msgothic.ttc");
+  return findFontFile(system.gameexe(), "msgothic.ttc");
 }
 
 // -----------------------------------------------------------------------

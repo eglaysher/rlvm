@@ -61,8 +61,8 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-SDLTextSystem::SDLTextSystem(Gameexe& gameexe)
-  : TextSystem(gameexe)
+SDLTextSystem::SDLTextSystem(System& system, Gameexe& gameexe)
+    : TextSystem(system, gameexe)
 {
   if(TTF_Init()==-1) {
     ostringstream oss;
@@ -97,14 +97,13 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLTextSystem::renderText(
-  RLMachine& machine, const std::string& utf8str, int size, int xspace,
-  int yspace, int colour)
+  const std::string& utf8str, int size, int xspace, int yspace, int colour)
 {
   // Pick the correct font
-  shared_ptr<TTF_Font> font = getFontOfSize(machine, size);
+  shared_ptr<TTF_Font> font = getFontOfSize(size);
 
   // Pick the correct font colour
-  Gameexe& gexe = machine.system().gameexe();
+  Gameexe& gexe = system().gameexe();
   vector<int> colour_vec = gexe("COLOR_TABLE", colour);
   SDL_Color color = {colour_vec.at(0), colour_vec.at(1), colour_vec.at(2)};
 
@@ -130,13 +129,12 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(
-  RLMachine& machine, int size)
+boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size)
 {
   FontSizeMap::iterator it = map_.find(size);
   if(it == map_.end())
   {
-    string filename = findFontFile(machine).external_file_string();
+    string filename = findFontFile(system()).external_file_string();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
     if(f == NULL)
     {

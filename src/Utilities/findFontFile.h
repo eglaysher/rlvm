@@ -36,13 +36,14 @@
 
 class Gameexe;
 class RLMachine;
+class System;
 
 /**
  * Hack. Finds msgothic.ttc which is the only font file we support
  * right now. Once I go in and allow the selection of arbitrary fonts,
  * this method and the other findFontFile need to go away.
  */
-boost::filesystem::path findFontFile(RLMachine& machine);
+boost::filesystem::path findFontFile(System& system);
 
 // -----------------------------------------------------------------------
 

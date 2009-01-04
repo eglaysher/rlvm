@@ -161,6 +161,15 @@ boost::filesystem::path findFile(RLMachine& machine,
                                  const std::string& fileName,
                                  const vector<string>& extensions)
 {
+  return findFile(machine.system(), fileName, extensions);
+}
+
+// -----------------------------------------------------------------------
+
+boost::filesystem::path findFile(System& system,
+                                 const std::string& fileName,
+                                 const vector<string>& extensions)
+{
   using namespace boost;
 
   // Hack to get around fileNames like "REALNAME?010", where we only
@@ -169,7 +178,7 @@ boost::filesystem::path findFile(RLMachine& machine,
     string(fileName.begin(), find(fileName.begin(), fileName.end(), '?'));
 
   // Iterate across the search paths in the order they were specified.
-  const vector<boost::filesystem::path>& blah = machine.system().getSearchPaths();
+  const vector<boost::filesystem::path>& blah = system.getSearchPaths();
   for(vector<boost::filesystem::path>::const_iterator it = blah.begin(); it != blah.end(); ++it)
   {
     for(vector<string>::const_iterator ext = extensions.begin();

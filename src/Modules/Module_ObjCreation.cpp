@@ -93,7 +93,7 @@ void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj, const string& val
   // The text at this point is still cp932. Convert it.
   string utf8str = cp932toUTF8(val, machine.getTextEncoding());
   obj.setTextText(utf8str);
-  obj.setObjectData(new GraphicsTextObject(machine));
+  obj.setObjectData(new GraphicsTextObject(machine.system()));
 }
 
 }

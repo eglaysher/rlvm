@@ -42,17 +42,17 @@ class TextWindow;
 class SDLTextSystem : public TextSystem
 {
 public:
-  SDLTextSystem(Gameexe& gameexe);
+  SDLTextSystem(System& system, Gameexe& gameexe);
   ~SDLTextSystem();
 
   virtual boost::shared_ptr<TextWindow> textWindow(
     RLMachine&, int text_window_number);
 
   virtual boost::shared_ptr<Surface> renderText(
-    RLMachine& machine, const std::string& utf8str, int size, int xspace,
-    int yspace, int colour);
+      const std::string& utf8str, int size, int xspace,
+      int yspace, int colour);
 
-  boost::shared_ptr<TTF_Font> getFontOfSize(RLMachine& machine, int size);
+  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
 
 private:
   /**

@@ -36,7 +36,6 @@
 
 #include "GraphicsTextObject.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/Surface.hpp"
@@ -48,8 +47,8 @@ using std::endl;
 
 // -----------------------------------------------------------------------
 
-GraphicsTextObject::GraphicsTextObject(RLMachine& machine)
-  : machine_(machine)
+GraphicsTextObject::GraphicsTextObject(System& system)
+  : system_(system)
 {
 }
 
@@ -63,9 +62,9 @@ GraphicsTextObject::~GraphicsTextObject()
 void GraphicsTextObject::updateSurface(const GraphicsObject& rp)
 {
   cached_utf8_str_ = rp.textText();
-  surface_ = machine_.system().text().renderText(
-    machine_, cached_utf8_str_, rp.textSize(), rp.textXSpace(),
-    rp.textYSpace(), rp.textColour());
+  surface_ = system_.text().renderText(
+      cached_utf8_str_, rp.textSize(), rp.textXSpace(),
+      rp.textYSpace(), rp.textColour());
 }
 
 // -----------------------------------------------------------------------

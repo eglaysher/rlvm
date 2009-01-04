@@ -82,7 +82,7 @@ TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
 // -----------------------------------------------------------------------
 // TextSystem
 // -----------------------------------------------------------------------
-TextSystem::TextSystem(Gameexe& gexe)
+TextSystem::TextSystem(System& system, Gameexe& gexe)
   : auto_mode_(false),
     ctrl_key_skip_(true), fast_text_mode_(false),
     message_no_wait_(false),
@@ -97,7 +97,8 @@ TextSystem::TextSystem(Gameexe& gexe)
     system_visible_(true),
     skip_mode_(false),
     kidoku_read_(false),
-    in_selection_mode_(false)
+    in_selection_mode_(false),
+    system_(system)
 {
   GameexeInterpretObject ctrl_use(gexe("CTRL_USE"));
   if(ctrl_use.exists())

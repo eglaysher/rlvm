@@ -222,11 +222,11 @@ private:
 // GCNPlatform
 // -----------------------------------------------------------------------
 
-GCNPlatform::GCNPlatform(RLMachine& machine, const Rect& screen_size)
-  : Platform(machine.system().gameexe()), blocker_(NULL),
+GCNPlatform::GCNPlatform(System& system, const Rect& screen_size)
+  : Platform(system.gameexe()), blocker_(NULL),
     screen_size_(screen_size)
 {
-  initializeGuichan(machine, screen_size);
+  initializeGuichan(system, screen_size);
 }
 
 // -----------------------------------------------------------------------
@@ -374,7 +374,7 @@ void GCNPlatform::pushBlocker(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::initializeGuichan(RLMachine& machine, const Rect& screen_size)
+void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size)
 {
   sdl_image_loader_.reset(new gcn::OpenGLSDLImageLoader());
 	gcn::Image::setImageLoader(sdl_image_loader_.get());
@@ -397,7 +397,7 @@ void GCNPlatform::initializeGuichan(RLMachine& machine, const Rect& screen_size)
   toplevel_container_->addMouseListener(this);
   guichan_gui_->setTop(toplevel_container_.get());
 
-  fs::path font_file = findFontFile(machine);
+  fs::path font_file = findFontFile(system);
   global_font_.reset(new SDLTrueTypeFont(font_file.string().c_str(), 12));
 	gcn::Widget::setGlobalFont(global_font_.get());
 }

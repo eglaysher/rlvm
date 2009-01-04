@@ -45,7 +45,7 @@ class Surface;
 class GraphicsTextObject : public GraphicsObjectData
 {
 public:
-  GraphicsTextObject(RLMachine& machine);
+  GraphicsTextObject(System& system);
   ~GraphicsTextObject();
 
   // ------------------------------------ [ GraphicsObjectData interface ]
@@ -60,7 +60,7 @@ protected:
 
 private:
   /// Current machine context.
-  RLMachine& machine_;
+  System& system_;
 
   std::string cached_utf8_str_;
 
@@ -94,7 +94,7 @@ template<class Archive>
 inline void load_construct_data(
   Archive & ar, GraphicsTextObject* t, const unsigned int file_version)
 {
-  ::new(t)GraphicsTextObject(*Serialization::g_current_machine);
+  ::new(t)GraphicsTextObject(Serialization::g_current_machine->system());
 }
   }}
 

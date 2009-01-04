@@ -40,7 +40,7 @@ NullSystem::NullSystem(const std::string& path_to_gameexe)
   : gameexe_(path_to_gameexe),
     null_graphics_system(*this, gameexe_),
     null_event_system(gameexe_),
-    null_text_system(gameexe_),
+    null_text_system(*this, gameexe_),
     null_sound_system(gameexe_)
 {}
 
@@ -50,7 +50,7 @@ NullSystem::NullSystem()
   : gameexe_(),
     null_graphics_system(*this, gameexe_),
     null_event_system(gameexe_),
-    null_text_system(gameexe_),
+    null_text_system(*this, gameexe_),
     null_sound_system(gameexe_)
 {
   gameexe_("__GAMEPATH") = locateTestCase("Gameroot") + "/";
