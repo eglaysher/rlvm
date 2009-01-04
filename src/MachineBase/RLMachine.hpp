@@ -203,6 +203,12 @@ class RLMachine {
   int getStoreRegisterValue() const { return store_register_; }
 
   /**
+   * Returns the integer that is the store register. (This is exposed for the
+   * memory iterators to work properly.)
+   */
+  int* storeRegisterAddress() { return &store_register_; }
+
+  /**
    * Returns the internal memory object for raw access to the machine
    * object's memory.
    *

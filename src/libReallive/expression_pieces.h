@@ -51,6 +51,9 @@ public:
   /// Returns the store register value of the passed in machine
   virtual int integerValue(RLMachine& machine) const;
 
+  /// Never seen in any commercial games, but needed for rlBabel support.
+  virtual IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
+
   virtual ExpressionPiece* clone() const;
 };
 
@@ -119,8 +122,8 @@ public:
   virtual void assignStringValue(RLMachine& machine, const std::string& rvalue);
   virtual const std::string& getStringValue(RLMachine& machine) const;
 
-  IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
-  StringReferenceIterator getStringReferenceIterator(RLMachine& machine) const;
+  virtual IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
+  virtual StringReferenceIterator getStringReferenceIterator(RLMachine& machine) const;
 
   virtual ExpressionPiece* clone() const;
 };

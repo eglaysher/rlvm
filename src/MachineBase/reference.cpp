@@ -48,7 +48,7 @@ using libReallive::IntMemRef;
 // -----------------------------------------------------------------------
 
 IntAccessor::IntAccessor(MemoryReferenceIterator<IntAccessor>* i)
-  : it(i)
+    : it(i), store_register_(i->store_register_)
 {}
 
 // -----------------------------------------------------------------------
@@ -65,7 +65,10 @@ IntAccessor::~IntAccessor()
  */
 IntAccessor::operator int() const
 {
-  return it->memory_->getIntValue(IntMemRef(it->type_, it->location_));
+  if (store_register_)
+    return *store_register_;
+  else
+    return it->memory_->getIntValue(IntMemRef(it->type_, it->location_));
 }
 
 // -----------------------------------------------------------------------
@@ -77,7 +80,10 @@ IntAccessor::operator int() const
  * @return Self
  */
 IntAccessor& IntAccessor::operator=(const int new_value) {
-  it->memory_->setIntValue(IntMemRef(it->type_, it->location_), new_value);
+  if (store_register_)
+    *store_register_ = new_value;
+  else
+    it->memory_->setIntValue(IntMemRef(it->type_, it->location_), new_value);
   return *this;
 }
 

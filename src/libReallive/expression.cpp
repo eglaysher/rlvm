@@ -582,6 +582,16 @@ void ExpressionPiece::assignStringValue(RLMachine& machine) {}
 const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const
 { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
+IntReferenceIterator ExpressionPiece::getIntegerReferenceIterator(
+    RLMachine& machine) const {
+  throw libReallive::Error("ExpressionPiece::getIntegerReferenceIterator() invalid on this object");
+}
+
+StringReferenceIterator ExpressionPiece::getStringReferenceIterator(
+    RLMachine& machine) const {
+  throw libReallive::Error("ExpressionPiece::getStringReferenceIterator() invalid on this object");
+}
+
 // -----------------------------------------------------------------------
 
 bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
@@ -590,6 +600,11 @@ void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine, int rvalue
 }
 int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
+}
+
+IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
+    RLMachine& machine) const {
+  return IntReferenceIterator(machine.storeRegisterAddress());
 }
 
 ExpressionPiece* StoreRegisterExpressionPiece::clone() const

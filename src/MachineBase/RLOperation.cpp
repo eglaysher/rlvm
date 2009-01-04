@@ -128,8 +128,7 @@ void IntConstant_T::parseParameters(
 IntReference_T::type IntReference_T::getData(RLMachine& machine,
                                              const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int position) {
-  return static_cast<const libReallive::MemoryReference&>(p[position]).
-    getIntegerReferenceIterator(machine);
+  return p[position].getIntegerReferenceIterator(machine);
 }
 
 // -----------------------------------------------------------------------

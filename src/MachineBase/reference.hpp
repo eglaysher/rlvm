@@ -65,6 +65,9 @@ private:
   /// Pointer to the real memory reference that we work with whenever
   /// we operate with an IntAccessor
   MemoryReferenceIterator<IntAccessor>* it;
+
+  /// Pointer to the store register (if this is that kind of IntAccessor).
+  int* store_register_;
 };
 
 // -----------------------------------------------------------------------
@@ -110,6 +113,9 @@ class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
 public:
   MemoryReferenceIterator();
+
+  // Explicit store register creation
+  MemoryReferenceIterator(int* store_register);
 
   // Explicit reference creation
   MemoryReferenceIterator(Memory* in_machine, const int in_type,
@@ -173,6 +179,7 @@ public:
   }
 
 private:
+  int* store_register_;
   Memory* memory_;
   int type_;
   int location_;
@@ -186,16 +193,24 @@ private:
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
-  : memory_(NULL), type_(-1), location_(0)
-{ }
+    : store_register_(NULL), memory_(NULL), type_(-1), location_(0)
+{}
+
+// -----------------------------------------------------------------------
+
+template<typename ACCESS>
+MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(int* store_register)
+    : store_register_(store_register), memory_(NULL), type_(-1), location_(0)
+{}
 
 // -----------------------------------------------------------------------
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
   Memory* memory, const int in_type, const int in_location)
-  : memory_(memory), type_(in_type), location_(in_location)
-{ }
+    : store_register_(NULL), memory_(memory), type_(in_type),
+      location_(in_location)
+{}
 
 // -----------------------------------------------------------------------
 

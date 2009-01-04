@@ -35,6 +35,8 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
+#include "MachineBase/reference.hpp"
+
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -108,6 +110,13 @@ public:
 
   virtual void assignStringValue(RLMachine& machine);
   virtual const std::string& getStringValue(RLMachine& machine) const;
+
+  /// I used to be able to just static cast any ExpressionPiece to a
+  /// MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
+  /// rlBabel library instead uses the store register as an argument to a
+  /// function that takes a integer reference. So this needs to be here now.
+  virtual IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
+  virtual StringReferenceIterator getStringReferenceIterator(RLMachine& machine) const;
 
   virtual ExpressionPiece* clone() const = 0;
 };
