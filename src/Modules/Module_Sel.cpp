@@ -63,7 +63,7 @@ Sel_LongOperation::Sel_LongOperation(
   RLMachine& machine,
   const libReallive::SelectElement& commandElement)
   : machine_(machine),
-    text_window_(machine.system().text().currentWindow(machine)),
+    text_window_(machine.system().text().currentWindow()),
     return_value_(-1)
 {
   machine.system().text().setInSelectionMode(true);

@@ -57,7 +57,7 @@ PauseLongOperation::PauseLongOperation(RLMachine& imachine)
   // Initialize Auto Mode (in case it's activated, or in case it gets
   // activated)
   int numChars =
-    text.currentPage(machine).numberOfCharsOnPage();
+    text.currentPage().numberOfCharsOnPage();
   automode_time_ = text.getAutoTime(numChars);
   start_time_ = event.getTicks();
 
@@ -137,13 +137,13 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     break;
   case MOUSE_WHEELUP:
     if (pressed) {
-      text.backPage(machine);
+      text.backPage();
       return true;
     }
     break;
   case MOUSE_WHEELDOWN:
     if (pressed) {
-      text.forwardPage(machine);
+      text.forwardPage();
       return true;
     }
     break;
@@ -178,10 +178,10 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
         graphics.toggleInterfaceHidden();
         handled = true;
       } else if(keyCode == RLKEY_UP) {
-        text.backPage(machine);
+        text.backPage();
         handled = true;
       } else if(keyCode == RLKEY_DOWN) {
-        text.forwardPage(machine);
+        text.forwardPage();
         handled = true;
       } else if(keyCode == RLKEY_RETURN) {
         if (text.isReadingBacklog())
@@ -233,9 +233,9 @@ NewPageAfterLongop::~NewPageAfterLongop()
 void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
 {
   TextSystem& text = machine.system().text();
-  text.snapshot(machine);
-  text.currentWindow(machine)->clearWin();
-  text.newPageOnWindow(machine, text.activeWindow());
+  text.snapshot();
+  text.currentWindow()->clearWin();
+  text.newPageOnWindow(text.activeWindow());
 }
 
 // -----------------------------------------------------------------------
@@ -254,6 +254,6 @@ HardBrakeAfterLongop::~HardBrakeAfterLongop()
 
 void HardBrakeAfterLongop::performAfterLongOperation(RLMachine& machine)
 {
-  machine.system().text().currentPage(machine).hardBrake();
+  machine.system().text().currentPage().hardBrake();
 }
 

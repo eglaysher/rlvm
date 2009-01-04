@@ -129,7 +129,7 @@ struct Sys_PauseCursor : public RLOp_Void_1< IntConstant_T > {
 struct Sys_GetWakuAll : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     boost::shared_ptr<TextWindow> window =
-        machine.system().text().currentWindow(machine);
+        machine.system().text().currentWindow();
     return window->wakuSet();
   }
 };

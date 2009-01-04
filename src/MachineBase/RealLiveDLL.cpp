@@ -45,9 +45,10 @@ using std::endl;
 // RealLiveDLL
 // -----------------------------------------------------------------------
 
-RealLiveDLL* RealLiveDLL::BuildDLLNamed(const std::string& name) {
+RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
+                                        const std::string& name) {
   if (name == "rlBabel") {
-    return new RlBabelDLL();
+    return new RlBabelDLL(machine);
   } else {
     ostringstream oss;
     oss << "Unsupported DLL interface " << name << endl;

@@ -85,7 +85,8 @@ enum getcReturn {
 class Gloss
 {
 public:
-  Gloss(RLMachine& machine, const std::string& cp932_src,
+  Gloss(const boost::shared_ptr<TextWindow>& window,
+        const std::string& cp932_src,
         int x1, int y1, int x2, int y2);
 
   /// Whether the passed in point intersects with 
@@ -133,7 +134,7 @@ private:
  */
 class RlBabelDLL : public RealLiveDLL {
  public:
-  RlBabelDLL();
+  RlBabelDLL(RLMachine& machine);
 
   // Overridden from RealLiveDLL:
 
@@ -147,7 +148,7 @@ class RlBabelDLL : public RealLiveDLL {
   int initialize(int dllno, int windname);
 
   /// Takes an input string and copies it to our internal buffer.
-  int textoutAdd(RLMachine& machine, const std::string& str);
+  int textoutAdd(const std::string& str);
 
   /// Adds characters to the internal buffer, italicizing text as it comes in.
   void AppendChar(const char*& ch);
@@ -157,44 +158,42 @@ class RlBabelDLL : public RealLiveDLL {
 
   // Checks if there's room on this page, and either line breaks (returns
   // getcNewLine) or page breaks (returns getcNewScreen).
-  int textoutLineBreak(RLMachine& machine, StringReferenceIterator buf);
+  int textoutLineBreak(StringReferenceIterator buf);
 
   /// Retrieves an action specified in getcReturn, which directs the side of
   /// rlBabel implemented in RealLive code. Uses buffer and xmod as output
   /// variables for the command given.
-  int textoutGetChar(RLMachine& machine,
-                     StringReferenceIterator buffer,
+  int textoutGetChar(StringReferenceIterator buffer,
                      IntReferenceIterator xmod);
 
   /// (rlBabel function not entirely understood...)
-  int startNewScreen(RLMachine& machine, const std::string& cnam);
+  int startNewScreen(const std::string& cnam);
 
   /// Sets the window name internally. This does not display the name in the
   /// case of NAME_MOD being 0 (name displayed inline), but will display it in
   /// case of NAME_MOD being 1 (name being displayed in a different window
   /// where it won't mess with our indentation rules.)
-  int setCurrentWindowName(RLMachine& machine, StringReferenceIterator buffer);
+  int setCurrentWindowName(StringReferenceIterator buffer);
 
   /// Clears all on screen glosses.
   int clearGlosses();
 
   /// Mark where this gloss begins.
-  int newGloss(RLMachine& machine);
+  int newGloss();
 
   /// Create a gloss of the text since newGloss() with the glosstext of
   /// |cp932_gloss_text|.
-  int addGloss(RLMachine& machine, const std::string& cp932_gloss_text);
+  int addGloss(const std::string& cp932_gloss_text);
 
   /// Tests if (x, y) is inside any defined glosses. If so, return true and put
   /// the glosstext in |text|.
-  int testGlosses(RLMachine& machine, int x, int y,
-                  StringReferenceIterator text, int globalwaku);
+  int testGlosses(int x, int y, StringReferenceIterator text, int globalwaku);
 
   // Helper functions:
 
-  int getCharWidth(RLMachine& machine, unsigned short full_char, bool as_xmod);
+  int getCharWidth(unsigned short full_char, bool as_xmod);
 
-  bool lineBreakRequired(RLMachine& machine);
+  bool lineBreakRequired();
 
   unsigned short consumeNextCharacter(std::string::size_type& index);
 
@@ -213,11 +212,13 @@ class RlBabelDLL : public RealLiveDLL {
 
   /// Transform one of rlBabel's integer addresses into an iterator to the
   /// corresponding piece of integer memory.
-  IntReferenceIterator getIvar(RLMachine& machine, int addr);
+  IntReferenceIterator getIvar(int addr);
 
   /// Transform one of rlBabel's integer addresses into an iterator to the
   /// corresponding piece of integer memory.
-  StringReferenceIterator getSvar(RLMachine& machine, int addr);
+  StringReferenceIterator getSvar(int addr);
+
+  boost::shared_ptr<TextWindow> getWindow(int id);
 
   /// Whether text being added is italicized.
   bool add_is_italic;
@@ -239,6 +240,9 @@ class RlBabelDLL : public RealLiveDLL {
 
   /// Marker set at the start of a gloss.
   int gloss_start_x_, gloss_start_y_;
+
+  /// Reference to our enclosing system.
+  RLMachine& machine_;
 };  // end of class RlBabelDll
 
 #endif

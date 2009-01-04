@@ -31,9 +31,9 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/function.hpp>
 
-class RLMachine;
 class TextPageElement;
 class SetWindowTextPageElement;
+class System;
 class TextTextPageElement;
 
 // -----------------------------------------------------------------------
@@ -41,7 +41,7 @@ class TextTextPageElement;
 class TextPage : public boost::noncopyable
 {
 public:
-  TextPage(RLMachine& in_sys, int window_num);
+  TextPage(System& system, int window_num);
   TextPage(const TextPage& rhs);
   ~TextPage();
 
@@ -155,7 +155,7 @@ private:
 
   boost::ptr_vector<TextPageElement> elements_to_replay_;
 
-  RLMachine* machine_;
+  System* system_;
 
   /// Current window that this page is rendering into
   int window_num_;

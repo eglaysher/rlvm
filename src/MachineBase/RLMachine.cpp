@@ -597,7 +597,7 @@ void RLMachine::performTextout(const std::string& cp932str) {
 void RLMachine::setKidokuMarker(int kidoku_number) {
   // Check to see if we mark savepoints on textout
   if (shouldSetMessageSavepoint() &&
-      system_.text().currentPage(*this).numberOfCharsOnPage() == 0)
+      system_.text().currentPage().numberOfCharsOnPage() == 0)
     markSavepoint();
 
   // Mark if we've previously read this piece of text.
@@ -611,7 +611,7 @@ void RLMachine::setKidokuMarker(int kidoku_number) {
 // -----------------------------------------------------------------------
 
 void RLMachine::loadDLL(int slot, const std::string& name) {
-  auto_ptr<RealLiveDLL> dll(RealLiveDLL::BuildDLLNamed(name));
+  auto_ptr<RealLiveDLL> dll(RealLiveDLL::BuildDLLNamed(*this, name));
   if (dll.get()) {
     loaded_dlls_.insert(slot, dll);
   } else {

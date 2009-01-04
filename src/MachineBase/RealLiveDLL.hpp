@@ -41,7 +41,8 @@ public:
    * Builds a RealLiveDLL for the DLL named |name|. Throws an exception on rlvm
    * not supporting this particular extension.
    */
-  static RealLiveDLL* BuildDLLNamed(const std::string& name);
+  static RealLiveDLL* BuildDLLNamed(RLMachine& machine,
+                                    const std::string& name);
 
   virtual ~RealLiveDLL();
 

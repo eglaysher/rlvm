@@ -45,8 +45,7 @@ public:
   SDLTextSystem(System& system, Gameexe& gameexe);
   ~SDLTextSystem();
 
-  virtual boost::shared_ptr<TextWindow> textWindow(
-    RLMachine&, int text_window_number);
+  virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
 
   virtual boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,

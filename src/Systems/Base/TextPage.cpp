@@ -139,8 +139,8 @@ class ActionElement : public TextPageElement {
 // TextPage
 // -----------------------------------------------------------------------
 
-TextPage::TextPage(RLMachine& machine, int window_num)
-  : machine_(&machine), window_num_(window_num), number_of_chars_on_page_(0),
+TextPage::TextPage(System& system, int window_num)
+  : system_(&system), window_num_(window_num), number_of_chars_on_page_(0),
     in_ruby_gloss_(false)
 {
   addSetToRightStartingColorElement();
@@ -149,7 +149,7 @@ TextPage::TextPage(RLMachine& machine, int window_num)
 // -----------------------------------------------------------------------
 
 TextPage::TextPage(const TextPage& rhs)
-  : machine_(rhs.machine_), window_num_(rhs.window_num_),
+  : system_(rhs.system_), window_num_(rhs.window_num_),
     number_of_chars_on_page_(rhs.number_of_chars_on_page_),
     in_ruby_gloss_(rhs.in_ruby_gloss_)
 {
@@ -178,7 +178,7 @@ TextPage& TextPage::operator=(const TextPage& rhs)
 void TextPage::swap(TextPage& rhs)
 {
   elements_to_replay_.swap(rhs.elements_to_replay_);
-  std::swap(machine_, rhs.machine_);
+  std::swap(system_, rhs.system_);
   std::swap(window_num_, rhs.window_num_);
   std::swap(number_of_chars_on_page_, rhs.number_of_chars_on_page_);
   std::swap(in_ruby_gloss_, rhs.in_ruby_gloss_);
@@ -309,8 +309,7 @@ void TextPage::addAction(
 bool TextPage::character_impl(const string& c,
                               const string& next_char)
 {
-  return machine_->system().text().textWindow(*machine_, window_num_)
-    ->displayChar(*machine_, c, next_char);
+  return system_->text().textWindow(window_num_)->displayChar(c, next_char);
 }
 
 // -----------------------------------------------------------------------
@@ -319,48 +318,43 @@ void TextPage::name_impl(const string& name,
                          const string& next_char,
                          bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->setName(*machine_, name, next_char);
+  system_->text().textWindow(window_num_)->setName(name, next_char);
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::hard_brake_impl(bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->hardBrake();
+  system_->text().textWindow(window_num_)->hardBrake();
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::set_indentation_impl(bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->setIndentation();
+  system_->text().textWindow(window_num_)->setIndentation();
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::reset_indentation_impl(bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->resetIndentation();
+  system_->text().textWindow(window_num_)->resetIndentation();
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::font_colour_impl(int color, bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->setFontColor(machine_->system().gameexe()("COLOR_TABLE", color));
+  system_->text().textWindow(window_num_)
+    ->setFontColor(system_->gameexe()("COLOR_TABLE", color));
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::mark_ruby_begin_impl(bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->markRubyBegin();
+  system_->text().textWindow(window_num_)->markRubyBegin();
   in_ruby_gloss_ = true;
 }
 
@@ -369,46 +363,41 @@ void TextPage::mark_ruby_begin_impl(bool is_active_page)
 void TextPage::display_ruby_text_impl(const std::string& utf8str,
                                       bool is_active_page)
 {
-  machine_->system().text().textWindow(*machine_, window_num_)
-    ->displayRubyText(*machine_, utf8str);
+  system_->text().textWindow(window_num_)->displayRubyText(utf8str);
   in_ruby_gloss_ = false;
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::set_insertion_point_x_impl(int x, bool is_active_page) {
-  machine_->system().text().textWindow(*machine_, window_num_)
-      ->setInsertionPointX(x);
+  system_->text().textWindow(window_num_)->setInsertionPointX(x);
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::set_insertion_point_y_impl(int y, bool is_active_page) {
-  machine_->system().text().textWindow(*machine_, window_num_)
-      ->setInsertionPointY(y);
+  system_->text().textWindow(window_num_)->setInsertionPointY(y);
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::offset_insertion_point_x_impl(int offset, bool is_active_page) {
-  machine_->system().text().textWindow(*machine_, window_num_)
-      ->offsetInsertionPointX(offset);
+  system_->text().textWindow(window_num_)->offsetInsertionPointX(offset);
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::offset_insertion_point_y_impl(int offset, bool is_active_page) {
-  machine_->system().text().textWindow(*machine_, window_num_)
-      ->offsetInsertionPointY(offset);
+  system_->text().textWindow(window_num_)->offsetInsertionPointY(offset);
 }
 
 // -----------------------------------------------------------------------
 
 void TextPage::set_to_right_starting_color_impl(bool is_active_page)
 {
-  Gameexe& gexe = machine_->system().gameexe();
-  boost::shared_ptr<TextWindow> window = machine_->system().text().textWindow(
-    *machine_, window_num_);
+  Gameexe& gexe = system_->gameexe();
+  boost::shared_ptr<TextWindow> window = system_->text().textWindow(
+    window_num_);
   if(!is_active_page)
   {
     GameexeInterpretObject color(gexe("COLOR_TABLE", 254));
@@ -419,8 +408,6 @@ void TextPage::set_to_right_starting_color_impl(bool is_active_page)
 
 // -----------------------------------------------------------------------
 
-bool TextPage::isFull() const
-{
-  return machine_->system().text().textWindow(*machine_, window_num_)
-    ->isFull();
+bool TextPage::isFull() const {
+  return system_->text().textWindow( window_num_)->isFull();
 }

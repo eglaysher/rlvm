@@ -81,27 +81,15 @@ inline bool token_delimiter(char val) {
   return val < 6 || (val > 7 && val <= 32) || val == '-';
 }
 
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<TextWindow> getWindow(RLMachine& machine, int id) {
-  TextSystem& text_system = machine.system().text();
-  if (id >= 0) {
-    return text_system.textWindow(machine, id);
-  } else {
-    return text_system.currentWindow(machine);
-  }
-}
-
 } // anonymous namespace
 
 // -----------------------------------------------------------------------
 // Gloss
 // -----------------------------------------------------------------------
-Gloss::Gloss(RLMachine& machine, const std::string& cp932_src,
+Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
+             const std::string& cp932_src,
              int x1, int y1, int x2, int y2)
     : text_(cp932_src) {
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
-
   int line_height = window->lineHeight();
   while (y1 < y2) {
     // Special case for multi-line links.  Hopefully these will be rare...
@@ -125,8 +113,9 @@ bool Gloss::contains(const Point& point) {
 // -----------------------------------------------------------------------
 // RlBabelDLL
 // -----------------------------------------------------------------------
-RlBabelDLL::RlBabelDLL()
-    : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0)
+RlBabelDLL::RlBabelDLL(RLMachine& machine)
+    : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0),
+      machine_(machine)
 {}
 
 // -----------------------------------------------------------------------
@@ -142,27 +131,26 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
         return 1;
       } else {
         textoutClear();
-        return textoutAdd(machine, *getSvar(machine, arg1));
+        return textoutAdd(*getSvar(arg1));
       }
     case dllTextoutAppend:
-      return textoutAdd(machine, *getSvar(machine, arg1));
+      return textoutAdd(*getSvar(arg1));
     case dllTextoutGetChar:
-      return textoutGetChar(machine, getSvar(machine, arg1),
-                            getIvar(machine, arg2));
+      return textoutGetChar(getSvar(arg1), getIvar(arg2));
     case dllTextoutNewScreen:
-      return startNewScreen(machine, *getSvar(machine, arg1));
+      return startNewScreen(*getSvar(arg1));
     case dllSetNameMod: {
-      boost::shared_ptr<TextWindow> textWindow = getWindow(machine, arg1);
+      boost::shared_ptr<TextWindow> textWindow = getWindow(arg1);
       int original_mod = textWindow->nameMod();
       textWindow->setNameMod(arg2);
       return original_mod;
     }
     case dllGetNameMod:
-      return getWindow(machine, arg1)->nameMod();
+      return getWindow(arg1)->nameMod();
     case dllGetTextWindow:
-      return getWindow(machine, -1)->windowNumber();
+      return getWindow(-1)->windowNumber();
     case dllSetWindowName:
-      return setCurrentWindowName(machine, getSvar(machine, arg1));
+      return setCurrentWindowName(getSvar(arg1));
     case endSetWindowName:
     case endGetCharWinNam: {
       // Should never happen since we don't do the insane trick of overwriting
@@ -172,13 +160,13 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
     case dllClearGlosses:
       return clearGlosses();
     case dllNewGloss:
-      return newGloss(machine);
+      return newGloss();
     case dllAddGloss:
-      return addGloss(machine, *getSvar(machine, arg1));
+      return addGloss(*getSvar(arg1));
     case dllTestGlosses:
-      return testGlosses(machine, arg1, arg2, getSvar(machine, arg3), arg4);
+      return testGlosses(arg1, arg2, getSvar(arg3), arg4);
     case dllGetRCommandMod: {
-      int window = getWindow(machine, arg1)->windowNumber();
+      int window = getWindow(arg1)->windowNumber();
       return machine.system().gameexe()("WINDOW")(window)("R_COMMAND_MOD");
     }
     case dllMessageBox:
@@ -198,7 +186,7 @@ int RlBabelDLL::initialize(int dllno, int windname) {
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::textoutAdd(RLMachine& machine, const std::string& str) {
+int RlBabelDLL::textoutAdd(const std::string& str) {
   const char* string = str.c_str();
 
   while (*string) {
@@ -213,7 +201,7 @@ int RlBabelDLL::textoutAdd(RLMachine& machine, const std::string& str) {
         idx = (idx + 1) * 26 + string[1] - 0x60;
         string += 2;
       }
-      Memory& memory = machine.memory();
+      Memory& memory = machine_.memory();
       const char* namestr = global ? memory.getName(idx).c_str() :
         memory.getLocalName(idx).c_str();
 
@@ -290,9 +278,8 @@ void RlBabelDLL::textoutClear() {
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::textoutLineBreak(RLMachine& machine,
-                                 StringReferenceIterator buf) {
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+int RlBabelDLL::textoutLineBreak(StringReferenceIterator buf) {
+  boost::shared_ptr<TextWindow> window = getWindow(-1);
 
   // If there's room on this page, break the line, otherwise break
   // the page.
@@ -311,8 +298,7 @@ int RlBabelDLL::textoutLineBreak(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::textoutGetChar(RLMachine& machine,
-                               StringReferenceIterator buffer,
+int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
                                IntReferenceIterator xmod) {
   int rv = getcPrintChar;
 
@@ -372,11 +358,11 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
 
         // If name display is not inline, skip the token to avoid
         // rendering it inline.
-        if (getWindow(machine, -1)->nameMod() >= 1)
+        if (getWindow(-1)->nameMod() >= 1)
           text_index = end_token_index;
 
         // Set the window name.
-        rv = setCurrentWindowName(machine, buffer);
+        rv = setCurrentWindowName(buffer);
 
         // By default, Haeleth's rlBabel will rewrite a big chunk of
         // instruction memory to writeout the equivalent of '\{name}' and a
@@ -386,10 +372,10 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
         // probably the only we could get around RealLives lousy binary
         // interface. We can maintain compatibility by just printing the
         // current buffer out right here.
-        return textoutGetChar(machine, buffer, xmod);
+        return textoutGetChar(buffer, xmod);
       }
       case 2: {
-        Codepage& cp = Cp::instance(machine.getTextEncoding());
+        Codepage& cp = Cp::instance(machine_.getTextEncoding());
         // End of previously-handled name setter.
         // If this is the end of the string, do nothing.
         if (!endToken(1))
@@ -415,16 +401,16 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
           endToken(0) = ' ';
           endToken(1) = 4;
         }
-        return textoutGetChar(machine, buffer, xmod);
+        return textoutGetChar(buffer, xmod);
       }
       case 3: {
         // Line break code (\n)
         text_index = ++end_token_index;
-        return textoutLineBreak(machine, buffer);
+        return textoutLineBreak(buffer);
       }
       case 4: {
         // Set indent code
-        if (getWindow(machine, -1)->useIndentation()) {
+        if (getWindow(-1)->useIndentation()) {
           char index = endToken();
           if (index < kCodeMapSize)
             rv = codemap[index];
@@ -435,7 +421,7 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
         }
         // If #WINDOW.INDENT_USE is 0, we ignore this code.
         text_index = ++end_token_index;
-        return textoutGetChar(machine, buffer, xmod);
+        return textoutGetChar(buffer, xmod);
       }
       case 5: {
         char index = endToken();
@@ -454,7 +440,7 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
         // Shouldn't happen (should be expanded away in TextoutAdd).
         // For now, ignore them.
         text_index = ++end_token_index;
-        return textoutGetChar(machine, buffer, xmod);
+        return textoutGetChar(buffer, xmod);
       }
       case 0x1f: // Begin gloss marker.  Treat as text.
         ++end_token_index;
@@ -477,10 +463,10 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
           ++end_token_index;
         // If the token will not fit on the current line, insert a
         // line break and strip leading spaces.
-        if (lineBreakRequired(machine)) {
+        if (lineBreakRequired()) {
           while (curPos() == ' ')
             ++text_index;
-          return textoutLineBreak(machine, buffer);
+          return textoutLineBreak(buffer);
         }
         // Otherwise the token will begin displaying.
       }
@@ -521,13 +507,13 @@ int RlBabelDLL::textoutGetChar(RLMachine& machine,
   }
 
   *buffer = cp932_char_out;
-  *xmod = getCharWidth(machine, full_char, true);
+  *xmod = getCharWidth(full_char, true);
   return rv;
 }
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::startNewScreen(RLMachine& machine, const std::string& cnam) {
+int RlBabelDLL::startNewScreen(const std::string& cnam) {
   if (cnam.empty())
     return getcEndOfString;
 
@@ -535,17 +521,16 @@ int RlBabelDLL::startNewScreen(RLMachine& machine, const std::string& cnam) {
   buf += "\x02\"";
   buf += cp932_text_buffer.substr(text_index);
   textoutClear();
-  return textoutAdd(machine, buf);
+  return textoutAdd(buf);
 }
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::setCurrentWindowName(RLMachine& machine,
-                                     StringReferenceIterator buffer) {
+int RlBabelDLL::setCurrentWindowName(StringReferenceIterator buffer) {
   // Haeleth's implementation of SetCurrentWindowName in rlBabel goes through
   // some monstrous hacks, including temporarily rewriting the bytecode at the
   // instruction pointer. I *think* I can get away with a simple:
-  getWindow(machine, -1)->setNameWithoutDisplay(*buffer);
+  getWindow(-1)->setNameWithoutDisplay(*buffer);
   return 1;
 }
 
@@ -558,8 +543,8 @@ int RlBabelDLL::clearGlosses() {
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::newGloss(RLMachine& machine) {
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+int RlBabelDLL::newGloss() {
+  boost::shared_ptr<TextWindow> window = getWindow(-1);
   gloss_start_x_ = window->insertionPointX();
   gloss_start_y_ = window->insertionPointY();
   return 1;
@@ -567,10 +552,9 @@ int RlBabelDLL::newGloss(RLMachine& machine) {
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::addGloss(RLMachine& machine,
-                         const std::string& cp932_gloss_text) {
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
-  glosses_.push_back(Gloss(machine,
+int RlBabelDLL::addGloss(const std::string& cp932_gloss_text) {
+  boost::shared_ptr<TextWindow> window = getWindow(-1);
+  glosses_.push_back(Gloss(window,
                            cp932_gloss_text, gloss_start_x_, gloss_start_y_,
                            window->insertionPointX(),
                            window->insertionPointY()));
@@ -579,11 +563,10 @@ int RlBabelDLL::addGloss(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::testGlosses(RLMachine& machine,
-                            int x, int y, StringReferenceIterator text,
+int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
                             int globalwaku) {
   // Does this handle all cases?
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+  boost::shared_ptr<TextWindow> window = getWindow(-1);
   x -= window->textX1();
   y -= window->textY1();
 
@@ -599,12 +582,11 @@ int RlBabelDLL::testGlosses(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::getCharWidth(RLMachine& machine, unsigned short cp932_char,
-                             bool as_xmod) {
-  Codepage& cp = Cp::instance(machine.getTextEncoding());
+int RlBabelDLL::getCharWidth(unsigned short cp932_char, bool as_xmod) {
+  Codepage& cp = Cp::instance(machine_.getTextEncoding());
   unsigned short native_char = cp.JisDecode(cp932_char);
   unsigned short unicode_codepoint = cp.Convert(native_char);
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+  boost::shared_ptr<TextWindow> window = getWindow(-1);
   // TODO: Can I somehow modify this to try to do proper kerning?
   int width = window->charWidth(unicode_codepoint);
   return as_xmod ? window->insertionPointX() + width : width;
@@ -612,15 +594,15 @@ int RlBabelDLL::getCharWidth(RLMachine& machine, unsigned short cp932_char,
 
 // -----------------------------------------------------------------------
 
-bool RlBabelDLL::lineBreakRequired(RLMachine& machine) {
-  boost::shared_ptr<TextWindow> window = getWindow(machine, -1);
+bool RlBabelDLL::lineBreakRequired() {
+  boost::shared_ptr<TextWindow> window = getWindow(-1);
 
   int width = 0;
   std::string::size_type ptr = text_index;
   while (ptr < end_token_index) {
     unsigned short cp932_char = consumeNextCharacter(ptr);
     if (text_index < end_token_index) {
-      width += getCharWidth(machine, cp932_char, false);
+      width += getCharWidth(cp932_char, false);
     } else {
       width += window->fontSizeInPixels();
     }
@@ -639,14 +621,14 @@ bool RlBabelDLL::lineBreakRequired(RLMachine& machine) {
   if (width >= max_space) {
     ptr = text_index;
     unsigned short cp932_char = consumeNextCharacter(ptr);
-    width = getCharWidth(machine, cp932_char, false);
+    width = getCharWidth(cp932_char, false);
 
     // If the first character will fit on the current line, a line break is not
     // required.
     if (width < remaining_space) {
       while (ptr < end_token_index) {
         cp932_char = consumeNextCharacter(ptr);
-        int cw = getCharWidth(machine, cp932_char, false);
+        int cw = getCharWidth(cp932_char, false);
         if (width + cw >= remaining_space)
           break;
         ptr += 1 + (cp932_char > 0xff);
@@ -666,7 +648,7 @@ bool RlBabelDLL::lineBreakRequired(RLMachine& machine) {
     // next line, and a break is required.
     while (ptr < end_token_index) {
       cp932_char = consumeNextCharacter(ptr);
-      int cw = getCharWidth(machine, cp932_char, false);
+      int cw = getCharWidth(cp932_char, false);
       if (width + cw >= remaining_space)
         break;
       ptr += 1 + (cp932_char > 0xff);
@@ -695,16 +677,16 @@ unsigned short RlBabelDLL::consumeNextCharacter(std::string::size_type& index) {
 
 // -----------------------------------------------------------------------
 
-IntReferenceIterator RlBabelDLL::getIvar(RLMachine& machine, int addr) {
+IntReferenceIterator RlBabelDLL::getIvar(int addr) {
   int bank = (addr >> 16) % 26;
   int location = addr & 0xffff;
-  return IntReferenceIterator(&(machine.memory()), bank, location);
+  return IntReferenceIterator(&(machine_.memory()), bank, location);
 }
 
 // -----------------------------------------------------------------------
 
-StringReferenceIterator RlBabelDLL::getSvar(RLMachine& machine, int addr) {
-  Memory* m = &(machine.memory());
+StringReferenceIterator RlBabelDLL::getSvar(int addr) {
+  Memory* m = &(machine_.memory());
   int bank = addr >> 16;
   int locaiton = addr & 0xfff;
 
@@ -726,4 +708,15 @@ StringReferenceIterator RlBabelDLL::getSvar(RLMachine& machine, int addr) {
 
   // Error.
   return StringReferenceIterator(m, libReallive::STRS_LOCATION, 0);
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<TextWindow> RlBabelDLL::getWindow(int id) {
+  TextSystem& text_system = machine_.system().text();
+  if (id >= 0) {
+    return text_system.textWindow(id);
+  } else {
+    return text_system.currentWindow();
+  }
 }

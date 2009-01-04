@@ -88,12 +88,13 @@ static struct ButtonInfo {
 // TextWindow
 // -----------------------------------------------------------------------
 
-TextWindow::TextWindow(RLMachine& machine, int window_num)
+TextWindow::TextWindow(System& system, int window_num)
     : window_num_(window_num), ruby_begin_point_(-1), current_line_number_(0),
       current_indentation_in_pixels_(0), use_indentation_(0), colour_(),
-      filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0)
+      filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0),
+      system_(system)
 {
-  Gameexe& gexe = machine.system().gameexe();
+  Gameexe& gexe = system.gameexe();
 
   // POINT
   Size size = getScreenSize(gexe);
@@ -107,7 +108,7 @@ TextWindow::TextWindow(RLMachine& machine, int window_num)
   window_attr_mod_ = window("ATTR_MOD");
   if(window_attr_mod_ == 0)
   {
-    setRGBAF(machine.system().text().windowAttr());
+    setRGBAF(system.text().windowAttr());
   }
   else
     setRGBAF(window("ATTR"));
@@ -132,7 +133,7 @@ TextWindow::TextWindow(RLMachine& machine, int window_num)
   setKeycurMod(window("KEYCUR_MOD"));
   setActionOnPause(window("R_COMMAND_MOD"));
   waku_set_ = window("WAKU_SETNO").to_int(0);
-  setWindowWaku(machine, gexe, waku_set_);
+  setWindowWaku(waku_set_);
 }
 
 // -----------------------------------------------------------------------
@@ -325,49 +326,52 @@ Point TextWindow::keycursorPosition() const
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
-                               const int waku_no)
+void TextWindow::setWindowWaku(const int waku_no)
 {
   using namespace boost;
 
-  GameexeInterpretObject waku(gexe("WAKU", waku_no, 0));
+  GameexeInterpretObject waku(system_.gameexe()("WAKU", waku_no, 0));
 
-  setWakuMain(machine, waku("NAME").to_string(""));
-  setWakuBacking(machine, waku("BACK").to_string(""));
-  setWakuButton(machine, waku("BTN").to_string(""));
+  setWakuMain(waku("NAME").to_string(""));
+  setWakuBacking(waku("BACK").to_string(""));
+  setWakuButton(waku("BTN").to_string(""));
 
-  TextSystem& ts = machine.system().text();
-  GraphicsSystem& gs = machine.system().graphics();
+  TextSystem& ts = system().text();
+  GraphicsSystem& gs = system().graphics();
 
   button_map_[0].reset(
-    new ActionTextWindowButton(
-      ts.windowClearUse(), waku("CLEAR_BOX"),
-      bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
+      new ActionTextWindowButton(
+          system(),
+          ts.windowClearUse(), waku("CLEAR_BOX"),
+          bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
   button_map_[1].reset(
     new RepeatActionWhileHoldingWindowButton(
-      ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"), machine,
-      bind(&TextSystem::backPage, ref(ts), ref(machine)),
-      250));
+        system(),
+        ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
+        bind(&TextSystem::backPage, ref(ts)),
+        250));
   button_map_[2].reset(
-    new RepeatActionWhileHoldingWindowButton(
-      ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"), machine,
-      bind(&TextSystem::forwardPage, ref(ts), ref(machine)),
-      250));
+      new RepeatActionWhileHoldingWindowButton(
+          system(),
+          ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
+          bind(&TextSystem::forwardPage, ref(ts)),
+          250));
 
   for(int i = 0; i < 7; ++i) {
-    GameexeInterpretObject wbcall(gexe("WBCALL", i));
+    GameexeInterpretObject wbcall(system_.gameexe()("WBCALL", i));
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
     button_map_[3 + i].reset(
       new ExbtnWindowButton(
-        machine, ts.windowExbtnUse(), waku(oss.str()), wbcall));
+          system(), ts.windowExbtnUse(), waku(oss.str()), wbcall));
   }
 
   ActivationTextWindowButton* readjump_box =
-    new ActivationTextWindowButton(
-      ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-      bind(&TextSystem::setSkipMode, ref(ts), true),
-      bind(&TextSystem::setSkipMode, ref(ts), false));
+      new ActivationTextWindowButton(
+          system(),
+          ts.windowReadJumpUse(), waku("READJUMP_BOX"),
+          bind(&TextSystem::setSkipMode, ref(ts), true),
+          bind(&TextSystem::setSkipMode, ref(ts), false));
   button_map_[10].reset(readjump_box);
   ts.skipModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
                                    readjump_box, _1));
@@ -376,9 +380,10 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
   ActivationTextWindowButton* automode_button =
     new ActivationTextWindowButton(
-      ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-      bind(&TextSystem::setAutoMode, ref(ts), true),
-      bind(&TextSystem::setAutoMode, ref(ts), false));
+        system(),
+        ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
+        bind(&TextSystem::setAutoMode, ref(ts), true),
+        bind(&TextSystem::setAutoMode, ref(ts), false));
   button_map_[11].reset(automode_button);
   ts.autoModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
                                    automode_button, _1));
@@ -399,13 +404,10 @@ void TextWindow::setWindowWaku(RLMachine& machine, Gameexe& gexe,
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWakuMain(RLMachine& machine, const std::string& name)
+void TextWindow::setWakuMain(const std::string& name)
 {
-  if(name != "")
-  {
-    waku_main_ =
-      machine.system().graphics().loadSurfaceFromFile(machine, name);
-  }
+  if (name != "")
+    waku_main_ = system_.graphics().loadNonCGSurfaceFromFile(name);
   else
     waku_main_.reset();
 }
@@ -413,39 +415,33 @@ void TextWindow::setWakuMain(RLMachine& machine, const std::string& name)
 // -----------------------------------------------------------------------
 
 
-void TextWindow::setWakuBacking(RLMachine& machine, const std::string& name)
+void TextWindow::setWakuBacking(const std::string& name)
 {
-  if(name != "")
-  {
-    waku_backing_ =
-      machine.system().graphics().loadSurfaceFromFile(machine, name);
+  if (name != "") {
+    waku_backing_ = system_.graphics().loadNonCGSurfaceFromFile(name);
     waku_backing_->setIsMask(true);
-  }
-  else
+  } else {
     waku_backing_.reset();
+  }
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWakuButton(RLMachine& machine, const std::string& name)
+void TextWindow::setWakuButton(const std::string& name)
 {
-  if(name != "")
-  {
-    waku_button_ =
-      machine.system().graphics().loadSurfaceFromFile(machine, name);
-  }
+  if (name != "")
+    waku_button_ = system_.graphics().loadNonCGSurfaceFromFile(name);
   else
     waku_button_.reset();
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::renderButtons(RLMachine& machine)
+void TextWindow::renderButtons()
 {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->render(machine, *this, waku_button_,
-                             BUTTON_INFO[i].waku_offset);
+      button_map_[i]->render(*this, waku_button_, BUTTON_INFO[i].waku_offset);
     }
   }
 }
@@ -521,7 +517,7 @@ void TextWindow::setMousePosition(RLMachine& machine, const Point& pos)
 
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->setMousePosition(machine, *this, pos);
+      button_map_[i]->setMousePosition(*this, pos);
     }
   }
 }

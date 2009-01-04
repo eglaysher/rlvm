@@ -119,8 +119,8 @@ GraphicsObject& NullGraphicsSystem::getObject(int layer, int obj_number)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> NullGraphicsSystem::loadSurfaceFromFile(
-  RLMachine& machine, const std::string& short_filename)
+boost::shared_ptr<Surface> NullGraphicsSystem::loadNonCGSurfaceFromFile(
+    const std::string& short_filename)
 {
   graphics_system_log_.recordFunction("load_surface_from_file", short_filename);
 

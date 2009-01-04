@@ -42,22 +42,21 @@ class SelectionElement;
 class SDLTextWindow : public TextWindow
 {
 public:
-  SDLTextWindow(RLMachine& machine, int window);
+  SDLTextWindow(System& system, int window);
   ~SDLTextWindow();
   virtual void render(RLMachine& machine,
                       std::ostream* tree);
 
   virtual void clearWin();
 
-  virtual bool displayChar(RLMachine& machine,
-                           const std::string& current,
+  virtual bool displayChar(const std::string& current,
                            const std::string& next);
   virtual int charWidth(unsigned short codepoint) const;
 
-  virtual void setName(RLMachine& machine, const std::string& utf8name,
+  virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
   virtual void setNameWithoutDisplay(const std::string& utf8name);
-  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
+  virtual void displayRubyText(const std::string& utf8str);
 
 
   virtual void addSelectionItem(const std::string& utf8str);

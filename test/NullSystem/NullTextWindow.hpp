@@ -31,7 +31,7 @@
 class NullTextWindow : public TextWindow
 {
 public:
-  NullTextWindow(RLMachine& machine, int x);
+  NullTextWindow(System& system, int x);
   ~NullTextWindow();
   virtual void execute(RLMachine& machine) {}
 
@@ -39,17 +39,14 @@ public:
 
   // We don't test graphics in the null system, so don't really
   // implement the waku parts.
-  virtual void setWakuMain(RLMachine& machine, const std::string& name) {}
-  virtual void setWakuBacking(RLMachine& machine, const std::string& name) {}
-  virtual void setWakuButton(RLMachine& machine, const std::string& name) {}
   virtual void render(RLMachine& machine, std::ostream* tree) {}
 
-  virtual bool displayChar(RLMachine& machine, const std::string& current,
+  virtual bool displayChar(const std::string& current,
                            const std::string& next);
   virtual int charWidth(unsigned short codepoint) const { return 0; }
 
   virtual void clearWin();
-  virtual void setName(RLMachine& machine, const std::string& utf8name,
+  virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
   virtual void setNameWithoutDisplay(const std::string& utf8name) { }
 
@@ -58,7 +55,7 @@ public:
   // To implement for real, instead of just recording in the mocklog.
   virtual void resetIndentation();
   virtual void markRubyBegin();
-  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str);
+  virtual void displayRubyText(const std::string& utf8str);
 
   virtual bool isFull() const { return false; }
 

@@ -44,8 +44,7 @@ public:
   void executeTextSystem(RLMachine& machine) { }
   void render(RLMachine& machine) { }
 
-  boost::shared_ptr<TextWindow> textWindow(
-    RLMachine& machine, int text_window_number);
+  virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
 
   // We can safely ignore mouse clicks...for now.
   void setMousePosition(RLMachine& machine, const Point& pos) { }

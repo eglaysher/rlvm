@@ -111,9 +111,8 @@ public:
   void hideTextWindow(int win_number);
   void hideAllTextWindows();
   void clearAllTextWindows();
-  virtual boost::shared_ptr<TextWindow> textWindow(
-    RLMachine&, int text_window_number) = 0;
-  boost::shared_ptr<TextWindow> currentWindow(RLMachine& machine);
+  virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number) = 0;
+  boost::shared_ptr<TextWindow> currentWindow();
 
   /// @}
 
@@ -128,18 +127,18 @@ public:
    * Take a snapshot of the current window state, with their
    * respective TextPages, and add it to the backlog.
    */
-  void snapshot(RLMachine& machine);
+  void snapshot();
 
   /**
    * Resets the text page in the current_set
    */
-  void newPageOnWindow(RLMachine& machine, int window);
+  void newPageOnWindow(int window);
 
   /**
    * Get the active page. This function will return
    * windows_[active_window_].page().
    */
-  TextPage& currentPage(RLMachine& machine);
+  TextPage& currentPage();
 
   /**
    * @name Backlog management
@@ -150,8 +149,8 @@ public:
   /**
    * Clears the screen, moves back one page and renders it.
    */
-  void backPage(RLMachine& machine);
-  void forwardPage(RLMachine& machine);
+  void backPage();
+  void forwardPage();
 
   void replayPageSet(PageSet& set, bool is_current_page);
 

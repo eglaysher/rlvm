@@ -570,6 +570,8 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
   return rect;
 }
 
+// -----------------------------------------------------------------------
+
 /**
  * @author Jagarl
  * @author Elliot Glaysher
@@ -593,19 +595,15 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
  * modified; it will either be put in an object, which is immutable,
  * or it will be copied into the DC.
  */
-shared_ptr<Surface> SDLGraphicsSystem::loadSurfaceFromFile(
-  RLMachine& machine, const std::string& short_filename)
-{
+boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
+    const std::string& short_filename) {
   // First check to see if this surface is already in our internal cache
   shared_ptr<Surface> cached_surface = image_cache_.fetch(short_filename);
   if (cached_surface)
     return cached_surface;
 
-  // Record that we viewed this CG.
-  cgTable().setViewed(machine, short_filename);
-
   boost::filesystem::path filename =
-    findFile(machine, short_filename, IMAGE_FILETYPES);
+      findFile(system(), short_filename, IMAGE_FILETYPES);
 
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.file_string().c_str(), "rb");

@@ -89,8 +89,8 @@ public:
   virtual void allocateDC(int dc, Size screen_size);
   virtual void freeDC(int dc);
 
-  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-    RLMachine& machine, const std::string& short_filename);
+  virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
+      const std::string& short_filename);
 
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size);

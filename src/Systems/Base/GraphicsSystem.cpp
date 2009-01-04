@@ -450,6 +450,17 @@ void GraphicsSystem::reset()
 
 // -----------------------------------------------------------------------
 
+boost::shared_ptr<Surface> GraphicsSystem::loadSurfaceFromFile(
+  RLMachine& machine, const std::string& short_filename)
+{
+  // Record that we viewed this CG.
+  cgTable().setViewed(machine, short_filename);
+
+  return loadNonCGSurfaceFromFile(short_filename);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::promoteObjects()
 {
   typedef LazyArray<GraphicsObject>::full_iterator FullIterator;

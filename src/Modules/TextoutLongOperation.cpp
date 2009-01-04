@@ -72,7 +72,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
-  if (machine.system().text().currentPage(machine).inRubyGloss())
+  if (machine.system().text().currentPage().inRubyGloss())
     no_wait_ = true;
 }
 
@@ -161,7 +161,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
     current_position_ = it;
   }
 
-  TextPage& page = machine.system().text().currentPage(machine);
+  TextPage& page = machine.system().text().currentPage();
   page.name(name, current_char_);
 
   // Stop if this was the end of input
@@ -188,7 +188,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
     if(it != strend)
     {
       int codepoint = utf8::next(it, strend);
-      TextPage& page = machine.system().text().currentPage(machine);
+      TextPage& page = machine.system().text().currentPage();
       if(codepoint)
       {
         string nextChar(current_position_, it);
@@ -223,8 +223,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
     }
     else
     {
-      machine.system().text().currentPage(machine).
-        character(current_char_, "");
+      machine.system().text().currentPage().character(current_char_, "");
 
       return true;
     }

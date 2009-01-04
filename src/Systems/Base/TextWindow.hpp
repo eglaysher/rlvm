@@ -47,6 +47,7 @@ class GraphicsSystem;
 class TextWindowButton;
 class SelectionElement;
 class Surface;
+class System;
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
@@ -234,6 +235,8 @@ protected:
   int next_id_;
   /// @}
 
+  System& system_;
+
 protected:
   /**
    * Accessor for the selection_callback_ for TextWindow subclasses
@@ -244,8 +247,10 @@ protected:
   typedef boost::ptr_vector<SelectionElement> Selections;
   Selections selections_;
 
+  System& system() { return system_; }
+
 public:
-  TextWindow(RLMachine& machine, int window_num);
+  TextWindow(System& system, int window_num);
   virtual ~TextWindow();
 
   virtual void execute(RLMachine& machine);
@@ -368,22 +373,22 @@ public:
    * @{
    */
 
-  void setWindowWaku(RLMachine& machine, Gameexe& gexe, const int waku_no);
+  void setWindowWaku(const int waku_no);
 
 
-  void setWakuMain(RLMachine& machine, const std::string& name);
+  void setWakuMain(const std::string& name);
 
   /**
    * Loads the graphics file name as the mask for represents the areas
    * of the text window that should be shaded.
    */
-  void setWakuBacking(RLMachine& machine, const std::string& name);
+  void setWakuBacking(const std::string& name);
 
   /**
    * Loads the graphics file name as the image with all the button
    * images used when drawing
    */
-  void setWakuButton(RLMachine& machine, const std::string& name);
+  void setWakuButton(const std::string& name);
 
   /// @}
 
@@ -441,7 +446,7 @@ public:
   // ------------------------------------------------ [ Abstract interface ]
   virtual void render(RLMachine& machine, std::ostream* tree) = 0;
 
-  void renderButtons(RLMachine& machine);
+  void renderButtons();
 
   /**
    * Clears the text window of all text and resets the insertion
@@ -456,7 +461,7 @@ public:
    * @return True if the character fits on the screen. False if it
    *         does not and was not displayed.
    */
-  virtual bool displayChar(RLMachine& machine, const std::string& current,
+  virtual bool displayChar(const std::string& current,
                            const std::string& next) = 0;
 
   /// Returns the width of the unicode codepoint stored in |character|.
@@ -475,7 +480,7 @@ public:
   /**
    * Sets (and displays, if appropriate) the name of the current speaker.
    */
-  virtual void setName(RLMachine& machine, const std::string& utf8name,
+  virtual void setName(const std::string& utf8name,
                        const std::string& next_char) = 0;
   virtual void setNameWithoutDisplay(const std::string& utf8name) = 0;
 
@@ -483,7 +488,7 @@ public:
   virtual void setIndentation();
   virtual void resetIndentation();
   virtual void markRubyBegin();
-  virtual void displayRubyText(RLMachine& machine, const std::string& utf8str) = 0;
+  virtual void displayRubyText(const std::string& utf8str) = 0;
 
 
   /**

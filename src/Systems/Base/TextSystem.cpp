@@ -207,9 +207,9 @@ void TextSystem::clearAllTextWindows()
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<TextWindow> TextSystem::currentWindow(RLMachine& machine)
+boost::shared_ptr<TextWindow> TextSystem::currentWindow()
 {
-  return textWindow(machine, active_window_);
+  return textWindow(active_window_);
 }
 
 // -----------------------------------------------------------------------
@@ -268,7 +268,7 @@ vector<int> TextSystem::activeWindows()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::snapshot(RLMachine& machine)
+void TextSystem::snapshot()
 {
   previous_page_sets_.push_back(current_pageset_->clone().release());
   expireOldPages();
@@ -276,7 +276,7 @@ void TextSystem::snapshot(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::newPageOnWindow(RLMachine& machine, int window)
+void TextSystem::newPageOnWindow(int window)
 {
   // Erase the current instance of this window if it exists
   PageSet::iterator it = current_pageset_->find(window);
@@ -286,26 +286,26 @@ void TextSystem::newPageOnWindow(RLMachine& machine, int window)
   }
 
   previous_page_it_ = previous_page_sets_.end();
-  current_pageset_->insert(window, new TextPage(machine, window));
+  current_pageset_->insert(window, new TextPage(system(), window));
   expireOldPages();
 }
 
 // -----------------------------------------------------------------------
 
-TextPage& TextSystem::currentPage(RLMachine& machine)
+TextPage& TextSystem::currentPage()
 {
   // Check to see if the active window has a current page.
   PageSet::iterator it = current_pageset_->find(active_window_);
   if(it == current_pageset_->end())
     it = current_pageset_->insert(
-      active_window_, new TextPage(machine, active_window_)).first;
+        active_window_, new TextPage(system(), active_window_)).first;
 
   return *it->second;
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::backPage(RLMachine& machine)
+void TextSystem::backPage()
 {
   is_reading_backlog_ = true;
 
@@ -323,7 +323,7 @@ void TextSystem::backPage(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::forwardPage(RLMachine& machine)
+void TextSystem::forwardPage()
 {
   is_reading_backlog_ = true;
 

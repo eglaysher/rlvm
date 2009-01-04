@@ -29,8 +29,8 @@
 
 // -----------------------------------------------------------------------
 
-NullTextWindow::NullTextWindow(RLMachine& machine, int x)
-    : TextWindow(machine, x), text_window_log_("NullTextWindow") {
+NullTextWindow::NullTextWindow(System& system, int x)
+    : TextWindow(system, x), text_window_log_("NullTextWindow") {
 }
 
 // -----------------------------------------------------------------------
@@ -55,7 +55,7 @@ void NullTextWindow::setFontColor(const std::vector<int>& color_data) {
 
 // -----------------------------------------------------------------------
 
-bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
+bool NullTextWindow::displayChar(const std::string& current,
                                  const std::string& next)
 {
   text_window_log_.recordFunction("displayChar", current, next);
@@ -66,7 +66,7 @@ bool NullTextWindow::displayChar(RLMachine& machine, const std::string& current,
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::setName(RLMachine& machine, const std::string& utf8name,
+void NullTextWindow::setName(const std::string& utf8name,
                              const std::string& next_char)
 {
   text_window_log_.recordFunction("setName", utf8name, next_char);
@@ -99,7 +99,6 @@ void NullTextWindow::markRubyBegin() {
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::displayRubyText(RLMachine& machine,
-                                     const std::string& utf8str) {
+void NullTextWindow::displayRubyText(const std::string& utf8str) {
   text_window_log_.recordFunction("displayRubyText", utf8str);
 }

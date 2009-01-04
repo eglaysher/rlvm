@@ -64,19 +64,16 @@ enum ButtonState
 // TextWindowButton
 // -----------------------------------------------------------------------
 
-TextWindowButton::TextWindowButton()
-  : state_(BUTTONSTATE_BUTTON_NOT_USED)
-{
+TextWindowButton::TextWindowButton(System& system)
+    : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
 }
 
 // -----------------------------------------------------------------------
 
-TextWindowButton::TextWindowButton(bool use_this_button,
+TextWindowButton::TextWindowButton(System& system, bool use_this_button,
                                    GameexeInterpretObject location_box)
-  : state_(BUTTONSTATE_BUTTON_NOT_USED)
-{
-  if(use_this_button && location_box.exists())
-  {
+    : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
+  if (use_this_button && location_box.exists()) {
     std::vector<int> z = location_box;
     location_ = location_box;
     state_ = BUTTONSTATE_NORMAL;
@@ -85,8 +82,7 @@ TextWindowButton::TextWindowButton(bool use_this_button,
 
 // -----------------------------------------------------------------------
 
-TextWindowButton::~TextWindowButton()
-{
+TextWindowButton::~TextWindowButton() {
 }
 
 // -----------------------------------------------------------------------
@@ -116,32 +112,29 @@ bool TextWindowButton::isValid() const
 
 // -----------------------------------------------------------------------
 
-void TextWindowButton::setMousePosition(
-  RLMachine& machine, TextWindow& window, const Point& pos)
-{
+void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
   if (state_ == BUTTONSTATE_DISABLED)
     return;
 
-  if(isValid())
-  {
+  if (isValid()) {
     int orig_state = state_;
     bool in_box = location(window).contains(pos);
-    if(in_box && state_ == BUTTONSTATE_NORMAL)
+    if (in_box && state_ == BUTTONSTATE_NORMAL)
       state_ = BUTTONSTATE_HIGHLIGHTED;
-    else if(!in_box && state_ == BUTTONSTATE_HIGHLIGHTED)
+    else if (!in_box && state_ == BUTTONSTATE_HIGHLIGHTED)
       state_ = BUTTONSTATE_NORMAL;
-    else if(!in_box && state_ == BUTTONSTATE_PRESSED)
+    else if (!in_box && state_ == BUTTONSTATE_PRESSED)
       state_ = BUTTONSTATE_NORMAL;
 
-    if(orig_state != state_)
-      machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+    if (orig_state != state_)
+      system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
 }
 
 // -----------------------------------------------------------------------
 
 bool TextWindowButton::handleMouseClick(
-  RLMachine& machine, TextWindow& window, const Point& pos, bool pressed)
+    RLMachine& machine, TextWindow& window, const Point& pos, bool pressed)
 {
   if (state_ == BUTTONSTATE_DISABLED)
     return false;
@@ -161,10 +154,10 @@ bool TextWindowButton::handleMouseClick(
       else
       {
         state_ = BUTTONSTATE_HIGHLIGHTED;
-        buttonReleased();
+        buttonReleased(machine);
       }
 
-      machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+      system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
 
       return true;
     }
@@ -175,8 +168,7 @@ bool TextWindowButton::handleMouseClick(
 
 // -----------------------------------------------------------------------
 
-void TextWindowButton::render(RLMachine& machine,
-                              TextWindow& window,
+void TextWindowButton::render(TextWindow& window,
                               const boost::shared_ptr<Surface>& buttons,
                               int base_pattern)
 {
@@ -197,9 +189,10 @@ void TextWindowButton::render(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 ActionTextWindowButton::ActionTextWindowButton(
-  bool use, GameexeInterpretObject location_box,
-  CallbackFunction action)
-  : TextWindowButton(use, location_box), action_(action)
+    System& system,
+    bool use, GameexeInterpretObject location_box,
+    CallbackFunction action)
+    : TextWindowButton(system, use, location_box), action_(action)
 {
 }
 
@@ -211,7 +204,7 @@ ActionTextWindowButton::~ActionTextWindowButton()
 
 // -----------------------------------------------------------------------
 
-void ActionTextWindowButton::buttonReleased()
+void ActionTextWindowButton::buttonReleased(RLMachine& machine)
 {
   action_();
 }
@@ -221,11 +214,10 @@ void ActionTextWindowButton::buttonReleased()
 // -----------------------------------------------------------------------
 
 ActivationTextWindowButton::ActivationTextWindowButton(
-  bool use, GameexeInterpretObject location_box,
-  CallbackFunction start,
-  CallbackFunction end)
-  : TextWindowButton(use, location_box), on_start_(start), on_end_(end),
-    on_(false), enabled_(true)
+    System& system, bool use, GameexeInterpretObject location_box,
+    CallbackFunction start, CallbackFunction end)
+    : TextWindowButton(system, use, location_box), on_start_(start),
+      on_end_(end), on_(false), enabled_(true)
 {
 }
 
@@ -237,7 +229,7 @@ ActivationTextWindowButton::~ActivationTextWindowButton()
 
 // -----------------------------------------------------------------------
 
-void ActivationTextWindowButton::buttonReleased()
+void ActivationTextWindowButton::buttonReleased(RLMachine& machine)
 {
   if (enabled_) {
     if (on_)
@@ -278,11 +270,11 @@ void ActivationTextWindowButton::setState()
 // -----------------------------------------------------------------------
 
 RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
-  bool use, GameexeInterpretObject location_box, RLMachine& machine,
+  System& system, bool use, GameexeInterpretObject location_box,
   CallbackFunction callback, unsigned int time_between_invocations)
-  : TextWindowButton(use, location_box), machine_(machine),
-    callback_(callback), held_down_(false),
-    time_between_invocations_(time_between_invocations)
+    : TextWindowButton(system, use, location_box),
+      callback_(callback), held_down_(false),
+      time_between_invocations_(time_between_invocations)
 {
 }
 
@@ -299,7 +291,7 @@ void RepeatActionWhileHoldingWindowButton::buttonPressed()
   held_down_ = true;
 
   callback_();
-  last_invocation_ = machine_.system().event().getTicks();
+  last_invocation_ = system_.event().getTicks();
 }
 
 // -----------------------------------------------------------------------
@@ -308,7 +300,7 @@ void RepeatActionWhileHoldingWindowButton::execute()
 {
   if(held_down_)
   {
-    unsigned int cur_time = machine_.system().event().getTicks();
+    unsigned int cur_time = system_.event().getTicks();
 
     if(last_invocation_ + time_between_invocations_ > cur_time)
     {
@@ -320,7 +312,7 @@ void RepeatActionWhileHoldingWindowButton::execute()
 
 // -----------------------------------------------------------------------
 
-void RepeatActionWhileHoldingWindowButton::buttonReleased()
+void RepeatActionWhileHoldingWindowButton::buttonReleased(RLMachine& machine)
 {
   held_down_ = false;
 }
@@ -330,11 +322,10 @@ void RepeatActionWhileHoldingWindowButton::buttonReleased()
 // -----------------------------------------------------------------------
 
 ExbtnWindowButton::ExbtnWindowButton(
-  RLMachine& machine,
-  bool use, GameexeInterpretObject location_box,
-  GameexeInterpretObject to_call)
-  : TextWindowButton(use, location_box), machine_(machine),
-    scenario_(0), entrypoint_(0)
+    System& system, bool use, GameexeInterpretObject location_box,
+    GameexeInterpretObject to_call)
+    : TextWindowButton(system, use, location_box),
+      scenario_(0), entrypoint_(0)
 {
   if(location_box.exists() && to_call.exists())
   {
@@ -352,14 +343,13 @@ ExbtnWindowButton::~ExbtnWindowButton()
 
 // -----------------------------------------------------------------------
 
-void ExbtnWindowButton::buttonReleased()
+void ExbtnWindowButton::buttonReleased(RLMachine& machine)
 {
   /// Hide all text boxes when entering an Exbtn
-  machine_.system().text().setSystemVisible(false);
+  machine.system().text().setSystemVisible(false);
 
   /// Push a LongOperation onto the stack which will restore
   /// visibility when we return from this Exbtn call
-  machine_.pushLongOperation(new RestoreTextSystemVisibility);
-
-  machine_.farcall(scenario_, entrypoint_);
+  machine.pushLongOperation(new RestoreTextSystemVisibility);
+  machine.farcall(scenario_, entrypoint_);
 }

@@ -64,12 +64,11 @@ struct TextSystem_data
   }
 
   NullTextWindow& getTextWindow(int twn) {
-    return dynamic_cast<NullTextWindow&>(*system.text().textWindow(
-                                           rlmachine, twn));
+    return dynamic_cast<NullTextWindow&>(*system.text().textWindow(twn));
   }
 
   TextPage& currentPage() {
-    return system.text().currentPage(rlmachine);
+    return system.text().currentPage();
   }
 
   void writeString(const std::string& text, bool nowait)
@@ -86,9 +85,9 @@ struct TextSystem_data
   void snapshotAndClear()
   {
     TextSystem& text = rlmachine.system().text();
-    text.snapshot(rlmachine);
-    text.textWindow(rlmachine, 0)->clearWin();
-    text.newPageOnWindow(rlmachine, 0);
+    text.snapshot();
+    text.textWindow(0)->clearWin();
+    text.newPageOnWindow(0);
   }
 };
 
@@ -189,28 +188,28 @@ void object::test<5>()
   ensure_equals("We're not reading the backlog.", text.isReadingBacklog(), false);
 
   // Reply our way back to the front
-  text.backPage(rlmachine);
+  text.backPage();
   ensure_equals("We're on the 3rd page!", getTextWindow(0).currentContents(),
                 "Page three.");
   ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
 
-  text.backPage(rlmachine);
+  text.backPage();
   ensure_equals("We're on the 2nd page!", getTextWindow(0).currentContents(),
                 "Page two.");
   ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
 
-  text.backPage(rlmachine);
+  text.backPage();
   ensure_equals("We're on the 1st page!", getTextWindow(0).currentContents(),
                 "Page one.");
   ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
 
   // Trying to go back past the first page doesn't do anything.
-  text.backPage(rlmachine);
+  text.backPage();
   ensure_equals("We're still on the 1st page!", getTextWindow(0).currentContents(),
                 "Page one.");
   ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
 
-  text.forwardPage(rlmachine);
+  text.forwardPage();
   ensure_equals("We're back to the 2nd page!", getTextWindow(0).currentContents(),
                 "Page two.");
   ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
@@ -239,7 +238,7 @@ void object::test<6>()
   snapshotAndClear();
 
   // Replay it:
-  getTextSystem().backPage(rlmachine);
+  getTextSystem().backPage();
   getTextWindow(0).log().ensure("setName", "Bob", "");
 }
 
@@ -259,7 +258,7 @@ void object::test<7>()
   snapshotAndClear();
 
   // Replay it:
-  getTextSystem().backPage(rlmachine);
+  getTextSystem().backPage();
   getTextWindow(0).log().ensure("hardBrake");
 }
 
@@ -280,7 +279,7 @@ void object::test<8>()
   snapshotAndClear();
 
   // Replay it:
-  getTextSystem().backPage(rlmachine);
+  getTextSystem().backPage();
   getTextWindow(0).log().ensure("resetIndentation");
 }
 
@@ -300,7 +299,7 @@ void object::test<9>()
   snapshotAndClear();
 
   // Replay it:
-  getTextSystem().backPage(rlmachine);
+  getTextSystem().backPage();
   getTextWindow(0).log().ensure("setFontColor");
 }
 
@@ -323,7 +322,7 @@ void object::test<10>()
   snapshotAndClear();
 
   // Replay it:
-  getTextSystem().backPage(rlmachine);
+  getTextSystem().backPage();
   getTextWindow(0).log().ensure("markRubyBegin");
   getTextWindow(0).log().ensure("displayRubyText", "ruby");
 }

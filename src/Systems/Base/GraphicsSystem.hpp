@@ -384,8 +384,10 @@ public:
   virtual void freeDC(int dc) = 0;
 
   // ----------------------------------------- [ Surface loading functions ]
-  virtual boost::shared_ptr<Surface> loadSurfaceFromFile(
-    RLMachine& machine, const std::string& short_filename) = 0;
+  boost::shared_ptr<Surface> loadSurfaceFromFile(
+      RLMachine& machine, const std::string& short_filename);
+  virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
+      const std::string& short_filename) = 0;
 
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 

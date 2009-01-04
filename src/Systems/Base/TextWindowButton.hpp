@@ -46,8 +46,9 @@ class TextWindow;
 class TextWindowButton : public boost::noncopyable
 {
 public:
-  TextWindowButton();
-  TextWindowButton(bool use, GameexeInterpretObject location_box);
+  TextWindowButton(System& system);
+  TextWindowButton(System& system, bool use,
+                   GameexeInterpretObject location_box);
   virtual ~TextWindowButton();
 
   /// Returns the absolute screen coordinate of this button.
@@ -57,14 +58,13 @@ public:
   bool isValid() const;
 
   /// Track the mouse position to see if we need to alter our state
-  void setMousePosition(RLMachine& machine, TextWindow& window,
-                        const Point& pos);
+  void setMousePosition(TextWindow& window, const Point& pos);
 
   bool handleMouseClick(RLMachine& machine, TextWindow& window,
                         const Point& pos, bool pressed);
 
   //
-  void render(RLMachine& machine, TextWindow& window,
+  void render(TextWindow& window,
               const boost::shared_ptr<Surface>& buttons,
               int base_pattern);
 
@@ -76,9 +76,11 @@ public:
   virtual void execute() {}
 
   /// Called when the button is released
-  virtual void buttonReleased() {}
+  virtual void buttonReleased(RLMachine& machine) {}
 
 protected:
+  System& system_;
+
   std::vector<int> location_;
   int state_;
 };
@@ -91,11 +93,12 @@ public:
   typedef boost::function<void(void)> CallbackFunction;
 
 public:
-  ActionTextWindowButton(bool use, GameexeInterpretObject location_box,
+  ActionTextWindowButton(System& system, bool use,
+                         GameexeInterpretObject location_box,
                          CallbackFunction action);
   ~ActionTextWindowButton();
 
-  virtual void buttonReleased();
+  virtual void buttonReleased(RLMachine& machine);
 
 private:
   CallbackFunction action_;
@@ -110,12 +113,13 @@ public:
   typedef boost::function<void(void)> CallbackFunction;
 
 public:
-  ActivationTextWindowButton(bool use, GameexeInterpretObject location_box,
+  ActivationTextWindowButton(System& system, bool use,
+                             GameexeInterpretObject location_box,
                              CallbackFunction start,
                              CallbackFunction end);
   ~ActivationTextWindowButton();
 
-  virtual void buttonReleased();
+  virtual void buttonReleased(RLMachine& machine);
 
   void setEnabled(bool on);
   void setActivated(bool on);
@@ -138,18 +142,17 @@ public:
 
 public:
   RepeatActionWhileHoldingWindowButton(
+    System& system,
     bool use, GameexeInterpretObject location_box,
-    RLMachine& machine,
     CallbackFunction callback,
     unsigned int time_between_invocations);
   ~RepeatActionWhileHoldingWindowButton();
 
   virtual void buttonPressed();
   virtual void execute();
-  virtual void buttonReleased();
+  virtual void buttonReleased(RLMachine& machine);
 
 private:
-  RLMachine& machine_;
   CallbackFunction callback_;
   bool held_down_;
   unsigned int last_invocation_;
@@ -161,16 +164,14 @@ private:
 class ExbtnWindowButton : public TextWindowButton
 {
 public:
-  ExbtnWindowButton(RLMachine& machine,
-                    bool use, GameexeInterpretObject location_box,
+  ExbtnWindowButton(System& system, bool use,
+                    GameexeInterpretObject location_box,
                     GameexeInterpretObject to_call);
   ~ExbtnWindowButton();
 
-  virtual void buttonReleased();
+  virtual void buttonReleased(RLMachine& machine);
 
 private:
-  RLMachine& machine_;
-
   int scenario_;
   int entrypoint_;
 };

@@ -68,7 +68,7 @@ using boost::shared_ptr;
 
 struct Msg_par : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.resetIndentation();
     page.hardBrake();
   }
@@ -87,7 +87,7 @@ struct Msg_pause : public RLOp_Void_Void
     TextSystem& text = machine.system().text();
     int windowNum = text.activeWindow();
     boost::shared_ptr<TextWindow> textWindow =
-      text.textWindow(machine, windowNum);
+      text.textWindow(windowNum);
 
     if(textWindow->actionOnPause())
     {
@@ -119,7 +119,7 @@ struct Msg_FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
 {
   void operator()(RLMachine& machine, int textColorNum, int shadowColorNum)
   {
-    machine.system().text().currentPage(machine).fontColour(textColorNum);
+    machine.system().text().currentPage().fontColour(textColorNum);
   }
 };
 
@@ -130,7 +130,7 @@ struct Msg_doruby_display : public RLOp_Void_1< StrConstant_T >
   void operator()(RLMachine& machine, std::string cpStr)
   {
     std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
-    machine.system().text().currentPage(machine).displayRubyText(utf8str);
+    machine.system().text().currentPage().displayRubyText(utf8str);
   }
 };
 
@@ -140,7 +140,7 @@ struct Msg_doruby_mark : public RLOp_Void_Void
 {
   void operator()(RLMachine& machine)
   {
-    machine.system().text().currentPage(machine).markRubyBegin();
+    machine.system().text().currentPage().markRubyBegin();
   }
 };
 
@@ -152,7 +152,7 @@ struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
   {
     int winNum = machine.system().text().activeWindow();
     machine.system().text().hideTextWindow(winNum);
-    machine.system().text().newPageOnWindow(machine, winNum);
+    machine.system().text().newPageOnWindow(winNum);
   }
 };
 
@@ -166,7 +166,7 @@ struct Msg_msgHideAll : public RLOp_Void_Void {
     for(vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it) {
       text.hideTextWindow(*it);
-      text.newPageOnWindow(machine, *it);
+      text.newPageOnWindow(*it);
     }
   }
 };
@@ -177,8 +177,8 @@ struct Msg_msgClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int activeWindow = text.activeWindow();
-    text.textWindow(machine, activeWindow)->clearWin();
-    text.newPageOnWindow(machine, activeWindow);
+    text.textWindow(activeWindow)->clearWin();
+    text.newPageOnWindow(activeWindow);
   }
 };
 
@@ -193,8 +193,8 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
     for(vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it)
     {
-      text.textWindow(machine, activeWindow)->clearWin();
-      text.newPageOnWindow(machine, *it);
+      text.textWindow(activeWindow)->clearWin();
+      text.newPageOnWindow(*it);
     }
   }
 };
@@ -203,7 +203,7 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
 
 struct Msg_br : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.system().text().currentPage(machine).hardBrake();
+    machine.system().text().currentPage().hardBrake();
   }
 };
 
@@ -228,7 +228,7 @@ struct Msg_page : public RLOp_Void_Void {
 
 struct Msg_SetIndent : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.setIndentation();
   }
 };
@@ -237,7 +237,7 @@ struct Msg_SetIndent : public RLOp_Void_Void {
 
 struct Msg_ClearIndent : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.resetIndentation();
   }
 };
@@ -246,7 +246,7 @@ struct Msg_ClearIndent : public RLOp_Void_Void {
 
 struct Msg_TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.setInsertionPointX(x);
     page.setInsertionPointY(y);
   }
@@ -256,7 +256,7 @@ struct Msg_TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct Msg_TextPosX : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int x) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.setInsertionPointX(x);
   }
 };
@@ -265,7 +265,7 @@ struct Msg_TextPosX : public RLOp_Void_1<IntConstant_T> {
 
 struct Msg_TextPosY : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int y) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.setInsertionPointY(y);
   }
 };
@@ -274,7 +274,7 @@ struct Msg_TextPosY : public RLOp_Void_1<IntConstant_T> {
 
 struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.offsetInsertionPointX(x);
     page.offsetInsertionPointY(y);
   }
@@ -284,7 +284,7 @@ struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct Msg_TextOffsetX : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int x) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.offsetInsertionPointX(x);
   }
 };
@@ -293,7 +293,7 @@ struct Msg_TextOffsetX : public RLOp_Void_1<IntConstant_T> {
 
 struct Msg_TextOffsetY : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int y) {
-    TextPage& page = machine.system().text().currentPage(machine);
+    TextPage& page = machine.system().text().currentPage();
     page.offsetInsertionPointY(y);
   }
 };

@@ -69,10 +69,10 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-SDLTextWindow::SDLTextWindow(RLMachine& machine, int window_num)
-  : TextWindow(machine, window_num)
+SDLTextWindow::SDLTextWindow(System& system, int window_num)
+  : TextWindow(system, window_num)
 {
-  SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(machine.system().text());
+  SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(system.text());
   font_ = text.getFontOfSize(fontSizeInPixels());
   ruby_font_ = text.getFontOfSize(rubyTextSize());
 
@@ -98,8 +98,7 @@ void SDLTextWindow::clearWin() {
 
 // -----------------------------------------------------------------------
 
-bool SDLTextWindow::displayChar(RLMachine& machine,
-                                const std::string& current,
+bool SDLTextWindow::displayChar(const std::string& current,
                                 const std::string& next)
 {
   // If this text page is already full, save some time and reject
@@ -178,7 +177,7 @@ bool SDLTextWindow::displayChar(RLMachine& machine,
   // the screen as dirty so that this character renders.
   if(ruby_begin_point_ == -1)
   {
-    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
 
   return true;
@@ -202,13 +201,12 @@ void SDLTextWindow::setIndentation()
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::setName(RLMachine& machine, const std::string& utf8name,
+void SDLTextWindow::setName(const std::string& utf8name,
                             const std::string& next_char)
 {
   if (name_mod_ == 0) {
     // Display the name in one pass
-    printTextToFunction(bind(&SDLTextWindow::displayChar, ref(*this),
-                             ref(machine), _1, _2),
+    printTextToFunction(bind(&SDLTextWindow::displayChar, ref(*this),_1, _2),
                         utf8name, next_char);
     setIndentation();
 
@@ -299,8 +297,8 @@ void SDLTextWindow::render(RLMachine& machine,
       }
     }
 
-    if(waku_button_)
-      renderButtons(machine);
+    if (waku_button_)
+      renderButtons();
 
     int x = textX1();
     int y = textY1();
@@ -326,8 +324,7 @@ void SDLTextWindow::render(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::displayRubyText(RLMachine& machine,
-                                    const std::string& utf8str)
+void SDLTextWindow::displayRubyText(const std::string& utf8str)
 {
   if(ruby_begin_point_ != -1)
   {
@@ -358,7 +355,7 @@ void SDLTextWindow::displayRubyText(RLMachine& machine,
       255);
     SDL_FreeSurface(tmp);
 
-    machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
 
     ruby_begin_point_ = -1;
   }
