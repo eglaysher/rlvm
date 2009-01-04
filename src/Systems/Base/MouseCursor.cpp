@@ -65,8 +65,7 @@ MouseCursor::~MouseCursor() {}
 
 // -----------------------------------------------------------------------
 
-void MouseCursor::renderHotspotAt(RLMachine& machine,
-                                  const Point& mouse_location)
+void MouseCursor::renderHotspotAt(const Point& mouse_location)
 {
   Point render_point = getTopLeftForHotspotAt(mouse_location);
   cursor_surface_->renderToScreen(

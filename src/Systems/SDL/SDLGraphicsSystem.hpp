@@ -77,8 +77,8 @@ public:
 
   virtual void endFrame(RLMachine& machine);
 
-  void redrawLastFrame(RLMachine& machine);
-  void drawCursor(RLMachine& machine);
+  void redrawLastFrame();
+  void drawCursor();
 
   boost::shared_ptr<Surface> renderToSurfaceWithBg(
     RLMachine& machine, boost::shared_ptr<Surface> bg);

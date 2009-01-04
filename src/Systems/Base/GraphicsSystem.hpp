@@ -479,7 +479,7 @@ public:
 protected:
   const Point& cursorPos() const { return cursor_pos_; }
 
-  boost::shared_ptr<MouseCursor> currentCursor(RLMachine& machine);
+  boost::shared_ptr<MouseCursor> currentCursor();
 
   void setScreenSize(const Size& size) {
     screen_size_ = size;

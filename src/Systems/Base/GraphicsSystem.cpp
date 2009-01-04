@@ -598,7 +598,7 @@ void GraphicsSystem::renderObjects(RLMachine& machine, std::ostream* tree)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
+boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor()
 {
   if (!use_custom_mouse_cursor_ || !show_curosr_)
     return boost::shared_ptr<MouseCursor>();
@@ -616,7 +616,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor(RLMachine& machine)
 
       if (cursor_key.exists())
       {
-        cursor_surface = loadSurfaceFromFile(machine, cursor_key);
+        cursor_surface = loadNonCGSurfaceFromFile(cursor_key);
         mouse_cursor_.reset(new MouseCursor(cursor_surface));
         cursor_cache_[cursor_] = mouse_cursor_;
       }

@@ -51,7 +51,7 @@ public:
    * Renders the cursor to the screen, taking the hotspot offset into
    * account.
    */
-  void renderHotspotAt(RLMachine& machine, const Point& mouse_pt);
+  void renderHotspotAt(const Point& mouse_pt);
 
   /**
    * Returns (renderX, renderY) which is the upper left corner of

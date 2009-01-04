@@ -164,7 +164,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
     screen_contents_texture_valid_ = false;
   }
 
-  drawCursor(machine);
+  drawCursor();
 
   // Swap the buffers
   glFlush();
@@ -174,7 +174,7 @@ void SDLGraphicsSystem::endFrame(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::redrawLastFrame(RLMachine& machine)
+void SDLGraphicsSystem::redrawLastFrame()
 {
   // We won't redraw the screen between when the DrawManual() command is issued
   // by the bytecode and the first refresh() is called since we need a valid
@@ -205,7 +205,7 @@ void SDLGraphicsSystem::redrawLastFrame(RLMachine& machine)
     }
     glEnd();
 
-    drawCursor(machine);
+    drawCursor();
 
     glFlush();
 
@@ -217,16 +217,16 @@ void SDLGraphicsSystem::redrawLastFrame(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::drawCursor(RLMachine& machine)
+void SDLGraphicsSystem::drawCursor()
 {
   boost::shared_ptr<MouseCursor> cursor;
   if(static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
-    cursor = currentCursor(machine);
+    cursor = currentCursor();
   if(cursor)
   {
     Point hotspot = cursorPos();
     Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
-    cursor->renderHotspotAt(machine, hotspot);
+    cursor->renderHotspotAt(hotspot);
   }
 }
 
@@ -388,7 +388,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
     screenRefreshed();
     redraw_last_frame_ = false;
   } else if (isResponsibleForUpdate() && redraw_last_frame_) {
-    redrawLastFrame(machine);
+    redrawLastFrame();
     redraw_last_frame_ = false;
   }
 
