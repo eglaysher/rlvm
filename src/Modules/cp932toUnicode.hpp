@@ -40,6 +40,9 @@
 //std::string unicodetocp932(const std::wstring& line);
 std::wstring cp932toUnicode(const std::string& line, int transformation);
 
+/// String representation of the transformation name.
+string transformationName(int transformation);
+
 std::string hantozen_cp932(const std::string& string);
 std::string zentohan_cp932(const std::string& string);
 

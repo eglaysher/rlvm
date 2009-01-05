@@ -178,6 +178,13 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
 
 // -----------------------------------------------------------------------
 
+const std::string& RlBabelDLL::name() const {
+  static std::string n("rlBabel");
+  return n;
+}
+
+// -----------------------------------------------------------------------
+
 int RlBabelDLL::initialize(int dllno, int windname) {
   // rlBabel hangs onto the dll index and uses it for something in his
   // SetCurrentWindowName implementation.

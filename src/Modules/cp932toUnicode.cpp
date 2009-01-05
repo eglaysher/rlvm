@@ -79,6 +79,23 @@ wstring cp932toUnicode(const std::string& line, int transformation)
 
 // -----------------------------------------------------------------------
 
+string transformationName(int transformation) {
+  switch(transformation) {
+    case 0:
+      return "Japanese (Cp932)";
+    case 1:
+      return "Chinese (Cp936)";
+    case 2:
+      return "Western";
+    case 3:
+      return "Korean (Cp949)";
+    default:
+      return "Unknown";
+  }
+}
+
+// -----------------------------------------------------------------------
+
 // All hankaku characters are <U+FF??>,
 // while all zenkaku characters are <U+30??>
 //

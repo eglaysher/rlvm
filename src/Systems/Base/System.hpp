@@ -224,6 +224,10 @@ public:
 
   /// @}
 
+  /// Shows a screen with certain information about the current state of the
+  /// interpreter.
+  void showSystemInfo(RLMachine& machine);
+
   /**
    * @name Variables we track here
    *
@@ -340,5 +344,11 @@ private:
     // For now, does nothing
   }
 };
+
+// -----------------------------------------------------------------------
+
+/// Returns a version string suitable for printing. Used on the command line
+/// interface and on the info screen.
+std::string rlvm_version();
 
 #endif

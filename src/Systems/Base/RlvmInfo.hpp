@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2009 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,39 +24,25 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __RealLiveDLL_hpp__
-#define __RealLiveDLL_hpp__
+
+#ifndef __RlvmInfo_hpp__
+#define __RlvmInfo_hpp__
 
 #include <string>
 
-class RLMachine;
-
 /**
- * Interface for common RealLive DLLs which have support compiled into rlvm.
+ * Data struct used to pass data to display on the Interpreter menu.
  */
-class RealLiveDLL
-{
-public:
-  /**
-   * Builds a RealLiveDLL for the DLL named |name|. Throws an exception on rlvm
-   * not supporting this particular extension.
-   */
-  static RealLiveDLL* BuildDLLNamed(RLMachine& machine,
-                                    const std::string& name);
+struct RlvmInfo {
+  std::string game_name;     // The second part of the #REGNAME key.
+  std::string game_brand;    // The first part of the #REGNAME key.
+  std::string game_version;  // The #VERSION_STR key.
+  std::string game_path;     // Top level game directory.
 
-  virtual ~RealLiveDLL();
+  std::string rlvm_version;  // rlvm's version as a string.
 
-  /**
-   * RealLive DLLs have essentially one entrypoint, taking up to five integers
-   * and yielding an integer. All values not given an explicit value in the
-   * bytecode default to zero.
-   */
-  virtual int callDLL(RLMachine& machine, int one, int two, int three,
-                      int four, int five) = 0;
-
-  /// Returns the DLL's name.
-  virtual const std::string& name() const = 0;
-};  // end of class RealLiveDLL
-
+  bool rlbabel_loaded;
+  int text_transformation;
+};
 
 #endif

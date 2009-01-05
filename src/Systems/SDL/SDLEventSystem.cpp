@@ -91,6 +91,11 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event)
     ctrl_pressed_ = false;
     break;
   }
+  case SDLK_F1:
+  {
+    machine.system().showSystemInfo(machine);
+    break;
+  }
   case SDLK_F12:
   {
     machine.system().dumpRenderTree(machine);

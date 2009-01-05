@@ -152,7 +152,7 @@ namespace fs = boost::filesystem;
 
 void printVersionInformation() {
   cout
-    << "rlvm (version 0.4)" << endl
+    << "rlvm (" << rlvm_version() <<  ")" << endl
     << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, Jagarl, et all."
     << endl << endl
     << "This program is free software: you can redistribute it and/or modify"

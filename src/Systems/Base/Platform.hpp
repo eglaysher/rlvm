@@ -33,6 +33,7 @@
 
 class Gameexe;
 class RLMachine;
+class RlvmInfo;
 
 /**
  * Encapsulates platform specific details; this is mainly dealing with the
@@ -73,6 +74,9 @@ public:
    * Invokes a standard dialog.
    */
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
+
+  /// Displays the current interpreter info.
+  virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
 
 private:
   /// Strips quotes off of value and adds it to our internal strings database.

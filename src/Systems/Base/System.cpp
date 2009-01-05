@@ -40,6 +40,7 @@
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/RlvmInfo.hpp"
 #include "Utilities.h"
 #include "libReallive/gameexe.h"
 
@@ -277,6 +278,32 @@ void System::invokeSyscom(RLMachine& machine, int syscom)
 
 // -----------------------------------------------------------------------
 
+void System::showSystemInfo(RLMachine& machine) {
+  if (platform_) {
+    RlvmInfo info;
+
+    string regname = gameexe()("REGNAME").to_string("");
+    size_t pos = regname.find('\\');
+    if (pos != string::npos) {
+      info.game_brand = regname.substr(0, pos);
+      info.game_name = regname.substr(pos + 1);
+    } else {
+      info.game_brand = "";
+      info.game_name = regname;
+    }
+
+    info.game_version = gameexe()("VERSION_STR").to_string("");
+    info.game_path = gameexe()("__GAMEPATH").to_string("");
+    info.rlvm_version = rlvm_version();
+    info.rlbabel_loaded = machine.dllLoaded("rlBabel");
+    info.text_transformation = machine.getTextEncoding();
+
+    platform_->showSystemInfo(machine, info);
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void System::invokeSaveOrLoad(RLMachine& machine,
                               int syscom,
                               const std::string& mod_key,
@@ -406,4 +433,10 @@ void System::dumpRenderTree(RLMachine& machine) {
 
   ofstream tree(oss.str().c_str());
   graphics().refresh(&tree);
+}
+
+// -----------------------------------------------------------------------
+
+std::string rlvm_version() {
+  return "Version 0.4";
 }

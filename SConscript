@@ -191,6 +191,7 @@ root_env.StaticLibrary('system_sdl', libsystemsdl_files)
 guichan_platform = [
   "src/Platforms/gcn/GCNButton.cpp",
   "src/Platforms/gcn/GCNGraphics.cpp",
+  "src/Platforms/gcn/GCNInfoWindow.cpp",
   "src/Platforms/gcn/GCNMenu.cpp",
   "src/Platforms/gcn/GCNPlatform.cpp",
   "src/Platforms/gcn/GCNSaveLoadWindow.cpp",

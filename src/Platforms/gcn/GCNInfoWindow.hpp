@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2009 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,39 +24,33 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __RealLiveDLL_hpp__
-#define __RealLiveDLL_hpp__
+#ifndef __GCNInfoWindow_hpp__
+#define __GCNInfoWindow_hpp__
 
-#include <string>
+#include "Platforms/gcn/GCNWindow.hpp"
+
+#include <guichan/actionlistener.hpp>
+#include <guichan/widgets/button.hpp>
 
 class RLMachine;
+class RlvmInfo;
 
 /**
- * Interface for common RealLive DLLs which have support compiled into rlvm.
+ * Displays information about the currently played game.
  */
-class RealLiveDLL
-{
-public:
-  /**
-   * Builds a RealLiveDLL for the DLL named |name|. Throws an exception on rlvm
-   * not supporting this particular extension.
-   */
-  static RealLiveDLL* BuildDLLNamed(RLMachine& machine,
-                                    const std::string& name);
+class GCNInfoWindow : public GCNWindow,
+                      public gcn::ActionListener {
+ public:
+  GCNInfoWindow(RLMachine& machine, const RlvmInfo& info,
+                GCNPlatform* platform);
+  ~GCNInfoWindow();
 
-  virtual ~RealLiveDLL();
+  // Overriden from gcn::ActionListener:
+  virtual void action(const gcn::ActionEvent& actionEvent);
 
-  /**
-   * RealLive DLLs have essentially one entrypoint, taking up to five integers
-   * and yielding an integer. All values not given an explicit value in the
-   * bytecode default to zero.
-   */
-  virtual int callDLL(RLMachine& machine, int one, int two, int three,
-                      int four, int five) = 0;
-
-  /// Returns the DLL's name.
-  virtual const std::string& name() const = 0;
-};  // end of class RealLiveDLL
+ private:
+  gcn::Button* ok_button_;
+};  // end of class GCNInfoWindow
 
 
 #endif

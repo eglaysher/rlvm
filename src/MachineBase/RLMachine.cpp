@@ -610,6 +610,18 @@ void RLMachine::setKidokuMarker(int kidoku_number) {
 
 // -----------------------------------------------------------------------
 
+bool RLMachine::dllLoaded(const std::string& name) {
+  for (DLLMap::const_iterator it = loaded_dlls_.begin();
+       it != loaded_dlls_.end(); ++it) {
+    if (it->second->name() == name)
+      return true;
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::loadDLL(int slot, const std::string& name) {
   auto_ptr<RealLiveDLL> dll(RealLiveDLL::BuildDLLNamed(*this, name));
   if (dll.get()) {

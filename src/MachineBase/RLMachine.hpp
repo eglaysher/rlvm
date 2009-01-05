@@ -388,6 +388,9 @@ class RLMachine {
    *
    * @{
    */
+  /// Returns true if a DLL with |name| loaded.
+  bool dllLoaded(const std::string& name);
+
   /// Loads a "DLL" into the specified slot.
   void loadDLL(int slot, const std::string& name);
 

@@ -70,6 +70,7 @@ public:
   void render();
   void showNativeSyscomMenu(RLMachine& machine);
   void invokeSyscomStandardUI(RLMachine& machine, int syscom);
+  virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
   void windowCanceled(GCNWindow* window);
   void receiveGCNMenuEvent(GCNMenu* menu, const std::string& event);
   void saveEvent(int slot);

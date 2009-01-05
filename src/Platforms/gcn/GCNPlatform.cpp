@@ -36,6 +36,7 @@
 #include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"
 #include "Platforms/gcn/GCNGraphics.hpp"
+#include "Platforms/gcn/GCNInfoWindow.hpp"
 #include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
@@ -282,6 +283,14 @@ void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
   else if (syscom == SYSCOM_LOAD)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuLoad, this, _1));
+}
+
+// -----------------------------------------------------------------------
+
+void GCNPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
+  pushBlocker(machine);
+  pushWindowOntoStack(
+      new GCNInfoWindow(machine, info, this));
 }
 
 // -----------------------------------------------------------------------

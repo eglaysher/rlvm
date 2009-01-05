@@ -143,6 +143,8 @@ class RlBabelDLL : public RealLiveDLL {
   virtual int callDLL(RLMachine& machine, int func, int arg1, int arg2,
                       int arg3, int arg4);
 
+  virtual const std::string& name() const;
+
  private:
   /// Initializes the DLL.
   int initialize(int dllno, int windname);
