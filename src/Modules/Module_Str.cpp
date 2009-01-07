@@ -367,7 +367,7 @@ struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
  */
 struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = hantozen_cp932(*dest);
+    *dest = hantozen_cp932(*dest, machine.getTextEncoding());
   }
 };
 
@@ -381,7 +381,7 @@ struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
 struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input,
                   StringReferenceIterator dest) {
-    *dest = hantozen_cp932(input);
+    *dest = hantozen_cp932(input, machine.getTextEncoding());
   }
 };
 
@@ -394,7 +394,7 @@ struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
  */
 struct Str_zentohan_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = zentohan_cp932(*dest);
+    *dest = zentohan_cp932(*dest, machine.getTextEncoding());
   }
 };
 
@@ -408,7 +408,7 @@ struct Str_zentohan_0 : public RLOp_Void_1< StrReference_T > {
 struct Str_zentohan_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input,
                   StringReferenceIterator dest) {
-    *dest = zentohan_cp932(input);
+    *dest = zentohan_cp932(input, machine.getTextEncoding());
   }
 };
 
@@ -488,7 +488,8 @@ struct Str_Lowercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
 struct Str_itoa_ws_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest) {
-    *dest = hantozen_cp932(rl_itoa_implementation(input, -1, ' '));
+    *dest = hantozen_cp932(rl_itoa_implementation(input, -1, ' '),
+                           machine.getTextEncoding());
   }
 };
 
@@ -504,7 +505,8 @@ struct Str_itoa_ws_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                            IntConstant_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest, int length) {
-    *dest = hantozen_cp932(rl_itoa_implementation(input, length, ' '));
+    *dest = hantozen_cp932(rl_itoa_implementation(input, length, ' '),
+                           machine.getTextEncoding());
   }
 };
 
@@ -552,7 +554,8 @@ struct Str_itoa_s_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
 struct Str_itoa_w_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest) {
-    *dest = hantozen_cp932(rl_itoa_implementation(input, -1, '0'));
+    *dest = hantozen_cp932(rl_itoa_implementation(input, -1, '0'),
+                           machine.getTextEncoding());
   }
 };
 
@@ -568,7 +571,8 @@ struct Str_itoa_w_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest, int length) {
-    *dest = hantozen_cp932(rl_itoa_implementation(input, length, '0'));
+    *dest = hantozen_cp932(rl_itoa_implementation(input, length, '0'),
+                           machine.getTextEncoding());
   }
 };
 

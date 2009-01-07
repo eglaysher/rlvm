@@ -82,3 +82,11 @@ bool readFullwidthLatinLetter(const char*& str, std::string& output)
 
   return false;
 }
+
+// -----------------------------------------------------------------------
+
+void addShiftJISChar(unsigned short c, std::string& output) {
+  if (c > 0xFF)
+    output += (c >> 8);
+  output += (c & 0xFF);
+}

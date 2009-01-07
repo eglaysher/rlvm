@@ -62,4 +62,10 @@ void copyOneShiftJisCharacter(const char*& str, std::string& output);
  */
 bool readFullwidthLatinLetter(const char*& str, std::string& output);
 
+/**
+ * Adds a character to the string |output|. Two byte characters are encoded in
+ * an unsigned short.
+ */
+void addShiftJISChar(unsigned short c, std::string& output);
+
 #endif
