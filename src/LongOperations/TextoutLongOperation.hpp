@@ -31,7 +31,6 @@
 #include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/EventListener.hpp"
 
-#include <boost/function.hpp>
 #include <string>
 
 class RLMachine;
@@ -67,11 +66,5 @@ public:
   virtual bool operator()(RLMachine& machine);
   virtual bool sleepEveryTick();
 };
-
-// -----------------------------------------------------------------------
-
-void printTextToFunction(
-  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
-  const std::string& charsToPrint, const std::string& nextCharForFinal);
 
 #endif

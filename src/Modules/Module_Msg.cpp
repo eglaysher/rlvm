@@ -45,7 +45,7 @@
 #include "MachineBase/RLModule.hpp"
 
 #include "libReallive/gameexe.h"
-#include "Modules/PauseLongOperation.hpp"
+#include "LongOperations/PauseLongOperation.hpp"
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"

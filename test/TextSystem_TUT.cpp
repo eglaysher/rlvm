@@ -26,7 +26,7 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/RLMachine.hpp"
-#include "Modules/TextoutLongOperation.hpp"
+#include "LongOperations/TextoutLongOperation.hpp"
 #include "NullSystem/NullSystem.hpp"
 #include "NullSystem/NullTextWindow.hpp"
 #include "Systems/Base/TextPage.hpp"

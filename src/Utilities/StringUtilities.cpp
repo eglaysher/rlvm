@@ -32,6 +32,8 @@
 #include "Utilities.h"
 #include "Utilities/StringUtilities.hpp"
 
+#include "utf8.h"
+
 // -----------------------------------------------------------------------
 
 void advanceOneShiftJISChar(const char*& c)
@@ -89,4 +91,29 @@ void addShiftJISChar(unsigned short c, std::string& output) {
   if (c > 0xFF)
     output += (c >> 8);
   output += (c & 0xFF);
+}
+
+// -----------------------------------------------------------------------
+
+void printTextToFunction(
+  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
+  const std::string& charsToPrint, const std::string& nextCharForFinal)
+{
+  // Iterate over each incoming character to display (we do this
+  // instead of rendering the entire string so that we can perform
+  // indentation, et cetera.)
+  string::const_iterator cur = charsToPrint.begin();
+  string::const_iterator tmp = cur;
+  string::const_iterator end = charsToPrint.end();
+  utf8::next(tmp, end);
+  string curChar(cur, tmp);
+  for(cur = tmp; tmp != end; cur = tmp)
+  {
+    utf8::next(tmp, end);
+    string next(cur, tmp);
+    fun(curChar, next);
+    curChar = next;
+  }
+
+  fun(curChar, nextCharForFinal);
 }

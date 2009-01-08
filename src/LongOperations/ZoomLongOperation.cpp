@@ -29,7 +29,7 @@
 
 // -----------------------------------------------------------------------
 
-#include "ZoomLongOperation.hpp"
+#include "LongOperations/ZoomLongOperation.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"

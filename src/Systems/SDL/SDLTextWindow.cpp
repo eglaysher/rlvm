@@ -58,7 +58,7 @@
 
 #include "utf8.h"
 #include "Modules/cp932toUnicode.hpp"
-#include "Modules/TextoutLongOperation.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include <iostream>
 #include <vector>

@@ -29,8 +29,8 @@
 
 // -----------------------------------------------------------------------
 
-#include "Modules/TextoutLongOperation.hpp"
-#include "Modules/PauseLongOperation.hpp"
+#include "LongOperations/TextoutLongOperation.hpp"
+#include "LongOperations/PauseLongOperation.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
@@ -251,29 +251,4 @@ bool TextoutLongOperation::operator()(RLMachine& machine)
 
 bool TextoutLongOperation::sleepEveryTick() {
   return !no_wait_;
-}
-
-// -----------------------------------------------------------------------
-
-void printTextToFunction(
-  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
-  const std::string& charsToPrint, const std::string& nextCharForFinal)
-{
-  // Iterate over each incoming character to display (we do this
-  // instead of rendering the entire string so that we can perform
-  // indentation, et cetera.)
-  string::const_iterator cur = charsToPrint.begin();
-  string::const_iterator tmp = cur;
-  string::const_iterator end = charsToPrint.end();
-  utf8::next(tmp, end);
-  string curChar(cur, tmp);
-  for(cur = tmp; tmp != end; cur = tmp)
-  {
-    utf8::next(tmp, end);
-    string next(cur, tmp);
-    fun(curChar, next);
-    curChar = next;
-  }
-
-  fun(curChar, nextCharForFinal);
 }

@@ -29,6 +29,7 @@
 #define __StringUtilities_hpp__
 
 #include <string>
+#include <boost/function.hpp>
 
 /**
  * Checks to see if the byte c is the first byte of a two byte
@@ -67,5 +68,12 @@ bool readFullwidthLatinLetter(const char*& str, std::string& output);
  * an unsigned short.
  */
 void addShiftJISChar(unsigned short c, std::string& output);
+
+/**
+ * Feeds each two consecutive pair of characters to |fun|.
+ */
+void printTextToFunction(
+  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
+  const std::string& charsToPrint, const std::string& nextCharForFinal);
 
 #endif

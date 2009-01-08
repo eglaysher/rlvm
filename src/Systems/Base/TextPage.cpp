@@ -30,7 +30,7 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/RLMachine.hpp"
-#include "Modules/TextoutLongOperation.hpp"
+#include "Utilities/StringUtilities.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextSystem.hpp"

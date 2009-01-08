@@ -56,7 +56,7 @@
 
 #include "Effects/Effect.hpp"
 #include "Effects/EffectFactory.hpp"
-#include "Modules/ZoomLongOperation.hpp"
+#include "LongOperations/ZoomLongOperation.hpp"
 
 #include "libReallive/gameexe.h"
 

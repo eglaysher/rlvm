@@ -42,6 +42,8 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 
+#include "LongOperations/PauseLongOperation.hpp"
+#include "LongOperations/TextoutLongOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/OpcodeLog.hpp"
@@ -51,8 +53,6 @@
 #include "MachineBase/RealLiveDLL.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/StackFrame.hpp"
-#include "Modules/PauseLongOperation.hpp"
-#include "Modules/TextoutLongOperation.hpp"
 #include "Modules/cp932toUnicode.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
