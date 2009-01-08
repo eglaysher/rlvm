@@ -39,7 +39,6 @@
  * Modules 81 "ObjFg", 82 "ObjBg", 90 "ObjRange", and 91 "ObjBgRange".
  */
 
-#include "Modules/cp932toUnicode.hpp"
 #include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
 
@@ -51,6 +50,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
 #include <iostream>

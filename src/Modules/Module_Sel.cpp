@@ -30,7 +30,6 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Sel.hpp"
-#include "Modules/cp932toUnicode.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
@@ -40,6 +39,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include "libReallive/bytecode.h"
 

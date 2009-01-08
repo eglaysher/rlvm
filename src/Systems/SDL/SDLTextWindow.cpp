@@ -57,7 +57,6 @@
 #include "Utilities.h"
 
 #include "utf8.h"
-#include "Modules/cp932toUnicode.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 #include <iostream>

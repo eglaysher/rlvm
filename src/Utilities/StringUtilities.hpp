@@ -31,6 +31,54 @@
 #include <string>
 #include <boost/function.hpp>
 
+// -----------------------------------------------------------------------
+
+/**
+ * Converts a CP932/Shift_JIS string into a wstring with Unicode
+ * characters.
+ *
+ * If the string was not CP932, but actually another encoding
+ * transformed such that it can be processed as CP932, this additional
+ * transformation should be reversed here.  This technique is how
+ * non-Japanese text is used in RealLive.  Transformations that might
+ * potentially be encountered are:
+ *
+ *   0 - plain CP932 (no transformation)
+ *   1 - CP936
+ *   2 - CP1252 (also requires rlBabel support)
+ *   3 - CP949
+ *
+ * These are the transformations applied by RLdev, and translation
+ * tables can be found in the rlBabel source code.  There are also at
+ * least two CP936 transformations used by the Key Fans Club and
+ * possibly one or more other CP949 transformations, but details of
+ * these are not publicly available.
+ *
+ * @param line Input string in CP932 encoding
+ * @param transformation Additional encoding transformation
+ * @return Equivalent string in Unicode
+ */
+std::wstring cp932toUnicode(const std::string& line, int transformation);
+
+/// String representation of the transformation name.
+std::string transformationName(int transformation);
+
+/// Converts a UTF-16 string to a UTF-8 one.
+std::string unicodeToUTF8(const std::wstring& widestring);
+
+// For convenience. Combines the two above functions.
+std::string cp932toUTF8(const std::string& line, int transformation);
+
+/**
+ * Returns whether the unicode |codepoint| is a piece of breaking punctuation.
+ */
+bool isKinsoku(int codepoint);
+
+/**
+ * Returns the unicode codpoint for the next UTF-8 character in |c|.
+ */
+int codepoint(const std::string& c);
+
 /**
  * Checks to see if the byte c is the first byte of a two byte
  * character. RealLive encodes its strings in Shift_JIS, so we have to

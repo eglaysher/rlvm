@@ -43,6 +43,8 @@
 #include "libReallive/gameexe.h"
 
 #include "Modules/Module_Sys.hpp"
+
+#include "Effects/FadeEffect.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Timer.hpp"
 #include "Modules/Module_Sys_Save.hpp"
@@ -51,8 +53,6 @@
 #include "Modules/Module_Sys_Name.hpp"
 #include "Modules/Module_Sys_index_series.hpp"
 #include "Modules/Module_Sys_Wait.hpp"
-#include "Modules/cp932toUnicode.hpp"
-
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
@@ -63,8 +63,7 @@
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/CGMTable.hpp"
-
-#include "Effects/FadeEffect.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
 #include <iostream>

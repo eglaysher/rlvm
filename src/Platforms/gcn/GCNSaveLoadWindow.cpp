@@ -35,7 +35,7 @@
 #include "Platforms/gcn/GCNScrollArea.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/RLMachine.hpp"
-#include "Modules/cp932toUnicode.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include <iomanip>
 #include <sstream>

@@ -42,8 +42,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
-
-#include "Modules/cp932toUnicode.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
 

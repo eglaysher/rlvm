@@ -51,8 +51,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextWindow.hpp"
-
-#include "Modules/cp932toUnicode.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 #include <boost/shared_ptr.hpp>
 

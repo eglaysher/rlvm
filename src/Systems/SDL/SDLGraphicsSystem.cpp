@@ -42,7 +42,6 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
 #include "MachineBase/RLMachine.hpp"
-#include "Modules/cp932toUnicode.hpp"
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -57,6 +56,7 @@
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
+#include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
 #include "file.h"

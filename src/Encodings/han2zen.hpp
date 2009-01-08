@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2006, 2007 Elliot Glaysher
+// Copyright (C) 2008 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,36 +22,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
 // -----------------------------------------------------------------------
-/**
- * @file   cp932toUnicode.hpp
- * @author Elliot Glaysher
- * @date   Sun Sep 17 14:24:05 2006
- *
- * @brief  Header that declares the two string conversion functions...
- */
 
-#ifndef __cp932toUnicode_hpp__
-#define __cp932toUnicode_hpp__
+#ifndef __han2zen_hpp__
+#define __han2zen_hpp__
 
 #include <string>
 
-//std::string unicodetocp932(const std::wstring& line);
-std::wstring cp932toUnicode(const std::string& line, int transformation);
-
-/// String representation of the transformation name.
-string transformationName(int transformation);
-
+/**
+ * Converts half-width ASCII and katakana characters to their full-width
+ * equivalents in a CP932 string. This is a no-op when |transformation| is
+ * anything other than 0.
+ */
 std::string hantozen_cp932(const std::string& string, int transformation);
+
+/**
+ * Converts full-width ASCII and katakana characters to their half-width
+ * equivalents in a CP932 string. This is a no-op when |transformation| is
+ * anything other than 0.
+ */
 std::string zentohan_cp932(const std::string& string, int transformation);
-
-std::string unicodeToUTF8(const std::wstring& widestring);
-
-// For convenience...
-std::string cp932toUTF8(const std::string& line, int transformation);
-
-bool isKinsoku(int codepoint);
-int codepoint(const std::string& c);
 
 #endif

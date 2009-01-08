@@ -31,7 +31,7 @@
 #include "Systems/Base/Platform.hpp"
 
 #include "libReallive/gameexe.h"
-#include "Modules/cp932toUnicode.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 using std::string;
 

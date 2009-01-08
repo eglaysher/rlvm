@@ -36,7 +36,8 @@
  */
 
 #include "Modules/Module_Str.hpp"
-#include "Modules/cp932toUnicode.hpp"
+
+#include "Encodings/han2zen.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
