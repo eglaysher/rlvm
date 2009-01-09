@@ -374,8 +374,12 @@ void RLMachine::jump(int scenario_num, int entrypoint)
 {
   // Check to make sure it's a valid scenario
   libReallive::Scenario* scenario = archive_.scenario(scenario_num);
-  if (scenario == 0)
-    throw rlvm::Exception("Invalid scenario number in jump");
+  if (scenario == 0) {
+    ostringstream oss;
+    oss << "Invalid scenario number in jump (" << scenario_num << ", "
+        << entrypoint << ")";
+    throw rlvm::Exception(oss.str());
+  }
 
   if (call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
     // TODO: For some reason this is slow; REALLY slow, so for now I'm trying
@@ -401,8 +405,12 @@ void RLMachine::jump(int scenario_num, int entrypoint)
 
 void RLMachine::farcall(int scenario_num, int entrypoint) {
   libReallive::Scenario* scenario = archive_.scenario(scenario_num);
-  if (scenario == 0)
-    throw rlvm::Exception("Invalid scenario number in jump");
+  if (scenario == 0) {
+    ostringstream oss;
+    oss << "Invalid scenario number in farcall (" << scenario_num << ", "
+        << entrypoint << ")";
+    throw rlvm::Exception(oss.str());
+  }
 
   libReallive::Scenario::const_iterator it =
       scenario->findEntrypoint(entrypoint);
