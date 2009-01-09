@@ -226,7 +226,7 @@ ExpressionPiece* get_expr_token(const char*& src)
     throw Error("Unexpected end of buffer in get_expr_token");
   } else {
     ostringstream err;
-    err << "Unknown toke type 0x" << hex << src[0] << " in get_expr_token" << endl;
+    err << "Unknown toke type 0x" << hex << (short)src[0] << " in get_expr_token" << endl;
     throw Error(err.str());
   }
 }
@@ -543,14 +543,17 @@ std::string printableToParsableString(const std::string& src)
   for(ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it)
   {
     const std::string& tok = *it;
+    if (tok.size() > 2)
+      throw libReallive::Error("Invalid string given to printableToParsableString");
+
     if(tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
       output.push_back(tok[0]);
     else
     {
-      char charToAdd;
+      int charToAdd;
       istringstream ss(tok);
       ss >> std::hex >> charToAdd;
-      output.push_back(charToAdd);
+      output.push_back((char)charToAdd);
     }
   }
 

@@ -224,6 +224,7 @@ test_case_files = [
   "test/Module_Str_TUT.cpp",
   "test/Module_Sys_TUT.cpp",
   "test/RLMachine_TUT.cpp",
+  "test/RLOperation_TUT.cpp",
   "test/TextSystem_TUT.cpp",
   "test/testUtils.cpp"
 ]
