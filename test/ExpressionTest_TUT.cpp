@@ -69,7 +69,7 @@ namespace tut
  */
 struct ExpressionTest_data
 {
-
+  NullSystem system;
 };
 
 /**
@@ -93,7 +93,6 @@ template<>
 void object::test<1>()
 {
   libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/basicOperators.TXT"));
-  NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
@@ -114,49 +113,15 @@ void object::test<1>()
 }
 
 // -----------------------------------------------------------------------
-
-/**
- * Tests basic arithmatic operations
- */
-template<>
-template<>
-void object::test<2>()
-{
-/*
-  libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/bitwiseOperators.TXT"));
-  NullSystem system;
-  RLMachine rlmachine(system, arc);
-  rlmachine.executeUntilHalted();
-
-  int values[10];
-  for(int i = 0; i < 10; ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
-
-  ensure_equals("Incorect value for intA[0] (+ test)", values[0], 2);
-  ensure_equals("Incorect value for intA[1] (+= test)", values[1], 3);
-  ensure_equals("Incorect value for intA[2] (- test)", values[2], 0);
-  ensure_equals("Incorect value for intA[3] (-= test)", values[3], 3);
-  ensure_equals("Incorect value for intA[4] (* test)", values[4], 10);
-  ensure_equals("Incorect value for intA[5] (*= test)", values[5], 30);
-  ensure_equals("Incorect value for intA[6] (/ test)", values[6], 10);
-  ensure_equals("Incorect value for intA[7] (/= test)", values[7], 2);
-  ensure_equals("Incorect value for intA[8] (% test)", values[8], 2);
-  ensure_equals("Incorect value for intA[9] (%= test)", values[9], 1);
-*/
-}
-
-// -----------------------------------------------------------------------
-
 
 /**
  * Tests logical operators in both basic and complex contexts.
  */
 template<>
 template<>
-void object::test<3>()
+void object::test<2>()
 {
   libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/comparisonOperators.TXT"));
-  NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
@@ -187,10 +152,9 @@ void object::test<3>()
  */
 template<>
 template<>
-void object::test<4>()
+void object::test<3>()
 {
   libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/logicalOperators.TXT"));
-  NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
 
@@ -214,10 +178,9 @@ void object::test<4>()
  */
 template<>
 template<>
-void object::test<5>()
+void object::test<4>()
 {
   libReallive::Archive arc(locateTestCase("ExpressionTest_SEEN/previousErrors.TXT"));
-  NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
@@ -235,13 +198,6 @@ void object::test<5>()
 }
 
 // -----------------------------------------------------------------------
-
-template<>
-template<>
-void object::test<6>()
-{
-  string exprString = printableToParsableString("( ( $ 00 [ $ ff e8 03 ] ");
-}
 
 }
 
