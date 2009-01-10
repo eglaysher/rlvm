@@ -36,7 +36,7 @@ struct DefaultIntValue_T
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
     if(position < p.size())
     {
@@ -48,7 +48,7 @@ struct DefaultIntValue_T
     }
   }
 
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
@@ -59,6 +59,7 @@ struct DefaultIntValue_T
     else
     {
       output.push_back(new libReallive::IntegerConstant(DEFAULTVAL));
+      position++;
     }
   }
 
@@ -81,7 +82,7 @@ struct DefaultStrValue_T
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
     if(position < p.size())
     {
@@ -93,7 +94,7 @@ struct DefaultStrValue_T
     }
   }
 
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
@@ -104,6 +105,7 @@ struct DefaultStrValue_T
     else
     {
       output.push_back(new libReallive::StringConstant(std::string()));
+      position++;
     }
   }
 

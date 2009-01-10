@@ -45,10 +45,10 @@ struct IntReference_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position);
+                      unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
@@ -77,10 +77,10 @@ struct StrReference_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position);
+                      unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output);
 

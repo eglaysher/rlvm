@@ -60,19 +60,23 @@ struct Special_T {
   static typename TYPE::type getDataFor(
     RLMachine& machine,
     const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-    unsigned int position,
+    unsigned int& position,
     const libReallive::SpecialExpressionPiece& sp)
   {
-    if(TYPE::is_complex)
+    if (TYPE::is_complex) {
       return TYPE::getData(machine, p, position);
-    else
-      return TYPE::getData(machine, sp.getContainedPieces(), 0);
+    } else {
+      unsigned int contained_position = 0;
+      position++;
+      return TYPE::getData(machine, sp.getContainedPieces(),
+                           contained_position);
+    }
   }
 
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
     if(position >= p.size())
     {
@@ -113,14 +117,14 @@ struct Special_T {
     return par;
   }
 
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
-
     output.push_back(ep.release());
+    position++;
   }
 
   enum {

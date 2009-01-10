@@ -44,10 +44,10 @@ struct Argc_T {
    */
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position);
+                      unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
@@ -63,10 +63,10 @@ template<typename CON>
 typename Argc_T<CON>::type Argc_T<CON>::
 getData(RLMachine& machine,
                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                     unsigned int position) {
+                     unsigned int& position) {
   type return_vector;
-  for(unsigned int i = position; i < p.size(); ++i)
-    return_vector.push_back(CON::getData(machine, p, i));
+  for(; position < p.size(); )
+    return_vector.push_back(CON::getData(machine, p, position));
 
   return return_vector;
 }
@@ -75,12 +75,12 @@ getData(RLMachine& machine,
 
 template<typename CON>
 void Argc_T<CON>::
-parseParameters(unsigned int position,
+parseParameters(unsigned int& position,
                 const std::vector<std::string>& input,
                 boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
-  for(unsigned int i = position; i < input.size(); ++i) {
-    CON::parseParameters(i, input, output);
+  for(; position < input.size(); ) {
+    CON::parseParameters(position, input, output);
   }
 }
 

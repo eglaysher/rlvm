@@ -170,10 +170,10 @@ struct IntConstant_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const ExpressionPiecesVector& p,
-                      unsigned int position);
+                      unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               ExpressionPiecesVector& output);
 
@@ -200,11 +200,11 @@ struct StrConstant_T {
   /// Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const ExpressionPiecesVector& p,
-                      unsigned int position);
+                      unsigned int& position);
 
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               ExpressionPiecesVector& output);
 
@@ -225,10 +225,10 @@ struct Empty_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const ExpressionPiecesVector& p,
-                      unsigned int position);
+                      unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               ExpressionPiecesVector& output);
 
@@ -314,7 +314,7 @@ template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
 struct RLOp_NormalOperation : public RLOperation {
 private:
   template<typename TYPE>
-  void addTypeTo(int position, const std::vector<std::string>& input,
+  void addTypeTo(unsigned int& position, const std::vector<std::string>& input,
                  ExpressionPiecesVector& output) {
     if(TYPE::is_real_typestruct) {
       TYPE::parseParameters(position, input, output);
@@ -324,32 +324,33 @@ private:
 public:
   void parseParameters(const std::vector<std::string>& input,
                        ExpressionPiecesVector& output) {
-    addTypeTo<A>(0, input, output);
-    addTypeTo<B>(1, input, output);
-    addTypeTo<C>(2, input, output);
-    addTypeTo<D>(3, input, output);
-    addTypeTo<E>(4, input, output);
-    addTypeTo<F>(5, input, output);
-    addTypeTo<G>(6, input, output);
-    addTypeTo<H>(7, input, output);
-    addTypeTo<I>(8, input, output);
-    addTypeTo<J>(9, input, output);
-    addTypeTo<K>(10, input, output);
-    addTypeTo<L>(11, input, output);
-    addTypeTo<M>(12, input, output);
-    addTypeTo<N>(13, input, output);
-    addTypeTo<O>(14, input, output);
-    addTypeTo<P>(15, input, output);
-    addTypeTo<Q>(16, input, output);
-    addTypeTo<R>(17, input, output);
-    addTypeTo<S>(18, input, output);
-    addTypeTo<T>(19, input, output);
-    addTypeTo<U>(20, input, output);
-    addTypeTo<V>(21, input, output);
-    addTypeTo<W>(22, input, output);
-    addTypeTo<X>(23, input, output);
-    addTypeTo<Y>(24, input, output);
-    addTypeTo<Z>(25, input, output);
+    unsigned int position = 0;
+    addTypeTo<A>(position, input, output);
+    addTypeTo<B>(position, input, output);
+    addTypeTo<C>(position, input, output);
+    addTypeTo<D>(position, input, output);
+    addTypeTo<E>(position, input, output);
+    addTypeTo<F>(position, input, output);
+    addTypeTo<G>(position, input, output);
+    addTypeTo<H>(position, input, output);
+    addTypeTo<I>(position, input, output);
+    addTypeTo<J>(position, input, output);
+    addTypeTo<K>(position, input, output);
+    addTypeTo<L>(position, input, output);
+    addTypeTo<M>(position, input, output);
+    addTypeTo<N>(position, input, output);
+    addTypeTo<O>(position, input, output);
+    addTypeTo<P>(position, input, output);
+    addTypeTo<Q>(position, input, output);
+    addTypeTo<R>(position, input, output);
+    addTypeTo<S>(position, input, output);
+    addTypeTo<T>(position, input, output);
+    addTypeTo<U>(position, input, output);
+    addTypeTo<V>(position, input, output);
+    addTypeTo<W>(position, input, output);
+    addTypeTo<X>(position, input, output);
+    addTypeTo<Y>(position, input, output);
+    addTypeTo<Z>(position, input, output);
   }
 };
 
@@ -385,7 +386,8 @@ struct RLOp_Void_1 : public RLOp_NormalOperation<A>
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-    operator()(machine, A::getData(machine, parameters, 0));
+    unsigned int position = 0;
+    operator()(machine, A::getData(machine, parameters, position));
   }
 
   virtual void operator()(RLMachine&, typename A::type) = 0;
@@ -398,8 +400,10 @@ struct RLOp_Void_2 : public RLOp_NormalOperation<A, B> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-    operator()(machine, A::getData(machine, parameters, 0),
-               B::getData(machine, parameters, 1));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    operator()(machine, a, b);
   }
 
   virtual void operator()(RLMachine&, typename A::type, typename B::type) = 0;
@@ -412,9 +416,11 @@ struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    operator()(machine, a, b, c);
   }
 
   virtual void operator()(RLMachine&, typename A::type, typename B::type, typename C::type) = 0;
@@ -427,10 +433,12 @@ struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -445,11 +453,13 @@ struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -465,12 +475,14 @@ struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -486,13 +498,15 @@ struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G>
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -508,14 +522,16 @@ struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H>
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -532,15 +548,17 @@ struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I>
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -557,16 +575,18 @@ struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J>
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -584,17 +604,19 @@ struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -612,18 +634,20 @@ struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -642,19 +666,21 @@ struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -674,20 +700,22 @@ struct RLOp_Void_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -708,21 +736,23 @@ struct RLOp_Void_15 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -744,22 +774,24 @@ struct RLOp_Void_16 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -782,23 +814,26 @@ struct RLOp_Void_17 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -820,24 +855,27 @@ struct RLOp_Void_18 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -860,25 +898,28 @@ struct RLOp_Void_19 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -901,26 +942,29 @@ struct RLOp_Void_20 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -944,27 +988,30 @@ struct RLOp_Void_21 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19),
-                 U::getData(machine, parameters, 20));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    typename U::type u = U::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t, u);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -989,28 +1036,31 @@ struct RLOp_Void_22 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19),
-                 U::getData(machine, parameters, 20),
-                 V::getData(machine, parameters, 21));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    typename U::type u = U::getData(machine, parameters, position);
+    typename V::type v = V::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t, u, v);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -1036,29 +1086,32 @@ struct RLOp_Void_23 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19),
-                 U::getData(machine, parameters, 20),
-                 V::getData(machine, parameters, 21),
-                 W::getData(machine, parameters, 22));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    typename U::type u = U::getData(machine, parameters, position);
+    typename V::type v = V::getData(machine, parameters, position);
+    typename W::type w = W::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t, u, v, w);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -1085,30 +1138,33 @@ struct RLOp_Void_24 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19),
-                 U::getData(machine, parameters, 20),
-                 V::getData(machine, parameters, 21),
-                 W::getData(machine, parameters, 22),
-                 X::getData(machine, parameters, 23));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    typename U::type u = U::getData(machine, parameters, position);
+    typename V::type v = V::getData(machine, parameters, position);
+    typename W::type w = W::getData(machine, parameters, position);
+    typename X::type x = X::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t, u, v, w, x);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -1135,31 +1191,34 @@ struct RLOp_Void_25 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19),
-                 U::getData(machine, parameters, 20),
-                 V::getData(machine, parameters, 21),
-                 W::getData(machine, parameters, 22),
-                 X::getData(machine, parameters, 23),
-                 Y::getData(machine, parameters, 24));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    typename U::type u = U::getData(machine, parameters, position);
+    typename V::type v = V::getData(machine, parameters, position);
+    typename W::type w = W::getData(machine, parameters, position);
+    typename X::type x = X::getData(machine, parameters, position);
+    typename Y::type y = Y::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t, u, v, w, x, y);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
@@ -1187,32 +1246,35 @@ struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 {
   void dispatch(RLMachine& machine, const ExpressionPiecesVector& parameters)
   {
-      operator()(machine, A::getData(machine, parameters, 0),
-                 B::getData(machine, parameters, 1),
-                 C::getData(machine, parameters, 2),
-                 D::getData(machine, parameters, 3),
-                 E::getData(machine, parameters, 4),
-                 F::getData(machine, parameters, 5),
-                 G::getData(machine, parameters, 6),
-                 H::getData(machine, parameters, 7),
-                 I::getData(machine, parameters, 8),
-                 J::getData(machine, parameters, 9),
-                 K::getData(machine, parameters, 10),
-                 L::getData(machine, parameters, 11),
-                 M::getData(machine, parameters, 12),
-                 N::getData(machine, parameters, 13),
-                 O::getData(machine, parameters, 14),
-                 P::getData(machine, parameters, 15),
-                 Q::getData(machine, parameters, 16),
-                 R::getData(machine, parameters, 17),
-                 S::getData(machine, parameters, 18),
-                 T::getData(machine, parameters, 19),
-                 U::getData(machine, parameters, 20),
-                 V::getData(machine, parameters, 21),
-                 W::getData(machine, parameters, 22),
-                 X::getData(machine, parameters, 23),
-                 Y::getData(machine, parameters, 24),
-                 Z::getData(machine, parameters, 25));
+    unsigned int position = 0;
+    typename A::type a = A::getData(machine, parameters, position);
+    typename B::type b = B::getData(machine, parameters, position);
+    typename C::type c = C::getData(machine, parameters, position);
+    typename D::type d = D::getData(machine, parameters, position);
+    typename E::type e = E::getData(machine, parameters, position);
+    typename F::type f = F::getData(machine, parameters, position);
+    typename G::type g = G::getData(machine, parameters, position);
+    typename H::type h = H::getData(machine, parameters, position);
+    typename I::type i = I::getData(machine, parameters, position);
+    typename J::type j = J::getData(machine, parameters, position);
+    typename K::type k = K::getData(machine, parameters, position);
+    typename L::type l = L::getData(machine, parameters, position);
+    typename M::type m = M::getData(machine, parameters, position);
+    typename N::type n = N::getData(machine, parameters, position);
+    typename O::type o = O::getData(machine, parameters, position);
+    typename P::type p = P::getData(machine, parameters, position);
+    typename Q::type q = Q::getData(machine, parameters, position);
+    typename R::type r = R::getData(machine, parameters, position);
+    typename S::type s = S::getData(machine, parameters, position);
+    typename T::type t = T::getData(machine, parameters, position);
+    typename U::type u = U::getData(machine, parameters, position);
+    typename V::type v = V::getData(machine, parameters, position);
+    typename W::type w = W::getData(machine, parameters, position);
+    typename X::type x = X::getData(machine, parameters, position);
+    typename Y::type y = Y::getData(machine, parameters, position);
+    typename Z::type z = Z::getData(machine, parameters, position);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
+               q, r, s, t, u, v, w, x, y, z);
   }
 
   virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,

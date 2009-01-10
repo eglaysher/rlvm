@@ -99,16 +99,16 @@ void RLOperation::throw_unimplemented()
 // Implementation for IntConstant_T
 IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
                                            const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                                           unsigned int position)
+                                           unsigned int& position)
 {
-  return p[position].integerValue(machine);
+  return p[position++].integerValue(machine);
 }
 
 // -----------------------------------------------------------------------
 
 // Was working to change the verify_type to parse_parameters.
 void IntConstant_T::parseParameters(
-  unsigned int position,
+  unsigned int& position,
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
@@ -121,20 +121,22 @@ void IntConstant_T::parseParameters(
   }
 
   output.push_back(ep.release());
+  position++;
 }
 
 // -----------------------------------------------------------------------
 
 IntReference_T::type IntReference_T::getData(RLMachine& machine,
                                              const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) {
-  return p[position].getIntegerReferenceIterator(machine);
+                      unsigned int& position) {
+  return static_cast<const libReallive::MemoryReference&>(p[position++]).
+    getIntegerReferenceIterator(machine);
 }
 
 // -----------------------------------------------------------------------
 
 void IntReference_T::parseParameters(
-  unsigned int position,
+  unsigned int& position,
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
@@ -147,21 +149,22 @@ void IntReference_T::parseParameters(
   }
 
   output.push_back(ep.release());
+  position++;
 }
 
 // -----------------------------------------------------------------------
 
 StrConstant_T::type StrConstant_T::getData(RLMachine& machine,
                                            const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
 {
-  return p[position].getStringValue(machine);
+  return p[position++].getStringValue(machine);
 }
 
 // -----------------------------------------------------------------------
 
 void StrConstant_T::parseParameters(
-  unsigned int position,
+  unsigned int& position,
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
@@ -174,22 +177,23 @@ void StrConstant_T::parseParameters(
   }
 
   output.push_back(ep.release());
+  position++;
 }
 
 // -----------------------------------------------------------------------
 
 StrReference_T::type StrReference_T::getData(RLMachine& machine,
                                              const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
 {
-  return static_cast<const libReallive::MemoryReference&>(p[position]).
+  return static_cast<const libReallive::MemoryReference&>(p[position++]).
     getStringReferenceIterator(machine);
 }
 
 // -----------------------------------------------------------------------
 
 void StrReference_T::parseParameters(
-  unsigned int position,
+  unsigned int& position,
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
@@ -202,6 +206,7 @@ void StrReference_T::parseParameters(
   }
 
   output.push_back(ep.release());
+  position++;
 }
 
 // -----------------------------------------------------------------------
@@ -210,7 +215,7 @@ void StrReference_T::parseParameters(
 
 Empty_T::type Empty_T::getData(RLMachine& machine,
                                const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
 {
   return empty_struct();
 }
@@ -218,7 +223,7 @@ Empty_T::type Empty_T::getData(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 void Empty_T::parseParameters(
-  unsigned int position,
+  unsigned int& position,
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {

@@ -44,50 +44,24 @@ struct Complex2_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position) {
+                      unsigned int& position) {
+    unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-    return type(
-      A::getData(machine, sp.getContainedPieces(), 0),
-      B::getData(machine, sp.getContainedPieces(), 1));
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
+    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    return type(a, b);
   }
 
-  /// Takes a type and makes sure that
-/*
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
-  {
-    // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the
-    bool type_ok = position < p.size();
-    type_ok = type_ok && p[position].isComplexParameter();
-    if(type_ok) {
-      const libReallive::ComplexExpressionPiece& sp =
-        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
-      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
-    }
-    return type_ok;
-  }
-*/
-
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-  const char* data = input.at(position).c_str();
-  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
-
-//   if(ep->expressionValueType() != libReallive::ValueTypeString)
-//   {
-//     throw rlvm::Exception("StrConstant_T parse err.");
-//   }
-
-  output.push_back(ep.release());
-
-//    throw rlvm::Exception("Unimplemented");
+    const char* data = input.at(position).c_str();
+    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    output.push_back(ep.release());
+    position++;
   }
-
 
   enum {
     is_real_typestruct = true,
@@ -112,54 +86,26 @@ struct Complex3_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
+    unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-
-    return type(
-      A::getData(machine, sp.getContainedPieces(), 0),
-      B::getData(machine, sp.getContainedPieces(), 1),
-      C::getData(machine, sp.getContainedPieces(), 2));
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
+    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    return type(a, b, c);
   }
 
-  /// Takes a type and makes sure that
-/*
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
-  {
-    // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the
-    bool type_ok = position < p.size();
-    type_ok = type_ok && p[position].isComplexParameter();
-    if(type_ok) {
-      const libReallive::ComplexExpressionPiece& sp =
-        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
-      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
-      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
-    }
-    return type_ok;
-  }
-*/
-
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-  const char* data = input.at(position).c_str();
-  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
-
-//   if(ep->expressionValueType() != libReallive::ValueTypeString)
-//   {
-//     throw rlvm::Exception("StrConstant_T parse err.");
-//   }
-
-  output.push_back(ep.release());
-
-//    throw rlvm::Exception("Unimplemented");
+    const char* data = input.at(position).c_str();
+    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    output.push_back(ep.release());
+    position++;
   }
-
 
   enum {
     is_real_typestruct = true,
@@ -184,55 +130,28 @@ struct Complex4_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
+    unsigned int pos_in_expression = 0;
+
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-    return type(
-      A::getData(machine, sp.getContainedPieces(), 0),
-      B::getData(machine, sp.getContainedPieces(), 1),
-      C::getData(machine, sp.getContainedPieces(), 2),
-      D::getData(machine, sp.getContainedPieces(), 3));
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
+    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename D::type d = D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    return type(a, b, c, d);
   }
 
-/*
-  /// Takes a type and makes sure that
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
-  {
-    // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the
-    bool type_ok = position < p.size();
-    type_ok = type_ok && p[position].isComplexParameter();
-    if(type_ok) {
-      const libReallive::ComplexExpressionPiece& sp =
-        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
-      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
-      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
-      type_ok = type_ok && D::verifyType(sp.getContainedPieces(), 3);
-    }
-    return type_ok;
-  }
-*/
-
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
     const char* data = input.at(position).c_str();
-  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
-
-//   if(ep->expressionValueType() != libReallive::ValueTypeString)
-//   {
-//     throw rlvm::Exception("StrConstant_T parse err.");
-//   }
-
-  output.push_back(ep.release());
-
-//  throw rlvm::Exception("Unimplemented");
+    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    output.push_back(ep.release());
+    position++;
   }
-
 
   enum {
     is_real_typestruct = true,
@@ -261,62 +180,31 @@ struct Complex7_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
+    unsigned int pos_in_expression = 0;
+
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-    return type(
-      A::getData(machine, sp.getContainedPieces(), 0),
-      B::getData(machine, sp.getContainedPieces(), 1),
-      C::getData(machine, sp.getContainedPieces(), 2),
-      D::getData(machine, sp.getContainedPieces(), 3),
-      E::getData(machine, sp.getContainedPieces(), 4),
-      F::getData(machine, sp.getContainedPieces(), 5),
-      G::getData(machine, sp.getContainedPieces(), 6));
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
+    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename D::type d = D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename E::type e = E::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename F::type f = F::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename G::type g = G::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    return type(a, b, c, d, e, f, g);
   }
 
-/*
-  /// Takes a type and makes sure that
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
-  {
-    // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the
-    bool type_ok = position < p.size();
-    type_ok = type_ok && p[position].isComplexParameter();
-    if(type_ok) {
-      const libReallive::ComplexExpressionPiece& sp =
-        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
-      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
-      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
-      type_ok = type_ok && D::verifyType(sp.getContainedPieces(), 3);
-      type_ok = type_ok && E::verifyType(sp.getContainedPieces(), 4);
-      type_ok = type_ok && F::verifyType(sp.getContainedPieces(), 5);
-      type_ok = type_ok && G::verifyType(sp.getContainedPieces(), 6);
-    }
-    return type_ok;
-  }
-*/
-
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-  const char* data = input.at(position).c_str();
-  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
-
-//   if(ep->expressionValueType() != libReallive::ValueTypeString)
-//   {
-//     throw rlvm::Exception("StrConstant_T parse err.");
-//   }
-
-  output.push_back(ep.release());
-
-
-//    throw rlvm::Exception("Unimplemented");
+    const char* data = input.at(position).c_str();
+    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    output.push_back(ep.release());
+    position++;
   }
-
 
   enum {
     is_real_typestruct = true,
@@ -325,7 +213,6 @@ struct Complex7_T {
 };
 
 // -----------------------------------------------------------------------
-
 
 /**
  * Type definition that implements the complex parameter concept.
@@ -345,63 +232,31 @@ struct Complex8_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int position)
+                      unsigned int& position)
   {
+    unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-    return type(
-      A::getData(machine, sp.getContainedPieces(), 0),
-      B::getData(machine, sp.getContainedPieces(), 1),
-      C::getData(machine, sp.getContainedPieces(), 2),
-      D::getData(machine, sp.getContainedPieces(), 3),
-      E::getData(machine, sp.getContainedPieces(), 4),
-      F::getData(machine, sp.getContainedPieces(), 5),
-      G::getData(machine, sp.getContainedPieces(), 6),
-      H::getData(machine, sp.getContainedPieces(), 7));
+      static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
+    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename D::type d = D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename E::type e = E::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename F::type f = F::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename G::type g = G::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename H::type h = H::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    return type(a, b, c, d, e, f, g, h);
   }
 
-  static void parseParameters(unsigned int position,
+  static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               boost::ptr_vector<libReallive::ExpressionPiece>& output)
   {
-  const char* data = input.at(position).c_str();
-  std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
-
-//   if(ep->expressionValueType() != libReallive::ValueTypeString)
-//   {
-//     throw rlvm::Exception("StrConstant_T parse err.");
-//   }
-
-  output.push_back(ep.release());
-
-
-//    throw rlvm::Exception("Unimplemented");
+    const char* data = input.at(position).c_str();
+    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    output.push_back(ep.release());
+    position++;
   }
-
-  /// Takes a type and makes sure that
-/*
-  static bool verifyType(const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                         unsigned int position)
-  {
-    // Verify the size of the vector, that we have a special parameter, and then
-    // make sure all the
-    bool type_ok = position < p.size();
-    type_ok = type_ok && p[position].isComplexParameter();
-    if(type_ok) {
-      const libReallive::ComplexExpressionPiece& sp =
-        static_cast<const libReallive::ComplexExpressionPiece&>(p[position]);
-      type_ok = type_ok && A::verifyType(sp.getContainedPieces(), 0);
-      type_ok = type_ok && B::verifyType(sp.getContainedPieces(), 1);
-      type_ok = type_ok && C::verifyType(sp.getContainedPieces(), 2);
-      type_ok = type_ok && D::verifyType(sp.getContainedPieces(), 3);
-      type_ok = type_ok && E::verifyType(sp.getContainedPieces(), 4);
-      type_ok = type_ok && F::verifyType(sp.getContainedPieces(), 5);
-      type_ok = type_ok && G::verifyType(sp.getContainedPieces(), 6);
-      type_ok = type_ok && H::verifyType(sp.getContainedPieces(), 7);
-    }
-    return type_ok;
-  }
-*/
 
   enum {
     is_real_typestruct = true,

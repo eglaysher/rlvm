@@ -506,11 +506,13 @@ struct Jmp_gosub_with : public RLOp_SpecialCase {
       const vector<string>& unparsed = gotoElement.getUnparsedParameters();
       ptr_vector<ExpressionPiece> output;
 
-      ParamFormat::parseParameters(0, unparsed, output);
+      unsigned int position = 0;
+      ParamFormat::parseParameters(position, unparsed, output);
     }
 
     const ptr_vector<ExpressionPiece>& parameterPieces = gotoElement.getParameters();
-    ParamFormat::type data = ParamFormat::getData(machine, parameterPieces, 0);
+    unsigned int position = 0;
+    ParamFormat::type data = ParamFormat::getData(machine, parameterPieces, position);
     storeData(machine, data);
 
     const Pointers& pointers = gotoElement.get_pointersRef();
