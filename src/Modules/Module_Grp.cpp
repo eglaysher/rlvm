@@ -44,6 +44,7 @@
 #include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLOperation/Special_T.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "MachineBase/RLOperation/Rect_T.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 
@@ -213,68 +214,6 @@ void handleOpenBgFileName(
 // -----------------------------------------------------------------------
 
 /**
- * Abstract interface for a space. Taken as a parameter to most Grp
- * classes.
- */
-struct SPACE {
-  virtual ~SPACE() {}
-  virtual Rect makeRect(int x1, int y1, int x2, int y2) = 0;
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * A large number of the operation structs in the Grp module are
- * written in a generic way so that they can be done in either rec or
- * grp coordinate space. GRP_SPACE or REC_SPACE are passed as
- * parameters to these operations.
- *
- * @see REC_SPACE
- * @see Grp_open_0
- */
-struct GRP_SPACE : public SPACE {
-  /**
-   * Changes the coordinate types. All operations internally are done in
-   * rec coordinates, (x, y, width, height). The GRP functions pass
-   * parameters of the format (x1, y1, x2, y2).
-   *
-   * @param x1 X coordinate. Not changed by this function
-   * @param y1 Y coordinate. Not changed by this function
-   * @param x2 X2. In place changed to width.
-   * @param y2 Y2. In place changed to height.
-   */
-  virtual Rect makeRect(int x1, int y1, int x2, int y2)
-  {
-    return Rect::GRP(x1, y1, x2, y2);
-  }
-
-  static SPACE& get() {
-    static GRP_SPACE space;
-    return space;
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct REC_SPACE : public SPACE {
-  /**
-   * Don't do anything; leave the incoming coordinates as they are.
-   */
-  virtual Rect makeRect(int x1, int y1, int x2, int y2)
-  {
-    return Rect::REC(x1, y1, x2, y2);
-  }
-
-  static SPACE& get() {
-    static REC_SPACE space;
-    return space;
-  }
-};
-
-
-// -----------------------------------------------------------------------
-
-/**
  * Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
  *
  * Allocates a blank width × height bitmap in dc. Any DC apart from DC
@@ -356,22 +295,20 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
  * this form, the given area of the bitmap is loaded at the given
  * location.
  */
-struct Grp_load_3 : public RLOp_Void_9<
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+template<typename SPACE>
+struct Grp_load_3 : public RLOp_Void_5<
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
   DefaultIntValue_T<255> >
 {
   bool use_alpha_;
-  SPACE& space_;
-  Grp_load_3(bool in, SPACE& space) : use_alpha_(in), space_(space) {}
+  Grp_load_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int dc,
-                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity) {
+                  Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
 
-    Rect srcRect = space_.makeRect(x1, y1, x2, y2);
-    Rect destRect = Rect(dx, dy, srcRect.size());
+    Rect destRect = Rect(dest, srcRect.size());
 
     if(dc != 0 && dc != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(surface->size());
@@ -422,25 +359,20 @@ struct Grp_display_0 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Grp_display_3 : public RLOp_Void_9<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T>
-{
-  SPACE& space_;
-  Grp_display_3(SPACE& space) : space_(space) {}
-
+template<typename SPACE>
+struct Grp_display_3
+    : public RLOp_Void_5<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
+                         IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int effectNum,
-                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
-  {
+                  Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-    Rect srcRect = space_.makeRect(x1, y1, x2, y2);
-    loadDCToDC1(graphics, dc, srcRect, Point(dx, dy), opacity);
+    loadDCToDC1(graphics, dc, srcRect, dest, opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
+    LongOperation* lop =
+        EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
   }
@@ -448,22 +380,13 @@ struct Grp_display_3 : public RLOp_Void_9<
 
 // -----------------------------------------------------------------------
 
-/**
- * @todo Finish documentation
- */
-struct Grp_display_2 : public RLOp_Void_8<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
-{
-  Grp_display_3 delegate;
-  Grp_display_2(SPACE& space) : delegate(space) {}
-
+template<typename SPACE>
+struct Grp_display_2
+    : public RLOp_Void_4<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   void operator()(RLMachine& machine, int dc, int effectNum,
-                  int x1, int y1, int x2, int y2, int dx, int dy)
-  {
+                  Rect src_rect, Point dest) {
     int opacity = getSELEffect(machine, effectNum).at(14);
-    delegate(machine, dc, effectNum, x1, y1, x2, y2, dx, dy,
-             opacity);
+    Grp_display_3<SPACE>()(machine, dc, effectNum, src_rect, dest, opacity);
   }
 };
 
@@ -484,9 +407,8 @@ struct Grp_display_2 : public RLOp_Void_8<
  */
 struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                         IntConstant_T > {
-  SPACE& space_;
   bool use_alpha_;
-  Grp_open_1(bool in, SPACE& space) : space_(space), use_alpha_(in) {}
+  Grp_open_1(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
                   int opacity)
@@ -522,10 +444,8 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
  * perform some intermediary steps and then render DC1 to DC0.
  */
 struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
-  SPACE& space_;
   Grp_open_1 delegate_;
-  Grp_open_0(bool in, SPACE& space)
-    : space_(space), delegate_(in, space) {}
+  Grp_open_0(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = getSELEffect(machine, effectNum);
@@ -535,23 +455,20 @@ struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Grp_open_3 : public RLOp_Void_9<
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T>
+template<typename SPACE>
+struct Grp_open_3 : public RLOp_Void_5<
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T>
 {
-  SPACE& space_;
   bool use_alpha_;
-  Grp_open_3(bool in, SPACE& space) : space_(space), use_alpha_(in) {}
+  Grp_open_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
-                  int x1, int y1, int x2, int y2, int dx, int dy, int opacity)
+                  Rect srcRect, Point dest, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???") filename = graphics.defaultGrpName();
 
-    Rect srcRect = space_.makeRect(x1, y1, x2, y2);
-    loadImageToDC1(machine, filename, srcRect, Point(dx, dy), opacity,
+    loadImageToDC1(machine, filename, srcRect, dest, opacity,
                    use_alpha_);
 
     // Set the long operation for the correct transition long operation
@@ -577,19 +494,18 @@ struct Grp_open_3 : public RLOp_Void_9<
  *
  * @todo Finish documentation
  */
-struct Grp_open_2 : public RLOp_Void_8<
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+template<typename SPACE>
+struct Grp_open_2 : public RLOp_Void_4<
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T>
 {
-  Grp_open_3 delegate_;
-  Grp_open_2(bool in, SPACE& space) : delegate_(in, space) {}
+  Grp_open_3<SPACE> delegate_;
+  Grp_open_2(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
-                  int x1, int y1, int x2, int y2, int dx, int dy)
+                  Rect src, Point dest)
   {
     int opacity = getSELEffect(machine, effectNum).at(14);
-    delegate_(machine, filename, effectNum, x1, y1, x2, y2,
-               dx, dy, opacity);
+    delegate_(machine, filename, effectNum, src, dest, opacity);
   }
 };
 
@@ -599,29 +515,28 @@ struct Grp_open_2 : public RLOp_Void_8<
 // 'dx', 'dy', 'steps', 'effect', 'direction',
 // 'interpolation', 'density', 'speed', '?', '?',
 // 'alpha', '?')
-struct Grp_open_4 : public RLOp_Void_17<
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+template<typename SPACE>
+struct Grp_open_4 : public RLOp_Void_13<
+  StrConstant_T, Rect_T<SPACE>,
+  Point_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T>
 {
-  SPACE& space_;
   bool use_alpha_;
-  Grp_open_4(bool in, SPACE& space) : space_(space), use_alpha_(in) {}
+  Grp_open_4(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName,
-                  int x1, int y1, int x2, int y2, int dx, int dy,
+                  Rect srcRect, Point dest,
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    Rect srcRect = space_.makeRect(x1, y1, x2, y2);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, srcRect, Point(dx, dy),
+    handleOpenBgFileName(machine, fileName, srcRect, dest,
                          opacity, use_alpha_);
 
     // Promote the objects
@@ -692,24 +607,22 @@ struct Grp_openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Grp_openBg_4 : public RLOp_Void_17<
-  StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+template<typename SPACE>
+struct Grp_openBg_4 : public RLOp_Void_13<
+  StrConstant_T, Rect_T<SPACE>, Point_T,
+  IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T>
 {
-  SPACE& space_;
   bool use_alpha_;
-  Grp_openBg_4(bool in, SPACE& space) : space_(space), use_alpha_(in) {}
+  Grp_openBg_4(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName,
-                  int x1, int y1, int x2, int y2, int dx, int dy,
+                  Rect srcRect, Point destPt,
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    Rect srcRect = space_.makeRect(x1, y1, x2, y2);
-    Point destPt(dx, dy);
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
@@ -743,18 +656,15 @@ struct Grp_openBg_4 : public RLOp_Void_17<
 // -----------------------------------------------------------------------
 // {grp,rec}Copy
 // -----------------------------------------------------------------------
-
-struct Grp_copy_3 : public RLOp_Void_9<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> >
+template<typename SPACE>
+struct Grp_copy_3 : public RLOp_Void_5<
+  Rect_T<SPACE>, IntConstant_T, Point_T, IntConstant_T, DefaultIntValue_T<255> >
 {
-  SPACE& space_;
   bool use_alpha_;
-  Grp_copy_3(bool in, SPACE& space) : space_(space), use_alpha_(in) {}
+  Grp_copy_3(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
-                  int src, int dx, int dy, int dst, int opacity) {
+  void operator()(RLMachine& machine, Rect srcRect,
+                  int src, Point destPoint, int dst, int opacity) {
     // Copying to self is a noop
     if(src == dst)
       return;
@@ -766,11 +676,9 @@ struct Grp_copy_3 : public RLOp_Void_9<
 //    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
     // @todo allocateDC?
 
-    Rect srcRect = space_.makeRect(x1, y1, x2, y2);
-
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
-      srcRect, Rect(dx, dy, srcRect.size()), opacity, use_alpha_);
+      srcRect, Rect(destPoint, srcRect.size()), opacity, use_alpha_);
   }
 };
 
@@ -815,17 +723,14 @@ struct Grp_fill_1 : public RLOp_Void_5<
 
 // -----------------------------------------------------------------------
 
-struct Grp_fill_3 : public RLOp_Void_9<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+template<typename SPACE>
+struct Grp_fill_3 : public RLOp_Void_6<
+  Rect_T<SPACE>,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   DefaultIntValue_T<255> >
 {
-  SPACE& space_;
-  Grp_fill_3(SPACE& space) : space_(space) {}
-
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
+  void operator()(RLMachine& machine, Rect destRect,
                   int dc, int r, int g, int b, int alpha) {
-    Rect destRect = space_.makeRect(x1, y1, x2, y2);
     machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha), destRect);
   }
 };
@@ -834,16 +739,13 @@ struct Grp_fill_3 : public RLOp_Void_9<
 // {grp,rec}Fade
 // -----------------------------------------------------------------------
 
-struct Grp_fade_7 : public RLOp_Void_8<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> >
+template<typename SPACE>
+struct Grp_fade_7 : public RLOp_Void_5<
+  Rect_T<SPACE>, IntConstant_T, IntConstant_T, IntConstant_T,
+  DefaultIntValue_T<0> >
 {
-  SPACE& space_;
-  Grp_fade_7(SPACE& space) : space_(space) {}
-
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
+  void operator()(RLMachine& machine, Rect rect,
                   int r, int g, int b, int time) {
-    Rect rect = space_.makeRect(x1, y1, x2, y2);
     GraphicsSystem& graphics = machine.system().graphics();
     if (time == 0) {
       graphics.getDC(0)->fill(RGBAColour(r, g, b), rect);
@@ -864,47 +766,40 @@ struct Grp_fade_7 : public RLOp_Void_8<
   }
 };
 
-struct Grp_fade_5 : public RLOp_Void_6<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, DefaultIntValue_T<0> >
+template<typename SPACE>
+struct Grp_fade_5 : public RLOp_Void_3<
+  Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0> >
 {
-  SPACE& space_;
-  Grp_fade_7 delegate_;
-  Grp_fade_5(SPACE& space) : space_(space), delegate_(space) {}
+  Grp_fade_7<SPACE> delegate_;
 
-  void operator()(RLMachine& machine, int x1, int y1, int x2, int y2,
-                  int color_num, int time) {
+  void operator()(RLMachine& machine, Rect rect, int color_num, int time) {
     Gameexe& gexe = machine.system().gameexe();
     const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
-    delegate_(machine, x1, y1, x2, y2, rgb[0], rgb[1], rgb[2], time);
+    delegate_(machine, rect, rgb[0], rgb[1], rgb[2], time);
   }
 };
 
 struct Grp_fade_3 : public RLOp_Void_4<
   IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> >
 {
-  Grp_fade_7 delegate_;
-  Grp_fade_3() : delegate_(REC_SPACE::get()) {}
+  Grp_fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int r, int g, int b, int time) {
     Size screenSize = machine.system().graphics().screenSize();
-    delegate_(machine, 0, 0, screenSize.width(), screenSize.height(),
-               r, g, b, time);
+    delegate_(machine, Rect(0, 0, screenSize), r, g, b, time);
   }
 };
 
 struct Grp_fade_1 : public RLOp_Void_2<
   IntConstant_T, DefaultIntValue_T<0> >
 {
-  Grp_fade_7 delegate_;
-  Grp_fade_1() : delegate_(REC_SPACE::get()) {}
+  Grp_fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int color_num, int time) {
     Size screenSize = machine.system().graphics().screenSize();
     Gameexe& gexe = machine.system().gameexe();
     const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
-    delegate_(machine, 0, 0, screenSize.width(), screenSize.height(),
-               rgb[0], rgb[1], rgb[2], time);
+    delegate_(machine, Rect(0, 0, screenSize), rgb[0], rgb[1], rgb[2], time);
   }
 };
 
@@ -912,22 +807,17 @@ struct Grp_fade_1 : public RLOp_Void_2<
 // -----------------------------------------------------------------------
 // {grp,rec}StretchBlit
 // -----------------------------------------------------------------------
-struct Grp_stretchBlit_1 : public RLOp_Void_11<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> >
+template<typename SPACE>
+struct Grp_stretchBlit_1
+    : public RLOp_Void_5<Rect_T<SPACE>, IntConstant_T,
+                         Rect_T<SPACE>, IntConstant_T,
+                         DefaultIntValue_T<255> >
 {
-  SPACE& space_;
   bool use_alpha_;
-  Grp_stretchBlit_1(bool in, SPACE& space) : use_alpha_(in), space_(space) {}
+  Grp_stretchBlit_1(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, 
-                  int x, int y, int width, int height, int src,
-                  int dx, int dy, int dwidth, int dheight, int dst,
-                  int opacity) {
-    Rect src_rect = space_.makeRect(x, y, width, height);
-    Rect dst_rect = space_.makeRect(dx, dy, dwidth, dheight);
-
+  void operator()(RLMachine& machine, Rect src_rect, int src,
+                  Rect dst_rect, int dst, int opacity) {
     // Copying to self is a noop
     if(src == dst)
       return;
@@ -947,22 +837,13 @@ struct Grp_stretchBlit_1 : public RLOp_Void_11<
 
 // -----------------------------------------------------------------------
 
-struct Grp_zoom : public RLOp_Void_14<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+template<typename SPACE>
+struct Grp_zoom : public RLOp_Void_5<
+  Rect_T<SPACE>, Rect_T<SPACE>, IntConstant_T, Rect_T<SPACE>, IntConstant_T>
 {
-  SPACE& space_;
-  Grp_zoom(SPACE& space) : space_(space) {}
-
-  void operator()(RLMachine& machine, int fx, int fy, int fwidth, int fheight,
-                  int tx, int ty, int twidth, int theight, int srcDC, int dx,
-                  int dy, int dwidth, int dheight, int time)
-  {
+  void operator()(RLMachine& machine, Rect frect, Rect trect, int srcDC,
+                  Rect drect, int time) {
     GraphicsSystem& gs = machine.system().graphics();
-    Rect frect = space_.makeRect(fx, fy, fwidth, fheight);
-    Rect trect = space_.makeRect(tx, ty, twidth, theight);
-    Rect drect = space_.makeRect(dx, dy, dwidth, dheight);
 
     LongOperation* zoomOp =
       new ZoomLongOperation(
@@ -1022,18 +903,14 @@ typedef Argc_T<
 /// All work is applied to DC 1.
 const int MULTI_TARGET_DC = 1;
 
+template<typename SPACE>
 struct Grp_multi_command {
-
-  /// All multi commands exist in a coordinate space
-  SPACE& space;
-
-  Grp_multi_command(SPACE& in) : space(in) {}
-
   void handleMultiCommands(
     RLMachine& machine, const MultiCommand::type& commands);
 };
 
-void Grp_multi_command::handleMultiCommands(
+template<typename SPACE>
+void Grp_multi_command<SPACE>::handleMultiCommands(
   RLMachine& machine, const MultiCommand::type& commands)
 {
   for (MultiCommand::type::const_iterator it = commands.begin();
@@ -1047,11 +924,12 @@ void Grp_multi_command::handleMultiCommands(
       // 1:copy(strC 'filename', 'effect')
       vector<int> selEffect = getSELEffect(machine, it->second.get<1>());
 
+      // TODO(erg): I think this comment is VERY wrong.
       // Coordinates coming out of getSELEffect are in REC space.
-      Grp_load_3(true, REC_SPACE::get())
+      Grp_load_3<SPACE>(true)
         (machine, it->second.get<0>(), MULTI_TARGET_DC,
-         selEffect[0], selEffect[1], selEffect[2], selEffect[3],
-         selEffect[4], selEffect[5], 255);
+         Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
+         Point(selEffect[4], selEffect[5]), 255);
       break;
     }
     case 2: {
@@ -1059,28 +937,28 @@ void Grp_multi_command::handleMultiCommands(
       vector<int> selEffect = getSELEffect(machine, it->third.get<1>());
 
       // Coordinates coming out of getSELEffect are in REC space.
-      Grp_load_3(true, REC_SPACE::get())
+      Grp_load_3<SPACE>(true)
         (machine, it->third.get<0>(), MULTI_TARGET_DC,
-         selEffect[0], selEffect[1], selEffect[2], selEffect[3],
-         selEffect[4], selEffect[5], it->third.get<2>());
+         Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
+         Point(selEffect[4], selEffect[5]), it->third.get<2>());
       break;
     }
     case 3: {
       // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
-      Grp_load_3(true, space)
+      Grp_load_3<SPACE>(true)
         (machine, it->fourth.get<0>(), MULTI_TARGET_DC,
-         it->fourth.get<1>(), it->fourth.get<2>(),
-         it->fourth.get<3>(), it->fourth.get<4>(),
-         it->fourth.get<5>(), it->fourth.get<6>(), 255);
+         SPACE::makeRect(it->fourth.get<1>(), it->fourth.get<2>(),
+                         it->fourth.get<3>(), it->fourth.get<4>()),
+         Point(it->fourth.get<5>(), it->fourth.get<6>()), 255);
       break;
     }
     case 4: {
       // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
-      Grp_load_3(true, space)
+      Grp_load_3<SPACE>(true)
         (machine, it->fifth.get<0>(), MULTI_TARGET_DC,
-         it->fifth.get<1>(), it->fifth.get<2>(),
-         it->fifth.get<3>(), it->fifth.get<4>(),
-         it->fifth.get<5>(), it->fifth.get<6>(), it->fifth.get<7>());
+         SPACE::makeRect(it->fifth.get<1>(), it->fifth.get<2>(),
+                         it->fifth.get<3>(), it->fifth.get<4>()),
+         Point(it->fifth.get<5>(), it->fifth.get<6>()), it->fifth.get<7>());
       break;
     }
     }
@@ -1090,26 +968,25 @@ void Grp_multi_command::handleMultiCommands(
 /**
  * fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
  */
+template<typename SPACE>
 struct Grp_multi_str_1
   : public RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T,
                        MultiCommand>,
-    public Grp_multi_command {
-  Grp_multi_str_1(SPACE& space) : Grp_multi_command(space) {}
-
+    public Grp_multi_command<SPACE> {
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
                   MultiCommand::type commands) {
     Grp_load_1(false)(machine, filename, MULTI_TARGET_DC, 255);
-    handleMultiCommands(machine, commands);
+    Grp_multi_command<SPACE>::handleMultiCommands(machine, commands);
     Grp_display_0()(machine, MULTI_TARGET_DC, effect);
   }
 };
 
 // -----------------------------------------------------------------------
 
+template<typename SPACE>
 struct Grp_multi_str_0
   : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
-  Grp_multi_str_1 delegate_;
-  Grp_multi_str_0(SPACE& space) : delegate_(space) {}
+  Grp_multi_str_1<SPACE> delegate_;
 
   void operator()(RLMachine& machine, string filename, int effect,
                   MultiCommand::type commands) {
@@ -1119,26 +996,25 @@ struct Grp_multi_str_0
 
 // -----------------------------------------------------------------------
 
+template<typename SPACE>
 struct Grp_multi_dc_1
   : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T,
                        MultiCommand>,
-    public Grp_multi_command {
-  Grp_multi_dc_1(SPACE& space) : Grp_multi_command(space) {}
-
+    public Grp_multi_command<SPACE> {
   void operator()(RLMachine& machine, int dc, int effect, int alpha,
                   MultiCommand::type commands) {
     Grp_copy_1(false)(machine, dc, MULTI_TARGET_DC, 255);
-    handleMultiCommands(machine, commands);
+    Grp_multi_command<SPACE>::handleMultiCommands(machine, commands);
     Grp_display_0()(machine, MULTI_TARGET_DC, effect);
   }
 };
 
 // -----------------------------------------------------------------------
 
+template<typename SPACE>
 struct Grp_multi_dc_0
   : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
-  Grp_multi_dc_1 delegate_;
-  Grp_multi_dc_0(SPACE& space) : delegate_(space) {}
+  Grp_multi_dc_1<SPACE> delegate_;
 
   void operator()(RLMachine& machine, int dc, int effect,
                   MultiCommand::type commands) {
@@ -1169,8 +1045,7 @@ struct Grp_multi_dc_0
 GrpModule::GrpModule()
   : RLModule("Grp", 1, 33)
 {
-  SPACE& GRP = GRP_SPACE::get();
-  SPACE& REC = REC_SPACE::get();
+  using namespace rect_impl;
 
   addOpcode(15, 0, "allocDC", new Grp_allocDC);
   addOpcode(16, 0, "freeDC", callFunction(&GraphicsSystem::freeDC));
@@ -1183,61 +1058,62 @@ GrpModule::GrpModule()
 
   addOpcode(50, 0, "grpLoad", new Grp_load_1(false));
   addOpcode(50, 1, "grpLoad", new Grp_load_1(false));
-  addOpcode(50, 2, "grpLoad", new Grp_load_3(false, GRP));
-  addOpcode(50, 3, "grpLoad", new Grp_load_3(false, GRP));
+  addOpcode(50, 2, "grpLoad", new Grp_load_3<GRP>(false));
+  addOpcode(50, 3, "grpLoad", new Grp_load_3<GRP>(false));
   addOpcode(51, 0, "grpMaskLoad", new Grp_load_1(true));
   addOpcode(51, 1, "grpMaskLoad", new Grp_load_1(true));
-  addOpcode(51, 2, "grpMaskLoad", new Grp_load_3(true, GRP));
-  addOpcode(51, 3, "grpMaskLoad", new Grp_load_3(true, GRP));
+  addOpcode(51, 2, "grpMaskLoad", new Grp_load_3<GRP>(true));
+  addOpcode(51, 3, "grpMaskLoad", new Grp_load_3<GRP>(true));
 
   // These are grpBuffer, which is very similar to grpLoad and Haeleth
   // doesn't know how they differ. For now, we just assume they're
   // equivalent.
   addOpcode(70, 0, "grpBuffer", new Grp_load_1(false));
   addOpcode(70, 1, "grpBuffer", new Grp_load_1(false));
-  addOpcode(70, 2, "grpBuffer", new Grp_load_3(false, GRP));
-  addOpcode(70, 3, "grpBuffer", new Grp_load_3(false, GRP));
+  addOpcode(70, 2, "grpBuffer", new Grp_load_3<GRP>(false));
+  addOpcode(70, 3, "grpBuffer", new Grp_load_3<GRP>(false));
   addOpcode(71, 0, "grpMaskBuffer", new Grp_load_1(true));
   addOpcode(71, 1, "grpMaskBuffer", new Grp_load_1(true));
-  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_3(true, GRP));
-  addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3(true, GRP));
+  addOpcode(71, 2, "grpMaskBuffer", new Grp_load_3<GRP>(true));
+  addOpcode(71, 3, "grpMaskBuffer", new Grp_load_3<GRP>(true));
 
   addOpcode(72, 0, "grpDisplay", new Grp_display_0);
   addOpcode(72, 1, "grpDisplay", new Grp_display_1);
-  addOpcode(72, 2, "grpDisplay", new Grp_display_2(GRP));
-  addOpcode(72, 3, "grpDisplay", new Grp_display_3(GRP));
+  addOpcode(72, 2, "grpDisplay", new Grp_display_2<GRP>());
+  addOpcode(72, 3, "grpDisplay", new Grp_display_3<GRP>());
 
   // These are supposed to be grpOpenBg, but until I have the object
   // layer working, this simply does the same thing.
   addOpcode(73, 0, "grpOpenBg", new Grp_openBg_0);
   addOpcode(73, 1, "grpOpenBg", new Grp_openBg_1);
-  addOpcode(73, 2, "grpOpenBg", new Grp_open_2(false, GRP));
-  addOpcode(73, 3, "grpOpenBg", new Grp_open_3(false, GRP));
-  addOpcode(73, 4, "grpOpenBg", new Grp_openBg_4(false, GRP));
+  // TODO(erg): This may be the cause of my missing Kanon calendar!
+  addOpcode(73, 2, "grpOpenBg", new Grp_open_2<GRP>(false));
+  addOpcode(73, 3, "grpOpenBg", new Grp_open_3<GRP>(false));
+  addOpcode(73, 4, "grpOpenBg", new Grp_openBg_4<GRP>(false));
 
-  addOpcode(74, 0, "grpMaskOpen", new Grp_open_0(true, GRP));
-  addOpcode(74, 1, "grpMaskOpen", new Grp_open_1(true, GRP));
-  addOpcode(74, 2, "grpMaskOpen", new Grp_open_2(true, GRP));
-  addOpcode(74, 3, "grpMaskOpen", new Grp_open_3(true, GRP));
-  addOpcode(74, 4, "grpMaskOpen", new Grp_open_4(true, GRP));
+  addOpcode(74, 0, "grpMaskOpen", new Grp_open_0(true));
+  addOpcode(74, 1, "grpMaskOpen", new Grp_open_1(true));
+  addOpcode(74, 2, "grpMaskOpen", new Grp_open_2<GRP>(true));
+  addOpcode(74, 3, "grpMaskOpen", new Grp_open_3<GRP>(true));
+  addOpcode(74, 4, "grpMaskOpen", new Grp_open_4<GRP>(true));
 
-  addOpcode(75, 0, "grpMulti", new Grp_multi_str_0(GRP));
-  addOpcode(75, 1, "grpMulti", new Grp_multi_str_1(GRP));
+  addOpcode(75, 0, "grpMulti", new Grp_multi_str_0<GRP>());
+  addOpcode(75, 1, "grpMulti", new Grp_multi_str_1<GRP>());
   addUnsupportedOpcode(75, 2, "grpMulti");
   addUnsupportedOpcode(75, 3, "grpMulti");
   addUnsupportedOpcode(75, 4, "grpMulti");
 
-  addOpcode(77, 0, "grpMulti", new Grp_multi_dc_0(GRP));
-  addOpcode(77, 1, "grpMulti", new Grp_multi_dc_1(GRP));
+  addOpcode(77, 0, "grpMulti", new Grp_multi_dc_0<GRP>());
+  addOpcode(77, 1, "grpMulti", new Grp_multi_dc_1<GRP>());
   addUnsupportedOpcode(77, 2, "grpMulti");
   addUnsupportedOpcode(77, 3, "grpMulti");
   addUnsupportedOpcode(77, 4, "grpMulti");
 
-  addOpcode(76, 0, "grpOpen", new Grp_open_0(false, GRP));
-  addOpcode(76, 1, "grpOpen", new Grp_open_1(false, GRP));
-  addOpcode(76, 2, "grpOpen", new Grp_open_2(false, GRP));
-  addOpcode(76, 3, "grpOpen", new Grp_open_3(false, GRP));
-  addOpcode(76, 4, "grpOpen", new Grp_open_4(false, GRP));
+  addOpcode(76, 0, "grpOpen", new Grp_open_0(false));
+  addOpcode(76, 1, "grpOpen", new Grp_open_1(false));
+  addOpcode(76, 2, "grpOpen", new Grp_open_2<GRP>(false));
+  addOpcode(76, 3, "grpOpen", new Grp_open_3<GRP>(false));
+  addOpcode(76, 4, "grpOpen", new Grp_open_4<GRP>(false));
 
   addUnsupportedOpcode(77, 0, "grpMulti");
   addUnsupportedOpcode(77, 1, "grpMulti");
@@ -1247,20 +1123,20 @@ GrpModule::GrpModule()
 
   addOpcode(100, 0, "grpCopy", new Grp_copy_1(false));
   addOpcode(100, 1, "grpCopy", new Grp_copy_1(false));
-  addOpcode(100, 2, "grpCopy", new Grp_copy_3(false, GRP));
-  addOpcode(100, 3, "grpCopy", new Grp_copy_3(false, GRP));
+  addOpcode(100, 2, "grpCopy", new Grp_copy_3<GRP>(false));
+  addOpcode(100, 3, "grpCopy", new Grp_copy_3<GRP>(false));
   addOpcode(101, 0, "grpMaskCopy", new Grp_copy_1(true));
   addOpcode(101, 1, "grpMaskCopy", new Grp_copy_1(true));
-  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_3(true, GRP));
-  addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3(true, GRP));
+  addOpcode(101, 2, "grpMaskCopy", new Grp_copy_3<GRP>(true));
+  addOpcode(101, 3, "grpMaskCopy", new Grp_copy_3<GRP>(true));
 
   addUnsupportedOpcode(120, 5, "grpCopyWithMask");
   addUnsupportedOpcode(140, 5, "grpCopyInvMask");
 
   addOpcode(201, 0, "grpFill", new Grp_fill_1);
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
-  addOpcode(201, 2, "grpFill", new Grp_fill_3(GRP));
-  addOpcode(201, 3, "grpFill", new Grp_fill_3(GRP));
+  addOpcode(201, 2, "grpFill", new Grp_fill_3<GRP>());
+  addOpcode(201, 3, "grpFill", new Grp_fill_3<GRP>());
 
   addUnsupportedOpcode(300, 0, "grpInvert");
   addUnsupportedOpcode(300, 1, "grpInvert");
@@ -1270,22 +1146,22 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(400, 0, "grpSwap");
   addUnsupportedOpcode(400, 1, "grpSwap");
 
-  addOpcode(401, 0, "grpStretchBlt", new Grp_stretchBlit_1(false, GRP));
-  addOpcode(401, 1, "grpStretchBlt", new Grp_stretchBlit_1(false, GRP));
+  addOpcode(401, 0, "grpStretchBlt", new Grp_stretchBlit_1<GRP>(false));
+  addOpcode(401, 1, "grpStretchBlt", new Grp_stretchBlit_1<GRP>(false));
 
-  addOpcode(402, 0, "grpZoom", new Grp_zoom(GRP));
+  addOpcode(402, 0, "grpZoom", new Grp_zoom<GRP>());
 
   addOpcode(403, 0, "grpFade", new Grp_fade_1);
   addOpcode(403, 1, "grpFade", new Grp_fade_1);
   addOpcode(403, 2, "grpFade", new Grp_fade_3);
   addOpcode(403, 3, "grpFade", new Grp_fade_3);
-  addOpcode(403, 4, "grpFade", new Grp_fade_5(GRP));
-  addOpcode(403, 5, "grpFade", new Grp_fade_5(GRP));
-  addOpcode(403, 6, "grpFade", new Grp_fade_7(GRP));
-  addOpcode(403, 7, "grpFade", new Grp_fade_7(GRP));
+  addOpcode(403, 4, "grpFade", new Grp_fade_5<GRP>());
+  addOpcode(403, 5, "grpFade", new Grp_fade_5<GRP>());
+  addOpcode(403, 6, "grpFade", new Grp_fade_7<GRP>());
+  addOpcode(403, 7, "grpFade", new Grp_fade_7<GRP>());
 
-  addOpcode(409, 0, "grpMaskStretchBlt", new Grp_stretchBlit_1(true, GRP));
-  addOpcode(409, 1, "grpMaskStretchBlt", new Grp_stretchBlit_1(true, GRP));
+  addOpcode(409, 0, "grpMaskStretchBlt", new Grp_stretchBlit_1<GRP>(true));
+  addOpcode(409, 1, "grpMaskStretchBlt", new Grp_stretchBlit_1<GRP>(true));
 
   addUnsupportedOpcode(601, 0, "grpMaskAdd");
   addUnsupportedOpcode(601, 1, "grpMaskAdd");
@@ -1296,76 +1172,76 @@ GrpModule::GrpModule()
 
   addOpcode(1050, 0, "recLoad", new Grp_load_1(false));
   addOpcode(1050, 1, "recLoad", new Grp_load_1(false));
-  addOpcode(1050, 2, "recLoad", new Grp_load_3(false, REC));
-  addOpcode(1050, 3, "recLoad", new Grp_load_3(false, REC));
+  addOpcode(1050, 2, "recLoad", new Grp_load_3<REC>(false));
+  addOpcode(1050, 3, "recLoad", new Grp_load_3<REC>(false));
 
   addOpcode(1052, 0, "recDisplay", new Grp_display_0);
   addOpcode(1052, 1, "recDisplay", new Grp_display_1);
-  addOpcode(1052, 2, "recDisplay", new Grp_display_2(REC));
-  addOpcode(1052, 3, "recDisplay", new Grp_display_3(REC));
+  addOpcode(1052, 2, "recDisplay", new Grp_display_2<REC>());
+  addOpcode(1052, 3, "recDisplay", new Grp_display_3<REC>());
 
   // These are supposed to be recOpenBg, but until I have the object
   // layer working, this simply does the same thing.
   addOpcode(1053, 0, "recOpenBg", new Grp_openBg_0);
   addOpcode(1053, 1, "recOpenBg", new Grp_openBg_1);
-  addOpcode(1053, 2, "recOpenBg", new Grp_open_2(false, REC));
-  addOpcode(1053, 3, "recOpenBg", new Grp_open_3(false, REC));
-  addOpcode(1053, 4, "recOpenBg", new Grp_openBg_4(false, REC));
+  addOpcode(1053, 2, "recOpenBg", new Grp_open_2<REC>(false));
+  addOpcode(1053, 3, "recOpenBg", new Grp_open_3<REC>(false));
+  addOpcode(1053, 4, "recOpenBg", new Grp_openBg_4<REC>(false));
 
-  addOpcode(1054, 0, "recMaskOpen", new Grp_open_0(true, REC));
-  addOpcode(1054, 1, "recMaskOpen", new Grp_open_1(true, REC));
-  addOpcode(1054, 2, "recMaskOpen", new Grp_open_2(true, REC));
-  addOpcode(1054, 3, "recMaskOpen", new Grp_open_3(true, REC));
-  addOpcode(1054, 4, "recMaskOpen", new Grp_open_4(true, REC));
+  addOpcode(1054, 0, "recMaskOpen", new Grp_open_0(true));
+  addOpcode(1054, 1, "recMaskOpen", new Grp_open_1(true));
+  addOpcode(1054, 2, "recMaskOpen", new Grp_open_2<REC>(true));
+  addOpcode(1054, 3, "recMaskOpen", new Grp_open_3<REC>(true));
+  addOpcode(1054, 4, "recMaskOpen", new Grp_open_4<REC>(true));
 
-  addOpcode(1056, 0, "recOpen", new Grp_open_0(false, REC));
-  addOpcode(1056, 1, "recOpen", new Grp_open_1(false, REC));
-  addOpcode(1056, 2, "recOpen", new Grp_open_2(false, REC));
-  addOpcode(1056, 3, "recOpen", new Grp_open_3(false, REC));
-  addOpcode(1056, 4, "recOpen", new Grp_open_4(false, REC));
+  addOpcode(1056, 0, "recOpen", new Grp_open_0(false));
+  addOpcode(1056, 1, "recOpen", new Grp_open_1(false));
+  addOpcode(1056, 2, "recOpen", new Grp_open_2<REC>(false));
+  addOpcode(1056, 3, "recOpen", new Grp_open_3<REC>(false));
+  addOpcode(1056, 4, "recOpen", new Grp_open_4<REC>(false));
 
-  addOpcode(1055, 0, "recMulti", new Grp_multi_str_0(REC));
-  addOpcode(1055, 1, "recMulti", new Grp_multi_str_1(REC));
+  addOpcode(1055, 0, "recMulti", new Grp_multi_str_0<REC>());
+  addOpcode(1055, 1, "recMulti", new Grp_multi_str_1<REC>());
   addUnsupportedOpcode(1055, 2, "recMulti");
   addUnsupportedOpcode(1055, 3, "recMulti");
   addUnsupportedOpcode(1055, 4, "recMulti");
 
-  addOpcode(1057, 0, "recMulti", new Grp_multi_dc_0(REC));
-  addOpcode(1057, 1, "recMulti", new Grp_multi_dc_1(REC));
+  addOpcode(1057, 0, "recMulti", new Grp_multi_dc_0<REC>());
+  addOpcode(1057, 1, "recMulti", new Grp_multi_dc_1<REC>());
   addUnsupportedOpcode(1057, 2, "recMulti");
   addUnsupportedOpcode(1057, 3, "recMulti");
   addUnsupportedOpcode(1057, 4, "recMulti");
 
   addOpcode(1100, 0, "recCopy", new Grp_copy_1(false));
   addOpcode(1100, 1, "recCopy", new Grp_copy_1(false));
-  addOpcode(1100, 2, "recCopy", new Grp_copy_3(false, REC));
-  addOpcode(1100, 3, "recCopy", new Grp_copy_3(false, REC));
+  addOpcode(1100, 2, "recCopy", new Grp_copy_3<REC>(false));
+  addOpcode(1100, 3, "recCopy", new Grp_copy_3<REC>(false));
   addOpcode(1101, 0, "recMaskCopy", new Grp_copy_1(true));
   addOpcode(1101, 1, "recMaskCopy", new Grp_copy_1(true));
-  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_3(true, REC));
-  addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3(true, REC));
+  addOpcode(1101, 2, "recMaskCopy", new Grp_copy_3<REC>(true));
+  addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3<REC>(true));
 
   addOpcode(1201, 0, "recFill", new Grp_fill_1);
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
-  addOpcode(1201, 2, "recFill", new Grp_fill_3(REC));
-  addOpcode(1201, 3, "recFill", new Grp_fill_3(REC));
+  addOpcode(1201, 2, "recFill", new Grp_fill_3<REC>());
+  addOpcode(1201, 3, "recFill", new Grp_fill_3<REC>());
 
   addUnsupportedOpcode(1400, 0, "recSwap");
   addUnsupportedOpcode(1400, 1, "recSwap");
 
-  addOpcode(1401, 0, "recStretchBlt", new Grp_stretchBlit_1(false, REC));
-  addOpcode(1401, 1, "recStretchBlt", new Grp_stretchBlit_1(false, REC));
+  addOpcode(1401, 0, "recStretchBlt", new Grp_stretchBlit_1<REC>(false));
+  addOpcode(1401, 1, "recStretchBlt", new Grp_stretchBlit_1<REC>(false));
 
-  addOpcode(1402, 0, "recZoom", new Grp_zoom(REC));
+  addOpcode(1402, 0, "recZoom", new Grp_zoom<REC>());
 
   addOpcode(1403, 0, "recFade", new Grp_fade_1);
   addOpcode(1403, 1, "recFade", new Grp_fade_1);
   addOpcode(1403, 2, "recFade", new Grp_fade_3);
   addOpcode(1403, 3, "recFade", new Grp_fade_3);
-  addOpcode(1403, 4, "recFade", new Grp_fade_5(REC));
-  addOpcode(1403, 5, "recFade", new Grp_fade_5(REC));
-  addOpcode(1403, 6, "recFade", new Grp_fade_7(REC));
-  addOpcode(1403, 7, "recFade", new Grp_fade_7(REC));
+  addOpcode(1403, 4, "recFade", new Grp_fade_5<REC>());
+  addOpcode(1403, 5, "recFade", new Grp_fade_5<REC>());
+  addOpcode(1403, 6, "recFade", new Grp_fade_7<REC>());
+  addOpcode(1403, 7, "recFade", new Grp_fade_7<REC>());
 
   addUnsupportedOpcode(1404, 0, "recFlash");
   addUnsupportedOpcode(1404, 1, "recFlash");
@@ -1375,8 +1251,8 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(1406, 0, "recPan");
   addUnsupportedOpcode(1407, 0, "recShift");
   addUnsupportedOpcode(1408, 0, "recSlide");
-  addOpcode(1409, 0, "recMaskStretchBlt", new Grp_stretchBlit_1(true, REC));
-  addOpcode(1409, 1, "recMaskStretchBlt", new Grp_stretchBlit_1(true, REC));
+  addOpcode(1409, 0, "recMaskStretchBlt", new Grp_stretchBlit_1<REC>(true));
+  addOpcode(1409, 1, "recMaskStretchBlt", new Grp_stretchBlit_1<REC>(true));
 }
 
 // @}
