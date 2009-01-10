@@ -227,6 +227,15 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
 
 // -----------------------------------------------------------------------
 
+void getSELPointAndRect(RLMachine& machine, int selNum, Rect& rect,
+                        Point& point) {
+  vector<int> selEffect = getSELEffect(machine, selNum);
+  rect = Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
+  point = Point(selEffect[4], selEffect[5]);
+}
+
+// -----------------------------------------------------------------------
+
 Size getScreenSize(Gameexe& gameexe) {
   int graphicsMode = gameexe("SCREENSIZE_MOD");
   if (graphicsMode == 0) {

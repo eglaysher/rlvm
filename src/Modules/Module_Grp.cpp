@@ -329,13 +329,12 @@ struct Grp_display_1
 {
   void operator()(RLMachine& machine, int dc, int effectNum, int opacity)
   {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
+    Rect src;
+    Point dest;
+    getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    loadDCToDC1(graphics, dc,
-                Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
-                Point(selEffect[4], selEffect[5]),
-                opacity);
+    loadDCToDC1(graphics, dc, src, dest, opacity);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -413,16 +412,15 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, string filename, int effectNum,
                   int opacity)
   {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
+    Rect src;
+    Point dest;
+    getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
     if(filename == "???")
       filename = graphics.defaultGrpName();
 
-    loadImageToDC1(machine, filename,
-                   Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
-                   Point(selEffect[4], selEffect[5]),
-                   opacity, use_alpha_);
+    loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -563,9 +561,9 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, string fileName, int effectNum, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    vector<int> selEffect = getSELEffect(machine, effectNum);
-    Rect srcRect = Rect::GRP(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
-    Point destPoint(selEffect[4], selEffect[5]);
+    Rect srcRect;
+    Point destPoint;
+    getSELPointAndRect(machine, effectNum, srcRect, destPoint);
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
@@ -922,25 +920,24 @@ void Grp_multi_command<SPACE>::handleMultiCommands(
       break;
     case 1: {
       // 1:copy(strC 'filename', 'effect')
-      vector<int> selEffect = getSELEffect(machine, it->second.get<1>());
+      Rect src;
+      Point dest;
+      getSELPointAndRect(machine, it->second.get<1>(), src, dest);
 
-      // TODO(erg): I think this comment is VERY wrong.
-      // Coordinates coming out of getSELEffect are in REC space.
       Grp_load_3<SPACE>(true)
         (machine, it->second.get<0>(), MULTI_TARGET_DC,
-         Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
-         Point(selEffect[4], selEffect[5]), 255);
+         src, dest, 255);
       break;
     }
     case 2: {
       // 2:copy(strC 'filename', 'effect', 'alpha')
-      vector<int> selEffect = getSELEffect(machine, it->third.get<1>());
+      Rect src;
+      Point dest;
+      getSELPointAndRect(machine, it->third.get<1>(), src, dest);
 
-      // Coordinates coming out of getSELEffect are in REC space.
       Grp_load_3<SPACE>(true)
         (machine, it->third.get<0>(), MULTI_TARGET_DC,
-         Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]),
-         Point(selEffect[4], selEffect[5]), it->third.get<2>());
+         src, dest, it->third.get<2>());
       break;
     }
     case 3: {
