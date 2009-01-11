@@ -38,7 +38,8 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Modules/Modules.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
 #include "Utilities/findFontFile.h"
 
 #include "Systems/Base/SoundSystem.hpp"

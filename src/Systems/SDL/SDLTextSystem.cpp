@@ -45,7 +45,7 @@
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/findFontFile.h"
 #include "libReallive/gameexe.h"

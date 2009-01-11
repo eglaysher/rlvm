@@ -30,7 +30,7 @@
 // -----------------------------------------------------------------------
 
 #include "Encodings/codepage.h"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 #include "utf8.h"
@@ -198,4 +198,17 @@ void printTextToFunction(
   }
 
   fun(curChar, nextCharForFinal);
+}
+
+// -----------------------------------------------------------------------
+
+std::string removeQuotes(const std::string& quotedString)
+{
+  string output = quotedString;
+  if (output.size() && output[0] == '\"')
+    output = output.substr(1);
+  if (output.size() && output[output.size() - 1] == '\"')
+    output = output.substr(0, output.size() - 2);
+
+  return output;
 }

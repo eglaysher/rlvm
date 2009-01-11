@@ -40,7 +40,6 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
-#include "Utilities.h"
 
 #include <iostream>
 using std::endl;

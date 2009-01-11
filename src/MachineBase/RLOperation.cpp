@@ -38,7 +38,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/References.hpp"
 #include "MachineBase/RLMachine.hpp"
-
+#include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
 #include <iostream>

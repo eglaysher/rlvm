@@ -32,7 +32,6 @@
 #include "Systems/Base/FrameCounter.hpp"
 
 #include "Systems/Base/EventSystem.hpp"
-#include "Utilities.h"
 
 #include <cmath>
 #include <iostream>

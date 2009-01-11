@@ -32,7 +32,7 @@
 #include "NullSystem/NullGraphicsSystem.hpp"
 #include "NullSystem/NullSurface.hpp"
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 
 #include <sstream>
 

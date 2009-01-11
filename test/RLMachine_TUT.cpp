@@ -34,7 +34,7 @@
 
 #include "NullSystem/NullSystem.hpp"
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
 

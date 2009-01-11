@@ -40,7 +40,8 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindowButton.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
+#include "Utilities/Graphics.hpp"
 #include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>

@@ -33,7 +33,6 @@
 #include "NullSystem/NullEventSystem.hpp"
 #include "NullSystem/NullSurface.hpp"
 
-#include "Utilities.h"
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
 #include <boost/assign/list_of.hpp>

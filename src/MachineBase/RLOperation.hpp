@@ -39,8 +39,6 @@
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
 
-#include "Utilities.h"
-
 // ------------------------------------------------------------ Real
 
 /**

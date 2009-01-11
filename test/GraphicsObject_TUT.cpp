@@ -43,7 +43,6 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 
-#include "Utilities.h"
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
 #include <boost/scoped_ptr.hpp>

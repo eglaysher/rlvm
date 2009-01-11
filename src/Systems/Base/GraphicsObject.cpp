@@ -36,7 +36,7 @@
 
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 
 #include <numeric>
 #include <boost/serialization/scoped_ptr.hpp>

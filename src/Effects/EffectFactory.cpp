@@ -54,7 +54,8 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
+#include "Utilities/Graphics.hpp"
 
 using namespace std;
 using namespace libReallive;

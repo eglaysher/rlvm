@@ -48,7 +48,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Special_T.hpp"
-
+#include "Utilities/Exception.hpp"
 #include "libReallive/intmemref.h"
 #include "libReallive/bytecode.h"
 

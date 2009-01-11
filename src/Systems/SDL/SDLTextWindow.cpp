@@ -54,7 +54,7 @@
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 
 #include "utf8.h"
 #include "Utilities/StringUtilities.hpp"

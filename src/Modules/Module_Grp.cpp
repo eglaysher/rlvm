@@ -65,7 +65,7 @@
 
 #include <boost/scoped_ptr.hpp>
 
-#include "Utilities.h"
+#include "Utilities/Graphics.hpp"
 
 using namespace std;
 using namespace boost;

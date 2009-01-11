@@ -41,7 +41,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/RlvmInfo.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "libReallive/gameexe.h"
 
 #include <algorithm>

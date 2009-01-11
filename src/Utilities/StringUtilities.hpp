@@ -124,4 +124,9 @@ void printTextToFunction(
   boost::function<void(const std::string& c, const std::string& nextChar)> fun,
   const std::string& charsToPrint, const std::string& nextCharForFinal);
 
+/**
+ * Removes quotes from the beginning and end of the string.
+ */
+std::string removeQuotes(const std::string& quotedString);
+
 #endif

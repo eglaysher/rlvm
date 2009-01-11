@@ -32,7 +32,6 @@
 #include "Systems/Base/TextPage.hpp"
 #include "libReallive/archive.h"
 
-#include "Utilities.h"
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
 

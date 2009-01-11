@@ -45,7 +45,7 @@
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "libReallive/gameexe.h"
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "Utilities/findFontFile.h"
 
 #include <iostream>

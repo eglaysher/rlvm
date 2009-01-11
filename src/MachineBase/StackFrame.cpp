@@ -32,14 +32,13 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/StackFrame.hpp"
-#include "MachineBase/Serialization.hpp"
+
 #include "MachineBase/LongOperation.hpp"
-
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "Utilities/Exception.hpp"
 #include "libReallive/archive.h"
-
-#include "Utilities.h"
 
 #include <iostream>
 #include <typeinfo>

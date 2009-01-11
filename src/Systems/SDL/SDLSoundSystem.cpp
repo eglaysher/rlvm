@@ -33,7 +33,8 @@
 #include "Systems/SDL/SDLSoundChunk.hpp"
 #include "Systems/SDL/SDLMusic.hpp"
 #include "Systems/Base/SystemError.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>

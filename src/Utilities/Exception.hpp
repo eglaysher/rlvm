@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2009 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,39 +24,45 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
 
-// -----------------------------------------------------------------------
+#ifndef __Exception_hpp__
+#define __Exception_hpp__
 
-#include "MachineBase/RealLiveDLL.hpp"
-
-#include "Systems/Base/RlBabelDLL.hpp"
-#include "Utilities/Exception.hpp"
-
-#include <iostream>
+#include <exception>
+#include <stdexcept>
 #include <string>
-#include <sstream>
 
-using std::ostringstream;
-using std::cerr;
-using std::endl;
+namespace rlvm {
 
-// -----------------------------------------------------------------------
-// RealLiveDLL
-// -----------------------------------------------------------------------
+class Exception : public std::exception
+{
+protected:
+  std::string description;
+public:
+  virtual const char* what() const throw();
+  Exception(std::string what);
+  virtual ~Exception() throw();
+};
 
-RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
-                                        const std::string& name) {
-  if (name == "rlBabel") {
-    return new RlBabelDLL(machine);
-  } else {
-    ostringstream oss;
-    oss << "Unsupported DLL interface " << name << endl;
-    throw rlvm::Exception(oss.str());
-  }
+class UnimplementedOpcode : public Exception
+{
+private:
+  /// Printable name of the opcode. Either "funname (opcode<W:X:Y:Z>)"
+  /// or "opcode<W:X:Y:Z>".
+  std::string name_;
+
+  void setDescription();
+
+public:
+  UnimplementedOpcode(const std::string& funName,
+                      int modtype, int module, int opcode, int overload);
+  UnimplementedOpcode(int modtype, int module, int opcode, int overload);
+  ~UnimplementedOpcode() throw();
+
+  /// Returns the name of the function that wasn't implemented.
+  const std::string& opcodeName() const { return name_; }
+};
+
 }
 
-// -----------------------------------------------------------------------
-
-RealLiveDLL::~RealLiveDLL() {
-}
+#endif

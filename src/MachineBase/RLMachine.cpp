@@ -58,6 +58,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/dateUtil.hpp"

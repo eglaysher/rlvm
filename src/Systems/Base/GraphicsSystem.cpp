@@ -49,7 +49,8 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
 #include "libReallive/gameexe.h"
 
 #include <algorithm>

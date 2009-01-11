@@ -36,7 +36,6 @@
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWindow.hpp"
-#include "Utilities.h"
 #include "libReallive/gameexe.h"
 
 #include <string>

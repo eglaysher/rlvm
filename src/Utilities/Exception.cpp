@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2009 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,35 +28,74 @@
 
 // -----------------------------------------------------------------------
 
-#include "MachineBase/RealLiveDLL.hpp"
-
-#include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"
 
-#include <iostream>
-#include <string>
-#include <sstream>
+#include <fstream>
 
 using std::ostringstream;
-using std::cerr;
-using std::endl;
 
 // -----------------------------------------------------------------------
-// RealLiveDLL
+// rlvm::Exception
 // -----------------------------------------------------------------------
 
-RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
-                                        const std::string& name) {
-  if (name == "rlBabel") {
-    return new RlBabelDLL(machine);
-  } else {
-    ostringstream oss;
-    oss << "Unsupported DLL interface " << name << endl;
-    throw rlvm::Exception(oss.str());
-  }
+namespace rlvm {
+
+const char* Exception::what() const throw()
+{
+  return description.c_str();
 }
 
 // -----------------------------------------------------------------------
 
-RealLiveDLL::~RealLiveDLL() {
+Exception::Exception(std::string what)
+  : description(what)
+{}
+
+// -----------------------------------------------------------------------
+
+Exception::~Exception() throw() {}
+
+// -----------------------------------------------------------------------
+
+UnimplementedOpcode::UnimplementedOpcode(
+  const std::string& funName,
+  int modtype, int module, int opcode, int overload)
+  : Exception("")
+{
+  ostringstream oss;
+  oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
+      << ", " << overload << ">)";
+  name_ = oss.str();
+  setDescription();
 }
+
+// -----------------------------------------------------------------------
+
+UnimplementedOpcode::UnimplementedOpcode(
+  int modtype, int module, int opcode, int overload)
+  : Exception("")
+{
+  ostringstream oss;
+  oss << "opcode<" << modtype << ":" << module << ":" << opcode
+      << ", " << overload << ">";
+  name_ = oss.str();
+  setDescription();
+}
+
+// -----------------------------------------------------------------------
+
+UnimplementedOpcode::~UnimplementedOpcode() throw() {
+}
+
+// -----------------------------------------------------------------------
+
+void UnimplementedOpcode::setDescription() {
+  ostringstream oss;
+  oss << "Undefined: " << name_;
+  description = oss.str();
+}
+
+// -----------------------------------------------------------------------
+
+}
+

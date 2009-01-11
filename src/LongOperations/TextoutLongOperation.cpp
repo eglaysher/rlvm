@@ -39,7 +39,7 @@
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 
 #include <boost/utility.hpp>
 

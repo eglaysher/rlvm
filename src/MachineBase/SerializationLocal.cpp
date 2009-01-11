@@ -42,7 +42,7 @@
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/StackFrame.hpp"

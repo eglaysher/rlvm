@@ -50,6 +50,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
+#include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 #include <cmath>

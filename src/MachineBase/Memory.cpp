@@ -31,9 +31,10 @@
 
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/StringUtilities.hpp"
 #include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
-#include "Utilities.h"
 #include <boost/assign/list_of.hpp>
 
 // -----------------------------------------------------------------------

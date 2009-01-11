@@ -57,7 +57,9 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
+#include "Utilities/Graphics.hpp"
 #include "libReallive/defs.h"
 
 #include <iterator>

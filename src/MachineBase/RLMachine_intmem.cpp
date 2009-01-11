@@ -46,8 +46,8 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/Memory.hpp"
+#include "Utilities/Exception.hpp"
 #include "libReallive/intmemref.h"
-#include "Utilities.h"
 #include <sstream>
 
 // -----------------------------------------------------------------------

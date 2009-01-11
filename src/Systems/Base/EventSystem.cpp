@@ -36,7 +36,7 @@
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>

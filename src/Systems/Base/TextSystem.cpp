@@ -41,7 +41,7 @@
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextWindow.hpp"
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 

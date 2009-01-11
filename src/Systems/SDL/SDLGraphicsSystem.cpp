@@ -56,11 +56,13 @@
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
+#include "Utilities/Graphics.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
 #include "file.h"
-#include "Utilities.h"
 #include "LazyArray.hpp"
 
 #include <algorithm>

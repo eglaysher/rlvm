@@ -40,7 +40,7 @@
 
 #include <sstream>
 
-#include "Utilities.h"
+#include "Utilities/Exception.hpp"
 
 using namespace std;
 

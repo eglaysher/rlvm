@@ -41,6 +41,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
+#include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include <cmath>
 #include <iostream>

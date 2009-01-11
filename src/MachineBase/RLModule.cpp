@@ -40,7 +40,7 @@
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
-
+#include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
 #include <sstream>
