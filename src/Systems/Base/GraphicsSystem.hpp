@@ -398,14 +398,6 @@ public:
    */
 
   /**
-   * Takes the current background object in each slot and puts it in
-   * the foreground slot.
-   *
-   * @todo Rewrite this to not needlessly copy the data.
-   */
-  void promoteObjects();
-
-  /**
    * Clears and promotes objects.
    */
   void clearAndPromoteObjects();

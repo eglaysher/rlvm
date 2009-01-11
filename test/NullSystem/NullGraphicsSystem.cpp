@@ -98,12 +98,6 @@ void NullGraphicsSystem::freeDC(int dc) {
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::promoteObjects() {
-  graphics_system_log_.recordFunction("promote_objects");
-}
-
-// -----------------------------------------------------------------------
-
 void NullGraphicsSystem::clearAndPromoteObjects() {
   graphics_system_log_.recordFunction("clear_and_promote_objects");
 }

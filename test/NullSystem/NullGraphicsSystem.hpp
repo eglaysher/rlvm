@@ -55,7 +55,6 @@ public:
   virtual void allocateDC(int dc, Size s);
   virtual void freeDC(int dc);
 
-  virtual void promoteObjects();
   virtual void clearAndPromoteObjects();
 
   virtual GraphicsObject& getObject(int layer, int obj_number);

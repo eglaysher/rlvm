@@ -462,26 +462,6 @@ boost::shared_ptr<Surface> GraphicsSystem::loadSurfaceFromFile(
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::promoteObjects()
-{
-  typedef LazyArray<GraphicsObject>::full_iterator FullIterator;
-
-  FullIterator bg = graphics_object_impl_->background_objects.full_begin();
-  FullIterator bg_end = graphics_object_impl_->background_objects.full_end();
-  FullIterator fg = graphics_object_impl_->foreground_objects.full_begin();
-  FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
-  for(; bg != bg_end && fg != fg_end; bg++, fg++)
-  {
-    if(bg.valid())
-    {
-      *fg = *bg;
-      bg->clearObject();
-    }
-  }
-}
-
-// -----------------------------------------------------------------------
-
 /// @todo The looping constructs here totally defeat the purpose of
 ///       LazyArray, and make it a bit worse.
 void GraphicsSystem::clearAndPromoteObjects()

@@ -533,12 +533,11 @@ struct Grp_open_4 : public RLOp_Void_13<
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    if (fileName == "???")
+      fileName = graphics.defaultGrpName();
 
     handleOpenBgFileName(machine, fileName, srcRect, dest,
                          opacity, use_alpha_);
-
-    // Promote the objects
-    graphics.promoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc1 = graphics.getDC(1);
@@ -600,6 +599,64 @@ struct Grp_openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = getSELEffect(machine, effectNum);
     delegate_(machine, filename, effectNum, selEffect[14]);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_openBg_3 : public RLOp_Void_5<
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T>
+{
+  bool use_alpha_;
+  Grp_openBg_3(bool in) : use_alpha_(in) {}
+
+  void operator()(RLMachine& machine, string fileName, int effectNum,
+                  Rect srcRect, Point destPt, int opacity)
+  {
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    graphics.addGraphicsStackFrame(GRP_OPENBG)
+      .setFilename(fileName)
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(destPt)
+      .setOpacity(opacity);
+
+    // Set the long operation for the correct transition long operation
+    shared_ptr<Surface> dc0 =
+      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+
+    handleOpenBgFileName(machine, fileName, srcRect, destPt,
+                         opacity, use_alpha_);
+
+    // Promote the objects
+    graphics.clearAndPromoteObjects();
+
+    // Render the screen to a temporary
+    shared_ptr<Surface> dc1 = graphics.getDC(1);
+    shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(dc1);
+
+    LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0,
+                                                        effectNum);
+    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
+    machine.pushLongOperation(effect);
+    machine.system().text().hideAllTextWindows();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_openBg_2
+    : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T>
+{
+  Grp_openBg_3<SPACE> delegate_;
+  Grp_openBg_2(bool in) : delegate_(in) {}
+
+  void operator()(RLMachine& machine, string fileName, int effectNum,
+                  Rect srcRect, Point destPt) {
+    vector<int> selEffect = getSELEffect(machine, effectNum);
+    delegate_(machine, fileName, effectNum, srcRect, destPt, selEffect[14]);
   }
 };
 
@@ -1083,9 +1140,8 @@ GrpModule::GrpModule()
   // layer working, this simply does the same thing.
   addOpcode(73, 0, "grpOpenBg", new Grp_openBg_0);
   addOpcode(73, 1, "grpOpenBg", new Grp_openBg_1);
-  // TODO(erg): This may be the cause of my missing Kanon calendar!
-  addOpcode(73, 2, "grpOpenBg", new Grp_open_2<GRP>(false));
-  addOpcode(73, 3, "grpOpenBg", new Grp_open_3<GRP>(false));
+  addOpcode(73, 2, "grpOpenBg", new Grp_openBg_2<GRP>(false));
+  addOpcode(73, 3, "grpOpenBg", new Grp_openBg_3<GRP>(false));
   addOpcode(73, 4, "grpOpenBg", new Grp_openBg_4<GRP>(false));
 
   addOpcode(74, 0, "grpMaskOpen", new Grp_open_0(true));
@@ -1177,12 +1233,10 @@ GrpModule::GrpModule()
   addOpcode(1052, 2, "recDisplay", new Grp_display_2<REC>());
   addOpcode(1052, 3, "recDisplay", new Grp_display_3<REC>());
 
-  // These are supposed to be recOpenBg, but until I have the object
-  // layer working, this simply does the same thing.
   addOpcode(1053, 0, "recOpenBg", new Grp_openBg_0);
   addOpcode(1053, 1, "recOpenBg", new Grp_openBg_1);
-  addOpcode(1053, 2, "recOpenBg", new Grp_open_2<REC>(false));
-  addOpcode(1053, 3, "recOpenBg", new Grp_open_3<REC>(false));
+  addOpcode(1053, 2, "recOpenBg", new Grp_openBg_2<REC>(false));
+  addOpcode(1053, 3, "recOpenBg", new Grp_openBg_3<REC>(false));
   addOpcode(1053, 4, "recOpenBg", new Grp_openBg_4<REC>(false));
 
   addOpcode(1054, 0, "recMaskOpen", new Grp_open_0(true));
