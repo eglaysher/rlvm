@@ -88,7 +88,10 @@ const int SEL_SIZE = 16;
 namespace graphicsStack {
 const std::string GRP_ALLOC = "allocDC";
 const std::string GRP_WIPE = "wipe";
+const std::string GRP_COPY = "copy";
+const std::string GRP_DISPLAY = "display";
 const std::string GRP_LOAD = "grpLoad";
+const std::string GRP_OPEN = "grpOpen";
 const std::string GRP_OPENBG = "grpOpenBg";
 }
 
@@ -269,7 +272,8 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     GraphicsSystem& graphics = machine.system().graphics();
 
     graphics.addGraphicsStackFrame(GRP_LOAD)
-      .setFilename(filename).setTargetDC(dc).setOpacity(opacity);
+      .setFilename(filename).setTargetDC(dc).setOpacity(opacity)
+      .setMask(use_alpha_);
 
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
 
@@ -308,6 +312,14 @@ struct Grp_load_3 : public RLOp_Void_5<
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
 
+    graphics.addGraphicsStackFrame(GRP_LOAD)
+        .setFilename(filename)
+        .setTargetDC(dc)
+        .setSourceCoordinates(srcRect)
+        .setTargetCoordinates(dest)
+        .setOpacity(opacity)
+        .setMask(use_alpha_);
+
     Rect destRect = Rect(dest, srcRect.size());
 
     if(dc != 0 && dc != 1) {
@@ -334,7 +346,16 @@ struct Grp_display_1
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.addGraphicsStackFrame(GRP_DISPLAY)
+      .setSourceCoordinates(src)
+      .setSourceDC(dc)
+      .setTargetCoordinates(dest)
+      .setOpacity(opacity);
+
     loadDCToDC1(graphics, dc, src, dest, opacity);
+
+    // Promote the objects
+    graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -365,7 +386,16 @@ struct Grp_display_3
   void operator()(RLMachine& machine, int dc, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.addGraphicsStackFrame(GRP_DISPLAY)
+      .setSourceDC(dc)
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(dest)
+      .setOpacity(opacity);
+
     loadDCToDC1(graphics, dc, srcRect, dest, opacity);
+
+    // Promote the objects
+    graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -417,10 +447,22 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename == "???")
+    if (filename == "???")
       filename = graphics.defaultGrpName();
 
-    loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
+    graphics.addGraphicsStackFrame(GRP_OPEN)
+      .setFilename(filename)
+      .setSourceCoordinates(src)
+      .setTargetCoordinates(dest)
+      .setOpacity(opacity)
+      .setMask(use_alpha_);
+
+    // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
+    // isn't documented in the rldev manual.
+    if (filename != "?")
+      loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
+    else
+      graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -464,10 +506,22 @@ struct Grp_open_3 : public RLOp_Void_5<
                   Rect srcRect, Point dest, int opacity)
   {
     GraphicsSystem& graphics = machine.system().graphics();
-    if(filename == "???") filename = graphics.defaultGrpName();
+    if (filename == "???")
+      filename = graphics.defaultGrpName();
 
-    loadImageToDC1(machine, filename, srcRect, dest, opacity,
-                   use_alpha_);
+    graphics.addGraphicsStackFrame(GRP_OPEN)
+      .setFilename(filename)
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(dest)
+      .setOpacity(opacity)
+      .setMask(use_alpha_);
+
+    // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
+    // isn't documented in the rldev manual.
+    if (filename != "?")
+      loadImageToDC1(machine, filename, srcRect, dest, opacity, use_alpha_);
+    else
+      graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -536,8 +590,19 @@ struct Grp_open_4 : public RLOp_Void_13<
     if (fileName == "???")
       fileName = graphics.defaultGrpName();
 
-    handleOpenBgFileName(machine, fileName, srcRect, dest,
-                         opacity, use_alpha_);
+    graphics.addGraphicsStackFrame(GRP_OPEN)
+      .setFilename(fileName)
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(dest)
+      .setOpacity(opacity)
+      .setMask(use_alpha_);
+
+    // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
+    // isn't documented in the rldev manual.
+    if (fileName != "?")
+      loadImageToDC1(machine, fileName, srcRect, dest, opacity, use_alpha_);
+    else
+      graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc1 = graphics.getDC(1);
@@ -725,11 +790,20 @@ struct Grp_copy_3 : public RLOp_Void_5<
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.addGraphicsStackFrame(GRP_COPY)
+      .setSourceCoordinates(srcRect)
+      .setSourceDC(src)
+      .setTargetCoordinates(destPoint)
+      .setTargetDC(dst)
+      .setOpacity(opacity)
+      .setMask(use_alpha_);
+
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
-    // Reallocate the destination so that it's the same size as the first.
-//    graphics.allocateDC(dst, sourceSurface.width(), sourceSurface.height());
-    // @todo allocateDC?
+    if(dst != 0 && dst != 1) {
+      Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
+      graphics.allocateDC(dst, maxSize);
+    }
 
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
@@ -751,6 +825,12 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.addGraphicsStackFrame(GRP_COPY)
+      .setSourceDC(src)
+      .setTargetDC(dst)
+      .setOpacity(opacity)
+      .setMask(use_alpha_);
+
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if(dst != 0 && dst != 1) {
@@ -1328,15 +1408,50 @@ void replayGraphicsStackVector(
   for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
       it != gstack.end(); ++it)
   {
+    try {
     if(it->name() == GRP_LOAD)
     {
-      if(it->hasTargetCoordinates())
-      {
-        cerr << "Ignoring because we are dumb!" << endl;
+      if(it->hasTargetCoordinates()) {
+        Grp_load_3<rect_impl::REC>(it->mask())(
+            machine, it->filename(), it->targetDC(),
+            it->sourceRect(), it->targetPoint(),
+            it->opacity());
+      } else {
+        // Older versions of rlvm didn't record the mask bit, so make sure we
+        // check for that since we don't want to break old save games.
+        bool mask = (it->hasMask() ? it->mask() : true);
+        Grp_load_1 loader(mask);
+        loader(machine, it->filename(), it->targetDC(), it->opacity());
       }
-      else
-        Grp_load_1(true)(machine, it->filename(), it->targetDC(),
-                         it->opacity());
+    }
+    else if(it->name() == GRP_OPEN)
+    {
+      // Grp_open is just a load + an animation.
+      loadImageToDC1(machine, it->filename(), it->sourceRect(),
+                     it->targetPoint(), it->opacity(), it->mask());
+      blitDC1toDC0(machine);
+    }
+    else if(it->name() == GRP_COPY)
+    {
+      if (it->hasSourceCoordinates()) {
+        Grp_copy_3<rect_impl::REC>(it->mask())(
+            machine,
+            it->sourceRect(), it->sourceDC(),
+            it->targetPoint(), it->targetDC(),
+            it->opacity());
+      } else {
+        Grp_copy_1(it->mask())(
+            machine, it->sourceDC(), it->targetDC(), it->opacity());
+      }
+    }
+    else if(it->name() == GRP_DISPLAY)
+    {
+      GraphicsSystem& graphics = machine.system().graphics();
+      loadDCToDC1(graphics,
+                  it->sourceDC(), it->sourceRect(),
+                  it->targetPoint(), it->opacity());
+      graphics.clearAndPromoteObjects();
+      blitDC1toDC0(machine);
     }
     else if(it->name() == GRP_OPENBG)
     {
@@ -1350,6 +1465,11 @@ void replayGraphicsStackVector(
     else if(it->name() == GRP_WIPE)
     {
       Grp_wipe()(machine, it->targetDC(), it->r(), it->g(), it->b());
+    }
+
+    } catch(rlvm::Exception& e) {
+      cerr << "WARNING: Error while thawing graphics stack: " << e.what()
+           << endl;
     }
   }
 }
