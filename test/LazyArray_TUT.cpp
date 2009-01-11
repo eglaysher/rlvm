@@ -30,7 +30,7 @@
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/tracking.hpp>
 
-#include "LazyArray.hpp"
+#include "Utilities/LazyArray.hpp"
 
 #include "testUtils.hpp"
 #include "tut/tut.hpp"

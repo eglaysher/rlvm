@@ -31,7 +31,7 @@
 
 #include "Systems/Base/GraphicsSystem.hpp"
 
-#include "LazyArray.hpp"
+#include "Utilities/LazyArray.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/StackFrame.hpp"

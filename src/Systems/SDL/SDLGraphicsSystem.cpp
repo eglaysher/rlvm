@@ -63,7 +63,7 @@
 #include "libReallive/gameexe.h"
 
 #include "file.h"
-#include "LazyArray.hpp"
+#include "Utilities/LazyArray.hpp"
 
 #include <algorithm>
 #include <iostream>
