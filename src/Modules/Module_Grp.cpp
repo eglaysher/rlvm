@@ -101,8 +101,7 @@ using namespace graphicsStack;
 
 namespace {
 
-void blitDC1toDC0(RLMachine& machine)
-{
+void blitDC1toDC0(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   boost::shared_ptr<Surface> src = graphics.getDC(1);
@@ -142,8 +141,7 @@ void loadImageToDC1(RLMachine& machine,
                     const std::string& name,
                     const Rect& srcRect,
                     const Point& dest,
-                    int opacity, bool useAlpha)
-{
+                    int opacity, bool useAlpha) {
   GraphicsSystem& graphics = machine.system().graphics();
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> dc1 = graphics.getDC(1);
@@ -167,8 +165,7 @@ void loadDCToDC1(GraphicsSystem& graphics,
                  int srcDc,
                  const Rect& srcRect,
                  const Point& dest,
-                 int opacity)
-{
+                 int opacity) {
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> dc1 = graphics.getDC(1);
   shared_ptr<Surface> src = graphics.getDC(srcDc);
@@ -197,15 +194,16 @@ void loadDCToDC1(GraphicsSystem& graphics,
 // -----------------------------------------------------------------------
 
 void handleOpenBgFileName(
-  RLMachine& machine,
-  std::string fileName,
-  const Rect& srcRect, const Point& dest, int opacity, bool useAlpha)
-{
+    RLMachine& machine,
+    std::string fileName,
+    const Rect& srcRect,
+    const Point& dest,
+    int opacity,
+    bool useAlpha) {
   GraphicsSystem& graphics = machine.system().graphics();
 
-  if(fileName != "?")
-  {
-    if(fileName == "???")
+  if (fileName != "?"){
+    if (fileName == "???")
       fileName = graphics.defaultGrpName();
 
     loadImageToDC1(machine, fileName, srcRect, dest, opacity, useAlpha);
@@ -277,7 +275,7 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
 
-    if(dc != 0 && dc != 1) {
+    if (dc != 0 && dc != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(surface->size());
       graphics.allocateDC(dc, maxSize);
     }
@@ -322,7 +320,7 @@ struct Grp_load_3 : public RLOp_Void_5<
 
     Rect destRect = Rect(dest, srcRect.size());
 
-    if(dc != 0 && dc != 1) {
+    if (dc != 0 && dc != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(surface->size());
       graphics.allocateDC(dc, maxSize);
     }
@@ -786,7 +784,7 @@ struct Grp_copy_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, Rect srcRect,
                   int src, Point destPoint, int dst, int opacity) {
     // Copying to self is a noop
-    if(src == dst)
+    if (src == dst)
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
@@ -800,7 +798,7 @@ struct Grp_copy_3 : public RLOp_Void_5<
 
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
-    if(dst != 0 && dst != 1) {
+    if (dst != 0 && dst != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
       graphics.allocateDC(dst, maxSize);
     }
@@ -821,7 +819,7 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, int src, int dst, int opacity) {
     // Copying to self is a noop
-    if(src == dst)
+    if (src == dst)
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
@@ -833,7 +831,7 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
-    if(dst != 0 && dst != 1) {
+    if (dst != 0 && dst != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
       graphics.allocateDC(dst, maxSize);
     }
@@ -954,13 +952,13 @@ struct Grp_stretchBlit_1
   void operator()(RLMachine& machine, Rect src_rect, int src,
                   Rect dst_rect, int dst, int opacity) {
     // Copying to self is a noop
-    if(src == dst)
+    if (src == dst)
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
-    if(dst != 0 && dst != 1) {
+    if (dst != 0 && dst != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
       graphics.allocateDC(dst, maxSize);
     }
@@ -1046,11 +1044,10 @@ struct Grp_multi_command {
 
 template<typename SPACE>
 void Grp_multi_command<SPACE>::handleMultiCommands(
-  RLMachine& machine, const MultiCommand::type& commands)
-{
+    RLMachine& machine, const MultiCommand::type& commands) {
   for (MultiCommand::type::const_iterator it = commands.begin();
        it != commands.end(); it++) {
-    switch(it->type) {
+    switch (it->type) {
     case 0:
       // 0:copy(strC 'filename')
       Grp_load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
@@ -1104,9 +1101,9 @@ void Grp_multi_command<SPACE>::handleMultiCommands(
  */
 template<typename SPACE>
 struct Grp_multi_str_1
-  : public RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T,
-                       MultiCommand>,
-    public Grp_multi_command<SPACE> {
+    : public RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T,
+                         MultiCommand>,
+      public Grp_multi_command<SPACE> {
   void operator()(RLMachine& machine, string filename, int effect, int alpha,
                   MultiCommand::type commands) {
     Grp_load_1(false)(machine, filename, MULTI_TARGET_DC, 255);
@@ -1119,7 +1116,7 @@ struct Grp_multi_str_1
 
 template<typename SPACE>
 struct Grp_multi_str_0
-  : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
   Grp_multi_str_1<SPACE> delegate_;
 
   void operator()(RLMachine& machine, string filename, int effect,
@@ -1132,9 +1129,9 @@ struct Grp_multi_str_0
 
 template<typename SPACE>
 struct Grp_multi_dc_1
-  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T,
-                       MultiCommand>,
-    public Grp_multi_command<SPACE> {
+    : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T,
+                         MultiCommand>,
+      public Grp_multi_command<SPACE> {
   void operator()(RLMachine& machine, int dc, int effect, int alpha,
                   MultiCommand::type commands) {
     Grp_copy_1(false)(machine, dc, MULTI_TARGET_DC, 255);
@@ -1147,7 +1144,7 @@ struct Grp_multi_dc_1
 
 template<typename SPACE>
 struct Grp_multi_dc_0
-  : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
   Grp_multi_dc_1<SPACE> delegate_;
 
   void operator()(RLMachine& machine, int dc, int effect,
@@ -1177,8 +1174,7 @@ struct Grp_multi_dc_0
  * recOpenBg
  */
 GrpModule::GrpModule()
-  : RLModule("Grp", 1, 33)
-{
+    : RLModule("Grp", 1, 33) {
   using namespace rect_impl;
 
   addOpcode(15, 0, "allocDC", new Grp_allocDC);
@@ -1391,8 +1387,7 @@ GrpModule::GrpModule()
 
 // -----------------------------------------------------------------------
 
-void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
-{
+void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f) {
   handleOpenBgFileName(
     machine, f.filename(), f.sourceRect(), f.targetPoint(), f.opacity(), false);
 
@@ -1402,71 +1397,55 @@ void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f)
 // -----------------------------------------------------------------------
 
 void replayGraphicsStackVector(
-  RLMachine& machine,
-  const std::vector<GraphicsStackFrame>& gstack)
-{
-  for(vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
-      it != gstack.end(); ++it)
-  {
+    RLMachine& machine,
+    const std::vector<GraphicsStackFrame>& gstack) {
+  for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
+       it != gstack.end(); ++it) {
     try {
-    if(it->name() == GRP_LOAD)
-    {
-      if(it->hasTargetCoordinates()) {
-        Grp_load_3<rect_impl::REC>(it->mask())(
-            machine, it->filename(), it->targetDC(),
-            it->sourceRect(), it->targetPoint(),
-            it->opacity());
-      } else {
-        // Older versions of rlvm didn't record the mask bit, so make sure we
-        // check for that since we don't want to break old save games.
-        bool mask = (it->hasMask() ? it->mask() : true);
-        Grp_load_1 loader(mask);
-        loader(machine, it->filename(), it->targetDC(), it->opacity());
+      if (it->name() == GRP_LOAD) {
+        if (it->hasTargetCoordinates()) {
+          Grp_load_3<rect_impl::REC>(it->mask())(
+              machine, it->filename(), it->targetDC(),
+              it->sourceRect(), it->targetPoint(),
+              it->opacity());
+        } else {
+          // Older versions of rlvm didn't record the mask bit, so make sure we
+          // check for that since we don't want to break old save games.
+          bool mask = (it->hasMask() ? it->mask() : true);
+          Grp_load_1 loader(mask);
+          loader(machine, it->filename(), it->targetDC(), it->opacity());
+        }
+      } else if (it->name() == GRP_OPEN) {
+        // Grp_open is just a load + an animation.
+        loadImageToDC1(machine, it->filename(), it->sourceRect(),
+                       it->targetPoint(), it->opacity(), it->mask());
+        blitDC1toDC0(machine);
+      } else if (it->name() == GRP_COPY) {
+        if (it->hasSourceCoordinates()) {
+          Grp_copy_3<rect_impl::REC>(it->mask())(
+              machine,
+              it->sourceRect(), it->sourceDC(),
+              it->targetPoint(), it->targetDC(),
+              it->opacity());
+        } else {
+          Grp_copy_1(it->mask())(
+              machine, it->sourceDC(), it->targetDC(), it->opacity());
+        }
+      } else if (it->name() == GRP_DISPLAY) {
+        GraphicsSystem& graphics = machine.system().graphics();
+        loadDCToDC1(graphics,
+                    it->sourceDC(), it->sourceRect(),
+                    it->targetPoint(), it->opacity());
+        graphics.clearAndPromoteObjects();
+        blitDC1toDC0(machine);
+      } else if (it->name() == GRP_OPENBG) {
+        replayOpenBg(machine, *it);
+      } else if (it->name() == GRP_ALLOC) {
+        Point target = it->targetPoint();
+        Grp_allocDC()(machine, it->targetDC(), target.x(), target.y());
+      } else if (it->name() == GRP_WIPE) {
+        Grp_wipe()(machine, it->targetDC(), it->r(), it->g(), it->b());
       }
-    }
-    else if(it->name() == GRP_OPEN)
-    {
-      // Grp_open is just a load + an animation.
-      loadImageToDC1(machine, it->filename(), it->sourceRect(),
-                     it->targetPoint(), it->opacity(), it->mask());
-      blitDC1toDC0(machine);
-    }
-    else if(it->name() == GRP_COPY)
-    {
-      if (it->hasSourceCoordinates()) {
-        Grp_copy_3<rect_impl::REC>(it->mask())(
-            machine,
-            it->sourceRect(), it->sourceDC(),
-            it->targetPoint(), it->targetDC(),
-            it->opacity());
-      } else {
-        Grp_copy_1(it->mask())(
-            machine, it->sourceDC(), it->targetDC(), it->opacity());
-      }
-    }
-    else if(it->name() == GRP_DISPLAY)
-    {
-      GraphicsSystem& graphics = machine.system().graphics();
-      loadDCToDC1(graphics,
-                  it->sourceDC(), it->sourceRect(),
-                  it->targetPoint(), it->opacity());
-      graphics.clearAndPromoteObjects();
-      blitDC1toDC0(machine);
-    }
-    else if(it->name() == GRP_OPENBG)
-    {
-      replayOpenBg(machine, *it);
-    }
-    else if(it->name() == GRP_ALLOC)
-    {
-      Point target = it->targetPoint();
-      Grp_allocDC()(machine, it->targetDC(), target.x(), target.y());
-    }
-    else if(it->name() == GRP_WIPE)
-    {
-      Grp_wipe()(machine, it->targetDC(), it->r(), it->g(), it->b());
-    }
-
     } catch(rlvm::Exception& e) {
       cerr << "WARNING: Error while thawing graphics stack: " << e.what()
            << endl;
