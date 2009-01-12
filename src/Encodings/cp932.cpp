@@ -1573,7 +1573,7 @@ unsigned short Cp932::Convert(unsigned short ch) const {
   leading& lb = fmcp932_tbl[sb];
   if (lb.tbl) {
     unsigned char db = ch > 255 ? ch & 0xFF : 0;
-    if (db > 64)
+    if (db >= 64)
       return lb.tbl[db - 64];
     else
       return 0;
