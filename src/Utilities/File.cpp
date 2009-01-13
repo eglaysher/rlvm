@@ -37,16 +37,17 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Utilities/Exception.hpp"
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
-#include <string>
 #include <iostream>
 #include <iterator>
 #include <stack>
-#include <cctype>
-#include "boost/filesystem/operations.hpp"
-
+#include <string>
+#include <vector>
+#include <boost/filesystem/operations.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/assign/list_of.hpp> // for 'list_of()'
+#include <boost/assign/list_of.hpp>  // for 'list_of()'
 
 using boost::to_upper;
 using boost::scoped_array;
@@ -65,12 +66,12 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-fs::path correctPathCase(fs::path Path)
-{
+fs::path correctPathCase(fs::path Path) {
   using namespace boost::filesystem;
 
 #ifndef CASE_SENSITIVE_FILESYSTEM
-  if(!exists(Path)) return path();
+  if (!exists(Path))
+    return path();
   return Path;
 #else
   // If the path is OK as it stands, do nothing.
@@ -100,8 +101,7 @@ fs::path correctPathCase(fs::path Path)
     if (exists(Path/elt) && (!needDir || is_directory(Path/elt))) {
       // If so, use it.
       Path /= elt;
-    }
-    else {
+    } else {
       // If not, search for a suitable candidate.
       to_upper(elt);
       directory_iterator end;
@@ -145,8 +145,7 @@ const std::vector<std::string> SOUND_FILETYPES =
  */
 boost::filesystem::path findFile(RLMachine& machine,
                                  const std::string& fileName,
-                                 const vector<string>& extensions)
-{
+                                 const vector<string>& extensions) {
   return findFile(machine.system(), fileName, extensions);
 }
 
@@ -154,8 +153,7 @@ boost::filesystem::path findFile(RLMachine& machine,
 
 boost::filesystem::path findFile(System& system,
                                  const std::string& fileName,
-                                 const vector<string>& extensions)
-{
+                                 const vector<string>& extensions) {
   using namespace boost;
 
   // Hack to get around fileNames like "REALNAME?010", where we only
@@ -165,16 +163,14 @@ boost::filesystem::path findFile(System& system,
 
   // Iterate across the search paths in the order they were specified.
   const vector<boost::filesystem::path>& blah = system.getSearchPaths();
-  for(vector<boost::filesystem::path>::const_iterator it = blah.begin(); it != blah.end(); ++it)
-  {
-    for(vector<string>::const_iterator ext = extensions.begin();
-        ext != extensions.end(); ++ext)
-    {
+  for (vector<boost::filesystem::path>::const_iterator it = blah.begin();
+       it != blah.end(); ++it) {
+    for (vector<string>::const_iterator ext = extensions.begin();
+         ext != extensions.end(); ++ext) {
       string fileWithExt = newName + "." + *ext;
       fs::path path = *it / fileWithExt;
       fs::path correctFile = correctPathCase(path);
-      if(!correctFile.empty())
-      {
+      if (!correctFile.empty()) {
         return correctFile;
       }
     }
@@ -191,8 +187,7 @@ boost::filesystem::path findFile(System& system,
 
 // -----------------------------------------------------------------------
 
-bool loadFileData(ifstream& ifs, scoped_array<char>& anmData, int& fileSize)
-{
+bool loadFileData(ifstream& ifs, scoped_array<char>& anmData, int& fileSize) {
   ifs.seekg(0, ios::end);
   fileSize = ifs.tellg();
   ifs.seekg(0, ios::beg);

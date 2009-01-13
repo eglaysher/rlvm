@@ -31,6 +31,7 @@
 #include "Utilities/Exception.hpp"
 
 #include <fstream>
+#include <string>
 
 using std::ostringstream;
 
@@ -40,16 +41,15 @@ using std::ostringstream;
 
 namespace rlvm {
 
-const char* Exception::what() const throw()
-{
+const char* Exception::what() const throw() {
   return description.c_str();
 }
 
 // -----------------------------------------------------------------------
 
 Exception::Exception(std::string what)
-  : description(what)
-{}
+  : description(what) {
+}
 
 // -----------------------------------------------------------------------
 
@@ -58,10 +58,9 @@ Exception::~Exception() throw() {}
 // -----------------------------------------------------------------------
 
 UnimplementedOpcode::UnimplementedOpcode(
-  const std::string& funName,
-  int modtype, int module, int opcode, int overload)
-  : Exception("")
-{
+    const std::string& funName,
+    int modtype, int module, int opcode, int overload)
+    : Exception("") {
   ostringstream oss;
   oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">)";
@@ -72,9 +71,8 @@ UnimplementedOpcode::UnimplementedOpcode(
 // -----------------------------------------------------------------------
 
 UnimplementedOpcode::UnimplementedOpcode(
-  int modtype, int module, int opcode, int overload)
-  : Exception("")
-{
+    int modtype, int module, int opcode, int overload)
+    : Exception("") {
   ostringstream oss;
   oss << "opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">";

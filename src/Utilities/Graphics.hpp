@@ -24,9 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
-#ifndef __Graphics_hpp__
-#define __Graphics_hpp__
+#ifndef SRC_UTILITIES_GRAPHICS_HPP_
+#define SRC_UTILITIES_GRAPHICS_HPP_
 
 #include <vector>
 
@@ -46,8 +45,7 @@ class Size;
  * @param x2 X2. In place changed to width.
  * @param y2 Y2. In place changed to height.
  */
-inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2)
-{
+inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2) {
   x2 = x2 - x1;
   y2 = y2 - y1;
 }
@@ -85,4 +83,4 @@ Size getScreenSize(Gameexe& gameexe);
  */
 void clamp(float& var, float min, float max);
 
-#endif
+#endif  // SRC_UTILITIES_GRAPHICS_HPP_

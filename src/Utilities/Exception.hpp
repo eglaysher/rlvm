@@ -24,9 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
-#ifndef __Exception_hpp__
-#define __Exception_hpp__
+#ifndef SRC_UTILITIES_EXCEPTION_HPP_
+#define SRC_UTILITIES_EXCEPTION_HPP_
 
 #include <exception>
 #include <stdexcept>
@@ -34,35 +33,34 @@
 
 namespace rlvm {
 
-class Exception : public std::exception
-{
-protected:
-  std::string description;
-public:
-  virtual const char* what() const throw();
-  Exception(std::string what);
+class Exception : public std::exception {
+ public:
+  explicit Exception(std::string what);
   virtual ~Exception() throw();
+  virtual const char* what() const throw();
+
+ protected:
+  std::string description;
 };
 
-class UnimplementedOpcode : public Exception
-{
-private:
-  /// Printable name of the opcode. Either "funname (opcode<W:X:Y:Z>)"
-  /// or "opcode<W:X:Y:Z>".
-  std::string name_;
-
-  void setDescription();
-
-public:
+class UnimplementedOpcode : public Exception {
+ public:
   UnimplementedOpcode(const std::string& funName,
                       int modtype, int module, int opcode, int overload);
   UnimplementedOpcode(int modtype, int module, int opcode, int overload);
   ~UnimplementedOpcode() throw();
 
-  /// Returns the name of the function that wasn't implemented.
+  // Returns the name of the function that wasn't implemented.
   const std::string& opcodeName() const { return name_; }
+
+ private:
+  // Printable name of the opcode. Either "funname (opcode<W:X:Y:Z>)"
+  // or "opcode<W:X:Y:Z>".
+  std::string name_;
+
+  void setDescription();
 };
 
-}
+}  // namespace rlvm
 
-#endif
+#endif  // SRC_UTILITIES_EXCEPTION_HPP_
