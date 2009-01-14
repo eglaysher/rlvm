@@ -25,14 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __RlBabelDLL_hpp__
-#define __RlBabelDLL_hpp__
+#ifndef SRC_SYSTEMS_BASE_RLBABELDLL_HPP_
+#define SRC_SYSTEMS_BASE_RLBABELDLL_HPP_
 
 #include "MachineBase/RealLiveDLL.hpp"
 #include "MachineBase/reference.hpp"
 #include "Systems/Base/Rect.hpp"
 
 #include <boost/shared_ptr.hpp>
+#include <string>
+#include <vector>
 
 class TextWindow;
 
@@ -82,19 +84,18 @@ enum getcReturn {
 /**
  * Clickable on screen areas that display a message.
  */
-class Gloss
-{
-public:
+class Gloss {
+ public:
   Gloss(const boost::shared_ptr<TextWindow>& window,
         const std::string& cp932_src,
         int x1, int y1, int x2, int y2);
 
-  /// Whether the passed in point intersects with 
+  /// Whether the passed in point intersects with
   bool contains(const Point& point);
 
   const std::string& text() const { return text_; }
 
-private:
+ private:
   /// Text displayed in the gloss.
   std::string text_;
 
@@ -134,7 +135,7 @@ private:
  */
 class RlBabelDLL : public RealLiveDLL {
  public:
-  RlBabelDLL(RLMachine& machine);
+  explicit RlBabelDLL(RLMachine& machine);
 
   // Overridden from RealLiveDLL:
 
@@ -193,11 +194,11 @@ class RlBabelDLL : public RealLiveDLL {
 
   // Helper functions:
 
-  int getCharWidth(unsigned short full_char, bool as_xmod);
+  int getCharWidth(uint16_t full_char, bool as_xmod);
 
   bool lineBreakRequired();
 
-  unsigned short consumeNextCharacter(std::string::size_type& index);
+  uint16_t consumeNextCharacter(std::string::size_type& index);
 
   inline char& curPos(int offset = 0) {
     return cp932_text_buffer[text_index + offset];
@@ -247,4 +248,4 @@ class RlBabelDLL : public RealLiveDLL {
   RLMachine& machine_;
 };  // end of class RlBabelDll
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_RLBABELDLL_HPP_

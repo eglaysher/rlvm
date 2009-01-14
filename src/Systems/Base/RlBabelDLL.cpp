@@ -60,6 +60,8 @@
 
 #include <algorithm>
 #include <iostream>
+#include <string>
+#include <vector>
 using std::cerr;
 using std::endl;
 
@@ -81,7 +83,7 @@ inline bool token_delimiter(char val) {
   return val < 6 || (val > 7 && val <= 32) || val == '-';
 }
 
-} // anonymous namespace
+}  // namespace
 
 // -----------------------------------------------------------------------
 // Gloss
@@ -226,36 +228,31 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
         if (*namestr) {
           AppendChar(namestr);
         }
-      }
-      else {
+      } else {
         // The whole string
         while (*namestr) {
           AppendChar(namestr);
         }
       }
-    }
-    else if (string[0] == 0x08) {
+    } else if (string[0] == 0x08) {
       // Quotation mark
 //      string[0] = '"';
       const char* quote_mark = "\"";
       ++string;
       AppendChar(quote_mark);
-    }
-    else if (string[0] == 0x09) {
+    } else if (string[0] == 0x09) {
       add_is_italic = true;
       ++string;
-    }
-    else if (string[0] == 0x0a) {
+    } else if (string[0] == 0x0a) {
       add_is_italic = false;
       ++string;
-    }
-    else {
+    } else {
       // Normal char: copy 1 or 2 bytes as appropriate.
       AppendChar(string);
     }
   }
 
-  return !*string; // 0 if the full string wasn't copied
+  return !*string;  // 0 if the full string wasn't copied
 }
 
 // -----------------------------------------------------------------------
@@ -291,12 +288,18 @@ int RlBabelDLL::textoutLineBreak(StringReferenceIterator buf) {
   // If there's room on this page, break the line, otherwise break
   // the page.
   if (window->lineHeight() <
-      window->textWindowSize().height() - window->insertionPointY())
+      window->textWindowSize().height() - window->insertionPointY()) {
     return getcNewLine;
-  else {
+  } else {
+    // TODO(erg): This will be harder then it looks.
+    // - Need to redo setName so that conversion from cp932 is done at the
+    //   absolute last minute, after (inside?) TextWindow::setName().
+    // - Need to record the cp932 name.
+    // - Need accessors (none written)
+    // - Pipe to here.
 //     const char* const cnam = (const char*) interpreter->getCurrentName();
 //     if (cnam)
-//       *buf = 
+//       *buf =
 //     else
     *buf = "";
     return getcNewScreen;
@@ -320,10 +323,8 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
     if (!endToken())
       return getcEndOfString;
 
-    switch(endToken()) {
-      // TODO: I'm ignoring most of the cases for now. Ouch!
-      case 1: {
-        // \{...} -> \x01...\x02
+    switch (endToken()) {
+      case 1: {  // \{...} -> \x01...\x02
         // If this is a name setter, we read the name.
         //
         // Processing of names is complicated.  There are three
@@ -361,7 +362,8 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         // hooking the text out function so he made a whole bunch of name moji
         // tiles and rendered into those. This is silly and unneccessary since
         // I control the rlvm code...
-        *buffer = cp932_text_buffer.substr(text_index, end_token_index - text_index);
+        *buffer = cp932_text_buffer.substr(text_index,
+                                           end_token_index - text_index);
 
         // If name display is not inline, skip the token to avoid
         // rendering it inline.
@@ -393,7 +395,8 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
           endToken(0) = ' ';
           endToken(1) = endToken(2);
           endToken(2) = 4;
-        } else if (endToken(2)==':' || endToken(2)=='.' || endToken(2)==',') {
+        } else if (endToken(2) == ':' || endToken(2) == '.' ||
+                   endToken(2) == ',') {
           if (endToken(3) == ' ')
             text_index = ++end_token_index;
           endToken(0) = endToken(1);
@@ -449,13 +452,13 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         text_index = ++end_token_index;
         return textoutGetChar(buffer, xmod);
       }
-      case 0x1f: // Begin gloss marker.  Treat as text.
+      case 0x1f:  // Begin gloss marker.  Treat as text.
         ++end_token_index;
         // Fall through!
       default: {
         // We tokenise text and break lines appropriately.
-        // TODO: Haeleth appears to be caching horizontal width. Should do this
-        // once I have something working.
+        // TODO(erg): Haeleth appears to be caching horizontal width. Should do
+        // this once I have something working.
         //
         // ZeroMemory(widthcache, 256 * sizeof(LONG));
 
@@ -488,14 +491,15 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
     rv = getcBeginGloss;
   }
 
-  // TODO: Missing special case for emoji...
   if (curPos() == 6 || curPos() == 7) {
-    assert(0 && "Implement special case for emoji in textoutGetChar");
+    // TODO(erg): Missing special case for emoji...
+    cerr << "Implement special case for emoji in textoutGetChar!" << endl;
+    return getcError;
   }
 
   // Fill buf with the next character, and xmod with how far to
   // adjust its width.
-  unsigned short full_char = 0;
+  uint16_t full_char = 0;
   char first_byte = cp932_text_buffer[text_index++];
   std::string cp932_char_out;
   cp932_char_out += first_byte;
@@ -589,12 +593,12 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
 
 // -----------------------------------------------------------------------
 
-int RlBabelDLL::getCharWidth(unsigned short cp932_char, bool as_xmod) {
+int RlBabelDLL::getCharWidth(uint16_t cp932_char, bool as_xmod) {
   Codepage& cp = Cp::instance(machine_.getTextEncoding());
-  unsigned short native_char = cp.JisDecode(cp932_char);
-  unsigned short unicode_codepoint = cp.Convert(native_char);
+  uint16_t native_char = cp.JisDecode(cp932_char);
+  uint16_t unicode_codepoint = cp.Convert(native_char);
   boost::shared_ptr<TextWindow> window = getWindow(-1);
-  // TODO: Can I somehow modify this to try to do proper kerning?
+  // TODO(erg): Can I somehow modify this to try to do proper kerning?
   int width = window->charWidth(unicode_codepoint);
   return as_xmod ? window->insertionPointX() + width : width;
 }
@@ -607,7 +611,7 @@ bool RlBabelDLL::lineBreakRequired() {
   int width = 0;
   std::string::size_type ptr = text_index;
   while (ptr < end_token_index) {
-    unsigned short cp932_char = consumeNextCharacter(ptr);
+    uint16_t cp932_char = consumeNextCharacter(ptr);
     if (text_index < end_token_index) {
       width += getCharWidth(cp932_char, false);
     } else {
@@ -627,7 +631,7 @@ bool RlBabelDLL::lineBreakRequired() {
   max_space -= window->currentIndentation();
   if (width >= max_space) {
     ptr = text_index;
-    unsigned short cp932_char = consumeNextCharacter(ptr);
+    uint16_t cp932_char = consumeNextCharacter(ptr);
     width = getCharWidth(cp932_char, false);
 
     // If the first character will fit on the current line, a line break is not
@@ -673,9 +677,9 @@ bool RlBabelDLL::lineBreakRequired() {
 
 // -----------------------------------------------------------------------
 
-unsigned short RlBabelDLL::consumeNextCharacter(std::string::size_type& index) {
+uint16_t RlBabelDLL::consumeNextCharacter(std::string::size_type& index) {
   char cp932sb = cp932_text_buffer[index++];
-  unsigned short cp932 = cp932sb;
+  uint16_t cp932 = cp932sb;
   if (shiftjis_lead_byte(cp932sb))
     cp932 = (cp932 << 8) | cp932_text_buffer[index++];
 
