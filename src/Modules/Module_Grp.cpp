@@ -1436,7 +1436,6 @@ void replayGraphicsStackVector(
         loadDCToDC1(graphics,
                     it->sourceDC(), it->sourceRect(),
                     it->targetPoint(), it->opacity());
-        graphics.clearAndPromoteObjects();
         blitDC1toDC0(machine);
       } else if (it->name() == GRP_OPENBG) {
         replayOpenBg(machine, *it);
