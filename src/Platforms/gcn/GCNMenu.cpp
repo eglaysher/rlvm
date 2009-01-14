@@ -58,6 +58,7 @@ GCNMenu::GCNMenu(
   if (!title.empty()) {
     menu_title = new gcn::Label(title);
     Container::add(menu_title, MENU_PADDING, top_offset);
+    widgets_to_delete_.push_back(menu_title);
     top_offset += menu_title->getHeight() + MENU_PADDING;
     max_button_size = menu_title->getWidth();
   }
@@ -78,6 +79,7 @@ GCNMenu::GCNMenu(
 
       Container::add(button, MENU_PADDING, top_offset);
       buttons.push_back(button);
+      widgets_to_delete_.push_back(button);
       max_button_size = std::max(max_button_size, button->getWidth());
       top_offset += button->getHeight() + MENU_PADDING;
     }
@@ -94,6 +96,7 @@ GCNMenu::GCNMenu(
        it != buttons.end(); ++it) {
     (*it)->setWidth(max_button_size);
     (*it)->setAlignment(gcn::Graphics::CENTER);
+    // TODO: Leak
   }
 
   setSize((MENU_PADDING*2) + max_button_size, top_offset);
@@ -101,7 +104,10 @@ GCNMenu::GCNMenu(
 
 // -----------------------------------------------------------------------
 
-GCNMenu::~GCNMenu() { }
+GCNMenu::~GCNMenu() {
+  for_each(widgets_to_delete_.begin(), widgets_to_delete_.end(),
+           boost::checked_deleter<gcn::Widget>());
+}
 
 // -----------------------------------------------------------------------
 

@@ -55,7 +55,7 @@ struct GCNMenuButton {
 class GCNMenu : public GCNWindow,
                 public gcn::ActionListener
 {
-public:
+ public:
   /**
    * Creates a menu out of a set of buttons
    *
@@ -72,6 +72,8 @@ public:
   // Overriden from gcn::ActionListener:
   virtual void action(const gcn::ActionEvent& actionEvent);
 
+ private:
+  std::vector<gcn::Widget*> widgets_to_delete_;
 };  // end of class GCNMenu
 
 

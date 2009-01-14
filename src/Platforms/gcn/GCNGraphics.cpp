@@ -142,12 +142,7 @@ void GCNGraphics::drawImageStretched(
   glBindTexture(GL_TEXTURE_2D, srcImage->getTextureHandle());
 
   glEnable(GL_TEXTURE_2D);
-
-  // Check if blending already is enabled
-  if (!mAlpha)
-  {
-    glEnable(GL_BLEND);
-  }
+  glEnable(GL_BLEND);
 
   // Draw a textured quad -- the image
   glBegin(GL_QUADS);
@@ -164,12 +159,6 @@ void GCNGraphics::drawImageStretched(
   glVertex3i(dstX + width, dstY, 0);
   glEnd();
   glDisable(GL_TEXTURE_2D);
-
-  // Don't disable blending if the color has alpha
-  if (!mAlpha)
-  {
-    glDisable(GL_BLEND);
-  }
 }
 
 // -----------------------------------------------------------------------

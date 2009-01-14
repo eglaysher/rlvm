@@ -108,7 +108,6 @@ static gcn::Image* buildThemeGCNImageFrom(SDL_Surface* loadedSurface) {
   }
 
   SDL_Surface *surface = convertToStandardFormat(loadedSurface);
-  SDL_FreeSurface(loadedSurface);
 
   if (surface == NULL)
   {
@@ -129,5 +128,9 @@ static gcn::Image* buildThemeGCNImageFrom(SDL_Surface* loadedSurface) {
 gcn::Image* getThemeImage(enum ThemeImage img) {
   SDL_RWops *rwop = SDL_RWFromMem(IMAGE_TABLE[img].data, IMAGE_TABLE[img].size);
   SDL_Surface* loadedSurface = IMG_LoadPNG_RW(rwop);
-  return buildThemeGCNImageFrom(loadedSurface);
+  gcn::Image* image = buildThemeGCNImageFrom(loadedSurface);
+  SDL_FreeSurface(loadedSurface);
+  SDL_FreeRW(rwop);
+
+  return image;
 }

@@ -191,24 +191,29 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
   Container::add(action_button_, button_left, button_top);
   Container::add(button, button_left - PADDING - button->getWidth(),
                  button_top);
+  widgets_to_delete_.push_back(action_button_);
+  widgets_to_delete_.push_back(button);
 
   listbox_ = new gcn::ListBox(model_.get());
   listbox_->setActionEventId(VALUE_CHANGE);
   listbox_->addActionListener(this);
   listbox_->addSelectionListener(this);
   listbox_->adjustSize();
+  widgets_to_delete_.push_back(listbox_);
 
   gcn::ScrollArea* area = new GCNScrollArea(listbox_);
   area->setHorizontalScrollPolicy(gcn::ScrollArea::SHOW_NEVER);
   area->setSize(getWidth() - (2*PADDING), button_top - (2*PADDING));
 
   Container::add(area, PADDING, PADDING);
+  widgets_to_delete_.push_back(area);
 }
 
 // -----------------------------------------------------------------------
 
-GCNSaveLoadWindow::~GCNSaveLoadWindow()
-{
+GCNSaveLoadWindow::~GCNSaveLoadWindow() {
+  for_each(widgets_to_delete_.begin(), widgets_to_delete_.end(),
+           boost::checked_deleter<gcn::Widget>());
 }
 
 // -----------------------------------------------------------------------

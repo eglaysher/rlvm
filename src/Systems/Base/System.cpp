@@ -74,7 +74,7 @@ SystemGlobals::SystemGlobals()
 // -----------------------------------------------------------------------
 
 System::System()
-  : in_menu_(false), force_fast_forward_(false)
+    : in_menu_(false), force_fast_forward_(false), force_wait_(false)
 {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }

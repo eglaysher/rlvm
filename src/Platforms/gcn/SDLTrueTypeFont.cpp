@@ -125,6 +125,7 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
                                        textSurface->w, textSurface->h));
     }
     SDL_UnlockSurface(textSurface);
+    SDL_FreeSurface(textSurface);
 
     image_cache_.insert(make_pair(text, colstr), image);
   }

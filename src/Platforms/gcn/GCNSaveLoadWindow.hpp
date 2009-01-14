@@ -79,6 +79,8 @@ private:
   gcn::Button* action_button_;
 
   gcn::ListBox* listbox_;
+
+  std::vector<gcn::Widget*> widgets_to_delete_;
 };  // end of class GCNSaveLoadWindow
 
 
