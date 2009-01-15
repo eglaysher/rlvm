@@ -73,7 +73,7 @@ struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
   {
     EventSystem& es = machine.system().event();
     if(es.frameCounterExists(layer_, counter))
-      return es.getFrameCounter(layer_, counter).readFrame(es);
+      return es.getFrameCounter(layer_, counter).readFrame();
     else
       return 0;
   }
@@ -89,10 +89,11 @@ struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    if(es.frameCounterExists(layer_, counter))
+    if(es.frameCounterExists(layer_, counter)) {
       return es.getFrameCounter(layer_, counter).isActive();
-    else
+    } else {
       return 0;
+    }
   }
 };
 
@@ -216,7 +217,7 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
 
       if(es.frameCounterExists(layer_, counter))
       {
-        int val = es.getFrameCounter(layer_, counter).readFrame(es);
+        int val = es.getFrameCounter(layer_, counter).readFrame();
         *(it->get<1>()) = val;
 
         if(es.getFrameCounter(layer_, counter).isActive())

@@ -52,7 +52,7 @@ public:
    *
    * @return
    */
-  virtual int readFrame(EventSystem& event_system) = 0;
+  virtual int readFrame() = 0;
 
   /**
    * The converse is setting the value, which should be done after the
@@ -69,7 +69,7 @@ public:
    *
    * @see end_timer
    */
-  void beginTimer(EventSystem& event_system);
+  void beginTimer();
 
   /**
    * When a timer ends, there's no need to be so harsh on the
@@ -78,9 +78,9 @@ public:
    *
    * @see begin_timer
    */
-  void endTimer(EventSystem& event_system);
+  void endTimer();
 
-  bool isActive() const { return is_active_; }
+  bool isActive();
   void setActive(bool active) { is_active_ = active; }
 
   bool checkIfFinished(float new_value);
@@ -88,15 +88,14 @@ public:
 
 
   int readNormalFrameWithChangeInterval(
-    EventSystem& event_system, float change_interval,
-    float& time_at_last_check);
+    float change_interval, float& time_at_last_check);
 
   /**
    * Called from read_normal_frame_with_change_interval when finished. This
    * method can be overloaded to control what happens when the timer
    * has reached its end.
    */
-  virtual void finished(EventSystem& event_system);
+  virtual void finished();
 
 // Give these accessors later?
 protected:
@@ -122,7 +121,7 @@ public:
   SimpleFrameCounter(EventSystem& es, int frame_min, int frame_max,
                      int milliseconds);
 
-  virtual int readFrame(EventSystem& event_system);
+  virtual int readFrame();
 
 private:
   float change_interval_;
@@ -141,8 +140,8 @@ public:
   LoopFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
 
-  virtual int readFrame(EventSystem& event_system);
-  virtual void finished(EventSystem& event_system);
+  virtual int readFrame();
+  virtual void finished();
 
 private:
   float change_interval_;
@@ -161,7 +160,7 @@ public:
   TurnFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
 
-  virtual int readFrame(EventSystem& event_system);
+  virtual int readFrame();
 
 private:
   bool going_forward_;
@@ -184,7 +183,7 @@ public:
   AcceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
-  virtual int readFrame(EventSystem& event_system);
+  virtual int readFrame();
 };
 
 // -----------------------------------------------------------------------
@@ -203,7 +202,7 @@ public:
   DeceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
-  virtual int readFrame(EventSystem& event_system);
+  virtual int readFrame();
 };
 
 
