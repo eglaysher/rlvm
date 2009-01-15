@@ -414,6 +414,8 @@ void addSysSaveOpcodes(RLModule& m)
   m.addOpcode(3009, 0, "load", new Sys_load);
   m.addOpcode(3109, 0, "load_always", new Sys_load);
 
+  m.addOpcode(3500, 0, "Savepoint",
+              callFunction(&RLMachine::markSavepoint));
   m.addOpcode(3501, 0, "EnableAutoSavepoints",
               setToConstant(&RLMachine::setMarkSavepoints, 1));
   m.addOpcode(3502, 0, "DisableAutoSavepoints",
