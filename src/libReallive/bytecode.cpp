@@ -162,7 +162,8 @@ void BytecodeElement::runOnMachine(RLMachine& machine) const
 // -----------------------------------------------------------------------
 
 BytecodeElement*
-BytecodeElement::read(const char* stream, ConstructionData& cdata)
+BytecodeElement::read(const char* stream, const char* end,
+                      ConstructionData& cdata)
 {
   const char c = *stream;
   if (c == '!') entrypoint_marker = '!';
@@ -174,7 +175,7 @@ BytecodeElement::read(const char* stream, ConstructionData& cdata)
   case '!':  return new MetaElement(&cdata, stream);
   case '$':  return new ExpressionElement(stream);
   case '#':  return read_function(stream, cdata);
-  default:   return new TextoutElement(stream);
+  default:   return new TextoutElement(stream, end);
   }
 }
 
@@ -270,11 +271,11 @@ MetaElement* MetaElement::clone() const { return new MetaElement(*this); }
 // TextoutElement
 // -----------------------------------------------------------------------
 
-TextoutElement::TextoutElement(const char* src)
+TextoutElement::TextoutElement(const char* src, const char* file_end)
 {
   const char* end = src;
   bool quoted = false;
-  while (true) {
+  while (true && end < file_end) {
     if (quoted) {
       quoted = *end != '"';
       if (*end == '\\' && end[1] == '"') ++end;

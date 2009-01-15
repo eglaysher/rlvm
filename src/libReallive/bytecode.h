@@ -110,7 +110,8 @@ public:
   virtual const int entrypoint() const;
 
   // Read the next element from a stream.
-  static BytecodeElement* read(const char* stream, ConstructionData& cdata);
+  static BytecodeElement* read(const char* stream, const char* end,
+                               ConstructionData& cdata);
 };
 
 inline BytecodeElement* new_clone(const BytecodeElement& e)
@@ -174,7 +175,7 @@ public:
   const string text() const;
   void set_text(const char* src);
   void set_text(const string& src) { set_text(src.c_str()); }
-  TextoutElement(const char* src);
+  TextoutElement(const char* src, const char* file_end);
   TextoutElement();
   TextoutElement* clone() const;
 

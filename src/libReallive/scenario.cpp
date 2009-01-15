@@ -130,10 +130,11 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
                           second_level_xor_key);
   // Read bytecode
   const char* stream = uncompressed;
+  const char* end = uncompressed + dlen;
   size_t pos = 0;
   while (pos < dlen) {
     // Read element
-    elts.push_back(BytecodeElement::read(stream, cdat));
+    elts.push_back(BytecodeElement::read(stream, end, cdat));
     pointer_t it = elts.end();
     cdat.offsets[pos] = --it;
     it->offset_ = pos;
