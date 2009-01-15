@@ -339,7 +339,8 @@ MsgModule::MsgModule()
   addUnsupportedOpcode(170, 0, "msgHideAllTemp");
   addOpcode(201, 0, "br", new Msg_br);
   addOpcode(205, 0, "spause", new Msg_spause);
-
+  addUnsupportedOpcode(206, 0, "spause2");
+  addUnsupportedOpcode(207, 0, "pause_all");
   addOpcode(210, 0, "page", new Msg_page);
 
   addOpcode(300, 0, "SetIndent", new Msg_SetIndent);
@@ -351,6 +352,16 @@ MsgModule::MsgModule()
   addOpcode(320, 0, "TextOffset", new Msg_TextOffset);
   addOpcode(321, 0, "TextOffsetX", new Msg_TextOffsetX);
   addOpcode(322, 0, "TextOffsetY", new Msg_TextOffsetY);
+  addUnsupportedOpcode(330, 0, "GetTextPos");
+
+  addUnsupportedOpcode(340, 0, "WindowLen");
+  addUnsupportedOpcode(340, 1, "WindowLen");
+  addUnsupportedOpcode(341, 0, "WindowLenAll");
+
+  addUnsupportedOpcode(1000, 0, "FaceOpen");
+  addUnsupportedOpcode(1000, 1, "FaceOpen");
+  addUnsupportedOpcode(1001, 0, "FaceClose");
+  addUnsupportedOpcode(1001, 1, "FaceClose");
 }
 
 // @}
