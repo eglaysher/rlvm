@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>rlvm: Installing the Kanon patch under Linux</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<link href="style.css" rel="stylesheet" type="text/css"/>
+
+<!-- Begin IE Fixes (Don't touch unless you know what you're doing!)-->
+	<!--[if IE]>
+	<link type="text/css" href="ie.css" rel="stylesheet" />
+	<![endif]-->
+<!-- End of IE fixes -->
+
+</head>
+<body>
+<a href="http://github.com/eglaysher/rlvm"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a>
+<div id="container">
+  <div id="navigation">
+	<ul>
+      <li><a href="index.html">Main</a></li>
+      <li><a href="guides.html">Guides</a></li>
+      <li><a href="screenshots.html">Screenshots</a></li>
+      <li><a href="old.html">Old versions</a></li>
+	  <li><a href="mailto:glaysher@umich.edu">Contact Me</a></li>
+	</ul>
+  </div>
+  <div id="header">
+	<h1>rlvm</h1>
+	<h2>play Clannad, Kanon, and Planetarian under Linux</h2>
+  </div>
+  <div id="wrapper">
+	<div id="content">
+	  <h1>Installing the Kanon patch under Linux</h1>
+      <p>
+        <em>(Note: All commands are examples. Depending on your linux
+        distribution, you may need to adjust paths, commands, et cetera.)</em>
+      </p>
+      <ol>
+        <li>Make sure you have wine installed. (We will need it to run the
+          Kanon English patch installer; not to play Kanon.)
+          <div class="codebox">$ sudo apt-get install wine</div>
+        </li>
+        <li>Copy the files from your <em>Kanon Standard Edition</em> or
+          <em>Kanon Standard Edition All Ages Version</em> CD to your hard
+          drive in a new folder. For example:
+          <div class="codebox">$ cp -R /media/cdrom0/ ~/Kanon.eng </div>
+        </li>
+        <li>The fine people at <a href="http://radicalr.pestermom.com/vn.html">
+            Non-directional Translations</a> have created a teaser patch, with
+            a full patch coming Real Soon Now. Download the installer from
+            their website.
+        </li>
+        <li>Use wine to run the installer.
+          <div class="codebox">$ wine ~/Desktop/KanonTeaser.exe </div>
+          You should see the first part of the installation wizard:
+          <div class="centerimage">
+            <img src="screenshots/guide_kanon_eng/1.jpg"
+                 alt="The Kanon English Patch installation wizard"/>
+          </div>
+        </li>
+        <li>Select the directory you copied the CD contents to:
+          <div class="centerimage">
+            <img src="screenshots/guide_kanon_eng/2.jpg"
+                 alt="The Kanon English Patch installation wizard"/>
+          </div>
+        </li>
+
+        <li>After finishing the installation, you will see the following dialog
+          window:
+          <div class="centerimage">
+            <img src="screenshots/guide_kanon_eng/3.jpg"
+                 alt="The Kanon English RealLive.exe Patcher"/>
+          </div>
+          <em>You do not need to do anything with this window and can safely
+            click exit.</em> This file translates strings inside the
+            RealLive.exe interpreter. You'll be using <code>rlvm</code> to play
+            the patch, so just click Exit.
+        </li>
+        <li>You should be able to play the NDT patched Kanon by running:
+          <div class="codebox">$ rlvm ~/Kanon.eng</div>
+          <div class="centerimage">
+            <img src="screenshots/kanon_eng_main_menu.jpg"
+                 alt="The Kanon English RealLive.exe Patcher"/>
+          </div>
+        </li>
+      </ol>
+      <p>Enjoy!</p>
+    </div>
+  </div>
+  <div id="footer">
+	<span id="design-by">Design by <a href="http://smallpark.org">Smallpark Studios<!-- Thank you for keeping this on --></a></span> 
+	Copyright &copy; Elliot Glaysher 2008.
+  </div>
+</div>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6905496-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
+
+</title>
+</head>

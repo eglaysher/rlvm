@@ -174,3 +174,22 @@ border-right: 1px solid #333;
 float: right;
 display:inline;
 }
+
+
+/* Elliot's additions */
+
+/* Taken from http://loadaveragezero.com/vnav/labs/CSS/code.php */
+div.codebox {
+  font-family: 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
+  white-space: pre;
+  padding: 0.5em 0;
+  margin: 1em 0;
+  border: 1px dashed #aaa8a8;
+  color: #000;
+  overflow: auto;
+}
+
+div.centerimage {
+  text-align: center;
+  margin: 0.5em 0;
+}
