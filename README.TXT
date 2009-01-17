@@ -31,16 +31,28 @@ RealLive system.
 2) STATUS
 -------------------------------------------------------------------------
 
-This beta is currently only compatible with the Planetarian CD
-edition[1], the non-voiced version of CLANNAD and the Standard Edition
-of Kanon. Planetarian is playable through the end, though rlvm currently
-doesn't implement all features used in the game (see known issues). All
-of the main routes necessary to get to the After Story True End work are
-playable, minus some problems with graphics and the Megumeru video not
-playing. Kanon SE is playable in its entirety, with slightly less minor
-graphical glitches than Planetarian or CLANNAD.
+rlvm currently plays the following games to their completion:
 
-This is the fourth public release of rlvm. Please report bugs and
+- The Planetarian CD edition[1]
+- The non-voiced version of CLANNAD
+- Kanon Standard Edition
+- Kanon Standard Edition with NDT's teaser patch
+
+rlvm is now at the point where enough commands are implemented that
+other games *may* work. The above is only a list of what I've tested
+against.
+
+In addition, rlvm has an implementation of rlBabel; English patches
+compiled with Haeleth's rlBabel should line break correctly. English
+patches that were *not* compiled with rlBabel will, obviously, not line
+break correctly. I mention this because it appears that many of the
+unofficial CLANNAD patches were not compiled with rlBabel turned on. You
+can check to see if rlBabel is enabled by hitting [F1] at any
+time. "rlBabel" should be set to "Enabled" and "Text Encoding" should be
+set to "Western". rlvm can not, and will never, support these broken
+patches.
+
+This is the fifth public release of rlvm. Please report bugs and
 discrepancies to <glaysher at umich dot edu>.
 
 3) COMPILING RLVM
@@ -133,11 +145,6 @@ the middle of words.
 Many graphics manipulation commands not required by Planetarian are
 currently unimplemented. Kanon SE, Haeleth's unofficial ONE demo and
 CLANNAD do not always render correctly because of this.
-
-rlvm does not contain an implementation of Haeleth's rlBabel and Textout
-extensions. Fan translations that use something other than the lower
-ASCII set, specifically Chinese or Korean ones, will not work and ones
-that are restricted to the lower ASCII set will look ugly.
 
 5) GETTING INVOLVED
 -------------------------------------------------------------------------

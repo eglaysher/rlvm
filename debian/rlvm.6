@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH RLVM 6 "December 08, 2008"
+.TH RLVM 6 "January 17, 2009"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -27,13 +27,18 @@ RealLive interpreter. It is meant to provide Linux and Apple users
 with a compatible, portable interpreter to play VisualArts games,
 specifically those released by Key. 
 .sp 1
-Currently, rlvm is only compatible with Planetarian, the non-voiced version of
+Currently, rlvm has only been tested with Planetarian, the non-voiced version of
 CLANNAD and the Standard Edition of Kanon.
 .SH BUGS?
-Yes.
-.sp 1
 While rlvm is generally stable, emulation of the RealLive virtual machine is
 incomplete.
+.sp 1
+The implementation of rlBabel currently does not work with Korean or Chinese
+patches.
+.SH NOT A BUG
+English patches that were not compiled with rlBabel will not line break
+correctly. You can check if your patch is compiled with rlBabel and the text
+encoding is set to "Western" by hitting [F1] at any time.
 .SH AUTHOR
 rlvm was written by Elliot Glaysher, with the help of Haeleth and
 Jagarl. Windows port and bug fixes made possible by Rasqual Twilight.

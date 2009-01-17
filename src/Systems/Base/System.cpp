@@ -438,5 +438,5 @@ void System::dumpRenderTree(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 std::string rlvm_version() {
-  return "Version 0.4";
+  return "Version 0.5";
 }

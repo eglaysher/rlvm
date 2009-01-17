@@ -1,3 +1,16 @@
+rlvm (0.5) unstable; urgency=low
+
+  * Kanon is now playable with NDT's English teaser patch
+  * Fix a large number of graphical glitches including the calendar in
+    Kanon blinking in and out and the CGs at the end of routes in CLANNAD
+    not always clearing as the end credits are displayed.
+  * New Kanon save games will restore the graphical contents of the screen
+    properly; old Kanon save files will show a black background.
+  * Fix OpenGL 1.4 support; Version 0.4 only worked on OpenGL 2.0 or higher
+    graphics cards.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 17 Jan 2009 12:00:03 -0800
+
 rlvm (0.4) unstable; urgency=low
 
   * CLANNAD is now playable from a clean file to After Story True End. No

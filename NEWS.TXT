@@ -1,6 +1,22 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.5:
+- There's now an implementation of rlBabel. This has only been tested with
+  NDT's Kanon preview patch. It has not been tested with any of the patches
+  from the Key Fan Club or any other Chinese or Korean patches.
+- Fix a large number of graphical glitches including the calendar in Kanon
+  blinking in and out and the CGs at the end of routes in CLANNAD not always
+  clearing as the end credits are displayed.
+- New Kanon save games will restore the graphical contents of the screen
+  properly; old Kanon save files will show a black background. I wasn't
+  recording the status of the graphics stack properly.
+- Game info can be brought up by hitting [F1].
+- Fix OpenGL 1.4 support; Version 0.4 only worked on OpenGL 2.0 or higher
+  graphics cards.
+
+-------------------------------------------------------------------------
+
 Version 0.4:
 - CLANNAD is playable from a clean file to the end of After Story True End;
   side routes and bad ends have not been tested.
