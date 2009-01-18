@@ -86,6 +86,8 @@ void NullTextWindow::setName(const std::string& utf8name,
   text_window_log_.recordFunction("setName", utf8name, next_char);
 
   current_contents_ += "\\{" + utf8name + "}";
+
+  TextWindow::setName(utf8name, next_char);
 }
 
 // -----------------------------------------------------------------------

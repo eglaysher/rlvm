@@ -45,7 +45,6 @@ public:
   virtual void clearWin();
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
-  virtual void setNameWithoutDisplay(const std::string& utf8name) { }
 
   virtual void hardBrake();
 

@@ -52,20 +52,11 @@ public:
                            const std::string& next);
   virtual int charWidth(unsigned short codepoint) const;
 
-  virtual void setName(const std::string& utf8name,
-                       const std::string& next_char);
-  virtual void setNameWithoutDisplay(const std::string& utf8name);
   virtual void displayRubyText(const std::string& utf8str);
-
 
   virtual void addSelectionItem(const std::string& utf8str);
 
 private:
-
-  void setIndentation();
-
-  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
-
   /// Converted surface for uploading.
   boost::shared_ptr<SDLSurface> surface_;
 

@@ -306,6 +306,8 @@ public:
   void setUseIndentation(const int i) { use_indentation_ = i; }
   int useIndentation() const { return use_indentation_; }
 
+  void setIndentation();
+  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
   int currentIndentation() const { return current_indentation_in_pixels_; }
 
   void setDefaultTextColor(const std::vector<int>& color_data);
@@ -484,11 +486,10 @@ public:
    * Sets (and displays, if appropriate) the name of the current speaker.
    */
   virtual void setName(const std::string& utf8name,
-                       const std::string& next_char) = 0;
-  virtual void setNameWithoutDisplay(const std::string& utf8name) = 0;
+                       const std::string& next_char);
+  void setNameWithoutDisplay(const std::string& utf8name);
 
   virtual void hardBrake();
-  virtual void setIndentation();
   virtual void resetIndentation();
   virtual void markRubyBegin();
   virtual void displayRubyText(const std::string& utf8str) = 0;

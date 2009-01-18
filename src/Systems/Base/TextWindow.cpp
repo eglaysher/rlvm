@@ -42,6 +42,7 @@
 #include "Systems/Base/TextWindowButton.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
+#include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>
@@ -49,6 +50,10 @@
 #include <iomanip>
 #include <vector>
 
+#include "utf8.h"
+
+using boost::bind;
+using boost::ref;
 using boost::shared_ptr;
 using std::cerr;
 using std::endl;
@@ -166,6 +171,56 @@ void TextWindow::setTextboxPadding(const vector<int>& pos_data)
   lower_box_padding_ = pos_data.at(1);
   left_box_padding_ = pos_data.at(2);
   right_box_padding_ = pos_data.at(3);
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setName(const std::string& utf8name,
+                         const std::string& next_char)
+{
+  if (name_mod_ == 0) {
+    // Display the name in one pass
+    printTextToFunction(bind(&TextWindow::displayChar, ref(*this),_1, _2),
+                        utf8name, next_char);
+    setIndentation();
+
+    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
+  } else {
+    setNameWithoutDisplay(utf8name);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
+  if(name_mod_ == 0) {
+    // TODO: Save the name for some reason?
+  } else if(name_mod_ == 1) {
+    throw SystemError("NAME_MOD=1 is unsupported.");
+  } else if(name_mod_ == 2) {
+    // This doesn't actually fix the problem in Planetarian because
+    // the call to set the name and the actual quotetext are in two
+    // different strings. This logic will need to be moved.
+//    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
+  } else {
+    throw SystemError("Invalid");
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
+  const std::string& next_char)
+{
+  // Check to see if we set the indentation after the
+  string::const_iterator it = next_char.begin();
+  int next_codepoint = utf8::next(it, next_char.end());
+  if(next_codepoint == 0x300C || next_codepoint == 0x300E ||
+     next_codepoint == 0xFF08)
+  {
+    current_indentation_in_pixels_ = text_insertion_point_x_ + font_size_in_pixels_ +
+      x_spacing_;
+  }
 }
 
 // -----------------------------------------------------------------------
