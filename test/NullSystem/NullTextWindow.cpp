@@ -25,7 +25,14 @@
 //
 // -----------------------------------------------------------------------
 
-#include "NullTextWindow.hpp"
+#include "NullSystem/NullTextWindow.hpp"
+
+#include "Systems/Base/Rect.hpp"
+#include "NullSystem/NullSurface.hpp"
+
+#include <boost/shared_ptr.hpp>
+
+using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
 
@@ -36,6 +43,13 @@ NullTextWindow::NullTextWindow(System& system, int x)
 // -----------------------------------------------------------------------
 
 NullTextWindow::~NullTextWindow() {}
+
+// -----------------------------------------------------------------------
+
+shared_ptr<Surface> NullTextWindow::textSurface() {
+  // TODO(erg): May need to use a real size?
+  return shared_ptr<Surface>(new NullSurface("Text Surface", Size(640, 480)));
+}
 
 // -----------------------------------------------------------------------
 

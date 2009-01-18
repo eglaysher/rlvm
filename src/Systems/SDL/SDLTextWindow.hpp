@@ -44,8 +44,8 @@ class SDLTextWindow : public TextWindow
 public:
   SDLTextWindow(System& system, int window);
   ~SDLTextWindow();
-  virtual void render(std::ostream* tree);
 
+  virtual boost::shared_ptr<Surface> textSurface();
   virtual void clearWin();
 
   virtual bool displayChar(const std::string& current,

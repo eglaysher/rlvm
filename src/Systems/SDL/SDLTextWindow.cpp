@@ -85,6 +85,12 @@ SDLTextWindow::~SDLTextWindow()
 
 // -----------------------------------------------------------------------
 
+boost::shared_ptr<Surface> SDLTextWindow::textSurface() {
+  return surface_;
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextWindow::clearWin() {
   TextWindow::clearWin();
 
@@ -244,78 +250,6 @@ void SDLTextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
   {
     current_indentation_in_pixels_ = text_insertion_point_x_ + font_size_in_pixels_ +
       x_spacing_;
-  }
-}
-
-// -----------------------------------------------------------------------
-
-/**
- * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
- *       waku_backing.
- */
-void SDLTextWindow::render(std::ostream* tree)
-{
-  if(surface_ && isVisible())
-  {
-    Size surface_size = surface_->size();
-
-    // POINT
-    int boxX = boxX1();
-    int boxY = boxY1();
-
-    if (tree) {
-      *tree << "  Text Window #" << window_num_ << endl;
-    }
-
-    if(waku_backing_)
-    {
-      Size backing_size = waku_backing_->size();
-      // COLOUR
-      waku_backing_->renderToScreenAsColorMask(
-        Rect(Point(0, 0), backing_size),
-        Rect(Point(boxX, boxY), backing_size),
-        colour_, filter_);
-
-      if (tree) {
-        *tree << "    Backing Area: " << Rect(Point(boxX, boxY), backing_size)
-              << endl;
-      }
-    }
-
-    if(waku_main_)
-    {
-      Size main_size = waku_main_->size();
-      waku_main_->renderToScreen(
-        Rect(Point(0, 0), main_size), Rect(Point(boxX, boxY), main_size), 255);
-
-      if (tree) {
-        *tree << "    Main Area: " << Rect(Point(boxX, boxY), main_size)
-              << endl;
-      }
-    }
-
-    if (waku_button_)
-      renderButtons();
-
-    int x = textX1();
-    int y = textY1();
-
-    if(inSelectionMode())
-    {
-      for_each(selections_.begin(), selections_.end(),
-               bind(&SelectionElement::render, _1));
-    }
-    else
-    {
-      surface_->renderToScreen(
-        Rect(Point(0, 0), surface_size),
-        Rect(Point(x, y), surface_size),
-        255);
-
-      if (tree) {
-        *tree << "    Text Area: " << Rect(Point(x, y), surface_size) << endl;
-      }
-    }
   }
 }
 

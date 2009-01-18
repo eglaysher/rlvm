@@ -49,6 +49,7 @@
 #include <iomanip>
 #include <vector>
 
+using boost::shared_ptr;
 using std::cerr;
 using std::endl;
 using std::ostringstream;
@@ -434,6 +435,80 @@ void TextWindow::setWakuButton(const std::string& name)
     waku_button_ = system_.graphics().loadNonCGSurfaceFromFile(name);
   else
     waku_button_.reset();
+}
+
+// -----------------------------------------------------------------------
+
+/**
+ * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
+ *       waku_backing.
+ */
+void TextWindow::render(std::ostream* tree)
+{
+  shared_ptr<Surface> text_surface = textSurface();
+
+  if(text_surface && isVisible())
+  {
+    Size surface_size = text_surface->size();
+
+    // POINT
+    int boxX = boxX1();
+    int boxY = boxY1();
+
+    if (tree) {
+      *tree << "  Text Window #" << window_num_ << endl;
+    }
+
+    if(waku_backing_)
+    {
+      Size backing_size = waku_backing_->size();
+      // COLOUR
+      waku_backing_->renderToScreenAsColorMask(
+        Rect(Point(0, 0), backing_size),
+        Rect(Point(boxX, boxY), backing_size),
+        colour_, filter_);
+
+      if (tree) {
+        *tree << "    Backing Area: " << Rect(Point(boxX, boxY), backing_size)
+              << endl;
+      }
+    }
+
+    if(waku_main_)
+    {
+      Size main_size = waku_main_->size();
+      waku_main_->renderToScreen(
+        Rect(Point(0, 0), main_size), Rect(Point(boxX, boxY), main_size), 255);
+
+      if (tree) {
+        *tree << "    Main Area: " << Rect(Point(boxX, boxY), main_size)
+              << endl;
+      }
+    }
+
+    if (waku_button_)
+      renderButtons();
+
+    int x = textX1();
+    int y = textY1();
+
+    if(inSelectionMode())
+    {
+      for_each(selections_.begin(), selections_.end(),
+               bind(&SelectionElement::render, _1));
+    }
+    else
+    {
+      text_surface->renderToScreen(
+        Rect(Point(0, 0), surface_size),
+        Rect(Point(x, y), surface_size),
+        255);
+
+      if (tree) {
+        *tree << "    Text Area: " << Rect(Point(x, y), surface_size) << endl;
+      }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------

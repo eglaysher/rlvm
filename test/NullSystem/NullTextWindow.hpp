@@ -37,14 +37,11 @@ public:
 
   virtual void setFontColor(const std::vector<int>& color_data);
 
-  // We don't test graphics in the null system, so don't really
-  // implement the waku parts.
-  virtual void render(std::ostream* tree) {}
-
   virtual bool displayChar(const std::string& current,
                            const std::string& next);
   virtual int charWidth(unsigned short codepoint) const { return 0; }
 
+  virtual boost::shared_ptr<Surface> textSurface();
   virtual void clearWin();
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);

@@ -444,9 +444,12 @@ public:
   /// @}
 
   // ------------------------------------------------ [ Abstract interface ]
-  virtual void render(std::ostream* tree) = 0;
+  void render(std::ostream* tree);
 
   void renderButtons();
+
+  /// Returns a surface that is the text.
+  virtual boost::shared_ptr<Surface> textSurface() = 0;
 
   /**
    * Clears the text window of all text and resets the insertion
