@@ -81,6 +81,12 @@ std::string cp932toUTF8(const std::string& line, int transformation)
 
 // -----------------------------------------------------------------------
 
+bool isOpeningQuoteMark(int codepoint) {
+  return codepoint == 0x300C || codepoint == 0x300E || codepoint == 0xFF08;
+}
+
+// -----------------------------------------------------------------------
+
 bool isKinsoku(int codepoint)
 {
   static const int matchingCodepoints[] =

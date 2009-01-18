@@ -112,6 +112,10 @@ protected:
   /// The initial value of text_insertion_point_y_ on new lines.
   int current_indentation_in_pixels_;
 
+  /// Whether the last token was a setName. This is used to control indentation
+  /// for quotes.
+  bool last_token_was_name_;
+
   /// @}
 
   /**
@@ -307,7 +311,6 @@ public:
   int useIndentation() const { return use_indentation_; }
 
   void setIndentation();
-  void setIndentationIfNextCharIsOpeningQuoteMark(const std::string& next_char);
   int currentIndentation() const { return current_indentation_in_pixels_; }
 
   void setDefaultTextColor(const std::vector<int>& color_data);
@@ -481,6 +484,9 @@ public:
    *  Write this later.
    */
  //  virtual void resetName() = 0;
+
+  /// Called when a PauseLongOperation happens.
+  void pause();
 
   /**
    * Sets (and displays, if appropriate) the name of the current speaker.

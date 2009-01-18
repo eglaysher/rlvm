@@ -82,13 +82,13 @@ private:
 };
 
 // -----------------------------------------------------------------------
-// HardBrakeAfterLongop
+// NewParagraphAfterLongop
 // -----------------------------------------------------------------------
-class HardBrakeAfterLongop : public PerformAfterLongOperationDecorator
+class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator
 {
 public:
-  HardBrakeAfterLongop(LongOperation* inOp);
-  ~HardBrakeAfterLongop();
+  NewParagraphAfterLongop(LongOperation* inOp);
+  ~NewParagraphAfterLongop();
 
 private:
   virtual void performAfterLongOperation(RLMachine& machine);

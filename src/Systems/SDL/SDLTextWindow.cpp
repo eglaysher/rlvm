@@ -118,6 +118,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
     RGBColourToSDLColor(font_colour_, &color);
     int cur_codepoint = codepoint(current);
     int next_codepoint = codepoint(next);
+    bool indent_after_spacing = false;
 
     // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
     // LENTICULAR BRACKET) should be handled before this
@@ -126,6 +127,26 @@ bool SDLTextWindow::displayChar(const std::string& current,
     {
       throw SystemError(
         "Bug in parser; \\{name} construct should be handled before display_char");
+    }
+
+    // But if the last character was a lenticular bracket, we need to indent
+    // now. See doc/notes/NamesAndIndentation.txt for more details.
+    if (last_token_was_name_) {
+      if (name_mod_ == 0) {
+        if (isOpeningQuoteMark(cur_codepoint))
+          indent_after_spacing = true;
+      } else if (name_mod_ == 2) {
+        if (isOpeningQuoteMark(cur_codepoint)) {
+          indent_after_spacing = true;
+        } else {
+          // An implicit wide space is printed instead on lines that don't have
+          // an opening quote mark.
+          std::string wide_space;
+          utf8::append(0x3000, back_inserter(wide_space));
+          if (!displayChar(wide_space, current))
+            return false;
+        }
+      }
     }
 
     SDL_Surface* tmp =
@@ -175,6 +196,9 @@ bool SDLTextWindow::displayChar(const std::string& current,
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
 
     SDL_FreeSurface(tmp);
+
+    if (indent_after_spacing)
+      setIndentation();
   }
 
   // When we aren't rendering a piece of text with a ruby gloss, mark
@@ -183,6 +207,8 @@ bool SDLTextWindow::displayChar(const std::string& current,
   {
     system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
+
+  last_token_was_name_ = false;
 
   return true;
 }
@@ -233,6 +259,8 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str)
 
     ruby_begin_point_ = -1;
   }
+
+  last_token_was_name_ = false;
 }
 
 // -----------------------------------------------------------------------

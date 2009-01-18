@@ -69,6 +69,9 @@ std::string unicodeToUTF8(const std::wstring& widestring);
 // For convenience. Combines the two above functions.
 std::string cp932toUTF8(const std::string& line, int transformation);
 
+/// Returns true if codepoint is either of the Japanese quote marks or '('.
+bool isOpeningQuoteMark(int codepoint);
+
 /**
  * Returns whether the unicode |codepoint| is a piece of breaking punctuation.
  */

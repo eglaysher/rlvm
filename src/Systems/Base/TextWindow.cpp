@@ -97,7 +97,8 @@ static struct ButtonInfo {
 
 TextWindow::TextWindow(System& system, int window_num)
     : window_num_(window_num), ruby_begin_point_(-1), current_line_number_(0),
-      current_indentation_in_pixels_(0), use_indentation_(0), colour_(),
+      current_indentation_in_pixels_(0), last_token_was_name_(false),
+      use_indentation_(0), colour_(),
       filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0),
       system_(system)
 {
@@ -183,44 +184,19 @@ void TextWindow::setName(const std::string& utf8name,
     printTextToFunction(bind(&TextWindow::displayChar, ref(*this),_1, _2),
                         utf8name, next_char);
     setIndentation();
-
-    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
-  } else {
-    setNameWithoutDisplay(utf8name);
   }
+
+  setNameWithoutDisplay(utf8name);
 }
 
 // -----------------------------------------------------------------------
 
 void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
-  if(name_mod_ == 0) {
-    // TODO: Save the name for some reason?
-  } else if(name_mod_ == 1) {
+  if (name_mod_ == 1) {
     throw SystemError("NAME_MOD=1 is unsupported.");
-  } else if(name_mod_ == 2) {
-    // This doesn't actually fix the problem in Planetarian because
-    // the call to set the name and the actual quotetext are in two
-    // different strings. This logic will need to be moved.
-//    setIndentationIfNextCharIsOpeningQuoteMark(next_char);
-  } else {
-    throw SystemError("Invalid");
   }
-}
 
-// -----------------------------------------------------------------------
-
-void TextWindow::setIndentationIfNextCharIsOpeningQuoteMark(
-  const std::string& next_char)
-{
-  // Check to see if we set the indentation after the
-  string::const_iterator it = next_char.begin();
-  int next_codepoint = utf8::next(it, next_char.end());
-  if(next_codepoint == 0x300C || next_codepoint == 0x300E ||
-     next_codepoint == 0xFF08)
-  {
-    current_indentation_in_pixels_ = text_insertion_point_x_ + font_size_in_pixels_ +
-      x_spacing_;
-  }
+  last_token_was_name_ = true;
 }
 
 // -----------------------------------------------------------------------

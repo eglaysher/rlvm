@@ -239,21 +239,23 @@ void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
 }
 
 // -----------------------------------------------------------------------
-// HardBrakeAfterLongop
+// NewParagraphAfterLongop
 // -----------------------------------------------------------------------
-HardBrakeAfterLongop::HardBrakeAfterLongop(LongOperation* inOp)
+NewParagraphAfterLongop::NewParagraphAfterLongop(LongOperation* inOp)
   : PerformAfterLongOperationDecorator(inOp)
 {}
 
 // -----------------------------------------------------------------------
 
-HardBrakeAfterLongop::~HardBrakeAfterLongop()
+NewParagraphAfterLongop::~NewParagraphAfterLongop()
 {}
 
 // -----------------------------------------------------------------------
 
-void HardBrakeAfterLongop::performAfterLongOperation(RLMachine& machine)
+void NewParagraphAfterLongop::performAfterLongOperation(RLMachine& machine)
 {
-  machine.system().text().currentPage().hardBrake();
+  TextPage& page = machine.system().text().currentPage();
+  page.resetIndentation();
+  page.hardBrake();
 }
 

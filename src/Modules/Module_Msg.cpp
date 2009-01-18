@@ -91,7 +91,7 @@ struct Msg_pause : public RLOp_Void_Void
     if(textWindow->actionOnPause())
     {
       machine.pushLongOperation(
-        new HardBrakeAfterLongop(new PauseLongOperation(machine)));
+        new NewParagraphAfterLongop(new PauseLongOperation(machine)));
     }
     else
     {
