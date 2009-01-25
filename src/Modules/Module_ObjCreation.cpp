@@ -70,7 +70,7 @@ void setObjectDataToGan(
   if(imgFilename == "???")
     imgFilename = ganFilename;
   obj.setObjectData(
-    new GanGraphicsObjectData(machine, ganFilename, imgFilename));
+      new GanGraphicsObjectData(machine.system(), ganFilename, imgFilename));
 }
 
 // -----------------------------------------------------------------------
@@ -81,8 +81,7 @@ typedef boost::function<void(RLMachine&, GraphicsObject& obj, const string&)> Da
 
 void objOfFileLoader(RLMachine& machine, GraphicsObject& obj, const string& val)
 {
-  GraphicsSystem& gs = machine.system().graphics();
-  obj.setObjectData(gs.buildObjOfFile(machine, val));
+  obj.setObjectData(machine.system().graphics().buildObjOfFile(val));
 }
 
 // -----------------------------------------------------------------------

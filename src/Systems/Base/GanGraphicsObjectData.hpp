@@ -30,6 +30,8 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
+#include "MachineBase/Serialization.hpp"
+
 #include <boost/scoped_array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
@@ -51,21 +53,21 @@ class GraphicsObject;
 class GanGraphicsObjectData : public GraphicsObjectData
 {
 public:
-  GanGraphicsObjectData();
-  GanGraphicsObjectData(RLMachine& machine, const std::string& ganfile,
+  GanGraphicsObjectData(System& system);
+  GanGraphicsObjectData(System& system, const std::string& ganfile,
                         const std::string& imgfile);
   ~GanGraphicsObjectData();
 
-  void load(RLMachine& machine);
+  void load();
 
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+  virtual void execute();
 
   virtual bool isAnimation() const { return true; }
-  virtual void playSet(RLMachine& machine, int set);
+  virtual void playSet(int set);
 
 protected:
   /// Resets to the first frame.
@@ -92,13 +94,14 @@ private:
   void testFileMagic(const std::string& file_name,
                      boost::scoped_array<char>& gan_data, int file_size);
   void readData(
-    RLMachine& machine,
     const std::string& file_name,
     boost::scoped_array<char>& gan_data, int file_size);
   Frame readSetFrame(const std::string& filename, const char*& data);
 
   /// Throws an error on bad GAN files.
   void throwBadFormat(const std::string& filename, const std::string& error);
+
+  System& system_;
 
   AnimationSets animation_sets;
 
@@ -124,5 +127,20 @@ private:
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
+
+
+/**
+ * We need help creating GanGraphicsObjectData s since they don't have a
+ * default constructor:
+ */
+namespace boost { namespace serialization {
+template<class Archive>
+inline void load_construct_data(
+  Archive & ar, GanGraphicsObjectData* t, const unsigned int file_version)
+{
+  ::new(t)GanGraphicsObjectData(Serialization::g_current_machine->system());
+}
+  }}
+
 
 #endif

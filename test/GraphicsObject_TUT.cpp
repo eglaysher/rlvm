@@ -95,7 +95,7 @@ void object::test<1>()
 
   {
     const scoped_ptr<GraphicsObjectData> inputObjOfFile(
-      new GraphicsObjectOfFile(rlmachine, FILE_NAME));
+      new GraphicsObjectOfFile(system, FILE_NAME));
     boost::archive::text_oarchive oa(ss);
     oa << inputObjOfFile;
   }
@@ -126,7 +126,7 @@ void object::test<2>()
 
   {
     const scoped_ptr<GraphicsObject> obj(new GraphicsObject());
-    obj->setObjectData(new GraphicsObjectOfFile(rlmachine, FILE_NAME));
+    obj->setObjectData(new GraphicsObjectOfFile(system, FILE_NAME));
 
     boost::archive::text_oarchive oa(ss);
     oa << obj;

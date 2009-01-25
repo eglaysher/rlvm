@@ -35,7 +35,6 @@
 
 class GraphicsObject;
 class Point;
-class RLMachine;
 class Rect;
 class Surface;
 
@@ -76,10 +75,10 @@ public:
 
   virtual GraphicsObjectData* clone() const = 0;
 
-  virtual void execute(RLMachine& machine);
+  virtual void execute();
 
   virtual bool isAnimation() const;
-  virtual void playSet(RLMachine& machine, int set);
+  virtual void playSet(int set);
 
   /// Returns when an animation has completed. (This only returns true when
   /// afterAnimation() is set to AFTER_NONE.)

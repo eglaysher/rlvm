@@ -398,7 +398,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
   // they want to force a redraw
   for_each(foregroundObjects().allocated_begin(),
            foregroundObjects().allocated_end(),
-           bind(&GraphicsObject::execute, _1, ref(machine)));
+           bind(&GraphicsObject::execute, _1));
 
   // Update the seen.
   int current_time = machine.system().event().getTicks();

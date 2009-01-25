@@ -193,7 +193,7 @@ public:
    * Called each pass through the gameloop to see if this object needs
    * to force a redraw, or something.
    */
-  void execute(RLMachine& machine);
+  void execute();
 
   /**
    * @name Text Object accessors

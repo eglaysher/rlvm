@@ -31,6 +31,8 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
+#include "MachineBase/Serialization.hpp"
+
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
@@ -51,10 +53,10 @@ class RLMachine;
 class GraphicsObjectOfFile : public GraphicsObjectData
 {
 public:
-  GraphicsObjectOfFile();
-  GraphicsObjectOfFile(RLMachine& machine, const std::string& filename);
+  GraphicsObjectOfFile(System& system);
+  GraphicsObjectOfFile(System& system, const std::string& filename);
 
-  void loadFile(RLMachine& machine);
+  void loadFile();
 
   const std::string& filename() const { return filename_; }
 
@@ -77,6 +79,9 @@ protected:
 private:
   // Private constructor for cloning
   GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
+
+  /// Our parent system.
+  System& system_;
 
   /// The name of the graphics file that was loaded.
   std::string filename_;
@@ -106,5 +111,19 @@ private:
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
+
+
+/**
+ * We need help creating AnmGraphicsObjectData s since they don't have a
+ * default constructor:
+ */
+namespace boost { namespace serialization {
+template<class Archive>
+inline void load_construct_data(
+  Archive & ar, GraphicsObjectOfFile* t, const unsigned int file_version)
+{
+  ::new(t)GraphicsObjectOfFile(Serialization::g_current_machine->system());
+}
+  }}
 
 #endif

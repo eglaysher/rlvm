@@ -40,7 +40,6 @@
 // -----------------------------------------------------------------------
 
 class Surface;
-class RLMachine;
 
 // -----------------------------------------------------------------------
 
@@ -52,20 +51,20 @@ class RLMachine;
  */
 class AnmGraphicsObjectData : public GraphicsObjectData {
 public:
-  AnmGraphicsObjectData();
-  AnmGraphicsObjectData(RLMachine& machine, const std::string& file);
+  AnmGraphicsObjectData(System& system);
+  AnmGraphicsObjectData(System& system, const std::string& file);
   ~AnmGraphicsObjectData();
 
-  void loadAnmFile(RLMachine& machine);
+  void loadAnmFile();
 
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+  virtual void execute();
 
   virtual bool isAnimation() const { return true; }
-  virtual void playSet(RLMachine& machine, int set);
+  virtual void playSet(int set);
 
 protected:
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
@@ -76,7 +75,7 @@ protected:
 
 private:
   /// Advance the position in the animation.
-  void advanceFrame(RLMachine& machine);
+  void advanceFrame();
 
   /**
    * @name Data loading functions
@@ -95,9 +94,12 @@ private:
     const char* start, int offset, int iterations,
     std::vector< std::vector<int> >& dest);
   void loadAnmFileFromData(
-    RLMachine& machine, boost::scoped_array<char>& anm_data);
+      boost::scoped_array<char>& anm_data);
   void fixAxis(Frame& frame, int width, int height);
   /// @}
+
+  /// The system we are a part of.
+  System& system_;
 
   /// Raw, short name for the ANM file.
   std::string filename_;
@@ -149,5 +151,18 @@ private:
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
+
+/**
+ * We need help creating AnmGraphicsObjectData s since they don't have a
+ * default constructor:
+ */
+namespace boost { namespace serialization {
+template<class Archive>
+inline void load_construct_data(
+  Archive & ar, AnmGraphicsObjectData* t, const unsigned int file_version)
+{
+  ::new(t)AnmGraphicsObjectData(Serialization::g_current_machine->system());
+}
+  }}
 
 #endif

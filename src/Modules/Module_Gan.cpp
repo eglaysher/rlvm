@@ -116,7 +116,7 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
       GraphicsObjectData& data = obj.objectData();
       if(data.isAnimation())
       {
-        data.playSet(machine, animationSet);
+        data.playSet(animationSet);
         data.setAfterAction(after_effect_);
 
         if(block_)

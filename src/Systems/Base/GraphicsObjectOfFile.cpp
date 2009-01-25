@@ -54,11 +54,12 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectOfFile::GraphicsObjectOfFile()
-  : filename_(""),
-    frame_time_(0),
-    current_frame_(0),
-    time_at_last_frame_change_(0)
+GraphicsObjectOfFile::GraphicsObjectOfFile(System& system)
+    : system_(system),
+      filename_(""),
+      frame_time_(0),
+      current_frame_(0),
+      time_at_last_frame_change_(0)
 {
 }
 
@@ -67,6 +68,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile()
 GraphicsObjectOfFile::GraphicsObjectOfFile(
   const GraphicsObjectOfFile& obj)
   : GraphicsObjectData(obj),
+    system_(obj.system_),
     filename_(obj.filename_),
     surface_(obj.surface_),
     frame_time_(obj.frame_time_),
@@ -77,20 +79,20 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 // -----------------------------------------------------------------------
 
 GraphicsObjectOfFile::GraphicsObjectOfFile(
-  RLMachine& machine, const std::string& filename)
-  : filename_(filename),
-    frame_time_(0),
-    current_frame_(0),
-    time_at_last_frame_change_(0)
-{
-  loadFile(machine);
+    System& system, const std::string& filename)
+    : system_(system),
+      filename_(filename),
+      frame_time_(0),
+      current_frame_(0),
+      time_at_last_frame_change_(0) {
+  loadFile();
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::loadFile(RLMachine& machine)
+void GraphicsObjectOfFile::loadFile()
 {
-  surface_ = machine.system().graphics().loadSurfaceFromFile(machine, filename_);
+  surface_ = system_.graphics().loadNonCGSurfaceFromFile(filename_);
 }
 
 // -----------------------------------------------------------------------
@@ -124,7 +126,7 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
 {
   if(currentlyPlaying())
   {
-    unsigned int current_time = machine.system().event().getTicks();
+    unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
       current_time - time_at_last_frame_change_;
 
@@ -139,7 +141,7 @@ void GraphicsObjectOfFile::execute(RLMachine& machine)
 
       time_at_last_frame_change_ += frame_time_;
       time_since_last_frame_change = current_time - time_at_last_frame_change_;
-      machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+      system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
 }
@@ -198,8 +200,8 @@ void GraphicsObjectOfFile::playSet(RLMachine& machine, int frame_time)
     frame_time_ = 10;
   }
 
-  time_at_last_frame_change_ = machine.system().event().getTicks();
-  machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  time_at_last_frame_change_ = system_.event().getTicks();
+  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------
@@ -210,7 +212,7 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 
-  loadFile(*Serialization::g_current_machine);
+  loadFile();
 }
 
 // -----------------------------------------------------------------------

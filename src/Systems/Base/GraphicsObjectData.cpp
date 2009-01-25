@@ -187,7 +187,7 @@ int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectData::execute(RLMachine& machine) { }
+void GraphicsObjectData::execute() { }
 
 // -----------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ bool GraphicsObjectData::isAnimation() const
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectData::playSet(RLMachine& machine, int set) { }
+void GraphicsObjectData::playSet(int set) { }
 
 // -----------------------------------------------------------------------
 

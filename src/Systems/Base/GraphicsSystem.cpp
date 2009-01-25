@@ -621,19 +621,18 @@ void GraphicsSystem::mouseMotion(const Point& new_location)
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsSystem::buildObjOfFile(RLMachine& machine,
-                                                   const std::string& filename)
+GraphicsObjectData* GraphicsSystem::buildObjOfFile(const std::string& filename)
 {
   // Get the path to get the file type (which won't be in filename)
-  fs::path full_path = findFile(machine, filename);
+  fs::path full_path = findFile(system(), filename);
   string file_str = full_path.file_string();
   if(iends_with(file_str, "g00") || iends_with(file_str, "pdt"))
   {
-    return new GraphicsObjectOfFile(machine, filename);
+    return new GraphicsObjectOfFile(system(), filename);
   }
   else if(iends_with(file_str, "anm"))
   {
-    return new AnmGraphicsObjectData(machine, filename);
+    return new AnmGraphicsObjectData(system(), filename);
   }
   else
   {

@@ -47,7 +47,6 @@
 
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -79,19 +78,25 @@ namespace fs = boost::filesystem;
 // GanGraphicsObjectData
 // -----------------------------------------------------------------------
 
-GanGraphicsObjectData::GanGraphicsObjectData()
-  : current_set_(-1), current_frame_(-1), time_at_last_frame_change_(0)
-{}
+GanGraphicsObjectData::GanGraphicsObjectData(System& system)
+    : system_(system),
+      current_set_(-1),
+      current_frame_(-1),
+      time_at_last_frame_change_(0) {
+}
 
 // -----------------------------------------------------------------------
 
 GanGraphicsObjectData::GanGraphicsObjectData(
-  RLMachine& machine, const std::string& gan_file,
-  const std::string& img_file)
-  : gan_filename_(gan_file), img_filename_(img_file), current_set_(-1),
-    current_frame_(-1), time_at_last_frame_change_(0)
-{
-  load(machine);
+    System& system, const std::string& gan_file,
+    const std::string& img_file)
+    : system_(system),
+      gan_filename_(gan_file),
+      img_filename_(img_file),
+      current_set_(-1),
+      current_frame_(-1),
+      time_at_last_frame_change_(0) {
+  load();
 }
 
 // -----------------------------------------------------------------------
@@ -101,12 +106,11 @@ GanGraphicsObjectData::~GanGraphicsObjectData()
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::load(RLMachine& machine)
+void GanGraphicsObjectData::load()
 {
-  image = machine.system().graphics().loadSurfaceFromFile(
-    machine, img_filename_);
+  image = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
 
-  fs::path gan_file_path = findFile(machine, gan_filename_, GAN_FILETYPES);
+  fs::path gan_file_path = findFile(system_, gan_filename_, GAN_FILETYPES);
   fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
   if(!ifs)
   {
@@ -125,7 +129,7 @@ void GanGraphicsObjectData::load(RLMachine& machine)
   }
 
   testFileMagic(gan_filename_, gan_data, file_size);
-  readData(machine, gan_filename_, gan_data, file_size);
+  readData(gan_filename_, gan_data, file_size);
 }
 
 // -----------------------------------------------------------------------
@@ -146,7 +150,6 @@ void GanGraphicsObjectData::testFileMagic(
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::readData(
-  RLMachine& machine,
   const std::string& file_name,
   boost::scoped_array<char>& gan_data, int file_size)
 {
@@ -297,11 +300,11 @@ GraphicsObjectData* GanGraphicsObjectData::clone() const
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::execute(RLMachine& machine)
+void GanGraphicsObjectData::execute()
 {
   if(currentlyPlaying() && current_frame_ >= 0)
   {
-    unsigned int current_time = machine.system().event().getTicks();
+    unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
       current_time - time_at_last_frame_change_;
 
@@ -318,7 +321,7 @@ void GanGraphicsObjectData::execute(RLMachine& machine)
         endAnimation();
       } else {
         time_at_last_frame_change_ = current_time;
-        machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+        system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
       }
     }
   }
@@ -395,13 +398,13 @@ void GanGraphicsObjectData::objectInfo(std::ostream& tree)
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::playSet(RLMachine& machine, int set)
+void GanGraphicsObjectData::playSet(int set)
 {
   setCurrentlyPlaying(true);
   current_set_ = set;
   current_frame_ = 0;
-  time_at_last_frame_change_ = machine.system().event().getTicks();
-  machine.system().graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  time_at_last_frame_change_ = system_.event().getTicks();
+  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------
@@ -413,7 +416,7 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version)
     & gan_filename_ & img_filename_ & current_set_
     & current_frame_ & time_at_last_frame_change_;
 
-  load(*Serialization::g_current_machine);
+  load();
 }
 
 // -----------------------------------------------------------------------

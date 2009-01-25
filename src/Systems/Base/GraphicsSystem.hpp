@@ -381,8 +381,18 @@ public:
   virtual void freeDC(int dc) = 0;
 
   // ----------------------------------------- [ Surface loading functions ]
+
+  /**
+   * Loads an image, optionally marking that this image has been loaded (if it
+   * is in the game's CGM table).
+   */
   boost::shared_ptr<Surface> loadSurfaceFromFile(
       RLMachine& machine, const std::string& short_filename);
+
+  /**
+   * Just loads an image. This shouldn't be used for images that are destined
+   * for one of the DCs, since those can be CGs.
+   */
   virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename) = 0;
 
@@ -416,8 +426,7 @@ public:
    *
    * Does not deal with GAN files. Those are built with a separate function.
    */
-  GraphicsObjectData* buildObjOfFile(RLMachine& machine,
-                                     const std::string& filename);
+  GraphicsObjectData* buildObjOfFile(const std::string& filename);
 
   /// Object getters
   /// layer == 0 for fg, layer == 1 for bg.
