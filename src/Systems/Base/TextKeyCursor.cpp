@@ -53,10 +53,12 @@ TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
   Gameexe& gexe = system.gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
 
-  setCursorImage(system, cursor("NAME"));
-  setCursorSize(cursor("SIZE"));
-  setCursorFrameCount(cursor("CONT"));
-  setCursorFrameSpeed(cursor("SPEED"));
+  if (cursor("NAME").exists()) {
+    setCursorImage(system, cursor("NAME"));
+    setCursorSize(cursor("SIZE"));
+    setCursorFrameCount(cursor("CONT"));
+    setCursorFrameSpeed(cursor("SPEED"));
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -70,7 +72,7 @@ void TextKeyCursor::execute()
 {
   unsigned int cur_time = system_.event().getTicks();
 
-  if(last_time_frame_incremented_ + frame_speed_ < cur_time)
+  if (cursor_image_ && last_time_frame_incremented_ + frame_speed_ < cur_time)
   {
     last_time_frame_incremented_ = cur_time;
 
