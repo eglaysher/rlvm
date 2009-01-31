@@ -86,9 +86,34 @@ public:
     }
     else
     {
+      char lastChar = '\0';
+
       // Eat the current character and all
-      for(; next != end && is_num(*next); ++next)
-        tok += *next;
+      while (next != end) {
+        if (*next == '-') {
+          // Dashes are ambiguous. They are both seperators and the negative
+          // sign and we have to tokenize differently based on what it's
+          // doing. If the previous character is a number, we are being used as
+          // a range separator.
+          if (lastChar >= '0' && lastChar <= '9') {
+            // Skip the dash so we don't treat the next number as negative.
+            next++;
+            break;
+          } else {
+            // Consume the dash for the next parts.
+            tok += *next;
+          }
+        } else if (is_num(*next)) {
+          // All other numbers are consumed here.
+          tok += *next;
+        } else {
+          // We only deal with numbers in this branch.
+          break;
+        }
+
+        lastChar = *next;
+        ++next;
+      }
     }
 
     return true;
@@ -143,8 +168,14 @@ Gameexe::Gameexe(const fs::path& gameexefile)
           cdata_.push_back(unquoted);
           vec.push_back(cdata_.size() - 1);
         }
-        else if(tok != "-")
-          vec.push_back(lexical_cast<int>(tok));
+        else if(tok != "-") {
+          try {
+            vec.push_back(lexical_cast<int>(tok));
+          } catch(boost::bad_lexical_cast& e) {
+            cerr << "Couldn't int-ify '" << tok << "'" << endl;
+            vec.push_back(0);
+          }
+        }
       }
       data_.insert(make_pair(key, vec));
     }

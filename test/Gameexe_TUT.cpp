@@ -202,4 +202,42 @@ void object::test<8>()
 
 // -----------------------------------------------------------------------
 
+/**
+ * A demo on the Princess Bride Box Set does something weird with its \#DSTRACK
+ * keys. While all other games space the entries like this:
+ *
+ *   #DSTRACK = 00000000 - 99999999 - 00269364 = "BGM01"  = "BGM01"
+ *
+ * this game does not:
+ *
+ *   #DSTRACK=00000000-10998934-00000000="dcbgm000"="dcbgm000"
+ *
+ * and this runs afoul of the gameexe tokenization
+ * code. (00000000-10998934-00000000 is treated as a single token.)
+ *
+ * This test ensures that the gameexe parser can handle both.
+ */
+template<>
+template<>
+void object::test<9>()
+{
+  Gameexe ini(locateTestCase("Gameexe_data/Gameexe_tokenization.ini"));
+
+  GameexeInterpretObject clannad = ini("CLANNADDSTRACK");
+  ensure_equals(clannad.getIntAt(0), 0);
+  ensure_equals(clannad.getIntAt(1), 99999999);
+  ensure_equals(clannad.getIntAt(2), 269364);
+  ensure_equals(clannad.getStringAt(3), "BGM01");
+  ensure_equals(clannad.getStringAt(4), "BGM01");
+
+  GameexeInterpretObject dc = ini("DCDSTRACK");
+  ensure_equals(dc.getIntAt(0), 0);
+  ensure_equals(dc.getIntAt(1), 10998934);
+  ensure_equals(dc.getIntAt(2), 0);
+  ensure_equals(dc.getStringAt(3), "dcbgm000");
+  ensure_equals(dc.getStringAt(4), "dcbgm000");
+}
+
+
+
 }
