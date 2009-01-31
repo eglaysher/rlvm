@@ -98,6 +98,8 @@ if ARGUMENTS.get('VERBOSE') != '1':
   env['SHCCCOMSTR'] = 'Compiling $TARGET ...'
   env['SHCXXCOMSTR'] = 'Compiling $TARGET ...'
   env['LINKCOMSTR'] = 'Linking $TARGET ...'
+  env['ARCOMSTR'] = 'Archiving $TARGET ...'
+  env['RANLIBCOMSTR'] = 'Indexing $TARGET ...'
   env['SHLINKCOMSTR'] = 'Linking $TARGET ...'
 
 #########################################################################
