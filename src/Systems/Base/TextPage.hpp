@@ -31,6 +31,9 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/function.hpp>
 
+#include <string>
+#include <vector>
+
 class TextPageElement;
 class SetWindowTextPageElement;
 class System;
@@ -38,9 +41,8 @@ class TextTextPageElement;
 
 // -----------------------------------------------------------------------
 
-class TextPage : public boost::noncopyable
-{
-public:
+class TextPage : public boost::noncopyable {
+ public:
   TextPage(System& system, int window_num);
   TextPage(const TextPage& rhs);
   ~TextPage();
@@ -134,24 +136,14 @@ public:
    */
   bool inRubyGloss() const { return in_ruby_gloss_; }
 
-private:
+ private:
   /// Performs the passed in action and then adds it to |elements_to_replay_|.
   void addAction(const boost::function<void(TextPage&, bool)>& action);
 
   /// All subclasses of TextPageElement are friends of TextPage for
   /// tight coupling.
-  ///
-  /// TODO: These classes suck. Any way to get rid of them with a function<>?
   friend class TextPageElement;
-  friend class SetWindowTextPageElement;
   friend class TextTextPageElement;
-  friend class NamePageElement;
-  friend class HardBreakElement;
-  friend class ResetIndentationElement;
-  friend class FontColourElement;
-  friend class SetToRightStartingColorElement;
-  friend class MarkRubyBeginElement;
-  friend class DisplayRubyTextElement;
 
   boost::ptr_vector<TextPageElement> elements_to_replay_;
 

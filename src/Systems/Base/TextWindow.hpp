@@ -39,15 +39,15 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-class Point;
-class RLMachine;
 class Gameexe;
 class GameexeInterpretObject;
 class GraphicsSystem;
-class TextWindowButton;
+class Point;
+class RLMachine;
 class SelectionElement;
 class Surface;
 class System;
+class TextWindowButton;
 
 /**
  * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
@@ -61,199 +61,8 @@ class System;
  * options, including multiple co-ordinate systems, which I'm sure was
  * done to give reverse engineers a headache.
  */
-class TextWindow
-{
-protected:
-  /// We cache the size of the screen so we don't need the machine in
-  /// some accessors.
-  int screen_width_, screen_height_;
-
-  /// Our numeric window identifier.
-  int window_num_;
-
-  /// The waku set number.
-  int waku_set_;
-
-  boost::shared_ptr<Surface> waku_main_;
-  boost::shared_ptr<Surface> waku_backing_;
-  boost::shared_ptr<Surface> waku_button_;
-
-  /**
-   * @name Text window Origin
-   * Describes the origin point of the window
-   *
-   * @{
-   */
-  int window_position_origin_;
-  int window_position_x_;
-  int window_position_y_;
-  /// @}
-
-  /**
-   * @name Insertion point
-   *
-   * The text insertion point. These two numbers are relative to the
-   * text window location and represent the top left corner of where
-   * the next piece of text should be inserted.
-   *
-   * @{
-   */
-  int text_insertion_point_x_;
-  int text_insertion_point_y_;
-
-  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
-  /// been called)
-  int ruby_begin_point_;
-
-  /// The line number in this text window; used to detect whether we
-  /// have filled this text box
-  int current_line_number_;
-
-  /// The initial value of text_insertion_point_y_ on new lines.
-  int current_indentation_in_pixels_;
-
-  /// Whether the last token was a setName. This is used to control indentation
-  /// for quotes.
-  bool last_token_was_name_;
-
-  /// @}
-
-  /**
-   * @name Text output properties
-   *
-   * @{
-   */
-
-  /// The current size of the font
-  int font_size_in_pixels_;
-
-  /// The current size of the ruby text in pixels
-  int ruby_size_;
-
-  /// Size of the window in characters
-  int x_window_size_in_chars_, y_window_size_in_chars_;
-
-  /// Spacing between characters
-  int x_spacing_, y_spacing_;
-
-  /// Whether to indent (INDENT_USE)
-  int use_indentation_;
-
-  /// The default color. Initialized to \#COLOR_TABLE.000, but can be
-  /// changed with the SetFontColour() command.
-  RGBColour default_color_;
-
-  /// The current color. Initialized to the default color on every
-  /// clearWin() call.
-  RGBColour font_colour_;
-
-  /// @}
-
-  /// Determines how the window will react to pause()
-  /// calls. Initialized to \#WINDOW.x.R_COMMAND_MOD.
-  int action_on_pause_;
-
-  /**
-   * @name Positional data
-   *
-   * @{
-   */
-  int origin_, x_distance_from_origin_, y_distance_from_origin_;
-
-  /// @}
-
-  int upper_box_padding_, lower_box_padding_, left_box_padding_, right_box_padding_;
-
-  /// Whether r_, etc is a per-window color.
-  int window_attr_mod_;
-
-  /// The default window background color.
-  /// @{
-  RGBAColour colour_;
-  int filter_;
-  /// @}
-
-  int is_visible_;
-
-  /// Determines the position of the keycursor (the animated cursor
-  /// that appears when the game is waiting for a click to move to the
-  /// next page of text).
-  ///
-  /// If type is 0, the cursor appears at the bottom right corner of
-  /// the text area; if it is 1, it appears directly after the final
-  /// character printed; if it is 2, it appears at (x, y) relative to
-  /// the top left of the text area. (x and y are ignored when type is
-  /// 0 or 1.)
-  ///
-  /// @{
-  int keycursor_type_;
-  Point keycursor_pos_;
-  /// @}
-
-  /**
-   * @name Name display options
-   *
-   * Options related to the display of the current speaker's name.
-   */
-
-  /// Describes how to render character names.
-  /// - 0: Display names inline (default)
-  /// - 1: Display names in a seperate window
-  /// - 2: Do not display names
-  int name_mod_;
-
-  /// @}
-
-  /**
-   * @name Buttons in this text box
-   *
-   * Attached action buttons defined in the
-   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
-   * things such as moving the text box, clearing the text box, moving
-   * forward or backwards in message history, and farcall()-ing a
-   * custom handler (EXBTN_index_BOX).
-   *
-   * @{
-   */
-  boost::scoped_ptr<TextWindowButton> button_map_[12];
-  /// @}
-
-  /**
-   * @name Selection mode data
-   *
-   * Text boxes can be in selection mode, in which case a
-   * Select_LongOperation is on the top of the RLMachine's call stack
-   * and has
-   *
-   * @{
-   */
-  /// Whether this text box currently contains
-  bool in_selection_mode_;
-
-  /// Callback function for when item is selected; usually will call a
-  /// specific method on Select_LongOperation
-  boost::function<void(int)> selection_callback_;
-
-  /// Used to assign a zero based index to all selection elements
-  /// added by addSelectionItem().
-  int next_id_;
-  /// @}
-
-  System& system_;
-
-protected:
-  /**
-   * Accessor for the selection_callback_ for TextWindow subclasses
-   */
-  const boost::function<void(int)>& selectionCallback();
-
-  /// The actual selection items in this TextWindow.
-  typedef boost::ptr_vector<SelectionElement> Selections;
-  Selections selections_;
-
-  System& system() { return system_; }
-
-public:
+class TextWindow {
+ public:
   TextWindow(System& system, int window_num);
   virtual ~TextWindow();
 
@@ -519,6 +328,185 @@ public:
 
   void endSelectionMode();
   /// @}
+
+ protected:
+  /**
+   * Accessor for the selection_callback_ for TextWindow subclasses
+   */
+  const boost::function<void(int)>& selectionCallback();
+
+  /// The actual selection items in this TextWindow.
+  typedef boost::ptr_vector<SelectionElement> Selections;
+  Selections selections_;
+
+  System& system() { return system_; }
+
+ protected:
+  /// We cache the size of the screen so we don't need the machine in
+  /// some accessors.
+  int screen_width_, screen_height_;
+
+  /// Our numeric window identifier.
+  int window_num_;
+
+  /// The waku set number.
+  int waku_set_;
+
+  boost::shared_ptr<Surface> waku_main_;
+  boost::shared_ptr<Surface> waku_backing_;
+  boost::shared_ptr<Surface> waku_button_;
+
+  /**
+   * @name Insertion point
+   *
+   * The text insertion point. These two numbers are relative to the
+   * text window location and represent the top left corner of where
+   * the next piece of text should be inserted.
+   *
+   * @{
+   */
+  int text_insertion_point_x_;
+  int text_insertion_point_y_;
+
+  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
+  /// been called)
+  int ruby_begin_point_;
+
+  /// The line number in this text window; used to detect whether we
+  /// have filled this text box
+  int current_line_number_;
+
+  /// The initial value of text_insertion_point_y_ on new lines.
+  int current_indentation_in_pixels_;
+
+  /// Whether the last token was a setName. This is used to control indentation
+  /// for quotes.
+  bool last_token_was_name_;
+
+  /// @}
+
+  /**
+   * @name Text output properties
+   *
+   * @{
+   */
+
+  /// The current size of the font
+  int font_size_in_pixels_;
+
+  /// The current size of the ruby text in pixels
+  int ruby_size_;
+
+  /// Size of the window in characters
+  int x_window_size_in_chars_, y_window_size_in_chars_;
+
+  /// Spacing between characters
+  int x_spacing_, y_spacing_;
+
+  /// Whether to indent (INDENT_USE)
+  int use_indentation_;
+
+  /// The default color. Initialized to \#COLOR_TABLE.000, but can be
+  /// changed with the SetFontColour() command.
+  RGBColour default_color_;
+
+  /// The current color. Initialized to the default color on every
+  /// clearWin() call.
+  RGBColour font_colour_;
+
+  /// @}
+
+  /// Determines how the window will react to pause()
+  /// calls. Initialized to \#WINDOW.x.R_COMMAND_MOD.
+  int action_on_pause_;
+
+  /**
+   * @name Positional data
+   *
+   * @{
+   */
+  int origin_, x_distance_from_origin_, y_distance_from_origin_;
+
+  /// @}
+
+  int upper_box_padding_, lower_box_padding_, left_box_padding_, right_box_padding_;
+
+  /// Whether r_, etc is a per-window color.
+  int window_attr_mod_;
+
+  /// The default window background color.
+  /// @{
+  RGBAColour colour_;
+  int filter_;
+  /// @}
+
+  int is_visible_;
+
+  /// Determines the position of the keycursor (the animated cursor
+  /// that appears when the game is waiting for a click to move to the
+  /// next page of text).
+  ///
+  /// If type is 0, the cursor appears at the bottom right corner of
+  /// the text area; if it is 1, it appears directly after the final
+  /// character printed; if it is 2, it appears at (x, y) relative to
+  /// the top left of the text area. (x and y are ignored when type is
+  /// 0 or 1.)
+  ///
+  /// @{
+  int keycursor_type_;
+  Point keycursor_pos_;
+  /// @}
+
+  /**
+   * @name Name display options
+   *
+   * Options related to the display of the current speaker's name.
+   */
+
+  /// Describes how to render character names.
+  /// - 0: Display names inline (default)
+  /// - 1: Display names in a seperate window
+  /// - 2: Do not display names
+  int name_mod_;
+
+  /// @}
+
+  /**
+   * @name Buttons in this text box
+   *
+   * Attached action buttons defined in the
+   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
+   * things such as moving the text box, clearing the text box, moving
+   * forward or backwards in message history, and farcall()-ing a
+   * custom handler (EXBTN_index_BOX).
+   *
+   * @{
+   */
+  boost::scoped_ptr<TextWindowButton> button_map_[12];
+  /// @}
+
+  /**
+   * @name Selection mode data
+   *
+   * Text boxes can be in selection mode, in which case a
+   * Select_LongOperation is on the top of the RLMachine's call stack
+   * and has
+   *
+   * @{
+   */
+  /// Whether this text box currently contains
+  bool in_selection_mode_;
+
+  /// Callback function for when item is selected; usually will call a
+  /// specific method on Select_LongOperation
+  boost::function<void(int)> selection_callback_;
+
+  /// Used to assign a zero based index to all selection elements
+  /// added by addSelectionItem().
+  int next_id_;
+  /// @}
+
+  System& system_;
 };
 
 #endif

@@ -39,17 +39,20 @@
 #include "libReallive/gameexe.h"
 
 #include <string>
+#include <vector>
 
-using namespace std;
+using std::endl;
+using std::string;
+using std::vector;
 
 // -----------------------------------------------------------------------
 // TextKeyCursor
 // -----------------------------------------------------------------------
 TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
-  : cursor_number_(in_curosr_number), current_frame_(0),
-    last_time_frame_incremented_(system.event().getTicks()),
-    system_(system)
-{
+    : cursor_number_(in_curosr_number),
+      current_frame_(0),
+      last_time_frame_incremented_(system.event().getTicks()),
+      system_(system) {
   Gameexe& gexe = system.gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
 
@@ -63,32 +66,30 @@ TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
 
 // -----------------------------------------------------------------------
 
-TextKeyCursor::~TextKeyCursor()
-{}
+TextKeyCursor::~TextKeyCursor() {
+}
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::execute()
-{
+void TextKeyCursor::execute() {
   unsigned int cur_time = system_.event().getTicks();
 
-  if (cursor_image_ && last_time_frame_incremented_ + frame_speed_ < cur_time)
-  {
+  if (cursor_image_ && last_time_frame_incremented_ +
+      frame_speed_ < cur_time) {
     last_time_frame_incremented_ = cur_time;
 
     system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
 
     current_frame_++;
-    if(current_frame_ >= frame_count_)
+    if (current_frame_ >= frame_count_)
       current_frame_ = 0;
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree)
-{
-  if(cursor_image_) {
+void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
+  if (cursor_image_) {
     // Get the location to render from text_window
     Point keycur = text_window.keycursorPosition();
 
@@ -107,9 +108,9 @@ void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree)
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorImage(System& system, const std::string& name)
-{
-  if(name != "") {
+void TextKeyCursor::setCursorImage(System& system,
+                                   const std::string& name) {
+  if (name != "") {
     cursor_image_ = system.graphics().loadNonCGSurfaceFromFile(name);
     cursor_image_file_ = name;
   } else {
@@ -120,21 +121,18 @@ void TextKeyCursor::setCursorImage(System& system, const std::string& name)
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorSize(const std::vector<int>& image_size)
-{
+void TextKeyCursor::setCursorSize(const std::vector<int>& image_size) {
   frame_size_ = Size(image_size.at(0), image_size.at(1));
 }
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorFrameCount(const int frame_count)
-{
+void TextKeyCursor::setCursorFrameCount(const int frame_count) {
   frame_count_ = frame_count;
 }
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorFrameSpeed(const int speed)
-{
+void TextKeyCursor::setCursorFrameSpeed(const int speed) {
   frame_speed_ = speed / frame_count_;
 }

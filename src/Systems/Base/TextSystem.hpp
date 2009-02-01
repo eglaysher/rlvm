@@ -423,7 +423,7 @@ void parseNames(const Memory& memory, const std::string& input,
 
 // -----------------------------------------------------------------------
 
-/** 
+/**
  * LongOperation which just calls text().setSystemVisible(true) and removes
  * itself from the callstack.
  */

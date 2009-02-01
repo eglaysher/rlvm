@@ -45,19 +45,21 @@
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
-#include <algorithm>
 #include <boost/bind.hpp>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
-using std::string;
-using std::endl;
-using std::cerr;
-using std::back_inserter;
-using std::vector;
-using std::ostringstream;
 using boost::bind;
 using boost::shared_ptr;
+using std::back_inserter;
+using std::cerr;
+using std::endl;
+using std::ostringstream;
+using std::string;
+using std::vector;
 
 const unsigned int MAX_PAGE_HISTORY = 100;
 
@@ -71,11 +73,11 @@ TextSystemGlobals::TextSystemGlobals()
 // -----------------------------------------------------------------------
 
 TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
-  : auto_mode_base_time(100), auto_mode_char_time(100),
-    message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30))
-{
+    : auto_mode_base_time(100),
+      auto_mode_char_time(100),
+      message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30)) {
   GameexeInterpretObject in_window_attr(gexe("WINDOW_ATTR"));
-  if(in_window_attr.exists())
+  if (in_window_attr.exists())
     window_attr = in_window_attr;
 }
 
@@ -83,25 +85,31 @@ TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
 // TextSystem
 // -----------------------------------------------------------------------
 TextSystem::TextSystem(System& system, Gameexe& gexe)
-  : auto_mode_(false),
-    ctrl_key_skip_(true), fast_text_mode_(false),
-    message_no_wait_(false),
-    active_window_(0), is_reading_backlog_(false),
-    current_pageset_(new PageSet),
-    in_pause_state_(false),
-    // #WINDOW_*_USE
-    move_use_(false), clear_use_(false), read_jump_use_(false),
-    automode_use_(false), msgbk_use_(false), msgbkleft_use_(false),
-    msgbkright_use_(false), exbtn_use_(false),
-    globals_(gexe),
-    system_visible_(true),
-    skip_mode_(false),
-    kidoku_read_(false),
-    in_selection_mode_(false),
-    system_(system)
-{
+    : auto_mode_(false),
+      ctrl_key_skip_(true),
+      fast_text_mode_(false),
+      message_no_wait_(false),
+      active_window_(0),
+      is_reading_backlog_(false),
+      current_pageset_(new PageSet),
+      in_pause_state_(false),
+      // #WINDOW_*_USE
+      move_use_(false),
+      clear_use_(false),
+      read_jump_use_(false),
+      automode_use_(false),
+      msgbk_use_(false),
+      msgbkleft_use_(false),
+      msgbkright_use_(false),
+      exbtn_use_(false),
+      globals_(gexe),
+      system_visible_(true),
+      skip_mode_(false),
+      kidoku_read_(false),
+      in_selection_mode_(false),
+      system_(system) {
   GameexeInterpretObject ctrl_use(gexe("CTRL_USE"));
-  if(ctrl_use.exists())
+  if (ctrl_use.exists())
     ctrl_key_skip_ = ctrl_use;
 
   checkAndSetBool(gexe, "WINDOW_MOVE_USE", move_use_);
@@ -118,54 +126,47 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
 
 // -----------------------------------------------------------------------
 
-TextSystem::~TextSystem()
-{
-
+TextSystem::~TextSystem() {
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::executeTextSystem()
-{
+void TextSystem::executeTextSystem() {
   // Check to see if the cursor is displayed
   WindowMap::iterator it = text_window_.find(active_window_);
-  if(it != text_window_.end() && it->second->isVisible() &&
-     in_pause_state_ && !isReadingBacklog())
-  {
-    if(!text_key_cursor_)
+  if (it != text_window_.end() && it->second->isVisible() &&
+      in_pause_state_ && !isReadingBacklog()) {
+    if (!text_key_cursor_)
       setKeyCursor(0);
 
     text_key_cursor_->execute();
   }
 
   // Let each window update any TextWindowButton s.
-  for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
-  {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
     it->second->execute();
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::render(std::ostream* tree)
-{
-  if(systemVisible())
-  {
+void TextSystem::render(std::ostream* tree) {
+  if (systemVisible()) {
     if (tree) {
       *tree << "Text System:" << endl;
     }
 
-    for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
-    {
+    for (WindowMap::iterator it = text_window_.begin();
+         it != text_window_.end(); ++it) {
       it->second->render(tree);
     }
 
     WindowMap::iterator it = text_window_.find(active_window_);
 
-    if(it != text_window_.end() && it->second->isVisible() &&
-       in_pause_state_ && !isReadingBacklog())
-    {
-      if(!text_key_cursor_)
+    if (it != text_window_.end() && it->second->isVisible() &&
+        in_pause_state_ && !isReadingBacklog()) {
+      if (!text_key_cursor_)
         setKeyCursor(0);
 
       text_key_cursor_->render(*it->second, tree);
@@ -175,63 +176,57 @@ void TextSystem::render(std::ostream* tree)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::hideTextWindow(int win_number)
-{
+void TextSystem::hideTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
-  if(it != text_window_.end())
-  {
+  if (it != text_window_.end()) {
     it->second->setVisible(0);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::hideAllTextWindows()
-{
-  for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
-  {
+void TextSystem::hideAllTextWindows() {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
     it->second->setVisible(0);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::clearAllTextWindows()
-{
-  for(WindowMap::iterator it = text_window_.begin(); it != text_window_.end(); ++it)
-  {
+void TextSystem::clearAllTextWindows() {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
     it->second->clearWin();
   }
 }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<TextWindow> TextSystem::currentWindow()
-{
+boost::shared_ptr<TextWindow> TextSystem::currentWindow() {
   return textWindow(active_window_);
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
-                                 bool& out)
-{
+                                 bool& out) {
   GameexeInterpretObject key_obj(gexe(key));
-  if(key_obj.exists())
+  if (key_obj.exists())
     out = key_obj.to_int();
 }
 
 // -----------------------------------------------------------------------
 
 void TextSystem::expireOldPages() {
-  while(previous_page_sets_.size() > MAX_PAGE_HISTORY)
+  while (previous_page_sets_.size() > MAX_PAGE_HISTORY)
     previous_page_sets_.pop_front();
 }
 
 // -----------------------------------------------------------------------
 
-bool TextSystem::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
-{
+bool TextSystem::mouseButtonStateChanged(MouseButton mouse_button,
+                                         bool pressed) {
   if (currentlySkipping() && !in_selection_mode_) {
     setSkipMode(false);
     return true;
@@ -242,8 +237,7 @@ bool TextSystem::mouseButtonStateChanged(MouseButton mouse_button, bool pressed)
 
 // -----------------------------------------------------------------------
 
-bool TextSystem::keyStateChanged(KeyCode key_code, bool pressed)
-{
+bool TextSystem::keyStateChanged(KeyCode key_code, bool pressed) {
   if (currentlySkipping() && !in_selection_mode_) {
     setSkipMode(false);
     return true;
@@ -254,12 +248,10 @@ bool TextSystem::keyStateChanged(KeyCode key_code, bool pressed)
 
 // -----------------------------------------------------------------------
 
-vector<int> TextSystem::activeWindows()
-{
+vector<int> TextSystem::activeWindows() {
   vector<int> tmp;
-  for(PageSet::iterator it = current_pageset_->begin();
-      it != current_pageset_->end(); ++it)
-  {
+  for (PageSet::iterator it = current_pageset_->begin();
+       it != current_pageset_->end(); ++it) {
     tmp.push_back(it->first);
   }
   return tmp;
@@ -267,20 +259,17 @@ vector<int> TextSystem::activeWindows()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::snapshot()
-{
+void TextSystem::snapshot() {
   previous_page_sets_.push_back(current_pageset_->clone().release());
   expireOldPages();
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::newPageOnWindow(int window)
-{
+void TextSystem::newPageOnWindow(int window) {
   // Erase the current instance of this window if it exists
   PageSet::iterator it = current_pageset_->find(window);
-  if(it != current_pageset_->end())
-  {
+  if (it != current_pageset_->end()) {
     current_pageset_->erase(it);
   }
 
@@ -291,11 +280,10 @@ void TextSystem::newPageOnWindow(int window)
 
 // -----------------------------------------------------------------------
 
-TextPage& TextSystem::currentPage()
-{
+TextPage& TextSystem::currentPage() {
   // Check to see if the active window has a current page.
   PageSet::iterator it = current_pageset_->find(active_window_);
-  if(it == current_pageset_->end())
+  if (it == current_pageset_->end())
     it = current_pageset_->insert(
         active_window_, new TextPage(system(), active_window_)).first;
 
@@ -304,12 +292,10 @@ TextPage& TextSystem::currentPage()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::backPage()
-{
+void TextSystem::backPage() {
   is_reading_backlog_ = true;
 
-  if(previous_page_it_ != previous_page_sets_.begin())
-  {
+  if (previous_page_it_ != previous_page_sets_.begin()) {
     previous_page_it_ = boost::prior(previous_page_it_);
 
     // Clear all windows
@@ -322,19 +308,17 @@ void TextSystem::backPage()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::forwardPage()
-{
+void TextSystem::forwardPage() {
   is_reading_backlog_ = true;
 
-  if(previous_page_it_ != previous_page_sets_.end())
-  {
+  if (previous_page_it_ != previous_page_sets_.end()) {
     previous_page_it_ = boost::next(previous_page_it_);
 
     // Clear all windows
     clearAllTextWindows();
     hideAllTextWindows();
 
-    if(previous_page_it_ != previous_page_sets_.end())
+    if (previous_page_it_ != previous_page_sets_.end())
       replayPageSet(*previous_page_it_, false);
     else
       replayPageSet(*current_pageset_, false);
@@ -343,9 +327,8 @@ void TextSystem::forwardPage()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::replayPageSet(PageSet& set, bool is_current_page)
-{
-  for(PageSet::iterator it = set.begin(); it != set.end(); ++it) {
+void TextSystem::replayPageSet(PageSet& set, bool is_current_page) {
+  for (PageSet::iterator it = set.begin(); it != set.end(); ++it) {
     try {
       it->second->replay(is_current_page);
     }
@@ -361,15 +344,13 @@ void TextSystem::replayPageSet(PageSet& set, bool is_current_page)
 
 // -----------------------------------------------------------------------
 
-bool TextSystem::isReadingBacklog() const
-{
+bool TextSystem::isReadingBacklog() const {
   return is_reading_backlog_;
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::stopReadingBacklog()
-{
+void TextSystem::stopReadingBacklog() {
   is_reading_backlog_ = false;
 
   // Clear all windows
@@ -380,39 +361,33 @@ void TextSystem::stopReadingBacklog()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setAutoMode(int i)
-{
+void TextSystem::setAutoMode(int i) {
   auto_mode_ = (bool)i;
   auto_mode_signal_(auto_mode_);
 }
 
 // -----------------------------------------------------------------------
 
-int TextSystem::getAutoTime(int num_chars)
-{
-  return globals_.auto_mode_base_time + globals_.auto_mode_char_time * num_chars;
+int TextSystem::getAutoTime(int num_chars) {
+  return globals_.auto_mode_base_time + globals_.auto_mode_char_time *
+      num_chars;
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setKeyCursor(int new_cursor)
-{
-  if(new_cursor == -1)
-  {
+void TextSystem::setKeyCursor(int new_cursor) {
+  if (new_cursor == -1) {
     text_key_cursor_.reset();
-  }
-  else if(!text_key_cursor_ ||
-     text_key_cursor_->cursorNumber() != new_cursor)
-  {
+  } else if (!text_key_cursor_ ||
+             text_key_cursor_->cursorNumber() != new_cursor) {
     text_key_cursor_.reset(new TextKeyCursor(system(), new_cursor));
   }
 }
 
 // -----------------------------------------------------------------------
 
-int TextSystem::cursorNumber() const
-{
-  if(text_key_cursor_)
+int TextSystem::cursorNumber() const {
+  if (text_key_cursor_)
     return text_key_cursor_->cursorNumber();
   else
     return -1;
@@ -420,21 +395,18 @@ int TextSystem::cursorNumber() const
 
 // -----------------------------------------------------------------------
 
-void TextSystem::updateWindowsForChangeToWindowAttr()
-{
+void TextSystem::updateWindowsForChangeToWindowAttr() {
   // Check each text window to see if it needs updating
-  for(WindowMap::iterator it = text_window_.begin();
-      it != text_window_.end(); ++it)
-  {
-    if(!it->second->windowAttrMod())
+  for (WindowMap::iterator it = text_window_.begin();
+       it != text_window_.end(); ++it) {
+    if (!it->second->windowAttrMod())
       it->second->setRGBAF(windowAttr());
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr)
-{
+void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr) {
   globals_.window_attr = attr;
   updateWindowsForChangeToWindowAttr();
 }
@@ -476,11 +448,9 @@ void TextSystem::setWindowAttrF(int i) {
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setMousePosition(const Point& pos)
-{
-  for(WindowMap::iterator it = text_window_.begin();
-      it != text_window_.end(); ++it)
-  {
+void TextSystem::setMousePosition(const Point& pos) {
+  for (WindowMap::iterator it = text_window_.begin();
+       it != text_window_.end(); ++it) {
     it->second->setMousePosition(pos);
   }
 }
@@ -488,29 +458,21 @@ void TextSystem::setMousePosition(const Point& pos)
 // -----------------------------------------------------------------------
 
 bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
-                                  bool pressed)
-{
-  if(systemVisible())
-  {
-    for(WindowMap::iterator it = text_window_.begin();
-        it != text_window_.end(); ++it)
-    {
-      if(it->second->handleMouseClick(machine, pos, pressed))
+                                  bool pressed) {
+  if (systemVisible()) {
+    for (WindowMap::iterator it = text_window_.begin();
+         it != text_window_.end(); ++it) {
+      if (it->second->handleMouseClick(machine, pos, pressed))
         return true;
     }
+  }
 
-    return false;
-  }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::reset()
-{
+void TextSystem::reset() {
   is_reading_backlog_ = false;
 
   current_pageset_ = std::auto_ptr<PageSet>(new PageSet);
@@ -528,8 +490,7 @@ void TextSystem::reset()
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setKidokuRead(const int in)
-{
+void TextSystem::setKidokuRead(const int in) {
   bool value_changed = kidoku_read_ != in;
 
   kidoku_read_ = in;
@@ -543,8 +504,7 @@ void TextSystem::setKidokuRead(const int in)
 
 // -----------------------------------------------------------------------
 
-void TextSystem::setSkipMode(const int in)
-{
+void TextSystem::setSkipMode(const int in) {
   bool value_changed = skip_mode_ != in;
   skip_mode_ = in;
 
@@ -555,8 +515,7 @@ void TextSystem::setSkipMode(const int in)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void TextSystem::load(Archive& ar, unsigned int version)
-{
+void TextSystem::load(Archive& ar, unsigned int version) {
   int win, cursor_num;
   ar & win & cursor_num;
 
@@ -567,8 +526,7 @@ void TextSystem::load(Archive& ar, unsigned int version)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void TextSystem::save(Archive& ar, unsigned int version) const
-{
+void TextSystem::save(Archive& ar, unsigned int version) const {
   int win = activeWindow();
   int cursor_num = cursorNumber();
   ar & win & cursor_num;
@@ -588,8 +546,7 @@ template void TextSystem::load<boost::archive::text_iarchive>(
 // -----------------------------------------------------------------------
 
 void parseNames(const Memory& memory, const std::string& input,
-                std::string& output)
-{
+                std::string& output) {
   const char* cur = input.c_str();
 
   const char LOWER_BYTE_FULLWIDTH_ASTERISK = 0x96;
@@ -602,7 +559,7 @@ void parseNames(const Memory& memory, const std::string& input,
       cur += 2;
 
       string strindex;
-      if(readFullwidthLatinLetter(cur, strindex)) {
+      if (readFullwidthLatinLetter(cur, strindex)) {
         // Try to read a second character. We don't care if it fails.
         readFullwidthLatinLetter(cur, strindex);
       } else {
@@ -622,15 +579,13 @@ void parseNames(const Memory& memory, const std::string& input,
 
 // -----------------------------------------------------------------------
 
-bool TextSystem::currentlySkipping() const
-{
+bool TextSystem::currentlySkipping() const {
   return kidoku_read_ && skipMode();
 }
 
 // -----------------------------------------------------------------------
 
-bool RestoreTextSystemVisibility::operator()(RLMachine& machine)
-{
+bool RestoreTextSystemVisibility::operator()(RLMachine& machine) {
   machine.system().text().setSystemVisible(true);
   return true;
 }
