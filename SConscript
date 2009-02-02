@@ -86,6 +86,7 @@ librlvm_files = [
   "src/MachineBase/StackFrame.cpp",
   "src/MachineBase/reference.cpp",
   "src/Modules/Module_Bgm.cpp",
+  "src/Modules/Module_Bgr.cpp",
   "src/Modules/Module_DLL.cpp",
   "src/Modules/Module_Debug.cpp",
   "src/Modules/Module_EventLoop.cpp",

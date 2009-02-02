@@ -40,6 +40,7 @@
 #include "Modules/Module_Grp.hpp"
 #include "Modules/Module_Msg.hpp"
 #include "Modules/Module_Bgm.hpp"
+#include "Modules/Module_Bgr.hpp"
 #include "Modules/Module_Pcm.hpp"
 #include "Modules/Module_Se.hpp"
 #include "Modules/Module_Koe.hpp"
@@ -74,6 +75,7 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new MsgModule);
   rlmachine.attachModule(new GrpModule);
   rlmachine.attachModule(new BgmModule);
+  rlmachine.attachModule(new BgrModule);
   rlmachine.attachModule(new PcmModule);
   rlmachine.attachModule(new SeModule);
   rlmachine.attachModule(new KoeModule);

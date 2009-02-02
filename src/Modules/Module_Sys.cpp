@@ -391,7 +391,20 @@ SysModule::SysModule()
 
   addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
 
+  addUnsupportedOpcode(400, 0, "GetWindowPos");
+  addUnsupportedOpcode(401, 0, "SetWindowPos");
+  addUnsupportedOpcode(402, 0, "WindowResetPos");
+  addUnsupportedOpcode(403, 0, "GetDefaultWindowPos");
+  addUnsupportedOpcode(404, 0, "SetDefaultWindowPos");
+  addUnsupportedOpcode(405, 0, "DefaultWindowResetPos");
+
   addOpcode( 410, 0, "GetWakuAll", new Sys_GetWakuAll);
+  addUnsupportedOpcode(411, 0, "SetWakuAll");
+  addUnsupportedOpcode(412, 0, "GetWaku");
+  addUnsupportedOpcode(413, 0, "SetWaku");
+  addUnsupportedOpcode(414, 0, "GetWakuMod");
+  addUnsupportedOpcode(415, 0, "SetWakuMod__dwm");
+  addUnsupportedOpcode(416, 0, "SetWakuMod__ewm");
 
   addUnsupportedOpcode(460, 0, "EnableWindowAnm");
   addUnsupportedOpcode(461, 0, "DisableWindowAnm");
