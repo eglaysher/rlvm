@@ -138,7 +138,7 @@ class TextWindow {
 
   int boxX1() const;
   int boxY1() const;
-
+  Size boxSize() const;
   int textX1() const;
   int textY1() const;
   int textX2() const;

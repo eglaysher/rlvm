@@ -229,10 +229,9 @@ void TextWindow::setWindowPosition(const vector<int>& pos_data) {
 
 Size TextWindow::textWindowSize() const {
   return Size((x_window_size_in_chars_ *
-               (font_size_in_pixels_ + x_spacing_)) + right_box_padding_,
+               (font_size_in_pixels_ + x_spacing_)),
               (y_window_size_in_chars_ *
-               (font_size_in_pixels_ + y_spacing_ + ruby_size_)) +
-              lower_box_padding_);
+               (font_size_in_pixels_ + y_spacing_ + ruby_size_)));
 }
 
 // -----------------------------------------------------------------------
@@ -241,11 +240,15 @@ int TextWindow::boxX1() const {
   switch (origin_) {
   case 0:
   case 2:
+    // Error checking. If the size places the text box off screen, then we
+    // return 0. Tested this out in ALMA.
+    if (x_distance_from_origin_ + boxSize().width() > screen_width_)
+      return 0;
+
     return x_distance_from_origin_;
   case 1:
   case 3:
-    return screen_width_ - x_distance_from_origin_ - textWindowSize().width() -
-      left_box_padding_;
+    return screen_width_ - boxSize().width();
   default:
     throw SystemError("Invalid origin");
   };
@@ -257,56 +260,55 @@ int TextWindow::boxY1() const {
   switch (origin_) {
   case 0:  // Top and left
   case 1:  // Top and right
+    // Error checking. If the size places the text box off screen, then we
+    // return 0. Tested this out in ALMA.
+    if (y_distance_from_origin_ + boxSize().height() > screen_height_)
+      return 0;
+
     return y_distance_from_origin_;
   case 2:  // Bottom and left
   case 3:  // Bottom and right
-    return screen_height_ - y_distance_from_origin_ -
-        textWindowSize().height() - upper_box_padding_;
+    return screen_height_ - boxSize().height();
   default:
     throw SystemError("Invalid origin");
+  }
+}
+
+// -----------------------------------------------------------------------
+
+Size TextWindow::boxSize() const {
+  if (waku_main_) {
+    return waku_main_->size();
+  } else {
+    // This is an estimate; it was what I was using before and worked fine for
+    // all the KEY games I orriginally targeted, but broke on ALMA.
+    return textWindowSize() + Size(left_box_padding_ - right_box_padding_,
+                                   upper_box_padding_ - lower_box_padding_);
   }
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::textX1() const {
-  switch (origin_) {
-  case 0:  // Top and left
-  case 2:  // Bottom and left
-    return x_distance_from_origin_ + left_box_padding_;
-  case 1:  // Top and right
-  case 3:  // Bottom and right
-    return screen_width_ - x_distance_from_origin_ - textWindowSize().width();
-  default:
-    throw SystemError("Invalid origin");
-  };
+  return boxX1() + left_box_padding_;
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::textY1() const {
-  switch (origin_) {
-  case 0:  // Top and left
-  case 1:  // Top and right
-    return y_distance_from_origin_ + upper_box_padding_;
-  case 2:  // Bottom and left
-  case 3:  // Bottom and right
-    return screen_height_ - y_distance_from_origin_ - textWindowSize().height();
-  default:
-    throw SystemError("Invalid origin");
-  }
+  return boxY1() + upper_box_padding_;
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::textX2() const {
-  return textX1() + textWindowSize().width();
+  return textX1() + textWindowSize().width() + right_box_padding_;
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::textY2() const {
-  return textY1() + textWindowSize().height();
+  return textY1() + textWindowSize().height() + lower_box_padding_;
 }
 
 // -----------------------------------------------------------------------
