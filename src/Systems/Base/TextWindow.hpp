@@ -47,6 +47,7 @@ class RLMachine;
 class SelectionElement;
 class Surface;
 class System;
+class TextWaku;
 class TextWindowButton;
 
 /**
@@ -190,20 +191,6 @@ class TextWindow {
   void setWindowWaku(const int waku_no);
 
 
-  void setWakuMain(const std::string& name);
-
-  /**
-   * Loads the graphics file name as the mask for represents the areas
-   * of the text window that should be shaded.
-   */
-  void setWakuBacking(const std::string& name);
-
-  /**
-   * Loads the graphics file name as the image with all the button
-   * images used when drawing
-   */
-  void setWakuButton(const std::string& name);
-
   /// @}
 
 
@@ -231,6 +218,7 @@ class TextWindow {
   int g() const { return colour_.g(); }
   int b() const { return colour_.b(); }
   int alpha() const { return colour_.a(); }
+  const RGBAColour& colour() const { return colour_; }
   int filter() const { return filter_; }
   /// @}
 
@@ -352,9 +340,8 @@ class TextWindow {
   /// The waku set number.
   int waku_set_;
 
-  boost::shared_ptr<Surface> waku_main_;
-  boost::shared_ptr<Surface> waku_backing_;
-  boost::shared_ptr<Surface> waku_button_;
+  /// The window decorations for the text window
+  boost::scoped_ptr<TextWaku> textbox_waku_;
 
   /**
    * @name Insertion point
@@ -469,20 +456,6 @@ class TextWindow {
   /// - 2: Do not display names
   int name_mod_;
 
-  /// @}
-
-  /**
-   * @name Buttons in this text box
-   *
-   * Attached action buttons defined in the
-   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
-   * things such as moving the text box, clearing the text box, moving
-   * forward or backwards in message history, and farcall()-ing a
-   * custom handler (EXBTN_index_BOX).
-   *
-   * @{
-   */
-  boost::scoped_ptr<TextWindowButton> button_map_[12];
   /// @}
 
   /**

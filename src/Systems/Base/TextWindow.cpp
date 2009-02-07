@@ -39,7 +39,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextWindowButton.hpp"
+#include "Systems/Base/TextWaku.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
 #include "Utilities/StringUtilities.hpp"
@@ -62,35 +62,6 @@ using std::ostringstream;
 using std::setfill;
 using std::setw;
 using std::vector;
-
-// -----------------------------------------------------------------------
-
-/**
- * Definitions for the location and Gameexe.ini keys describing various text
- * window buttons.
- *
- * Previously was using a map keyed on strings. In rendering code. With keys
- * that had similar prefixes. WTF was I smoking...
- */
-static struct ButtonInfo {
-  int index;
-  const char* button_name;
-  int waku_offset;
-} BUTTON_INFO[] = {
-  { 0, "CLEAR_BOX", 8},
-  { 1, "MSGBKLEFT_BOX", 24},
-  { 2, "MSGBKRIGHT_BOX", 32},
-  { 3, "EXBTN_000_BOX", 40},
-  { 4, "EXBTN_001_BOX", 48},
-  { 5, "EXBTN_002_BOX", 56},
-  { 6, "EXBTN_003_BOX", 64},
-  { 7, "EXBTN_004_BOX", 72},
-  { 8, "EXBTN_005_BOX", 80},
-  { 9, "EXBTN_006_BOX", 88},
-  {10, "READJUMP_BOX", 104},
-  {11, "AUTOMODE_BOX", 112},
-  {-1, NULL, -1}
-};
 
 // -----------------------------------------------------------------------
 // TextWindow
@@ -139,7 +110,7 @@ TextWindow::TextWindow(System& system, int window_num)
   setKeycurMod(window("KEYCUR_MOD"));
   setActionOnPause(window("R_COMMAND_MOD"));
   waku_set_ = window("WAKU_SETNO").to_int(0);
-  setWindowWaku(waku_set_);
+  textbox_waku_.reset(new TextWaku(system_, *this, waku_set_, 0));
 }
 
 // -----------------------------------------------------------------------
@@ -150,11 +121,7 @@ TextWindow::~TextWindow() {}
 
 void TextWindow::execute() {
   if (isVisible() && !system_.graphics().interfaceHidden()) {
-    for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
-      if (button_map_[i]) {
-        button_map_[i]->execute();
-      }
-    }
+    textbox_waku_->execute();
   }
 }
 
@@ -277,8 +244,8 @@ int TextWindow::boxY1() const {
 // -----------------------------------------------------------------------
 
 Size TextWindow::boxSize() const {
-  if (waku_main_) {
-    return waku_main_->size();
+  if (textbox_waku_->wakuMain()) {
+    return textbox_waku_->wakuMain()->size();
   } else {
     // This is an estimate; it was what I was using before and worked fine for
     // all the KEY games I orriginally targeted, but broke on ALMA.
@@ -335,113 +302,6 @@ Point TextWindow::keycursorPosition() const {
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setWindowWaku(const int waku_no) {
-  using namespace boost;
-
-  GameexeInterpretObject waku(system_.gameexe()("WAKU", waku_no, 0));
-
-  setWakuMain(waku("NAME").to_string(""));
-  setWakuBacking(waku("BACK").to_string(""));
-  setWakuButton(waku("BTN").to_string(""));
-
-  TextSystem& ts = system().text();
-  GraphicsSystem& gs = system().graphics();
-
-  button_map_[0].reset(
-      new ActionTextWindowButton(
-          system(),
-          ts.windowClearUse(), waku("CLEAR_BOX"),
-          bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
-  button_map_[1].reset(
-    new RepeatActionWhileHoldingWindowButton(
-        system(),
-        ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
-        bind(&TextSystem::backPage, ref(ts)),
-        250));
-  button_map_[2].reset(
-      new RepeatActionWhileHoldingWindowButton(
-          system(),
-          ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
-          bind(&TextSystem::forwardPage, ref(ts)),
-          250));
-
-  for (int i = 0; i < 7; ++i) {
-    GameexeInterpretObject wbcall(system_.gameexe()("WBCALL", i));
-    ostringstream oss;
-    oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
-    button_map_[3 + i].reset(
-      new ExbtnWindowButton(
-          system(), ts.windowExbtnUse(), waku(oss.str()), wbcall));
-  }
-
-  ActivationTextWindowButton* readjump_box =
-      new ActivationTextWindowButton(
-          system(),
-          ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-          bind(&TextSystem::setSkipMode, ref(ts), true),
-          bind(&TextSystem::setSkipMode, ref(ts), false));
-  button_map_[10].reset(readjump_box);
-  ts.skipModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
-                                   readjump_box, _1));
-  ts.skipModeEnabledSignal().connect(
-    bind(&ActivationTextWindowButton::setEnabled, readjump_box, _1));
-
-  ActivationTextWindowButton* automode_button =
-    new ActivationTextWindowButton(
-        system(),
-        ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-        bind(&TextSystem::setAutoMode, ref(ts), true),
-        bind(&TextSystem::setAutoMode, ref(ts), false));
-  button_map_[11].reset(automode_button);
-  ts.autoModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
-                                   automode_button, _1));
-
-  /*
-   * TODO: I didn't translate these to the new way of doing things. I don't
-   * seem to be rendering them. Must deal with this later.
-   *
-  string key = "MOVE_BOX";
-  button_map_.insert(
-    key, new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
-
-  key = string("MSGBK_BOX");
-  button_map_.insert(
-    key, new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
-  */
-}
-
-// -----------------------------------------------------------------------
-
-void TextWindow::setWakuMain(const std::string& name) {
-  if (name != "")
-    waku_main_ = system_.graphics().loadNonCGSurfaceFromFile(name);
-  else
-    waku_main_.reset();
-}
-
-// -----------------------------------------------------------------------
-
-
-void TextWindow::setWakuBacking(const std::string& name) {
-  if (name != "") {
-    waku_backing_ = system_.graphics().loadNonCGSurfaceFromFile(name);
-    waku_backing_->setIsMask(true);
-  } else {
-    waku_backing_.reset();
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void TextWindow::setWakuButton(const std::string& name) {
-  if (name != "")
-    waku_button_ = system_.graphics().loadNonCGSurfaceFromFile(name);
-  else
-    waku_button_.reset();
-}
-
-// -----------------------------------------------------------------------
-
 /**
  * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
  *       waku_backing.
@@ -453,40 +313,13 @@ void TextWindow::render(std::ostream* tree) {
     Size surface_size = text_surface->size();
 
     // POINT
-    int boxX = boxX1();
-    int boxY = boxY1();
+    Point box(boxX1(), boxY1());
 
     if (tree) {
       *tree << "  Text Window #" << window_num_ << endl;
     }
 
-    if (waku_backing_) {
-      Size backing_size = waku_backing_->size();
-      // COLOUR
-      waku_backing_->renderToScreenAsColorMask(
-        Rect(Point(0, 0), backing_size),
-        Rect(Point(boxX, boxY), backing_size),
-        colour_, filter_);
-
-      if (tree) {
-        *tree << "    Backing Area: " << Rect(Point(boxX, boxY), backing_size)
-              << endl;
-      }
-    }
-
-    if (waku_main_) {
-      Size main_size = waku_main_->size();
-      waku_main_->renderToScreen(
-        Rect(Point(0, 0), main_size), Rect(Point(boxX, boxY), main_size), 255);
-
-      if (tree) {
-        *tree << "    Main Area: " << Rect(Point(boxX, boxY), main_size)
-              << endl;
-      }
-    }
-
-    if (waku_button_)
-      renderButtons();
+    textbox_waku_->render(tree, box);
 
     int x = textX1();
     int y = textY1();
@@ -503,16 +336,6 @@ void TextWindow::render(std::ostream* tree) {
       if (tree) {
         *tree << "    Text Area: " << Rect(Point(x, y), surface_size) << endl;
       }
-    }
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void TextWindow::renderButtons() {
-  for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
-    if (button_map_[i]) {
-      button_map_[i]->render(*this, waku_button_, BUTTON_INFO[i].waku_offset);
     }
   }
 }
@@ -577,11 +400,7 @@ void TextWindow::setMousePosition(const Point& pos) {
              bind(&SelectionElement::setMousePosition, _1, pos));
   }
 
-  for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
-    if (button_map_[i]) {
-      button_map_[i]->setMousePosition(*this, pos);
-    }
-  }
+  textbox_waku_->setMousePosition(pos);
 }
 
 // -----------------------------------------------------------------------
@@ -602,12 +421,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
 
   if (isVisible() && !machine.system().graphics().interfaceHidden()) {
-    for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
-      if (button_map_[i]) {
-        if (button_map_[i]->handleMouseClick(machine, *this, pos, pressed))
-          return true;
-      }
-    }
+    return textbox_waku_->handleMouseClick(machine, pos, pressed);
   }
 
   return false;
