@@ -184,54 +184,66 @@ void TextWaku::loadWindowWaku() {
   TextSystem& ts = system_.text();
   GraphicsSystem& gs = system_.graphics();
 
-  button_map_[0].reset(
-      new ActionTextWindowButton(
-          system_,
-          ts.windowClearUse(), waku("CLEAR_BOX"),
-          bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
-  button_map_[1].reset(
-    new RepeatActionWhileHoldingWindowButton(
-        system_,
-        ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
-        bind(&TextSystem::backPage, ref(ts)),
-        250));
-  button_map_[2].reset(
-      new RepeatActionWhileHoldingWindowButton(
-          system_,
-          ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
-          bind(&TextSystem::forwardPage, ref(ts)),
-          250));
+  if (waku("CLEAR_BOX").exists()) {
+    button_map_[0].reset(
+        new ActionTextWindowButton(
+            system_,
+            ts.windowClearUse(), waku("CLEAR_BOX"),
+            bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
+  }
+  if (waku("MSGBKLEFT_BOX").exists()) {
+    button_map_[1].reset(
+        new RepeatActionWhileHoldingWindowButton(
+            system_,
+            ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
+            bind(&TextSystem::backPage, ref(ts)),
+            250));
+  }
+  if (waku("MSGBKRIGHT_BOX").exists()) {
+    button_map_[2].reset(
+        new RepeatActionWhileHoldingWindowButton(
+            system_,
+            ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
+            bind(&TextSystem::forwardPage, ref(ts)),
+            250));
+  }
 
   for (int i = 0; i < 7; ++i) {
     GameexeInterpretObject wbcall(system_.gameexe()("WBCALL", i));
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
-    button_map_[3 + i].reset(
-      new ExbtnWindowButton(
-          system_, ts.windowExbtnUse(), waku(oss.str()), wbcall));
+    if (waku(oss.str()).exists()) {
+      button_map_[3 + i].reset(
+          new ExbtnWindowButton(
+              system_, ts.windowExbtnUse(), waku(oss.str()), wbcall));
+    }
   }
 
-  ActivationTextWindowButton* readjump_box =
-      new ActivationTextWindowButton(
-          system_,
-          ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-          bind(&TextSystem::setSkipMode, ref(ts), true),
-          bind(&TextSystem::setSkipMode, ref(ts), false));
-  button_map_[10].reset(readjump_box);
-  ts.skipModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
-                                   readjump_box, _1));
-  ts.skipModeEnabledSignal().connect(
-    bind(&ActivationTextWindowButton::setEnabled, readjump_box, _1));
+  if (waku("READJUMP_BOX").exists()) {
+    ActivationTextWindowButton* readjump_box =
+        new ActivationTextWindowButton(
+            system_,
+            ts.windowReadJumpUse(), waku("READJUMP_BOX"),
+            bind(&TextSystem::setSkipMode, ref(ts), true),
+            bind(&TextSystem::setSkipMode, ref(ts), false));
+    button_map_[10].reset(readjump_box);
+    ts.skipModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
+                                     readjump_box, _1));
+    ts.skipModeEnabledSignal().connect(
+        bind(&ActivationTextWindowButton::setEnabled, readjump_box, _1));
+  }
 
-  ActivationTextWindowButton* automode_button =
-    new ActivationTextWindowButton(
-        system_,
-        ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-        bind(&TextSystem::setAutoMode, ref(ts), true),
-        bind(&TextSystem::setAutoMode, ref(ts), false));
-  button_map_[11].reset(automode_button);
-  ts.autoModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
-                                   automode_button, _1));
+  if (waku("AUTOMODE_BOX").exists()) {
+    ActivationTextWindowButton* automode_button =
+        new ActivationTextWindowButton(
+            system_,
+            ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
+            bind(&TextSystem::setAutoMode, ref(ts), true),
+            bind(&TextSystem::setAutoMode, ref(ts), false));
+    button_map_[11].reset(automode_button);
+    ts.autoModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
+                                     automode_button, _1));
+  }
 
   /*
    * TODO: I didn't translate these to the new way of doing things. I don't
