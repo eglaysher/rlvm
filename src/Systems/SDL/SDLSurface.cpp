@@ -744,11 +744,9 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
   // TODO: This needs to be made exception safe and so does the rest
   // of this file.
   SDL_Surface* tmp_surface =
-    SDL_CreateRGBSurface(surface_->flags & ~SDL_SRCALPHA,
-                         surface_->w, surface_->h,
-                         surface_->format->BitsPerPixel,
-                         surface_->format->Rmask, surface_->format->Gmask,
-                         surface_->format->Bmask, 0);
+      SDL_CreateRGBSurface(NULL, surface_->w, surface_->h, 24,
+                           0xFF0000, 0xFF00, 0xFF, 0);
+
   if(!tmp_surface)
     reportSDLError("SDL_CreateRGBSurface", function_name);
 
