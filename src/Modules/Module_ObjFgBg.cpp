@@ -44,7 +44,7 @@
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
-
+#include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -101,12 +101,9 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-struct Obj_dispArea_0 : RLOp_Void_1< IntConstant_T > {
-  int layer_;
-  Obj_dispArea_0(int layer) : layer_(layer) {}
-
+struct Obj_dispArea_0 : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.clearClip();
   }
 };
@@ -114,11 +111,8 @@ struct Obj_dispArea_0 : RLOp_Void_1< IntConstant_T > {
 struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
-  int layer_;
-  Obj_dispArea_1(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setClip(Rect::GRP(x1, y1, x2, y2));
   }
 };
@@ -128,11 +122,8 @@ struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
-  int layer_;
-  Obj_dispRect_1(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setClip(Rect::REC(x, y, w, h));
   }
 };
@@ -142,11 +133,8 @@ struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 
 struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
-  int layer_;
-  Obj_dispCorner_1(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int x, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setClip(Rect::GRP(0, 0, x, y));
   }
 };
@@ -156,11 +144,8 @@ struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T > {
-  int layer_;
-  Obj_adjust(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setXAdjustment(idx, x);
     obj.setYAdjustment(idx, y);
   }
@@ -169,11 +154,8 @@ struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
-  int layer_;
-  Obj_adjustX(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int idx, int x) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setXAdjustment(idx, x);
   }
 };
@@ -181,11 +163,8 @@ struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
-  int layer_;
-  Obj_adjustY(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int idx, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setYAdjustment(idx, y);
   }
 };
@@ -194,11 +173,8 @@ struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 
 struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T> {
-  int layer_;
-  Obj_tint(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setTint(RGBColour(r, g, b));
   }
 };
@@ -207,11 +183,8 @@ struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 
 struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
-  int layer_;
-  Obj_colour(int layer) : layer_(layer) {}
-
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setColour(RGBAColour(r, g, b, level));
   }
 };
@@ -219,16 +192,11 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
 // -----------------------------------------------------------------------
 
 struct Obj_objSetText
-  : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T>
-{
-  int layer_;
-  Obj_objSetText(int layer) : layer_(layer) {}
-
-  void operator()(RLMachine& machine, int buf, string val)
-  {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
-	std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
-	obj.setTextText(utf8str);
+    : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
+  void operator()(RLMachine& machine, int buf, string val) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
+    obj.setTextText(utf8str);
   }
 };
 
@@ -237,15 +205,10 @@ struct Obj_objSetText
 struct Obj_objTextOpts
   : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T, IntConstant_T, IntConstant_T,
-                       IntConstant_T>
-{
-  int layer_;
-  Obj_objTextOpts(int layer) : layer_(layer) {}
-
+                       IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int size, int xspace,
-                  int yspace, int vert, int colour, int shadow)
-  {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+                  int yspace, int vert, int colour, int shadow) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setTextOps(size, xspace, yspace, vert, colour, shadow);
   }
 };
@@ -312,89 +275,89 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
-void addObjectFunctions(RLModule& m, int layer) {
-  m.addOpcode(1000, 0, "objMove", new Obj_SetTwoIntOnObj(layer,
+void addObjectFunctions(RLModule& m) {
+  m.addOpcode(1000, 0, "objMove", new Obj_SetTwoIntOnObj(
                   &GraphicsObject::setX,
                   &GraphicsObject::setY));
   m.addOpcode(1001, 0, "objLeft",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setX));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setX));
   m.addOpcode(1002, 0, "objTop",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setY));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setY));
   m.addOpcode(1003, 0, "objAlpha",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setAlpha));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setAlpha));
   m.addOpcode(1004, 0, "objShow",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVisible));
-  m.addOpcode(1005, 0, "objDispArea", new Obj_dispArea_0(layer));
-  m.addOpcode(1005, 1, "objDispArea", new Obj_dispArea_1(layer));
-  m.addOpcode(1006, 0, "objAdjust", new Obj_adjust(layer));
-  m.addOpcode(1007, 0, "objAdjustX", new Obj_adjustX(layer));
-  m.addOpcode(1008, 0, "objAdjustY", new Obj_adjustY(layer));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setVisible));
+  m.addOpcode(1005, 0, "objDispArea", new Obj_dispArea_0);
+  m.addOpcode(1005, 1, "objDispArea", new Obj_dispArea_1);
+  m.addOpcode(1006, 0, "objAdjust", new Obj_adjust);
+  m.addOpcode(1007, 0, "objAdjustX", new Obj_adjustX);
+  m.addOpcode(1008, 0, "objAdjustY", new Obj_adjustY);
   m.addOpcode(1009, 0, "objMono",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setMono));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setMono));
   m.addOpcode(1010, 0, "objInvert",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setInvert));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setInvert));
   m.addOpcode(1011, 0, "objLight",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setLight));
-  m.addOpcode(1012, 0, "objTint", new Obj_tint(layer));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setLight));
+  m.addOpcode(1012, 0, "objTint", new Obj_tint);
   m.addOpcode(1013, 0, "objTintR",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintR));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setTintR));
   m.addOpcode(1014, 0, "objTintG",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintG));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setTintG));
   m.addOpcode(1015, 0, "objTintB",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintB));
-  m.addOpcode(1016, 0, "objColour", new Obj_colour(layer));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setTintB));
+  m.addOpcode(1016, 0, "objColour", new Obj_colour);
   m.addOpcode(1017, 0, "objColR",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourR));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setColourR));
   m.addOpcode(1018, 0, "objColG",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourG));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setColourG));
   m.addOpcode(1019, 0, "objColB",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourB));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setColourB));
   m.addOpcode(1020, 0, "objColLevel",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourLevel));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setColourLevel));
   m.addOpcode(1021, 0, "objComposite",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setCompositeMode));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setCompositeMode));
 
-  m.addOpcode(1024, 0, "objSetText", new Obj_objSetText(layer));
-  m.addOpcode(1024, 1, "objSetText", new Obj_objSetText(layer));
-  m.addOpcode(1025, 0, "objTextOpts", new Obj_objTextOpts(layer));
+  m.addOpcode(1024, 0, "objSetText", new Obj_objSetText);
+  m.addOpcode(1024, 1, "objSetText", new Obj_objSetText);
+  m.addOpcode(1025, 0, "objTextOpts", new Obj_objTextOpts);
 
 /*  m.addOpcode(1028, 0, new  */
   m.addOpcode(1029, 0, "objScrollRateX",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateX));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateX));
   m.addOpcode(1030, 0, "objScrollRateY",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateY));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateY));
 
-  m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0(layer)); //dispRect_0 == dispArea_0
-  m.addOpcode(1034, 1, "objDispRect", new Obj_dispRect_1(layer));
+  m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0); //dispRect_0 == dispArea_0
+  m.addOpcode(1034, 1, "objDispRect", new Obj_dispRect_1);
   m.addOpcode(1035, 0, "objDispCorner",
-              new Obj_dispArea_0(layer)); //dispCorner_0 == dispArea_0
+              new Obj_dispArea_0); //dispCorner_0 == dispArea_0
   m.addOpcode(1035, 1, "objDispCorner",
-              new Obj_dispCorner_1(layer));
+              new Obj_dispCorner_1);
   m.addOpcode(1036, 0, "objAdjustVert",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVert));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setVert));
   m.addOpcode(1039, 0, "objPattNo",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setPattNo));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setPattNo));
 
-  m.addOpcode(1046, 0, "objScale", new Obj_SetTwoIntOnObj(layer,
+  m.addOpcode(1046, 0, "objScale", new Obj_SetTwoIntOnObj(
                 &GraphicsObject::setWidth,
                 &GraphicsObject::setHeight));
   m.addOpcode(1047, 0, "objWidth",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setWidth));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setWidth));
   m.addOpcode(1048, 0, "objHeight",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setHeight));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setHeight));
   m.addOpcode(1049, 0, "objRotate",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setRotation));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setRotation));
 
   m.addUnsupportedOpcode(1050, 0, "objRepOrigin");
   m.addUnsupportedOpcode(1051, 0, "objRepOriginX");
   m.addUnsupportedOpcode(1052, 0, "objRepOriginY");
-  m.addOpcode(1053, 0, "objOrigin", new Obj_SetTwoIntOnObj(layer,
+  m.addOpcode(1053, 0, "objOrigin", new Obj_SetTwoIntOnObj(
                 &GraphicsObject::setXOrigin,
                 &GraphicsObject::setYOrigin));
   m.addOpcode(1054, 0, "objOriginX",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setXOrigin));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setXOrigin));
   m.addOpcode(1055, 0, "objOriginY",
-              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setYOrigin));
+              new Obj_SetOneIntOnObj(&GraphicsObject::setYOrigin));
 }
 
 // -----------------------------------------------------------------------
@@ -404,7 +367,8 @@ void addObjectFunctions(RLModule& m, int layer) {
 ObjFgModule::ObjFgModule()
   : RLModule("ObjFg", 1, 81)
 {
-  addObjectFunctions(*this, OBJ_FG_LAYER);
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -412,7 +376,8 @@ ObjFgModule::ObjFgModule()
 ObjBgModule::ObjBgModule()
   : RLModule("ObjBg", 1, 82)
 {
-  addObjectFunctions(*this, OBJ_BG_LAYER);
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -437,7 +402,8 @@ RLOperation* rangeMappingFun(RLOperation* op)
 ObjRangeFgModule::ObjRangeFgModule()
   : MappedRLModule(rangeMappingFun, "ObjRangeFg", 1, 90)
 {
-  addObjectFunctions(*this, OBJ_FG_LAYER);
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -445,5 +411,6 @@ ObjRangeFgModule::ObjRangeFgModule()
 ObjRangeBgModule::ObjRangeBgModule()
   : MappedRLModule(rangeMappingFun, "ObjRangeBg", 1, 91)
 {
-  addObjectFunctions(*this, OBJ_BG_LAYER);
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
 }

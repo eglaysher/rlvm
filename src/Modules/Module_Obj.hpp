@@ -44,9 +44,10 @@ class GraphicsObject;
 // -----------------------------------------------------------------------
 
 /// Helper function to clean up the code a bit
-GraphicsObject& getGraphicsObject(RLMachine& machine, int layer, int obj);
+GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
+                                  int obj);
 
-void setGraphicsObject(RLMachine& machine, int layer, int obj,
+void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
                        GraphicsObject& gobj);
 
 // -----------------------------------------------------------------------
@@ -68,11 +69,8 @@ private:
   /// called.
   Setter setter;
 
-  /// Whether we're working on fg or bg objects
-  int layer;
-
 public:
-  Obj_SetOneIntOnObj(int inlayer, Setter s);
+  Obj_SetOneIntOnObj(Setter s);
   ~Obj_SetOneIntOnObj();
 
   void operator()(RLMachine& machine, int buf, int incoming);
@@ -96,11 +94,8 @@ class Obj_SetTwoIntOnObj
   Setter setterOne;
   Setter setterTwo;
 
-  /// Fg or Bg
-  int layer;
-
 public:
-  Obj_SetTwoIntOnObj(int inlayer, Setter one, Setter two);
+  Obj_SetTwoIntOnObj(Setter one, Setter two);
   ~Obj_SetTwoIntOnObj();
 
   void operator()(RLMachine& machine, int buf, int incomingOne, int incomingTwo);

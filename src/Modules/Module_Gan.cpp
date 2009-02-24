@@ -32,6 +32,7 @@
 #include "Modules/Module_Gan.hpp"
 
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
@@ -50,10 +51,8 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
-{
-  struct WaitForGanToFinish : public LongOperation
-  {
+struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  struct WaitForGanToFinish : public LongOperation {
     /**
      * Save the screen update mode and change it to automatic when entering a
      * blocking animation, restoring when we leave.
@@ -69,18 +68,18 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
     GraphicsSystem& system_;
     GraphicsSystem::DCScreenUpdateMode mode_;
 
-    int layer_;
+    int fgbg_;
     int buf_;
-    WaitForGanToFinish(GraphicsSystem& system, int inLayer, int inBuf)
+    WaitForGanToFinish(GraphicsSystem& system, int fgbg, int inBuf)
       : system_(system),
         mode_(system_.screenUpdateMode()),
-        layer_(inLayer), buf_(inBuf) {
+        fgbg_(fgbg), buf_(inBuf) {
       system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
     }
 
     bool operator()(RLMachine& machine)
     {
-      GraphicsObject& obj = getGraphicsObject(machine, layer_, buf_);
+      GraphicsObject& obj = machine.system().graphics().getObject(fgbg_, buf_);
       bool done = true;
 
       if(obj.hasObjectData())
@@ -100,16 +99,14 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
   };
 
   bool block_;
-  int layer_;
   GraphicsObjectData::AfterAnimation after_effect_;
 
-  Gan_ganPlay(bool block, int layer,
-              GraphicsObjectData::AfterAnimation after)
-    : block_(block), layer_(layer), after_effect_(after) {}
+  Gan_ganPlay(bool block, GraphicsObjectData::AfterAnimation after)
+    : block_(block), after_effect_(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet)
   {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, buf);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
 
     if(obj.hasObjectData())
     {
@@ -119,10 +116,15 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
         data.playSet(animationSet);
         data.setAfterAction(after_effect_);
 
-        if(block_)
+        if (block_) {
+          int fgbg;
+          if(!getProperty(P_FGBG, fgbg))
+            fgbg = OBJ_FG;
+
           machine.pushLongOperation(new WaitForGanToFinish(
                                       machine.system().graphics(),
-                                      layer_, buf));
+                                      fgbg, buf));
+        }
       }
     }
   }
@@ -166,12 +168,9 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T>
  * After implementing this, we no longer get stuck in an infinite loop during
  * Ushio's birth so I'm assuming this is correct.
  */
-class Gan_isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
-public:
-  Gan_isGanDonePlaying(int layer) : layer_(layer) {}
-
+struct Gan_isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, gan_num);
+    GraphicsObject& obj = getGraphicsObject(machine, this, gan_num);
 
     if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
@@ -181,59 +180,55 @@ public:
 
     return 0;
   }
-
-private:
-  int layer_;
 };
 
 // -----------------------------------------------------------------------
 
-void addGanOperationsTo(RLModule& m, int layer)
-{
-  m.addOpcode(3, 0, "ganIsDonePlaying", new Gan_isGanDonePlaying(layer));
+void addGanOperationsTo(RLModule& m) {
+  m.addOpcode(3, 0, "ganIsDonePlaying", new Gan_isGanDonePlaying);
 
   m.addUnsupportedOpcode(1000, 0, "objStop");
   m.addUnsupportedOpcode(1000, 1, "objStop");
 
   m.addOpcode(1001, 0, "ganLoop",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_LOOP));
   m.addOpcode(1003, 0, "ganPlay",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_NONE));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(1005, 0, "ganPlayOnce",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_CLEAR));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
   m.addOpcode(1006, 0, "ganPlayEx",
-              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_NONE));
+              new Gan_ganPlay(true, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(1007, 0, "ganPlayOnceEx",
-              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_CLEAR));
+              new Gan_ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 
   m.addOpcode(2001, 0, "objLoop",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_LOOP));
   m.addUnsupportedOpcode(2003, 0, "objPlay");
 
   m.addOpcode(3001, 0, "ganLoop2",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_LOOP));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_LOOP));
   m.addOpcode(3003, 0, "ganPlay2",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_NONE));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3005, 0, "ganPlayOnce2",
-              new Gan_ganPlay(false, layer, GraphicsObjectData::AFTER_CLEAR));
+              new Gan_ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
   m.addOpcode(3006, 0, "ganPlayEx2",
-              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_NONE));
+              new Gan_ganPlay(true, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3007, 0, "ganPlayOnceEx2",
-              new Gan_ganPlay(true, layer, GraphicsObjectData::AFTER_CLEAR));
+              new Gan_ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 }
 
 // -----------------------------------------------------------------------
 
 GanFgModule::GanFgModule()
-  : RLModule("GanFg", 1, 73)
-{
-  addGanOperationsTo(*this, OBJ_FG_LAYER);
+    : RLModule("GanFg", 1, 73) {
+  addGanOperationsTo(*this);
+  setProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 GanBgModule::GanBgModule()
-  : RLModule("GanBg", 1, 74)
-{
-  addGanOperationsTo(*this, OBJ_BG_LAYER);
+    : RLModule("GanBg", 1, 74) {
+  addGanOperationsTo(*this);
+  setProperty(P_FGBG, OBJ_BG);
 }

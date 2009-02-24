@@ -39,6 +39,8 @@
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
 
+class RLModule;
+
 // ------------------------------------------------------------ Real
 
 /**
@@ -89,6 +91,15 @@
 typedef boost::ptr_vector<libReallive::ExpressionPiece> ExpressionPiecesVector;
 
 /**
+ * Each RLOperation can optionally carry some numeric properties.
+ */
+enum OperationProperties {
+  PROP_NAME,
+  PROP_FGBG,
+  PROP_OBJSET
+};
+
+/**
  * An RLOperation object implements an individual bytecode
  * command. All command bytecodes have a corresponding instance of a
  * subclass of RLOperation that defines it.
@@ -106,6 +117,9 @@ public:
 
   void setName(const char* name) { name_ = name; }
   const char* name() const { return name_; }
+
+  RLOperation* setProperty(int property, int value);
+  bool getProperty(int property, int& value) const;
 
   /**
    * Check made as to whether the instruction pointer should be
@@ -147,6 +161,21 @@ public:
   void throw_unimplemented();
 
 private:
+  friend class RLModule;
+
+  typedef std::pair<int, int> Property;
+  typedef std::vector<Property> PropertyList;
+
+  /// Searches for a property on this object.
+  PropertyList::iterator findProperty(int property) const;
+
+  /// Our properties (for the number of properties O(n) is faster than O(log
+  /// n)...)
+  PropertyList* property_list_;
+
+  /// The module that owns us (we ask it for properties).
+  RLModule* module_;
+
   /// The human readable name for this operation
   const char* name_;
 };

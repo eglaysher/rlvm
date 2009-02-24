@@ -38,6 +38,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/References.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
@@ -49,12 +50,59 @@ using namespace boost;
 using namespace libReallive;
 
 RLOperation::RLOperation()
-{}
+    : property_list_(NULL),
+      name_(NULL) {
+}
 
 // -----------------------------------------------------------------------
 
-RLOperation::~RLOperation()
-{}
+RLOperation::~RLOperation() {
+  if (property_list_)
+    delete property_list_;
+}
+
+// -----------------------------------------------------------------------
+
+RLOperation* RLOperation::setProperty(int property, int value) {
+  if (!property_list_) {
+    property_list_ = new std::vector< std::pair<int, int> >;
+  }
+
+  // Modify the property if it already exists
+  PropertyList::iterator it = findProperty(property);
+  if (it != property_list_->end()) {
+    it->second = value;
+  } else {
+    property_list_->push_back(std::make_pair(property, value));
+  }
+
+  return this;
+}
+
+// -----------------------------------------------------------------------
+
+bool RLOperation::getProperty(int property, int& value) const {
+  if (property_list_) {
+    PropertyList::iterator it = findProperty(property);
+    if (it != property_list_->end()) {
+      return it->second;
+    }
+  }
+
+  if (module_) {
+    // If we don't have a property, ask our module if it has one.
+    return module_->getProperty(property, value);
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+RLOperation::PropertyList::iterator RLOperation::findProperty(int property) const {
+  return find_if(property_list_->begin(), property_list_->end(),
+                 bind(&Property::first, _1) == property);
+}
 
 // -----------------------------------------------------------------------
 

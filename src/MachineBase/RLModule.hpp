@@ -39,6 +39,9 @@
 #include <boost/utility.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
+#include <map>
+#include <vector>
+
 namespace libReallive {
 class FunctionElement;
 class CommandElement;
@@ -128,6 +131,9 @@ public:
   /// Accessor that returns this module's mnemonic nmae
   const std::string& moduleName() const { return module_name_; }
 
+  void setProperty(int property, int value);
+  bool getProperty(int property, int& value) const;
+
   /**
    * Using the bytecode element CommandElement f, try to find an
    * RLOperation implementation of the instruction in this module, and
@@ -145,6 +151,14 @@ protected:
   void unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload);
 
 private:
+  typedef std::pair<int, int> Property;
+  typedef std::vector<Property> PropertyList;
+
+  PropertyList::iterator findProperty(int property) const;
+
+  /// 
+  PropertyList* property_list_;
+
   int module_type_;
   int module_number_;
   std::string module_name_;

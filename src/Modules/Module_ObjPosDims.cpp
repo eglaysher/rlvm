@@ -32,6 +32,7 @@
 #include "Module_Obj.hpp"
 #include "Module_ObjPosDims.hpp"
 
+#include "MachineBase/Properties.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/References.hpp"
@@ -52,15 +53,10 @@ using namespace std;
  * that aren't immediatly obvious.
  */
 struct Obj_objGetPos
-  : public RLOp_Void_3< IntConstant_T, IntReference_T, IntReference_T >
-{
-  int layer_;
-  Obj_objGetPos(int layer) : layer_(layer) {}
-
+    : public RLOp_Void_3< IntConstant_T, IntReference_T, IntReference_T > {
   void operator()(RLMachine& machine, int objNum, IntReferenceIterator xIt,
-                  IntReferenceIterator yIt)
-  {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, objNum);
+                  IntReferenceIterator yIt) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     *xIt = obj.x();
     *yIt = obj.y();
   }
@@ -75,15 +71,10 @@ struct Obj_objGetPos
  */
 struct Obj_objGetDims
   : public RLOp_Void_4< IntConstant_T, IntReference_T, IntReference_T,
-                        DefaultIntValue_T<4> >
-{
-  int layer_;
-  Obj_objGetDims(int layer) : layer_(layer) {}
-
+                        DefaultIntValue_T<4> > {
   void operator()(RLMachine& machine, int objNum, IntReferenceIterator widthIt,
-                  IntReferenceIterator heightIt, int unknown)
-  {
-    GraphicsObject& obj = getGraphicsObject(machine, layer_, objNum);
+                  IntReferenceIterator heightIt, int unknown) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     *widthIt = obj.pixelWidth();
     *heightIt = obj.pixelHeight();
   }
@@ -92,24 +83,23 @@ struct Obj_objGetDims
 // -----------------------------------------------------------------------
 
 namespace {
-void addFunctions(RLModule& m, int layer) {
-  m.addOpcode(1000, 0, "objGetPos", new Obj_objGetPos(layer));
-  m.addOpcode(1100, 0, "objGetPos", new Obj_objGetDims(layer));
-  m.addOpcode(1100, 1, "objGetPos", new Obj_objGetDims(layer));
+void addFunctions(RLModule& m) {
+  m.addOpcode(1000, 0, "objGetPos", new Obj_objGetPos);
+  m.addOpcode(1100, 0, "objGetPos", new Obj_objGetDims);
+  m.addOpcode(1100, 1, "objGetPos", new Obj_objGetDims);
 }
 }
 
 ObjFgPosDimsModule::ObjFgPosDimsModule()
-  : RLModule("ObjFgPosDims", 1, 84)
-{
-  addFunctions(*this, OBJ_FG_LAYER);
+    : RLModule("ObjFgPosDims", 1, 84) {
+  addFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
-
 ObjBgPosDimsModule::ObjBgPosDimsModule()
-  : RLModule("ObjBgPosDims", 1, 85)
-{
-  addFunctions(*this, OBJ_BG_LAYER);
+    : RLModule("ObjBgPosDims", 1, 85) {
+  addFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
 }

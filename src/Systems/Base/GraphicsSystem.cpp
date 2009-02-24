@@ -494,7 +494,7 @@ GraphicsObject& GraphicsSystem::getObject(int layer, int obj_number)
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
-  if(layer == OBJ_BG_LAYER)
+  if(layer == OBJ_BG)
     return graphics_object_impl_->background_objects[obj_number];
   else
     return graphics_object_impl_->foreground_objects[obj_number];
@@ -507,7 +507,7 @@ void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj)
   if(layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
-  if(layer == OBJ_BG_LAYER)
+  if(layer == OBJ_BG)
     graphics_object_impl_->background_objects[obj_number] = obj;
   else
     graphics_object_impl_->foreground_objects[obj_number] = obj;

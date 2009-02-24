@@ -54,14 +54,17 @@ using namespace libReallive;
 
 RLModule::RLModule(const std::string& in_module_name, int in_module_type,
                    int in_module_number)
-  : module_type_(in_module_type), module_number_(in_module_number),
-    module_name_(in_module_name)
+    : property_list_(NULL),
+      module_type_(in_module_type), module_number_(in_module_number),
+      module_name_(in_module_name)
 {}
 
 // -----------------------------------------------------------------------
 
-RLModule::~RLModule()
-{}
+RLModule::~RLModule() {
+  if (property_list_)
+    delete property_list_;
+}
 
 // -----------------------------------------------------------------------
 
@@ -85,6 +88,7 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
 {
   int packed_opcode = packOpcodeNumber(opcode, overload);
   op->setName(name);
+  op->module_ = this;
   stored_operations.insert(packed_opcode, op);
 }
 
@@ -96,6 +100,44 @@ void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload,
   addOpcode(opcode, overload, "",
             new UndefinedFunction(name, module_type_, module_number_, opcode,
                                   (int)overload));
+}
+
+// -----------------------------------------------------------------------
+
+void RLModule::setProperty(int property, int value) {
+  if (!property_list_) {
+    property_list_ = new std::vector< std::pair<int, int> >;
+  }
+
+  // Modify the property if it already exists
+  PropertyList::iterator it = findProperty(property);
+  if (it != property_list_->end()) {
+    it->second = value;
+    return;
+  }
+
+  property_list_->push_back(std::make_pair(property, value));
+}
+
+// -----------------------------------------------------------------------
+
+bool RLModule::getProperty(int property, int& value) const {
+  if (property_list_) {
+    PropertyList::iterator it = findProperty(property);
+    if (it != property_list_->end()) {
+      value = it->second;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
+  return find_if(property_list_->begin(), property_list_->end(),
+                 bind(&Property::first, _1) == property);
 }
 
 // -----------------------------------------------------------------------

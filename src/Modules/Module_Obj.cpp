@@ -39,6 +39,7 @@
 
 #include "Modules/Module_Obj.hpp"
 
+#include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -46,26 +47,33 @@
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& getGraphicsObject(RLMachine& machine, int layer, int obj)
-{
-  return machine.system().graphics().getObject(layer, obj);
+GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
+                                  int obj) {
+  int fgbg;
+  if(!op->getProperty(P_FGBG, fgbg))
+    fgbg = OBJ_FG;
+
+  return machine.system().graphics().getObject(fgbg, obj);
 }
 
 // -----------------------------------------------------------------------
 
-void setGraphicsObject(RLMachine& machine, int layer, int obj,
-                       GraphicsObject& gobj)
-{
-  machine.system().graphics().setObject(layer, obj, gobj);
+void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
+                       GraphicsObject& gobj) {
+  int fgbg;
+  if(!op->getProperty(P_FGBG, fgbg))
+    fgbg = OBJ_FG;
+
+  machine.system().graphics().setObject(fgbg, obj, gobj);
 }
 
 // -----------------------------------------------------------------------
 // Obj_SetOneIntOnObj
 // -----------------------------------------------------------------------
 
-Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(int inlayer, Setter s)
-  : setter(s), layer(inlayer)
-{}
+Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s)
+    : setter(s) {
+}
 
 // -----------------------------------------------------------------------
 
@@ -74,9 +82,8 @@ Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj()
 
 // -----------------------------------------------------------------------
 
-void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming)
-{
-  GraphicsObject& obj = getGraphicsObject(machine, layer, buf);
+void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
+  GraphicsObject& obj = getGraphicsObject(machine, this, buf);
   ((obj).*(setter))(incoming);
 }
 
@@ -85,21 +92,20 @@ void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming)
 // Obj_SetTwoIntOnObj
 // -----------------------------------------------------------------------
 
-Obj_SetTwoIntOnObj::Obj_SetTwoIntOnObj(int inlayer, Setter one, Setter two)
-  : setterOne(one), setterTwo(two), layer(inlayer)
-{}
+Obj_SetTwoIntOnObj::Obj_SetTwoIntOnObj(Setter one, Setter two)
+  : setterOne(one), setterTwo(two) {
+}
 
 // -----------------------------------------------------------------------
 
-Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj()
-{}
+Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj() {
+}
 
 // -----------------------------------------------------------------------
 
 void Obj_SetTwoIntOnObj::operator()(RLMachine& machine, int buf,
-                                    int incomingOne, int incomingTwo)
-{
-  GraphicsObject& obj = getGraphicsObject(machine, layer, buf);
+                                    int incomingOne, int incomingTwo) {
+  GraphicsObject& obj = getGraphicsObject(machine, this, buf);
   ((obj).*(setterOne))(incomingOne);
   ((obj).*(setterTwo))(incomingTwo);
 }
