@@ -191,12 +191,12 @@ struct Sel_select : public RLOp_SpecialCase
 SelModule::SelModule()
   : RLModule("Sel", 0, 2)
 {
-  addOpcode(1, 0, new Sel_select);
+  addOpcode(1, 0, "select", new Sel_select);
 
   // TODO: These are wrong! These have different implementations which do more
   // graphical fun. Refer to the rldev manual once I get off my lazy ass to
   // implement them!
-  addOpcode(0, 0, new Sel_select);
-  addOpcode(2, 0, new Sel_select);
-  addOpcode(3, 0, new Sel_select);
+  addOpcode(0, 0, "select_w", new Sel_select);
+  addOpcode(2, 0, "select_s2", new Sel_select);
+  addOpcode(3, 0, "select_s", new Sel_select);
 }

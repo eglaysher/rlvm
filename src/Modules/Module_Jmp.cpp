@@ -622,29 +622,29 @@ struct Jmp_rtl_with_1 : public RLOp_Void_Void {
 JmpModule::JmpModule()
   : RLModule("Jmp", 0, 1)
 {
-  addOpcode(0, 0, new Jmp_goto);
-  addOpcode(1, 0, new Jmp_goto_if);
-  addOpcode(2, 0, new Jmp_goto_unless);
-  addOpcode(3, 0, new Jmp_goto_on);
-  addOpcode(4, 0, new Jmp_goto_case);
-  addOpcode(5, 0, new Jmp_gosub);
-  addOpcode(6, 0, new Jmp_gosub_if);
-  addOpcode(7, 0, new Jmp_gosub_unless);
-  addOpcode(8, 0, new Jmp_gosub_on);
-  addOpcode(9, 0, new Jmp_gosub_case);
-  addOpcode(10, 0, new Jmp_ret);
-  addOpcode(11, 0, new Jmp_jump_0);
-  addOpcode(11, 1, new Jmp_jump_1);
-  addOpcode(12, 0, new Jmp_farcall_0);
-  addOpcode(12, 1, new Jmp_farcall_1);
-  addOpcode(13, 0, new Jmp_rtl);
+  addOpcode(0, 0, "goto", new Jmp_goto);
+  addOpcode(1, 0, "goto_if", new Jmp_goto_if);
+  addOpcode(2, 0, "goto_unless", new Jmp_goto_unless);
+  addOpcode(3, 0, "goto_on", new Jmp_goto_on);
+  addOpcode(4, 0, "goto_case", new Jmp_goto_case);
+  addOpcode(5, 0, "gosub", new Jmp_gosub);
+  addOpcode(6, 0, "gosub_if", new Jmp_gosub_if);
+  addOpcode(7, 0, "gosub_unless", new Jmp_gosub_unless);
+  addOpcode(8, 0, "gosub_on", new Jmp_gosub_on);
+  addOpcode(9, 0, "gosub_case", new Jmp_gosub_case);
+  addOpcode(10, 0, "ret", new Jmp_ret);
+  addOpcode(11, 0, "jump", new Jmp_jump_0);
+  addOpcode(11, 1, "jump", new Jmp_jump_1);
+  addOpcode(12, 0, "farcall", new Jmp_farcall_0);
+  addOpcode(12, 1, "farcall", new Jmp_farcall_1);
+  addOpcode(13, 0, "rtl", new Jmp_rtl);
 
-  addOpcode(16, 0, new Jmp_gosub_with);
-  addOpcode(17, 0, new Jmp_ret_with_0);
-  addOpcode(17, 1, new Jmp_ret_with_1);
-  addOpcode(18, 0, new Jmp_farcall_with);
-  addOpcode(19, 0, new Jmp_rtl_with_0);
-  addOpcode(19, 1, new Jmp_rtl_with_1);
+  addOpcode(16, 0, "gosub_with", new Jmp_gosub_with);
+  addOpcode(17, 0, "ret_with", new Jmp_ret_with_0);
+  addOpcode(17, 1, "ret_with", new Jmp_ret_with_1);
+  addOpcode(18, 0, "farcall_with", new Jmp_farcall_with);
+  addOpcode(19, 0, "rtl_with", new Jmp_rtl_with_0);
+  addOpcode(19, 1, "rtl_with", new Jmp_rtl_with_1);
 }
 
 //@}

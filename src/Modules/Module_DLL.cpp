@@ -65,13 +65,13 @@ struct Jmp_CallDLL : public RLOp_Store_6<
 DLLModule::DLLModule()
   : RLModule("DLL", 2, 1)
 {
-  addOpcode(10, 0, new Jmp_LoadDLL);
-  addOpcode(11, 0, callFunction(&RLMachine::unloadDLL));
+  addOpcode(10, 0, "LoadDLL", new Jmp_LoadDLL);
+  addOpcode(11, 0, "UnloadDLL", callFunction(&RLMachine::unloadDLL));
 
-  addOpcode(12, 0, new Jmp_CallDLL);
-  addOpcode(12, 1, new Jmp_CallDLL);
-  addOpcode(12, 2, new Jmp_CallDLL);
-  addOpcode(12, 3, new Jmp_CallDLL);
-  addOpcode(12, 4, new Jmp_CallDLL);
-  addOpcode(12, 5, new Jmp_CallDLL);
+  addOpcode(12, 0, "CallDLL", new Jmp_CallDLL);
+  addOpcode(12, 1, "CallDLL", new Jmp_CallDLL);
+  addOpcode(12, 2, "CallDLL", new Jmp_CallDLL);
+  addOpcode(12, 3, "CallDLL", new Jmp_CallDLL);
+  addOpcode(12, 4, "CallDLL", new Jmp_CallDLL);
+  addOpcode(12, 5, "CallDLL", new Jmp_CallDLL);
 }

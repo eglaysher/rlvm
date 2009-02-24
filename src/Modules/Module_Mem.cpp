@@ -261,17 +261,17 @@ struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
 MemModule::MemModule()
   : RLModule("Mem", 1, 11)
 {
-  addOpcode(0, 0, new Mem_setarray);
-  addOpcode(1, 0, new Mem_setrng_0);
-  addOpcode(1, 1, new Mem_setrng_1);
-  addOpcode(2, 0, new Mem_cpyrng);
-  addOpcode(3, 0, new Mem_setarray_stepped);
-  addOpcode(4, 0, new Mem_setrng_stepped_0);
-  addOpcode(4, 1, new Mem_setrng_stepped_1);
+  addOpcode(0, 0, "setarray", new Mem_setarray);
+  addOpcode(1, 0, "setrng", new Mem_setrng_0);
+  addOpcode(1, 1, "setrng", new Mem_setrng_1);
+  addOpcode(2, 0, "cpyrng", new Mem_cpyrng);
+  addOpcode(3, 0, "setarray_stepped", new Mem_setarray_stepped);
+  addOpcode(4, 0, "setrng_stepped", new Mem_setrng_stepped_0);
+  addOpcode(4, 1, "setrng_stepped", new Mem_setrng_stepped_1);
   // implement op<1:Mem:00005, 0>
-  addOpcode(6, 0, new Mem_cpyvars);
-  addOpcode(100, 0, new Mem_sum);
-  addOpcode(101, 0, new Mem_sums);
+  addOpcode(6, 0, "cpyvars", new Mem_cpyvars);
+  addOpcode(100, 0, "sum", new Mem_sum);
+  addOpcode(101, 0, "sums", new Mem_sums);
 }
 
 // @}

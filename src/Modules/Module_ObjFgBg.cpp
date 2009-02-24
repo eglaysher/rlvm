@@ -312,56 +312,78 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
-void addObjectFunctions(RLModule& m, int layer)
-{
+void addObjectFunctions(RLModule& m, int layer) {
   m.addOpcode(1000, 0, "objMove", new Obj_SetTwoIntOnObj(layer,
-                &GraphicsObject::setX,
-                &GraphicsObject::setY));
-  m.addOpcode(1001, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setX));
-  m.addOpcode(1002, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setY));
-  m.addOpcode(1003, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setAlpha));
-  m.addOpcode(1004, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVisible));
-  m.addOpcode(1005, 0, new Obj_dispArea_0(layer));
-  m.addOpcode(1005, 1, new Obj_dispArea_1(layer));
-  m.addOpcode(1006, 0, new Obj_adjust(layer));
-  m.addOpcode(1007, 0, new Obj_adjustX(layer));
-  m.addOpcode(1008, 0, new Obj_adjustY(layer));
-  m.addOpcode(1009, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setMono));
-  m.addOpcode(1010, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setInvert));
-  m.addOpcode(1011, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setLight));
-  m.addOpcode(1012, 0, new Obj_tint(layer));
-  m.addOpcode(1013, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintR));
-  m.addOpcode(1014, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintG));
-  m.addOpcode(1015, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintB));
-  m.addOpcode(1016, 0, new Obj_colour(layer));
-  m.addOpcode(1017, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourR));
-  m.addOpcode(1018, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourG));
-  m.addOpcode(1019, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourB));
-  m.addOpcode(1020, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourLevel));
-  m.addOpcode(1021, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setCompositeMode));
+                  &GraphicsObject::setX,
+                  &GraphicsObject::setY));
+  m.addOpcode(1001, 0, "objLeft",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setX));
+  m.addOpcode(1002, 0, "objTop",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setY));
+  m.addOpcode(1003, 0, "objAlpha",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setAlpha));
+  m.addOpcode(1004, 0, "objShow",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVisible));
+  m.addOpcode(1005, 0, "objDispArea", new Obj_dispArea_0(layer));
+  m.addOpcode(1005, 1, "objDispArea", new Obj_dispArea_1(layer));
+  m.addOpcode(1006, 0, "objAdjust", new Obj_adjust(layer));
+  m.addOpcode(1007, 0, "objAdjustX", new Obj_adjustX(layer));
+  m.addOpcode(1008, 0, "objAdjustY", new Obj_adjustY(layer));
+  m.addOpcode(1009, 0, "objMono",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setMono));
+  m.addOpcode(1010, 0, "objInvert",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setInvert));
+  m.addOpcode(1011, 0, "objLight",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setLight));
+  m.addOpcode(1012, 0, "objTint", new Obj_tint(layer));
+  m.addOpcode(1013, 0, "objTintR",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintR));
+  m.addOpcode(1014, 0, "objTintG",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintG));
+  m.addOpcode(1015, 0, "objTintB",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setTintB));
+  m.addOpcode(1016, 0, "objColour", new Obj_colour(layer));
+  m.addOpcode(1017, 0, "objColR",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourR));
+  m.addOpcode(1018, 0, "objColG",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourG));
+  m.addOpcode(1019, 0, "objColB",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourB));
+  m.addOpcode(1020, 0, "objColLevel",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setColourLevel));
+  m.addOpcode(1021, 0, "objComposite",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setCompositeMode));
 
-  m.addOpcode(1024, 0, new Obj_objSetText(layer));
-  m.addOpcode(1024, 1, new Obj_objSetText(layer));
-  m.addOpcode(1025, 0, new Obj_objTextOpts(layer));
+  m.addOpcode(1024, 0, "objSetText", new Obj_objSetText(layer));
+  m.addOpcode(1024, 1, "objSetText", new Obj_objSetText(layer));
+  m.addOpcode(1025, 0, "objTextOpts", new Obj_objTextOpts(layer));
 
 /*  m.addOpcode(1028, 0, new  */
-  m.addOpcode(1030, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateX));
-  m.addOpcode(1031, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateY));
+  m.addOpcode(1029, 0, "objScrollRateX",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateX));
+  m.addOpcode(1030, 0, "objScrollRateY",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setScrollRateY));
 
-  m.addOpcode(1034, 0, new Obj_dispArea_0(layer)); //dispRect_0 == dispArea_0
-  m.addOpcode(1034, 1, new Obj_dispRect_1(layer));
-  m.addOpcode(1035, 0, new Obj_dispArea_0(layer)); //dispCorner_0 == dispArea_0
-  m.addOpcode(1035, 1, new Obj_dispCorner_1(layer));
+  m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0(layer)); //dispRect_0 == dispArea_0
+  m.addOpcode(1034, 1, "objDispRect", new Obj_dispRect_1(layer));
+  m.addOpcode(1035, 0, "objDispCorner",
+              new Obj_dispArea_0(layer)); //dispCorner_0 == dispArea_0
+  m.addOpcode(1035, 1, "objDispCorner",
+              new Obj_dispCorner_1(layer));
+  m.addOpcode(1036, 0, "objAdjustVert",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVert));
+  m.addOpcode(1039, 0, "objPattNo",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setPattNo));
 
-  m.addOpcode(1036, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setVert));
-  m.addOpcode(1039, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setPattNo));
-
-  m.addOpcode(1046, 0, new Obj_SetTwoIntOnObj(layer,
+  m.addOpcode(1046, 0, "objScale", new Obj_SetTwoIntOnObj(layer,
                 &GraphicsObject::setWidth,
                 &GraphicsObject::setHeight));
-  m.addOpcode(1047, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setWidth));
-  m.addOpcode(1048, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setHeight));
-  m.addOpcode(1049, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setRotation));
+  m.addOpcode(1047, 0, "objWidth",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setWidth));
+  m.addOpcode(1048, 0, "objHeight",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setHeight));
+  m.addOpcode(1049, 0, "objRotate",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setRotation));
 
   m.addUnsupportedOpcode(1050, 0, "objRepOrigin");
   m.addUnsupportedOpcode(1051, 0, "objRepOriginX");
@@ -369,8 +391,10 @@ void addObjectFunctions(RLModule& m, int layer)
   m.addOpcode(1053, 0, "objOrigin", new Obj_SetTwoIntOnObj(layer,
                 &GraphicsObject::setXOrigin,
                 &GraphicsObject::setYOrigin));
-  m.addOpcode(1054, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setXOrigin));
-  m.addOpcode(1055, 0, new Obj_SetOneIntOnObj(layer, &GraphicsObject::setYOrigin));
+  m.addOpcode(1054, 0, "objOriginX",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setXOrigin));
+  m.addOpcode(1055, 0, "objOriginY",
+              new Obj_SetOneIntOnObj(layer, &GraphicsObject::setYOrigin));
 }
 
 // -----------------------------------------------------------------------

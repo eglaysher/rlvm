@@ -276,11 +276,11 @@ struct Obj_objOfFileGan_3
 
 void addObjectCreationFunctions(RLModule& m, int layer)
 {
-  m.addOpcode(1000, 0, new Obj_objGeneric_0(layer, objOfFileLoader));
-  m.addOpcode(1000, 1, new Obj_objGeneric_1(layer, objOfFileLoader));
-  m.addOpcode(1000, 2, new Obj_objGeneric_2(layer, objOfFileLoader));
-  m.addOpcode(1000, 3, new Obj_objGeneric_3(layer, objOfFileLoader));
-  m.addOpcode(1000, 4, new Obj_objGeneric_4(layer, objOfFileLoader));
+  m.addOpcode(1000, 0, "objOfFile", new Obj_objGeneric_0(layer, objOfFileLoader));
+  m.addOpcode(1000, 1, "objOfFile", new Obj_objGeneric_1(layer, objOfFileLoader));
+  m.addOpcode(1000, 2, "objOfFile", new Obj_objGeneric_2(layer, objOfFileLoader));
+  m.addOpcode(1000, 3, "objOfFile", new Obj_objGeneric_3(layer, objOfFileLoader));
+  m.addOpcode(1000, 4, "objOfFile", new Obj_objGeneric_4(layer, objOfFileLoader));
 
   m.addOpcode(1003, 0, "objOfFileGan", new Obj_objOfFileGan_0(layer));
   m.addOpcode(1003, 1, "objOfFileGan", new Obj_objOfFileGan_1(layer));
@@ -293,9 +293,9 @@ void addObjectCreationFunctions(RLModule& m, int layer)
   m.addUnsupportedOpcode(1101, 2, "objOfRect");
   m.addUnsupportedOpcode(1101, 3, "objOfRect");
 
-  m.addOpcode(1200, 0, new Obj_objGeneric_0(layer, objOfTextBuilder));
-  m.addOpcode(1200, 1, new Obj_objGeneric_1(layer, objOfTextBuilder));
-  m.addOpcode(1200, 2, new Obj_objGeneric_2(layer, objOfTextBuilder));
+  m.addOpcode(1200, 0, "objOfText", new Obj_objGeneric_0(layer, objOfTextBuilder));
+  m.addOpcode(1200, 1, "objOfText", new Obj_objGeneric_1(layer, objOfTextBuilder));
+  m.addOpcode(1200, 2, "objOfText", new Obj_objGeneric_2(layer, objOfTextBuilder));
   m.addUnsupportedOpcode(1200, 3, "objOfText");
 
   m.addUnsupportedOpcode(1300, 0, "objDriftOfFile");

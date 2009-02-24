@@ -771,44 +771,44 @@ struct Str_strused : public RLOp_Store_1< StrReference_T > {
 StrModule::StrModule()
   : RLModule("Str", 1, 10)
 {
-  addOpcode(  0, 0, new Str_strcpy_0);
-  addOpcode(  0, 1, new Str_strcpy_1);
-  addOpcode(  1, 0, new Str_strclear_0);
-  addOpcode(  1, 1, new Str_strclear_1);
-  addOpcode(  2, 0, new Str_strcat);
-  addOpcode(  3, 0, new Str_strlen);
-  addOpcode(  4, 0, new Str_strcmp);
-  addOpcode(  5, 0, new Str_strsub_0);
-  addOpcode(  5, 1, new Str_strsub_1);
-  addOpcode(  6, 0, new Str_strrsub_0);
-  addOpcode(  6, 1, new Str_strrsub_1);
-  addOpcode(  7, 0, new Str_strcharlen);
-  addOpcode(  8, 0, new Str_strtrunc);
-  addOpcode( 10, 0, new Str_hantozen_0);
-  addOpcode( 10, 1, new Str_hantozen_1);
-  addOpcode( 11, 0, new Str_zentohan_0);
-  addOpcode( 11, 1, new Str_zentohan_1);
-  addOpcode( 12, 0, new Str_Uppercase_0);
-  addOpcode( 12, 1, new Str_Uppercase_1);
-  addOpcode( 13, 0, new Str_Lowercase_0);
-  addOpcode( 13, 1, new Str_Lowercase_1);
-  addOpcode( 14, 0, new Str_itoa_ws_0);
-  addOpcode( 14, 1, new Str_itoa_ws_1);
-  addOpcode( 15, 0, new Str_itoa_s_0);
-  addOpcode( 15, 1, new Str_itoa_s_1);
-  addOpcode( 16, 0, new Str_itoa_w_0);
-  addOpcode( 16, 1, new Str_itoa_w_1);
-  addOpcode( 17, 0, new Str_itoa_0);
-  addOpcode( 17, 1, new Str_itoa_1);
-  addOpcode( 18, 0, new Str_atoi);
-  addOpcode( 19, 0, new Str_digits);
-  addOpcode( 20, 0, new Str_digit);
-  addOpcode( 30, 0, new Str_strpos);
-  addOpcode( 31, 0, new Str_strlpos);
+  addOpcode(  0, 0, "strcpy", new Str_strcpy_0);
+  addOpcode(  0, 1, "strcpy", new Str_strcpy_1);
+  addOpcode(  1, 0, "strclear", new Str_strclear_0);
+  addOpcode(  1, 1, "strclear", new Str_strclear_1);
+  addOpcode(  2, 0, "strcat", new Str_strcat);
+  addOpcode(  3, 0, "strlen", new Str_strlen);
+  addOpcode(  4, 0, "strcmp", new Str_strcmp);
+  addOpcode(  5, 0, "strsub", new Str_strsub_0);
+  addOpcode(  5, 1, "strsub", new Str_strsub_1);
+  addOpcode(  6, 0, "strrsub", new Str_strrsub_0);
+  addOpcode(  6, 1, "strrsub", new Str_strrsub_1);
+  addOpcode(  7, 0, "strcharlen", new Str_strcharlen);
+  addOpcode(  8, 0, "strtrunc", new Str_strtrunc);
+  addOpcode( 10, 0, "hantozen", new Str_hantozen_0);
+  addOpcode( 10, 1, "hantozen", new Str_hantozen_1);
+  addOpcode( 11, 0, "zentohan", new Str_zentohan_0);
+  addOpcode( 11, 1, "zentohan", new Str_zentohan_1);
+  addOpcode( 12, 0, "Uppercase", new Str_Uppercase_0);
+  addOpcode( 12, 1, "Uppercase", new Str_Uppercase_1);
+  addOpcode( 13, 0, "Lowercase", new Str_Lowercase_0);
+  addOpcode( 13, 1, "Lowercase", new Str_Lowercase_1);
+  addOpcode( 14, 0, "itoa_ws", new Str_itoa_ws_0);
+  addOpcode( 14, 1, "itoa_ws", new Str_itoa_ws_1);
+  addOpcode( 15, 0, "itoa_s", new Str_itoa_s_0);
+  addOpcode( 15, 1, "itoa_s", new Str_itoa_s_1);
+  addOpcode( 16, 0, "itoa_w", new Str_itoa_w_0);
+  addOpcode( 16, 1, "itoa_w", new Str_itoa_w_1);
+  addOpcode( 17, 0, "itoa", new Str_itoa_0);
+  addOpcode( 17, 1, "itoa", new Str_itoa_1);
+  addOpcode( 18, 0, "atoi", new Str_atoi);
+  addOpcode( 19, 0, "digits", new Str_digits);
+  addOpcode( 20, 0, "digit", new Str_digit);
+  addOpcode( 30, 0, "strpos", new Str_strpos);
+  addOpcode( 31, 0, "strlpos", new Str_strlpos);
 
-  addOpcode(100, 0, new Str_strout);
-  addOpcode(100, 1, new Str_intout);
-  addOpcode(200, 0, new Str_strused);
+  addOpcode(100, 0, "strout", new Str_strout);
+  addOpcode(100, 1, "intout", new Str_intout);
+  addOpcode(200, 0, "strused", new Str_strused);
 }
 
 // @}

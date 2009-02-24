@@ -91,12 +91,18 @@ struct Obj_objGetDims
 
 // -----------------------------------------------------------------------
 
+namespace {
+void addFunctions(RLModule& m, int layer) {
+  m.addOpcode(1000, 0, "objGetPos", new Obj_objGetPos(layer));
+  m.addOpcode(1100, 0, "objGetPos", new Obj_objGetDims(layer));
+  m.addOpcode(1100, 1, "objGetPos", new Obj_objGetDims(layer));
+}
+}
+
 ObjFgPosDimsModule::ObjFgPosDimsModule()
   : RLModule("ObjFgPosDims", 1, 84)
 {
-  addOpcode(1000, 0, new Obj_objGetPos(OBJ_FG_LAYER));
-  addOpcode(1100, 0, new Obj_objGetDims(OBJ_FG_LAYER));
-  addOpcode(1100, 1, new Obj_objGetDims(OBJ_FG_LAYER));
+  addFunctions(*this, OBJ_FG_LAYER);
 }
 
 // -----------------------------------------------------------------------
@@ -105,7 +111,5 @@ ObjFgPosDimsModule::ObjFgPosDimsModule()
 ObjBgPosDimsModule::ObjBgPosDimsModule()
   : RLModule("ObjBgPosDims", 1, 85)
 {
-  addOpcode(1000, 0, new Obj_objGetPos(OBJ_BG_LAYER));
-  addOpcode(1100, 0, new Obj_objGetDims(OBJ_BG_LAYER));
-  addOpcode(1100, 1, new Obj_objGetDims(OBJ_BG_LAYER));
+  addFunctions(*this, OBJ_BG_LAYER);
 }

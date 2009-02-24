@@ -418,18 +418,18 @@ SysModule::SysModule()
   addUnsupportedOpcode(469, 0, "SetCloseAnmTime");
 
   addOpcode(1000, 0, "rnd", new Sys_rnd_0);
-  addOpcode(1000, 1, new Sys_rnd_1);
-  addOpcode(1001, 0, new Sys_pcnt);
-  addOpcode(1002, 0, new Sys_abs);
-  addOpcode(1003, 0, new Sys_power_0);
-  addOpcode(1003, 1, new Sys_power_1);
-  addOpcode(1004, 0, new Sys_sin_0);
-  addOpcode(1004, 1, new Sys_sin_1);
-  addOpcode(1005, 0, new Sys_modulus);
-  addOpcode(1006, 0, new Sys_angle);
-  addOpcode(1007, 0, new Sys_min);
-  addOpcode(1008, 0, new Sys_max);
-  addOpcode(1009, 0, new Sys_constrain);
+  addOpcode(1000, 1, "rnd", new Sys_rnd_1);
+  addOpcode(1001, 0, "pcnt", new Sys_pcnt);
+  addOpcode(1002, 0, "abs", new Sys_abs);
+  addOpcode(1003, 0, "power", new Sys_power_0);
+  addOpcode(1003, 1, "power", new Sys_power_1);
+  addOpcode(1004, 0, "sin", new Sys_sin_0);
+  addOpcode(1004, 1, "sin", new Sys_sin_1);
+  addOpcode(1005, 0, "modulus", new Sys_modulus);
+  addOpcode(1006, 0, "angle", new Sys_angle);
+  addOpcode(1007, 0, "min", new Sys_min);
+  addOpcode(1008, 0, "max", new Sys_max);
+  addOpcode(1009, 0, "constrain", new Sys_constrain);
   // cos 01010
   // sign 01011
   // (unknown) 01012
@@ -559,7 +559,7 @@ SysModule::SysModule()
   addOpcode(2264, 0, "SetWindowAttrF",
             callFunction(&TextSystem::setWindowAttrF));
 
-  addOpcode(2267, 0, new Sys_SetWindowAttr);
+  addOpcode(2267, 0, "SetWindowAttr", new Sys_SetWindowAttr);
 
   addUnsupportedOpcode(2273, 0, "SetClassifyText");
   addUnsupportedOpcode(2373, 0, "ClassifyText");
@@ -575,21 +575,21 @@ SysModule::SysModule()
   addOpcode(2352, 0, "AutoBaseTime",
             returnIntValue(&TextSystem::autoBaseTime));
 
-  addOpcode(2360, 0, returnIntValue(&TextSystem::windowAttrR));
-  addOpcode(2361, 0, returnIntValue(&TextSystem::windowAttrG));
-  addOpcode(2362, 0, returnIntValue(&TextSystem::windowAttrB));
-  addOpcode(2363, 0, returnIntValue(&TextSystem::windowAttrA));
-  addOpcode(2364, 0, returnIntValue(&TextSystem::windowAttrF));
+  addOpcode(2360, 0, "WindowAttrR", returnIntValue(&TextSystem::windowAttrR));
+  addOpcode(2361, 0, "WindowAttrG", returnIntValue(&TextSystem::windowAttrG));
+  addOpcode(2362, 0, "WindowAttrB", returnIntValue(&TextSystem::windowAttrB));
+  addOpcode(2363, 0, "WindowAttrA", returnIntValue(&TextSystem::windowAttrA));
+  addOpcode(2364, 0, "WindowAttrF", returnIntValue(&TextSystem::windowAttrF));
 
-  addOpcode(2367, 0, new Sys_GetWindowAttr);
+  addOpcode(2367, 0, "GetWindowAttr", new Sys_GetWindowAttr);
 
-  addOpcode(2610, 0, new ReturnGameexeInt("WINDOW_ATTR", 0));
-  addOpcode(2611, 0, new ReturnGameexeInt("WINDOW_ATTR", 1));
-  addOpcode(2612, 0, new ReturnGameexeInt("WINDOW_ATTR", 2));
-  addOpcode(2613, 0, new ReturnGameexeInt("WINDOW_ATTR", 3));
-  addOpcode(2614, 0, new ReturnGameexeInt("WINDOW_ATTR", 4));
+  addOpcode(2610, 0, "DefWindowAttrR", new ReturnGameexeInt("WINDOW_ATTR", 0));
+  addOpcode(2611, 0, "DefWindowAttrG", new ReturnGameexeInt("WINDOW_ATTR", 1));
+  addOpcode(2612, 0, "DefWindowAttrB", new ReturnGameexeInt("WINDOW_ATTR", 2));
+  addOpcode(2613, 0, "DefWindowAttrA", new ReturnGameexeInt("WINDOW_ATTR", 3));
+  addOpcode(2614, 0, "DefWindowAttrF", new ReturnGameexeInt("WINDOW_ATTR", 4));
 
-  addOpcode(2617, 0, new Sys_DefWindowAttr);
+  addOpcode(2617, 0, "DefWindowAttr", new Sys_DefWindowAttr);
 
   addOpcode(2270, 0, "SetShowObject1",
 			callFunction(&GraphicsSystem::setShowObject1));
@@ -604,8 +604,8 @@ SysModule::SysModule()
   addOpcode(2372, 0, "ShowWeather",
             returnIntValue(&GraphicsSystem::showWeather));
 
-  addOpcode(2324, 0, returnIntValue(&TextSystem::messageNoWait));
-  addOpcode(2350, 0, returnIntValue(&TextSystem::autoMode));
+  addOpcode(2324, 0, "MessageNoWait", returnIntValue(&TextSystem::messageNoWait));
+  addOpcode(2350, 0, "AutoMode", returnIntValue(&TextSystem::autoMode));
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.

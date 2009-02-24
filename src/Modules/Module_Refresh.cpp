@@ -52,5 +52,5 @@ using namespace std;
 RefreshModule::RefreshModule()
   : RLModule("Refresh", 1, 31)
 {
-  addOpcode(0, 0, callFunction(&GraphicsSystem::forceRefresh));
+  addOpcode(0, 0, "refresh", callFunction(&GraphicsSystem::forceRefresh));
 }

@@ -106,17 +106,12 @@ public:
    *
    * @param opcode The opcode number of this operation
    * @param overload The overload number of this operation
+   * @param name A cstring with the printable name (or NULL)
    * @param op An RLOperation functor which represents the
    *           implementation of this operation.
    */
-  virtual void addOpcode(int opcode, unsigned char overload, RLOperation* op);
-
-  /**
-   * Convenience function to allow a function name to be embeded in
-   * the declaration.
-   */
-  void addOpcode(int opcode, unsigned char overload, const char* name,
-                 RLOperation* op);
+  virtual void addOpcode(int opcode, unsigned char overload, const char* name,
+                         RLOperation* op);
 
   /**
    * Adds an UndefinedFunction object to this module.

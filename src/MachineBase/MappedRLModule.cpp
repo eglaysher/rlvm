@@ -52,7 +52,7 @@ MappedRLModule::~MappedRLModule()
 
 // -----------------------------------------------------------------------
 
-void MappedRLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
-{
-  RLModule::addOpcode(opcode, overload, map_function_(op));
+void MappedRLModule::addOpcode(int opcode, unsigned char overload,
+                               const char* name, RLOperation* op) {
+  RLModule::addOpcode(opcode, overload, name, map_function_(op));
 }

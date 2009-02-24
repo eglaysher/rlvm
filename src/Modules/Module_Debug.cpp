@@ -80,8 +80,8 @@ DebugModule::DebugModule()
 {
   using namespace Opcodes::Debug;
 
-  addOpcode(  10, 0, new DebugMessage<IntConstant_T>);
-  addOpcode(  10, 1, new DebugMessage<StrConstant_T>);
+  addOpcode(10, 0, "__DebugMessage", new DebugMessage<IntConstant_T>);
+  addOpcode(10, 1, "__DebugMessage", new DebugMessage<StrConstant_T>);
 }
 
 /// @}

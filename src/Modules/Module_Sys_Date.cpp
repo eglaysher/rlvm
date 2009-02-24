@@ -165,15 +165,15 @@ struct Sys_GetDateTime : public RLOp_Void_8<
 
 void addSysDateOpcodes(RLModule& m)
 {
-  m.addOpcode(1100, 0, new Sys_GetYear);
-  m.addOpcode(1101, 0, new Sys_GetMonth);
-  m.addOpcode(1102, 0, new Sys_GetDay);
-  m.addOpcode(1103, 0, new Sys_GetDayOfWeek);
-  m.addOpcode(1104, 0, new Sys_GetHour);
-  m.addOpcode(1105, 0, new Sys_GetMinute);
-  m.addOpcode(1106, 0, new Sys_GetSecond);
-  m.addOpcode(1107, 0, new Sys_GetMs);
-  m.addOpcode(1110, 0, new Sys_GetDate);
-  m.addOpcode(1111, 0, new Sys_GetTime);
-  m.addOpcode(1112, 0, new Sys_GetDateTime);
+  m.addOpcode(1100, 0, "GetYear", new Sys_GetYear);
+  m.addOpcode(1101, 0, "GetMonth", new Sys_GetMonth);
+  m.addOpcode(1102, 0, "GetDay", new Sys_GetDay);
+  m.addOpcode(1103, 0, "GetDayOfWeek", new Sys_GetDayOfWeek);
+  m.addOpcode(1104, 0, "GetHour", new Sys_GetHour);
+  m.addOpcode(1105, 0, "GetMinute", new Sys_GetMinute);
+  m.addOpcode(1106, 0, "GetSecond", new Sys_GetSecond);
+  m.addOpcode(1107, 0, "GetMs", new Sys_GetMs);
+  m.addOpcode(1110, 0, "GetDate", new Sys_GetDate);
+  m.addOpcode(1111, 0, "GetTime", new Sys_GetTime);
+  m.addOpcode(1112, 0, "GetDateTime", new Sys_GetDateTime);
 }

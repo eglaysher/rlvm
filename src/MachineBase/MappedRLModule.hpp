@@ -55,10 +55,12 @@ protected:
    *
    * @param opcode The opcode number of this operation
    * @param overload The overload number of this operation
+   * @param name A cstring with the printable name (or NULL)
    * @param op An RLOperation functor which represents the
    *           implementation of this operation.
    */
-  virtual void addOpcode(int opcode, unsigned char overload, RLOperation* op);
+  virtual void addOpcode(int opcode, unsigned char overload, const char* name,
+                         RLOperation* op);
 
 private:
   /**

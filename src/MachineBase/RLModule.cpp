@@ -80,13 +80,6 @@ void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char&
 
 // -----------------------------------------------------------------------
 
-void RLModule::addOpcode(int opcode, unsigned char overload, RLOperation* op)
-{
-  addOpcode(opcode, overload, "", op);
-}
-
-// -----------------------------------------------------------------------
-
 void RLModule::addOpcode(int opcode, unsigned char overload,
                          const char* name, RLOperation* op)
 {
@@ -100,7 +93,7 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
 void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload,
                                     const std::string& name)
 {
-  addOpcode(opcode, overload,
+  addOpcode(opcode, overload, "",
             new UndefinedFunction(name, module_type_, module_number_, opcode,
                                   (int)overload));
 }
