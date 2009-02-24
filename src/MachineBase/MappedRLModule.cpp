@@ -54,5 +54,6 @@ MappedRLModule::~MappedRLModule()
 
 void MappedRLModule::addOpcode(int opcode, unsigned char overload,
                                const char* name, RLOperation* op) {
+  op->module_ = this;
   RLModule::addOpcode(opcode, overload, name, map_function_(op));
 }

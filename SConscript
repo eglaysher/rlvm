@@ -136,6 +136,7 @@ librlvm_files = [
   "src/Systems/Base/GraphicsTextObject.cpp",
   "src/Systems/Base/MouseCursor.cpp",
   "src/Systems/Base/ObjectSettings.cpp",
+  "src/Systems/Base/ParentGraphicsObjectData.cpp",
   "src/Systems/Base/Platform.cpp",
   "src/Systems/Base/RLTimer.cpp",
   "src/Systems/Base/RlBabelDLL.cpp",

@@ -29,6 +29,7 @@
 #define __Module_ObjManagement_hpp__
 
 #include "MachineBase/RLModule.hpp"
+#include "MachineBase/MappedRLModule.hpp"
 
 class ObjCopyFgToBg : public RLModule
 {
@@ -47,5 +48,16 @@ class ObjBgManagement : public RLModule
 public:
   ObjBgManagement();
 };
+
+class ChildObjFgManagement : public MappedRLModule {
+ public:
+  ChildObjFgManagement();
+};
+
+class ChildObjBgManagement : public MappedRLModule {
+ public:
+  ChildObjBgManagement();
+};
+
 
 #endif

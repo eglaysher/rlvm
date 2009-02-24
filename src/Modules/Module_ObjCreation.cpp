@@ -305,3 +305,19 @@ ObjBgCreationModule::ObjBgCreationModule()
   addObjectCreationFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }
+
+// -----------------------------------------------------------------------
+
+ChildObjFgCreationModule::ChildObjFgCreationModule()
+    : MappedRLModule(childObjMappingFun, "ChildObjFgCreation", 2, 71) {
+  addObjectCreationFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjBgCreationModule::ChildObjBgCreationModule()
+    : MappedRLModule(childObjMappingFun, "ChildObjBgCreation", 2, 72) {
+  addObjectCreationFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
+}

@@ -68,7 +68,7 @@ public:
   void setCurrentlyPlaying(bool in) { currently_playing_ = in; }
   bool currentlyPlaying() const { return currently_playing_; }
 
-  void render(const GraphicsObject& go, std::ostream* tree);
+  virtual void render(const GraphicsObject& go, std::ostream* tree);
 
   virtual int pixelWidth(const GraphicsObject& rendering_properties) = 0;
   virtual int pixelHeight(const GraphicsObject& rendering_properties) = 0;
@@ -83,6 +83,9 @@ public:
   /// Returns when an animation has completed. (This only returns true when
   /// afterAnimation() is set to AFTER_NONE.)
   bool animationFinished() const;
+
+  /// Whether this object data owns another layer of objects.
+  virtual bool isParentLayer() const { return false; }
 
 protected:
   /**

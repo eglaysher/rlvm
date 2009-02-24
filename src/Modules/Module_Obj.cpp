@@ -44,27 +44,109 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/ParentGraphicsObjectData.hpp"
+#include "Utilities/Exception.hpp"
+#include "libReallive/bytecode.h"
+
+#include <iostream>
+using namespace std;
+
+using libReallive::ExpressionPiece;
+using boost::ptr_vector;
+
+namespace {
+
+void ensureIsParentObject(GraphicsObject& parent) {
+  if (parent.hasObjectData()) {
+    if (parent.objectData().isParentLayer()) {
+      return;
+    }
+  }
+
+  parent.setObjectData(new ParentGraphicsObjectData);
+}
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 
 GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
                                   int obj) {
+  GraphicsSystem& graphics = machine.system().graphics();
+
   int fgbg;
   if(!op->getProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
-  return machine.system().graphics().getObject(fgbg, obj);
+  int parentobj;
+  if (op->getProperty(P_PARENTOBJ, parentobj)) {
+    GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
+    ensureIsParentObject(parent);
+    return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
+        getObject(obj);
+  } else {
+    return graphics.getObject(fgbg, obj);
+  }
 }
 
 // -----------------------------------------------------------------------
 
 void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
                        GraphicsObject& gobj) {
+  GraphicsSystem& graphics = machine.system().graphics();
+
   int fgbg;
   if(!op->getProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
-  machine.system().graphics().setObject(fgbg, obj, gobj);
+  int parentobj;
+  if (op->getProperty(P_PARENTOBJ, parentobj)) {
+    GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
+    ensureIsParentObject(parent);
+    static_cast<ParentGraphicsObjectData&>(parent.objectData()).
+        setObject(obj, gobj);
+  } else {
+    graphics.setObject(fgbg, obj, gobj);
+  }
+}
+
+// -----------------------------------------------------------------------
+// ChildObjAdapter
+// -----------------------------------------------------------------------
+
+ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {
+}
+
+// -----------------------------------------------------------------------
+
+void ChildObjAdapter::operator()(RLMachine& machine,
+                                 const libReallive::CommandElement& ff) {
+  const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
+
+  // Range check the data
+  if(allParameters.size() < 1)
+    throw rlvm::Exception("Less than one argument to an objLayered function!");
+
+  int objset = allParameters[0].integerValue(machine);
+
+  // Copy everything after the first item
+  ptr_vector<ExpressionPiece> currentInstantiation;
+  ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
+  ++it;
+  for (; it != allParameters.end(); ++it) {
+    currentInstantiation.push_back(it->clone());
+  }
+
+  handler->setProperty(P_PARENTOBJ, objset);
+  handler->dispatch(machine, currentInstantiation);
+
+  machine.advanceInstructionPointer();
+}
+
+// -----------------------------------------------------------------------
+
+RLOperation* childObjMappingFun(RLOperation* op) {
+  return new ChildObjAdapter(op);
 }
 
 // -----------------------------------------------------------------------

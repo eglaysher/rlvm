@@ -382,6 +382,22 @@ ObjBgModule::ObjBgModule()
 
 // -----------------------------------------------------------------------
 
+ChildObjFgModule::ChildObjFgModule()
+    : MappedRLModule(childObjMappingFun, "ChildObjFg", 2, 81) {
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjBgModule::ChildObjBgModule()
+    : MappedRLModule(childObjMappingFun, "ChildObjBg", 2, 82) {
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
+}
+
+// -----------------------------------------------------------------------
+
 /**
  * Mapping function for a MappedRLModule which turns operation op into
  * a ranged operation.

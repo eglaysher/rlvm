@@ -90,6 +90,8 @@ void addFunctions(RLModule& m) {
 }
 }
 
+// -----------------------------------------------------------------------
+
 ObjFgPosDimsModule::ObjFgPosDimsModule()
     : RLModule("ObjFgPosDims", 1, 84) {
   addFunctions(*this);
@@ -100,6 +102,22 @@ ObjFgPosDimsModule::ObjFgPosDimsModule()
 
 ObjBgPosDimsModule::ObjBgPosDimsModule()
     : RLModule("ObjBgPosDims", 1, 85) {
+  addFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjFgPosDimsModule::ChildObjFgPosDimsModule()
+    : MappedRLModule(childObjMappingFun, "ChildObjFgPosDims", 2, 84) {
+  addFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjBgPosDimsModule::ChildObjBgPosDimsModule()
+    : MappedRLModule(childObjMappingFun, "ChildObjBgPosDims", 2, 85) {
   addFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }

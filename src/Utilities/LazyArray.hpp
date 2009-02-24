@@ -86,6 +86,8 @@ class LazyArray {
    */
   int size() const { return size_; }
 
+  bool exists(int index) const { return array_[index] != NULL; }
+
   /**
    * Go through each item in the array, and deletes it. The array's
    * size is maintained.

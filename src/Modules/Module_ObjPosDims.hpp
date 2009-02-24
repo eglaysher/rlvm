@@ -29,6 +29,7 @@
 #define __Module_ObjPosDims_hpp__
 
 #include "MachineBase/RLModule.hpp"
+#include "MachineBase/MappedRLModule.hpp"
 
 class ObjFgPosDimsModule : public RLModule
 {
@@ -42,6 +43,20 @@ class ObjBgPosDimsModule : public RLModule
 {
 public:
   ObjBgPosDimsModule();
+};
+
+// -----------------------------------------------------------------------
+
+class ChildObjFgPosDimsModule : public MappedRLModule {
+ public:
+  ChildObjFgPosDimsModule();
+};
+
+// -----------------------------------------------------------------------
+
+class ChildObjBgPosDimsModule : public MappedRLModule {
+ public:
+  ChildObjBgPosDimsModule();
 };
 
 #endif

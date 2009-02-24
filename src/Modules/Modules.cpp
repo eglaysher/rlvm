@@ -80,16 +80,29 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new SeModule);
   rlmachine.attachModule(new KoeModule);
   rlmachine.attachModule(new ObjCopyFgToBg);
+
   rlmachine.attachModule(new ObjFgPosDimsModule);
   rlmachine.attachModule(new ObjBgPosDimsModule);
+  rlmachine.attachModule(new ChildObjFgPosDimsModule);
+  rlmachine.attachModule(new ChildObjBgPosDimsModule);
+
   rlmachine.attachModule(new ObjFgModule);
   rlmachine.attachModule(new ObjBgModule);
+  rlmachine.attachModule(new ChildObjFgModule);
+  rlmachine.attachModule(new ChildObjBgModule);
   rlmachine.attachModule(new ObjRangeFgModule);
   rlmachine.attachModule(new ObjRangeBgModule);
+
   rlmachine.attachModule(new ObjFgCreationModule);
   rlmachine.attachModule(new ObjBgCreationModule);
+  rlmachine.attachModule(new ChildObjFgCreationModule);
+  rlmachine.attachModule(new ChildObjBgCreationModule);
+
   rlmachine.attachModule(new ObjFgManagement);
   rlmachine.attachModule(new ObjBgManagement);
+  rlmachine.attachModule(new ChildObjFgManagement);
+  rlmachine.attachModule(new ChildObjBgManagement);
+
   rlmachine.attachModule(new OsModule);
   rlmachine.attachModule(new RefreshModule);
   rlmachine.attachModule(new ScrModule);

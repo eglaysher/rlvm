@@ -39,6 +39,7 @@
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
 
+class MappedRLModule;
 class RLModule;
 
 // ------------------------------------------------------------ Real
@@ -162,6 +163,7 @@ public:
 
 private:
   friend class RLModule;
+  friend class MappedRLModule;
 
   typedef std::pair<int, int> Property;
   typedef std::vector<Property> PropertyList;

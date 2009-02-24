@@ -36,6 +36,7 @@
  * @brief  Reusable function objects for the GraphicsObject system.
  *
  */
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "MachineBase/RLOperation.hpp"
 
@@ -49,6 +50,24 @@ GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
 
 void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
                        GraphicsObject& gobj);
+
+// -----------------------------------------------------------------------
+
+
+/// An adapter that changes a normal object operation into one that operates on
+/// an object's child objects.
+class ChildObjAdapter : public RLOp_SpecialCase {
+ public:
+  ChildObjAdapter(RLOperation* in);
+
+  virtual void operator()(RLMachine& machine,
+                          const libReallive::CommandElement& ff);
+
+ private:
+  boost::scoped_ptr<RLOperation> handler;
+};
+
+RLOperation* childObjMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 

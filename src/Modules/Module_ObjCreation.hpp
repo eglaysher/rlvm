@@ -29,6 +29,7 @@
 #define __Module_ObjCreation_hpp__
 
 #include "MachineBase/RLModule.hpp"
+#include "MachineBase/MappedRLModule.hpp"
 
 class ObjFgCreationModule : public RLModule {
 public:
@@ -38,6 +39,16 @@ public:
 class ObjBgCreationModule : public RLModule {
 public:
   ObjBgCreationModule();
+};
+
+class ChildObjFgCreationModule : public MappedRLModule {
+public:
+  ChildObjFgCreationModule();
+};
+
+class ChildObjBgCreationModule : public MappedRLModule {
+public:
+  ChildObjBgCreationModule();
 };
 
 #endif

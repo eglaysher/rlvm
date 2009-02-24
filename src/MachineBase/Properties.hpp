@@ -38,7 +38,7 @@
 
 enum Properties {
   P_FGBG = 1,
-  P_OBJECTSET
+  P_PARENTOBJ
 };
 
 #endif

@@ -58,6 +58,20 @@ public:
 
 // -----------------------------------------------------------------------
 
+class ChildObjFgModule : public MappedRLModule {
+public:
+  ChildObjFgModule();
+};
+
+// -----------------------------------------------------------------------
+
+class ChildObjBgModule : public MappedRLModule {
+public:
+  ChildObjBgModule();
+};
+
+// -----------------------------------------------------------------------
+
 class ObjRangeFgModule : public MappedRLModule {
 public:
   ObjRangeFgModule();

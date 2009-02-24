@@ -191,3 +191,28 @@ ObjBgManagement::ObjBgManagement()
   addObjManagementFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }
+
+// -----------------------------------------------------------------------
+
+ChildObjFgManagement::ChildObjFgManagement()
+    : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 61) {
+  addOpcode(2, 0, "objSetCopy", new Obj_objCopy(OBJ_FG, OBJ_FG));
+  addOpcode(3, 0, "objSetCopyToBg", new Obj_objCopy(OBJ_FG, OBJ_BG));
+
+  addObjManagementFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjBgManagement::ChildObjBgManagement()
+    : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 62) {
+  addOpcode(2, 0, "objSetBgCopyToFg", new Obj_objCopy(OBJ_BG, OBJ_FG));
+  addOpcode(3, 0, "objSetBgCopy", new Obj_objCopy(OBJ_BG, OBJ_BG));
+
+  addObjManagementFunctions(*this);
+  setProperty(P_FGBG, OBJ_BG);
+}
+
+// -----------------------------------------------------------------------
+

@@ -85,7 +85,8 @@ bool RLOperation::getProperty(int property, int& value) const {
   if (property_list_) {
     PropertyList::iterator it = findProperty(property);
     if (it != property_list_->end()) {
-      return it->second;
+      value = it->second;
+      return true;
     }
   }
 
