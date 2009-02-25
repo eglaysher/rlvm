@@ -318,6 +318,25 @@ void RLMachine::executeNextInstruction() {
 
       if (undefined_log_)
         undefined_log_->increment(e.opcodeName());
+    } catch(rlvm::Exception& e) {
+      if (halt_on_exception_) {
+        halted_ = true;
+      } else {
+        // Advance the instruction pointer so as to prevent infinite
+        // loops where we throw an exception, and then try again.
+        advanceInstructionPointer();
+      }
+
+      cout << "(SEEN" << call_stack_.back().scenario->sceneNumber()
+           << ")(Line " << line_ << ")";
+
+      // We specialcase rlvm::Exception because we might have the name of the
+      // opcode.
+      if (e.operation() && e.operation()->name()) {
+        cout << "[" << e.operation()->name() << "]";
+      }
+
+      cout << ":  " <<e.what() << endl;
     } catch(std::exception& e) {
       if (halt_on_exception_) {
         halted_ = true;

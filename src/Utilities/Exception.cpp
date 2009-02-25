@@ -48,7 +48,8 @@ const char* Exception::what() const throw() {
 // -----------------------------------------------------------------------
 
 Exception::Exception(std::string what)
-  : description(what) {
+  : description(what),
+    operation_(NULL) {
 }
 
 // -----------------------------------------------------------------------

@@ -104,7 +104,12 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
 {
   OpcodeMap::iterator it = stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
   if(it != stored_operations.end()) {
-    it->second->dispatchFunction(machine, f);
+    try {
+      it->second->dispatchFunction(machine, f);
+    } catch(rlvm::Exception& e) {
+      e.setOperation(it->second);
+      throw;
+    }
   } else {
     throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
                                     f.overload());

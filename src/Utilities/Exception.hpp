@@ -31,6 +31,8 @@
 #include <stdexcept>
 #include <string>
 
+class RLOperation;
+
 namespace rlvm {
 
 class Exception : public std::exception {
@@ -39,8 +41,15 @@ class Exception : public std::exception {
   virtual ~Exception() throw();
   virtual const char* what() const throw();
 
+  void setOperation(RLOperation* operation) { operation_ = operation; }
+  RLOperation* operation() const { return operation_; }
+
  protected:
+  // Returned in what().
   std::string description;
+
+  // Optionally, the operation that we were in when we threw.
+  RLOperation* operation_;
 };
 
 class UnimplementedOpcode : public Exception {
