@@ -194,6 +194,24 @@ void TextSystem::hideAllTextWindows() {
 
 // -----------------------------------------------------------------------
 
+void TextSystem::showTextWindow(int win_number) {
+  WindowMap::iterator it = text_window_.find(win_number);
+  if (it != text_window_.end()) {
+    it->second->setVisible(1);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::showAllTextWindows() {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
+    it->second->setVisible(1);
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::clearAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {

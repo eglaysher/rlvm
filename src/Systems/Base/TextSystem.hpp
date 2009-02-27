@@ -109,6 +109,8 @@ public:
   void render(std::ostream* tree);
   void hideTextWindow(int win_number);
   void hideAllTextWindows();
+  void showTextWindow(int win_number);
+  void showAllTextWindows();
   void clearAllTextWindows();
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number) = 0;
   boost::shared_ptr<TextWindow> currentWindow();
