@@ -31,6 +31,7 @@
 // -----------------------------------------------------------------------
 
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 #include <map>
@@ -107,6 +108,10 @@ struct SoundSystemGlobals
   /// How much to modify the bgm volume if |bgm_koe_fade| is on.
   int bgm_koe_fade_vol;
 
+  /// Maps between a koePlay character number, and whether we enable voices for
+  /// them.
+  std::map<int, int> character_koe_enabled;
+
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
@@ -116,7 +121,7 @@ struct SoundSystemGlobals
 
     if (version >= 1) {
       ar & koe_mode & koe_enabled & koe_volume & bgm_koe_fade &
-          bgm_koe_fade_vol;
+          bgm_koe_fade_vol & character_koe_enabled;
     }
   }
 };
@@ -367,6 +372,15 @@ public:
    */
   int koeEnabled() const;
 
+  /// Sets whether we play voices for certain characters.
+  void setUseKoeForCharacter(const int usekoe_id, const int enabled);
+
+  /// Returns whether we should play voices for certain characters. This
+  /// function is tied to UseKoe() family of functions and should not be
+  /// queried from within rlvm; use the |globals_.character_koe_enabled| map
+  /// instead.
+  int useKoeForCharacter(const int usekoe_id) const;
+
   /// Sets the volume for all voice levels (0-255).
   virtual void setKoeVolume(const int level);
 
@@ -458,6 +472,9 @@ private:
   SeTable se_table_;
 
   /// @}
+
+  /// Maps each UseKoe id to one or more koePlay ids.
+  std::multimap<int, int> usekoe_to_koeplay_mapping_;
 
   SoundSystemGlobals globals_;
 

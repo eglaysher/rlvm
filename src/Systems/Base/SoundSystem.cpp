@@ -40,7 +40,7 @@
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
 
-#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
@@ -177,6 +177,40 @@ SoundSystem::SoundSystem(Gameexe& gexe)
     boost::to_lower(name);
 
     cd_tracks_[name] = CDTrack(name, from, to, loop);
+  }
+
+  // Read the \#KOEONOFF entries
+  GameexeFilteringIterator koeonoff = gexe.filtering_begin("KOEONOFF.");
+  for(; koeonoff != end; ++koeonoff)
+  {
+    std::vector<string> keyparts = koeonoff->key_parts();
+    int usekoe_id = lexical_cast<int>(keyparts.at(1));
+
+    // Find the corresponding koeplay ids.
+    vector<int> koeplay_ids;
+    const string& unprocessed_koeids = keyparts.at(2);
+    if (unprocessed_koeids.find('(') != string::npos) {
+      // We have a list that we need to parse out.
+      string no_parens =
+          unprocessed_koeids.substr(1, unprocessed_koeids.size() - 2);
+
+      vector<string> string_koeplay_ids;
+      boost::split(string_koeplay_ids, no_parens, boost::is_any_of(","));
+
+      for (vector<string>::iterator it = string_koeplay_ids.begin();
+           it != string_koeplay_ids.end(); ++it) {
+        koeplay_ids.push_back(lexical_cast<int>(*it));
+      }
+    } else {
+      koeplay_ids.push_back(lexical_cast<int>(unprocessed_koeids));
+    }
+
+    int onoff = (keyparts.at(3) == "ON") ? 1 : 0;
+    for (vector<int>::iterator it = koeplay_ids.begin();
+         it != koeplay_ids.end(); ++it) {
+      usekoe_to_koeplay_mapping_.insert(std::make_pair(usekoe_id, *it));
+      globals_.character_koe_enabled[*it] = onoff;
+    }
   }
 }
 
@@ -363,6 +397,41 @@ void SoundSystem::setKoeEnabled(const int in) {
 
 int SoundSystem::koeEnabled() const {
   return globals_.koe_enabled;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setUseKoeForCharacter(const int character,
+                                        const int enabled) {
+  // Dear C++: I want the auto keyword NOW.
+  std::pair<std::multimap<int, int>::iterator,
+      std::multimap<int, int>::iterator> range =
+      usekoe_to_koeplay_mapping_.equal_range(character);
+
+  std::multimap<int, int>::iterator it;
+  for (it = range.first; it != range.second; ++it) {
+    globals_.character_koe_enabled[it->second] = enabled;
+  }
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::useKoeForCharacter(const int character) const {
+  std::multimap<int, int>::const_iterator it =
+      usekoe_to_koeplay_mapping_.find(character);
+  if (it != usekoe_to_koeplay_mapping_.end()) {
+    // We can sample only the first id because they should all be equivalent.
+    int koeplay_id = it->second;
+
+    std::map<int, int>::const_iterator koe_it =
+        globals_.character_koe_enabled.find(koeplay_id);
+    if (koe_it != globals_.character_koe_enabled.end()) {
+      return koe_it->second;
+    }
+  }
+
+  // Default to true
+  return 1;
 }
 
 // -----------------------------------------------------------------------

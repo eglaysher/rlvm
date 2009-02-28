@@ -230,6 +230,7 @@ test_case_files = [
   "test/RLMachine_TUT.cpp",
   "test/RLOperation_TUT.cpp",
   "test/Regressions_TUT.cpp",
+  "test/SoundSystem_TUT.cpp",
   "test/TextSystem_TUT.cpp",
   "test/testUtils.cpp"
 ]

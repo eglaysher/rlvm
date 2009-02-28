@@ -573,8 +573,14 @@ SysModule::SysModule()
 
   addUnsupportedOpcode(2273, 0, "SetClassifyText");
   addUnsupportedOpcode(2373, 0, "ClassifyText");
-  addUnsupportedOpcode(2274, 0, "SetUseKoe");
-  addUnsupportedOpcode(2374, 0, "UseKoe");
+  addOpcode(2274, 0, "SetUseKoe",
+            callFunction(&SoundSystem::setUseKoeForCharacter));
+  // Note: I don't understand how this overload differs, but CLANNAD_FV treats
+  // it just like the previous one.
+  addOpcode(2274, 1, "SetUseKoe",
+            callFunction(&SoundSystem::setUseKoeForCharacter));
+  addOpcode(2374, 0, "UseKoe",
+            returnIntValue(&SoundSystem::useKoeForCharacter));
   addUnsupportedOpcode(2275, 0, "SetScreenMode");
   addUnsupportedOpcode(2375, 0, "ScreenMode");
 
