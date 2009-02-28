@@ -493,20 +493,28 @@ SysModule::SysModule()
   addOpcode(2252, 0, "SetAutoBaseTime",
             callFunction(&TextSystem::setAutoCharTime));
 
-  addUnsupportedOpcode(2225, 0, "SetKoeMode");
-  addUnsupportedOpcode(2325, 0, "KoeMode");
-  addUnsupportedOpcode(2226, 0, "SetBgmKoeFadeVol");
-  addUnsupportedOpcode(2326, 0, "BgmKoeFadeVol");
+  addOpcode(2225, 0, "SetKoeMode",
+            callFunction(&SoundSystem::setKoeMode));
+  addOpcode(2325, 0, "KoeMode",
+            returnIntValue(&SoundSystem::koeMode));
+  addOpcode(2226, 0, "SetBgmKoeFadeVol",
+            callFunction(&SoundSystem::setBgmKoeFadeVolume));
+  addOpcode(2326, 0, "BgmKoeFadeVol",
+            returnIntValue(&SoundSystem::bgmKoeFadeVolume));
   addUnsupportedOpcode(2602, 0, "DefBgmKoeFadeVol");
-  addUnsupportedOpcode(2227, 0, "SetBgmKoeFade");
-  addUnsupportedOpcode(2327, 0, "BgmKoeFade");
+  addOpcode(2227, 0, "SetBgmKoeFade",
+            callFunction(&SoundSystem::setBgmKoeFade));
+  addOpcode(2327, 0, "BgmKoeFade",
+            returnIntValue(&SoundSystem::bgmKoeFade));
   addUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
   addOpcode(2230, 0, "SetBgmVolMod",
             callFunction(&SoundSystem::setBgmVolume));
   addOpcode(2330, 0, "BgmVolMod",
             returnIntValue(&SoundSystem::bgmVolume));
-  addUnsupportedOpcode(2231, 0, "SetKoeVolMod");
-  addUnsupportedOpcode(2331, 0, "KoeVolMod");
+  addOpcode(2231, 0, "SetKoeVolMod",
+            callFunction(&SoundSystem::setKoeVolume));
+  addOpcode(2331, 0, "KoeVolMod",
+            returnIntValue(&SoundSystem::koeVolume));
   addOpcode(2232, 0, "SetPcmVolMod",
             callFunction(&SoundSystem::setPcmVolume));
   addOpcode(2332, 0, "PcmVolMod",
@@ -519,8 +527,10 @@ SysModule::SysModule()
             callFunction(&SoundSystem::setBgmEnabled));
   addOpcode(2340, 0, "BgmEnabled",
             returnIntValue(&SoundSystem::bgmEnabled));
-  addUnsupportedOpcode(2241, 0, "SetKoeEnabled");
-  addUnsupportedOpcode(2341, 0, "KoeEnabled");
+  addOpcode(2241, 0, "SetKoeEnabled",
+            callFunction(&SoundSystem::setKoeEnabled));
+  addOpcode(2341, 0, "KoeEnabled",
+            returnIntValue(&SoundSystem::koeEnabled));
   addOpcode(2242, 0, "SetPcmEnabled",
             callFunction(&SoundSystem::setPcmEnabled));
   addOpcode(2342, 0, "PcmEnabled",

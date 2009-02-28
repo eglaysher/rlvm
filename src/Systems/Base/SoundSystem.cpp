@@ -55,7 +55,9 @@ using namespace std;
 // -----------------------------------------------------------------------
 SoundSystemGlobals::SoundSystemGlobals()
   : sound_quality(5), bgm_enabled(true), bgm_volume(255), pcm_enabled(true),
-    pcm_volume(255), se_enabled(true), se_volume(255)
+    pcm_volume(255), se_enabled(true), se_volume(255),
+    koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
+    bgm_koe_fade_vol(128)
 {}
 
 // -----------------------------------------------------------------------
@@ -63,7 +65,9 @@ SoundSystemGlobals::SoundSystemGlobals()
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
   : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
     bgm_enabled(true), bgm_volume(255), pcm_enabled(true),
-    pcm_volume(255), se_enabled(true), se_volume(255)
+    pcm_volume(255), se_enabled(true), se_volume(255),
+    koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
+    bgm_koe_fade_vol(128)
 {}
 
 // -----------------------------------------------------------------------
@@ -335,6 +339,67 @@ void SoundSystem::setSeVolume(const int level)
 int SoundSystem::seVolume() const
 {
   return globals_.se_volume;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setKoeMode(const int in) {
+  globals_.koe_mode = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::koeMode() const {
+  return globals_.koe_mode;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setKoeEnabled(const int in) {
+  globals_.koe_enabled = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::koeEnabled() const {
+  return globals_.koe_enabled;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setKoeVolume(const int level) {
+  checkVolume(level, "setKoeVolume");
+  globals_.koe_volume = level;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::koeVolume() const {
+  return globals_.koe_volume;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setBgmKoeFade(const int in) {
+  globals_.bgm_koe_fade = in;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::bgmKoeFade() const {
+  return globals_.bgm_koe_fade;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::setBgmKoeFadeVolume(const int level) {
+  globals_.bgm_koe_fade_vol = level;
+}
+
+// -----------------------------------------------------------------------
+
+int SoundSystem::bgmKoeFadeVolume() const {
+  return globals_.bgm_koe_fade_vol;
 }
 
 // -----------------------------------------------------------------------

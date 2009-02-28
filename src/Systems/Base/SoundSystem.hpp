@@ -32,6 +32,7 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/serialization/version.hpp>
 #include <map>
 #include <string>
 
@@ -91,14 +92,36 @@ struct SoundSystemGlobals
    */
   int se_volume;
 
+  /// Voice playback mode (see setKoeMode() for details).
+  int koe_mode;
+
+  /// Whether we play any voiceovers.
+  bool koe_enabled;
+
+  /// Volume of the koe relative to other sound playback.
+  int koe_volume;
+
+  /// Whether we fade the background music when a voiceover is playing.
+  bool bgm_koe_fade;
+
+  /// How much to modify the bgm volume if |bgm_koe_fade| is on.
+  int bgm_koe_fade_vol;
+
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
   {
     ar & sound_quality & bgm_enabled & bgm_volume & pcm_enabled &
       pcm_volume & se_enabled & se_volume;
+
+    if (version >= 1) {
+      ar & koe_mode & koe_enabled & koe_volume & bgm_koe_fade &
+          bgm_koe_fade_vol;
+    }
   }
 };
+
+BOOST_CLASS_VERSION(SoundSystemGlobals, 1)
 
 // -----------------------------------------------------------------------
 
@@ -310,6 +333,59 @@ public:
    * @param se_num Index into the \#SE table
    */
   virtual void playSe(RLMachine& machine, const int se_num) = 0;
+  /// @}
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * @name Koe (voice) functions
+   *
+   * @{
+   */
+  /**
+   * Selects a voice playback mode, i.e. which form of communication to use for
+   * strings having both text and voice data:
+   *
+   * - 0: Text and voice
+   * - 1: Text only
+   * - 2: Voice only
+   *
+   * @todo We keep track of this value, but we don't really USE it yet.
+   */
+  void setKoeMode(const int in);
+
+  /// Returns the current value set with setKoeMode().
+  int koeMode() const;
+
+  /**
+   * Sets whether we should play voices (in general).
+   */
+  virtual void setKoeEnabled(const int in);
+
+  /**
+   * Returns whether we should play any voices.
+   */
+  int koeEnabled() const;
+
+  /// Sets the volume for all voice levels (0-255).
+  virtual void setKoeVolume(const int level);
+
+  /// Returns the volume for voice relative to other sound effects.
+  int koeVolume() const;
+
+  /// Sets whether we fade the background when playing a voiceover.
+  void setBgmKoeFade(const int in);
+
+  /// Returns whether we fade the background when playing a voiceover.
+  int bgmKoeFade() const;
+
+  /// Sets the amount by which the music volume is modified when the
+  /// music/voice fade flag is active.
+  void setBgmKoeFadeVolume(const int level);
+
+  /// Returns the amount to change the bgm volume.
+  int bgmKoeFadeVolume() const;
+
   /// @}
 
   virtual void reset();
