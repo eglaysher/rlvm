@@ -21,7 +21,7 @@ static_env.ParseConfig("sdl-config --static-libs", MergeEverythingButSDLMain)
 
 cocoa_platform = [
   "src/Platforms/osx/FindFont.mm",
-  "src/Platforms/osx/SDLMain.m"
+  "src/Platforms/osx/SDLMain.mm"
 ]
 
 # Builds a fullstatic version of rlvm and then builds a bundle
