@@ -81,6 +81,11 @@ SDLSystem::~SDLSystem()
   event_system_->removeMouseListener(text_system_.get());
   event_system_->removeMouseListener(graphics_system_.get());
 
+  // Some combinations of SDL and FT on the Mac require us to destroy the
+  // Platform first. This will crash on Tiger if this isn't here, but it won't
+  // crash under Linux...
+  platform_.reset();
+
   // Force the deletion of the various systems before we shut down
   // SDL.
   sound_system_.reset();

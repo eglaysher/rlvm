@@ -303,6 +303,10 @@ public:
 protected:
   boost::filesystem::path getHomeDirectory();
 
+  /// Native widget drawer. Can be NULL. This field is protected instead of
+  /// private because we need to be destroy the Platform before we destroy SDL.
+  boost::shared_ptr<Platform> platform_;
+
 private:
   /**
    * Invokes a custom dialog or the standard one if none present.
@@ -333,9 +337,6 @@ private:
   void addPath(GameexeInterpretObject gio);
 
   SystemGlobals globals_;
-
-  /// Native widget drawer. Can be NULL.
-  boost::shared_ptr<Platform> platform_;
 
   /// Implementation detail which resets in_menu_;
   friend class MenuReseter;
