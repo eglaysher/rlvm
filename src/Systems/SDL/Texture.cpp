@@ -688,9 +688,14 @@ void Texture::renderToScreenAsObject(
   case 1:
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     break;
-  case 2:
-    cerr << "Compisite mode 2 (unwritten!)" << endl;
+  case 2: {
+    static int displayedWarning = 0;
+    if (displayedWarning == 0) {
+      cerr << "Composite mode 2 (unwritten!)" << endl;
+      displayedWarning = 1;
+    }
     break;
+  }
   default:
   {
     ostringstream oss;
