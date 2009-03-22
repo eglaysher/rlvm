@@ -133,9 +133,12 @@ SoundSystem::CDTrack::CDTrack(
 // -----------------------------------------------------------------------
 // SoundSystem
 // -----------------------------------------------------------------------
-SoundSystem::SoundSystem(Gameexe& gexe)
-  : globals_(gexe)
+SoundSystem::SoundSystem(System& system)
+    : system_(system),
+      globals_(system.gameexe())
 {
+  Gameexe& gexe = system_.gameexe();
+
   std::fill_n(channel_volume_, NUM_BASE_CHANNELS, 255);
 
   // Read the \#SE.xxx entries from the Gameexe

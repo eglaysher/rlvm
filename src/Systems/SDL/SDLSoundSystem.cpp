@@ -129,8 +129,8 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
 // -----------------------------------------------------------------------
 // SDLSoundSystem
 // -----------------------------------------------------------------------
-SDLSoundSystem::SDLSoundSystem(Gameexe& gexe)
-  : SoundSystem(gexe), se_cache_(5), wav_cache_(5)
+SDLSoundSystem::SDLSoundSystem(System& system)
+  : SoundSystem(system), se_cache_(5), wav_cache_(5)
 {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 

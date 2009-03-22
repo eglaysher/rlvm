@@ -31,8 +31,8 @@
 // NullSoundSystem
 // -----------------------------------------------------------------------
 
-NullSoundSystem::NullSoundSystem(Gameexe& gexe)
-  : SoundSystem(gexe),
+NullSoundSystem::NullSoundSystem(System& system)
+  : SoundSystem(system),
     sound_system_log_("NullSoundSystem")
 {}
 

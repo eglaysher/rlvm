@@ -68,7 +68,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   graphics_system_.reset(new SDLGraphicsSystem(*this, gameexe));
   event_system_.reset(new SDLEventSystem(gameexe));
   text_system_.reset(new SDLTextSystem(*this, gameexe));
-  sound_system_.reset(new SDLSoundSystem(gameexe));
+  sound_system_.reset(new SDLSoundSystem(*this));
 
   event_system_->addMouseListener(graphics_system_.get());
   event_system_->addMouseListener(text_system_.get());

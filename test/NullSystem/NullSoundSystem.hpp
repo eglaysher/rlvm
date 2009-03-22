@@ -40,7 +40,7 @@ class Gameexe;
 class NullSoundSystem : public SoundSystem
 {
 public:
-  NullSoundSystem(Gameexe& gexe);
+  NullSoundSystem(System& system);
   ~NullSoundSystem();
 
   virtual int bgmStatus() const;

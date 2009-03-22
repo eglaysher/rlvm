@@ -30,6 +30,7 @@
 #include "testUtils.hpp"
 #include "tut/tut.hpp"
 
+#include "NullSystem/NullSystem.hpp"
 #include "NullSystem/NullSoundSystem.hpp"
 #include "libReallive/gameexe.h"
 
@@ -55,8 +56,8 @@ template<>
 template<>
 void object::test<1>()
 {
-  Gameexe gexe(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
-  NullSoundSystem sys(gexe);
+  NullSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
+  SoundSystem& sys = top.sound();
 
   // Test the UseKoe side of things
   ensure_equals(sys.useKoeForCharacter(0), 1);
@@ -81,8 +82,8 @@ template<>
 template<>
 void object::test<2>()
 {
-  Gameexe gexe(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
-  NullSoundSystem sys(gexe);
+  NullSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
+  SoundSystem& sys = top.sound();
 
   sys.setUseKoeForCharacter(0, 0);
   sys.setUseKoeForCharacter(7, 1);
@@ -113,11 +114,12 @@ template<>
 template<>
 void object::test<3>()
 {
-  Gameexe gexe(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
+  std::string gexe = locateTestCase("Gameexe_data/Gameexe_koeonoff.ini");
   stringstream ss;
 
   {
-    NullSoundSystem sys(gexe);
+    NullSystem top(gexe);
+    SoundSystem& sys = top.sound();
 
     // Reverse the values as in <2>.
     sys.setUseKoeForCharacter(0, 0);
@@ -129,7 +131,9 @@ void object::test<3>()
   }
 
   {
-    NullSoundSystem sys(gexe);
+    NullSystem top(gexe);
+    SoundSystem& sys = top.sound();
+
     boost::archive::text_iarchive ia(ss);
     ia >> sys.globals();
 

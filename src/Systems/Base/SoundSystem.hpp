@@ -41,6 +41,7 @@
 
 class Gameexe;
 class RLMachine;
+class System;
 
 // -----------------------------------------------------------------------
 
@@ -197,7 +198,7 @@ protected:
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
 
 public:
-  SoundSystem(Gameexe& gexe);
+  SoundSystem(System& system);
   virtual ~SoundSystem();
 
   /**
@@ -404,6 +405,8 @@ public:
 
   virtual void reset();
 
+  System& system() { return system_; }
+
 protected:
   SeTable& seTable() { return se_table_; }
   const DSTable& getDSTable() { return ds_tracks_; }
@@ -421,6 +424,8 @@ protected:
   static void checkVolume(int level, const char* function_name);
 
 private:
+
+  System& system_;
 
   /**
    * @name Background Music data

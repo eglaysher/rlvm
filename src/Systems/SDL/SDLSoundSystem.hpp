@@ -49,7 +49,7 @@ class SDLMusic;
 class SDLSoundSystem : public SoundSystem
 {
 public:
-  SDLSoundSystem(Gameexe& gexe);
+  SDLSoundSystem(System& system);
   ~SDLSoundSystem();
 
   virtual void executeSoundSystem(RLMachine& machine);
