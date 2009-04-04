@@ -37,6 +37,8 @@
 #include <map>
 #include <string>
 
+#include "Systems/Base/VoiceCache.hpp"
+
 // -----------------------------------------------------------------------
 
 class Gameexe;
@@ -47,6 +49,7 @@ class System;
 
 const int NUM_BASE_CHANNELS = 16;
 const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
+const int NUM_KOE_CHANNELS = 1;
 
 // -----------------------------------------------------------------------
 
@@ -401,6 +404,9 @@ public:
   /// Returns the amount to change the bgm volume.
   int bgmKoeFadeVolume() const;
 
+  /// Plays a voice sample
+  virtual void koePlay(RLMachine& machine, int id) = 0;
+
   /// @}
 
   virtual void reset();
@@ -422,6 +428,8 @@ protected:
 
   static void checkChannel(int channel, const char* function_name);
   static void checkVolume(int level, const char* function_name);
+
+  VoiceCache voice_cache_;
 
 private:
 

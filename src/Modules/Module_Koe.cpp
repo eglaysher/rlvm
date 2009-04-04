@@ -31,13 +31,28 @@
 
 #include "Modules/Module_Koe.hpp"
 
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/System.hpp"
+
+// -----------------------------------------------------------------------
+
+struct Koe_koePlay_0 : public RLOp_Void_2< IntConstant_T,
+                                           DefaultIntValue_T<-1> > {
+  void operator()(RLMachine& machine, int id, int charid) {
+    machine.system().sound().koePlay(machine, id);
+  }
+};
+
 // -----------------------------------------------------------------------
 
 KoeModule::KoeModule()
   : RLModule("Koe", 1, 23)
 {
-  addUnsupportedOpcode(0, 0, "koePlay");
-  addUnsupportedOpcode(0, 1, "koePlay");
+  addOpcode(0, 0, "koePlay", new Koe_koePlay_0);
+  addOpcode(0, 1, "koePlay", new Koe_koePlay_0);
 
   addUnsupportedOpcode(1, 0, "koePlayEx");
   addUnsupportedOpcode(1, 1, "koePlayEx");

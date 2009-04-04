@@ -45,7 +45,12 @@
 class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk>
 {
 public:
+  /// Builds a Mix_Chunk from a file.
   SDLSoundChunk(const boost::filesystem::path& path);
+
+  /// Builds a Mix_Chunk from a chunk of memory.
+  SDLSoundChunk(char* data, int length);
+
   ~SDLSoundChunk();
 
   /**
@@ -99,6 +104,10 @@ private:
 
   /// Wrapped chunk
   Mix_Chunk* sample_;
+
+  /// If this object was created from a memory chunk instead of a file, we have
+  /// to own the data that we pass to Mix_LoadWAV_RW(SDL_RWFromMem(...)).
+  boost::scoped_array<char> data_;
 };
 
 // -----------------------------------------------------------------------

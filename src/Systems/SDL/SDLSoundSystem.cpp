@@ -33,6 +33,7 @@
 #include "Systems/SDL/SDLSoundChunk.hpp"
 #include "Systems/SDL/SDLMusic.hpp"
 #include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/VoiceArchive.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 
@@ -69,6 +70,8 @@ static RealLiveSoundQualities s_real_live_sound_qualities[] = {
   {48000, AUDIO_S16}    // 48 h_kz, 16 bit stereo
 };
 
+// The koe channel is the last one.
+const int KOE_CHANNEL = NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS;
 
 // -----------------------------------------------------------------------
 // SDLSoundSystem (private)
@@ -85,6 +88,13 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
   }
 
   return sample;
+}
+
+// -----------------------------------------------------------------------
+
+SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::buildKoeChunk(
+    char* data, int length) {
+  return SDLSoundChunkPtr(new SDLSoundChunk(data, length));
 }
 
 // -----------------------------------------------------------------------
@@ -156,7 +166,8 @@ SDLSoundSystem::SDLSoundSystem(System& system)
 		WAVFILE::channels = channels;
 	}
 
-  Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS);
+  Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS +
+                       NUM_KOE_CHANNELS);
 
   Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
 
@@ -418,6 +429,29 @@ bool SDLSoundSystem::bgmLooping() const {
     return currently_playing->isLooping();
   else
     return false;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::koePlay(RLMachine& machine, int id) {
+  if (!koeEnabled()) {
+    return;
+  }
+
+  // Get the VoiceSample.
+  boost::shared_ptr<VoiceSample> sample = voice_cache_.find(id);
+  if (!sample) {
+    ostringstream oss;
+    oss << "No sample for " << id;
+    throw std::runtime_error(oss.str());
+  }
+
+  int length;
+  char* data = sample->decode(&length);
+
+  SDLSoundChunkPtr koe = buildKoeChunk(data, length);
+  Mix_Volume(KOE_CHANNEL, 128);
+  koe->playChunkOn(KOE_CHANNEL, 0);
 }
 
 // -----------------------------------------------------------------------

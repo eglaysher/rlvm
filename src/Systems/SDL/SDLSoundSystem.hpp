@@ -82,6 +82,8 @@ public:
   virtual std::string bgmName() const;
   virtual bool bgmLooping() const;
 
+  virtual void koePlay(RLMachine& machine, int id);
+
   virtual void reset();
 
   /**
@@ -108,6 +110,13 @@ private:
     RLMachine& machine,
     const std::string& file_name,
     SoundChunkCache& cache);
+
+  /**
+   * Builds a SoundChunk from a piece of memory. This is used for playing
+   * voice. These chunks are not put in a SoundChunkCache since there's no
+   * string to cache on.
+   */
+  static SDLSoundChunkPtr buildKoeChunk(char* data, int length);
 
   /**
    * Implementation to play a wave file. Two wavPlay() versions use

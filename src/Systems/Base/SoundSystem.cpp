@@ -134,7 +134,8 @@ SoundSystem::CDTrack::CDTrack(
 // SoundSystem
 // -----------------------------------------------------------------------
 SoundSystem::SoundSystem(System& system)
-    : system_(system),
+    : voice_cache_(*this),
+      system_(system),
       globals_(system.gameexe())
 {
   Gameexe& gexe = system_.gameexe();
