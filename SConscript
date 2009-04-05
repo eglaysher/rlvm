@@ -69,6 +69,7 @@ librlvm_files = [
   "src/Encodings/western.cpp",
   "src/LongOperations/PauseLongOperation.cpp",
   "src/LongOperations/TextoutLongOperation.cpp",
+  "src/LongOperations/WaitLongOperation.cpp",
   "src/LongOperations/ZoomLongOperation.cpp",
   "src/MachineBase/GeneralOperations.cpp",
   "src/MachineBase/LongOperation.cpp",
