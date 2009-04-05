@@ -173,6 +173,12 @@ bool NullSoundSystem::koePlaying() const {
 
 // -----------------------------------------------------------------------
 
+void NullSoundSystem::koeStop() {
+  sound_system_log_.recordFunction("koeStop");
+}
+
+// -----------------------------------------------------------------------
+
 void NullSoundSystem::koePlayImpl(int id) {
   sound_system_log_.recordFunction("koePlayImpl", id);
 }

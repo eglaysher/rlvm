@@ -85,6 +85,7 @@ public:
   virtual bool bgmLooping() const;
 
   virtual bool koePlaying() const;
+  virtual void koeStop();
 
   virtual void reset();
 

@@ -89,7 +89,7 @@ KoeModule::KoeModule()
 
   addOpcode(3, 0, "koeWait", new Koe_koeWait);
   addOpcode(4, 0, "koePlaying", returnIntValue(&SoundSystem::koePlaying));
-  addUnsupportedOpcode(5, 0, "koeStop");
+  addOpcode(5, 0, "koeStop", callFunction(&SoundSystem::koeStop));
   addOpcode(6, 0, "koeWaitC", new Koe_koeWaitC);
 
   addUnsupportedOpcode(7, 0, "koePlayExC");

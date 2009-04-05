@@ -437,6 +437,12 @@ bool SDLSoundSystem::koePlaying() const {
 
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::koeStop() {
+  SDLSoundChunk::StopChannel(KOE_CHANNEL);
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::koePlayImpl(int id) {
   if (!koeEnabled()) {
     return;

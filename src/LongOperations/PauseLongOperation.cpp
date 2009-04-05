@@ -36,6 +36,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextWindow.hpp"
@@ -212,6 +213,11 @@ bool PauseLongOperation::operator()(RLMachine& machine)
   // of text we've already hit.
   if (machine.system().fastForward())
     is_done_ = true;
+
+  if (is_done_) {
+    // Stop all voices before continuing.
+    machine.system().sound().koeStop();
+  }
 
   return is_done_;
 }

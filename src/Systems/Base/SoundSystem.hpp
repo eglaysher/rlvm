@@ -409,6 +409,7 @@ public:
   void koePlay(int id, int charid);
 
   virtual bool koePlaying() const = 0;
+  virtual void koeStop() = 0;
 
   /// @}
 
