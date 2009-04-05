@@ -96,7 +96,7 @@ public:
    * or can't be played due to compile options.
    */
   static boost::shared_ptr<SDLMusic> CreateMusic(
-    RLMachine& machine, const SoundSystem::DSTrack& track);
+    System& system, const SoundSystem::DSTrack& track);
 
   /**
    * Returns the currently playing SDLMusic object. Returns NULL if no

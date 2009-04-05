@@ -42,7 +42,6 @@
 // -----------------------------------------------------------------------
 
 class Gameexe;
-class RLMachine;
 class System;
 
 // -----------------------------------------------------------------------
@@ -210,7 +209,7 @@ public:
    * @note Overriders MUST call SoundSystem::execute_sound_system
    *       because we rely on it to handle volume adjustment tasks.
    */
-  virtual void executeSoundSystem(RLMachine& machine);
+  virtual void executeSoundSystem();
 
   // ---------------------------------------------------------------------
 
@@ -252,10 +251,10 @@ public:
    */
   virtual int bgmStatus() const = 0;
 
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop) = 0;
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name, bool loop) = 0;
+  virtual void bgmPlay(const std::string& bgm_name, bool loop,
                        int fade_in_ms) = 0;
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name, bool loop,
                        int fade_in_ms, int fade_out_ms) = 0;
   virtual void bgmStop() = 0;
   virtual void bgmPause() = 0;
@@ -287,19 +286,19 @@ public:
 
   /// Change the volume smoothly; the change from the current volume
   /// to level will take fade_time_in_ms
-  void setChannelVolume(RLMachine& machine, const int channel,
-                        const int level, const int fade_time_in_ms);
+  void setChannelVolume(const int channel, const int level,
+                        const int fade_time_in_ms);
 
   /// Fetches an individual channel volume
   int channelVolume(const int channel);
 
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
+  virtual void wavPlay(const std::string& wav_file,
                        bool loop) = 0;
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
+  virtual void wavPlay(const std::string& wav_file,
                        bool loop, const int channel) = 0;
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
+  virtual void wavPlay(const std::string& wav_file,
                        bool loop, const int channel, const int fadein_ms) = 0;
-  virtual bool wavPlaying(RLMachine& machine, const int channel) = 0;
+  virtual bool wavPlaying(const int channel) = 0;
   virtual void wavStop(const int channel) = 0;
   virtual void wavStopAll() = 0;
   virtual void wavFadeOut(const int channel, const int fadetime) = 0;
@@ -341,7 +340,7 @@ public:
    *
    * @param se_num Index into the \#SE table
    */
-  virtual void playSe(RLMachine& machine, const int se_num) = 0;
+  virtual void playSe(const int se_num) = 0;
   /// @}
 
   // ---------------------------------------------------------------------
@@ -406,8 +405,8 @@ public:
   /// Returns the amount to change the bgm volume.
   int bgmKoeFadeVolume() const;
 
-  void koePlay(RLMachine& machine, int id);
-  void koePlay(RLMachine& machine, int id, int charid);
+  void koePlay(int id);
+  void koePlay(int id, int charid);
 
   /// @}
 
@@ -429,7 +428,7 @@ protected:
   }
 
   /// Plays a voice sample.
-  virtual void koePlayImpl(RLMachine& machine, int id) = 0;
+  virtual void koePlayImpl(int id) = 0;
 
   static void checkChannel(int channel, const char* function_name);
   static void checkVolume(int level, const char* function_name);

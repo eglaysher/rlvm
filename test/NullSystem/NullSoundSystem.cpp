@@ -32,9 +32,9 @@
 // -----------------------------------------------------------------------
 
 NullSoundSystem::NullSoundSystem(System& system)
-  : SoundSystem(system),
-    sound_system_log_("NullSoundSystem")
-{}
+    : SoundSystem(system),
+      sound_system_log_("NullSoundSystem") {
+}
 
 // -----------------------------------------------------------------------
 
@@ -42,148 +42,130 @@ NullSoundSystem::~NullSoundSystem() {}
 
 // -----------------------------------------------------------------------
 
-int NullSoundSystem::bgmStatus() const
-{
+int NullSoundSystem::bgmStatus() const {
   sound_system_log_.recordFunction("bgm_status");
   return 0;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
-                              bool loop)
-{
+void NullSoundSystem::bgmPlay(const std::string& bgm_name, bool loop) {
   sound_system_log_.recordFunction("bgm_play", bgm_name, loop);
   bgm_name_ = bgm_name;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name,
-                              bool loop, int fade_in_ms)
-{
+void NullSoundSystem::bgmPlay(const std::string& bgm_name,
+                              bool loop, int fade_in_ms) {
   sound_system_log_.recordFunction("bgm_play", bgm_name, loop, fade_in_ms);
   bgm_name_ = bgm_name;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
-                       int fade_in_ms, int fade_out_ms)
-{
-  sound_system_log_.recordFunction("bgm_play", bgm_name, loop, fade_in_ms, fade_out_ms);
+void NullSoundSystem::bgmPlay(const std::string& bgm_name, bool loop,
+                              int fade_in_ms, int fade_out_ms) {
+  sound_system_log_.recordFunction("bgm_play", bgm_name, loop, fade_in_ms,
+                                   fade_out_ms);
   bgm_name_ = bgm_name;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmStop()
-{
+void NullSoundSystem::bgmStop() {
   sound_system_log_.recordFunction("bgm_stop");
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmPause()
-{
+void NullSoundSystem::bgmPause() {
   sound_system_log_.recordFunction("bgm_pause");
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmUnPause()
-{
+void NullSoundSystem::bgmUnPause() {
   sound_system_log_.recordFunction("bgm_un_pause");
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::bgmFadeOut(int fade_out_ms)
-{
+void NullSoundSystem::bgmFadeOut(int fade_out_ms) {
   sound_system_log_.recordFunction("bgm_fade_out", fade_out_ms);
 }
 
 // -----------------------------------------------------------------------
 
-std::string NullSoundSystem::bgmName() const
-{
+std::string NullSoundSystem::bgmName() const {
   sound_system_log_.recordFunction("bgm_name");
   return bgm_name_;
 }
 
 // -----------------------------------------------------------------------
 
-bool NullSoundSystem::bgmLooping() const
-{
+bool NullSoundSystem::bgmLooping() const {
   sound_system_log_.recordFunction("bgm_looping");
   return false;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file,
-                              bool loop)
-{
+void NullSoundSystem::wavPlay(const std::string& wav_file, bool loop) {
   sound_system_log_.recordFunction("wav_play", wav_file, loop);
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file,
-                              bool loop, const int channel)
-{
+void NullSoundSystem::wavPlay(const std::string& wav_file, bool loop,
+                              const int channel) {
   sound_system_log_.recordFunction("wav_play", wav_file, loop, channel);
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::wavPlay(RLMachine& machine, const std::string& wav_file,
-                              bool loop, const int channel, const int fadein_ms)
-{
-  sound_system_log_.recordFunction("wav_play", wav_file, loop, channel, fadein_ms);
+void NullSoundSystem::wavPlay(const std::string& wav_file, bool loop,
+                              const int channel, const int fadein_ms) {
+  sound_system_log_.recordFunction("wav_play", wav_file, loop, channel,
+                                   fadein_ms);
 }
 
 // -----------------------------------------------------------------------
 
-bool NullSoundSystem::wavPlaying(RLMachine& machine, const int channel)
-{
+bool NullSoundSystem::wavPlaying(const int channel) {
   sound_system_log_.recordFunction("wav_playing", channel);
 
-  // Might want to do something about this eventually.
+  // TODO: Might want to do something about this eventually.
   return false;
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::wavStop(const int channel)
-{
+void NullSoundSystem::wavStop(const int channel) {
   sound_system_log_.recordFunction("wav_stop", channel);
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::wavStopAll()
-{
+void NullSoundSystem::wavStopAll() {
   sound_system_log_.recordFunction("wav_stop_all");
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::wavFadeOut(const int channel, const int fadetime)
-{
+void NullSoundSystem::wavFadeOut(const int channel, const int fadetime) {
   sound_system_log_.recordFunction("wav_fade_out", channel, fadetime);
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::playSe(RLMachine& machine, const int se_num)
-{
+void NullSoundSystem::playSe(const int se_num) {
   sound_system_log_.recordFunction("play_se", se_num);
 }
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::koePlayImpl(RLMachine& machine, int id) {
+void NullSoundSystem::koePlayImpl(int id) {
   sound_system_log_.recordFunction("koePlayImpl", id);
 }
 

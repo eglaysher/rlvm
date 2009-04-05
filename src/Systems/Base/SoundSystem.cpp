@@ -34,7 +34,6 @@
 
 #include "Systems/Base/SoundSystem.hpp"
 
-#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/System.hpp"
@@ -225,9 +224,9 @@ SoundSystem::~SoundSystem()
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::executeSoundSystem(RLMachine& machine)
+void SoundSystem::executeSoundSystem()
 {
-  unsigned int cur_time = machine.system().event().getTicks();
+  unsigned int cur_time = system().event().getTicks();
 
   ChannelAdjustmentMap::iterator it = pcm_adjustment_tasks_.begin();
   while(it != pcm_adjustment_tasks_.end())
@@ -328,14 +327,13 @@ void SoundSystem::setChannelVolume(const int channel, const int level)
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setChannelVolume(
-  RLMachine& machine, const int channel, const int level,
-  const int fade_time_in_ms)
+void SoundSystem::setChannelVolume(const int channel, const int level,
+                                   const int fade_time_in_ms)
 {
   checkChannel(channel, "set_channel_volume");
   checkVolume(level, "set_channel_volume");
 
-  unsigned int cur_time = machine.system().event().getTicks();
+  unsigned int cur_time = system().event().getTicks();
 
   pcm_adjustment_tasks_.insert(
     make_pair(channel, VolumeAdjustTask(cur_time, channel_volume_[channel],
@@ -478,13 +476,13 @@ int SoundSystem::bgmKoeFadeVolume() const {
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::koePlay(RLMachine& machine, int id) {
-  koePlayImpl(machine, id);
+void SoundSystem::koePlay(int id) {
+  koePlayImpl(id);
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::koePlay(RLMachine& machine, int id, int charid) {
+void SoundSystem::koePlay(int id, int charid) {
   bool play_voice = true;
 
   std::map<int, int>::const_iterator koe_it =
@@ -494,7 +492,7 @@ void SoundSystem::koePlay(RLMachine& machine, int id, int charid) {
   }
 
   if (play_voice) {
-    koePlayImpl(machine, id);
+    koePlayImpl(id);
   }
 }
 
@@ -540,8 +538,8 @@ void SoundSystem::load(Archive& ar, unsigned int version)
   bool looping;
   ar & track_name & looping;
 
-  if(track_name != "")
-    bgmPlay(*Serialization::g_current_machine, track_name, looping);
+  if (track_name != "")
+    bgmPlay(track_name, looping);
 }
 
 // -----------------------------------------------------------------------

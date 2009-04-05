@@ -46,7 +46,7 @@ struct LongOp_pcmWait : public LongOperation
   }
 
   bool operator()(RLMachine& machine) {
-    return !machine.system().sound().wavPlaying(machine, channel_);
+    return !machine.system().sound().wavPlaying(channel_);
   }
 };
 
@@ -54,7 +54,7 @@ struct LongOp_pcmWait : public LongOperation
 
 struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
-    machine.system().sound().wavPlay(machine, fileName, false);
+    machine.system().sound().wavPlay(fileName, false);
   }
 };
 
@@ -62,7 +62,7 @@ struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
 
 struct Pcm_wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
-    machine.system().sound().wavPlay(machine, fileName, false, channel);
+    machine.system().sound().wavPlay(fileName, false, channel);
   }
 };
 
@@ -72,7 +72,7 @@ struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
-    machine.system().sound().wavPlay(machine, fileName, false, channel, fadein);
+    machine.system().sound().wavPlay(fileName, false, channel, fadein);
   }
 };
 
@@ -80,7 +80,7 @@ struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 struct Pcm_wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
-    machine.system().sound().wavPlay(machine, fileName, false, channel);
+    machine.system().sound().wavPlay(fileName, false, channel);
     machine.pushLongOperation(new LongOp_pcmWait(channel));
   }
 };
@@ -91,7 +91,7 @@ struct Pcm_wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                             IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
-    machine.system().sound().wavPlay(machine, fileName, false, channel, fadein);
+    machine.system().sound().wavPlay(fileName, false, channel, fadein);
     machine.pushLongOperation(new LongOp_pcmWait(channel));
   }
 };
@@ -100,7 +100,7 @@ struct Pcm_wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 struct Pcm_wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
-    machine.system().sound().wavPlay(machine, fileName, true, channel);
+    machine.system().sound().wavPlay(fileName, true, channel);
   }
 };
 
@@ -110,7 +110,7 @@ struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
-    machine.system().sound().wavPlay(machine, fileName, true, channel, fadein);
+    machine.system().sound().wavPlay(fileName, true, channel, fadein);
   }
 };
 
@@ -127,7 +127,7 @@ struct Pcm_wavWait : public RLOp_Void_1<IntConstant_T> {
 
 struct Pcm_wavPlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
-    return machine.system().sound().wavPlaying(machine, channel);
+    return machine.system().sound().wavPlaying(channel);
   }
 };
 
@@ -154,7 +154,7 @@ struct Pcm_wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct Pcm_wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                                IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level, int fadeInMs) {
-    machine.system().sound().setChannelVolume(machine, channel, level, fadeInMs);
+    machine.system().sound().setChannelVolume(channel, level, fadeInMs);
   }
 };
 
@@ -170,7 +170,7 @@ struct Pcm_wavUnMute_0 : public RLOp_Void_1<IntConstant_T> {
 
 struct Pcm_wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int fadein) {
-    machine.system().sound().setChannelVolume(machine, channel, 255, fadein);
+    machine.system().sound().setChannelVolume(channel, 255, fadein);
   }
 };
 
@@ -186,7 +186,7 @@ struct Pcm_wavMute_0 : public RLOp_Void_1<IntConstant_T> {
 
 struct Pcm_wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int fadein) {
-    machine.system().sound().setChannelVolume(machine, channel, 0, fadein);
+    machine.system().sound().setChannelVolume(channel, 0, fadein);
   }
 };
 

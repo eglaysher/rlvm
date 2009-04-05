@@ -52,28 +52,28 @@ public:
   SDLSoundSystem(System& system);
   ~SDLSoundSystem();
 
-  virtual void executeSoundSystem(RLMachine& machine);
+  virtual void executeSoundSystem();
 
   virtual void setBgmEnabled(const int in);
   virtual void setChannelVolume(const int channel, const int level);
 
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file, bool loop);
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file, bool loop,
+  virtual void wavPlay(const std::string& wav_file, bool loop);
+  virtual void wavPlay(const std::string& wav_file, bool loop,
                        const int channel);
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file, bool loop,
+  virtual void wavPlay(const std::string& wav_file, bool loop,
                        const int channel, const int fadein_ms);
-  virtual bool wavPlaying(RLMachine& machine, const int channel);
+  virtual bool wavPlaying(const int channel);
   virtual void wavStop(const int channel);
   virtual void wavStopAll();
   virtual void wavFadeOut(const int channel, const int fadetime);
 
-  virtual void playSe(RLMachine& machine, const int se_num);
+  virtual void playSe(const int se_num);
 
   virtual int bgmStatus() const;
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop);
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name, bool loop);
+  virtual void bgmPlay(const std::string& bgm_name, bool loop,
                        int fade_in_ms);
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name, bool loop,
                        int fade_in_ms, int fade_out_ms);
   virtual void bgmStop();
   virtual void bgmPause();
@@ -95,19 +95,17 @@ private:
   typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
   typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;
 
-  virtual void koePlayImpl(RLMachine& machine, int id);
+  virtual void koePlayImpl(int id);
 
   /**
    * Retrieves a sound chunk from the passed in cache (or loads it if
    * it's not in the cache and then stuffs it into the cache.)
    *
-   * @param machine Current machine context
    * @param file_name Name of the file (minus extension)
    * @param cache Which cache to check (and store) the
    * @return The loaded sound chunk
    */
-  static SDLSoundChunkPtr getSoundChunk(
-    RLMachine& machine,
+  SDLSoundChunkPtr getSoundChunk(
     const std::string& file_name,
     SoundChunkCache& cache);
 
@@ -123,21 +121,19 @@ private:
    * this underlying implementation, which is split out so the one
    * that takes a raw channel can verify its input.
    *
-   * @param machine Current machine context
    * @param wav_file Name of the file (minux extension)
    * @param channel Channel to play on (both NUM_BASE_CHANNELS and
    *                NUM_EXTRA_WAVPLAY_CHANNELS are legal here.)
    * @param loop    Whether to loop this sound endlessly
    */
-  void wavPlayImpl(RLMachine& machine, const std::string& wav_file,
+  void wavPlayImpl(const std::string& wav_file,
                    const int channel, bool loop);
 
   /**
    * Creates an SDLMusic object from a name. Throws if the bgm isn't
    * found.
    */
-  boost::shared_ptr<SDLMusic> LoadMusic(
-    RLMachine& machine, const std::string& bgm_name);
+  boost::shared_ptr<SDLMusic> LoadMusic(const std::string& bgm_name);
 
   SoundChunkCache se_cache_;
   SoundChunkCache wav_cache_;

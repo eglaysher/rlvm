@@ -42,7 +42,7 @@
 
 struct Bgm_bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
-    machine.system().sound().bgmPlay(machine, filename, true);
+    machine.system().sound().bgmPlay(filename, true);
   }
 };
 
@@ -50,7 +50,7 @@ struct Bgm_bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
 
 struct Bgm_bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
-    machine.system().sound().bgmPlay(machine, filename, true, fadein);
+    machine.system().sound().bgmPlay(filename, true, fadein);
   }
 };
 
@@ -60,7 +60,7 @@ struct Bgm_bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein,
                   int fadeout) {
-    machine.system().sound().bgmPlay(machine, filename, true, fadein, fadeout);
+    machine.system().sound().bgmPlay(filename, true, fadein, fadeout);
   }
 };
 
@@ -68,7 +68,7 @@ struct Bgm_bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 struct Bgm_bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
-    machine.system().sound().bgmPlay(machine, filename, false);
+    machine.system().sound().bgmPlay(filename, false);
   }
 };
 
@@ -76,7 +76,7 @@ struct Bgm_bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
 
 struct Bgm_bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
-    machine.system().sound().bgmPlay(machine, filename, false, fadein);
+    machine.system().sound().bgmPlay(filename, false, fadein);
   }
 };
 
@@ -86,7 +86,7 @@ struct Bgm_bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein,
                   int fadeout) {
-    machine.system().sound().bgmPlay(machine, filename, false, fadein, fadeout);
+    machine.system().sound().bgmPlay(filename, false, fadein, fadeout);
   }
 };
 

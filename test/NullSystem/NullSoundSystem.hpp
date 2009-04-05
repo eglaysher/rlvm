@@ -45,10 +45,10 @@ public:
 
   virtual int bgmStatus() const;
 
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop);
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name, bool loop);
+  virtual void bgmPlay(const std::string& bgm_name, bool loop,
                        int fade_in_ms);
-  virtual void bgmPlay(RLMachine& machine, const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name, bool loop,
                        int fade_in_ms, int fade_out_ms);
   virtual void bgmStop();
   virtual void bgmPause();
@@ -57,22 +57,21 @@ public:
   virtual std::string bgmName() const;
   virtual bool bgmLooping() const;
 
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
-                       bool loop);
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
+  virtual void wavPlay(const std::string& wav_file, bool loop);
+  virtual void wavPlay(const std::string& wav_file,
                        bool loop, const int channel);
-  virtual void wavPlay(RLMachine& machine, const std::string& wav_file,
+  virtual void wavPlay(const std::string& wav_file,
                        bool loop, const int channel, const int fadein_ms);
-  virtual bool wavPlaying(RLMachine& machine, const int channel);
+  virtual bool wavPlaying(const int channel);
   virtual void wavStop(const int channel);
   virtual void wavStopAll();
   virtual void wavFadeOut(const int channel, const int fadetime);
 
-  virtual void playSe(RLMachine& machine, const int se_num);
+  virtual void playSe(const int se_num);
 
 private:
 
-  virtual void koePlayImpl(RLMachine& machine, int id);
+  virtual void koePlayImpl(int id);
 
   /// Record all method calls here
   mutable MockLog sound_system_log_;

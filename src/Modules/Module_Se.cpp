@@ -43,7 +43,7 @@ struct Se_sePlay : public RLOp_Void_1<IntConstant_T>
 {
   void operator()(RLMachine& machine, int effectNum)
   {
-    machine.system().sound().playSe(machine, effectNum);
+    machine.system().sound().playSe(effectNum);
   }
 };
 
