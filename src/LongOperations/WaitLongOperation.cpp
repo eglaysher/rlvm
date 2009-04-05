@@ -45,6 +45,7 @@ WaitLongOperation::WaitLongOperation(RLMachine& machine)
       wait_until_target_time_(false),
       target_time_(0),
       break_on_clicks_(false), button_pressed_(0),
+      break_on_event_(false),
       break_on_ctrl_pressed_(machine.system().text().ctrlKeySkip()),
       ctrl_pressed_(false),
       mouse_moved_(false),
@@ -67,6 +68,13 @@ void WaitLongOperation::waitMilliseconds(unsigned int time) {
 
 void WaitLongOperation::breakOnClicks() {
   break_on_clicks_ = true;
+}
+
+// -----------------------------------------------------------------------
+
+void WaitLongOperation::breakOnEvent(const boost::function<bool()>& function) {
+  break_on_event_ = true;
+  event_function_ = function;
 }
 
 // -----------------------------------------------------------------------
@@ -135,6 +143,10 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
 
   if (!done && wait_until_target_time_) {
     done = machine.system().event().getTicks() > target_time_;
+  }
+
+  if (!done && break_on_event_) {
+    done = event_function_();
   }
 
   if (mouse_moved_) {

@@ -27,6 +27,8 @@
 #ifndef __WaitLongOperation_hpp__
 #define __WaitLongOperation_hpp__
 
+#include <boost/function.hpp>
+
 #include "MachineBase/LongOperation.hpp"
 
 class Point;
@@ -42,6 +44,10 @@ class WaitLongOperation : public LongOperation {
 
   /// Whether we should exit this long operation on a click.
   void breakOnClicks();
+
+  /// Checks |function| on every LongOperation invocation to see if we are
+  /// finished. |function| should return true if we are done.
+  void breakOnEvent(const boost::function<bool()>& function);
 
   /// Whether we write out the location of a mouse click. Implies that we're
   /// breaking on mouse click.
@@ -66,6 +72,9 @@ class WaitLongOperation : public LongOperation {
 
   bool break_on_clicks_;
   int button_pressed_;
+
+  bool break_on_event_;
+  boost::function<bool()> event_function_;
 
   bool break_on_ctrl_pressed_;
   bool ctrl_pressed_;

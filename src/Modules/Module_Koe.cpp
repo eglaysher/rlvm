@@ -31,6 +31,9 @@
 
 #include "Modules/Module_Koe.hpp"
 
+#include <boost/bind.hpp>
+
+#include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -57,6 +60,22 @@ struct Koe_koeWait : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
+struct Koe_koeWaitC : public RLOp_Void_Void {
+  static bool isPlaying(RLMachine& machine) {
+    return !machine.system().sound().koePlaying();
+  }
+
+  void operator()(RLMachine& machine) {
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnClicks();
+    wait_op->breakOnEvent(boost::bind(isPlaying, boost::ref(machine)));
+
+    machine.pushLongOperation(wait_op);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 KoeModule::KoeModule()
   : RLModule("Koe", 1, 23)
 {
@@ -71,7 +90,7 @@ KoeModule::KoeModule()
   addOpcode(3, 0, "koeWait", new Koe_koeWait);
   addOpcode(4, 0, "koePlaying", returnIntValue(&SoundSystem::koePlaying));
   addUnsupportedOpcode(5, 0, "koeStop");
-  addUnsupportedOpcode(6, 0, "koeWaitC");
+  addOpcode(6, 0, "koeWaitC", new Koe_koeWaitC);
 
   addUnsupportedOpcode(7, 0, "koePlayExC");
   addUnsupportedOpcode(7, 1, "koePlayExC");
