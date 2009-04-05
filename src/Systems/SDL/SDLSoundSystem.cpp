@@ -433,7 +433,7 @@ bool SDLSoundSystem::bgmLooping() const {
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::koePlay(RLMachine& machine, int id) {
+void SDLSoundSystem::koePlayImpl(RLMachine& machine, int id) {
   if (!koeEnabled()) {
     return;
   }

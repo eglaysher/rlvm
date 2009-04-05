@@ -82,8 +82,6 @@ public:
   virtual std::string bgmName() const;
   virtual bool bgmLooping() const;
 
-  virtual void koePlay(RLMachine& machine, int id);
-
   virtual void reset();
 
   /**
@@ -96,6 +94,8 @@ private:
   typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
   typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
   typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;
+
+  virtual void koePlayImpl(RLMachine& machine, int id);
 
   /**
    * Retrieves a sound chunk from the passed in cache (or loads it if

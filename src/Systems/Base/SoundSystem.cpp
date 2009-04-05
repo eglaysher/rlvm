@@ -440,9 +440,10 @@ int SoundSystem::useKoeForCharacter(const int character) const {
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setKoeVolume(const int level) {
+void SoundSystem::setKoeVolume(const int level, const int fadetime) {
   checkVolume(level, "setKoeVolume");
   globals_.koe_volume = level;
+  // TODO: Gradually transition the volume with |fadetime|.
 }
 
 // -----------------------------------------------------------------------
@@ -473,6 +474,28 @@ void SoundSystem::setBgmKoeFadeVolume(const int level) {
 
 int SoundSystem::bgmKoeFadeVolume() const {
   return globals_.bgm_koe_fade_vol;
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::koePlay(RLMachine& machine, int id) {
+  koePlayImpl(machine, id);
+}
+
+// -----------------------------------------------------------------------
+
+void SoundSystem::koePlay(RLMachine& machine, int id, int charid) {
+  bool play_voice = true;
+
+  std::map<int, int>::const_iterator koe_it =
+      globals_.character_koe_enabled.find(charid);
+  if (koe_it != globals_.character_koe_enabled.end()) {
+    play_voice = koe_it->second;
+  }
+
+  if (play_voice) {
+    koePlayImpl(machine, id);
+  }
 }
 
 // -----------------------------------------------------------------------

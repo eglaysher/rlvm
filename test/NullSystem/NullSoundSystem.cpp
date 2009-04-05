@@ -183,7 +183,7 @@ void NullSoundSystem::playSe(RLMachine& machine, const int se_num)
 
 // -----------------------------------------------------------------------
 
-void NullSoundSystem::koePlay(RLMachine& machine, int id) {
-  sound_system_log_.recordFunction("koePlay", id);
+void NullSoundSystem::koePlayImpl(RLMachine& machine, int id) {
+  sound_system_log_.recordFunction("koePlayImpl", id);
 }
 

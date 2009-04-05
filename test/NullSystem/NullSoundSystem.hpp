@@ -70,9 +70,10 @@ public:
 
   virtual void playSe(RLMachine& machine, const int se_num);
 
-  virtual void koePlay(RLMachine& machine, int id);
-
 private:
+
+  virtual void koePlayImpl(RLMachine& machine, int id);
+
   /// Record all method calls here
   mutable MockLog sound_system_log_;
 

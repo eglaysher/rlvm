@@ -385,8 +385,10 @@ public:
   /// instead.
   int useKoeForCharacter(const int usekoe_id) const;
 
-  /// Sets the volume for all voice levels (0-255).
-  virtual void setKoeVolume(const int level);
+  /// Sets the volume for all voice levels (0-255). If |fadetime| is non-zero,
+  /// the volume will change smoothly, with the change taking |fadetime| ms,
+  /// otherwise it will change instantly.
+  virtual void setKoeVolume(const int level, const int fadetime);
 
   /// Returns the volume for voice relative to other sound effects.
   int koeVolume() const;
@@ -404,8 +406,8 @@ public:
   /// Returns the amount to change the bgm volume.
   int bgmKoeFadeVolume() const;
 
-  /// Plays a voice sample
-  virtual void koePlay(RLMachine& machine, int id) = 0;
+  void koePlay(RLMachine& machine, int id);
+  void koePlay(RLMachine& machine, int id, int charid);
 
   /// @}
 
@@ -425,6 +427,9 @@ protected:
   int computeChannelVolume(const int channel_volume, const int system_volume) {
     return (channel_volume * system_volume) / 255;
   }
+
+  /// Plays a voice sample.
+  virtual void koePlayImpl(RLMachine& machine, int id) = 0;
 
   static void checkChannel(int channel, const char* function_name);
   static void checkVolume(int level, const char* function_name);
