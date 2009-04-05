@@ -165,6 +165,14 @@ void NullSoundSystem::playSe(const int se_num) {
 
 // -----------------------------------------------------------------------
 
+bool NullSoundSystem::koePlaying() const {
+  sound_system_log_.recordFunction("koePlaying");
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void NullSoundSystem::koePlayImpl(int id) {
   sound_system_log_.recordFunction("koePlayImpl", id);
 }

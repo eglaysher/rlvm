@@ -69,6 +69,8 @@ public:
 
   virtual void playSe(const int se_num);
 
+  virtual bool koePlaying() const;
+
 private:
 
   virtual void koePlayImpl(int id);

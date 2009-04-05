@@ -431,6 +431,12 @@ bool SDLSoundSystem::bgmLooping() const {
 
 // -----------------------------------------------------------------------
 
+bool SDLSoundSystem::koePlaying() const {
+  return Mix_Playing(KOE_CHANNEL);
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::koePlayImpl(int id) {
   if (!koeEnabled()) {
     return;
@@ -448,7 +454,7 @@ void SDLSoundSystem::koePlayImpl(int id) {
   char* data = sample->decode(&length);
 
   SDLSoundChunkPtr koe = buildKoeChunk(data, length);
-  Mix_Volume(KOE_CHANNEL, 128);
+  Mix_Volume(KOE_CHANNEL, realLiveVolumeToSDLMixerVolume(koeVolume()));
   koe->playChunkOn(KOE_CHANNEL, 0);
 }
 

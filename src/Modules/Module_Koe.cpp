@@ -32,11 +32,28 @@
 #include "Modules/Module_Koe.hpp"
 
 #include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/System.hpp"
+
+// -----------------------------------------------------------------------
+
+struct LongOp_koeWait : public LongOperation {
+  bool operator()(RLMachine& machine) {
+    return !machine.system().sound().koePlaying();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Koe_koeWait : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.pushLongOperation(new LongOp_koeWait);
+  }
+};
 
 // -----------------------------------------------------------------------
 
@@ -51,8 +68,8 @@ KoeModule::KoeModule()
   addUnsupportedOpcode(1, 0, "koePlayEx");
   addUnsupportedOpcode(1, 1, "koePlayEx");
 
-  addUnsupportedOpcode(3, 0, "koeWait");
-  addUnsupportedOpcode(4, 0, "koePlaying");
+  addOpcode(3, 0, "koeWait", new Koe_koeWait);
+  addOpcode(4, 0, "koePlaying", returnIntValue(&SoundSystem::koePlaying));
   addUnsupportedOpcode(5, 0, "koeStop");
   addUnsupportedOpcode(6, 0, "koeWaitC");
 

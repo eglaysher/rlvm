@@ -45,6 +45,8 @@ class SDLMusic;
 
 /**
  *
+ * TODO: All of my volume calculations are WRONG. I don't take the difference
+ * between say, bgmSetVolume and SetBgmVolMod().
  */
 class SDLSoundSystem : public SoundSystem
 {
@@ -81,6 +83,8 @@ public:
   virtual void bgmFadeOut(int fade_out_ms);
   virtual std::string bgmName() const;
   virtual bool bgmLooping() const;
+
+  virtual bool koePlaying() const;
 
   virtual void reset();
 
