@@ -11,7 +11,7 @@ function runPath() {
   LOG=`echo $SCRIPT | sed s/\.lua/\.log/g;`
 
   echo "Running $SCRIPT..."
-  time build/luaRlvm --count-undefined test/CLANNAD/$SCRIPT > CLANNAD.log/$LOG 2>&1
+  time build/luaRlvm --count-undefined test/CLANNAD/$SCRIPT ~/GameImages/CLANNAD > CLANNAD.log/$LOG 2>&1
 }
 
 # The School Life Section

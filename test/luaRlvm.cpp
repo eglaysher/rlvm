@@ -94,8 +94,9 @@ void printVersionInformation()
 
 void printUsage(const string& name, po::options_description& opts)
 {
-  cout << "Usage: " << name << " [options] <lua script to run>" << endl;
-  cout << opts << endl;
+  cout << "Usage: " << name << " [options] <lua script to run> <game root>"
+       << endl
+       << opts << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -126,10 +127,12 @@ int main(int argc, char* argv[])
   // Declare the final option to be game-root
   po::options_description hidden("Hidden");
   hidden.add_options()
-    ("script-location", po::value<string>(), "Location of the lua script");
+    ("script-location", po::value<string>(), "Location of the lua script")
+    ("game-root", po::value<string>(), "Location of game root");
 
   po::positional_options_description p;
-  p.add("script-location", -1);
+  p.add("script-location", 1);
+  p.add("game-root", 1);
 
   // Use these on the command line
   po::options_description commandLineOpts;
@@ -171,33 +174,50 @@ int main(int argc, char* argv[])
     return -1;
   }
 
-  try {
-    // Run the incoming lua file and do some basic error checking on what it
-    // wants us to do.
-    ScriptWorld world(scriptLocation.file_string());
+  if (vm.count("game-root")) {
+    gamerootPath = vm["game-root"].as<string>();
 
-    if (world.regname() == "") {
-      cerr << "Script did not specify a regname. Please add a World::setRegname() statement." << endl;
-      return -2;
-    }
-
-    if (world.gameRoot() == "") {
-      cerr << "Script did not specify a game root. Please add a World::setGameRoot() statement." << endl;
-      return -2;
-    }
-
-    gamerootPath = world.gameRoot();
     if (!fs::exists(gamerootPath)) {
-      cerr << "Specified gameroot \"" << gamerootPath << "\" does not exist." << endl;
-      return -2;
+      cerr << "ERROR: Path '" << gamerootPath << "' does not exist." << endl;
+      return -1;
     }
 
+    if (!fs::is_directory(gamerootPath)) {
+      cerr << "ERROR: Path '" << gamerootPath << "' is not a directory."
+           << endl;
+      return -1;
+    }
+
+    // Some games hide data in a lower subdirectory.  A little hack to
+    // make these behave as expected...
+    if (correctPathCase(gamerootPath / "Gameexe.ini").empty()) {
+      if (!correctPathCase(gamerootPath / "KINETICDATA" /
+                           "Gameexe.ini").empty()) {
+        gamerootPath /= "KINETICDATA/";
+      } else if (!correctPathCase(gamerootPath / "REALLIVEDATA" /
+                                  "Gameexe.ini").empty()) {
+        gamerootPath /= "REALLIVEDATA/";
+      } else {
+        cerr << "WARNING: Path '" << gamerootPath << "' may not contain a "
+             << "RealLive game." << endl;
+      }
+    }
+  } else {
+    printUsage(argv[0], opts);
+    return -1;
+  }
+
+  try {
     gameexePath = correctPathCase(gamerootPath / "Gameexe.ini");
     seenPath = correctPathCase(gamerootPath / "Seen.txt");
 
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath.file_string();
     gameexe("MEMORY") = 1;
+
+    // Run the incoming lua file and do some basic error checking on what it
+    // wants us to do.
+    ScriptWorld world(scriptLocation.file_string());
 
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));

@@ -1,9 +1,3 @@
--- luaRlvm file which drives the interpreter through Nagisa's route in
--- CLANNAIDS.
-
-World:setRegname("KEY_CLANNAD")
-World:setGameRoot("/home/elliot/GameImages/CLANNAD/")
-
 World:import("CLANNAD_lib.lua")
 CLANNAD:installMainMenuHandler("New Game")
 CLANNAD:clickOnCharactersBeingThrown()

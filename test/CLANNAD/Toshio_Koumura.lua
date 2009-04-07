@@ -1,13 +1,6 @@
--- luaRlvm file which drives the interpreter through Toshio Komura's route in
--- CLANNAIDS.
-
-World:setRegname("KEY_CLANNAD")
-World:setGameRoot("/home/elliot/GameImages/CLANNAD/")
-
 World:import("CLANNAD_lib.lua")
 CLANNAD:installMainMenuHandler("New Game")
 
--- Nagisa's end route
 decisions = {
    -- April 14th
    "やめておく",

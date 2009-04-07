@@ -157,10 +157,6 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
     // High level interface
     class_<ScriptWorld>("World").
     def("import", &ScriptWorld::import).
-    def("regname", &ScriptWorld::regname).
-    def("setRegname", &ScriptWorld::setRegname).
-    def("gameRoot", &ScriptWorld::gameRoot).
-    def("setGameRoot", &ScriptWorld::setGameRoot).
     def("setDecisionList", &ScriptWorld::setDecisionList).
     def("error", &ScriptWorld::error).
     def("addHandler", &ScriptWorld::addHandler),

@@ -11,7 +11,7 @@ function runPath() {
   LOG=`echo $SCRIPT | sed s/\.lua/\.log/g;`
 
   echo "Running $SCRIPT..."
-  time build/luaRlvm --count-undefined test/Kanon_SE/$SCRIPT > KANON.log/$LOG 2>&1
+  time build/luaRlvm --count-undefined test/Kanon_SE/$SCRIPT ~/GameImages/KANON > KANON.log/$LOG 2>&1
 }
 
 runPath "Mai.lua"

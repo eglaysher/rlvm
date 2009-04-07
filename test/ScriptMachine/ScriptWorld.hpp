@@ -60,12 +60,6 @@ public:
   ScriptWorld(const std::string& lua_file);
   ~ScriptWorld();
 
-  const std::string& regname() const { return regname_; }
-  void setRegname(const std::string& in) { regname_ = in; }
-
-  const std::string& gameRoot() const { return game_root_; }
-  void setGameRoot(const std::string& in) { game_root_ = in; }
-
   /**
    * Copies data from the initial script execution into the ScriptMachine,
    * since the lua script is executed during the ScriptWorld constructor, but

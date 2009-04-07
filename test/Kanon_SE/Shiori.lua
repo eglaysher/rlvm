@@ -1,7 +1,3 @@
-
-World:setRegname("KEY_KANON_SE_ALL")
-World:setGameRoot("/home/elliot/GameImages/KANON")
-
 World:import("Kanon_lib.lua")
 Kanon:installMainMenuHandler()
 Kanon:skipEverything()
