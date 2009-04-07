@@ -64,6 +64,24 @@ struct Obj_objGetPos
 
 // -----------------------------------------------------------------------
 
+struct Obj_objGetPosX : public RLOp_Store_1< IntConstant_T> {
+  int operator()(RLMachine& machine, int objNum) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    return obj.x();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Obj_objGetPosY : public RLOp_Store_1< IntConstant_T> {
+  int operator()(RLMachine& machine, int objNum) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    return obj.y();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 /**
  * @note objGetDims takes an integer as its fourth argument, but we
  * have no idea what this is or how it affects things. Usually appears
@@ -85,8 +103,10 @@ struct Obj_objGetDims
 namespace {
 void addFunctions(RLModule& m) {
   m.addOpcode(1000, 0, "objGetPos", new Obj_objGetPos);
-  m.addOpcode(1100, 0, "objGetPos", new Obj_objGetDims);
-  m.addOpcode(1100, 1, "objGetPos", new Obj_objGetDims);
+  m.addOpcode(1001, 0, "objGetPosX", new Obj_objGetPosX);
+  m.addOpcode(1002, 0, "objGetPosY", new Obj_objGetPosY);
+  m.addOpcode(1100, 0, "objGetDims", new Obj_objGetDims);
+  m.addOpcode(1100, 1, "objGetDims", new Obj_objGetDims);
 }
 }
 
