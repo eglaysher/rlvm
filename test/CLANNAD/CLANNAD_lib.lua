@@ -105,13 +105,30 @@ end
 -- Some paths have Sunohara and other characters being throw around... and will
 -- continue until a click breaks them free.
 function CLANNAD:clickOnCharactersBeingThrown ()
-  -- Sunohara
-  World:addHandler(1, 137, function ()
-    System:event():injectMouseDown()
-  end)
+  -- Different editions of CLANNAD need to have the click injected on different
+  -- line numbers.
+  name = World:regname()
+  if name == "KEY_CLANNAD" then
+    -- Sunohara
+    World:addHandler(1, 137, function ()
+      System:event():injectMouseDown()
+    end)
 
-  -- Botan
-  World:addHandler(1, 215, function ()
-    System:event():injectMouseDown()
-  end)
+    -- Botan
+    World:addHandler(1, 215, function ()
+      System:event():injectMouseDown()
+    end)
+  elseif name == "KEY_CLANNAD_FV" then
+    -- Sunohara
+    World:addHandler(1, 154, function ()
+      System:event():injectMouseDown()
+    end)
+
+    -- Botan
+    World:addHandler(1, 233, function ()
+      System:event():injectMouseDown()
+    end)
+  else
+    World:error("We don't appear to be CLANNAD or CLANNAD_FV...")
+  end
 end
