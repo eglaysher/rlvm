@@ -129,7 +129,9 @@ decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
 
   if (per_game_xor_key) {
     dst = dststart + 256;
-    for (int i = 0; i < 257; ++i) *dst++ ^= per_game_xor_key[i % 16];
+    for (int i = 0; i < 257 && dst < dstend; ++i) {
+      *dst++ ^= per_game_xor_key[i % 16];
+    }
   }
 }
 
