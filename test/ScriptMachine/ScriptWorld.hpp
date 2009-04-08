@@ -57,7 +57,7 @@ class ScriptMachine;
 class ScriptWorld
 {
 public:
-  ScriptWorld(const std::string& lua_file);
+  ScriptWorld();
   ~ScriptWorld();
 
   /**
@@ -67,8 +67,16 @@ public:
    */
   void initializeMachine(ScriptMachine& machine);
 
+  /// Loads the "main" lua testing file (and settings the search path for
+  /// future import() statements).
+  void loadToplevelFile(const std::string& lua_file);
+
   /// Loads a lua script in the same directory as lua_file.
   void import(const std::string& file_name);
+
+  /// Returns the sanitized #REGNAME key (as would be found in the ~/.rlvm
+  /// folder).
+  std::string regname() const;
 
   void setDecisionList(luabind::object table);
   void error(const std::string& error_message);
@@ -83,9 +91,6 @@ private:
   std::vector<std::string> decisions_;
 
   std::map<std::pair<int, int>, luabind::object> handlers_;
-
-  std::string regname_;
-  std::string game_root_;
 
   lua_State* L;
 };  // end of class ScriptWorld

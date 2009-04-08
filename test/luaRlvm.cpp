@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
 
     // Run the incoming lua file and do some basic error checking on what it
     // wants us to do.
-    ScriptWorld world(scriptLocation.file_string());
+    ScriptWorld world;
 
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
@@ -225,6 +225,7 @@ int main(int argc, char* argv[])
     ScriptMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
     world.initializeMachine(rlmachine);
+    world.loadToplevelFile(scriptLocation.file_string());
 
     // Make sure we go as fast as possible:
     sdlSystem.setForceFastForward();

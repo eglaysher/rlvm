@@ -402,14 +402,17 @@ boost::filesystem::path System::getHomeDirectory()
 
 // -----------------------------------------------------------------------
 
-boost::filesystem::path System::gameSaveDirectory()
-{
+std::string System::regname() {
   Gameexe& gexe = gameexe();
-
   string regname = gexe("REGNAME");
   replace_all(regname, "\\", "_");
+  return regname;
+}
 
-  fs::path base_dir = getHomeDirectory() / ".rlvm" / regname;
+// -----------------------------------------------------------------------
+
+boost::filesystem::path System::gameSaveDirectory() {
+  fs::path base_dir = getHomeDirectory() / ".rlvm" / regname();
   fs::create_directories(base_dir);
 
   return base_dir;

@@ -259,6 +259,11 @@ public:
   SystemGlobals& globals() { return globals_; }
 
   /**
+   * Cleans the regname entry from the gameexe and makes it filesystem safe.
+   */
+  virtual std::string regname();
+
+  /**
    * Returns a boost::filesystem object which points to the directory
    * where saved game data, preferences, et cetera should be stored
    * for this game.
