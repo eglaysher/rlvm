@@ -152,7 +152,11 @@ void TextWindow::setName(const std::string& utf8name,
 
 void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
   if (name_mod_ == 1) {
-    throw SystemError("NAME_MOD=1 is unsupported.");
+    static int displayedWarning = 0;
+    if (displayedWarning == 0) {
+      cerr << "NAME_MOD=1 is unsupported." << endl;
+      displayedWarning = 1;
+    }
   }
 
   last_token_was_name_ = true;
