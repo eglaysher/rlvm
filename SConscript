@@ -68,6 +68,7 @@ librlvm_files = [
   "src/Encodings/han2zen.cpp",
   "src/Encodings/western.cpp",
   "src/LongOperations/PauseLongOperation.cpp",
+  "src/LongOperations/SelectLongOperation.cpp",
   "src/LongOperations/TextoutLongOperation.cpp",
   "src/LongOperations/WaitLongOperation.cpp",
   "src/LongOperations/ZoomLongOperation.cpp",

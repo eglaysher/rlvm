@@ -31,7 +31,7 @@
 #include "ScriptMachine/ScriptMachine.hpp"
 
 #include "libReallive/intmemref.h"
-#include "Modules/Module_Sel.hpp"
+#include "LongOperations/SelectLongOperation.hpp"
 #include "MachineBase/Serialization.hpp"
 
 #include <iostream>
@@ -94,8 +94,9 @@ void ScriptMachine::setLineNumber(const int i) {
 
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
-  if (typeid(*long_operation) == typeid(Sel_LongOperation)) {
-    Sel_LongOperation& sel = dynamic_cast<Sel_LongOperation&>(*long_operation);
+  if (typeid(*long_operation) == typeid(SelectLongOperation)) {
+    SelectLongOperation& sel =
+        dynamic_cast<SelectLongOperation&>(*long_operation);
 
     bool optionFound = false;
     int offset = 0;

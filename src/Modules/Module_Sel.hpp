@@ -29,55 +29,6 @@
 #define __Module_Sel_hpp__
 
 #include "MachineBase/RLModule.hpp"
-#include "MachineBase/LongOperation.hpp"
-#include "Systems/Base/EventListener.hpp"
-
-#include <vector>
-#include <string>
-#include <boost/shared_ptr.hpp>
-
-class TextWindow;
-
-// -----------------------------------------------------------------------
-
-namespace libReallive {
-class SelectElement;
-}
-
-// -----------------------------------------------------------------------
-
-class Sel_LongOperation : public LongOperation
-{
-private:
-  RLMachine& machine_;
-
-  std::vector<std::string> options_;
-
-  boost::shared_ptr<TextWindow> text_window_;
-
-  int return_value_;
-
-public:
-  Sel_LongOperation(RLMachine& machine,
-                    const libReallive::SelectElement& commandElement);
-  ~Sel_LongOperation();
-
-  void selected(int num);
-
-  /// Selects by the string text. Returns true if successful.
-  bool selectOption(const std::string& str);
-
-  const std::vector<std::string>& options() const { return options_; }
-
-  // Overridden from EventListener:
-  virtual void mouseMotion(const Point&);
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-
-  // Overridden from LongOperation:
-  virtual bool operator()(RLMachine& machine);
-};
-
-// -----------------------------------------------------------------------
 
 /**
  * Contains functions for mod<0:2>, Sel.
