@@ -32,7 +32,31 @@
 #include "Modules/Module_EventLoop.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/GeneralOperations.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
+
+// -----------------------------------------------------------------------
+
+struct EventLoop_setOverride : public RLOp_Void_1< IntConstant_T > {
+  bool value_;
+  EventLoop_setOverride(int value) : value_(value) { }
+
+  void operator()(RLMachine& machine, int window) {
+    machine.system().text().setVisualOverride(window, value_);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct EventLoop_setOverrideAll : public RLOp_Void_Void {
+  bool value_;
+  EventLoop_setOverrideAll(int value) : value_(value) { }
+
+  void operator()(RLMachine& machine) {
+    machine.system().text().setVisualOverrideAll(value_);
+  }
+};
+
 
 // -----------------------------------------------------------------------
 
@@ -57,12 +81,14 @@ EventLoopModule::EventLoopModule()
 
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
   // system; no idea what they do.
-  addOpcode(1200, 0, "TextwindowShow",
-            callFunction(&TextSystem::showTextWindow));
-  addOpcode(1200, 2, "TextwindowShow",
-            callFunction(&TextSystem::showAllTextWindows));
-  addOpcode(1201, 0, "TextwindowHide",
-            callFunction(&TextSystem::hideTextWindow));
-  addOpcode(1201, 2, "TextwindowHide",
-            callFunction(&TextSystem::hideAllTextWindows));
+  addOpcode(1200, 0, "TextwindowOverrideShow",
+            new EventLoop_setOverride(true));
+  addOpcode(1200, 2, "TextwindowOverrideShow",
+            new EventLoop_setOverrideAll(true));
+  addOpcode(1201, 0, "TextwindowOverrideHide",
+            new EventLoop_setOverride(false));
+  addOpcode(1201, 2, "TextwindowOverrideHide",
+            new EventLoop_setOverrideAll(false));
+  addOpcode(1202, 0, "ClearTextwindowOverrides",
+            callFunction(&TextSystem::clearVisualOverrides));
 }

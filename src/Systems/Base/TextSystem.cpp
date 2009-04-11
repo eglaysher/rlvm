@@ -133,19 +133,23 @@ TextSystem::~TextSystem() {
 
 void TextSystem::executeTextSystem() {
   // Check to see if the cursor is displayed
-  WindowMap::iterator it = text_window_.find(active_window_);
-  if (it != text_window_.end() && it->second->isVisible() &&
-      in_pause_state_ && !isReadingBacklog()) {
-    if (!text_key_cursor_)
-      setKeyCursor(0);
+  if (showWindow(active_window_)) {
+    WindowMap::iterator it = text_window_.find(active_window_);
+    if (it != text_window_.end() && it->second->isVisible() &&
+        in_pause_state_ && !isReadingBacklog()) {
+      if (!text_key_cursor_)
+        setKeyCursor(0);
 
-    text_key_cursor_->execute();
+      text_key_cursor_->execute();
+    }
   }
 
   // Let each window update any TextWindowButton s.
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
-    it->second->execute();
+    if (showWindow(it->first)) {
+      it->second->execute();
+    }
   }
 }
 
@@ -159,28 +163,38 @@ void TextSystem::render(std::ostream* tree) {
 
     for (WindowMap::iterator it = text_window_.begin();
          it != text_window_.end(); ++it) {
-      it->second->render(tree);
+      if (showWindow(it->first)) {
+        it->second->render(tree);
+      }
     }
 
-    WindowMap::iterator it = text_window_.find(active_window_);
+    if (showWindow(active_window_)) {
+      WindowMap::iterator it = text_window_.find(active_window_);
 
-    if (it != text_window_.end() && it->second->isVisible() &&
-        in_pause_state_ && !isReadingBacklog()) {
-      if (!text_key_cursor_)
-        setKeyCursor(0);
+      if (it != text_window_.end() && it->second->isVisible() &&
+          in_pause_state_ && !isReadingBacklog()) {
+        if (!text_key_cursor_)
+          setKeyCursor(0);
 
-      text_key_cursor_->render(*it->second, tree);
+        text_key_cursor_->render(*it->second, tree);
+      }
     }
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::hideTextWindow(int win_number) {
+void TextSystem::closeTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {
-    it->second->setVisible(0);
+    text_window_.erase(it);
   }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::closeAllTextWindows() {
+  text_window_.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -194,29 +208,22 @@ void TextSystem::hideAllTextWindows() {
 
 // -----------------------------------------------------------------------
 
-void TextSystem::showTextWindow(int win_number) {
-  WindowMap::iterator it = text_window_.find(win_number);
-  if (it != text_window_.end()) {
-    it->second->setVisible(1);
+void TextSystem::setVisualOverride(int win_number, bool show_window) {
+  window_visual_override_[win_number] = show_window;
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::setVisualOverrideAll(bool show_window) {
+  for (int i = 0; i < 64; ++i) {
+    window_visual_override_[i] = show_window;
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextSystem::showAllTextWindows() {
-  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
-       ++it) {
-    it->second->setVisible(1);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::clearAllTextWindows() {
-  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
-       ++it) {
-    it->second->clearWin();
-  }
+void TextSystem::clearVisualOverrides() {
+  window_visual_override_.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -317,8 +324,7 @@ void TextSystem::backPage() {
     previous_page_it_ = boost::prior(previous_page_it_);
 
     // Clear all windows
-    clearAllTextWindows();
-    hideAllTextWindows();
+    closeAllTextWindows();
 
     replayPageSet(*previous_page_it_, false);
   }
@@ -333,8 +339,7 @@ void TextSystem::forwardPage() {
     previous_page_it_ = boost::next(previous_page_it_);
 
     // Clear all windows
-    clearAllTextWindows();
-    hideAllTextWindows();
+    closeAllTextWindows();
 
     if (previous_page_it_ != previous_page_sets_.end())
       replayPageSet(*previous_page_it_, false);
@@ -372,8 +377,7 @@ void TextSystem::stopReadingBacklog() {
   is_reading_backlog_ = false;
 
   // Clear all windows
-  clearAllTextWindows();
-  hideAllTextWindows();
+  closeAllTextWindows();
   replayPageSet(*current_pageset_, true);
 }
 
@@ -424,6 +428,17 @@ void TextSystem::updateWindowsForChangeToWindowAttr() {
 
 // -----------------------------------------------------------------------
 
+bool TextSystem::showWindow(int win_num) const {
+  std::map<int, bool>::const_iterator it =
+      window_visual_override_.find(win_num);
+  if (it != window_visual_override_.end())
+    return it->second;
+  else
+    return true;
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::setDefaultWindowAttr(const std::vector<int>& attr) {
   globals_.window_attr = attr;
   updateWindowsForChangeToWindowAttr();
@@ -469,7 +484,9 @@ void TextSystem::setWindowAttrF(int i) {
 void TextSystem::setMousePosition(const Point& pos) {
   for (WindowMap::iterator it = text_window_.begin();
        it != text_window_.end(); ++it) {
-    it->second->setMousePosition(pos);
+    if (showWindow(it->first)) {
+      it->second->setMousePosition(pos);
+    }
   }
 }
 
@@ -480,8 +497,10 @@ bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
   if (systemVisible()) {
     for (WindowMap::iterator it = text_window_.begin();
          it != text_window_.end(); ++it) {
-      if (it->second->handleMouseClick(machine, pos, pressed))
-        return true;
+      if (showWindow(it->first)) {
+        if (it->second->handleMouseClick(machine, pos, pressed))
+          return true;
+      }
     }
   }
 

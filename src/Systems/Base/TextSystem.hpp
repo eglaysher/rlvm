@@ -39,6 +39,7 @@
 #include <boost/signal.hpp>
 #include <string>
 #include <vector>
+#include <map>
 
 class Gameexe;
 class Memory;
@@ -107,11 +108,13 @@ public:
   void executeTextSystem();
 
   void render(std::ostream* tree);
-  void hideTextWindow(int win_number);
+  void closeTextWindow(int win_number);
+  void closeAllTextWindows();
   void hideAllTextWindows();
-  void showTextWindow(int win_number);
-  void showAllTextWindows();
-  void clearAllTextWindows();
+  void setVisualOverride(int win_number, bool show_window);
+  void setVisualOverrideAll(bool show_window);
+  void clearVisualOverrides();
+
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number) = 0;
   boost::shared_ptr<TextWindow> currentWindow();
 
@@ -288,6 +291,8 @@ public:
 protected:
   void updateWindowsForChangeToWindowAttr();
 
+  bool showWindow(int win_num) const;
+
   /// TextPage will call our internals since it actually does most of
   /// the work while we hold state.
   friend class TextPage;
@@ -386,6 +391,9 @@ protected:
 
   /// Whether we are currently paused at a user choice.
   bool in_selection_mode_;
+
+  /// Contains overrides for showing or hiding the text windows.
+  std::map<int, bool> window_visual_override_;
 
   /**
    * Reduces the number of page snapshots in previous_page_sets_ down to a
