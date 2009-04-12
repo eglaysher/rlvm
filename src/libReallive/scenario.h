@@ -95,15 +95,18 @@ public:
 inline
 Scenario::Scenario(const char* data, const size_t length, int sn,
                    const char* second_level_xor_key)
-  : header(data, length), script(header, data, length, second_level_xor_key),
+  : header(data, length),
+    script(header, data, length,
+           header.use_xor_2 ? second_level_xor_key : NULL),
     scenarioNum(sn)
 {
 }
 
 inline
 Scenario::Scenario(const FilePos& fp, int sn, const char* second_level_xor_key)
-  : header(fp.data, fp.length), script(header, fp.data, fp.length,
-                                       second_level_xor_key),
+  : header(fp.data, fp.length),
+    script(header, fp.data, fp.length,
+           header.use_xor_2 ? second_level_xor_key : NULL),
     scenarioNum(sn)
 {
 }

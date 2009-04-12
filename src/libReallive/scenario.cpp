@@ -65,7 +65,7 @@ Header::Header(const char* data, const size_t length)
 
   string compiler = string(data, 4);
 
-  // Check the version of the
+  // Check the version of the compiler.
   if(read_i32(data + 4) == 10002)
     use_xor_2 = false;
   else if(read_i32(data + 4) == 110002)
@@ -103,8 +103,9 @@ Header::Header(const char* data, const size_t length)
   // potentially-useful metadata block.  Check for that and read it if
   // it's present.
   offs = read_i32(data + 0x14) + read_i32(data + 0x1c);
-  if (offs != read_i32(data + 0x20))
+  if (offs != read_i32(data + 0x20)) {
     rldev_metadata.assign(data + offs);
+  }
 }
 
 Script::Script(const Header& hdr, const char* data, const size_t length,
