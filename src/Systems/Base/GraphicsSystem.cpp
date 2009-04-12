@@ -332,6 +332,18 @@ void GraphicsSystem::replayGraphicsStack(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::addRenderable(Renderable* renderable) {
+  final_renderers_.insert(renderable);
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::removeRenderable(Renderable* renderable) {
+  final_renderers_.erase(renderable);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::setWindowSubtitle(const std::string& cp932str,
                                        int text_encoding)
 {

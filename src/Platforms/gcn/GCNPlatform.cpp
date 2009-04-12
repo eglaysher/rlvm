@@ -166,17 +166,23 @@ const MenuSpec SYCOM_MAIN_MENU[] = {
 // GCNPlatformBlocker
 // -----------------------------------------------------------------------
 class GCNPlatformBlocker : public LongOperation,
+                           public Renderable,
                            public RawSDLInputHandler
 {
 public:
   GCNPlatformBlocker(SDLEventSystem& system,
+                     GraphicsSystem& graphics,
                      const boost::shared_ptr<GCNPlatform>& platform)
-    : event_system_(system), platform_(platform) {
+      : event_system_(system),
+        graphics_system_(graphics),
+        platform_(platform) {
     event_system_.setRawSDLInputHandler(this);
+    graphics_system_.addRenderable(this);
     platform_->blocker_ = this;
   }
 
   ~GCNPlatformBlocker() {
+    graphics_system_.removeRenderable(this);
     event_system_.setRawSDLInputHandler(NULL);
     platform_->blocker_ = NULL;
   }
@@ -206,6 +212,11 @@ public:
     return platform_->window_stack_.size() == 0;
   }
 
+  // Overridden from Renderable:
+  virtual void render(std::ostream* tree) {
+    platform_->render();
+  }
+
   // Overridden from RawSDLInputHandler:
   virtual void pushInput(SDL_Event event) {
     platform_->sdl_input_->pushInput(event);
@@ -213,6 +224,7 @@ public:
 
 private:
   SDLEventSystem& event_system_;
+  GraphicsSystem& graphics_system_;
   boost::shared_ptr<GCNPlatform> platform_;
 
   std::queue<boost::function<void(void)> > delayed_tasks_;
@@ -373,9 +385,10 @@ void GCNPlatform::pushBlocker(RLMachine& machine)
 {
   if (blocker_ == NULL) {
     // Block the world!
-    SDLEventSystem& system = dynamic_cast<SDLEventSystem&>(
-      machine.system().event());
-    machine.pushLongOperation(new GCNPlatformBlocker(system,
+    SDLEventSystem& event = dynamic_cast<SDLEventSystem&>(
+        machine.system().event());
+    GraphicsSystem& graphics = machine.system().graphics();
+    machine.pushLongOperation(new GCNPlatformBlocker(event, graphics,
                                                      shared_from_this()));
 
   }

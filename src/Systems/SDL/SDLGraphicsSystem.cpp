@@ -49,6 +49,7 @@
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/Platform.hpp"
+#include "Systems/Base/Renderable.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
@@ -148,10 +149,12 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::endFrame()
-{
-  if (system().platform())
-    system().platform()->render();
+void SDLGraphicsSystem::endFrame() {
+  FinalRenderers::iterator it = renderer_begin();
+  FinalRenderers::iterator end = renderer_end();
+  for (; it != end; ++it) {
+    (*it)->render(NULL);
+  }
 
   if (screenUpdateMode() == SCREENUPDATEMODE_MANUAL) {
     // Copy the area behind the cursor to the temporary buffer (drivers differ:

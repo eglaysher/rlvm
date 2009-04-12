@@ -59,12 +59,6 @@ public:
   virtual void run(RLMachine& machine) = 0;
 
   /**
-   * Allows a platform to render after all of rlvm's drawing except for the
-   * mouse cursor.
-   */
-  virtual void render() = 0;
-
-  /**
    * Called on a right click where the game doesn't have its own syscom
    * handler.
    */

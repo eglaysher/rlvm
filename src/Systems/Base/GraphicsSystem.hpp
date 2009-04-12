@@ -58,6 +58,7 @@ class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
 class MouseCursor;
+class Renderable;
 class RLMachine;
 class Size;
 class Surface;
@@ -215,6 +216,25 @@ public:
   /// a saved game.
   void replayGraphicsStack(RLMachine& machine);
   /// @}
+
+
+  // -----------------------------------------------------------------------
+
+  /**
+   * @name Final Renderers
+   *
+   * Individual LongOperations can also hook into the end of the rendering
+   * pipeline by injecting Renderables. There should only really be one
+   * Renderable on screen at a time, but the interface allows for multiple
+   * ones.
+   *
+   * @{
+   */
+  void addRenderable(Renderable* renderable);
+  void removeRenderable(Renderable* renderable);
+  /// @}
+
+  // -----------------------------------------------------------------------
 
 
   /**
@@ -475,6 +495,11 @@ public:
   CGMTable& cgTable() { return globals_.cg_table; }
 
 protected:
+  typedef std::set<Renderable*> FinalRenderers;
+
+  FinalRenderers::iterator renderer_begin() { return final_renderers_.begin(); }
+  FinalRenderers::iterator renderer_end() { return final_renderers_.end(); }
+
   const Point& cursorPos() const { return cursor_pos_; }
 
   boost::shared_ptr<MouseCursor> currentCursor();
@@ -556,6 +581,9 @@ private:
   /// build:
   typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
   MouseCursorCache cursor_cache_;
+
+  /// A set of renderers
+  FinalRenderers final_renderers_;
 
   /// Our parent system object.
   System& system_;

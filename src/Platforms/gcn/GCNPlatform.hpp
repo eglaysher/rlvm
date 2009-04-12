@@ -28,6 +28,7 @@
 #define __GCNPlatform_hpp__
 
 #include "Systems/Base/Platform.hpp"
+#include "Systems/Base/Renderable.hpp"
 #include "Platforms/gcn/GCNMenu.hpp"
 #include "Platforms/gcn/GCNWindow.hpp"
 #include "Platforms/gcn/GCNSaveLoadWindow.hpp"
@@ -65,16 +66,17 @@ public:
   GCNPlatform(System& system, const Rect& screen_size);
   ~GCNPlatform();
 
-  // Events from UI objects
-  void run(RLMachine& machine);
   void render();
-  void showNativeSyscomMenu(RLMachine& machine);
-  void invokeSyscomStandardUI(RLMachine& machine, int syscom);
-  virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
   void windowCanceled(GCNWindow* window);
   void receiveGCNMenuEvent(GCNMenu* menu, const std::string& event);
   void saveEvent(int slot);
   void loadEvent(int slot);
+
+  // Overridden from Platform:
+  virtual void run(RLMachine& machine);
+  virtual void showNativeSyscomMenu(RLMachine& machine);
+  virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom);
+  virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
 
   // Overridden from gcn::MouseListener:
   virtual void mouseClicked(gcn::MouseEvent& mouseEvent);
