@@ -44,7 +44,8 @@ class GraphicsObject;
 
 // -----------------------------------------------------------------------
 
-/// Helper function to clean up the code a bit
+void ensureIsParentObject(GraphicsObject& parent);
+
 GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
                                   int obj);
 

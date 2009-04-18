@@ -41,6 +41,7 @@
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include "Systems/Base/System.hpp"
 
 #include <boost/shared_ptr.hpp>
@@ -69,17 +70,19 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     GraphicsSystem::DCScreenUpdateMode mode_;
 
     int fgbg_;
+    int parent_;
     int buf_;
-    WaitForGanToFinish(GraphicsSystem& system, int fgbg, int inBuf)
+    WaitForGanToFinish(GraphicsSystem& system, int fgbg, int parent,
+                       int inBuf)
       : system_(system),
         mode_(system_.screenUpdateMode()),
-        fgbg_(fgbg), buf_(inBuf) {
+        fgbg_(fgbg), parent_(parent), buf_(inBuf) {
       system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
     }
 
     bool operator()(RLMachine& machine)
     {
-      GraphicsObject& obj = machine.system().graphics().getObject(fgbg_, buf_);
+      GraphicsObject& obj = getObject(machine);
       bool done = true;
 
       if(obj.hasObjectData())
@@ -95,6 +98,19 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
       }
 
       return done;
+    }
+
+    GraphicsObject& getObject(RLMachine& machine) {
+      GraphicsSystem& graphics = machine.system().graphics();
+
+      if (parent_ != -1) {
+        GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
+        ensureIsParentObject(parent);
+        return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
+            getObject(buf_);
+      } else {
+        return graphics.getObject(fgbg_, buf_);
+      }
     }
   };
 
@@ -121,9 +137,13 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
           if(!getProperty(P_FGBG, fgbg))
             fgbg = OBJ_FG;
 
+          int parent_object;
+          if (!getProperty(P_PARENTOBJ, parent_object))
+            parent_object = -1;
+
           machine.pushLongOperation(new WaitForGanToFinish(
                                       machine.system().graphics(),
-                                      fgbg, buf));
+                                      fgbg, parent_object, buf));
         }
       }
     }
@@ -229,6 +249,23 @@ GanFgModule::GanFgModule()
 
 GanBgModule::GanBgModule()
     : RLModule("GanBg", 1, 74) {
+  addGanOperationsTo(*this);
+  setProperty(P_FGBG, OBJ_BG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildGanFgModule::ChildGanFgModule()
+    : MappedRLModule(childObjMappingFun, "ChildGanFg", 2, 73) {
+  addGanOperationsTo(*this);
+  setProperty(P_FGBG, OBJ_FG);
+}
+
+
+// -----------------------------------------------------------------------
+
+ChildGanBgModule::ChildGanBgModule()
+    : MappedRLModule(childObjMappingFun, "ChildGanBg", 2, 74) {
   addGanOperationsTo(*this);
   setProperty(P_FGBG, OBJ_BG);
 }

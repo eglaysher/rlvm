@@ -109,6 +109,8 @@ void addAllModules(RLMachine& rlmachine)
   rlmachine.attachModule(new DebugModule);
   rlmachine.attachModule(new GanFgModule);
   rlmachine.attachModule(new GanBgModule);
+  rlmachine.attachModule(new ChildGanFgModule);
+  rlmachine.attachModule(new ChildGanBgModule);
   rlmachine.attachModule(new LayeredShakingModule);
   rlmachine.attachModule(new ShakingModule);
 }

@@ -29,6 +29,7 @@
 #define __Module_Gan_hpp__
 
 #include "MachineBase/RLModule.hpp"
+#include "MachineBase/MappedRLModule.hpp"
 
 class GanFgModule : public RLModule {
 public:
@@ -38,6 +39,16 @@ public:
 class GanBgModule : public RLModule {
 public:
   GanBgModule();
+};
+
+class ChildGanFgModule : public MappedRLModule {
+public:
+  ChildGanFgModule();
+};
+
+class ChildGanBgModule : public MappedRLModule {
+public:
+  ChildGanBgModule();
 };
 
 #endif

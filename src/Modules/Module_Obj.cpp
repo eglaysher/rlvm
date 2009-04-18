@@ -54,8 +54,6 @@ using namespace std;
 using libReallive::ExpressionPiece;
 using boost::ptr_vector;
 
-namespace {
-
 void ensureIsParentObject(GraphicsObject& parent) {
   if (parent.hasObjectData()) {
     if (parent.objectData().isParentLayer()) {
@@ -65,8 +63,6 @@ void ensureIsParentObject(GraphicsObject& parent) {
 
   parent.setObjectData(new ParentGraphicsObjectData);
 }
-
-}  // namespace
 
 // -----------------------------------------------------------------------
 
