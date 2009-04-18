@@ -170,27 +170,134 @@ bool NormalSelectLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 // -----------------------------------------------------------------------
 ButtonSelectLongOperation::ButtonSelectLongOperation(
     RLMachine& machine,
-    const libReallive::SelectElement& commandElement)
-    : SelectLongOperation(machine, commandElement) {
+    const libReallive::SelectElement& commandElement,
+    int selbtn_set)
+    : SelectLongOperation(machine, commandElement),
+      machine_(machine),
+      highlighted_item_(-1) {
+  machine.system().graphics().addRenderable(this);
+
+  // Load all the data about this #SELBTN from the Gameexe.ini file.
+  Gameexe& gexe = machine.system().gameexe();
+  GameexeInterpretObject selbtn(gexe("SELBTN", selbtn_set));
+
+  vector<int> vec = selbtn("BASEPOS");
+  basepos_x_ = vec.at(0);
+  basepos_y_ = vec.at(1);
+
+  vec = selbtn("REPPOS");
+  reppos_x_ = vec.at(0);
+  reppos_y_ = vec.at(1);
+
+  moji_size_ = selbtn("MOJISIZE");
+
+  int default_colour_num_ = selbtn("MOJIDEFAULTCOL");
+  int select_colour_num_ = selbtn("MOJISELECTCOL");
+  if (default_colour_num_ == select_colour_num_)
+    select_colour_num_ = 1;  // For CLANNAD
+
+  GraphicsSystem& gs = machine.system().graphics();
+  name_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("NAME"));
+  back_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("BACK"));
+
+  // Build graphic representations of the choices to display to the user.
+  TextSystem& ts = machine.system().text();
+  for (size_t i = 0; i < options_.size(); ++i) {
+    const std::string& text = options_[i];
+
+    default_text_surfaces_.push_back(ts.renderText(
+        text, moji_size_, 0, 0, default_colour_num_));
+    select_text_surfaces_.push_back(ts.renderText(
+        text, moji_size_, 0, 0, select_colour_num_));
+  }
+
+  // Calculate out the bounding rectangles for all the options.
+  int baseposx = basepos_x_;
+  int baseposy = basepos_y_;
+  for (int i = 0; i < options_.size(); i++) {
+    bounding_rects_.push_back(Rect(baseposx, baseposy, back_surface_->size()));
+
+    baseposx += reppos_x_;
+    baseposy += reppos_y_;
+  }
 }
 
 // -----------------------------------------------------------------------
 
 ButtonSelectLongOperation::~ButtonSelectLongOperation() {
+  machine_.system().graphics().removeRenderable(this);
 }
 
 // -----------------------------------------------------------------------
 
-void ButtonSelectLongOperation::mouseMotion(const Point&) {
+void ButtonSelectLongOperation::mouseMotion(const Point& p) {
+  for (int i = 0; i < options_.size(); i++) {
+    Rect bounding_rect = bounding_rects_[i];
+    if (bounding_rect.contains(p)) {
+      highlighted_item_ = i;
+      return;
+    }
+  }
+
+  highlighted_item_ = -1;
 }
 
 // -----------------------------------------------------------------------
 
 bool ButtonSelectLongOperation::mouseButtonStateChanged(
     MouseButton mouseButton, bool pressed) {
+  EventSystem& es = machine_.system().event();
+
+  switch (mouseButton) {
+    case MOUSE_LEFT: {
+      Point pos = es.getCursorPos();
+      for (int i = 0; i < options_.size(); i++) {
+        Rect bounding_rect = bounding_rects_[i];
+        if (bounding_rect.contains(pos)) {
+          selected(i);
+          break;
+        }
+      }
+
+      return true;
+      break;
+    }
+    case MOUSE_RIGHT: {
+      if (pressed) {
+        machine_.system().showSyscomMenu(machine_);
+        return true;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------
 
 void ButtonSelectLongOperation::render(std::ostream* tree) {
+  for (int i = 0; i < options_.size(); i++) {
+    Rect bounding_rect = bounding_rects_[i];
+
+    back_surface_->renderToScreen(back_surface_->rect(), bounding_rect);
+    name_surface_->renderToScreen(name_surface_->rect(), bounding_rect);
+
+    if (i == highlighted_item_) {
+      renderTextSurface(select_text_surfaces_[i], bounding_rect);
+    } else {
+      renderTextSurface(default_text_surfaces_[i], bounding_rect);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void ButtonSelectLongOperation::renderTextSurface(
+    const boost::shared_ptr<Surface>& text_surface, const Rect& bounding_rect) {
+  // Render the correct text in the correct place.
+  Rect text_bounding_rect = text_surface->size().centeredIn(bounding_rect);
+  text_surface->renderToScreen(text_surface->rect(), text_bounding_rect);
 }

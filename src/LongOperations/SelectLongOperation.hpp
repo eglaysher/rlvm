@@ -27,12 +27,16 @@
 #ifndef __SelectLongOperation_hpp__
 #define __SelectLongOperation_hpp__
 
-#include "MachineBase/LongOperation.hpp"
-#include "Systems/Base/EventListener.hpp"
-#include "Systems/Base/Renderable.hpp"
-
 #include <vector>
 #include <string>
+#include <boost/shared_ptr.hpp>
+
+#include "MachineBase/LongOperation.hpp"
+#include "Systems/Base/Colour.hpp"
+#include "Systems/Base/EventListener.hpp"
+#include "Systems/Base/Rect.hpp"
+#include "Systems/Base/Renderable.hpp"
+#include "Systems/Base/Surface.hpp"
 
 class RLMachine;
 class TextWindow;
@@ -74,7 +78,10 @@ class SelectLongOperation : public LongOperation {
 
 // -----------------------------------------------------------------------
 
-// Selection LongOperation which waits for input
+// Selection LongOperation which waits for input in the TextBox. Most work is
+// passed off to the TextWindow which does all the drawing.
+//
+// TODO: Move that code into here.
 class NormalSelectLongOperation : public SelectLongOperation {
  public:
   NormalSelectLongOperation(RLMachine& machine,
@@ -93,12 +100,17 @@ class NormalSelectLongOperation : public SelectLongOperation {
 
 // -----------------------------------------------------------------------
 
-// Selection LongOperation for #SELBTN based selections
+// Selection LongOperation for #SELBTN based selections. Most of the work is
+// done in this class, and is rendered through Renderable.
+//
+// Haeleth has no documentation on SELBTNs. What follows are guesses based on
+// xclannad.
 class ButtonSelectLongOperation : public SelectLongOperation,
                                   public Renderable {
  public:
   ButtonSelectLongOperation(RLMachine& machine,
-                            const libReallive::SelectElement& commandElement);
+                            const libReallive::SelectElement& commandElement,
+                            int selbtn_set);
   ~ButtonSelectLongOperation();
 
   // Overridden from EventListener:
@@ -107,6 +119,37 @@ class ButtonSelectLongOperation : public SelectLongOperation,
 
   // Overridden from Renderable:
   virtual void render(std::ostream* tree);
+
+
+ private:
+  void renderTextSurface(const boost::shared_ptr<Surface>& text_surface,
+                         const Rect& bounding_rect);
+
+  RLMachine& machine_;
+
+  // ????
+  int basepos_x_, basepos_y_;
+
+  // ????
+  int reppos_x_, reppos_y_;
+
+  int moji_size_;
+
+  // If positive, the currently highlighted text button.
+  int highlighted_item_;
+
+  // Surface loaded from #SELBTN.xxx.NAME.
+  boost::shared_ptr<Surface> name_surface_;
+
+  // Surface loaded from #SELBTN.xxx.BACK.
+  boost::shared_ptr<Surface> back_surface_;
+
+  // Text representations to blit to the screen.
+  std::vector<boost::shared_ptr<Surface> > default_text_surfaces_;
+  std::vector<boost::shared_ptr<Surface> > select_text_surfaces_;
+
+  // A set of rects describing where to render the back_surface_ to.
+  std::vector<Rect> bounding_rects_;
 };
 
 #endif

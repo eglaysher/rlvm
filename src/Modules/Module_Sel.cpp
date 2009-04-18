@@ -73,6 +73,26 @@ struct Sel_select : public RLOp_SpecialCase {
 
 // -----------------------------------------------------------------------
 
+struct Sel_select_s : public RLOp_SpecialCase {
+  // Prevent us from trying to parse the parameters to the CommandElement as
+  // RealLive expressions (because they are not).
+  virtual void parseParameters(
+    const std::vector<std::string>& input,
+    boost::ptr_vector<libReallive::ExpressionPiece>& output) {}
+
+  void operator()(RLMachine& machine, const CommandElement& ce) {
+    if (machine.shouldSetSelcomSavepoint())
+      machine.markSavepoint();
+
+    const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
+    machine.pushLongOperation(
+        new ButtonSelectLongOperation(machine, element, 0));
+    machine.advanceInstructionPointer();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 SelModule::SelModule()
     : RLModule("Sel", 0, 2) {
   addOpcode(1, 0, "select", new Sel_select);
@@ -81,6 +101,6 @@ SelModule::SelModule()
   // graphical fun. Refer to the rldev manual once I get off my lazy ass to
   // implement them!
   addOpcode(0, 0, "select_w", new Sel_select);
-  addOpcode(2, 0, "select_s2", new Sel_select);
-  addOpcode(3, 0, "select_s", new Sel_select);
+  addOpcode(2, 0, "select_s2", new Sel_select_s);
+  addOpcode(3, 0, "select_s", new Sel_select_s);
 }

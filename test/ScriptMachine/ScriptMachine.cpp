@@ -93,11 +93,11 @@ void ScriptMachine::setLineNumber(const int i) {
 // -----------------------------------------------------------------------
 
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
-  // Intercept various LongOperations and modify them.
-  if (typeid(*long_operation) == typeid(SelectLongOperation)) {
-    SelectLongOperation& sel =
-        dynamic_cast<SelectLongOperation&>(*long_operation);
 
+  // Intercept various LongOperations and modify them.
+  SelectLongOperation* sel =
+      dynamic_cast<SelectLongOperation*>(long_operation);
+  if (sel) {
     bool optionFound = false;
     int offset = 0;
     for(; offset < 3; ++offset) {
@@ -107,7 +107,7 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
       }
 
       std::string to_select = decisions_.at(current_decision_ + offset);
-      optionFound = sel.selectOption(to_select);
+      optionFound = sel->selectOption(to_select);
 
       if (optionFound) {
         cerr << "Selected '" << to_select << "'";
@@ -138,7 +138,7 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
            << ". Options are: " << endl;
 
       // Dear C++: I can't wait for the 'auto' keyword:
-      const std::vector<std::string>& options = sel.options();
+      const std::vector<std::string>& options = sel->options();
       for (std::vector<std::string>::const_iterator it = options.begin();
            it != options.end(); ++it) {
         cerr << "- \"" << *it << "\"" << endl;

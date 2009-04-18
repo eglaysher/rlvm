@@ -31,6 +31,7 @@
 #include <boost/serialization/access.hpp>
 #include <iosfwd>
 
+class Rect;
 class Size;
 
 class Point
@@ -103,6 +104,10 @@ public:
   void setHeight(const int height) { height_ = height; }
 
   bool isEmpty() const { return width_ == 0 && height_ == 0; }
+
+  // Returns a rect of our size that is centered in rect |r|. Can return a rect
+  // larger than |r|.
+  Rect centeredIn(const Rect& r) const;
 
   Size& operator+=(const Size& rhs) {
     width_ += rhs.width_;

@@ -45,6 +45,19 @@ std::ostream& operator<<(std::ostream& os, const Point& p) {
 // -----------------------------------------------------------------------
 // Size
 // -----------------------------------------------------------------------
+Rect Size::centeredIn(const Rect& r) const {
+  int half_r_width = r.width() / 2;
+  int half_r_height = r.height() / 2;
+
+  int half_width = width() / 2;
+  int half_height = height() / 2;
+
+  int new_x = r.x() + half_r_width - half_width;
+  int new_y = r.y() + half_r_height - half_height;
+
+  return Rect(Point(new_x, new_y), *this);
+}
+
 Size Size::sizeUnion(const Size& rhs) const {
   return Size(std::max(width_, rhs.width_),
               std::max(height_, rhs.height_));
