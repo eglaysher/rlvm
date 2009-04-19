@@ -1,6 +1,20 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.6:
+- Lots of improvements to CLANNAD_FV:
+  - Support newer mouse cursors
+  - Support hierarchical objects (used in menus)
+  - Implement support for voice in OVK archives. rlvm still does not read the
+    older KOE and NWK archives.
+- Support selection buttons (used during Fuuko's "donna itazura wo?" selections
+  in CLANNAD)
+- Note: rlvm currently doesn't work with the English patches released by the
+  Baka-Tsuki CLANNAD translation wiki. There appears to be a problem parsing
+  the bytecode.
+
+-------------------------------------------------------------------------
+
 Version 0.5:
 - There's now an implementation of rlBabel. This has only been tested with
   NDT's Kanon preview patch. It has not been tested with any of the patches

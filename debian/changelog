@@ -1,3 +1,11 @@
+rlvm (0.6) unstable; urgency=low
+
+  * CLANNAD_FV is now playable to the end.
+  * Supports selection buttons.
+  * Supports OVK voice archives.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 18 Apr 2009 20:10:57 -0700
+
 rlvm (0.5) unstable; urgency=low
 
   * Kanon is now playable with NDT's English teaser patch

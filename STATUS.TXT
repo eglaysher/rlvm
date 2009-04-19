@@ -11,8 +11,6 @@ CLANNAD
 -------
 - All routes playable to the end, from a clean file to After Story True End.
 - No screen shaking, no inversion, and other graphical glitches.
-- Several Fuuko selections which should have custom graphics are displayed like
-  any other selection.
 
 Planetarian CD
 --------------
@@ -24,7 +22,8 @@ Planetarian CD
 
 CLANNAD FULL VOICE
 ------------------
-- Doesn't even get to the main menu.
+- All routes playable to the end.
+- Voices work.
 
 UNOFFICIAL "ONE" DEMO
 ---------------------

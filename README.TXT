@@ -34,7 +34,8 @@ RealLive system.
 rlvm currently plays the following games to their completion:
 
 - The Planetarian CD edition[1]
-- The non-voiced version of CLANNAD
+- The non-voiced edition of CLANNAD
+- The Full Voiced edition of CLANNAD
 - Kanon Standard Edition
 - Kanon Standard Edition with NDT's teaser patch
 
@@ -43,16 +44,12 @@ other games *may* work. The above is only a list of what I've tested
 against.
 
 In addition, rlvm has an implementation of rlBabel; English patches
-compiled with Haeleth's rlBabel should line break correctly. English
-patches that were *not* compiled with rlBabel will, obviously, not line
-break correctly. I mention this because it appears that many of the
-unofficial CLANNAD patches were not compiled with rlBabel turned on. You
-can check to see if rlBabel is enabled by hitting [F1] at any
-time. "rlBabel" should be set to "Enabled" and "Text Encoding" should be
-set to "Western". rlvm can not, and will never, support these broken
-patches.
+compiled with Haeleth's rlBabel should line break correctly. I've
+successfully tested it with the patches from NDT. Baka-Tsuki's
+pre-release patches don't appear to work though I'm not sure if the
+problem is on my end or theirs.
 
-This is the fifth public release of rlvm. Please report bugs and
+This is the sixth public release of rlvm. Please report bugs and
 discrepancies to <glaysher at umich dot edu>.
 
 3) COMPILING RLVM
@@ -133,7 +130,8 @@ The interpreter currently lacks the following features:
  - TCC shading data used to give character images a certain tint in some
    scenes. To my knowledge, the file format has not been reverse
    engineered.
- - Koe / Narration
+ - Koe / Narration is missing in games that don't store their data in
+   ogg vorbis format.
 
 In addition, the current indentation system is extremely naive and does
 not produce the same results as the official interpreter, though it's
