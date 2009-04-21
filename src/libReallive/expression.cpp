@@ -130,7 +130,7 @@ size_t next_string(const char* src)
       }
       if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)
             || (*end >= 'A'  && *end <= 'Z')  || (*end >= '0'  && *end <= '9')
-            || *end == '?' || *end == '_' || *end == '"')) break;
+            || *end == ' ' || *end == '?' || *end == '_' || *end == '"')) break;
     }
     if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef))
       end += 2;
@@ -152,7 +152,7 @@ size_t next_data(const char* src)
     return 1 + next_data(src + 1);
   if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
       || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
-      || *src == '?' || *src == '_' || *src == '"'
+      || *src == ' ' || *src == '?' || *src == '_' || *src == '"'
       || strcmp(src, "###PRINT(") == 0)
     return next_string(src);
   if (*src == 'a' || *src == '(') {
