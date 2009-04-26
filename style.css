@@ -16,27 +16,17 @@ html,body {
 
 body {
 	font-family: Arial, Helvetica, sans-serif;
-	text-align:center;
+	text-align: center;
 	margin-top: 20px;
 }
 
-div#content a, div#extra a, div#sidebar a {
-	color: #FFBA27;
-	font-weight: bold;
-	text-decoration: none;
-	background-color: #FAFAFA; 
-	border-bottom: 1px solid #F1F1F1; 
-	border-right: 1px solid #F1F1F1;
+a {
+	color: #06266F;
 	padding: 1px;
 }
 
-div#content a:hover , div#extra a:hover, div#sidebar a:hover {
-	color: #FFBA27;
-	font-weight: bold;
-	text-decoration: none;
-	background-color: #FAFAFA; 
-	border-bottom: 1px solid #CCC; 
-	border-right: 1px solid #CCC;
+a:hover {
+	color: #1240AB;
 	padding: 1px;
 }
 
@@ -49,7 +39,7 @@ div#header h1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 25px;
 	font-weight: normal;
-	color: #FFBA27;
+	color: #06266F;
 	letter-spacing: -1px;
 }
 
@@ -58,7 +48,7 @@ div#header h2 { /* The tagline thing */
 	padding: 0;
 	font-size: 11px;
 	font-weight: normal;
-	color: #999;
+	color: #1240AB;
 	padding-left: 20px;
 	margin-top: -15px;
 }
@@ -79,11 +69,6 @@ font-size: 11px;
 color: #666;
 font-weight: normal;
 padding: 4px;
-text-decoration: none;
-}
-
-#navigation li a:hover {
-text-decoration: underline;
 }
 
 div#container {
@@ -92,25 +77,22 @@ text-align:left
 
 div#content p, div#extra p, div#sidebar p {
 font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
-font-size: 11px;
+font-size: 12px;
 color: #444;
 line-height:1.8em;
 }
 
 div#content h1, div#extra h1, div#sidebar h1 {
-font-size: 14px;
-font-weight: normal;
-color: #FFBA27; 
-text-decoration: none; 
+font-size: 15px;
+font-weight: bold;
+color: #06266F; 
+background-color: #6C8CD5;
 padding: 3px 6px; 
-background-color: #F9F9F9; 
-border-bottom: 1px solid #F1F1F1; 
-border-right: 1px solid #F1F1F1;
 }
 
 div#content h2 {
 font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
-font-size: 11px;
+font-size: 13px;
 font-weight: bold;
 color: #444;
 margin: 0;
@@ -157,7 +139,7 @@ font-size: 11px;
 font-family: Tahoma, Arial, Helvetica, sans-serif;
 clear:both;
 width:100%;
-color: #FFBA27;
+color: #06266F;
 font-weight: bold;
 text-decoration: none;
 border-bottom: 1px solid #333; 
