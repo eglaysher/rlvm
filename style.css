@@ -175,3 +175,15 @@ div.centerimage {
   text-align: center;
   margin: 0.5em 0;
 }
+
+.ubuntuicon {
+  list-style-image: url(images/ubuntu_16.png);
+}
+
+.macicon {
+  list-style-image: url(images/mac_16.png);
+}
+
+.sourceicon {
+  list-style-image: url(images/package-x-generic.png);
+}

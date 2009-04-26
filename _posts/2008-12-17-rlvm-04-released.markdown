@@ -12,25 +12,25 @@ I thought I should also mention that the whole project history, in addition to b
 
 <h2>Download</h2>
 <ul>
-  <li>
+  <li class="ubuntuicon">
     <a href="http://www.elliotglaysher.org/Releases/rlvm_0.4_i386.deb"
        onClick="pageTracker._trackEvent('Download', 'rlvm_0.4_i386.deb');">
       Ubuntu (Intrepid) package for x86 machines (version 0.04)
     </a>
   </li>
-  <li>
+  <li class="ubuntuicon">
     <a href="http://www.elliotglaysher.org/Releases/rlvm_0.4_amd64.deb"
        onClick="pageTracker._trackEvent('Download', 'rlvm_0.4_amd64.deb');">
       Ubuntu (Intrepid) package for amd64 machines (version 0.04)
     </a>
   </li>
-  <li>
+  <li class="macicon">
     <a href="http://www.elliotglaysher.org/Releases/rlvm_0.4.dmg"
        onClick="pageTracker._trackEvent('Download', 'rlvm_0.4.dmg');">
       Mac OSX Application (Intel Only) (version 0.04)
     </a>
   </li>
-  <li>
+  <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.04"
        onClick="pageTracker._trackEvent('Download', 'source-0.4');">
       Source code (0.04)
