@@ -1,3 +1,6 @@
+---
+title: Whatever
+---
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -47,16 +50,10 @@
 	  visual novels, a few of which I care about, and many that I do
 	  not. Currently, I'm working on getting three games working: Kanon
 	  Standard Edition, CLANNAD and Planetarian. The newer Full Voice Edition
-	  of CLANNAD also works and plays character voices correctly.</p>
-
-      <p>rlvm can run <a href="http://radicalr.pestermom.com/vn.html">NDT'S
+	  of CLANNAD also works and plays character voices correctly. rlvm can
+	  run <a href="http://radicalr.pestermom.com/vn.html">NDT'S
       Kanon Patch</a>. For more info, see <a href="guide_kanon_eng.html">the
-      guide to installing the Kanon patch</a>. Currently, English patches to
-      CLANNAD are known to not work. (And I suspect that they never did.)
-      Specifically, I've tested with the SEEN.TXT files
-      on <a href="http://www.assembla.com/wiki/show/clannad">Assembla</a> and
-      things aren't working. More investigation is needed. rlvm still works
-      properly with the NDT Kanon patches. </p>
+      guide to installing the Kanon patch</a>.
 
       <p><img src="gplv3-88x31.png" style="float: right;" alt="GPLv3 logo"/>
       rlvm is open sourced under the
@@ -64,6 +61,16 @@
       General Public License version 3</a> (or later). I welcome patches,
       forking <a href="http://www.github.com/eglaysher/rlvm">the project on
       github</a> and other code submissions.</p>
+
+{% for post in site.posts limit:1 %} 
+      <h1>Current release - {{post.title}} - Released {{post.date | date_to_string }}</h2>
+
+  <div class="entry">
+    {{ post.content }}
+  </div>
+
+{% endfor %}
+
 	</div>
   </div>
   <div id="sidebar">

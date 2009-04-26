@@ -1,3 +1,6 @@
+---
+title: Whatever
+---
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -30,24 +33,15 @@
   </div>
   <div id="wrapper">
 	<div id="content">
-	  <h1>Old Versions</h1>
-      <p>Please don't send bug reports for these; they are here for historical interest only:</p>
-<p><a href="http://www.elliotglaysher.org/Releases/rlvm_0.1_i386.deb">Ubuntu (Gutsy) package (version 0.01)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.1.dmg">Mac OSX Application (Universal) (version 0.01)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm-0.1.tar.bz2">Source code (0.01)</a><br /></p>
+      <h1>Project History</h1>
+{% for post in site.posts %} 
+      <h1>{{post.title}} - Released {{post.date | date_to_string }}</h2>
 
-<p><a href="http://www.elliotglaysher.org/Releases/rlvm_0.2_i386.deb">Ubuntu (Hardy) package (version 0.02)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.2.dmg">Mac OSX Application (Universal) (version 0.02)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm-0.2.tar.bz2">Source code (0.02)</a><br /></p>
+  <div class="entry">
+    {{ post.content }}
+  </div>
+{% endfor %}
 
-<p><a href="http://www.elliotglaysher.org/Releases/rlvm_0.3_i386.deb">Ubuntu (Hardy) package (version 0.03)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.3.dmg">Mac OSX Application (Universal) (version 0.03)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.3.tar.bz2">Source code (0.03)</a></p>
-
-<p><a href="http://www.elliotglaysher.org/Releases/rlvm_0.4_i386.deb">Ubuntu (Intrepid) package for x86 machines (version 0.04)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.4_amd64.deb">Ubuntu (Intrepid) package for amd64 machines (version 0.04)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.4.dmg">Mac OSX Application (Intel Only) (version 0.04)</a><br />
-<a href="http://www.elliotglaysher.org/Releases/rlvm_0.4_src.tar.bz2">Source code (0.04)</a></p>
     </div>
   </div>
   <div id="footer">
