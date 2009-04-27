@@ -9,12 +9,11 @@ Import('env')
 def build_rlc_simple(target, source, env, for_signature):
   target_build_directory = os.path.splitext(target[0].path)[0]
   intermediate = target_build_directory + "/seen0001.TXT"
-  return env.Command(target, source,
-                     Action([Mkdir(target_build_directory),
+  return Action([Mkdir(target_build_directory),
                              "rlc ${SOURCES[0]} -o seen0001 -d " + target_build_directory,
                              "kprl -a ${TARGETS[0]} " + intermediate,
                              Delete(target_build_directory)],
-                            "Building ${TARGET}..."))
+                            "Building ${TARGET}...")
 
 def build_rlc_complex(target, source, env, for_signature):
   '''Builds all SEENXXXX.ke files in the source directory into a resulting .TXT
@@ -43,7 +42,7 @@ def build_rlc_complex(target, source, env, for_signature):
      Delete(target_build_directory)
   ]
 
-  return env.Command(target, source, Action(commands, "Building ${TARGET}..."))
+  return Action(commands, "Building ${TARGET}...")
 
 builder_rlc = Builder(generator = build_rlc_simple,
                       suffix = ".TXT",
