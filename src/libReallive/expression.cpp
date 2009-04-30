@@ -410,7 +410,7 @@ ExpressionPiece* get_data(const char*& src)
             || (*src >= 0xe0 && *src <= 0xef)
             || (*src >= 'A'  && *src <= 'Z')
             || (*src >= '0'  && *src <= '9')
-            || *src == '?' || *src == '_' || *src == '"'
+            || *src == ' ' || *src == '?' || *src == '_' || *src == '"'
             || strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
   } else if(*src == 'a') {
