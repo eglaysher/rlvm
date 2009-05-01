@@ -516,6 +516,7 @@ void TextSystem::reset() {
   previous_page_sets_.clear();
   previous_page_it_ = previous_page_sets_.end();
 
+  window_visual_override_.clear();
   text_window_.clear();
 
   system_visible_ = true;
