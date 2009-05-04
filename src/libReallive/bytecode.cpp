@@ -949,7 +949,9 @@ GotoOnElement* GotoOnElement::clone() const { return new GotoOnElement(*this); }
 // -----------------------------------------------------------------------
 
 const size_t GotoOnElement::length() const
-{ return repr.size() + targets.size() * 4 + 2; }
+{
+  return repr.size() + argc() * 4 + 2;
+}
 
 // -----------------------------------------------------------------------
 
