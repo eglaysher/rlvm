@@ -38,6 +38,7 @@
  */
 
 #include "Modules/Module_Msg.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 
@@ -269,6 +270,21 @@ struct Msg_TextPosY : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
+struct Msg_GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine, IntReferenceIterator x,
+                  IntReferenceIterator y) {
+    boost::shared_ptr<TextWindow> textWindow =
+        machine.system().text().currentWindow();
+
+    if (textWindow) {
+      *x = textWindow->insertionPointX();
+      *y = textWindow->insertionPointY();
+    }
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().currentPage();
@@ -313,8 +329,9 @@ MsgModule::MsgModule()
   addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
   addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
-  addUnsupportedOpcode(103, 0, "FastText");
-  addUnsupportedOpcode(104, 0, "NormalText");
+  addOpcode(103, 0, "FastText", setToConstant(&TextSystem::setFastTextMode, 1));
+  addOpcode(104, 0, "NormalText",
+            setToConstant(&TextSystem::setFastTextMode, 0));
 
   addOpcode(105, 0, "FontColor", new Msg_FontColour);
   addOpcode(105, 1, "FontColor", new Msg_FontColour);
@@ -350,7 +367,7 @@ MsgModule::MsgModule()
   addOpcode(320, 0, "TextOffset", new Msg_TextOffset);
   addOpcode(321, 0, "TextOffsetX", new Msg_TextOffsetX);
   addOpcode(322, 0, "TextOffsetY", new Msg_TextOffsetY);
-  addUnsupportedOpcode(330, 0, "GetTextPos");
+  addOpcode(330, 0, "GetTextPos", new Msg_GetTextPos);
 
   addUnsupportedOpcode(340, 0, "WindowLen");
   addUnsupportedOpcode(340, 1, "WindowLen");
