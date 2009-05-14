@@ -103,13 +103,13 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   // Pick the correct font colour
   Gameexe& gexe = system().gameexe();
   vector<int> colour_vec = gexe("COLOR_TABLE", colour);
-  SDL_Color color = {colour_vec.at(0), colour_vec.at(1), colour_vec.at(2)};
+  SDL_Color sdl_colour = {colour_vec.at(0), colour_vec.at(1), colour_vec.at(2)};
 
   // Naively render. Ignore most of the arguments for now
   if(utf8str.size())
   {
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), color);
+      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_colour);
     if(tmp == NULL)
     {
       ostringstream oss;

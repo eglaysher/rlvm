@@ -100,11 +100,11 @@ private:
   // large enough.
   static char* uploadBuffer(unsigned int size);
 
-  void render_to_screen_as_color_mask_subtractive_glsl(
+  void render_to_screen_as_colour_mask_subtractive_glsl(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void render_to_screen_as_color_mask_subtractive_fallback(
+  void render_to_screen_as_colour_mask_subtractive_fallback(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void render_to_screen_as_color_mask_additive(
+  void render_to_screen_as_colour_mask_additive(
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
 
   bool filterCoords(int& x1, int& y1, int& x2, int& y2,

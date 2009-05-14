@@ -90,7 +90,7 @@ void NullSurface::renderToScreenAsColorMask(
   const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
   surface_log_.recordFunction(
-    "render_to_screen_as_color_mask", src, dst, rgba, filter);
+    "render_to_screen_as_colour_mask", src, dst, rgba, filter);
 }
 
 // -----------------------------------------------------------------------
@@ -155,7 +155,7 @@ void NullSurface::getDCPixel(const Point& p, int& r, int& g, int& b) {
 
 boost::shared_ptr<Surface> NullSurface::clipAsColorMask(
   const Rect& rect, int r, int g, int b) {
-  surface_log_.recordFunction("clip_as_color_mask", rect, r, g, b);
+  surface_log_.recordFunction("clip_as_colour_mask", rect, r, g, b);
 
   return boost::shared_ptr<Surface>(
     new NullSurface("Clip of " + surface_name_, rect.size()));

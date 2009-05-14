@@ -131,13 +131,13 @@ public:
   void setLight(const int in);
 
   const RGBColour& tint() const { return impl_->tint_; }
-  void setTint(const RGBColour& color);
+  void setTint(const RGBColour& colour);
   void setTintR(const int in);
   void setTintG(const int in);
   void setTintB(const int in);
 
   const RGBAColour& colour() const { return impl_->colour_; }
-  void setColour(const RGBAColour& color);
+  void setColour(const RGBAColour& colour);
   void setColourR(const int in);
   void setColourG(const int in);
   void setColourB(const int in);

@@ -905,9 +905,9 @@ struct Grp_fade_5 : public RLOp_Void_3<
 {
   Grp_fade_7<SPACE> delegate_;
 
-  void operator()(RLMachine& machine, Rect rect, int color_num, int time) {
+  void operator()(RLMachine& machine, Rect rect, int colour_num, int time) {
     Gameexe& gexe = machine.system().gameexe();
-    const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
+    const vector<int>& rgb = gexe("COLOR_TABLE", colour_num).to_intVector();
     delegate_(machine, rect, rgb[0], rgb[1], rgb[2], time);
   }
 };
@@ -928,10 +928,10 @@ struct Grp_fade_1 : public RLOp_Void_2<
 {
   Grp_fade_7<rect_impl::REC> delegate_;
 
-  void operator()(RLMachine& machine, int color_num, int time) {
+  void operator()(RLMachine& machine, int colour_num, int time) {
     Size screenSize = machine.system().graphics().screenSize();
     Gameexe& gexe = machine.system().gameexe();
-    const vector<int>& rgb = gexe("COLOR_TABLE", color_num).to_intVector();
+    const vector<int>& rgb = gexe("COLOR_TABLE", colour_num).to_intVector();
     delegate_(machine, Rect(0, 0, screenSize), rgb[0], rgb[1], rgb[2], time);
   }
 };

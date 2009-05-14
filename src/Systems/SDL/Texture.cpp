@@ -290,10 +290,10 @@ string Texture::getSubtractiveShaderString()
     ""
     "void main()"
     "{"
-    "vec4 bg_color = texture2D(current_values, gl_TexCoord[0].st);"
+    "vec4 bg_colour = texture2D(current_values, gl_TexCoord[0].st);"
     "vec4 mask_vector = texture2D(mask, gl_TexCoord[1].st);"
-    "float mask_color = clamp(mask_vector.a * gl_Color.a, 0.0, 1.0);"
-    "gl_FragColor = clamp(bg_color - mask_color + gl_Color * mask_color, 0.0, 1.0);"
+    "float mask_colour = clamp(mask_vector.a * gl_Color.a, 0.0, 1.0);"
+    "gl_FragColor = clamp(bg_colour - mask_colour + gl_Color * mask_colour, 0.0, 1.0);"
     "}";
 
   return x;
@@ -385,24 +385,24 @@ void Texture::renderToScreenAsColorMask(
   {
     if(GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
     {
-      render_to_screen_as_color_mask_subtractive_glsl(src, dst, rgba);
+      render_to_screen_as_colour_mask_subtractive_glsl(src, dst, rgba);
     }
     else
     {
-      render_to_screen_as_color_mask_subtractive_fallback(
+      render_to_screen_as_colour_mask_subtractive_fallback(
         src, dst, rgba);
     }
   }
   else
   {
-    render_to_screen_as_color_mask_additive(
+    render_to_screen_as_colour_mask_additive(
       src, dst, rgba);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void Texture::render_to_screen_as_color_mask_subtractive_glsl(
+void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
@@ -511,12 +511,12 @@ void Texture::render_to_screen_as_color_mask_subtractive_glsl(
 /**
  * This fallback does not accurately render the scene according to
  * standard RealLive. This only negatively shades according to the
- * alpha value, ignoring the rest of the \#WINDOW_ATTR color.
+ * alpha value, ignoring the rest of the \#WINDOW_ATTR colour.
  *
  * This will probably only occur with mesa software and people with
  * graphics cards > 5 years old.
  */
-void Texture::render_to_screen_as_color_mask_subtractive_fallback(
+void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
   const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
@@ -563,7 +563,7 @@ void Texture::render_to_screen_as_color_mask_subtractive_fallback(
 
 // -----------------------------------------------------------------------
 
-void Texture::render_to_screen_as_color_mask_additive(
+void Texture::render_to_screen_as_colour_mask_additive(
   const Rect& src, const Rect& dst, const RGBAColour& rgba)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();

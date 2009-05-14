@@ -62,9 +62,9 @@ void NullTextWindow::clearWin()
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::setFontColor(const std::vector<int>& color_data) {
+void NullTextWindow::setFontColor(const std::vector<int>& colour_data) {
   text_window_log_.recordFunction("setFontColor");
-  TextWindow::setFontColor(color_data);
+  TextWindow::setFontColor(colour_data);
 }
 
 // -----------------------------------------------------------------------

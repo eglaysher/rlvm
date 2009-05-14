@@ -164,14 +164,14 @@ void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setDefaultTextColor(const vector<int>& color) {
-  default_color_ = RGBColour(color.at(0), color.at(1), color.at(2));
+void TextWindow::setDefaultTextColor(const vector<int>& colour) {
+  default_colour_ = RGBColour(colour.at(0), colour.at(1), colour.at(2));
 }
 
 // -----------------------------------------------------------------------
 
-void TextWindow::setFontColor(const vector<int>& color) {
-  font_colour_ = RGBColour(color.at(0), color.at(1), color.at(2));
+void TextWindow::setFontColor(const vector<int>& colour) {
+  font_colour_ = RGBColour(colour.at(0), colour.at(1), colour.at(2));
 }
 
 // -----------------------------------------------------------------------
@@ -307,7 +307,7 @@ Point TextWindow::keycursorPosition() const {
 // -----------------------------------------------------------------------
 
 /**
- * @todo Make this pass the \#WINDOW_ATTR color off wile rendering the
+ * @todo Make this pass the \#WINDOW_ATTR colour off wile rendering the
  *       waku_backing.
  */
 void TextWindow::render(std::ostream* tree) {
@@ -352,7 +352,7 @@ void TextWindow::clearWin() {
   current_indentation_in_pixels_ = 0;
   current_line_number_ = 0;
   ruby_begin_point_ = -1;
-  font_colour_ = default_color_;
+  font_colour_ = default_colour_;
 }
 
 // -----------------------------------------------------------------------

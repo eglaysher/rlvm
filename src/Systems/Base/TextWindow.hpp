@@ -123,8 +123,8 @@ class TextWindow {
   void setIndentation();
   int currentIndentation() const { return current_indentation_in_pixels_; }
 
-  void setDefaultTextColor(const std::vector<int>& color_data);
-  virtual void setFontColor(const std::vector<int>& color_data);
+  void setDefaultTextColor(const std::vector<int>& colour_data);
+  virtual void setFontColor(const std::vector<int>& colour_data);
 
   /// @}
 
@@ -197,7 +197,7 @@ class TextWindow {
   /**
    * @name Window Background Color Attributes
    *
-   * Accessors regarding the background color of the window.
+   * Accessors regarding the background colour of the window.
    *
    * Represents the data parsed from \#WINDOW_ATTR,
    * \#WINDOW.index.ATTR_MOD, and \#WINDOW.index.ATTR
@@ -393,11 +393,11 @@ class TextWindow {
   /// Whether to indent (INDENT_USE)
   int use_indentation_;
 
-  /// The default color. Initialized to \#COLOR_TABLE.000, but can be
+  /// The default colour. Initialized to \#COLOR_TABLE.000, but can be
   /// changed with the SetFontColour() command.
-  RGBColour default_color_;
+  RGBColour default_colour_;
 
-  /// The current color. Initialized to the default color on every
+  /// The current colour. Initialized to the default colour on every
   /// clearWin() call.
   RGBColour font_colour_;
 
@@ -418,10 +418,10 @@ class TextWindow {
 
   int upper_box_padding_, lower_box_padding_, left_box_padding_, right_box_padding_;
 
-  /// Whether r_, etc is a per-window color.
+  /// Whether r_, etc is a per-window colour.
   int window_attr_mod_;
 
-  /// The default window background color.
+  /// The default window background colour.
   /// @{
   RGBAColour colour_;
   int filter_;

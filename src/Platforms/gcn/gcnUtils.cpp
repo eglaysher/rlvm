@@ -82,17 +82,17 @@ static SDL_Surface* convertToStandardFormat(SDL_Surface* surface)
   amask = 0xff000000;
 #endif
 
-  SDL_Surface *colorSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
+  SDL_Surface *colourSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
                                                    0, 0, 32,
                                                    rmask, gmask, bmask, amask);
 
   SDL_Surface *tmp = NULL;
 
-  if (colorSurface != NULL)
+  if (colourSurface != NULL)
   {
-    tmp = SDL_ConvertSurface(surface, colorSurface->format,
+    tmp = SDL_ConvertSurface(surface, colourSurface->format,
                              SDL_SWSURFACE);
-    SDL_FreeSurface(colorSurface);
+    SDL_FreeSurface(colourSurface);
   }
 
   return tmp;

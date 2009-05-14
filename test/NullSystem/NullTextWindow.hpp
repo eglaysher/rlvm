@@ -35,7 +35,7 @@ public:
   ~NullTextWindow();
   virtual void execute() {}
 
-  virtual void setFontColor(const std::vector<int>& color_data);
+  virtual void setFontColor(const std::vector<int>& colour_data);
 
   virtual bool displayChar(const std::string& current,
                            const std::string& next);

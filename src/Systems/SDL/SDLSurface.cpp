@@ -596,10 +596,10 @@ void SDLSurface::rawRenderQuad(const int src_coords[8],
 
 void SDLSurface::fill(const RGBAColour& colour)
 {
-  // Fill the entire surface with the incoming color
-  Uint32 color = MapRGBA(surface_->format, colour);
+  // Fill the entire surface with the incoming colour
+  Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
-  if(SDL_FillRect(surface_, NULL, color))
+  if(SDL_FillRect(surface_, NULL, sdl_colour))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
@@ -610,13 +610,13 @@ void SDLSurface::fill(const RGBAColour& colour)
 
 void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
 {
-  // Fill the entire surface with the incoming color
-  Uint32 color = MapRGBA(surface_->format, colour);
+  // Fill the entire surface with the incoming colour
+  Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
   SDL_Rect rect;
   RectToSDLRect(area, &rect);
 
-  if(SDL_FillRect(surface_, &rect, color))
+  if(SDL_FillRect(surface_, &rect, sdl_colour))
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
@@ -711,7 +711,7 @@ vector<int> SDLSurface::segmentPicture(int size_remainging)
 
 void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
 {
-  SDL_Color color;
+  SDL_Color colour;
   Uint32 col = 0 ;
 
   //determine position
@@ -728,10 +728,10 @@ void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
 
   // Before someone tries to simplify the following four lines,
   // remember that sizeof(int) != sizeof(Uint8).
-  SDL_GetRGB ( col , surface_->format , &color.r , &color.g , &color.b ) ;
-  r = color.r;
-  g = color.g;
-  b = color.b;
+  SDL_GetRGB ( col , surface_->format , &colour.r , &colour.g , &colour.b ) ;
+  r = colour.r;
+  g = colour.g;
+  b = colour.b;
 }
 
 // -----------------------------------------------------------------------
@@ -753,8 +753,8 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
   if(SDL_BlitSurface(surface_, NULL, tmp_surface, NULL))
     reportSDLError("SDL_BlitSurface", function_name);
 
-  Uint32 color = SDL_MapRGB(tmp_surface->format, r, g, b);
-  if(SDL_SetColorKey(tmp_surface, SDL_SRCCOLORKEY, color))
+  Uint32 colour = SDL_MapRGB(tmp_surface->format, r, g, b);
+  if(SDL_SetColorKey(tmp_surface, SDL_SRCCOLORKEY, colour))
     reportSDLError("SDL_SetAlpha", function_name);
 
   // The OpenGL pieces don't know what to do an image formatted to

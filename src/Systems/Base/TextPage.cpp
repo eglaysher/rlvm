@@ -232,8 +232,8 @@ void TextPage::resetIndentation() {
 
 // -----------------------------------------------------------------------
 
-void TextPage::fontColour(int color) {
-  addAction(bind(&TextPage::font_colour_impl, _1, color, _2));
+void TextPage::fontColour(int colour) {
+  addAction(bind(&TextPage::font_colour_impl, _1, colour, _2));
 }
 
 // -----------------------------------------------------------------------
@@ -277,7 +277,7 @@ void TextPage::offsetInsertionPointY(int offset) {
 void TextPage::addSetToRightStartingColorElement() {
   elements_to_replay_.push_back(
       new ActionElement(
-          bind(&TextPage::set_to_right_starting_color_impl, _1, _2)));
+          bind(&TextPage::set_to_right_starting_colour_impl, _1, _2)));
 }
 
 // -----------------------------------------------------------------------
@@ -322,9 +322,9 @@ void TextPage::reset_indentation_impl(bool is_active_page) {
 
 // -----------------------------------------------------------------------
 
-void TextPage::font_colour_impl(int color, bool is_active_page) {
+void TextPage::font_colour_impl(int colour, bool is_active_page) {
   system_->text().textWindow(window_num_)
-    ->setFontColor(system_->gameexe()("COLOR_TABLE", color));
+    ->setFontColor(system_->gameexe()("COLOR_TABLE", colour));
 }
 
 // -----------------------------------------------------------------------
@@ -368,14 +368,14 @@ void TextPage::offset_insertion_point_y_impl(int offset, bool is_active_page) {
 
 // -----------------------------------------------------------------------
 
-void TextPage::set_to_right_starting_color_impl(bool is_active_page) {
+void TextPage::set_to_right_starting_colour_impl(bool is_active_page) {
   Gameexe& gexe = system_->gameexe();
   boost::shared_ptr<TextWindow> window = system_->text().textWindow(
     window_num_);
   if (!is_active_page) {
-    GameexeInterpretObject color(gexe("COLOR_TABLE", 254));
-    if (color.exists())
-      window->setFontColor(color);
+    GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
+    if (colour.exists())
+      window->setFontColor(colour);
   }
 }
 

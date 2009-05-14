@@ -93,10 +93,10 @@ class TextPage : public boost::noncopyable {
   void resetIndentation();
 
   /**
-   * Sets the text foreground to the color passed in, up until the
+   * Sets the text foreground to the colour passed in, up until the
    * next pause().
    */
-  void fontColour(const int color);
+  void fontColour(const int colour);
 
   /**
    * Marks the current character as the beginning of a phrase that has
@@ -116,10 +116,10 @@ class TextPage : public boost::noncopyable {
   void offsetInsertionPointY(int offset);
 
   /**
-   * This is a hack to get the backlog color working. This adds a
+   * This is a hack to get the backlog colour working. This adds a
    * SetToRightStartingColorElement element to the TextPage, which, on
    * replay, simply checks to see if we're redisplaying a backlog
-   * page and sets the color to the backlog color if we are.
+   * page and sets the colour to the backlog colour if we are.
    */
   void addSetToRightStartingColorElement();
   /// @}
@@ -177,7 +177,7 @@ class TextPage : public boost::noncopyable {
 
   void reset_indentation_impl(bool is_active_page);
 
-  void font_colour_impl(const int color, bool is_active_page);
+  void font_colour_impl(const int colour, bool is_active_page);
 
   void mark_ruby_begin_impl(bool is_active_page);
 
@@ -188,7 +188,7 @@ class TextPage : public boost::noncopyable {
   void offset_insertion_point_x_impl(int offset, bool is_active_page);
   void offset_insertion_point_y_impl(int offset, bool is_active_page);
 
-  void set_to_right_starting_color_impl(bool is_active_page);
+  void set_to_right_starting_colour_impl(bool is_active_page);
   /// @}
 };
 

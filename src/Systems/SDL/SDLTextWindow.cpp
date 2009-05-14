@@ -114,8 +114,8 @@ bool SDLTextWindow::displayChar(const std::string& current,
 
   if(current != "")
   {
-    SDL_Color color;
-    RGBColourToSDLColor(font_colour_, &color);
+    SDL_Color colour;
+    RGBColourToSDLColor(font_colour_, &colour);
     int cur_codepoint = codepoint(current);
     int next_codepoint = codepoint(next);
     bool indent_after_spacing = false;
@@ -150,7 +150,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
     }
 
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(font_.get(), current.c_str(), color);
+      TTF_RenderUTF8_Blended(font_.get(), current.c_str(), colour);
 
     if (tmp == NULL) {
       // Bug during Kyou's path. The string is printed "". Regression in parser?
@@ -236,10 +236,10 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str)
       throw rlvm::Exception("We don't handle ruby across line breaks yet!");
     }
 
-    SDL_Color color;
-    RGBColourToSDLColor(font_colour_, &color);
+    SDL_Color colour;
+    RGBColourToSDLColor(font_colour_, &colour);
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(ruby_font_.get(), utf8str.c_str(), color);
+      TTF_RenderUTF8_Blended(ruby_font_.get(), utf8str.c_str(), colour);
 
     // Render glyph to surface
     int w = tmp->w;
@@ -268,10 +268,10 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str)
 void SDLTextWindow::addSelectionItem(const std::string& utf8str)
 {
   // Render the incoming string for both selected and not-selected.
-  SDL_Color color;
-  RGBColourToSDLColor(font_colour_, &color);
+  SDL_Color colour;
+  RGBColourToSDLColor(font_colour_, &colour);
   SDL_Surface* normal =
-    TTF_RenderUTF8_Blended(font_.get(), utf8str.c_str(), color);
+    TTF_RenderUTF8_Blended(font_.get(), utf8str.c_str(), colour);
 
   // Copy and invert the surface for whatever.
   SDL_Surface* inverted = AlphaInvert(normal);
