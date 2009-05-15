@@ -24,6 +24,7 @@
 #define __NullTextWindow_hpp__
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include "Systems/Base/TextWindow.hpp"
 
 #include "NullSystem/MockLog.hpp"
@@ -42,6 +43,8 @@ public:
   virtual int charWidth(unsigned short codepoint) const { return 0; }
 
   virtual boost::shared_ptr<Surface> textSurface();
+  virtual boost::shared_ptr<Surface> nameSurface();
+  virtual void renderNameInBox(const std::string& utf8str);
   virtual void clearWin();
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
@@ -63,6 +66,8 @@ public:
 
 private:
   std::string current_contents_;
+
+  boost::shared_ptr<Surface> name_surface_;
 
   /// Record all method calls here
   MockLog text_window_log_;

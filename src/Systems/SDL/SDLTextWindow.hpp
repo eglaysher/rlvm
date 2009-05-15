@@ -46,10 +46,12 @@ public:
   ~SDLTextWindow();
 
   virtual boost::shared_ptr<Surface> textSurface();
+  virtual boost::shared_ptr<Surface> nameSurface();
   virtual void clearWin();
 
   virtual bool displayChar(const std::string& current,
                            const std::string& next);
+  virtual void renderNameInBox(const std::string& utf8str);
   virtual int charWidth(unsigned short codepoint) const;
 
   virtual void displayRubyText(const std::string& utf8str);
@@ -59,6 +61,7 @@ public:
 private:
   /// Converted surface for uploading.
   boost::shared_ptr<SDLSurface> surface_;
+  boost::shared_ptr<SDLSurface> name_surface_;
 
   /// Font being used.
   boost::shared_ptr<TTF_Font> font_;

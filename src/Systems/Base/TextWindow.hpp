@@ -145,6 +145,9 @@ class TextWindow {
   int textX2() const;
   int textY2() const;
 
+  int nameboxX1() const;
+  int nameboxY1() const;
+  Size nameboxSize();
   /// @}
 
   // TODO: What's setMousePosition and how does it differ from mouse listeners?
@@ -160,8 +163,18 @@ class TextWindow {
   /// Sets how the name is displayed
   /// @see name_mod_
   void setNameMod(const int in) { name_mod_ = in; }
-
   int nameMod() const { return name_mod_; }
+
+  /**
+   * Sets the size of the spacing between characters. Reprsented by
+   * \#WINDOW.xxx.NAME_MOJI_REP.
+   */
+  void setNameSpacingBetweenCharacters(const std::vector<int>& pos_data);
+  int nameXSpacing() const { return name_x_spacing_; }
+
+  void setNameboxPadding(const std::vector<int>& pos_data);
+  void setNameboxPosition(const std::vector<int>& pos_data);
+
   /// @}
 
   /**
@@ -248,10 +261,9 @@ class TextWindow {
   // ------------------------------------------------ [ Abstract interface ]
   void render(std::ostream* tree);
 
-  void renderButtons();
-
   /// Returns a surface that is the text.
   virtual boost::shared_ptr<Surface> textSurface() = 0;
+  virtual boost::shared_ptr<Surface> nameSurface() = 0;
 
   /**
    * Clears the text window of all text and resets the insertion
@@ -291,6 +303,8 @@ class TextWindow {
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
   void setNameWithoutDisplay(const std::string& utf8name);
+
+  virtual void renderNameInBox(const std::string& utf8str) = 0;
 
   virtual void hardBrake();
   virtual void resetIndentation();
@@ -456,6 +470,32 @@ class TextWindow {
   /// - 2: Do not display names
   int name_mod_;
 
+  /// Waku set to use for the text box in the case where name_mod_ == 1.
+  int name_waku_set_;
+
+  boost::scoped_ptr<TextWaku> namebox_waku_;
+
+  int name_font_size_in_pixels_;
+
+  int name_waku_dir_set_;
+
+  /// Spacing between characters
+  int name_x_spacing_;
+
+  int horizontal_namebox_padding_;
+  int vertical_namebox_padding_;
+
+  int namebox_x_offset_;
+  int namebox_y_offset_;
+
+  int namebox_centering_;
+
+  int minimum_namebox_size_;
+
+  int name_size_;
+
+  // The number of characters in the window (or |minimum_namebox_size_|).
+  int namebox_characters_;
   /// @}
 
   /**

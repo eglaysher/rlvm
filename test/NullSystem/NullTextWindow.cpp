@@ -31,7 +31,9 @@
 #include "NullSystem/NullSurface.hpp"
 
 #include <boost/shared_ptr.hpp>
+#include <sstream>
 
+using std::ostringstream;
 using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
@@ -53,11 +55,26 @@ shared_ptr<Surface> NullTextWindow::textSurface() {
 
 // -----------------------------------------------------------------------
 
+shared_ptr<Surface> NullTextWindow::nameSurface() {
+  return name_surface_;
+}
+
+// -----------------------------------------------------------------------
+
+void NullTextWindow::renderNameInBox(const std::string& utf8str) {
+  ostringstream oss;
+  oss << "Name Surface [" << utf8str << "]";
+  name_surface_.reset(new NullSurface(oss.str(), Size(640, 480)));
+}
+
+// -----------------------------------------------------------------------
+
 void NullTextWindow::clearWin()
 {
   text_window_log_.recordFunction("clearWin");
   TextWindow::clearWin();
   current_contents_ = "";
+  name_surface_.reset();
 }
 
 // -----------------------------------------------------------------------

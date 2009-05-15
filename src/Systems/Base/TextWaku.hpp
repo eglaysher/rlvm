@@ -33,6 +33,7 @@
 
 class Point;
 class RLMachine;
+class Size;
 class Surface;
 class System;
 class TextWindow;
@@ -60,7 +61,7 @@ class TextWaku {
   void setMousePosition(const Point& pos);
   bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
-  boost::shared_ptr<Surface> wakuMain() { return waku_main_; }
+  Size size() const;
 
  private:
   /// Renders all the buttons in |button_map_|.
@@ -86,7 +87,8 @@ class TextWaku {
   /// The system we are a part of.
   System& system_;
 
-  /// The text window we decorate.
+  /// The text window we decorate. TODO: Figure out how wrong this is when we
+  /// are a name box.
   TextWindow& window_;
 
   int setno_, no_;

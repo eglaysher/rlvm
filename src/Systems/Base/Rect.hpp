@@ -134,6 +134,10 @@ public:
                 static_cast<int>(height_ * factor));
   }
 
+  Size operator/(int denominator) const {
+    return Size(width_ / denominator, height_ / denominator);
+  }
+
   bool operator==(const Size& rhs) const {
     return width_ == rhs.width_ && height_ == rhs.height_;
   }

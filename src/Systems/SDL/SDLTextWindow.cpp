@@ -91,6 +91,12 @@ boost::shared_ptr<Surface> SDLTextWindow::textSurface() {
 
 // -----------------------------------------------------------------------
 
+boost::shared_ptr<Surface> SDLTextWindow::nameSurface() {
+  return name_surface_;
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextWindow::clearWin() {
   TextWindow::clearWin();
 
@@ -98,6 +104,8 @@ void SDLTextWindow::clearWin() {
   if (!surface_)
     surface_.reset(new SDLSurface(textWindowSize()));
   surface_->fill(RGBAColour::Clear());
+
+  name_surface_.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -211,6 +219,17 @@ bool SDLTextWindow::displayChar(const std::string& current,
   last_token_was_name_ = false;
 
   return true;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
+  SDL_Color color;
+  RGBColourToSDLColor(font_colour_, &color);
+
+  SDL_Surface* tmp =
+      TTF_RenderUTF8_Blended(font_.get(), utf8str.c_str(), color);
+  name_surface_.reset(new SDLSurface(tmp));
 }
 
 // -----------------------------------------------------------------------

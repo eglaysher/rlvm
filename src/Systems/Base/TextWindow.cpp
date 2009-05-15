@@ -45,6 +45,7 @@
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
+#include <algorithm>
 #include <boost/bind.hpp>
 #include <iostream>
 #include <iomanip>
@@ -105,12 +106,27 @@ TextWindow::TextWindow(System& system, int window_num)
   // Gameexe.ini.
   setUseIndentation(window("INDENT_USE").to_int(1));
 
-  setNameMod(window("NAME_MOD").to_int(0));
-
   setKeycurMod(window("KEYCUR_MOD"));
   setActionOnPause(window("R_COMMAND_MOD"));
+
+  // Main textbox waku
   waku_set_ = window("WAKU_SETNO").to_int(0);
   textbox_waku_.reset(new TextWaku(system_, *this, waku_set_, 0));
+
+  // Name textbox if that setting has been enabled.
+  setNameMod(window("NAME_MOD").to_int(0));
+  if (name_mod_ == 1 && window("NAME_WAKU_SETNO").exists()) {
+    name_waku_set_ = window("NAME_WAKU_SETNO");
+    namebox_waku_.reset(new TextWaku(system_, *this, name_waku_set_, 0));
+    setNameSpacingBetweenCharacters(window("NAME_MOJI_REP"));
+    setNameboxPadding(window("NAME_MOJI_POS"));
+    // Ignoring NAME_WAKU_MIN for now
+    setNameboxPosition(window("NAME_POS"));
+    name_waku_dir_set_ = window("NAME_WAKU_DIR").to_int(0);
+    namebox_centering_ = window("NAME_CENTERING").to_int(0);
+    minimum_namebox_size_ = window("NAME_MOJI_MIN").to_int(4);
+    name_size_ = window("NAME_MOJI_SIZE");
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -152,11 +168,17 @@ void TextWindow::setName(const std::string& utf8name,
 
 void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
   if (name_mod_ == 1) {
-    static int displayedWarning = 0;
-    if (displayedWarning == 0) {
-      cerr << "NAME_MOD=1 is unsupported." << endl;
-      displayedWarning = 1;
+    namebox_characters_ = 0;
+    try {
+      namebox_characters_ = utf8::distance(utf8name.begin(), utf8name.end());
+    } catch(...) {
+      // If utf8name isn't a real UTF-8 string, possibly overestimate:
+      namebox_characters_ = utf8name.size();
     }
+
+    namebox_characters_ = std::max(namebox_characters_, minimum_namebox_size_);
+
+    renderNameInBox(utf8name);
   }
 
   last_token_was_name_ = true;
@@ -248,8 +270,8 @@ int TextWindow::boxY1() const {
 // -----------------------------------------------------------------------
 
 Size TextWindow::boxSize() const {
-  if (textbox_waku_->wakuMain()) {
-    return textbox_waku_->wakuMain()->size();
+  if (textbox_waku_->size() != Size()) {
+    return textbox_waku_->size();
   } else {
     // This is an estimate; it was what I was using before and worked fine for
     // all the KEY games I orriginally targeted, but broke on ALMA.
@@ -280,6 +302,52 @@ int TextWindow::textX2() const {
 
 int TextWindow::textY2() const {
   return textY1() + textWindowSize().height() + lower_box_padding_;
+}
+
+// -----------------------------------------------------------------------
+
+int TextWindow::nameboxX1() const {
+  return boxX1() + namebox_x_offset_;
+}
+
+// -----------------------------------------------------------------------
+
+int TextWindow::nameboxY1() const {
+  // We cheat with the size calculation here.
+  return boxY1() + namebox_y_offset_ -
+      (2 * vertical_namebox_padding_ + name_size_);
+}
+
+// -----------------------------------------------------------------------
+
+// THIS IS A HACK! THIS IS SUCH AN UGLY HACK. ALL OF THE NAMEBOX POSITIONING
+// CODE SIMPLY NEEDS TO BE REDONE.
+Size TextWindow::nameboxSize() {
+  shared_ptr<Surface> name_surface = nameSurface();
+  return Size(2 * horizontal_namebox_padding_ +
+              namebox_characters_ * name_size_,
+              2 * vertical_namebox_padding_ + name_size_);
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setNameSpacingBetweenCharacters(
+    const std::vector<int>& pos_data) {
+  name_x_spacing_ = pos_data.at(0);
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setNameboxPadding(const std::vector<int>& pos_data) {
+  horizontal_namebox_padding_ = pos_data.at(0);
+  vertical_namebox_padding_ = pos_data.at(1);
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::setNameboxPosition(const vector<int>& pos_data) {
+  namebox_x_offset_ = pos_data.at(0);
+  namebox_y_offset_ = pos_data.at(1);
 }
 
 // -----------------------------------------------------------------------
@@ -332,6 +400,32 @@ void TextWindow::render(std::ostream* tree) {
       for_each(selections_.begin(), selections_.end(),
                bind(&SelectionElement::render, _1));
     } else {
+      shared_ptr<Surface> name_surface = nameSurface();
+      if (name_surface) {
+        Point namebox_location(nameboxX1(), nameboxY1());
+        Size namebox_size = nameboxSize();
+
+        if (namebox_waku_) {
+          // TODO(erg): The waku needs to be adjusted to be the minimum size of
+          // the window in characters
+          namebox_waku_->render(tree, namebox_location);
+        }
+
+        Point insertion_point =
+            namebox_location +
+            Point((namebox_size.width() / 2) -
+                  (name_surface->size().width() / 2), 0);
+        name_surface->renderToScreen(
+            name_surface->rect(),
+            Rect(insertion_point, name_surface->size()),
+            255);
+
+        if (tree) {
+          *tree << "     Name Area: " << Rect(namebox_location, namebox_size)
+                << endl;
+        }
+      }
+
       text_surface->renderToScreen(
         Rect(Point(0, 0), surface_size),
         Rect(Point(x, y), surface_size),
