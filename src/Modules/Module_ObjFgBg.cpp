@@ -326,6 +326,9 @@ void addObjectFunctions(RLModule& m) {
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateX));
   m.addOpcode(1030, 0, "objScrollRateY",
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateY));
+  m.addUnsupportedOpcode(1031, 0, "objDriftOpts");
+  m.addUnsupportedOpcode(1032, 0, "objOrder");
+  m.addUnsupportedOpcode(1033, 0, "objQuarterView");
 
   m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0); //dispRect_0 == dispArea_0
   m.addOpcode(1034, 1, "objDispRect", new Obj_dispRect_1);
