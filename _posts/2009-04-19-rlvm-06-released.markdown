@@ -14,6 +14,6 @@ href="http://www.assembla.com/wiki/show/clannad">Assembla</a> and things aren't
 working. More investigation is needed. rlvm still works properly with the NDT
 Kanon patches.
 
-By popular demand, OSX application are now universal binaries again. (I am not
-sure how many more releases will have universal binaries because my old G4
-laptop is dieing.)
+By popular demand, the OSX application is now a universal binary again. (I am
+not sure how many more releases will have universal binaries because my old G4
+laptop is dying.)
