@@ -111,13 +111,13 @@ TextWindow::TextWindow(System& system, int window_num)
 
   // Main textbox waku
   waku_set_ = window("WAKU_SETNO").to_int(0);
-  textbox_waku_.reset(new TextWaku(system_, *this, waku_set_, 0));
+  textbox_waku_.reset(TextWaku::Create(system_, *this, waku_set_, 0));
 
   // Name textbox if that setting has been enabled.
   setNameMod(window("NAME_MOD").to_int(0));
   if (name_mod_ == 1 && window("NAME_WAKU_SETNO").exists()) {
     name_waku_set_ = window("NAME_WAKU_SETNO");
-    namebox_waku_.reset(new TextWaku(system_, *this, name_waku_set_, 0));
+    namebox_waku_.reset(TextWaku::Create(system_, *this, name_waku_set_, 0));
     setNameSpacingBetweenCharacters(window("NAME_MOJI_REP"));
     setNameboxPadding(window("NAME_MOJI_POS"));
     // Ignoring NAME_WAKU_MIN for now

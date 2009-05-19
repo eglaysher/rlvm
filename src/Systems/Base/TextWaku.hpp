@@ -27,89 +27,30 @@
 #ifndef __TextWaku_hpp__
 #define __TextWaku_hpp__
 
-#include <iosfwd>
-#include <string>
-#include <boost/scoped_ptr.hpp>
-
 class Point;
 class RLMachine;
 class Size;
-class Surface;
 class System;
 class TextWindow;
-class TextWindowButton;
 
-/**
- * Container class that owns all text window decorations.
- *
- * Window decorations are defined with \#WAKU.<setno>.<no>. Gameexe.ini keys
- */
 class TextWaku {
  public:
-  TextWaku(System& system, TextWindow& window, int setno, int no);
-  ~TextWaku();
+  // Factory method which automatically picks the correct subclass of TextWaku
+  // for the implementation at hand.
+  static TextWaku* Create(System& system, TextWindow& window, int setno, int no);
 
-  void execute();
-  void render(std::ostream* tree, Point box_location);
+  virtual ~TextWaku();
 
-  /**
-   * @todo These two methods shouldn't really exist; I need to redo plumbing of
-   *       events so that these aren't routed through TextWindow, but are
-   *       instead some sort of listener. I'm currently thinking that the
-   *       individual buttons that need to handle events should be listeners.
-   */
-  void setMousePosition(const Point& pos);
-  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
+  virtual void execute() = 0;
+  virtual void render(std::ostream* tree, Point box_location) = 0;
 
-  Size size() const;
+  virtual void setMousePosition(const Point& pos) { };
+  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
+                                bool pressed) {
+    return false;
+  }
 
- private:
-  /// Renders all the buttons in |button_map_|.
-  void renderButtons();
-
-  /// Loads all bitmaps and sets up all window buttons for this waku.
-  void loadWindowWaku();
-
-  void setWakuMain(const std::string& name);
-
-  /**
-   * Loads the graphics file name as the mask for represents the areas
-   * of the text window that should be shaded.
-   */
-  void setWakuBacking(const std::string& name);
-
-  /**
-   * Loads the graphics file name as the image with all the button
-   * images used when drawing
-   */
-  void setWakuButton(const std::string& name);
-
-  /// The system we are a part of.
-  System& system_;
-
-  /// The text window we decorate. TODO: Figure out how wrong this is when we
-  /// are a name box.
-  TextWindow& window_;
-
-  int setno_, no_;
-
-  boost::shared_ptr<Surface> waku_main_;
-  boost::shared_ptr<Surface> waku_backing_;
-  boost::shared_ptr<Surface> waku_button_;
-
-  /**
-   * @name Buttons in this text box
-   *
-   * Attached action buttons defined in the
-   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
-   * things such as moving the text box, clearing the text box, moving
-   * forward or backwards in message history, and farcall()-ing a
-   * custom handler (EXBTN_index_BOX).
-   *
-   * @{
-   */
-  boost::scoped_ptr<TextWindowButton> button_map_[12];
-  /// @}
-};  // end of class TextWaku
+  virtual Size size() const = 0;
+};
 
 #endif
