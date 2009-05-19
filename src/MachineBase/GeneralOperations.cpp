@@ -33,6 +33,7 @@
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"
 #include "libReallive/bytecode.h"
@@ -75,6 +76,11 @@ SoundSystem& getSystemObj(RLMachine& machine) {
 template<>
 CGMTable& getSystemObj(RLMachine& machine) {
   return machine.system().graphics().cgTable();
+}
+
+template<>
+TextPage& getSystemObj(RLMachine& machine) {
+  return machine.system().text().currentPage();
 }
 
 }

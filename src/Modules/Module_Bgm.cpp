@@ -100,14 +100,6 @@ struct Bgm_bgmPlaying : public RLOp_Store_Void {
 
 // -----------------------------------------------------------------------
 
-struct Bgm_bgmFadeOut : public RLOp_Void_1<IntConstant_T> {
-  void operator()(RLMachine& machine, int fadetime) {
-    machine.system().sound().bgmFadeOut(fadetime);
-  }
-};
-
-// -----------------------------------------------------------------------
-
 BgmModule::BgmModule()
   : RLModule("Bgm", 1, 20)
 {
@@ -142,7 +134,7 @@ BgmModule::BgmModule()
   addUnsupportedOpcode(14, 0, "bgmMute");
   addUnsupportedOpcode(14, 1, "bgmMute");
 
-  addOpcode(105, 0, "bgmFadeOut", new Bgm_bgmFadeOut);
+  addOpcode(105, 0, "bgmFadeOut", callFunction(&SoundSystem::bgmFadeOut));
 
   addUnsupportedOpcode(106, 0, "bgmFadeOutEx");
   addUnsupportedOpcode(106, 1, "bgmFadeOutEx");

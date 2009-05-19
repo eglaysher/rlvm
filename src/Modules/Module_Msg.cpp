@@ -136,16 +136,6 @@ struct Msg_doruby_display : public RLOp_Void_1< StrConstant_T >
 
 // -----------------------------------------------------------------------
 
-struct Msg_doruby_mark : public RLOp_Void_Void
-{
-  void operator()(RLMachine& machine)
-  {
-    machine.system().text().currentPage().markRubyBegin();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 {
   void operator()(RLMachine& machine, int unknown)
@@ -199,14 +189,6 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
-struct Msg_br : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.system().text().currentPage().hardBrake();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 struct Msg_spause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.pushLongOperation(new PauseLongOperation(machine));
@@ -224,46 +206,10 @@ struct Msg_page : public RLOp_Void_Void {
 
 // -----------------------------------------------------------------------
 
-struct Msg_SetIndent : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage();
-    page.setIndentation();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Msg_ClearIndent : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage();
-    page.resetIndentation();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 struct Msg_TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().currentPage();
     page.setInsertionPointX(x);
-    page.setInsertionPointY(y);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Msg_TextPosX : public RLOp_Void_1<IntConstant_T> {
-  void operator()(RLMachine& machine, int x) {
-    TextPage& page = machine.system().text().currentPage();
-    page.setInsertionPointX(x);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Msg_TextPosY : public RLOp_Void_1<IntConstant_T> {
-  void operator()(RLMachine& machine, int y) {
-    TextPage& page = machine.system().text().currentPage();
     page.setInsertionPointY(y);
   }
 };
@@ -289,24 +235,6 @@ struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().currentPage();
     page.offsetInsertionPointX(x);
-    page.offsetInsertionPointY(y);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Msg_TextOffsetX : public RLOp_Void_1<IntConstant_T> {
-  void operator()(RLMachine& machine, int x) {
-    TextPage& page = machine.system().text().currentPage();
-    page.offsetInsertionPointX(x);
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Msg_TextOffsetY : public RLOp_Void_1<IntConstant_T> {
-  void operator()(RLMachine& machine, int y) {
-    TextPage& page = machine.system().text().currentPage();
     page.offsetInsertionPointY(y);
   }
 };
@@ -344,7 +272,7 @@ MsgModule::MsgModule()
   addUnsupportedOpcode(107, 0, "FontSizeAll");
 
   addOpcode(120, 0, "__doruby_on", new Msg_doruby_display);
-  addOpcode(120, 1, "__doruby_off", new Msg_doruby_mark);
+  addOpcode(120, 1, "__doruby_off", callFunction(&TextPage::markRubyBegin));
 
   addOpcode(151, 0, "msgHide", new Msg_msgHide);
   addOpcode(152, 0, "msgClear", new Msg_msgClear);
@@ -352,21 +280,23 @@ MsgModule::MsgModule()
   addOpcode(161, 0, "msgHideAll", new Msg_msgHideAll);
   addOpcode(162, 0, "msgClearAll", new Msg_msgClearAll);
   addUnsupportedOpcode(170, 0, "msgHideAllTemp");
-  addOpcode(201, 0, "br", new Msg_br);
+  addOpcode(201, 0, "br", callFunction(&TextPage::hardBrake));
   addOpcode(205, 0, "spause", new Msg_spause);
   addUnsupportedOpcode(206, 0, "spause2");
   addUnsupportedOpcode(207, 0, "pause_all");
   addOpcode(210, 0, "page", new Msg_page);
 
-  addOpcode(300, 0, "SetIndent", new Msg_SetIndent);
-  addOpcode(301, 0, "ClearIndent", new Msg_ClearIndent);
+  addOpcode(300, 0, "SetIndent", callFunction(&TextPage::setIndentation));
+  addOpcode(301, 0, "ClearIndent", callFunction(&TextPage::resetIndentation));
 
   addOpcode(310, 0, "TextPos", new Msg_TextPos);
-  addOpcode(311, 0, "TextPosX", new Msg_TextPosX);
-  addOpcode(312, 0, "TextPosY", new Msg_TextPosY);
+  addOpcode(311, 0, "TextPosX", callFunction(&TextPage::setInsertionPointX));
+  addOpcode(312, 0, "TextPosY", callFunction(&TextPage::setInsertionPointY));
   addOpcode(320, 0, "TextOffset", new Msg_TextOffset);
-  addOpcode(321, 0, "TextOffsetX", new Msg_TextOffsetX);
-  addOpcode(322, 0, "TextOffsetY", new Msg_TextOffsetY);
+  addOpcode(321, 0, "TextOffsetX",
+            callFunction(&TextPage::offsetInsertionPointX));
+  addOpcode(322, 0, "TextOffsetY",
+            callFunction(&TextPage::offsetInsertionPointY));
   addOpcode(330, 0, "GetTextPos", new Msg_GetTextPos);
 
   addUnsupportedOpcode(340, 0, "WindowLen");

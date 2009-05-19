@@ -42,6 +42,7 @@
 class System;
 class EventSystem;
 class GraphicsSystem;
+class TextPage;
 class TextSystem;
 class SoundSystem;
 class CGMTable;
@@ -62,23 +63,33 @@ inline RLMachine& getSystemObj(RLMachine& machine) {
   return machine;
 }
 
+// Equivalent to machine.system().
 template<>
 System& getSystemObj(RLMachine& machine);
 
+// Equivalent to machine.system().event().
 template<>
 EventSystem& getSystemObj(RLMachine& machine);
 
+// Equivalent to machine.system().graphics().
 template<>
 GraphicsSystem& getSystemObj(RLMachine& machine);
 
+// Equivalent to machine.system().text().
 template<>
 TextSystem& getSystemObj(RLMachine& machine);
 
+// Equivalent to machine.system().sound().
 template<>
 SoundSystem& getSystemObj(RLMachine& machine);
 
+// Equivalent to machine.system().graphics().cgTable().
 template<>
 CGMTable& getSystemObj(RLMachine& machine);
+
+// Equivalent to machine.system().text().currentPage().
+template<>
+TextPage& getSystemObj(RLMachine& machine);
 
 };
 
