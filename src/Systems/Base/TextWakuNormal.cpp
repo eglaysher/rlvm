@@ -91,6 +91,7 @@ TextWakuNormal::TextWakuNormal(System& system, TextWindow& window, int setno,
 
 TextWakuNormal::~TextWakuNormal() {
 }
+
 // -----------------------------------------------------------------------
 
 void TextWakuNormal::execute() {
@@ -169,17 +170,6 @@ bool TextWakuNormal::handleMouseClick(RLMachine& machine, const Point& pos,
   }
 
   return false;
-}
-
-// -----------------------------------------------------------------------
-
-Size TextWakuNormal::size() const {
-  if (waku_main_)
-    return waku_main_->size();
-  if (waku_backing_)
-    return waku_backing_->size();
-
-  return Size();
 }
 
 // -----------------------------------------------------------------------

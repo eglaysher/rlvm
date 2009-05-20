@@ -49,8 +49,6 @@ class TextWaku {
                                 bool pressed) {
     return false;
   }
-
-  virtual Size size() const = 0;
 };
 
 #endif

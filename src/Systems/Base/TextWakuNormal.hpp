@@ -65,8 +65,6 @@ class TextWakuNormal : public TextWaku {
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed);
 
-  virtual Size size() const;
-
  private:
   /// Renders all the buttons in |button_map_|.
   void renderButtons();
