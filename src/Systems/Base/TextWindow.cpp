@@ -412,7 +412,9 @@ void TextWindow::render(std::ostream* tree) {
         Point insertion_point =
             namebox_location +
             Point((namebox_size.width() / 2) -
-                  (name_surface->size().width() / 2), 0);
+                  (name_surface->size().width() / 2),
+                  (namebox_size.height() / 2) -
+                  (name_surface->size().height() / 2));
         name_surface->renderToScreen(
             name_surface->rect(),
             Rect(insertion_point, name_surface->size()),
