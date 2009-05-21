@@ -73,7 +73,7 @@ public:
   }
 
   bool operator!=(const Point& rhs) const {
-    return x_ != rhs.x_ && y_ != rhs.y_;
+    return x_ != rhs.x_ || y_ != rhs.y_;
   }
 
 private:
@@ -143,7 +143,7 @@ public:
   }
 
   bool operator!=(const Size& rhs) const {
-    return width_ != rhs.width_ && height_ != rhs.height_;
+    return width_ != rhs.width_ || height_ != rhs.height_;
   }
 
   /// Returns a size that is the max of both size's widths and heights.

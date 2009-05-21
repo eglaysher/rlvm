@@ -42,7 +42,8 @@ class TextWaku {
   virtual ~TextWaku();
 
   virtual void execute() = 0;
-  virtual void render(std::ostream* tree, Point box_location) = 0;
+  virtual void render(std::ostream* tree, Point box_location,
+                      Size namebox_size) = 0;
 
   virtual void setMousePosition(const Point& pos) { };
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,

@@ -30,12 +30,21 @@
 
 #include "Systems/Base/TextWaku.hpp"
 
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWakuNormal.hpp"
+#include "Systems/Base/TextWakuType4.hpp"
+#include "libReallive/gameexe.h"
 
 // static
 TextWaku* TextWaku::Create(System& system, TextWindow& window,
                            int setno, int no) {
-  return new TextWakuNormal(system, window, setno, no);
+  GameexeInterpretObject waku(system.gameexe()("WAKU", setno, "TYPE"));
+  if (waku.to_int(5) == 4) {
+    return new TextWakuType4(system, window, setno, no);
+  } else {
+    // Old style used everywhere is treated as the default.
+    return new TextWakuNormal(system, window, setno, no);
+  }
 }
 
 TextWaku::~TextWaku() { }

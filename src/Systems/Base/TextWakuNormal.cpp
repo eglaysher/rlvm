@@ -104,14 +104,14 @@ void TextWakuNormal::execute() {
 
 // -----------------------------------------------------------------------
 
-void TextWakuNormal::render(std::ostream* tree, Point box_location) {
+void TextWakuNormal::render(std::ostream* tree, Point box_location,
+                            Size namebox_size) {
   if (tree) {
     *tree << "    Window Waku(" << setno_ << ", " << no_ << "):" << endl;
   }
 
   if (waku_backing_) {
     Size backing_size = waku_backing_->size();
-    // COLOUR
     waku_backing_->renderToScreenAsColorMask(
         Rect(Point(0, 0), backing_size),
         Rect(box_location, backing_size),

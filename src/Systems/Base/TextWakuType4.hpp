@@ -24,33 +24,19 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __TextWakuNormal_hpp__
-#define __TextWakuNormal_hpp__
-
-#include <iosfwd>
-#include <string>
-#include <boost/scoped_ptr.hpp>
+#ifndef __TextWakuType4_hpp__
+#define __TextWakuType4_hpp__
 
 #include "Systems/Base/TextWaku.hpp"
+#include "Systems/Base/Surface.hpp"
 
-class Point;
-class Rect;
-class RLMachine;
-class Size;
-class Surface;
-class System;
-class TextWindow;
-class TextWindowButton;
-
-/**
- * Container class that owns all text window decorations.
- *
- * Window decorations are defined with \#WAKU.<setno>.<no>. Gameexe.ini keys.
- */
-class TextWakuNormal : public TextWaku {
+// Waku which is a modified Ninebox. Instead of a ninebox, it's really a 12-box
+// where four of the entries aren't used and the center is never defined. This
+// box expands to fill whatever size is passed into render().
+class TextWakuType4 : public TextWaku {
  public:
-  TextWakuNormal(System& system, TextWindow& window, int setno, int no);
-  ~TextWakuNormal();
+  TextWakuType4(System& system, TextWindow& window, int setno, int no);
+  ~TextWakuType4();
 
   virtual void execute();
   virtual void render(std::ostream* tree, Point box_location,
@@ -67,25 +53,10 @@ class TextWakuNormal : public TextWaku {
                                 bool pressed);
 
  private:
-  /// Renders all the buttons in |button_map_|.
-  void renderButtons();
-
-  /// Loads all bitmaps and sets up all window buttons for this waku.
-  void loadWindowWaku();
-
   void setWakuMain(const std::string& name);
 
-  /**
-   * Loads the graphics file name as the mask for represents the areas
-   * of the text window that should be shaded.
-   */
-  void setWakuBacking(const std::string& name);
-
-  /**
-   * Loads the graphics file name as the image with all the button
-   * images used when drawing
-   */
-  void setWakuButton(const std::string& name);
+  /// Returns |cached_backing_|, shrinking or enlarging it to |size|.
+  const boost::shared_ptr<Surface>& getWakuBackingOfSize(Size size);
 
   /// The system we are a part of.
   System& system_;
@@ -96,23 +67,24 @@ class TextWakuNormal : public TextWaku {
 
   int setno_, no_;
 
+  /// The surface that we pick pieces of our textbox against.
   boost::shared_ptr<Surface> waku_main_;
-  boost::shared_ptr<Surface> waku_backing_;
-  boost::shared_ptr<Surface> waku_button_;
 
-  /**
-   * @name Buttons in this text box
-   *
-   * Attached action buttons defined in the
-   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
-   * things such as moving the text box, clearing the text box, moving
-   * forward or backwards in message history, and farcall()-ing a
-   * custom handler (EXBTN_index_BOX).
-   *
-   * @{
-   */
-  boost::scoped_ptr<TextWindowButton> button_map_[12];
-  /// @}
-};  // end of class TextWakuNormal
+  /// A cached backing regenerated whenever the namebox size changes
+  boost::shared_ptr<Surface> cached_backing_;
+
+  /// G00 regions in |waku_main_|.
+  Surface::GrpRect top_left;
+  Surface::GrpRect top_center;
+  Surface::GrpRect top_right;
+
+  Surface::GrpRect left_side;
+  Surface::GrpRect right_side;
+
+  Surface::GrpRect bottom_left;
+  Surface::GrpRect bottom_center;
+  Surface::GrpRect bottom_right;
+};
+
 
 #endif

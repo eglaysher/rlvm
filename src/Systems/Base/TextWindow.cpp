@@ -389,7 +389,7 @@ void TextWindow::render(std::ostream* tree) {
       *tree << "  Text Window #" << window_num_ << endl;
     }
 
-    textbox_waku_->render(tree, box);
+    textbox_waku_->render(tree, box, surface_size);
 
     int x = textX1();
     int y = textY1();
@@ -406,7 +406,7 @@ void TextWindow::render(std::ostream* tree) {
         if (namebox_waku_) {
           // TODO(erg): The waku needs to be adjusted to be the minimum size of
           // the window in characters
-          namebox_waku_->render(tree, namebox_location);
+          namebox_waku_->render(tree, namebox_location, namebox_size);
         }
 
         Point insertion_point =

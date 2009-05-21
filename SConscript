@@ -154,6 +154,7 @@ librlvm_files = [
   "src/Systems/Base/TextSystem.cpp",
   "src/Systems/Base/TextWaku.cpp",
   "src/Systems/Base/TextWakuNormal.cpp",
+  "src/Systems/Base/TextWakuType4.cpp",
   "src/Systems/Base/TextWindow.cpp",
   "src/Systems/Base/TextWindowButton.cpp",
   "src/Systems/Base/VoiceArchive.cpp",
