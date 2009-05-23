@@ -36,6 +36,8 @@ rlvm currently plays the following games to their completion:
 - The Planetarian CD edition[1]
 - The non-voiced edition of CLANNAD
 - The Full Voiced edition of CLANNAD
+- Full Voiced edition CLANNAD with one of the pre-release English patches
+  from Assembla. (Still in beta).
 - Kanon Standard Edition
 - Kanon Standard Edition with NDT's teaser patch
 
@@ -45,12 +47,9 @@ against.
 
 In addition, rlvm has an implementation of rlBabel; English patches
 compiled with Haeleth's rlBabel should line break correctly. I've
-successfully tested it with the patches from NDT. Baka-Tsuki's
-pre-release patches don't appear to work though I'm not sure if the
-problem is on my end or theirs.
+successfully tested it with the patches from NDT.
 
-This is the sixth public release of rlvm. Please report bugs and
-discrepancies to <glaysher at umich dot edu>.
+Please report bugs and discrepancies to <glaysher at umich dot edu>.
 
 3) COMPILING RLVM
 -------------------------------------------------------------------------

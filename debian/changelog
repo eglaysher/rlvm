@@ -1,3 +1,11 @@
+rlvm (0.6.1) jaunty; urgency=low
+
+  * rlvm now has basic (beta) support for the Baka-Tsuki CLANNAD English patch
+    applied to CLANNAD_FV.
+  * Minor bug fixes to normal CLANNAD_FV.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Fri, 22 May 2009 20:00:45 -0700
+
 rlvm (0.6) unstable; urgency=low
 
   * CLANNAD_FV is now playable to the end.

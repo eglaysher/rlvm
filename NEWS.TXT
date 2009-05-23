@@ -1,6 +1,16 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.6.1:
+- Preliminary support of the CLANNAD_FV English patch:
+  - Fixed multiple tokenization errors in rlvm's bytecode tokenizer.
+  - Add support for floating name boxes.
+- General CLANNAD_FV fixes:
+  - Fix loading save games from the in game menu.
+  - Fix display of two characters talking at the same time.
+
+-------------------------------------------------------------------------
+
 Version 0.6:
 - Lots of improvements to CLANNAD_FV:
   - Support newer mouse cursors
