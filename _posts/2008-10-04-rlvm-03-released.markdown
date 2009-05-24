@@ -1,6 +1,6 @@
 ---
 layout: post
-title: rlvm 0.3 released!
+title: rlvm 0.03 released!
 tags: [rlvm]
 ---
 

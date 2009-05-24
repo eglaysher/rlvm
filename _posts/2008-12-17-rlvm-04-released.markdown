@@ -1,6 +1,6 @@
 ---
 layout: post
-title: rlvm 0.4
+title: rlvm 0.04
 ---
 
 CLANNAD is now playable to the True End of the After Story. All routes in Kanon SE are playable, and there's a minimal default interface for Kanon and other games that don't provide a custom one.
