@@ -36,6 +36,7 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/References.hpp"
+#include "MachineBase/RLOperation/RLOp_Store.hpp"
 
 #include "Systems/Base/GraphicsObject.hpp"
 

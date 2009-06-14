@@ -46,6 +46,7 @@
 class Gameexe;
 class GCNPlatformBlocker;
 class Rect;
+class System;
 struct MenuSpec;
 
 // -----------------------------------------------------------------------

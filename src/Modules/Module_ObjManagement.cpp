@@ -42,6 +42,7 @@
 
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

@@ -31,6 +31,7 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 
 #include <boost/serialization/access.hpp>
@@ -38,6 +39,7 @@
 #include <boost/shared_ptr.hpp>
 #include <string>
 
+class System;
 class Surface;
 class RLMachine;
 

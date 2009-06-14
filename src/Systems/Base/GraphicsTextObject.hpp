@@ -28,6 +28,7 @@
 #ifndef __GraphicsTextObject_hpp__
 #define __GraphicsTextObject_hpp__
 
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
@@ -37,6 +38,7 @@
 
 class GraphicsObject;
 class Surface;
+class System;
 
 /**
  * Represents the textual data made with commands such as obj_of_text,

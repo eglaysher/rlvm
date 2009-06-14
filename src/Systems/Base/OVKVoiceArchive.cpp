@@ -80,7 +80,7 @@ namespace {
 const int INITSIZE = 65536;
 const int WAV_HEADER_SIZE = 0x2c;
 
-string oggErrorCodeToString(int code) {
+std::string oggErrorCodeToString(int code) {
   switch (code) {
     case OV_FALSE:
       return "Not true, or no data available";

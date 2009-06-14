@@ -36,6 +36,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -44,7 +45,10 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
+
 #include "libReallive/bytecode.h"
+#include "libReallive/expression.h"
+#include "libReallive/gameexe.h"
 
 using boost::bind;
 using boost::shared_ptr;

@@ -37,9 +37,12 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include "MachineBase/RLMachine.hpp"
+
 // -----------------------------------------------------------------------
 
 class Surface;
+class System;
 
 // -----------------------------------------------------------------------
 

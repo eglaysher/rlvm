@@ -30,6 +30,7 @@
 #include <boost/function.hpp>
 
 #include "MachineBase/LongOperation.hpp"
+#include "MachineBase/reference.hpp"
 
 class Point;
 

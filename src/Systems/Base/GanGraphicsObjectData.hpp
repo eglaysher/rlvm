@@ -30,6 +30,7 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
+#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 
 #include <boost/scoped_array.hpp>
@@ -41,6 +42,7 @@
 #include <vector>
 
 class Surface;
+class System;
 class RLMachine;
 class GraphicsObject;
 

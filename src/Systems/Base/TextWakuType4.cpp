@@ -38,6 +38,8 @@
 
 #include <iostream>
 
+#include "libReallive/gameexe.h"
+
 using std::endl;
 
 // A listing of all the g00 regions in type 4 wakus. The ranges to the right

@@ -30,6 +30,7 @@
 
 #include "LongOperations/WaitLongOperation.hpp"
 
+#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

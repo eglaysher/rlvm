@@ -39,6 +39,7 @@ class Point;
 class RLMachine;
 class Rect;
 class Surface;
+class System;
 class TextWindow;
 
 // -----------------------------------------------------------------------

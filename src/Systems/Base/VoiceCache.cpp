@@ -44,6 +44,7 @@ const int ID_RADIX = 100000;
 
 using boost::iends_with;
 using boost::shared_ptr;
+using std::string;
 
 namespace fs = boost::filesystem;
 

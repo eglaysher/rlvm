@@ -30,12 +30,13 @@
 
 #include "Platforms/gcn/GCNInfoWindow.hpp"
 
+#include <vector>
+#include <boost/bind.hpp>
+
 #include "Utilities/StringUtilities.hpp"
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 #include "Systems/Base/RlvmInfo.hpp"
-
-#include <vector>
 
 using std::vector;
 

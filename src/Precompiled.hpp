@@ -35,14 +35,14 @@
 #ifdef USE_PRECOMPILED_HEADERS
 
 // C++ Standard Template Library
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <memory>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <vector>
+// #include <algorithm>
+// #include <iostream>
+// #include <iterator>
+// #include <memory>
+// #include <sstream>
+// #include <stdexcept>
+// #include <string>
+// #include <vector>
 
 // Boost.org Template Libraries
 #include <boost/algorithm/string.hpp>
@@ -58,21 +58,6 @@
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
-
-// At least for the time being, I'm putting these files in the
-// precompiled header because they're large template messes and are
-// probably eating up a lot of parsing time.
-//
-// REMEMBER TO COMMENT THESE LINES OUT BEFORE YOU GO OFF AND FIDDLE
-// WITH THEM!
-#include "libReallive/gameexe.h"
-
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/reference.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
-#include "MachineBase/RLOperation/References.hpp"
 
 #endif  // USE_PRECOMPILED_HEADERS
 

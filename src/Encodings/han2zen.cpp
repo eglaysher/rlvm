@@ -34,6 +34,8 @@
 
 #include <string>
 
+using std::string;
+
 // -----------------------------------------------------------------------
 
 unsigned short lower_hantozen_table[] = {
@@ -202,7 +204,7 @@ unsigned short upper_hantozen_table[] = {
 
 // -----------------------------------------------------------------------
 
-string hantozen_cp932(const std::string& input, int transformation)
+string hantozen_cp932(const string& input, int transformation)
 {
   // hantozen only makes sense in the context of Cp932
   if (transformation == 0) {
@@ -252,7 +254,7 @@ static int findCharInTable(const char* str,
 
 // -----------------------------------------------------------------------
 
-string zentohan_cp932(const std::string& input, int transformation)
+string zentohan_cp932(const string& input, int transformation)
 {
   string output;
 

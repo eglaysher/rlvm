@@ -35,9 +35,12 @@
 
 #include "utf8.h"
 
+using std::string;
+using std::wstring;
+
 // -----------------------------------------------------------------------
 
-std::wstring cp932toUnicode(const std::string& line, int transformation)
+wstring cp932toUnicode(const string& line, int transformation)
 {
   return Cp::instance(transformation).ConvertString(line);
 }
@@ -62,7 +65,7 @@ string transformationName(int transformation) {
 
 // -----------------------------------------------------------------------
 
-std::string unicodeToUTF8(const std::wstring& widestring)
+string unicodeToUTF8(const std::wstring& widestring)
 {
   string out;
   utf8::utf16to8(widestring.begin(), widestring.end(),
@@ -73,7 +76,7 @@ std::string unicodeToUTF8(const std::wstring& widestring)
 
 // -----------------------------------------------------------------------
 
-std::string cp932toUTF8(const std::string& line, int transformation)
+string cp932toUTF8(const string& line, int transformation)
 {
   std::wstring ws = cp932toUnicode(line, transformation);
   return unicodeToUTF8(ws);
@@ -111,13 +114,13 @@ bool isKinsoku(int codepoint)
 
 // -----------------------------------------------------------------------
 
-int codepoint(const std::string& c)
+int codepoint(const string& c)
 {
   if(c == "")
     return 0;
   else
   {
-    std::string::const_iterator it = c.begin();
+    string::const_iterator it = c.begin();
     return utf8::next(it, c.end());
   }
 }
@@ -139,7 +142,7 @@ void advanceOneShiftJISChar(const char*& c)
 
 // -----------------------------------------------------------------------
 
-void copyOneShiftJisCharacter(const char*& str, std::string& output)
+void copyOneShiftJisCharacter(const char*& str, string& output)
 {
   if(shiftjis_lead_byte(str[0]))
   {
@@ -156,7 +159,7 @@ void copyOneShiftJisCharacter(const char*& str, std::string& output)
 
 // -----------------------------------------------------------------------
 
-bool readFullwidthLatinLetter(const char*& str, std::string& output)
+bool readFullwidthLatinLetter(const char*& str, string& output)
 {
   // The fullwidth uppercase latin characters are 0x8260 through 0x8279.
   if (str[0] == 0x82) {
@@ -175,7 +178,7 @@ bool readFullwidthLatinLetter(const char*& str, std::string& output)
 
 // -----------------------------------------------------------------------
 
-void addShiftJISChar(unsigned short c, std::string& output) {
+void addShiftJISChar(unsigned short c, string& output) {
   if (c > 0xFF)
     output += (c >> 8);
   output += (c & 0xFF);
@@ -184,8 +187,8 @@ void addShiftJISChar(unsigned short c, std::string& output) {
 // -----------------------------------------------------------------------
 
 void printTextToFunction(
-  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
-  const std::string& charsToPrint, const std::string& nextCharForFinal)
+  boost::function<void(const string& c, const string& nextChar)> fun,
+  const string& charsToPrint, const string& nextCharForFinal)
 {
   // Iterate over each incoming character to display (we do this
   // instead of rendering the entire string so that we can perform
@@ -208,7 +211,7 @@ void printTextToFunction(
 
 // -----------------------------------------------------------------------
 
-std::string removeQuotes(const std::string& quotedString)
+string removeQuotes(const string& quotedString)
 {
   string output = quotedString;
   if (output.size() && output[0] == '\"')

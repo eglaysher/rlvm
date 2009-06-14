@@ -27,6 +27,8 @@
 #ifndef __Module_Sys_Wait_hpp__
 #define __Module_Sys_Wait_hpp__
 
+class RLModule;
+
 void addWaitAndMouseOpcodes(RLModule& m);
 
 #endif
