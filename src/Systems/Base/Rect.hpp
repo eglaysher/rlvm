@@ -41,9 +41,7 @@ public:
   Point(int x, int y) : x_(x), y_(y) {}
 
   int x() const { return x_; }
-  void setX(const int in) { x_ = in; }
   int y() const { return y_; }
-  void setY(const int in) { y_ = in; }
 
   bool isEmpty() const { return x_ == 0 && y_ == 0; }
 
@@ -183,19 +181,15 @@ public:
   }
 
   int x() const { return origin_.x(); }
-  void setX(const int in) { origin_.setX(in); }
   int y() const { return origin_.y(); }
-  void setY(const int in) { origin_.setY(in); }
+  const Point& origin() const { return origin_; }
+
   int x2() const { return origin_.x() + size_.width(); }
-  void setX2(const int in) { size_.setWidth(in - origin_.x()); }
   int y2() const { return origin_.y() + size_.height(); }
-  void setY2(const int in) { size_.setHeight(in - origin_.y()); }
 
   int width() const { return size_.width(); }
   int height() const { return size_.height(); }
-
   const Size& size() const { return size_; }
-  const Point& origin() const { return origin_; }
 
   bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }
 

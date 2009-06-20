@@ -68,45 +68,17 @@ void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree)
     Rect dst = dstRect(go);
     int alpha = getRenderingAlpha(go);
 
+    // TODO: Anyone attempting moving the clip area calculations here should
+    // verify that it doesn't break the final pan scene of Yumemi in
+    // Planetarian.
     if (tree) {
       objectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst;
       if (alpha != 255)
         *tree << " (alpha=" << alpha << ")";
+      if (go.hasClip())
+        *tree << " [Warning: Clip rectangle calculations not applied.]";
       *tree << endl;
-    }
-
-    // Perform the object clipping.
-    if (go.hasClip()) {
-      // Do nothing if object falls wholly outside clip area
-      if (dst.x2() < go.clipX1() || dst.x() > go.clipX2() ||
-          dst.y2() < go.clipY1() || dst.y() > go.clipY2())
-        return;
-
-      // Otherwise, adjust coordinates to present only the visible area.
-      if (dst.x() < go.clipX1()) {
-        src.setX( src.x() + go.clipX1() - dst.x());
-        dst.setX(go.clipX1());
-      }
-      if (dst.y() < go.clipY1()) {
-        src.setY(src.y() + go.clipY1() - dst.y());
-        dst.setY(go.clipY1());
-      }
-      if (dst.x2() >= go.clipX2()) {
-        src.setX2(src.x2() - dst.x2() + go.clipX2());
-        dst.setX2(go.clipX2());
-      }
-      if (dst.y2() >= go.clipY2()) {
-        src.setY2(src.y2() - dst.y2() + go.clipY2());
-        dst.setY2(go.clipY2());
-      }
-
-      if (tree) {
-        *tree << "  After clipping rect, " << src << " to " << dst;
-        if (alpha != 255)
-          *tree << " (alpha=" << alpha << ")";
-        *tree << endl;
-      }
     }
 
     surface->renderToScreenAsObject(go, src, dst, alpha);

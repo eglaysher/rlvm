@@ -663,9 +663,40 @@ void Texture::renderToScreenAsObject(
   int ySrc1 = srcRect.y();
   int xSrc2 = srcRect.x2();
   int ySrc2 = srcRect.y2();
+  int xPos1 = dstRect.x();
+  int yPos1 = dstRect.y();
+  int xPos2 = dstRect.x2();
+  int yPos2 = dstRect.y2();
 
-  float fdx1 = dstRect.x(), fdy1 = dstRect.y(), fdx2 = dstRect.x2(),
-    fdy2 = dstRect.y2();
+  // If clipping is active for this object, take that into account too.
+  if (go.hasClip()) {
+    // Do nothing if object falls wholly outside clip area
+    if (xPos2 < go.clipX1() || xPos1 > go.clipX2() ||
+        yPos2 < go.clipY1() || yPos1 > go.clipY2()) {
+      return;
+    }
+    // Otherwise, adjust coordinates to present only the visible area.
+    // POINT
+    // TODO: Move this logic into an intersection of rectangles.
+    if (xPos1 < go.clipX1()) {
+      xSrc1 += go.clipX1() - xPos1;
+      xPos1 = go.clipX1();
+    }
+    if (yPos1 < go.clipY1()) {
+      ySrc1 += go.clipY1() - yPos1;
+      yPos1 = go.clipY1();
+    }
+    if (xPos2 >= go.clipX2()) {
+      xSrc2 -= xPos2 - go.clipX2();
+      xPos2 = go.clipX2();
+    }
+    if (yPos2 >= go.clipY2()) {
+      ySrc2 -= yPos2 - go.clipY2();
+      yPos2 = go.clipY2();
+    }
+  }
+
+  float fdx1 = xPos1, fdy1 = yPos1, fdx2 = xPos2, fdy2 = yPos2;
   if(!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2,
                    fdx1, fdy1, fdx2, fdy2))
     return;
