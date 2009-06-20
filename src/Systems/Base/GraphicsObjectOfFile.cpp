@@ -122,7 +122,7 @@ GraphicsObjectData* GraphicsObjectOfFile::clone() const
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::execute(RLMachine& machine)
+void GraphicsObjectOfFile::execute()
 {
   if(currentlyPlaying())
   {
@@ -187,7 +187,7 @@ void GraphicsObjectOfFile::objectInfo(std::ostream& tree)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::playSet(RLMachine& machine, int frame_time)
+void GraphicsObjectOfFile::playSet(int frame_time)
 {
   setCurrentlyPlaying(true);
   frame_time_ = frame_time;

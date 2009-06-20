@@ -187,10 +187,6 @@ int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectData::execute() { }
-
-// -----------------------------------------------------------------------
-
 bool GraphicsObjectData::isAnimation() const
 {
   return false;

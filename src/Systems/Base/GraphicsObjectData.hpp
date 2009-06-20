@@ -75,7 +75,7 @@ public:
 
   virtual GraphicsObjectData* clone() const = 0;
 
-  virtual void execute();
+  virtual void execute() = 0;
 
   virtual bool isAnimation() const;
   virtual void playSet(int set);

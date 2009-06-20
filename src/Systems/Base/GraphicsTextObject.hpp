@@ -55,6 +55,7 @@ public:
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
+  virtual void execute() { }
 
 protected:
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);

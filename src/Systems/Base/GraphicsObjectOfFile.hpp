@@ -67,10 +67,10 @@ public:
 
   virtual GraphicsObjectData* clone() const;
 
-  virtual void execute(RLMachine& machine);
+  virtual void execute();
 
   virtual bool isAnimation() const;
-  virtual void playSet(RLMachine& machine, int set);
+  virtual void playSet(int set);
 
 protected:
   virtual void loopAnimation();
