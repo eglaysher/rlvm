@@ -1,6 +1,18 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.6.2:
+- Bugfix release:
+  - Fixes regression where G00 animations weren't being played (Seen in
+    Planetarian.)
+  - Fixes regression where Yumemi's face in the final scene in Planetarian
+    was being drawn twice because of poor clip rect handling.
+  - Support for English patches compiled with debugging symbols stripped.
+  - Temporarily disables scrollback due to crash that will be invasive to
+    fix.
+
+-------------------------------------------------------------------------
+
 Version 0.6.1:
 - Preliminary support of the CLANNAD_FV English patch:
   - Fixed multiple tokenization errors in rlvm's bytecode tokenizer.

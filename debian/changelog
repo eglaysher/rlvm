@@ -1,3 +1,15 @@
+rlvm (0.6.2) unstable; urgency=low
+
+  * Fixes regression where G00 animations weren't being played (Seen in
+    Planetarian.)
+  * Fixes regression where Yumemi's face in the final scene in Planetarian
+    was being drawn twice because of poor clip rect handling.
+  * Support for English patches compiled with debugging symbols stripped.
+  * Temporarily disables scrollback due to crash that will be invasive to
+    fix.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sun, 21 Jun 2009 13:51:58 -0700
+
 rlvm (0.6.1) jaunty; urgency=low
 
   * rlvm now has basic (beta) support for the Baka-Tsuki CLANNAD English patch
