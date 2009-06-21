@@ -1304,6 +1304,11 @@ GrpModule::GrpModule()
   addOpcode(1050, 2, "recLoad", new Grp_load_3<REC>(false));
   addOpcode(1050, 3, "recLoad", new Grp_load_3<REC>(false));
 
+  addUnsupportedOpcode(1051, 0, "recMaskLoad");
+  addUnsupportedOpcode(1051, 1, "recMaskLoad");
+  addUnsupportedOpcode(1051, 2, "recMaskLoad");
+  addUnsupportedOpcode(1051, 3, "recMaskLoad");
+
   addOpcode(1052, 0, "recDisplay", new Grp_display_0);
   addOpcode(1052, 1, "recDisplay", new Grp_display_1);
   addOpcode(1052, 2, "recDisplay", new Grp_display_2<REC>());
@@ -1352,6 +1357,16 @@ GrpModule::GrpModule()
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
   addOpcode(1201, 2, "recFill", new Grp_fill_3<REC>());
   addOpcode(1201, 3, "recFill", new Grp_fill_3<REC>());
+
+  addUnsupportedOpcode(1300, 0, "recInvert");
+  addUnsupportedOpcode(1300, 1, "recInvert");
+  addUnsupportedOpcode(1300, 2, "recInvert");
+  addUnsupportedOpcode(1300, 3, "recInvert");
+
+  addUnsupportedOpcode(1301, 0, "recMono");
+  addUnsupportedOpcode(1301, 1, "recMono");
+  addUnsupportedOpcode(1301, 2, "recMono");
+  addUnsupportedOpcode(1301, 3, "recMono");
 
   addUnsupportedOpcode(1400, 0, "recSwap");
   addUnsupportedOpcode(1400, 1, "recSwap");
