@@ -195,19 +195,13 @@ void TextWakuNormal::loadWindowWaku() {
   }
   if (waku("MSGBKLEFT_BOX").exists()) {
     button_map_[1].reset(
-        new RepeatActionWhileHoldingWindowButton(
-            system_,
-            ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
-            bind(&TextSystem::backPage, ref(ts)),
-            250));
+        new TextWindowButton(system_, ts.windowMsgbkleftUse(),
+                             waku("MSGBKLEFT_BOX")));
   }
   if (waku("MSGBKRIGHT_BOX").exists()) {
     button_map_[2].reset(
-        new RepeatActionWhileHoldingWindowButton(
-            system_,
-            ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
-            bind(&TextSystem::forwardPage, ref(ts)),
-            250));
+        new TextWindowButton(system_, ts.windowMsgbkrightUse(),
+                             waku("MSGBKRIGHT_BOX")));
   }
 
   for (int i = 0; i < 7; ++i) {
