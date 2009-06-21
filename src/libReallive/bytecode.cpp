@@ -361,6 +361,7 @@ TextoutElement::set_text(const char* src)
 void TextoutElement::runOnMachine(RLMachine& machine) const
 {
   machine.performTextout(*this);
+  machine.advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------

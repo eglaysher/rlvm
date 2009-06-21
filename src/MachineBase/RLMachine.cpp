@@ -617,7 +617,6 @@ void RLMachine::performTextout(const std::string& cp932str) {
     ptr->setNoWait();
 
   pushLongOperation(ptr.release());
-  advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
