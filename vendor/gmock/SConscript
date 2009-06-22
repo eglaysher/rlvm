@@ -1,0 +1,23 @@
+
+Import('component_env', 'env')
+
+component_env.Append(
+  CPPPATH = [
+    "#/vendor/gmock/include/",
+    "#/vendor/gmock/",
+  ],
+)
+
+libgmock_files = [
+  "src/gmock-cardinalities.cc",
+  "src/gmock-internal-utils.cc",
+  "src/gmock-matchers.cc",
+  "src/gmock-printers.cc",
+  "src/gmock-spec-builders.cc",
+  "src/gmock.cc"
+]
+
+component_env.StaticLibrary('libgmock', libgmock_files)
+component_env.Install('$LIBRARY_DIR', 'libgmock.a')
+
+#env.AddStaticLibraryTo("gmock", "test")

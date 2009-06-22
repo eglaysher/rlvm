@@ -1,0 +1,23 @@
+
+Import('component_env', 'env')
+
+component_env.Append(
+  CPPPATH = [
+    "#/vendor/gtest/include/",
+    "#/vendor/gtest/",
+  ],
+)
+
+libgtest_files = [
+  "src/gtest.cc",
+  "src/gtest-death-test.cc",
+  "src/gtest-filepath.cc",
+  "src/gtest-port.cc",
+  "src/gtest-test-part.cc",
+  "src/gtest-typed-test.cc",
+]
+
+component_env.StaticLibrary('libgtest', libgtest_files)
+component_env.Install('$LIBRARY_DIR', 'libgtest.a')
+
+#env.AddStaticLibraryTo("gtest", "test")

@@ -236,6 +236,10 @@ if config.CheckLibWithHeader('lua5.1', 'lua5.1/lua.h', 'cpp'):
   env['BUILD_LUA_TESTS'] = True
   subcomponents.append("luabind")
 
+# We need to build gtest/gmock always.
+subcomponents.append("gtest")
+subcomponents.append("gmock")
+
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
 config.CheckLibWithHeader('png', 'png.h', "cpp")
