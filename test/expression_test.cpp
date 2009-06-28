@@ -35,7 +35,6 @@
 #include "libReallive/intmemref.h"
 
 #include "testUtils.hpp"
-#include "tut/tut.hpp"
 
 #include <iostream>
 using namespace std;

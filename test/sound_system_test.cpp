@@ -30,7 +30,6 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include "testUtils.hpp"
-#include "tut/tut.hpp"
 
 #include "NullSystem/NullSystem.hpp"
 #include "NullSystem/NullSoundSystem.hpp"
