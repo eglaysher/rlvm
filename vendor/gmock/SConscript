@@ -20,4 +20,4 @@ libgmock_files = [
 component_env.StaticLibrary('libgmock', libgmock_files)
 component_env.Install('$LIBRARY_DIR', 'libgmock.a')
 
-#env.AddStaticLibraryTo("gmock", "test")
+env.AddStaticLibraryTo("gmock", "TEST")

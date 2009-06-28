@@ -24,7 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "tut/tut.hpp"
+#include "gtest/gtest.h"
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
@@ -54,18 +54,6 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-/**
- * @file   RLOperation_TUT.cpp
- * @author Elliot Glaysher <glaysher@umich.edu>
- * @date   Thu Jan  8 21:07:23 2009
- * @brief  Tests that we can parse all the types in RLOperation.hpp.
- */
-
-namespace tut
-{
-
-// -----------------------------------------------------------------------
-
 template<class T>
 void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
   ExpressionPiecesVector expression_pieces;
@@ -79,30 +67,23 @@ void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
 
 // -----------------------------------------------------------------------
 
-/// Class from which test cases derive.
-struct RLOperation_data
-{
+class RLOperationTest : public ::testing::Test {
+ protected:
+  RLOperationTest()
+      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
+        system(),
+        rlmachine(system, arc) {
+  }
+
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
   NullSystem system;
   RLMachine rlmachine;
-
-  RLOperation_data()
-	: arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-	  system(),
-	  rlmachine(system, arc)
-  {}
 };
-
-typedef test_group<RLOperation_data> tf;
-typedef tf::object object;
-tf RLOperation_data("RLOperation");
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that we can parse an IntConstant_T.
- */
+// Tests that we can parse an IntConstant_T.
 struct IntcIntcCapturer : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int& one_;
   int& two_;
@@ -117,11 +98,7 @@ struct IntcIntcCapturer : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-template<>
-template<>
-void object::test<1>()
-{
-  set_test_name("Test IntConstant_T");
+TEST_F(RLOperationTest, TestIntConstant_T) {
   int one = -1;
   int two = -1;
   IntcIntcCapturer capturer(one, two);
@@ -131,15 +108,13 @@ void object::test<1>()
       ("$ FF 02 00 00 00");
   runDataTest(capturer, rlmachine, unparsed);
 
-  ensure_equals(one, 1);
-  ensure_equals(two, 2);
+  EXPECT_EQ(1, one);
+  EXPECT_EQ(2, two);
 }
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that we can parse an IntReference_T.
- */
+// Tests that we can parse an IntReference_T.
 struct IntRefIntRefCapturer
     : public RLOp_Void_2<IntReference_T, IntReference_T> {
   int& one_;
@@ -156,11 +131,7 @@ struct IntRefIntRefCapturer
   }
 };
 
-template<>
-template<>
-void object::test<2>()
-{
-  set_test_name("Test IntReference_T");
+TEST_F(RLOperationTest, TestIntReference_T) {
   rlmachine.setIntValue(IntMemRef('A', 0), 1);
   rlmachine.setIntValue(IntMemRef('B', 5), 2);
 
@@ -173,8 +144,8 @@ void object::test<2>()
       ("$ 01 [ $ FF 05 00 00 00 ]");
   runDataTest(capturer, rlmachine, unparsed);
 
-  ensure_equals(one, 1);
-  ensure_equals(two, 2);
+  EXPECT_EQ(1, one);
+  EXPECT_EQ(2, two);
 }
 
 // -----------------------------------------------------------------------
@@ -195,11 +166,7 @@ struct StringcStringcCapturer
   }
 };
 
-template<>
-template<>
-void object::test<3>()
-{
-  set_test_name("Test StringConstant_T");
+TEST_F(RLOperationTest, TestStringConstant_T) {
   std::string one = "empty";
   std::string two = "empty";
   StringcStringcCapturer capturer(one, two);
@@ -211,15 +178,13 @@ void object::test<3>()
   capturer.parseParameters(unparsed, expression_pieces);
   capturer.dispatch(rlmachine, expression_pieces);
 
-  ensure_equals(one, "string one");
-  ensure_equals(two, "string two");
+  EXPECT_EQ("string one", one);
+  EXPECT_EQ("string two", two);
 }
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that we can parse an StrReference_T.
- */
+// Tests that we can parse an StrReference_T.
 struct StrRefStrRefCapturer
     : public RLOp_Void_2<StrReference_T, StrReference_T> {
   std::string& one_;
@@ -236,11 +201,7 @@ struct StrRefStrRefCapturer
   }
 };
 
-template<>
-template<>
-void object::test<4>()
-{
-  set_test_name("Test StringReference_T");
+TEST_F(RLOperationTest, TestStringReference_T) {
   rlmachine.setStringValue(STRM_LOCATION, 0, "string one");
   rlmachine.setStringValue(STRS_LOCATION, 5, "string two");
 
@@ -253,8 +214,8 @@ void object::test<4>()
       ("$ 12 [ $ FF 05 00 00 00 ]");
   runDataTest(capturer, rlmachine, unparsed);
 
-  ensure_equals(one, "string one");
-  ensure_equals(two, "string two");
+  EXPECT_EQ("string one", one);
+  EXPECT_EQ("string two", two);
 }
 
 // -----------------------------------------------------------------------
@@ -268,12 +229,7 @@ struct ArgcCapturer : public RLOp_Void_1<Argc_T<IntConstant_T> > {
   }
 };
 
-template<>
-template<>
-void object::test<5>()
-{
-  set_test_name("Test Argc_T");
-
+TEST_F(RLOperationTest, TestArgc_T) {
   vector<int> output;
   ArgcCapturer capturer(output);
 
@@ -284,11 +240,11 @@ void object::test<5>()
       ("$ FF 00 00 00 00");
   runDataTest(capturer, rlmachine, unparsed);
 
-  ensure_equals(output.size(), 4);
-  ensure_equals(output[0], 9);
-  ensure_equals(output[1], 3);
-  ensure_equals(output[2], 7);
-  ensure_equals(output[3], 0);
+  EXPECT_EQ(4, output.size());
+  EXPECT_EQ(9, output[0]);
+  EXPECT_EQ(3, output[1]);
+  EXPECT_EQ(7, output[2]);
+  EXPECT_EQ(0, output[3]);
 }
 
 // -----------------------------------------------------------------------
@@ -303,21 +259,16 @@ struct DefaultValueCapturer
   }
 };
 
-template<>
-template<>
-void object::test<6>()
-{
-  set_test_name("Test DefaultIntValue_T");
-
+TEST_F(RLOperationTest, TestDefaultIntValue_T) {
   int output = -1;
   DefaultValueCapturer capturer(output);
   vector<string> unparsed;
   runDataTest(capturer, rlmachine, unparsed);
-  ensure_equals("Uses default value with no arguments", output, 18);
+  EXPECT_EQ(18, output) << "Uses default value with no arguments";
 
   unparsed.push_back("$ FF 04 00 00 00");
   runDataTest(capturer, rlmachine, unparsed);
-  ensure_equals("Returns argument", output, 4);
+  EXPECT_EQ(4, output) << "Returns argument";
 }
 
 // -----------------------------------------------------------------------
@@ -344,12 +295,7 @@ struct ComplexCapturer
   }
 };
 
-template<>
-template<>
-void object::test<7>()
-{
-  set_test_name("Test the Complex2_T struct (in isolation)");
-
+TEST_F(RLOperationTest, TestComplex2_T) {
   int one = -1;
   int two = -1;
   int three = -1;
@@ -361,12 +307,9 @@ void object::test<7>()
       ("( $ FF 03 00 00 00 $ FF 04 00 00 00 )");
   runDataTest(capturer, rlmachine, unparsed);
 
-  ensure_equals(one, 1);
-  ensure_equals(two, 2);
-  ensure_equals(three, 3);
-  ensure_equals(four, 4);
+  EXPECT_EQ(1, one);
+  EXPECT_EQ(2, two);
+
+  EXPECT_EQ(3, three);
+  EXPECT_EQ(4, four);
 }
-
-// -----------------------------------------------------------------------
-
-};

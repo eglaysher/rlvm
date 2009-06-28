@@ -24,6 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
+#include "gtest/gtest.h"
+
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
@@ -38,50 +40,27 @@
 
 using std::stringstream;
 
-namespace tut
-{
-
-struct SoundSystem_data
-{
-};
-
-typedef test_group<SoundSystem_data> tf;
-typedef tf::object object;
-tf SoundSystem_data("SoundSystem");
-
-/**
- * Makes sure we can parse the bizarre Gameexe.ini keys for KOEONOFF
- */
-template<>
-template<>
-void object::test<1>()
-{
+// Makes sure we can parse the bizarre Gameexe.ini keys for KOEONOFF
+TEST(SoundSystem, CanParseKOEONOFFKeys) {
   NullSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
   SoundSystem& sys = top.sound();
 
   // Test the UseKoe side of things
-  ensure_equals(sys.useKoeForCharacter(0), 1);
-  ensure_equals(sys.useKoeForCharacter(7), 0);
-  ensure_equals(sys.useKoeForCharacter(8), 1);
+  EXPECT_EQ(1, sys.useKoeForCharacter(0));
+  EXPECT_EQ(0, sys.useKoeForCharacter(7));
+  EXPECT_EQ(1, sys.useKoeForCharacter(8));
 
   // Test the koePlay side of things
-  ensure_equals(sys.globals().character_koe_enabled.size(), 5);
-  ensure_equals(sys.globals().character_koe_enabled[0], 1);
-  ensure_equals(sys.globals().character_koe_enabled[3], 0);
-  ensure_equals(sys.globals().character_koe_enabled[2], 1);
-  ensure_equals(sys.globals().character_koe_enabled[20], 1);
-  ensure_equals(sys.globals().character_koe_enabled[105], 1);
+  EXPECT_EQ(5, sys.globals().character_koe_enabled.size());
+  EXPECT_EQ(1, sys.globals().character_koe_enabled[0]);
+  EXPECT_EQ(0, sys.globals().character_koe_enabled[3]);
+  EXPECT_EQ(1, sys.globals().character_koe_enabled[2]);
+  EXPECT_EQ(1, sys.globals().character_koe_enabled[20]);
+  EXPECT_EQ(1, sys.globals().character_koe_enabled[105]);
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Tests that SetUseKoe sets values correctly
- */
-template<>
-template<>
-void object::test<2>()
-{
+// Tests that SetUseKoe sets values correctly
+TEST(SoundSystem, SetUseKoeCorrectly) {
   NullSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
   SoundSystem& sys = top.sound();
 
@@ -92,28 +71,21 @@ void object::test<2>()
   // Make sure all values are flipped from the previous test.
 
   // Test the UseKoe side of things
-  ensure_equals(sys.useKoeForCharacter(0), 0);
-  ensure_equals(sys.useKoeForCharacter(7), 1);
-  ensure_equals(sys.useKoeForCharacter(8), 0);
+  EXPECT_EQ(0, sys.useKoeForCharacter(0));
+  EXPECT_EQ(1, sys.useKoeForCharacter(7));
+  EXPECT_EQ(0, sys.useKoeForCharacter(8));
 
   // Test the koePlay side of things
-  ensure_equals(sys.globals().character_koe_enabled.size(), 5);
-  ensure_equals(sys.globals().character_koe_enabled[0], 0);
-  ensure_equals(sys.globals().character_koe_enabled[3], 1);
-  ensure_equals(sys.globals().character_koe_enabled[2], 0);
-  ensure_equals(sys.globals().character_koe_enabled[20], 0);
-  ensure_equals(sys.globals().character_koe_enabled[105], 0);
+  EXPECT_EQ(5, sys.globals().character_koe_enabled.size());
+  EXPECT_EQ(0, sys.globals().character_koe_enabled[0]);
+  EXPECT_EQ(1, sys.globals().character_koe_enabled[3]);
+  EXPECT_EQ(0, sys.globals().character_koe_enabled[2]);
+  EXPECT_EQ(0, sys.globals().character_koe_enabled[20]);
+  EXPECT_EQ(0, sys.globals().character_koe_enabled[105]);
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Make sure we thaw previously serialized character_koe_enabled data correctly.
- */
-template<>
-template<>
-void object::test<3>()
-{
+// Make sure we thaw previously serialized character_koe_enabled data correctly.
+TEST(SoundSystem, SetUseKoeSerialization) {
   std::string gexe = locateTestCase("Gameexe_data/Gameexe_koeonoff.ini");
   stringstream ss;
 
@@ -140,19 +112,16 @@ void object::test<3>()
     // Do the flip tests as in <2>
 
     // Test the UseKoe side of things
-    ensure_equals(sys.useKoeForCharacter(0), 0);
-    ensure_equals(sys.useKoeForCharacter(7), 1);
-    ensure_equals(sys.useKoeForCharacter(8), 0);
+    EXPECT_EQ(0, sys.useKoeForCharacter(0));
+    EXPECT_EQ(1, sys.useKoeForCharacter(7));
+    EXPECT_EQ(0, sys.useKoeForCharacter(8));
 
     // Test the koePlay side of things
-    ensure_equals(sys.globals().character_koe_enabled.size(), 5);
-    ensure_equals(sys.globals().character_koe_enabled[0], 0);
-    ensure_equals(sys.globals().character_koe_enabled[3], 1);
-    ensure_equals(sys.globals().character_koe_enabled[2], 0);
-    ensure_equals(sys.globals().character_koe_enabled[20], 0);
-    ensure_equals(sys.globals().character_koe_enabled[105], 0);
+    EXPECT_EQ(5, sys.globals().character_koe_enabled.size());
+    EXPECT_EQ(0, sys.globals().character_koe_enabled[0]);
+    EXPECT_EQ(1, sys.globals().character_koe_enabled[3]);
+    EXPECT_EQ(0, sys.globals().character_koe_enabled[2]);
+    EXPECT_EQ(0, sys.globals().character_koe_enabled[20]);
+    EXPECT_EQ(0, sys.globals().character_koe_enabled[105]);
   }
 }
-
-
-};

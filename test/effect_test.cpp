@@ -25,6 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
+#include "gtest/gtest.h"
+
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Effects/Effect.hpp"
@@ -34,18 +36,14 @@
 #include "NullSystem/NullSurface.hpp"
 
 #include "testUtils.hpp"
-#include "tut/tut.hpp"
+
+#include <boost/shared_ptr.hpp>
 #include <boost/assign/list_of.hpp>
 #include <memory>
 #include <set>
 
-using namespace std;
-using namespace boost::assign;
+using std::auto_ptr;
 using boost::shared_ptr;
-
-namespace tut {
-
-// -----------------------------------------------------------------------
 
 /// Helper to specify the return value of getTicks().
 class EffectEventSystemTest : public EventSystemMockHandler {
@@ -58,9 +56,17 @@ private:
   unsigned int ticks;
 };
 
-// -----------------------------------------------------------------------
+class EffectTest : public ::testing::Test {
+ protected:
+  EffectTest()
+      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
+        system(locateTestCase("Gameexe_data/Gameexe.ini")),
+        event(dynamic_cast<NullEventSystem&>(system.event())),
+        event_system_impl(new EffectEventSystemTest),
+        rlmachine(system, arc) {
+    event.setMockHandler(event_system_impl);
+  }
 
-struct Effect_data {
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
   NullSystem system;
@@ -68,27 +74,8 @@ struct Effect_data {
   RLMachine rlmachine;
 
   shared_ptr<EffectEventSystemTest> event_system_impl;
-
-  Effect_data()
-    : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-      system(locateTestCase("Gameexe_data/Gameexe.ini")),
-      event(dynamic_cast<NullEventSystem&>(system.event())),
-      event_system_impl(new EffectEventSystemTest),
-      rlmachine(system, arc) {
-    event.setMockHandler(event_system_impl);
-  }
 };
 
-typedef test_group<Effect_data> tf;
-typedef tf::object object;
-tf Effect_data("Effect");
-
-// -----------------------------------------------------------------------
-
-/**
- * Testing code used by test<1> to test the actual code in the base
- * Effect class.
- */
 class EffectPreconditionTest : public Effect {
 public:
   EffectPreconditionTest(RLMachine& machine, boost::shared_ptr<Surface> src,
@@ -120,13 +107,8 @@ private:
   mutable MockLog log_;
 };
 
-/**
- * Tests the base
- */
-template<>
-template<>
-void object::test<1>()
-{
+
+TEST_F(EffectTest, DISABLED_TestBase) {
   shared_ptr<Surface> src(new NullSurface("src"));
   shared_ptr<Surface> dst(new NullSurface("dst"));
 
@@ -137,14 +119,14 @@ void object::test<1>()
   bool retVal = false;
   for (int i = 0; i < 2; ++i) {
     retVal = (*effect)(rlmachine);
-    ensure_not("Didn't prematurely quit", retVal);
+    EXPECT_FALSE(retVal) << "Didn't prematurely quit";
     effect->log().ensure("performEffectForTime", i);
 
     event_system_impl->setTicks(i + 1);
   }
 
   retVal = (*effect)(rlmachine);
-  ensure("Quit at the right time", retVal);
+  EXPECT_TRUE(retVal) << "Quit at the right time";
 }
 
 // -----------------------------------------------------------------------
@@ -174,13 +156,7 @@ private:
   mutable MockLog log_;
 };
 
-/**
- * Tests BlindTopToBottomEffect.
- */
-template<>
-template<>
-void object::test<2>()
-{
+TEST_F(EffectTest, DISABLED_BlindTopToBottomEffect) {
   shared_ptr<NullSurface> src(new NullSurface("src"));
   shared_ptr<NullSurface> dst(new NullSurface("dst"));
 
@@ -197,14 +173,14 @@ void object::test<2>()
 
   // Test at 0
   retVal = (*effect)(rlmachine);
-  ensure_not("Prematurely quit", retVal);
+  EXPECT_FALSE(retVal) << "Prematurely quit";
   effect->log().ensure("renderPolygon", 0, 0);
   effect->log().clear();
 
   // Test at 25
   event_system_impl->setTicks(25);
   retVal = (*effect)(rlmachine);
-  ensure_not("Prematurely quit", retVal);
+  EXPECT_FALSE(retVal) << "Prematurely quit";
   effect->log().ensure("renderPolygon", 0, 15);
   effect->log().ensure("renderPolygon", 50, 64);
   effect->log().ensure("renderPolygon", 100, 113);
@@ -220,7 +196,7 @@ void object::test<2>()
   // Test at 50
   event_system_impl->setTicks(50);
   retVal = (*effect)(rlmachine);
-  ensure_not("Prematurely quit", retVal);
+  EXPECT_FALSE(retVal) << "Prematurely quit";
   effect->log().ensure("renderPolygon", 0, 30);
   effect->log().ensure("renderPolygon", 50, 79);
   effect->log().ensure("renderPolygon", 100, 128);
@@ -236,7 +212,7 @@ void object::test<2>()
   // Test at 75
   event_system_impl->setTicks(75);
   retVal = (*effect)(rlmachine);
-  ensure_not("Prematurely quit", retVal);
+  EXPECT_FALSE(retVal) << "Prematurely quit";
   effect->log().ensure("renderPolygon", 0, 45);
   effect->log().ensure("renderPolygon", 50, 94);
   effect->log().ensure("renderPolygon", 100, 143);
@@ -256,9 +232,5 @@ void object::test<2>()
   // Test at the end
   event_system_impl->setTicks(100);
   retVal = (*effect)(rlmachine);
-  ensure("We quit", retVal);
+  EXPECT_TRUE(retVal) << "We quit";
 }
-
-// -----------------------------------------------------------------------
-
-};

@@ -110,7 +110,10 @@ def generate(env, **kw):
 
     # A list of absolute paths to static lua objects to make that subsystem
     # work.
-    STATIC_LUA_LIBS = [ ]
+    STATIC_LUA_LIBS = [ ],
+
+    # A list of absolute paths to static google testing libraries.
+    STATIC_TEST_LIBS = [ ]
   )
 
   env.AddMethod(RlvmLibrary)

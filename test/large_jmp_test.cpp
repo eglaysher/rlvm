@@ -25,14 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Jmp_TUT.cpp
- * @author Elliot Glaysher
- * @date   Tue Sep 19 21:27:49 2006
- * @ingroup TestCase
- *
- * Test cases for the flow control module.
- */
+#include "gtest/gtest.h"
 
 #include "Modules/Module_Jmp.hpp"
 #include "Modules/Module_Str.hpp"
@@ -50,40 +43,6 @@
 using namespace std;
 using namespace libReallive;
 
-namespace tut
-{
-
-/**
- * Struct which may contain test data members.
- * Test object (class that contains test methods)
- * will inherite from it, so each test method can
- * access members directly.
- *
- * Additionally, for each test, test object is re-created
- * using defaut constructor. Thus, any prepare work can be put
- * into default constructor.
- *
- * Finally, after each test, test object is destroyed independently
- * of test result, so any cleanup work should be located in destructor.
- */
-struct Module_Jmp_data
-{
-
-};
-
-/**
- * This group of declarations is just to register
- * test group in test-application-wide singleton.
- * Name of test group object (auto_ptr_group) shall
- * be unique in tut:: namespace. Alternatively, you
- * you may put it into anonymous namespace.
- */
-typedef test_group<Module_Jmp_data> tf;
-typedef tf::object object;
-tf module_jmp_group("Module_Jmp");
-
-// -----------------------------------------------------------------------
-
 /**
  * Tests goto.
  *
@@ -96,25 +55,16 @@ tf module_jmp_group("Module_Jmp");
  * intA[2] = 1;
  * @endcode
  */
-template<>
-template<>
-void object::test<1>()
-{
+TEST(LargeJmpTest, goto) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Set intA[1]; this means the goto was ignored!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                0);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1))) << "Set intA[1]; this means the goto was ignored!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -132,25 +82,16 @@ void object::test<1>()
  * intA[2] = 1
  * @endcode
  */
-template<>
-template<>
-void object::test<2>()
-{
+TEST(LargeJmpTest, goto_if_false) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Didn't set intA[1]; this means the goto-ed when we had a false value!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                1);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1))) << "Didn't set intA[1]; this means the goto-ed when we had a false value!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -168,10 +109,7 @@ void object::test<2>()
  * intA[2] = 1
  * @endcode
  */
-template<>
-template<>
-void object::test<3>()
-{
+TEST(LargeJmpTest, goto_if_true) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
@@ -180,15 +118,12 @@ void object::test<3>()
 
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Set intA[1]; this means that we failed to goto when we had a true value!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                0);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Set intA[1]; this means that we failed to goto when we had a true value!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -206,10 +141,7 @@ void object::test<3>()
  * intA[2] = 1
  * @endcode
  */
-template<>
-template<>
-void object::test<4>()
-{
+TEST(LargeJmpTest, goto_unless_false) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
@@ -217,53 +149,12 @@ void object::test<4>()
 
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Set intA[1]; this means that we didn't goto but we had a false val",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                0);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-}
-
-// -----------------------------------------------------------------------
-
-
-/**
- * Tests goto_unless (if false)
- *
- * Corresponding kepago listing:
- * @code
- * // intB[0] may or maynot be set by the calling program.
- * intA[0] = 1
- * goto_unless(intB[0]) @aa
- * intA[1] = 1
- * @aa
- * intA[2] = 1
- * @endcode
- */
-template<>
-template<>
-void object::test<5>()
-{
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
-  NullSystem system;
-  RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 1);
-  rlmachine.executeUntilHalted();
-
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Set intA[1]; this means that we gotoed when we had a true val",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                1);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Set intA[1]; this means that we didn't goto but we had a false val";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -292,13 +183,9 @@ void object::test<5>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<6>()
-{
+TEST(LargeJmpTest, goto_on) {
   // Repeat this test to hit each label
-  for(int i = 0; i < 3; ++i)
-  {
+  for (int i = 0; i < 3; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
@@ -306,9 +193,8 @@ void object::test<6>()
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
-    ensure_equals("Wrong destination on goto_on",
-                  rlmachine.getIntValue(IntMemRef('A', 0)),
-                  i);
+    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+        << "Wrong destination on goto_on";
   }
 }
 
@@ -338,10 +224,7 @@ void object::test<6>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<7>()
-{
+TEST(LargeJmpTest, goto_on_illegal) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
   NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
@@ -349,9 +232,8 @@ void object::test<7>()
   rlmachine.setIntValue(IntMemRef('B', 0), 7);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("We jumped somewhere unexpected on a bad value!",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                -1);
+  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "We jumped somewhere unexpected on a bad value!";
 }
 
 // -----------------------------------------------------------------------
@@ -381,12 +263,8 @@ void object::test<7>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<8>()
-{
-  for(int i = 0; i < 3; ++i)
-  {
+TEST(LargeJmpTest, goto_case) {
+  for (int i = 0; i < 3; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
@@ -394,9 +272,8 @@ void object::test<8>()
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
-    ensure_equals("We jumped somewhere unexpected on a bad value!",
-                  rlmachine.getIntValue(IntMemRef('A', 0)),
-                  i);
+    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+        << "We jumped somewhere unexpected on a bad value!";
   }
 
   // Now test the default value
@@ -407,9 +284,8 @@ void object::test<8>()
   rlmachine.setIntValue(IntMemRef('B', 0), 29);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("We jumped somewhere unexpected on a bad value!",
-                rlmachine.getIntValue(IntMemRef(0, 0)),
-                3);
+  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef(0, 0)))
+      << "We jumped somewhere unexpected on a bad value!";
 }
 
 // -----------------------------------------------------------------------
@@ -433,67 +309,19 @@ void object::test<8>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<9>()
-{
+TEST(LargeJmpTest, gosub_0) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("intA[1] is unset; this means the gosub or ret was ignored!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                1);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-}
-
-// -----------------------------------------------------------------------
-
-/**
- * Tests gosub
- *
- * Corresponding kepago listing:
- * @code
- * intA[0] = 1
- * gosub @sub
- * intA[2] = 1
- * goto @end
- *
- * @sub
- * intA[1] = 1
- * ret()
- *
- * // If we fall through, reset the flag
- * intA[1] = 0
- * @end
- * @endcode
- */
-template<>
-template<>
-void object::test<10>()
-{
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
-  NullSystem system;
-  RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
-
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("intA[1] is unset; this means the gosub or ret was ignored!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                1);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "intA[1] is unset; this means the gosub or ret was ignored!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -505,25 +333,19 @@ void object::test<10>()
  * @code
  * @endcode
  */
-template<>
-template<>
-void object::test<11>()
-{
+TEST(LargeJmpTest, gosub_if_false) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Set intA[1]; this means we gosubed on a false value (or ret problem)",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                0);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Set intA[1]; this means we gosubed on a false value (or ret problem)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -535,10 +357,7 @@ void object::test<11>()
  * @code
  * @endcode
  */
-template<>
-template<>
-void object::test<12>()
-{
+TEST(LargeJmpTest, gosub_if_true) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
@@ -547,15 +366,12 @@ void object::test<12>()
 
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Didn't set intA[1]; didn't gosub on true!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                1);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Didn't set intA[1]; didn't gosub on true!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -580,25 +396,20 @@ void object::test<12>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<13>()
-{
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
+TEST(LargeJmpTest, gosub_unless_false) {
+  libReallive::Archive arc(
+      locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Didn't set intA[1]; didn't gosub on false!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                1);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Didn't set intA[1]; didn't gosub on false!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -622,11 +433,9 @@ void object::test<13>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<14>()
-{
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
+TEST(LargeJmpTest, gosub_unless_true) {
+  libReallive::Archive arc(
+      locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -634,15 +443,12 @@ void object::test<14>()
 
   rlmachine.executeUntilHalted();
 
-  ensure_equals("Didn't set precondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
-  ensure_equals("Set intA[1]; this means we gosubed on a true value (or ret problem)",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                0);
-  ensure_equals("Didn't set postcondition (!?!?)",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                1);
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Set intA[1]; this means we gosubed on a true value (or ret problem)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -672,22 +478,18 @@ void object::test<14>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<15>()
-{
-  for(int i = 0; i < 3; ++i)
-  {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
+TEST(LargeJmpTest, gosub_case) {
+  for (int i = 0; i < 3; ++i) {
+    libReallive::Archive arc(
+        locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
     NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
-    ensure_equals("We jumped somewhere unexpected on a bad value!",
-                  rlmachine.getIntValue(IntMemRef('A', 0)),
-                  i);
+    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+        << "We jumped somewhere unexpected on a bad value!";
   }
 
   // Now test the default value
@@ -698,9 +500,8 @@ void object::test<15>()
   rlmachine.setIntValue(IntMemRef('B', 0), 29);
   rlmachine.executeUntilHalted();
 
-  ensure_equals("We jumped somewhere unexpected on a bad value!",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                3);
+  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "We jumped somewhere unexpected on a bad value!";
 }
 
 // -----------------------------------------------------------------------
@@ -728,12 +529,8 @@ void object::test<15>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<16>()
-{
-  for(int i = 1; i < 4; ++i)
-  {
+TEST(LargeJmpTest, jump) {
+  for (int i = 1; i < 4; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
@@ -741,9 +538,8 @@ void object::test<16>()
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
-    ensure_equals("We jumped somewhere unexpected on a bad value!",
-                  rlmachine.getIntValue(IntMemRef('A', 0)),
-                  i);
+    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+        << "We jumped somewhere unexpected on a bad value!";
   }
 }
 
@@ -771,12 +567,8 @@ void object::test<16>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<17>()
-{
-  for(int i = 1; i < 4; ++i)
-  {
+TEST(LargeJmpTest, jumpTest) {
+  for (int i = 1; i < 4; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
@@ -784,14 +576,12 @@ void object::test<17>()
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
-    ensure_equals("We jumped somewhere unexpected on a bad value!",
-                  rlmachine.getIntValue(IntMemRef('A', 0)),
-                  i);
+    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+        << "We jumped somewhere unexpected on a bad value!";
   }
 }
 
 // -----------------------------------------------------------------------
-
 
 /**
  *
@@ -815,28 +605,22 @@ void object::test<17>()
  * ret
  * @endcode
  */
-template<>
-template<>
-void object::test<18>()
-{
-  for(int i = 1; i < 4; ++i)
-  {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcallTest_0.TXT"));
+TEST(LargeJmpTest, farcall) {
+  for (int i = 1; i < 4; ++i) {
+    libReallive::Archive arc(
+        locateTestCase("Module_Jmp_SEEN/farcallTest_0.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
     rlmachine.executeUntilHalted();
 
-    ensure_equals("Precondition not set! (!?!?!?!)",
-                  rlmachine.getIntValue(IntMemRef('A', 0)),
-                  1);
-    ensure_equals("We jumped somewhere unexpected on a bad value!",
-                  rlmachine.getIntValue(IntMemRef('A', 1)),
-                  i);
-    ensure_equals("Postcondition not set! (We didn't return correctly!)",
-                  rlmachine.getIntValue(IntMemRef('A', 2)),
-                  1);
+    EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+        << "Precondition not set! (!?!?!?!)";
+    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 1)))
+        << "We jumped somewhere unexpected on a bad value!";
+    EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 2)))
+        << "Postcondition not set! (We didn't return correctly!)";
   }
 }
 
@@ -869,10 +653,7 @@ void object::test<18>()
  * @end
  * @endcode
  */
-template<>
-template<>
-void object::test<19>()
-{
+TEST(LargeJmpTest, gosub_with) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_with_0.TXT"));
   NullSystem system;
   RLMachine rlmachine(system, arc);
@@ -883,36 +664,28 @@ void object::test<19>()
   // @nextaction Continue writing the test case from here.
 
   // Original states that shouldn't be modified
-  ensure_equals("Precondition not set! (!?!?!?!) (intB[0])",
-                rlmachine.getIntValue(IntMemRef('B', 0)),
-                1);
-  ensure_equals("Precondition not set! (!?!?!?!) (intB[1])",
-                rlmachine.getIntValue(IntMemRef('B', 1)),
-                2);
-  ensure_equals("Precondition not set! (!?!?!?!) (strS[0])",
-                rlmachine.getStringValue(STRS_LOCATION, 0),
-                "one");
-  ensure_equals("Precondition not set! (!?!?!?!) (strS[1])",
-                rlmachine.getStringValue(STRS_LOCATION, 1),
-                "two");
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('B', 0)))
+      << "Precondition not set! (!?!?!?!) (intB[0])";
+  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('B', 1)))
+      << "Precondition not set! (!?!?!?!) (intB[1])";
+  EXPECT_EQ("one", rlmachine.getStringValue(STRS_LOCATION, 0))
+      << "Precondition not set! (!?!?!?!) (strS[0])";
+  EXPECT_EQ("two", rlmachine.getStringValue(STRS_LOCATION, 1))
+      << "Precondition not set! (!?!?!?!) (strS[1])";
 
   // Check the intermediate values that were calculated in the
   // functions
-  ensure_equals("Wrong intermediary value for strS[3] in @stringTest!",
-                rlmachine.getStringValue(STRS_LOCATION, 3),
-                "onetwo");
-  ensure_equals("Wrong intermediary value for intD[0] in @intTest!",
-                rlmachine.getIntValue(IntMemRef('D', 0)),
-                3);
+  EXPECT_EQ("onetwo", rlmachine.getStringValue(STRS_LOCATION, 3))
+      << "Wrong intermediary value for strS[3] in @stringTest!";
+  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('D', 0)))
+      << "Wrong intermediary value for intD[0] in @intTest!";
 
   // Make sure that intA[0] and intA[1] are set correctly when the
   // gosub_with returns
-  ensure_equals("Wrong final value for intA[0]!",
-                rlmachine.getIntValue(IntMemRef('A', 0)),
-                3);
-  ensure_equals("Wrong final value for intA[1]!",
-                rlmachine.getIntValue(IntMemRef('A', 1)),
-                6);
+  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Wrong final value for intA[0]!";
+  EXPECT_EQ(6, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Wrong final value for intA[1]!";
 }
 
 // -----------------------------------------------------------------------
@@ -974,12 +747,8 @@ static int recFib(int input) {
  * @endcode
  *
  */
-template<>
-template<>
-void object::test<20>()
-{
-  for(int i = 0; i < 10; ++i)
-  {
+TEST(LargeJmpTest, fibonacci) {
+  for (int i = 0; i < 10; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
     NullSystem system;
     RLMachine rlmachine(system, arc);
@@ -990,9 +759,8 @@ void object::test<20>()
 
     stringstream ss;
     ss << "Wrong output value for fib(" << i << ")";
-    ensure_equals(ss.str().c_str(),
-                  rlmachine.getIntValue(IntMemRef('E', 0)),
-                  recFib(i));
+    EXPECT_EQ(recFib(i), rlmachine.getIntValue(IntMemRef('E', 0)))
+        << ss.str().c_str();
   }
 }
 
@@ -1022,15 +790,11 @@ void object::test<20>()
  * rtl_with(3 + intL[0])
  * @endcode
  */
-template<>
-template<>
-void object::test<21>()
-{
-  for(int offset = 0; offset < 2; ++offset)
-  {
-    for(int entrypoint = 1; entrypoint < 4; ++entrypoint)
-    {
-      libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/farcall_withTest.TXT"));
+TEST(LargeJmpTest, farcall_with) {
+  for (int offset = 0; offset < 2; ++offset) {
+    for (int entrypoint = 1; entrypoint < 4; ++entrypoint) {
+      libReallive::Archive arc(
+          locateTestCase("Module_Jmp_SEEN/farcall_withTest.TXT"));
       NullSystem system;
       RLMachine rlmachine(system, arc);
       rlmachine.attachModule(new JmpModule);
@@ -1042,25 +806,8 @@ void object::test<21>()
       stringstream ss;
       ss << "Wrong output value for pair (" << offset << ", " << entrypoint
          << ") in farcall_with test!";
-      ensure_equals(ss.str().c_str(),
-                    rlmachine.getIntValue(IntMemRef('A', 1)),
-                    entrypoint + offset);
+      EXPECT_EQ(entrypoint + offset, rlmachine.getIntValue(IntMemRef('A', 1)))
+          << ss.str().c_str();
     }
   }
-}
-
-// -----------------------------------------------------------------------
-
-// template<>
-// template<>
-// void object::test<22>()
-// {
-// //   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/graphicTest.TXT"));
-// //   NullSystem system;
-// //   RLMachine rlmachine(system, arc);
-// //   rlmachine.attachModule(new JmpModule);
-// //   rlmachine.attachModule(new MsgModule);
-// //   rlmachine.executeUntilHalted();
-// }
-
 }

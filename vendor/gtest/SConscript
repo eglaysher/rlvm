@@ -20,4 +20,4 @@ libgtest_files = [
 component_env.StaticLibrary('libgtest', libgtest_files)
 component_env.Install('$LIBRARY_DIR', 'libgtest.a')
 
-#env.AddStaticLibraryTo("gtest", "test")
+env.AddStaticLibraryTo("gtest", "TEST")

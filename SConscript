@@ -226,21 +226,23 @@ test_env = root_env.Clone()
 test_env.Append(CPPPATH = ["#/test"])
 
 test_case_files = [
-  "test/Effect_TUT.cpp",
-  "test/ExpressionTest_TUT.cpp",
-  "test/Gameexe_TUT.cpp",
-  "test/GraphicsObject_TUT.cpp",
-  "test/LazyArray_TUT.cpp",
-  "test/Module_Jmp_TUT.cpp",
-  "test/Module_Mem_TUT.cpp",
-  "test/Module_Str_TUT.cpp",
-  "test/Module_Sys_TUT.cpp",
-  "test/RLMachine_TUT.cpp",
-  "test/RLOperation_TUT.cpp",
-  "test/Regressions_TUT.cpp",
-  "test/SoundSystem_TUT.cpp",
-  "test/TextSystem_TUT.cpp",
-  "test/testUtils.cpp"
+  "test/testUtils.cpp",
+  "test/gameexe_test.cpp",
+  "test/rlmachine_test.cpp",
+  "test/lazy_array_test.cpp",
+  "test/graphics_object_test.cpp",
+  "test/rloperation_test.cpp",
+  "test/regressions_test.cpp",
+  "test/text_system_test.cpp",
+  "test/expression_test.cpp",
+  "test/sound_system_test.cpp",
+  "test/effect_test.cpp",
+
+  # large tests
+  "test/large_sys_test.cpp",
+  "test/large_str_test.cpp",
+  "test/large_mem_test.cpp",
+  "test/large_jmp_test.cpp"
 ]
 
 null_system_files = [
@@ -257,6 +259,7 @@ null_system_files = [
 if env['BUILD_RLC_TESTS']:
   test_env.RlvmProgram('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
                                      test_case_files],
+                       use_lib_set = ["TEST"],
                        rlvm_libs = ["rlvm"])
   test_env.Install('$OUTPUT_DIR', 'rlvmTests')
 

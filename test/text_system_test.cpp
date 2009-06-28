@@ -25,6 +25,9 @@
 //
 // -----------------------------------------------------------------------
 
+#include "gtest/gtest.h"
+#include "gmock/gmock.h"
+
 #include "MachineBase/RLMachine.hpp"
 #include "LongOperations/TextoutLongOperation.hpp"
 #include "NullSystem/NullSystem.hpp"
@@ -33,28 +36,20 @@
 #include "libReallive/archive.h"
 
 #include "testUtils.hpp"
-#include "tut/tut.hpp"
 
 #include <memory>
 #include <boost/assign/list_of.hpp>
 
 using namespace std;
 
-namespace tut
-{
+using ::testing::_;
 
-struct TextSystem_data
-{
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  NullSystem system;
-  RLMachine rlmachine;
-
-  TextSystem_data()
-    : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-      system(locateTestCase("Gameexe_data/Gameexe.ini")),
-      rlmachine(system, arc)
-  {
+class TextSystemTest : public ::testing::Test {
+ protected:
+  TextSystemTest()
+      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
+        system(locateTestCase("Gameexe_data/Gameexe.ini")),
+        rlmachine(system, arc) {
     system.text().setActiveWindow(0);
   }
 
@@ -70,108 +65,45 @@ struct TextSystem_data
     return system.text().currentPage();
   }
 
-  void writeString(const std::string& text, bool nowait)
-  {
+  void writeString(const std::string& text, bool nowait) {
     auto_ptr<TextoutLongOperation> tolo(
       new TextoutLongOperation(rlmachine, text));
 
-    if(nowait)
+    if (nowait)
       tolo->setNoWait();
 
     while(!(*tolo)(rlmachine));
   }
 
-  void snapshotAndClear()
-  {
+  void snapshotAndClear() {
     TextSystem& text = rlmachine.system().text();
     text.snapshot();
     text.textWindow(0)->clearWin();
     text.newPageOnWindow(0);
   }
+
+  // Use any old test case; it isn't getting executed
+  libReallive::Archive arc;
+  NullSystem system;
+  RLMachine rlmachine;
 };
 
-typedef test_group<TextSystem_data> tf;
-typedef tf::object object;
-tf TextSystem_data("TextSystem");
-
-/**
- * Tests to make sure we can display a text string while displaying
- * text normally.
- */
-template<>
-template<>
-void object::test<1>()
-{
+TEST_F(TextSystemTest, NormalTextDisplay) {
   writeString("A text string.", false);
-
-  // Make sure all the data was printed correctly
-  ensure_equals("Data was printed correctly!",
-                getTextWindow(0).currentContents(),
-                "A text string.");
+  EXPECT_EQ("A text string.", getTextWindow(0).currentContents());
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Same as <1>, but with nowait enabled
- */
-template<>
-template<>
-void object::test<2>()
-{
+TEST_F(TextSystemTest, NormalTextWithNoWait) {
   writeString("A text string.", true);
-
-  // Make sure all the data was printed correctly
-  ensure_equals("Data was printed correctly!",
-                getTextWindow(0).currentContents(),
-                "A text string.");
+  EXPECT_EQ("A text string.", getTextWindow(0).currentContents());
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Test the printing of an empty string. (This happens all the time in
- * Planetarian.)
- */
-template<>
-template<>
-void object::test<3>()
-{
+TEST_F(TextSystemTest, PrintEmptyString) {
   writeString("", false);
-
-  // Make sure all the data was printed correctly
-  ensure_equals("Data was printed correctly!",
-                getTextWindow(0).currentContents(),
-                "");
+  EXPECT_EQ("", getTextWindow(0).currentContents());
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Test the printing of an empty string. (This happens all the time in
- * Planetarian.)
- */
-template<>
-template<>
-void object::test<4>()
-{
-  writeString("", true);
-
-  // Make sure all the data was printed correctly
-  ensure_equals("Data was printed correctly!",
-                getTextWindow(0).currentContents(),
-                "");
-}
-
-// -----------------------------------------------------------------------
-
-/**
- * Check the functionality of the backlog.
- */
-template<>
-template<>
-void object::test<5>()
-{
+TEST_F(TextSystemTest, BackLogFunctionality) {
   TextSystem& text = rlmachine.system().text();
 
   writeString("Page one.", true);
@@ -182,54 +114,48 @@ void object::test<5>()
   snapshotAndClear();
   writeString("Page four.", true);
 
-  ensure_equals("We're on the final page!", getTextWindow(0).currentContents(),
-                "Page four.");
-  ensure_equals("We're not reading the backlog.", text.isReadingBacklog(), false);
+  EXPECT_EQ("Page four.", getTextWindow(0).currentContents())
+      << "We're on the final page!";
+  EXPECT_FALSE(text.isReadingBacklog()) << "We're not reading the backlog.";
 
   // Reply our way back to the front
   text.backPage();
-  ensure_equals("We're on the 3rd page!", getTextWindow(0).currentContents(),
-                "Page three.");
-  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+  EXPECT_EQ("Page three.", getTextWindow(0).currentContents())
+      << "We're on the 3rd page!";
+  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
 
   text.backPage();
-  ensure_equals("We're on the 2nd page!", getTextWindow(0).currentContents(),
-                "Page two.");
-  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+  EXPECT_EQ("Page two.", getTextWindow(0).currentContents())
+      << "We're on the 2nd page!";
+  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
 
   text.backPage();
-  ensure_equals("We're on the 1st page!", getTextWindow(0).currentContents(),
-                "Page one.");
-  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+  EXPECT_EQ("Page one.", getTextWindow(0).currentContents())
+      << "We're on the 1st page!";
+  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
 
   // Trying to go back past the first page doesn't do anything.
   text.backPage();
-  ensure_equals("We're still on the 1st page!", getTextWindow(0).currentContents(),
-                "Page one.");
-  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+  EXPECT_EQ("Page one.", getTextWindow(0).currentContents())
+      << "We're still on the 1st page!";
+  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
 
   text.forwardPage();
-  ensure_equals("We're back to the 2nd page!", getTextWindow(0).currentContents(),
-                "Page two.");
-  ensure_equals("We're reading the backlog.", text.isReadingBacklog(), true);
+  EXPECT_EQ("Page two.", getTextWindow(0).currentContents())
+      << "We're back to the 2nd page!";
+  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
 
   text.stopReadingBacklog();
-  ensure_equals("We're back to the current page!",
-                getTextWindow(0).currentContents(),
-                "Page four.");
-  ensure_equals("We're no longer reading the backlog.",
-                text.isReadingBacklog(), false);
+  EXPECT_EQ("Page four.", getTextWindow(0).currentContents())
+      << "We're back to the current page!";
+  EXPECT_FALSE(text.isReadingBacklog())
+      << "We're no longer reading the backlog.";
 }
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that the TextPage::name construct repeats correctly.
- */
-template<>
-template<>
-void object::test<6>()
-{
+// Tests that the TextPage::name construct repeats correctly.
+TEST_F(TextSystemTest, DISABLED_TextPageNameRepeats) {
   NullTextSystem& sys = getTextSystem();
   currentPage().name("Bob", "");
   getTextWindow(0).log().ensure("setName", "Bob", "");
@@ -243,13 +169,8 @@ void object::test<6>()
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that the TextPgae::hardBreak construct repeats correctly.
- */
-template<>
-template<>
-void object::test<7>()
-{
+// Tests that the TextPgae::hardBreak construct repeats correctly.
+TEST_F(TextSystemTest, DISABLED_TextPageHardBreakRepeats) {
   NullTextSystem& sys = getTextSystem();
   currentPage().hardBrake();
   getTextWindow(0).log().ensure("hardBrake");
@@ -263,13 +184,8 @@ void object::test<7>()
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that the TextPage::resetIndentation construct repeats correctly.
- */
-template<>
-template<>
-void object::test<8>()
-{
+// Tests that the TextPage::resetIndentation construct repeats correctly.
+TEST_F(TextSystemTest, DISABLED_TextPageResetIndentationRepeats) {
   NullTextSystem& sys = getTextSystem();
   writeString("test", true);
   currentPage().resetIndentation();
@@ -284,13 +200,8 @@ void object::test<8>()
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that the TextPage::fontColor construct repeats correctly.
- */
-template<>
-template<>
-void object::test<9>()
-{
+// Tests that the TextPage::fontColor construct repeats correctly.
+TEST_F(TextSystemTest, DISABLED_TextPageFontColorRepeats) {
   NullTextSystem& sys = getTextSystem();
   currentPage().fontColour(0);
   getTextWindow(0).log().ensure("setFontColor");
@@ -304,13 +215,8 @@ void object::test<9>()
 
 // -----------------------------------------------------------------------
 
-/**
- * Tests that the ruby constructs repeat correctly.
- */
-template<>
-template<>
-void object::test<10>()
-{
+// Tests that the ruby constructs repeat correctly.
+TEST_F(TextSystemTest, DISABLED_RubyRepeats) {
   NullTextSystem& sys = getTextSystem();
   currentPage().markRubyBegin();
   writeString("With Ruby", true);
@@ -325,5 +231,3 @@ void object::test<10>()
   getTextWindow(0).log().ensure("markRubyBegin");
   getTextWindow(0).log().ensure("displayRubyText", "ruby");
 }
-
-};
