@@ -1,0 +1,16 @@
+# Builds the coverage data for the rlvm unit tests.
+
+import os
+
+Import('env')
+
+env.Command(Dir("build/coverage_report"), "$BUILD_DIR/rlvmTests",
+  ["rm -f build/coverage/base.info build/coverage/cleaned.info",
+  "lcov --directory build/coverage/ --zerocounters",
+  "build/coverage/rlvmTests",
+  "lcov --directory build/coverage/ --base-directory . --capture --output-file build/coverage/base.info",
+  "lcov -l build/coverage/base.info | grep -v \"`pwd`\" | cut -d: -f1 > build/coverage/remove_list",
+  "lcov -l build/coverage/base.info | grep vendor | cut -d: -f1 >> build/coverage/remove_list",
+  "lcov -r build/coverage/base.info `cat build/coverage/remove_list` > build/coverage/cleaned.info",
+  "genhtml --output-directory build/coverage_report/ --title \"RLVM Code Coverage\" build/coverage/cleaned.info"],
+            ENV = {'HOME': os.environ['HOME']})

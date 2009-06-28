@@ -9,10 +9,14 @@ EnsureSConsVersion(0, 98, 5)
 
 AddOption('--release', action='store_true',
           help='Builds an optimized release for the platform.')
+AddOption('--coverage', action='store_true',
+          help='Builds the unit tests for running through gcov, runs them, '
+          'runs gcov, and then generates an html report with lcov.')
 AddOption('--fullstatic', action='store_true',
           help='Builds a static binary, linking in all libraries.')
 AddOption('--othercodesets', action='store_true', default=False,
           help='Include Chinese and Korean code pages in rlBabel support.')
+
 
 # Set libraries used by all configurations and all binaries in rlvm.
 env = Environment(
@@ -295,6 +299,7 @@ if env['BUILD_RLC_TESTS'] == True:
                  duplicate=0,
                  exports='env')
 
+duplicate_files = 0
 # Hacky Temporary Differentiation between release and debug:
 if GetOption('release'):
   env["BUILD_DIR"] = "#/build/release"
@@ -305,6 +310,20 @@ if GetOption('release'):
     CPPFLAGS = [
       "-O2"
     ]
+  )
+elif GetOption('coverage'):
+  env["BUILD_DIR"] = "#/build/coverage"
+  env['BUILD_TYPE'] = "Release"
+
+  env.Append(
+    CPPFLAGS = [
+      "-O0",
+      "-g",
+      "-fprofile-arcs",
+      "-ftest-coverage"
+    ],
+
+    LIBS = [ "gcov" ]
   )
 else:
   # Add debugging flags to all binaries here
@@ -322,6 +341,12 @@ env.SConscript("SConscript",
 
 if GetOption("fullstatic") and env['PLATFORM'] == 'darwin':
   env.SConscript("SConscript.cocoa",
+                 build_dir="$BUILD_DIR/",
+                 duplicate=0,
+                 exports='env')
+
+if GetOption("coverage"):
+  env.SConscript("SConscript.coverage",
                  build_dir="$BUILD_DIR/",
                  duplicate=0,
                  exports='env')
