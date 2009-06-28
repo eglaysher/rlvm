@@ -237,6 +237,7 @@ test_case_files = [
   "test/expression_test.cpp",
   "test/sound_system_test.cpp",
   "test/effect_test.cpp",
+  "test/rlbabel_test.cpp",
 
   # large tests
   "test/large_sys_test.cpp",

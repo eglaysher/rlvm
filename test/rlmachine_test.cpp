@@ -59,6 +59,22 @@ class RLMachineTest : public ::testing::Test {
   RLMachine rlmachine;
 };
 
+TEST_F(RLMachineTest, RejectsDoubleAttachs) {
+  rlmachine.attachModule(new StrModule);
+  EXPECT_THROW({rlmachine.attachModule(new StrModule); },
+               rlvm::Exception);
+}
+
+TEST_F(RLMachineTest, ReturnFromFarcallMismatch) {
+  EXPECT_THROW({rlmachine.returnFromFarcall(); },
+               rlvm::Exception);
+}
+
+TEST_F(RLMachineTest, ReturnFromGosubMismatch) {
+  EXPECT_THROW({rlmachine.returnFromGosub(); },
+               rlvm::Exception);
+}
+
 TEST_F(RLMachineTest, Halts) {
   EXPECT_TRUE(!rlmachine.halted()) << "Machine does not start halted.";
   rlmachine.halt();
