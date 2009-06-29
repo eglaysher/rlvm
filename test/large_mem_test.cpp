@@ -32,7 +32,7 @@
 #include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 
 #include "testUtils.hpp"
 
@@ -50,7 +50,7 @@ using libReallive::IntMemRef;
 //
 TEST(LargeMemTest, setarray_0) {
   libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setarray_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -75,7 +75,7 @@ TEST(LargeMemTest, setarray_0) {
 //   setrng(intA[0], intA[3])
 TEST(LargeMemTest, setrng_0) {
   libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -99,7 +99,7 @@ TEST(LargeMemTest, setrng_0) {
 //   setrng(intA[0], intA[3], 4)
 TEST(LargeMemTest, setrng_1) {
   libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -119,7 +119,7 @@ TEST(LargeMemTest, setrng_1) {
 // Tests cpyrng_0.
 TEST(LargeMemTest, cpyrng_0) {
   libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/cpyrng_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -149,7 +149,7 @@ TEST(LargeMemTest, cpyrng_0) {
 TEST(LargeMemTest, setarray_stepped_0) {
   libReallive::Archive arc(
       locateTestCase("Module_Mem_SEEN/setarray_stepped_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -178,7 +178,7 @@ TEST(LargeMemTest, setarray_stepped_0) {
 TEST(LargeMemTest, setrng_stepped_0) {
   libReallive::Archive arc(
       locateTestCase("Module_Mem_SEEN/setrng_stepped_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -207,7 +207,7 @@ TEST(LargeMemTest, setrng_stepped_0) {
 TEST(LargeMemTest, setrng_stepped_1) {
   libReallive::Archive arc(
       locateTestCase("Module_Mem_SEEN/setrng_stepped_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -236,7 +236,7 @@ TEST(LargeMemTest, setrng_stepped_1) {
 //   cpyvars(intA[0], 2, intB[1], intB[3], intB[6])
 TEST(LargeMemTest, cpyvars) {
   libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/cpyvars_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();
@@ -260,7 +260,7 @@ TEST(LargeMemTest, cpyvars) {
 //
 TEST(LargeMemTest, sum_0) {
   libReallive::Archive arc(locateTestCase("Module_Mem_SEEN/sum_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new MemModule);
   rlmachine.executeUntilHalted();

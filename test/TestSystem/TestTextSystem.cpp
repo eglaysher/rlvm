@@ -25,30 +25,30 @@
 //
 // -----------------------------------------------------------------------
 
-#include "NullTextSystem.hpp"
-#include "NullTextWindow.hpp"
+#include "TestTextSystem.hpp"
+#include "TestTextWindow.hpp"
 
 #include <boost/shared_ptr.hpp>
 
 // -----------------------------------------------------------------------
 
-NullTextSystem::NullTextSystem(System& system, Gameexe& gexe)
+TestTextSystem::TestTextSystem(System& system, Gameexe& gexe)
     : TextSystem(system, gexe) {}
 
 // -----------------------------------------------------------------------
 
-NullTextSystem::~NullTextSystem() { }
+TestTextSystem::~TestTextSystem() { }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<TextWindow> NullTextSystem::textWindow(int text_window_num)
+boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num)
 {
   WindowMap::iterator it = text_window_.find(text_window_num);
   if(it == text_window_.end())
   {
     it = text_window_.insert(std::make_pair(
       text_window_num, boost::shared_ptr<TextWindow>(
-          new NullTextWindow(system(), text_window_num)))).first;
+          new TestTextWindow(system(), text_window_num)))).first;
   }
 
   return it->second;

@@ -20,20 +20,20 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __NullTextWindow_hpp__
-#define __NullTextWindow_hpp__
+#ifndef __TestTextWindow_hpp__
+#define __TestTextWindow_hpp__
 
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/TextWindow.hpp"
 
-#include "NullSystem/MockLog.hpp"
+#include "TestSystem/MockLog.hpp"
 
-class NullTextWindow : public TextWindow
+class TestTextWindow : public TextWindow
 {
 public:
-  NullTextWindow(System& system, int x);
-  ~NullTextWindow();
+  TestTextWindow(System& system, int x);
+  ~TestTextWindow();
   virtual void execute() {}
 
   virtual void setFontColor(const std::vector<int>& colour_data);

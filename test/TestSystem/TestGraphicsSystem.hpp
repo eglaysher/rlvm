@@ -25,27 +25,27 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __NullGraphicsSystem_hpp__
-#define __NullGraphicsSystem_hpp__
+#ifndef __TestGraphicsSystem_hpp__
+#define __TestGraphicsSystem_hpp__
 
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include "NullSystem/MockLog.hpp"
+#include "TestSystem/MockLog.hpp"
 
 #include <boost/shared_ptr.hpp>
 
 // -----------------------------------------------------------------------
 
 class System;
-class NullSurface;
+class TestSurface;
 
 // -----------------------------------------------------------------------
 
-class NullGraphicsSystem : public GraphicsSystem
+class TestGraphicsSystem : public GraphicsSystem
 {
 public:
-  NullGraphicsSystem(System& system, Gameexe& gexe);
+  TestGraphicsSystem(System& system, Gameexe& gexe);
 
   virtual void executeGraphicsSystem(RLMachine&) { }
 
@@ -75,7 +75,7 @@ private:
   MockLog graphics_system_log_;
 
   /// Map between device contexts number and their surface.
-  boost::shared_ptr<NullSurface> display_contexts_[16];
+  boost::shared_ptr<TestSurface> display_contexts_[16];
 };
 
 #endif

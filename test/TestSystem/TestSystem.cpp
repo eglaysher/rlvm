@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2007 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,53 +25,45 @@
 //
 // -----------------------------------------------------------------------
 
-#include "NullSystem/NullEventSystem.hpp"
+#include "TestSystem.hpp"
+#include "testUtils.hpp"
+#include <iostream>
+
+#include "Systems/Base/SystemError.hpp"
+
+using namespace std;
 
 // -----------------------------------------------------------------------
-// NullEventSystem
+// TestSystem
 // -----------------------------------------------------------------------
-NullEventSystem::NullEventSystem(Gameexe& gexe)
-  : EventSystem(gexe),
-    event_system_mock_(new EventSystemMockHandler),
-    mock_log_("NullEventSystem") {
+TestSystem::TestSystem(const std::string& path_to_gameexe)
+  : gameexe_(path_to_gameexe),
+    null_graphics_system(*this, gameexe_),
+    null_event_system(gameexe_),
+    null_text_system(*this, gameexe_),
+    null_sound_system(*this
+)
+{}
+
+// -----------------------------------------------------------------------
+
+TestSystem::TestSystem()
+  : gameexe_(),
+    null_graphics_system(*this, gameexe_),
+    null_event_system(gameexe_),
+    null_text_system(*this, gameexe_),
+    null_sound_system(*this)
+{
+  gameexe_("__GAMEPATH") = locateTestCase("Gameroot") + "/";
+  gameexe_("FOLDNAME.G00") = "G00";
 }
 
 // -----------------------------------------------------------------------
 
-void NullEventSystem::setMockHandler(
-  const boost::shared_ptr<EventSystemMockHandler>& handler) {
-  event_system_mock_ = handler;
-}
+void TestSystem::run(RLMachine& machine) { /* do nothing */ }
 
-// -----------------------------------------------------------------------
-
-void NullEventSystem::executeEventSystem(RLMachine& machine) {
-}
-
-// -----------------------------------------------------------------------
-
-bool NullEventSystem::shiftPressed() const {
-  mock_log_.recordFunction("shift_pressed");
-  return event_system_mock_->shiftPressed();
-}
-
-// -----------------------------------------------------------------------
-
-bool NullEventSystem::ctrlPressed() const {
-  mock_log_.recordFunction("ctrl_pressed");
-  return event_system_mock_->ctrlPressed();
-}
-
-// -----------------------------------------------------------------------
-
-unsigned int NullEventSystem::getTicks() const {
-  mock_log_.recordFunction("get_ticks");
-  return event_system_mock_->getTicks();
-}
-
-// -----------------------------------------------------------------------
-
-void NullEventSystem::wait(unsigned int milliseconds) const {
-  // waiting is a noop.
-  mock_log_.recordFunction("wait", milliseconds);
-}
+GraphicsSystem& TestSystem::graphics() { return null_graphics_system; }
+EventSystem& TestSystem::event() { return null_event_system; }
+Gameexe& TestSystem::gameexe() { return gameexe_; }
+TextSystem& TestSystem::text() { return null_text_system; }
+SoundSystem& TestSystem::sound() { return null_sound_system; }

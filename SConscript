@@ -247,14 +247,14 @@ test_case_files = [
 ]
 
 null_system_files = [
-  "test/NullSystem/MockLog.cpp",
-  "test/NullSystem/NullEventSystem.cpp",
-  "test/NullSystem/NullGraphicsSystem.cpp",
-  "test/NullSystem/NullSoundSystem.cpp",
-  "test/NullSystem/NullSurface.cpp",
-  "test/NullSystem/NullSystem.cpp",
-  "test/NullSystem/NullTextSystem.cpp",
-  "test/NullSystem/NullTextWindow.cpp"
+  "test/TestSystem/MockLog.cpp",
+  "test/TestSystem/TestEventSystem.cpp",
+  "test/TestSystem/TestGraphicsSystem.cpp",
+  "test/TestSystem/TestSoundSystem.cpp",
+  "test/TestSystem/TestSurface.cpp",
+  "test/TestSystem/TestSystem.cpp",
+  "test/TestSystem/TestTextSystem.cpp",
+  "test/TestSystem/TestTextWindow.cpp"
 ]
 
 if env['BUILD_RLC_TESTS']:

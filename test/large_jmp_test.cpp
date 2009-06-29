@@ -34,7 +34,7 @@
 #include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 
 #include "testUtils.hpp"
 
@@ -56,7 +56,7 @@ using namespace libReallive;
  */
 TEST(LargeJmpTest, goto) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
@@ -83,7 +83,7 @@ TEST(LargeJmpTest, goto) {
  */
 TEST(LargeJmpTest, goto_if_false) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
@@ -110,7 +110,7 @@ TEST(LargeJmpTest, goto_if_false) {
  */
 TEST(LargeJmpTest, goto_if_true) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 1);
@@ -142,7 +142,7 @@ TEST(LargeJmpTest, goto_if_true) {
  */
 TEST(LargeJmpTest, goto_unless_false) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
 
@@ -186,7 +186,7 @@ TEST(LargeJmpTest, goto_on) {
   // Repeat this test to hit each label
   for (int i = 0; i < 3; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
-    NullSystem system;
+    TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
@@ -225,7 +225,7 @@ TEST(LargeJmpTest, goto_on) {
  */
 TEST(LargeJmpTest, goto_on_illegal) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
-  NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
+  TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 7);
@@ -265,7 +265,7 @@ TEST(LargeJmpTest, goto_on_illegal) {
 TEST(LargeJmpTest, goto_case) {
   for (int i = 0; i < 3; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
-    NullSystem system;
+    TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
@@ -277,7 +277,7 @@ TEST(LargeJmpTest, goto_case) {
 
   // Now test the default value
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 29);
@@ -310,7 +310,7 @@ TEST(LargeJmpTest, goto_case) {
  */
 TEST(LargeJmpTest, gosub_0) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
@@ -334,7 +334,7 @@ TEST(LargeJmpTest, gosub_0) {
  */
 TEST(LargeJmpTest, gosub_if_false) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
@@ -358,7 +358,7 @@ TEST(LargeJmpTest, gosub_if_false) {
  */
 TEST(LargeJmpTest, gosub_if_true) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 1);
@@ -398,7 +398,7 @@ TEST(LargeJmpTest, gosub_if_true) {
 TEST(LargeJmpTest, gosub_unless_false) {
   libReallive::Archive arc(
       locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
@@ -435,7 +435,7 @@ TEST(LargeJmpTest, gosub_unless_false) {
 TEST(LargeJmpTest, gosub_unless_true) {
   libReallive::Archive arc(
       locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 1);
@@ -481,7 +481,7 @@ TEST(LargeJmpTest, gosub_case) {
   for (int i = 0; i < 3; ++i) {
     libReallive::Archive arc(
         locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
-    NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
+    TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
@@ -493,7 +493,7 @@ TEST(LargeJmpTest, gosub_case) {
 
   // Now test the default value
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
-  NullSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
+  TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.setIntValue(IntMemRef('B', 0), 29);
@@ -531,7 +531,7 @@ TEST(LargeJmpTest, gosub_case) {
 TEST(LargeJmpTest, jump) {
   for (int i = 1; i < 4; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
-    NullSystem system;
+    TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
@@ -569,7 +569,7 @@ TEST(LargeJmpTest, jump) {
 TEST(LargeJmpTest, jumpTest) {
   for (int i = 1; i < 4; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest.TXT"));
-    NullSystem system;
+    TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
@@ -608,7 +608,7 @@ TEST(LargeJmpTest, farcall) {
   for (int i = 1; i < 4; ++i) {
     libReallive::Archive arc(
         locateTestCase("Module_Jmp_SEEN/farcallTest_0.TXT"));
-    NullSystem system;
+    TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.setIntValue(IntMemRef('B', 0), i);
@@ -654,7 +654,7 @@ TEST(LargeJmpTest, farcall) {
  */
 TEST(LargeJmpTest, gosub_with) {
   libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_with_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
   rlmachine.attachModule(new StrModule);
@@ -749,7 +749,7 @@ static int recFib(int input) {
 TEST(LargeJmpTest, fibonacci) {
   for (int i = 0; i < 10; ++i) {
     libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
-    NullSystem system;
+    TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
     rlmachine.attachModule(new StrModule);
@@ -794,7 +794,7 @@ TEST(LargeJmpTest, farcall_with) {
     for (int entrypoint = 1; entrypoint < 4; ++entrypoint) {
       libReallive::Archive arc(
           locateTestCase("Module_Jmp_SEEN/farcall_withTest.TXT"));
-      NullSystem system;
+      TestSystem system;
       RLMachine rlmachine(system, arc);
       rlmachine.attachModule(new JmpModule);
       rlmachine.attachModule(new StrModule);

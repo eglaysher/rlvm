@@ -33,7 +33,7 @@
 #include "libReallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 
 #include "testUtils.hpp"
 
@@ -47,7 +47,7 @@ using libReallive::IntMemRef;
 // jump to the next scenario.
 TEST(LargeModuleSysTest, SceneNum) {
   libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new SysModule);
   rlmachine.attachModule(new JmpModule);
@@ -66,7 +66,7 @@ TEST(LargeModuleSysTest, SceneNum) {
 // Tests integer built-in functions.
 TEST(LargeModuleSysTest, BuiltIns) {
   libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new SysModule);
   rlmachine.executeUntilHalted();

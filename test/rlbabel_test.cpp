@@ -27,7 +27,7 @@
 #include "gtest/gtest.h"
 
 #include "MachineBase/RLMachine.hpp"
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 #include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/archive.h"
@@ -43,7 +43,7 @@ class RLBabelTest : public ::testing::Test {
   }
 
   libReallive::Archive arc;
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine;
 };
 
@@ -77,5 +77,5 @@ TEST_F(RLBabelTest, Initialization) {
                     0, 0, 0);
 
   // TODO: Doing anything real with RLBabel requires that we have working
-  // font metrics in NullSystem...
+  // font metrics in TestSystem...
 }

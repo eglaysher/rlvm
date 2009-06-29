@@ -25,18 +25,18 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __NullEventSystem_hpp__
-#define __NullEventSystem_hpp__
+#ifndef __TestEventSystem_hpp__
+#define __TestEventSystem_hpp__
 
 #include "Systems/Base/EventSystem.hpp"
-#include "NullSystem/MockLog.hpp"
+#include "TestSystem/MockLog.hpp"
 
 #include <boost/shared_ptr.hpp>
 
 // -----------------------------------------------------------------------
 
 /**
- * Provides behaviour for the NullEventSystem.
+ * Provides behaviour for the TestEventSystem.
  */
 class EventSystemMockHandler {
 public:
@@ -51,10 +51,10 @@ public:
  * Mock enabled event system. Returned values are controlled by
  * EventSystemMockHandler.
  */
-class NullEventSystem : public EventSystem
+class TestEventSystem : public EventSystem
 {
 public:
-  NullEventSystem(Gameexe& gexe);
+  TestEventSystem(Gameexe& gexe);
   void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
 
   virtual void executeEventSystem(RLMachine& machine);
@@ -64,13 +64,13 @@ public:
   virtual void wait(unsigned int milliseconds) const;
 
   // TODO: This needs to be done to get running luaRlvm with a
-  // NullEventSystem. Among a lot of other things in this class...
+  // TestEventSystem. Among a lot of other things in this class...
   virtual void injectMouseMovement(RLMachine& machine, const Point& loc) {}
   virtual void injectMouseDown(RLMachine& machine) {}
   virtual void injectMouseUp(RLMachine& machine) {}
 
 private:
-  /// Defines test specific behaviour for the NullEventSystem
+  /// Defines test specific behaviour for the TestEventSystem
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 
   /// Log of which methods have been called.

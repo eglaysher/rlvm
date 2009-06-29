@@ -32,7 +32,7 @@
 #include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/References.hpp"
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 #include "libReallive/archive.h"
 #include "libReallive/expression.h"
 #include "libReallive/intmemref.h"
@@ -77,7 +77,7 @@ class RLOperationTest : public ::testing::Test {
 
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine;
 };
 

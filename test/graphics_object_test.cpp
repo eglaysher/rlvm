@@ -38,8 +38,8 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Str.hpp"
-#include "NullSystem/NullGraphicsSystem.hpp"
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestGraphicsSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Utilities/Exception.hpp"
@@ -72,7 +72,7 @@ class GraphicsObjectTest : public ::testing::Test {
 
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine;
 };
 

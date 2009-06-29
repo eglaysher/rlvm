@@ -20,35 +20,35 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __NullSystem_hpp__
-#define __NullSystem_hpp__
+#ifndef __TestSystem_hpp__
+#define __TestSystem_hpp__
 
 #include "Systems/Base/System.hpp"
-#include "NullSystem/NullGraphicsSystem.hpp"
-#include "NullSystem/NullEventSystem.hpp"
-#include "NullSystem/NullTextSystem.hpp"
-#include "NullSystem/NullSoundSystem.hpp"
+#include "TestSystem/TestGraphicsSystem.hpp"
+#include "TestSystem/TestEventSystem.hpp"
+#include "TestSystem/TestTextSystem.hpp"
+#include "TestSystem/TestSoundSystem.hpp"
 #include "libReallive/gameexe.h"
 
 /**
- * The Null system contains absolutely no input/ouput
+ * The Test system contains absolutely no input/ouput
  *
  *
  * @return
  */
-class NullSystem : public System
+class TestSystem : public System
 {
 private:
   Gameexe gameexe_;
 
-  NullGraphicsSystem null_graphics_system;
-  NullEventSystem null_event_system;
-  NullTextSystem null_text_system;
-  NullSoundSystem null_sound_system;
+  TestGraphicsSystem null_graphics_system;
+  TestEventSystem null_event_system;
+  TestTextSystem null_text_system;
+  TestSoundSystem null_sound_system;
 
 public:
-  NullSystem(const std::string& path_to_gameexe);
-  NullSystem();
+  TestSystem(const std::string& path_to_gameexe);
+  TestSystem();
 
   virtual void run(RLMachine& machine);
 

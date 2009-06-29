@@ -29,8 +29,8 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
-#include "NullSystem/NullGraphicsSystem.hpp"
-#include "NullSystem/NullSurface.hpp"
+#include "TestSystem/TestGraphicsSystem.hpp"
+#include "TestSystem/TestSurface.hpp"
 
 #include "Utilities/Exception.hpp"
 
@@ -40,13 +40,13 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-NullGraphicsSystem::NullGraphicsSystem(System& system, Gameexe& gexe)
-  : GraphicsSystem(system, gexe), graphics_system_log_("NullGraphicsSystem")
+TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
+  : GraphicsSystem(system, gexe), graphics_system_log_("TestGraphicsSystem")
 {
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
-    display_contexts_[i].reset(new NullSurface(oss.str()));
+    display_contexts_[i].reset(new TestSurface(oss.str()));
   }
 
   display_contexts_[0]->allocate(screenSize());
@@ -55,11 +55,11 @@ NullGraphicsSystem::NullGraphicsSystem(System& system, Gameexe& gexe)
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::allocateDC(int dc, Size size) {
+void TestGraphicsSystem::allocateDC(int dc, Size size) {
   graphics_system_log_.recordFunction("allocate_dc", dc, size.width(), size.height());
 
   if(dc >= 16)
-    throw rlvm::Exception("Invalid DC number in NullGrpahicsSystem::allocate_dc");
+    throw rlvm::Exception("Invalid DC number in TestGrpahicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
   if(dc == 0)
@@ -69,7 +69,7 @@ void NullGraphicsSystem::allocateDC(int dc, Size size) {
   // the screen.
   if(dc == 1)
   {
-    boost::shared_ptr<NullSurface> dc0 = display_contexts_[0];
+    boost::shared_ptr<TestSurface> dc0 = display_contexts_[0];
     if(size.width() < dc0->size().width())
       size.setWidth(dc0->size().width());
     if(size.height() < dc0->size().height())
@@ -82,7 +82,7 @@ void NullGraphicsSystem::allocateDC(int dc, Size size) {
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::freeDC(int dc) {
+void TestGraphicsSystem::freeDC(int dc) {
   graphics_system_log_.recordFunction("free_dc", dc);
 
   if(dc == 0)
@@ -98,13 +98,13 @@ void NullGraphicsSystem::freeDC(int dc) {
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::clearAndPromoteObjects() {
+void TestGraphicsSystem::clearAndPromoteObjects() {
   graphics_system_log_.recordFunction("clear_and_promote_objects");
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& NullGraphicsSystem::getObject(int layer, int obj_number)
+GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number)
 {
   static GraphicsObject x;
   graphics_system_log_.recordFunction("get_object", layer, obj_number);
@@ -113,19 +113,19 @@ GraphicsObject& NullGraphicsSystem::getObject(int layer, int obj_number)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> NullGraphicsSystem::loadNonCGSurfaceFromFile(
+boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename)
 {
   graphics_system_log_.recordFunction("load_surface_from_file", short_filename);
 
   // Make this a real surface so we can track what's done with it
   return boost::shared_ptr<Surface>(
-    new NullSurface(short_filename, Size(50, 50)));
+    new TestSurface(short_filename, Size(50, 50)));
 }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
+boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc)
 {
   graphics_system_log_.recordFunction("get_dc", dc);
   return display_contexts_[dc];
@@ -133,19 +133,19 @@ boost::shared_ptr<Surface> NullGraphicsSystem::getDC(int dc)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> NullGraphicsSystem::buildSurface(const Size& s)
+boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s)
 {
   graphics_system_log_.recordFunction("get_dc", s);
   static int surface_num = 0;
   ostringstream oss;
   oss << "Built Surface #" << surface_num++;
 
-  return boost::shared_ptr<Surface>(new NullSurface(oss.str(), s));
+  return boost::shared_ptr<Surface>(new TestSurface(oss.str(), s));
 }
 
 // -----------------------------------------------------------------------
 
-void NullGraphicsSystem::blitSurfaceToDC(
+void TestGraphicsSystem::blitSurfaceToDC(
   Surface& source_obj, int target_dc,
   int srcX, int srcY, int src_width, int src_height,
   int destX, int destY, int dest_width, int dest_height,

@@ -25,10 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-#include "NullSystem/NullTextWindow.hpp"
+#include "TestSystem/TestTextWindow.hpp"
 
 #include "Systems/Base/Rect.hpp"
-#include "NullSystem/NullSurface.hpp"
+#include "TestSystem/TestSurface.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <sstream>
@@ -38,38 +38,38 @@ using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
 
-NullTextWindow::NullTextWindow(System& system, int x)
-    : TextWindow(system, x), text_window_log_("NullTextWindow") {
+TestTextWindow::TestTextWindow(System& system, int x)
+    : TextWindow(system, x), text_window_log_("TestTextWindow") {
 }
 
 // -----------------------------------------------------------------------
 
-NullTextWindow::~NullTextWindow() {}
+TestTextWindow::~TestTextWindow() {}
 
 // -----------------------------------------------------------------------
 
-shared_ptr<Surface> NullTextWindow::textSurface() {
+shared_ptr<Surface> TestTextWindow::textSurface() {
   // TODO(erg): May need to use a real size?
-  return shared_ptr<Surface>(new NullSurface("Text Surface", Size(640, 480)));
+  return shared_ptr<Surface>(new TestSurface("Text Surface", Size(640, 480)));
 }
 
 // -----------------------------------------------------------------------
 
-shared_ptr<Surface> NullTextWindow::nameSurface() {
+shared_ptr<Surface> TestTextWindow::nameSurface() {
   return name_surface_;
 }
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::renderNameInBox(const std::string& utf8str) {
+void TestTextWindow::renderNameInBox(const std::string& utf8str) {
   ostringstream oss;
   oss << "Name Surface [" << utf8str << "]";
-  name_surface_.reset(new NullSurface(oss.str(), Size(640, 480)));
+  name_surface_.reset(new TestSurface(oss.str(), Size(640, 480)));
 }
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::clearWin()
+void TestTextWindow::clearWin()
 {
   text_window_log_.recordFunction("clearWin");
   TextWindow::clearWin();
@@ -79,14 +79,14 @@ void NullTextWindow::clearWin()
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::setFontColor(const std::vector<int>& colour_data) {
+void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
   text_window_log_.recordFunction("setFontColor");
   TextWindow::setFontColor(colour_data);
 }
 
 // -----------------------------------------------------------------------
 
-bool NullTextWindow::displayChar(const std::string& current,
+bool TestTextWindow::displayChar(const std::string& current,
                                  const std::string& next)
 {
   text_window_log_.recordFunction("displayChar", current, next);
@@ -97,7 +97,7 @@ bool NullTextWindow::displayChar(const std::string& current,
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::setName(const std::string& utf8name,
+void TestTextWindow::setName(const std::string& utf8name,
                              const std::string& next_char)
 {
   text_window_log_.recordFunction("setName", utf8name, next_char);
@@ -109,7 +109,7 @@ void NullTextWindow::setName(const std::string& utf8name,
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::hardBrake()
+void TestTextWindow::hardBrake()
 {
   text_window_log_.recordFunction("hardBrake");
   current_contents_ += "\n";
@@ -118,20 +118,20 @@ void NullTextWindow::hardBrake()
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::resetIndentation() {
+void TestTextWindow::resetIndentation() {
   text_window_log_.recordFunction("resetIndentation");
   TextWindow::resetIndentation();
 }
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::markRubyBegin() {
+void TestTextWindow::markRubyBegin() {
   text_window_log_.recordFunction("markRubyBegin");
   TextWindow::markRubyBegin();
 }
 
 // -----------------------------------------------------------------------
 
-void NullTextWindow::displayRubyText(const std::string& utf8str) {
+void TestTextWindow::displayRubyText(const std::string& utf8str) {
   text_window_log_.recordFunction("displayRubyText", utf8str);
 }

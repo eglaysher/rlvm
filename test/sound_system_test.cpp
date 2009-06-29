@@ -31,8 +31,8 @@
 
 #include "testUtils.hpp"
 
-#include "NullSystem/NullSystem.hpp"
-#include "NullSystem/NullSoundSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
+#include "TestSystem/TestSoundSystem.hpp"
 #include "libReallive/gameexe.h"
 
 #include <sstream>
@@ -41,7 +41,7 @@ using std::stringstream;
 
 // Makes sure we can parse the bizarre Gameexe.ini keys for KOEONOFF
 TEST(SoundSystem, CanParseKOEONOFFKeys) {
-  NullSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
+  TestSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
   SoundSystem& sys = top.sound();
 
   // Test the UseKoe side of things
@@ -60,7 +60,7 @@ TEST(SoundSystem, CanParseKOEONOFFKeys) {
 
 // Tests that SetUseKoe sets values correctly
 TEST(SoundSystem, SetUseKoeCorrectly) {
-  NullSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
+  TestSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
   SoundSystem& sys = top.sound();
 
   sys.setUseKoeForCharacter(0, 0);
@@ -89,7 +89,7 @@ TEST(SoundSystem, SetUseKoeSerialization) {
   stringstream ss;
 
   {
-    NullSystem top(gexe);
+    TestSystem top(gexe);
     SoundSystem& sys = top.sound();
 
     // Reverse the values as in <2>.
@@ -102,7 +102,7 @@ TEST(SoundSystem, SetUseKoeSerialization) {
   }
 
   {
-    NullSystem top(gexe);
+    TestSystem top(gexe);
     SoundSystem& sys = top.sound();
 
     boost::archive::text_iarchive ia(ss);

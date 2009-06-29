@@ -33,7 +33,7 @@
 
 #include "MachineBase/RLMachine.hpp"
 
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 
 #include "testUtils.hpp"
 
@@ -50,7 +50,7 @@ using namespace libReallive;
 //
 TEST(LargeModuleStrTest, strcpy0) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -67,7 +67,7 @@ TEST(LargeModuleStrTest, strcpy0) {
 //
 TEST(LargeModuleStrTest, strcpy1) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -86,7 +86,7 @@ TEST(LargeModuleStrTest, strcpy1) {
 //
 TEST(LargeModuleStrTest, strclear0) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strclear_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -110,7 +110,7 @@ TEST(LargeModuleStrTest, strclear0) {
 //   strclear(strS[0], strS[1])
 TEST(LargeModuleStrTest, strclear1) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strclear_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -136,7 +136,7 @@ TEST(LargeModuleStrTest, strclear1) {
 //
 TEST(LargeModuleStrTest, strcat) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcat_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -154,7 +154,7 @@ TEST(LargeModuleStrTest, strcat) {
 //
 TEST(LargeModuleStrTest, strlen) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strlen_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -177,7 +177,7 @@ TEST(LargeModuleStrTest, strlen) {
 //
 TEST(LargeModuleStrTest, strcmp) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcmp_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -193,7 +193,7 @@ TEST(LargeModuleStrTest, strcmp) {
 // First strsub_0 test. Make sure it works on ASCII strings.
 TEST(LargeModuleStrTest, strsub0_ascii) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -209,7 +209,7 @@ TEST(LargeModuleStrTest, strsub0_ascii) {
 //
 TEST(LargeModuleStrTest, strsub0_shiftjis) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -226,7 +226,7 @@ TEST(LargeModuleStrTest, strsub0_shiftjis) {
 //
 TEST(LargeModuleStrTest, strsub1_ascii) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_2.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -242,7 +242,7 @@ TEST(LargeModuleStrTest, strsub1_ascii) {
 //
 TEST(LargeModuleStrTest, strsub1_shiftjis) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_3.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -261,7 +261,7 @@ TEST(LargeModuleStrTest, strsub1_shiftjis) {
 //
 TEST(LargeModuleStrTest, strrsub_0) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strrsub_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -277,7 +277,7 @@ TEST(LargeModuleStrTest, strrsub_0) {
 //
 TEST(LargeModuleStrTest, strrsub_1) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strrsub_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -293,7 +293,7 @@ TEST(LargeModuleStrTest, strrsub_1) {
 //
 TEST(LargeModuleStrTest, strcharlen_ascii) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcharlen_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -309,7 +309,7 @@ TEST(LargeModuleStrTest, strcharlen_ascii) {
 //
 TEST(LargeModuleStrTest, srcharlen_shiftjis) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcharlen_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -325,7 +325,7 @@ TEST(LargeModuleStrTest, srcharlen_shiftjis) {
 //
 TEST(LargeModuleStrTest, strtrunc_ascii) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strtrunc_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -337,7 +337,7 @@ TEST(LargeModuleStrTest, strtrunc_ascii) {
 // strtrunc test on Shift-JIS characters
 TEST(LargeModuleStrTest, strtrunc_shiftjis) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strtrunc_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -354,7 +354,7 @@ TEST(LargeModuleStrTest, strtrunc_shiftjis) {
 //
 TEST(LargeModuleStrTest, hantozen_ascii) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/hantozen_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -372,7 +372,7 @@ TEST(LargeModuleStrTest, hantozen_ascii) {
 //
 TEST(LargeModuleStrTest, hantozen_half_width_katakana) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/hantozen_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -389,7 +389,7 @@ TEST(LargeModuleStrTest, hantozen_half_width_katakana) {
 //
 TEST(LargeModuleStrTest, hantozen_fullwidth_ascii) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/zentohan_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -405,7 +405,7 @@ TEST(LargeModuleStrTest, hantozen_fullwidth_ascii) {
 //
 TEST(LargeModuleStrTest, zentohan_fullwidth_katakana) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/zentohan_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -423,7 +423,7 @@ TEST(LargeModuleStrTest, zentohan_fullwidth_katakana) {
 //
 TEST(LargeModuleStrTest, Uppercase_0) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/uppercase_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -440,7 +440,7 @@ TEST(LargeModuleStrTest, Uppercase_0) {
 //
 TEST(LargeModuleStrTest, Uppercase_1) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/uppercase_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -459,7 +459,7 @@ TEST(LargeModuleStrTest, Uppercase_1) {
 //
 TEST(LargeModuleStrTest, Lowercase_0) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/lowercase_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -476,7 +476,7 @@ TEST(LargeModuleStrTest, Lowercase_0) {
 //
 TEST(LargeModuleStrTest, Lowercase_1) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/lowercase_1.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -496,7 +496,7 @@ TEST(LargeModuleStrTest, Lowercase_1) {
 //
 TEST(LargeModuleStrTest, itoa_ws) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_ws_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -522,7 +522,7 @@ TEST(LargeModuleStrTest, itoa_ws) {
 //
 TEST(LargeModuleStrTest, itoa_s) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_s_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -546,7 +546,7 @@ TEST(LargeModuleStrTest, itoa_s) {
 //
 TEST(LargeModuleStrTest, itoa_w) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_w_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -572,7 +572,7 @@ TEST(LargeModuleStrTest, itoa_w) {
 //
 TEST(LargeModuleStrTest, itoa) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -597,7 +597,7 @@ TEST(LargeModuleStrTest, itoa) {
 //
 TEST(LargeModuleStrTest, atoi) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/atoi_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -622,7 +622,7 @@ TEST(LargeModuleStrTest, atoi) {
 //
 TEST(LargeModuleStrTest, digits) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/digits_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -643,7 +643,7 @@ TEST(LargeModuleStrTest, digits) {
 //
 TEST(LargeModuleStrTest, strpos) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strpos_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -664,7 +664,7 @@ TEST(LargeModuleStrTest, strpos) {
 //
 TEST(LargeModuleStrTest, strlpos) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strlpos_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();
@@ -685,7 +685,7 @@ TEST(LargeModuleStrTest, strlpos) {
 //
 TEST(LargeModuleStrTest, strused) {
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strused_0.TXT"));
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new StrModule);
   rlmachine.executeUntilHalted();

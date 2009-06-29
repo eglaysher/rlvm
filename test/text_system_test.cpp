@@ -30,8 +30,8 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "LongOperations/TextoutLongOperation.hpp"
-#include "NullSystem/NullSystem.hpp"
-#include "NullSystem/NullTextWindow.hpp"
+#include "TestSystem/TestSystem.hpp"
+#include "TestSystem/TestTextWindow.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "libReallive/archive.h"
 
@@ -53,12 +53,12 @@ class TextSystemTest : public ::testing::Test {
     system.text().setActiveWindow(0);
   }
 
-  NullTextSystem& getTextSystem() {
-    return dynamic_cast<NullTextSystem&>(system.text());
+  TestTextSystem& getTextSystem() {
+    return dynamic_cast<TestTextSystem&>(system.text());
   }
 
-  NullTextWindow& getTextWindow(int twn) {
-    return dynamic_cast<NullTextWindow&>(*system.text().textWindow(twn));
+  TestTextWindow& getTextWindow(int twn) {
+    return dynamic_cast<TestTextWindow&>(*system.text().textWindow(twn));
   }
 
   TextPage& currentPage() {
@@ -84,7 +84,7 @@ class TextSystemTest : public ::testing::Test {
 
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine;
 };
 
@@ -156,7 +156,7 @@ TEST_F(TextSystemTest, BackLogFunctionality) {
 
 // Tests that the TextPage::name construct repeats correctly.
 TEST_F(TextSystemTest, DISABLED_TextPageNameRepeats) {
-  NullTextSystem& sys = getTextSystem();
+  TestTextSystem& sys = getTextSystem();
   currentPage().name("Bob", "");
   getTextWindow(0).log().ensure("setName", "Bob", "");
   getTextWindow(0).log().clear();
@@ -171,7 +171,7 @@ TEST_F(TextSystemTest, DISABLED_TextPageNameRepeats) {
 
 // Tests that the TextPgae::hardBreak construct repeats correctly.
 TEST_F(TextSystemTest, DISABLED_TextPageHardBreakRepeats) {
-  NullTextSystem& sys = getTextSystem();
+  TestTextSystem& sys = getTextSystem();
   currentPage().hardBrake();
   getTextWindow(0).log().ensure("hardBrake");
   getTextWindow(0).log().clear();
@@ -186,7 +186,7 @@ TEST_F(TextSystemTest, DISABLED_TextPageHardBreakRepeats) {
 
 // Tests that the TextPage::resetIndentation construct repeats correctly.
 TEST_F(TextSystemTest, DISABLED_TextPageResetIndentationRepeats) {
-  NullTextSystem& sys = getTextSystem();
+  TestTextSystem& sys = getTextSystem();
   writeString("test", true);
   currentPage().resetIndentation();
   getTextWindow(0).log().ensure("resetIndentation");
@@ -202,7 +202,7 @@ TEST_F(TextSystemTest, DISABLED_TextPageResetIndentationRepeats) {
 
 // Tests that the TextPage::fontColor construct repeats correctly.
 TEST_F(TextSystemTest, DISABLED_TextPageFontColorRepeats) {
-  NullTextSystem& sys = getTextSystem();
+  TestTextSystem& sys = getTextSystem();
   currentPage().fontColour(0);
   getTextWindow(0).log().ensure("setFontColor");
   getTextWindow(0).log().clear();
@@ -217,7 +217,7 @@ TEST_F(TextSystemTest, DISABLED_TextPageFontColorRepeats) {
 
 // Tests that the ruby constructs repeat correctly.
 TEST_F(TextSystemTest, DISABLED_RubyRepeats) {
-  NullTextSystem& sys = getTextSystem();
+  TestTextSystem& sys = getTextSystem();
   currentPage().markRubyBegin();
   writeString("With Ruby", true);
   currentPage().displayRubyText("ruby");

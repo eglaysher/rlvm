@@ -2,22 +2,22 @@
 // vi:tw=80:et:ts=2:sts=2
 //
 
-#ifndef __NullSurface_hpp__
-#define __NullSurface_hpp__
+#ifndef __TestSurface_hpp__
+#define __TestSurface_hpp__
 
 #include "Systems/Base/Surface.hpp"
-#include "NullSystem/MockLog.hpp"
+#include "TestSystem/MockLog.hpp"
 
 #include <string>
 #include <vector>
 
 // -----------------------------------------------------------------------
 
-class NullSurface : public Surface
+class TestSurface : public Surface
 {
 public:
-  NullSurface(const std::string& surface_name);
-  NullSurface(const std::string& surface_name, const Size& size);
+  TestSurface(const std::string& surface_name);
+  TestSurface(const std::string& surface_name, const Size& size);
 
   void allocate(const Size& size);
   void deallocate();

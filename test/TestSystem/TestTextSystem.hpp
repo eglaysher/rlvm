@@ -25,21 +25,21 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __NullTextSystem_hpp__
-#define __NullTextSystem_hpp__
+#ifndef __TestTextSystem_hpp__
+#define __TestTextSystem_hpp__
 
 #include "Systems/Base/TextSystem.hpp"
 #include <boost/ptr_container/ptr_map.hpp>
 
 class RLMachine;
 class TextWindow;
-class NullTextWindow;
+class TestTextWindow;
 
-class NullTextSystem : public TextSystem
+class TestTextSystem : public TextSystem
 {
 public:
-  NullTextSystem(System& system, Gameexe& gexe);
-  ~NullTextSystem();
+  TestTextSystem(System& system, Gameexe& gexe);
+  ~TestTextSystem();
 
   void executeTextSystem(RLMachine& machine) { }
   void render(RLMachine& machine) { }

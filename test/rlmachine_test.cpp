@@ -35,7 +35,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Str.hpp"
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/archive.h"
 #include "libReallive/intmemref.h"
@@ -55,7 +55,7 @@ class RLMachineTest : public ::testing::Test {
   }
 
   libReallive::Archive arc;
-  NullSystem system;
+  TestSystem system;
   RLMachine rlmachine;
 };
 

@@ -25,23 +25,23 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __NullSoundSystem_hpp__
-#define __NullSoundSystem_hpp__
+#ifndef __TestSoundSystem_hpp__
+#define __TestSoundSystem_hpp__
 
 #include "Systems/Base/SoundSystem.hpp"
-#include "NullSystem/MockLog.hpp"
+#include "TestSystem/MockLog.hpp"
 #include <string>
 
 class Gameexe;
 
 /**
- * Null sound system
+ * Test sound system
  */
-class NullSoundSystem : public SoundSystem
+class TestSoundSystem : public SoundSystem
 {
 public:
-  NullSoundSystem(System& system);
-  ~NullSoundSystem();
+  TestSoundSystem(System& system);
+  ~TestSoundSystem();
 
   virtual int bgmStatus() const;
 
@@ -80,7 +80,7 @@ private:
   mutable MockLog sound_system_log_;
 
   std::string bgm_name_;
-};  // end of class NullSoundSystem
+};  // end of class TestSoundSystem
 
 
 #endif

@@ -31,9 +31,9 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Effects/Effect.hpp"
 #include "Effects/BlindEffect.hpp"
-#include "NullSystem/NullSystem.hpp"
-#include "NullSystem/NullEventSystem.hpp"
-#include "NullSystem/NullSurface.hpp"
+#include "TestSystem/TestSystem.hpp"
+#include "TestSystem/TestEventSystem.hpp"
+#include "TestSystem/TestSurface.hpp"
 
 #include "testUtils.hpp"
 
@@ -61,7 +61,7 @@ class EffectTest : public ::testing::Test {
   EffectTest()
       : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
         system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        event(dynamic_cast<NullEventSystem&>(system.event())),
+        event(dynamic_cast<TestEventSystem&>(system.event())),
         event_system_impl(new EffectEventSystemTest),
         rlmachine(system, arc) {
     event.setMockHandler(event_system_impl);
@@ -69,8 +69,8 @@ class EffectTest : public ::testing::Test {
 
   // Use any old test case; it isn't getting executed
   libReallive::Archive arc;
-  NullSystem system;
-  NullEventSystem& event;
+  TestSystem system;
+  TestEventSystem& event;
   RLMachine rlmachine;
 
   shared_ptr<EffectEventSystemTest> event_system_impl;
@@ -109,8 +109,8 @@ private:
 
 
 TEST_F(EffectTest, DISABLED_TestBase) {
-  shared_ptr<Surface> src(new NullSurface("src"));
-  shared_ptr<Surface> dst(new NullSurface("dst"));
+  shared_ptr<Surface> src(new TestSurface("src"));
+  shared_ptr<Surface> dst(new TestSurface("dst"));
 
   auto_ptr<EffectPreconditionTest> effect(
     new EffectPreconditionTest(rlmachine, src, dst, Size(640, 480), 2, false));
@@ -157,8 +157,8 @@ private:
 };
 
 TEST_F(EffectTest, DISABLED_BlindTopToBottomEffect) {
-  shared_ptr<NullSurface> src(new NullSurface("src"));
-  shared_ptr<NullSurface> dst(new NullSurface("dst"));
+  shared_ptr<TestSurface> src(new TestSurface("src"));
+  shared_ptr<TestSurface> dst(new TestSurface("dst"));
 
   const int DURATION = 100;
   const int BLIND_SIZE = 50;

@@ -29,7 +29,7 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Modules/Module_Jmp.hpp"
-#include "NullSystem/NullSystem.hpp"
+#include "TestSystem/TestSystem.hpp"
 #include "libReallive/archive.h"
 #include "libReallive/expression.h"
 #include "libReallive/intmemref.h"
@@ -41,7 +41,7 @@ using namespace std;
 using namespace libReallive;
 
 TEST(ExpressionTest, BasicArithmatic) {
-  NullSystem system;
+  TestSystem system;
   libReallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/basicOperators.TXT"));
   RLMachine rlmachine(system, arc);
@@ -64,7 +64,7 @@ TEST(ExpressionTest, BasicArithmatic) {
 }
 
 TEST(ExpressionTest, ComparisonOperators) {
-  NullSystem system;
+  TestSystem system;
   libReallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/comparisonOperators.TXT"));
   RLMachine rlmachine(system, arc);
@@ -91,7 +91,7 @@ TEST(ExpressionTest, ComparisonOperators) {
 }
 
 TEST(ExpressionTest, LogicalOperators) {
-  NullSystem system;
+  TestSystem system;
   libReallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/logicalOperators.TXT"));
   RLMachine rlmachine(system, arc);
@@ -111,7 +111,7 @@ TEST(ExpressionTest, LogicalOperators) {
 }
 
 TEST(ExpressionTest, PreviousErrors) {
-  NullSystem system;
+  TestSystem system;
   libReallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/previousErrors.TXT"));
   RLMachine rlmachine(system, arc);
