@@ -32,12 +32,6 @@ laptop is dying.)
       Ubuntu (Intrepid) package for amd64 machines (version 0.06)
     </a>
   </li>
-  <li class="macicon">
-    <a href="http://www.elliotglaysher.org/Releases/rlvm_0.6.dmg"
-       onClick="pageTracker._trackEvent('Download', 'rlvm_0.6.dmg');">
-      Mac OSX Application (Universal) (version 0.06)
-    </a>
-  </li>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.06"
        onClick="pageTracker._trackEvent('Download', 'source-0.6');">

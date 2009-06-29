@@ -12,4 +12,12 @@ This version is not backwards compatible with rlvm 0.1's save files. I've added 
 
 rlvm compiles on Ubuntu Hardy Heron (and most likely any modern Linux distribution), Mac OSX 10.4 Tiger, and Mac OSX 10.5 Leopard.
 
-<h2><em>Old links removed</em></h2>
+<h2>Downloads</h2>
+<ul>
+  <li class="sourceicon">
+    <a href="http://github.com/eglaysher/rlvm/tarball/release-0.02"
+       onClick="pageTracker._trackEvent('Download', 'source-0.2');">
+      Source code (0.02)
+    </a>
+  </li>
+</ul>

@@ -10,4 +10,12 @@ As this is the first publicly released version, there are bound to be bugs. The 
 
 rlvm compiles on Ubuntu Gutsy Gibbon (and most likely any modern Linux distribution), Mac OSX 10.4 Tiger, and Mac OSX 10.5 Leopard.
 
-<h2><em>Old links removed</em></h2>
+<h2>Downloads</h2>
+<ul>
+  <li class="sourceicon">
+    <a href="http://github.com/eglaysher/rlvm/tarball/release-0.01"
+       onClick="pageTracker._trackEvent('Download', 'source-0.1');">
+      Source code (0.01)
+    </a>
+  </li>
+</ul>

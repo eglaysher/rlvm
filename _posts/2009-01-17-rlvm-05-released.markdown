@@ -14,24 +14,6 @@ rlvm compiles on Ubuntu Intrepid Ibex (and most likely any modern Linux distribu
 
 <h2>Download</h2>
 <ul>
-  <li class="ubuntuicon">
-    <a href="http://www.elliotglaysher.org/Releases/rlvm_0.5_i386.deb"
-       onClick="pageTracker._trackEvent('Download', 'rlvm_0.5_i386.deb');">
-      Ubuntu (Intrepid) package for x86 machines (version 0.05)
-    </a>
-  </li>
-  <li class="ubuntuicon">
-    <a href="http://www.elliotglaysher.org/Releases/rlvm_0.5_amd64.deb"
-       onClick="pageTracker._trackEvent('Download', 'rlvm_0.5_amd64.deb');">
-      Ubuntu (Intrepid) package for amd64 machines (version 0.05)
-    </a>
-  </li>
-  <li class="macicon">
-    <a href="http://www.elliotglaysher.org/Releases/rlvm_0.5.dmg"
-       onClick="pageTracker._trackEvent('Download', 'rlvm_0.5.dmg');">
-      Mac OSX Application (Intel Only) (version 0.06)
-    </a>
-  </li>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.05"
        onClick="pageTracker._trackEvent('Download', 'source-0.5');">
