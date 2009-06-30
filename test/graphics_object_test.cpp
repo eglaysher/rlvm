@@ -136,11 +136,11 @@ typedef boost::tuple<
   boost::function<void(GraphicsObject&, const int)>,
   boost::function<int(const GraphicsObject&)> > TupleT;
 
-class GraphicsObjectAccessorTest : public ::testing::TestWithParam<TupleT> {
+class AccessorTest : public ::testing::TestWithParam<TupleT> {
   // Empty.
 };
 
-TEST_P(GraphicsObjectAccessorTest, TestReferenceCount) {
+TEST_P(AccessorTest, TestReferenceCount) {
   TupleT accessors = GetParam();
 
   GraphicsObject obj;
@@ -194,13 +194,36 @@ SetterVec graphics_object_setters =
          (&GraphicsObject::setAlpha, &GraphicsObject::alpha)
          (&GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy);
 
-INSTANTIATE_TEST_CASE_P(GraphicsObject,
-                        GraphicsObjectAccessorTest,
+INSTANTIATE_TEST_CASE_P(GraphicsObjectSimple,
+                        AccessorTest,
                         ::testing::ValuesIn(graphics_object_setters));
 
 // -----------------------------------------------------------------------
 
-// TODO: Test adjustments, tint(), colour(), clip()
+int getTintR(const GraphicsObject& obj) { return obj.tint().r(); }
+int getTintG(const GraphicsObject& obj) { return obj.tint().g(); }
+int getTintB(const GraphicsObject& obj) { return obj.tint().b(); }
+int getColourR(const GraphicsObject& obj) { return obj.colour().r(); }
+int getColourG(const GraphicsObject& obj) { return obj.colour().g(); }
+int getColourB(const GraphicsObject& obj) { return obj.colour().b(); }
+int getColourLevel(const GraphicsObject& obj) { return obj.colour().a(); }
+
+typedef vector<TupleT> SetterVec;
+SetterVec graphics_object_colour_setters =
+    tuple_list_of
+         (&GraphicsObject::setTintR, getTintR)
+         (&GraphicsObject::setTintG, getTintG)
+         (&GraphicsObject::setTintB, getTintB)
+         (&GraphicsObject::setColourR, getColourR)
+         (&GraphicsObject::setColourG, getColourG)
+         (&GraphicsObject::setColourB, getColourB)
+         (&GraphicsObject::setColourLevel, getColourLevel);
+
+INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
+                        AccessorTest,
+                        ::testing::ValuesIn(graphics_object_colour_setters));
+
+// -----------------------------------------------------------------------
 
 class MockGraphicsObjectData : public GraphicsObjectData {
  public:
