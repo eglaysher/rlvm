@@ -98,7 +98,11 @@ class RLMachine;
  * @ingroup ModulesOpcodes
  */
 class RLModule : public boost::noncopyable {
-public:
+ public:
+  // Storage type of the opcodes. Exposed so TestMachine can iterate over this.
+  typedef boost::ptr_map<int, RLOperation> OpcodeMap;
+
+ public:
   virtual ~RLModule();
 
   /** Used in derived Module constructors to declare all the
@@ -144,11 +148,16 @@ public:
    */
   void dispatchFunction(RLMachine& machine, const libReallive::CommandElement& f);
 
+
+  OpcodeMap::iterator begin() { return stored_operations.begin(); }
+  OpcodeMap::iterator end() { return stored_operations.end(); }
+
+  static int packOpcodeNumber(int opcode, unsigned char overload);
+  static void unpackOpcodeNumber(int packed_opcode, int& opcode,
+                                 unsigned char& overload);
+
 protected:
   RLModule(const std::string& in_module_name, int in_module_type, int in_module_number);
-
-  int packOpcodeNumber(int opcode, unsigned char overload);
-  void unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload);
 
 private:
   typedef std::pair<int, int> Property;
@@ -164,7 +173,6 @@ private:
   std::string module_name_;
 
   // Store functions.
-  typedef boost::ptr_map<int, RLOperation> OpcodeMap;
   OpcodeMap stored_operations;
 };
 

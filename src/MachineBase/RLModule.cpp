@@ -75,7 +75,8 @@ int RLModule::packOpcodeNumber(int opcode, unsigned char overload)
 
 // -----------------------------------------------------------------------
 
-void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode, unsigned char& overload)
+void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode,
+                                  unsigned char& overload)
 {
   opcode = (packed_opcode >> 8);
   overload = packed_opcode & 0xFF;

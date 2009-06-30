@@ -226,6 +226,8 @@ test_env = root_env.Clone()
 test_env.Append(CPPPATH = ["#/test"])
 
 test_case_files = [
+  "test/TestSystem/TestMachine.cpp",
+
   "test/testUtils.cpp",
   "test/gameexe_test.cpp",
   "test/rlmachine_test.cpp",
@@ -238,6 +240,9 @@ test_case_files = [
   "test/sound_system_test.cpp",
   "test/effect_test.cpp",
   "test/rlbabel_test.cpp",
+
+  # medium tests
+  "test/medium_eventloop_test.cpp",
 
   # large tests
   "test/large_sys_test.cpp",

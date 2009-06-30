@@ -81,7 +81,7 @@ class RLMachine {
    * @note RLMachine takes ownership of any RLModule object passed in through
    * attach_module.
    */
-  void attachModule(RLModule* module);
+  virtual void attachModule(RLModule* module);
 
   // -----------------------------------------------------------------------
 
