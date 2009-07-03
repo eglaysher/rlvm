@@ -184,17 +184,11 @@ void TextSystem::render(std::ostream* tree) {
 
 // -----------------------------------------------------------------------
 
-void TextSystem::closeTextWindow(int win_number) {
+void TextSystem::hideTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {
-    text_window_.erase(it);
+    it->second->setVisible(0);
   }
-}
-
-// -----------------------------------------------------------------------
-
-void TextSystem::closeAllTextWindows() {
-  text_window_.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -203,6 +197,33 @@ void TextSystem::hideAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
     it->second->setVisible(0);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::showTextWindow(int win_number) {
+  WindowMap::iterator it = text_window_.find(win_number);
+  if (it != text_window_.end()) {
+    it->second->setVisible(1);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::showAllTextWindows() {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
+    it->second->setVisible(1);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextSystem::clearAllTextWindows() {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
+    it->second->clearWin();
   }
 }
 
@@ -324,7 +345,8 @@ void TextSystem::backPage() {
     previous_page_it_ = boost::prior(previous_page_it_);
 
     // Clear all windows
-    closeAllTextWindows();
+    clearAllTextWindows();
+    hideAllTextWindows();
 
     replayPageSet(*previous_page_it_, false);
   }
@@ -339,7 +361,8 @@ void TextSystem::forwardPage() {
     previous_page_it_ = boost::next(previous_page_it_);
 
     // Clear all windows
-    closeAllTextWindows();
+    clearAllTextWindows();
+    hideAllTextWindows();
 
     if (previous_page_it_ != previous_page_sets_.end())
       replayPageSet(*previous_page_it_, false);
@@ -377,7 +400,8 @@ void TextSystem::stopReadingBacklog() {
   is_reading_backlog_ = false;
 
   // Clear all windows
-  closeAllTextWindows();
+  clearAllTextWindows();
+  hideAllTextWindows();
   replayPageSet(*current_pageset_, true);
 }
 

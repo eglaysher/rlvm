@@ -141,7 +141,8 @@ struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
   void operator()(RLMachine& machine, int unknown)
   {
     int winNum = machine.system().text().activeWindow();
-    machine.system().text().closeTextWindow(winNum);
+    machine.system().text().hideTextWindow(winNum);
+    machine.system().text().newPageOnWindow(winNum);
   }
 };
 
@@ -154,7 +155,8 @@ struct Msg_msgHideAll : public RLOp_Void_Void {
     vector<int> activeWindows = text.activeWindows();
     for(vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it) {
-      machine.system().text().closeTextWindow(*it);
+      text.hideTextWindow(*it);
+      text.newPageOnWindow(*it);
     }
   }
 };

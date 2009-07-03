@@ -108,13 +108,14 @@ public:
   void executeTextSystem();
 
   void render(std::ostream* tree);
-  void closeTextWindow(int win_number);
-  void closeAllTextWindows();
+  void hideTextWindow(int win_number);
   void hideAllTextWindows();
+  void showTextWindow(int win_number);
+  void showAllTextWindows();
+  void clearAllTextWindows();
   void setVisualOverride(int win_number, bool show_window);
   void setVisualOverrideAll(bool show_window);
   void clearVisualOverrides();
-
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number) = 0;
   boost::shared_ptr<TextWindow> currentWindow();
 
