@@ -260,7 +260,8 @@ null_system_files = [
   "test/TestSystem/TestSurface.cpp",
   "test/TestSystem/TestSystem.cpp",
   "test/TestSystem/TestTextSystem.cpp",
-  "test/TestSystem/TestTextWindow.cpp"
+  "test/TestSystem/TestTextWindow.cpp",
+  "test/TestSystem/MockTextWindow.cpp"
 ]
 
 if env['BUILD_RLC_TESTS']:

@@ -31,6 +31,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include <boost/ptr_container/ptr_map.hpp>
 
+class MockTextWindow;
 class RLMachine;
 class TextWindow;
 class TestTextWindow;
@@ -44,6 +45,7 @@ public:
   void executeTextSystem(RLMachine& machine) { }
   void render(RLMachine& machine) { }
 
+  MockTextWindow& getMockTextWindowAt(int text_window_number);
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
 
   // We can safely ignore mouse clicks...for now.

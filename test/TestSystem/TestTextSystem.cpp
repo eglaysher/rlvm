@@ -25,8 +25,9 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestTextSystem.hpp"
-#include "TestTextWindow.hpp"
+#include "TestSystem/TestTextSystem.hpp"
+#include "TestSystem/TestTextWindow.hpp"
+#include "TestSystem/MockTextWindow.hpp"
 
 #include <boost/shared_ptr.hpp>
 
@@ -48,7 +49,8 @@ boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num)
   {
     it = text_window_.insert(std::make_pair(
       text_window_num, boost::shared_ptr<TextWindow>(
-          new TestTextWindow(system(), text_window_num)))).first;
+          new ::testing::NiceMock<MockTextWindow>(
+              ::testing::ByRef(system()), text_window_num)))).first;
   }
 
   return it->second;

@@ -31,7 +31,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "LongOperations/TextoutLongOperation.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "TestSystem/TestTextWindow.hpp"
+#include "TestSystem/MockTextWindow.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "libReallive/archive.h"
 
@@ -57,8 +57,8 @@ class TextSystemTest : public ::testing::Test {
     return dynamic_cast<TestTextSystem&>(system.text());
   }
 
-  TestTextWindow& getTextWindow(int twn) {
-    return dynamic_cast<TestTextWindow&>(*system.text().textWindow(twn));
+  MockTextWindow& getTextWindow(int twn) {
+    return dynamic_cast<MockTextWindow&>(*system.text().textWindow(twn));
   }
 
   TextPage& currentPage() {
@@ -155,47 +155,54 @@ TEST_F(TextSystemTest, BackLogFunctionality) {
 // -----------------------------------------------------------------------
 
 // Tests that the TextPage::name construct repeats correctly.
-TEST_F(TextSystemTest, DISABLED_TextPageNameRepeats) {
+TEST_F(TextSystemTest, RepeatsTextPageName) {
   TestTextSystem& sys = getTextSystem();
+  MockTextWindow& win = getTextWindow(0);
+  EXPECT_CALL(win, setName("Bob", "")).Times(1);
   currentPage().name("Bob", "");
-  getTextWindow(0).log().ensure("setName", "Bob", "");
-  getTextWindow(0).log().clear();
   snapshotAndClear();
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
+  EXPECT_CALL(win, setName("Bob", _)).Times(1);
   getTextSystem().backPage();
-  getTextWindow(0).log().ensure("setName", "Bob", "");
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
 // -----------------------------------------------------------------------
 
 // Tests that the TextPgae::hardBreak construct repeats correctly.
-TEST_F(TextSystemTest, DISABLED_TextPageHardBreakRepeats) {
+TEST_F(TextSystemTest, TextPageHardBreakRepeats) {
   TestTextSystem& sys = getTextSystem();
+  MockTextWindow& win = getTextWindow(0);
+  EXPECT_CALL(win, hardBrake()).Times(1);
   currentPage().hardBrake();
-  getTextWindow(0).log().ensure("hardBrake");
-  getTextWindow(0).log().clear();
   snapshotAndClear();
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
+  EXPECT_CALL(win, hardBrake()).Times(1);
   getTextSystem().backPage();
-  getTextWindow(0).log().ensure("hardBrake");
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
 // -----------------------------------------------------------------------
 
 // Tests that the TextPage::resetIndentation construct repeats correctly.
-TEST_F(TextSystemTest, DISABLED_TextPageResetIndentationRepeats) {
+TEST_F(TextSystemTest, TextPageResetIndentationRepeats) {
   TestTextSystem& sys = getTextSystem();
+  MockTextWindow& win = getTextWindow(0);
   writeString("test", true);
+
+  EXPECT_CALL(win, resetIndentation()).Times(1);
   currentPage().resetIndentation();
-  getTextWindow(0).log().ensure("resetIndentation");
-  getTextWindow(0).log().clear();
   snapshotAndClear();
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
+  EXPECT_CALL(win, resetIndentation()).Times(1);
   getTextSystem().backPage();
-  getTextWindow(0).log().ensure("resetIndentation");
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
 // -----------------------------------------------------------------------
@@ -203,31 +210,39 @@ TEST_F(TextSystemTest, DISABLED_TextPageResetIndentationRepeats) {
 // Tests that the TextPage::fontColor construct repeats correctly.
 TEST_F(TextSystemTest, DISABLED_TextPageFontColorRepeats) {
   TestTextSystem& sys = getTextSystem();
+  MockTextWindow& win = getTextWindow(0);
+
+  /*
+  EXPECT_CALL(win, fontColour()).Times(1);
   currentPage().fontColour(0);
-  getTextWindow(0).log().ensure("setFontColor");
-  getTextWindow(0).log().clear();
   snapshotAndClear();
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
+  EXPECT_CALL(win, fontColour()).Times(1);
   getTextSystem().backPage();
-  getTextWindow(0).log().ensure("setFontColor");
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
+  */
 }
 
 // -----------------------------------------------------------------------
 
 // Tests that the ruby constructs repeat correctly.
-TEST_F(TextSystemTest, DISABLED_RubyRepeats) {
+TEST_F(TextSystemTest, RubyRepeats) {
   TestTextSystem& sys = getTextSystem();
+  MockTextWindow& win = getTextWindow(0);
+
+  EXPECT_CALL(win, markRubyBegin()).Times(1);
+  EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
   currentPage().markRubyBegin();
   writeString("With Ruby", true);
   currentPage().displayRubyText("ruby");
-  getTextWindow(0).log().ensure("markRubyBegin");
-  getTextWindow(0).log().ensure("displayRubyText", "ruby");
-  getTextWindow(0).log().clear();
   snapshotAndClear();
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
+  EXPECT_CALL(win, markRubyBegin()).Times(1);
+  EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
   getTextSystem().backPage();
-  getTextWindow(0).log().ensure("markRubyBegin");
-  getTextWindow(0).log().ensure("displayRubyText", "ruby");
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }

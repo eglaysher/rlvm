@@ -27,8 +27,6 @@
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/TextWindow.hpp"
 
-#include "TestSystem/MockLog.hpp"
-
 class TestTextWindow : public TextWindow
 {
 public:
@@ -62,15 +60,10 @@ public:
 
   virtual void addSelectionItem(const std::string& utf8str) {}
 
-  MockLog& log() { return text_window_log_; }
-
-private:
+ private:
   std::string current_contents_;
 
   boost::shared_ptr<Surface> name_surface_;
-
-  /// Record all method calls here
-  MockLog text_window_log_;
 };
 
 #endif

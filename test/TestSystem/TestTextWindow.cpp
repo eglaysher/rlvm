@@ -39,7 +39,7 @@ using boost::shared_ptr;
 // -----------------------------------------------------------------------
 
 TestTextWindow::TestTextWindow(System& system, int x)
-    : TextWindow(system, x), text_window_log_("TestTextWindow") {
+    : TextWindow(system, x) {
 }
 
 // -----------------------------------------------------------------------
@@ -69,9 +69,7 @@ void TestTextWindow::renderNameInBox(const std::string& utf8str) {
 
 // -----------------------------------------------------------------------
 
-void TestTextWindow::clearWin()
-{
-  text_window_log_.recordFunction("clearWin");
+void TestTextWindow::clearWin() {
   TextWindow::clearWin();
   current_contents_ = "";
   name_surface_.reset();
@@ -80,7 +78,6 @@ void TestTextWindow::clearWin()
 // -----------------------------------------------------------------------
 
 void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
-  text_window_log_.recordFunction("setFontColor");
   TextWindow::setFontColor(colour_data);
 }
 
@@ -89,8 +86,6 @@ void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
 bool TestTextWindow::displayChar(const std::string& current,
                                  const std::string& next)
 {
-  text_window_log_.recordFunction("displayChar", current, next);
-
   current_contents_ += current;
   return true;
 }
@@ -100,8 +95,6 @@ bool TestTextWindow::displayChar(const std::string& current,
 void TestTextWindow::setName(const std::string& utf8name,
                              const std::string& next_char)
 {
-  text_window_log_.recordFunction("setName", utf8name, next_char);
-
   current_contents_ += "\\{" + utf8name + "}";
 
   TextWindow::setName(utf8name, next_char);
@@ -111,7 +104,6 @@ void TestTextWindow::setName(const std::string& utf8name,
 
 void TestTextWindow::hardBrake()
 {
-  text_window_log_.recordFunction("hardBrake");
   current_contents_ += "\n";
   TextWindow::hardBrake();
 }
@@ -119,19 +111,16 @@ void TestTextWindow::hardBrake()
 // -----------------------------------------------------------------------
 
 void TestTextWindow::resetIndentation() {
-  text_window_log_.recordFunction("resetIndentation");
   TextWindow::resetIndentation();
 }
 
 // -----------------------------------------------------------------------
 
 void TestTextWindow::markRubyBegin() {
-  text_window_log_.recordFunction("markRubyBegin");
   TextWindow::markRubyBegin();
 }
 
 // -----------------------------------------------------------------------
 
 void TestTextWindow::displayRubyText(const std::string& utf8str) {
-  text_window_log_.recordFunction("displayRubyText", utf8str);
 }
