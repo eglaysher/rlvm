@@ -6,7 +6,6 @@
 #define __TestSurface_hpp__
 
 #include "Systems/Base/Surface.hpp"
-#include "TestSystem/MockLog.hpp"
 
 #include <string>
 #include <vector>
@@ -60,8 +59,6 @@ public:
 
   virtual Surface* clone() const;
 
-  MockLog& log() { return surface_log_; }
-
 private:
   /// Unique name of this surface.
   std::string surface_name_;
@@ -74,8 +71,6 @@ private:
 
   /// The region table
   std::vector<GrpRect> region_table_;
-
-  mutable MockLog surface_log_;
 };
 
 

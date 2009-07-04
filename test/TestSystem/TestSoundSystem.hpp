@@ -29,7 +29,6 @@
 #define __TestSoundSystem_hpp__
 
 #include "Systems/Base/SoundSystem.hpp"
-#include "TestSystem/MockLog.hpp"
 #include <string>
 
 class Gameexe;
@@ -75,9 +74,6 @@ public:
 private:
 
   virtual void koePlayImpl(int id);
-
-  /// Record all method calls here
-  mutable MockLog sound_system_log_;
 
   std::string bgm_name_;
 };  // end of class TestSoundSystem

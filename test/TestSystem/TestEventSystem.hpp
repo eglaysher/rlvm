@@ -29,7 +29,6 @@
 #define __TestEventSystem_hpp__
 
 #include "Systems/Base/EventSystem.hpp"
-#include "TestSystem/MockLog.hpp"
 
 #include <boost/shared_ptr.hpp>
 
@@ -72,9 +71,6 @@ public:
 private:
   /// Defines test specific behaviour for the TestEventSystem
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
-
-  /// Log of which methods have been called.
-  mutable MockLog mock_log_;
 };
 
 #endif

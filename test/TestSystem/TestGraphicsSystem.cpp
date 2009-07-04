@@ -41,7 +41,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
-  : GraphicsSystem(system, gexe), graphics_system_log_("TestGraphicsSystem")
+  : GraphicsSystem(system, gexe)
 {
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
@@ -56,8 +56,6 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
 // -----------------------------------------------------------------------
 
 void TestGraphicsSystem::allocateDC(int dc, Size size) {
-  graphics_system_log_.recordFunction("allocate_dc", dc, size.width(), size.height());
-
   if(dc >= 16)
     throw rlvm::Exception("Invalid DC number in TestGrpahicsSystem::allocate_dc");
 
@@ -83,8 +81,6 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
 // -----------------------------------------------------------------------
 
 void TestGraphicsSystem::freeDC(int dc) {
-  graphics_system_log_.recordFunction("free_dc", dc);
-
   if(dc == 0)
     throw rlvm::Exception("Attempt to deallocate DC[0]");
   else if(dc == 1)
@@ -99,7 +95,6 @@ void TestGraphicsSystem::freeDC(int dc) {
 // -----------------------------------------------------------------------
 
 void TestGraphicsSystem::clearAndPromoteObjects() {
-  graphics_system_log_.recordFunction("clear_and_promote_objects");
 }
 
 // -----------------------------------------------------------------------
@@ -107,7 +102,6 @@ void TestGraphicsSystem::clearAndPromoteObjects() {
 GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number)
 {
   static GraphicsObject x;
-  graphics_system_log_.recordFunction("get_object", layer, obj_number);
   return x;
 }
 
@@ -116,8 +110,6 @@ GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number)
 boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename)
 {
-  graphics_system_log_.recordFunction("load_surface_from_file", short_filename);
-
   // Make this a real surface so we can track what's done with it
   return boost::shared_ptr<Surface>(
     new TestSurface(short_filename, Size(50, 50)));
@@ -127,7 +119,6 @@ boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
 
 boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc)
 {
-  graphics_system_log_.recordFunction("get_dc", dc);
   return display_contexts_[dc];
 }
 
@@ -135,7 +126,6 @@ boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc)
 
 boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s)
 {
-  graphics_system_log_.recordFunction("get_dc", s);
   static int surface_num = 0;
   ostringstream oss;
   oss << "Built Surface #" << surface_num++;
@@ -150,8 +140,5 @@ void TestGraphicsSystem::blitSurfaceToDC(
   int srcX, int srcY, int src_width, int src_height,
   int destX, int destY, int dest_width, int dest_height,
   int alpha) {
-  graphics_system_log_.recordFunction(
-    "blit_surface_to_dc", target_dc, srcX, srcY, src_width, src_height,
-    destX, destY, dest_width, dest_height, alpha);
   // TODO
 }

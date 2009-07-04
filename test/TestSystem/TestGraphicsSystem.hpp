@@ -31,8 +31,6 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include "TestSystem/MockLog.hpp"
-
 #include <boost/shared_ptr.hpp>
 
 // -----------------------------------------------------------------------
@@ -42,8 +40,7 @@ class TestSurface;
 
 // -----------------------------------------------------------------------
 
-class TestGraphicsSystem : public GraphicsSystem
-{
+class TestGraphicsSystem : public GraphicsSystem {
 public:
   TestGraphicsSystem(System& system, Gameexe& gexe);
 
@@ -71,9 +68,6 @@ public:
                                int alpha = 255);
 
 private:
-  /// Record all method calls here
-  MockLog graphics_system_log_;
-
   /// Map between device contexts number and their surface.
   boost::shared_ptr<TestSurface> display_contexts_[16];
 };

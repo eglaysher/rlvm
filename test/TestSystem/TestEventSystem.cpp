@@ -32,8 +32,7 @@
 // -----------------------------------------------------------------------
 TestEventSystem::TestEventSystem(Gameexe& gexe)
   : EventSystem(gexe),
-    event_system_mock_(new EventSystemMockHandler),
-    mock_log_("TestEventSystem") {
+    event_system_mock_(new EventSystemMockHandler) {
 }
 
 // -----------------------------------------------------------------------
@@ -51,21 +50,18 @@ void TestEventSystem::executeEventSystem(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 bool TestEventSystem::shiftPressed() const {
-  mock_log_.recordFunction("shift_pressed");
   return event_system_mock_->shiftPressed();
 }
 
 // -----------------------------------------------------------------------
 
 bool TestEventSystem::ctrlPressed() const {
-  mock_log_.recordFunction("ctrl_pressed");
   return event_system_mock_->ctrlPressed();
 }
 
 // -----------------------------------------------------------------------
 
 unsigned int TestEventSystem::getTicks() const {
-  mock_log_.recordFunction("get_ticks");
   return event_system_mock_->getTicks();
 }
 
@@ -73,5 +69,4 @@ unsigned int TestEventSystem::getTicks() const {
 
 void TestEventSystem::wait(unsigned int milliseconds) const {
   // waiting is a noop.
-  mock_log_.recordFunction("wait", milliseconds);
 }

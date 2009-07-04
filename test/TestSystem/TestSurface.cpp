@@ -32,23 +32,18 @@
 // TestSurface
 // -----------------------------------------------------------------------
 TestSurface::TestSurface(const std::string& surface_name)
-  : surface_name_(surface_name), allocated_(false), size_(-1, -1),
-    surface_log_(surface_name)
-{
+    : surface_name_(surface_name), allocated_(false), size_(-1, -1) {
 }
 
 // -----------------------------------------------------------------------
 
 TestSurface::TestSurface(const std::string& surface_name, const Size& size)
-  : surface_name_(surface_name), allocated_(true), size_(size),
-    surface_log_(surface_name)
-{
+    : surface_name_(surface_name), allocated_(true), size_(size) {
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::allocate(const Size& size) {
-  surface_log_.recordFunction("allocate", size);
   allocated_ = true;
   size_ = size;
 }
@@ -56,7 +51,6 @@ void TestSurface::allocate(const Size& size) {
 // -----------------------------------------------------------------------
 
 void TestSurface::deallocate() {
-  surface_log_.recordFunction("deallocate");
   allocated_ = false;
 }
 
@@ -69,37 +63,25 @@ Size TestSurface::size() const { return size_; }
 void TestSurface::blitToSurface(
   Surface& surface,
   const Rect& src, const Rect& dst,
-  int alpha, bool use_src_alpha)
-{
-  surface_log_.recordFunction(
-    "blit_to_surface", src, dst, alpha, use_src_alpha);
+  int alpha, bool use_src_alpha) {
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::renderToScreen(
-  const Rect& src, const Rect& dst, int alpha)
-{
-  surface_log_.recordFunction(
-    "render_to_screen", src, dst, alpha);
+  const Rect& src, const Rect& dst, int alpha) {
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
-{
-  surface_log_.recordFunction(
-    "render_to_screen_as_colour_mask", src, dst, rgba, filter);
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) {
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::renderToScreen(
-  const Rect& src, const Rect& dst, const int opacity[4])
-{
-  surface_log_.recordFunction(
-    "render_to_screen", src, dst);
+  const Rect& src, const Rect& dst, const int opacity[4]) {
 }
 
 // -----------------------------------------------------------------------
@@ -108,7 +90,6 @@ void TestSurface::renderToScreenAsObject(const GraphicsObject& rp,
                                          const Rect& src,
                                          const Rect& dst,
                                          int alpha) {
-  surface_log_.recordFunction("render_to_screen_as_object");
 }
 
 // -----------------------------------------------------------------------
@@ -129,25 +110,21 @@ const Surface::GrpRect& TestSurface::getPattern(int patt_no) const {
 void TestSurface::rawRenderQuad(const int src_coords[8],
                                 const int dest_coords[8],
                                 const int opacity[4]) {
-  surface_log_.recordFunction("raw_render_quad");
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::fill(const RGBAColour& colour) {
-  surface_log_.recordFunction("fill", colour);
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::fill(const RGBAColour& colour, const Rect& rect) {
-  surface_log_.recordFunction("fill", colour, rect);
 }
 
 // -----------------------------------------------------------------------
 
 void TestSurface::getDCPixel(const Point& p, int& r, int& g, int& b) {
-  surface_log_.recordFunction("get_dcpixel", p);
   // This really doesn't work...
 }
 
@@ -155,7 +132,6 @@ void TestSurface::getDCPixel(const Point& p, int& r, int& g, int& b) {
 
 boost::shared_ptr<Surface> TestSurface::clipAsColorMask(
   const Rect& rect, int r, int g, int b) {
-  surface_log_.recordFunction("clip_as_colour_mask", rect, r, g, b);
 
   return boost::shared_ptr<Surface>(
     new TestSurface("Clip of " + surface_name_, rect.size()));
@@ -164,8 +140,6 @@ boost::shared_ptr<Surface> TestSurface::clipAsColorMask(
 // -----------------------------------------------------------------------
 
 Surface* TestSurface::clone() const {
-  surface_log_.recordFunction("clone");
-
   return new TestSurface("Copy of " + surface_name_, size_);
 }
 

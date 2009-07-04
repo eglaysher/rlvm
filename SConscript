@@ -253,7 +253,6 @@ test_case_files = [
 ]
 
 null_system_files = [
-  "test/TestSystem/MockLog.cpp",
   "test/TestSystem/TestEventSystem.cpp",
   "test/TestSystem/TestGraphicsSystem.cpp",
   "test/TestSystem/TestSoundSystem.cpp",
