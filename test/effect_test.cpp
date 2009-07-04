@@ -26,6 +26,7 @@
 // -----------------------------------------------------------------------
 
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 #include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
@@ -38,12 +39,11 @@
 #include "testUtils.hpp"
 
 #include <boost/shared_ptr.hpp>
-#include <boost/assign/list_of.hpp>
-#include <memory>
-#include <set>
 
-using std::auto_ptr;
 using boost::shared_ptr;
+using boost::scoped_ptr;
+
+using namespace testing;
 
 /// Helper to specify the return value of getTicks().
 class EffectEventSystemTest : public EventSystemMockHandler {
@@ -76,95 +76,63 @@ class EffectTest : public ::testing::Test {
   shared_ptr<EffectEventSystemTest> event_system_impl;
 };
 
-class EffectPreconditionTest : public Effect {
-public:
-  EffectPreconditionTest(RLMachine& machine, boost::shared_ptr<Surface> src,
-                         boost::shared_ptr<Surface> dst,
-                         Size size, int time,
-                         bool blit_original_image)
-    : Effect(machine, src, dst, size, time),
-      blit_original_image_(blit_original_image),
-      log_("EffectLog") {
-  }
-  virtual ~EffectPreconditionTest() {}
-  MockLog& log() { return log_; }
-
-protected:
-  virtual void performEffectForTime(RLMachine& machine,
-                                    int currentTime) {
-    log_.recordFunction("performEffectForTime", currentTime);
+class MockEffect : public Effect {
+ public:
+  MockEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+             boost::shared_ptr<Surface> dst,
+             Size size, int time)
+      : Effect(machine, src, dst, size, time) {
   }
 
-private:
-  virtual bool blitOriginalImage() const {
-    log_.recordFunction("blitOriginalImage");
-    return blit_original_image_;
-  }
-
-  // What we should return
-  bool blit_original_image_;
-
-  mutable MockLog log_;
+  MOCK_METHOD2(performEffectForTime, void(RLMachine& machine, int));
+  MOCK_CONST_METHOD0(blitOriginalImage, bool());
 };
 
-
-TEST_F(EffectTest, DISABLED_TestBase) {
+TEST_F(EffectTest, TestBase) {
   shared_ptr<Surface> src(new TestSurface("src"));
   shared_ptr<Surface> dst(new TestSurface("dst"));
 
-  auto_ptr<EffectPreconditionTest> effect(
-    new EffectPreconditionTest(rlmachine, src, dst, Size(640, 480), 2, false));
+  scoped_ptr<MockEffect> effect(
+    new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
 
-  // First loop through (with
   bool retVal = false;
   for (int i = 0; i < 2; ++i) {
-    retVal = (*effect)(rlmachine);
-    EXPECT_FALSE(retVal) << "Didn't prematurely quit";
-    effect->log().ensure("performEffectForTime", i);
+    EXPECT_CALL(*effect, blitOriginalImage()).WillOnce(Return(false));
+    EXPECT_CALL(*effect, performEffectForTime(_, i)).Times(1);
+    EXPECT_FALSE((*effect)(rlmachine)) << "Didn't prematurely quit";
+    ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
     event_system_impl->setTicks(i + 1);
   }
 
-  retVal = (*effect)(rlmachine);
-  EXPECT_TRUE(retVal) << "Quit at the right time";
+  EXPECT_TRUE((*effect)(rlmachine)) << "We didn't quit?";
 }
 
 // -----------------------------------------------------------------------
 
-class BlindTopToBottomWithLog : public BlindTopToBottomEffect {
-public:
-  BlindTopToBottomWithLog(RLMachine& machine, boost::shared_ptr<Surface> src,
-                          boost::shared_ptr<Surface> dst,
-                          int width, int height, int time, int blindSize)
-    : BlindTopToBottomEffect(machine, src, dst, Size(width, height), time, blindSize),
-      log_("BlindTopToBottomEffect") {
+class MockBlitTopToBottom : public BlindTopToBottomEffect {
+ public:
+  MockBlitTopToBottom(
+      RLMachine& machine, boost::shared_ptr<Surface> src,
+      boost::shared_ptr<Surface> dst,
+      int width, int height, int time, int blindSize)
+      : BlindTopToBottomEffect(machine, src, dst, Size(width, height),
+                               time, blindSize) {
   }
 
-  virtual void performEffectForTime(RLMachine& machine, int currentTime) {
-    log_.recordFunction("performEffectForTime", currentTime);
-    BlindTopToBottomEffect::performEffectForTime(machine, currentTime);
-  }
-
-  virtual void renderPolygon(int polyStart, int polyEnd) {
-    log_.recordFunction("renderPolygon", polyStart, polyEnd);
-    BlindTopToBottomEffect::renderPolygon(polyStart, polyEnd);
-  }
-
-  MockLog& log() { return log_; }
-
-private:
-  mutable MockLog log_;
+  MOCK_METHOD2(performEffectForTime, void(const RLMachine& machine, int));
+  MOCK_METHOD2(renderPolygon, void(int, int));
 };
 
-TEST_F(EffectTest, DISABLED_BlindTopToBottomEffect) {
+TEST_F(EffectTest, BlindTopToBottomEffect) {
   shared_ptr<TestSurface> src(new TestSurface("src"));
   shared_ptr<TestSurface> dst(new TestSurface("dst"));
 
   const int DURATION = 100;
   const int BLIND_SIZE = 50;
   const int HEIGHT = 480;
-  auto_ptr<BlindTopToBottomWithLog> effect(
-    new BlindTopToBottomWithLog(
+  scoped_ptr<MockBlitTopToBottom> effect(
+    new MockBlitTopToBottom(
       rlmachine, src, dst, 640, HEIGHT, DURATION, BLIND_SIZE));
 
   int numBlinds = (HEIGHT / BLIND_SIZE) + 1;
@@ -172,65 +140,56 @@ TEST_F(EffectTest, DISABLED_BlindTopToBottomEffect) {
   bool retVal = false;
 
   // Test at 0
-  retVal = (*effect)(rlmachine);
-  EXPECT_FALSE(retVal) << "Prematurely quit";
-  effect->log().ensure("renderPolygon", 0, 0);
-  effect->log().clear();
+  EXPECT_CALL(*effect, renderPolygon(0, 0)).Times(1);
+  EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at 25
   event_system_impl->setTicks(25);
-  retVal = (*effect)(rlmachine);
-  EXPECT_FALSE(retVal) << "Prematurely quit";
-  effect->log().ensure("renderPolygon", 0, 15);
-  effect->log().ensure("renderPolygon", 50, 64);
-  effect->log().ensure("renderPolygon", 100, 113);
-  effect->log().ensure("renderPolygon", 150, 162);
-  effect->log().ensure("renderPolygon", 200, 211);
-  effect->log().ensure("renderPolygon", 250, 260);
-  effect->log().ensure("renderPolygon", 300, 309);
-  effect->log().ensure("renderPolygon", 350, 358);
-  effect->log().ensure("renderPolygon", 400, 407);
-  effect->log().ensure("renderPolygon", 450, 456);
-  effect->log().clear();
+  EXPECT_CALL(*effect, renderPolygon(0, 15)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(50, 64)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(100, 113)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(150, 162)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(200, 211)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(250, 260)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(300, 309)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(350, 358)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(400, 407)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(450, 456)).Times(1);
+  EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at 50
   event_system_impl->setTicks(50);
-  retVal = (*effect)(rlmachine);
-  EXPECT_FALSE(retVal) << "Prematurely quit";
-  effect->log().ensure("renderPolygon", 0, 30);
-  effect->log().ensure("renderPolygon", 50, 79);
-  effect->log().ensure("renderPolygon", 100, 128);
-  effect->log().ensure("renderPolygon", 150, 177);
-  effect->log().ensure("renderPolygon", 200, 226);
-  effect->log().ensure("renderPolygon", 250, 275);
-  effect->log().ensure("renderPolygon", 300, 324);
-  effect->log().ensure("renderPolygon", 350, 373);
-  effect->log().ensure("renderPolygon", 400, 422);
-  effect->log().ensure("renderPolygon", 450, 471);
-  effect->log().clear();
+  EXPECT_CALL(*effect, renderPolygon(0, 30)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(50, 79)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(100, 128)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(150, 177)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(200, 226)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(250, 275)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(300, 324)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(350, 373)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(400, 422)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(450, 471)).Times(1);
+  EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at 75
   event_system_impl->setTicks(75);
-  retVal = (*effect)(rlmachine);
-  EXPECT_FALSE(retVal) << "Prematurely quit";
-  effect->log().ensure("renderPolygon", 0, 45);
-  effect->log().ensure("renderPolygon", 50, 94);
-  effect->log().ensure("renderPolygon", 100, 143);
-  effect->log().ensure("renderPolygon", 150, 192);
-  effect->log().ensure("renderPolygon", 200, 241);
-  effect->log().ensure("renderPolygon", 250, 290);
-  effect->log().ensure("renderPolygon", 300, 339);
-  effect->log().ensure("renderPolygon", 350, 388);
-  effect->log().ensure("renderPolygon", 400, 437);
-  effect->log().ensure("renderPolygon", 450, 486);
-  effect->log().clear();
-
-  // TODO: test at the end?
-//  (98, pair_list_of(0, 50)(50, 100)(100, 150)(150, 200)(200, 250)(250, 300)
-//   (300, 350)(350, 400)(400, 450)(450, 499));
+  EXPECT_CALL(*effect, renderPolygon(0, 45)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(50, 94)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(100, 143)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(150, 192)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(200, 241)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(250, 290)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(300, 339)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(350, 388)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(400, 437)).Times(1);
+  EXPECT_CALL(*effect, renderPolygon(450, 486)).Times(1);
+  EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
+  ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at the end
   event_system_impl->setTicks(100);
-  retVal = (*effect)(rlmachine);
-  EXPECT_TRUE(retVal) << "We quit";
+  EXPECT_TRUE((*effect)(rlmachine)) << "We didn't quit?";
 }
