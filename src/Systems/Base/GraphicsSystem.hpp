@@ -88,6 +88,9 @@ struct GraphicsSystemGlobals
   /// Whether we should skip animations (such as those made by Effect)
   int skip_animations;
 
+  /// screen mode. 1 is windowed (default), 0 is full-screen.
+  int screen_mode;
+
   /// CG Table
   CGMTable cg_table;
 
@@ -99,10 +102,13 @@ struct GraphicsSystemGlobals
 
     if (version > 0)
       ar & cg_table;
+
+    if (version > 1)
+      ar & screen_mode;
   }
 };
 
-BOOST_CLASS_VERSION(GraphicsSystemGlobals, 1)
+BOOST_CLASS_VERSION(GraphicsSystemGlobals, 2)
 
 // -----------------------------------------------------------------------
 
@@ -306,6 +312,11 @@ public:
    */
   void setShowWeather(const int in);
   int showWeather() const { return globals_.show_weather; }
+
+  // Sets whether we're in fullscreen mode. setScreenMode() is virtual so we
+  // can tell SDL to switch the screen mode.
+  virtual void setScreenMode(const int in);
+  int screenMode() const { return globals_.screen_mode; }
 
   /**
    * Toggles whether the interface is shown. Called by

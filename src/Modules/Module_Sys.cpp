@@ -581,8 +581,10 @@ SysModule::SysModule()
             callFunction(&SoundSystem::setUseKoeForCharacter));
   addOpcode(2374, 0, "UseKoe",
             returnIntValue(&SoundSystem::useKoeForCharacter));
-  addUnsupportedOpcode(2275, 0, "SetScreenMode");
-  addUnsupportedOpcode(2375, 0, "ScreenMode");
+  addOpcode(2275, 0, "SetScreenMode",
+            callFunction(&GraphicsSystem::setScreenMode));
+  addOpcode(2375, 0, "ScreenMode",
+            returnIntValue(&GraphicsSystem::screenMode));
 
   addOpcode(2350, 0, "AutoMode",
             returnIntValue(&TextSystem::autoMode));

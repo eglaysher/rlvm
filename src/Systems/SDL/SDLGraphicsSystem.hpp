@@ -62,6 +62,11 @@ class SDLGraphicsSystem : public GraphicsSystem
 {
 public:
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
+  ~SDLGraphicsSystem();
+
+  void registerSurface(SDLSurface* surface);
+  void unregisterSurface(SDLSurface* surface);
+
 
 //  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
 
@@ -99,6 +104,8 @@ public:
   virtual void setWindowSubtitle(const std::string& cp932str,
                                  int text_encoding);
 
+  virtual void setScreenMode(const int in);
+
   /**
    * Reset the system. Should clear all state for when a user loads a
    * game.
@@ -106,6 +113,8 @@ public:
   virtual void reset();
 
 private:
+  void setupVideo();
+
   /**
    * @name Internal Error Checking Methods
    *
@@ -178,6 +187,10 @@ private:
   /// OpenGL v1.x drivers.
   int screen_tex_width_;
   int screen_tex_height_;
+
+  /// Keep a list of all surfaces that are currently alive. We do this so that
+  /// when we
+  std::set<SDLSurface*> alive_surfaces_;
 
   /**
    * LRU cache filled with the last fifteen accessed images.

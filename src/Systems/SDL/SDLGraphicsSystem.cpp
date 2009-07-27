@@ -260,8 +260,35 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     image_cache_(20)
 {
   for(int i = 0; i < 16; ++i)
-    display_contexts_[i].reset(new SDLSurface);
+    display_contexts_[i].reset(new SDLSurface(this));
 
+  setScreenSize(getScreenSize(gameexe));
+  Texture::SetScreenSize(screenSize());
+
+  /// Grab the caption
+  std::string cp932caption = gameexe("CAPTION").to_string();
+  int name_enc = gameexe("NAME_ENC").to_int(0);
+  caption_title_ = cp932toUTF8(cp932caption, name_enc);
+
+  setupVideo();
+
+  // Now we allocate the first two display contexts with equal size to
+  // the display
+  display_contexts_[0]->allocate(screenSize(), true);
+  display_contexts_[1]->allocate(screenSize());
+
+  setWindowTitle();
+
+  // When debug is set, display trace data in the titlebar
+  if(gameexe("MEMORY").exists())
+  {
+    display_data_in_titlebar_ = true;
+  }
+
+  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
+}
+
+void SDLGraphicsSystem::setupVideo() {
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo( );
 
@@ -271,15 +298,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     throw SystemError(ss.str());
   }
 
-  setScreenSize(getScreenSize(gameexe));
-  Texture::SetScreenSize(screenSize());
-
   int bpp = info->vfmt->BitsPerPixel;
-
-  /// Grab the caption
-  std::string cp932caption = gameexe("CAPTION").to_string();
-  int name_enc = gameexe("NAME_ENC").to_int(0);
-  caption_title_ = cp932toUTF8(cp932caption, name_enc);
 
   /* the flags to pass to SDL_SetVideoMode */
   int video_flags;
@@ -296,6 +315,9 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   /* This checks if hardware blits can be done */
   if ( info->blit_hw )
     video_flags |= SDL_HWACCEL;
+
+  if (screenMode() == 0)
+    video_flags |= SDL_FULLSCREEN;
 
   /* Sets up OpenGL double buffering */
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
@@ -353,11 +375,6 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   /* Full Brightness, 50% Alpha ( NEW ) */
   glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);
 
-  // Now we allocate the first two display contexts with equal size to
-  // the display
-  display_contexts_[0]->allocate(screenSize(), this);
-  display_contexts_[1]->allocate(screenSize());
-
   // Create a small 32x32 texture for storing what's behind the mouse
   // cursor.
   glGenTextures(1, &screen_contents_texture_);
@@ -370,16 +387,27 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
                screen_tex_width_, screen_tex_height_, 0, GL_RGB,
                GL_UNSIGNED_BYTE, NULL);
   ShowGLErrors();
+}
 
-  setWindowTitle();
+// -----------------------------------------------------------------------
 
-  // When debug is set, display trace data in the titlebar
-  if(gameexe("MEMORY").exists())
-  {
-    display_data_in_titlebar_ = true;
+SDLGraphicsSystem::~SDLGraphicsSystem() {
+  // Force all surfaces to unregister from us now, because otherwise they'll
+  // access our unresolved memory.
+  for (std::set<SDLSurface*>::iterator it = alive_surfaces_.begin();
+       it != alive_surfaces_.end(); ++it) {
+    (*it)->unregisterFromGraphicsSystem();
   }
+}
 
-  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::registerSurface(SDLSurface* surface) {
+  alive_surfaces_.insert(surface);
+}
+
+void SDLGraphicsSystem::unregisterSurface(SDLSurface* surface) {
+  alive_surfaces_.erase(surface);
 }
 
 // -----------------------------------------------------------------------
@@ -449,6 +477,19 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
   subtitle_ = cp932toUTF8(cp932str, text_encoding);
 
   GraphicsSystem::setWindowSubtitle(cp932str, text_encoding);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLGraphicsSystem::setScreenMode(const int in) {
+  for (std::set<SDLSurface*>::iterator it = alive_surfaces_.begin();
+       it != alive_surfaces_.end(); ++it) {
+    (*it)->invalidate();
+  }
+
+  GraphicsSystem::setScreenMode(in);
+
+  setupVideo();
 }
 
 // -----------------------------------------------------------------------
@@ -673,7 +714,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
     region_table.push_back(rect);
   }
 
-  shared_ptr<Surface> surface_to_ret(new SDLSurface(s, region_table));
+  shared_ptr<Surface> surface_to_ret(new SDLSurface(this, s, region_table));
   image_cache_.insert(short_filename, surface_to_ret);
   return surface_to_ret;
 }
@@ -695,7 +736,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
 {
-  return shared_ptr<Surface>(new SDLSurface(size));
+  return shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
 // -----------------------------------------------------------------------

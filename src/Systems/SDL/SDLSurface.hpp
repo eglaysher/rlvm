@@ -76,7 +76,11 @@ private:
      */
     void reupload(SDL_Surface* surface);
 
-    ///
+    /// Clears |texture|. Called before a switch between windowed and
+    /// fullscreen mode, so that we aren't holding stale references.
+    void forceUnload();
+
+    /// The actual texture.
     boost::shared_ptr<Texture> texture;
 
     int x_, y_, w_, h_;
@@ -98,8 +102,12 @@ private:
   /// texture.
   bool texture_is_valid_;
 
-  /// A pointer to the graphics_system. This item being non-NULL means
-  /// that this Surface is the special DC0.
+  /// Whether this surface is DC0 and needs special treatment.
+  bool is_dc0_;
+
+  /// A pointer to the graphics_system. We use this to make sure the
+  /// GraphicsSystem has a weak_ptr to all SDLSurface instances so it can
+  /// invalidate them all in the case of a screen change.
   SDLGraphicsSystem* graphics_system_;
 
   /**
@@ -114,30 +122,36 @@ private:
   static std::vector<int> segmentPicture(int size_remainging);
 
 public:
-  SDLSurface();
+  SDLSurface(SDLGraphicsSystem* system);
 
   /// Surface that takes ownership of an externally created surface
   /// and assumes it is only a single region.
-  SDLSurface(SDL_Surface* sruf);
+  SDLSurface(SDLGraphicsSystem* system, SDL_Surface* sruf);
 
   /// Surface that takes ownership of an externally created surface.
-  SDLSurface(SDL_Surface* surf,
+  SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
              const std::vector<SDLSurface::GrpRect>& region_table);
 
   /// Surface created with a specified width and height
-  SDLSurface(const Size& size);
+  SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
   virtual void setIsMask(const bool is) { is_mask_ = is; }
 
   void buildRegionTable(const Size& size);
+  void registerWithGraphicsSystem();
+  void unregisterFromGraphicsSystem();
+
+  /// Clears |texture|. Called before a switch between windowed and
+  /// fullscreen mode, so that we aren't holding stale references.
+  void invalidate();
 
   void dump();
 
   /// allocate a surface
   void allocate(const Size& size);
 
-  void allocate(const Size& size, SDLGraphicsSystem* in);
+  void allocate(const Size& size, bool is_dc0);
 
   /// Deallocate
   void deallocate();

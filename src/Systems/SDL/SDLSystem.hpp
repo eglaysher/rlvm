@@ -62,4 +62,7 @@ private:
   unsigned int last_time_paused_;
 };
 
+/// Convenience function to do the casting.
+SDLGraphicsSystem* getSDLGraphics(System& system);
+
 #endif

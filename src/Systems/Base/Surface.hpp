@@ -30,6 +30,7 @@
 
 #include "Systems/Base/Rect.hpp"
 
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
 
 class RGBColour;
@@ -40,7 +41,7 @@ struct GraphicsObjectOverride;
 /**
  * Abstract concept of a surface.
  */
-class Surface
+class Surface : public boost::enable_shared_from_this<Surface>
 {
 public:
   struct GrpRect {

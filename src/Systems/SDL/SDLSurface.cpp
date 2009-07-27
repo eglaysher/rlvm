@@ -105,44 +105,60 @@ SDLSurface::TextureRecord::TextureRecord(
 
 void SDLSurface::TextureRecord::reupload(SDL_Surface* surface)
 {
-  texture->reupload(surface, x_, y_, w_, h_, bytes_per_pixel_, byte_order_,
-                    byte_type_);
+  if (texture) {
+    texture->reupload(surface, x_, y_, w_, h_, bytes_per_pixel_, byte_order_,
+                      byte_type_);
+  } else {
+    texture.reset(new Texture(surface, x_, y_, w_, h_, bytes_per_pixel_,
+                              byte_order_, byte_type_));
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::TextureRecord::forceUnload() {
+  texture.reset();
 }
 
 // -----------------------------------------------------------------------
 // SDLSurface
 // -----------------------------------------------------------------------
 
-SDLSurface::SDLSurface()
-  : surface_(NULL), texture_is_valid_(false), graphics_system_(NULL),
-    is_mask_(false)
-{}
+SDLSurface::SDLSurface(SDLGraphicsSystem* system)
+    : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
+      graphics_system_(system), is_mask_(false)
+{
+  registerWithGraphicsSystem();
+}
 
 // -----------------------------------------------------------------------
 
-SDLSurface::SDLSurface(SDL_Surface* surf)
-  : surface_(surf), texture_is_valid_(false), graphics_system_(NULL),
-    is_mask_(false)
+SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
+  : surface_(surf), texture_is_valid_(false), is_dc0_(false),
+    graphics_system_(system), is_mask_(false)
 {
+  registerWithGraphicsSystem();
   buildRegionTable(Size(surf->w, surf->h));
 }
 
 // -----------------------------------------------------------------------
 
 /// Surface that takes ownership of an externally created surface.
-SDLSurface::SDLSurface(SDL_Surface* surf,
+SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
                        const vector<SDLSurface::GrpRect>& region_table)
   : surface_(surf), region_table_(region_table),
-    texture_is_valid_(false), graphics_system_(NULL),
-    is_mask_(false)
-{}
+    texture_is_valid_(false), is_dc0_(false), graphics_system_(system),
+    is_mask_(false) {
+  registerWithGraphicsSystem();
+}
 
 // -----------------------------------------------------------------------
 
-SDLSurface::SDLSurface(const Size& size)
-  : surface_(NULL), texture_is_valid_(false), graphics_system_(NULL),
-    is_mask_(false)
+SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
+  : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
+    graphics_system_(system), is_mask_(false)
 {
+  registerWithGraphicsSystem();
   allocate(size);
   buildRegionTable(size);
 }
@@ -165,9 +181,36 @@ void SDLSurface::buildRegionTable(const Size& size)
 
 // -----------------------------------------------------------------------
 
+void SDLSurface::registerWithGraphicsSystem() {
+  if (graphics_system_)
+    graphics_system_->registerSurface(this);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::unregisterFromGraphicsSystem() {
+  if (graphics_system_) {
+    graphics_system_->unregisterSurface(this);
+    graphics_system_ = NULL;
+  }
+}
+
+// -----------------------------------------------------------------------
+
 SDLSurface::~SDLSurface()
 {
+  unregisterFromGraphicsSystem();
   deallocate();
+}
+
+void SDLSurface::invalidate() {
+  // Force unloading of all OpenGL resources
+  for (std::vector<TextureRecord>::iterator it = textures_.begin();
+       it != textures_.end(); ++it) {
+    it->forceUnload();
+  }
+
+  texture_is_valid_ = false;
 }
 
 // -----------------------------------------------------------------------
@@ -198,9 +241,9 @@ void SDLSurface::allocate(const Size& size)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::allocate(const Size& size, SDLGraphicsSystem* sys)
+void SDLSurface::allocate(const Size& size, bool is_dc0)
 {
-  graphics_system_ = sys;
+  is_dc0_ = is_dc0;
   allocate(size);
 }
 
@@ -628,7 +671,7 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
 void SDLSurface::markWrittenTo()
 {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
-  if(graphics_system_) {
+  if (is_dc0_ && graphics_system_) {
     graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
   }
 
@@ -668,7 +711,7 @@ Surface* SDLSurface::clone() const
   if(SDL_BlitSurface(surface_, NULL, tmp_surface, NULL))
     reportSDLError("SDL_BlitSurface", "SDLSurface::clone()");
 
-  return new SDLSurface(tmp_surface, region_table_);
+  return new SDLSurface(graphics_system_, tmp_surface, region_table_);
 }
 
 // -----------------------------------------------------------------------
@@ -768,5 +811,5 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
 
   SDL_FreeSurface(tmp_surface);
 
-  return boost::shared_ptr<Surface>(new SDLSurface(surface));
+  return boost::shared_ptr<Surface>(new SDLSurface(graphics_system_, surface));
 }

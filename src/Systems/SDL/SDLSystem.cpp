@@ -152,3 +152,7 @@ SoundSystem& SDLSystem::sound()
 {
   return *sound_system_;
 }
+
+SDLGraphicsSystem* getSDLGraphics(System& system) {
+  return &static_cast<SDLGraphicsSystem&>(system.graphics());
+}

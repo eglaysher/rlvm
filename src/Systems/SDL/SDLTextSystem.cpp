@@ -40,10 +40,10 @@
 #include "Systems/SDL/SDLTextSystem.hpp"
 
 #include "Systems/Base/Rect.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/algoplus.hpp"
@@ -116,12 +116,13 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
       oss << "Error printing \"" << utf8str << "\" in font size " << size;
       throw rlvm::Exception(oss.str());
     }
-    return shared_ptr<Surface>(new SDLSurface(tmp));
+    return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), tmp));
   }
   else
   {
     // Allocate a 1x1 SDL_Surface
-    return shared_ptr<Surface>(new SDLSurface(buildNewSurface(Size(1, 1))));
+    return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()),
+                                              buildNewSurface(Size(1, 1))));
   }
 }
 
