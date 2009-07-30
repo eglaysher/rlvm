@@ -239,7 +239,7 @@ void SDLGraphicsSystem::drawCursor()
 
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
 {
-  return shared_ptr<Surface>(new SDLRenderToTextureSurface(screenSize()));
+  return shared_ptr<Surface>(new SDLRenderToTextureSurface(this, screenSize()));
 }
 
 // -----------------------------------------------------------------------
@@ -394,7 +394,7 @@ void SDLGraphicsSystem::setupVideo() {
 SDLGraphicsSystem::~SDLGraphicsSystem() {
   // Force all surfaces to unregister from us now, because otherwise they'll
   // access our unresolved memory.
-  for (std::set<SDLSurface*>::iterator it = alive_surfaces_.begin();
+  for (std::set<SurfaceInvalidatable*>::iterator it = alive_surfaces_.begin();
        it != alive_surfaces_.end(); ++it) {
     (*it)->unregisterFromGraphicsSystem();
   }
@@ -402,11 +402,11 @@ SDLGraphicsSystem::~SDLGraphicsSystem() {
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::registerSurface(SDLSurface* surface) {
+void SDLGraphicsSystem::registerSurface(SurfaceInvalidatable* surface) {
   alive_surfaces_.insert(surface);
 }
 
-void SDLGraphicsSystem::unregisterSurface(SDLSurface* surface) {
+void SDLGraphicsSystem::unregisterSurface(SurfaceInvalidatable* surface) {
   alive_surfaces_.erase(surface);
 }
 
@@ -482,7 +482,7 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::setScreenMode(const int in) {
-  for (std::set<SDLSurface*>::iterator it = alive_surfaces_.begin();
+  for (std::set<SurfaceInvalidatable*>::iterator it = alive_surfaces_.begin();
        it != alive_surfaces_.end(); ++it) {
     (*it)->invalidate();
   }

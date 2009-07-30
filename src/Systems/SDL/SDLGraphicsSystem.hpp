@@ -41,6 +41,7 @@ class Gameexe;
 class GraphicsObject;
 class SDLGraphicsSystem;
 class SDLSurface;
+class SurfaceInvalidatable;
 class System;
 class Texture;
 
@@ -64,8 +65,8 @@ public:
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();
 
-  void registerSurface(SDLSurface* surface);
-  void unregisterSurface(SDLSurface* surface);
+  void registerSurface(SurfaceInvalidatable* surface);
+  void unregisterSurface(SurfaceInvalidatable* surface);
 
 
 //  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
@@ -190,7 +191,7 @@ private:
 
   /// Keep a list of all surfaces that are currently alive. We do this so that
   /// when we
-  std::set<SDLSurface*> alive_surfaces_;
+  std::set<SurfaceInvalidatable*> alive_surfaces_;
 
   /**
    * LRU cache filled with the last fifteen accessed images.

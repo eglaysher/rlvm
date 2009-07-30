@@ -31,17 +31,31 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "Systems/Base/Surface.hpp"
+#include "Systems/SDL/SurfaceInvalidatable.hpp"
 
+class SDLGraphicsSystem;
 class Texture;
 
 /**
  * Fake SDLSurface used to
  */
-class SDLRenderToTextureSurface : public Surface
+class SDLRenderToTextureSurface : public SurfaceInvalidatable,
+                                  public Surface
 {
 public:
-  SDLRenderToTextureSurface(const Size& size);
+  SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLRenderToTextureSurface();
+
+  /// Overridden from SurfaceInvalidatable:
+
+  /// Clears |texture|. Called before a switch between windowed and
+  /// fullscreen mode, so that we aren't holding stale references.
+  virtual void invalidate();
+
+  /// Unregisters this object from the GraphicsSystem.
+  virtual void unregisterFromGraphicsSystem();
+
+  void registerWithGraphicsSystem();
 
   virtual void dump();
 
@@ -79,6 +93,9 @@ public:
 private:
   /// The SDLTexture which wraps one or more OpenGL textures
   boost::scoped_ptr<Texture> texture_;
+
+  /// A pointer to the graphics_system.
+  SDLGraphicsSystem* graphics_system_;
 };
 
 

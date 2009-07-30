@@ -48,14 +48,38 @@ using namespace std;
 // SDLRenderToTextureSurface
 // -----------------------------------------------------------------------
 
-SDLRenderToTextureSurface::SDLRenderToTextureSurface(const Size& size)
-  : texture_(new Texture(render_to_texture(), size.width(), size.height()))
-{}
+SDLRenderToTextureSurface::SDLRenderToTextureSurface(SDLGraphicsSystem* system,
+                                                     const Size& size)
+    : texture_(new Texture(render_to_texture(), size.width(), size.height())),
+      graphics_system_(system){
+  registerWithGraphicsSystem();
+}
 
 // -----------------------------------------------------------------------
 
-SDLRenderToTextureSurface::~SDLRenderToTextureSurface()
-{
+SDLRenderToTextureSurface::~SDLRenderToTextureSurface() {
+  unregisterFromGraphicsSystem();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLRenderToTextureSurface::invalidate() {
+  // We regretfully can't restore the state here. Oh well. Since
+  // SDLRenderToTextureSurface are only used during Effects, we will soon be in
+  // the right state.
+  texture_.reset();
+}
+
+void SDLRenderToTextureSurface::unregisterFromGraphicsSystem() {
+  if (graphics_system_) {
+    graphics_system_->unregisterSurface(this);
+    graphics_system_ = NULL;
+  }
+}
+
+void SDLRenderToTextureSurface::registerWithGraphicsSystem() {
+  if (graphics_system_)
+    graphics_system_->registerSurface(this);
 }
 
 // -----------------------------------------------------------------------
@@ -83,7 +107,8 @@ void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,
 void SDLRenderToTextureSurface::renderToScreen(
   const Rect& src, const Rect& dst, int opacity)
 {
-  texture_->renderToScreen(src, dst, opacity);
+  if (texture_)
+    texture_->renderToScreen(src, dst, opacity);
 }
 
 // -----------------------------------------------------------------------
@@ -91,7 +116,8 @@ void SDLRenderToTextureSurface::renderToScreen(
 void SDLRenderToTextureSurface::renderToScreen(
   const Rect& src, const Rect& dst, const int opacity[4])
 {
-  texture_->renderToScreen(src, dst, opacity);
+  if (texture_)
+    texture_->renderToScreen(src, dst, opacity);
 }
 
 // -----------------------------------------------------------------------
@@ -118,7 +144,8 @@ void SDLRenderToTextureSurface::rawRenderQuad(const int src_coords[8],
                                const int dest_coords[8],
                                const int opacity[4])
 {
-  texture_->rawRenderQuad(src_coords, dest_coords, opacity);
+  if (texture_)
+    texture_->rawRenderQuad(src_coords, dest_coords, opacity);
 }
 
 // -----------------------------------------------------------------------
@@ -146,7 +173,10 @@ void SDLRenderToTextureSurface::getDCPixel(const Point& pos, int& r, int& g, int
 
 Size SDLRenderToTextureSurface::size() const
 {
-  return Size(texture_->width(), texture_->height());
+  if (texture_)
+    return Size(texture_->width(), texture_->height());
+  else
+    return Size();
 }
 
 // -----------------------------------------------------------------------

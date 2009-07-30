@@ -31,6 +31,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "Systems/Base/Surface.hpp"
+#include "Systems/SDL/SurfaceInvalidatable.hpp"
 
 struct SDL_Surface;
 class Texture;
@@ -52,7 +53,8 @@ SDL_Surface* buildNewSurface(const Size& size);
  * example, anything returned from loadSurfaceFromFile(), while others
  * don't own their surfaces (SDLSurfaces returned by getDC()
  */
-class SDLSurface : public Surface
+class SDLSurface : public SurfaceInvalidatable,
+                   public Surface
 {
 private:
   /**
@@ -136,15 +138,19 @@ public:
   SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
+  /// Overridden from SurfaceInvalidatable:
+
+  /// Clears |texture|. Called before a switch between windowed and
+  /// fullscreen mode, so that we aren't holding stale references.
+  virtual void invalidate();
+
+  /// Unregisters this object from the GraphicsSystem.
+  virtual void unregisterFromGraphicsSystem();
+
   virtual void setIsMask(const bool is) { is_mask_ = is; }
 
   void buildRegionTable(const Size& size);
   void registerWithGraphicsSystem();
-  void unregisterFromGraphicsSystem();
-
-  /// Clears |texture|. Called before a switch between windowed and
-  /// fullscreen mode, so that we aren't holding stale references.
-  void invalidate();
 
   void dump();
 
