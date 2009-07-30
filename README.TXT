@@ -49,6 +49,9 @@ In addition, rlvm has an implementation of rlBabel; English patches
 compiled with Haeleth's rlBabel should line break correctly. I've
 successfully tested it with the patches from NDT.
 
+Fullscreen can be entered by pressing Alt+{F,Enter} on Linux and
+Command+{F,Enter} on Mac.
+
 Please report bugs and discrepancies to <glaysher at umich dot edu>.
 
 3) COMPILING RLVM

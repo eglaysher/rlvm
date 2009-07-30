@@ -391,6 +391,12 @@ void GraphicsSystem::setScreenMode(const int in)
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::toggleFullscreen() {
+  setScreenMode(screenMode() ? 0 : 1);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::toggleInterfaceHidden()
 {
   hide_interface_ = !hide_interface_;

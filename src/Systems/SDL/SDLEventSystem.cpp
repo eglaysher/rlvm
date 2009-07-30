@@ -65,6 +65,20 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event)
     ctrl_pressed_ = true;
     break;
   }
+  case SDLK_RETURN:
+  case SDLK_f:
+  {
+    if ((event.key.keysym.mod & KMOD_ALT) ||
+        (event.key.keysym.mod & KMOD_META)) {
+      machine.system().graphics().toggleFullscreen();
+
+      // Stop processing because we don't want to dispatch this event, which
+      // might advance the text.
+      return;
+    }
+
+    break;
+  }
   default:
     break;
   }

@@ -317,6 +317,7 @@ public:
   // can tell SDL to switch the screen mode.
   virtual void setScreenMode(const int in);
   int screenMode() const { return globals_.screen_mode; }
+  void toggleFullscreen();
 
   /**
    * Toggles whether the interface is shown. Called by
