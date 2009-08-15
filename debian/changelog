@@ -1,3 +1,10 @@
+rlvm (0.6.3) unstable; urgency=low
+
+  * Add fullscreen mode.
+  * Internal unit testing changes.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 15 Aug 2009 12:14:58 -0700
+
 rlvm (0.6.2) unstable; urgency=low
 
   * Fixes regression where G00 animations weren't being played (Seen in

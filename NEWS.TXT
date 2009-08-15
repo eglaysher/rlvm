@@ -1,6 +1,14 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.6.3:
+- Add fullscreen mode. Can be entered from game's interface or by hitting
+  Alt+{F,Enter}.
+- Internal changes to unit testing. (Now uses Google C++ Testing Framework,
+  has code coverage, etc.)
+
+-------------------------------------------------------------------------
+
 Version 0.6.2:
 - Bugfix release:
   - Fixes regression where G00 animations weren't being played (Seen in
