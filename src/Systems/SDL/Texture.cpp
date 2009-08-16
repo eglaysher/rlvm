@@ -59,9 +59,6 @@
 using namespace std;
 using namespace boost;
 
-GLuint Texture::shader_object_id_ = 0;
-GLuint Texture::program_object_id_ = 0;
-
 unsigned int Texture::s_screen_width = 0;
 unsigned int Texture::s_screen_height = 0;
 
@@ -87,7 +84,8 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     total_width_(surface->w), total_height_(surface->h),
     texture_width_(SafeSize(logical_width_)),
     texture_height_(SafeSize(logical_height_)),
-    back_texture_id_(0), is_upside_down_(false)
+    back_texture_id_(0),  shader_object_id_(0), program_object_id_(0),
+    is_upside_down_(false)
 {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
@@ -153,7 +151,8 @@ Texture::Texture(render_to_texture, int width, int height)
     logical_width_(width), logical_height_(height),
     total_width_(width), total_height_(height),
     texture_width_(0), texture_height_(0), texture_id_(0),
-    back_texture_id_(0), is_upside_down_(true)
+    back_texture_id_(0), shader_object_id_(0), program_object_id_(0),
+    is_upside_down_(true)
 {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
@@ -183,8 +182,13 @@ Texture::~Texture()
 {
   glDeleteTextures(1, &texture_id_);
 
-  if(back_texture_id_)
+  if (back_texture_id_)
     glDeleteTextures(1, &back_texture_id_);
+
+  if (shader_object_id_)
+    glDeleteObjectARB(shader_object_id_);
+  if (program_object_id_)
+    glDeleteObjectARB(program_object_id_);
 
   ShowGLErrors();
 }

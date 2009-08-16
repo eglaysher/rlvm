@@ -126,8 +126,8 @@ private:
 
   GLuint back_texture_id_;
 
-  static GLuint shader_object_id_;
-  static GLuint program_object_id_;
+  GLuint shader_object_id_;
+  GLuint program_object_id_;
 
   /// Is this texture upside down? (Because it's a screenshot, et cetera.)
   bool is_upside_down_;
