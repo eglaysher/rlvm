@@ -318,7 +318,7 @@ void Texture::buildShader()
   ShowGLErrors();
 
   glCompileShaderARB(shader_object_id_);
-  printARBLog(shader_object_id_);
+  //printARBLog(shader_object_id_);
   ShowGLErrors();
 
   // Check the log here
@@ -328,7 +328,7 @@ void Texture::buildShader()
   ShowGLErrors();
 
   glLinkProgramARB(program_object_id_);
-  printARBLog(program_object_id_);
+  //printARBLog(program_object_id_);
   ShowGLErrors();
 }
 
