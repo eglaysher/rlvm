@@ -31,38 +31,63 @@
   <div id="wrapper">
 	<div id="content">
 	  <h1>Installing the Kanon patch under Linux</h1>
+
+      <p><span style="color: red;">WARNING</span>: This guide describes installing an outdated teaser patch and
+      will not help you install the final Kanon translation patch. It is kept
+      for historical reasons. You can find the current
+      guide <a href="guide_kanon_eng.html">here</a>.</p>
+
       <p>
         <em>(Note: All commands are examples. Depending on your linux
         distribution, you may need to adjust paths, commands, et cetera.)</em>
       </p>
       <ol>
+        <li>Make sure you have wine installed. (We will need it to run the
+          Kanon English patch installer; not to play Kanon.)
+          <div class="codebox">$ sudo apt-get install wine</div>
+        </li>
         <li>Copy the files from your <em>Kanon Standard Edition</em> or
           <em>Kanon Standard Edition All Ages Version</em> CD to your hard
           drive in a new folder. For example:
           <div class="codebox">$ cp -R /media/cdrom0/ ~/Kanon.eng </div>
         </li>
         <li>The fine people at <a href="http://radicalr.pestermom.com/vn.html">
-            Non-directional Translations</a> have created their final patch
-            that completely translates the game. Download Kanon.7z.
+            Non-directional Translations</a> have created a teaser patch, with
+            a full patch coming Real Soon Now. Download the installer from
+            their website.
+        </li>
+        <li>Use wine to run the installer.
+          <div class="codebox">$ wine ~/Desktop/KanonTeaser.exe </div>
+          You should see the first part of the installation wizard:
+          <div class="centerimage">
+            <img src="screenshots/guide_kanon_eng/1.jpg"
+                 alt="The Kanon English Patch installation wizard"/>
+          </div>
+        </li>
+        <li>Select the directory you copied the CD contents to:
+          <div class="centerimage">
+            <img src="screenshots/guide_kanon_eng/2.jpg"
+                 alt="The Kanon English Patch installation wizard"/>
+          </div>
         </li>
 
-        <li>Kanon.7z is meant to be unextracted on top of a normal Kanon
-        Standard Edition install, but relies on a case-insensitive filesystem,
-        such as NTFS. Grab a copy of my
-        script, <a href="http://github.com/eglaysher/rlvm/raw/master/scripts/patch-kanon-en-ndt.sh">patch-kanon-en-ndt.sh</a>,
-        which will correctly install the files under Linux.
+        <li>After finishing the installation, you will see the following dialog
+          window:
+          <div class="centerimage">
+            <img src="screenshots/guide_kanon_eng/3.jpg"
+                 alt="The Kanon English RealLive.exe Patcher"/>
+          </div>
+          <em>You do not need to do anything with this window and can safely
+            click exit.</em> This file translates strings inside the
+            RealLive.exe interpreter. You'll be using <code>rlvm</code> to play
+            the patch, so just click Exit.
         </li>
-
-        <li>Unextract NDT's patch into a temporary directory that isn't your
-          Kanon install.
-          <div class="codebox">$ 7z x Kanon.7z</div>
-
-          <em>If the above command fails, you may need to install <a href="http://www.7-zip.org">7-zip</a>. You can install it on <a href="http://www.ubuntu.com">Ubuntu Linux</a> by typing:</em>
-          <div class="codebox">$ sudo apt-get install p7zip-full</div>
-        </li>
-
-        <li>Run the script:
-          <div class="codebox">$ ./patch-kanon-en-ndt.sh &lt;/path/to/Patch Files/&gt; ~/Kanon.eng</div>
+        <li>You should be able to play the NDT patched Kanon by running:
+          <div class="codebox">$ rlvm ~/Kanon.eng</div>
+          <div class="centerimage">
+            <img src="screenshots/kanon_eng_main_menu.jpg"
+                 alt="The Kanon English RealLive.exe Patcher"/>
+          </div>
         </li>
       </ol>
       <p>Enjoy!</p>
