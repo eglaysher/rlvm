@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SaveGameHeader_hpp__
-#define __SaveGameHeader_hpp__
+#ifndef SRC_MACHINEBASE_SAVEGAMEHEADER_HPP_
+#define SRC_MACHINEBASE_SAVEGAMEHEADER_HPP_
 
 #include <string>
 
@@ -60,4 +60,4 @@ struct SaveGameHeader
   }
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_SAVEGAMEHEADER_HPP_

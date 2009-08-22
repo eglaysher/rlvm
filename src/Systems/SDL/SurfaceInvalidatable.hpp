@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __SurfaceInvalidatable_hpp__
-#define __SurfaceInvalidatable_hpp__
+#ifndef SRC_SYSTEMS_SDL_SURFACEINVALIDATABLE_HPP_
+#define SRC_SYSTEMS_SDL_SURFACEINVALIDATABLE_HPP_
 
 // Interface that all our surfaces follow. Responds to invalidate() calls so we
 // can free OpenGL resources that we're hanging on to during fullscreen
@@ -40,4 +40,4 @@ class SurfaceInvalidatable {
   virtual void unregisterFromGraphicsSystem() = 0;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SURFACEINVALIDATABLE_HPP_

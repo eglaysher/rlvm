@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_Name_hpp__
-#define __Module_Sys_Name_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_NAME_HPP_
+#define SRC_MODULES_MODULE_SYS_NAME_HPP_
 
 class RLMachine;
 class RLModule;
@@ -40,4 +40,4 @@ class System;
  */
 void addSysNameOpcodes(RLModule& module);
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_NAME_HPP_

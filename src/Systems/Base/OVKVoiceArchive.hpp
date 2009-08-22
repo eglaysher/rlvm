@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __OVKVoiceArchive_hpp__
-#define __OVKVoiceArchive_hpp__
+#ifndef SRC_SYSTEMS_BASE_OVKVOICEARCHIVE_HPP_
+#define SRC_SYSTEMS_BASE_OVKVOICEARCHIVE_HPP_
 
 #include <boost/filesystem/path.hpp>
 
@@ -59,4 +59,4 @@ class OVKVoiceArchive : public VoiceArchive {
   std::vector<Entry> entries_;
 };  // class OVKVoiceArchive
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_OVKVOICEARCHIVE_HPP_

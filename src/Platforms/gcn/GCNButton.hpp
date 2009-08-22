@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __GCNButton_hpp__
-#define __GCNButton_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
+#define SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
 
 #include <guichan/widgets/button.hpp>
 
@@ -64,4 +64,4 @@ private:
 };  // end of class GCNButton
 
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNBUTTON_HPP_

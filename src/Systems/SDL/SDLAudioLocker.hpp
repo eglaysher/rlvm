@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __SDLAudioLocker_hpp__
-#define __SDLAudioLocker_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLAUDIOLOCKER_HPP_
+#define SRC_SYSTEMS_SDL_SDLAUDIOLOCKER_HPP_
 
 /**
  * RAII class that locks (and unlocks) the mix loop.
@@ -39,4 +39,4 @@ public:
   ~SDLAudioLocker();
 };  // end of class SDLAudioLocker
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLAUDIOLOCKER_HPP_

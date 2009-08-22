@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __DefaultValue_hpp__
-#define __DefaultValue_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_DEFAULTVALUE_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_DEFAULTVALUE_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include "libReallive/expression_pieces.h"
@@ -115,4 +115,4 @@ struct DefaultStrValue_T
   };
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_DEFAULTVALUE_HPP_

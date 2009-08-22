@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __EventListener_hpp__
-#define __EventListener_hpp__
+#ifndef SRC_SYSTEMS_BASE_EVENTLISTENER_HPP_
+#define SRC_SYSTEMS_BASE_EVENTLISTENER_HPP_
 
 class RLMachine;
 class Point;
@@ -335,4 +335,4 @@ public:
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_EVENTLISTENER_HPP_

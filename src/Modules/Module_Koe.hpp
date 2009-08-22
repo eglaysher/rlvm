@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Koe_hpp__
-#define __Module_Koe_hpp__
+#ifndef SRC_MODULES_MODULE_KOE_HPP_
+#define SRC_MODULES_MODULE_KOE_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -38,4 +38,4 @@ public:
   KoeModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_KOE_HPP_

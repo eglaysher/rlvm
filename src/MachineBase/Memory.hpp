@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Memory_hpp__
-#define __Memory_hpp__
+#ifndef SRC_MACHINEBASE_MEMORY_HPP_
+#define SRC_MACHINEBASE_MEMORY_HPP_
 
 /**
  * @file   Memory.hpp
@@ -335,4 +335,4 @@ public:
 };  // end of class Memory
 
 
-#endif
+#endif  // SRC_MACHINEBASE_MEMORY_HPP_

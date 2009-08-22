@@ -33,8 +33,8 @@
  * @brief  Factory that creates all Effect s.
  */
 
-#ifndef __EffectFactory_hpp__
-#define __EffectFactory_hpp__
+#ifndef SRC_EFFECTS_EFFECTFACTORY_HPP_
+#define SRC_EFFECTS_EFFECTFACTORY_HPP_
 
 #include <boost/shared_ptr.hpp>
 
@@ -127,4 +127,4 @@ private:
     int style);
 };
 
-#endif
+#endif  // SRC_EFFECTS_EFFECTFACTORY_HPP_

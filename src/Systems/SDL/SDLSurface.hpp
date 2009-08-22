@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 // -----------------------------------------------------------------------
-#ifndef __SDLSurface_hpp__
-#define __SDLSurface_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLSURFACE_HPP_
+#define SRC_SYSTEMS_SDL_SDLSURFACE_HPP_
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -228,4 +228,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLSURFACE_HPP_

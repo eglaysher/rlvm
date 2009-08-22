@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __AnmGraphicsObjectData_hpp__
-#define __AnmGraphicsObjectData_hpp__
+#ifndef SRC_SYSTEMS_BASE_ANMGRAPHICSOBJECTDATA_HPP_
+#define SRC_SYSTEMS_BASE_ANMGRAPHICSOBJECTDATA_HPP_
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
@@ -168,4 +168,4 @@ inline void load_construct_data(
 }
   }}
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_ANMGRAPHICSOBJECTDATA_HPP_

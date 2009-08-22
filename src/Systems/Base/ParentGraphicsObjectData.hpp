@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __ParentGraphicsObjectData_hpp__
-#define __ParentGraphicsObjectData_hpp__
+#ifndef SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_
+#define SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Utilities/LazyArray.hpp"
@@ -67,4 +67,4 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   LazyArray<GraphicsObject> objects_;
 };  // end of class ParentGraphicsObjectData
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_

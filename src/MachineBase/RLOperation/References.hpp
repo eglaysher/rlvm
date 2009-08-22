@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __References_hpp__
-#define __References_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_REFERENCES_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_REFERENCES_HPP_
 
 #include "MachineBase/reference.hpp"
 #include "libReallive/expression.h"
@@ -92,4 +92,4 @@ struct StrReference_T {
 
 // -----------------------------------------------------------------------
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_REFERENCES_HPP_

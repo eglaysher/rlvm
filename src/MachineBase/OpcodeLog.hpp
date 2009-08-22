@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __OpcodeLog_hpp__
-#define __OpcodeLog_hpp__
+#ifndef SRC_MACHINEBASE_OPCODELOG_HPP_
+#define SRC_MACHINEBASE_OPCODELOG_HPP_
 
 #include <iosfwd>
 #include <map>
@@ -65,4 +65,4 @@ private:
 std::ostream& operator<<(std::ostream& os, const OpcodeLog& log);
 
 
-#endif
+#endif  // SRC_MACHINEBASE_OPCODELOG_HPP_

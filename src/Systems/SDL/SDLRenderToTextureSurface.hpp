@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLRenderToTextureSurface_hpp__
-#define __SDLRenderToTextureSurface_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLRENDERTOTEXTURESURFACE_HPP_
+#define SRC_SYSTEMS_SDL_SDLRENDERTOTEXTURESURFACE_HPP_
 
 #include <boost/scoped_ptr.hpp>
 
@@ -99,4 +99,4 @@ private:
 };
 
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLRENDERTOTEXTURESURFACE_HPP_

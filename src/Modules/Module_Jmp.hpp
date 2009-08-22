@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Jmp_hpp__
-#define __Module_Jmp_hpp__
+#ifndef SRC_MODULES_MODULE_JMP_HPP_
+#define SRC_MODULES_MODULE_JMP_HPP_
 
 /**
  * @file   Module_Jmp.cpp
@@ -48,4 +48,4 @@ public:
   JmpModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_JMP_HPP_

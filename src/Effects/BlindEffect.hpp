@@ -34,8 +34,8 @@
  * @brief  Implements \#SEL transition style \#10, Blind.
  */
 
-#ifndef __BlindEffect_hpp__
-#define __BlindEffect_hpp__
+#ifndef SRC_EFFECTS_BLINDEFFECT_HPP_
+#define SRC_EFFECTS_BLINDEFFECT_HPP_
 
 #include "Effects/Effect.hpp"
 
@@ -139,4 +139,4 @@ public:
              const Size& screenSize, int time, int blindSize);
 };
 
-#endif
+#endif  // SRC_EFFECTS_BLINDEFFECT_HPP_

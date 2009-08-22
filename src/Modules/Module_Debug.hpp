@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Debug_hpp__
-#define __Module_Debug_hpp__
+#ifndef SRC_MODULES_MODULE_DEBUG_HPP_
+#define SRC_MODULES_MODULE_DEBUG_HPP_
 
 /**
  * @file   Module_Debug.hpp
@@ -51,4 +51,4 @@ public:
   DebugModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_DEBUG_HPP_

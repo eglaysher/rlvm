@@ -34,8 +34,8 @@
  * @brief  Implements \#SEL transition style \#10, Wipe.
  */
 
-#ifndef __WipeEffect_hpp__
-#define __WipeEffect_hpp__
+#ifndef SRC_EFFECTS_WIPEEFFECT_HPP_
+#define SRC_EFFECTS_WIPEEFFECT_HPP_
 
 #include "Effects/Effect.hpp"
 
@@ -146,4 +146,4 @@ public:
                         int interpolation);
 };
 
-#endif
+#endif  // SRC_EFFECTS_WIPEEFFECT_HPP_

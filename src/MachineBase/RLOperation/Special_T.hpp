@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Special_T_hpp__
-#define __Special_T_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_SPECIAL_T_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_SPECIAL_T_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -134,4 +134,4 @@ struct Special_T {
   };
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_SPECIAL_T_HPP_

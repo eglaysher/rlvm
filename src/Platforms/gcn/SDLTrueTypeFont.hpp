@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __SDLTrueTypeFont_hpp__
-#define __SDLTrueTypeFont_hpp__
+#ifndef SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
+#define SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
 
 #include <map>
 #include <string>
@@ -143,4 +143,4 @@ private:
            boost::shared_ptr<gcn::OpenGLImage> > image_cache_;
 };
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_

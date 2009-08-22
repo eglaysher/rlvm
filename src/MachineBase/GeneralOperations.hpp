@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __GeneralOperations_hpp__
-#define __GeneralOperations_hpp__
+#ifndef SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
+#define SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 
 #include "RLOperation.hpp"
 #include "RLOperation/RLOp_Store.hpp"
@@ -512,4 +512,4 @@ class UndefinedFunction : public RLOp_SpecialCase {
   int overload_;
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_GENERALOPERATIONS_HPP_

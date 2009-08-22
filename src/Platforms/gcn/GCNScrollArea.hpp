@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __GCNScrollArea_hpp__
-#define __GCNScrollArea_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
+#define SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
 
 #include <guichan/widgets/scrollarea.hpp>
 
@@ -86,4 +86,4 @@ protected:
 };  // end of class GCNScrollArea
 
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_

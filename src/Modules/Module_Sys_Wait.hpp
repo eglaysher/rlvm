@@ -24,11 +24,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 /// -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_Wait_hpp__
-#define __Module_Sys_Wait_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_WAIT_HPP_
+#define SRC_MODULES_MODULE_SYS_WAIT_HPP_
 
 class RLModule;
 
 void addWaitAndMouseOpcodes(RLModule& m);
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_WAIT_HPP_

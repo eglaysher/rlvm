@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __System_hpp__
-#define __System_hpp__
+#ifndef SRC_SYSTEMS_BASE_SYSTEM_HPP_
+#define SRC_SYSTEMS_BASE_SYSTEM_HPP_
 
 #include <vector>
 #include <string>
@@ -357,4 +357,4 @@ private:
 /// interface and on the info screen.
 std::string rlvm_version();
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_SYSTEM_HPP_

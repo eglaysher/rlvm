@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SystemError_hpp__
-#define __SystemError_hpp__
+#ifndef SRC_SYSTEMS_BASE_SYSTEMERROR_HPP_
+#define SRC_SYSTEMS_BASE_SYSTEMERROR_HPP_
 
 #include <exception>
 #include <string>
@@ -47,4 +47,4 @@ public:
   virtual ~SystemError() throw();
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_SYSTEMERROR_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Modules_Pcm_hpp__
-#define __Modules_Pcm_hpp__
+#ifndef SRC_MODULES_MODULE_PCM_HPP_
+#define SRC_MODULES_MODULE_PCM_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -38,4 +38,4 @@ public:
   PcmModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_PCM_HPP_

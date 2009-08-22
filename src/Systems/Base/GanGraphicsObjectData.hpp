@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __GanGraphicsObjectData_hpp__
-#define __GanGraphicsObjectData_hpp__
+#ifndef SRC_SYSTEMS_BASE_GANGRAPHICSOBJECTDATA_HPP_
+#define SRC_SYSTEMS_BASE_GANGRAPHICSOBJECTDATA_HPP_
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
@@ -145,4 +145,4 @@ inline void load_construct_data(
   }}
 
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GANGRAPHICSOBJECTDATA_HPP_

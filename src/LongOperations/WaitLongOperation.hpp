@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __WaitLongOperation_hpp__
-#define __WaitLongOperation_hpp__
+#ifndef SRC_LONGOPERATIONS_WAITLONGOPERATION_HPP_
+#define SRC_LONGOPERATIONS_WAITLONGOPERATION_HPP_
 
 #include <boost/function.hpp>
 
@@ -87,4 +87,4 @@ class WaitLongOperation : public LongOperation {
   IntReferenceIterator y_;
 };
 
-#endif
+#endif  // SRC_LONGOPERATIONS_WAITLONGOPERATION_HPP_

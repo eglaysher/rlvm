@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SoundSystem_hpp__
-#define __SoundSystem_hpp__
+#ifndef SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_
+#define SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_
 
 // -----------------------------------------------------------------------
 
@@ -510,4 +510,4 @@ private:
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };	// end of class SoundSystem
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_

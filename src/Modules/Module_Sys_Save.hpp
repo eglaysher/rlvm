@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_Save_hpp__
-#define __Module_Sys_Save_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_SAVE_HPP_
+#define SRC_MODULES_MODULE_SYS_SAVE_HPP_
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -75,4 +75,4 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T >
   virtual void operator()(RLMachine& machine, int slot);
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_SAVE_HPP_

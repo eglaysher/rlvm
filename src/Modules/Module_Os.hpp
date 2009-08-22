@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Os_hpp__
-#define __Module_Os_hpp__
+#ifndef SRC_MODULES_MODULE_OS_HPP_
+#define SRC_MODULES_MODULE_OS_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -38,4 +38,4 @@ public:
   OsModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_OS_HPP_

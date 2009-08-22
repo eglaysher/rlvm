@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __EventSystem_hpp__
-#define __EventSystem_hpp__
+#ifndef SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_
+#define SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_
 
 #include "Systems/Base/RLTimer.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -253,4 +253,4 @@ private:
   EventSystemGlobals globals_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_

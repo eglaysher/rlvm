@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __GCNPlatform_hpp__
-#define __GCNPlatform_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_
+#define SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_
 
 #include "Systems/Base/Platform.hpp"
 #include "Systems/Base/Renderable.hpp"
@@ -151,4 +151,4 @@ private:
 };  // end of class GCNPlatform
 
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_

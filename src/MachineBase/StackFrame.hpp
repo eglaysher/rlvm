@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __StackFrame_hpp__
-#define __StackFrame_hpp__
+#ifndef SRC_MACHINEBASE_STACKFRAME_HPP_
+#define SRC_MACHINEBASE_STACKFRAME_HPP_
 
 #include "libReallive/scenario.h"
 #include <boost/shared_ptr.hpp>
@@ -102,4 +102,4 @@ struct StackFrame
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame);
 
 
-#endif
+#endif  // SRC_MACHINEBASE_STACKFRAME_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TextWindowButton_hpp__
-#define __TextWindowButton_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_
+#define SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
@@ -177,4 +177,4 @@ private:
   int entrypoint_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_

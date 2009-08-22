@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __ZoomLongOperation_hpp__
-#define __ZoomLongOperation_hpp__
+#ifndef SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_
+#define SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_
 
 #include <boost/shared_ptr.hpp>
 
@@ -63,4 +63,4 @@ public:
   virtual bool operator()(RLMachine& machine);
 };
 
-#endif
+#endif  // SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_

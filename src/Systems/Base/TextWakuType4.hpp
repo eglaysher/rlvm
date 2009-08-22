@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __TextWakuType4_hpp__
-#define __TextWakuType4_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTWAKUTYPE4_HPP_
+#define SRC_SYSTEMS_BASE_TEXTWAKUTYPE4_HPP_
 
 #include "Systems/Base/TextWaku.hpp"
 #include "Systems/Base/Surface.hpp"
@@ -87,4 +87,4 @@ class TextWakuType4 : public TextWaku {
 };
 
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTWAKUTYPE4_HPP_

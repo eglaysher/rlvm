@@ -44,6 +44,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <boost/bind.hpp>
 
 using namespace std;
 using namespace boost;

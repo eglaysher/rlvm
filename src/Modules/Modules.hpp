@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Modules_hpp__
-#define __Modules_hpp__
+#ifndef SRC_MODULES_MODULES_HPP_
+#define SRC_MODULES_MODULES_HPP_
 
 class RLMachine;
 
@@ -38,4 +38,4 @@ class RLMachine;
  */
 void addAllModules(RLMachine& machine);
 
-#endif
+#endif  // SRC_MODULES_MODULES_HPP_

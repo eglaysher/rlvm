@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_Timer_hpp__
-#define __Module_Sys_Timer_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_TIMER_HPP_
+#define SRC_MODULES_MODULE_SYS_TIMER_HPP_
 
 class RLModule;
 
@@ -38,4 +38,4 @@ class RLModule;
  */
 void addSysTimerOpcodes(RLModule& module);
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_TIMER_HPP_

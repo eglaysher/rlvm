@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __MouseCursor_hpp__
-#define __MouseCursor_hpp__
+#ifndef SRC_SYSTEMS_BASE_MOUSECURSOR_HPP_
+#define SRC_SYSTEMS_BASE_MOUSECURSOR_HPP_
 
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/Rect.hpp"
@@ -72,4 +72,4 @@ private:
 };	// end of class MouseCursor
 
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_MOUSECURSOR_HPP_

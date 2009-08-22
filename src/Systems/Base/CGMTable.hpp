@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __CGMTable_hpp__
-#define __CGMTable_hpp__
+#ifndef SRC_SYSTEMS_BASE_CGMTABLE_HPP_
+#define SRC_SYSTEMS_BASE_CGMTABLE_HPP_
 
 #include <boost/serialization/access.hpp>
 #include <map>
@@ -106,4 +106,4 @@ private:
 };  // end of class CGMTable
 
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_CGMTABLE_HPP_

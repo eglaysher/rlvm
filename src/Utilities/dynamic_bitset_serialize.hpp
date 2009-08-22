@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 /// -----------------------------------------------------------------------
 
-#ifndef __dynamic_bitset_serialize_hpp__
-#define __dynamic_bitset_serialize_hpp__
+#ifndef SRC_UTILITIES_DYNAMIC_BITSET_SERIALIZE_HPP_
+#define SRC_UTILITIES_DYNAMIC_BITSET_SERIALIZE_HPP_
 
 /**
  * @file   dynamic_bitset_serialize.hpp
@@ -81,4 +81,4 @@ inline void serialize(Archive & ar,
 }
 }
 
-#endif
+#endif  // SRC_UTILITIES_DYNAMIC_BITSET_SERIALIZE_HPP_

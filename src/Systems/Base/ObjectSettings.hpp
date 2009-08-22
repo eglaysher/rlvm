@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __ObjectSettings_hpp__
-#define __ObjectSettings_hpp__
+#ifndef SRC_SYSTEMS_BASE_OBJECTSETTINGS_HPP_
+#define SRC_SYSTEMS_BASE_OBJECTSETTINGS_HPP_
 
 #include <vector>
 
@@ -75,4 +75,4 @@ struct ObjectSettings
   int weather_on_off;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_OBJECTSETTINGS_HPP_

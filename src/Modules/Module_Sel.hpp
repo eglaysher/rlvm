@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sel_hpp__
-#define __Module_Sel_hpp__
+#ifndef SRC_MODULES_MODULE_SEL_HPP_
+#define SRC_MODULES_MODULE_SEL_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_MODULES_MODULE_SEL_HPP_

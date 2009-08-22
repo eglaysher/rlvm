@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLGraphicsSystem_hpp_
-#define __SDLGraphicsSystem_hpp_
+#ifndef SRC_SYSTEMS_SDL_SDLGRAPHICSSYSTEM_HPP_
+#define SRC_SYSTEMS_SDL_SDLGRAPHICSSYSTEM_HPP_
 
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -205,4 +205,4 @@ private:
 };
 
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLGRAPHICSSYSTEM_HPP_

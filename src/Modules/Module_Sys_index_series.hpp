@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Module_Sys_index_series_hpp__
-#define __Module_Sys_index_series_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_INDEX_SERIES_HPP_
+#define SRC_MODULES_MODULE_SYS_INDEX_SERIES_HPP_
 
 class RLMachine;
 class RLModule;
@@ -40,4 +40,4 @@ class System;
  */
 void addIndexSeriesOpcode(RLModule& module);
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_INDEX_SERIES_HPP_

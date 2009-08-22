@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __GCNMenu_hpp__
-#define __GCNMenu_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNMENU_HPP_
+#define SRC_PLATFORMS_GCN_GCNMENU_HPP_
 
 #include "Platforms/gcn/GCNWindow.hpp"
 
@@ -77,4 +77,4 @@ class GCNMenu : public GCNWindow,
 };  // end of class GCNMenu
 
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNMENU_HPP_

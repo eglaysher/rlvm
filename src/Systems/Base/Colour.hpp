@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Colour_hpp__
-#define __Colour_hpp__
+#ifndef SRC_SYSTEMS_BASE_COLOUR_HPP_
+#define SRC_SYSTEMS_BASE_COLOUR_HPP_
 
 #include <boost/serialization/access.hpp>
 #include <iosfwd>
@@ -120,4 +120,4 @@ private:
 std::ostream& operator<<(std::ostream& os, const RGBColour& rgb);
 std::ostream& operator<<(std::ostream& os, const RGBAColour& rgba);
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_COLOUR_HPP_

@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Complex_T_hpp__
-#define __Complex_T_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -264,4 +264,4 @@ struct Complex8_T {
   };
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_

@@ -33,8 +33,8 @@
  * @brief  Contains an OpenGL texture and some metadata.
  */
 
-#ifndef __Texture_hpp__
-#define __Texture_hpp__
+#ifndef SRC_SYSTEMS_SDL_TEXTURE_HPP_
+#define SRC_SYSTEMS_SDL_TEXTURE_HPP_
 
 #include <boost/scoped_array.hpp>
 #include <SDL/SDL_opengl.h>
@@ -144,4 +144,4 @@ private:
   static boost::scoped_array<char> s_upload_buffer;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_TEXTURE_HPP_

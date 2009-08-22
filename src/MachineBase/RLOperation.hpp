@@ -31,8 +31,8 @@
  * @brief Defines all the base RLOperations and their type checking structs.
  */
 
-#ifndef __RLOperation__h__
-#define __RLOperation__h__
+#ifndef SRC_MACHINEBASE_RLOPERATION_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -1326,4 +1326,4 @@ struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 // -----------------------------------------------------------------------
 // @}
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_HPP_

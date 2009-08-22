@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Argc_T_hpp__
-#define __Argc_T_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_ARGC_T_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_ARGC_T_HPP_
 
 /**
  * @ingroup RLOperationGroup
@@ -84,4 +84,4 @@ parseParameters(unsigned int& position,
   }
 }
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_ARGC_T_HPP_

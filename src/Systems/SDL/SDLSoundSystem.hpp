@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLSoundSystem_hpp__
-#define __SDLSoundSystem_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLSOUNDSYSTEM_HPP_
+#define SRC_SYSTEMS_SDL_SDLSOUNDSYSTEM_HPP_
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "lru_cache.hpp"
@@ -153,4 +153,4 @@ private:
   int queued_music_fadein_;
 };	// end of class SDLSoundSystem
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLSOUNDSYSTEM_HPP_

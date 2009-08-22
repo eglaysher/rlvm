@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_EventLoop_hpp__
-#define __Module_EventLoop_hpp__
+#ifndef SRC_MODULES_MODULE_EVENTLOOP_HPP_
+#define SRC_MODULES_MODULE_EVENTLOOP_HPP_
 
 /**
  * @file   Module_EventLoop.cpp
@@ -48,4 +48,4 @@ public:
   EventLoopModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_EVENTLOOP_HPP_

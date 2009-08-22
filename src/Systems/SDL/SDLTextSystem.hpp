@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLTextSystem_hpp__
-#define __SDLTextSystem_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
+#define SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
 
 #include "Systems/Base/TextSystem.hpp"
 
@@ -64,5 +64,5 @@ private:
   /// @}
 };
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
 

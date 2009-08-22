@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __StringUtilities_hpp__
-#define __StringUtilities_hpp__
+#ifndef SRC_UTILITIES_STRINGUTILITIES_HPP_
+#define SRC_UTILITIES_STRINGUTILITIES_HPP_
 
 #include <string>
 #include <boost/function.hpp>
@@ -132,4 +132,4 @@ void printTextToFunction(
  */
 std::string removeQuotes(const std::string& quotedString);
 
-#endif
+#endif  // SRC_UTILITIES_STRINGUTILITIES_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TextPage_hpp__
-#define __TextPage_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
+#define SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/function.hpp>
@@ -192,4 +192,4 @@ class TextPage : public boost::noncopyable {
   /// @}
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTPAGE_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Msg_hpp__
-#define __Module_Msg_hpp__
+#ifndef SRC_MODULES_MODULE_MSG_HPP_
+#define SRC_MODULES_MODULE_MSG_HPP_
 
 /**
  * @file   Module_Msg.hpp
@@ -48,4 +48,4 @@ public:
   MsgModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_MSG_HPP_

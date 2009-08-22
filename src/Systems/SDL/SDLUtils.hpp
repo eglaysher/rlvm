@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLUtils_hpp__
-#define __SDLUtils_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLUTILS_HPP_
+#define SRC_SYSTEMS_SDL_SDLUTILS_HPP_
 
 #include <string>
 #include <SDL/SDL.h>
@@ -50,4 +50,4 @@ Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in);
 
 void glColorRGBA(const RGBAColour& rgba);
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLUTILS_HPP_

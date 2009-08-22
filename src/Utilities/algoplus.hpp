@@ -1,5 +1,5 @@
-#ifndef __algoplus_hpp__
-#define __algoplus_hpp__
+#ifndef SRC_UTILITIES_ALGOPLUS_HPP_
+#define SRC_UTILITIES_ALGOPLUS_HPP_
 
 // Performs f() on any element elem in [first, last) where pred(elem) is true
 template<typename InputIterator, typename Predicate, typename UnaryFunction>
@@ -41,4 +41,4 @@ OutIt copy_until(InIt first, InIt end, OutIt x, Pred pred) {
   return x;
 }
 
-#endif
+#endif  // SRC_UTILITIES_ALGOPLUS_HPP_

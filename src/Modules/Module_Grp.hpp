@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Grp_hpp__
-#define __Module_Grp_hpp__
+#ifndef SRC_MODULES_MODULE_GRP_HPP_
+#define SRC_MODULES_MODULE_GRP_HPP_
 
 /**
  * @file   Module_Grp.hpp
@@ -81,4 +81,4 @@ void replayGraphicsStackVector(
   RLMachine& machine,
   const std::vector<GraphicsStackFrame>& serializedStack);
 
-#endif
+#endif  // SRC_MODULES_MODULE_GRP_HPP_

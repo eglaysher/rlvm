@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __FadeEffect_hpp__
-#define __FadeEffect_hpp__
+#ifndef SRC_EFFECTS_FADEEFFECT_HPP_
+#define SRC_EFFECTS_FADEEFFECT_HPP_
 
 #include "Effects/Effect.hpp"
 
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_EFFECTS_FADEEFFECT_HPP_

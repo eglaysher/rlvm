@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __GraphicsStackFrame_hpp__
-#define __GraphicsStackFrame_hpp__
+#ifndef SRC_SYSTEMS_BASE_GRAPHICSSTACKFRAME_HPP_
+#define SRC_SYSTEMS_BASE_GRAPHICSSTACKFRAME_HPP_
 
 #include "Systems/Base/Rect.hpp"
 
@@ -132,4 +132,4 @@ private:
 
 std::ostream& operator<<(std::ostream&, const GraphicsStackFrame&);
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GRAPHICSSTACKFRAME_HPP_

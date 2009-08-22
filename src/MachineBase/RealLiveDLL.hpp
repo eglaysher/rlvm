@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __RealLiveDLL_hpp__
-#define __RealLiveDLL_hpp__
+#ifndef SRC_MACHINEBASE_REALLIVEDLL_HPP_
+#define SRC_MACHINEBASE_REALLIVEDLL_HPP_
 
 #include <string>
 
@@ -59,4 +59,4 @@ public:
 };  // end of class RealLiveDLL
 
 
-#endif
+#endif  // SRC_MACHINEBASE_REALLIVEDLL_HPP_

@@ -33,8 +33,8 @@
  * @brief  Defines the abstract interface to the Graphics system.
  */
 
-#ifndef __GraphicsSystem_hpp__
-#define __GraphicsSystem_hpp__
+#ifndef SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
+#define SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
 
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -616,5 +616,5 @@ private:
 
 const int OBJECTS_IN_A_LAYER = 256;
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
 

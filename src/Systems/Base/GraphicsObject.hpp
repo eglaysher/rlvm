@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __GraphicObject_hpp__
-#define __GraphicObject_hpp__
+#ifndef SRC_SYSTEMS_BASE_GRAPHICSOBJECT_HPP_
+#define SRC_SYSTEMS_BASE_GRAPHICSOBJECT_HPP_
 
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -394,5 +394,5 @@ private:
 const static int OBJ_FG = 0;
 const static int OBJ_BG = 1;
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GRAPHICSOBJECT_HPP_
 

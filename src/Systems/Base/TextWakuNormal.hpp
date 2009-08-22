@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __TextWakuNormal_hpp__
-#define __TextWakuNormal_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTWAKUNORMAL_HPP_
+#define SRC_SYSTEMS_BASE_TEXTWAKUNORMAL_HPP_
 
 #include <iosfwd>
 #include <string>
@@ -115,4 +115,4 @@ class TextWakuNormal : public TextWaku {
   /// @}
 };  // end of class TextWakuNormal
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTWAKUNORMAL_HPP_

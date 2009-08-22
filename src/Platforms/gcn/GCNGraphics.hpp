@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __GCNGraphics_hpp__
-#define __GCNGraphics_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_
+#define SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_
 
 #include <boost/shared_ptr.hpp>
 #include <guichan/opengl/openglgraphics.hpp>
@@ -108,4 +108,4 @@ private:
   void drawImage(gcn::Image* image, const Rect& source, int dstX, int dstY);
 };
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_

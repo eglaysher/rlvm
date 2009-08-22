@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __Module_DLL_hpp__
-#define __Module_DLL_hpp__
+#ifndef SRC_MODULES_MODULE_DLL_HPP_
+#define SRC_MODULES_MODULE_DLL_HPP_
 
 /**
  * @file   Module_DLL.cpp
@@ -46,4 +46,4 @@ public:
   DLLModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_DLL_HPP_

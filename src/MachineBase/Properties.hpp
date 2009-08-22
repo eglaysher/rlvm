@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Properties_hpp__
-#define __Properties_hpp__
+#ifndef SRC_MACHINEBASE_PROPERTIES_HPP_
+#define SRC_MACHINEBASE_PROPERTIES_HPP_
 
 /**
  * @file   Properties.hpp
@@ -41,4 +41,4 @@ enum Properties {
   P_PARENTOBJ
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_PROPERTIES_HPP_

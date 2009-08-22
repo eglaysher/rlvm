@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Rect_hpp__
-#define __Rect_hpp__
+#ifndef SRC_SYSTEMS_BASE_RECT_HPP_
+#define SRC_SYSTEMS_BASE_RECT_HPP_
 
 #include <boost/serialization/access.hpp>
 #include <iosfwd>
@@ -230,4 +230,4 @@ std::ostream& operator<<(std::ostream& os, const Size& s);
 std::ostream& operator<<(std::ostream& os, const Point& p);
 std::ostream& operator<<(std::ostream& os, const Rect& r);
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_RECT_HPP_

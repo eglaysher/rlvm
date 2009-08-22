@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Surface_hpp__
-#define __Surface_hpp__
+#ifndef SRC_SYSTEMS_BASE_SURFACE_HPP_
+#define SRC_SYSTEMS_BASE_SURFACE_HPP_
 
 #include "Systems/Base/Rect.hpp"
 
@@ -102,4 +102,4 @@ public:
   virtual Surface* clone() const = 0;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_SURFACE_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SelectionElement_hpp__
-#define __SelectionElement_hpp__
+#ifndef SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_
+#define SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_
 
 #include <boost/shared_ptr.hpp>
 
@@ -76,4 +76,4 @@ private:
   bool isHighlighted(const Point& p);
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_

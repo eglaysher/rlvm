@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Gan_hpp__
-#define __Module_Gan_hpp__
+#ifndef SRC_MODULES_MODULE_GAN_HPP_
+#define SRC_MODULES_MODULE_GAN_HPP_
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
@@ -51,4 +51,4 @@ public:
   ChildGanBgModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_GAN_HPP_

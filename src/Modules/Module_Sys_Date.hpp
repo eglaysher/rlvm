@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Module_Sys_Date_hpp__
-#define __Module_Sys_Date_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_DATE_HPP_
+#define SRC_MODULES_MODULE_SYS_DATE_HPP_
 
 class RLModule;
 
@@ -40,4 +40,4 @@ class RLModule;
  */
 void addSysDateOpcodes(RLModule& module);
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_DATE_HPP_

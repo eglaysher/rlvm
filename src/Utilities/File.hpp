@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Utilities_h__
-#define __Utilities_h__
+#ifndef SRC_UTILITIES_FILE_HPP_
+#define SRC_UTILITIES_FILE_HPP_
 
 #include <string>
 #include <vector>
@@ -100,4 +100,4 @@ bool loadFileData(std::ifstream& ifs,
 
 // -----------------------------------------------------------------------
 
-#endif
+#endif  // SRC_UTILITIES_FILE_HPP_

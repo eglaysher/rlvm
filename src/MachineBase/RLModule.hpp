@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __RLModule_hpp__
-#define __RLModule_hpp__
+#ifndef SRC_MACHINEBASE_RLMODULE_HPP_
+#define SRC_MACHINEBASE_RLMODULE_HPP_
 
 /**
  * @file   RLModule.hpp
@@ -181,4 +181,4 @@ std::ostream& operator<<(std::ostream&, const RLModule& module);
 
 // -----------------------------------------------------------------------
 
-#endif
+#endif  // SRC_MACHINEBASE_RLMODULE_HPP_

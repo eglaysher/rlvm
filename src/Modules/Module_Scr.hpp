@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Scr_hpp__
-#define __Module_Scr_hpp__
+#ifndef SRC_MODULES_MODULE_SCR_HPP_
+#define SRC_MODULES_MODULE_SCR_HPP_
 
 /**
  * @file   Module_Scr.hpp
@@ -53,4 +53,4 @@ public:
   ScrModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_SCR_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLSoundChunk_hpp__
-#define __SDLSoundChunk_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLSOUNDCHUNK_HPP_
+#define SRC_SYSTEMS_SDL_SDLSOUNDCHUNK_HPP_
 
 #include <map>
 
@@ -123,4 +123,4 @@ inline int realLiveVolumeToSDLMixerVolume(int in_vol)
   return in_vol / 2;
 }
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLSOUNDCHUNK_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLTextWindow_hpp__
-#define __SDLTextWindow_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLTEXTWINDOW_HPP_
+#define SRC_SYSTEMS_SDL_SDLTEXTWINDOW_HPP_
 
 #include "Systems/Base/TextWindow.hpp"
 
@@ -69,4 +69,4 @@ private:
 };
 
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLTEXTWINDOW_HPP_

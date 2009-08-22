@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_ObjManagement_hpp__
-#define __Module_ObjManagement_hpp__
+#ifndef SRC_MODULES_MODULE_OBJMANAGEMENT_HPP_
+#define SRC_MODULES_MODULE_OBJMANAGEMENT_HPP_
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
@@ -60,4 +60,4 @@ class ChildObjBgManagement : public MappedRLModule {
 };
 
 
-#endif
+#endif  // SRC_MODULES_MODULE_OBJMANAGEMENT_HPP_

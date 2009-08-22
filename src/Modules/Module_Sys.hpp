@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_hpp__
-#define __Module_Sys_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_HPP_
+#define SRC_MODULES_MODULE_SYS_HPP_
 
 /**
  * @file   Module_Sys.hpp
@@ -60,4 +60,4 @@ struct Sys_MenuReturn : public RLOp_Void_Void
   virtual bool advanceInstructionPointer() { return false; }
   virtual void operator()(RLMachine& machine);
 };
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_HPP_

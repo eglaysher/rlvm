@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __RlvmInfo_hpp__
-#define __RlvmInfo_hpp__
+#ifndef SRC_SYSTEMS_BASE_RLVMINFO_HPP_
+#define SRC_SYSTEMS_BASE_RLVMINFO_HPP_
 
 #include <string>
 
@@ -45,4 +45,4 @@ struct RlvmInfo {
   int text_transformation;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_RLVMINFO_HPP_

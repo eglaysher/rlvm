@@ -44,7 +44,9 @@
 #include "libReallive/bytecode.h"
 
 #include <sstream>
+#include <boost/bind.hpp>
 
+using namespace boost;
 using namespace std;
 using namespace libReallive;
 

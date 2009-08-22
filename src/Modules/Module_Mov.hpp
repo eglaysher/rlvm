@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Module_Mov_hpp__
-#define __Module_Mov_hpp__
+#ifndef SRC_MODULES_MODULE_MOV_HPP_
+#define SRC_MODULES_MODULE_MOV_HPP_
 
 
 #include "MachineBase/RLModule.hpp"
@@ -41,4 +41,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_MODULES_MODULE_MOV_HPP_

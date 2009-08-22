@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLEventSystem_hpp__
-#define __SDLEventSystem_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLEVENTSYSTEM_HPP_
+#define SRC_SYSTEMS_SDL_SDLEVENTSYSTEM_HPP_
 
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -102,4 +102,4 @@ private:
   RawSDLInputHandler* raw_handler_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLEVENTSYSTEM_HPP_

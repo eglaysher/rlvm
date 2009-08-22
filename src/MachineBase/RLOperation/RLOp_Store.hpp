@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __RLOp_Store_hpp__
-#define __RLOp_Store_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_RLOP_STORE_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_RLOP_STORE_HPP_
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -985,4 +985,4 @@ struct RLOp_Store_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J,
 };
 
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_RLOP_STORE_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TextWindow_hpp__
-#define __TextWindow_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTWINDOW_HPP_
+#define SRC_SYSTEMS_BASE_TEXTWINDOW_HPP_
 
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/Colour.hpp"
@@ -522,4 +522,4 @@ class TextWindow {
   System& system_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTWINDOW_HPP_

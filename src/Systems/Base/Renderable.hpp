@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __Renderable_hpp__
-#define __Renderable_hpp__
+#ifndef SRC_SYSTEMS_BASE_RENDERABLE_HPP_
+#define SRC_SYSTEMS_BASE_RENDERABLE_HPP_
 
 /// An object that is renderable to screen.
 class Renderable {
@@ -35,4 +35,4 @@ class Renderable {
   virtual void render(std::ostream* tree) = 0;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_RENDERABLE_HPP_

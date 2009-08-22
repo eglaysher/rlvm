@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __GraphicsTextObject_hpp__
-#define __GraphicsTextObject_hpp__
+#ifndef SRC_SYSTEMS_BASE_GRAPHICSTEXTOBJECT_HPP_
+#define SRC_SYSTEMS_BASE_GRAPHICSTEXTOBJECT_HPP_
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
@@ -101,4 +101,4 @@ inline void load_construct_data(
 }
   }}
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GRAPHICSTEXTOBJECT_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Str_hpp__
-#define __Module_Str_hpp__
+#ifndef SRC_MODULES_MODULE_STR_HPP_
+#define SRC_MODULES_MODULE_STR_HPP_
 
 /**
  * @file    Module_Str.hpp
@@ -46,4 +46,4 @@ public:
   StrModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_STR_HPP_

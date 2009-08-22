@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __VoiceArchive_hpp__
-#define __VoiceArchive_hpp__
+#ifndef SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
+#define SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
@@ -65,4 +65,4 @@ class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
   int file_no_;
 };  // end of class VoiceArchive
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_

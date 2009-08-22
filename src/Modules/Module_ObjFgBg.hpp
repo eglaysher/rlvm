@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_ObjFgBg_hpp__
-#define __Module_ObjFgBg_hpp__
+#ifndef SRC_MODULES_MODULE_OBJFGBG_HPP_
+#define SRC_MODULES_MODULE_OBJFGBG_HPP_
 
 /**
  * @file    Module_ObjFgBg.hpp
@@ -85,4 +85,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_MODULES_MODULE_OBJFGBG_HPP_

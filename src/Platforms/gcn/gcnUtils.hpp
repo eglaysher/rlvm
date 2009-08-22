@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __gcnUtils_hpp__
-#define __gcnUtils_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNUTILS_HPP_
+#define SRC_PLATFORMS_GCN_GCNUTILS_HPP_
 
 #include "Systems/Base/Rect.hpp"
 
@@ -55,4 +55,4 @@ inline gcn::Rectangle rectConvert(const Rect& obj) {
   return gcn::Rectangle(obj.x(), obj.y(), obj.x2(), obj.y2());
 }
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNUTILS_HPP_

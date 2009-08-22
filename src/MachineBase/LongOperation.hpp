@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __LongOperation_hpp__
-#define __LongOperation_hpp__
+#ifndef SRC_MACHINEBASE_LONGOPERATION_HPP_
+#define SRC_MACHINEBASE_LONGOPERATION_HPP_
 
 #include <boost/scoped_ptr.hpp>
 
@@ -101,4 +101,4 @@ private:
 };
 
 
-#endif
+#endif  // SRC_MACHINEBASE_LONGOPERATION_HPP_

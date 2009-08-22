@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Reference_hpp__
-#define __Reference_hpp__
+#ifndef SRC_MACHINEBASE_REFERENCE_HPP_
+#define SRC_MACHINEBASE_REFERENCE_HPP_
 
 /**
  * @file   reference.hpp
@@ -220,4 +220,4 @@ typedef MemoryReferenceIterator<IntAccessor> IntReferenceIterator;
 /// Defines a MemoryReferenceIterator that operates on the string memory
 typedef MemoryReferenceIterator<StringAccessor> StringReferenceIterator;
 
-#endif
+#endif  // SRC_MACHINEBASE_REFERENCE_HPP_

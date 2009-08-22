@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Module_Bgr_hpp__
-#define __Module_Bgr_hpp__
+#ifndef SRC_MODULES_MODULE_BGR_HPP_
+#define SRC_MODULES_MODULE_BGR_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -40,4 +40,4 @@ public:
   BgrModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_BGR_HPP_

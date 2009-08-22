@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __RLMachine_hpp__
-#define __RLMachine_hpp__
+#ifndef SRC_MACHINEBASE_RLMACHINE_HPP_
+#define SRC_MACHINEBASE_RLMACHINE_HPP_
 
 /**
  * @file   RLMachine.hpp
@@ -575,4 +575,4 @@ class RLMachine {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-#endif
+#endif  // SRC_MACHINEBASE_RLMACHINE_HPP_

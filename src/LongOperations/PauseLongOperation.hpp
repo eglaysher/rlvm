@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __PauseLongOperation_hpp__
-#define __PauseLongOperation_hpp__
+#ifndef SRC_LONGOPERATIONS_PAUSELONGOPERATION_HPP_
+#define SRC_LONGOPERATIONS_PAUSELONGOPERATION_HPP_
 
 #include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -94,4 +94,4 @@ private:
   virtual void performAfterLongOperation(RLMachine& machine);
 };
 
-#endif
+#endif  // SRC_LONGOPERATIONS_PAUSELONGOPERATION_HPP_

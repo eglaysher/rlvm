@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_ObjCreation_hpp__
-#define __Module_ObjCreation_hpp__
+#ifndef SRC_MODULES_MODULE_OBJCREATION_HPP_
+#define SRC_MODULES_MODULE_OBJCREATION_HPP_
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
@@ -51,4 +51,4 @@ public:
   ChildObjBgCreationModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_OBJCREATION_HPP_

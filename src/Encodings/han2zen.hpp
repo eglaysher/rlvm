@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __han2zen_hpp__
-#define __han2zen_hpp__
+#ifndef SRC_ENCODINGS_HAN2ZEN_HPP_
+#define SRC_ENCODINGS_HAN2ZEN_HPP_
 
 #include <string>
 
@@ -43,4 +43,4 @@ std::string hantozen_cp932(const std::string& string, int transformation);
  */
 std::string zentohan_cp932(const std::string& string, int transformation);
 
-#endif
+#endif  // SRC_ENCODINGS_HAN2ZEN_HPP_

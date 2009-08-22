@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __TextWaku_hpp__
-#define __TextWaku_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTWAKU_HPP_
+#define SRC_SYSTEMS_BASE_TEXTWAKU_HPP_
 
 class Point;
 class RLMachine;
@@ -52,4 +52,4 @@ class TextWaku {
   }
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTWAKU_HPP_

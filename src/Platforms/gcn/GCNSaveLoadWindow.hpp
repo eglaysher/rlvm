@@ -25,12 +25,13 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __GCNSaveLoadWindow_hpp__
-#define __GCNSaveLoadWindow_hpp__
+#ifndef SRC_PLATFORMS_GCN_GCNSAVELOADWINDOW_HPP_
+#define SRC_PLATFORMS_GCN_GCNSAVELOADWINDOW_HPP_
 
 #include "Platforms/gcn/GCNWindow.hpp"
 
 #include <boost/scoped_ptr.hpp>
+#include <vector>
 
 #include <guichan/actionlistener.hpp>
 #include <guichan/widgets/listbox.hpp>
@@ -84,4 +85,4 @@ private:
 };  // end of class GCNSaveLoadWindow
 
 
-#endif
+#endif  // SRC_PLATFORMS_GCN_GCNSAVELOADWINDOW_HPP_

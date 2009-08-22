@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Sys_Frame_hpp__
-#define __Module_Sys_Frame_hpp__
+#ifndef SRC_MODULES_MODULE_SYS_FRAME_HPP_
+#define SRC_MODULES_MODULE_SYS_FRAME_HPP_
 
 class RLModule;
 
@@ -38,4 +38,4 @@ class RLModule;
  */
 void addSysFrameOpcodes(RLModule& module);
 
-#endif
+#endif  // SRC_MODULES_MODULE_SYS_FRAME_HPP_

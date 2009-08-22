@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Mem_hpp__
-#define __Module_Mem_hpp__
+#ifndef SRC_MODULES_MODULE_MEM_HPP_
+#define SRC_MODULES_MODULE_MEM_HPP_
 
 /**
  * @file    Module_Mem.hpp
@@ -48,4 +48,4 @@ public:
   MemModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_MEM_HPP_

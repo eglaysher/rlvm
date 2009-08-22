@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TextSystem_hpp__
-#define __TextSystem_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTSYSTEM_HPP_
+#define SRC_SYSTEMS_BASE_TEXTSYSTEM_HPP_
 
 #include "Systems/Base/EventListener.hpp"
 
@@ -442,4 +442,4 @@ struct RestoreTextSystemVisibility : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTSYSTEM_HPP_

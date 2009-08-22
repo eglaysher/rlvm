@@ -33,8 +33,8 @@
  * @brief  Implements a bunch of \#SEL transitions.
  */
 
-#ifndef __ScrollOnScrollOff_hpp__
-#define __ScrollOnScrollOff_hpp__
+#ifndef SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_
+#define SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_
 
 #include "Effects/Effect.hpp"
 
@@ -323,4 +323,4 @@ public:
 
 ///@}
 
-#endif
+#endif  // SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_

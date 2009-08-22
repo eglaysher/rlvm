@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __GraphicsObjectOfFile_hpp__
-#define __GraphicsObjectOfFile_hpp__
+#ifndef SRC_SYSTEMS_BASE_GRAPHICSOBJECTOFFILE_HPP_
+#define SRC_SYSTEMS_BASE_GRAPHICSOBJECTOFFILE_HPP_
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
@@ -128,4 +128,4 @@ inline void load_construct_data(
 }
   }}
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GRAPHICSOBJECTOFFILE_HPP_

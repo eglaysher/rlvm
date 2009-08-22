@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLSystem_hpp__
-#define __SDLSystem_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLSYSTEM_HPP_
+#define SRC_SYSTEMS_SDL_SDLSYSTEM_HPP_
 
 #include <boost/scoped_ptr.hpp>
 
@@ -65,4 +65,4 @@ private:
 /// Convenience function to do the casting.
 SDLGraphicsSystem* getSDLGraphics(System& system);
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLSYSTEM_HPP_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TextoutLongOperation_hpp__
-#define __TextoutLongOperation_hpp__
+#ifndef SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_
+#define SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_
 
 #include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -67,4 +67,4 @@ public:
   virtual bool sleepEveryTick();
 };
 
-#endif
+#endif  // SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_

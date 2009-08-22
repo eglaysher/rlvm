@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TextKeyCursor_hpp__
-#define __TextKeyCursor_hpp__
+#ifndef SRC_SYSTEMS_BASE_TEXTKEYCURSOR_HPP_
+#define SRC_SYSTEMS_BASE_TEXTKEYCURSOR_HPP_
 
 #include "Systems/Base/Rect.hpp"
 
@@ -115,4 +115,4 @@ private:
   System& system_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_TEXTKEYCURSOR_HPP_

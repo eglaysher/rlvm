@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __VoiceCache_hpp__
-#define __VoiceCache_hpp__
+#ifndef SRC_SYSTEMS_BASE_VOICECACHE_HPP_
+#define SRC_SYSTEMS_BASE_VOICECACHE_HPP_
 
 #include "lru_cache.hpp"
 
@@ -55,4 +55,4 @@ class VoiceCache {
 };  // class VoiceCache
 
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_VOICECACHE_HPP_

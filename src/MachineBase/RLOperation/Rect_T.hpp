@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __Rect_T_hpp__
-#define __Rect_T_hpp__
+#ifndef SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_
+#define SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_
 
 #include "MachineBase/RLOperation.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -106,4 +106,4 @@ struct Rect_T {
 
 // -----------------------------------------------------------------------
 
-#endif
+#endif  // SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_

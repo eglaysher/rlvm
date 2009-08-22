@@ -25,8 +25,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Platform_hpp__
-#define __Platform_hpp__
+#ifndef SRC_SYSTEMS_BASE_PLATFORM_HPP_
+#define SRC_SYSTEMS_BASE_PLATFORM_HPP_
 
 #include <map>
 #include <string>
@@ -82,4 +82,4 @@ private:
   std::map<std::string, std::string> utf8_syscom_strings_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_PLATFORM_HPP_

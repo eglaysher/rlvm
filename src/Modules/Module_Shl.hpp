@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 /// -----------------------------------------------------------------------
 
-#ifndef __Module_Shl_hpp__
-#define __Module_Shl_hpp__
+#ifndef SRC_MODULES_MODULE_SHL_HPP_
+#define SRC_MODULES_MODULE_SHL_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -37,4 +37,4 @@ public:
   LayeredShakingModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_SHL_HPP_

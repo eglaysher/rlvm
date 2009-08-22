@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __RLTimer_hpp__
-#define __RLTimer_hpp__
+#ifndef SRC_SYSTEMS_BASE_RLTIMER_HPP_
+#define SRC_SYSTEMS_BASE_RLTIMER_HPP_
 
 class EventSystem;
 
@@ -73,4 +73,4 @@ private:
   unsigned int time_at_last_set_;
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_RLTIMER_HPP_

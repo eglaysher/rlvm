@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_Refresh_hpp__
-#define __Module_Refresh_hpp__
+#ifndef SRC_MODULES_MODULE_REFRESH_HPP_
+#define SRC_MODULES_MODULE_REFRESH_HPP_
 
 /**
  * @file   Module_Refresh.hpp
@@ -48,4 +48,4 @@ public:
   RefreshModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_REFRESH_HPP_

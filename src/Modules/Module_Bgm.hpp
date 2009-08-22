@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Module_Bgm_hpp__
-#define __Module_Bgm_hpp__
+#ifndef SRC_MODULES_MODULE_BGM_HPP_
+#define SRC_MODULES_MODULE_BGM_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
@@ -39,4 +39,4 @@ public:
   BgmModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_BGM_HPP_

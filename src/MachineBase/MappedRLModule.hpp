@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __MappedRLModule_hpp__
-#define __MappedRLModule_hpp__
+#ifndef SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
+#define SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
 
 #include "MachineBase/RLModule.hpp"
 #include <boost/function.hpp>
@@ -71,4 +71,4 @@ private:
 };
 
 
-#endif
+#endif  // SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_

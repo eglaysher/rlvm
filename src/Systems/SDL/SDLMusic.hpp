@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __SDLMusic_hpp__
-#define __SDLMusic_hpp__
+#ifndef SRC_SYSTEMS_SDL_SDLMUSIC_HPP_
+#define SRC_SYSTEMS_SDL_SDLMUSIC_HPP_
 
 #include "Systems/Base/SoundSystem.hpp"
 
@@ -174,4 +174,4 @@ private:
 
 // -----------------------------------------------------------------------
 
-#endif
+#endif  // SRC_SYSTEMS_SDL_SDLMUSIC_HPP_

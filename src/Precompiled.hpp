@@ -28,8 +28,8 @@
 // This is our precompiled header. Note that we include a lot of
 // boost, something that every C++ program should do.
 
-#ifndef __Header_hpp__
-#define __Header_hpp__
+#ifndef SRC_PRECOMPILED_HPP_
+#define SRC_PRECOMPILED_HPP_
 
 #define USE_PRECOMPILED_HEADERS
 #ifdef USE_PRECOMPILED_HEADERS
@@ -61,4 +61,4 @@
 
 #endif  // USE_PRECOMPILED_HEADERS
 
-#endif
+#endif  // SRC_PRECOMPILED_HPP_

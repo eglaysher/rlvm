@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __Module_ObjPosDims_hpp__
-#define __Module_ObjPosDims_hpp__
+#ifndef SRC_MODULES_MODULE_OBJPOSDIMS_HPP_
+#define SRC_MODULES_MODULE_OBJPOSDIMS_HPP_
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
@@ -59,4 +59,4 @@ class ChildObjBgPosDimsModule : public MappedRLModule {
   ChildObjBgPosDimsModule();
 };
 
-#endif
+#endif  // SRC_MODULES_MODULE_OBJPOSDIMS_HPP_

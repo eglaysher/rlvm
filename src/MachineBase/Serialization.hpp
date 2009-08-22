@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __Serialization_hpp__
-#define __Serialization_hpp__
+#ifndef SRC_MACHINEBASE_SERIALIZATION_HPP_
+#define SRC_MACHINEBASE_SERIALIZATION_HPP_
 
 #include "MachineBase/SaveGameHeader.hpp"
 #include <boost/filesystem/path.hpp>
@@ -77,4 +77,4 @@ void loadGameFrom(std::istream& iss, RLMachine& machine);
 }
 
 
-#endif
+#endif  // SRC_MACHINEBASE_SERIALIZATION_HPP_

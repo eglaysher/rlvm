@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __FrameCounter_hpp__
-#define __FrameCounter_hpp__
+#ifndef SRC_SYSTEMS_BASE_FRAMECOUNTER_HPP_
+#define SRC_SYSTEMS_BASE_FRAMECOUNTER_HPP_
 
 class EventSystem;
 
@@ -206,4 +206,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_FRAMECOUNTER_HPP_

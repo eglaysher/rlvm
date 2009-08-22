@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __SelectLongOperation_hpp__
-#define __SelectLongOperation_hpp__
+#ifndef SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_
+#define SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_
 
 #include <vector>
 #include <string>
@@ -152,4 +152,4 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   std::vector<Rect> bounding_rects_;
 };
 
-#endif
+#endif  // SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_

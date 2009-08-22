@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __AnimationObjectData_hpp__
-#define __AnimationObjectData_hpp__
+#ifndef SRC_SYSTEMS_BASE_GRAPHICSOBJECTDATA_HPP_
+#define SRC_SYSTEMS_BASE_GRAPHICSOBJECTDATA_HPP_
 
 #include <boost/serialization/access.hpp>
 #include <boost/shared_ptr.hpp>
@@ -161,4 +161,4 @@ private:
   }
 };
 
-#endif
+#endif  // SRC_SYSTEMS_BASE_GRAPHICSOBJECTDATA_HPP_

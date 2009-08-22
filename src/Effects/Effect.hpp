@@ -34,8 +34,8 @@
  */
 
 
-#ifndef __Effect_hpp__
-#define __Effect_hpp__
+#ifndef SRC_EFFECTS_EFFECT_HPP_
+#define SRC_EFFECTS_EFFECT_HPP_
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
@@ -195,4 +195,4 @@ void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> dst);
 // @}
 
-#endif
+#endif  // SRC_EFFECTS_EFFECT_HPP_
