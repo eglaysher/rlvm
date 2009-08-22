@@ -77,11 +77,11 @@ struct TextSystemGlobals {
 // -----------------------------------------------------------------------
 
 class TextSystem : public EventListener {
-public:
+ public:
   /// Internal structure used to keep track of the state of
   typedef boost::ptr_map<int, TextPage> PageSet;
 
-public:
+ public:
   TextSystem(System& system, Gameexe& gexe);
   virtual ~TextSystem();
 
@@ -286,7 +286,7 @@ public:
 
   System& system() { return system_; }
 
-protected:
+ protected:
   void updateWindowsForChangeToWindowAttr();
 
   bool showWindow(int win_num) const;

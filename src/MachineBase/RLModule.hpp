@@ -156,10 +156,10 @@ class RLModule : public boost::noncopyable {
   static void unpackOpcodeNumber(int packed_opcode, int& opcode,
                                  unsigned char& overload);
 
-protected:
+ protected:
   RLModule(const std::string& in_module_name, int in_module_type, int in_module_number);
 
-private:
+ private:
   typedef std::pair<int, int> Property;
   typedef std::vector<Property> PropertyList;
 

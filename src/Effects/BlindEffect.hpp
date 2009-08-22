@@ -45,12 +45,12 @@
  * @ingroup TransitionEffects
  */
 class BlindEffect : public Effect {
-private:
+ private:
   int blind_size_;
 
   virtual bool blitOriginalImage() const;
 
-protected:
+ protected:
   // We'll probably need some utility stuff here.
 
   const int blindSize() const { return blind_size_; }
@@ -62,7 +62,7 @@ protected:
 
   virtual void renderPolygon(int polyStart, int polyEnd) = 0;
 
-public:
+ public:
   BlindEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
@@ -76,11 +76,11 @@ public:
  * @ingroup TransitionEffects
  */
 class BlindTopToBottomEffect : public BlindEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
 
-public:
+ public:
   BlindTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
@@ -92,11 +92,11 @@ public:
  * @ingroup TransitionEffects
  */
 class BlindBottomToTopEffect : public BlindEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
 
-public:
+ public:
   BlindBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
@@ -108,11 +108,11 @@ public:
  * @ingroup TransitionEffects
  */
 class BlindLeftToRightEffect : public BlindEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
 
-public:
+ public:
   BlindLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);
@@ -124,11 +124,11 @@ public:
  * @ingroup TransitionEffects
  */
 class BlindRightToLeftEffect : public BlindEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
 
-public:
+ public:
   BlindRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int blindSize);

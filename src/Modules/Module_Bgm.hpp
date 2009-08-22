@@ -35,7 +35,7 @@
  * Contains functions for mod<1:20>, Bgm.
  */
 class BgmModule : public RLModule {
-public:
+ public:
   BgmModule();
 };
 

@@ -44,7 +44,7 @@
  * @ingroup ModuleJmp
  */
 class JmpModule : public RLModule {
-public:
+ public:
   JmpModule();
 };
 

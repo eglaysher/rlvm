@@ -45,42 +45,42 @@
  * @ingroup ModuleObj
  */
 class ObjFgModule : public RLModule {
-public:
+ public:
   ObjFgModule();
 };
 
 // -----------------------------------------------------------------------
 
 class ObjBgModule : public RLModule {
-public:
+ public:
   ObjBgModule();
 };
 
 // -----------------------------------------------------------------------
 
 class ChildObjFgModule : public MappedRLModule {
-public:
+ public:
   ChildObjFgModule();
 };
 
 // -----------------------------------------------------------------------
 
 class ChildObjBgModule : public MappedRLModule {
-public:
+ public:
   ChildObjBgModule();
 };
 
 // -----------------------------------------------------------------------
 
 class ObjRangeFgModule : public MappedRLModule {
-public:
+ public:
   ObjRangeFgModule();
 };
 
 // -----------------------------------------------------------------------
 
 class ObjRangeBgModule : public MappedRLModule {
-public:
+ public:
   ObjRangeBgModule();
 };
 

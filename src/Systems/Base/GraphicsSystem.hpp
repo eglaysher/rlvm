@@ -138,7 +138,7 @@ enum GraphicsUpdateType {
  */
 
 class GraphicsSystem : public EventListener {
-public:
+ public:
   /**
    * The current display context drawing mode. The Reallive system
    * will update the screen after certain events in user code
@@ -161,7 +161,7 @@ public:
     SCREENUPDATEMODE_MANUAL
   };
 
-public:
+ public:
   GraphicsSystem(System& system, Gameexe& gameexe);
   virtual ~GraphicsSystem();
 
@@ -503,7 +503,7 @@ public:
   /// Access to the cgtable for the cg* functions.
   CGMTable& cgTable() { return globals_.cg_table; }
 
-protected:
+ protected:
   typedef std::set<Renderable*> FinalRenderers;
 
   FinalRenderers::iterator renderer_begin() { return final_renderers_.begin(); }
@@ -518,7 +518,7 @@ protected:
     screen_rect_ = Rect(Point(0, 0), size);
   }
 
-private:
+ private:
   /// Default grp name (used in grp* and rec* functions where filename
   /// is '???')
   std::string default_grp_name_;

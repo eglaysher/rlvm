@@ -54,7 +54,7 @@ class ScriptMachine;
  * @endcode
  */
 class ScriptWorld {
-public:
+ public:
   ScriptWorld();
   ~ScriptWorld();
 
@@ -80,7 +80,7 @@ public:
   void error(const std::string& error_message);
   void addHandler(int scene, int lineNo, luabind::object handler);
 
-private:
+ private:
   static void InitializeLuabind(lua_State* L);
 
   /// The directory containg the passed in |lua_file|. Used as a search path.

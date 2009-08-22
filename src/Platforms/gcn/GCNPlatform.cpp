@@ -221,7 +221,7 @@ public:
     platform_->sdl_input_->pushInput(event);
   }
 
-private:
+ private:
   SDLEventSystem& event_system_;
   GraphicsSystem& graphics_system_;
   boost::shared_ptr<GCNPlatform> platform_;

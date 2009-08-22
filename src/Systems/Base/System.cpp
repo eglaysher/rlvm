@@ -164,7 +164,7 @@ public:
     return true;
   }
 
-private:
+ private:
   System& sys_;
 };
 

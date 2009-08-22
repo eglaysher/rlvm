@@ -74,7 +74,7 @@ class RLMachine;
  * operations.
  */
 class Effect : public LongOperation {
-private:
+ private:
   /// Defines the size of the screen; since effects update the entire screen.
   Size screen_size_;
 
@@ -99,7 +99,7 @@ private:
   /// The destination surface (previously known as DC0)
   boost::shared_ptr<Surface> dst_surface_;
 
-protected:
+ protected:
   Size size() const { return screen_size_; }
   int width() const { return screen_size_.width(); }
   int height() const { return screen_size_.height(); }
@@ -116,7 +116,7 @@ protected:
   virtual void performEffectForTime(RLMachine& machine,
                                     int currentTime) = 0;
 
-public:
+ public:
   /**
    * Sets up all other variables
    *
@@ -157,7 +157,7 @@ public:
  * @see Grp_openBg_1
  */
 class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
-private:
+ private:
   /// The source surface (previously known as DC1, before I realized
   /// that temporary surfaces could in fact be part of effects)
   boost::shared_ptr<Surface> src_surface_;
@@ -169,7 +169,7 @@ private:
 
   virtual void performAfterLongOperation(RLMachine& machine);
 
-public:
+ public:
   BlitAfterEffectFinishes(LongOperation* in,
                           boost::shared_ptr<Surface> src,
                           boost::shared_ptr<Surface> dst,

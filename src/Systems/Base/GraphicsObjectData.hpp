@@ -86,7 +86,7 @@ class GraphicsObjectData {
   /// Whether this object data owns another layer of objects.
   virtual bool isParentLayer() const { return false; }
 
-protected:
+ protected:
   /**
    * Function called after animation ends when this object has been
    * set up to loop.

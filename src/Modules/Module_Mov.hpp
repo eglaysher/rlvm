@@ -36,7 +36,7 @@
  * Contains functions for mod<1:26>, Mov.
  */
 class MovModule : public RLModule {
-public:
+ public:
   MovModule();
 };
 

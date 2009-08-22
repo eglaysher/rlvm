@@ -41,7 +41,7 @@ class EventSystem;
  * more details.
  */
 class FrameCounter {
-public:
+ public:
   FrameCounter(EventSystem& es, int frame_min, int frame_max, int milliseconds);
 
   virtual ~FrameCounter();
@@ -97,7 +97,7 @@ public:
   virtual void finished();
 
 // Give these accessors later?
-protected:
+ protected:
   EventSystem& event_system_;
 
   float value_;
@@ -115,13 +115,13 @@ protected:
  * Simple frame counter that counts from frame_min to frame_max.
  */
 class SimpleFrameCounter : public FrameCounter {
-public:
+ public:
   SimpleFrameCounter(EventSystem& es, int frame_min, int frame_max,
                      int milliseconds);
 
   virtual int readFrame();
 
-private:
+ private:
   float change_interval_;
   float time_at_last_check_;
 };
@@ -133,14 +133,14 @@ private:
  * frame_min.
  */
 class LoopFrameCounter : public FrameCounter {
-public:
+ public:
   LoopFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
 
   virtual int readFrame();
   virtual void finished();
 
-private:
+ private:
   float change_interval_;
   float time_at_last_check_;
 };
@@ -152,13 +152,13 @@ private:
  * down to frame_min.
  */
 class TurnFrameCounter : public FrameCounter {
-public:
+ public:
   TurnFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
 
   virtual int readFrame();
 
-private:
+ private:
   bool going_forward_;
   unsigned int change_interval_;
   unsigned int time_at_last_check_;
@@ -170,11 +170,11 @@ private:
  * Frame counter that counts from frame_min to frame_max, speeding up as it goes.
  */
 class AcceleratingFrameCounter : public FrameCounter {
-private:
+ private:
   unsigned int start_time_;
   float time_at_last_check_;
 
-public:
+ public:
   AcceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
@@ -188,11 +188,11 @@ public:
  * Frame counter that counts from frame_min to frame_max, slowing down as it goes.
  */
 class DeceleratingFrameCounter : public FrameCounter {
-private:
+ private:
   unsigned int start_time_;
   float time_at_last_check_;
 
-public:
+ public:
   DeceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 

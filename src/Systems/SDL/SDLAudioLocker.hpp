@@ -33,7 +33,7 @@
  * RAII class that locks (and unlocks) the mix loop.
  */
 class SDLAudioLocker {
-public:
+ public:
   SDLAudioLocker();
   ~SDLAudioLocker();
 };  // end of class SDLAudioLocker

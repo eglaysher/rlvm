@@ -44,7 +44,7 @@
  * @ingroup ModuleEventLoop
  */
 class EventLoopModule : public RLModule {
-public:
+ public:
   EventLoopModule();
 };
 

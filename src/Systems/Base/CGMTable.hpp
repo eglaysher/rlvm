@@ -44,7 +44,7 @@ class RLMachine;
  * interface to querrying whether a CG was viewed.
  */
 class CGMTable {
-public:
+ public:
   /**
    * Initializes an empty CG table (for games that don't use this feature).
    */
@@ -84,7 +84,7 @@ public:
    */
   void setViewed(RLMachine& machine, const std::string& filename);
 
-private:
+ private:
   typedef std::map<std::string, int> CGMMap;
 
   /// Mapping between a graphics file name and the file's cg index.

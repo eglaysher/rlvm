@@ -35,7 +35,7 @@
  * Main pause function. Exported for TextoutLongOperation to abuse.
  */
 class PauseLongOperation : public LongOperation {
-public:
+ public:
   PauseLongOperation(RLMachine& machine);
   ~PauseLongOperation();
 
@@ -47,7 +47,7 @@ public:
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);
 
-private:
+ private:
   RLMachine& machine;
 
   bool is_done_;
@@ -71,11 +71,11 @@ private:
 // NewPageAfterLongop
 // -----------------------------------------------------------------------
 class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
-public:
+ public:
   NewPageAfterLongop(LongOperation* inOp);
   ~NewPageAfterLongop();
 
-private:
+ private:
   virtual void performAfterLongOperation(RLMachine& machine);
 };
 
@@ -83,11 +83,11 @@ private:
 // NewParagraphAfterLongop
 // -----------------------------------------------------------------------
 class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
-public:
+ public:
   NewParagraphAfterLongop(LongOperation* inOp);
   ~NewParagraphAfterLongop();
 
-private:
+ private:
   virtual void performAfterLongOperation(RLMachine& machine);
 };
 

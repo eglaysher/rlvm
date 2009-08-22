@@ -36,14 +36,14 @@
  * @ingroup TransitionEffects
  */
 class FadeEffect : public Effect {
-private:
+ private:
   virtual bool blitOriginalImage() const;
 
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine,
                                     int currentTime);
 
-public:
+ public:
   FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time);

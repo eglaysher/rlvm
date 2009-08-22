@@ -37,7 +37,7 @@ class RLMachine;
 class Surface;
 
 class ZoomLongOperation : public LongOperation {
-private:
+ private:
   RLMachine& machine_;
 
   boost::shared_ptr<Surface> orig_surface_;
@@ -50,7 +50,7 @@ private:
 
   unsigned int start_time_;
 
-public:
+ public:
   ZoomLongOperation(
     RLMachine& machine,
     const boost::shared_ptr<Surface>& orig_surface_,

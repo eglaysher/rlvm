@@ -34,7 +34,7 @@
  * Contains functions for mod<1:21>, Pcm.
  */
 class PcmModule : public RLModule {
-public:
+ public:
   PcmModule();
 };
 

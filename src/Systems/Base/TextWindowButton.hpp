@@ -45,7 +45,7 @@ class TextWindow;
 // -----------------------------------------------------------------------
 
 class TextWindowButton : public boost::noncopyable {
-public:
+ public:
   TextWindowButton(System& system);
   TextWindowButton(System& system, bool use,
                    GameexeInterpretObject location_box);
@@ -78,7 +78,7 @@ public:
   /// Called when the button is released
   virtual void buttonReleased(RLMachine& machine) {}
 
-protected:
+ protected:
   System& system_;
 
   std::vector<int> location_;
@@ -88,10 +88,10 @@ protected:
 // -----------------------------------------------------------------------
 
 class ActionTextWindowButton : public TextWindowButton {
-public:
+ public:
   typedef boost::function<void(void)> CallbackFunction;
 
-public:
+ public:
   ActionTextWindowButton(System& system, bool use,
                          GameexeInterpretObject location_box,
                          CallbackFunction action);
@@ -99,7 +99,7 @@ public:
 
   virtual void buttonReleased(RLMachine& machine);
 
-private:
+ private:
   CallbackFunction action_;
 };
 
@@ -107,10 +107,10 @@ private:
 
 class ActivationTextWindowButton : public TextWindowButton,
                                    public boost::signals::trackable {
-public:
+ public:
   typedef boost::function<void(void)> CallbackFunction;
 
-public:
+ public:
   ActivationTextWindowButton(System& system, bool use,
                              GameexeInterpretObject location_box,
                              CallbackFunction start,
@@ -122,7 +122,7 @@ public:
   void setEnabled(bool on);
   void setActivated(bool on);
 
-private:
+ private:
   void setState();
 
   CallbackFunction on_start_;
@@ -134,10 +134,10 @@ private:
 // -----------------------------------------------------------------------
 
 class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
-public:
+ public:
   typedef boost::function<void(void)> CallbackFunction;
 
-public:
+ public:
   RepeatActionWhileHoldingWindowButton(
     System& system,
     bool use, GameexeInterpretObject location_box,
@@ -149,7 +149,7 @@ public:
   virtual void execute();
   virtual void buttonReleased(RLMachine& machine);
 
-private:
+ private:
   CallbackFunction callback_;
   bool held_down_;
   unsigned int last_invocation_;
@@ -159,7 +159,7 @@ private:
 // -----------------------------------------------------------------------
 
 class ExbtnWindowButton : public TextWindowButton {
-public:
+ public:
   ExbtnWindowButton(System& system, bool use,
                     GameexeInterpretObject location_box,
                     GameexeInterpretObject to_call);
@@ -167,7 +167,7 @@ public:
 
   virtual void buttonReleased(RLMachine& machine);
 
-private:
+ private:
   int scenario_;
   int entrypoint_;
 };

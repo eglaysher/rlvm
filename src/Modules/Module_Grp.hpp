@@ -59,7 +59,7 @@ extern const std::string GRP_OPENBG;
  * @ingroup ModuleGrp
  */
 class GrpModule : public RLModule {
-public:
+ public:
   GrpModule();
 };
 

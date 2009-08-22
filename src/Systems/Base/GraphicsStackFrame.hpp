@@ -43,7 +43,7 @@
  * @todo Move the serialization code into this class
  */
 class GraphicsStackFrame {
-public:
+ public:
   GraphicsStackFrame();
   GraphicsStackFrame(const std::string& name);
   ~GraphicsStackFrame();
@@ -85,7 +85,7 @@ public:
   bool mask() const { return mask_; }
   GraphicsStackFrame& setMask(bool in);
 
-private:
+ private:
   std::string command_name_;
 
   bool has_filename_;

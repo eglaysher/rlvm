@@ -60,7 +60,7 @@
  */
 class SDLMusic : public boost::noncopyable,
                  public boost::enable_shared_from_this<SDLMusic> {
-public:
+ public:
   ~SDLMusic();
 
   /// Whether we were told to loop when we were play()ed.
@@ -109,7 +109,7 @@ public:
   /// Whether we should output music.
   static void SetBgmEnabled(const int in) { s_bgm_enabled = in; }
 
-private:
+ private:
   /**
    * Builds an SDLMusic object.
    *

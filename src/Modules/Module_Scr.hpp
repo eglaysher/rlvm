@@ -49,7 +49,7 @@
  * @ingroup ModuleScr
  */
 class ScrModule : public RLModule {
-public:
+ public:
   ScrModule();
 };
 

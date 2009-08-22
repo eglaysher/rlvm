@@ -37,7 +37,7 @@ class TextWindow;
 class TestTextWindow;
 
 class TestTextSystem : public TextSystem {
-public:
+ public:
   TestTextSystem(System& system, Gameexe& gexe);
   ~TestTextSystem();
 

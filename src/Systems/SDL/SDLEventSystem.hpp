@@ -38,12 +38,12 @@
  * control of the input.
  */
 class RawSDLInputHandler {
-public:
+ public:
   virtual void pushInput(SDL_Event event) = 0;
 };
 
 class SDLEventSystem : public EventSystem {
-public:
+ public:
   SDLEventSystem(Gameexe& gexe);
 
   /// We provide this accessor to let the Graphics system querry what
@@ -74,7 +74,7 @@ public:
   virtual void injectMouseDown(RLMachine& machine);
   virtual void injectMouseUp(RLMachine& machine);
 
-private:
+ private:
   /**
    * @name RealLive event system commands
    *

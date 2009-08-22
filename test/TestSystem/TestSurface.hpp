@@ -13,7 +13,7 @@
 // -----------------------------------------------------------------------
 
 class TestSurface : public Surface {
-public:
+ public:
   TestSurface(const std::string& surface_name);
   TestSurface(const std::string& surface_name, const Size& size);
 
@@ -58,7 +58,7 @@ public:
 
   virtual Surface* clone() const;
 
-private:
+ private:
   /// Unique name of this surface.
   std::string surface_name_;
 

@@ -37,11 +37,11 @@
 /// was run during the lifetime of a program, or the number of times an
 /// undefined opcode was encountered, et cetera.
 class OpcodeLog {
-public:
+ public:
   /// Storage type
   typedef std::map<std::string, int> Storage;
 
-public:
+ public:
   OpcodeLog();
   ~OpcodeLog();
 
@@ -52,7 +52,7 @@ public:
   Storage::const_iterator end() const { return storage_.end(); }
   size_t size() const { return storage_.size(); }
 
-private:
+ private:
   /// Counts the instances of an opcode encountered.
   Storage storage_;
 };

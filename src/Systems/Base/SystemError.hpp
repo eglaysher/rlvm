@@ -38,9 +38,9 @@
  * should be rlvm::Exception instead.
  */
 class SystemError : public std::exception {
-private:
+ private:
   std::string description;
-public:
+ public:
   virtual const char* what() const throw();
   SystemError(std::string what);
   virtual ~SystemError() throw();

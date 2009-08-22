@@ -47,7 +47,7 @@
  * @ingroup ModuleDebug
  */
 class DebugModule : public RLModule {
-public:
+ public:
   DebugModule();
 };
 

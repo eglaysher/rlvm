@@ -41,7 +41,7 @@ class TestSurface;
 // -----------------------------------------------------------------------
 
 class TestGraphicsSystem : public GraphicsSystem {
-public:
+ public:
   TestGraphicsSystem(System& system, Gameexe& gexe);
 
   virtual void executeGraphicsSystem(RLMachine&) { }
@@ -67,7 +67,7 @@ public:
                                int destX, int destY, int dest_width, int dest_height,
                                int alpha = 255);
 
-private:
+ private:
   /// Map between device contexts number and their surface.
   boost::shared_ptr<TestSurface> display_contexts_[16];
 };

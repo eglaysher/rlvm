@@ -45,7 +45,7 @@ class System;
  * obj_set_text, obj_text_opts, et cetera.
  */
 class GraphicsTextObject : public GraphicsObjectData {
-public:
+ public:
   GraphicsTextObject(System& system);
   ~GraphicsTextObject();
 
@@ -56,11 +56,11 @@ public:
   virtual GraphicsObjectData* clone() const;
   virtual void execute() { }
 
-protected:
+ protected:
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
-private:
+ private:
   /// Current machine context.
   System& system_;
 

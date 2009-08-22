@@ -38,7 +38,7 @@
  * Provides behaviour for the TestEventSystem.
  */
 class EventSystemMockHandler {
-public:
+ public:
   virtual bool shiftPressed() const { return false; }
   virtual bool ctrlPressed() const { return false; }
   virtual unsigned int getTicks() const { return 0; }
@@ -51,7 +51,7 @@ public:
  * EventSystemMockHandler.
  */
 class TestEventSystem : public EventSystem {
-public:
+ public:
   TestEventSystem(Gameexe& gexe);
   void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
 
@@ -67,7 +67,7 @@ public:
   virtual void injectMouseDown(RLMachine& machine) {}
   virtual void injectMouseUp(RLMachine& machine) {}
 
-private:
+ private:
   /// Defines test specific behaviour for the TestEventSystem
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };

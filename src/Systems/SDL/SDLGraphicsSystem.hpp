@@ -60,7 +60,7 @@ class Texture;
  * @todo This public interface really needs to be rethought out.
  */
 class SDLGraphicsSystem : public GraphicsSystem {
-public:
+ public:
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();
 
@@ -112,7 +112,7 @@ public:
    */
   virtual void reset();
 
-private:
+ private:
   void setupVideo();
 
   /**

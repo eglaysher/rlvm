@@ -37,7 +37,7 @@ class Gameexe;
  * Test sound system
  */
 class TestSoundSystem : public SoundSystem {
-public:
+ public:
   TestSoundSystem(System& system);
   ~TestSoundSystem();
 
@@ -70,7 +70,7 @@ public:
   virtual bool koePlaying() const;
   virtual void koeStop();
 
-private:
+ private:
 
   virtual void koePlayImpl(int id);
 

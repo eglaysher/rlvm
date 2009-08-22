@@ -54,7 +54,7 @@ class ScrollSquashSlideEffectTypeBase;
  * @ingroup TransitionEffects
  */
 class EffectFactory {
-public:
+ public:
   /**
    * Builds an Effect based off the \#SEL.selnum line in the
    * Gameexe.ini file. The coordinates, which are in grp* format (x1,
@@ -107,7 +107,7 @@ public:
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int c);
 
-private:
+ private:
   static Effect* buildWipeEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,

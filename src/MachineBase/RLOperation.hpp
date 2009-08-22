@@ -109,7 +109,7 @@ enum OperationProperties {
  * the RLMachine.
  */
 class RLOperation {
-public:
+ public:
   /// Default constructor
   RLOperation();
 
@@ -161,7 +161,7 @@ public:
   /// hack is errors found at runtime instead of compiletime. *tear*
   void throw_unimplemented();
 
-private:
+ private:
   friend class RLModule;
   friend class MappedRLModule;
 
@@ -289,7 +289,7 @@ struct Empty_T {
  * @see JmpModule
  */
 class RLOp_SpecialCase : public RLOperation {
-public:
+ public:
   /**
    * Empty function defined simply to obey the interface
    */
@@ -341,7 +341,7 @@ template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
          typename V = Empty_T, typename W = Empty_T, typename X = Empty_T,
          typename Y = Empty_T, typename Z = Empty_T>
 struct RLOp_NormalOperation : public RLOperation {
-private:
+ private:
   template<typename TYPE>
   void addTypeTo(unsigned int& position, const std::vector<std::string>& input,
                  ExpressionPiecesVector& output) {
@@ -350,7 +350,7 @@ private:
     }
   }
 
-public:
+ public:
   void parseParameters(const std::vector<std::string>& input,
                        ExpressionPiecesVector& output) {
     unsigned int position = 0;

@@ -34,7 +34,7 @@
  * Contains functions for mod<1:5>, Os.
  */
 class OsModule : public RLModule {
-public:
+ public:
   OsModule();
 };
 

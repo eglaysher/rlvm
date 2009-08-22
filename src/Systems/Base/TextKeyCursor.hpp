@@ -42,7 +42,7 @@ class TextWindow;
  * Represents a key cursor.
  */
 class TextKeyCursor {
-public:
+ public:
   /**
    * Creates a Key Cursor object based off of the properties in
    * \#CURSOR.curosr_number. This will load all image files, and data
@@ -86,7 +86,7 @@ public:
   void setCursorFrameSpeed(const int frame_speed);
   /// @}
 
-private:
+ private:
   /// Keep track of which cursor we are as an optimization
   int cursor_number_;
 

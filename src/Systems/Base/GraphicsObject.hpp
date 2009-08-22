@@ -50,7 +50,7 @@ class GraphicsObjectData;
  * @todo I want to put index checks on a lot of these accessors.
  */
 class GraphicsObject {
-public:
+ public:
   GraphicsObject();
   GraphicsObject(const GraphicsObject& obj);
   ~GraphicsObject();
@@ -218,7 +218,7 @@ public:
    */
   long referenceCount() const { return impl_.use_count(); }
 
-private:
+ private:
   /**
    * Makes the ineternal copy for our copy-on-write semantics. This
    * function checks to see if our Impl object has only one reference

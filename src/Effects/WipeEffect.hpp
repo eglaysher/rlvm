@@ -51,19 +51,19 @@ class GraphicsSystem;
  * @ingroup TransitionEffects
  */
 class WipeEffect : public Effect {
-private:
+ private:
   int interpolation_;
   int interpolation_in_pixels_;
 
   virtual bool blitOriginalImage() const;
 
-protected:
+ protected:
   void calculateSizes(int currentTime,
                       int& sizeOfInterpolation,
                       int& sizeOfMainPolygon,
                       int sizeOfScreen);
 
-public:
+ public:
   WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
              const Size& screenSize, int time, int interpolation);
@@ -77,10 +77,10 @@ public:
  * @ingroup TransitionEffects
  */
 class WipeTopToBottomEffect : public WipeEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
-public:
+ public:
   WipeTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
@@ -95,10 +95,10 @@ public:
  * @ingroup TransitionEffects
  */
 class WipeBottomToTopEffect : public WipeEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
-public:
+ public:
   WipeBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
@@ -113,10 +113,10 @@ public:
  * @ingroup TransitionEffects
  */
 class WipeLeftToRightEffect : public WipeEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
-public:
+ public:
   WipeLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
@@ -131,10 +131,10 @@ public:
  * @ingroup TransitionEffects
  */
 class WipeRightToLeftEffect : public WipeEffect {
-protected:
+ protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
-public:
+ public:
   WipeRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,

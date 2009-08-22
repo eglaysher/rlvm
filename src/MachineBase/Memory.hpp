@@ -175,7 +175,7 @@ BOOST_CLASS_VERSION(LocalMemory, 1)
  * @see Sys_GetSaveFlag
  */
 class Memory {
-private:
+ private:
   /**
    * Pointer to the GlobalMemory structure. While there can (and will
    * be) multiple Memory instances (this is how we implement
@@ -208,7 +208,7 @@ private:
    */
   void initializeDefaultValues(Gameexe& gameexe);
 
-public:
+ public:
   /**
    * Default constructor; creates a Memory object which owns its own
    * GlobalMemory. Initial memory values are read from the passed in Gameexe

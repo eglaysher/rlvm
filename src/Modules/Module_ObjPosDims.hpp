@@ -32,14 +32,14 @@
 #include "MachineBase/MappedRLModule.hpp"
 
 class ObjFgPosDimsModule : public RLModule {
-public:
+ public:
   ObjFgPosDimsModule();
 };
 
 // -----------------------------------------------------------------------
 
 class ObjBgPosDimsModule : public RLModule {
-public:
+ public:
   ObjBgPosDimsModule();
 };
 

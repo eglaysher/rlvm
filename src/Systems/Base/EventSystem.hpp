@@ -73,7 +73,7 @@ struct EventSystemGlobals {
  * expects. The other is based on event handlers and is sane.
  */
 class EventSystem : public boost::noncopyable {
-public:
+ public:
   EventSystem(Gameexe& gexe);
   virtual ~EventSystem();
 
@@ -223,7 +223,7 @@ public:
 
   EventSystemGlobals& globals() { return globals_; }
 
-protected:
+ protected:
   typedef std::set<EventListener*> EventListeners;
 
   EventListeners::iterator listeners_begin() { return event_listeners_.begin(); }
@@ -238,7 +238,7 @@ protected:
   void broadcastEvent(RLMachine& machine,
                       const boost::function<void(EventListener&)>& event);
 
-private:
+ private:
   boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
   RLTimer timers_[255][2];
 

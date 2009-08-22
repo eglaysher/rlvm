@@ -40,7 +40,7 @@ class SDLTextWindow;
 class TextWindow;
 
 class SDLTextSystem : public TextSystem {
-public:
+ public:
   SDLTextSystem(System& system, Gameexe& gameexe);
   ~SDLTextSystem();
 
@@ -52,7 +52,7 @@ public:
 
   boost::shared_ptr<TTF_Font> getFontOfSize(int size);
 
-private:
+ private:
   /**
    * @name Font storage
    *

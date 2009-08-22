@@ -40,7 +40,7 @@ class RlvmInfo;
  * underlying widget set.
  */
 class Platform {
-public:
+ public:
   /**
    * Parses out strings that are presented to the user as part of the platform.
    */
@@ -71,7 +71,7 @@ public:
   /// Displays the current interpreter info.
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
 
-private:
+ private:
   /// Strips quotes off of value and adds it to our internal strings database.
   void addSyscomStringFor(const std::string& key, const std::string& value);
 

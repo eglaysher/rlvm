@@ -44,7 +44,7 @@
  * @ingroup ModuleMemory
  */
 class MemModule : public RLModule {
-public:
+ public:
   MemModule();
 };
 

@@ -42,7 +42,7 @@
  * @ingroup ModuleDLL
  */
 class DLLModule : public RLModule {
-public:
+ public:
   DLLModule();
 };
 

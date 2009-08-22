@@ -32,17 +32,17 @@
 #include "MachineBase/MappedRLModule.hpp"
 
 class ObjCopyFgToBg : public RLModule {
-public:
+ public:
   ObjCopyFgToBg();
 };
 
 class ObjFgManagement : public RLModule {
-public:
+ public:
   ObjFgManagement();
 };
 
 class ObjBgManagement : public RLModule {
-public:
+ public:
   ObjBgManagement();
 };
 

@@ -50,7 +50,7 @@ class RLMachine;
  * events.
  */
 class LongOperation : public EventListener {
-public:
+ public:
   LongOperation();
   virtual ~LongOperation();
 
@@ -78,7 +78,7 @@ public:
  * arbitrary action.
  */
 class PerformAfterLongOperationDecorator : public LongOperation {
-public:
+ public:
   PerformAfterLongOperationDecorator(LongOperation* in_op);
   ~PerformAfterLongOperationDecorator();
 
@@ -91,7 +91,7 @@ public:
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);
 
-private:
+ private:
   boost::scoped_ptr<LongOperation> operation_;
 
   /// Payload of decorator implemented by subclasses

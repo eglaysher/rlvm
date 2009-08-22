@@ -42,7 +42,7 @@
  * @ingroup ModuleStr
  */
 class StrModule : public RLModule {
-public:
+ public:
   StrModule();
 };
 

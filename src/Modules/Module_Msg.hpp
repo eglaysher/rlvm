@@ -44,7 +44,7 @@
  * @ingroup ModuleMessage
  */
 class MsgModule : public RLModule {
-public:
+ public:
   MsgModule();
 };
 

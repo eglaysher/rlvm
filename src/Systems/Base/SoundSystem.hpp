@@ -135,7 +135,7 @@ BOOST_CLASS_VERSION(SoundSystemGlobals, 1)
  *
  */
 class SoundSystem {
-public:
+ public:
   /**
    * Defines a piece of background music who's backed by a file,
    * usually VisualArt's nwa format.
@@ -166,7 +166,7 @@ public:
     int loop;
   };
 
-protected:
+ protected:
   /// Type for a parsed \#SE table.
   typedef std::map<int, std::pair<std::string, int> > SeTable;
 
@@ -196,7 +196,7 @@ protected:
 
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
 
-public:
+ public:
   SoundSystem(System& system);
   virtual ~SoundSystem();
 
@@ -413,7 +413,7 @@ public:
 
   System& system() { return system_; }
 
-protected:
+ protected:
   SeTable& seTable() { return se_table_; }
   const DSTable& getDSTable() { return ds_tracks_; }
   const CDTable& getCDTable() { return cd_tracks_; }
@@ -434,7 +434,7 @@ protected:
 
   VoiceCache voice_cache_;
 
-private:
+ private:
 
   System& system_;
 

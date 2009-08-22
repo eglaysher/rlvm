@@ -49,7 +49,7 @@ class SDLMusic;
  * between say, bgmSetVolume and SetBgmVolMod().
  */
 class SDLSoundSystem : public SoundSystem {
-public:
+ public:
   SDLSoundSystem(System& system);
   ~SDLSoundSystem();
 
@@ -94,7 +94,7 @@ public:
    */
   void setMusicHook(void (*mix_func)(void *udata, Uint8 *stream, int len));
 
-private:
+ private:
   typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
   typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
   typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;

@@ -44,7 +44,7 @@
  * Contains functions for mod<1:31>, Refresh.
  */
 class RefreshModule : public RLModule {
-public:
+ public:
   RefreshModule();
 };
 

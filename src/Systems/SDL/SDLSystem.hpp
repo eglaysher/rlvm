@@ -40,7 +40,7 @@ class SDLSoundSystem;
 // -----------------------------------------------------------------------
 
 class SDLSystem : public System {
-public:
+ public:
   SDLSystem(Gameexe& gameexe);
   ~SDLSystem();
 
@@ -51,7 +51,7 @@ public:
   virtual TextSystem& text();
   virtual SoundSystem& sound();
 
-private:
+ private:
   boost::scoped_ptr<SDLGraphicsSystem> graphics_system_;
   boost::scoped_ptr<SDLEventSystem> event_system_;
   boost::scoped_ptr<SDLTextSystem> text_system_;

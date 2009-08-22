@@ -37,7 +37,7 @@
  * @return
  */
 class TestSystem : public System {
-private:
+ private:
   Gameexe gameexe_;
 
   TestGraphicsSystem null_graphics_system;
@@ -45,7 +45,7 @@ private:
   TestTextSystem null_text_system;
   TestSoundSystem null_sound_system;
 
-public:
+ public:
   TestSystem(const std::string& path_to_gameexe);
   TestSystem();
 

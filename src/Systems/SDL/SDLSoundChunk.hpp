@@ -43,7 +43,7 @@
  * properly.
  */
 class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
-public:
+ public:
   /// Builds a Mix_Chunk from a file.
   SDLSoundChunk(const boost::filesystem::path& path);
 
@@ -90,7 +90,7 @@ public:
 
   static void FadeOut(const int channel, const int fadetime);
 
-private:
+ private:
   /**
    * Static table which deliberatly creates cycles. When a chunk
    * starts playing, it's associated with its channel ID in this table

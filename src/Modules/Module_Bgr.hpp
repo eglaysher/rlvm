@@ -36,7 +36,7 @@
  * @ingroup ModuleSys
  */
 class BgrModule : public RLModule {
-public:
+ public:
   BgrModule();
 };
 

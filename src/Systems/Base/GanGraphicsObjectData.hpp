@@ -53,7 +53,7 @@ class GraphicsObject;
  * storing, and rendering GAN data as a GraphicsObjectData.
  */
 class GanGraphicsObjectData : public GraphicsObjectData {
-public:
+ public:
   GanGraphicsObjectData(System& system);
   GanGraphicsObjectData(System& system, const std::string& ganfile,
                         const std::string& imgfile);
@@ -70,7 +70,7 @@ public:
   virtual bool isAnimation() const { return true; }
   virtual void playSet(int set);
 
-protected:
+ protected:
   /// Resets to the first frame.
   virtual void loopAnimation();
 
@@ -80,7 +80,7 @@ protected:
   virtual int getRenderingAlpha(const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
-private:
+ private:
   struct Frame {
     int pattern;
     int x;

@@ -142,7 +142,7 @@ BOOST_CLASS_VERSION(SystemGlobals, 1)
  * @see SystemGlobals
  */
 class System {
-public:
+ public:
   System();
 
   virtual ~System() {}
@@ -297,14 +297,14 @@ public:
   bool forceWait() { return force_wait_; }
   void setForceWait(bool in) { force_wait_ = in; }
 
-protected:
+ protected:
   boost::filesystem::path getHomeDirectory();
 
   /// Native widget drawer. Can be NULL. This field is protected instead of
   /// private because we need to be destroy the Platform before we destroy SDL.
   boost::shared_ptr<Platform> platform_;
 
-private:
+ private:
   /**
    * Invokes a custom dialog or the standard one if none present.
    */

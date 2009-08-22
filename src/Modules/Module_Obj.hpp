@@ -81,7 +81,7 @@ RLOperation* childObjMappingFun(RLOperation* op);
  * structs.
  */
 class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
-private:
+ private:
   /// The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const int);
 
@@ -89,7 +89,7 @@ private:
   /// called.
   Setter setter;
 
-public:
+ public:
   Obj_SetOneIntOnObj(Setter s);
   ~Obj_SetOneIntOnObj();
 
@@ -113,7 +113,7 @@ class Obj_SetTwoIntOnObj
   Setter setterOne;
   Setter setterTwo;
 
-public:
+ public:
   Obj_SetTwoIntOnObj(Setter one, Setter two);
   ~Obj_SetTwoIntOnObj();
 

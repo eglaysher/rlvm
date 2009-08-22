@@ -33,7 +33,7 @@
  * Contains functions for mod<1:12>, Shl.
  */
 class LayeredShakingModule : public RLModule {
-public:
+ public:
   LayeredShakingModule();
 };
 

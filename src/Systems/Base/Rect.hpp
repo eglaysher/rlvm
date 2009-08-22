@@ -35,7 +35,7 @@ class Rect;
 class Size;
 
 class Point {
-public:
+ public:
   Point() : x_(0), y_(0) {}
   Point(int x, int y) : x_(x), y_(y) {}
 
@@ -73,7 +73,7 @@ public:
     return x_ != rhs.x_ || y_ != rhs.y_;
   }
 
-private:
+ private:
   int x_;
   int y_;
 
@@ -89,7 +89,7 @@ private:
  * Backend independent representation of a size.
  */
 class Size {
-public:
+ public:
   Size() : width_(0), height_(0) {}
   Size(int width, int height) : width_(width), height_(height) {}
 
@@ -145,7 +145,7 @@ public:
   /// Returns a size that is the max of both size's widths and heights.
   Size sizeUnion(const Size& rhs) const;
 
-private:
+ private:
   int width_;
   int height_;
 
@@ -161,7 +161,7 @@ private:
  *
  */
 class Rect {
-public:
+ public:
   Rect() {}
   Rect(const Point& point1, const Point& point2)
     : origin_(point1), size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
@@ -195,7 +195,7 @@ public:
    */
   bool contains(const Point& loc);
 
-private:
+ private:
   Point origin_;
   Size size_;
 

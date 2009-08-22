@@ -42,7 +42,7 @@ struct GraphicsObjectOverride;
  * Abstract concept of a surface.
  */
 class Surface : public boost::enable_shared_from_this<Surface> {
-public:
+ public:
   struct GrpRect {
     Rect rect;
 
@@ -51,7 +51,7 @@ public:
     int originX, originY;
   };
 
-public:
+ public:
   Surface();
   virtual ~Surface();
 

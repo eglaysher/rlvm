@@ -52,7 +52,7 @@ class Memory;
  * this class.
  */
 class IntAccessor {
-public:
+ public:
   IntAccessor(MemoryReferenceIterator<IntAccessor>* i);
   ~IntAccessor();
 
@@ -61,7 +61,7 @@ public:
   IntAccessor& operator=(const int new_value);
   IntAccessor& operator=(const IntAccessor& rhs);
 
-private:
+ private:
   /// Pointer to the real memory reference that we work with whenever
   /// we operate with an IntAccessor
   MemoryReferenceIterator<IntAccessor>* it;
@@ -83,7 +83,7 @@ private:
  * this class.
  */
 class StringAccessor {
-public:
+ public:
   StringAccessor(MemoryReferenceIterator<StringAccessor>* i);
   ~StringAccessor();
 
@@ -94,7 +94,7 @@ public:
 
   bool operator==(const std::string& rhs);
 
-private:
+ private:
   /// Pointer to the real memory reference that we work with whenever
   /// we operate with an StringAccessor.
   MemoryReferenceIterator<StringAccessor>* it;
@@ -111,7 +111,7 @@ private:
 template<typename ACCESS>
 class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
-public:
+ public:
   MemoryReferenceIterator();
 
   // Explicit store register creation
@@ -178,7 +178,7 @@ public:
     return MemoryReferenceIterator<ACCESS>(new_mem_obj, type_, location_);
   }
 
-private:
+ private:
   int* store_register_;
   Memory* memory_;
   int type_;

@@ -34,7 +34,7 @@
  * Contains functions for mod<1:23>, Koe.
  */
 class KoeModule : public RLModule {
-public:
+ public:
   KoeModule();
 };
 

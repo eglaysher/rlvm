@@ -54,10 +54,10 @@ struct render_to_texture { };
 // TODO: The entire Texture class's internals need to be transitioned
 // to the Point and Rect classes.
 class Texture {
-public:
+ public:
   static void SetScreenSize(const Size& s);
 
-public:
+ public:
   Texture(SDL_Surface* surface, int x, int y, int w, int h,
           unsigned int bytes_per_pixel, int byte_order, int byte_type);
   Texture(render_to_texture, int screen_width, int screen_height);
@@ -91,7 +91,7 @@ public:
   void buildShader();
   std::string getSubtractiveShaderString();
 
-private:
+ private:
   // Returns a shared buffer of at least size. This is not thread safe
   // or reenterant in the least; it is merely meant to prevent
   // allocations. This is the proper way to access s_upload_buffer,

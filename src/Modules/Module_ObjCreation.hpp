@@ -32,22 +32,22 @@
 #include "MachineBase/MappedRLModule.hpp"
 
 class ObjFgCreationModule : public RLModule {
-public:
+ public:
   ObjFgCreationModule();
 };
 
 class ObjBgCreationModule : public RLModule {
-public:
+ public:
   ObjBgCreationModule();
 };
 
 class ChildObjFgCreationModule : public MappedRLModule {
-public:
+ public:
   ChildObjFgCreationModule();
 };
 
 class ChildObjBgCreationModule : public MappedRLModule {
-public:
+ public:
   ChildObjBgCreationModule();
 };
 

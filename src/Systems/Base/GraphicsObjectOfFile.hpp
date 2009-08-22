@@ -53,7 +53,7 @@ class RLMachine;
  *
  */
 class GraphicsObjectOfFile : public GraphicsObjectData {
-public:
+ public:
   GraphicsObjectOfFile(System& system);
   GraphicsObjectOfFile(System& system, const std::string& filename);
 
@@ -71,13 +71,13 @@ public:
   virtual bool isAnimation() const;
   virtual void playSet(int set);
 
-protected:
+ protected:
   virtual void loopAnimation();
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
-private:
+ private:
   // Private constructor for cloning
   GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
 

@@ -41,7 +41,7 @@ class Point;
  *       @c TextWindowButton.
  */
 class SelectionElement {
-public:
+ public:
   SelectionElement(GraphicsSystem& gs,
                    const boost::shared_ptr<Surface>& normal_image,
                    const boost::shared_ptr<Surface>& highlighted_image,
@@ -56,7 +56,7 @@ public:
 
   void render();
 
-private:
+ private:
   bool is_highlighted_;
 
   int id_;

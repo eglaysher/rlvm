@@ -73,7 +73,7 @@ class ScrollSquashSlideEffectTypeBase;
  * - SlideOff
  */
 class ScrollSquashSlideBaseEffect : public Effect {
-private:
+ private:
   /// Drawer behavior class
   boost::scoped_ptr<ScrollSquashSlideDrawer> drawer_;
 
@@ -89,7 +89,7 @@ private:
   /// Implement the Effect interface
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
-public:
+ public:
   ScrollSquashSlideBaseEffect(RLMachine& machine,
                               boost::shared_ptr<Surface> src,
                               boost::shared_ptr<Surface> dst,
@@ -120,7 +120,7 @@ public:
  * @ingroup TransitionEffects
  */
 class ScrollSquashSlideDrawer {
-public:
+ public:
   ScrollSquashSlideDrawer();
   virtual ~ScrollSquashSlideDrawer();
 
@@ -137,7 +137,7 @@ public:
  * @ingroup TransitionEffects
  */
 class TopToBottomDrawer : public ScrollSquashSlideDrawer {
-public:
+ public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
   virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -151,7 +151,7 @@ public:
  * @ingroup TransitionEffects
  */
 class BottomToTopDrawer : public ScrollSquashSlideDrawer {
-public:
+ public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
   virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -165,7 +165,7 @@ public:
  * @ingroup TransitionEffects
  */
 class LeftToRightDrawer : public ScrollSquashSlideDrawer {
-public:
+ public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
   virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -179,7 +179,7 @@ public:
  * @ingroup TransitionEffects
  */
 class RightToLeftDrawer : public ScrollSquashSlideDrawer {
-public:
+ public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
   virtual void scrollOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -204,7 +204,7 @@ public:
  * @ingroup TransitionEffects
  */
 class ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual ~ScrollSquashSlideEffectTypeBase();
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
@@ -221,7 +221,7 @@ public:
  * @ingroup TransitionEffects
  */
 class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
@@ -237,7 +237,7 @@ public:
  * @ingroup TransitionEffects
  */
 class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
@@ -253,7 +253,7 @@ public:
  * @ingroup TransitionEffects
  */
 class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
@@ -270,7 +270,7 @@ public:
  * @ingroup TransitionEffects
  */
 class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
@@ -285,7 +285,7 @@ public:
  *
  */
 class SlideOn : public ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
@@ -301,7 +301,7 @@ public:
  * @ingroup TransitionEffects
  */
 class SlideOff : public ScrollSquashSlideEffectTypeBase {
-public:
+ public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,

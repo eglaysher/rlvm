@@ -55,7 +55,7 @@ SDL_Surface* buildNewSurface(const Size& size);
  */
 class SDLSurface : public SurfaceInvalidatable,
                    public Surface {
-private:
+ private:
   /**
    * Keeps track of a texture and the information about which region
    * of the current surface this Texture is. We keep track of this
@@ -122,7 +122,7 @@ private:
 
   static std::vector<int> segmentPicture(int size_remainging);
 
-public:
+ public:
   SDLSurface(SDLGraphicsSystem* system);
 
   /// Surface that takes ownership of an externally created surface

@@ -52,7 +52,7 @@ class EventSystem;
  * started and then add the value to which the timer was initialised."
  */
 class RLTimer {
-public:
+ public:
   RLTimer();
   ~RLTimer();
 
@@ -68,7 +68,7 @@ public:
    */
   void set(EventSystem& events, unsigned int value = 0);
 
-private:
+ private:
   unsigned int time_at_last_set_;
 };
 

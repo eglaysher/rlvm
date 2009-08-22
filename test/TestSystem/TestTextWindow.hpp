@@ -28,7 +28,7 @@
 #include "Systems/Base/TextWindow.hpp"
 
 class TestTextWindow : public TextWindow {
-public:
+ public:
   TestTextWindow(System& system, int x);
   ~TestTextWindow();
   virtual void execute() {}

@@ -42,7 +42,7 @@ class RLMachine;
  * Represents a mouse cursor on screen.
  */
 class MouseCursor {
-public:
+ public:
   MouseCursor(const boost::shared_ptr<Surface>& cursor_surface);
   ~MouseCursor();
 
@@ -59,7 +59,7 @@ public:
    */
   Point getTopLeftForHotspotAt(const Point& mouse_location);
 
-private:
+ private:
   /// Sets hotspot_[XY] to the white pixel in the
   void findHotspot();
 

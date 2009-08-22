@@ -53,7 +53,7 @@ class System;
  *       ANM file implementation, but has been changed to be all C++ like.
  */
 class AnmGraphicsObjectData : public GraphicsObjectData {
-public:
+ public:
   AnmGraphicsObjectData(System& system);
   AnmGraphicsObjectData(System& system, const std::string& file);
   ~AnmGraphicsObjectData();
@@ -69,14 +69,14 @@ public:
   virtual bool isAnimation() const { return true; }
   virtual void playSet(int set);
 
-protected:
+ protected:
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
   virtual Rect dstRect(const GraphicsObject& go);
 
   virtual void objectInfo(std::ostream& tree);
 
-private:
+ private:
   /// Advance the position in the animation.
   void advanceFrame();
 

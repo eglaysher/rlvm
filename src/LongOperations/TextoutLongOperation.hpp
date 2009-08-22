@@ -36,7 +36,7 @@
 class RLMachine;
 
 class TextoutLongOperation : public LongOperation {
-private:
+ private:
   std::string m_utf8string;
 
   int current_codepoint_;
@@ -51,7 +51,7 @@ private:
   bool displayName(RLMachine& machine);
   bool displayOneMoreCharacter(RLMachine& machine, bool& paused);
 
-public:
+ public:
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
   ~TextoutLongOperation();
 

@@ -32,22 +32,22 @@
 #include "MachineBase/MappedRLModule.hpp"
 
 class GanFgModule : public RLModule {
-public:
+ public:
   GanFgModule();
 };
 
 class GanBgModule : public RLModule {
-public:
+ public:
   GanBgModule();
 };
 
 class ChildGanFgModule : public MappedRLModule {
-public:
+ public:
   ChildGanFgModule();
 };
 
 class ChildGanBgModule : public MappedRLModule {
-public:
+ public:
   ChildGanBgModule();
 };
 

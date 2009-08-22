@@ -48,7 +48,7 @@ class RLMachine;
  * @ingroup ModuleSys
  */
 class SysModule : public RLModule {
-public:
+ public:
   SysModule();
 };
 

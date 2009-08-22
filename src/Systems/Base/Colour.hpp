@@ -35,7 +35,7 @@
  * A colour without an alpha channel.
  */
 class RGBColour {
-public:
+ public:
   RGBColour() : r_(0), g_(0), b_(0) {}
   RGBColour(int r, int g, int b) : r_(r), g_(g), b_(b) {}
 
@@ -54,7 +54,7 @@ public:
   static RGBColour Black() { return RGBColour(0, 0, 0); }
   static RGBColour White() { return RGBColour(255, 255, 255); }
 
-private:
+ private:
   int r_, g_, b_;
 
   /// boost::serialization support
@@ -74,7 +74,7 @@ private:
  *       instance of RGBA to where one expects an RGB is WRONG!
  */
 class RGBAColour {
-public:
+ public:
   RGBAColour() : rgb_(0, 0, 0), alpha_(0) { }
   RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { }
   RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { }
@@ -100,7 +100,7 @@ public:
   static RGBAColour Black() { return RGBAColour(0, 0, 0, 255); }
   static RGBAColour White() { return RGBAColour(255, 255, 255, 255); }
 
-private:
+ private:
   RGBColour rgb_;
 
   int alpha_;

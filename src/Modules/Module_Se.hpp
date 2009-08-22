@@ -35,7 +35,7 @@
  * Contains functions for mod<1:22>, Se.
  */
 class SeModule : public RLModule {
-public:
+ public:
   SeModule();
 };
 

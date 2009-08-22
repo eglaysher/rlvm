@@ -38,7 +38,7 @@
  * A special RLMachine used in testing, which automatically selects specific
  */
 class ScriptMachine : public RLMachine {
-public:
+ public:
   ScriptMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~ScriptMachine();
 
@@ -68,7 +68,7 @@ public:
   // Memory accessor. (Maybe just translate this in luabind_Machine?)
   int getInt(const std::string& bank, int position);
 
-private:
+ private:
   typedef std::vector<std::string> Selections;
   Selections decisions_;
 
