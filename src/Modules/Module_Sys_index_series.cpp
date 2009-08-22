@@ -55,10 +55,10 @@ struct Sys_index_series
     index = index + offset;
     int value = init;
 
-    for(IndexList::type::iterator it = index_list.begin();
+    for (IndexList::type::iterator it = index_list.begin();
         it != index_list.end(); ++it)
     {
-      switch(it->type)
+      switch (it->type)
       {
       case 0:
         throw rlvm::Exception(

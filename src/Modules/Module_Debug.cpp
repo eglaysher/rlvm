@@ -65,7 +65,7 @@ struct DebugMessage : public RLOp_Void_1< TYPE >
 {
   void operator()(RLMachine& machine, typename TYPE::type value)
   {
-    if(machine.system().gameexe()("MEMORY").exists())
+    if (machine.system().gameexe()("MEMORY").exists())
        cerr << "VALUE: " << value << endl;
   }
 };

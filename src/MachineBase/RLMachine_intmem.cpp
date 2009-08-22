@@ -79,7 +79,7 @@ int Memory::getIntValue(const IntMemRef& ref)
   int index = ref.bank();
   int location = ref.location();
 
-  if(index > NUMBER_OF_INT_LOCATIONS)
+  if (index > NUMBER_OF_INT_LOCATIONS)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
   if (type == 0) {

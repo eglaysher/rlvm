@@ -70,16 +70,16 @@ public:
   {
     tok = Token();
     // Advance to the next data character
-    for(; next != end && ( !is_data(*next) ); ++next);
+    for (; next != end && ( !is_data(*next) ); ++next);
 
-    if(next == end)
+    if (next == end)
       return false;
 
-    if(*next == '"')
+    if (*next == '"')
     {
       tok += '"';
       next++;
-      for(; next != end && *next != '"'; ++next)
+      for (; next != end && *next != '"'; ++next)
         tok += *next;
       tok += '"';
       next++;
@@ -131,7 +131,7 @@ Gameexe::Gameexe(const fs::path& gameexefile)
   : data_(), cdata_()
 {
   fs::ifstream ifs(gameexefile);
-  if(!ifs)
+  if (!ifs)
   {
     ostringstream oss;
     oss << "Could not find Gameexe.ini file! (Looking in " << gameexefile << ")";
@@ -139,10 +139,10 @@ Gameexe::Gameexe(const fs::path& gameexefile)
   }
 
   string line;
-  while(getline(ifs, line))
+  while (getline(ifs, line))
   {
     size_t firstHash = line.find_first_of('#');
-    if(firstHash != string::npos)
+    if (firstHash != string::npos)
     {
       // Extract what's the key and value
       size_t firstEqual = line.find_first_of('=');
@@ -158,17 +158,17 @@ Gameexe::Gameexe(const fs::path& gameexefile)
       // Extract all numeric and data values from the value
       typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
       ValueTokenizer tokenizer(value);
-      for(ValueTokenizer::iterator it = tokenizer.begin();
+      for (ValueTokenizer::iterator it = tokenizer.begin();
           it != tokenizer.end(); ++it)
       {
         const string& tok = *it;
-        if(tok[0] == '"')
+        if (tok[0] == '"')
         {
           string unquoted = tok.substr(1, tok.size() - 2);
           cdata_.push_back(unquoted);
           vec.push_back(cdata_.size() - 1);
         }
-        else if(tok != "-") {
+        else if (tok != "-") {
           try {
             vec.push_back(lexical_cast<int>(tok));
           } catch(boost::bad_lexical_cast& e) {
@@ -190,7 +190,7 @@ Gameexe::~Gameexe()
 
 const std::vector<int>& Gameexe::getIntArray(GameexeData_t::const_iterator key)
 {
-  if(key == data_.end())
+  if (key == data_.end())
   {
     static std::vector<int> falseVector;
     return falseVector;
@@ -203,7 +203,7 @@ const std::vector<int>& Gameexe::getIntArray(GameexeData_t::const_iterator key)
 
 int Gameexe::getIntAt(GameexeData_t::const_iterator key, int index)
 {
-  if(key == data_.end())
+  if (key == data_.end())
     throwUnknownKey("TMP");
 
   return key->second.at(index);
@@ -308,7 +308,7 @@ GameexeInterpretObject::GameexeInterpretObject(
 
 const int GameexeInterpretObject::to_int(const int defaultValue) const {
   const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
-  if(ints.size() == 0)
+  if (ints.size() == 0)
     return defaultValue;
 
   return ints[0];
@@ -318,7 +318,7 @@ const int GameexeInterpretObject::to_int(const int defaultValue) const {
 
 const int GameexeInterpretObject::to_int() const {
   const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
-  if(ints.size() == 0)
+  if (ints.size() == 0)
     object_to_lookup_on_.throwUnknownKey(key_);
 
   return ints[0];
@@ -375,7 +375,7 @@ const std::string GameexeInterpretObject::getStringAt(int index) const
 const std::vector<int>& GameexeInterpretObject::to_intVector() const
 {
   const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
-  if(ints.size() == 0)
+  if (ints.size() == 0)
     object_to_lookup_on_.throwUnknownKey(key_);
 
   return ints;
@@ -421,7 +421,7 @@ GameexeInterpretObject& GameexeInterpretObject::operator=(const int value)
 
 void GameexeFilteringIterator::incrementUntilValid()
 {
-  while(currentKey != gexe.data_.end() &&
+  while (currentKey != gexe.data_.end() &&
         !istarts_with(currentKey->first, filterKeys))
   {
     currentKey++;

@@ -147,7 +147,7 @@ struct Mem_setarray_stepped
   void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, vector<int> values) {
     // Sigh. No more simple STL statements
-    for(vector<int>::iterator it = values.begin(); it != values.end(); ++it) {
+    for (vector<int>::iterator it = values.begin(); it != values.end(); ++it) {
       *origin = *it;
       advance(origin, step);
     }
@@ -166,7 +166,7 @@ struct Mem_setrng_stepped_0
   : public RLOp_Void_3< IntReference_T, IntConstant_T, IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, int count) {
-    for(int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) {
       *origin = 0;
       advance(origin, step);
     }
@@ -186,7 +186,7 @@ struct Mem_setrng_stepped_1
                         IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, int count, int value) {
-    for(int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) {
       *origin = value;
       advance(origin, step);
     }
@@ -208,7 +208,7 @@ struct Mem_cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
                                          Argc_T< IntReference_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int offset, vector<IntReferenceIterator> values) {
-    for(vector<IntReferenceIterator>::iterator it = values.begin();
+    for (vector<IntReferenceIterator>::iterator it = values.begin();
         it != values.end(); ++it) {
       IntReferenceIterator irIt = *it;
       advance(irIt, offset);
@@ -244,7 +244,7 @@ struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
   int operator()(RLMachine& machine,
                  vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
     int total = 0;
-    for(vector<tuple<IntReferenceIterator, IntReferenceIterator> >::iterator it =
+    for (vector<tuple<IntReferenceIterator, IntReferenceIterator> >::iterator it =
           ranges.begin(); it != ranges.end(); ++it) {
       IntReferenceIterator last = it->get<1>();
       ++last;

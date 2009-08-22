@@ -49,7 +49,7 @@ wstring cp932toUnicode(const string& line, int transformation)
 // -----------------------------------------------------------------------
 
 string transformationName(int transformation) {
-  switch(transformation) {
+  switch (transformation) {
     case 0:
       return "Japanese (Cp932)";
     case 1:
@@ -105,8 +105,8 @@ bool isKinsoku(int codepoint)
       0xff68, 0xff69, 0xff6a, 0xff6b, 0xff6c, 0xff6d, 0xff6e,
       0xff6f, 0xff70, 0xff9e, 0xff9f, 0x0 };
 
-  for(int i = 0; matchingCodepoints[i] != 0x0; ++i)
-    if(matchingCodepoints[i] == codepoint)
+  for (int i = 0; matchingCodepoints[i] != 0x0; ++i)
+    if (matchingCodepoints[i] == codepoint)
       return true;
 
   return false;
@@ -116,7 +116,7 @@ bool isKinsoku(int codepoint)
 
 int codepoint(const string& c)
 {
-  if(c == "")
+  if (c == "")
     return 0;
   else
   {
@@ -129,9 +129,9 @@ int codepoint(const string& c)
 
 void advanceOneShiftJISChar(const char*& c)
 {
-  if(shiftjis_lead_byte(c[0]))
+  if (shiftjis_lead_byte(c[0]))
   {
-    if(c[1] == '\0')
+    if (c[1] == '\0')
       throw rlvm::Exception("Malformed Shift_JIS string!");
     else
       c += 2;
@@ -144,9 +144,9 @@ void advanceOneShiftJISChar(const char*& c)
 
 void copyOneShiftJisCharacter(const char*& str, string& output)
 {
-  if(shiftjis_lead_byte(str[0]))
+  if (shiftjis_lead_byte(str[0]))
   {
-    if(str[1] == '\0')
+    if (str[1] == '\0')
       throw rlvm::Exception("Malformed Shift_JIS string!");
     else {
       output += *str++;
@@ -198,7 +198,7 @@ void printTextToFunction(
   string::const_iterator end = charsToPrint.end();
   utf8::next(tmp, end);
   string curChar(cur, tmp);
-  for(cur = tmp; tmp != end; cur = tmp)
+  for (cur = tmp; tmp != end; cur = tmp)
   {
     utf8::next(tmp, end);
     string next(cur, tmp);

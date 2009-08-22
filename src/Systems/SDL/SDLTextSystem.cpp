@@ -63,7 +63,7 @@ using namespace boost;
 SDLTextSystem::SDLTextSystem(System& system, Gameexe& gameexe)
     : TextSystem(system, gameexe)
 {
-  if(TTF_Init()==-1) {
+  if (TTF_Init()==-1) {
     ostringstream oss;
     oss << "Error initializing SDL_ttf: " << TTF_GetError();
     throw SystemError(oss.str());
@@ -82,7 +82,7 @@ SDLTextSystem::~SDLTextSystem()
 boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window)
 {
   WindowMap::iterator it = text_window_.find(text_window);
-  if(it == text_window_.end())
+  if (it == text_window_.end())
   {
     it = text_window_.insert(std::make_pair(
       text_window, shared_ptr<TextWindow>(
@@ -106,11 +106,11 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   SDL_Color sdl_colour = {colour_vec.at(0), colour_vec.at(1), colour_vec.at(2)};
 
   // Naively render. Ignore most of the arguments for now
-  if(utf8str.size())
+  if (utf8str.size())
   {
     SDL_Surface* tmp =
       TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_colour);
-    if(tmp == NULL)
+    if (tmp == NULL)
     {
       ostringstream oss;
       oss << "Error printing \"" << utf8str << "\" in font size " << size;
@@ -131,11 +131,11 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size)
 {
   FontSizeMap::iterator it = map_.find(size);
-  if(it == map_.end())
+  if (it == map_.end())
   {
     string filename = findFontFile(system()).external_file_string();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
-    if(f == NULL)
+    if (f == NULL)
     {
       ostringstream oss;
       oss << "Error loading font: " << TTF_GetError();

@@ -67,7 +67,7 @@ SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
   : file_(wav), track_(track), fadetime_total_(0), music_paused_(false)
 {
   // Advance the audio stream to the starting point
-  if(track.from > 0)
+  if (track.from > 0)
     wav->Seek(track.from);
 }
 
@@ -79,7 +79,7 @@ SDLMusic::~SDLMusic()
     SDLAudioLocker locker;
     delete file_;
 
-    if(s_currently_playing.get() == this)
+    if (s_currently_playing.get() == this)
       s_currently_playing.reset();
   }
 }
@@ -117,7 +117,7 @@ void SDLMusic::stop()
 {
   {
     SDLAudioLocker locker;
-    if(s_currently_playing.get() == this)
+    if (s_currently_playing.get() == this)
       s_currently_playing.reset();
   }
 }
@@ -138,7 +138,7 @@ void SDLMusic::fadeOut(int fade_out_ms)
 {
   SDLAudioLocker locker;
   fade_count_ = 0;
-  if(fade_out_ms <= 0)
+  if (fade_out_ms <= 0)
     fade_out_ms = 1;
   fadetime_total_ = fade_out_ms;
 }
@@ -250,12 +250,12 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 
   fs::path file_path = findFile(system, track.file, SOUND_FILETYPES);
   const string& raw_path = file_path.external_file_string();
-  for(FileTypes::const_iterator it = types.begin(); it != types.end(); ++it)
+  for (FileTypes::const_iterator it = types.begin(); it != types.end(); ++it)
   {
-    if(iends_with(raw_path, it->first))
+    if (iends_with(raw_path, it->first))
     {
       FILE* f = fopen(raw_path.c_str(), "r");
-      if(f == 0)
+      if (f == 0)
       {
         ostringstream oss;
         oss << "Could not open \"" << file_path << "\" for reading.";
@@ -267,7 +267,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
       rewind(f);
 
       WAVFILE* w = it->second(f, size);
-      if(w)
+      if (w)
         return shared_ptr<SDLMusic>(new SDLMusic(track, w));
     }
   }
@@ -284,7 +284,7 @@ void SDLMusic::setLoopPoint(bool loop)
 {
   SDLAudioLocker locker;
 
-  if(loop)
+  if (loop)
     loop_point_ = track_.loop;
   else
     loop_point_ = STOP_AT_END;

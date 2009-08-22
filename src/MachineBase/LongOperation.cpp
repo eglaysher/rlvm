@@ -98,7 +98,7 @@ bool PerformAfterLongOperationDecorator::keyStateChanged(
 bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine)
 {
   bool ret_val = (*operation_)(machine);
-  if(ret_val)
+  if (ret_val)
     performAfterLongOperation(machine);
 
   return ret_val;

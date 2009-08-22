@@ -112,7 +112,7 @@ void GanGraphicsObjectData::load()
 
   fs::path gan_file_path = findFile(system_, gan_filename_, GAN_FILETYPES);
   fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
-  if(!ifs)
+  if (!ifs)
   {
     ostringstream oss;
     oss << "Could not open file \"" << gan_file_path << "\".";
@@ -121,7 +121,7 @@ void GanGraphicsObjectData::load()
 
   int file_size = 0;
   scoped_array<char> gan_data;
-  if(loadFileData(ifs, gan_data, file_size))
+  if (loadFileData(ifs, gan_data, file_size))
   {
     ostringstream oss;
     oss << "Could not read the contents of \"" << gan_file_path << "\"";
@@ -143,7 +143,7 @@ void GanGraphicsObjectData::testFileMagic(
   int b = read_i32(data + 0x04);
   int c = read_i32(data + 0x08);
 
-  if(a != 10000 || b != 10000 || c != 10100)
+  if (a != 10000 || b != 10000 || c != 10100)
     throwBadFormat(file_name, "Incorrect GAN file magic");
 }
 
@@ -159,33 +159,33 @@ void GanGraphicsObjectData::readData(
 
   // Strings should be NULL terminated.
   data = data + 0x10 + file_name_length - 1;
-  if(*data != 0)
+  if (*data != 0)
     throwBadFormat(file_name, "Incorrect filename length in GAN header");
   data++;
 
   int twenty_thousand = read_i32(data);
-  if(twenty_thousand != 20000)
+  if (twenty_thousand != 20000)
     throwBadFormat(file_name, "Expected start of GAN data section");
   data += 4;
 
   int number_of_sets = read_i32(data);
   data += 4;
 
-  for(int i = 0; i < number_of_sets; ++i)
+  for (int i = 0; i < number_of_sets; ++i)
   {
     int start_of_ganset = read_i32(data);
-    if(start_of_ganset != 0x7530)
+    if (start_of_ganset != 0x7530)
       throwBadFormat(file_name, "Expected start of GAN set");
 
     data += 4;
     int frame_count = read_i32(data);
-    if(frame_count < 0)
+    if (frame_count < 0)
       throwBadFormat(file_name,
                      "Expected animation to contain at least one frame");
     data += 4;
 
     vector<Frame> animation_set;
-    for(int j = 0; j < frame_count; ++j)
+    for (int j = 0; j < frame_count; ++j)
       animation_set.push_back(readSetFrame(file_name, data));
     animation_sets.push_back(animation_set);
   }
@@ -201,12 +201,12 @@ GanGraphicsObjectData::readSetFrame(const std::string& file_name,
 
   int tag = read_i32(data);
   data += 4;
-  while(tag != 999999)
+  while (tag != 999999)
   {
     int value = read_i32(data);
     data += 4;
 
-    switch(tag)
+    switch (tag)
     {
     case 30100:
       frame.pattern = value;
@@ -260,10 +260,10 @@ void GanGraphicsObjectData::throwBadFormat(
 int GanGraphicsObjectData::pixelWidth(
   const GraphicsObject& rendering_properties)
 {
-  if(current_set_ != -1 && current_frame_ != -1)
+  if (current_set_ != -1 && current_frame_ != -1)
   {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
-    if(frame.pattern != -1)
+    if (frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
       return rect.rect.width();
@@ -278,10 +278,10 @@ int GanGraphicsObjectData::pixelWidth(
 int GanGraphicsObjectData::pixelHeight(
   const GraphicsObject& rendering_properties)
 {
-  if(current_set_ != -1 && current_frame_ != -1)
+  if (current_set_ != -1 && current_frame_ != -1)
   {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
-    if(frame.pattern != -1)
+    if (frame.pattern != -1)
     {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
       return rect.rect.height();
@@ -302,7 +302,7 @@ GraphicsObjectData* GanGraphicsObjectData::clone() const
 
 void GanGraphicsObjectData::execute()
 {
-  if(currentlyPlaying() && current_frame_ >= 0)
+  if (currentlyPlaying() && current_frame_ >= 0)
   {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
@@ -310,10 +310,10 @@ void GanGraphicsObjectData::execute()
 
     const vector<Frame>& current_set = animation_sets.at(current_set_);
     unsigned int frame_time = (unsigned int)(current_set[current_frame_].time);
-    if(time_since_last_frame_change > frame_time)
+    if (time_since_last_frame_change > frame_time)
     {
       current_frame_++;
-      if(size_t(current_frame_) == current_set.size())
+      if (size_t(current_frame_) == current_set.size())
       {
         current_frame_--;
         // endAnimation() can delete this, so it needs to be the last thing
@@ -339,11 +339,11 @@ void GanGraphicsObjectData::loopAnimation()
 boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
   const GraphicsObject& go)
 {
-  if(current_set_ != -1 && current_frame_ != -1)
+  if (current_set_ != -1 && current_frame_ != -1)
   {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
 
-    if(frame.pattern != -1) {
+    if (frame.pattern != -1) {
       // We are currently rendering an animation AND the current frame says to
       // render something to the screen.
       return image;

@@ -241,7 +241,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
     const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
 
     // Range check the data
-    if(allParameters.size() < 2)
+    if (allParameters.size() < 2)
       throw rlvm::Exception("Less then two arguments to an objRange function!");
 
     // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
@@ -250,7 +250,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
     // incrementing of the instruction pointer.
     int lowerRange = allParameters[0].integerValue(machine);
     int upperRange = allParameters[1].integerValue(machine);
-    for(int i = lowerRange; i <= upperRange; ++i) {
+    for (int i = lowerRange; i <= upperRange; ++i) {
       // Create a new list of expression pieces that contain the
       // current object we're dealing with and
       ptr_vector<ExpressionPiece> currentInstantiation;
@@ -259,7 +259,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
       // Copy everything after the first two items
       ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
       std::advance(it, 2);
-      for(; it != allParameters.end(); ++it) {
+      for (; it != allParameters.end(); ++it) {
         currentInstantiation.push_back(it->clone());
       }
 

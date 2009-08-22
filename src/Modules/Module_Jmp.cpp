@@ -96,19 +96,19 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
   // Walk linearly through the output cases, executing the first
   // match against value.
   int cases = gotoElement.case_count();
-  for(int i = 0; i < cases; ++i)
+  for (int i = 0; i < cases; ++i)
   {
     string caseUnparsed = gotoElement.get_case(i);
 
     // Check for bytecode wellformedness. All cases should be
     // surrounded by parens
-    if(caseUnparsed[0] != '(' ||
+    if (caseUnparsed[0] != '(' ||
        caseUnparsed[caseUnparsed.size() - 1] != ')')
       throw rlvm::Exception("Malformed bytecode in goto_case statment");
 
     // In the case of an empty set of parens, always accept. It is
     // the bytecode representation for the default case.
-    if(caseUnparsed == "()")
+    if (caseUnparsed == "()")
       return i;
 
     // Strip the parens for parsing
@@ -118,7 +118,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
     // it's equal to the value we're searching for
     const char* e = (const char*)caseUnparsed.c_str();
     auto_ptr<ExpressionPiece> output(get_expression(e));
-    if(output->integerValue(machine) == value)
+    if (output->integerValue(machine) == value)
       return i;
   }
 
@@ -144,10 +144,10 @@ void storeData(RLMachine& machine, const ParamVector& f)
   int intLpos = 0;
   int strKpos = 0;
 
-  for(ParamVector::const_iterator it = f.begin(); it != f.end();
+  for (ParamVector::const_iterator it = f.begin(); it != f.end();
       ++it)
   {
-    switch(it->type) {
+    switch (it->type) {
     case 0:
       machine.setIntValue(IntMemRef(INTL_LOCATION, 0, intLpos), it->first);
       intLpos++;
@@ -188,16 +188,16 @@ struct Jmp_goto : public RLOp_SpecialCase {
 // -----------------------------------------------------------------------
 
 /**
- * Implements op<0:Jmp:00001, 0>, fun goto_if(<'condition').
+ * Implements op<0:Jmp:00001, 0>, fun goto_if (<'condition').
  *
- * Conditional equivalents of goto; goto_if() jumps to \@label if the
+ * Conditional equivalents of goto; goto_if () jumps to \@label if the
  * value of condition is non-zero
  */
 struct Jmp_goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if(conditions.at(0).integerValue(machine))
+    if (conditions.at(0).integerValue(machine))
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
@@ -210,16 +210,16 @@ struct Jmp_goto_if : public RLOp_SpecialCase {
 // -----------------------------------------------------------------------
 
 /**
- * Implements op<0:Jmp:00002, 0>, fun goto_if(<'condition').
+ * Implements op<0:Jmp:00002, 0>, fun goto_if (<'condition').
  *
- * Conditional equivalents of goto; goto_if() jumps to \@label if the
+ * Conditional equivalents of goto; goto_if () jumps to \@label if the
  * value of condition is non-zero
  */
 struct Jmp_goto_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if(!conditions.at(0).integerValue(machine))
+    if (!conditions.at(0).integerValue(machine))
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
@@ -253,7 +253,7 @@ struct Jmp_goto_on : public RLOp_SpecialCase {
 //     int value = conditions.at(0).integerValue(machine);
 
     const Pointers& pointers = gotoElement.get_pointersRef();
-    if(value >= 0 && value < int(pointers.size()))
+    if (value >= 0 && value < int(pointers.size()))
       machine.gotoLocation(pointers[value]);
     else
       // If the value is not a valid pointer, simply increment.
@@ -297,7 +297,7 @@ struct Jmp_gosub : public RLOp_SpecialCase {
 // -----------------------------------------------------------------------
 
 /**
- * Implements op<0:Jmp:00006, 0>, fun gosub_if().
+ * Implements op<0:Jmp:00006, 0>, fun gosub_if ().
  *
  * Pushes the current location onto the call stack, then jumps to the
  * label \@label in the current scenario, if the passed in condition is
@@ -309,7 +309,7 @@ struct Jmp_gosub_if : public RLOp_SpecialCase {
     const char* location = tmpval.c_str();
     auto_ptr<ExpressionPiece> condition(get_expression(location));
 
-    if(condition->integerValue(machine))
+    if (condition->integerValue(machine))
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
@@ -332,7 +332,7 @@ struct Jmp_gosub_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if(!conditions.at(0).integerValue(machine))
+    if (!conditions.at(0).integerValue(machine))
     {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
@@ -358,7 +358,7 @@ struct Jmp_gosub_on : public RLOp_SpecialCase {
     int value = conditions.at(0).integerValue(machine);
 
     const Pointers& pointers = gotoElement.get_pointersRef();
-    if(value >= 0 && value < int(pointers.size()))
+    if (value >= 0 && value < int(pointers.size()))
       machine.gosub(pointers[value]);
     else
       // If the value is not a valid pointer, simply increment.
@@ -501,7 +501,7 @@ struct Jmp_gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
 
-    if(!gotoElement.areParametersParsed())
+    if (!gotoElement.areParametersParsed())
     {
       const vector<string>& unparsed = gotoElement.getUnparsedParameters();
       ptr_vector<ExpressionPiece> output;

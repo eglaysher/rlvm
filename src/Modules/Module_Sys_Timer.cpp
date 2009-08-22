@@ -124,7 +124,7 @@ struct LongOp_time : public LongOperation
       if (button_pressed_) {
         done = true;
         machine.setStoreRegister(button_pressed_);
-      } else if(done) {
+      } else if (done) {
         machine.setStoreRegister(0);
       }
     }
@@ -145,7 +145,7 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > >
   {
     EventSystem& es = machine.system().event();
 
-    if(es.getTimer(layer_, counter).read(es) < numeric_cast<unsigned int>(time))
+    if (es.getTimer(layer_, counter).read(es) < numeric_cast<unsigned int>(time))
     {
       machine.pushLongOperation(new LongOp_time(machine, layer_, counter,
                                                 time, in_time_c_));

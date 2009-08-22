@@ -166,7 +166,7 @@ size_t next_data(const char* src)
     }
     while (*end != ')') end += next_data(end);
     end++;
-    if(*end == '\\')
+    if (*end == '\\')
       end += next_expr(end);
     return end - src;
   }
@@ -200,20 +200,20 @@ size_t next_data(const char* src)
 
 ExpressionPiece* get_expr_token(const char*& src)
 {
-  if(src[0] == 0xff) {
+  if (src[0] == 0xff) {
     src++;
     int value = read_i32(src);
     src += 4;
     return new IntegerConstant(value);
-  } else if(src[0] == 0xc8) {
+  } else if (src[0] == 0xc8) {
     src++;
     return new StoreRegisterExpressionPiece();
-  } else if((src[0] != 0xc8 && src[0] != 0xff) && src[1] == '[') {
+  } else if ((src[0] != 0xc8 && src[0] != 0xff) && src[1] == '[') {
     int type = src[0];
     src += 2;
     ExpressionPiece* location = get_expression(src);
 
-    if(src[0] != ']') {
+    if (src[0] != ']') {
       ostringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_token"
          << " (']' expected)";
@@ -222,7 +222,7 @@ ExpressionPiece* get_expr_token(const char*& src)
     src++;
 
     return new MemoryReference(type, location);
-  } else if(src[0] == 0) {
+  } else if (src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_token");
   } else {
     ostringstream err;
@@ -233,20 +233,20 @@ ExpressionPiece* get_expr_token(const char*& src)
 
 ExpressionPiece* get_expr_term(const char*& src)
 {
-  if(src[0] == '$') {
+  if (src[0] == '$') {
     src++;
     return get_expr_token(src);
-  } else if(src[0] == '\\' && src[1] == 0x00) {
+  } else if (src[0] == '\\' && src[1] == 0x00) {
     src += 2;
     return get_expr_term(src);
-  } else if(src[0] == '\\' && src[1] == 0x01) {
+  } else if (src[0] == '\\' && src[1] == 0x01) {
     // Uniary -
     src += 2;
     return new UniaryExpressionOperator(0x01, get_expr_term(src));
-  } else if(src[0] == '(') {
+  } else if (src[0] == '(') {
     src++;
     ExpressionPiece* p = get_expr_bool(src);
-    if(src[0] != ')') {
+    if (src[0] != ')') {
       ostringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_term"
          << " (')' expected)";
@@ -254,7 +254,7 @@ ExpressionPiece* get_expr_term(const char*& src)
     }
     src++;
     return p;
-  } else if(src[0] == 0) {
+  } else if (src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_term");
   } else {
     ostringstream err;
@@ -266,7 +266,7 @@ ExpressionPiece* get_expr_term(const char*& src)
 static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
                                                     ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
+  if (src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
     char op = src[1];
     // Advance past this operator
     src += 2;
@@ -281,7 +281,7 @@ static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
 
 static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && (src[1] == 0x00 || src[1] == 0x01)) {
+  if (src[0] == '\\' && (src[1] == 0x00 || src[1] == 0x01)) {
     char op = src[1];
     src += 2;
     ExpressionPiece* other = get_expr_term(src);
@@ -300,7 +300,7 @@ ExpressionPiece* get_expr_arith(const char*& src)
 
 static ExpressionPiece* get_expr_cond_loop(const char*& src, ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && (src[1] >= 0x28 && src[1] <= 0x2d)) {
+  if (src[0] == '\\' && (src[1] >= 0x28 && src[1] <= 0x2d)) {
     char op = src[1];
     src += 2;
     ExpressionPiece* rhs = get_expr_arith(src);
@@ -318,7 +318,7 @@ ExpressionPiece* get_expr_cond(const char*& src)
 
 static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && src[1] == '<') {
+  if (src[0] == '\\' && src[1] == '<') {
     src += 2;
     ExpressionPiece* rhs = get_expr_cond(src);
     return get_expr_bool_loop_and(src, new BinaryExpressionOperator(0x3c, tok, rhs));
@@ -329,7 +329,7 @@ static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece
 
 static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece* tok)
 {
-  if(src[0] == '\\' && src[1] == '=') {
+  if (src[0] == '\\' && src[1] == '=') {
     src += 2;
     ExpressionPiece* innerTerm = get_expr_cond(src);
     ExpressionPiece* rhs = get_expr_bool_loop_and(src, innerTerm);
@@ -361,7 +361,7 @@ ExpressionPiece* get_assignment(const char*& src)
   int op = src[1];
   src += 2;
   auto_ptr<ExpressionPiece> etok(get_expression(src));
-  if(op >= 0x14 && op <= 0x24) {
+  if (op >= 0x14 && op <= 0x24) {
     return new AssignmentExpressionOperator(op, itok.release(), etok.release());
   } else {
     throw Error("Undefined assignment in get_assignment");
@@ -381,7 +381,7 @@ static ExpressionPiece* get_string(const char*& src)
 
   string s;
   // Check to see if the string is quoted;
-  if(src[0] == '"')
+  if (src[0] == '"')
     s = string(src + 1, src + length - 1);
   else
     s = string(src, src + length);
@@ -403,17 +403,17 @@ static ExpressionPiece* get_string(const char*& src)
  */
 ExpressionPiece* get_data(const char*& src)
 {
-  if(*src == ',') {
+  if (*src == ',') {
     ++src;
     return get_data(src);
-  } else if((*src >= 0x81 && *src <= 0x9f)
+  } else if ((*src >= 0x81 && *src <= 0x9f)
             || (*src >= 0xe0 && *src <= 0xef)
             || (*src >= 'A'  && *src <= 'Z')
             || (*src >= '0'  && *src <= '9')
             || *src == ' ' || *src == '?' || *src == '_' || *src == '"'
             || strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
-  } else if(*src == 'a') {
+  } else if (*src == 'a') {
     // @todo Cleanup below.
     const char* end = src;
     auto_ptr<ComplexExpressionPiece> cep;
@@ -446,10 +446,10 @@ ExpressionPiece* get_data(const char*& src)
 
 ExpressionPiece* get_complex_param(const char*& src)
 {
-  if(*src == ',') {
+  if (*src == ',') {
     ++src;
     return get_data(src);
-  } else if(*src == '(') {
+  } else if (*src == '(') {
     ++src;
     auto_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
 
@@ -500,9 +500,9 @@ std::string parsableToPrintableString(const std::string& src)
   string output;
 
   bool firstToken = true;
-  for(string::const_iterator it = src.begin(); it != src.end(); ++it)
+  for (string::const_iterator it = src.begin(); it != src.end(); ++it)
   {
-    if(firstToken)
+    if (firstToken)
       firstToken = false;
     else
     {
@@ -510,7 +510,7 @@ std::string parsableToPrintableString(const std::string& src)
     }
 
     char tok = *it;
-    if(tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']')
+    if (tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']')
       output.push_back(tok);
     else
     {
@@ -540,13 +540,13 @@ std::string printableToParsableString(const std::string& src)
 
   boost::char_separator<char> sep(" ");
   ttokenizer tokens(src, sep);
-  for(ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it)
+  for (ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it)
   {
     const std::string& tok = *it;
     if (tok.size() > 2)
       throw libReallive::Error("Invalid string given to printableToParsableString");
 
-    if(tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
+    if (tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
       output.push_back(tok[0]);
     else
     {
@@ -652,7 +652,7 @@ MemoryReference::~MemoryReference() {}
 
 bool MemoryReference::isMemoryReference() const { return true; }
 ExpressionValueType MemoryReference::expressionValueType() const {
-  if(isStringLocation(type))
+  if (isStringLocation(type))
   {
     return ValueTypeString;
   } else {
@@ -678,7 +678,7 @@ const std::string& MemoryReference::getStringValue(RLMachine& machine) const {
 
 IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
-  if(isStringLocation(type)) {
+  if (isStringLocation(type)) {
     throw Error("Request to getIntegerReferenceIterator() on a string reference!");
   }
 
@@ -687,7 +687,7 @@ IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& mac
 
 StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
-  if(!isStringLocation(type)) {
+  if (!isStringLocation(type)) {
     throw Error("Request to getStringReferenceIterator() on an integer reference!");
   }
 
@@ -710,7 +710,7 @@ UniaryExpressionOperator::~UniaryExpressionOperator() {}
 int UniaryExpressionOperator::performOperationOn(int int_operand) const
 {
   int result = int_operand;
-  switch(operation) {
+  switch (operation) {
   case 0x01:
     result = - int_operand;
     break;
@@ -744,7 +744,7 @@ BinaryExpressionOperator::~BinaryExpressionOperator()
 // Stolen from xclannad
 int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
 {
-  switch(operation) {
+  switch (operation) {
   case 0:
   case 20:
     return lhs + rhs;
@@ -817,7 +817,7 @@ AssignmentExpressionOperator::~AssignmentExpressionOperator()
 
 int AssignmentExpressionOperator::integerValue(RLMachine& machine) const
 {
-  if(operation == 30) {
+  if (operation == 30) {
     int value = rightOperand->integerValue(machine);
     leftOperand->assignIntValue(machine, value);
     return value;

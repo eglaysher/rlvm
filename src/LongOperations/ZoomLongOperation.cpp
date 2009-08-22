@@ -74,7 +74,7 @@ bool ZoomLongOperation::operator()(RLMachine& machine)
 
   bool fastForward = machine.system().fastForward();
 
-  if(currentFrame >= duration_ || fastForward)
+  if (currentFrame >= duration_ || fastForward)
   {
     return true;
   }

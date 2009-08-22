@@ -83,7 +83,7 @@ void saveGlobalMemory(RLMachine& machine)
 {
   fs::path home = buildGlobalMemoryFilename(machine);
   fs::ofstream file(home);
-  if(!file)
+  if (!file)
   {
     ostringstream oss;
     oss << "Could not open global memory file.";
@@ -124,7 +124,7 @@ void loadGlobalMemory(RLMachine& machine)
   // If we were able to open the file for reading, load it. Don't
   // complain if we're unable to, since this may be the first run on
   // this certain game and it may not exist yet.
-  if(file)
+  if (file)
   {
     try {
       using namespace boost::iostreams;

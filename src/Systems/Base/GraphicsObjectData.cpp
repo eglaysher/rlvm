@@ -96,13 +96,13 @@ void GraphicsObjectData::endAnimation()
   // Set first, because we may deallocate this by one of our actions
   currently_playing_ = false;
 
-  switch(afterAnimation())
+  switch (afterAnimation())
   {
   case AFTER_NONE:
     animation_finished_ = true;
     break;
   case AFTER_CLEAR:
-    if(ownedBy())
+    if (ownedBy())
       ownedBy()->deleteObject();
     break;
   case AFTER_LOOP:

@@ -255,9 +255,9 @@ const int MetaElement::entrypoint() const {
 
 void MetaElement::runOnMachine(RLMachine& machine) const
 {
-  if(type_ == Line_)
+  if (type_ == Line_)
     machine.setLineNumber(value_);
-  else if(type_ == Kidoku_)
+  else if (type_ == Kidoku_)
     machine.setKidokuMarker(value_);
 
   machine.advanceInstructionPointer();
@@ -417,7 +417,7 @@ ExpressionElement* ExpressionElement::clone() const {
 // -----------------------------------------------------------------------
 
 const ExpressionPiece& ExpressionElement::parsedExpression() const {
-  if(parsed_expression_.get() == 0) {
+  if (parsed_expression_.get() == 0) {
     const char* location = repr.c_str();
     parsed_expression_.reset(get_assignment(location));
   }
@@ -476,11 +476,11 @@ const ElementType CommandElement::type() const { return Command; }
 const vector<string>& CommandElement::getUnparsedParameters() const
 {
   size_t numberOfParameters = param_count();
-  if(numberOfParameters != unparsed_parameters_.size())
+  if (numberOfParameters != unparsed_parameters_.size())
   {
     unparsed_parameters_.clear();
 
-    for(size_t i = 0; i < numberOfParameters; ++i)
+    for (size_t i = 0; i < numberOfParameters; ++i)
       unparsed_parameters_.push_back(get_param(i));
   }
 
@@ -572,7 +572,7 @@ SelectElement::SelectElement(const char* src)
   // NULL arguments are allowed. I am not sure if this is a hack or if this is
   // the proper behaviour. Also, why the hell would the official RealLive
   // compiler generate this bytecode. WTF?
-  while(*src == '\n') {
+  while (*src == '\n') {
     // The only thing allowed other than a 16 bit integer.
     src += 3;
     uselessjunk++;
@@ -997,7 +997,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
     if (*src++ != '(') throw Error("GosubWithElement(): expected `('");
     repr.push_back('(');
 
-    while(*src != ')') {
+    while (*src != ')') {
       int expr = next_data(src);
       repr.append(src, expr);
       params.push_back(string(src, expr));

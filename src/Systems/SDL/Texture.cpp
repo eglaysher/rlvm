@@ -95,7 +95,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  if(w == total_width_ && h == total_height_)
+  if (w == total_width_ && h == total_height_)
   {
     SDL_LockSurface(surface);
     glTexImage2D(GL_TEXTURE_2D, 0, bytes_per_pixel,
@@ -123,7 +123,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
 
       int row_start = surface->format->BytesPerPixel * x;
       int subrow_size = surface->format->BytesPerPixel * w;
-      for(int current_row = 0; current_row < h; ++current_row)
+      for (int current_row = 0; current_row < h; ++current_row)
       {
         memcpy(cur_dst_ptr, cur_src_ptr + row_start, subrow_size);
         cur_dst_ptr += subrow_size;
@@ -197,7 +197,7 @@ Texture::~Texture()
 
 char* Texture::uploadBuffer(unsigned int size)
 {
-  if(!s_upload_buffer || size > s_upload_buffer_size) {
+  if (!s_upload_buffer || size > s_upload_buffer_size) {
     s_upload_buffer.reset(new char[size]);
     s_upload_buffer_size = size;
   }
@@ -212,7 +212,7 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
 {
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
-  if(w == total_width_ && h == total_height_)
+  if (w == total_width_ && h == total_height_)
   {
     SDL_LockSurface(surface);
 
@@ -235,7 +235,7 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
 
       int row_start = surface->format->BytesPerPixel * x;
       int subrow_size = surface->format->BytesPerPixel * w;
-      for(int current_row = 0; current_row < h; ++current_row)
+      for (int current_row = 0; current_row < h; ++current_row)
       {
         memcpy(cur_dst_ptr, cur_src_ptr + row_start, subrow_size);
         cur_dst_ptr += subrow_size;
@@ -255,7 +255,7 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
 std::string readTextFile(const std::string& file)
 {
   ifstream ifs(file.c_str());
-  if(!ifs)
+  if (!ifs)
   {
     ostringstream oss;
     oss << "Can't open text file: " << file;
@@ -263,7 +263,7 @@ std::string readTextFile(const std::string& file)
   }
 
   string out, line;
-  while(getline(ifs, line))
+  while (getline(ifs, line))
   {
     out += line;
     out += '\n';
@@ -279,7 +279,7 @@ void printARBLog(GLhandleARB obj)
   char str[256];
   GLsizei size = 0;
   glGetInfoLogARB(obj, 256, &size, str);
-  if(size != 0)
+  if (size != 0)
   {
     cerr << "Log: " << str << endl;
   }
@@ -339,7 +339,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
-  if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
+  if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
   // For the time being, we are dumb and assume that it's one texture
@@ -349,7 +349,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if(is_upside_down_)
+  if (is_upside_down_)
   {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
@@ -385,9 +385,9 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
 void Texture::renderToScreenAsColorMask(
   const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
 {
-  if(filter == 0)
+  if (filter == 0)
   {
-    if(GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
+    if (GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
     {
       render_to_screen_as_colour_mask_subtractive_glsl(src, dst, rgba);
     }
@@ -411,10 +411,10 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
-  if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
+  if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
-  if(shader_object_id_ == 0)
+  if (shader_object_id_ == 0)
     buildShader();
 
   float thisx1 = float(x1) / texture_width_;
@@ -422,7 +422,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if(is_upside_down_)
+  if (is_upside_down_)
   {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
@@ -433,7 +433,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   //
   // NOTE: Does this code deal with changing the dimensions of the
   // text box? Does it matter?
-  if(back_texture_id_ == 0)
+  if (back_texture_id_ == 0)
   {
     glGenTextures(1, &back_texture_id_);
     glBindTexture(GL_TEXTURE_2D, back_texture_id_);
@@ -467,7 +467,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   glBindTexture(GL_TEXTURE_2D, back_texture_id_);
   GLint current_values_loc = glGetUniformLocationARB(program_object_id_,
                                                    "current_values");
-  if(current_values_loc == -1)
+  if (current_values_loc == -1)
     throw SystemError("Bad uniform value");
   glUniform1iARB(current_values_loc, 0);
 
@@ -477,7 +477,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
   GLint mask_loc = glGetUniformLocationARB(program_object_id_, "mask");
-  if(mask_loc == -1)
+  if (mask_loc == -1)
     throw SystemError("Bad uniform value");
   glUniform1iARB(mask_loc, 1);
 
@@ -525,7 +525,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
-  if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
+  if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
   float thisx1 = float(x1) / texture_width_;
@@ -533,7 +533,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if(is_upside_down_)
+  if (is_upside_down_)
   {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
@@ -572,7 +572,7 @@ void Texture::render_to_screen_as_colour_mask_additive(
 {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
-  if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
+  if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
   float thisx1 = float(x1) / texture_width_;
@@ -580,7 +580,7 @@ void Texture::render_to_screen_as_colour_mask_additive(
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if(is_upside_down_)
+  if (is_upside_down_)
   {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
@@ -615,7 +615,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
   // For the time being, we are dumb and assume that it's one texture
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
-  if(!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
+  if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
   float thisx1 = float(x1) / texture_width_;
@@ -626,7 +626,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
   // Blend when we have less opacity
-  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
+  if (find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
      != opacity + 4)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -701,7 +701,7 @@ void Texture::renderToScreenAsObject(
   }
 
   float fdx1 = xPos1, fdy1 = yPos1, fdx2 = xPos2, fdy2 = yPos2;
-  if(!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2,
+  if (!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2,
                    fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -715,7 +715,7 @@ void Texture::renderToScreenAsObject(
 
   // Make this so that when we have composite 1, we're doing a pure
   // additive blend, (ignoring the alpha channel?)
-  switch(go.compositeMode())
+  switch (go.compositeMode())
   {
   case 0:
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -775,12 +775,12 @@ void Texture::rawRenderQuad(const int src_coords[8],
                             const int opacity[4])
 {
   /// @bug FIXME!
-//  if(!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
+//  if (!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
 //    return;
 
   // For the time being, we are dumb and assume that it's one texture
   float texture_coords[8];
-  for(int i = 0; i < 8; i += 2)
+  for (int i = 0; i < 8; i += 2)
   {
     texture_coords[i] = float(src_coords[i]) / texture_width_;
     texture_coords[i + 1] = float(src_coords[i + 1]) / texture_height_;
@@ -789,13 +789,13 @@ void Texture::rawRenderQuad(const int src_coords[8],
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
   // Blend when we have less opacity
-  if(find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
+  if (find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
      != opacity + 4)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   {
-    for(int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
       glColor4ub(255, 255, 255, opacity[i]);
 

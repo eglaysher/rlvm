@@ -92,7 +92,7 @@ Effect* EffectFactory::build(
   // There is a completely ridiculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so
   // confusing and hard to implement!
-  switch(style)
+  switch (style)
   {
   case 10:
     return buildWipeEffect(machine, src, dst, screenSize, time,
@@ -147,7 +147,7 @@ Effect* EffectFactory::buildWipeEffect(
   boost::shared_ptr<Surface> dst, const Size& screenSize, int time,
   int direction, int interpolation)
 {
-  switch(direction)
+  switch (direction)
   {
   case TOP_TO_BOTTOM:
     return new WipeTopToBottomEffect(machine, src, dst, screenSize,
@@ -182,25 +182,25 @@ Effect* EffectFactory::buildBlindEffect(
   boost::shared_ptr<Surface> dst, const Size& screenSize, int time,
   int direction, int xsize, int ysize)
 {
-  switch(direction)
+  switch (direction)
   {
   case TOP_TO_BOTTOM:
-    if(xsize == 0 && ysize > 0)
+    if (xsize == 0 && ysize > 0)
       xsize = ysize;
     return new BlindTopToBottomEffect(machine, src, dst, screenSize,
                                       time, xsize);
   case BOTTOM_TO_TOP:
-    if(xsize == 0 && ysize > 0)
+    if (xsize == 0 && ysize > 0)
       xsize = ysize;
     return new BlindBottomToTopEffect(machine, src, dst, screenSize,
                                       time, xsize);
   case LEFT_TO_RIGHT:
-    if(ysize == 0 && xsize > 0)
+    if (ysize == 0 && xsize > 0)
       ysize = xsize;
     return new BlindLeftToRightEffect(machine, src, dst, screenSize,
                                       time, ysize);
   case RIGHT_TO_LEFT:
-    if(ysize == 0 && xsize > 0)
+    if (ysize == 0 && xsize > 0)
       ysize = xsize;
     return new BlindRightToLeftEffect(machine, src, dst, screenSize,
                                       time, ysize);
@@ -209,7 +209,7 @@ Effect* EffectFactory::buildBlindEffect(
     cerr << "WARNING! Unsupported direction " << direction
          << " in EffectFactory::buildWipeEffect. Returning Top to"
          << " Bottom effect." << endl;
-    if(xsize == 0 && ysize > 0)
+    if (xsize == 0 && ysize > 0)
       xsize = ysize;
     return new BlindTopToBottomEffect(machine, src, dst, screenSize,
                                      time, xsize);
@@ -221,7 +221,7 @@ Effect* EffectFactory::buildBlindEffect(
 ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
   int drawerType)
 {
-  switch(drawerType)
+  switch (drawerType)
   {
   case TOP_TO_BOTTOM:
     return new TopToBottomDrawer;
@@ -244,7 +244,7 @@ ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
 ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
   int style)
 {
-  switch(style)
+  switch (style)
   {
   case 15:
     return new ScrollOnScrollOff;

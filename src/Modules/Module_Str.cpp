@@ -116,9 +116,9 @@ inline char ToLower(char x) { return tolower(x); }
 string rl_itoa_implementation(int number, int length, char fill)
 {
   ostringstream ss;
-  if(number < 0)
+  if (number < 0)
     ss << "-";
-  if(length > 0)
+  if (length > 0)
     ss << setw(length);
   ss << right << setfill(fill) << abs(number);
   return ss.str();
@@ -242,8 +242,8 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
     string output;
 
     // Advance the string to the first
-    while(offset > 0) {
-      if(str[0] == '\0')
+    while (offset > 0) {
+      if (str[0] == '\0')
         throw rlvm::Exception("Error in strsub: offset is greater then string length");
 
       advanceOneShiftJISChar(str);
@@ -253,7 +253,7 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
     // Copy the rest of the string to the output buffer. We do not need to
     // worry about bytes vs. characters since we aren't worrying about the
     // number of characters.
-    while(*str) {
+    while (*str) {
       output += *str;
       str++;
     }
@@ -277,15 +277,15 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
     string output;
 
     // Advance the string to the first
-    while(offset > 0) {
-      if(*str == '\0')
+    while (offset > 0) {
+      if (*str == '\0')
         throw rlvm::Exception("Error in strsub: offset is greater then string length");
 
       advanceOneShiftJISChar(str);
       offset--;
     }
 
-    while(*str && length > 0)
+    while (*str && length > 0)
     {
       copyOneShiftJisCharacter(str, output);
       length--;
@@ -318,7 +318,7 @@ struct Str_strrsub_0 : public Str_strsub_0 {
 struct Str_strrsub_1 : public Str_strsub_1 {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offsetFromBack, int length) {
-    if(length > offsetFromBack)
+    if (length > offsetFromBack)
       throw rlvm::Exception("strrsub: length of substring greater then offset in rsub");
 
     int offset = strcharlen(source.c_str()) - offsetFromBack;
@@ -352,7 +352,7 @@ struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
     string input = *dest;
     const char* str = input.c_str();
     string output;
-    while(*str && length > 0) {
+    while (*str && length > 0) {
       copyOneShiftJisCharacter(str, output);
       --length;
     }
@@ -628,7 +628,7 @@ struct Str_atoi : public RLOp_Store_1< StrConstant_T > {
     stringstream ss(word);
     int out;
     ss >> out;
-    if(ss)
+    if (ss)
       return out;
     else
       return 0;
@@ -689,7 +689,7 @@ struct Str_digit : public RLOp_Store_3< IntConstant_T, IntReference_T,
 struct Str_strpos : public RLOp_Store_2< StrConstant_T, StrConstant_T > {
   int operator()(RLMachine& machine, string str, string substring) {
     size_t pos = str.find(substring);
-    if(pos == string::npos)
+    if (pos == string::npos)
       return -1;
     else
       return pos;
@@ -708,7 +708,7 @@ struct Str_strpos : public RLOp_Store_2< StrConstant_T, StrConstant_T > {
 struct Str_strlpos : public RLOp_Store_2< StrConstant_T, StrConstant_T > {
   int operator()(RLMachine& machine, string str, string substring) {
     size_t pos = str.rfind(substring);
-    if(pos == string::npos)
+    if (pos == string::npos)
       return -1;
     else
       return pos;

@@ -62,7 +62,7 @@ void ShowGLErrors(void)
 int SafeSize(int i)
 {
   static GLint max_texture_size = 0;
-  if(max_texture_size == 0)
+  if (max_texture_size == 0)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
   int p;
 
@@ -93,7 +93,7 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
 {
   SDL_PixelFormat* format = in_surface->format;
 
-  if(format->BitsPerPixel != 32)
+  if (format->BitsPerPixel != 32)
     throw SystemError("AlphaInvert requires an alpha channel!");
 
   // Build a copy of the surface
@@ -105,12 +105,12 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
   SDL_BlitSurface(in_surface, NULL, dst, NULL);
 
   // iterate over the copy and make the alpha value = 255 - alpha value.
-  if(SDL_MUSTLOCK(dst)) SDL_LockSurface(dst);
+  if (SDL_MUSTLOCK(dst)) SDL_LockSurface(dst);
   {
     int num_pixels = dst->h * dst->pitch;
     char* p_data = (char*)dst->pixels;
 
-    for(int i = 0; i < num_pixels; i += 4)
+    for (int i = 0; i < num_pixels; i += 4)
     {
       // Invert the pixel here.
       p_data[i] = 255 - p_data[i];
@@ -119,7 +119,7 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
       p_data[i + 3] = 255 - p_data[i + 3];
     }
   }
-  if(SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
+  if (SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
 
   return dst;
 }

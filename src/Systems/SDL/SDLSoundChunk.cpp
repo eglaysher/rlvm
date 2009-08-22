@@ -71,7 +71,7 @@ void SDLSoundChunk::playChunkOn(int channel, int loops)
     s_playing_table[channel] = shared_from_this();
   }
 
-  if(Mix_PlayChannel(channel, sample_, loops) == -1)
+  if (Mix_PlayChannel(channel, sample_, loops) == -1)
   {
     // TODO: Throw something here.
   }
@@ -86,7 +86,7 @@ void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
     s_playing_table[channel] = shared_from_this();
   }
 
-  if(Mix_FadeInChannel(channel, sample_, loops, ms) == -1)
+  if (Mix_FadeInChannel(channel, sample_, loops, ms) == -1)
   {
     // TODO: Throw something here.
   }
@@ -112,10 +112,10 @@ int SDLSoundChunk::FindNextFreeExtraChannel()
 {
   SDLAudioLocker locker;
 
-  for(int i = NUM_BASE_CHANNELS;
+  for (int i = NUM_BASE_CHANNELS;
       i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i)
   {
-    if(s_playing_table[i].get() == 0)
+    if (s_playing_table[i].get() == 0)
       return i;
   }
 

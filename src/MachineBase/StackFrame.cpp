@@ -110,14 +110,14 @@ void StackFrame::load(Archive & ar, unsigned int version)
 
   libReallive::Scenario const* scenario =
     Serialization::g_current_machine->archive().scenario(scene_number);
-  if(scenario == NULL)
+  if (scenario == NULL)
   {
     ostringstream oss;
     oss << "Unknown SEEN #" << scene_number << " in save file!";
     throw rlvm::Exception(oss.str());
   }
 
-  if(offset > distance(scenario->begin(), scenario->end()) || offset < 0)
+  if (offset > distance(scenario->begin(), scenario->end()) || offset < 0)
   {
     ostringstream oss;
     oss << offset << " is an illegal bytecode offset for SEEN #"

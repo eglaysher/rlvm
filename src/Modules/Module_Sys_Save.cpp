@@ -100,7 +100,7 @@ struct Sys_SaveDate : public RLOp_Store_5<
   {
     int fileExists = Sys_SaveExists()(machine, slot);
 
-    if(fileExists) {
+    if (fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
       *yIt = header.save_time.date().year();
@@ -124,7 +124,7 @@ struct Sys_SaveTime : public RLOp_Store_5<
   {
     int fileExists = Sys_SaveExists()(machine, slot);
 
-    if(fileExists)
+    if (fileExists)
     {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
@@ -152,7 +152,7 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
   {
     int fileExists = Sys_SaveExists()(machine, slot);
 
-    if(fileExists)
+    if (fileExists)
     {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
@@ -186,7 +186,7 @@ struct Sys_SaveInfo : public RLOp_Store_10<
   {
     int fileExists = Sys_SaveExists()(machine, slot);
 
-    if(fileExists) {
+    if (fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
 
       *yIt = header.save_time.date().year();
@@ -243,17 +243,17 @@ struct Sys_GetSaveFlag : public RLOp_Store_2<
   int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList)
   {
     int fileExists = Sys_SaveExists()(machine, slot);
-    if(!fileExists)
+    if (!fileExists)
       return 0;
 
     Memory overlayedMemory(machine, slot);
     Serialization::loadLocalMemoryForSlot(machine, slot, overlayedMemory);
 
     using boost::detail::multi_array::copy_n;
-    for(GetSaveFlagList::type::iterator it = flagList.begin();
+    for (GetSaveFlagList::type::iterator it = flagList.begin();
         it != flagList.end(); ++it)
     {
-      switch(it->type)
+      switch (it->type)
       {
       case 0:
       {
@@ -293,17 +293,17 @@ struct Sys_LatestSave : public RLOp_Store_Void
     int latestSlot = -1;
     time_t latestTime = numeric_limits<time_t>::min();
 
-    if(fs::exists(saveDir))
+    if (fs::exists(saveDir))
     {
       fs::directory_iterator end;
-      for(fs::directory_iterator it(saveDir); it != end; ++it)
+      for (fs::directory_iterator it(saveDir); it != end; ++it)
       {
         string filename = it->leaf();
-        if(starts_with(filename, "save") && ends_with(filename, ".sav.gz"))
+        if (starts_with(filename, "save") && ends_with(filename, ".sav.gz"))
         {
           time_t mtime = fs::last_write_time(*it);
 
-          if(mtime > latestTime)
+          if (mtime > latestTime)
           {
             latestTime = mtime;
             latestSlot = lexical_cast<int>(filename.substr(4, 3));

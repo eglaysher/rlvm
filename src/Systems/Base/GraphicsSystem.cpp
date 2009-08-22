@@ -102,7 +102,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
 {
   // First we populate everything with the special value
   fill(position, position + OBJECTS_IN_A_LAYER, 0);
-  if(gameexe.exists("OBJECT.999"))
+  if (gameexe.exists("OBJECT.999"))
     data.push_back(ObjectSettings(gameexe("OBJECT.999")));
   else
     data.push_back(ObjectSettings());
@@ -110,7 +110,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   // Read the #OBJECT.xxx entries from the Gameexe
   GameexeFilteringIterator it = gameexe.filtering_begin("OBJECT.");
   GameexeFilteringIterator end = gameexe.filtering_end();
-  for(; it != end; ++it)
+  for (; it != end; ++it)
   {
     string s = it->key().substr(it->key().find_first_of(".") + 1);
     std::list<int> object_nums;
@@ -129,11 +129,11 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
       object_nums.push_back(lexical_cast<int>(s));
     }
 
-    for( std::list<int>::const_iterator intit = object_nums.begin();
+    for ( std::list<int>::const_iterator intit = object_nums.begin();
          intit != object_nums.end(); ++intit )
     {
       int obj_num = *intit;
-      if(obj_num != 999 && obj_num < OBJECTS_IN_A_LAYER)
+      if (obj_num != 999 && obj_num < OBJECTS_IN_A_LAYER)
       {
         position[obj_num] = data.size();
         data.push_back(ObjectSettings(*it));
@@ -230,7 +230,7 @@ void GraphicsSystem::setIsResponsibleForUpdate(bool in)
 
 void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
 {
-  switch(screenUpdateMode())
+  switch (screenUpdateMode())
   {
   case SCREENUPDATEMODE_AUTOMATIC:
   case SCREENUPDATEMODE_SEMIAUTOMATIC:
@@ -319,7 +319,7 @@ void GraphicsSystem::clearStack()
 
 void GraphicsSystem::stackPop(int items)
 {
-  for(int i = 0; i < items; ++i)
+  for (int i = 0; i < items; ++i)
     graphics_object_settings_->graphics_stack.pop_back();
 }
 
@@ -441,7 +441,7 @@ void GraphicsSystem::refresh(std::ostream* tree) {
   renderObjects(tree);
 
   // Render text
-  if(!interfaceHidden())
+  if (!interfaceHidden())
     system().text().render(tree);
 
   endFrame();
@@ -501,14 +501,14 @@ void GraphicsSystem::clearAndPromoteObjects()
   FullIterator bg_end = graphics_object_impl_->background_objects.full_end();
   FullIterator fg = graphics_object_impl_->foreground_objects.full_begin();
   FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
-  for(; bg != bg_end && fg != fg_end; bg++, fg++)
+  for (; bg != bg_end && fg != fg_end; bg++, fg++)
   {
-    if(fg.valid() && !fg->wipeCopy())
+    if (fg.valid() && !fg->wipeCopy())
     {
       fg->clearObject();
     }
 
-    if(bg.valid())
+    if (bg.valid())
     {
       *fg = *bg;
       bg->clearObject();
@@ -520,10 +520,10 @@ void GraphicsSystem::clearAndPromoteObjects()
 
 GraphicsObject& GraphicsSystem::getObject(int layer, int obj_number)
 {
-  if(layer < 0 || layer > 1)
+  if (layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
-  if(layer == OBJ_BG)
+  if (layer == OBJ_BG)
     return graphics_object_impl_->background_objects[obj_number];
   else
     return graphics_object_impl_->foreground_objects[obj_number];
@@ -533,10 +533,10 @@ GraphicsObject& GraphicsSystem::getObject(int layer, int obj_number)
 
 void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj)
 {
-  if(layer < 0 || layer > 1)
+  if (layer < 0 || layer > 1)
     throw rlvm::Exception("Invalid layer number");
 
-  if(layer == OBJ_BG)
+  if (layer == OBJ_BG)
     graphics_object_impl_->background_objects[obj_number] = obj;
   else
     graphics_object_impl_->foreground_objects[obj_number] = obj;
@@ -577,7 +577,7 @@ void GraphicsSystem::takeSavepointSnapshot()
 void GraphicsSystem::clearAllDCs() {
   getDC(0)->fill(RGBAColour::Black());
 
-  for(int i = 1; i < 16; ++i)
+  for (int i = 1; i < 16; ++i)
     freeDC(i);
 }
 
@@ -590,16 +590,16 @@ void GraphicsSystem::renderObjects(std::ostream* tree)
     graphics_object_impl_->foreground_objects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
     graphics_object_impl_->foreground_objects.allocated_end();
-  for(; it != end; ++it)
+  for (; it != end; ++it)
   {
     const ObjectSettings& settings = getObjectSettings(it.pos());
-    if(settings.obj_on_off == 1 && showObject1() == false)
+    if (settings.obj_on_off == 1 && showObject1() == false)
       continue;
-    else if(settings.obj_on_off == 2 && showObject2() == false)
+    else if (settings.obj_on_off == 2 && showObject2() == false)
       continue;
-    else if(settings.weather_on_off && showWeather() == false)
+    else if (settings.weather_on_off && showWeather() == false)
       continue;
-    else if(settings.space_key && interfaceHidden())
+    else if (settings.space_key && interfaceHidden())
       continue;
 
     it->render(it.pos(), tree);
@@ -613,10 +613,10 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor()
   if (!use_custom_mouse_cursor_ || !show_curosr_)
     return boost::shared_ptr<MouseCursor>();
 
-  if(use_custom_mouse_cursor_ && !mouse_cursor_)
+  if (use_custom_mouse_cursor_ && !mouse_cursor_)
   {
     MouseCursorCache::iterator it = cursor_cache_.find(cursor_);
-    if(it != cursor_cache_.end())
+    if (it != cursor_cache_.end())
       mouse_cursor_ = it->second;
     else
     {
@@ -642,7 +642,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor()
 
 void GraphicsSystem::mouseMotion(const Point& new_location)
 {
-  if(use_custom_mouse_cursor_ && show_curosr_)
+  if (use_custom_mouse_cursor_ && show_curosr_)
     markScreenAsDirty(GUT_MOUSE_MOTION);
 
   cursor_pos_ = new_location;
@@ -655,11 +655,11 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(const std::string& filename)
   // Get the path to get the file type (which won't be in filename)
   fs::path full_path = findFile(system(), filename);
   string file_str = full_path.file_string();
-  if(iends_with(file_str, "g00") || iends_with(file_str, "pdt"))
+  if (iends_with(file_str, "g00") || iends_with(file_str, "pdt"))
   {
     return new GraphicsObjectOfFile(system(), filename);
   }
-  else if(iends_with(file_str, "anm"))
+  else if (iends_with(file_str, "anm"))
   {
     return new AnmGraphicsObjectData(system(), filename);
   }

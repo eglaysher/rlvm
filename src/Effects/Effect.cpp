@@ -78,7 +78,7 @@ bool Effect::operator()(RLMachine& machine)
 
   bool fastForward = machine.system().fastForward();
 
-  if(currentFrame >= duration_ || fastForward)
+  if (currentFrame >= duration_ || fastForward)
   {
     return true;
   }
@@ -88,7 +88,7 @@ bool Effect::operator()(RLMachine& machine)
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.beginFrame();
 
-    if(blitOriginalImage())
+    if (blitOriginalImage())
     {
       dstSurface().
         renderToScreen(Rect(Point(0, 0), size()),

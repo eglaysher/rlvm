@@ -92,10 +92,10 @@ void SelectionElement::setMousePosition(const Point& pos) {
 
 bool SelectionElement::handleMouseClick(const Point& pos, bool pressed)
 {
-  if(pressed == false && isHighlighted(pos))
+  if (pressed == false && isHighlighted(pos))
   {
     // Released within the button
-    if(selection_callback_)
+    if (selection_callback_)
       selection_callback_(id_);
 
     return true;
@@ -110,7 +110,7 @@ void SelectionElement::render()
 {
   shared_ptr<Surface> target;
 
-  if(is_highlighted_)
+  if (is_highlighted_)
     target = highlighted_image_;
   else
     target = normal_image_;

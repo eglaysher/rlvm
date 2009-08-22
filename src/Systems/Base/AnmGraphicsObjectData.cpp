@@ -117,7 +117,7 @@ void AnmGraphicsObjectData::loadAnmFile()
   fs::path file = findFile(system_, filename_, ANM_FILETYPES);
 
   fs::ifstream ifs(file, ifstream::in | ifstream::binary);
-  if(!ifs)
+  if (!ifs)
   {
     ostringstream oss;
     oss << "Could not open file \"" << file << "\".";
@@ -126,14 +126,14 @@ void AnmGraphicsObjectData::loadAnmFile()
 
   int file_size = 0;
   scoped_array<char> anm_data;
-  if(loadFileData(ifs, anm_data, file_size))
+  if (loadFileData(ifs, anm_data, file_size))
   {
     ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());
   }
 
-  if(testFileMagic(anm_data))
+  if (testFileMagic(anm_data))
   {
     ostringstream oss;
     oss << "File \"" << file << "\" does not appear to be in ANM format.";
@@ -154,7 +154,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   int frames_len = read_i32(data + 0x8c);
   int framelist_len = read_i32(data + 0x90);
   int animation_set_len = read_i32(data + 0x94);
-  if(animation_set_len < 0)
+  if (animation_set_len < 0)
     throw rlvm::Exception("Impossible value for animation_set_len in ANM file.");
 
   // Read the corresponding image file we read from, and load the image.
@@ -164,7 +164,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   // Read the frame list
   const char* buf = data + 0xb8;
   Size screen_size = getScreenSize(system_.gameexe());
-  for(int i = 0; i < frames_len; ++i)
+  for (int i = 0; i < frames_len; ++i)
   {
     Frame f;
     f.src_x1 = read_i32(buf);
@@ -191,12 +191,12 @@ void AnmGraphicsObjectData::readIntegerList(
   const char* start, int offset, int iterations,
   std::vector< std::vector<int> >& dest)
 {
-  for(int i = 0; i < iterations; ++i)
+  for (int i = 0; i < iterations; ++i)
   {
     int list_length = read_i32(start + 4);
     const char* tmpbuf = start + 8;
     vector<int> intlist;
-    for(int j = 0; j < list_length; ++j)
+    for (int j = 0; j < list_length; ++j)
     {
       intlist.push_back(read_i32(tmpbuf));
       tmpbuf += 4;
@@ -232,7 +232,7 @@ void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height)
 
 void AnmGraphicsObjectData::execute()
 {
-  if(currentlyPlaying())
+  if (currentlyPlaying())
     advanceFrame();
 }
 
@@ -245,19 +245,19 @@ void AnmGraphicsObjectData::advanceFrame()
     system_.event().getTicks() - time_at_last_frame_change_;
   bool done = false;
 
-  while(currentlyPlaying() && !done)
+  while (currentlyPlaying() && !done)
   {
-    if(time_since_last_frame_change > frames[current_frame_].time)
+    if (time_since_last_frame_change > frames[current_frame_].time)
     {
       time_since_last_frame_change -= frames[current_frame_].time;
       time_at_last_frame_change_ += frames[current_frame_].time;
       system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 
       cur_frame_++;
-      if(cur_frame_ == cur_frame_end_)
+      if (cur_frame_ == cur_frame_end_)
       {
         cur_frame_set_++;
-        if(cur_frame_set_ == cur_frame_set_end_)
+        if (cur_frame_set_ == cur_frame_set_end_)
           setCurrentlyPlaying(false);
         else
         {

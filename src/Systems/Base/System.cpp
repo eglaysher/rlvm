@@ -83,7 +83,7 @@ System::System()
 
 void System::checkSyscomIndex(int index, const char* function)
 {
-  if(index < 0 || index >= NUM_SYSCOM_ENTRIES)
+  if (index < 0 || index >= NUM_SYSCOM_ENTRIES)
   {
     ostringstream oss;
     oss << "Illegal syscom index #" << index << " in " << function;
@@ -207,7 +207,7 @@ void System::showSyscomMenu(RLMachine& machine)
 
 void System::invokeSyscom(RLMachine& machine, int syscom)
 {
-  switch(syscom) {
+  switch (syscom) {
   case SYSCOM_SAVE:
     invokeSaveOrLoad(machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
     break;
@@ -338,7 +338,7 @@ void System::addPath(GameexeInterpretObject gio)
 
 const std::vector<boost::filesystem::path>& System::getSearchPaths()
 {
-  if(cached_search_paths.size() == 0)
+  if (cached_search_paths.size() == 0)
   {
     Gameexe& gexe = gameexe();
 
@@ -347,7 +347,7 @@ const std::vector<boost::filesystem::path>& System::getSearchPaths()
     // http://www.boost.org/libs/bind/bind.html#Limitations.
     GameexeFilteringIterator it = gexe.filtering_begin("FOLDNAME");
     GameexeFilteringIterator end = gexe.filtering_end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
       addPath(*it);
   }
 
@@ -376,12 +376,12 @@ boost::filesystem::path System::getHomeDirectory()
   char *driveptr    = getenv("HOMEDRIVE");
   char *homepathptr = getenv("HOMEPATH");
   char *profileptr  = getenv("USERPROFILE");
-  if(homeptr != 0 && (home = homeptr) != "")
+  if (homeptr != 0 && (home = homeptr) != "")
   {
 	// UN*X like home directory
 	return fs::path(home);
   }
-  else if(driveptr != 0 &&
+  else if (driveptr != 0 &&
 		  homepathptr !=0 &&
 		  (drive = driveptr) != "" &&
 		  (home  = homepathptr) != "")
@@ -389,7 +389,7 @@ boost::filesystem::path System::getHomeDirectory()
 	// Windows.
 	return fs::path(drive) / fs::path(home);
   }
-  else if(profileptr != 0 && (home = profileptr) != "")
+  else if (profileptr != 0 && (home = profileptr) != "")
   {
 	// Windows?
 	return fs::path(home);

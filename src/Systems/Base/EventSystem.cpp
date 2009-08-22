@@ -108,7 +108,7 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter)
   checkLayerAndCounter(layer, frame_counter);
 
   scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frame_counter];
-  if(counter.get() == NULL)
+  if (counter.get() == NULL)
     throw rlvm::Exception("Trying to get an uninitialized frame counter!");
 
   return *counter;
@@ -167,10 +167,10 @@ void EventSystem::broadcastEvent(RLMachine& machine,
 
 void EventSystem::checkLayerAndCounter(int layer, int frame_counter)
 {
-  if(layer < 0 || layer > 1)
+  if (layer < 0 || layer > 1)
     throw rlvm::Exception("Illegal frame counter layer!");
 
-  if(frame_counter < 0 || frame_counter > 255)
+  if (frame_counter < 0 || frame_counter > 255)
     throw rlvm::Exception("Frame Counter index out of range!");
 }
 

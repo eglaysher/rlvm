@@ -75,16 +75,16 @@ static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *m
     *cfmFlags   =   0;
     *mvofFlags  =   0;
 
-    if(PROT_NONE == prot)
+    if (PROT_NONE == prot)
     {
         *cfmFlags   =   PAGE_NOACCESS;
         *mvofFlags  =   0;
     }
     else
     {
-        if(prot & PROT_WRITE)
+        if (prot & PROT_WRITE)
         {
-            if((flags & MAP_PRIVATE))
+            if ((flags & MAP_PRIVATE))
             {
                 *mvofFlags |= FILE_MAP_COPY;
             }
@@ -98,11 +98,11 @@ static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *m
             *mvofFlags |= FILE_MAP_READ;
         }
 
-        if(*mvofFlags & FILE_MAP_COPY)
+        if (*mvofFlags & FILE_MAP_COPY)
         {
             *cfmFlags = PAGE_WRITECOPY;
         }
-        else if(*mvofFlags & FILE_MAP_WRITE)
+        else if (*mvofFlags & FILE_MAP_WRITE)
         {
             *cfmFlags = PAGE_READWRITE;
         }
@@ -112,7 +112,7 @@ static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *m
         }
     }
 
-    if(flags & MAP_ANONYMOUS)
+    if (flags & MAP_ANONYMOUS)
     {
 #if 0
         *cfmFlags |= SEC_RESERVE;
@@ -145,17 +145,17 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
     /* Sanity checks first */
     int     errno_      =   0;
 
-    if( NULL == addr && 
+    if ( NULL == addr && 
         0 != (flags & MAP_FIXED))
     {
         errno_ = ENOMEM;
     }
-    else if(MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
+    else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
             INVALID_HANDLE_VALUE != fh)
     {
         errno_ = EINVAL;
     }
-    else if(MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
+    else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
             (   0 == len ||
                 0 != offset))
     {
@@ -163,11 +163,11 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
     }
     else
     {
-        if(MAP_ANONYMOUS != (flags & MAP_ANONYMOUS))
+        if (MAP_ANONYMOUS != (flags & MAP_ANONYMOUS))
         {
             DWORD   fileSize    =   GetFileSize(fh, NULL);
 
-            if( 0xFFFFFFFF == fileSize &&
+            if ( 0xFFFFFFFF == fileSize &&
                 ERROR_SUCCESS != GetLastError())
             {
                 errno_ = EBADF;
@@ -175,7 +175,7 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
         }
     }
 
-    if(0 != errno_)
+    if (0 != errno_)
     {
         errno = errno_;
         return MAP_FAILED;
@@ -187,7 +187,7 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
 
         errno_  =   win32_flags_from_mmap_(prot, flags, &cfmFlags, &mvofFlags);
 
-        if(0 != errno_)
+        if (0 != errno_)
         {
             return MAP_FAILED;
         }
@@ -195,19 +195,19 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
         {
             HANDLE  hMap    =   CreateFileMapping(fh, NULL, cfmFlags, 0, len, NULL);
 
-            if(NULL == hMap)
+            if (NULL == hMap)
             {
                 DWORD   dwErr   =   GetLastError();
 
-                if(dwErr == ERROR_ACCESS_DENIED)
+                if (dwErr == ERROR_ACCESS_DENIED)
                 {
                     errno = EACCES;
                 }
-                else if(dwErr == ERROR_INVALID_PARAMETER)
+                else if (dwErr == ERROR_INVALID_PARAMETER)
                 {
                     errno = EINVAL;
                 }
-                else if(dwErr == ERROR_FILE_INVALID)
+                else if (dwErr == ERROR_FILE_INVALID)
                 {
                     errno = EBADF;
                 }

@@ -82,7 +82,7 @@ GraphicsObject::GraphicsObject()
 GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
   : impl_(rhs.impl_)
 {
-  if(rhs.object_data_)
+  if (rhs.object_data_)
   {
     object_data_.reset(rhs.object_data_->clone());
     object_data_->setOwnedBy(*this);
@@ -102,7 +102,7 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj)
 {
   impl_ = obj.impl_;
 
-  if(obj.object_data_)
+  if (obj.object_data_)
   {
     object_data_.reset(obj.object_data_->clone());
     object_data_->setOwnedBy(*this);
@@ -229,7 +229,7 @@ int GraphicsObject::pixelWidth() const
 {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
-  if(hasObjectData())
+  if (hasObjectData())
     return object_data_->pixelWidth(*this);
   else
     return 0;
@@ -239,7 +239,7 @@ int GraphicsObject::pixelWidth() const
 
 int GraphicsObject::pixelHeight() const
 {
-  if(hasObjectData())
+  if (hasObjectData())
     return object_data_->pixelHeight(*this);
   else
     return 0;
@@ -317,7 +317,7 @@ void GraphicsObject::setClip(const Rect& rect)
 
 GraphicsObjectData& GraphicsObject::objectData()
 {
-  if(object_data_)
+  if (object_data_)
     return *object_data_;
   else
   {
@@ -348,7 +348,7 @@ const std::string& GraphicsObject::textText() const
 {
   static const std::string empty = "";
 
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->value;
   else
     return empty;
@@ -358,7 +358,7 @@ const std::string& GraphicsObject::textText() const
 
 int GraphicsObject::textSize() const
 {
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->text_size;
   else
     return DEFAULT_TEXT_SIZE;
@@ -368,7 +368,7 @@ int GraphicsObject::textSize() const
 
 int GraphicsObject::textXSpace() const
 {
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->xspace;
   else
     return DEFAULT_TEXT_XSPACE;
@@ -378,7 +378,7 @@ int GraphicsObject::textXSpace() const
 
 int GraphicsObject::textYSpace() const
 {
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->yspace;
   else
     return DEFAULT_TEXT_YSPACE;
@@ -388,7 +388,7 @@ int GraphicsObject::textYSpace() const
 
 int GraphicsObject::textVertical() const
 {
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->vertical;
   else
     return DEFAULT_TEXT_VERTICAL;
@@ -398,7 +398,7 @@ int GraphicsObject::textVertical() const
 
 int GraphicsObject::textColour() const
 {
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->colour;
   else
     return DEFAULT_TEXT_COLOUR;
@@ -407,7 +407,7 @@ int GraphicsObject::textColour() const
 // -----------------------------------------------------------------------
 
 int GraphicsObject::textShadowColour() const {
-  if(impl_->text_properties_)
+  if (impl_->text_properties_)
     return impl_->text_properties_->shadow_colour;
   else
     return DEFAULT_TEXT_SHADOWCOLOUR;
@@ -433,7 +433,7 @@ void GraphicsObject::setTextOps(
 
 void GraphicsObject::makeImplUnique()
 {
-  if(!impl_.unique())
+  if (!impl_.unique())
   {
     impl_.reset(new Impl(*impl_));
   }
@@ -443,7 +443,7 @@ void GraphicsObject::makeImplUnique()
 
 void GraphicsObject::render(int objNum, std::ostream* tree)
 {
-  if(object_data_ && visible())
+  if (object_data_ && visible())
   {
     if (tree) {
       *tree << "Object #" << objNum << ":" << endl;
@@ -543,7 +543,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     scroll_rate_y_(rhs.scroll_rate_y_),
     wipe_copy_(0)
 {
-  if(rhs.text_properties_)
+  if (rhs.text_properties_)
     text_properties_.reset(new TextProperties(*rhs.text_properties_));
 
   copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
@@ -560,7 +560,7 @@ GraphicsObject::Impl::~Impl()
 GraphicsObject::Impl& GraphicsObject::Impl::operator=(
   const GraphicsObject::Impl& rhs)
 {
-  if(this != &rhs)
+  if (this != &rhs)
   {
     visible_ = rhs.visible_;
     x_ = rhs.x_;
@@ -592,7 +592,7 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
     scroll_rate_x_ = rhs.scroll_rate_x_;
     scroll_rate_y_ = rhs.scroll_rate_y_;
 
-    if(rhs.text_properties_)
+    if (rhs.text_properties_)
       text_properties_.reset(new TextProperties(*rhs.text_properties_));
 
     wipe_copy_ = rhs.wipe_copy_;
@@ -605,7 +605,7 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
 
 void GraphicsObject::Impl::makeSureHaveTextProperties()
 {
-  if(!text_properties_)
+  if (!text_properties_)
   {
     text_properties_.reset(new Impl::TextProperties());
   }

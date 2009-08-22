@@ -57,7 +57,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
   : System(), gameexe_(gameexe), last_time_paused_(0)
 {
   // First, initialize SDL's video subsystem.
-  if( SDL_Init( SDL_INIT_VIDEO) < 0 )
+  if ( SDL_Init( SDL_INIT_VIDEO) < 0 )
   {
     ostringstream ss;
     ss << "Video initialization failed: " << SDL_GetError();

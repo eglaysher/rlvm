@@ -65,12 +65,12 @@ std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
 
     os << setw(max_function_name_len) << left << "Name" << "  " << "Count" << endl;
 
-    for(int i = 0; i < max_function_name_len; ++i)
+    for (int i = 0; i < max_function_name_len; ++i)
       os << "-";
 
     os << "  " << "-----" << endl;
 
-    for(OpcodeLog::Storage::const_iterator it = log.begin(); it != log.end();
+    for (OpcodeLog::Storage::const_iterator it = log.begin(); it != log.end();
         ++it)
     {
       os << setw(max_function_name_len) << left <<  it->first << "  " << it->second

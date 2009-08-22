@@ -94,7 +94,7 @@ namespace {
 template<typename TYPE>
 void checkInFileOpened(TYPE& file, const fs::path& home)
 {
-  if(!file)
+  if (!file)
   {
     ostringstream oss;
     oss << "Could not open save game file " << home.string();

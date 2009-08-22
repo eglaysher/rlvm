@@ -365,7 +365,7 @@ void RLMachine::executeUntilHalted() {
 
 void RLMachine::advanceInstructionPointer() {
   std::vector<StackFrame>::reverse_iterator it =
-      find_if(call_stack_.rbegin(), call_stack_.rend(),
+      find_if (call_stack_.rbegin(), call_stack_.rend(),
               bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
   if (it != call_stack_.rend()) {
@@ -554,7 +554,7 @@ shared_ptr<LongOperation> RLMachine::currentLongOperation() const {
 // -----------------------------------------------------------------------
 
 void RLMachine::clearCallstack() {
-  while(call_stack_.size())
+  while (call_stack_.size())
     popStackFrame();
 }
 

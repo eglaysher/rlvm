@@ -102,7 +102,7 @@ bool RLOperation::getProperty(int property, int& value) const {
 // -----------------------------------------------------------------------
 
 RLOperation::PropertyList::iterator RLOperation::findProperty(int property) const {
-  return find_if(property_list_->begin(), property_list_->end(),
+  return find_if (property_list_->begin(), property_list_->end(),
                  bind(&Property::first, _1) == property);
 }
 
@@ -117,7 +117,7 @@ bool RLOperation::advanceInstructionPointer()
 
 void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
 {
-  if(!ff.areParametersParsed())
+  if (!ff.areParametersParsed())
   {
     const vector<string>& unparsed = ff.getUnparsedParameters();
     ptr_vector<ExpressionPiece> output;
@@ -133,7 +133,7 @@ void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff)
   // By default, we advacne the instruction pointer on any instruction we
   // perform. Weird special cases all derive from RLOp_SpecialCase, which
   // redefines the dispatcher, so this is ok.
-  if(advanceInstructionPointer())
+  if (advanceInstructionPointer())
     machine.advanceInstructionPointer();
 }
 
@@ -165,7 +165,7 @@ void IntConstant_T::parseParameters(
   const char* data = input.at(position).c_str();
   auto_ptr<ExpressionPiece> ep(get_data(data));
 
-  if(ep->expressionValueType() != libReallive::ValueTypeInteger)
+  if (ep->expressionValueType() != libReallive::ValueTypeInteger)
   {
     throw rlvm::Exception("IntConstant_T parse err.");
   }
@@ -193,7 +193,7 @@ void IntReference_T::parseParameters(
   const char* data = input.at(position).c_str();
   auto_ptr<ExpressionPiece> ep(get_data(data));
 
-  if(ep->expressionValueType() != libReallive::ValueTypeInteger)
+  if (ep->expressionValueType() != libReallive::ValueTypeInteger)
   {
     throw rlvm::Exception("IntReference_T parse err.");
   }
@@ -221,7 +221,7 @@ void StrConstant_T::parseParameters(
   const char* data = input.at(position).c_str();
   auto_ptr<ExpressionPiece> ep(get_data(data));
 
-  if(ep->expressionValueType() != libReallive::ValueTypeString)
+  if (ep->expressionValueType() != libReallive::ValueTypeString)
   {
     throw rlvm::Exception("StrConstant_T parse err.");
   }
@@ -250,7 +250,7 @@ void StrReference_T::parseParameters(
   const char* data = input.at(position).c_str();
   auto_ptr<ExpressionPiece> ep(get_data(data));
 
-  if(ep->expressionValueType() != libReallive::ValueTypeString)
+  if (ep->expressionValueType() != libReallive::ValueTypeString)
   {
     throw rlvm::Exception("StrReference_T parse err.");
   }
@@ -292,7 +292,7 @@ void RLOp_SpecialCase::parseParameters(
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output)
 {
-  for(vector<string>::const_iterator it = input.begin(); it != input.end();
+  for (vector<string>::const_iterator it = input.begin(); it != input.end();
       ++it)
   {
     const char* src = it->c_str();
@@ -306,7 +306,7 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
                                         const libReallive::CommandElement& ff)
 {
   // First try to run the default parse_parameters if we can.
-  if(!ff.areParametersParsed())
+  if (!ff.areParametersParsed())
   {
     const vector<string>& unparsed = ff.getUnparsedParameters();
     ptr_vector<ExpressionPiece> output;

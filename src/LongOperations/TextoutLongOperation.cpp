@@ -87,7 +87,7 @@ TextoutLongOperation::~TextoutLongOperation()
 bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed)
 {
-  if(pressed && mouseButton == MOUSE_LEFT) {
+  if (pressed && mouseButton == MOUSE_LEFT) {
     no_wait_ = true;
     return true;
   }
@@ -99,7 +99,7 @@ bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 {
-  if(pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
+  if (pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
     no_wait_ = true;
     return true;
   }
@@ -112,8 +112,8 @@ bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine)
 {
   bool paused = false;
-  while(!displayOneMoreCharacter(machine, paused))
-    if(paused)
+  while (!displayOneMoreCharacter(machine, paused))
+    if (paused)
       return false;
 
   return true;
@@ -138,13 +138,13 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
   int codepoint = utf8::next(it, strend);
 
   // Eat all characters between the name brackets
-  while(codepoint != 0x3011 && it != strend)
+  while (codepoint != 0x3011 && it != strend)
   {
     curend = it;
     codepoint = utf8::next(it, strend);
   }
 
-  if(codepoint != 0x3011 && it == strend)
+  if (codepoint != 0x3011 && it == strend)
     throw SystemError("Malformed string code. Opening bracket in \\{name} construct,"
                       " but missing closing bracket.");
 
@@ -154,7 +154,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
   // Consume the next character
   current_position_ = it;
 
-  if(it != strend)
+  if (it != strend)
   {
     current_codepoint_ = utf8::next(it, strend);
     current_char_ = string(current_position_, it);
@@ -173,7 +173,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
 bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
                                                    bool& paused)
 {
-  if(current_codepoint_ == 0x3010)
+  if (current_codepoint_ == 0x3010)
   {
     // The current character is the opening character for a name. We
     // treat names as a single display operation
@@ -185,11 +185,11 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
     string::iterator it = current_position_;
     string::iterator strend = m_utf8string.end();
 
-    if(it != strend)
+    if (it != strend)
     {
       int codepoint = utf8::next(it, strend);
       TextPage& page = machine.system().text().currentPage();
-      if(codepoint)
+      if (codepoint)
       {
         string nextChar(current_position_, it);
         bool rendered = page.character(current_char_, nextChar);
@@ -197,7 +197,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
         // Check to see if this character was rendered to the screen. If
         // this is false, then the page is probably full and the check
         // later on will do something about that.
-        if(rendered)
+        if (rendered)
         {
           current_char_ = nextChar;
           current_position_ = it;
@@ -211,7 +211,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       }
 
       // Call the pause operation if we've filled up the current page.
-      if(page.isFull())
+      if (page.isFull())
       {
         paused = true;
         machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -235,10 +235,10 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
 bool TextoutLongOperation::operator()(RLMachine& machine)
 {
   // Check to make sure we're not trying to do a textout (impossible!)
-  if(!machine.system().text().systemVisible())
+  if (!machine.system().text().systemVisible())
     throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
 
-  if(no_wait_)
+  if (no_wait_)
     return displayAsMuchAsWeCanThenPause(machine);
   else
   {

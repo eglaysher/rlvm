@@ -222,7 +222,7 @@ char* OVKVoiceSample::decode(int* size) {
           buffer = new_buffer;
           buffer_size = new_size;
         }
-	} while(1);
+	} while (1);
 	ov_clear(&vf);
 
     *size = buffer_size;
@@ -289,7 +289,7 @@ OVKVoiceArchive::~OVKVoiceArchive() {
 
 shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
-      find_if(entries_.begin(), entries_.end(),
+      find_if (entries_.begin(), entries_.end(),
               bind(&Entry::koe_num, _1) == sample_num);
   if (it != entries_.end()) {
     return shared_ptr<VoiceSample>(

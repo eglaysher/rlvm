@@ -118,13 +118,13 @@ void MultiDispatch::operator()(
 {
   const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
 
-  for(unsigned int i = 0; i < parameter_pieces.size(); ++i) {
+  for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const ptr_vector<ExpressionPiece>& element =
         dynamic_cast<const ComplexExpressionPiece&>(parameter_pieces[i]).
         getContainedPieces();
 
     // @todo Do whatever is needed to get this part working...
-    //     if(!handler->checkTypes(machine, element)) {
+    //     if (!handler->checkTypes(machine, element)) {
     //       throw Error("Expected type mismatch in parameters in MultiDispatch.");
     //     }
 

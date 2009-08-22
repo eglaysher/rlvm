@@ -91,7 +91,7 @@ struct Obj_objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;
 
-    for(int i = min; i < max; ++i) {
+    for (int i = min; i < max; ++i) {
       getGraphicsObject(machine, this, i).clearObject();
     }
   }

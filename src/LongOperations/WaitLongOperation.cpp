@@ -108,7 +108,7 @@ bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     if (mouseButton == MOUSE_LEFT) {
       button_pressed_ = 1;
       return true;
-    } else if(mouseButton == MOUSE_RIGHT) {
+    } else if (mouseButton == MOUSE_RIGHT) {
       button_pressed_ = -1;
       return true;
     }
@@ -159,7 +159,7 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
     if (button_pressed_) {
       done = true;
       machine.setStoreRegister(button_pressed_);
-    } else if(done) {
+    } else if (done) {
       if (save_click_location_)
         recordMouseCursorPosition();
       machine.setStoreRegister(0);

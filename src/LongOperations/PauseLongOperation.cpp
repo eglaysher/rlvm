@@ -93,29 +93,29 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
   TextSystem& text = machine.system().text();
 
-  switch(mouseButton)
+  switch (mouseButton)
   {
   case MOUSE_LEFT:
   {
     Point pos = es.getCursorPos();
     // Only unhide the interface on release of the left mouse button
-    if(graphics.interfaceHidden())
+    if (graphics.interfaceHidden())
     {
-      if(!pressed) {
+      if (!pressed) {
         graphics.toggleInterfaceHidden();
         return true;
       }
     }
-    else if(!machine.system().text().handleMouseClick(machine, pos, pressed))
+    else if (!machine.system().text().handleMouseClick(machine, pos, pressed))
     {
       // We *must* only respond on mouseups! This detail matters because in
       // rlBabel, if glosses are enabled, an spause() is called and then the
       // mouse button value returned by GetCursorPos needs to be "2" for the
       // rest of the gloss implementation to work. If we respond on a
       // mousedown, then it'll return "1" instead.
-      if(!pressed)
+      if (!pressed)
       {
-        if(text.isReadingBacklog())
+        if (text.isReadingBacklog())
         {
           // Move back to the main page.
           text.stopReadingBacklog();
@@ -175,16 +175,16 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
           (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
         is_done_ = true;
         handled = true;
-      } else if(keyCode == RLKEY_SPACE) {
+      } else if (keyCode == RLKEY_SPACE) {
         graphics.toggleInterfaceHidden();
         handled = true;
-      } else if(keyCode == RLKEY_UP) {
+      } else if (keyCode == RLKEY_UP) {
         text.backPage();
         handled = true;
-      } else if(keyCode == RLKEY_DOWN) {
+      } else if (keyCode == RLKEY_DOWN) {
         text.forwardPage();
         handled = true;
-      } else if(keyCode == RLKEY_RETURN) {
+      } else if (keyCode == RLKEY_RETURN) {
         if (text.isReadingBacklog())
           text.stopReadingBacklog();
         else

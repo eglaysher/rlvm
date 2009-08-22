@@ -107,7 +107,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   fs::path basename = gameexe("__GAMEPATH").to_string();
   fs::path filename = correctPathCase(basename / "dat" / cgtable);
   fs::ifstream file(filename, ifstream::in | ifstream::binary);
-  if(!file)
+  if (!file)
   {
     ostringstream oss;
     oss << "Could not open file \"" << filename << "\".";
@@ -116,7 +116,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
 
   int size;
   scoped_array<char> data;
-  if(loadFileData(file, data, size)) {
+  if (loadFileData(file, data, size)) {
     ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());
@@ -129,7 +129,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   }
 
   int cgm_size = read_little_endian_int(data.get() + 0x10);
-  for(int i = 0; i < size - 0x20; i++) {
+  for (int i = 0; i < size - 0x20; i++) {
     data[i+0x20] ^= cgm_xor_key[i&0xff];
   }
 

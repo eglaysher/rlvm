@@ -71,7 +71,7 @@ GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
   GraphicsSystem& graphics = machine.system().graphics();
 
   int fgbg;
-  if(!op->getProperty(P_FGBG, fgbg))
+  if (!op->getProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
   int parentobj;
@@ -92,7 +92,7 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
   GraphicsSystem& graphics = machine.system().graphics();
 
   int fgbg;
-  if(!op->getProperty(P_FGBG, fgbg))
+  if (!op->getProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
   int parentobj;
@@ -120,7 +120,7 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
 
   // Range check the data
-  if(allParameters.size() < 1)
+  if (allParameters.size() < 1)
     throw rlvm::Exception("Less than one argument to an objLayered function!");
 
   int objset = allParameters[0].integerValue(machine);

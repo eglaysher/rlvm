@@ -68,7 +68,7 @@ void setObjectDataToGan(
   /// @todo This is a hack and probably a source of errors. Figure
   ///       out what '???' means when used as the first parameter to
   ///       objOfFileGan.
-  if(imgFilename == "???")
+  if (imgFilename == "???")
     imgFilename = ganFilename;
   obj.setObjectData(
       new GanGraphicsObjectData(machine.system(), ganFilename, imgFilename));

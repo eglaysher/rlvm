@@ -85,10 +85,10 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
       GraphicsObject& obj = getObject(machine);
       bool done = true;
 
-      if(obj.hasObjectData())
+      if (obj.hasObjectData())
       {
         const GraphicsObjectData& data = obj.objectData();
-        if(data.isAnimation())
+        if (data.isAnimation())
           done = !data.currentlyPlaying();
       }
 
@@ -124,17 +124,17 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
 
-    if(obj.hasObjectData())
+    if (obj.hasObjectData())
     {
       GraphicsObjectData& data = obj.objectData();
-      if(data.isAnimation())
+      if (data.isAnimation())
       {
         data.playSet(animationSet);
         data.setAfterAction(after_effect_);
 
         if (block_) {
           int fgbg;
-          if(!getProperty(P_FGBG, fgbg))
+          if (!getProperty(P_FGBG, fgbg))
             fgbg = OBJ_FG;
 
           int parent_object;

@@ -78,7 +78,7 @@ bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
 boost::shared_ptr<Surface> GraphicsTextObject::currentSurface(
   const GraphicsObject& go)
 {
-  if(needsUpdate(go))
+  if (needsUpdate(go))
     updateSurface(go);
 
   return surface_;
@@ -95,7 +95,7 @@ void GraphicsTextObject::objectInfo(std::ostream& tree)
 
 int GraphicsTextObject::pixelWidth(const GraphicsObject& rp)
 {
-  if(needsUpdate(rp))
+  if (needsUpdate(rp))
     updateSurface(rp);
 
   return int((rp.width() / 100.0f) * surface_->size().width());
@@ -105,7 +105,7 @@ int GraphicsTextObject::pixelWidth(const GraphicsObject& rp)
 
 int GraphicsTextObject::pixelHeight(const GraphicsObject& rp)
 {
-  if(needsUpdate(rp))
+  if (needsUpdate(rp))
     updateSurface(rp);
 
   return int((rp.height() / 100.0f) * surface_->size().height());

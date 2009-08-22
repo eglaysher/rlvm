@@ -66,9 +66,9 @@ Header::Header(const char* data, const size_t length)
   string compiler = string(data, 4);
 
   // Check the version of the compiler.
-  if(read_i32(data + 4) == 10002)
+  if (read_i32(data + 4) == 10002)
     use_xor_2 = false;
-  else if(read_i32(data + 4) == 110002)
+  else if (read_i32(data + 4) == 110002)
     use_xor_2 = true;
   else {
     // New xor key?
@@ -141,7 +141,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
     it->offset_ = pos;
 
     // Keep track of the entrypoints
-    if(it->type() == Entrypoint) {
+    if (it->type() == Entrypoint) {
       entrypointAssociations.insert(make_pair(it->entrypoint(), it));
     }
 
@@ -224,7 +224,7 @@ Script::remove_elt(pointer_t& it)
 const pointer_t Script::getEntrypoint(int entrypoint) const
 {
   pointernumber::const_iterator it = entrypointAssociations.find(entrypoint);
-  if(it == entrypointAssociations.end())
+  if (it == entrypointAssociations.end())
     throw Error("Unknown entrypoint");
 
   return it->second;

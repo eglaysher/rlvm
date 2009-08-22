@@ -51,7 +51,7 @@ using boost::bind;
 
 void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event)
 {
-  switch(event.key.keysym.sym)
+  switch (event.key.keysym.sym)
   {
   case SDLK_LSHIFT:
   case SDLK_RSHIFT:
@@ -91,7 +91,7 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event)
 
 void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event)
 {
-  switch(event.key.keysym.sym)
+  switch (event.key.keysym.sym)
   {
   case SDLK_LSHIFT:
   case SDLK_RSHIFT:
@@ -128,7 +128,7 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event)
 
 void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event)
 {
-  if(mouse_inside_window_)
+  if (mouse_inside_window_)
   {
     // Handle this somehow.
     mouse_pos_ = Point(event.motion.x, event.motion.y);
@@ -143,18 +143,18 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event)
 void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
                                             SDL_Event& event)
 {
-  if(mouse_inside_window_)
+  if (mouse_inside_window_)
   {
     bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
     int press_code = pressed ? 1 : 2;
 
-    if(event.button.button == SDL_BUTTON_LEFT)
+    if (event.button.button == SDL_BUTTON_LEFT)
       m_button1State = press_code;
-    else if(event.button.button == SDL_BUTTON_RIGHT)
+    else if (event.button.button == SDL_BUTTON_RIGHT)
       m_button2State = press_code;
 
     MouseButton button = MOUSE_NONE;
-    switch(event.button.button)
+    switch (event.button.button)
     {
     case SDL_BUTTON_LEFT:
       button = MOUSE_LEFT;
@@ -184,12 +184,12 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event)
 {
-  if(event.active.state & SDL_APPINPUTFOCUS) {
+  if (event.active.state & SDL_APPINPUTFOCUS) {
     mouse_inside_window_ = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
 
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   }
-  else if(event.active.state & SDL_APPMOUSEFOCUS) {
+  else if (event.active.state & SDL_APPMOUSEFOCUS) {
     mouse_inside_window_ = event.active.gain == 1;
 
     // Force a mouse refresh:
@@ -215,9 +215,9 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine)
   EventSystem::executeEventSystem(machine);
 
   SDL_Event event;
-  while(SDL_PollEvent(&event))
+  while (SDL_PollEvent(&event))
   {
-    switch(event.type)
+    switch (event.type)
     {
     case SDL_KEYDOWN:
     {

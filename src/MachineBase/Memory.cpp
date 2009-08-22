@@ -145,12 +145,12 @@ void Memory::connectIntVarPointers()
 
 const std::string& Memory::getStringValue(int type, int location)
 {
-  if(location > (SIZE_OF_MEM_BANK -1))
+  if (location > (SIZE_OF_MEM_BANK -1))
     throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
 
-  switch(type) {
+  switch (type) {
   case STRK_LOCATION:
-    if(location > 2)
+    if (location > 2)
       throw rlvm::Exception("Invalid range access on strK in RLMachine::set_string_value");
     return local_.strK[location];
   case STRM_LOCATION: return global_->strM[location];
@@ -164,12 +164,12 @@ const std::string& Memory::getStringValue(int type, int location)
 
 void Memory::setStringValue(int type, int number, const std::string& value)
 {
-  if(number > (SIZE_OF_MEM_BANK -1))
+  if (number > (SIZE_OF_MEM_BANK -1))
       throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
 
-  switch(type) {
+  switch (type) {
   case STRK_LOCATION:
-    if(number > 2)
+    if (number > 2)
       throw rlvm::Exception("Invalid range access on strK in RLMachine::set_string_value");
     local_.strK[number] = value;
     break;
@@ -188,7 +188,7 @@ void Memory::setStringValue(int type, int number, const std::string& value)
 
 void Memory::checkNameIndex(int index, const std::string& name) const
 {
-  if(index > (SIZE_OF_NAME_BANK - 1)) {
+  if (index > (SIZE_OF_NAME_BANK - 1)) {
     ostringstream oss;
     oss << "Invalid index " << index << " in " << name;
     throw rlvm::Exception(oss.str());
@@ -278,7 +278,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe)
   // Note: We ignore the \#NAME_MAXLEN variable because manual allocation is
   // error prone and for losers.
   GameexeFilteringIterator end = gameexe.filtering_end();
-  for(GameexeFilteringIterator it = gameexe.filtering_begin("NAME.");
+  for (GameexeFilteringIterator it = gameexe.filtering_begin("NAME.");
       it != end; ++it)
   {
     try {
@@ -289,7 +289,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe)
     }
   }
 
-  for(GameexeFilteringIterator it = gameexe.filtering_begin("LOCALNAME.");
+  for (GameexeFilteringIterator it = gameexe.filtering_begin("LOCALNAME.");
       it != end; ++it)
   {
     try {

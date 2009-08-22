@@ -80,7 +80,7 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
     const std::string& file_name, SoundChunkCache& cache)
 {
   SDLSoundChunkPtr sample = cache.fetch(file_name);
-  if(sample == NULL)
+  if (sample == NULL)
   {
     fs::path file_path = findFile(system(), file_name, SOUND_FILETYPES);
     sample.reset(new SDLSoundChunk(file_path));
@@ -101,7 +101,7 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::buildKoeChunk(
 
 void SDLSoundSystem::wavPlayImpl(const std::string& wav_file, const int channel, bool loop)
 {
-  if(pcmEnabled())
+  if (pcmEnabled())
   {
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
@@ -116,12 +116,12 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(const std::string& bgm_nam
 {
   const DSTable& ds_table = getDSTable();
   DSTable::const_iterator ds_it = ds_table.find(boost::to_lower_copy(bgm_name));
-  if(ds_it != ds_table.end())
+  if (ds_it != ds_table.end())
     return SDLMusic::CreateMusic(system(), ds_it->second);
 
   const CDTable& cd_table = getCDTable();
   CDTable::const_iterator cd_it = cd_table.find(boost::to_lower_copy(bgm_name));
-  if(cd_it != cd_table.end())
+  if (cd_it != cd_table.end())
   {
     ostringstream oss;
     oss << "CD music not supported yet. Could not play track \""
@@ -152,13 +152,13 @@ SDLSoundSystem::SDLSoundSystem(System& system)
 
   /* This is where we open up our audio device.  Mix_OpenAudio takes
      as its parameters the audio format we'd /like/ to have. */
-  if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
+  if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
     throw SystemError("Couldn't initialize audio");
   }
 
   // Jagarl's sound system wants information on the audio settings.
 	int freq, channels; Uint16 format;
-	if(Mix_QuerySpec(&freq, &format, &channels) ) {
+	if (Mix_QuerySpec(&freq, &format, &channels) ) {
 		WAVFILE::freq = freq;
 		WAVFILE::format = format;
 		WAVFILE::channels = channels;
@@ -215,7 +215,7 @@ void SDLSoundSystem::setChannelVolume(const int channel, const int level)
 void SDLSoundSystem::wavPlay(const std::string& wav_file, bool loop)
 {
   int channel_number = SDLSoundChunk::FindNextFreeExtraChannel();
-  if(channel_number == -1)
+  if (channel_number == -1)
   {
     ostringstream oss;
     oss << "Couldn't find a free channel for wavPlay()";
@@ -241,7 +241,7 @@ void SDLSoundSystem::wavPlay(const std::string& wav_file,
 {
   checkChannel(channel, "SDLSoundSystem::wav_play");
 
-  if(pcmEnabled())
+  if (pcmEnabled())
   {
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
@@ -265,7 +265,7 @@ void SDLSoundSystem::wavStop(const int channel)
 {
   checkChannel(channel, "SDLSoundSystem::wav_stop");
 
-  if(pcmEnabled())
+  if (pcmEnabled())
   {
     SDLSoundChunk::StopChannel(channel);
   }
@@ -275,7 +275,7 @@ void SDLSoundSystem::wavStop(const int channel)
 
 void SDLSoundSystem::wavStopAll()
 {
-  if(pcmEnabled())
+  if (pcmEnabled())
   {
     SDLSoundChunk::StopAllChannels();
   }
@@ -287,7 +287,7 @@ void SDLSoundSystem::wavFadeOut(const int channel, const int fadetime)
 {
   checkChannel(channel, "SDLSoundSystem::wav_fade_out");
 
-  if(pcmEnabled())
+  if (pcmEnabled())
     SDLSoundChunk::FadeOut(channel, fadetime);
 }
 
@@ -295,10 +295,10 @@ void SDLSoundSystem::wavFadeOut(const int channel, const int fadetime)
 
 void SDLSoundSystem::playSe(const int se_num)
 {
-  if(seEnabled())
+  if (seEnabled())
   {
     SeTable::const_iterator it = seTable().find(se_num);
-    if(it == seTable().end())
+    if (it == seTable().end())
     {
       ostringstream oss;
       oss << "No #SE entry found for sound effect number " << se_num;
@@ -311,7 +311,7 @@ void SDLSoundSystem::playSe(const int se_num)
     // Make sure there isn't anything playing on the current channel
     Mix_HaltChannel(channel);
 
-    if(file_name == "")
+    if (file_name == "")
     {
       // Just stop a channel in case of an empty file name.
       return;
@@ -330,7 +330,7 @@ void SDLSoundSystem::playSe(const int se_num)
 int SDLSoundSystem::bgmStatus() const
 {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
   {
     return currently_playing->bgmStatus();
   }
@@ -379,7 +379,7 @@ void SDLSoundSystem::bgmPlay(const std::string& bgm_name,
 void SDLSoundSystem::bgmStop()
 {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
     currently_playing->stop();
 }
 
@@ -388,7 +388,7 @@ void SDLSoundSystem::bgmStop()
 void SDLSoundSystem::bgmPause()
 {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
     currently_playing->pause();
 }
 
@@ -397,7 +397,7 @@ void SDLSoundSystem::bgmPause()
 void SDLSoundSystem::bgmUnPause()
 {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
     currently_playing->unpause();
 }
 
@@ -405,7 +405,7 @@ void SDLSoundSystem::bgmUnPause()
 
 void SDLSoundSystem::bgmFadeOut(int fade_out_ms) {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
     currently_playing->fadeOut(fade_out_ms);
 }
 
@@ -413,7 +413,7 @@ void SDLSoundSystem::bgmFadeOut(int fade_out_ms) {
 
 std::string SDLSoundSystem::bgmName() const {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
     return currently_playing->name();
   else
     return "";
@@ -423,7 +423,7 @@ std::string SDLSoundSystem::bgmName() const {
 
 bool SDLSoundSystem::bgmLooping() const {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
-  if(currently_playing)
+  if (currently_playing)
     return currently_playing->isLooping();
   else
     return false;

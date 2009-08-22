@@ -108,7 +108,7 @@ Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
 // -----------------------------------------------------------------------
 
 bool Gloss::contains(const Point& point) {
-  return std::find_if(link_areas_.begin(), link_areas_.end(),
+  return std::find_if (link_areas_.begin(), link_areas_.end(),
                       bind(&Rect::contains, _1, point)) != link_areas_.end();
 }
 
@@ -582,7 +582,7 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
   y -= window->textY1();
 
   std::vector<Gloss>::const_iterator it =
-      std::find_if(glosses_.begin(), glosses_.end(),
+      std::find_if (glosses_.begin(), glosses_.end(),
                    bind(&Gloss::contains, _1, Point(x, y)));
   if (it == glosses_.end())
     return 0;

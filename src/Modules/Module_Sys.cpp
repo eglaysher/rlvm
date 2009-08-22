@@ -236,9 +236,9 @@ struct Sys_max : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
 
 struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
-    if(var2 < var1)
+    if (var2 < var1)
       return var1;
-    else if(var2 > var3)
+    else if (var2 > var3)
       return var3;
     else
       return var2;

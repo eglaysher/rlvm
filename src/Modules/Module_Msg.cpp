@@ -89,7 +89,7 @@ struct Msg_pause : public RLOp_Void_Void
     boost::shared_ptr<TextWindow> textWindow =
       text.textWindow(windowNum);
 
-    if(textWindow->actionOnPause())
+    if (textWindow->actionOnPause())
     {
       machine.pushLongOperation(
         new NewParagraphAfterLongop(new PauseLongOperation(machine)));
@@ -153,7 +153,7 @@ struct Msg_msgHideAll : public RLOp_Void_Void {
     TextSystem& text = machine.system().text();
 
     vector<int> activeWindows = text.activeWindows();
-    for(vector<int>::const_iterator it = activeWindows.begin();
+    for (vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it) {
       text.hideTextWindow(*it);
       text.newPageOnWindow(*it);
@@ -180,7 +180,7 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
     vector<int> activeWindows = text.activeWindows();
     int activeWindow = text.activeWindow();
 
-    for(vector<int>::const_iterator it = activeWindows.begin();
+    for (vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it)
     {
       text.textWindow(activeWindow)->clearWin();

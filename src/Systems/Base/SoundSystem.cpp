@@ -88,9 +88,9 @@ int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time)
   double percent = double(cur_offset) / end_offset;
 
   int candidate_vol = start_volume + (percent * (final_volume - start_volume));
-  if(candidate_vol < start_volume)
+  if (candidate_vol < start_volume)
     candidate_vol = start_volume;
-  else if(candidate_vol > final_volume)
+  else if (candidate_vol > final_volume)
     candidate_vol = final_volume;
 
   return candidate_vol;
@@ -144,7 +144,7 @@ SoundSystem::SoundSystem(System& system)
   // Read the \#SE.xxx entries from the Gameexe
   GameexeFilteringIterator se = gexe.filtering_begin("SE.");
   GameexeFilteringIterator end = gexe.filtering_end();
-  for(; se != end; ++se)
+  for (; se != end; ++se)
   {
     string raw_number = se->key_parts().at(1);
     int entry_number = lexical_cast<int>(raw_number);
@@ -157,7 +157,7 @@ SoundSystem::SoundSystem(System& system)
 
   // Read the \#DSTRACK entries
   GameexeFilteringIterator dstrack = gexe.filtering_begin("DSTRACK");
-  for(; dstrack != end; ++dstrack)
+  for (; dstrack != end; ++dstrack)
   {
     int from = dstrack->getIntAt(0);
     int to = dstrack->getIntAt(1);
@@ -171,7 +171,7 @@ SoundSystem::SoundSystem(System& system)
 
   // Read the \#CDTRACK entries
   GameexeFilteringIterator cdtrack = gexe.filtering_begin("CDTRACK");
-  for(; cdtrack != end; ++cdtrack)
+  for (; cdtrack != end; ++cdtrack)
   {
     int from = cdtrack->getIntAt(0);
     int to = cdtrack->getIntAt(1);
@@ -184,7 +184,7 @@ SoundSystem::SoundSystem(System& system)
 
   // Read the \#KOEONOFF entries
   GameexeFilteringIterator koeonoff = gexe.filtering_begin("KOEONOFF.");
-  for(; koeonoff != end; ++koeonoff)
+  for (; koeonoff != end; ++koeonoff)
   {
     std::vector<string> keyparts = koeonoff->key_parts();
     int usekoe_id = lexical_cast<int>(keyparts.at(1));
@@ -229,9 +229,9 @@ void SoundSystem::executeSoundSystem()
   unsigned int cur_time = system().event().getTicks();
 
   ChannelAdjustmentMap::iterator it = pcm_adjustment_tasks_.begin();
-  while(it != pcm_adjustment_tasks_.end())
+  while (it != pcm_adjustment_tasks_.end())
   {
-    if(cur_time >= it->second.end_time)
+    if (cur_time >= it->second.end_time)
     {
       setChannelVolume(it->first, it->second.final_volume);
       pcm_adjustment_tasks_.erase(it++);
@@ -508,7 +508,7 @@ void SoundSystem::reset()
 // static
 void SoundSystem::checkChannel(int channel, const char* function_name)
 {
-  if(channel < 0 || channel > NUM_BASE_CHANNELS)
+  if (channel < 0 || channel > NUM_BASE_CHANNELS)
   {
     ostringstream oss;
     oss << "Invalid channel number " << channel << " in " << function_name;
@@ -521,7 +521,7 @@ void SoundSystem::checkChannel(int channel, const char* function_name)
 // static
 void SoundSystem::checkVolume(int level, const char* function_name)
 {
-  if(level < 0 || level > 255)
+  if (level < 0 || level > 255)
   {
     ostringstream oss;
     oss << "Invalid volume \"" << level << "\". Valid values are 0-255.";

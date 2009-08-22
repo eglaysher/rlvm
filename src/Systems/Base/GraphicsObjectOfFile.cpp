@@ -124,16 +124,16 @@ GraphicsObjectData* GraphicsObjectOfFile::clone() const
 
 void GraphicsObjectOfFile::execute()
 {
-  if(currentlyPlaying())
+  if (currentlyPlaying())
   {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
       current_time - time_at_last_frame_change_;
 
-    while(time_since_last_frame_change > frame_time_)
+    while (time_since_last_frame_change > frame_time_)
     {
       current_frame_++;
-      if(current_frame_ == surface_->numPatterns())
+      if (current_frame_ == surface_->numPatterns())
       {
         current_frame_--;
         endAnimation();
@@ -172,7 +172,7 @@ boost::shared_ptr<Surface> GraphicsObjectOfFile::currentSurface(
 
 Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go)
 {
-  if(currentlyPlaying())
+  if (currentlyPlaying())
     return surface_->getPattern(current_frame_).rect;
 
   return GraphicsObjectData::srcRect(go);

@@ -46,20 +46,20 @@ fs::path findFontFile(System& system)
 fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
 {
   // HACK: If the user has overridden the __GAMEFONT, use it instead.
-  if(gexe.exists("__GAMEFONT"))
+  if (gexe.exists("__GAMEFONT"))
   {
     std::string gamefontstr = gexe("__GAMEFONT");
     fs::path gameFont = fs::path(gamefontstr);
-    if(fs::exists(gameFont))
+    if (fs::exists(gameFont))
       return gameFont;
   }
 
   // HACK: Look for the font in the game
-  if(gexe.exists("__GAMEPATH"))
+  if (gexe.exists("__GAMEPATH"))
   {
     std::string gamepath = gexe("__GAMEPATH");
     fs::path gamePathFont = fs::path(gamepath) / fileName;
-    if(fs::exists(gamePathFont))
+    if (fs::exists(gamePathFont))
       return gamePathFont;
   }
 
@@ -76,7 +76,7 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
 
   fs::path filePath = home / fileName;
 
-  if(fs::exists(filePath))
+  if (fs::exists(filePath))
     return filePath;
   else
     return fs::path();

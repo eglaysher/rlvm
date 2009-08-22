@@ -86,12 +86,12 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
   int rowsToDisplay = int((float(currentTime) / duration()) *
                           (blindSize() + numBlinds));
 
-  for(int currentBlind = 0; currentBlind < numBlinds; ++currentBlind)
+  for (int currentBlind = 0; currentBlind < numBlinds; ++currentBlind)
   {
-    if(currentBlind <= rowsToDisplay)
+    if (currentBlind <= rowsToDisplay)
     {
       int currentlyDisplayed = abs(currentBlind - rowsToDisplay);
-      if(currentlyDisplayed > blindSize())
+      if (currentlyDisplayed > blindSize())
         currentlyDisplayed = blindSize();
 
       int polygonStart = currentBlind * blindSize();
@@ -109,12 +109,12 @@ void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
   int rowsToDisplay = int((float(currentTime) / duration()) *
                           (blindSize() + numBlinds));
 
-  for(int currentBlind = numBlinds; currentBlind >= 0; --currentBlind)
+  for (int currentBlind = numBlinds; currentBlind >= 0; --currentBlind)
   {
-    if((numBlinds - currentBlind) < rowsToDisplay)
+    if ((numBlinds - currentBlind) < rowsToDisplay)
     {
       int currentlyDisplayed = abs(numBlinds - currentBlind - rowsToDisplay);
-      if(currentlyDisplayed > blindSize())
+      if (currentlyDisplayed > blindSize())
         currentlyDisplayed = blindSize();
 
       int bottomOfPolygon = currentBlind * blindSize();

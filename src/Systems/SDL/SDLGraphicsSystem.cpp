@@ -141,7 +141,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   renderObjects(NULL);
 
   // Render text
-  if(!interfaceHidden())
+  if (!interfaceHidden())
     system().text().render(NULL);
 
   return endFrameToSurface();
@@ -225,9 +225,9 @@ void SDLGraphicsSystem::redrawLastFrame()
 void SDLGraphicsSystem::drawCursor()
 {
   boost::shared_ptr<MouseCursor> cursor;
-  if(static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
+  if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
     cursor = currentCursor();
-  if(cursor)
+  if (cursor)
   {
     Point hotspot = cursorPos();
     Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
@@ -259,7 +259,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     screen_tex_height_(0),
     image_cache_(20)
 {
-  for(int i = 0; i < 16; ++i)
+  for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
 
   setScreenSize(getScreenSize(gameexe));
@@ -280,7 +280,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   setWindowTitle();
 
   // When debug is set, display trace data in the titlebar
-  if(gameexe("MEMORY").exists())
+  if (gameexe("MEMORY").exists())
   {
     display_data_in_titlebar_ = true;
   }
@@ -292,7 +292,7 @@ void SDLGraphicsSystem::setupVideo() {
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo( );
 
-  if( !info ) {
+  if ( !info ) {
     ostringstream ss;
     ss << "Video query failed: " << SDL_GetError();
     throw SystemError(ss.str());
@@ -326,7 +326,7 @@ void SDLGraphicsSystem::setupVideo() {
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
   // Set the video mode
-  if((screen_ = SDL_SetVideoMode(
+  if ((screen_ = SDL_SetVideoMode(
         screenSize().width(), screenSize().height(), bpp, video_flags)) == 0 )
   {
     // This could happen for a variety of reasons,
@@ -339,7 +339,7 @@ void SDLGraphicsSystem::setupVideo() {
 
   // Initialize glew
   GLenum err = glewInit();
-  if(GLEW_OK != err)
+  if (GLEW_OK != err)
   {
     ostringstream oss;
     oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
@@ -433,11 +433,11 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 
   // Update the seen.
   int current_time = machine.system().event().getTicks();
-  if((current_time - time_of_last_titlebar_update_) > 60)
+  if ((current_time - time_of_last_titlebar_update_) > 60)
   {
     time_of_last_titlebar_update_ = current_time;
 
-    if(machine.sceneNumber() != last_seen_number_ ||
+    if (machine.sceneNumber() != last_seen_number_ ||
        machine.lineNumber() != last_line_number_)
     {
       last_seen_number_ = machine.sceneNumber();
@@ -454,12 +454,12 @@ void SDLGraphicsSystem::setWindowTitle()
   ostringstream oss;
   oss << caption_title_;
 
-  if(displaySubtitle() && subtitle_ != "")
+  if (displaySubtitle() && subtitle_ != "")
   {
     oss << ": " << subtitle_;
   }
 
-  if(display_data_in_titlebar_)
+  if (display_data_in_titlebar_)
   {
     oss << " - (SEEN" << last_seen_number_ << ")(Line "
         << last_line_number_ << ")";
@@ -496,21 +496,21 @@ void SDLGraphicsSystem::setScreenMode(const int in) {
 
 void SDLGraphicsSystem::allocateDC(int dc, Size size)
 {
-  if(dc >= 16)
+  if (dc >= 16)
     throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
-  if(dc == 0)
+  if (dc == 0)
     throw rlvm::Exception("Attempting to reallocate DC 0!");
 
   // DC 1 is a special case and must always be at least the size of
   // the screen.
-  if(dc == 1)
+  if (dc == 1)
   {
     SDL_Surface* dc0 = *(display_contexts_[0]);
-    if(size.width() < dc0->w)
+    if (size.width() < dc0->w)
       size.setWidth(dc0->w);
-    if(size.height() < dc0->h)
+    if (size.height() < dc0->h)
       size.setHeight(dc0->h);
   }
 
@@ -522,9 +522,9 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size)
 
 void SDLGraphicsSystem::freeDC(int dc)
 {
-  if(dc == 0)
+  if (dc == 0)
     throw rlvm::Exception("Attempt to deallocate DC[0]");
-  else if(dc == 1)
+  else if (dc == 1)
   {
     // DC[1] never gets freed; it only gets blanked
     getDC(1)->fill(RGBAColour::Black());
@@ -537,14 +537,14 @@ void SDLGraphicsSystem::freeDC(int dc)
 
 void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
 {
-  if(dc >= 16)
+  if (dc >= 16)
   {
     ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
     throw rlvm::Exception(ss.str());
   }
 
-  if(display_contexts_[dc] == NULL)
+  if (display_contexts_[dc] == NULL)
   {
     ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
@@ -556,7 +556,7 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
 
 void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
 {
-  if(display_contexts_[dc] == NULL)
+  if (display_contexts_[dc] == NULL)
   {
     ostringstream ss;
     ss << "Couldn't allocate DC[" << dc << "] in " << caller
@@ -653,7 +653,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.file_string().c_str(), "rb");
-  if(!file)
+  if (!file)
   {
     ostringstream oss;
     oss << "Could not open file: " << filename;
@@ -699,7 +699,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   // Grab the Type-2 information out of the converter or create one
   // default region if none exist
   vector<SDLSurface::GrpRect> region_table;
-  if(conv->region_table.size())
+  if (conv->region_table.size())
   {
     transform(conv->region_table.begin(), conv->region_table.end(),
               back_inserter(region_table),

@@ -72,7 +72,7 @@ struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    if(es.frameCounterExists(layer_, counter))
+    if (es.frameCounterExists(layer_, counter))
       return es.getFrameCounter(layer_, counter).readFrame();
     else
       return 0;
@@ -89,7 +89,7 @@ struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    if(es.frameCounterExists(layer_, counter)) {
+    if (es.frameCounterExists(layer_, counter)) {
       return es.getFrameCounter(layer_, counter).isActive();
     } else {
       return 0;
@@ -107,9 +107,9 @@ struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
   int operator()(RLMachine& machine, int counter)
   {
     EventSystem& es = machine.system().event();
-    for(int i = 0; i < 255; ++i)
+    for (int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(layer_, counter) &&
+      if (es.frameCounterExists(layer_, counter) &&
          es.getFrameCounter(layer_, counter).isActive())
       {
         return 1;
@@ -160,9 +160,9 @@ struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
   {
     EventSystem& es = machine.system().event();
 
-    for(int i = 0; i < 255; ++i)
+    for (int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(layer_, i))
+      if (es.frameCounterExists(layer_, i))
       {
         FrameCounter& fc = es.getFrameCounter(layer_, i);
         fc.setActive(false);
@@ -183,9 +183,9 @@ struct Sys_ClearAllFrames_1 : public RLOp_Void_Void
   {
     EventSystem& es = machine.system().event();
 
-    for(int i = 0; i < 255; ++i)
+    for (int i = 0; i < 255; ++i)
     {
-      if(es.frameCounterExists(layer_, i))
+      if (es.frameCounterExists(layer_, i))
       {
         es.setFrameCounter(layer_, i, NULL);
       }
@@ -210,17 +210,17 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
 
     bool storeValue = false;
 
-    for(vector<FrameDataInReadFrames::type>::iterator it = frames.begin();
+    for (vector<FrameDataInReadFrames::type>::iterator it = frames.begin();
         it != frames.end(); ++it)
     {
       int counter = it->get<0>();
 
-      if(es.frameCounterExists(layer_, counter))
+      if (es.frameCounterExists(layer_, counter))
       {
         int val = es.getFrameCounter(layer_, counter).readFrame();
         *(it->get<1>()) = val;
 
-        if(es.getFrameCounter(layer_, counter).isActive())
+        if (es.getFrameCounter(layer_, counter).isActive())
           storeValue = true;
       }
       else
