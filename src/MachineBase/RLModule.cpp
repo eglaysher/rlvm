@@ -58,8 +58,7 @@ RLModule::RLModule(const std::string& in_module_name, int in_module_type,
                    int in_module_number)
     : property_list_(NULL),
       module_type_(in_module_type), module_number_(in_module_number),
-      module_name_(in_module_name)
-{}
+      module_name_(in_module_name) {}
 
 // -----------------------------------------------------------------------
 
@@ -70,16 +69,14 @@ RLModule::~RLModule() {
 
 // -----------------------------------------------------------------------
 
-int RLModule::packOpcodeNumber(int opcode, unsigned char overload)
-{
+int RLModule::packOpcodeNumber(int opcode, unsigned char overload) {
   return ((int)opcode << 8) | overload;
 }
 
 // -----------------------------------------------------------------------
 
 void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode,
-                                  unsigned char& overload)
-{
+                                  unsigned char& overload) {
   opcode = (packed_opcode >> 8);
   overload = packed_opcode & 0xFF;
 }
@@ -87,8 +84,7 @@ void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode,
 // -----------------------------------------------------------------------
 
 void RLModule::addOpcode(int opcode, unsigned char overload,
-                         const char* name, RLOperation* op)
-{
+                         const char* name, RLOperation* op) {
   int packed_opcode = packOpcodeNumber(opcode, overload);
   op->setName(name);
   op->module_ = this;
@@ -98,8 +94,7 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
 // -----------------------------------------------------------------------
 
 void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload,
-                                    const std::string& name)
-{
+                                    const std::string& name) {
   addOpcode(opcode, overload, "",
             new UndefinedFunction(name, module_type_, module_number_, opcode,
                                   (int)overload));
@@ -145,8 +140,7 @@ RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
 
 // -----------------------------------------------------------------------
 
-void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
-{
+void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {
   OpcodeMap::iterator it = stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations.end()) {
     try {
@@ -163,8 +157,7 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f)
 
 // -----------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& os, const RLModule& module)
-{
+std::ostream& operator<<(std::ostream& os, const RLModule& module) {
   os << "mod<" << module.moduleName() << "," << module.moduleType()
      << ":" << module.moduleNumber() << ">";
   return os;

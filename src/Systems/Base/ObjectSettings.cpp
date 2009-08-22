@@ -37,15 +37,13 @@
 
 ObjectSettings::ObjectSettings()
   : layer(0), space_key(0), obj_on_off(0), time_mod(0), disp_sort(0),
-    init_mod(0), weather_on_off(0)
-{}
+    init_mod(0), weather_on_off(0) {}
 
 // -----------------------------------------------------------------------
 
 ObjectSettings::ObjectSettings(const std::vector<int>& data)
   : layer(0), space_key(0), obj_on_off(0), time_mod(0), disp_sort(0),
-    init_mod(0), weather_on_off(0)
-{
+    init_mod(0), weather_on_off(0) {
   if (data.size() > 0)
     layer = data[0];
   if (data.size() > 1)

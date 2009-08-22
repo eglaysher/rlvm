@@ -43,12 +43,10 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-void ShowGLErrors(void)
-{
+void ShowGLErrors(void) {
   GLenum error;
   const GLubyte* err_str;
-  if ((error = glGetError()) != GL_NO_ERROR)
-  {
+  if ((error = glGetError()) != GL_NO_ERROR) {
     err_str = gluErrorString(error);
     abort();
     ostringstream oss;
@@ -59,8 +57,7 @@ void ShowGLErrors(void)
 
 // -----------------------------------------------------------------------
 
-int SafeSize(int i)
-{
+int SafeSize(int i) {
   static GLint max_texture_size = 0;
   if (max_texture_size == 0)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
@@ -78,8 +75,7 @@ int SafeSize(int i)
 // -----------------------------------------------------------------------
 
 void reportSDLError(const std::string& sdl_name,
-                    const std::string& function_name)
-{
+                    const std::string& function_name) {
   ostringstream ss;
   ss << "Error while calling SDL function '" << sdl_name << "' in "
      << function_name << ": " << SDL_GetError();
@@ -89,8 +85,7 @@ void reportSDLError(const std::string& sdl_name,
 // -----------------------------------------------------------------------
 
 /// @todo This is not endian safe in any way.
-SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
-{
+SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
   SDL_PixelFormat* format = in_surface->format;
 
   if (format->BitsPerPixel != 32)
@@ -105,13 +100,11 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
   SDL_BlitSurface(in_surface, NULL, dst, NULL);
 
   // iterate over the copy and make the alpha value = 255 - alpha value.
-  if (SDL_MUSTLOCK(dst)) SDL_LockSurface(dst);
-  {
+  if (SDL_MUSTLOCK(dst)) SDL_LockSurface(dst); {
     int num_pixels = dst->h * dst->pitch;
     char* p_data = (char*)dst->pixels;
 
-    for (int i = 0; i < num_pixels; i += 4)
-    {
+    for (int i = 0; i < num_pixels; i += 4) {
       // Invert the pixel here.
       p_data[i] = 255 - p_data[i];
       p_data[i + 1] = 255 - p_data[i + 1];
@@ -126,8 +119,7 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface)
 
 // -----------------------------------------------------------------------
 
-void RectToSDLRect(const Rect& rect, SDL_Rect* out)
-{
+void RectToSDLRect(const Rect& rect, SDL_Rect* out) {
   out->x = rect.x();
   out->y = rect.y();
   out->w = rect.width();
@@ -136,8 +128,7 @@ void RectToSDLRect(const Rect& rect, SDL_Rect* out)
 
 // -----------------------------------------------------------------------
 
-void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out)
-{
+void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out) {
   out->r = in.r();
   out->g = in.g();
   out->b = in.b();
@@ -145,14 +136,12 @@ void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out)
 
 // -----------------------------------------------------------------------
 
-Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in)
-{
+Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in) {
   return SDL_MapRGBA(fmt, in.r(), in.g(), in.b(), in.a());
 }
 
 // -----------------------------------------------------------------------
 
-void glColorRGBA(const RGBAColour& rgba)
-{
+void glColorRGBA(const RGBAColour& rgba) {
     glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
 }

@@ -53,8 +53,7 @@ struct render_to_texture { };
 
 // TODO: The entire Texture class's internals need to be transitioned
 // to the Point and Rect classes.
-class Texture
-{
+class Texture {
 public:
   static void SetScreenSize(const Size& s);
 

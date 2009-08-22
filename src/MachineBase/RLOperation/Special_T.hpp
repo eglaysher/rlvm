@@ -62,8 +62,7 @@ struct Special_T {
     RLMachine& machine,
     const boost::ptr_vector<libReallive::ExpressionPiece>& p,
     unsigned int& position,
-    const libReallive::SpecialExpressionPiece& sp)
-  {
+    const libReallive::SpecialExpressionPiece& sp) {
     if (TYPE::is_complex) {
       return TYPE::getData(machine, p, position);
     } else {
@@ -77,10 +76,8 @@ struct Special_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position)
-  {
-    if(position >= p.size())
-    {
+                      unsigned int& position) {
+    if(position >= p.size()) {
       std::ostringstream oss;
       oss << "Illegal position in Special_T: " << position << " (Size of p: "
           << p.size() << ")";
@@ -120,8 +117,7 @@ struct Special_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
-  {
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
     output.push_back(ep.release());

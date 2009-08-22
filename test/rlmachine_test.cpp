@@ -173,10 +173,7 @@ TEST_F(RLMachineTest, NameStorage) {
 
 TEST_F(RLMachineTest, Serialization) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
-
-  // Save data
-  {
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")); { // Save data
     RLMachine saveMachine(system, arc);
 
     int count = 0;
@@ -193,10 +190,7 @@ TEST_F(RLMachineTest, Serialization) {
       saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
 
     Serialization::saveGlobalMemoryTo(ss, saveMachine);
-  }
-
-  // Load data
-  {
+  } { // Load data
     RLMachine loadMachine(system, arc);
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 
@@ -220,10 +214,7 @@ TEST_F(RLMachineTest, Serialization) {
 // Tests serialization of the kidoku table.
 TEST_F(RLMachineTest, SerializationOfKidoku) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
-
-  // Save data
-  {
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")); { // Save data
     RLMachine saveMachine(system, arc);
 
     for (int i = 0; i < 10; i += 2) {
@@ -231,10 +222,7 @@ TEST_F(RLMachineTest, SerializationOfKidoku) {
     }
 
     Serialization::saveGlobalMemoryTo(ss, saveMachine);
-  }
-
-  // Load data
-  {
+  } { // Load data
     RLMachine loadMachine(system, arc);
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 

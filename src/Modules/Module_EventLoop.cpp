@@ -61,8 +61,7 @@ struct EventLoop_setOverrideAll : public RLOp_Void_Void {
 // -----------------------------------------------------------------------
 
 EventLoopModule::EventLoopModule()
-  : RLModule("EventLoop", 0, 4)
-{
+  : RLModule("EventLoop", 0, 4) {
   addUnsupportedOpcode(120, 0, "SetInterrupt");
   addUnsupportedOpcode(121, 0, "ClearInterrupt");
   addUnsupportedOpcode(303, 0, "yield");

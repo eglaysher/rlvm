@@ -72,8 +72,7 @@ class ScrollSquashSlideEffectTypeBase;
  * - SlideOn
  * - SlideOff
  */
-class ScrollSquashSlideBaseEffect : public Effect
-{
+class ScrollSquashSlideBaseEffect : public Effect {
 private:
   /// Drawer behavior class
   boost::scoped_ptr<ScrollSquashSlideDrawer> drawer_;
@@ -120,8 +119,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class ScrollSquashSlideDrawer
-{
+class ScrollSquashSlideDrawer {
 public:
   ScrollSquashSlideDrawer();
   virtual ~ScrollSquashSlideDrawer();
@@ -138,8 +136,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class TopToBottomDrawer : public ScrollSquashSlideDrawer
-{
+class TopToBottomDrawer : public ScrollSquashSlideDrawer {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -153,8 +150,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class BottomToTopDrawer : public ScrollSquashSlideDrawer
-{
+class BottomToTopDrawer : public ScrollSquashSlideDrawer {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -168,8 +164,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class LeftToRightDrawer : public ScrollSquashSlideDrawer
-{
+class LeftToRightDrawer : public ScrollSquashSlideDrawer {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -183,8 +178,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class RightToLeftDrawer : public ScrollSquashSlideDrawer
-{
+class RightToLeftDrawer : public ScrollSquashSlideDrawer {
 public:
   virtual int getMaxSize(GraphicsSystem& gs);
   virtual void scrollOn(GraphicsSystem&, ScrollSquashSlideBaseEffect&, int amountVisible, int width, int height);
@@ -209,8 +203,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class ScrollSquashSlideEffectTypeBase
-{
+class ScrollSquashSlideEffectTypeBase {
 public:
   virtual ~ScrollSquashSlideEffectTypeBase();
   virtual void composeEffectsFor(GraphicsSystem& system,
@@ -227,8 +220,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase
-{
+class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
@@ -244,8 +236,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase
-{
+class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
@@ -261,8 +252,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase
-{
+class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
@@ -279,8 +269,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase
-{
+class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
@@ -295,8 +284,7 @@ public:
  * #20, Slide On.
  *
  */
-class SlideOn : public ScrollSquashSlideEffectTypeBase
-{
+class SlideOn : public ScrollSquashSlideEffectTypeBase {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
@@ -312,8 +300,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class SlideOff : public ScrollSquashSlideEffectTypeBase
-{
+class SlideOff : public ScrollSquashSlideEffectTypeBase {
 public:
   virtual void composeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,

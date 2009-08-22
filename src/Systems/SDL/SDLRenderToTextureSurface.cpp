@@ -84,8 +84,7 @@ void SDLRenderToTextureSurface::registerWithGraphicsSystem() {
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::dump()
-{
+void SDLRenderToTextureSurface::dump() {
   cerr << "Attempting to dump a remembered texture." << endl;
 }
 
@@ -97,16 +96,14 @@ void SDLRenderToTextureSurface::dump()
  */
 void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,
                                               const Rect& src, const Rect& dst,
-                                              int alpha, bool use_src_alpha)
-{
+                                              int alpha, bool use_src_alpha) {
   throw SystemError("Unsupported operation blit_to_surface on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
-  const Rect& src, const Rect& dst, int opacity)
-{
+  const Rect& src, const Rect& dst, int opacity) {
   if (texture_)
     texture_->renderToScreen(src, dst, opacity);
 }
@@ -114,8 +111,7 @@ void SDLRenderToTextureSurface::renderToScreen(
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
-  const Rect& src, const Rect& dst, const int opacity[4])
-{
+  const Rect& src, const Rect& dst, const int opacity[4]) {
   if (texture_)
     texture_->renderToScreen(src, dst, opacity);
 }
@@ -123,8 +119,7 @@ void SDLRenderToTextureSurface::renderToScreen(
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
-{
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) {
   throw rlvm::Exception(
     "SDLRenderToTextureSurface::render_to_screen_as_colour_mask unimplemented");
 }
@@ -132,8 +127,7 @@ void SDLRenderToTextureSurface::renderToScreenAsColorMask(
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreenAsObject(
-  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha)
-{
+  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha) {
   throw rlvm::Exception(
     "SDLRenderToTextureSurface::render_to_screen_as_object unimplemented");
 }
@@ -142,37 +136,32 @@ void SDLRenderToTextureSurface::renderToScreenAsObject(
 
 void SDLRenderToTextureSurface::rawRenderQuad(const int src_coords[8],
                                const int dest_coords[8],
-                               const int opacity[4])
-{
+                               const int opacity[4]) {
   if (texture_)
     texture_->rawRenderQuad(src_coords, dest_coords, opacity);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::fill(const RGBAColour& colour)
-{
+void SDLRenderToTextureSurface::fill(const RGBAColour& colour) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::fill(const RGBAColour& colour, const Rect& rect)
-{
+void SDLRenderToTextureSurface::fill(const RGBAColour& colour, const Rect& rect) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
-{
+void SDLRenderToTextureSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-Size SDLRenderToTextureSurface::size() const
-{
+Size SDLRenderToTextureSurface::size() const {
   if (texture_)
     return Size(texture_->width(), texture_->height());
   else
@@ -181,7 +170,6 @@ Size SDLRenderToTextureSurface::size() const
 
 // -----------------------------------------------------------------------
 
-Surface* SDLRenderToTextureSurface::clone() const
-{
+Surface* SDLRenderToTextureSurface::clone() const {
   throw SystemError("Unsupported operation clone on SDLRenderToTextureSurface!");
 }

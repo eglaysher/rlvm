@@ -49,8 +49,7 @@ class GraphicsObjectData;
  *
  * @todo I want to put index checks on a lot of these accessors.
  */
-class GraphicsObject
-{
+class GraphicsObject {
 public:
   GraphicsObject();
   GraphicsObject(const GraphicsObject& obj);
@@ -232,8 +231,7 @@ private:
    * internal data store for GraphicsObjects' copy-on-write semantics. It is
    *
    */
-  struct Impl
-  {
+  struct Impl {
     Impl();
     Impl(const Impl& rhs);
     ~Impl();
@@ -338,8 +336,7 @@ private:
      *
      * @{
      */
-    struct TextProperties
-    {
+    struct TextProperties {
       TextProperties();
 
       std::string value;

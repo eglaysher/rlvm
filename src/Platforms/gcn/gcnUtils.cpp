@@ -88,8 +88,7 @@ static SDL_Surface* convertToStandardFormat(SDL_Surface* surface)
 
   SDL_Surface *tmp = NULL;
 
-  if (colourSurface != NULL)
-  {
+  if (colourSurface != NULL) {
     tmp = SDL_ConvertSurface(surface, colourSurface->format,
                              SDL_SWSURFACE);
     SDL_FreeSurface(colourSurface);
@@ -102,15 +101,13 @@ static SDL_Surface* convertToStandardFormat(SDL_Surface* surface)
 // -----------------------------------------------------------------------
 
 static gcn::Image* buildThemeGCNImageFrom(SDL_Surface* loadedSurface) {
-  if (loadedSurface == NULL)
-  {
+  if (loadedSurface == NULL) {
     throw GCN_EXCEPTION(std::string("Unable to theme image"));
   }
 
   SDL_Surface *surface = convertToStandardFormat(loadedSurface);
 
-  if (surface == NULL)
-  {
+  if (surface == NULL) {
     throw GCN_EXCEPTION(std::string("Not enough memory to load theme image"));
   }
 

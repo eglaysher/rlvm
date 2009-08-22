@@ -41,8 +41,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
-  : GraphicsSystem(system, gexe)
-{
+  : GraphicsSystem(system, gexe) {
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
@@ -65,8 +64,7 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
 
   // DC 1 is a special case and must always be at least the size of
   // the screen.
-  if(dc == 1)
-  {
+  if(dc == 1) {
     boost::shared_ptr<TestSurface> dc0 = display_contexts_[0];
     if(size.width() < dc0->size().width())
       size.setWidth(dc0->size().width());
@@ -83,12 +81,10 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
 void TestGraphicsSystem::freeDC(int dc) {
   if(dc == 0)
     throw rlvm::Exception("Attempt to deallocate DC[0]");
-  else if(dc == 1)
-  {
+  else if(dc == 1) {
     // DC[1] never gets freed; it only gets blanked
     display_contexts_[1]->fill(RGBAColour::Black());
-  }
-  else
+  } else
     display_contexts_[dc]->deallocate();
 }
 
@@ -99,8 +95,7 @@ void TestGraphicsSystem::clearAndPromoteObjects() {
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number)
-{
+GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number) {
   static GraphicsObject x;
   return x;
 }
@@ -108,8 +103,7 @@ GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
-    const std::string& short_filename)
-{
+    const std::string& short_filename) {
   // Make this a real surface so we can track what's done with it
   return boost::shared_ptr<Surface>(
     new TestSurface(short_filename, Size(50, 50)));
@@ -117,15 +111,13 @@ boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc)
-{
+boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc) {
   return display_contexts_[dc];
 }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s)
-{
+boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
   static int surface_num = 0;
   ostringstream oss;
   oss << "Built Surface #" << surface_num++;

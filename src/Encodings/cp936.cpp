@@ -38,8 +38,7 @@
 
 #include <cstring>
 
-Cp936::Cp936()
-{
+Cp936::Cp936() {
   //	DesirableCharset = GB2312_CHARSET;
 	NoTransforms = false;
   //    UseUnicode = GetSystemDefaultLangID() & 0x1ff != 0x04; // I hope... :/
@@ -47,8 +46,7 @@ Cp936::Cp936()
 
 // We use a GBK <-> JIS transformation function based on, but subtly different
 // from, the one that the Key Fans Club used to use.
-unsigned short Cp936::JisDecode(unsigned short ch) const
-{
+unsigned short Cp936::JisDecode(unsigned short ch) const {
 	// Special cases
 	if (ch < 0x80)
 		return ch;
@@ -80,15 +78,13 @@ unsigned short Cp936::JisDecode(unsigned short ch) const
 	}
 }
 
-void Cp936::JisEncodeString(const char* src, char* buf, size_t buflen) const
-{
+void Cp936::JisEncodeString(const char* src, char* buf, size_t buflen) const {
     int srclen = std::strlen(src), i = 0, j = 0;
 	while (i < srclen && j < buflen) {
 		int c1 = (unsigned char) src[i++];
 		if (c1 < 0x80) {
 			buf[j++] = c1;
-		}
-		else {
+		} else {
 			// Special cases
 			int c2 = c1 << 8 | (unsigned char) src[i++];
 			if (c2 == 0xa1b8)
@@ -115,8 +111,7 @@ void Cp936::JisEncodeString(const char* src, char* buf, size_t buflen) const
 				if (c2 > 0x9f) c2 += 0x40;
 				buf[j++] = c2 & 0xff;
 				buf[j++] = c1 & 0xff;
-			}
-			else {
+			} else {
 				buf[j++] = '_';
 				buf[j++] = '_';
 			}
@@ -3138,15 +3133,12 @@ const unsigned short gbk_to_uni[] =
 	  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
 	  0xffff, 0xffff };
 
-unsigned short Cp936::Convert(unsigned short ch) const
-{
+unsigned short Cp936::Convert(unsigned short ch) const {
 	if (ch <= 0x7f) {
 		return ch;
-	}
-	else if (ch == 0x80) {
+	} else if (ch == 0x80) {
 		return 0x20ac;
-	}
-	else {
+	} else {
 		// TODO: test this.  Is it _really_ 0x81 and 0x40 we want, not 0xa1 twice?
 		int c1 = ((ch >> 8) & 0xff) - 0x81;
 		int c2 = (ch & 0xff) - 0x40;
@@ -3154,8 +3146,7 @@ unsigned short Cp936::Convert(unsigned short ch) const
 	}
 }
 
-std::wstring Cp936::ConvertString(const std::string& in_string) const
-{
+std::wstring Cp936::ConvertString(const std::string& in_string) const {
   std::wstring rv;
   rv.reserve(in_string.size());
 
@@ -3173,13 +3164,11 @@ std::wstring Cp936::ConvertString(const std::string& in_string) const
 }
 
 #else
-unsigned short Cp936::Convert(unsigned short ch) const
-{
+unsigned short Cp936::Convert(unsigned short ch) const {
 	return ch;
 }
 
-std::wstring Cp936::ConvertString(const std::string& s) const
-{
+std::wstring Cp936::ConvertString(const std::string& s) const {
   return std::wstring();
 }
 

@@ -259,8 +259,7 @@ struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
 // -----------------------------------------------------------------------
 
 MemModule::MemModule()
-  : RLModule("Mem", 1, 11)
-{
+  : RLModule("Mem", 1, 11) {
   addOpcode(0, 0, "setarray", new Mem_setarray);
   addOpcode(1, 0, "setrng", new Mem_setrng_0);
   addOpcode(1, 1, "setrng", new Mem_setrng_1);

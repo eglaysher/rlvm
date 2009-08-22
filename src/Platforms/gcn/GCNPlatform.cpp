@@ -167,8 +167,7 @@ const MenuSpec SYCOM_MAIN_MENU[] = {
 // -----------------------------------------------------------------------
 class GCNPlatformBlocker : public LongOperation,
                            public Renderable,
-                           public RawSDLInputHandler
-{
+                           public RawSDLInputHandler {
 public:
   GCNPlatformBlocker(SDLEventSystem& system,
                      GraphicsSystem& graphics,
@@ -237,15 +236,13 @@ private:
 
 GCNPlatform::GCNPlatform(System& system, const Rect& screen_size)
   : Platform(system.gameexe()), blocker_(NULL),
-    screen_size_(screen_size)
-{
+    screen_size_(screen_size) {
   initializeGuichan(system, screen_size);
 }
 
 // -----------------------------------------------------------------------
 
-GCNPlatform::~GCNPlatform()
-{
+GCNPlatform::~GCNPlatform() {
   toplevel_container_->removeMouseListener(this);
   guichan_gui_->removeGlobalKeyListener(this);
 
@@ -254,15 +251,13 @@ GCNPlatform::~GCNPlatform()
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::run(RLMachine& machine)
-{
+void GCNPlatform::run(RLMachine& machine) {
   guichan_gui_->logic();
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::render()
-{
+void GCNPlatform::render() {
   try {
     guichan_gui_->draw();
   } catch (gcn::Exception& e) {
@@ -280,16 +275,14 @@ void GCNPlatform::render()
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::showNativeSyscomMenu(RLMachine& machine)
-{
+void GCNPlatform::showNativeSyscomMenu(RLMachine& machine) {
   pushBlocker(machine);
   buildSyscomMenuFor("", SYCOM_MAIN_MENU, machine);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom)
-{
+void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
   pushBlocker(machine);
   if (syscom == SYSCOM_SAVE)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
@@ -307,15 +300,13 @@ void GCNPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::windowCanceled(GCNWindow* window)
-{
+void GCNPlatform::windowCanceled(GCNWindow* window) {
   blocker_->addTask(bind(&GCNPlatform::popWindowFromStack, this));
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
-{
+void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event) {
   // First, clear the window_stack_
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
 
@@ -345,24 +336,21 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::saveEvent(int slot)
-{
+void GCNPlatform::saveEvent(int slot) {
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
   blocker_->addMachineTask(bind(&GCNPlatform::DoSave, this, _1, slot));
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::loadEvent(int slot)
-{
+void GCNPlatform::loadEvent(int slot) {
   blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
   blocker_->addMachineTask(bind(&GCNPlatform::DoLoad, this, _1, slot));
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::mouseClicked(gcn::MouseEvent& mouseEvent)
-{
+void GCNPlatform::mouseClicked(gcn::MouseEvent& mouseEvent) {
   if (mouseEvent.getSource() == toplevel_container_.get() &&
       mouseEvent.getButton() == gcn::MouseEvent::RIGHT) {
     blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
@@ -371,8 +359,7 @@ void GCNPlatform::mouseClicked(gcn::MouseEvent& mouseEvent)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::keyReleased(gcn::KeyEvent& keyEvent)
-{
+void GCNPlatform::keyReleased(gcn::KeyEvent& keyEvent) {
   if (keyEvent.getKey() == gcn::Key::ESCAPE)
     blocker_->addTask(bind(&GCNPlatform::clearWindowStack, this));
 }
@@ -381,8 +368,7 @@ void GCNPlatform::keyReleased(gcn::KeyEvent& keyEvent)
 // Private
 // -----------------------------------------------------------------------
 
-void GCNPlatform::pushBlocker(RLMachine& machine)
-{
+void GCNPlatform::pushBlocker(RLMachine& machine) {
   if (blocker_ == NULL) {
     // Block the world!
     SDLEventSystem& event = dynamic_cast<SDLEventSystem&>(
@@ -396,8 +382,7 @@ void GCNPlatform::pushBlocker(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size)
-{
+void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
   sdl_image_loader_.reset(new gcn::OpenGLSDLImageLoader());
 	gcn::Image::setImageLoader(sdl_image_loader_.get());
 
@@ -427,8 +412,7 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size)
 // -----------------------------------------------------------------------
 
 void GCNPlatform::buildSyscomMenuFor(
-  const std::string& label, const MenuSpec menu_items[], RLMachine& machine)
-{
+  const std::string& label, const MenuSpec menu_items[], RLMachine& machine) {
   System& sys = machine.system();
 
   std::vector<GCNMenuButton> buttons;
@@ -471,16 +455,14 @@ void GCNPlatform::buildSyscomMenuFor(
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::clearWindowStack()
-{
+void GCNPlatform::clearWindowStack() {
   while (window_stack_.size())
     popWindowFromStack();
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::popWindowFromStack()
-{
+void GCNPlatform::popWindowFromStack() {
   GCNWindow* to_pop = window_stack_.back();
   window_stack_.pop_back();
 
@@ -490,8 +472,7 @@ void GCNPlatform::popWindowFromStack()
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::pushWindowOntoStack(GCNWindow* window)
-{
+void GCNPlatform::pushWindowOntoStack(GCNWindow* window) {
   window->centerInWindow(screen_size_.size());
   window_stack_.push_back(window);
   toplevel_container_->add(window);

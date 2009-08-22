@@ -162,8 +162,7 @@ private:
 namespace boost { namespace serialization {
 template<class Archive>
 inline void load_construct_data(
-  Archive & ar, AnmGraphicsObjectData* t, const unsigned int file_version)
-{
+  Archive & ar, AnmGraphicsObjectData* t, const unsigned int file_version) {
   ::new(t)AnmGraphicsObjectData(Serialization::g_current_machine->system());
 }
   }}

@@ -61,10 +61,8 @@ namespace Opcodes {
 namespace Debug {
 
 template<typename TYPE>
-struct DebugMessage : public RLOp_Void_1< TYPE >
-{
-  void operator()(RLMachine& machine, typename TYPE::type value)
-  {
+struct DebugMessage : public RLOp_Void_1< TYPE > {
+  void operator()(RLMachine& machine, typename TYPE::type value) {
     if (machine.system().gameexe()("MEMORY").exists())
        cerr << "VALUE: " << value << endl;
   }
@@ -76,8 +74,7 @@ struct DebugMessage : public RLOp_Void_1< TYPE >
 }
 
 DebugModule::DebugModule()
-  : RLModule("Debug", 1, 255)
-{
+  : RLModule("Debug", 1, 255) {
   using namespace Opcodes::Debug;
 
   addOpcode(10, 0, "__DebugMessage", new DebugMessage<IntConstant_T>);

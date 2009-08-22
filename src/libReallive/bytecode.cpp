@@ -75,8 +75,7 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c)
 
 // -----------------------------------------------------------------------
 
-const ElementType BytecodeElement::type() const
-{
+const ElementType BytecodeElement::type() const {
   return Unspecified;
 }
 
@@ -86,18 +85,15 @@ const size_t BytecodeElement::offset() const { return offset_; }
 
 // -----------------------------------------------------------------------
 
-const string BytecodeElement::data() const
-{ return string(); }
+const string BytecodeElement::data() const { return string(); }
 
 // -----------------------------------------------------------------------
 
-const size_t BytecodeElement::length() const
-{ return 0; }
+const size_t BytecodeElement::length() const { return 0; }
 
 // -----------------------------------------------------------------------
 
-Pointers* BytecodeElement::get_pointers()
-{ return NULL; }
+Pointers* BytecodeElement::get_pointers() { return NULL; }
 
 // -----------------------------------------------------------------------
 
@@ -105,19 +101,16 @@ void BytecodeElement::set_pointers(ConstructionData& cdata) {}
 
 // -----------------------------------------------------------------------
 
-BytecodeElement* BytecodeElement::clone() const
-{  return new BytecodeElement(*this); }
+BytecodeElement* BytecodeElement::clone() const {  return new BytecodeElement(*this); }
 
 // -----------------------------------------------------------------------
 
-BytecodeElement::~BytecodeElement()
-{}
+BytecodeElement::~BytecodeElement() {}
 
 // -----------------------------------------------------------------------
 
 BytecodeElement::BytecodeElement()
-  : id(id_src++)
-{}
+  : id(id_src++) {}
 
 // -----------------------------------------------------------------------
 
@@ -126,8 +119,7 @@ const int BytecodeElement::entrypoint() const { return -999; }
 // -----------------------------------------------------------------------
 
 inline BytecodeElement*
-read_function(const char* stream, ConstructionData& cdata)
-{
+read_function(const char* stream, ConstructionData& cdata) {
   // opcode: 0xttmmoooo (Type, Module, Opcode: e.g. 0x01030101 = 1:03:00257
   const unsigned long opcode = (stream[1] << 24) | (stream[2] << 16) |
     (stream[4] << 8) | stream[3];
@@ -154,8 +146,7 @@ read_function(const char* stream, ConstructionData& cdata)
 
 // -----------------------------------------------------------------------
 
-void BytecodeElement::runOnMachine(RLMachine& machine) const
-{
+void BytecodeElement::runOnMachine(RLMachine& machine) const {
   machine.advanceInstructionPointer();
 }
 
@@ -163,8 +154,7 @@ void BytecodeElement::runOnMachine(RLMachine& machine) const
 
 BytecodeElement*
 BytecodeElement::read(const char* stream, const char* end,
-                      ConstructionData& cdata)
-{
+                      ConstructionData& cdata) {
   const char c = *stream;
   if (c == '!') entrypoint_marker = '!';
   switch (c) {
@@ -202,30 +192,25 @@ DataElement* DataElement::clone() const { return new DataElement(*this); }
 // MetaElement
 // -----------------------------------------------------------------------
 
-MetaElement::MetaElement(const ConstructionData* cv, const char* src)
-{
+MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
   value_ = read_i16(src + 1);
   if (!cv) {
     type_ = Line_;
-  }
-  else if (cv->kidoku_table.at(value_) >= 1000000) {
+  } else if (cv->kidoku_table.at(value_) >= 1000000) {
     type_ = Entrypoint_;
     entrypoint_index = cv->kidoku_table[value_] - 1000000;
-  }
-  else {
+  } else {
     type_ = Kidoku_;
   }
 }
 
 // -----------------------------------------------------------------------
 
-MetaElement::~MetaElement()
-{}
+MetaElement::~MetaElement() {}
 
 // -----------------------------------------------------------------------
 
-const ElementType MetaElement::type() const
-{
+const ElementType MetaElement::type() const {
   return type_ == Line_ ? Line
     : (type_ == Kidoku_ ? Kidoku
        : Entrypoint);
@@ -233,8 +218,7 @@ const ElementType MetaElement::type() const
 
 // -----------------------------------------------------------------------
 
-const string MetaElement::data() const
-{
+const string MetaElement::data() const {
   string rv(3, 0);
   rv[0] = type_ == Entrypoint_ ? entrypoint_marker : type_;
   insert_i16(rv, 1, value_);
@@ -253,8 +237,7 @@ const int MetaElement::entrypoint() const {
 
 // -----------------------------------------------------------------------
 
-void MetaElement::runOnMachine(RLMachine& machine) const
-{
+void MetaElement::runOnMachine(RLMachine& machine) const {
   if (type_ == Line_)
     machine.setLineNumber(value_);
   else if (type_ == Kidoku_)
@@ -271,16 +254,14 @@ MetaElement* MetaElement::clone() const { return new MetaElement(*this); }
 // TextoutElement
 // -----------------------------------------------------------------------
 
-TextoutElement::TextoutElement(const char* src, const char* file_end)
-{
+TextoutElement::TextoutElement(const char* src, const char* file_end) {
   const char* end = src;
   bool quoted = false;
   while (true && end < file_end) {
     if (quoted) {
       quoted = *end != '"';
       if (*end == '\\' && end[1] == '"') ++end;
-    }
-    else {
+    } else {
       if (*end == ',') ++end;
       quoted = *end == '"';
       if (!*end || *end == '#' || *end == '$' || *end == '\n' ||
@@ -306,8 +287,7 @@ const ElementType TextoutElement::type() const { return Textout; }
 // -----------------------------------------------------------------------
 
 const string
-TextoutElement::text() const
-{
+TextoutElement::text() const {
   string rv;
   bool quoted = false;
   string::const_iterator it = repr.begin();
@@ -315,16 +295,13 @@ TextoutElement::text() const
     if (*it == '"') {
       ++it;
       quoted = !quoted;
-    }
-    else if (quoted && *it == '\\') {
+    } else if (quoted && *it == '\\') {
       ++it;
       if (*it == '"') {
         ++it;
         rv.push_back('"');
-      }
-      else rv.push_back('\\');
-    }
-    else {
+      } else rv.push_back('\\');
+    } else {
       if ((*it >= 0x81 && *it <= 0x9f) || (*it >= 0xe0 && *it <= 0xef))
         rv.push_back(*it++);
       rv.push_back(*it++);
@@ -336,15 +313,13 @@ TextoutElement::text() const
 // -----------------------------------------------------------------------
 
 void
-TextoutElement::set_text(const char* src)
-{
+TextoutElement::set_text(const char* src) {
   bool quoted = false;
   repr.clear();
   if (src) while (*src) {
       if (!quoted && (*src == '"' || *src == '#' || *src == '$' ||
                       *src == '\n' || *src == '@' ||
-                      *src == ',' || *src == entrypoint_marker))
-      {
+                      *src == ',' || *src == entrypoint_marker)) {
         quoted = true;
         repr.push_back('"');
       }
@@ -358,23 +333,20 @@ TextoutElement::set_text(const char* src)
 
 // -----------------------------------------------------------------------
 
-void TextoutElement::runOnMachine(RLMachine& machine) const
-{
+void TextoutElement::runOnMachine(RLMachine& machine) const {
   machine.performTextout(*this);
   machine.advanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
 
-TextoutElement* TextoutElement::clone() const
-{ return new TextoutElement(*this); }
+TextoutElement* TextoutElement::clone() const { return new TextoutElement(*this); }
 
 // -----------------------------------------------------------------------
 // ExpressionElement
 // -----------------------------------------------------------------------
 
-ExpressionElement::ExpressionElement(const char* src)
-{
+ExpressionElement::ExpressionElement(const char* src) {
   // Don't parse the expression, just isolate it.
   const char* end = src;
   end += next_token(end);
@@ -387,8 +359,7 @@ ExpressionElement::ExpressionElement(const char* src)
 
 // -----------------------------------------------------------------------
 
-ExpressionElement::ExpressionElement(const long val)
-{
+ExpressionElement::ExpressionElement(const long val) {
   repr.resize(6, '$');
   repr[1] = 0xff;
   insert_i32(repr, 2, val);
@@ -396,16 +367,14 @@ ExpressionElement::ExpressionElement(const long val)
 
 // -----------------------------------------------------------------------
 
-const ElementType ExpressionElement::type() const
-{
+const ElementType ExpressionElement::type() const {
   return Expression;
 }
 
 // -----------------------------------------------------------------------
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-  : DataElement(rhs), parsed_expression_(NULL)
-{
+  : DataElement(rhs), parsed_expression_(NULL) {
 }
 
 // -----------------------------------------------------------------------
@@ -427,8 +396,7 @@ const ExpressionPiece& ExpressionElement::parsedExpression() const {
 
 // -----------------------------------------------------------------------
 
-void ExpressionElement::runOnMachine(RLMachine& machine) const
-{
+void ExpressionElement::runOnMachine(RLMachine& machine) const {
   machine.executeExpression(*this);
 }
 
@@ -438,8 +406,7 @@ void ExpressionElement::runOnMachine(RLMachine& machine) const
 
 CommandElement::CommandElement(
   const int type, const int module, const int opcode, const int argc,
-  const int overload)
-{
+  const int overload) {
   repr.resize(8, 0);
   repr[0] = '#';
   repr[1] = type;
@@ -458,14 +425,12 @@ CommandElement::CommandElement(const char* src) {
 // -----------------------------------------------------------------------
 
 CommandElement::CommandElement(const CommandElement& ce)
-  : parsed_parameters_()
-{
+  : parsed_parameters_() {
 }
 
 // -----------------------------------------------------------------------
 
-CommandElement::~CommandElement()
-{}
+CommandElement::~CommandElement() {}
 
 // -----------------------------------------------------------------------
 
@@ -473,11 +438,9 @@ const ElementType CommandElement::type() const { return Command; }
 
 // -----------------------------------------------------------------------
 
-const vector<string>& CommandElement::getUnparsedParameters() const
-{
+const vector<string>& CommandElement::getUnparsedParameters() const {
   size_t numberOfParameters = param_count();
-  if (numberOfParameters != unparsed_parameters_.size())
-  {
+  if (numberOfParameters != unparsed_parameters_.size()) {
     unparsed_parameters_.clear();
 
     for (size_t i = 0; i < numberOfParameters; ++i)
@@ -489,8 +452,7 @@ const vector<string>& CommandElement::getUnparsedParameters() const
 
 // -----------------------------------------------------------------------
 
-bool CommandElement::areParametersParsed() const
-{
+bool CommandElement::areParametersParsed() const {
   return param_count() == parsed_parameters_.size();
 }
 
@@ -499,8 +461,7 @@ bool CommandElement::areParametersParsed() const
 /// This function shows...some deeper truth about mutability and
 /// const-ness in C++, but I for one can't figure it out.
 void CommandElement::setParsedParameters(
-  boost::ptr_vector<libReallive::ExpressionPiece>& parsedParameters) const
-{
+  boost::ptr_vector<libReallive::ExpressionPiece>& parsedParameters) const {
   parsed_parameters_.clear();
   parsed_parameters_.transfer( parsed_parameters_.end(),
                                parsedParameters.begin(),
@@ -511,15 +472,13 @@ void CommandElement::setParsedParameters(
 // -----------------------------------------------------------------------
 
 const boost::ptr_vector<libReallive::ExpressionPiece>&
-CommandElement::getParameters() const
-{
+CommandElement::getParameters() const {
   return parsed_parameters_;
 }
 
 // -----------------------------------------------------------------------
 
-void CommandElement::runOnMachine(RLMachine& machine) const
-{
+void CommandElement::runOnMachine(RLMachine& machine) const {
   machine.executeCommand(*this);
 }
 
@@ -528,8 +487,7 @@ void CommandElement::runOnMachine(RLMachine& machine) const
 // -----------------------------------------------------------------------
 
 SelectElement::SelectElement(const char* src)
-  : CommandElement(src), uselessjunk(0)
-{
+  : CommandElement(src), uselessjunk(0) {
   src += 8;
   if (*src == '(') {
     const int elen = next_expr(src);
@@ -583,16 +541,14 @@ SelectElement::SelectElement(const char* src)
 
 // -----------------------------------------------------------------------
 
-const ElementType SelectElement::type() const
-{
+const ElementType SelectElement::type() const {
   return Select;
 }
 
 // -----------------------------------------------------------------------
 
 ExpressionElement
-SelectElement::window()
-{
+SelectElement::window() {
   return repr[8] == '('
     ? ExpressionElement(repr.data() + 9)
     : ExpressionElement(-1);
@@ -601,8 +557,7 @@ SelectElement::window()
 // -----------------------------------------------------------------------
 
 const string
-SelectElement::text(const int index) const
-{
+SelectElement::text(const int index) const {
   string rv;
   bool quoted = false;
   const string& s = params.at(index).text;
@@ -611,19 +566,16 @@ SelectElement::text(const int index) const
     if (*it == '"') {
       ++it;
       quoted = !quoted;
-    }
-    else if (!quoted && strcmp((char*)it, "###PRINT(") == 0) {
+    } else if (!quoted && strcmp((char*)it, "###PRINT(") == 0) {
       it += 9;
       rv += "\\s{";
       int ne = next_expr(it);
       rv.append(it, ne);
       it += ne + 1;
       rv += '}';
-    }
-    else if (*it == '\\') {
+    } else if (*it == '\\') {
       rv += "\\\\";
-    }
-    else {
+    } else {
       if ((*it >= 0x81 && *it <= 0x9f) || (*it >= 0xe0 && *it <= 0xef))
         rv.push_back(*it++);
       rv.push_back(*it++);
@@ -635,8 +587,7 @@ SelectElement::text(const int index) const
 // -----------------------------------------------------------------------
 
 const string
-SelectElement::data() const
-{
+SelectElement::data() const {
   string rv(repr);
   rv.push_back('{');
   rv.push_back('\n');
@@ -655,8 +606,7 @@ SelectElement::data() const
 // -----------------------------------------------------------------------
 
 const size_t
-SelectElement::length() const
-{
+SelectElement::length() const {
   size_t rv = repr.size() + 5;
   for (params_t::const_iterator it = params.begin(); it != params.end(); ++it)
     rv += it->cond.size() + it->text.size() + 3;
@@ -666,15 +616,13 @@ SelectElement::length() const
 
 // -----------------------------------------------------------------------
 
-const size_t SelectElement::param_count() const
-{
+const size_t SelectElement::param_count() const {
   return params.size();
 }
 
 // -----------------------------------------------------------------------
 
-string SelectElement::get_param(int i) const
-{
+string SelectElement::get_param(int i) const {
   string rv(params[i].cond);
   rv.append(params[i].text);
   return rv;
@@ -682,15 +630,13 @@ string SelectElement::get_param(int i) const
 
 // -----------------------------------------------------------------------
 
-SelectElement* SelectElement::clone() const
-{ return new SelectElement(*this); }
+SelectElement* SelectElement::clone() const { return new SelectElement(*this); }
 
 // -----------------------------------------------------------------------
 // FunctionElement
 // -----------------------------------------------------------------------
 
-FunctionElement::FunctionElement(const char* src) : CommandElement(src)
-{
+FunctionElement::FunctionElement(const char* src) : CommandElement(src) {
   src += 8;
   if (*src == '(') {
     const char* end = src + 1;
@@ -709,8 +655,7 @@ const ElementType FunctionElement::type() const { return Function; }
 // -----------------------------------------------------------------------
 
 const string
-FunctionElement::data() const
-{
+FunctionElement::data() const {
   string rv(repr);
   if (params.size() > 0) {
     rv.push_back('(');
@@ -723,14 +668,12 @@ FunctionElement::data() const
 // -----------------------------------------------------------------------
 
 const size_t
-FunctionElement::length() const
-{
+FunctionElement::length() const {
   if (params.size() > 0) {
     size_t rv(repr.size() + 2);
     for (std::vector<string>::const_iterator it = params.begin(); it != params.end(); ++it) rv += it->size();
     return rv;
-  }
-  else {
+  } else {
     return repr.size();
   }
 }
@@ -742,8 +685,7 @@ string FunctionElement::get_param(int i) const { return params[i]; }
 
 // -----------------------------------------------------------------------
 
-FunctionElement* FunctionElement::clone() const
-{ return new FunctionElement(*this); }
+FunctionElement* FunctionElement::clone() const { return new FunctionElement(*this); }
 
 // -----------------------------------------------------------------------
 // PointerElement
@@ -757,8 +699,7 @@ PointerElement::~PointerElement() {}
 
 // -----------------------------------------------------------------------
 
-void PointerElement::set_pointers(ConstructionData& cdata)
-{
+void PointerElement::set_pointers(ConstructionData& cdata) {
   targets.set_pointers(cdata);
 }
 
@@ -775,8 +716,7 @@ const Pointers& PointerElement::get_pointersRef() const { return targets; }
 // -----------------------------------------------------------------------
 
 GotoElement::GotoElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src)
-{
+  : PointerElement(src) {
   src += 8;
   const int op = (module() * 100000) | opcode();
   if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
@@ -803,8 +743,7 @@ GotoElement* GotoElement::clone() const { return new GotoElement(*this); }
 // -----------------------------------------------------------------------
 
 const string
-GotoElement::data() const
-{
+GotoElement::data() const {
   string rv(repr);
   append_i32(rv, targets[0]->offset());
   return rv;
@@ -813,8 +752,7 @@ GotoElement::data() const
 // -----------------------------------------------------------------------
 
 const GotoElement::Case
-GotoElement::taken() const
-{
+GotoElement::taken() const {
   const int op = (module() * 100000) | opcode();
   if (op == 100000 || op == 500001) return Unconditional;
   const string arg(get_param(0));
@@ -841,8 +779,7 @@ GotoElement::taken() const
 // -----------------------------------------------------------------------
 
 void
-GotoElement::make_unconditional()
-{
+GotoElement::make_unconditional() {
   if (opcode() < 5) set_opcode(module() == 1 ? 0 : 1); else set_opcode(5);
   repr.resize(8);
 }
@@ -852,8 +789,7 @@ GotoElement::make_unconditional()
 // -----------------------------------------------------------------------
 
 GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src)
-{
+  : PointerElement(src) {
   src += 8;
   // Condition
   const int expr = next_expr(src);
@@ -869,8 +805,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
     if (src[1] == ')') {
       cases.push_back("()");
       src += 2;
-    }
-    else {
+    } else {
       int cexpr = next_expr(src + 1);
       cases.push_back(string(src, cexpr + 2));
       src += cexpr + 1;
@@ -888,14 +823,12 @@ const ElementType GotoCaseElement::type() const { return GotoCase; }
 
 // -----------------------------------------------------------------------
 
-GotoCaseElement* GotoCaseElement::clone() const
-{ return new GotoCaseElement(*this); }
+GotoCaseElement* GotoCaseElement::clone() const { return new GotoCaseElement(*this); }
 
 // -----------------------------------------------------------------------
 
 const string
-GotoCaseElement::data() const
-{
+GotoCaseElement::data() const {
   string rv(repr);
   rv += '{';
   for (unsigned int i = 0; i < cases.size(); ++i) {
@@ -909,8 +842,7 @@ GotoCaseElement::data() const
 // -----------------------------------------------------------------------
 
 const size_t
-GotoCaseElement::length() const
-{
+GotoCaseElement::length() const {
   size_t rv = repr.size() + 2;
   for (unsigned int i = 0; i < cases.size(); ++i) rv += cases[i].size() + 4;
   return rv;
@@ -921,8 +853,7 @@ GotoCaseElement::length() const
 // -----------------------------------------------------------------------
 
 GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src)
-{
+  : PointerElement(src) {
   src += 8;
   // Condition
   const int expr = next_expr(src);
@@ -949,16 +880,14 @@ GotoOnElement* GotoOnElement::clone() const { return new GotoOnElement(*this); }
 
 // -----------------------------------------------------------------------
 
-const size_t GotoOnElement::length() const
-{
+const size_t GotoOnElement::length() const {
   return repr.size() + argc() * 4 + 2;
 }
 
 // -----------------------------------------------------------------------
 
 const string
-GotoOnElement::data() const
-{
+GotoOnElement::data() const {
   string rv(repr);
   rv += '{';
   for (unsigned int i = 0; i < targets.size(); ++i) {
@@ -971,8 +900,7 @@ GotoOnElement::data() const
 // -----------------------------------------------------------------------
 
 void
-Pointers::set_pointers(ConstructionData& cdata)
-{
+Pointers::set_pointers(ConstructionData& cdata) {
   assert(target_ids.size() != 0);
   targets.reserve(target_ids.size());
   for (unsigned int i = 0; i < target_ids.size(); ++i) {
@@ -989,8 +917,7 @@ Pointers::set_pointers(ConstructionData& cdata)
 // -----------------------------------------------------------------------
 
 GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src)
-{
+  : PointerElement(src) {
   src += 8;
   const int op = (module() * 100000) | opcode();
   if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
@@ -1016,14 +943,12 @@ const ElementType GosubWithElement::type() const { return Goto; }
 
 // -----------------------------------------------------------------------
 
-GosubWithElement* GosubWithElement::clone() const
-{ return new GosubWithElement(*this); }
+GosubWithElement* GosubWithElement::clone() const { return new GosubWithElement(*this); }
 
 // -----------------------------------------------------------------------
 
 const string
-GosubWithElement::data() const
-{
+GosubWithElement::data() const {
   string rv(repr);
   append_i32(rv, targets[0]->offset());
   return rv;

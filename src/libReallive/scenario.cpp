@@ -49,8 +49,7 @@ namespace libReallive {
 Metadata::Metadata() : encoding(0) {}
 
 void
-Metadata::assign(const char* input)
-{
+Metadata::assign(const char* input) {
   const int meta_len = read_i32(input),
             id_len   = read_i32(input + 4) + 1;
   if (meta_len < id_len + 17) return; // malformed metadata
@@ -58,8 +57,7 @@ Metadata::assign(const char* input)
   encoding = input[id_len + 16];
 }
 
-Header::Header(const char* data, const size_t length)
-{
+Header::Header(const char* data, const size_t length) {
   if (length < 0x1d0)
     throw Error("not a RealLive bytecode file");
 
@@ -110,8 +108,7 @@ Header::Header(const char* data, const size_t length)
 
 Script::Script(const Header& hdr, const char* data, const size_t length,
                const char* second_level_xor_key)
-  : uptodate(true), strip(false)
-{
+  : uptodate(true), strip(false) {
   // Kidoku/entrypoint table
   const int kidoku_offs = read_i32(data + 0x08);
   const size_t kidoku_length = read_i32(data + 0x0c);
@@ -165,8 +162,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
 }
 
 void
-Script::update_offsets()
-{
+Script::update_offsets() {
   size_t offset = 0;
   int kidoku_idx = 0;
   for (pointer_t it = elts.begin(); it != elts.end(); ++it) {
@@ -179,8 +175,7 @@ Script::update_offsets()
 }
 
 void
-Script::recalculate(const bool force)
-{
+Script::recalculate(const bool force) {
   if (uptodate && !force) return;
   update_offsets();
   lencache = elts.back().offset() + elts.back().length();
@@ -188,8 +183,7 @@ Script::recalculate(const bool force)
 }
 
 void
-Script::update_pointers(pointer_t& old_target, pointer_t& new_target)
-{
+Script::update_pointers(pointer_t& old_target, pointer_t& new_target) {
   labelmap::iterator it = labels.find(old_target);
   if (it != labels.end()) {
     pointer_list& l = it->second;
@@ -206,23 +200,20 @@ Script::update_pointers(pointer_t& old_target, pointer_t& new_target)
 }
 
 inline void
-Script::remove_label(pointer_t& pt, pointer_t& it)
-{
+Script::remove_label(pointer_t& pt, pointer_t& it) {
   pointer_list& l = labels[pt];
   l.erase(std::remove(l.begin(), l.end(), it), l.end());
   if (l.size() == 0) labels.erase(pt);
 }
 
 inline void
-Script::remove_elt(pointer_t& it)
-{
+Script::remove_elt(pointer_t& it) {
   pointer_t new_it(it);
   update_pointers(it, ++new_it);
   it = elts.erase(it);
 }
 
-const pointer_t Script::getEntrypoint(int entrypoint) const
-{
+const pointer_t Script::getEntrypoint(int entrypoint) const {
   pointernumber::const_iterator it = entrypointAssociations.find(entrypoint);
   if (it == entrypointAssociations.end())
     throw Error("Unknown entrypoint");
@@ -231,8 +222,7 @@ const pointer_t Script::getEntrypoint(int entrypoint) const
 }
 
 const string*
-Scenario::rebuild()
-{
+Scenario::rebuild() {
   // Initialise
   string* rv = new string(0x1d0, 0);
   script.recalculate(true);
@@ -249,17 +239,14 @@ Scenario::rebuild()
   size_t offset = 0;
   int line = 0;
   for (BytecodeList::const_iterator it = script.elts.begin();
-       it != script.elts.end(); ++it)
-  {
+       it != script.elts.end(); ++it) {
     const string data = it->data();
     if (it->type() == Line) {
       line = static_cast<const MetaElement&>(*it).value();
       if (script.strip) continue;
-    }
-    else if (it->type() == Kidoku) {
+    } else if (it->type() == Kidoku) {
       kidoku_table.push_back(line);
-    }
-    else if (it->type() == Entrypoint) {
+    } else if (it->type() == Entrypoint) {
       int idx = static_cast<const MetaElement&>(*it).entrypoint();
       entrypoints[idx] = offset;
       kidoku_table.push_back(idx + 1000000);
@@ -302,8 +289,7 @@ Scenario::rebuild()
   if (!script.strip) {
     for (std::vector<string>::const_iterator it =
            header.dramatis_personae.begin();
-         it != header.dramatis_personae.end(); ++it)
-    {
+         it != header.dramatis_personae.end(); ++it) {
       append_i32(*rv, it->size() + 1);
       rv->append(*it);
       rv->push_back(0);
@@ -323,22 +309,19 @@ Scenario::rebuild()
   return rv;
 }
 
-Scenario::const_iterator Scenario::findEntrypoint(int entrypoint) const
-{
+Scenario::const_iterator Scenario::findEntrypoint(int entrypoint) const {
   return script.getEntrypoint(entrypoint);
 }
 
 // Classification functions for optimisation code.
 
 inline bool
-is_line(const pointer_t& it)
-{
+is_line(const pointer_t& it) {
   return it->type() == Line;
 }
 
 bool
-is_goto_statement(const pointer_t& it)
-{
+is_goto_statement(const pointer_t& it) {
   if (it->type() != Goto) return false;
   const CommandElement& elt = static_cast<const CommandElement&>(*it);
   return (elt.module() == 1 && elt.opcode() == 0)
@@ -346,8 +329,7 @@ is_goto_statement(const pointer_t& it)
 }
 
 bool
-does_not_return(const pointer_t& it)
-{
+does_not_return(const pointer_t& it) {
   // It is safe for this to be conservative. If in doubt, return false.
   if (it->type() < Command) return false;
   const CommandElement& elt = static_cast<const CommandElement&>(*it);
@@ -372,8 +354,7 @@ does_not_return(const pointer_t& it)
 // Optimisation code per se.
 
 Scenario&
-Scenario::optimise()
-{
+Scenario::optimise() {
   // It's not safe to keep any cached data around.
   script.invalidate();
 
@@ -418,8 +399,7 @@ Scenario::optimise()
         if (seek == dest) {
           it = erase(it);
           continue;
-        }
-        else {
+        } else {
           // Conditional jumps that are always taken can be replaced
           // with unconditional jumps.
           GotoElement& elt = static_cast<GotoElement&>(*it);

@@ -40,8 +40,7 @@
  * game file. This structure is at the top of the file since it is
  * what gets queried by SaveDate, SaveTime, et cetera.
  */
-struct SaveGameHeader
-{
+struct SaveGameHeader {
   SaveGameHeader();
   SaveGameHeader(const std::string& in_title);
   ~SaveGameHeader();
@@ -54,8 +53,7 @@ struct SaveGameHeader
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
+  void serialize(Archive& ar, unsigned int version) {
     ar & title & save_time;
   }
 };

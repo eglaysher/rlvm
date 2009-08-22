@@ -55,15 +55,13 @@ Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
                Size size, int time)
   : screen_size_(size), duration_(time),
     start_time_(machine.system().event().getTicks()),
-    machine_(machine), src_surface_(src), dst_surface_(dst)
-{
+    machine_(machine), src_surface_(src), dst_surface_(dst) {
   machine.system().graphics().setIsResponsibleForUpdate(false);
 }
 
 // -----------------------------------------------------------------------
 
-Effect::~Effect()
-{
+Effect::~Effect() {
   machine_.system().graphics().setIsResponsibleForUpdate(true);
 }
 
@@ -71,25 +69,20 @@ Effect::~Effect()
 
 /// @todo Riht now, the ctrl pressed behaviour *may* not match
 ///       RealLive exactly. Verify this.
-bool Effect::operator()(RLMachine& machine)
-{
+bool Effect::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - start_time_;
 
   bool fastForward = machine.system().fastForward();
 
-  if (currentFrame >= duration_ || fastForward)
-  {
+  if (currentFrame >= duration_ || fastForward) {
     return true;
-  }
-  else
-  {
+  } else {
     // Render to the screen
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.beginFrame();
 
-    if (blitOriginalImage())
-    {
+    if (blitOriginalImage()) {
       dstSurface().
         renderToScreen(Rect(Point(0, 0), size()),
                        Rect(Point(0, 0), size()),
@@ -107,8 +100,7 @@ bool Effect::operator()(RLMachine& machine)
 // BlitAfterEffectFinishes
 // -----------------------------------------------------------------------
 
-void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine)
-{
+void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
   // Blit DC1 onto DC0, with full opacity, and end the operation
   src_surface_->blitToSurface(*dst_surface_,
                               src_rect_, dest_rect_, 255);
@@ -123,20 +115,17 @@ BlitAfterEffectFinishes::BlitAfterEffectFinishes(
   LongOperation* in, boost::shared_ptr<Surface> src, boost::shared_ptr<Surface> dst,
   const Rect& srcRect, const Rect& destRect)
   : PerformAfterLongOperationDecorator(in), src_surface_(src), dst_surface_(dst),
-    src_rect_(srcRect), dest_rect_(destRect)
-{}
+    src_rect_(srcRect), dest_rect_(destRect) {}
 
 // -----------------------------------------------------------------------
 
-BlitAfterEffectFinishes::~BlitAfterEffectFinishes()
-{}
+BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
 
 // -----------------------------------------------------------------------
 
 void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> src,
-                            boost::shared_ptr<Surface> dst)
-{
+                            boost::shared_ptr<Surface> dst) {
   BlitAfterEffectFinishes* blit =
     new BlitAfterEffectFinishes(lop, src, dst, src->rect(), src->rect());
   lop = blit;

@@ -86,9 +86,7 @@ TEST(SoundSystem, SetUseKoeCorrectly) {
 // Make sure we thaw previously serialized character_koe_enabled data correctly.
 TEST(SoundSystem, SetUseKoeSerialization) {
   std::string gexe = locateTestCase("Gameexe_data/Gameexe_koeonoff.ini");
-  stringstream ss;
-
-  {
+  stringstream ss; {
     TestSystem top(gexe);
     SoundSystem& sys = top.sound();
 
@@ -99,9 +97,7 @@ TEST(SoundSystem, SetUseKoeSerialization) {
 
     boost::archive::text_oarchive oa(ss);
     oa << const_cast<const SoundSystemGlobals&>(sys.globals());
-  }
-
-  {
+  } {
     TestSystem top(gexe);
     SoundSystem& sys = top.sound();
 

@@ -67,8 +67,7 @@ const unsigned int MAX_PAGE_HISTORY = 100;
 // TextSystemGlobals
 // -----------------------------------------------------------------------
 TextSystemGlobals::TextSystemGlobals()
-  : auto_mode_base_time(100), auto_mode_char_time(100), message_speed(30)
-{}
+  : auto_mode_base_time(100), auto_mode_char_time(100), message_speed(30) {}
 
 // -----------------------------------------------------------------------
 

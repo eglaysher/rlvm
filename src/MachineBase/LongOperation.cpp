@@ -39,13 +39,11 @@
 // -----------------------------------------------------------------------
 
 LongOperation::LongOperation()
-  : EventListener()
-{}
+  : EventListener() {}
 
 // -----------------------------------------------------------------------
 
-LongOperation::~LongOperation()
-{}
+LongOperation::~LongOperation() {}
 
 // -----------------------------------------------------------------------
 
@@ -59,44 +57,38 @@ bool LongOperation::sleepEveryTick() {
 
 PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
   LongOperation* in_op)
-  : operation_(in_op)
-{
+  : operation_(in_op) {
 }
 
 // -----------------------------------------------------------------------
 
-PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator()
-{
+PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator() {
 }
 
 // -----------------------------------------------------------------------
 
 void PerformAfterLongOperationDecorator::mouseMotion(
-  const Point& new_location)
-{
+  const Point& new_location) {
   operation_->mouseMotion(new_location);
 }
 
 // -----------------------------------------------------------------------
 
 bool PerformAfterLongOperationDecorator::mouseButtonStateChanged(
-  MouseButton mouse_button, bool pressed)
-{
+  MouseButton mouse_button, bool pressed) {
   return operation_->mouseButtonStateChanged(mouse_button, pressed);
 }
 
 // -----------------------------------------------------------------------
 
 bool PerformAfterLongOperationDecorator::keyStateChanged(
-  KeyCode key_code, bool pressed)
-{
+  KeyCode key_code, bool pressed) {
   return operation_->keyStateChanged(key_code, pressed);
 }
 
 // -----------------------------------------------------------------------
 
-bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine)
-{
+bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine) {
   bool ret_val = (*operation_)(machine);
   if (ret_val)
     performAfterLongOperation(machine);

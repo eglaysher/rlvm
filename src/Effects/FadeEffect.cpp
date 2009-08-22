@@ -47,16 +47,14 @@ using namespace std;
 
 // -----------------------------------------------------------------------
 
-bool FadeEffect::blitOriginalImage() const
-{
+bool FadeEffect::blitOriginalImage() const {
   return true;
 }
 
 // -----------------------------------------------------------------------
 
 void FadeEffect::performEffectForTime(RLMachine& machine,
-                                      int currentTime)
-{
+                                      int currentTime) {
   // Blit the source image to the screen with the opacity
   int opacity = int((float(currentTime) / duration()) * 255);
 
@@ -72,6 +70,5 @@ FadeEffect::FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                        boost::shared_ptr<Surface> dst,
                        const Size& screenSize,
                        int time)
-  : Effect(machine, src, dst, screenSize, time)
-{
+  : Effect(machine, src, dst, screenSize, time) {
 }

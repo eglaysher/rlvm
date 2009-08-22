@@ -44,8 +44,7 @@
  *
  * @ingroup TransitionEffects
  */
-class BlindEffect : public Effect
-{
+class BlindEffect : public Effect {
 private:
   int blind_size_;
 
@@ -76,8 +75,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class BlindTopToBottomEffect : public BlindEffect
-{
+class BlindTopToBottomEffect : public BlindEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
@@ -93,8 +91,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class BlindBottomToTopEffect : public BlindEffect
-{
+class BlindBottomToTopEffect : public BlindEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
@@ -110,8 +107,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class BlindLeftToRightEffect : public BlindEffect
-{
+class BlindLeftToRightEffect : public BlindEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
@@ -127,8 +123,7 @@ public:
 /**
  * @ingroup TransitionEffects
  */
-class BlindRightToLeftEffect : public BlindEffect
-{
+class BlindRightToLeftEffect : public BlindEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);

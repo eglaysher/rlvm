@@ -33,8 +33,7 @@
 
 using namespace luabind;
 
-scope register_utility()
-{
+scope register_utility() {
   return
     class_<Point>("Point")
     .def(constructor<>())

@@ -79,16 +79,12 @@ class GraphicsObjectTest : public ::testing::Test {
 // Test the serialization of an individual GraphicsObjectOfFile object.
 TEST_F(GraphicsObjectTest, SerializeObjectData) {
   stringstream ss;
-  Serialization::g_current_machine = &rlmachine;
-
-  {
+  Serialization::g_current_machine = &rlmachine; {
     const scoped_ptr<GraphicsObjectData> inputObjOfFile(
       new GraphicsObjectOfFile(system, FILE_NAME));
     boost::archive::text_oarchive oa(ss);
     oa << inputObjOfFile;
-  }
-
-  {
+  } {
     scoped_ptr<GraphicsObjectData> dst;
     boost::archive::text_iarchive ia(ss);
     ia >> dst;
@@ -105,17 +101,13 @@ TEST_F(GraphicsObjectTest, SerializeObjectData) {
 // Try it again, this time wrapped in the GraphicsObject
 TEST_F(GraphicsObjectTest, SerializeObject) {
   stringstream ss;
-  Serialization::g_current_machine = &rlmachine;
-
-  {
+  Serialization::g_current_machine = &rlmachine; {
     const scoped_ptr<GraphicsObject> obj(new GraphicsObject());
     obj->setObjectData(new GraphicsObjectOfFile(system, FILE_NAME));
 
     boost::archive::text_oarchive oa(ss);
     oa << obj;
-  }
-
-  {
+  } {
     scoped_ptr<GraphicsObject> dst;
     boost::archive::text_iarchive ia(ss);
     ia >> dst;

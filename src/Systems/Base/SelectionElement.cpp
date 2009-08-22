@@ -53,28 +53,24 @@ SelectionElement::SelectionElement(
       normal_image_(normal_image),
       highlighted_image_(highlighted_image),
       selection_callback_(selection_callback),
-      graphics_system_(gs)
-{
+      graphics_system_(gs) {
 }
 
 // -----------------------------------------------------------------------
 
-SelectionElement::~SelectionElement()
-{
+SelectionElement::~SelectionElement() {
 }
 
 // -----------------------------------------------------------------------
 
 void SelectionElement::setSelectionCallback(
-  const boost::function<void(int)>& func)
-{
+  const boost::function<void(int)>& func) {
   selection_callback_ = func;
 }
 
 // -----------------------------------------------------------------------
 
-bool SelectionElement::isHighlighted(const Point& p)
-{
+bool SelectionElement::isHighlighted(const Point& p) {
   return Rect(pos_, normal_image_->size()).contains(p);
 }
 
@@ -90,24 +86,20 @@ void SelectionElement::setMousePosition(const Point& pos) {
 
 // -----------------------------------------------------------------------
 
-bool SelectionElement::handleMouseClick(const Point& pos, bool pressed)
-{
-  if (pressed == false && isHighlighted(pos))
-  {
+bool SelectionElement::handleMouseClick(const Point& pos, bool pressed) {
+  if (pressed == false && isHighlighted(pos)) {
     // Released within the button
     if (selection_callback_)
       selection_callback_(id_);
 
     return true;
-  }
-  else
+  } else
     return false;
 }
 
 // -----------------------------------------------------------------------
 
-void SelectionElement::render()
-{
+void SelectionElement::render() {
   shared_ptr<Surface> target;
 
   if (is_highlighted_)

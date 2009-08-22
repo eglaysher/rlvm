@@ -40,8 +40,7 @@ class Point;
  * @todo Later on, see if I can factor out common code from
  *       @c TextWindowButton.
  */
-class SelectionElement
-{
+class SelectionElement {
 public:
   SelectionElement(GraphicsSystem& gs,
                    const boost::shared_ptr<Surface>& normal_image,

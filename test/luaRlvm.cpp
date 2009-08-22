@@ -62,8 +62,7 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-void printVersionInformation()
-{
+void printVersionInformation() {
   cout
     << "rlvm (version 0.3)" << endl
     << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, Jagarl, et all."
@@ -92,8 +91,7 @@ void printVersionInformation()
 
 // -----------------------------------------------------------------------
 
-void printUsage(const string& name, po::options_description& opts)
-{
+void printUsage(const string& name, po::options_description& opts) {
   cout << "Usage: " << name << " [options] <lua script to run> <game root>"
        << endl
        << opts << endl;
@@ -101,8 +99,7 @@ void printUsage(const string& name, po::options_description& opts)
 
 // -----------------------------------------------------------------------
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   srand(time(NULL));
 
   // Set global state: allow spaces in game paths
@@ -148,24 +145,20 @@ int main(int argc, char* argv[])
   // Process command line options
   fs::path scriptLocation, gamerootPath, gameexePath, seenPath;
 
-  if(vm.count("help"))
-  {
+  if(vm.count("help")) {
     printUsage(argv[0], opts);
     return 0;
   }
 
-  if(vm.count("version"))
-  {
+  if(vm.count("version")) {
     printVersionInformation();
     return 0;
   }
 
-  if(vm.count("script-location"))
-  {
+  if(vm.count("script-location")) {
     scriptLocation = vm["script-location"].as<string>();
 
-    if(!fs::exists(scriptLocation))
-    {
+    if(!fs::exists(scriptLocation)) {
       cerr << "ERROR: File '" << gamerootPath << "' does not exist." << endl;
       return -1;
     }

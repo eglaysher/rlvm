@@ -169,14 +169,10 @@ TEST_F(LazyArrayTest, Serialization) {
 
   LazyArray<IntWrapper> lazyArray(SIZE);
   EXPECT_EQ(SIZE, lazyArray.size()) << "Lazy Array didn't remember its size";
-  populateIntArray(lazyArray);
-
-  {
+  populateIntArray(lazyArray); {
     boost::archive::text_oarchive oa(ss);
     oa << const_cast<const LazyArray<IntWrapper>&>(lazyArray);
-  }
-
-  {
+  } {
     // Thaw the data that was saved into a different LazyArray and
     // make sure that it's the same data.
     LazyArray<IntWrapper> newArray(SIZE);

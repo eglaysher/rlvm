@@ -53,8 +53,7 @@ class TextWindow;
 
 // -----------------------------------------------------------------------
 
-struct TextSystemGlobals
-{
+struct TextSystemGlobals {
   TextSystemGlobals();
   TextSystemGlobals(Gameexe& gexe);
 
@@ -69,8 +68,7 @@ struct TextSystemGlobals
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, const unsigned int version)
-  {
+  void serialize(Archive& ar, const unsigned int version) {
     ar & auto_mode_base_time & auto_mode_char_time & message_speed
       & window_attr;
   }
@@ -78,8 +76,7 @@ struct TextSystemGlobals
 
 // -----------------------------------------------------------------------
 
-class TextSystem : public EventListener
-{
+class TextSystem : public EventListener {
 public:
   /// Internal structure used to keep track of the state of
   typedef boost::ptr_map<int, TextPage> PageSet;

@@ -39,8 +39,7 @@ class SDLSoundSystem;
 
 // -----------------------------------------------------------------------
 
-class SDLSystem : public System
-{
+class SDLSystem : public System {
 public:
   SDLSystem(Gameexe& gameexe);
   ~SDLSystem();

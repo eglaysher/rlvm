@@ -68,8 +68,7 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(System& system, int window_num)
-  : TextWindow(system, window_num)
-{
+  : TextWindow(system, window_num) {
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(system.text());
   font_ = text.getFontOfSize(fontSizeInPixels());
   ruby_font_ = text.getFontOfSize(rubyTextSize());
@@ -79,8 +78,7 @@ SDLTextWindow::SDLTextWindow(System& system, int window_num)
 
 // -----------------------------------------------------------------------
 
-SDLTextWindow::~SDLTextWindow()
-{
+SDLTextWindow::~SDLTextWindow() {
 }
 
 // -----------------------------------------------------------------------
@@ -111,8 +109,7 @@ void SDLTextWindow::clearWin() {
 // -----------------------------------------------------------------------
 
 bool SDLTextWindow::displayChar(const std::string& current,
-                                const std::string& next)
-{
+                                const std::string& next) {
   // If this text page is already full, save some time and reject
   // early.
   if (isFull())
@@ -120,8 +117,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
 
   setVisible(true);
 
-  if (current != "")
-  {
+  if (current != "") {
     SDL_Color colour;
     RGBColourToSDLColor(font_colour_, &colour);
     int cur_codepoint = codepoint(current);
@@ -131,8 +127,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
     // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
     // LENTICULAR BRACKET) should be handled before this
     // function. Otherwise, it's an error.
-    if (cur_codepoint == 0x3010 || cur_codepoint == 0x3011)
-    {
+    if (cur_codepoint == 0x3010 || cur_codepoint == 0x3011) {
       throw SystemError(
         "Bug in parser; \\{name} construct should be handled before display_char");
     }
@@ -184,8 +179,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
       textWindowSize().width();
     if (!char_will_fit_on_line ||
        (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
-        !next_char_will_fit_on_line && isKinsoku(next_codepoint)))
-    {
+        !next_char_will_fit_on_line && isKinsoku(next_codepoint))) {
       hardBrake();
 
       if (isFull())
@@ -211,8 +205,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
 
   // When we aren't rendering a piece of text with a ruby gloss, mark
   // the screen as dirty so that this character renders.
-  if (ruby_begin_point_ == -1)
-  {
+  if (ruby_begin_point_ == -1) {
     system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
 
@@ -243,14 +236,11 @@ int SDLTextWindow::charWidth(unsigned short codepoint) const {
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::displayRubyText(const std::string& utf8str)
-{
-  if (ruby_begin_point_ != -1)
-  {
+void SDLTextWindow::displayRubyText(const std::string& utf8str) {
+  if (ruby_begin_point_ != -1) {
     int end_point = text_insertion_point_x_ - x_spacing_;
 
-    if (ruby_begin_point_ > end_point)
-    {
+    if (ruby_begin_point_ > end_point) {
       ruby_begin_point_ = -1;
       throw rlvm::Exception("We don't handle ruby across line breaks yet!");
     }
@@ -284,8 +274,7 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str)
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::addSelectionItem(const std::string& utf8str)
-{
+void SDLTextWindow::addSelectionItem(const std::string& utf8str) {
   // Render the incoming string for both selected and not-selected.
   SDL_Color colour;
   RGBColourToSDLColor(font_colour_, &colour);

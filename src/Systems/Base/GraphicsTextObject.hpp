@@ -44,8 +44,7 @@ class System;
  * Represents the textual data made with commands such as obj_of_text,
  * obj_set_text, obj_text_opts, et cetera.
  */
-class GraphicsTextObject : public GraphicsObjectData
-{
+class GraphicsTextObject : public GraphicsObjectData {
 public:
   GraphicsTextObject(System& system);
   ~GraphicsTextObject();
@@ -95,8 +94,7 @@ private:
 namespace boost { namespace serialization {
 template<class Archive>
 inline void load_construct_data(
-  Archive & ar, GraphicsTextObject* t, const unsigned int file_version)
-{
+  Archive & ar, GraphicsTextObject* t, const unsigned int file_version) {
   ::new(t)GraphicsTextObject(Serialization::g_current_machine->system());
 }
   }}

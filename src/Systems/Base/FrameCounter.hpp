@@ -40,8 +40,7 @@ class EventSystem;
  * See section "5.13.3 Frame counters" of the RLdev specification for
  * more details.
  */
-class FrameCounter
-{
+class FrameCounter {
 public:
   FrameCounter(EventSystem& es, int frame_min, int frame_max, int milliseconds);
 
@@ -115,8 +114,7 @@ protected:
 /**
  * Simple frame counter that counts from frame_min to frame_max.
  */
-class SimpleFrameCounter : public FrameCounter
-{
+class SimpleFrameCounter : public FrameCounter {
 public:
   SimpleFrameCounter(EventSystem& es, int frame_min, int frame_max,
                      int milliseconds);
@@ -134,8 +132,7 @@ private:
  * Loop frame counter that counts from frame_min to frame_max, starting over at
  * frame_min.
  */
-class LoopFrameCounter : public FrameCounter
-{
+class LoopFrameCounter : public FrameCounter {
 public:
   LoopFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
@@ -154,8 +151,7 @@ private:
  * Turn frame counter that counts from frame_min to frame_max and then counts back
  * down to frame_min.
  */
-class TurnFrameCounter : public FrameCounter
-{
+class TurnFrameCounter : public FrameCounter {
 public:
   TurnFrameCounter(EventSystem& es, int frame_min, int frame_max,
                    int milliseconds);
@@ -173,8 +169,7 @@ private:
 /**
  * Frame counter that counts from frame_min to frame_max, speeding up as it goes.
  */
-class AcceleratingFrameCounter : public FrameCounter
-{
+class AcceleratingFrameCounter : public FrameCounter {
 private:
   unsigned int start_time_;
   float time_at_last_check_;
@@ -192,8 +187,7 @@ public:
 /**
  * Frame counter that counts from frame_min to frame_max, slowing down as it goes.
  */
-class DeceleratingFrameCounter : public FrameCounter
-{
+class DeceleratingFrameCounter : public FrameCounter {
 private:
   unsigned int start_time_;
   float time_at_last_check_;

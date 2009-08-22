@@ -37,8 +37,7 @@
 
 // -----------------------------------------------------------------------
 
-struct LongOp_pcmWait : public LongOperation
-{
+struct LongOp_pcmWait : public LongOperation {
   int channel_;
   LongOp_pcmWait(int channel) : channel_(channel) {
     // TODO: Make it reset the number of loops, or this could
@@ -193,8 +192,7 @@ struct Pcm_wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 PcmModule::PcmModule()
-  : RLModule("Pcm", 1, 21)
-{
+  : RLModule("Pcm", 1, 21) {
   addOpcode(0, 0, "wavPlay", new Pcm_wavPlay_0);
   addOpcode(0, 1, "wavPlay", new Pcm_wavPlay_1);
   addOpcode(0, 2, "wavPlay", new Pcm_wavPlay_2);

@@ -75,8 +75,7 @@ const char clannad_full_voice_xor_mask_2[] = {
 
 // "Encrypt"/"decrypt" a file.
 void
-apply_mask(char* array, size_t len)
-{
+apply_mask(char* array, size_t len) {
   unsigned char i = 0;
   while (len--) *array++ ^= xor_mask[i++];
 }
@@ -84,8 +83,7 @@ apply_mask(char* array, size_t len)
 // -----------------------------------------------------------------------
 
 void
-apply_mask(string& array, size_t start)
-{
+apply_mask(string& array, size_t start) {
   unsigned char i = 0;
   size_t j = start;
   size_t len = array.size() - start;
@@ -97,8 +95,7 @@ apply_mask(string& array, size_t start)
 // Decompress an archived file.
 void
 decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
-           const char* per_game_xor_key)
-{
+           const char* per_game_xor_key) {
   int bit = 1;
   const char* srcend = src + src_len;
   char* dststart = dst;
@@ -138,8 +135,7 @@ decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
 // -----------------------------------------------------------------------
 
 string*
-compress(char* arr, size_t len)
-{
+compress(char* arr, size_t len) {
   string* rv = new string;
   RealliveCompressor cmp;
   cmp.WriteData(arr, len);

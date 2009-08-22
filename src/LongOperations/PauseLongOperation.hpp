@@ -34,8 +34,7 @@
 /**
  * Main pause function. Exported for TextoutLongOperation to abuse.
  */
-class PauseLongOperation : public LongOperation
-{
+class PauseLongOperation : public LongOperation {
 public:
   PauseLongOperation(RLMachine& machine);
   ~PauseLongOperation();
@@ -71,8 +70,7 @@ private:
 // -----------------------------------------------------------------------
 // NewPageAfterLongop
 // -----------------------------------------------------------------------
-class NewPageAfterLongop : public PerformAfterLongOperationDecorator
-{
+class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
 public:
   NewPageAfterLongop(LongOperation* inOp);
   ~NewPageAfterLongop();
@@ -84,8 +82,7 @@ private:
 // -----------------------------------------------------------------------
 // NewParagraphAfterLongop
 // -----------------------------------------------------------------------
-class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator
-{
+class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
 public:
   NewParagraphAfterLongop(LongOperation* inOp);
   ~NewParagraphAfterLongop();

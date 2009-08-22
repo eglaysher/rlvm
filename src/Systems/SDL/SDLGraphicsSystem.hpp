@@ -59,8 +59,7 @@ class Texture;
  *
  * @todo This public interface really needs to be rethought out.
  */
-class SDLGraphicsSystem : public GraphicsSystem
-{
+class SDLGraphicsSystem : public GraphicsSystem {
 public:
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();

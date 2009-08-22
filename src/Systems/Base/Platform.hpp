@@ -39,8 +39,7 @@ class RlvmInfo;
  * Encapsulates platform specific details; this is mainly dealing with the
  * underlying widget set.
  */
-class Platform
-{
+class Platform {
 public:
   /**
    * Parses out strings that are presented to the user as part of the platform.

@@ -43,16 +43,14 @@ using namespace std;
 
 GraphicsObjectData::GraphicsObjectData()
   : after_animation_(AFTER_NONE), owned_by_(NULL), currently_playing_(false),
-    animation_finished_(false)
-{}
+    animation_finished_(false) {}
 
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
   : after_animation_(obj.after_animation_), owned_by_(NULL),
     currently_playing_(obj.currently_playing_),
-    animation_finished_(false)
-{}
+    animation_finished_(false) {}
 
 // -----------------------------------------------------------------------
 
@@ -60,8 +58,7 @@ GraphicsObjectData::~GraphicsObjectData() { }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree)
-{
+void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree) {
   boost::shared_ptr<Surface> surface = currentSurface(go);
   if (surface) {
     Rect src = srcRect(go);
@@ -91,13 +88,11 @@ void GraphicsObjectData::loopAnimation() { }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectData::endAnimation()
-{
+void GraphicsObjectData::endAnimation() {
   // Set first, because we may deallocate this by one of our actions
   currently_playing_ = false;
 
-  switch (afterAnimation())
-  {
+  switch (afterAnimation()) {
   case AFTER_NONE:
     animation_finished_ = true;
     break;
@@ -105,8 +100,7 @@ void GraphicsObjectData::endAnimation()
     if (ownedBy())
       ownedBy()->deleteObject();
     break;
-  case AFTER_LOOP:
-  {
+  case AFTER_LOOP: {
     // Reset from the beginning
     currently_playing_ = true;
     loopAnimation();
@@ -117,15 +111,13 @@ void GraphicsObjectData::endAnimation()
 
 // -----------------------------------------------------------------------
 
-Rect GraphicsObjectData::srcRect(const GraphicsObject& go)
-{
+Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {
   return currentSurface(go)->getPattern(go.pattNo()).rect;
 }
 
 // -----------------------------------------------------------------------
 
-Point GraphicsObjectData::dstOrigin(const GraphicsObject& go)
-{
+Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   boost::shared_ptr<Surface> surface = currentSurface(go);
   if (surface) {
     return Point(surface->getPattern(go.pattNo()).originX,
@@ -137,8 +129,7 @@ Point GraphicsObjectData::dstOrigin(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-Rect GraphicsObjectData::dstRect(const GraphicsObject& go)
-{
+Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
   Point origin = dstOrigin(go);
   Rect src = srcRect(go);
 
@@ -152,15 +143,13 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
-{
+int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
   return go.alpha();
 }
 
 // -----------------------------------------------------------------------
 
-bool GraphicsObjectData::isAnimation() const
-{
+bool GraphicsObjectData::isAnimation() const {
   return false;
 }
 

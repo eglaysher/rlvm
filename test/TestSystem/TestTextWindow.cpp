@@ -84,8 +84,7 @@ void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
 // -----------------------------------------------------------------------
 
 bool TestTextWindow::displayChar(const std::string& current,
-                                 const std::string& next)
-{
+                                 const std::string& next) {
   current_contents_ += current;
   return true;
 }
@@ -93,8 +92,7 @@ bool TestTextWindow::displayChar(const std::string& current,
 // -----------------------------------------------------------------------
 
 void TestTextWindow::setName(const std::string& utf8name,
-                             const std::string& next_char)
-{
+                             const std::string& next_char) {
   current_contents_ += "\\{" + utf8name + "}";
 
   TextWindow::setName(utf8name, next_char);
@@ -102,8 +100,7 @@ void TestTextWindow::setName(const std::string& utf8name,
 
 // -----------------------------------------------------------------------
 
-void TestTextWindow::hardBrake()
-{
+void TestTextWindow::hardBrake() {
   current_contents_ += "\n";
   TextWindow::hardBrake();
 }

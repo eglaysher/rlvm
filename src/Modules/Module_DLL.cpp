@@ -63,8 +63,7 @@ struct Jmp_CallDLL : public RLOp_Store_6<
 // -----------------------------------------------------------------------
 
 DLLModule::DLLModule()
-  : RLModule("DLL", 2, 1)
-{
+  : RLModule("DLL", 2, 1) {
   addOpcode(10, 0, "LoadDLL", new Jmp_LoadDLL);
   addOpcode(11, 0, "UnloadDLL", callFunction(&RLMachine::unloadDLL));
 

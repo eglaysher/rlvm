@@ -155,8 +155,7 @@ Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s)
 
 // -----------------------------------------------------------------------
 
-Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj()
-{}
+Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj() {}
 
 // -----------------------------------------------------------------------
 

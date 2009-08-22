@@ -50,8 +50,7 @@ public:
  * Mock enabled event system. Returned values are controlled by
  * EventSystemMockHandler.
  */
-class TestEventSystem : public EventSystem
-{
+class TestEventSystem : public EventSystem {
 public:
   TestEventSystem(Gameexe& gexe);
   void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);

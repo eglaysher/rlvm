@@ -36,18 +36,15 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(System& system)
-{
+fs::path findFontFile(System& system) {
   return findFontFile(system.gameexe(), "msgothic.ttc");
 }
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
-{
+fs::path findFontFile(Gameexe& gexe, const std::string& fileName) {
   // HACK: If the user has overridden the __GAMEFONT, use it instead.
-  if (gexe.exists("__GAMEFONT"))
-  {
+  if (gexe.exists("__GAMEFONT")) {
     std::string gamefontstr = gexe("__GAMEFONT");
     fs::path gameFont = fs::path(gamefontstr);
     if (fs::exists(gameFont))
@@ -55,8 +52,7 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
   }
 
   // HACK: Look for the font in the game
-  if (gexe.exists("__GAMEPATH"))
-  {
+  if (gexe.exists("__GAMEPATH")) {
     std::string gamepath = gexe("__GAMEPATH");
     fs::path gamePathFont = fs::path(gamepath) / fileName;
     if (fs::exists(gamePathFont))
@@ -68,8 +64,7 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName)
   fs::path home;
   if (homeptr != 0) {
     home = homeptr;
-  }
-  else if (rootptr != 0) {
+  } else if (rootptr != 0) {
     home = rootptr;
     home /= "Fonts";
   }

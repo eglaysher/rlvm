@@ -71,57 +71,49 @@ namespace libReallive {
  * @{
  */
 
-size_t next_token(const char* src)
-{
+size_t next_token(const char* src) {
   if (*src++ != '$') return 0;
   if (*src++ == 0xff) return 6;
   if (*src++ != '[') return 2;
   return 4 + next_expr(src);
 }
 
-size_t next_term(const char* src)
-{
+size_t next_term(const char* src) {
   if (*src == '(') return 2 + next_expr(src + 1);
   if (*src == '\\') return 2 + next_term(src + 2);
   return next_token(src);
 }
 
-size_t next_arith(const char* src)
-{
+size_t next_arith(const char* src) {
   size_t lhs = next_term(src);
   return (src[lhs] == '\\') ? lhs + 2 + next_arith(src + lhs + 2) : lhs;
 }
 
-size_t next_cond(const char* src)
-{
+size_t next_cond(const char* src) {
   size_t lhs = next_arith(src);
   return (src[lhs] == '\\' && src[lhs + 1] >= 0x28 && src[lhs + 1] <= 0x2d) ?
     lhs + 2 + next_arith(src + lhs + 2) : lhs;
 }
 
-size_t next_and(const char* src)
-{
+size_t next_and(const char* src) {
   size_t lhs = next_cond(src);
   return (src[lhs] == '\\' && src[lhs + 1] == '<') ?
     lhs + 2 + next_and(src + lhs + 2) : lhs;
 }
 
-size_t next_expr(const char* src)
-{
+size_t next_expr(const char* src) {
   size_t lhs = next_and(src);
   return (src[lhs] == '\\' && src[lhs + 1] == '=') ?
     lhs + 2 + next_expr(src + lhs + 2) : lhs;
 }
 
-size_t next_string(const char* src)
-{
+size_t next_string(const char* src) {
   bool quoted = false;
   const char* end = src;
   while (true) {
     if (quoted) {
       quoted = *end != '"';
-    }
-    else {
+    } else {
       quoted = *end == '"';
       if (strncmp(end, "###PRINT(", 9) == 0) {
         end += 9;
@@ -146,8 +138,7 @@ size_t next_string(const char* src)
  *       a way to tell if something should be a complex parameter or a
  *       parenthisized expression at tokenization time.
  */
-size_t next_data(const char* src)
-{
+size_t next_data(const char* src) {
   if (*src == ',')
     return 1 + next_data(src + 1);
   if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
@@ -169,8 +160,7 @@ size_t next_data(const char* src)
     if (*end == '\\')
       end += next_expr(end);
     return end - src;
-  }
-  else return next_expr(src);
+  } else return next_expr(src);
 }
 
 //@}
@@ -198,8 +188,7 @@ size_t next_data(const char* src)
  * @{
  */
 
-ExpressionPiece* get_expr_token(const char*& src)
-{
+ExpressionPiece* get_expr_token(const char*& src) {
   if (src[0] == 0xff) {
     src++;
     int value = read_i32(src);
@@ -231,8 +220,7 @@ ExpressionPiece* get_expr_token(const char*& src)
   }
 }
 
-ExpressionPiece* get_expr_term(const char*& src)
-{
+ExpressionPiece* get_expr_term(const char*& src) {
   if (src[0] == '$') {
     src++;
     return get_expr_token(src);
@@ -264,8 +252,7 @@ ExpressionPiece* get_expr_term(const char*& src)
 }
 
 static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
-                                                    ExpressionPiece* tok)
-{
+                                                    ExpressionPiece* tok) {
   if (src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
     char op = src[1];
     // Advance past this operator
@@ -279,8 +266,7 @@ static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
   }
 }
 
-static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* tok)
-{
+static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* tok) {
   if (src[0] == '\\' && (src[1] == 0x00 || src[1] == 0x01)) {
     char op = src[1];
     src += 2;
@@ -293,13 +279,11 @@ static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* t
   }
 }
 
-ExpressionPiece* get_expr_arith(const char*& src)
-{
+ExpressionPiece* get_expr_arith(const char*& src) {
   return get_expr_arith_loop(src, get_expr_arith_loop_hi_prec(src, get_expr_term(src)));
 }
 
-static ExpressionPiece* get_expr_cond_loop(const char*& src, ExpressionPiece* tok)
-{
+static ExpressionPiece* get_expr_cond_loop(const char*& src, ExpressionPiece* tok) {
   if (src[0] == '\\' && (src[1] >= 0x28 && src[1] <= 0x2d)) {
     char op = src[1];
     src += 2;
@@ -311,13 +295,11 @@ static ExpressionPiece* get_expr_cond_loop(const char*& src, ExpressionPiece* to
   }
 }
 
-ExpressionPiece* get_expr_cond(const char*& src)
-{
+ExpressionPiece* get_expr_cond(const char*& src) {
   return get_expr_cond_loop(src, get_expr_arith(src));
 }
 
-static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece* tok)
-{
+static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece* tok) {
   if (src[0] == '\\' && src[1] == '<') {
     src += 2;
     ExpressionPiece* rhs = get_expr_cond(src);
@@ -327,8 +309,7 @@ static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece
   }
 }
 
-static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece* tok)
-{
+static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece* tok) {
   if (src[0] == '\\' && src[1] == '=') {
     src += 2;
     ExpressionPiece* innerTerm = get_expr_cond(src);
@@ -339,13 +320,11 @@ static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece*
   }
 }
 
-ExpressionPiece* get_expr_bool(const char*& src)
-{
+ExpressionPiece* get_expr_bool(const char*& src) {
   return get_expr_bool_loop_or(src, get_expr_bool_loop_and(src, get_expr_cond(src)));
 }
 
-ExpressionPiece* get_expression(const char*& src)
-{
+ExpressionPiece* get_expression(const char*& src) {
   return get_expr_bool(src);
 }
 
@@ -355,8 +334,7 @@ ExpressionPiece* get_expression(const char*& src)
  * @param src Current location in string to parse
  * @return The parsed ExpressionPiece
  */
-ExpressionPiece* get_assignment(const char*& src)
-{
+ExpressionPiece* get_assignment(const char*& src) {
   auto_ptr<ExpressionPiece> itok(get_expr_term(src));
   int op = src[1];
   src += 2;
@@ -374,8 +352,7 @@ ExpressionPiece* get_assignment(const char*& src)
  * @param src Current location in input string to parse
  * @return A StringConstant ExpressionPiece* containg the string.
  */
-static ExpressionPiece* get_string(const char*& src)
-{
+static ExpressionPiece* get_string(const char*& src) {
   // Get the length of this string in the bytecode:
   size_t length = next_string(src);
 
@@ -401,8 +378,7 @@ static ExpressionPiece* get_string(const char*& src)
  * @param src Current location in string to parse
  * @return The parsed ExpressionPiece
  */
-ExpressionPiece* get_data(const char*& src)
-{
+ExpressionPiece* get_data(const char*& src) {
   if (*src == ',') {
     ++src;
     return get_data(src);
@@ -422,14 +398,12 @@ ExpressionPiece* get_data(const char*& src)
       int tag = *end++;
       cep.reset(new SpecialExpressionPiece(tag));
 
-      if (*end != '(')
-      {
+      if (*end != '(') {
         // We have a single parameter in this special expression;
         cep->addContainedPiece(get_data(end));
         return cep.release();
       } else end++;
-    }
-    else
+    } else
       cep.reset(new ComplexExpressionPiece());
 
     while (*end != ')') {
@@ -437,15 +411,13 @@ ExpressionPiece* get_data(const char*& src)
     }
 
     return cep.release();
-  }
-  else
+  } else
     return get_expression(src);
 }
 
 // -----------------------------------------------------------------------
 
-ExpressionPiece* get_complex_param(const char*& src)
-{
+ExpressionPiece* get_complex_param(const char*& src) {
   if (*src == ',') {
     ++src;
     return get_data(src);
@@ -458,8 +430,7 @@ ExpressionPiece* get_complex_param(const char*& src)
     }
 
     return cep.release();
-  }
-  else
+  } else
     return get_expression(src);
 }
 
@@ -495,25 +466,21 @@ std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
  * @param src Raw string to turn into a printable string
  * @return Printable string
  */
-std::string parsableToPrintableString(const std::string& src)
-{
+std::string parsableToPrintableString(const std::string& src) {
   string output;
 
   bool firstToken = true;
-  for (string::const_iterator it = src.begin(); it != src.end(); ++it)
-  {
+  for (string::const_iterator it = src.begin(); it != src.end(); ++it) {
     if (firstToken)
       firstToken = false;
-    else
-    {
+    else {
       output += " ";
     }
 
     char tok = *it;
     if (tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']')
       output.push_back(tok);
-    else
-    {
+    else {
       ostringstream ss;
       ss << std::hex << std::setw(2) << std::setfill('0') << int(tok);
       output += ss.str();
@@ -532,24 +499,21 @@ std::string parsableToPrintableString(const std::string& src)
  * @param src Printable string
  * @return Parsable string
  */
-std::string printableToParsableString(const std::string& src)
-{
+std::string printableToParsableString(const std::string& src) {
   typedef boost::tokenizer<boost::char_separator<char> > ttokenizer;
 
   std::string output;
 
   boost::char_separator<char> sep(" ");
   ttokenizer tokens(src, sep);
-  for (ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it)
-  {
+  for (ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it) {
     const std::string& tok = *it;
     if (tok.size() > 2)
       throw libReallive::Error("Invalid string given to printableToParsableString");
 
     if (tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
       output.push_back(tok[0]);
-    else
-    {
+    else {
       int charToAdd;
       istringstream ss(tok);
       ss >> std::hex >> charToAdd;
@@ -578,12 +542,10 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
 /// A default implementation is provided since not everything will have assign
 /// semantics.
 void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
-int ExpressionPiece::integerValue(RLMachine& machine) const
-{ throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
+int ExpressionPiece::integerValue(RLMachine& machine) const { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
-const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const
-{ throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
+const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
 
 IntReferenceIterator ExpressionPiece::getIntegerReferenceIterator(
     RLMachine& machine) const {
@@ -610,8 +572,7 @@ IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
   return IntReferenceIterator(machine.storeRegisterAddress());
 }
 
-ExpressionPiece* StoreRegisterExpressionPiece::clone() const
-{
+ExpressionPiece* StoreRegisterExpressionPiece::clone() const {
   return new StoreRegisterExpressionPiece;
 }
 
@@ -623,8 +584,7 @@ IntegerConstant::~IntegerConstant() {}
 
 int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
 
-ExpressionPiece* IntegerConstant::clone() const
-{
+ExpressionPiece* IntegerConstant::clone() const {
   return new IntegerConstant(constant);
 }
 
@@ -632,14 +592,12 @@ ExpressionPiece* IntegerConstant::clone() const
 
 // StringConstant
 StringConstant::StringConstant(const std::string& in) : constant(in) {}
-ExpressionValueType StringConstant::expressionValueType() const
-{ return ValueTypeString; }
+ExpressionValueType StringConstant::expressionValueType() const { return ValueTypeString; }
 const std::string& StringConstant::getStringValue(RLMachine& machine) const {
   return constant;
 }
 
-ExpressionPiece* StringConstant::clone() const
-{
+ExpressionPiece* StringConstant::clone() const {
   return new StringConstant(constant);
 }
 
@@ -652,8 +610,7 @@ MemoryReference::~MemoryReference() {}
 
 bool MemoryReference::isMemoryReference() const { return true; }
 ExpressionValueType MemoryReference::expressionValueType() const {
-  if (isStringLocation(type))
-  {
+  if (isStringLocation(type)) {
     return ValueTypeString;
   } else {
     return ValueTypeInteger;
@@ -694,8 +651,7 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& m
   return StringReferenceIterator(&machine.memory(), type, location->integerValue(machine));
 }
 
-ExpressionPiece* MemoryReference::clone() const
-{
+ExpressionPiece* MemoryReference::clone() const {
   return new MemoryReference(type, location->clone());
 }
 
@@ -707,8 +663,7 @@ UniaryExpressionOperator::UniaryExpressionOperator(char inOperation,
 
 UniaryExpressionOperator::~UniaryExpressionOperator() {}
 
-int UniaryExpressionOperator::performOperationOn(int int_operand) const
-{
+int UniaryExpressionOperator::performOperationOn(int int_operand) const {
   int result = int_operand;
   switch (operation) {
   case 0x01:
@@ -725,8 +680,7 @@ int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
   return performOperationOn(operand->integerValue(machine));
 }
 
-ExpressionPiece* UniaryExpressionOperator::clone() const
-{
+ExpressionPiece* UniaryExpressionOperator::clone() const {
   return new UniaryExpressionOperator(operation, operand->clone());
 }
 
@@ -735,15 +689,12 @@ ExpressionPiece* UniaryExpressionOperator::clone() const
 BinaryExpressionOperator::BinaryExpressionOperator(char inOperation,
                                                    ExpressionPiece* lhs,
                                                    ExpressionPiece* rhs)
-  : operation(inOperation), leftOperand(lhs), rightOperand(rhs)
-{}
+  : operation(inOperation), leftOperand(lhs), rightOperand(rhs) {}
 
-BinaryExpressionOperator::~BinaryExpressionOperator()
-{}
+BinaryExpressionOperator::~BinaryExpressionOperator() {}
 
 // Stolen from xclannad
-int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
-{
+int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const {
   switch (operation) {
   case 0:
   case 20:
@@ -783,8 +734,7 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const
   case 45: return lhs >  rhs;
   case 60: return lhs && rhs;
   case 61: return lhs || rhs;
-  default:
-  {
+  default: {
     ostringstream ss;
     ss << "Invalid operator " << (int)operation << " in expression!";
     throw Error(ss.str());
@@ -797,8 +747,7 @@ int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
                             rightOperand->integerValue(machine));
 }
 
-ExpressionPiece* BinaryExpressionOperator::clone() const
-{
+ExpressionPiece* BinaryExpressionOperator::clone() const {
   return new BinaryExpressionOperator(operation, leftOperand->clone(),
                                       rightOperand->clone());
 }
@@ -808,15 +757,12 @@ ExpressionPiece* BinaryExpressionOperator::clone() const
 AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
                                                            ExpressionPiece* lhs,
                                                            ExpressionPiece* rhs)
-  : BinaryExpressionOperator(op, lhs, rhs)
-{}
+  : BinaryExpressionOperator(op, lhs, rhs) {}
 
-AssignmentExpressionOperator::~AssignmentExpressionOperator()
-{
+AssignmentExpressionOperator::~AssignmentExpressionOperator() {
 }
 
-int AssignmentExpressionOperator::integerValue(RLMachine& machine) const
-{
+int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   if (operation == 30) {
     int value = rightOperand->integerValue(machine);
     leftOperand->assignIntValue(machine, value);
@@ -829,8 +775,7 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const
   }
 }
 
-ExpressionPiece* AssignmentExpressionOperator::clone() const
-{
+ExpressionPiece* AssignmentExpressionOperator::clone() const {
   return new AssignmentExpressionOperator(operation, leftOperand->clone(),
                                           rightOperand->clone());
 }
@@ -838,8 +783,7 @@ ExpressionPiece* AssignmentExpressionOperator::clone() const
 
 // -----------------------------------------------------------------------
 
-bool ComplexExpressionPiece::isComplexParameter() const
-{
+bool ComplexExpressionPiece::isComplexParameter() const {
   return true;
 }
 
@@ -852,15 +796,13 @@ bool ComplexExpressionPiece::isComplexParameter() const
  *
  * @param piece Piece to pass take ownership of
  */
-void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece)
-{
+void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece) {
   containedPieces.push_back(piece);
 }
 
 // -----------------------------------------------------------------------
 
-ExpressionPiece* ComplexExpressionPiece::clone() const
-{
+ExpressionPiece* ComplexExpressionPiece::clone() const {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
   cep->containedPieces = containedPieces.clone();
   return cep;
@@ -869,8 +811,7 @@ ExpressionPiece* ComplexExpressionPiece::clone() const
 // -----------------------------------------------------------------------
 
 SpecialExpressionPiece::SpecialExpressionPiece(int tag)
-  : overloadTag(tag)
-{}
+  : overloadTag(tag) {}
 
 // -----------------------------------------------------------------------
 
@@ -878,8 +819,7 @@ bool SpecialExpressionPiece::isSpecialParamater() const {
   return true;
 }
 
-ExpressionPiece* SpecialExpressionPiece::clone() const
-{
+ExpressionPiece* SpecialExpressionPiece::clone() const {
   SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
   cep->containedPieces = containedPieces.clone();
   return cep;

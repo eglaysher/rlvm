@@ -37,8 +37,7 @@
  * that a bad opcode could do should not fall under this class, and
  * should be rlvm::Exception instead.
  */
-class SystemError : public std::exception
-{
+class SystemError : public std::exception {
 private:
   std::string description;
 public:

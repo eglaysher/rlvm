@@ -52,23 +52,20 @@ using namespace std;
 // ScrollOnScrollOff base class
 // -----------------------------------------------------------------------
 
-bool ScrollSquashSlideBaseEffect::blitOriginalImage() const
-{
+bool ScrollSquashSlideBaseEffect::blitOriginalImage() const {
   return false;
 }
 
 // -----------------------------------------------------------------------
 
-int ScrollSquashSlideBaseEffect::calculateAmountVisible(int currentTime, int screenSize)
-{
+int ScrollSquashSlideBaseEffect::calculateAmountVisible(int currentTime, int screenSize) {
   return int((float(currentTime) / duration()) * screenSize);
 }
 
 // -----------------------------------------------------------------------
 
 void ScrollSquashSlideBaseEffect::performEffectForTime(
-  RLMachine& machine, int currentTime)
-{
+  RLMachine& machine, int currentTime) {
   GraphicsSystem& graphics = machine.system().graphics();
   int amountVisible = calculateAmountVisible(currentTime,
                                              drawer_->getMaxSize(graphics));
@@ -85,14 +82,12 @@ ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
   ScrollSquashSlideEffectTypeBase* effectType,
   const Size& s, int time)
   : Effect(machine, src, dst, s, time),
-    drawer_(drawer), effect_type_(effectType)
-{
+    drawer_(drawer), effect_type_(effectType) {
 }
 
 // -----------------------------------------------------------------------
 
-ScrollSquashSlideBaseEffect::~ScrollSquashSlideBaseEffect()
-{}
+ScrollSquashSlideBaseEffect::~ScrollSquashSlideBaseEffect() {}
 
 // -----------------------------------------------------------------------
 
@@ -102,18 +97,15 @@ ScrollSquashSlideBaseEffect::~ScrollSquashSlideBaseEffect()
 
 // ------------------------------------------- [ ScrollSquashSlideDrawer ]
 
-ScrollSquashSlideDrawer::ScrollSquashSlideDrawer()
-{}
+ScrollSquashSlideDrawer::ScrollSquashSlideDrawer() {}
 
 // -----------------------------------------------------------------------
 
-ScrollSquashSlideDrawer::~ScrollSquashSlideDrawer()
-{}
+ScrollSquashSlideDrawer::~ScrollSquashSlideDrawer() {}
 
 // ------------------------------------------------- [ TopToBottomDrawer ]
 
-int TopToBottomDrawer::getMaxSize(GraphicsSystem& gs)
-{
+int TopToBottomDrawer::getMaxSize(GraphicsSystem& gs) {
   return gs.screenSize().height();
 }
 
@@ -121,8 +113,7 @@ int TopToBottomDrawer::getMaxSize(GraphicsSystem& gs)
 
 void TopToBottomDrawer::scrollOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
    effect.dstSurface().
      renderToScreen(Rect::GRP(0, 0, width, height - amountVisible),
                     Rect::GRP(0, amountVisible, width, height), 255);
@@ -132,8 +123,7 @@ void TopToBottomDrawer::scrollOff(GraphicsSystem& graphics,
 
 void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
   effect.srcSurface().
     renderToScreen(Rect::GRP(0, height - amountVisible, width, height),
                    Rect::GRP(0, 0, width, amountVisible), 255);
@@ -143,8 +133,7 @@ void TopToBottomDrawer::scrollOn(GraphicsSystem& graphics,
 
 void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
   effect.dstSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(0, amountVisible, width, height), 255);
@@ -154,8 +143,7 @@ void TopToBottomDrawer::squashOff(GraphicsSystem& graphics,
 
 void TopToBottomDrawer::squashOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
   effect.srcSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(0, 0, width, amountVisible), 255);
@@ -163,8 +151,7 @@ void TopToBottomDrawer::squashOn(GraphicsSystem& graphics,
 
 // ------------------------------------------------- [ BottomToTopDrawer ]
 
-int BottomToTopDrawer::getMaxSize(GraphicsSystem& gs)
-{
+int BottomToTopDrawer::getMaxSize(GraphicsSystem& gs) {
   return gs.screenSize().height();
 }
 
@@ -172,8 +159,7 @@ int BottomToTopDrawer::getMaxSize(GraphicsSystem& gs)
 
 void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
    effect.srcSurface().
      renderToScreen(Rect::GRP(0, 0, width, amountVisible),
                     Rect::GRP(0, height - amountVisible, width, height), 255);
@@ -183,8 +169,7 @@ void BottomToTopDrawer::scrollOn(GraphicsSystem& graphics,
 
 void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
    effect.dstSurface().
      renderToScreen(Rect::GRP(0, amountVisible, width, height),
                     Rect::GRP(0, 0, width, height - amountVisible), 255);
@@ -194,8 +179,7 @@ void BottomToTopDrawer::scrollOff(GraphicsSystem& graphics,
 
 void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
    effect.srcSurface().
      renderToScreen(Rect::GRP(0, 0, width, height),
                     Rect::GRP(0, height - amountVisible, width, height), 255);
@@ -205,8 +189,7 @@ void BottomToTopDrawer::squashOn(GraphicsSystem& graphics,
 
 void BottomToTopDrawer::squashOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
   effect.dstSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(0, 0, width, height - amountVisible), 255);
@@ -214,8 +197,7 @@ void BottomToTopDrawer::squashOff(GraphicsSystem& graphics,
 
 // ------------------------------------------------- [ LeftToRightDrawer ]
 
-int LeftToRightDrawer::getMaxSize(GraphicsSystem& gs)
-{
+int LeftToRightDrawer::getMaxSize(GraphicsSystem& gs) {
   return gs.screenSize().width();
 }
 
@@ -223,8 +205,7 @@ int LeftToRightDrawer::getMaxSize(GraphicsSystem& gs)
 
 void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
   effect.srcSurface().
     renderToScreen(Rect::GRP(width - amountVisible, 0, width, height),
                    Rect::GRP(0, 0, amountVisible, height), 255);
@@ -234,8 +215,7 @@ void LeftToRightDrawer::scrollOn(GraphicsSystem& graphics,
 
 void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
   effect.dstSurface().
     renderToScreen(Rect::GRP(0, 0, width - amountVisible, height),
                    Rect::GRP(amountVisible, 0, width, height), 255);
@@ -245,8 +225,7 @@ void LeftToRightDrawer::scrollOff(GraphicsSystem& graphics,
 
 void LeftToRightDrawer::squashOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
   effect.srcSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(0, 0, amountVisible, height), 255);
@@ -256,8 +235,7 @@ void LeftToRightDrawer::squashOn(GraphicsSystem& graphics,
 
 void LeftToRightDrawer::squashOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
   effect.dstSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(amountVisible, 0, width, height), 255);
@@ -265,8 +243,7 @@ void LeftToRightDrawer::squashOff(GraphicsSystem& graphics,
 
 // ------------------------------------------------- [ RightToLeftDrawer ]
 
-int RightToLeftDrawer::getMaxSize(GraphicsSystem& gs)
-{
+int RightToLeftDrawer::getMaxSize(GraphicsSystem& gs) {
   return gs.screenSize().width();
 }
 
@@ -274,8 +251,7 @@ int RightToLeftDrawer::getMaxSize(GraphicsSystem& gs)
 
 void RightToLeftDrawer::scrollOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
   effect.dstSurface().
     renderToScreen(Rect::GRP(amountVisible, 0, width, height),
                    Rect::GRP(0, 0, width - amountVisible, height), 255);
@@ -285,8 +261,7 @@ void RightToLeftDrawer::scrollOff(GraphicsSystem& graphics,
 
 void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
   effect.srcSurface().
     renderToScreen(Rect::GRP(0, 0, amountVisible, height),
                    Rect::GRP(width - amountVisible, 0, width, height), 255);
@@ -296,8 +271,7 @@ void RightToLeftDrawer::scrollOn(GraphicsSystem& graphics,
 
 void RightToLeftDrawer::squashOff(GraphicsSystem& graphics,
                                   ScrollSquashSlideBaseEffect& effect,
-                                  int amountVisible, int width, int height)
-{
+                                  int amountVisible, int width, int height) {
   effect.dstSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(0, 0, width - amountVisible, height), 255);
@@ -307,8 +281,7 @@ void RightToLeftDrawer::squashOff(GraphicsSystem& graphics,
 
 void RightToLeftDrawer::squashOn(GraphicsSystem& graphics,
                                  ScrollSquashSlideBaseEffect& effect,
-                                 int amountVisible, int width, int height)
-{
+                                 int amountVisible, int width, int height) {
   effect.srcSurface().
     renderToScreen(Rect::GRP(0, 0, width, height),
                    Rect::GRP(width - amountVisible, 0, width, height), 255);
@@ -318,8 +291,7 @@ void RightToLeftDrawer::squashOn(GraphicsSystem& graphics,
 // Effect Type Interface
 // -----------------------------------------------------------------------
 
-ScrollSquashSlideEffectTypeBase::~ScrollSquashSlideEffectTypeBase()
-{}
+ScrollSquashSlideEffectTypeBase::~ScrollSquashSlideEffectTypeBase() {}
 
 // -----------------------------------------------------------------------
 
@@ -327,8 +299,7 @@ void ScrollOnScrollOff::composeEffectsFor(
   GraphicsSystem& system,
   ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
-  int amountVisible)
-{
+  int amountVisible) {
   Size s = system.screenSize();
   drawer.scrollOn(system, effect, amountVisible, s.width(), s.height());
   drawer.scrollOff(system, effect, amountVisible, s.width(), s.height());
@@ -340,8 +311,7 @@ void ScrollOnSquashOff::composeEffectsFor(
   GraphicsSystem& system,
   ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
-  int amountVisible)
-{
+  int amountVisible) {
   Size s = system.screenSize();
   drawer.scrollOn(system, effect, amountVisible, s.width(), s.height());
   drawer.squashOff(system, effect, amountVisible, s.width(), s.height());
@@ -353,8 +323,7 @@ void SquashOnScrollOff::composeEffectsFor(
   GraphicsSystem& system,
   ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
-  int amountVisible)
-{
+  int amountVisible) {
   Size s = system.screenSize();
   drawer.squashOn(system, effect, amountVisible, s.width(), s.height());
   drawer.scrollOff(system, effect, amountVisible, s.width(), s.height());
@@ -366,8 +335,7 @@ void SquashOnSquashOff::composeEffectsFor(
   GraphicsSystem& system,
   ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
-  int amountVisible)
-{
+  int amountVisible) {
   Size s = system.screenSize();
   drawer.squashOn(system, effect, amountVisible, s.width(), s.height());
   drawer.squashOff(system, effect, amountVisible, s.width(), s.height());
@@ -379,8 +347,7 @@ void SlideOn::composeEffectsFor(
   GraphicsSystem& system,
   ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
-  int amountVisible)
-{
+  int amountVisible) {
   Size s = system.screenSize();
   Rect screenRect = system.screenRect();
 
@@ -397,8 +364,7 @@ void SlideOff::composeEffectsFor(
   GraphicsSystem& system,
   ScrollSquashSlideBaseEffect& effect,
   ScrollSquashSlideDrawer& drawer,
-  int amountVisible)
-{
+  int amountVisible) {
   Size s = system.screenSize();
   Rect screenRect = system.screenRect();
 

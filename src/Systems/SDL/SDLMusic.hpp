@@ -59,8 +59,7 @@
  * wavfile.{cc,h}, and some binding code.
  */
 class SDLMusic : public boost::noncopyable,
-                 public boost::enable_shared_from_this<SDLMusic>
-{
+                 public boost::enable_shared_from_this<SDLMusic> {
 public:
   ~SDLMusic();
 
@@ -102,8 +101,7 @@ public:
    * Returns the currently playing SDLMusic object. Returns NULL if no
    * music is currently playing.
    */
-  static boost::shared_ptr<SDLMusic> CurrnetlyPlaying()
-  { return s_currently_playing; }
+  static boost::shared_ptr<SDLMusic> CurrnetlyPlaying() { return s_currently_playing; }
 
   /// Whether music is currently playing.
   static bool IsCurrentlyPlaying() { return s_currently_playing; }

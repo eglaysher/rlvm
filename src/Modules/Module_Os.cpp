@@ -66,7 +66,6 @@ struct Os_CheckFile
 // -----------------------------------------------------------------------
 
 OsModule::OsModule()
-  : RLModule("Os", 1, 005)
-{
+  : RLModule("Os", 1, 005) {
   addOpcode(114, 0, "(unknown)", new Os_CheckFile);
 }

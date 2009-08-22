@@ -39,10 +39,8 @@
 
 // -----------------------------------------------------------------------
 
-struct Se_sePlay : public RLOp_Void_1<IntConstant_T>
-{
-  void operator()(RLMachine& machine, int effectNum)
-  {
+struct Se_sePlay : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int effectNum) {
     machine.system().sound().playSe(effectNum);
   }
 };
@@ -50,7 +48,6 @@ struct Se_sePlay : public RLOp_Void_1<IntConstant_T>
 // -----------------------------------------------------------------------
 
 SeModule::SeModule()
-  : RLModule("Se", 1, 22)
-{
+  : RLModule("Se", 1, 22) {
   addOpcode(0, 0, "sePlay", new Se_sePlay);
 }

@@ -58,8 +58,7 @@ using namespace std;
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
   : m_utf8string(utf8string), current_codepoint_(0),
-    current_position_(m_utf8string.begin()), no_wait_(false)
-{
+    current_position_(m_utf8string.begin()), no_wait_(false) {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
   if (tmp == m_utf8string.end()) {
@@ -78,15 +77,13 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-TextoutLongOperation::~TextoutLongOperation()
-{
+TextoutLongOperation::~TextoutLongOperation() {
 }
 
 // -----------------------------------------------------------------------
 
 bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
-                                                   bool pressed)
-{
+                                                   bool pressed) {
   if (pressed && mouseButton == MOUSE_LEFT) {
     no_wait_ = true;
     return true;
@@ -97,8 +94,7 @@ bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 // -----------------------------------------------------------------------
 
-bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
-{
+bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
     no_wait_ = true;
     return true;
@@ -109,8 +105,7 @@ bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 
 // -----------------------------------------------------------------------
 
-bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine)
-{
+bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine) {
   bool paused = false;
   while (!displayOneMoreCharacter(machine, paused))
     if (paused)
@@ -129,8 +124,7 @@ bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine)
  *       name, even though character names are one of the places where
  *       that's evaluated.
  */
-bool TextoutLongOperation::displayName(RLMachine& machine)
-{
+bool TextoutLongOperation::displayName(RLMachine& machine) {
   // Ignore the starting bracket
   string::iterator it = current_position_;
   string::iterator curend = it;
@@ -138,8 +132,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
   int codepoint = utf8::next(it, strend);
 
   // Eat all characters between the name brackets
-  while (codepoint != 0x3011 && it != strend)
-  {
+  while (codepoint != 0x3011 && it != strend) {
     curend = it;
     codepoint = utf8::next(it, strend);
   }
@@ -154,8 +147,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
   // Consume the next character
   current_position_ = it;
 
-  if (it != strend)
-  {
+  if (it != strend) {
     current_codepoint_ = utf8::next(it, strend);
     current_char_ = string(current_position_, it);
     current_position_ = it;
@@ -171,48 +163,38 @@ bool TextoutLongOperation::displayName(RLMachine& machine)
 // -----------------------------------------------------------------------
 
 bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
-                                                   bool& paused)
-{
-  if (current_codepoint_ == 0x3010)
-  {
+                                                   bool& paused) {
+  if (current_codepoint_ == 0x3010) {
     // The current character is the opening character for a name. We
     // treat names as a single display operation
     return displayName(machine);
-  }
-  else
-  {
+  } else {
     // Isolate the next character
     string::iterator it = current_position_;
     string::iterator strend = m_utf8string.end();
 
-    if (it != strend)
-    {
+    if (it != strend) {
       int codepoint = utf8::next(it, strend);
       TextPage& page = machine.system().text().currentPage();
-      if (codepoint)
-      {
+      if (codepoint) {
         string nextChar(current_position_, it);
         bool rendered = page.character(current_char_, nextChar);
 
         // Check to see if this character was rendered to the screen. If
         // this is false, then the page is probably full and the check
         // later on will do something about that.
-        if (rendered)
-        {
+        if (rendered) {
           current_char_ = nextChar;
           current_position_ = it;
         }
-      }
-      else
-      {
+      } else {
         // advance to the next character if we've somehow hit an
         // embedded NULL that isn't the end of the string
         current_position_ = it;
       }
 
       // Call the pause operation if we've filled up the current page.
-      if (page.isFull())
-      {
+      if (page.isFull()) {
         paused = true;
         machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
         machine.pushLongOperation(
@@ -220,9 +202,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       }
 
       return false;
-    }
-    else
-    {
+    } else {
       machine.system().text().currentPage().character(current_char_, "");
 
       return true;
@@ -232,16 +212,14 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-bool TextoutLongOperation::operator()(RLMachine& machine)
-{
+bool TextoutLongOperation::operator()(RLMachine& machine) {
   // Check to make sure we're not trying to do a textout (impossible!)
   if (!machine.system().text().systemVisible())
     throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
 
   if (no_wait_)
     return displayAsMuchAsWeCanThenPause(machine);
-  else
-  {
+  else {
     bool paused = false;
     return displayOneMoreCharacter(machine, paused);
   }

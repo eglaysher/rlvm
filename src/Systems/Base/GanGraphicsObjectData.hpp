@@ -52,8 +52,7 @@ class GraphicsObject;
  * In-memory representation of a GAN file. Responsible for reading in,
  * storing, and rendering GAN data as a GraphicsObjectData.
  */
-class GanGraphicsObjectData : public GraphicsObjectData
-{
+class GanGraphicsObjectData : public GraphicsObjectData {
 public:
   GanGraphicsObjectData(System& system);
   GanGraphicsObjectData(System& system, const std::string& ganfile,
@@ -138,8 +137,7 @@ private:
 namespace boost { namespace serialization {
 template<class Archive>
 inline void load_construct_data(
-  Archive & ar, GanGraphicsObjectData* t, const unsigned int file_version)
-{
+  Archive & ar, GanGraphicsObjectData* t, const unsigned int file_version) {
   ::new(t)GanGraphicsObjectData(Serialization::g_current_machine->system());
 }
   }}

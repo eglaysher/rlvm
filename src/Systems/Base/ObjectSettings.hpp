@@ -34,8 +34,7 @@
  * Holds certain properties of regarding an object that are set from
  * the Gameexe.ini and are immutable inside of an instance.
  */
-struct ObjectSettings
-{
+struct ObjectSettings {
   ObjectSettings();
   ObjectSettings(const std::vector<int>& data);
 

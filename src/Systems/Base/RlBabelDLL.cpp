@@ -117,8 +117,7 @@ bool Gloss::contains(const Point& point) {
 // -----------------------------------------------------------------------
 RlBabelDLL::RlBabelDLL(RLMachine& machine)
     : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0),
-      machine_(machine)
-{}
+      machine_(machine) {}
 
 // -----------------------------------------------------------------------
 

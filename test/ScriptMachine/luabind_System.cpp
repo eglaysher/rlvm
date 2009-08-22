@@ -34,8 +34,7 @@
 
 using namespace luabind;
 
-scope register_system()
-{
+scope register_system() {
   return
     class_<System>("System")
     .def("graphics", &System::graphics)

@@ -36,8 +36,7 @@
  *
  * @return
  */
-class TestSystem : public System
-{
+class TestSystem : public System {
 private:
   Gameexe gameexe_;
 

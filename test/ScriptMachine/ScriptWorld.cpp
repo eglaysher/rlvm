@@ -45,8 +45,7 @@
 #include <typeinfo>
 #include <boost/filesystem/path.hpp>
 
-extern "C"
-{
+extern "C" {
     #include "lua.h"
     #include "lualib.h"
     #include "lauxlib.h"

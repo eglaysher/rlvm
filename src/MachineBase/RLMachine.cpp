@@ -172,8 +172,7 @@ RLMachine::~RLMachine() {
 
 // -----------------------------------------------------------------------
 
-void RLMachine::attachModule(RLModule* module)
-{
+void RLMachine::attachModule(RLModule* module) {
   int module_type = module->moduleType();
   int module_number = module->moduleNumber();
   unsigned int packed_module = packModuleNumber(module_type, module_number);
@@ -193,36 +192,31 @@ void RLMachine::attachModule(RLModule* module)
 
 // -----------------------------------------------------------------------
 
-int RLMachine::getIntValue(const libReallive::IntMemRef& ref)
-{
+int RLMachine::getIntValue(const libReallive::IntMemRef& ref) {
   return memory_->getIntValue(ref);
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setIntValue(const libReallive::IntMemRef& ref, int value)
-{
+void RLMachine::setIntValue(const libReallive::IntMemRef& ref, int value) {
   memory_->setIntValue(ref, value);
 }
 
 // -----------------------------------------------------------------------
 
-const std::string& RLMachine::getStringValue(int type, int location)
-{
+const std::string& RLMachine::getStringValue(int type, int location) {
   return memory_->getStringValue(type, location);
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setStringValue(int type, int number, const std::string& value)
-{
+void RLMachine::setStringValue(int type, int number, const std::string& value) {
   memory_->setStringValue(type, number, value);
 }
 
 // -----------------------------------------------------------------------
 
-void RLMachine::markSavepoint()
-{
+void RLMachine::markSavepoint() {
   savepoint_call_stack_ = call_stack_;
   system().graphics().takeSavepointSnapshot();
 }
@@ -230,8 +224,7 @@ void RLMachine::markSavepoint()
 // -----------------------------------------------------------------------
 
 bool RLMachine::savepointDecide(AttributeFunction func,
-                                const std::string& gameexe_key) const
-{
+                                const std::string& gameexe_key) const {
   //
   if (!mark_savepoints_)
     return false;
@@ -259,8 +252,7 @@ bool RLMachine::savepointDecide(AttributeFunction func,
 
 // -----------------------------------------------------------------------
 
-void RLMachine::setMarkSavepoints(const int in)
-{
+void RLMachine::setMarkSavepoints(const int in) {
   mark_savepoints_ = in;
 }
 
@@ -377,8 +369,7 @@ void RLMachine::advanceInstructionPointer() {
 
 // -----------------------------------------------------------------------
 
-void RLMachine::executeCommand(const CommandElement& f)
-{
+void RLMachine::executeCommand(const CommandElement& f) {
   ModuleMap::iterator it = modules_.find(packModuleNumber(f.modtype(),
                                                           f.module()));
   if (it != modules_.end()) {
@@ -391,8 +382,7 @@ void RLMachine::executeCommand(const CommandElement& f)
 
 // -----------------------------------------------------------------------
 
-void RLMachine::jump(int scenario_num, int entrypoint)
-{
+void RLMachine::jump(int scenario_num, int entrypoint) {
   // Check to make sure it's a valid scenario
   libReallive::Scenario* scenario = archive_.scenario(scenario_num);
   if (scenario == 0) {

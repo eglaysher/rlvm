@@ -49,14 +49,12 @@ using namespace std;
 
 template<typename FRAMECLASS>
 struct Sys_InitFrame
-  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
-{
+  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   const int layer_;
   Sys_InitFrame(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter, int frameMin, int frameMax,
-                  int time)
-  {
+                  int time) {
     EventSystem& es = machine.system().event();
     es.setFrameCounter(layer_, counter, new FRAMECLASS(es, frameMin, frameMax, time));
   }
@@ -64,13 +62,11 @@ struct Sys_InitFrame
 
 // -----------------------------------------------------------------------
 
-struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
-{
+struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T> {
   const int layer_;
   Sys_ReadFrame(int layer) : layer_(layer) {}
 
-  int operator()(RLMachine& machine, int counter)
-  {
+  int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
     if (es.frameCounterExists(layer_, counter))
       return es.getFrameCounter(layer_, counter).readFrame();
@@ -81,13 +77,11 @@ struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
-{
+struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T> {
   const int layer_;
   Sys_FrameActive(int layer) : layer_(layer) {}
 
-  int operator()(RLMachine& machine, int counter)
-  {
+  int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
     if (es.frameCounterExists(layer_, counter)) {
       return es.getFrameCounter(layer_, counter).isActive();
@@ -99,19 +93,15 @@ struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
-{
+struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
   const int layer_;
   Sys_AnyFrameActive(int layer) : layer_(layer) {}
 
-  int operator()(RLMachine& machine, int counter)
-  {
+  int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
-    for (int i = 0; i < 255; ++i)
-    {
+    for (int i = 0; i < 255; ++i) {
       if (es.frameCounterExists(layer_, counter) &&
-         es.getFrameCounter(layer_, counter).isActive())
-      {
+         es.getFrameCounter(layer_, counter).isActive()) {
         return 1;
       }
     }
@@ -122,13 +112,11 @@ struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T>
-{
+struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
   const int layer_;
   Sys_ClearFrame_0(int layer) : layer_(layer) {}
 
-  void operator()(RLMachine& machine, int counter)
-  {
+  void operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
     es.setFrameCounter(layer_, counter, NULL);
   }
@@ -136,13 +124,11 @@ struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T>
-{
+struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   const int layer_;
   Sys_ClearFrame_1(int layer) : layer_(layer) {}
 
-  void operator()(RLMachine& machine, int counter, int newValue)
-  {
+  void operator()(RLMachine& machine, int counter, int newValue) {
     FrameCounter& fc = machine.system().event().getFrameCounter(layer_, counter);
     fc.setActive(false);
     fc.setValue(newValue);
@@ -151,19 +137,15 @@ struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
-{
+struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
   const int layer_;
   Sys_ClearAllFrames_0(int layer) : layer_(layer) {}
 
-  void operator()(RLMachine& machine, int newValue)
-  {
+  void operator()(RLMachine& machine, int newValue) {
     EventSystem& es = machine.system().event();
 
-    for (int i = 0; i < 255; ++i)
-    {
-      if (es.frameCounterExists(layer_, i))
-      {
+    for (int i = 0; i < 255; ++i) {
+      if (es.frameCounterExists(layer_, i)) {
         FrameCounter& fc = es.getFrameCounter(layer_, i);
         fc.setActive(false);
         fc.setValue(newValue);
@@ -174,19 +156,15 @@ struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T>
 
 // -----------------------------------------------------------------------
 
-struct Sys_ClearAllFrames_1 : public RLOp_Void_Void
-{
+struct Sys_ClearAllFrames_1 : public RLOp_Void_Void {
   const int layer_;
   Sys_ClearAllFrames_1(int layer) : layer_(layer) {}
 
-  void operator()(RLMachine& machine)
-  {
+  void operator()(RLMachine& machine) {
     EventSystem& es = machine.system().event();
 
-    for (int i = 0; i < 255; ++i)
-    {
-      if (es.frameCounterExists(layer_, i))
-      {
+    for (int i = 0; i < 255; ++i) {
+      if (es.frameCounterExists(layer_, i)) {
         es.setFrameCounter(layer_, i, NULL);
       }
     }
@@ -197,13 +175,11 @@ struct Sys_ClearAllFrames_1 : public RLOp_Void_Void
 
 typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
-struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
-{
+struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> > {
   const int layer_;
   Sys_ReadFrames(int layer) : layer_(layer) {}
 
-  int operator()(RLMachine& machine, vector<FrameDataInReadFrames::type> frames)
-  {
+  int operator()(RLMachine& machine, vector<FrameDataInReadFrames::type> frames) {
     static int callNum = 0;
     callNum++;
     EventSystem& es = machine.system().event();
@@ -211,19 +187,16 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
     bool storeValue = false;
 
     for (vector<FrameDataInReadFrames::type>::iterator it = frames.begin();
-        it != frames.end(); ++it)
-    {
+        it != frames.end(); ++it) {
       int counter = it->get<0>();
 
-      if (es.frameCounterExists(layer_, counter))
-      {
+      if (es.frameCounterExists(layer_, counter)) {
         int val = es.getFrameCounter(layer_, counter).readFrame();
         *(it->get<1>()) = val;
 
         if (es.getFrameCounter(layer_, counter).isActive())
           storeValue = true;
-      }
-      else
+      } else
         *(it->get<1>()) = 0;
     }
 
@@ -233,8 +206,7 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> >
 
 // -----------------------------------------------------------------------
 
-void addSysFrameOpcodes(RLModule& m)
-{
+void addSysFrameOpcodes(RLModule& m) {
   // Normal frame counter operations
   m.addOpcode(500, 0, "InitFrame", new Sys_InitFrame<SimpleFrameCounter>(0));
   m.addOpcode(501, 0, "InitFrameLoop", new Sys_InitFrame<LoopFrameCounter>(0));

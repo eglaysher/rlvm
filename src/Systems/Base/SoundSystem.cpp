@@ -56,8 +56,7 @@ SoundSystemGlobals::SoundSystemGlobals()
   : sound_quality(5), bgm_enabled(true), bgm_volume(255), pcm_enabled(true),
     pcm_volume(255), se_enabled(true), se_volume(255),
     koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
-    bgm_koe_fade_vol(128)
-{}
+    bgm_koe_fade_vol(128) {}
 
 // -----------------------------------------------------------------------
 
@@ -66,8 +65,7 @@ SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
     bgm_enabled(true), bgm_volume(255), pcm_enabled(true),
     pcm_volume(255), se_enabled(true), se_volume(255),
     koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
-    bgm_koe_fade_vol(128)
-{}
+    bgm_koe_fade_vol(128) {}
 
 // -----------------------------------------------------------------------
 // SoundSystem::VolumeAdjustTask
@@ -76,13 +74,11 @@ SoundSystem::VolumeAdjustTask::VolumeAdjustTask(
   unsigned int current_time, int in_start_volume, int in_final_volume,
   int fade_time_in_ms)
   : start_time(current_time), end_time(current_time + fade_time_in_ms),
-    start_volume(in_start_volume), final_volume(in_final_volume)
-{}
+    start_volume(in_start_volume), final_volume(in_final_volume) {}
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time)
-{
+int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time) {
   int end_offset = end_time - start_time;
   int cur_offset = in_time - start_time;
   double percent = double(cur_offset) / end_offset;
@@ -100,8 +96,7 @@ int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time)
 // SoundSystem::DSTrack
 // -----------------------------------------------------------------------
 SoundSystem::DSTrack::DSTrack()
-  : name(""), file(""), from(-1), to(-1), loop(-1)
-{
+  : name(""), file(""), from(-1), to(-1), loop(-1) {
 }
 
 // -----------------------------------------------------------------------
@@ -109,24 +104,21 @@ SoundSystem::DSTrack::DSTrack()
 SoundSystem::DSTrack::DSTrack(
   const std::string in_name, const std::string in_file, int in_from,
   int in_to, int in_loop)
-  : name(in_name), file(in_file), from(in_from), to(in_to), loop(in_loop)
-{
+  : name(in_name), file(in_file), from(in_from), to(in_to), loop(in_loop) {
 }
 
 // -----------------------------------------------------------------------
 // SoundSystem::CDTrack
 // -----------------------------------------------------------------------
 SoundSystem::CDTrack::CDTrack()
-  : name(""), from(-1), to(-1), loop(-1)
-{
+  : name(""), from(-1), to(-1), loop(-1) {
 }
 
 // -----------------------------------------------------------------------
 
 SoundSystem::CDTrack::CDTrack(
   const std::string in_name, int in_from, int in_to, int in_loop)
-  : name(in_name), from(in_from), to(in_to), loop(in_loop)
-{
+  : name(in_name), from(in_from), to(in_to), loop(in_loop) {
 }
 
 // -----------------------------------------------------------------------
@@ -135,8 +127,7 @@ SoundSystem::CDTrack::CDTrack(
 SoundSystem::SoundSystem(System& system)
     : voice_cache_(*this),
       system_(system),
-      globals_(system.gameexe())
-{
+      globals_(system.gameexe()) {
   Gameexe& gexe = system_.gameexe();
 
   std::fill_n(channel_volume_, NUM_BASE_CHANNELS, 255);
@@ -144,8 +135,7 @@ SoundSystem::SoundSystem(System& system)
   // Read the \#SE.xxx entries from the Gameexe
   GameexeFilteringIterator se = gexe.filtering_begin("SE.");
   GameexeFilteringIterator end = gexe.filtering_end();
-  for (; se != end; ++se)
-  {
+  for (; se != end; ++se) {
     string raw_number = se->key_parts().at(1);
     int entry_number = lexical_cast<int>(raw_number);
 
@@ -157,8 +147,7 @@ SoundSystem::SoundSystem(System& system)
 
   // Read the \#DSTRACK entries
   GameexeFilteringIterator dstrack = gexe.filtering_begin("DSTRACK");
-  for (; dstrack != end; ++dstrack)
-  {
+  for (; dstrack != end; ++dstrack) {
     int from = dstrack->getIntAt(0);
     int to = dstrack->getIntAt(1);
     int loop = dstrack->getIntAt(2);
@@ -171,8 +160,7 @@ SoundSystem::SoundSystem(System& system)
 
   // Read the \#CDTRACK entries
   GameexeFilteringIterator cdtrack = gexe.filtering_begin("CDTRACK");
-  for (; cdtrack != end; ++cdtrack)
-  {
+  for (; cdtrack != end; ++cdtrack) {
     int from = cdtrack->getIntAt(0);
     int to = cdtrack->getIntAt(1);
     int loop = cdtrack->getIntAt(2);
@@ -184,8 +172,7 @@ SoundSystem::SoundSystem(System& system)
 
   // Read the \#KOEONOFF entries
   GameexeFilteringIterator koeonoff = gexe.filtering_begin("KOEONOFF.");
-  for (; koeonoff != end; ++koeonoff)
-  {
+  for (; koeonoff != end; ++koeonoff) {
     std::vector<string> keyparts = koeonoff->key_parts();
     int usekoe_id = lexical_cast<int>(keyparts.at(1));
 
@@ -219,25 +206,19 @@ SoundSystem::SoundSystem(System& system)
 
 // -----------------------------------------------------------------------
 
-SoundSystem::~SoundSystem()
-{}
+SoundSystem::~SoundSystem() {}
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::executeSoundSystem()
-{
+void SoundSystem::executeSoundSystem() {
   unsigned int cur_time = system().event().getTicks();
 
   ChannelAdjustmentMap::iterator it = pcm_adjustment_tasks_.begin();
-  while (it != pcm_adjustment_tasks_.end())
-  {
-    if (cur_time >= it->second.end_time)
-    {
+  while (it != pcm_adjustment_tasks_.end()) {
+    if (cur_time >= it->second.end_time) {
       setChannelVolume(it->first, it->second.final_volume);
       pcm_adjustment_tasks_.erase(it++);
-    }
-    else
-    {
+    } else {
       int volume = it->second.calculateVolumeFor(cur_time);
       setChannelVolume(it->first, volume);
       ++it;
@@ -247,8 +228,7 @@ void SoundSystem::executeSoundSystem()
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::restoreFromGlobals()
-{
+void SoundSystem::restoreFromGlobals() {
   setBgmEnabled(bgmEnabled());
   setBgmVolume(bgmVolume());
 
@@ -261,64 +241,55 @@ void SoundSystem::restoreFromGlobals()
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setBgmEnabled(const int in)
-{
+void SoundSystem::setBgmEnabled(const int in) {
   globals_.bgm_enabled = in;
 }
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::bgmEnabled() const
-{
+int SoundSystem::bgmEnabled() const {
   return globals_.bgm_enabled;
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setBgmVolume(const int in)
-{
+void SoundSystem::setBgmVolume(const int in) {
   globals_.bgm_volume = in;
 }
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::bgmVolume() const
-{
+int SoundSystem::bgmVolume() const {
   return globals_.bgm_volume;
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setPcmEnabled(const int in)
-{
+void SoundSystem::setPcmEnabled(const int in) {
   globals_.pcm_enabled = in;
 }
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::pcmEnabled() const
-{
+int SoundSystem::pcmEnabled() const {
   return globals_.pcm_enabled;
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setPcmVolume(const int in)
-{
+void SoundSystem::setPcmVolume(const int in) {
   globals_.pcm_volume = in;
 }
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::pcmVolume() const
-{
+int SoundSystem::pcmVolume() const {
   return globals_.pcm_volume;
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setChannelVolume(const int channel, const int level)
-{
+void SoundSystem::setChannelVolume(const int channel, const int level) {
   checkChannel(channel, "set_channel_volume");
   checkVolume(level, "set_channel_volume");
 
@@ -328,8 +299,7 @@ void SoundSystem::setChannelVolume(const int channel, const int level)
 // -----------------------------------------------------------------------
 
 void SoundSystem::setChannelVolume(const int channel, const int level,
-                                   const int fade_time_in_ms)
-{
+                                   const int fade_time_in_ms) {
   checkChannel(channel, "set_channel_volume");
   checkVolume(level, "set_channel_volume");
 
@@ -342,38 +312,33 @@ void SoundSystem::setChannelVolume(const int channel, const int level,
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::channelVolume(const int channel)
-{
+int SoundSystem::channelVolume(const int channel) {
   checkChannel(channel, "channel_volume");
   return channel_volume_[channel];
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setSeEnabled(const int in)
-{
+void SoundSystem::setSeEnabled(const int in) {
   globals_.se_enabled = in;
 }
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::seEnabled() const
-{
+int SoundSystem::seEnabled() const {
   return globals_.se_enabled;
 }
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::setSeVolume(const int level)
-{
+void SoundSystem::setSeVolume(const int level) {
   checkVolume(level, "set_se_volume");
   globals_.se_volume = level;
 }
 
 // -----------------------------------------------------------------------
 
-int SoundSystem::seVolume() const
-{
+int SoundSystem::seVolume() const {
   return globals_.se_volume;
 }
 
@@ -498,18 +463,15 @@ void SoundSystem::koePlay(int id, int charid) {
 
 // -----------------------------------------------------------------------
 
-void SoundSystem::reset()
-{
+void SoundSystem::reset() {
   // empty
 }
 
 // -----------------------------------------------------------------------
 
 // static
-void SoundSystem::checkChannel(int channel, const char* function_name)
-{
-  if (channel < 0 || channel > NUM_BASE_CHANNELS)
-  {
+void SoundSystem::checkChannel(int channel, const char* function_name) {
+  if (channel < 0 || channel > NUM_BASE_CHANNELS) {
     ostringstream oss;
     oss << "Invalid channel number " << channel << " in " << function_name;
     throw std::runtime_error(oss.str());
@@ -519,10 +481,8 @@ void SoundSystem::checkChannel(int channel, const char* function_name)
 // -----------------------------------------------------------------------
 
 // static
-void SoundSystem::checkVolume(int level, const char* function_name)
-{
-  if (level < 0 || level > 255)
-  {
+void SoundSystem::checkVolume(int level, const char* function_name) {
+  if (level < 0 || level > 255) {
     ostringstream oss;
     oss << "Invalid volume \"" << level << "\". Valid values are 0-255.";
     throw std::runtime_error(oss.str());
@@ -532,8 +492,7 @@ void SoundSystem::checkVolume(int level, const char* function_name)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void SoundSystem::load(Archive& ar, unsigned int version)
-{
+void SoundSystem::load(Archive& ar, unsigned int version) {
   std::string track_name;
   bool looping;
   ar & track_name & looping;
@@ -545,8 +504,7 @@ void SoundSystem::load(Archive& ar, unsigned int version)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void SoundSystem::save(Archive& ar, unsigned int version) const
-{
+void SoundSystem::save(Archive& ar, unsigned int version) const {
   std::string track_name;
   bool looping = false;
 

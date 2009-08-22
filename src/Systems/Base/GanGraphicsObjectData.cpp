@@ -101,19 +101,16 @@ GanGraphicsObjectData::GanGraphicsObjectData(
 
 // -----------------------------------------------------------------------
 
-GanGraphicsObjectData::~GanGraphicsObjectData()
-{}
+GanGraphicsObjectData::~GanGraphicsObjectData() {}
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::load()
-{
+void GanGraphicsObjectData::load() {
   image = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
 
   fs::path gan_file_path = findFile(system_, gan_filename_, GAN_FILETYPES);
   fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
-  if (!ifs)
-  {
+  if (!ifs) {
     ostringstream oss;
     oss << "Could not open file \"" << gan_file_path << "\".";
     throw rlvm::Exception(oss.str());
@@ -121,8 +118,7 @@ void GanGraphicsObjectData::load()
 
   int file_size = 0;
   scoped_array<char> gan_data;
-  if (loadFileData(ifs, gan_data, file_size))
-  {
+  if (loadFileData(ifs, gan_data, file_size)) {
     ostringstream oss;
     oss << "Could not read the contents of \"" << gan_file_path << "\"";
     throw rlvm::Exception(oss.str());
@@ -136,8 +132,7 @@ void GanGraphicsObjectData::load()
 
 void GanGraphicsObjectData::testFileMagic(
   const std::string& file_name,
-  boost::scoped_array<char>& gan_data, int file_size)
-{
+  boost::scoped_array<char>& gan_data, int file_size) {
   const char* data = gan_data.get();
   int a = read_i32(data);
   int b = read_i32(data + 0x04);
@@ -151,8 +146,7 @@ void GanGraphicsObjectData::testFileMagic(
 
 void GanGraphicsObjectData::readData(
   const std::string& file_name,
-  boost::scoped_array<char>& gan_data, int file_size)
-{
+  boost::scoped_array<char>& gan_data, int file_size) {
   const char* data = gan_data.get();
   int file_name_length = read_i32(data + 0xc);
   string raw_file_name = data + 0x10;
@@ -171,8 +165,7 @@ void GanGraphicsObjectData::readData(
   int number_of_sets = read_i32(data);
   data += 4;
 
-  for (int i = 0; i < number_of_sets; ++i)
-  {
+  for (int i = 0; i < number_of_sets; ++i) {
     int start_of_ganset = read_i32(data);
     if (start_of_ganset != 0x7530)
       throwBadFormat(file_name, "Expected start of GAN set");
@@ -195,19 +188,16 @@ void GanGraphicsObjectData::readData(
 
 GanGraphicsObjectData::Frame
 GanGraphicsObjectData::readSetFrame(const std::string& file_name,
-                                    const char*& data)
-{
+                                    const char*& data) {
   GanGraphicsObjectData::Frame frame;
 
   int tag = read_i32(data);
   data += 4;
-  while (tag != 999999)
-  {
+  while (tag != 999999) {
     int value = read_i32(data);
     data += 4;
 
-    switch (tag)
-    {
+    switch (tag) {
     case 30100:
       frame.pattern = value;
       break;
@@ -226,8 +216,7 @@ GanGraphicsObjectData::readSetFrame(const std::string& file_name,
     case 30105:
       frame.other = value;
       break;
-    default:
-    {
+    default: {
       ostringstream oss;
       oss << "Unknown GAN frame tag: " << tag;
       throwBadFormat(file_name, oss.str());
@@ -244,8 +233,7 @@ GanGraphicsObjectData::readSetFrame(const std::string& file_name,
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::throwBadFormat(
-  const std::string& file_name, const std::string& error)
-{
+  const std::string& file_name, const std::string& error) {
   ostringstream oss;
   oss << "File \"" << file_name
       << "\" does not appear to be in GAN format: "
@@ -258,13 +246,10 @@ void GanGraphicsObjectData::throwBadFormat(
 // -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelWidth(
-  const GraphicsObject& rendering_properties)
-{
-  if (current_set_ != -1 && current_frame_ != -1)
-  {
+  const GraphicsObject& rendering_properties) {
+  if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
-    if (frame.pattern != -1)
-    {
+    if (frame.pattern != -1) {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
       return rect.rect.width();
     }
@@ -276,13 +261,10 @@ int GanGraphicsObjectData::pixelWidth(
 // -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelHeight(
-  const GraphicsObject& rendering_properties)
-{
-  if (current_set_ != -1 && current_frame_ != -1)
-  {
+  const GraphicsObject& rendering_properties) {
+  if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
-    if (frame.pattern != -1)
-    {
+    if (frame.pattern != -1) {
       const Surface::GrpRect& rect = image->getPattern(frame.pattern);
       return rect.rect.height();
     }
@@ -293,28 +275,23 @@ int GanGraphicsObjectData::pixelHeight(
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GanGraphicsObjectData::clone() const
-{
+GraphicsObjectData* GanGraphicsObjectData::clone() const {
   return new GanGraphicsObjectData(*this);
 }
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::execute()
-{
-  if (currentlyPlaying() && current_frame_ >= 0)
-  {
+void GanGraphicsObjectData::execute() {
+  if (currentlyPlaying() && current_frame_ >= 0) {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
       current_time - time_at_last_frame_change_;
 
     const vector<Frame>& current_set = animation_sets.at(current_set_);
     unsigned int frame_time = (unsigned int)(current_set[current_frame_].time);
-    if (time_since_last_frame_change > frame_time)
-    {
+    if (time_since_last_frame_change > frame_time) {
       current_frame_++;
-      if (size_t(current_frame_) == current_set.size())
-      {
+      if (size_t(current_frame_) == current_set.size()) {
         current_frame_--;
         // endAnimation() can delete this, so it needs to be the last thing
         // done in this code path...
@@ -329,18 +306,15 @@ void GanGraphicsObjectData::execute()
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::loopAnimation()
-{
+void GanGraphicsObjectData::loopAnimation() {
   current_frame_ = 0;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
-  const GraphicsObject& go)
-{
-  if (current_set_ != -1 && current_frame_ != -1)
-  {
+  const GraphicsObject& go) {
+  if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
 
     if (frame.pattern != -1) {
@@ -355,8 +329,7 @@ boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
 
 // -----------------------------------------------------------------------
 
-Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go)
-{
+Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
     return image->getPattern(frame.pattern).rect;
@@ -367,16 +340,14 @@ Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-Point GanGraphicsObjectData::dstOrigin(const GraphicsObject& go)
-{
+Point GanGraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   return GraphicsObjectData::dstOrigin(go) - Size(frame.x, frame.y);
 }
 
 // -----------------------------------------------------------------------
 
-int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
-{
+int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
     // Calculate the combination of our frame alpha with the current object
@@ -390,16 +361,14 @@ int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::objectInfo(std::ostream& tree)
-{
+void GanGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "  GAN file: " << gan_filename_ << " (Using image: "
        << img_filename_ << ")" << endl;
 }
 
 // -----------------------------------------------------------------------
 
-void GanGraphicsObjectData::playSet(int set)
-{
+void GanGraphicsObjectData::playSet(int set) {
   setCurrentlyPlaying(true);
   current_set_ = set;
   current_frame_ = 0;
@@ -410,8 +379,7 @@ void GanGraphicsObjectData::playSet(int set)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GanGraphicsObjectData::load(Archive& ar, unsigned int version)
-{
+void GanGraphicsObjectData::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & gan_filename_ & img_filename_ & current_set_
     & current_frame_ & time_at_last_frame_change_;
@@ -422,8 +390,7 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GanGraphicsObjectData::save(Archive& ar, unsigned int version) const
-{
+void GanGraphicsObjectData::save(Archive& ar, unsigned int version) const {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & gan_filename_ & img_filename_ & current_set_
     & current_frame_ & time_at_last_frame_change_;

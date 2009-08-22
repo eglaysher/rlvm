@@ -50,8 +50,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 PauseLongOperation::PauseLongOperation(RLMachine& imachine)
-  : LongOperation(), machine(imachine), is_done_(false)
-{
+  : LongOperation(), machine(imachine), is_done_(false) {
   TextSystem& text = machine.system().text();
   EventSystem& event = machine.system().event();
 
@@ -70,15 +69,13 @@ PauseLongOperation::PauseLongOperation(RLMachine& imachine)
 
 // -----------------------------------------------------------------------
 
-PauseLongOperation::~PauseLongOperation()
-{
+PauseLongOperation::~PauseLongOperation() {
   machine.system().text().setInPauseState(false);
 }
 
 // -----------------------------------------------------------------------
 
-void PauseLongOperation::mouseMotion(const Point& p)
-{
+void PauseLongOperation::mouseMotion(const Point& p) {
   // Tell the text system about the move
   machine.system().text().setMousePosition(p);
 }
@@ -86,42 +83,32 @@ void PauseLongOperation::mouseMotion(const Point& p)
 // -----------------------------------------------------------------------
 
 bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
-                                                 bool pressed)
-{
+                                                 bool pressed) {
   GraphicsSystem& graphics = machine.system().graphics();
   EventSystem& es = machine.system().event();
 
   TextSystem& text = machine.system().text();
 
-  switch (mouseButton)
-  {
-  case MOUSE_LEFT:
-  {
+  switch (mouseButton) {
+  case MOUSE_LEFT: {
     Point pos = es.getCursorPos();
     // Only unhide the interface on release of the left mouse button
-    if (graphics.interfaceHidden())
-    {
+    if (graphics.interfaceHidden()) {
       if (!pressed) {
         graphics.toggleInterfaceHidden();
         return true;
       }
-    }
-    else if (!machine.system().text().handleMouseClick(machine, pos, pressed))
-    {
+    } else if (!machine.system().text().handleMouseClick(machine, pos, pressed)) {
       // We *must* only respond on mouseups! This detail matters because in
       // rlBabel, if glosses are enabled, an spause() is called and then the
       // mouse button value returned by GetCursorPos needs to be "2" for the
       // rest of the gloss implementation to work. If we respond on a
       // mousedown, then it'll return "1" instead.
-      if (!pressed)
-      {
-        if (text.isReadingBacklog())
-        {
+      if (!pressed) {
+        if (text.isReadingBacklog()) {
           // Move back to the main page.
           text.stopReadingBacklog();
-        }
-        else
-        {
+        } else {
           is_done_ = true;
         }
 
@@ -157,8 +144,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
 // -----------------------------------------------------------------------
 
-bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
-{
+bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   bool handled = false;
 
   if (pressed) {
@@ -200,8 +186,7 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed)
 
 // -----------------------------------------------------------------------
 
-bool PauseLongOperation::operator()(RLMachine& machine)
-{
+bool PauseLongOperation::operator()(RLMachine& machine) {
   // Check to see if we're done because of the auto mode timer
   if (machine.system().text().autoMode()) {
     unsigned int curTime = machine.system().event().getTicks();
@@ -226,18 +211,15 @@ bool PauseLongOperation::operator()(RLMachine& machine)
 // NewPageAfterLongop
 // -----------------------------------------------------------------------
 NewPageAfterLongop::NewPageAfterLongop(LongOperation* inOp)
-  : PerformAfterLongOperationDecorator(inOp)
-{}
+  : PerformAfterLongOperationDecorator(inOp) {}
 
 // -----------------------------------------------------------------------
 
-NewPageAfterLongop::~NewPageAfterLongop()
-{}
+NewPageAfterLongop::~NewPageAfterLongop() {}
 
 // -----------------------------------------------------------------------
 
-void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
-{
+void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine) {
   TextSystem& text = machine.system().text();
   text.snapshot();
   text.currentWindow()->clearWin();
@@ -248,18 +230,15 @@ void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine)
 // NewParagraphAfterLongop
 // -----------------------------------------------------------------------
 NewParagraphAfterLongop::NewParagraphAfterLongop(LongOperation* inOp)
-  : PerformAfterLongOperationDecorator(inOp)
-{}
+  : PerformAfterLongOperationDecorator(inOp) {}
 
 // -----------------------------------------------------------------------
 
-NewParagraphAfterLongop::~NewParagraphAfterLongop()
-{}
+NewParagraphAfterLongop::~NewParagraphAfterLongop() {}
 
 // -----------------------------------------------------------------------
 
-void NewParagraphAfterLongop::performAfterLongOperation(RLMachine& machine)
-{
+void NewParagraphAfterLongop::performAfterLongOperation(RLMachine& machine) {
   TextPage& page = machine.system().text().currentPage();
   page.resetIndentation();
   page.hardBrake();

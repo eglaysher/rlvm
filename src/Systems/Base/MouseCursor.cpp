@@ -48,8 +48,7 @@ using namespace std;
 // MouseCursor (public)
 // -----------------------------------------------------------------------
 MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursor_surface)
-  : cursor_surface_(cursor_surface)
-{
+  : cursor_surface_(cursor_surface) {
   findHotspot();
 
   int alphaR, alphaG, alphaB;
@@ -65,8 +64,7 @@ MouseCursor::~MouseCursor() {}
 
 // -----------------------------------------------------------------------
 
-void MouseCursor::renderHotspotAt(const Point& mouse_location)
-{
+void MouseCursor::renderHotspotAt(const Point& mouse_location) {
   Point render_point = getTopLeftForHotspotAt(mouse_location);
   cursor_surface_->renderToScreen(
     Rect(0, 0, CURSOR_SIZE),
@@ -75,8 +73,7 @@ void MouseCursor::renderHotspotAt(const Point& mouse_location)
 
 // -----------------------------------------------------------------------
 
-Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location)
-{
+Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location) {
   return mouse_location - hotspot_offset_;
 }
 
@@ -84,20 +81,16 @@ Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location)
 // MouseCursor (private)
 // -----------------------------------------------------------------------
 
-void MouseCursor::findHotspot()
-{
+void MouseCursor::findHotspot() {
   int r, g, b;
 
   for (int x = HOTSPOTMASK_X_OFFSET; x < HOTSPOTMASK_X_OFFSET + CURSOR_SIZE_INT;
-      ++x)
-  {
+      ++x) {
     for (int y = HOTSPOTMASK_Y_OFFSET; y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE_INT;
-        ++y)
-    {
+        ++y) {
       cursor_surface_->getDCPixel(Point(x, y), r, g, b);
 
-      if (r == 255 && g == 255 && b == 255)
-      {
+      if (r == 255 && g == 255 && b == 255) {
         hotspot_offset_ =
           Size(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
         break;

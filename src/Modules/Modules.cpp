@@ -61,8 +61,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
-void addAllModules(RLMachine& rlmachine)
-{
+void addAllModules(RLMachine& rlmachine) {
   // Attatch the modules for some commands
   rlmachine.attachModule(new JmpModule);
   rlmachine.attachModule(new DLLModule);

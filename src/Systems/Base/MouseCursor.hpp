@@ -41,8 +41,7 @@ class RLMachine;
 /**
  * Represents a mouse cursor on screen.
  */
-class MouseCursor
-{
+class MouseCursor {
 public:
   MouseCursor(const boost::shared_ptr<Surface>& cursor_surface);
   ~MouseCursor();

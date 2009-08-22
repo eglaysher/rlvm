@@ -52,8 +52,7 @@ class RLMachine;
  * object. It has support for normal display, and also
  *
  */
-class GraphicsObjectOfFile : public GraphicsObjectData
-{
+class GraphicsObjectOfFile : public GraphicsObjectData {
 public:
   GraphicsObjectOfFile(System& system);
   GraphicsObjectOfFile(System& system, const std::string& filename);
@@ -122,8 +121,7 @@ private:
 namespace boost { namespace serialization {
 template<class Archive>
 inline void load_construct_data(
-  Archive & ar, GraphicsObjectOfFile* t, const unsigned int file_version)
-{
+  Archive & ar, GraphicsObjectOfFile* t, const unsigned int file_version) {
   ::new(t)GraphicsObjectOfFile(Serialization::g_current_machine->system());
 }
   }}

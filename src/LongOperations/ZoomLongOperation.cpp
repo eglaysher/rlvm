@@ -55,31 +55,25 @@ ZoomLongOperation::ZoomLongOperation(
   : machine_(machine), orig_surface_(origSurface),
     src_surface_(srcSurface),
     frect_(frect), trect_(trect), drect_(drect), duration_(time),
-    start_time_(machine.system().event().getTicks())
-{
+    start_time_(machine.system().event().getTicks()) {
 }
 
 // -----------------------------------------------------------------------
 
-ZoomLongOperation::~ZoomLongOperation()
-{
+ZoomLongOperation::~ZoomLongOperation() {
 }
 
 // -----------------------------------------------------------------------
 
-bool ZoomLongOperation::operator()(RLMachine& machine)
-{
+bool ZoomLongOperation::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - start_time_;
 
   bool fastForward = machine.system().fastForward();
 
-  if (currentFrame >= duration_ || fastForward)
-  {
+  if (currentFrame >= duration_ || fastForward) {
     return true;
-  }
-  else
-  {
+  } else {
     // Render to the screen
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.beginFrame();

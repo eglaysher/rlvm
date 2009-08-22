@@ -35,8 +35,7 @@
  *
  * @ingroup TransitionEffects
  */
-class FadeEffect : public Effect
-{
+class FadeEffect : public Effect {
 private:
   virtual bool blitOriginalImage() const;
 

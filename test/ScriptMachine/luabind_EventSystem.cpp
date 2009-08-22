@@ -57,8 +57,7 @@ void injectMouseUp(lua_State* L, EventSystem& sys) {
 
 // -----------------------------------------------------------------------
 
-scope register_event_system()
-{
+scope register_event_system() {
   return
     class_<EventSystem>("EventSystem")
     .def("injectMouseMovement", &injectMouseMovement, raw(_1))

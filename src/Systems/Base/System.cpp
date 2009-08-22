@@ -66,25 +66,21 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 SystemGlobals::SystemGlobals()
-  : confirm_save_load_(true), low_priority_(false)
-{}
+  : confirm_save_load_(true), low_priority_(false) {}
 
 // -----------------------------------------------------------------------
 // System
 // -----------------------------------------------------------------------
 
 System::System()
-    : in_menu_(false), force_fast_forward_(false), force_wait_(false)
-{
+    : in_menu_(false), force_fast_forward_(false), force_wait_(false) {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
 // -----------------------------------------------------------------------
 
-void System::checkSyscomIndex(int index, const char* function)
-{
-  if (index < 0 || index >= NUM_SYSCOM_ENTRIES)
-  {
+void System::checkSyscomIndex(int index, const char* function) {
+  if (index < 0 || index >= NUM_SYSCOM_ENTRIES) {
     ostringstream oss;
     oss << "Illegal syscom index #" << index << " in " << function;
     throw std::runtime_error(oss.str());
@@ -93,8 +89,7 @@ void System::checkSyscomIndex(int index, const char* function)
 
 // -----------------------------------------------------------------------
 
-int System::isSyscomEnabled(int syscom)
-{
+int System::isSyscomEnabled(int syscom) {
   checkSyscomIndex(syscom, "System::is_syscom_enabled");
 
   // Special cases where state of the interpreter would override the
@@ -115,53 +110,46 @@ int System::isSyscomEnabled(int syscom)
 
 // -----------------------------------------------------------------------
 
-void System::hideSyscom()
-{
+void System::hideSyscom() {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_INVISIBLE);
 }
 
 // -----------------------------------------------------------------------
 
-void System::hideSyscomEntry(int syscom)
-{
+void System::hideSyscomEntry(int syscom) {
   checkSyscomIndex(syscom, "System::hide_system");
   syscom_status_[syscom] = SYSCOM_INVISIBLE;
 }
 
 // -----------------------------------------------------------------------
 
-void System::enableSyscom()
-{
+void System::enableSyscom() {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
 // -----------------------------------------------------------------------
 
-void System::enableSyscomEntry(int syscom)
-{
+void System::enableSyscomEntry(int syscom) {
   checkSyscomIndex(syscom, "System::enable_system");
   syscom_status_[syscom] = SYSCOM_VISIBLE;
 }
 
 // -----------------------------------------------------------------------
 
-void System::disableSyscom()
-{
+void System::disableSyscom() {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_GREYED_OUT);
 }
 
 // -----------------------------------------------------------------------
 
-void System::disableSyscomEntry(int syscom)
-{
+void System::disableSyscomEntry(int syscom) {
   checkSyscomIndex(syscom, "System::disable_system");
   syscom_status_[syscom] = SYSCOM_GREYED_OUT;
 }
 
 // -----------------------------------------------------------------------
 
-int System::readSyscom(int syscom)
-{
+int System::readSyscom(int syscom) {
   throw rlvm::Exception("ReadSyscom unimplemented!");
 }
 
@@ -182,8 +170,7 @@ private:
 
 // -----------------------------------------------------------------------
 
-void System::showSyscomMenu(RLMachine& machine)
-{
+void System::showSyscomMenu(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
 
   if (gexe("CANCELCALL_MOD") == 1) {
@@ -205,8 +192,7 @@ void System::showSyscomMenu(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void System::invokeSyscom(RLMachine& machine, int syscom)
-{
+void System::invokeSyscom(RLMachine& machine, int syscom) {
   switch (syscom) {
   case SYSCOM_SAVE:
     invokeSaveOrLoad(machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
@@ -307,8 +293,7 @@ void System::showSystemInfo(RLMachine& machine) {
 void System::invokeSaveOrLoad(RLMachine& machine,
                               int syscom,
                               const std::string& mod_key,
-                              const std::string& location)
-{
+                              const std::string& location) {
   GameexeInterpretObject save_mod = gameexe()(mod_key);
   GameexeInterpretObject save_loc = gameexe()(location);
 
@@ -327,8 +312,7 @@ void System::invokeSaveOrLoad(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void System::addPath(GameexeInterpretObject gio)
-{
+void System::addPath(GameexeInterpretObject gio) {
   boost::filesystem::path gamepath(gameexe()("__GAMEPATH").to_string());
   gamepath /= gio.to_string();
   cached_search_paths.push_back(gamepath);
@@ -336,10 +320,8 @@ void System::addPath(GameexeInterpretObject gio)
 
 // -----------------------------------------------------------------------
 
-const std::vector<boost::filesystem::path>& System::getSearchPaths()
-{
-  if (cached_search_paths.size() == 0)
-  {
+const std::vector<boost::filesystem::path>& System::getSearchPaths() {
+  if (cached_search_paths.size() == 0) {
     Gameexe& gexe = gameexe();
 
     // This *can't* be rewritten as a for_each + bind because of the
@@ -356,8 +338,7 @@ const std::vector<boost::filesystem::path>& System::getSearchPaths()
 
 // -----------------------------------------------------------------------
 
-void System::reset()
-{
+void System::reset() {
   in_menu_ = false;
 
   enableSyscom();
@@ -369,33 +350,25 @@ void System::reset()
 
 // -----------------------------------------------------------------------
 
-boost::filesystem::path System::getHomeDirectory()
-{
+boost::filesystem::path System::getHomeDirectory() {
   string drive, home;
   char *homeptr     = getenv("HOME");
   char *driveptr    = getenv("HOMEDRIVE");
   char *homepathptr = getenv("HOMEPATH");
   char *profileptr  = getenv("USERPROFILE");
-  if (homeptr != 0 && (home = homeptr) != "")
-  {
+  if (homeptr != 0 && (home = homeptr) != "") {
 	// UN*X like home directory
 	return fs::path(home);
-  }
-  else if (driveptr != 0 &&
+  } else if (driveptr != 0 &&
 		  homepathptr !=0 &&
 		  (drive = driveptr) != "" &&
-		  (home  = homepathptr) != "")
-  {
+		  (home  = homepathptr) != "") {
 	// Windows.
 	return fs::path(drive) / fs::path(home);
-  }
-  else if (profileptr != 0 && (home = profileptr) != "")
-  {
+  } else if (profileptr != 0 && (home = profileptr) != "") {
 	// Windows?
 	return fs::path(home);
-  }
-  else
-  {
+  } else {
 	throw SystemError("Could not find location of home directory.");
   }
 }
@@ -420,8 +393,7 @@ boost::filesystem::path System::gameSaveDirectory() {
 
 // -----------------------------------------------------------------------
 
-bool System::fastForward()
-{
+bool System::fastForward() {
   return (event().ctrlPressed() && text().ctrlKeySkip()) ||
     text().currentlySkipping() ||
     force_fast_forward_;

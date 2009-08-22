@@ -53,8 +53,7 @@ struct Sys_SyscomEnabled : public RLOp_Store_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-void addSysSyscomOpcodes(RLModule& m)
-{
+void addSysSyscomOpcodes(RLModule& m) {
   m.addUnsupportedOpcode(1210, 0, "ContextMenu");
 
   m.addOpcode(1211, 0, "EnableSyscom",

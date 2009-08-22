@@ -59,8 +59,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(System& system)
       filename_(""),
       frame_time_(0),
       current_frame_(0),
-      time_at_last_frame_change_(0)
-{
+      time_at_last_frame_change_(0) {
 }
 
 // -----------------------------------------------------------------------
@@ -73,8 +72,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
     surface_(obj.surface_),
     frame_time_(obj.frame_time_),
     current_frame_(obj.current_frame_),
-    time_at_last_frame_change_(obj.time_at_last_frame_change_)
-{}
+    time_at_last_frame_change_(obj.time_at_last_frame_change_) {}
 
 // -----------------------------------------------------------------------
 
@@ -90,15 +88,13 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::loadFile()
-{
+void GraphicsObjectOfFile::loadFile() {
   surface_ = system_.graphics().loadNonCGSurfaceFromFile(filename_);
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelWidth(const GraphicsObject& rp)
-{
+int GraphicsObjectOfFile::pixelWidth(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
   int width = rect.rect.width();
   return int((rp.width() / 100.0f) * width);
@@ -106,8 +102,7 @@ int GraphicsObjectOfFile::pixelWidth(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelHeight(const GraphicsObject& rp)
-{
+int GraphicsObjectOfFile::pixelHeight(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
   int height = rect.rect.height();
   return int((rp.height() / 100.0f) * height);
@@ -115,26 +110,21 @@ int GraphicsObjectOfFile::pixelHeight(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsObjectOfFile::clone() const
-{
+GraphicsObjectData* GraphicsObjectOfFile::clone() const {
   return new GraphicsObjectOfFile(*this);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::execute()
-{
-  if (currentlyPlaying())
-  {
+void GraphicsObjectOfFile::execute() {
+  if (currentlyPlaying()) {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
       current_time - time_at_last_frame_change_;
 
-    while (time_since_last_frame_change > frame_time_)
-    {
+    while (time_since_last_frame_change > frame_time_) {
       current_frame_++;
-      if (current_frame_ == surface_->numPatterns())
-      {
+      if (current_frame_ == surface_->numPatterns()) {
         current_frame_--;
         endAnimation();
       }
@@ -148,30 +138,26 @@ void GraphicsObjectOfFile::execute()
 
 // -----------------------------------------------------------------------
 
-bool GraphicsObjectOfFile::isAnimation() const
-{
+bool GraphicsObjectOfFile::isAnimation() const {
   return surface_->numPatterns();
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::loopAnimation()
-{
+void GraphicsObjectOfFile::loopAnimation() {
   current_frame_ = 0;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> GraphicsObjectOfFile::currentSurface(
-  const GraphicsObject& rp)
-{
+  const GraphicsObject& rp) {
   return surface_;
 }
 
 // -----------------------------------------------------------------------
 
-Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go)
-{
+Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go) {
   if (currentlyPlaying())
     return surface_->getPattern(current_frame_).rect;
 
@@ -180,15 +166,13 @@ Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::objectInfo(std::ostream& tree)
-{
+void GraphicsObjectOfFile::objectInfo(std::ostream& tree) {
   tree << "  Image: " << filename_ << endl;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::playSet(int frame_time)
-{
+void GraphicsObjectOfFile::playSet(int frame_time) {
   setCurrentlyPlaying(true);
   frame_time_ = frame_time;
   current_frame_ = 0;
@@ -207,8 +191,7 @@ void GraphicsObjectOfFile::playSet(int frame_time)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
-{
+void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 
@@ -218,8 +201,7 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GraphicsObjectOfFile::save(Archive& ar, unsigned int version) const
-{
+void GraphicsObjectOfFile::save(Archive& ar, unsigned int version) const {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
     & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 }

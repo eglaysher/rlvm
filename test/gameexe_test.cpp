@@ -85,12 +85,10 @@ TEST(GameexeUnit, FilteringIterators) {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   GameexeFilteringIterator it = ini.filtering_begin("IMAGINE");
   GameexeFilteringIterator end = ini.filtering_end();
-  for(; it != end; ++it)
-  {
+  for(; it != end; ++it) {
     if(it->key() != "IMAGINE.ONE" &&
        it->key() != "IMAGINE.TWO" &&
-       it->key() != "IMAGINE.THREE")
-    {
+       it->key() != "IMAGINE.THREE") {
       FAIL() << "Failed to filter keys in GameexeFilteringIterator. Has key "
              << it->key();
     }

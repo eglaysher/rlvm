@@ -33,25 +33,21 @@
 #include "Systems/Base/RLTimer.hpp"
 
 RLTimer::RLTimer()
-  : time_at_last_set_(0)
-{
+  : time_at_last_set_(0) {
 }
 
 // -----------------------------------------------------------------------
 
-RLTimer::~RLTimer()
-{}
+RLTimer::~RLTimer() {}
 
 // -----------------------------------------------------------------------
 
-unsigned int RLTimer::read(EventSystem& events)
-{
+unsigned int RLTimer::read(EventSystem& events) {
   return events.getTicks() - time_at_last_set_;
 }
 
 // -----------------------------------------------------------------------
 
-void RLTimer::set(EventSystem& events, unsigned int value)
-{
+void RLTimer::set(EventSystem& events, unsigned int value) {
   time_at_last_set_ = events.getTicks() + value;
 }

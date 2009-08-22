@@ -42,8 +42,7 @@ public:
   virtual void pushInput(SDL_Event event) = 0;
 };
 
-class SDLEventSystem : public EventSystem
-{
+class SDLEventSystem : public EventSystem {
 public:
   SDLEventSystem(Gameexe& gexe);
 

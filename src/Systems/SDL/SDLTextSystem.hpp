@@ -39,8 +39,7 @@ class RLMachine;
 class SDLTextWindow;
 class TextWindow;
 
-class SDLTextSystem : public TextSystem
-{
+class SDLTextSystem : public TextSystem {
 public:
   SDLTextSystem(System& system, Gameexe& gameexe);
   ~SDLTextSystem();

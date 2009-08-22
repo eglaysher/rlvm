@@ -94,8 +94,7 @@ void SDLGraphicsSystem::setCursor(int cursor) {
   SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
 }
 
-void SDLGraphicsSystem::beginFrame()
-{
+void SDLGraphicsSystem::beginFrame() {
   glClearColor(0,0,0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   ShowGLErrors();
@@ -118,8 +117,7 @@ void SDLGraphicsSystem::beginFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
-{
+void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
   if (isResponsibleForUpdate() &&
       screenUpdateMode() == SCREENUPDATEMODE_MANUAL &&
       type == GUT_MOUSE_MOTION)
@@ -131,8 +129,7 @@ void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
-  boost::shared_ptr<Surface> bg)
-{
+  boost::shared_ptr<Surface> bg) {
   beginFrame();
 
   // Display DC0
@@ -179,8 +176,7 @@ void SDLGraphicsSystem::endFrame() {
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::redrawLastFrame()
-{
+void SDLGraphicsSystem::redrawLastFrame() {
   // We won't redraw the screen between when the DrawManual() command is issued
   // by the bytecode and the first refresh() is called since we need a valid
   // copy of the screen to work with and we only snapshot the screen during
@@ -188,8 +184,7 @@ void SDLGraphicsSystem::redrawLastFrame()
   if (screen_contents_texture_valid_) {
     // Redraw the screen
     glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
-    glBegin(GL_QUADS);
-    {
+    glBegin(GL_QUADS); {
       int dx1 = 0;
       int dx2 = screenSize().width();
       int dy1 = 0;
@@ -222,13 +217,11 @@ void SDLGraphicsSystem::redrawLastFrame()
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::drawCursor()
-{
+void SDLGraphicsSystem::drawCursor() {
   boost::shared_ptr<MouseCursor> cursor;
   if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
     cursor = currentCursor();
-  if (cursor)
-  {
+  if (cursor) {
     Point hotspot = cursorPos();
     Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
     cursor->renderHotspotAt(hotspot);
@@ -237,8 +230,7 @@ void SDLGraphicsSystem::drawCursor()
 
 // -----------------------------------------------------------------------
 
-shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface()
-{
+shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
   return shared_ptr<Surface>(new SDLRenderToTextureSurface(this, screenSize()));
 }
 
@@ -257,8 +249,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     screen_contents_texture_valid_(false),
     screen_tex_width_(0),
     screen_tex_height_(0),
-    image_cache_(20)
-{
+    image_cache_(20) {
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
 
@@ -280,8 +271,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   setWindowTitle();
 
   // When debug is set, display trace data in the titlebar
-  if (gameexe("MEMORY").exists())
-  {
+  if (gameexe("MEMORY").exists()) {
     display_data_in_titlebar_ = true;
   }
 
@@ -327,8 +317,7 @@ void SDLGraphicsSystem::setupVideo() {
 
   // Set the video mode
   if ((screen_ = SDL_SetVideoMode(
-        screenSize().width(), screenSize().height(), bpp, video_flags)) == 0 )
-  {
+        screenSize().width(), screenSize().height(), bpp, video_flags)) == 0 ) {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
     // resolution not being available, etc.
@@ -339,8 +328,7 @@ void SDLGraphicsSystem::setupVideo() {
 
   // Initialize glew
   GLenum err = glewInit();
-  if (GLEW_OK != err)
-  {
+  if (GLEW_OK != err) {
     ostringstream oss;
     oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
     throw SystemError(oss.str());
@@ -412,8 +400,7 @@ void SDLGraphicsSystem::unregisterSurface(SurfaceInvalidatable* surface) {
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
-{
+void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // For now, nothing, but later, we need to put all code each cycle
   // here.
   if (isResponsibleForUpdate() && screenNeedsRefresh()) {
@@ -433,13 +420,11 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 
   // Update the seen.
   int current_time = machine.system().event().getTicks();
-  if ((current_time - time_of_last_titlebar_update_) > 60)
-  {
+  if ((current_time - time_of_last_titlebar_update_) > 60) {
     time_of_last_titlebar_update_ = current_time;
 
     if (machine.sceneNumber() != last_seen_number_ ||
-       machine.lineNumber() != last_line_number_)
-    {
+       machine.lineNumber() != last_line_number_) {
       last_seen_number_ = machine.sceneNumber();
       last_line_number_ = machine.lineNumber();
       setWindowTitle();
@@ -449,18 +434,15 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setWindowTitle()
-{
+void SDLGraphicsSystem::setWindowTitle() {
   ostringstream oss;
   oss << caption_title_;
 
-  if (displaySubtitle() && subtitle_ != "")
-  {
+  if (displaySubtitle() && subtitle_ != "") {
     oss << ": " << subtitle_;
   }
 
-  if (display_data_in_titlebar_)
-  {
+  if (display_data_in_titlebar_) {
     oss << " - (SEEN" << last_seen_number_ << ")(Line "
         << last_line_number_ << ")";
   }
@@ -471,8 +453,7 @@ void SDLGraphicsSystem::setWindowTitle()
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
-                                          int text_encoding)
-{
+                                          int text_encoding) {
   // @todo Still not restoring title correctly!
   subtitle_ = cp932toUTF8(cp932str, text_encoding);
 
@@ -494,8 +475,7 @@ void SDLGraphicsSystem::setScreenMode(const int in) {
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::allocateDC(int dc, Size size)
-{
+void SDLGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16)
     throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocate_dc");
 
@@ -505,8 +485,7 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size)
 
   // DC 1 is a special case and must always be at least the size of
   // the screen.
-  if (dc == 1)
-  {
+  if (dc == 1) {
     SDL_Surface* dc0 = *(display_contexts_[0]);
     if (size.width() < dc0->w)
       size.setWidth(dc0->w);
@@ -520,32 +499,26 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::freeDC(int dc)
-{
+void SDLGraphicsSystem::freeDC(int dc) {
   if (dc == 0)
     throw rlvm::Exception("Attempt to deallocate DC[0]");
-  else if (dc == 1)
-  {
+  else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
     getDC(1)->fill(RGBAColour::Black());
-  }
-  else
+  } else
     display_contexts_[dc]->deallocate();
 }
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
-{
-  if (dc >= 16)
-  {
+void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
+  if (dc >= 16) {
     ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
     throw rlvm::Exception(ss.str());
   }
 
-  if (display_contexts_[dc] == NULL)
-  {
+  if (display_contexts_[dc] == NULL) {
     ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
     throw rlvm::Exception(ss.str());
@@ -554,10 +527,8 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller)
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller)
-{
-  if (display_contexts_[dc] == NULL)
-  {
+void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller) {
+  if (display_contexts_[dc] == NULL) {
     ostringstream ss;
     ss << "Couldn't allocate DC[" << dc << "] in " << caller
        << ": " << SDL_GetError();
@@ -578,8 +549,7 @@ typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 #define DefaultBpp 32
 
 static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
-                                           MaskType with_mask)
-{
+                                           MaskType with_mask) {
   int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
   SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask,
@@ -606,8 +576,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
 /**
  * Helper function for load_surface_from_file; invoked in a stl loop.
  */
-SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region)
-{
+SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region) {
   SDLSurface::GrpRect rect;
   rect.rect = Rect(Point(region.x1, region.y1),
                    Point(region.x2 + 1, region.y2 + 1));
@@ -653,8 +622,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.file_string().c_str(), "rb");
-  if (!file)
-  {
+  if (!file) {
     ostringstream oss;
     oss << "Could not open file: " << filename;
     throw rlvm::Exception(oss.str());
@@ -699,14 +667,11 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   // Grab the Type-2 information out of the converter or create one
   // default region if none exist
   vector<SDLSurface::GrpRect> region_table;
-  if (conv->region_table.size())
-  {
+  if (conv->region_table.size()) {
     transform(conv->region_table.begin(), conv->region_table.end(),
               back_inserter(region_table),
               xclannadRegionToGrpRect);
-  }
-  else
-  {
+  } else {
     SDLSurface::GrpRect rect;
     rect.rect = Rect(Point(0, 0), Size(conv->Width(), conv->Height()));
     rect.originX = 0;
@@ -721,8 +686,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
-{
+boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc) {
   verifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
 
   // If requesting a DC that doesn't exist, allocate it first.
@@ -734,15 +698,13 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc)
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size)
-{
+boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
   return shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::reset()
-{
+void SDLGraphicsSystem::reset() {
   last_seen_number_ = 0;
   last_line_number_ = 0;
 

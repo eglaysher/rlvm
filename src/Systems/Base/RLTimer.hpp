@@ -51,8 +51,7 @@ class EventSystem;
  * and future queries subtract this from the time since the interpreter was
  * started and then add the value to which the timer was initialised."
  */
-class RLTimer
-{
+class RLTimer {
 public:
   RLTimer();
   ~RLTimer();

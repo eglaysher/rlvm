@@ -75,8 +75,7 @@ template<typename T> class LazyArray;
  * Variables and configuration data that are global across all save
  * game files in a game.
  */
-struct GraphicsSystemGlobals
-{
+struct GraphicsSystemGlobals {
   GraphicsSystemGlobals();
   GraphicsSystemGlobals(Gameexe& gameexe);
 
@@ -96,8 +95,7 @@ struct GraphicsSystemGlobals
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, const unsigned int version)
-  {
+  void serialize(Archive& ar, const unsigned int version) {
     ar & show_object_1 & show_object_2 & show_weather;
 
     if (version > 0)
@@ -139,8 +137,7 @@ enum GraphicsUpdateType {
  * effect.)
  */
 
-class GraphicsSystem : public EventListener
-{
+class GraphicsSystem : public EventListener {
 public:
   /**
    * The current display context drawing mode. The Reallive system

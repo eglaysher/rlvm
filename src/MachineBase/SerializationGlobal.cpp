@@ -72,19 +72,16 @@ const int CURRENT_GLOBAL_VERSION = 2;
 
 // -----------------------------------------------------------------------
 
-fs::path buildGlobalMemoryFilename(RLMachine& machine)
-{
+fs::path buildGlobalMemoryFilename(RLMachine& machine) {
   return machine.system().gameSaveDirectory() / "global.sav.gz";
 }
 
 // -----------------------------------------------------------------------
 
-void saveGlobalMemory(RLMachine& machine)
-{
+void saveGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
   fs::ofstream file(home);
-  if (!file)
-  {
+  if (!file) {
     ostringstream oss;
     oss << "Could not open global memory file.";
     throw rlvm::Exception(oss.str());
@@ -100,8 +97,7 @@ void saveGlobalMemory(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine)
-{
+void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
   text_oarchive oa(oss);
   System& sys = machine.system();
 
@@ -116,16 +112,14 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void loadGlobalMemory(RLMachine& machine)
-{
+void loadGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
   fs::ifstream file(home);
 
   // If we were able to open the file for reading, load it. Don't
   // complain if we're unable to, since this may be the first run on
   // this certain game and it may not exist yet.
-  if (file)
-  {
+  if (file) {
     try {
       using namespace boost::iostreams;
       filtering_stream<input> filtered_input;
@@ -155,8 +149,7 @@ void loadGlobalMemory(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine)
-{
+void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
   text_iarchive ia(iss);
   System& sys = machine.system();
   int version;

@@ -43,28 +43,24 @@ ImageRect GCNButton::s_button_disabled;
 // -----------------------------------------------------------------------
 // GCNButton
 // -----------------------------------------------------------------------
-GCNButton::GCNButton()
-{
+GCNButton::GCNButton() {
   init();
 }
 
 // -----------------------------------------------------------------------
 
 GCNButton::GCNButton(const std::string& label)
-  : gcn::Button(label)
-{
+  : gcn::Button(label) {
   init();
 }
 
 // -----------------------------------------------------------------------
 
-GCNButton::~GCNButton()
-{}
+GCNButton::~GCNButton() {}
 
 // -----------------------------------------------------------------------
 
-void GCNButton::draw(gcn::Graphics* graphics)
-{
+void GCNButton::draw(gcn::Graphics* graphics) {
   static_cast<GCNGraphics*>(graphics)->
     drawImageRect(0, 0, getWidth(), getHeight(), currentButtonImage());
 
@@ -97,8 +93,7 @@ void GCNButton::draw(gcn::Graphics* graphics)
 
 // -----------------------------------------------------------------------
 
-void GCNButton::init()
-{
+void GCNButton::init() {
   setFrameSize(0);
 
   if (s_button.image == NULL) {
@@ -118,8 +113,7 @@ void GCNButton::init()
 
 // -----------------------------------------------------------------------
 
-ImageRect& GCNButton::currentButtonImage()
-{
+ImageRect& GCNButton::currentButtonImage() {
   if (!isEnabled())
     return s_button_disabled;
   else if (isPressed())

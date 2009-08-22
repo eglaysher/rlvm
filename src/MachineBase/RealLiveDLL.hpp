@@ -34,8 +34,7 @@ class RLMachine;
 /**
  * Interface for common RealLive DLLs which have support compiled into rlvm.
  */
-class RealLiveDLL
-{
+class RealLiveDLL {
 public:
   /**
    * Builds a RealLiveDLL for the DLL named |name|. Throws an exception on rlvm

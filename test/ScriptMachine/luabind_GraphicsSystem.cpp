@@ -39,8 +39,7 @@ GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
 
 // -----------------------------------------------------------------------
 
-scope register_graphics_system()
-{
+scope register_graphics_system() {
   return
     class_<GraphicsSystem>("GraphicsSystem").
       def("getFgObject", getFgObject);

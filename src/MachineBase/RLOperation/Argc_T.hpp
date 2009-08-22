@@ -77,8 +77,7 @@ template<typename CON>
 void Argc_T<CON>::
 parseParameters(unsigned int& position,
                 const std::vector<std::string>& input,
-                boost::ptr_vector<libReallive::ExpressionPiece>& output)
-{
+                boost::ptr_vector<libReallive::ExpressionPiece>& output) {
   for(; position < input.size(); ) {
     CON::parseParameters(position, input, output);
   }

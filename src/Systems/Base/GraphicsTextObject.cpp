@@ -47,19 +47,16 @@ using std::endl;
 // -----------------------------------------------------------------------
 
 GraphicsTextObject::GraphicsTextObject(System& system)
-  : system_(system)
-{
+  : system_(system) {
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsTextObject::~GraphicsTextObject()
-{}
+GraphicsTextObject::~GraphicsTextObject() {}
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::updateSurface(const GraphicsObject& rp)
-{
+void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
   cached_utf8_str_ = rp.textText();
   surface_ = system_.text().renderText(
       cached_utf8_str_, rp.textSize(), rp.textXSpace(),
@@ -68,16 +65,14 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp)
-{
+bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
   return !surface_ || rp.textText() != cached_utf8_str_;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> GraphicsTextObject::currentSurface(
-  const GraphicsObject& go)
-{
+  const GraphicsObject& go) {
   if (needsUpdate(go))
     updateSurface(go);
 
@@ -86,15 +81,13 @@ boost::shared_ptr<Surface> GraphicsTextObject::currentSurface(
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::objectInfo(std::ostream& tree)
-{
+void GraphicsTextObject::objectInfo(std::ostream& tree) {
   tree << "  Text: \"" << cached_utf8_str_ << "\"" << endl;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelWidth(const GraphicsObject& rp)
-{
+int GraphicsTextObject::pixelWidth(const GraphicsObject& rp) {
   if (needsUpdate(rp))
     updateSurface(rp);
 
@@ -103,8 +96,7 @@ int GraphicsTextObject::pixelWidth(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelHeight(const GraphicsObject& rp)
-{
+int GraphicsTextObject::pixelHeight(const GraphicsObject& rp) {
   if (needsUpdate(rp))
     updateSurface(rp);
 
@@ -113,16 +105,14 @@ int GraphicsTextObject::pixelHeight(const GraphicsObject& rp)
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsTextObject::clone() const
-{
+GraphicsObjectData* GraphicsTextObject::clone() const {
   return new GraphicsTextObject(*this);
 }
 
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GraphicsTextObject::load(Archive& ar, unsigned int version)
-{
+void GraphicsTextObject::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
 
   cached_utf8_str_ = "";
@@ -132,8 +122,7 @@ void GraphicsTextObject::load(Archive& ar, unsigned int version)
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GraphicsTextObject::save(Archive& ar, unsigned int version) const
-{
+void GraphicsTextObject::save(Archive& ar, unsigned int version) const {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
 }
 

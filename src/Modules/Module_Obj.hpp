@@ -104,8 +104,7 @@ public:
  * related functions simply call a setter.
  */
 class Obj_SetTwoIntOnObj
-  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T >
-{
+  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
   /// The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const int);
 

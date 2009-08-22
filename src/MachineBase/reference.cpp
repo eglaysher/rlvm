@@ -48,13 +48,11 @@ using libReallive::IntMemRef;
 // -----------------------------------------------------------------------
 
 IntAccessor::IntAccessor(MemoryReferenceIterator<IntAccessor>* i)
-    : it(i), store_register_(i->store_register_)
-{}
+    : it(i), store_register_(i->store_register_) {}
 
 // -----------------------------------------------------------------------
 
-IntAccessor::~IntAccessor()
-{}
+IntAccessor::~IntAccessor() {}
 
 // -----------------------------------------------------------------------
 
@@ -63,8 +61,7 @@ IntAccessor::~IntAccessor()
  *
  * @return The integer value of the memory location.
  */
-IntAccessor::operator int() const
-{
+IntAccessor::operator int() const {
   if (store_register_)
     return *store_register_;
   else
@@ -97,8 +94,7 @@ IntAccessor& IntAccessor::operator=(const int new_value) {
  * @param rhs IntAccessor to read from
  * @return Self
  */
-IntAccessor& IntAccessor::operator=(const IntAccessor& rhs)
-{
+IntAccessor& IntAccessor::operator=(const IntAccessor& rhs) {
   return operator=(rhs.operator int());
 }
 
@@ -107,13 +103,11 @@ IntAccessor& IntAccessor::operator=(const IntAccessor& rhs)
 // -----------------------------------------------------------------------
 
 StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i)
-  : it(i)
-{}
+  : it(i) {}
 
 // -----------------------------------------------------------------------
 
-StringAccessor::~StringAccessor()
-{}
+StringAccessor::~StringAccessor() {}
 
 // -----------------------------------------------------------------------
 
@@ -122,8 +116,7 @@ StringAccessor::~StringAccessor()
  *
  * @return The string value of the memory location.
  */
-StringAccessor::operator std::string() const
-{
+StringAccessor::operator std::string() const {
   return it->memory_->getStringValue(it->type_, it->location_);
 }
 
@@ -156,8 +149,7 @@ bool StringAccessor::operator==(const std::string& rhs) {
  * @param rhs StringAccessor to read from
  * @return Self
  */
-StringAccessor& StringAccessor::operator=(const StringAccessor& rhs)
-{
+StringAccessor& StringAccessor::operator=(const StringAccessor& rhs) {
   return operator=(rhs.operator std::string());
 }
 

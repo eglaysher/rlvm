@@ -61,8 +61,7 @@ void setObjectDataToGan(
   RLMachine& machine,
   GraphicsObject& obj,
   string& imgFilename,
-  const string& ganFilename)
-{
+  const string& ganFilename) {
 //  GraphicsSystem& gs = machine.system().graphics();
 
   /// @todo This is a hack and probably a source of errors. Figure
@@ -80,15 +79,13 @@ typedef boost::function<void(RLMachine&, GraphicsObject& obj, const string&)> Da
 
 // -----------------------------------------------------------------------
 
-void objOfFileLoader(RLMachine& machine, GraphicsObject& obj, const string& val)
-{
+void objOfFileLoader(RLMachine& machine, GraphicsObject& obj, const string& val) {
   obj.setObjectData(machine.system().graphics().buildObjOfFile(val));
 }
 
 // -----------------------------------------------------------------------
 
-void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj, const string& val)
-{
+void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj, const string& val) {
   // The text at this point is still cp932. Convert it.
   string utf8str = cp932toUTF8(val, machine.getTextEncoding());
   obj.setTextText(utf8str);
@@ -112,8 +109,7 @@ struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
-											 IntConstant_T>
-{
+											 IntConstant_T> {
   DataFunction data_fun_;
   Obj_objGeneric_1(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -128,8 +124,7 @@ struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
 
 struct Obj_objGeneric_2
   : public RLOp_Void_5<IntConstant_T, StrConstant_T, IntConstant_T,
-					   IntConstant_T, IntConstant_T>
-{
+					   IntConstant_T, IntConstant_T> {
   DataFunction data_fun_;
   Obj_objGeneric_2(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -147,8 +142,7 @@ struct Obj_objGeneric_2
 
 struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T,
-                                          IntConstant_T, IntConstant_T>
-{
+                                          IntConstant_T, IntConstant_T> {
   DataFunction data_fun_;
   Obj_objGeneric_3(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -167,8 +161,7 @@ struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
 
 struct Obj_objGeneric_4 : public RLOp_Void_8<
   IntConstant_T, StrConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
-{
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   DataFunction data_fun_;
   Obj_objGeneric_4(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -189,11 +182,9 @@ struct Obj_objGeneric_4 : public RLOp_Void_8<
 // -----------------------------------------------------------------------
 
 struct Obj_objOfFileGan_0
-  : public RLOp_Void_3<IntConstant_T, StrConstant_T, StrConstant_T>
-{
+  : public RLOp_Void_3<IntConstant_T, StrConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename)
-  {
+                  string ganFilename) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(true);
@@ -204,11 +195,9 @@ struct Obj_objOfFileGan_0
 
 struct Obj_objOfFileGan_1
   : public RLOp_Void_4<IntConstant_T, StrConstant_T, StrConstant_T,
-                       IntConstant_T>
-{
+                       IntConstant_T> {
   void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename, int visible)
-  {
+                  string ganFilename, int visible) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -219,11 +208,9 @@ struct Obj_objOfFileGan_1
 
 struct Obj_objOfFileGan_2
   : public RLOp_Void_6<IntConstant_T, StrConstant_T, StrConstant_T,
-                       IntConstant_T, IntConstant_T, IntConstant_T>
-{
+                       IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename, int visible, int x, int y)
-  {
+                  string ganFilename, int visible, int x, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -237,11 +224,9 @@ struct Obj_objOfFileGan_2
 struct Obj_objOfFileGan_3
   : public RLOp_Void_7<IntConstant_T, StrConstant_T, StrConstant_T,
                        IntConstant_T, IntConstant_T, IntConstant_T,
-                       IntConstant_T>
-{
+                       IntConstant_T> {
   void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename, int visible, int x, int y, int pattern)
-  {
+                  string ganFilename, int visible, int x, int y, int pattern) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -253,8 +238,7 @@ struct Obj_objOfFileGan_3
 
 // -----------------------------------------------------------------------
 
-void addObjectCreationFunctions(RLModule& m)
-{
+void addObjectCreationFunctions(RLModule& m) {
   m.addOpcode(1000, 0, "objOfFile", new Obj_objGeneric_0(objOfFileLoader));
   m.addOpcode(1000, 1, "objOfFile", new Obj_objGeneric_1(objOfFileLoader));
   m.addOpcode(1000, 2, "objOfFile", new Obj_objGeneric_2(objOfFileLoader));
@@ -291,8 +275,7 @@ void addObjectCreationFunctions(RLModule& m)
 // -----------------------------------------------------------------------
 
 ObjFgCreationModule::ObjFgCreationModule()
-  : RLModule("ObjFgCreation", 1, 71)
-{
+  : RLModule("ObjFgCreation", 1, 71) {
   addObjectCreationFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
@@ -300,8 +283,7 @@ ObjFgCreationModule::ObjFgCreationModule()
 // -----------------------------------------------------------------------
 
 ObjBgCreationModule::ObjBgCreationModule()
-  : RLModule("ObjBgCreation", 1, 72)
-{
+  : RLModule("ObjBgCreation", 1, 72) {
   addObjectCreationFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }

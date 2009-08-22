@@ -85,12 +85,10 @@ struct Sys_title : public RLOp_Void_1< StrConstant_T > {
 
 struct Sys_GetCursorPos_gc1
   : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T,
-						IntReference_T>
-{
+						IntReference_T> {
   void operator()(RLMachine& machine,
 				  IntReferenceIterator xit, IntReferenceIterator yit,
-                  IntReferenceIterator button1It, IntReferenceIterator button2It)
-  {
+                  IntReferenceIterator button1It, IntReferenceIterator button2It) {
     Point pos;
     int button1, button2;
     machine.system().event().getCursorPos(pos, button1, button2);
@@ -104,10 +102,8 @@ struct Sys_GetCursorPos_gc1
 // -----------------------------------------------------------------------
 
 struct Sys_GetCursorPos_gc2
-  : public RLOp_Void_2< IntReference_T, IntReference_T>
-{
-  void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit)
-  {
+  : public RLOp_Void_2< IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit) {
     Point pos = machine.system().event().getCursorPos();
     *xit = pos.x();
     *yit = pos.y();
@@ -270,10 +266,8 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
 
 struct Sys_SetWindowAttr : public RLOp_Void_5<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T>
-{
-  void operator()(RLMachine& machine, int r, int g, int b, int a, int f)
-  {
+  IntConstant_T> {
+  void operator()(RLMachine& machine, int r, int g, int b, int a, int f) {
     vector<int> attr(5);
     attr[0] = r;
     attr[1] = g;
@@ -289,12 +283,10 @@ struct Sys_SetWindowAttr : public RLOp_Void_5<
 
 struct Sys_GetWindowAttr : public RLOp_Void_5<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T>
-{
+  IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator r,
                   IntReferenceIterator g, IntReferenceIterator b,
-                  IntReferenceIterator a, IntReferenceIterator f)
-  {
+                  IntReferenceIterator a, IntReferenceIterator f) {
     TextSystem& text = machine.system().text();
 
     *r = text.windowAttrR();
@@ -309,12 +301,10 @@ struct Sys_GetWindowAttr : public RLOp_Void_5<
 
 struct Sys_DefWindowAttr : public RLOp_Void_5<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T>
-{
+  IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator r,
                   IntReferenceIterator g, IntReferenceIterator b,
-                  IntReferenceIterator a, IntReferenceIterator f)
-  {
+                  IntReferenceIterator a, IntReferenceIterator f) {
     Gameexe& gexe = machine.system().gameexe();
     vector<int> attr = gexe("WINDOW_ATTR");
 
@@ -328,8 +318,7 @@ struct Sys_DefWindowAttr : public RLOp_Void_5<
 
 // -----------------------------------------------------------------------
 
-void Sys_MenuReturn::operator()(RLMachine& machine)
-{
+void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   // Render the screen as is.
@@ -356,8 +345,7 @@ void Sys_MenuReturn::operator()(RLMachine& machine)
 // -----------------------------------------------------------------------
 
 SysModule::SysModule()
-  : RLModule("Sys", 1, 004)
-{
+  : RLModule("Sys", 1, 004) {
   addOpcode(   0, 0, "title", new Sys_title);
 
   addOpcode( 130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));

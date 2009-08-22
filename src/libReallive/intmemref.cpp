@@ -39,8 +39,7 @@ namespace libReallive {
 
 IntMemRef::IntMemRef(int bytecodeRep, int location)
   : memoryBank(bytecodeRep % 26),  accessType(bytecodeRep / 26),
-    loc(location)
-{
+    loc(location) {
   if (memoryBank == INTZ_LOCATION_IN_BYTECODE)
     memoryBank = INTZ_LOCATION;
   else if (memoryBank == INTL_LOCATION_IN_BYTECODE)
@@ -50,15 +49,13 @@ IntMemRef::IntMemRef(int bytecodeRep, int location)
 // -----------------------------------------------------------------------
 
 IntMemRef::IntMemRef(int bank, int type, int location)
-  : memoryBank(bank), accessType(type), loc(location)
-{
+  : memoryBank(bank), accessType(type), loc(location) {
 }
 
 // -----------------------------------------------------------------------
 
 IntMemRef::IntMemRef(char bankName, int location)
-  : accessType(0), loc(location)
-{
+  : accessType(0), loc(location) {
   if (bankName >= 'A' && bankName <= 'G')
     memoryBank = bankName - 'A';
   else if (bankName == 'Z')
@@ -72,8 +69,7 @@ IntMemRef::IntMemRef(char bankName, int location)
 // -----------------------------------------------------------------------
 
 IntMemRef::IntMemRef(char bankName, const char* accessStr, int location)
-  : accessType(0), loc(location)
-{
+  : accessType(0), loc(location) {
   if (bankName >= 'A' && bankName <= 'G')
     memoryBank = bankName - 'A';
   else if (bankName == 'Z')
@@ -99,15 +95,13 @@ IntMemRef::IntMemRef(char bankName, const char* accessStr, int location)
 
 // -----------------------------------------------------------------------
 
-IntMemRef::~IntMemRef()
-{}
+IntMemRef::~IntMemRef() {}
 
 }
 
 // -----------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& oss, const libReallive::IntMemRef& memref)
-{
+std::ostream& operator<<(std::ostream& oss, const libReallive::IntMemRef& memref) {
   using namespace libReallive;
 
   oss << "int";

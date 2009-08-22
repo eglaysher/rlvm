@@ -80,13 +80,11 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
       system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
     }
 
-    bool operator()(RLMachine& machine)
-    {
+    bool operator()(RLMachine& machine) {
       GraphicsObject& obj = getObject(machine);
       bool done = true;
 
-      if (obj.hasObjectData())
-      {
+      if (obj.hasObjectData()) {
         const GraphicsObjectData& data = obj.objectData();
         if (data.isAnimation())
           done = !data.currentlyPlaying();
@@ -120,15 +118,12 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   Gan_ganPlay(bool block, GraphicsObjectData::AfterAnimation after)
     : block_(block), after_effect_(after) {}
 
-  void operator()(RLMachine& machine, int buf, int animationSet)
-  {
+  void operator()(RLMachine& machine, int buf, int animationSet) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
 
-    if (obj.hasObjectData())
-    {
+    if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation())
-      {
+      if (data.isAnimation()) {
         data.playSet(animationSet);
         data.setAfterAction(after_effect_);
 

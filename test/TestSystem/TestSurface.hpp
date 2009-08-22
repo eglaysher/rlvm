@@ -12,8 +12,7 @@
 
 // -----------------------------------------------------------------------
 
-class TestSurface : public Surface
-{
+class TestSurface : public Surface {
 public:
   TestSurface(const std::string& surface_name);
   TestSurface(const std::string& surface_name, const Size& size);

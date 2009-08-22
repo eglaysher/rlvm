@@ -31,8 +31,7 @@
 #include <boost/filesystem/path.hpp>
 #include <luabind/luabind.hpp>
 
-extern "C"
-{
+extern "C" {
     #include "lua.h"
 }
 
@@ -54,8 +53,7 @@ class ScriptMachine;
  * end
  * @endcode
  */
-class ScriptWorld
-{
+class ScriptWorld {
 public:
   ScriptWorld();
   ~ScriptWorld();

@@ -50,8 +50,7 @@ class GraphicsSystem;
  *
  * @ingroup TransitionEffects
  */
-class WipeEffect : public Effect
-{
+class WipeEffect : public Effect {
 private:
   int interpolation_;
   int interpolation_in_pixels_;
@@ -77,8 +76,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class WipeTopToBottomEffect : public WipeEffect
-{
+class WipeTopToBottomEffect : public WipeEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
@@ -96,8 +94,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class WipeBottomToTopEffect : public WipeEffect
-{
+class WipeBottomToTopEffect : public WipeEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
@@ -115,8 +112,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class WipeLeftToRightEffect : public WipeEffect
-{
+class WipeLeftToRightEffect : public WipeEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
@@ -134,8 +130,7 @@ public:
  *
  * @ingroup TransitionEffects
  */
-class WipeRightToLeftEffect : public WipeEffect
-{
+class WipeRightToLeftEffect : public WipeEffect {
 protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 

@@ -368,8 +368,7 @@ void addObjectFunctions(RLModule& m) {
 // -----------------------------------------------------------------------
 
 ObjFgModule::ObjFgModule()
-  : RLModule("ObjFg", 1, 81)
-{
+  : RLModule("ObjFg", 1, 81) {
   addObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
@@ -377,8 +376,7 @@ ObjFgModule::ObjFgModule()
 // -----------------------------------------------------------------------
 
 ObjBgModule::ObjBgModule()
-  : RLModule("ObjBg", 1, 82)
-{
+  : RLModule("ObjBg", 1, 82) {
   addObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }
@@ -411,16 +409,14 @@ ChildObjBgModule::ChildObjBgModule()
  * @param op Incoming RLOperation
  * @return op in an ObjRangeAdapter
  */
-RLOperation* rangeMappingFun(RLOperation* op)
-{
+RLOperation* rangeMappingFun(RLOperation* op) {
   return new ObjRangeAdapter(op);
 }
 
 // -----------------------------------------------------------------------
 
 ObjRangeFgModule::ObjRangeFgModule()
-  : MappedRLModule(rangeMappingFun, "ObjRangeFg", 1, 90)
-{
+  : MappedRLModule(rangeMappingFun, "ObjRangeFg", 1, 90) {
   addObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
@@ -428,8 +424,7 @@ ObjRangeFgModule::ObjRangeFgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeBgModule::ObjRangeBgModule()
-  : MappedRLModule(rangeMappingFun, "ObjRangeBg", 1, 91)
-{
+  : MappedRLModule(rangeMappingFun, "ObjRangeBg", 1, 91) {
   addObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }

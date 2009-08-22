@@ -74,8 +74,7 @@ namespace {
  * @param string The string to count
  * @return The length of the string in characters
  */
-size_t strcharlen(const char* string)
-{
+size_t strcharlen(const char* string) {
   if (!string) return 0;
   size_t result = 0;
   while (*string) {
@@ -113,8 +112,7 @@ inline char ToLower(char x) { return tolower(x); }
  * @param fill Character to fill empty space with
  * @return The converted string
  */
-string rl_itoa_implementation(int number, int length, char fill)
-{
+string rl_itoa_implementation(int number, int length, char fill) {
   ostringstream ss;
   if (number < 0)
     ss << "-";
@@ -285,8 +283,7 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
       offset--;
     }
 
-    while (*str && length > 0)
-    {
+    while (*str && length > 0) {
       copyOneShiftJisCharacter(str, output);
       length--;
     }
@@ -769,8 +766,7 @@ struct Str_strused : public RLOp_Store_1< StrReference_T > {
 // -----------------------------------------------------------------------
 
 StrModule::StrModule()
-  : RLModule("Str", 1, 10)
-{
+  : RLModule("Str", 1, 10) {
   addOpcode(  0, 0, "strcpy", new Str_strcpy_0);
   addOpcode(  0, 1, "strcpy", new Str_strcpy_1);
   addOpcode(  1, 0, "strclear", new Str_strclear_0);

@@ -34,8 +34,7 @@
 class Rect;
 class Size;
 
-class Point
-{
+class Point {
 public:
   Point() : x_(0), y_(0) {}
   Point(int x, int y) : x_(x), y_(y) {}
@@ -89,8 +88,7 @@ private:
 /**
  * Backend independent representation of a size.
  */
-class Size
-{
+class Size {
 public:
   Size() : width_(0), height_(0) {}
   Size(int width, int height) : width_(width), height_(height) {}
@@ -162,8 +160,7 @@ private:
 /**
  *
  */
-class Rect
-{
+class Rect {
 public:
   Rect() {}
   Rect(const Point& point1, const Point& point2)

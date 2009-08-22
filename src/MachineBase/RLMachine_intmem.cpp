@@ -64,8 +64,7 @@ using libReallive::IntMemRef;
  * @see RLMachine::get_int_value
  */
 static void throwIllegalIndex(const IntMemRef& ref,
-                              const std::string& function)
-{
+                              const std::string& function) {
   ostringstream ss;
   ss << "Invalid memory access " << ref << " in " << function;
   throw rlvm::Exception(ss.str());
@@ -73,8 +72,7 @@ static void throwIllegalIndex(const IntMemRef& ref,
 
 // -----------------------------------------------------------------------
 
-int Memory::getIntValue(const IntMemRef& ref)
-{
+int Memory::getIntValue(const IntMemRef& ref) {
   int type = ref.type();
   int index = ref.bank();
   int location = ref.location();
@@ -102,8 +100,7 @@ int Memory::getIntValue(const IntMemRef& ref)
 
 // -----------------------------------------------------------------------
 
-void Memory::setIntValue(const IntMemRef& ref, int value)
-{
+void Memory::setIntValue(const IntMemRef& ref, int value) {
   int type = ref.type();
   int index = ref.bank();
   int location = ref.location();

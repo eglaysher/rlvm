@@ -80,22 +80,17 @@ struct Msg_par : public RLOp_Void_Void {
  * Implements op<0:Msg:17, 0>, fun pause().
  *
  */
-struct Msg_pause : public RLOp_Void_Void
-{
-  void operator()(RLMachine& machine)
-  {
+struct Msg_pause : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int windowNum = text.activeWindow();
     boost::shared_ptr<TextWindow> textWindow =
       text.textWindow(windowNum);
 
-    if (textWindow->actionOnPause())
-    {
+    if (textWindow->actionOnPause()) {
       machine.pushLongOperation(
         new NewParagraphAfterLongop(new PauseLongOperation(machine)));
-    }
-    else
-    {
+    } else {
       machine.pushLongOperation(
         new NewPageAfterLongop(new PauseLongOperation(machine)));
     }
@@ -104,10 +99,8 @@ struct Msg_pause : public RLOp_Void_Void
 
 // -----------------------------------------------------------------------
 
-struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
-{
-  void operator()(RLMachine& machine, int window)
-  {
+struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+  void operator()(RLMachine& machine, int window) {
     machine.system().text().setActiveWindow(window);
   }
 };
@@ -115,20 +108,16 @@ struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > >
 // -----------------------------------------------------------------------
 
 struct Msg_FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
-                                            DefaultIntValue_T< 0 > >
-{
-  void operator()(RLMachine& machine, int textColorNum, int shadowColorNum)
-  {
+                                            DefaultIntValue_T< 0 > > {
+  void operator()(RLMachine& machine, int textColorNum, int shadowColorNum) {
     machine.system().text().currentPage().fontColour(textColorNum);
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Msg_doruby_display : public RLOp_Void_1< StrConstant_T >
-{
-  void operator()(RLMachine& machine, std::string cpStr)
-  {
+struct Msg_doruby_display : public RLOp_Void_1< StrConstant_T > {
+  void operator()(RLMachine& machine, std::string cpStr) {
     std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
     machine.system().text().currentPage().displayRubyText(utf8str);
   }
@@ -136,10 +125,8 @@ struct Msg_doruby_display : public RLOp_Void_1< StrConstant_T >
 
 // -----------------------------------------------------------------------
 
-struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > >
-{
-  void operator()(RLMachine& machine, int unknown)
-  {
+struct Msg_msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+  void operator()(RLMachine& machine, int unknown) {
     int winNum = machine.system().text().activeWindow();
     machine.system().text().hideTextWindow(winNum);
     machine.system().text().newPageOnWindow(winNum);
@@ -181,8 +168,7 @@ struct Msg_msgClearAll : public RLOp_Void_Void {
     int activeWindow = text.activeWindow();
 
     for (vector<int>::const_iterator it = activeWindows.begin();
-        it != activeWindows.end(); ++it)
-    {
+        it != activeWindows.end(); ++it) {
       text.textWindow(activeWindow)->clearWin();
       text.newPageOnWindow(*it);
     }
@@ -244,8 +230,7 @@ struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 MsgModule::MsgModule()
-  : RLModule("Msg", 0, 003)
-{
+  : RLModule("Msg", 0, 003) {
   addOpcode(3, 0, "par", new Msg_par);
 //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, "pause", new Msg_pause);

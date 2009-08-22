@@ -142,14 +142,12 @@ struct Sys_GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
  */
 struct Sys_GetDateTime : public RLOp_Void_8<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T, IntReference_T, IntReference_T, IntReference_T>
-{
+  IntReference_T, IntReference_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator y, IntReferenceIterator m,
                   IntReferenceIterator d, IntReferenceIterator wd,
                   IntReferenceIterator hh, IntReferenceIterator mm,
-                  IntReferenceIterator ss, IntReferenceIterator ms)
-  {
+                  IntReferenceIterator ss, IntReferenceIterator ms) {
     *y = (int)Sys_GetYear()(machine);
     *m = (int)Sys_GetMonth()(machine);
     *d = (int)Sys_GetDay()(machine);
@@ -163,8 +161,7 @@ struct Sys_GetDateTime : public RLOp_Void_8<
 
 // -----------------------------------------------------------------------
 
-void addSysDateOpcodes(RLModule& m)
-{
+void addSysDateOpcodes(RLModule& m) {
   m.addOpcode(1100, 0, "GetYear", new Sys_GetYear);
   m.addOpcode(1101, 0, "GetMonth", new Sys_GetMonth);
   m.addOpcode(1102, 0, "GetDay", new Sys_GetDay);

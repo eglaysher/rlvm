@@ -46,8 +46,7 @@ class EventListener;
 
 // -----------------------------------------------------------------------
 
-struct EventSystemGlobals
-{
+struct EventSystemGlobals {
   EventSystemGlobals();
   EventSystemGlobals(Gameexe& gexe);
 
@@ -73,8 +72,7 @@ struct EventSystemGlobals
  * side. One is exposed to Reallive and mimics what RealLive bytecode
  * expects. The other is based on event handlers and is sane.
  */
-class EventSystem : public boost::noncopyable
-{
+class EventSystem : public boost::noncopyable {
 public:
   EventSystem(Gameexe& gexe);
   virtual ~EventSystem();
@@ -88,8 +86,7 @@ public:
    */
   virtual unsigned int getTicks() const = 0;
 
-  RLTimer& getTimer(int layer, int counter)
-  { return timers_[layer][counter]; }
+  RLTimer& getTimer(int layer, int counter) { return timers_[layer][counter]; }
 
   /**
    * Idles the program for a certain amount of time in milliseconds.

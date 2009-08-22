@@ -54,8 +54,7 @@ SDL_Surface* buildNewSurface(const Size& size);
  * don't own their surfaces (SDLSurfaces returned by getDC()
  */
 class SDLSurface : public SurfaceInvalidatable,
-                   public Surface
-{
+                   public Surface {
 private:
   /**
    * Keeps track of a texture and the information about which region
@@ -162,8 +161,7 @@ public:
   /// Deallocate
   void deallocate();
 
-  operator SDL_Surface*()
-  {
+  operator SDL_Surface*() {
     return surface_;
   }
 

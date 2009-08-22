@@ -81,8 +81,7 @@ struct Sys_WaitClick
 
 // -----------------------------------------------------------------------
 
-void addWaitAndMouseOpcodes(RLModule& m)
-{
+void addWaitAndMouseOpcodes(RLModule& m) {
   m.addOpcode( 100, 0, "wait", new Sys_wait(false));
   m.addOpcode( 101, 0, "waitC", new Sys_wait(true));
 

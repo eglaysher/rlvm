@@ -43,8 +43,7 @@ SDLSoundChunk::PlayingTable SDLSoundChunk::s_playing_table;
 // -----------------------------------------------------------------------
 
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
-  : sample_(Mix_LoadWAV(path.external_file_string().c_str()))
-{
+  : sample_(Mix_LoadWAV(path.external_file_string().c_str())) {
 }
 
 // -----------------------------------------------------------------------
@@ -56,38 +55,31 @@ SDLSoundChunk::SDLSoundChunk(char* data, int length)
 
 // -----------------------------------------------------------------------
 
-SDLSoundChunk::~SDLSoundChunk()
-{
+SDLSoundChunk::~SDLSoundChunk() {
   Mix_FreeChunk(sample_);
   data_.reset();
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundChunk::playChunkOn(int channel, int loops)
-{
-  {
+void SDLSoundChunk::playChunkOn(int channel, int loops) { {
     SDLAudioLocker locker;
     s_playing_table[channel] = shared_from_this();
   }
 
-  if (Mix_PlayChannel(channel, sample_, loops) == -1)
-  {
+  if (Mix_PlayChannel(channel, sample_, loops) == -1) {
     // TODO: Throw something here.
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
-{
-  {
+void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) { {
     SDLAudioLocker locker;
     s_playing_table[channel] = shared_from_this();
   }
 
-  if (Mix_FadeInChannel(channel, sample_, loops, ms) == -1)
-  {
+  if (Mix_FadeInChannel(channel, sample_, loops, ms) == -1) {
     // TODO: Throw something here.
   }
 }
@@ -95,8 +87,7 @@ void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms)
 // -----------------------------------------------------------------------
 
 // static
-void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
-{
+void SDLSoundChunk::SoundChunkFinishedPlayback(int channel) {
   // Don't need an SDLAudioLocker because we're in the audio callback right
   // now.
   //
@@ -108,13 +99,11 @@ void SDLSoundChunk::SoundChunkFinishedPlayback(int channel)
 // -----------------------------------------------------------------------
 
 // static
-int SDLSoundChunk::FindNextFreeExtraChannel()
-{
+int SDLSoundChunk::FindNextFreeExtraChannel() {
   SDLAudioLocker locker;
 
   for (int i = NUM_BASE_CHANNELS;
-      i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i)
-  {
+      i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i) {
     if (s_playing_table[i].get() == 0)
       return i;
   }
@@ -125,21 +114,18 @@ int SDLSoundChunk::FindNextFreeExtraChannel()
 // -----------------------------------------------------------------------
 
 // static
-void SDLSoundChunk::StopChannel(int channel)
-{
+void SDLSoundChunk::StopChannel(int channel) {
   Mix_HaltChannel(channel);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundChunk::StopAllChannels()
-{
+void SDLSoundChunk::StopAllChannels() {
   Mix_HaltChannel(-1);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSoundChunk::FadeOut(const int channel, const int fadetime)
-{
+void SDLSoundChunk::FadeOut(const int channel, const int fadetime) {
   Mix_FadeOutChannel(channel, fadetime);
 }

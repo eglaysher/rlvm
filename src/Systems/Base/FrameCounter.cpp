@@ -47,30 +47,26 @@ FrameCounter::FrameCounter(EventSystem& event_system, int frame_min,
   : event_system_(event_system), value_(frame_min), min_value_(frame_min),
     max_value_(frame_max), is_active_(true),
     time_at_start_(event_system.getTicks()),
-    total_time_(milliseconds)
-{
+    total_time_(milliseconds) {
   beginTimer();
 }
 
 // -----------------------------------------------------------------------
 
-FrameCounter::~FrameCounter()
-{
+FrameCounter::~FrameCounter() {
   if (is_active_)
     endTimer();
 }
 
 // -----------------------------------------------------------------------
 
-void FrameCounter::beginTimer()
-{
+void FrameCounter::beginTimer() {
   is_active_ = true;
 }
 
 // -----------------------------------------------------------------------
 
-void FrameCounter::endTimer()
-{
+void FrameCounter::endTimer() {
   is_active_ = false;
 }
 
@@ -85,22 +81,17 @@ bool FrameCounter::isActive() {
 
 // -----------------------------------------------------------------------
 
-bool FrameCounter::checkIfFinished(float new_value)
-{
-  if (max_value_ > min_value_)
-  {
+bool FrameCounter::checkIfFinished(float new_value) {
+  if (max_value_ > min_value_) {
     return new_value >= max_value_;
-  }
-  else
-  {
+  } else {
     return new_value <= max_value_;
   }
 }
 
 // -----------------------------------------------------------------------
 
-void FrameCounter::updateTimeValue(float num_ticks)
-{
+void FrameCounter::updateTimeValue(float num_ticks) {
   // Update the value
   if (max_value_ > min_value_)
     value_ += num_ticks;
@@ -111,10 +102,8 @@ void FrameCounter::updateTimeValue(float num_ticks)
 // -----------------------------------------------------------------------
 
 int FrameCounter::readNormalFrameWithChangeInterval(
-  float change_interval, float& time_at_last_check)
-{
-  if (is_active_)
-  {
+  float change_interval, float& time_at_last_check) {
+  if (is_active_) {
     unsigned int current_time = event_system_.getTicks();
     float ms_elapsed = current_time - time_at_last_check;
     float num_ticks = ms_elapsed / change_interval;
@@ -126,8 +115,7 @@ int FrameCounter::readNormalFrameWithChangeInterval(
     // this time.
     time_at_last_check = current_time;
 
-    if (checkIfFinished(value_))
-    {
+    if (checkIfFinished(value_)) {
       finished();
     }
   }
@@ -137,8 +125,7 @@ int FrameCounter::readNormalFrameWithChangeInterval(
 
 // -----------------------------------------------------------------------
 
-void FrameCounter::finished()
-{
+void FrameCounter::finished() {
   value_ = max_value_;
   endTimer();
 }
@@ -150,15 +137,13 @@ void FrameCounter::finished()
 SimpleFrameCounter::SimpleFrameCounter(
   EventSystem& es, int frame_min, int frame_max, int milliseconds)
   : FrameCounter(es, frame_min, frame_max, milliseconds),
-    time_at_last_check_(es.getTicks())
-{
+    time_at_last_check_(es.getTicks()) {
   change_interval_ = float(milliseconds) / abs(frame_max - frame_min);
 }
 
 // -----------------------------------------------------------------------
 
-int SimpleFrameCounter::readFrame()
-{
+int SimpleFrameCounter::readFrame() {
   return readNormalFrameWithChangeInterval(change_interval_,
                                            time_at_last_check_);
 }
@@ -170,23 +155,20 @@ int SimpleFrameCounter::readFrame()
 LoopFrameCounter::LoopFrameCounter(
   EventSystem& es, int frame_min, int frame_max, int milliseconds)
   : FrameCounter(es, frame_min, frame_max, milliseconds),
-    time_at_last_check_(es.getTicks())
-{
+    time_at_last_check_(es.getTicks()) {
   change_interval_ = float(milliseconds) / abs(frame_max - frame_min);
 }
 
 // -----------------------------------------------------------------------
 
-int LoopFrameCounter::readFrame()
-{
+int LoopFrameCounter::readFrame() {
   return readNormalFrameWithChangeInterval(change_interval_,
                                            time_at_last_check_);
 }
 
 // -----------------------------------------------------------------------
 
-void LoopFrameCounter::finished()
-{
+void LoopFrameCounter::finished() {
   // Don't end the timer, simply reset it
   value_ = min_value_;
 }
@@ -197,8 +179,7 @@ void LoopFrameCounter::finished()
 TurnFrameCounter::TurnFrameCounter(
   EventSystem& es, int frame_min, int frame_max, int milliseconds)
   : FrameCounter(es, frame_min, frame_max, milliseconds),
-    time_at_last_check_(es.getTicks())
-{
+    time_at_last_check_(es.getTicks()) {
   change_interval_ = int(float(milliseconds) / abs(frame_max - frame_min));
   going_forward_ = frame_max >= frame_min;
 }
@@ -206,13 +187,11 @@ TurnFrameCounter::TurnFrameCounter(
 // -----------------------------------------------------------------------
 
 /// @bug This has all the bugs of the old implementation.
-int TurnFrameCounter::readFrame()
-{
+int TurnFrameCounter::readFrame() {
   cerr << "BIG WARNING: TurnFrameCounter::read_frame DOESN'T DO THE SAFE "
        << " THING LIKE ALL OTHER FRAME COUNTERS. FIXME." << endl;
 
-  if (is_active_)
-  {
+  if (is_active_) {
     unsigned int current_time = event_system_.getTicks();
     unsigned int ms_elapsed = current_time - time_at_last_check_;
     unsigned int time_remainder = ms_elapsed % change_interval_;
@@ -229,14 +208,11 @@ int TurnFrameCounter::readFrame()
     // this time.
     time_at_last_check_ = current_time - time_remainder;
 
-    if (value_ >= max_value_)
-    {
+    if (value_ >= max_value_) {
       int difference = int(value_ - max_value_);
       value_ = max_value_ - difference;
       going_forward_ = false;
-    }
-    else if (value_ < min_value_)
-    {
+    } else if (value_ < min_value_) {
       int difference = int(min_value_ - value_);
       value_ = min_value_ + difference;
       going_forward_ = true;
@@ -253,15 +229,12 @@ AcceleratingFrameCounter::AcceleratingFrameCounter(
   EventSystem& es, int frame_min, int frame_max, int milliseconds)
   : FrameCounter(es, frame_min, frame_max, milliseconds),
     start_time_(es.getTicks()),
-    time_at_last_check_(start_time_)
-{}
+    time_at_last_check_(start_time_) {}
 
 // -----------------------------------------------------------------------
 
-int AcceleratingFrameCounter::readFrame()
-{
-  if (is_active_)
-  {
+int AcceleratingFrameCounter::readFrame() {
+  if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
     float cur_time = (event_system_.getTicks() - start_time_) / float(total_time_);
     float interval = (1.1f - cur_time*0.2f) * base_interval;
@@ -279,15 +252,12 @@ DeceleratingFrameCounter::DeceleratingFrameCounter(
   EventSystem& es, int frame_min, int frame_max, int milliseconds)
   : FrameCounter(es, frame_min, frame_max, milliseconds),
     start_time_(es.getTicks()),
-    time_at_last_check_(start_time_)
-{}
+    time_at_last_check_(start_time_) {}
 
 // -----------------------------------------------------------------------
 
-int DeceleratingFrameCounter::readFrame()
-{
-  if (is_active_)
-  {
+int DeceleratingFrameCounter::readFrame() {
+  if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
     float cur_time = (event_system_.getTicks() - start_time_) / float(total_time_);
     float interval = (0.9f + cur_time*0.2f) * base_interval;

@@ -55,12 +55,10 @@ void addSysSaveOpcodes(RLModule& module);
  * we're going to nuke the call stack and system memory in
  * LoadingGame.
  */
-struct Sys_load : public RLOp_Void_1< IntConstant_T >
-{
+struct Sys_load : public RLOp_Void_1< IntConstant_T > {
   bool advanceInstructionPointer() { return false; }
 
-  struct LoadingGame : public LongOperation
-  {
+  struct LoadingGame : public LongOperation {
     int slot_;
     LoadingGame(int slot) : slot_(slot) {}
 

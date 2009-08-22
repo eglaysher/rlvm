@@ -37,8 +37,7 @@
 /**
  * A special RLMachine used in testing, which automatically selects specific
  */
-class ScriptMachine : public RLMachine
-{
+class ScriptMachine : public RLMachine {
 public:
   ScriptMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~ScriptMachine();

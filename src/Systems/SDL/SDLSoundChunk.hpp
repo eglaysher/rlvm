@@ -42,8 +42,7 @@
  * Encapsulates a Mix_Chunk object. We do this so we can refcounting
  * properly.
  */
-class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk>
-{
+class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
 public:
   /// Builds a Mix_Chunk from a file.
   SDLSoundChunk(const boost::filesystem::path& path);
@@ -118,8 +117,7 @@ private:
  * @param in_vol RealLive volume (ranged 0-256)
  * @return SDL_Mixer volume (ranged 0-128)
  */
-inline int realLiveVolumeToSDLMixerVolume(int in_vol)
-{
+inline int realLiveVolumeToSDLMixerVolume(int in_vol) {
   return in_vol / 2;
 }
 

@@ -33,8 +33,7 @@
 // -----------------------------------------------------------------------
 
 LayeredShakingModule::LayeredShakingModule()
-  : RLModule("Shl", 1, 12)
-{
+  : RLModule("Shl", 1, 12) {
   addUnsupportedOpcode(0, 0, "ShakeLayersStop");
   addUnsupportedOpcode(0, 1, "ShakeLayersStop");
   addUnsupportedOpcode(0, 2, "ShakeLayersStop");

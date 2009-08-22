@@ -130,8 +130,7 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
 // -----------------------------------------------------------------------
 
 bool TextWindowButton::handleMouseClick(
-    RLMachine& machine, TextWindow& window, const Point& pos, bool pressed)
-{
+    RLMachine& machine, TextWindow& window, const Point& pos, bool pressed) {
   if (state_ == BUTTONSTATE_DISABLED)
     return false;
 

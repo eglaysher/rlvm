@@ -36,8 +36,7 @@
 class RLMachine;
 class Surface;
 
-class ZoomLongOperation : public LongOperation
-{
+class ZoomLongOperation : public LongOperation {
 private:
   RLMachine& machine_;
 

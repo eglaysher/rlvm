@@ -52,8 +52,7 @@ const int NUM_KOE_CHANNELS = 1;
 
 // -----------------------------------------------------------------------
 
-struct SoundSystemGlobals
-{
+struct SoundSystemGlobals {
   SoundSystemGlobals();
   SoundSystemGlobals(Gameexe& gexe);
 
@@ -117,8 +116,7 @@ struct SoundSystemGlobals
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, const unsigned int version)
-  {
+  void serialize(Archive& ar, const unsigned int version) {
     ar & sound_quality & bgm_enabled & bgm_volume & pcm_enabled &
       pcm_volume & se_enabled & se_volume;
 
@@ -136,8 +134,7 @@ BOOST_CLASS_VERSION(SoundSystemGlobals, 1)
 /**
  *
  */
-class SoundSystem
-{
+class SoundSystem {
 public:
   /**
    * Defines a piece of background music who's backed by a file,
@@ -216,8 +213,7 @@ public:
   /**
    * Sets how much sound hertz.
    */
-  virtual void setSoundQuality(const int quality)
-  { globals_.sound_quality = quality; }
+  virtual void setSoundQuality(const int quality) { globals_.sound_quality = quality; }
 
   int soundQuality() const { return globals_.sound_quality; }
 

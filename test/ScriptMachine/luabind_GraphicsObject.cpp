@@ -45,8 +45,7 @@ Point getClickPointHack(const GraphicsObject& obj) {
   return Point(obj.x() + 5, obj.y() + 5);
 }
 
-scope register_graphics_object()
-{
+scope register_graphics_object() {
   return
     class_<GraphicsObject>("GraphicsObject").
     def("getClickPointHack", &getClickPointHack).

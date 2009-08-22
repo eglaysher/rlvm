@@ -70,50 +70,34 @@
  * API functions
  */
 
-static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *mvofFlags)
-{
+static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *mvofFlags) {
     *cfmFlags   =   0;
     *mvofFlags  =   0;
 
-    if (PROT_NONE == prot)
-    {
+    if (PROT_NONE == prot) {
         *cfmFlags   =   PAGE_NOACCESS;
         *mvofFlags  =   0;
-    }
-    else
-    {
-        if (prot & PROT_WRITE)
-        {
-            if ((flags & MAP_PRIVATE))
-            {
+    } else {
+        if (prot & PROT_WRITE) {
+            if ((flags & MAP_PRIVATE)) {
                 *mvofFlags |= FILE_MAP_COPY;
-            }
-            else
-            {
+            } else {
                 *mvofFlags |= FILE_MAP_WRITE;
             }
-        }
-        else
-        {
+        } else {
             *mvofFlags |= FILE_MAP_READ;
         }
 
-        if (*mvofFlags & FILE_MAP_COPY)
-        {
+        if (*mvofFlags & FILE_MAP_COPY) {
             *cfmFlags = PAGE_WRITECOPY;
-        }
-        else if (*mvofFlags & FILE_MAP_WRITE)
-        {
+        } else if (*mvofFlags & FILE_MAP_WRITE) {
             *cfmFlags = PAGE_READWRITE;
-        }
-        else
-        {
+        } else {
             *cfmFlags = PAGE_READONLY;
         }
     }
 
-    if (flags & MAP_ANONYMOUS)
-    {
+    if (flags & MAP_ANONYMOUS) {
 #if 0
         *cfmFlags |= SEC_RESERVE;
 #endif /* 0 */
@@ -140,82 +124,58 @@ static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *m
  * system paging file.
  */
 
-void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
-{
+void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset) {
     /* Sanity checks first */
     int     errno_      =   0;
 
     if ( NULL == addr && 
-        0 != (flags & MAP_FIXED))
-    {
+        0 != (flags & MAP_FIXED)) {
         errno_ = ENOMEM;
-    }
-    else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
-            INVALID_HANDLE_VALUE != fh)
-    {
+    } else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
+            INVALID_HANDLE_VALUE != fh) {
         errno_ = EINVAL;
-    }
-    else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
+    } else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
             (   0 == len ||
-                0 != offset))
-    {
+                0 != offset)) {
         errno_ = EINVAL;
-    }
-    else
-    {
-        if (MAP_ANONYMOUS != (flags & MAP_ANONYMOUS))
-        {
+    } else {
+        if (MAP_ANONYMOUS != (flags & MAP_ANONYMOUS)) {
             DWORD   fileSize    =   GetFileSize(fh, NULL);
 
             if ( 0xFFFFFFFF == fileSize &&
-                ERROR_SUCCESS != GetLastError())
-            {
+                ERROR_SUCCESS != GetLastError()) {
                 errno_ = EBADF;
             }
         }
     }
 
-    if (0 != errno_)
-    {
+    if (0 != errno_) {
         errno = errno_;
         return MAP_FAILED;
-    }
-    else
-    {
+    } else {
         DWORD   cfmFlags;
         DWORD   mvofFlags;
 
         errno_  =   win32_flags_from_mmap_(prot, flags, &cfmFlags, &mvofFlags);
 
-        if (0 != errno_)
-        {
+        if (0 != errno_) {
             return MAP_FAILED;
-        }
-        else
-        {
+        } else {
             HANDLE  hMap    =   CreateFileMapping(fh, NULL, cfmFlags, 0, len, NULL);
 
-            if (NULL == hMap)
-            {
+            if (NULL == hMap) {
                 DWORD   dwErr   =   GetLastError();
 
-                if (dwErr == ERROR_ACCESS_DENIED)
-                {
+                if (dwErr == ERROR_ACCESS_DENIED) {
                     errno = EACCES;
-                }
-                else if (dwErr == ERROR_INVALID_PARAMETER)
-                {
+                } else if (dwErr == ERROR_INVALID_PARAMETER) {
                     errno = EINVAL;
-                }
-                else if (dwErr == ERROR_FILE_INVALID)
-                {
+                } else if (dwErr == ERROR_FILE_INVALID) {
                     errno = EBADF;
                 }
 
                 return MAP_FAILED;
-            }
-            else
-            {
+            } else {
                 void    *pvMap  =   MapViewOfFileEx(hMap, mvofFlags, 0, offset, len, addr);
 
                 CloseHandle(hMap);
@@ -239,8 +199,7 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
  * \retval -1 if failed
  */
 
-int munmap(void *addr, size_t len)
-{
+int munmap(void *addr, size_t len) {
     ((void)len);
 
     return UnmapViewOfFile(addr) ? 0 : (errno = EINVAL, -1);
@@ -254,8 +213,7 @@ int munmap(void *addr, size_t len)
  * \param flags Ignored
  */
 
-int msync(void *addr, size_t len, int flags)
-{
+int msync(void *addr, size_t len, int flags) {
     ((void)flags);
 
     return FlushViewOfFile(addr, len) ? 0 : (errno = EINVAL, -1);

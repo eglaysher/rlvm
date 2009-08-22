@@ -41,15 +41,13 @@ MappedRLModule::MappedRLModule(
   const MappingFunction& fun, const std::string& in_module_name,
   int in_module_type, int in_module_number)
   : RLModule(in_module_name, in_module_type, in_module_number),
-    map_function_(fun)
-{
+    map_function_(fun) {
 
 }
 
 // -----------------------------------------------------------------------
 
-MappedRLModule::~MappedRLModule()
-{}
+MappedRLModule::~MappedRLModule() {}
 
 // -----------------------------------------------------------------------
 

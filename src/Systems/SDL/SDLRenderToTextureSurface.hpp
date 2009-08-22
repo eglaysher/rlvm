@@ -40,8 +40,7 @@ class Texture;
  * Fake SDLSurface used to
  */
 class SDLRenderToTextureSurface : public SurfaceInvalidatable,
-                                  public Surface
-{
+                                  public Surface {
 public:
   SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLRenderToTextureSurface();

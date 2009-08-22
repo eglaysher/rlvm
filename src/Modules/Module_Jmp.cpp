@@ -84,8 +84,7 @@ namespace {
  * @return Which pointer we should follow.
  * @exception Exception Throws on malformed bytecode
  */
-int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
-{
+int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
   string tmpval = gotoElement.get_param(0);
   const char* location = tmpval.c_str();
 
@@ -96,8 +95,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement)
   // Walk linearly through the output cases, executing the first
   // match against value.
   int cases = gotoElement.case_count();
-  for (int i = 0; i < cases; ++i)
-  {
+  for (int i = 0; i < cases; ++i) {
     string caseUnparsed = gotoElement.get_case(i);
 
     // Check for bytecode wellformedness. All cases should be
@@ -138,15 +136,13 @@ typedef Argc_T< Special_T< IntConstant_T, StrConstant_T> >::type ParamVector;
  * @param machine RLMachine to operate on
  * @param f Parameters to store into call variables
  */
-void storeData(RLMachine& machine, const ParamVector& f)
-{
+void storeData(RLMachine& machine, const ParamVector& f) {
   // First, we copy all the input parameters into
   int intLpos = 0;
   int strKpos = 0;
 
   for (ParamVector::const_iterator it = f.begin(); it != f.end();
-      ++it)
-  {
+      ++it) {
     switch (it->type) {
     case 0:
       machine.setIntValue(IntMemRef(INTL_LOCATION, 0, intLpos), it->first);
@@ -156,8 +152,7 @@ void storeData(RLMachine& machine, const ParamVector& f)
       machine.setStringValue(0x0a, strKpos, it->second);
       strKpos++;
       break;
-    default:
-    {
+    default: {
       ostringstream ss;
       ss << "Unknown type tag " << it->type
          << " during a *_with function call" << endl;
@@ -197,12 +192,10 @@ struct Jmp_goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if (conditions.at(0).integerValue(machine))
-    {
+    if (conditions.at(0).integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
-    }
-    else
+    } else
       machine.advanceInstructionPointer();
   }
 };
@@ -219,12 +212,10 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if (!conditions.at(0).integerValue(machine))
-    {
+    if (!conditions.at(0).integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
-    }
-    else
+    } else
       machine.advanceInstructionPointer();
   }
 };
@@ -309,12 +300,10 @@ struct Jmp_gosub_if : public RLOp_SpecialCase {
     const char* location = tmpval.c_str();
     auto_ptr<ExpressionPiece> condition(get_expression(location));
 
-    if (condition->integerValue(machine))
-    {
+    if (condition->integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
-    }
-    else
+    } else
       machine.advanceInstructionPointer();
   }
 };
@@ -332,12 +321,10 @@ struct Jmp_gosub_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
-    if (!conditions.at(0).integerValue(machine))
-    {
+    if (!conditions.at(0).integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
-    }
-    else
+    } else
       machine.advanceInstructionPointer();
   }
 };
@@ -501,8 +488,7 @@ struct Jmp_gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
 
-    if (!gotoElement.areParametersParsed())
-    {
+    if (!gotoElement.areParametersParsed()) {
       const vector<string>& unparsed = gotoElement.getUnparsedParameters();
       ptr_vector<ExpressionPiece> output;
 
@@ -566,8 +552,7 @@ struct Jmp_ret_with_1 : public RLOp_Void_Void {
  */
 struct Jmp_farcall_with
   : public RLOp_Void_3< IntConstant_T, IntConstant_T,
-                      Argc_T< Special_T< IntConstant_T, StrConstant_T > > >
-{
+                      Argc_T< Special_T< IntConstant_T, StrConstant_T > > > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint,
@@ -620,8 +605,7 @@ struct Jmp_rtl_with_1 : public RLOp_Void_Void {
  * RLModule that contains functions from mod<0:Jmp>.
  */
 JmpModule::JmpModule()
-  : RLModule("Jmp", 0, 1)
-{
+  : RLModule("Jmp", 0, 1) {
   addOpcode(0, 0, "goto", new Jmp_goto);
   addOpcode(1, 0, "goto_if", new Jmp_goto_if);
   addOpcode(2, 0, "goto_unless", new Jmp_goto_unless);

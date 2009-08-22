@@ -39,8 +39,7 @@ namespace fs = boost::filesystem;
 
 #define BUFFER_SIZE 4096
 
-void defineheader_start( std::ostringstream& data, std::string& headername, bool usemacro = true, bool useconst = false )
-{
+void defineheader_start( std::ostringstream& data, std::string& headername, bool usemacro = true, bool useconst = false ) {
 	/* Write info header */
 	data << "/*" << std::endl;
 	data << "	Automatic generated header by:" << std::endl << std::endl;
@@ -58,14 +57,12 @@ void defineheader_start( std::ostringstream& data, std::string& headername, bool
 	data << "#define _WXINCLUDE_" << temp << "_H_" << std::endl << std::endl;
 }
 
-void defineheader_end( std::ostringstream& data, std::string& name )
-{
+void defineheader_end( std::ostringstream& data, std::string& name ) {
 	/* Prevent multiple defines */
 	data << "#endif" << std::endl << std::endl;
 }
 
-void definemacros( std::ostringstream& data, std::string& includename, bool definestream = true )
-{
+void definemacros( std::ostringstream& data, std::string& includename, bool definestream = true ) {
 	/* Include wxWidgets header */
 	data << "#include \"" << includename << "\"" << std::endl;
 
@@ -96,16 +93,12 @@ void definemacros( std::ostringstream& data, std::string& includename, bool defi
 
 static std::vector<std::string> list;
 
-void definefile( std::ostringstream& data, fs::ifstream& input, std::string& name, bool useconst = false )
-{
+void definefile( std::ostringstream& data, fs::ifstream& input, std::string& name, bool useconst = false ) {
 	/* Check if already defined */
 	std::vector<std::string>::iterator search = std::find( list.begin(), list.end(), name );
-	if ( search == list.end() )
-	{
+	if ( search == list.end() ) {
 		list.push_back( name );
-	}
-	else
-	{
+	} else {
 		/* Show warning, object of this name is already processed! */
 		std::cout << "Warning: '" << name << "' already defined, processing of new one stopped." << std::endl;
 		return;
@@ -120,8 +113,7 @@ void definefile( std::ostringstream& data, fs::ifstream& input, std::string& nam
 	int c = 0;
 	int col = 0;
 
-	for ( int i = 1; i <= size; ++i )
-	{
+	for ( int i = 1; i <= size; ++i ) {
 		/* Get character and add to array */
 		c = input.get();
 
@@ -141,21 +133,17 @@ void definefile( std::ostringstream& data, fs::ifstream& input, std::string& nam
 		snprintf( temp, 5, "0x%02X", c );
 		data << temp;
 
-		if ( i >= size )
-		{
+		if ( i >= size ) {
 			/* Last character */
 			data << std::endl;
-		}
-		else
-		{
+		} else {
 			/* Next */
 			data << ", ";
 		}
 
 		/* New colume? */
 		int curcol = ( i / 10 );
-		if ( col < curcol )
-		{
+		if ( col < curcol ) {
 			col = curcol;
 			data << std::endl;
 		}
@@ -164,10 +152,8 @@ void definefile( std::ostringstream& data, fs::ifstream& input, std::string& nam
 	data << "};" << std::endl << std::endl;
 }
 
-int main(int argc, char* argv[])
-{
-    try
-	{
+int main(int argc, char* argv[]) {
+    try {
         po::options_description desc( "Options" );
         desc.add_options()
             ( "help,h", "Show detailed help." )
@@ -197,23 +183,20 @@ int main(int argc, char* argv[])
 //		std::cout << WXINCLUDE_INFO << std::endl;
 
 		/* Show options when requested */
-        if ( opt.count( "options" ) )
-		{
+        if ( opt.count( "options" ) ) {
 			std::cout << desc << std::endl << std::endl;
             exit( 0 );
         }
 
 		/* Show help when requested */
-        if ( opt.count( "help" ) )
-		{
+        if ( opt.count( "help" ) ) {
 			std::cout << WXINCLUDE_HELP;
 			std::cout << std::endl << desc << std::endl << std::endl;
             exit( 0 );
         }
 
 		/* Show version when requested */
-        if ( opt.count( "version" ) )
-		{
+        if ( opt.count( "version" ) ) {
 			std::cout << WXINCLUDE_VERSION << std::endl;
             exit( 0 );
         }
@@ -221,10 +204,8 @@ int main(int argc, char* argv[])
         bool silent = opt.count( "silent" );
 
 		/* Process */
-        if ( opt.count( "input-file" ) || opt.count( "input-type" ) )
-		{
-			if ( opt.count( "output-file" ) )
-			{	
+        if ( opt.count( "input-file" ) || opt.count( "input-type" ) ) {
+			if ( opt.count( "output-file" ) ) {	
 				/* Create timer */
 				boost::timer timer;
 
@@ -269,20 +250,17 @@ int main(int argc, char* argv[])
 				char inbuffer[BUFFER_SIZE];
 
 				/* Process input files based on provided list */
-				if ( opt.count( "input-file" ) )
-				{
+				if ( opt.count( "input-file" ) ) {
 					std::vector<std::string> files( opt[ "input-file" ].as<std::vector<std::string> >() );
 
-					BOOST_FOREACH( std::string& file, files )
-					{
+					BOOST_FOREACH( std::string& file, files ) {
 						fs::path inputpath( file );
 						std::string fileext( fs::extension( inputpath ) );
 
 						fs::ifstream input( inputpath, std::ios::in | std::ios::binary | std::ios::ate );
 						input.rdbuf()->pubsetbuf( inbuffer, BUFFER_SIZE ); 
 
-						if ( input.is_open() )
-						{
+						if ( input.is_open() ) {
 							/* Show status */
                           if (!silent)
 							std::cout << "Process: file '" << file << "'..." << std::endl;
@@ -295,8 +273,7 @@ int main(int argc, char* argv[])
 								boost::to_lower( fileext );
 
 							/* Append type */
-							if ( opt.count( "appendtype" ) )
-							{
+							if ( opt.count( "appendtype" ) ) {
 								boost::erase_first( fileext, "." );
 
 								/* Static and NO copy constructor for speed */
@@ -310,9 +287,7 @@ int main(int argc, char* argv[])
 
 							/* Process file */
 							definefile( data, input, file, opt.count( "const" ) ? true : false );
-						}
-						else
-						{
+						} else {
 							/* Only show warning, other files need to be processed */
 							std::cout << "Warning: input file '" << file << "' failed to open." << std::endl;
 						}
@@ -320,17 +295,13 @@ int main(int argc, char* argv[])
 				}
 
 				/* Process input files based on provided type */
-				if ( opt.count( "input-type" ) )
-				{
+				if ( opt.count( "input-type" ) ) {
 					std::vector<std::string> types( opt[ "input-type" ].as<std::vector<std::string> >() );
 
-					for ( fs::directory_iterator dir_itr( fs::initial_path() ); dir_itr != fs::directory_iterator(); ++dir_itr )
-					{
-						BOOST_FOREACH( std::string& type, types )
-						{
+					for ( fs::directory_iterator dir_itr( fs::initial_path() ); dir_itr != fs::directory_iterator(); ++dir_itr ) {
+						BOOST_FOREACH( std::string& type, types ) {
 							/* Normal file? */
-							if ( fs::is_regular( dir_itr->status() ) )
-							{
+							if ( fs::is_regular( dir_itr->status() ) ) {
 								/* Wanted type? */
 								std::string fileext( fs::extension( dir_itr->path() ));
 
@@ -341,15 +312,13 @@ int main(int argc, char* argv[])
 								else
 									equals = boost::iequals( fileext, type );
 
-								if ( equals )
-								{
+								if ( equals ) {
 									fs::ifstream input( dir_itr->path(), std::ios::in | std::ios::binary | std::ios::ate );
 									input.rdbuf()->pubsetbuf( inbuffer, BUFFER_SIZE ); 
 
 									std::string file( dir_itr->path().leaf() );
 
-									if ( input.is_open() )
-									{
+									if ( input.is_open() ) {
 										/* Show status */
                                       if (!silent)
 										std::cout << "Process: file '" << file << "'..." << std::endl;
@@ -358,8 +327,7 @@ int main(int argc, char* argv[])
 										boost::erase_last( file, fileext );
 
 										/* Append type */
-										if ( opt.count( "appendtype" ) )
-										{
+										if ( opt.count( "appendtype" ) ) {
 											boost::erase_first( fileext, "." );
 
 											/* Static and NO copy constructor for speed */
@@ -373,9 +341,7 @@ int main(int argc, char* argv[])
 
 										/* Process file */
 										definefile( data, input, file, opt.count( "const" ) ? true : false );
-									}
-									else
-									{
+									} else {
 										/* Only show warning, other files need to be processed */
 										std::cout << "Warning: input file '" << file << "' failed to open." << std::endl;
 									}
@@ -396,23 +362,17 @@ int main(int argc, char* argv[])
 				/* Show status */
                 if (!silent)
                   std::cout << "Build  : " << timer.elapsed() << "s needed for conversion of " << list.size() << " files." << std::endl;
-			}
-			else
-			{
+			} else {
 				throw std::invalid_argument( "No output defined!" );
 			}
-		}
-		else
-		{
+		} else {
 			throw std::invalid_argument( "No input defined!" );
 		}
     }
-	catch( std::exception& e )
-	{
+	catch( std::exception& e ) {
 		std::cerr << "Error: " << e.what() << std::endl;
     }
-    catch( ... )
-	{
+    catch( ... ) {
 		std::cerr << "Error: Exception of unknown type!" << std::endl;
     }
 

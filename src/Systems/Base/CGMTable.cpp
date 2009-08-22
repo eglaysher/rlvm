@@ -107,8 +107,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   fs::path basename = gameexe("__GAMEPATH").to_string();
   fs::path filename = correctPathCase(basename / "dat" / cgtable);
   fs::ifstream file(filename, ifstream::in | ifstream::binary);
-  if (!file)
-  {
+  if (!file) {
     ostringstream oss;
     oss << "Could not open file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());

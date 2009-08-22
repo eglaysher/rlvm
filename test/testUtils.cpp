@@ -44,11 +44,9 @@ namespace fs = boost::filesystem;
 const std::vector<std::string> testPaths =
     list_of("./")("./test/")("./build/test/");
 
-string locateTestCase(const string& baseName)
-{
+string locateTestCase(const string& baseName) {
   for(vector<string>::const_iterator it = testPaths.begin();
-      it != testPaths.end(); ++it)
-  {
+      it != testPaths.end(); ++it) {
     string testName = *it + baseName;
     if(fs::exists(testName))
       return testName;

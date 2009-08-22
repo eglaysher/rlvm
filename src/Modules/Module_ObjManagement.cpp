@@ -50,8 +50,7 @@
 
 // -----------------------------------------------------------------------
 
-struct Obj_objCopyFgToBg : public RLOp_Void_1<IntConstant_T>
-{
+struct Obj_objCopyFgToBg : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsSystem& sys = machine.system().graphics();
     GraphicsObject& go = sys.getObject(OBJ_FG, buf);
@@ -132,8 +131,7 @@ struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
-{
+struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   int val_;
   Obj_setWipeCopyTo_1(int value) : val_(value) {}
 
@@ -148,8 +146,7 @@ struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T >
 // -----------------------------------------------------------------------
 
 ObjCopyFgToBg::ObjCopyFgToBg()
-  : RLModule("ObjCopyFgToBg", 1, 60)
-{
+  : RLModule("ObjCopyFgToBg", 1, 60) {
   // This may be wrong; the function is undocumented, but this appears
   // to fix the display problem in Kanon OP.
   addOpcode(2, 0, "objCopyFgToBg", new Obj_objCopyFgToBg);
@@ -172,8 +169,7 @@ void addObjManagementFunctions(RLModule& m) {
 // -----------------------------------------------------------------------
 
 ObjFgManagement::ObjFgManagement()
-  : RLModule("ObjFgManagement", 1, 61)
-{
+  : RLModule("ObjFgManagement", 1, 61) {
   addOpcode(2, 0, "objCopy", new Obj_objCopy(OBJ_FG, OBJ_FG));
   addOpcode(3, 0, "objCopyToBg", new Obj_objCopy(OBJ_FG, OBJ_BG));
 
@@ -184,8 +180,7 @@ ObjFgManagement::ObjFgManagement()
 // -----------------------------------------------------------------------
 
 ObjBgManagement::ObjBgManagement()
-  : RLModule("ObjBgManagement", 1, 62)
-{
+  : RLModule("ObjBgManagement", 1, 62) {
   addOpcode(2, 0, "objBgCopyToFg", new Obj_objCopy(OBJ_BG, OBJ_FG));
   addOpcode(3, 0, "objBgCopy", new Obj_objCopy(OBJ_BG, OBJ_BG));
 

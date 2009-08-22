@@ -64,8 +64,7 @@ bool SDLMusic::s_bgm_enabled = true;
 // -----------------------------------------------------------------------
 
 SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
-  : file_(wav), track_(track), fadetime_total_(0), music_paused_(false)
-{
+  : file_(wav), track_(track), fadetime_total_(0), music_paused_(false) {
   // Advance the audio stream to the starting point
   if (track.from > 0)
     wav->Seek(track.from);
@@ -73,9 +72,7 @@ SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
 
 // -----------------------------------------------------------------------
 
-SDLMusic::~SDLMusic()
-{
-  {
+SDLMusic::~SDLMusic() { {
     SDLAudioLocker locker;
     delete file_;
 
@@ -86,25 +83,21 @@ SDLMusic::~SDLMusic()
 
 // -----------------------------------------------------------------------
 
-bool SDLMusic::isLooping() const
-{
+bool SDLMusic::isLooping() const {
   SDLAudioLocker locker;
   return loop_point_ != STOP_AT_END;
 }
 
 // -----------------------------------------------------------------------
 
-bool SDLMusic::isFading() const
-{
+bool SDLMusic::isFading() const {
   SDLAudioLocker locker;
   return fadetime_total_ > 0;
 }
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::play(bool loop)
-{
-  {
+void SDLMusic::play(bool loop) { {
     SDLAudioLocker locker;
     setLoopPoint(loop);
     s_currently_playing = shared_from_this();
@@ -113,9 +106,7 @@ void SDLMusic::play(bool loop)
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::stop()
-{
-  {
+void SDLMusic::stop() { {
     SDLAudioLocker locker;
     if (s_currently_playing.get() == this)
       s_currently_playing.reset();
@@ -124,8 +115,7 @@ void SDLMusic::stop()
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::fadeIn(bool loop, int fade_in_ms)
-{
+void SDLMusic::fadeIn(bool loop, int fade_in_ms) {
   // Set up, then just play normally.
   cerr << "Doesn't deal with fade_in properly yet..." << endl;
 
@@ -134,8 +124,7 @@ void SDLMusic::fadeIn(bool loop, int fade_in_ms)
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::fadeOut(int fade_out_ms)
-{
+void SDLMusic::fadeOut(int fade_out_ms) {
   SDLAudioLocker locker;
   fade_count_ = 0;
   if (fade_out_ms <= 0)
@@ -145,32 +134,28 @@ void SDLMusic::fadeOut(int fade_out_ms)
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::pause()
-{
+void SDLMusic::pause() {
   SDLAudioLocker locker;
   music_paused_ = true;
 }
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::unpause()
-{
+void SDLMusic::unpause() {
   SDLAudioLocker locker;
   music_paused_ = false;
 }
 
 // -----------------------------------------------------------------------
 
-std::string SDLMusic::name() const
-{
+std::string SDLMusic::name() const {
   SDLAudioLocker locker;
   return track_.name;
 }
 
 // -----------------------------------------------------------------------
 
-int SDLMusic::bgmStatus() const
-{
+int SDLMusic::bgmStatus() const {
   SDLAudioLocker locker;
 
   if (music_paused_)
@@ -184,8 +169,7 @@ int SDLMusic::bgmStatus() const
 // -----------------------------------------------------------------------
 
 // static
-void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
-{
+void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
   // Inside an SDL_LockAudio() section set up by SDL_Mixer! Don't lock here!
   SDLMusic* music = s_currently_playing.get();
 
@@ -230,16 +214,14 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len)
 // -----------------------------------------------------------------------
 
 template<typename TYPE>
-WAVFILE* buildMusicImplementation(FILE* file, int size)
-{
+WAVFILE* buildMusicImplementation(FILE* file, int size) {
   return WAVFILE::MakeConverter(new TYPE(file, size));
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
-  System& system, const SoundSystem::DSTrack& track)
-{
+  System& system, const SoundSystem::DSTrack& track) {
   typedef vector<pair<string, function<WAVFILE*(FILE*, int)> > > FileTypes;
   static FileTypes types =
     map_list_of
@@ -250,13 +232,10 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 
   fs::path file_path = findFile(system, track.file, SOUND_FILETYPES);
   const string& raw_path = file_path.external_file_string();
-  for (FileTypes::const_iterator it = types.begin(); it != types.end(); ++it)
-  {
-    if (iends_with(raw_path, it->first))
-    {
+  for (FileTypes::const_iterator it = types.begin(); it != types.end(); ++it) {
+    if (iends_with(raw_path, it->first)) {
       FILE* f = fopen(raw_path.c_str(), "r");
-      if (f == 0)
-      {
+      if (f == 0) {
         ostringstream oss;
         oss << "Could not open \"" << file_path << "\" for reading.";
         throw std::runtime_error(oss.str());
@@ -280,8 +259,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 // -----------------------------------------------------------------------
 // SDLMusic (private)
 // -----------------------------------------------------------------------
-void SDLMusic::setLoopPoint(bool loop)
-{
+void SDLMusic::setLoopPoint(bool loop) {
   SDLAudioLocker locker;
 
   if (loop)

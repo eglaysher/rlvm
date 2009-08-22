@@ -41,8 +41,7 @@ class TextWindow;
 /**
  * Represents a key cursor.
  */
-class TextKeyCursor
-{
+class TextKeyCursor {
 public:
   /**
    * Creates a Key Cursor object based off of the properties in

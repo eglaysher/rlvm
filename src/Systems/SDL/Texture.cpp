@@ -67,8 +67,7 @@ boost::scoped_array<char> Texture::s_upload_buffer;
 
 // -----------------------------------------------------------------------
 
-void Texture::SetScreenSize(const Size& s)
-{
+void Texture::SetScreenSize(const Size& s) {
   s_screen_width = s.width();
   s_screen_height = s.height();
 }
@@ -85,8 +84,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     texture_width_(SafeSize(logical_width_)),
     texture_height_(SafeSize(logical_height_)),
     back_texture_id_(0),  shader_object_id_(0), program_object_id_(0),
-    is_upside_down_(false)
-{
+    is_upside_down_(false) {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
   ShowGLErrors();
@@ -95,8 +93,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  if (w == total_width_ && h == total_height_)
-  {
+  if (w == total_width_ && h == total_height_) {
     SDL_LockSurface(surface);
     glTexImage2D(GL_TEXTURE_2D, 0, bytes_per_pixel,
                  texture_width_, texture_height_,
@@ -109,22 +106,18 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     ShowGLErrors();
 
     SDL_UnlockSurface(surface);
-  }
-  else
-  {
+  } else {
     // Cut out the current piece
     char* pixel_data = uploadBuffer(surface->format->BytesPerPixel * w * h);
     char* cur_dst_ptr = pixel_data;
 
-    SDL_LockSurface(surface);
-    {
+    SDL_LockSurface(surface); {
       char* cur_src_ptr = (char*) surface->pixels;
       cur_src_ptr += surface->pitch * y;
 
       int row_start = surface->format->BytesPerPixel * x;
       int subrow_size = surface->format->BytesPerPixel * w;
-      for (int current_row = 0; current_row < h; ++current_row)
-      {
+      for (int current_row = 0; current_row < h; ++current_row) {
         memcpy(cur_dst_ptr, cur_src_ptr + row_start, subrow_size);
         cur_dst_ptr += subrow_size;
         cur_src_ptr += surface->pitch;
@@ -152,8 +145,7 @@ Texture::Texture(render_to_texture, int width, int height)
     total_width_(width), total_height_(height),
     texture_width_(0), texture_height_(0), texture_id_(0),
     back_texture_id_(0), shader_object_id_(0), program_object_id_(0),
-    is_upside_down_(true)
-{
+    is_upside_down_(true) {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
   ShowGLErrors();
@@ -178,8 +170,7 @@ Texture::Texture(render_to_texture, int width, int height)
 
 // -----------------------------------------------------------------------
 
-Texture::~Texture()
-{
+Texture::~Texture() {
   glDeleteTextures(1, &texture_id_);
 
   if (back_texture_id_)
@@ -195,8 +186,7 @@ Texture::~Texture()
 
 // -----------------------------------------------------------------------
 
-char* Texture::uploadBuffer(unsigned int size)
-{
+char* Texture::uploadBuffer(unsigned int size) {
   if (!s_upload_buffer || size > s_upload_buffer_size) {
     s_upload_buffer.reset(new char[size]);
     s_upload_buffer_size = size;
@@ -208,12 +198,10 @@ char* Texture::uploadBuffer(unsigned int size)
 // -----------------------------------------------------------------------
 
 void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
-                       unsigned int bytes_per_pixel, int byte_order, int byte_type)
-{
+                       unsigned int bytes_per_pixel, int byte_order, int byte_type) {
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
-  if (w == total_width_ && h == total_height_)
-  {
+  if (w == total_width_ && h == total_height_) {
     SDL_LockSurface(surface);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
@@ -221,22 +209,18 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
     ShowGLErrors();
 
     SDL_UnlockSurface(surface);
-  }
-  else
-  {
+  } else {
     // Cut out the current piece
     char* pixel_data = uploadBuffer(surface->format->BytesPerPixel * w * h);
     char* cur_dst_ptr = pixel_data;
 
-    SDL_LockSurface(surface);
-    {
+    SDL_LockSurface(surface); {
       char* cur_src_ptr = (char*) surface->pixels;
       cur_src_ptr += surface->pitch * y;
 
       int row_start = surface->format->BytesPerPixel * x;
       int subrow_size = surface->format->BytesPerPixel * w;
-      for (int current_row = 0; current_row < h; ++current_row)
-      {
+      for (int current_row = 0; current_row < h; ++current_row) {
         memcpy(cur_dst_ptr, cur_src_ptr + row_start, subrow_size);
         cur_dst_ptr += subrow_size;
         cur_src_ptr += surface->pitch;
@@ -252,19 +236,16 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
 
 // -----------------------------------------------------------------------
 
-std::string readTextFile(const std::string& file)
-{
+std::string readTextFile(const std::string& file) {
   ifstream ifs(file.c_str());
-  if (!ifs)
-  {
+  if (!ifs) {
     ostringstream oss;
     oss << "Can't open text file: " << file;
     throw SystemError(oss.str());
   }
 
   string out, line;
-  while (getline(ifs, line))
-  {
+  while (getline(ifs, line)) {
     out += line;
     out += '\n';
   }
@@ -274,21 +255,18 @@ std::string readTextFile(const std::string& file)
 
 // -----------------------------------------------------------------------
 
-void printARBLog(GLhandleARB obj)
-{
+void printARBLog(GLhandleARB obj) {
   char str[256];
   GLsizei size = 0;
   glGetInfoLogARB(obj, 256, &size, str);
-  if (size != 0)
-  {
+  if (size != 0) {
     cerr << "Log: " << str << endl;
   }
 }
 
 // -----------------------------------------------------------------------
 
-string Texture::getSubtractiveShaderString()
-{
+string Texture::getSubtractiveShaderString() {
   string x =
     "uniform sampler2D current_values, mask;"
     ""
@@ -305,8 +283,7 @@ string Texture::getSubtractiveShaderString()
 
 // -----------------------------------------------------------------------
 
-void Texture::buildShader()
-{
+void Texture::buildShader() {
   shader_object_id_ = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
   ShowGLErrors();
 
@@ -335,8 +312,7 @@ void Texture::buildShader()
 // -----------------------------------------------------------------------
 
 // This is really broken and brain dead.
-void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
-{
+void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
@@ -349,8 +325,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if (is_upside_down_)
-  {
+  if (is_upside_down_) {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
   }
@@ -358,8 +333,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glBegin(GL_QUADS);
-  {
+  glBegin(GL_QUADS); {
     glColor4ub(255, 255, 255, opacity);
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
@@ -383,22 +357,15 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity)
  *       cstrs over to the new exception class.
  */
 void Texture::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
-{
-  if (filter == 0)
-  {
-    if (GLEW_ARB_fragment_shader && GLEW_ARB_multitexture)
-    {
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) {
+  if (filter == 0) {
+    if (GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
       render_to_screen_as_colour_mask_subtractive_glsl(src, dst, rgba);
-    }
-    else
-    {
+    } else {
       render_to_screen_as_colour_mask_subtractive_fallback(
         src, dst, rgba);
     }
-  }
-  else
-  {
+  } else {
     render_to_screen_as_colour_mask_additive(
       src, dst, rgba);
   }
@@ -407,8 +374,7 @@ void Texture::renderToScreenAsColorMask(
 // -----------------------------------------------------------------------
 
 void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba)
-{
+  const Rect& src, const Rect& dst, const RGBAColour& rgba) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
@@ -422,8 +388,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if (is_upside_down_)
-  {
+  if (is_upside_down_) {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
   }
@@ -433,8 +398,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   //
   // NOTE: Does this code deal with changing the dimensions of the
   // text box? Does it matter?
-  if (back_texture_id_ == 0)
-  {
+  if (back_texture_id_ == 0) {
     glGenTextures(1, &back_texture_id_);
     glBindTexture(GL_TEXTURE_2D, back_texture_id_);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -483,8 +447,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
 
   glDisable(GL_BLEND);
 
-  glBegin(GL_QUADS);
-  {
+  glBegin(GL_QUADS); {
     glColorRGBA(rgba);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx1, thisy2);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx1, thisy1);
@@ -521,8 +484,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
  * graphics cards > 5 years old.
  */
 void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba)
-{
+  const Rect& src, const Rect& dst, const RGBAColour& rgba) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
@@ -533,8 +495,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if (is_upside_down_)
-  {
+  if (is_upside_down_) {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
   }
@@ -548,8 +509,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
 //                      GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
   glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA);
 
-  glBegin(GL_QUADS);
-  {
+  glBegin(GL_QUADS); {
     glColorRGBA(rgba);
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
@@ -568,8 +528,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
 // -----------------------------------------------------------------------
 
 void Texture::render_to_screen_as_colour_mask_additive(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba)
-{
+  const Rect& src, const Rect& dst, const RGBAColour& rgba) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
@@ -580,8 +539,7 @@ void Texture::render_to_screen_as_colour_mask_additive(
   float thisx2 = float(x2) / texture_width_;
   float thisy2 = float(y2) / texture_height_;
 
-  if (is_upside_down_)
-  {
+  if (is_upside_down_) {
     thisy1 = float(logical_height_ - y1) / texture_height_;
     thisy2 = float(logical_height_ - y2) / texture_height_;
   }
@@ -590,8 +548,7 @@ void Texture::render_to_screen_as_colour_mask_additive(
   glBindTexture(GL_TEXTURE_2D, texture_id_);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glBegin(GL_QUADS);
-  {
+  glBegin(GL_QUADS); {
     glColorRGBA(rgba);
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
@@ -610,8 +567,7 @@ void Texture::render_to_screen_as_colour_mask_additive(
 // -----------------------------------------------------------------------
 
 void Texture::renderToScreen(const Rect& src, const Rect& dst,
-                             const int opacity[4])
-{
+                             const int opacity[4]) {
   // For the time being, we are dumb and assume that it's one texture
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
@@ -630,8 +586,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
      != opacity + 4)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glBegin(GL_QUADS);
-  {
+  glBegin(GL_QUADS); {
     glColor4ub(255, 255, 255, opacity[0]);
     glTexCoord2f(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
@@ -656,8 +611,7 @@ void Texture::renderToScreenAsObject(
   SDLSurface& surface,
   const Rect& srcRect,
   const Rect& dstRect,
-  int alpha)
-{
+  int alpha) {
   // This all needs to be pushed up out of the rendering code and down into
   // either GraphicsObject or the individual GraphicsObjectData subclasses.
 
@@ -715,8 +669,7 @@ void Texture::renderToScreenAsObject(
 
   // Make this so that when we have composite 1, we're doing a pure
   // additive blend, (ignoring the alpha channel?)
-  switch (go.compositeMode())
-  {
+  switch (go.compositeMode()) {
   case 0:
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     break;
@@ -731,24 +684,21 @@ void Texture::renderToScreenAsObject(
     }
     break;
   }
-  default:
-  {
+  default: {
     ostringstream oss;
     oss << "Invalid composite_mode in render: " << go.compositeMode();
     throw SystemError(oss.str());
   }
   }
 
-  glPushMatrix();
-  {
+  glPushMatrix(); {
     // Move the "origin" to the correct position.
     glTranslatef(go.xOrigin(), go.yOrigin(), 0);
 
     // Rotate here?
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
 
-    glBegin(GL_QUADS);
-    {
+    glBegin(GL_QUADS); {
       glColorRGBA(RGBAColour(go.tint(), alpha));
       glTexCoord2f(thisx1, thisy1);
       glVertex2f(fdx1, fdy1);
@@ -772,16 +722,14 @@ void Texture::renderToScreenAsObject(
 
 void Texture::rawRenderQuad(const int src_coords[8],
                             const int dest_coords[8],
-                            const int opacity[4])
-{
+                            const int opacity[4]) {
   /// @bug FIXME!
 //  if (!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
 //    return;
 
   // For the time being, we are dumb and assume that it's one texture
   float texture_coords[8];
-  for (int i = 0; i < 8; i += 2)
-  {
+  for (int i = 0; i < 8; i += 2) {
     texture_coords[i] = float(src_coords[i]) / texture_width_;
     texture_coords[i + 1] = float(src_coords[i + 1]) / texture_height_;
   }
@@ -793,10 +741,8 @@ void Texture::rawRenderQuad(const int src_coords[8],
      != opacity + 4)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glBegin(GL_QUADS);
-  {
-    for (int i = 0; i < 4; i++)
-    {
+  glBegin(GL_QUADS); {
+    for (int i = 0; i < 4; i++) {
       glColor4ub(255, 255, 255, opacity[i]);
 
       int first_index = i * 2;
@@ -812,8 +758,7 @@ void Texture::rawRenderQuad(const int src_coords[8],
 // -----------------------------------------------------------------------
 
 bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
-                           float& dx1, float& dy1, float& dx2, float& dy2)
-{
+                           float& dx1, float& dy1, float& dx2, float& dy2) {
   // POINT
   using std::max;
   using std::min;
@@ -829,8 +774,7 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
   //
   /// @bug s/>/>=/?
   if (x1 + w1 > x_offset_ && x1 < x_offset_ + logical_width_ &&
-      y1 + h1 > y_offset_ && y1 < y_offset_ + logical_height_)
-  {
+      y1 + h1 > y_offset_ && y1 < y_offset_ + logical_height_) {
     // Do an intersection test in terms of the virtual coordinates
     int virX = max(x1, x_offset_);
     int virY = max(y1, y_offset_);

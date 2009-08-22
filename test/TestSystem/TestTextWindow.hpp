@@ -27,8 +27,7 @@
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/TextWindow.hpp"
 
-class TestTextWindow : public TextWindow
-{
+class TestTextWindow : public TextWindow {
 public:
   TestTextWindow(System& system, int x);
   ~TestTextWindow();

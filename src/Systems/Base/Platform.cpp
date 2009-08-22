@@ -88,8 +88,7 @@ Platform::~Platform() { }
 
 // -----------------------------------------------------------------------
 
-std::string Platform::syscomString(const std::string& key) const
-{
+std::string Platform::syscomString(const std::string& key) const {
   std::map<std::string, std::string>::const_iterator it =
     utf8_syscom_strings_.find(key);
   if (it != utf8_syscom_strings_.end())
@@ -101,8 +100,7 @@ std::string Platform::syscomString(const std::string& key) const
 // -----------------------------------------------------------------------
 
 void Platform::addSyscomStringFor(const std::string& key,
-                                  const std::string& value)
-{
+                                  const std::string& value) {
   std::string::size_type front = value.find('"');
   std::string::size_type back = value.rfind('"');
   std::string unquoted = string(value, front + 1, back);

@@ -55,8 +55,7 @@ struct Complex2_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
-  {
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
     output.push_back(ep.release());
@@ -86,8 +85,7 @@ struct Complex3_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position)
-  {
+                      unsigned int& position) {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
@@ -99,8 +97,7 @@ struct Complex3_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
-  {
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
     output.push_back(ep.release());
@@ -130,8 +127,7 @@ struct Complex4_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position)
-  {
+                      unsigned int& position) {
     unsigned int pos_in_expression = 0;
 
     const libReallive::ComplexExpressionPiece& sp =
@@ -145,8 +141,7 @@ struct Complex4_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
-  {
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
     output.push_back(ep.release());
@@ -180,8 +175,7 @@ struct Complex7_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position)
-  {
+                      unsigned int& position) {
     unsigned int pos_in_expression = 0;
 
     const libReallive::ComplexExpressionPiece& sp =
@@ -198,8 +192,7 @@ struct Complex7_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
-  {
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
     output.push_back(ep.release());
@@ -232,8 +225,7 @@ struct Complex8_T {
   /// Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position)
-  {
+                      unsigned int& position) {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
@@ -250,8 +242,7 @@ struct Complex8_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output)
-  {
+                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
     output.push_back(ep.release());

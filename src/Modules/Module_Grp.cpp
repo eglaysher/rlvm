@@ -300,8 +300,7 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 template<typename SPACE>
 struct Grp_load_3 : public RLOp_Void_5<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
-  DefaultIntValue_T<255> >
-{
+  DefaultIntValue_T<255> > {
   bool use_alpha_;
   Grp_load_3(bool in) : use_alpha_(in) {}
 
@@ -335,10 +334,8 @@ struct Grp_load_3 : public RLOp_Void_5<
 // -----------------------------------------------------------------------
 
 struct Grp_display_1
-  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T >
-{
-  void operator()(RLMachine& machine, int dc, int effectNum, int opacity)
-  {
+  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+  void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
     Rect src;
     Point dest;
     getSELPointAndRect(machine, effectNum, src, dest);
@@ -438,8 +435,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
   Grp_open_1(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
-                  int opacity)
-  {
+                  int opacity) {
     Rect src;
     Point dest;
     getSELPointAndRect(machine, effectNum, src, dest);
@@ -495,14 +491,12 @@ struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
 
 template<typename SPACE>
 struct Grp_open_3 : public RLOp_Void_5<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T>
-{
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T> {
   bool use_alpha_;
   Grp_open_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
-                  Rect srcRect, Point dest, int opacity)
-  {
+                  Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     if (filename == "???")
       filename = graphics.defaultGrpName();
@@ -546,14 +540,12 @@ struct Grp_open_3 : public RLOp_Void_5<
  */
 template<typename SPACE>
 struct Grp_open_2 : public RLOp_Void_4<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T>
-{
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   Grp_open_3<SPACE> delegate_;
   Grp_open_2(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
-                  Rect src, Point dest)
-  {
+                  Rect src, Point dest) {
     int opacity = getSELEffect(machine, effectNum).at(14);
     delegate_(machine, filename, effectNum, src, dest, opacity);
   }
@@ -570,16 +562,14 @@ struct Grp_open_4 : public RLOp_Void_13<
   StrConstant_T, Rect_T<SPACE>,
   Point_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T>
-{
+  IntConstant_T, IntConstant_T> {
   bool use_alpha_;
   Grp_open_4(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName,
                   Rect srcRect, Point dest,
                   int time, int style, int direction, int interpolation,
-                  int xsize, int ysize, int a, int b, int opacity, int c)
-  {
+                  int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     // Set the long operation for the correct transition long operation
@@ -618,10 +608,8 @@ struct Grp_open_4 : public RLOp_Void_13<
 // -----------------------------------------------------------------------
 
 struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
-                                          IntConstant_T >
-{
-  void operator()(RLMachine& machine, string fileName, int effectNum, int opacity)
-  {
+                                          IntConstant_T > {
+  void operator()(RLMachine& machine, string fileName, int effectNum, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     Rect srcRect;
     Point destPoint;
@@ -669,14 +657,12 @@ struct Grp_openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
 
 template<typename SPACE>
 struct Grp_openBg_3 : public RLOp_Void_5<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T>
-{
+  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T> {
   bool use_alpha_;
   Grp_openBg_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName, int effectNum,
-                  Rect srcRect, Point destPt, int opacity)
-  {
+                  Rect srcRect, Point destPt, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
@@ -711,8 +697,7 @@ struct Grp_openBg_3 : public RLOp_Void_5<
 
 template<typename SPACE>
 struct Grp_openBg_2
-    : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T>
-{
+    : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   Grp_openBg_3<SPACE> delegate_;
   Grp_openBg_2(bool in) : delegate_(in) {}
 
@@ -730,16 +715,14 @@ struct Grp_openBg_4 : public RLOp_Void_13<
   StrConstant_T, Rect_T<SPACE>, Point_T,
   IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T>
-{
+  IntConstant_T, IntConstant_T> {
   bool use_alpha_;
   Grp_openBg_4(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName,
                   Rect srcRect, Point destPt,
                   int time, int style, int direction, int interpolation,
-                  int xsize, int ysize, int a, int b, int opacity, int c)
-  {
+                  int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
@@ -776,8 +759,7 @@ struct Grp_openBg_4 : public RLOp_Void_13<
 // -----------------------------------------------------------------------
 template<typename SPACE>
 struct Grp_copy_3 : public RLOp_Void_5<
-  Rect_T<SPACE>, IntConstant_T, Point_T, IntConstant_T, DefaultIntValue_T<255> >
-{
+  Rect_T<SPACE>, IntConstant_T, Point_T, IntConstant_T, DefaultIntValue_T<255> > {
   bool use_alpha_;
   Grp_copy_3(bool in) : use_alpha_(in) {}
 
@@ -812,8 +794,7 @@ struct Grp_copy_3 : public RLOp_Void_5<
 // -----------------------------------------------------------------------
 
 struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
-                                       DefaultIntValue_T<255> >
-{
+                                       DefaultIntValue_T<255> > {
   bool use_alpha_;
   Grp_copy_1(bool in) : use_alpha_(in) {}
 
@@ -860,8 +841,7 @@ template<typename SPACE>
 struct Grp_fill_3 : public RLOp_Void_6<
   Rect_T<SPACE>,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> >
-{
+  DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, Rect destRect,
                   int dc, int r, int g, int b, int alpha) {
     machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha), destRect);
@@ -875,15 +855,13 @@ struct Grp_fill_3 : public RLOp_Void_6<
 template<typename SPACE>
 struct Grp_fade_7 : public RLOp_Void_5<
   Rect_T<SPACE>, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<0> >
-{
+  DefaultIntValue_T<0> > {
   void operator()(RLMachine& machine, Rect rect,
                   int r, int g, int b, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
     if (time == 0) {
       graphics.getDC(0)->fill(RGBAColour(r, g, b), rect);
-    }
-    else {
+    } else {
       // FIXME: this needs checking for sanity of implementation, lack
       // of memory leaks, correct functioning in the presence of
       // objects, etc.
@@ -901,8 +879,7 @@ struct Grp_fade_7 : public RLOp_Void_5<
 
 template<typename SPACE>
 struct Grp_fade_5 : public RLOp_Void_3<
-  Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0> >
-{
+  Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0> > {
   Grp_fade_7<SPACE> delegate_;
 
   void operator()(RLMachine& machine, Rect rect, int colour_num, int time) {
@@ -913,8 +890,7 @@ struct Grp_fade_5 : public RLOp_Void_3<
 };
 
 struct Grp_fade_3 : public RLOp_Void_4<
-  IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> >
-{
+  IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> > {
   Grp_fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int r, int g, int b, int time) {
@@ -924,8 +900,7 @@ struct Grp_fade_3 : public RLOp_Void_4<
 };
 
 struct Grp_fade_1 : public RLOp_Void_2<
-  IntConstant_T, DefaultIntValue_T<0> >
-{
+  IntConstant_T, DefaultIntValue_T<0> > {
   Grp_fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int colour_num, int time) {
@@ -944,8 +919,7 @@ template<typename SPACE>
 struct Grp_stretchBlit_1
     : public RLOp_Void_5<Rect_T<SPACE>, IntConstant_T,
                          Rect_T<SPACE>, IntConstant_T,
-                         DefaultIntValue_T<255> >
-{
+                         DefaultIntValue_T<255> > {
   bool use_alpha_;
   Grp_stretchBlit_1(bool in) : use_alpha_(in) {}
 
@@ -972,8 +946,7 @@ struct Grp_stretchBlit_1
 
 template<typename SPACE>
 struct Grp_zoom : public RLOp_Void_5<
-  Rect_T<SPACE>, Rect_T<SPACE>, IntConstant_T, Rect_T<SPACE>, IntConstant_T>
-{
+  Rect_T<SPACE>, Rect_T<SPACE>, IntConstant_T, Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect frect, Rect trect, int srcDC,
                   Rect drect, int time) {
     GraphicsSystem& gs = machine.system().graphics();

@@ -36,8 +36,7 @@ class Gameexe;
 /**
  * Test sound system
  */
-class TestSoundSystem : public SoundSystem
-{
+class TestSoundSystem : public SoundSystem {
 public:
   TestSoundSystem(System& system);
   ~TestSoundSystem();

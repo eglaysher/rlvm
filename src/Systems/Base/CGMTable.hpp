@@ -43,8 +43,7 @@ class RLMachine;
  * CGMTable class is responsible for loading the cgm data and providing an
  * interface to querrying whether a CG was viewed.
  */
-class CGMTable
-{
+class CGMTable {
 public:
   /**
    * Initializes an empty CG table (for games that don't use this feature).

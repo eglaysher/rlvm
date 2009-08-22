@@ -53,8 +53,7 @@ using boost::ptr_vector;
 
 // -----------------------------------------------------------------------
 
-SDL_Surface* buildNewSurface(const Size& size)
-{
+SDL_Surface* buildNewSurface(const Size& size) {
   // Create an empty surface
   Uint32 rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -74,8 +73,7 @@ SDL_Surface* buildNewSurface(const Size& size)
       SDL_HWSURFACE | SDL_SRCALPHA, size.width(), size.height(),
       32, rmask, gmask, bmask, amask);
 
-  if (tmp == NULL)
-  {
+  if (tmp == NULL) {
     ostringstream ss;
     ss << "Couldn't allocate surface in build_new_surface"
        << ": " << SDL_GetError();
@@ -98,13 +96,11 @@ SDLSurface::TextureRecord::TextureRecord(
   : texture(new Texture(surface, x, y, w, h, bytes_per_pixel, byte_order,
                         byte_type)),
     x_(x), y_(y), w_(w), h_(h), bytes_per_pixel_(bytes_per_pixel),
-    byte_order_(byte_order), byte_type_(byte_type)
-{}
+    byte_order_(byte_order), byte_type_(byte_type) {}
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::TextureRecord::reupload(SDL_Surface* surface)
-{
+void SDLSurface::TextureRecord::reupload(SDL_Surface* surface) {
   if (texture) {
     texture->reupload(surface, x_, y_, w_, h_, bytes_per_pixel_, byte_order_,
                       byte_type_);
@@ -126,8 +122,7 @@ void SDLSurface::TextureRecord::forceUnload() {
 
 SDLSurface::SDLSurface(SDLGraphicsSystem* system)
     : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
-      graphics_system_(system), is_mask_(false)
-{
+      graphics_system_(system), is_mask_(false) {
   registerWithGraphicsSystem();
 }
 
@@ -135,8 +130,7 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system)
 
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
   : surface_(surf), texture_is_valid_(false), is_dc0_(false),
-    graphics_system_(system), is_mask_(false)
-{
+    graphics_system_(system), is_mask_(false) {
   registerWithGraphicsSystem();
   buildRegionTable(Size(surf->w, surf->h));
 }
@@ -156,8 +150,7 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
 
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
   : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
-    graphics_system_(system), is_mask_(false)
-{
+    graphics_system_(system), is_mask_(false) {
   registerWithGraphicsSystem();
   allocate(size);
   buildRegionTable(size);
@@ -166,8 +159,7 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
 // -----------------------------------------------------------------------
 
 /// Constructor helper function
-void SDLSurface::buildRegionTable(const Size& size)
-{
+void SDLSurface::buildRegionTable(const Size& size) {
   // Build a region table with one entry the size of the surface (This
   // should never need to be used with objects created with this
   // constructor, but let's make sure everything is initialized since
@@ -197,8 +189,7 @@ void SDLSurface::unregisterFromGraphicsSystem() {
 
 // -----------------------------------------------------------------------
 
-SDLSurface::~SDLSurface()
-{
+SDLSurface::~SDLSurface() {
   unregisterFromGraphicsSystem();
   deallocate();
 }
@@ -219,8 +210,7 @@ Size SDLSurface::size() const { return Size(surface_->w, surface_->h); }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::dump()
-{
+void SDLSurface::dump() {
   static int count = 0;
   ostringstream ss;
   ss << "dump_" << count << ".bmp";
@@ -230,8 +220,7 @@ void SDLSurface::dump()
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::allocate(const Size& size)
-{
+void SDLSurface::allocate(const Size& size) {
   deallocate();
 
   surface_ = buildNewSurface(size);
@@ -241,19 +230,16 @@ void SDLSurface::allocate(const Size& size)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::allocate(const Size& size, bool is_dc0)
-{
+void SDLSurface::allocate(const Size& size, bool is_dc0) {
   is_dc0_ = is_dc0;
   allocate(size);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::deallocate()
-{
+void SDLSurface::deallocate() {
   textures_.clear();
-  if (surface_)
-  {
+  if (surface_) {
     SDL_FreeSurface(surface_);
     surface_ = NULL;
   }
@@ -267,8 +253,7 @@ void SDLSurface::deallocate()
  * @author Pete Shinners, Taken from pygame
  * @license LGPL
  */
-static void stretch(SDL_Surface *src, SDL_Surface *dst)
-{
+static void stretch(SDL_Surface *src, SDL_Surface *dst) {
 	int looph, loopw;
 
 	Uint8* srcrow = (Uint8*)src->pixels;
@@ -288,15 +273,12 @@ static void stretch(SDL_Surface *src, SDL_Surface *dst)
 	int w_err, h_err = srcheight2 - dstheight2;
 
 
-	switch (src->format->BytesPerPixel)
-	{
+	switch (src->format->BytesPerPixel) {
 	case 1:
-		for (looph = 0; looph < dstheight; ++looph)
-		{
+		for (looph = 0; looph < dstheight; ++looph) {
 			Uint8 *srcpix = (Uint8*)srcrow, *dstpix = (Uint8*)dstrow;
 			w_err = srcwidth2 - dstwidth2;
-			for (loopw = 0; loopw < dstwidth; ++ loopw)
-			{
+			for (loopw = 0; loopw < dstwidth; ++ loopw) {
 				*dstpix++ = *srcpix;
 				while (w_err >= 0) {++srcpix; w_err -= dstwidth2;}
 				w_err += srcwidth2;
@@ -306,12 +288,10 @@ static void stretch(SDL_Surface *src, SDL_Surface *dst)
 			h_err += srcheight2;
 		}break;
 	case 2:
-		for (looph = 0; looph < dstheight; ++looph)
-		{
+		for (looph = 0; looph < dstheight; ++looph) {
 			Uint16 *srcpix = (Uint16*)srcrow, *dstpix = (Uint16*)dstrow;
 			w_err = srcwidth2 - dstwidth2;
-			for (loopw = 0; loopw < dstwidth; ++ loopw)
-			{
+			for (loopw = 0; loopw < dstwidth; ++ loopw) {
 				*dstpix++ = *srcpix;
 				while (w_err >= 0) {++srcpix; w_err -= dstwidth2;}
 				w_err += srcwidth2;
@@ -321,12 +301,10 @@ static void stretch(SDL_Surface *src, SDL_Surface *dst)
 			h_err += srcheight2;
 		}break;
 	case 3:
-		for (looph = 0; looph < dstheight; ++looph)
-		{
+		for (looph = 0; looph < dstheight; ++looph) {
 			Uint8 *srcpix = (Uint8*)srcrow, *dstpix = (Uint8*)dstrow;
 			w_err = srcwidth2 - dstwidth2;
-			for (loopw = 0; loopw < dstwidth; ++ loopw)
-			{
+			for (loopw = 0; loopw < dstwidth; ++ loopw) {
 				dstpix[0] = srcpix[0]; dstpix[1] = srcpix[1]; dstpix[2] = srcpix[2];
 				dstpix += 3;
 				while (w_err >= 0) {srcpix+=3; w_err -= dstwidth2;}
@@ -337,12 +315,10 @@ static void stretch(SDL_Surface *src, SDL_Surface *dst)
 			h_err += srcheight2;
 		}break;
 	default: /*case 4:*/
-		for (looph = 0; looph < dstheight; ++looph)
-		{
+		for (looph = 0; looph < dstheight; ++looph) {
 			Uint32 *srcpix = (Uint32*)srcrow, *dstpix = (Uint32*)dstrow;
 			w_err = srcwidth2 - dstwidth2;
-			for (loopw = 0; loopw < dstwidth; ++ loopw)
-			{
+			for (loopw = 0; loopw < dstwidth; ++ loopw) {
 				*dstpix++ = *srcpix;
 				while (w_err >= 0) {++srcpix; w_err -= dstwidth2;}
 				w_err += srcwidth2;
@@ -364,16 +340,14 @@ static void stretch(SDL_Surface *src, SDL_Surface *dst)
  */
 void SDLSurface::blitToSurface(Surface& dest_surface,
                                const Rect& src, const Rect& dst,
-                               int alpha, bool use_src_alpha)
-{
+                               int alpha, bool use_src_alpha) {
   SDLSurface& sdl_dest_surface = dynamic_cast<SDLSurface&>(dest_surface);
 
   SDL_Rect src_rect, dest_rect;
   RectToSDLRect(src, &src_rect);
   RectToSDLRect(dst, &dest_rect);
 
-  if (src.size() != dst.size())
-  {
+  if (src.size() != dst.size()) {
     // Blit the source rectangle into its own image.
     SDL_Surface* src_image = buildNewSurface(src.size());
     if (pygame_AlphaBlit(surface_, &src_rect, src_image, NULL))
@@ -382,13 +356,10 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
     SDL_Surface* tmp = buildNewSurface(dst.size());
     stretch(src_image, tmp);
 
-    if (use_src_alpha)
-    {
+    if (use_src_alpha) {
       if (SDL_SetAlpha(tmp, SDL_SRCALPHA, alpha))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
-    }
-    else
-    {
+    } else {
       if (SDL_SetAlpha(tmp, 0, 0))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
     }
@@ -398,16 +369,11 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
 
     SDL_FreeSurface(tmp);
     SDL_FreeSurface(src_image);
-  }
-  else
-  {
-    if (use_src_alpha)
-    {
+  } else {
+    if (use_src_alpha) {
       if (SDL_SetAlpha(surface_, SDL_SRCALPHA, alpha))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
-    }
-    else
-    {
+    } else {
       if (SDL_SetAlpha(surface_, 0, 0))
         reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
     }
@@ -428,19 +394,15 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
  */
 void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
                                  const Rect& src, const Rect& dst,
-                                 int alpha, bool use_src_alpha)
-{
+                                 int alpha, bool use_src_alpha) {
   SDL_Rect src_rect, dest_rect;
   RectToSDLRect(src, &src_rect);
   RectToSDLRect(dst, &dest_rect);
 
-  if (use_src_alpha)
-  {
+  if (use_src_alpha) {
     if (pygame_AlphaBlit(src_surface, &src_rect, surface_, &dest_rect))
       reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
-  }
-  else
-  {
+  } else {
     if (SDL_BlitSurface(src_surface, &src_rect, surface_, &dest_rect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
@@ -452,26 +414,22 @@ void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
 
 static void determineProperties(
   SDL_Surface* surface, bool is_mask,
-  GLenum& bytes_per_pixel, GLint& byte_order, GLint& byte_type)
-{
-  SDL_LockSurface(surface);
-  {
+  GLenum& bytes_per_pixel, GLint& byte_order, GLint& byte_type) {
+  SDL_LockSurface(surface); {
     bytes_per_pixel = surface->format->BytesPerPixel;
     byte_order = GL_RGBA;
     byte_type = GL_UNSIGNED_BYTE;
 
     // Determine the byte order of the surface
     SDL_PixelFormat* format = surface->format;
-    if (bytes_per_pixel == 4)
-    {
+    if (bytes_per_pixel == 4) {
       // If the order is RGBA...
       if (format->Rmask == 0xFF000000 && format->Amask == 0xFF)
         byte_order = GL_RGBA;
       // OSX's crazy ARGB pixel format
       else if ((format->Amask == 0x0 || format->Amask == 0xFF000000) &&
               format->Rmask == 0xFF0000 &&
-              format->Gmask == 0xFF00 && format->Bmask == 0xFF)
-      {
+              format->Gmask == 0xFF00 && format->Bmask == 0xFF) {
         // This is an insane hack to get around OSX's crazy byte order
         // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
         // need to specify BGRA and then tell the byte type to be
@@ -481,24 +439,18 @@ static void determineProperties(
         // platforms!?
         byte_order = GL_BGRA;
         byte_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-      }
-      else
-      {
+      } else {
         ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
         cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
              << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
         cerr.flags(f);
       }
-    }
-    else if (bytes_per_pixel == 3)
-    {
+    } else if (bytes_per_pixel == 3) {
       // For now, just assume RGB.
       byte_order = GL_RGB;
       cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
            << endl;
-    }
-    else
-    {
+    } else {
       ostringstream oss;
       oss << "Error loading texture: bytes_per_pixel == " << int(bytes_per_pixel)
           << " and we only handle 3 or 4.";
@@ -508,8 +460,7 @@ static void determineProperties(
   }
   SDL_UnlockSurface(surface);
 
-  if (is_mask)
-  {
+  if (is_mask) {
     // Compile shader for use:
     bytes_per_pixel = GL_ALPHA;
   }
@@ -517,12 +468,9 @@ static void determineProperties(
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::uploadTextureIfNeeded()
-{
-  if (!texture_is_valid_)
-  {
-    if (textures_.size() == 0)
-    {
+void SDLSurface::uploadTextureIfNeeded() {
+  if (!texture_is_valid_) {
+    if (textures_.size() == 0) {
       GLenum bytes_per_pixel;
       GLint byte_order, byte_type;
       determineProperties(surface_, is_mask_, bytes_per_pixel, byte_order,
@@ -537,12 +485,10 @@ void SDLSurface::uploadTextureIfNeeded()
 
       int x_offset = 0;
       for (vector<int>::const_iterator it = x_pieces.begin();
-          it != x_pieces.end(); ++it)
-      {
+          it != x_pieces.end(); ++it) {
         int y_offset = 0;
         for (vector<int>::const_iterator jt = y_pieces.begin();
-            jt != y_pieces.end(); ++jt)
-        {
+            jt != y_pieces.end(); ++jt) {
           TextureRecord record(
             surface_, x_offset, y_offset, *it, *jt,  bytes_per_pixel,
             byte_order, byte_type);
@@ -553,9 +499,7 @@ void SDLSurface::uploadTextureIfNeeded()
 
         x_offset += *it;
       }
-    }
-    else
-    {
+    } else {
       // Reupload the textures without reallocating them.
       for_each(textures_.begin(), textures_.end(),
                bind(&TextureRecord::reupload, _1, surface_));
@@ -567,13 +511,11 @@ void SDLSurface::uploadTextureIfNeeded()
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha)
-{
+void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha) {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it)
-  {
+      it != textures_.end(); ++it) {
     it->texture->renderToScreen(src, dst, alpha);
   }
 }
@@ -581,13 +523,11 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha)
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter)
-{
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it)
-  {
+      it != textures_.end(); ++it) {
     it->texture->renderToScreenAsColorMask(src, dst, rgba, filter);
   }
 }
@@ -595,13 +535,11 @@ void SDLSurface::renderToScreenAsColorMask(
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
-                                const int opacity[4])
-{
+                                const int opacity[4]) {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it)
-  {
+      it != textures_.end(); ++it) {
     it->texture->renderToScreen(src, dst, opacity);
   }
 }
@@ -609,13 +547,11 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsObject(
-  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha)
-{
+  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha) {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it)
-  {
+      it != textures_.end(); ++it) {
     it->texture->renderToScreenAsObject(rp, *this, src, dst, alpha);
   }
 }
@@ -624,21 +560,18 @@ void SDLSurface::renderToScreenAsObject(
 
 void SDLSurface::rawRenderQuad(const int src_coords[8],
                                const int dest_coords[8],
-                               const int opacity[4])
-{
+                               const int opacity[4]) {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it)
-  {
+      it != textures_.end(); ++it) {
     it->texture->rawRenderQuad(src_coords, dest_coords, opacity);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(const RGBAColour& colour)
-{
+void SDLSurface::fill(const RGBAColour& colour) {
   // Fill the entire surface with the incoming colour
   Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
@@ -651,8 +584,7 @@ void SDLSurface::fill(const RGBAColour& colour)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
-{
+void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
   // Fill the entire surface with the incoming colour
   Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
@@ -668,8 +600,7 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::markWrittenTo()
-{
+void SDLSurface::markWrittenTo() {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
   if (is_dc0_ && graphics_system_) {
     graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
@@ -681,22 +612,19 @@ void SDLSurface::markWrittenTo()
 
 // -----------------------------------------------------------------------
 
-int SDLSurface::numPatterns() const
-{
+int SDLSurface::numPatterns() const {
   return region_table_.size();
 }
 
 // -----------------------------------------------------------------------
 
-const SDLSurface::GrpRect& SDLSurface::getPattern(int patt_no) const
-{
+const SDLSurface::GrpRect& SDLSurface::getPattern(int patt_no) const {
   return region_table_.at(patt_no);
 }
 
 // -----------------------------------------------------------------------
 
-Surface* SDLSurface::clone() const
-{
+Surface* SDLSurface::clone() const {
   SDL_Surface* tmp_surface =
     SDL_CreateRGBSurface(surface_->flags, surface_->w, surface_->h,
                          surface_->format->BitsPerPixel,
@@ -719,29 +647,23 @@ Surface* SDLSurface::clone() const
 /**
  * @todo This scheme may be entirely suboptimal. Needs field testing.
  */
-vector<int> SDLSurface::segmentPicture(int size_remainging)
-{
+vector<int> SDLSurface::segmentPicture(int size_remainging) {
   static GLint max_texture_size = 0;
   if (max_texture_size == 0)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
 
   vector<int> output;
-  while (size_remainging > max_texture_size)
-  {
+  while (size_remainging > max_texture_size) {
     output.push_back(max_texture_size);
     size_remainging -= max_texture_size;
   }
 
-  while (size_remainging)
-  {
+  while (size_remainging) {
     int ss = SafeSize(size_remainging);
-    if (ss > 512)
-    {
+    if (ss > 512) {
       output.push_back(512);
       size_remainging -= 512;
-    }
-    else
-    {
+    } else {
       output.push_back(size_remainging);
       size_remainging = 0;
     }
@@ -752,8 +674,7 @@ vector<int> SDLSurface::segmentPicture(int size_remainging)
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
-{
+void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) {
   SDL_Color colour;
   Uint32 col = 0 ;
 
@@ -780,8 +701,7 @@ void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b)
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
-  const Rect& clip_rect, int r, int g, int b)
-{
+  const Rect& clip_rect, int r, int g, int b) {
   const char* function_name = "SDLGraphicsSystem::clipAsColorMask()";
 
   // TODO: This needs to be made exception safe and so does the rest

@@ -48,8 +48,7 @@ ScriptMachine::ScriptMachine(
   : RLMachine(in_system, in_archive),
     current_decision_(0),
     save_on_decision_slot_(-1),
-    increment_on_save_(false)
-{
+    increment_on_save_(false) {
 
 }
 
@@ -60,8 +59,7 @@ ScriptMachine::~ScriptMachine() { }
 // -----------------------------------------------------------------------
 
 void ScriptMachine::setDecisionList(
-  const std::vector<std::string>& decisions)
-{
+  const std::vector<std::string>& decisions) {
   decisions_ = decisions;
   current_decision_ = 0;
 }
@@ -155,8 +153,7 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
 
 // -----------------------------------------------------------------------
 
-int ScriptMachine::getInt(const std::string& bank, int position)
-{
+int ScriptMachine::getInt(const std::string& bank, int position) {
   char bchar = bank[0];
 
   return getIntValue(IntMemRef(bchar, position));

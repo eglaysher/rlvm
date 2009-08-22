@@ -75,8 +75,7 @@ class Gameexe;
  *
  * @see Memory
  */
-struct GlobalMemory
-{
+struct GlobalMemory {
   GlobalMemory();
 
   int intG[SIZE_OF_MEM_BANK];
@@ -94,8 +93,7 @@ struct GlobalMemory
 
   /// boost::serialization
   template<class Archive>
-  void serialize(Archive & ar, unsigned int version)
-  {
+  void serialize(Archive & ar, unsigned int version) {
     ar & intG & intZ & strM;
 
     // Starting in version 1, \#NAME variable storage were added.
@@ -119,8 +117,7 @@ struct dont_initialize { };
  * @see Sys_GetSaveFlag
  * @see Memory
  */
-struct LocalMemory
-{
+struct LocalMemory {
   LocalMemory();
 
   /**
@@ -152,8 +149,7 @@ struct LocalMemory
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive & ar, unsigned int version)
-  {
+  void serialize(Archive & ar, unsigned int version) {
     ar & intA & intB & intC & intD & intE & intF & strS & intL & strK;
 
     // Starting in version 1, \#LOCALNAME variable storage were added.
@@ -178,8 +174,7 @@ BOOST_CLASS_VERSION(LocalMemory, 1)
  * @see RLMachine
  * @see Sys_GetSaveFlag
  */
-class Memory
-{
+class Memory {
 private:
   /**
    * Pointer to the GlobalMemory structure. While there can (and will

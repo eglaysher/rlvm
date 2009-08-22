@@ -40,8 +40,7 @@
 #include <algorithm> // for lower_bound()
 #include <cstring>
 
-Cp949::Cp949()
-{
+Cp949::Cp949() {
   //	DesirableCharset = HANGUL_CHARSET;
 	NoTransforms = false;
   //	UseUnicode = GetSystemDefaultLangID() & 0x1ff != 0x12;
@@ -120,8 +119,7 @@ const unsigned short extras[extras_length] =
 	  0xc548, 0xc561, 0xc562, 0xc569, 0xc56a, 0xc570, 0xc575, 0xc579, 0xc581, 0xc586,
 	  0xc587, 0xc588, 0xc589, 0xc58e, 0xc597, 0xc643, 0xc64a, 0xc64c, 0xc64f };
 
-unsigned short Cp949::JisDecode(unsigned short ch) const
-{
+unsigned short Cp949::JisDecode(unsigned short ch) const {
 	// Special cases
 	if (ch < 0x80)
 		return ch;
@@ -144,32 +142,27 @@ unsigned short Cp949::JisDecode(unsigned short ch) const
 			int i = (c1 - 0x81) * 255 + c2 - 1;
 			c2 = i % 177;
 			return ((0x81 + i / 177) << 8) | (c2 + (c2 < 0x1a ? 0x41 : (c2 < 0x34 ? 0x47 : 0x4d)));
-		}
-		else if (c1 <= 0xe6) {
+		} else if (c1 <= 0xe6) {
 			int i = (c1 - (c1 <= 0x9f ? 0x97 : 0xd8)) * 255 + c2 - 1;
 			return ((0xa1 + i / 94) << 8) | (0xa1 + i % 94);
-		}
-		else {
+		} else {
 			int i = (c1 - 0xe7) * 255 + c2 - 1;
 			if (i >= 0 && i < extras_length) {
 				return extras[i];
-			}
-			else {
+			} else {
 				return 0xa3bf; // fail: return full-width question mark.
 			}
 		}
 	}
 }
 
-void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const
-{
+void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
     int srclen = std::strlen(src), k = 0, j = 0;
 	while (k < srclen && j < buflen) {
 		unsigned char c1 = (unsigned char) src[k++];
 		if (c1 < 0x80) {
 			buf[j++] = c1;
-		}
-		else {
+		} else {
 			unsigned short ch = c1 << 8 | (unsigned char) src[k++];
 			if (ch == 0xa1b8)
 				ch = 0x8175;
@@ -189,21 +182,18 @@ void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const
 				int i = (c1 - 0x81) * 177 + c2 - (c2 < 0x5b ? 0x41 : (c2 < 0x7b ? 0x47 : 0x4d));
 				buf[j++] = i / 255 + 0x81;
 				buf[j++] = i % 255 + 1;
-			}
-			else if (c1 >= 0xa1 && c2 >= 0xa1) {
+			} else if (c1 >= 0xa1 && c2 >= 0xa1) {
 				int i = (c1 - 0xa1) * 94 + c2 - 0xa1;
 				c1 = i / 255 + 0x97;
 				buf[j++] = c1 > 0x9f ? c1 + 0x41 : c1;
 				buf[j++] = i % 255 + 1;
-			}
-			else {
+			} else {
 				const unsigned short* p = std::lower_bound(extras, extras + extras_length, ch);
 				if (*p == ch) {
 					int i = p - extras;
 					buf[j++] = i / 255 + 0xe7;
 					buf[j++] = i % 255 + 1;
-				}
-				else {
+				} else {
 					buf[j++] = 0x97;
 					buf[j++] = 0xdb;
 				}
@@ -213,8 +203,7 @@ void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const
 	buf[j] = 0;
 }
 
-const unsigned short ksc_to_uni[] =
-	{ 0xac02, 0xac03, 0xac05, 0xac06, 0xac0b, 0xac0c, 0xac0d, 0xac0e, 0xac0f, 0xac18,
+const unsigned short ksc_to_uni[] = { 0xac02, 0xac03, 0xac05, 0xac06, 0xac0b, 0xac0c, 0xac0d, 0xac0e, 0xac0f, 0xac18,
 	  0xac1e, 0xac1f, 0xac21, 0xac22, 0xac23, 0xac25, 0xac26, 0xac27, 0xac28, 0xac29,
 	  0xac2a, 0xac2b, 0xac2e, 0xac32, 0xac33, 0xac34, 0x3000, 0x3000, 0x3000, 0x3000,
 	  0x3000, 0x3000, 0xac35, 0xac36, 0xac37, 0xac3a, 0xac3b, 0xac3d, 0xac3e, 0xac3f,
@@ -1583,20 +1572,17 @@ const unsigned short ksc_to_uni[] =
 	  0xd759, 0xd760, 0xd761, 0xd763, 0xd765, 0xd769, 0xd76c, 0xd770, 0xd774, 0xd77c,
 	  0xd77d, 0xd781, 0xd788, 0xd789, 0xd78c, 0xd790, 0xd798, 0xd799, 0xd79b, 0xd79d };
 
-unsigned short Cp949::Convert(unsigned short ch) const
-{
+unsigned short Cp949::Convert(unsigned short ch) const {
   if (ch <= 0x7f) {
     return ch;
-  }
-  else {
+  } else {
     int c1 = ((ch >> 8) & 0xff) - 0x81;
     int c2 = (ch & 0xff) - 0x41;
     return ksc_to_uni[c1 * 190 + c2];
   }
 }
 
-std::wstring Cp949::ConvertString(const std::string& in_string) const
-{
+std::wstring Cp949::ConvertString(const std::string& in_string) const {
   std::wstring rv;
   rv.reserve(in_string.size());
 

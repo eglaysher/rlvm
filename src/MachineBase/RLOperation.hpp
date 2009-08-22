@@ -399,8 +399,7 @@ parseParameters(const std::vector<std::string>& input,
 
 struct RLOp_Void_Void : public RLOp_NormalOperation<> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     operator()(machine);
   }
 
@@ -410,11 +409,9 @@ struct RLOp_Void_Void : public RLOp_NormalOperation<> {
 // -----------------------------------------------------------------------
 
 template<typename A>
-struct RLOp_Void_1 : public RLOp_NormalOperation<A>
-{
+struct RLOp_Void_1 : public RLOp_NormalOperation<A> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     operator()(machine, A::getData(machine, parameters, position));
   }
@@ -427,8 +424,7 @@ struct RLOp_Void_1 : public RLOp_NormalOperation<A>
 template<typename A, typename B>
 struct RLOp_Void_2 : public RLOp_NormalOperation<A, B> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -443,8 +439,7 @@ struct RLOp_Void_2 : public RLOp_NormalOperation<A, B> {
 template<typename A, typename B, typename C>
 struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -460,8 +455,7 @@ struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
 template<typename A, typename B, typename C, typename D>
 struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -480,8 +474,7 @@ struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
 template<typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -502,8 +495,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F>
 struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -522,11 +514,9 @@ struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
-struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G>
-{
+struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -546,11 +536,9 @@ struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G>
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
-struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H>
-{
+struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -572,11 +560,9 @@ struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H>
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I>
-struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I>
-{
+struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -599,11 +585,9 @@ struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I>
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J>
-struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J>
-{
+struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -628,11 +612,9 @@ struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J>
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K>
-struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K>
-{
+struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -658,11 +640,9 @@ struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L>
-struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L>
-{
+struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -690,11 +670,9 @@ struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M>
-struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M>
-{
+struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -724,11 +702,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N>
 struct RLOp_Void_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N>
-{
+                                                  L, M, N> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -760,11 +736,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O>
 struct RLOp_Void_15 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O>
-{
+                                                  L, M, N, O> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -798,11 +772,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P>
 struct RLOp_Void_16 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P>
-{
+                                                  L, M, N, O, P> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -838,11 +810,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q>
 struct RLOp_Void_17 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q>
-{
+                                                  L, M, N, O, P, Q> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -879,11 +849,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R>
 struct RLOp_Void_18 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R>
-{
+                                                  L, M, N, O, P, Q, R> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -922,11 +890,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S>
 struct RLOp_Void_19 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S>
-{
+                                                  L, M, N, O, P, Q, R, S> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -966,11 +932,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T>
 struct RLOp_Void_20 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T>
-{
+                                                  L, M, N, O, P, Q, R, S, T> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1012,11 +976,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename P, typename Q, typename R, typename S, typename T,
          typename U>
 struct RLOp_Void_21 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U>
-{
+                                                  L, M, N, O, P, Q, R, S, T, U> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1060,11 +1022,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename P, typename Q, typename R, typename S, typename T,
          typename U, typename V>
 struct RLOp_Void_22 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U, V>
-{
+                                                  L, M, N, O, P, Q, R, S, T, U, V> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1110,11 +1070,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename U, typename V, typename W>
 struct RLOp_Void_23 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
                                                   L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W>
-{
+                                                  W> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1162,11 +1120,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename U, typename V, typename W, typename X>
 struct RLOp_Void_24 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
                                                   L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W, X>
-{
+                                                  W, X> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1215,11 +1171,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename U, typename V, typename W, typename X, typename Y>
 struct RLOp_Void_25 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
                                                   L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W, X, Y>
-{
+                                                  W, X, Y> {
   void dispatch(RLMachine& machine,
-                const ExpressionPiecesVector& parameters)
-  {
+                const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1271,10 +1225,8 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename Z>
 struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
                                                   L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W, X, Y, Z>
-{
-  void dispatch(RLMachine& machine, const ExpressionPiecesVector& parameters)
-  {
+                                                  W, X, Y, Z> {
+  void dispatch(RLMachine& machine, const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);

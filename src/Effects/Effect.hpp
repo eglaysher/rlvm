@@ -73,8 +73,7 @@ class RLMachine;
  * LongOperations on the RLMachine, as they are all long and blocking
  * operations.
  */
-class Effect : public LongOperation
-{
+class Effect : public LongOperation {
 private:
   /// Defines the size of the screen; since effects update the entire screen.
   Size screen_size_;
@@ -157,8 +156,7 @@ public:
  *
  * @see Grp_openBg_1
  */
-class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator
-{
+class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
 private:
   /// The source surface (previously known as DC1, before I realized
   /// that temporary surfaces could in fact be part of effects)

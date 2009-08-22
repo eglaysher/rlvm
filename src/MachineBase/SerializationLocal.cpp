@@ -92,10 +92,8 @@ const int CURRENT_LOCAL_VERSION = 2;
 namespace {
 
 template<typename TYPE>
-void checkInFileOpened(TYPE& file, const fs::path& home)
-{
-  if (!file)
-  {
+void checkInFileOpened(TYPE& file, const fs::path& home) {
+  if (!file) {
     ostringstream oss;
     oss << "Could not open save game file " << home.string();
     throw rlvm::Exception(oss.str());
@@ -110,8 +108,7 @@ namespace Serialization {
 
 // -----------------------------------------------------------------------
 
-void saveGameForSlot(RLMachine& machine, int slot)
-{
+void saveGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ofstream file(path);
   checkInFileOpened(file, path);
@@ -126,14 +123,12 @@ void saveGameForSlot(RLMachine& machine, int slot)
 
 // -----------------------------------------------------------------------
 
-void saveGameTo(std::ostream& oss, RLMachine& machine)
-{
+void saveGameTo(std::ostream& oss, RLMachine& machine) {
   const SaveGameHeader header(machine.system().graphics().windowSubtitle());
 
   g_current_machine = &machine;
 
-  try
-  {
+  try {
     text_oarchive oa(oss);
     oa << CURRENT_LOCAL_VERSION
        << header
@@ -144,8 +139,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
        << const_cast<const TextSystem&>(machine.system().text())
        << const_cast<const SoundSystem&>(machine.system().sound());
   }
-  catch(std::exception& e)
-  {
+  catch(std::exception& e) {
     cerr << "--- WARNING: ERROR DURING SAVING FILE: " << e.what() << " ---"
          << endl;
 
@@ -158,8 +152,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-fs::path buildSaveGameFilename(RLMachine& machine, int slot)
-{
+fs::path buildSaveGameFilename(RLMachine& machine, int slot) {
   ostringstream oss;
   oss << "save" << setw(3) << setfill('0') << slot << ".sav.gz";
 
@@ -168,8 +161,7 @@ fs::path buildSaveGameFilename(RLMachine& machine, int slot)
 
 // -----------------------------------------------------------------------
 
-SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot)
-{
+SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ifstream file(path);
   checkInFileOpened(file, path);
@@ -184,8 +176,7 @@ SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot)
 
 // -----------------------------------------------------------------------
 
-SaveGameHeader loadHeaderFrom(std::istream& iss)
-{
+SaveGameHeader loadHeaderFrom(std::istream& iss) {
   int version;
   SaveGameHeader header;
 
@@ -198,8 +189,7 @@ SaveGameHeader loadHeaderFrom(std::istream& iss)
 
 // -----------------------------------------------------------------------
 
-void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory)
-{
+void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory) {
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ifstream file(path);
   checkInFileOpened(file, path);
@@ -214,8 +204,7 @@ void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory)
 
 // -----------------------------------------------------------------------
 
-void loadLocalMemoryFrom(std::istream& iss, Memory& memory)
-{
+void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
   int version;
   SaveGameHeader header;
 
@@ -228,8 +217,7 @@ void loadLocalMemoryFrom(std::istream& iss, Memory& memory)
 
 // -----------------------------------------------------------------------
 
-void loadGameForSlot(RLMachine& machine, int slot)
-{
+void loadGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
   fs::ifstream file(path);
   checkInFileOpened(file, path);
@@ -244,15 +232,13 @@ void loadGameForSlot(RLMachine& machine, int slot)
 
 // -----------------------------------------------------------------------
 
-void loadGameFrom(std::istream& iss, RLMachine& machine)
-{
+void loadGameFrom(std::istream& iss, RLMachine& machine) {
   int version;
   SaveGameHeader header;
 
   g_current_machine = &machine;
 
-  try
-  {
+  try {
     // Must clear the stack before reseting the System because LongOperations
     // often hold references to objects in the System heiarchy.
     machine.reset();
@@ -271,8 +257,7 @@ void loadGameFrom(std::istream& iss, RLMachine& machine)
 
     machine.system().graphics().forceRefresh();
   }
-  catch(std::exception& e)
-  {
+  catch(std::exception& e) {
     cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what() << " ---"
          << endl;
 

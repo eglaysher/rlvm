@@ -67,8 +67,7 @@ const int SEL_SIZE = 16;
 Effect* EffectFactory::buildFromSEL(RLMachine& machine,
                                     boost::shared_ptr<Surface> src,
                                     boost::shared_ptr<Surface> dst,
-                                    int selNum)
-{
+                                    int selNum) {
   vector<int> selParams = getSELEffect(machine, selNum);
 
   return build(machine, src, dst,
@@ -85,15 +84,13 @@ Effect* EffectFactory::build(
   boost::shared_ptr<Surface> dst,
   int time, int style,
   int direction, int interpolation, int xsize, int ysize, int a, int b,
-  int c)
-{
+  int c) {
   Size screenSize = machine.system().graphics().screenSize();
 
   // There is a completely ridiculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so
   // confusing and hard to implement!
-  switch (style)
-  {
+  switch (style) {
   case 10:
     return buildWipeEffect(machine, src, dst, screenSize, time,
                            direction, interpolation);
@@ -104,8 +101,7 @@ Effect* EffectFactory::build(
   case 17:
   case 18:
   case 20:
-  case 21:
-  {
+  case 21: {
     ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
     ScrollSquashSlideEffectTypeBase* effect = buildScrollSquashSlideTypeBase(style);
     return new ScrollSquashSlideBaseEffect(machine, src, dst, drawer, effect,
@@ -145,10 +141,8 @@ enum ScreenDirection {
 Effect* EffectFactory::buildWipeEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, const Size& screenSize, int time,
-  int direction, int interpolation)
-{
-  switch (direction)
-  {
+  int direction, int interpolation) {
+  switch (direction) {
   case TOP_TO_BOTTOM:
     return new WipeTopToBottomEffect(machine, src, dst, screenSize,
                                      time, interpolation);
@@ -180,10 +174,8 @@ Effect* EffectFactory::buildWipeEffect(
 Effect* EffectFactory::buildBlindEffect(
   RLMachine& machine, boost::shared_ptr<Surface> src,
   boost::shared_ptr<Surface> dst, const Size& screenSize, int time,
-  int direction, int xsize, int ysize)
-{
-  switch (direction)
-  {
+  int direction, int xsize, int ysize) {
+  switch (direction) {
   case TOP_TO_BOTTOM:
     if (xsize == 0 && ysize > 0)
       xsize = ysize;
@@ -219,10 +211,8 @@ Effect* EffectFactory::buildBlindEffect(
 // -----------------------------------------------------------------------
 
 ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
-  int drawerType)
-{
-  switch (drawerType)
-  {
+  int drawerType) {
+  switch (drawerType) {
   case TOP_TO_BOTTOM:
     return new TopToBottomDrawer;
   case BOTTOM_TO_TOP:
@@ -242,10 +232,8 @@ ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
 // -----------------------------------------------------------------------
 
 ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
-  int style)
-{
-  switch (style)
-  {
+  int style) {
+  switch (style) {
   case 15:
     return new ScrollOnScrollOff;
   case 16:

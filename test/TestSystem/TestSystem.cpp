@@ -42,8 +42,7 @@ TestSystem::TestSystem(const std::string& path_to_gameexe)
     null_event_system(gameexe_),
     null_text_system(*this, gameexe_),
     null_sound_system(*this
-)
-{}
+) {}
 
 // -----------------------------------------------------------------------
 
@@ -52,8 +51,7 @@ TestSystem::TestSystem()
     null_graphics_system(*this, gameexe_),
     null_event_system(gameexe_),
     null_text_system(*this, gameexe_),
-    null_sound_system(*this)
-{
+    null_sound_system(*this) {
   gameexe_("__GAMEPATH") = locateTestCase("Gameroot") + "/";
   gameexe_("FOLDNAME.G00") = "G00";
 }

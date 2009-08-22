@@ -116,8 +116,7 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
       textSurface = TTF_RenderUTF8_Solid(mFont, text.c_str(), sdlCol);
     }
 
-    SDL_LockSurface(textSurface);
-    {
+    SDL_LockSurface(textSurface); {
       image.reset(new gcn::OpenGLImage((const unsigned int*)textSurface->pixels,
                                        textSurface->w, textSurface->h));
     }

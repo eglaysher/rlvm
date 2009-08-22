@@ -49,8 +49,7 @@ class RLMachine;
  * EventListener. LongOperations on the top of the callstack receive key/mouse
  * events.
  */
-class LongOperation : public EventListener
-{
+class LongOperation : public EventListener {
 public:
   LongOperation();
   virtual ~LongOperation();
@@ -78,8 +77,7 @@ public:
  * LongOperation and when that LongOperation finishes, performs an
  * arbitrary action.
  */
-class PerformAfterLongOperationDecorator : public LongOperation
-{
+class PerformAfterLongOperationDecorator : public LongOperation {
 public:
   PerformAfterLongOperationDecorator(LongOperation* in_op);
   ~PerformAfterLongOperationDecorator();

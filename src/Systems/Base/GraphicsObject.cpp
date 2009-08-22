@@ -66,48 +66,39 @@ GraphicsObject::Impl::TextProperties::TextProperties()
     yspace(DEFAULT_TEXT_YSPACE),
     vertical(DEFAULT_TEXT_VERTICAL),
     colour(DEFAULT_TEXT_COLOUR),
-    shadow_colour(DEFAULT_TEXT_SHADOWCOLOUR)
-{
+    shadow_colour(DEFAULT_TEXT_SHADOWCOLOUR) {
 }
 
 // -----------------------------------------------------------------------
 // GraphicsObject
 // -----------------------------------------------------------------------
 GraphicsObject::GraphicsObject()
-  : impl_(s_empty_impl)
-{}
+  : impl_(s_empty_impl) {}
 
 // -----------------------------------------------------------------------
 
 GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
-  : impl_(rhs.impl_)
-{
-  if (rhs.object_data_)
-  {
+  : impl_(rhs.impl_) {
+  if (rhs.object_data_) {
     object_data_.reset(rhs.object_data_->clone());
     object_data_->setOwnedBy(*this);
-  }
-  else
+  } else
     object_data_.reset();
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObject::~GraphicsObject()
-{}
+GraphicsObject::~GraphicsObject() {}
 
 // -----------------------------------------------------------------------
 
-GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj)
-{
+GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
   impl_ = obj.impl_;
 
-  if (obj.object_data_)
-  {
+  if (obj.object_data_) {
     object_data_.reset(obj.object_data_->clone());
     object_data_->setOwnedBy(*this);
-  }
-  else
+  } else
     object_data_.reset();
 
   return *this;
@@ -115,118 +106,103 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setObjectData(GraphicsObjectData* obj)
-{
+void GraphicsObject::setObjectData(GraphicsObjectData* obj) {
   object_data_.reset(obj);
   object_data_->setOwnedBy(*this);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setVisible(const int in)
-{
+void GraphicsObject::setVisible(const int in) {
   makeImplUnique();
   impl_->visible_ = in;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setX(const int x)
-{
+void GraphicsObject::setX(const int x) {
   makeImplUnique();
   impl_->x_ = x;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setY(const int y)
-{
+void GraphicsObject::setY(const int y) {
   makeImplUnique();
   impl_->y_ = y;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::xAdjustmentSum() const
-{
+int GraphicsObject::xAdjustmentSum() const {
   return std::accumulate(impl_->adjust_x_, impl_->adjust_x_ + 8, 0);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setXAdjustment(int idx, int x)
-{
+void GraphicsObject::setXAdjustment(int idx, int x) {
   makeImplUnique();
   impl_->adjust_x_[idx] = x;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::yAdjustmentSum() const
-{
+int GraphicsObject::yAdjustmentSum() const {
   return std::accumulate(impl_->adjust_y_, impl_->adjust_y_ + 8, 0);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setYAdjustment(int idx, int y)
-{
+void GraphicsObject::setYAdjustment(int idx, int y) {
   makeImplUnique();
   impl_->adjust_y_[idx] = y;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setVert(const int vert)
-{
+void GraphicsObject::setVert(const int vert) {
   makeImplUnique();
   impl_->whatever_adjust_vert_operates_on_ = vert;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setXOrigin(const int x)
-{
+void GraphicsObject::setXOrigin(const int x) {
   makeImplUnique();
   impl_->origin_x_ = x;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setYOrigin(const int y)
-{
+void GraphicsObject::setYOrigin(const int y) {
   makeImplUnique();
   impl_->origin_y_ = y;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setWidth(const int in)
-{
+void GraphicsObject::setWidth(const int in) {
   makeImplUnique();
   impl_->width_ = in;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setHeight(const int in)
-{
+void GraphicsObject::setHeight(const int in) {
   makeImplUnique();
   impl_->height_ = in;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setRotation(const int in)
-{
+void GraphicsObject::setRotation(const int in) {
   makeImplUnique();
   impl_->rotation_ = in;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelWidth() const
-{
+int GraphicsObject::pixelWidth() const {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
   if (hasObjectData())
@@ -237,8 +213,7 @@ int GraphicsObject::pixelWidth() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::pixelHeight() const
-{
+int GraphicsObject::pixelHeight() const {
   if (hasObjectData())
     return object_data_->pixelHeight(*this);
   else
@@ -247,96 +222,73 @@ int GraphicsObject::pixelHeight() const
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setPattNo(const int in)
-{ makeImplUnique(); impl_->patt_no_ = in; }
-void GraphicsObject::setMono(const int in)
-{ makeImplUnique(); impl_->mono_ = in; }
-void GraphicsObject::setInvert(const int in)
-{ makeImplUnique(); impl_->invert_ = in; }
-void GraphicsObject::setLight(const int in)
-{ makeImplUnique(); impl_->light_ = in; }
-void GraphicsObject::setTint(const RGBColour& colour)
-{ makeImplUnique(); impl_->tint_ = colour; }
-void GraphicsObject::setTintR(const int in)
-{ makeImplUnique(); impl_->tint_.setRed(in); }
-void GraphicsObject::setTintG(const int in)
-{ makeImplUnique(); impl_->tint_.setGreen(in); }
-void GraphicsObject::setTintB(const int in)
-{ makeImplUnique(); impl_->tint_.setBlue(in); }
-void GraphicsObject::setColour(const RGBAColour& colour)
-{ makeImplUnique(); impl_->colour_ = colour; }
-void GraphicsObject::setColourR(const int in)
-{ makeImplUnique(); impl_->colour_.setRed(in); }
-void GraphicsObject::setColourG(const int in)
-{ makeImplUnique(); impl_->colour_.setGreen(in); }
-void GraphicsObject::setColourB(const int in)
-{ makeImplUnique(); impl_->colour_.setBlue(in); }
-void GraphicsObject::setColourLevel(const int in)
-{ makeImplUnique(); impl_->colour_.setAlpha(in); }
+void GraphicsObject::setPattNo(const int in) { makeImplUnique(); impl_->patt_no_ = in; }
+void GraphicsObject::setMono(const int in) { makeImplUnique(); impl_->mono_ = in; }
+void GraphicsObject::setInvert(const int in) { makeImplUnique(); impl_->invert_ = in; }
+void GraphicsObject::setLight(const int in) { makeImplUnique(); impl_->light_ = in; }
+void GraphicsObject::setTint(const RGBColour& colour) { makeImplUnique(); impl_->tint_ = colour; }
+void GraphicsObject::setTintR(const int in) { makeImplUnique(); impl_->tint_.setRed(in); }
+void GraphicsObject::setTintG(const int in) { makeImplUnique(); impl_->tint_.setGreen(in); }
+void GraphicsObject::setTintB(const int in) { makeImplUnique(); impl_->tint_.setBlue(in); }
+void GraphicsObject::setColour(const RGBAColour& colour) { makeImplUnique(); impl_->colour_ = colour; }
+void GraphicsObject::setColourR(const int in) { makeImplUnique(); impl_->colour_.setRed(in); }
+void GraphicsObject::setColourG(const int in) { makeImplUnique(); impl_->colour_.setGreen(in); }
+void GraphicsObject::setColourB(const int in) { makeImplUnique(); impl_->colour_.setBlue(in); }
+void GraphicsObject::setColourLevel(const int in) { makeImplUnique(); impl_->colour_.setAlpha(in); }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setCompositeMode(const int in)
-{
+void GraphicsObject::setCompositeMode(const int in) {
   makeImplUnique();
   impl_->composite_mode_ = in;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setScrollRateX(const int x)
-{ makeImplUnique(); impl_->scroll_rate_x_ = x; }
-void GraphicsObject::setScrollRateY(const int y)
-{ makeImplUnique(); impl_->scroll_rate_y_ = y; }
+void GraphicsObject::setScrollRateX(const int x) { makeImplUnique(); impl_->scroll_rate_x_ = x; }
+void GraphicsObject::setScrollRateY(const int y) { makeImplUnique(); impl_->scroll_rate_y_ = y; }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setAlpha(const int alpha)
-{
+void GraphicsObject::setAlpha(const int alpha) {
   makeImplUnique();
   impl_->alpha_ = alpha;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::clearClip()
-{
+void GraphicsObject::clearClip() {
   makeImplUnique();
   impl_->clip_ = EMPTY_CLIP;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setClip(const Rect& rect)
-{
+void GraphicsObject::setClip(const Rect& rect) {
   makeImplUnique();
   impl_->clip_ = rect;
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData& GraphicsObject::objectData()
-{
+GraphicsObjectData& GraphicsObject::objectData() {
   if (object_data_)
     return *object_data_;
-  else
-  {
+  else {
     throw rlvm::Exception("null object data");
   }
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setWipeCopy(const int wipe_copy)
-{
+void GraphicsObject::setWipeCopy(const int wipe_copy) {
   makeImplUnique();
   impl_->wipe_copy_ = wipe_copy;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::setTextText(const std::string& utf8str)
-{
+void GraphicsObject::setTextText(const std::string& utf8str) {
   makeImplUnique();
   impl_->makeSureHaveTextProperties();
   impl_->text_properties_->value = utf8str;
@@ -344,8 +296,7 @@ void GraphicsObject::setTextText(const std::string& utf8str)
 
 // -----------------------------------------------------------------------
 
-const std::string& GraphicsObject::textText() const
-{
+const std::string& GraphicsObject::textText() const {
   static const std::string empty = "";
 
   if (impl_->text_properties_)
@@ -356,8 +307,7 @@ const std::string& GraphicsObject::textText() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textSize() const
-{
+int GraphicsObject::textSize() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->text_size;
   else
@@ -366,8 +316,7 @@ int GraphicsObject::textSize() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textXSpace() const
-{
+int GraphicsObject::textXSpace() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->xspace;
   else
@@ -376,8 +325,7 @@ int GraphicsObject::textXSpace() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textYSpace() const
-{
+int GraphicsObject::textYSpace() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->yspace;
   else
@@ -386,8 +334,7 @@ int GraphicsObject::textYSpace() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textVertical() const
-{
+int GraphicsObject::textVertical() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->vertical;
   else
@@ -396,8 +343,7 @@ int GraphicsObject::textVertical() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textColour() const
-{
+int GraphicsObject::textColour() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->colour;
   else
@@ -416,8 +362,7 @@ int GraphicsObject::textShadowColour() const {
 // -----------------------------------------------------------------------
 
 void GraphicsObject::setTextOps(
-  int size, int xspace, int yspace, int vertical, int colour, int shadow)
-{
+  int size, int xspace, int yspace, int vertical, int colour, int shadow) {
   makeImplUnique();
 
   impl_->makeSureHaveTextProperties();
@@ -431,20 +376,16 @@ void GraphicsObject::setTextOps(
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::makeImplUnique()
-{
-  if (!impl_.unique())
-  {
+void GraphicsObject::makeImplUnique() {
+  if (!impl_.unique()) {
     impl_.reset(new Impl(*impl_));
   }
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::render(int objNum, std::ostream* tree)
-{
-  if (object_data_ && visible())
-  {
+void GraphicsObject::render(int objNum, std::ostream* tree) {
+  if (object_data_ && visible()) {
     if (tree) {
       *tree << "Object #" << objNum << ":" << endl;
     }
@@ -455,15 +396,13 @@ void GraphicsObject::render(int objNum, std::ostream* tree)
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::deleteObject()
-{
+void GraphicsObject::deleteObject() {
   object_data_.reset();
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::clearObject()
-{
+void GraphicsObject::clearObject() {
   impl_ = s_empty_impl;
   object_data_.reset();
 }
@@ -479,8 +418,7 @@ void GraphicsObject::execute() {
 // -----------------------------------------------------------------------
 
 template<class Archive>
-void GraphicsObject::serialize(Archive& ar, unsigned int version)
-{
+void GraphicsObject::serialize(Archive& ar, unsigned int version) {
   ar & impl_ & object_data_;
 }
 
@@ -518,8 +456,7 @@ GraphicsObject::Impl::Impl()
     composite_mode_(0),
     scroll_rate_x_(0),
     scroll_rate_y_(0),
-    wipe_copy_(0)
-{
+    wipe_copy_(0) {
   // Regretfully, we can't do this in the initializer list.
   fill(adjust_x_, adjust_x_ + 8, 0);
   fill(adjust_y_, adjust_y_ + 8, 0);
@@ -541,8 +478,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     composite_mode_(rhs.composite_mode_),
     scroll_rate_x_(rhs.scroll_rate_x_),
     scroll_rate_y_(rhs.scroll_rate_y_),
-    wipe_copy_(0)
-{
+    wipe_copy_(0) {
   if (rhs.text_properties_)
     text_properties_.reset(new TextProperties(*rhs.text_properties_));
 
@@ -552,16 +488,13 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
 
 // -----------------------------------------------------------------------
 
-GraphicsObject::Impl::~Impl()
-{}
+GraphicsObject::Impl::~Impl() {}
 
 // -----------------------------------------------------------------------
 
 GraphicsObject::Impl& GraphicsObject::Impl::operator=(
-  const GraphicsObject::Impl& rhs)
-{
-  if (this != &rhs)
-  {
+  const GraphicsObject::Impl& rhs) {
+  if (this != &rhs) {
     visible_ = rhs.visible_;
     x_ = rhs.x_;
     y_ = rhs.y_;
@@ -603,10 +536,8 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
 
 // -----------------------------------------------------------------------
 
-void GraphicsObject::Impl::makeSureHaveTextProperties()
-{
-  if (!text_properties_)
-  {
+void GraphicsObject::Impl::makeSureHaveTextProperties() {
+  if (!text_properties_) {
     text_properties_.reset(new Impl::TextProperties());
   }
 }
@@ -615,8 +546,7 @@ void GraphicsObject::Impl::makeSureHaveTextProperties()
 
 /// boost::serialization support
 template<class Archive>
-void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version)
-{
+void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
   ar & visible_ & x_ & y_ & whatever_adjust_vert_operates_on_ &
     origin_x_ & origin_y_ & rep_origin_x_ & rep_origin_y_ &
     width_ & height_ & rotation_ & patt_no_ & alpha_ &
@@ -640,8 +570,7 @@ template void GraphicsObject::Impl::serialize<boost::archive::text_iarchive>(
 // -----------------------------------------------------------------------
 template<class Archive>
 void GraphicsObject::Impl::TextProperties::serialize(
-  Archive& ar, unsigned int version)
-{
+  Archive& ar, unsigned int version) {
   ar & value & text_size & xspace & yspace & vertical & colour &
     shadow_colour;
 }

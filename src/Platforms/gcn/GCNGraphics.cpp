@@ -40,8 +40,7 @@ using namespace std;
 // -----------------------------------------------------------------------
 // ImageRect
 // -----------------------------------------------------------------------
-void ImageRect::setCoordinates(const int xpos[], const int ypos[])
-{
+void ImageRect::setCoordinates(const int xpos[], const int ypos[]) {
   int id = 0;
   for (int y = 0; y < 3; ++y) {
     for (int x = 0; x < 3; ++x) {
@@ -57,8 +56,7 @@ void ImageRect::setCoordinates(const int xpos[], const int ypos[])
 // GCNGraphics
 // -----------------------------------------------------------------------
 GCNGraphics::GCNGraphics(int width, int height)
-  : gcn::OpenGLGraphics(width, height)
-{ }
+  : gcn::OpenGLGraphics(width, height) { }
 
 // -----------------------------------------------------------------------
 
@@ -67,8 +65,7 @@ GCNGraphics::~GCNGraphics() { }
 // -----------------------------------------------------------------------
 
 void GCNGraphics::drawImageRect(int x, int y, int w, int h,
-                                const ImageRect &i)
-{
+                                const ImageRect &i) {
   pushClipArea(gcn::Rectangle(x, y, w, h));
 
   gcn::Image* image = i.image.get();
@@ -113,18 +110,15 @@ void GCNGraphics::drawImageRect(int x, int y, int w, int h,
 
 void GCNGraphics::drawImageStretched(
   gcn::Image* image, const Rect& source,
-  int dstX, int dstY, int width, int height)
-{
+  int dstX, int dstY, int width, int height) {
   const gcn::OpenGLImage* srcImage =
     dynamic_cast<const gcn::OpenGLImage*>(image);
 
-  if (srcImage == NULL)
-  {
+  if (srcImage == NULL) {
     throw GCN_EXCEPTION("Trying to draw an image of unknown format, must be an OpenGLImage.");
   }
 
-  if (mClipStack.empty())
-  {
+  if (mClipStack.empty()) {
     throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw funtion outside of _beginDraw() and _endDraw()?");
   }
 
@@ -164,8 +158,7 @@ void GCNGraphics::drawImageStretched(
 // -----------------------------------------------------------------------
 
 void GCNGraphics::drawImage(gcn::Image* image, const Rect& source,
-                            int dstX, int dstY)
-{
+                            int dstX, int dstY) {
   OpenGLGraphics::drawImage(image, source.x(), source.y(), dstX, dstY,
                             source.width(), source.height());
 }

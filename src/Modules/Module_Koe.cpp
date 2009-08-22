@@ -77,8 +77,7 @@ struct Koe_koeWaitC : public RLOp_Void_Void {
 // -----------------------------------------------------------------------
 
 KoeModule::KoeModule()
-  : RLModule("Koe", 1, 23)
-{
+  : RLModule("Koe", 1, 23) {
   addOpcode(0, 0, "koePlay", callFunction(
                 (void (SoundSystem::*)(int))&SoundSystem::koePlay));
   addOpcode(0, 1, "koePlay", callFunction(

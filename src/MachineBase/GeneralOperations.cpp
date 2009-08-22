@@ -102,8 +102,7 @@ void MultiDispatch::parseParameters(
     const std::vector<std::string>& input,
     boost::ptr_vector<ExpressionPiece>& output) {
   for (vector<string>::const_iterator it = input.begin(); it != input.end();
-       ++it)
-  {
+       ++it) {
     const char* src = it->c_str();
     output.push_back(get_complex_param(src));
   }
@@ -114,8 +113,7 @@ void MultiDispatch::parseParameters(
 /// @todo Port this up to the new expression handling code
 void MultiDispatch::operator()(
     RLMachine& machine,
-    const libReallive::CommandElement& ff)
-{
+    const libReallive::CommandElement& ff) {
   const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {

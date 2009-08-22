@@ -48,8 +48,7 @@ class SDLMusic;
  * TODO: All of my volume calculations are WRONG. I don't take the difference
  * between say, bgmSetVolume and SetBgmVolMod().
  */
-class SDLSoundSystem : public SoundSystem
-{
+class SDLSoundSystem : public SoundSystem {
 public:
   SDLSoundSystem(System& system);
   ~SDLSoundSystem();

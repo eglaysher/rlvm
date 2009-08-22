@@ -47,8 +47,7 @@ class LongOperation;
  *
  * StackFrames can also be added to represent LongOperations.
  */
-struct StackFrame
-{
+struct StackFrame {
   /// The scenario in the SEEN file for this stack frame.
   libReallive::Scenario const* scenario;
 

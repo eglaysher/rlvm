@@ -40,8 +40,7 @@ using std::wstring;
 
 // -----------------------------------------------------------------------
 
-wstring cp932toUnicode(const string& line, int transformation)
-{
+wstring cp932toUnicode(const string& line, int transformation) {
   return Cp::instance(transformation).ConvertString(line);
 }
 
@@ -65,8 +64,7 @@ string transformationName(int transformation) {
 
 // -----------------------------------------------------------------------
 
-string unicodeToUTF8(const std::wstring& widestring)
-{
+string unicodeToUTF8(const std::wstring& widestring) {
   string out;
   utf8::utf16to8(widestring.begin(), widestring.end(),
                  back_inserter(out));
@@ -76,8 +74,7 @@ string unicodeToUTF8(const std::wstring& widestring)
 
 // -----------------------------------------------------------------------
 
-string cp932toUTF8(const string& line, int transformation)
-{
+string cp932toUTF8(const string& line, int transformation) {
   std::wstring ws = cp932toUnicode(line, transformation);
   return unicodeToUTF8(ws);
 }
@@ -90,10 +87,8 @@ bool isOpeningQuoteMark(int codepoint) {
 
 // -----------------------------------------------------------------------
 
-bool isKinsoku(int codepoint)
-{
-  static const int matchingCodepoints[] =
-    { 0x0021, 0x0022, 0x0027, 0x0029, 0x002c, 0x002e, 0x003a,
+bool isKinsoku(int codepoint) {
+  static const int matchingCodepoints[] = { 0x0021, 0x0022, 0x0027, 0x0029, 0x002c, 0x002e, 0x003a,
       0x003b, 0x003e, 0x003f, 0x005d, 0x007d, 0x2019, 0x201d,
       0x2025, 0x2026, 0x3001, 0x3002, 0x3009, 0x300b, 0x300d,
       0x300f, 0x3011, 0x301f, 0x3041, 0x3043, 0x3045, 0x3047,
@@ -114,12 +109,10 @@ bool isKinsoku(int codepoint)
 
 // -----------------------------------------------------------------------
 
-int codepoint(const string& c)
-{
+int codepoint(const string& c) {
   if (c == "")
     return 0;
-  else
-  {
+  else {
     string::const_iterator it = c.begin();
     return utf8::next(it, c.end());
   }
@@ -127,40 +120,33 @@ int codepoint(const string& c)
 
 // -----------------------------------------------------------------------
 
-void advanceOneShiftJISChar(const char*& c)
-{
-  if (shiftjis_lead_byte(c[0]))
-  {
+void advanceOneShiftJISChar(const char*& c) {
+  if (shiftjis_lead_byte(c[0])) {
     if (c[1] == '\0')
       throw rlvm::Exception("Malformed Shift_JIS string!");
     else
       c += 2;
-  }
-  else
+  } else
     c += 1;
 }
 
 // -----------------------------------------------------------------------
 
-void copyOneShiftJisCharacter(const char*& str, string& output)
-{
-  if (shiftjis_lead_byte(str[0]))
-  {
+void copyOneShiftJisCharacter(const char*& str, string& output) {
+  if (shiftjis_lead_byte(str[0])) {
     if (str[1] == '\0')
       throw rlvm::Exception("Malformed Shift_JIS string!");
     else {
       output += *str++;
       output += *str++;
     }
-  }
-  else
+  } else
     output += *str++;
 }
 
 // -----------------------------------------------------------------------
 
-bool readFullwidthLatinLetter(const char*& str, string& output)
-{
+bool readFullwidthLatinLetter(const char*& str, string& output) {
   // The fullwidth uppercase latin characters are 0x8260 through 0x8279.
   if (str[0] == 0x82) {
     if (str[1] == 0) {
@@ -188,8 +174,7 @@ void addShiftJISChar(unsigned short c, string& output) {
 
 void printTextToFunction(
   boost::function<void(const string& c, const string& nextChar)> fun,
-  const string& charsToPrint, const string& nextCharForFinal)
-{
+  const string& charsToPrint, const string& nextCharForFinal) {
   // Iterate over each incoming character to display (we do this
   // instead of rendering the entire string so that we can perform
   // indentation, et cetera.)
@@ -198,8 +183,7 @@ void printTextToFunction(
   string::const_iterator end = charsToPrint.end();
   utf8::next(tmp, end);
   string curChar(cur, tmp);
-  for (cur = tmp; tmp != end; cur = tmp)
-  {
+  for (cur = tmp; tmp != end; cur = tmp) {
     utf8::next(tmp, end);
     string next(cur, tmp);
     fun(curChar, next);
@@ -211,8 +195,7 @@ void printTextToFunction(
 
 // -----------------------------------------------------------------------
 
-string removeQuotes(const string& quotedString)
-{
+string removeQuotes(const string& quotedString) {
   string output = quotedString;
   if (output.size() && output[0] == '\"')
     output = output.substr(1);

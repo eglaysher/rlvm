@@ -87,8 +87,7 @@ int codepoint(const std::string& c);
  * character. RealLive encodes its strings in Shift_JIS, so we have to
  * deal with this character encoding.
  */
-inline bool shiftjis_lead_byte(const char c)
-{
+inline bool shiftjis_lead_byte(const char c) {
   return (c >= 0x81 && c <= 0x9f) || (c >= 0xe0 && c <= 0xfc);
 }
 

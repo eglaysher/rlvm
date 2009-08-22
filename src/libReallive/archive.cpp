@@ -54,15 +54,13 @@ namespace fs = boost::filesystem;
 namespace libReallive {
 
 Archive::Archive(const string& filename)
-  : name(filename), info(filename, Read), second_level_xor_key_(NULL)
-{
+  : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
   readTOC();
   readOverrides();
 }
 
 Archive::Archive(const string& filename, const std::string& regname)
-  : name(filename), info(filename, Read), second_level_xor_key_(NULL)
-{
+  : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
   readTOC();
   readOverrides();
 
@@ -75,8 +73,7 @@ Archive::Archive(const string& filename, const std::string& regname)
       libReallive::Compression::little_busters_xor_mask_2;
 }
 
-Archive::~Archive()
-{
+Archive::~Archive() {
 	for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it) delete it->second;
 }
 
@@ -126,8 +123,7 @@ Archive::scenario(int index) {
 }
 
 void
-Archive::reset()
-{
+Archive::reset() {
 	for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it) delete it->second;
 	accessed.clear();
 }

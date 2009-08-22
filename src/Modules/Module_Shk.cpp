@@ -33,8 +33,7 @@
 // -----------------------------------------------------------------------
 
 ShakingModule::ShakingModule()
-  : RLModule("Shk", 1, 13)
-{
+  : RLModule("Shk", 1, 13) {
   addUnsupportedOpcode(0, 0, "ShakeStop");
   addUnsupportedOpcode(0, 1, "ShakeStop");
 

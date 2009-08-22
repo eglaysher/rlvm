@@ -101,8 +101,7 @@ struct Bgm_bgmPlaying : public RLOp_Store_Void {
 // -----------------------------------------------------------------------
 
 BgmModule::BgmModule()
-  : RLModule("Bgm", 1, 20)
-{
+  : RLModule("Bgm", 1, 20) {
   // fun \\([A-Za-z0-9]+\\) +<1:Bgm:\\([0-9]+\\), \\([0-9]+\\).*$
   addOpcode(0, 0, "bgmLoop", new Bgm_bgmLoop_0);
   addOpcode(0, 1, "bgmLoop", new Bgm_bgmLoop_1);

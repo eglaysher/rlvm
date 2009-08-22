@@ -38,8 +38,7 @@
  * Special case RLModule where each opcode added is transformed with a
  * mapping function.
  */
-class MappedRLModule : public RLModule
-{
+class MappedRLModule : public RLModule {
 public:
   typedef boost::function<RLOperation*(RLOperation* op)> MappingFunction;
 

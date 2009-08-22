@@ -34,8 +34,7 @@
 /**
  * A colour without an alpha channel.
  */
-class RGBColour
-{
+class RGBColour {
 public:
   RGBColour() : r_(0), g_(0), b_(0) {}
   RGBColour(int r, int g, int b) : r_(r), g_(g), b_(b) {}
@@ -74,8 +73,7 @@ private:
  * @note We compose instead of inherit from RGB because passing in an
  *       instance of RGBA to where one expects an RGB is WRONG!
  */
-class RGBAColour
-{
+class RGBAColour {
 public:
   RGBAColour() : rgb_(0, 0, 0), alpha_(0) { }
   RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { }

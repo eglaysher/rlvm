@@ -54,11 +54,9 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 SDLSystem::SDLSystem(Gameexe& gameexe)
-  : System(), gameexe_(gameexe), last_time_paused_(0)
-{
+  : System(), gameexe_(gameexe), last_time_paused_(0) {
   // First, initialize SDL's video subsystem.
-  if ( SDL_Init( SDL_INIT_VIDEO) < 0 )
-  {
+  if ( SDL_Init( SDL_INIT_VIDEO) < 0 ) {
     ostringstream ss;
     ss << "Video initialization failed: " << SDL_GetError();
     throw Error(ss.str());
@@ -76,8 +74,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
 
 // -----------------------------------------------------------------------
 
-SDLSystem::~SDLSystem()
-{
+SDLSystem::~SDLSystem() {
   event_system_->removeMouseListener(text_system_.get());
   event_system_->removeMouseListener(graphics_system_.get());
 
@@ -98,8 +95,7 @@ SDLSystem::~SDLSystem()
 
 // -----------------------------------------------------------------------
 
-void SDLSystem::run(RLMachine& machine)
-{
+void SDLSystem::run(RLMachine& machine) {
   // Give the event handler a chance to run.
   event_system_->executeEventSystem(machine);
   text_system_->executeTextSystem();
@@ -120,36 +116,31 @@ void SDLSystem::run(RLMachine& machine)
 
 // -----------------------------------------------------------------------
 
-GraphicsSystem& SDLSystem::graphics()
-{
+GraphicsSystem& SDLSystem::graphics() {
   return *graphics_system_;
 }
 
 // -----------------------------------------------------------------------
 
-EventSystem& SDLSystem::event()
-{
+EventSystem& SDLSystem::event() {
   return *event_system_;
 }
 
 // -----------------------------------------------------------------------
 
-Gameexe& SDLSystem::gameexe()
-{
+Gameexe& SDLSystem::gameexe() {
   return gameexe_;
 }
 
 // -----------------------------------------------------------------------
 
-TextSystem& SDLSystem::text()
-{
+TextSystem& SDLSystem::text() {
   return *text_system_;
 }
 
 // -----------------------------------------------------------------------
 
-SoundSystem& SDLSystem::sound()
-{
+SoundSystem& SDLSystem::sound() {
   return *sound_system_;
 }
 

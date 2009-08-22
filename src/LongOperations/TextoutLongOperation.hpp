@@ -35,8 +35,7 @@
 
 class RLMachine;
 
-class TextoutLongOperation : public LongOperation
-{
+class TextoutLongOperation : public LongOperation {
 private:
   std::string m_utf8string;
 

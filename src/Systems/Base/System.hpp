@@ -97,8 +97,7 @@ const int SYSCOM_SHOW_BACKGROUND = 31;
  * Struct containing the global memory to get serialized to disk with
  * global memory.
  */
-struct SystemGlobals
-{
+struct SystemGlobals {
   SystemGlobals();
 
   /// Whether we should put up a yes/no dialog box when saving/loading.
@@ -119,8 +118,7 @@ struct SystemGlobals
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & confirm_save_load_;
 
     if (version > 0)
@@ -143,8 +141,7 @@ BOOST_CLASS_VERSION(SystemGlobals, 1)
  *
  * @see SystemGlobals
  */
-class System
-{
+class System {
 public:
   System();
 
@@ -345,8 +342,7 @@ private:
 
   /// boost::serialization
   template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
+  void serialize(Archive& ar, unsigned int version) {
     // For now, does nothing
   }
 };

@@ -36,8 +36,7 @@ class RLMachine;
 class TextWindow;
 class TestTextWindow;
 
-class TestTextSystem : public TextSystem
-{
+class TestTextSystem : public TextSystem {
 public:
   TestTextSystem(System& system, Gameexe& gexe);
   ~TestTextSystem();

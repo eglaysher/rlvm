@@ -44,8 +44,7 @@ class TextWindow;
 
 // -----------------------------------------------------------------------
 
-class TextWindowButton : public boost::noncopyable
-{
+class TextWindowButton : public boost::noncopyable {
 public:
   TextWindowButton(System& system);
   TextWindowButton(System& system, bool use,
@@ -88,8 +87,7 @@ protected:
 
 // -----------------------------------------------------------------------
 
-class ActionTextWindowButton : public TextWindowButton
-{
+class ActionTextWindowButton : public TextWindowButton {
 public:
   typedef boost::function<void(void)> CallbackFunction;
 
@@ -108,8 +106,7 @@ private:
 // -----------------------------------------------------------------------
 
 class ActivationTextWindowButton : public TextWindowButton,
-                                   public boost::signals::trackable
-{
+                                   public boost::signals::trackable {
 public:
   typedef boost::function<void(void)> CallbackFunction;
 
@@ -136,8 +133,7 @@ private:
 
 // -----------------------------------------------------------------------
 
-class RepeatActionWhileHoldingWindowButton : public TextWindowButton
-{
+class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
 public:
   typedef boost::function<void(void)> CallbackFunction;
 
@@ -162,8 +158,7 @@ private:
 
 // -----------------------------------------------------------------------
 
-class ExbtnWindowButton : public TextWindowButton
-{
+class ExbtnWindowButton : public TextWindowButton {
 public:
   ExbtnWindowButton(System& system, bool use,
                     GameexeInterpretObject location_box,

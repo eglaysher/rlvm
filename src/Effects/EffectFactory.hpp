@@ -53,8 +53,7 @@ class ScrollSquashSlideEffectTypeBase;
  *
  * @ingroup TransitionEffects
  */
-class EffectFactory
-{
+class EffectFactory {
 public:
   /**
    * Builds an Effect based off the \#SEL.selnum line in the

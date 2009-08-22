@@ -77,12 +77,10 @@ struct Scr_stackTrunc : public RLOp_Void_1< IntConstant_T > {
 
 struct Scr_GetDCPixel : public RLOp_Void_6<
   IntConstant_T, IntConstant_T, IntConstant_T,
-  IntReference_T, IntReference_T, IntReference_T>
-{
+  IntReference_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine, int x, int y, int dc,
                   IntReferenceIterator r, IntReferenceIterator g,
-                  IntReferenceIterator b)
-  {
+                  IntReferenceIterator b) {
     int rval, gval, bval;
     machine.system().graphics().getDC(dc)->getDCPixel(Point(x, y), rval, gval, bval);
     *r = rval;
@@ -94,8 +92,7 @@ struct Scr_GetDCPixel : public RLOp_Void_6<
 // -----------------------------------------------------------------------
 
 ScrModule::ScrModule()
-  : RLModule("Scr", 1, 30)
-{
+  : RLModule("Scr", 1, 30) {
   addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
   addOpcode(1, 0, "stackNop", new Scr_stackNop);
   addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));

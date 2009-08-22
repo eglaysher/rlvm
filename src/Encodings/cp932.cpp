@@ -77,8 +77,7 @@
 
 using namespace std;
 
-Cp932::Cp932()
-{
+Cp932::Cp932() {
   NoTransforms = true;
 }
 
@@ -1603,8 +1602,7 @@ std::wstring Cp932::ConvertString(const std::string& in_string) const {
 
 #else
 
-unsigned short Cp932::Convert(unsigned short ch) const
-{
+unsigned short Cp932::Convert(unsigned short ch) const {
   if (ch >= 0xa1 && ch <= 0xdf)
     return ch + 0xfec0;
   else

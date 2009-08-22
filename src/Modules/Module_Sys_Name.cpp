@@ -70,8 +70,7 @@ struct Sys_SetLocalName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
 
 // -----------------------------------------------------------------------
 
-void addSysNameOpcodes(RLModule& m)
-{
+void addSysNameOpcodes(RLModule& m) {
   m.addOpcode(1300, 0, "GetName", new Sys_GetName);
   m.addOpcode(1301, 0, "SetName", new Sys_SetName);
   m.addOpcode(1310, 0, "GetLocalName", new Sys_GetLocalName);

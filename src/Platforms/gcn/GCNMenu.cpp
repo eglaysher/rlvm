@@ -48,8 +48,7 @@ GCNMenu::GCNMenu(
   const std::string& title,
   const vector<GCNMenuButton>& buttons_to_display,
                  GCNPlatform* platform)
-  : GCNWindow(platform)
-{
+  : GCNWindow(platform) {
   int top_offset = MENU_PADDING;
   int max_button_size = 0;
 

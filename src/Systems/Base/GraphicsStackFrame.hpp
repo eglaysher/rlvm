@@ -42,8 +42,7 @@
  *
  * @todo Move the serialization code into this class
  */
-class GraphicsStackFrame
-{
+class GraphicsStackFrame {
 public:
   GraphicsStackFrame();
   GraphicsStackFrame(const std::string& name);
@@ -117,8 +116,7 @@ private:
 
   /// boost::serialization support
   template<class Archive>
-  void serialize(Archive& ar, unsigned int version)
-  {
+  void serialize(Archive& ar, unsigned int version) {
     ar & command_name_ & has_filename_ & file_name_ & has_source_dc_
       & source_dc_ & has_source_coordinates_ & source_rect_
       & has_target_dc_ & target_dc_
