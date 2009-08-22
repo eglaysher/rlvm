@@ -37,8 +37,12 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/StringUtilities.hpp"
 
+#include <algorithm>
+#include <limits>
 #include <iomanip>
+#include <string>
 #include <sstream>
+#include <vector>
 #include <boost/filesystem.hpp>
 #include <boost/date_time/posix_time/time_formatters_limited.hpp>
 namespace fs = boost::filesystem;
@@ -58,7 +62,7 @@ const std::string VALUE_CHANGE = "VALUECHANGE";
  * Creates a list of save games from the save game files on disk.
  */
 class SaveGameListModel : public gcn::ListModel {
-public:
+ public:
   SaveGameListModel(const std::string& no_data, RLMachine& machine);
   virtual ~SaveGameListModel();
 
@@ -69,15 +73,14 @@ public:
   /// Whether this save should enable the action button while loading.
   bool getSaveExistsAt(int i);
 
-private:
+ private:
   std::vector<std::pair<std::string, bool> > titles_;
 };
 
 // -----------------------------------------------------------------------
 
 SaveGameListModel::SaveGameListModel(const std::string& no_data,
-                                     RLMachine& machine)
-{
+                                     RLMachine& machine) {
   using namespace boost::posix_time;
 
   // TODO: Can I make this faster instead of trying to see if every game
@@ -117,21 +120,18 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
 
 // -----------------------------------------------------------------------
 
-SaveGameListModel::~SaveGameListModel()
-{
+SaveGameListModel::~SaveGameListModel() {
 }
 
 // -----------------------------------------------------------------------
 
-int SaveGameListModel::getNumberOfElements()
-{
+int SaveGameListModel::getNumberOfElements() {
   return titles_.size();
 }
 
 // -----------------------------------------------------------------------
 
-std::string SaveGameListModel::getElementAt(int i)
-{
+std::string SaveGameListModel::getElementAt(int i) {
   if (size_t(i) < titles_.size())
     return titles_[i].first;
   else
@@ -141,8 +141,7 @@ std::string SaveGameListModel::getElementAt(int i)
 
 // -----------------------------------------------------------------------
 
-bool SaveGameListModel::getSaveExistsAt(int i)
-{
+bool SaveGameListModel::getSaveExistsAt(int i) {
   if (size_t(i) < titles_.size())
     return titles_[i].second;
   else
@@ -156,8 +155,7 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
                                      GCNPlatform* platform)
   : GCNWindow(platform),
     model_(new SaveGameListModel("NO DATA", machine)),
-    type_(type)
-{
+    type_(type) {
   setSize(540, 400);
 
   // Either the save/load button
@@ -218,8 +216,7 @@ GCNSaveLoadWindow::~GCNSaveLoadWindow() {
 
 // -----------------------------------------------------------------------
 
-void GCNSaveLoadWindow::action(const gcn::ActionEvent& actionEvent)
-{
+void GCNSaveLoadWindow::action(const gcn::ActionEvent& actionEvent) {
   if (actionEvent.getId() == EVENT_CANCEL) {
     platform_->windowCanceled(this);
   } else if (actionEvent.getId() == EVENT_SAVE) {
@@ -232,8 +229,7 @@ void GCNSaveLoadWindow::action(const gcn::ActionEvent& actionEvent)
 
 // -----------------------------------------------------------------------
 
-void GCNSaveLoadWindow::valueChanged(const gcn::SelectionEvent& event)
-{
+void GCNSaveLoadWindow::valueChanged(const gcn::SelectionEvent& event) {
   // When we get a value from the list box, enable the action button.
   bool activate_button = true;
   if (type_ == DO_LOAD) {

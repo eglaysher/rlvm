@@ -47,37 +47,31 @@ boost::scoped_ptr<gcn::Image> GCNScrollArea::s_buttonImages[4][2];
 // -----------------------------------------------------------------------
 
 GCNScrollArea::GCNScrollArea(gcn::Widget *widget)
-  : gcn::ScrollArea(widget)
-{
+  : gcn::ScrollArea(widget) {
   init();
 }
 
 // -----------------------------------------------------------------------
 
-GCNScrollArea::~GCNScrollArea()
-{
+GCNScrollArea::~GCNScrollArea() {
   // Correct?
   delete getContent();
 }
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::logic()
-{
+void GCNScrollArea::logic() {
   gcn::ScrollArea::logic();
   gcn::Widget *content = getContent();
 
   // When no scrollbar in a certain direction, adapt content size to match
   // the content dimension exactly.
-  if (content != NULL)
-  {
-    if (getHorizontalScrollPolicy() == gcn::ScrollArea::SHOW_NEVER)
-    {
+  if (content != NULL) {
+    if (getHorizontalScrollPolicy() == gcn::ScrollArea::SHOW_NEVER) {
       content->setWidth(getChildrenArea().width -
                         2 * content->getFrameSize());
     }
-    if (getVerticalScrollPolicy() == gcn::ScrollArea::SHOW_NEVER)
-    {
+    if (getVerticalScrollPolicy() == gcn::ScrollArea::SHOW_NEVER) {
       content->setHeight(getChildrenArea().height -
                          2 * content->getFrameSize());
     }
@@ -86,26 +80,22 @@ void GCNScrollArea::logic()
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::draw(gcn::Graphics *graphics)
-{
-  if (mVBarVisible)
-  {
+void GCNScrollArea::draw(gcn::Graphics *graphics) {
+  if (mVBarVisible) {
     drawUpButton(graphics);
     drawDownButton(graphics);
     drawVBar(graphics);
     drawVMarker(graphics);
   }
 
-  if (mHBarVisible)
-  {
+  if (mHBarVisible) {
     drawLeftButton(graphics);
     drawRightButton(graphics);
     drawHBar(graphics);
     drawHMarker(graphics);
   }
 
-  if (mHBarVisible && mVBarVisible)
-  {
+  if (mHBarVisible && mVBarVisible) {
     graphics->setColor(getBaseColor());
     graphics->fillRectangle(gcn::Rectangle(getWidth() - mScrollbarWidth,
                                            getHeight() - mScrollbarWidth,
@@ -118,8 +108,7 @@ void GCNScrollArea::draw(gcn::Graphics *graphics)
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawFrame(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawFrame(gcn::Graphics *graphics) {
   int bs = getFrameSize();
   int w = getWidth() + bs * 2;
   int h = getHeight() + bs * 2;
@@ -130,8 +119,7 @@ void GCNScrollArea::drawFrame(gcn::Graphics *graphics)
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::init()
-{
+void GCNScrollArea::init() {
   if (s_background.image == NULL) {
     s_background.image.reset(getThemeImage(IMG_DEEPBOX));
     // TODO: +1 these values??
@@ -158,28 +146,27 @@ void GCNScrollArea::init()
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawButton(gcn::Graphics *graphics, BUTTON_DIR dir)
-{
+void GCNScrollArea::drawButton(gcn::Graphics *graphics, BUTTON_DIR dir) {
   int state = 0;
   gcn::Rectangle dim;
 
-  switch(dir) {
-  case UP:
-    state = mUpButtonPressed ? 1 : 0;
-    dim = getUpButtonDimension();
-    break;
-  case DOWN:
-    state = mDownButtonPressed ? 1 : 0;
-    dim = getDownButtonDimension();
-    break;
-  case LEFT:
-    state = mLeftButtonPressed ? 1 : 0;
-    dim = getLeftButtonDimension();
-    break;
-  case RIGHT:
-    state = mRightButtonPressed ? 1 : 0;
-    dim = getRightButtonDimension();
-    break;
+  switch (dir) {
+    case UP:
+      state = mUpButtonPressed ? 1 : 0;
+      dim = getUpButtonDimension();
+      break;
+    case DOWN:
+      state = mDownButtonPressed ? 1 : 0;
+      dim = getDownButtonDimension();
+      break;
+    case LEFT:
+      state = mLeftButtonPressed ? 1 : 0;
+      dim = getLeftButtonDimension();
+      break;
+    case RIGHT:
+      state = mRightButtonPressed ? 1 : 0;
+      dim = getRightButtonDimension();
+      break;
   }
 
   graphics->drawImage(s_buttonImages[dir][state].get(), dim.x, dim.y);
@@ -187,36 +174,31 @@ void GCNScrollArea::drawButton(gcn::Graphics *graphics, BUTTON_DIR dir)
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawUpButton(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawUpButton(gcn::Graphics *graphics) {
   drawButton(graphics, UP);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawDownButton(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawDownButton(gcn::Graphics *graphics) {
   drawButton(graphics, DOWN);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawLeftButton(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawLeftButton(gcn::Graphics *graphics) {
   drawButton(graphics, LEFT);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawRightButton(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawRightButton(gcn::Graphics *graphics) {
   drawButton(graphics, RIGHT);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawVBar(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawVBar(gcn::Graphics *graphics) {
   gcn::Rectangle dim = getVerticalBarDimension();
   graphics->setColor(gcn::Color(0, 0, 0, 32));
   graphics->fillRectangle(dim);
@@ -225,8 +207,7 @@ void GCNScrollArea::drawVBar(gcn::Graphics *graphics)
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawHBar(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawHBar(gcn::Graphics *graphics) {
   gcn::Rectangle dim = getHorizontalBarDimension();
   graphics->setColor(gcn::Color(0, 0, 0, 32));
   graphics->fillRectangle(dim);
@@ -235,8 +216,7 @@ void GCNScrollArea::drawHBar(gcn::Graphics *graphics)
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawVMarker(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawVMarker(gcn::Graphics *graphics) {
   gcn::Rectangle dim = getVerticalMarkerDimension();
 
   static_cast<GCNGraphics*>(graphics)->
@@ -245,8 +225,7 @@ void GCNScrollArea::drawVMarker(gcn::Graphics *graphics)
 
 // -----------------------------------------------------------------------
 
-void GCNScrollArea::drawHMarker(gcn::Graphics *graphics)
-{
+void GCNScrollArea::drawHMarker(gcn::Graphics *graphics) {
   gcn::Rectangle dim = getHorizontalMarkerDimension();
 
   static_cast<GCNGraphics*>(graphics)->

@@ -41,6 +41,7 @@
 #include <guichan/sdl.hpp>
 #include <guichan/opengl/openglsdlimageloader.hpp>
 
+#include <string>
 #include <vector>
 
 class Gameexe;
@@ -61,9 +62,8 @@ extern const char* EVENT_CANCEL;
 class GCNPlatform : public Platform,
                     public gcn::MouseListener,
                     public gcn::KeyListener,
-                    public boost::enable_shared_from_this<GCNPlatform>
-{
-public:
+                    public boost::enable_shared_from_this<GCNPlatform> {
+ public:
   GCNPlatform(System& system, const Rect& screen_size);
   ~GCNPlatform();
 
@@ -85,7 +85,7 @@ public:
   // Overridden from gcn::KeyListener:
   virtual void keyReleased(gcn::KeyEvent& keyEvent);
 
-private:
+ private:
   /// Blocks the world until we're done.
   void pushBlocker(RLMachine& machine);
 
@@ -149,6 +149,5 @@ private:
 
   friend class GCNPlatformBlocker;
 };  // end of class GCNPlatform
-
 
 #endif  // SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_

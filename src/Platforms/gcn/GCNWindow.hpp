@@ -38,10 +38,9 @@ class Size;
  * Base window. Later, this should be themed correctly. Default ugliness for
  * now.
  */
-class GCNWindow : public gcn::Container
-{
-public:
-  GCNWindow(GCNPlatform* platform);
+class GCNWindow : public gcn::Container {
+ public:
+  explicit GCNWindow(GCNPlatform* platform);
   ~GCNWindow();
 
   /// Centers this GCNWindow in the rlvm window.
@@ -50,13 +49,12 @@ public:
   // Override from gcn::Container:
   virtual void draw(gcn::Graphics* graphics);
 
-protected:
+ protected:
   /// Our owning platform.
   GCNPlatform* platform_;
 
   /// The border that's put around a window
   static ImageRect s_border;
 };  // end of class GCNWindow
-
 
 #endif  // SRC_PLATFORMS_GCN_GCNWINDOW_HPP_

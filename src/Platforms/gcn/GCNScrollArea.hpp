@@ -24,7 +24,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
 #define SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
 
@@ -37,10 +36,9 @@
 /**
  * Copy of TMW's ScrollArea class, adapted to my system.
  */
-class GCNScrollArea : public gcn::ScrollArea
-{
-public:
-  GCNScrollArea(gcn::Widget *widget);
+class GCNScrollArea : public gcn::ScrollArea {
+ public:
+  explicit GCNScrollArea(gcn::Widget *widget);
   ~GCNScrollArea();
 
   /**
@@ -59,7 +57,7 @@ public:
    */
   void drawFrame(gcn::Graphics *graphics);
 
-protected:
+ protected:
   enum BUTTON_DIR {
     UP,
     DOWN,
@@ -84,6 +82,5 @@ protected:
   static ImageRect s_vMarker;
   static boost::scoped_ptr<gcn::Image> s_buttonImages[4][2];
 };  // end of class GCNScrollArea
-
 
 #endif  // SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_

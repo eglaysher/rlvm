@@ -24,9 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
 #define SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
+
+#include <string>
 
 #include <guichan/widgets/button.hpp>
 
@@ -39,12 +40,12 @@
  * actual copies.
  */
 class GCNButton : public gcn::Button {
-public:
+ public:
   /// Default constructor.
   GCNButton();
 
   /// Initializes the button with a label.
-  GCNButton(const std::string& label);
+  explicit GCNButton(const std::string& label);
 
   /// Destructor
   ~GCNButton();
@@ -52,7 +53,7 @@ public:
   // Override from gcn::Button:
   virtual void draw(gcn::Graphics* graphics);
 
-private:
+ private:
   void init();
 
   ImageRect& currentButtonImage();
@@ -62,6 +63,5 @@ private:
   static ImageRect s_buttonpress;
   static ImageRect s_button_disabled;
 };  // end of class GCNButton
-
 
 #endif  // SRC_PLATFORMS_GCN_GCNBUTTON_HPP_

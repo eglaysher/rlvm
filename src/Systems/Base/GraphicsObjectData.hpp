@@ -45,18 +45,17 @@ class Surface;
  * store image or text data that need to be associated with a
  * GraphicsObject.
  */
-class GraphicsObjectData
-{
-public:
+class GraphicsObjectData {
+ public:
   enum AfterAnimation {
     AFTER_NONE,
     AFTER_CLEAR,
     AFTER_LOOP
   };
 
-public:
+ public:
   GraphicsObjectData();
-  GraphicsObjectData(const GraphicsObjectData& obj);
+  explicit GraphicsObjectData(const GraphicsObjectData& obj);
   virtual ~GraphicsObjectData();
 
   AfterAnimation afterAnimation() const { return after_animation_; }
@@ -139,7 +138,7 @@ protected:
    */
   virtual void objectInfo(std::ostream& tree) = 0;
 
-private:
+ private:
   /// Policy of what to do after an animation is finished.
   AfterAnimation after_animation_;
 

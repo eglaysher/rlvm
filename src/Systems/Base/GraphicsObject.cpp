@@ -406,8 +406,7 @@ int GraphicsObject::textColour() const
 
 // -----------------------------------------------------------------------
 
-int GraphicsObject::textShadowColour() const
-{
+int GraphicsObject::textShadowColour() const {
   if(impl_->text_properties_)
     return impl_->text_properties_->shadow_colour;
   else

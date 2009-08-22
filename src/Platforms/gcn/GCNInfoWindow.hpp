@@ -52,5 +52,4 @@ class GCNInfoWindow : public GCNWindow,
   gcn::Button* ok_button_;
 };  // end of class GCNInfoWindow
 
-
 #endif  // SRC_PLATFORMS_GCN_GCNINFOWINDOW_HPP_

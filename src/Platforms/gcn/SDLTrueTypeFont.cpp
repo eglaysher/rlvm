@@ -40,15 +40,15 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <string>
 #include <iostream>
 using namespace std;
 
 // -----------------------------------------------------------------------
 // SDLTrueTypeFont
 // -----------------------------------------------------------------------
-SDLTrueTypeFont::SDLTrueTypeFont (const std::string& filename, int size)
-  : image_cache_(125)
-{
+SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
+    : image_cache_(125) {
   mRowSpacing = 0;
   mGlyphSpacing = 0;
   mAntiAlias = true;
@@ -58,21 +58,20 @@ SDLTrueTypeFont::SDLTrueTypeFont (const std::string& filename, int size)
   mFont = TTF_OpenFont(filename.c_str(), size);
 
   if (mFont == NULL) {
-    throw GCN_EXCEPTION("SDLTrueTypeFont::SDLTrueTypeFont. "+std::string(TTF_GetError()));
+    throw GCN_EXCEPTION("SDLTrueTypeFont::SDLTrueTypeFont. " +
+                        std::string(TTF_GetError()));
   }
 }
 
 // -----------------------------------------------------------------------
 
-SDLTrueTypeFont::~SDLTrueTypeFont()
-{
+SDLTrueTypeFont::~SDLTrueTypeFont() {
   TTF_CloseFont(mFont);
 }
 
 // -----------------------------------------------------------------------
 
-int SDLTrueTypeFont::getWidth(const std::string& text) const
-{
+int SDLTrueTypeFont::getWidth(const std::string& text) const {
   int w, h;
   TTF_SizeUTF8(mFont, text.c_str(), &w, &h);
 
@@ -81,8 +80,7 @@ int SDLTrueTypeFont::getWidth(const std::string& text) const
 
 // -----------------------------------------------------------------------
 
-int SDLTrueTypeFont::getHeight() const
-{
+int SDLTrueTypeFont::getHeight() const {
   return TTF_FontHeight(mFont) + mRowSpacing;
 }
 
@@ -90,8 +88,7 @@ int SDLTrueTypeFont::getHeight() const
 
 void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
                                  const std::string& text,
-                                 const int x, const int y)
-{
+                                 const int x, const int y) {
   if (text == "")
     return;
 
@@ -100,9 +97,9 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
 
   gcn::Color col = graphics->getColor();
   std::string colstr;
-  colstr += char(col.r);
-  colstr += char(col.g);
-  colstr += char(col.b);
+  colstr += static_cast<char>(col.r);
+  colstr += static_cast<char>(col.g);
+  colstr += static_cast<char>(col.b);
 
   boost::shared_ptr<gcn::OpenGLImage> image =
     image_cache_.fetch(make_pair(text, colstr));
@@ -139,42 +136,36 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
 
 // -----------------------------------------------------------------------
 
-void SDLTrueTypeFont::setRowSpacing(int spacing)
-{
+void SDLTrueTypeFont::setRowSpacing(int spacing) {
   mRowSpacing = spacing;
 }
 
 // -----------------------------------------------------------------------
 
-int SDLTrueTypeFont::getRowSpacing()
-{
+int SDLTrueTypeFont::getRowSpacing() {
   return mRowSpacing;
 }
 
 // -----------------------------------------------------------------------
 
-void SDLTrueTypeFont::setGlyphSpacing(int spacing)
-{
+void SDLTrueTypeFont::setGlyphSpacing(int spacing) {
   mGlyphSpacing = spacing;
 }
 
 // -----------------------------------------------------------------------
 
-int SDLTrueTypeFont::getGlyphSpacing()
-{
+int SDLTrueTypeFont::getGlyphSpacing() {
   return mGlyphSpacing;
 }
 
 // -----------------------------------------------------------------------
 
-void SDLTrueTypeFont::setAntiAlias(bool antiAlias)
-{
+void SDLTrueTypeFont::setAntiAlias(bool antiAlias) {
   mAntiAlias = antiAlias;
 }
 
 // -----------------------------------------------------------------------
 
-bool SDLTrueTypeFont::isAntiAlias()
-{
+bool SDLTrueTypeFont::isAntiAlias() {
   return mAntiAlias;
 }

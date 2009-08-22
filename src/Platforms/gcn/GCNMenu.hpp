@@ -53,8 +53,7 @@ struct GCNMenuButton {
  * A GCNMenu is a window that just auto-lays out a set of buttons.
  */
 class GCNMenu : public GCNWindow,
-                public gcn::ActionListener
-{
+                public gcn::ActionListener {
  public:
   /**
    * Creates a menu out of a set of buttons
@@ -75,6 +74,5 @@ class GCNMenu : public GCNWindow,
  private:
   std::vector<gcn::Widget*> widgets_to_delete_;
 };  // end of class GCNMenu
-
 
 #endif  // SRC_PLATFORMS_GCN_GCNMENU_HPP_

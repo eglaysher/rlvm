@@ -42,6 +42,19 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 
+#include "MachineBase/RLMachine.hpp"
+
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <iterator>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/assign.hpp>
+#include <boost/bind.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include "LongOperations/PauseLongOperation.hpp"
 #include "LongOperations/TextoutLongOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -69,17 +82,6 @@
 #include "libReallive/intmemref.h"
 #include "libReallive/scenario.h"
 
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <iterator>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/assign.hpp>
-#include <boost/bind.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/lexical_cast.hpp>
-
 namespace fs = boost::filesystem;
 
 using namespace std;
@@ -96,13 +98,13 @@ using boost::shared_ptr;
 /// Seen files are terminated with the string "SeenEnd", which isn't NULL
 /// terminated and has a bunch of random garbage after it.
 static const char seen_end[] = {
-  130, 114, // S
-  130, 133, // e
-  130, 133, // e
-  130, 142, // n
-  130, 100, // E
-  130, 142, // n
-  130, 132  // d
+  130, 114,  // S
+  130, 133,  // e
+  130, 133,  // e
+  130, 142,  // n
+  130, 100,  // E
+  130, 142,  // n
+  130, 132   // d
 };
 
 static const std::string SeenEnd(seen_end, 14);
@@ -120,8 +122,7 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
       line_(0),
       system_(in_system),
       mark_savepoints_(true),
-      delay_stack_modifications_(false)
-{
+      delay_stack_modifications_(false) {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libReallive::Scenario* scenario = NULL;

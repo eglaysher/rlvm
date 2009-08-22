@@ -24,11 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_PLATFORMS_GCN_GCNSAVELOADWINDOW_HPP_
 #define SRC_PLATFORMS_GCN_GCNSAVELOADWINDOW_HPP_
-
-#include "Platforms/gcn/GCNWindow.hpp"
 
 #include <boost/scoped_ptr.hpp>
 #include <vector>
@@ -38,6 +35,8 @@
 #include <guichan/selectionlistener.hpp>
 #include <guichan/listmodel.hpp>
 #include <guichan/widgets/button.hpp>
+
+#include "Platforms/gcn/GCNWindow.hpp"
 
 class RLMachine;
 class SaveGameListModel;
@@ -49,15 +48,14 @@ class SaveGameListModel;
  */
 class GCNSaveLoadWindow : public GCNWindow,
                           public gcn::ActionListener,
-                          public gcn::SelectionListener
-{
-public:
+                          public gcn::SelectionListener {
+ public:
   enum WindowType {
     DO_SAVE,
     DO_LOAD
   };
 
-public:
+ public:
   GCNSaveLoadWindow(RLMachine& machine,
                     WindowType type,
                     GCNPlatform* platform_);
@@ -69,7 +67,7 @@ public:
   // Overriden from gcn::SelectionListener:
   virtual void valueChanged(const gcn::SelectionEvent& event);
 
-private:
+ private:
   /// Provides titles and whether a save exists in said slot.
   boost::scoped_ptr<SaveGameListModel> model_;
 
@@ -83,6 +81,5 @@ private:
 
   std::vector<gcn::Widget*> widgets_to_delete_;
 };  // end of class GCNSaveLoadWindow
-
 
 #endif  // SRC_PLATFORMS_GCN_GCNSAVELOADWINDOW_HPP_

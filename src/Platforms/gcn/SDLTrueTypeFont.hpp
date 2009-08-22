@@ -24,7 +24,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
 #define SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
 
@@ -62,17 +61,15 @@ class OpenGLImage;
  * @author Walluce Pinkham
  * @author Olof Naessén
  */
-class SDLTrueTypeFont : public gcn::Font
-{
-public:
-
+class SDLTrueTypeFont : public gcn::Font {
+ public:
   /**
    * Constructor.
    *
    * @param filename the filename of the True Type Font.
    * @param size the size the font should be in.
    */
-  SDLTrueTypeFont (const std::string& filename, int size);
+  SDLTrueTypeFont(const std::string& filename, int size);
 
   /**
    * Destructor.
@@ -85,7 +82,7 @@ public:
    *
    * @param spacing the spacing in pixels.
    */
-  virtual void setRowSpacing (int spacing);
+  virtual void setRowSpacing(int spacing);
 
   /**
    * Gets the spacing between rows in pixels.
@@ -129,7 +126,7 @@ public:
   virtual void drawString(gcn::Graphics* graphics, const std::string& text,
                           int x, int y);
 
-private:
+ private:
   TTF_Font *mFont;
 
   int mHeight;

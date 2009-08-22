@@ -39,9 +39,8 @@ class SelectionElement;
 
 // -----------------------------------------------------------------------
 
-class SDLTextWindow : public TextWindow
-{
-public:
+class SDLTextWindow : public TextWindow {
+ public:
   SDLTextWindow(System& system, int window);
   ~SDLTextWindow();
 
@@ -58,7 +57,7 @@ public:
 
   virtual void addSelectionItem(const std::string& utf8str);
 
-private:
+ private:
   /// Converted surface for uploading.
   boost::shared_ptr<SDLSurface> surface_;
   boost::shared_ptr<SDLSurface> name_surface_;
@@ -67,6 +66,5 @@ private:
   boost::shared_ptr<TTF_Font> font_;
   boost::shared_ptr<TTF_Font> ruby_font_;
 };
-
 
 #endif  // SRC_SYSTEMS_SDL_SDLTEXTWINDOW_HPP_

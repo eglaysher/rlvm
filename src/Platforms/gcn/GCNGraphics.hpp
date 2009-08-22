@@ -86,7 +86,7 @@ struct ImageRect {
  * forth.
  */
 class GCNGraphics : public gcn::OpenGLGraphics {
-public:
+ public:
   /// Initializes the graphics with the current screen resolution.
   GCNGraphics(int width, int height);
 
@@ -98,7 +98,7 @@ public:
    */
   void drawImageRect(int x, int y, int w, int h, const ImageRect &imgRect);
 
-private:
+ private:
   /// Hack around OpenGLGraphics::drawImage to render the image (stretched)
   /// into the target rectangle.
   void drawImageStretched(gcn::Image* image,
