@@ -25,9 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
 #define SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
+
+#include <string>
 
 #include "MachineBase/RLModule.hpp"
 #include <boost/function.hpp>

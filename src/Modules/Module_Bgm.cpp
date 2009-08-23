@@ -31,6 +31,8 @@
 
 #include "Modules/Module_Bgm.hpp"
 
+#include <string>
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"

@@ -41,6 +41,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 namespace libReallive {
 class FunctionElement;
@@ -146,8 +147,8 @@ class RLModule : public boost::noncopyable {
    * @param machine The RLMachine we are operating with
    * @param f The bytecode element that we are trying to execute
    */
-  void dispatchFunction(RLMachine& machine, const libReallive::CommandElement& f);
-
+  void dispatchFunction(RLMachine& machine,
+                        const libReallive::CommandElement& f);
 
   OpcodeMap::iterator begin() { return stored_operations.begin(); }
   OpcodeMap::iterator end() { return stored_operations.end(); }
@@ -157,7 +158,8 @@ class RLModule : public boost::noncopyable {
                                  unsigned char& overload);
 
  protected:
-  RLModule(const std::string& in_module_name, int in_module_type, int in_module_number);
+  RLModule(const std::string& in_module_name, int in_module_type,
+           int in_module_number);
 
  private:
   typedef std::pair<int, int> Property;
@@ -165,7 +167,6 @@ class RLModule : public boost::noncopyable {
 
   PropertyList::iterator findProperty(int property) const;
 
-  /// 
   PropertyList* property_list_;
 
   int module_type_;

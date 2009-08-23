@@ -35,6 +35,7 @@
  * @date   Sat Oct  7 11:16:10 2006
  */
 
+#include <string>
 #include <iterator>
 
 template<typename T>
@@ -53,7 +54,7 @@ class Memory;
  */
 class IntAccessor {
  public:
-  IntAccessor(MemoryReferenceIterator<IntAccessor>* i);
+  explicit IntAccessor(MemoryReferenceIterator<IntAccessor>* i);
   ~IntAccessor();
 
   operator int() const;
@@ -84,7 +85,7 @@ class IntAccessor {
  */
 class StringAccessor {
  public:
-  StringAccessor(MemoryReferenceIterator<StringAccessor>* i);
+  explicit StringAccessor(MemoryReferenceIterator<StringAccessor>* i);
   ~StringAccessor();
 
   operator std::string() const;
@@ -115,7 +116,7 @@ class MemoryReferenceIterator
   MemoryReferenceIterator();
 
   // Explicit store register creation
-  MemoryReferenceIterator(int* store_register);
+  explicit MemoryReferenceIterator(int* store_register);
 
   // Explicit reference creation
   MemoryReferenceIterator(Memory* in_machine, const int in_type,
@@ -171,7 +172,7 @@ class MemoryReferenceIterator
   }
 
   bool operator!=(const MemoryReferenceIterator<ACCESS>& rhs) const {
-    return ! operator==(rhs);
+    return !operator==(rhs);
   }
 
   MemoryReferenceIterator<ACCESS> changeMemoryTo(Memory* new_mem_obj) const {

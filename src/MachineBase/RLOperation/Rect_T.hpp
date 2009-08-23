@@ -27,6 +27,9 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_
 
+#include <string>
+#include <vector>
+
 #include "MachineBase/RLOperation.hpp"
 #include "Systems/Base/Rect.hpp"
 

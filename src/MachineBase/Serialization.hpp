@@ -74,7 +74,6 @@ void loadLocalMemoryFrom(std::istream& iss, Memory& memory);
 void loadGameForSlot(RLMachine& machine, int slot);
 void loadGameFrom(std::istream& iss, RLMachine& machine);
 
-}
-
+}  // namespace Serialization
 
 #endif  // SRC_MACHINEBASE_SERIALIZATION_HPP_

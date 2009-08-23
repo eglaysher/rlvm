@@ -23,6 +23,9 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_SPECIAL_T_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_SPECIAL_T_HPP_
 
+#include <string>
+#include <vector>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/tuple/tuple.hpp>
 
@@ -77,7 +80,7 @@ struct Special_T {
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
-    if(position >= p.size()) {
+    if (position >= p.size()) {
       std::ostringstream oss;
       oss << "Illegal position in Special_T: " << position << " (Size of p: "
           << p.size() << ")";
@@ -87,37 +90,38 @@ struct Special_T {
     const libReallive::SpecialExpressionPiece& sp =
       static_cast<const libReallive::SpecialExpressionPiece&>(p[position]);
 
-    if(sp.getContainedPieces().size() == 0)
+    if (sp.getContainedPieces().size() == 0)
       throw rlvm::Exception("Empty special construct in Special_T");
 
     Parameter par;
     par.type = sp.getOverloadTag();
-    switch(par.type) {
-    case 0:
-      par.first = getDataFor<A>(machine, p, position, sp);
-      break;
-    case 1:
-      par.second = getDataFor<B>(machine, p, position, sp);
-      break;
-    case 2:
-      par.third = getDataFor<C>(machine, p, position, sp);
-      break;
-    case 3:
-      par.fourth = getDataFor<D>(machine, p, position, sp);
-      break;
-    case 4:
-      par.fifth = getDataFor<E>(machine, p, position, sp);
-      break;
-    default:
-      throw rlvm::Exception("Illegal overload in Special2_T::getData()");
+    switch (par.type) {
+      case 0:
+        par.first = getDataFor<A>(machine, p, position, sp);
+        break;
+      case 1:
+        par.second = getDataFor<B>(machine, p, position, sp);
+        break;
+      case 2:
+        par.third = getDataFor<C>(machine, p, position, sp);
+        break;
+      case 3:
+        par.fourth = getDataFor<D>(machine, p, position, sp);
+        break;
+      case 4:
+        par.fifth = getDataFor<E>(machine, p, position, sp);
+        break;
+      default:
+        throw rlvm::Exception("Illegal overload in Special2_T::getData()");
     };
 
     return par;
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
     std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
     output.push_back(ep.release());

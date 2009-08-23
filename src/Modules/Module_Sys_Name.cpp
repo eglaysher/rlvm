@@ -29,6 +29,8 @@
 
 // -----------------------------------------------------------------------
 
+#include <string>
+
 #include "Modules/Module_Sys_Save.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/References.hpp"
@@ -39,7 +41,8 @@
 // -----------------------------------------------------------------------
 
 struct Sys_GetName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
-  void operator()(RLMachine& machine, int index, StringReferenceIterator strIt) {
+  void operator()(RLMachine& machine, int index,
+                  StringReferenceIterator strIt) {
     *strIt = machine.memory().getName(index);
   }
 };
@@ -55,7 +58,8 @@ struct Sys_SetName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
 // -----------------------------------------------------------------------
 
 struct Sys_GetLocalName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
-  void operator()(RLMachine& machine, int index, StringReferenceIterator strIt) {
+  void operator()(RLMachine& machine, int index,
+                  StringReferenceIterator strIt) {
     *strIt = machine.memory().getLocalName(index);
   }
 };

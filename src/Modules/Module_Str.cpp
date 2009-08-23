@@ -37,6 +37,9 @@
 
 #include "Modules/Module_Str.hpp"
 
+#include <algorithm>
+#include <string>
+
 #include "Encodings/han2zen.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
@@ -177,7 +180,7 @@ struct Str_strclear_0 : public RLOp_Void_1< StrReference_T > {
 struct Str_strclear_1 : public RLOp_Void_2< StrReference_T, StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator first,
                   StringReferenceIterator last) {
-    ++last; // RL ranges are inclusive
+    ++last;  // RL ranges are inclusive
     fill(first, last, "");
   }
 };
@@ -235,15 +238,17 @@ struct Str_strcmp : public RLOp_Store_2< StrConstant_T, StrConstant_T> {
  */
 struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
                                          IntConstant_T> {
-  void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
-                  int offset) {
+  void operator()(RLMachine& machine, StringReferenceIterator dest,
+                  string source, int offset) {
     const char* str = source.c_str();
     string output;
 
     // Advance the string to the first
     while (offset > 0) {
-      if (str[0] == '\0')
-        throw rlvm::Exception("Error in strsub: offset is greater then string length");
+      if (str[0] == '\0') {
+        throw rlvm::Exception(
+            "Error in strsub: offset is greater then string length");
+      }
 
       advanceOneShiftJISChar(str);
       offset--;
@@ -270,15 +275,17 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
  */
 struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, StringReferenceIterator dest, string source,
-                  int offset, int length) {
+  void operator()(RLMachine& machine, StringReferenceIterator dest,
+                  string source, int offset, int length) {
     const char* str = source.c_str();
     string output;
 
     // Advance the string to the first
     while (offset > 0) {
-      if (*str == '\0')
-        throw rlvm::Exception("Error in strsub: offset is greater then string length");
+      if (*str == '\0') {
+        throw rlvm::Exception(
+            "Error in strsub: offset is greater then string length");
+      }
 
       advanceOneShiftJISChar(str);
       offset--;
@@ -316,8 +323,10 @@ struct Str_strrsub_0 : public Str_strsub_0 {
 struct Str_strrsub_1 : public Str_strsub_1 {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offsetFromBack, int length) {
-    if (length > offsetFromBack)
-      throw rlvm::Exception("strrsub: length of substring greater then offset in rsub");
+    if (length > offsetFromBack) {
+      throw rlvm::Exception(
+          "strrsub: length of substring greater then offset in rsub");
+    }
 
     int offset = strcharlen(source.c_str()) - offsetFromBack;
     return Str_strsub_1::operator()(machine, dest, source, offset, length);

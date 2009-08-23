@@ -79,7 +79,7 @@ class LongOperation : public EventListener {
  */
 class PerformAfterLongOperationDecorator : public LongOperation {
  public:
-  PerformAfterLongOperationDecorator(LongOperation* in_op);
+  explicit PerformAfterLongOperationDecorator(LongOperation* in_op);
   ~PerformAfterLongOperationDecorator();
 
   // Overridden from EventListener:

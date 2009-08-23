@@ -23,6 +23,9 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_REFERENCES_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_REFERENCES_HPP_
 
+#include <string>
+#include <vector>
+
 #include "MachineBase/reference.hpp"
 #include "libReallive/expression.h"
 #include "libReallive/expression_pieces.h"
@@ -48,9 +51,10 @@ struct IntReference_T {
                       unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     is_real_typestruct = true,
@@ -80,9 +84,10 @@ struct StrReference_T {
                       unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     is_real_typestruct = true,

@@ -115,11 +115,13 @@ void GCNGraphics::drawImageStretched(
     dynamic_cast<const gcn::OpenGLImage*>(image);
 
   if (srcImage == NULL) {
-    throw GCN_EXCEPTION("Trying to draw an image of unknown format, must be an OpenGLImage.");
+    throw GCN_EXCEPTION("Trying to draw an image of unknown format, must be "
+                        "an OpenGLImage.");
   }
 
   if (mClipStack.empty()) {
-    throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw funtion outside of _beginDraw() and _endDraw()?");
+    throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw "
+                        "function outside of _beginDraw() and _endDraw()?");
   }
 
   const gcn::ClipRectangle& top = mClipStack.top();

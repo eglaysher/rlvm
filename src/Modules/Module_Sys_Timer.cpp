@@ -52,7 +52,7 @@ using boost::numeric_cast;
 
 struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
   const int layer_;
-  Sys_ResetTimer(const int in) : layer_(in) {}
+  explicit Sys_ResetTimer(const int in) : layer_(in) {}
 
   void operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -135,7 +135,8 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
   void operator()(RLMachine& machine, int time, int counter) {
     EventSystem& es = machine.system().event();
 
-    if (es.getTimer(layer_, counter).read(es) < numeric_cast<unsigned int>(time)) {
+    if (es.getTimer(layer_, counter).read(es) <
+        numeric_cast<unsigned int>(time)) {
       machine.pushLongOperation(new LongOp_time(machine, layer_, counter,
                                                 time, in_time_c_));
     }
@@ -146,7 +147,7 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
 
 struct Sys_Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
   const int layer_;
-  Sys_Timer(const int in) : layer_(in) {}
+  explicit Sys_Timer(const int in) : layer_(in) {}
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -156,21 +157,24 @@ struct Sys_Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_CmpTimer : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> > {
+struct Sys_CmpTimer
+    : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> > {
   const int layer_;
-  Sys_CmpTimer(const int in) : layer_(in) {}
+  explicit Sys_CmpTimer(const int in) : layer_(in) {}
 
   int operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();
-    return es.getTimer(layer_, counter).read(es) > numeric_cast<unsigned int>(val);
+    return es.getTimer(layer_, counter).read(es) >
+        numeric_cast<unsigned int>(val);
   }
 };
 
 // -----------------------------------------------------------------------
 
-struct Sys_SetTimer : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T<0> > {
+struct Sys_SetTimer
+    : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T<0> > {
   const int layer_;
-  Sys_SetTimer(const int in) : layer_(in) {}
+  explicit Sys_SetTimer(const int in) : layer_(in) {}
 
   void operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();

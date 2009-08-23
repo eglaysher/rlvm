@@ -23,6 +23,9 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_ARGC_T_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_ARGC_T_HPP_
 
+#include <string>
+#include <vector>
+
 /**
  * @ingroup RLOperationGroup
  *
@@ -47,9 +50,10 @@ struct Argc_T {
                       unsigned int& position);
 
   /// Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output);
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
     is_real_typestruct = true,
@@ -65,7 +69,7 @@ getData(RLMachine& machine,
                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                      unsigned int& position) {
   type return_vector;
-  for(; position < p.size(); )
+  for (; position < p.size(); )
     return_vector.push_back(CON::getData(machine, p, position));
 
   return return_vector;
@@ -78,7 +82,7 @@ void Argc_T<CON>::
 parseParameters(unsigned int& position,
                 const std::vector<std::string>& input,
                 boost::ptr_vector<libReallive::ExpressionPiece>& output) {
-  for(; position < input.size(); ) {
+  for (; position < input.size(); ) {
     CON::parseParameters(position, input, output);
   }
 }

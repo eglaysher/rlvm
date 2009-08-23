@@ -23,9 +23,11 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_DEFAULTVALUE_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_DEFAULTVALUE_HPP_
 
+#include <string>
+#include <vector>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 #include "libReallive/expression_pieces.h"
-
 
 template<int DEFAULTVAL>
 struct DefaultIntValue_T {
@@ -36,17 +38,18 @@ struct DefaultIntValue_T {
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
-    if(position < p.size()) {
+    if (position < p.size()) {
       return IntConstant_T::getData(machine, p, position);
     } else {
       return DEFAULTVAL;
     }
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
-    if(position < input.size()) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+    if (position < input.size()) {
       IntConstant_T::parseParameters(position, input, output);
     } else {
       output.push_back(new libReallive::IntegerConstant(DEFAULTVAL));
@@ -73,17 +76,18 @@ struct DefaultStrValue_T {
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
-    if(position < p.size()) {
+    if (position < p.size()) {
       return StrConstant_T::getData(machine, p, position);
     } else {
       return std::string();
     }
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
-    if(position < input.size()) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+    if (position < input.size()) {
       StrConstant_T::parseParameters(position, input, output);
     } else {
       output.push_back(new libReallive::StringConstant(std::string()));

@@ -23,6 +23,9 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_
 
+#include <string>
+#include <vector>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/tuple/tuple.hpp>
 
@@ -48,16 +51,20 @@ struct Complex2_T {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
-    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename A::type a =
+        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b =
+        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
     return type(a, b);
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    std::auto_ptr<libReallive::ExpressionPiece> ep(
+        libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
   }
@@ -89,17 +96,22 @@ struct Complex3_T {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
-    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename A::type a =
+        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b =
+        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c =
+        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
     return type(a, b, c);
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    std::auto_ptr<libReallive::ExpressionPiece> ep(
+        libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
   }
@@ -132,18 +144,24 @@ struct Complex4_T {
 
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
-    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename D::type d = D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename A::type a =
+        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b =
+        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c =
+        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename D::type d =
+        D::getData(machine, sp.getContainedPieces(), pos_in_expression);
     return type(a, b, c, d);
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    std::auto_ptr<libReallive::ExpressionPiece> ep(
+        libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
   }
@@ -180,21 +198,30 @@ struct Complex7_T {
 
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
-    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename D::type d = D::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename E::type e = E::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename F::type f = F::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename G::type g = G::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename A::type a =
+        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b =
+        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c =
+        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename D::type d =
+        D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename E::type e =
+        E::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename F::type f =
+        F::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename G::type g =
+        G::getData(machine, sp.getContainedPieces(), pos_in_expression);
     return type(a, b, c, d, e, f, g);
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    std::auto_ptr<libReallive::ExpressionPiece> ep(
+        libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
   }
@@ -229,22 +256,32 @@ struct Complex8_T {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
       static_cast<const libReallive::ComplexExpressionPiece&>(p[position++]);
-    typename A::type a = A::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename B::type b = B::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename C::type c = C::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename D::type d = D::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename E::type e = E::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename F::type f = F::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename G::type g = G::getData(machine, sp.getContainedPieces(), pos_in_expression);
-    typename H::type h = H::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename A::type a =
+        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename B::type b =
+        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename C::type c =
+        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename D::type d =
+        D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename E::type e =
+        E::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename F::type f =
+        F::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename G::type g =
+        G::getData(machine, sp.getContainedPieces(), pos_in_expression);
+    typename H::type h =
+        H::getData(machine, sp.getContainedPieces(), pos_in_expression);
     return type(a, b, c, d, e, f, g, h);
   }
 
-  static void parseParameters(unsigned int& position,
-                              const std::vector<std::string>& input,
-                              boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  static void parseParameters(
+      unsigned int& position,
+      const std::vector<std::string>& input,
+      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_complex_param(data));
+    std::auto_ptr<libReallive::ExpressionPiece> ep(
+        libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
   }

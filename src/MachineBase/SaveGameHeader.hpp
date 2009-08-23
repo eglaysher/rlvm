@@ -30,7 +30,6 @@
 
 #include <string>
 
-//include all types plus i/o
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 // -----------------------------------------------------------------------
@@ -42,7 +41,7 @@
  */
 struct SaveGameHeader {
   SaveGameHeader();
-  SaveGameHeader(const std::string& in_title);
+  explicit SaveGameHeader(const std::string& in_title);
   ~SaveGameHeader();
 
   /// The title of the current saved game
