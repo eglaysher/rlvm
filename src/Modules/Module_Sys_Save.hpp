@@ -60,7 +60,7 @@ struct Sys_load : public RLOp_Void_1< IntConstant_T > {
 
   struct LoadingGame : public LongOperation {
     int slot_;
-    LoadingGame(int slot) : slot_(slot) {}
+    explicit LoadingGame(int slot) : slot_(slot) {}
 
     virtual bool operator()(RLMachine& machine);
   };

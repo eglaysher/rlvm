@@ -70,8 +70,8 @@ struct DebugMessage : public RLOp_Void_1< TYPE > {
 
 // -----------------------------------------------------------------------
 
-}
-}
+}  // namespace Debug
+}  // namespace Opcodes
 
 DebugModule::DebugModule()
   : RLModule("Debug", 1, 255) {

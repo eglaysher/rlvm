@@ -59,7 +59,7 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
 /// an object's child objects.
 class ChildObjAdapter : public RLOp_SpecialCase {
  public:
-  ChildObjAdapter(RLOperation* in);
+  explicit ChildObjAdapter(RLOperation* in);
 
   virtual void operator()(RLMachine& machine,
                           const libReallive::CommandElement& ff);
@@ -90,7 +90,7 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   Setter setter;
 
  public:
-  Obj_SetOneIntOnObj(Setter s);
+  explicit Obj_SetOneIntOnObj(Setter s);
   ~Obj_SetOneIntOnObj();
 
   void operator()(RLMachine& machine, int buf, int incoming);
@@ -117,7 +117,8 @@ class Obj_SetTwoIntOnObj
   Obj_SetTwoIntOnObj(Setter one, Setter two);
   ~Obj_SetTwoIntOnObj();
 
-  void operator()(RLMachine& machine, int buf, int incomingOne, int incomingTwo);
+  void operator()(RLMachine& machine, int buf, int incomingOne,
+                  int incomingTwo);
 };
 
 

@@ -27,6 +27,8 @@
 
 #include "MachineBase/SaveGameHeader.hpp"
 
+#include <string>
+
 using namespace boost::posix_time;
 
 // -----------------------------------------------------------------------

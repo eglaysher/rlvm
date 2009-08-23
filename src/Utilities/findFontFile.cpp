@@ -25,7 +25,9 @@
 //
 // -----------------------------------------------------------------------
 
-#include "findFontFile.h"
+#include "Utilities/findFontFile.h"
+
+#include <string>
 
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"

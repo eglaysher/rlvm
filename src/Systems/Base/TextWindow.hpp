@@ -152,7 +152,8 @@ class TextWindow {
 
   // TODO: What's setMousePosition and how does it differ from mouse listeners?
   virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
+  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
+                                bool pressed);
 
   /**
    * @name Name window settings

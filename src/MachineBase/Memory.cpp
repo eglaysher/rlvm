@@ -29,6 +29,9 @@
 
 // -----------------------------------------------------------------------
 
+#include <map>
+#include <string>
+
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
@@ -137,12 +140,14 @@ void Memory::connectIntVarPointers() {
 
 const std::string& Memory::getStringValue(int type, int location) {
   if (location > (SIZE_OF_MEM_BANK -1))
-    throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
+    throw rlvm::Exception(
+        "Invalid range access in RLMachine::set_string_value");
 
   switch (type) {
   case STRK_LOCATION:
     if (location > 2)
-      throw rlvm::Exception("Invalid range access on strK in RLMachine::set_string_value");
+      throw rlvm::Exception(
+          "Invalid range access on strK in RLMachine::set_string_value");
     return local_.strK[location];
   case STRM_LOCATION: return global_->strM[location];
   case STRS_LOCATION: return local_.strS[location];
@@ -155,12 +160,14 @@ const std::string& Memory::getStringValue(int type, int location) {
 
 void Memory::setStringValue(int type, int number, const std::string& value) {
   if (number > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception("Invalid range access in RLMachine::set_string_value");
+      throw rlvm::Exception(
+          "Invalid range access in RLMachine::set_string_value");
 
   switch (type) {
   case STRK_LOCATION:
     if (number > 2)
-      throw rlvm::Exception("Invalid range access on strK in RLMachine::set_string_value");
+      throw rlvm::Exception(
+          "Invalid range access on strK in RLMachine::set_string_value");
     local_.strK[number] = value;
     break;
   case STRM_LOCATION:

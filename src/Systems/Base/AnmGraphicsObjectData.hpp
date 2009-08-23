@@ -54,7 +54,7 @@ class System;
  */
 class AnmGraphicsObjectData : public GraphicsObjectData {
  public:
-  AnmGraphicsObjectData(System& system);
+  explicit AnmGraphicsObjectData(System& system);
   AnmGraphicsObjectData(System& system, const std::string& file);
   ~AnmGraphicsObjectData();
 

@@ -28,6 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
 #define SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
 
+#include <map>
+#include <string>
+
 #include "Systems/Base/TextSystem.hpp"
 
 #include <boost/ptr_container/ptr_map.hpp>

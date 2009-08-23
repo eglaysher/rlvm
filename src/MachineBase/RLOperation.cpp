@@ -44,6 +44,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <utility>
+#include <vector>
 #include <boost/bind.hpp>
 
 using namespace std;
@@ -101,7 +103,8 @@ bool RLOperation::getProperty(int property, int& value) const {
 
 // -----------------------------------------------------------------------
 
-RLOperation::PropertyList::iterator RLOperation::findProperty(int property) const {
+RLOperation::PropertyList::iterator RLOperation::findProperty(
+    int property) const {
   return find_if (property_list_->begin(), property_list_->end(),
                  bind(&Property::first, _1) == property);
 }
@@ -114,7 +117,8 @@ bool RLOperation::advanceInstructionPointer() {
 
 // -----------------------------------------------------------------------
 
-void RLOperation::dispatchFunction(RLMachine& machine, const CommandElement& ff) {
+void RLOperation::dispatchFunction(RLMachine& machine,
+                                   const CommandElement& ff) {
   if (!ff.areParametersParsed()) {
     const vector<string>& unparsed = ff.getUnparsedParameters();
     ptr_vector<ExpressionPiece> output;
@@ -143,9 +147,10 @@ void RLOperation::throw_unimplemented() {
 // -----------------------------------------------------------------------
 
 // Implementation for IntConstant_T
-IntConstant_T::type IntConstant_T::getData(RLMachine& machine,
-                                           const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                                           unsigned int& position) {
+IntConstant_T::type IntConstant_T::getData(
+    RLMachine& machine,
+    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    unsigned int& position) {
   return p[position++].integerValue(machine);
 }
 
@@ -169,9 +174,10 @@ void IntConstant_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
-IntReference_T::type IntReference_T::getData(RLMachine& machine,
-                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position) {
+IntReference_T::type IntReference_T::getData(
+    RLMachine& machine,
+    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    unsigned int& position) {
   return static_cast<const libReallive::MemoryReference&>(p[position++]).
     getIntegerReferenceIterator(machine);
 }
@@ -195,9 +201,10 @@ void IntReference_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
-StrConstant_T::type StrConstant_T::getData(RLMachine& machine,
-                                           const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position) {
+StrConstant_T::type StrConstant_T::getData(
+    RLMachine& machine,
+    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    unsigned int& position) {
   return p[position++].getStringValue(machine);
 }
 
@@ -220,9 +227,10 @@ void StrConstant_T::parseParameters(
 
 // -----------------------------------------------------------------------
 
-StrReference_T::type StrReference_T::getData(RLMachine& machine,
-                                             const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position) {
+StrReference_T::type StrReference_T::getData(
+    RLMachine& machine,
+    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    unsigned int& position) {
   return static_cast<const libReallive::MemoryReference&>(p[position++]).
     getStringReferenceIterator(machine);
 }
@@ -248,9 +256,10 @@ void StrReference_T::parseParameters(
 // Empty_T
 // -----------------------------------------------------------------------
 
-Empty_T::type Empty_T::getData(RLMachine& machine,
-                               const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-                      unsigned int& position) {
+Empty_T::type Empty_T::getData(
+    RLMachine& machine,
+    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    unsigned int& position) {
   return empty_struct();
 }
 

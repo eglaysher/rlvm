@@ -27,6 +27,8 @@
 #ifndef SRC_SYSTEMS_BASE_TEXTWAKUTYPE4_HPP_
 #define SRC_SYSTEMS_BASE_TEXTWAKUTYPE4_HPP_
 
+#include <string>
+
 #include "Systems/Base/TextWaku.hpp"
 #include "Systems/Base/Surface.hpp"
 

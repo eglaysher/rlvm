@@ -96,5 +96,5 @@ void UnimplementedOpcode::setDescription() {
 
 // -----------------------------------------------------------------------
 
-}
+}  // namespace rlvm
 

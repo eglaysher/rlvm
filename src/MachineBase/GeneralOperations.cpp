@@ -31,6 +31,9 @@
 
 #include "MachineBase/GeneralOperations.hpp"
 
+#include <string>
+#include <vector>
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
@@ -83,7 +86,7 @@ TextPage& getSystemObj(RLMachine& machine) {
   return machine.system().text().currentPage();
 }
 
-}
+}  // namespace getSystemObjImpl
 
 // -----------------------------------------------------------------------
 
@@ -120,11 +123,6 @@ void MultiDispatch::operator()(
     const ptr_vector<ExpressionPiece>& element =
         dynamic_cast<const ComplexExpressionPiece&>(parameter_pieces[i]).
         getContainedPieces();
-
-    // @todo Do whatever is needed to get this part working...
-    //     if (!handler->checkTypes(machine, element)) {
-    //       throw Error("Expected type mismatch in parameters in MultiDispatch.");
-    //     }
 
     handler_->dispatch(machine, element);
   }

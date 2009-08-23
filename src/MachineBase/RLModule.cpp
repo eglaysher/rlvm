@@ -43,7 +43,11 @@
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
+#include <utility>
 #include <sstream>
+#include <string>
+#include <vector>
+
 #include <boost/bind.hpp>
 
 using namespace boost;
@@ -141,7 +145,8 @@ RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
 // -----------------------------------------------------------------------
 
 void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {
-  OpcodeMap::iterator it = stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
+  OpcodeMap::iterator it =
+      stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations.end()) {
     try {
       it->second->dispatchFunction(machine, f);

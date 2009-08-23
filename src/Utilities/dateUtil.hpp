@@ -34,6 +34,6 @@ int getMinute();
 int getSecond();
 int getMs();
 
-}
+}  // namespace datetime
 
 #endif  // SRC_UTILITIES_DATEUTIL_HPP_

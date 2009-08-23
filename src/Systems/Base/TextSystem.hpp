@@ -55,7 +55,7 @@ class TextWindow;
 
 struct TextSystemGlobals {
   TextSystemGlobals();
-  TextSystemGlobals(Gameexe& gexe);
+  explicit TextSystemGlobals(Gameexe& gexe);
 
   int auto_mode_base_time;
   int auto_mode_char_time;
@@ -254,9 +254,9 @@ class TextSystem : public EventListener {
    *
    * @{
    */
-   virtual boost::shared_ptr<Surface> renderText(
-       const std::string& utf8str, int size, int xspace,
-       int yspace, int colour) = 0;
+  virtual boost::shared_ptr<Surface> renderText(
+      const std::string& utf8str, int size, int xspace,
+      int yspace, int colour) = 0;
   /// @}
 
   TextSystemGlobals& globals() { return globals_; }

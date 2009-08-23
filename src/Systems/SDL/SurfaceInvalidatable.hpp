@@ -33,6 +33,8 @@
 // changes.
 class SurfaceInvalidatable {
  public:
+  virtual ~SurfaceInvalidatable() {}
+
   /// Releases any OpenGL resources.
   virtual void invalidate() = 0;
 

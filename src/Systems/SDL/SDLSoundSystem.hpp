@@ -50,7 +50,7 @@ class SDLMusic;
  */
 class SDLSoundSystem : public SoundSystem {
  public:
-  SDLSoundSystem(System& system);
+  explicit SDLSoundSystem(System& system);
   ~SDLSoundSystem();
 
   virtual void executeSoundSystem();
@@ -150,6 +150,6 @@ class SDLSoundSystem : public SoundSystem {
 
   /// The fadein time for queued piece of music
   int queued_music_fadein_;
-};	// end of class SDLSoundSystem
+};  // end of class SDLSoundSystem
 
 #endif  // SRC_SYSTEMS_SDL_SDLSOUNDSYSTEM_HPP_

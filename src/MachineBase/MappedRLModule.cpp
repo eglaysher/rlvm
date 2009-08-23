@@ -29,10 +29,10 @@
 
 // -----------------------------------------------------------------------
 
+#include <string>
+
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/MappedRLModule.hpp"
-
-// -----------------------------------------------------------------------
 
 // -----------------------------------------------------------------------
 // MappedRLModule
@@ -42,7 +42,6 @@ MappedRLModule::MappedRLModule(
   int in_module_type, int in_module_number)
   : RLModule(in_module_name, in_module_type, in_module_number),
     map_function_(fun) {
-
 }
 
 // -----------------------------------------------------------------------

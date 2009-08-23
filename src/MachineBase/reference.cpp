@@ -37,6 +37,8 @@
  *
  */
 
+#include <string>
+
 #include "MachineBase/reference.hpp"
 #include "MachineBase/Memory.hpp"
 #include "libReallive/intmemref.h"

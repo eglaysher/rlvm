@@ -48,6 +48,7 @@
 #include <sstream>
 #include <iostream>
 #include <iterator>
+#include <vector>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assign.hpp>
 #include <boost/bind.hpp>
@@ -60,7 +61,6 @@
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/OpcodeLog.hpp"
-#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RealLiveDLL.hpp"
@@ -279,9 +279,9 @@ bool RLMachine::shouldSetSeentopSavepoint() const {
 
 void RLMachine::executeNextInstruction() {
   // Do not execute any more instructions if the machine is halted.
-  if (halted() == true)
+  if (halted() == true) {
     return;
-  else {
+  } else {
     try {
       if (call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
         delay_stack_modifications_ = true;
@@ -357,7 +357,7 @@ void RLMachine::executeUntilHalted() {
 
 void RLMachine::advanceInstructionPointer() {
   std::vector<StackFrame>::reverse_iterator it =
-      find_if (call_stack_.rbegin(), call_stack_.rend(),
+      find_if(call_stack_.rbegin(), call_stack_.rend(),
               bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
   if (it != call_stack_.rend()) {
@@ -399,7 +399,7 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
     //
     // The lag is noticeable on the CLANNAD menu, without profiling tools.
     std::vector<StackFrame>::reverse_iterator it =
-        find_if (call_stack_.rbegin(), call_stack_.rend(),
+        find_if(call_stack_.rbegin(), call_stack_.rend(),
                 bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
     if (it != call_stack_.rend()) {

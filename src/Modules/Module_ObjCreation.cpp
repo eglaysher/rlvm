@@ -29,7 +29,7 @@
 
 // -----------------------------------------------------------------------
 
-// Insert headers here
+#include <string>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Modules/Module_Obj.hpp"
@@ -75,30 +75,33 @@ void setObjectDataToGan(
 
 // -----------------------------------------------------------------------
 
-typedef boost::function<void(RLMachine&, GraphicsObject& obj, const string&)> DataFunction;
+typedef boost::function<void(RLMachine&, GraphicsObject& obj,
+                             const string&)> DataFunction;
 
 // -----------------------------------------------------------------------
 
-void objOfFileLoader(RLMachine& machine, GraphicsObject& obj, const string& val) {
+void objOfFileLoader(RLMachine& machine, GraphicsObject& obj,
+                     const string& val) {
   obj.setObjectData(machine.system().graphics().buildObjOfFile(val));
 }
 
 // -----------------------------------------------------------------------
 
-void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj, const string& val) {
+void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj,
+                      const string& val) {
   // The text at this point is still cp932. Convert it.
   string utf8str = cp932toUTF8(val, machine.getTextEncoding());
   obj.setTextText(utf8str);
   obj.setObjectData(new GraphicsTextObject(machine.system()));
 }
 
-}
+}  // namespace
 
 // -----------------------------------------------------------------------
 
 struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   DataFunction data_fun_;
-  Obj_objGeneric_0(const DataFunction& fun) : data_fun_(fun) {}
+  explicit Obj_objGeneric_0(const DataFunction& fun) : data_fun_(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -109,9 +112,9 @@ struct Obj_objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 // -----------------------------------------------------------------------
 
 struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
-											 IntConstant_T> {
+                                             IntConstant_T> {
   DataFunction data_fun_;
-  Obj_objGeneric_1(const DataFunction& fun) : data_fun_(fun) {}
+  explicit Obj_objGeneric_1(const DataFunction& fun) : data_fun_(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -124,9 +127,9 @@ struct Obj_objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
 
 struct Obj_objGeneric_2
   : public RLOp_Void_5<IntConstant_T, StrConstant_T, IntConstant_T,
-					   IntConstant_T, IntConstant_T> {
+                       IntConstant_T, IntConstant_T> {
   DataFunction data_fun_;
-  Obj_objGeneric_2(const DataFunction& fun) : data_fun_(fun) {}
+  explicit Obj_objGeneric_2(const DataFunction& fun) : data_fun_(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y) {
@@ -144,7 +147,7 @@ struct Obj_objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T> {
   DataFunction data_fun_;
-  Obj_objGeneric_3(const DataFunction& fun) : data_fun_(fun) {}
+  explicit Obj_objGeneric_3(const DataFunction& fun) : data_fun_(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern) {
@@ -163,7 +166,7 @@ struct Obj_objGeneric_4 : public RLOp_Void_8<
   IntConstant_T, StrConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   DataFunction data_fun_;
-  Obj_objGeneric_4(const DataFunction& fun) : data_fun_(fun) {}
+  explicit Obj_objGeneric_4(const DataFunction& fun) : data_fun_(fun) {}
 
   void operator()(RLMachine& machine, int buf, string filename, int visible,
                   int x, int y, int pattern, int scrollX, int scrollY) {

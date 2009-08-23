@@ -122,7 +122,7 @@ struct Obj_objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T > {
   int val_;
-  Obj_setWipeCopyTo_0(int value) : val_(value) {}
+  explicit Obj_setWipeCopyTo_0(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int buf) {
     getGraphicsObject(machine, this, buf).setWipeCopy(val_);
@@ -131,9 +131,9 @@ struct Obj_setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Obj_setWipeCopyTo_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+struct Obj_setWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int val_;
-  Obj_setWipeCopyTo_1(int value) : val_(value) {}
+  explicit Obj_setWipeCopyTo_1(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int min, int numObjsToSet) {
     int maxObj = min + numObjsToSet;

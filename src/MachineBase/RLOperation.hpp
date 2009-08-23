@@ -34,6 +34,10 @@
 #ifndef SRC_MACHINEBASE_RLOPERATION_HPP_
 #define SRC_MACHINEBASE_RLOPERATION_HPP_
 
+#include <utility>
+#include <string>
+#include <vector>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "libReallive/bytecode_fwd.h"
@@ -345,7 +349,7 @@ struct RLOp_NormalOperation : public RLOperation {
   template<typename TYPE>
   void addTypeTo(unsigned int& position, const std::vector<std::string>& input,
                  ExpressionPiecesVector& output) {
-    if(TYPE::is_real_typestruct) {
+    if (TYPE::is_real_typestruct) {
       TYPE::parseParameters(position, input, output);
     }
   }
@@ -447,7 +451,8 @@ struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
     operator()(machine, a, b, c);
   }
 
-  virtual void operator()(RLMachine&, typename A::type, typename B::type, typename C::type) = 0;
+  virtual void operator()(RLMachine&, typename A::type, typename B::type,
+                          typename C::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -464,8 +469,8 @@ struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
     operator()(machine, a, b, c, d);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type) = 0;
+  virtual void operator()(RLMachine&, typename A::type, typename B::type,
+                          typename C::type, typename D::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -484,8 +489,9 @@ struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E> {
     operator()(machine, a, b, c, d, e);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type) = 0;
+  virtual void operator()(RLMachine&, typename A::type, typename B::type,
+                          typename C::type, typename D::type,
+                          typename E::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -506,8 +512,9 @@ struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
     operator()(machine, a, b, c, d, e, f);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -528,8 +535,10 @@ struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
     operator()(machine, a, b, c, d, e, f, g);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type,
+      typename G::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -551,9 +560,10 @@ struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
     operator()(machine, a, b, c, d, e, f, g, h);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -576,16 +586,18 @@ struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
     operator()(machine, a, b, c, d, e, f, g, h, i);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type) = 0;
 };
 
 // -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J>
-struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
+struct RLOp_Void_10
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -602,9 +614,10 @@ struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> 
     operator()(machine, a, b, c, d, e, f, g, h, i, j);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -612,7 +625,8 @@ struct RLOp_Void_10 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K>
-struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
+struct RLOp_Void_11
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -630,9 +644,11 @@ struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type,
+      typename K::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -640,7 +656,8 @@ struct RLOp_Void_11 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L>
-struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
+struct RLOp_Void_12
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -659,10 +676,11 @@ struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -670,7 +688,8 @@ struct RLOp_Void_12 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M>
-struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
+struct RLOp_Void_13
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -690,10 +709,11 @@ struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -701,8 +721,8 @@ struct RLOp_Void_13 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N>
-struct RLOp_Void_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N> {
+struct RLOp_Void_14
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -723,10 +743,11 @@ struct RLOp_Void_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -735,8 +756,8 @@ struct RLOp_Void_14 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O>
-struct RLOp_Void_15 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O> {
+struct RLOp_Void_15
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -758,11 +779,12 @@ struct RLOp_Void_15 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type,
+      typename O::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -771,8 +793,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
          typename P>
-struct RLOp_Void_16 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P> {
+struct RLOp_Void_16
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -795,11 +818,12 @@ struct RLOp_Void_16 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -809,8 +833,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q>
-struct RLOp_Void_17 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q> {
+struct RLOp_Void_17
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -835,11 +860,12 @@ struct RLOp_Void_17 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type,
+      typename O::type, typename P::type, typename Q::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -848,8 +874,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R>
-struct RLOp_Void_18 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R> {
+struct RLOp_Void_18
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -875,12 +902,12 @@ struct RLOp_Void_18 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -889,8 +916,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S>
-struct RLOp_Void_19 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S> {
+struct RLOp_Void_19
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -917,12 +945,13 @@ struct RLOp_Void_19 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type,
+      typename S::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -931,8 +960,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T>
-struct RLOp_Void_20 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T> {
+struct RLOp_Void_20
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -960,12 +990,13 @@ struct RLOp_Void_20 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -975,8 +1006,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T,
          typename U>
-struct RLOp_Void_21 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U> {
+struct RLOp_Void_21
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T, U> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1005,13 +1037,13 @@ struct RLOp_Void_21 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t, u);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type,
-                          typename U::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type, typename U::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -1021,8 +1053,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T,
          typename U, typename V>
-struct RLOp_Void_22 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U, V> {
+struct RLOp_Void_22
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T, U, V> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1052,13 +1085,13 @@ struct RLOp_Void_22 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t, u, v);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type,
-                          typename U::type, typename V::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type, typename U::type, typename V::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -1068,9 +1101,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T,
          typename U, typename V, typename W>
-struct RLOp_Void_23 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W> {
+struct RLOp_Void_23
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T, U, V, W> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1101,14 +1134,14 @@ struct RLOp_Void_23 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t, u, v, w);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type,
-                          typename U::type, typename V::type,
-                          typename W::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type, typename U::type, typename V::type,
+      typename W::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -1118,9 +1151,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T,
          typename U, typename V, typename W, typename X>
-struct RLOp_Void_24 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W, X> {
+struct RLOp_Void_24
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T, U, V, W, X> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1152,14 +1185,14 @@ struct RLOp_Void_24 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t, u, v, w, x);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type,
-                          typename U::type, typename V::type,
-                          typename W::type, typename X::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type, typename U::type, typename V::type, typename W::type,
+      typename X::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -1169,9 +1202,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename K, typename L, typename M, typename N, typename O,
          typename P, typename Q, typename R, typename S, typename T,
          typename U, typename V, typename W, typename X, typename Y>
-struct RLOp_Void_25 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W, X, Y> {
+struct RLOp_Void_25
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T, U, V, W, X, Y> {
   void dispatch(RLMachine& machine,
                 const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1204,15 +1237,14 @@ struct RLOp_Void_25 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t, u, v, w, x, y);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type,
-                          typename U::type, typename V::type,
-                          typename W::type, typename X::type,
-                          typename Y::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type, typename U::type, typename V::type, typename W::type,
+      typename X::type, typename Y::type) = 0;
 };
 
 // -----------------------------------------------------------------------
@@ -1223,9 +1255,9 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename P, typename Q, typename R, typename S, typename T,
          typename U, typename V, typename W, typename X, typename Y,
          typename Z>
-struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K,
-                                                  L, M, N, O, P, Q, R, S, T, U, V,
-                                                  W, X, Y, Z> {
+struct RLOp_Void_26
+    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+                                  P, Q, R, S, T, U, V, W, X, Y, Z> {
   void dispatch(RLMachine& machine, const ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
@@ -1258,22 +1290,15 @@ struct RLOp_Void_26 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, 
                q, r, s, t, u, v, w, x, y, z);
   }
 
-  virtual void operator()(RLMachine&, typename A::type,typename B::type, typename C::type,
-                          typename D::type, typename E::type, typename F::type, typename G::type,
-                          typename H::type, typename I::type, typename J::type, typename K::type,
-                          typename L::type, typename M::type, typename N::type,
-                          typename O::type, typename P::type, typename Q::type,
-                          typename R::type, typename S::type, typename T::type,
-                          typename U::type, typename V::type,
-                          typename W::type, typename X::type,
-                          typename Y::type, typename Z::type) = 0;
+  virtual void operator()(
+      RLMachine&, typename A::type, typename B::type, typename C::type,
+      typename D::type, typename E::type, typename F::type, typename G::type,
+      typename H::type, typename I::type, typename J::type, typename K::type,
+      typename L::type, typename M::type, typename N::type, typename O::type,
+      typename P::type, typename Q::type, typename R::type, typename S::type,
+      typename T::type, typename U::type, typename V::type, typename W::type,
+      typename X::type, typename Y::type, typename Z::type) = 0;
 };
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-
-
 
 // -----------------------------------------------------------------------
 // @}

@@ -28,6 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_SDLGRAPHICSSYSTEM_HPP_
 #define SRC_SYSTEMS_SDL_SDLGRAPHICSSYSTEM_HPP_
 
+#include <set>
+#include <string>
+
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
 
@@ -44,13 +47,6 @@ class SDLSurface;
 class SurfaceInvalidatable;
 class System;
 class Texture;
-
-// -----------------------------------------------------------------------
-
-/// These are function pointers to OpenGL extensions that we use in
-/// fragment shaders, which we do to get the closest blending to how
-/// RealLive does it.
-//extern gl_create_shader_object_arbproc_ptr gl_create_shader_object;
 
 // -----------------------------------------------------------------------
 

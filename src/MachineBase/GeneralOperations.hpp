@@ -36,6 +36,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include <string>
+#include <vector>
 
 // -----------------------------------------------------------------------
 
@@ -91,7 +92,7 @@ CGMTable& getSystemObj(RLMachine& machine);
 template<>
 TextPage& getSystemObj(RLMachine& machine);
 
-};
+}  // namespace getSystemObjImpl
 
 // -----------------------------------------------------------------------
 
@@ -105,7 +106,7 @@ class Op_CallWithInt : public RLOp_Void_1< IntConstant_T > {
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(const int);
 
-  Op_CallWithInt(Setter s)
+  explicit Op_CallWithInt(Setter s)
       : setter(s) {
   }
 
@@ -131,7 +132,7 @@ class Op_CallWithMachineInt : public RLOp_Void_1< IntConstant_T > {
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(RLMachine&, const int);
 
-  Op_CallWithMachineInt(Setter s)
+  explicit Op_CallWithMachineInt(Setter s)
       : setter(s) {
   }
 
@@ -159,7 +160,7 @@ class Op_CallWithMachineIntInt : public RLOp_Void_2< IntConstant_T,
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(RLMachine&, const int, const int);
 
-  Op_CallWithMachineIntInt(Setter s)
+  explicit Op_CallWithMachineIntInt(Setter s)
       : setter(s) {
   }
 
@@ -186,7 +187,7 @@ class Op_CallWithIntInt : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(const int, const int);
 
-  Op_CallWithIntInt(Setter s)
+  explicit Op_CallWithIntInt(Setter s)
       : setter(s) {
   }
 
@@ -212,7 +213,7 @@ class Op_CallWithString : public RLOp_Void_1< StrConstant_T > {
   /// The function signature for the setter function
   typedef void(OBJTYPE::*Setter)(const std::string&);
 
-  Op_CallWithString(Setter s)
+  explicit Op_CallWithString(Setter s)
       : setter(s) {
   }
 
@@ -233,7 +234,7 @@ class Op_CallMethod : public RLOp_Void_Void {
   /// The string getter function to call
   typedef void(OBJTYPE::*FUNCTYPE)();
 
-  Op_CallMethod(FUNCTYPE f)
+  explicit Op_CallMethod(FUNCTYPE f)
       : func(f) {
   }
 
@@ -330,7 +331,7 @@ class Op_ReturnIntValue : public RLOp_Store_Void {
  public:
   typedef RETTYPE(OBJTYPE::*Getter)() const;
 
-  Op_ReturnIntValue(Getter g)
+  explicit Op_ReturnIntValue(Getter g)
       : getter_(g) {
   }
 
@@ -349,7 +350,7 @@ class Op_ReturnIntValueWithInt : public RLOp_Store_1<IntConstant_T> {
  public:
   typedef RETTYPE(OBJTYPE::*Getter)(const int) const;
 
-  Op_ReturnIntValueWithInt(Getter g)
+  explicit Op_ReturnIntValueWithInt(Getter g)
       : getter_(g) {
   }
 
@@ -368,7 +369,7 @@ class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
  public:
   typedef RETTYPE(OBJTYPE::*Getter)(const std::string&) const;
 
-  Op_ReturnIntValueWithString(Getter g)
+  explicit Op_ReturnIntValueWithString(Getter g)
       : getter_(g) {
   }
 
@@ -413,7 +414,7 @@ class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
   /// The signature of a string getter function
   typedef const std::string&(OBJTYPE::*Getter)() const;
 
-  Op_ReturnStringValue(Getter g)
+  explicit Op_ReturnStringValue(Getter g)
       : getter_(g) {
   }
 
@@ -453,7 +454,7 @@ RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const) {
  */
 class MultiDispatch : public RLOp_SpecialCase {
  public:
-  MultiDispatch(RLOperation* op);
+  explicit MultiDispatch(RLOperation* op);
   ~MultiDispatch();
 
   void parseParameters(const std::vector<std::string>& input,
@@ -483,7 +484,7 @@ class ReturnGameexeInt : public RLOp_Store_Void {
 
 class InvokeSyscomAsOp : public RLOp_Void_Void {
  public:
-  InvokeSyscomAsOp(const int syscom);
+  explicit InvokeSyscomAsOp(const int syscom);
 
   virtual void operator()(RLMachine& machine);
 

@@ -47,38 +47,40 @@ typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T,
 typedef Argc_T< Special_T< ValOnly, StartEndval, StartEndvalMode > > IndexList;
 
 struct Sys_index_series
-  : public RLOp_Store_4<IntConstant_T, IntConstant_T, IntConstant_T, IndexList> {
+    : public RLOp_Store_4<IntConstant_T, IntConstant_T, IntConstant_T,
+                          IndexList> {
   int operator()(RLMachine& machine, int index, int offset, int init,
                  IndexList::type index_list) {
     index = index + offset;
     int value = init;
 
     for (IndexList::type::iterator it = index_list.begin();
-        it != index_list.end(); ++it) {
+         it != index_list.end(); ++it) {
       switch (it->type) {
-      case 0:
-        throw rlvm::Exception(
-          "Don't know how to handle type 0 index_series statements");
-        break;
-      case 1: {
-        // This is the only thing we reliably can do.
-        int start = it->second.get<0>();
-        int end = it->second.get<1>();
-        int endval = it->second.get<2>();
-        mode0(index, start, end, endval, value, init);
-
-        break;
-      }
-      case 2: {
-        int start = it->third.get<0>();
-        int end = it->third.get<1>();
-        int endval = it->third.get<2>();
-        if (it->third.get<3>() == 0) {
-          mode0(index, start, end, endval, value, init);
-        } else
+        case 0:
           throw rlvm::Exception(
-            "Don't know how to handle type 2 index_series statements");
-      }
+              "Don't know how to handle type 0 index_series statements");
+          break;
+        case 1: {
+          // This is the only thing we reliably can do.
+          int start = it->second.get<0>();
+          int end = it->second.get<1>();
+          int endval = it->second.get<2>();
+          mode0(index, start, end, endval, value, init);
+
+          break;
+        }
+        case 2: {
+          int start = it->third.get<0>();
+          int end = it->third.get<1>();
+          int endval = it->third.get<2>();
+          if (it->third.get<3>() == 0) {
+            mode0(index, start, end, endval, value, init);
+          } else {
+            throw rlvm::Exception(
+                "Don't know how to handle type 2 index_series statements");
+          }
+        }
       }
     }
 
@@ -90,9 +92,8 @@ struct Sys_index_series
       double percentage = double(index - start) / double(end - start);
       int amount = endval - init;
       value = init + (percentage * amount);
-    }
-    // Finally, if we're over the value, set
-    else if (index > end) {
+    } else if (index > end) {
+      // Finally, if we're over the value, set
       value = endval;
       init = endval;
     }

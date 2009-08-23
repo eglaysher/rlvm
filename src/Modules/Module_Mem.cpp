@@ -37,6 +37,8 @@
  * @brief   Defines the Memory module (mod<1:11>).
  */
 
+#include <vector>
+
 #include "Modules/Module_Mem.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
@@ -74,7 +76,8 @@ using namespace boost;
  * values. values is an arbitrary number of integer expressions, each
  * of which is assigned in turn to the next variable.
  */
-struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T > > {
+struct Mem_setarray : public RLOp_Void_2<IntReference_T,
+                                         Argc_T<IntConstant_T> > {
   void operator()(RLMachine& machine, IntReferenceIterator origin,
                   vector<int> values) {
     copy(values.begin(), values.end(), origin);
@@ -91,7 +94,7 @@ struct Mem_setarray : public RLOp_Void_2< IntReference_T, Argc_T<IntConstant_T >
 struct Mem_setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last) {
-    ++last; // RealLive ranges are inclusive
+    ++last;  // RealLive ranges are inclusive
     fill(first, last, 0);
   }
 };
@@ -107,7 +110,7 @@ struct Mem_setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, IntReferenceIterator first,
                   IntReferenceIterator last, int value) {
-    ++last; // RealLive ranges are inclusive
+    ++last;  // RealLive ranges are inclusive
     fill(first, last, value);
   }
 };
@@ -143,7 +146,8 @@ struct Mem_cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
  * of passed in values.
  */
 struct Mem_setarray_stepped
-  : public RLOp_Void_3< IntReference_T, IntConstant_T, Argc_T<IntConstant_T > > {
+  : public RLOp_Void_3< IntReference_T, IntConstant_T,
+                        Argc_T<IntConstant_T > > {
   void operator()(RLMachine& machine, IntReferenceIterator origin,
                   int step, vector<int> values) {
     // Sigh. No more simple STL statements
@@ -240,12 +244,13 @@ struct Mem_sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
  * Returns the sum of all the numbers in all the given memory ranges.
  */
 struct Mem_sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
-                                                         IntReference_T > > >{
-  int operator()(RLMachine& machine,
-                 vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
+                                                         IntReference_T > > > {
+  int operator()(
+      RLMachine& machine,
+      vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
     int total = 0;
-    for (vector<tuple<IntReferenceIterator, IntReferenceIterator> >::iterator it =
-          ranges.begin(); it != ranges.end(); ++it) {
+    for (vector<tuple<IntReferenceIterator, IntReferenceIterator> >::iterator
+             it = ranges.begin(); it != ranges.end(); ++it) {
       IntReferenceIterator last = it->get<1>();
       ++last;
       total += accumulate(it->get<0>(), last, 0);

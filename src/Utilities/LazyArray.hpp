@@ -107,12 +107,18 @@ class LazyArray {
   // Iterate across all items, allocated or not. It is the users
   // responsibility to call the isValid() method on the iterator
   // before trying to use the contents.
-  FullLazyArrayIterator<T> full_begin() { return FullLazyArrayIterator<T>(0, this); }
-  FullLazyArrayIterator<T> full_end() { return FullLazyArrayIterator<T>(size_, this); }
+  FullLazyArrayIterator<T> full_begin() {
+    return FullLazyArrayIterator<T>(0, this);
+  }
+  FullLazyArrayIterator<T> full_end() {
+    return FullLazyArrayIterator<T>(size_, this);
+  }
 
   // Iterate across the already allocated items
   AllocatedLazyArrayIterator<T> allocated_begin();
-  AllocatedLazyArrayIterator<T> allocated_end() { return AllocatedLazyArrayIterator<T>(size_, this); }
+  AllocatedLazyArrayIterator<T> allocated_end() {
+    return AllocatedLazyArrayIterator<T>(size_, this);
+  }
 
  private:
   int size_;

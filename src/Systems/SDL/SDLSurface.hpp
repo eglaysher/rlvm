@@ -24,8 +24,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 // -----------------------------------------------------------------------
+
 #ifndef SRC_SYSTEMS_SDL_SDLSURFACE_HPP_
 #define SRC_SYSTEMS_SDL_SDLSURFACE_HPP_
+
+#include <vector>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -123,7 +126,7 @@ class SDLSurface : public SurfaceInvalidatable,
   static std::vector<int> segmentPicture(int size_remainging);
 
  public:
-  SDLSurface(SDLGraphicsSystem* system);
+  explicit SDLSurface(SDLGraphicsSystem* system);
 
   /// Surface that takes ownership of an externally created surface
   /// and assumes it is only a single region.

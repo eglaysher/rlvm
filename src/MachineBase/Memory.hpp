@@ -124,7 +124,7 @@ struct LocalMemory {
    * Constructor that prevents the memory banks from being memset
    * (since they'll be overwritten entirely by the thawing process.
    */
-  LocalMemory(dont_initialize);
+  explicit LocalMemory(dont_initialize);
 
   /// Zeros and clears all of local memory.
   void reset();
@@ -217,7 +217,7 @@ class Memory {
    * @note For now, we only read \#NAME and \#LOCALNAME variables, skipping any
    *       declaration of the form \#intvar[index] or \#strvar[index].
    */
-  Memory(Gameexe& gamexe);
+  explicit Memory(Gameexe& gamexe);
 
   /**
    * Creates an overlayed memory object. An overlay takes another

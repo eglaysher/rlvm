@@ -68,6 +68,7 @@
 #include <iostream>
 #include <exception>
 #include <stdexcept>
+#include <string>
 #include <boost/bind.hpp>
 
 using namespace std;
@@ -85,7 +86,7 @@ RLMachine* g_current_machine = NULL;
 
 const int CURRENT_LOCAL_VERSION = 2;
 
-}
+}  // namespace Serialization
 
 // -----------------------------------------------------------------------
 
@@ -100,7 +101,7 @@ void checkInFileOpened(TYPE& file, const fs::path& home) {
   }
 }
 
-}
+}  // namespace
 
 // -----------------------------------------------------------------------
 
@@ -268,4 +269,4 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
   g_current_machine = NULL;
 }
 
-}
+}  // namespace Serialization

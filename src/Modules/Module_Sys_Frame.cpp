@@ -31,6 +31,8 @@
 
 #include "Module_Sys_Frame.hpp"
 
+#include <vector>
+
 #include "Modules/Module_Sys.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"

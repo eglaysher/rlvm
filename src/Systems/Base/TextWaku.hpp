@@ -37,7 +37,8 @@ class TextWaku {
  public:
   // Factory method which automatically picks the correct subclass of TextWaku
   // for the implementation at hand.
-  static TextWaku* Create(System& system, TextWindow& window, int setno, int no);
+  static TextWaku* Create(System& system, TextWindow& window, int setno,
+                          int no);
 
   virtual ~TextWaku();
 
@@ -45,7 +46,7 @@ class TextWaku {
   virtual void render(std::ostream* tree, Point box_location,
                       Size namebox_size) = 0;
 
-  virtual void setMousePosition(const Point& pos) { };
+  virtual void setMousePosition(const Point& pos) { }
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed) {
     return false;

@@ -36,6 +36,7 @@
 #ifndef SRC_SYSTEMS_SDL_TEXTURE_HPP_
 #define SRC_SYSTEMS_SDL_TEXTURE_HPP_
 
+#include <string>
 #include <boost/scoped_array.hpp>
 #include <SDL/SDL_opengl.h>
 

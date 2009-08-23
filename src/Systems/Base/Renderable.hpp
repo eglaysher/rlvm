@@ -30,6 +30,8 @@
 /// An object that is renderable to screen.
 class Renderable {
  public:
+  virtual ~Renderable() {}
+
   /// Renders this object to screen (and optionally writes metadata about what
   /// was rendered to |tree|).
   virtual void render(std::ostream* tree) = 0;

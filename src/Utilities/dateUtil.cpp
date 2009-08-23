@@ -75,7 +75,8 @@ int getSecond() {
 // -----------------------------------------------------------------------
 
 int getMs() {
-  return boost::posix_time::second_clock::local_time().time_of_day().fractional_seconds();
+  return boost::posix_time::second_clock::local_time().time_of_day().
+      fractional_seconds();
 }
 
-}
+}  // namespace datetime

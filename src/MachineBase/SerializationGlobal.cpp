@@ -167,6 +167,4 @@ void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
   sys.sound().restoreFromGlobals();
 }
 
-// -----------------------------------------------------------------------
-
-}
+}  // namespace Serialization

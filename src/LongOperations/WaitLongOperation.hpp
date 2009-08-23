@@ -37,7 +37,7 @@ class Point;
 /// Pauses interpretation, waiting for input, an event or a user click.
 class WaitLongOperation : public LongOperation {
  public:
-  WaitLongOperation(RLMachine& machine);
+  explicit WaitLongOperation(RLMachine& machine);
   ~WaitLongOperation();
 
   /// This instance should wait time milliseconds and then return.

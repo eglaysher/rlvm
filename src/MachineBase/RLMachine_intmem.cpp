@@ -45,10 +45,12 @@
 
 // -----------------------------------------------------------------------
 
+#include <sstream>
+#include <string>
+
 #include "MachineBase/Memory.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/intmemref.h"
-#include <sstream>
 
 // -----------------------------------------------------------------------
 
@@ -81,13 +83,13 @@ int Memory::getIntValue(const IntMemRef& ref) {
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
   if (type == 0) {
-   // A[]..G[], Z[] を直に読む
+    // A[]..G[], Z[] を直に読む
     if ((unsigned int)(location) >= 2000)
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
     return int_var[index][location];
   } else {
-   // Ab[]..G4b[], Z8b[] などを読む
+    // Ab[]..G4b[], Z8b[] などを読む
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
     if ((unsigned int)(location) >= (64000u / factor))

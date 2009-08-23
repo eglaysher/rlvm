@@ -77,12 +77,14 @@ extern const std::vector<std::string> KOE_FILETYPES;
  * @param fileName The filename given in the source code.
  * @return The full path of the file
  */
-boost::filesystem::path findFile(RLMachine& machine,
-                                 const std::string& fileName,
-                                 const std::vector<std::string>& extensions = ALL_FILETYPES);
-boost::filesystem::path findFile(System& system,
-                                 const std::string& fileName,
-                                 const std::vector<std::string>& extensions = ALL_FILETYPES);
+boost::filesystem::path findFile(
+    RLMachine& machine,
+    const std::string& fileName,
+    const std::vector<std::string>& extensions = ALL_FILETYPES);
+boost::filesystem::path findFile(
+    System& system,
+    const std::string& fileName,
+    const std::vector<std::string>& extensions = ALL_FILETYPES);
 
 // -----------------------------------------------------------------------
 

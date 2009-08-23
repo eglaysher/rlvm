@@ -39,7 +39,7 @@
 
 struct EventLoop_setOverride : public RLOp_Void_1< IntConstant_T > {
   bool value_;
-  EventLoop_setOverride(int value) : value_(value) { }
+  explicit EventLoop_setOverride(int value) : value_(value) { }
 
   void operator()(RLMachine& machine, int window) {
     machine.system().text().setVisualOverride(window, value_);
@@ -50,7 +50,7 @@ struct EventLoop_setOverride : public RLOp_Void_1< IntConstant_T > {
 
 struct EventLoop_setOverrideAll : public RLOp_Void_Void {
   bool value_;
-  EventLoop_setOverrideAll(int value) : value_(value) { }
+  explicit EventLoop_setOverrideAll(int value) : value_(value) { }
 
   void operator()(RLMachine& machine) {
     machine.system().text().setVisualOverrideAll(value_);

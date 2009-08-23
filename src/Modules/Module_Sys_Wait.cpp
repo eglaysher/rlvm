@@ -41,7 +41,7 @@
 struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
   const bool cancelable_;
 
-  Sys_wait(bool cancelable) : cancelable_(cancelable) {}
+  explicit Sys_wait(bool cancelable) : cancelable_(cancelable) {}
 
   /// Simply set the long operation
   void operator()(RLMachine& machine, int time) {
@@ -82,9 +82,9 @@ struct Sys_WaitClick
 // -----------------------------------------------------------------------
 
 void addWaitAndMouseOpcodes(RLModule& m) {
-  m.addOpcode( 100, 0, "wait", new Sys_wait(false));
-  m.addOpcode( 101, 0, "waitC", new Sys_wait(true));
+  m.addOpcode(100, 0, "wait", new Sys_wait(false));
+  m.addOpcode(101, 0, "waitC", new Sys_wait(true));
 
-  m.addOpcode( 131, 0, "GetClick", new Sys_GetClick);
-  m.addOpcode( 131, 0, "WaitClick", new Sys_WaitClick);
+  m.addOpcode(131, 0, "GetClick", new Sys_GetClick);
+  m.addOpcode(131, 0, "WaitClick", new Sys_WaitClick);
 }

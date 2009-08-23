@@ -42,9 +42,9 @@ class RGBColour {
   int r() const { return r_; }
   int g() const { return g_; }
   int b() const { return b_; }
-  float r_float() const { return float(r_) / 256; }
-  float g_float() const { return float(g_) / 256; }
-  float b_float() const { return float(b_) / 256; }
+  float r_float() const { return static_cast<float>(r_) / 256; }
+  float g_float() const { return static_cast<float>(g_) / 256; }
+  float b_float() const { return static_cast<float>(b_) / 256; }
 
   void setRed(const int in) { r_ = in; }
   void setGreen(const int in) { g_ = in; }
@@ -88,7 +88,7 @@ class RGBAColour {
   float b_float() const { return rgb_.b_float(); }
 
   int a() const { return alpha_; }
-  float a_float() const { return float(alpha_) / 256; }
+  float a_float() const { return static_cast<float>(alpha_) / 256; }
 
   void setRed(const int in) { rgb_.setRed(in); }
   void setGreen(const int in) { rgb_.setGreen(in); }

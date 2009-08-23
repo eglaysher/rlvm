@@ -63,7 +63,8 @@ class SDLRenderToTextureSurface : public SurfaceInvalidatable,
                              const Rect& src, const Rect& dst,
                              int alpha = 255, bool use_src_alpha = true);
 
-  virtual void renderToScreen(const Rect& src, const Rect& dst, int alpha = 255);
+  virtual void renderToScreen(const Rect& src, const Rect& dst,
+                              int alpha = 255);
 
   virtual void renderToScreen(const Rect& src, const Rect& dst,
                               const int opacity[4]);

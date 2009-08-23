@@ -45,7 +45,7 @@
 class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
  public:
   /// Builds a Mix_Chunk from a file.
-  SDLSoundChunk(const boost::filesystem::path& path);
+  explicit SDLSoundChunk(const boost::filesystem::path& path);
 
   /// Builds a Mix_Chunk from a chunk of memory.
   SDLSoundChunk(char* data, int length);

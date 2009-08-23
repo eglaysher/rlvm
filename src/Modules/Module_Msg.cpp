@@ -37,6 +37,9 @@
  * @brief  Implements many textout related operations.
  */
 
+#include <string>
+#include <vector>
+
 #include "Modules/Module_Msg.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLOperation.hpp"

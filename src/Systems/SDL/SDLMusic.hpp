@@ -28,7 +28,10 @@
 #ifndef SRC_SYSTEMS_SDL_SDLMUSIC_HPP_
 #define SRC_SYSTEMS_SDL_SDLMUSIC_HPP_
 
+#include <string>
+
 #include "Systems/Base/SoundSystem.hpp"
+
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
@@ -101,7 +104,9 @@ class SDLMusic : public boost::noncopyable,
    * Returns the currently playing SDLMusic object. Returns NULL if no
    * music is currently playing.
    */
-  static boost::shared_ptr<SDLMusic> CurrnetlyPlaying() { return s_currently_playing; }
+  static boost::shared_ptr<SDLMusic> CurrnetlyPlaying() {
+    return s_currently_playing;
+  }
 
   /// Whether music is currently playing.
   static bool IsCurrentlyPlaying() { return s_currently_playing; }

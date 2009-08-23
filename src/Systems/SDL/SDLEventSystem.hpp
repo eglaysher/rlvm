@@ -39,12 +39,14 @@
  */
 class RawSDLInputHandler {
  public:
+  virtual ~RawSDLInputHandler() {}
+
   virtual void pushInput(SDL_Event event) = 0;
 };
 
 class SDLEventSystem : public EventSystem {
  public:
-  SDLEventSystem(Gameexe& gexe);
+  explicit SDLEventSystem(Gameexe& gexe);
 
   /// We provide this accessor to let the Graphics system querry what
   /// to do when redrawing the mouse.
