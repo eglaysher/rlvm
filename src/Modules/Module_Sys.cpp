@@ -44,6 +44,10 @@
 
 #include "Modules/Module_Sys.hpp"
 
+#include <algorithm>
+#include <string>
+#include <vector>
+
 #include "Effects/FadeEffect.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Timer.hpp"
@@ -84,11 +88,11 @@ struct Sys_title : public RLOp_Void_1< StrConstant_T > {
 // -----------------------------------------------------------------------
 
 struct Sys_GetCursorPos_gc1
-  : public RLOp_Void_4< IntReference_T, IntReference_T, IntReference_T,
-						IntReference_T> {
-  void operator()(RLMachine& machine,
-				  IntReferenceIterator xit, IntReferenceIterator yit,
-                  IntReferenceIterator button1It, IntReferenceIterator button2It) {
+  : public RLOp_Void_4<IntReference_T, IntReference_T, IntReference_T,
+                       IntReference_T> {
+  void operator()(RLMachine& machine, IntReferenceIterator xit,
+                  IntReferenceIterator yit, IntReferenceIterator button1It,
+                  IntReferenceIterator button2It) {
     Point pos;
     int button1, button2;
     machine.system().event().getCursorPos(pos, button1, button2);
@@ -103,7 +107,8 @@ struct Sys_GetCursorPos_gc1
 
 struct Sys_GetCursorPos_gc2
   : public RLOp_Void_2< IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator xit, IntReferenceIterator yit) {
+  void operator()(RLMachine& machine, IntReferenceIterator xit,
+                  IntReferenceIterator yit) {
     Point pos = machine.system().event().getCursorPos();
     *xit = pos.x();
     *yit = pos.y();
@@ -230,7 +235,8 @@ struct Sys_max : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_constrain : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+struct Sys_constrain
+    : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
     if (var2 < var1)
       return var1;
@@ -346,15 +352,17 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
 
 SysModule::SysModule()
   : RLModule("Sys", 1, 004) {
-  addOpcode(   0, 0, "title", new Sys_title);
+  addOpcode(0, 0, "title", new Sys_title);
 
-  addOpcode( 130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
-  addOpcode( 133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
+  addOpcode(130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
+  addOpcode(133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
 
-  addOpcode( 202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
+  addOpcode(202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
 
-  addOpcode(204, 0, "ShowCursor", setToConstant(&GraphicsSystem::setShowCursor, 1));
-  addOpcode(205, 0, "HideCursor", setToConstant(&GraphicsSystem::setShowCursor, 0));
+  addOpcode(204, 0, "ShowCursor",
+            setToConstant(&GraphicsSystem::setShowCursor, 1));
+  addOpcode(205, 0, "HideCursor",
+            setToConstant(&GraphicsSystem::setShowCursor, 0));
   addOpcode(206, 0, "GetMouseCursor", returnIntValue(&GraphicsSystem::cursor));
   addOpcode(207, 0, "MouseCursor", callFunction(&GraphicsSystem::setCursor));
 
@@ -366,18 +374,18 @@ SysModule::SysModule()
   addOpcode(334, 0, "ClearLocalSkipMode",
             setToConstant(&TextSystem::setSkipMode, 0));
 
-  addOpcode( 350, 0, "CtrlKeyShip",
-             returnIntValue(&TextSystem::ctrlKeySkip));
-  addOpcode( 351, 0, "CtrlKeySkipOn",
-             setToConstant(&TextSystem::setCtrlKeySkip, 1));
-  addOpcode( 352, 0, "CtrlKeySkipOff",
-             setToConstant(&TextSystem::setCtrlKeySkip, 0));
-  addOpcode( 353, 0, "CtrlPressed",
-             returnIntValue(&EventSystem::ctrlPressed));
-  addOpcode( 354, 0, "ShiftPressed",
-             returnIntValue(&EventSystem::shiftPressed));
+  addOpcode(350, 0, "CtrlKeyShip",
+            returnIntValue(&TextSystem::ctrlKeySkip));
+  addOpcode(351, 0, "CtrlKeySkipOn",
+            setToConstant(&TextSystem::setCtrlKeySkip, 1));
+  addOpcode(352, 0, "CtrlKeySkipOff",
+            setToConstant(&TextSystem::setCtrlKeySkip, 0));
+  addOpcode(353, 0, "CtrlPressed",
+            returnIntValue(&EventSystem::ctrlPressed));
+  addOpcode(354, 0, "ShiftPressed",
+            returnIntValue(&EventSystem::shiftPressed));
 
-  addOpcode( 364, 0, "PauseCursor", new Sys_PauseCursor);
+  addOpcode(364, 0, "PauseCursor", new Sys_PauseCursor);
 
   addUnsupportedOpcode(400, 0, "GetWindowPos");
   addUnsupportedOpcode(401, 0, "SetWindowPos");
@@ -441,7 +449,6 @@ SysModule::SysModule()
             returnStringValue(&GraphicsSystem::defaultBgrName));
   addOpcode(1133, 0, "SetDefaultBgr",
             callFunction(&GraphicsSystem::setDefaultBgrName));
-
 
   addUnsupportedOpcode(1302, 0, "nwSingle");
   addUnsupportedOpcode(1303, 0, "nwMulti");
@@ -598,19 +605,20 @@ SysModule::SysModule()
   addOpcode(2617, 0, "DefWindowAttr", new Sys_DefWindowAttr);
 
   addOpcode(2270, 0, "SetShowObject1",
-			callFunction(&GraphicsSystem::setShowObject1));
+            callFunction(&GraphicsSystem::setShowObject1));
   addOpcode(2370, 0, "ShowObject1",
-			returnIntValue(&GraphicsSystem::showObject1));
+            returnIntValue(&GraphicsSystem::showObject1));
   addOpcode(2271, 0, "SetShowObject2",
-			callFunction(&GraphicsSystem::setShowObject2));
+            callFunction(&GraphicsSystem::setShowObject2));
   addOpcode(2371, 0, "ShowObject2",
-			returnIntValue(&GraphicsSystem::showObject2));
+            returnIntValue(&GraphicsSystem::showObject2));
   addOpcode(2272, 0, "SetShowWeather",
             callFunction(&GraphicsSystem::setShowWeather));
   addOpcode(2372, 0, "ShowWeather",
             returnIntValue(&GraphicsSystem::showWeather));
 
-  addOpcode(2324, 0, "MessageNoWait", returnIntValue(&TextSystem::messageNoWait));
+  addOpcode(2324, 0, "MessageNoWait",
+            returnIntValue(&TextSystem::messageNoWait));
   addOpcode(2350, 0, "AutoMode", returnIntValue(&TextSystem::autoMode));
 
   // Sys is hueg liek xbox, so lets group some of the operations by

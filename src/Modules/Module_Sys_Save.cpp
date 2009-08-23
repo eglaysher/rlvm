@@ -30,6 +30,10 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Sys_Save.hpp"
+
+#include <limits>
+#include <string>
+
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
@@ -89,8 +93,9 @@ struct Sys_SaveExists : public RLOp_Store_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_SaveDate : public RLOp_Store_5<
-  IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T> {
+struct Sys_SaveDate
+    : public RLOp_Store_5<IntConstant_T, IntReference_T, IntReference_T,
+                          IntReference_T, IntReference_T> {
   int operator()(RLMachine& machine, int slot,
                  IntReferenceIterator yIt, IntReferenceIterator mIt,
                  IntReferenceIterator dIt, IntReferenceIterator wdIt) {
@@ -111,8 +116,9 @@ struct Sys_SaveDate : public RLOp_Store_5<
 
 // -----------------------------------------------------------------------
 
-struct Sys_SaveTime : public RLOp_Store_5<
-  IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T> {
+struct Sys_SaveTime
+    : public RLOp_Store_5<IntConstant_T, IntReference_T, IntReference_T,
+                          IntReference_T, IntReference_T> {
   int operator()(RLMachine& machine, int slot,
                  IntReferenceIterator hhIt, IntReferenceIterator mmIt,
                  IntReferenceIterator ssIt, IntReferenceIterator msIt) {
@@ -163,9 +169,11 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
 // -----------------------------------------------------------------------
 
 
-struct Sys_SaveInfo : public RLOp_Store_10<
-  IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T, IntReference_T, IntReference_T, IntReference_T, StrReference_T > {
+struct Sys_SaveInfo
+    : public RLOp_Store_10<IntConstant_T, IntReference_T, IntReference_T,
+                           IntReference_T, IntReference_T, IntReference_T,
+                           IntReference_T, IntReference_T, IntReference_T,
+                           StrReference_T > {
   int operator()(RLMachine& machine, int slot,
                  IntReferenceIterator yIt, IntReferenceIterator mIt,
                  IntReferenceIterator dIt, IntReferenceIterator wdIt,

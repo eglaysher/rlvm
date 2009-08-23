@@ -27,6 +27,7 @@
 #ifndef SRC_SYSTEMS_BASE_OVKVOICEARCHIVE_HPP_
 #define SRC_SYSTEMS_BASE_OVKVOICEARCHIVE_HPP_
 
+#include <vector>
 #include <boost/filesystem/path.hpp>
 
 #include "Systems/Base/VoiceArchive.hpp"

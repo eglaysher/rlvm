@@ -111,7 +111,7 @@ class ScrollSquashSlideBaseEffect : public Effect {
  *
  * There are four, all representing the four directions used in these selections
  */
-///@}
+/// @}
 
 /**
  * Base interface which describes the (very) high level primatives
@@ -206,7 +206,7 @@ class RightToLeftDrawer : public ScrollSquashSlideDrawer {
   virtual void squashOff(GraphicsSystem&, ScrollSquashSlideBaseEffect&,
                          int amountVisible, int width, int height);
 };
-//@}
+// @}
 
 // -----------------------------------------------------------------------
 
@@ -216,7 +216,7 @@ class RightToLeftDrawer : public ScrollSquashSlideDrawer {
  * Each EffectType that derives from ScrollSquashSlideEffectTypeBase
  * represents one of the SEL effects.
  */
-///@{
+/// @{
 
 /**
  * Base class that defines the interface
@@ -328,6 +328,6 @@ class SlideOff : public ScrollSquashSlideEffectTypeBase {
                                  int amountVisible);
 };
 
-///@}
+/// @}
 
 #endif  // SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_

@@ -67,8 +67,7 @@ struct ImageDefinition {
 // -----------------------------------------------------------------------
 
 // Copy from SDLImageLoader
-static SDL_Surface* convertToStandardFormat(SDL_Surface* surface)
-{
+static SDL_Surface* convertToStandardFormat(SDL_Surface* surface) {
   Uint32 rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
   rmask = 0xff000000;

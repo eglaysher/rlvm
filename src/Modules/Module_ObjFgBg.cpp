@@ -42,6 +42,8 @@
 #include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
 
+#include <string>
+
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/Properties.hpp"
@@ -235,7 +237,7 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
   /// Keep a copy of the operation that we wrap
   scoped_ptr<RLOperation> handler;
 
-  ObjRangeAdapter(RLOperation* in) : handler(in) { }
+  explicit ObjRangeAdapter(RLOperation* in) : handler(in) { }
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
     const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
@@ -330,10 +332,10 @@ void addObjectFunctions(RLModule& m) {
   m.addUnsupportedOpcode(1032, 0, "objOrder");
   m.addUnsupportedOpcode(1033, 0, "objQuarterView");
 
-  m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0); //dispRect_0 == dispArea_0
+  m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0);
   m.addOpcode(1034, 1, "objDispRect", new Obj_dispRect_1);
   m.addOpcode(1035, 0, "objDispCorner",
-              new Obj_dispArea_0); //dispCorner_0 == dispArea_0
+              new Obj_dispArea_0);
   m.addOpcode(1035, 1, "objDispCorner",
               new Obj_dispCorner_1);
   m.addOpcode(1036, 0, "objAdjustVert",

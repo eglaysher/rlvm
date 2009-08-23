@@ -54,7 +54,7 @@ class GraphicsObject;
  */
 class GanGraphicsObjectData : public GraphicsObjectData {
  public:
-  GanGraphicsObjectData(System& system);
+  explicit GanGraphicsObjectData(System& system);
   GanGraphicsObjectData(System& system, const std::string& ganfile,
                         const std::string& imgfile);
   ~GanGraphicsObjectData();
@@ -87,7 +87,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
     int y;
     int time;
     int alpha;
-    int other; ///< No idea what this is.
+    int other;  // No idea what this is.
   };
 
   typedef std::vector< std::vector<Frame> > AnimationSets;

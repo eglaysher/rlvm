@@ -36,7 +36,7 @@
  */
 struct ObjectSettings {
   ObjectSettings();
-  ObjectSettings(const std::vector<int>& data);
+  explicit ObjectSettings(const std::vector<int>& data);
 
   /// Purpose unknown
   int layer;

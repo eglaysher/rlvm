@@ -30,6 +30,10 @@
 
 #include "Platforms/gcn/GCNMenu.hpp"
 
+#include <string>
+#include <algorithm>
+#include <vector>
+
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 

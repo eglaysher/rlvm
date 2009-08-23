@@ -30,6 +30,8 @@
 
 #include "Platforms/gcn/GCNButton.hpp"
 
+#include <string>
+
 #include "Platforms/gcn/gcnUtils.hpp"
 
 #include <guichan/exception.hpp>

@@ -46,7 +46,7 @@ class System;
  */
 class GraphicsTextObject : public GraphicsObjectData {
  public:
-  GraphicsTextObject(System& system);
+  explicit GraphicsTextObject(System& system);
   ~GraphicsTextObject();
 
   // ------------------------------------ [ GraphicsObjectData interface ]

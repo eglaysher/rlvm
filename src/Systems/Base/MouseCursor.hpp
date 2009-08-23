@@ -43,7 +43,7 @@ class RLMachine;
  */
 class MouseCursor {
  public:
-  MouseCursor(const boost::shared_ptr<Surface>& cursor_surface);
+  explicit MouseCursor(const boost::shared_ptr<Surface>& cursor_surface);
   ~MouseCursor();
 
   /**
@@ -68,7 +68,7 @@ class MouseCursor {
 
   /// The hotspot location.
   Size hotspot_offset_;
-};	// end of class MouseCursor
+};  // end of class MouseCursor
 
 
 #endif  // SRC_SYSTEMS_BASE_MOUSECURSOR_HPP_

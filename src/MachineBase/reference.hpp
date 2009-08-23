@@ -127,8 +127,14 @@ class MemoryReferenceIterator
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*() { return ACCESS(this); }
 
-  MemoryReferenceIterator& operator++() { ++location_; return *this; }
-  MemoryReferenceIterator& operator--() { --location_; return *this; }
+  MemoryReferenceIterator& operator++() {
+    ++location_;
+    return *this;
+  }
+  MemoryReferenceIterator& operator--() {
+    --location_;
+    return *this;
+  }
   MemoryReferenceIterator& operator+=(int step) {
     location_ += step;
     return *this;

@@ -54,7 +54,7 @@ const int NUM_KOE_CHANNELS = 1;
 
 struct SoundSystemGlobals {
   SoundSystemGlobals();
-  SoundSystemGlobals(Gameexe& gexe);
+  explicit SoundSystemGlobals(Gameexe& gexe);
 
   /**
    * Number passed in from RealLive that represents what we want the
@@ -197,7 +197,7 @@ class SoundSystem {
   typedef std::map<int, VolumeAdjustTask> ChannelAdjustmentMap;
 
  public:
-  SoundSystem(System& system);
+  explicit SoundSystem(System& system);
   virtual ~SoundSystem();
 
   /**
@@ -213,7 +213,9 @@ class SoundSystem {
   /**
    * Sets how much sound hertz.
    */
-  virtual void setSoundQuality(const int quality) { globals_.sound_quality = quality; }
+  virtual void setSoundQuality(const int quality) {
+    globals_.sound_quality = quality;
+  }
 
   int soundQuality() const { return globals_.sound_quality; }
 
@@ -504,6 +506,6 @@ class SoundSystem {
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-};	// end of class SoundSystem
+};  // end of class SoundSystem
 
 #endif  // SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_

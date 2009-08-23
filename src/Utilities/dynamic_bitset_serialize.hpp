@@ -40,6 +40,7 @@
  *         how the data is going to be pumped through gzip.
  */
 #include <iostream>
+#include <string>
 
 #include <boost/dynamic_bitset.hpp>
 #include <boost/serialization/split_free.hpp>
@@ -75,7 +76,7 @@ inline void serialize(Archive & ar,
     boost::serialization::split_free(ar, bs, file_version);
 }
 
-}
-}
+}  // namespace serialization
+}  // namespace boost
 
 #endif  // SRC_UTILITIES_DYNAMIC_BITSET_SERIALIZE_HPP_

@@ -31,6 +31,7 @@
 #include <boost/serialization/access.hpp>
 #include <map>
 #include <set>
+#include <string>
 
 class Gameexe;
 class RLMachine;
@@ -54,7 +55,7 @@ class CGMTable {
    * Initializes the CG table with the CGM data file specified in the
    * \#CGTABLE_FILENAME gameexe key.
    */
-  CGMTable(Gameexe& gameexe);
+  explicit CGMTable(Gameexe& gameexe);
   ~CGMTable();
 
   /// Returns the total number of images designated as CGs.

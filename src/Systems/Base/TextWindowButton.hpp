@@ -28,6 +28,7 @@
 #ifndef SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_
 #define SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_
 
+#include <vector>
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/utility.hpp>
@@ -46,7 +47,7 @@ class TextWindow;
 
 class TextWindowButton : public boost::noncopyable {
  public:
-  TextWindowButton(System& system);
+  explicit TextWindowButton(System& system);
   TextWindowButton(System& system, bool use,
                    GameexeInterpretObject location_box);
   virtual ~TextWindowButton();

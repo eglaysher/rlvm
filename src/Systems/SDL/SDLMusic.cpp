@@ -64,7 +64,7 @@ bool SDLMusic::s_bgm_enabled = true;
 // -----------------------------------------------------------------------
 
 SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
-  : file_(wav), track_(track), fadetime_total_(0), music_paused_(false) {
+    : file_(wav), track_(track), fadetime_total_(0), music_paused_(false) {
   // Advance the audio stream to the starting point
   if (track.from > 0)
     wav->Seek(track.from);
@@ -201,8 +201,8 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
 		}
 
 		int cur_vol =
-      SDL_MIX_MAXVOLUME * (count_total - music->fade_count_) /
-      count_total;
+        SDL_MIX_MAXVOLUME * (count_total - music->fade_count_) /
+        count_total;
 		char stream_dup[len];
 		memcpy(stream_dup, stream, len);
 		memset(stream, 0, len);
@@ -221,14 +221,14 @@ WAVFILE* buildMusicImplementation(FILE* file, int size) {
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
-  System& system, const SoundSystem::DSTrack& track) {
+    System& system, const SoundSystem::DSTrack& track) {
   typedef vector<pair<string, function<WAVFILE*(FILE*, int)> > > FileTypes;
   static FileTypes types =
-    map_list_of
-    ("wav", &buildMusicImplementation<WAVFILE_Stream>)
-    ("nwa", &buildMusicImplementation<NWAFILE>)
-    ("mp3", &buildMusicImplementation<MP3FILE>);
-//    ("ogg", &build_music_implementation_with_impl<OggFILE>);
+      map_list_of
+      ("wav", &buildMusicImplementation<WAVFILE_Stream>)
+      ("nwa", &buildMusicImplementation<NWAFILE>)
+      ("mp3", &buildMusicImplementation<MP3FILE>);
+  //    ("ogg", &build_music_implementation_with_impl<OggFILE>);
 
   fs::path file_path = findFile(system, track.file, SOUND_FILETYPES);
   const string& raw_path = file_path.external_file_string();

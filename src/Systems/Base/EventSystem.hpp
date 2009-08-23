@@ -48,7 +48,7 @@ class EventListener;
 
 struct EventSystemGlobals {
   EventSystemGlobals();
-  EventSystemGlobals(Gameexe& gexe);
+  explicit EventSystemGlobals(Gameexe& gexe);
 
   /// The two generic values that the reallive game has control over
   /// with the Generic1 and Generic2 functions.
@@ -74,7 +74,7 @@ struct EventSystemGlobals {
  */
 class EventSystem : public boost::noncopyable {
  public:
-  EventSystem(Gameexe& gexe);
+  explicit EventSystem(Gameexe& gexe);
   virtual ~EventSystem();
 
   /// Run once per cycle through the game loop to process events.
@@ -226,8 +226,12 @@ class EventSystem : public boost::noncopyable {
  protected:
   typedef std::set<EventListener*> EventListeners;
 
-  EventListeners::iterator listeners_begin() { return event_listeners_.begin(); }
-  EventListeners::iterator listeners_end() { return event_listeners_.end(); }
+  EventListeners::iterator listeners_begin() {
+    return event_listeners_.begin();
+  }
+  EventListeners::iterator listeners_end() {
+    return event_listeners_.end();
+  }
 
   /**
    * Calls a EventListener member function on all event listeners, and then

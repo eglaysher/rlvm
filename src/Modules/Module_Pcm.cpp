@@ -30,6 +30,9 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Pcm.hpp"
+
+#include <string>
+
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -39,7 +42,7 @@
 
 struct LongOp_pcmWait : public LongOperation {
   int channel_;
-  LongOp_pcmWait(int channel) : channel_(channel) {
+  explicit LongOp_pcmWait(int channel) : channel_(channel) {
     // TODO: Make it reset the number of loops, or this could
     // theoretically go on forever.
   }

@@ -46,19 +46,20 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 
-//#include <iostream>
 using namespace std;
 
 template<typename FRAMECLASS>
 struct Sys_InitFrame
-  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T,
+                       IntConstant_T> {
   const int layer_;
-  Sys_InitFrame(int layer) : layer_(layer) {}
+  explicit Sys_InitFrame(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter, int frameMin, int frameMax,
                   int time) {
     EventSystem& es = machine.system().event();
-    es.setFrameCounter(layer_, counter, new FRAMECLASS(es, frameMin, frameMax, time));
+    es.setFrameCounter(layer_, counter,
+                       new FRAMECLASS(es, frameMin, frameMax, time));
   }
 };
 
@@ -66,7 +67,7 @@ struct Sys_InitFrame
 
 struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T> {
   const int layer_;
-  Sys_ReadFrame(int layer) : layer_(layer) {}
+  explicit Sys_ReadFrame(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -81,7 +82,7 @@ struct Sys_ReadFrame : public RLOp_Store_1<IntConstant_T> {
 
 struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T> {
   const int layer_;
-  Sys_FrameActive(int layer) : layer_(layer) {}
+  explicit Sys_FrameActive(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -97,7 +98,7 @@ struct Sys_FrameActive : public RLOp_Store_1<IntConstant_T> {
 
 struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
   const int layer_;
-  Sys_AnyFrameActive(int layer) : layer_(layer) {}
+  explicit Sys_AnyFrameActive(int layer) : layer_(layer) {}
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -116,7 +117,7 @@ struct Sys_AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
 
 struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
   const int layer_;
-  Sys_ClearFrame_0(int layer) : layer_(layer) {}
+  explicit Sys_ClearFrame_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -128,10 +129,11 @@ struct Sys_ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
 
 struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   const int layer_;
-  Sys_ClearFrame_1(int layer) : layer_(layer) {}
+  explicit Sys_ClearFrame_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int counter, int newValue) {
-    FrameCounter& fc = machine.system().event().getFrameCounter(layer_, counter);
+    FrameCounter& fc =
+        machine.system().event().getFrameCounter(layer_, counter);
     fc.setActive(false);
     fc.setValue(newValue);
   }
@@ -141,7 +143,7 @@ struct Sys_ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
   const int layer_;
-  Sys_ClearAllFrames_0(int layer) : layer_(layer) {}
+  explicit Sys_ClearAllFrames_0(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine, int newValue) {
     EventSystem& es = machine.system().event();
@@ -160,7 +162,7 @@ struct Sys_ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
 
 struct Sys_ClearAllFrames_1 : public RLOp_Void_Void {
   const int layer_;
-  Sys_ClearAllFrames_1(int layer) : layer_(layer) {}
+  explicit Sys_ClearAllFrames_1(int layer) : layer_(layer) {}
 
   void operator()(RLMachine& machine) {
     EventSystem& es = machine.system().event();
@@ -179,9 +181,10 @@ typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
 struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> > {
   const int layer_;
-  Sys_ReadFrames(int layer) : layer_(layer) {}
+  explicit Sys_ReadFrames(int layer) : layer_(layer) {}
 
-  int operator()(RLMachine& machine, vector<FrameDataInReadFrames::type> frames) {
+  int operator()(RLMachine& machine,
+                 std::vector<FrameDataInReadFrames::type> frames) {
     static int callNum = 0;
     callNum++;
     EventSystem& es = machine.system().event();
@@ -198,8 +201,9 @@ struct Sys_ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> > {
 
         if (es.getFrameCounter(layer_, counter).isActive())
           storeValue = true;
-      } else
+      } else {
         *(it->get<1>()) = 0;
+      }
     }
 
     return storeValue;
@@ -213,8 +217,10 @@ void addSysFrameOpcodes(RLModule& m) {
   m.addOpcode(500, 0, "InitFrame", new Sys_InitFrame<SimpleFrameCounter>(0));
   m.addOpcode(501, 0, "InitFrameLoop", new Sys_InitFrame<LoopFrameCounter>(0));
   m.addOpcode(502, 0, "InitFrameTurn", new Sys_InitFrame<TurnFrameCounter>(0));
-  m.addOpcode(503, 0, "InitFrameAccel", new Sys_InitFrame<AcceleratingFrameCounter>(0));
-  m.addOpcode(504, 0, "InitFrameDecel", new Sys_InitFrame<DeceleratingFrameCounter>(0));
+  m.addOpcode(503, 0, "InitFrameAccel",
+              new Sys_InitFrame<AcceleratingFrameCounter>(0));
+  m.addOpcode(504, 0, "InitFrameDecel",
+              new Sys_InitFrame<DeceleratingFrameCounter>(0));
   m.addOpcode(510, 0, "ReadFrame", new Sys_ReadFrame(0));
   m.addOpcode(511, 0, "FrameActive", new Sys_FrameActive(0));
   m.addOpcode(512, 0, "AnyFrameActive", new Sys_AnyFrameActive(0));
@@ -225,10 +231,14 @@ void addSysFrameOpcodes(RLModule& m) {
 
   // Extended frame counter operations
   m.addOpcode(520, 0, "InitExFrame", new Sys_InitFrame<SimpleFrameCounter>(1));
-  m.addOpcode(521, 0, "InitExFrameLoop", new Sys_InitFrame<LoopFrameCounter>(1));
-  m.addOpcode(522, 0, "InitExFrameTurn", new Sys_InitFrame<TurnFrameCounter>(1));
-  m.addOpcode(523, 0, "InitExFrameAccel", new Sys_InitFrame<AcceleratingFrameCounter>(1));
-  m.addOpcode(524, 0, "InitExFrameDecel", new Sys_InitFrame<DeceleratingFrameCounter>(1));
+  m.addOpcode(521, 0, "InitExFrameLoop",
+              new Sys_InitFrame<LoopFrameCounter>(1));
+  m.addOpcode(522, 0, "InitExFrameTurn",
+              new Sys_InitFrame<TurnFrameCounter>(1));
+  m.addOpcode(523, 0, "InitExFrameAccel",
+              new Sys_InitFrame<AcceleratingFrameCounter>(1));
+  m.addOpcode(524, 0, "InitExFrameDecel",
+              new Sys_InitFrame<DeceleratingFrameCounter>(1));
   m.addOpcode(530, 0, "ReadExFrame", new Sys_ReadFrame(1));
   m.addOpcode(531, 0, "ExFrameActive", new Sys_FrameActive(1));
   m.addOpcode(532, 0, "AnyExFrameActive", new Sys_AnyFrameActive(1));
@@ -245,9 +255,11 @@ void addSysFrameOpcodes(RLModule& m) {
   m.addOpcode(602, 0, "InitFramesTurn",
               new MultiDispatch(new Sys_InitFrame<TurnFrameCounter>(0)));
   m.addOpcode(603, 0, "InitFramesAccel",
-              new MultiDispatch(new Sys_InitFrame<AcceleratingFrameCounter>(0)));
+              new MultiDispatch(
+                  new Sys_InitFrame<AcceleratingFrameCounter>(0)));
   m.addOpcode(604, 0, "InitFramesDecel",
-              new MultiDispatch(new Sys_InitFrame<DeceleratingFrameCounter>(0)));
+              new MultiDispatch(
+                  new Sys_InitFrame<DeceleratingFrameCounter>(0)));
   m.addOpcode(610, 0, "ReadFrames", new Sys_ReadFrames(0));
 
   // Multiple dispatch operations on normal frame counters
@@ -258,8 +270,10 @@ void addSysFrameOpcodes(RLModule& m) {
   m.addOpcode(622, 0, "InitExFramesTurn",
               new MultiDispatch(new Sys_InitFrame<TurnFrameCounter>(1)));
   m.addOpcode(623, 0, "InitExFramesAccel",
-              new MultiDispatch(new Sys_InitFrame<AcceleratingFrameCounter>(1)));
+              new MultiDispatch(
+                  new Sys_InitFrame<AcceleratingFrameCounter>(1)));
   m.addOpcode(624, 0, "InitExFramesDecel",
-              new MultiDispatch(new Sys_InitFrame<DeceleratingFrameCounter>(1)));
+              new MultiDispatch(
+                  new Sys_InitFrame<DeceleratingFrameCounter>(1)));
   m.addOpcode(630, 0, "ReadExFrames", new Sys_ReadFrames(1));
 }

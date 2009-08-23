@@ -203,7 +203,7 @@ class GraphicsObject {
   const std::string& textText() const;
 
   void setTextOps(int size, int xspace, int yspace, int vertical, int colour,
-				  int shadow);
+                  int shadow);
   int textSize() const;
   int textXSpace() const;
   int textYSpace() const;
@@ -388,8 +388,8 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-const static int OBJ_FG = 0;
-const static int OBJ_BG = 1;
+static const int OBJ_FG = 0;
+static const int OBJ_BG = 1;
 
 #endif  // SRC_SYSTEMS_BASE_GRAPHICSOBJECT_HPP_
 

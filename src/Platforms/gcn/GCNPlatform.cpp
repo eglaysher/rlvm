@@ -30,6 +30,10 @@
 
 #include "Platforms/gcn/GCNPlatform.hpp"
 
+#include <queue>
+#include <string>
+#include <vector>
+
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
@@ -82,7 +86,7 @@ const char* SYSCOM_EVENTS[] = {
   "SYSCOM_SHOW_WEATHER",
   "SYSCOM_SHOW_OBJECT_1",
   "SYSCOM_SHOW_OBJECT_2",
-  "SYSCOM_CLASSIFY_TEXT", // ??????? Unknown function.
+  "SYSCOM_CLASSIFY_TEXT",  // ??????? Unknown function.
   "SYSCOM_GENERIC_1",
   "SYSCOM_GENERIC_2",
   "NONE",
@@ -168,7 +172,7 @@ const MenuSpec SYCOM_MAIN_MENU[] = {
 class GCNPlatformBlocker : public LongOperation,
                            public Renderable,
                            public RawSDLInputHandler {
-public:
+ public:
   GCNPlatformBlocker(SDLEventSystem& system,
                      GraphicsSystem& graphics,
                      const boost::shared_ptr<GCNPlatform>& platform)
@@ -376,7 +380,6 @@ void GCNPlatform::pushBlocker(RLMachine& machine) {
     GraphicsSystem& graphics = machine.system().graphics();
     machine.pushLongOperation(new GCNPlatformBlocker(event, graphics,
                                                      shared_from_this()));
-
   }
 }
 
@@ -384,7 +387,7 @@ void GCNPlatform::pushBlocker(RLMachine& machine) {
 
 void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
   sdl_image_loader_.reset(new gcn::OpenGLSDLImageLoader());
-	gcn::Image::setImageLoader(sdl_image_loader_.get());
+  gcn::Image::setImageLoader(sdl_image_loader_.get());
 
   sdl_input_.reset(new gcn::SDLInput());
 
@@ -392,7 +395,7 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
                                          screen_size.height()));
 
   guichan_gui_.reset(new gcn::Gui);
-  guichan_gui_->setTabbingEnabled(false); // Do I want this on?
+  guichan_gui_->setTabbingEnabled(false);  // Do I want this on?
   guichan_gui_->setGraphics(opengl_graphics_.get());
   guichan_gui_->setInput(sdl_input_.get());
   guichan_gui_->addGlobalKeyListener(this);
@@ -406,7 +409,7 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
 
   fs::path font_file = findFontFile(system);
   global_font_.reset(new SDLTrueTypeFont(font_file.string().c_str(), 12));
-	gcn::Widget::setGlobalFont(global_font_.get());
+  gcn::Widget::setGlobalFont(global_font_.get());
 }
 
 // -----------------------------------------------------------------------

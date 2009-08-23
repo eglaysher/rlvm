@@ -290,11 +290,6 @@ class TextWindow {
    */
   bool isFull() const;
 
-  /**
-   *  Write this later.
-   */
- //  virtual void resetName() = 0;
-
   /// Called when a PauseLongOperation happens.
   void pause();
 
@@ -431,7 +426,10 @@ class TextWindow {
 
   /// @}
 
-  int upper_box_padding_, lower_box_padding_, left_box_padding_, right_box_padding_;
+  int upper_box_padding_;
+  int lower_box_padding_;
+  int left_box_padding_;
+  int right_box_padding_;
 
   /// Whether r_, etc is a per-window colour.
   int window_attr_mod_;
@@ -444,20 +442,17 @@ class TextWindow {
 
   int is_visible_;
 
-  /// Determines the position of the keycursor (the animated cursor
-  /// that appears when the game is waiting for a click to move to the
-  /// next page of text).
-  ///
-  /// If type is 0, the cursor appears at the bottom right corner of
-  /// the text area; if it is 1, it appears directly after the final
-  /// character printed; if it is 2, it appears at (x, y) relative to
-  /// the top left of the text area. (x and y are ignored when type is
-  /// 0 or 1.)
-  ///
-  /// @{
+  // Determines the position of the keycursor (the animated cursor
+  // that appears when the game is waiting for a click to move to the
+  // next page of text).
+  //
+  // If type is 0, the cursor appears at the bottom right corner of
+  // the text area; if it is 1, it appears directly after the final
+  // character printed; if it is 2, it appears at (x, y) relative to
+  // the top left of the text area. (x and y are ignored when type is
+  // 0 or 1.)
   int keycursor_type_;
   Point keycursor_pos_;
-  /// @}
 
   /**
    * @name Name display options

@@ -36,7 +36,7 @@
  */
 class PauseLongOperation : public LongOperation {
  public:
-  PauseLongOperation(RLMachine& machine);
+  explicit PauseLongOperation(RLMachine& machine);
   ~PauseLongOperation();
 
   // Overridden from EventListener:
@@ -72,7 +72,7 @@ class PauseLongOperation : public LongOperation {
 // -----------------------------------------------------------------------
 class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
  public:
-  NewPageAfterLongop(LongOperation* inOp);
+  explicit NewPageAfterLongop(LongOperation* inOp);
   ~NewPageAfterLongop();
 
  private:
@@ -84,7 +84,7 @@ class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
 // -----------------------------------------------------------------------
 class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
  public:
-  NewParagraphAfterLongop(LongOperation* inOp);
+  explicit NewParagraphAfterLongop(LongOperation* inOp);
   ~NewParagraphAfterLongop();
 
  private:

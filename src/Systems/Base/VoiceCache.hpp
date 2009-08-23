@@ -40,7 +40,7 @@ class VoiceSample;
  */
 class VoiceCache {
  public:
-  VoiceCache(SoundSystem& sound_system);
+  explicit VoiceCache(SoundSystem& sound_system);
   ~VoiceCache();
 
   boost::shared_ptr<VoiceSample> find(int id);
