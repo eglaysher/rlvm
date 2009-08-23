@@ -46,7 +46,7 @@
  */
 struct Sys_GetYear : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getYear();
+    return datetime::getYear();
   }
 };
 
@@ -54,7 +54,7 @@ struct Sys_GetYear : public RLOp_Store_Void {
 
 struct Sys_GetMonth : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getMonth();
+    return datetime::getMonth();
   }
 };
 
@@ -62,7 +62,7 @@ struct Sys_GetMonth : public RLOp_Store_Void {
 
 struct Sys_GetDay : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getDay();
+    return datetime::getDay();
   }
 };
 
@@ -70,7 +70,7 @@ struct Sys_GetDay : public RLOp_Store_Void {
 
 struct Sys_GetDayOfWeek : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getDayOfWeek();
+    return datetime::getDayOfWeek();
   }
 };
 
@@ -78,7 +78,7 @@ struct Sys_GetDayOfWeek : public RLOp_Store_Void {
 
 struct Sys_GetHour : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getHour();
+    return datetime::getHour();
   }
 };
 
@@ -86,7 +86,7 @@ struct Sys_GetHour : public RLOp_Store_Void {
 
 struct Sys_GetMinute : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getMinute();
+    return datetime::getMinute();
   }
 };
 
@@ -94,7 +94,7 @@ struct Sys_GetMinute : public RLOp_Store_Void {
 
 struct Sys_GetSecond : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getSecond();
+    return datetime::getSecond();
   }
 };
 
@@ -102,7 +102,7 @@ struct Sys_GetSecond : public RLOp_Store_Void {
 
 struct Sys_GetMs : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-	return datetime::getMs();
+    return datetime::getMs();
   }
 };
 

@@ -33,6 +33,9 @@
 #include "libReallive/gameexe.h"
 #include "Utilities/StringUtilities.hpp"
 
+#include <map>
+#include <string>
+
 using std::string;
 
 const char* ADDTIONAL_STRINGS_TO_LOAD[] = {

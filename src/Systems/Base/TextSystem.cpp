@@ -34,6 +34,8 @@
 
 #include "Systems/Base/TextSystem.hpp"
 
+#include <map>
+
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/RLMachine.hpp"

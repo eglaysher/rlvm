@@ -32,6 +32,7 @@
 #include "Systems/Base/GraphicsStackFrame.hpp"
 
 #include <iostream>
+#include <string>
 
 // -----------------------------------------------------------------------
 // GraphicsStackFrame
@@ -56,7 +57,8 @@ GraphicsStackFrame::~GraphicsStackFrame() {}
 
 // -----------------------------------------------------------------------
 
-GraphicsStackFrame& GraphicsStackFrame::setFilename(const std::string& filename) {
+GraphicsStackFrame& GraphicsStackFrame::setFilename(
+    const std::string& filename) {
   has_filename_ = true;
   file_name_ = filename;
   return *this;

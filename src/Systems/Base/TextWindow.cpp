@@ -509,7 +509,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
   if (inSelectionMode()) {
     bool found =
-      find_if (selections_.begin(), selections_.end(),
+      find_if(selections_.begin(), selections_.end(),
               bind(&SelectionElement::handleMouseClick, _1, pos, pressed))
       != selections_.end();
 

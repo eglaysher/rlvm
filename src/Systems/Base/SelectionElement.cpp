@@ -93,8 +93,9 @@ bool SelectionElement::handleMouseClick(const Point& pos, bool pressed) {
       selection_callback_(id_);
 
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 // -----------------------------------------------------------------------

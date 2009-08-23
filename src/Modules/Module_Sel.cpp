@@ -47,6 +47,7 @@
 #include <iostream>
 #include <iterator>
 #include <boost/bind.hpp>
+#include <string>
 
 using boost::bind;
 using libReallive::SelectElement;

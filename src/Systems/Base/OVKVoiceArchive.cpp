@@ -63,6 +63,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
+#include <vector>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <vorbis/vorbisfile.h>

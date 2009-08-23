@@ -39,6 +39,7 @@
 #include <cstdio>
 #include <sstream>
 #include <fstream>
+#include <functional>
 #include <string>
 #include <algorithm>
 #include <cmath>
@@ -196,7 +197,8 @@ char* Texture::uploadBuffer(unsigned int size) {
 // -----------------------------------------------------------------------
 
 void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
-                       unsigned int bytes_per_pixel, int byte_order, int byte_type) {
+                       unsigned int bytes_per_pixel, int byte_order,
+                       int byte_type) {
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
   if (w == total_width_ && h == total_height_) {
@@ -285,7 +287,6 @@ void Texture::buildShader() {
   shader_object_id_ = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
   ShowGLErrors();
 
-//  string str = readTextFile("/Users/elliot/Projects/rlvm/src/Systems/SDL/subtractive.frag");
   string str = getSubtractiveShaderString();
   const char* file = str.c_str();
 
@@ -293,17 +294,15 @@ void Texture::buildShader() {
   ShowGLErrors();
 
   glCompileShaderARB(shader_object_id_);
-  //printARBLog(shader_object_id_);
   ShowGLErrors();
 
-  // Check the log here
+  // TODO(erg): Should check the log and propogate failures.
 
   program_object_id_ = glCreateProgramObjectARB();
   glAttachObjectARB(program_object_id_, shader_object_id_);
   ShowGLErrors();
 
   glLinkProgramARB(program_object_id_);
-  //printARBLog(program_object_id_);
   ShowGLErrors();
 }
 

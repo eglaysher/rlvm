@@ -129,8 +129,8 @@ bool SDLTextWindow::displayChar(const std::string& current,
     // LENTICULAR BRACKET) should be handled before this
     // function. Otherwise, it's an error.
     if (cur_codepoint == 0x3010 || cur_codepoint == 0x3011) {
-      throw SystemError(
-        "Bug in parser; \\{name} construct should be handled before display_char");
+      throw SystemError("Bug in parser; \\{name} construct should be handled "
+                        "before display_char");
     }
 
     // But if the last character was a lenticular bracket, we need to indent

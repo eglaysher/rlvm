@@ -81,8 +81,9 @@ namespace fs = boost::filesystem;
 
 // Constants
 static const int ANM_MAGIC_SIZE = 12;
-static const char ANM_MAGIC[ANM_MAGIC_SIZE] =
-{'A','N','M','3','2',0,0,0,0,1,0,0};
+static const char ANM_MAGIC[ANM_MAGIC_SIZE] = {
+  'A', 'N', 'M', '3', '2', 0, 0, 0, 0, 1, 0, 0
+};
 
 // -----------------------------------------------------------------------
 
@@ -147,8 +148,10 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   int frames_len = read_i32(data + 0x8c);
   int framelist_len = read_i32(data + 0x90);
   int animation_set_len = read_i32(data + 0x94);
-  if (animation_set_len < 0)
-    throw rlvm::Exception("Impossible value for animation_set_len in ANM file.");
+  if (animation_set_len < 0) {
+    throw rlvm::Exception(
+        "Impossible value for animation_set_len in ANM file.");
+  }
 
   // Read the corresponding image file we read from, and load the image.
   string raw_file_name = data + 0x1c;
@@ -172,7 +175,8 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
     buf += 0x60;
   }
 
-  readIntegerList(data + 0xb8 + frames_len*0x60, 0x68, framelist_len, framelist);
+  readIntegerList(data + 0xb8 + frames_len*0x60, 0x68, framelist_len,
+                  framelist);
   readIntegerList(data + 0xb8 + frames_len*0x60 + framelist_len*0x68,
                   0x78, animation_set_len, animation_set);
 }
@@ -198,20 +202,23 @@ void AnmGraphicsObjectData::readIntegerList(
 
 // -----------------------------------------------------------------------
 
-/// @todo make me work.
 void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height) {
-  if (frame.src_x1 > frame.src_x2) { // swap
-    int tmp = frame.src_x1; frame.src_x1 = frame.src_x2; frame.src_x2 = tmp;
+  if (frame.src_x1 > frame.src_x2) {  // swap
+    int tmp = frame.src_x1;
+    frame.src_x1 = frame.src_x2;
+    frame.src_x2 = tmp;
   }
-  if (frame.src_y1 > frame.src_y2) { // swap
-    int tmp = frame.src_y1; frame.src_y1 = frame.src_y2; frame.src_y2 = tmp;
+  if (frame.src_y1 > frame.src_y2) {  // swap
+    int tmp = frame.src_y1;
+    frame.src_y1 = frame.src_y2;
+    frame.src_y2 = tmp;
   }
   // check screen size
   // int tmp_x = frame.dest_x, tmp_y = frame.dest_y;
-  if (frame.dest_x + (frame.src_x2-frame.src_x1+1) > width) {
+  if (frame.dest_x + (frame.src_x2 - frame.src_x1 + 1) > width) {
     frame.src_x2 = frame.src_x1 + width - frame.dest_x;
   }
-  if (frame.dest_y + (frame.src_y2-frame.src_y1+1) > width) {
+  if (frame.dest_y + (frame.src_y2 - frame.src_y1 + 1) > width) {
     frame.src_y2 = frame.src_y1 + width - frame.dest_y;
   }
 }
@@ -240,17 +247,19 @@ void AnmGraphicsObjectData::advanceFrame() {
       cur_frame_++;
       if (cur_frame_ == cur_frame_end_) {
         cur_frame_set_++;
-        if (cur_frame_set_ == cur_frame_set_end_)
+        if (cur_frame_set_ == cur_frame_set_end_) {
           setCurrentlyPlaying(false);
-        else {
+        } else {
           cur_frame_ = framelist.at(*cur_frame_set_).begin();
           cur_frame_end_ = framelist.at(*cur_frame_set_).end();
           current_frame_ = *cur_frame_;
         }
-      } else
+      } else {
         current_frame_ = *cur_frame_;
-    } else
+      }
+    } else {
       done = true;
+    }
   }
 }
 

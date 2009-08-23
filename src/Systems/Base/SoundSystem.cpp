@@ -42,6 +42,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <utility>
+#include <map>
+#include <string>
+#include <vector>
 
 // -----------------------------------------------------------------------
 

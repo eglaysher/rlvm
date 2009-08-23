@@ -37,6 +37,7 @@
 #include "Systems/Base/TextWindow.hpp"
 
 #include <iostream>
+#include <string>
 
 #include "libReallive/gameexe.h"
 
@@ -45,18 +46,18 @@ using std::endl;
 // A listing of all the g00 regions in type 4 wakus. The ranges to the right
 // are from the file smw01a.g00 in CLANNAD_FV.
 enum WakuPart {
-  TOP_LEFT_CORNER,     // <region x1="0" y1="0" x2="3" y2="3"/>
-  TOP_CENTER,          // <region x1="4" y1="0" x2="19" y2="3"/>
-  TOP_RIGHT_CORNER,    // <region x1="20" y1="0" x2="23" y2="3"/>
-  LEFT_SIDE,           // <region x1="0" y1="4" x2="1" y2="5"/>
-  UNKNOWN_1,           // <region x1="0" y1="4" x2="1" y2="5"/>
-  UNKNOWN_2,           // <region x1="0" y1="4" x2="1" y2="5"/>
-  RIGHT_SIDE,          // <region x1="22" y1="4" x2="23" y2="5"/>
-  UNKNOWN_3,           // <region x1="22" y1="4" x2="23" y2="5"/>
-  UNKNOWN_4,           // <region x1="22" y1="4" x2="23" y2="5"/>
-  BOTTOM_LEFT_CORNER,  // <region x1="0" y1="20" x2="3" y2="23"/>
-  BOTTOM_CENTER,       // <region x1="4" y1="20" x2="19" y2="23"/>
-  BOTTOM_RIGHT_CORNER, // <region x1="20" y1="20" x2="23" y2="23"/>
+  TOP_LEFT_CORNER,      // <region x1="0" y1="0" x2="3" y2="3"/>
+  TOP_CENTER,           // <region x1="4" y1="0" x2="19" y2="3"/>
+  TOP_RIGHT_CORNER,     // <region x1="20" y1="0" x2="23" y2="3"/>
+  LEFT_SIDE,            // <region x1="0" y1="4" x2="1" y2="5"/>
+  UNKNOWN_1,            // <region x1="0" y1="4" x2="1" y2="5"/>
+  UNKNOWN_2,            // <region x1="0" y1="4" x2="1" y2="5"/>
+  RIGHT_SIDE,           // <region x1="22" y1="4" x2="23" y2="5"/>
+  UNKNOWN_3,            // <region x1="22" y1="4" x2="23" y2="5"/>
+  UNKNOWN_4,            // <region x1="22" y1="4" x2="23" y2="5"/>
+  BOTTOM_LEFT_CORNER,   // <region x1="0" y1="20" x2="3" y2="23"/>
+  BOTTOM_CENTER,        // <region x1="4" y1="20" x2="19" y2="23"/>
+  BOTTOM_RIGHT_CORNER,  // <region x1="20" y1="20" x2="23" y2="23"/>
 };
 
 TextWakuType4::TextWakuType4(System& system, TextWindow& window, int setno,

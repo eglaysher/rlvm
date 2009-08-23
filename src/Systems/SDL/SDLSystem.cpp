@@ -145,5 +145,5 @@ SoundSystem& SDLSystem::sound() {
 }
 
 SDLGraphicsSystem* getSDLGraphics(System& system) {
-  return &static_cast<SDLGraphicsSystem&>(system.graphics());
+  return static_cast<SDLGraphicsSystem*>(&system.graphics());
 }

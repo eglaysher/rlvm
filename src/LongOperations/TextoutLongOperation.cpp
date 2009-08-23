@@ -218,9 +218,9 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
   if (!machine.system().text().systemVisible())
     throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
 
-  if (no_wait_)
+  if (no_wait_) {
     return displayAsMuchAsWeCanThenPause(machine);
-  else {
+  } else {
     bool paused = false;
     return displayOneMoreCharacter(machine, paused);
   }

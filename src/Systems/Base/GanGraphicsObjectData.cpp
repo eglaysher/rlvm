@@ -59,6 +59,8 @@
 
 #include <boost/serialization/export.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <string>
+#include <vector>
 
 // -----------------------------------------------------------------------
 
@@ -233,7 +235,7 @@ GanGraphicsObjectData::readSetFrame(const std::string& file_name,
 // -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::throwBadFormat(
-  const std::string& file_name, const std::string& error) {
+    const std::string& file_name, const std::string& error) {
   ostringstream oss;
   oss << "File \"" << file_name
       << "\" does not appear to be in GAN format: "

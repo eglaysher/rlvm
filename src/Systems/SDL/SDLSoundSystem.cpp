@@ -42,6 +42,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <sstream>
+#include <string>
 
 using boost::shared_ptr;
 using namespace std;
@@ -97,7 +98,8 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::buildKoeChunk(
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::wavPlayImpl(const std::string& wav_file, const int channel, bool loop) {
+void SDLSoundSystem::wavPlayImpl(const std::string& wav_file,
+                                 const int channel, bool loop) {
   if (pcmEnabled()) {
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
@@ -108,7 +110,8 @@ void SDLSoundSystem::wavPlayImpl(const std::string& wav_file, const int channel,
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(const std::string& bgm_name) {
+boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
+    const std::string& bgm_name) {
   const DSTable& ds_table = getDSTable();
   DSTable::const_iterator ds_it = ds_table.find(boost::to_lower_copy(bgm_name));
   if (ds_it != ds_table.end())
@@ -150,12 +153,12 @@ SDLSoundSystem::SDLSoundSystem(System& system)
   }
 
   // Jagarl's sound system wants information on the audio settings.
-	int freq, channels; Uint16 format;
-	if (Mix_QuerySpec(&freq, &format, &channels) ) {
-		WAVFILE::freq = freq;
-		WAVFILE::format = format;
-		WAVFILE::channels = channels;
-	}
+  int freq, channels; Uint16 format;
+  if (Mix_QuerySpec(&freq, &format, &channels)) {
+    WAVFILE::freq = freq;
+    WAVFILE::format = format;
+    WAVFILE::channels = channels;
+  }
 
   Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS +
                        NUM_KOE_CHANNELS);
@@ -222,8 +225,8 @@ void SDLSoundSystem::wavPlay(const std::string& wav_file,
 
 // -----------------------------------------------------------------------
 
-void SDLSoundSystem::wavPlay(const std::string& wav_file,
-                             bool loop, const int channel, const int fadein_ms) {
+void SDLSoundSystem::wavPlay(const std::string& wav_file, bool loop,
+                             const int channel, const int fadein_ms) {
   checkChannel(channel, "SDLSoundSystem::wav_play");
 
   if (pcmEnabled()) {
@@ -305,8 +308,9 @@ int SDLSoundSystem::bgmStatus() const {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing) {
     return currently_playing->bgmStatus();
-  } else
+  } else {
     return 0;
+  }
 }
 
 // -----------------------------------------------------------------------

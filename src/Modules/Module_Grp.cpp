@@ -62,6 +62,8 @@
 #include "libReallive/gameexe.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include <boost/scoped_ptr.hpp>
 
@@ -202,7 +204,7 @@ void handleOpenBgFileName(
     bool useAlpha) {
   GraphicsSystem& graphics = machine.system().graphics();
 
-  if (fileName != "?"){
+  if (fileName != "?") {
     if (fileName == "???")
       fileName = graphics.defaultGrpName();
 
@@ -210,7 +212,7 @@ void handleOpenBgFileName(
   }
 }
 
-}
+}  // namespace
 
 // -----------------------------------------------------------------------
 
@@ -244,7 +246,7 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
     machine.system().graphics().addGraphicsStackFrame(GRP_WIPE)
       .setTargetDC(dc).setRGB(r, g, b);
 
-    machine.system().graphics().getDC(dc)->fill(RGBAColour(RGBAColour(r, g, b)));
+    machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b));
   }
 };
 
@@ -264,7 +266,7 @@ struct Grp_wipe : public RLOp_Void_4< IntConstant_T, IntConstant_T,
 struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                         DefaultIntValue_T<255> > {
   bool use_alpha_;
-  Grp_load_1(bool in) : use_alpha_(in) {}
+  explicit Grp_load_1(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
@@ -273,7 +275,8 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
       .setFilename(filename).setTargetDC(dc).setOpacity(opacity)
       .setMask(use_alpha_);
 
-    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
+    shared_ptr<Surface> surface(
+        graphics.loadSurfaceFromFile(machine, filename));
 
     if (dc != 0 && dc != 1) {
       Size maxSize = graphics.screenSize().sizeUnion(surface->size());
@@ -283,7 +286,6 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     surface->blitToSurface(*graphics.getDC(dc),
                            surface->rect(), surface->rect(),
                            opacity, use_alpha_);
-
   }
 };
 
@@ -302,12 +304,13 @@ struct Grp_load_3 : public RLOp_Void_5<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
   DefaultIntValue_T<255> > {
   bool use_alpha_;
-  Grp_load_3(bool in) : use_alpha_(in) {}
+  explicit Grp_load_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int dc,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, filename));
+    shared_ptr<Surface> surface(
+        graphics.loadSurfaceFromFile(machine, filename));
 
     graphics.addGraphicsStackFrame(GRP_LOAD)
         .setFilename(filename)
@@ -355,7 +358,8 @@ struct Grp_display_1
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
+    LongOperation* lop =
+        EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
   }
@@ -432,7 +436,7 @@ struct Grp_display_2
 struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                         IntConstant_T > {
   bool use_alpha_;
-  Grp_open_1(bool in) : use_alpha_(in) {}
+  explicit Grp_open_1(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
                   int opacity) {
@@ -461,7 +465,8 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
     shared_ptr<Surface> dc1 = graphics.getDC(1);
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
+    LongOperation* lop =
+        EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
     decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();
@@ -479,7 +484,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
  */
 struct Grp_open_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   Grp_open_1 delegate_;
-  Grp_open_0(bool in) : delegate_(in) {}
+  explicit Grp_open_0(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
     vector<int> selEffect = getSELEffect(machine, effectNum);
@@ -493,7 +498,7 @@ template<typename SPACE>
 struct Grp_open_3 : public RLOp_Void_5<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T> {
   bool use_alpha_;
-  Grp_open_3(bool in) : use_alpha_(in) {}
+  explicit Grp_open_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
@@ -542,7 +547,7 @@ template<typename SPACE>
 struct Grp_open_2 : public RLOp_Void_4<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   Grp_open_3<SPACE> delegate_;
-  Grp_open_2(bool in) : delegate_(in) {}
+  explicit Grp_open_2(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum,
                   Rect src, Point dest) {
@@ -553,10 +558,6 @@ struct Grp_open_2 : public RLOp_Void_4<
 
 // -----------------------------------------------------------------------
 
-//(strC 'filename', 'x1', 'y1', 'x2', 'y2',
-// 'dx', 'dy', 'steps', 'effect', 'direction',
-// 'interpolation', 'density', 'speed', '?', '?',
-// 'alpha', '?')
 template<typename SPACE>
 struct Grp_open_4 : public RLOp_Void_13<
   StrConstant_T, Rect_T<SPACE>,
@@ -564,7 +565,7 @@ struct Grp_open_4 : public RLOp_Void_13<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T> {
   bool use_alpha_;
-  Grp_open_4(bool in) : use_alpha_(in) {}
+  explicit Grp_open_4(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName,
                   Rect srcRect, Point dest,
@@ -609,7 +610,8 @@ struct Grp_open_4 : public RLOp_Void_13<
 
 struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                           IntConstant_T > {
-  void operator()(RLMachine& machine, string fileName, int effectNum, int opacity) {
+  void operator()(RLMachine& machine, string fileName, int effectNum,
+                  int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     Rect srcRect;
     Point destPoint;
@@ -635,7 +637,8 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     shared_ptr<Surface> tmp = graphics.renderToSurfaceWithBg(dc1);
 
-    LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
+    LongOperation* effect =
+        EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
     decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
     machine.pushLongOperation(effect);
     machine.system().text().hideAllTextWindows();
@@ -659,7 +662,7 @@ template<typename SPACE>
 struct Grp_openBg_3 : public RLOp_Void_5<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T> {
   bool use_alpha_;
-  Grp_openBg_3(bool in) : use_alpha_(in) {}
+  explicit Grp_openBg_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName, int effectNum,
                   Rect srcRect, Point destPt, int opacity) {
@@ -699,7 +702,7 @@ template<typename SPACE>
 struct Grp_openBg_2
     : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   Grp_openBg_3<SPACE> delegate_;
-  Grp_openBg_2(bool in) : delegate_(in) {}
+  explicit Grp_openBg_2(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string fileName, int effectNum,
                   Rect srcRect, Point destPt) {
@@ -717,7 +720,7 @@ struct Grp_openBg_4 : public RLOp_Void_13<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T, IntConstant_T> {
   bool use_alpha_;
-  Grp_openBg_4(bool in) : use_alpha_(in) {}
+  explicit Grp_openBg_4(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, string fileName,
                   Rect srcRect, Point destPt,
@@ -758,10 +761,11 @@ struct Grp_openBg_4 : public RLOp_Void_13<
 // {grp,rec}Copy
 // -----------------------------------------------------------------------
 template<typename SPACE>
-struct Grp_copy_3 : public RLOp_Void_5<
-  Rect_T<SPACE>, IntConstant_T, Point_T, IntConstant_T, DefaultIntValue_T<255> > {
+struct Grp_copy_3
+    : public RLOp_Void_5<Rect_T<SPACE>, IntConstant_T, Point_T, IntConstant_T,
+                         DefaultIntValue_T<255> > {
   bool use_alpha_;
-  Grp_copy_3(bool in) : use_alpha_(in) {}
+  explicit Grp_copy_3(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, Rect srcRect,
                   int src, Point destPoint, int dst, int opacity) {
@@ -796,7 +800,7 @@ struct Grp_copy_3 : public RLOp_Void_5<
 struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                        DefaultIntValue_T<255> > {
   bool use_alpha_;
-  Grp_copy_1(bool in) : use_alpha_(in) {}
+  explicit Grp_copy_1(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, int src, int dst, int opacity) {
     // Copying to self is a noop
@@ -844,7 +848,8 @@ struct Grp_fill_3 : public RLOp_Void_6<
   DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, Rect destRect,
                   int dc, int r, int g, int b, int alpha) {
-    machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha), destRect);
+    machine.system().graphics().getDC(dc)->fill(
+        RGBAColour(r, g, b, alpha), destRect);
   }
 };
 
@@ -921,7 +926,7 @@ struct Grp_stretchBlit_1
                          Rect_T<SPACE>, IntConstant_T,
                          DefaultIntValue_T<255> > {
   bool use_alpha_;
-  Grp_stretchBlit_1(bool in) : use_alpha_(in) {}
+  explicit Grp_stretchBlit_1(bool in) : use_alpha_(in) {}
 
   void operator()(RLMachine& machine, Rect src_rect, int src,
                   Rect dst_rect, int dst, int opacity) {

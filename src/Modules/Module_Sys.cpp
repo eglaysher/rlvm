@@ -394,7 +394,7 @@ SysModule::SysModule()
   addUnsupportedOpcode(404, 0, "SetDefaultWindowPos");
   addUnsupportedOpcode(405, 0, "DefaultWindowResetPos");
 
-  addOpcode( 410, 0, "GetWakuAll", new Sys_GetWakuAll);
+  addOpcode(410, 0, "GetWakuAll", new Sys_GetWakuAll);
   addUnsupportedOpcode(411, 0, "SetWakuAll");
   addUnsupportedOpcode(412, 0, "GetWaku");
   addUnsupportedOpcode(413, 0, "SetWaku");

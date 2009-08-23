@@ -55,6 +55,8 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace boost;
 using namespace std;
@@ -72,7 +74,7 @@ using namespace libReallive;
  * module should not be used as a template for how to implement a
  * RLModule.
  */
-//@{
+// @{
 
 namespace {
 
@@ -162,7 +164,7 @@ void storeData(RLMachine& machine, const ParamVector& f) {
   }
 }
 
-}
+}  // namespace
 
 // -----------------------------------------------------------------------
 
@@ -195,8 +197,9 @@ struct Jmp_goto_if : public RLOp_SpecialCase {
     if (conditions.at(0).integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
-    } else
+    } else {
       machine.advanceInstructionPointer();
+    }
   }
 };
 
@@ -215,8 +218,9 @@ struct Jmp_goto_unless : public RLOp_SpecialCase {
     if (!conditions.at(0).integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gotoLocation(pointers[0]);
-    } else
+    } else {
       machine.advanceInstructionPointer();
+    }
   }
 };
 
@@ -240,15 +244,13 @@ struct Jmp_goto_on : public RLOp_SpecialCase {
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
 
-//     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
-//     int value = conditions.at(0).integerValue(machine);
-
     const Pointers& pointers = gotoElement.get_pointersRef();
-    if (value >= 0 && value < int(pointers.size()))
+    if (value >= 0 && value < int(pointers.size())) {
       machine.gotoLocation(pointers[value]);
-    else
+    } else {
       // If the value is not a valid pointer, simply increment.
       machine.advanceInstructionPointer();
+    }
   }
 };
 
@@ -303,8 +305,9 @@ struct Jmp_gosub_if : public RLOp_SpecialCase {
     if (condition->integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
-    } else
+    } else {
       machine.advanceInstructionPointer();
+    }
   }
 };
 
@@ -324,8 +327,9 @@ struct Jmp_gosub_unless : public RLOp_SpecialCase {
     if (!conditions.at(0).integerValue(machine)) {
       const Pointers& pointers = gotoElement.get_pointersRef();
       machine.gosub(pointers[0]);
-    } else
+    } else {
       machine.advanceInstructionPointer();
+    }
   }
 };
 
@@ -496,9 +500,11 @@ struct Jmp_gosub_with : public RLOp_SpecialCase {
       ParamFormat::parseParameters(position, unparsed, output);
     }
 
-    const ptr_vector<ExpressionPiece>& parameterPieces = gotoElement.getParameters();
+    const ptr_vector<ExpressionPiece>& parameterPieces =
+        gotoElement.getParameters();
     unsigned int position = 0;
-    ParamFormat::type data = ParamFormat::getData(machine, parameterPieces, position);
+    ParamFormat::type data =
+        ParamFormat::getData(machine, parameterPieces, position);
     storeData(machine, data);
 
     const Pointers& pointers = gotoElement.get_pointersRef();
@@ -631,4 +637,4 @@ JmpModule::JmpModule()
   addOpcode(19, 1, "rtl_with", new Jmp_rtl_with_1);
 }
 
-//@}
+// @}

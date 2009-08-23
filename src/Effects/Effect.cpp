@@ -112,10 +112,12 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 BlitAfterEffectFinishes::BlitAfterEffectFinishes(
-  LongOperation* in, boost::shared_ptr<Surface> src, boost::shared_ptr<Surface> dst,
-  const Rect& srcRect, const Rect& destRect)
-  : PerformAfterLongOperationDecorator(in), src_surface_(src), dst_surface_(dst),
-    src_rect_(srcRect), dest_rect_(destRect) {}
+    LongOperation* in, boost::shared_ptr<Surface> src,
+    boost::shared_ptr<Surface> dst, const Rect& srcRect, const Rect& destRect)
+    : PerformAfterLongOperationDecorator(in),
+      src_surface_(src), dst_surface_(dst), src_rect_(srcRect),
+      dest_rect_(destRect) {
+}
 
 // -----------------------------------------------------------------------
 

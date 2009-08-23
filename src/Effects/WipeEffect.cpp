@@ -142,11 +142,12 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
     int opacity[4] = {255, 255, 0, 0};
 
     srcSurface().
-      renderToScreen(Rect::GRP(0, sizeOfMainPolygon,
-                               width(), sizeOfMainPolygon + sizeOfInterpolation),
-                     Rect::GRP(0, sizeOfMainPolygon, width(),
-                               sizeOfMainPolygon + sizeOfInterpolation),
-                     opacity);
+      renderToScreen(
+          Rect::GRP(0, sizeOfMainPolygon,
+                    width(), sizeOfMainPolygon + sizeOfInterpolation),
+          Rect::GRP(0, sizeOfMainPolygon, width(),
+                    sizeOfMainPolygon + sizeOfInterpolation),
+          opacity);
   }
 }
 
@@ -172,19 +173,21 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
   // Render the sliding on frame
   if (sizeOfMainPolygon) {
     srcSurface().
-      renderToScreen(Rect::GRP(0, height() - sizeOfMainPolygon, width(), height()),
-                     Rect::GRP(0, height() - sizeOfMainPolygon, width(), height()),
-                     255);
+      renderToScreen(
+          Rect::GRP(0, height() - sizeOfMainPolygon, width(), height()),
+          Rect::GRP(0, height() - sizeOfMainPolygon, width(), height()),
+          255);
   }
 
   if (sizeOfInterpolation) {
     int opacity[4] = {0, 0, 255, 255};
     srcSurface().
-      renderToScreen(Rect::GRP(0, height() - sizeOfMainPolygon - sizeOfInterpolation,
-                               width(), height() - sizeOfMainPolygon),
-                     Rect::GRP(0, height() - sizeOfMainPolygon - sizeOfInterpolation,
-                          width(), height() - sizeOfMainPolygon),
-                     opacity);
+      renderToScreen(
+          Rect::GRP(0, height() - sizeOfMainPolygon - sizeOfInterpolation,
+                    width(), height() - sizeOfMainPolygon),
+          Rect::GRP(0, height() - sizeOfMainPolygon - sizeOfInterpolation,
+                    width(), height() - sizeOfMainPolygon),
+          opacity);
   }
 }
 
@@ -219,11 +222,12 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
   if (sizeOfInterpolation) {
     int opacity[4] = {255, 0, 0, 255};
     srcSurface().
-      renderToScreen(Rect::GRP(sizeOfMainPolygon, 0,
-                               sizeOfMainPolygon + sizeOfInterpolation, height()),
-                     Rect::GRP(sizeOfMainPolygon, 0,
-                               sizeOfMainPolygon + sizeOfInterpolation, height()),
-                     opacity);
+      renderToScreen(
+          Rect::GRP(sizeOfMainPolygon, 0,
+                    sizeOfMainPolygon + sizeOfInterpolation, height()),
+          Rect::GRP(sizeOfMainPolygon, 0,
+                    sizeOfMainPolygon + sizeOfInterpolation, height()),
+          opacity);
   }
 }
 
@@ -247,18 +251,20 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
 
   if (sizeOfMainPolygon) {
     srcSurface().
-      renderToScreen(Rect::GRP(width() - sizeOfMainPolygon, 0, width(), height()),
-                     Rect::GRP(width() - sizeOfMainPolygon, 0, width(), height()),
-                     255);
+        renderToScreen(
+            Rect::GRP(width() - sizeOfMainPolygon, 0, width(), height()),
+            Rect::GRP(width() - sizeOfMainPolygon, 0, width(), height()),
+            255);
   }
 
   if (sizeOfInterpolation) {
     int opacity[4] = {0, 255, 255, 0};
     srcSurface().
-      renderToScreen(Rect::GRP(width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
-                               width() - sizeOfMainPolygon, height()),
-                     Rect::GRP(width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
-                               width() - sizeOfMainPolygon, height()),
-                     opacity);
+      renderToScreen(
+          Rect::GRP(width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
+                    width() - sizeOfMainPolygon, height()),
+          Rect::GRP(width() - sizeOfInterpolation - sizeOfMainPolygon, 0,
+                    width() - sizeOfMainPolygon, height()),
+          opacity);
   }
 }

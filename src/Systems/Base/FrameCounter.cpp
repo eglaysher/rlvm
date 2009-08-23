@@ -236,7 +236,8 @@ AcceleratingFrameCounter::AcceleratingFrameCounter(
 int AcceleratingFrameCounter::readFrame() {
   if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
-    float cur_time = (event_system_.getTicks() - start_time_) / float(total_time_);
+    float cur_time = (event_system_.getTicks() - start_time_) /
+                     float(total_time_);
     float interval = (1.1f - cur_time*0.2f) * base_interval;
 
     return readNormalFrameWithChangeInterval(interval, time_at_last_check_);
@@ -259,7 +260,8 @@ DeceleratingFrameCounter::DeceleratingFrameCounter(
 int DeceleratingFrameCounter::readFrame() {
   if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
-    float cur_time = (event_system_.getTicks() - start_time_) / float(total_time_);
+    float cur_time = (event_system_.getTicks() - start_time_) /
+                     float(total_time_);
     float interval = (0.9f + cur_time*0.2f) * base_interval;
 
     return readNormalFrameWithChangeInterval(interval, time_at_last_check_);

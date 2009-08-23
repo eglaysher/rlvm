@@ -40,6 +40,7 @@
 #include "libReallive/gameexe.h"
 
 #include <sstream>
+#include <string>
 #include <iomanip>
 #include <iostream>
 #include <boost/bind.hpp>
@@ -62,7 +63,20 @@ static struct ButtonInfo {
   int index;
   const char* button_name;
   int waku_offset;
-} BUTTON_INFO[] = { { 0, "CLEAR_BOX", 8}, { 1, "MSGBKLEFT_BOX", 24}, { 2, "MSGBKRIGHT_BOX", 32}, { 3, "EXBTN_000_BOX", 40}, { 4, "EXBTN_001_BOX", 48}, { 5, "EXBTN_002_BOX", 56}, { 6, "EXBTN_003_BOX", 64}, { 7, "EXBTN_004_BOX", 72}, { 8, "EXBTN_005_BOX", 80}, { 9, "EXBTN_006_BOX", 88}, {10, "READJUMP_BOX", 104}, {11, "AUTOMODE_BOX", 112}, {-1, NULL, -1}
+} BUTTON_INFO[] = {
+  { 0, "CLEAR_BOX", 8},
+  { 1, "MSGBKLEFT_BOX", 24},
+  { 2, "MSGBKRIGHT_BOX", 32},
+  { 3, "EXBTN_000_BOX", 40},
+  { 4, "EXBTN_001_BOX", 48},
+  { 5, "EXBTN_002_BOX", 56},
+  { 6, "EXBTN_003_BOX", 64},
+  { 7, "EXBTN_004_BOX", 72},
+  { 8, "EXBTN_005_BOX", 80},
+  { 9, "EXBTN_006_BOX", 88},
+  {10, "READJUMP_BOX", 104},
+  {11, "AUTOMODE_BOX", 112},
+  {-1, NULL, -1}
 };
 
 // -----------------------------------------------------------------------

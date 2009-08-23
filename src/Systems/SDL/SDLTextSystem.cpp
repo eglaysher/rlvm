@@ -54,6 +54,8 @@
 #include <SDL/SDL_ttf.h>
 #include <sstream>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace boost;
@@ -62,7 +64,7 @@ using namespace boost;
 
 SDLTextSystem::SDLTextSystem(System& system, Gameexe& gameexe)
     : TextSystem(system, gameexe) {
-  if (TTF_Init()==-1) {
+  if (TTF_Init() == -1) {
     ostringstream oss;
     oss << "Error initializing SDL_ttf: " << TTF_GetError();
     throw SystemError(oss.str());

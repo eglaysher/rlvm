@@ -51,7 +51,7 @@ using namespace std;
 SDLRenderToTextureSurface::SDLRenderToTextureSurface(SDLGraphicsSystem* system,
                                                      const Size& size)
     : texture_(new Texture(render_to_texture(), size.width(), size.height())),
-      graphics_system_(system){
+      graphics_system_(system) {
   registerWithGraphicsSystem();
 }
 

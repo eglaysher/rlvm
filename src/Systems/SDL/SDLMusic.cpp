@@ -38,6 +38,7 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <SDL/SDL_mixer.h>
 
 #include <boost/function.hpp>
@@ -173,42 +174,42 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
   // Inside an SDL_LockAudio() section set up by SDL_Mixer! Don't lock here!
   SDLMusic* music = s_currently_playing.get();
 
-	int count;
+  int count;
   if (!s_bgm_enabled || !music || music->music_paused_) {
-		memset(stream, 0, len);
-		return;
-	}
-	count = music->file_->Read( (char*)stream, 4, len/4);
+    memset(stream, 0, len);
+    return;
+  }
+  count = music->file_->Read((char*)stream, 4, len/4);
 
-	if (count != len/4) {
-		memset(stream+count*4, 0, len-count*4);
-		if (music->loop_point_ == STOP_AT_END) {
-			music->loop_point_ = STOP_NOW;
+  if (count != len/4) {
+    memset(stream+count*4, 0, len-count*4);
+    if (music->loop_point_ == STOP_AT_END) {
+      music->loop_point_ = STOP_NOW;
       s_currently_playing.reset();
-		} else {
-			music->file_->Seek(music->loop_point_);
-			music->file_->Read( (char*)(stream+count*4), 4, len/4-count);
-		}
-	}
-	if (music->fadetime_total_) {
-		int count_total = music->fadetime_total_*(WAVFILE::freq/1000);
-		if (music->fade_count_ > count_total ||
+    } else {
+      music->file_->Seek(music->loop_point_);
+      music->file_->Read( (char*)(stream+count*4), 4, len/4-count);
+    }
+  }
+  if (music->fadetime_total_) {
+    int count_total = music->fadetime_total_*(WAVFILE::freq/1000);
+    if (music->fade_count_ > count_total ||
         music->fadetime_total_ == 1) {
-			music->loop_point_ = STOP_NOW;
+      music->loop_point_ = STOP_NOW;
       s_currently_playing.reset();
-			memset(stream, 0, len);
-			return;
-		}
+      memset(stream, 0, len);
+      return;
+    }
 
-		int cur_vol =
+    int cur_vol =
         SDL_MIX_MAXVOLUME * (count_total - music->fade_count_) /
         count_total;
-		char stream_dup[len];
-		memcpy(stream_dup, stream, len);
-		memset(stream, 0, len);
-		SDL_MixAudio(stream, (Uint8*)stream_dup, len, cur_vol);
-		music->fade_count_ += len/4;
-	}
+    char stream_dup[len];
+    memcpy(stream_dup, stream, len);
+    memset(stream, 0, len);
+    SDL_MixAudio(stream, (Uint8*)stream_dup, len, cur_vol);
+    music->fade_count_ += len/4;
+  }
 }
 
 // -----------------------------------------------------------------------

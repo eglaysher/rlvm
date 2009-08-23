@@ -54,6 +54,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 using boost::bind;
@@ -156,8 +157,8 @@ int System::readSyscom(int syscom) {
 // -----------------------------------------------------------------------
 
 class MenuReseter : public LongOperation {
-public:
-  MenuReseter(System& sys) : sys_(sys) {}
+ public:
+  explicit MenuReseter(System& sys) : sys_(sys) {}
 
   bool operator()(RLMachine& machine) {
     sys_.in_menu_ = false;
@@ -357,19 +358,19 @@ boost::filesystem::path System::getHomeDirectory() {
   char *homepathptr = getenv("HOMEPATH");
   char *profileptr  = getenv("USERPROFILE");
   if (homeptr != 0 && (home = homeptr) != "") {
-	// UN*X like home directory
-	return fs::path(home);
+    // UN*X like home directory
+    return fs::path(home);
   } else if (driveptr != 0 &&
-		  homepathptr !=0 &&
-		  (drive = driveptr) != "" &&
-		  (home  = homepathptr) != "") {
-	// Windows.
-	return fs::path(drive) / fs::path(home);
+             homepathptr !=0 &&
+             (drive = driveptr) != "" &&
+             (home  = homepathptr) != "") {
+    // Windows.
+    return fs::path(drive) / fs::path(home);
   } else if (profileptr != 0 && (home = profileptr) != "") {
-	// Windows?
-	return fs::path(home);
+    // Windows?
+    return fs::path(home);
   } else {
-	throw SystemError("Could not find location of home directory.");
+    throw SystemError("Could not find location of home directory.");
   }
 }
 

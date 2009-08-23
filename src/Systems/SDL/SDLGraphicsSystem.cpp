@@ -41,6 +41,11 @@
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <set>
+
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/Colour.hpp"
@@ -66,7 +71,6 @@
 #include "file.h"
 #include "Utilities/LazyArray.hpp"
 
-#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <cstdio>
@@ -95,7 +99,7 @@ void SDLGraphicsSystem::setCursor(int cursor) {
 }
 
 void SDLGraphicsSystem::beginFrame() {
-  glClearColor(0,0,0, 0);
+  glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   ShowGLErrors();
 
@@ -280,7 +284,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
 void SDLGraphicsSystem::setupVideo() {
   // Let's get some video information.
-  const SDL_VideoInfo* info = SDL_GetVideoInfo( );
+  const SDL_VideoInfo* info = SDL_GetVideoInfo();
 
   if ( !info ) {
     ostringstream ss;
@@ -310,10 +314,10 @@ void SDLGraphicsSystem::setupVideo() {
     video_flags |= SDL_FULLSCREEN;
 
   /* Sets up OpenGL double buffering */
-  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
-  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   // Set the video mode
   if ((screen_ = SDL_SetVideoMode(
@@ -338,30 +342,30 @@ void SDLGraphicsSystem::setupVideo() {
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   /* Enable Texture Mapping ( NEW ) */
-  glEnable( GL_TEXTURE_2D );
+  glEnable(GL_TEXTURE_2D);
 
   /* Enable smooth shading */
-  glShadeModel( GL_SMOOTH );
+  glShadeModel(GL_SMOOTH);
 
   /* Set the background black */
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   /* Depth buffer setup */
-  glClearDepth( 1.0f );
+  glClearDepth(1.0f);
 
   /* Enables Depth Testing */
-  glEnable( GL_DEPTH_TEST );
+  glEnable(GL_DEPTH_TEST);
 
-  glEnable( GL_BLEND);
+  glEnable(GL_BLEND);
 
   /* The Type Of Depth Test To Do */
-  glDepthFunc( GL_LEQUAL );
+  glDepthFunc(GL_LEQUAL);
 
   /* Really Nice Perspective Calculations */
-  glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
   /* Full Brightness, 50% Alpha ( NEW ) */
-  glColor4f( 1.0f, 1.0f, 1.0f, 0.5f);
+  glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
   // Create a small 32x32 texture for storing what's behind the mouse
   // cursor.
@@ -476,8 +480,10 @@ void SDLGraphicsSystem::setScreenMode(const int in) {
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::allocateDC(int dc, Size size) {
-  if (dc >= 16)
-    throw rlvm::Exception("Invalid DC number in SDLGrpahicsSystem::allocate_dc");
+  if (dc >= 16) {
+    throw rlvm::Exception(
+        "Invalid DC number in SDLGrpahicsSystem::allocate_dc");
+  }
 
   // We can't reallocate the screen!
   if (dc == 0)
@@ -500,13 +506,14 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size) {
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::freeDC(int dc) {
-  if (dc == 0)
+  if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
-  else if (dc == 1) {
+  } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
     getDC(1)->fill(RGBAColour::Black());
-  } else
+  } else {
     display_contexts_[dc]->deallocate();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -560,7 +567,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   // this!?
   // :Surface doesn't use preallocated memory? (the malloc'd data argument)
   // :This is silly! --RT
-  //tmp->flags &= ~SDL_PREALLOC;
+  // tmp->flags &= ~SDL_PREALLOC;
 
   SDL_Surface* surf;
   if (with_mask == ALPHA_MASK)

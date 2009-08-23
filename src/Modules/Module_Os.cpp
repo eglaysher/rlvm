@@ -43,6 +43,7 @@
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 // -----------------------------------------------------------------------

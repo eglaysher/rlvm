@@ -85,14 +85,14 @@ void MouseCursor::findHotspot() {
   int r, g, b;
 
   for (int x = HOTSPOTMASK_X_OFFSET; x < HOTSPOTMASK_X_OFFSET + CURSOR_SIZE_INT;
-      ++x) {
-    for (int y = HOTSPOTMASK_Y_OFFSET; y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE_INT;
-        ++y) {
+       ++x) {
+    for (int y = HOTSPOTMASK_Y_OFFSET;
+         y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE_INT; ++y) {
       cursor_surface_->getDCPixel(Point(x, y), r, g, b);
 
       if (r == 255 && g == 255 && b == 255) {
         hotspot_offset_ =
-          Size(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
+            Size(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
         break;
       }
     }

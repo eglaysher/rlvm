@@ -47,6 +47,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 #include "libReallive/gameexe.h"
 
@@ -103,7 +104,8 @@ Effect* EffectFactory::build(
   case 20:
   case 21: {
     ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
-    ScrollSquashSlideEffectTypeBase* effect = buildScrollSquashSlideTypeBase(style);
+    ScrollSquashSlideEffectTypeBase* effect =
+        buildScrollSquashSlideTypeBase(style);
     return new ScrollSquashSlideBaseEffect(machine, src, dst, drawer, effect,
                                            screenSize, time);
   }
@@ -127,10 +129,10 @@ Effect* EffectFactory::build(
 
 /// Which direction we wipe in
 enum ScreenDirection {
-  TOP_TO_BOTTOM = 0, ///< From the top to the bottom
-  BOTTOM_TO_TOP = 1, ///< From the bottom to the top
-  LEFT_TO_RIGHT = 2, ///< From left to right
-  RIGHT_TO_LEFT = 3  ///< From right to left
+  TOP_TO_BOTTOM = 0,  // From the top to the bottom
+  BOTTOM_TO_TOP = 1,  // From the bottom to the top
+  LEFT_TO_RIGHT = 2,  // From left to right
+  RIGHT_TO_LEFT = 3   // From right to left
 };
 
 // -----------------------------------------------------------------------
@@ -247,6 +249,7 @@ ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
   case 21:
     return new SlideOff;
   default:
-    throw SystemError("Impossible style number in EffectFactory::buildScrollSquashSlideTypeBase");
+    throw SystemError("Impossible style number in "
+                      "EffectFactory::buildScrollSquashSlideTypeBase");
   };
 }

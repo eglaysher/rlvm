@@ -45,6 +45,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include <boost/bind.hpp>
 
 using namespace std;
@@ -293,7 +294,6 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
     if (SDL_BlitSurface(surface_, &src_rect, sdl_dest_surface.surface(),
                        &dest_rect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
-
   }
   sdl_dest_surface.markWrittenTo();
 }
@@ -313,7 +313,8 @@ void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
 
   if (use_src_alpha) {
     if (pygame_AlphaBlit(src_surface, &src_rect, surface_, &dest_rect))
-      reportSDLError("pygame_AlphaBlit", "SDLGrpahicsSystem::blitSurfaceToDC()");
+      reportSDLError("pygame_AlphaBlit",
+                     "SDLGrpahicsSystem::blitSurfaceToDC()");
   } else {
     if (SDL_BlitSurface(src_surface, &src_rect, surface_, &dest_rect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
@@ -364,11 +365,10 @@ static void determineProperties(
            << endl;
     } else {
       ostringstream oss;
-      oss << "Error loading texture: bytes_per_pixel == " << int(bytes_per_pixel)
-          << " and we only handle 3 or 4.";
+      oss << "Error loading texture: bytes_per_pixel == "
+          << int(bytes_per_pixel) << " and we only handle 3 or 4.";
       throw SystemError(oss.str());
     }
-
   }
   SDL_UnlockSurface(surface);
 
@@ -588,23 +588,23 @@ vector<int> SDLSurface::segmentPicture(int size_remainging) {
 
 void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) {
   SDL_Color colour;
-  Uint32 col = 0 ;
+  Uint32 col = 0;
 
-  //determine position
-  char* p_position = ( char* ) surface_->pixels ;
+  // determine position
+  char* p_position = (char*)surface_->pixels;
 
-  //offset by y
-  p_position += ( surface_->pitch * pos.y() ) ;
+  // offset by y
+  p_position += (surface_->pitch * pos.y());
 
-  //offset by x
-  p_position += ( surface_->format->BytesPerPixel * pos.x() ) ;
+  // offset by x
+  p_position += (surface_->format->BytesPerPixel * pos.x());
 
-  //copy pixel data
-  memcpy ( &col , p_position , surface_->format->BytesPerPixel ) ;
+  // copy pixel data
+  memcpy(&col, p_position, surface_->format->BytesPerPixel);
 
   // Before someone tries to simplify the following four lines,
   // remember that sizeof(int) != sizeof(Uint8).
-  SDL_GetRGB ( col , surface_->format , &colour.r , &colour.g , &colour.b ) ;
+  SDL_GetRGB(col, surface_->format, &colour.r, &colour.g, &colour.b);
   r = colour.r;
   g = colour.g;
   b = colour.b;

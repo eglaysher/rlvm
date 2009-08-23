@@ -41,6 +41,8 @@
 #include <numeric>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 
