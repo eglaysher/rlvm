@@ -70,10 +70,11 @@ public:
   typedef BytecodeList::const_iterator const_iterator;
   typedef BytecodeList::iterator iterator;
 
-  // Access to metadata in the script
-  long savepointMessage() const { return header.savepoint_message; }
-  long savepointSelcom()  const { return header.savepoint_selcom;  }
-  long savepointSeentop() const { return header.savepoint_seentop; }
+  // Access to metadata in the script. Don't worry about information loss;
+  // valid values are 0, 1, and 2.
+  int savepointMessage() const { return header.savepoint_message; }
+  int savepointSelcom()  const { return header.savepoint_selcom;  }
+  int savepointSeentop() const { return header.savepoint_seentop; }
 
   /// Locate the entrypoint
   const_iterator findEntrypoint(int entrypoint) const;

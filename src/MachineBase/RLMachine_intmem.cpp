@@ -7,12 +7,6 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file contains memory functions that were taken from xclannad,
-// and are thus under the 3-clause BSD instead of the GPL used in the
-// rest of rlvm.
-//
-// -----------------------------------------------------------------------
-//
 // Copyright (c) 2004-2007  Kazunori "jagarl" Ueno
 // Copyright (C) 2007 Elliot Glaysher
 // All rights reserved.
@@ -38,6 +32,12 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// -----------------------------------------------------------------------
+//
+// This file contains memory functions that were taken from xclannad,
+// and are thus under the 3-clause BSD instead of the GPL used in the
+// rest of rlvm.
 //
 // -----------------------------------------------------------------------
 

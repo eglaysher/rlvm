@@ -119,7 +119,7 @@ class RLMachine {
    */
   bool shouldSetSeentopSavepoint() const;
 
-  typedef long(libReallive::Scenario::*AttributeFunction)() const;
+  typedef int(libReallive::Scenario::*AttributeFunction)() const;
 
   /**
    * Implementation function for should_set*Savepoint().

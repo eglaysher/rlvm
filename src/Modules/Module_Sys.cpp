@@ -136,16 +136,23 @@ struct Sys_GetWakuAll : public RLOp_Store_Void {
 // -----------------------------------------------------------------------
 
 struct Sys_rnd_0 : public RLOp_Store_1< IntConstant_T > {
+  unsigned int seedp_;
+  Sys_rnd_0() : seedp_(time(NULL)) {}
+
   int operator()(RLMachine& machine, int maxVal) {
-    return (int)( double(maxVal) * rand()/(RAND_MAX + 1.0));
+    return (int)(double(maxVal) * rand_r(&seedp_)/(RAND_MAX + 1.0));
   }
 };
 
 // -----------------------------------------------------------------------
 
 struct Sys_rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+  unsigned int seedp_;
+  Sys_rnd_1() : seedp_(time(NULL)) {}
+
   int operator()(RLMachine& machine, int minVal, int maxVal) {
-    return minVal + (int)( double(maxVal - minVal) * rand()/(RAND_MAX + 1.0));
+    return minVal + (int)(double(maxVal - minVal) *
+                          rand_r(&seedp_)/(RAND_MAX + 1.0));
   }
 };
 

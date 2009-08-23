@@ -157,7 +157,7 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
       skip_animations(0),
       screen_mode(1),
       cg_table(gameexe) {
-}
+      }
 
 // -----------------------------------------------------------------------
 // GraphicsObjectImpl
@@ -561,9 +561,9 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
 
   if (use_custom_mouse_cursor_ && !mouse_cursor_) {
     MouseCursorCache::iterator it = cursor_cache_.find(cursor_);
-    if (it != cursor_cache_.end())
+    if (it != cursor_cache_.end()) {
       mouse_cursor_ = it->second;
-    else {
+    } else {
       boost::shared_ptr<Surface> cursor_surface;
       GameexeInterpretObject cursor_key =
         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME");
@@ -572,8 +572,9 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
         cursor_surface = loadNonCGSurfaceFromFile(cursor_key);
         mouse_cursor_.reset(new MouseCursor(cursor_surface));
         cursor_cache_[cursor_] = mouse_cursor_;
-      } else
+      } else {
         mouse_cursor_.reset();
+      }
     }
   }
 
@@ -591,7 +592,8 @@ void GraphicsSystem::mouseMotion(const Point& new_location) {
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsSystem::buildObjOfFile(const std::string& filename) {
+GraphicsObjectData* GraphicsSystem::buildObjOfFile(
+    const std::string& filename) {
   // Get the path to get the file type (which won't be in filename)
   fs::path full_path = findFile(system(), filename);
   string file_str = full_path.file_string();

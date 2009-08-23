@@ -225,11 +225,10 @@ void RLMachine::markSavepoint() {
 
 bool RLMachine::savepointDecide(AttributeFunction func,
                                 const std::string& gameexe_key) const {
-  //
   if (!mark_savepoints_)
     return false;
 
-  long attribute = (scenario().*func)();
+  int attribute = (scenario().*func)();
   if (attribute == 1)
     return true;
   else if (attribute == 2)

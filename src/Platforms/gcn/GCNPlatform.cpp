@@ -107,7 +107,7 @@ const int MENU = -3;
 
 struct MenuSpec {
   /// Syscom id >= 0, or a MENU* thing.
-  short syscom_id;
+  int16_t syscom_id;
   /// User interface string key, or NULL for syscom default.
   const char* label;
   /// Event to send back if the button is pressed, or NULL for
