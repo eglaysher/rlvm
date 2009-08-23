@@ -47,12 +47,13 @@ using std::endl;
 // -----------------------------------------------------------------------
 
 GraphicsTextObject::GraphicsTextObject(System& system)
-  : system_(system) {
+    : system_(system) {
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsTextObject::~GraphicsTextObject() {}
+GraphicsTextObject::~GraphicsTextObject() {
+}
 
 // -----------------------------------------------------------------------
 

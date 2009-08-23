@@ -34,58 +34,61 @@
   the work might be covered by the LGPL.
 */
 
-#include "codepage.h"
-
-// Supported codepages
-#include "cp932.h"
-#include "cp936.h"
-#include "cp949.h"
-#include "western.h"
+#include "Encodings/codepage.h"
 
 #include <cstring>
+
+// Supported codepages
+#include "Encodings/cp932.h"
+#include "Encodings/cp936.h"
+#include "Encodings/cp949.h"
+#include "Encodings/western.h"
 
 // -----------------------------------------------------------------------
 // Codepage
 // -----------------------------------------------------------------------
 Codepage::~Codepage() {
-	// empty virtual destructor
+  // empty virtual destructor
 }
 
 unsigned short Codepage::JisDecode(unsigned short ch) const {
-	return ch;
+  return ch;
 }
 
-void Codepage::JisEncodeString(const char* src, char* buf, size_t buflen) const {
-  std::strncpy((char*) buf, (const char*) src, buflen);
+void Codepage::JisEncodeString(const char* src, char* buf,
+                               size_t buflen) const {
+  std::strncpy(static_cast<char*>(buf),
+               static_cast<const char*>(src), buflen);
 }
 
-void Codepage::JisDecodeString(const char* src, char* buf, size_t buflen) const {
-    int srclen = std::strlen(src), i = 0, j = 0;
-	while (i < srclen && j < buflen) {
-		unsigned int c1 = (unsigned char) src[i++];
-		if ((c1 >= 0x81 && c1 < 0xa0) || (c1 >= 0xe0 && c1 < 0xf0))
-			c1 = (c1 << 8) | (unsigned char) src[i++];
-		unsigned int c2 = JisDecode(c1);
-		if (c2 <= 0xff)
-			buf[j++] = c2;
-		else {
-			buf[j++] = (c2 >> 8) & 0xff;
-			buf[j++] = c2 & 0xff;
-		}
-	}
-	buf[j] = 0;
+void Codepage::JisDecodeString(const char* src, char* buf,
+                               size_t buflen) const {
+  int srclen = std::strlen(src), i = 0, j = 0;
+  while (i < srclen && j < buflen) {
+    unsigned int c1 = (unsigned char) src[i++];
+    if ((c1 >= 0x81 && c1 < 0xa0) || (c1 >= 0xe0 && c1 < 0xf0))
+      c1 = (c1 << 8) | (unsigned char) src[i++];
+    unsigned int c2 = JisDecode(c1);
+    if (c2 <= 0xff) {
+      buf[j++] = c2;
+    } else {
+      buf[j++] = (c2 >> 8) & 0xff;
+      buf[j++] = c2 & 0xff;
+    }
+  }
+  buf[j] = 0;
 }
 
 unsigned short Codepage::Convert(unsigned short ch) const {
-	return ch;
+  return ch;
 }
 
 bool Codepage::DbcsDelim(char* str) const {
-	return false;
+  return false;
 }
 
 bool Codepage::IsItalic(unsigned short ch) const {
-	return false;
+  return false;
 }
 
 boost::scoped_ptr<Codepage> Cp::instance_;

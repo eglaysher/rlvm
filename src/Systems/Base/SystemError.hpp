@@ -38,12 +38,13 @@
  * should be rlvm::Exception instead.
  */
 class SystemError : public std::exception {
+ public:
+  explicit SystemError(std::string what);
+  virtual ~SystemError() throw();
+  virtual const char* what() const throw();
+
  private:
   std::string description;
- public:
-  virtual const char* what() const throw();
-  SystemError(std::string what);
-  virtual ~SystemError() throw();
 };
 
 #endif  // SRC_SYSTEMS_BASE_SYSTEMERROR_HPP_

@@ -77,7 +77,7 @@ const int SYSCOM_DISPLAY_VERSION = 16;
 const int SYSCOM_SHOW_WEATHER = 17;
 const int SYSCOM_SHOW_OBJECT_1 = 18;
 const int SYSCOM_SHOW_OBJECT_2 = 19;
-const int SYSCOM_CLASSIFY_TEXT = 20; // ??????? Unknown function.
+const int SYSCOM_CLASSIFY_TEXT = 20;  // ??????? Unknown function.
 const int SYSCOM_GENERIC_1 = 21;
 const int SYSCOM_GENERIC_2 = 22;
 // No 23?

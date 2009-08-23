@@ -43,16 +43,14 @@
 #include <algorithm>
 #include <cmath>
 
-#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
-#include "Systems/SDL/Texture.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
-
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/Colour.hpp"
+#include "Systems/SDL/Texture.hpp"
 
 #include "alphablit.h"
 

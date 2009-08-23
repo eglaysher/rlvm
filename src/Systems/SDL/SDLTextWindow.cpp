@@ -60,6 +60,7 @@
 #include "Utilities/StringUtilities.hpp"
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -68,7 +69,7 @@ using namespace boost;
 // -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(System& system, int window_num)
-  : TextWindow(system, window_num) {
+    : TextWindow(system, window_num) {
   SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(system.text());
   font_ = text.getFontOfSize(fontSizeInPixels());
   ruby_font_ = text.getFontOfSize(rubyTextSize());
@@ -173,13 +174,15 @@ bool SDLTextWindow::displayChar(const std::string& current,
     // character instead, to prevent the next character being stranded
     // at the start of a line.
     //
-    bool char_will_fit_on_line = text_insertion_point_x_ + tmp->w + x_spacing_ <=
-      textWindowSize().width();
-    bool next_char_will_fit_on_line = text_insertion_point_x_ + 2*(tmp->w + x_spacing_) <=
-      textWindowSize().width();
+    bool char_will_fit_on_line =
+        text_insertion_point_x_ + tmp->w + x_spacing_ <=
+        textWindowSize().width();
+    bool next_char_will_fit_on_line =
+        text_insertion_point_x_ + 2 * (tmp->w + x_spacing_) <=
+        textWindowSize().width();
     if (!char_will_fit_on_line ||
-       (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
-        !next_char_will_fit_on_line && isKinsoku(next_codepoint))) {
+        (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
+         !next_char_will_fit_on_line && isKinsoku(next_codepoint))) {
       hardBrake();
 
       if (isFull())
@@ -187,7 +190,7 @@ bool SDLTextWindow::displayChar(const std::string& current,
     }
 
     // Render glyph to surface
-    Size s(tmp->w,tmp->h);
+    Size s(tmp->w, tmp->h);
     surface_->blitFROMSurface(
       tmp,
       Rect(Point(0, 0), s),

@@ -31,6 +31,8 @@
 
 #include "Systems/Base/SystemError.hpp"
 
+#include <string>
+
 // -----------------------------------------------------------------------
 // SystemError
 // -----------------------------------------------------------------------
@@ -42,7 +44,8 @@ const char* SystemError::what() const throw() {
 // -----------------------------------------------------------------------
 
 SystemError::SystemError(std::string what)
-  : description(what) {}
+    : description(what) {
+}
 
 // -----------------------------------------------------------------------
 

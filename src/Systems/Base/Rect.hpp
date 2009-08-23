@@ -164,7 +164,8 @@ class Rect {
  public:
   Rect() {}
   Rect(const Point& point1, const Point& point2)
-    : origin_(point1), size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
+      : origin_(point1),
+        size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
   Rect(const Point& origin, const Size& size) : origin_(origin), size_(size) {}
   Rect(const int x, const int y, const Size& size)
     : origin_(x, y), size_(size) {}
@@ -205,7 +206,7 @@ class Rect {
   void serialize(Archive& ar, unsigned int version) {
     ar & origin_ & size_;
   }
-};	// end of class Rect
+};  // end of class Rect
 
 // -----------------------------------------------------------------------
 

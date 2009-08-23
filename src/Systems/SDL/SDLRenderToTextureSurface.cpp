@@ -97,13 +97,14 @@ void SDLRenderToTextureSurface::dump() {
 void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,
                                               const Rect& src, const Rect& dst,
                                               int alpha, bool use_src_alpha) {
-  throw SystemError("Unsupported operation blit_to_surface on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation blit_to_surface on "
+                    "SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
-  const Rect& src, const Rect& dst, int opacity) {
+    const Rect& src, const Rect& dst, int opacity) {
   if (texture_)
     texture_->renderToScreen(src, dst, opacity);
 }
@@ -111,7 +112,7 @@ void SDLRenderToTextureSurface::renderToScreen(
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
-  const Rect& src, const Rect& dst, const int opacity[4]) {
+    const Rect& src, const Rect& dst, const int opacity[4]) {
   if (texture_)
     texture_->renderToScreen(src, dst, opacity);
 }
@@ -135,8 +136,8 @@ void SDLRenderToTextureSurface::renderToScreenAsObject(
 // -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::rawRenderQuad(const int src_coords[8],
-                               const int dest_coords[8],
-                               const int opacity[4]) {
+                                              const int dest_coords[8],
+                                              const int opacity[4]) {
   if (texture_)
     texture_->rawRenderQuad(src_coords, dest_coords, opacity);
 }
@@ -149,13 +150,15 @@ void SDLRenderToTextureSurface::fill(const RGBAColour& colour) {
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::fill(const RGBAColour& colour, const Rect& rect) {
+void SDLRenderToTextureSurface::fill(const RGBAColour& colour,
+                                     const Rect& rect) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) {
+void SDLRenderToTextureSurface::getDCPixel(const Point& pos,
+                                           int& r, int& g, int& b) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
@@ -171,5 +174,6 @@ Size SDLRenderToTextureSurface::size() const {
 // -----------------------------------------------------------------------
 
 Surface* SDLRenderToTextureSurface::clone() const {
-  throw SystemError("Unsupported operation clone on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation clone on "
+                    "SDLRenderToTextureSurface!");
 }
