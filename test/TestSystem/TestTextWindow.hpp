@@ -37,7 +37,7 @@ class TestTextWindow : public TextWindow {
 
   virtual bool displayChar(const std::string& current,
                            const std::string& next);
-  virtual int charWidth(unsigned short codepoint) const { return 0; }
+  virtual int charWidth(uint16_t codepoint) const { return 0; }
 
   virtual boost::shared_ptr<Surface> textSurface();
   virtual boost::shared_ptr<Surface> nameSurface();

@@ -230,7 +230,7 @@ void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
 
 // -----------------------------------------------------------------------
 
-int SDLTextWindow::charWidth(unsigned short codepoint) const {
+int SDLTextWindow::charWidth(uint16_t codepoint) const {
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics(font_.get(), codepoint,
                    &minx, &maxx, &miny, &maxy, &advance);

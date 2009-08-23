@@ -51,7 +51,7 @@ class SDLTextWindow : public TextWindow {
   virtual bool displayChar(const std::string& current,
                            const std::string& next);
   virtual void renderNameInBox(const std::string& utf8str);
-  virtual int charWidth(unsigned short codepoint) const;
+  virtual int charWidth(uint16_t codepoint) const;
 
   virtual void displayRubyText(const std::string& utf8str);
 

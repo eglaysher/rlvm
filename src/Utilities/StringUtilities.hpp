@@ -115,9 +115,9 @@ bool readFullwidthLatinLetter(const char*& str, std::string& output);
 
 /**
  * Adds a character to the string |output|. Two byte characters are encoded in
- * an unsigned short.
+ * an uint16_t.
  */
-void addShiftJISChar(unsigned short c, std::string& output);
+void addShiftJISChar(uint16_t c, std::string& output);
 
 /**
  * Feeds each two consecutive pair of characters to |fun|.

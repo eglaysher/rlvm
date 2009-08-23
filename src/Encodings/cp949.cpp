@@ -51,7 +51,7 @@ Cp949::Cp949() {
 #ifndef NO_CP949_CONVERSION
 
 const size_t extras_length = 679;
-const unsigned short extras[extras_length] = {
+const uint16_t extras[extras_length] = {
   0xa046, 0xa04f, 0xa057, 0xa059, 0xa06c, 0xa074, 0xa075, 0xa077,
   0xa079, 0xa086, 0xa089, 0xa08a, 0xa08b, 0xa092, 0xa095, 0xa097,
   0xa09c, 0xa0a5, 0xa0a6, 0xa0ac, 0xa0b1, 0xa0b2, 0xa0b3, 0xa0b4,
@@ -138,7 +138,7 @@ const unsigned short extras[extras_length] = {
   0xc56a, 0xc570, 0xc575, 0xc579, 0xc581, 0xc586, 0xc587, 0xc588,
   0xc589, 0xc58e, 0xc597, 0xc643, 0xc64a, 0xc64c, 0xc64f };
 
-unsigned short Cp949::JisDecode(unsigned short ch) const {
+uint16_t Cp949::JisDecode(uint16_t ch) const {
   // Special cases
   if (ch < 0x80) {
     return ch;
@@ -183,7 +183,7 @@ void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
     if (c1 < 0x80) {
       buf[j++] = c1;
     } else {
-      unsigned short ch = c1 << 8 | (unsigned char) src[k++];
+      uint16_t ch = c1 << 8 | (unsigned char) src[k++];
       if (ch == 0xa1b8)
         ch = 0x8175;
       else if (ch == 0xa1ba)
@@ -209,7 +209,7 @@ void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
         buf[j++] = c1 > 0x9f ? c1 + 0x41 : c1;
         buf[j++] = i % 255 + 1;
       } else {
-        const unsigned short* p =
+        const uint16_t* p =
             std::lower_bound(extras, extras + extras_length, ch);
         if (*p == ch) {
           int i = p - extras;
@@ -225,7 +225,7 @@ void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
   buf[j] = 0;
 }
 
-const unsigned short ksc_to_uni[] = {
+const uint16_t ksc_to_uni[] = {
   0xac02, 0xac03, 0xac05, 0xac06, 0xac0b, 0xac0c, 0xac0d, 0xac0e,
   0xac0f, 0xac18, 0xac1e, 0xac1f, 0xac21, 0xac22, 0xac23, 0xac25,
   0xac26, 0xac27, 0xac28, 0xac29, 0xac2a, 0xac2b, 0xac2e, 0xac32,
@@ -1938,7 +1938,7 @@ const unsigned short ksc_to_uni[] = {
   0xd788, 0xd789, 0xd78c, 0xd790, 0xd798, 0xd799, 0xd79b, 0xd79d
 };
 
-unsigned short Cp949::Convert(unsigned short ch) const {
+uint16_t Cp949::Convert(uint16_t ch) const {
   if (ch <= 0x7f) {
     return ch;
   } else {
@@ -1967,7 +1967,7 @@ std::wstring Cp949::ConvertString(const std::string& in_string) const {
 
 #else
 
-unsigned short Cp949::JisDecode(unsigned short ch) const {
+uint16_t Cp949::JisDecode(uint16_t ch) const {
   return ch;
 }
 
@@ -1975,7 +1975,7 @@ void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
   std::strncpy(buf, src, buflen);
 }
 
-unsigned short Cp949::Convert(unsigned short ch) const {
+uint16_t Cp949::Convert(uint16_t ch) const {
   return ch;
 }
 

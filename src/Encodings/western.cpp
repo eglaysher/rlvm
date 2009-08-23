@@ -38,16 +38,16 @@
 
 #include <string>
 
-bool Cp1252::IsItalic(unsigned short ch) const {
+bool Cp1252::IsItalic(uint16_t ch) const {
   return (ch > 0x8300 && ch < 0x8900);
 }
 
-unsigned short GetItalic(unsigned short ch) {
+uint16_t GetItalic(uint16_t ch) {
   if (ch > 0x8700) return ch + 0x0200;
   return ch - (ch >= 0x8380 ? 0x8320 : 0x831f);
 }
 
-unsigned short Italicise(unsigned short ch) {
+uint16_t Italicise(uint16_t ch) {
   if (ch == 0x20 || ch > 0xff) return ch;
   if (ch > 0x8900) return ch - 0x0200;
   return ch + (ch >= 0x60 ? 0x8320 : 0x831f);
@@ -68,7 +68,7 @@ bool Cp1252::DbcsDelim(char* str) const {
                             str[1] == 0x91 || str[1] == 0x93);
 }
 
-unsigned short Cp1252::JisDecode(unsigned short ch) const {
+uint16_t Cp1252::JisDecode(uint16_t ch) const {
   if (ch <= 0x7f)
     return ch;
   if (ch >= 0xa1 && ch <= 0xdf)
@@ -82,7 +82,7 @@ unsigned short Cp1252::JisDecode(unsigned short ch) const {
   return 0;
 }
 
-unsigned short JisEncode(unsigned short ch) {
+uint16_t JisEncode(uint16_t ch) {
   if (ch <= 0x7f)
     return ch;
   if (ch >= 0x80 && ch <= 0xbf)
@@ -107,13 +107,13 @@ void Cp1252::JisEncodeString(const char* src, char* buf, size_t buflen) const {
   }
 }
 
-const unsigned short cp1252_to_uni[0x9f - 0x80 + 1] = {
+const uint16_t cp1252_to_uni[0x9f - 0x80 + 1] = {
   0x20ac, 0xffff, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6,
   0x2030, 0x0160, 0x2039, 0x0152, 0xffff, 0x017d, 0xffff, 0xffff, 0x2018,
   0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161,
   0x203a, 0x0153, 0xffff, 0x017e, 0x0178 };
 
-unsigned short Cp1252::Convert(unsigned short ch) const {
+uint16_t Cp1252::Convert(uint16_t ch) const {
   return ch >= 0x80 && ch <= 0x9f ? cp1252_to_uni[ch - 0x80] : ch;
 }
 

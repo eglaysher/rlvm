@@ -164,7 +164,7 @@ bool readFullwidthLatinLetter(const char*& str, string& output) {
 
 // -----------------------------------------------------------------------
 
-void addShiftJISChar(unsigned short c, string& output) {
+void addShiftJISChar(uint16_t c, string& output) {
   if (c > 0xFF)
     output += (c >> 8);
   output += (c & 0xFF);

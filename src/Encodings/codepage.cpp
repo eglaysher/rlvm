@@ -51,7 +51,7 @@ Codepage::~Codepage() {
   // empty virtual destructor
 }
 
-unsigned short Codepage::JisDecode(unsigned short ch) const {
+uint16_t Codepage::JisDecode(uint16_t ch) const {
   return ch;
 }
 
@@ -79,7 +79,7 @@ void Codepage::JisDecodeString(const char* src, char* buf,
   buf[j] = 0;
 }
 
-unsigned short Codepage::Convert(unsigned short ch) const {
+uint16_t Codepage::Convert(uint16_t ch) const {
   return ch;
 }
 
@@ -87,7 +87,7 @@ bool Codepage::DbcsDelim(char* str) const {
   return false;
 }
 
-bool Codepage::IsItalic(unsigned short ch) const {
+bool Codepage::IsItalic(uint16_t ch) const {
   return false;
 }
 

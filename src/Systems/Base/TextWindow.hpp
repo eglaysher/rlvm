@@ -282,7 +282,7 @@ class TextWindow {
                            const std::string& next) = 0;
 
   /// Returns the width of the unicode codepoint stored in |character|.
-  virtual int charWidth(unsigned short codepoint) const = 0;
+  virtual int charWidth(uint16_t codepoint) const = 0;
 
   /**
    * Returns whether another character can be placed on the screen.

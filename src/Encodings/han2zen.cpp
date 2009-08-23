@@ -37,7 +37,7 @@ using std::string;
 
 // -----------------------------------------------------------------------
 
-unsigned short lower_hantozen_table[] = {
+uint16_t lower_hantozen_table[] = {
   0x8140,  // 32 'SPACE' => 'IDEOGRAPH SPACE'
   0x8149,  // 33 'EXCLAMATION MARK' => 'FULLWIDTH EXCLAMATION MARK'
   0xeefc,  // 34 'QUOTATION MARK' => 'FULLWIDTH QUOTATION MARK'
@@ -135,7 +135,7 @@ unsigned short lower_hantozen_table[] = {
   0x8160,  // 126 'TILDE' => 'FULLWIDTH TILDE'
 };
 
-unsigned short upper_hantozen_table[] = {
+uint16_t upper_hantozen_table[] = {
   0x8142,  // 'HALFWIDTH IDEOGRAPHIC FULL STOP' => 'IDEOGRAPHIC FULL STOP'
   0x8175,  // 'HALFWIDTH LEFT CORNER BRACKET' => 'LEFT CORNER BRACKET'
   0x8176,  // 'HALFWIDTH RIGHT CORNER BRACKET' => 'RIGHT CORNER BRACKET'
@@ -243,9 +243,9 @@ string hantozen_cp932(const string& input, int transformation) {
 
 // Helper function used in zentohan_cp932.
 static int findCharInTable(const char* str,
-                           unsigned short upper_hantozen_table[],
+                           uint16_t upper_hantozen_table[],
                            char start, char end) {
-  unsigned short c = (str[0] << 8) | str[1];
+  uint16_t c = (str[0] << 8) | str[1];
 
   int max = end - start;
   for (int i = 0; i < max; ++i) {
