@@ -70,7 +70,7 @@
 #include <vorbis/vorbisfile.h>
 
 #include "Utilities/Exception.hpp"
-#include "endian.hpp"
+#include "xclannad/endian.hpp"
 
 using boost::shared_ptr;
 using std::ifstream;

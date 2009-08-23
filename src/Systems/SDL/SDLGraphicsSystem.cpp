@@ -68,7 +68,7 @@
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
-#include "file.h"
+#include "xclannad/file.h"
 #include "Utilities/LazyArray.hpp"
 
 #include <iostream>

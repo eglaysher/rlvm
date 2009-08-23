@@ -53,7 +53,7 @@
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
 
-#include "alphablit.h"
+#include "pygame/alphablit.h"
 
 using namespace std;
 using namespace boost;
@@ -275,7 +275,8 @@ string Texture::getSubtractiveShaderString() {
     "vec4 bg_colour = texture2D(current_values, gl_TexCoord[0].st);"
     "vec4 mask_vector = texture2D(mask, gl_TexCoord[1].st);"
     "float mask_colour = clamp(mask_vector.a * gl_Color.a, 0.0, 1.0);"
-    "gl_FragColor = clamp(bg_colour - mask_colour + gl_Color * mask_colour, 0.0, 1.0);"
+    "gl_FragColor = clamp(bg_colour - mask_colour + gl_Color * mask_colour, "
+    "                     0.0, 1.0);"
     "}";
 
   return x;

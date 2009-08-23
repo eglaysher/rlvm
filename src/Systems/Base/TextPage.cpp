@@ -37,7 +37,7 @@
 #include "Systems/Base/TextWindow.hpp"
 #include "libReallive/gameexe.h"
 
-#include "utf8.h"
+#include "utf8cpp/utf8.h"
 
 #include <boost/bind.hpp>
 #include <algorithm>

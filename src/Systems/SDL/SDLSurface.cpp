@@ -41,7 +41,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
-#include "alphablit.h"
+#include "pygame/alphablit.h"
 
 #include <iostream>
 #include <sstream>

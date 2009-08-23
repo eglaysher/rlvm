@@ -66,7 +66,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 
-#include "utf8.h"
+#include "utf8cpp/utf8.h"
 #include "Effects/FadeEffect.hpp"
 
 // For copy_n, which isn't part of the C++ standard and doesn't come on

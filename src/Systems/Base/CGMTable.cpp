@@ -29,16 +29,7 @@
 
 // -----------------------------------------------------------------------
 
-#include "file.h"
-#include "endian.hpp"
-
-#include "libReallive/gameexe.h"
-#include "libReallive/intmemref.h"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Memory.hpp"
 #include "Systems/Base/CGMTable.hpp"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -46,6 +37,15 @@
 #include <boost/scoped_array.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+
+#include "MachineBase/Memory.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
+#include "libReallive/gameexe.h"
+#include "libReallive/intmemref.h"
+#include "xclannad/endian.hpp"
+#include "xclannad/file.h"
 
 using namespace std;
 using boost::scoped_array;

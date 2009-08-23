@@ -35,7 +35,7 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 
-#include "utf8.h"
+#include "utf8cpp/utf8.h"
 
 using std::string;
 using std::wstring;

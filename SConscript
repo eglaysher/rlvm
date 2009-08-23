@@ -173,10 +173,10 @@ librlvm_files = [
   "src/libReallive/gameexe.cpp",
   "src/libReallive/intmemref.cpp",
   "src/libReallive/scenario.cpp",
-  "vendor/endian.cpp",
-  "vendor/file.cc",
-  "vendor/nwatowav.cc",
-  "vendor/wavfile.cc"
+  "vendor/xclannad/endian.cpp",
+  "vendor/xclannad/file.cc",
+  "vendor/xclannad/nwatowav.cc",
+  "vendor/xclannad/wavfile.cc"
 ]
 
 root_env.StaticLibrary('rlvm', librlvm_files)
@@ -195,7 +195,7 @@ libsystemsdl_files = [
   "src/Systems/SDL/SDLTextWindow.cpp",
   "src/Systems/SDL/SDLUtils.cpp",
   "src/Systems/SDL/Texture.cpp",
-  "vendor/alphablit.cc"
+  "vendor/pygame/alphablit.cc"
 ]
 
 root_env.StaticLibrary('system_sdl', libsystemsdl_files)

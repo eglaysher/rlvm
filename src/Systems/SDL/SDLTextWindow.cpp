@@ -56,7 +56,7 @@
 #include <boost/bind.hpp>
 #include "Utilities/Exception.hpp"
 
-#include "utf8.h"
+#include "utf8cpp/utf8.h"
 #include "Utilities/StringUtilities.hpp"
 
 #include <iostream>

@@ -52,7 +52,7 @@
 #include <string>
 #include <vector>
 
-#include "utf8.h"
+#include "utf8cpp/utf8.h"
 
 using boost::bind;
 using boost::ref;

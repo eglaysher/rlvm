@@ -39,7 +39,7 @@
 
 #include <SDL/SDL_mixer.h>
 
-#include "wavfile.h"
+#include "xclannad/wavfile.h"
 
 /**
  * Encapsulates access to a
