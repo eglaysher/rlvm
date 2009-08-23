@@ -41,7 +41,7 @@ guichan_resources = [
 ]
 
 # Build the resource compiler and then use it to make the inline header file.
-root_env.Program('wxInclude', ['src/Platforms/gcn/wxInclude.cpp'])
+root_env.Program('wxInclude', ['vendor/wxInclude.cpp'])
 root_env.Command('$BUILD_DIR/resource_header.h',
                  ['$BUILD_DIR/wxInclude', guichan_resources],
                  ["$SOURCE --silent --wxnone --output-file=$TARGET " +
