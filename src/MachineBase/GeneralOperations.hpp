@@ -412,7 +412,7 @@ template<typename OBJTYPE>
 class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
  public:
   /// The signature of a string getter function
-  typedef const std::string&(OBJTYPE::*Getter)() const;
+  typedef const std::string&(OBJTYPE::*Getter)() const;  // NOLINT
 
   explicit Op_ReturnStringValue(Getter g)
       : getter_(g) {
@@ -430,7 +430,7 @@ class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
 // -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
-RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const) {
+RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const) { // NOLINT
   return new Op_ReturnStringValue<OBJTYPE>(s);
 }
 

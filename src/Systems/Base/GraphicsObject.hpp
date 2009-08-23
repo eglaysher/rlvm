@@ -212,11 +212,9 @@ class GraphicsObject {
   int textShadowColour() const;
   // @}
 
-  /**
-   * Returns the number of GraphicsObject instances sharing the
-   * internal copy-on-write object.
-   */
-  long referenceCount() const { return impl_.use_count(); }
+  // Returns the number of GraphicsObject instances sharing the
+  // internal copy-on-write object. Only used in unit testing.
+  int32_t referenceCount() const { return impl_.use_count(); }
 
  private:
   /**

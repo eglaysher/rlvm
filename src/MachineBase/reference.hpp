@@ -144,12 +144,12 @@ class MemoryReferenceIterator
     return *this;
   }
 
-  MemoryReferenceIterator operator++(int) {
+  MemoryReferenceIterator operator++(int postfix) {
     MemoryReferenceIterator tmp(*this);
     ++location_;
     return tmp;
   }
-  MemoryReferenceIterator operator--(int) {
+  MemoryReferenceIterator operator--(int postfix) {
     MemoryReferenceIterator tmp(*this);
     --location_;
     return tmp;

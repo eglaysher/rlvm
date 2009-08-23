@@ -151,13 +151,13 @@ GraphicsSystemGlobals::GraphicsSystemGlobals()
 }
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
-    :	show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
+    : show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
       show_object_2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
       show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
       skip_animations(0),
       screen_mode(1),
       cg_table(gameexe) {
-      }
+}
 
 // -----------------------------------------------------------------------
 // GraphicsObjectImpl

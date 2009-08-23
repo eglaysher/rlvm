@@ -171,7 +171,7 @@ class OVKVoiceSample : public VoiceSample {
                              OVKVoiceSample* datasource);
   static int ogg_seekfunc(OVKVoiceSample* datasource, ogg_int64_t new_offset,
                           int whence);
-  static long ogg_tellfunc(OVKVoiceSample* datasource);
+  static long ogg_tellfunc(OVKVoiceSample* datasource); // NOLINT
 
   FILE* stream_;
   int offset_;
@@ -186,7 +186,7 @@ char* OVKVoiceSample::decode(int* size) {
   callback.read_func = (size_t (*)(void*, size_t, size_t, void*))ogg_readfunc;
   callback.seek_func = (int (*)(void*, ogg_int64_t, int))ogg_seekfunc;
   callback.close_func = NULL;
-  callback.tell_func = (long int (*)(void*))ogg_tellfunc;
+  callback.tell_func = (long int (*)(void*))ogg_tellfunc;  // NOLINT
 
   OggVorbis_File vf;
   int r = ov_open_callbacks(this, &vf, NULL, 0, callback);
@@ -260,7 +260,7 @@ int OVKVoiceSample::ogg_seekfunc(OVKVoiceSample* info,
   return fseek(info->stream_, pt, 0);
 }
 
-long OVKVoiceSample::ogg_tellfunc(OVKVoiceSample* info) {
+long OVKVoiceSample::ogg_tellfunc(OVKVoiceSample* info) {  // NOLINT
   int pos = ftell(info->stream_);
   if (pos == -1) return -1;
   return pos - info->offset_;
