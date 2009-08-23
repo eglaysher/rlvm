@@ -45,6 +45,7 @@
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/scenario.h"
 
+#include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
@@ -141,7 +142,7 @@ class RLMachine {
    * @param in The new value. 0 is the override for false. 1 is normal
    *           and will consult the rest of the values.
    */
-  void setMarkSavepoints(const int in); // mark_savepoints_
+  void setMarkSavepoints(const int in);
   /// @}
 
   // -----------------------------------------------------------------------
@@ -217,7 +218,7 @@ class RLMachine {
    */
   Memory& memory() { return *memory_; }
   const Memory& memory() const { return *memory_; }
-  //@}
+  // @}
 
   // -----------------------------------------------------------------------
 

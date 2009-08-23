@@ -44,7 +44,7 @@ class Platform {
   /**
    * Parses out strings that are presented to the user as part of the platform.
    */
-  Platform(Gameexe& gameexe);
+  explicit Platform(Gameexe& gameexe);
   virtual ~Platform();
 
   /**

@@ -118,31 +118,31 @@ std::string oggErrorCodeToString(int code) {
 
 // Header at the beginning of WAV data.
 unsigned char orig_header[0x2c] = {
-	0x52, 0x49, 0x46, 0x46,	/* +00 "RIFF" */
-	0x00, 0x00, 0x00, 0x00, /* +04 file size - 8 */
-	0x57, 0x41, 0x56, 0x45, 0x66, 0x6d, 0x74, 0x20, /* +08 "WAVEfmt " */
-	0x10, 0x00, 0x00, 0x00, /* +10 fmt size */
-	0x01, 0x00,             /* +14 wFormatTag */
-	0x02, 0x00,             /* +16 Channels */
-	0x44, 0xac, 0x00, 0x00, /* +18 rate */
-	0x10, 0xb1, 0x02, 0x00, /* +1c BytesPerSec = rate * BlockAlign */
-	0x04, 0x00,             /* +20 BlockAlign = channels*BytesPerSample */
-	0x10, 0x00,             /* +22 BitsPerSample */
-	0x64, 0x61, 0x74, 0x61, /* +24 "data" */
-	0x00, 0x00, 0x00, 0x00  /* +28 filesize - 0x2c */
+  0x52, 0x49, 0x46, 0x46, /* +00 "RIFF" */
+  0x00, 0x00, 0x00, 0x00, /* +04 file size - 8 */
+  0x57, 0x41, 0x56, 0x45, 0x66, 0x6d, 0x74, 0x20, /* +08 "WAVEfmt " */
+  0x10, 0x00, 0x00, 0x00, /* +10 fmt size */
+  0x01, 0x00,             /* +14 wFormatTag */
+  0x02, 0x00,             /* +16 Channels */
+  0x44, 0xac, 0x00, 0x00, /* +18 rate */
+  0x10, 0xb1, 0x02, 0x00, /* +1c BytesPerSec = rate * BlockAlign */
+  0x04, 0x00,             /* +20 BlockAlign = channels*BytesPerSample */
+  0x10, 0x00,             /* +22 BitsPerSample */
+  0x64, 0x61, 0x74, 0x61, /* +24 "data" */
+  0x00, 0x00, 0x00, 0x00  /* +28 filesize - 0x2c */
 };
 
 const char* MakeWavHeader(int rate, int ch, int bps, int size) {
-	static char header[0x2c];
-	memcpy(header, (const char*)orig_header, 0x2c);
-	write_little_endian_int(header+0x04, size-8);
-	write_little_endian_int(header+0x28, size-0x2c);
-	write_little_endian_int(header+0x18, rate);
-	write_little_endian_int(header+0x1c, rate*ch*bps);
-	header[0x16] = ch;
-	header[0x20] = ch*bps;
-	header[0x22] = bps*8;
-	return header;
+  static char header[0x2c];
+  memcpy(header, (const char*)orig_header, 0x2c);
+  write_little_endian_int(header+0x04, size-8);
+  write_little_endian_int(header+0x28, size-0x2c);
+  write_little_endian_int(header+0x18, rate);
+  write_little_endian_int(header+0x1c, rate*ch*bps);
+  header[0x16] = ch;
+  header[0x20] = ch*bps;
+  header[0x22] = bps*8;
+  return header;
 }
 
 }  // namespace
@@ -208,26 +208,26 @@ char* OVKVoiceSample::decode(int* size) {
   try {
     buffer = new char[buffer_size];
 
-	do {
-		r = ov_read(&vf, buffer + buffer_pos, buffer_size - buffer_pos,
-                    0, 2, 1, 0);
-		if (r <= 0) break;
-		buffer_pos += r;
-		if ((buffer_size - INITSIZE / 4) < buffer_pos) {
-          int new_size = buffer_size + INITSIZE;
-          char* new_buffer = new char[new_size];
-          memcpy(new_buffer, buffer, buffer_size);
+    do {
+      r = ov_read(&vf, buffer + buffer_pos, buffer_size - buffer_pos,
+                  0, 2, 1, 0);
+      if (r <= 0) break;
+      buffer_pos += r;
+      if ((buffer_size - INITSIZE / 4) < buffer_pos) {
+        int new_size = buffer_size + INITSIZE;
+        char* new_buffer = new char[new_size];
+        memcpy(new_buffer, buffer, buffer_size);
 
-          delete [] buffer;
-          buffer = new_buffer;
-          buffer_size = new_size;
-        }
-	} while (1);
-	ov_clear(&vf);
+        delete [] buffer;
+        buffer = new_buffer;
+        buffer_size = new_size;
+      }
+    } while (1);
+    ov_clear(&vf);
 
     *size = buffer_size;
     const char* header = MakeWavHeader(rate, channels, 2, buffer_pos);
-	memcpy(buffer, header, WAV_HEADER_SIZE);
+    memcpy(buffer, header, WAV_HEADER_SIZE);
   } catch (...) {
     delete [] buffer;
     throw;
@@ -289,7 +289,7 @@ OVKVoiceArchive::~OVKVoiceArchive() {
 
 shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
-      find_if (entries_.begin(), entries_.end(),
+      find_if(entries_.begin(), entries_.end(),
               bind(&Entry::koe_num, _1) == sample_num);
   if (it != entries_.end()) {
     return shared_ptr<VoiceSample>(

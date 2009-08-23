@@ -647,15 +647,15 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   SDL_Surface* s = 0;
   if (conv->Read(mem)) {
     MaskType is_mask = conv->IsMask() ? ALPHA_MASK : NO_MASK;
-    if (is_mask == ALPHA_MASK) { // alpha §¨§π§Ÿ§∆ 0xff § §È•ﬁ•π•ØÃµ§∑§»§π§ÅE//      cerr << "Loading alpha mask..." << endl;
+    if (is_mask == ALPHA_MASK) {
       int len = conv->Width()*conv->Height();
       unsigned int* d = (unsigned int*)mem;
-      int i; for (i=0; i<len; i++) {
+      int i;
+      for (i = 0; i < len; i++) {
         if ( (*d&0xff000000) != 0xff000000) break;
         d++;
       }
       if (i == len) {
-//        cerr << "No mask found!" << endl;
         is_mask = NO_MASK;
       }
     }

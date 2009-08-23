@@ -54,7 +54,7 @@ class RLMachine;
  */
 class GraphicsObjectOfFile : public GraphicsObjectData {
  public:
-  GraphicsObjectOfFile(System& system);
+  explicit GraphicsObjectOfFile(System& system);
   GraphicsObjectOfFile(System& system, const std::string& filename);
 
   void loadFile();

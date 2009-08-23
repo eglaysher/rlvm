@@ -98,7 +98,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
         graphics.toggleInterfaceHidden();
         return true;
       }
-    } else if (!machine.system().text().handleMouseClick(machine, pos, pressed)) {
+    } else if (!text.handleMouseClick(machine, pos, pressed)) {
       // We *must* only respond on mouseups! This detail matters because in
       // rlBabel, if glosses are enabled, an spause() is called and then the
       // mouse button value returned by GetCursorPos needs to be "2" for the

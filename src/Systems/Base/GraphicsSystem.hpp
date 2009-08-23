@@ -36,6 +36,8 @@
 #ifndef SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
 #define SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
 
+#include <set>
+
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -77,7 +79,7 @@ template<typename T> class LazyArray;
  */
 struct GraphicsSystemGlobals {
   GraphicsSystemGlobals();
-  GraphicsSystemGlobals(Gameexe& gameexe);
+  explicit GraphicsSystemGlobals(Gameexe& gameexe);
 
   /// ShowObject flags
   int show_object_1, show_object_2;
@@ -257,7 +259,8 @@ class GraphicsSystem : public EventListener {
    * @param cp932str The subtitle (encoded in cp932 or similar)
    * @param text_encoding The encoding type (as passed in to cp932toUTF8)
    */
-  virtual void setWindowSubtitle(const std::string& cp932str, int text_encoding);
+  virtual void setWindowSubtitle(const std::string& cp932str,
+                                 int text_encoding);
 
   /**
    * Returns the current window subtitle.

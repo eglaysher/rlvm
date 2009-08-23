@@ -31,6 +31,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/function.hpp>
 
+#include <algorithm>
 #include <string>
 #include <vector>
 

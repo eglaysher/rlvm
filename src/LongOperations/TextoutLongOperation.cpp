@@ -137,9 +137,10 @@ bool TextoutLongOperation::displayName(RLMachine& machine) {
     codepoint = utf8::next(it, strend);
   }
 
-  if (codepoint != 0x3011 && it == strend)
-    throw SystemError("Malformed string code. Opening bracket in \\{name} construct,"
-                      " but missing closing bracket.");
+  if (codepoint != 0x3011 && it == strend) {
+    throw SystemError("Malformed string code. Opening bracket in \\{name}"
+                      " construct,  but missing closing bracket.");
+  }
 
   // Grab the name
   string name(current_position_, curend);

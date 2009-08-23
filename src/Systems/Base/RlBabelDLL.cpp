@@ -581,7 +581,7 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
   y -= window->textY1();
 
   std::vector<Gloss>::const_iterator it =
-      std::find_if (glosses_.begin(), glosses_.end(),
+      std::find_if(glosses_.begin(), glosses_.end(),
                    bind(&Gloss::contains, _1, Point(x, y)));
   if (it == glosses_.end())
     return 0;

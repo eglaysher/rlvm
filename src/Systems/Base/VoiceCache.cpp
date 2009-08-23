@@ -32,6 +32,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <string>
 #include <boost/filesystem/path.hpp>
 
 #include "Systems/Base/OVKVoiceArchive.hpp"
