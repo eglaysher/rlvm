@@ -32,6 +32,7 @@
 #include "Systems/SDL/SDLMusic.hpp"
 
 #include "Systems/SDL/SDLAudioLocker.hpp"
+#include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 
 #include <vector>
@@ -232,6 +233,12 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
   //    ("ogg", &build_music_implementation_with_impl<OggFILE>);
 
   fs::path file_path = findFile(system, track.file, SOUND_FILETYPES);
+  if (file_path.empty()) {
+    ostringstream oss;
+    oss << "Could not find music file \"" << track.file << "\".";
+    throw rlvm::Exception(oss.str());
+  }
+
   const string& raw_path = file_path.external_file_string();
   for (FileTypes::const_iterator it = types.begin(); it != types.end(); ++it) {
     if (iends_with(raw_path, it->first)) {

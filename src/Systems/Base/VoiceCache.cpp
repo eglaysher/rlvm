@@ -79,8 +79,11 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   oss << "z" << std::setw(4) << std::setfill('0') << file_no;
 
   fs::path file = findFile(sound_system_.system(), oss.str(), KOE_FILETYPES);
-  string file_str = file.file_string();
+  if (file.empty()) {
+    return shared_ptr<VoiceArchive>();
+  }
 
+  string file_str = file.file_string();
   if (iends_with(file_str, "ovk")) {
     return shared_ptr<VoiceArchive>(new OVKVoiceArchive(file, file_no));
   }

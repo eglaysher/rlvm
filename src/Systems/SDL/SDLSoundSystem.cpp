@@ -82,6 +82,12 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
   SDLSoundChunkPtr sample = cache.fetch(file_name);
   if (sample == NULL) {
     fs::path file_path = findFile(system(), file_name, SOUND_FILETYPES);
+    if (file_path.empty()) {
+      ostringstream oss;
+      oss << "Could not find sound file \"" << file_name << "\".";
+      throw rlvm::Exception(oss.str());
+    }
+
     sample.reset(new SDLSoundChunk(file_path));
     cache.insert(file_name, sample);
   }

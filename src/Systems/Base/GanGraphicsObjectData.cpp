@@ -111,6 +111,12 @@ void GanGraphicsObjectData::load() {
   image = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
 
   fs::path gan_file_path = findFile(system_, gan_filename_, GAN_FILETYPES);
+  if (gan_file_path.empty()) {
+    ostringstream oss;
+    oss << "Could not find GAN file \"" << gan_filename_ << "\".";
+    throw rlvm::Exception(oss.str());
+  }
+
   fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
   if (!ifs) {
     ostringstream oss;

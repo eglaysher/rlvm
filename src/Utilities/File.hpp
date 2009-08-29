@@ -75,12 +75,9 @@ extern const std::vector<std::string> KOE_FILETYPES;
  * Returns the full path to a g00 file for the basename of the file.
  *
  * @param fileName The filename given in the source code.
- * @return The full path of the file
+ * @return The full path of the file. Returns an empty() path if an appropriate
+ *         file can't be found.
  */
-boost::filesystem::path findFile(
-    RLMachine& machine,
-    const std::string& fileName,
-    const std::vector<std::string>& extensions = ALL_FILETYPES);
 boost::filesystem::path findFile(
     System& system,
     const std::string& fileName,

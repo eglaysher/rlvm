@@ -596,6 +596,12 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(
     const std::string& filename) {
   // Get the path to get the file type (which won't be in filename)
   fs::path full_path = findFile(system(), filename);
+  if (full_path.empty()) {
+    ostringstream oss;
+    oss << "Could not find Object compatible file \"" << filename << "\".";
+    throw rlvm::Exception(oss.str());
+  }
+
   string file_str = full_path.file_string();
   if (iends_with(file_str, "g00") || iends_with(file_str, "pdt")) {
     return new GraphicsObjectOfFile(system(), filename);

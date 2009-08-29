@@ -141,18 +141,6 @@ const std::vector<std::string> KOE_FILETYPES =
 
 // -----------------------------------------------------------------------
 
-/**
- * @todo This function is a hack and needs to be completely rewritten
- *       to use the \#FOLDNAME table in the Gameexe.ini file.
- */
-boost::filesystem::path findFile(RLMachine& machine,
-                                 const std::string& fileName,
-                                 const vector<string>& extensions) {
-  return findFile(machine.system(), fileName, extensions);
-}
-
-// -----------------------------------------------------------------------
-
 boost::filesystem::path findFile(System& system,
                                  const std::string& fileName,
                                  const vector<string>& extensions) {
@@ -178,13 +166,8 @@ boost::filesystem::path findFile(System& system,
     }
   }
 
-  ostringstream oss;
-  oss << "Could not open file: \"" << newName << "\" looking for types: {";
-  copy(extensions.begin(), extensions.end(),
-       ostream_iterator<string>(oss, ","));
-  oss << "}";
-
-  throw rlvm::Exception(oss.str());
+  // Error.
+  return boost::filesystem::path();
 }
 
 // -----------------------------------------------------------------------

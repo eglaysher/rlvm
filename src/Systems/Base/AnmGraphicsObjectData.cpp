@@ -114,6 +114,12 @@ bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anm_data) {
 void AnmGraphicsObjectData::loadAnmFile() {
   fs::path file = findFile(system_, filename_, ANM_FILETYPES);
 
+  if (file.empty()) {
+    ostringstream oss;
+    oss << "Could not find ANM file \"" << filename_ << "\".";
+    throw rlvm::Exception(oss.str());
+  }
+
   fs::ifstream ifs(file, ifstream::in | ifstream::binary);
   if (!ifs) {
     ostringstream oss;

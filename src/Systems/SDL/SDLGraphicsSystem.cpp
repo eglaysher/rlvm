@@ -626,6 +626,11 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 
   boost::filesystem::path filename =
       findFile(system(), short_filename, IMAGE_FILETYPES);
+  if (filename.empty()) {
+    ostringstream oss;
+    oss << "Could not find image file \"" << short_filename << "\".";
+    throw rlvm::Exception(oss.str());
+  }
 
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.file_string().c_str(), "rb");
