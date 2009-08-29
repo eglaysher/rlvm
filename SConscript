@@ -139,6 +139,7 @@ librlvm_files = [
   "src/Systems/Base/MouseCursor.cpp",
   "src/Systems/Base/ObjectSettings.cpp",
   "src/Systems/Base/OVKVoiceArchive.cpp",
+  "src/Systems/Base/OVKVoiceSample.cpp",
   "src/Systems/Base/ParentGraphicsObjectData.cpp",
   "src/Systems/Base/Platform.cpp",
   "src/Systems/Base/RLTimer.cpp",
