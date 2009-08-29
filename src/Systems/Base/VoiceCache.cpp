@@ -36,6 +36,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include "Systems/Base/OVKVoiceArchive.hpp"
+#include "Systems/Base/OVKVoiceSample.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/VoiceArchive.hpp"
 #include "Utilities/Exception.hpp"
@@ -62,23 +63,33 @@ boost::shared_ptr<VoiceSample> VoiceCache::find(int id) {
   int index = id % ID_RADIX;
 
   shared_ptr<VoiceArchive> archive = file_cache_.fetch(file_no);
-  if (!archive) {
+  if (archive) {
+    return archive->findSample(index);
+  } else {
     archive = findArchive(file_no);
-    if (!archive) {
-      throw rlvm::Exception("No such voice archive");
+    if (archive) {
+      // Cache for later use.
+      file_cache_.insert(file_no, archive);
+      return archive->findSample(index);
+    } else {
+      // There aren't any archives with |file_no|. Look for an individual file
+      // instead.
+      shared_ptr<VoiceSample> sample = findUnpackedSample(file_no, index);
+      if (sample) {
+        return sample;
+      } else {
+        throw rlvm::Exception("No such voice archive or sample");
+      }
     }
-
-    file_cache_.insert(file_no, archive);
   }
-
-  return archive->findSample(index);
 }
 
 shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   std::ostringstream oss;
   oss << "z" << std::setw(4) << std::setfill('0') << file_no;
 
-  fs::path file = findFile(sound_system_.system(), oss.str(), KOE_FILETYPES);
+  fs::path file =
+      findFile(sound_system_.system(), oss.str(), KOE_ARCHIVE_FILETYPES);
   if (file.empty()) {
     return shared_ptr<VoiceArchive>();
   }
@@ -89,4 +100,25 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   }
 
   return shared_ptr<VoiceArchive>();
+}
+
+shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
+    int file_no, int index) const {
+  // Loose voice files are packed into directories, like:
+  // /KOE/0008/z000800073.ogg.
+  std::ostringstream oss;
+  oss << std::setw(4) << std::setfill('0') << file_no << "/"
+      << "z"
+      << std::setw(4) << std::setfill('0') << file_no
+      << std::setw(5) << std::setfill('0') << index;
+
+  fs::path file =
+      findFile(sound_system_.system(), oss.str(), KOE_LOOSE_FILETYPES);
+  string file_str = file.file_string();
+
+  if (iends_with(file_str, "ogg")) {
+    return shared_ptr<VoiceSample>(new OVKVoiceSample(file));
+  }
+
+  return shared_ptr<VoiceSample>();
 }

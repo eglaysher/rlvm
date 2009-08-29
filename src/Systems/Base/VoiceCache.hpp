@@ -46,13 +46,17 @@ class VoiceCache {
   boost::shared_ptr<VoiceSample> find(int id);
 
  private:
+  // Searches for a file archive of voices.
   boost::shared_ptr<VoiceArchive> findArchive(int file_no) const;
+
+  // Searches for an unarchived ogg or mp3 file.
+  boost::shared_ptr<VoiceSample> findUnpackedSample(
+      int file_no, int index) const;
 
   SoundSystem& sound_system_;
 
   /// A mapping between a file id number and the underlying file object.
   LRUCache<int, boost::shared_ptr<VoiceArchive> > file_cache_;
 };  // class VoiceCache
-
 
 #endif  // SRC_SYSTEMS_BASE_VOICECACHE_HPP_

@@ -68,7 +68,8 @@ extern const std::vector<std::string> PDT_IMAGE_FILETYPES;
 extern const std::vector<std::string> GAN_FILETYPES;
 extern const std::vector<std::string> ANM_FILETYPES;
 extern const std::vector<std::string> SOUND_FILETYPES;
-extern const std::vector<std::string> KOE_FILETYPES;
+extern const std::vector<std::string> KOE_ARCHIVE_FILETYPES;
+extern const std::vector<std::string> KOE_LOOSE_FILETYPES;
 /// @}
 
 /**

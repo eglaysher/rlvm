@@ -49,6 +49,11 @@ In addition, rlvm has an implementation of rlBabel; English patches
 compiled with Haeleth's rlBabel should line break correctly. I've
 successfully tested it with the patches from NDT.
 
+rlvm currently supports OVK voice files, along with voice patches to
+some of the above games (as long as the voice files are stored in ogg
+vorbis files and follow the filename convention
+<packnumber>/z<packnumber><sampleid>.ogg).
+
 Fullscreen can be entered by pressing Alt+{F,Enter} on Linux and
 Command+{F,Enter} on Mac.
 

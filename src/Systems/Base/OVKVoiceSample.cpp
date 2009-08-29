@@ -61,6 +61,7 @@
 
 #include "Systems/Base/OVKVoiceSample.hpp"
 
+#include <cstdio>
 #include <string>
 #include <vorbis/vorbisfile.h>
 
@@ -143,6 +144,13 @@ const char* MakeWavHeader(int rate, int ch, int bps, int size) {
 
 }  // namespace
 
+OVKVoiceSample::OVKVoiceSample(fs::path file)
+    : stream_(std::fopen(file.external_file_string().c_str(), "rb")),
+      offset_(0), length_(0) {
+  std::fseek(stream_, 0, SEEK_END);
+  length_ = ftell(stream_);
+  std::fseek(stream_, 0, SEEK_SET);
+}
 
 OVKVoiceSample::OVKVoiceSample(fs::path file, int offset, int length)
     : stream_(std::fopen(file.external_file_string().c_str(), "rb")),
