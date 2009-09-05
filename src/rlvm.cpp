@@ -126,7 +126,7 @@ namespace fs = boost::filesystem;
 /**
  * @page architectureReview RLVM Architecture
  *
- * RLVM is divided into five basic parts:
+ * RLVM is divided into several high level directories:
  *
  * - A modified version of Haeleth's @c libReallive, which is
  *   responsible for reading and parsing the SEEN.TXT file and
@@ -141,13 +141,29 @@ namespace fs = boost::filesystem;
  *   - RLOperation: the base class of every opcode definition.
  *   - LongOperation: the base class for all operations that persist
  *     for multiple cycles through the game loop.
- * - The Base System classes found in @c src/Systems/Base , which
- *   define the generalized interface for system dependent operations
- *   like sound and graphics.
+ * - The Base System classes found in @c src/Systems/Base , which define the
+ *   generalized interface for system dependent operations like sound and
+ *   graphics. It was originally meant to only define abstract interface which
+ *   would be implemented in System/ specific directories. Said base classes
+ *   have grown to hold significant cross-platform logic, implemented per
+ *   system by subclassing. It has also grown to contain a whole lot of
+ *   non-subclassed, cross platform code.
  * - The System subclasses, such as @c src/Systems/SDL , which
  *   implement the Base System interface for SDL. Additional
  *   subclasses could be written for DirectX, or some other game
  *   interface.
+ *
+ * The above was part of the original version of this document. In the
+ * intervening time, I've also added:
+ *
+ * - LongOperations and Effects: LongOperations are functors that get run
+ *   during the mainloop instead of a RealLive instruction. Sometimes execution
+ *   of RealLive code needs to stop so a command that would run longer than a
+ *   single run through the gameloop can take all the time it needs while still
+ *   updating the screen. Effects are graphical LongOperations that transition
+ *   between two images.
+ * - Encodings: A combination of Haeleth's encoding functions from rlBabel and
+ *   various encoding utility functions I've written.
  */
 
 // -----------------------------------------------------------------------
