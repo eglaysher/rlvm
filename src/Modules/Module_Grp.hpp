@@ -81,4 +81,9 @@ void replayGraphicsStackVector(
   RLMachine& machine,
   const std::vector<GraphicsStackFrame>& serializedStack);
 
+// -----------------------------------------------------------------------
+
+// Because I have no clue at all.
+RLOperation* makeBgrMulti1();
+
 #endif  // SRC_MODULES_MODULE_GRP_HPP_

@@ -31,6 +31,20 @@
 #include "Modules/Module_Bgr.hpp"
 
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
+#include "MachineBase/RLOperation/Special_T.hpp"
+#include "Modules/Module_Grp.hpp"
+
+#include <string>
+#include <iostream>
+using namespace std;
+
+// -----------------------------------------------------------------------
+
+// TODO(erg): Figure out for real how the Bgr module works. For AIR, I'm just
+// forwarding bgrMulti to an implementation in Module_Grp.cpp because I don't
+// understand how these two systems interlock.
 
 // -----------------------------------------------------------------------
 
@@ -41,5 +55,5 @@ BgrModule::BgrModule()
   addUnsupportedOpcode(10, 2, "bgrLoadHaikei");
 
   addUnsupportedOpcode(100, 0, "bgrMulti");
-  addUnsupportedOpcode(100, 1, "bgrMulti");
+  addOpcode(100, 1, "bgrMulti", makeBgrMulti1());
 }

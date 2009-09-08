@@ -1282,10 +1282,10 @@ GrpModule::GrpModule()
   addOpcode(1050, 2, "recLoad", new Grp_load_3<REC>(false));
   addOpcode(1050, 3, "recLoad", new Grp_load_3<REC>(false));
 
-  addUnsupportedOpcode(1051, 0, "recMaskLoad");
-  addUnsupportedOpcode(1051, 1, "recMaskLoad");
-  addUnsupportedOpcode(1051, 2, "recMaskLoad");
-  addUnsupportedOpcode(1051, 3, "recMaskLoad");
+  addOpcode(1051, 0, "recMaskLoad", new Grp_load_1(true));
+  addOpcode(1051, 1, "recMaskLoad", new Grp_load_1(true));
+  addOpcode(1051, 2, "recMaskLoad", new Grp_load_3<REC>(true));
+  addOpcode(1051, 3, "recMaskLoad", new Grp_load_3<REC>(true));
 
   addOpcode(1052, 0, "recDisplay", new Grp_display_0);
   addOpcode(1052, 1, "recDisplay", new Grp_display_1);
@@ -1443,4 +1443,65 @@ void replayGraphicsStackVector(
            << endl;
     }
   }
+}
+
+// -----------------------------------------------------------------------
+
+// I don't know how the BGR module really works and it appears to access a
+// BUNCH of the above graphical primitives. Everything up here needs to be
+// rewritten anyway, so why not just add to the mess?
+
+typedef Argc_T<
+  Special_T<
+    // 0:copy(strC 'filename')
+    StrConstant_T,
+    // 1:DUMMY. Unknown.
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 2:copy(strC 'filename', '?')
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 3:DUMMY. Unknown.
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 4:copy(strC, '?', '?')
+    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>
+    > > BgrMultiCommand;
+
+struct Bgr_bgrMulti_1 : public RLOp_Void_3<
+  StrConstant_T, IntConstant_T, BgrMultiCommand> {
+ public:
+  void operator()(RLMachine& machine, string filename, int effect,
+                  BgrMultiCommand::type commands) {
+    Grp_load_1(false)(machine, filename, MULTI_TARGET_DC, 255);
+
+    for (BgrMultiCommand::type::const_iterator it = commands.begin();
+         it != commands.end(); it++) {
+      switch (it->type) {
+        case 0:
+          // 0:copy(strC 'filename')
+          Grp_load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
+          break;
+        case 2: {
+          // 2:copy(strC 'filename', '?')
+          Rect src;
+          Point dest;
+          getSELPointAndRect(machine, it->third.get<1>(), src, dest);
+
+          Grp_load_3<rect_impl::REC>(true)
+              (machine, it->third.get<0>(), MULTI_TARGET_DC,
+               src, dest, 255);
+          break;
+        }
+        default:
+          cerr << "Don't know what to do with a type " << it->type
+               << " in bgrMulti_1"
+               << endl;
+          break;
+      }
+    }
+
+    Grp_display_0()(machine, MULTI_TARGET_DC, effect);
+  }
+};
+
+RLOperation* makeBgrMulti1() {
+  return new Bgr_bgrMulti_1;
 }
