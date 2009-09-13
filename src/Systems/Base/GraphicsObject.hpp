@@ -216,6 +216,9 @@ class GraphicsObject {
   // internal copy-on-write object. Only used in unit testing.
   int32_t referenceCount() const { return impl_.use_count(); }
 
+  // Whether we have the default shared data. Only used in unit testing.
+  bool isCleared() const { return impl_ == s_empty_impl; }
+
  private:
   /**
    * Makes the ineternal copy for our copy-on-write semantics. This

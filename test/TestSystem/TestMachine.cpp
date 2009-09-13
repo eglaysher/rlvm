@@ -26,10 +26,15 @@
 
 #include "TestSystem/TestMachine.hpp"
 
+#include <boost/variant/static_visitor.hpp>
+#include <string>
+#include <vector>
+
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/defs.h"
+#include "xclannad/endian.hpp"
 
 using libReallive::insert_i16;
 using rlvm::Exception;
@@ -55,6 +60,27 @@ void TestMachine::attachModule(RLModule* module) {
 
 void TestMachine::exe(const std::string& name, unsigned char overload) {
   runOpcode(name, overload, 0, "");
+}
+
+void TestMachine::exe(const std::string& name, unsigned char overload,
+                      const ExeArgument& arguments) {
+  runOpcode(name, overload, arguments.first, arguments.second);
+}
+
+// static
+void TestMachine::addEntity(std::string& output, const std::string& arg) {
+  output += "\"";
+  output += arg;
+  output += "\"";
+}
+
+// static
+void TestMachine::addEntity(std::string& output, const int arg)  {
+  char buf[6];
+  buf[0] = '$';
+  buf[1] = 0xff;
+  write_little_endian_int(buf + 2, arg);
+  output.append(buf, 6);
 }
 
 void TestMachine::runOpcode(const std::string& name, unsigned char overload,
