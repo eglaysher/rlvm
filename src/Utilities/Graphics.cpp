@@ -38,8 +38,11 @@
 
 #include <sstream>
 #include <vector>
+#include <boost/assign/list_of.hpp>
+
 
 using namespace std;
+using namespace boost::assign;
 
 // -----------------------------------------------------------------------
 
@@ -54,10 +57,21 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   } else if (gexe("SELR", selNum).exists()) {
     selEffect = gexe("SELR", selNum).to_intVector();
   } else {
-    ostringstream oss;
-    oss << "Could not find either #SEL." << selNum << " or #SELR."
-        << selNum;
-    throw SystemError(oss.str());
+    // Can't find the specified #SEL effect. See if there's a #SEL.000 effect:
+    if (gexe("SEL", 0).exists()) {
+      selEffect = gexe("SEL", 0).to_intVector();
+      grpToRecCoordinates(selEffect[0], selEffect[1],
+                          selEffect[2], selEffect[3]);
+    } else if (gexe("SELR", 0).exists()) {
+      selEffect = gexe("SELR", 0).to_intVector();
+    } else {
+      // Crap! Couldn't fall back on the default one either, so instead return
+      // a SEL vector that is a screenwide, short fade because we absolutely
+      // can't fail here.
+      Size screen = getScreenSize(gexe);
+      selEffect = list_of(0)(0)(screen.width())(screen.height())(0)(0)(1000)
+                  (000)(0)(0)(0)(0)(0)(0)(255)(0);
+    }
   }
 
   return selEffect;
