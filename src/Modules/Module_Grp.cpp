@@ -127,38 +127,33 @@ void blitDC1toDC0(RLMachine& machine) {
  *
  * Note that it works in rec coordinate space; grp commands must
  * convert from grp coordinate space.
- *
- * @param graphics The graphics system to composite on
- * @param fileName The full filename (as returned by findFile)
- * @param x Source X coordinate
- * @param y Source Y coordinate
- * @param width Width of area to composite
- * @param height Height of area to composite
- * @param dx Destination X coordinate
- * @param dy Destination Y coordinate
- * @param opacity Opacity in range from 0 - 255
- * @param useAlpha Whether to use the alpha
  */
 void loadImageToDC1(RLMachine& machine,
-                    const std::string& name,
+                    std::string name,
                     const Rect& srcRect,
                     const Point& dest,
                     int opacity, bool useAlpha) {
   GraphicsSystem& graphics = machine.system().graphics();
-  shared_ptr<Surface> dc0 = graphics.getDC(0);
-  shared_ptr<Surface> dc1 = graphics.getDC(1);
 
-  // Inclusive ranges are a monstrosity to computer people
-  Size size = srcRect.size() + Size(1, 1);
+  if (name != "?") {
+    if (name == "???")
+      name = graphics.defaultGrpName();
 
-  dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
+    shared_ptr<Surface> dc0 = graphics.getDC(0);
+    shared_ptr<Surface> dc1 = graphics.getDC(1);
 
-  // Load the section of the image file on top of dc1
-  shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, name));
-  surface->blitToSurface(*graphics.getDC(1),
-                         Rect(srcRect.origin(), size),
-                         Rect(dest, size),
-                         opacity, useAlpha);
+    // Inclusive ranges are a monstrosity to computer people
+    Size size = srcRect.size() + Size(1, 1);
+
+    dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
+
+    // Load the section of the image file on top of dc1
+    shared_ptr<Surface> surface(graphics.loadSurfaceFromFile(machine, name));
+    surface->blitToSurface(*graphics.getDC(1),
+                           Rect(srcRect.origin(), size),
+                           Rect(dest, size),
+                           opacity, useAlpha);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -191,25 +186,6 @@ void loadDCToDC1(GraphicsSystem& graphics,
                      Rect(srcRect.origin(), size),
                      Rect(dest, size),
                      opacity, false);
-}
-
-// -----------------------------------------------------------------------
-
-void handleOpenBgFileName(
-    RLMachine& machine,
-    std::string fileName,
-    const Rect& srcRect,
-    const Point& dest,
-    int opacity,
-    bool useAlpha) {
-  GraphicsSystem& graphics = machine.system().graphics();
-
-  if (fileName != "?") {
-    if (fileName == "???")
-      fileName = graphics.defaultGrpName();
-
-    loadImageToDC1(machine, fileName, srcRect, dest, opacity, useAlpha);
-  }
 }
 
 }  // namespace
@@ -445,9 +421,6 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    if (filename == "???")
-      filename = graphics.defaultGrpName();
-
     graphics.addGraphicsStackFrame(GRP_OPEN)
       .setFilename(filename)
       .setSourceCoordinates(src)
@@ -455,12 +428,9 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
       .setOpacity(opacity)
       .setMask(use_alpha_);
 
-    // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
-    // isn't documented in the rldev manual.
-    if (filename != "?")
-      loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
-    else
-      graphics.clearAndPromoteObjects();
+    loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
+
+    graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -503,8 +473,6 @@ struct Grp_open_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string filename, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-    if (filename == "???")
-      filename = graphics.defaultGrpName();
 
     graphics.addGraphicsStackFrame(GRP_OPEN)
       .setFilename(filename)
@@ -515,10 +483,9 @@ struct Grp_open_3 : public RLOp_Void_5<
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
-    if (filename != "?")
-      loadImageToDC1(machine, filename, srcRect, dest, opacity, use_alpha_);
-    else
-      graphics.clearAndPromoteObjects();
+    loadImageToDC1(machine, filename, srcRect, dest, opacity, use_alpha_);
+
+    graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 = graphics.getDC(0);
@@ -576,9 +543,6 @@ struct Grp_open_4 : public RLOp_Void_13<
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
-    if (fileName == "???")
-      fileName = graphics.defaultGrpName();
-
     graphics.addGraphicsStackFrame(GRP_OPEN)
       .setFilename(fileName)
       .setSourceCoordinates(srcRect)
@@ -588,10 +552,9 @@ struct Grp_open_4 : public RLOp_Void_13<
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
-    if (fileName != "?")
-      loadImageToDC1(machine, fileName, srcRect, dest, opacity, use_alpha_);
-    else
-      graphics.clearAndPromoteObjects();
+    loadImageToDC1(machine, fileName, srcRect, dest, opacity, use_alpha_);
+
+    graphics.clearAndPromoteObjects();
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc1 = graphics.getDC(1);
@@ -608,6 +571,8 @@ struct Grp_open_4 : public RLOp_Void_13<
 
 // -----------------------------------------------------------------------
 
+// TODO(erg): I don't appear to be setting the default '???' filename! Handle
+// that next?
 struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, string fileName, int effectNum,
@@ -627,8 +592,7 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
-    handleOpenBgFileName(
-      machine, fileName, srcRect, destPoint, opacity, false);
+    loadImageToDC1(machine, fileName, srcRect, destPoint, opacity, false);
 
     // Promote the objects
     graphics.clearAndPromoteObjects();
@@ -678,8 +642,7 @@ struct Grp_openBg_3 : public RLOp_Void_5<
     shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, srcRect, destPt,
-                         opacity, use_alpha_);
+    loadImageToDC1(machine, fileName, srcRect, destPt, opacity, use_alpha_);
 
     // Promote the objects
     graphics.clearAndPromoteObjects();
@@ -738,8 +701,7 @@ struct Grp_openBg_4 : public RLOp_Void_13<
     shared_ptr<Surface> dc0 =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
-    handleOpenBgFileName(machine, fileName, srcRect, destPt,
-                         opacity, use_alpha_);
+    loadImageToDC1(machine, fileName, srcRect, destPt, opacity, use_alpha_);
 
     // Promote the objects
     graphics.clearAndPromoteObjects();
@@ -1381,8 +1343,8 @@ GrpModule::GrpModule()
 // -----------------------------------------------------------------------
 
 void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f) {
-  handleOpenBgFileName(
-    machine, f.filename(), f.sourceRect(), f.targetPoint(), f.opacity(), false);
+  loadImageToDC1(machine, f.filename(), f.sourceRect(), f.targetPoint(),
+                 f.opacity(), false);
 
   blitDC1toDC0(machine);
 }
