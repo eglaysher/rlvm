@@ -50,11 +50,24 @@
 
 // -----------------------------------------------------------------------
 
-struct Obj_objCopyFgToBg : public RLOp_Void_1<IntConstant_T> {
+struct Obj_objCopyFgToBg_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsSystem& sys = machine.system().graphics();
     GraphicsObject& go = sys.getObject(OBJ_FG, buf);
     sys.setObject(OBJ_BG, buf, go);
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Obj_objCopyFgToBg_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int start, int end) {
+    GraphicsSystem& sys = machine.system().graphics();
+
+    for (int i = start; i <= end; ++i) {
+      GraphicsObject& go = sys.getObject(OBJ_FG, i);
+      sys.setObject(OBJ_BG, i, go);
+    }
   }
 };
 
@@ -149,7 +162,8 @@ ObjCopyFgToBg::ObjCopyFgToBg()
   : RLModule("ObjCopyFgToBg", 1, 60) {
   // This may be wrong; the function is undocumented, but this appears
   // to fix the display problem in Kanon OP.
-  addOpcode(2, 0, "objCopyFgToBg", new Obj_objCopyFgToBg);
+  addOpcode(2, 0, "objCopyFgToBg", new Obj_objCopyFgToBg_0);
+  addOpcode(2, 1, "objCopyFgToBg", new Obj_objCopyFgToBg_1);
 }
 
 // -----------------------------------------------------------------------
