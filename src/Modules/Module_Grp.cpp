@@ -261,6 +261,10 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     surface->blitToSurface(*graphics.getDC(dc),
                            surface->rect(), surface->rect(),
                            opacity, use_alpha_);
+
+    if (dc == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
@@ -303,6 +307,9 @@ struct Grp_load_3 : public RLOp_Void_5<
 
     surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
                            opacity, use_alpha_);
+    if (dc == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
@@ -752,6 +759,10 @@ struct Grp_copy_3
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
       srcRect, Rect(destPoint, srcRect.size()), opacity, use_alpha_);
+
+    if (dst == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
@@ -784,6 +795,10 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
     sourceSurface->blitToSurface(
       *graphics.getDC(dst), sourceSurface->rect(), sourceSurface->rect(),
       opacity, use_alpha_);
+
+    if (dst == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
@@ -796,6 +811,10 @@ struct Grp_fill_1 : public RLOp_Void_5<
   DefaultIntValue_T<255> > {
   void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
     machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha));
+
+    if (dc == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
@@ -810,6 +829,10 @@ struct Grp_fill_3 : public RLOp_Void_6<
                   int dc, int r, int g, int b, int alpha) {
     machine.system().graphics().getDC(dc)->fill(
         RGBAColour(r, g, b, alpha), destRect);
+
+    if (dc == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
@@ -904,6 +927,10 @@ struct Grp_stretchBlit_1
 
     sourceSurface->blitToSurface(
       *graphics.getDC(dst), src_rect, dst_rect, opacity, use_alpha_);
+
+    if (dst == 0) {
+      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
+    }
   }
 };
 
