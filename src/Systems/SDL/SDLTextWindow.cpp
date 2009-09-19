@@ -147,8 +147,14 @@ bool SDLTextWindow::displayChar(const std::string& current,
           // an opening quote mark.
           std::string wide_space;
           utf8::append(0x3000, back_inserter(wide_space));
-          if (!displayChar(wide_space, current))
+
+          // Prevent infinite recursion.
+          last_token_was_name_ = false;
+
+          if (!displayChar(wide_space, current)) {
+            last_token_was_name_ = true;
             return false;
+          }
         }
       }
     }
@@ -238,6 +244,11 @@ int SDLTextWindow::charWidth(uint16_t codepoint) const {
 }
 
 // -----------------------------------------------------------------------
+
+void SDLTextWindow::markRubyBegin() {
+  TextWindow::markRubyBegin();
+  //  last_token_was_name_ = false;
+}
 
 void SDLTextWindow::displayRubyText(const std::string& utf8str) {
   if (ruby_begin_point_ != -1) {
