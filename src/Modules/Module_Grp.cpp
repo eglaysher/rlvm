@@ -752,8 +752,7 @@ struct Grp_copy_3
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if (dst != 0 && dst != 1) {
-      Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
-      graphics.allocateDC(dst, maxSize);
+      graphics.setMinimumSizeForDC(dst, srcRect.size());
     }
 
     sourceSurface->blitToSurface(
@@ -921,8 +920,7 @@ struct Grp_stretchBlit_1
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if (dst != 0 && dst != 1) {
-      Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
-      graphics.allocateDC(dst, maxSize);
+      graphics.setMinimumSizeForDC(dst, sourceSurface->size());
     }
 
     sourceSurface->blitToSurface(

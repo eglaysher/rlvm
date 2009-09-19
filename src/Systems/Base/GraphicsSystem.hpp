@@ -410,6 +410,7 @@ class GraphicsSystem : public EventListener {
   const Rect& screenRect() const { return screen_rect_; }
 
   virtual void allocateDC(int dc, Size size) = 0;
+  virtual void setMinimumSizeForDC(int dc, Size size) = 0;
   virtual void freeDC(int dc) = 0;
 
   // ----------------------------------------- [ Surface loading functions ]

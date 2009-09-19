@@ -140,6 +140,9 @@ class SDLSurface : public SurfaceInvalidatable,
   SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
+  // Whether we have an underlying allocated surface.
+  bool allocated() { return surface_; }
+
   /// Overridden from SurfaceInvalidatable:
 
   /// Clears |texture|. Called before a switch between windowed and

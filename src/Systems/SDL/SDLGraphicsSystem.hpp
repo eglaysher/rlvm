@@ -88,6 +88,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
   virtual void executeGraphicsSystem(RLMachine& machine);
 
   virtual void allocateDC(int dc, Size screen_size);
+  virtual void setMinimumSizeForDC(int dc, Size size);
   virtual void freeDC(int dc);
 
   virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(

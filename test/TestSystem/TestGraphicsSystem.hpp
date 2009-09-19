@@ -25,11 +25,13 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TestGraphicsSystem_hpp__
-#define __TestGraphicsSystem_hpp__
+#ifndef TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
+#define TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
 
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+
+#include <string>
 
 #include <boost/shared_ptr.hpp>
 
@@ -50,6 +52,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   int screenHeight() const { return 480; }
   virtual Size screenSize() const { return Size(640, 480); }
   virtual void allocateDC(int dc, Size s);
+  virtual void setMinimumSizeForDC(int, Size) { /* noop for now. */ }
   virtual void freeDC(int dc);
 
   virtual void clearAndPromoteObjects();
@@ -62,14 +65,15 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
 
-  virtual void blitSurfaceToDC(Surface& source_obj, int target_dc,
-                               int srcX, int srcY, int src_width, int src_height,
-                               int destX, int destY, int dest_width, int dest_height,
-                               int alpha = 255);
+  virtual void blitSurfaceToDC(
+      Surface& source_obj, int target_dc,
+      int srcX, int srcY, int src_width, int src_height,
+      int destX, int destY, int dest_width, int dest_height,
+      int alpha = 255);
 
  private:
   /// Map between device contexts number and their surface.
   boost::shared_ptr<TestSurface> display_contexts_[16];
 };
 
-#endif
+#endif  // TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_

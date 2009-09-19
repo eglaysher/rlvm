@@ -505,6 +505,28 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size) {
 
 // -----------------------------------------------------------------------
 
+void SDLGraphicsSystem::setMinimumSizeForDC(int dc, Size size) {
+  if (display_contexts_[dc] == NULL || !display_contexts_[dc]->allocated()) {
+    allocateDC(dc, size);
+  } else {
+    Size current = display_contexts_[dc]->size();
+    if (current.width() < size.width() || current.height() < size.height()) {
+      // Make a new surface of the maximum size.
+      Size maxSize = current.sizeUnion(size);
+
+      boost::shared_ptr<SDLSurface> newdc(new SDLSurface(this));
+      newdc->allocate(maxSize);
+
+      display_contexts_[dc]->blitToSurface(
+          *newdc,
+          display_contexts_[dc]->rect(),
+          display_contexts_[dc]->rect());
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void SDLGraphicsSystem::freeDC(int dc) {
   if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
