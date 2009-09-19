@@ -255,8 +255,7 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
         graphics.loadSurfaceFromFile(machine, filename));
 
     if (dc != 0 && dc != 1) {
-      Size maxSize = graphics.screenSize().sizeUnion(surface->size());
-      graphics.allocateDC(dc, maxSize);
+      graphics.allocateDC(dc, surface->size());
     }
 
     surface->blitToSurface(*graphics.getDC(dc),
@@ -299,8 +298,7 @@ struct Grp_load_3 : public RLOp_Void_5<
     Rect destRect = Rect(dest, srcRect.size());
 
     if (dc != 0 && dc != 1) {
-      Size maxSize = graphics.screenSize().sizeUnion(surface->size());
-      graphics.allocateDC(dc, maxSize);
+      graphics.allocateDC(dc, surface->size());
     }
 
     surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
