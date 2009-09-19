@@ -445,7 +445,7 @@ void NWAData::ReadHeader(FILE* in, int _file_size) {
 void NWAData::Rewind(FILE* in) {
 	curblock = -1;
 	fseek(in, 0x2c, 0);
-	if (offsets) fseek(in, blocks*4, 0);
+	if (offsets) fseek(in, blocks*4, 1);
 }
 int NWAData::CheckHeader(void) {
 	if (complevel != -1 && offsets == 0) return false;
