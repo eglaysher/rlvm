@@ -1235,6 +1235,9 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(300, 2, "grpInvert");
   addUnsupportedOpcode(300, 3, "grpInvert");
 
+  addUnsupportedOpcode(302, 0, "grpColour");
+  addUnsupportedOpcode(302, 1, "grpColour");
+
   addUnsupportedOpcode(400, 0, "grpSwap");
   addUnsupportedOpcode(400, 1, "grpSwap");
 
@@ -1330,6 +1333,9 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(1301, 1, "recMono");
   addUnsupportedOpcode(1301, 2, "recMono");
   addUnsupportedOpcode(1301, 3, "recMono");
+
+  addUnsupportedOpcode(1302, 0, "recColour");
+  addUnsupportedOpcode(1302, 1, "recColour");
 
   addUnsupportedOpcode(1400, 0, "recSwap");
   addUnsupportedOpcode(1400, 1, "recSwap");
