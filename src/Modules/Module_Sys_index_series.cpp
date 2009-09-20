@@ -92,8 +92,8 @@ struct Sys_index_series
       double percentage = double(index - start) / double(end - start);
       int amount = endval - init;
       value = init + (percentage * amount);
-    } else if (index > end) {
-      // Finally, if we're over the value, set
+    } else if (index >= end) {
+      // Prevent us from going over the endval.
       value = endval;
       init = endval;
     }
