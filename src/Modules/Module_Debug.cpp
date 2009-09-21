@@ -41,8 +41,10 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "Systems/Base/System.hpp"
+#include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
+#include <string>
 #include <iostream>
 using namespace std;
 
@@ -60,11 +62,19 @@ using namespace std;
 namespace Opcodes {
 namespace Debug {
 
-template<typename TYPE>
-struct DebugMessage : public RLOp_Void_1< TYPE > {
-  void operator()(RLMachine& machine, typename TYPE::type value) {
+struct DebugMessageInt : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int value) {
     if (machine.system().gameexe()("MEMORY").exists())
-       cerr << "VALUE: " << value << endl;
+       cerr << "DebugMessage: " << value << endl;
+  }
+};
+
+struct DebugMessageStr : public RLOp_Void_1< StrConstant_T > {
+  void operator()(RLMachine& machine, std::string value) {
+    if (machine.system().gameexe()("MEMORY").exists()) {
+      string utfvalue = cp932toUTF8(value, machine.getTextEncoding());
+      cerr << "DebugMessage: " << utfvalue << endl;
+    }
   }
 };
 
@@ -77,8 +87,8 @@ DebugModule::DebugModule()
   : RLModule("Debug", 1, 255) {
   using namespace Opcodes::Debug;
 
-  addOpcode(10, 0, "__DebugMessage", new DebugMessage<IntConstant_T>);
-  addOpcode(10, 1, "__DebugMessage", new DebugMessage<StrConstant_T>);
+  addOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
+  addOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
 }
 
 /// @}
