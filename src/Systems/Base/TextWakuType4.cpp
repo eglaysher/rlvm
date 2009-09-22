@@ -155,6 +155,13 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
 
 // -----------------------------------------------------------------------
 
+bool TextWakuType4::getSize(Size& out) const {
+  out = Size();
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void TextWakuType4::setMousePosition(const Point& pos) {
   // Noop
 }

@@ -55,6 +55,7 @@ class TextWakuNormal : public TextWaku {
   virtual void execute();
   virtual void render(std::ostream* tree, Point box_location,
                       Size namebox_size);
+  virtual bool getSize(Size& out) const;
 
   /**
    * @todo These two methods shouldn't really exist; I need to redo plumbing of

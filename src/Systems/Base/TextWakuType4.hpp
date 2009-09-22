@@ -44,6 +44,10 @@ class TextWakuType4 : public TextWaku {
   virtual void render(std::ostream* tree, Point box_location,
                       Size namebox_size);
 
+  // We have no size other than what is passed to |namebox_size|. Always
+  // returns false and resets |out|.
+  virtual bool getSize(Size& out) const;
+
   /**
    * @todo These two methods shouldn't really exist; I need to redo plumbing of
    *       events so that these aren't routed through TextWindow, but are

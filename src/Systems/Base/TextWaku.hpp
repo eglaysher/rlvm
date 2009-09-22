@@ -46,6 +46,10 @@ class TextWaku {
   virtual void render(std::ostream* tree, Point box_location,
                       Size namebox_size) = 0;
 
+  // Possibly returns the size if this TextWaku object has a known size on
+  // screen.
+  virtual bool getSize(Size& out) const = 0;
+
   virtual void setMousePosition(const Point& pos) { }
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed) {

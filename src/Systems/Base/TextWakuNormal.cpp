@@ -151,6 +151,21 @@ void TextWakuNormal::renderButtons() {
 
 // -----------------------------------------------------------------------
 
+bool TextWakuNormal::getSize(Size& out) const {
+  if (waku_main_) {
+    out = waku_main_->size();
+    return true;
+  } else if (waku_backing_) {
+    out = waku_backing_->size();
+    return true;
+  }
+
+  out = Size();
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void TextWakuNormal::setMousePosition(const Point& pos) {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {

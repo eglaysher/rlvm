@@ -270,12 +270,15 @@ int TextWindow::boxY1() const {
 // -----------------------------------------------------------------------
 
 Size TextWindow::boxSize() const {
-  // This is an estimate; it was what I was using before and worked fine for
-  // all the KEY games I orriginally targeted, but broke on ALMA.
-  //
-  // TODO(erg): This just needs to be adjusted to be correct.
-  return textWindowSize() + Size(left_box_padding_ - right_box_padding_,
-                                 upper_box_padding_ - lower_box_padding_);
+  Size outSize;
+  if (textbox_waku_->getSize(outSize)) {
+    return outSize;
+  } else {
+    // This is an estimate; it was what I was using before and worked fine for
+    // all the KEY games I orriginally targeted, but broke on ALMA.
+    return textWindowSize() + Size(left_box_padding_ - right_box_padding_,
+                                   upper_box_padding_ - lower_box_padding_);
+  }
 }
 
 // -----------------------------------------------------------------------
