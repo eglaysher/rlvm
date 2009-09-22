@@ -577,8 +577,9 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
                             int globalwaku) {
   // Does this handle all cases?
   boost::shared_ptr<TextWindow> window = getWindow(-1);
-  x -= window->textX1();
-  y -= window->textY1();
+  Point textOrigin = window->textRect().origin();
+  x -= textOrigin.x();
+  y -= textOrigin.y();
 
   std::vector<Gloss>::const_iterator it =
       std::find_if(glosses_.begin(), glosses_.end(),

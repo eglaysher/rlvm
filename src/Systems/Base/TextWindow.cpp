@@ -229,93 +229,101 @@ Size TextWindow::textWindowSize() const {
 
 // -----------------------------------------------------------------------
 
-int TextWindow::boxX1() const {
-  switch (origin_) {
-  case 0:
-  case 2:
-    // Error checking. If the size places the text box off screen, then we
-    // return 0. Tested this out in ALMA.
-    if (x_distance_from_origin_ + boxSize().width() > screen_width_)
-      return 0;
-
-    return x_distance_from_origin_;
-  case 1:
-  case 3:
-    return screen_width_ - boxSize().width();
-  default:
-    throw SystemError("Invalid origin");
-  };
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindow::boxY1() const {
-  switch (origin_) {
-  case 0:  // Top and left
-  case 1:  // Top and right
-    // Error checking. If the size places the text box off screen, then we
-    // return 0. Tested this out in ALMA.
-    if (y_distance_from_origin_ + boxSize().height() > screen_height_)
-      return 0;
-
-    return y_distance_from_origin_;
-  case 2:  // Bottom and left
-  case 3:  // Bottom and right
-    return screen_height_ - boxSize().height();
-  default:
-    throw SystemError("Invalid origin");
-  }
-}
-
-// -----------------------------------------------------------------------
-
-Size TextWindow::boxSize() const {
-  Size outSize;
-  if (textbox_waku_->getSize(outSize)) {
-    return outSize;
-  } else {
+Rect TextWindow::windowRect() const {
+  // This absolutely needs to know the size of the on main backing waku if we
+  // want to draw things correctly! If we are going to offset this text box
+  // from the top or the bottom, we MUST know what the size of the image
+  // graphic is if we want accurate calculations, because some image graphics
+  // are significantly larger than textWindowSize() + the paddings.
+  //
+  // RealLive is definitely correcting programmer errors which places textboxes
+  // offscreen. For example, take P_BRAVE (please!): #WINDOW.002.POS=2:78,6,
+  // and a waku that refers to PM_WIN.g00 for it's image. That image is 800x300
+  // pixels. The image is still centered perfectly, even though it's supposed
+  // to be shifted 78 pixels right since the origin is the bottom
+  // left. Expanding this number didn't change the position offscreen.
+  Size boxSize;
+  if (!textbox_waku_->getSize(boxSize)) {
     // This is an estimate; it was what I was using before and worked fine for
-    // all the KEY games I orriginally targeted, but broke on ALMA.
-    return textWindowSize() + Size(left_box_padding_ - right_box_padding_,
-                                   upper_box_padding_ - lower_box_padding_);
+    // all the KEY games I originally targeted, but broke on ALMA.
+    //
+    // This should work as long as the background image is fully on screen or
+    // doesn't exist.
+    //
+    // TODO(erg): This looks wrong maybe. Shouldn't I be adding the paddings to
+    // both sides or deleting from all sides? (Or just not add it here in the
+    // first place?
+    boxSize = textWindowSize() + Size(left_box_padding_ - right_box_padding_,
+                                      upper_box_padding_ - lower_box_padding_);
   }
+
+  int x, y;
+  switch (origin_) {
+    case 0:
+    case 2:
+      x = x_distance_from_origin_;
+      break;
+    case 1:
+    case 3:
+      x = screen_width_ - boxSize.width() - x_distance_from_origin_;
+      break;
+    default:
+      throw SystemError("Invalid origin");
+  };
+
+  switch (origin_) {
+    case 0:  // Top and left
+    case 1:  // Top and right
+      y = y_distance_from_origin_;
+      break;
+    case 2:  // Bottom and left
+    case 3:  // Bottom and right
+      y = screen_height_ - boxSize.height() - y_distance_from_origin_;
+      break;
+    default:
+      throw SystemError("Invalid origin");
+  }
+
+  // Now that we have the coordinate that the programmer wanted to position the
+  // box at, possibly move the box so it fits on screen.
+  if ((x + boxSize.width()) > screen_width_)
+    x -= (x + boxSize.width()) - screen_width_;
+  if (x < 0)
+    x = 0;
+
+  if ((y + boxSize.height()) > screen_height_)
+    y -= (y + boxSize.height()) - screen_height_;
+  if (y < 0)
+    y = 0;
+
+  return Rect(x, y, boxSize);
 }
 
 // -----------------------------------------------------------------------
 
-int TextWindow::textX1() const {
-  return boxX1() + left_box_padding_;
-}
+Rect TextWindow::textRect() const {
+  Rect window = windowRect();
 
-// -----------------------------------------------------------------------
+  Point textOrigin = window.origin() +
+                     Size(left_box_padding_, upper_box_padding_);
 
-int TextWindow::textY1() const {
-  return boxY1() + upper_box_padding_;
-}
+  Size rectSize = textWindowSize();
+  rectSize += Size(right_box_padding_, lower_box_padding_);
 
-// -----------------------------------------------------------------------
-
-int TextWindow::textX2() const {
-  return textX1() + textWindowSize().width() + right_box_padding_;
-}
-
-// -----------------------------------------------------------------------
-
-int TextWindow::textY2() const {
-  return textY1() + textWindowSize().height() + lower_box_padding_;
+  return Rect(textOrigin, rectSize);
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::nameboxX1() const {
-  return boxX1() + namebox_x_offset_;
+  return windowRect().origin().x() + namebox_x_offset_;
 }
 
 // -----------------------------------------------------------------------
 
 int TextWindow::nameboxY1() const {
   // We cheat with the size calculation here.
-  return boxY1() + namebox_y_offset_ -
+  return windowRect().origin().y() + namebox_y_offset_ -
       (2 * vertical_namebox_padding_ + name_size_);
 }
 
@@ -361,13 +369,15 @@ void TextWindow::setKeycurMod(const vector<int>& keycur) {
 // -----------------------------------------------------------------------
 
 Point TextWindow::keycursorPosition() const {
+  // TODO(erg): This is the next thing to look at after I have the rects layed
+  // out. The keycursor in ALMA isn't positioned correctly.
   switch (keycursor_type_) {
   case 0:
-    return Point(textX2(), textY2());
+    return textRect().lowerRight();
   case 1:
     return Point(text_insertion_point_x_, text_insertion_point_y_);
   case 2:
-    return Point(textX1(), textY1()) + keycursor_pos_;
+    return textRect().origin() + keycursor_pos_;
   default:
     throw SystemError("Invalid keycursor type");
   }
@@ -386,7 +396,7 @@ void TextWindow::render(std::ostream* tree) {
     Size surface_size = text_surface->size();
 
     // POINT
-    Point box(boxX1(), boxY1());
+    Point box = windowRect().origin();
 
     if (tree) {
       *tree << "  Text Window #" << window_num_ << endl;
@@ -394,8 +404,7 @@ void TextWindow::render(std::ostream* tree) {
 
     textbox_waku_->render(tree, box, surface_size);
 
-    int x = textX1();
-    int y = textY1();
+    Point textOrigin = textRect().origin();
 
     if (inSelectionMode()) {
       for_each(selections_.begin(), selections_.end(),
@@ -431,11 +440,11 @@ void TextWindow::render(std::ostream* tree) {
 
       text_surface->renderToScreen(
         Rect(Point(0, 0), surface_size),
-        Rect(Point(x, y), surface_size),
+        Rect(textOrigin, surface_size),
         255);
 
       if (tree) {
-        *tree << "    Text Area: " << Rect(Point(x, y), surface_size) << endl;
+        *tree << "    Text Area: " << Rect(textOrigin, surface_size) << endl;
       }
     }
   }

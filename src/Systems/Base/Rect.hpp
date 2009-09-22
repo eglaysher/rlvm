@@ -181,6 +181,7 @@ class Rect {
   int x() const { return origin_.x(); }
   int y() const { return origin_.y(); }
   const Point& origin() const { return origin_; }
+  const Point lowerRight() const { return origin_ + size_; }
 
   int x2() const { return origin_.x() + size_.width(); }
   int y2() const { return origin_.y() + size_.height(); }

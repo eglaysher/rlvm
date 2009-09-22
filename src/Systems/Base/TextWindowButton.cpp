@@ -90,10 +90,12 @@ TextWindowButton::~TextWindowButton() {
 Rect TextWindowButton::location(TextWindow& window) {
   int type = location_.at(0);
   switch (type) {
-  case 0:
-    return Rect(Point(window.boxX1() + location_.at(1),
-                      window.boxY1() + location_.at(2)),
-                Size(location_.at(3), location_.at(4)));
+    case 0: {
+      Point origin = window.windowRect().origin() +
+                     Size(location_.at(1), location_.at(2));
+
+      return Rect(origin, Size(location_.at(3), location_.at(4)));
+    }
   default:
     throw SystemError("Unsupported coordinate system");
   }
