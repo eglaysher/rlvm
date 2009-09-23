@@ -239,6 +239,7 @@ test_case_files = [
   "test/text_system_test.cpp",
   "test/expression_test.cpp",
   "test/sound_system_test.cpp",
+  "test/text_window_test.cpp",
   "test/effect_test.cpp",
   "test/rlbabel_test.cpp",
 

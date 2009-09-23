@@ -132,44 +132,50 @@ Gameexe::Gameexe(const fs::path& gameexefile)
 
   string line;
   while (getline(ifs, line)) {
-    size_t firstHash = line.find_first_of('#');
-    if (firstHash != string::npos) {
-      // Extract what's the key and value
-      size_t firstEqual = line.find_first_of('=');
-      string key = line.substr(firstHash + 1, firstEqual - firstHash - 1);
-      string value = line.substr(firstEqual + 1);
-
-      // Get rid of extra whitespace
-      trim(key);
-      trim(value);
-
-      Gameexe_vec_type vec;
-
-      // Extract all numeric and data values from the value
-      typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
-      ValueTokenizer tokenizer(value);
-      for (ValueTokenizer::iterator it = tokenizer.begin();
-          it != tokenizer.end(); ++it) {
-        const string& tok = *it;
-        if (tok[0] == '"') {
-          string unquoted = tok.substr(1, tok.size() - 2);
-          cdata_.push_back(unquoted);
-          vec.push_back(cdata_.size() - 1);
-        } else if (tok != "-") {
-          try {
-            vec.push_back(lexical_cast<int>(tok));
-          } catch(boost::bad_lexical_cast& e) {
-            cerr << "Couldn't int-ify '" << tok << "'" << endl;
-            vec.push_back(0);
-          }
-        }
-      }
-      data_.insert(make_pair(key, vec));
-    }
+    parseLine(line);
   }
 }
 
 Gameexe::~Gameexe() {
+}
+
+// -----------------------------------------------------------------------
+
+void Gameexe::parseLine(const std::string& line) {
+  size_t firstHash = line.find_first_of('#');
+  if (firstHash != string::npos) {
+    // Extract what's the key and value
+    size_t firstEqual = line.find_first_of('=');
+    string key = line.substr(firstHash + 1, firstEqual - firstHash - 1);
+    string value = line.substr(firstEqual + 1);
+
+    // Get rid of extra whitespace
+    trim(key);
+    trim(value);
+
+    Gameexe_vec_type vec;
+
+    // Extract all numeric and data values from the value
+    typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
+    ValueTokenizer tokenizer(value);
+    for (ValueTokenizer::iterator it = tokenizer.begin();
+         it != tokenizer.end(); ++it) {
+      const string& tok = *it;
+      if (tok[0] == '"') {
+        string unquoted = tok.substr(1, tok.size() - 2);
+        cdata_.push_back(unquoted);
+        vec.push_back(cdata_.size() - 1);
+      } else if (tok != "-") {
+        try {
+          vec.push_back(lexical_cast<int>(tok));
+        } catch(boost::bad_lexical_cast& e) {
+          cerr << "Couldn't int-ify '" << tok << "'" << endl;
+          vec.push_back(0);
+        }
+      }
+    }
+    data_.insert(make_pair(key, vec));
+  }
 }
 
 // -----------------------------------------------------------------------

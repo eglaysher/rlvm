@@ -91,7 +91,7 @@ TextWindow::TextWindow(System& system, int window_num)
   else
     setRGBAF(window("ATTR"));
 
-  setFontSizeInPixels(window("MOJI_SIZE"));
+  setFontSizeInPixels(window("MOJI_SIZE").to_int(25));
   setWindowSizeInCharacters(window("MOJI_CNT"));
   setSpacingBetweenCharacters(window("MOJI_REP"));
   setRubyTextSize(window("LUBY_SIZE").to_int(0));
@@ -107,7 +107,7 @@ TextWindow::TextWindow(System& system, int window_num)
   setUseIndentation(window("INDENT_USE").to_int(1));
 
   setKeycurMod(window("KEYCUR_MOD"));
-  setActionOnPause(window("R_COMMAND_MOD"));
+  setActionOnPause(window("R_COMMAND_MOD").to_int(0));
 
   // Main textbox waku
   waku_set_ = window("WAKU_SETNO").to_int(0);

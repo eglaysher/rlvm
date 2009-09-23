@@ -34,6 +34,8 @@
 
 #include "Utilities/Exception.hpp"
 
+#include <map>
+#include <string>
 #include <sstream>
 
 using namespace std;
@@ -55,20 +57,21 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
 // -----------------------------------------------------------------------
 
 void TestGraphicsSystem::allocateDC(int dc, Size size) {
-  if(dc >= 16)
-    throw rlvm::Exception("Invalid DC number in TestGrpahicsSystem::allocate_dc");
+  if (dc >= 16)
+    throw rlvm::Exception("Invalid DC number in "
+                          "TestGrpahicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
-  if(dc == 0)
+  if (dc == 0)
     throw rlvm::Exception("Attempting to reallocate DC 0!");
 
   // DC 1 is a special case and must always be at least the size of
   // the screen.
-  if(dc == 1) {
+  if (dc == 1) {
     boost::shared_ptr<TestSurface> dc0 = display_contexts_[0];
-    if(size.width() < dc0->size().width())
+    if (size.width() < dc0->size().width())
       size.setWidth(dc0->size().width());
-    if(size.height() < dc0->size().height())
+    if (size.height() < dc0->size().height())
       size.setHeight(dc0->size().height());
   }
 
@@ -79,13 +82,14 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
 // -----------------------------------------------------------------------
 
 void TestGraphicsSystem::freeDC(int dc) {
-  if(dc == 0)
+  if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
-  else if(dc == 1) {
+  } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
     display_contexts_[1]->fill(RGBAColour::Black());
-  } else
+  } else {
     display_contexts_[dc]->deallocate();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -102,9 +106,24 @@ GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number) {
 
 // -----------------------------------------------------------------------
 
+void TestGraphicsSystem::injectSurface(
+    const std::string& short_filename,
+    const boost::shared_ptr<Surface>& surface) {
+  named_surfaces_[short_filename] = surface;
+}
+
+// -----------------------------------------------------------------------
+
 boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename) {
-  // Make this a real surface so we can track what's done with it
+  // If we have an injected surface, return it instead of a fresh surface.
+  std::map<std::string, boost::shared_ptr<Surface> >::iterator it =
+      named_surfaces_.find(short_filename);
+  if (it != named_surfaces_.end()) {
+    return it->second;
+  }
+
+  // We don't have an injected surface so make a surface.
   return boost::shared_ptr<Surface>(
     new TestSurface(short_filename, Size(50, 50)));
 }

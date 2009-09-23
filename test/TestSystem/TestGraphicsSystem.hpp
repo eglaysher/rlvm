@@ -31,6 +31,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
+#include <map>
 #include <string>
 
 #include <boost/shared_ptr.hpp>
@@ -50,6 +51,10 @@ class TestGraphicsSystem : public GraphicsSystem {
 
   int screenWidth() const { return 640; }
   int screenHeight() const { return 480; }
+
+  void injectSurface(const std::string& short_filename,
+                     const boost::shared_ptr<Surface>& surface);
+
   virtual Size screenSize() const { return Size(640, 480); }
   virtual void allocateDC(int dc, Size s);
   virtual void setMinimumSizeForDC(int, Size) { /* noop for now. */ }
@@ -74,6 +79,9 @@ class TestGraphicsSystem : public GraphicsSystem {
  private:
   /// Map between device contexts number and their surface.
   boost::shared_ptr<TestSurface> display_contexts_[16];
+
+  // A list of user injected surfaces to hand back for named files.
+  std::map<std::string, boost::shared_ptr<Surface> > named_surfaces_;
 };
 
 #endif  // TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_

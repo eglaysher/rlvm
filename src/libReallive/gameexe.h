@@ -261,6 +261,9 @@ public:
    */
   ~Gameexe();
 
+  // Parses an individual Gameexe.ini line.
+  void parseLine(const std::string& line);
+
   /// @{
   /**
    * @name Streamlined Interface for data access

@@ -28,6 +28,7 @@
 #include "TestSystem.hpp"
 #include "testUtils.hpp"
 #include <iostream>
+#include <string>
 
 #include "Systems/Base/SystemError.hpp"
 
@@ -60,7 +61,7 @@ TestSystem::TestSystem()
 
 void TestSystem::run(RLMachine& machine) { /* do nothing */ }
 
-GraphicsSystem& TestSystem::graphics() { return null_graphics_system; }
+TestGraphicsSystem& TestSystem::graphics() { return null_graphics_system; }
 EventSystem& TestSystem::event() { return null_event_system; }
 Gameexe& TestSystem::gameexe() { return gameexe_; }
 TextSystem& TestSystem::text() { return null_text_system; }

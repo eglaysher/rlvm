@@ -197,6 +197,14 @@ class Rect {
    */
   bool contains(const Point& loc);
 
+  bool operator==(const Rect& rhs) const {
+    return origin_ == rhs.origin_ && size_ == rhs.size_;
+  }
+
+  bool operator!=(const Rect& rhs) const {
+    return origin_ != rhs.origin_ || size_ != rhs.size_;
+  }
+
  private:
   Point origin_;
   Size size_;

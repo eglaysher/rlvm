@@ -20,8 +20,10 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TestSystem_hpp__
-#define __TestSystem_hpp__
+#ifndef TEST_TESTSYSTEM_TESTSYSTEM_HPP_
+#define TEST_TESTSYSTEM_TESTSYSTEM_HPP_
+
+#include <string>
 
 #include "Systems/Base/System.hpp"
 #include "TestSystem/TestGraphicsSystem.hpp"
@@ -29,6 +31,7 @@
 #include "TestSystem/TestTextSystem.hpp"
 #include "TestSystem/TestSoundSystem.hpp"
 #include "libReallive/gameexe.h"
+
 
 /**
  * The Test system contains absolutely no input/ouput
@@ -46,16 +49,16 @@ class TestSystem : public System {
   TestSoundSystem null_sound_system;
 
  public:
-  TestSystem(const std::string& path_to_gameexe);
+  explicit TestSystem(const std::string& path_to_gameexe);
   TestSystem();
 
   virtual void run(RLMachine& machine);
 
-  virtual GraphicsSystem& graphics();
+  virtual TestGraphicsSystem& graphics();
   virtual EventSystem& event();
   virtual Gameexe& gameexe();
   virtual TextSystem& text();
   virtual SoundSystem& sound();
 };
 
-#endif
+#endif  // TEST_TESTSYSTEM_TESTSYSTEM_HPP_
