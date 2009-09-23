@@ -272,7 +272,7 @@ component_env = env.Clone()
 
 component_env.Append(
   CPPFLAGS = [
-    "-O2"
+    "-Os"
   ]
 )
 
@@ -308,7 +308,13 @@ if GetOption('release'):
   # Now add release optimizations to the environment
   env.Append(
     CPPFLAGS = [
-      "-O2"
+      "-Os",
+      "-ffunction-sections",
+      "-fdata-sections",
+    ],
+
+    LINKFLAGS = [
+      "-Wl,--gc-sections"
     ]
   )
 elif GetOption('coverage'):
