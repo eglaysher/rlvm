@@ -73,8 +73,8 @@ class LazyArrayTest : public ::testing::Test {
   template<typename T>
   void populateIntArray(T& lazyArray) {
     // Set each even slot to its number
-    for(int i = 0; i < SIZE; ++i)
-      if(i % 2 == 0)
+    for (int i = 0; i < SIZE; ++i)
+      if (i % 2 == 0)
         lazyArray[i] = i;
   }
 

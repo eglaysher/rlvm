@@ -30,6 +30,9 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <utility>
+#include <string>
+#include <vector>
 
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -82,7 +85,7 @@ TEST_F(RLMachineTest, Halts) {
 }
 
 TEST_F(RLMachineTest, RegisterStore) {
-  for(int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 10; ++i) {
     rlmachine.setStoreRegister(i);
     EXPECT_EQ(i, rlmachine.getStoreRegisterValue());
   }
@@ -151,7 +154,7 @@ TEST_F(RLMachineTest, IntegerMemory) {
 TEST_F(RLMachineTest, IntegerMemoryErrors) {
   EXPECT_THROW({rlmachine.getIntValue(IntMemRef(10, 0, 0));},
                rlvm::Exception);
-  EXPECT_NO_THROW({rlmachine.getIntValue(IntMemRef('A', 1999));});
+  EXPECT_NO_THROW({rlmachine.getIntValue(IntMemRef('A', 1999));});  // NOLINT
   EXPECT_THROW({rlmachine.getIntValue(IntMemRef('A', 2000));},
                rlvm::Exception);
 }
@@ -173,7 +176,9 @@ TEST_F(RLMachineTest, NameStorage) {
 
 TEST_F(RLMachineTest, Serialization) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")); { // Save data
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+  // Save data
+  {
     RLMachine saveMachine(system, arc);
 
     int count = 0;
@@ -190,7 +195,10 @@ TEST_F(RLMachineTest, Serialization) {
       saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
 
     Serialization::saveGlobalMemoryTo(ss, saveMachine);
-  } { // Load data
+  }
+
+  // Load data
+  {
     RLMachine loadMachine(system, arc);
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 
@@ -214,7 +222,10 @@ TEST_F(RLMachineTest, Serialization) {
 // Tests serialization of the kidoku table.
 TEST_F(RLMachineTest, SerializationOfKidoku) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")); { // Save data
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+
+  // Save data
+  {
     RLMachine saveMachine(system, arc);
 
     for (int i = 0; i < 10; i += 2) {
@@ -222,7 +233,10 @@ TEST_F(RLMachineTest, SerializationOfKidoku) {
     }
 
     Serialization::saveGlobalMemoryTo(ss, saveMachine);
-  } { // Load data
+  }
+
+  // Load data
+  {
     RLMachine loadMachine(system, arc);
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 

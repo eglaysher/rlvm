@@ -33,6 +33,9 @@
 #include <boost/shared_ptr.hpp>
 #include <sstream>
 
+#include <string>
+#include <vector>
+
 using std::ostringstream;
 using boost::shared_ptr;
 

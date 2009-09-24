@@ -25,11 +25,11 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __luabind_EventSystem_hpp__
-#define __luabind_EventSystem_hpp__
+#ifndef TEST_SCRIPTMACHINE_LUABIND_EVENTSYSTEM_HPP_
+#define TEST_SCRIPTMACHINE_LUABIND_EVENTSYSTEM_HPP_
 
 #include <luabind/luabind.hpp>
 
 luabind::scope register_event_system();
 
-#endif
+#endif  // TEST_SCRIPTMACHINE_LUABIND_EVENTSYSTEM_HPP_

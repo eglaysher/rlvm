@@ -24,12 +24,15 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __MockTextWindow_hpp__
-#define __MockTextWindow_hpp__
+#ifndef TEST_TESTSYSTEM_MOCKTEXTWINDOW_HPP_
+#define TEST_TESTSYSTEM_MOCKTEXTWINDOW_HPP_
 
 #include "gmock/gmock.h"
 
 #include "TestSystem/TestTextWindow.hpp"
+
+#include <string>
+#include <vector>
 
 // A TextWindow that acts as a mock, but delegates to a TestTextWindow.
 class MockTextWindow : public TestTextWindow {
@@ -103,4 +106,4 @@ class MockTextWindow : public TestTextWindow {
   }
 };
 
-#endif
+#endif  // TEST_TESTSYSTEM_MOCKTEXTWINDOW_HPP_

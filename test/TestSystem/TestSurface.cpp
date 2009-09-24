@@ -28,6 +28,8 @@
 #include "TestSystem/TestSurface.hpp"
 #include "Systems/Base/Colour.hpp"
 
+#include <string>
+
 // -----------------------------------------------------------------------
 // TestSurface
 // -----------------------------------------------------------------------
@@ -132,7 +134,6 @@ void TestSurface::getDCPixel(const Point& p, int& r, int& g, int& b) {
 
 boost::shared_ptr<Surface> TestSurface::clipAsColorMask(
   const Rect& rect, int r, int g, int b) {
-
   return boost::shared_ptr<Surface>(
     new TestSurface("Clip of " + surface_name_, rect.size()));
 }

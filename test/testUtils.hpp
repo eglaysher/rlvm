@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __testUtils_hpp__
-#define __testUtils_hpp__
+#ifndef TEST_TESTUTILS_HPP_
+#define TEST_TESTUTILS_HPP_
 
 #include <string>
 
@@ -38,4 +38,4 @@
  */
 std::string locateTestCase(const std::string& baseName);
 
-#endif
+#endif  // TEST_TESTUTILS_HPP_

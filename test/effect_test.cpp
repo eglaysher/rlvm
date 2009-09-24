@@ -47,12 +47,11 @@ using namespace testing;
 
 /// Helper to specify the return value of getTicks().
 class EffectEventSystemTest : public EventSystemMockHandler {
-public:
+ public:
   EffectEventSystemTest() : ticks(0) { }
   void setTicks(unsigned int in) { ticks = in; }
   virtual unsigned int getTicks() const { return ticks; }
  private:
-  ///
   unsigned int ticks;
 };
 

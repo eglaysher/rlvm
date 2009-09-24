@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TestEventSystem_hpp__
-#define __TestEventSystem_hpp__
+#ifndef TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
+#define TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
 
 #include "Systems/Base/EventSystem.hpp"
 
@@ -39,6 +39,8 @@
  */
 class EventSystemMockHandler {
  public:
+  virtual ~EventSystemMockHandler() {}
+
   virtual bool shiftPressed() const { return false; }
   virtual bool ctrlPressed() const { return false; }
   virtual unsigned int getTicks() const { return 0; }
@@ -52,7 +54,7 @@ class EventSystemMockHandler {
  */
 class TestEventSystem : public EventSystem {
  public:
-  TestEventSystem(Gameexe& gexe);
+  explicit TestEventSystem(Gameexe& gexe);
   void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
 
   virtual void executeEventSystem(RLMachine& machine);
@@ -72,4 +74,4 @@ class TestEventSystem : public EventSystem {
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };
 
-#endif
+#endif  // TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_

@@ -24,9 +24,12 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __ScriptWorld_hpp__
-#define __ScriptWorld_hpp__
+#ifndef TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_
+#define TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_
 
+#include <utility>
+#include <map>
+#include <string>
 #include <vector>
 #include <boost/filesystem/path.hpp>
 #include <luabind/luabind.hpp>
@@ -94,4 +97,4 @@ class ScriptWorld {
 };  // end of class ScriptWorld
 
 
-#endif
+#endif  // TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_

@@ -25,11 +25,11 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __luabind_System_hpp__
-#define __luabind_System_hpp__
+#ifndef TEST_SCRIPTMACHINE_LUABIND_SYSTEM_HPP_
+#define TEST_SCRIPTMACHINE_LUABIND_SYSTEM_HPP_
 
 #include <luabind/luabind.hpp>
 
 luabind::scope register_system();
 
-#endif
+#endif  // TEST_SCRIPTMACHINE_LUABIND_SYSTEM_HPP_

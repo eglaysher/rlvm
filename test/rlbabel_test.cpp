@@ -34,6 +34,8 @@
 #include "libReallive/intmemref.h"
 #include "testUtils.hpp"
 
+#include <string>
+
 class RLBabelTest : public ::testing::Test {
  protected:
   RLBabelTest()

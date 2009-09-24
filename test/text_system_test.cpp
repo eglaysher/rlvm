@@ -37,6 +37,7 @@
 
 #include "testUtils.hpp"
 
+#include <string>
 #include <memory>
 #include <boost/assign/list_of.hpp>
 
@@ -72,7 +73,7 @@ class TextSystemTest : public ::testing::Test {
     if (nowait)
       tolo->setNoWait();
 
-    while(!(*tolo)(rlmachine));
+    while (!(*tolo)(rlmachine));
   }
 
   void snapshotAndClear() {

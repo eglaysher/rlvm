@@ -27,10 +27,11 @@
 
 #include "testUtils.hpp"
 #include <vector>
-#include <boost/assign/list_of.hpp> // for 'list_of()'
+#include <boost/assign/list_of.hpp>  // for 'list_of()'
 #include <boost/filesystem/operations.hpp>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 
 using boost::assign::list_of;
 using std::string;
@@ -45,10 +46,10 @@ const std::vector<std::string> testPaths =
     list_of("./")("./test/")("./build/test/");
 
 string locateTestCase(const string& baseName) {
-  for(vector<string>::const_iterator it = testPaths.begin();
+  for (vector<string>::const_iterator it = testPaths.begin();
       it != testPaths.end(); ++it) {
     string testName = *it + baseName;
-    if(fs::exists(testName))
+    if (fs::exists(testName))
       return testName;
   }
 

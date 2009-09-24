@@ -43,6 +43,7 @@
 
 #include <iostream>
 #include <typeinfo>
+#include <string>
 #include <boost/filesystem/path.hpp>
 
 extern "C" {

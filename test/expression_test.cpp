@@ -98,7 +98,7 @@ TEST(ExpressionTest, LogicalOperators) {
   rlmachine.executeUntilHalted();
 
   int values[7];
-  for(int i = 0; i < 7; ++i)
+  for (int i = 0; i < 7; ++i)
     values[i] = rlmachine.getIntValue(IntMemRef('A', i));
 
   EXPECT_EQ(1, values[0]) << "Incorect value for intA[0]";
@@ -119,7 +119,7 @@ TEST(ExpressionTest, PreviousErrors) {
   rlmachine.executeUntilHalted();
 
   int values[6];
-  for(int i = 0; i < 6; ++i)
+  for (int i = 0; i < 6; ++i)
     values[i] = rlmachine.getIntValue(IntMemRef('B', i));
 
   EXPECT_EQ(1, values[0]) << "Incorect value for intB[0]";

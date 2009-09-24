@@ -24,11 +24,14 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __ScriptMachine_hpp__
-#define __ScriptMachine_hpp__
+#ifndef TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
+#define TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
 
 #include "MachineBase/RLMachine.hpp"
 
+#include <utility>
+#include <map>
+#include <string>
 #include <vector>
 #include <luabind/luabind.hpp>
 
@@ -85,4 +88,4 @@ class ScriptMachine : public RLMachine {
   bool increment_on_save_;
 };  // end of class ScriptMachine
 
-#endif
+#endif  // TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_

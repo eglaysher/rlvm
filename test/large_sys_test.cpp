@@ -54,7 +54,7 @@ TEST(LargeModuleSysTest, SceneNum) {
   rlmachine.executeUntilHalted();
 
   int values[3];
-  for(int i = 0; i < 3; ++i)
+  for (int i = 0; i < 3; ++i)
     values[i] = rlmachine.getIntValue(IntMemRef(0, i));
 
   EXPECT_EQ(1, values[0]) << "SceneNum::SEEN0001 didn't set value";
@@ -72,7 +72,7 @@ TEST(LargeModuleSysTest, BuiltIns) {
   rlmachine.executeUntilHalted();
 
   int values[6];
-  for(int i = 0; i < sizeof(values) / sizeof(values[0]); ++i)
+  for (int i = 0; i < sizeof(values) / sizeof(values[0]); ++i)
     values[i] = rlmachine.getIntValue(IntMemRef('A', i));
 
   // 5.6.1  Integer built-ins

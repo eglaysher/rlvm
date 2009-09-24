@@ -37,6 +37,11 @@
 #include <iostream>
 #include <typeinfo>
 
+#include <utility>
+#include <map>
+#include <string>
+#include <vector>
+
 using namespace std;
 using libReallive::IntMemRef;
 
@@ -49,7 +54,6 @@ ScriptMachine::ScriptMachine(
     current_decision_(0),
     save_on_decision_slot_(-1),
     increment_on_save_(false) {
-
 }
 
 // -----------------------------------------------------------------------
@@ -81,7 +85,7 @@ void ScriptMachine::setLineNumber(const int i) {
       luabind::call_function<void>(it->second);
     } catch(const luabind::error& e) {
       lua_State* state = e.state();
-      std::cerr << lua_tostring( state, -1) << endl;
+      std::cerr << lua_tostring(state, -1) << endl;
     }
   }
 
@@ -91,14 +95,13 @@ void ScriptMachine::setLineNumber(const int i) {
 // -----------------------------------------------------------------------
 
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
-
   // Intercept various LongOperations and modify them.
   SelectLongOperation* sel =
       dynamic_cast<SelectLongOperation*>(long_operation);
   if (sel) {
     bool optionFound = false;
     int offset = 0;
-    for(; offset < 3; ++offset) {
+    for (; offset < 3; ++offset) {
       if (current_decision_ + offset >= decisions_.size()) {
         cerr << "WARNING! Ran out of options on decision list." << endl;
         break;

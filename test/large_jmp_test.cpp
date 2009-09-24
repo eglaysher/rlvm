@@ -61,9 +61,12 @@ TEST(LargeJmpTest, goto) {
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1))) << "Set intA[1]; this means the goto was ignored!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set postcondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Set intA[1]; this means the goto was ignored!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -75,7 +78,7 @@ TEST(LargeJmpTest, goto) {
  * @code
  * // intB[0] may or maynot be set by the calling program.
  * intA[0] = 1
- * goto_if(intB[0]) @aa
+ * goto_if (intB[0]) @aa
  * intA[1] = 1
  * @aa
  * intA[2] = 1
@@ -88,9 +91,12 @@ TEST(LargeJmpTest, goto_if_false) {
   rlmachine.attachModule(new JmpModule);
   rlmachine.executeUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1))) << "Didn't set intA[1]; this means the goto-ed when we had a false value!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0))) << "Didn't set postcondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set precondition (!?!?)";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+      << "Didn't set intA[1]; goto-ed when we had a false value!";
+  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+      << "Didn't set postcondition (!?!?)";
 }
 
 // -----------------------------------------------------------------------
@@ -102,7 +108,7 @@ TEST(LargeJmpTest, goto_if_false) {
  * @code
  * // intB[0] may or maynot be set by the calling program.
  * intA[0] = 1
- * goto_if(intB[0]) @aa
+ * goto_if (intB[0]) @aa
  * intA[1] = 1
  * @aa
  * intA[2] = 1
@@ -120,7 +126,7 @@ TEST(LargeJmpTest, goto_if_true) {
   EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
   EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
-      << "Set intA[1]; this means that we failed to goto when we had a true value!";
+      << "Set intA[1]; failed to goto when we had a true value!";
   EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
@@ -695,8 +701,8 @@ TEST(LargeJmpTest, gosub_with) {
  * test it. Used in test<20>
  */
 static int recFib(int input) {
-  if(input == 0) return 0;
-  if(input == 1) return 1;
+  if (input == 0) return 0;
+  if (input == 1) return 1;
   return recFib(input - 1) + recFib(input - 2);
 }
 

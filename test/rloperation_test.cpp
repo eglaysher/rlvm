@@ -40,6 +40,7 @@
 #include "testUtils.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <boost/assign/list_of.hpp>
@@ -222,7 +223,7 @@ TEST_F(RLOperationTest, TestStringReference_T) {
 
 struct ArgcCapturer : public RLOp_Void_1<Argc_T<IntConstant_T> > {
   std::vector<int>& out_;
-  ArgcCapturer(std::vector<int>& out) : out_(out) {}
+  explicit ArgcCapturer(std::vector<int>& out) : out_(out) {}
 
   virtual void operator()(RLMachine& machine, std::vector<int> inputs) {
     copy(inputs.begin(), inputs.end(), back_inserter(out_));
@@ -252,7 +253,7 @@ TEST_F(RLOperationTest, TestArgc_T) {
 struct DefaultValueCapturer
     : public RLOp_Void_1<DefaultIntValue_T<18> > {
   int& out_;
-  DefaultValueCapturer(int& out) : out_(out) {}
+  explicit DefaultValueCapturer(int& out) : out_(out) {}
 
   virtual void operator()(RLMachine& machine, int in) {
     out_ = in;

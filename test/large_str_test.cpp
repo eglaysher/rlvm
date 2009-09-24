@@ -37,6 +37,7 @@
 
 #include "testUtils.hpp"
 
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -134,7 +135,7 @@ TEST(LargeModuleStrTest, strclear1) {
 //   strS[0] = "va"
 //   strS[0] += "lid"
 //
-TEST(LargeModuleStrTest, strcat) {
+TEST(LargeModuleStrTest, strcat) {  // NOLINT
   libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcat_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);

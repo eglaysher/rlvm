@@ -34,6 +34,9 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/tuple/tuple.hpp>
 
+#include <string>
+#include <vector>
+
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
@@ -60,7 +63,7 @@ using namespace Serialization;
 using ::testing::Ref;
 using ::testing::Return;
 
-const string FILE_NAME = "doesntmatter";
+const char* FILE_NAME = "doesntmatter";
 
 class GraphicsObjectTest : public ::testing::Test {
  protected:

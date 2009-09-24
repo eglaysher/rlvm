@@ -25,11 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TestTextSystem_hpp__
-#define __TestTextSystem_hpp__
+#ifndef TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
+#define TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
 
 #include "Systems/Base/TextSystem.hpp"
 #include <boost/ptr_container/ptr_map.hpp>
+#include <string>
 
 class MockTextWindow;
 class RLMachine;
@@ -57,4 +58,4 @@ class TestTextSystem : public TextSystem {
       int yspace, int colour) { return boost::shared_ptr<Surface>(); }
 };
 
-#endif
+#endif  // TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_

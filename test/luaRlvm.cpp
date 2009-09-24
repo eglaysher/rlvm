@@ -54,6 +54,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -116,10 +117,13 @@ int main(int argc, char* argv[]) {
     ("font", po::value<string>(), "Specifies TrueType font to use.")
     ("undefined-opcodes", "Display a message on undefined opcodes")
     ("count-undefined",
-     "On exit, present a summary table about how many times each undefined opcode was called")
-    ("save-on-decision", po::value<int>(), "Automatically save the game on decision points to the specified save game slot. Useful while debugging crashes far into a game.")
-    ("save-on-decision-counting-from", po::value<int>(), "Like --save-on-decision, but will increment the save number every time.")
-    ;
+     "On exit, present a summary table about how many times each undefined "
+     "opcode was called")
+    ("save-on-decision", po::value<int>(),
+     "Automatically save the game on decision points to the specified save "
+     "game slot. Useful while debugging crashes far into a game.")
+    ("save-on-decision-counting-from", po::value<int>(),
+     "Like --save-on-decision, but will increment the save number every time.");
 
   // Declare the final option to be game-root
   po::options_description hidden("Hidden");
@@ -145,20 +149,20 @@ int main(int argc, char* argv[]) {
   // Process command line options
   fs::path scriptLocation, gamerootPath, gameexePath, seenPath;
 
-  if(vm.count("help")) {
+  if (vm.count("help")) {
     printUsage(argv[0], opts);
     return 0;
   }
 
-  if(vm.count("version")) {
+  if (vm.count("version")) {
     printVersionInformation();
     return 0;
   }
 
-  if(vm.count("script-location")) {
+  if (vm.count("script-location")) {
     scriptLocation = vm["script-location"].as<string>();
 
-    if(!fs::exists(scriptLocation)) {
+    if (!fs::exists(scriptLocation)) {
       cerr << "ERROR: File '" << gamerootPath << "' does not exist." << endl;
       return -1;
     }
@@ -223,13 +227,13 @@ int main(int argc, char* argv[]) {
     // Make sure we go as fast as possible:
     sdlSystem.setForceFastForward();
 
-    if(vm.count("undefined-opcodes"))
+    if (vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);
 
-    if(vm.count("count-undefined"))
+    if (vm.count("count-undefined"))
       rlmachine.recordUndefinedOpcodeCounts();
 
-    if(vm.count("save-on-decision")) {
+    if (vm.count("save-on-decision")) {
       int decision_num = vm["save-on-decision"].as<int>();
       rlmachine.saveOnDecisions(decision_num);
     }
@@ -243,7 +247,7 @@ int main(int argc, char* argv[]) {
     Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);
 
-    while(!rlmachine.halted()) {
+    while (!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
       // etc.
       sdlSystem.run(rlmachine);

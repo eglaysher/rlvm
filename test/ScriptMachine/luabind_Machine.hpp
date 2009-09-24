@@ -24,11 +24,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef __luabind_Machine_hpp__
-#define __luabind_Machine_hpp__
+#ifndef TEST_SCRIPTMACHINE_LUABIND_MACHINE_HPP_
+#define TEST_SCRIPTMACHINE_LUABIND_MACHINE_HPP_
 
 #include <luabind/luabind.hpp>
 
 luabind::scope register_machine();
 
-#endif
+#endif  // TEST_SCRIPTMACHINE_LUABIND_MACHINE_HPP_

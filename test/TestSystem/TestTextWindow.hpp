@@ -20,12 +20,14 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TestTextWindow_hpp__
-#define __TestTextWindow_hpp__
+#ifndef TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
+#define TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
 
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/TextWindow.hpp"
+
+#include <vector>
 
 class TestTextWindow : public TextWindow {
  public:
@@ -65,4 +67,4 @@ class TestTextWindow : public TextWindow {
   boost::shared_ptr<Surface> name_surface_;
 };
 
-#endif
+#endif  // TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_

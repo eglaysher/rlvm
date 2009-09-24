@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __TestSoundSystem_hpp__
-#define __TestSoundSystem_hpp__
+#ifndef TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
+#define TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
 
 #include "Systems/Base/SoundSystem.hpp"
 #include <string>
@@ -38,7 +38,7 @@ class Gameexe;
  */
 class TestSoundSystem : public SoundSystem {
  public:
-  TestSoundSystem(System& system);
+  explicit TestSoundSystem(System& system);
   ~TestSoundSystem();
 
   virtual int bgmStatus() const;
@@ -78,4 +78,4 @@ class TestSoundSystem : public SoundSystem {
 };  // end of class TestSoundSystem
 
 
-#endif
+#endif  // TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_

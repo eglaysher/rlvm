@@ -25,11 +25,11 @@
 // -----------------------------------------------------------------------
 
 
-#ifndef __luabind_GraphicsObject_hpp__
-#define __luabind_GraphicsObject_hpp__
+#ifndef TEST_SCRIPTMACHINE_LUABIND_GRAPHICSOBJECT_HPP_
+#define TEST_SCRIPTMACHINE_LUABIND_GRAPHICSOBJECT_HPP_
 
 #include <luabind/luabind.hpp>
 
 luabind::scope register_graphics_object();
 
-#endif
+#endif  // TEST_SCRIPTMACHINE_LUABIND_GRAPHICSOBJECT_HPP_

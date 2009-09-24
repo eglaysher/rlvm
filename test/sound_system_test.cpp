@@ -35,6 +35,7 @@
 #include "TestSystem/TestSoundSystem.hpp"
 #include "libReallive/gameexe.h"
 
+#include <string>
 #include <sstream>
 
 using std::stringstream;
