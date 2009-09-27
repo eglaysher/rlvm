@@ -83,6 +83,7 @@ class SDLRenderToTextureSurface : public SurfaceInvalidatable,
 
   virtual void fill(const RGBAColour& colour);
   virtual void fill(const RGBAColour& colour, const Rect& rect);
+  virtual void invert(const Rect& rect);
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
 

@@ -216,6 +216,7 @@ class SDLSurface : public SurfaceInvalidatable,
 
   virtual void fill(const RGBAColour& colour);
   virtual void fill(const RGBAColour& colour, const Rect& area);
+  virtual void invert(const Rect& rect);
 
   SDL_Surface* surface() { return surface_; }
 

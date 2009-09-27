@@ -44,7 +44,7 @@ class MockSurface : public Surface {
   static MockSurface* Create(const std::string& surface_name);
   static MockSurface* Create(const std::string& surface_name, const Size& size);
 
-  // 
+  // Size related stuff.
   void allocate(const Size& size);
   void deallocate();
   virtual Size size() const;
@@ -62,6 +62,7 @@ class MockSurface : public Surface {
   MOCK_METHOD3(rawRenderQuad, void(const int[8], const int[8], const int[4]));
   MOCK_METHOD1(fill, void(const RGBAColour&));
   MOCK_METHOD2(fill, void(const RGBAColour&, const Rect&));
+  MOCK_METHOD1(invert, void(const Rect&));
 
   MOCK_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
 

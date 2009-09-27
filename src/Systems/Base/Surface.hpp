@@ -38,9 +38,8 @@ class RGBAColour;
 class GraphicsObject;
 struct GraphicsObjectOverride;
 
-/**
- * Abstract concept of a surface.
- */
+// Abstract surface used in rlvm. Various systems graphics systems should
+// provide a subclass of Surface that implement all the following primitives.
 class Surface : public boost::enable_shared_from_this<Surface> {
  public:
   struct GrpRect {
@@ -92,6 +91,8 @@ class Surface : public boost::enable_shared_from_this<Surface> {
 
   virtual void fill(const RGBAColour& colour) = 0;
   virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
+
+  virtual void invert(const Rect& area) = 0;
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) = 0;
 

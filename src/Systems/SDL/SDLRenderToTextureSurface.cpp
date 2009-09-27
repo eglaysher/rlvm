@@ -157,6 +157,12 @@ void SDLRenderToTextureSurface::fill(const RGBAColour& colour,
 
 // -----------------------------------------------------------------------
 
+void SDLRenderToTextureSurface::invert(const Rect& rect) {
+  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+}
+
+// -----------------------------------------------------------------------
+
 void SDLRenderToTextureSurface::getDCPixel(const Point& pos,
                                            int& r, int& g, int& b) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");

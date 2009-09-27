@@ -83,6 +83,17 @@ TEST_F(MediumGrpTest, TestFill_3) {
                 TestMachine::Arg(10, 10, 20, 20, 0, 128, 128, 128, 255));
 }
 
+TEST_F(MediumGrpTest, TestInvert_1) {
+  EXPECT_CALL(system.graphics().getMockDC(0),
+              invert(system.graphics().getMockDC(0).rect()));
+  rlmachine.exe("recInvert", 0, TestMachine::Arg(0));
+}
+
+TEST_F(MediumGrpTest, TestInvert_3) {
+  EXPECT_CALL(system.graphics().getMockDC(0), invert(Rect(5, 6, Size(7, 8))));
+  rlmachine.exe("recInvert", 2, TestMachine::Arg(5, 6, 7, 8, 0));
+}
+
 TEST_F(MediumGrpTest, TestFade_6) {
   EXPECT_CALL(system.graphics().getMockDC(0),
               fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));

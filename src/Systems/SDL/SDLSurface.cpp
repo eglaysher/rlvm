@@ -52,6 +52,74 @@ using namespace std;
 using boost::bind;
 using boost::ptr_vector;
 
+
+namespace {
+
+// An interface to TransformSurface that maps one color to another.
+class ColourTransformer {
+ public:
+  virtual ~ColourTransformer() {}
+  virtual SDL_Color operator()(const SDL_Color& colour) const = 0;
+};
+
+class InvertColourTransformer : public ColourTransformer {
+ public:
+  virtual SDL_Color operator()(const SDL_Color& colour) const {
+    SDL_Color out;
+    out.r = 255 - colour.r;
+    out.g = 255 - colour.g;
+    out.b = 255 - colour.b;
+    return out;
+  }
+};
+
+// Applies a |transformer| to every pixel in |area| in the surface |surface|.
+void TransformSurface(SDLSurface* our_surface, const Rect& area,
+                      const ColourTransformer& transformer) {
+  SDL_Surface* surface = our_surface->rawSurface();
+  SDL_Color colour;
+  Uint32 col = 0;
+
+  // determine position
+  char* p_position = (char*)surface->pixels;
+
+  // offset by y
+  p_position += (surface->pitch * area.y());
+
+  SDL_LockSurface(surface);
+  {
+    for (int y = 0; y < area.height(); ++y) {
+      // advance forward x
+      p_position += (surface->format->BytesPerPixel * area.x());
+
+      for (int x = 0; x < area.width(); ++x) {
+        // copy pixel data
+        memcpy(&col, p_position, surface->format->BytesPerPixel);
+
+        // Before someone tries to simplify the following four lines,
+        // remember that sizeof(int) != sizeof(Uint8).
+        SDL_GetRGB(col, surface->format, &colour.r, &colour.g, &colour.b);
+        SDL_Color out = transformer(colour);
+        Uint32 out_colour = SDL_MapRGB(surface->format, out.r, out.g, out.b);
+
+        memcpy(p_position, &out_colour, surface->format->BytesPerPixel);
+
+        p_position += surface->format->BytesPerPixel;
+      }
+
+      // advance forward image_width - area.width() - x
+      int advance = surface->w - area.x() - area.width();
+      p_position += (surface->format->BytesPerPixel * advance);
+    }
+  }
+  SDL_UnlockSurface(surface);
+
+  // If we are the main screen, then we want to update the screen
+  our_surface->markWrittenTo();
+}
+
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 SDL_Surface* buildNewSurface(const Size& size) {
@@ -508,6 +576,13 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
 
   // If we are the main screen, then we want to update the screen
   markWrittenTo();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::invert(const Rect& rect) {
+  InvertColourTransformer inverter;
+  TransformSurface(this, rect, inverter);
 }
 
 // -----------------------------------------------------------------------
