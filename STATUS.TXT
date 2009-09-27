@@ -7,6 +7,10 @@ Kanon SE ALL
 - No screen shaking, no inversion, and other graphical glitches.
 - Playable with NDT's English patch.
 
+AIR
+---
+- All routes playable to the end.
+
 CLANNAD
 -------
 - All routes playable to the end, from a clean file to After Story True End.

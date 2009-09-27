@@ -40,6 +40,7 @@ rlvm currently plays the following games to their completion:
   from Assembla. (Still in beta).
 - Kanon Standard Edition
 - Kanon Standard Edition with NDT's teaser patch
+- Air Standard Edition
 
 rlvm is now at the point where enough commands are implemented that
 other games *may* work. The above is only a list of what I've tested
