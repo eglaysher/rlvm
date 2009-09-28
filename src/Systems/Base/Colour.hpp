@@ -29,6 +29,7 @@
 #define SRC_SYSTEMS_BASE_COLOUR_HPP_
 
 #include <boost/serialization/access.hpp>
+#include <vector>
 #include <iosfwd>
 
 /**
@@ -38,6 +39,9 @@ class RGBColour {
  public:
   RGBColour() : r_(0), g_(0), b_(0) {}
   RGBColour(int r, int g, int b) : r_(r), g_(g), b_(b) {}
+
+  // Reads (r,g,b) from (colour[0], colour[1], colour[2]).
+  explicit RGBColour(const std::vector<int>& colour);
 
   int r() const { return r_; }
   int g() const { return g_; }
@@ -80,7 +84,11 @@ class RGBAColour {
   RGBAColour() : rgb_(0, 0, 0), alpha_(0) { }
   RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { }
   RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { }
+  explicit RGBAColour(const RGBColour& colour) : rgb_(colour), alpha_(255) { }
   RGBAColour(const RGBColour& colour, int a) : rgb_(colour), alpha_(a) { }
+
+  // Reads (r,g,b) from (colour[0], colour[1], colour[2]). Alpha is always 255.
+  explicit RGBAColour(const std::vector<int>& colour);
 
   int r() const { return rgb_.r(); }
   int g() const { return rgb_.g(); }

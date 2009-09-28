@@ -30,11 +30,18 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/Colour.hpp"
+#include <vector>
 #include <iostream>
 
 // -----------------------------------------------------------------------
 // RGBColour
 // -----------------------------------------------------------------------
+RGBColour::RGBColour(const std::vector<int>& colour)
+    : r_(colour.at(0)),
+      g_(colour.at(1)),
+      b_(colour.at(2)) {
+}
+
 bool RGBColour::operator==(const RGBColour& rhs) const {
   return r_ == rhs.r_ && g_ == rhs.g_ && b_ == rhs.b_;
 }
@@ -48,6 +55,10 @@ std::ostream& operator<<(std::ostream& os, const RGBColour& rgb) {
 // -----------------------------------------------------------------------
 // RGBAColour
 // -----------------------------------------------------------------------
+RGBAColour::RGBAColour(const std::vector<int>& colour)
+    : rgb_(colour), alpha_(255) {
+}
+
 bool RGBAColour::operator==(const RGBAColour& rhs) const {
   return rgb_ == rhs.rgb_ && alpha_ == rhs.alpha_;
 }

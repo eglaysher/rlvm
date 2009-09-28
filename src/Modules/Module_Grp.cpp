@@ -45,6 +45,7 @@
 #include "MachineBase/RLOperation/Special_T.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/Rect_T.hpp"
+#include "MachineBase/RLOperation/RGBColour_T.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 
@@ -805,11 +806,9 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 // {grp,rec}Fill
 // -----------------------------------------------------------------------
 
-struct Grp_fill_1 : public RLOp_Void_5<
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> > {
-  void operator()(RLMachine& machine, int dc, int r, int g, int b, int alpha) {
-    machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b, alpha));
+struct Grp_fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
+  void operator()(RLMachine& machine, int dc, RGBAColour colour) {
+    machine.system().graphics().getDC(dc)->fill(colour);
 
     if (dc == 0) {
       machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
@@ -820,14 +819,11 @@ struct Grp_fill_1 : public RLOp_Void_5<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_fill_3 : public RLOp_Void_6<
-  Rect_T<SPACE>,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<255> > {
-  void operator()(RLMachine& machine, Rect destRect,
-                  int dc, int r, int g, int b, int alpha) {
-    machine.system().graphics().getDC(dc)->fill(
-        RGBAColour(r, g, b, alpha), destRect);
+struct Grp_fill_3 : public RLOp_Void_3<
+  Rect_T<SPACE>, IntConstant_T, RGBMaybeAColour_T> {
+  void operator()(RLMachine& machine, Rect destRect, int dc,
+                  RGBAColour colour) {
+    machine.system().graphics().getDC(dc)->fill(colour, destRect);
 
     if (dc == 0) {
       machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
@@ -840,21 +836,20 @@ struct Grp_fill_3 : public RLOp_Void_6<
 // -----------------------------------------------------------------------
 
 template<typename SPACE>
-struct Grp_fade_7 : public RLOp_Void_5<
-  Rect_T<SPACE>, IntConstant_T, IntConstant_T, IntConstant_T,
-  DefaultIntValue_T<0> > {
+struct Grp_fade_7 : public RLOp_Void_3<
+  Rect_T<SPACE>, RGBColour_T, DefaultIntValue_T<0> > {
   void operator()(RLMachine& machine, Rect rect,
-                  int r, int g, int b, int time) {
+                  RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
     if (time == 0) {
-      graphics.getDC(0)->fill(RGBAColour(r, g, b), rect);
+      graphics.getDC(0)->fill(colour, rect);
     } else {
       // FIXME: this needs checking for sanity of implementation, lack
       // of memory leaks, correct functioning in the presence of
       // objects, etc.
       shared_ptr<Surface> dc0 = graphics.getDC(0);
       shared_ptr<Surface> tmp(dc0->clone());
-      tmp->fill(RGBAColour(r, g, b), rect);
+      tmp->fill(colour, rect);
       LongOperation* lop =
         EffectFactory::build(machine, tmp, dc0, time, 0, 0,
                              0, 0, 0, 0, 0, 0);
@@ -872,29 +867,27 @@ struct Grp_fade_5 : public RLOp_Void_3<
   void operator()(RLMachine& machine, Rect rect, int colour_num, int time) {
     Gameexe& gexe = machine.system().gameexe();
     const vector<int>& rgb = gexe("COLOR_TABLE", colour_num).to_intVector();
-    delegate_(machine, rect, rgb[0], rgb[1], rgb[2], time);
+    delegate_(machine, rect, RGBAColour(rgb), time);
   }
 };
 
-struct Grp_fade_3 : public RLOp_Void_4<
-  IntConstant_T, IntConstant_T, IntConstant_T, DefaultIntValue_T<0> > {
+struct Grp_fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0> > {
   Grp_fade_7<rect_impl::REC> delegate_;
 
-  void operator()(RLMachine& machine, int r, int g, int b, int time) {
+  void operator()(RLMachine& machine, RGBAColour colour, int time) {
     Size screenSize = machine.system().graphics().screenSize();
-    delegate_(machine, Rect(0, 0, screenSize), r, g, b, time);
+    delegate_(machine, Rect(0, 0, screenSize), colour, time);
   }
 };
 
-struct Grp_fade_1 : public RLOp_Void_2<
-  IntConstant_T, DefaultIntValue_T<0> > {
+struct Grp_fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0> > {
   Grp_fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int colour_num, int time) {
     Size screenSize = machine.system().graphics().screenSize();
     Gameexe& gexe = machine.system().gameexe();
     const vector<int>& rgb = gexe("COLOR_TABLE", colour_num).to_intVector();
-    delegate_(machine, Rect(0, 0, screenSize), rgb[0], rgb[1], rgb[2], time);
+    delegate_(machine, Rect(0, 0, screenSize), RGBAColour(rgb), time);
   }
 };
 
