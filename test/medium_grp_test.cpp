@@ -83,6 +83,21 @@ TEST_F(MediumGrpTest, TestFill_3) {
                 TestMachine::Arg(10, 10, 20, 20, 0, 128, 128, 128, 255));
 }
 
+TEST_F(MediumGrpTest, TestColour_1) {
+  EXPECT_CALL(system.graphics().getMockDC(0),
+              applyColour(RGBColour(128, 128, 128),
+                          Rect(0, 0, Size(640, 480))));
+  rlmachine.exe("recColour", 0, TestMachine::Arg(0, 128, 128, 128));
+}
+
+TEST_F(MediumGrpTest, TestColour_3) {
+  EXPECT_CALL(system.graphics().getMockDC(0),
+              applyColour(RGBColour(128, 128, 128),
+                          Rect(0, 0, Size(640, 480))));
+  rlmachine.exe("recColour", 1,
+                TestMachine::Arg(0, 0, 640, 480, 0, 128, 128, 128));
+}
+
 TEST_F(MediumGrpTest, TestInvert_1) {
   EXPECT_CALL(system.graphics().getMockDC(0),
               invert(system.graphics().getMockDC(0).rect()));

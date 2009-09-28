@@ -54,6 +54,21 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   Surface();
   virtual ~Surface();
 
+  // ------------------------------------------------- [ Drawing functions ]
+
+  // Fills the surface with |colour|.
+  virtual void fill(const RGBAColour& colour) = 0;
+
+  // Fills |area| with |colour|.
+  virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
+
+  // Inverts each color of the surface (like a photo negative).
+  virtual void invert(const Rect& area) = 0;
+
+  // Applies |colour| to |area| of the surface.
+  virtual void applyColour(const RGBColour& colour, const Rect& area) = 0;
+
+  // ----------------------------------------------------- [ Uncategorized ]
   virtual void setIsMask(const bool is) { }
 
   virtual Size size() const = 0;
@@ -88,11 +103,6 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   virtual void rawRenderQuad(const int src_coords[8],
                              const int dest_coords[8],
                              const int opacity[4]) = 0;
-
-  virtual void fill(const RGBAColour& colour) = 0;
-  virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
-
-  virtual void invert(const Rect& area) = 0;
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) = 0;
 

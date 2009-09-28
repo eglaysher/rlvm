@@ -41,7 +41,6 @@ class Texture;
 class SDLGraphicsSystem;
 class GraphicsObject;
 
-
 /**
  * Helper function. Used throughout the SDL system.
  */
@@ -217,6 +216,7 @@ class SDLSurface : public SurfaceInvalidatable,
   virtual void fill(const RGBAColour& colour);
   virtual void fill(const RGBAColour& colour, const Rect& area);
   virtual void invert(const Rect& rect);
+  virtual void applyColour(const RGBColour& colour, const Rect& area);
 
   SDL_Surface* surface() { return surface_; }
 

@@ -63,6 +63,7 @@ class MockSurface : public Surface {
   MOCK_METHOD1(fill, void(const RGBAColour&));
   MOCK_METHOD2(fill, void(const RGBAColour&, const Rect&));
   MOCK_METHOD1(invert, void(const Rect&));
+  MOCK_METHOD2(applyColour, void(const RGBColour&, const Rect&));
 
   MOCK_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
 

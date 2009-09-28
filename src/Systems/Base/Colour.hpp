@@ -93,6 +93,7 @@ class RGBAColour {
   int r() const { return rgb_.r(); }
   int g() const { return rgb_.g(); }
   int b() const { return rgb_.b(); }
+  const RGBColour& rgb() const { return rgb_; }
   float r_float() const { return rgb_.r_float(); }
   float g_float() const { return rgb_.g_float(); }
   float b_float() const { return rgb_.b_float(); }

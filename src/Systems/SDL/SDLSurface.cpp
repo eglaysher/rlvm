@@ -73,6 +73,36 @@ class InvertColourTransformer : public ColourTransformer {
   }
 };
 
+class ApplyColourTransformer : public ColourTransformer {
+ public:
+  explicit ApplyColourTransformer(const RGBColour& colour) : colour_(colour) {
+  }
+
+  int compose(int in_colour, int surface_colour) const {
+    if (in_colour > 0) {
+      return 255 -
+          ((static_cast<float>((255 - in_colour) * (255 - surface_colour)) /
+            (255 * 255)) * 255);
+    } else if (in_colour < 0) {
+      return (static_cast<float>(abs(in_colour) * surface_colour) /
+              (255 * 255)) * 255;
+    } else {
+      return surface_colour;
+    }
+  }
+
+  virtual SDL_Color operator()(const SDL_Color& colour) const {
+    SDL_Color out;
+    out.r = compose(colour_.r(), colour.r);
+    out.g = compose(colour_.g(), colour.g);
+    out.b = compose(colour_.b(), colour.b);
+    return out;
+  }
+
+ private:
+  RGBColour colour_;
+};
+
 // Applies a |transformer| to every pixel in |area| in the surface |surface|.
 void TransformSurface(SDLSurface* our_surface, const Rect& area,
                       const ColourTransformer& transformer) {
@@ -583,6 +613,13 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
 void SDLSurface::invert(const Rect& rect) {
   InvertColourTransformer inverter;
   TransformSurface(this, rect, inverter);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::applyColour(const RGBColour& colour, const Rect& area) {
+  ApplyColourTransformer apply(colour);
+  TransformSurface(this, area, apply);
 }
 
 // -----------------------------------------------------------------------
