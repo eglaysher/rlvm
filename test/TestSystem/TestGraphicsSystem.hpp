@@ -39,7 +39,7 @@
 // -----------------------------------------------------------------------
 
 class System;
-class TestSurface;
+class MockSurface;
 
 // -----------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ class TestGraphicsSystem : public GraphicsSystem {
 
  private:
   /// Map between device contexts number and their surface.
-  boost::shared_ptr<TestSurface> display_contexts_[16];
+  boost::shared_ptr<MockSurface> display_contexts_[16];
 
   // A list of user injected surfaces to hand back for named files.
   std::map<std::string, boost::shared_ptr<Surface> > named_surfaces_;

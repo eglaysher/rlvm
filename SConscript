@@ -259,10 +259,10 @@ null_system_files = [
   "test/TestSystem/TestEventSystem.cpp",
   "test/TestSystem/TestGraphicsSystem.cpp",
   "test/TestSystem/TestSoundSystem.cpp",
-  "test/TestSystem/TestSurface.cpp",
   "test/TestSystem/TestSystem.cpp",
   "test/TestSystem/TestTextSystem.cpp",
   "test/TestSystem/TestTextWindow.cpp",
+  "test/TestSystem/MockSurface.cpp",
   "test/TestSystem/MockTextWindow.cpp"
 ]
 

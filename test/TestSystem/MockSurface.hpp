@@ -24,61 +24,56 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTSURFACE_HPP_
-#define TEST_TESTSYSTEM_TESTSURFACE_HPP_
+#ifndef TEST_TESTSYSTEM_MOCKSURFACE_HPP_
+#define TEST_TESTSYSTEM_MOCKSURFACE_HPP_
+
+#include "gmock/gmock.h"
 
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
 
 #include <string>
 #include <vector>
 
 // -----------------------------------------------------------------------
 
-class TestSurface : public Surface {
+// A suface which has 90% of it mocked out for testing.
+class MockSurface : public Surface {
  public:
-  explicit TestSurface(const std::string& surface_name);
-  TestSurface(const std::string& surface_name, const Size& size);
+  // Creates NiceMock<>ed MockSurfaces.
+  static MockSurface* Create(const std::string& surface_name);
+  static MockSurface* Create(const std::string& surface_name, const Size& size);
 
+  // 
   void allocate(const Size& size);
   void deallocate();
-
   virtual Size size() const;
 
-  virtual void blitToSurface(Surface& surface,
-                             const Rect& src, const Rect& dst,
-                             int alpha = 255, bool use_src_alpha = true);
+  MOCK_METHOD5(blitToSurface, void(Surface&, const Rect&, const Rect&,
+                                   int alpha, bool use_src_alpha));
+  MOCK_METHOD3(renderToScreen, void(const Rect&, const Rect&, int alpha));
+  MOCK_METHOD4(renderToScreenAsColorMask, void(const Rect&, const Rect&,
+                                               const RGBAColour&, int));
+  MOCK_METHOD3(renderToScreen, void(const Rect&, const Rect&, const int[4]));
+  MOCK_METHOD4(renderToScreenAsObject, void(const GraphicsObject&,
+                                            const Rect&, const Rect&, int));
+  MOCK_CONST_METHOD0(numPatterns, int());
+  MOCK_CONST_METHOD1(getPattern, const GrpRect&(int patt_no));
+  MOCK_METHOD3(rawRenderQuad, void(const int[8], const int[8], const int[4]));
+  MOCK_METHOD1(fill, void(const RGBAColour&));
+  MOCK_METHOD2(fill, void(const RGBAColour&, const Rect&));
 
-  virtual void renderToScreen(
-    const Rect& src, const Rect& dst,
-    int alpha = 255);
+  MOCK_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
 
-  virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
-
-  virtual void renderToScreen(
-    const Rect& src, const Rect& dst, const int opacity[4]);
-
-  virtual void renderToScreenAsObject(const GraphicsObject& rp,
-                                      const Rect& src,
-                                      const Rect& dst,
-                                      int alpha);
-
-  virtual int numPatterns() const;
-  virtual const GrpRect& getPattern(int patt_no) const;
-
-  virtual void rawRenderQuad(const int src_coords[8],
-                             const int dest_coords[8],
-                             const int opacity[4]);
-
-  virtual void fill(const RGBAColour& colour);
-  virtual void fill(const RGBAColour& colour, const Rect& rect);
-
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
-
+  // Concrete implementations of the cloning methods.
   virtual boost::shared_ptr<Surface> clipAsColorMask(
     const Rect& rect, int r, int g, int b);
-
   virtual Surface* clone() const;
+
+ protected:
+  // The real constructors are private. (See static creation methods above).
+  explicit MockSurface(const std::string& surface_name);
+  MockSurface(const std::string& surface_name, const Size& size);
 
  private:
   /// Unique name of this surface.
@@ -95,4 +90,4 @@ class TestSurface : public Surface {
 };
 
 
-#endif  // TEST_TESTSYSTEM_TESTSURFACE_HPP_
+#endif  // TEST_TESTSYSTEM_MOCKSURFACE_HPP_

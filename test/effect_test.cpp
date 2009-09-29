@@ -32,9 +32,9 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Effects/Effect.hpp"
 #include "Effects/BlindEffect.hpp"
+#include "TestSystem/MockSurface.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "TestSystem/TestEventSystem.hpp"
-#include "TestSystem/TestSurface.hpp"
 
 #include "testUtils.hpp"
 
@@ -88,8 +88,8 @@ class MockEffect : public Effect {
 };
 
 TEST_F(EffectTest, TestBase) {
-  shared_ptr<Surface> src(new TestSurface("src"));
-  shared_ptr<Surface> dst(new TestSurface("dst"));
+  shared_ptr<Surface> src(MockSurface::Create("src"));
+  shared_ptr<Surface> dst(MockSurface::Create("dst"));
 
   scoped_ptr<MockEffect> effect(
     new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
@@ -124,8 +124,8 @@ class MockBlitTopToBottom : public BlindTopToBottomEffect {
 };
 
 TEST_F(EffectTest, BlindTopToBottomEffect) {
-  shared_ptr<TestSurface> src(new TestSurface("src"));
-  shared_ptr<TestSurface> dst(new TestSurface("dst"));
+  shared_ptr<MockSurface> src(MockSurface::Create("src"));
+  shared_ptr<MockSurface> dst(MockSurface::Create("dst"));
 
   const int DURATION = 100;
   const int BLIND_SIZE = 50;

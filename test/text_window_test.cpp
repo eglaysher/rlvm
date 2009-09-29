@@ -28,7 +28,7 @@
 #include "gmock/gmock.h"
 
 #include "MachineBase/RLMachine.hpp"
-#include "TestSystem/TestSurface.hpp"
+#include "TestSystem/MockSurface.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "TestSystem/TestTextWindow.hpp"
 #include "libReallive/archive.h"
@@ -102,8 +102,8 @@ TEST_F(TextWindowTest, KanonLikePositioning) {
   // Inject an image for the textbox.
   system.graphics().injectSurface(
       "name_image",
-      boost::shared_ptr<Surface>(new TestSurface("name_image",
-                                                 Size(640, 122))));
+      boost::shared_ptr<Surface>(MockSurface::Create("name_image",
+                                                     Size(640, 122))));
 
   TestTextWindow window(system, 0);
 
@@ -144,8 +144,8 @@ TEST_F(TextWindowTest, PrincessBraveLikePositioning) {
   // Inject an image for the textbox.
   system.graphics().injectSurface(
       "background",
-      boost::shared_ptr<Surface>(new TestSurface("background",
-                                                 Size(800, 300))));
+      boost::shared_ptr<Surface>(MockSurface::Create("background",
+                                                     Size(800, 300))));
 
   TestTextWindow window(system, 2);
 

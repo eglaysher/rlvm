@@ -28,7 +28,7 @@
 #include "TestSystem/TestTextWindow.hpp"
 
 #include "Systems/Base/Rect.hpp"
-#include "TestSystem/TestSurface.hpp"
+#include "TestSystem/MockSurface.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <sstream>
@@ -53,7 +53,8 @@ TestTextWindow::~TestTextWindow() {}
 
 shared_ptr<Surface> TestTextWindow::textSurface() {
   // TODO(erg): May need to use a real size?
-  return shared_ptr<Surface>(new TestSurface("Text Surface", Size(640, 480)));
+  return shared_ptr<Surface>(
+      MockSurface::Create("Text Surface", Size(640, 480)));
 }
 
 // -----------------------------------------------------------------------
@@ -67,7 +68,7 @@ shared_ptr<Surface> TestTextWindow::nameSurface() {
 void TestTextWindow::renderNameInBox(const std::string& utf8str) {
   ostringstream oss;
   oss << "Name Surface [" << utf8str << "]";
-  name_surface_.reset(new TestSurface(oss.str(), Size(640, 480)));
+  name_surface_.reset(MockSurface::Create(oss.str(), Size(640, 480)));
 }
 
 // -----------------------------------------------------------------------

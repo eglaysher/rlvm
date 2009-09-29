@@ -25,13 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-
 #include "TestSystem/TestGraphicsSystem.hpp"
-#include "TestSystem/TestSurface.hpp"
 
+#include "Systems/Base/Colour.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "TestSystem/MockSurface.hpp"
 #include "Utilities/Exception.hpp"
 
 #include <map>
@@ -47,7 +46,7 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
-    display_contexts_[i].reset(new TestSurface(oss.str()));
+    display_contexts_[i].reset(MockSurface::Create(oss.str()));
   }
 
   display_contexts_[0]->allocate(screenSize());
@@ -68,7 +67,7 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
   // DC 1 is a special case and must always be at least the size of
   // the screen.
   if (dc == 1) {
-    boost::shared_ptr<TestSurface> dc0 = display_contexts_[0];
+    boost::shared_ptr<MockSurface> dc0 = display_contexts_[0];
     if (size.width() < dc0->size().width())
       size.setWidth(dc0->size().width());
     if (size.height() < dc0->size().height())
@@ -125,7 +124,7 @@ boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
 
   // We don't have an injected surface so make a surface.
   return boost::shared_ptr<Surface>(
-    new TestSurface(short_filename, Size(50, 50)));
+      MockSurface::Create(short_filename, Size(50, 50)));
 }
 
 // -----------------------------------------------------------------------
@@ -141,7 +140,7 @@ boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
   ostringstream oss;
   oss << "Built Surface #" << surface_num++;
 
-  return boost::shared_ptr<Surface>(new TestSurface(oss.str(), s));
+  return boost::shared_ptr<Surface>(MockSurface::Create(oss.str(), s));
 }
 
 // -----------------------------------------------------------------------
