@@ -247,6 +247,7 @@ test_case_files = [
   "test/medium_eventloop_test.cpp",
   "test/medium_msg_test.cpp",
   "test/medium_object_promotion.cpp",
+  "test/medium_grp_test.cpp",
 
   # large tests
   "test/large_sys_test.cpp",

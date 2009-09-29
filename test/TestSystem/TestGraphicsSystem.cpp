@@ -152,3 +152,9 @@ void TestGraphicsSystem::blitSurfaceToDC(
   int alpha) {
   // TODO
 }
+
+// -----------------------------------------------------------------------
+
+MockSurface& TestGraphicsSystem::getMockDC(int dc) {
+  return *display_contexts_[dc];
+}

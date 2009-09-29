@@ -76,6 +76,9 @@ class TestGraphicsSystem : public GraphicsSystem {
       int destX, int destY, int dest_width, int dest_height,
       int alpha = 255);
 
+  // Needed because of covariant issues.
+  MockSurface& getMockDC(int dc);
+
  private:
   /// Map between device contexts number and their surface.
   boost::shared_ptr<MockSurface> display_contexts_[16];

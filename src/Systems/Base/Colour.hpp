@@ -50,6 +50,8 @@ class RGBColour {
   void setGreen(const int in) { g_ = in; }
   void setBlue(const int in) { b_ = in; }
 
+  bool operator==(const RGBColour& rhs) const;
+
   // Colour constants
   static RGBColour Black() { return RGBColour(0, 0, 0); }
   static RGBColour White() { return RGBColour(255, 255, 255); }
@@ -94,6 +96,8 @@ class RGBAColour {
   void setGreen(const int in) { rgb_.setGreen(in); }
   void setBlue(const int in) { rgb_.setBlue(in); }
   void setAlpha(const int in) { alpha_ = in; }
+
+  bool operator==(const RGBAColour& rhs) const;
 
   // Colour constants
   static RGBAColour Clear() { return RGBAColour(0, 0, 0, 0); }

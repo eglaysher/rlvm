@@ -76,7 +76,57 @@ class TestMachine : public RLMachine {
     return ExeArgument(3, output);
   }
 
-  // TODO(erg): 4, 5, 6, and 7 argument converters.
+  template<typename A, typename B, typename C, typename D>
+  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d) {
+    std::string output;
+    addEntity(output, a);
+    addEntity(output, b);
+    addEntity(output, c);
+    addEntity(output, d);
+    return ExeArgument(4, output);
+  }
+
+  template<typename A, typename B, typename C, typename D, typename E>
+  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
+                         const E& e) {
+    std::string output;
+    addEntity(output, a);
+    addEntity(output, b);
+    addEntity(output, c);
+    addEntity(output, d);
+    addEntity(output, e);
+    return ExeArgument(5, output);
+  }
+
+  template<typename A, typename B, typename C, typename D, typename E,
+           typename F>
+  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
+                         const E& e, const F& f) {
+    std::string output;
+    addEntity(output, a);
+    addEntity(output, b);
+    addEntity(output, c);
+    addEntity(output, d);
+    addEntity(output, e);
+    addEntity(output, f);
+    return ExeArgument(6, output);
+  }
+
+  template<typename A, typename B, typename C, typename D, typename E,
+           typename F, typename G>
+  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
+                         const E& e, const F& f, const G& g) {
+    std::string output;
+    addEntity(output, a);
+    addEntity(output, b);
+    addEntity(output, c);
+    addEntity(output, d);
+    addEntity(output, e);
+    addEntity(output, f);
+    addEntity(output, g);
+    return ExeArgument(7, output);
+  }
+
   template<typename A, typename B, typename C, typename D, typename E,
            typename F, typename G, typename H>
   static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
