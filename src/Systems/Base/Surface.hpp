@@ -65,6 +65,9 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   // Inverts each color of the surface (like a photo negative).
   virtual void invert(const Rect& area) = 0;
 
+  // Turns |area| to grayscale.
+  virtual void mono(const Rect& area) = 0;
+
   // Applies |colour| to |area| of the surface.
   virtual void applyColour(const RGBColour& colour, const Rect& area) = 0;
 

@@ -40,6 +40,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Utilities/Graphics.hpp"
 
 #include "pygame/alphablit.h"
 
@@ -69,6 +70,19 @@ class InvertColourTransformer : public ColourTransformer {
     out.r = 255 - colour.r;
     out.g = 255 - colour.g;
     out.b = 255 - colour.b;
+    return out;
+  }
+};
+
+class MonoColourTransformer : public ColourTransformer {
+ public:
+  virtual SDL_Color operator()(const SDL_Color& colour) const {
+    float grayscale = 0.3 * colour.r + 0.59 * colour.g + 0.11 * colour.b;
+    clamp(grayscale, 0, 255);
+    SDL_Color out;
+    out.r = grayscale;
+    out.g = grayscale;
+    out.b = grayscale;
     return out;
   }
 };
@@ -614,6 +628,14 @@ void SDLSurface::invert(const Rect& rect) {
   InvertColourTransformer inverter;
   TransformSurface(this, rect, inverter);
 }
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::mono(const Rect& rect) {
+  MonoColourTransformer mono;
+  TransformSurface(this, rect, mono);
+}
+
 
 // -----------------------------------------------------------------------
 

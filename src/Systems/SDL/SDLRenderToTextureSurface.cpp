@@ -163,6 +163,12 @@ void SDLRenderToTextureSurface::invert(const Rect& rect) {
 
 // -----------------------------------------------------------------------
 
+void SDLRenderToTextureSurface::mono(const Rect& rect) {
+  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+}
+
+// -----------------------------------------------------------------------
+
 void SDLRenderToTextureSurface::applyColour(
     const RGBColour& colour, const Rect& area) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");

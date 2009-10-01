@@ -845,6 +845,20 @@ struct Grp_invert_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   }
 };
 
+struct Grp_mono_1 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int dc) {
+    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    surface->mono(surface->rect());
+  }
+};
+
+template<typename SPACE>
+struct Grp_mono_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
+  void operator()(RLMachine& machine, Rect rect, int dc) {
+    machine.system().graphics().getDC(dc)->mono(rect);
+  }
+};
+
 struct Grp_colour_1 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
@@ -1259,6 +1273,11 @@ GrpModule::GrpModule()
   addOpcode(300, 2, "grpInvert", new Grp_invert_3<GRP>());
   addUnsupportedOpcode(300, 3, "grpInvert");
 
+  addOpcode(301, 0, "grpMono", new Grp_mono_1);
+  addUnsupportedOpcode(301, 1, "grpMono");
+  addOpcode(301, 2, "grpMono", new Grp_mono_3<GRP>());
+  addUnsupportedOpcode(301, 3, "grpMono");
+
   addOpcode(302, 0, "grpColour", new Grp_colour_1);
   addOpcode(302, 1, "grpColour", new Grp_colour_2<GRP>());
 
@@ -1353,9 +1372,9 @@ GrpModule::GrpModule()
   addOpcode(1300, 2, "recInvert", new Grp_invert_3<REC>());
   addUnsupportedOpcode(1300, 3, "recInvert");
 
-  addUnsupportedOpcode(1301, 0, "recMono");
+  addOpcode(1301, 0, "recMono", new Grp_mono_1);
   addUnsupportedOpcode(1301, 1, "recMono");
-  addUnsupportedOpcode(1301, 2, "recMono");
+  addOpcode(1301, 2, "recMono", new Grp_mono_3<REC>());
   addUnsupportedOpcode(1301, 3, "recMono");
 
   addOpcode(1302, 0, "recColour", new Grp_colour_1);
