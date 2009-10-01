@@ -875,6 +875,21 @@ struct Grp_colour_2 : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T,
   }
 };
 
+struct Grp_light_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int dc, int level) {
+    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    surface->applyColour(RGBColour(level, level, level), surface->rect());
+  }
+};
+
+template<typename SPACE>
+struct Grp_light_2 : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T,
+                                         IntConstant_T> {
+  void operator()(RLMachine& machine, Rect rect, int dc, int level) {
+    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    surface->applyColour(RGBColour(level, level, level), rect);
+  }
+};
 
 // -----------------------------------------------------------------------
 // {grp,rec}Fade
@@ -1281,6 +1296,9 @@ GrpModule::GrpModule()
   addOpcode(302, 0, "grpColour", new Grp_colour_1);
   addOpcode(302, 1, "grpColour", new Grp_colour_2<GRP>());
 
+  addOpcode(303, 0, "grpLight", new Grp_light_1);
+  addOpcode(303, 1, "grpLight", new Grp_light_2<GRP>());
+
   addUnsupportedOpcode(400, 0, "grpSwap");
   addUnsupportedOpcode(400, 1, "grpSwap");
 
@@ -1379,6 +1397,9 @@ GrpModule::GrpModule()
 
   addOpcode(1302, 0, "recColour", new Grp_colour_1);
   addOpcode(1302, 1, "recColour", new Grp_colour_2<REC>());
+
+  addOpcode(1303, 0, "recLight", new Grp_light_1);
+  addOpcode(1303, 1, "recLight", new Grp_light_2<REC>());
 
   addUnsupportedOpcode(1400, 0, "recSwap");
   addUnsupportedOpcode(1400, 1, "recSwap");
