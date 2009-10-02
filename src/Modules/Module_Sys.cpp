@@ -266,6 +266,23 @@ struct Sys_constrain
 
 // -----------------------------------------------------------------------
 
+struct Sys_cos_0 : public RLOp_Store_1< IntConstant_T > {
+  int operator()(RLMachine& machine, int var1) {
+    return int( std::cos(var1 * (PI/180)) * 32640 );
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_cos_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+  int operator()(RLMachine& machine, int var1, int var2) {
+    return int( std::cos(var1 * (PI/180)) * 32640 / var2 );
+  }
+};
+
+
+// -----------------------------------------------------------------------
+
 /**
  * Implements op<0:Sys:01203, 0>, ReturnMenu.
  *
@@ -451,7 +468,8 @@ SysModule::SysModule()
   addOpcode(1007, 0, "min", new Sys_min);
   addOpcode(1008, 0, "max", new Sys_max);
   addOpcode(1009, 0, "constrain", new Sys_constrain);
-  // cos 01010
+  addOpcode(1010, 0, "cos", new Sys_cos_0);
+  addOpcode(1010, 1, "cos", new Sys_cos_1);
   // sign 01011
   // (unknown) 01012
   // (unknown) 01013
