@@ -73,6 +73,14 @@ struct Obj_objCopyFgToBg_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
+struct Obj_objClearAll : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    machine.system().graphics().clearAllObjects();
+  }
+};
+
+// -----------------------------------------------------------------------
+
 struct Obj_objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int from_fgbg_, to_fgbg_;
   Obj_objCopy(int from, int to) : from_fgbg_(from), to_fgbg_(to) {}
@@ -164,6 +172,8 @@ ObjCopyFgToBg::ObjCopyFgToBg()
   // to fix the display problem in Kanon OP.
   addOpcode(2, 0, "objCopyFgToBg", new Obj_objCopyFgToBg_0);
   addOpcode(2, 1, "objCopyFgToBg", new Obj_objCopyFgToBg_1);
+
+  addOpcode(100, 0, "objClearAll", new Obj_objClearAll);
 }
 
 // -----------------------------------------------------------------------
