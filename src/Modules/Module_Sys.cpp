@@ -58,6 +58,7 @@
 #include "Modules/Module_Sys_index_series.hpp"
 #include "Modules/Module_Sys_Wait.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -112,6 +113,15 @@ struct Sys_GetCursorPos_gc2
     Point pos = machine.system().event().getCursorPos();
     *xit = pos.x();
     *yit = pos.y();
+  }
+};
+
+// -----------------------------------------------------------------------
+
+struct Sys_CallStackPop : RLOp_Void_1< DefaultIntValue_T<1> > {
+  void operator()(RLMachine& machine, int frames_to_pop) {
+    for (int i = 0; i < frames_to_pop; ++i)
+      machine.popStackFrame();
   }
 };
 
@@ -365,6 +375,14 @@ SysModule::SysModule()
   addOpcode(133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
 
   addOpcode(202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
+
+  addUnsupportedOpcode(320, 0, "CallStackClear");
+  addUnsupportedOpcode(321, 0, "CallStackNop");
+  addUnsupportedOpcode(321, 1, "CallStackNop");
+  addOpcode(322, 0, "CallStackPop", new Sys_CallStackPop);
+  addOpcode(322, 1, "CallStackPop", new Sys_CallStackPop);
+  addUnsupportedOpcode(323, 0, "CallStackSize");
+  addUnsupportedOpcode(324, 0, "CallStackTrunc");
 
   addOpcode(204, 0, "ShowCursor",
             setToConstant(&GraphicsSystem::setShowCursor, 1));
