@@ -96,6 +96,12 @@ class TextPage : public boost::noncopyable {
   void offsetInsertionPointX(int offset);
   void offsetInsertionPointY(int offset);
 
+  // Sets the face in slot |index| to filename.
+  void faceOpen(const std::string& filename, int index);
+
+  // Removes the face in slot |index|.
+  void faceClose(int index);
+
   // This is a hack to get the backlog colour working. This adds a
   // SetToRightStartingColorElement element to the TextPage, which, on
   // replay, simply checks to see if we're redisplaying a backlog
@@ -163,6 +169,9 @@ class TextPage : public boost::noncopyable {
   void set_insertion_point_y_impl(int y, bool is_active_page);
   void offset_insertion_point_x_impl(int offset, bool is_active_page);
   void offset_insertion_point_y_impl(int offset, bool is_active_page);
+
+  void faceOpenImpl(std::string filename, int index, bool is_active_page);
+  void faceCloseImpl(int index, bool is_active_page);
 
   void set_to_right_starting_colour_impl(bool is_active_page);
   /// @}

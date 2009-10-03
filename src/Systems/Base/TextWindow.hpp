@@ -50,6 +50,8 @@ class System;
 class TextWaku;
 class TextWindowButton;
 
+const int kNumFaceSlots = 8;
+
 /**
  * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
  * and rendered in conjunction with @c GraphicsSystem.
@@ -254,6 +256,12 @@ class TextWindow {
   }
   /// @}
 
+  // Loads |filename| into face slot |index|.
+  void faceOpen(const std::string& filename, int index);
+
+  // Clears face slot |index|.
+  void faceClose(int index);
+
   // ------------------------------------------------ [ Abstract interface ]
   void render(std::ostream* tree);
 
@@ -333,6 +341,9 @@ class TextWindow {
   Selections selections_;
 
   System& system() { return system_; }
+
+  // Render faces implementation.
+  void renderFaces(std::ostream* tree, int behind);
 
  protected:
   /// We cache the size of the screen so we don't need the machine in
@@ -509,6 +520,9 @@ class TextWindow {
   /// added by addSelectionItem().
   int next_id_;
   /// @}
+
+  struct FaceSlot;
+  boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];
 
   System& system_;
 };

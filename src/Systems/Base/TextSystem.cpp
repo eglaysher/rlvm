@@ -203,6 +203,17 @@ void TextSystem::hideAllTextWindows() {
 
 // -----------------------------------------------------------------------
 
+void TextSystem::hideAllTextWindowsExcept(int i) {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
+    if (it->first != i) {
+      it->second->setVisible(0);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void TextSystem::showTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {

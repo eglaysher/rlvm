@@ -272,6 +272,14 @@ void TextPage::offsetInsertionPointY(int offset) {
   addAction(bind(&TextPage::offset_insertion_point_y_impl, _1, offset, _2));
 }
 
+void TextPage::faceOpen(const std::string& filename, int index) {
+  addAction(bind(&TextPage::faceOpenImpl, _1, filename, index, _2));
+}
+
+void TextPage::faceClose(int index) {
+  addAction(bind(&TextPage::faceCloseImpl, _1, index, _2));
+}
+
 // -----------------------------------------------------------------------
 
 void TextPage::addSetToRightStartingColorElement() {
@@ -364,6 +372,15 @@ void TextPage::offset_insertion_point_x_impl(int offset, bool is_active_page) {
 
 void TextPage::offset_insertion_point_y_impl(int offset, bool is_active_page) {
   system_->text().textWindow(window_num_)->offsetInsertionPointY(offset);
+}
+
+void TextPage::faceOpenImpl(std::string filename, int index,
+                            bool is_active_page) {
+  system_->text().textWindow(window_num_)->faceOpen(filename, index);
+}
+
+void TextPage::faceCloseImpl(int index, bool is_active_page) {
+  system_->text().textWindow(window_num_)->faceClose(index);
 }
 
 // -----------------------------------------------------------------------

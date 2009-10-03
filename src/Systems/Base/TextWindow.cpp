@@ -64,6 +64,29 @@ using std::setfill;
 using std::setw;
 using std::vector;
 
+struct TextWindow::FaceSlot {
+  explicit FaceSlot(const std::vector<int>& vec)
+      : x(vec.at(0)), y(vec.at(1)), behind(vec.at(2)),
+        hide_other_windows(vec.at(3)),
+        unknown(vec.at(4)) { }
+
+  int x, y;
+
+  // 0 if layered in front or window background. 1 if behind.
+  int behind;
+
+  // Speculation: This makes ALMA work correctly and doesn't appear to harm
+  // P_BRIDE.
+  int hide_other_windows;
+
+  // Unknown.
+  int unknown;
+
+  // The current face loaded. NULL whenever no face is loaded.
+  boost::shared_ptr<Surface> face_surface;
+};
+
+
 // -----------------------------------------------------------------------
 // TextWindow
 // -----------------------------------------------------------------------
@@ -126,6 +149,23 @@ TextWindow::TextWindow(System& system, int window_num)
     namebox_centering_ = window("NAME_CENTERING").to_int(0);
     minimum_namebox_size_ = window("NAME_MOJI_MIN").to_int(4);
     name_size_ = window("NAME_MOJI_SIZE");
+  }
+
+  // Load #FACE information.
+  GameexeFilteringIterator it = gexe.filtering_begin(window.key() + ".FACE");
+  GameexeFilteringIterator end = gexe.filtering_end();
+  for (; it != end; ++it) {
+    // Retrieve the face slot number
+    std::vector<std::string> key_parts = it->key_parts();
+
+    try {
+      int slot = boost::lexical_cast<int>(key_parts.at(3));
+      if (slot < kNumFaceSlots) {
+        face_slot_[slot].reset(new FaceSlot(it->to_intVector()));
+      }
+    } catch (...) {
+      // Parsing failure. Ignore this key.
+    }
   }
 }
 
@@ -385,6 +425,31 @@ Point TextWindow::keycursorPosition() const {
 
 // -----------------------------------------------------------------------
 
+void TextWindow::faceOpen(const std::string& filename, int index) {
+  if (face_slot_[index]) {
+    face_slot_[index]->face_surface =
+        system_.graphics().loadNonCGSurfaceFromFile(filename);
+
+    if (face_slot_[index]->hide_other_windows) {
+      system_.text().hideAllTextWindowsExcept(windowNumber());
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::faceClose(int index) {
+  if (face_slot_[index]) {
+    face_slot_[index]->face_surface.reset();
+
+    if (face_slot_[index]->hide_other_windows) {
+      system_.text().hideAllTextWindowsExcept(windowNumber());
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
 /**
  * @todo Make this pass the \#WINDOW_ATTR colour off wile rendering the
  *       waku_backing.
@@ -403,6 +468,7 @@ void TextWindow::render(std::ostream* tree) {
     }
 
     textbox_waku_->render(tree, box, surface_size);
+    renderFaces(tree, 1);
 
     Point textOrigin = textRect().origin();
 
@@ -438,6 +504,8 @@ void TextWindow::render(std::ostream* tree) {
         }
       }
 
+      renderFaces(tree, 0);
+
       text_surface->renderToScreen(
         Rect(Point(0, 0), surface_size),
         Rect(textOrigin, surface_size),
@@ -446,6 +514,23 @@ void TextWindow::render(std::ostream* tree) {
       if (tree) {
         *tree << "    Text Area: " << Rect(textOrigin, surface_size) << endl;
       }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void TextWindow::renderFaces(std::ostream* tree, int behind) {
+  for (int i = 0; i < kNumFaceSlots; ++i) {
+    if (face_slot_[i] &&
+        face_slot_[i]->face_surface &&
+        face_slot_[i]->behind == behind) {
+      const boost::shared_ptr<Surface>& surface = face_slot_[i]->face_surface;
+      surface->renderToScreen(
+          surface->rect(),
+          Rect(windowRect().x() + face_slot_[i]->x,
+               windowRect().y() + face_slot_[i]->y,
+               surface->size()), 255);
     }
   }
 }

@@ -232,6 +232,22 @@ struct Msg_TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
+struct Msg_FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0> > {
+  void operator()(RLMachine& machine, string file, int index) {
+    TextPage& page = machine.system().text().currentPage();
+    page.faceOpen(file, index);
+  }
+};
+
+struct Msg_FaceClose : public RLOp_Void_1<DefaultIntValue_T<0> > {
+  void operator()(RLMachine& machine, int index) {
+    TextPage& page = machine.system().text().currentPage();
+    page.faceClose(index);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003) {
   addOpcode(3, 0, "par", new Msg_par);
@@ -293,10 +309,10 @@ MsgModule::MsgModule()
   addUnsupportedOpcode(340, 1, "WindowLen");
   addUnsupportedOpcode(341, 0, "WindowLenAll");
 
-  addUnsupportedOpcode(1000, 0, "FaceOpen");
-  addUnsupportedOpcode(1000, 1, "FaceOpen");
-  addUnsupportedOpcode(1001, 0, "FaceClose");
-  addUnsupportedOpcode(1001, 1, "FaceClose");
+  addOpcode(1000, 0, "FaceOpen", new Msg_FaceOpen);
+  addOpcode(1000, 1, "FaceOpen", new Msg_FaceOpen);
+  addOpcode(1001, 0, "FaceClose", new Msg_FaceClose);
+  addOpcode(1001, 1, "FaceClose", new Msg_FaceClose);
 }
 
 // @}
