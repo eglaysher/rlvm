@@ -40,8 +40,12 @@ class SetWindowTextPageElement;
 class System;
 class TextTextPageElement;
 
-// -----------------------------------------------------------------------
-
+// A sequence of replayable commands that write to or modify a window, such as
+// displaying characters and changing font information.
+//
+// The majority of public methods in TextPage simply call the private versions
+// of these methods, and add the appropriate TextPageElement to this page's
+// back log for replay.
 class TextPage : public boost::noncopyable {
  public:
   TextPage(System& system, int window_num);
@@ -51,64 +55,40 @@ class TextPage : public boost::noncopyable {
   TextPage& operator=(const TextPage& rhs);
   void swap(TextPage& rhs);
 
+  // Replays every recordable action called on this TextPage.
   void replay(bool is_active_page);
 
+  // Returns the number of characters printed with character() and name().
   int numberOfCharsOnPage() const { return number_of_chars_on_page_; }
 
-  /**
-   * @name Public operations
-   *
-   * These methods simply call the private versions of these methods,
-   * and add the appropriate TextPageElement to this page's back log
-   * for replay.
-   *
-   * @{
-   */
-
-  /**
-   * Add this character to the most recent text render operation on
-   * this page's backlog, and then render it, minding the kinsoku
-   * spacing rules.
-   */
+  // Add this character to the most recent text render operation on
+  // this page's backlog, and then render it, minding the kinsoku
+  // spacing rules.
   bool character(const std::string& current, const std::string& next);
 
-  /**
-   * Displays a name. This function will be called by the
-   * TextoutLongOperation.
-   */
+  // Displays a name. This function will be called by the
+  // TextoutLongOperation.
   void name(const std::string& name, const std::string& next_char);
 
-  /**
-   * Forces a hard line brake.
-   */
+  // Forces a hard line brake.
   void hardBrake();
 
-  /**
-   * Sets the indentation to the x part of the current insertion point.
-   */
+  // Sets the indentation to the x part of the current insertion point.
   void setIndentation();
 
-  /**
-   * Resets the indentation.
-   */
+  // Resets the indentation.
   void resetIndentation();
 
-  /**
-   * Sets the text foreground to the colour passed in, up until the
-   * next pause().
-   */
+  // Sets the text foreground to the colour passed in, up until the
+  // next pause().
   void fontColour(const int colour);
 
-  /**
-   * Marks the current character as the beginning of a phrase that has
-   * rubytext over it.
-   */
+  // Marks the current character as the beginning of a phrase that has
+  // rubytext over it.
   void markRubyBegin();
 
-  /**
-   * Display the incoming phrase as the rubytext for the text since
-   * markRubyBegin() was called.
-   */
+  // Display the incoming phrase as the rubytext for the text since
+  // markRubyBegin() was called.
   void displayRubyText(const std::string& utf8str);
 
   void setInsertionPointX(int x);
@@ -116,46 +96,41 @@ class TextPage : public boost::noncopyable {
   void offsetInsertionPointX(int offset);
   void offsetInsertionPointY(int offset);
 
-  /**
-   * This is a hack to get the backlog colour working. This adds a
-   * SetToRightStartingColorElement element to the TextPage, which, on
-   * replay, simply checks to see if we're redisplaying a backlog
-   * page and sets the colour to the backlog colour if we are.
-   */
+  // This is a hack to get the backlog colour working. This adds a
+  // SetToRightStartingColorElement element to the TextPage, which, on
+  // replay, simply checks to see if we're redisplaying a backlog
+  // page and sets the colour to the backlog colour if we are.
   void addSetToRightStartingColorElement();
-  /// @}
 
-  /**
-   * Queries the corresponding TextWindow to see if it is full. Used
-   * to implement implicit pauses when a page is full.
-   */
+  // Queries the corresponding TextWindow to see if it is full. Used
+  // to implement implicit pauses when a page is full.
   bool isFull() const;
 
-  /**
-   * Queries to see if there has been an invocation of
-   * markRubyBegin(), but not the closing displayRubyText().
-   */
+  // Queries to see if there has been an invocation of
+  // markRubyBegin(), but not the closing displayRubyText().
   bool inRubyGloss() const { return in_ruby_gloss_; }
 
  private:
-  /// Performs the passed in action and then adds it to |elements_to_replay_|.
-  void addAction(const boost::function<void(TextPage&, bool)>& action);
-
-  /// All subclasses of TextPageElement are friends of TextPage for
-  /// tight coupling.
+  // All subclasses of TextPageElement are friends of TextPage for
+  // tight coupling.
   friend class TextPageElement;
   friend class TextTextPageElement;
+
+  // Performs the passed in action and then adds it to |elements_to_replay_|.
+  void addAction(const boost::function<void(TextPage&, bool)>& action);
 
   boost::ptr_vector<TextPageElement> elements_to_replay_;
 
   System* system_;
 
-  /// Current window that this page is rendering into
+  // Current window that this page is rendering into
   int window_num_;
 
-  /// Number of characters on this page (used in automode)
+  // Number of characters on this page (used in automode)
   int number_of_chars_on_page_;
 
+  // Whether markRubyBegin() was called but displayRubyText() hasn't yet been
+  // called.
   bool in_ruby_gloss_;
 
   /**

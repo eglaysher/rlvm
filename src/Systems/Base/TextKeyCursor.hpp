@@ -38,77 +38,58 @@ class Surface;
 class System;
 class TextWindow;
 
-/**
- * Represents a key cursor.
- */
+// Represents a key cursor, the little icon after a block of text telling the
+// user to click to advance.
 class TextKeyCursor {
  public:
-  /**
-   * Creates a Key Cursor object based off of the properties in
-   * \#CURSOR.curosr_number. This will load all image files, and data
-   * from the Gameexe.
-   */
+  // Creates a Key Cursor object based off of the properties in
+  // \#CURSOR.curosr_number. This will load all image files, and data
+  // from the Gameexe.
   TextKeyCursor(System& system, int curosr_number);
   ~TextKeyCursor();
 
-  /**
-   * Updates the key cursor properties during the System::execute()
-   * phase. This should run once every game loop while a key cursor is
-   * displayed on the screen.
-   */
+  // Updates the key cursor properties during the System::execute()
+  // phase. This should run once every game loop while a key cursor is
+  // displayed on the screen.
   void execute();
 
-  /**
-   * Render this key cursor to the specified window, which owns
-   * positional information.
-   */
+  // Render this key cursor to the specified window, which owns
+  // positional information.
   void render(TextWindow& text_window, std::ostream* tree);
 
-  /**
-   * @name Accessors
-   *
-   * @{
-   */
+  // Returns which cursor we are.
   int cursorNumber() const { return cursor_number_; }
-  // @}
 
-  /**
-   * @name Gameexe setters
-   *
-   * Convenience setters which set properties directly from
-   * Gameexe.ini data.
-   *
-   * @{
-   */
+  // Convenience setters which set properties directly from
+  // Gameexe.ini data.
   void setCursorImage(System& system, const std::string& file);
   void setCursorSize(const std::vector<int>& image_size);
   void setCursorFrameCount(const int frame_count);
   void setCursorFrameSpeed(const int frame_speed);
-  /// @}
 
  private:
-  /// Keep track of which cursor we are as an optimization
+  // Keep track of which cursor we are as an optimization
   int cursor_number_;
 
-  /// The surface containing the cursor
+  // The surface containing the cursor
   boost::shared_ptr<Surface> cursor_image_;
 
-  /// The cursor image file
+  // The cursor image file
   std::string cursor_image_file_;
 
-  /// The size of the cursor
+  // The size of the cursor
   Size frame_size_;
 
-  /// Number of frames in this cursor
+  // Number of frames in this cursor
   int frame_count_;
 
-  /// Current frame being displayed
+  // Current frame being displayed
   int current_frame_;
 
-  /// How long an individual frame should be displayed
+  // How long an individual frame should be displayed
   int frame_speed_;
 
-  /// The last time current_frame_ was incremented in ticks
+  // The last time current_frame_ was incremented in ticks
   unsigned int last_time_frame_incremented_;
 
   System& system_;
