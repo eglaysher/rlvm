@@ -40,9 +40,6 @@
 
 #include "Systems/Base/GraphicsObject.hpp"
 
-#include <iostream>
-using namespace std;
-
 // -----------------------------------------------------------------------
 
 /**

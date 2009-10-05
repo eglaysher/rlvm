@@ -40,7 +40,6 @@
 #include "Utilities/Exception.hpp"
 #include "libReallive/archive.h"
 
-#include <iostream>
 #include <typeinfo>
 
 using namespace std;

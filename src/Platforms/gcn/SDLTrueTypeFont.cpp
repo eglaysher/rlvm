@@ -41,8 +41,6 @@
 #include <boost/shared_ptr.hpp>
 
 #include <string>
-#include <iostream>
-using namespace std;
 
 // -----------------------------------------------------------------------
 // SDLTrueTypeFont

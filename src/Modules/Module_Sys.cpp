@@ -71,7 +71,6 @@
 #include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
-#include <iostream>
 
 const float PI = 3.14159265;
 

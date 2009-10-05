@@ -40,9 +40,7 @@
 #include "libReallive/gameexe.h"
 
 #include <boost/bind.hpp>
-#include <iostream>
 
-using namespace std;
 using namespace boost;
 
 // -----------------------------------------------------------------------

@@ -70,13 +70,9 @@
 
 #include "Encodings/cp932.h"
 
-#include <iostream>
-#include <iomanip>
 #include <string>
 
 #include "Utilities/StringUtilities.hpp"
-
-using namespace std;
 
 Cp932::Cp932() {
   NoTransforms = true;

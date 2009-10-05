@@ -47,7 +47,6 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include <cmath>
-#include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <boost/lexical_cast.hpp>

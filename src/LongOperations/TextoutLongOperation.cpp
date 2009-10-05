@@ -44,12 +44,9 @@
 #include <boost/utility.hpp>
 
 #include <string>
-#include <iostream>
 #include <algorithm>
 
 #include "utf8cpp/utf8.h"
-
-using namespace std;
 
 // -----------------------------------------------------------------------
 // TextoutLongOperation

@@ -43,10 +43,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
 #include <cmath>
-
-using namespace std;
 
 // -----------------------------------------------------------------------
 // ScrollOnScrollOff base class

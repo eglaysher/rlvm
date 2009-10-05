@@ -45,12 +45,9 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
 #include <cmath>
 
 #include <boost/shared_ptr.hpp>
-
-using namespace std;
 
 // -----------------------------------------------------------------------
 // WipeEffect base class

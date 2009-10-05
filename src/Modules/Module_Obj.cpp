@@ -48,9 +48,6 @@
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
-#include <iostream>
-using namespace std;
-
 using libReallive::ExpressionPiece;
 using boost::ptr_vector;
 

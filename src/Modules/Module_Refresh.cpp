@@ -43,10 +43,6 @@
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
-#include <iostream>
-
-using namespace std;
-
 // -----------------------------------------------------------------------
 
 RefreshModule::RefreshModule()

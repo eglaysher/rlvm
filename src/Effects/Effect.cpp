@@ -44,10 +44,6 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
-
-using namespace std;
-
 // -----------------------------------------------------------------------
 
 Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,

@@ -33,13 +33,10 @@
 #include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"
 
-#include <iostream>
 #include <string>
 #include <sstream>
 
 using std::ostringstream;
-using std::cerr;
-using std::endl;
 
 // -----------------------------------------------------------------------
 // RealLiveDLL
@@ -51,7 +48,7 @@ RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
     return new RlBabelDLL(machine);
   } else {
     ostringstream oss;
-    oss << "Unsupported DLL interface " << name << endl;
+    oss << "Unsupported DLL interface " << name;
     throw rlvm::Exception(oss.str());
   }
 }

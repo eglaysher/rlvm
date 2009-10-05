@@ -52,7 +52,6 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/findFontFile.h"
 
-#include <iostream>
 #include <iomanip>
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>

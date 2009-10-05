@@ -31,7 +31,6 @@
 
 #include "MachineBase/OpcodeLog.hpp"
 #include <algorithm>
-#include <iostream>
 #include <iomanip>
 #include <string>
 #include <boost/bind.hpp>

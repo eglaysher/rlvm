@@ -41,10 +41,6 @@
 #include "Effects/FadeEffect.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
-
-using namespace std;
-
 // -----------------------------------------------------------------------
 
 bool FadeEffect::blitOriginalImage() const {

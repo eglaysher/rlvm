@@ -34,9 +34,6 @@
 #include <guichan/image.hpp>
 #include <guichan/opengl/openglimage.hpp>
 
-#include <iostream>
-using namespace std;
-
 // -----------------------------------------------------------------------
 // ImageRect
 // -----------------------------------------------------------------------

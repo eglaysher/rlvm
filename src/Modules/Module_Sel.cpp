@@ -44,7 +44,6 @@
 #include "libReallive/bytecode.h"
 
 #include <vector>
-#include <iostream>
 #include <iterator>
 #include <boost/bind.hpp>
 #include <string>

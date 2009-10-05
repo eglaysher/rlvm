@@ -35,10 +35,8 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 
-#include <iostream>
 #include <string>
 
-using namespace std;
 using namespace libReallive;
 
 // -----------------------------------------------------------------------

@@ -42,7 +42,6 @@
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <utility>

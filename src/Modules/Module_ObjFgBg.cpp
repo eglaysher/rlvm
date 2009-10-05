@@ -56,7 +56,6 @@
 #include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
-#include <iostream>
 #include <iomanip>
 #include <sstream>
 
@@ -66,7 +65,6 @@
 
 #include "libReallive/bytecode.h"
 
-using namespace std;
 using namespace boost;
 using namespace libReallive;
 

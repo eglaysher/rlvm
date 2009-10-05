@@ -37,8 +37,6 @@
 #include "Modules/Module_Grp.hpp"
 
 #include <string>
-#include <iostream>
-using namespace std;
 
 // -----------------------------------------------------------------------
 

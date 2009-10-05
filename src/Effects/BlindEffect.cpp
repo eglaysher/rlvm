@@ -41,12 +41,9 @@
 #include "Effects/BlindEffect.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-using std::cerr;
-using std::endl;
 using boost::bind;
 using boost::function;
 using boost::ref;

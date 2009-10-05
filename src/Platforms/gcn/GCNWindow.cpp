@@ -33,9 +33,6 @@
 #include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 
-#include <iostream>
-using namespace std;
-
 ImageRect GCNWindow::s_border;
 
 // -----------------------------------------------------------------------

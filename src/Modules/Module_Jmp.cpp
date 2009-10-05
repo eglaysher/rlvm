@@ -53,13 +53,12 @@
 #include "libReallive/bytecode.h"
 
 #include <cmath>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-using namespace boost;
 using namespace std;
+using namespace boost;
 using namespace libReallive;
 
 /**
@@ -157,7 +156,7 @@ void storeData(RLMachine& machine, const ParamVector& f) {
     default: {
       ostringstream ss;
       ss << "Unknown type tag " << it->type
-         << " during a *_with function call" << endl;
+         << " during a *_with function call";
       throw rlvm::Exception(ss.str());
     }
     }

@@ -37,11 +37,6 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
-
-using std::cerr;
-using std::endl;
-
 // -----------------------------------------------------------------------
 // ZoomLongOperation
 // -----------------------------------------------------------------------
