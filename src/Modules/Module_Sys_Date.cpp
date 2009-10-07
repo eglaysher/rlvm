@@ -31,6 +31,7 @@
 
 #include "Module_Sys_Date.hpp"
 
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
@@ -39,108 +40,33 @@
 
 // -----------------------------------------------------------------------
 
-/**
- * Implements op<1:Sys:01100, 0>, fun GetYear().
- *
- * Returns the current four digit year.
- */
-struct Sys_GetYear : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getYear();
-  }
-};
+namespace {
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetMonth : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getMonth();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetDay : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getDay();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetDayOfWeek : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getDayOfWeek();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetHour : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getHour();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetMinute : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getMinute();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetSecond : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getSecond();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetMs : public RLOp_Store_Void {
-  int operator()(RLMachine& machine) {
-    return datetime::getMs();
-  }
-};
-
-// -----------------------------------------------------------------------
-
-struct Sys_GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
-                                         IntReference_T, IntReference_T> {
+struct GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
+                                     IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator y,
                   IntReferenceIterator m, IntReferenceIterator d,
                   IntReferenceIterator wd) {
-    *y = (int)Sys_GetYear()(machine);
-    *m = (int)Sys_GetMonth()(machine);
-    *d = (int)Sys_GetDay()(machine);
-    *wd = (int)Sys_GetDayOfWeek()(machine);
+    *y = datetime::getYear();
+    *m = datetime::getMonth();
+    *d = datetime::getDay();
+    *wd = datetime::getDayOfWeek();
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
-                                         IntReference_T, IntReference_T> {
+struct GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
+                                     IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator hh,
                   IntReferenceIterator mm, IntReferenceIterator ss,
                   IntReferenceIterator ms) {
-    *hh = (int)Sys_GetHour()(machine);
-    *mm = (int)Sys_GetMinute()(machine);
-    *ss = (int)Sys_GetSecond()(machine);
-    *ms = (int)Sys_GetMs()(machine);
+    *hh = datetime::getHour();
+    *mm = datetime::getMinute();
+    *ss = datetime::getSecond();
+    *ms = datetime::getMs();
   }
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * @bug A random thought. Could these present a weird race condition
- *      it the call between any two calls flips the counter?
- */
-struct Sys_GetDateTime : public RLOp_Void_8<
+struct GetDateTime : public RLOp_Void_8<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
   IntReference_T, IntReference_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
@@ -148,29 +74,31 @@ struct Sys_GetDateTime : public RLOp_Void_8<
                   IntReferenceIterator d, IntReferenceIterator wd,
                   IntReferenceIterator hh, IntReferenceIterator mm,
                   IntReferenceIterator ss, IntReferenceIterator ms) {
-    *y = (int)Sys_GetYear()(machine);
-    *m = (int)Sys_GetMonth()(machine);
-    *d = (int)Sys_GetDay()(machine);
-    *wd = (int)Sys_GetDayOfWeek()(machine);
-    *hh = (int)Sys_GetHour()(machine);
-    *mm = (int)Sys_GetMinute()(machine);
-    *ss = (int)Sys_GetSecond()(machine);
-    *ms = (int)Sys_GetMs()(machine);
+    *y = datetime::getYear();
+    *m = datetime::getMonth();
+    *d = datetime::getDay();
+    *wd = datetime::getDayOfWeek();
+    *hh = datetime::getHour();
+    *mm = datetime::getMinute();
+    *ss = datetime::getSecond();
+    *ms = datetime::getMs();
   }
 };
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 
 void addSysDateOpcodes(RLModule& m) {
-  m.addOpcode(1100, 0, "GetYear", new Sys_GetYear);
-  m.addOpcode(1101, 0, "GetMonth", new Sys_GetMonth);
-  m.addOpcode(1102, 0, "GetDay", new Sys_GetDay);
-  m.addOpcode(1103, 0, "GetDayOfWeek", new Sys_GetDayOfWeek);
-  m.addOpcode(1104, 0, "GetHour", new Sys_GetHour);
-  m.addOpcode(1105, 0, "GetMinute", new Sys_GetMinute);
-  m.addOpcode(1106, 0, "GetSecond", new Sys_GetSecond);
-  m.addOpcode(1107, 0, "GetMs", new Sys_GetMs);
-  m.addOpcode(1110, 0, "GetDate", new Sys_GetDate);
-  m.addOpcode(1111, 0, "GetTime", new Sys_GetTime);
-  m.addOpcode(1112, 0, "GetDateTime", new Sys_GetDateTime);
+  m.addOpcode(1100, 0, "GetYear", returnIntValue(datetime::getYear));
+  m.addOpcode(1101, 0, "GetMonth", returnIntValue(datetime::getMonth));
+  m.addOpcode(1102, 0, "GetDay", returnIntValue(datetime::getDay));
+  m.addOpcode(1103, 0, "GetDayOfWeek", returnIntValue(datetime::getDayOfWeek));
+  m.addOpcode(1104, 0, "GetHour", returnIntValue(datetime::getHour));
+  m.addOpcode(1105, 0, "GetMinute", returnIntValue(datetime::getMinute));
+  m.addOpcode(1106, 0, "GetSecond", returnIntValue(datetime::getSecond));
+  m.addOpcode(1107, 0, "GetMs", returnIntValue(datetime::getMs));
+  m.addOpcode(1110, 0, "GetDate", new GetDate);
+  m.addOpcode(1111, 0, "GetTime", new GetTime);
+  m.addOpcode(1112, 0, "GetDateTime", new GetDateTime);
 }

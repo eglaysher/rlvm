@@ -322,6 +322,24 @@ RLOperation* setToConstant(void(OBJTYPE::*s)(VALTYPE), VALTYPE val) {
 
 // -----------------------------------------------------------------------
 
+
+template<typename RETTYPE>
+class Op_ReturnFunctionIntValue : public RLOp_Store_Void {
+ public:
+  typedef RETTYPE(*Getter)();
+
+  explicit Op_ReturnFunctionIntValue(Getter g)
+      : getter_(g) {
+  }
+
+  int operator()(RLMachine& machine) {
+    return (*getter_)();
+  }
+
+ private:
+  Getter getter_;
+};
+
 /**
  * Reads the value of an internal variable in a generic way using an
  * arbitrary getter function and places it in the store register.
@@ -380,6 +398,13 @@ class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
  private:
   Getter getter_;
 };
+
+// -----------------------------------------------------------------------
+
+template<typename RETTYPE>
+RLOperation* returnIntValue(RETTYPE(*s)()) {
+  return new Op_ReturnFunctionIntValue<RETTYPE>(s);
+}
 
 // -----------------------------------------------------------------------
 
