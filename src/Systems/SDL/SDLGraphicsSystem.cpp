@@ -521,6 +521,8 @@ void SDLGraphicsSystem::setMinimumSizeForDC(int dc, Size size) {
           *newdc,
           display_contexts_[dc]->rect(),
           display_contexts_[dc]->rect());
+
+      display_contexts_[dc] = newdc;
     }
   }
 }

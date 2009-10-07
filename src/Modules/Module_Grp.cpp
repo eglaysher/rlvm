@@ -788,8 +788,7 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if (dst != 0 && dst != 1) {
-      Size maxSize = graphics.screenSize().sizeUnion(sourceSurface->size());
-      graphics.allocateDC(dst, maxSize);
+      graphics.setMinimumSizeForDC(dst, sourceSurface->size());
     }
 
     sourceSurface->blitToSurface(
