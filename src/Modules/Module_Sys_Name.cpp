@@ -40,43 +40,41 @@
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+namespace {
+
+struct GetName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int index,
                   StringReferenceIterator strIt) {
     *strIt = machine.memory().getName(index);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SetName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
+struct SetName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
   void operator()(RLMachine& machine, int index, string name) {
     machine.memory().setName(index, name);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetLocalName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+struct GetLocalName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int index,
                   StringReferenceIterator strIt) {
     *strIt = machine.memory().getLocalName(index);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SetLocalName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
+struct SetLocalName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
   void operator()(RLMachine& machine, int index, string name) {
     machine.memory().setLocalName(index, name);
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 void addSysNameOpcodes(RLModule& m) {
-  m.addOpcode(1300, 0, "GetName", new Sys_GetName);
-  m.addOpcode(1301, 0, "SetName", new Sys_SetName);
-  m.addOpcode(1310, 0, "GetLocalName", new Sys_GetLocalName);
-  m.addOpcode(1311, 0, "SetLocalName", new Sys_SetLocalName);
+  m.addOpcode(1300, 0, "GetName", new GetName);
+  m.addOpcode(1301, 0, "SetName", new SetName);
+  m.addOpcode(1310, 0, "GetLocalName", new GetLocalName);
+  m.addOpcode(1311, 0, "SetLocalName", new SetLocalName);
 }

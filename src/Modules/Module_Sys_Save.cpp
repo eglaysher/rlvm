@@ -84,22 +84,22 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-struct Sys_SaveExists : public RLOp_Store_1< IntConstant_T > {
+namespace {
+
+struct SaveExists : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int slot) {
     fs::path saveFile = Serialization::buildSaveGameFilename(machine, slot);
     return fs::exists(saveFile) ? 1 : 0;
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SaveDate
+struct SaveDate
     : public RLOp_Store_5<IntConstant_T, IntReference_T, IntReference_T,
                           IntReference_T, IntReference_T> {
   int operator()(RLMachine& machine, int slot,
                  IntReferenceIterator yIt, IntReferenceIterator mIt,
                  IntReferenceIterator dIt, IntReferenceIterator wdIt) {
-    int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
@@ -114,15 +114,13 @@ struct Sys_SaveDate
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SaveTime
+struct SaveTime
     : public RLOp_Store_5<IntConstant_T, IntReference_T, IntReference_T,
                           IntReference_T, IntReference_T> {
   int operator()(RLMachine& machine, int slot,
                  IntReferenceIterator hhIt, IntReferenceIterator mmIt,
                  IntReferenceIterator ssIt, IntReferenceIterator msIt) {
-    int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
@@ -137,9 +135,7 @@ struct Sys_SaveTime
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SaveDateTime : public RLOp_Store_9<
+struct SaveDateTime : public RLOp_Store_9<
   IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T,
   IntReference_T, IntReference_T, IntReference_T, IntReference_T > {
   int operator()(RLMachine& machine, int slot,
@@ -147,7 +143,7 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
                  IntReferenceIterator dIt, IntReferenceIterator wdIt,
                  IntReferenceIterator hhIt, IntReferenceIterator mmIt,
                  IntReferenceIterator ssIt, IntReferenceIterator msIt) {
-    int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
@@ -166,10 +162,7 @@ struct Sys_SaveDateTime : public RLOp_Store_9<
   }
 };
 
-// -----------------------------------------------------------------------
-
-
-struct Sys_SaveInfo
+struct SaveInfo
     : public RLOp_Store_10<IntConstant_T, IntReference_T, IntReference_T,
                            IntReference_T, IntReference_T, IntReference_T,
                            IntReference_T, IntReference_T, IntReference_T,
@@ -180,7 +173,7 @@ struct Sys_SaveInfo
                  IntReferenceIterator hhIt, IntReferenceIterator mmIt,
                  IntReferenceIterator ssIt, IntReferenceIterator msIt,
                  StringReferenceIterator titleIt) {
-    int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
@@ -201,8 +194,6 @@ struct Sys_SaveInfo
     return fileExists;
   }
 };
-
-// -----------------------------------------------------------------------
 
 typedef Argc_T<
   Special_T<
@@ -232,11 +223,11 @@ GetSaveFlagList;
  *   menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
  * @endcode
  */
-struct Sys_GetSaveFlag : public RLOp_Store_2<
+struct GetSaveFlag : public RLOp_Store_2<
   IntConstant_T, GetSaveFlagList> {
   /// Main operation
   int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList) {
-    int fileExists = Sys_SaveExists()(machine, slot);
+    int fileExists = SaveExists()(machine, slot);
     if (!fileExists)
       return 0;
 
@@ -245,23 +236,23 @@ struct Sys_GetSaveFlag : public RLOp_Store_2<
 
     using boost::detail::multi_array::copy_n;
     for (GetSaveFlagList::type::iterator it = flagList.begin();
-        it != flagList.end(); ++it) {
+         it != flagList.end(); ++it) {
       switch (it->type) {
-      case 0: {
-        IntReferenceIterator jt = it->first.get<0>()
-          .changeMemoryTo(&overlayedMemory);
-        copy_n(jt, it->first.get<2>(), it->first.get<1>());
-        break;
-      }
-      case 1: {
-        StringReferenceIterator jt = it->second.get<0>()
-          .changeMemoryTo(&overlayedMemory);
-        copy_n(jt, it->second.get<2>(), it->second.get<1>());
-        break;
-      }
-      default:
-        throw rlvm::Exception("Illegal value in Special_T in GetSaveFlag");
-        break;
+        case 0: {
+          IntReferenceIterator jt = it->first.get<0>()
+                                    .changeMemoryTo(&overlayedMemory);
+          copy_n(jt, it->first.get<2>(), it->first.get<1>());
+          break;
+        }
+        case 1: {
+          StringReferenceIterator jt = it->second.get<0>()
+                                       .changeMemoryTo(&overlayedMemory);
+          copy_n(jt, it->second.get<2>(), it->second.get<1>());
+          break;
+        }
+        default:
+          throw rlvm::Exception("Illegal value in Special_T in GetSaveFlag");
+          break;
       }
     }
 
@@ -269,13 +260,11 @@ struct Sys_GetSaveFlag : public RLOp_Store_2<
   }
 };
 
-// -----------------------------------------------------------------------
-
 /**
  * Returns the slot most recently saved to, or −1 if no games have
  * been saved.
  */
-struct Sys_LatestSave : public RLOp_Store_Void {
+struct LatestSave : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     fs::path saveDir = machine.system().gameSaveDirectory();
     int latestSlot = -1;
@@ -300,14 +289,14 @@ struct Sys_LatestSave : public RLOp_Store_Void {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_save : public RLOp_Void_1< IntConstant_T > {
+struct save : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int slot) {
     Serialization::saveGlobalMemory(machine);
     Serialization::saveGameForSlot(machine, slot);
   }
 };
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 
@@ -328,7 +317,7 @@ bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
 
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> currentWindow =
-    graphics.renderToSurfaceWithBg(dc0);
+      graphics.renderToSurfaceWithBg(dc0);
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
@@ -337,7 +326,7 @@ bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
   blankScreen->fill(RGBAColour::Black());
 
   machine.pushLongOperation(
-    new FadeEffect(machine, currentWindow, blankScreen, s, 250));
+      new FadeEffect(machine, currentWindow, blankScreen, s, 250));
 
   // At this point, the stack has been nuked, and this current
   // object has already been deleted, leaving an invalid
@@ -352,7 +341,7 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 
   shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> currentWindow =
-    graphics.renderToSurfaceWithBg(dc0);
+      graphics.renderToSurfaceWithBg(dc0);
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
@@ -361,7 +350,7 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 
   machine.pushLongOperation(new LoadingGame(slot));
   machine.pushLongOperation(
-    new FadeEffect(machine, dc0, currentWindow, s, 250));
+      new FadeEffect(machine, dc0, currentWindow, s, 250));
 
   // We have our before and after images to use as a transition now. Reset the
   // system to prevent a brief flash of the previous contents of the screen for
@@ -372,13 +361,13 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 // -----------------------------------------------------------------------
 
 void addSysSaveOpcodes(RLModule& m) {
-  m.addOpcode(1409, 0, "SaveExists", new Sys_SaveExists);
-  m.addOpcode(1410, 0, "SaveDate", new Sys_SaveDate);
-  m.addOpcode(1411, 0, "SaveTime", new Sys_SaveTime);
-  m.addOpcode(1412, 0, "SaveDateTime", new Sys_SaveDateTime);
-  m.addOpcode(1413, 0, "SaveInfo", new Sys_SaveInfo);
-  m.addOpcode(1414, 0, "GetSaveFlag", new Sys_GetSaveFlag);
-  m.addOpcode(1421, 0, "LatestSave", new Sys_LatestSave);
+  m.addOpcode(1409, 0, "SaveExists", new SaveExists);
+  m.addOpcode(1410, 0, "SaveDate", new SaveDate);
+  m.addOpcode(1411, 0, "SaveTime", new SaveTime);
+  m.addOpcode(1412, 0, "SaveDateTime", new SaveDateTime);
+  m.addOpcode(1413, 0, "SaveInfo", new SaveInfo);
+  m.addOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
+  m.addOpcode(1421, 0, "LatestSave", new LatestSave);
 
   m.addOpcode(2053, 0, "SetConfirmSaveLoad",
               callFunction(&System::setConfirmSaveLoad));
@@ -388,8 +377,8 @@ void addSysSaveOpcodes(RLModule& m) {
   m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
   m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3007, 0, "save", new Sys_save);
-  m.addOpcode(3107, 0, "save_always", new Sys_save);
+  m.addOpcode(3007, 0, "save", new save);
+  m.addOpcode(3107, 0, "save_always", new save);
 
   m.addOpcode(3009, 0, "load", new Sys_load);
   m.addOpcode(3109, 0, "load_always", new Sys_load);

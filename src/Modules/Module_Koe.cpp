@@ -52,15 +52,15 @@ struct LongOp_koeWait : public LongOperation {
 
 // -----------------------------------------------------------------------
 
-struct Koe_koeWait : public RLOp_Void_Void {
+namespace {
+
+struct koeWait : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.pushLongOperation(new LongOp_koeWait);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Koe_koeWaitC : public RLOp_Void_Void {
+struct koeWaitC : public RLOp_Void_Void {
   static bool isPlaying(RLMachine& machine) {
     return !machine.system().sound().koePlaying();
   }
@@ -74,6 +74,8 @@ struct Koe_koeWaitC : public RLOp_Void_Void {
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 KoeModule::KoeModule()
@@ -86,10 +88,10 @@ KoeModule::KoeModule()
   addUnsupportedOpcode(1, 0, "koePlayEx");
   addUnsupportedOpcode(1, 1, "koePlayEx");
 
-  addOpcode(3, 0, "koeWait", new Koe_koeWait);
+  addOpcode(3, 0, "koeWait", new koeWait);
   addOpcode(4, 0, "koePlaying", returnIntValue(&SoundSystem::koePlaying));
   addOpcode(5, 0, "koeStop", callFunction(&SoundSystem::koeStop));
-  addOpcode(6, 0, "koeWaitC", new Koe_koeWaitC);
+  addOpcode(6, 0, "koeWaitC", new koeWaitC);
 
   addUnsupportedOpcode(7, 0, "koePlayExC");
   addUnsupportedOpcode(7, 1, "koePlayExC");

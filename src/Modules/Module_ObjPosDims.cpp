@@ -42,6 +42,8 @@
 
 // -----------------------------------------------------------------------
 
+namespace {
+
 /**
  * Theoretically implements objGetPos. People don't actually
  * understand what's going on in this module (more so then anything
@@ -50,7 +52,7 @@
  * This is probably wrong or overlooks all sorts of weird corner cases
  * that aren't immediatly obvious.
  */
-struct Obj_objGetPos
+struct objGetPos
     : public RLOp_Void_3< IntConstant_T, IntReference_T, IntReference_T > {
   void operator()(RLMachine& machine, int objNum, IntReferenceIterator xIt,
                   IntReferenceIterator yIt) {
@@ -60,32 +62,26 @@ struct Obj_objGetPos
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Obj_objGetPosX : public RLOp_Store_1< IntConstant_T> {
+struct objGetPosX : public RLOp_Store_1< IntConstant_T> {
   int operator()(RLMachine& machine, int objNum) {
     GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     return obj.x();
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Obj_objGetPosY : public RLOp_Store_1< IntConstant_T> {
+struct objGetPosY : public RLOp_Store_1< IntConstant_T> {
   int operator()(RLMachine& machine, int objNum) {
     GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     return obj.y();
   }
 };
 
-// -----------------------------------------------------------------------
-
 /**
  * @note objGetDims takes an integer as its fourth argument, but we
  * have no idea what this is or how it affects things. Usually appears
  * to be 4. ????
  */
-struct Obj_objGetDims
+struct objGetDims
   : public RLOp_Void_4< IntConstant_T, IntReference_T, IntReference_T,
                         DefaultIntValue_T<4> > {
   void operator()(RLMachine& machine, int objNum, IntReferenceIterator widthIt,
@@ -96,17 +92,15 @@ struct Obj_objGetDims
   }
 };
 
-// -----------------------------------------------------------------------
-
-namespace {
 void addFunctions(RLModule& m) {
-  m.addOpcode(1000, 0, "objGetPos", new Obj_objGetPos);
-  m.addOpcode(1001, 0, "objGetPosX", new Obj_objGetPosX);
-  m.addOpcode(1002, 0, "objGetPosY", new Obj_objGetPosY);
-  m.addOpcode(1100, 0, "objGetDims", new Obj_objGetDims);
-  m.addOpcode(1100, 1, "objGetDims", new Obj_objGetDims);
+  m.addOpcode(1000, 0, "objGetPos", new objGetPos);
+  m.addOpcode(1001, 0, "objGetPosX", new objGetPosX);
+  m.addOpcode(1002, 0, "objGetPosY", new objGetPosY);
+  m.addOpcode(1100, 0, "objGetDims", new objGetDims);
+  m.addOpcode(1100, 1, "objGetDims", new objGetDims);
 }
-}
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 

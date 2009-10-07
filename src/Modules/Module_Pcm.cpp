@@ -40,6 +40,8 @@
 
 // -----------------------------------------------------------------------
 
+namespace {
+
 struct LongOp_pcmWait : public LongOperation {
   int channel_;
   explicit LongOp_pcmWait(int channel) : channel_(channel) {
@@ -54,7 +56,7 @@ struct LongOp_pcmWait : public LongOperation {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
+struct wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
     machine.system().sound().wavPlay(fileName, false);
   }
@@ -62,7 +64,7 @@ struct Pcm_wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, false, channel);
   }
@@ -70,8 +72,8 @@ struct Pcm_wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                          IntConstant_T> {
+struct wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+                                      IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, false, channel, fadein);
@@ -80,7 +82,7 @@ struct Pcm_wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, false, channel);
     machine.pushLongOperation(new LongOp_pcmWait(channel));
@@ -89,8 +91,8 @@ struct Pcm_wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                            IntConstant_T> {
+struct wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+                                        IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, false, channel, fadein);
@@ -100,7 +102,7 @@ struct Pcm_wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, true, channel);
   }
@@ -108,8 +110,8 @@ struct Pcm_wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                          IntConstant_T> {
+struct wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+                                      IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, true, channel, fadein);
@@ -118,7 +120,7 @@ struct Pcm_wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavWait : public RLOp_Void_1<IntConstant_T> {
+struct wavWait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     // Start waiting on the channel
     machine.pushLongOperation(new LongOp_pcmWait(channel));
@@ -127,7 +129,7 @@ struct Pcm_wavWait : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavPlaying : public RLOp_Store_1<IntConstant_T> {
+struct wavPlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
     return machine.system().sound().wavPlaying(channel);
   }
@@ -135,7 +137,7 @@ struct Pcm_wavPlaying : public RLOp_Store_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavVolume : public RLOp_Store_1<IntConstant_T> {
+struct wavVolume : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
     return machine.system().sound().channelVolume(channel);
   }
@@ -143,7 +145,7 @@ struct Pcm_wavVolume : public RLOp_Store_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level) {
     machine.system().sound().setChannelVolume(channel, level);
   }
@@ -153,8 +155,8 @@ struct Pcm_wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 /// We ignore fadein because we'll never get that effect with the
 /// current mixing library.
-struct Pcm_wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
-                                               IntConstant_T> {
+struct wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
+                                           IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level, int fadeInMs) {
     machine.system().sound().setChannelVolume(channel, level, fadeInMs);
   }
@@ -162,7 +164,7 @@ struct Pcm_wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavUnMute_0 : public RLOp_Void_1<IntConstant_T> {
+struct wavUnMute_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     machine.system().sound().setChannelVolume(channel, 255);
   }
@@ -170,7 +172,7 @@ struct Pcm_wavUnMute_0 : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int fadein) {
     machine.system().sound().setChannelVolume(channel, 255, fadein);
   }
@@ -178,7 +180,7 @@ struct Pcm_wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavMute_0 : public RLOp_Void_1<IntConstant_T> {
+struct wavMute_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     machine.system().sound().setChannelVolume(channel, 0);
   }
@@ -186,28 +188,30 @@ struct Pcm_wavMute_0 : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Pcm_wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int fadein) {
     machine.system().sound().setChannelVolume(channel, 0, fadein);
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 PcmModule::PcmModule()
-  : RLModule("Pcm", 1, 21) {
-  addOpcode(0, 0, "wavPlay", new Pcm_wavPlay_0);
-  addOpcode(0, 1, "wavPlay", new Pcm_wavPlay_1);
-  addOpcode(0, 2, "wavPlay", new Pcm_wavPlay_2);
+    : RLModule("Pcm", 1, 21) {
+  addOpcode(0, 0, "wavPlay", new wavPlay_0);
+  addOpcode(0, 1, "wavPlay", new wavPlay_1);
+  addOpcode(0, 2, "wavPlay", new wavPlay_2);
 
-  addOpcode(1, 0, "wavPlayEx", new Pcm_wavPlayEx_0);
-  addOpcode(1, 1, "wavPlayEx", new Pcm_wavPlayEx_1);
+  addOpcode(1, 0, "wavPlayEx", new wavPlayEx_0);
+  addOpcode(1, 1, "wavPlayEx", new wavPlayEx_1);
 
-  addOpcode(2, 0, "wavLoop", new Pcm_wavLoop_0);
-  addOpcode(2, 1, "wavLoop", new Pcm_wavLoop_1);
+  addOpcode(2, 0, "wavLoop", new wavLoop_0);
+  addOpcode(2, 1, "wavLoop", new wavLoop_1);
 
-  addOpcode(3, 0, "wavWait", new Pcm_wavWait);
-  addOpcode(4, 0, "wavPlaying", new Pcm_wavPlaying);
+  addOpcode(3, 0, "wavWait", new wavWait);
+  addOpcode(4, 0, "wavPlaying", new wavPlaying);
 
   addOpcode(5, 0, "wavStop", callFunction(&SoundSystem::wavStop));
   addOpcode(5, 1, "wavStop", callFunction(&SoundSystem::wavStopAll));
@@ -216,16 +220,16 @@ PcmModule::PcmModule()
   addUnsupportedOpcode(8, 0, "wavRewind");
   addOpcode(9, 0, "wavStop3", callFunction(&SoundSystem::wavStop));
   addOpcode(10, 0, "wavStop4", callFunction(&SoundSystem::wavStop));
-  addOpcode(11, 0, "wavVolume", new Pcm_wavVolume);
+  addOpcode(11, 0, "wavVolume", new wavVolume);
 
-  addOpcode(12, 0, "wavSetVolume", new Pcm_wavSetVolume_0);
-  addOpcode(12, 1, "wavSetVolume", new Pcm_wavSetVolume_1);
+  addOpcode(12, 0, "wavSetVolume", new wavSetVolume_0);
+  addOpcode(12, 1, "wavSetVolume", new wavSetVolume_1);
 
-  addOpcode(13, 0, "wavUnMute", new Pcm_wavUnMute_0);
-  addOpcode(13, 1, "wavUnMute", new Pcm_wavUnMute_1);
+  addOpcode(13, 0, "wavUnMute", new wavUnMute_0);
+  addOpcode(13, 1, "wavUnMute", new wavUnMute_1);
 
-  addOpcode(14, 0, "wavMute", new Pcm_wavMute_0);
-  addOpcode(14, 1, "wavMute", new Pcm_wavMute_0);
+  addOpcode(14, 0, "wavMute", new wavMute_0);
+  addOpcode(14, 1, "wavMute", new wavMute_0);
 
   addOpcode(20, 0, "wavStopAll", callFunction(&SoundSystem::wavStopAll));
 
@@ -234,5 +238,5 @@ PcmModule::PcmModule()
   addOpcode(106, 1, "wavFadeOut2", callFunction(&SoundSystem::wavFadeOut));
 
   // Unknown/Undocumented function in this module
-//  fun <1:Pcm:00040, 0> (<intC, (strC, intC, intC)+)
+  //  fun <1:Pcm:00040, 0> (<intC, (strC, intC, intC)+)
 }

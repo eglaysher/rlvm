@@ -50,17 +50,19 @@
 using namespace std;
 using boost::numeric_cast;
 
-struct Sys_ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+// -----------------------------------------------------------------------
+
+namespace {
+
+struct ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
   const int layer_;
-  explicit Sys_ResetTimer(const int in) : layer_(in) {}
+  explicit ResetTimer(const int in) : layer_(in) {}
 
   void operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
     es.getTimer(layer_, counter).set(es);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct LongOp_time : public LongOperation {
   const int layer_;
@@ -125,8 +127,6 @@ struct LongOp_time : public LongOperation {
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
   const int layer_;
   const bool in_time_c_;
@@ -143,11 +143,9 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
+struct Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
   const int layer_;
-  explicit Sys_Timer(const int in) : layer_(in) {}
+  explicit Timer(const int in) : layer_(in) {}
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
@@ -155,12 +153,10 @@ struct Sys_Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_CmpTimer
+struct CmpTimer
     : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> > {
   const int layer_;
-  explicit Sys_CmpTimer(const int in) : layer_(in) {}
+  explicit CmpTimer(const int in) : layer_(in) {}
 
   int operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();
@@ -169,12 +165,10 @@ struct Sys_CmpTimer
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SetTimer
+struct SetTimer
     : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T<0> > {
   const int layer_;
-  explicit Sys_SetTimer(const int in) : layer_(in) {}
+  explicit SetTimer(const int in) : layer_(in) {}
 
   void operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();
@@ -182,33 +176,34 @@ struct Sys_SetTimer
   }
 };
 
+}  // namespace
 
 // -----------------------------------------------------------------------
 
 void addSysTimerOpcodes(RLModule& m) {
-  m.addOpcode(110, 0, "ResetTimer", new Sys_ResetTimer(0));
-  m.addOpcode(110, 1, "ResetTimer", new Sys_ResetTimer(0));
+  m.addOpcode(110, 0, "ResetTimer", new ResetTimer(0));
+  m.addOpcode(110, 1, "ResetTimer", new ResetTimer(0));
   m.addOpcode(111, 0, "time", new Sys_time(0, false));
   m.addOpcode(111, 1, "time", new Sys_time(0, false));
   m.addOpcode(112, 0, "timeC", new Sys_time(0, true));
   m.addOpcode(112, 1, "timeC", new Sys_time(0, true));
-  m.addOpcode(114, 0, "Timer", new Sys_Timer(0));
-  m.addOpcode(114, 1, "Timer", new Sys_Timer(0));
-  m.addOpcode(115, 0, "CmpTimer", new Sys_CmpTimer(0));
-  m.addOpcode(115, 1, "CmpTimer", new Sys_CmpTimer(0));
-  m.addOpcode(116, 0, "CmpTimer", new Sys_SetTimer(0));
-  m.addOpcode(116, 1, "CmpTimer", new Sys_SetTimer(0));
+  m.addOpcode(114, 0, "Timer", new Timer(0));
+  m.addOpcode(114, 1, "Timer", new Timer(0));
+  m.addOpcode(115, 0, "CmpTimer", new CmpTimer(0));
+  m.addOpcode(115, 1, "CmpTimer", new CmpTimer(0));
+  m.addOpcode(116, 0, "CmpTimer", new SetTimer(0));
+  m.addOpcode(116, 1, "CmpTimer", new SetTimer(0));
 
-  m.addOpcode(120, 0, "ResetExTimer", new Sys_ResetTimer(1));
-  m.addOpcode(120, 1, "ResetExTimer", new Sys_ResetTimer(1));
+  m.addOpcode(120, 0, "ResetExTimer", new ResetTimer(1));
+  m.addOpcode(120, 1, "ResetExTimer", new ResetTimer(1));
   m.addOpcode(121, 0, "timeEx", new Sys_time(1, false));
   m.addOpcode(121, 1, "timeEx", new Sys_time(1, false));
   m.addOpcode(122, 0, "timeExC", new Sys_time(1, true));
   m.addOpcode(122, 1, "timeExC", new Sys_time(1, true));
-  m.addOpcode(124, 0, "ExTimer", new Sys_Timer(1));
-  m.addOpcode(124, 1, "ExTimer", new Sys_Timer(1));
-  m.addOpcode(125, 0, "CmpExTimer", new Sys_CmpTimer(1));
-  m.addOpcode(125, 1, "CmpExTimer", new Sys_CmpTimer(1));
-  m.addOpcode(126, 0, "SetExTimer", new Sys_SetTimer(1));
-  m.addOpcode(126, 1, "SetExTimer", new Sys_SetTimer(1));
+  m.addOpcode(124, 0, "ExTimer", new Timer(1));
+  m.addOpcode(124, 1, "ExTimer", new Timer(1));
+  m.addOpcode(125, 0, "CmpExTimer", new CmpTimer(1));
+  m.addOpcode(125, 1, "CmpExTimer", new CmpTimer(1));
+  m.addOpcode(126, 0, "SetExTimer", new SetTimer(1));
+  m.addOpcode(126, 1, "SetExTimer", new SetTimer(1));
 }

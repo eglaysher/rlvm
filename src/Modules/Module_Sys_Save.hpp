@@ -45,7 +45,6 @@ void addSysSaveOpcodes(RLModule& module);
 
 // -----------------------------------------------------------------------
 
-
 /**
  * Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
  * from a save game slot.

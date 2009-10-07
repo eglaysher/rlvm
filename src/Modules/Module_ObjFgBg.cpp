@@ -101,14 +101,16 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-struct Obj_dispArea_0 : public RLOp_Void_1< IntConstant_T > {
+namespace {
+
+struct dispArea_0 : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.clearClip();
   }
 };
 
-struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
+struct dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
@@ -119,7 +121,7 @@ struct Obj_dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
+struct dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
@@ -131,7 +133,7 @@ struct Obj_dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
+struct dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -142,7 +144,7 @@ struct Obj_dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
+struct adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -153,7 +155,7 @@ struct Obj_adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
+struct adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setXAdjustment(idx, x);
@@ -162,7 +164,7 @@ struct Obj_adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
+struct adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setYAdjustment(idx, y);
@@ -171,7 +173,7 @@ struct Obj_adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
+struct tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -181,7 +183,7 @@ struct Obj_tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
+struct colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -191,7 +193,7 @@ struct Obj_colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-struct Obj_objSetText
+struct objSetText
     : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
   void operator()(RLMachine& machine, int buf, string val) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -202,7 +204,7 @@ struct Obj_objSetText
 
 // -----------------------------------------------------------------------
 
-struct Obj_objTextOpts
+struct objTextOpts
   : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T> {
@@ -287,25 +289,25 @@ void addObjectFunctions(RLModule& m) {
               new Obj_SetOneIntOnObj(&GraphicsObject::setAlpha));
   m.addOpcode(1004, 0, "objShow",
               new Obj_SetOneIntOnObj(&GraphicsObject::setVisible));
-  m.addOpcode(1005, 0, "objDispArea", new Obj_dispArea_0);
-  m.addOpcode(1005, 1, "objDispArea", new Obj_dispArea_1);
-  m.addOpcode(1006, 0, "objAdjust", new Obj_adjust);
-  m.addOpcode(1007, 0, "objAdjustX", new Obj_adjustX);
-  m.addOpcode(1008, 0, "objAdjustY", new Obj_adjustY);
+  m.addOpcode(1005, 0, "objDispArea", new dispArea_0);
+  m.addOpcode(1005, 1, "objDispArea", new dispArea_1);
+  m.addOpcode(1006, 0, "objAdjust", new adjust);
+  m.addOpcode(1007, 0, "objAdjustX", new adjustX);
+  m.addOpcode(1008, 0, "objAdjustY", new adjustY);
   m.addOpcode(1009, 0, "objMono",
               new Obj_SetOneIntOnObj(&GraphicsObject::setMono));
   m.addOpcode(1010, 0, "objInvert",
               new Obj_SetOneIntOnObj(&GraphicsObject::setInvert));
   m.addOpcode(1011, 0, "objLight",
               new Obj_SetOneIntOnObj(&GraphicsObject::setLight));
-  m.addOpcode(1012, 0, "objTint", new Obj_tint);
+  m.addOpcode(1012, 0, "objTint", new tint);
   m.addOpcode(1013, 0, "objTintR",
               new Obj_SetOneIntOnObj(&GraphicsObject::setTintR));
   m.addOpcode(1014, 0, "objTintG",
               new Obj_SetOneIntOnObj(&GraphicsObject::setTintG));
   m.addOpcode(1015, 0, "objTintB",
               new Obj_SetOneIntOnObj(&GraphicsObject::setTintB));
-  m.addOpcode(1016, 0, "objColour", new Obj_colour);
+  m.addOpcode(1016, 0, "objColour", new colour);
   m.addOpcode(1017, 0, "objColR",
               new Obj_SetOneIntOnObj(&GraphicsObject::setColourR));
   m.addOpcode(1018, 0, "objColG",
@@ -317,9 +319,9 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1021, 0, "objComposite",
               new Obj_SetOneIntOnObj(&GraphicsObject::setCompositeMode));
 
-  m.addOpcode(1024, 0, "objSetText", new Obj_objSetText);
-  m.addOpcode(1024, 1, "objSetText", new Obj_objSetText);
-  m.addOpcode(1025, 0, "objTextOpts", new Obj_objTextOpts);
+  m.addOpcode(1024, 0, "objSetText", new objSetText);
+  m.addOpcode(1024, 1, "objSetText", new objSetText);
+  m.addOpcode(1025, 0, "objTextOpts", new objTextOpts);
 
 /*  m.addOpcode(1028, 0, new  */
   m.addOpcode(1029, 0, "objScrollRateX",
@@ -330,12 +332,10 @@ void addObjectFunctions(RLModule& m) {
   m.addUnsupportedOpcode(1032, 0, "objOrder");
   m.addUnsupportedOpcode(1033, 0, "objQuarterView");
 
-  m.addOpcode(1034, 0, "objDispRect", new Obj_dispArea_0);
-  m.addOpcode(1034, 1, "objDispRect", new Obj_dispRect_1);
-  m.addOpcode(1035, 0, "objDispCorner",
-              new Obj_dispArea_0);
-  m.addOpcode(1035, 1, "objDispCorner",
-              new Obj_dispCorner_1);
+  m.addOpcode(1034, 0, "objDispRect", new dispArea_0);
+  m.addOpcode(1034, 1, "objDispRect", new dispRect_1);
+  m.addOpcode(1035, 0, "objDispCorner", new dispArea_0);
+  m.addOpcode(1035, 1, "objDispCorner", new dispCorner_1);
   m.addOpcode(1036, 0, "objAdjustVert",
               new Obj_SetOneIntOnObj(&GraphicsObject::setVert));
   m.addOpcode(1039, 0, "objPattNo",
@@ -362,6 +362,8 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1055, 0, "objOriginY",
               new Obj_SetOneIntOnObj(&GraphicsObject::setYOrigin));
 }
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------

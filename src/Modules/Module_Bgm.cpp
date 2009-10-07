@@ -42,23 +42,21 @@
 
 // -----------------------------------------------------------------------
 
-struct Bgm_bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
+namespace {
+
+struct bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
     machine.system().sound().bgmPlay(filename, true);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Bgm_bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
     machine.system().sound().bgmPlay(filename, true, fadein);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Bgm_bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+struct bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein,
                   int fadeout) {
@@ -66,25 +64,19 @@ struct Bgm_bgmLoop_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Bgm_bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
+struct bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
     machine.system().sound().bgmPlay(filename, false);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Bgm_bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
     machine.system().sound().bgmPlay(filename, false, fadein);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Bgm_bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
+struct bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein,
                   int fadeout) {
@@ -92,33 +84,31 @@ struct Bgm_bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Bgm_bgmPlaying : public RLOp_Store_Void {
+struct bgmPlaying : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     return machine.system().sound().bgmStatus() == 1;
   }
 };
 
-// -----------------------------------------------------------------------
+}  // namespace
 
 BgmModule::BgmModule()
   : RLModule("Bgm", 1, 20) {
   // fun \\([A-Za-z0-9]+\\) +<1:Bgm:\\([0-9]+\\), \\([0-9]+\\).*$
-  addOpcode(0, 0, "bgmLoop", new Bgm_bgmLoop_0);
-  addOpcode(0, 1, "bgmLoop", new Bgm_bgmLoop_1);
-  addOpcode(0, 2, "bgmLoop", new Bgm_bgmLoop_2);
+  addOpcode(0, 0, "bgmLoop", new bgmLoop_0);
+  addOpcode(0, 1, "bgmLoop", new bgmLoop_1);
+  addOpcode(0, 2, "bgmLoop", new bgmLoop_2);
 
   addUnsupportedOpcode(1, 0, "bgmPlayEx");
   addUnsupportedOpcode(1, 1, "bgmPlayEx");
   addUnsupportedOpcode(1, 2, "bgmPlayEx");
 
-  addOpcode(2, 0, "bgmPlay", new Bgm_bgmPlay_0);
-  addOpcode(2, 1, "bgmPlay", new Bgm_bgmPlay_1);
-  addOpcode(2, 2, "bgmPlay", new Bgm_bgmPlay_2);
+  addOpcode(2, 0, "bgmPlay", new bgmPlay_0);
+  addOpcode(2, 1, "bgmPlay", new bgmPlay_1);
+  addOpcode(2, 2, "bgmPlay", new bgmPlay_2);
 
   addUnsupportedOpcode(3, 0, "bgmWait");
-  addOpcode(4, 0, "bgmPlaying", new Bgm_bgmPlaying);
+  addOpcode(4, 0, "bgmPlaying", new bgmPlaying);
   addOpcode(5, 0, "bgmStop", callFunction(&SoundSystem::bgmStop));
   addOpcode(6, 0, "bgmStop2", callFunction(&SoundSystem::bgmStop));
   addUnsupportedOpcode(6, 0, "bgmStop2");

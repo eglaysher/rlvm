@@ -59,8 +59,7 @@ using namespace std;
  * @{
  */
 
-namespace Opcodes {
-namespace Debug {
+namespace {
 
 struct DebugMessageInt : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int value) {
@@ -78,15 +77,10 @@ struct DebugMessageStr : public RLOp_Void_1< StrConstant_T > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-}  // namespace Debug
-}  // namespace Opcodes
+}  // namespace
 
 DebugModule::DebugModule()
   : RLModule("Debug", 1, 255) {
-  using namespace Opcodes::Debug;
-
   addOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
   addOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
 }

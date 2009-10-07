@@ -52,7 +52,9 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+namespace {
+
+struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   struct WaitForGanToFinish : public LongOperation {
     /**
      * Save the screen update mode and change it to automatic when entering a
@@ -115,7 +117,7 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   bool block_;
   GraphicsObjectData::AfterAnimation after_effect_;
 
-  Gan_ganPlay(bool block, GraphicsObjectData::AfterAnimation after)
+  ganPlay(bool block, GraphicsObjectData::AfterAnimation after)
     : block_(block), after_effect_(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet) {
@@ -144,8 +146,6 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     }
   }
 };
-
-// -----------------------------------------------------------------------
 
 /**
  * Returns true when an animation is completed.
@@ -183,7 +183,7 @@ struct Gan_ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
  * After implementing this, we no longer get stuck in an infinite loop during
  * Ushio's birth so I'm assuming this is correct.
  */
-struct Gan_isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
+struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
     GraphicsObject& obj = getGraphicsObject(machine, this, gan_num);
 
@@ -197,39 +197,41 @@ struct Gan_isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 void addGanOperationsTo(RLModule& m) {
-  m.addOpcode(3, 0, "ganIsDonePlaying", new Gan_isGanDonePlaying);
+  m.addOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
 
   m.addUnsupportedOpcode(1000, 0, "objStop");
   m.addUnsupportedOpcode(1000, 1, "objStop");
 
   m.addOpcode(1001, 0, "ganLoop",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_LOOP));
+              new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
   m.addOpcode(1003, 0, "ganPlay",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_NONE));
+              new ganPlay(false, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(1005, 0, "ganPlayOnce",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
+              new ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
   m.addOpcode(1006, 0, "ganPlayEx",
-              new Gan_ganPlay(true, GraphicsObjectData::AFTER_NONE));
+              new ganPlay(true, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(1007, 0, "ganPlayOnceEx",
-              new Gan_ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
+              new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 
   m.addOpcode(2001, 0, "objLoop",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_LOOP));
+              new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
   m.addUnsupportedOpcode(2003, 0, "objPlay");
 
   m.addOpcode(3001, 0, "ganLoop2",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_LOOP));
+              new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
   m.addOpcode(3003, 0, "ganPlay2",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_NONE));
+              new ganPlay(false, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3005, 0, "ganPlayOnce2",
-              new Gan_ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
+              new ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
   m.addOpcode(3006, 0, "ganPlayEx2",
-              new Gan_ganPlay(true, GraphicsObjectData::AFTER_NONE));
+              new ganPlay(true, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3007, 0, "ganPlayOnceEx2",
-              new Gan_ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
+              new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 }
 
 // -----------------------------------------------------------------------

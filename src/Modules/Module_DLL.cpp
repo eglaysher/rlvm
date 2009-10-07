@@ -39,17 +39,15 @@
 
 using namespace libReallive;
 
-// -----------------------------------------------------------------------
+namespace {
 
-struct Jmp_LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     machine.loadDLL(slot, name);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Jmp_CallDLL : public RLOp_Store_6<
+struct CallDLL : public RLOp_Store_6<
   IntConstant_T,
   DefaultIntValue_T<0>, DefaultIntValue_T<0>, DefaultIntValue_T<0>,
   DefaultIntValue_T<0>, DefaultIntValue_T<0> > {
@@ -59,17 +57,17 @@ struct Jmp_CallDLL : public RLOp_Store_6<
   }
 };
 
-// -----------------------------------------------------------------------
+}  // namespace
 
 DLLModule::DLLModule()
   : RLModule("DLL", 2, 1) {
-  addOpcode(10, 0, "LoadDLL", new Jmp_LoadDLL);
+  addOpcode(10, 0, "LoadDLL", new LoadDLL);
   addOpcode(11, 0, "UnloadDLL", callFunction(&RLMachine::unloadDLL));
 
-  addOpcode(12, 0, "CallDLL", new Jmp_CallDLL);
-  addOpcode(12, 1, "CallDLL", new Jmp_CallDLL);
-  addOpcode(12, 2, "CallDLL", new Jmp_CallDLL);
-  addOpcode(12, 3, "CallDLL", new Jmp_CallDLL);
-  addOpcode(12, 4, "CallDLL", new Jmp_CallDLL);
-  addOpcode(12, 5, "CallDLL", new Jmp_CallDLL);
+  addOpcode(12, 0, "CallDLL", new CallDLL);
+  addOpcode(12, 1, "CallDLL", new CallDLL);
+  addOpcode(12, 2, "CallDLL", new CallDLL);
+  addOpcode(12, 3, "CallDLL", new CallDLL);
+  addOpcode(12, 4, "CallDLL", new CallDLL);
+  addOpcode(12, 5, "CallDLL", new CallDLL);
 }

@@ -37,28 +37,27 @@
 
 // -----------------------------------------------------------------------
 
-struct EventLoop_setOverride : public RLOp_Void_1< IntConstant_T > {
+namespace {
+
+struct setOverride : public RLOp_Void_1< IntConstant_T > {
   bool value_;
-  explicit EventLoop_setOverride(int value) : value_(value) { }
+  explicit setOverride(int value) : value_(value) { }
 
   void operator()(RLMachine& machine, int window) {
     machine.system().text().setVisualOverride(window, value_);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct EventLoop_setOverrideAll : public RLOp_Void_Void {
+struct setOverrideAll : public RLOp_Void_Void {
   bool value_;
-  explicit EventLoop_setOverrideAll(int value) : value_(value) { }
+  explicit setOverrideAll(int value) : value_(value) { }
 
   void operator()(RLMachine& machine) {
     machine.system().text().setVisualOverrideAll(value_);
   }
 };
 
-
-// -----------------------------------------------------------------------
+}  // namespace
 
 EventLoopModule::EventLoopModule()
   : RLModule("EventLoop", 0, 4) {
@@ -80,14 +79,10 @@ EventLoopModule::EventLoopModule()
 
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
   // system; no idea what they do.
-  addOpcode(1200, 0, "TextwindowOverrideShow",
-            new EventLoop_setOverride(true));
-  addOpcode(1200, 2, "TextwindowOverrideShow",
-            new EventLoop_setOverrideAll(true));
-  addOpcode(1201, 0, "TextwindowOverrideHide",
-            new EventLoop_setOverride(false));
-  addOpcode(1201, 2, "TextwindowOverrideHide",
-            new EventLoop_setOverrideAll(false));
+  addOpcode(1200, 0, "TextwindowOverrideShow", new setOverride(true));
+  addOpcode(1200, 2, "TextwindowOverrideShow", new setOverrideAll(true));
+  addOpcode(1201, 0, "TextwindowOverrideHide", new setOverride(false));
+  addOpcode(1201, 2, "TextwindowOverrideHide", new setOverrideAll(false));
   addOpcode(1202, 0, "ClearTextwindowOverrides",
             callFunction(&TextSystem::clearVisualOverrides));
 }

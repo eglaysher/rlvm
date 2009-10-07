@@ -54,7 +54,9 @@
 
 // -----------------------------------------------------------------------
 
-struct Scr_stackNop : public RLOp_Void_1< IntConstant_T > {
+namespace {
+
+struct stackNop : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int numberOfNops) {
     GraphicsSystem& sys = machine.system().graphics();
 
@@ -64,18 +66,14 @@ struct Scr_stackNop : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Scr_stackTrunc : public RLOp_Void_1< IntConstant_T > {
+struct stackTrunc : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int count) {
     GraphicsSystem& sys = machine.system().graphics();
     sys.stackPop(sys.stackSize() - count);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Scr_GetDCPixel : public RLOp_Void_6<
+struct GetDCPixel : public RLOp_Void_6<
   IntConstant_T, IntConstant_T, IntConstant_T,
   IntReference_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine, int x, int y, int dc,
@@ -90,15 +88,17 @@ struct Scr_GetDCPixel : public RLOp_Void_6<
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 ScrModule::ScrModule()
   : RLModule("Scr", 1, 30) {
   addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
-  addOpcode(1, 0, "stackNop", new Scr_stackNop);
+  addOpcode(1, 0, "stackNop", new stackNop);
   addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));
   addOpcode(3, 0, "stackSize", returnIntValue(&GraphicsSystem::stackSize));
-  addOpcode(4, 0, "stackTrunc", new Scr_stackTrunc);
+  addOpcode(4, 0, "stackTrunc", new stackTrunc);
 
   addOpcode(20, 0, "DrawAuto",
             setToConstant(&GraphicsSystem::setScreenUpdateMode,
@@ -110,6 +110,6 @@ ScrModule::ScrModule()
             setToConstant(&GraphicsSystem::setScreenUpdateMode,
                           GraphicsSystem::SCREENUPDATEMODE_MANUAL));
 
-  addOpcode(31, 0, "GetDCPixel", new Scr_GetDCPixel);
+  addOpcode(31, 0, "GetDCPixel", new GetDCPixel);
 }
 

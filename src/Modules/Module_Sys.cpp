@@ -77,17 +77,16 @@ const float PI = 3.14159265;
 using namespace std;
 using boost::shared_ptr;
 
-//  fun title                   <1:Sys:00000, 0> (res 'sub-title')
-struct Sys_title : public RLOp_Void_1< StrConstant_T > {
+namespace {
+
+struct title : public RLOp_Void_1< StrConstant_T > {
   void operator()(RLMachine& machine, std::string subtitle) {
     machine.system().graphics().setWindowSubtitle(
       subtitle, machine.getTextEncoding());
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetCursorPos_gc1
+struct GetCursorPos_gc1
   : public RLOp_Void_4<IntReference_T, IntReference_T, IntReference_T,
                        IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator xit,
@@ -103,9 +102,7 @@ struct Sys_GetCursorPos_gc1
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetCursorPos_gc2
+struct GetCursorPos_gc2
   : public RLOp_Void_2< IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator xit,
                   IntReferenceIterator yit) {
@@ -115,26 +112,20 @@ struct Sys_GetCursorPos_gc2
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_CallStackPop : RLOp_Void_1< DefaultIntValue_T<1> > {
+struct CallStackPop : RLOp_Void_1< DefaultIntValue_T<1> > {
   void operator()(RLMachine& machine, int frames_to_pop) {
     for (int i = 0; i < frames_to_pop; ++i)
       machine.popStackFrame();
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_PauseCursor : public RLOp_Void_1< IntConstant_T > {
+struct PauseCursor : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int newCursor) {
     machine.system().text().setKeyCursor(newCursor);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetWakuAll : public RLOp_Store_Void {
+struct GetWakuAll : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     boost::shared_ptr<TextWindow> window =
         machine.system().text().currentWindow();
@@ -142,22 +133,18 @@ struct Sys_GetWakuAll : public RLOp_Store_Void {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_rnd_0 : public RLOp_Store_1< IntConstant_T > {
+struct rnd_0 : public RLOp_Store_1< IntConstant_T > {
   unsigned int seedp_;
-  Sys_rnd_0() : seedp_(time(NULL)) {}
+  rnd_0() : seedp_(time(NULL)) {}
 
   int operator()(RLMachine& machine, int maxVal) {
     return (int)(double(maxVal) * rand_r(&seedp_)/(RAND_MAX + 1.0));
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   unsigned int seedp_;
-  Sys_rnd_1() : seedp_(time(NULL)) {}
+  rnd_1() : seedp_(time(NULL)) {}
 
   int operator()(RLMachine& machine, int minVal, int maxVal) {
     return minVal + (int)(double(maxVal - minVal) *
@@ -165,15 +152,11 @@ struct Sys_rnd_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_pcnt : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct pcnt : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int numenator, int denominator) {
     return int( ((float)numenator / (float)denominator) * 100 );
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct Sys_abs : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var) {
@@ -181,39 +164,29 @@ struct Sys_abs : public RLOp_Store_1< IntConstant_T > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_power_0 : public RLOp_Store_1< IntConstant_T > {
+struct power_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var) {
     return var * var;
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_power_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct power_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return (int)std::pow((float)var1, var2);
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_sin_0 : public RLOp_Store_1< IntConstant_T > {
+struct sin_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
     return int( std::sin(var1 * (PI/180)) * 32640 );
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_sin_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct sin_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return int( std::sin(var1 * (PI/180)) * 32640 / var2 );
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
                                           IntConstant_T, IntConstant_T > {
@@ -223,9 +196,7 @@ struct Sys_modulus : public RLOp_Store_4< IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
+struct angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
                                         IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2,
                  int var3, int var4) {
@@ -233,15 +204,11 @@ struct Sys_angle : public RLOp_Store_4< IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct Sys_min : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::min(var1, var2);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct Sys_max : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
@@ -249,9 +216,7 @@ struct Sys_max : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_constrain
+struct constrain
     : public RLOp_Store_3< IntConstant_T, IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
     if (var2 < var1)
@@ -263,24 +228,17 @@ struct Sys_constrain
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_cos_0 : public RLOp_Store_1< IntConstant_T > {
+struct cos_0 : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int var1) {
     return int( std::cos(var1 * (PI/180)) * 32640 );
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_cos_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct cos_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   int operator()(RLMachine& machine, int var1, int var2) {
     return int( std::cos(var1 * (PI/180)) * 32640 / var2 );
   }
 };
-
-
-// -----------------------------------------------------------------------
 
 /**
  * Implements op<0:Sys:01203, 0>, ReturnMenu.
@@ -291,7 +249,7 @@ struct Sys_cos_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
  * This method also resets a LOT of the game state, though this isn't mentioned
  * in the rldev manual.
  */
-struct Sys_ReturnMenu : public RLOp_Void_Void {
+struct ReturnMenu : public RLOp_Void_Void {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine) {
@@ -301,9 +259,7 @@ struct Sys_ReturnMenu : public RLOp_Void_Void {
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_SetWindowAttr : public RLOp_Void_5<
+struct SetWindowAttr : public RLOp_Void_5<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T> {
   void operator()(RLMachine& machine, int r, int g, int b, int a, int f) {
@@ -318,9 +274,7 @@ struct Sys_SetWindowAttr : public RLOp_Void_5<
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_GetWindowAttr : public RLOp_Void_5<
+struct GetWindowAttr : public RLOp_Void_5<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
   IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator r,
@@ -336,9 +290,7 @@ struct Sys_GetWindowAttr : public RLOp_Void_5<
   }
 };
 
-// -----------------------------------------------------------------------
-
-struct Sys_DefWindowAttr : public RLOp_Void_5<
+struct DefWindowAttr : public RLOp_Void_5<
   IntReference_T, IntReference_T, IntReference_T, IntReference_T,
   IntReference_T> {
   void operator()(RLMachine& machine, IntReferenceIterator r,
@@ -355,8 +307,11 @@ struct Sys_DefWindowAttr : public RLOp_Void_5<
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
+// Implementation isn't in anonymous namespace since it is used elsewhere.
 void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
@@ -380,23 +335,22 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
   machine.pushLongOperation(effect);
 }
 
-
 // -----------------------------------------------------------------------
 
 SysModule::SysModule()
   : RLModule("Sys", 1, 004) {
-  addOpcode(0, 0, "title", new Sys_title);
+  addOpcode(0, 0, "title", new title);
 
   addOpcode(130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
-  addOpcode(133, 0, "GetCursorPos", new Sys_GetCursorPos_gc1);
+  addOpcode(133, 0, "GetCursorPos", new GetCursorPos_gc1);
 
-  addOpcode(202, 0, "GetCursorPos", new Sys_GetCursorPos_gc2);
+  addOpcode(202, 0, "GetCursorPos", new GetCursorPos_gc2);
 
   addUnsupportedOpcode(320, 0, "CallStackClear");
   addUnsupportedOpcode(321, 0, "CallStackNop");
   addUnsupportedOpcode(321, 1, "CallStackNop");
-  addOpcode(322, 0, "CallStackPop", new Sys_CallStackPop);
-  addOpcode(322, 1, "CallStackPop", new Sys_CallStackPop);
+  addOpcode(322, 0, "CallStackPop", new CallStackPop);
+  addOpcode(322, 1, "CallStackPop", new CallStackPop);
   addUnsupportedOpcode(323, 0, "CallStackSize");
   addUnsupportedOpcode(324, 0, "CallStackTrunc");
 
@@ -426,7 +380,7 @@ SysModule::SysModule()
   addOpcode(354, 0, "ShiftPressed",
             returnIntValue(&EventSystem::shiftPressed));
 
-  addOpcode(364, 0, "PauseCursor", new Sys_PauseCursor);
+  addOpcode(364, 0, "PauseCursor", new PauseCursor);
 
   addUnsupportedOpcode(400, 0, "GetWindowPos");
   addUnsupportedOpcode(401, 0, "SetWindowPos");
@@ -435,7 +389,7 @@ SysModule::SysModule()
   addUnsupportedOpcode(404, 0, "SetDefaultWindowPos");
   addUnsupportedOpcode(405, 0, "DefaultWindowResetPos");
 
-  addOpcode(410, 0, "GetWakuAll", new Sys_GetWakuAll);
+  addOpcode(410, 0, "GetWakuAll", new GetWakuAll);
   addUnsupportedOpcode(411, 0, "SetWakuAll");
   addUnsupportedOpcode(412, 0, "GetWaku");
   addUnsupportedOpcode(413, 0, "SetWaku");
@@ -454,21 +408,21 @@ SysModule::SysModule()
   addUnsupportedOpcode(468, 0, "GetCloseAnmTime");
   addUnsupportedOpcode(469, 0, "SetCloseAnmTime");
 
-  addOpcode(1000, 0, "rnd", new Sys_rnd_0);
-  addOpcode(1000, 1, "rnd", new Sys_rnd_1);
-  addOpcode(1001, 0, "pcnt", new Sys_pcnt);
+  addOpcode(1000, 0, "rnd", new rnd_0);
+  addOpcode(1000, 1, "rnd", new rnd_1);
+  addOpcode(1001, 0, "pcnt", new pcnt);
   addOpcode(1002, 0, "abs", new Sys_abs);
-  addOpcode(1003, 0, "power", new Sys_power_0);
-  addOpcode(1003, 1, "power", new Sys_power_1);
-  addOpcode(1004, 0, "sin", new Sys_sin_0);
-  addOpcode(1004, 1, "sin", new Sys_sin_1);
+  addOpcode(1003, 0, "power", new power_0);
+  addOpcode(1003, 1, "power", new power_1);
+  addOpcode(1004, 0, "sin", new sin_0);
+  addOpcode(1004, 1, "sin", new sin_1);
   addOpcode(1005, 0, "modulus", new Sys_modulus);
-  addOpcode(1006, 0, "angle", new Sys_angle);
+  addOpcode(1006, 0, "angle", new angle);
   addOpcode(1007, 0, "min", new Sys_min);
   addOpcode(1008, 0, "max", new Sys_max);
-  addOpcode(1009, 0, "constrain", new Sys_constrain);
-  addOpcode(1010, 0, "cos", new Sys_cos_0);
-  addOpcode(1010, 1, "cos", new Sys_cos_1);
+  addOpcode(1009, 0, "constrain", new constrain);
+  addOpcode(1010, 0, "cos", new cos_0);
+  addOpcode(1010, 1, "cos", new cos_1);
   // sign 01011
   // (unknown) 01012
   // (unknown) 01013
@@ -478,10 +432,10 @@ SysModule::SysModule()
   addOpcode(1200, 0, "end", callFunction(&RLMachine::halt));
   addOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
   addOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
-  addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
+  addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
   addUnsupportedOpcode(1204, 0, "ReturnPrevSelect");
   addUnsupportedOpcode(1205, 0, "ReturnPrevSelect2");
-  addOpcode(1203, 0, "ReturnMenu", new Sys_ReturnMenu);
+  addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
 
   addOpcode(1130, 0, "DefaultGrp",
             returnStringValue(&GraphicsSystem::defaultGrpName));
@@ -606,7 +560,7 @@ SysModule::SysModule()
   addOpcode(2264, 0, "SetWindowAttrF",
             callFunction(&TextSystem::setWindowAttrF));
 
-  addOpcode(2267, 0, "SetWindowAttr", new Sys_SetWindowAttr);
+  addOpcode(2267, 0, "SetWindowAttr", new SetWindowAttr);
 
   addUnsupportedOpcode(2273, 0, "SetClassifyText");
   addUnsupportedOpcode(2373, 0, "ClassifyText");
@@ -636,7 +590,7 @@ SysModule::SysModule()
   addOpcode(2363, 0, "WindowAttrA", returnIntValue(&TextSystem::windowAttrA));
   addOpcode(2364, 0, "WindowAttrF", returnIntValue(&TextSystem::windowAttrF));
 
-  addOpcode(2367, 0, "GetWindowAttr", new Sys_GetWindowAttr);
+  addOpcode(2367, 0, "GetWindowAttr", new GetWindowAttr);
 
   addOpcode(2610, 0, "DefWindowAttrR", new ReturnGameexeInt("WINDOW_ATTR", 0));
   addOpcode(2611, 0, "DefWindowAttrG", new ReturnGameexeInt("WINDOW_ATTR", 1));
@@ -644,7 +598,7 @@ SysModule::SysModule()
   addOpcode(2613, 0, "DefWindowAttrA", new ReturnGameexeInt("WINDOW_ATTR", 3));
   addOpcode(2614, 0, "DefWindowAttrF", new ReturnGameexeInt("WINDOW_ATTR", 4));
 
-  addOpcode(2617, 0, "DefWindowAttr", new Sys_DefWindowAttr);
+  addOpcode(2617, 0, "DefWindowAttr", new DefWindowAttr);
 
   addOpcode(2270, 0, "SetShowObject1",
             callFunction(&GraphicsSystem::setShowObject1));
