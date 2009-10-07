@@ -160,7 +160,7 @@ InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom)
 // -----------------------------------------------------------------------
 
 void InvokeSyscomAsOp::operator()(RLMachine& machine) {
-  return machine.system().invokeSyscom(machine, syscom_);
+  machine.system().invokeSyscom(machine, syscom_);
 }
 
 // ------------------------------------------------- [ UndefinedFunction ]

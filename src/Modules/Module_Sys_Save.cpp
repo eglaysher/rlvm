@@ -394,6 +394,9 @@ void addSysSaveOpcodes(RLModule& m) {
   m.addOpcode(3009, 0, "load", new Sys_load);
   m.addOpcode(3109, 0, "load_always", new Sys_load);
 
+  m.addOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
+  m.addOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
+
   m.addOpcode(3500, 0, "Savepoint",
               callFunction(&RLMachine::markSavepoint));
   m.addOpcode(3501, 0, "EnableAutoSavepoints",
