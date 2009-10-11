@@ -303,7 +303,7 @@ struct Grp_load_3 : public RLOp_Void_5<
     Rect destRect = Rect(dest, srcRect.size());
 
     if (dc != 0 && dc != 1) {
-      graphics.allocateDC(dc, surface->size());
+      graphics.setMinimumSizeForDC(dc, surface->size());
     }
 
     surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
