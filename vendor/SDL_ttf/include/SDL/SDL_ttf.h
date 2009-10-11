@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id$ */
+/* $Id: SDL_ttf.h 3282 2007-07-15 06:02:48Z slouken $ */
 
 /* This library is a wrapper around the excellent FreeType 2.0 library,
    available at:
@@ -30,8 +30,8 @@
 #ifndef _SDL_TTF_H
 #define _SDL_TTF_H
 
-#include <SDL/SDL.h>
-#include <SDL/begin_code.h>
+#include "SDL.h"
+#include "begin_code.h"
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -42,7 +42,7 @@ extern "C" {
 */
 #define SDL_TTF_MAJOR_VERSION	2
 #define SDL_TTF_MINOR_VERSION	0
-#define SDL_TTF_PATCHLEVEL	8
+#define SDL_TTF_PATCHLEVEL	9
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
@@ -229,6 +229,6 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
 #ifdef __cplusplus
 }
 #endif
-#include <SDL/close_code.h>
+#include "close_code.h"
 
 #endif /* _SDL_TTF_H */

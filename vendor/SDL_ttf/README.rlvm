@@ -1,7 +1,1 @@
-Included version of libsdl_ttf: Debian patched r2.0.8-3.
-
-This is not the current most recent version of SDL_ttf, nor is it a clean
-vendor version; this is the debian patched version and I used this version to
-work around a bug in text displaying that was triggered in Japanese
-fonts. Attempting to update this to clean v2.0.9 should be done early in the
-rlvm 0.5 devcycle.
+Included version of libsdl_ttf: 2.0.9. No patches applied.
