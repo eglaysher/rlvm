@@ -29,12 +29,6 @@
 
 // -----------------------------------------------------------------------
 
-/**
- * @file    Module_Str.cpp
- * @ingroup ModulesOpcodes
- * @brief   Contains definitions for string handling functions.
- */
-
 #include "Modules/Module_Str.hpp"
 
 #include <algorithm>
@@ -55,19 +49,7 @@ using namespace std;
 using namespace boost;
 using namespace libReallive;
 
-/**
- * @defgroup ModuleStr The String module (mod<1:10>)
- * @ingroup ModulesOpcodes
- *
- * Module that implements string handeling opcodes in the RealLive
- * virtual machine. This module implements commands such as strcpy,
- * strcat, strlen, et cetera.
- * @{
- */
-
 namespace {
-
-// -----------------------------------------------------------------------
 
 /**
  * Counts the number of Shift_JIS characters in a string.
@@ -124,16 +106,12 @@ string rl_itoa_implementation(int number, int length, char fill) {
   return ss.str();
 }
 
-}  // namespace
-
-// -----------------------------------------------------------------------
-
 /**
  * @brief Implement op<1:Str:00000, 0>, fun strcpy(str, strC).
  *
  * Assigns the string value val to the string variable dest.
  */
-struct Str_strcpy_0 : public RLOp_Void_2< StrReference_T, StrConstant_T > {
+struct strcpy_0 : public RLOp_Void_2< StrReference_T, StrConstant_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string val) {
     *dest = val;
@@ -147,7 +125,7 @@ struct Str_strcpy_0 : public RLOp_Void_2< StrReference_T, StrConstant_T > {
  *
  * Assigns the first count characters of val to the string variable dest.
  */
-struct Str_strcpy_1 : public RLOp_Void_3< StrReference_T, StrConstant_T,
+struct strcpy_1 : public RLOp_Void_3< StrReference_T, StrConstant_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest, string val,
                   int count) {
@@ -163,7 +141,7 @@ struct Str_strcpy_1 : public RLOp_Void_3< StrReference_T, StrConstant_T,
  *
  * Clears the string variable dest.
  */
-struct Str_strclear_0 : public RLOp_Void_1< StrReference_T > {
+struct strclear_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = "";
   }
@@ -176,7 +154,7 @@ struct Str_strclear_0 : public RLOp_Void_1< StrReference_T > {
  *
  * Clears all string variables in the inclusive range [first, last].
  */
-struct Str_strclear_1 : public RLOp_Void_2< StrReference_T, StrReference_T > {
+struct strclear_1 : public RLOp_Void_2< StrReference_T, StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator first,
                   StringReferenceIterator last) {
     ++last;  // RL ranges are inclusive
@@ -235,7 +213,7 @@ struct Str_strcmp : public RLOp_Store_2< StrConstant_T, StrConstant_T> {
  *
  * Returns the substring, starting at offset.
  */
-struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
+struct strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
                                          IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offset) {
@@ -272,7 +250,7 @@ struct Str_strsub_0 : public RLOp_Void_3<StrReference_T, StrConstant_T,
  *
  * Returns the substring of length length, starting at offset.
  */
-struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
+struct strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
                                           IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offset, int length) {
@@ -305,11 +283,11 @@ struct Str_strsub_1 : public RLOp_Void_4< StrReference_T, StrConstant_T,
  * Implements op<1:Str:00006, 0>, fun strrsub(str, strC, intC).
  *
  */
-struct Str_strrsub_0 : public Str_strsub_0 {
+struct strrsub_0 : public strsub_0 {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offsetFromBack) {
     int offset = strcharlen(source.c_str()) - offsetFromBack;
-    return Str_strsub_0::operator()(machine, dest, source, offset);
+    return strsub_0::operator()(machine, dest, source, offset);
   }
 };
 
@@ -319,7 +297,7 @@ struct Str_strrsub_0 : public Str_strsub_0 {
  * Implements op<1:Str:00006, 1>, fun strrsub(str, strC, intC, intC).
  *
  */
-struct Str_strrsub_1 : public Str_strsub_1 {
+struct strrsub_1 : public strsub_1 {
   void operator()(RLMachine& machine, StringReferenceIterator dest,
                   string source, int offsetFromBack, int length) {
     if (length > offsetFromBack) {
@@ -328,7 +306,7 @@ struct Str_strrsub_1 : public Str_strsub_1 {
     }
 
     int offset = strcharlen(source.c_str()) - offsetFromBack;
-    return Str_strsub_1::operator()(machine, dest, source, offset, length);
+    return strsub_1::operator()(machine, dest, source, offset, length);
   }
 };
 
@@ -373,7 +351,7 @@ struct Str_strtrunc : public RLOp_Void_2< StrReference_T, IntConstant_T > {
  *
  * Changes half width characters to their full width equivalents.
  */
-struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
+struct hantozen_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = hantozen_cp932(*dest, machine.getTextEncoding());
   }
@@ -386,7 +364,7 @@ struct Str_hantozen_0 : public RLOp_Void_1< StrReference_T > {
  *
  * Changes half width characters to their full width equivalents.
  */
-struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+struct hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input,
                   StringReferenceIterator dest) {
     *dest = hantozen_cp932(input, machine.getTextEncoding());
@@ -400,7 +378,7 @@ struct Str_hantozen_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
  *
  * Changes full width characters to their half width equivalents.
  */
-struct Str_zentohan_0 : public RLOp_Void_1< StrReference_T > {
+struct zentohan_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = zentohan_cp932(*dest, machine.getTextEncoding());
   }
@@ -413,7 +391,7 @@ struct Str_zentohan_0 : public RLOp_Void_1< StrReference_T > {
  *
  * Changes full width characters to their half width equivalents.
  */
-struct Str_zentohan_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+struct zentohan_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input,
                   StringReferenceIterator dest) {
     *dest = zentohan_cp932(input, machine.getTextEncoding());
@@ -428,7 +406,7 @@ struct Str_zentohan_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
  * Changes the case of all ASCII characters to UPPERCASE. This
  * function does not affect full-width Shift_JIS characters.
  */
-struct Str_Uppercase_0 : public RLOp_Void_1< StrReference_T > {
+struct Uppercase_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     string input = *dest;
     transform(input.begin(), input.end(), input.begin(), ToUpper);
@@ -444,7 +422,7 @@ struct Str_Uppercase_0 : public RLOp_Void_1< StrReference_T > {
  * Changes the case of all ASCII characters to UPPERCASE. This
  * function does not affect full-width Shift_JIS characters.
  */
-struct Str_Uppercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+struct Uppercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input,
                   StringReferenceIterator dest) {
     transform(input.begin(), input.end(), input.begin(), ToUpper);
@@ -460,7 +438,7 @@ struct Str_Uppercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
  * Changes the case of all ASCII characters to LOWERCASE. This
  * function does not affect full-width Shift_JIS characters.
  */
-struct Str_Lowercase_0 : public RLOp_Void_1< StrReference_T > {
+struct Lowercase_0 : public RLOp_Void_1< StrReference_T > {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     string input = *dest;
     transform(input.begin(), input.end(), input.begin(), ToLower);
@@ -476,7 +454,7 @@ struct Str_Lowercase_0 : public RLOp_Void_1< StrReference_T > {
  * Changes the case of all ASCII characters to LOWERCASE. This
  * function does not affect full-width Shift_JIS characters.
  */
-struct Str_Lowercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
+struct Lowercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, string input,
                   StringReferenceIterator dest) {
     transform(input.begin(), input.end(), input.begin(), ToLower);
@@ -490,10 +468,10 @@ struct Str_Lowercase_1 : public RLOp_Void_2< StrConstant_T, StrReference_T > {
  * Implements op<1:Str:00014, 0>, fun itoa_ws(intC, str).
  *
  * Converts the integer value into a decimal representation. I don't understand
- * how this function is any different from Str_itoa_0, since we don't have a
+ * how this function is any different from itoa_0, since we don't have a
  * length parameter. See RLdev documentation on itoa_s.
  */
-struct Str_itoa_ws_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+struct itoa_ws_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, -1, ' '),
@@ -509,7 +487,7 @@ struct Str_itoa_ws_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
  * Converts the integer value into a decimal representation, right aligned
  * with spaces to length characters.
  */
-struct Str_itoa_ws_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
+struct itoa_ws_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                            IntConstant_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest, int length) {
@@ -524,10 +502,10 @@ struct Str_itoa_ws_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
  * Implements op<1:Str:00015, 0>, fun itoa_s(intC, str).
  *
  * Converts the integer value into a decimal representation. I don't understand
- * how this function is any different from Str_itoa_0, since we don't have a
+ * how this function is any different from itoa_0, since we don't have a
  * length parameter. See RLdev documentation on itoa_s.
  */
-struct Str_itoa_s_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+struct itoa_s_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest) {
     *dest = rl_itoa_implementation(input, -1, ' ');
@@ -542,7 +520,7 @@ struct Str_itoa_s_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
  * Converts the integer value into a decimal representation, right aligned
  * with spaces to length characters.
  */
-struct Str_itoa_s_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
+struct itoa_s_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest, int length) {
@@ -556,10 +534,10 @@ struct Str_itoa_s_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
  * Implements op<1:Str:00016, 0>, fun itoa_w(intC, str).
  *
  * Converts the integer value into a decimal representation. I don't understand
- * how this function is any different from Str_itoa_0, since we don't have a
+ * how this function is any different from itoa_0, since we don't have a
  * length parameter. See RLdev documentation on itoa_s.
  */
-struct Str_itoa_w_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+struct itoa_w_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, -1, '0'),
@@ -575,7 +553,7 @@ struct Str_itoa_w_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
  * Converts the integer value into a decimal representation, right aligned
  * with zeroes to length characters.
  */
-struct Str_itoa_w_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
+struct itoa_w_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                           IntConstant_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest, int length) {
@@ -590,10 +568,10 @@ struct Str_itoa_w_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
  * Implements op<1:Str:00017, 0>, fun itoa(intC, str).
  *
  * Converts the integer value into a decimal representation. I don't understand
- * how this function is any different from Str_itoa_0, since we don't have a
+ * how this function is any different from itoa_0, since we don't have a
  * length parameter. See RLdev documentation on itoa_s.
  */
-struct Str_itoa_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
+struct itoa_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest) {
     *dest = rl_itoa_implementation(input, -1, '0');
@@ -608,7 +586,7 @@ struct Str_itoa_0 : public RLOp_Void_2< IntConstant_T, StrReference_T > {
  * Converts the integer value into a decimal representation, right aligned
  * with zeroes to length characters.
  */
-struct Str_itoa_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
+struct itoa_1 : public RLOp_Void_3< IntConstant_T, StrReference_T,
                                         IntConstant_T > {
   void operator()(RLMachine& machine, int input,
                   StringReferenceIterator dest, int length) {
@@ -770,41 +748,41 @@ struct Str_strused : public RLOp_Store_1< StrReference_T > {
   }
 };
 
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 StrModule::StrModule()
   : RLModule("Str", 1, 10) {
-  addOpcode(0, 0, "strcpy", new Str_strcpy_0);
-  addOpcode(0, 1, "strcpy", new Str_strcpy_1);
-  addOpcode(1, 0, "strclear", new Str_strclear_0);
-  addOpcode(1, 1, "strclear", new Str_strclear_1);
+  addOpcode(0, 0, "strcpy", new strcpy_0);
+  addOpcode(0, 1, "strcpy", new strcpy_1);
+  addOpcode(1, 0, "strclear", new strclear_0);
+  addOpcode(1, 1, "strclear", new strclear_1);
   addOpcode(2, 0, "strcat", new Str_strcat);
   addOpcode(3, 0, "strlen", new Str_strlen);
   addOpcode(4, 0, "strcmp", new Str_strcmp);
-  addOpcode(5, 0, "strsub", new Str_strsub_0);
-  addOpcode(5, 1, "strsub", new Str_strsub_1);
-  addOpcode(6, 0, "strrsub", new Str_strrsub_0);
-  addOpcode(6, 1, "strrsub", new Str_strrsub_1);
+  addOpcode(5, 0, "strsub", new strsub_0);
+  addOpcode(5, 1, "strsub", new strsub_1);
+  addOpcode(6, 0, "strrsub", new strrsub_0);
+  addOpcode(6, 1, "strrsub", new strrsub_1);
   addOpcode(7, 0, "strcharlen", new Str_strcharlen);
   addOpcode(8, 0, "strtrunc", new Str_strtrunc);
-  addOpcode(10, 0, "hantozen", new Str_hantozen_0);
-  addOpcode(10, 1, "hantozen", new Str_hantozen_1);
-  addOpcode(11, 0, "zentohan", new Str_zentohan_0);
-  addOpcode(11, 1, "zentohan", new Str_zentohan_1);
-  addOpcode(12, 0, "Uppercase", new Str_Uppercase_0);
-  addOpcode(12, 1, "Uppercase", new Str_Uppercase_1);
-  addOpcode(13, 0, "Lowercase", new Str_Lowercase_0);
-  addOpcode(13, 1, "Lowercase", new Str_Lowercase_1);
-  addOpcode(14, 0, "itoa_ws", new Str_itoa_ws_0);
-  addOpcode(14, 1, "itoa_ws", new Str_itoa_ws_1);
-  addOpcode(15, 0, "itoa_s", new Str_itoa_s_0);
-  addOpcode(15, 1, "itoa_s", new Str_itoa_s_1);
-  addOpcode(16, 0, "itoa_w", new Str_itoa_w_0);
-  addOpcode(16, 1, "itoa_w", new Str_itoa_w_1);
-  addOpcode(17, 0, "itoa", new Str_itoa_0);
-  addOpcode(17, 1, "itoa", new Str_itoa_1);
+  addOpcode(10, 0, "hantozen", new hantozen_0);
+  addOpcode(10, 1, "hantozen", new hantozen_1);
+  addOpcode(11, 0, "zentohan", new zentohan_0);
+  addOpcode(11, 1, "zentohan", new zentohan_1);
+  addOpcode(12, 0, "Uppercase", new Uppercase_0);
+  addOpcode(12, 1, "Uppercase", new Uppercase_1);
+  addOpcode(13, 0, "Lowercase", new Lowercase_0);
+  addOpcode(13, 1, "Lowercase", new Lowercase_1);
+  addOpcode(14, 0, "itoa_ws", new itoa_ws_0);
+  addOpcode(14, 1, "itoa_ws", new itoa_ws_1);
+  addOpcode(15, 0, "itoa_s", new itoa_s_0);
+  addOpcode(15, 1, "itoa_s", new itoa_s_1);
+  addOpcode(16, 0, "itoa_w", new itoa_w_0);
+  addOpcode(16, 1, "itoa_w", new itoa_w_1);
+  addOpcode(17, 0, "itoa", new itoa_0);
+  addOpcode(17, 1, "itoa", new itoa_1);
   addOpcode(18, 0, "atoi", new Str_atoi);
   addOpcode(19, 0, "digits", new Str_digits);
   addOpcode(20, 0, "digit", new Str_digit);
@@ -815,5 +793,3 @@ StrModule::StrModule()
   addOpcode(100, 1, "intout", new Str_intout);
   addOpcode(200, 0, "strused", new Str_strused);
 }
-
-// @}
