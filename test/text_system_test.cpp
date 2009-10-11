@@ -209,21 +209,19 @@ TEST_F(TextSystemTest, TextPageResetIndentationRepeats) {
 // -----------------------------------------------------------------------
 
 // Tests that the TextPage::fontColor construct repeats correctly.
-TEST_F(TextSystemTest, DISABLED_TextPageFontColorRepeats) {
+TEST_F(TextSystemTest, TextPageFontColorRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
 
-  /*
-  EXPECT_CALL(win, fontColour()).Times(1);
+  EXPECT_CALL(win, setFontColor(_)).Times(1);
   currentPage().fontColour(0);
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
-  EXPECT_CALL(win, fontColour()).Times(1);
+  EXPECT_CALL(win, setFontColor(_)).Times(1);
   getTextSystem().backPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
-  */
 }
 
 // -----------------------------------------------------------------------
