@@ -14,9 +14,6 @@ AddOption('--coverage', action='store_true',
           'runs gcov, and then generates an html report with lcov.')
 AddOption('--fullstatic', action='store_true',
           help='Builds a static binary, linking in all libraries.')
-AddOption('--othercodesets', action='store_true', default=False,
-          help='Include Chinese and Korean code pages in rlBabel support.')
-
 
 # Set libraries used by all configurations and all binaries in rlvm.
 env = Environment(
@@ -77,14 +74,6 @@ env = Environment(
 
 if GetOption("fullstatic"):
   env["FULL_STATIC_BUILD"] = True
-
-if GetOption("othercodesets") == False:
-  env.Append(
-    CPPDEFINES = [
-      "NO_CP949_CONVERSION",
-      "NO_CP936_CONVERSION"
-    ]
-  )
 
 # Auto select the number of processors
 if os.path.exists('/proc'):
