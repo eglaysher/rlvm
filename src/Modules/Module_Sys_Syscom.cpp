@@ -37,6 +37,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/EventSystem.hpp"
 
 #include <boost/lexical_cast.hpp>
 
@@ -45,16 +46,30 @@ using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
 
-struct Sys_SyscomEnabled : public RLOp_Store_1< IntConstant_T > {
+namespace {
+
+struct ContextMenu : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    // Based off of ALMA, it appears that we also are responsible for flushing
+    // clicks.
+    machine.system().event().flushMouseClicks();
+
+    machine.system().showSyscomMenu(machine);
+  }
+};
+
+struct SyscomEnabled : public RLOp_Store_1< IntConstant_T > {
   int operator()(RLMachine& machine, int num) {
     return machine.system().isSyscomEnabled(num);
   }
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 
 void addSysSyscomOpcodes(RLModule& m) {
-  m.addUnsupportedOpcode(1210, 0, "ContextMenu");
+  m.addOpcode(1210, 0, "ContextMenu", new ContextMenu);
 
   m.addOpcode(1211, 0, "EnableSyscom",
               callFunction(&System::enableSyscomEntry));
@@ -69,7 +84,7 @@ void addSysSyscomOpcodes(RLModule& m) {
   m.addOpcode(1213, 0, "DisableSyscom",
               callFunction(&System::disableSyscomEntry));
 
-  m.addOpcode(1214, 0, "SyscomEnabled", new Sys_SyscomEnabled);
+  m.addOpcode(1214, 0, "SyscomEnabled", new SyscomEnabled);
 
   m.addUnsupportedOpcode(1215, 0, "InvokeSyscom");
   m.addUnsupportedOpcode(1215, 1, "InvokeSyscom");
