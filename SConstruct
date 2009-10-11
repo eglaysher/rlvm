@@ -300,6 +300,8 @@ if GetOption('release'):
       "-Os",
       "-ffunction-sections",
       "-fdata-sections",
+      "-DNDEBUG",
+      "-DBOOST_DISABLE_ASSERTS"
     ],
 
     LINKFLAGS = [
