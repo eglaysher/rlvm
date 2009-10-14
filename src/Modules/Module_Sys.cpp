@@ -307,6 +307,26 @@ struct DefWindowAttr : public RLOp_Void_5<
   }
 };
 
+// Not documented in rldev, but assumed from context in ALMA's main menu.
+struct FadeGraphics : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    shared_ptr<Surface> dc0 = graphics.getDC(0);
+    shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(dc0);
+
+    // Clear all graphics
+    graphics.reset();
+
+    shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(dc0);
+    // Now we push a LongOperation on top of the stack; when this
+    // ends, we'll be at SEEN_MENU.
+    LongOperation* effect =
+        new FadeEffect(machine, after, before, after->size(), 1000);
+    machine.pushLongOperation(effect);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -436,6 +456,8 @@ SysModule::SysModule()
   addUnsupportedOpcode(1204, 0, "ReturnPrevSelect");
   addUnsupportedOpcode(1205, 0, "ReturnPrevSelect2");
   addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
+
+  addOpcode(1231, 0, "FadeGraphics", new FadeGraphics);
 
   addOpcode(1130, 0, "DefaultGrp",
             returnStringValue(&GraphicsSystem::defaultGrpName));
