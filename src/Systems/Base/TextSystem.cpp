@@ -69,14 +69,17 @@ const unsigned int MAX_PAGE_HISTORY = 100;
 // TextSystemGlobals
 // -----------------------------------------------------------------------
 TextSystemGlobals::TextSystemGlobals()
-  : auto_mode_base_time(100), auto_mode_char_time(100), message_speed(30) {}
+    : auto_mode_base_time(100), auto_mode_char_time(100), message_speed(30),
+      font_weight(0), font_shadow(1)
+{}
 
 // -----------------------------------------------------------------------
 
 TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
     : auto_mode_base_time(100),
       auto_mode_char_time(100),
-      message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30)) {
+      message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30)),
+      font_weight(0), font_shadow(1) {
   GameexeInterpretObject in_window_attr(gexe("WINDOW_ATTR"));
   if (in_window_attr.exists())
     window_attr = in_window_attr;

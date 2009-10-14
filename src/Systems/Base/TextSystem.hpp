@@ -35,6 +35,7 @@
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/signal.hpp>
 #include <string>
@@ -64,6 +65,12 @@ struct TextSystemGlobals {
   /// Message speed; range from 0 to 255
   char message_speed;
 
+  /// Whether we should be bolded.
+  int font_weight;
+
+  /// Whether we should draw a shadow.
+  int font_shadow;
+
   /// The default \#WINDOW_ATTR. This is what is changed by the
   std::vector<int> window_attr;
 
@@ -72,8 +79,13 @@ struct TextSystemGlobals {
   void serialize(Archive& ar, const unsigned int version) {
     ar & auto_mode_base_time & auto_mode_char_time & message_speed
       & window_attr;
+
+    if (version > 0)
+      ar & font_weight & font_shadow;
   }
 };
+
+BOOST_CLASS_VERSION(TextSystemGlobals, 1)
 
 // -----------------------------------------------------------------------
 
@@ -206,6 +218,12 @@ class TextSystem : public EventListener {
 
   void setMessageSpeed(int i) { globals_.message_speed = i; }
   int messageSpeed() const { return globals_.message_speed; }
+
+  void setFontWeight(int i) { globals_.font_weight = i; }
+  int fontWeight() const { return globals_.font_weight; }
+
+  void setFontShadow(int i) { globals_.font_shadow = i; }
+  int fontShadow() const { return globals_.font_shadow; }
 
   /**
    * @name Window Attr Related functions

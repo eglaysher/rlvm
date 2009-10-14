@@ -553,6 +553,15 @@ SysModule::SysModule()
   addOpcode(2343, 0, "SeEnabled",
             returnIntValue(&SoundSystem::seEnabled));
 
+  addOpcode(2256, 0, "SetFontWeight",
+            callFunction(&TextSystem::setFontWeight));
+  addOpcode(2356, 0, "FontWeight",
+            returnIntValue(&TextSystem::fontWeight));
+  addOpcode(2257, 0, "SetFontShadow",
+            callFunction(&TextSystem::setFontShadow));
+  addOpcode(2357, 0, "FontShadow",
+            returnIntValue(&TextSystem::fontShadow));
+
   addUnsupportedOpcode(2054, 0, "SetReduceDistortion");
   addUnsupportedOpcode(2004, 0, "ReduceDistortion");
   addUnsupportedOpcode(2059, 0, "SetSoundQuality");

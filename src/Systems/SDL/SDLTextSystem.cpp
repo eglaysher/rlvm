@@ -119,7 +119,7 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   }
 
   boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour) {
+  if (shadow_colour && fontShadow()) {
     SDL_Color sdl_shadow_colour;
     RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
     shadow.reset(
@@ -138,7 +138,7 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   // black, right?
   surface->fill(RGBAColour::Clear());
 
-  if (shadow_colour) {
+  if (shadow) {
     Size offset(text->w - 2, text->h - 2);
     surface->blitFROMSurface(
         shadow.get(), Rect(Point(0, 0), offset), Rect(Point(2, 2), offset),
@@ -169,7 +169,7 @@ boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
   }
 
   boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour) {
+  if (shadow_colour && fontShadow()) {
     SDL_Color sdl_shadow_colour;
     RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
 
