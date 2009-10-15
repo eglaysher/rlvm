@@ -44,6 +44,7 @@
 class Gameexe;
 class Memory;
 class Point;
+class RGBColour;
 class RLMachine;
 class Surface;
 class System;
@@ -258,6 +259,9 @@ class TextSystem : public EventListener {
   virtual boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
       int yspace, int colour) = 0;
+
+  virtual boost::shared_ptr<Surface> renderUTF8Glyph(
+      const std::string& current, int font_size, const RGBColour& colour) = 0;
   /// @}
 
   TextSystemGlobals& globals() { return globals_; }

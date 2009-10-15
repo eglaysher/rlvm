@@ -56,6 +56,9 @@ class TestTextSystem : public TextSystem {
   boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
       int yspace, int colour) { return boost::shared_ptr<Surface>(); }
+  boost::shared_ptr<Surface> renderUTF8Glyph(
+      const std::string& current, int font_size, const RGBColour& colour) {
+    return boost::shared_ptr<Surface>(); }
 };
 
 #endif  // TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_

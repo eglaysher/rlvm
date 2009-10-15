@@ -39,12 +39,14 @@
 
 #include "Systems/SDL/SDLTextSystem.hpp"
 
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/findFontFile.h"
@@ -117,6 +119,39 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
     return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()),
                                               buildNewSurface(Size(1, 1))));
   }
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
+    const std::string& current, int font_size, const RGBColour& colour) {
+  boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
+
+  SDL_Color sdl_colour;
+  RGBColourToSDLColor(colour, &sdl_colour);
+  boost::shared_ptr<SDL_Surface> character(
+      TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_colour),
+      SDL_FreeSurface);
+
+  if (character == NULL) {
+    return boost::shared_ptr<Surface>();
+  }
+
+  // TODO(erg): cast is least evil for now because I would otherwise have to do
+  // some major redesign to *System.
+  Size size(character->w, character->h);
+  boost::shared_ptr<SDLSurface> surface(
+      boost::static_pointer_cast<SDLSurface>(
+          system().graphics().buildSurface(size)));
+
+  // TODO(erg): Surely there's a way to allocate with something other than
+  // black, right?
+  surface->fill(RGBAColour::Clear());
+
+  surface->blitFROMSurface(
+      character.get(), Rect(Point(0, 0), size), Rect(Point(0, 0), size), 255);
+
+  return surface;
 }
 
 // -----------------------------------------------------------------------

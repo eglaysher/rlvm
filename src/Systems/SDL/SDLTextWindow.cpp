@@ -119,8 +119,6 @@ bool SDLTextWindow::displayChar(const std::string& current,
   setVisible(true);
 
   if (current != "") {
-    SDL_Color colour;
-    RGBColourToSDLColor(font_colour_, &colour);
     int cur_codepoint = codepoint(current);
     int next_codepoint = codepoint(next);
     bool indent_after_spacing = false;
@@ -159,16 +157,18 @@ bool SDLTextWindow::displayChar(const std::string& current,
       }
     }
 
-    SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(font_.get(), current.c_str(), colour);
-
-    if (tmp == NULL) {
+    // Render glyph to surface
+    boost::shared_ptr<Surface> character = system().text().renderUTF8Glyph(
+        current, fontSizeInPixels(), font_colour_);
+    if (character == NULL) {
       // Bug during Kyou's path. The string is printed "". Regression in parser?
       cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the string \""
            << current << "\". Hopefully continuing..." << endl;
 
       return true;
     }
+
+    character->dump();
 
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
@@ -180,11 +180,12 @@ bool SDLTextWindow::displayChar(const std::string& current,
     // character instead, to prevent the next character being stranded
     // at the start of a line.
     //
+    int char_width = character->size().width();
     bool char_will_fit_on_line =
-        text_insertion_point_x_ + tmp->w + x_spacing_ <=
+        text_insertion_point_x_ + char_width + x_spacing_ <=
         textWindowSize().width();
     bool next_char_will_fit_on_line =
-        text_insertion_point_x_ + 2 * (tmp->w + x_spacing_) <=
+        text_insertion_point_x_ + 2 * (char_width + x_spacing_) <=
         textWindowSize().width();
     if (!char_will_fit_on_line ||
         (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
@@ -195,18 +196,15 @@ bool SDLTextWindow::displayChar(const std::string& current,
         return false;
     }
 
-    // Render glyph to surface
-    Size s(tmp->w, tmp->h);
-    surface_->blitFROMSurface(
-      tmp,
-      Rect(Point(0, 0), s),
-      Rect(Point(text_insertion_point_x_, text_insertion_point_y_), s),
-      255);
+    Size s(character->size());
+    character->blitToSurface(
+        *surface_,
+        Rect(Point(0, 0), s),
+        Rect(Point(text_insertion_point_x_, text_insertion_point_y_), s),
+        255, false);
 
     // Move the insertion point forward one character
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
-
-    SDL_FreeSurface(tmp);
 
     if (indent_after_spacing)
       setIndentation();
