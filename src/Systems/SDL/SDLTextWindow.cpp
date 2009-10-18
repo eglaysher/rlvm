@@ -37,6 +37,7 @@
  * @brief
  */
 
+#include "Systems/Base/Colour.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLTextSystem.hpp"
@@ -158,8 +159,9 @@ bool SDLTextWindow::displayChar(const std::string& current,
     }
 
     // Render glyph to surface
+    RGBColour shadow = RGBAColour::Black().rgb();
     boost::shared_ptr<Surface> character = system().text().renderUTF8Glyph(
-        current, fontSizeInPixels(), font_colour_);
+        current, fontSizeInPixels(), font_colour_, &shadow);
     if (character == NULL) {
       // Bug during Kyou's path. The string is printed "". Regression in parser?
       cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the string \""
@@ -167,8 +169,6 @@ bool SDLTextWindow::displayChar(const std::string& current,
 
       return true;
     }
-
-    character->dump();
 
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
@@ -224,12 +224,9 @@ bool SDLTextWindow::displayChar(const std::string& current,
 // -----------------------------------------------------------------------
 
 void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
-  SDL_Color color;
-  RGBColourToSDLColor(font_colour_, &color);
-
-  SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(font_.get(), utf8str.c_str(), color);
-  name_surface_.reset(new SDLSurface(getSDLGraphics(system()), tmp));
+  RGBColour shadow = RGBAColour::Black().rgb();
+  name_surface_ = system_.text().renderText(
+      utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow);
 }
 
 // -----------------------------------------------------------------------
@@ -242,11 +239,6 @@ int SDLTextWindow::charWidth(uint16_t codepoint) const {
 }
 
 // -----------------------------------------------------------------------
-
-void SDLTextWindow::markRubyBegin() {
-  TextWindow::markRubyBegin();
-  //  last_token_was_name_ = false;
-}
 
 void SDLTextWindow::displayRubyText(const std::string& utf8str) {
   if (ruby_begin_point_ != -1) {

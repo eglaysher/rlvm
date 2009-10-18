@@ -204,15 +204,23 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   name_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("NAME"));
   back_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("BACK"));
 
+  // Pick the correct font colour
+  vec = gexe("COLOR_TABLE", default_colour_num_);
+  RGBColour default_colour(vec.at(0), vec.at(1), vec.at(2));
+  vec = gexe("COLOR_TABLE", select_colour_num_);
+  RGBColour select_colour(vec.at(0), vec.at(1), vec.at(2));
+  vec = gexe("COLOR_TABLE", 255);
+  RGBColour shadow_colour(vec.at(0), vec.at(1), vec.at(2));
+
   // Build graphic representations of the choices to display to the user.
   TextSystem& ts = machine.system().text();
   for (size_t i = 0; i < options_.size(); ++i) {
     const std::string& text = options_[i];
 
     default_text_surfaces_.push_back(ts.renderText(
-        text, moji_size_, 0, 0, default_colour_num_));
+        text, moji_size_, 0, 0, default_colour, &shadow_colour));
     select_text_surfaces_.push_back(ts.renderText(
-        text, moji_size_, 0, 0, select_colour_num_));
+        text, moji_size_, 0, 0, select_colour, &shadow_colour));
   }
 
   // Calculate out the bounding rectangles for all the options.

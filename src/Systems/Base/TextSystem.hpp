@@ -258,10 +258,11 @@ class TextSystem : public EventListener {
    */
   virtual boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
-      int yspace, int colour) = 0;
+      int yspace, const RGBColour& colour, RGBColour* shadow_colour) = 0;
 
   virtual boost::shared_ptr<Surface> renderUTF8Glyph(
-      const std::string& current, int font_size, const RGBColour& colour) = 0;
+      const std::string& current, int font_size, const RGBColour& colour,
+      RGBColour* shadow_colour) = 0;
   /// @}
 
   TextSystemGlobals& globals() { return globals_; }

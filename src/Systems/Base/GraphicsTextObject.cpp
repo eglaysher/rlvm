@@ -34,13 +34,15 @@
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/export.hpp>
 
-#include "GraphicsTextObject.hpp"
+#include "Systems/Base/GraphicsTextObject.hpp"
 
+#include "libReallive/gameexe.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 
+#include <vector>
 #include <iostream>
 using std::endl;
 
@@ -59,9 +61,23 @@ GraphicsTextObject::~GraphicsTextObject() {
 
 void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
   cached_utf8_str_ = rp.textText();
+
+  // Get the correct colour
+  Gameexe& gexe = system_.gameexe();
+  std::vector<int> vec = gexe("COLOR_TABLE", rp.textColour());
+  RGBColour colour(vec.at(0), vec.at(1), vec.at(2));
+
+  RGBColour* shadow = NULL;
+  RGBColour shadow_impl;
+  if (rp.textShadowColour() != -1) {
+    vec = gexe("COLOR_TABLE", rp.textShadowColour());
+    shadow_impl = RGBColour(vec.at(0), vec.at(1), vec.at(2));
+    shadow = &shadow_impl;
+  }
+
   surface_ = system_.text().renderText(
       cached_utf8_str_, rp.textSize(), rp.textXSpace(),
-      rp.textYSpace(), rp.textColour());
+      rp.textYSpace(), colour, shadow);
 }
 
 // -----------------------------------------------------------------------

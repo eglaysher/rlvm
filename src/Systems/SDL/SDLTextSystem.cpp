@@ -54,6 +54,7 @@
 
 #include <boost/bind.hpp>
 #include <SDL/SDL_ttf.h>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -95,36 +96,66 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLTextSystem::renderText(
-  const std::string& utf8str, int size, int xspace, int yspace, int colour) {
+  const std::string& utf8str, int size, int xspace, int yspace,
+  const RGBColour& colour, RGBColour* shadow_colour) {
+  // TODO(erg): Entirely rewrite this method in terms of renderUTF8Glyph so we
+  // can handle the x/yspacing correctly.
+
   // Pick the correct font
   shared_ptr<TTF_Font> font = getFontOfSize(size);
 
-  // Pick the correct font colour
-  Gameexe& gexe = system().gameexe();
-  vector<int> colour_vec = gexe("COLOR_TABLE", colour);
-  SDL_Color sdl_colour = {colour_vec.at(0), colour_vec.at(1), colour_vec.at(2)};
-
   // Naively render. Ignore most of the arguments for now
-  if (utf8str.size()) {
-    SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_colour);
-    if (tmp == NULL) {
-      ostringstream oss;
-      oss << "Error printing \"" << utf8str << "\" in font size " << size;
-      throw rlvm::Exception(oss.str());
-    }
-    return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), tmp));
-  } else {
-    // Allocate a 1x1 SDL_Surface
+  SDL_Color sdl_colour;
+  RGBColourToSDLColor(colour, &sdl_colour);
+  boost::shared_ptr<SDL_Surface> text(
+      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_colour),
+      SDL_FreeSurface);
+  if (text == NULL) {
+    // TODO(erg): Make our callers check for NULL.
+    cerr << "Error printing \"" << utf8str << "\" in font size " << size
+         << endl;
     return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()),
                                               buildNewSurface(Size(1, 1))));
   }
+
+  boost::shared_ptr<SDL_Surface> shadow;
+  if (shadow_colour) {
+    SDL_Color sdl_shadow_colour;
+    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
+    shadow.reset(
+        TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_shadow_colour),
+        SDL_FreeSurface);
+  }
+
+  // TODO(erg): cast is least evil for now because I would otherwise have to do
+  // some major redesign to *System.
+  Size out_size(text->w, text->h);
+  boost::shared_ptr<SDLSurface> surface(
+      boost::static_pointer_cast<SDLSurface>(
+          system().graphics().buildSurface(out_size)));
+
+  // TODO(erg): Surely there's a way to allocate with something other than
+  // black, right?
+  surface->fill(RGBAColour::Clear());
+
+  if (shadow_colour) {
+    Size offset(text->w - 2, text->h - 2);
+    surface->blitFROMSurface(
+        shadow.get(), Rect(Point(0, 0), offset), Rect(Point(2, 2), offset),
+        255);
+  }
+  surface->blitFROMSurface(
+      text.get(), Rect(Point(0, 0), out_size), Rect(Point(0, 0), out_size),
+      255);
+
+  return surface;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
-    const std::string& current, int font_size, const RGBColour& colour) {
+    const std::string& current, int font_size, const RGBColour& colour,
+    RGBColour* shadow_colour) {
   boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
 
   SDL_Color sdl_colour;
@@ -137,6 +168,16 @@ boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
     return boost::shared_ptr<Surface>();
   }
 
+  boost::shared_ptr<SDL_Surface> shadow;
+  if (shadow_colour) {
+    SDL_Color sdl_shadow_colour;
+    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
+
+    shadow.reset(
+        TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_shadow_colour),
+        SDL_FreeSurface);
+  }
+
   // TODO(erg): cast is least evil for now because I would otherwise have to do
   // some major redesign to *System.
   Size size(character->w, character->h);
@@ -147,6 +188,13 @@ boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
   // TODO(erg): Surely there's a way to allocate with something other than
   // black, right?
   surface->fill(RGBAColour::Clear());
+
+  if (shadow) {
+    Size offset(character->w - 2, character->h - 2);
+    surface->blitFROMSurface(
+        shadow.get(), Rect(Point(0, 0), offset), Rect(Point(2, 2), offset),
+        255);
+  }
 
   surface->blitFROMSurface(
       character.get(), Rect(Point(0, 0), size), Rect(Point(0, 0), size), 255);

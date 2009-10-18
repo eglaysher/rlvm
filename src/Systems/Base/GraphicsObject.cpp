@@ -51,7 +51,7 @@ const int DEFAULT_TEXT_XSPACE = 0;
 const int DEFAULT_TEXT_YSPACE = 0;
 const int DEFAULT_TEXT_VERTICAL = 0;
 const int DEFAULT_TEXT_COLOUR = 0;
-const int DEFAULT_TEXT_SHADOWCOLOUR = 0;
+const int DEFAULT_TEXT_SHADOWCOLOUR = -1;
 
 const Rect EMPTY_CLIP = Rect(Point(0, 0), Size(-1, -1));
 
