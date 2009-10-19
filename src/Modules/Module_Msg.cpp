@@ -222,8 +222,8 @@ MsgModule::MsgModule()
   addUnsupportedOpcode(100, 0, "SetFontColour");
   addUnsupportedOpcode(100, 1, "SetFontColour");
   addUnsupportedOpcode(100, 2, "SetFontColour");
-  addUnsupportedOpcode(101, 0, "FontSize");
-  addUnsupportedOpcode(101, 1, "FontSize");
+  addOpcode(101, 0, "FontSize", callFunction(&TextPage::fontSize));
+  addOpcode(101, 1, "FontSize", callFunction(&TextPage::defaultFontSize));
 
   addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
   addOpcode(102, 1, "TextWindow", new Msg_TextWindow);

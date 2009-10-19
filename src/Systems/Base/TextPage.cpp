@@ -238,6 +238,18 @@ void TextPage::fontColour(int colour) {
 
 // -----------------------------------------------------------------------
 
+void TextPage::defaultFontSize() {
+  addAction(bind(&TextPage::default_font_size_impl, _1, _2));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::fontSize(const int size) {
+  addAction(bind(&TextPage::font_size_impl, _1, size, _2));
+}
+
+// -----------------------------------------------------------------------
+
 void TextPage::markRubyBegin() {
   addAction(bind(&TextPage::mark_ruby_begin_impl, _1, _2));
 }
@@ -333,6 +345,18 @@ void TextPage::reset_indentation_impl(bool is_active_page) {
 void TextPage::font_colour_impl(int colour, bool is_active_page) {
   system_->text().textWindow(window_num_)
     ->setFontColor(system_->gameexe()("COLOR_TABLE", colour));
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::default_font_size_impl(bool is_active_page) {
+  system_->text().textWindow(window_num_)->setFontSizeToDefault();
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::font_size_impl(int size, bool is_active_page) {
+  system_->text().textWindow(window_num_)->setFontSizeInPixels(size);
 }
 
 // -----------------------------------------------------------------------

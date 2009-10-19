@@ -83,6 +83,10 @@ class TextPage : public boost::noncopyable {
   // next pause().
   void fontColour(const int colour);
 
+  // Changes the size of text.
+  void defaultFontSize();
+  void fontSize(const int size);
+
   // Marks the current character as the beginning of a phrase that has
   // rubytext over it.
   void markRubyBegin();
@@ -160,7 +164,8 @@ class TextPage : public boost::noncopyable {
   void reset_indentation_impl(bool is_active_page);
 
   void font_colour_impl(const int colour, bool is_active_page);
-
+  void default_font_size_impl(bool is_active_page);
+  void font_size_impl(int size, bool is_active_page);
   void mark_ruby_begin_impl(bool is_active_page);
 
   void display_ruby_text_impl(const std::string& utf8str, bool is_active_page);

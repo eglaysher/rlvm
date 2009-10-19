@@ -114,7 +114,8 @@ TextWindow::TextWindow(System& system, int window_num)
   else
     setRGBAF(window("ATTR"));
 
-  setFontSizeInPixels(window("MOJI_SIZE").to_int(25));
+  default_font_size_in_pixels_ = window("MOJI_SIZE").to_int(25);
+  setFontSizeInPixels(default_font_size_in_pixels_);
   setWindowSizeInCharacters(window("MOJI_CNT"));
   setSpacingBetweenCharacters(window("MOJI_REP"));
   setRubyTextSize(window("LUBY_SIZE").to_int(0));
@@ -270,9 +271,9 @@ void TextWindow::setWindowPosition(const vector<int>& pos_data) {
 
 Size TextWindow::textWindowSize() const {
   return Size((x_window_size_in_chars_ *
-               (font_size_in_pixels_ + x_spacing_)),
+               (default_font_size_in_pixels_ + x_spacing_)),
               (y_window_size_in_chars_ *
-               (font_size_in_pixels_ + y_spacing_ + ruby_size_)));
+               (default_font_size_in_pixels_ + y_spacing_ + ruby_size_)));
 }
 
 // -----------------------------------------------------------------------

@@ -114,6 +114,9 @@ class TextWindow {
   /**
    * Sets the size of the font. Reprsented by \#WINDOW.xxx.MOJI.SIZE.
    */
+  void setFontSizeToDefault() {
+    font_size_in_pixels_ = default_font_size_in_pixels_;
+  }
   void setFontSizeInPixels(int i) { font_size_in_pixels_ = i; }
   int fontSizeInPixels() const { return font_size_in_pixels_; }
 
@@ -386,6 +389,9 @@ class TextWindow {
    *
    * @{
    */
+
+  /// The default font size.
+  int default_font_size_in_pixels_;
 
   /// The current size of the font
   int font_size_in_pixels_;
