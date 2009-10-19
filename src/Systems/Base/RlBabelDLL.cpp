@@ -598,8 +598,9 @@ int RlBabelDLL::getCharWidth(uint16_t cp932_char, bool as_xmod) {
   uint16_t native_char = cp.JisDecode(cp932_char);
   uint16_t unicode_codepoint = cp.Convert(native_char);
   boost::shared_ptr<TextWindow> window = getWindow(-1);
+  int font_size = window->fontSizeInPixels();
   // TODO(erg): Can I somehow modify this to try to do proper kerning?
-  int width = window->charWidth(unicode_codepoint);
+  int width = machine_.system().text().charWidth(font_size, unicode_codepoint);
   return as_xmod ? window->insertionPointX() + width : width;
 }
 

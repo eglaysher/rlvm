@@ -45,7 +45,6 @@ class MockTextWindow : public TestTextWindow {
   MOCK_METHOD2(displayChar, bool(const std::string&, const std::string&));
   MOCK_METHOD1(charWidth, int(uint16_t));
   MOCK_METHOD0(textSurface, boost::shared_ptr<Surface>());
-  MOCK_METHOD0(nameSurface, boost::shared_ptr<Surface>());
   MOCK_METHOD1(renderNameInBox, void(const std::string&));
   MOCK_METHOD0(clearWin, void());
   MOCK_METHOD2(setName, void(const std::string&, const std::string&));
@@ -70,10 +69,6 @@ class MockTextWindow : public TestTextWindow {
 
   boost::shared_ptr<Surface> ConcreteTextSurface() {
     return TestTextWindow::textSurface();
-  }
-
-  boost::shared_ptr<Surface> ConcreteNameSurface() {
-    return TestTextWindow::nameSurface();
   }
 
   void ConcreteRenderNameInBox(const std::string& utf8str) {

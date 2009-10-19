@@ -265,10 +265,6 @@ class TextWindow {
   // ------------------------------------------------ [ Abstract interface ]
   void render(std::ostream* tree);
 
-  /// Returns a surface that is the text.
-  virtual boost::shared_ptr<Surface> textSurface() = 0;
-  virtual boost::shared_ptr<Surface> nameSurface() = 0;
-
   /**
    * Clears the text window of all text and resets the insertion
    * point.
@@ -283,10 +279,7 @@ class TextWindow {
    *         does not and was not displayed.
    */
   virtual bool displayChar(const std::string& current,
-                           const std::string& next) = 0;
-
-  /// Returns the width of the unicode codepoint stored in |character|.
-  virtual int charWidth(uint16_t codepoint) const = 0;
+                           const std::string& next);
 
   /**
    * Returns whether another character can be placed on the screen.
@@ -303,12 +296,12 @@ class TextWindow {
                        const std::string& next_char);
   void setNameWithoutDisplay(const std::string& utf8name);
 
-  virtual void renderNameInBox(const std::string& utf8str) = 0;
+  void renderNameInBox(const std::string& utf8str);
 
   virtual void hardBrake();
   virtual void resetIndentation();
   virtual void markRubyBegin();
-  virtual void displayRubyText(const std::string& utf8str) = 0;
+  virtual void displayRubyText(const std::string& utf8str);
 
 
   /**
@@ -523,6 +516,12 @@ class TextWindow {
 
   struct FaceSlot;
   boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];
+
+  /// Converted surface for uploading.
+  boost::shared_ptr<Surface> text_surface_;
+
+  // Surface with current speakers name drawn to it. Can be NULL.
+  boost::shared_ptr<Surface> name_surface_;
 
   System& system_;
 };

@@ -204,6 +204,16 @@ boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
 
 // -----------------------------------------------------------------------
 
+int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
+  boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
+  int minx, maxx, miny, maxy, advance;
+  TTF_GlyphMetrics(font.get(), codepoint,
+                   &minx, &maxx, &miny, &maxy, &advance);
+  return advance;
+}
+
+// -----------------------------------------------------------------------
+
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {

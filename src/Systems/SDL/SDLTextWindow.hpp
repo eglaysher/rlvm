@@ -44,27 +44,11 @@ class SDLTextWindow : public TextWindow {
   SDLTextWindow(System& system, int window);
   ~SDLTextWindow();
 
-  virtual boost::shared_ptr<Surface> textSurface();
-  virtual boost::shared_ptr<Surface> nameSurface();
-  virtual void clearWin();
-
-  virtual bool displayChar(const std::string& current,
-                           const std::string& next);
-  virtual void renderNameInBox(const std::string& utf8str);
-  virtual int charWidth(uint16_t codepoint) const;
-
-  virtual void displayRubyText(const std::string& utf8str);
-
   virtual void addSelectionItem(const std::string& utf8str);
 
  private:
-  /// Converted surface for uploading.
-  boost::shared_ptr<SDLSurface> surface_;
-  boost::shared_ptr<Surface> name_surface_;
-
   /// Font being used.
   boost::shared_ptr<TTF_Font> font_;
-  boost::shared_ptr<TTF_Font> ruby_font_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDLTEXTWINDOW_HPP_

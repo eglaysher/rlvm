@@ -43,8 +43,6 @@ MockTextWindow::MockTextWindow(System& system, int win)
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteCharWidth));
   ON_CALL(*this, textSurface())
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteTextSurface));
-  ON_CALL(*this, nameSurface())
-      .WillByDefault(Invoke(this, &MockTextWindow::ConcreteNameSurface));
   ON_CALL(*this, renderNameInBox(_))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteRenderNameInBox));
   ON_CALL(*this, clearWin())
