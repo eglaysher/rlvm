@@ -135,15 +135,6 @@ void SDLRenderToTextureSurface::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
-void SDLRenderToTextureSurface::rawRenderQuad(const int src_coords[8],
-                                              const int dest_coords[8],
-                                              const int opacity[4]) {
-  if (texture_)
-    texture_->rawRenderQuad(src_coords, dest_coords, opacity);
-}
-
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::fill(const RGBAColour& colour) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }

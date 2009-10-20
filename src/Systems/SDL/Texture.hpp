@@ -85,10 +85,6 @@ class Texture {
   void renderToScreen(const Rect& src, const Rect& dst,
                       const int opacity[4]);
 
-  void rawRenderQuad(const int src_coords[8],
-                     const int dest_coords[8],
-                     const int opacity[4]);
-
   void buildShader();
   std::string getSubtractiveShaderString();
 

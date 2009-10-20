@@ -77,10 +77,6 @@ class SDLRenderToTextureSurface : public SurfaceInvalidatable,
                                       const Rect& dst,
                                       int alpha);
 
-  virtual void rawRenderQuad(const int src_coords[8],
-                             const int dest_coords[8],
-                             const int opacity[4]);
-
   virtual void fill(const RGBAColour& colour);
   virtual void fill(const RGBAColour& colour, const Rect& rect);
   virtual void invert(const Rect& rect);

@@ -582,19 +582,6 @@ void SDLSurface::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::rawRenderQuad(const int src_coords[8],
-                               const int dest_coords[8],
-                               const int opacity[4]) {
-  uploadTextureIfNeeded();
-
-  for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it) {
-    it->texture->rawRenderQuad(src_coords, dest_coords, opacity);
-  }
-}
-
-// -----------------------------------------------------------------------
-
 void SDLSurface::fill(const RGBAColour& colour) {
   // Fill the entire surface with the incoming colour
   Uint32 sdl_colour = MapRGBA(surface_->format, colour);

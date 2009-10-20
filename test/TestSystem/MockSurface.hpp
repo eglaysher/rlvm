@@ -59,7 +59,6 @@ class MockSurface : public Surface {
                                             const Rect&, const Rect&, int));
   MOCK_CONST_METHOD0(numPatterns, int());
   MOCK_CONST_METHOD1(getPattern, const GrpRect&(int patt_no));
-  MOCK_METHOD3(rawRenderQuad, void(const int[8], const int[8], const int[4]));
   MOCK_METHOD1(fill, void(const RGBAColour&));
   MOCK_METHOD2(fill, void(const RGBAColour&, const Rect&));
   MOCK_METHOD1(invert, void(const Rect&));

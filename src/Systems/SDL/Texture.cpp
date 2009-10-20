@@ -718,43 +718,6 @@ void Texture::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
-void Texture::rawRenderQuad(const int src_coords[8],
-                            const int dest_coords[8],
-                            const int opacity[4]) {
-  /// @bug FIXME!
-//  if (!filterCoords(x1, y1, x2, y2, dx1, dy1, dx2, dy2))
-//    return;
-
-  // For the time being, we are dumb and assume that it's one texture
-  float texture_coords[8];
-  for (int i = 0; i < 8; i += 2) {
-    texture_coords[i] = float(src_coords[i]) / texture_width_;
-    texture_coords[i + 1] = float(src_coords[i + 1]) / texture_height_;
-  }
-
-  glBindTexture(GL_TEXTURE_2D, texture_id_);
-
-  // Blend when we have less opacity
-  if (find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
-     != opacity + 4)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  glBegin(GL_QUADS); {
-    for (int i = 0; i < 4; i++) {
-      glColor4ub(255, 255, 255, opacity[i]);
-
-      int first_index = i * 2;
-      int second_index = first_index + 1;
-      glTexCoord2f(src_coords[first_index], src_coords[second_index]);
-      glVertex2i(dest_coords[first_index], dest_coords[second_index]);
-    }
-  }
-  glEnd();
-  glBlendFunc(GL_ONE, GL_ZERO);
-}
-
-// -----------------------------------------------------------------------
-
 bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
                            float& dx1, float& dy1, float& dx2, float& dy2) {
   // POINT

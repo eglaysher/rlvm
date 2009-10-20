@@ -190,10 +190,6 @@ class SDLSurface : public SurfaceInvalidatable,
   virtual void renderToScreen(
     const Rect& src, const Rect& dst, const int opacity[4]);
 
-  virtual void rawRenderQuad(const int src_coords[8],
-                             const int dest_coords[8],
-                             const int opacity[4]);
-
   // Used internally; not exposed to the general graphics system
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
