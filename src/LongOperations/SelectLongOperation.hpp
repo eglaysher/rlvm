@@ -138,6 +138,10 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   // If positive, the currently highlighted text button.
   int highlighted_item_;
 
+  // Properties when rendering our back surface as a color mask.
+  RGBAColour window_bg_colour_;
+  int window_filter_;
+
   // Surface loaded from #SELBTN.xxx.NAME.
   boost::shared_ptr<Surface> name_surface_;
 

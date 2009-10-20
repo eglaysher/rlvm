@@ -195,6 +195,11 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   moji_size_ = selbtn("MOJISIZE");
 
+  // Retrieve the parameters needed to render as a color mask.
+  shared_ptr<TextWindow> window = machine.system().text().currentWindow();
+  window_bg_colour_ = window->colour();
+  window_filter_ = window->filter();
+
   int default_colour_num_ = selbtn("MOJIDEFAULTCOL");
   int select_colour_num_ = selbtn("MOJISELECTCOL");
   if (default_colour_num_ == select_colour_num_)
@@ -232,6 +237,8 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
     baseposx += reppos_x_;
     baseposy += reppos_y_;
   }
+
+  machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 
 // -----------------------------------------------------------------------
@@ -294,7 +301,9 @@ void ButtonSelectLongOperation::render(std::ostream* tree) {
   for (int i = 0; i < options_.size(); i++) {
     Rect bounding_rect = bounding_rects_[i];
 
-    back_surface_->renderToScreen(back_surface_->rect(), bounding_rect);
+    back_surface_->renderToScreenAsColorMask(
+        back_surface_->rect(), bounding_rect, window_bg_colour_,
+        window_filter_);
     name_surface_->renderToScreen(name_surface_->rect(), bounding_rect);
 
     if (i == highlighted_item_) {
