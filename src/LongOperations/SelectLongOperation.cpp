@@ -193,6 +193,10 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   reppos_x_ = vec.at(0);
   reppos_y_ = vec.at(1);
 
+  vec = selbtn("CENTERING");
+  int center_x = vec.at(0);
+  int center_y = vec.at(1);
+
   moji_size_ = selbtn("MOJISIZE");
 
   // Retrieve the parameters needed to render as a color mask.
@@ -229,8 +233,25 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   }
 
   // Calculate out the bounding rectangles for all the options.
-  int baseposx = basepos_x_;
-  int baseposy = basepos_y_;
+  Size screen_size = machine.system().graphics().screenSize();
+  int baseposx = 0;
+  if (center_x) {
+    int totalwidth = ((options_.size() - 1) * reppos_x_) +
+                     back_surface_->size().width();
+    baseposx = (screen_size.width() / 2) - (totalwidth / 2);
+  } else {
+    baseposx = basepos_x_;
+  }
+
+  int baseposy = 0;
+  if (center_y) {
+    int totalheight = ((options_.size() - 1) * reppos_y_) +
+                      back_surface_->size().height();
+    baseposy = (screen_size.height() / 2) - (totalheight / 2);
+  } else {
+    baseposy = basepos_y_;
+  }
+
   for (int i = 0; i < options_.size(); i++) {
     bounding_rects_.push_back(Rect(baseposx, baseposy, back_surface_->size()));
 
