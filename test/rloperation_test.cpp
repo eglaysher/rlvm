@@ -68,19 +68,7 @@ void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
 
 // -----------------------------------------------------------------------
 
-class RLOperationTest : public ::testing::Test {
- protected:
-  RLOperationTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(),
-        rlmachine(system, arc) {
-  }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  RLMachine rlmachine;
-};
+class RLOperationTest : public FullSystemTest { };
 
 // -----------------------------------------------------------------------
 

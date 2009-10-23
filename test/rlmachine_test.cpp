@@ -38,9 +38,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Str.hpp"
-#include "TestSystem/TestSystem.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/archive.h"
 #include "libReallive/intmemref.h"
 #include "testUtils.hpp"
 
@@ -49,18 +47,7 @@ using namespace libReallive;
 using boost::lexical_cast;
 using boost::assign::list_of;
 
-class RLMachineTest : public ::testing::Test {
- protected:
-  RLMachineTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        rlmachine(system, arc) {
-  }
-
-  libReallive::Archive arc;
-  TestSystem system;
-  RLMachine rlmachine;
-};
+class RLMachineTest : public FullSystemTest {};
 
 TEST_F(RLMachineTest, RejectsDoubleAttachs) {
   rlmachine.attachModule(new StrModule);

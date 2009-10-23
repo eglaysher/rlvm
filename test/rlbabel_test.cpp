@@ -36,18 +36,7 @@
 
 #include <string>
 
-class RLBabelTest : public ::testing::Test {
- protected:
-  RLBabelTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        rlmachine(system, arc) {
-  }
-
-  libReallive::Archive arc;
-  TestSystem system;
-  RLMachine rlmachine;
-};
+class RLBabelTest : public FullSystemTest { };
 
 const std::string rlBabel = "rlBabel";
 

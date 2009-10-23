@@ -65,19 +65,7 @@ using ::testing::Return;
 
 const char* FILE_NAME = "doesntmatter";
 
-class GraphicsObjectTest : public ::testing::Test {
- protected:
-  GraphicsObjectTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(),
-        rlmachine(system, arc) {
-  }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  RLMachine rlmachine;
-};
+class GraphicsObjectTest : public FullSystemTest { };
 
 // Test the serialization of an individual GraphicsObjectOfFile object.
 TEST_F(GraphicsObjectTest, SerializeObjectData) {

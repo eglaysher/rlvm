@@ -28,25 +28,14 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Modules/Module_EventLoop.hpp"
-#include "TestSystem/TestMachine.hpp"
-#include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
 
 #include "testUtils.hpp"
 
-class MediumEventLoopTest : public ::testing::Test {
+class MediumEventLoopTest : public FullSystemTest {
  protected:
-  MediumEventLoopTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        rlmachine(system, arc) {
+  MediumEventLoopTest() {
     rlmachine.attachModule(new EventLoopModule);
   }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  TestMachine rlmachine;
 };
 
 TEST_F(MediumEventLoopTest, TestSkipMode) {

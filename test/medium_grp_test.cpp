@@ -30,25 +30,14 @@
 #include "Modules/Module_Grp.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "TestSystem/MockSurface.hpp"
-#include "TestSystem/TestMachine.hpp"
-#include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
 
 #include "testUtils.hpp"
 
-class MediumGrpTest : public ::testing::Test {
+class MediumGrpTest : public FullSystemTest {
  protected:
-  MediumGrpTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        rlmachine(system, arc) {
+  MediumGrpTest() {
     rlmachine.attachModule(new GrpModule);
   }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  TestMachine rlmachine;
 };
 
 TEST_F(MediumGrpTest, TestWipe) {

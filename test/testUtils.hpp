@@ -30,6 +30,11 @@
 
 #include <string>
 
+#include "gtest/gtest.h"
+#include "TestSystem/TestMachine.hpp"
+#include "TestSystem/TestSystem.hpp"
+#include "libReallive/archive.h"
+
 /**
  * Locates a test file in the test/ directory.
  *
@@ -37,5 +42,18 @@
  * @return Full path to the test case file.
  */
 std::string locateTestCase(const std::string& baseName);
+
+// A base class for all tests that instantiate an archive, a System and a
+// Machine.
+class FullSystemTest : public ::testing::Test {
+ protected:
+  // Grab a random SEEN.TXT file and the Gameexe.ini file and load them.
+  FullSystemTest();
+  ~FullSystemTest();
+
+  libReallive::Archive arc;
+  TestSystem system;
+  TestMachine rlmachine;
+};
 
 #endif  // TEST_TESTUTILS_HPP_

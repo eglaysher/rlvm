@@ -28,7 +28,6 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "libReallive/archive.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Effects/Effect.hpp"
 #include "Effects/BlindEffect.hpp"
@@ -55,22 +54,13 @@ class EffectEventSystemTest : public EventSystemMockHandler {
   unsigned int ticks;
 };
 
-class EffectTest : public ::testing::Test {
+class EffectTest : public FullSystemTest {
  protected:
   EffectTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        event(dynamic_cast<TestEventSystem&>(system.event())),
-        event_system_impl(new EffectEventSystemTest),
-        rlmachine(system, arc) {
-    event.setMockHandler(event_system_impl);
+      : event_system_impl(new EffectEventSystemTest) {
+    dynamic_cast<TestEventSystem&>(system.event())
+        .setMockHandler(event_system_impl);
   }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  TestEventSystem& event;
-  RLMachine rlmachine;
 
   shared_ptr<EffectEventSystemTest> event_system_impl;
 };

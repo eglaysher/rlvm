@@ -34,19 +34,11 @@
 
 #include "testUtils.hpp"
 
-class MediumMsgLoopTest : public ::testing::Test {
+class MediumMsgLoopTest : public FullSystemTest {
  protected:
-  MediumMsgLoopTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        rlmachine(system, arc) {
+  MediumMsgLoopTest() {
     rlmachine.attachModule(new MsgModule);
   }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  TestMachine rlmachine;
 };
 
 TEST_F(MediumMsgLoopTest, TestFastText) {

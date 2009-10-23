@@ -45,12 +45,9 @@ using namespace std;
 
 using ::testing::_;
 
-class TextSystemTest : public ::testing::Test {
+class TextSystemTest : public FullSystemTest {
  protected:
-  TextSystemTest()
-      : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-        system(locateTestCase("Gameexe_data/Gameexe.ini")),
-        rlmachine(system, arc) {
+  TextSystemTest() {
     system.text().setActiveWindow(0);
   }
 
@@ -82,11 +79,6 @@ class TextSystemTest : public ::testing::Test {
     text.textWindow(0)->clearWin();
     text.newPageOnWindow(0);
   }
-
-  // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
-  TestSystem system;
-  RLMachine rlmachine;
 };
 
 TEST_F(TextSystemTest, NormalTextDisplay) {

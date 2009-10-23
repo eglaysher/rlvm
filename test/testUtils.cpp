@@ -57,3 +57,14 @@ string locateTestCase(const string& baseName) {
   oss << "Could not locate data file '" << baseName << "' in locateTestCase.";
   throw std::runtime_error(oss.str());
 }
+
+// -----------------------------------------------------------------------
+
+FullSystemTest::FullSystemTest()
+    : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
+      system(locateTestCase("Gameexe_data/Gameexe.ini")),
+      rlmachine(system, arc) {
+}
+
+FullSystemTest::~FullSystemTest() {
+}
