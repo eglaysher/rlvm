@@ -573,14 +573,6 @@ bool TextWindow::displayChar(const std::string& current,
     int next_codepoint = codepoint(next);
     bool indent_after_spacing = false;
 
-    // U+3010 (LEFT BLACK LENTICULAR BRACKET) and U+3011 (RIGHT BLACK
-    // LENTICULAR BRACKET) should be handled before this
-    // function. Otherwise, it's an error.
-    if (cur_codepoint == 0x3010 || cur_codepoint == 0x3011) {
-      throw SystemError("Bug in parser; \\{name} construct should be handled "
-                        "before display_char");
-    }
-
     // But if the last character was a lenticular bracket, we need to indent
     // now. See doc/notes/NamesAndIndentation.txt for more details.
     if (last_token_was_name_) {
