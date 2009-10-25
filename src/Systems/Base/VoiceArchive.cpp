@@ -84,3 +84,8 @@ VoiceArchive::VoiceArchive(int file_no)
 VoiceArchive::~VoiceArchive() {
 }
 
+// -----------------------------------------------------------------------
+
+VoiceArchive::Entry::Entry(int ikoe_num, int ilength, int ioffset)
+    : koe_num(ikoe_num), length(ilength), offset(ioffset) {
+}

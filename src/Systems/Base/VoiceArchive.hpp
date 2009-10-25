@@ -34,10 +34,8 @@ class VoiceArchive;
 
 const int WAV_HEADER_SIZE = 0x2c;
 
-/**
- * A Reference to an individual voice sample in a voice archive (independent of
- * the voice archive type).
- */
+// A Reference to an individual voice sample in a voice archive (independent of
+// the voice archive type).
 class VoiceSample {
  public:
   virtual ~VoiceSample();
@@ -53,9 +51,8 @@ class VoiceSample {
   static const char* MakeWavHeader(int rate, int ch, int bps, int size);
 };
 
-/**
- * Abstr
- */
+// Abstract representation of an archive on disk with a bunch of voice samples
+// in it.
 class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
  public:
   explicit VoiceArchive(int file_no);
@@ -64,6 +61,24 @@ class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
   virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) = 0;
 
   int fileNumber() const { return file_no_; }
+
+ protected:
+  // A sortable list with metadata pointing into an archive.
+  struct Entry {
+    Entry(int koe_num, int length, int offset);
+
+    int koe_num;
+    int length;
+    int offset;
+
+    bool operator<(const Entry& rhs) const {
+      return koe_num < rhs.koe_num;
+    }
+
+    bool operator<(int rhs) const {
+      return koe_num < rhs;
+    }
+  };
 
  private:
   int file_no_;

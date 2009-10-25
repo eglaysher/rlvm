@@ -61,6 +61,7 @@
 
 #include "Systems/Base/OVKVoiceArchive.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -76,13 +77,6 @@ using boost::shared_ptr;
 using std::ifstream;
 using std::ostringstream;
 namespace fs = boost::filesystem;
-
-// -----------------------------------------------------------------------
-// OVKVoiceArchive::Entry
-// -----------------------------------------------------------------------
-OVKVoiceArchive::Entry::Entry(int ikoe_num, int ilength, int ioffset)
-    : koe_num(ikoe_num), length(ilength), offset(ioffset) {
-}
 
 // -----------------------------------------------------------------------
 // OVKVoiceArchive
@@ -102,8 +96,7 @@ OVKVoiceArchive::~OVKVoiceArchive() {
 
 shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
-      find_if(entries_.begin(), entries_.end(),
-              bind(&Entry::koe_num, _1) == sample_num);
+      std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {
     return shared_ptr<VoiceSample>(
         new OVKVoiceSample(file_, it->offset, it->length));
@@ -135,4 +128,5 @@ void OVKVoiceArchive::readTable(boost::filesystem::path file) {
     int koe_num = read_little_endian_int(head+8);
     entries_.push_back(Entry(koe_num, length, offset));
   }
+  sort(entries_.begin(), entries_.end());
 }

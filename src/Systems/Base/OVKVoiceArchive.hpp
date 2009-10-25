@@ -45,14 +45,6 @@ class OVKVoiceArchive : public VoiceArchive {
  private:
   void readTable(boost::filesystem::path file);
 
-  struct Entry {
-    Entry(int koe_num, int length, int offset);
-
-    int koe_num;
-    int length;
-    int offset;
-  };
-
   // The file to read from
   boost::filesystem::path file_;
 

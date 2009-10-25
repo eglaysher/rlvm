@@ -45,22 +45,6 @@ class KOEPACVoiceArchive : public VoiceArchive {
  private:
   void readTable(boost::filesystem::path file);
 
-  struct Entry {
-    Entry(int koe_num, int length, int offset);
-
-    int koe_num;
-    int length;
-    int offset;
-
-    bool operator<(const Entry& rhs) const {
-      return koe_num < rhs.koe_num;
-    }
-
-    bool operator<(int rhs) const {
-      return koe_num < rhs;
-    }
-  };
-
   // The file to read from
   boost::filesystem::path file_;
 

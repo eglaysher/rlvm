@@ -270,13 +270,6 @@ char* KOEPACVoiceSample::decode(int* dest_len) {
 }
 
 // -----------------------------------------------------------------------
-// KOEPACVoiceArchive::Entry
-// -----------------------------------------------------------------------
-KOEPACVoiceArchive::Entry::Entry(int ikoe_num, int ilength, int ioffset)
-    : koe_num(ikoe_num), length(ilength), offset(ioffset) {
-}
-
-// -----------------------------------------------------------------------
 // KOEPACVoiceArchive
 // -----------------------------------------------------------------------
 KOEPACVoiceArchive::KOEPACVoiceArchive(fs::path file, int file_no)
