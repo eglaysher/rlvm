@@ -588,6 +588,9 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     Point destPoint;
     getSELPointAndRect(machine, effectNum, srcRect, destPoint);
 
+    // openBg commands clears the graphics stack.
+    graphics.clearStack();
+
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
       .setSourceCoordinates(srcRect)
@@ -637,6 +640,9 @@ struct Grp_openBg_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string fileName, int effectNum,
                   Rect srcRect, Point destPt, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
+
+    // openBg commands clears the graphics stack.
+    graphics.clearStack();
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
@@ -696,6 +702,9 @@ struct Grp_openBg_4 : public RLOp_Void_13<
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
+
+    // openBg commands clears the graphics stack.
+    graphics.clearStack();
 
     graphics.addGraphicsStackFrame(GRP_OPENBG)
       .setFilename(fileName)
@@ -1227,8 +1236,6 @@ GrpModule::GrpModule()
   addOpcode(72, 2, "grpDisplay", new Grp_display_2<GRP>());
   addOpcode(72, 3, "grpDisplay", new Grp_display_3<GRP>());
 
-  // These are supposed to be grpOpenBg, but until I have the object
-  // layer working, this simply does the same thing.
   addOpcode(73, 0, "grpOpenBg", new Grp_openBg_0);
   addOpcode(73, 1, "grpOpenBg", new Grp_openBg_1);
   addOpcode(73, 2, "grpOpenBg", new Grp_openBg_2<GRP>(false));
