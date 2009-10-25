@@ -35,6 +35,7 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
+#include "Systems/Base/KOEPACVoiceArchive.hpp"
 #include "Systems/Base/OVKVoiceArchive.hpp"
 #include "Systems/Base/OVKVoiceSample.hpp"
 #include "Systems/Base/SoundSystem.hpp"
@@ -97,6 +98,8 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   string file_str = file.file_string();
   if (iends_with(file_str, "ovk")) {
     return shared_ptr<VoiceArchive>(new OVKVoiceArchive(file, file_no));
+  } else if (iends_with(file_str, "koe")) {
+    return shared_ptr<VoiceArchive>(new KOEPACVoiceArchive(file, file_no));
   }
 
   return shared_ptr<VoiceArchive>();

@@ -75,7 +75,6 @@ namespace fs = boost::filesystem;
 namespace {
 
 const int INITSIZE = 65536;
-const int WAV_HEADER_SIZE = 0x2c;
 
 std::string oggErrorCodeToString(int code) {
   switch (code) {
@@ -111,35 +110,6 @@ std::string oggErrorCodeToString(int code) {
     default:
       return "Unknown error";
   }
-}
-
-// Header at the beginning of WAV data.
-unsigned char orig_header[0x2c] = {
-  0x52, 0x49, 0x46, 0x46, /* +00 "RIFF" */
-  0x00, 0x00, 0x00, 0x00, /* +04 file size - 8 */
-  0x57, 0x41, 0x56, 0x45, 0x66, 0x6d, 0x74, 0x20, /* +08 "WAVEfmt " */
-  0x10, 0x00, 0x00, 0x00, /* +10 fmt size */
-  0x01, 0x00,             /* +14 wFormatTag */
-  0x02, 0x00,             /* +16 Channels */
-  0x44, 0xac, 0x00, 0x00, /* +18 rate */
-  0x10, 0xb1, 0x02, 0x00, /* +1c BytesPerSec = rate * BlockAlign */
-  0x04, 0x00,             /* +20 BlockAlign = channels*BytesPerSample */
-  0x10, 0x00,             /* +22 BitsPerSample */
-  0x64, 0x61, 0x74, 0x61, /* +24 "data" */
-  0x00, 0x00, 0x00, 0x00  /* +28 filesize - 0x2c */
-};
-
-const char* MakeWavHeader(int rate, int ch, int bps, int size) {
-  static char header[0x2c];
-  memcpy(header, (const char*)orig_header, 0x2c);
-  write_little_endian_int(header+0x04, size-8);
-  write_little_endian_int(header+0x28, size-0x2c);
-  write_little_endian_int(header+0x18, rate);
-  write_little_endian_int(header+0x1c, rate*ch*bps);
-  header[0x16] = ch;
-  header[0x20] = ch*bps;
-  header[0x22] = bps*8;
-  return header;
 }
 
 }  // namespace

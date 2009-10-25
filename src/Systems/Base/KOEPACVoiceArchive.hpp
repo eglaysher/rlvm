@@ -24,49 +24,51 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
-#define SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
+#ifndef SRC_SYSTEMS_BASE_KOEPACVOICEARCHIVE_HPP_
+#define SRC_SYSTEMS_BASE_KOEPACVOICEARCHIVE_HPP_
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/filesystem/path.hpp>
+#include <vector>
 
-class VoiceArchive;
-
-const int WAV_HEADER_SIZE = 0x2c;
+#include "Systems/Base/VoiceArchive.hpp"
 
 /**
- * A Reference to an individual voice sample in a voice archive (independent of
- * the voice archive type).
+ * A VoiceArchive that reads the older KOEPAC archives (KOE files).
  */
-class VoiceSample {
+class KOEPACVoiceArchive : public VoiceArchive {
  public:
-  virtual ~VoiceSample();
+  KOEPACVoiceArchive(boost::filesystem::path file, int file_no);
+  ~KOEPACVoiceArchive();
 
-  /**
-   * Returns waveform data.
-   *
-   * @param[out] size The size of the returned buffer.
-   * @return A buffer in WAV format.
-   */
-  virtual char* decode(int* size) = 0;
-
-  static const char* MakeWavHeader(int rate, int ch, int bps, int size);
-};
-
-/**
- * Abstr
- */
-class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
- public:
-  explicit VoiceArchive(int file_no);
-  ~VoiceArchive();
-
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) = 0;
-
-  int fileNumber() const { return file_no_; }
+  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
 
  private:
-  int file_no_;
-};  // end of class VoiceArchive
+  void readTable(boost::filesystem::path file);
 
-#endif  // SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
+  struct Entry {
+    Entry(int koe_num, int length, int offset);
+
+    int koe_num;
+    int length;
+    int offset;
+
+    bool operator<(const Entry& rhs) const {
+      return koe_num < rhs.koe_num;
+    }
+
+    bool operator<(int rhs) const {
+      return koe_num < rhs;
+    }
+  };
+
+  // The file to read from
+  boost::filesystem::path file_;
+
+  // The rate of the samples in this file.
+  int rate_;
+
+  // A list of samples in this archive
+  std::vector<Entry> entries_;
+};  // class KOEPACVoiceArchive
+
+#endif  // SRC_SYSTEMS_BASE_KOEPACVOICEARCHIVE_HPP_
