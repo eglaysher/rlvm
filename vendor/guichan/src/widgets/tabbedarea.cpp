@@ -60,7 +60,8 @@
 namespace gcn
 {
     TabbedArea::TabbedArea()
-            :mSelectedTab(NULL)
+            :mSelectedTab(NULL),
+             mOpaque(false)
     {
         setFocusable(true);
         addKeyListener(this);
@@ -82,8 +83,7 @@ namespace gcn
         delete mTabContainer;
         delete mWidgetContainer;
 
-        unsigned int i;
-        for (i = 0; i < mTabsToDelete.size(); i++)
+        for (unsigned int i = 0; i < mTabsToDelete.size(); i++)
         {
             delete mTabsToDelete[i];
         }
@@ -250,6 +250,16 @@ namespace gcn
         return mSelectedTab;
     }
 
+    void TabbedArea::setOpaque(bool opaque)
+    {
+        mOpaque = opaque;
+    }
+
+    bool TabbedArea::isOpaque() const
+    {
+        return mOpaque;
+    }
+
     void TabbedArea::draw(Graphics *graphics)
     {
         const Color &faceColor = getBaseColor();
@@ -270,14 +280,18 @@ namespace gcn
                            mTabContainer->getHeight() + 1,
                            getWidth() - 1,
                            getHeight() - 1);
-       graphics->drawLine(1,
-                          getHeight() - 1,
-                          getWidth() - 1,
-                          getHeight() - 1);
+        graphics->drawLine(1,
+                           getHeight() - 1,
+                           getWidth() - 1,
+                           getHeight() - 1);
 
-        graphics->setColor(getBaseColor());
-        graphics->fillRectangle(Rectangle(1, 1, getWidth() - 2, getHeight() - 2));
-
+        if (isOpaque())
+        {
+            graphics->setColor(getBaseColor());
+            graphics->fillRectangle(Rectangle(1, 1,
+                                              getWidth() - 2,
+                                              getHeight() - 2));
+        }
 
         // Draw a line underneath the tabs.
         graphics->setColor(highlightColor);
@@ -303,14 +317,13 @@ namespace gcn
 
     void TabbedArea::logic()
     {
-
     }
 
     void TabbedArea::adjustSize()
     {
         int maxTabHeight = 0;
-        unsigned int i;
-        for (i = 0; i < mTabs.size(); i++)
+
+        for (unsigned int i = 0; i < mTabs.size(); i++)
         {
             if (mTabs[i].first->getHeight() > maxTabHeight)
             {
@@ -353,7 +366,6 @@ namespace gcn
         adjustSize();
     }
 
-
     void TabbedArea::setHeight(int height)
     {
         Widget::setHeight(height);
@@ -362,16 +374,14 @@ namespace gcn
 
     void TabbedArea::setSize(int width, int height)
     {
-        setWidth(width);
-        setHeight(height);
+        Widget::setSize(width, height);
+        adjustSize();
     }
 
     void TabbedArea::setDimension(const Rectangle& dimension)
     {
-        setX(dimension.x);
-        setY(dimension.y);
-        setWidth(dimension.width);
-        setHeight(dimension.height);
+        Widget::setDimension(dimension);
+        adjustSize();
     }
 
     void TabbedArea::keyPressed(KeyEvent& keyEvent)
@@ -418,8 +428,7 @@ namespace gcn
 
     void TabbedArea::mousePressed(MouseEvent& mouseEvent)
     {
-        if (mouseEvent.isConsumed()
-            && mouseEvent.getSource()->isFocusable())
+        if (mouseEvent.isConsumed())
         {
             return;
         }
@@ -435,13 +444,18 @@ namespace gcn
             }
         }
 
-        requestFocus();
+        // Request focus only if the source of the event
+        // is not focusble. If the source of the event
+        // is focused we don't want to steal the focus.
+        if (!mouseEvent.getSource()->isFocusable())
+        {
+            requestFocus();
+        }
     }
 
     void TabbedArea::death(const Event& event)
     {
-        Widget* source = event.getSource();
-        Tab* tab = dynamic_cast<Tab*>(source);
+        Tab* tab = dynamic_cast<Tab*>(event.getSource());
 
         if (tab != NULL)
         {

@@ -103,7 +103,7 @@ namespace gcn
          */
         virtual void widgetShown(const Event& event) { }
 
-        protected:
+    protected:
         /**
          * Constructor.
          *

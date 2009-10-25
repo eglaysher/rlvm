@@ -160,6 +160,11 @@ namespace gcn
             mSurface = NULL;
         }
 
+        if (tmp == NULL)
+        {
+            throw GCN_EXCEPTION("Unable to convert image to display format.");
+        }
+
         if (hasPink)
         {
             SDL_SetColorKey(tmp, SDL_SRCCOLORKEY,

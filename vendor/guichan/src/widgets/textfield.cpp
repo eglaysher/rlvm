@@ -116,12 +116,19 @@ namespace gcn
 
         if (isFocused())
         {
+            graphics->setColor(getSelectionColor());
+            graphics->drawRectangle(Rectangle(0, 0, getWidth() - 2, getHeight() - 2));
+            graphics->drawRectangle(Rectangle(1, 1, getWidth() - 4, getHeight() - 4));
+        }
+
+        if (isFocused())
+        {
             drawCaret(graphics, getFont()->getWidth(mText.substr(0, mCaretPosition)) - mXScroll);
         }
 
         graphics->setColor(getForegroundColor());
         graphics->setFont(getFont());
-        graphics->drawText(mText, 1 - mXScroll, 1);
+        graphics->drawText(mText, 3 - mXScroll, 1);
 
         graphics->popClipArea();
     }
@@ -209,7 +216,7 @@ namespace gcn
 
     void TextField::adjustSize()
     {
-        setWidth(getFont()->getWidth(mText) + 6);
+        setWidth(getFont()->getWidth(mText) + 7);
         adjustHeight();
 
         fixScroll();

@@ -298,8 +298,6 @@ namespace gcn
         glVertex2f(x1 + 0.375f,
                    y1 + 0.375f);
         glEnd();
-
-        
     }
 
     void OpenGLGraphics::drawRectangle(const Rectangle& rectangle)
@@ -310,7 +308,7 @@ namespace gcn
         }
 
         const ClipRectangle& top = mClipStack.top();
-        
+
         glBegin(GL_LINE_LOOP);
         glVertex2f(rectangle.x + top.xOffset,
                    rectangle.y + top.yOffset);
@@ -347,7 +345,10 @@ namespace gcn
     void OpenGLGraphics::setColor(const Color& color)
     {
         mColor = color;
-        glColor4ub(color.r, color.g, color.b, color.a);
+        glColor4ub((GLubyte) color.r,
+                   (GLubyte) color.g,
+                   (GLubyte) color.b,
+                   (GLubyte) color.a);
 
         mAlpha = color.a != 255;
 

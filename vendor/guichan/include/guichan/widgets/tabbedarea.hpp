@@ -62,6 +62,8 @@ namespace gcn
     /**
      * An implementation of a tabbed area where a user can display a widget by
      * selecting a tab.
+     *
+     * @since 0.8.0
      */
     class GCN_CORE_DECLSPEC TabbedArea:
         public ActionListener,
@@ -83,7 +85,32 @@ namespace gcn
         virtual ~TabbedArea();
 
         /**
-         * Adds a tab to the tabbed area.
+         * Sets the tabbed area to be opaque or not. If the tabbed area is
+         * opaque its background will be drawn, if it's not opaque its
+         * background will not be drawn. By default, a tabbed area is not
+         * opaque.
+         *
+         * The tabbed area's background is normally only visible behind the
+         * tabs, since the container holding the tab contents is opaque by
+         * default.
+         *
+         * @param opaque True if the tabbed area should be opaque, false
+         *               otherwise.
+         * @see isOpaque
+         */
+        void setOpaque(bool opaque);
+
+        /**
+         * Checks if the tabbed area is opaque or not.
+         *
+         * @return true if the tabbed area is opaque, false otherwise.
+         * @see setOpaque
+         */
+        bool isOpaque() const;
+
+        /**
+         * Adds a tab to the tabbed area. The newly created tab will be
+         * automatically deleted by the tabbed area when it is removed.
          *
          * @param caption The caption of the tab to add.
          * @param widget The widget to view when the tab is selected.
@@ -92,7 +119,8 @@ namespace gcn
         virtual void addTab(const std::string& caption, Widget* widget);
 
         /**
-         * Adds a tab to the tabbed area.
+         * Adds a tab to the tabbed area. The tab will not be deleted by the
+         * tabbed area when it is removed.
          *
          * @param tab The tab widget for the tab.
          * @param widget The widget to view when the tab is selected.
@@ -205,7 +233,7 @@ namespace gcn
 
     protected:
         /**
-         * Adjusts the size of the tabbed area.
+         * Adjusts the size of the tab container and the widget container.
          */
         void adjustSize();
 
@@ -241,6 +269,11 @@ namespace gcn
          * tab is selected.
          */
         std::vector<std::pair<Tab*, Widget*> > mTabs;
+
+        /**
+         * True if the tabbed area is opaque, false otherwise.
+         */
+        bool mOpaque;
     };
 }
 

@@ -60,6 +60,7 @@ namespace gcn
      * An implementation of a simple tab to be used in a tabbed area.
      *
      * @see TabbedArea
+     * @since 0.8.0
      */
     class GCN_CORE_DECLSPEC Tab:
         public BasicContainer,
@@ -78,7 +79,8 @@ namespace gcn
         virtual ~Tab();
 
         /**
-         * Adjusts the size of the tab fit the caption.
+         * Adjusts the size of the tab to fit the caption. If this tab was
+         * added to a TabbedArea, it will also adjust the tab positions.
          */
         void adjustSize();
 

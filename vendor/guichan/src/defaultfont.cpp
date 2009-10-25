@@ -82,7 +82,7 @@ namespace gcn
         }
     }
 
-    int DefaultFont::getStringIndexAt(const std::string& text, int x)
+    int DefaultFont::getStringIndexAt(const std::string& text, int x) const
     {
         if (x > (int)text.size() * 8)
         {

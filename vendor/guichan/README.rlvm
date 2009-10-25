@@ -1,4 +1,4 @@
-Included version of guichan: 0.8.1, released April 2008.
+Included version of guichan: 0.8.2, released October 2009.
 
 The included copy strips out support for backends other than OpenGL and SDL,
 along with some of the contrib/ folder.

@@ -309,7 +309,7 @@ namespace gcn
         virtual void handleModalMouseInputFocus();
 
         /**
-         * Handles modal focus gained. If modal focus has been gaind it might 
+         * Handles modal focus gained. If modal focus has been gained it might
          * be necessary to distribute mouse entered or mouse exited events.
          *
          * @since 0.8.0
@@ -317,8 +317,9 @@ namespace gcn
         virtual void handleModalFocusGained();
 
         /**
-         * Handles modal mouse input focus gained. If modal focus has been gaind 
-         * it might be necessary to distribute mouse entered or mouse exited events.
+         * Handles modal mouse input focus gained. If modal focus has been
+         * gained it might be necessary to distribute mouse entered or mouse
+         * exited events.
          *
          * @since 0.8.0
          */

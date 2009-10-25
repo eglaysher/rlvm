@@ -48,11 +48,8 @@
 
 #include "guichan/platform.hpp"
 
-
-#ifdef _MSC_VER
-#if _MSC_VER <= 1200
+#ifndef __FUNCTION__
 #define __FUNCTION__ "?"
-#endif
 #endif
 
 /*

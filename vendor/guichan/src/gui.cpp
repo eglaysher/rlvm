@@ -505,12 +505,22 @@ namespace gcn
 
         int sourceWidgetX, sourceWidgetY;
         sourceWidget->getAbsolutePosition(sourceWidgetX, sourceWidgetY);
-        
-		if ((mFocusHandler->getModalFocused() != NULL
+
+        if ((mFocusHandler->getModalFocused() != NULL
             && sourceWidget->isModalFocused())
             || mFocusHandler->getModalFocused() == NULL)
         {
             sourceWidget->requestFocus();
+        }
+
+        if (mouseInput.getTimeStamp() - mLastMousePressTimeStamp < 250
+            && mLastMousePressButton == mouseInput.getButton())
+        {
+            mClickCount++;
+        }
+        else
+        {
+            mClickCount = 1;
         }
 
         distributeMouseEvent(sourceWidget,
@@ -520,19 +530,9 @@ namespace gcn
                              mouseInput.getY());
 
         mFocusHandler->setLastWidgetPressed(sourceWidget);
-        
+
         mFocusHandler->setDraggedWidget(sourceWidget);
         mLastMouseDragButton = mouseInput.getButton();
-
-        if (mLastMousePressTimeStamp < 300
-            && mLastMousePressButton == mouseInput.getButton())
-        {
-            mClickCount++;
-        }
-        else
-        {
-            mClickCount = 1;
-        }
 
         mLastMousePressButton = mouseInput.getButton();
         mLastMousePressTimeStamp = mouseInput.getTimeStamp();

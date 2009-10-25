@@ -288,6 +288,9 @@ namespace gcn
 
     void DropDown::keyPressed(KeyEvent& keyEvent)
     {
+        if (keyEvent.isConsumed())
+            return;
+        
         Key key = keyEvent.getKey();
 
         if ((key.getValue() == Key::ENTER || key.getValue() == Key::SPACE)

@@ -79,12 +79,12 @@ namespace gcn
 
         /**
          * Sets the container to be opaque or not. If the container
-         * is opaque it's background will be drawn, if it's not opaque 
-         * it's background will not be drawn, and thus making the container
+         * is opaque its background will be drawn, if it's not opaque
+         * its background will not be drawn, and thus making the container
          * completely transparent.
          *
          * NOTE: This is not the same as to set visibility. A non visible
-         *       container will not itself nor will it draw it's content.
+         *       container will not itself nor will it draw its content.
          *
          * @param opaque True if the container should be opaque, false otherwise.
          * @see isOpaque
@@ -108,13 +108,13 @@ namespace gcn
         virtual void add(Widget* widget);
 
         /**
-         * Adds a widget to the container and also specifices the widget's
-         * postion in the container. The position is relative to the container
+         * Adds a widget to the container and also specifies the widget's
+         * position in the container. The position is relative to the container
          * and not relative to the screen.
          *
          * @param widget The widget to add.
-         * @param x The x coordinat for the widget.
-         * @param y The y coordinat for the widget.
+         * @param x The x coordinate for the widget.
+         * @param y The y coordinate for the widget.
          * @see remove, clear
          */
         virtual void add(Widget* widget, int x, int y);

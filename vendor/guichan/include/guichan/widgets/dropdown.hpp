@@ -57,23 +57,22 @@
 #include "guichan/widgets/listbox.hpp"
 #include "guichan/widgets/scrollarea.hpp"
 
-namespace gcn
-{
+namespace gcn {
     /**
-     * An implementation of a drop downable list from which an item can be selected.
-     * The drop down consists of an internal ScrollArea and an internal ListBox. 
-     * The drop down also uses an internal FocusHandler to handle the focus of the 
-     * internal ScollArea and the internal ListBox. The scroll area and the list box
-     * can be passed to the drop down if a custom scroll area and or a custom list box
-     * is preferable.
+     * An implementation of a drop downable list from which an item can be
+     * selected. The drop down consists of an internal ScrollArea and an
+     * internal ListBox. The drop down also uses an internal FocusHandler to
+     * handle the focus of the internal ScollArea and the internal ListBox. The
+     * scroll area and the list box can be passed to the drop down if a custom
+     * scroll area and or a custom list box is preferable.
      *
-     * To be able display a list the drop down uses a user provided list model. 
-     * A list model can be any class that implements the ListModel interface. 
+     * To be able display a list the drop down uses a user provided list model.
+     * A list model can be any class that implements the ListModel interface.
      *
-     * If an item is selected in the drop down a select event will be sent to all selection 
-     * listeners of the drop down. If an item is selected by using a mouse click or by using 
-     * the enter or space key an action event will be sent to all action listeners of the 
-     * drop down.
+     * If an item is selected in the drop down a select event will be sent to
+     * all selection listeners of the drop down. If an item is selected by
+     * using a mouse click or by using the enter or space key an action event
+     * will be sent to all action listeners of the drop down.
      */
     class GCN_CORE_DECLSPEC DropDown :
         public ActionListener,
@@ -146,6 +145,9 @@ namespace gcn
          * changes an event will be sent to all selection listeners of the
          * drop down.
          *
+         * If you delete your selection listener, be sure to also remove it
+         * using removeSelectionListener().
+         *
          * @param selectionListener the selection listener to add.
          * @since 0.8.0
          */
@@ -170,7 +172,7 @@ namespace gcn
 
         void setForegroundColor(const Color& color);
 
-		void setFont(Font *font);
+        void setFont(Font *font);
 
         void setSelectionColor(const Color& color);
 
@@ -238,7 +240,7 @@ namespace gcn
         /**
          * Distributes a value changed event to all selection listeners
          * of the drop down.
-         * 
+         *
          * @since 0.8.0
          */
         void distributeValueChangedEvent();
@@ -251,13 +253,13 @@ namespace gcn
         /**
          * True if the drop down has been pushed with the mouse, false
          * otherwise.
-         */ 
+         */
         bool mPushed;
 
         /**
          * Holds what the height is if the drop down is folded up. Used when
-         * checking if the list of the drop down was clicked or if the upper part
-         * of the drop down was clicked on a mouse click 
+         * checking if the list of the drop down was clicked or if the upper
+         * part of the drop down was clicked on a mouse click.
          */
         int mFoldedUpHeight;
 

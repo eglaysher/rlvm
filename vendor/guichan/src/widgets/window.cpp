@@ -125,11 +125,9 @@ namespace gcn
 
     void Window::draw(Graphics* graphics)
     {
-        Color faceColor = getBaseColor();
+        const Color &faceColor = getBaseColor();
         Color highlightColor, shadowColor;
-        int alpha = getBaseColor().a;
-        int width = getWidth() + getFrameSize() * 2 - 1;
-        int height = getHeight() + getFrameSize() * 2 - 1;
+        const int alpha = getBaseColor().a;
         highlightColor = faceColor + 0x303030;
         highlightColor.a = alpha;
         shadowColor = faceColor - 0x303030;
@@ -226,7 +224,7 @@ namespace gcn
         {
             return;
         }
-        
+
         if (getParent() != NULL)
         {
             getParent()->moveToTop(this);
@@ -234,7 +232,7 @@ namespace gcn
 
         mDragOffsetX = mouseEvent.getX();
         mDragOffsetY = mouseEvent.getY();
-        
+
         mMoved = mouseEvent.getY() <= (int)mTitleBarHeight;
     }
 
@@ -249,7 +247,7 @@ namespace gcn
         {
             return;
         }
-        
+
         if (isMovable() && mMoved)
         {
             setPosition(mouseEvent.getX() - mDragOffsetX + getX(),

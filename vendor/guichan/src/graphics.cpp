@@ -61,6 +61,16 @@ namespace gcn
 
     bool Graphics::pushClipArea(Rectangle area)
     {
+        // Ignore area with a negate width or height
+        // by simple pushing an empty clip area
+        // to the stack.
+        if (area.width < 0 || area.height < 0)
+        {
+            ClipRectangle carea;
+            mClipStack.push(carea);
+            return true;
+        }
+            
         if (mClipStack.empty())
         {
             ClipRectangle carea;
@@ -68,10 +78,10 @@ namespace gcn
             carea.y = area.y;
             carea.width = area.width;
             carea.height = area.height;
-			carea.xOffset = area.x;
-			carea.yOffset = area.y;
+            carea.xOffset = area.x;
+            carea.yOffset = area.y;
             mClipStack.push(carea);
-            return true;
+            return true; 
         }
 
         const ClipRectangle &top = mClipStack.top();
@@ -97,26 +107,26 @@ namespace gcn
         {
             carea.width = top.x + top.width - carea.x;
 
-			if (carea.width < 0)
-			{
-				carea.width = 0;
-			}
+            if (carea.width < 0)
+            {
+                carea.width = 0;
+            }
         }
         
         if (carea.y + carea.height > top.y + top.height)
         {
             carea.height = top.y + top.height - carea.y;
-
-			if (carea.height < 0)
-			{
-				carea.height = 0;
-			}
+            
+            if (carea.height < 0)
+            {
+                carea.height = 0;
+            }
         }
-
+        
         bool result = carea.isIntersecting(top);
-
+        
         mClipStack.push(carea);
-
+        
         return result;
     }
 

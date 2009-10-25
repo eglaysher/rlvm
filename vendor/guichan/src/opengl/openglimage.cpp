@@ -58,7 +58,7 @@ namespace gcn
 
         mWidth = width;
         mHeight = height;
-		mTextureWidth = 1, mTextureHeight = 1;
+        mTextureWidth = 1, mTextureHeight = 1;
 
         while(mTextureWidth < mWidth)
         {
@@ -70,37 +70,37 @@ namespace gcn
             mTextureHeight *= 2;
         }
 
-		// Create a new pixel array and copy the pixels into it
-		mPixels = new unsigned int[mTextureWidth * mTextureHeight];
+        // Create a new pixel array and copy the pixels into it
+        mPixels = new unsigned int[mTextureWidth * mTextureHeight];
 
 #ifdef __BIG_ENDIAN__
         const unsigned int magicPink = 0xff00ffff;
 #else
         const unsigned int magicPink = 0xffff00ff;
 #endif
-		int x, y;
-		for (y = 0; y < mTextureHeight; y++)
-		{
-			for (x = 0; x < mTextureWidth; x++)
-			{
-				if (x < mWidth && y < mHeight)
-				{
-					unsigned int c = pixels[x + y * mWidth];
+        int x, y;
+        for (y = 0; y < mTextureHeight; y++)
+        {
+            for (x = 0; x < mTextureWidth; x++)
+            {
+                if (x < mWidth && y < mHeight)
+                {
+                    unsigned int c = pixels[x + y * mWidth];
 
-					// Magic pink to transparent
-					if (c == magicPink)
-					{
-						c = 0x00000000;
-					}
+                    // Magic pink to transparent
+                    if (c == magicPink)
+                    {
+                        c = 0x00000000;
+                    }
 
-					mPixels[x + y * mTextureWidth] = c;
-				}
-				else
-				{
-					mPixels[x + y * mTextureWidth] = 0x00000000;
-				}
-			}
-		}
+                    mPixels[x + y * mTextureWidth] = c;
+                }
+                else
+                {
+                    mPixels[x + y * mTextureWidth] = 0x00000000;
+                }
+            }
+        }
 
         if (convertToDisplayFormat)
         {
@@ -112,11 +112,11 @@ namespace gcn
     {
         mTextureHandle = textureHandle;
         mAutoFree = autoFree;
-		mPixels = NULL;
+        mPixels = NULL;
 
-		mWidth = width;
+        mWidth = width;
         mHeight = height;
-		mTextureWidth = 1, mTextureHeight = 1;
+        mTextureWidth = 1, mTextureHeight = 1;
 
         while(mTextureWidth < mWidth)
         {
@@ -144,25 +144,25 @@ namespace gcn
 
     int OpenGLImage::getTextureWidth() const
     {
-		return mTextureWidth;
+        return mTextureWidth;
     }
 
     int OpenGLImage::getTextureHeight() const
     {
-		return mTextureHeight;
+        return mTextureHeight;
     }
 
     void OpenGLImage::free()
     {
-		if (mPixels == NULL)
-		{
-			glDeleteTextures(1, &mTextureHandle);
-		}
-		else
-		{
-			delete[] mPixels;
-			mPixels = NULL;
-		}
+        if (mPixels == NULL)
+        {
+            glDeleteTextures(1, &mTextureHandle);
+        }
+        else
+        {
+            delete[] mPixels;
+            mPixels = NULL;
+        }
     }
 
     int OpenGLImage::getWidth() const
@@ -177,28 +177,28 @@ namespace gcn
 
     Color OpenGLImage::getPixel(int x, int y)
     {
-		if (mPixels == NULL)
-		{
-			throw GCN_EXCEPTION("Image has been converted to display format");
-		}
+        if (mPixels == NULL)
+        {
+            throw GCN_EXCEPTION("Image has been converted to display format");
+        }
 
-		if (x < 0 || x >= mWidth || y < 0 || y >= mHeight)
-		{
-			throw GCN_EXCEPTION("Coordinates outside of the image");
-		}
+        if (x < 0 || x >= mWidth || y < 0 || y >= mHeight)
+        {
+            throw GCN_EXCEPTION("Coordinates outside of the image");
+        }
 
-		unsigned int c = mPixels[x + y * mTextureWidth];
+        unsigned int c = mPixels[x + y * mTextureWidth];
 
 #ifdef __BIG_ENDIAN__
-		unsigned char r = (c >> 24) & 0xff;
-		unsigned char g = (c >> 16) & 0xff;
-		unsigned char b = (c >> 8) & 0xff;
-		unsigned char a = c & 0xff;
+        unsigned char r = (unsigned char) ((c >> 24) & 0xff);
+        unsigned char g = (unsigned char) ((c >> 16) & 0xff);
+        unsigned char b = (unsigned char) ((c >> 8) & 0xff);
+        unsigned char a = (unsigned char) (c & 0xff);
 #else
-		unsigned char a = (c >> 24) & 0xff;
-		unsigned char b = (c >> 16) & 0xff;
-		unsigned char g = (c >> 8) & 0xff;
-		unsigned char r = c & 0xff;
+        unsigned char a = (unsigned char) ((c >> 24) & 0xff);
+        unsigned char b = (unsigned char) ((c >> 16) & 0xff);
+        unsigned char g = (unsigned char) ((c >> 8) & 0xff);
+        unsigned char r = (unsigned char) (c & 0xff);
 #endif
 
         return Color(r, g, b, a);
@@ -207,30 +207,30 @@ namespace gcn
     void OpenGLImage::putPixel(int x, int y, const Color& color)
     {
         if (mPixels == NULL)
-		{
-			throw GCN_EXCEPTION("Image has been converted to display format");
-		}
+        {
+            throw GCN_EXCEPTION("Image has been converted to display format");
+        }
 
-		if (x < 0 || x >= mWidth || y < 0 || y >= mHeight)
-		{
-			throw GCN_EXCEPTION("Coordinates outside of the image");
-		}
+        if (x < 0 || x >= mWidth || y < 0 || y >= mHeight)
+        {
+            throw GCN_EXCEPTION("Coordinates outside of the image");
+        }
 
 #ifdef __BIG_ENDIAN__
-		unsigned int c = color.a | color.b << 8 | color.g << 16 | color.r << 24;
+        unsigned int c = color.a | color.b << 8 | color.g << 16 | color.r << 24;
 #else
-		unsigned int c = color.r | color.g << 8 | color.b << 16 | color.a << 24;
+        unsigned int c = color.r | color.g << 8 | color.b << 16 | color.a << 24;
 #endif
 
-		mPixels[x + y * mTextureWidth] = c;
+        mPixels[x + y * mTextureWidth] = c;
     }
 
     void OpenGLImage::convertToDisplayFormat()
     {
-		if (mPixels == NULL)
-		{
-			throw GCN_EXCEPTION("Image has already been converted to display format");
-		}
+        if (mPixels == NULL)
+        {
+            throw GCN_EXCEPTION("Image has already been converted to display format");
+        }
 
         glGenTextures(1, &mTextureHandle);
         glBindTexture(GL_TEXTURE_2D, mTextureHandle);
@@ -249,7 +249,7 @@ namespace gcn
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         delete[] mPixels;
-		mPixels = NULL;
+        mPixels = NULL;
 
         GLenum error = glGetError();
         if (error)
