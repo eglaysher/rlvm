@@ -115,7 +115,10 @@ width:330px;
 
 div#footer {
 margin-top: 10px;
-background-color: #333;
+border: 1px solid #111;
+-moz-border-radiu:s 5px;
+-webkit-border-radius: 5px;
+background-color: #555;
 color: #FFF;
 font-size: 11px;
 font-family: Tahoma, Arial, Helvetica, sans-serif;
