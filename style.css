@@ -1,13 +1,3 @@
-/* 
-=======================================================
-Lemon CSS
-
-Released for OSWD and OWD.
-Coded by Anthony Yeung (http://smallpark.org)
-May 24 2005
-It would be nice if you could leave this here, thanks.
-=======================================================
-*/
 
 html,body {
 	margin:0;
@@ -148,18 +138,6 @@ text-decoration: none;
 border-bottom: 1px solid #333; 
 border-right: 1px solid #333;
 }
-
-/*
-
- Would be nice if you could keep this credit below. Thanks.
-
-*/
-
-#design-by {
-float: right;
-display:inline;
-}
-
 
 /* Elliot's additions */
 
