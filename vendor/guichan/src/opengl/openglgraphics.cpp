@@ -76,6 +76,7 @@ namespace gcn
     OpenGLGraphics::OpenGLGraphics(int width, int height)
     {
         setTargetPlane(width, height);
+        mAlpha = false;
     }
 
     OpenGLGraphics::~OpenGLGraphics()
