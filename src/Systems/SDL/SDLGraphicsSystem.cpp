@@ -386,9 +386,8 @@ void SDLGraphicsSystem::setupVideo() {
 SDLGraphicsSystem::~SDLGraphicsSystem() {
   // Force all surfaces to unregister from us now, because otherwise they'll
   // access our unresolved memory.
-  for (std::set<SurfaceInvalidatable*>::iterator it = alive_surfaces_.begin();
-       it != alive_surfaces_.end(); ++it) {
-    (*it)->unregisterFromGraphicsSystem();
+  while (!alive_surfaces_.empty()) {
+    (*alive_surfaces_.begin())->unregisterFromGraphicsSystem();
   }
 }
 
