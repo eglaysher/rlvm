@@ -64,7 +64,7 @@ SDLSystem::SDLSystem(Gameexe& gameexe)
 
   // Initialize the various subsystems
   graphics_system_.reset(new SDLGraphicsSystem(*this, gameexe));
-  event_system_.reset(new SDLEventSystem(gameexe));
+  event_system_.reset(new SDLEventSystem(*this, gameexe));
   text_system_.reset(new SDLTextSystem(*this, gameexe));
   sound_system_.reset(new SDLSoundSystem(*this));
 

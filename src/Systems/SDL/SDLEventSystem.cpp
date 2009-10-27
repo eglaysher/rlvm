@@ -33,8 +33,8 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventListener.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
 
 #include <boost/bind.hpp>
 #include <iostream>
@@ -183,11 +183,15 @@ void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
 // Public implementation
 // -----------------------------------------------------------------------
 
-SDLEventSystem::SDLEventSystem(Gameexe& gexe)
+SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
   : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
     mouse_inside_window_(true),
     mouse_pos_(),
-    m_button1State(0), m_button2State(0), raw_handler_(NULL) {}
+    m_button1State(0),
+    m_button2State(0),
+    last_get_currsor_time_(0),
+    system_(sys),
+    raw_handler_(NULL) {}
 
 // -----------------------------------------------------------------------
 
@@ -244,6 +248,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 Point SDLEventSystem::getCursorPos() {
+  preventCursorPosSpinning();
   return mouse_pos_;
 }
 
@@ -251,6 +256,7 @@ Point SDLEventSystem::getCursorPos() {
 
 void SDLEventSystem::getCursorPos(Point& position, int& button1,
                                   int& button2) {
+  preventCursorPosSpinning();
   position = mouse_pos_;
   button1 = m_button1State;
   button2 = m_button2State;
@@ -300,4 +306,22 @@ void SDLEventSystem::injectMouseUp(RLMachine& machine) {
 
   dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
                               MOUSE_LEFT, 1));
+}
+
+// -----------------------------------------------------------------------
+
+void SDLEventSystem::preventCursorPosSpinning() {
+  unsigned int newTime = getTicks();
+
+  if ((system_.graphics().screenUpdateMode() !=
+       GraphicsSystem::SCREENUPDATEMODE_MANUAL) &&
+      (newTime - last_get_currsor_time_) < 20) {
+    // Prevent spinning on input. When we're not in manual mode, we don't get
+    // convenient refresh() calls to insert pauses at. Instead, we need to sort
+    // of intuit about what's going on and the easiest way to slow down is to
+    // track when the bytecode keeps spamming us for the cursor.
+    system_.setForceWait(true);
+  }
+
+  last_get_currsor_time_ = newTime;
 }

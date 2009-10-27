@@ -33,6 +33,8 @@
 
 #include <SDL/SDL_events.h>
 
+class SDLSystem;
+
 /**
  * Hack to ferry SDL_Events over to something like Guichan which wants to take
  * control of the input.
@@ -46,7 +48,7 @@ class RawSDLInputHandler {
 
 class SDLEventSystem : public EventSystem {
  public:
-  explicit SDLEventSystem(Gameexe& gexe);
+  SDLEventSystem(SDLSystem& sys, Gameexe& gexe);
 
   /// We provide this accessor to let the Graphics system querry what
   /// to do when redrawing the mouse.
@@ -77,6 +79,10 @@ class SDLEventSystem : public EventSystem {
   virtual void injectMouseUp(RLMachine& machine);
 
  private:
+  // Called from getCursorPos() functions to force a pause if it's been less
+  // than 10ms since the last getCursorPos() call.
+  void preventCursorPosSpinning();
+
   /**
    * @name RealLive event system commands
    *
@@ -97,6 +103,12 @@ class SDLEventSystem : public EventSystem {
   Point mouse_pos_;
 
   int m_button1State, m_button2State;
+
+  // The last time a getCursorPos() function was called.
+  unsigned int last_get_currsor_time_;
+
+  // Our owning system.
+  SDLSystem& system_;
 
   /// Handles raw SDL events when appropriate. (Used for things like Guichan,
   /// et cetera who want to suck raw SDL events).
