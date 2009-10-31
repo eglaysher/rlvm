@@ -22,6 +22,11 @@
    obj:/usr/lib/dri/fglrx_dri.so
 }
 {
+   Invalid write of size 8
+   Memcheck:Addr8
+   obj:/usr/lib/dri/fglrx_dri.so
+}
+{
    WTF, fglrx!
    Memcheck:Addr1
    fun:memset
