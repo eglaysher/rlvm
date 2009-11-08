@@ -298,16 +298,23 @@ if GetOption('release'):
   env.Append(
     CPPFLAGS = [
       "-Os",
-      "-ffunction-sections",
-      "-fdata-sections",
       "-DNDEBUG",
       "-DBOOST_DISABLE_ASSERTS"
-    ],
-
-    LINKFLAGS = [
-      "-Wl,--gc-sections"
     ]
   )
+
+  # I would love to enable gc-sections everywhere, but it isn't enabled on OSX?
+  if env['PLATFORM'] != "darwin":
+    env.Append(
+      CPPFLAGS = [
+        "-ffunction-sections",
+        "-fdata-sections",
+        ],
+
+      LINKFLAGS = [
+        "-Wl,--gc-sections"
+        ],
+      )
 elif GetOption('coverage'):
   env["BUILD_DIR"] = "#/build/coverage"
   env['BUILD_TYPE'] = "Release"
