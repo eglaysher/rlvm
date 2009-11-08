@@ -2,19 +2,24 @@ Primary development by:
 -------------------------------------------------------------------------
 Elliot Glaysher <glaysher at umich dot edu>
 
+
 Other code by:
 -------------------------------------------------------------------------
-Rasqual Twilight 
-- Provided Win32 build files and several small bugfixes
-
 Haeleth
 - Wrote the original libReallive (rlvm is built on top of it)
 - Wrote the kprl/rlc toolchain; used to compile the test cases
 - Wrote several features
 
+Kazunori "jagarl" Ueno
+- Wrote file decoders for the majority of formats that RealLive and AVG32 use,
+  which I have blatantly stolen, as they had BSDish licenses.
+
+Rasqual Twilight
+- Provided Win32 build files and several small bugfixes
+
+
 Libraries used (and included in the distribution)
 -------------------------------------------------------------------------
-TUT C++ Templated Unit Tests - http://tut-framework.sourceforge.net/
 GLEW - http://glew.sourceforge.net/
 UTF8-CPP - http://utfcpp.sourceforge.net/
 SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
@@ -23,6 +28,8 @@ SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
 C++ LRU Cache - http://lifelines.blackcat.ca/lifeline/query.php/tag=LRU_CACHE
 luabind - http://www.rasterbar.com/products/luabind.html
 guichan - http://guichan.sourceforge.net/
+googletest - http://code.google.com/p/googletest/
+googlemock - http://code.google.com/p/googlemock/
 
 Libraries depended on (and are not included)
 -------------------------------------------------------------------------

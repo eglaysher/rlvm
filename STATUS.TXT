@@ -16,6 +16,18 @@ CLANNAD
 - All routes playable to the end, from a clean file to After Story True End.
 - No screen shaking, no inversion, and other graphical glitches.
 
+CLANNAD FULL VOICE
+------------------
+- All routes playable to the end.
+- Voices work.
+- Partially playable with the Baka-Tsuki English patch (currently beta)
+
+Tomoyo After
+------------
+- I have verified that the game starts. (No other testing has happened)
+- I assume that the dungeon crawler parts are broken.
+- Requires unwritten NWK support for voices.
+
 Planetarian CD
 --------------
 - Planetarian is playable through the end, with the following caveats:
@@ -23,12 +35,27 @@ Planetarian CD
     functions, and the corresponding HIK file format have not been
     reverse engineered. 
   - There are minor issues with indentation that need to be worked out.
+- Requires unwritten NWK support for voices.
 
-CLANNAD FULL VOICE
-------------------
-- All routes playable to the end.
-- Voices work.
-- Partially playable with the Baka-Tsuki English patch (currently beta)
+Little Busters
+--------------
+- The game doesn't even start. 100% broken.
+
+Princess Bride
+--------------
+- Playable to the end with the caveat that the user doesn't click to skip the
+  fake "ending" sequence on Wedding Day. (I am not sure if this is due to a bug
+  in rlvm or in Pricness Bride).
+
+Princess Brave
+--------------
+- Appears to work. Game starts, story mode appears to work. I can't play
+  Riichi Mahjong, so maybe the mahjong parts are broken?
+
+ALMA ~Zutto soba ni~
+--------------------
+- Can complete Yui's route. Haven't tested any other paths.
+- There's a bunch of stuff broken in the OP.
 
 UNOFFICIAL "ONE" DEMO
 ---------------------

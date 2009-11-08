@@ -1,3 +1,19 @@
+rlvm (0.7) unstable; urgency=low
+
+  * AIR Standard Edition can be completed, along with a few other games.
+  * Fix intermittent crashes after loading saved games.
+  * Prevernt text boxes from being positioned offscreen.
+  * Implement shadows on text.
+  * Support KOE voice archives.
+  * Support loose ogg vorbis file voice patches.
+  * Chinese and Korean rlBabel support compiled in by default. (I can't
+    find any patches so this is untested).
+  * Large number of small graphical fixes, including faces in text boxes,
+    visual appearance of #SELBTNs (such as in Fuuko's route), and various
+    shading effects.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sun, 15 Nov 2009 14:04:59 -0800
+
 rlvm (0.6.3) unstable; urgency=low
 
   * Add fullscreen mode.

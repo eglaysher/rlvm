@@ -1,6 +1,24 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.7:
+
+- AIR Standard Edition can be completed.
+- Princess Bride can be completed and Princess Brave maybe works.
+- At least one route in ALMA can be completed.
+- Fixes intermittent crashes after loading saved game.
+- Prevent text boxes from being positioned offscreen.
+- Implement shadows on text.
+- Support KOE voice archives.
+- Support loose ogg vorbis file voice patches (such as the one for KANON).
+- Chinese and Korean rlBabel support compiled in by default. (I can't find any
+  patches so this is untested).
+- Large number of small graphical fixes, including faces in text boxes, visual
+  appearance of #SELBTNs (such as in Fuuko's route), and various shading
+  effects.
+
+-------------------------------------------------------------------------
+
 Version 0.6.3:
 - Add fullscreen mode. Can be entered from game's interface or by hitting
   Alt+{F,Enter}.

@@ -14,7 +14,7 @@ boost.org license.
 Table of Contents:
 I) Code incorporated directly into rlvm
  a) libReallive
- b) xclannad image loading code
+ b) xclannad file loading code
  c) xkanon animation loading code
  d) mman (part of libReallive)
  e) nwatowav
@@ -64,7 +64,7 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-------------------------------------------[ xclannad image loading code ]
+------------------------------------------[ xclannad file loading code ]
 
 Copyright (C) 2000, 2007-   Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
 

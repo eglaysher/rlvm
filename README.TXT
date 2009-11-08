@@ -10,7 +10,7 @@ Table of Contents:
 5) GETTING INVOLVED
 
 1) INTRODUCTION:
-------------------------------------------------------------------------- 
+-------------------------------------------------------------------------
 rlvm is a Free Software reimplementation of the VisualArt's KK's
 RealLive interpreter. It is meant to provide Linux and Apple users with
 a compatible, portable interpreter to play VisualArts games,
@@ -33,27 +33,35 @@ RealLive system.
 
 rlvm currently plays the following games to their completion:
 
-- The Planetarian CD edition[1]
-- The non-voiced edition of CLANNAD
-- The Full Voiced edition of CLANNAD
-- Full Voiced edition CLANNAD with one of the pre-release English patches
-  from Assembla. (Still in beta).
-- Kanon Standard Edition
-- Kanon Standard Edition with NDT's teaser patch
-- Air Standard Edition
+|----------------------------+--------------------+------------------------|
+| Game                       | Original Japanese  | With English Fan Patch |
+|----------------------------+--------------------+------------------------|
+| Kanon Standard Edition     | OK                 | Get from NDT           |
+| Air Standard Edition       | OK                 | (None)                 |
+| CLANNAD (Original Edition) | OK                 | (Not supported)        |
+| CLANNAD (Full Voice)       | OK                 | Get from Baka-Tsuki    |
+| Planetarian CD             | OK (No voices)     | (Broken)               |
+|----------------------------+--------------------+------------------------|
+| Tomoyo After               | Works? (No voices) | (None)                 |
+| Little Busters             | (Broken)           | (Broken)               |
+| Princess Bride             | Mostly works       | (None)                 |
+| Princess Brave             | Works?             | (None)                 |
+| ALMA ~zutto soba ni~       | Reported to work   | (None)                 |
+|----------------------------+--------------------+------------------------|
 
-rlvm is now at the point where enough commands are implemented that
-other games *may* work. The above is only a list of what I've tested
-against.
+For more details, please read STATUS.TXT.
 
-In addition, rlvm has an implementation of rlBabel; English patches
-compiled with Haeleth's rlBabel should line break correctly. I've
-successfully tested it with the patches from NDT.
+rlvm is now at the point where enough commands are implemented that other games
+*may* work. The above is only a list of what I've tested first hand or what
+I've been told.
 
-rlvm currently supports OVK voice files, along with voice patches to
-some of the above games (as long as the voice files are stored in ogg
-vorbis files and follow the filename convention
-<packnumber>/z<packnumber><sampleid>.ogg).
+rlvm has an implementation of rlBabel; English patches compiled with Haeleth's
+rlBabel should line break correctly. I've successfully tested it with the Kanon
+patch from NDT and the beta CLANNAD patches from Baka-Tsuki's Assembla page.
+
+rlvm supports KOE and OVK archives for voices, along with ogg vorbis voice
+patches which follow the convention <packnumber>/z<packnumber><sampleid>.ogg.
+NWK voice archive files are not supported at this time.
 
 Fullscreen can be entered by pressing Alt+{F,Enter} on Linux and
 Command+{F,Enter} on Mac.
@@ -78,7 +86,7 @@ Optionally, you may want:
 -------------------------------------------------------------------------
 
 Make sure that freetype-config and sdl-config are in your $PATH. The
-current OMakefiles are fairly naive and may need editing to point to the
+current SConscripts are fairly naive and may need editing to point to the
 correct location of some header files. Future versions will have the
 build system refined. You should be able to type:
 
@@ -87,7 +95,7 @@ build system refined. You should be able to type:
 in the root and have a complete build. If you have rldev installed, the
 unit tests will automatically be built and can be run by typing:
 
- $ cd build && ./rlvmTest 
+ $ ./build/rlvmTest
 
 They should all pass.
 
@@ -95,7 +103,7 @@ You should copy the contents of the Planetarian CD to a directory on
 your hard drive for speed reasons. Playing directly from the CD is
 discouraged. Once done, you should be able to run:
 
- $ build/rlvm [--font=/path/to/JapaneseTTF] /path/to/PlanetarianCopy
+ $ ./build/rlvm [--font=/path/to/JapaneseTTF] /path/to/PlanetarianCopy
 
 The rlvm binary should be self contained and movable anywhere, though
 the build system does not have an install target.
@@ -107,7 +115,7 @@ line with --font.
 3b) Compiling under OSX
 -------------------------------------------------------------------------
 In addition to freetype-config and sdl-config needing to be in your
-$PATH, (like when compiling under Linux), the OMakefiles assume you use
+$PATH, (like when compiling under Linux), the Sconscripts assume you use
 fink to manage your unix programs and that fink is installed at /sw/. If
 you are using Darwin Ports or are just compiling libraries manually and
 installing them into /usr/local/, you may need to edit the SConscript
@@ -127,7 +135,7 @@ You can also build rlvm as a command line program, as in Linux:
 
 The result is run like this:
 
- $ build/rlvm /path/to/PlanetarianCopy
+ $ ./build/rlvm /path/to/PlanetarianCopy
 
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
@@ -138,8 +146,7 @@ The interpreter currently lacks the following features:
  - TCC shading data used to give character images a certain tint in some
    scenes. To my knowledge, the file format has not been reverse
    engineered.
- - Koe / Narration is missing in games that don't store their data in
-   ogg vorbis format.
+ - NWK voice file support is missing.
 
 In addition, the current indentation system is extremely naive and does
 not produce the same results as the official interpreter, though it's
@@ -147,10 +154,6 @@ sufficient for Japanese text as line breaks can occur essentially
 anywhere. Using rlvm with insani's English translation of Planetarian is
 currently not recommended as the indentation behaviour *will* break in
 the middle of words.
-
-Many graphics manipulation commands not required by Planetarian are
-currently unimplemented. Kanon SE, Haeleth's unofficial ONE demo and
-CLANNAD do not always render correctly because of this.
 
 5) GETTING INVOLVED
 -------------------------------------------------------------------------
@@ -172,12 +175,6 @@ rlvm needs several file formats reverse engineered:
   information about this file format would be appreciated.
 
 -------------------------------------------------------------------------
-
-[1]  The Planetarian download edition is not supported and never
-     will be. I can not write, nor can I accept, code to run the
-     download edition or other DRMed Kinetic games because of the
-     anticircumvention provisions of the United States Digital
-     Millennium Copyright Act.
 
 ;; Local Variables: **
 ;; fill-column: 72 **
