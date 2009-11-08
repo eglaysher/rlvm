@@ -2,6 +2,12 @@
 
 # Runs all paths of CLANNAD; the result should be a save file with everything
 # unlocked.
+if [ ! -n "$1" ]
+then
+  echo "Usage: `basename $0` <path to CLANNAD directory>"
+  exit 65
+fi
+GAMEDIR=$1
 
 rm -Rf ~/.rlvm/KEY_CLANNAD/
 mkdir -p CLANNAD.log
@@ -11,7 +17,7 @@ function runPath() {
   LOG=`echo $SCRIPT | sed s/\.lua/\.log/g;`
 
   echo "Running $SCRIPT..."
-  time build/luaRlvm --count-undefined test/CLANNAD/$SCRIPT ~/GameImages/CLANNAD > CLANNAD.log/$LOG 2>&1
+  time build/luaRlvm --count-undefined test/CLANNAD/$SCRIPT $GAMEDIR > CLANNAD.log/$LOG 2>&1
 }
 
 # The School Life Section
