@@ -36,6 +36,7 @@
 
 #include "Encodings/cp936.h"
 
+#include <stdint.h>
 #include <cstring>
 #include <string>
 

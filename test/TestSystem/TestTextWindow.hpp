@@ -23,6 +23,7 @@
 #ifndef TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
 #define TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
 
+#include <stdint.h>
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/TextWindow.hpp"

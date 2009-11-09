@@ -70,6 +70,7 @@
 
 #include "Encodings/cp932.h"
 
+#include <stdint.h>
 #include <string>
 
 #include "Utilities/StringUtilities.hpp"

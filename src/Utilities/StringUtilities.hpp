@@ -28,6 +28,7 @@
 #ifndef SRC_UTILITIES_STRINGUTILITIES_HPP_
 #define SRC_UTILITIES_STRINGUTILITIES_HPP_
 
+#include <stdint.h>
 #include <string>
 #include <boost/function.hpp>
 

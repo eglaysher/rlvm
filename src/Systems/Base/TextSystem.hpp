@@ -38,6 +38,7 @@
 #include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/signal.hpp>
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include <map>

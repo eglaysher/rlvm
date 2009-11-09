@@ -36,6 +36,7 @@
 
 #include "Encodings/western.h"
 
+#include <stdint.h>
 #include <string>
 
 bool Cp1252::IsItalic(uint16_t ch) const {

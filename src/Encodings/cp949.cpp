@@ -38,6 +38,7 @@
 
 #include "Encodings/cp949.h"
 
+#include <stdint.h>
 #include <algorithm>  // for lower_bound()
 #include <cstring>
 #include <string>

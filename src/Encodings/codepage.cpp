@@ -36,6 +36,7 @@
 
 #include "Encodings/codepage.h"
 
+#include <stdint.h>
 #include <cstring>
 
 // Supported codepages
