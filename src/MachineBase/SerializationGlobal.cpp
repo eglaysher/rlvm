@@ -68,7 +68,12 @@ namespace Serialization {
 
 // -----------------------------------------------------------------------
 
-const int CURRENT_GLOBAL_VERSION = 2;
+// - Was at 2 was most of rlvm's lifetime.
+// - Was changed to 3 during the 0.7 release because boost 1.35 had a serious
+//   bug in its implementation of vectors of primitive types which made
+//   archives not-backwards (or forwards) compatible. Thankfully, the save
+//   games themselves don't use that feature.
+const int CURRENT_GLOBAL_VERSION = 3;
 
 // -----------------------------------------------------------------------
 
@@ -155,16 +160,32 @@ void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
   int version;
   ia >> version;
 
-  ia >> machine.memory().global()
-     >> sys.globals()
-     >> sys.graphics().globals()
-     >> sys.event().globals()
-     >> sys.text().globals()
-     >> sys.sound().globals();
+  // Load global memory.
+  ia >> machine.memory().global();
 
-  // Restore options which may have System specific implementations. (This will
-  // probably expand as more of RealLive is implemented).
-  sys.sound().restoreFromGlobals();
+  // When Karmic Koala came out, support for all boost earlier than 1.36 was
+  // dropped. For years, I had used boost 1.35 on Ubuntu. It turns out that
+  // boost 1.35 had a serious bug in it, where it wouldn't save vectors of
+  // primitive data types correctly. These global data files no longer load
+  // correctly.
+  //
+  // After flirting with moving to Google protobuf (can't; doesn't handle
+  // complex object graphs like GraphicsObject and its copy-on-write stuff),
+  // and then trying to fix the problem in a forked copy of the serialization
+  // headers which was unsuccessful, I'm just saying to hell with the user's
+  // settings. Most people don't change these values and save games and global
+  // memory still work (per above.)
+  if (version == CURRENT_GLOBAL_VERSION) {
+    ia >> sys.globals()
+       >> sys.graphics().globals()
+       >> sys.event().globals()
+       >> sys.text().globals()
+       >> sys.sound().globals();
+
+    // Restore options which may have System specific implementations. (This
+    // will probably expand as more of RealLive is implemented).
+    sys.sound().restoreFromGlobals();
+  }
 }
 
 }  // namespace Serialization
