@@ -179,8 +179,8 @@ static_sdl_libs = [ ]
 
 config = env.Configure(custom_tests = {'CheckBoost' : CheckBoost},
                        config_h="build/config.h")
-if not config.CheckBoost('1.35'):
-  print "Boost version >= 1.35 needed to compile rlvm!"
+if not config.CheckBoost('1.40'):
+  print "Boost version >= 1.40 needed to compile rlvm!"
   Exit(1)
 
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')

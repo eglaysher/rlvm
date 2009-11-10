@@ -38,6 +38,7 @@
 
 #include <SDL/SDL.h>
 
+#include <iostream>
 #include <sstream>
 
 #include "Utilities/Exception.hpp"
