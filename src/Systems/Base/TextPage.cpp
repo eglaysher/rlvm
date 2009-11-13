@@ -311,7 +311,7 @@ void TextPage::addAction(
 // -----------------------------------------------------------------------
 
 bool TextPage::character_impl(const string& c, const string& next_char) {
-  return system_->text().textWindow(window_num_)->displayChar(c, next_char);
+  return system_->text().textWindow(window_num_)->character(c, next_char);
 }
 
 // -----------------------------------------------------------------------

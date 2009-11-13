@@ -38,7 +38,7 @@ class TestTextWindow : public TextWindow {
 
   virtual void setFontColor(const std::vector<int>& colour_data);
 
-  virtual bool displayChar(const std::string& current,
+  virtual bool character(const std::string& current,
                            const std::string& next);
   virtual int charWidth(uint16_t codepoint) const { return 0; }
 

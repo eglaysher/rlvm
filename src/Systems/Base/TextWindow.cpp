@@ -197,7 +197,7 @@ void TextWindow::setName(const std::string& utf8name,
                          const std::string& next_char) {
   if (name_mod_ == 0) {
     // Display the name in one pass
-    printTextToFunction(bind(&TextWindow::displayChar, ref(*this), _1, _2),
+    printTextToFunction(bind(&TextWindow::character, ref(*this), _1, _2),
                         utf8name, next_char);
     setIndentation();
   }
@@ -560,7 +560,7 @@ void TextWindow::clearWin() {
 
 // -----------------------------------------------------------------------
 
-bool TextWindow::displayChar(const std::string& current,
+bool TextWindow::character(const std::string& current,
                              const std::string& next) {
   // If this text page is already full, save some time and reject
   // early.
@@ -592,7 +592,7 @@ bool TextWindow::displayChar(const std::string& current,
           // Prevent infinite recursion.
           last_token_was_name_ = false;
 
-          if (!displayChar(wide_space, current)) {
+          if (!character(wide_space, current)) {
             last_token_was_name_ = true;
             return false;
           }

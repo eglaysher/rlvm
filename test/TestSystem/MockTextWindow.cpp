@@ -37,7 +37,7 @@ MockTextWindow::MockTextWindow(System& system, int win)
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteExecute));
   ON_CALL(*this, setFontColor(_))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteSetFontColor));
-  ON_CALL(*this, displayChar(_, _))
+  ON_CALL(*this, character(_, _))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteDisplayChar));
   ON_CALL(*this, charWidth(_))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteCharWidth));

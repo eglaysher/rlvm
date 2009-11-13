@@ -281,8 +281,8 @@ class TextWindow {
    * @return True if the character fits on the screen. False if it
    *         does not and was not displayed.
    */
-  virtual bool displayChar(const std::string& current,
-                           const std::string& next);
+  virtual bool character(const std::string& current,
+                         const std::string& next);
 
   /**
    * Returns whether another character can be placed on the screen.
