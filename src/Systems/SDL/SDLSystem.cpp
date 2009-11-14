@@ -134,7 +134,7 @@ Gameexe& SDLSystem::gameexe() {
 
 // -----------------------------------------------------------------------
 
-TextSystem& SDLSystem::text() {
+SDLTextSystem& SDLSystem::text() {
   return *text_system_;
 }
 

@@ -69,11 +69,8 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-SDLTextWindow::SDLTextWindow(System& system, int window_num)
-    : TextWindow(system, window_num) {
-  SDLTextSystem& text = dynamic_cast<SDLTextSystem&>(system.text());
-  font_ = text.getFontOfSize(fontSizeInPixels());
-
+SDLTextWindow::SDLTextWindow(SDLSystem& system, int window_num)
+    : TextWindow(system, window_num), sdl_system_(system) {
   clearWin();
 }
 
@@ -84,13 +81,49 @@ SDLTextWindow::~SDLTextWindow() {
 
 // -----------------------------------------------------------------------
 
+boost::shared_ptr<Surface> SDLTextWindow::textSurface() {
+  return surface_;
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> SDLTextWindow::nameSurface() {
+  return name_surface_;
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::clearWin() {
+  TextWindow::clearWin();
+
+  // Allocate the text window surface
+  if (!surface_)
+    surface_.reset(new SDLSurface(getSDLGraphics(system()), textWindowSize()));
+  surface_->fill(RGBAColour::Clear());
+
+  name_surface_.reset();
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
+  RGBColour shadow = RGBAColour::Black().rgb();
+  name_surface_ = system_.text().renderText(
+      utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow);
+}
+
+// -----------------------------------------------------------------------
+
 void SDLTextWindow::addSelectionItem(const std::string& utf8str) {
+  boost::shared_ptr<TTF_Font> font =
+      sdl_system_.text().getFontOfSize(fontSizeInPixels());
+
   // Render the incoming string for both selected and not-selected.
   SDL_Color colour;
   RGBColourToSDLColor(font_colour_, &colour);
 
   SDL_Surface* normal =
-    TTF_RenderUTF8_Blended(font_.get(), utf8str.c_str(), colour);
+    TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
 
   // Copy and invert the surface for whatever.
   SDL_Surface* inverted = AlphaInvert(normal);
@@ -107,4 +140,90 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str) {
 
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);
+}
+
+// -----------------------------------------------------------------------
+
+void SDLTextWindow::renderGlyphAt(const std::string& current, int font_size,
+                                  const RGBColour& font_colour,
+                                  const RGBColour* shadow_colour,
+                                  int insertion_point_x,
+                                  int insertion_point_y) {
+  boost::shared_ptr<TTF_Font> font =
+      sdl_system_.text().getFontOfSize(font_size);
+
+  SDL_Color sdl_colour;
+  RGBColourToSDLColor(font_colour, &sdl_colour);
+  boost::shared_ptr<SDL_Surface> character(
+      TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_colour),
+      SDL_FreeSurface);
+
+  if (character == NULL) {
+    // Bug during Kyou's path. The string is printed "". Regression in parser?
+    cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the string \""
+         << current << "\". Hopefully continuing..." << endl;
+    return;
+  }
+
+  boost::shared_ptr<SDL_Surface> shadow;
+  if (shadow_colour && sdl_system_.text().fontShadow()) {
+    SDL_Color sdl_shadow_colour;
+    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
+
+    shadow.reset(
+        TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_shadow_colour),
+        SDL_FreeSurface);
+  }
+
+  Point insertion(insertion_point_x, insertion_point_y);
+
+  if (shadow) {
+    Size offset(shadow->w, shadow->h);
+    surface_->blitFROMSurface(
+        shadow.get(), Rect(Point(0, 0), offset),
+        Rect(insertion + Point(2, 2), offset),
+        255);
+  }
+
+  Size size(character->w, character->h);
+  surface_->blitFROMSurface(
+      character.get(), Rect(Point(0, 0), size), Rect(insertion, size), 255);
+}
+
+void SDLTextWindow::displayRubyText(const std::string& utf8str) {
+  if (ruby_begin_point_ != -1) {
+    boost::shared_ptr<TTF_Font> font =
+        sdl_system_.text().getFontOfSize(rubyTextSize());
+    int end_point = text_insertion_point_x_ - x_spacing_;
+
+    if (ruby_begin_point_ > end_point) {
+      ruby_begin_point_ = -1;
+      throw rlvm::Exception("We don't handle ruby across line breaks yet!");
+    }
+
+    SDL_Color colour;
+    RGBColourToSDLColor(font_colour_, &colour);
+    SDL_Surface* tmp =
+      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
+
+    // Render glyph to surface
+    int w = tmp->w;
+    int h = tmp->h;
+    int height_location = text_insertion_point_y_ - rubyTextSize();
+    int width_start =
+      int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
+          (w * 0.5f));
+    surface_->blitFROMSurface(
+      tmp,
+      Rect(Point(0, 0), Size(w, h)),
+      Rect(Point(width_start, height_location), Size(w, h)),
+      255);
+    SDL_FreeSurface(tmp);
+
+    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+
+    ruby_begin_point_ = -1;
+  }
+
+  last_token_was_name_ = false;
 }

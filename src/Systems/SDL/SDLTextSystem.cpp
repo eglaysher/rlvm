@@ -65,8 +65,8 @@ using namespace boost;
 
 // -----------------------------------------------------------------------
 
-SDLTextSystem::SDLTextSystem(System& system, Gameexe& gameexe)
-    : TextSystem(system, gameexe) {
+SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
+    : TextSystem(system, gameexe), sdl_system_(system) {
   if (TTF_Init() == -1) {
     ostringstream oss;
     oss << "Error initializing SDL_ttf: " << TTF_GetError();
@@ -87,7 +87,7 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   if (it == text_window_.end()) {
     it = text_window_.insert(std::make_pair(
       text_window, shared_ptr<TextWindow>(
-          new SDLTextWindow(system(), text_window)))).first;
+          new SDLTextWindow(sdl_system_, text_window)))).first;
   }
 
   return it->second;

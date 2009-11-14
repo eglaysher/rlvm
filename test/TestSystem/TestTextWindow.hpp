@@ -39,7 +39,7 @@ class TestTextWindow : public TextWindow {
   virtual void setFontColor(const std::vector<int>& colour_data);
 
   virtual bool character(const std::string& current,
-                           const std::string& next);
+                         const std::string& next);
   virtual int charWidth(uint16_t codepoint) const { return 0; }
 
   virtual boost::shared_ptr<Surface> textSurface();
@@ -48,6 +48,11 @@ class TestTextWindow : public TextWindow {
   virtual void clearWin();
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
+  virtual void renderGlyphAt(const std::string& current, int font_size,
+                             const RGBColour& font_colour,
+                             const RGBColour* shadow_colour,
+                             int insertion_point_x,
+                             int insertion_point_y) { }
 
   virtual void hardBrake();
 

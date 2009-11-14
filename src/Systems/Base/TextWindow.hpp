@@ -268,6 +268,10 @@ class TextWindow {
   // ------------------------------------------------ [ Abstract interface ]
   void render(std::ostream* tree);
 
+  /// Returns a surface that is the text.
+  virtual boost::shared_ptr<Surface> textSurface() = 0;
+  virtual boost::shared_ptr<Surface> nameSurface() = 0;
+
   /**
    * Clears the text window of all text and resets the insertion
    * point.
@@ -299,12 +303,12 @@ class TextWindow {
                        const std::string& next_char);
   void setNameWithoutDisplay(const std::string& utf8name);
 
-  void renderNameInBox(const std::string& utf8str);
+  virtual void renderNameInBox(const std::string& utf8str) = 0;
 
   virtual void hardBrake();
   virtual void resetIndentation();
   virtual void markRubyBegin();
-  virtual void displayRubyText(const std::string& utf8str);
+  virtual void displayRubyText(const std::string& utf8str) = 0;
 
 
   /**
@@ -331,6 +335,15 @@ class TextWindow {
    * Accessor for the selection_callback_ for TextWindow subclasses
    */
   const boost::function<void(int)>& selectionCallback();
+
+  // Implementation called by the layout method character(). character() is
+  // responsible for layout; renderGlyphAt() actually renders the glyph to the
+  // backing surface.
+  virtual void renderGlyphAt(const std::string& current, int font_size,
+                             const RGBColour& font_colour,
+                             const RGBColour* shadow_colour,
+                             int insertion_point_x,
+                             int insertion_point_y) = 0;
 
   /// The actual selection items in this TextWindow.
   typedef boost::ptr_vector<SelectionElement> Selections;
@@ -522,12 +535,6 @@ class TextWindow {
 
   struct FaceSlot;
   boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];
-
-  /// Converted surface for uploading.
-  boost::shared_ptr<Surface> text_surface_;
-
-  // Surface with current speakers name drawn to it. Can be NULL.
-  boost::shared_ptr<Surface> name_surface_;
 
   System& system_;
 };

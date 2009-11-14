@@ -35,20 +35,35 @@
 #include <SDL/SDL_ttf.h>
 
 class SDLSurface;
+class SDLSystem;
 class SelectionElement;
 
 // -----------------------------------------------------------------------
 
 class SDLTextWindow : public TextWindow {
  public:
-  SDLTextWindow(System& system, int window);
+  SDLTextWindow(SDLSystem& system, int window);
   ~SDLTextWindow();
+
+  virtual boost::shared_ptr<Surface> textSurface();
+  virtual boost::shared_ptr<Surface> nameSurface();
+  virtual void clearWin();
+  virtual void renderNameInBox(const std::string& utf8str);
+  virtual void displayRubyText(const std::string& utf8str);
 
   virtual void addSelectionItem(const std::string& utf8str);
 
  private:
-  /// Font being used.
-  boost::shared_ptr<TTF_Font> font_;
+  virtual void renderGlyphAt(const std::string& current, int font_size,
+                             const RGBColour& font_colour,
+                             const RGBColour* shadow_colour,
+                             int insertion_point_x,
+                             int insertion_point_y);
+
+  SDLSystem& sdl_system_;
+
+  boost::shared_ptr<SDLSurface> surface_;
+  boost::shared_ptr<Surface> name_surface_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDLTEXTWINDOW_HPP_

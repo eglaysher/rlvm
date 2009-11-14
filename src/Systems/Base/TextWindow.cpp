@@ -92,7 +92,9 @@ struct TextWindow::FaceSlot {
 // -----------------------------------------------------------------------
 
 TextWindow::TextWindow(System& system, int window_num)
-    : window_num_(window_num), ruby_begin_point_(-1), current_line_number_(0),
+    : window_num_(window_num), text_insertion_point_x_(0),
+      text_insertion_point_y_(0),
+      ruby_begin_point_(-1), current_line_number_(0),
       current_indentation_in_pixels_(0), last_token_was_name_(false),
       use_indentation_(0), colour_(),
       filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0),
@@ -223,14 +225,6 @@ void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
   }
 
   last_token_was_name_ = true;
-}
-
-// -----------------------------------------------------------------------
-
-void TextWindow::renderNameInBox(const std::string& utf8str) {
-  RGBColour shadow = RGBAColour::Black().rgb();
-  name_surface_ = system_.text().renderText(
-      utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow);
 }
 
 // -----------------------------------------------------------------------
@@ -463,8 +457,10 @@ void TextWindow::faceClose(int index) {
  *       waku_backing.
  */
 void TextWindow::render(std::ostream* tree) {
-  if (text_surface_ && isVisible()) {
-    Size surface_size = text_surface_->size();
+  shared_ptr<Surface> text_surface = textSurface();
+
+  if (text_surface && isVisible()) {
+    Size surface_size = text_surface->size();
 
     // POINT
     Point box = windowRect().origin();
@@ -482,7 +478,8 @@ void TextWindow::render(std::ostream* tree) {
       for_each(selections_.begin(), selections_.end(),
                bind(&SelectionElement::render, _1));
     } else {
-      if (name_surface_) {
+      shared_ptr<Surface> name_surface = nameSurface();
+      if (name_surface) {
         Point namebox_location(nameboxX1(), nameboxY1());
         Size namebox_size = nameboxSize();
 
@@ -495,12 +492,12 @@ void TextWindow::render(std::ostream* tree) {
         Point insertion_point =
             namebox_location +
             Point((namebox_size.width() / 2) -
-                  (name_surface_->size().width() / 2),
+                  (name_surface->size().width() / 2),
                   (namebox_size.height() / 2) -
-                  (name_surface_->size().height() / 2));
-        name_surface_->renderToScreen(
-            name_surface_->rect(),
-            Rect(insertion_point, name_surface_->size()),
+                  (name_surface->size().height() / 2));
+        name_surface->renderToScreen(
+            name_surface->rect(),
+            Rect(insertion_point, name_surface->size()),
             255);
 
         if (tree) {
@@ -511,7 +508,7 @@ void TextWindow::render(std::ostream* tree) {
 
       renderFaces(tree, 0);
 
-      text_surface_->renderToScreen(
+      text_surface->renderToScreen(
         Rect(Point(0, 0), surface_size),
         Rect(textOrigin, surface_size),
         255);
@@ -549,13 +546,6 @@ void TextWindow::clearWin() {
   current_line_number_ = 0;
   ruby_begin_point_ = -1;
   font_colour_ = default_colour_;
-
-  // Allocate the text window surface
-  if (!text_surface_)
-    text_surface_ = system_.graphics().buildSurface(textWindowSize());
-  text_surface_->fill(RGBAColour::Clear());
-
-  name_surface_.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -600,18 +590,6 @@ bool TextWindow::character(const std::string& current,
       }
     }
 
-    // Render glyph to surface
-    RGBColour shadow = RGBAColour::Black().rgb();
-    boost::shared_ptr<Surface> character = system().text().renderUTF8Glyph(
-        current, fontSizeInPixels(), font_colour_, &shadow);
-    if (character == NULL) {
-      // Bug during Kyou's path. The string is printed "". Regression in parser?
-      cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the string \""
-           << current << "\". Hopefully continuing..." << endl;
-
-      return true;
-    }
-
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
     //
@@ -622,7 +600,8 @@ bool TextWindow::character(const std::string& current,
     // character instead, to prevent the next character being stranded
     // at the start of a line.
     //
-    int char_width = character->size().width();
+    int char_width = system().text().charWidth(
+        fontSizeInPixels(), cur_codepoint);
     bool char_will_fit_on_line =
         text_insertion_point_x_ + char_width + x_spacing_ <=
         textWindowSize().width();
@@ -638,12 +617,9 @@ bool TextWindow::character(const std::string& current,
         return false;
     }
 
-    Size s(character->size());
-    character->blitToSurface(
-        *text_surface_,
-        Rect(Point(0, 0), s),
-        Rect(Point(text_insertion_point_x_, text_insertion_point_y_), s),
-        255, false);
+    RGBColour shadow = RGBAColour::Black().rgb();
+    renderGlyphAt(current, fontSizeInPixels(), font_colour_, &shadow,
+                  text_insertion_point_x_, text_insertion_point_y_);
 
     // Move the insertion point forward one character
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
@@ -693,39 +669,6 @@ void TextWindow::resetIndentation() {
 
 void TextWindow::markRubyBegin() {
   ruby_begin_point_ = text_insertion_point_x_;
-}
-
-// -----------------------------------------------------------------------
-
-void TextWindow::displayRubyText(const std::string& utf8str) {
-  if (ruby_begin_point_ != -1) {
-    int end_point = text_insertion_point_x_ - x_spacing_;
-
-    if (ruby_begin_point_ > end_point) {
-      ruby_begin_point_ = -1;
-      throw rlvm::Exception("We don't handle ruby across line breaks yet!");
-    }
-
-    boost::shared_ptr<Surface> ruby = system_.text().renderText(
-      utf8str, rubyTextSize(), 0, 0, font_colour_, NULL);
-
-    // Render glyph to surface
-    int height_location = text_insertion_point_y_ - rubyTextSize();
-    int width_start =
-      int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
-          (ruby->size().width() * 0.5f));
-    ruby->blitToSurface(
-        *text_surface_,
-        ruby->rect(),
-        Rect(Point(width_start, height_location), ruby->size()),
-        255, false);
-
-    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
-
-    ruby_begin_point_ = -1;
-  }
-
-  last_token_was_name_ = false;
 }
 
 // -----------------------------------------------------------------------

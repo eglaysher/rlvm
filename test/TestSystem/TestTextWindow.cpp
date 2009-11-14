@@ -88,9 +88,9 @@ void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
 // -----------------------------------------------------------------------
 
 bool TestTextWindow::character(const std::string& current,
-                                 const std::string& next) {
+                               const std::string& next) {
   current_contents_ += current;
-  return true;
+  return TextWindow::character(current, next);
 }
 
 // -----------------------------------------------------------------------

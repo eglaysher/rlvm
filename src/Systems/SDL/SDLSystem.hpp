@@ -31,6 +31,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "Systems/Base/System.hpp"
+#include "Systems/SDL/SDLTextSystem.hpp"
 
 class SDLGraphicsSystem;
 class SDLEventSystem;
@@ -48,7 +49,7 @@ class SDLSystem : public System {
   virtual GraphicsSystem& graphics();
   virtual EventSystem& event();
   virtual Gameexe& gameexe();
-  virtual TextSystem& text();
+  virtual SDLTextSystem& text();
   virtual SoundSystem& sound();
 
  private:

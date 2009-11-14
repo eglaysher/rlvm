@@ -39,12 +39,13 @@
 
 class Point;
 class RLMachine;
+class SDLSystem;
 class SDLTextWindow;
 class TextWindow;
 
 class SDLTextSystem : public TextSystem {
  public:
-  SDLTextSystem(System& system, Gameexe& gameexe);
+  SDLTextSystem(SDLSystem& system, Gameexe& gameexe);
   ~SDLTextSystem();
 
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
@@ -69,6 +70,8 @@ class SDLTextSystem : public TextSystem {
   typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
   FontSizeMap map_;
   /// @}
+
+  SDLSystem& sdl_system_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
