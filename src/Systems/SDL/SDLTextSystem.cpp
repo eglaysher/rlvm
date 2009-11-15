@@ -153,58 +153,6 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLTextSystem::renderUTF8Glyph(
-    const std::string& current, int font_size, const RGBColour& colour,
-    RGBColour* shadow_colour) {
-  boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
-
-  SDL_Color sdl_colour;
-  RGBColourToSDLColor(colour, &sdl_colour);
-  boost::shared_ptr<SDL_Surface> character(
-      TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_colour),
-      SDL_FreeSurface);
-
-  if (character == NULL) {
-    return boost::shared_ptr<Surface>();
-  }
-
-  boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour && fontShadow()) {
-    SDL_Color sdl_shadow_colour;
-    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
-
-    shadow.reset(
-        TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_shadow_colour),
-        SDL_FreeSurface);
-  }
-
-  // TODO(erg): cast is least evil for now because I would otherwise have to do
-  // some major redesign to *System.
-  Size surface_size(character->w + 2, character->h + 2);
-  boost::shared_ptr<SDLSurface> surface(
-      boost::static_pointer_cast<SDLSurface>(
-          system().graphics().buildSurface(surface_size)));
-
-  // TODO(erg): Surely there's a way to allocate with something other than
-  // black, right?
-  surface->fill(RGBAColour::Clear());
-
-  if (shadow) {
-    Size offset(character->w, character->h);
-    surface->blitFROMSurface(
-        shadow.get(), Rect(Point(0, 0), offset), Rect(Point(2, 2), offset),
-        255);
-  }
-
-  Size size(character->w, character->h);
-  surface->blitFROMSurface(
-      character.get(), Rect(Point(0, 0), size), Rect(Point(0, 0), size), 255);
-
-  return surface;
-}
-
-// -----------------------------------------------------------------------
-
 int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
   boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
   int minx, maxx, miny, maxy, advance;

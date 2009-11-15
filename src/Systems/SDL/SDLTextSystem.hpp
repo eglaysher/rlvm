@@ -53,9 +53,6 @@ class SDLTextSystem : public TextSystem {
   virtual boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
       int yspace, const RGBColour& colour, RGBColour* shadow_colour);
-  virtual boost::shared_ptr<Surface> renderUTF8Glyph(
-      const std::string& current, int font_size,
-      const RGBColour& colour, RGBColour* shadow_colour);
   virtual int charWidth(int size, uint16_t codepoint);
 
   // Returns (and caches) a SDL_ttf font object for a font of |size|.

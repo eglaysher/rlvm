@@ -279,10 +279,6 @@ class TextSystem : public EventListener {
       const std::string& utf8str, int size, int xspace,
       int yspace, const RGBColour& colour, RGBColour* shadow_colour) = 0;
 
-  virtual boost::shared_ptr<Surface> renderUTF8Glyph(
-      const std::string& current, int font_size, const RGBColour& colour,
-      RGBColour* shadow_colour) = 0;
-
   virtual int charWidth(int size, uint16_t codepoint) = 0;
   /// @}
 
