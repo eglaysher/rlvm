@@ -72,6 +72,15 @@ color: #444;
 line-height:1.8em;
 }
 
+div#content .oldpost {
+font-size: 16px;
+border: 1px solid #1240AB;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+padding: 3px 6px;
+margin-bottom: 5px;
+}
+
 div#content h1, div#extra h1, div#sidebar h1 {
 font-size: 15px;
 font-weight: bold;

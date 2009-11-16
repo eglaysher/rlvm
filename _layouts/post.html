@@ -1,49 +1,52 @@
----
-title: Older Versions
----
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>rlvm: Old Versions</title>
+<title>rlvm</title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
-<link href="style.css" rel="stylesheet" type="text/css"/>
-
+<link href="../../../style.css" rel="stylesheet" type="text/css"/>
 <!-- Begin IE Fixes (Don't touch unless you know what you're doing!)-->
 	<!--[if IE]>
 	<link type="text/css" href="ie.css" rel="stylesheet" />
 	<![endif]-->
 <!-- End of IE fixes -->
-
 </head>
 <body>
 <a href="http://github.com/eglaysher/rlvm"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a>
 <div id="container">
   <div id="navigation">
 	<ul>
-      <li><a href="index.html">Main</a></li>
-      <li><a href="guides.html">Guides</a></li>
-      <li><a href="screenshots.html">Screenshots</a></li>
-      <li><a href="old.html">Old versions</a></li>
+      <li><a href="../../../index.html">Main</a></li>
+      <li><a href="../../../guides.html">Guides</a></li>
+      <li><a href="../../../screenshots.html">Screenshots</a></li>
+      <li><a href="../../../old.html">Old versions</a></li>
 	  <li><a href="mailto:glaysher@umich.edu">Contact Me</a></li>
 	</ul>
   </div>
   <div id="header">
 	<h1>rlvm</h1>
-	<h2>play Clannad, Kanon, and Planetarian under Linux</h2>
+	<h2>play Key games under Linux and OSX</h2>
   </div>
   <div id="wrapper">
 	<div id="content">
-      <h1>Project History</h1>
-{% for post in site.posts %} 
-      <div class="oldpost">
-        {{post.title}} - Released {{post.date | date_to_string }}
-        <span style="float: right;">
-          <a href="{{ post.url }}#disqus_thread" title="{{ post.title }}">Comments</a>
-        </span>
-      </div>
-{% endfor %}
+      <h1>{{page.title}}</h1>
+      <h2>Released {{page.date | date_to_string }}</h2>
 
-    </div>
+      <div class="entry">
+        {{ content }}
+      </div>
+
+      <hr>
+
+      <div id="disqus_thread"></div>
+      <script type="text/javascript"
+              src="http://disqus.com/forums/rlvm/embed.js"></script>
+      <noscript>
+        <a href="http://disqus.com/forums/rlvm/?url=ref">
+          View the discussion thread.</a>
+      </noscript>
+      <a href="http://disqus.com" class="dsq-brlink">
+        blog comments powered by <span class="logo-disqus">Disqus</span></a>
+	</div>
   </div>
   <div id="footer">
 	Copyright &copy; 2008-2009 Elliot Glaysher.
@@ -59,21 +62,4 @@ var pageTracker = _gat._getTracker("UA-6905496-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
 </body>
-
-<!-- Disqus comment code -->
-<script type="text/javascript">
-//<![CDATA[
-(function() {
-	var links = document.getElementsByTagName('a');
-	var query = '?';
-	for(var i = 0; i < links.length; i++) {
-	if(links[i].href.indexOf('#disqus_thread') >= 0) {
-		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-	}
-	}
-	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/rlvm/get_num_replies.js' + query + '"></' + 'script>');
-})();
-//]]>
-</script>
 </html>
-

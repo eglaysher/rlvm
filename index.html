@@ -64,6 +64,11 @@ title: rlvm
 
   <div class="entry">
     {{ post.content }}
+
+    <div style="text-align: right;">
+      <a href="{{ post.url }}#disqus_thread"
+         title="{{ post.title }}">Comments</a>
+    </div>
   </div>
 
 {% endfor %}
@@ -126,4 +131,20 @@ var pageTracker = _gat._getTracker("UA-6905496-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
 </body>
+
+<!-- Disqus comment code -->
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/rlvm/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
 </html>
