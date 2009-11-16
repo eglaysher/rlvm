@@ -11,5 +11,8 @@ preferences such as text box color and text speed will not be read with rlvm
 0.7. Saved games were not subject to the corruption bugs and should continue to
 work.
 
+(You may also enjoy reading about [rlvm development][development], if you like stories about programming.)
+
 [ogg]: http://en.wikipedia.org/wiki/Vorbis
 [status]: http://github.com/eglaysher/rlvm/blob/master/STATUS.TXT
+[development]: http://www.elliotglaysher.org/2009/11/07/hardest-bug/
