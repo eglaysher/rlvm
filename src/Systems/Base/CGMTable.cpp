@@ -97,8 +97,14 @@ CGMTable::CGMTable() {
 // -----------------------------------------------------------------------
 
 CGMTable::CGMTable(Gameexe& gameexe) {
-  string cgtable = gameexe("CGTABLE_FILENAME").to_string("");
+  GameexeInterpretObject filename_key = gameexe("CGTABLE_FILENAME");
+  if (!filename_key.exists()) {
+    // It is perfectly valid not to have a CG table key. All operations in this
+    // class become noops.
+    return;
+  }
 
+  string cgtable = filename_key.to_string("");
   if (cgtable == "") {
     // It is perfectly valid not to have a CG table. All operations in this
     // class become noops.
