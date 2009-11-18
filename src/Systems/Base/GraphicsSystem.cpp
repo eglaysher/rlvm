@@ -294,8 +294,11 @@ void GraphicsSystem::clearStack() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::stackPop(int items) {
-  for (int i = 0; i < items; ++i)
-    graphics_object_settings_->graphics_stack.pop_back();
+  for (int i = 0; i < items; ++i) {
+    if (graphics_object_settings_->graphics_stack.size()) {
+      graphics_object_settings_->graphics_stack.pop_back();
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
