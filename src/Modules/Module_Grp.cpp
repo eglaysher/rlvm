@@ -400,6 +400,40 @@ struct Grp_display_2
   }
 };
 
+// -----------------------------------------------------------------------
+
+template<typename SPACE>
+struct Grp_display_4
+    : public RLOp_Void_13<IntConstant_T, Rect_T<SPACE>, Point_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T> {
+  void operator()(RLMachine& machine, int dc, Rect srcRect, Point dest,
+                  int time, int style, int direction, int interpolation,
+                  int xsize, int ysize, int a, int b, int opacity, int c) {
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.addGraphicsStackFrame(GRP_DISPLAY)
+      .setSourceDC(dc)
+      .setSourceCoordinates(srcRect)
+      .setTargetCoordinates(dest)
+      .setOpacity(opacity);
+
+    loadDCToDC1(graphics, dc, srcRect, dest, opacity);
+
+    // Promote the objects
+    graphics.clearAndPromoteObjects();
+
+    // Set the long operation for the correct transition long operation
+    shared_ptr<Surface> dc0 = graphics.getDC(0);
+    shared_ptr<Surface> dc1 = graphics.getDC(1);
+    LongOperation* effect = EffectFactory::build(machine, dc1, dc0, time,
+                                          style, direction, interpolation,
+                                          xsize, ysize, a, b, c);
+    decorateEffectWithBlit(effect, dc1, dc0);
+    machine.pushLongOperation(effect);
+  }
+};
 
 // -----------------------------------------------------------------------
 // {grp,rec}Open
@@ -1235,6 +1269,7 @@ GrpModule::GrpModule()
   addOpcode(72, 1, "grpDisplay", new Grp_display_1);
   addOpcode(72, 2, "grpDisplay", new Grp_display_2<GRP>());
   addOpcode(72, 3, "grpDisplay", new Grp_display_3<GRP>());
+  addOpcode(72, 4, "grpDisplay", new Grp_display_4<GRP>());
 
   addOpcode(73, 0, "grpOpenBg", new Grp_openBg_0);
   addOpcode(73, 1, "grpOpenBg", new Grp_openBg_1);
@@ -1346,6 +1381,7 @@ GrpModule::GrpModule()
   addOpcode(1052, 1, "recDisplay", new Grp_display_1);
   addOpcode(1052, 2, "recDisplay", new Grp_display_2<REC>());
   addOpcode(1052, 3, "recDisplay", new Grp_display_3<REC>());
+  addOpcode(1052, 4, "recDisplay", new Grp_display_4<REC>());
 
   addOpcode(1053, 0, "recOpenBg", new Grp_openBg_0);
   addOpcode(1053, 1, "recOpenBg", new Grp_openBg_1);
