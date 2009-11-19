@@ -89,15 +89,44 @@ TextWindowButton::~TextWindowButton() {
 
 Rect TextWindowButton::location(TextWindow& window) {
   int type = location_.at(0);
+  Size size(location_.at(3), location_.at(4));
+  Rect win_rect = window.windowRect();
+
   switch (type) {
     case 0: {
-      Point origin = window.windowRect().origin() +
-                     Size(location_.at(1), location_.at(2));
-
-      return Rect(origin, Size(location_.at(3), location_.at(4)));
+      // Top and left
+      Point origin = win_rect.origin() + Size(location_.at(1), location_.at(2));
+      return Rect(origin, size);
     }
-  default:
-    throw SystemError("Unsupported coordinate system");
+    case 1: {
+      // Top and right
+      Point origin = win_rect.origin() +
+                     Size(-location_.at(1), location_.at(2)) +
+                     Size(win_rect.size().width() - size.width(), 0);
+      return Rect(origin, size);
+    }
+    // TODO(erg): While 0 is used in pretty much everything I've tried, and 1
+    // is used in the Maiden Halo demo, I'm not certain about these other two
+    // calculations. Both KareKare games screw up here, but it may be because
+    // of the win_rect. Needs further investigation.
+    case 2: {
+      // Bottom and left
+      Point origin = win_rect.origin() +
+                     Size(location_.at(1), -location_.at(2)) +
+                     Size(0, win_rect.size().height() - size.height());
+      return Rect(origin, size);
+    }
+    case 3: {
+      // Bottom and right
+      Point origin = win_rect.origin() +
+                     Size(-location_.at(1), -location_.at(2)) +
+                     Size(win_rect.size().width() - size.width(),
+                          win_rect.size().height() - size.height());
+      return Rect(origin, size);
+    }
+    default: {
+      throw SystemError("Unsupported coordinate system");
+    }
   }
 }
 
