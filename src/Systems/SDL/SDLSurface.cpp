@@ -652,7 +652,10 @@ int SDLSurface::numPatterns() const {
 // -----------------------------------------------------------------------
 
 const SDLSurface::GrpRect& SDLSurface::getPattern(int patt_no) const {
-  return region_table_.at(patt_no);
+  if (patt_no < region_table_.size())
+    return region_table_[patt_no];
+  else
+    return region_table_[0];
 }
 
 // -----------------------------------------------------------------------
