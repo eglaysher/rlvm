@@ -229,8 +229,8 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
       map_list_of
       ("wav", &buildMusicImplementation<WAVFILE_Stream>)
       ("nwa", &buildMusicImplementation<NWAFILE>)
-      ("mp3", &buildMusicImplementation<MP3FILE>);
-  //    ("ogg", &build_music_implementation_with_impl<OggFILE>);
+      ("mp3", &buildMusicImplementation<MP3FILE>)
+      ("ogg", &buildMusicImplementation<OggFILE>);
 
   fs::path file_path = findFile(system, track.file, SOUND_FILETYPES);
   if (file_path.empty()) {

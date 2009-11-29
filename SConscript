@@ -177,6 +177,7 @@ librlvm_files = [
   "src/libReallive/scenario.cpp",
   "vendor/xclannad/endian.cpp",
   "vendor/xclannad/file.cc",
+  "vendor/xclannad/koedec_ogg.cc",
   "vendor/xclannad/nwatowav.cc",
   "vendor/xclannad/wavfile.cc"
 ]
