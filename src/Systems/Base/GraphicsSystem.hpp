@@ -383,11 +383,6 @@ class GraphicsSystem : public EventListener {
    */
   void refresh(std::ostream* tree);
 
-  /**
-   * Prints a textual representation of what SHOULD be on the screen right now.
-   */
-  void dumpRenderTree(std::ostream& tree);
-
   virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
     boost::shared_ptr<Surface> bg);
 

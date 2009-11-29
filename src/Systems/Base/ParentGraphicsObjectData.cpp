@@ -126,6 +126,5 @@ void ParentGraphicsObjectData::playSet(int set) {
 // -----------------------------------------------------------------------
 
 void ParentGraphicsObjectData::objectInfo(std::ostream& tree) {
-  // TODO
   tree << "ParentGraphicsObjectData::objectInfo is a TODO";
 }

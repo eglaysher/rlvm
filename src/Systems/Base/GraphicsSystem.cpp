@@ -417,12 +417,6 @@ void GraphicsSystem::refresh(std::ostream* tree) {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::dumpRenderTree(std::ostream& tree) {
-  // TODO
-}
-
-// -----------------------------------------------------------------------
-
 boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
   boost::shared_ptr<Surface> bg) { return boost::shared_ptr<Surface>(); }
 

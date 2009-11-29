@@ -128,7 +128,7 @@ class Texture {
   /// Is this texture upside down? (Because it's a screenshot, et cetera.)
   bool is_upside_down_;
 
-  // TODO: Dead code?
+  // Size of the screen. Used during color mask calculations.
   static unsigned int s_screen_width;
   static unsigned int s_screen_height;
 
