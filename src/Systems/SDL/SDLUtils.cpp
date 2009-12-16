@@ -45,7 +45,6 @@ void ShowGLErrors(void) {
   const GLubyte* err_str;
   if ((error = glGetError()) != GL_NO_ERROR) {
     err_str = gluErrorString(error);
-    abort();
     ostringstream oss;
     oss << "OpenGL Error: " << (char*)err_str;
     throw SystemError(oss.str());
