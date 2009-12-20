@@ -67,6 +67,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   // Make a null Surface object?
   virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename);
+  virtual boost::shared_ptr<Surface> getHaikei();
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
 
@@ -80,6 +81,8 @@ class TestGraphicsSystem : public GraphicsSystem {
   MockSurface& getMockDC(int dc);
 
  private:
+  boost::shared_ptr<MockSurface> haikei_;
+
   /// Map between device contexts number and their surface.
   boost::shared_ptr<MockSurface> display_contexts_[16];
 

@@ -51,6 +51,9 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
 
   display_contexts_[0]->allocate(screenSize());
   display_contexts_[1]->allocate(screenSize());
+
+  haikei_.reset(MockSurface::Create("Haikei"));
+  haikei_->allocate(screenSize());
 }
 
 // -----------------------------------------------------------------------
@@ -128,6 +131,10 @@ boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
 }
 
 // -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> TestGraphicsSystem::getHaikei() {
+  return haikei_;
+}
 
 boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc) {
   return display_contexts_[dc];

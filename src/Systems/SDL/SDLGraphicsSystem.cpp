@@ -124,9 +124,15 @@ void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
 
 // -----------------------------------------------------------------------
 
+// TODO(erg): This method name no longer makes sense. It should either be
+// renamed to DC0 or should not take |bg| at all and someone somewhere else
+// should modify dc0.
 boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
   boost::shared_ptr<Surface> bg) {
   beginFrame();
+
+  // Display the Haikei behind everything.
+  getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
 
   // Display DC0
   bg->renderToScreen(screenRect(), screenRect(), 255);
@@ -246,6 +252,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     screen_tex_width_(0),
     screen_tex_height_(0),
     image_cache_(20) {
+  haikei_.reset(new SDLSurface(this));
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
 
@@ -712,6 +719,15 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 }
 
 // -----------------------------------------------------------------------
+
+boost::shared_ptr<Surface> SDLGraphicsSystem::getHaikei() {
+  if (haikei_->rawSurface() == NULL) {
+    haikei_->allocate(screenSize(), true);
+    cerr << "Reallocating haikei!" << endl;
+  }
+
+  return haikei_;
+}
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc) {
   verifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");

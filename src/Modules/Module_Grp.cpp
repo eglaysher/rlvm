@@ -847,6 +847,17 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 // {grp,rec}Fill
 // -----------------------------------------------------------------------
 
+struct Grp_fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
+  void operator()(RLMachine& machine, int dc, RGBAColour colour) {
+    // Justification: Maiden Halo uses fill(x, 0, 0, 0) as a synanom for clear
+    // and since it uses haikei, the DC0 needs to be transparent.
+    if (colour.r() == 0 && colour.g() == 0 && colour.b() == 0)
+      colour.setAlpha(0);
+
+    machine.system().graphics().getDC(dc)->fill(colour);
+  }
+};
+
 struct Grp_fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     machine.system().graphics().getDC(dc)->fill(colour);
@@ -1318,7 +1329,7 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(120, 5, "grpCopyWithMask");
   addUnsupportedOpcode(140, 5, "grpCopyInvMask");
 
-  addOpcode(201, 0, "grpFill", new Grp_fill_1);
+  addOpcode(201, 0, "grpFill", new Grp_fill_0);
   addOpcode(201, 1, "grpFill", new Grp_fill_1);
   addOpcode(201, 2, "grpFill", new Grp_fill_3<GRP>());
   addOpcode(201, 3, "grpFill", new Grp_fill_3<GRP>());
@@ -1421,7 +1432,7 @@ GrpModule::GrpModule()
   addOpcode(1101, 2, "recMaskCopy", new Grp_copy_3<REC>(true));
   addOpcode(1101, 3, "recMaskCopy", new Grp_copy_3<REC>(true));
 
-  addOpcode(1201, 0, "recFill", new Grp_fill_1);
+  addOpcode(1201, 0, "recFill", new Grp_fill_0);
   addOpcode(1201, 1, "recFill", new Grp_fill_1);
   addOpcode(1201, 2, "recFill", new Grp_fill_3<REC>());
   addOpcode(1201, 3, "recFill", new Grp_fill_3<REC>());

@@ -94,6 +94,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename);
 
+  virtual boost::shared_ptr<Surface> getHaikei();
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
   // -----------------------------------------------------------------------
@@ -144,6 +145,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
 
   SDL_Surface* screen_;
 
+  boost::shared_ptr<SDLSurface> haikei_;
   boost::shared_ptr<SDLSurface> display_contexts_[16];
 
   bool redraw_last_frame_;

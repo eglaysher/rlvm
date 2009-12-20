@@ -424,6 +424,8 @@ class GraphicsSystem : public EventListener {
   virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename) = 0;
 
+  virtual boost::shared_ptr<Surface> getHaikei() = 0;
+
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size) = 0;

@@ -391,6 +391,9 @@ void GraphicsSystem::endFrame() { }
 void GraphicsSystem::refresh(std::ostream* tree) {
   beginFrame();
 
+  // Display the Haikei behind everything.
+  getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
+
   // Display DC0
   getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
   if (tree) {
