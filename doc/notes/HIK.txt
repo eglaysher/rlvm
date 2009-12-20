@@ -1,0 +1,79 @@
+A description of the HIK animation format for RealLive
+------------------------------------------------------
+
+I only have the HIK files for ALMA and Planetarian. When I say "always," I mean
+it in the context of those two games.
+
+Things to note:
+- It looks like most atoms are optional? Look at ALMA's BG32_NOISE, which has 3
+  records where the final two only have five properties each.
+- dumphik appears to be able to read all the hik files in ALMA and planetarian
+  EXCEPT ALMA's MAD_ANM.hik, which is the animation of Madoka at the end of
+  ALMA'S OP. I have no idea what's going on in this file, and it may just
+  invalidate all above assumptions. There appear to be multiple copies of
+  several atoms. WTF.
+
+-------------------------------------------------------------------------
+
+Byte 0x00 through 0x33 : Some sort of header.
+0x30<int>: number of records in the HIK file? Maybe not! See LEAF.hik in ALMA.
+
+A record consists of a sequence of atoms which are key value pairs, described
+below:
+
+20001 : <int>
+      > Usually "1". No visible differences when I tried "0" or "2".
+20100 : <size of string including NULL> <NULL terminated character string>
+20101 : <int> <int>
+      > Appears to be an offset from the top left corner of the screen to where
+      > this record's image starts. This doesn't affect the clip area.
+
+21000 : <int>
+      > Most likely a boolean to control the next couple of options. Always
+      > false in Planetarian's HIK files. When I disable 21200 and enable these
+      > options, the planetarian background scrolls diagonally and repeats. Is
+      > this an option for backgrounds?
+21001 : <int> <int> <int> <int> ; 640x480 (size of source or dest?)
+21002 : <int> <int> <int> <int> <int>
+21003 : <int>
+
+21100 : <int>
+      > Most likely a boolean to control 21101. Always false in Planetarian's
+      > HIK files.
+21101 : <int> <int> <int> <int> ; 640x480 (size of source or dest?)
+
+21200 : <int>
+      > 1 if we use the scrolling stuff from 21201 and 21202. (Maybe 21203?)
+21201 : <int> <int> <int> <int>
+      > Think this is the important part. The first int pair is the (x, y)
+      > starting coordinate for the top left of the image (perhaps offset by
+      > 20101) and the second pair is the ending (x, y).
+21202 : <int> <int>
+      > The first int is definitly time to xscroll. Second is time to yscroll?
+21203 : <int>
+
+21301 : <int>
+      > 1 if we should use the clip area. 
+21300 : <int> <int> <int> <int>
+      > Defines the output clip area.
+
+30000 : <int>
+30001 : <int>
+30100 : <int>
+30101 : <int>
+30102 : <int>
+
+40000 : <int>
+      > Whether to use a source file.
+40101 : 31 <int>s.
+      > No idea at all.
+40102 : <int>
+      > Image Opacity in the range 0-255.
+40103 : <int> <int>              ; 0 0
+      > Some sort of offset; Weirdness happens when setting this to something
+      > other than [0, 0]
+40100 : <size of string including NULL> <NULL terminated character string>
+      > Source g00 image
+
+Terminated with "-1 <some number>". <some number> is 100 in all the planetarian
+files. Done in all files except for MAD_ANM.hik?
