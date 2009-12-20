@@ -338,7 +338,7 @@ struct Grp_display_1
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop =
         EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+    decorateEffectWithBlit(lop, dc1, dc0, false);
     machine.pushLongOperation(lop);
   }
 };
@@ -379,7 +379,7 @@ struct Grp_display_3
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop =
         EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+    decorateEffectWithBlit(lop, dc1, dc0, false);
     machine.pushLongOperation(lop);
   }
 };
@@ -426,7 +426,7 @@ struct Grp_display_4
     LongOperation* effect = EffectFactory::build(machine, dc1, dc0, time,
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
-    decorateEffectWithBlit(effect, dc1, dc0);
+    decorateEffectWithBlit(effect, dc1, dc0, false);
     machine.pushLongOperation(effect);
   }
 };
@@ -473,7 +473,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop =
         EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+    decorateEffectWithBlit(lop, dc1, dc0, use_alpha_);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();
   }
@@ -528,7 +528,7 @@ struct Grp_open_3 : public RLOp_Void_5<
     shared_ptr<Surface> dc1 = graphics.getDC(1);
     LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0,
                                                      effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+    decorateEffectWithBlit(lop, dc1, dc0, use_alpha_);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();
   }
@@ -599,7 +599,7 @@ struct Grp_open_4 : public RLOp_Void_13<
     LongOperation* lop =
       EffectFactory::build(machine, tmp, dc0, time, style, direction,
                            interpolation, xsize, ysize, a, b, c);
-    decorateEffectWithBlit(lop, dc1, graphics.getDC(0));
+    decorateEffectWithBlit(lop, dc1, graphics.getDC(0), use_alpha_);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();
   }
@@ -642,7 +642,8 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
 
     LongOperation* effect =
         EffectFactory::buildFromSEL(machine, tmp, dc0, effectNum);
-    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
+    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0),
+                           false);
     machine.pushLongOperation(effect);
     machine.system().text().hideAllTextWindows();
   }
@@ -695,7 +696,8 @@ struct Grp_openBg_3 : public RLOp_Void_5<
 
     LongOperation* effect = EffectFactory::buildFromSEL(machine, tmp, dc0,
                                                         effectNum);
-    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
+    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0),
+                           use_alpha_);
     machine.pushLongOperation(effect);
     machine.system().text().hideAllTextWindows();
   }
@@ -758,7 +760,8 @@ struct Grp_openBg_4 : public RLOp_Void_13<
     LongOperation* effect = EffectFactory::build(machine, tmp, dc0, time,
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
-    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0));
+    decorateEffectWithBlit(effect, graphics.getDC(1), graphics.getDC(0),
+                           use_alpha_);
     machine.pushLongOperation(effect);
     machine.system().text().hideAllTextWindows();
   }
@@ -951,7 +954,7 @@ struct Grp_fade_7 : public RLOp_Void_3<
       LongOperation* lop =
         EffectFactory::build(machine, tmp, dc0, time, 0, 0,
                              0, 0, 0, 0, 0, 0);
-      decorateEffectWithBlit(lop, tmp, dc0);
+      decorateEffectWithBlit(lop, tmp, dc0, true);
       machine.pushLongOperation(lop);
     }
   }
@@ -1040,7 +1043,7 @@ struct Grp_zoom : public RLOp_Void_5<
       new BlitAfterEffectFinishes(
         zoomOp,
         gs.getDC(srcDC), gs.getDC(0),
-        trect, drect);
+        trect, drect, false);
     machine.pushLongOperation(blitOp);
   }
 };

@@ -339,7 +339,7 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  dc0->fill(RGBAColour::Black());
+  dc0->fill(RGBAColour::Clear());
 
   machine.pushLongOperation(new LoadingGame(slot));
   machine.pushLongOperation(

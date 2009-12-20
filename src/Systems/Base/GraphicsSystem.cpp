@@ -520,7 +520,7 @@ void GraphicsSystem::takeSavepointSnapshot() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllDCs() {
-  getDC(0)->fill(RGBAColour::Black());
+  getDC(0)->fill(RGBAColour::Clear());
 
   for (int i = 1; i < 16; ++i)
     freeDC(i);
