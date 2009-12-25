@@ -63,7 +63,6 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
-#include <boost/filesystem/fstream.hpp>
 
 using boost::scoped_array;
 using boost::shared_ptr;
@@ -109,23 +108,15 @@ bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anm_data) {
 
 void AnmGraphicsObjectData::loadAnmFile() {
   fs::path file = findFile(system_, filename_, ANM_FILETYPES);
-
   if (file.empty()) {
     ostringstream oss;
     oss << "Could not find ANM file \"" << filename_ << "\".";
     throw rlvm::Exception(oss.str());
   }
 
-  fs::ifstream ifs(file, ifstream::in | ifstream::binary);
-  if (!ifs) {
-    ostringstream oss;
-    oss << "Could not open file \"" << file << "\".";
-    throw rlvm::Exception(oss.str());
-  }
-
   int file_size = 0;
   scoped_array<char> anm_data;
-  if (loadFileData(ifs, anm_data, file_size)) {
+  if (loadFileData(file, anm_data, file_size)) {
     ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());

@@ -109,16 +109,10 @@ CGMTable::CGMTable(Gameexe& gameexe) {
 
   fs::path basename = gameexe("__GAMEPATH").to_string();
   fs::path filename = correctPathCase(basename / "dat" / cgtable);
-  fs::ifstream file(filename, ifstream::in | ifstream::binary);
-  if (!file) {
-    ostringstream oss;
-    oss << "Could not open file \"" << filename << "\".";
-    throw rlvm::Exception(oss.str());
-  }
 
   int size;
   scoped_array<char> data;
-  if (loadFileData(file, data, size)) {
+  if (loadFileData(filename, data, size)) {
     ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());

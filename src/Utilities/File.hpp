@@ -89,12 +89,12 @@ boost::filesystem::path findFile(
 /**
  * Reads the entire contents of a file into character array.
  *
- * @param[in] ifs Ifstream opened for binary mode
+ * @param[in] path File to read
  * @param[out] anmData Array to allocate and write data to
  * @param[out] fileSize Size of anmData
  * @return True if there were no problems reading the file
  */
-bool loadFileData(std::ifstream& ifs,
+bool loadFileData(const boost::filesystem::path& path,
                   boost::scoped_array<char>& anmData,
                   int& fileSize);
 

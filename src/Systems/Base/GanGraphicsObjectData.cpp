@@ -113,16 +113,9 @@ void GanGraphicsObjectData::load() {
     throw rlvm::Exception(oss.str());
   }
 
-  fs::ifstream ifs(gan_file_path, ifstream::in | ifstream::binary);
-  if (!ifs) {
-    ostringstream oss;
-    oss << "Could not open file \"" << gan_file_path << "\".";
-    throw rlvm::Exception(oss.str());
-  }
-
   int file_size = 0;
   scoped_array<char> gan_data;
-  if (loadFileData(ifs, gan_data, file_size)) {
+  if (loadFileData(gan_file_path, gan_data, file_size)) {
     ostringstream oss;
     oss << "Could not read the contents of \"" << gan_file_path << "\"";
     throw rlvm::Exception(oss.str());

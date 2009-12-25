@@ -30,11 +30,13 @@
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/assign/list_of.hpp>  // for 'list_of()'
+#include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <cctype>
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <sstream>
 #include <stack>
 #include <stdexcept>
 #include <string>
@@ -170,7 +172,15 @@ boost::filesystem::path findFile(System& system,
 
 // -----------------------------------------------------------------------
 
-bool loadFileData(ifstream& ifs, scoped_array<char>& anmData, int& fileSize) {
+bool loadFileData(const boost::filesystem::path& path,
+                  scoped_array<char>& anmData, int& fileSize) {
+  fs::ifstream ifs(path, ifstream::in | ifstream::binary);
+  if (!ifs) {
+    ostringstream oss;
+    oss << "Could not open file \"" << path << "\".";
+    throw rlvm::Exception(oss.str());
+  }
+
   ifs.seekg(0, ios::end);
   fileSize = ifs.tellg();
   ifs.seekg(0, ios::beg);
