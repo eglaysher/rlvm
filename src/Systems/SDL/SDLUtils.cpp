@@ -25,20 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/SDL/SDLUtils.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/Rect.hpp"
-#include "Systems/Base/Colour.hpp"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
-
 #include <string>
 #include <sstream>
+
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/Rect.hpp"
+#include "Systems/Base/Colour.hpp"
 
 using namespace std;
 

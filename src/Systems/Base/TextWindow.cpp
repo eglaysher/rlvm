@@ -25,12 +25,15 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
-#include "libReallive/defs.h"
 #include "Systems/Base/TextWindow.hpp"
+
+#include <algorithm>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -43,15 +46,8 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
 #include "Utilities/StringUtilities.hpp"
+#include "libReallive/defs.h"
 #include "libReallive/gameexe.h"
-
-#include <algorithm>
-#include <boost/bind.hpp>
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <vector>
-
 #include "utf8cpp/utf8.h"
 
 using boost::bind;

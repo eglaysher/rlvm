@@ -24,19 +24,15 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/GCNInfoWindow.hpp"
 
 #include <vector>
 #include <boost/bind.hpp>
 
-#include "Utilities/StringUtilities.hpp"
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 #include "Systems/Base/RlvmInfo.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 using std::vector;
 

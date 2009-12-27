@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_Sel.hpp"
 
 #include "LongOperations/SelectLongOperation.hpp"

@@ -25,26 +25,20 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
-#include "Module_Sys_Frame.hpp"
+#include "Modules/Module_Sys_Frame.hpp"
+#include "Modules/Module_Sys.hpp"
 
 #include <vector>
 
-#include "Modules/Module_Sys.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Complex_T.hpp"
-
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/GeneralOperations.hpp"
-
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
+#include "Systems/Base/System.hpp"
 
 using namespace std;
 

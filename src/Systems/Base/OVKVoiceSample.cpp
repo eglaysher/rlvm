@@ -55,14 +55,11 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/OVKVoiceSample.hpp"
 
 #include <cstdio>
 #include <string>
+#include <sstream>
 #include <vorbis/vorbisfile.h>
 
 #include "Utilities/Exception.hpp"

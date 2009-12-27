@@ -24,13 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Utilities/Exception.hpp"
 
 #include <fstream>
+#include <sstream>
 #include <string>
 
 using std::ostringstream;
@@ -62,7 +59,7 @@ UnimplementedOpcode::UnimplementedOpcode(
     const std::string& funName,
     int modtype, int module, int opcode, int overload)
     : Exception("") {
-  ostringstream oss;
+  std::ostringstream oss;
   oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">)";
   name_ = oss.str();

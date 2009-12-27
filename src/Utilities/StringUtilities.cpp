@@ -25,16 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
+#include "Utilities/StringUtilities.hpp"
 
 #include <string>
 
 #include "Encodings/codepage.h"
 #include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-
 #include "utf8cpp/utf8.h"
 
 using std::string;

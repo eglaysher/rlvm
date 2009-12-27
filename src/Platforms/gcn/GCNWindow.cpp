@@ -24,10 +24,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/GCNWindow.hpp"
 
 #include "Platforms/gcn/gcnUtils.hpp"

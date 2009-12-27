@@ -25,15 +25,13 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
 
-// -----------------------------------------------------------------------
+#include <iostream>
 
 #include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/Rect.hpp"
-#include <iostream>
 
 using namespace std;
 

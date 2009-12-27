@@ -25,29 +25,23 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
+#include "Systems/SDL/SDLSurface.hpp"
 
 #include <SDL/SDL.h>
-
-#include "Systems/SDL/SDLSurface.hpp"
-#include "Systems/SDL/SDLUtils.hpp"
-#include "Systems/SDL/Texture.hpp"
-#include "Systems/SDL/SDLGraphicsSystem.hpp"
-
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsObjectData.hpp"
-#include "Utilities/Graphics.hpp"
-
-#include "pygame/alphablit.h"
-
+#include <boost/bind.hpp>
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <boost/bind.hpp>
+
+#include "Systems/Base/Colour.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
+#include "Systems/SDL/Texture.hpp"
+#include "Utilities/Graphics.hpp"
+#include "pygame/alphablit.h"
 
 using namespace std;
 using boost::bind;

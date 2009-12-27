@@ -24,18 +24,13 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/GCNButton.hpp"
 
 #include <string>
-
-#include "Platforms/gcn/gcnUtils.hpp"
-
 #include <guichan/exception.hpp>
 #include <guichan/font.hpp>
+
+#include "Platforms/gcn/gcnUtils.hpp"
 
 ImageRect GCNButton::s_button;
 ImageRect GCNButton::s_buttonhi;

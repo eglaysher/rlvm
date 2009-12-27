@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "LongOperations/PauseLongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "libReallive/gameexe.h"

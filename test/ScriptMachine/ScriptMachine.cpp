@@ -24,23 +24,18 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "ScriptMachine/ScriptMachine.hpp"
 
-#include "libReallive/intmemref.h"
-#include "LongOperations/SelectLongOperation.hpp"
-#include "MachineBase/Serialization.hpp"
-
 #include <iostream>
-#include <typeinfo>
-
-#include <utility>
 #include <map>
 #include <string>
+#include <typeinfo>
+#include <utility>
 #include <vector>
+
+#include "LongOperations/SelectLongOperation.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "libReallive/intmemref.h"
 
 using namespace std;
 using libReallive::IntMemRef;

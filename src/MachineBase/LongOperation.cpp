@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"

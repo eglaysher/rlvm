@@ -25,29 +25,25 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
-#include <stdexcept>
-
 #include "Utilities/File.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Utilities/Exception.hpp"
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <boost/assign/list_of.hpp>  // for 'list_of()'
+#include <boost/filesystem/operations.hpp>
 #include <cctype>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <stack>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <boost/filesystem/operations.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/assign/list_of.hpp>  // for 'list_of()'
+
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Utilities/Exception.hpp"
 
 using boost::to_upper;
 using boost::scoped_array;

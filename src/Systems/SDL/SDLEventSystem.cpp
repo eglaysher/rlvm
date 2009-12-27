@@ -25,21 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/SDL/SDLEventSystem.hpp"
+
+#include <boost/bind.hpp>
+#include <iostream>
+#include <SDL/SDL.h>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
-
-#include <boost/bind.hpp>
-#include <iostream>
-
-#include <SDL/SDL.h>
 
 using namespace std;
 

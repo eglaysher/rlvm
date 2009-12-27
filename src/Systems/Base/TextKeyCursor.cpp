@@ -25,11 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/TextKeyCursor.hpp"
+
+#include <string>
+#include <vector>
 
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -37,9 +36,6 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "libReallive/gameexe.h"
-
-#include <string>
-#include <vector>
 
 using std::endl;
 using std::string;

@@ -113,6 +113,12 @@ if env['PLATFORM'] == "darwin":
       CPPPATH = ["/opt/local/include/"],
       LIBPATH = ["/opt/local/lib/"]
     )
+  if os.path.exists("/usr/local/"):
+    env['ENV']['PATH'] += ":/usr/local/bin/"
+    env.Append(
+      CPPPATH = ["/usr/local/include/"],
+      LIBPATH = ["/usr/local/lib/"]
+    )
 
 #########################################################################
 ## CheckBoost

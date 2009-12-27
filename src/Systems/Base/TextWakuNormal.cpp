@@ -24,11 +24,13 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/TextWakuNormal.hpp"
+
+#include <boost/bind.hpp>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -38,12 +40,6 @@
 #include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/TextWindowButton.hpp"
 #include "libReallive/gameexe.h"
-
-#include <sstream>
-#include <string>
-#include <iomanip>
-#include <iostream>
-#include <boost/bind.hpp>
 
 using std::endl;
 using std::ostringstream;

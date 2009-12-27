@@ -24,23 +24,17 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"
+
+#include <boost/shared_ptr.hpp>
+#include <guichan/color.hpp>
+#include <guichan/exception.hpp>
+#include <guichan/graphics.hpp>
+#include <guichan/opengl/openglimage.hpp>
+#include <string>
 
 #include "Systems/Base/Rect.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
-
-#include <guichan/exception.hpp>
-#include <guichan/graphics.hpp>
-#include <guichan/color.hpp>
-#include <guichan/opengl/openglimage.hpp>
-
-#include <boost/shared_ptr.hpp>
-
-#include <string>
 
 // -----------------------------------------------------------------------
 // SDLTrueTypeFont

@@ -25,21 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/EventSystem.hpp"
 
-#include "Systems/Base/EventListener.hpp"
-#include "Systems/Base/FrameCounter.hpp"
+#include <boost/bind.hpp>
+
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
-
+#include "Systems/Base/EventListener.hpp"
+#include "Systems/Base/FrameCounter.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/gameexe.h"
-
-#include <boost/bind.hpp>
 
 using namespace boost;
 

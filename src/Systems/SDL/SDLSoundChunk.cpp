@@ -25,16 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/SDL/SDLSoundChunk.hpp"
+
+#include <SDL/SDL_mixer.h>
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/SDL/SDLAudioLocker.hpp"
-
-#include <SDL/SDL_mixer.h>
 
 // -----------------------------------------------------------------------
 

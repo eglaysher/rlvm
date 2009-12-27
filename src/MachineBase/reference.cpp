@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 /**
  * @file   reference.cpp
  * @brief  Defines the iterator interface to integer and string memory

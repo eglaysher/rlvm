@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "LongOperations/TextoutLongOperation.hpp"
 #include "LongOperations/PauseLongOperation.hpp"
 

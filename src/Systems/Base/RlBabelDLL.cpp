@@ -42,11 +42,13 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/RlBabelDLL.hpp"
+
+#include <algorithm>
+#include <boost/bind.hpp>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "Encodings/codepage.h"
 #include "Systems/Base/System.hpp"
@@ -58,10 +60,6 @@
 #include "libReallive/intmemref.h"
 #include "Utilities/StringUtilities.hpp"
 
-#include <algorithm>
-#include <iostream>
-#include <string>
-#include <vector>
 using std::cerr;
 using std::endl;
 

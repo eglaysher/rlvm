@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 /**
  * @file   SDLGraphicsSystem.cpp
  * @brief  Exposed interface for the SDL Graphics system.
@@ -41,10 +37,20 @@
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_opengl.h>
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <boost/bind.hpp>
+#include <boost/scoped_array.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <cstdio>
+#include <iostream>
+#include <set>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <set>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/CGMTable.hpp"
@@ -52,9 +58,9 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/MouseCursor.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/Platform.hpp"
 #include "Systems/Base/Renderable.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
@@ -65,24 +71,10 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "Utilities/Graphics.hpp"
+#include "Utilities/LazyArray.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
-
 #include "xclannad/file.h"
-#include "Utilities/LazyArray.hpp"
-
-#include <iostream>
-#include <sstream>
-#include <cstdio>
-
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_image.h>
-
-#include <boost/bind.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/algorithm/string.hpp>
 
 using namespace boost;
 using namespace std;

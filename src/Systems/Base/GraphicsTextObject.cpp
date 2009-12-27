@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
@@ -36,14 +32,15 @@
 
 #include "Systems/Base/GraphicsTextObject.hpp"
 
-#include "libReallive/gameexe.h"
+#include <iostream>
+#include <vector>
+
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
+#include "libReallive/gameexe.h"
 
-#include <vector>
-#include <iostream>
 using std::endl;
 
 // -----------------------------------------------------------------------

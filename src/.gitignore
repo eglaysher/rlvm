@@ -4,8 +4,6 @@ rlvm
 rlvm-osx-static
 rlvm.app
 librlvm.a
-alldefs.h.gch
-Precompiled.hpp.gch
 SEEN*.*
 rlas_*
 semantic.cache

@@ -25,49 +25,42 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_Sys_Save.hpp"
 
+#include <algorithm>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/bind.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
+#include <iostream>
 #include <limits>
 #include <string>
 
+#include "Effects/FadeEffect.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/LongOperation.hpp"
+#include "MachineBase/Memory.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Special_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/Serialization.hpp"
 #include "MachineBase/SaveGameHeader.hpp"
-#include "MachineBase/Memory.hpp"
-#include "MachineBase/GeneralOperations.hpp"
-#include "Systems/Base/System.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
-#include "Systems/Base/Colour.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "libReallive/intmemref.h"
-
-#include <boost/shared_ptr.hpp>
-
-#include <algorithm>
-#include <iostream>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
-
 #include "utf8cpp/utf8.h"
-#include "Effects/FadeEffect.hpp"
 
 // For copy_n, which isn't part of the C++ standard and doesn't come on
 // OSX.

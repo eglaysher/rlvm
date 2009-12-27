@@ -25,20 +25,22 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
 #include "Systems/Base/TextSystem.hpp"
 
+#include <algorithm>
+#include <boost/bind.hpp>
+#include <iostream>
 #include <map>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "MachineBase/Memory.hpp"
-#include "MachineBase/Serialization.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/Base/TextPage.hpp"
@@ -46,13 +48,6 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
-
-#include <boost/bind.hpp>
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
 
 using boost::bind;
 using boost::shared_ptr;

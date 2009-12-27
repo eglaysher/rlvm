@@ -25,25 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
-#include "libReallive/reallive.h"
-#include "libReallive/gameexe.h"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/SDL/SDLSystem.hpp"
-#include "Modules/Modules.hpp"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
-#include "Utilities/findFontFile.h"
-
-#include "Systems/Base/SoundSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Platforms/gcn/GCNPlatform.hpp"
-
 #include <boost/program_options.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -54,6 +35,20 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "Modules/Modules.hpp"
+#include "Platforms/gcn/GCNPlatform.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
+#include "Utilities/findFontFile.h"
+#include "libReallive/gameexe.h"
+#include "libReallive/reallive.h"
 
 using namespace std;
 

@@ -24,17 +24,13 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/Platform.hpp"
-
-#include "libReallive/gameexe.h"
-#include "Utilities/StringUtilities.hpp"
 
 #include <map>
 #include <string>
+
+#include "libReallive/gameexe.h"
+#include "Utilities/StringUtilities.hpp"
 
 using std::string;
 

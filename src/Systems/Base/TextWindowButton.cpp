@@ -25,11 +25,11 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/TextWindowButton.hpp"
+
+#include <iostream>
+#include <stdexcept>
+#include <vector>
 
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -41,10 +41,6 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
-
-#include <stdexcept>
-#include <iostream>
-#include <vector>
 
 using namespace std;
 

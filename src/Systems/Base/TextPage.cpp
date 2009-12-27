@@ -25,24 +25,20 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
-#include "MachineBase/RLMachine.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/TextPage.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextWindow.hpp"
-#include "libReallive/gameexe.h"
 
-#include "utf8cpp/utf8.h"
-
-#include <boost/bind.hpp>
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <iostream>
 #include <string>
+
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindow.hpp"
+#include "Utilities/StringUtilities.hpp"
+#include "libReallive/gameexe.h"
+#include "utf8cpp/utf8.h"
 
 using namespace std;
 using namespace boost;

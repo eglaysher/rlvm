@@ -24,11 +24,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/TextWaku.hpp"
+
+#include <iostream>
 
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWakuNormal.hpp"

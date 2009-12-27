@@ -24,12 +24,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/GCNPlatform.hpp"
 
+#include <boost/bind.hpp>
+#include <boost/filesystem.hpp>
+#include <iomanip>
 #include <queue>
 #include <string>
 #include <vector>
@@ -38,23 +37,18 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Sys_Save.hpp"
-#include "Platforms/gcn/SDLTrueTypeFont.hpp"
 #include "Platforms/gcn/GCNGraphics.hpp"
 #include "Platforms/gcn/GCNInfoWindow.hpp"
+#include "Platforms/gcn/SDLTrueTypeFont.hpp"
 #include "Platforms/gcn/gcnUtils.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
-#include "libReallive/gameexe.h"
-
 #include "Utilities/Exception.hpp"
 #include "Utilities/findFontFile.h"
-
-#include <iomanip>
-#include <boost/bind.hpp>
-#include <boost/filesystem.hpp>
+#include "libReallive/gameexe.h"
 
 using namespace std;
 using boost::bind;

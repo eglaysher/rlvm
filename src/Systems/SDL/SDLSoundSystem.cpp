@@ -25,17 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/SDL/SDLSoundSystem.hpp"
-#include "Systems/SDL/SDLSoundChunk.hpp"
-#include "Systems/SDL/SDLMusic.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/VoiceArchive.hpp"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
@@ -43,6 +33,13 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <sstream>
 #include <string>
+
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/VoiceArchive.hpp"
+#include "Systems/SDL/SDLMusic.hpp"
+#include "Systems/SDL/SDLSoundChunk.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
 
 using boost::shared_ptr;
 using namespace std;

@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 /**
  * @file   SDLTextSystem.cpp
  * @brief  SDL specialization of the text system

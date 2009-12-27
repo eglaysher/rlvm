@@ -24,22 +24,17 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Utilities/Graphics.hpp"
+
+#include <sstream>
+#include <vector>
+#include <boost/assign/list_of.hpp>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "libReallive/gameexe.h"
-
-#include <sstream>
-#include <vector>
-#include <boost/assign/list_of.hpp>
-
 
 using namespace std;
 using namespace boost::assign;

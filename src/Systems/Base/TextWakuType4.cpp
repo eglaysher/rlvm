@@ -24,21 +24,16 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/TextWakuType4.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWindow.hpp"
-
-#include <iostream>
-#include <string>
-
 #include "libReallive/gameexe.h"
 
 using std::endl;

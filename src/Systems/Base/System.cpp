@@ -25,24 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/System.hpp"
-
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "Modules/Module_Sys.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/Platform.hpp"
-#include "Systems/Base/SoundSystem.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/RlvmInfo.hpp"
-#include "Utilities/Exception.hpp"
-#include "libReallive/gameexe.h"
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -55,6 +38,19 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "Modules/Module_Sys.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Platform.hpp"
+#include "Systems/Base/RlvmInfo.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Utilities/Exception.hpp"
+#include "libReallive/gameexe.h"
 
 using namespace std;
 using boost::bind;

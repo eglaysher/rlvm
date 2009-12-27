@@ -25,13 +25,11 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/MouseCursor.hpp"
-#include "Systems/Base/Surface.hpp"
+
 #include <iostream>
+
+#include "Systems/Base/Surface.hpp"
 
 // -----------------------------------------------------------------------
 

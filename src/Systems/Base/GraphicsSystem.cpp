@@ -25,13 +25,22 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/GraphicsSystem.hpp"
 
-#include "Utilities/LazyArray.hpp"
+#include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/serialization/scoped_ptr.hpp>
+#include <boost/serialization/vector.hpp>
+#include <iostream>
+#include <iterator>
+#include <list>
+#include <sstream>
+#include <string>
+#include <vector>
+
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/StackFrame.hpp"
@@ -50,21 +59,8 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
+#include "Utilities/LazyArray.hpp"
 #include "libReallive/gameexe.h"
-
-#include <algorithm>
-#include <boost/algorithm/string.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
-#include <boost/serialization/vector.hpp>
-#include <iostream>
-#include <iterator>
-#include <list>
-#include <sstream>
-#include <string>
-#include <vector>
 
 using boost::iends_with;
 using boost::lexical_cast;

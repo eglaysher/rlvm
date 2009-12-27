@@ -25,21 +25,18 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_Sys_Syscom.hpp"
+
+#include <boost/lexical_cast.hpp>
+
+#include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/GeneralOperations.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
-
-#include <boost/lexical_cast.hpp>
+#include "Systems/Base/System.hpp"
 
 using namespace std;
 using boost::lexical_cast;

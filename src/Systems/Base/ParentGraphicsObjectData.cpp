@@ -24,14 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/ParentGraphicsObjectData.hpp"
 
-#include "Utilities/Exception.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Utilities/Exception.hpp"
 
 // -----------------------------------------------------------------------
 // ParentGraphicsObjectData

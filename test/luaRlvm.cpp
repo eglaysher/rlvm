@@ -25,36 +25,30 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
-#include "libReallive/reallive.h"
-#include "libReallive/gameexe.h"
-#include "MachineBase/RLMachine.hpp"
-#include "ScriptMachine/ScriptMachine.hpp"
-#include "ScriptMachine/ScriptWorld.hpp"
-#include "MachineBase/Serialization.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/SDL/SDLSystem.hpp"
-#include "Modules/Modules.hpp"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
-#include "Utilities/findFontFile.h"
-
-#include "Systems/Base/SoundSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-
-#include <boost/program_options.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/program_options.hpp>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 // We include this here because SDL is retarded and works by #define
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
-#include <iostream>
-#include <sstream>
-#include <string>
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "Modules/Modules.hpp"
+#include "ScriptMachine/ScriptMachine.hpp"
+#include "ScriptMachine/ScriptWorld.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/File.hpp"
+#include "Utilities/findFontFile.h"
+#include "libReallive/gameexe.h"
+#include "libReallive/reallive.h"
 
 using namespace std;
 

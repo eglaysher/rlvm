@@ -25,27 +25,23 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
 #include "Systems/Base/SoundSystem.hpp"
 
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <iostream>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
-
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-#include <iostream>
-#include <utility>
-#include <map>
-#include <string>
-#include <vector>
 
 // -----------------------------------------------------------------------
 

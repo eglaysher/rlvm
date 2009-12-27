@@ -30,6 +30,7 @@
 #include <iosfwd>
 #include <string>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "Systems/Base/TextWaku.hpp"
 

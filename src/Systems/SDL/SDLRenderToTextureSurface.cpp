@@ -25,22 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
-#include "Systems/SDL/SDLUtils.hpp"
-#include "Systems/SDL/Texture.hpp"
-#include "Systems/SDL/SDLGraphicsSystem.hpp"
-
-#include "Systems/Base/SystemError.hpp"
 
 #include <SDL/SDL.h>
-
 #include <iostream>
 #include <sstream>
 
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/SDL/SDLGraphicsSystem.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
+#include "Systems/SDL/Texture.hpp"
 #include "Utilities/Exception.hpp"
 
 using namespace std;

@@ -24,13 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_Shl.hpp"
-
-// -----------------------------------------------------------------------
 
 LayeredShakingModule::LayeredShakingModule()
   : RLModule("Shl", 1, 12) {

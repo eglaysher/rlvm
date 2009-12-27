@@ -25,16 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/export.hpp>
 
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
+
+#include <boost/shared_ptr.hpp>
+#include <string>
+#include <iostream>
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
@@ -45,9 +45,6 @@
 #include "Systems/Base/System.hpp"
 #include "Utilities/File.hpp"
 
-#include <boost/shared_ptr.hpp>
-#include <string>
-#include <iostream>
 
 using namespace std;
 namespace fs = boost::filesystem;

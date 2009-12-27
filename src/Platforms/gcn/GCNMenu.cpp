@@ -24,20 +24,15 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/GCNMenu.hpp"
 
-#include <string>
 #include <algorithm>
+#include <guichan/widgets/button.hpp>
+#include <string>
 #include <vector>
 
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
-
-#include <guichan/widgets/button.hpp>
 
 using std::vector;
 using gcn::Button;

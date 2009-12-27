@@ -25,26 +25,20 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
+#include "Systems/SDL/SDLSystem.hpp"
 
 #include <iostream>
 #include <sstream>
+#include <SDL/SDL.h>
 
 #include "MachineBase/RLMachine.hpp"
-
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/Platform.hpp"
-#include "Systems/SDL/SDLSystem.hpp"
-#include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
-#include "Systems/SDL/SDLTextSystem.hpp"
+#include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSoundSystem.hpp"
-
-#include <SDL/SDL.h>
-
+#include "Systems/SDL/SDLTextSystem.hpp"
 #include "libReallive/defs.h"
 #include "libReallive/gameexe.h"
 

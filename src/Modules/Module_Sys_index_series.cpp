@@ -25,18 +25,15 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_Sys_index_series.hpp"
+
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/Special_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLMachine.hpp"
 
 // -----------------------------------------------------------------------
 

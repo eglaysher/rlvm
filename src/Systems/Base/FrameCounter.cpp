@@ -25,16 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/FrameCounter.hpp"
-
-#include "Systems/Base/EventSystem.hpp"
 
 #include <cmath>
 #include <iostream>
+
+#include "Systems/Base/EventSystem.hpp"
 
 using namespace std;
 

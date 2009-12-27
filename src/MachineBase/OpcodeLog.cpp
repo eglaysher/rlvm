@@ -25,11 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "MachineBase/OpcodeLog.hpp"
+
 #include <algorithm>
 #include <iomanip>
 #include <string>

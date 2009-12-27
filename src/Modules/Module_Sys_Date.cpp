@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Module_Sys_Date.hpp"
 
 #include "MachineBase/GeneralOperations.hpp"

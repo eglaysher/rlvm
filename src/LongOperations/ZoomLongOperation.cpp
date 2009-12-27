@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "LongOperations/ZoomLongOperation.hpp"
 
 #include "MachineBase/RLMachine.hpp"

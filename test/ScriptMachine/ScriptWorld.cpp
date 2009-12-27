@@ -24,27 +24,22 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "ScriptMachine/ScriptWorld.hpp"
-#include "ScriptMachine/ScriptMachine.hpp"
-#include "Modules/Module_Sel.hpp"
-
-#include "Systems/Base/System.hpp"
-
-#include "ScriptMachine/luabind_Machine.hpp"
-#include "ScriptMachine/luabind_System.hpp"
-#include "ScriptMachine/luabind_EventSystem.hpp"
-#include "ScriptMachine/luabind_GraphicsSystem.hpp"
-#include "ScriptMachine/luabind_GraphicsObject.hpp"
-#include "ScriptMachine/luabind_utility.hpp"
 
 #include <iostream>
 #include <typeinfo>
 #include <string>
 #include <boost/filesystem/path.hpp>
+
+#include "Modules/Module_Sel.hpp"
+#include "ScriptMachine/ScriptMachine.hpp"
+#include "ScriptMachine/luabind_EventSystem.hpp"
+#include "ScriptMachine/luabind_GraphicsObject.hpp"
+#include "ScriptMachine/luabind_GraphicsSystem.hpp"
+#include "ScriptMachine/luabind_Machine.hpp"
+#include "ScriptMachine/luabind_System.hpp"
+#include "ScriptMachine/luabind_utility.hpp"
+#include "Systems/Base/System.hpp"
 
 extern "C" {
     #include "lua.h"

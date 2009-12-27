@@ -24,28 +24,25 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Platforms/gcn/GCNSaveLoadWindow.hpp"
 
+#include <algorithm>
+#include <boost/date_time/posix_time/time_formatters_limited.hpp>
+#include <boost/filesystem.hpp>
+#include <iomanip>
+#include <limits>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 #include "Platforms/gcn/GCNScrollArea.hpp"
-#include "MachineBase/Serialization.hpp"
-#include "MachineBase/RLMachine.hpp"
 #include "Utilities/StringUtilities.hpp"
 
-#include <algorithm>
-#include <limits>
-#include <iomanip>
-#include <string>
-#include <sstream>
-#include <utility>
-#include <vector>
-#include <boost/filesystem.hpp>
-#include <boost/date_time/posix_time/time_formatters_limited.hpp>
 namespace fs = boost::filesystem;
 
 using namespace std;

@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 /**
  * @file   GanGraphicsObjectData.cpp
  * @author Elliot Glaysher
@@ -47,6 +43,11 @@
 
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 
+#include <boost/serialization/export.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <string>
+#include <vector>
+
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -56,11 +57,6 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "libReallive/defs.h"
-
-#include <boost/serialization/export.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <string>
-#include <vector>
 
 // -----------------------------------------------------------------------
 

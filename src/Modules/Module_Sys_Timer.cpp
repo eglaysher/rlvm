@@ -25,27 +25,21 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Module_Sys_Frame.hpp"
 
+#include <boost/numeric/conversion/cast.hpp>
+
+#include "MachineBase/LongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
-
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/LongOperation.hpp"
-
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/EventListener.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
-
-#include <boost/numeric/conversion/cast.hpp>
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/System.hpp"
 
 using namespace std;
 using boost::numeric_cast;

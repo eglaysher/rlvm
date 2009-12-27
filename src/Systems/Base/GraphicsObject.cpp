@@ -25,24 +25,21 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsObjectData.hpp"
-#include "Utilities/Exception.hpp"
 
 #include <numeric>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <string>
 #include <algorithm>
+
+#include "Systems/Base/GraphicsObjectData.hpp"
+#include "Utilities/Exception.hpp"
 
 using namespace std;
 

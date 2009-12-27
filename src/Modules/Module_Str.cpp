@@ -25,13 +25,13 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_Str.hpp"
 
 #include <algorithm>
+#include <boost/lexical_cast.hpp>
+#include <cmath>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 #include "Encodings/han2zen.hpp"
@@ -40,10 +40,6 @@
 #include "MachineBase/RLOperation/References.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include <cmath>
-#include <iomanip>
-#include <sstream>
-#include <boost/lexical_cast.hpp>
 
 using namespace std;
 using namespace boost;

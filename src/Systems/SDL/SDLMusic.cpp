@@ -25,27 +25,22 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/SDL/SDLMusic.hpp"
+
+#include <SDL/SDL_mixer.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/function.hpp>
+#include <iostream>
+#include <map>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "Systems/SDL/SDLAudioLocker.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
-
-#include <vector>
-#include <map>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <SDL/SDL_mixer.h>
-
-#include <boost/function.hpp>
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/algorithm/string.hpp>
 
 using namespace std;
 using namespace boost;

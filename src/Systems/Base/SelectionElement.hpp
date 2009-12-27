@@ -28,11 +28,13 @@
 #ifndef SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_
 #define SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_
 
+#include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include "Systems/Base/Rect.hpp"
 
 class GraphicsSystem;
 class Surface;
-class Point;
 
 /**
  * Represents a clickable

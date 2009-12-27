@@ -25,10 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Modules/Module_EventLoop.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/GeneralOperations.hpp"

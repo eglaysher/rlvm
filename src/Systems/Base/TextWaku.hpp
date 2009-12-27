@@ -27,6 +27,8 @@
 #ifndef SRC_SYSTEMS_BASE_TEXTWAKU_HPP_
 #define SRC_SYSTEMS_BASE_TEXTWAKU_HPP_
 
+#include <iosfwd>
+
 class Point;
 class RLMachine;
 class Size;

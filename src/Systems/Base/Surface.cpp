@@ -25,14 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Precompiled.hpp"
-
-// -----------------------------------------------------------------------
-
 #include "Systems/Base/Surface.hpp"
-#include "Utilities/Exception.hpp"
 
 #include <iostream>
+
+#include "Utilities/Exception.hpp"
+
 using namespace std;
 
 // -----------------------------------------------------------------------
