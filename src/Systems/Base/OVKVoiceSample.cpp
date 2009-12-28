@@ -58,6 +58,7 @@
 #include "Systems/Base/OVKVoiceSample.hpp"
 
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <sstream>
 #include <vorbis/vorbisfile.h>

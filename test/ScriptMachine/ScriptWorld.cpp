@@ -29,6 +29,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <string>
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include "Modules/Module_Sel.hpp"
