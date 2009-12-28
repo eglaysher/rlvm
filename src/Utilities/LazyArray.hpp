@@ -35,7 +35,6 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
-#include <boost/utility.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/serialization/split_member.hpp>

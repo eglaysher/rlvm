@@ -34,8 +34,8 @@
 
 
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/utility.hpp>
 
 #include <SDL/SDL_mixer.h>
 

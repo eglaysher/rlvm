@@ -33,8 +33,8 @@
 #include "Systems/Base/Rect.hpp"
 
 #include <boost/function.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/utility.hpp>
 #include <queue>
 #include <set>
 

@@ -36,7 +36,6 @@
 #include <string>
 #include <iostream>
 
-#include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"

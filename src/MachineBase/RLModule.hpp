@@ -36,7 +36,7 @@
  * @brief  Declares the base class RLModule
  */
 
-#include <boost/utility.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
 #include <map>

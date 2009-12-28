@@ -32,7 +32,6 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include <boost/utility.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
 
 using std::string;

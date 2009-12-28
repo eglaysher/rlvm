@@ -34,37 +34,32 @@
  */
 
 #include "Modules/Module_Grp.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLOperation/Special_T.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/RLOperation/Rect_T.hpp"
-#include "MachineBase/RLOperation/RGBColour_T.hpp"
 
-#include "MachineBase/RLMachine.hpp"
-
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsStackFrame.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/Colour.hpp"
-
-#include "Effects/Effect.hpp"
-#include "Effects/EffectFactory.hpp"
-#include "LongOperations/ZoomLongOperation.hpp"
-
-#include "libReallive/gameexe.h"
-
+#include <boost/scoped_ptr.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include <boost/scoped_ptr.hpp>
-
+#include "Effects/Effect.hpp"
+#include "Effects/EffectFactory.hpp"
+#include "LongOperations/ZoomLongOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "MachineBase/RLOperation/RGBColour_T.hpp"
+#include "MachineBase/RLOperation/Rect_T.hpp"
+#include "MachineBase/RLOperation/Special_T.hpp"
+#include "Systems/Base/Colour.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Graphics.hpp"
+#include "libReallive/gameexe.h"
 
 using namespace std;
 using namespace boost;

@@ -30,8 +30,8 @@
 
 #include <vector>
 #include <boost/function.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/utility.hpp>
 #include <boost/signals/trackable.hpp>
 
 #include "libReallive/gameexe.h"

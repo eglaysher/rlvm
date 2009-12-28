@@ -63,8 +63,8 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   virtual void objectInfo(std::ostream& tree);
 
  private:
-  /// 256 child objects.
+  // 256 child objects.
   LazyArray<GraphicsObject> objects_;
-};  // end of class ParentGraphicsObjectData
+};  // class ParentGraphicsObjectData
 
 #endif  // SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_

@@ -37,8 +37,6 @@
 
 #include "Utilities/Exception.hpp"
 
-#include <boost/utility.hpp>
-
 #include <string>
 #include <algorithm>
 
