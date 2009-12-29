@@ -26,6 +26,7 @@
 
 #include "Utilities/Graphics.hpp"
 
+#include <iostream>
 #include <sstream>
 #include <vector>
 #include <boost/assign/list_of.hpp>
@@ -103,4 +104,26 @@ void clamp(float& var, float min, float max) {
     var = min;
   else if (var > max)
     var = max;
+}
+
+// -----------------------------------------------------------------------
+
+void ClipDestination(const Rect& clip_rect, Rect& src, Rect& dest) {
+  Rect intersection = clip_rect.intersection(dest);
+  if (intersection.size().isEmpty()) {
+    src = Rect();
+    dest = Rect();
+    return;
+  }
+
+  // TODO(erg): Doesn't deal with clipping the right side because we don't
+  // really want an intersection here; we want it clipped to.
+
+  if (src.size() == dest.size()) {
+    Size top_left_offset = intersection.origin() - dest.origin();
+    dest = intersection;
+    src = Rect(src.origin() + top_left_offset, intersection.size());
+  } else {
+    cerr << "Doesn't deal with different sizes in ClipDestination!" << endl;
+  }
 }

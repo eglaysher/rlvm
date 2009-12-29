@@ -192,10 +192,14 @@ class Rect {
 
   bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }
 
-  /**
-   * Whether loc is inside this Rect.
-   */
+  // Whether loc is inside this Rect.
   bool contains(const Point& loc);
+
+  // Whether we intersect with |rhs|.
+  bool intersects(const Rect& rhs) const;
+
+  // Contains the intersection of two overlapping (or subsumed) rectangles.
+  Rect intersection(const Rect& rhs) const;
 
   bool operator==(const Rect& rhs) const {
     return origin_ == rhs.origin_ && size_ == rhs.size_;

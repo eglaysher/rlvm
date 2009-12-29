@@ -71,6 +71,21 @@ bool Rect::contains(const Point& loc) {
   return loc.x() >= x() && loc.x() < x2() && loc.y() >= y() && loc.y() < y2();
 }
 
+bool Rect::intersects(const Rect& rhs) const {
+  return !(x() > rhs.x2() || x2() < rhs.x() ||
+           y() > rhs.y2() || y2() < rhs.y());
+}
+
+Rect Rect::intersection(const Rect& rhs) const {
+  if (intersects(rhs)) {
+    return Rect::GRP(
+        std::max(x(), rhs.x()), std::max(y(), rhs.y()),
+        std::min(x2(), rhs.x2()), std::min(y2(), rhs.y2()));
+  }
+
+  return Rect();
+}
+
 std::ostream& operator<<(std::ostream& os, const Rect& r) {
   os << "Rect(" << r.x() << ", " << r.y() << ", " << r.size() << ")";
   return os;

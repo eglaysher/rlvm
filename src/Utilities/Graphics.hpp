@@ -83,4 +83,7 @@ Size getScreenSize(Gameexe& gameexe);
  */
 void clamp(float& var, float min, float max);
 
+// Clips |dest| to |clip_rect|, adjusting |src|.
+void ClipDestination(const Rect& clip_rect, Rect& src, Rect& dest);
+
 #endif  // SRC_UTILITIES_GRAPHICS_HPP_

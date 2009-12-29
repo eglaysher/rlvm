@@ -244,6 +244,7 @@ test_case_files = [
   "test/text_window_test.cpp",
   "test/effect_test.cpp",
   "test/rlbabel_test.cpp",
+  "test/utilities_test.cpp",
 
   # medium tests
   "test/medium_eventloop_test.cpp",
