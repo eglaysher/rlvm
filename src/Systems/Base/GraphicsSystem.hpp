@@ -59,6 +59,7 @@ class Gameexe;
 class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
+class HIKScript;
 class MouseCursor;
 class Renderable;
 class RLMachine;
@@ -118,6 +119,7 @@ BOOST_CLASS_VERSION(GraphicsSystemGlobals, 2)
  */
 enum GraphicsUpdateType {
   GUT_DRAW_DC0,
+  GUT_DRAW_HIK,
   GUT_DISPLAY_OBJ,
   GUT_TEXTSYS,
   GUT_MOUSE_MOTION
@@ -222,6 +224,9 @@ class GraphicsSystem : public EventListener {
   void replayGraphicsStack(RLMachine& machine);
   /// @}
 
+  // Sets the current hik script. GraphicsSystem takes ownership, freeing the
+  // current HIKScript if applicable. |script| can be NULL.
+  void setHikScript(HIKScript* script);
 
   // -----------------------------------------------------------------------
 
@@ -391,7 +396,7 @@ class GraphicsSystem : public EventListener {
    * Called from the game loop; Does everything that's needed to keep
    * things up.
    */
-  virtual void executeGraphicsSystem(RLMachine& machine) = 0;
+  virtual void executeGraphicsSystem(RLMachine& machine);
 
   /**
    * Returns the size of the window in pixels.
@@ -450,6 +455,9 @@ class GraphicsSystem : public EventListener {
    * @param tree Optional stream to write this piece of the render tree to.
    */
   void renderObjects(std::ostream* tree);
+
+  // Renders either the surface returned from getHaikei() or the HIK script.
+  void renderHaikei(std::ostream* tree);
 
   /**
    * Creates rendering data for a graphics object from a G00, PDT or ANM file.
@@ -597,6 +605,9 @@ class GraphicsSystem : public EventListener {
 
   /// Our parent system object.
   System& system_;
+
+  // Possible background script which drives graphics to the screen.
+  boost::scoped_ptr<HIKScript> hik_script_;
 
   /// boost::serialization support
   friend class boost::serialization::access;

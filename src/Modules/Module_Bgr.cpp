@@ -26,6 +26,11 @@
 
 #include "Modules/Module_Bgr.hpp"
 
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+#include <iostream>
+#include <string>
+
 #include "Effects/EffectFactory.hpp"
 #include "Effects/Effect.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -36,13 +41,14 @@
 #include "Modules/Module_Grp.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/HIKScript.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
-
-#include <iostream>
-#include <string>
+#include "Utilities/File.hpp"
 
 using namespace std;
+namespace fs = boost::filesystem;
+using boost::iends_with;
 
 // Working theory of how this module works: The haikei module is one backing
 // surface and (optionally) a HIK script. Games like AIR and the Maiden Halo
@@ -57,6 +63,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int sel) {
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.setDefaultBgrName("");
+    graphics.setHikScript(NULL);
 
     boost::shared_ptr<Surface> before =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
@@ -72,27 +79,37 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
 
 struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int sel) {
-    GraphicsSystem& graphics = machine.system().graphics();
+    System& system = machine.system();
+    GraphicsSystem& graphics = system.graphics();
     graphics.setDefaultBgrName(filename);
 
     // bgrLoadHaikei clears the stack.
     graphics.clearStack();
 
-    boost::shared_ptr<Surface> before =
-      graphics.renderToSurfaceWithBg(graphics.getDC(0));
-    boost::shared_ptr<Surface> source(
-        graphics.loadSurfaceFromFile(machine, filename));
-    boost::shared_ptr<Surface> haikei = graphics.getHaikei();
-    source->blitToSurface(*haikei,
-                          source->rect(),
-                          source->rect(),
-                          255, true);
-    boost::shared_ptr<Surface> after =
-      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    fs::path path = findFile(system, filename, HIK_FILETYPES);
+    if (path.empty()) {
+      ostringstream oss;
+      oss << "Could not find background file: " << filename;
+      throw rlvm::Exception(oss.str());
+    } else if (iends_with(path.string(), "hik")) {
+      graphics.setHikScript(new HIKScript(system, path));
+    } else {
+      boost::shared_ptr<Surface> before =
+          graphics.renderToSurfaceWithBg(graphics.getDC(0));
+      boost::shared_ptr<Surface> source(
+          graphics.loadSurfaceFromFile(machine, filename));
+      boost::shared_ptr<Surface> haikei = graphics.getHaikei();
+      source->blitToSurface(*haikei,
+                            source->rect(),
+                            source->rect(),
+                            255, true);
+      boost::shared_ptr<Surface> after =
+          graphics.renderToSurfaceWithBg(graphics.getDC(0));
 
-    LongOperation* effect =
-        EffectFactory::buildFromSEL(machine, after, before, sel);
-    machine.pushLongOperation(effect);
+      LongOperation* effect =
+          EffectFactory::buildFromSEL(machine, after, before, sel);
+      machine.pushLongOperation(effect);
+    }
   }
 };
 

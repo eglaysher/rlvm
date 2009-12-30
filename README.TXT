@@ -141,8 +141,6 @@ The result is run like this:
 -------------------------------------------------------------------------
 The interpreter currently lacks the following features:
 
- - Haikei / HIK animations. To my knowledge, the file format has not
-   been reverse engineered.
  - TCC shading data used to give character images a certain tint in some
    scenes. To my knowledge, the file format has not been reverse
    engineered.
@@ -164,10 +162,6 @@ rlvm needs several file formats reverse engineered:
   working decoding library before I can start work on voice support and
   I'm sure jagarl would like nwatowav to be able to read even more
   files.
-- The HIK file format hasn't been reverse engineered at all. Nothing is
-  known about this format, except that the commands to display and
-  manipulate these files are in module<1:40>. These files are used in
-  Planetarian to control the opening animation.
 - The TCC file format hasn't been reverse engineered. TCC files (called
   "tonecurve" files in the GAMEEXE file) are tint definitions that are
   applied to graphics objects. Tones are applied to objects by loading

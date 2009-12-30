@@ -432,6 +432,8 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
       setWindowTitle();
     }
   }
+
+  GraphicsSystem::executeGraphicsSystem(machine);
 }
 
 // -----------------------------------------------------------------------

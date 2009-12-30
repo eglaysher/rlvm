@@ -51,6 +51,7 @@
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Systems/Base/GraphicsStackFrame.hpp"
+#include "Systems/Base/HIKScript.hpp"
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/Surface.hpp"
@@ -309,6 +310,12 @@ void GraphicsSystem::replayGraphicsStack(RLMachine& machine) {
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::setHikScript(HIKScript* script) {
+  hik_script_.reset(script);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::addRenderable(Renderable* renderable) {
   final_renderers_.insert(renderable);
 }
@@ -392,7 +399,7 @@ void GraphicsSystem::refresh(std::ostream* tree) {
   beginFrame();
 
   // Display the Haikei behind everything.
-  getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
+  renderHaikei(tree);
 
   // Display DC0
   getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
@@ -418,6 +425,11 @@ void GraphicsSystem::refresh(std::ostream* tree) {
 
 boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
   boost::shared_ptr<Surface> bg) { return boost::shared_ptr<Surface>(); }
+
+void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
+  if (hik_script_)
+    hik_script_->execute(machine);
+}
 
 // -----------------------------------------------------------------------
 
@@ -549,6 +561,20 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
       continue;
 
     it->render(it.pos(), tree);
+  }
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::renderHaikei(std::ostream* tree) {
+  if (hik_script_) {
+    hik_script_->render(tree);
+  } else {
+    getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
+
+    if (tree) {
+      *tree << "[Haikei bitmap]";
+    }
   }
 }
 

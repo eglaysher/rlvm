@@ -47,7 +47,9 @@ class TestGraphicsSystem : public GraphicsSystem {
  public:
   TestGraphicsSystem(System& system, Gameexe& gexe);
 
-  virtual void executeGraphicsSystem(RLMachine&) { }
+  virtual void executeGraphicsSystem(RLMachine& machine) {
+    GraphicsSystem::executeGraphicsSystem(machine);
+  }
 
   int screenWidth() const { return 640; }
   int screenHeight() const { return 480; }
