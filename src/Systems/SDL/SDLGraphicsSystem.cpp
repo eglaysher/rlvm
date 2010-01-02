@@ -534,7 +534,7 @@ void SDLGraphicsSystem::freeDC(int dc) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
   } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
-    getDC(1)->fill(RGBAColour::Clear());
+    getDC(1)->fill(RGBAColour::Black());
   } else {
     display_contexts_[dc]->deallocate();
   }

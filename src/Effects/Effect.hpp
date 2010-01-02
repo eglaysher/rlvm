@@ -167,16 +167,13 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
 
   Rect src_rect_, dest_rect_;
 
-  bool use_alpha_;
-
   virtual void performAfterLongOperation(RLMachine& machine);
 
  public:
   BlitAfterEffectFinishes(LongOperation* in,
                           boost::shared_ptr<Surface> src,
                           boost::shared_ptr<Surface> dst,
-                          const Rect& srcRect, const Rect& destRect,
-                          bool useAlpha);
+                          const Rect& srcRect, const Rect& destRect);
 
   ~BlitAfterEffectFinishes();
 };
@@ -193,8 +190,7 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
  */
 void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> src,
-                            boost::shared_ptr<Surface> dst,
-                            bool use_alpha);
+                            boost::shared_ptr<Surface> dst);
 // @}
 
 #endif  // SRC_EFFECTS_EFFECT_HPP_

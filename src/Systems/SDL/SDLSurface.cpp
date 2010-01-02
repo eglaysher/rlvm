@@ -332,7 +332,7 @@ void SDLSurface::allocate(const Size& size) {
 
   surface_ = buildNewSurface(size);
 
-  fill(RGBAColour::Clear());
+  fill(RGBAColour::Black());
 }
 
 // -----------------------------------------------------------------------

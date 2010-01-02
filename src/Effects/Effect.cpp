@@ -92,13 +92,23 @@ bool Effect::operator()(RLMachine& machine) {
 // BlitAfterEffectFinishes
 // -----------------------------------------------------------------------
 
+void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
+  // Blit DC1 onto DC0, with full opacity, and end the operation
+  src_surface_->blitToSurface(*dst_surface_,
+                              src_rect_, dest_rect_, 255);
+
+  // Now force a screen refresh
+  machine.system().graphics().forceRefresh();
+}
+
+// -----------------------------------------------------------------------
+
 BlitAfterEffectFinishes::BlitAfterEffectFinishes(
     LongOperation* in, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst, const Rect& srcRect, const Rect& destRect,
-    bool useAlpha)
+    boost::shared_ptr<Surface> dst, const Rect& srcRect, const Rect& destRect)
     : PerformAfterLongOperationDecorator(in),
       src_surface_(src), dst_surface_(dst), src_rect_(srcRect),
-      dest_rect_(destRect), use_alpha_(useAlpha) {
+      dest_rect_(destRect) {
 }
 
 // -----------------------------------------------------------------------
@@ -107,23 +117,10 @@ BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
 
 // -----------------------------------------------------------------------
 
-void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
-  // Blit DC1 onto DC0, with full opacity, and end the operation
-  src_surface_->blitToSurface(*dst_surface_,
-                              src_rect_, dest_rect_, 255, use_alpha_);
-
-  // Now force a screen refresh
-  machine.system().graphics().forceRefresh();
-}
-
-// -----------------------------------------------------------------------
-
 void decorateEffectWithBlit(LongOperation*& lop,
                             boost::shared_ptr<Surface> src,
-                            boost::shared_ptr<Surface> dst,
-                            bool use_alpha) {
+                            boost::shared_ptr<Surface> dst) {
   BlitAfterEffectFinishes* blit =
-      new BlitAfterEffectFinishes(lop, src, dst, src->rect(), src->rect(),
-                                  use_alpha);
+    new BlitAfterEffectFinishes(lop, src, dst, src->rect(), src->rect());
   lop = blit;
 }
