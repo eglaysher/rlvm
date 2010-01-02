@@ -31,8 +31,8 @@
 #include <iostream>
 #include <string>
 
-#include "Effects/EffectFactory.hpp"
 #include "Effects/Effect.hpp"
+#include "Effects/EffectFactory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
@@ -45,10 +45,12 @@
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/File.hpp"
+#include "Utilities/Graphics.hpp"
 
 using namespace std;
 namespace fs = boost::filesystem;
 using boost::iends_with;
+using boost::shared_ptr;
 
 // Working theory of how this module works: The haikei module is one backing
 // surface and (optionally) a HIK script. Games like AIR and the Maiden Halo
@@ -124,6 +126,91 @@ struct bgrLoadHaikei_wtf
   }
 };
 
+// -----------------------------------------------------------------------
+
+typedef Argc_T<
+  Special_T<
+    // 0:copy(strC 'filename')
+    StrConstant_T,
+    // 1:DUMMY. Unknown.
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 2:copy(strC 'filename', '?')
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 3:DUMMY. Unknown.
+    Complex2_T<StrConstant_T, IntConstant_T>,
+    // 4:copy(strC, '?', '?')
+    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>
+    > > BgrMultiCommand;
+
+struct Bgr_bgrMulti_1 : public RLOp_Void_3<
+  StrConstant_T, IntConstant_T, BgrMultiCommand> {
+ public:
+  void operator()(RLMachine& machine, string filename, int effectNum,
+                  BgrMultiCommand::type commands) {
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_HIK);
+
+    // Get the state of the world before we do any processing.
+    shared_ptr<Surface> before =
+      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+
+    // May need to use current background.
+    if (filename == "???")
+      filename = graphics.defaultBgrName();
+
+    // Load "filename" as the background.
+    shared_ptr<Surface> surface(
+        graphics.loadSurfaceFromFile(machine, filename));
+    surface->blitToSurface(*graphics.getHaikei(),
+                           surface->rect(), surface->rect(),
+                           255, true);
+
+    // TODO(erg): Unsure about the alpha in these implementation.
+    for (BgrMultiCommand::type::const_iterator it = commands.begin();
+         it != commands.end(); it++) {
+      switch (it->type) {
+        case 0: {
+          // 0:copy(strC 'filename')
+          surface = graphics.loadSurfaceFromFile(machine, it->first);
+          surface->blitToSurface(*graphics.getHaikei(),
+                                 surface->rect(), surface->rect(),
+                                 255, true);
+          break;
+        }
+        case 2: {
+          // 2:copy(strC 'filename', '?')
+          Rect srcRect;
+          Point dest;
+          getSELPointAndRect(machine, it->third.get<1>(), srcRect, dest);
+
+          surface = graphics.loadSurfaceFromFile(machine, it->third.get<0>());
+          Rect destRect = Rect(dest, srcRect.size());
+          surface->blitToSurface(*graphics.getHaikei(), srcRect, destRect,
+                                 255, true);
+          break;
+        }
+        default: {
+          cerr << "Don't know what to do with a type " << it->type
+               << " in bgrMulti_1"
+               << endl;
+          break;
+        }
+      }
+    }
+
+    // Maybe load DC1 to DC0
+
+    // Promote the objects? Not sure how bgr interacts with the object layer!
+    // graphics.clearAndPromoteObjects();
+
+    shared_ptr<Surface> after =
+      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    LongOperation* effect =
+        EffectFactory::buildFromSEL(machine, after, before, effectNum);
+    machine.pushLongOperation(effect);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -135,5 +222,5 @@ BgrModule::BgrModule()
   addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
 
   addUnsupportedOpcode(100, 0, "bgrMulti");
-  addOpcode(100, 1, "bgrMulti", makeBgrMulti1());
+  addOpcode(100, 1, "bgrMulti", new Bgr_bgrMulti_1);
 }
