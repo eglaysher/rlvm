@@ -186,6 +186,7 @@ GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
   : screen_update_mode_(SCREENUPDATEMODE_AUTOMATIC),
+    background_type_(BACKGROUND_DC0),
     screen_needs_refresh_(false),
     is_responsible_for_update_(true),
     display_subtitle_(gameexe("SUBTITLE").to_int(0)),
@@ -398,17 +399,29 @@ void GraphicsSystem::endFrame() { }
 void GraphicsSystem::refresh(std::ostream* tree) {
   beginFrame();
 
-  // Display the Haikei behind everything.
-  renderHaikei(tree);
-
-  // Display DC0
-  getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
-  if (tree) {
-    *tree << "Graphic Stack:" << endl;
-    const vector<GraphicsStackFrame>& gstack = graphicsStack();
-    for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
-         it != gstack.end(); ++it) {
-      *tree << "  " << *it << endl;
+  switch (background_type_) {
+    case BACKGROUND_DC0: {
+      // Display DC0
+      getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
+      if (tree) {
+        *tree << "Graphic Stack:" << endl;
+        const vector<GraphicsStackFrame>& gstack = graphicsStack();
+        for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
+             it != gstack.end(); ++it) {
+          *tree << "  " << *it << endl;
+        }
+      }
+      break;
+    }
+    case BACKGROUND_HIK: {
+      if (hik_script_) {
+        hik_script_->render(tree);
+      } else {
+        getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
+        if (tree) {
+          *tree << "[Haikei bitmap]";
+        }
+      }
     }
   }
 
@@ -427,7 +440,7 @@ boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
   boost::shared_ptr<Surface> bg) { return boost::shared_ptr<Surface>(); }
 
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
-  if (hik_script_)
+  if (hik_script_ && background_type_ == BACKGROUND_HIK)
     hik_script_->execute(machine);
 }
 
@@ -445,6 +458,7 @@ void GraphicsSystem::reset() {
   default_grp_name_ = "";
   default_bgr_name_ = "";
   screen_update_mode_ = SCREENUPDATEMODE_AUTOMATIC;
+  background_type_ = BACKGROUND_DC0;
   subtitle_ = "";
   hide_interface_ = false;
 }
@@ -561,20 +575,6 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
       continue;
 
     it->render(it.pos(), tree);
-  }
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::renderHaikei(std::ostream* tree) {
-  if (hik_script_) {
-    hik_script_->render(tree);
-  } else {
-    getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
-
-    if (tree) {
-      *tree << "[Haikei bitmap]";
-    }
   }
 }
 

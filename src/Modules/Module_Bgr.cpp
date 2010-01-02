@@ -64,6 +64,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.setDefaultBgrName("");
     graphics.setHikScript(NULL);
+    graphics.setGraphicsBackground(BACKGROUND_HIK);
 
     boost::shared_ptr<Surface> before =
       graphics.renderToSurfaceWithBg(graphics.getDC(0));
@@ -82,6 +83,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
     System& system = machine.system();
     GraphicsSystem& graphics = system.graphics();
     graphics.setDefaultBgrName(filename);
+    graphics.setGraphicsBackground(BACKGROUND_HIK);
 
     // bgrLoadHaikei clears the stack.
     graphics.clearStack();

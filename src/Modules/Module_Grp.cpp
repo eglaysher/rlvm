@@ -317,6 +317,8 @@ struct Grp_display_1
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     graphics.addGraphicsStackFrame(GRP_DISPLAY)
       .setSourceCoordinates(src)
       .setSourceDC(dc)
@@ -358,6 +360,8 @@ struct Grp_display_3
   void operator()(RLMachine& machine, int dc, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     graphics.addGraphicsStackFrame(GRP_DISPLAY)
       .setSourceDC(dc)
       .setSourceCoordinates(srcRect)
@@ -404,6 +408,8 @@ struct Grp_display_4
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     graphics.addGraphicsStackFrame(GRP_DISPLAY)
       .setSourceDC(dc)
       .setSourceCoordinates(srcRect)
@@ -452,6 +458,8 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     graphics.addGraphicsStackFrame(GRP_OPEN)
       .setFilename(filename)
       .setSourceCoordinates(src)
@@ -504,6 +512,7 @@ struct Grp_open_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string filename, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     graphics.addGraphicsStackFrame(GRP_OPEN)
       .setFilename(filename)
@@ -570,6 +579,7 @@ struct Grp_open_4 : public RLOp_Void_13<
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> dc0 =
@@ -612,6 +622,8 @@ struct Grp_openBg_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     Rect srcRect;
     Point destPoint;
     getSELPointAndRect(machine, effectNum, srcRect, destPoint);
+
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     // openBg commands clears the graphics stack.
     graphics.clearStack();
@@ -665,6 +677,8 @@ struct Grp_openBg_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string fileName, int effectNum,
                   Rect srcRect, Point destPt, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
+
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     // openBg commands clears the graphics stack.
     graphics.clearStack();
@@ -727,6 +741,7 @@ struct Grp_openBg_4 : public RLOp_Void_13<
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     // openBg commands clears the graphics stack.
     graphics.clearStack();
@@ -1037,6 +1052,7 @@ struct Grp_zoom : public RLOp_Void_5<
   void operator()(RLMachine& machine, Rect frect, Rect trect, int srcDC,
                   Rect drect, int time) {
     GraphicsSystem& gs = machine.system().graphics();
+    gs.setGraphicsBackground(BACKGROUND_DC0);
 
     LongOperation* zoomOp =
       new ZoomLongOperation(

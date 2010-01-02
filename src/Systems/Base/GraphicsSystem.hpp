@@ -125,6 +125,12 @@ enum GraphicsUpdateType {
   GUT_MOUSE_MOTION
 };
 
+// Which type of mutually exclusive background should we display?
+enum GraphicsBackgroundType {
+  BACKGROUND_DC0,
+  BACKGROUND_HIK
+};
+
 // -----------------------------------------------------------------------
 
 /**
@@ -179,6 +185,8 @@ class GraphicsSystem : public EventListener {
 
   DCScreenUpdateMode screenUpdateMode() const { return screen_update_mode_; }
   virtual void setScreenUpdateMode(DCScreenUpdateMode u);
+
+  void setGraphicsBackground(GraphicsBackgroundType t) { background_type_ = t; }
 
   System& system() { return system_; }
 
@@ -456,9 +464,6 @@ class GraphicsSystem : public EventListener {
    */
   void renderObjects(std::ostream* tree);
 
-  // Renders either the surface returned from getHaikei() or the HIK script.
-  void renderHaikei(std::ostream* tree);
-
   /**
    * Creates rendering data for a graphics object from a G00, PDT or ANM file.
    *
@@ -538,6 +543,9 @@ class GraphicsSystem : public EventListener {
 
   /// Current screen update mode
   DCScreenUpdateMode screen_update_mode_;
+
+  /// Whether we display HIK or DC0.
+  GraphicsBackgroundType background_type_;
 
   /// Flag set to redraw the screen NOW
   bool screen_needs_refresh_;
