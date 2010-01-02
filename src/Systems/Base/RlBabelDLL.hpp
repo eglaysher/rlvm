@@ -33,6 +33,7 @@
 #include "Systems/Base/Rect.hpp"
 
 #include <boost/shared_ptr.hpp>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
