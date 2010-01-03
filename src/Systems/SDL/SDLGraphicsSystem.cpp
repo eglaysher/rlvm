@@ -196,13 +196,15 @@ void SDLGraphicsSystem::redrawLastFrame() {
 // -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::drawCursor() {
-  boost::shared_ptr<MouseCursor> cursor;
-  if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
-    cursor = currentCursor();
-  if (cursor) {
-    Point hotspot = cursorPos();
-    Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
-    cursor->renderHotspotAt(hotspot);
+  if (useCustomCursor()) {
+    boost::shared_ptr<MouseCursor> cursor;
+    if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
+      cursor = currentCursor();
+    if (cursor) {
+      Point hotspot = cursorPos();
+      Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
+      cursor->renderHotspotAt(hotspot);
+    }
   }
 }
 

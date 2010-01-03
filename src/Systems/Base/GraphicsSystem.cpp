@@ -253,7 +253,7 @@ void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u) {
 
 int GraphicsSystem::useCustomCursor() {
   return use_custom_mouse_cursor_ &&
-    system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").exists();
+      system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").to_string("") != "";
 }
 
 // -----------------------------------------------------------------------

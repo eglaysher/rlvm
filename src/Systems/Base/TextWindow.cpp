@@ -386,8 +386,10 @@ void TextWindow::setNameSpacingBetweenCharacters(
 // -----------------------------------------------------------------------
 
 void TextWindow::setNameboxPadding(const std::vector<int>& pos_data) {
-  horizontal_namebox_padding_ = pos_data.at(0);
-  vertical_namebox_padding_ = pos_data.at(1);
+  if (pos_data.size() >= 1)
+    horizontal_namebox_padding_ = pos_data.at(0);
+  if (pos_data.size() >= 2)
+    vertical_namebox_padding_ = pos_data.at(1);
 }
 
 // -----------------------------------------------------------------------
