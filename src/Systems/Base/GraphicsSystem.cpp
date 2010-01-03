@@ -398,7 +398,17 @@ void GraphicsSystem::endFrame() { }
 
 void GraphicsSystem::refresh(std::ostream* tree) {
   beginFrame();
+  drawFrame(tree);
+  endFrame();
+}
 
+boost::shared_ptr<Surface> GraphicsSystem::renderToSurface() {
+  beginFrame();
+  drawFrame(NULL);
+  return endFrameToSurface();
+}
+
+void GraphicsSystem::drawFrame(std::ostream* tree) {
   switch (background_type_) {
     case BACKGROUND_DC0: {
       // Display DC0
@@ -430,14 +440,7 @@ void GraphicsSystem::refresh(std::ostream* tree) {
   // Render text
   if (!interfaceHidden())
     system().text().render(tree);
-
-  endFrame();
 }
-
-// -----------------------------------------------------------------------
-
-boost::shared_ptr<Surface> GraphicsSystem::renderToSurfaceWithBg(
-  boost::shared_ptr<Surface> bg) { return boost::shared_ptr<Surface>(); }
 
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   if (hik_script_ && background_type_ == BACKGROUND_HIK)

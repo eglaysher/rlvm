@@ -68,11 +68,9 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
     graphics.setHikScript(NULL);
     graphics.setGraphicsBackground(BACKGROUND_HIK);
 
-    boost::shared_ptr<Surface> before =
-      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
     graphics.getHaikei()->fill(RGBAColour::Clear());
-    boost::shared_ptr<Surface> after =
-      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
     LongOperation* effect =
         EffectFactory::buildFromSEL(machine, after, before, sel);
@@ -98,8 +96,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
     } else if (iends_with(path.string(), "hik")) {
       graphics.setHikScript(new HIKScript(system, path));
     } else {
-      boost::shared_ptr<Surface> before =
-          graphics.renderToSurfaceWithBg(graphics.getDC(0));
+      boost::shared_ptr<Surface> before = graphics.renderToSurface();
       boost::shared_ptr<Surface> source(
           graphics.loadSurfaceFromFile(machine, filename));
       boost::shared_ptr<Surface> haikei = graphics.getHaikei();
@@ -107,8 +104,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
                             source->rect(),
                             source->rect(),
                             255, true);
-      boost::shared_ptr<Surface> after =
-          graphics.renderToSurfaceWithBg(graphics.getDC(0));
+      boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
       LongOperation* effect =
           EffectFactory::buildFromSEL(machine, after, before, sel);
@@ -148,11 +144,11 @@ struct Bgr_bgrMulti_1 : public RLOp_Void_3<
   void operator()(RLMachine& machine, string filename, int effectNum,
                   BgrMultiCommand::type commands) {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setGraphicsBackground(BACKGROUND_HIK);
 
     // Get the state of the world before we do any processing.
-    shared_ptr<Surface> before =
-      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    shared_ptr<Surface> before = graphics.renderToSurface();
+
+    graphics.setGraphicsBackground(BACKGROUND_HIK);
 
     // May need to use current background.
     if (filename == "???")
@@ -198,13 +194,9 @@ struct Bgr_bgrMulti_1 : public RLOp_Void_3<
       }
     }
 
-    // Maybe load DC1 to DC0
+    graphics.clearAndPromoteObjects();
 
-    // Promote the objects? Not sure how bgr interacts with the object layer!
-    // graphics.clearAndPromoteObjects();
-
-    shared_ptr<Surface> after =
-      graphics.renderToSurfaceWithBg(graphics.getDC(0));
+    shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* effect =
         EffectFactory::buildFromSEL(machine, after, before, effectNum);
     machine.pushLongOperation(effect);

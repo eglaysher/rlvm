@@ -79,6 +79,10 @@ class TestGraphicsSystem : public GraphicsSystem {
       int destX, int destY, int dest_width, int dest_height,
       int alpha = 255);
 
+  virtual boost::shared_ptr<Surface> endFrameToSurface() {
+    return boost::shared_ptr<Surface>();
+  }
+
   // Needed because of covariant issues.
   MockSurface& getMockDC(int dc);
 

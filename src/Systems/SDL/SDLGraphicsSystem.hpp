@@ -81,9 +81,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
   void redrawLastFrame();
   void drawCursor();
 
-  boost::shared_ptr<Surface> renderToSurfaceWithBg(
-      boost::shared_ptr<Surface> bg);
-  boost::shared_ptr<Surface> endFrameToSurface();
+  virtual boost::shared_ptr<Surface> endFrameToSurface();
 
   virtual void executeGraphicsSystem(RLMachine& machine);
 

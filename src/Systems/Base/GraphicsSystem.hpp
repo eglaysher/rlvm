@@ -382,6 +382,7 @@ class GraphicsSystem : public EventListener {
 
   virtual void beginFrame();
   virtual void endFrame();
+  virtual boost::shared_ptr<Surface> endFrameToSurface() = 0;
 
   /**
    * Performs a full redraw of the screen; blitting dc0 to the screen,
@@ -395,10 +396,7 @@ class GraphicsSystem : public EventListener {
    *             the passed in ostream. Usually NULL.
    */
   void refresh(std::ostream* tree);
-
-  virtual boost::shared_ptr<Surface> renderToSurfaceWithBg(
-    boost::shared_ptr<Surface> bg);
-
+  boost::shared_ptr<Surface> renderToSurface();
 
   /**
    * Called from the game loop; Does everything that's needed to keep
@@ -531,6 +529,8 @@ class GraphicsSystem : public EventListener {
     screen_size_ = size;
     screen_rect_ = Rect(Point(0, 0), size);
   }
+
+  void drawFrame(std::ostream* tree);
 
  private:
   /// Default grp name (used in grp* and rec* functions where filename

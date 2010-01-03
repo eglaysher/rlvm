@@ -124,30 +124,6 @@ void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
 
 // -----------------------------------------------------------------------
 
-// TODO(erg): This method name no longer makes sense. It should either be
-// renamed to DC0 or should not take |bg| at all and someone somewhere else
-// should modify dc0.
-boost::shared_ptr<Surface> SDLGraphicsSystem::renderToSurfaceWithBg(
-  boost::shared_ptr<Surface> bg) {
-  beginFrame();
-
-  // Display the Haikei behind everything.
-  getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
-
-  // Display DC0
-  bg->renderToScreen(screenRect(), screenRect(), 255);
-
-  renderObjects(NULL);
-
-  // Render text
-  if (!interfaceHidden())
-    system().text().render(NULL);
-
-  return endFrameToSurface();
-}
-
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::endFrame() {
   FinalRenderers::iterator it = renderer_begin();
   FinalRenderers::iterator end = renderer_end();

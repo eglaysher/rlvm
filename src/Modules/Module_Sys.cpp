@@ -308,13 +308,12 @@ struct FadeGraphics : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(dc0);
+    shared_ptr<Surface> before = graphics.renderToSurface();
 
     // Clear all graphics
     graphics.reset();
 
-    shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(dc0);
+    shared_ptr<Surface> after = graphics.renderToSurface();
     // Now we push a LongOperation on top of the stack; when this
     // ends, we'll be at SEEN_MENU.
     LongOperation* effect =
@@ -333,12 +332,12 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
 
   // Render the screen as is.
   shared_ptr<Surface> dc0 = graphics.getDC(0);
-  shared_ptr<Surface> before = graphics.renderToSurfaceWithBg(dc0);
+  shared_ptr<Surface> before = graphics.renderToSurface();
 
   // Clear everything
   machine.localReset();
 
-  shared_ptr<Surface> after = graphics.renderToSurfaceWithBg(dc0);
+  shared_ptr<Surface> after = graphics.renderToSurface();
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").to_int();

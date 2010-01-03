@@ -308,9 +308,7 @@ bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  shared_ptr<Surface> dc0 = graphics.getDC(0);
-  shared_ptr<Surface> currentWindow =
-      graphics.renderToSurfaceWithBg(dc0);
+  shared_ptr<Surface> currentWindow = graphics.renderToSurface();
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
@@ -332,13 +330,12 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  shared_ptr<Surface> dc0 = graphics.getDC(0);
-  shared_ptr<Surface> currentWindow =
-      graphics.renderToSurfaceWithBg(dc0);
+  shared_ptr<Surface> currentWindow = graphics.renderToSurface();
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
+  shared_ptr<Surface> dc0 = graphics.getDC(0);
   dc0->fill(RGBAColour::Black());
 
   machine.pushLongOperation(new LoadingGame(slot));
