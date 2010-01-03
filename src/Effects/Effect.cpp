@@ -114,13 +114,3 @@ BlitAfterEffectFinishes::BlitAfterEffectFinishes(
 // -----------------------------------------------------------------------
 
 BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
-
-// -----------------------------------------------------------------------
-
-void decorateEffectWithBlit(LongOperation*& lop,
-                            boost::shared_ptr<Surface> src,
-                            boost::shared_ptr<Surface> dst) {
-  BlitAfterEffectFinishes* blit =
-    new BlitAfterEffectFinishes(lop, src, dst, src->rect(), src->rect());
-  lop = blit;
-}

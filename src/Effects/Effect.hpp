@@ -178,19 +178,4 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
   ~BlitAfterEffectFinishes();
 };
 
-/**
- * Takes a normal Effect and decorates it with the
- * BlitAfterEffectFinishes, so that after the Effect has run, it will
- * do the final blit.
- *
- * @relates BlitAfterEffectFinishes
- * @param[in,out] lop LongOperation to decorate
- * @param src
- * @param dst
- */
-void decorateEffectWithBlit(LongOperation*& lop,
-                            boost::shared_ptr<Surface> src,
-                            boost::shared_ptr<Surface> dst);
-// @}
-
 #endif  // SRC_EFFECTS_EFFECT_HPP_

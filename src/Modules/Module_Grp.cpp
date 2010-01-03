@@ -314,7 +314,6 @@ struct Grp_display_1
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     graphics.addGraphicsStackFrame(GRP_DISPLAY)
       .setSourceCoordinates(src)
@@ -322,17 +321,18 @@ struct Grp_display_1
       .setTargetCoordinates(dest)
       .setOpacity(opacity);
 
+    shared_ptr<Surface> before = graphics.renderToSurface();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     loadDCToDC1(graphics, dc, src, dest, opacity);
+    blitDC1toDC0(machine);
 
     // Promote the objects
     graphics.clearAndPromoteObjects();
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
+    shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+        EffectFactory::buildFromSEL(machine, after, before, effectNum);
     machine.pushLongOperation(lop);
   }
 };
@@ -357,7 +357,6 @@ struct Grp_display_3
   void operator()(RLMachine& machine, int dc, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     graphics.addGraphicsStackFrame(GRP_DISPLAY)
       .setSourceDC(dc)
@@ -365,17 +364,18 @@ struct Grp_display_3
       .setTargetCoordinates(dest)
       .setOpacity(opacity);
 
+    shared_ptr<Surface> before = graphics.renderToSurface();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     loadDCToDC1(graphics, dc, srcRect, dest, opacity);
+    blitDC1toDC0(machine);
 
     // Promote the objects
     graphics.clearAndPromoteObjects();
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
+    shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+        EffectFactory::buildFromSEL(machine, after, before, effectNum);
     machine.pushLongOperation(lop);
   }
 };
@@ -405,7 +405,6 @@ struct Grp_display_4
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     graphics.addGraphicsStackFrame(GRP_DISPLAY)
       .setSourceDC(dc)
@@ -413,18 +412,19 @@ struct Grp_display_4
       .setTargetCoordinates(dest)
       .setOpacity(opacity);
 
+    shared_ptr<Surface> before = graphics.renderToSurface();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     loadDCToDC1(graphics, dc, srcRect, dest, opacity);
+    blitDC1toDC0(machine);
 
     // Promote the objects
     graphics.clearAndPromoteObjects();
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
-    LongOperation* effect = EffectFactory::build(machine, dc1, dc0, time,
+    shared_ptr<Surface> after = graphics.renderToSurface();
+    LongOperation* effect = EffectFactory::build(machine, after, before, time,
                                           style, direction, interpolation,
                                           xsize, ysize, a, b, c);
-    decorateEffectWithBlit(effect, dc1, dc0);
     machine.pushLongOperation(effect);
   }
 };
@@ -455,6 +455,7 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
+    shared_ptr<Surface> before = graphics.renderToSurface();
     graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     graphics.addGraphicsStackFrame(GRP_OPEN)
@@ -465,15 +466,13 @@ struct Grp_open_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
       .setMask(use_alpha_);
 
     loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
+    blitDC1toDC0(machine);
 
     graphics.clearAndPromoteObjects();
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
+    shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, dc1, dc0, effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
+        EffectFactory::buildFromSEL(machine, after, before, effectNum);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();
   }
@@ -509,7 +508,6 @@ struct Grp_open_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string filename, int effectNum,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setGraphicsBackground(BACKGROUND_DC0);
 
     graphics.addGraphicsStackFrame(GRP_OPEN)
       .setFilename(filename)
@@ -518,18 +516,19 @@ struct Grp_open_3 : public RLOp_Void_5<
       .setOpacity(opacity)
       .setMask(use_alpha_);
 
+    shared_ptr<Surface> before = graphics.renderToSurface();
+    graphics.setGraphicsBackground(BACKGROUND_DC0);
+
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
     loadImageToDC1(machine, filename, srcRect, dest, opacity, use_alpha_);
+    blitDC1toDC0(machine);
 
     graphics.clearAndPromoteObjects();
 
-    // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, dc1, dc0,
+    shared_ptr<Surface> after = graphics.renderToSurface();
+    LongOperation* lop = EffectFactory::buildFromSEL(machine, after, before,
                                                      effectNum);
-    decorateEffectWithBlit(lop, dc1, dc0);
     machine.pushLongOperation(lop);
     machine.system().text().hideAllTextWindows();
   }
@@ -950,13 +949,12 @@ struct Grp_fade_7 : public RLOp_Void_3<
       // FIXME: this needs checking for sanity of implementation, lack
       // of memory leaks, correct functioning in the presence of
       // objects, etc.
-      shared_ptr<Surface> dc0 = graphics.getDC(0);
-      shared_ptr<Surface> tmp(dc0->clone());
-      tmp->fill(colour, rect);
+      shared_ptr<Surface> before = graphics.renderToSurface();
+      graphics.getDC(0)->fill(colour, rect);
+      shared_ptr<Surface> after = graphics.renderToSurface();
       LongOperation* lop =
-        EffectFactory::build(machine, tmp, dc0, time, 0, 0,
+        EffectFactory::build(machine, after, before, time, 0, 0,
                              0, 0, 0, 0, 0, 0);
-      decorateEffectWithBlit(lop, tmp, dc0);
       machine.pushLongOperation(lop);
     }
   }
