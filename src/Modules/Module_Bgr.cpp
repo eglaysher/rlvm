@@ -138,7 +138,7 @@ typedef Argc_T<
     Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>
     > > BgrMultiCommand;
 
-struct Bgr_bgrMulti_1 : public RLOp_Void_3<
+struct bgrMulti_1 : public RLOp_Void_3<
   StrConstant_T, IntConstant_T, BgrMultiCommand> {
  public:
   void operator()(RLMachine& machine, string filename, int effectNum,
@@ -203,6 +203,15 @@ struct Bgr_bgrMulti_1 : public RLOp_Void_3<
   }
 };
 
+struct bgrSetYOffset : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int offset) {
+    HIKScript* script = machine.system().graphics().getHikScript();
+    if (script) {
+      script->set_y_offset(offset);
+    }
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -214,5 +223,7 @@ BgrModule::BgrModule()
   addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
 
   addUnsupportedOpcode(100, 0, "bgrMulti");
-  addOpcode(100, 1, "bgrMulti", new Bgr_bgrMulti_1);
+  addOpcode(100, 1, "bgrMulti", new bgrMulti_1);
+
+  addOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
 }

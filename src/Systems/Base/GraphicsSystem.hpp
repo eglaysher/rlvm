@@ -235,6 +235,7 @@ class GraphicsSystem : public EventListener {
   // Sets the current hik script. GraphicsSystem takes ownership, freeing the
   // current HIKScript if applicable. |script| can be NULL.
   void setHikScript(HIKScript* script);
+  HIKScript* getHikScript() const { return hik_script_.get(); }
 
   // -----------------------------------------------------------------------
 

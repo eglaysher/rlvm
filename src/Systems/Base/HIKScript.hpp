@@ -40,9 +40,6 @@ class System;
 class Surface;
 
 // Class that parses and executes HIK files.
-//
-// Note: Currently this can only deal with two HIK files from planetarian and
-// they are checked for by name.
 class HIKScript {
  public:
   HIKScript(System& system, const boost::filesystem::path& file);
@@ -55,6 +52,11 @@ class HIKScript {
 
   void render(std::ostream* os);
 
+  // RL bytecode controlled offsets from the top left corner of the source
+  // image.
+  void set_y_offset(int offset) { y_offset_ = offset; }
+
+ private:
   struct Record {
     Point top_offset;
 
@@ -80,6 +82,9 @@ class HIKScript {
   // Time when this HIK script was loaded (in ms since startup). Used for
   // animation.
   int creation_time_;
+
+  // Bytecode controllable offset.
+  int y_offset_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_HIKSCRIPT_HPP_
