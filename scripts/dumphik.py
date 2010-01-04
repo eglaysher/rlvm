@@ -13,6 +13,11 @@ def read_string(f):
   return struct.unpack(format_str, f.read(length))
 
 property_formats = {
+  10100: lambda f: struct.unpack("i", f.read(0x4)),
+  10101: lambda f: struct.unpack("i", f.read(0x4)),
+  10102: lambda f: struct.unpack("i", f.read(0x4)),
+  10103: lambda f: struct.unpack("ii", f.read(0x8)),
+  20000: lambda f: struct.unpack("i", f.read(0x4)),
   20001: lambda f: struct.unpack("i", f.read(0x4)),
   20100: read_string,
   20101: lambda f: struct.unpack("ii", f.read(0x8)),
@@ -47,15 +52,17 @@ if len(sys.argv) != 3:
   exit(-1)
 
 with open(sys.argv[1], "rb") as f:
-  # Get the header but don't do anything interesting with it yet.
-  header = f.read(0x30)
+  # Read past the file magic
+  f.read(0x8)
 
-  # TODO(erg): This value may not be the number of entries! See LEAF.hik in ALMA.
-  entries = struct.unpack("i", f.read(0x4))[0]
-  for i in range(entries):
+  while True:
     record = [ ]
 
-    property_id = struct.unpack("i", f.read(0x4))[0]
+    raw_property = f.read(0x4)
+    if raw_property == '':
+      break
+
+    property_id = struct.unpack("i", raw_property)[0]
     while property_id != -1:
       if property_id in property_formats:
         record.append([property_id, property_formats[property_id](f)])

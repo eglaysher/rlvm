@@ -7,13 +7,7 @@ import json
 import struct
 import sys
 
-# TODO(erg): THIS HEADER ISN'T THE SAME IN ALL HIK FILES. IT WAS CRIBBED FROM
-# BG26o.HIK in PLANETARIAN WHICH MEANS THIS SCRIPT PROBABLY ONLY WORKS WITH
-# THAT FILE.
-HIK_HEADER = (
-  "10270000102700007427000001000000"
-  "75270000000000007627000000000000"
-  "772700002003000058020000204e0000").decode('hex')
+HIK_HEADER = "1027000010270000".decode('hex')
 
 def write_property(output, property):
   for x in property:
@@ -34,7 +28,6 @@ with open(sys.argv[1], "rb") as input:
   with open(sys.argv[2], "wb") as output:
     output.write(HIK_HEADER)
 
-    output.write(struct.pack("i", len(data)))
     for record in data:
       for entry in record:
         property = int(entry[0])
