@@ -73,7 +73,10 @@ Please report bugs and discrepancies to <glaysher at umich dot edu>.
 You will need the following libraries/utilities:
 
 - The scons build system
-- boost 1.35 or higher
+- boost 1.40 or higher (1.35 has a subtle corruption bug; if you are
+  upgrading from a copy of rlvm 0.7 that was compiled with 1.35, you may
+  need to delete your save files. My Ubuntu packages and Mac applications
+  did not use 1.35 for rlvm 0.7.)
 - SDL (and optionally, SDL_image, and SDL_mixer, though there are copies
   included in the source distribution if you don't already have them
   installed.)
