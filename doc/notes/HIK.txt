@@ -1,49 +1,43 @@
 A description of the HIK animation format for RealLive
 ------------------------------------------------------
 
-I only have the HIK files for ALMA and Planetarian. When I say "always," I mean
-it in the context of those two games.
+A HIK file is an animation format that can be thought of as a nested set of
+collections. The basic format of the HIK file is a list of key value pairs,
+where the key is a five digit integer. The first digit describes which level
+off the hierarchy we're describing:
 
-Things to note:
-- It looks like most atoms are optional? Look at ALMA's BG32_NOISE, which has 3
-  records where the final two only have five properties each.
-- dumphik appears to be able to read all the hik files in ALMA and planetarian
-  EXCEPT ALMA's MAD_ANM.hik, which is the animation of Madoka at the end of
-  ALMA'S OP. I have no idea what's going on in this file, and it may just
-  invalidate all above assumptions. There appear to be multiple copies of
-  several atoms. WTF.
+1: Top level information
+2: Per layer information
+3: Per ????? information (always only 1 entry so far...)
+4: Per frame information
 
--------------------------------------------------------------------------
+The key 10000 is special and I believe is treated like file magic. Otherwise,
+20000, 30000 and 40000 describe the number of entries at their level.
 
-Byte 0x00 through 0x08 : The integer values 10000 twice. I assume this is file
-                         magic.
+I suspect that the keys ?0001 are deliminators between records and that their
+value is always 1. (Hence why there is no 10001 record in any HIK file I've
+examined).
 
-A sequence of key value pairs (I am not sure if these are part of the header or
-the first record):
+Top level layer information
+---------------------------
 
+10000 : 10000
+      > Suspect to be file magic.
 10100 : <int> (always 1 so far)
 10101 : <int> (always 0 so far)
 10102 : <int> (always 0 so far)
 10103 : <int> <int>
       > Size of the HIK layer, probably.
 
-(This might be part of the header or the first record--not sure. Used to think
-this was the number of records below, but that's wrong. See the majority of
-files in ALMA...)
+Per layer information
+---------------------
 
 20000 : <int>
-      > Used to think that this was the number of records in a hik file; then I
-      > didn't, and now I suspect that it is, but my definition of a record is
-      > wrong. Regardless, this is 1 in ALMA's EV0703.hik (which has one layer
-      > with five animated images) and 4 in planetarian's hik files (which have
-      > four images composited together). Random idea: a 20001 atom is actually
-      > the deliminator between records?
-
-A record consists of a sequence of atoms which are key value pairs, described
-below:
-
-20001 : <int>
-      > Usually "1". No visible differences when I tried "0" or "2".
+      > Number of layers 
+20001 : 1
+      > Start of new layer. (Value probably doesn't matter; no visible
+      > differences when I tried "0" or "2" during a previous experiment with
+      > Planetarian).
 20100 : <size of string including NULL> <NULL terminated character string>
 20101 : <int> <int>
       > Appears to be an offset from the top left corner of the screen to where
@@ -74,15 +68,18 @@ below:
 21203 : <int>
 
 21301 : <int>
-      > 1 if we should use the clip area. 
+      > 1 if we should use the clip area. Note how this is backwards from how
+      > things usually are. Maybe I'm wrong here?
 21300 : <int> <int> <int> <int>
       > Defines the output clip area.
 
+Per ????? information (always only 1 entry so far...)
+-----------------------------------------------------
+
 30000 : <int>
-      > In EV0703.hik, this is 1. Same in Planetarian's files. When setting
-      > this to 0 in EV0703.hik, nothing gets displayed. I suspect this
-      > controls whether the image is outputted.
+      > Number of ????? in the ??????
 30001 : <int>
+      > Start of a new ?????
 
 30100 : <int>
       > 1 if we should perform some sort of multiframe animation.  This is used
@@ -93,17 +90,18 @@ below:
       > Not sure; this doesn't appear to be the time a frame should be on
       > screen; changing it to 1000 doesn't increase frame length.
 
+Per frame information
+---------------------
+
 40000 : <int>
-      > Whether to use a source file.
+      > Number of frames
 40101 : 31 <int>s.
-      > No idea at all.
+      > No idea at all. Probably the start of a new frame.
 40102 : <int>
       > Image Opacity in the range 0-255.
 40103 : <int> <int>              ; 0 0
       > Some sort of offset; Weirdness happens when setting this to something
       > other than [0, 0]
 40100 : <size of string including NULL> <NULL terminated character string>
-      > Source g00 image
-
-Terminated with "-1 <some number>". <some number> is 100 in all the planetarian
-files. Done in all files except for MAD_ANM.hik?
+      : <int> <int>
+      > Source g00 image. No idea what the two ints are.

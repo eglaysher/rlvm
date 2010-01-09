@@ -57,7 +57,35 @@ class HIKScript {
   void set_y_offset(int offset) { y_offset_ = offset; }
 
  private:
-  struct Record {
+  // The contents of the 40000 keys which define an individual frame.
+  struct Frame {
+    int opacity;
+    std::string image;
+    boost::shared_ptr<Surface> surface;
+
+    int grp_pattern;
+    int frame_length_ms;
+  };
+
+  // The contents of the 30000 keys. I used to call this structure Unkowns;
+  // "Animation" is a tentative name as it contains individual Frames that are
+  // played in sequence.
+  struct Animation {
+    int use_multiframe_animation;
+
+    // The number of frames as reported by the HIK file. Used for error
+    // checking.
+    int number_of_frames;
+
+    // All frames to display.
+    std::vector<Frame> frames;
+
+    // The sum of all |frame_length_ms| in frames.
+    int total_time;
+  };
+
+  // The contents of the 20000 keys.
+  struct Layer {
     Point top_offset;
 
     bool use_scrolling;
@@ -69,15 +97,27 @@ class HIKScript {
     bool use_clip_area;
     Rect clip_area;
 
-    int opacity;
-    std::string image;
-    boost::shared_ptr<Surface> surface;
+    // Number of unknowns as reported by the HIK file on disk.
+    int number_of_animations;
+
+    std::vector<Animation> animations;
   };
+
+  // Returns the current structure being operated on, throwing on logic errors.
+  Animation& currentAnimation();
+  Layer& currentLayer();
+  Frame& currentFrame();
 
   System& system_;
 
   // Each graphics component in the HIK script.
-  std::vector<Record> records_;
+  std::vector<Layer> layers_;
+
+  // The number of layers as reported by the HIK file. Used for error checking.
+  int number_of_layers_;
+
+  // Size of the hik graphic as reported by the hik.
+  Size size_of_hik_;
 
   // Time when this HIK script was loaded (in ms since startup). Used for
   // animation.

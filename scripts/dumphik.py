@@ -42,7 +42,7 @@ property_formats = {
   40101: lambda f: struct.unpack("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", f.read(0x7c)),
   40102: lambda f: struct.unpack("i", f.read(0x4)),
   40103: lambda f: struct.unpack("ii", f.read(0x8)),
-  40100: read_string,
+  40100: lambda f: [read_string(f), struct.unpack("ii", f.read(0x8))],
 }
 
 results = [ ]

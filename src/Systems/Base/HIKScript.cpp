@@ -88,160 +88,200 @@ void HIKScript::loadHikFile(const fs::path& file) {
     throw rlvm::Exception(oss.str());
   }
 
-  // Skip the header for now.
-  int num_entries = read_i32(hik_data.get() + 0x30);
-  const char* curpointer = hik_data.get() + 0x34;
+  const char* curpointer = hik_data.get();
+  const char* endpointer = hik_data.get() + file_size;
+  int a = consume_i32(curpointer);
+  int b = consume_i32(curpointer);
+  if (a != 10000 || b != 10000) {
+    ostringstream oss;
+    oss << "HIK Parse error: Invalid magic";
+    throw std::runtime_error(oss.str());
+  }
 
-  // Read a property id.
-  bool eof = false;
-  while (curpointer < hik_data.get() + file_size) {
-    Record record;
-
+  while (curpointer < endpointer) {
     int property_id = consume_i32(curpointer);
-    while (property_id != -1) {
-      switch (property_id) {
-        case 20001:
-          // This may be |use_top_offet_|?
-          consume_i32(curpointer);
-          break;
-        case 20100:
-          consume_string(curpointer);
-          break;
-        case 20101: {
-          int x = consume_i32(curpointer);
-          int y = consume_i32(curpointer);
-          record.top_offset = Point(x, y);
-          break;
-        }
-        case 21000: {
-          consume_i32(curpointer);
-          break;
-        }
-        case 21001: {
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          break;
-        }
-        case 21002: {
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          break;
-        }
-        case 21003: {
-          consume_i32(curpointer);
-          break;
-        }
-        case 21100: {
-          consume_i32(curpointer);
-          break;
-        }
-        case 21101: {
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          break;
-        }
-        case 21200: {
-          record.use_scrolling = consume_i32(curpointer);
-          break;
-        }
-        case 21201: {
-          int x = consume_i32(curpointer);
-          int y = consume_i32(curpointer);
-          record.start_point = Point(x, y);
-          x = consume_i32(curpointer);
-          y = consume_i32(curpointer);
-          record.end_point = Point(x, y);
-          break;
-        }
-        case 21202: {
-          record.x_scroll_time_ms = consume_i32(curpointer);
-          record.y_scroll_time_ms = consume_i32(curpointer);
-          break;
-        }
-        case 21203: {
-          consume_i32(curpointer);
-          break;
-        }
-        case 21301: {
-          record.use_clip_area = consume_i32(curpointer);
-          break;
-        }
-        case 21300: {
-          // GRP or REC?
-          int x = consume_i32(curpointer);
-          int y = consume_i32(curpointer);
-          int x2 = consume_i32(curpointer);
-          int y2 = consume_i32(curpointer);
-          record.clip_area = Rect::GRP(x, y, x2, y2);
-          break;
-        }
-        case 30000:
-        case 30001:
-        case 30100:
-        case 30101:
-        case 30102: {
-          consume_i32(curpointer);
-          break;
-        }
-        case 40000: {
-          consume_i32(curpointer);
-          break;
-        }
-        case 40101: {
-          for (int i = 0; i < 31; ++i) {
-            consume_i32(curpointer);
-          }
-          break;
-        }
-        case 40102: {
-          record.opacity = consume_i32(curpointer);
-          break;
-        }
-        case 40103: {
-          consume_i32(curpointer);
-          consume_i32(curpointer);
-          break;
-        }
-        case 40100: {
-          record.image = consume_string(curpointer);
-          record.surface = system_.graphics().loadNonCGSurfaceFromFile(
-              record.image);
-          if (!record.surface) {
-            ostringstream oss;
-            oss << "Could not load image " << record.image << " for HIK";
-            throw rlvm::Exception(oss.str());
-          }
-          break;
-        }
-        default: {
-          ostringstream oss;
-          oss << "HIK Parse exception. Unknown id: " << property_id;
-          throw rlvm::Exception(oss.str());
-          break;
-        }
+    switch (property_id) {
+      case 10100:
+      case 10101:
+      case 10102: {
+        consume_i32(curpointer);
+        break;
       }
+      case 10103: {
+        int width = consume_i32(curpointer);
+        int height = consume_i32(curpointer);
+        size_of_hik_ = Size(width, height);
+        break;
+      }
+      case 20000: {
+        number_of_layers_ = consume_i32(curpointer);
+        break;
+      }
+      case 20001: {
+        consume_i32(curpointer);
+        layers_.push_back(Layer());
+        break;
+      }
+      case 20100: {
+        // String name of this layer? We can't make use of this.
+        consume_string(curpointer);
+        break;
+      }
+      case 20101: {
+        int x = consume_i32(curpointer);
+        int y = consume_i32(curpointer);
+        currentLayer().top_offset = Point(x, y);
+        break;
+      }
+      case 21000: {
+        consume_i32(curpointer);
+        break;
+      }
+      case 21001: {
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        break;
+      }
+      case 21002: {
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        break;
+      }
+      case 21003: {
+        consume_i32(curpointer);
+        break;
+      }
+      case 21100: {
+        consume_i32(curpointer);
+        break;
+      }
+      case 21101: {
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        break;
+      }
+      case 21200: {
+        currentLayer().use_scrolling = consume_i32(curpointer);
+        break;
+      }
+      case 21201: {
+        int x = consume_i32(curpointer);
+        int y = consume_i32(curpointer);
+        currentLayer().start_point = Point(x, y);
+        x = consume_i32(curpointer);
+        y = consume_i32(curpointer);
+        currentLayer().end_point = Point(x, y);
+        break;
+      }
+      case 21202: {
+        currentLayer().x_scroll_time_ms = consume_i32(curpointer);
+        currentLayer().y_scroll_time_ms = consume_i32(curpointer);
+        break;
+      }
+      case 21203: {
+        consume_i32(curpointer);
+        break;
+      }
+      case 21301: {
+        currentLayer().use_clip_area = consume_i32(curpointer);
+        break;
+      }
+      case 21300: {
+        // GRP or REC?
+        int x = consume_i32(curpointer);
+        int y = consume_i32(curpointer);
+        int x2 = consume_i32(curpointer);
+        int y2 = consume_i32(curpointer);
+        currentLayer().clip_area = Rect::GRP(x, y, x2, y2);
+        break;
+      }
+      case 30000: {
+        currentLayer().number_of_animations = consume_i32(curpointer);
+        break;
+      }
+      case 30001: {
+        consume_i32(curpointer);
+        currentLayer().animations.push_back(Animation());
+        break;
+      }
+      case 30100: {
+        currentAnimation().use_multiframe_animation = consume_i32(curpointer);
+        break;
+      }
+      case 30101: {
+        consume_i32(curpointer);
+        break;
+      }
+      case 30102: {
+        consume_i32(curpointer);
+        break;
+      }
+      case 40000: {
+        currentAnimation().number_of_frames = consume_i32(curpointer);
+        break;
+      }
+      case 40101: {
+        for (int i = 0; i < 31; ++i) {
+          consume_i32(curpointer);
+        }
 
-      property_id = consume_i32(curpointer);
+        currentAnimation().frames.push_back(Frame());
+        break;
+      }
+      case 40102: {
+        currentFrame().opacity = consume_i32(curpointer);
+        break;
+      }
+      case 40103: {
+        consume_i32(curpointer);
+        consume_i32(curpointer);
+        break;
+      }
+      case 40100: {
+        Frame& frame = currentFrame();
+        frame.image = consume_string(curpointer);
+        frame.surface = system_.graphics().loadNonCGSurfaceFromFile(
+            frame.image);
+        if (!frame.surface) {
+          ostringstream oss;
+          oss << "Could not load image " << frame.image << " for HIK";
+          throw rlvm::Exception(oss.str());
+        }
+        frame.grp_pattern = consume_i32(curpointer);
+        frame.frame_length_ms = consume_i32(curpointer);
+        break;
+      }
+      default: {
+        ostringstream oss;
+        oss << "HIK Parse exception. Unknown id: " << property_id;
+        throw rlvm::Exception(oss.str());
+        break;
+      }
     }
+  }
 
-    // We only work with Planetarian's HIK files right now, which have a 100
-    // here. Other games have a different values.
-    if (consume_i32(curpointer) != 100) {
-      throw rlvm::Exception("HIK Parse exception: Different terminator");
+  // For every Animation, sum up the frame_length_ms.
+  for (std::vector<Layer>::iterator it = layers_.begin();
+       it != layers_.end(); ++it) {
+    for (std::vector<Animation>::iterator jt = it->animations.begin();
+         jt != it->animations.end(); ++jt) {
+      jt->total_time = 0;
+      for (std::vector<Frame>::const_iterator kt = jt->frames.begin();
+           kt != jt->frames.end(); ++kt) {
+        jt->total_time += kt->frame_length_ms;
+      }
     }
-
-    records_.push_back(record);
   }
 
   // Records are in reverse order of what they should be.
-  std::reverse(records_.begin(), records_.end());
+  std::reverse(layers_.begin(), layers_.end());
 
   creation_time_ = system_.event().getTicks();
 }
@@ -252,11 +292,15 @@ void HIKScript::execute(RLMachine& machine) {
 
 void HIKScript::render(std::ostream* tree) {
   int time_since_creation = system_.event().getTicks() - creation_time_;
-  for (std::vector<Record>::const_iterator it = records_.begin();
-       it != records_.end(); ++it) {
+
+  if (tree) {
+    *tree << "  HIK Script:" << endl;
+  }
+
+  for (std::vector<Layer>::const_iterator it = layers_.begin();
+       it != layers_.end(); ++it) {
     // Calculate the source rectangle
 
-    // TODO(erg): Should top_offset only be conditionally added?
     Point dest_point = it->top_offset;
     if (it->use_scrolling) {
       dest_point += it->start_point;
@@ -278,16 +322,71 @@ void HIKScript::render(std::ostream* tree) {
       dest_point += Point(x_difference, y_difference);
     }
 
-    Rect src_rect = it->surface->rect();
-    src_rect = Rect(src_rect.origin() + Size(0, y_offset_), src_rect.size());
-    Rect dest_rect(dest_point, src_rect.size());
-    if (it->use_clip_area)
-      ClipDestination(it->clip_area, src_rect, dest_rect);
+    for (std::vector<Animation>::const_iterator jt = it->animations.begin();
+         jt != it->animations.end(); ++jt) {
+      int frame_to_use = 0;
+      if (jt->use_multiframe_animation) {
+        int ticks_since_sequence_start = time_since_creation % jt->total_time;
 
-    it->surface->renderToScreen(src_rect, dest_rect, it->opacity);
+        // Separate out the remainder here. Need to check since
+        // |ticks_since_sequence_start| may already be 0.
+        while (ticks_since_sequence_start > 0) {
+          ticks_since_sequence_start -=
+              jt->frames.at(frame_to_use).frame_length_ms;
 
-    if (tree) {
-      *tree << "  [" << it->image << "]" << endl;
+          if (ticks_since_sequence_start > 0) {
+            frame_to_use++;
+            if (frame_to_use > jt->frames.size()) {
+              frame_to_use = 0;
+              cerr << "Maybe an impossible situation?";
+            }
+          }
+        }
+      }
+
+      const Frame& frame = jt->frames.at(frame_to_use);
+
+      int pattern_to_use = 0;
+      if (frame.grp_pattern != -1)
+        pattern_to_use = frame.grp_pattern;
+
+      Rect src_rect = frame.surface->getPattern(pattern_to_use).rect;
+      src_rect = Rect(src_rect.origin() + Size(0, y_offset_), src_rect.size());
+      Rect dest_rect(dest_point, src_rect.size());
+      if (it->use_clip_area)
+        ClipDestination(it->clip_area, src_rect, dest_rect);
+
+      frame.surface->renderToScreen(src_rect, dest_rect, frame.opacity);
+
+      if (tree) {
+        *tree << "  [" << frame.image << "]" << endl;
+      }
     }
   }
+}
+
+HIKScript::Layer& HIKScript::currentLayer() {
+  if (layers_.size() == 0) {
+    throw rlvm::Exception("Invalid layer reference");
+  }
+
+  return layers_.back();
+}
+
+HIKScript::Animation& HIKScript::currentAnimation() {
+  Layer& layer = currentLayer();
+  if (layer.animations.size() == 0) {
+    throw rlvm::Exception("Invalid unkowns reference");
+  }
+
+  return layer.animations.back();
+}
+
+HIKScript::Frame& HIKScript::currentFrame() {
+  Animation& animation = currentAnimation();
+  if (animation.frames.size() == 0) {
+    throw rlvm::Exception("Invalid frame reference");
+  }
+
+  return animation.frames.back();
 }
