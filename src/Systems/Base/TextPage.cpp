@@ -68,14 +68,11 @@ class TextTextPageElement : public TextPageElement {
   /// A list of UTF-8 characters to print.
   string list_of_chars_to_print_;
 
-  /// The next_char on the last operation.
-  string next_char_;
-
  public:
   TextTextPageElement();
   virtual bool isTextElement() { return true; }
   virtual void replayElement(TextPage& page, bool is_active_page);
-  void append(const string& c, const string& next_char);
+  void append(const string& c);
 
   virtual TextPageElement* clone() const {
     return new TextTextPageElement(*this);
@@ -94,15 +91,14 @@ void TextTextPageElement::replayElement(TextPage& page, bool is_active_page) {
   // because of empty strings which just set the speaker's name.
   if (list_of_chars_to_print_.size()) {
     printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
-                        list_of_chars_to_print_, next_char_);
+                        list_of_chars_to_print_, "");
   }
 }
 
 // -----------------------------------------------------------------------
 
-void TextTextPageElement::append(const string& c, const string& next_char) {
+void TextTextPageElement::append(const string& c) {
   list_of_chars_to_print_.append(c);
-  next_char_ = next_char;
 }
 
 // -----------------------------------------------------------------------
@@ -184,8 +180,8 @@ void TextPage::replay(bool is_active_page) {
 
 // ------------------------------------------------- [ Public operations ]
 
-bool TextPage::character(const string& current, const string& next) {
-  bool rendered = character_impl(current, next);
+bool TextPage::character(const string& current, const string& rest) {
+  bool rendered = character_impl(current, rest);
 
   if (rendered) {
     if (elements_to_replay_.size() == 0 ||
@@ -193,7 +189,7 @@ bool TextPage::character(const string& current, const string& next) {
       elements_to_replay_.push_back(new TextTextPageElement);
 
     dynamic_cast<TextTextPageElement&>(elements_to_replay_.back()).
-      append(current, next);
+      append(current);
 
     number_of_chars_on_page_++;
   }
@@ -306,8 +302,8 @@ void TextPage::addAction(
 
 // -----------------------------------------------------------------------
 
-bool TextPage::character_impl(const string& c, const string& next_char) {
-  return system_->text().textWindow(window_num_)->character(c, next_char);
+bool TextPage::character_impl(const string& c, const string& rest) {
+  return system_->text().textWindow(window_num_)->character(c, rest);
 }
 
 // -----------------------------------------------------------------------

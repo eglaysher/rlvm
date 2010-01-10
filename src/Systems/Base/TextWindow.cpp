@@ -260,8 +260,10 @@ void TextWindow::setWindowPosition(const vector<int>& pos_data) {
 // -----------------------------------------------------------------------
 
 Size TextWindow::textWindowSize() const {
+  // There is one extra character in each line to accommodate squeezed punctuation.
   return Size((x_window_size_in_chars_ *
-               (default_font_size_in_pixels_ + x_spacing_)),
+               (default_font_size_in_pixels_ + x_spacing_) +
+               default_font_size_in_pixels_),
               (y_window_size_in_chars_ *
                (default_font_size_in_pixels_ + y_spacing_ + ruby_size_)));
 }
@@ -549,7 +551,7 @@ void TextWindow::clearWin() {
 // -----------------------------------------------------------------------
 
 bool TextWindow::character(const std::string& current,
-                             const std::string& next) {
+                           const std::string& rest) {
   // If this text page is already full, save some time and reject
   // early.
   if (isFull())
@@ -559,7 +561,6 @@ bool TextWindow::character(const std::string& current,
 
   if (current != "") {
     int cur_codepoint = codepoint(current);
-    int next_codepoint = codepoint(next);
     bool indent_after_spacing = false;
 
     // But if the last character was a lenticular bracket, we need to indent
@@ -590,25 +591,7 @@ bool TextWindow::character(const std::string& current,
 
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
-    //
-    // If the current character will fit on this line, and it is NOT
-    // in this set, then we should additionally check the next
-    // character.  If that IS in this set and will not fit on the
-    // current line, then we break the line before the current
-    // character instead, to prevent the next character being stranded
-    // at the start of a line.
-    //
-    int char_width = system().text().charWidth(
-        fontSizeInPixels(), cur_codepoint);
-    bool char_will_fit_on_line =
-        text_insertion_point_x_ + char_width + x_spacing_ <=
-        textWindowSize().width();
-    bool next_char_will_fit_on_line =
-        text_insertion_point_x_ + 2 * (char_width + x_spacing_) <=
-        textWindowSize().width();
-    if (!char_will_fit_on_line ||
-        (char_will_fit_on_line && !isKinsoku(cur_codepoint) &&
-         !next_char_will_fit_on_line && isKinsoku(next_codepoint))) {
+    if (mustLineBreak(cur_codepoint, rest)) {
       hardBrake();
 
       if (isFull())
@@ -635,6 +618,51 @@ bool TextWindow::character(const std::string& current,
   last_token_was_name_ = false;
 
   return true;
+}
+
+// -----------------------------------------------------------------------
+
+bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
+  int char_width = system().text().charWidth(fontSizeInPixels(), cur_codepoint);
+  bool cur_codepoint_is_kinsoku = isKinsoku(cur_codepoint);
+  int normal_width =
+      x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_);
+  int extended_width = normal_width + default_font_size_in_pixels_;
+
+  // If this character is a kinsoku, and will squeeze onto this line, don't
+  // break and don't follow any of the further rules.
+  if (cur_codepoint_is_kinsoku &&
+      (text_insertion_point_x_ + char_width <= extended_width)) {
+    return false;
+  }
+
+  // If this character won't fit on the line normally, break.
+  if (text_insertion_point_x_ + char_width + x_spacing_ > normal_width) {
+    return true;
+  }
+
+  // If this character will fit on the line, but the next n characters are
+  // kinsoku characters and one of them won't, then break.
+  if (!cur_codepoint_is_kinsoku && rest != "") {
+    int final_insertion_x = text_insertion_point_x_ + char_width + x_spacing_;
+
+    string::const_iterator cur = rest.begin();
+    string::const_iterator end = rest.end();
+    while (cur != end) {
+      int point = utf8::next(cur, end);
+      if (isKinsoku(point)) {
+        final_insertion_x += char_width + x_spacing_;
+
+        if (final_insertion_x > extended_width) {
+          return true;
+        }
+      } else {
+        break;
+      }
+    }
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------

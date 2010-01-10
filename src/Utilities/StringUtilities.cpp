@@ -177,7 +177,8 @@ void addShiftJISChar(uint16_t c, string& output) {
 
 void printTextToFunction(
   boost::function<void(const string& c, const string& nextChar)> fun,
-  const string& charsToPrint, const string& nextCharForFinal) {
+  const string& charsToPrint,
+  const std::string& nextCharForFinal) {
   // Iterate over each incoming character to display (we do this
   // instead of rendering the entire string so that we can perform
   // indentation, et cetera.)
@@ -187,10 +188,10 @@ void printTextToFunction(
   utf8::next(tmp, end);
   string curChar(cur, tmp);
   for (cur = tmp; tmp != end; cur = tmp) {
+    fun(curChar, string(cur, end));
+
     utf8::next(tmp, end);
-    string next(cur, tmp);
-    fun(curChar, next);
-    curChar = next;
+    curChar = string(cur, tmp);
   }
 
   fun(curChar, nextCharForFinal);

@@ -64,7 +64,7 @@ class TextPage : public boost::noncopyable {
   // Add this character to the most recent text render operation on
   // this page's backlog, and then render it, minding the kinsoku
   // spacing rules.
-  bool character(const std::string& current, const std::string& next);
+  bool character(const std::string& current, const std::string& rest);
 
   // Displays a name. This function will be called by the
   // TextoutLongOperation.
@@ -152,7 +152,7 @@ class TextPage : public boost::noncopyable {
    * @{
    */
 
-  bool character_impl(const std::string& c, const std::string& next_char);
+  bool character_impl(const std::string& c, const std::string& rest);
 
   void name_impl(const std::string& name, const std::string& next_char,
                  bool is_active_page);
