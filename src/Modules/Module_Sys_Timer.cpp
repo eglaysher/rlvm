@@ -154,8 +154,7 @@ struct CmpTimer
 
   int operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();
-    return es.getTimer(layer_, counter).read(es) >
-        numeric_cast<unsigned int>(val);
+    return es.getTimer(layer_, counter).read(es) > val;
   }
 };
 
