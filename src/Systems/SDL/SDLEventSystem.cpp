@@ -40,9 +40,127 @@ using namespace std;
 
 using boost::bind;
 
-// -----------------------------------------------------------------------
-// Private implementation
-// -----------------------------------------------------------------------
+SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
+    : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
+      mouse_inside_window_(true),
+      mouse_pos_(),
+      m_button1State(0),
+      m_button2State(0),
+      last_get_currsor_time_(0),
+      system_(sys),
+      raw_handler_(NULL) {
+}
+
+void SDLEventSystem::executeEventSystem(RLMachine& machine) {
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+      case SDL_KEYDOWN: {
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        else
+          handleKeyDown(machine, event);
+        break;
+      }
+      case SDL_KEYUP: {
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        else
+          handleKeyUp(machine, event);
+        break;
+      }
+      case SDL_MOUSEMOTION: {
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        handleMouseMotion(machine, event);
+        break;
+      }
+      case SDL_MOUSEBUTTONDOWN:
+      case SDL_MOUSEBUTTONUP: {
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        else
+          handleMouseButtonEvent(machine, event);
+        break;
+      }
+      case SDL_QUIT:
+        machine.halt();
+        break;
+      case SDL_ACTIVEEVENT:
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        handleActiveEvent(machine, event);
+        break;
+      case SDL_VIDEOEXPOSE: {
+        machine.system().graphics().forceRefresh();
+        break;
+      }
+    }
+  }
+}
+
+Point SDLEventSystem::getCursorPos() {
+  preventCursorPosSpinning();
+  return mouse_pos_;
+}
+
+void SDLEventSystem::getCursorPos(Point& position, int& button1,
+                                  int& button2) {
+  preventCursorPosSpinning();
+  position = mouse_pos_;
+  button1 = m_button1State;
+  button2 = m_button2State;
+}
+
+void SDLEventSystem::flushMouseClicks() {
+  m_button1State = 0;
+  m_button2State = 0;
+}
+
+unsigned int SDLEventSystem::getTicks() const {
+  return SDL_GetTicks();
+}
+
+void SDLEventSystem::wait(unsigned int milliseconds) const {
+  SDL_Delay(milliseconds);
+}
+
+void SDLEventSystem::injectMouseMovement(RLMachine& machine, const Point& loc) {
+  mouse_pos_ = loc;
+  broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
+}
+
+void SDLEventSystem::injectMouseDown(RLMachine& machine) {
+  m_button1State = 1;
+  m_button2State = 0;
+
+  dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
+                              MOUSE_LEFT, 1));
+}
+
+void SDLEventSystem::injectMouseUp(RLMachine& machine) {
+  m_button1State = 2;
+  m_button2State = 0;
+
+  dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
+                              MOUSE_LEFT, 1));
+}
+
+void SDLEventSystem::preventCursorPosSpinning() {
+  unsigned int newTime = getTicks();
+
+  if ((system_.graphics().screenUpdateMode() !=
+       GraphicsSystem::SCREENUPDATEMODE_MANUAL) &&
+      (newTime - last_get_currsor_time_) < 20) {
+    // Prevent spinning on input. When we're not in manual mode, we don't get
+    // convenient refresh() calls to insert pauses at. Instead, we need to sort
+    // of intuit about what's going on and the easiest way to slow down is to
+    // track when the bytecode keeps spamming us for the cursor.
+    system_.setForceWait(true);
+  }
+
+  last_get_currsor_time_ = newTime;
+}
 
 void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
   switch (event.key.keysym.sym) {
@@ -77,8 +195,6 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
   dispatchEvent(machine, bind(&EventListener::keyStateChanged, _1, code, true));
 }
 
-// -----------------------------------------------------------------------
-
 void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
   switch (event.key.keysym.sym) {
   case SDLK_LSHIFT:
@@ -108,8 +224,6 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
                               false));
 }
 
-// -----------------------------------------------------------------------
-
 void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
   if (mouse_inside_window_) {
     // Handle this somehow.
@@ -119,8 +233,6 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
     broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
   }
 }
-
-// -----------------------------------------------------------------------
 
 void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
                                             SDL_Event& event) {
@@ -159,8 +271,6 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
   }
 }
 
-// -----------------------------------------------------------------------
-
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
   if (event.active.state & SDL_APPINPUTFOCUS) {
     mouse_inside_window_ = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
@@ -172,151 +282,4 @@ void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
     // Force a mouse refresh:
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   }
-}
-
-// -----------------------------------------------------------------------
-// Public implementation
-// -----------------------------------------------------------------------
-
-SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
-  : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
-    mouse_inside_window_(true),
-    mouse_pos_(),
-    m_button1State(0),
-    m_button2State(0),
-    last_get_currsor_time_(0),
-    system_(sys),
-    raw_handler_(NULL) {}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::executeEventSystem(RLMachine& machine) {
-  EventSystem::executeEventSystem(machine);
-
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-    case SDL_KEYDOWN: {
-      if (raw_handler_)
-        raw_handler_->pushInput(event);
-      else
-        handleKeyDown(machine, event);
-      break;
-    }
-    case SDL_KEYUP: {
-      if (raw_handler_)
-        raw_handler_->pushInput(event);
-      else
-        handleKeyUp(machine, event);
-      break;
-    }
-    case SDL_MOUSEMOTION: {
-      if (raw_handler_)
-        raw_handler_->pushInput(event);
-      handleMouseMotion(machine, event);
-      break;
-    }
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP: {
-      if (raw_handler_)
-        raw_handler_->pushInput(event);
-      else
-        handleMouseButtonEvent(machine, event);
-      break;
-    }
-    case SDL_QUIT:
-      machine.halt();
-      break;
-    case SDL_ACTIVEEVENT:
-      if (raw_handler_)
-        raw_handler_->pushInput(event);
-      handleActiveEvent(machine, event);
-      break;
-    case SDL_VIDEOEXPOSE: {
-      machine.system().graphics().forceRefresh();
-      break;
-    }
-    }
-  }
-}
-
-// -----------------------------------------------------------------------
-
-Point SDLEventSystem::getCursorPos() {
-  preventCursorPosSpinning();
-  return mouse_pos_;
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::getCursorPos(Point& position, int& button1,
-                                  int& button2) {
-  preventCursorPosSpinning();
-  position = mouse_pos_;
-  button1 = m_button1State;
-  button2 = m_button2State;
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::flushMouseClicks() {
-  m_button1State = 0;
-  m_button2State = 0;
-}
-
-// -----------------------------------------------------------------------
-
-unsigned int SDLEventSystem::getTicks() const {
-  return SDL_GetTicks();
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::wait(unsigned int milliseconds) const {
-  SDL_Delay(milliseconds);
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::injectMouseMovement(RLMachine& machine, const Point& loc) {
-  mouse_pos_ = loc;
-  broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::injectMouseDown(RLMachine& machine) {
-  m_button1State = 1;
-  m_button2State = 0;
-
-  dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
-                              MOUSE_LEFT, 1));
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::injectMouseUp(RLMachine& machine) {
-  m_button1State = 2;
-  m_button2State = 0;
-
-  dispatchEvent(machine, bind(&EventListener::mouseButtonStateChanged, _1,
-                              MOUSE_LEFT, 1));
-}
-
-// -----------------------------------------------------------------------
-
-void SDLEventSystem::preventCursorPosSpinning() {
-  unsigned int newTime = getTicks();
-
-  if ((system_.graphics().screenUpdateMode() !=
-       GraphicsSystem::SCREENUPDATEMODE_MANUAL) &&
-      (newTime - last_get_currsor_time_) < 20) {
-    // Prevent spinning on input. When we're not in manual mode, we don't get
-    // convenient refresh() calls to insert pauses at. Instead, we need to sort
-    // of intuit about what's going on and the easiest way to slow down is to
-    // track when the bytecode keeps spamming us for the cursor.
-    system_.setForceWait(true);
-  }
-
-  last_get_currsor_time_ = newTime;
 }

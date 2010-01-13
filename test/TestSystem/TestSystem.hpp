@@ -32,14 +32,20 @@
 #include "TestSystem/TestSoundSystem.hpp"
 #include "libReallive/gameexe.h"
 
-
-/**
- * The Test system contains absolutely no input/ouput
- *
- *
- * @return
- */
+// System subclass used for testing.
 class TestSystem : public System {
+ public:
+  explicit TestSystem(const std::string& path_to_gameexe);
+  TestSystem();
+
+  // Implementation of System:
+  virtual void run(RLMachine& machine);
+  virtual TestGraphicsSystem& graphics();
+  virtual EventSystem& event();
+  virtual Gameexe& gameexe();
+  virtual TextSystem& text();
+  virtual SoundSystem& sound();
+
  private:
   Gameexe gameexe_;
 
@@ -47,18 +53,6 @@ class TestSystem : public System {
   TestEventSystem null_event_system;
   TestTextSystem null_text_system;
   TestSoundSystem null_sound_system;
-
- public:
-  explicit TestSystem(const std::string& path_to_gameexe);
-  TestSystem();
-
-  virtual void run(RLMachine& machine);
-
-  virtual TestGraphicsSystem& graphics();
-  virtual EventSystem& event();
-  virtual Gameexe& gameexe();
-  virtual TextSystem& text();
-  virtual SoundSystem& sound();
 };
 
 #endif  // TEST_TESTSYSTEM_TESTSYSTEM_HPP_

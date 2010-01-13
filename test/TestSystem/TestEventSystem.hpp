@@ -32,11 +32,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-// -----------------------------------------------------------------------
-
-/**
- * Provides behaviour for the TestEventSystem.
- */
+// Provides behaviour for the TestEventSystem.
 class EventSystemMockHandler {
  public:
   virtual ~EventSystemMockHandler() {}
@@ -46,31 +42,28 @@ class EventSystemMockHandler {
   virtual unsigned int getTicks() const { return 0; }
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Mock enabled event system. Returned values are controlled by
- * EventSystemMockHandler.
- */
+// Mock enabled event system. Returned values are controlled by
+// EventSystemMockHandler.
 class TestEventSystem : public EventSystem {
  public:
   explicit TestEventSystem(Gameexe& gexe);
   void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
 
+  // Implementation of EventSystem:
   virtual void executeEventSystem(RLMachine& machine);
-  virtual bool shiftPressed() const;
-  virtual bool ctrlPressed() const;
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
-
-  // TODO: This needs to be done to get running luaRlvm with a
-  // TestEventSystem. Among a lot of other things in this class...
+  virtual bool shiftPressed() const;
+  virtual bool ctrlPressed() const;
+  virtual Point getCursorPos() { return Point(0, 0); }
+  virtual void getCursorPos(Point& position, int& button1, int& button2) {}
+  virtual void flushMouseClicks() {}
   virtual void injectMouseMovement(RLMachine& machine, const Point& loc) {}
   virtual void injectMouseDown(RLMachine& machine) {}
   virtual void injectMouseUp(RLMachine& machine) {}
 
  private:
-  /// Defines test specific behaviour for the TestEventSystem
+  // Defines test specific behaviour for the TestEventSystem
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };
 

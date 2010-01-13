@@ -35,10 +35,8 @@
 
 class SDLSystem;
 
-/**
- * Hack to ferry SDL_Events over to something like Guichan which wants to take
- * control of the input.
- */
+// Hack to ferry SDL_Events over to something like Guichan which wants to take
+// control of the input.
 class RawSDLInputHandler {
  public:
   virtual ~RawSDLInputHandler() {}
@@ -50,30 +48,23 @@ class SDLEventSystem : public EventSystem {
  public:
   SDLEventSystem(SDLSystem& sys, Gameexe& gexe);
 
-  /// We provide this accessor to let the Graphics system querry what
-  /// to do when redrawing the mouse.
+  // We provide this accessor to let the Graphics system querry what
+  // to do when redrawing the mouse.
   bool mouseInsideWindow() const { return mouse_inside_window_; }
 
   void setRawSDLInputHandler(RawSDLInputHandler* handler) {
     raw_handler_ = handler;
   }
 
+  // Implementation of EventSystem:
   virtual void executeEventSystem(RLMachine& machine);
-
-  virtual bool shiftPressed() const { return shift_pressed_; }
-  virtual bool ctrlPressed() const  { return ctrl_pressed_;  }
-
-  virtual Point getCursorPos();
-  virtual void getCursorPos(Point& position, int& button1, int& button2);
-
-  /**
-   * Resets the state of the mouse buttons.
-   */
-  virtual void flushMouseClicks();
-
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
-
+  virtual bool shiftPressed() const { return shift_pressed_; }
+  virtual bool ctrlPressed() const  { return ctrl_pressed_;  }
+  virtual Point getCursorPos();
+  virtual void getCursorPos(Point& position, int& button1, int& button2);
+  virtual void flushMouseClicks();
   virtual void injectMouseMovement(RLMachine& machine, const Point& loc);
   virtual void injectMouseDown(RLMachine& machine);
   virtual void injectMouseUp(RLMachine& machine);
@@ -83,21 +74,16 @@ class SDLEventSystem : public EventSystem {
   // than 10ms since the last getCursorPos() call.
   void preventCursorPosSpinning();
 
-  /**
-   * @name RealLive event system commands
-   *
-   * @{
-   */
+  // RealLive event system commands
   void handleKeyDown(RLMachine& machine, SDL_Event& event);
   void handleKeyUp(RLMachine& machine, SDL_Event& event);
   void handleMouseMotion(RLMachine& machine, SDL_Event& event);
   void handleMouseButtonEvent(RLMachine& machine, SDL_Event& event);
   void handleActiveEvent(RLMachine& machine, SDL_Event& event);
-  /// @}
 
   bool shift_pressed_, ctrl_pressed_;
 
-  /// Whether the mouse cursor is currently inside the window bounds.
+  // Whether the mouse cursor is currently inside the window bounds.
   bool mouse_inside_window_;
 
   Point mouse_pos_;
@@ -110,8 +96,8 @@ class SDLEventSystem : public EventSystem {
   // Our owning system.
   SDLSystem& system_;
 
-  /// Handles raw SDL events when appropriate. (Used for things like Guichan,
-  /// et cetera who want to suck raw SDL events).
+  // Handles raw SDL events when appropriate. (Used for things like Guichan,
+  // et cetera who want to suck raw SDL events).
   RawSDLInputHandler* raw_handler_;
 };
 

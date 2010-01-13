@@ -43,15 +43,9 @@ class Gameexe;
 class GameexeInterpretObject;
 class Platform;
 
-// -----------------------------------------------------------------------
-
-/**
- * @name Syscom Constants
- *
- * Associations between syscom integer values and their names.
- *
- * @{
- */
+// Syscom Constants
+//
+// Associations between syscom integer values and their names.
 const int NUM_SYSCOM_ENTRIES = 32;
 const int SYSCOM_INVISIBLE = 0;
 const int SYSCOM_VISIBLE = 1;
@@ -89,34 +83,20 @@ const int SYSCOM_MENU_RETURN = 28;
 const int SYSCOM_EXIT_GAME = 29;
 const int SYSCOM_HIDE_MENU = 30;
 const int SYSCOM_SHOW_BACKGROUND = 31;
-/// @}
 
-// -----------------------------------------------------------------------
-
-/**
- * Struct containing the global memory to get serialized to disk with
- * global memory.
- */
+// Struct containing the global memory to get serialized to disk with
+// global memory.
 struct SystemGlobals {
   SystemGlobals();
 
-  /// Whether we should put up a yes/no dialog box when saving/loading.
+  // Whether we should put up a yes/no dialog box when saving/loading.
   bool confirm_save_load_;
 
-  /**
-   * From the rldev documentation:
-   *
-   * "This flag is described in the default menu as 'make this program run
-   * slower so that other programs will run smoothly'. Its effect is unclear;
-   * it does not lower the process priority, but it might cause RealLive to
-   * yield control to other processes more frequently."
-   *
-   * I suspect that this is a placebo. I'll track the value, but I don't think
-   * it's relevant to anything.
-   */
+  // I suspect that this is a placebo. I'll track the value, but I don't think
+  // it's relevant to anything.
   bool low_priority_;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {
     ar & confirm_save_load_;
@@ -128,219 +108,184 @@ struct SystemGlobals {
 
 BOOST_CLASS_VERSION(SystemGlobals, 1)
 
-// -----------------------------------------------------------------------
 
-/**
- * The system class provides a generalized interface to all the
- * components that make up a local system that may need to be
- * implemented differently on different systems, i.e., sound,
- * graphics, filesystem et cetera.
- *
- * The base System class is an abstract base class that is meant to be
- * specialized.
- *
- * @see SystemGlobals
- */
+// The system class provides a generalized interface to all the
+// components that make up a local system that may need to be
+// implemented differently on different systems, i.e., sound,
+// graphics, filesystem et cetera.
+//
+// The base System class is an abstract base class that is meant to be
+// specialized.
 class System {
  public:
   System();
-
-  virtual ~System() {}
-
-  virtual void run(RLMachine& machine) = 0;
-
-  virtual GraphicsSystem& graphics() = 0;
-  virtual EventSystem& event() = 0;
-  virtual Gameexe& gameexe() = 0;
-  virtual TextSystem& text() = 0;
-  virtual SoundSystem& sound() = 0;
+  virtual ~System();
 
   void setPlatform(const boost::shared_ptr<Platform>& platform) {
     platform_ = platform;
   }
   boost::shared_ptr<Platform> platform() { return platform_; }
 
-  /**
-   * @name Syscom related functions
-   *
-   * RealLive provides a context menu system to handle most actions
-   * and configuration settings. The system command menu is configured
-   * with the \#SYSCOM variables in gameexe.ini. It can be disabled by
-   * setting \#SYSCOM_USE to 0, and if a \#CANCELCALL hook is defined it
-   * will never be used at all (Clannad does this, although it uses
-   * the internal flags associated with the system command menu to
-   * control its own menu system).
-   *
-   * These functions are used to manipulate the visibility, change the
-   * values of, and invoke standard dialogs for various SYSCOM elements.
-   *
-   * @{
-   */
+  // Syscom related functions
+  //
+  // RealLive provides a context menu system to handle most actions
+  // and configuration settings. The system command menu is configured
+  // with the \#SYSCOM variables in gameexe.ini. It can be disabled by
+  // setting \#SYSCOM_USE to 0, and if a \#CANCELCALL hook is defined it
+  // will never be used at all (Clannad does this, although it uses
+  // the internal flags associated with the system command menu to
+  // control its own menu system).
+  //
+  // These functions are used to manipulate the visibility, change the
+  // values of, and invoke standard dialogs for various SYSCOM elements.
 
-  /**
-   * Checks the visibility of a single syscom command.
-   *
-   * @param syscom The syscom number to check
-   * @return Returns 0 if the given system command is invisible, 1 if
-   *         it is visible, and 2 if it is visible but disabled
-   *         (greyed out).
-   */
+  // Checks the visibility of a single syscom command. Returns 0 if the given
+  // system command is invisible, 1 if it is visible, and 2 if it is visible
+  // but disabled (greyed out).
   int isSyscomEnabled(int syscom);
 
-  /// Hides all syscom entries
+  // Hides all syscom entries
   void hideSyscom();
 
-  /// Hides the syscom entry @c syscom
+  // Hides the syscom entry |syscom|
   void hideSyscomEntry(int syscom);
 
-  /// Enables all syscom entries
+  // Enables all syscom entries
   void enableSyscom();
 
-  /// Enables the syscom entry @c syscom
+  // Enables the syscom entry |syscom|
   void enableSyscomEntry(int syscom);
 
-  /// Disables all syscom entries
+  // Disables all syscom entries
   void disableSyscom();
 
-  /// Disables the syscom entry @c syscom
+  // Disables the syscom entry |syscom|
   void disableSyscomEntry(int syscom);
 
-  /// Reads the corresponding value for syscom number @c syscom
+  // Reads the corresponding value for syscom number |syscom|
   int readSyscom(int syscom);
 
-  /// Called by various LongOperations to show the right click menu.
+  // Called by various LongOperations to show the right click menu.
   void showSyscomMenu(RLMachine& machine);
 
-  /// If there is a standard dialog box associated with syscom, it is
-  /// displayed; if there is a standard action, it is performed. The list of
-  /// menu commands in section 4.5 has details of which menu commands have
-  /// standard dialogs. The optional value is used for the setting where
-  /// relevant (for example, InvokeSyscom(5, val) is exactly equivalent to
-  /// SetScreenMode(val)).
+  // If there is a standard dialog box associated with syscom, it is
+  // displayed; if there is a standard action, it is performed. The list of
+  // menu commands in section 4.5 has details of which menu commands have
+  // standard dialogs. The optional value is used for the setting where
+  // relevant (for example, InvokeSyscom(5, val) is exactly equivalent to
+  // SetScreenMode(val)).
   void invokeSyscom(RLMachine& machine, int syscom);
 
-  /// @}
-
-  /// Shows a screen with certain information about the current state of the
-  /// interpreter.
+  // Shows a screen with certain information about the current state of the
+  // interpreter.
   void showSystemInfo(RLMachine& machine);
 
-  /**
-   * @name Variables we track here
-   *
-   * @{
-   */
   bool confirmSaveLoad() const { return globals_.confirm_save_load_; }
   void setConfirmSaveLoad(const int in) { globals_.confirm_save_load_ = in; }
 
   bool lowPriority() const { return globals_.low_priority_; }
   void setLowPriority(const int in) { globals_.low_priority_ = in; }
-  /// @}
 
+  // Returns the paths we should search for files in.
   const std::vector<boost::filesystem::path>& getSearchPaths();
 
-  /**
-   * Resets the present values of the system; this doesn't clear user
-   * settings, but clears things like the current graphics state and
-   * the status of all the text windows.
-   *
-   * This method is called when the user loads a game or resets the
-   * machine.
-   *
-   * The System implementation of reset() will call reset() on all
-   * systems.
-   */
-  virtual void reset();
+  // Resets the present values of the system; this doesn't clear user settings,
+  // but clears things like the current graphics state and the status of all
+  // the text windows. This method is called when the user loads a game or
+  // resets the machine. The System implementation of reset() will call
+  // reset() on all systems.
+  void reset();
 
-  /// Returns the global state for saving/restoring
+  // Returns the global state for saving/restoring
   SystemGlobals& globals() { return globals_; }
 
-  /**
-   * Cleans the regname entry from the gameexe and makes it filesystem safe.
-   */
-  virtual std::string regname();
+  // Cleans the regname entry from the gameexe and makes it filesystem safe.
+  std::string regname();
 
-  /**
-   * Returns a boost::filesystem object which points to the directory
-   * where saved game data, preferences, et cetera should be stored
-   * for this game.
-   *
-   * The default implementation returns "~/.rlvm/#{REGNAME}/". A Mac
-   * specific override could return "~/Library/Application
-   * Support/rlvm/#{REGNAME}/"
-   */
-  virtual boost::filesystem::path gameSaveDirectory();
+  // Returns a boost::filesystem object which points to the directory
+  // where saved game data, preferences, et cetera should be stored
+  // for this game.
+  //
+  // The default implementation returns "~/.rlvm/#{REGNAME}/". A Mac
+  // specific override could return "~/Library/Application
+  // Support/rlvm/#{REGNAME}/"
+  boost::filesystem::path gameSaveDirectory();
 
-  /**
-   * @name Testing and Debugging Tools
-   *
-   * @{
-   */
+  // Testing and Debugging Tools
 
-  /**
-   * Whether we are zooming through text and events quickly. Currently can be
-   * triggered by holding down the control key, or using skip previously read
-   * text.
-   */
+  // Whether we are zooming through text and events quickly. Currently can be
+  // triggered by holding down the control key, or using skip previously read
+  // text.
   bool fastForward();
 
-  /// Whether we're currently forcing fast forward (only used during game tests
-  /// to zoom through).
+  // Whether we're currently forcing fast forward (only used during game tests
+  // to zoom through).
   bool forceFastForward() { return force_fast_forward_; }
 
-  /// Set in luaRlvm, to speed through the game with maximum speed!
+  // Set in luaRlvm, to speed through the game with maximum speed!
   void setForceFastForward() { force_fast_forward_ = true; }
 
+  // Renders the screen and dumps a textual representation of the screen.
   void dumpRenderTree(RLMachine& machine);
-  /// @}
 
   bool forceWait() { return force_wait_; }
   void setForceWait(bool in) { force_wait_ = in; }
 
- protected:
-  boost::filesystem::path getHomeDirectory();
+  // Called once per gameloop.
+  virtual void run(RLMachine& machine) = 0;
 
-  /// Native widget drawer. Can be NULL. This field is protected instead of
-  /// private because we need to be destroy the Platform before we destroy SDL.
+  // Returns the specific subclasses.
+  virtual GraphicsSystem& graphics() = 0;
+  virtual EventSystem& event() = 0;
+  virtual Gameexe& gameexe() = 0;
+  virtual TextSystem& text() = 0;
+  virtual SoundSystem& sound() = 0;
+
+ protected:
+  // Native widget drawer. Can be NULL. This field is protected instead of
+  // private because we need to be destroy the Platform before we destroy SDL.
   boost::shared_ptr<Platform> platform_;
 
  private:
-  /**
-   * Invokes a custom dialog or the standard one if none present.
-   */
+  boost::filesystem::path getHomeDirectory();
+
+  // Invokes a custom dialog or the standard one if none present.
   void invokeSaveOrLoad(RLMachine& machine,
                         int syscom,
                         const std::string& mod_key,
                         const std::string& location);
 
-  /// The visibility status for all syscom entries
-  int syscom_status_[NUM_SYSCOM_ENTRIES];
-
-  /// Whether the SYSCOM menu is currently being displayed.
-  bool in_menu_;
-
-  /// Whether we are being forced to fast forward through the game for testing
-  /// reasons.
-  bool force_fast_forward_;
-
-  /// Forces a 10ms sleep at the end of the System::run function. Used to lower
-  /// CPU usage during manual redrawing.
-  bool force_wait_;
-
+  // Verify that |index| is valid and throw if it isn't.
   void checkSyscomIndex(int index, const char* function);
 
-  std::vector<boost::filesystem::path> cached_search_paths;
-
+  // Adds a path to the list of places to search for a file.
   void addPath(GameexeInterpretObject gio);
+
+  // The visibility status for all syscom entries
+  int syscom_status_[NUM_SYSCOM_ENTRIES];
+
+  // Whether the SYSCOM menu is currently being displayed.
+  bool in_menu_;
+
+  // Whether we are being forced to fast forward through the game for testing
+  // reasons.
+  bool force_fast_forward_;
+
+  // Forces a 10ms sleep at the end of the System::run function. Used to lower
+  // CPU usage during manual redrawing.
+  bool force_wait_;
+
+  // Paths to search for files in.
+  std::vector<boost::filesystem::path> cached_search_paths;
 
   SystemGlobals globals_;
 
-  /// Implementation detail which resets in_menu_;
+  // Implementation detail which resets in_menu_;
   friend class MenuReseter;
 
   friend class boost::serialization::access;
 
-  /// boost::serialization
+  // boost::serialization
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
     // For now, does nothing
@@ -349,8 +294,8 @@ class System {
 
 // -----------------------------------------------------------------------
 
-/// Returns a version string suitable for printing. Used on the command line
-/// interface and on the info screen.
+// Returns a version string suitable for printing. Used on the command line
+// interface and on the info screen.
 std::string rlvm_version();
 
 #endif  // SRC_SYSTEMS_BASE_SYSTEM_HPP_

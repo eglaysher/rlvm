@@ -41,11 +41,8 @@ using namespace boost;
 // -----------------------------------------------------------------------
 // EventSystemGlobals
 // -----------------------------------------------------------------------
-
 EventSystemGlobals::EventSystemGlobals()
   : generic1(false), generic2(false) {}
-
-// -----------------------------------------------------------------------
 
 EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
   : generic1(gexe("INIT_ORIGINALSETING1_MOD").to_int(0)),
@@ -58,36 +55,13 @@ EventSystem::EventSystem(Gameexe& gexe)
   : globals_(gexe) {
 }
 
-// -----------------------------------------------------------------------
-
 EventSystem::~EventSystem() {}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::executeEventSystem(RLMachine& machine) {
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::addMouseListener(EventListener* listener) {
-  event_listeners_.insert(listener);
-}
-
-// -----------------------------------------------------------------------
-
-void EventSystem::removeMouseListener(EventListener* listener) {
-  event_listeners_.erase(listener);
-}
-
-// -----------------------------------------------------------------------
 
 void EventSystem::setFrameCounter(int layer, int frame_counter,
                                   FrameCounter* counter) {
   checkLayerAndCounter(layer, frame_counter);
   frame_counters_[layer][frame_counter].reset(counter);
 }
-
-// -----------------------------------------------------------------------
 
 FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter) {
   checkLayerAndCounter(layer, frame_counter);
@@ -99,15 +73,19 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter) {
   return *counter;
 }
 
-// -----------------------------------------------------------------------
-
 bool EventSystem::frameCounterExists(int layer, int frame_counter) {
   checkLayerAndCounter(layer, frame_counter);
   scoped_ptr<FrameCounter>& counter = frame_counters_[layer][frame_counter];
   return counter.get() != NULL;
 }
 
-// -----------------------------------------------------------------------
+void EventSystem::addMouseListener(EventListener* listener) {
+  event_listeners_.insert(listener);
+}
+
+void EventSystem::removeMouseListener(EventListener* listener) {
+  event_listeners_.erase(listener);
+}
 
 void EventSystem::dispatchEvent(RLMachine& machine,
   const boost::function<bool(EventListener&)>& event) {
@@ -131,8 +109,6 @@ void EventSystem::dispatchEvent(RLMachine& machine,
     event(*current_op);
 }
 
-// -----------------------------------------------------------------------
-
 void EventSystem::broadcastEvent(RLMachine& machine,
   const boost::function<void(EventListener&)>& event) {
   EventListeners::iterator listenerIt = listeners_begin();
@@ -145,8 +121,6 @@ void EventSystem::broadcastEvent(RLMachine& machine,
     event(*current_op);
 }
 
-// -----------------------------------------------------------------------
-
 void EventSystem::checkLayerAndCounter(int layer, int frame_counter) {
   if (layer < 0 || layer > 1)
     throw rlvm::Exception("Illegal frame counter layer!");
@@ -154,6 +128,4 @@ void EventSystem::checkLayerAndCounter(int layer, int frame_counter) {
   if (frame_counter < 0 || frame_counter > 255)
     throw rlvm::Exception("Frame Counter index out of range!");
 }
-
-// -----------------------------------------------------------------------
 

@@ -43,8 +43,9 @@ class SDLSoundSystem;
 class SDLSystem : public System {
  public:
   explicit SDLSystem(Gameexe& gameexe);
-  ~SDLSystem();
+  virtual ~SDLSystem();
 
+  // Implementation of System:
   virtual void run(RLMachine& machine);
   virtual GraphicsSystem& graphics();
   virtual EventSystem& event();
