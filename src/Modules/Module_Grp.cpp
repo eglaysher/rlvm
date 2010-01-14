@@ -103,9 +103,6 @@ void blitDC1toDC0(RLMachine& machine) {
 
   // Blit DC1 onto DC0, with full opacity, and end the operation
   src->blitToSurface(*dst, src->rect(), dst->rect(), 255);
-
-  // Now force a screen refresh
-  machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
 }
 
 // -----------------------------------------------------------------------
@@ -250,10 +247,6 @@ struct Grp_load_1 : public RLOp_Void_3< StrConstant_T, IntConstant_T,
     surface->blitToSurface(*graphics.getDC(dc),
                            surface->rect(), surface->rect(),
                            opacity, use_alpha_);
-
-    if (dc == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
@@ -296,9 +289,6 @@ struct Grp_load_3 : public RLOp_Void_5<
 
     surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
                            opacity, use_alpha_);
-    if (dc == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
@@ -791,10 +781,6 @@ struct Grp_copy_3
     sourceSurface->blitToSurface(
       *graphics.getDC(dst),
       srcRect, Rect(destPoint, srcRect.size()), opacity, use_alpha_);
-
-    if (dst == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
@@ -826,10 +812,6 @@ struct Grp_copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
     sourceSurface->blitToSurface(
       *graphics.getDC(dst), sourceSurface->rect(), sourceSurface->rect(),
       opacity, use_alpha_);
-
-    if (dst == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
@@ -851,10 +833,6 @@ struct Grp_fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
 struct Grp_fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     machine.system().graphics().getDC(dc)->fill(colour);
-
-    if (dc == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
@@ -866,10 +844,6 @@ struct Grp_fill_3 : public RLOp_Void_3<
   void operator()(RLMachine& machine, Rect destRect, int dc,
                   RGBAColour colour) {
     machine.system().graphics().getDC(dc)->fill(colour, destRect);
-
-    if (dc == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
@@ -1019,10 +993,6 @@ struct Grp_stretchBlit_1
 
     sourceSurface->blitToSurface(
       *graphics.getDC(dst), src_rect, dst_rect, opacity, use_alpha_);
-
-    if (dst == 0) {
-      machine.system().graphics().markScreenAsDirty(GUT_DRAW_DC0);
-    }
   }
 };
 
