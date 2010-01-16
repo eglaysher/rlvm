@@ -124,7 +124,6 @@ void loadDCToDC1(GraphicsSystem& graphics,
                  const Rect& srcRect,
                  const Point& dest,
                  int opacity) {
-  shared_ptr<Surface> dc0 = graphics.getDC(0);
   shared_ptr<Surface> dc1 = graphics.getDC(1);
   shared_ptr<Surface> src = graphics.getDC(srcDc);
 
@@ -135,6 +134,26 @@ void loadDCToDC1(GraphicsSystem& graphics,
                      Rect(srcRect.origin(), size),
                      Rect(dest, size),
                      opacity, false);
+}
+
+void performEffect(RLMachine& machine,
+                   const shared_ptr<Surface>& src,
+                   const shared_ptr<Surface>& dst,
+                   int selnum) {
+  LongOperation* lop =
+      EffectFactory::buildFromSEL(machine, src, dst, selnum);
+  machine.pushLongOperation(lop);
+}
+
+void performEffect(RLMachine& machine,
+                   const shared_ptr<Surface>& src,
+                   const shared_ptr<Surface>& dst,
+                   int time, int style, int direction, int interpolation,
+                   int xsize, int ysize, int a, int b, int c) {
+  LongOperation* lop =
+      EffectFactory::build(machine, src, dst, time, style, direction,
+                           interpolation, xsize, ysize, a, b, c);
+  machine.pushLongOperation(lop);
 }
 
 /**
@@ -276,9 +295,7 @@ struct display_1
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-    LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, after, before, effectNum);
-    machine.pushLongOperation(lop);
+    performEffect(machine, after, before, effectNum);
   }
 };
 
@@ -315,9 +332,7 @@ struct display_3
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-    LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, after, before, effectNum);
-    machine.pushLongOperation(lop);
+    performEffect(machine, after, before, effectNum);
   }
 };
 
@@ -359,10 +374,8 @@ struct display_4
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-    LongOperation* effect = EffectFactory::build(machine, after, before, time,
-                                          style, direction, interpolation,
-                                          xsize, ysize, a, b, c);
-    machine.pushLongOperation(effect);
+    performEffect(machine, after, before, time, style, direction,
+                  interpolation, xsize, ysize, a, b, c);
   }
 };
 
@@ -405,9 +418,7 @@ struct open_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-    LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, after, before, effectNum);
-    machine.pushLongOperation(lop);
+    performEffect(machine, after, before, effectNum);
     machine.system().text().hideAllTextWindows();
   }
 };
@@ -458,9 +469,7 @@ struct open_3 : public RLOp_Void_5<
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, after, before,
-                                                     effectNum);
-    machine.pushLongOperation(lop);
+    performEffect(machine, after, before, effectNum);
     machine.system().text().hideAllTextWindows();
   }
 };
@@ -522,11 +531,8 @@ struct open_4 : public RLOp_Void_13<
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-
-    LongOperation* lop =
-      EffectFactory::build(machine, after, before, time, style, direction,
-                           interpolation, xsize, ysize, a, b, c);
-    machine.pushLongOperation(lop);
+    performEffect(machine, after, before, time, style, direction,
+                  interpolation, xsize, ysize, a, b, c);
     machine.system().text().hideAllTextWindows();
   }
 };
@@ -559,10 +565,7 @@ struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-
-    LongOperation* effect =
-        EffectFactory::buildFromSEL(machine, after, before, effectNum);
-    machine.pushLongOperation(effect);
+    performEffect(machine, after, before, effectNum);
     machine.system().text().hideAllTextWindows();
   }
 };
@@ -606,10 +609,7 @@ struct openBg_3 : public RLOp_Void_5<
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
-
-    LongOperation* effect = EffectFactory::buildFromSEL(machine, after, before,
-                                                        effectNum);
-    machine.pushLongOperation(effect);
+    performEffect(machine, after, before, effectNum);
     machine.system().text().hideAllTextWindows();
   }
 };
@@ -663,11 +663,9 @@ struct openBg_4 : public RLOp_Void_13<
 
     // Render the screen to a temporary
     shared_ptr<Surface> after = graphics.renderToSurface();
+    performEffect(machine, after, before, time, style, direction,
+                  interpolation, xsize, ysize, a, b, c);
 
-    LongOperation* effect = EffectFactory::build(machine, after, before, time,
-                                          style, direction, interpolation,
-                                          xsize, ysize, a, b, c);
-    machine.pushLongOperation(effect);
     machine.system().text().hideAllTextWindows();
   }
 };
@@ -842,19 +840,12 @@ struct fade_7 : public RLOp_Void_3<
   void operator()(RLMachine& machine, Rect rect,
                   RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
-    if (time == 0) {
-      graphics.getDC(0)->fill(colour, rect);
-    } else {
-      // FIXME: this needs checking for sanity of implementation, lack
-      // of memory leaks, correct functioning in the presence of
-      // objects, etc.
-      shared_ptr<Surface> before = graphics.renderToSurface();
-      graphics.getDC(0)->fill(colour, rect);
-      shared_ptr<Surface> after = graphics.renderToSurface();
-      LongOperation* lop =
-        EffectFactory::build(machine, after, before, time, 0, 0,
-                             0, 0, 0, 0, 0, 0);
-      machine.pushLongOperation(lop);
+    shared_ptr<Surface> before = graphics.renderToSurface();
+    graphics.getDC(0)->fill(colour, rect);
+    shared_ptr<Surface> after = graphics.renderToSurface();
+
+    if (time > 0) {
+      performEffect(machine, after, before, time, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 };
