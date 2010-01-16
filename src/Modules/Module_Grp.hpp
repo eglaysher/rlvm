@@ -28,28 +28,11 @@
 #ifndef SRC_MODULES_MODULE_GRP_HPP_
 #define SRC_MODULES_MODULE_GRP_HPP_
 
-/**
- * @file   Module_Grp.hpp
- * @author Elliot Glaysher
- * @date   Sat Oct  7 11:20:27 2006
- * @ingroup ModulesOpcodes
- *
- * @brief  Defines the Graphcis module (mod<1:33>), along with
- *         replaying the graohics stack.
- */
-
 #include "MachineBase/RLModule.hpp"
 #include <string>
 #include <vector>
 
 class GraphicsStackFrame;
-
-// -----------------------------------------------------------------------
-
-namespace graphicsStack {
-extern const std::string GRP_LOAD;
-extern const std::string GRP_OPENBG;
-}
 
 // -----------------------------------------------------------------------
 
