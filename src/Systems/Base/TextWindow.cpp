@@ -469,10 +469,10 @@ void TextWindow::render(std::ostream* tree) {
       *tree << "  Text Window #" << window_num_ << endl;
     }
 
+    Point textOrigin = textRect().origin();
+
     textbox_waku_->render(tree, box, surface_size);
     renderFaces(tree, 1);
-
-    Point textOrigin = textRect().origin();
 
     if (inSelectionMode()) {
       for_each(selections_.begin(), selections_.end(),
@@ -501,7 +501,7 @@ void TextWindow::render(std::ostream* tree) {
             255);
 
         if (tree) {
-          *tree << "     Name Area: " << Rect(namebox_location, namebox_size)
+          *tree << "    Name Area: " << Rect(namebox_location, namebox_size)
                 << endl;
         }
       }
@@ -528,11 +528,15 @@ void TextWindow::renderFaces(std::ostream* tree, int behind) {
         face_slot_[i]->face_surface &&
         face_slot_[i]->behind == behind) {
       const boost::shared_ptr<Surface>& surface = face_slot_[i]->face_surface;
-      surface->renderToScreen(
-          surface->rect(),
-          Rect(windowRect().x() + face_slot_[i]->x,
-               windowRect().y() + face_slot_[i]->y,
-               surface->size()), 255);
+
+      Rect dest(windowRect().x() + face_slot_[i]->x,
+                windowRect().y() + face_slot_[i]->y,
+                surface->size());
+      surface->renderToScreen(surface->rect(), dest, 255);
+
+      if (tree) {
+        *tree << "    Face Slot #" << i << ": " << dest << endl;
+      }
     }
   }
 }
