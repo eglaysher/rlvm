@@ -50,6 +50,19 @@ const int DEFAULT_TEXT_VERTICAL = 0;
 const int DEFAULT_TEXT_COLOUR = 0;
 const int DEFAULT_TEXT_SHADOWCOLOUR = -1;
 
+const int DEFAULT_DRIFT_COUNT = 1;
+const int DEFAULT_DRIFT_USE_ANIMATION = 0;
+const int DEFAULT_DRIFT_START_PATTERN = 0;
+const int DEFAULT_DRIFT_END_PATTERN = 0;
+const int DEFAULT_DRIFT_ANIMATION_TIME = 0;
+const int DEFAULT_DRIFT_YSPEED = 1000;
+const int DEFAULT_DRIFT_PERIOD = 0;
+const int DEFAULT_DRIFT_AMPLITUDE = 0;
+const int DEFAULT_DRIFT_USE_DRIFT = 0;
+const int DEFAULT_DRIFT_UNKNOWN_PROP = 0;
+const int DEFAULT_DRIFT_DRIFTSPEED = 0;
+const Rect DEFAULT_DRIFT_AREA = Rect(Point(-1, -1), Size(-1, -1));
+
 const Rect EMPTY_CLIP = Rect(Point(0, 0), Size(-1, -1));
 
 const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_empty_impl(
@@ -65,6 +78,21 @@ GraphicsObject::Impl::TextProperties::TextProperties()
       vertical(DEFAULT_TEXT_VERTICAL),
       colour(DEFAULT_TEXT_COLOUR),
       shadow_colour(DEFAULT_TEXT_SHADOWCOLOUR) {
+}
+
+GraphicsObject::Impl::DriftProperties::DriftProperties()
+    : count(DEFAULT_DRIFT_COUNT),
+      use_animation(DEFAULT_DRIFT_USE_ANIMATION),
+      start_pattern(DEFAULT_DRIFT_START_PATTERN),
+      end_pattern(DEFAULT_DRIFT_END_PATTERN),
+      total_animation_time_ms(DEFAULT_DRIFT_ANIMATION_TIME),
+      yspeed(DEFAULT_DRIFT_YSPEED),
+      period(DEFAULT_DRIFT_PERIOD),
+      amplitude(DEFAULT_DRIFT_AMPLITUDE),
+      use_drift(DEFAULT_DRIFT_USE_DRIFT),
+      unknown_drift_property(DEFAULT_DRIFT_UNKNOWN_PROP),
+      driftspeed(DEFAULT_DRIFT_DRIFTSPEED),
+      drift_area(DEFAULT_DRIFT_AREA) {
 }
 
 // -----------------------------------------------------------------------
@@ -433,6 +461,113 @@ void GraphicsObject::setTextOps(
   impl_->text_properties_->shadow_colour = shadow;
 }
 
+void GraphicsObject::setDriftOpts(
+    int count, int use_animation, int start_pattern,
+    int end_pattern, int total_animation_time_ms, int yspeed,
+    int period, int amplitude, int use_drift,
+    int unknown_drift_property, int driftspeed,
+    Rect driftarea) {
+  makeImplUnique();
+
+  impl_->makeSureHaveDriftProperties();
+  impl_->drift_properties_->count = count;
+  impl_->drift_properties_->use_animation = use_animation;
+  impl_->drift_properties_->start_pattern = start_pattern;
+  impl_->drift_properties_->end_pattern = end_pattern;
+  impl_->drift_properties_->total_animation_time_ms = total_animation_time_ms;
+  impl_->drift_properties_->yspeed = yspeed;
+  impl_->drift_properties_->period = period;
+  impl_->drift_properties_->amplitude = amplitude;
+  impl_->drift_properties_->use_drift = use_drift;
+  impl_->drift_properties_->unknown_drift_property = unknown_drift_property;
+  impl_->drift_properties_->driftspeed = driftspeed;
+  impl_->drift_properties_->drift_area = driftarea;
+}
+
+int GraphicsObject::driftParticleCount() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->count;
+  else
+    return DEFAULT_DRIFT_COUNT;
+}
+
+int GraphicsObject::driftUseAnimation() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->use_animation;
+  else
+    return DEFAULT_DRIFT_USE_ANIMATION;
+}
+
+int GraphicsObject::driftStartPattern() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->start_pattern;
+  else
+    return DEFAULT_DRIFT_START_PATTERN;
+}
+
+int GraphicsObject::driftEndPattern() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->end_pattern;
+  else
+    return DEFAULT_DRIFT_END_PATTERN;
+}
+
+int GraphicsObject::driftAnimationTime() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->total_animation_time_ms;
+  else
+    return DEFAULT_DRIFT_ANIMATION_TIME;
+}
+
+int GraphicsObject::driftYSpeed() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->yspeed;
+  else
+    return DEFAULT_DRIFT_YSPEED;
+}
+
+int GraphicsObject::driftPeriod() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->period;
+  else
+    return DEFAULT_DRIFT_PERIOD;
+}
+
+int GraphicsObject::driftAmplitude() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->amplitude;
+  else
+    return DEFAULT_DRIFT_AMPLITUDE;
+}
+
+int GraphicsObject::driftUseDrift() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->use_drift;
+  else
+    return DEFAULT_DRIFT_USE_DRIFT;
+}
+
+int GraphicsObject::driftUnknown() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->unknown_drift_property;
+  else
+    return DEFAULT_DRIFT_UNKNOWN_PROP;
+}
+
+int GraphicsObject::driftDriftSpeed() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->driftspeed;
+  else
+    return DEFAULT_DRIFT_UNKNOWN_PROP;
+}
+
+Rect GraphicsObject::driftArea() const {
+  if (impl_->drift_properties_)
+    return impl_->drift_properties_->drift_area;
+  else
+    return Rect();
+}
+
 // -----------------------------------------------------------------------
 
 void GraphicsObject::makeImplUnique() {
@@ -536,6 +671,8 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
       wipe_copy_(0) {
   if (rhs.text_properties_)
     text_properties_.reset(new TextProperties(*rhs.text_properties_));
+  if (rhs.drift_properties_)
+    drift_properties_.reset(new DriftProperties(*rhs.drift_properties_));
 
   copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
   copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
@@ -582,6 +719,8 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
 
     if (rhs.text_properties_)
       text_properties_.reset(new TextProperties(*rhs.text_properties_));
+    if (rhs.drift_properties_)
+      drift_properties_.reset(new DriftProperties(*rhs.drift_properties_));
 
     wipe_copy_ = rhs.wipe_copy_;
   }
@@ -597,6 +736,12 @@ void GraphicsObject::Impl::makeSureHaveTextProperties() {
   }
 }
 
+void GraphicsObject::Impl::makeSureHaveDriftProperties() {
+  if (!drift_properties_) {
+    drift_properties_.reset(new Impl::DriftProperties());
+  }
+}
+
 // -----------------------------------------------------------------------
 
 /// boost::serialization support
@@ -607,6 +752,10 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
     width_ & height_ & rotation_ & patt_no_ & alpha_ &
     clip_ & mono_ & invert_ &
     tint_ & colour_ & composite_mode_ & text_properties_ & wipe_copy_;
+
+  if (version > 0) {
+    ar & drift_properties_;
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -642,3 +791,26 @@ template void GraphicsObject::Impl::TextProperties::serialize
 template void GraphicsObject::Impl::TextProperties::serialize
 <boost::archive::text_iarchive>(
   boost::archive::text_iarchive & ar, unsigned int version);
+
+// -----------------------------------------------------------------------
+// GraphicsObject::Impl::DirftProperties
+// -----------------------------------------------------------------------
+template<class Archive>
+void GraphicsObject::Impl::DriftProperties::serialize(
+    Archive& ar, unsigned int version) {
+  ar & count & use_animation & start_pattern & end_pattern
+     & total_animation_time_ms & yspeed & period & amplitude
+     & use_drift & unknown_drift_property & driftspeed
+     & drift_area;
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsObject::Impl::DriftProperties::serialize
+<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);
+
+template void GraphicsObject::Impl::DriftProperties::serialize
+<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+

@@ -33,6 +33,7 @@
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLModule.hpp"
+#include "Systems/Base/DriftGraphicsObject.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -81,6 +82,11 @@ void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj,
   string utf8str = cp932toUTF8(val, machine.getTextEncoding());
   obj.setTextText(utf8str);
   obj.setObjectData(new GraphicsTextObject(machine.system()));
+}
+
+void objOfDriftLoader(RLMachine& machine, GraphicsObject& obj,
+                      const string& value) {
+  obj.setObjectData(new DriftGraphicsObject(machine.system(), value));
 }
 
 struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
@@ -234,10 +240,10 @@ void addObjectCreationFunctions(RLModule& m) {
   m.addOpcode(1200, 2, "objOfText", new objGeneric_2(objOfTextBuilder));
   m.addUnsupportedOpcode(1200, 3, "objOfText");
 
-  m.addUnsupportedOpcode(1300, 0, "objDriftOfFile");
-  m.addUnsupportedOpcode(1300, 1, "objDriftOfFile");
-  m.addUnsupportedOpcode(1300, 2, "objDriftOfFile");
-  m.addUnsupportedOpcode(1300, 3, "objDriftOfFile");
+  m.addOpcode(1300, 0, "objDriftOfFile", new objGeneric_0(objOfDriftLoader));
+  m.addOpcode(1300, 1, "objDriftOfFile", new objGeneric_1(objOfDriftLoader));
+  m.addOpcode(1300, 2, "objDriftOfFile", new objGeneric_2(objOfDriftLoader));
+  m.addOpcode(1300, 3, "objDriftOfFile", new objGeneric_3(objOfDriftLoader));
 
   m.addUnsupportedOpcode(1400, 0, "objOfDigits");
   m.addUnsupportedOpcode(1400, 1, "objOfDigits");

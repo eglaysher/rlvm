@@ -126,6 +126,7 @@ librlvm_files = [
   "src/Systems/Base/AnmGraphicsObjectData.cpp",
   "src/Systems/Base/CGMTable.cpp",
   "src/Systems/Base/Colour.cpp",
+  "src/Systems/Base/DriftGraphicsObject.cpp",
   "src/Systems/Base/EventListener.cpp",
   "src/Systems/Base/EventSystem.cpp",
   "src/Systems/Base/FrameCounter.cpp",

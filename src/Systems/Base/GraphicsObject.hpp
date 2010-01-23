@@ -35,6 +35,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/version.hpp>
 
 class RLMachine;
 class GraphicsObject;
@@ -212,6 +213,26 @@ class GraphicsObject {
   int textShadowColour() const;
   // @}
 
+  // Drift object accessors
+  void setDriftOpts(int count, int use_animation, int start_pattern,
+                    int end_pattern, int total_animation_time_ms, int yspeed,
+                    int period, int amplitude, int use_drift,
+                    int unknown_drift_property, int driftspeed,
+                    Rect driftarea);
+
+  int driftParticleCount() const;
+  int driftUseAnimation() const;
+  int driftStartPattern() const;
+  int driftEndPattern() const;
+  int driftAnimationTime() const;
+  int driftYSpeed() const;
+  int driftPeriod() const;
+  int driftAmplitude() const;
+  int driftUseDrift() const;
+  int driftUnknown() const;
+  int driftDriftSpeed() const;
+  Rect driftArea() const;
+
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.
   int32_t referenceCount() const { return impl_.use_count(); }
@@ -359,6 +380,35 @@ class GraphicsObject {
 
     /// @}
 
+    struct DriftProperties {
+      DriftProperties();
+
+      int count;
+
+      int use_animation;
+      int start_pattern;
+      int end_pattern;
+      int total_animation_time_ms;
+
+      int yspeed;
+
+      int period;
+      int amplitude;
+
+      int use_drift;
+      int unknown_drift_property;
+      int driftspeed;
+
+      Rect drift_area;
+
+      /// boost::serialization support
+      template<class Archive>
+      void serialize(Archive& ar, unsigned int version);
+    };
+
+    void makeSureHaveDriftProperties();
+    boost::scoped_ptr<DriftProperties> drift_properties_;
+
     /// The wipe_copy bit
     int wipe_copy_;
 
@@ -388,6 +438,8 @@ class GraphicsObject {
   template<class Archive>
   void serialize(Archive& ar, unsigned int version);
 };
+
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 1)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

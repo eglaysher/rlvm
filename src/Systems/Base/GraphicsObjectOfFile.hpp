@@ -57,8 +57,6 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
   explicit GraphicsObjectOfFile(System& system);
   GraphicsObjectOfFile(System& system, const std::string& filename);
 
-  void loadFile();
-
   const std::string& filename() const { return filename_; }
 
   virtual int pixelWidth(const GraphicsObject& rp);
@@ -80,6 +78,9 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
  private:
   // Private constructor for cloning
   GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
+
+  // Used in serialization system.
+  void loadFile();
 
   /// Our parent system.
   System& system_;

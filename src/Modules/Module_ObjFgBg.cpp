@@ -42,6 +42,7 @@
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "MachineBase/RLOperation/Rect_T.hpp"
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
@@ -211,6 +212,24 @@ struct objTextOpts
   }
 };
 
+struct objDriftOpts
+    : public RLOp_Void_13<IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T,
+                          Rect_T<rect_impl::GRP> > {
+  void operator()(RLMachine& machine, int buf, int count, int use_animation,
+                  int start_pattern, int end_pattern,
+                  int total_animaton_time_ms, int yspeed, int period,
+                  int amplitude, int use_drift, int unknown, int driftspeed,
+                  Rect drift_area) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setDriftOpts(count, use_animation, start_pattern, end_pattern,
+                     total_animaton_time_ms, yspeed, period, amplitude, use_drift,
+                     unknown, driftspeed, drift_area);
+  }
+};
+
 // -----------------------------------------------------------------------
 
 /**
@@ -324,7 +343,7 @@ void addObjectFunctions(RLModule& m) {
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateX));
   m.addOpcode(1030, 0, "objScrollRateY",
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateY));
-  m.addUnsupportedOpcode(1031, 0, "objDriftOpts");
+  m.addOpcode(1031, 0, "objDriftOpts", new objDriftOpts);
   m.addUnsupportedOpcode(1032, 0, "objOrder");
   m.addUnsupportedOpcode(1033, 0, "objQuarterView");
 

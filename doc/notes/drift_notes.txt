@@ -1,0 +1,31 @@
+objDriftOpts(buf, <count>, <use animation>, <start pattern>,
+             <end pattern>, <pattern time>, <yspeed>,
+             <period>, <amplitude>, <use drift>, 3, <driftspeed>,
+             x, y, x', y')
+
+buf = obj buffer to work with
+<count> = number of copies of our drift file to show.
+<use animation> = whether to animate 
+<start pattern> = first consequitive frame g00 pattern to show,
+                  or only pattern to show if use animation false.
+<end pattern> = last consequitive frame g00 pattern to show
+<pattern time> = Time it takes to display full sequence.
+
+yspeed = Time it takes to go from the top of the screen to the
+         bottom of the screen
+
+<period> = Period of a sine wave added to our position.
+           When 0, no sine wave is added.
+<amplitude> = Amplitude of the sine wave. When 0, no sine wave
+              is added. 1 is the largest possible amplitude. I am not
+              really sure about units here.
+
+<use drift> = A boolean flag on whether to add a semi-random drift to the 
+<drift pattern> = Defines how drift is applied. 
+       0 = ?
+       2 = 
+       3 = Steady leftwards movement?
+       4 = Steady leftwards movement
+<driftspeed> = Time in milliseconds that it takes to move leftwards across the screen.
+
+x, y, x', y' = Can all be -1 to specify the full screen.
