@@ -169,14 +169,14 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       int codepoint = utf8::next(it, strend);
       TextPage& page = machine.system().text().currentPage();
       if (codepoint) {
-        string nextChar(current_position_, it);
-        bool rendered = page.character(current_char_, nextChar);
+        string rest(current_position_, strend);
+        bool rendered = page.character(current_char_, rest);
 
         // Check to see if this character was rendered to the screen. If
         // this is false, then the page is probably full and the check
         // later on will do something about that.
         if (rendered) {
-          current_char_ = nextChar;
+          current_char_ = std::string(current_position_, it);
           current_position_ = it;
         }
       } else {
