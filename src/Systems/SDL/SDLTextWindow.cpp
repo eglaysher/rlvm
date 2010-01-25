@@ -110,7 +110,8 @@ void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
 
 // -----------------------------------------------------------------------
 
-void SDLTextWindow::addSelectionItem(const std::string& utf8str) {
+void SDLTextWindow::addSelectionItem(const std::string& utf8str,
+                                     int selection_id) {
   boost::shared_ptr<TTF_Font> font =
       sdl_system_.text().getFontOfSize(fontSizeInPixels());
 
@@ -132,7 +133,7 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str) {
       system().graphics(),
       shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), normal)),
       shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), inverted)),
-      selectionCallback(), getNextSelectionID(), position);
+      selectionCallback(), selection_id, position);
 
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);

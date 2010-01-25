@@ -330,9 +330,9 @@ class TextWindow {
   virtual void startSelectionMode();
 
   bool inSelectionMode() { return in_selection_mode_; }
-  int getNextSelectionID() { return next_id_++; }
 
-  virtual void addSelectionItem(const std::string& utf8str) = 0;
+  virtual void addSelectionItem(const std::string& utf8str,
+                                int selection_id) = 0;
   virtual void setSelectionCallback(const boost::function<void(int)>& func);
 
   void endSelectionMode();
@@ -535,10 +535,6 @@ class TextWindow {
   /// Callback function for when item is selected; usually will call a
   /// specific method on Select_LongOperation
   boost::function<void(int)> selection_callback_;
-
-  /// Used to assign a zero based index to all selection elements
-  /// added by addSelectionItem().
-  int next_id_;
   /// @}
 
   struct FaceSlot;

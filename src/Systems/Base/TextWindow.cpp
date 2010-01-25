@@ -93,7 +93,7 @@ TextWindow::TextWindow(System& system, int window_num)
       ruby_begin_point_(-1), current_line_number_(0),
       current_indentation_in_pixels_(0), last_token_was_name_(false),
       use_indentation_(0), colour_(),
-      filter_(0), is_visible_(0), in_selection_mode_(0), next_id_(0),
+      filter_(0), is_visible_(0), in_selection_mode_(0),
       system_(system) {
   Gameexe& gexe = system.gameexe();
 
@@ -753,7 +753,6 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
 
 void TextWindow::startSelectionMode() {
   in_selection_mode_ = true;
-  next_id_ = 0;
 }
 
 // -----------------------------------------------------------------------

@@ -51,7 +51,7 @@ class SDLTextWindow : public TextWindow {
   virtual void renderNameInBox(const std::string& utf8str);
   virtual void displayRubyText(const std::string& utf8str);
 
-  virtual void addSelectionItem(const std::string& utf8str);
+  virtual void addSelectionItem(const std::string& utf8str, int selection_id);
 
  private:
   virtual void renderGlyphAt(const std::string& current, int font_size,

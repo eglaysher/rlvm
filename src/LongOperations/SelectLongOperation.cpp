@@ -118,7 +118,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     bind(&NormalSelectLongOperation::selected, this, _1));
 
   for (size_t i = 0; i < options_.size(); ++i) {
-    text_window_->addSelectionItem(options_[i]);
+    text_window_->addSelectionItem(options_[i], i);
   }
 
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);

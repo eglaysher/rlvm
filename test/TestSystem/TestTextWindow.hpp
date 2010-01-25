@@ -65,7 +65,7 @@ class TestTextWindow : public TextWindow {
 
   std::string currentContents() const { return current_contents_; }
 
-  virtual void addSelectionItem(const std::string& utf8str) {}
+  virtual void addSelectionItem(const std::string& utf8str, int selection_id) {}
 
  private:
   std::string current_contents_;
