@@ -26,9 +26,11 @@
 
 #include "LongOperations/SelectLongOperation.hpp"
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include <boost/bind.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
@@ -47,11 +49,15 @@
 #include "libReallive/gameexe.h"
 
 using boost::bind;
+using boost::scoped_ptr;
 using boost::shared_ptr;
+using std::cerr;
+using std::endl;
 using std::string;
 using std::vector;
 using std::distance;
 using libReallive::SelectElement;
+using libReallive::ExpressionPiece;
 using libReallive::CommandElement;
 
 // -----------------------------------------------------------------------
@@ -62,12 +68,39 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
     : return_value_(-1) {
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
   for (unsigned int i = 0; i < params.size(); ++i) {
+    Option o;
+    o.shown = true;
+
     std::string evaluated_native =
         libReallive::evaluatePRINT(machine, params[i].text);
-    std::string utf8str = cp932toUTF8(evaluated_native,
-                                      machine.getTextEncoding());
+    o.str = cp932toUTF8(evaluated_native, machine.getTextEncoding());
 
-    options_.push_back(utf8str);
+    std::vector<SelectElement::Condition> conditions = params[i].cond_parsed;
+    for (std::vector<SelectElement::Condition>::const_iterator it =
+             conditions.begin(); it != conditions.end(); ++it) {
+      switch (it->effect) {
+        // TODO(erg): Someday, I might need to support the other options, but
+        // for now, I've never seen anything other than hide.
+        case SelectElement::OPTION_HIDE: {
+          bool value = false;
+          if (it->condition != "") {
+            const char* location = it->condition.c_str();
+            scoped_ptr<ExpressionPiece> condition(
+              libReallive::get_expression(location));
+            value = !condition->integerValue(machine);
+          }
+
+          o.shown = value;
+          break;
+        }
+        default:
+          cerr << "Unsupported option in select statement: "
+               << it->effect << endl;
+          break;
+      }
+    }
+
+    options_.push_back(o);
   }
 }
 
@@ -80,10 +113,10 @@ void SelectLongOperation::selected(int num) {
 // -----------------------------------------------------------------------
 
 bool SelectLongOperation::selectOption(const std::string& str) {
-  std::vector<std::string>::iterator it =
-    find(options_.begin(), options_.end(), str);
+  std::vector<Option>::iterator it =
+      find_if(options_.begin(), options_.end(), bind(&Option::str, _1) == str);
 
-  if (it != options_.end()) {
+  if (it != options_.end() && it->shown) {
     selected(distance(options_.begin(), it));
     return true;
   }
@@ -118,7 +151,10 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     bind(&NormalSelectLongOperation::selected, this, _1));
 
   for (size_t i = 0; i < options_.size(); ++i) {
-    text_window_->addSelectionItem(options_[i], i);
+    // TODO(erg): Also deal with colour.
+    if (options_[i].shown) {
+      text_window_->addSelectionItem(options_[i].str, i);
+    }
   }
 
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -219,20 +255,14 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   // Build graphic representations of the choices to display to the user.
   TextSystem& ts = machine.system().text();
-  for (size_t i = 0; i < options_.size(); ++i) {
-    const std::string& text = options_[i];
-
-    default_text_surfaces_.push_back(ts.renderText(
-        text, moji_size_, 0, 0, default_colour, &shadow_colour));
-    select_text_surfaces_.push_back(ts.renderText(
-        text, moji_size_, 0, 0, select_colour, &shadow_colour));
-  }
+  int shown_option_count = std::count_if(options_.begin(), options_.end(),
+                                         bind(&Option::shown, _1));
 
   // Calculate out the bounding rectangles for all the options.
   Size screen_size = machine.system().graphics().screenSize();
   int baseposx = 0;
   if (center_x) {
-    int totalwidth = ((options_.size() - 1) * reppos_x_) +
+    int totalwidth = ((shown_option_count - 1) * reppos_x_) +
                      back_surface_->size().width();
     baseposx = (screen_size.width() / 2) - (totalwidth / 2);
   } else {
@@ -241,18 +271,30 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   int baseposy = 0;
   if (center_y) {
-    int totalheight = ((options_.size() - 1) * reppos_y_) +
+    int totalheight = ((shown_option_count - 1) * reppos_y_) +
                       back_surface_->size().height();
     baseposy = (screen_size.height() / 2) - (totalheight / 2);
   } else {
     baseposy = basepos_y_;
   }
 
-  for (int i = 0; i < options_.size(); i++) {
-    bounding_rects_.push_back(Rect(baseposx, baseposy, back_surface_->size()));
+  for (size_t i = 0; i < options_.size(); i++) {
+    if (options_[i].shown) {
+      const std::string& text = options_[i].str;
 
-    baseposx += reppos_x_;
-    baseposy += reppos_y_;
+      ButtonOption o;
+      o.id = i;
+      o.default_surface = ts.renderText(
+          text, moji_size_, 0, 0, default_colour, &shadow_colour);
+      o.select_surface = ts.renderText(
+          text, moji_size_, 0, 0, select_colour, &shadow_colour);
+      o.bounding_rect = Rect(baseposx, baseposy, back_surface_->size());
+
+      buttons_.push_back(o);
+
+      baseposx += reppos_x_;
+      baseposy += reppos_y_;
+    }
   }
 
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -267,9 +309,8 @@ ButtonSelectLongOperation::~ButtonSelectLongOperation() {
 // -----------------------------------------------------------------------
 
 void ButtonSelectLongOperation::mouseMotion(const Point& p) {
-  for (int i = 0; i < options_.size(); i++) {
-    Rect bounding_rect = bounding_rects_[i];
-    if (bounding_rect.contains(p)) {
+  for (size_t i = 0; i < buttons_.size(); i++) {
+    if (buttons_[i].bounding_rect.contains(p)) {
       highlighted_item_ = i;
       return;
     }
@@ -287,10 +328,9 @@ bool ButtonSelectLongOperation::mouseButtonStateChanged(
   switch (mouseButton) {
     case MOUSE_LEFT: {
       Point pos = es.getCursorPos();
-      for (int i = 0; i < options_.size(); i++) {
-        Rect bounding_rect = bounding_rects_[i];
-        if (bounding_rect.contains(pos)) {
-          selected(i);
+      for (int i = 0; i < buttons_.size(); i++) {
+        if (buttons_[i].bounding_rect.contains(pos)) {
+          selected(buttons_[i].id);
           break;
         }
       }
@@ -315,8 +355,8 @@ bool ButtonSelectLongOperation::mouseButtonStateChanged(
 // -----------------------------------------------------------------------
 
 void ButtonSelectLongOperation::render(std::ostream* tree) {
-  for (int i = 0; i < options_.size(); i++) {
-    Rect bounding_rect = bounding_rects_[i];
+  for (int i = 0; i < buttons_.size(); i++) {
+    Rect bounding_rect = buttons_[i].bounding_rect;
 
     back_surface_->renderToScreenAsColorMask(
         back_surface_->rect(), bounding_rect, window_bg_colour_,
@@ -324,9 +364,9 @@ void ButtonSelectLongOperation::render(std::ostream* tree) {
     name_surface_->renderToScreen(name_surface_->rect(), bounding_rect);
 
     if (i == highlighted_item_) {
-      renderTextSurface(select_text_surfaces_[i], bounding_rect);
+      renderTextSurface(buttons_[i].select_surface, bounding_rect);
     } else {
-      renderTextSurface(default_text_surfaces_[i], bounding_rect);
+      renderTextSurface(buttons_[i].default_surface, bounding_rect);
     }
   }
 }

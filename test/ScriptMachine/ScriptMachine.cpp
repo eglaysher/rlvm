@@ -134,10 +134,10 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
            << ". Options are: " << endl;
 
       // Dear C++: I can't wait for the 'auto' keyword:
-      const std::vector<std::string>& options = sel->options();
-      for (std::vector<std::string>::const_iterator it = options.begin();
-           it != options.end(); ++it) {
-        cerr << "- \"" << *it << "\"" << endl;
+      const std::vector<SelectLongOperation::Option>& options = sel->options();
+      for (std::vector<SelectLongOperation::Option>::const_iterator it =
+               options.begin(); it != options.end(); ++it) {
+        cerr << "- \"" << it->str << "\"" << endl;
       }
 
       current_decision_++;

@@ -37,6 +37,7 @@
 #include "defs.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <stdint.h>
 
 #include "bytecode_fwd.h"
 
@@ -266,14 +267,31 @@ public:
 
 class SelectElement : public CommandElement {
 public:
+  static const int OPTION_COLOUR = 0x30;
+  static const int OPTION_TITLE = 0x31;
+  static const int OPTION_HIDE = 0x32;
+  static const int OPTION_BLANK = 0x33;
+  static const int OPTION_CURSOR = 0x34;
+
+  struct Condition {
+    string condition;
+    uint8_t effect;
+    string effect_argument;
+  };
+
   struct Param {
-    string cond, text;
+    std::vector<Condition> cond_parsed;
+    string cond_text;
+    string text;
     int line;
-    Param() : cond(), text(), line(0) {}
-    Param(const char* tsrc, const size_t tlen, const int lnum) :
-      cond(), text(tsrc, tlen), line(lnum) {}
-    Param(const char* csrc, const size_t clen, const char* tsrc, const size_t tlen, const int lnum) :
-      cond(csrc, clen), text(tsrc, tlen), line(lnum) {}
+    Param() : cond_text(), text(), line(0) {}
+    Param(const char* tsrc, const size_t tlen, const int lnum)
+        : cond_text(), text(tsrc, tlen), line(lnum) {}
+    Param(const std::vector<Condition>& conditions,
+          const char* csrc, const size_t clen,
+          const char* tsrc, const size_t tlen, const int lnum)
+        : cond_parsed(conditions), cond_text(csrc, clen), text(tsrc, tlen),
+          line(lnum) {}
   };
   typedef std::vector<Param> params_t;
 private:

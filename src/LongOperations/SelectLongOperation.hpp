@@ -50,6 +50,14 @@ class SelectElement;
 /// Base class for all selections.
 class SelectLongOperation : public LongOperation {
  public:
+  struct Option {
+    // Whether we show this option.
+    bool shown;
+
+    // What to print as the option.
+    std::string str;
+  };
+
   SelectLongOperation(RLMachine& machine,
                       const libReallive::SelectElement& commandElement);
 
@@ -60,7 +68,7 @@ class SelectLongOperation : public LongOperation {
   bool selectOption(const std::string& str);
 
   // Returns the underlying list of options.
-  const std::vector<std::string>& options() const {
+  const std::vector<Option>& options() const {
     return options_;
   }
 
@@ -69,7 +77,7 @@ class SelectLongOperation : public LongOperation {
 
  protected:
   // A list of the string literals of the options.
-  std::vector<std::string> options_;
+  std::vector<Option> options_;
 
   // If positive, the option that was selected (and that this object should
   // put in the store register).
@@ -120,8 +128,19 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   // Overridden from Renderable:
   virtual void render(std::ostream* tree);
 
-
  private:
+  struct ButtonOption {
+    // The id to return when this button is clicked.
+    int id;
+
+    // Text representations to blit to the screen.
+    boost::shared_ptr<Surface> default_surface;
+    boost::shared_ptr<Surface> select_surface;
+
+    // Where to render the above surface to.
+    Rect bounding_rect;
+  };
+
   void renderTextSurface(const boost::shared_ptr<Surface>& text_surface,
                          const Rect& bounding_rect);
 
@@ -135,7 +154,8 @@ class ButtonSelectLongOperation : public SelectLongOperation,
 
   int moji_size_;
 
-  // If positive, the currently highlighted text button.
+  // If positive, the currently highlighted text button. (As an index into
+  // buttons_, not as the button's id.)
   int highlighted_item_;
 
   // Properties when rendering our back surface as a color mask.
@@ -148,12 +168,7 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   // Surface loaded from #SELBTN.xxx.BACK.
   boost::shared_ptr<Surface> back_surface_;
 
-  // Text representations to blit to the screen.
-  std::vector<boost::shared_ptr<Surface> > default_text_surfaces_;
-  std::vector<boost::shared_ptr<Surface> > select_text_surfaces_;
-
-  // A set of rects describing where to render the back_surface_ to.
-  std::vector<Rect> bounding_rects_;
+  std::vector<ButtonOption> buttons_;
 };
 
 #endif  // SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_

@@ -497,13 +497,25 @@ SelectElement::SelectElement(const char* src)
     while (*src == ',') ++src;
     // Read condition, if present.
     const char* cond = src;
+    std::vector<Condition> cond_parsed;
     if (*src == '(') {
       ++src;
       while (*src != ')') {
-        if (*src == '(') src += next_expr(src);
+        Condition c;
+        if (*src == '(') {
+          int len = next_expr(src);
+          c.condition = string(src, len);
+          src += len;
+        }
         bool seekarg = *src != '2' && *src != '3';
+        c.effect = *src;
         ++src;
-        if (seekarg && *src != ')' && (*src < '0' || *src > '9')) src += next_expr(src);
+        if (seekarg && *src != ')' && (*src < '0' || *src > '9')) {
+          int len = next_expr(src);
+          c.effect_argument = string(src, len);
+          src += len;
+        }
+        cond_parsed.push_back(c);
       }
       if (*src++ != ')') throw Error("SelectElement(): expected `)'");
     }
@@ -516,7 +528,7 @@ SelectElement::SelectElement(const char* src)
     if (*src != '\n') throw Error("SelectElement(): expected `\\n'");
     int lnum = read_i16(src + 1);
     src += 3;
-    params.push_back(Param(cond, clen, text, tlen, lnum));
+    params.push_back(Param(cond_parsed, cond, clen, text, tlen, lnum));
   }
 
   // HACK?: In Kotomi's path in CLANNAD, there's a select with empty options
@@ -589,7 +601,7 @@ SelectElement::data() const {
   rv.push_back('\n');
   append_i16(rv, firstline);
   for (params_t::const_iterator it = params.begin(); it != params.end(); ++it) {
-    rv += it->cond;
+    rv += it->cond_text;
     rv += it->text;
     rv.push_back('\n');
     rv.push_back(it->line & 0xff);
@@ -605,7 +617,7 @@ const size_t
 SelectElement::length() const {
   size_t rv = repr.size() + 5;
   for (params_t::const_iterator it = params.begin(); it != params.end(); ++it)
-    rv += it->cond.size() + it->text.size() + 3;
+    rv += it->cond_text.size() + it->text.size() + 3;
   rv += (uselessjunk * 3);
   return rv;
 }
@@ -619,7 +631,7 @@ const size_t SelectElement::param_count() const {
 // -----------------------------------------------------------------------
 
 string SelectElement::get_param(int i) const {
-  string rv(params[i].cond);
+  string rv(params[i].cond_text);
   rv.append(params[i].text);
   return rv;
 }
