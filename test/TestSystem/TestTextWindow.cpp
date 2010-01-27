@@ -89,24 +89,25 @@ void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
 
 bool TestTextWindow::character(const std::string& current,
                                const std::string& next) {
+  bool ret = TextWindow::character(current, next);
+  // Must record after we've called superclass because character() can
+  // linebreak.
   current_contents_ += current;
-  return TextWindow::character(current, next);
+  return ret;
 }
 
 // -----------------------------------------------------------------------
 
 void TestTextWindow::setName(const std::string& utf8name,
                              const std::string& next_char) {
-  current_contents_ += "\\{" + utf8name + "}";
-
   TextWindow::setName(utf8name, next_char);
 }
 
 // -----------------------------------------------------------------------
 
 void TestTextWindow::hardBrake() {
-  current_contents_ += "\n";
   TextWindow::hardBrake();
+  current_contents_ += "\n";
 }
 
 // -----------------------------------------------------------------------

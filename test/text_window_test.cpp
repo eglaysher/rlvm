@@ -34,15 +34,36 @@
 #include "libReallive/archive.h"
 #include "libReallive/expression.h"
 #include "libReallive/intmemref.h"
+#include "Utilities/StringUtilities.hpp"
 
 #include "testUtils.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/bind.hpp>
 
 #include <string>
 #include <vector>
 
 using namespace boost;
+
+namespace {
+
+// "彼女"
+const std::string kGirl = "\xe5\xbd\xbc\xe5\xa5\xb3";
+
+// "「"
+const std::string kOpenQuote = "\xe3\x80\x8c";
+
+// "あ" (Hiragana a)
+const std::string kHiraganaA = "\xe3\x81\x82";
+
+// "」"
+const std::string kCloseQuote = "\xe3\x80\x8d";
+
+// "。"
+const std::string kPeriod = "\xe3\x80\x82";
+
+}  // namespace
 
 class TextWindowTest : public ::testing::Test {
  protected:
@@ -50,6 +71,42 @@ class TextWindowTest : public ::testing::Test {
       : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
         system(),
         rlmachine(system, arc) {
+  }
+
+  void kanonLikeTextbox() {
+    const std::string gameexe_data =
+        "#SCREENSIZE_MOD=0\n"
+        "#WAKU.000.TYPE=5\n"
+        "#WAKU.000.000.NAME=\"name_image\"\n"
+        "#WAKU.000.000.BACK=\"\"\n"
+        "#WAKU.000.000.AREA=0,0,0,0\n"
+        "#WAKU.000.000.REP_MOJI_POS=0,0\n"
+        "#WAKU.000.000.MOVE_BOX=0:0,0,0,0\n"
+        "#WAKU.000.000.CLEAR_BOX=0:0,0,0,0\n"
+        "#WAKU.000.000.READJUMP_BOX=0:0,0,0,0\n"
+        "#WAKU.000.000.AUTOMODE_BOX=0:0,0,0,0\n"
+        "#WAKU.000.000.MSGBK_BOX=0:0,0,0,0\n"
+        "#WAKU.000.000.MSGBKLEFT_BOX=0:0,0,0,0\n"
+        "#WAKU.000.000.MSGBKRIGHT_BOX=0:0,0,0,0\n"
+        "#WINDOW.000.MOJI_CNT=22,3\n"
+        "#WINDOW.000.MOJI_REP=0,3\n"
+        "#WINDOW.000.MOJI_POS=29,0,53,0\n"
+        "#WINDOW.000.POS=0:0,344\n"
+        "#WINDOW.000.KEYCUR_MOD=0:0,0\n"
+        "#WINDOW.000.WAKU_SETNO=000\n"
+        "#WINDOW.000.WAKU_MOD=0\n"
+        "#WINDOW.000.WAKU_NO=000\n"
+        "#WINDOW.000.ATTR_MOD=1\n"
+        "#WINDOW.000.ATTR=010,10,10,255,0\n"
+        "#COLOR_TABLE.000=255,255,255\n";
+
+    setGameexeData(gameexe_data);
+
+    // Inject an image for the textbox.
+    system.graphics().injectSurface(
+        "name_image",
+        boost::shared_ptr<Surface>(MockSurface::Create("name_image",
+                                                       Size(640, 122))));
   }
 
   void setGameexeData(const std::string& data) {
@@ -71,39 +128,7 @@ class TextWindowTest : public ::testing::Test {
 // Tests that a text box like the one in Kanon (origin 0, left aligned, etc)
 // has its windowRect() calculated correctly from the gameexe data.
 TEST_F(TextWindowTest, KanonLikePositioning) {
-  const std::string gameexe_data =
-      "#SCREENSIZE_MOD=0\n"
-      "#WAKU.000.TYPE=5\n"
-      "#WAKU.000.000.NAME=\"name_image\"\n"
-      "#WAKU.000.000.BACK=\"\"\n"
-      "#WAKU.000.000.AREA=0,0,0,0\n"
-      "#WAKU.000.000.REP_MOJI_POS=0,0\n"
-      "#WAKU.000.000.MOVE_BOX=0:0,0,0,0\n"
-      "#WAKU.000.000.CLEAR_BOX=0:0,0,0,0\n"
-      "#WAKU.000.000.READJUMP_BOX=0:0,0,0,0\n"
-      "#WAKU.000.000.AUTOMODE_BOX=0:0,0,0,0\n"
-      "#WAKU.000.000.MSGBK_BOX=0:0,0,0,0\n"
-      "#WAKU.000.000.MSGBKLEFT_BOX=0:0,0,0,0\n"
-      "#WAKU.000.000.MSGBKRIGHT_BOX=0:0,0,0,0\n"
-      "#WINDOW.000.MOJI_CNT=22,3\n"
-      "#WINDOW.000.MOJI_REP=0,3\n"
-      "#WINDOW.000.MOJI_POS=29,0,53,0\n"
-      "#WINDOW.000.POS=0:0,344\n"
-      "#WINDOW.000.KEYCUR_MOD=0:0,0\n"
-      "#WINDOW.000.WAKU_SETNO=000\n"
-      "#WINDOW.000.WAKU_MOD=0\n"
-      "#WINDOW.000.WAKU_NO=000\n"
-      "#WINDOW.000.ATTR_MOD=1\n"
-      "#WINDOW.000.ATTR=010,10,10,255,0\n"
-      "#COLOR_TABLE.000=255,255,255\n";
-
-  setGameexeData(gameexe_data);
-
-  // Inject an image for the textbox.
-  system.graphics().injectSurface(
-      "name_image",
-      boost::shared_ptr<Surface>(MockSurface::Create("name_image",
-                                                     Size(640, 122))));
+  kanonLikeTextbox();
 
   TestTextWindow window(system, 0);
 
@@ -150,4 +175,90 @@ TEST_F(TextWindowTest, PrincessBraveLikePositioning) {
   TestTextWindow window(system, 2);
 
   EXPECT_EQ(Rect(0, 292, Size(800, 300)), window.windowRect());
+}
+
+// Tests normal line breaking by trying to fit a line of "<two kanji name>
+// <quote open> 20x<hiragana a> <quote close>" in a Kanon-like
+// textbox. There should be a newline before the final 'a'.
+TEST_F(TextWindowTest, NormalLineBreaking) {
+  kanonLikeTextbox();
+
+  TestTextWindow window(system, 0);
+
+  // "彼女", "「"
+  window.setName(kGirl, kOpenQuote);
+
+  // "「", 20x"あ", "」"
+  std::string str = kOpenQuote;
+  for (int i = 0; i < 20; ++i)
+    str += kHiraganaA;
+  str += kCloseQuote;
+
+  printTextToFunction(bind(&TextWindow::character, ref(window), _1, _2),
+                      str, "");
+
+  EXPECT_EQ(window.currentContents(),
+            "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
+            "\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81"
+            "\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82"
+            "\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3"
+            "\x81\x82\x0a\xe3\x81\x82\xe3\x80\x8d");
+}
+
+// Like NormalLineBreaking, but should have 19 Hiragana 'A's to make sure we
+// don't call hardBrake() and squeeze the final close quote onto the first
+// line.
+TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
+  kanonLikeTextbox();
+
+  TestTextWindow window(system, 0);
+
+  // "彼女", "「"
+  window.setName(kGirl, kOpenQuote);
+
+  // "「", 19x"あ", "」"
+  std::string str = kOpenQuote;
+  for (int i = 0; i < 19; ++i)
+    str += kHiraganaA;
+  str += kCloseQuote;
+
+  printTextToFunction(bind(&TextWindow::character, ref(window), _1, _2),
+                      str, "");
+
+  EXPECT_EQ(window.currentContents(),
+            "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
+            "\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81"
+            "\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82"
+            "\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3"
+            "\x81\x82\xe3\x80\x8d");
+}
+
+// Tests the string "<two character name> <quote open> 19x<random hiragana
+// char> <period> <quote close>" in a Kanon-like textbox. This time, we should
+// break before the final 'A' because both the <elipsis> and the <close quote>
+// are kinsoku characters.
+TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
+  kanonLikeTextbox();
+
+  TestTextWindow window(system, 0);
+
+  // "彼女", "「"
+  window.setName(kGirl, kOpenQuote);
+
+  // "「", 19x"あ", "」"
+  std::string str = kOpenQuote;
+  for (int i = 0; i < 19; ++i)
+    str += kHiraganaA;
+  str += kPeriod;
+  str += kCloseQuote;
+
+  printTextToFunction(bind(&TextWindow::character, ref(window), _1, _2),
+                      str, "");
+
+  EXPECT_EQ(window.currentContents(),
+            "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
+            "\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81"
+            "\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82"
+            "\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\x0a"
+            "\xe3\x81\x82\xe3\x80\x82\xe3\x80\x8d");
 }
