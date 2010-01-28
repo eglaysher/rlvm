@@ -140,10 +140,15 @@ class TextWindow {
    */
   void setWindowPosition(const std::vector<int>& pos_data);
 
+  // We have to differentiate between the official size where we're supposed to
+  // put text (textWindowSize()) and the actual size of the surface
+  // (textSurfaceSize()) because textSurfaceSize() contains extra space for one
+  // squashed kinsoku character.
   Size textWindowSize() const;
+  Size textSurfaceSize() const;
 
   Rect windowRect() const;
-  Rect textRect() const;
+  Rect textSurfaceRect() const;
 
   int nameboxX1() const;
   int nameboxY1() const;

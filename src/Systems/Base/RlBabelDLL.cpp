@@ -575,7 +575,7 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
                             int globalwaku) {
   // Does this handle all cases?
   boost::shared_ptr<TextWindow> window = getWindow(-1);
-  Point textOrigin = window->textRect().origin();
+  Point textOrigin = window->textSurfaceRect().origin();
   x -= textOrigin.x();
   y -= textOrigin.y();
 

@@ -94,7 +94,7 @@ void SDLTextWindow::clearWin() {
 
   // Allocate the text window surface
   if (!surface_)
-    surface_.reset(new SDLSurface(getSDLGraphics(system()), textWindowSize()));
+    surface_.reset(new SDLSurface(getSDLGraphics(system()), textSurfaceSize()));
   surface_->fill(RGBAColour::Clear());
 
   name_surface_.reset();
@@ -125,7 +125,7 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str) {
   SDL_Surface* inverted = AlphaInvert(normal);
 
   // Figure out xpos and ypos
-  Point position = textRect().origin() +
+  Point position = textSurfaceRect().origin() +
                    Size(text_insertion_point_x_, text_insertion_point_y_);
 
   SelectionElement* element = new SelectionElement(

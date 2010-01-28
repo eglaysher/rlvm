@@ -260,12 +260,16 @@ void TextWindow::setWindowPosition(const vector<int>& pos_data) {
 // -----------------------------------------------------------------------
 
 Size TextWindow::textWindowSize() const {
-  // There is one extra character in each line to accommodate squeezed punctuation.
   return Size((x_window_size_in_chars_ *
-               (default_font_size_in_pixels_ + x_spacing_) +
-               default_font_size_in_pixels_),
+               (default_font_size_in_pixels_ + x_spacing_)),
               (y_window_size_in_chars_ *
                (default_font_size_in_pixels_ + y_spacing_ + ruby_size_)));
+}
+
+Size TextWindow::textSurfaceSize() const {
+  // There is one extra character in each line to accommodate squeezed
+  // punctuation.
+  return textWindowSize() + Size(default_font_size_in_pixels_, 0);
 }
 
 // -----------------------------------------------------------------------
@@ -294,7 +298,7 @@ Rect TextWindow::windowRect() const {
     // TODO(erg): This looks wrong maybe. Shouldn't I be adding the paddings to
     // both sides or deleting from all sides? (Or just not add it here in the
     // first place?
-    boxSize = textWindowSize() + Size(left_box_padding_ - right_box_padding_,
+    boxSize = textSurfaceSize() + Size(left_box_padding_ - right_box_padding_,
                                       upper_box_padding_ - lower_box_padding_);
   }
 
@@ -342,13 +346,13 @@ Rect TextWindow::windowRect() const {
 
 // -----------------------------------------------------------------------
 
-Rect TextWindow::textRect() const {
+Rect TextWindow::textSurfaceRect() const {
   Rect window = windowRect();
 
   Point textOrigin = window.origin() +
                      Size(left_box_padding_, upper_box_padding_);
 
-  Size rectSize = textWindowSize();
+  Size rectSize = textSurfaceSize();
   rectSize += Size(right_box_padding_, lower_box_padding_);
 
   return Rect(textOrigin, rectSize);
@@ -415,11 +419,11 @@ Point TextWindow::keycursorPosition() const {
   // out. The keycursor in ALMA isn't positioned correctly.
   switch (keycursor_type_) {
   case 0:
-    return textRect().lowerRight();
+    return textSurfaceRect().lowerRight();
   case 1:
     return Point(text_insertion_point_x_, text_insertion_point_y_);
   case 2:
-    return textRect().origin() + keycursor_pos_;
+    return textSurfaceRect().origin() + keycursor_pos_;
   default:
     throw SystemError("Invalid keycursor type");
   }
@@ -469,7 +473,7 @@ void TextWindow::render(std::ostream* tree) {
       *tree << "  Text Window #" << window_num_ << endl;
     }
 
-    Point textOrigin = textRect().origin();
+    Point textOrigin = textSurfaceRect().origin();
 
     textbox_waku_->render(tree, box, surface_size);
     renderFaces(tree, 1);
