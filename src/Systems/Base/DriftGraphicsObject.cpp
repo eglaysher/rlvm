@@ -41,6 +41,7 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
+#include "Utilities/Graphics.hpp"
 
 using namespace std;
 
@@ -170,6 +171,10 @@ void DriftGraphicsObject::render(const GraphicsObject& go, std::ostream* tree) {
       else
         dest_y %= bounding_box.size().height();
       Rect dest(bounding_box.origin() + Size(dest_x, dest_y), src.size());
+
+      if (go.hasClip())
+        ClipDestination(go.clipRect(), src, dest);
+
       surface->renderToScreen(src, dest, it->alpha);
     }
   }
