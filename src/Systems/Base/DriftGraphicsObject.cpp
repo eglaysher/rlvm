@@ -32,6 +32,8 @@
 #include "Systems/Base/DriftGraphicsObject.hpp"
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -112,8 +114,8 @@ void DriftGraphicsObject::render(const GraphicsObject& go, std::ostream* tree) {
     // Grab the drift object
     if (particles_.size() < count) {
       Particle p;
-      p.x = rand() % bounding_box.size().width();
-      p.y = rand() % bounding_box.size().height();
+      p.x = rand() % bounding_box.size().width();   // NOLINT
+      p.y = rand() % bounding_box.size().height();  // NOLINT
       p.alpha = 255;
       p.start_time = current_time;
 
@@ -153,7 +155,8 @@ void DriftGraphicsObject::render(const GraphicsObject& go, std::ostream* tree) {
       // Add the left drift if we have this bit set.
       if (use_drift) {
         dest_x -= bounding_box.size().width() *
-                (static_cast<double>((current_time - it->start_time) % drift_speed) /
+                (static_cast<double>((current_time - it->start_time) %
+                                     drift_speed) /
                  static_cast<double>(drift_speed));
       }
 
