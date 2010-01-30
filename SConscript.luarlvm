@@ -1,0 +1,36 @@
+# Main scons file
+
+import shutil
+import sys
+
+Import('env')
+
+########################################################## [ Root environment ]
+test_env = env.Clone()
+test_env.Append(
+  CPPDEFINES = [
+    "CASE_SENSITIVE_FILESYSTEM",
+    "_THREAD_SAFE"
+  ],
+)
+
+test_env.Append(CPPPATH = ["#/test"])
+
+script_machine_files = [
+  "test/ScriptMachine/ScriptMachine.cpp",
+  "test/ScriptMachine/ScriptWorld.cpp",
+  "test/ScriptMachine/luabind_EventSystem.cpp",
+  "test/ScriptMachine/luabind_GraphicsObject.cpp",
+  "test/ScriptMachine/luabind_GraphicsSystem.cpp",
+  "test/ScriptMachine/luabind_Machine.cpp",
+  "test/ScriptMachine/luabind_System.cpp",
+  "test/ScriptMachine/luabind_utility.cpp"
+]
+
+if env['BUILD_LUA_TESTS'] == True:
+  test_env.Append(CPPPATH = [ "/usr/include/lua5.1" ] )
+
+  test_env.RlvmProgram("luaRlvm", ['test/luaRlvm.cpp', script_machine_files],
+                       use_lib_set = ["SDL", "LUA"],
+                       rlvm_libs = ["system_sdl", "rlvm"])
+  test_env.Install('$OUTPUT_DIR', 'luaRlvm')

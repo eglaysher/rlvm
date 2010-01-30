@@ -1,0 +1,66 @@
+# Main scons file
+
+import shutil
+import sys
+
+Import('env')
+
+########################################################## [ Root environment ]
+test_env = env.Clone()
+test_env.Append(
+  CPPDEFINES = [
+    "CASE_SENSITIVE_FILESYSTEM",
+    "_THREAD_SAFE"
+  ],
+)
+
+test_env.Append(CPPPATH = ["#/test"])
+
+test_case_files = [
+  "test/TestSystem/TestMachine.cpp",
+
+  "test/testUtils.cpp",
+  "test/gameexe_test.cpp",
+  "test/rlmachine_test.cpp",
+  "test/lazy_array_test.cpp",
+  "test/graphics_object_test.cpp",
+  "test/rloperation_test.cpp",
+  "test/regressions_test.cpp",
+  "test/text_system_test.cpp",
+  "test/expression_test.cpp",
+  "test/sound_system_test.cpp",
+  "test/text_window_test.cpp",
+  "test/effect_test.cpp",
+  "test/rlbabel_test.cpp",
+  "test/utilities_test.cpp",
+
+  # medium tests
+  "test/medium_eventloop_test.cpp",
+  "test/medium_msg_test.cpp",
+  "test/medium_object_promotion.cpp",
+  "test/medium_grp_test.cpp",
+
+  # large tests
+  "test/large_sys_test.cpp",
+  "test/large_str_test.cpp",
+  "test/large_mem_test.cpp",
+  "test/large_jmp_test.cpp"
+]
+
+null_system_files = [
+  "test/TestSystem/TestEventSystem.cpp",
+  "test/TestSystem/TestGraphicsSystem.cpp",
+  "test/TestSystem/TestSoundSystem.cpp",
+  "test/TestSystem/TestSystem.cpp",
+  "test/TestSystem/TestTextSystem.cpp",
+  "test/TestSystem/TestTextWindow.cpp",
+  "test/TestSystem/MockSurface.cpp",
+  "test/TestSystem/MockTextWindow.cpp"
+]
+
+if env['BUILD_RLC_TESTS']:
+  test_env.RlvmProgram('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
+                                     test_case_files],
+                       use_lib_set = ["TEST"],
+                       rlvm_libs = ["rlvm"])
+  test_env.Install('$OUTPUT_DIR', 'rlvmTests')

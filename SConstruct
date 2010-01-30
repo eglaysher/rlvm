@@ -371,6 +371,16 @@ env.SConscript("SConscript",
                duplicate=0,
                exports='env')
 
+env.SConscript("SConscript.test",
+               build_dir="$BUILD_DIR/",
+               duplicate=0,
+               exports='env')
+
+env.SConscript("SConscript.luarlvm",
+               build_dir="$BUILD_DIR/",
+               duplicate=0,
+               exports='env')
+
 if GetOption("fullstatic") and env['PLATFORM'] == 'darwin':
   env.SConscript("SConscript.cocoa",
                  build_dir="$BUILD_DIR/",
