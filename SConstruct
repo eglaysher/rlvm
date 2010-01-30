@@ -255,11 +255,6 @@ if not config.CheckGuichan():
   print "(Using included copy of guichan)"
   subcomponents.append("guichan")
 
-# Building the luaRlvm test harness requires having lua installed;
-if config.CheckLibWithHeader('lua5.1', 'lua5.1/lua.h', 'cpp'):
-  env['BUILD_LUA_TESTS'] = True
-  subcomponents.append("luabind")
-
 # We need to build gtest/gmock always.
 subcomponents.append("gtest")
 subcomponents.append("gmock")
