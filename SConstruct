@@ -255,10 +255,6 @@ if not config.CheckGuichan():
   print "(Using included copy of guichan)"
   subcomponents.append("guichan")
 
-# We need to build gtest/gmock always.
-subcomponents.append("gtest")
-subcomponents.append("gmock")
-
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
 config.CheckLibWithHeader('png', 'png.h', "cpp")
@@ -289,13 +285,6 @@ for component in subcomponents:
 #########################################################################
 ## Building things
 #########################################################################
-
-if env['BUILD_RLC_TESTS'] == True:
-  # Build the platform independent SEEN.TXT files.
-  env.SConscript("test/SConscript.rlc",
-                 build_dir="build/test",
-                 duplicate=0,
-                 exports='env')
 
 duplicate_files = 0
 # Hacky Temporary Differentiation between release and debug:
@@ -352,10 +341,18 @@ env.SConscript("SConscript",
                duplicate=0,
                exports='env')
 
-env.SConscript("SConscript.test",
-               build_dir="$BUILD_DIR/",
-               duplicate=0,
-               exports='env')
+if env['BUILD_RLC_TESTS'] == True:
+  # Build the platform independent SEEN.TXT files.
+  env.SConscript("test/SConscript.rlc",
+                 build_dir="build/test",
+                 duplicate=0,
+                 exports='env')
+
+  # Build the rlvmTests binary that uses those SEEN.TXT files.
+  env.SConscript("SConscript.test",
+                 build_dir="$BUILD_DIR/",
+                 duplicate=0,
+                 exports='env')
 
 env.SConscript("SConscript.luarlvm",
                build_dir="$BUILD_DIR/",
