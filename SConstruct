@@ -288,22 +288,8 @@ env.ParseConfig("freetype-config --cflags --libs")
 #########################################################################
 ## Building subcomponent functions
 #########################################################################
-component_env = env.Clone()
-
-component_env.Append(
-  CPPFLAGS = [
-    "-Os"
-  ]
-)
-
 for component in subcomponents:
-  component_env.SConscript("vendor/" + component + "/SConscript",
-                           build_dir="build/libraries/" + component,
-                           duplicate=0,
-                           exports=["component_env", "env"])
-
-  # Make sure the main compilation can see the includes to these files
-  env.Append(CPPPATH = [ "#vendor/" + component + "/include/" ])
+  env.BuildSubcomponent(component)
 
 #########################################################################
 ## Building things

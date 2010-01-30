@@ -102,6 +102,28 @@ def AddStaticLibraryTo(env, name, type):
   path = env['LIBRARY_DIR'] + "/" + env['LIBPREFIX'] + name + env['LIBSUFFIX']
   env[_MakeStaticName(type)].append(path)
 
+
+def BuildSubcomponent(env, component_name):
+  """
+  Builds the subcomponent |name| and puts the resultant libraries in
+  build/libraries/|name| and exposes that subcomponent's headers to |env|.
+  """
+  component_env = env.Clone()
+  component_env.Append(
+    CPPFLAGS = [
+      "-Os"
+    ]
+  )
+
+  component_env.SConscript("vendor/" + component_name + "/SConscript",
+                           build_dir="build/libraries/" + component_name,
+                           duplicate=0,
+                           exports=["component_env", "env"])
+
+  # Make sure the main compilation can see the includes to these files
+  env.Append(CPPPATH = [ "#vendor/" + component_name + "/include/" ])
+
+
 def generate(env, **kw):
   env.Append(
     # A list of absolute paths to static sdl libraries to make things that need
@@ -119,6 +141,7 @@ def generate(env, **kw):
   env.AddMethod(RlvmLibrary)
   env.AddMethod(RlvmProgram)
   env.AddMethod(AddStaticLibraryTo)
+  env.AddMethod(BuildSubcomponent)
 
 def exists(env):
   return True
