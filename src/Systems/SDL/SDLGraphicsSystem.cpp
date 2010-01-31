@@ -564,18 +564,21 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
     data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask,
     DefaultBmask, amask);
 
-  // This is the perfect example of why I need to come back and
-  // really understand this part of the code I'm stealing. WTF is
-  // this!?
-  // :Surface doesn't use preallocated memory? (the malloc'd data argument)
-  // :This is silly! --RT
-  // tmp->flags &= ~SDL_PREALLOC;
+  // We now need to convert this surface to a format suitable for use across
+  // the rest of the program. We can't (regretfully) rely on
+  // SDL_DisplayFormat[Alpha] to decide on a format that we can send to OpenGL
+  // (see some Intel macs) so use convert surface to a pixel order our data
+  // correctly while still using the appropriate alpha flags. So use the above
+  // format with only the flags that would have been set by
+  // SDL_DisplayFormat[Alpha].
+  Uint32 flags;
+  if (with_mask == ALPHA_MASK) {
+    flags = tmp->flags & (SDL_SRCALPHA | SDL_RLEACCELOK);
+  } else {
+    flags = tmp->flags & (SDL_SRCCOLORKEY | SDL_SRCALPHA | SDL_RLEACCELOK);
+  }
 
-  SDL_Surface* surf;
-  if (with_mask == ALPHA_MASK)
-    surf = SDL_DisplayFormatAlpha(tmp);
-  else
-    surf = SDL_DisplayFormat(tmp);
+  SDL_Surface* surf = SDL_ConvertSurface(tmp, tmp->format, flags);
   SDL_FreeSurface(tmp);
   return surf;
 };
