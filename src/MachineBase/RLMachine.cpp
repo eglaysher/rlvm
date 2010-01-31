@@ -180,6 +180,9 @@ void RLMachine::attachModule(RLModule* module) {
     ss << "Module identification clash: tyring to overwrite "
        << cur_mod << " with " << *module << endl;
 
+    // Free |module| since we took ownership of it
+    delete module;
+
     throw rlvm::Exception(ss.str());
   }
 
