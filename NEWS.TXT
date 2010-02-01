@@ -1,6 +1,22 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.8:
+
+- HIK animations have been reverse engineered and implemented:
+  - Opening pan of the city in Planetarian now displays.
+  - Many things that use HIK animations in the ALMA opening work.
+- Weather objects have been reverse engineered and implemented and are used in
+  pretty much every game I can find. They're used for snow, sakura petals,
+  rain, balls of light, etc.
+- Implement better line breaking for Japanese text.
+- Fix color issues (blue displayed as red and vice versa) on some displays.
+- Fixed multiple compatibility issues with the free demos on the Kinetic Novel
+  website. Some demos are almost playable now; fully supporting them is an
+  ongoing project.
+
+-------------------------------------------------------------------------
+
 Version 0.7:
 
 - AIR Standard Edition can be completed.

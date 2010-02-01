@@ -2,7 +2,7 @@ Source: rlvm
 Section: games
 Priority: extra
 Maintainer: Elliot Glaysher <glaysher@umich.edu>
-Build-Depends: debhelper (>= 5), libsdl1.2-dev, libfreetype6-dev, zlib1g-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libgl1-mesa-dev, libboost-date-time1.40-dev, libboost-filesystem1.40-dev, libboost-iostreams1.40-dev, libboost-program-options1.40-dev, libboost-serialization1.40-dev, libboost-signals1.40-dev, libboost-thread1.40-dev, libboost1.40-dev, libglew1.5-dev, scons
+Build-Depends: debhelper (>= 5), libsdl1.2-dev, libfreetype6-dev, zlib1g-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libgl1-mesa-dev, libboost-date-time1.40-dev, libboost-filesystem1.40-dev, libboost-iostreams1.40-dev, libboost-program-options1.40-dev, libboost-serialization1.40-dev, libboost-signals1.40-dev, libboost-thread1.40-dev, libboost1.40-dev, libglew1.5-dev, scons, libguichan-dev
 Standards-Version: 3.7.2
 
 Package: rlvm
@@ -10,6 +10,6 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: RealLive virtual machine clone
  rlvm is a Free Software reimplementation of VisualArt's KK's
- RealLive interpreter, used in the games CLANNAD, Planetarian
- and Kanon. Currently rlvm is only compatible with Planetarian.
+ RealLive interpreter, used in the games Kanon, Air, CLANNAD,
+ and Planetarian, among many others.
 

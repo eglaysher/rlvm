@@ -1,3 +1,12 @@
+rlvm (0.8) unstable; urgency=low
+
+  * HIK animations implemented.
+  * Weather objects implemented.
+  * Implement better line breaking for Japanese text.
+  * Some compatibility bugs with Kinetic Novel games fixed.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sun, 31 Jan 2010 17:29:09 -0800
+
 rlvm (0.7) unstable; urgency=low
 
   * AIR Standard Edition can be completed, along with a few other games.
