@@ -706,7 +706,6 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 boost::shared_ptr<Surface> SDLGraphicsSystem::getHaikei() {
   if (haikei_->rawSurface() == NULL) {
     haikei_->allocate(screenSize(), true);
-    cerr << "Reallocating haikei!" << endl;
   }
 
   return haikei_;
