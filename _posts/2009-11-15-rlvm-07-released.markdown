@@ -16,3 +16,13 @@ work.
 [ogg]: http://en.wikipedia.org/wiki/Vorbis
 [status]: http://github.com/eglaysher/rlvm/blob/master/STATUS.TXT
 [development]: http://www.elliotglaysher.org/2009/11/07/hardest-bug/
+
+<h2>Downloads</h2>
+<ul>
+  <li class="sourceicon">
+    <a href="http://github.com/eglaysher/rlvm/tarball/release-0.07"
+       onClick="pageTracker._trackEvent('Download', 'source-0.7');">
+      Source code (0.07)
+    </a>
+  </li>
+</ul>
