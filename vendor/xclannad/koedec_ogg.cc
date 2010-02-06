@@ -43,21 +43,6 @@
 // #include<tremor/ivorbisfile.h>
 // #endif
 
-#define INITSIZE 65536
-
-static int cur_size = 0;
-static char* out = 0;
-static void Resize(void) {
-	char* new_out = (char*)realloc(out, cur_size+INITSIZE);
-	if (new_out == 0) {
-		new_out = (char*)malloc(cur_size+INITSIZE);
-		memcpy(new_out, out, cur_size);
-		free(out);
-	}
-	out = new_out;
-	cur_size += INITSIZE;
-}
-
 struct OggInfo {
 	FILE* stream;
 	int length;
@@ -150,7 +135,7 @@ OggFILE::~OggFILE() {
 }
 int OggFILE::Read(char* buf, int blksize, int blklen) {
 	if (pimpl == 0) return -1;
-	int current_section;
+// int current_section;
 // #if HAVE_LIBVORBISFILE
 	int r = ov_read( &(pimpl->vf), buf, blksize*blklen, 0, 2, 1, 0);
 // #else /* HAVE_LIBVORBISIDEC */

@@ -297,13 +297,13 @@ namespace internal
         }
         else if (cp < 0x10000) {              // three octets
             *(result++) = static_cast<uint8_t>((cp >> 12)           | 0xe0);
-            *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
+            *(result++) = static_cast<uint8_t>(((cp >> 6) & 0x3f)   | 0x80);
             *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
         }
         else if (cp <= internal::CODE_POINT_MAX) {      // four octets
             *(result++) = static_cast<uint8_t>((cp >> 18)           | 0xf0);
-            *(result++) = static_cast<uint8_t>((cp >> 12)& 0x3f     | 0x80);
-            *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
+            *(result++) = static_cast<uint8_t>(((cp >> 12) & 0x3f)  | 0x80);
+            *(result++) = static_cast<uint8_t>(((cp >> 6) & 0x3f)   | 0x80);
             *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
         }
         else

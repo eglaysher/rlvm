@@ -324,7 +324,7 @@ void HIKScript::render(std::ostream* tree) {
 
     for (std::vector<Animation>::const_iterator jt = it->animations.begin();
          jt != it->animations.end(); ++jt) {
-      int frame_to_use = 0;
+      size_t frame_to_use = 0;
       if (jt->use_multiframe_animation) {
         int ticks_since_sequence_start = time_since_creation % jt->total_time;
 

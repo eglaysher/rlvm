@@ -81,7 +81,7 @@ uint16_t Cp936::JisDecode(uint16_t ch) const {
 }
 
 void Cp936::JisEncodeString(const char* src, char* buf, size_t buflen) const {
-  int srclen = std::strlen(src), i = 0, j = 0;
+  size_t srclen = std::strlen(src), i = 0, j = 0;
   while (i < srclen && j < buflen) {
     int c1 = (unsigned char) src[i++];
     if (c1 < 0x80) {

@@ -12,6 +12,11 @@ root_env.Append(
     "CASE_SENSITIVE_FILESYSTEM",
     "_THREAD_SAFE"
   ],
+
+  CXXFLAGS = [
+    "-Wall",
+    "-Wno-sign-compare"
+  ]
 )
 
 if root_env['PLATFORM'] == 'darwin':

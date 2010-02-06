@@ -58,8 +58,6 @@ void ParentGraphicsObjectData::setObject(int obj_number,
 
 void ParentGraphicsObjectData::render(const GraphicsObject& go,
                                       std::ostream* tree) {
-  ParentGraphicsObjectData* cloned = new ParentGraphicsObjectData;
-
   AllocatedLazyArrayIterator<GraphicsObject> it = objects_.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = objects_.allocated_end();
   for (; it != end; ++it) {

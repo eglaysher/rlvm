@@ -418,7 +418,7 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
       case 4: {
         // Set indent code
         if (getWindow(-1)->useIndentation()) {
-          char index = endToken();
+          unsigned char index = endToken();
           if (index < kCodeMapSize)
             rv = codemap[index];
           else
@@ -431,7 +431,7 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         return textoutGetChar(buffer, xmod);
       }
       case 5: {
-        char index = endToken();
+        unsigned char index = endToken();
         if (index < kCodeMapSize)
           rv = codemap[index];
         else
@@ -698,7 +698,6 @@ IntReferenceIterator RlBabelDLL::getIvar(int addr) {
 StringReferenceIterator RlBabelDLL::getSvar(int addr) {
   Memory* m = &(machine_.memory());
   int bank = addr >> 16;
-  int locaiton = addr & 0xfff;
 
   switch (bank) {
     case libReallive::STRS_LOCATION:

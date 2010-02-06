@@ -238,7 +238,7 @@ public:
 
 template<class NWAI> void NWADecode(const NWAI& info,const char* data, char* outdata, int datasize, int outdatasize) {
 	int d[2];
-	int i,j;
+	int i;
 	int shift = 0;
 	const char* dataend = data+datasize;
 	/* 最初のデータを読み込む */

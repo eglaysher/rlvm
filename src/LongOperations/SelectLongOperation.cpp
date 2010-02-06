@@ -328,7 +328,7 @@ bool ButtonSelectLongOperation::mouseButtonStateChanged(
   switch (mouseButton) {
     case MOUSE_LEFT: {
       Point pos = es.getCursorPos();
-      for (int i = 0; i < buttons_.size(); i++) {
+      for (size_t i = 0; i < buttons_.size(); i++) {
         if (buttons_[i].bounding_rect.contains(pos)) {
           selected(buttons_[i].id);
           break;
@@ -355,7 +355,7 @@ bool ButtonSelectLongOperation::mouseButtonStateChanged(
 // -----------------------------------------------------------------------
 
 void ButtonSelectLongOperation::render(std::ostream* tree) {
-  for (int i = 0; i < buttons_.size(); i++) {
+  for (size_t i = 0; i < buttons_.size(); i++) {
     Rect bounding_rect = buttons_[i].bounding_rect;
 
     back_surface_->renderToScreenAsColorMask(

@@ -145,7 +145,6 @@ ARCFILE::ARCFILE(char* aname) {
 }
 
 void ARCFILE::Init(void) {
-	int i;
 	if (! arc_atom.empty()) return;
 	if (arcname == 0) return;
 	/* ファイル数を得る */
@@ -269,7 +268,6 @@ char* DIRFILE::SearchFile(const char* fname) {
 }
 
 void ARCFILE::ListFiles(FILE* out) {
-	int i;
 	Init();
 	if (arc_atom.empty()) return;
 	// list file name...
@@ -277,7 +275,7 @@ void ARCFILE::ListFiles(FILE* out) {
 		"pointer","arcsize", "filesize");
 	vector<ARCFILE_ATOM>::iterator it;
 	for (it=arc_atom.begin(); it!=arc_atom.end(); it++) {
-		fprintf(out,"%16s %10d %10d %10d\n",
+		fprintf(out,"%16s %10jd %10d %10d\n",
 			it->filename,it->offset,it->arcsize,it->filesize);
 	}
 	return;
@@ -289,7 +287,7 @@ void ARCFILE::InitList(void) {
 }
 char* ARCFILE::ListItem(void) {
 	if (list_point < 0) return 0;
-	if (list_point >= arc_atom.size()) return 0;
+	if (size_t(list_point) >= arc_atom.size()) return 0;
 	char* fname = arc_atom[list_point].filename;
 	if (fname == 0) return 0;
 	char* ret = new char[strlen(fname)+1];
@@ -381,7 +379,7 @@ int DIRFILE::CheckFileDeal(void) {
 	return flen;
 }
 void DIRFILE::ListupFiles(int fname_len) {
-	DIR* dir; int i;
+	DIR* dir;
 	fname_len *= 2;
 	dir = opendir(arcname);
 	if (dir == 0) { 
@@ -725,7 +723,7 @@ GRPCONV* GRPCONV::AssignConverter(const char* inbuf, int inlen, const char* fnam
 	/* ファイルの内容に応じたコンバーターを割り当てる */
 	GRPCONV* conv = 0;
 	if (inlen < 10) return 0; /* invalid file */
-	if (conv == 0 && strncmp(inbuf, "PDT10", 5) == 0 || strncmp(inbuf, "PDT11", 5) == 0) { /* PDT10 or PDT11 */
+	if (strncmp(inbuf, "PDT10", 5) == 0 || strncmp(inbuf, "PDT11", 5) == 0) { /* PDT10 or PDT11 */
 		conv = new PDTCONV(inbuf, inlen, fname);
 		if (conv->data == 0) { delete conv; conv = 0;}
 	}
@@ -850,6 +848,7 @@ bool G00CONV::Read(char* image) {
 	if (type == 0) return Read_Type0(image);
 	else if (type == 1) return Read_Type1(image);
 	else if (type == 2) return Read_Type2(image);
+  return false;
 }
 
 /* 一般的な LZ 圧縮の展開ルーチン */
@@ -1589,7 +1588,7 @@ BMPCONV::BMPCONV(const char* _inbuf, int _inlen, const char* _filename) {
 	int h = read_little_endian_int(_inbuf + 0x16);
 	if (h < 0) h = -h;
 	int bpp = read_little_endian_short(_inbuf + 0x1c);
-	int comp = read_little_endian_int(_inbuf + 0x1e);
+  //	int comp = read_little_endian_int(_inbuf + 0x1e);
 	Init(filename, _inbuf, _inlen, w, h, bpp==32 ? true : false);
 	return;
 }

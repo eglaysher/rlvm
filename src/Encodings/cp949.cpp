@@ -51,7 +51,7 @@ Cp949::Cp949() {
 
 #ifndef NO_CP949_CONVERSION
 
-const size_t extras_length = 679;
+const int extras_length = 679;
 const uint16_t extras[extras_length] = {
   0xa046, 0xa04f, 0xa057, 0xa059, 0xa06c, 0xa074, 0xa075, 0xa077,
   0xa079, 0xa086, 0xa089, 0xa08a, 0xa08b, 0xa092, 0xa095, 0xa097,
@@ -178,7 +178,7 @@ uint16_t Cp949::JisDecode(uint16_t ch) const {
 }
 
 void Cp949::JisEncodeString(const char* src, char* buf, size_t buflen) const {
-    int srclen = std::strlen(src), k = 0, j = 0;
+  size_t srclen = std::strlen(src), k = 0, j = 0;
   while (k < srclen && j < buflen) {
     unsigned char c1 = (unsigned char) src[k++];
     if (c1 < 0x80) {

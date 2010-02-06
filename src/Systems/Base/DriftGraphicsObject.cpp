@@ -93,7 +93,7 @@ void DriftGraphicsObject::render(const GraphicsObject& go, std::ostream* tree) {
     int current_time = system_.event().getTicks();
     last_rendered_time_ = current_time;
 
-    int count = go.driftParticleCount();
+    size_t count = go.driftParticleCount();
     bool use_animation = go.driftUseAnimation();
     int start_pattern = go.driftStartPattern();
     int end_pattern = go.driftEndPattern();

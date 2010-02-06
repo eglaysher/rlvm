@@ -58,6 +58,7 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
 
  protected:
   virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& rp) {
+    return boost::shared_ptr<Surface>();
   }
 
   virtual void objectInfo(std::ostream& tree);
