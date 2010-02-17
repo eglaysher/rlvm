@@ -66,7 +66,7 @@ fi
 
 # Check source root
 SRCROOT="$1"
-if [ ! -e "$SRCROOT/SEEN0050.TXT" ]
+if [ ! -e "$SRCROOT/seen.txt" ]
 then
     usage
     echo "  ERROR: First argument does not appear to be an unextracted NDT Patch."
@@ -83,9 +83,12 @@ then
     exit $E_BADARGS
 fi
 
+echo "Deleting untranslated SEEN.TXT from local Kanon install..."
+find "$DESTROOT" -iname "seen.txt" -delete
+
 echo "Copying SEEN files..."
 # Spaces in filenames: ARRRRGGGHHHH!
-find "$SRCROOT" -iname "SEEN*.TXT" | while read FILE
+find "$SRCROOT" -iname "seen.txt" | while read FILE
 do
     cp "$FILE" "$DESTROOT"
 done
@@ -94,7 +97,7 @@ echo "Deleting untranslated images from local Kanon install..."
 find "$SRCROOT" -iname "*.g00" | while read FILE
 do
     BASE=`basename "$FILE"`
-    find $DESTROOT/g00/ -iname "$BASE" | xargs rm
+    find $DESTROOT/g00/ -iname "$BASE" -delete
 done
 
 echo "Copying translated images into Kanon install..."
