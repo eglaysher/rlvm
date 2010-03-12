@@ -42,6 +42,10 @@
 
 namespace libReallive {
 
+namespace Compression {
+struct XorKey;
+}  // namespace Compression
+
 /**
  * Interface to a loaded SEEN.TXT file.
  *
@@ -61,7 +65,7 @@ class Archive {
    * Now that VisualArts is using per game xor keys, this is equivalent to the
    * game's second level xor key.
    */
-  const char* second_level_xor_key_;
+  const Compression::XorKey* second_level_xor_key_;
 
   void readTOC();
 

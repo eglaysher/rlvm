@@ -39,6 +39,10 @@
 
 namespace libReallive {
 
+namespace Compression {
+struct XorKey;
+}  // namespace Compression
+
 #include "scenario_internals.h"
 
 class Scenario {
@@ -47,8 +51,9 @@ class Scenario {
   int scenarioNum;
 public:
   Scenario(const char* data, const size_t length, int scenarioNum,
-           const char* second_level_xor_key);
-  Scenario(const FilePos& fp, int scenarioNum, const char* second_level_xor_key);
+           const Compression::XorKey* second_level_xor_key);
+  Scenario(const FilePos& fp, int scenarioNum,
+           const Compression::XorKey* second_level_xor_key);
 
   // Get the scenario number
   int sceneNumber() const { return scenarioNum; }
@@ -95,7 +100,7 @@ public:
 
 inline
 Scenario::Scenario(const char* data, const size_t length, int sn,
-                   const char* second_level_xor_key)
+                   const Compression::XorKey* second_level_xor_key)
   : header(data, length),
     script(header, data, length,
            header.use_xor_2 ? second_level_xor_key : NULL),
@@ -104,7 +109,8 @@ Scenario::Scenario(const char* data, const size_t length, int sn,
 }
 
 inline
-Scenario::Scenario(const FilePos& fp, int sn, const char* second_level_xor_key)
+Scenario::Scenario(const FilePos& fp, int sn,
+                   const Compression::XorKey* second_level_xor_key)
   : header(fp.data, fp.length),
     script(header, fp.data, fp.length,
            header.use_xor_2 ? second_level_xor_key : NULL),

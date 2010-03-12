@@ -35,6 +35,7 @@
 #include "compression.h"
 #include <cassert>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
@@ -63,6 +64,8 @@ Header::Header(const char* data, const size_t length) {
   if (read_i32(data + 4) == 10002)
     use_xor_2 = false;
   else if (read_i32(data + 4) == 110002)
+    use_xor_2 = true;
+  else if (read_i32(data + 4) == 1110002)
     use_xor_2 = true;
   else {
     // New xor key?
@@ -103,7 +106,7 @@ Header::Header(const char* data, const size_t length) {
 }
 
 Script::Script(const Header& hdr, const char* data, const size_t length,
-               const char* second_level_xor_key)
+               const Compression::XorKey* second_level_xor_key)
   : uptodate(true), strip(false) {
   // Kidoku/entrypoint table
   const int kidoku_offs = read_i32(data + 0x08);

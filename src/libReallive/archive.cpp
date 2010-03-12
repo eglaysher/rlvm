@@ -60,13 +60,21 @@ Archive::Archive(const string& filename, const std::string& regname)
   readTOC();
   readOverrides();
 
-  if (regname == "KEY\\CLANNAD_FV")
+  if (regname == "KEY\\CLANNAD_FV") {
     second_level_xor_key_ =
-      libReallive::Compression::clannad_full_voice_xor_mask_2;
-  else if (regname == "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83"
-           "\x6f\x83\x58\x83\x5e\x81\x5b\x83\x59\x81\x49")
+      libReallive::Compression::clannad_full_voice_xor_mask;
+  } else if (regname == "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83"
+             "\x6f\x83\x58\x83\x5e\x81\x5b\x83\x59\x81\x49") {
     second_level_xor_key_ =
-      libReallive::Compression::little_busters_xor_mask_2;
+      libReallive::Compression::little_busters_xor_mask;
+  } else if (regname ==
+             "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83\x6f\x83\x58\x83\x5e"
+             "\x81\x5b\x83\x59\x81\x49\x82\x64\x82\x77") {
+    // "KEY\<little busters in katakana>!EX", with all fullwidth latin
+    // characters.
+    second_level_xor_key_ =
+        libReallive::Compression::little_busters_ex_xor_mask;
+  }
 }
 
 Archive::~Archive() {
