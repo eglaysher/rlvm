@@ -144,6 +144,7 @@ librlvm_files = [
   "src/Systems/Base/GraphicsTextObject.cpp",
   "src/Systems/Base/HIKScript.cpp",
   "src/Systems/Base/KOEPACVoiceArchive.cpp",
+  "src/Systems/Base/LittleBustersEF00DLL.cpp",
   "src/Systems/Base/MouseCursor.cpp",
   "src/Systems/Base/ObjectSettings.cpp",
   "src/Systems/Base/OVKVoiceArchive.cpp",

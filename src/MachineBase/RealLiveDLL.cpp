@@ -26,6 +26,7 @@
 
 #include "MachineBase/RealLiveDLL.hpp"
 
+#include "Systems/Base/LittleBustersEF00DLL.hpp"
 #include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"
 
@@ -42,6 +43,8 @@ RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
                                         const std::string& name) {
   if (name == "rlBabel") {
     return new RlBabelDLL(machine);
+  } else if (name == "EF00") {
+    return new LittleBustersEF00DLL;
   } else {
     ostringstream oss;
     oss << "Unsupported DLL interface " << name;
