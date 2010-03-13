@@ -83,6 +83,12 @@ const XorKey clannad_full_voice_xor_mask[] = {
   { { 0x0 }, -1, -1 }
 };
 
+const XorKey snow_standard_edition_xor_mask[] = {
+  { { 0xe4, 0xab, 0xa2, 0xc9, 0xec, 0x39, 0x36, 0x62,
+      0xc9, 0x03, 0xba, 0x6d, 0x2e, 0x9c, 0xf2, 0x64 }, 256, 257 },
+  { { 0x0 }, -1, -1 }
+};
+
 // "Encrypt"/"decrypt" a file.
 void
 apply_mask(char* array, size_t len) {

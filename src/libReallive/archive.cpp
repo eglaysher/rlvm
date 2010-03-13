@@ -74,6 +74,9 @@ Archive::Archive(const string& filename, const std::string& regname)
     // characters.
     second_level_xor_key_ =
         libReallive::Compression::little_busters_ex_xor_mask;
+  } else if (regname == "StudioMebius\\SNOWSE") {
+    second_level_xor_key_ =
+        libReallive::Compression::snow_standard_edition_xor_mask;
   }
 }
 
