@@ -489,6 +489,12 @@ class RLMachine {
    */
   void popStackFrame();
 
+  // Returns the intL bank of the current stack frame.
+  int* currentIntLBank();
+
+  // Returns the strK bank of the current stack frame.
+  std::string* currentStrKBank();
+
   /**
    * Clears all LongOperations from the back of the stack.
    */

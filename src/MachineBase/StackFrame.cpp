@@ -44,21 +44,27 @@ using namespace std;
 // StackFrame
 // -----------------------------------------------------------------------
 StackFrame::StackFrame()
-  : scenario(NULL), ip(), frame_type() {}
+  : scenario(NULL), ip(), frame_type() {
+  memset(intL, 0, sizeof(intL));
+}
 
 // -----------------------------------------------------------------------
 
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t)
-  : scenario(s), ip(i), frame_type(t) {}
+  : scenario(s), ip(i), frame_type(t) {
+  memset(intL, 0, sizeof(intL));
+}
 
 // -----------------------------------------------------------------------
 
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        LongOperation* op)
-  : scenario(s), ip(i), long_op(op), frame_type(TYPE_LONGOP) {}
+  : scenario(s), ip(i), long_op(op), frame_type(TYPE_LONGOP) {
+  memset(intL, 0, sizeof(intL));
+}
 
 // -----------------------------------------------------------------------
 
@@ -85,7 +91,7 @@ template<class Archive>
 void StackFrame::save(Archive & ar, unsigned int version) const {
   int scene_number = scenario->sceneNumber();
   int position = distance(scenario->begin(), ip);
-  ar & scene_number & position & frame_type;
+  ar & scene_number & position & frame_type & intL & strK;
 }
 
 // -----------------------------------------------------------------------
@@ -115,6 +121,10 @@ void StackFrame::load(Archive & ar, unsigned int version) {
   advance(position_it, offset);
 
   *this = StackFrame(scenario, position_it, type);
+
+  if (version >= 1) {
+    ar & intL & strK;
+  }
 }
 
 // -----------------------------------------------------------------------

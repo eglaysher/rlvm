@@ -52,7 +52,7 @@
 
 // -----------------------------------------------------------------------
 
-const int NUMBER_OF_INT_LOCATIONS = 9;
+const int NUMBER_OF_INT_LOCATIONS = 8;
 const int SIZE_OF_MEM_BANK = 2000;
 const int SIZE_OF_INT_PASSING_MEM = 40;
 const int SIZE_OF_NAME_BANK = 702;
@@ -139,18 +139,23 @@ struct LocalMemory {
   /// Local string bank
   std::string strS[SIZE_OF_MEM_BANK];
 
-  /// Parameter passing integer bank
-  int intL[SIZE_OF_INT_PASSING_MEM];
-
-  /// Parameter passing string bank
-  std::string strK[3];
-
   std::string local_names[SIZE_OF_NAME_BANK];
 
   /// boost::serialization support
   template<class Archive>
   void serialize(Archive & ar, unsigned int version) {
-    ar & intA & intB & intC & intD & intE & intF & strS & intL & strK;
+    ar & intA & intB & intC & intD & intE & intF & strS;
+
+    // Starting in version 2, we no longer have the intL and strK in
+    // LocalMemory. They were moved to StackFrame because they're stack
+    // local. Throw away old data.
+    if (version < 2) {
+      int intL[SIZE_OF_INT_PASSING_MEM];
+      ar & intL;
+
+      std::string strK[3];
+      ar & strK;
+    }
 
     // Starting in version 1, \#LOCALNAME variable storage were added.
     if (version > 0)
@@ -187,6 +192,10 @@ class Memory {
   /// Local memory to a save file
   LocalMemory local_;
 
+  // Our owning machine. We keep this reference so we can ask for the current
+  // stackframe.
+  RLMachine& machine_;
+
   /// Integer variable pointers. This redirect into Global and local
   /// memory (as the case may be) allows us to overlay new views of
   /// local memory without copying global memory.
@@ -217,7 +226,7 @@ class Memory {
    * @note For now, we only read \#NAME and \#LOCALNAME variables, skipping any
    *       declaration of the form \#intvar[index] or \#strvar[index].
    */
-  explicit Memory(Gameexe& gamexe);
+  explicit Memory(RLMachine& machine, Gameexe& gamexe);
 
   /**
    * Creates an overlayed memory object. An overlay takes another
@@ -329,5 +338,14 @@ class Memory {
   static int ConvertLetterIndexToInt(const std::string& value);
 };  // end of class Memory
 
+// Implementation of getting an integer out of an array. Global because we need
+// share this implementation with RLMachine which passes in the local stack
+// frames bank for intL[] access.
+int GetIntValue(const libReallive::IntMemRef& ref, int* bank);
+
+// Implementation of setting an integer out of an array. Global because we need
+// share this implementation with RLMachine which passes in the local stack
+// frames bank for intL[] access.
+void SetIntValue(const libReallive::IntMemRef& ref, int* bank, int value);
 
 #endif  // SRC_MACHINEBASE_MEMORY_HPP_

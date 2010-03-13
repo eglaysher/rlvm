@@ -459,15 +459,15 @@ struct gosub_with : public RLOp_SpecialCase {
       ParamFormat::parseParameters(position, unparsed, output);
     }
 
+    const Pointers& pointers = gotoElement.get_pointersRef();
+    machine.gosub(pointers[0]);
+
     const ptr_vector<ExpressionPiece>& parameterPieces =
         gotoElement.getParameters();
     unsigned int position = 0;
     ParamFormat::type data =
         ParamFormat::getData(machine, parameterPieces, position);
     storeData(machine, data);
-
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    machine.gosub(pointers[0]);
   }
 };
 
@@ -516,8 +516,8 @@ struct farcall_with
 
   void operator()(RLMachine& machine, int scenario, int entrypoint,
                   ParamVector withStuff) {
-    storeData(machine, withStuff);
     machine.farcall(scenario, entrypoint);
+    storeData(machine, withStuff);
   }
 };
 

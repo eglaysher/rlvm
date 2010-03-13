@@ -86,12 +86,8 @@ void LocalMemory::reset() {
   memset(intE, 0, sizeof(intE));
   memset(intF, 0, sizeof(intF));
 
-  memset(intL, 0, sizeof(intL));
-
   for (int i = 0; i < SIZE_OF_MEM_BANK; ++i)
     strS[i].clear();
-  for (int i = 0; i < 3; ++i)
-    strK[i].clear();
   for (int i = 0; i < SIZE_OF_NAME_BANK; ++i)
     local_names[i].clear();
 }
@@ -99,8 +95,10 @@ void LocalMemory::reset() {
 // -----------------------------------------------------------------------
 // Memory
 // -----------------------------------------------------------------------
-Memory::Memory(Gameexe& gameexe)
-  : global_(new GlobalMemory), local_() {
+Memory::Memory(RLMachine& machine, Gameexe& gameexe)
+  : global_(new GlobalMemory),
+    local_(),
+    machine_(machine) {
   connectIntVarPointers();
 
   initializeDefaultValues(gameexe);
@@ -109,7 +107,9 @@ Memory::Memory(Gameexe& gameexe)
 // -----------------------------------------------------------------------
 
 Memory::Memory(RLMachine& machine, int slot)
-  : global_(machine.memory().global_), local_(dont_initialize()) {
+  : global_(machine.memory().global_),
+    local_(dont_initialize()),
+    machine_(machine) {
   connectIntVarPointers();
 }
 
@@ -129,7 +129,6 @@ void Memory::connectIntVarPointers() {
   int_var[5] = local_.intF;
   int_var[6] = global_->intG;
   int_var[7] = global_->intZ;
-  int_var[8] = local_.intL;
 }
 
 // -----------------------------------------------------------------------
@@ -141,10 +140,14 @@ const std::string& Memory::getStringValue(int type, int location) {
 
   switch (type) {
   case STRK_LOCATION:
-    if (location > 2)
+    if (location > 2) {
       throw rlvm::Exception(
           "Invalid range access on strK in RLMachine::set_string_value");
-    return local_.strK[location];
+    } else if (!machine_.currentStrKBank()) {
+      throw rlvm::Exception("No string bank connected yet!");
+    } else {
+      return machine_.currentStrKBank()[location];
+    }
   case STRM_LOCATION: return global_->strM[location];
   case STRS_LOCATION: return local_.strS[location];
   default:
@@ -161,10 +164,14 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
 
   switch (type) {
   case STRK_LOCATION:
-    if (number > 2)
+    if (number > 2) {
       throw rlvm::Exception(
           "Invalid range access on strK in RLMachine::set_string_value");
-    local_.strK[number] = value;
+    } else if (!machine_.currentStrKBank()) {
+      throw rlvm::Exception("No string bank connected yet!");
+    } else {
+      machine_.currentStrKBank()[number] = value;
+    }
     break;
   case STRM_LOCATION:
     global_->strM[number] = value;

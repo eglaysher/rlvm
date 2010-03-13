@@ -110,7 +110,7 @@ static const std::string SeenEnd(seen_end, 14);
 // -----------------------------------------------------------------------
 
 RLMachine::RLMachine(System& in_system, Archive& in_archive)
-    : memory_(new Memory(in_system.gameexe())),
+    : memory_(new Memory(*this, in_system.gameexe())),
       halted_(false),
       print_undefined_opcodes_(false),
       halt_on_exception_(true),
@@ -494,6 +494,18 @@ void RLMachine::popStackFrame() {
   }
 
   call_stack_.pop_back();
+}
+
+// -----------------------------------------------------------------------
+
+int* RLMachine::currentIntLBank() {
+  return call_stack_.back().intL;
+}
+
+// -----------------------------------------------------------------------
+
+std::string* RLMachine::currentStrKBank() {
+  return call_stack_.back().strK;
 }
 
 // -----------------------------------------------------------------------

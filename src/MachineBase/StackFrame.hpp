@@ -31,6 +31,7 @@
 #include "libReallive/scenario.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/serialization/version.hpp>
 
 class LongOperation;
 
@@ -56,6 +57,12 @@ struct StackFrame {
 
   /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
   boost::shared_ptr<LongOperation> long_op;
+
+  /// Parameter passing integer bank
+  int intL[40];
+
+  /// Parameter passing string bank
+  std::string strK[3];
 
   /**
    * The function that pushed the current frame onto the
@@ -98,7 +105,8 @@ struct StackFrame {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-std::ostream& operator<<(std::ostream& os, const StackFrame& frame);
+BOOST_CLASS_VERSION(StackFrame, 1)
 
+std::ostream& operator<<(std::ostream& os, const StackFrame& frame);
 
 #endif  // SRC_MACHINEBASE_STACKFRAME_HPP_
