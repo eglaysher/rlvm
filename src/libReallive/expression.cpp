@@ -137,6 +137,8 @@ size_t next_string(const char* src) {
 size_t next_data(const char* src) {
   if (*src == ',')
     return 1 + next_data(src + 1);
+  if (*src == '\n')
+    return 3 + next_data(src + 3);
   if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
       || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
       || *src == ' ' || *src == '?' || *src == '_' || *src == '"'
@@ -377,6 +379,9 @@ static ExpressionPiece* get_string(const char*& src) {
 ExpressionPiece* get_data(const char*& src) {
   if (*src == ',') {
     ++src;
+    return get_data(src);
+  } else if (*src == '\n') {
+    src += 3;
     return get_data(src);
   } else if ((*src >= 0x81 && *src <= 0x9f)
             || (*src >= 0xe0 && *src <= 0xef)
