@@ -210,7 +210,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
     int selbtn_set)
     : SelectLongOperation(machine, commandElement),
       machine_(machine),
-      highlighted_item_(-1) {
+      highlighted_item_(-1),
+      normal_frame_(0),
+      select_frame_(0) {
   machine.system().graphics().addRenderable(this);
 
   // Load all the data about this #SELBTN from the Gameexe.ini file.
@@ -240,10 +242,24 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   int select_colour_num_ = selbtn("MOJISELECTCOL");
   if (default_colour_num_ == select_colour_num_)
     select_colour_num_ = 1;  // For CLANNAD
+  if (select_colour_num_ == -1) // For little busters
+    select_colour_num_ = 1;
 
   GraphicsSystem& gs = machine.system().graphics();
-  name_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("NAME"));
-  back_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("BACK"));
+  if (selbtn("NAME").exists() && selbtn("NAME").to_string() != "")
+    name_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("NAME"));
+  if (selbtn("BACK").exists() && selbtn("BACK").to_string() != "")
+    back_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("BACK"));
+
+  std::vector<int> tmp;
+  if (selbtn("NORMAL").exists()) {
+    tmp = selbtn("NORMAL");
+    normal_frame_ = tmp.at(0);
+  }
+  if (selbtn("SELECT").exists()) {
+    tmp = selbtn("SELECT");
+    select_frame_ = tmp.at(0);
+  }
 
   // Pick the correct font colour
   vec = gexe("COLOR_TABLE", default_colour_num_);
@@ -262,8 +278,11 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   Size screen_size = machine.system().graphics().screenSize();
   int baseposx = 0;
   if (center_x) {
-    int totalwidth = ((shown_option_count - 1) * reppos_x_) +
-                     back_surface_->size().width();
+    int totalwidth = ((shown_option_count - 1) * reppos_x_);
+    if (back_surface_)
+      totalwidth += back_surface_->size().width();
+    else
+      totalwidth += name_surface_->getPattern(normal_frame_).rect.width();
     baseposx = (screen_size.width() / 2) - (totalwidth / 2);
   } else {
     baseposx = basepos_x_;
@@ -271,8 +290,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   int baseposy = 0;
   if (center_y) {
-    int totalheight = ((shown_option_count - 1) * reppos_y_) +
-                      back_surface_->size().height();
+    int totalheight = ((shown_option_count - 1) * reppos_y_);
+    if (back_surface_)
+      totalheight += back_surface_->size().height();
     baseposy = (screen_size.height() / 2) - (totalheight / 2);
   } else {
     baseposy = basepos_y_;
@@ -288,7 +308,12 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
           text, moji_size_, 0, 0, default_colour, &shadow_colour);
       o.select_surface = ts.renderText(
           text, moji_size_, 0, 0, select_colour, &shadow_colour);
-      o.bounding_rect = Rect(baseposx, baseposy, back_surface_->size());
+      if (back_surface_) {
+        o.bounding_rect = Rect(baseposx, baseposy, back_surface_->size());
+      } else {
+        o.bounding_rect = Rect(baseposx, baseposy,
+                               name_surface_->getPattern(0).rect.size());
+      }
 
       buttons_.push_back(o);
 
@@ -327,15 +352,17 @@ bool ButtonSelectLongOperation::mouseButtonStateChanged(
 
   switch (mouseButton) {
     case MOUSE_LEFT: {
-      Point pos = es.getCursorPos();
-      for (size_t i = 0; i < buttons_.size(); i++) {
-        if (buttons_[i].bounding_rect.contains(pos)) {
-          selected(buttons_[i].id);
-          break;
+      if (!pressed) {
+        Point pos = es.getCursorPos();
+        for (size_t i = 0; i < buttons_.size(); i++) {
+          if (buttons_[i].bounding_rect.contains(pos)) {
+            selected(buttons_[i].id);
+            break;
+          }
         }
-      }
 
-      return true;
+        return true;
+      }
       break;
     }
     case MOUSE_RIGHT: {
@@ -358,10 +385,19 @@ void ButtonSelectLongOperation::render(std::ostream* tree) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     Rect bounding_rect = buttons_[i].bounding_rect;
 
-    back_surface_->renderToScreenAsColorMask(
-        back_surface_->rect(), bounding_rect, window_bg_colour_,
-        window_filter_);
-    name_surface_->renderToScreen(name_surface_->rect(), bounding_rect);
+    if (back_surface_) {
+      back_surface_->renderToScreenAsColorMask(
+          back_surface_->rect(), bounding_rect, window_bg_colour_,
+          window_filter_);
+    }
+    if (name_surface_) {
+      int frame = normal_frame_;
+      if (i == highlighted_item_)
+        frame = select_frame_;
+
+      name_surface_->renderToScreen(
+          name_surface_->getPattern(frame).rect, bounding_rect);
+    }
 
     if (i == highlighted_item_) {
       renderTextSurface(buttons_[i].select_surface, bounding_rect);

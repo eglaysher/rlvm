@@ -162,6 +162,10 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   RGBAColour window_bg_colour_;
   int window_filter_;
 
+  // g00 pattern numbers in name_surface_ for whether to display 
+  int normal_frame_;
+  int select_frame_;
+
   // Surface loaded from #SELBTN.xxx.NAME.
   boost::shared_ptr<Surface> name_surface_;
 
