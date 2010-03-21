@@ -1,0 +1,80 @@
+---
+title: "rlvm: Contributing"
+layout: default
+---
+  <div id="wrapper">
+	<div id="content">
+      <h1>Bug tracker?</h1>
+
+      <p>rlvm uses github's issue system. You can see currently reported bugs
+      and report new bugs here: <a href="http://github.com/eglaysher/rlvm/issues">http://github.com/eglaysher/rlvm/issues</a>.
+
+      <h1>Source Code?</h1>
+      <p>The source code repository is on github. You can checkout the rlvm 
+        source code by cloning it:</p>
+      <div class="codebox">$ git clone git://github.com/eglaysher/rlvm.git</div>
+
+      <h1>Contributing code</h1>
+
+      <p>rlvm's code was written in two stages: before I tried to write in a
+      consistent style, and after I got
+      the <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml">Google
+      C++ Style Guide</a> pounded into my brain. While there are still some
+      files I haven't converted, the majority of the code is clean according to
+      Google's <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#cpplint">cpplint.py</a>.</p>
+
+      <p>Patches should therefore conform to the Google C++ Style guide, with
+      three exceptions:</p>
+
+      <ul>
+        <li>C++ streams aren't banned.</li>
+        <li>Exceptions aren't banned.</li>
+        <li><a href="http://www.boost.org/">Boost</a> isn't banned.</li>
+      </ul>
+
+      <p>Sending patches. Either:</p>
+      <ul>
+        <li>Send small one-off patches processed using <a href="http://kernel.org/pub/software/scm/git/docs/git-format-patch.html">git-format-patch</a> to <a href="mailto:glaysher@umich.edu">glaysher@umich.edu</a>.</li>
+        <li>Fork the repository on github and send a pull request when done.</li>
+      </ul>
+
+      <h1>Running Tests</h1>
+      <p>rlvm has two test suites:</p>
+      <ul>
+        <li>A set of tests using the <a href="http://code.google.com/p/googletest/">googletest</a> system. This contains unit tests and larger integration tests that use actual SEEN.TXT files to test things like flow control. These are only built if Haeleth's <a href="http://dev.haeleth.net/rldev.shtml">rldev</a> assembler and disassembler are installed.
+          <p>Assuming everything was built, you can run the test suite by running:
+            <div class="codebox">$ ./build/rlvmTests</div>
+        </li>
+        <li>A lua-backed system which simulates clicks and other user input and is used as a full integration test on actual games. As of this writing, there are lua scripts to drive all of Kanon, Air, Clannad and Princess Bride. While you can run individual paths, like this:
+          <div class="codebox">$ ./build/luaRlvm ./test/Air_SE/Dream_Kano.lua /path/to/AIRSE</div>
+          But you will usually want to run an entire game at a time, like this:
+          <div class="codebox">$ ./test/Kanon_SE/test_all.sh </div>
+      </ul>
+
+
+      <h1>Source Code Overview</h1>
+      <p>Here's a description of some of the high level directory structure:</p>
+      <ul>
+        <li><b>src/</b> - The rlvm source code proper.
+          <ul>
+            <li><b>Effects/</b> - LongOperations that work on the screen, for example, cross fades.</li>
+            <li><b>Encodings/</b> - Code mostly taken from Haeleth's <a href="http://svn.haeleth.net/pub/rlBabel/">rlBabel</a> that converts from various encodings to UTF-8.</li>
+            <li><b>libReallive/</b> - A <em>heavily</em> modified version of Haeleth's <a href="http://svn.haeleth.net/pub/libreallive/">libReallive</a>. Used to parse the SEEN.TXT file into a stream of bytecode objects.</li>
+            <li><b>LongOperations/</b> - Tasks that are run while interpretting the bytecode from the SEEN.TXT is paused. For example, waiting for the user to click after some text has been displayed.</li>
+            <li><b>MachineBase/</b> - The core part of the interpreter. You are probably interested in <a href="http://github.com/eglaysher/rlvm/blob/master/src/MachineBase/RLMachine.hpp">RLMachine.hpp</a>, the interpreter object, and <a href="http://github.com/eglaysher/rlvm/blob/master/src/MachineBase/RLOperation.hpp">RLOperation.hpp</a>, which defines how a piece of C++ code is bound to an opcode in a SEEN.TXT file.</li>
+            <li><b>Modules/</b> - C++ definitions of RealLive opcodes.</li>
+            <li><b>Platforms/</b> - Per platform user interface elements and platform specific code.</li>
+            <li><b>Systems/</b>
+              <ul>
+                <li><b>Base/</b> - Was supposed to be just base classes that needed to be implemented by the <b>SDL/</b> directory. Has turned into a dumping ground. :(</li>
+                <li><b>SDL/</b> - <a href="http://www.libsdl.org/">SDL</a> sound and graphics functions. Implements a bunch of interfaces from Base/.</li>
+              </ul>
+            </li>
+            <li><b>Utilities/</b> - Random functions that don't belong anywhere else.</li>
+          </ul>
+        </li>
+        <li><b>test/</b> - Our test suite, consisting of <a href="http://code.google.com/p/googletest/">googletest</a> tests, and a lua backed system that will input clicks and selections to test real games.</li>
+        <li><b>vendor/</b> - A mix of convenience copies and some <a href="http://www.creator.club.ne.jp/~jagarl/xclannad.html">xclannad</a> code.</li>
+      </ul>
+    </div>
+  </div>
