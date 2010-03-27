@@ -133,11 +133,15 @@ read_function(const char* stream, ConstructionData& cdata) {
     return new GotoCaseElement(stream, cdata);
   case 0x00010010:
     return new GosubWithElement(stream, cdata);
-  }
-  if (stream[2] == 2)
+
+  // Select elements.
+  case 0x00020000: case 0x00020001:
+  case 0x00020002: case 0x00020003:
+  case 0x00020010:
     return new SelectElement(stream);
-  else
-    return new FunctionElement(stream);
+  }
+
+  return new FunctionElement(stream);
 }
 
 // -----------------------------------------------------------------------
