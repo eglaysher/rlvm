@@ -931,9 +931,8 @@ Pointers::set_pointers(ConstructionData& cdata) {
 GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
   : PointerElement(src) {
   src += 8;
-  const int op = (module() * 100000) | opcode();
-  if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
-    if (*src++ != '(') throw Error("GosubWithElement(): expected `('");
+  if (*src == '(') {
+    src++;
     repr.push_back('(');
 
     while (*src != ')') {
@@ -946,6 +945,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
 
     repr.push_back(')');
   }
+
   targets.push_id(read_i32(src));
 }
 
