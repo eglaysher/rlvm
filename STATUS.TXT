@@ -30,19 +30,19 @@ Tomoyo After
 
 Planetarian CD
 --------------
-- Planetarian is playable through the end, with the following caveats:
-  - There are minor issues with indentation that need to be worked out.
-- Requires unwritten NWK support for voices.
+- Requires unwritten NWK support for voices. Otherwise works.
 
-Little Busters
---------------
-- The game doesn't even start. 100% broken.
+Little Busters (Ex)
+-------------------
+- Both Little Busters and Little Busters Ecstasy start up and are playable for
+  a while.
+  - Battle system slow and graphically buggy.
+  - Breaks hard at baseball. I assume it'll break at the shooting, too.
 
 Princess Bride
 --------------
 - Playable to the end with the caveat that the user doesn't click to skip the
-  fake "ending" sequence on Wedding Day. (I am not sure if this is due to a bug
-  in rlvm or in Pricness Bride).
+  fake "ending" sequence on Wedding Day. (This is a bug in rlvm).
 
 Princess Brave
 --------------
@@ -53,6 +53,11 @@ ALMA ~Zutto soba ni~
 --------------------
 - Can complete Yui's route. Haven't tested any other paths.
 - There's a bunch of stuff broken in the OP.
+
+SNOW Standard Edition
+---------------------
+- Displays copyright/disclaimer screen.
+- Main menu doesn't show due to large number of haikei commands not written.
 
 UNOFFICIAL "ONE" DEMO
 ---------------------
