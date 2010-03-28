@@ -338,7 +338,9 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1024, 1, "objSetText", new objSetText);
   m.addOpcode(1025, 0, "objTextOpts", new objTextOpts);
 
-/*  m.addOpcode(1028, 0, new  */
+  m.addUnsupportedOpcode(1026, 0, "objLayer");
+  m.addUnsupportedOpcode(1027, 0, "objDepth");
+  m.addUnsupportedOpcode(1028, 0, "objScrollRate");
   m.addOpcode(1029, 0, "objScrollRateX",
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateX));
   m.addOpcode(1030, 0, "objScrollRateY",
@@ -353,8 +355,14 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1035, 1, "objDispCorner", new dispCorner_1);
   m.addOpcode(1036, 0, "objAdjustVert",
               new Obj_SetOneIntOnObj(&GraphicsObject::setVert));
+  m.addUnsupportedOpcode(1037, 0, "objSetDigits");
+  m.addUnsupportedOpcode(1038, 0, "objNumOpts");
   m.addOpcode(1039, 0, "objPattNo",
               new Obj_SetOneIntOnObj(&GraphicsObject::setPattNo));
+
+  m.addUnsupportedOpcode(1041, 0, "objAdjustAll");
+  m.addUnsupportedOpcode(1042, 0, "objAdjustAllX");
+  m.addUnsupportedOpcode(1043, 0, "objAdjustAllY");
 
   m.addOpcode(1046, 0, "objScale", new Obj_SetTwoIntOnObj(
                 &GraphicsObject::setWidth,
@@ -376,6 +384,7 @@ void addObjectFunctions(RLModule& m) {
               new Obj_SetOneIntOnObj(&GraphicsObject::setXOrigin));
   m.addOpcode(1055, 0, "objOriginY",
               new Obj_SetOneIntOnObj(&GraphicsObject::setYOrigin));
+  m.addUnsupportedOpcode(1056, 0, "objFadeOpts");
 }
 
 }  // namespace
