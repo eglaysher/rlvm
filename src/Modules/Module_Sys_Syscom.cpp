@@ -83,7 +83,7 @@ void addSysSyscomOpcodes(RLModule& m) {
 
   m.addOpcode(1214, 0, "SyscomEnabled", new SyscomEnabled);
 
-  m.addUnsupportedOpcode(1215, 0, "InvokeSyscom");
+  m.addOpcode(1215, 0, "InvokeSyscom", callFunction(&System::invokeSyscom));
   m.addUnsupportedOpcode(1215, 1, "InvokeSyscom");
   m.addUnsupportedOpcode(1216, 0, "ReadSyscom");
 }
