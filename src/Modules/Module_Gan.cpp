@@ -101,7 +101,7 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
       if (parent_ != -1) {
         GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
-        ensureIsParentObject(parent);
+        ensureIsParentObject(parent, graphics.objectLayerSize());
         return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
             getObject(buf_);
       } else {

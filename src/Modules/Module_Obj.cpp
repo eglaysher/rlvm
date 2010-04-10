@@ -47,14 +47,14 @@
 using libReallive::ExpressionPiece;
 using boost::ptr_vector;
 
-void ensureIsParentObject(GraphicsObject& parent) {
+void ensureIsParentObject(GraphicsObject& parent, int size) {
   if (parent.hasObjectData()) {
     if (parent.objectData().isParentLayer()) {
       return;
     }
   }
 
-  parent.setObjectData(new ParentGraphicsObjectData);
+  parent.setObjectData(new ParentGraphicsObjectData(size));
 }
 
 // -----------------------------------------------------------------------
@@ -70,7 +70,7 @@ GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
   int parentobj;
   if (op->getProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    ensureIsParentObject(parent);
+    ensureIsParentObject(parent, graphics.objectLayerSize());
     return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
         getObject(obj);
   } else {
@@ -91,7 +91,7 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
   int parentobj;
   if (op->getProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    ensureIsParentObject(parent);
+    ensureIsParentObject(parent, graphics.objectLayerSize());
     static_cast<ParentGraphicsObjectData&>(parent.objectData()).
         setObject(obj, gobj);
   } else {

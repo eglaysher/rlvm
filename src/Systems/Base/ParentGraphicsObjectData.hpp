@@ -40,7 +40,7 @@ class GraphicsObject;
  */
 class ParentGraphicsObjectData : public GraphicsObjectData {
  public:
-  ParentGraphicsObjectData();
+  ParentGraphicsObjectData(int size);
   ~ParentGraphicsObjectData();
 
   GraphicsObject& getObject(int obj_number);

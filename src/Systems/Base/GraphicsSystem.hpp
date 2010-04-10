@@ -343,6 +343,10 @@ class GraphicsSystem : public EventListener {
   // Deallocates all graphics objects.
   void clearAllObjects();
 
+  // The number of objects in a layer for this game. Defaults to 256 and can be
+  // overridden with #OBJECT_MAX.
+  int objectLayerSize();
+
   LazyArray<GraphicsObject>& backgroundObjects();
   LazyArray<GraphicsObject>& foregroundObjects();
 
@@ -480,8 +484,6 @@ class GraphicsSystem : public EventListener {
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
-
-const int OBJECTS_IN_A_LAYER = 256;
 
 #endif  // SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
 

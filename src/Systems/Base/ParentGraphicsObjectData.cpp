@@ -32,8 +32,8 @@
 // -----------------------------------------------------------------------
 // ParentGraphicsObjectData
 // -----------------------------------------------------------------------
-ParentGraphicsObjectData::ParentGraphicsObjectData()
-    : objects_(256) {
+ParentGraphicsObjectData::ParentGraphicsObjectData(int size)
+    : objects_(size) {
 }
 
 // -----------------------------------------------------------------------
@@ -82,9 +82,9 @@ int ParentGraphicsObjectData::pixelHeight(
 // -----------------------------------------------------------------------
 
 GraphicsObjectData* ParentGraphicsObjectData::clone() const {
-  ParentGraphicsObjectData* cloned = new ParentGraphicsObjectData;
-
   int size = objects_.size();
+  ParentGraphicsObjectData* cloned = new ParentGraphicsObjectData(size);
+
   for (int i = 0; i < size; ++i) {
     if (objects_.exists(i)) {
       cloned->objects_[i] = GraphicsObject(objects_[i]);

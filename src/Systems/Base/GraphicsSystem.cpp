@@ -79,8 +79,11 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 /// Impl object
 struct GraphicsSystem::GraphicsObjectSettings {
+  // Number of graphical objects in a layer.
+  int objects_in_a_layer;
+
   /// Each is a valid index into data, refering to
-  unsigned char position[OBJECTS_IN_A_LAYER];
+  boost::scoped_array<unsigned char> position;
 
   std::vector<ObjectSettings> data;
 
@@ -95,8 +98,15 @@ struct GraphicsSystem::GraphicsObjectSettings {
 
 GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   Gameexe& gameexe) {
+  if (gameexe.exists("OBJECT_MAX"))
+    objects_in_a_layer = gameexe("OBJECT_MAX");
+  else
+    objects_in_a_layer = 256;
+
   // First we populate everything with the special value
-  fill(position, position + OBJECTS_IN_A_LAYER, 0);
+  position.reset(new unsigned char[objects_in_a_layer]);
+  fill(position.get(), position.get() + objects_in_a_layer, 0);
+
   if (gameexe.exists("OBJECT.999"))
     data.push_back(ObjectSettings(gameexe("OBJECT.999")));
   else
@@ -122,7 +132,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     for ( std::list<int>::const_iterator intit = object_nums.begin();
          intit != object_nums.end(); ++intit ) {
       int obj_num = *intit;
-      if (obj_num != 999 && obj_num < OBJECTS_IN_A_LAYER) {
+      if (obj_num != 999 && obj_num < objects_in_a_layer) {
         position[obj_num] = data.size();
         data.push_back(ObjectSettings(*it));
       }
@@ -134,7 +144,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
 
 const ObjectSettings&
 GraphicsSystem::GraphicsObjectSettings::getObjectSettingsFor(int obj_num) {
-  return data[position[obj_num]];
+  return data.at(position[obj_num]);
 }
 
 // -----------------------------------------------------------------------
@@ -160,7 +170,7 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
 // GraphicsObjectImpl
 // -----------------------------------------------------------------------
 struct GraphicsSystem::GraphicsObjectImpl {
-  GraphicsObjectImpl();
+  GraphicsObjectImpl(int objects_in_layer);
 
   /// Foreground objects
   LazyArray<GraphicsObject> foreground_objects;
@@ -177,9 +187,9 @@ struct GraphicsSystem::GraphicsObjectImpl {
 
 // -----------------------------------------------------------------------
 
-GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl()
-  : foreground_objects(256), background_objects(256),
-    saved_foreground_objects(256), saved_background_objects(256) {}
+GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl(int size)
+  : foreground_objects(size), background_objects(size),
+    saved_foreground_objects(size), saved_background_objects(size) {}
 
 // -----------------------------------------------------------------------
 // GraphicsSystem
@@ -193,7 +203,8 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     hide_interface_(false),
     globals_(gameexe),
     graphics_object_settings_(new GraphicsObjectSettings(gameexe)),
-    graphics_object_impl_(new GraphicsObjectImpl),
+    graphics_object_impl_(new GraphicsObjectImpl(
+        graphics_object_settings_->objects_in_a_layer)),
     use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
     show_curosr_(true),
     cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
@@ -528,6 +539,12 @@ void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj) {
 void GraphicsSystem::clearAllObjects() {
   graphics_object_impl_->foreground_objects.clear();
   graphics_object_impl_->background_objects.clear();
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsSystem::objectLayerSize() {
+  return graphics_object_settings_->objects_in_a_layer;
 }
 
 // -----------------------------------------------------------------------
