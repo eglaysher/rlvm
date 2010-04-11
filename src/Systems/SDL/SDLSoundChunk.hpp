@@ -92,6 +92,10 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
   static void FadeOut(const int channel, const int fadetime);
 
  private:
+  // Used in the path constructor to actually create the Mix_Chunk, which
+  // requires a hack for NWA support.
+  Mix_Chunk* loadSample(const boost::filesystem::path& path);
+
   /**
    * Static table which deliberatly creates cycles. When a chunk
    * starts playing, it's associated with its channel ID in this table

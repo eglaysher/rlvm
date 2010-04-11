@@ -28,9 +28,11 @@
 #include "Systems/SDL/SDLSoundChunk.hpp"
 
 #include <SDL/SDL_mixer.h>
+#include <boost/algorithm/string.hpp>
 
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/SDL/SDLAudioLocker.hpp"
+#include "xclannad/wavfile.h"
 
 // -----------------------------------------------------------------------
 
@@ -39,7 +41,7 @@ SDLSoundChunk::PlayingTable SDLSoundChunk::s_playing_table;
 // -----------------------------------------------------------------------
 
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
-  : sample_(Mix_LoadWAV(path.external_file_string().c_str())) {
+    : sample_(loadSample(path)) {
 }
 
 // -----------------------------------------------------------------------
@@ -54,6 +56,29 @@ SDLSoundChunk::SDLSoundChunk(char* data, int length)
 SDLSoundChunk::~SDLSoundChunk() {
   Mix_FreeChunk(sample_);
   data_.reset();
+}
+
+// -----------------------------------------------------------------------
+
+Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
+  if (boost::iequals(path.extension(), ".nwa")) {
+    // Hack to load NWA sounds into a MixChunk. I was resisted doing this
+    // because I assumed there was a better way, but this is essentially what
+    // jagarl does in xclannad too :(
+    FILE* f = fopen(path.external_file_string().c_str(), "r");
+    if (!f)
+      return NULL;
+    int size = 0;
+    char* data = NWAFILE::ReadAll(f, size);
+    fclose(f);
+
+    Mix_Chunk* chunk = Mix_LoadWAV_RW(SDL_RWFromMem(data, size), 1);
+    delete [] data;
+
+    return chunk;
+  } else {
+    return Mix_LoadWAV(path.external_file_string().c_str());
+  }
 }
 
 // -----------------------------------------------------------------------
