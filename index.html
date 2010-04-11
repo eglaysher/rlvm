@@ -7,13 +7,26 @@ description: "Play Kanon, CLANNAD, planetarian and similar games on your Apple o
 	<div id="content">
 	  <h1>What's rlvm?</h1>
 
+      <!-- ohloh widget. Their default code is a blocking <script> call that's
+      just a document.write(), which sucks latency-wise. So this is my
+      extracting their Google widget's page directly into an iframe for speed.
+        -->
+      <iframe frameborder="0"
+              src="http://www.ohloh.net/p/rlvm/widgets/project_users_logo.html"
+              scrolling="no"
+              width="83"
+              height="37"
+              style="float: right;"
+              longdesc="Ohloh widget">
+      </iframe>
+
 	  <p>rlvm is an open source implementation of the RealLive scripting engine
 	  for Linux and OSX. RealLive is a game engine used in Japan to write
 	  visual novels, a few of which I care about, and many that I do
 	  not. Currently, rlvm works with: Kanon Standard Edition, Air Standard
 	  Edition, CLANNAD, CLANNAD Full Voice Edition and Planetarian, along with
 	  a few non-KEY games. rlvm can optionally use English patches to some
-	  games.
+	  games.</p>
 
       <p>rlvmはRealLive互換環境です。カノンもAIRもCLANNAD [Full Voice]もplanetarianもプリンセスブライドを遊べる。</p>
 
