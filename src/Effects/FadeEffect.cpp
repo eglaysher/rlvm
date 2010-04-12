@@ -25,25 +25,20 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   FadeEffect.cpp
- * @author Elliot Glaysher
- * @date   Tue Nov 14 20:58:10 2006
- *
- * @ingroup TransitionEffects
- * @brief  Fade transition Effect
- */
-
 #include "Effects/FadeEffect.hpp"
 #include "Systems/Base/Surface.hpp"
 
 // -----------------------------------------------------------------------
-
-bool FadeEffect::blitOriginalImage() const {
-  return true;
-}
-
+// FadeEffect
 // -----------------------------------------------------------------------
+
+FadeEffect::FadeEffect(RLMachine& machine,
+                       boost::shared_ptr<Surface> src,
+                       boost::shared_ptr<Surface> dst,
+                       const Size& screenSize,
+                       int time)
+    : Effect(machine, src, dst, screenSize, time) {
+}
 
 void FadeEffect::performEffectForTime(RLMachine& machine,
                                       int currentTime) {
@@ -51,16 +46,11 @@ void FadeEffect::performEffectForTime(RLMachine& machine,
   int opacity = int((float(currentTime) / duration()) * 255);
 
   srcSurface().
-    renderToScreen(Rect(0, 0, size()),
-                   Rect(0, 0, size()),
-                   opacity);
+      renderToScreen(Rect(0, 0, size()),
+                     Rect(0, 0, size()),
+                     opacity);
 }
 
-// -----------------------------------------------------------------------
-
-FadeEffect::FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-                       boost::shared_ptr<Surface> dst,
-                       const Size& screenSize,
-                       int time)
-  : Effect(machine, src, dst, screenSize, time) {
+bool FadeEffect::blitOriginalImage() const {
+  return true;
 }

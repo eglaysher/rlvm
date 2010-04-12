@@ -25,15 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   WipeEffect.hpp
- * @author Elliot Glaysher
- * @date   Thu Nov  2 20:34:27 2006
- *
- * @ingroup TransitionEffects
- * @brief  Implements \#SEL transition style \#10, Wipe.
- */
-
 #ifndef SRC_EFFECTS_WIPEEFFECT_HPP_
 #define SRC_EFFECTS_WIPEEFFECT_HPP_
 
@@ -43,19 +34,14 @@
 
 class GraphicsSystem;
 
-/**
- * Base class for the four classess that implement \#SEL transition
- * style #10, Wipe. There are four direct subclasses from WipeEffect
- * that implement the individual directions that we wipe in.
- *
- * @ingroup TransitionEffects
- */
+// Base class for the four classess that implement \#SEL transition
+// style #10, Wipe. There are four direct subclasses from WipeEffect
+// that implement the individual directions that we wipe in.
 class WipeEffect : public Effect {
- private:
-  int interpolation_;
-  int interpolation_in_pixels_;
-
-  virtual bool blitOriginalImage() const;
+ public:
+  WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+             boost::shared_ptr<Surface> dst,
+             const Size& screenSize, int time, int interpolation);
 
  protected:
   void calculateSizes(int currentTime,
@@ -63,82 +49,61 @@ class WipeEffect : public Effect {
                       int& sizeOfMainPolygon,
                       int sizeOfScreen);
 
- public:
-  WipeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst,
-             const Size& screenSize, int time, int interpolation);
+
+ private:
+  virtual bool blitOriginalImage() const;
+
+  int interpolation_;
+  int interpolation_in_pixels_;
 };
 
-// -----------------------------------------------------------------------
 
-/**
- * Implements SEL #10, Wipe, with direction 0, top to bottom.
- *
- * @ingroup TransitionEffects
- */
+// Implements SEL #10, Wipe, with direction 0, top to bottom.
 class WipeTopToBottomEffect : public WipeEffect {
- protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
-
  public:
   WipeTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
                         int interpolation);
-};
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements SEL #10, Wipe, with direction 1, bottom to top.
- *
- * @ingroup TransitionEffects
- */
-class WipeBottomToTopEffect : public WipeEffect {
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
+};
 
+// Implements SEL #10, Wipe, with direction 1, bottom to top.
+class WipeBottomToTopEffect : public WipeEffect {
  public:
   WipeBottomToTopEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
                         int interpolation);
-};
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements SEL #10, Wipe, with direction 2, left to right.
- *
- * @ingroup TransitionEffects
- */
-class WipeLeftToRightEffect : public WipeEffect {
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
+};
 
+// Implements SEL #10, Wipe, with direction 2, left to right.
+class WipeLeftToRightEffect : public WipeEffect {
  public:
   WipeLeftToRightEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
                         int interpolation);
-};
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements SEL #10, Wipe, with direction 2, left to right.
- *
- * @ingroup TransitionEffects
- */
-class WipeRightToLeftEffect : public WipeEffect {
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
+};
 
+// Implements SEL #10, Wipe, with direction 3, right to left.
+class WipeRightToLeftEffect : public WipeEffect {
  public:
   WipeRightToLeftEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
                         const Size& screenSize, int time,
                         int interpolation);
+
+ protected:
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
 };
 
 #endif  // SRC_EFFECTS_WIPEEFFECT_HPP_

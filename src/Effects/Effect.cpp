@@ -25,42 +25,31 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Effect.cpp
- * @author Elliot Glaysher
- * @date   Thu Nov  2 20:35:54 2006
- *
- * @brief  Base LongOperation for all transition effects on DCs.
- */
-
 #include "Effects/Effect.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/Surface.hpp"
 
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+
+// -----------------------------------------------------------------------
+// Effect
 // -----------------------------------------------------------------------
 
 Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
                boost::shared_ptr<Surface> dst,
                Size size, int time)
-  : screen_size_(size), duration_(time),
-    start_time_(machine.system().event().getTicks()),
-    machine_(machine), src_surface_(src), dst_surface_(dst) {
+    : screen_size_(size), duration_(time),
+      start_time_(machine.system().event().getTicks()),
+      machine_(machine), src_surface_(src), dst_surface_(dst) {
   machine.system().graphics().setIsResponsibleForUpdate(false);
 }
-
-// -----------------------------------------------------------------------
 
 Effect::~Effect() {
   machine_.system().graphics().setIsResponsibleForUpdate(true);
 }
 
-// -----------------------------------------------------------------------
-
-/// @todo Riht now, the ctrl pressed behaviour *may* not match
-///       RealLive exactly. Verify this.
 bool Effect::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - start_time_;
@@ -70,15 +59,14 @@ bool Effect::operator()(RLMachine& machine) {
   if (currentFrame >= duration_ || fastForward) {
     return true;
   } else {
-    // Render to the screen
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.beginFrame();
 
     if (blitOriginalImage()) {
       dstSurface().
-        renderToScreen(Rect(Point(0, 0), size()),
-                       Rect(Point(0, 0), size()),
-                       255);
+          renderToScreen(Rect(Point(0, 0), size()),
+                         Rect(Point(0, 0), size()),
+                         255);
     }
 
     performEffectForTime(machine, currentFrame);
@@ -92,6 +80,16 @@ bool Effect::operator()(RLMachine& machine) {
 // BlitAfterEffectFinishes
 // -----------------------------------------------------------------------
 
+BlitAfterEffectFinishes::BlitAfterEffectFinishes(
+    LongOperation* in, boost::shared_ptr<Surface> src,
+    boost::shared_ptr<Surface> dst, const Rect& srcRect, const Rect& destRect)
+    : PerformAfterLongOperationDecorator(in),
+      src_surface_(src), dst_surface_(dst), src_rect_(srcRect),
+      dest_rect_(destRect) {
+      }
+
+BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
+
 void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
   // Blit DC1 onto DC0, with full opacity, and end the operation
   src_surface_->blitToSurface(*dst_surface_,
@@ -100,17 +98,3 @@ void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
   // Now force a screen refresh
   machine.system().graphics().forceRefresh();
 }
-
-// -----------------------------------------------------------------------
-
-BlitAfterEffectFinishes::BlitAfterEffectFinishes(
-    LongOperation* in, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst, const Rect& srcRect, const Rect& destRect)
-    : PerformAfterLongOperationDecorator(in),
-      src_surface_(src), dst_surface_(dst), src_rect_(srcRect),
-      dest_rect_(destRect) {
-}
-
-// -----------------------------------------------------------------------
-
-BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}

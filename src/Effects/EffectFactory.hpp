@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   EffectFactory.hpp
- * @author Elliot Glaysher
- * @date   Thu Nov  2 20:37:58 2006
- * @ingroup TransitionEffects
- * @brief  Factory that creates all Effect s.
- */
-
 #ifndef SRC_EFFECTS_EFFECTFACTORY_HPP_
 #define SRC_EFFECTS_EFFECTFACTORY_HPP_
 
@@ -46,60 +38,24 @@ class Effect;
 class ScrollSquashSlideDrawer;
 class ScrollSquashSlideEffectTypeBase;
 
-/**
- * Factory that creates all Effects. This factory is called with
- * either a Gameexe and the \#SEL or \#SELR number, or it is passed the
- * equivalent parameters.
- *
- * @ingroup TransitionEffects
- */
+// Factory that creates all Effects. This factory is called with
+// either a Gameexe and the \#SEL or \#SELR number, or it is passed the
+// equivalent parameters.
 class EffectFactory {
  public:
-  /**
-   * Builds an Effect based off the \#SEL.selnum line in the
-   * Gameexe.ini file. The coordinates, which are in grp* format (x1,
-   * y1, x2, y2), are converted to rec* format and then based to the
-   * build() method.
-   *
-   * @param machine  Machine to read Gameexe from
-   * @param selnum   \#SEL to read
-   * @throw Error selnum is not a valid \#SEL number, Gameexe file is
-   *              malformed.
-   * @return A LongOperation which will perform the following transition
-   *         and then exit.
-   */
+  // Builds an Effect based off the \#SEL.selnum line in the
+  // Gameexe.ini file. The coordinates, which are in grp* format (x1,
+  // y1, x2, y2), are converted to rec* format and then based to the
+  // build() method.
   static Effect* buildFromSEL(RLMachine& machine,
                               boost::shared_ptr<Surface> src,
                               boost::shared_ptr<Surface> dst,
                               int selnum);
 
-  /**
-   * Returns a constructed LongOperation with the following properties
-   * to perform a transition. Note: Effect's external interface work on
-   * the rec* coordinate system (x, y, width, height) instead of the
-   * grp* coordinate system (x1, y1, x2, y2) .
-   *
-   * @param machine       Machine to construct with
-   * @param time          Length of transition, in ms.
-   * @param style         The style of transition. This factory does a
-   *                      big switch statement on this value.
-   * @param direction     For wipes and pans, sets the wipe direction.
-   * @param interpolation Smooths certain transitions. For For dithered
-   *                      fades, interpolation N adds N intermediate
-   *                      steps so that the transition fades between
-   *                      patterns rather than stepping between them.
-   *                      For wipes, interpolation N replaces the hard
-   *                      boundary with a soft edge of thickness roughly
-   *                      2^N * 2.5 pixels.
-   * @param xsize         X size of pattern in some transitions
-   * @param ysize         Y size of pattern in some transitions
-   * @param a             Unknown
-   * @param b             Unknown
-   * @param c             Unknown
-   *
-   * @return A LongOperation which will perform the following transition
-   *         and then exit.
-   */
+  // Returns a constructed LongOperation with the following properties
+  // to perform a transition. Note: Effect's external interface work on
+  // the rec* coordinate system (x, y, width, height) instead of the
+  // grp* coordinate system (x1, y1, x2, y2) .
   static Effect* build(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
@@ -108,11 +64,13 @@ class EffectFactory {
     int c);
 
  private:
+  // Creates a specific subclass of WipeEffect for \#SEL #10, Wipe.
   static Effect* buildWipeEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,
     const Size& screenSize, int time, int direction, int interpolation);
 
+  // Creates a specific subclass of BlindEffect for \#SEL #120, Blind.
   static Effect* buildBlindEffect(
     RLMachine& machine, boost::shared_ptr<Surface> src,
     boost::shared_ptr<Surface> dst,

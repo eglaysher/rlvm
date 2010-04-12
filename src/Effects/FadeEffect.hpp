@@ -30,23 +30,20 @@
 
 #include "Effects/Effect.hpp"
 
-/**
- * Simple fade in.
- *
- * @ingroup TransitionEffects
- */
+// Simple fade in.
 class FadeEffect : public Effect {
- private:
-  virtual bool blitOriginalImage() const;
+ public:
+  FadeEffect(RLMachine& machine,
+             boost::shared_ptr<Surface> src,
+             boost::shared_ptr<Surface> dst,
+             const Size& screenSize, int time);
 
  protected:
   virtual void performEffectForTime(RLMachine& machine,
                                     int currentTime);
 
- public:
-  FadeEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst,
-             const Size& screenSize, int time);
+ private:
+  virtual bool blitOriginalImage() const;
 };
 
 
