@@ -365,8 +365,7 @@ void addObjectFunctions(RLModule& m) {
   m.addUnsupportedOpcode(1043, 0, "objAdjustAllY");
 
   m.addOpcode(1046, 0, "objScale", new Obj_SetTwoIntOnObj(
-                &GraphicsObject::setWidth,
-                &GraphicsObject::setHeight));
+      &GraphicsObject::setWidth, &GraphicsObject::setHeight));
   m.addOpcode(1047, 0, "objWidth",
               new Obj_SetOneIntOnObj(&GraphicsObject::setWidth));
   m.addOpcode(1048, 0, "objHeight",
@@ -374,12 +373,14 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1049, 0, "objRotate",
               new Obj_SetOneIntOnObj(&GraphicsObject::setRotation));
 
-  m.addUnsupportedOpcode(1050, 0, "objRepOrigin");
-  m.addUnsupportedOpcode(1051, 0, "objRepOriginX");
-  m.addUnsupportedOpcode(1052, 0, "objRepOriginY");
+  m.addOpcode(1050, 0, "objRepOrigin", new Obj_SetTwoIntOnObj(
+      &GraphicsObject::setXRepOrigin, &GraphicsObject::setYRepOrigin));
+  m.addOpcode(1051, 0, "objRepOriginX",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setXRepOrigin));
+  m.addOpcode(1052, 0, "objRepOriginY",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setYRepOrigin));
   m.addOpcode(1053, 0, "objOrigin", new Obj_SetTwoIntOnObj(
-                &GraphicsObject::setXOrigin,
-                &GraphicsObject::setYOrigin));
+      &GraphicsObject::setXOrigin, &GraphicsObject::setYOrigin));
   m.addOpcode(1054, 0, "objOriginX",
               new Obj_SetOneIntOnObj(&GraphicsObject::setXOrigin));
   m.addOpcode(1055, 0, "objOriginY",

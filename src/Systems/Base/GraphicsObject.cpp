@@ -210,6 +210,20 @@ void GraphicsObject::setYOrigin(const int y) {
 
 // -----------------------------------------------------------------------
 
+void GraphicsObject::setXRepOrigin(const int x) {
+  makeImplUnique();
+  impl_->rep_origin_x_ = x;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsObject::setYRepOrigin(const int y) {
+  makeImplUnique();
+  impl_->rep_origin_y_ = y;
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsObject::setWidth(const int in) {
   makeImplUnique();
   impl_->width_ = in;

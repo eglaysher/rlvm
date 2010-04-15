@@ -689,8 +689,12 @@ void Texture::renderToScreenAsObject(
     // Move the "origin" to the correct position.
     glTranslatef(go.xOrigin(), go.yOrigin(), 0);
 
-    // Rotate here?
+    // Rotate the texture around the point (origin + position + reporigin)
+    float x_rep = fdx1 + go.xRepOrigin();
+    float y_rep = fdy1 + go.yRepOrigin();
+    glTranslatef(x_rep, y_rep, 0);
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
+    glTranslatef(-x_rep, -y_rep, 0);
 
     glBegin(GL_QUADS); {
       glColorRGBA(RGBAColour(go.tint(), alpha));

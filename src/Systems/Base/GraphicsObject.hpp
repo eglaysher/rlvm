@@ -98,6 +98,12 @@ class GraphicsObject {
   int yOrigin() const { return impl_->origin_y_; }
   void setYOrigin(const int y);
 
+  int xRepOrigin() const { return impl_->rep_origin_x_; }
+  void setXRepOrigin(const int x);
+
+  int yRepOrigin() const { return impl_->rep_origin_y_; }
+  void setYRepOrigin(const int y);
+
   int width() const { return impl_->width_; }
   void setWidth(const int in);
 
