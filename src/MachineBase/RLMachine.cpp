@@ -468,6 +468,29 @@ void RLMachine::returnFromGosub() {
 
 // -----------------------------------------------------------------------
 
+void RLMachine::pushStringValueUp(int index, const std::string& val) {
+  if (index < 0 || index > 2) {
+    throw rlvm::Exception("Invalid index in pushStringValue");
+  }
+
+  // Find the first real stack frame.
+  std::vector<StackFrame>::reverse_iterator it =
+      find_if(call_stack_.rbegin(), call_stack_.rend(),
+              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+  if (it != call_stack_.rend()) {
+    // Now try to move one stack frame up.
+    it++;
+    it = find_if(it, call_stack_.rend(),
+                 bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+
+    if (it != call_stack_.rend()) {
+      it->strK[index] = val;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------
+
 void RLMachine::pushLongOperation(LongOperation* long_operation) {
   pushStackFrame(StackFrame(call_stack_.back().scenario, call_stack_.back().ip,
                             long_operation));

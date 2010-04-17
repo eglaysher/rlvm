@@ -552,6 +552,15 @@ struct rtl_with_1 : public RLOp_Void_Void {
   }
 };
 
+// Pushes a string value into strK[index] one stack frame above the current
+// one. Used in the Little Busters battle system to return string values that
+// refer to people's faces. (See SEEN8700).
+struct push_string_value_up : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+  void operator()(RLMachine& machine, int index, std::string val) {
+    machine.pushStringValueUp(index, val);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -586,6 +595,8 @@ JmpModule::JmpModule()
   addOpcode(18, 0, "farcall_with", new farcall_with);
   addOpcode(19, 0, "rtl_with", new rtl_with_0);
   addOpcode(19, 1, "rtl_with", new rtl_with_1);
+
+  addOpcode(101, 0, "pushStringValueUp", new push_string_value_up);
 }
 
 // @}

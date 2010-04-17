@@ -816,3 +816,16 @@ TEST(LargeJmpTest, farcall_with) {
     }
   }
 }
+
+// Tests the new pushStringValue that Little Busters depends on.
+TEST(LargeJmpTest, pushStringValueUp) {
+  libReallive::Archive arc(
+      locateTestCase("Module_Jmp_SEEN/pushStringValueUp.TXT"));
+  TestSystem system;
+  RLMachine rlmachine(system, arc);
+  rlmachine.attachModule(new JmpModule);
+  rlmachine.attachModule(new StrModule);
+  rlmachine.executeUntilHalted();
+
+  EXPECT_EQ("GOOD", rlmachine.getStringValue(STRM_LOCATION, 0));
+}

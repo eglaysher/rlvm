@@ -78,6 +78,7 @@ simple_test_cases = [
   'Module_Jmp_SEEN/graphics',
   'Module_Jmp_SEEN/graphics2',
   'Module_Jmp_SEEN/jump_0',
+  "Module_Jmp_SEEN/pushStringValueUp",
   "Module_Mem_SEEN/cpyrng_0",
   "Module_Mem_SEEN/cpyvars_0",
   "Module_Mem_SEEN/setarray_0",

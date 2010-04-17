@@ -279,6 +279,13 @@ class RLMachine {
   void returnFromGosub();
 
   /**
+   * Writes |val| to strK[index] in the stack frame above the current one. Used
+   * to return strings from {farcall,gosub}_with constructs (since rtl_with
+   * only accepts integers).
+   */
+  void pushStringValueUp(int index, const std::string& val);
+
+  /**
    * Pushes a long operation onto the function stack. Control will be
    * passed to this LongOperation instead of normal bytecode passing
    * until the LongOperation gives control up.
