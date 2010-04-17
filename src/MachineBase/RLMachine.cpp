@@ -522,13 +522,27 @@ void RLMachine::popStackFrame() {
 // -----------------------------------------------------------------------
 
 int* RLMachine::currentIntLBank() {
-  return call_stack_.back().intL;
+  std::vector<StackFrame>::reverse_iterator it =
+      find_if(call_stack_.rbegin(), call_stack_.rend(),
+              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+  if (it != call_stack_.rend()) {
+    return it->intL;
+  }
+
+  throw rlvm::Exception("No valid intL bank");
 }
 
 // -----------------------------------------------------------------------
 
 std::string* RLMachine::currentStrKBank() {
-  return call_stack_.back().strK;
+  std::vector<StackFrame>::reverse_iterator it =
+      find_if(call_stack_.rbegin(), call_stack_.rend(),
+              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+  if (it != call_stack_.rend()) {
+    return it->strK;
+  }
+
+  throw rlvm::Exception("No valid strK bank");
 }
 
 // -----------------------------------------------------------------------
