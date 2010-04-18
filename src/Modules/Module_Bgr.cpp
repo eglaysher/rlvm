@@ -203,6 +203,15 @@ struct bgrMulti_1 : public RLOp_Void_3<
   }
 };
 
+struct bgrSetXOffset : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int offset) {
+    HIKScript* script = machine.system().graphics().getHikScript();
+    if (script) {
+      script->set_x_offset(offset);
+    }
+  }
+};
+
 struct bgrSetYOffset : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int offset) {
     HIKScript* script = machine.system().graphics().getHikScript();
@@ -225,5 +234,6 @@ BgrModule::BgrModule()
   addUnsupportedOpcode(100, 0, "bgrMulti");
   addOpcode(100, 1, "bgrMulti", new bgrMulti_1);
 
+  addOpcode(1104, 0, "bgrSetXOffset", new bgrSetXOffset);
   addOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
 }

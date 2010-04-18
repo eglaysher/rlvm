@@ -54,6 +54,7 @@ class HIKScript {
 
   // RL bytecode controlled offsets from the top left corner of the source
   // image.
+  void set_x_offset(int offset) { x_offset_ = offset; }
   void set_y_offset(int offset) { y_offset_ = offset; }
 
  private:
@@ -124,6 +125,7 @@ class HIKScript {
   int creation_time_;
 
   // Bytecode controllable offset.
+  int x_offset_;
   int y_offset_;
 };
 
