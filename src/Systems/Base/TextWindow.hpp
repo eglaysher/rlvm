@@ -198,7 +198,7 @@ class TextWindow {
    */
   void setKeycurMod(const std::vector<int>& keycur);
 
-  Point keycursorPosition() const;
+  Point keycursorPosition(const Size& cursor_size) const;
   /// @}
 
   /**

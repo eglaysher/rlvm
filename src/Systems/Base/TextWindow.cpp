@@ -414,12 +414,10 @@ void TextWindow::setKeycurMod(const vector<int>& keycur) {
 
 // -----------------------------------------------------------------------
 
-Point TextWindow::keycursorPosition() const {
-  // TODO(erg): This is the next thing to look at after I have the rects layed
-  // out. The keycursor in ALMA isn't positioned correctly.
+Point TextWindow::keycursorPosition(const Size& cursor_size) const {
   switch (keycursor_type_) {
   case 0:
-    return textSurfaceRect().lowerRight();
+    return textSurfaceRect().lowerRight() - cursor_size;
   case 1:
     return Point(text_insertion_point_x_, text_insertion_point_y_);
   case 2:
