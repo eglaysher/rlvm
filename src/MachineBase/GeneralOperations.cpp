@@ -85,17 +85,14 @@ TextPage& getSystemObj(RLMachine& machine) {
 }  // namespace getSystemObjImpl
 
 // -----------------------------------------------------------------------
-
+// MultiDispatch
+// -----------------------------------------------------------------------
 MultiDispatch::MultiDispatch(RLOperation* op)
     : handler_(op) {
 }
 
-// -----------------------------------------------------------------------
-
 MultiDispatch::~MultiDispatch() {
 }
-
-// -----------------------------------------------------------------------
 
 void MultiDispatch::parseParameters(
     const std::vector<std::string>& input,
@@ -106,8 +103,6 @@ void MultiDispatch::parseParameters(
     output.push_back(get_complex_param(src));
   }
 }
-
-// -----------------------------------------------------------------------
 
 /// @todo Port this up to the new expression handling code
 void MultiDispatch::operator()(
@@ -126,13 +121,12 @@ void MultiDispatch::operator()(
   machine.advanceInstructionPointer();
 }
 
-// -------------------------------------------------- [ ReturnGameexeInt ]
-
+// -----------------------------------------------------------------------
+// ReturnGameexeInt
+// -----------------------------------------------------------------------
 ReturnGameexeInt::ReturnGameexeInt(const std::string& full_key, int en)
     : full_key_name_(full_key), entry_(en) {
 }
-
-// -----------------------------------------------------------------------
 
 int ReturnGameexeInt::operator()(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
@@ -147,28 +141,27 @@ int ReturnGameexeInt::operator()(RLMachine& machine) {
   }
 }
 
-// -------------------------------------------------- [ InvokeSyscomAsOp ]
 
+// -----------------------------------------------------------------------
+// InvokeSyscomAsOp
+// -----------------------------------------------------------------------
 InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom)
     : syscom_(syscom) {
 }
-
-// -----------------------------------------------------------------------
 
 void InvokeSyscomAsOp::operator()(RLMachine& machine) {
   machine.system().invokeSyscom(machine, syscom_);
 }
 
-// ------------------------------------------------- [ UndefinedFunction ]
-
+// -----------------------------------------------------------------------
+// UndefinedFunction
+// -----------------------------------------------------------------------
 UndefinedFunction::UndefinedFunction(
     const std::string& name,
     int modtype, int module, int opcode, int overload)
     : name_(name), modtype_(modtype), module_(module), opcode_(opcode),
       overload_(overload) {
 }
-
-// -----------------------------------------------------------------------
 
 void UndefinedFunction::operator()(RLMachine&,
                                    const libReallive::CommandElement&) {

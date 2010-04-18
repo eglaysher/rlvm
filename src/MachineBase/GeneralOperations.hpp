@@ -29,16 +29,13 @@
 #ifndef SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 #define SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 
-#include "RLOperation.hpp"
-#include "RLOperation/RLOp_Store.hpp"
-#include "RLOperation/References.hpp"
-
 #include <boost/scoped_ptr.hpp>
-
 #include <string>
 #include <vector>
 
-// -----------------------------------------------------------------------
+#include "RLOperation.hpp"
+#include "RLOperation/RLOp_Store.hpp"
+#include "RLOperation/References.hpp"
 
 class System;
 class EventSystem;
@@ -48,435 +45,86 @@ class TextSystem;
 class SoundSystem;
 class CGMTable;
 
-// -----------------------------------------------------------------------
+// Templated implementation details:
+#include "MachineBase/GeneralOperations_impl.hpp"
 
-/**
- * Contains details on how to get a certain object from an input
- * RLMachine. Templates are specialized in the cpp file.
- */
-namespace getSystemObjImpl {
-
-template<typename RETTYPE>
-RETTYPE& getSystemObj(RLMachine& machine);
-
-template<>
-inline RLMachine& getSystemObj(RLMachine& machine) {
-  return machine;
-}
-
-// Equivalent to machine.system().
-template<>
-System& getSystemObj(RLMachine& machine);
-
-// Equivalent to machine.system().event().
-template<>
-EventSystem& getSystemObj(RLMachine& machine);
-
-// Equivalent to machine.system().graphics().
-template<>
-GraphicsSystem& getSystemObj(RLMachine& machine);
-
-// Equivalent to machine.system().text().
-template<>
-TextSystem& getSystemObj(RLMachine& machine);
-
-// Equivalent to machine.system().sound().
-template<>
-SoundSystem& getSystemObj(RLMachine& machine);
-
-// Equivalent to machine.system().graphics().cgTable().
-template<>
-CGMTable& getSystemObj(RLMachine& machine);
-
-// Equivalent to machine.system().text().currentPage().
-template<>
-TextPage& getSystemObj(RLMachine& machine);
-
-}  // namespace getSystemObjImpl
-
-// -----------------------------------------------------------------------
-
-/**
- * Binds setting an internal variable to a passed in value in from a
- * running Reallive script.
- */
-template<typename OBJTYPE>
-class Op_CallWithInt : public RLOp_Void_1< IntConstant_T > {
- public:
-  /// The function signature for the setter function
-  typedef void(OBJTYPE::*Setter)(const int);
-
-  explicit Op_CallWithInt(Setter s)
-      : setter(s) {
-  }
-
-  void operator()(RLMachine& machine, int in) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(in);
-  }
-
- private:
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
-  Setter setter;
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Binds setting an internal variable to a passed in value in from a
- * running Reallive script.
- */
-template<typename OBJTYPE>
-class Op_CallWithMachineInt : public RLOp_Void_1< IntConstant_T > {
- public:
-  /// The function signature for the setter function
-  typedef void(OBJTYPE::*Setter)(RLMachine&, const int);
-
-  explicit Op_CallWithMachineInt(Setter s)
-      : setter(s) {
-  }
-
-  void operator()(RLMachine& machine, int in) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(machine, in);
-  }
-
- private:
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
-  Setter setter;
-};
-
-
-// -----------------------------------------------------------------------
-
-/**
- * Binds setting an internal variable to a passed in value in from a
- * running Reallive script.
- */
-template<typename OBJTYPE>
-class Op_CallWithMachineIntInt : public RLOp_Void_2< IntConstant_T,
-                                                     IntConstant_T > {
- public:
-  /// The function signature for the setter function
-  typedef void(OBJTYPE::*Setter)(RLMachine&, const int, const int);
-
-  explicit Op_CallWithMachineIntInt(Setter s)
-      : setter(s) {
-  }
-
-  void operator()(RLMachine& machine, int one, int two) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(
-        machine, one, two);
-  }
-
- private:
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
-  Setter setter;
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Binds setting an internal variable to a passed in value in from a
- * running Reallive script.
- */
-template<typename OBJTYPE>
-class Op_CallWithIntInt : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
- public:
-  /// The function signature for the setter function
-  typedef void(OBJTYPE::*Setter)(const int, const int);
-
-  explicit Op_CallWithIntInt(Setter s)
-      : setter(s) {
-  }
-
-  void operator()(RLMachine& machine, int in1, int in2) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(in1, in2);
-  }
-
- private:
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
-  Setter setter;
-};
-
-// -----------------------------------------------------------------------
-
-/**
- * Binds setting an internal variable to a passed in value in from a
- * running Reallive script.
- */
-template<typename OBJTYPE>
-class Op_CallWithString : public RLOp_Void_1< StrConstant_T > {
- public:
-  /// The function signature for the setter function
-  typedef void(OBJTYPE::*Setter)(const std::string&);
-
-  explicit Op_CallWithString(Setter s)
-      : setter(s) {
-  }
-
-  void operator()(RLMachine& machine, std::string incoming) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
-  }
-
- private:
-  /// The setter function to call on Op_CallWithString::reference
-  /// when called.
-  Setter setter;
-};
-// -----------------------------------------------------------------------
-
-template<typename OBJTYPE>
-class Op_CallMethod : public RLOp_Void_Void {
- public:
-  /// The string getter function to call
-  typedef void(OBJTYPE::*FUNCTYPE)();
-
-  explicit Op_CallMethod(FUNCTYPE f)
-      : func(f) {
-  }
-
-  void operator()(RLMachine& machine) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*func)();
-  }
-
- private:
-  FUNCTYPE func;
-};
-
-// -----------------------------------------------------------------------
-
+// callFunction(), the public interface to all the above binder classes.
 template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)(const int)) {
-  return new Op_CallWithInt<OBJTYPE>(s);
+  return new binderImpl::Op_CallWithInt<OBJTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)(RLMachine&, const int)) {
-  return new Op_CallWithMachineInt<OBJTYPE>(s);
+  return new binderImpl::Op_CallWithMachineInt<OBJTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)(RLMachine&, const int, const int)) {
-  return new Op_CallWithMachineIntInt<OBJTYPE>(s);
+  return new binderImpl::Op_CallWithMachineIntInt<OBJTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)(const int, const int)) {
-  return new Op_CallWithIntInt<OBJTYPE>(s);
+  return new binderImpl::Op_CallWithIntInt<OBJTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)(const std::string&)) {
-  return new Op_CallWithString<OBJTYPE>(s);
+  return new binderImpl::Op_CallWithString<OBJTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
 RLOperation* callFunction(void(OBJTYPE::*s)()) {
-  return new Op_CallMethod<OBJTYPE>(s);
+  return new binderImpl::Op_CallMethod<OBJTYPE>(s);
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Sets an internal variable to a specific value set at compile time,
- * and exposes this as an operation to Reallive scripts.
- */
-template<typename OBJTYPE, typename VALTYPE>
-class Op_SetToConstant : public RLOp_Void_Void {
- public:
-  typedef void(OBJTYPE::*Setter)(VALTYPE);
-
-  Op_SetToConstant(Setter s, VALTYPE in_val)
-      : setter(s), value(in_val) {
-  }
-
-  void operator()(RLMachine& machine) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(value);
-  }
-
- private:
-  Setter setter;
-
-  VALTYPE value;
-};
-
-// -----------------------------------------------------------------------
-
+// Calls the incoming function with value.
 template<typename OBJTYPE, typename VALTYPE>
 RLOperation* setToConstant(void(OBJTYPE::*s)(VALTYPE), VALTYPE val) {
-  return new Op_SetToConstant<OBJTYPE, VALTYPE>(s, val);
+  return new binderImpl::Op_SetToConstant<OBJTYPE, VALTYPE>(s, val);
 }
 
-// -----------------------------------------------------------------------
-
-
-template<typename RETTYPE>
-class Op_ReturnFunctionIntValue : public RLOp_Store_Void {
- public:
-  typedef RETTYPE(*Getter)();
-
-  explicit Op_ReturnFunctionIntValue(Getter g)
-      : getter_(g) {
-  }
-
-  int operator()(RLMachine& machine) {
-    return (*getter_)();
-  }
-
- private:
-  Getter getter_;
-};
-
-/**
- * Reads the value of an internal variable in a generic way using an
- * arbitrary getter function and places it in the store register.
- */
-template<typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValue : public RLOp_Store_Void {
- public:
-  typedef RETTYPE(OBJTYPE::*Getter)() const;
-
-  explicit Op_ReturnIntValue(Getter g)
-      : getter_(g) {
-  }
-
-  int operator()(RLMachine& machine) {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)();
-  }
-
- private:
-  Getter getter_;
-};
-
-// -----------------------------------------------------------------------
-
-template<typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValueWithInt : public RLOp_Store_1<IntConstant_T> {
- public:
-  typedef RETTYPE(OBJTYPE::*Getter)(const int) const;
-
-  explicit Op_ReturnIntValueWithInt(Getter g)
-      : getter_(g) {
-  }
-
-  int operator()(RLMachine& machine, int one) {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)(one);
-  }
-
- private:
-  Getter getter_;
-};
-
-// -----------------------------------------------------------------------
-
-template<typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
- public:
-  typedef RETTYPE(OBJTYPE::*Getter)(const std::string&) const;
-
-  explicit Op_ReturnIntValueWithString(Getter g)
-      : getter_(g) {
-  }
-
-  int operator()(RLMachine& machine, string one) {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)(one);
-  }
-
- private:
-  Getter getter_;
-};
-
-// -----------------------------------------------------------------------
-
+// Returns the int value of the passed in function as the store register.
 template<typename RETTYPE>
 RLOperation* returnIntValue(RETTYPE(*s)()) {
-  return new Op_ReturnFunctionIntValue<RETTYPE>(s);
+  return new binderImpl::Op_ReturnFunctionIntValue<RETTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename RETTYPE>
 RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)() const) {
-  return new Op_ReturnIntValue<OBJTYPE, RETTYPE>(s);
+  return new binderImpl::Op_ReturnIntValue<OBJTYPE, RETTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename RETTYPE>
 RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(const int) const) {
-  return new Op_ReturnIntValueWithInt<OBJTYPE, RETTYPE>(s);
+  return new binderImpl::Op_ReturnIntValueWithInt<OBJTYPE, RETTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE, typename RETTYPE>
 RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(const std::string&) const) {
-  return new Op_ReturnIntValueWithString<OBJTYPE, RETTYPE>(s);
+  return new binderImpl::Op_ReturnIntValueWithString<OBJTYPE, RETTYPE>(s);
 }
-
-// -----------------------------------------------------------------------
-
-/**
- * Reads the value of an internal variable in a generic way using an
- * arbitrary getter function and places it in the store register.
- */
-template<typename OBJTYPE>
-class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
- public:
-  /// The signature of a string getter function
-  typedef const std::string&(OBJTYPE::*Getter)() const;  // NOLINT
-
-  explicit Op_ReturnStringValue(Getter g)
-      : getter_(g) {
-  }
-
-  void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)();
-  }
-
- private:
-  /// The string getter function to call
-  Getter getter_;
-};
-
-// -----------------------------------------------------------------------
 
 template<typename OBJTYPE>
 RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const) { // NOLINT
-  return new Op_ReturnStringValue<OBJTYPE>(s);
+  return new binderImpl::Op_ReturnStringValue<OBJTYPE>(s);
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Special adapter for multiple dispatch versions of operations. This
- * operation structure will take a Argc_T<  >
- *
- * For example, consider the two functions @c InitFrame and @c
- * InitFrames. The following pieces of kepago are equivalent:
- *
- * @code
- * InitFrame(0, 0, 1000, 2500)
- * InitFrame(1, 1000, 0, 2500)
- * @endcode
- *
- * @code
- * InitFrames({0, 0, 1000, 2500}, {1, 1000, 0, 2500))
- * @endcode
- */
+// Special adapter for multiple dispatch versions of operations. This
+// operation structure will take a Argc_T<  >
+//
+// For example, consider the two functions @c InitFrame and @c
+// InitFrames. The following pieces of kepago are equivalent:
+//
+// @code
+// InitFrame(0, 0, 1000, 2500)
+// InitFrame(1, 1000, 0, 2500)
+// @endcode
+//
+// @code
+// InitFrames({0, 0, 1000, 2500}, {1, 1000, 0, 2500))
+// @endcode
 class MultiDispatch : public RLOp_SpecialCase {
  public:
   explicit MultiDispatch(RLOperation* op);
@@ -492,8 +140,7 @@ class MultiDispatch : public RLOp_SpecialCase {
   boost::scoped_ptr<RLOperation> handler_;
 };
 
-// -----------------------------------------------------------------------
-
+// Returns a Gameexe value to the store register.
 class ReturnGameexeInt : public RLOp_Store_Void {
  public:
   ReturnGameexeInt(const std::string& full_key, int en);
@@ -505,8 +152,7 @@ class ReturnGameexeInt : public RLOp_Store_Void {
   int entry_;
 };
 
-// -----------------------------------------------------------------------
-
+// Invokes a syscom command.
 class InvokeSyscomAsOp : public RLOp_Void_Void {
  public:
   explicit InvokeSyscomAsOp(const int syscom);
@@ -517,12 +163,8 @@ class InvokeSyscomAsOp : public RLOp_Void_Void {
   int syscom_;
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Class that exists simply to print out a prettier output message on
- * unimplemented functions.
- */
+// Class that exists simply to print out a prettier output message on
+// unimplemented functions.
 class UndefinedFunction : public RLOp_SpecialCase {
  public:
   UndefinedFunction(const std::string& name,
