@@ -125,29 +125,21 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
 /// Type of the parameter data in the _with functions
 typedef Argc_T< Special_T< IntConstant_T, StrConstant_T> >::type ParamVector;
 
-/**
- * Stores the incoming parameter format into the local variables used
- * for parameters in gosub_with and farcall_with calls, strK[] (0a)
- * and intL[] (0b).
- *
- * @param machine RLMachine to operate on
- * @param f Parameters to store into call variables
- */
-void storeData(RLMachine& machine, const ParamVector& f) {
-  // First, we copy all the input parameters into
-  int intLpos = 0;
-  int strKpos = 0;
-
+// Stores the incoming parameter format into the local variables used for
+// parameters in gosub_with and farcall_with calls, and return them to the
+// caller. We read the data before pushing the stack frame because intL[] and
+// strK[]'s values change after the gosub_with/farcall_with.
+void readWithData(RLMachine& machine, const ParamVector& f,
+                  std::vector<int>& integers,
+                  std::vector<std::string>& strings) {
   for (ParamVector::const_iterator it = f.begin(); it != f.end();
       ++it) {
     switch (it->type) {
     case 0:
-      machine.setIntValue(IntMemRef(INTL_LOCATION, 0, intLpos), it->first);
-      intLpos++;
+      integers.push_back(it->first);
       break;
     case 1:
-      machine.setStringValue(0x0a, strKpos, it->second);
-      strKpos++;
+      strings.push_back(it->second);
       break;
     default: {
       ostringstream ss;
@@ -156,6 +148,19 @@ void storeData(RLMachine& machine, const ParamVector& f) {
       throw rlvm::Exception(ss.str());
     }
     }
+  }
+}
+
+// Write the data after we've changed the stack frame.
+void writeWithData(RLMachine& machine,
+                   const std::vector<int>& integers,
+                   const std::vector<std::string>& strings) {
+  for (int i = 0; i < 40 && i < integers.size(); ++i) {
+    machine.setIntValue(IntMemRef(INTL_LOCATION, 0, i), integers[i]);
+  }
+
+  for (int i = 0; i < 3 && i < strings.size(); ++i) {
+    machine.setStringValue(STRK_LOCATION, i, strings[i]);
   }
 }
 
@@ -459,15 +464,20 @@ struct gosub_with : public RLOp_SpecialCase {
       ParamFormat::parseParameters(position, unparsed, output);
     }
 
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    machine.gosub(pointers[0]);
-
     const ptr_vector<ExpressionPiece>& parameterPieces =
         gotoElement.getParameters();
     unsigned int position = 0;
     ParamFormat::type data =
         ParamFormat::getData(machine, parameterPieces, position);
-    storeData(machine, data);
+
+    std::vector<int> integers;
+    std::vector<std::string> strings;
+    readWithData(machine, data, integers, strings);
+
+    const Pointers& pointers = gotoElement.get_pointersRef();
+    machine.gosub(pointers[0]);
+
+    writeWithData(machine, integers, strings);
   }
 };
 
@@ -516,8 +526,13 @@ struct farcall_with
 
   void operator()(RLMachine& machine, int scenario, int entrypoint,
                   ParamVector withStuff) {
+    std::vector<int> integers;
+    std::vector<std::string> strings;
+    readWithData(machine, withStuff, integers, strings);
+
     machine.farcall(scenario, entrypoint);
-    storeData(machine, withStuff);
+
+    writeWithData(machine, integers, strings);
   }
 };
 
