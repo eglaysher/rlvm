@@ -49,32 +49,22 @@ WaitLongOperation::WaitLongOperation(RLMachine& machine)
       save_click_location_(false) {
 }
 
-// -----------------------------------------------------------------------
-
 WaitLongOperation::~WaitLongOperation() {
 }
-
-// -----------------------------------------------------------------------
 
 void WaitLongOperation::waitMilliseconds(unsigned int time) {
   wait_until_target_time_ = true;
   target_time_ = machine_.system().event().getTicks() + time;
 }
 
-// -----------------------------------------------------------------------
-
 void WaitLongOperation::breakOnClicks() {
   break_on_clicks_ = true;
 }
-
-// -----------------------------------------------------------------------
 
 void WaitLongOperation::breakOnEvent(const boost::function<bool()>& function) {
   break_on_event_ = true;
   event_function_ = function;
 }
-
-// -----------------------------------------------------------------------
 
 void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
                                           IntReferenceIterator y) {
@@ -84,13 +74,9 @@ void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
   y_ = y;
 }
 
-// -----------------------------------------------------------------------
-
 void WaitLongOperation::mouseMotion(const Point&) {
   mouse_moved_ = true;
 }
-
-// -----------------------------------------------------------------------
 
 bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed) {
@@ -113,8 +99,6 @@ bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 bool WaitLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && break_on_ctrl_pressed_ &&
       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
@@ -125,15 +109,11 @@ bool WaitLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 void WaitLongOperation::recordMouseCursorPosition() {
   Point location = machine_.system().event().getCursorPos();
   *x_ = location.x();
   *y_ = location.y();
 }
-
-// -----------------------------------------------------------------------
 
 bool WaitLongOperation::operator()(RLMachine& machine) {
   bool done = ctrl_pressed_ || machine.system().fastForward();

@@ -31,9 +31,7 @@
 #include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/EventListener.hpp"
 
-/**
- * Main pause function. Exported for TextoutLongOperation to abuse.
- */
+// Main pause function. Exported for TextoutLongOperation to abuse.
 class PauseLongOperation : public LongOperation {
  public:
   explicit PauseLongOperation(RLMachine& machine);
@@ -52,19 +50,14 @@ class PauseLongOperation : public LongOperation {
 
   bool is_done_;
 
-  /**
-   * @name Automode Related Variables
-   *
-   * @{
-   */
-  /// Keeps track of when PauseLongOperation was constructed (in ticks from
-  /// start)
+  // Used in automode:
+  // Keeps track of when PauseLongOperation was constructed (in ticks from
+  // start)
   unsigned int start_time_;
 
-  /// How long after start_time_ to automatically break out of this
-  /// Longoperation if auto mode is enabled
+  // How long after start_time_ to automatically break out of this
+  // Longoperation if auto mode is enabled
   unsigned int automode_time_;
-  /// @}
 };
 
 // -----------------------------------------------------------------------

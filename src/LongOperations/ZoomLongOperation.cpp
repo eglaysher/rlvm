@@ -28,10 +28,10 @@
 #include "LongOperations/ZoomLongOperation.hpp"
 
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
 
 // -----------------------------------------------------------------------
 // ZoomLongOperation
@@ -49,12 +49,8 @@ ZoomLongOperation::ZoomLongOperation(
     start_time_(machine.system().event().getTicks()) {
 }
 
-// -----------------------------------------------------------------------
-
 ZoomLongOperation::~ZoomLongOperation() {
 }
-
-// -----------------------------------------------------------------------
 
 bool ZoomLongOperation::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
@@ -78,13 +74,9 @@ bool ZoomLongOperation::operator()(RLMachine& machine) {
     Point zPt = frect_.origin() + ((trect_.origin() - frect_.origin()) * ratio);
     Size zSize = frect_.size() + ((trect_.size() - frect_.size()) * ratio);
 
-    src_surface_->
-      renderToScreen(Rect(zPt, zSize), drect_, 255);
+    src_surface_->renderToScreen(Rect(zPt, zSize), drect_, 255);
 
     graphics.endFrame();
     return false;
   }
 }
-
-
-

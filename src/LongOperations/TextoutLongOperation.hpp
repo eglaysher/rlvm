@@ -48,6 +48,8 @@ class TextoutLongOperation : public LongOperation {
 
   bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
 
+  // Extract a name and send it to the text system as an automic
+  // operation.
   bool displayName(RLMachine& machine);
   bool displayOneMoreCharacter(RLMachine& machine, bool& paused);
 

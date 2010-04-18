@@ -34,24 +34,24 @@
 
 class Point;
 
-/// Pauses interpretation, waiting for input, an event or a user click.
+// Pauses interpretation, waiting for input, an event or a user click.
 class WaitLongOperation : public LongOperation {
  public:
   explicit WaitLongOperation(RLMachine& machine);
   ~WaitLongOperation();
 
-  /// This instance should wait time milliseconds and then return.
+  // This instance should wait time milliseconds and then return.
   void waitMilliseconds(unsigned int time);
 
-  /// Whether we should exit this long operation on a click.
+  // Whether we should exit this long operation on a click.
   void breakOnClicks();
 
-  /// Checks |function| on every LongOperation invocation to see if we are
-  /// finished. |function| should return true if we are done.
+  // Checks |function| on every LongOperation invocation to see if we are
+  // finished. |function| should return true if we are done.
   void breakOnEvent(const boost::function<bool()>& function);
 
-  /// Whether we write out the location of a mouse click. Implies that we're
-  /// breaking on mouse click.
+  // Whether we write out the location of a mouse click. Implies that we're
+  // breaking on mouse click.
   void saveClickLocation(IntReferenceIterator x, IntReferenceIterator y);
 
   void mouseMotion(const Point&);

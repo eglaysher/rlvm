@@ -43,7 +43,6 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
-
 #include "libReallive/bytecode.h"
 #include "libReallive/expression.h"
 #include "libReallive/gameexe.h"
@@ -104,13 +103,9 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
   }
 }
 
-// -----------------------------------------------------------------------
-
 void SelectLongOperation::selected(int num) {
   return_value_ = num;
 }
-
-// -----------------------------------------------------------------------
 
 bool SelectLongOperation::selectOption(const std::string& str) {
   std::vector<Option>::iterator it =
@@ -123,8 +118,6 @@ bool SelectLongOperation::selectOption(const std::string& str) {
 
   return false;
 }
-
-// -----------------------------------------------------------------------
 
 bool SelectLongOperation::operator()(RLMachine& machine) {
   if (return_value_ != -1) {
@@ -160,21 +153,15 @@ NormalSelectLongOperation::NormalSelectLongOperation(
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 
-// -----------------------------------------------------------------------
-
 NormalSelectLongOperation::~NormalSelectLongOperation() {
   text_window_->endSelectionMode();
   machine_.system().text().setInSelectionMode(false);
 }
 
-// -----------------------------------------------------------------------
-
 void NormalSelectLongOperation::mouseMotion(const Point& pos) {
   // Tell the text system about the move
   machine_.system().text().setMousePosition(pos);
 }
-
-// -----------------------------------------------------------------------
 
 bool NormalSelectLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                         bool pressed) {
@@ -325,13 +312,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 }
 
-// -----------------------------------------------------------------------
-
 ButtonSelectLongOperation::~ButtonSelectLongOperation() {
   machine_.system().graphics().removeRenderable(this);
 }
-
-// -----------------------------------------------------------------------
 
 void ButtonSelectLongOperation::mouseMotion(const Point& p) {
   for (size_t i = 0; i < buttons_.size(); i++) {
@@ -343,8 +326,6 @@ void ButtonSelectLongOperation::mouseMotion(const Point& p) {
 
   highlighted_item_ = -1;
 }
-
-// -----------------------------------------------------------------------
 
 bool ButtonSelectLongOperation::mouseButtonStateChanged(
     MouseButton mouseButton, bool pressed) {
@@ -379,8 +360,6 @@ bool ButtonSelectLongOperation::mouseButtonStateChanged(
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 void ButtonSelectLongOperation::render(std::ostream* tree) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     Rect bounding_rect = buttons_[i].bounding_rect;
@@ -406,8 +385,6 @@ void ButtonSelectLongOperation::render(std::ostream* tree) {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 void ButtonSelectLongOperation::renderTextSurface(
     const boost::shared_ptr<Surface>& text_surface, const Rect& bounding_rect) {

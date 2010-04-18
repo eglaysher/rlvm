@@ -26,20 +26,18 @@
 // -----------------------------------------------------------------------
 
 #include "LongOperations/TextoutLongOperation.hpp"
-#include "LongOperations/PauseLongOperation.hpp"
-
-#include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextPage.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-
-#include "Utilities/Exception.hpp"
 
 #include <string>
 #include <algorithm>
 
+#include "LongOperations/PauseLongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Utilities/Exception.hpp"
 #include "utf8cpp/utf8.h"
 
 // -----------------------------------------------------------------------
@@ -48,8 +46,8 @@
 
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
-  : m_utf8string(utf8string), current_codepoint_(0),
-    current_position_(m_utf8string.begin()), no_wait_(false) {
+    : m_utf8string(utf8string), current_codepoint_(0),
+      current_position_(m_utf8string.begin()), no_wait_(false) {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
   if (tmp == m_utf8string.end()) {
@@ -66,12 +64,8 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
     no_wait_ = true;
 }
 
-// -----------------------------------------------------------------------
-
 TextoutLongOperation::~TextoutLongOperation() {
 }
-
-// -----------------------------------------------------------------------
 
 bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed) {
@@ -83,8 +77,6 @@ bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
     no_wait_ = true;
@@ -93,8 +85,6 @@ bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
 
   return false;
 }
-
-// -----------------------------------------------------------------------
 
 bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine) {
   bool paused = false;
@@ -105,17 +95,11 @@ bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine) {
   return true;
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Extract a name and send it to the text system as an automic
- * operation.
- *
- * @todo Right now, this doesn't deal with \#\#\#PRINT() syntax in the
- *       name, even though character names are one of the places where
- *       that's evaluated.
- */
 bool TextoutLongOperation::displayName(RLMachine& machine) {
+  // TODO(erg): Right now, this doesn't deal with \#\#\#PRINT() syntax in the
+  // name, even though character names are one of the places where that's
+  // evaluated.
+
   // Ignore the starting bracket
   string::iterator it = current_position_;
   string::iterator curend = it;
@@ -151,8 +135,6 @@ bool TextoutLongOperation::displayName(RLMachine& machine) {
   // Stop if this was the end of input
   return it == strend;
 }
-
-// -----------------------------------------------------------------------
 
 bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
                                                    bool& paused) {
@@ -190,7 +172,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
         paused = true;
         machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
         machine.pushLongOperation(
-          new NewPageAfterLongop(new PauseLongOperation(machine)));
+            new NewPageAfterLongop(new PauseLongOperation(machine)));
       }
 
       return false;
@@ -201,8 +183,6 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 bool TextoutLongOperation::operator()(RLMachine& machine) {
   // Check to make sure we're not trying to do a textout (impossible!)
@@ -216,8 +196,6 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
     return displayOneMoreCharacter(machine, paused);
   }
 }
-
-// -----------------------------------------------------------------------
 
 bool TextoutLongOperation::sleepEveryTick() {
   return !no_wait_;

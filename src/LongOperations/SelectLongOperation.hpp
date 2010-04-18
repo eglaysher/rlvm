@@ -47,7 +47,7 @@ class SelectElement;
 
 // -----------------------------------------------------------------------
 
-/// Base class for all selections.
+// Base class for all selections.
 class SelectLongOperation : public LongOperation {
  public:
   struct Option {
@@ -84,8 +84,6 @@ class SelectLongOperation : public LongOperation {
   int return_value_;
 };
 
-// -----------------------------------------------------------------------
-
 // Selection LongOperation which waits for input in the TextBox. Most work is
 // passed off to the TextWindow which does all the drawing.
 //
@@ -105,8 +103,6 @@ class NormalSelectLongOperation : public SelectLongOperation {
 
   boost::shared_ptr<TextWindow> text_window_;
 };
-
-// -----------------------------------------------------------------------
 
 // Selection LongOperation for #SELBTN based selections. Most of the work is
 // done in this class, and is rendered through Renderable.
@@ -162,7 +158,8 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   RGBAColour window_bg_colour_;
   int window_filter_;
 
-  // g00 pattern numbers in name_surface_ for whether to display 
+  // g00 pattern numbers in name_surface_ for which pattern to display during
+  // certain states.
   int normal_frame_;
   int select_frame_;
 
