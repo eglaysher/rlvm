@@ -26,19 +26,12 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   AnmGraphicsObjectData.cpp
- * @date   Sun Jun  3 13:04:19 2007
- *
- * @brief  In memory representation of an ANM file.
- *
- * The code in this file has been modified from the file anm.cc in
- * Jagarl's xkanon project.
- *
- * @todo Reading the data into memory and then acessing it by byte
- *       offset isn't secure; there needs to be some sort of check
- *       against the length of the array if we're going to do that.
- */
+// The code in this file has been modified from the file anm.cc in
+// Jagarl's xkanon project.
+//
+// @todo Reading the data into memory and then acessing it by byte
+//       offset isn't secure; there needs to be some sort of check
+//       against the length of the array if we're going to do that.
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -47,6 +40,14 @@
 
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
+
+#include <iterator>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <iostream>
+
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -56,13 +57,6 @@
 #include "Utilities/File.hpp"
 #include "Utilities/Graphics.hpp"
 #include "libReallive/defs.h"
-
-#include <iterator>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iostream>
 
 using boost::scoped_array;
 using boost::shared_ptr;
@@ -81,12 +75,12 @@ static const char ANM_MAGIC[ANM_MAGIC_SIZE] = {
 };
 
 // -----------------------------------------------------------------------
+// AnmGraphicsObjectData
+// -----------------------------------------------------------------------
 
 AnmGraphicsObjectData::AnmGraphicsObjectData(System& system)
     : system_(system), current_set_(-1)
 {}
-
-// -----------------------------------------------------------------------
 
 AnmGraphicsObjectData::AnmGraphicsObjectData(
     System& system, const std::string& file)
@@ -94,17 +88,11 @@ AnmGraphicsObjectData::AnmGraphicsObjectData(
   loadAnmFile();
 }
 
-// -----------------------------------------------------------------------
-
 AnmGraphicsObjectData::~AnmGraphicsObjectData() {}
-
-// -----------------------------------------------------------------------
 
 bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anm_data) {
   return memcmp(anm_data.get(), ANM_MAGIC, ANM_MAGIC_SIZE) != 0;
 }
-
-// -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::loadAnmFile() {
   fs::path file = findFile(system_, filename_, ANM_FILETYPES);
@@ -130,8 +118,6 @@ void AnmGraphicsObjectData::loadAnmFile() {
 
   loadAnmFileFromData(anm_data);
 }
-
-// -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::loadAnmFileFromData(
     boost::scoped_array<char>& anm_data) {
@@ -174,8 +160,6 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
                   0x78, animation_set_len, animation_set);
 }
 
-// -----------------------------------------------------------------------
-
 void AnmGraphicsObjectData::readIntegerList(
   const char* start, int offset, int iterations,
   std::vector< std::vector<int> >& dest) {
@@ -192,8 +176,6 @@ void AnmGraphicsObjectData::readIntegerList(
     start += offset;
   }
 }
-
-// -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height) {
   if (frame.src_x1 > frame.src_x2) {  // swap
@@ -216,14 +198,10 @@ void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void AnmGraphicsObjectData::execute() {
   if (currentlyPlaying())
     advanceFrame();
 }
-
-// -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::advanceFrame() {
   // Do things that advance the state
@@ -256,17 +234,13 @@ void AnmGraphicsObjectData::advanceFrame() {
   }
 }
 
-// -----------------------------------------------------------------------
-
-/// I am not entirely sure these methods even make sense given the
-/// context...
+// I am not entirely sure these methods even make sense given the
+// context...
 int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
   int width = rect.rect.width();
   return int((rp.width() / 100.0f) * width);
 }
-
-// -----------------------------------------------------------------------
 
 int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
@@ -274,13 +248,9 @@ int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp) {
   return int((rp.height() / 100.0f) * height);
 }
 
-// -----------------------------------------------------------------------
-
 GraphicsObjectData* AnmGraphicsObjectData::clone() const {
   return new AnmGraphicsObjectData(*this);
 }
-
-// -----------------------------------------------------------------------
 
 void AnmGraphicsObjectData::playSet(int set) {
   setCurrentlyPlaying(true);
@@ -295,14 +265,10 @@ void AnmGraphicsObjectData::playSet(int set) {
   system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
-// -----------------------------------------------------------------------
-
 boost::shared_ptr<Surface> AnmGraphicsObjectData::currentSurface(
   const GraphicsObject& rp) {
   return image;
 }
-
-// -----------------------------------------------------------------------
 
 Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go) {
   if (current_frame_ != -1) {
@@ -312,8 +278,6 @@ Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go) {
 
   return Rect();
 }
-
-// -----------------------------------------------------------------------
 
 Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go) {
   if (current_frame_ != -1) {
@@ -325,15 +289,10 @@ Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go) {
   return Rect();
 }
 
-// -----------------------------------------------------------------------
-
 void AnmGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "  ANM file: " << filename_ << endl;
 }
 
-// -----------------------------------------------------------------------
-// AnmGraphicsObjectData
-// -----------------------------------------------------------------------
 template<class Archive>
 void AnmGraphicsObjectData::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
@@ -358,8 +317,6 @@ void AnmGraphicsObjectData::load(Archive& ar, unsigned int version) {
   advance(cur_frame_, current_frame);
   cur_frame_end_ = framelist.at(*cur_frame_set_).end();
 }
-
-// -----------------------------------------------------------------------
 
 template<class Archive>
 void AnmGraphicsObjectData::save(Archive& ar, unsigned int version) const {

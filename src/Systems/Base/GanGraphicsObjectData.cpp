@@ -25,17 +25,9 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   GanGraphicsObjectData.cpp
- * @author Elliot Glaysher
- * @date   Sun Jun 10 11:21:51 2007
- *
- * @brief  In memory representation of a GAN animation file.
- *
- * This code is heavily based off Haeleth's O'caml implementation
- * (which translates binary GAN files to and from an XML
- * representation), found at rldev/src/rlxml/gan.ml.
- */
+// This code is heavily based off Haeleth's O'caml implementation
+// (which translates binary GAN files to and from an XML
+// representation), found at rldev/src/rlxml/gan.ml.
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -57,8 +49,6 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "libReallive/defs.h"
-
-// -----------------------------------------------------------------------
 
 using libReallive::read_i32;
 using boost::scoped_array;
@@ -83,8 +73,6 @@ GanGraphicsObjectData::GanGraphicsObjectData(System& system)
       time_at_last_frame_change_(0) {
 }
 
-// -----------------------------------------------------------------------
-
 GanGraphicsObjectData::GanGraphicsObjectData(
     System& system, const std::string& gan_file,
     const std::string& img_file)
@@ -97,11 +85,7 @@ GanGraphicsObjectData::GanGraphicsObjectData(
   load();
 }
 
-// -----------------------------------------------------------------------
-
 GanGraphicsObjectData::~GanGraphicsObjectData() {}
-
-// -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::load() {
   image = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
@@ -125,8 +109,6 @@ void GanGraphicsObjectData::load() {
   readData(gan_filename_, gan_data, file_size);
 }
 
-// -----------------------------------------------------------------------
-
 void GanGraphicsObjectData::testFileMagic(
   const std::string& file_name,
   boost::scoped_array<char>& gan_data, int file_size) {
@@ -138,8 +120,6 @@ void GanGraphicsObjectData::testFileMagic(
   if (a != 10000 || b != 10000 || c != 10100)
     throwBadFormat(file_name, "Incorrect GAN file magic");
 }
-
-// -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::readData(
   const std::string& file_name,
@@ -180,8 +160,6 @@ void GanGraphicsObjectData::readData(
     animation_sets.push_back(animation_set);
   }
 }
-
-// -----------------------------------------------------------------------
 
 GanGraphicsObjectData::Frame
 GanGraphicsObjectData::readSetFrame(const std::string& file_name,
@@ -227,8 +205,6 @@ GanGraphicsObjectData::readSetFrame(const std::string& file_name,
   return frame;
 }
 
-// -----------------------------------------------------------------------
-
 void GanGraphicsObjectData::throwBadFormat(
     const std::string& file_name, const std::string& error) {
   ostringstream oss;
@@ -237,10 +213,6 @@ void GanGraphicsObjectData::throwBadFormat(
       << error;
   throw rlvm::Exception(oss.str());
 }
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::pixelWidth(
   const GraphicsObject& rendering_properties) {
@@ -255,8 +227,6 @@ int GanGraphicsObjectData::pixelWidth(
   return 0;
 }
 
-// -----------------------------------------------------------------------
-
 int GanGraphicsObjectData::pixelHeight(
   const GraphicsObject& rendering_properties) {
   if (current_set_ != -1 && current_frame_ != -1) {
@@ -270,13 +240,9 @@ int GanGraphicsObjectData::pixelHeight(
   return 0;
 }
 
-// -----------------------------------------------------------------------
-
 GraphicsObjectData* GanGraphicsObjectData::clone() const {
   return new GanGraphicsObjectData(*this);
 }
-
-// -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::execute() {
   if (currentlyPlaying() && current_frame_ >= 0) {
@@ -301,13 +267,9 @@ void GanGraphicsObjectData::execute() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void GanGraphicsObjectData::loopAnimation() {
   current_frame_ = 0;
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
   const GraphicsObject& go) {
@@ -324,8 +286,6 @@ boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
   return boost::shared_ptr<Surface>();
 }
 
-// -----------------------------------------------------------------------
-
 Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
@@ -335,14 +295,10 @@ Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go) {
   return Rect();
 }
 
-// -----------------------------------------------------------------------
-
 Point GanGraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   return GraphicsObjectData::dstOrigin(go) - Size(frame.x, frame.y);
 }
-
-// -----------------------------------------------------------------------
 
 int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
@@ -356,14 +312,10 @@ int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void GanGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "  GAN file: " << gan_filename_ << " (Using image: "
        << img_filename_ << ")" << endl;
 }
-
-// -----------------------------------------------------------------------
 
 void GanGraphicsObjectData::playSet(int set) {
   setCurrentlyPlaying(true);
@@ -373,8 +325,6 @@ void GanGraphicsObjectData::playSet(int set) {
   system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
-// -----------------------------------------------------------------------
-
 template<class Archive>
 void GanGraphicsObjectData::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this)
@@ -383,8 +333,6 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version) {
 
   load();
 }
-
-// -----------------------------------------------------------------------
 
 template<class Archive>
 void GanGraphicsObjectData::save(Archive& ar, unsigned int version) const {

@@ -129,11 +129,8 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-
-/**
- * We need help creating GanGraphicsObjectData s since they don't have a
- * default constructor:
- */
+// We need help creating GanGraphicsObjectData s since they don't have a
+// default constructor:
 namespace boost { namespace serialization {
 template<class Archive>
 inline void load_construct_data(

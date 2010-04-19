@@ -39,19 +39,12 @@
 
 #include "MachineBase/RLMachine.hpp"
 
-// -----------------------------------------------------------------------
-
 class Surface;
 class System;
 
-// -----------------------------------------------------------------------
-
-/**
- * Executable, in-memory representation of an ANM file.
- *
- * @note This internal structure is heavily based off of xkanon's
- *       ANM file implementation, but has been changed to be all C++ like.
- */
+// Executable, in-memory representation of an ANM file. This internal structure
+// is heavily based off of xkanon's ANM file implementation, but has been
+// changed to be all C++ like.
 class AnmGraphicsObjectData : public GraphicsObjectData {
  public:
   explicit AnmGraphicsObjectData(System& system);
@@ -77,14 +70,9 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   virtual void objectInfo(std::ostream& tree);
 
  private:
-  /// Advance the position in the animation.
+  // Advance the position in the animation.
   void advanceFrame();
 
-  /**
-   * @name Data loading functions
-   *
-   * @{
-   */
   struct Frame {
     int src_x1, src_y1;
     int src_x2, src_y2;
@@ -99,35 +87,21 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   void loadAnmFileFromData(
       boost::scoped_array<char>& anm_data);
   void fixAxis(Frame& frame, int width, int height);
-  /// @}
 
   /// The system we are a part of.
   System& system_;
 
-  /// Raw, short name for the ANM file.
+  // Raw, short name for the ANM file.
   std::string filename_;
 
-  /**
-   * @name Animation Data
-   *
-   * (This structure was stolen from xkanon.)
-   *
-   * @{
-   */
+  // Animation Data (This structure was stolen from xkanon.)
   std::vector<Frame> frames;
   std::vector< std::vector<int> > framelist;
   std::vector< std::vector<int> > animation_set;
 
-  /// The image the above coordinates map into.
+  // The image the above coordinates map into.
   boost::shared_ptr<Surface> image;
 
-  /// @}
-
-  /**
-   * @name Animation state
-   *
-   * @{
-   */
   bool currently_playing_;
 
   int current_set_;
@@ -141,8 +115,6 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   int current_frame_;
 
   unsigned int time_at_last_frame_change_;
-
-  // @}
 
   friend class boost::serialization::access;
   template<class Archive>
