@@ -28,14 +28,6 @@
 #ifndef SRC_MACHINEBASE_RLMODULE_HPP_
 #define SRC_MACHINEBASE_RLMODULE_HPP_
 
-/**
- * @file   RLModule.hpp
- * @author Elliot Glaysher
- * @date   Sat Oct  7 10:57:36 2006
- *
- * @brief  Declares the base class RLModule
- */
-
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
@@ -51,53 +43,48 @@ class CommandElement;
 struct RLOperation;
 class RLMachine;
 
-/**
- * @defgroup ModulesOpcodes Modules and Opcode Definitions
- *
- * Contains definitions for each operation that RLVM executes based
- * off of an instruction in the SEEN.TXT file.
- *
- * Each opcode/overload that RLVM recognizes has a concrete instance
- * of RLOperation represented with it's opcode number. There are a set
- * of GeneralOperations that take parameters and are used as function
- * binders to call various functions, but most opcodes are defined by
- * having a concrete subclass of RLOp_Store<> or RLOp_Void<>.
- *
- * Subclasses of RLModule are used to contain subclasses of
- * RLOperation; Each module should have a class derived from RLModule,
- * where, in the constructor, the modules two identification numbers
- * (@c module_type and @c module_number) are passed up to RLModule's
- * constructor. The subclass constructor should then call
- * RLModule::add_opcode for each opcode/overload pair with the
- * RLOperation object that implements that operation.
- *
- * Example:
- * @code
- * FakeModule::FakeModule()
- *   : RLModule("Fake", 0, 0)
- * {
- *   addOpcode(0, 0, new Fake_fake_operation_0);
- *   addOpcode(0, 1, new Fake_fake_operation_1);
- * }
- * @endcode
- *
- * An instance of this module can now be passed to
- * RLMachine::attach_module to expose these opcodes to an instance of RLMachine:
- *
- * @code
- * RLMachine machine(some_archive_object);
- * machine.attachModule(new FakeModule);
- * @endcode
- *
- * For information on how to write an RLOperation subclass, see the
- * documentation on @ref RLOperationGroup "RLOperation and it's type system"
- */
+// Modules and Opcode Definitions
+//
+// Contains definitions for each operation that RLVM executes based
+// off of an instruction in the SEEN.TXT file.
+//
+// Each opcode/overload that RLVM recognizes has a concrete instance
+// of RLOperation represented with it's opcode number. There are a set
+// of GeneralOperations that take parameters and are used as function
+// binders to call various functions, but most opcodes are defined by
+// having a concrete subclass of RLOp_Store<> or RLOp_Void<>.
+//
+// Subclasses of RLModule are used to contain subclasses of
+// RLOperation; Each module should have a class derived from RLModule,
+// where, in the constructor, the modules two identification numbers
+// (@c module_type and @c module_number) are passed up to RLModule's
+// constructor. The subclass constructor should then call
+// RLModule::add_opcode for each opcode/overload pair with the
+// RLOperation object that implements that operation.
+//
+// Example:
+// @code
+// FakeModule::FakeModule()
+//   : RLModule("Fake", 0, 0)
+// {
+//   addOpcode(0, 0, new Fake_fake_operation_0);
+//   addOpcode(0, 1, new Fake_fake_operation_1);
+// }
+// @endcode
+//
+// An instance of this module can now be passed to
+// RLMachine::attach_module to expose these opcodes to an instance of RLMachine:
+//
+// @code
+// RLMachine machine(some_archive_object);
+// machine.attachModule(new FakeModule);
+// @endcode
+//
+// For information on how to write an RLOperation subclass, see the
+// documentation on @ref RLOperationGroup "RLOperation and it's type system"
 
-/** Describes a Module, a grouping of functions. Modules are added to
- *  an RLMachine before the machine starts.
- *
- * @ingroup ModulesOpcodes
- */
+// Describes a Module, a grouping of functions. Modules are added to
+// an RLMachine before the machine starts.
 class RLModule : public boost::noncopyable {
  public:
   // Storage type of the opcodes. Exposed so TestMachine can iterate over this.
@@ -106,47 +93,30 @@ class RLModule : public boost::noncopyable {
  public:
   virtual ~RLModule();
 
-  /** Used in derived Module constructors to declare all the
-   * operations the module handles.
-   *
-   * @note The RLModule class takes ownership of any RLOperation
-   * objects passed in this way.
-   *
-   * @param opcode The opcode number of this operation
-   * @param overload The overload number of this operation
-   * @param name A cstring with the printable name (or NULL)
-   * @param op An RLOperation functor which represents the
-   *           implementation of this operation.
-   */
+  // Used in derived Module constructors to declare all the
+  // operations the module handles. Takes ownership |op|.
   virtual void addOpcode(int opcode, unsigned char overload, const char* name,
                          RLOperation* op);
 
-  /**
-   * Adds an UndefinedFunction object to this module.
-   */
+  // Adds an UndefinedFunction object to this module.
   void addUnsupportedOpcode(int opcode, unsigned char overload,
                             const std::string& name);
 
-  /// Accessor that returns this module's type number
+  // Accessor that returns this module's type number
   int moduleType() const { return module_type_; }
 
-  /// Accessor that returns this modules's identification number
+  // Accessor that returns this modules's identification number
   int moduleNumber() const { return module_number_; }
 
-  /// Accessor that returns this module's mnemonic nmae
+  // Accessor that returns this module's mnemonic nmae
   const std::string& moduleName() const { return module_name_; }
 
   void setProperty(int property, int value);
   bool getProperty(int property, int& value) const;
 
-  /**
-   * Using the bytecode element CommandElement f, try to find an
-   * RLOperation implementation of the instruction in this module, and
-   * execute it.
-   *
-   * @param machine The RLMachine we are operating with
-   * @param f The bytecode element that we are trying to execute
-   */
+  // Using the bytecode element CommandElement f, try to find an
+  // RLOperation implementation of the instruction in this module, and
+  // execute it.
   void dispatchFunction(RLMachine& machine,
                         const libReallive::CommandElement& f);
 
@@ -178,8 +148,5 @@ class RLModule : public boost::noncopyable {
 };
 
 std::ostream& operator<<(std::ostream&, const RLModule& module);
-
-
-// -----------------------------------------------------------------------
 
 #endif  // SRC_MACHINEBASE_RLMODULE_HPP_

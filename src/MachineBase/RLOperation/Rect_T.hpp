@@ -33,8 +33,6 @@
 #include "MachineBase/RLOperation.hpp"
 #include "Systems/Base/Rect.hpp"
 
-// -----------------------------------------------------------------------
-
 struct Point_T {
   typedef Point type;
 
@@ -59,9 +57,7 @@ struct Point_T {
   };
 };
 
-// -----------------------------------------------------------------------
-
-/// Tags used to specify how we should construct a Rect.
+// Tags used to specify how we should construct a Rect.
 namespace rect_impl {
 struct GRP {
   static Rect makeRect(int one, int two, int three, int four) {
@@ -80,7 +76,7 @@ template<typename T>
 struct Rect_T {
   typedef Rect type;
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const ExpressionPiecesVector& p,
                       unsigned int& position) {
@@ -91,7 +87,7 @@ struct Rect_T {
     return T::makeRect(one, two, three, four);
   }
 
-  /// Parse the raw parameter string and put the results in ExpressionPiece
+  // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               ExpressionPiecesVector& output) {
@@ -106,7 +102,5 @@ struct Rect_T {
     is_complex = false
   };
 };
-
-// -----------------------------------------------------------------------
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_

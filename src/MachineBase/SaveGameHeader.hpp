@@ -28,29 +28,24 @@
 #ifndef SRC_MACHINEBASE_SAVEGAMEHEADER_HPP_
 #define SRC_MACHINEBASE_SAVEGAMEHEADER_HPP_
 
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <string>
 
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-
-// -----------------------------------------------------------------------
-
-/**
- * Header structure written to and read from the start of each save
- * game file. This structure is at the top of the file since it is
- * what gets queried by SaveDate, SaveTime, et cetera.
- */
+// Header structure written to and read from the start of each save
+// game file. This structure is at the top of the file since it is
+// what gets queried by SaveDate, SaveTime, et cetera.
 struct SaveGameHeader {
   SaveGameHeader();
   explicit SaveGameHeader(const std::string& in_title);
   ~SaveGameHeader();
 
-  /// The title of the current saved game
+  // The title of the current saved game
   std::string title;
 
-  /// The time the save file was created.
+  // The time the save file was created.
   boost::posix_time::ptime save_time;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
     ar & title & save_time;

@@ -25,34 +25,25 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MACHINEBASE_SERIALIZATION_HPP_
 #define SRC_MACHINEBASE_SERIALIZATION_HPP_
 
 #include "MachineBase/SaveGameHeader.hpp"
 #include <boost/filesystem/path.hpp>
 
-// -----------------------------------------------------------------------
-
 class RLMachine;
 class Memory;
 
-// -----------------------------------------------------------------------
-
 namespace Serialization {
 
-/**
- * Pointer to the machine that is having its data
- * serialized. boost::serialization doesn't allow passing something
- * like a closure around, which is frustrating because many pieces of
- * data rely on looking things up on the machine.
- *
- * @warning We're using what is essentially a piece of static data
- *          here; this is a likely location for errors
- */
+// Pointer to the machine that is having its data
+// serialized. boost::serialization doesn't allow passing something
+// like a closure around, which is frustrating because many pieces of
+// data rely on looking things up on the machine.
+//
+// @warning We're using what is essentially a piece of static data
+//          here; this is a likely location for errors
 extern RLMachine* g_current_machine;
-
-// -----------------------------------------------------------------------
 
 void saveGlobalMemory(RLMachine& machine);
 void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine);

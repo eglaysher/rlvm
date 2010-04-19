@@ -32,10 +32,10 @@
 #include <map>
 #include <string>
 
-/// An optional component to an RLMachine that counts the number of instnaces of
-/// an opcode. An OpcodeLog can be used to count the number of times an opcode
-/// was run during the lifetime of a program, or the number of times an
-/// undefined opcode was encountered, et cetera.
+// An optional component to an RLMachine that counts the number of instnaces of
+// an opcode. An OpcodeLog can be used to count the number of times an opcode
+// was run during the lifetime of a program, or the number of times an
+// undefined opcode was encountered, et cetera.
 class OpcodeLog {
  public:
   /// Storage type
@@ -45,7 +45,7 @@ class OpcodeLog {
   OpcodeLog();
   ~OpcodeLog();
 
-  /// Increments the number of times we've encountered "name".
+  // Increments the number of times we've encountered "name".
   void increment(const std::string& name);
 
   Storage::const_iterator begin() const { return storage_.begin(); }
@@ -53,16 +53,11 @@ class OpcodeLog {
   size_t size() const { return storage_.size(); }
 
  private:
-  /// Counts the instances of an opcode encountered.
+  // Counts the instances of an opcode encountered.
   Storage storage_;
 };
 
-/**
- * Pretty prints the contents of an OpcodeLog.
- *
- * @relates OpcodeLog
- */
+// Pretty prints the contents of an OpcodeLog.
 std::ostream& operator<<(std::ostream& os, const OpcodeLog& log);
-
 
 #endif  // SRC_MACHINEBASE_OPCODELOG_HPP_

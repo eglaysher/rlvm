@@ -26,30 +26,25 @@
 #include <string>
 #include <vector>
 
-/**
- * @ingroup RLOperationGroup
- *
- * Type struct that implements the argc concept.
- *
- * This type struct can only be used as the last element in a type
- * definition. (This is not checked for at runtime; I'm not even sure
- * how I'd check this concept.) This type struct takes a type struct
- * as its parameter type, and then will accept a variable number of
- * items of that type.
- */
+// Type struct that implements the argc concept.
+//
+// This type struct can only be used as the last element in a type
+// definition. (This is not checked for at runtime; I'm not even sure
+// how I'd check this concept.) This type struct takes a type struct
+// as its parameter type, and then will accept a variable number of
+// items of that type.
 template<typename CON>
 struct Argc_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef typename std::vector<typename CON::type> type;
 
-  /** Convert the incoming parameter objects into the resulting type.
-   * Passes each parameter down to
-   */
+  // Convert the incoming parameter objects into the resulting type.
+  // Passes each parameter down to
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position);
 
-  /// Parse the raw parameter string and put the results in ExpressionPiece
+  // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(
       unsigned int& position,
       const std::vector<std::string>& input,
@@ -60,8 +55,6 @@ struct Argc_T {
     is_complex = false
   };
 };
-
-// -----------------------------------------------------------------------
 
 template<typename CON>
 typename Argc_T<CON>::type Argc_T<CON>::
@@ -74,8 +67,6 @@ getData(RLMachine& machine,
 
   return return_vector;
 }
-
-// -----------------------------------------------------------------------
 
 template<typename CON>
 void Argc_T<CON>::

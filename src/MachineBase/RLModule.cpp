@@ -25,26 +25,18 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   RLModule.cpp
- * @author Elliot Glaysher
- * @date   Sat Oct  7 11:14:14 2006
- *
- * @brief  Definition of RLModule
- */
-
 #include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/GeneralOperations.hpp"
-#include "Utilities/Exception.hpp"
-#include "libReallive/bytecode.h"
 
+#include <boost/bind.hpp>
 #include <utility>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include <boost/bind.hpp>
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/GeneralOperations.hpp"
+#include "Utilities/Exception.hpp"
+#include "libReallive/bytecode.h"
 
 using namespace boost;
 using namespace std;
@@ -60,28 +52,20 @@ RLModule::RLModule(const std::string& in_module_name, int in_module_type,
       module_type_(in_module_type), module_number_(in_module_number),
       module_name_(in_module_name) {}
 
-// -----------------------------------------------------------------------
-
 RLModule::~RLModule() {
   if (property_list_)
     delete property_list_;
 }
 
-// -----------------------------------------------------------------------
-
 int RLModule::packOpcodeNumber(int opcode, unsigned char overload) {
   return ((int)opcode << 8) | overload;
 }
-
-// -----------------------------------------------------------------------
 
 void RLModule::unpackOpcodeNumber(int packed_opcode, int& opcode,
                                   unsigned char& overload) {
   opcode = (packed_opcode >> 8);
   overload = packed_opcode & 0xFF;
 }
-
-// -----------------------------------------------------------------------
 
 void RLModule::addOpcode(int opcode, unsigned char overload,
                          const char* name, RLOperation* op) {
@@ -91,16 +75,12 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
   stored_operations.insert(packed_opcode, op);
 }
 
-// -----------------------------------------------------------------------
-
 void RLModule::addUnsupportedOpcode(int opcode, unsigned char overload,
                                     const std::string& name) {
   addOpcode(opcode, overload, "",
             new UndefinedFunction(name, module_type_, module_number_, opcode,
                                   (int)overload));
 }
-
-// -----------------------------------------------------------------------
 
 void RLModule::setProperty(int property, int value) {
   if (!property_list_) {
@@ -117,8 +97,6 @@ void RLModule::setProperty(int property, int value) {
   property_list_->push_back(std::make_pair(property, value));
 }
 
-// -----------------------------------------------------------------------
-
 bool RLModule::getProperty(int property, int& value) const {
   if (property_list_) {
     PropertyList::iterator it = findProperty(property);
@@ -131,14 +109,10 @@ bool RLModule::getProperty(int property, int& value) const {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
   return find_if (property_list_->begin(), property_list_->end(),
                  bind(&Property::first, _1) == property);
 }
-
-// -----------------------------------------------------------------------
 
 void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {
   OpcodeMap::iterator it =
@@ -155,8 +129,6 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {
                                     f.overload());
   }
 }
-
-// -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const RLModule& module) {
   os << "mod<" << module.moduleName() << "," << module.moduleType()

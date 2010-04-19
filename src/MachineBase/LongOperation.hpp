@@ -34,49 +34,36 @@
 
 class RLMachine;
 
-/**
- * A LongOperation is a non-trivial command that requires multiple
- * passes through the game loop to complete.
- *
- * For example, pause(). The pause() RLOperation sets the pause()
- * LongOperation, which is executed instead of normal
- * interpretation. The pause() LongOperation checks for any input from
- * the user (ctrl or mouse click), returning true when it detects it,
- * telling the RLMachine to delete the current LongOperation and
- * resume normal operations.
- *
- * Since we are taking over normal event flow, we implement
- * EventListener. LongOperations on the top of the callstack receive key/mouse
- * events.
- */
+// A LongOperation is a non-trivial command that requires multiple
+// passes through the game loop to complete.
+//
+// For example, pause(). The pause() RLOperation sets the pause()
+// LongOperation, which is executed instead of normal
+// interpretation. The pause() LongOperation checks for any input from
+// the user (ctrl or mouse click), returning true when it detects it,
+// telling the RLMachine to delete the current LongOperation and
+// resume normal operations.
+//
+// Since we are taking over normal event flow, we implement
+// EventListener. LongOperations on the top of the callstack receive key/mouse
+// events.
 class LongOperation : public EventListener {
  public:
   LongOperation();
   virtual ~LongOperation();
 
-  /**
-   * Executes the current LongOperation.
-   *
-   * @return Returns true if the command has completed, and normal
-   * interpretation should be resumed. Returns false if the command is
-   * still running.
-   */
+  // Executes the current LongOperation. Returns true if the command has
+  // completed, and normal interpretation should be resumed, false otherwise.
   virtual bool operator()(RLMachine& machine) = 0;
 
-  /**
-   * Whether we should sleep(10) every time we go through the
-   * gameloop. Defaults to true.
-   */
+  // Whether we should sleep(10) every time we go through the
+  // gameloop. Defaults to true.
   virtual bool sleepEveryTick();
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * LongOperator decorator that simply invokes the included
- * LongOperation and when that LongOperation finishes, performs an
- * arbitrary action.
- */
+// LongOperator decorator that simply invokes the included
+// LongOperation and when that LongOperation finishes, performs an
+// arbitrary action.
 class PerformAfterLongOperationDecorator : public LongOperation {
  public:
   explicit PerformAfterLongOperationDecorator(LongOperation* in_op);
@@ -94,9 +81,8 @@ class PerformAfterLongOperationDecorator : public LongOperation {
  private:
   boost::scoped_ptr<LongOperation> operation_;
 
-  /// Payload of decorator implemented by subclasses
+  // Payload of decorator implemented by subclasses
   virtual void performAfterLongOperation(RLMachine& machine) = 0;
 };
-
 
 #endif  // SRC_MACHINEBASE_LONGOPERATION_HPP_

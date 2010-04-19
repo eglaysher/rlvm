@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   reference.cpp
- * @brief  Defines the iterator interface to integer and string memory
- * @author Elliot Glaysher
- * @date   Sat Oct  7 11:15:37 2006
- *
- */
-
 #include <string>
 
 #include "MachineBase/reference.hpp"
@@ -48,17 +40,8 @@ using libReallive::IntMemRef;
 IntAccessor::IntAccessor(MemoryReferenceIterator<IntAccessor>* i)
     : it(i), store_register_(i->store_register_) {}
 
-// -----------------------------------------------------------------------
-
 IntAccessor::~IntAccessor() {}
 
-// -----------------------------------------------------------------------
-
-/**
- * Read from the memory location, and return the value.
- *
- * @return The integer value of the memory location.
- */
 IntAccessor::operator int() const {
   if (store_register_)
     return *store_register_;
@@ -66,14 +49,6 @@ IntAccessor::operator int() const {
     return it->memory_->getIntValue(IntMemRef(it->type_, it->location_));
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Assign a new value to the memory location.
- *
- * @param new_value New value to set.
- * @return Self
- */
 IntAccessor& IntAccessor::operator=(const int new_value) {
   if (store_register_)
     *store_register_ = new_value;
@@ -82,16 +57,6 @@ IntAccessor& IntAccessor::operator=(const int new_value) {
   return *this;
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Assigns to this accessor from another IntAccessor. This allows us
- * to use the "*dest = *src" mechanic since normally, that would call
- * the default copy operator, which would copy rhs.it onto it.
- *
- * @param rhs IntAccessor to read from
- * @return Self
- */
 IntAccessor& IntAccessor::operator=(const IntAccessor& rhs) {
   return operator=(rhs.operator int());
 }
@@ -103,50 +68,21 @@ IntAccessor& IntAccessor::operator=(const IntAccessor& rhs) {
 StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i)
   : it(i) {}
 
-// -----------------------------------------------------------------------
-
 StringAccessor::~StringAccessor() {}
 
-// -----------------------------------------------------------------------
-
-/**
- * Read from the memory location, and return the value.
- *
- * @return The string value of the memory location.
- */
 StringAccessor::operator std::string() const {
   return it->memory_->getStringValue(it->type_, it->location_);
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Assign a new value to the memory location.
- *
- * @param new_value New value to set.
- * @return Self
- */
 StringAccessor& StringAccessor::operator=(const std::string& new_value) {
   it->memory_->setStringValue(it->type_, it->location_, new_value);
   return *this;
 }
 
-// -----------------------------------------------------------------------
-
 bool StringAccessor::operator==(const std::string& rhs) {
   return operator std::string() == rhs;
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Assigns to this accessor from another StringAccessor. This allows
- * us to use the "*dest = *src" mechanic since normally, that would
- * call the default copy operator, which would copy rhs.it onto it.
- *
- * @param rhs StringAccessor to read from
- * @return Self
- */
 StringAccessor& StringAccessor::operator=(const StringAccessor& rhs) {
   return operator=(rhs.operator std::string());
 }

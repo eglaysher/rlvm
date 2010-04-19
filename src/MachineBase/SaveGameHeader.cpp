@@ -38,13 +38,9 @@ SaveGameHeader::SaveGameHeader()
   : title(), save_time(microsec_clock::local_time()) {
 }
 
-// -----------------------------------------------------------------------
-
 SaveGameHeader::SaveGameHeader(const std::string& in_title)
   : title(in_title), save_time(microsec_clock::local_time()) {
 }
-
-// -----------------------------------------------------------------------
 
 SaveGameHeader::~SaveGameHeader() {}
 

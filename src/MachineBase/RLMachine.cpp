@@ -25,15 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   RLMachine.cpp
- * @author Elliot Glaysher
- * @date   Sat Oct  7 10:54:19 2006
- *
- * @brief  Implementation of the main RLMachine class
- *
- */
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
@@ -159,14 +150,10 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
   }
 }
 
-// -----------------------------------------------------------------------
-
 RLMachine::~RLMachine() {
   if (undefined_log_)
     cerr << *undefined_log_;
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::attachModule(RLModule* module) {
   int module_type = module->moduleType();
@@ -189,38 +176,26 @@ void RLMachine::attachModule(RLModule* module) {
   modules_.insert(packed_module, module);
 }
 
-// -----------------------------------------------------------------------
-
 int RLMachine::getIntValue(const libReallive::IntMemRef& ref) {
   return memory_->getIntValue(ref);
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::setIntValue(const libReallive::IntMemRef& ref, int value) {
   memory_->setIntValue(ref, value);
 }
 
-// -----------------------------------------------------------------------
-
 const std::string& RLMachine::getStringValue(int type, int location) {
   return memory_->getStringValue(type, location);
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::setStringValue(int type, int number, const std::string& value) {
   memory_->setStringValue(type, number, value);
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::markSavepoint() {
   savepoint_call_stack_ = call_stack_;
   system().graphics().takeSavepointSnapshot();
 }
-
-// -----------------------------------------------------------------------
 
 bool RLMachine::savepointDecide(AttributeFunction func,
                                 const std::string& gameexe_key) const {
@@ -248,32 +223,22 @@ bool RLMachine::savepointDecide(AttributeFunction func,
   return true;
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::setMarkSavepoints(const int in) {
   mark_savepoints_ = in;
 }
-
-// -----------------------------------------------------------------------
 
 bool RLMachine::shouldSetMessageSavepoint() const {
   return
       savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
 }
 
-// -----------------------------------------------------------------------
-
 bool RLMachine::shouldSetSelcomSavepoint() const {
   return savepointDecide(&Scenario::savepointSelcom, "SAVEPOINT_SELCOM");
 }
 
-// -----------------------------------------------------------------------
-
 bool RLMachine::shouldSetSeentopSavepoint() const {
   return savepointDecide(&Scenario::savepointSeentop, "SAVEPOINT_SEENTOP");
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::executeNextInstruction() {
   // Do not execute any more instructions if the machine is halted.
@@ -343,15 +308,11 @@ void RLMachine::executeNextInstruction() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::executeUntilHalted() {
   while (!halted()) {
     executeNextInstruction();
   }
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::advanceInstructionPointer() {
   std::vector<StackFrame>::reverse_iterator it =
@@ -365,8 +326,6 @@ void RLMachine::advanceInstructionPointer() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::executeCommand(const CommandElement& f) {
   ModuleMap::iterator it = modules_.find(packModuleNumber(f.modtype(),
                                                           f.module()));
@@ -377,8 +336,6 @@ void RLMachine::executeCommand(const CommandElement& f) {
                                     f.overload());
   }
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::jump(int scenario_num, int entrypoint) {
   // Check to make sure it's a valid scenario
@@ -410,8 +367,6 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::farcall(int scenario_num, int entrypoint) {
   libReallive::Scenario* scenario = archive_.scenario(scenario_num);
   if (scenario == 0) {
@@ -430,8 +385,6 @@ void RLMachine::farcall(int scenario_num, int entrypoint) {
   pushStackFrame(StackFrame(scenario, it, StackFrame::TYPE_FARCALL));
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::returnFromFarcall() {
   // Check to make sure the types match up.
   if (call_stack_.back().frame_type != StackFrame::TYPE_FARCALL) {
@@ -441,21 +394,15 @@ void RLMachine::returnFromFarcall() {
   popStackFrame();
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::gotoLocation(libReallive::BytecodeList::iterator new_location) {
   // Modify the current frame of the call stack so that it's
   call_stack_.back().ip = new_location;
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::gosub(libReallive::BytecodeList::iterator new_location) {
   pushStackFrame(StackFrame(call_stack_.back().scenario, new_location,
                             StackFrame::TYPE_GOSUB));
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::returnFromGosub() {
   // Check to make sure the types match up.
@@ -465,8 +412,6 @@ void RLMachine::returnFromGosub() {
 
   popStackFrame();
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::pushStringValueUp(int index, const std::string& val) {
   if (index < 0 || index > 2) {
@@ -489,14 +434,10 @@ void RLMachine::pushStringValueUp(int index, const std::string& val) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::pushLongOperation(LongOperation* long_operation) {
   pushStackFrame(StackFrame(call_stack_.back().scenario, call_stack_.back().ip,
                             long_operation));
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::pushStackFrame(const StackFrame& frame) {
   if (delay_stack_modifications_) {
@@ -508,8 +449,6 @@ void RLMachine::pushStackFrame(const StackFrame& frame) {
   call_stack_.push_back(frame);
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::popStackFrame() {
   if (delay_stack_modifications_) {
     delayed_modifications_.push_back(bind(&RLMachine::popStackFrame, this));
@@ -518,8 +457,6 @@ void RLMachine::popStackFrame() {
 
   call_stack_.pop_back();
 }
-
-// -----------------------------------------------------------------------
 
 int* RLMachine::currentIntLBank() {
   std::vector<StackFrame>::reverse_iterator it =
@@ -532,8 +469,6 @@ int* RLMachine::currentIntLBank() {
   throw rlvm::Exception("No valid intL bank");
 }
 
-// -----------------------------------------------------------------------
-
 std::string* RLMachine::currentStrKBank() {
   std::vector<StackFrame>::reverse_iterator it =
       find_if(call_stack_.rbegin(), call_stack_.rend(),
@@ -544,8 +479,6 @@ std::string* RLMachine::currentStrKBank() {
 
   throw rlvm::Exception("No valid strK bank");
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::clearLongOperationsOffBackOfStack() {
   if (delay_stack_modifications_) {
@@ -561,23 +494,17 @@ void RLMachine::clearLongOperationsOffBackOfStack() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::reset() {
   call_stack_.clear();
   savepoint_call_stack_.clear();
   system().reset();
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::localReset() {
   savepoint_call_stack_.clear();
   memory_->local().reset();
   system().reset();
 }
-
-// -----------------------------------------------------------------------
 
 shared_ptr<LongOperation> RLMachine::currentLongOperation() const {
   if (call_stack_.size() &&
@@ -588,39 +515,27 @@ shared_ptr<LongOperation> RLMachine::currentLongOperation() const {
   return shared_ptr<LongOperation>();
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::clearCallstack() {
   while (call_stack_.size())
     popStackFrame();
 }
 
-// -----------------------------------------------------------------------
-
 int RLMachine::sceneNumber() const {
   return call_stack_.back().scenario->sceneNumber();
 }
 
-// -----------------------------------------------------------------------
-
 const Scenario& RLMachine::scenario() const {
   return *call_stack_.back().scenario;
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::executeExpression(const ExpressionElement& e) {
   e.parsedExpression().integerValue(*this);
   advanceInstructionPointer();
 }
 
-// -----------------------------------------------------------------------
-
 int RLMachine::getTextEncoding() const {
   return call_stack_.back().scenario->encoding();
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::performTextout(const TextoutElement& e) {
   std::string unparsed_text = e.text();
@@ -631,8 +546,6 @@ void RLMachine::performTextout(const TextoutElement& e) {
 
   performTextout(unparsed_text);
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::performTextout(const std::string& cp932str) {
   std::string name_parsed_text;
@@ -657,8 +570,6 @@ void RLMachine::performTextout(const std::string& cp932str) {
   pushLongOperation(ptr.release());
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::setKidokuMarker(int kidoku_number) {
   // Check to see if we mark savepoints on textout
   if (shouldSetMessageSavepoint() &&
@@ -673,8 +584,6 @@ void RLMachine::setKidokuMarker(int kidoku_number) {
   memory().recordKidoku(sceneNumber(), kidoku_number);
 }
 
-// -----------------------------------------------------------------------
-
 bool RLMachine::dllLoaded(const std::string& name) {
   for (DLLMap::const_iterator it = loaded_dlls_.begin();
        it != loaded_dlls_.end(); ++it) {
@@ -684,8 +593,6 @@ bool RLMachine::dllLoaded(const std::string& name) {
 
   return false;
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::loadDLL(int slot, const std::string& name) {
   auto_ptr<RealLiveDLL> dll(RealLiveDLL::BuildDLLNamed(*this, name));
@@ -698,13 +605,9 @@ void RLMachine::loadDLL(int slot, const std::string& name) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::unloadDLL(int slot) {
   loaded_dlls_.erase(slot);
 }
-
-// -----------------------------------------------------------------------
 
 int RLMachine::callDLL(int slot, int one, int two, int three, int four,
                        int five) {
@@ -720,13 +623,9 @@ int RLMachine::callDLL(int slot, int one, int two, int three, int four,
   }
 }
 
-// -----------------------------------------------------------------------
-
 unsigned int RLMachine::packModuleNumber(int modtype, int module) {
   return (modtype << 8) | module;
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::unpackModuleNumber(unsigned int packed_module_number,
                                    int& modtype, int& module) {
@@ -734,37 +633,25 @@ void RLMachine::unpackModuleNumber(unsigned int packed_module_number,
   module = packed_module_number && 0xFF;
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::setPrintUndefinedOpcodes(bool in) {
   print_undefined_opcodes_ = in;
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::recordUndefinedOpcodeCounts() {
   undefined_log_.reset(new OpcodeLog);
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::halt() {
   halted_ = true;
 }
-
-// -----------------------------------------------------------------------
 
 void RLMachine::setHaltOnException(bool halt_on_exception) {
   halt_on_exception_ = halt_on_exception;
 }
 
-// -----------------------------------------------------------------------
-
 void RLMachine::setLineNumber(const int i) {
   line_ = i;
 }
-
-// -----------------------------------------------------------------------
 
 template<class Archive>
 void RLMachine::save(Archive & ar, unsigned int version) const {
@@ -774,8 +661,6 @@ void RLMachine::save(Archive & ar, unsigned int version) const {
   /// Save the state of the stack when the last save point was hit
   ar & savepoint_call_stack_;
 }
-
-// -----------------------------------------------------------------------
 
 template<class Archive>
 void RLMachine::load(Archive & ar, unsigned int version) {
@@ -788,7 +673,6 @@ void RLMachine::load(Archive & ar, unsigned int version) {
 }
 
 // -----------------------------------------------------------------------
-
 
 // Explicit instantiations for text archives (since we hide the
 // implementation)

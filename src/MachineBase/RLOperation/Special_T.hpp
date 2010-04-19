@@ -37,14 +37,12 @@
 #include <sstream>
 #include <iostream>
 
-/**
- * Type definition that implements the special parameter concept; the
- * way to expect multiple different types in a parameter slot.
- */
+// Type definition that implements the special parameter concept; the
+// way to expect multiple different types in a parameter slot.
 template<typename A, typename B = Empty_T, typename C = Empty_T,
          typename D = Empty_T, typename E = Empty_T>
 struct Special_T {
-  /// Internal unionish structure which we pass in to the
+  // Internal unionish structure which we pass in to the
   struct Parameter {
     // 0 = A, 1 = B
     int type;
@@ -56,10 +54,10 @@ struct Special_T {
     typename E::type fifth;
   };
 
-  /// Export our internal struct as our external type
+  // Export our internal struct as our external type
   typedef Parameter type;
 
-  /// Special<Complex, Complex, ...> requires a special construct...
+  // Special<Complex, Complex, ...> requires a special construct...
   template<typename TYPE>
   static typename TYPE::type getDataFor(
     RLMachine& machine,
@@ -76,7 +74,7 @@ struct Special_T {
     }
   }
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {

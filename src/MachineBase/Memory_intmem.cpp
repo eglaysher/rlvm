@@ -49,27 +49,16 @@
 #include "Utilities/Exception.hpp"
 #include "libReallive/intmemref.h"
 
-// -----------------------------------------------------------------------
-
 using namespace std;
 using libReallive::IntMemRef;
 
-// -----------------------------------------------------------------------
-
-/**
- * Helper function that throws errors for illegal memory access
- *
- * @param location The illegal index that was accessed
- * @see RLMachine::get_int_value
- */
+// Helper function that throws errors for illegal memory access
 static void throwIllegalIndex(const IntMemRef& ref,
                               const std::string& function) {
   ostringstream ss;
   ss << "Invalid memory access " << ref << " in " << function;
   throw rlvm::Exception(ss.str());
 }
-
-// -----------------------------------------------------------------------
 
 int Memory::getIntValue(const IntMemRef& ref) {
   int type = ref.type();
@@ -102,8 +91,6 @@ int Memory::getIntValue(const IntMemRef& ref) {
             ((location % eltsize) * factor)) & ((1 << factor) - 1);
   }
 }
-
-// -----------------------------------------------------------------------
 
 void Memory::setIntValue(const IntMemRef& ref, int value) {
   int type = ref.type();

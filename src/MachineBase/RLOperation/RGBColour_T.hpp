@@ -59,8 +59,6 @@ struct RGBColour_T {
   };
 };
 
-// -----------------------------------------------------------------------
-
 // RGB colour triplet with option alpha.
 struct RGBMaybeAColour_T {
   typedef RGBAColour type;

@@ -37,28 +37,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
-
-#include "Utilities/Exception.hpp"
-
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/StackFrame.hpp"
-#include "MachineBase/Memory.hpp"
-#include "MachineBase/SaveGameHeader.hpp"
-#include "MachineBase/Serialization.hpp"
-#include "Utilities/algoplus.hpp"
-
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsStackFrame.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsObjectOfFile.hpp"
-#include "Systems/Base/AnmGraphicsObjectData.hpp"
-#include "Systems/Base/GanGraphicsObjectData.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/SoundSystem.hpp"
-#include "libReallive/intmemref.h"
-#include "libReallive/archive.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -67,24 +45,38 @@
 #include <string>
 #include <boost/bind.hpp>
 
+#include "MachineBase/Memory.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/SaveGameHeader.hpp"
+#include "MachineBase/Serialization.hpp"
+#include "MachineBase/StackFrame.hpp"
+#include "Systems/Base/AnmGraphicsObjectData.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GanGraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectOfFile.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/algoplus.hpp"
+#include "libReallive/archive.h"
+#include "libReallive/intmemref.h"
+
 using namespace std;
 using namespace libReallive;
 using namespace boost::archive;
 namespace fs = boost::filesystem;
 
-// -----------------------------------------------------------------------
-
 namespace Serialization {
 
 RLMachine* g_current_machine = NULL;
 
-// -----------------------------------------------------------------------
-
 const int CURRENT_LOCAL_VERSION = 2;
 
 }  // namespace Serialization
-
-// -----------------------------------------------------------------------
 
 namespace {
 
@@ -99,11 +91,7 @@ void checkInFileOpened(TYPE& file, const fs::path& home) {
 
 }  // namespace
 
-// -----------------------------------------------------------------------
-
 namespace Serialization {
-
-// -----------------------------------------------------------------------
 
 void saveGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
@@ -117,8 +105,6 @@ void saveGameForSlot(RLMachine& machine, int slot) {
 
   return saveGameTo(filtered_output, machine);
 }
-
-// -----------------------------------------------------------------------
 
 void saveGameTo(std::ostream& oss, RLMachine& machine) {
   const SaveGameHeader header(machine.system().graphics().windowSubtitle());
@@ -147,16 +133,12 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
   g_current_machine = NULL;
 }
 
-// -----------------------------------------------------------------------
-
 fs::path buildSaveGameFilename(RLMachine& machine, int slot) {
   ostringstream oss;
   oss << "save" << setw(3) << setfill('0') << slot << ".sav.gz";
 
   return machine.system().gameSaveDirectory() / oss.str();
 }
-
-// -----------------------------------------------------------------------
 
 SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
@@ -171,8 +153,6 @@ SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {
   return loadHeaderFrom(filtered_input);
 }
 
-// -----------------------------------------------------------------------
-
 SaveGameHeader loadHeaderFrom(std::istream& iss) {
   int version;
   SaveGameHeader header;
@@ -183,8 +163,6 @@ SaveGameHeader loadHeaderFrom(std::istream& iss) {
 
   return header;
 }
-
-// -----------------------------------------------------------------------
 
 void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory) {
   fs::path path = buildSaveGameFilename(machine, slot);
@@ -199,8 +177,6 @@ void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory) {
   loadLocalMemoryFrom(filtered_input, memory);
 }
 
-// -----------------------------------------------------------------------
-
 void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
   int version;
   SaveGameHeader header;
@@ -211,8 +187,6 @@ void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
      >> header
      >> memory.local();
 }
-
-// -----------------------------------------------------------------------
 
 void loadGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
@@ -226,8 +200,6 @@ void loadGameForSlot(RLMachine& machine, int slot) {
 
   loadGameFrom(filtered_input, machine);
 }
-
-// -----------------------------------------------------------------------
 
 void loadGameFrom(std::istream& iss, RLMachine& machine) {
   int version;

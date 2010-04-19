@@ -33,18 +33,16 @@
 #include "libReallive/expression.h"
 #include "libReallive/expression_pieces.h"
 
-/**
- * Type definition that implements the complex parameter concept.
- *
- * It really should have been called tuple, but the name's stuck
- * now. Takes two other type structs as template parameters.
- */
+// Type definition that implements the complex parameter concept.
+//
+// It really should have been called tuple, but the name's stuck
+// now. Takes two other type structs as template parameters.
 template<typename A, typename B>
 struct Complex2_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef boost::tuple<typename A::type, typename B::type> type;
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
@@ -75,21 +73,17 @@ struct Complex2_T {
   };
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Type definition that implements the complex parameter concept.
- *
- * It really should have been called tuple, but the name's stuck
- * now. Takes two other type structs as template parameters.
- */
+// Type definition that implements the complex parameter concept.
+//
+// It really should have been called tuple, but the name's stuck
+// now. Takes two other type structs as template parameters.
 template<typename A, typename B, typename C>
 struct Complex3_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type> type;
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
@@ -122,21 +116,17 @@ struct Complex3_T {
   };
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Type definition that implements the complex parameter concept.
- *
- * It really should have been called tuple, but the name's stuck
- * now. Takes two other type structs as template parameters.
- */
+// Type definition that implements the complex parameter concept.
+//
+// It really should have been called tuple, but the name's stuck
+// now. Takes two other type structs as template parameters.
 template<typename A, typename B, typename C, typename D>
 struct Complex4_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type, typename D::type> type;
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
@@ -172,25 +162,20 @@ struct Complex4_T {
   };
 };
 
-
-// -----------------------------------------------------------------------
-
-/**
- * Type definition that implements the complex parameter concept.
- *
- * It really should have been called tuple, but the name's stuck
- * now. Takes two other type structs as template parameters.
- */
+// Type definition that implements the complex parameter concept.
+//
+// It really should have been called tuple, but the name's stuck
+// now. Takes two other type structs as template parameters.
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
 struct Complex7_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type, typename D::type,
                        typename E::type, typename F::type,
                        typename G::type> type;
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
@@ -232,24 +217,20 @@ struct Complex7_T {
   };
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Type definition that implements the complex parameter concept.
- *
- * It really should have been called tuple, but the name's stuck
- * now. Takes two other type structs as template parameters.
- */
+// Type definition that implements the complex parameter concept.
+//
+// It really should have been called tuple, but the name's stuck
+// now. Takes two other type structs as template parameters.
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
 struct Complex8_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef boost::tuple<typename A::type, typename B::type,
                        typename C::type, typename D::type,
                        typename E::type, typename F::type,
                        typename G::type, typename H::type> type;
 
-  /// Convert the incoming parameter objects into the resulting type.
+  // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {

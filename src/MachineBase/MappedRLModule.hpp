@@ -28,17 +28,13 @@
 #ifndef SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
 #define SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
 
+#include <boost/function.hpp>
 #include <string>
 
 #include "MachineBase/RLModule.hpp"
-#include <boost/function.hpp>
 
-// -----------------------------------------------------------------------
-
-/**
- * Special case RLModule where each opcode added is transformed with a
- * mapping function.
- */
+// Special case RLModule where each opcode added is transformed with a
+// mapping function.
 class MappedRLModule : public RLModule {
  public:
   typedef boost::function<RLOperation*(RLOperation* op)> MappingFunction;
@@ -48,27 +44,15 @@ class MappedRLModule : public RLModule {
                  int in_module_type, int in_module_number);
   ~MappedRLModule();
 
-  /** Adds a map_function_(op) to this modules set of opcodes.
-   *
-   * @note The RLModule class takes ownership of any RLOperation
-   * objects passed in this way.
-   *
-   * @param opcode The opcode number of this operation
-   * @param overload The overload number of this operation
-   * @param name A cstring with the printable name (or NULL)
-   * @param op An RLOperation functor which represents the
-   *           implementation of this operation.
-   */
+  // Adds a map_function_(op) to this modules set of opcodes. Takes ownership
+  // of |op|.
   virtual void addOpcode(int opcode, unsigned char overload, const char* name,
                          RLOperation* op);
 
  private:
-  /**
-   * Function which takes an RLOperation and returns an RLOperation. Takes
-   * ownership of the incoming RLOperation.
-   */
+  // Function which takes an RLOperation and returns an RLOperation. Takes
+  // ownership of the incoming RLOperation.
   MappingFunction map_function_;
 };
-
 
 #endif  // SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_

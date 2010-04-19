@@ -30,13 +30,13 @@
 
 #include "MachineBase/StackFrame.hpp"
 
+#include <typeinfo>
+
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/archive.h"
-
-#include <typeinfo>
 
 using namespace std;
 
@@ -48,16 +48,12 @@ StackFrame::StackFrame()
   memset(intL, 0, sizeof(intL));
 }
 
-// -----------------------------------------------------------------------
-
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t)
   : scenario(s), ip(i), frame_type(t) {
   memset(intL, 0, sizeof(intL));
 }
-
-// -----------------------------------------------------------------------
 
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
@@ -66,12 +62,8 @@ StackFrame::StackFrame(libReallive::Scenario const* s,
   memset(intL, 0, sizeof(intL));
 }
 
-// -----------------------------------------------------------------------
-
 StackFrame::~StackFrame() {
 }
-
-// -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame) {
   os << "{seen=" << frame.scenario->sceneNumber() << ", offset="
@@ -85,16 +77,12 @@ std::ostream& operator<<(std::ostream& os, const StackFrame& frame) {
   return os;
 }
 
-// -----------------------------------------------------------------------
-
 template<class Archive>
 void StackFrame::save(Archive & ar, unsigned int version) const {
   int scene_number = scenario->sceneNumber();
   int position = distance(scenario->begin(), ip);
   ar & scene_number & position & frame_type & intL & strK;
 }
-
-// -----------------------------------------------------------------------
 
 template<class Archive>
 void StackFrame::load(Archive & ar, unsigned int version) {

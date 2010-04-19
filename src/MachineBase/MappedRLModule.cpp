@@ -40,11 +40,7 @@ MappedRLModule::MappedRLModule(
     map_function_(fun) {
 }
 
-// -----------------------------------------------------------------------
-
 MappedRLModule::~MappedRLModule() {}
-
-// -----------------------------------------------------------------------
 
 void MappedRLModule::addOpcode(int opcode, unsigned char overload,
                                const char* name, RLOperation* op) {

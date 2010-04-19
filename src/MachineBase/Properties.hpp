@@ -24,17 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MACHINEBASE_PROPERTIES_HPP_
 #define SRC_MACHINEBASE_PROPERTIES_HPP_
-
-/**
- * @file   Properties.hpp
- * @author Elliot Glaysher <glaysher@umich.edu>
- * @date   Sun Feb 22 19:14:21 2009
- *
- * @brief  List of properties used on modules and opcodes
- */
 
 enum Properties {
   P_FGBG = 1,

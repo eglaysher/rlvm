@@ -26,9 +26,10 @@
 // -----------------------------------------------------------------------
 
 #include "MachineBase/LongOperation.hpp"
+
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
 #include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/System.hpp"
 
 // -----------------------------------------------------------------------
 // LongOperation
@@ -37,11 +38,7 @@
 LongOperation::LongOperation()
   : EventListener() {}
 
-// -----------------------------------------------------------------------
-
 LongOperation::~LongOperation() {}
-
-// -----------------------------------------------------------------------
 
 bool LongOperation::sleepEveryTick() {
   return true;
@@ -56,33 +53,23 @@ PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
   : operation_(in_op) {
 }
 
-// -----------------------------------------------------------------------
-
 PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator() {
 }
-
-// -----------------------------------------------------------------------
 
 void PerformAfterLongOperationDecorator::mouseMotion(
   const Point& new_location) {
   operation_->mouseMotion(new_location);
 }
 
-// -----------------------------------------------------------------------
-
 bool PerformAfterLongOperationDecorator::mouseButtonStateChanged(
   MouseButton mouse_button, bool pressed) {
   return operation_->mouseButtonStateChanged(mouse_button, pressed);
 }
 
-// -----------------------------------------------------------------------
-
 bool PerformAfterLongOperationDecorator::keyStateChanged(
   KeyCode key_code, bool pressed) {
   return operation_->keyStateChanged(key_code, pressed);
 }
-
-// -----------------------------------------------------------------------
 
 bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine) {
   bool ret_val = (*operation_)(machine);

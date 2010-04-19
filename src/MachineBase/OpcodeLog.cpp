@@ -41,20 +41,14 @@ using namespace std;
 OpcodeLog::OpcodeLog() {}
 OpcodeLog::~OpcodeLog() {}
 
-// -----------------------------------------------------------------------
-
 void OpcodeLog::increment(const std::string& name) {
   storage_[name]++;
 }
-
-// -----------------------------------------------------------------------
 
 static bool nameLessThan(const OpcodeLog::Storage::value_type& lhs,
                          const OpcodeLog::Storage::value_type& rhs) {
   return lhs.first.size() < rhs.first.size();
 }
-
-// -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
   if (log.size()) {

@@ -251,7 +251,7 @@ struct ReturnMenu : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
     machine.localReset();
-    machine.jump(scenario);
+    machine.jump(scenario, 0);
   }
 };
 
@@ -341,7 +341,7 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-  machine.jump(scenario);
+  machine.jump(scenario, 0);
 
   // Now we push a LongOperation on top of the stack; when this
   // ends, we'll be at SEEN_MENU.

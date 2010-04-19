@@ -38,6 +38,9 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 #include "Utilities/Exception.hpp"
 #include "Utilities/dynamic_bitset_serialize.hpp"
@@ -49,20 +52,13 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "libReallive/intmemref.h"
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
 using namespace std;
 using namespace libReallive;
 using namespace boost::archive;
 namespace fs = boost::filesystem;
 
-// -----------------------------------------------------------------------
-
 namespace Serialization {
-
-// -----------------------------------------------------------------------
 
 // - Was at 2 was most of rlvm's lifetime.
 // - Was changed to 3 during the 0.7 release because boost 1.35 had a serious
@@ -71,13 +67,9 @@ namespace Serialization {
 //   games themselves don't use that feature.
 const int CURRENT_GLOBAL_VERSION = 3;
 
-// -----------------------------------------------------------------------
-
 fs::path buildGlobalMemoryFilename(RLMachine& machine) {
   return machine.system().gameSaveDirectory() / "global.sav.gz";
 }
-
-// -----------------------------------------------------------------------
 
 void saveGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
@@ -96,8 +88,6 @@ void saveGlobalMemory(RLMachine& machine) {
   saveGlobalMemoryTo(filtered_output, machine);
 }
 
-// -----------------------------------------------------------------------
-
 void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
   text_oarchive oa(oss);
   System& sys = machine.system();
@@ -110,8 +100,6 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
      << const_cast<const TextSystemGlobals&>(sys.text().globals())
      << const_cast<const SoundSystemGlobals&>(sys.sound().globals());
 }
-
-// -----------------------------------------------------------------------
 
 void loadGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
@@ -147,8 +135,6 @@ void loadGlobalMemory(RLMachine& machine) {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
   text_iarchive ia(iss);

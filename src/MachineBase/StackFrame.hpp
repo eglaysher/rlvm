@@ -38,36 +38,33 @@ class LongOperation;
 // -----------------------------------------------------------------------
 // Stack Frame
 // -----------------------------------------------------------------------
-/**
- * Internally used type that represents a stack frame in RLMachine's
- * call stack.
- *
- * StackFrames are added by two bytecode mechanisms: gosubs and
- * farcalls. gosubs move the instruction pointer within one Scenario,
- * while farcalls move the instruction pointer between Scenarios.
- *
- * StackFrames can also be added to represent LongOperations.
- */
+
+// Internally used type that represents a stack frame in RLMachine's
+// call stack.
+//
+// StackFrames are added by two bytecode mechanisms: gosubs and
+// farcalls. gosubs move the instruction pointer within one Scenario,
+// while farcalls move the instruction pointer between Scenarios.
+//
+// StackFrames can also be added to represent LongOperations.
 struct StackFrame {
-  /// The scenario in the SEEN file for this stack frame.
+  // The scenario in the SEEN file for this stack frame.
   libReallive::Scenario const* scenario;
 
-  /// The instruction pointer in the stack frame.
+  // The instruction pointer in the stack frame.
   libReallive::Scenario::const_iterator ip;
 
-  /// Pointer to the owned LongOperation if this is of TYPE_LONGOP.
+  // Pointer to the owned LongOperation if this is of TYPE_LONGOP.
   boost::shared_ptr<LongOperation> long_op;
 
-  /// Parameter passing integer bank
+  // Parameter passing integer bank
   int intL[40];
 
-  /// Parameter passing string bank
+  // Parameter passing string bank
   std::string strK[3];
 
-  /**
-   * The function that pushed the current frame onto the
-   * stack. Used in error checking.
-   */
+  // The function that pushed the current frame onto the
+  // stack. Used in error checking.
   enum FrameType {
     TYPE_ROOT,    /**< Added by the Machine's constructor */
     TYPE_GOSUB,   /**< Added by a call by gosub */
@@ -75,21 +72,15 @@ struct StackFrame {
     TYPE_LONGOP   /**< Added by pushLongOperation() */
   } frame_type;
 
-  /**
-   * Default constructor. Only used during serialization.
-   */
+  // Default constructor. Only used during serialization.
   StackFrame();
 
-  /**
-   * Constructor for normal stack frames added by RealLive code.
-   */
+  // Constructor for normal stack frames added by RealLive code.
   StackFrame(libReallive::Scenario const* s,
              const libReallive::Scenario::const_iterator& i,
              FrameType t);
 
-  /**
-   * Constructor for frames that are just LongOperations.
-   */
+  // Constructor for frames that are just LongOperations.
   StackFrame(libReallive::Scenario const* s,
              const libReallive::Scenario::const_iterator& i,
              LongOperation* op);

@@ -26,8 +26,6 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 
-// -----------------------------------------------------------------------
-
 struct RLOp_Store_Void : public RLOp_NormalOperation<> {
   void dispatch(
       RLMachine& machine,
@@ -38,8 +36,6 @@ struct RLOp_Store_Void : public RLOp_NormalOperation<> {
 
   virtual int operator()(RLMachine&) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A>
 struct RLOp_Store_1 : public RLOp_NormalOperation<A> {
@@ -53,8 +49,6 @@ struct RLOp_Store_1 : public RLOp_NormalOperation<A> {
 
   virtual int operator()(RLMachine&, typename A::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B>
 struct RLOp_Store_2 : public RLOp_NormalOperation<A, B> {
@@ -70,8 +64,6 @@ struct RLOp_Store_2 : public RLOp_NormalOperation<A, B> {
 
   virtual int operator()(RLMachine&, typename A::type, typename B::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C>
 struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C> {
@@ -89,8 +81,6 @@ struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C> {
   virtual int operator()(
       RLMachine&, typename A::type, typename B::type, typename C::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D>
 struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D> {
@@ -111,9 +101,6 @@ struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D> {
       typename D::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
-
 template<typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Store_5 : public RLOp_NormalOperation<A, B, C, D, E> {
   void dispatch(
@@ -133,9 +120,6 @@ struct RLOp_Store_5 : public RLOp_NormalOperation<A, B, C, D, E> {
       RLMachine&, typename A::type, typename B::type, typename C::type,
       typename D::type, typename E::type) = 0;
 };
-
-// -----------------------------------------------------------------------
-
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F>
@@ -158,8 +142,6 @@ struct RLOp_Store_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
       RLMachine&, typename A::type, typename B::type, typename C::type,
       typename D::type, typename E::type, typename F::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
@@ -184,8 +166,6 @@ struct RLOp_Store_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
       typename D::type, typename E::type, typename F::type,
       typename G::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
@@ -212,8 +192,6 @@ struct RLOp_Store_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
       typename H::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I>
 struct RLOp_Store_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
@@ -239,8 +217,6 @@ struct RLOp_Store_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
       typename D::type, typename E::type, typename F::type, typename G::type,
       typename H::type, typename I::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J>
@@ -269,8 +245,6 @@ struct RLOp_Store_10
       typename D::type, typename E::type, typename F::type, typename G::type,
       typename H::type, typename I::type, typename J::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -303,8 +277,6 @@ struct RLOp_Store_11
       typename K::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L>
@@ -336,8 +308,6 @@ struct RLOp_Store_12
       typename H::type, typename I::type, typename J::type, typename K::type,
       typename L::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -372,8 +342,6 @@ struct RLOp_Store_13
       typename L::type, typename M::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N>
@@ -407,8 +375,6 @@ struct RLOp_Store_14
       typename H::type, typename I::type, typename J::type, typename K::type,
       typename L::type, typename M::type, typename N::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -446,8 +412,6 @@ struct RLOp_Store_15
       typename L::type, typename M::type, typename N::type,
       typename O::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -488,8 +452,6 @@ struct RLOp_Store_16
       typename L::type, typename M::type, typename N::type, typename O::type,
       typename P::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -532,8 +494,6 @@ struct RLOp_Store_17
       typename P::type, typename Q::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
@@ -575,8 +535,6 @@ struct RLOp_Store_18
       typename L::type, typename M::type, typename N::type, typename O::type,
       typename P::type, typename Q::type, typename R::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -622,8 +580,6 @@ struct RLOp_Store_19
       typename S::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
@@ -668,8 +624,6 @@ struct RLOp_Store_20
       typename P::type, typename Q::type, typename R::type, typename S::type,
       typename T::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -718,8 +672,6 @@ struct RLOp_Store_21
       typename T::type, typename U::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
@@ -767,8 +719,6 @@ struct RLOp_Store_22
       typename P::type, typename Q::type, typename R::type, typename S::type,
       typename T::type, typename U::type, typename V::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -819,8 +769,6 @@ struct RLOp_Store_23
       typename T::type, typename U::type, typename V::type,
       typename W::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
@@ -873,8 +821,6 @@ struct RLOp_Store_24
       typename X::type) = 0;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,
          typename K, typename L, typename M, typename N, typename O,
@@ -926,8 +872,6 @@ struct RLOp_Store_25
       typename T::type, typename U::type, typename V::type, typename W::type,
       typename X::type, typename Y::type) = 0;
 };
-
-// -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J,

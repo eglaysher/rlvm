@@ -25,7 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 #define SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 

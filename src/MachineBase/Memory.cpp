@@ -25,24 +25,21 @@
 //
 // -----------------------------------------------------------------------
 
+#include "MachineBase/Memory.hpp"
+
+#include <boost/assign/list_of.hpp>
 #include <map>
 #include <string>
 
-#include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/intmemref.h"
 #include "libReallive/gameexe.h"
-#include <boost/assign/list_of.hpp>
-
-// -----------------------------------------------------------------------
+#include "libReallive/intmemref.h"
 
 using boost::assign::list_of;
 using namespace std;
 using namespace libReallive;
-
-// -----------------------------------------------------------------------
 
 const IntegerBank_t LOCAL_INTEGER_BANKS =
   list_of(make_pair(INTB_LOCATION, 'A'))
@@ -71,12 +68,8 @@ LocalMemory::LocalMemory() {
   reset();
 }
 
-// -----------------------------------------------------------------------
-
 LocalMemory::LocalMemory(dont_initialize) {
 }
-
-// -----------------------------------------------------------------------
 
 void LocalMemory::reset() {
   memset(intA, 0, sizeof(intA));
@@ -104,8 +97,6 @@ Memory::Memory(RLMachine& machine, Gameexe& gameexe)
   initializeDefaultValues(gameexe);
 }
 
-// -----------------------------------------------------------------------
-
 Memory::Memory(RLMachine& machine, int slot)
   : global_(machine.memory().global_),
     local_(dont_initialize()),
@@ -113,12 +104,8 @@ Memory::Memory(RLMachine& machine, int slot)
   connectIntVarPointers();
 }
 
-// -----------------------------------------------------------------------
-
 Memory::~Memory() {
 }
-
-// -----------------------------------------------------------------------
 
 void Memory::connectIntVarPointers() {
   int_var[0] = local_.intA;
@@ -130,8 +117,6 @@ void Memory::connectIntVarPointers() {
   int_var[6] = global_->intG;
   int_var[7] = global_->intZ;
 }
-
-// -----------------------------------------------------------------------
 
 const std::string& Memory::getStringValue(int type, int location) {
   if (location > (SIZE_OF_MEM_BANK -1))
@@ -154,8 +139,6 @@ const std::string& Memory::getStringValue(int type, int location) {
     throw rlvm::Exception("Invalid type in RLMachine::get_string_value");
   }
 }
-
-// -----------------------------------------------------------------------
 
 void Memory::setStringValue(int type, int number, const std::string& value) {
   if (number > (SIZE_OF_MEM_BANK -1))
@@ -184,8 +167,6 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void Memory::checkNameIndex(int index, const std::string& name) const {
   if (index > (SIZE_OF_NAME_BANK - 1)) {
     ostringstream oss;
@@ -194,35 +175,25 @@ void Memory::checkNameIndex(int index, const std::string& name) const {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void Memory::setName(int index, const std::string& name) {
   checkNameIndex(index, "Memory::set_name");
   global_->global_names[index] = name;
 }
-
-// -----------------------------------------------------------------------
 
 const std::string& Memory::getName(int index) const {
   checkNameIndex(index, "Memory::get_name");
   return global_->global_names[index];
 }
 
-// -----------------------------------------------------------------------
-
 void Memory::setLocalName(int index, const std::string& name) {
   checkNameIndex(index, "Memory::set_local_name");
   local_.local_names[index] = name;
 }
 
-// -----------------------------------------------------------------------
-
 const std::string& Memory::getLocalName(int index) const {
   checkNameIndex(index, "Memory::set_local_name");
   return local_.local_names[index];
 }
-
-// -----------------------------------------------------------------------
 
 bool Memory::hasBeenRead(int scenario, int kidoku) const {
   std::map<int, boost::dynamic_bitset<> >::const_iterator it =
@@ -235,8 +206,6 @@ bool Memory::hasBeenRead(int scenario, int kidoku) const {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 void Memory::recordKidoku(int scenario, int kidoku) {
   boost::dynamic_bitset<>& bitset = global_->kidoku_data[scenario];
   if (bitset.size() <= static_cast<size_t>(kidoku))
@@ -245,9 +214,7 @@ void Memory::recordKidoku(int scenario, int kidoku) {
   bitset[kidoku] = true;
 }
 
-// -----------------------------------------------------------------------
-
-/* static */
+// static
 int Memory::ConvertLetterIndexToInt(const std::string& value) {
   int total = 0;
 
@@ -262,8 +229,6 @@ int Memory::ConvertLetterIndexToInt(const std::string& value) {
 
   return total;
 }
-
-// -----------------------------------------------------------------------
 
 void Memory::initializeDefaultValues(Gameexe& gameexe) {
   // Note: We ignore the \#NAME_MAXLEN variable because manual allocation is

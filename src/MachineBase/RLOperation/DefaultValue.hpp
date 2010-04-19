@@ -31,10 +31,10 @@
 
 template<int DEFAULTVAL>
 struct DefaultIntValue_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef int type;
 
-  /// Convert the incoming parameter objects into the resulting type
+  // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {
@@ -63,16 +63,12 @@ struct DefaultIntValue_T {
   };
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Typestruct that will return an empty string if there isn't a value.
- */
+// Typestruct that will return an empty string if there isn't a value.
 struct DefaultStrValue_T {
-  /// The output type of this type struct
+  // The output type of this type struct
   typedef std::string type;
 
-  /// Convert the incoming parameter objects into the resulting type
+  // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
                       const boost::ptr_vector<libReallive::ExpressionPiece>& p,
                       unsigned int& position) {

@@ -378,7 +378,7 @@ struct jump_0 : public RLOp_Void_1< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
-    machine.jump(scenario);
+    machine.jump(scenario, 0);
   }
 };
 
@@ -406,7 +406,7 @@ struct farcall_0 : public RLOp_Void_1< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
-    machine.farcall(scenario);
+    machine.farcall(scenario, 0);
   }
 };
 

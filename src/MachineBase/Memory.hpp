@@ -28,29 +28,15 @@
 #ifndef SRC_MACHINEBASE_MEMORY_HPP_
 #define SRC_MACHINEBASE_MEMORY_HPP_
 
-/**
- * @file   Memory.hpp
- * @author Elliot Glaysher
- * @date   Wed Dec 19 19:34:33 2007
- *
- * @brief  Classes that contain local and global memory
- *
- * Classes that contain local and global memory, with abstractions for
- * serializing them (and doing other cool things)
- */
-
-// -----------------------------------------------------------------------
-
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
-#include "libReallive/intmemref.h"
-#include <boost/shared_ptr.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <boost/serialization/version.hpp>
+#include <boost/shared_ptr.hpp>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 
-// -----------------------------------------------------------------------
+#include "libReallive/intmemref.h"
 
 const int NUMBER_OF_INT_LOCATIONS = 8;
 const int SIZE_OF_MEM_BANK = 2000;
@@ -61,20 +47,12 @@ typedef std::vector<std::pair<int, char> > IntegerBank_t;
 extern const IntegerBank_t LOCAL_INTEGER_BANKS;
 extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
 
-// -----------------------------------------------------------------------
-
 class RLMachine;
 class Gameexe;
 
-// -----------------------------------------------------------------------
-
-/**
- * Struct that represents Global Memory. In any one rlvm process, there
- * should only be one GlobalMemory struct existing, as it will be
- * shared over all the Memory objects in the process.
- *
- * @see Memory
- */
+// Struct that represents Global Memory. In any one rlvm process, there
+// should only be one GlobalMemory struct existing, as it will be
+// shared over all the Memory objects in the process.
 struct GlobalMemory {
   GlobalMemory();
 
@@ -85,13 +63,11 @@ struct GlobalMemory {
 
   std::string global_names[SIZE_OF_NAME_BANK];
 
-  /**
-   * A mapping from a scenario number to a dynamic bitset, where each bit
-   * represents a specific kidoku bit.
-   */
+  // A mapping from a scenario number to a dynamic bitset, where each bit
+  // represents a specific kidoku bit.
   std::map<int, boost::dynamic_bitset<> > kidoku_data;
 
-  /// boost::serialization
+  // boost::serialization
   template<class Archive>
   void serialize(Archive & ar, unsigned int version) {
     ar & intG & intZ & strM;
@@ -106,27 +82,18 @@ struct GlobalMemory {
 
 BOOST_CLASS_VERSION(GlobalMemory, 1)
 
-// -----------------------------------------------------------------------
-
 struct dont_initialize { };
 
-/**
- * Struct that represents Local Memory. In any one rlvm process, lots
- * of these things will be created, because there are commands
- *
- * @see Sys_GetSaveFlag
- * @see Memory
- */
+// Struct that represents Local Memory. In any one rlvm process, lots
+// of these things will be created, because there are commands
 struct LocalMemory {
   LocalMemory();
 
-  /**
-   * Constructor that prevents the memory banks from being memset
-   * (since they'll be overwritten entirely by the thawing process.
-   */
+  // Constructor that prevents the memory banks from being memset
+  // (since they'll be overwritten entirely by the thawing process.
   explicit LocalMemory(dont_initialize);
 
-  /// Zeros and clears all of local memory.
+  // Zeros and clears all of local memory.
   void reset();
 
   int intA[SIZE_OF_MEM_BANK];
@@ -136,12 +103,12 @@ struct LocalMemory {
   int intE[SIZE_OF_MEM_BANK];
   int intF[SIZE_OF_MEM_BANK];
 
-  /// Local string bank
+  // Local string bank
   std::string strS[SIZE_OF_MEM_BANK];
 
   std::string local_names[SIZE_OF_NAME_BANK];
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive & ar, unsigned int version) {
     ar & intA & intB & intC & intD & intE & intF & strS;
@@ -165,70 +132,26 @@ struct LocalMemory {
 
 BOOST_CLASS_VERSION(LocalMemory, 1)
 
-// -----------------------------------------------------------------------
-
-/**
- * Class that encapsulates access to all integer and string
- * memory. Multiple instances of this class will probably exist if
- * save games are used.
- *
- * @note Because I use BSD code from xclannad in some of the methods
- *       in this class, for licensing purposes, that code is separated
- *       into RLMachine_intmem.cpp.
- *
- * @see RLMachine
- * @see Sys_GetSaveFlag
- */
+// Class that encapsulates access to all integer and string
+// memory. Multiple instances of this class will probably exist if
+// save games are used.
+//
+// @note Because I use BSD code from xclannad in some of the methods
+//       in this class, for licensing purposes, that code is separated
+//       into RLMachine_intmem.cpp.
 class Memory {
- private:
-  /**
-   * Pointer to the GlobalMemory structure. While there can (and will
-   * be) multiple Memory instances (this is how we implement
-   * GetSaveFlag), we don't really need to duplicate this data
-   * structure and can simply pass a pointer to it.
-   */
-  boost::shared_ptr<GlobalMemory> global_;
-
-  /// Local memory to a save file
-  LocalMemory local_;
-
-  // Our owning machine. We keep this reference so we can ask for the current
-  // stackframe.
-  RLMachine& machine_;
-
-  /// Integer variable pointers. This redirect into Global and local
-  /// memory (as the case may be) allows us to overlay new views of
-  /// local memory without copying global memory.
-  int* int_var[NUMBER_OF_INT_LOCATIONS];
-
-  /**
-   * Connects the memory banks in local_ and in global_ into int_var.
-   */
-  void connectIntVarPointers();
-
-  /**
-   * Input validating function to the {get,set}(Local)?Name set of functions.
-   */
-  void checkNameIndex(int index, const std::string& name) const;
-
-  /**
-   * Reads in default memory values from the passed in Gameexe, such as \#NAME
-   * and \#LOCALNAME values.
-   */
-  void initializeDefaultValues(Gameexe& gameexe);
-
  public:
-  /**
-   * Default constructor; creates a Memory object which owns its own
-   * GlobalMemory. Initial memory values are read from the passed in Gameexe
-   * object.
-   *
-   * @note For now, we only read \#NAME and \#LOCALNAME variables, skipping any
-   *       declaration of the form \#intvar[index] or \#strvar[index].
-   */
+  // Default constructor; creates a Memory object which owns its own
+  // GlobalMemory. Initial memory values are read from the passed in Gameexe
+  // object.
+  //
+  // @note For now, we only read \#NAME and \#LOCALNAME variables, skipping any
+  //       declaration of the form \#intvar[index] or \#strvar[index].
   explicit Memory(RLMachine& machine, Gameexe& gamexe);
 
   /**
+   * TODO(erg): This function doesn't make sense. Clean up later.
+   *
    * Creates an overlayed memory object. An overlay takes another
    * Memory's global memory.
    *
@@ -242,100 +165,76 @@ class Memory {
 
   ~Memory();
 
-  /**
-   * Returns the integer value of a certain memory location
-   *
-   * @param type The memory bank/access method to access from
-   * @param location The offset into that memory bank
-   * @return The integer value
-   * @note This method was plagarized from xclannad.
-   */
+  // Returns the integer value of a certain memory location
   int getIntValue(const libReallive::IntMemRef& ref);
 
-  /**
-   * Sets the value of a certain memory location
-   *
-   * @param type The memory bank/access method to access from
-   * @param number The offset into that memory bank
-   * @param value The new value
-   * @note This method was plagarized from xclannad.
-   */
+  // Sets the value of a certain memory location
   void setIntValue(const libReallive::IntMemRef& ref, int value);
 
-  /**
-   * Returns the string value of a string memory bank
-   *
-   * @param type The memory bank to access from
-   * @param location The offset into that memory bank
-   * @return The string in that location
-   */
+  // Returns the string value of a string memory bank
   const std::string& getStringValue(int type, int location);
 
-  /**
-   * Sets the string value of one of the string banks
-   *
-   * @param type The memory bank to set to
-   * @param number The offset into that memory bank
-   * @param value The new string value to assign
-   */
+  // Sets the string value of one of the string banks
   void setStringValue(int type, int number, const std::string& value);
 
-  /**
-   * @name Name tables
-   *
-   * @{
-   */
-  /**
-   * Sets the local name slot index to name.
-   */
+  // Name table functions:
+
+  // Sets the local name slot index to name.
   void setName(int index, const std::string& name);
 
-  /**
-   * Returns the local name slot index.
-   */
+  // Returns the local name slot index.
   const std::string& getName(int index) const;
 
-  /**
-   * Sets the local name slot index to name.
-   */
+  // Sets the local name slot index to name.
   void setLocalName(int index, const std::string& name);
 
-  /**
-   * Returns the local name slot index.
-   */
+  // Returns the local name slot index.
   const std::string& getLocalName(int index) const;
-  /// @}
 
-  /**
-   * @name Kidoku Access
-   *
-   * Methods that record whether a piece of text has been read. RealLive
-   * scripts have a piece of metadata called a kidoku marker which signifies if
-   * the text between that and the next kidoku marker have been previously read.
-   *
-   * @{
-   */
+  // Methods that record whether a piece of text has been read. RealLive
+  // scripts have a piece of metadata called a kidoku marker which signifies if
+  // the text between that and the next kidoku marker have been previously read.
   bool hasBeenRead(int scenario, int kidoku) const;
   void recordKidoku(int scenario, int kidoku);
-  /// @}
 
-
-  /**
-   * @name Accessors for serialization.
-   *
-   * @{
-   */
+  // Accessors for serialization.
   GlobalMemory& global() { return *global_; }
   const GlobalMemory& global() const { return *global_; }
   LocalMemory& local() { return local_; }
   const LocalMemory& local() const { return local_; }
-  /// @}
 
-  /**
-   * Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
-   * equivalent. These letter indexies are used in \#NAME definitions.
-   */
+  // Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
+  // equivalent. These letter indexies are used in \#NAME definitions.
   static int ConvertLetterIndexToInt(const std::string& value);
+
+ private:
+  // Connects the memory banks in local_ and in global_ into int_var.
+  void connectIntVarPointers();
+
+  // Input validating function to the {get,set}(Local)?Name set of functions.
+  void checkNameIndex(int index, const std::string& name) const;
+
+  // Reads in default memory values from the passed in Gameexe, such as \#NAME
+  // and \#LOCALNAME values.
+  void initializeDefaultValues(Gameexe& gameexe);
+
+  // Pointer to the GlobalMemory structure. While there can (and will
+  // be) multiple Memory instances (this is how we implement
+  // GetSaveFlag), we don't really need to duplicate this data
+  // structure and can simply pass a pointer to it.
+  boost::shared_ptr<GlobalMemory> global_;
+
+  // Local memory to a save file
+  LocalMemory local_;
+
+  // Our owning machine. We keep this reference so we can ask for the current
+  // stackframe.
+  RLMachine& machine_;
+
+  // Integer variable pointers. This redirect into Global and local
+  // memory (as the case may be) allows us to overlay new views of
+  // local memory without copying global memory.
+  int* int_var[NUMBER_OF_INT_LOCATIONS];
 };  // end of class Memory
 
 // Implementation of getting an integer out of an array. Global because we need

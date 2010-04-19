@@ -28,13 +28,6 @@
 #ifndef SRC_MACHINEBASE_REFERENCE_HPP_
 #define SRC_MACHINEBASE_REFERENCE_HPP_
 
-/**
- * @file   reference.hpp
- * @brief  Declares the iterated interface to integer and string memory
- * @author Elliot Glaysher
- * @date   Sat Oct  7 11:16:10 2006
- */
-
 #include <string>
 #include <iterator>
 
@@ -42,47 +35,34 @@ template<typename T>
 class MemoryReferenceIterator;
 class Memory;
 
-/**
- * Accessor class passed back to user when the iterator is
- * dereferenced. Each IntAcessor will (probably) be a short-lived
- * temporary object which is immediatly casted to an int, or it may
- * have a value assigned to it.
- *
- * @note If you are having weird problems with code that dereferences
- * MemoryReferenceIterators, you may need to overload an operator in
- * this class.
- */
+// Accessor class passed back to user when the iterator is
+// dereferenced. Each IntAcessor will (probably) be a short-lived
+// temporary object which is immediatly casted to an int, or it may
+// have a value assigned to it.
 class IntAccessor {
  public:
   explicit IntAccessor(MemoryReferenceIterator<IntAccessor>* i);
   ~IntAccessor();
 
+  // Read from the memory location, and return the value.
   operator int() const;
 
   IntAccessor& operator=(const int new_value);
   IntAccessor& operator=(const IntAccessor& rhs);
 
  private:
-  /// Pointer to the real memory reference that we work with whenever
-  /// we operate with an IntAccessor
+  // Pointer to the real memory reference that we work with whenever
+  // we operate with an IntAccessor
   MemoryReferenceIterator<IntAccessor>* it;
 
-  /// Pointer to the store register (if this is that kind of IntAccessor).
+  // Pointer to the store register (if this is that kind of IntAccessor).
   int* store_register_;
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Accessor class passed back to user when the iterator is
- * dereferenced. Each StringAcessor will (probably) be a short-lived
- * temporary object which is immediatly casted to an string, or it may
- * have a value assigned to it.
- *
- * @note If you are having weird problems with code that dereferences
- * MemoryReferenceIterators, you may need to overload an operator in
- * this class.
- */
+// Accessor class passed back to user when the iterator is
+// dereferenced. Each StringAcessor will (probably) be a short-lived
+// temporary object which is immediatly casted to an string, or it may
+// have a value assigned to it.
 class StringAccessor {
  public:
   explicit StringAccessor(MemoryReferenceIterator<StringAccessor>* i);
@@ -96,19 +76,17 @@ class StringAccessor {
   bool operator==(const std::string& rhs);
 
  private:
-  /// Pointer to the real memory reference that we work with whenever
-  /// we operate with an StringAccessor.
+  // Pointer to the real memory reference that we work with whenever
+  // we operate with an StringAccessor.
   MemoryReferenceIterator<StringAccessor>* it;
 };
 
-/**
- * MemoryReferenceIterator represents iterators into an RLMachine's
- * memory.  Since changing the RLMachine's memory can change the
- * pointed memory address of a MemoryReference, we create iterators
- * that point to the current state of an MemoryReference. This also
- * solves the problem where some functions in RealLive accept two
- * memory addresses, and do something on that range.
- */
+// MemoryReferenceIterator represents iterators into an RLMachine's
+// memory.  Since changing the RLMachine's memory can change the
+// pointed memory address of a MemoryReference, we create iterators
+// that point to the current state of an MemoryReference. This also
+// solves the problem where some functions in RealLive accept two
+// memory addresses, and do something on that range.
 template<typename ACCESS>
 class MemoryReferenceIterator
   : public std::iterator<std::random_access_iterator_tag, ACCESS> {
@@ -124,6 +102,7 @@ class MemoryReferenceIterator
 
   int type() const { return type_; }
   int location() const { return location_; }
+
   // -------------------------------------------------------- Iterated Interface
   ACCESS operator*() { return ACCESS(this); }
 
@@ -131,14 +110,17 @@ class MemoryReferenceIterator
     ++location_;
     return *this;
   }
+
   MemoryReferenceIterator& operator--() {
     --location_;
     return *this;
   }
+
   MemoryReferenceIterator& operator+=(int step) {
     location_ += step;
     return *this;
   }
+
   MemoryReferenceIterator& operator-=(int step) {
     location_ -= step;
     return *this;
@@ -149,6 +131,7 @@ class MemoryReferenceIterator
     ++location_;
     return tmp;
   }
+
   MemoryReferenceIterator operator--(int postfix) {
     MemoryReferenceIterator tmp(*this);
     --location_;
@@ -159,6 +142,7 @@ class MemoryReferenceIterator
     MemoryReferenceIterator tmp(*this);
     return tmp += step;
   }
+
   MemoryReferenceIterator operator-(int step) {
     MemoryReferenceIterator tmp(*this);
     return tmp -= step;
@@ -196,19 +180,13 @@ class MemoryReferenceIterator
   friend class IntAccessor;
 };
 
-// -----------------------------------------------------------------------
-
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
     : store_register_(NULL), memory_(NULL), type_(-1), location_(0) {}
 
-// -----------------------------------------------------------------------
-
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(int* store_register)
     : store_register_(store_register), memory_(NULL), type_(-1), location_(0) {}
-
-// -----------------------------------------------------------------------
 
 template<typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
@@ -218,10 +196,10 @@ MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
 
 // -----------------------------------------------------------------------
 
-/// Defines a MemoryReferenceIterator that operates on the numeric memory
+// Defines a MemoryReferenceIterator that operates on the numeric memory
 typedef MemoryReferenceIterator<IntAccessor> IntReferenceIterator;
 
-/// Defines a MemoryReferenceIterator that operates on the string memory
+// Defines a MemoryReferenceIterator that operates on the string memory
 typedef MemoryReferenceIterator<StringAccessor> StringReferenceIterator;
 
 #endif  // SRC_MACHINEBASE_REFERENCE_HPP_
