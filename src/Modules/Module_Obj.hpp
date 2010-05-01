@@ -28,14 +28,8 @@
 #ifndef SRC_MODULES_MODULE_OBJ_HPP_
 #define SRC_MODULES_MODULE_OBJ_HPP_
 
-/**
- * @file   Module_Obj.hpp
- * @author Elliot Glaysher
- * @date   Mon Jan  1 20:48:43 2007
- *
- * @brief  Reusable function objects for the GraphicsObject system.
- *
- */
+// Reusable function objects for the GraphicsObject system.
+
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "MachineBase/RLOperation.hpp"
@@ -54,9 +48,8 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
 
 // -----------------------------------------------------------------------
 
-
-/// An adapter that changes a normal object operation into one that operates on
-/// an object's child objects.
+// An adapter that changes a normal object operation into one that operates on
+// an object's child objects.
 class ChildObjAdapter : public RLOp_SpecialCase {
  public:
   explicit ChildObjAdapter(RLOperation* in);
@@ -72,21 +65,19 @@ RLOperation* childObjMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
-/**
- * Specialized form of Op_SetToIncomingInt to deal with looking up
- * object from the Obj* helper templates; since a lot of Object
- * related functions simply call a setter.
- *
- * This template magic saves having to write out 25 - 30 operation
- * structs.
- */
+// Specialized form of Op_SetToIncomingInt to deal with looking up
+// object from the Obj* helper templates; since a lot of Object
+// related functions simply call a setter.
+//
+// This template magic saves having to write out 25 - 30 operation
+// structs.
 class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
  private:
-  /// The function signature for the setter function
+  // The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const int);
 
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
+  // The setter function to call on Op_SetToIncoming::reference when
+  // called.
   Setter setter;
 
  public:
@@ -98,18 +89,16 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-/**
- * Specialized form of Op_SetToIncomingInt to deal with looking up
- * object from the Obj* helper templates; since a lot of Object
- * related functions simply call a setter.
- */
+// Specialized form of Op_SetToIncomingInt to deal with looking up object from
+// the Obj* helper templates; since a lot of Object related functions simply
+// call a setter.
 class Obj_SetTwoIntOnObj
-  : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
-  /// The function signature for the setter function
+    : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+  // The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const int);
 
-  /// The setter functions to call on Op_SetToIncoming::reference when
-  /// called.
+  // The setter functions to call on Op_SetToIncoming::reference when
+  // called.
   Setter setterOne;
   Setter setterTwo;
 

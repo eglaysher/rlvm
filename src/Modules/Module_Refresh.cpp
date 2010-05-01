@@ -25,21 +25,13 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Refresh.cpp
- * @author Elliot Glaysher
- * @date   Sun Jan 21 13:16:13 2007
- *
- * @brief  Contains module<1:31>, which contains a single command: refresh()
- */
+// Contains module<1:31>, which contains a single command: refresh()
 
 #include "Modules/Module_Refresh.hpp"
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-
-// -----------------------------------------------------------------------
 
 RefreshModule::RefreshModule()
   : RLModule("Refresh", 1, 31) {

@@ -30,9 +30,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<0:2>, Sel.
- */
+// Contains functions for mod<0:2>, Sel.
 class SelModule : public RLModule {
  public:
   SelModule();

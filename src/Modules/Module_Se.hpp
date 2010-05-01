@@ -25,15 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MODULES_MODULE_SE_HPP_
 #define SRC_MODULES_MODULE_SE_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:22>, Se.
- */
+// Contains functions for mod<1:22>, Se.
 class SeModule : public RLModule {
  public:
   SeModule();

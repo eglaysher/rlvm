@@ -38,19 +38,15 @@
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/System.hpp"
 
-// -----------------------------------------------------------------------
-
-struct LongOp_koeWait : public LongOperation {
-  bool operator()(RLMachine& machine) {
-    return !machine.system().sound().koePlaying();
-  }
-};
-
-// -----------------------------------------------------------------------
-
 namespace {
 
 struct koeWait : public RLOp_Void_Void {
+  struct LongOp_koeWait : public LongOperation {
+    bool operator()(RLMachine& machine) {
+      return !machine.system().sound().koePlaying();
+    }
+  };
+
   void operator()(RLMachine& machine) {
     machine.pushLongOperation(new LongOp_koeWait);
   }

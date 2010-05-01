@@ -29,9 +29,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:13>, Shk.
- */
+// Contains functions for mod<1:13>, Shk.
 class ShakingModule : public RLModule {
  public:
   ShakingModule();

@@ -30,12 +30,8 @@
 
 class RLMachine;
 
-/**
- * Convenience function to add all known module to a certain machine;
- * This keeps us from having to recompile rlvm.cpp all the time.
- *
- * @param machine
- */
+// Convenience function to add all known module to a certain machine;
+// This keeps us from having to recompile rlvm.cpp all the time.
 void addAllModules(RLMachine& machine);
 
 #endif  // SRC_MODULES_MODULES_HPP_

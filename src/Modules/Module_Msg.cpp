@@ -25,35 +25,24 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Msg.cpp
- * @author Elliot Glaysher
- * @date   Sun Oct  1 22:18:39 2006
- *
- * @brief  Implements many textout related operations.
- */
+#include "Modules/Module_Msg.hpp"
 
+#include <boost/shared_ptr.hpp>
 #include <string>
 #include <vector>
 
-#include "Modules/Module_Msg.hpp"
+#include "LongOperations/PauseLongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
-
-#include "libReallive/gameexe.h"
-#include "LongOperations/PauseLongOperation.hpp"
-
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "Systems/Base/System.hpp"
-#include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
-
-#include <boost/shared_ptr.hpp>
+#include "libReallive/gameexe.h"
 
 using namespace std;
 using boost::shared_ptr;
@@ -206,8 +195,6 @@ struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0> > {
 };
 
 }  // namespace
-
-// -----------------------------------------------------------------------
 
 MsgModule::MsgModule()
   : RLModule("Msg", 0, 003) {

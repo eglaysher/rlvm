@@ -27,20 +27,9 @@
 #ifndef SRC_MODULES_MODULE_DLL_HPP_
 #define SRC_MODULES_MODULE_DLL_HPP_
 
-/**
- * @file   Module_DLL.cpp
- * @author Elliot Glaysher
- * @ingroup ModulesOpcodes
- * @brief  Declaration of JmpModule
- */
-
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:1>, Dll.
- *
- * @ingroup ModuleDLL
- */
+// Contains functions for mod<1:1>, Dll.
 class DLLModule : public RLModule {
  public:
   DLLModule();

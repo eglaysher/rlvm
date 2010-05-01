@@ -30,11 +30,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:40>, Bgr.
- *
- * @ingroup ModuleSys
- */
+// Contains functions for mod<1:40>, Bgr.
 class BgrModule : public RLModule {
  public:
   BgrModule();

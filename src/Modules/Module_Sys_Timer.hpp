@@ -30,12 +30,8 @@
 
 class RLModule;
 
-/**
- * Public access to the frame counter operations. Meant to be called
- * from the constructor of SysModule.
- *
- * @see SysModule
- */
+// Public access to the frame counter operations. Meant to be called
+// from the constructor of SysModule.
 void addSysTimerOpcodes(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_TIMER_HPP_

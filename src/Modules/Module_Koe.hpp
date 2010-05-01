@@ -30,9 +30,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:23>, Koe.
- */
+// Contains functions for mod<1:23>, Koe.
 class KoeModule : public RLModule {
  public:
   KoeModule();

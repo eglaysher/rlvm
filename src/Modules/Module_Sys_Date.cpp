@@ -34,8 +34,6 @@
 #include "MachineBase/RLOperation/References.hpp"
 #include "Utilities/dateUtil.hpp"
 
-// -----------------------------------------------------------------------
-
 namespace {
 
 struct GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
@@ -82,8 +80,6 @@ struct GetDateTime : public RLOp_Void_8<
 };
 
 }  // namespace
-
-// -----------------------------------------------------------------------
 
 void addSysDateOpcodes(RLModule& m) {
   m.addOpcode(1100, 0, "GetYear", returnIntValue(datetime::getYear));

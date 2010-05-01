@@ -25,20 +25,15 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MODULES_MODULE_MOV_HPP_
 #define SRC_MODULES_MODULE_MOV_HPP_
 
-
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:26>, Mov.
- */
+// Contains functions for mod<1:26>, Mov.
 class MovModule : public RLModule {
  public:
   MovModule();
 };
-
 
 #endif  // SRC_MODULES_MODULE_MOV_HPP_

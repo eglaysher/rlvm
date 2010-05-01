@@ -26,12 +26,11 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_EventLoop.hpp"
-#include "MachineBase/RLMachine.hpp"
+
 #include "MachineBase/GeneralOperations.hpp"
+#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
-
-// -----------------------------------------------------------------------
 
 namespace {
 

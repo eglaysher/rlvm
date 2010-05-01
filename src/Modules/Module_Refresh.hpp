@@ -28,21 +28,9 @@
 #ifndef SRC_MODULES_MODULE_REFRESH_HPP_
 #define SRC_MODULES_MODULE_REFRESH_HPP_
 
-/**
- * @file   Module_Refresh.hpp
- * @author Elliot Glaysher
- * @date   Sun Jan 21 13:21:51 2007
- * @ingroup ModuleObj
- *
- * @brief
- *
- */
-
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:31>, Refresh.
- */
+// Contains functions for mod<1:31>, Refresh.
 class RefreshModule : public RLModule {
  public:
   RefreshModule();

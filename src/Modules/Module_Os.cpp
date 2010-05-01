@@ -25,35 +25,26 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Os.cpp
- * @author Elliot Glaysher
- * @date   Sun Aug 10 13:34:48 2008
- *
- * @brief  Implements commands that interact with the OS.
- */
-
 #include "Modules/Module_Os.hpp"
+
+#include <string>
 
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 
-#include <string>
 using namespace std;
 
 // -----------------------------------------------------------------------
 
 namespace {
 
-/**
- * I have only the vaguest idea of what this is. This is used in the new
- * CLANNAD_FV game to do some sort of disk checking. If this returns false,
- * CLANNAD_FV will popup a message box telling you to insert the CLANNAD_FV
- * disc.
- *
- * This probably does some sort of file existance checking, but for now, just
- * always return true to get over this speed bump.
- */
+// I have only the vaguest idea of what this is. This is used in the new
+// CLANNAD_FV game to do some sort of disk checking. If this returns false,
+// CLANNAD_FV will popup a message box telling you to insert the CLANNAD_FV
+// disc.
+//
+// This probably does some sort of file existance checking, but for now, just
+// always return true to get over this speed bump.
 struct CheckFile
   : public RLOp_Store_3<StrConstant_T, IntConstant_T, StrConstant_T> {
   int operator()(RLMachine& machine, string one, int two, string three) {
@@ -62,8 +53,6 @@ struct CheckFile
 };
 
 }  // namespace
-
-// -----------------------------------------------------------------------
 
 OsModule::OsModule()
   : RLModule("Os", 1, 005) {

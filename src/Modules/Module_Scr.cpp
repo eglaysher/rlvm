@@ -25,30 +25,15 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Scr.cpp
- * @author Elliot Glaysher
- * @date   Sat Feb  3 09:32:05 2007
- *
- * @brief A module that contains a few graphics related functions.
- *
- * A quarter of what's in Sys should really be here instead. This
- * probably has something to do with the implementation details of the
- * official RealLive interpreter.
- */
-#include "Module_Scr.hpp"
+#include "Modules/Module_Scr.hpp"
 
-
-#include "MachineBase/RLOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
-
-#include "Systems/Base/System.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
-#include "Systems/Base/GraphicsStackFrame.hpp"
-
-// -----------------------------------------------------------------------
+#include "Systems/Base/System.hpp"
 
 namespace {
 
@@ -89,7 +74,7 @@ struct GetDCPixel : public RLOp_Void_6<
 // -----------------------------------------------------------------------
 
 ScrModule::ScrModule()
-  : RLModule("Scr", 1, 30) {
+    : RLModule("Scr", 1, 30) {
   addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
   addOpcode(1, 0, "stackNop", new stackNop);
   addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));
@@ -108,4 +93,3 @@ ScrModule::ScrModule()
 
   addOpcode(31, 0, "GetDCPixel", new GetDCPixel);
 }
-

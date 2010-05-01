@@ -44,8 +44,6 @@
 using namespace std;
 using boost::numeric_cast;
 
-// -----------------------------------------------------------------------
-
 namespace {
 
 struct ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {

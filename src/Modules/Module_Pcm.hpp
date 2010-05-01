@@ -30,9 +30,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:21>, Pcm.
- */
+// Contains functions for mod<1:21>, Pcm.
 class PcmModule : public RLModule {
  public:
   PcmModule();

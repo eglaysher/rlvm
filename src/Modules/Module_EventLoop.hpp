@@ -28,21 +28,9 @@
 #ifndef SRC_MODULES_MODULE_EVENTLOOP_HPP_
 #define SRC_MODULES_MODULE_EVENTLOOP_HPP_
 
-/**
- * @file   Module_EventLoop.cpp
- * @author Elliot Glaysher
- * @date   Sat Apr  7 12:55:50 2007
- * @ingroup ModulesOpcodes
- * @brief  Declaration of EventLoopModule
- */
-
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<0:1>, EventLoop.
- *
- * @ingroup ModuleEventLoop
- */
+// Contains functions for mod<0:1>, EventLoop.
 class EventLoopModule : public RLModule {
  public:
   EventLoopModule();

@@ -27,28 +27,27 @@
 
 #include "Modules/Module_Sel.hpp"
 
-#include "LongOperations/SelectLongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextWindow.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Utilities/StringUtilities.hpp"
-
-#include "libReallive/bytecode.h"
-
 #include <vector>
 #include <iterator>
 #include <boost/bind.hpp>
 #include <string>
 
+#include "LongOperations/SelectLongOperation.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindow.hpp"
+#include "Utilities/StringUtilities.hpp"
+#include "libReallive/bytecode.h"
+
 using boost::bind;
 using libReallive::SelectElement;
 using libReallive::CommandElement;
 
-// -----------------------------------------------------------------------
+namespace {
 
 struct Sel_select : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
@@ -66,8 +65,6 @@ struct Sel_select : public RLOp_SpecialCase {
     machine.advanceInstructionPointer();
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct Sel_select_s : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
@@ -87,7 +84,7 @@ struct Sel_select_s : public RLOp_SpecialCase {
   }
 };
 
-// -----------------------------------------------------------------------
+}  // namespace
 
 SelModule::SelModule()
     : RLModule("Sel", 0, 2) {

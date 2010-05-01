@@ -28,26 +28,9 @@
 #ifndef SRC_MODULES_MODULE_SCR_HPP_
 #define SRC_MODULES_MODULE_SCR_HPP_
 
-/**
- * @file   Module_Scr.hpp
- * @author Elliot Glaysher
- *
- * @brief A module that contains a few graphics related functions.
- *
- * A quarter of what's in Sys should really be here instead. This
- * probably has something to do with the implementation details of the
- * official RealLive interpreter.
- */
-
 #include "MachineBase/RLModule.hpp"
 
-// -----------------------------------------------------------------------
-
-/**
- * Contains functions for mod<1:30>, Scr.
- *
- * @ingroup ModuleScr
- */
+// Contains functions for mod<1:30>, Scr.
 class ScrModule : public RLModule {
  public:
   ScrModule();

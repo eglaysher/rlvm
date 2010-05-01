@@ -194,28 +194,24 @@ typedef Argc_T<
     Complex3_T<StrReference_T, StrReference_T, IntConstant_T> > >
 GetSaveFlagList;
 
-/**
- * Retrieves the values of variables from saved games. If slot is
- * empty, returns 0 and does nothing further; if slot contains a saved
- * game, returns 1 and processes the list of structures. For each
- * entry in the list, count values are copied to a block of variables
- * starting with dst, reading from src: the values copied are those
- * that are stored in the saved game in slot.
- *
- * For example, an RPG that stored the player's level in F[100], the
- * player's hit points in F[101], and the name of the player's class
- * in S[10], could retrieve these values from saved games to display
- * them in a custom load menu as follows:
- *
- * @code
- * str menu_line[10]
- * for (int i = 0) (i < length(menu_line)) (i += 1):
- *   int (block) level, hp
- *   str class
- *   GetSaveFlag(i, {intF[100], level, 2}, {strS[10], class, 1})
- *   menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
- * @endcode
- */
+// Retrieves the values of variables from saved games. If slot is
+// empty, returns 0 and does nothing further; if slot contains a saved
+// game, returns 1 and processes the list of structures. For each
+// entry in the list, count values are copied to a block of variables
+// starting with dst, reading from src: the values copied are those
+// that are stored in the saved game in slot.
+//
+// For example, an RPG that stored the player's level in F[100], the
+// player's hit points in F[101], and the name of the player's class
+// in S[10], could retrieve these values from saved games to display
+// them in a custom load menu as follows:
+//
+//   str menu_line[10]
+//   for (int i = 0) (i < length(menu_line)) (i += 1):
+//     int (block) level, hp
+//     str class
+//     GetSaveFlag(i, {intF[100], level, 2}, {strS[10], class, 1})
+//     menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
 struct GetSaveFlag : public RLOp_Store_2<
   IntConstant_T, GetSaveFlagList> {
   /// Main operation
@@ -253,10 +249,8 @@ struct GetSaveFlag : public RLOp_Store_2<
   }
 };
 
-/**
- * Returns the slot most recently saved to, or −1 if no games have
- * been saved.
- */
+// Returns the slot most recently saved to, or −1 if no games have
+// been saved.
 struct LatestSave : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     fs::path saveDir = machine.system().gameSaveDirectory();
@@ -293,15 +287,13 @@ struct save : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-/**
- * Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
- * from a save game slot.
- *
- * Internally, load is fairly complex, consisting of several
- * LongOperations because we can't rely on normal flow control because
- * we're going to nuke the call stack and system memory in
- * LoadingGame.
- */
+// Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
+// from a save game slot.
+//
+// Internally, load is fairly complex, consisting of several
+// LongOperations because we can't rely on normal flow control because
+// we're going to nuke the call stack and system memory in
+// LoadingGame.
 bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
   Serialization::loadGameForSlot(machine, slot_);
 

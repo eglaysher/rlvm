@@ -25,48 +25,42 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Sys.cpp
- * @author Elliot Glaysher
- * @date   Tue Nov 14 19:35:15 2006
- *
- * @brief  Implements various commands that don't fit in other modules.
- *
- * VisualArts appears to have used this as a dumping ground for any
- * operations that don't otherwise fit into other categories.
- */
-
-#include "libReallive/gameexe.h"
+// Implements various commands that don't fit in other modules.
+//
+// VisualArts appears to have used this as a dumping ground for any operations
+// that don't otherwise fit into other categories. Because of this, the
+// implementation has been split along themes into the different
+// Module_Sys_*.cpp files.
 
 #include "Modules/Module_Sys.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <string>
 #include <vector>
 
 #include "Effects/FadeEffect.hpp"
-#include "Modules/Module_Sys_Frame.hpp"
-#include "Modules/Module_Sys_Timer.hpp"
-#include "Modules/Module_Sys_Save.hpp"
-#include "Modules/Module_Sys_Syscom.hpp"
-#include "Modules/Module_Sys_Date.hpp"
-#include "Modules/Module_Sys_Name.hpp"
-#include "Modules/Module_Sys_index_series.hpp"
-#include "Modules/Module_Sys_Wait.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/GeneralOperations.hpp"
-#include "Systems/Base/System.hpp"
+#include "Modules/Module_Sys_Date.hpp"
+#include "Modules/Module_Sys_Frame.hpp"
+#include "Modules/Module_Sys_Name.hpp"
+#include "Modules/Module_Sys_Save.hpp"
+#include "Modules/Module_Sys_Syscom.hpp"
+#include "Modules/Module_Sys_Timer.hpp"
+#include "Modules/Module_Sys_Wait.hpp"
+#include "Modules/Module_Sys_index_series.hpp"
+#include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
-#include "Systems/Base/CGMTable.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
-
-#include <cmath>
+#include "libReallive/gameexe.h"
 
 const float PI = 3.14159265;
 
@@ -236,15 +230,13 @@ struct cos_1 : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Sys:01203, 0>, ReturnMenu.
- *
- * Jumps the instruction pointer to the begining of the scenario
- * defined in the Gameexe key \#SEEN_MENU.
- *
- * This method also resets a LOT of the game state, though this isn't mentioned
- * in the rldev manual.
- */
+// Implements op<0:Sys:01203, 0>, ReturnMenu.
+//
+// Jumps the instruction pointer to the begining of the scenario defined in the
+// Gameexe key #SEEN_MENU.
+//
+// This method also resets a LOT of the game state, though this isn't mentioned
+// in the rldev manual.
 struct ReturnMenu : public RLOp_Void_Void {
   virtual bool advanceInstructionPointer() { return false; }
 
@@ -324,8 +316,6 @@ struct FadeGraphics : public RLOp_Void_Void {
 
 }  // namespace
 
-// -----------------------------------------------------------------------
-
 // Implementation isn't in anonymous namespace since it is used elsewhere.
 void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
@@ -349,8 +339,6 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
     new FadeEffect(machine, after, before, after->size(), 1000);
   machine.pushLongOperation(effect);
 }
-
-// -----------------------------------------------------------------------
 
 SysModule::SysModule()
   : RLModule("Sys", 1, 004) {

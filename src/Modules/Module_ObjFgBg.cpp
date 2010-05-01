@@ -25,15 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Obj.cpp
- * @author Elliot Glaysher
- * @date   Thu Dec  7 19:44:24 2006
- * @ingroup ModulesOpcodes
- *
- * @brief Contains definitions for object handling functions for the
- * Modules 81 "ObjFg", 82 "ObjBg", 90 "ObjRange", and 91 "ObjBgRange".
- */
+// Contains definitions for object handling functions for the Modules 81
+// "ObjFg", 82 "ObjBg", 90 "ObjRange", and 91 "ObjBgRange".
 
 #include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
@@ -65,39 +58,6 @@
 using namespace boost;
 using namespace libReallive;
 
-
-// List of functions we're going to have to handle to be compatible
-// with Kanon:
-//
-// objBgAdjust
-// objBgAlpha
-// objBgClear
-// objBgDispRect
-// objBgDriftOfFile
-// objBgDriftOpts
-// objBgMove
-// objBgOfFile
-// objBgOfFileGan
-// objBgPattNo
-// objBgShow
-//
-// objAdjust
-// objAlpha
-// objClear
-// objCopyFgToBg
-// objDelete
-// objDispRect
-// objDriftOfFile
-// objDriftOpts
-// objGetDims
-// objGetPos
-// objMove
-// objOfFile
-// objPattNo
-// objShow
-
-// -----------------------------------------------------------------------
-
 namespace {
 
 struct dispArea_0 : public RLOp_Void_1< IntConstant_T > {
@@ -116,8 +76,6 @@ struct dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
                                      IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
@@ -127,9 +85,6 @@ struct dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
   }
 };
 
-
-// -----------------------------------------------------------------------
-
 struct dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
                                      IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x, int y) {
@@ -137,9 +92,6 @@ struct dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
     obj.setClip(Rect::GRP(0, 0, x, y));
   }
 };
-
-
-// -----------------------------------------------------------------------
 
 struct adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T > {
@@ -150,8 +102,6 @@ struct adjust : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -159,16 +109,12 @@ struct adjustX : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct adjustY : RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setYAdjustment(idx, y);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
                                IntConstant_T> {
@@ -178,8 +124,6 @@ struct tint : RLOp_Void_4< IntConstant_T, IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
@@ -187,8 +131,6 @@ struct colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
     obj.setColour(RGBAColour(r, g, b, level));
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct objSetText
     : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
@@ -198,8 +140,6 @@ struct objSetText
     obj.setTextText(utf8str);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct objTextOpts
   : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
@@ -232,24 +172,22 @@ struct objDriftOpts
 
 // -----------------------------------------------------------------------
 
-/**
- * Special adapter to make any of obj* and objBg* operation structs
- * into an objRange* or objRangeBg* struct.
- *
- * We extract the first two expression pieces from the incoming
- * command and assume that they are integers and are the bounds on the
- * object number. We then construct a set of parameters to pass to the
- * real implementation.
- *
- * This is certainly not the most efficient way to do it, but it cuts
- * down on a duplicated operation struct for each obj* and objBg*
- * function, alowing us to just use this adapter with the already
- * defined operations.
- *
- * @see rangeMappingFun
- */
+// Special adapter to make any of obj* and objBg* operation structs
+// into an objRange* or objRangeBg* struct.
+//
+// We extract the first two expression pieces from the incoming
+// command and assume that they are integers and are the bounds on the
+// object number. We then construct a set of parameters to pass to the
+// real implementation.
+//
+// This is certainly not the most efficient way to do it, but it cuts
+// down on a duplicated operation struct for each obj* and objBg*
+// function, alowing us to just use this adapter with the already
+// defined operations.
+//
+// @see rangeMappingFun
 struct ObjRangeAdapter : RLOp_SpecialCase {
-  /// Keep a copy of the operation that we wrap
+  // Keep a copy of the operation that we wrap
   scoped_ptr<RLOperation> handler;
 
   explicit ObjRangeAdapter(RLOperation* in) : handler(in) { }
@@ -426,16 +364,11 @@ ChildObjBgModule::ChildObjBgModule()
 
 // -----------------------------------------------------------------------
 
-/**
- * Mapping function for a MappedRLModule which turns operation op into
- * a ranged operation.
- *
- * The wrapper takes ownership of the incoming op pointer, and the
- * caller takes ownership of the resultant RLOperation.
- *
- * @param op Incoming RLOperation
- * @return op in an ObjRangeAdapter
- */
+// Mapping function for a MappedRLModule which turns operation op into
+// a ranged operation.
+//
+// The wrapper takes ownership of the incoming op pointer, and the
+// caller takes ownership of the resultant RLOperation.
 RLOperation* rangeMappingFun(RLOperation* op) {
   return new ObjRangeAdapter(op);
 }

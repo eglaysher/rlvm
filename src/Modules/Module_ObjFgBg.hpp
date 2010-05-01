@@ -28,56 +28,34 @@
 #ifndef SRC_MODULES_MODULE_OBJFGBG_HPP_
 #define SRC_MODULES_MODULE_OBJFGBG_HPP_
 
-/**
- * @file    Module_ObjFgBg.hpp
- * @ingroup ModuleObj
- * @brief   Contains definitions for string handling functions.
- */
-
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
 
-// -----------------------------------------------------------------------
-
-/**
- * Contains functions for mod<1:10>, Obj.
- *
- * @ingroup ModuleObj
- */
+// Contains functions for mod<1:10>, Obj.
 class ObjFgModule : public RLModule {
  public:
   ObjFgModule();
 };
-
-// -----------------------------------------------------------------------
 
 class ObjBgModule : public RLModule {
  public:
   ObjBgModule();
 };
 
-// -----------------------------------------------------------------------
-
 class ChildObjFgModule : public MappedRLModule {
  public:
   ChildObjFgModule();
 };
-
-// -----------------------------------------------------------------------
 
 class ChildObjBgModule : public MappedRLModule {
  public:
   ChildObjBgModule();
 };
 
-// -----------------------------------------------------------------------
-
 class ObjRangeFgModule : public MappedRLModule {
  public:
   ObjRangeFgModule();
 };
-
-// -----------------------------------------------------------------------
 
 class ObjRangeBgModule : public MappedRLModule {
  public:

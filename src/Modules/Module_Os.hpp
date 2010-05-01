@@ -30,9 +30,7 @@
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:5>, Os.
- */
+// Contains functions for mod<1:5>, Os.
 class OsModule : public RLModule {
  public:
   OsModule();

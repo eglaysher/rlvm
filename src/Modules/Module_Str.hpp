@@ -28,19 +28,9 @@
 #ifndef SRC_MODULES_MODULE_STR_HPP_
 #define SRC_MODULES_MODULE_STR_HPP_
 
-/**
- * @file    Module_Str.hpp
- * @ingroup ModuleStr
- * @brief   Contains definitions for string handling functions.
- */
-
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:10>, Str.
- *
- * @ingroup ModuleStr
- */
+// Contains functions for mod<1:10>, Str.
 class StrModule : public RLModule {
  public:
   StrModule();

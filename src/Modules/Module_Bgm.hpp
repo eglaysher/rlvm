@@ -25,15 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MODULES_MODULE_BGM_HPP_
 #define SRC_MODULES_MODULE_BGM_HPP_
 
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<1:20>, Bgm.
- */
+// Contains functions for mod<1:20>, Bgm.
 class BgmModule : public RLModule {
  public:
   BgmModule();

@@ -25,19 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Jmp.cpp
- * @author Elliot Glaysher
- * @date   Fri Sep 22 20:10:16 2006
- * @ingroup ModulesOpcodes
- * @brief  Definitions for flow control opcodes.
- *
- * @todo Consider cleaning up the code here; generalize the repeated
- * code and casting into a set of namespace local functions. We do a
- * little bit of this with the *_case functors and evaluateCase
- * function, but we could be doing so much more.
- */
-
 #include "Modules/Module_Jmp.hpp"
 
 #include <cmath>
@@ -57,37 +44,25 @@ using namespace std;
 using namespace boost;
 using namespace libReallive;
 
-/**
- * @defgroup ModuleJmp The Flow Control (Jump) Module (mod<0:1>).
- * @ingroup ModulesOpcodes
- *
- * Module that describes flow control opcodes in the RealLive virtual
- * machine. This module implements commands such as goto, gosub, ret,
- * jump, et cetera.
- *
- * Most of these opcodes derive from RLOp_SpecialCase and thus this
- * module should not be used as a template for how to implement a
- * RLModule.
- */
-// @{
+// The Flow Control (Jump) Module (mod<0:1>).
+//
+// Module that describes flow control opcodes in the RealLive virtual
+// machine. This module implements commands such as goto, gosub, ret,
+// jump, et cetera.
+//
+// Most of these opcodes derive from RLOp_SpecialCase and thus this
+// module should not be used as a template for how to implement a
+// RLModule.
 
 namespace {
 
-/**
- * Finds which case should be used in the *_case functions.
- *
- * @param machine RLMachine reference
- * @param gotoElement Bytecode element being evalutated
- * @return Which pointer we should follow.
- * @exception Exception Throws on malformed bytecode
- */
+// Finds which case should be used in the *_case functions.
 int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
   string tmpval = gotoElement.get_param(0);
   const char* location = tmpval.c_str();
 
   auto_ptr<ExpressionPiece> condition(get_expression(location));
   int value = condition->integerValue(machine);
-//  const Pointers& pointers = gotoElement.get_pointersRef();
 
   // Walk linearly through the output cases, executing the first
   // match against value.
@@ -164,11 +139,9 @@ void writeWithData(RLMachine& machine,
   }
 }
 
-/**
- * Implements op<0:Jmp:00000, 0>, fun goto().
- *
- * Jumps to the supplied label in the current scenario.
- */
+// Implements op<0:Jmp:00000, 0>, fun goto().
+//
+// Jumps to the supplied label in the current scenario.
 struct Jmp_goto : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const Pointers& pointers = gotoElement.get_pointersRef();
@@ -178,12 +151,10 @@ struct Jmp_goto : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00001, 0>, fun goto_if (<'condition').
- *
- * Conditional equivalents of goto; goto_if () jumps to \@label if the
- * value of condition is non-zero
- */
+// Implements op<0:Jmp:00001, 0>, fun goto_if (<'condition').
+//
+// Conditional equivalents of goto; goto_if () jumps to @label if the value of
+// condition is non-zero
 struct goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
@@ -197,12 +168,10 @@ struct goto_if : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00002, 0>, fun goto_if (<'condition').
- *
- * Conditional equivalents of goto; goto_if () jumps to \@label if the
- * value of condition is non-zero
- */
+// Implements op<0:Jmp:00002, 0>, fun goto_if (<'condition').
+//
+// Conditional equivalents of goto; goto_if () jumps to @label if the
+// value of condition is non-zero
 struct goto_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
@@ -216,16 +185,14 @@ struct goto_unless : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00003, 0>, fun goto_on(special case).
- *
- * Table jumps. expr is evaluated, and control passed to the
- * corresponding label in the list, counting from 0. If expr falls
- * outside the valid range, no jump takes place, and execution
- * continues from the next statement instead.
- *
- * @todo Figure out why I couldn't use cached expressions here.
- */
+// Implements op<0:Jmp:00003, 0>, fun goto_on(special case).
+//
+// Table jumps. expr is evaluated, and control passed to the
+// corresponding label in the list, counting from 0. If expr falls
+// outside the valid range, no jump takes place, and execution
+// continues from the next statement instead.
+//
+// TODO(erg): Figure out why I couldn't use cached expressions here.
 struct goto_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     // use a temporary object so that it is only destroyed at end of scope! --RT
@@ -244,14 +211,11 @@ struct goto_on : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00004, 0>, fun goto_case (expr) { val1:
- * \@label1... }
- *
- * Conditional table jumps. expr is evaluated, and
- * compared to val1, val2, etc. in turn, and control passes to the
- * label associated with the first matching value.
- */
+// Implements op<0:Jmp:00004, 0>, fun goto_case (expr) { val1: @label1... }
+//
+// Conditional table jumps. expr is evaluated, and
+// compared to val1, val2, etc. in turn, and control passes to the
+// label associated with the first matching value.
 struct goto_case : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     int i = evaluateCase(machine, gotoElement);
@@ -260,12 +224,10 @@ struct goto_case : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00005, 0>, fun gosub().
- *
- * Pushes the current location onto the call stack, then jumps to the
- * label \@label in the current scenario.
- */
+// Implements op<0:Jmp:00005, 0>, fun gosub().
+//
+// Pushes the current location onto the call stack, then jumps to the
+// label @label in the current scenario.
 struct gosub : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const Pointers& pointers = gotoElement.get_pointersRef();
@@ -273,13 +235,11 @@ struct gosub : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00006, 0>, fun gosub_if ().
- *
- * Pushes the current location onto the call stack, then jumps to the
- * label \@label in the current scenario, if the passed in condition is
- * true.
- */
+// Implements op<0:Jmp:00006, 0>, fun gosub_if ().
+//
+// Pushes the current location onto the call stack, then jumps to the
+// label @label in the current scenario, if the passed in condition is
+// true.
 struct gosub_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     string tmpval = gotoElement.get_param(0);
@@ -295,13 +255,10 @@ struct gosub_if : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00007, 0>, fun gosub_unless().
- *
- * Pushes the current location onto the call stack, then jumps to the
- * label \@label in the current scenario, if the passed in condition is
- * false.
- */
+// Implements op<0:Jmp:00007, 0>, fun gosub_unless().
+//
+// Pushes the current location onto the call stack, then jumps to the label
+// @label in the current scenario, if the passed in condition is false.
 struct gosub_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
@@ -315,14 +272,12 @@ struct gosub_unless : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00008, 0>, fun gosub_on(special case).
- *
- * Table gosub. expr is evaluated, and control passed to the
- * corresponding label in the list, counting from 0. If expr falls
- * outside the valid range, no gosub takes place, and execution
- * continues from the next statement instead.
- */
+// Implements op<0:Jmp:00008, 0>, fun gosub_on(special case).
+//
+// Table gosub. expr is evaluated, and control passed to the corresponding
+// label in the list, counting from 0. If expr falls outside the valid range,
+// no gosub takes place, and execution continues from the next statement
+// instead.
 struct gosub_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
@@ -337,14 +292,11 @@ struct gosub_on : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00009, 0>, fun gosub_case (expr) { val1:
- * \@label1... }
- *
- * Conditional table gosub. expr is evaluated, and
- * compared to val1, val2, etc. in turn, and control passes to the
- * label associated with the first matching value.
- */
+// Implements op<0:Jmp:00009, 0>, fun gosub_case (expr) { val1: @label1... }
+//
+// Conditional table gosub. expr is evaluated, and compared to val1, val2,
+// etc. in turn, and control passes to the label associated with the first
+// matching value.
 struct gosub_case : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     int i = evaluateCase(machine, gotoElement);
@@ -353,27 +305,22 @@ struct gosub_case : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00010, 0>, fun ret().
- *
- * Returns from the current stack frame if it was a farcall.
- *
- * @note This functor MUST increment the instruction pointer, since
- * the instruction pointer at this stack frame is still pointing to
- * the gosub that created the new frame.
- */
+// Implements op<0:Jmp:00010, 0>, fun ret().
+//
+// Returns from the current stack frame if it was a farcall.
+//
+// This functor MUST increment the instruction pointer, since the instruction
+// pointer at this stack frame is still pointing to the gosub that created the
+// new frame.
 struct ret : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.returnFromGosub();
   }
 };
 
-/**
- * Implements op<0:Jmp:00011, 0>, fun jump(intC).
- *
- * Jumps the instruction pointer to the begining of the scenario
- * \#scenario.
- */
+// Implements op<0:Jmp:00011, 0>, fun jump(intC).
+//
+// Jumps the instruction pointer to the begining of the |scenario|.
 struct jump_0 : public RLOp_Void_1< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
@@ -382,12 +329,9 @@ struct jump_0 : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Jmp:00011, 1>, fun jump(intC, intC).
- *
- * Jumps the instruction pointer to entrypoint \#entrypoint of scenario
- * \#scenario.
- */
+// Implements op<0:Jmp:00011, 1>, fun jump(intC, intC).
+//
+// Jumps the instruction pointer to |entrypoint| of |scenario|.
 struct jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
@@ -396,12 +340,9 @@ struct jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Jmp:00012, 0>, fun farcall(intC).
- *
- * Farcalls the instruction pointer to the begining of the scenario
- * \#scenario.
- */
+// Implements op<0:Jmp:00012, 0>, fun farcall(intC).
+//
+// Farcalls the instruction pointer to the begining of the |scenario|.
 struct farcall_0 : public RLOp_Void_1< IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
@@ -410,12 +351,9 @@ struct farcall_0 : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Jmp:00012, 1>, fun farcall(intC, intC).
- *
- * Farcalls the instruction pointer to entrypoint \#entrypoint of scenario
- * \#scenario.
- */
+// Implements op<0:Jmp:00012, 1>, fun farcall(intC, intC).
+//
+// Farcalls the instruction pointer to |entrypoint| of |scenario|.
 struct farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   virtual bool advanceInstructionPointer() { return false; }
 
@@ -424,34 +362,29 @@ struct farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Jmp:00013, 0>, fun rtl().
- *
- * Returns from the current stack frame if it was a farcall.
- *
- * @note This functor MUST increment the instruction pointer, since
- * the instruction pointer at this stack frame is still pointing to
- * the gosub that created the new frame.
- */
+// Implements op<0:Jmp:00013, 0>, fun rtl().
+//
+// Returns from the current stack frame if it was a farcall.
+//
+// This functor MUST increment the instruction pointer, since the instruction
+// pointer at this stack frame is still pointing to the gosub that created the
+// new frame.
 struct rtl : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.returnFromFarcall();
   }
 };
 
-/**
- * Implements op<0:Jmp:16,0>, fun gosub_with(params...) \@label.
- *
- * Sets the passing variables intL[] and strK[] to the incoming
- * parameters and gosub to the given label.
- *
- * This operation is implemented in a hacky way, since gosub_with is
- * really unlike most other functions, including other
- * RLOp_SpecialCase implemented functions. It requires both casting
- * from the CommandElement itself to get special data, as well as
- * doing normal parameter parsing. Therefore, I invoke the static
- * methods on the type checking structs directly to reuse code.
- */
+// Implements op<0:Jmp:16,0>, fun gosub_with(params...) @label.
+//
+// Sets the passing variables intL[] and strK[] to the incoming parameters and
+// gosub to the given label.
+//
+// This operation is implemented in a hacky way, since gosub_with is really
+// unlike most other functions, including other RLOp_SpecialCase implemented
+// functions. It requires both casting from the CommandElement itself to get
+// special data, as well as doing normal parameter parsing. Therefore, I invoke
+// the static methods on the type checking structs directly to reuse code.
 struct gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
@@ -481,14 +414,9 @@ struct gosub_with : public RLOp_SpecialCase {
   }
 };
 
-/**
- * Implements op<0:Jmp:00017, 0>, fun ret_with('value').
- *
- * Returns from a goto_with call, storing the value in the store
- * register.
- *
- * @todo Do we need to check to see if the caller was gosub_with?
- */
+// Implements op<0:Jmp:00017, 0>, fun ret_with('value').
+//
+// Returns from a goto_with call, storing the value in the store register.
 struct ret_with_0 : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int retVal) {
     machine.setStoreRegister(retVal);
@@ -496,29 +424,20 @@ struct ret_with_0 : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Jmp:00017, 1>, fun ret_with().
- *
- * Returns from a goto_with call. But it doesn't return a value. What
- * gets dumped in the store register?
- *
- * @todo Do we need to check to see if the caller was gosub_with?
- * @todo Think about what should go in the store register.
- */
+// Implements op<0:Jmp:00017, 1>, fun ret_with().
+//
+// Returns from a goto_with call. But it doesn't return a value. What gets
+// dumped in the store register?
 struct ret_with_1 : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-//    machine.setStoreRegister(retVal);
     machine.returnFromGosub();
   }
 };
 
-/**
- * Implements op<0:Jmp:00018, 0>, fun farcall_with().
- *
- * Performs a call into a target scenario/entrypoint pair, passing
- * along all values passed in to the first avaiable intL[] and strK[]
- * memory blocks.
- */
+// Implements op<0:Jmp:00018, 0>, fun farcall_with().
+//
+// Performs a call into a target scenario/entrypoint pair, passing along all
+// values passed in to the first avaiable intL[] and strK[] memory blocks.
 struct farcall_with
   : public RLOp_Void_3< IntConstant_T, IntConstant_T,
                       Argc_T< Special_T< IntConstant_T, StrConstant_T > > > {
@@ -536,15 +455,13 @@ struct farcall_with
   }
 };
 
-/**
- * Implements op<0:Jmp:00019, 0>, fun rtl_with(intC).
- *
- * Returns from the current stack frame if it was a farcall_with.
- *
- * @note This functor MUST increment the instruction pointer, since
- * the instruction pointer at this stack frame is still pointing to
- * the gosub that created the new frame.
- */
+// Implements op<0:Jmp:00019, 0>, fun rtl_with(intC).
+//
+// Returns from the current stack frame if it was a farcall_with.
+//
+// This functor MUST increment the instruction pointer, since the instruction
+// pointer at this stack frame is still pointing to the gosub that created the
+// new frame.
 struct rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int retVal) {
     machine.setStoreRegister(retVal);
@@ -552,15 +469,13 @@ struct rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-/**
- * Implements op<0:Jmp:00019, 1>, fun rtl_with().
- *
- * Returns from the current stack frame if it was a farcall_with.
- *
- * @note This functor MUST increment the instruction pointer, since
- * the instruction pointer at this stack frame is still pointing to
- * the gosub that created the new frame.
- */
+// Implements op<0:Jmp:00019, 1>, fun rtl_with().
+//
+// Returns from the current stack frame if it was a farcall_with.
+//
+// This functor MUST increment the instruction pointer, since the instruction
+// pointer at this stack frame is still pointing to the gosub that created the
+// new frame.
 struct rtl_with_1 : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.returnFromFarcall();
@@ -580,13 +495,8 @@ struct push_string_value_up : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-/**
- * @class JmpModule
- *
- * RLModule that contains functions from mod<0:Jmp>.
- */
 JmpModule::JmpModule()
-  : RLModule("Jmp", 0, 1) {
+    : RLModule("Jmp", 0, 1) {
   addOpcode(0, 0, "goto", new Jmp_goto);
   addOpcode(1, 0, "goto_if", new goto_if);
   addOpcode(2, 0, "goto_unless", new goto_unless);
@@ -613,5 +523,3 @@ JmpModule::JmpModule()
 
   addOpcode(101, 0, "pushStringValueUp", new push_string_value_up);
 }
-
-// @}

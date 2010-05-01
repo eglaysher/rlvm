@@ -28,21 +28,9 @@
 #ifndef SRC_MODULES_MODULE_MSG_HPP_
 #define SRC_MODULES_MODULE_MSG_HPP_
 
-/**
- * @file   Module_Msg.hpp
- * @author Elliot Glaysher
- * @date   Tue Nov 14 21:03:18 2006
- *
- * @brief  Module that deals with textout
- */
-
 #include "MachineBase/RLModule.hpp"
 
-/**
- * Contains functions for mod<0:3>, Msg.
- *
- * @ingroup ModuleMessage
- */
+// Contains functions for mod<0:3>, Msg.
 class MsgModule : public RLModule {
  public:
   MsgModule();

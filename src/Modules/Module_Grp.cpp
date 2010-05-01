@@ -156,14 +156,11 @@ void performEffect(RLMachine& machine,
   machine.pushLongOperation(lop);
 }
 
-/**
- * Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
- *
- * Allocates a blank width × height bitmap in dc. Any DC apart from DC
- * 0 may be allocated thus, although DC 1 is never given a size
- * smaller than the screen resolution. Any previous contents of dc are
- * erased.
- */
+// Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
+//
+// Allocates a blank width × height bitmap in dc. Any DC apart from DC 0 may be
+// allocated thus, although DC 1 is never given a size smaller than the screen
+// resolution. Any previous contents of dc are erased.
 struct allocDC : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                     IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int width, int height) {
@@ -173,13 +170,9 @@ struct allocDC : public RLOp_Void_3<IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements op<1:Grp:00031, 0>, fun wipe('DC', 'r', 'g', 'b')
- *
- * Fills dc with the colour indicated by the given RGB triplet.
- */
+// Implements op<1:Grp:00031, 0>, fun wipe('DC', 'r', 'g', 'b')
+//
+// Fills dc with the colour indicated by the given RGB triplet.
 struct wipe : public RLOp_Void_4<IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
@@ -194,15 +187,13 @@ struct wipe : public RLOp_Void_4<IntConstant_T, IntConstant_T,
 // {grp,rec}Load Commands
 // -----------------------------------------------------------------------
 
-/**
- * Implements the {grp,rec}(Mask)?Load family of functions.
- *
- * Loads filename into dc; note that filename may not be '???'.
- *
- * @note Since this function deals with the entire screen (and
- * therefore doesn't need to worry about the difference between
- * grp/rec coordinate space), we write one function for both versions.
- */
+// Implements the {grp,rec}(Mask)?Load family of functions.
+//
+// Loads filename into dc; note that filename may not be '???'.
+//
+// Since this function deals with the entire screen (and therefore doesn't need
+// to worry about the difference between grp/rec coordinate space), we write
+// one function for both versions.
 struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                    DefaultIntValue_T<255> > {
   bool use_alpha_;
@@ -228,16 +219,11 @@ struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements op<1:Grp:00050, 3>, fun grpLoad(strC 'filename', 'DC',
- * 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha').
- *
- * Loads filename into dc; note that filename may not be '???'. Using
- * this form, the given area of the bitmap is loaded at the given
- * location.
- */
+// Implements op<1:Grp:00050, 3>, fun grpLoad(strC 'filename', 'DC',
+// 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha').
+//
+// Loads filename into dc; note that filename may not be '???'. Using this
+// form, the given area of the bitmap is loaded at the given location.
 template<typename SPACE>
 struct load_3 : public RLOp_Void_5<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
@@ -299,8 +285,6 @@ struct display_1
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   display_1 delegate_;
 
@@ -309,8 +293,6 @@ struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     delegate_(machine, dc, effectNum, selEffect.at(14));
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct display_3
@@ -336,8 +318,6 @@ struct display_3
   }
 };
 
-// -----------------------------------------------------------------------
-
 template<typename SPACE>
 struct display_2
     : public RLOp_Void_4<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
@@ -347,8 +327,6 @@ struct display_2
     display_3<SPACE>()(machine, dc, effectNum, src_rect, dest, opacity);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct display_4
@@ -383,16 +361,13 @@ struct display_4
 // {grp,rec}Open
 // -----------------------------------------------------------------------
 
-/**
- * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
- *
- * Load and display a bitmap. @em filename is loaded into DC1 with
- * opacity @em opacity, and then is passed off to whatever transition
- * effect, which will perform some intermediary steps and then render
- * DC1 to DC0.
- *
- * @todo factor out the common code between grpOpens!
- */
+// Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL', 'opacity').
+//
+// Load and display a bitmap. |filename| is loaded into DC1 with opacity
+// |opacity|, and then is passed off to whatever transition effect, which will
+// perform some intermediary steps and then render DC1 to DC0.
+//
+// TODO(erg): factor out the common code between grpOpens!
 struct open_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                    IntConstant_T > {
   bool use_alpha_;
@@ -423,15 +398,11 @@ struct open_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements op<1:Grp:00076, 0>, fun grpOpen(strC 'filename', '\#SEL').
- *
- * Load and display a bitmap. @em filename is loaded into DC1, and
- * then is passed off to whatever transition effect, which will
- * perform some intermediary steps and then render DC1 to DC0.
- */
+// Implements op<1:Grp:00076, 0>, fun grpOpen(strC 'filename', '\#SEL').
+//
+// Load and display a bitmap. |filename| is loaded into DC1, and then is passed
+// off to whatever transition effect, which will perform some intermediary
+// steps and then render DC1 to DC0.
 struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   open_1 delegate_;
   explicit open_0(bool in) : delegate_(in) {}
@@ -441,8 +412,6 @@ struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
     delegate_(machine, filename, effectNum, selEffect[14]);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct open_3 : public RLOp_Void_5<
@@ -474,18 +443,11 @@ struct open_3 : public RLOp_Void_5<
   }
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
- *
- * Load and display a bitmap. @em filename is loaded into DC1 with
- * opacity @em opacity, and then is passed off to whatever transition
- * effect, which will perform some intermediary steps and then render
- * DC1 to DC0.
- *
- * @todo Finish documentation
- */
+// Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
+//
+// Load and display a bitmap. |filename| is loaded into DC1 with opacity
+// |opacity|, and then is passed off to whatever transition effect, which will
+// perform some intermediary steps and then render DC1 to DC0.
 template<typename SPACE>
 struct open_2 : public RLOp_Void_4<
   StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
@@ -498,8 +460,6 @@ struct open_2 : public RLOp_Void_4<
     delegate_(machine, filename, effectNum, src, dest, opacity);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct open_4 : public RLOp_Void_13<
@@ -537,8 +497,6 @@ struct open_4 : public RLOp_Void_13<
   }
 };
 
-// -----------------------------------------------------------------------
-
 // TODO(erg): I don't appear to be setting the default '???' filename! Handle
 // that next?
 struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
@@ -570,8 +528,6 @@ struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   openBg_1 delegate_;
 
@@ -580,8 +536,6 @@ struct openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
     delegate_(machine, filename, effectNum, selEffect[14]);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct openBg_3 : public RLOp_Void_5<
@@ -614,8 +568,6 @@ struct openBg_3 : public RLOp_Void_5<
   }
 };
 
-// -----------------------------------------------------------------------
-
 template<typename SPACE>
 struct openBg_2
     : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
@@ -628,8 +580,6 @@ struct openBg_2
     delegate_(machine, fileName, effectNum, srcRect, destPt, selEffect[14]);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct openBg_4 : public RLOp_Void_13<
@@ -707,8 +657,6 @@ struct copy_3
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                    DefaultIntValue_T<255> > {
   bool use_alpha_;
@@ -758,8 +706,6 @@ struct fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
     machine.system().graphics().getDC(dc)->fill(colour);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct fill_3 : public RLOp_Void_3<
@@ -912,8 +858,6 @@ struct stretchBlit_1
   }
 };
 
-// -----------------------------------------------------------------------
-
 template<typename SPACE>
 struct zoom : public RLOp_Void_5<
   Rect_T<SPACE>, Rect_T<SPACE>, IntConstant_T, Rect_T<SPACE>, IntConstant_T> {
@@ -939,10 +883,8 @@ struct zoom : public RLOp_Void_5<
 // {grp,rec}multi
 // -----------------------------------------------------------------------
 
-/**
- * defines the fairly complex parameter definition for the list of
- * functions to call in a {grp,rec}Multi command.
- */
+// Defines the fairly complex parameter definition for the list of functions to
+// call in a {grp,rec}Multi command.
 typedef Argc_T<
   Special_T<
     // 0:copy(strC 'filename')
@@ -963,19 +905,15 @@ typedef Argc_T<
 
 // -----------------------------------------------------------------------
 
-/**
- * Defines the weird multi commands. I will be the first to admit that
- * the following is fairly difficult to read; it comes from the
- * quagmire of composing Special_T and ComplexX_T templates.
- *
- * In the end, this operation struct simply dispatches the
- * Special/Complex commands to functions and other operation structs
- * that are clearer in purpose.
- *
- * @todo Finish this operation; it's in an incomplete, but compiling
- *       state.
- * @see MultiCommand
- */
+// Defines the weird multi commands. I will be the first to admit that the
+// following is fairly difficult to read; it comes from the quagmire of
+// composing Special_T and ComplexX_T templates.
+//
+// In the end, this operation struct simply dispatches the Special/Complex
+// commands to functions and other operation structs that are clearer in
+// purpose.
+//
+// TODO(erg): Finish this operation; it's in an incomplete, but compiling state.
 
 /// All work is applied to DC 1.
 const int MULTI_TARGET_DC = 1;
@@ -1040,9 +978,7 @@ void multi_command<SPACE>::handleMultiCommands(
   }
 }
 
-/**
- * fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
- */
+// fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
 template<typename SPACE>
 struct multi_str_1
     : public RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T,
@@ -1056,8 +992,6 @@ struct multi_str_1
   }
 };
 
-// -----------------------------------------------------------------------
-
 template<typename SPACE>
 struct multi_str_0
     : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
@@ -1068,8 +1002,6 @@ struct multi_str_0
     delegate_(machine, filename, effect, 255, commands);
   }
 };
-
-// -----------------------------------------------------------------------
 
 template<typename SPACE>
 struct multi_dc_1
@@ -1084,8 +1016,6 @@ struct multi_dc_1
   }
 };
 
-// -----------------------------------------------------------------------
-
 template<typename SPACE>
 struct multi_dc_0
     : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
@@ -1097,7 +1027,7 @@ struct multi_dc_0
   }
 };
 
-}
+} // namespace
 
 GrpModule::GrpModule()
     : RLModule("Grp", 1, 33) {
@@ -1340,19 +1270,12 @@ GrpModule::GrpModule()
   addOpcode(1409, 1, "recMaskStretchBlt", new stretchBlit_1<REC>(true));
 }
 
-// @}
-
-
-// -----------------------------------------------------------------------
-
 void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f) {
   loadImageToDC1(machine, f.filename(), f.sourceRect(), f.targetPoint(),
                  f.opacity(), false);
 
   blitDC1toDC0(machine);
 }
-
-// -----------------------------------------------------------------------
 
 void replayGraphicsStackVector(
     RLMachine& machine,

@@ -25,22 +25,14 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Obj.cpp
- * @author Elliot Glaysher
- * @date   Sat Feb 10 10:34:12 2007
- *
- * @brief  Reusable function objects for the GraphicsObject system.
- */
-
 #include "Modules/Module_Obj.hpp"
 
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/ParentGraphicsObjectData.hpp"
+#include "Systems/Base/System.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
@@ -56,8 +48,6 @@ void ensureIsParentObject(GraphicsObject& parent, int size) {
 
   parent.setObjectData(new ParentGraphicsObjectData(size));
 }
-
-// -----------------------------------------------------------------------
 
 GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
                                   int obj) {
@@ -77,8 +67,6 @@ GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
     return graphics.getObject(fgbg, obj);
   }
 }
-
-// -----------------------------------------------------------------------
 
 void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
                        GraphicsObject& gobj) {
@@ -106,8 +94,6 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
 ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {
 }
 
-// -----------------------------------------------------------------------
-
 void ChildObjAdapter::operator()(RLMachine& machine,
                                  const libReallive::CommandElement& ff) {
   const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
@@ -132,8 +118,6 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   machine.advanceInstructionPointer();
 }
 
-// -----------------------------------------------------------------------
-
 RLOperation* childObjMappingFun(RLOperation* op) {
   return new ChildObjAdapter(op);
 }
@@ -146,11 +130,7 @@ Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s)
     : setter(s) {
 }
 
-// -----------------------------------------------------------------------
-
 Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj() {}
-
-// -----------------------------------------------------------------------
 
 void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
   GraphicsObject& obj = getGraphicsObject(machine, this, buf);
@@ -166,12 +146,8 @@ Obj_SetTwoIntOnObj::Obj_SetTwoIntOnObj(Setter one, Setter two)
   : setterOne(one), setterTwo(two) {
 }
 
-// -----------------------------------------------------------------------
-
 Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj() {
 }
-
-// -----------------------------------------------------------------------
 
 void Obj_SetTwoIntOnObj::operator()(RLMachine& machine, int buf,
                                     int incomingOne, int incomingTwo) {

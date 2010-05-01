@@ -28,21 +28,9 @@
 #ifndef SRC_MODULES_MODULE_MEM_HPP_
 #define SRC_MODULES_MODULE_MEM_HPP_
 
-/**
- * @file    Module_Mem.hpp
- * @author  Elliot Glaysher
- * @date    Sat Oct  7 11:17:55 2006
- * @ingroup ModulesOpcodes
- * @brief   Declares the Memory module (mod<1:11>).
- */
+#include "MachineBase/RLModule.hpp"
 
-#include "../MachineBase/RLModule.hpp"
-
-/**
- * Contains functions for mod<1:11>, Mem.
- *
- * @ingroup ModuleMemory
- */
+// Contains functions for mod<1:11>, Mem.
 class MemModule : public RLModule {
  public:
   MemModule();

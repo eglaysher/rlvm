@@ -36,8 +36,6 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 
-// -----------------------------------------------------------------------
-
 namespace {
 
 struct bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {

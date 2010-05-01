@@ -25,19 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_MODULES_MODULE_SYS_INDEX_SERIES_HPP_
 #define SRC_MODULES_MODULE_SYS_INDEX_SERIES_HPP_
 
-class RLMachine;
 class RLModule;
-class System;
 
-/**
- * index_series has its own file.
- *
- * @see SysModule
- */
+// index_series has its own file.
 void addIndexSeriesOpcode(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_INDEX_SERIES_HPP_

@@ -28,25 +28,12 @@
 #ifndef SRC_MODULES_MODULE_SYS_HPP_
 #define SRC_MODULES_MODULE_SYS_HPP_
 
-/**
- * @file   Module_Sys.hpp
- * @author Elliot Glaysher
- * @date   Tue Nov 14 21:04:24 2006
- *
- * @brief  A module that contains completely random and non-related functions.
- */
-
 #include "MachineBase/RLModule.hpp"
-
 #include "MachineBase/RLOperation.hpp"
 
 class RLMachine;
 
-/**
- * Contains functions for mod<1:4>, Sys.
- *
- * @ingroup ModuleSys
- */
+// Contains functions for mod<1:4>, Sys.
 class SysModule : public RLModule {
  public:
   SysModule();
@@ -59,4 +46,5 @@ struct Sys_MenuReturn : public RLOp_Void_Void {
   virtual bool advanceInstructionPointer() { return false; }
   virtual void operator()(RLMachine& machine);
 };
+
 #endif  // SRC_MODULES_MODULE_SYS_HPP_

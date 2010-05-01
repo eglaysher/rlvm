@@ -28,16 +28,10 @@
 #ifndef SRC_MODULES_MODULE_SYS_SYSCOM_HPP_
 #define SRC_MODULES_MODULE_SYS_SYSCOM_HPP_
 
-class RLMachine;
 class RLModule;
-class System;
 
-/**
- * Public access to the frame counter operations. Meant to be called
- * from the constructor of SysModule.
- *
- * @see SysModule
- */
+// Public access to the frame counter operations. Meant to be called
+// from the constructor of SysModule.
 void addSysSyscomOpcodes(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_SYSCOM_HPP_

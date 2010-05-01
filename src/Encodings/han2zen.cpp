@@ -31,8 +31,6 @@
 
 using std::string;
 
-// -----------------------------------------------------------------------
-
 uint16_t lower_hantozen_table[] = {
   0x8140,  // 32 'SPACE' => 'IDEOGRAPH SPACE'
   0x8149,  // 33 'EXCLAMATION MARK' => 'FULLWIDTH EXCLAMATION MARK'
@@ -203,8 +201,6 @@ uint16_t upper_hantozen_table[] = {
   0x814B
 };
 
-// -----------------------------------------------------------------------
-
 string hantozen_cp932(const string& input, int transformation) {
   // hantozen only makes sense in the context of Cp932
   if (transformation == 0) {
@@ -235,8 +231,6 @@ string hantozen_cp932(const string& input, int transformation) {
   return input;
 }
 
-// -----------------------------------------------------------------------
-
 // Helper function used in zentohan_cp932.
 static int findCharInTable(const char* str,
                            uint16_t upper_hantozen_table[],
@@ -251,8 +245,6 @@ static int findCharInTable(const char* str,
 
   return 0;
 }
-
-// -----------------------------------------------------------------------
 
 string zentohan_cp932(const string& input, int transformation) {
   string output;

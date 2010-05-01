@@ -34,8 +34,6 @@
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 
-// -----------------------------------------------------------------------
-
 namespace {
 
 struct LongOp_pcmWait : public LongOperation {
@@ -50,23 +48,17 @@ struct LongOp_pcmWait : public LongOperation {
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
     machine.system().sound().wavPlay(fileName, false);
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, false, channel);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                       IntConstant_T> {
@@ -76,16 +68,12 @@ struct wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, false, channel);
     machine.pushLongOperation(new LongOp_pcmWait(channel));
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                         IntConstant_T> {
@@ -96,15 +84,11 @@ struct wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, true, channel);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                       IntConstant_T> {
@@ -114,8 +98,6 @@ struct wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavWait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     // Start waiting on the channel
@@ -123,15 +105,11 @@ struct wavWait : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavPlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
     return machine.system().sound().wavPlaying(channel);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct wavVolume : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
@@ -139,18 +117,14 @@ struct wavVolume : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level) {
     machine.system().sound().setChannelVolume(channel, level);
   }
 };
 
-// -----------------------------------------------------------------------
-
-/// We ignore fadein because we'll never get that effect with the
-/// current mixing library.
+// We ignore fadein because we'll never get that effect with the
+// current mixing library.
 struct wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                            IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level, int fadeInMs) {
@@ -158,15 +132,11 @@ struct wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavUnMute_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     machine.system().sound().setChannelVolume(channel, 255);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int fadein) {
@@ -174,15 +144,11 @@ struct wavUnMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-// -----------------------------------------------------------------------
-
 struct wavMute_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     machine.system().sound().setChannelVolume(channel, 0);
   }
 };
-
-// -----------------------------------------------------------------------
 
 struct wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int fadein) {
