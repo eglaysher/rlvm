@@ -42,36 +42,24 @@ class GraphicsObject;
 class GraphicsObjectSlot;
 class GraphicsObjectData;
 
-/**
- * Describes an independent, movable graphical object on the
- * screen. GraphicsObject, internally, references a copy-on-write
- * datastructure, which in turn has optional components to save
- * memory.
- *
- * @todo I want to put index checks on a lot of these accessors.
- */
+// Describes an independent, movable graphical object on the
+// screen. GraphicsObject, internally, references a copy-on-write
+// datastructure, which in turn has optional components to save
+// memory.
+//
+// @todo I want to put index checks on a lot of these accessors.
 class GraphicsObject {
  public:
   GraphicsObject();
   GraphicsObject(const GraphicsObject& obj);
   ~GraphicsObject();
-
-  /**
-   * Copy operator.
-   *
-   * @param obj
-   */
   GraphicsObject& operator=(const GraphicsObject& obj);
 
-  /**
-   * @name Object Position Accessors
-   *
-   * @{
-   */
+  // Object Position Accessors
 
-  /// This code, while a boolean, uses an int so that we can get rid
-  /// of one template parameter in one of the generic operation
-  /// functors.
+  // This code, while a boolean, uses an int so that we can get rid
+  // of one template parameter in one of the generic operation
+  // functors.
   int visible() const { return impl_->visible_; }
   void setVisible(const int in);
 
@@ -116,14 +104,7 @@ class GraphicsObject {
   int pixelWidth() const;
   int pixelHeight() const;
 
-  /// @}
-
-  /**
-   * @name Object attribute accessors
-   *
-   * @{
-   */
-
+  // Object attribute accessors
   int pattNo() const { return impl_->patt_no_; }
   void setPattNo(const int in);
 
@@ -158,8 +139,6 @@ class GraphicsObject {
   int scrollRateY() const { return impl_->scroll_rate_y_; }
   void setScrollRateY(const int y);
 
-  /// @}
-
   int alpha() const { return impl_->alpha_; }
   void setAlpha(const int alpha);
 
@@ -180,34 +159,24 @@ class GraphicsObject {
   GraphicsObjectData& objectData();
   void setObjectData(GraphicsObjectData* obj);
 
-  /// Render!
+  // Render!
   void render(int objNum, std::ostream* tree);
 
-  /**
-   * Deletes the object data. Corresponds to the RLAPI command obj_delete.
-   */
+  // Deletes the object data. Corresponds to the RLAPI command obj_delete.
   void deleteObject();
 
-  /**
-   * Deletes the object data and resets all values in this
-   * GraphicsObject. Corresponds to the RLAPI command obj_clear.
-   */
+  // Deletes the object data and resets all values in this
+  // GraphicsObject. Corresponds to the RLAPI command obj_clear.
   void clearObject();
 
   int wipeCopy() const { return impl_->wipe_copy_; }
   void setWipeCopy(const int wipe_copy);
 
-  /**
-   * Called each pass through the gameloop to see if this object needs
-   * to force a redraw, or something.
-   */
+  // Called each pass through the gameloop to see if this object needs
+  // to force a redraw, or something.
   void execute();
 
-  /**
-   * @name Text Object accessors
-   *
-   * @{
-   */
+  // Text Object accessors
   void setTextText(const std::string& utf8str);
   const std::string& textText() const;
 
@@ -219,7 +188,6 @@ class GraphicsObject {
   int textVertical() const;
   int textColour() const;
   int textShadowColour() const;
-  // @}
 
   // Drift object accessors
   void setDriftOpts(int count, int use_animation, int start_pattern,
@@ -249,18 +217,13 @@ class GraphicsObject {
   bool isCleared() const { return impl_ == s_empty_impl; }
 
  private:
-  /**
-   * Makes the ineternal copy for our copy-on-write semantics. This
-   * function checks to see if our Impl object has only one reference
-   * to it. If it doesn't, a local copy is made.
-   */
+  // Makes the ineternal copy for our copy-on-write semantics. This function
+  // checks to see if our Impl object has only one reference to it. If it
+  // doesn't, a local copy is made.
   void makeImplUnique();
 
-  /**
-   * Implementation data structure. GraphicsObject::Impl is the
-   * internal data store for GraphicsObjects' copy-on-write semantics. It is
-   *
-   */
+  // Implementation data structure. GraphicsObject::Impl is the internal data
+  // store for GraphicsObjects' copy-on-write semantics.
   struct Impl {
     Impl();
     Impl(const Impl& rhs);
@@ -268,104 +231,63 @@ class GraphicsObject {
 
     Impl& operator=(const Impl& rhs);
 
-    /**
-     * @name Object Position Variables
-     *
-     * Describes various properties as defined in section 5.12.3 of the
-     * RLDev manual.
-     *
-     * @{
-     */
-
-    /// Visiblitiy. Different from whether an object is in the bg or fg layer
+    // Visiblitiy. Different from whether an object is in the bg or fg layer
     bool visible_;
 
-    /// The positional coordinates of the object
+    // The positional coordinates of the object
     int x_, y_;
 
-    /// Eight additional parameters that are added to x and y during
-    /// rendering. (WTF?!)
+    // Eight additional parameters that are added to x and y during
+    // rendering.
     int adjust_x_[8], adjust_y_[8];
 
-    /// Whatever obj_adjust_vert operates on; what's this used for?
+    // Whatever obj_adjust_vert operates on; what's this used for?
     int whatever_adjust_vert_operates_on_;
 
-    /// The origin
+    // The origin
     int origin_x_, origin_y_;
 
-    /// "Rep" origin. This second origin is added to the normal origin
-    /// only in cases of rotating and scaling.
+    // "Rep" origin. This second origin is added to the normal origin
+    // only in cases of rotating and scaling.
     int rep_origin_x_, rep_origin_y_;
 
-    /// The size of the object, given in integer percentages of [0,
-    /// 100]. Used for scaling.
+    // The size of the object, given in integer percentages of [0,
+    // 100]. Used for scaling.
     int width_, height_;
 
-    /// The rotation degree / 10
+    // The rotation degree / 10
     int rotation_;
 
-    /// @}
+    // Object attributes.
 
-    // -----------------------------------------------------------------------
-
-    /**
-     * @name Object attributes.
-     *
-     * @{
-     */
-
-    /// The region ("pattern") in g00 bitmaps
+    // The region ("pattern") in g00 bitmaps
     int patt_no_;
 
-    /// The source alpha for this image
+    // The source alpha for this image
     int alpha_;
 
-    /// The clipping region for this image
+    // The clipping region for this image
     Rect clip_;
 
-    /// The monochrome transformation
+    // The monochrome transformation
     int mono_;
 
-    /// The invert transformation
+    // The invert transformation
     int invert_;
 
     int light_;
 
     RGBColour tint_;
 
-    /// Applies a colour to the object by blending it directly at the
-    /// alpha components opacity.
+    // Applies a colour to the object by blending it directly at the
+    // alpha components opacity.
     RGBAColour colour_;
 
     int composite_mode_;
 
     int scroll_rate_x_, scroll_rate_y_;
 
-    /// @}
-
-    // ---------------------------------------------------------------------
-
-    /**
-     * @name Animation state
-     *
-     * Certain pieces of state from Animated objects are cached on the
-     * GraphicsObject to implement the delete-after-play semantics of
-     * gan_play_once, et all.
-     *
-     * @{
-     */
-
-    /// @}
-
-
-
-    // -----------------------------------------------------------------------
-
-    /**
-     * @name Text Object properties
-     *
-     * @{
-     */
+    // Text Object properties
     struct TextProperties {
       TextProperties();
 
@@ -378,7 +300,7 @@ class GraphicsObject {
       int colour;
       int shadow_colour;
 
-      /// boost::serialization support
+      // boost::serialization support
       template<class Archive>
       void serialize(Archive& ar, unsigned int version);
     };
@@ -386,8 +308,7 @@ class GraphicsObject {
     void makeSureHaveTextProperties();
     boost::scoped_ptr<TextProperties> text_properties_;
 
-    /// @}
-
+    // Drift Object properties
     struct DriftProperties {
       DriftProperties();
 
@@ -409,7 +330,7 @@ class GraphicsObject {
 
       Rect drift_area;
 
-      /// boost::serialization support
+      // boost::serialization support
       template<class Archive>
       void serialize(Archive& ar, unsigned int version);
     };
@@ -417,32 +338,30 @@ class GraphicsObject {
     void makeSureHaveDriftProperties();
     boost::scoped_ptr<DriftProperties> drift_properties_;
 
-    /// The wipe_copy bit
+    // The wipe_copy bit
     int wipe_copy_;
 
     friend class boost::serialization::access;
 
-    /// boost::serialization support
+    // boost::serialization support
     template<class Archive>
     void serialize(Archive& ar, unsigned int version);
   };
 
-  /**
-   * Default empty GraphicsObject::Impl. This variable is allocated
-   * once, and then is used as the initial value of impl_, where it
-   * is cloned on write.
-   */
+  // Default empty GraphicsObject::Impl. This variable is allocated
+  // once, and then is used as the initial value of impl_, where it
+  // is cloned on write.
   static const boost::shared_ptr<GraphicsObject::Impl> s_empty_impl;
 
-  /// Our actual implementation data
+  // Our actual implementation data
   boost::shared_ptr<GraphicsObject::Impl> impl_;
 
-  /// The actual data used to render the object
+  // The actual data used to render the object
   boost::scoped_ptr<GraphicsObjectData> object_data_;
 
   friend class boost::serialization::access;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, unsigned int version);
 };

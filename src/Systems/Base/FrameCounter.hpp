@@ -30,53 +30,33 @@
 
 class EventSystem;
 
-// -----------------------------------------------------------------------
-
-/**
- * Frame counter used by RealLive code to ensure events happen at a
- * constant speed. Constant to all System implementations since it is
- * implemented in terms of operations on System classes.a
- *
- * See section "5.13.3 Frame counters" of the RLdev specification for
- * more details.
- */
+// Frame counter used by RealLive code to ensure events happen at a constant
+// speed. Constant to all System implementations since it is implemented in
+// terms of operations on System classes.a
+//
+// See section "5.13.3 Frame counters" of the RLdev specification for more
+// details.
 class FrameCounter {
  public:
   FrameCounter(EventSystem& es, int frame_min, int frame_max, int milliseconds);
 
   virtual ~FrameCounter();
 
-  /**
-   * Returns the current value of this frame counter, a value between
-   *
-   * @return
-   */
+  // Returns the current value of this frame counter, a value between
   virtual int readFrame() = 0;
 
-  /**
-   * The converse is setting the value, which should be done after the
-   * frame counter has been turned off.
-   *
-   * @param value New value for the frame counter
-   */
+  // The converse is setting the value, which should be done after the
+  // frame counter has been turned off.
   void setValue(int value) { value_ = value; }
 
-  /**
-   * When a timer starts, we need to tell the EventSystem that we now
-   * have a near realtime event going on and to stop being nice to the
-   * operating system.
-   *
-   * @see end_timer
-   */
+  // When a timer starts, we need to tell the EventSystem that we now
+  // have a near realtime event going on and to stop being nice to the
+  // operating system.
   void beginTimer();
 
-  /**
-   * When a timer ends, there's no need to be so harsh on the
-   * system. Tell the event_system that we no longer require near
-   * realtime event handling.
-   *
-   * @see begin_timer
-   */
+  // When a timer ends, there's no need to be so harsh on the
+  // system. Tell the event_system that we no longer require near
+  // realtime event handling.
   void endTimer();
 
   bool isActive();
@@ -85,19 +65,17 @@ class FrameCounter {
   bool checkIfFinished(float new_value);
   void updateTimeValue(float num_ticks);
 
-
+ protected:
+  // Implementation of readFrame(). Called by most subclasses with their own
+  // data members.
   int readNormalFrameWithChangeInterval(
     float change_interval, float& time_at_last_check);
 
-  /**
-   * Called from read_normal_frame_with_change_interval when finished. This
-   * method can be overloaded to control what happens when the timer
-   * has reached its end.
-   */
+  // Called from read_normal_frame_with_change_interval when finished. This
+  // method can be overloaded to control what happens when the timer
+  // has reached its end.
   virtual void finished();
 
-// Give these accessors later?
- protected:
   EventSystem& event_system_;
 
   float value_;
@@ -109,11 +87,8 @@ class FrameCounter {
   unsigned int total_time_;
 };
 
-// -----------------------------------------------------------------------
 
-/**
- * Simple frame counter that counts from frame_min to frame_max.
- */
+// Simple frame counter that counts from frame_min to frame_max.
 class SimpleFrameCounter : public FrameCounter {
  public:
   SimpleFrameCounter(EventSystem& es, int frame_min, int frame_max,
@@ -126,12 +101,9 @@ class SimpleFrameCounter : public FrameCounter {
   float time_at_last_check_;
 };
 
-// -----------------------------------------------------------------------
 
-/**
- * Loop frame counter that counts from frame_min to frame_max, starting over at
- * frame_min.
- */
+// Loop frame counter that counts from frame_min to frame_max, starting over at
+// frame_min.
 class LoopFrameCounter : public FrameCounter {
  public:
   LoopFrameCounter(EventSystem& es, int frame_min, int frame_max,
@@ -145,12 +117,9 @@ class LoopFrameCounter : public FrameCounter {
   float time_at_last_check_;
 };
 
-// -----------------------------------------------------------------------
 
-/**
- * Turn frame counter that counts from frame_min to frame_max and then counts back
- * down to frame_min.
- */
+// Turn frame counter that counts from frame_min to frame_max and then counts
+// back down to frame_min.
 class TurnFrameCounter : public FrameCounter {
  public:
   TurnFrameCounter(EventSystem& es, int frame_min, int frame_max,
@@ -164,40 +133,34 @@ class TurnFrameCounter : public FrameCounter {
   unsigned int time_at_last_check_;
 };
 
-// -----------------------------------------------------------------------
 
-/**
- * Frame counter that counts from frame_min to frame_max, speeding up as it goes.
- */
+// Frame counter that counts from frame_min to frame_max, speeding up as it
+// goes.
 class AcceleratingFrameCounter : public FrameCounter {
- private:
-  unsigned int start_time_;
-  float time_at_last_check_;
-
  public:
   AcceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
   virtual int readFrame();
-};
 
-// -----------------------------------------------------------------------
-
-
-/**
- * Frame counter that counts from frame_min to frame_max, slowing down as it goes.
- */
-class DeceleratingFrameCounter : public FrameCounter {
  private:
   unsigned int start_time_;
   float time_at_last_check_;
+};
 
+
+// Frame counter that counts from frame_min to frame_max, slowing down as it
+// goes.
+class DeceleratingFrameCounter : public FrameCounter {
  public:
   DeceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
                            int milliseconds);
 
   virtual int readFrame();
-};
 
+ private:
+  unsigned int start_time_;
+  float time_at_last_check_;
+};
 
 #endif  // SRC_SYSTEMS_BASE_FRAMECOUNTER_HPP_

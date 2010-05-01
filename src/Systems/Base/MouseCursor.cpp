@@ -31,8 +31,6 @@
 
 #include "Systems/Base/Surface.hpp"
 
-// -----------------------------------------------------------------------
-
 const int CURSOR_SIZE_INT = 32;
 const Size CURSOR_SIZE = Size(CURSOR_SIZE_INT, CURSOR_SIZE_INT);
 const Rect CURSOR_RECT = Rect(8, 8, CURSOR_SIZE);
@@ -56,11 +54,7 @@ MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursor_surface)
     cursor_surface->clipAsColorMask(CURSOR_RECT, alphaR, alphaG, alphaB);
 }
 
-// -----------------------------------------------------------------------
-
 MouseCursor::~MouseCursor() {}
-
-// -----------------------------------------------------------------------
 
 void MouseCursor::renderHotspotAt(const Point& mouse_location) {
   Point render_point = getTopLeftForHotspotAt(mouse_location);
@@ -68,8 +62,6 @@ void MouseCursor::renderHotspotAt(const Point& mouse_location) {
     Rect(0, 0, CURSOR_SIZE),
     Rect(render_point, CURSOR_SIZE));
 }
-
-// -----------------------------------------------------------------------
 
 Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location) {
   return mouse_location - hotspot_offset_;

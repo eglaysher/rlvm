@@ -63,8 +63,6 @@
 using std::cerr;
 using std::endl;
 
-// -----------------------------------------------------------------------
-
 namespace {
 
 const int kCodeMapSize = 6;
@@ -103,8 +101,6 @@ Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
   link_areas_.push_back(Rect::GRP(x1, y1, x2, y2 + line_height));
 }
 
-// -----------------------------------------------------------------------
-
 bool Gloss::contains(const Point& point) {
   return std::find_if (link_areas_.begin(), link_areas_.end(),
                       bind(&Rect::contains, _1, point)) != link_areas_.end();
@@ -116,8 +112,6 @@ bool Gloss::contains(const Point& point) {
 RlBabelDLL::RlBabelDLL(RLMachine& machine)
     : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0),
       machine_(machine) {}
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
                         int arg3, int arg4) {
@@ -175,22 +169,16 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
   }
 }
 
-// -----------------------------------------------------------------------
-
 const std::string& RlBabelDLL::name() const {
   static std::string n("rlBabel");
   return n;
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::initialize(int dllno, int windname) {
   // rlBabel hangs onto the dll index and uses it for something in his
   // SetCurrentWindowName implementation.
   return 1;
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::textoutAdd(const std::string& str) {
   const char* string = str.c_str();
@@ -252,8 +240,6 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
   return !*string;  // 0 if the full string wasn't copied
 }
 
-// -----------------------------------------------------------------------
-
 void RlBabelDLL::AppendChar(const char*& ch) {
 //   if (add_is_italic) {
 //     short uc = *ch++;
@@ -268,16 +254,12 @@ void RlBabelDLL::AppendChar(const char*& ch) {
 //  }
 }
 
-// -----------------------------------------------------------------------
-
 void RlBabelDLL::textoutClear() {
   cp932_text_buffer.clear();
   text_index = 0;
   end_token_index = 0;
   add_is_italic = false;
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::textoutLineBreak(StringReferenceIterator buf) {
   boost::shared_ptr<TextWindow> window = getWindow(-1);
@@ -302,8 +284,6 @@ int RlBabelDLL::textoutLineBreak(StringReferenceIterator buf) {
     return getcNewScreen;
   }
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
                                IntReferenceIterator xmod) {
@@ -519,8 +499,6 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
   return rv;
 }
 
-// -----------------------------------------------------------------------
-
 int RlBabelDLL::startNewScreen(const std::string& cnam) {
   if (cnam.empty())
     return getcEndOfString;
@@ -532,8 +510,6 @@ int RlBabelDLL::startNewScreen(const std::string& cnam) {
   return textoutAdd(buf);
 }
 
-// -----------------------------------------------------------------------
-
 int RlBabelDLL::setCurrentWindowName(StringReferenceIterator buffer) {
   // Haeleth's implementation of SetCurrentWindowName in rlBabel goes through
   // some monstrous hacks, including temporarily rewriting the bytecode at the
@@ -542,14 +518,10 @@ int RlBabelDLL::setCurrentWindowName(StringReferenceIterator buffer) {
   return 1;
 }
 
-// -----------------------------------------------------------------------
-
 int RlBabelDLL::clearGlosses() {
   glosses_.clear();
   return 1;
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::newGloss() {
   boost::shared_ptr<TextWindow> window = getWindow(-1);
@@ -557,8 +529,6 @@ int RlBabelDLL::newGloss() {
   gloss_start_y_ = window->insertionPointY();
   return 1;
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::addGloss(const std::string& cp932_gloss_text) {
   boost::shared_ptr<TextWindow> window = getWindow(-1);
@@ -568,8 +538,6 @@ int RlBabelDLL::addGloss(const std::string& cp932_gloss_text) {
                            window->insertionPointY()));
   return 1;
 }
-
-// -----------------------------------------------------------------------
 
 int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
                             int globalwaku) {
@@ -589,8 +557,6 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
   return 1;
 }
 
-// -----------------------------------------------------------------------
-
 int RlBabelDLL::getCharWidth(uint16_t cp932_char, bool as_xmod) {
   Codepage& cp = Cp::instance(machine_.getTextEncoding());
   uint16_t native_char = cp.JisDecode(cp932_char);
@@ -601,8 +567,6 @@ int RlBabelDLL::getCharWidth(uint16_t cp932_char, bool as_xmod) {
   int width = machine_.system().text().charWidth(font_size, unicode_codepoint);
   return as_xmod ? window->insertionPointX() + width : width;
 }
-
-// -----------------------------------------------------------------------
 
 bool RlBabelDLL::lineBreakRequired() {
   boost::shared_ptr<TextWindow> window = getWindow(-1);
@@ -674,8 +638,6 @@ bool RlBabelDLL::lineBreakRequired() {
   return true;
 }
 
-// -----------------------------------------------------------------------
-
 uint16_t RlBabelDLL::consumeNextCharacter(std::string::size_type& index) {
   char cp932sb = cp932_text_buffer[index++];
   uint16_t cp932 = cp932sb;
@@ -685,15 +647,11 @@ uint16_t RlBabelDLL::consumeNextCharacter(std::string::size_type& index) {
   return cp932;
 }
 
-// -----------------------------------------------------------------------
-
 IntReferenceIterator RlBabelDLL::getIvar(int addr) {
   int bank = (addr >> 16) % 26;
   int location = addr & 0xffff;
   return IntReferenceIterator(&(machine_.memory()), bank, location);
 }
-
-// -----------------------------------------------------------------------
 
 StringReferenceIterator RlBabelDLL::getSvar(int addr) {
   Memory* m = &(machine_.memory());
@@ -718,8 +676,6 @@ StringReferenceIterator RlBabelDLL::getSvar(int addr) {
   // Error.
   return StringReferenceIterator(m, libReallive::STRS_LOCATION, 0);
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<TextWindow> RlBabelDLL::getWindow(int id) {
   TextSystem& text_system = machine_.system().text();

@@ -48,8 +48,6 @@ using boost::scoped_array;
 
 namespace fs = boost::filesystem;
 
-// -----------------------------------------------------------------------
-
 static unsigned char cgm_xor_key[256] = {
   0x8b, 0xe5, 0x5d, 0xc3, 0xa1, 0xe0, 0x30, 0x44,
   0x00, 0x85, 0xc0, 0x74, 0x09, 0x5f, 0x5e, 0x33,
@@ -85,12 +83,8 @@ static unsigned char cgm_xor_key[256] = {
   0xff, 0x00, 0x00, 0x04, 0x00, 0x6a, 0x00, 0x76
 };
 
-// -----------------------------------------------------------------------
-
 CGMTable::CGMTable() {
 }
-
-// -----------------------------------------------------------------------
 
 CGMTable::CGMTable(Gameexe& gameexe) {
   GameexeInterpretObject filename_key = gameexe("CGTABLE_FILENAME");
@@ -142,23 +136,15 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 CGMTable::~CGMTable() {}
-
-// -----------------------------------------------------------------------
 
 int CGMTable::getTotal() const {
   return cgm_info_.size();
 }
 
-// -----------------------------------------------------------------------
-
 int CGMTable::getViewed() const {
   return cgm_data_.size();
 }
-
-// -----------------------------------------------------------------------
 
 int CGMTable::getPercent() const {
   // Prevent divide by zero
@@ -168,8 +154,6 @@ int CGMTable::getPercent() const {
     return 0;
 }
 
-// -----------------------------------------------------------------------
-
 int CGMTable::getFlag(const std::string& filename) const {
   CGMMap::const_iterator it = cgm_info_.find(filename);
   if (it == cgm_info_.end())
@@ -177,8 +161,6 @@ int CGMTable::getFlag(const std::string& filename) const {
 
   return it->second;
 }
-
-// -----------------------------------------------------------------------
 
 int CGMTable::getStatus(const std::string& filename) const {
   int flag = getFlag(filename);
@@ -190,8 +172,6 @@ int CGMTable::getStatus(const std::string& filename) const {
 
   return 0;
 }
-
-// -----------------------------------------------------------------------
 
 void CGMTable::setViewed(RLMachine& machine, const std::string& filename) {
   int flag = getFlag(filename);

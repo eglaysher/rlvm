@@ -28,8 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_
 #define SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_
 
-// -----------------------------------------------------------------------
-
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/split_member.hpp>
@@ -39,82 +37,71 @@
 
 #include "Systems/Base/VoiceCache.hpp"
 
-// -----------------------------------------------------------------------
-
 class Gameexe;
 class System;
-
-// -----------------------------------------------------------------------
 
 const int NUM_BASE_CHANNELS = 16;
 const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
 const int NUM_KOE_CHANNELS = 1;
 
-// -----------------------------------------------------------------------
-
+// Global sound settings and data, saved and restored when rlvm is shutdown and
+// started up.
 struct SoundSystemGlobals {
   SoundSystemGlobals();
   explicit SoundSystemGlobals(Gameexe& gexe);
 
-  /**
-   * Number passed in from RealLive that represents what we want the
-   * sound system to do. Right now is fairly securely set to 5 since I
-   * have no idea how to change this property at runtime.
-   *
-   * 0 	          	11 k_hz 	          	8 bit
-   * 1 	          	11 k_hz 	          	16 bit
-   * 2 	          	22 k_hz 	          	8 bit
-   * 3 	          	22 k_hz 	          	16 bit
-   * 4 	          	44 k_hz 	          	8 bit
-   * 5 	          	44 k_hz 	          	16 bit
-   * 6 	          	48 k_hz 	          	8 bit
-   * 7 	          	48 h_kz 	          	16 bit
-   *
-   */
+  // Number passed in from RealLive that represents what we want the
+  // sound system to do. Right now is fairly securely set to 5 since I
+  // have no idea how to change this property at runtime.
+  //
+  // 0 	          	11 k_hz 	          	8 bit
+  // 1 	          	11 k_hz 	          	16 bit
+  // 2 	          	22 k_hz 	          	8 bit
+  // 3 	          	22 k_hz 	          	16 bit
+  // 4 	          	44 k_hz 	          	8 bit
+  // 5 	          	44 k_hz 	          	16 bit
+  // 6 	          	48 k_hz 	          	8 bit
+  // 7 	          	48 h_kz 	          	16 bit
   int sound_quality;
 
-  /// Whether music playback is enabled
+  // Whether music playback is enabled
   bool bgm_enabled;
 
-  /// Volume for the music
+  // Volume for the music
   int bgm_volume;
 
-  /// Whether the Wav functions are enabled
+  // Whether the Wav functions are enabled
   bool pcm_enabled;
 
-  /**
-   * Volume of wave files relative to other sound playback.
-   */
+  // Volume of wave files relative to other sound playback.
   int pcm_volume;
 
-  /// Whether the Se functions are enabled
+  // Whether the Se functions are enabled
   bool se_enabled;
 
-  /** Volume of interface sound effects relative to other sound
-   * playback.
-   */
+  // Volume of interface sound effects relative to other sound playback.
   int se_volume;
 
-  /// Voice playback mode (see setKoeMode() for details).
+  // Voice playback mode (see setKoeMode() for details).
   int koe_mode;
 
-  /// Whether we play any voiceovers.
+  // Whether we play any voiceovers.
   bool koe_enabled;
 
-  /// Volume of the koe relative to other sound playback.
+  // Volume of the koe relative to other sound playback.
   int koe_volume;
 
-  /// Whether we fade the background music when a voiceover is playing.
+  // Whether we fade the background music when a voiceover is playing.
   bool bgm_koe_fade;
 
-  /// How much to modify the bgm volume if |bgm_koe_fade| is on.
+  // How much to modify the bgm volume if |bgm_koe_fade| is on.
   int bgm_koe_fade_vol;
 
-  /// Maps between a koePlay character number, and whether we enable voices for
-  /// them.
+  // Maps between a koePlay character number, and whether we enable voices for
+  // them.
   std::map<int, int> character_koe_enabled;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & sound_quality & bgm_enabled & bgm_volume & pcm_enabled &
@@ -131,15 +118,11 @@ BOOST_CLASS_VERSION(SoundSystemGlobals, 1)
 
 // -----------------------------------------------------------------------
 
-/**
- *
- */
+// Generalized interface to sound commands.
 class SoundSystem {
  public:
-  /**
-   * Defines a piece of background music who's backed by a file,
-   * usually VisualArt's nwa format.
-   */
+  // Defines a piece of background music who's backed by a file, usually
+  // VisualArt's nwa format.
   struct DSTrack {
     DSTrack();
     DSTrack(const std::string name, const std::string file,
@@ -152,10 +135,7 @@ class SoundSystem {
     int loop;
   };
 
-  /**
-   * Defines a piece of background music who's backed by a cd audio
-   * track.
-   */
+  // Defines a piece of background music who's backed by a cd audio track.
   struct CDTrack {
     CDTrack();
     CDTrack(const std::string name, int from, int to, int loop);
@@ -167,19 +147,17 @@ class SoundSystem {
   };
 
  protected:
-  /// Type for a parsed \#SE table.
+  // Type for a parsed \#SE table.
   typedef std::map<int, std::pair<std::string, int> > SeTable;
 
-  /// Type for parsed \#DSTRACK entries.
+  // Type for parsed \#DSTRACK entries.
   typedef std::map<std::string, DSTrack> DSTable;
 
-  /// Type for parsed \#CDTRACK entries.
+  // Type for parsed \#CDTRACK entries.
   typedef std::map<std::string, CDTrack> CDTable;
 
-  /**
-   * Stores data about an ongoing volume adjustment (such as those
-   * started by fun wavSetVolume(int, int, int).)
-   */
+  // Stores data about an ongoing volume adjustment (such as those started by
+  // fun wavSetVolume(int, int, int).)
   struct VolumeAdjustTask {
     VolumeAdjustTask(unsigned int current_time, int in_start_volume,
                      int in_final_volume, int fade_time_in_ms);
@@ -190,7 +168,7 @@ class SoundSystem {
     int start_volume;
     int final_volume;
 
-    /// Calculate the volume for in_time
+    // Calculate the volume for in_time
     int calculateVolumeFor(unsigned int in_time);
   };
 
@@ -200,19 +178,15 @@ class SoundSystem {
   explicit SoundSystem(System& system);
   virtual ~SoundSystem();
 
-  /**
-   * Gives the sound system a chance to run; done once per game loop.
-   *
-   * @note Overriders MUST call SoundSystem::execute_sound_system
-   *       because we rely on it to handle volume adjustment tasks.
-   */
+  // Gives the sound system a chance to run; done once per game loop.
+  //
+  // Overriders MUST call SoundSystem::execute_sound_system because we rely on
+  // it to handle volume adjustment tasks.
   virtual void executeSoundSystem();
 
   // ---------------------------------------------------------------------
 
-  /**
-   * Sets how much sound hertz.
-   */
+  // Sets how much sound hertz.
   virtual void setSoundQuality(const int quality) {
     globals_.sound_quality = quality;
   }
@@ -221,32 +195,24 @@ class SoundSystem {
 
   SoundSystemGlobals& globals() { return globals_; }
 
-  /**
-   * After loading global memory, there may be a mismatch between global state
-   * and what subclasses of SoundSystem think because they overloaded a setter,
-   * so set all values from the data in globals().
-   */
+  // After loading global memory, there may be a mismatch between global state
+  // and what subclasses of SoundSystem think because they overloaded a setter,
+  // so set all values from the data in globals().
   void restoreFromGlobals();
 
   // ---------------------------------------------------------------------
-  /**
-   * @name BGM functions
-   *
-   * @{
-   */
-  virtual void setBgmEnabled(const int in);
 
+  // BGM functions
+  virtual void setBgmEnabled(const int in);
   int bgmEnabled() const;
   virtual void setBgmVolume(const int in);
   int bgmVolume() const;
 
-  /**
-   * Status of the music subsystem
-   *
-   * - 0 Idle
-   * - 1 Playing music
-   * - 2 Fading out music
-   */
+  // Status of the music subsystem
+  //
+  // - 0 Idle
+  // - 1 Playing music
+  // - 2 Fading out music
   virtual int bgmStatus() const = 0;
 
   virtual void bgmPlay(const std::string& bgm_name, bool loop) = 0;
@@ -261,33 +227,29 @@ class SoundSystem {
 
   virtual std::string bgmName() const = 0;
   virtual bool bgmLooping() const = 0;
-  /// @}
 
   // ---------------------------------------------------------------------
 
-  /**
-   * @name PCM/Wave functions
-   *
-   * @{
-   */
-  /// Sets whether the wav* functions play
+  // @name PCM/Wave functions
+
+  // Sets whether the wav* functions play
   virtual void setPcmEnabled(const int in);
 
-  /// Whether the wav* functions play
+  // Whether the wav* functions play
   int pcmEnabled() const;
 
   virtual void setPcmVolume(const int in);
   int pcmVolume() const;
 
-  /// Sets an individual channel volume
+  // Sets an individual channel volume
   virtual void setChannelVolume(const int channel, const int level);
 
-  /// Change the volume smoothly; the change from the current volume
-  /// to level will take fade_time_in_ms
+  // Change the volume smoothly; the change from the current volume to level
+  // will take fade_time_in_ms
   void setChannelVolume(const int channel, const int level,
                         const int fade_time_in_ms);
 
-  /// Fetches an individual channel volume
+  // Fetches an individual channel volume
   int channelVolume(const int channel);
 
   virtual void wavPlay(const std::string& wav_file,
@@ -301,106 +263,76 @@ class SoundSystem {
   virtual void wavStopAll() = 0;
   virtual void wavFadeOut(const int channel, const int fadetime) = 0;
 
-  /// @}
-
   // ---------------------------------------------------------------------
 
-  /**
-   * @name Sound Effect functions
-   *
-   * @{
-   */
-  /**
-   * Sets whether we should have interface sound effects
-   */
+  // Sound Effect functions
+
+  // Sets whether we should have interface sound effects
   virtual void setSeEnabled(const int in);
 
-  /**
-   * Returns whether (interface) sound effects are enabled
-   */
+  // Returns whether (interface) sound effects are enabled
   int seEnabled() const;
 
-  /**
-   * Sets the volume of interface sound effects relative to other
-   * sound playback.
-   *
-   * @param in Sound Effect volume (0-255)
-   */
+  // Sets the volume of interface sound effects relative to other
+  // sound playback. (0-255)
   virtual void setSeVolume(const int in);
 
-  /**
-   * Gets the current sound effect volume.
-   */
+  // Gets the current sound effect volume.
   int seVolume() const;
 
-  /**
-   * Plays an interface sound effect.
-   *
-   * @param se_num Index into the \#SE table
-   */
+  // Plays an interface sound effect. |se_num| is an index into the #SE table.
   virtual void playSe(const int se_num) = 0;
-  /// @}
 
   // ---------------------------------------------------------------------
 
-  /**
-   * @name Koe (voice) functions
-   *
-   * @{
-   */
-  /**
-   * Selects a voice playback mode, i.e. which form of communication to use for
-   * strings having both text and voice data:
-   *
-   * - 0: Text and voice
-   * - 1: Text only
-   * - 2: Voice only
-   *
-   * @todo We keep track of this value, but we don't really USE it yet.
-   */
+  // Koe (voice) functions
+
+  // Selects a voice playback mode, i.e. which form of communication to use for
+  // strings having both text and voice data:
+  //
+  // - 0: Text and voice
+  // - 1: Text only
+  // - 2: Voice only
+  //
+  // TODO(erg): We keep track of this value, but we don't really USE it yet.
   void setKoeMode(const int in);
 
-  /// Returns the current value set with setKoeMode().
+  // Returns the current value set with setKoeMode().
   int koeMode() const;
 
-  /**
-   * Sets whether we should play voices (in general).
-   */
+  // Sets whether we should play voices (in general).
   virtual void setKoeEnabled(const int in);
 
-  /**
-   * Returns whether we should play any voices.
-   */
+  // Returns whether we should play any voices.
   int koeEnabled() const;
 
-  /// Sets whether we play voices for certain characters.
+  // Sets whether we play voices for certain characters.
   void setUseKoeForCharacter(const int usekoe_id, const int enabled);
 
-  /// Returns whether we should play voices for certain characters. This
-  /// function is tied to UseKoe() family of functions and should not be
-  /// queried from within rlvm; use the |globals_.character_koe_enabled| map
-  /// instead.
+  // Returns whether we should play voices for certain characters. This
+  // function is tied to UseKoe() family of functions and should not be queried
+  // from within rlvm; use the |globals_.character_koe_enabled| map instead.
   int useKoeForCharacter(const int usekoe_id) const;
 
-  /// Sets the volume for all voice levels (0-255). If |fadetime| is non-zero,
-  /// the volume will change smoothly, with the change taking |fadetime| ms,
-  /// otherwise it will change instantly.
+  // Sets the volume for all voice levels (0-255). If |fadetime| is non-zero,
+  // the volume will change smoothly, with the change taking |fadetime| ms,
+  // otherwise it will change instantly.
   virtual void setKoeVolume(const int level, const int fadetime);
 
-  /// Returns the volume for voice relative to other sound effects.
+  // Returns the volume for voice relative to other sound effects.
   int koeVolume() const;
 
-  /// Sets whether we fade the background when playing a voiceover.
+  // Sets whether we fade the background when playing a voiceover.
   void setBgmKoeFade(const int in);
 
-  /// Returns whether we fade the background when playing a voiceover.
+  // Returns whether we fade the background when playing a voiceover.
   int bgmKoeFade() const;
 
-  /// Sets the amount by which the music volume is modified when the
-  /// music/voice fade flag is active.
+  // Sets the amount by which the music volume is modified when the music/voice
+  // fade flag is active.
   void setBgmKoeFadeVolume(const int level);
 
-  /// Returns the amount to change the bgm volume.
+  // Returns the amount to change the bgm volume.
   int bgmKoeFadeVolume() const;
 
   void koePlay(int id);
@@ -408,8 +340,6 @@ class SoundSystem {
 
   virtual bool koePlaying() const = 0;
   virtual void koeStop() = 0;
-
-  /// @}
 
   virtual void reset();
 
@@ -420,10 +350,8 @@ class SoundSystem {
   const DSTable& getDSTable() { return ds_tracks_; }
   const CDTable& getCDTable() { return cd_tracks_; }
 
-  /**
-   * Computes the actual volume for a channel based on the per channel
-   * and the per system volume.
-   */
+  // Computes the actual volume for a channel based on the per channel
+  // and the per system volume.
   int computeChannelVolume(const int channel_volume, const int system_volume) {
     return (channel_volume * system_volume) / 255;
   }
@@ -440,63 +368,41 @@ class SoundSystem {
 
   System& system_;
 
-  /**
-   * @name Background Music data
-   *
-   * @{
-   */
-  /// Defined music tracks (files)
+  // Defined music tracks (files)
   DSTable ds_tracks_;
 
-  /// Defined music tracks (cd tracks)
+  // Defined music tracks (cd tracks)
   CDTable cd_tracks_;
 
-  /// @}
-
   // ---------------------------------------------------------------------
 
-  /**
-   * @name PCM/Wave sound effect data
-   *
-   * @{
-   */
-  /// Per channel volume
+  // PCM/Wave sound effect data
+
+  // Per channel volume
   unsigned char channel_volume_[NUM_BASE_CHANNELS];
 
-  /**
-   * Open tasks that adjust the volume of a wave channel. We do this
-   * because SDL_mixer doesn't provide this functionality and I'm
-   * guessing other mixers don't either.
-   *
-   * @note Depending on features in other systems, I may push this
-   *       down to SDLSoundSystem later.
-   */
+  // Open tasks that adjust the volume of a wave channel. We do this
+  // because SDL_mixer doesn't provide this functionality and I'm
+  // guessing other mixers don't either.
+  //
+  // @note Depending on features in other systems, I may push this
+  //       down to SDLSoundSystem later.
   ChannelAdjustmentMap pcm_adjustment_tasks_;
-
-  /// @}
 
   // ---------------------------------------------------------------------
 
-  /**
-   * @name Interface sound effect data
-   *
-   * @{
-   */
+  // @name Interface sound effect data
 
-  /**
-   * Parsed \#SE.index entries. Maps a sound effect number to the
-   * filename to play and the channel to play it on.
-   */
+  // Parsed #SE.index entries. Maps a sound effect number to the filename to
+  // play and the channel to play it on.
   SeTable se_table_;
 
-  /// @}
-
-  /// Maps each UseKoe id to one or more koePlay ids.
+  // Maps each UseKoe id to one or more koePlay ids.
   std::multimap<int, int> usekoe_to_koeplay_mapping_;
 
   SoundSystemGlobals globals_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
 
   template<class Archive>

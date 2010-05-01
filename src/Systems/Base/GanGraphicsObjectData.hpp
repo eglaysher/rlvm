@@ -48,10 +48,8 @@ class GraphicsObject;
 
 // -----------------------------------------------------------------------
 
-/**
- * In-memory representation of a GAN file. Responsible for reading in,
- * storing, and rendering GAN data as a GraphicsObjectData.
- */
+// In-memory representation of a GAN file. Responsible for reading in,
+// storing, and rendering GAN data as a GraphicsObjectData.
 class GanGraphicsObjectData : public GraphicsObjectData {
  public:
   explicit GanGraphicsObjectData(System& system);

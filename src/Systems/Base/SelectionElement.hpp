@@ -36,12 +36,7 @@
 class GraphicsSystem;
 class Surface;
 
-/**
- * Represents a clickable
- *
- * @todo Later on, see if I can factor out common code from
- *       @c TextWindowButton.
- */
+// Represents a clickable element inside TextWindows.
 class SelectionElement {
  public:
   SelectionElement(GraphicsSystem& gs,
@@ -69,7 +64,7 @@ class SelectionElement {
   boost::shared_ptr<Surface> normal_image_;
   boost::shared_ptr<Surface> highlighted_image_;
 
-  /// Callback function for when item is selected.
+  // Callback function for when item is selected.
   boost::function<void(int)> selection_callback_;
 
   GraphicsSystem& graphics_system_;

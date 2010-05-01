@@ -77,7 +77,7 @@ class Point {
   int x_;
   int y_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
@@ -85,9 +85,6 @@ class Point {
   }
 };
 
-/**
- * Backend independent representation of a size.
- */
 class Size {
  public:
   Size() : width_(0), height_(0) {}
@@ -142,14 +139,14 @@ class Size {
     return width_ != rhs.width_ || height_ != rhs.height_;
   }
 
-  /// Returns a size that is the max of both size's widths and heights.
+  // Returns a size that is the max of both size's widths and heights.
   Size sizeUnion(const Size& rhs) const;
 
  private:
   int width_;
   int height_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
@@ -157,9 +154,7 @@ class Size {
   }
 };
 
-/**
- *
- */
+
 class Rect {
  public:
   Rect() {}
