@@ -35,49 +35,37 @@ class Gameexe;
 class RLMachine;
 class RlvmInfo;
 
-/**
- * Encapsulates platform specific details; this is mainly dealing with the
- * underlying widget set.
- */
+// Encapsulates platform specific details; this is mainly dealing with the
+// underlying widget set.
 class Platform {
  public:
-  /**
-   * Parses out strings that are presented to the user as part of the platform.
-   */
+  // Parses out strings that are presented to the user as part of the platform.
   explicit Platform(Gameexe& gameexe);
   virtual ~Platform();
 
-  /**
-   * Returns a game specific string from the Gameexe.ini file.
-   */
+  // Returns a game specific string from the Gameexe.ini file.
   std::string syscomString(const std::string& key) const;
 
-  /**
-   * Called every cycle.
-   */
+  // Called every cycle.
   virtual void run(RLMachine& machine) = 0;
 
-  /**
-   * Called on a right click where the game doesn't have its own syscom
-   * handler.
-   */
+  // Called on a right click where the game doesn't have its own syscom
+  // handler.
   virtual void showNativeSyscomMenu(RLMachine& machine) = 0;
 
-  /**
-   * Invokes a standard dialog.
-   */
+  // Invokes a standard dialog.
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
 
-  /// Displays the current interpreter info.
+  // Displays the current interpreter info.
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
 
  private:
-  /// Strips quotes off of value and adds it to our internal strings database.
+  // Strips quotes off of value and adds it to our internal strings database.
   void addSyscomStringFor(const std::string& key, const std::string& value);
 
-  /// Parsed out syscom strings from the Gameexe.ini file. Gameexe.ini files
-  /// are in some input encoding (usually Shift_JIS), but the text system
-  /// expects UTF-8, so pre-parse them.
+  // Parsed out syscom strings from the Gameexe.ini file. Gameexe.ini files
+  // are in some input encoding (usually Shift_JIS), but the text system
+  // expects UTF-8, so pre-parse them.
   std::map<std::string, std::string> utf8_syscom_strings_;
 };
 

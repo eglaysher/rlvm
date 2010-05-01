@@ -183,12 +183,7 @@ class GraphicsSystem : public EventListener {
   // Whether we display a cursor at all
   void setShowCursor(const int in) { show_curosr_ = in; }
 
-
-  /**
-   * @name Graphics Stack
-   *
-   * @{
-   */
+  // Graphics Stack
   GraphicsStackFrame& addGraphicsStackFrame(const std::string& name);
 
   std::vector<GraphicsStackFrame>& graphicsStack();
@@ -198,10 +193,9 @@ class GraphicsSystem : public EventListener {
 
   void stackPop(int num_items);
 
-  /// Replays the graphics stack. This is called after we've reloaded
-  /// a saved game.
+  // Replays the graphics stack. This is called after we've reloaded
+  // a saved game.
   void replayGraphicsStack(RLMachine& machine);
-  /// @}
 
   // Sets the current hik script. GraphicsSystem takes ownership, freeing the
   // current HIKScript if applicable. |script| can be NULL.

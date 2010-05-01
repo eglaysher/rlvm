@@ -34,10 +34,8 @@
 
 class GraphicsObject;
 
-/**
- * A GraphicsObjectData implementation which owns a full set of graphics
- * objects which inherit some(?) of its parent properties.
- */
+// A GraphicsObjectData implementation which owns a full set of graphics
+// objects which inherit some(?) of its parent properties.
 class ParentGraphicsObjectData : public GraphicsObjectData {
  public:
   ParentGraphicsObjectData(int size);

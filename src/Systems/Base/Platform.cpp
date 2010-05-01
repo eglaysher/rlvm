@@ -81,11 +81,7 @@ Platform::Platform(Gameexe& gameexe) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 Platform::~Platform() { }
-
-// -----------------------------------------------------------------------
 
 std::string Platform::syscomString(const std::string& key) const {
   std::map<std::string, std::string>::const_iterator it =
@@ -95,8 +91,6 @@ std::string Platform::syscomString(const std::string& key) const {
   else
     return "";
 }
-
-// -----------------------------------------------------------------------
 
 void Platform::addSyscomStringFor(const std::string& key,
                                   const std::string& value) {

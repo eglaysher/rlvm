@@ -36,25 +36,17 @@ ParentGraphicsObjectData::ParentGraphicsObjectData(int size)
     : objects_(size) {
 }
 
-// -----------------------------------------------------------------------
-
 ParentGraphicsObjectData::~ParentGraphicsObjectData() {
 }
-
-// -----------------------------------------------------------------------
 
 GraphicsObject& ParentGraphicsObjectData::getObject(int obj_number) {
   return objects_[obj_number];
 }
 
-// -----------------------------------------------------------------------
-
 void ParentGraphicsObjectData::setObject(int obj_number,
                                          GraphicsObject& object) {
   objects_[obj_number] = object;
 }
-
-// -----------------------------------------------------------------------
 
 void ParentGraphicsObjectData::render(const GraphicsObject& go,
                                       std::ostream* tree) {
@@ -65,21 +57,15 @@ void ParentGraphicsObjectData::render(const GraphicsObject& go,
   }
 }
 
-// -----------------------------------------------------------------------
-
 int ParentGraphicsObjectData::pixelWidth(
     const GraphicsObject& rendering_properties) {
   throw rlvm::Exception("There is no sane value for this!");
 }
 
-// -----------------------------------------------------------------------
-
 int ParentGraphicsObjectData::pixelHeight(
     const GraphicsObject& rendering_properties) {
   throw rlvm::Exception("There is no sane value for this!");
 }
-
-// -----------------------------------------------------------------------
 
 GraphicsObjectData* ParentGraphicsObjectData::clone() const {
   int size = objects_.size();
@@ -94,8 +80,6 @@ GraphicsObjectData* ParentGraphicsObjectData::clone() const {
   return cloned;
 }
 
-// -----------------------------------------------------------------------
-
 void ParentGraphicsObjectData::execute() {
   // We pass on execute to all our children
   AllocatedLazyArrayIterator<GraphicsObject> it = objects_.allocated_begin();
@@ -105,19 +89,13 @@ void ParentGraphicsObjectData::execute() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 bool ParentGraphicsObjectData::isAnimation() const {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 void ParentGraphicsObjectData::playSet(int set) {
   // Deliberately empty.
 }
-
-// -----------------------------------------------------------------------
 
 void ParentGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "ParentGraphicsObjectData::objectInfo is a TODO";
