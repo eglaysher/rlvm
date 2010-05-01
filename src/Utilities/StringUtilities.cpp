@@ -36,14 +36,9 @@
 using std::string;
 using std::wstring;
 
-// -----------------------------------------------------------------------
-
 wstring cp932toUnicode(const string& line, int transformation) {
   return Cp::instance(transformation).ConvertString(line);
 }
-
-
-// -----------------------------------------------------------------------
 
 string transformationName(int transformation) {
   switch (transformation) {
@@ -60,8 +55,6 @@ string transformationName(int transformation) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 string unicodeToUTF8(const std::wstring& widestring) {
   string out;
   utf8::utf16to8(widestring.begin(), widestring.end(),
@@ -70,20 +63,14 @@ string unicodeToUTF8(const std::wstring& widestring) {
   return out;
 }
 
-// -----------------------------------------------------------------------
-
 string cp932toUTF8(const string& line, int transformation) {
   std::wstring ws = cp932toUnicode(line, transformation);
   return unicodeToUTF8(ws);
 }
 
-// -----------------------------------------------------------------------
-
 bool isOpeningQuoteMark(int codepoint) {
   return codepoint == 0x300C || codepoint == 0x300E || codepoint == 0xFF08;
 }
-
-// -----------------------------------------------------------------------
 
 bool isKinsoku(int codepoint) {
   static const int matchingCodepoints[] = {
@@ -107,8 +94,6 @@ bool isKinsoku(int codepoint) {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 int codepoint(const string& c) {
   if (c == "") {
     return 0;
@@ -117,8 +102,6 @@ int codepoint(const string& c) {
     return utf8::next(it, c.end());
   }
 }
-
-// -----------------------------------------------------------------------
 
 void advanceOneShiftJISChar(const char*& c) {
   if (shiftjis_lead_byte(c[0])) {
@@ -132,8 +115,6 @@ void advanceOneShiftJISChar(const char*& c) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void copyOneShiftJisCharacter(const char*& str, string& output) {
   if (shiftjis_lead_byte(str[0])) {
     if (str[1] == '\0') {
@@ -146,8 +127,6 @@ void copyOneShiftJisCharacter(const char*& str, string& output) {
     output += *str++;
   }
 }
-
-// -----------------------------------------------------------------------
 
 bool readFullwidthLatinLetter(const char*& str, string& output) {
   // The fullwidth uppercase latin characters are 0x8260 through 0x8279.
@@ -165,15 +144,11 @@ bool readFullwidthLatinLetter(const char*& str, string& output) {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 void addShiftJISChar(uint16_t c, string& output) {
   if (c > 0xFF)
     output += (c >> 8);
   output += (c & 0xFF);
 }
-
-// -----------------------------------------------------------------------
 
 void printTextToFunction(
   boost::function<void(const string& c, const string& nextChar)> fun,
@@ -196,8 +171,6 @@ void printTextToFunction(
 
   fun(curChar, nextCharForFinal);
 }
-
-// -----------------------------------------------------------------------
 
 string removeQuotes(const string& quotedString) {
   string output = quotedString;

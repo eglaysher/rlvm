@@ -39,29 +39,16 @@ class Gameexe;
 class RLMachine;
 class System;
 
-/**
- * Takes the full path to a file, and adjusts its case so that it
- * points to an existing file if possible.
- *
- * @param fileName The path to correct the case of.
- * @return On platforms with case-insensitive file systems, returns
- *         a copy of the input unchanged. On less tolerant platforms,
- *         returns a copy of the input with correct case, or the empty
- *         string if no solution could be found.
- */
+// On platforms with case-insensitive file systems, returns a copy of the input
+// unchanged. On less tolerant platforms, returns a copy of the input with
+// correct case, or the empty string if no solution could be found.
 boost::filesystem::path correctPathCase(boost::filesystem::path Path);
 
-// -----------------------------------------------------------------------
-
-/**
- * @name File type constants.
- *
- * These constant, externed vectors are passed as parameters to
- * findFile to control which file types are searched for. Defaults to
- * all.
- *
- * @{
- */
+// File type constants.
+//
+// These constant, externed vectors are passed as parameters to
+// findFile to control which file types are searched for. Defaults to
+// all.
 extern const std::vector<std::string> ALL_FILETYPES;
 extern const std::vector<std::string> IMAGE_FILETYPES;
 extern const std::vector<std::string> PDT_IMAGE_FILETYPES;
@@ -71,34 +58,19 @@ extern const std::vector<std::string> HIK_FILETYPES;
 extern const std::vector<std::string> SOUND_FILETYPES;
 extern const std::vector<std::string> KOE_ARCHIVE_FILETYPES;
 extern const std::vector<std::string> KOE_LOOSE_FILETYPES;
-/// @}
 
-/**
- * Returns the full path to a g00 file for the basename of the file.
- *
- * @param fileName The filename given in the source code.
- * @return The full path of the file. Returns an empty() path if an appropriate
- *         file can't be found.
- */
+
+// Returns the full path to a g00 file for the basename of the file, or empty()
+// if file not found.
 boost::filesystem::path findFile(
     System& system,
     const std::string& fileName,
     const std::vector<std::string>& extensions = ALL_FILETYPES);
 
-// -----------------------------------------------------------------------
-
-/**
- * Reads the entire contents of a file into character array.
- *
- * @param[in] path File to read
- * @param[out] anmData Array to allocate and write data to
- * @param[out] fileSize Size of anmData
- * @return True if there were no problems reading the file
- */
+// Reads the entire contents of a file into the passed in |data| and
+// |size|. Returns true if there were no problems.
 bool loadFileData(const boost::filesystem::path& path,
-                  boost::scoped_array<char>& anmData,
+                  boost::scoped_array<char>& fileData,
                   int& fileSize);
-
-// -----------------------------------------------------------------------
 
 #endif  // SRC_UTILITIES_FILE_HPP_

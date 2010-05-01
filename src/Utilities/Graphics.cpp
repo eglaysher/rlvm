@@ -40,8 +40,6 @@
 using namespace std;
 using namespace boost::assign;
 
-// -----------------------------------------------------------------------
-
 std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   Gameexe& gexe = machine.system().gameexe();
   vector<int> selEffect;
@@ -73,16 +71,12 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   return selEffect;
 }
 
-// -----------------------------------------------------------------------
-
 void getSELPointAndRect(RLMachine& machine, int selNum, Rect& rect,
                         Point& point) {
   vector<int> selEffect = getSELEffect(machine, selNum);
   rect = Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
   point = Point(selEffect[4], selEffect[5]);
 }
-
-// -----------------------------------------------------------------------
 
 Size getScreenSize(Gameexe& gameexe) {
   int graphicsMode = gameexe("SCREENSIZE_MOD");
@@ -97,16 +91,12 @@ Size getScreenSize(Gameexe& gameexe) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void clamp(float& var, float min, float max) {
   if (var < min)
     var = min;
   else if (var > max)
     var = max;
 }
-
-// -----------------------------------------------------------------------
 
 void ClipDestination(const Rect& clip_rect, Rect& src, Rect& dest) {
   Rect intersection = clip_rect.intersection(dest);

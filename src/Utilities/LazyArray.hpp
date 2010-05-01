@@ -23,15 +23,6 @@
 #ifndef SRC_UTILITIES_LAZYARRAY_HPP_
 #define SRC_UTILITIES_LAZYARRAY_HPP_
 
-/**
- * @file   LazyArray.hpp
- * @author Elliot Glaysher
- * @date   Sun Nov  4 09:30:31 2007
- *
- * @brief  Contains the LazyArray class.
- *
- */
-
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -45,23 +36,19 @@ class AllocatedLazyArrayIterator;
 template<typename Value>
 class FullLazyArrayIterator;
 
-// -----------------------------------------------------------------------
-
-/**
- * Container that implements an array where all objects are lazily
- * evaluated when first accessed. RealLive contains a large number of
- * arrays of fairly heavyweight objects.
- *
- * For example, is the user (in the average case) *really* going to
- * use all 256 object slots? It's much more efficient use of memory to
- * lazily allocate the
- *
- * Testing with CLANNAD shows use of 90 objects allocated in the
- * foreground layer at exit. Planetarian leaves 3 objects
- * allocated. Kanon leaves 10.
- *
- * @todo Think about caching firstEntry for the iterators...
- */
+// Container that implements an array where all objects are lazily
+// evaluated when first accessed. RealLive contains a large number of
+// arrays of fairly heavyweight objects.
+//
+// For example, is the user (in the average case) *really* going to
+// use all 256 object slots? It's much more efficient use of memory to
+// lazily allocate the
+//
+// Testing with CLANNAD shows use of 90 objects allocated in the
+// foreground layer at exit. Planetarian leaves 3 objects
+// allocated. Kanon leaves 10.
+//
+// @todo Think about caching firstEntry for the iterators...
 template<typename T>
 class LazyArray {
  public:
@@ -69,38 +56,26 @@ class LazyArray {
   typedef AllocatedLazyArrayIterator<T> alloc_iterator;
 
  public:
-  /**
-   * Creates an empty LazyArray with a static size.
-   *
-   * @param size Size of the array
-   */
+  // Creates an empty LazyArray with a static size.
   explicit LazyArray(int size);
   ~LazyArray();
 
   T& operator[](int pos);
   const T& operator[](int pos) const;
 
-  /**
-   * Returns the size of the array.
-   */
+  // Returns the size of the array.
   int size() const { return size_; }
 
   bool exists(int index) const { return array_[index] != NULL; }
 
-  /**
-   * Go through each item in the array, and deletes it. The array's
-   * size is maintained.
-   */
+  // Go through each item in the array, and deletes it. The array's
+  // size is maintained.
   void clear();
 
-  /**
-   * Copies the contents of one LazyArray to another. This method will
-   * reuse already allocated objects in otherArray (and simply calling
-   * T::operator=(const T&) on them), but will allocate a new object
-   * if otherArray[i] == NULL.
-   *
-   * @param otherArray Target LazyArray
-   */
+  // Copies the contents of one LazyArray to another. This method will
+  // reuse already allocated objects in otherArray (and simply calling
+  // T::operator=(const T&) on them), but will allocate a new object
+  // if otherArray[i] == NULL.
   void copyTo(LazyArray<T>& otherArray);
 
   // Iterate across all items, allocated or not. It is the users
@@ -269,22 +244,16 @@ LazyArray<T>::LazyArray(int size)
     array_[i] = NULL;
 }
 
-// -----------------------------------------------------------------------
-
 template<typename T>
 LazyArray<T>::~LazyArray() {
   std::for_each(array_.get(), array_.get() + size_,
                 boost::checked_deleter<T>());
 }
 
-// -----------------------------------------------------------------------
-
 template<typename T>
 T* LazyArray<T>::rawDeref(int pos) {
   return array_[pos];
 }
-
-// -----------------------------------------------------------------------
 
 template<typename T>
 T& LazyArray<T>::operator[](int pos) {
@@ -298,8 +267,6 @@ T& LazyArray<T>::operator[](int pos) {
   return *(array_[pos]);
 }
 
-// -----------------------------------------------------------------------
-
 template<typename T>
 const T& LazyArray<T>::operator[](int pos) const {
   if (pos < 0 || pos >= size_)
@@ -312,8 +279,6 @@ const T& LazyArray<T>::operator[](int pos) const {
   return *(array_[pos]);
 }
 
-// -----------------------------------------------------------------------
-
 template<typename T>
 void LazyArray<T>::clear() {
   for (int i = 0; i < size_; ++i) {
@@ -321,8 +286,6 @@ void LazyArray<T>::clear() {
     array_[i] = NULL;
   }
 }
-
-// -----------------------------------------------------------------------
 
 template<typename T>
 void LazyArray<T>::copyTo(LazyArray<T>& otherArray) {
@@ -345,8 +308,6 @@ void LazyArray<T>::copyTo(LazyArray<T>& otherArray) {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 template<typename T>
 AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin() {

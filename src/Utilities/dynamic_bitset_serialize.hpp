@@ -22,23 +22,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-/// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 
 #ifndef SRC_UTILITIES_DYNAMIC_BITSET_SERIALIZE_HPP_
 #define SRC_UTILITIES_DYNAMIC_BITSET_SERIALIZE_HPP_
 
-/**
- * @file   dynamic_bitset_serialize.hpp
- * @author Elliot Glaysher
- * @date   Sat Aug 23 15:48:18 2008
- *
- * @brief  boost::serialization doesn't come with built in support for
- *         serializing dynamic_bitset, so write our own version.
- *
- *         This implementation is in no way optimal, but is meant to be
- *         portable. This representation isn't that bad once you think about
- *         how the data is going to be pumped through gzip.
- */
+// boost::serialization doesn't come with built in support for
+// serializing dynamic_bitset, so write our own version.
+//
+// This implementation is in no way optimal, but is meant to be
+// portable. This representation isn't that bad once you think about
+// how the data is going to be pumped through gzip.
+
 #include <iostream>
 #include <string>
 

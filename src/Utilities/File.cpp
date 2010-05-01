@@ -172,10 +172,9 @@ boost::filesystem::path findFile(System& system,
   return boost::filesystem::path();
 }
 
-// -----------------------------------------------------------------------
-
 bool loadFileData(const boost::filesystem::path& path,
-                  scoped_array<char>& anmData, int& fileSize) {
+                  scoped_array<char>& fileData,
+                  int& fileSize) {
   fs::ifstream ifs(path, ifstream::in | ifstream::binary);
   if (!ifs) {
     ostringstream oss;
@@ -187,8 +186,8 @@ bool loadFileData(const boost::filesystem::path& path,
   fileSize = ifs.tellg();
   ifs.seekg(0, ios::beg);
 
-  anmData.reset(new char[fileSize]);
-  ifs.read(anmData.get(), fileSize);
+  fileData.reset(new char[fileSize]);
+  ifs.read(fileData.get(), fileSize);
 
   return !ifs.good();
 }
