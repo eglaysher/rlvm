@@ -108,8 +108,6 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
       SDL_FreeSurface);
   if (text == NULL) {
     // TODO(erg): Make our callers check for NULL.
-    cerr << "Error printing \"" << utf8str << "\" in font size " << size
-         << endl;
     return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()),
                                               buildNewSurface(Size(1, 1))));
   }
