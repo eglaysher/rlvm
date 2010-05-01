@@ -30,7 +30,7 @@ def build_rlc_complex(target, source, env, for_signature):
     Mkdir(target_build_directory)
   ]
 
-  source_file_names = os.listdir(source[0].srcnode().path)
+  source_file_names = os.listdir(source[0].srcnode().abspath)
   for file_name in source_file_names:
     if os.path.splitext(file_name)[1] == ".ke":
       input_path = os.path.join(source[0].srcnode().path, file_name)
