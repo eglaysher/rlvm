@@ -198,7 +198,7 @@ class RLMachine {
   // instruction pointer.
 
   // Sets the current line number
-  virtual void setLineNumber(const int i);
+  void setLineNumber(const int i);
 
   // Where the current scenario was compiled with RLdev, returns the text
   // encoding used:
@@ -316,6 +316,13 @@ class RLMachine {
   // stack, though it does clear the shadow save stack.
   void localReset();
 
+  // Adds a programatic action triggered by a line marker in a specific SEEN
+  // file. This is used both by luaRlvm to trigger actions specified in lua to
+  // drive rlvm's playing certain games, but is also used for game specific
+  // hacks.
+  void addLineAction(const int seen, const int line,
+                     boost::function<void(void)>);
+
  private:
   // The Reallive VM's integer and string memory
   boost::scoped_ptr<Memory> memory_;
@@ -369,6 +376,11 @@ class RLMachine {
 
   // The actions that were delayed when |delay_stack_modifications_| is on.
   std::vector<boost::function<void(void)> > delayed_modifications_;
+
+  // An optional set of game specific hacks that run at certain SEEN/line
+  // pairs. These run during setLineNumer().
+  typedef std::map<std::pair<int, int>, boost::function<void(void)> > ActionMap;
+  boost::scoped_ptr<ActionMap> on_line_actions_;
 
   typedef boost::ptr_map<int, RealLiveDLL> DLLMap;
   // Currenlty loaded "DLLs".

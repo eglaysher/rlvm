@@ -48,18 +48,9 @@ class ScriptMachine : public RLMachine {
   /// Sets the decisions to take
   void setDecisionList(const std::vector<std::string>& decisions);
 
-  void setHandlers(
-    const std::map<std::pair<int, int>, luabind::object>& handlers);
-
   void saveOnDecisions(int slot) { save_on_decision_slot_ = slot; }
 
   // Overloaded from RLMachine:
-
-  /**
-   * ScriptMachine will run pieces of lua code at certain scene/line
-   * combinations.
-   */
-  virtual void setLineNumber(const int i);
 
   /**
    * So we can effectively intercept requests to pause and x
@@ -74,9 +65,6 @@ class ScriptMachine : public RLMachine {
  private:
   typedef std::vector<std::string> Selections;
   Selections decisions_;
-
-  typedef std::map<std::pair<int, int>, luabind::object> Handlers;
-  Handlers handlers_;
 
   int current_decision_;
 

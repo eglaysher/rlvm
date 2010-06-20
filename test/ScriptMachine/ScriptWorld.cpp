@@ -69,9 +69,6 @@ ScriptWorld::ScriptWorld() {
 // -----------------------------------------------------------------------
 
 ScriptWorld::~ScriptWorld() {
-  // Must manually destroy all lua objects before we close the L context.
-  handlers_.clear();
-
   lua_close(L);
 }
 
@@ -151,12 +148,11 @@ void ScriptWorld::error(const std::string& error_message) {
 // -----------------------------------------------------------------------
 
 void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
-  handlers_[make_pair(scene, lineNo)] = handler;
-
   ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
     luabind::globals(L)["Machine"]);
   if (machine) {
-    machine->setHandlers(handlers_);
+    machine->addLineAction(scene, lineNo,
+                           boost::bind(&ScriptWorld::RunHandler, handler));
   }
 }
 
@@ -192,4 +188,16 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
     register_graphics_system(),
     register_graphics_object()
   ];
+}
+
+// -----------------------------------------------------------------------
+
+// static
+void ScriptWorld::RunHandler(luabind::object handler) {
+  try {
+    luabind::call_function<void>(handler);
+  } catch(const luabind::error& e) {
+    lua_State* state = e.state();
+    std::cerr << lua_tostring(state, -1) << endl;
+  }
 }

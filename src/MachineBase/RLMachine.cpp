@@ -651,6 +651,22 @@ void RLMachine::setHaltOnException(bool halt_on_exception) {
 
 void RLMachine::setLineNumber(const int i) {
   line_ = i;
+
+  if (on_line_actions_) {
+    ActionMap::iterator it = on_line_actions_->find(
+        std::make_pair(sceneNumber(), line_));
+    if (it != on_line_actions_->end()) {
+      it->second();
+    }
+  }
+}
+
+void RLMachine::addLineAction(const int seen, const int line,
+                              boost::function<void(void)> function) {
+  if (!on_line_actions_)
+    on_line_actions_.reset(new ActionMap);
+
+  (*on_line_actions_)[std::make_pair(seen, line)] = function;
 }
 
 template<class Archive>

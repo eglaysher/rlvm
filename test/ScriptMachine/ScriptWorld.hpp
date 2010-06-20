@@ -86,12 +86,13 @@ class ScriptWorld {
  private:
   static void InitializeLuabind(lua_State* L);
 
+  // Callback function used to implement addHandler().
+  static void RunHandler(luabind::object handler);
+
   /// The directory containg the passed in |lua_file|. Used as a search path.
   boost::filesystem::path script_dir_;
 
   std::vector<std::string> decisions_;
-
-  std::map<std::pair<int, int>, luabind::object> handlers_;
 
   lua_State* L;
 };  // end of class ScriptWorld
