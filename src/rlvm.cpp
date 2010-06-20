@@ -36,6 +36,7 @@
 #include <sstream>
 #include <string>
 
+#include "MachineBase/GameHacks.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
@@ -345,6 +346,7 @@ int main(int argc, char* argv[]) {
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
+    addGameHacks(rlmachine);
 
     // Validate our font file
     fs::path fontFile = findFontFile(sdlSystem);

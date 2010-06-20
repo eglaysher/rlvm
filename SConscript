@@ -77,6 +77,7 @@ librlvm_files = [
   "src/LongOperations/TextoutLongOperation.cpp",
   "src/LongOperations/WaitLongOperation.cpp",
   "src/LongOperations/ZoomLongOperation.cpp",
+  "src/MachineBase/GameHacks.cpp",
   "src/MachineBase/GeneralOperations.cpp",
   "src/MachineBase/LongOperation.cpp",
   "src/MachineBase/MappedRLModule.cpp",

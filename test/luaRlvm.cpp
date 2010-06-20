@@ -35,6 +35,7 @@
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
+#include "MachineBase/GameHacks.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
@@ -215,6 +216,7 @@ int main(int argc, char* argv[]) {
 
     ScriptMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
+    addGameHacks(rlmachine);
     world.initializeMachine(rlmachine);
     world.loadToplevelFile(scriptLocation.file_string());
 

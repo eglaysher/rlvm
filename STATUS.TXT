@@ -41,8 +41,9 @@ Little Busters (Ex)
 
 Princess Bride
 --------------
-- Playable to the end with the caveat that the user doesn't click to skip the
-  fake "ending" sequence on Wedding Day. (This is a bug in rlvm).
+- Playable to the end; all routes.
+- Doesn't display cards.
+- Post Wedding-Day, there are graphical artifacts.
 
 Princess Brave
 --------------
