@@ -27,14 +27,30 @@
 #include "ScriptMachine/luabind_System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include <luabind/luabind.hpp>
+
+#include <iostream>
 
 // -----------------------------------------------------------------------
 
 using namespace luabind;
+using namespace std;
 
 GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
   return sys.getObject(0, obj_number);
+}
+
+GraphicsObject& getChildFgObject(GraphicsSystem& sys, int parent, int child) {
+  GraphicsObject& obj = sys.getObject(0, parent);
+  if (obj.hasObjectData() && obj.objectData().isParentLayer()) {
+    return static_cast<ParentGraphicsObjectData&>(obj.objectData()).
+        getObject(child);
+  }
+
+  cerr << "WARNING: Couldn't get child object (" << parent << ", "
+       << child << "). Returning just the parent object instead." << endl;
+  return obj;
 }
 
 // -----------------------------------------------------------------------
@@ -42,5 +58,6 @@ GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
 scope register_graphics_system() {
   return
     class_<GraphicsSystem>("GraphicsSystem").
-      def("getFgObject", getFgObject);
+      def("getFgObject", getFgObject).
+      def("getChildFgObject", getChildFgObject);
 }
