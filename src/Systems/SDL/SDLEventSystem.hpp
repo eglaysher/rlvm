@@ -61,7 +61,7 @@ class SDLEventSystem : public EventSystem {
   virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
   virtual bool shiftPressed() const { return shift_pressed_; }
-  virtual bool ctrlPressed() const  { return ctrl_pressed_;  }
+  virtual bool ctrlPressed() const;
   virtual Point getCursorPos();
   virtual void getCursorPos(Point& position, int& button1, int& button2);
   virtual void flushMouseClicks();

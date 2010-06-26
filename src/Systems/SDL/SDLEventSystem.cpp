@@ -99,6 +99,10 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
   }
 }
 
+bool SDLEventSystem::ctrlPressed() const {
+  return system_.forceFastForward() || ctrl_pressed_;
+}
+
 Point SDLEventSystem::getCursorPos() {
   preventCursorPosSpinning();
   return mouse_pos_;
