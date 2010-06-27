@@ -32,13 +32,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   expression.cpp
- *
- * @brief Defines functions and structures for representing
- * expressions in Reallive byte code.
- */
-
 #include "libReallive/expression.h"
 #include "libReallive/expression_pieces.h"
 #include "libReallive/intmemref.h"

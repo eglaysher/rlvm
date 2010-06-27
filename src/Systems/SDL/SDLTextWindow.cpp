@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   SDLTextWindow.cpp
- * @author Elliot Glaysher
- * @date   Wed Mar  7 22:11:17 2007
- *
- * @brief
- */
-
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

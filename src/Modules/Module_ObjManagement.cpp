@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_ObjManagement.cpp
- * @author Elliot Glaysher
- * @date   Wed Jan 31 18:33:08 2007
- *
- * @brief  Modules 60, 61, and 62. Misc. object management.
- */
-
 #include "Module_Obj.hpp"
 #include "Module_ObjManagement.hpp"
 

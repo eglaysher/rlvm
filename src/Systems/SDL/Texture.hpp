@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Texture.hpp
- * @author Elliot Glaysher
- * @date   Sat Feb 17 20:21:59 2007
- *
- * @brief  Contains an OpenGL texture and some metadata.
- */
-
 #ifndef SRC_SYSTEMS_SDL_TEXTURE_HPP_
 #define SRC_SYSTEMS_SDL_TEXTURE_HPP_
 

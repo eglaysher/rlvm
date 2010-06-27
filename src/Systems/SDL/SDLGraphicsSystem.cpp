@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   SDLGraphicsSystem.cpp
- * @brief  Exposed interface for the SDL Graphics system.
- * @author Elliot Glaysher
- * @date   Fri Oct  6 13:34:08 2006
- *
- */
-
 #include "GL/glew.h"
 
 #include "Systems/SDL/SDLGraphicsSystem.hpp"

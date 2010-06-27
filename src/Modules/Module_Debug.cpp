@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   Module_Debug.cpp
- * @author Elliot Glaysher
- * @date   Sun Mar  4 17:41:03 2007
- *
- * @brief  Defines debugging functions. (mod<1:255)
- */
-
 #include "Modules/Module_Debug.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"

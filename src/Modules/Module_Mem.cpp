@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file    Module_Mem.cpp
- * @author  Elliot Glaysher
- * @date    Sat Oct  7 11:18:42 2006
- * @ingroup ModulesOpcodes
- * @brief   Defines the Memory module (mod<1:11>).
- */
-
 #include <vector>
 
 #include "Modules/Module_Mem.hpp"

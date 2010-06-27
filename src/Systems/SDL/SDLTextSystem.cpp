@@ -25,14 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-/**
- * @file   SDLTextSystem.cpp
- * @brief  SDL specialization of the text system
- * @author Elliot Glaysher
- * @date   Wed Mar  7 22:04:25 2007
- *
- */
-
 #include "Systems/SDL/SDLTextSystem.hpp"
 
 #include "Systems/Base/GraphicsSystem.hpp"
