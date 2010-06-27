@@ -39,3 +39,17 @@ function LB:installMainMenuHandler ()
         end
     end)
 end
+
+function LB:clickThroughMinigames ()
+    -- Clicks during the first minigame where Rin is tossed.
+    throwState = 0
+    World:addHandler(9070, 290, function ()
+        if throwState == 0 then
+            System:event():injectMouseDown()
+            throwState = 1
+        elseif throwState == 1 then
+            System:event():injectMouseUp()
+            throwState = 2
+        end
+    end)
+end
