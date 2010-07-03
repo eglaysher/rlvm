@@ -94,7 +94,8 @@ TextWindow::TextWindow(System& system, int window_num)
       current_indentation_in_pixels_(0), last_token_was_name_(false),
       use_indentation_(0), colour_(),
       filter_(0), is_visible_(0), in_selection_mode_(0),
-      system_(system) {
+      system_(system),
+      text_system_(system.text()) {
   Gameexe& gexe = system.gameexe();
 
   // POINT
@@ -550,8 +551,10 @@ bool TextWindow::character(const std::string& current,
     }
 
     RGBColour shadow = RGBAColour::Black().rgb();
-    renderGlyphAt(current, fontSizeInPixels(), font_colour_, &shadow,
-                  text_insertion_point_x_, text_insertion_point_y_);
+    text_system_.renderGlyphOnto(
+        current, fontSizeInPixels(), font_colour_, &shadow,
+        text_insertion_point_x_, text_insertion_point_y_,
+        textSurface());
 
     // Move the insertion point forward one character
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;

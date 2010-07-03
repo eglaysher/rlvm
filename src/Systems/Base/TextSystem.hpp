@@ -214,7 +214,14 @@ class TextSystem : public EventListener {
   virtual boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
       int yspace, const RGBColour& colour, RGBColour* shadow_colour) = 0;
-
+  virtual void renderGlyphOnto(
+      const std::string& current,
+      int font_size,
+      const RGBColour& font_colour,
+      const RGBColour* shadow_colour,
+      int insertion_point_x,
+      int insertion_point_y,
+      const boost::shared_ptr<Surface>& destination) = 0;
   virtual int charWidth(int size, uint16_t codepoint) = 0;
 
   TextSystemGlobals& globals() { return globals_; }

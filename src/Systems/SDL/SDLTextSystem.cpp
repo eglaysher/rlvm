@@ -129,6 +129,57 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   return surface;
 }
 
+void SDLTextSystem::renderGlyphOnto(
+    const std::string& current,
+    int font_size,
+    const RGBColour& font_colour,
+    const RGBColour* shadow_colour,
+    int insertion_point_x,
+    int insertion_point_y,
+    const boost::shared_ptr<Surface>& destination) {
+  SDLSurface* sdl_surface = static_cast<SDLSurface*>(destination.get());
+
+  boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
+
+  // TODO: Glyphs go in a cache?
+  SDL_Color sdl_colour;
+  RGBColourToSDLColor(font_colour, &sdl_colour);
+  boost::shared_ptr<SDL_Surface> character(
+      TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_colour),
+      SDL_FreeSurface);
+
+  if (character == NULL) {
+    // Bug during Kyou's path. The string is printed "". Regression in parser?
+    cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the character \""
+         << current << "\". Hopefully continuing..." << endl;
+    return;
+  }
+
+  boost::shared_ptr<SDL_Surface> shadow;
+  if (shadow_colour && sdl_system_.text().fontShadow()) {
+    SDL_Color sdl_shadow_colour;
+    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
+
+    shadow.reset(
+        TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_shadow_colour),
+        SDL_FreeSurface);
+  }
+
+  Point insertion(insertion_point_x, insertion_point_y);
+
+  if (shadow) {
+    Size offset(shadow->w, shadow->h);
+    sdl_surface->blitFROMSurface(
+        shadow.get(), Rect(Point(0, 0), offset),
+        Rect(insertion + Point(2, 2), offset),
+        255);
+  }
+
+  Size size(character->w, character->h);
+  sdl_surface->blitFROMSurface(
+      character.get(), Rect(Point(0, 0), size), Rect(insertion, size), 255);
+}
+
 int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
   boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
   int minx, maxx, miny, maxy, advance;

@@ -48,11 +48,6 @@ class TestTextWindow : public TextWindow {
   virtual void clearWin();
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
-  virtual void renderGlyphAt(const std::string& current, int font_size,
-                             const RGBColour& font_colour,
-                             const RGBColour* shadow_colour,
-                             int insertion_point_x,
-                             int insertion_point_y) { }
 
   virtual void hardBrake();
 

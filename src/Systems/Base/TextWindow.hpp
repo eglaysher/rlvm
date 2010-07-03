@@ -47,6 +47,7 @@ class RLMachine;
 class SelectionElement;
 class Surface;
 class System;
+class TextSystem;
 class TextWaku;
 class TextWindowButton;
 
@@ -253,15 +254,6 @@ class TextWindow {
   // Accessor for the |selection_callback_| for TextWindow subclasses
   const boost::function<void(int)>& selectionCallback();
 
-  // Implementation called by the layout method character(). character() is
-  // responsible for layout; renderGlyphAt() actually renders the glyph to the
-  // backing surface.
-  virtual void renderGlyphAt(const std::string& current, int font_size,
-                             const RGBColour& font_colour,
-                             const RGBColour* shadow_colour,
-                             int insertion_point_x,
-                             int insertion_point_y) = 0;
-
   // The actual selection items in this TextWindow.
   typedef boost::ptr_vector<SelectionElement> Selections;
   Selections selections_;
@@ -409,6 +401,7 @@ class TextWindow {
   boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];
 
   System& system_;
+  TextSystem& text_system_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_TEXTWINDOW_HPP_

@@ -52,12 +52,6 @@ class SDLTextWindow : public TextWindow {
   virtual void addSelectionItem(const std::string& utf8str, int selection_id);
 
  private:
-  virtual void renderGlyphAt(const std::string& current, int font_size,
-                             const RGBColour& font_colour,
-                             const RGBColour* shadow_colour,
-                             int insertion_point_x,
-                             int insertion_point_y);
-
   SDLSystem& sdl_system_;
 
   boost::shared_ptr<SDLSurface> surface_;

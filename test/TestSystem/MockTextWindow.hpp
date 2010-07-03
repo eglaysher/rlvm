@@ -52,8 +52,6 @@ class MockTextWindow : public TestTextWindow {
   MOCK_METHOD0(resetIndentation, void());
   MOCK_METHOD0(markRubyBegin, void());
   MOCK_METHOD1(displayRubyText, void(const std::string&));
-  MOCK_METHOD6(renderGlyphAt, void(const std::string&, int, const RGBColour&,
-                                   const RGBColour*, int, int));
 
   // Calls to the parent class.
   void ConcreteExecute() { TestTextWindow::execute(); }

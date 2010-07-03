@@ -115,52 +115,6 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
   selections_.push_back(element);
 }
 
-void SDLTextWindow::renderGlyphAt(const std::string& current, int font_size,
-                                  const RGBColour& font_colour,
-                                  const RGBColour* shadow_colour,
-                                  int insertion_point_x,
-                                  int insertion_point_y) {
-  boost::shared_ptr<TTF_Font> font =
-      sdl_system_.text().getFontOfSize(font_size);
-
-  SDL_Color sdl_colour;
-  RGBColourToSDLColor(font_colour, &sdl_colour);
-  boost::shared_ptr<SDL_Surface> character(
-      TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_colour),
-      SDL_FreeSurface);
-
-  if (character == NULL) {
-    // Bug during Kyou's path. The string is printed "". Regression in parser?
-    cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the string \""
-         << current << "\". Hopefully continuing..." << endl;
-    return;
-  }
-
-  boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour && sdl_system_.text().fontShadow()) {
-    SDL_Color sdl_shadow_colour;
-    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
-
-    shadow.reset(
-        TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_shadow_colour),
-        SDL_FreeSurface);
-  }
-
-  Point insertion(insertion_point_x, insertion_point_y);
-
-  if (shadow) {
-    Size offset(shadow->w, shadow->h);
-    surface_->blitFROMSurface(
-        shadow.get(), Rect(Point(0, 0), offset),
-        Rect(insertion + Point(2, 2), offset),
-        255);
-  }
-
-  Size size(character->w, character->h);
-  surface_->blitFROMSurface(
-      character.get(), Rect(Point(0, 0), size), Rect(insertion, size), 255);
-}
-
 void SDLTextWindow::displayRubyText(const std::string& utf8str) {
   if (ruby_begin_point_ != -1) {
     boost::shared_ptr<TTF_Font> font =
