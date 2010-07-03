@@ -51,8 +51,6 @@
 using namespace std;
 using namespace boost;
 
-// -----------------------------------------------------------------------
-
 SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
     : TextSystem(system, gameexe), sdl_system_(system) {
   if (TTF_Init() == -1) {
@@ -62,13 +60,9 @@ SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
   }
 }
 
-// -----------------------------------------------------------------------
-
 SDLTextSystem::~SDLTextSystem() {
   TTF_Quit();
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
@@ -80,8 +74,6 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
 
   return it->second;
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLTextSystem::renderText(
   const std::string& utf8str, int size, int xspace, int yspace,
@@ -137,8 +129,6 @@ boost::shared_ptr<Surface> SDLTextSystem::renderText(
   return surface;
 }
 
-// -----------------------------------------------------------------------
-
 int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
   boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
   int minx, maxx, miny, maxy, advance;
@@ -146,8 +136,6 @@ int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
                    &minx, &maxx, &miny, &maxy, &advance);
   return advance;
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);

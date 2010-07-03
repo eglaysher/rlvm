@@ -54,8 +54,7 @@ class TextKeyCursor;
 class TextPage;
 class TextWindow;
 
-// -----------------------------------------------------------------------
-
+// Global variables written to disk.
 struct TextSystemGlobals {
   TextSystemGlobals();
   explicit TextSystemGlobals(Gameexe& gexe);
@@ -63,19 +62,19 @@ struct TextSystemGlobals {
   int auto_mode_base_time;
   int auto_mode_char_time;
 
-  /// Message speed; range from 0 to 255
+  // Message speed; range from 0 to 255
   char message_speed;
 
-  /// Whether we should be bolded.
+  // Whether we should be bolded.
   int font_weight;
 
-  /// Whether we should draw a shadow.
+  // Whether we should draw a shadow.
   int font_shadow;
 
-  /// The default \#WINDOW_ATTR. This is what is changed by the
+  // The default #WINDOW_ATTR. This is what is changed by the
   std::vector<int> window_attr;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & auto_mode_base_time & auto_mode_char_time & message_speed
@@ -92,29 +91,16 @@ BOOST_CLASS_VERSION(TextSystemGlobals, 1)
 
 class TextSystem : public EventListener {
  public:
-  /// Internal structure used to keep track of the state of
+  // Internal structure used to keep track of the state of
   typedef boost::ptr_map<int, TextPage> PageSet;
 
  public:
   TextSystem(System& system, Gameexe& gexe);
   virtual ~TextSystem();
 
-  /**
-   * @name Master visibility control
-   *
-   * Controls whether the text system is rendered at all.
-   *
-   * @{
-   */
+  // Controls whether the text system is rendered at all.
   void setSystemVisible(bool in) { system_visible_ = in; }
   bool systemVisible() const { return system_visible_; }
-  /// @}
-
-  /**
-   * @name Implementation detail interface
-   *
-   * @{
-   */
 
   void executeTextSystem();
 
@@ -131,8 +117,6 @@ class TextSystem : public EventListener {
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number) = 0;
   boost::shared_ptr<TextWindow> currentWindow();
 
-  /// @}
-
   void setInPauseState(bool in) { in_pause_state_ = in; }
 
   int activeWindow() const { return active_window_; }
@@ -140,32 +124,18 @@ class TextSystem : public EventListener {
 
   std::vector<int> activeWindows();
 
-  /**
-   * Take a snapshot of the current window state, with their
-   * respective TextPages, and add it to the backlog.
-   */
+  // Take a snapshot of the current window state, with their
+  // respective TextPages, and add it to the backlog.
   void snapshot();
 
-  /**
-   * Resets the text page in the current_set
-   */
+  // Resets the text page in the current_set
   void newPageOnWindow(int window);
 
-  /**
-   * Get the active page. This function will return
-   * windows_[active_window_].page().
-   */
+  // Get the active page. This function will return
+  // windows_[active_window_].page().
   TextPage& currentPage();
 
-  /**
-   * @name Backlog management
-   *
-   * @{
-   */
-
-  /**
-   * Clears the screen, moves back one page and renders it.
-   */
+  // Clears the screen, moves back one page and renders it.
   void backPage();
   void forwardPage();
 
@@ -174,18 +144,10 @@ class TextSystem : public EventListener {
   bool isReadingBacklog() const;
   void stopReadingBacklog();
 
-  /// @}
-
-  /**
-   * @name Auto mode
-   *
-   * It is possible to set the interpreter up to advance text
-   * automatically instead of waiting for player input after each
-   * screen is displayed; the `auto mode' controls permit this
-   * behaviour to be customized.
-   *
-   * @{
-   */
+  // It is possible to set the interpreter up to advance text
+  // automatically instead of waiting for player input after each
+  // screen is displayed; the `auto mode' controls permit this
+  // behaviour to be customized.
   void setAutoMode(int i);
   int autoMode() const { return (int)auto_mode_; }
   boost::signal<void(bool)>& autoModeSignal() { return auto_mode_signal_; }
@@ -197,15 +159,10 @@ class TextSystem : public EventListener {
   int autoCharTime() const { return globals_.auto_mode_char_time; }
 
   int getAutoTime(int num_chars);
-  /// @}
 
   void setKeyCursor(int new_cursor);
 
-  /**
-   * Returns the key cursor index.
-   *
-   * @return The key cursor number (or -1 if no key cursor).
-   */
+  // Returns the key cursor index. (or -1 if no key cursor).
   int cursorNumber() const;
 
   void setCtrlKeySkip(int i) { ctrl_key_skip_ = i; }
@@ -226,15 +183,6 @@ class TextSystem : public EventListener {
   void setFontShadow(int i) { globals_.font_shadow = i; }
   int fontShadow() const { return globals_.font_shadow; }
 
-  /**
-   * @name Window Attr Related functions
-   *
-   * @note Any class deriving from TextSystem is responsible for
-   *       overriding all the virtual functions in this section, so as
-   *       to alert any TextWindow derived objects that it owns that
-   *       the default window attr has changed.
-   * @{
-   */
   void setDefaultWindowAttr(const std::vector<int>& attr);
   std::vector<int> windowAttr() const { return globals_.window_attr; }
 
@@ -249,13 +197,7 @@ class TextSystem : public EventListener {
   void setWindowAttrB(int i);
   void setWindowAttrA(int i);
   void setWindowAttrF(int i);
-  /// @}
 
-  /**
-   * @name Window button state
-   *
-   * @{
-   */
   bool windowMoveUse() const { return move_use_; }
   bool windowClearUse() const { return clear_use_; }
   bool windowReadJumpUse() const { return read_jump_use_; }
@@ -265,28 +207,19 @@ class TextSystem : public EventListener {
   bool windowMsgbkrightUse() const { return msgbkright_use_; }
   bool windowExbtnUse() const { return exbtn_use_; }
 
-  /// Update the mouse cursor.
+  // Update the mouse cursor.
   void setMousePosition(const Point& pos);
   bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
-  /// @}
 
-  /**
-   * @name Font Management and Text Rendering
-   *
-   * @{
-   */
   virtual boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
       int yspace, const RGBColour& colour, RGBColour* shadow_colour) = 0;
 
   virtual int charWidth(int size, uint16_t codepoint) = 0;
-  /// @}
 
   TextSystemGlobals& globals() { return globals_; }
 
-  /**
-   * Resets non-configuration values (so we can load games).
-   */
+  // Resets non-configuration values (so we can load games).
   virtual void reset();
 
   bool kidokuRead() const { return kidoku_read_; }
@@ -314,118 +247,90 @@ class TextSystem : public EventListener {
 
   bool showWindow(int win_num) const;
 
-  /// TextPage will call our internals since it actually does most of
-  /// the work while we hold state.
+  // TextPage will call our internals since it actually does most of
+  // the work while we hold state.
   friend class TextPage;
 
-  /**
-   * @name Auto mode (variables)
-   *
-   * @{
-   */
-  /// Whether Auto mode is enabled
+  // Whether Auto mode is enabled
   bool auto_mode_;
 
-  /// Signal to slots who are monitoring whether auto mode is enabled.
+  // Signal to slots who are monitoring whether auto mode is enabled.
   boost::signal<void(bool)> auto_mode_signal_;
-  /// @}
 
-  /// Whether holding down the control key will skip text.
+  // Whether holding down the control key will skip text.
   bool ctrl_key_skip_;
 
-  /// Fast text mode
+  // Fast text mode
   bool fast_text_mode_;
 
-  /// Internal 'no wait' flag
+  // Internal 'no wait' flag
   bool message_no_wait_;
 
-  /**
-   * @name Textwindow Management
-   *
-   * @{
-   */
-  /// Sets which window is the current active window.
+  // Sets which window is the current active window.
   int active_window_;
 
-  /// Type of the Window storage
+  // Type of the Window storage
   typedef std::map<int, boost::shared_ptr<TextWindow> > WindowMap;
 
-  /// Storage of active windows
+  // Storage of active windows
   WindowMap text_window_;
-  /// @}
 
-  /**
-   * @name Backlog Management
-   *
-   * @{
-   */
-
-  /// Whether we are reading the backlog
+  // Whether we are reading the backlog
   bool is_reading_backlog_;
 
-  /// The current page set. Represents what is on the screen right now.
+  // The current page set. Represents what is on the screen right now.
   std::auto_ptr<PageSet> current_pageset_;
 
-  /// Previous Text Pages. The TextSystem owns the list of previous
-  /// pages because multiple windows can be displayed in one text page.
+  // Previous Text Pages. The TextSystem owns the list of previous
+  // pages because multiple windows can be displayed in one text page.
   boost::ptr_list<PageSet> previous_page_sets_;
 
-  /// When previous_page_it_ == previous_pages_.end(), active_page_ is
-  /// currently being rendered to the screen. When it is any valid
-  /// iterator pointing into previous_pages_, that is the current page
-  /// being rendered.
+  // When previous_page_it_ == previous_pages_.end(), active_page_ is
+  // currently being rendered to the screen. When it is any valid
+  // iterator pointing into previous_pages_, that is the current page
+  // being rendered.
   boost::ptr_list<PageSet>::iterator previous_page_it_;
 
-  /// Whether we are in a state where the interpreter is pause()d.
+  // Whether we are in a state where the interpreter is pause()d.
   bool in_pause_state_;
-
-  /// @}
 
   boost::shared_ptr<TextKeyCursor> text_key_cursor_;
 
-  /**
-   * @name Global Window Button Toggles
-   *
-   * @{
-   */
   bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
     msgbkleft_use_, msgbkright_use_, exbtn_use_;
 
   void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
-  /// @}
 
   TextSystemGlobals globals_;
 
   bool system_visible_;
 
-  /// Whether we skip text that we've already seen
+  // Whether we skip text that we've already seen
   bool skip_mode_;
 
-  /// Signal to slots who are monitoring whether skip mode is enabled.
+  // Signal to slots who are monitoring whether skip mode is enabled.
   boost::signal<void(bool)> skip_mode_signal_;
 
-  /// Whether we are currently on a page of text that we've previously read.
+  // Whether we are currently on a page of text that we've previously read.
   bool kidoku_read_;
 
-  /// Signal to slots who are monitoring whether skip mode is enabled.
+  // Signal to slots who are monitoring whether skip mode is enabled.
   boost::signal<void(bool)> skip_mode_enabled_signal_;
 
-  /// Whether we are currently paused at a user choice.
+  // Whether we are currently paused at a user choice.
   bool in_selection_mode_;
 
-  /// Contains overrides for showing or hiding the text windows.
+  // Contains overrides for showing or hiding the text windows.
   std::map<int, bool> window_visual_override_;
 
-  /**
-   * Reduces the number of page snapshots in previous_page_sets_ down to a
-   * manageable constant number.
-   */
+  // Reduces the number of page snapshots in previous_page_sets_ down to a
+  // manageable constant number.
   void expireOldPages();
 
-  /// Our parent system object.
+  // Our parent system object.
   System& system_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
 
   template<class Archive>
@@ -437,27 +342,15 @@ class TextSystem : public EventListener {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-// -----------------------------------------------------------------------
-
-int convertNameVar(const std::string& value);
-
-/**
- * Name parser. Takes a raw, local machine encoded string and replaces name
- * variable placeholders with the names from Memory.
- *
- * @note This function assumes that text is in CP932 encoding, and will need to
- *       be generalized when we try to support other hacks on top of cp932.
- * @relates TextSystem
- */
+// Name parser. Takes a raw, local machine encoded string and replaces name
+// variable placeholders with the names from Memory. This function assumes that
+// text is in CP932 encoding, and will need to be generalized when we try to
+// support other hacks on top of cp932.
 void parseNames(const Memory& memory, const std::string& input,
                 std::string& output);
 
-// -----------------------------------------------------------------------
-
-/**
- * LongOperation which just calls text().setSystemVisible(true) and removes
- * itself from the callstack.
- */
+// LongOperation which just calls text().setSystemVisible(true) and removes
+// itself from the callstack.
 struct RestoreTextSystemVisibility : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 };

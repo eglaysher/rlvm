@@ -52,18 +52,16 @@ class TextWindowButton;
 
 const int kNumFaceSlots = 8;
 
-/**
- * Abstract representation of a TextWindow. Aggrigated by @c TextSystem,
- * and rendered in conjunction with @c GraphicsSystem.
- *
- * Sets of TextWindows should be reconstructable by the state in @c
- * TextPage , though there are some notable exceptions, specifically
- * @c Select_LongOperation .
- *
- * This class has all sorts of complex, rarely used text rendering
- * options, including multiple co-ordinate systems, which I'm sure was
- * done to give reverse engineers a headache.
- */
+
+// Abstract representation of a TextWindow. Aggrigated by TextSystem, and
+// rendered in conjunction with GraphicsSystem.
+//
+// Sets of TextWindows should be reconstructable by the state in TextPage,
+// though there are some notable exceptions, specifically Select_LongOperation.
+//
+// This class has all sorts of complex, rarely used text rendering options,
+// including multiple co-ordinate systems, which I'm sure was done to give
+// reverse engineers a headache.
 class TextWindow {
  public:
   TextWindow(System& system, int window_num);
@@ -78,42 +76,25 @@ class TextWindow {
   // TextWindow? O RLY?
   int wakuSet() const { return waku_set_; }
 
-  /**
-   * @name Text size and location
-   *
-   * Accessors dealing with the size and location of the text
-   * window.
-   *
-   * @{
-   */
-
-  /**
-   * Sets the size of the text window in characters. Reprsented by
-   * \#WINDOW.xxx.MOJI_CNT.
-   */
+  // Sets the size of the text window in characters. Reprsented by
+  // #WINDOW.xxx.MOJI_CNT.
   void setWindowSizeInCharacters(const std::vector<int>& pos_data);
   int xWindowSizeInChars() const { return x_window_size_in_chars_; }
   int yWindowSizeInChars() const { return y_window_size_in_chars_; }
 
-  /**
-   * Sets the size of the spacing between characters. Reprsented by
-   * \#WINDOW.xxx.MOJI_REP.
-   */
+  // Sets the size of the spacing between characters. Reprsented by
+  // #WINDOW.xxx.MOJI_REP.
   void setSpacingBetweenCharacters(const std::vector<int>& pos_data);
   int xSpacing() const { return x_spacing_; }
   int ySpacing() const { return y_spacing_; }
 
-  /**
-   * Sets the size of the ruby (furigana; pronounciation guide) text
-   * in pixels. If zero, ruby text is disabled in this
-   * window. Represented by \#WINDOW.xxx.LUBY_SIZE.
-   */
+  // Sets the size of the ruby (furigana; pronounciation guide) text in
+  // pixels. If zero, ruby text is disabled in this window. Represented by
+  // #WINDOW.xxx.LUBY_SIZE.
   void setRubyTextSize(const int i) { ruby_size_ = i; }
   int rubyTextSize() const { return ruby_size_; }
 
-  /**
-   * Sets the size of the font. Reprsented by \#WINDOW.xxx.MOJI.SIZE.
-   */
+  // Sets the size of the font. Reprsented by #WINDOW.xxx.MOJI.SIZE.
   void setFontSizeToDefault() {
     font_size_in_pixels_ = default_font_size_in_pixels_;
   }
@@ -131,13 +112,6 @@ class TextWindow {
   void setDefaultTextColor(const std::vector<int>& colour_data);
   virtual void setFontColor(const std::vector<int>& colour_data);
 
-  /// @}
-
-  /**
-   * @name Window Positional
-   *
-   * @{
-   */
   void setWindowPosition(const std::vector<int>& pos_data);
 
   // We have to differentiate between the official size where we're supposed to
@@ -153,76 +127,37 @@ class TextWindow {
   int nameboxX1() const;
   int nameboxY1() const;
   Size nameboxSize();
-  /// @}
 
   // TODO: What's setMousePosition and how does it differ from mouse listeners?
   virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed);
 
-  /**
-   * @name Name window settings
-   *
-   * @{
-   */
-
-  /// Sets how the name is displayed
-  /// @see name_mod_
+  // Sets how the name is displayed
   void setNameMod(const int in) { name_mod_ = in; }
   int nameMod() const { return name_mod_; }
 
-  /**
-   * Sets the size of the spacing between characters. Reprsented by
-   * \#WINDOW.xxx.NAME_MOJI_REP.
-   */
+  // Sets the size of the spacing between characters. Reprsented by
+  // #WINDOW.xxx.NAME_MOJI_REP.
   void setNameSpacingBetweenCharacters(const std::vector<int>& pos_data);
   int nameXSpacing() const { return name_x_spacing_; }
 
   void setNameboxPadding(const std::vector<int>& pos_data);
   void setNameboxPosition(const std::vector<int>& pos_data);
 
-  /// @}
-
-  /**
-   * @name Keycursor settings
-   *
-   * Set and access the position of the animated icon that appears
-   * when waiting for user input. The TextWindow only owns the
-   * position which is queried by the TextKeyCursor object which owns
-   * the actual image and other properties. This is an artifact of how
-   * RealLive handles this.
-   *
-   * @see TextKeyCursor
-   *
-   * @{
-   */
+  // Set and access the position of the animated icon that appears when waiting
+  // for user input. The TextWindow only owns the position which is queried by
+  // the TextKeyCursor object which owns the actual image and other
+  // properties. This is an artifact of how RealLive handles this.
   void setKeycurMod(const std::vector<int>& keycur);
-
   Point keycursorPosition(const Size& cursor_size) const;
-  /// @}
-
-  /**
-   * @name Waku (Window decoration) Handling Functions
-   *
-   * @{
-   */
 
   void setWindowWaku(const int waku_no);
 
-
-  /// @}
-
-
-  /**
-   * @name Window Background Color Attributes
-   *
-   * Accessors regarding the background colour of the window.
-   *
-   * Represents the data parsed from \#WINDOW_ATTR,
-   * \#WINDOW.index.ATTR_MOD, and \#WINDOW.index.ATTR
-   *
-   * @{
-   */
+  // Accessors regarding the background colour of the window.
+  //
+  // Represents the data parsed from #WINDOW_ATTR,
+  // #WINDOW.index.ATTR_MOD, and #WINDOW.index.ATTR
   void setWindowAttrMod(int i) { window_attr_mod_ = i; }
   int windowAttrMod() const { return window_attr_mod_; }
 
@@ -239,7 +174,6 @@ class TextWindow {
   int alpha() const { return colour_.a(); }
   const RGBAColour& colour() const { return colour_; }
   int filter() const { return filter_; }
-  /// @}
 
   void setVisible(int in) { is_visible_ = in; }
   bool isVisible() const { return is_visible_; }
@@ -247,11 +181,6 @@ class TextWindow {
   void setActionOnPause(const int i) { action_on_pause_ = i; }
   bool actionOnPause() const { return action_on_pause_; }
 
-  /**
-   * @name Insertion point control
-   *
-   * @{
-   */
   int insertionPointX() const { return text_insertion_point_x_; }
   int insertionPointY() const { return text_insertion_point_y_; }
   void offsetInsertionPointX(int offset) { text_insertion_point_x_ += offset; }
@@ -262,7 +191,6 @@ class TextWindow {
   int lineHeight() const {
     return font_size_in_pixels_ + y_spacing_ + ruby_size_;
   }
-  /// @}
 
   // Loads |filename| into face slot |index|.
   void faceOpen(const std::string& filename, int index);
@@ -277,36 +205,26 @@ class TextWindow {
   virtual boost::shared_ptr<Surface> textSurface() = 0;
   virtual boost::shared_ptr<Surface> nameSurface() = 0;
 
-  /**
-   * Clears the text window of all text and resets the insertion
-   * point.
-   */
+  // Clears the text window of all text and resets the insertion
+  // point.
   virtual void clearWin();
 
-  /**
-   * Displays one character, and performs line breaking logic based on
-   * the next character.
-   *
-   * @return True if the character fits on the screen. False if it
-   *         does not and was not displayed.
-   */
+  // Displays one character, and performs line breaking logic based on the next
+  // character. Returns true if the character fits on the screen. False if it
+  // does not and was not displayed.
   virtual bool character(const std::string& current, const std::string& rest);
 
   // Checks to make sure that not only will |cur_codepoint| fit on the line,
   // but also that we'll perform kinsoku rules correctly.
   bool mustLineBreak(int cur_codepoint, const std::string& rest);
 
-  /**
-   * Returns whether another character can be placed on the screen.
-   */
+  // Returns whether another character can be placed on the screen.
   bool isFull() const;
 
-  /// Called when a PauseLongOperation happens.
+  // Called when a PauseLongOperation happens.
   void pause();
 
-  /**
-   * Sets (and displays, if appropriate) the name of the current speaker.
-   */
+  // Sets (and displays, if appropriate) the name of the current speaker.
   virtual void setName(const std::string& utf8name,
                        const std::string& next_char);
   void setNameWithoutDisplay(const std::string& utf8name);
@@ -319,14 +237,8 @@ class TextWindow {
   virtual void displayRubyText(const std::string& utf8str) = 0;
 
 
-  /**
-   * @name Selection Mode
-   *
-   * Text Windows are responsible for presenting the questions from
-   * select() and select_s() calls. (select_w() is not done here.)
-   *
-   * @{
-   */
+  // Text Windows are responsible for presenting the questions from
+  // select() and select_s() calls. (select_w() is not done here.)
   virtual void startSelectionMode();
 
   bool inSelectionMode() { return in_selection_mode_; }
@@ -336,12 +248,9 @@ class TextWindow {
   virtual void setSelectionCallback(const boost::function<void(int)>& func);
 
   void endSelectionMode();
-  /// @}
 
  protected:
-  /**
-   * Accessor for the selection_callback_ for TextWindow subclasses
-   */
+  // Accessor for the |selection_callback_| for TextWindow subclasses
   const boost::function<void(int)>& selectionCallback();
 
   // Implementation called by the layout method character(). character() is
@@ -353,7 +262,7 @@ class TextWindow {
                              int insertion_point_x,
                              int insertion_point_y) = 0;
 
-  /// The actual selection items in this TextWindow.
+  // The actual selection items in this TextWindow.
   typedef boost::ptr_vector<SelectionElement> Selections;
   Selections selections_;
 
@@ -363,108 +272,83 @@ class TextWindow {
   void renderFaces(std::ostream* tree, int behind);
 
  protected:
-  /// We cache the size of the screen so we don't need the machine in
-  /// some accessors.
+  // We cache the size of the screen so we don't need the machine in
+  // some accessors.
   int screen_width_, screen_height_;
 
-  /// Our numeric window identifier.
+  // Our numeric window identifier.
   int window_num_;
 
-  /// The waku set number.
+  // The waku set number.
   int waku_set_;
 
-  /// The window decorations for the text window
+  // The window decorations for the text window
   boost::scoped_ptr<TextWaku> textbox_waku_;
 
-  /**
-   * @name Insertion point
-   *
-   * The text insertion point. These two numbers are relative to the
-   * text window location and represent the top left corner of where
-   * the next piece of text should be inserted.
-   *
-   * @{
-   */
+  // The text insertion point. These two numbers are relative to the
+  // text window location and represent the top left corner of where
+  // the next piece of text should be inserted.
   int text_insertion_point_x_;
   int text_insertion_point_y_;
 
-  /// Current ruby insertion point (or -1 if markRubyBegin() hasn't
-  /// been called)
+  // Current ruby insertion point (or -1 if markRubyBegin() hasn't
+  // been called)
   int ruby_begin_point_;
 
-  /// The line number in this text window; used to detect whether we
-  /// have filled this text box
+  // The line number in this text window; used to detect whether we
+  // have filled this text box
   int current_line_number_;
 
-  /// The initial value of text_insertion_point_y_ on new lines.
+  // The initial value of text_insertion_point_y_ on new lines.
   int current_indentation_in_pixels_;
 
-  /// Whether the last token was a setName. This is used to control indentation
+  // Whether the last token was a setName. This is used to control indentation
   /// for quotes.
   bool last_token_was_name_;
 
-  /// @}
-
-  /**
-   * @name Text output properties
-   *
-   * @{
-   */
-
-  /// The default font size.
+  // The default font size.
   int default_font_size_in_pixels_;
 
-  /// The current size of the font
+  // The current size of the font
   int font_size_in_pixels_;
 
-  /// The current size of the ruby text in pixels
+  // The current size of the ruby text in pixels
   int ruby_size_;
 
-  /// Size of the window in characters
+  // Size of the window in characters
   int x_window_size_in_chars_, y_window_size_in_chars_;
 
-  /// Spacing between characters
+  // Spacing between characters
   int x_spacing_, y_spacing_;
 
-  /// Whether to indent (INDENT_USE)
+  // Whether to indent (INDENT_USE)
   int use_indentation_;
 
-  /// The default colour. Initialized to \#COLOR_TABLE.000, but can be
-  /// changed with the SetFontColour() command.
+  // The default colour. Initialized to #COLOR_TABLE.000, but can be
+  // changed with the SetFontColour() command.
   RGBColour default_colour_;
 
-  /// The current colour. Initialized to the default colour on every
-  /// clearWin() call.
+  // The current colour. Initialized to the default colour on every
+  // clearWin() call.
   RGBColour font_colour_;
 
-  /// @}
-
-  /// Determines how the window will react to pause()
-  /// calls. Initialized to \#WINDOW.x.R_COMMAND_MOD.
+  // Determines how the window will react to pause()
+  // calls. Initialized to #WINDOW.x.R_COMMAND_MOD.
   int action_on_pause_;
 
-  /**
-   * @name Positional data
-   *
-   * @{
-   */
   int origin_, x_distance_from_origin_, y_distance_from_origin_;
-
-  /// @}
 
   int upper_box_padding_;
   int lower_box_padding_;
   int left_box_padding_;
   int right_box_padding_;
 
-  /// Whether r_, etc is a per-window colour.
+  // Whether r_, etc is a per-window colour.
   int window_attr_mod_;
 
-  /// The default window background colour.
-  /// @{
+  // The default window background colour.
   RGBAColour colour_;
   int filter_;
-  /// @}
 
   int is_visible_;
 
@@ -480,19 +364,13 @@ class TextWindow {
   int keycursor_type_;
   Point keycursor_pos_;
 
-  /**
-   * @name Name display options
-   *
-   * Options related to the display of the current speaker's name.
-   */
-
-  /// Describes how to render character names.
-  /// - 0: Display names inline (default)
-  /// - 1: Display names in a seperate window
-  /// - 2: Do not display names
+  // Describes how to render character names.
+  // - 0: Display names inline (default)
+  // - 1: Display names in a seperate window
+  // - 2: Do not display names
   int name_mod_;
 
-  /// Waku set to use for the text box in the case where name_mod_ == 1.
+  // Waku set to use for the text box in the case where name_mod_ == 1.
   int name_waku_set_;
 
   boost::scoped_ptr<TextWaku> namebox_waku_;
@@ -501,7 +379,7 @@ class TextWindow {
 
   int name_waku_dir_set_;
 
-  /// Spacing between characters
+  // Spacing between characters
   int name_x_spacing_;
 
   int horizontal_namebox_padding_;
@@ -518,24 +396,14 @@ class TextWindow {
 
   // The number of characters in the window (or |minimum_namebox_size_|).
   int namebox_characters_;
-  /// @}
 
-  /**
-   * @name Selection mode data
-   *
-   * Text boxes can be in selection mode, in which case a
-   * Select_LongOperation is on the top of the RLMachine's call stack
-   * and has
-   *
-   * @{
-   */
-  /// Whether this text box currently contains
+  // Text boxes can be in selection mode, in which case a Select_LongOperation
+  // is on the top of the RLMachine's call stack.
   bool in_selection_mode_;
 
-  /// Callback function for when item is selected; usually will call a
-  /// specific method on Select_LongOperation
+  // Callback function for when item is selected; usually will call a
+  // specific method on Select_LongOperation
   boost::function<void(int)> selection_callback_;
-  /// @}
 
   struct FaceSlot;
   boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];

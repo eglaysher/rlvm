@@ -38,8 +38,6 @@ class SDLSurface;
 class SDLSystem;
 class SelectionElement;
 
-// -----------------------------------------------------------------------
-
 class SDLTextWindow : public TextWindow {
  public:
   SDLTextWindow(SDLSystem& system, int window);

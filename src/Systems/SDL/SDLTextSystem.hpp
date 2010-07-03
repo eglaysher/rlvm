@@ -31,11 +31,10 @@
 #include <map>
 #include <string>
 
-#include "Systems/Base/TextSystem.hpp"
-
 #include <boost/ptr_container/ptr_map.hpp>
-
 #include <SDL/SDL_ttf.h>
+
+#include "Systems/Base/TextSystem.hpp"
 
 class Point;
 class RLMachine;
@@ -59,14 +58,9 @@ class SDLTextSystem : public TextSystem {
   boost::shared_ptr<TTF_Font> getFontOfSize(int size);
 
  private:
-  /**
-   * @name Font storage
-   *
-   * @{
-   */
+  // Font storage.
   typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
   FontSizeMap map_;
-  /// @}
 
   SDLSystem& sdl_system_;
 };

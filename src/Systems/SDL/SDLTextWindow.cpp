@@ -25,61 +25,49 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/SDL/SDLTextSystem.hpp"
-#include "Systems/Base/TextWindowButton.hpp"
-#include "Systems/Base/SelectionElement.hpp"
 #include "Systems/SDL/SDLTextWindow.hpp"
-#include "Systems/SDL/SDLSurface.hpp"
-#include "Systems/SDL/SDLSystem.hpp"
-#include "Systems/SDL/SDLUtils.hpp"
-
-#include "libReallive/gameexe.h"
-
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_ttf.h>
-
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include "Utilities/Exception.hpp"
-
-#include "utf8cpp/utf8.h"
-#include "Utilities/StringUtilities.hpp"
 
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL_ttf.h>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+
+#include "Systems/Base/Colour.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SelectionElement.hpp"
+#include "Systems/Base/SystemError.hpp"
+#include "Systems/Base/TextWindowButton.hpp"
+#include "Systems/SDL/SDLSurface.hpp"
+#include "Systems/SDL/SDLSystem.hpp"
+#include "Systems/SDL/SDLTextSystem.hpp"
+#include "Systems/SDL/SDLUtils.hpp"
+#include "Utilities/Exception.hpp"
+#include "Utilities/StringUtilities.hpp"
+#include "libReallive/gameexe.h"
+#include "utf8cpp/utf8.h"
+
 using namespace std;
 using namespace boost;
-
-// -----------------------------------------------------------------------
 
 SDLTextWindow::SDLTextWindow(SDLSystem& system, int window_num)
     : TextWindow(system, window_num), sdl_system_(system) {
   clearWin();
 }
 
-// -----------------------------------------------------------------------
-
 SDLTextWindow::~SDLTextWindow() {
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLTextWindow::textSurface() {
   return surface_;
 }
 
-// -----------------------------------------------------------------------
-
 boost::shared_ptr<Surface> SDLTextWindow::nameSurface() {
   return name_surface_;
 }
-
-// -----------------------------------------------------------------------
 
 void SDLTextWindow::clearWin() {
   TextWindow::clearWin();
@@ -92,15 +80,11 @@ void SDLTextWindow::clearWin() {
   name_surface_.reset();
 }
 
-// -----------------------------------------------------------------------
-
 void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
   RGBColour shadow = RGBAColour::Black().rgb();
   name_surface_ = system_.text().renderText(
       utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLTextWindow::addSelectionItem(const std::string& utf8str,
                                      int selection_id) {
@@ -130,8 +114,6 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLTextWindow::renderGlyphAt(const std::string& current, int font_size,
                                   const RGBColour& font_colour,
