@@ -75,60 +75,6 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   return it->second;
 }
 
-boost::shared_ptr<Surface> SDLTextSystem::renderText(
-  const std::string& utf8str, int size, int xspace, int yspace,
-  const RGBColour& colour, RGBColour* shadow_colour) {
-  // TODO(erg): Entirely rewrite this method in terms of renderUTF8Glyph so we
-  // can handle the x/yspacing correctly.
-
-  // Pick the correct font
-  shared_ptr<TTF_Font> font = getFontOfSize(size);
-
-  // Naively render. Ignore most of the arguments for now
-  SDL_Color sdl_colour;
-  RGBColourToSDLColor(colour, &sdl_colour);
-  boost::shared_ptr<SDL_Surface> text(
-      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_colour),
-      SDL_FreeSurface);
-  if (text == NULL) {
-    // TODO(erg): Make our callers check for NULL.
-    return shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()),
-                                              buildNewSurface(Size(1, 1))));
-  }
-
-  boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour && fontShadow()) {
-    SDL_Color sdl_shadow_colour;
-    RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
-    shadow.reset(
-        TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), sdl_shadow_colour),
-        SDL_FreeSurface);
-  }
-
-  // TODO(erg): cast is least evil for now because I would otherwise have to do
-  // some major redesign to *System.
-  Size out_size(text->w, text->h);
-  boost::shared_ptr<SDLSurface> surface(
-      boost::static_pointer_cast<SDLSurface>(
-          system().graphics().buildSurface(out_size)));
-
-  // TODO(erg): Surely there's a way to allocate with something other than
-  // black, right?
-  surface->fill(RGBAColour::Clear());
-
-  if (shadow) {
-    Size offset(text->w - 2, text->h - 2);
-    surface->blitFROMSurface(
-        shadow.get(), Rect(Point(0, 0), offset), Rect(Point(2, 2), offset),
-        255);
-  }
-  surface->blitFROMSurface(
-      text.get(), Rect(Point(0, 0), out_size), Rect(Point(0, 0), out_size),
-      255);
-
-  return surface;
-}
-
 void SDLTextSystem::renderGlyphOnto(
     const std::string& current,
     int font_size,

@@ -57,12 +57,3 @@ boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
   return it->second;
 }
 
-boost::shared_ptr<Surface> TestTextSystem::renderText(
-      const std::string& utf8str, int size, int xspace,
-      int yspace, const RGBColour& colour, RGBColour* shadow_colour) {
-  int xsize = utf8::distance(utf8str.begin(), utf8str.end()) * 20;
-
-  return boost::shared_ptr<Surface>(
-      MockSurface::Create(utf8str, Size(xsize, 20)));
-}
-

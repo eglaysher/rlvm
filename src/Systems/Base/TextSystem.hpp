@@ -211,9 +211,13 @@ class TextSystem : public EventListener {
   void setMousePosition(const Point& pos);
   bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
-  virtual boost::shared_ptr<Surface> renderText(
+  // Returns a surface with |utf8str| rendered with the other specified
+  // properties. Will search |utf8str| for object text syntax and will change
+  // various properties based on that syntax.
+  boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
-      int yspace, const RGBColour& colour, RGBColour* shadow_colour) = 0;
+      int yspace, const RGBColour& colour, RGBColour* shadow_colour);
+
   virtual void renderGlyphOnto(
       const std::string& current,
       int font_size,

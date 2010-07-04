@@ -41,6 +41,8 @@
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextKeyCursor.hpp"
 #include "Systems/Base/TextPage.hpp"
@@ -48,6 +50,7 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
+#include "utf8cpp/utf8.h"
 
 using boost::bind;
 using boost::shared_ptr;
@@ -459,6 +462,66 @@ bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
   }
 
   return false;
+}
+
+boost::shared_ptr<Surface> TextSystem::renderText(
+    const std::string& utf8str, int size, int xspace, int yspace,
+    const RGBColour& colour, RGBColour* shadow_colour) {
+  // On the first pass, we figure out how large of a surface we need for
+  // rendering the text.
+  int currentSize = size;
+  int totalHeight = 0;
+  int maxWidth = 0;
+  int currentLineWidth = 0;
+  int currentLineHeight = 0;
+  std::string::const_iterator it = utf8str.begin();
+  std::string::const_iterator strend = utf8str.end();
+  while (it != strend) {
+    int codepoint = utf8::next(it, strend);
+    if (codepoint == '#') {
+      // TODO(erg): Take action on this control character.
+    } else {
+      int w = charWidth(currentSize, codepoint);
+      // TODO(erg): xspace should be added on the next character add.
+      currentLineWidth += (w + xspace);
+
+      maxWidth = std::max(maxWidth, currentLineWidth);
+      currentLineHeight = std::max(currentLineHeight, currentSize);
+    }
+  }
+  totalHeight += currentLineHeight;
+
+  Size out_size(maxWidth, totalHeight);
+  boost::shared_ptr<Surface> surface(
+      system().graphics().buildSurface(out_size));
+  // TODO(erg): Surely there's a way to allocate with something other than
+  // black, right?
+  surface->fill(RGBAColour::Clear());
+
+  int currentX = 0;
+  int currentY = 0;
+  currentSize = size;
+  it = utf8str.begin();
+  std::string::const_iterator cur_end = it;
+  utf8::next(cur_end, strend);
+  while (it != strend) {
+    std::string character(it, cur_end);
+
+    renderGlyphOnto(character,
+                    currentSize,
+                    colour,
+                    shadow_colour,
+                    currentX,
+                    currentY,
+                    surface);
+    currentX += currentSize + xspace;
+
+    it = cur_end;
+    if (cur_end != strend)
+      utf8::next(cur_end, strend);
+  }
+
+  return surface;
 }
 
 void TextSystem::reset() {

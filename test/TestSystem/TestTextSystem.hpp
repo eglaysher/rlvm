@@ -53,9 +53,6 @@ class TestTextSystem : public TextSystem {
   bool handleMouseClick(RLMachine& machine, const Point& pos,
                         bool pressed) { return false; }
 
-  boost::shared_ptr<Surface> renderText(
-      const std::string& utf8str, int size, int xspace,
-      int yspace, const RGBColour& colour, RGBColour* shadow_colour);
   virtual void renderGlyphOnto(
       const std::string& current,
       int font_size,
