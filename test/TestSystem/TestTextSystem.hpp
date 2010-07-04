@@ -28,6 +28,7 @@
 #ifndef TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
 #define TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
 
+#include "Systems/Base/Rect.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include <boost/ptr_container/ptr_map.hpp>
 #include <string>
@@ -53,14 +54,14 @@ class TestTextSystem : public TextSystem {
   bool handleMouseClick(RLMachine& machine, const Point& pos,
                         bool pressed) { return false; }
 
-  virtual void renderGlyphOnto(
+  virtual Size renderGlyphOnto(
       const std::string& current,
       int font_size,
       const RGBColour& font_colour,
       const RGBColour* shadow_colour,
       int insertion_point_x,
       int insertion_point_y,
-      const boost::shared_ptr<Surface>& destination) { };
+      const boost::shared_ptr<Surface>& destination) { return Size(20, 20); }
   int charWidth(int size, uint16_t codepoint) { return 20; }
 };
 

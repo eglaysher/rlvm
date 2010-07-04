@@ -75,7 +75,7 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   return it->second;
 }
 
-void SDLTextSystem::renderGlyphOnto(
+Size SDLTextSystem::renderGlyphOnto(
     const std::string& current,
     int font_size,
     const RGBColour& font_colour,
@@ -98,7 +98,7 @@ void SDLTextSystem::renderGlyphOnto(
     // Bug during Kyou's path. The string is printed "". Regression in parser?
     cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the character \""
          << current << "\". Hopefully continuing..." << endl;
-    return;
+    return Size(0, 0);
   }
 
   boost::shared_ptr<SDL_Surface> shadow;
@@ -124,6 +124,7 @@ void SDLTextSystem::renderGlyphOnto(
   Size size(character->w, character->h);
   sdl_surface->blitFROMSurface(
       character.get(), Rect(Point(0, 0), size), Rect(insertion, size), 255);
+  return size;
 }
 
 int SDLTextSystem::charWidth(int size, uint16_t codepoint) {

@@ -49,7 +49,7 @@ class SDLTextSystem : public TextSystem {
 
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
 
-  virtual void renderGlyphOnto(
+  virtual Size renderGlyphOnto(
       const std::string& current,
       int font_size,
       const RGBColour& font_colour,

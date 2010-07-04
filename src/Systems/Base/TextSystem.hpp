@@ -48,6 +48,7 @@ class Memory;
 class Point;
 class RGBColour;
 class RLMachine;
+class Size;
 class Surface;
 class System;
 class TextKeyCursor;
@@ -218,7 +219,8 @@ class TextSystem : public EventListener {
       const std::string& utf8str, int size, int xspace,
       int yspace, const RGBColour& colour, RGBColour* shadow_colour);
 
-  virtual void renderGlyphOnto(
+  // Renders a glyph onto destination. Returns the size of the glyph blitted.
+  virtual Size renderGlyphOnto(
       const std::string& current,
       int font_size,
       const RGBColour& font_colour,
@@ -226,6 +228,7 @@ class TextSystem : public EventListener {
       int insertion_point_x,
       int insertion_point_y,
       const boost::shared_ptr<Surface>& destination) = 0;
+
   virtual int charWidth(int size, uint16_t codepoint) = 0;
 
   TextSystemGlobals& globals() { return globals_; }

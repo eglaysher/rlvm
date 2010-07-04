@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -464,61 +465,168 @@ bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
   return false;
 }
 
+bool parseInteger(std::string::const_iterator& begin,
+                  std::string::const_iterator end,
+                  int& out_value) {
+  std::string::const_iterator str_begin = begin;
+
+  if (begin != end && *begin == '-')
+    begin++;
+  while (begin != end && *begin >= '0' && *begin <= '9')
+    begin++;
+
+  if (str_begin == begin)
+    return false;
+
+  out_value = boost::lexical_cast<int>(std::string(str_begin, begin));
+  return true;
+}
+
 boost::shared_ptr<Surface> TextSystem::renderText(
     const std::string& utf8str, int size, int xspace, int yspace,
     const RGBColour& colour, RGBColour* shadow_colour) {
   // On the first pass, we figure out how large of a surface we need for
   // rendering the text.
-  int currentSize = size;
-  int totalHeight = 0;
-  int maxWidth = 0;
-  int currentLineWidth = 0;
-  int currentLineHeight = 0;
+  int current_size = size;
+  int total_height = 0;
+  int max_width = 0;
+  int current_line_width = 0;
+  int current_line_height = 0;
   std::string::const_iterator it = utf8str.begin();
   std::string::const_iterator strend = utf8str.end();
   while (it != strend) {
     int codepoint = utf8::next(it, strend);
-    if (codepoint == '#') {
-      // TODO(erg): Take action on this control character.
-    } else {
-      int w = charWidth(currentSize, codepoint);
-      // TODO(erg): xspace should be added on the next character add.
-      currentLineWidth += (w + xspace);
+    bool add_char = true;
 
-      maxWidth = std::max(maxWidth, currentLineWidth);
-      currentLineHeight = std::max(currentLineHeight, currentSize);
+    if (codepoint == '#') {
+      add_char = false;
+      codepoint = utf8::next(it, strend);
+      switch (codepoint) {
+        // TODO(erg): While playtesting with this new parser, I noticed a '#a'
+        // control code that wasn't mentioned in xclannad's source or in rldev,
+        // but is used in Little Busters.
+        case 'D':
+        case 'd': {
+          total_height += current_line_height + yspace;
+          current_line_height = 0;
+          break;
+        }
+        case 'S':
+        case 's': {
+          int val;
+          if (parseInteger(it, strend, val)) {
+            current_size = val;
+          } else {
+            current_size = size;
+          }
+          break;
+        }
+        case 'C':
+        case 'c': {
+          // Consume an integer. Or don't.
+          int val;
+          parseInteger(it, strend, val);
+        }
+        case 'X':
+        case 'x':
+        case 'Y':
+        case 'y':
+        case '#':
+          break;
+        default: {
+          // Ooops. This isn't a control code.
+          add_char = true;
+        }
+      }
+    }
+
+    if (add_char) {
+      int w = charWidth(current_size, codepoint);
+      // TODO(erg): xspace should be added on the next character add.
+      current_line_width += (w + xspace);
+
+      max_width = std::max(max_width, current_line_width);
+      current_line_height = std::max(current_line_height, current_size);
     }
   }
-  totalHeight += currentLineHeight;
+  total_height += current_line_height;
 
-  Size out_size(maxWidth, totalHeight);
-  boost::shared_ptr<Surface> surface(
-      system().graphics().buildSurface(out_size));
   // TODO(erg): Surely there's a way to allocate with something other than
   // black, right?
+  boost::shared_ptr<Surface> surface(
+      system().graphics().buildSurface(Size(max_width, total_height)));
   surface->fill(RGBAColour::Clear());
 
+  RGBColour current_colour = colour;
   int currentX = 0;
   int currentY = 0;
-  currentSize = size;
+  current_size = size;
+  current_line_height = 0;
   it = utf8str.begin();
   std::string::const_iterator cur_end = it;
-  utf8::next(cur_end, strend);
   while (it != strend) {
+    int codepoint = utf8::next(cur_end, strend);
     std::string character(it, cur_end);
+    bool add_char = true;
 
-    renderGlyphOnto(character,
-                    currentSize,
-                    colour,
-                    shadow_colour,
-                    currentX,
-                    currentY,
-                    surface);
-    currentX += currentSize + xspace;
+    if (codepoint == '#') {
+      add_char = false;
+      codepoint = utf8::next(cur_end, strend);
+      switch (codepoint) {
+        case 'D':
+        case 'd': {
+          currentX = 0;
+          currentY += current_line_height + yspace;
+          current_line_height = 0;
+          break;
+        }
+        case 'S':
+        case 's': {
+          int val;
+          if (parseInteger(cur_end, strend, val)) {
+            current_size = val;
+          } else {
+            current_size = size;
+          }
+          break;
+        }
+        case 'C':
+        case 'c': {
+          // Consume an integer. Or don't.
+          int val;
+          if (parseInteger(cur_end, strend, val)) {
+            Gameexe& gexe = system().gameexe();
+            current_colour = RGBColour(gexe("COLOR_TABLE", val));
+          } else {
+            current_colour = colour;
+          }
+        }
+        case 'X':
+        case 'x':
+        case 'Y':
+        case 'y':
+        case '#':
+          break;
+        default: {
+          // Ooops. This isn't a control code.
+          add_char = true;
+        }
+      }
+    }
+
+    if (add_char) {
+      Size s = renderGlyphOnto(character,
+                               current_size,
+                               current_colour,
+                               shadow_colour,
+                               currentX,
+                               currentY,
+                               surface);
+      currentX += s.width() + xspace;
+      current_line_height = std::max(current_line_height, current_size);
+    }
 
     it = cur_end;
-    if (cur_end != strend)
-      utf8::next(cur_end, strend);
   }
 
   return surface;
