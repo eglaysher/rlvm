@@ -30,8 +30,6 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include <luabind/luabind.hpp>
 
-// -----------------------------------------------------------------------
-
 using namespace luabind;
 
 scope register_system() {

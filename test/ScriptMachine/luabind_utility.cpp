@@ -29,8 +29,6 @@
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
 
-// -----------------------------------------------------------------------
-
 using namespace luabind;
 
 scope register_utility() {

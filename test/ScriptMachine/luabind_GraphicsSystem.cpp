@@ -32,10 +32,10 @@
 
 #include <iostream>
 
-// -----------------------------------------------------------------------
-
 using namespace luabind;
 using namespace std;
+
+namespace {
 
 GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
   return sys.getObject(0, obj_number);
@@ -53,7 +53,7 @@ GraphicsObject& getChildFgObject(GraphicsSystem& sys, int parent, int child) {
   return obj;
 }
 
-// -----------------------------------------------------------------------
+}  // namespace
 
 scope register_graphics_system() {
   return

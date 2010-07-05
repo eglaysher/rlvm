@@ -38,45 +38,37 @@ extern "C" {
     #include "lua.h"
 }
 
-// -----------------------------------------------------------------------
-
 class ScriptMachine;
 
-/**
- * Class which encapsulates all lua scripting. It's created before a System or
- * the RLMachine subclass used in scripting.
- *
- * Because the lua script is parsed first, the script can only call methods on
- * the ScriptWorld object, exposed as "World:...". Callback functions, OTOH,
- * can call into the Machine and System objects:
- *
- * @code
- * World:AddHandler(400, 0, function
- *   Machine:dosomething()
- * end
- * @endcode
- */
+// Class which encapsulates all lua scripting. It's created before a System or
+// the RLMachine subclass used in scripting.
+//
+// Because the lua script is parsed first, the script can only call methods on
+// the ScriptWorld object, exposed as "World:...". Callback functions, OTOH,
+// can call into the Machine and System objects:
+//
+//   World:AddHandler(400, 0, function
+//     Machine:dosomething()
+//   end
 class ScriptWorld {
  public:
   ScriptWorld();
   ~ScriptWorld();
 
-  /**
-   * Copies data from the initial script execution into the ScriptMachine,
-   * since the lua script is executed during the ScriptWorld constructor, but
-   * some of the data is meant for the ScriptMachine.
-   */
+  // Copies data from the initial script execution into the ScriptMachine,
+  // since the lua script is executed during the ScriptWorld constructor, but
+  // some of the data is meant for the ScriptMachine.
   void initializeMachine(ScriptMachine& machine);
 
-  /// Loads the "main" lua testing file (and settings the search path for
-  /// future import() statements).
+  // Loads the "main" lua testing file (and settings the search path for
+  // future import() statements).
   void loadToplevelFile(const std::string& lua_file);
 
-  /// Loads a lua script in the same directory as lua_file.
+  // Loads a lua script in the same directory as lua_file.
   void import(const std::string& file_name);
 
-  /// Returns the sanitized #REGNAME key (as would be found in the ~/.rlvm
-  /// folder).
+  // Returns the sanitized #REGNAME key (as would be found in the ~/.rlvm
+  // folder).
   std::string regname() const;
 
   void setDecisionList(luabind::object table);
@@ -89,7 +81,7 @@ class ScriptWorld {
   // Callback function used to implement addHandler().
   static void RunHandler(luabind::object handler);
 
-  /// The directory containg the passed in |lua_file|. Used as a search path.
+  // The directory containg the passed in |lua_file|. Used as a search path.
   boost::filesystem::path script_dir_;
 
   std::vector<std::string> decisions_;

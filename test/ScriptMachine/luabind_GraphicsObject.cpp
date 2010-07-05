@@ -29,11 +29,9 @@
 #include <luabind/luabind.hpp>
 #include <luabind/out_value_policy.hpp>
 
-// -----------------------------------------------------------------------
-
 using namespace luabind;
 
-// -----------------------------------------------------------------------
+namespace {
 
 Point getClickPointHack(const GraphicsObject& obj) {
   // WARNING! THIS WILL BE REALLY WRONG WHEN THEY USE ADJUSTMENTS, OVERRIDES,
@@ -44,6 +42,8 @@ Point getClickPointHack(const GraphicsObject& obj) {
   // let's go coding!
   return Point(obj.x() + 5, obj.y() + 5);
 }
+
+}  // namespace
 
 scope register_graphics_object() {
   return

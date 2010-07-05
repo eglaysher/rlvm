@@ -30,9 +30,9 @@
 #include <luabind/luabind.hpp>
 #include <luabind/raw_policy.hpp>
 
-// -----------------------------------------------------------------------
-
 using namespace luabind;
+
+namespace {
 
 // For convenience, we don't force script users to manually specify the
 // RLMachine argument, and fetch it ourselves from the globals.
@@ -55,7 +55,7 @@ void injectMouseUp(lua_State* L, EventSystem& sys) {
   sys.injectMouseUp(*machine);
 }
 
-// -----------------------------------------------------------------------
+}  // namespace
 
 scope register_event_system() {
   return

@@ -29,32 +29,25 @@
 
 #include "MachineBase/RLMachine.hpp"
 
-#include <utility>
+#include <luabind/luabind.hpp>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
-#include <luabind/luabind.hpp>
 
-// -----------------------------------------------------------------------
-
-/**
- * A special RLMachine used in testing, which automatically selects specific
- */
+// A special RLMachine used in testing, which automatically selects specific
 class ScriptMachine : public RLMachine {
  public:
   ScriptMachine(System& in_system, libReallive::Archive& in_archive);
   virtual ~ScriptMachine();
 
-  /// Sets the decisions to take
+  // Sets the decisions to take.
   void setDecisionList(const std::vector<std::string>& decisions);
 
   void saveOnDecisions(int slot) { save_on_decision_slot_ = slot; }
 
   // Overloaded from RLMachine:
-
-  /**
-   * So we can effectively intercept requests to pause and x
-   */
+  // So we can effectively intercept requests to pause and selection options.
   virtual void pushLongOperation(LongOperation* long_operation);
 
   void incrementOnSave() { increment_on_save_ = true; }
@@ -68,11 +61,11 @@ class ScriptMachine : public RLMachine {
 
   int current_decision_;
 
-  /// Which game save slot to automatically save to when we automatically make
-  /// a decision, or -1 if disabled.
+  // Which game save slot to automatically save to when we automatically make
+  // a decision, or -1 if disabled.
   int save_on_decision_slot_;
 
-  /// Whether we increment |save_on_decision_slot_| every time we save.
+  // Whether we increment |save_on_decision_slot_| every time we save.
   bool increment_on_save_;
 };  // end of class ScriptMachine
 

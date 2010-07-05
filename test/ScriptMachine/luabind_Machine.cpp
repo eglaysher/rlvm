@@ -28,8 +28,6 @@
 #include "ScriptMachine/ScriptMachine.hpp"
 #include <luabind/luabind.hpp>
 
-// -----------------------------------------------------------------------
-
 using namespace luabind;
 
 scope register_machine() {

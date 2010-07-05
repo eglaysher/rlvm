@@ -51,19 +51,13 @@ ScriptMachine::ScriptMachine(
     increment_on_save_(false) {
 }
 
-// -----------------------------------------------------------------------
-
 ScriptMachine::~ScriptMachine() { }
-
-// -----------------------------------------------------------------------
 
 void ScriptMachine::setDecisionList(
   const std::vector<std::string>& decisions) {
   decisions_ = decisions;
   current_decision_ = 0;
 }
-
-// -----------------------------------------------------------------------
 
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
@@ -124,8 +118,6 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
 
   RLMachine::pushLongOperation(long_operation);
 }
-
-// -----------------------------------------------------------------------
 
 int ScriptMachine::getInt(const std::string& bank, int position) {
   char bchar = bank[0];

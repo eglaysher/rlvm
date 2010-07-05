@@ -54,8 +54,6 @@ using namespace std;
 using namespace luabind;
 namespace fs = boost::filesystem;
 
-// -----------------------------------------------------------------------
-
 ScriptWorld::ScriptWorld() {
   L = lua_open();
   luaopen_base(L);
@@ -66,13 +64,9 @@ ScriptWorld::ScriptWorld() {
   luabind::globals(L)["World"] = this;
 }
 
-// -----------------------------------------------------------------------
-
 ScriptWorld::~ScriptWorld() {
   lua_close(L);
 }
-
-// -----------------------------------------------------------------------
 
 void ScriptWorld::loadToplevelFile(const std::string& lua_file) {
   script_dir_ = fs::path(lua_file).branch_path();
@@ -84,8 +78,6 @@ void ScriptWorld::loadToplevelFile(const std::string& lua_file) {
     throw std::runtime_error(oss.str());
   }
 }
-
-// -----------------------------------------------------------------------
 
 void ScriptWorld::import(const std::string& file_name) {
   fs::path script_path(script_dir_ / file_name);
@@ -103,8 +95,6 @@ void ScriptWorld::import(const std::string& file_name) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 std::string ScriptWorld::regname() const {
   ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
     luabind::globals(L)["Machine"]);
@@ -114,8 +104,6 @@ std::string ScriptWorld::regname() const {
     throw std::logic_error("No machine!?");
   }
 }
-
-// -----------------------------------------------------------------------
 
 void ScriptWorld::setDecisionList(luabind::object table) {
   decisions_.clear();
@@ -134,8 +122,6 @@ void ScriptWorld::setDecisionList(luabind::object table) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void ScriptWorld::error(const std::string& error_message) {
   ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
     luabind::globals(L)["Machine"]);
@@ -144,8 +130,6 @@ void ScriptWorld::error(const std::string& error_message) {
 
   cerr << "ERROR: " << error_message << endl;
 }
-
-// -----------------------------------------------------------------------
 
 void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
   ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
@@ -156,16 +140,12 @@ void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void ScriptWorld::initializeMachine(ScriptMachine& machine) {
   luabind::globals(L)["Machine"] = &machine;
   luabind::globals(L)["System"] = &(machine.system());
 }
 
-// -----------------------------------------------------------------------
-
-/* static */
+// static
 void ScriptWorld::InitializeLuabind(lua_State* L) {
   using namespace luabind;
 
@@ -189,8 +169,6 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
     register_graphics_object()
   ];
 }
-
-// -----------------------------------------------------------------------
 
 // static
 void ScriptWorld::RunHandler(luabind::object handler) {
