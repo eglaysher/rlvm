@@ -35,37 +35,25 @@ TestEventSystem::TestEventSystem(Gameexe& gexe)
     event_system_mock_(new EventSystemMockHandler) {
 }
 
-// -----------------------------------------------------------------------
-
 void TestEventSystem::setMockHandler(
   const boost::shared_ptr<EventSystemMockHandler>& handler) {
   event_system_mock_ = handler;
 }
 
-// -----------------------------------------------------------------------
-
 void TestEventSystem::executeEventSystem(RLMachine& machine) {
 }
-
-// -----------------------------------------------------------------------
 
 bool TestEventSystem::shiftPressed() const {
   return event_system_mock_->shiftPressed();
 }
 
-// -----------------------------------------------------------------------
-
 bool TestEventSystem::ctrlPressed() const {
   return event_system_mock_->ctrlPressed();
 }
 
-// -----------------------------------------------------------------------
-
 unsigned int TestEventSystem::getTicks() const {
   return event_system_mock_->getTicks();
 }
-
-// -----------------------------------------------------------------------
 
 void TestEventSystem::wait(unsigned int milliseconds) const {
   // waiting is a noop.

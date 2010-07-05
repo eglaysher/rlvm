@@ -34,22 +34,15 @@
 #include <sstream>
 
 #include <string>
-#include <vector>
 
 using std::ostringstream;
 using boost::shared_ptr;
-
-// -----------------------------------------------------------------------
 
 TestTextWindow::TestTextWindow(System& system, int x)
     : TextWindow(system, x) {
 }
 
-// -----------------------------------------------------------------------
-
 TestTextWindow::~TestTextWindow() {}
-
-// -----------------------------------------------------------------------
 
 shared_ptr<Surface> TestTextWindow::textSurface() {
   // TODO(erg): May need to use a real size?
@@ -57,13 +50,9 @@ shared_ptr<Surface> TestTextWindow::textSurface() {
       MockSurface::Create("Text Surface", Size(640, 480)));
 }
 
-// -----------------------------------------------------------------------
-
 shared_ptr<Surface> TestTextWindow::nameSurface() {
   return name_surface_;
 }
-
-// -----------------------------------------------------------------------
 
 void TestTextWindow::renderNameInBox(const std::string& utf8str) {
   ostringstream oss;
@@ -71,21 +60,15 @@ void TestTextWindow::renderNameInBox(const std::string& utf8str) {
   name_surface_.reset(MockSurface::Create(oss.str(), Size(640, 480)));
 }
 
-// -----------------------------------------------------------------------
-
 void TestTextWindow::clearWin() {
   TextWindow::clearWin();
   current_contents_ = "";
   name_surface_.reset();
 }
 
-// -----------------------------------------------------------------------
-
 void TestTextWindow::setFontColor(const std::vector<int>& colour_data) {
   TextWindow::setFontColor(colour_data);
 }
-
-// -----------------------------------------------------------------------
 
 bool TestTextWindow::character(const std::string& current,
                                const std::string& next) {
@@ -96,33 +79,23 @@ bool TestTextWindow::character(const std::string& current,
   return ret;
 }
 
-// -----------------------------------------------------------------------
-
 void TestTextWindow::setName(const std::string& utf8name,
                              const std::string& next_char) {
   TextWindow::setName(utf8name, next_char);
 }
-
-// -----------------------------------------------------------------------
 
 void TestTextWindow::hardBrake() {
   TextWindow::hardBrake();
   current_contents_ += "\n";
 }
 
-// -----------------------------------------------------------------------
-
 void TestTextWindow::resetIndentation() {
   TextWindow::resetIndentation();
 }
 
-// -----------------------------------------------------------------------
-
 void TestTextWindow::markRubyBegin() {
   TextWindow::markRubyBegin();
 }
-
-// -----------------------------------------------------------------------
 
 void TestTextWindow::displayRubyText(const std::string& utf8str) {
 }

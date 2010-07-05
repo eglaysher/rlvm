@@ -36,12 +36,8 @@
 
 #include <boost/shared_ptr.hpp>
 
-// -----------------------------------------------------------------------
-
 class System;
 class MockSurface;
-
-// -----------------------------------------------------------------------
 
 class TestGraphicsSystem : public GraphicsSystem {
  public:
@@ -89,7 +85,7 @@ class TestGraphicsSystem : public GraphicsSystem {
  private:
   boost::shared_ptr<MockSurface> haikei_;
 
-  /// Map between device contexts number and their surface.
+  // Map between device contexts number and their surface.
   boost::shared_ptr<MockSurface> display_contexts_[16];
 
   // A list of user injected surfaces to hand back for named files.

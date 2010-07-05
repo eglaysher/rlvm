@@ -34,16 +34,10 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
-// -----------------------------------------------------------------------
-
 TestTextSystem::TestTextSystem(System& system, Gameexe& gexe)
     : TextSystem(system, gexe) {}
 
-// -----------------------------------------------------------------------
-
 TestTextSystem::~TestTextSystem() { }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
   WindowMap::iterator it = text_window_.find(text_window_num);

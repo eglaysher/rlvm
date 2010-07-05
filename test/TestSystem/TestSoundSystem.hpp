@@ -33,9 +33,7 @@
 
 class Gameexe;
 
-/**
- * Test sound system
- */
+// Test sound system
 class TestSoundSystem : public SoundSystem {
  public:
   explicit TestSoundSystem(System& system);
@@ -76,6 +74,5 @@ class TestSoundSystem : public SoundSystem {
 
   std::string bgm_name_;
 };  // end of class TestSoundSystem
-
 
 #endif  // TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_

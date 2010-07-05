@@ -39,8 +39,6 @@
 
 using namespace std;
 
-// -----------------------------------------------------------------------
-
 TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
   : GraphicsSystem(system, gexe) {
   for (int i = 0; i < 16; ++i) {
@@ -55,8 +53,6 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
   haikei_.reset(MockSurface::Create("Haikei"));
   haikei_->allocate(screenSize());
 }
-
-// -----------------------------------------------------------------------
 
 void TestGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16)
@@ -81,8 +77,6 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
   display_contexts_[dc]->allocate(size);
 }
 
-// -----------------------------------------------------------------------
-
 void TestGraphicsSystem::freeDC(int dc) {
   if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
@@ -94,27 +88,19 @@ void TestGraphicsSystem::freeDC(int dc) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void TestGraphicsSystem::clearAndPromoteObjects() {
 }
-
-// -----------------------------------------------------------------------
 
 GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number) {
   static GraphicsObject x;
   return x;
 }
 
-// -----------------------------------------------------------------------
-
 void TestGraphicsSystem::injectSurface(
     const std::string& short_filename,
     const boost::shared_ptr<Surface>& surface) {
   named_surfaces_[short_filename] = surface;
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename) {
@@ -130,8 +116,6 @@ boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
       MockSurface::Create(short_filename, Size(50, 50)));
 }
 
-// -----------------------------------------------------------------------
-
 boost::shared_ptr<Surface> TestGraphicsSystem::getHaikei() {
   return haikei_;
 }
@@ -139,8 +123,6 @@ boost::shared_ptr<Surface> TestGraphicsSystem::getHaikei() {
 boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc) {
   return display_contexts_[dc];
 }
-
-// -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
   static int surface_num = 0;
@@ -150,8 +132,6 @@ boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
   return boost::shared_ptr<Surface>(MockSurface::Create(oss.str(), s));
 }
 
-// -----------------------------------------------------------------------
-
 void TestGraphicsSystem::blitSurfaceToDC(
   Surface& source_obj, int target_dc,
   int srcX, int srcY, int src_width, int src_height,
@@ -159,8 +139,6 @@ void TestGraphicsSystem::blitSurfaceToDC(
   int alpha) {
   // TODO
 }
-
-// -----------------------------------------------------------------------
 
 MockSurface& TestGraphicsSystem::getMockDC(int dc) {
   return *display_contexts_[dc];

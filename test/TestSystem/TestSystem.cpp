@@ -27,12 +27,9 @@
 
 #include "TestSystem.hpp"
 #include "testUtils.hpp"
-#include <iostream>
 #include <string>
 
 #include "Systems/Base/SystemError.hpp"
-
-using namespace std;
 
 // -----------------------------------------------------------------------
 // TestSystem
@@ -45,8 +42,6 @@ TestSystem::TestSystem(const std::string& path_to_gameexe)
     null_sound_system(*this
 ) {}
 
-// -----------------------------------------------------------------------
-
 TestSystem::TestSystem()
   : gameexe_(),
     null_graphics_system(*this, gameexe_),
@@ -56,8 +51,6 @@ TestSystem::TestSystem()
   gameexe_("__GAMEPATH") = locateTestCase("Gameroot") + "/";
   gameexe_("FOLDNAME.G00") = "G00";
 }
-
-// -----------------------------------------------------------------------
 
 void TestSystem::run(RLMachine& machine) { /* do nothing */ }
 

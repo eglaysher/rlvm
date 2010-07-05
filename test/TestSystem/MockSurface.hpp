@@ -78,18 +78,17 @@ class MockSurface : public Surface {
   MockSurface(const std::string& surface_name, const Size& size);
 
  private:
-  /// Unique name of this surface.
+  // Unique name of this surface.
   std::string surface_name_;
 
-  /// Whether we are allocated.
+  // Whether we are allocated.
   bool allocated_;
 
-  /// Supposed size of this surface.
+  // Supposed size of this surface.
   Size size_;
 
-  /// The region table
+  // The region table
   std::vector<GrpRect> region_table_;
 };
-
 
 #endif  // TEST_TESTSYSTEM_MOCKSURFACE_HPP_
