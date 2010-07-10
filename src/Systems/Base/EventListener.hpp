@@ -31,8 +31,6 @@
 class RLMachine;
 class Point;
 
-// -----------------------------------------------------------------------
-
 enum MouseButton {
   MOUSE_NONE = 0,
   MOUSE_LEFT,
@@ -42,16 +40,12 @@ enum MouseButton {
   MOUSE_WHEELDOWN
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Note that this looks suspiciously like the SDLKey definition with
- * s/SDLK_/RLKEY/;. This was done because I'm lazy and SDL was the
- * first backend I used, and they're right that lining up with ASCII
- * as much as possible is a really good idea.
- */
+// Note that this looks suspiciously like the SDLKey definition with
+// s/SDLK_/RLKEY/;. This was done because I'm lazy and SDL was the
+// first backend I used, and they're right that lining up with ASCII
+// as much as possible is a really good idea.
 enum KeyCode {
-  /* The keyboard syms have been cleverly chosen to map to ASCII */
+  // The keyboard syms have been cleverly chosen to map to ASCII
   RLKEY_UNKNOWN      = 0,
   RLKEY_FIRST        = 0,
   RLKEY_BACKSPACE    = 8,
@@ -92,9 +86,7 @@ enum KeyCode {
   RLKEY_GREATER      = 62,
   RLKEY_QUESTION     = 63,
   RLKEY_AT           = 64,
-  /*
-     Skip uppercase letters
-   */
+  // Skip uppercase letters
   RLKEY_LEFTBRACKET  = 91,
   RLKEY_BACKSLASH    = 92,
   RLKEY_RIGHTBRACKET = 93,
@@ -128,10 +120,10 @@ enum KeyCode {
   RLKEY_y            = 121,
   RLKEY_z            = 122,
   RLKEY_DELETE       = 127,
-  /* End of ASCII mapped keysyms */
+  // End of ASCII mapped keysyms
 
-  /* International keyboard syms */
-  RLKEY_WORLD_0      = 160,    /* 0xA0 */
+  // International keyboard syms
+  RLKEY_WORLD_0      = 160,    // 0xA0
   RLKEY_WORLD_1      = 161,
   RLKEY_WORLD_2      = 162,
   RLKEY_WORLD_3      = 163,
@@ -226,9 +218,9 @@ enum KeyCode {
   RLKEY_WORLD_92     = 252,
   RLKEY_WORLD_93     = 253,
   RLKEY_WORLD_94     = 254,
-  RLKEY_WORLD_95     = 255,    /* 0xFF */
+  RLKEY_WORLD_95     = 255,    // 0xFF
 
-  /* Numeric keypad */
+  // Numeric keypad
   RLKEY_KP0          = 256,
   RLKEY_KP1          = 257,
   RLKEY_KP2          = 258,
@@ -247,7 +239,7 @@ enum KeyCode {
   RLKEY_KP_ENTER     = 271,
   RLKEY_KP_EQUALS    = 272,
 
-  /* Arrows + Home/End pad */
+  // Arrows + Home/End pad
   RLKEY_UP           = 273,
   RLKEY_DOWN         = 274,
   RLKEY_RIGHT        = 275,
@@ -258,7 +250,7 @@ enum KeyCode {
   RLKEY_PAGEUP       = 280,
   RLKEY_PAGEDOWN     = 281,
 
-  /* Function keys */
+  // Function keys
   RLKEY_F1           = 282,
   RLKEY_F2           = 283,
   RLKEY_F3           = 284,
@@ -275,7 +267,7 @@ enum KeyCode {
   RLKEY_F14          = 295,
   RLKEY_F15          = 296,
 
-  /* Key state modifier keys */
+  // Key state modifier keys
   RLKEY_NUMLOCK      = 300,
   RLKEY_CAPSLOCK     = 301,
   RLKEY_SCROLLOCK    = 302,
@@ -287,49 +279,39 @@ enum KeyCode {
   RLKEY_LALT         = 308,
   RLKEY_RMETA        = 309,
   RLKEY_LMETA        = 310,
-  RLKEY_LSUPER       = 311,    /* Left "Windows" key */
-  RLKEY_RSUPER       = 312,    /* Right "Windows" key */
-  RLKEY_MODE         = 313,    /* "Alt Gr" key */
-  RLKEY_COMPOSE      = 314,    /* Multi-key compose key */
+  RLKEY_LSUPER       = 311,    // Left "Windows" key
+  RLKEY_RSUPER       = 312,    // Right "Windows" key
+  RLKEY_MODE         = 313,    // "Alt Gr" key
+  RLKEY_COMPOSE      = 314,    // Multi-key compose key
 
-  /* Miscellaneous function keys */
+  // Miscellaneous function keys
   RLKEY_HELP         = 315,
   RLKEY_PRINT        = 316,
   RLKEY_SYSREQ       = 317,
   RLKEY_BREAK        = 318,
   RLKEY_MENU         = 319,
-  RLKEY_POWER        = 320,    /* Power Macintosh power key */
-  RLKEY_EURO         = 321,    /* Some european keyboards */
-  RLKEY_UNDO         = 322,    /* Atari keyboard has Undo */
+  RLKEY_POWER        = 320,    // Power Macintosh power key
+  RLKEY_EURO         = 321,    // Some european keyboards
+  RLKEY_UNDO         = 322,    // Atari keyboard has Undo
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Interface to receive information from the Event system when the
- * mouse is moved.
- */
+// Interface to receive information from the Event system when the
+// mouse is moved.
 class EventListener {
  public:
   virtual ~EventListener();
 
-  /// Notifies of the new location of the mouse hotspot.
+  // Notifies of the new location of the mouse hotspot.
   virtual void mouseMotion(const Point& new_location);
 
-  /**
-   * A notification of a mouse or key press.
-   *
-   * @return True if this EventListener handled the message (and this message
-   *         shouldn't be dispatched to other EventListeners).
-   */
+  // A notification of a mouse or key press. Returns true if this EventListener
+  // handled the message (and this message shouldn't be dispatched to other
+  // EventListeners).
   virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
 
-  /**
-   * A notification that a key was pressed or unpressed.
-   *
-   * @return True if this EventListener handled the message (and this message
-   *         shouldn't be dispatched to other EventListeners).
-   */
+  // A notification that a key was pressed or unpressed. Returns true if this
+  // EventListener handled the message (and this message shouldn't be
+  // dispatched to other EventListeners).
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 };
 

@@ -63,61 +63,27 @@ class OpenGLImage;
  */
 class SDLTrueTypeFont : public gcn::Font {
  public:
-  /**
-   * Constructor.
-   *
-   * @param filename the filename of the True Type Font.
-   * @param size the size the font should be in.
-   */
   SDLTrueTypeFont(const std::string& filename, int size);
-
-  /**
-   * Destructor.
-   */
   virtual ~SDLTrueTypeFont();
 
-  /**
-   * Sets the spacing between rows in pixels. Default is 0 pixels.
-   * The spacing can be negative.
-   *
-   * @param spacing the spacing in pixels.
-   */
+  // Sets the spacing between rows in pixels. Default is 0 pixels. The spacing
+  // can be negative.
   virtual void setRowSpacing(int spacing);
 
-  /**
-   * Gets the spacing between rows in pixels.
-   *
-   * @return the spacing.
-   */
+  // Gets the spacing between rows in pixels.
   virtual int getRowSpacing();
 
-  /**
-   * Sets the spacing between letters in pixels. Default is 0 pixels.
-   * The spacing can be negative.
-   *
-   * @param spacing the spacing in pixels.
-   */
+  // Sets the spacing between letters in pixels. Default is 0 pixels.  The
+  // spacing can be negative.
   virtual void setGlyphSpacing(int spacing);
 
-  /**
-   * Gets the spacing between letters in pixels.
-   *
-   * @return the spacing.
-   */
+  // Gets the spacing between letters in pixels.
   virtual int getGlyphSpacing();
 
-  /**
-   * Sets the use of anti aliasing..
-   *
-   * @param antaAlias true for use of antia aliasing.
-   */
-  virtual void setAntiAlias(bool antiAlias);
+  // Sets the use of anti aliasing..
+  virtual void setAntiAlias(bool anti_alias);
 
-  /**
-   * Checks if anti aliasing is used.
-   *
-   * @return true if anti aliasing is used.
-   */
+  // Checks if anti aliasing is used.
   virtual bool isAntiAlias();
 
   // Inherited from Font
@@ -127,14 +93,13 @@ class SDLTrueTypeFont : public gcn::Font {
                           int x, int y);
 
  private:
-  TTF_Font *mFont;
+  TTF_Font *font_;
 
-  int mHeight;
-  int mGlyphSpacing;
-  int mRowSpacing;
+  int glyph_spacing_;
+  int row_spacing_;
 
-  std::string mFilename;
-  bool mAntiAlias;
+  std::string filename_;
+  bool anti_alias_;
 
   LRUCache<std::pair<std::string, std::string>,
            boost::shared_ptr<gcn::OpenGLImage> > image_cache_;

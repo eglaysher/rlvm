@@ -41,42 +41,34 @@
 // -----------------------------------------------------------------------
 SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
     : image_cache_(125) {
-  mRowSpacing = 0;
-  mGlyphSpacing = 0;
-  mAntiAlias = true;
-  mFilename = filename;
-  mFont = NULL;
+  row_spacing_ = 0;
+  glyph_spacing_ = 0;
+  anti_alias_ = true;
+  filename_ = filename;
+  font_ = NULL;
 
-  mFont = TTF_OpenFont(filename.c_str(), size);
+  font_ = TTF_OpenFont(filename.c_str(), size);
 
-  if (mFont == NULL) {
+  if (font_ == NULL) {
     throw GCN_EXCEPTION("SDLTrueTypeFont::SDLTrueTypeFont. " +
                         std::string(TTF_GetError()));
   }
 }
 
-// -----------------------------------------------------------------------
-
 SDLTrueTypeFont::~SDLTrueTypeFont() {
-  TTF_CloseFont(mFont);
+  TTF_CloseFont(font_);
 }
-
-// -----------------------------------------------------------------------
 
 int SDLTrueTypeFont::getWidth(const std::string& text) const {
   int w, h;
-  TTF_SizeUTF8(mFont, text.c_str(), &w, &h);
+  TTF_SizeUTF8(font_, text.c_str(), &w, &h);
 
   return w;
 }
 
-// -----------------------------------------------------------------------
-
 int SDLTrueTypeFont::getHeight() const {
-  return TTF_FontHeight(mFont) + mRowSpacing;
+  return TTF_FontHeight(font_) + row_spacing_;
 }
-
-// -----------------------------------------------------------------------
 
 void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
                                  const std::string& text,
@@ -102,10 +94,10 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
     sdlCol.g = col.g;
 
     SDL_Surface *textSurface;
-    if (mAntiAlias) {
-      textSurface = TTF_RenderUTF8_Blended(mFont, text.c_str(), sdlCol);
+    if (anti_alias_) {
+      textSurface = TTF_RenderUTF8_Blended(font_, text.c_str(), sdlCol);
     } else {
-      textSurface = TTF_RenderUTF8_Solid(mFont, text.c_str(), sdlCol);
+      textSurface = TTF_RenderUTF8_Solid(font_, text.c_str(), sdlCol);
     }
 
     SDL_LockSurface(textSurface); {
@@ -125,38 +117,26 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
                       image->getHeight());
 }
 
-// -----------------------------------------------------------------------
-
 void SDLTrueTypeFont::setRowSpacing(int spacing) {
-  mRowSpacing = spacing;
+  row_spacing_ = spacing;
 }
-
-// -----------------------------------------------------------------------
 
 int SDLTrueTypeFont::getRowSpacing() {
-  return mRowSpacing;
+  return row_spacing_;
 }
-
-// -----------------------------------------------------------------------
 
 void SDLTrueTypeFont::setGlyphSpacing(int spacing) {
-  mGlyphSpacing = spacing;
+  glyph_spacing_ = spacing;
 }
-
-// -----------------------------------------------------------------------
 
 int SDLTrueTypeFont::getGlyphSpacing() {
-  return mGlyphSpacing;
+  return glyph_spacing_;
 }
 
-// -----------------------------------------------------------------------
-
-void SDLTrueTypeFont::setAntiAlias(bool antiAlias) {
-  mAntiAlias = antiAlias;
+void SDLTrueTypeFont::setAntiAlias(bool anti_alias) {
+  anti_alias_ = anti_alias_;
 }
-
-// -----------------------------------------------------------------------
 
 bool SDLTrueTypeFont::isAntiAlias() {
-  return mAntiAlias;
+  return anti_alias_;
 }

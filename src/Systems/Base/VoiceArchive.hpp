@@ -40,12 +40,7 @@ class VoiceSample {
  public:
   virtual ~VoiceSample();
 
-  /**
-   * Returns waveform data.
-   *
-   * @param[out] size The size of the returned buffer.
-   * @return A buffer in WAV format.
-   */
+  // Returns waveform data, putting the size of the buffer in |size|.
   virtual char* decode(int* size) = 0;
 
   static const char* MakeWavHeader(int rate, int ch, int bps, int size);
