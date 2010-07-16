@@ -126,17 +126,14 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-
-/**
- * We need help creating AnmGraphicsObjectData s since they don't have a
- * default constructor:
- */
+// We need help creating AnmGraphicsObjectData s since they don't have a
+// default constructor:
 namespace boost { namespace serialization {
 template<class Archive>
 inline void load_construct_data(
   Archive & ar, AnmGraphicsObjectData* t, const unsigned int file_version) {
   ::new(t)AnmGraphicsObjectData(Serialization::g_current_machine->system());
 }
-  }}
+}}  // namespace boost::serialization
 
 #endif  // SRC_SYSTEMS_BASE_ANMGRAPHICSOBJECTDATA_HPP_

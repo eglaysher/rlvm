@@ -31,20 +31,14 @@
 #include <boost/serialization/access.hpp>
 #include <boost/shared_ptr.hpp>
 
-// -----------------------------------------------------------------------
-
 class GraphicsObject;
 class Point;
 class Rect;
 class Surface;
 
-// -----------------------------------------------------------------------
-
-/**
- * Describes what is rendered in a graphics object; Subclasses will
- * store image or text data that need to be associated with a
- * GraphicsObject.
- */
+// Describes what is rendered in a graphics object; Subclasses will
+// store image or text data that need to be associated with a
+// GraphicsObject.
 class GraphicsObjectData {
  public:
   enum AfterAnimation {
@@ -79,74 +73,56 @@ class GraphicsObjectData {
   virtual bool isAnimation() const;
   virtual void playSet(int set);
 
-  /// Returns when an animation has completed. (This only returns true when
-  /// afterAnimation() is set to AFTER_NONE.)
+  // Returns when an animation has completed. (This only returns true when
+  // afterAnimation() is set to AFTER_NONE.)
   bool animationFinished() const;
 
-  /// Whether this object data owns another layer of objects.
+  // Whether this object data owns another layer of objects.
   virtual bool isParentLayer() const { return false; }
 
  protected:
-  /**
-   * Function called after animation ends when this object has been
-   * set up to loop.
-   *
-   * Default implementation does nothing.
-   */
+  // Function called after animation ends when this object has been
+  // set up to loop. Default implementation does nothing.
   virtual void loopAnimation();
 
-  /**
-   * Takes the specified action when we've reached the last frame of
-   * animation.
-   */
+  // Takes the specified action when we've reached the last frame of
+  // animation.
   void endAnimation();
 
-  /**
-   * Template method used during rendering to get the surface to render.
-   * Return a null shared_ptr to disable rendering.
-   */
+  // Template method used during rendering to get the surface to render.
+  // Return a null shared_ptr to disable rendering.
   virtual boost::shared_ptr<Surface> currentSurface(
     const GraphicsObject& rp) = 0;
 
-  /**
-   * Returns the rectangle in currentSurface() to draw to the screen. Override
-   * to return custom rectangles in the case of a custom animation format.
-   */
+  // Returns the rectangle in currentSurface() to draw to the screen. Override
+  // to return custom rectangles in the case of a custom animation format.
   virtual Rect srcRect(const GraphicsObject& go);
 
-  /**
-   * Returns the offset to the destination, which is set on a per surface
-   * basis. This template method can be ignored if you override dstRect().
-   */
+  // Returns the offset to the destination, which is set on a per surface
+  // basis. This template method can be ignored if you override dstRect().
   virtual Point dstOrigin(const GraphicsObject& go);
 
-  /**
-   * Returns the destination rectangle on the screen to draw srcRect()
-   * to. Override to return custom rectangles in the case of a custom animation
-   * format.
-   */
+  // Returns the destination rectangle on the screen to draw srcRect()
+  // to. Override to return custom rectangles in the case of a custom animation
+  // format.
   virtual Rect dstRect(const GraphicsObject& go);
 
-  /**
-   * Controls the alpha during rendering. Default implementation just consults
-   * the GraphicsObject.
-   */
+  // Controls the alpha during rendering. Default implementation just consults
+  // the GraphicsObject.
   virtual int getRenderingAlpha(const GraphicsObject& go);
 
-  /**
-   * Prints a description of this object for the RenderTree log.
-   */
+  // Prints a description of this object for the RenderTree log.
   virtual void objectInfo(std::ostream& tree) = 0;
 
  private:
-  /// Policy of what to do after an animation is finished.
+  // Policy of what to do after an animation is finished.
   AfterAnimation after_animation_;
 
   GraphicsObject* owned_by_;
 
   bool currently_playing_;
 
-  /// Whether we're on the final frame (and are in AFTER_NONE mode).
+  // Whether we're on the final frame (and are in AFTER_NONE mode).
   bool animation_finished_;
 
   friend class boost::serialization::access;

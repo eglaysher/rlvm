@@ -41,20 +41,17 @@ using namespace std;
 
 GraphicsObjectData::GraphicsObjectData()
   : after_animation_(AFTER_NONE), owned_by_(NULL), currently_playing_(false),
-    animation_finished_(false) {}
-
-// -----------------------------------------------------------------------
+    animation_finished_(false) {
+}
 
 GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
   : after_animation_(obj.after_animation_), owned_by_(NULL),
     currently_playing_(obj.currently_playing_),
-    animation_finished_(false) {}
+    animation_finished_(false) {
+}
 
-// -----------------------------------------------------------------------
-
-GraphicsObjectData::~GraphicsObjectData() { }
-
-// -----------------------------------------------------------------------
+GraphicsObjectData::~GraphicsObjectData() {
+}
 
 void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree) {
   boost::shared_ptr<Surface> surface = currentSurface(go);
@@ -80,11 +77,8 @@ void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree) {
   }
 }
 
-// -----------------------------------------------------------------------
-
-void GraphicsObjectData::loopAnimation() { }
-
-// -----------------------------------------------------------------------
+void GraphicsObjectData::loopAnimation() {
+}
 
 void GraphicsObjectData::endAnimation() {
   // Set first, because we may deallocate this by one of our actions
@@ -107,13 +101,9 @@ void GraphicsObjectData::endAnimation() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {
   return currentSurface(go)->getPattern(go.pattNo()).rect;
 }
-
-// -----------------------------------------------------------------------
 
 Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   boost::shared_ptr<Surface> surface = currentSurface(go);
@@ -124,8 +114,6 @@ Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
 
   return Point();
 }
-
-// -----------------------------------------------------------------------
 
 Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
   Point origin = dstOrigin(go);
@@ -139,23 +127,16 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
   return Rect::GRP(xPos1, yPos1, xPos2, yPos2);
 }
 
-// -----------------------------------------------------------------------
-
 int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
   return go.alpha();
 }
-
-// -----------------------------------------------------------------------
 
 bool GraphicsObjectData::isAnimation() const {
   return false;
 }
 
-// -----------------------------------------------------------------------
-
-void GraphicsObjectData::playSet(int set) { }
-
-// -----------------------------------------------------------------------
+void GraphicsObjectData::playSet(int set) {
+}
 
 bool GraphicsObjectData::animationFinished() const {
   return animation_finished_;
