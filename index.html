@@ -1,5 +1,5 @@
 ---
-title: rlvm
+title: "rlvm :: play Key games under Linux and OSX"
 layout: default
 description: "Play Kanon, CLANNAD, planetarian and similar games on your Apple or Linux computer."
 ---
@@ -7,17 +7,16 @@ description: "Play Kanon, CLANNAD, planetarian and similar games on your Apple o
 	<div id="content">
 	  <h1>What's rlvm?</h1>
 
-      <!-- ohloh widget. Their default code is a blocking <script> call that's
-      just a document.write(), which sucks latency-wise. So this is my
-      extracting their Google widget's page directly into an iframe for speed.
-        -->
+      <!-- Social media buttons, allowing for twetting and buzzing. To make
+      sure this doesn't block the main page loading, we instead use an iframe
+      to a page that can load async.-->
       <iframe frameborder="0"
-              src="http://www.ohloh.net/p/rlvm/widgets/project_users_logo.html"
+              src="social-media.html"
               scrolling="no"
-              width="83"
-              height="37"
+              width="140"
+              height="80"
               style="float: right;"
-              longdesc="Ohloh widget">
+              longdesc="Social media widgets">
       </iframe>
 
 	  <p>rlvm is an open source implementation of the RealLive scripting engine
