@@ -14,7 +14,7 @@ rlvm compiles on Ubuntu Gutsy Gibbon (and most likely any modern Linux distribut
 <ul>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.01"
-       onClick="pageTracker._trackEvent('Download', 'source-0.1');">
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.1']);">
       Source code (0.01)
     </a>
   </li>

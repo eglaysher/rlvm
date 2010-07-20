@@ -12,7 +12,7 @@ In addition, there are several stability fixes. The race condition in the BGM sy
 <ul>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.03"
-       onClick="pageTracker._trackEvent('Download', 'source-0.3');">
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.3']);">
       Source code (0.03)
     </a>
   </li>

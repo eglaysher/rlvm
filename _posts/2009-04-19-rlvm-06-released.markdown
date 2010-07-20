@@ -20,21 +20,9 @@ laptop is dying.)
 
 <h2>Downloads</h2>
 <ul>
-  <li class="ubuntuicon">
-    <a href="http://www.elliotglaysher.org/Releases/rlvm_0.6_i386.deb"
-       onClick="pageTracker._trackEvent('Download', 'rlvm_0.6_i386.deb');">
-      Ubuntu (Intrepid) package for x86 machines (version 0.06)
-    </a>
-  </li>
-  <li class="ubuntuicon">
-    <a href="http://www.elliotglaysher.org/Releases/rlvm_0.6_amd64.deb"
-       onClick="pageTracker._trackEvent('Download', 'rlvm_0.6_amd64.deb');">
-      Ubuntu (Intrepid) package for amd64 machines (version 0.06)
-    </a>
-  </li>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.06"
-       onClick="pageTracker._trackEvent('Download', 'source-0.6');">
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.6']);">
       Source code (0.06)
     </a>
   </li>

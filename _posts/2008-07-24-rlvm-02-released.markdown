@@ -16,7 +16,7 @@ rlvm compiles on Ubuntu Hardy Heron (and most likely any modern Linux distributi
 <ul>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.02"
-       onClick="pageTracker._trackEvent('Download', 'source-0.2');">
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.2']);">
       Source code (0.02)
     </a>
   </li>

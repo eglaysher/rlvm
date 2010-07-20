@@ -14,7 +14,7 @@ I thought I should also mention that the whole project history, in addition to b
 <ul>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.04"
-       onClick="pageTracker._trackEvent('Download', 'source-0.4');">
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.4']);">
       Source code (0.04)
     </a>
   </li>

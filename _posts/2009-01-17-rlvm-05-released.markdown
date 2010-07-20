@@ -16,7 +16,7 @@ rlvm compiles on Ubuntu Intrepid Ibex (and most likely any modern Linux distribu
 <ul>
   <li class="sourceicon">
     <a href="http://github.com/eglaysher/rlvm/tarball/release-0.05"
-       onClick="pageTracker._trackEvent('Download', 'source-0.5');">
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.5']);">
       Source code (0.05)
     </a>
   </li>
