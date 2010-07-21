@@ -52,4 +52,15 @@ function LB:clickThroughMinigames ()
             throwState = 2
         end
     end)
+
+    creditState = 0
+    World:addHandler(9503, 245, function ()
+        if creditState == 0 then
+            System:event():injectMouseDown()
+            creditState = 1
+        elseif creditState == 1 then
+            System:event():injectMouseUp()
+            creditState = 2
+        end
+    end)
 end
