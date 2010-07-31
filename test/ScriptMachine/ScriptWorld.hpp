@@ -60,6 +60,11 @@ class ScriptWorld {
   // some of the data is meant for the ScriptMachine.
   void initializeMachine(ScriptMachine& machine);
 
+  // Try to make a decision based on the decision handler. Will return the
+  // empty string if there is no decision handler added or if the decision
+  // handler returned nil.
+  std::string makeDecision(const std::vector<std::string>& decisions);
+
   // Loads the "main" lua testing file (and settings the search path for
   // future import() statements).
   void loadToplevelFile(const std::string& lua_file);
@@ -75,6 +80,11 @@ class ScriptWorld {
   void error(const std::string& error_message);
   void addHandler(int scene, int lineNo, luabind::object handler);
 
+  // Sets a function that can override the decision list. The function takes an
+  // table of strings, which are possible decisions. It will either return the
+  // string to select or nil if the default behaviour should be used instead.
+  void setDecisionHandler(luabind::object obj);
+
  private:
   static void InitializeLuabind(lua_State* L);
 
@@ -85,6 +95,8 @@ class ScriptWorld {
   boost::filesystem::path script_dir_;
 
   std::vector<std::string> decisions_;
+
+  luabind::object decision_handler_;
 
   lua_State* L;
 };  // end of class ScriptWorld

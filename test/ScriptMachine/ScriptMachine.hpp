@@ -35,10 +35,14 @@
 #include <utility>
 #include <vector>
 
+class ScriptWorld;
+
 // A special RLMachine used in testing, which automatically selects specific
 class ScriptMachine : public RLMachine {
  public:
-  ScriptMachine(System& in_system, libReallive::Archive& in_archive);
+  ScriptMachine(ScriptWorld& world,
+                System& in_system,
+                libReallive::Archive& in_archive);
   virtual ~ScriptMachine();
 
   // Sets the decisions to take.
@@ -58,6 +62,8 @@ class ScriptMachine : public RLMachine {
  private:
   typedef std::vector<std::string> Selections;
   Selections decisions_;
+
+  ScriptWorld& world_;
 
   int current_decision_;
 

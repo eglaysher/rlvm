@@ -140,6 +140,29 @@ void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
   }
 }
 
+void ScriptWorld::setDecisionHandler(luabind::object obj) {
+  luabind::globals(L)["DecisionHandler"] = obj;
+}
+
+std::string ScriptWorld::makeDecision(
+    const std::vector<std::string>& decisions) {
+  luabind::object handler = luabind::globals(L)["DecisionHandler"];
+
+  if (type(handler) == LUA_TFUNCTION) {
+    object table = newtable(L);
+    for (int i = 0; i < decisions.size(); ++i) {
+      settable(table, i, decisions[i]);
+    }
+
+    luabind::object ret = handler(table);
+    if (type(ret) == LUA_TSTRING) {
+      return object_cast<std::string>(ret);
+    }
+  }
+
+  return "";
+}
+
 void ScriptWorld::initializeMachine(ScriptMachine& machine) {
   luabind::globals(L)["Machine"] = &machine;
   luabind::globals(L)["System"] = &(machine.system());
@@ -158,7 +181,8 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
     def("regname", &ScriptWorld::regname).
     def("setDecisionList", &ScriptWorld::setDecisionList).
     def("error", &ScriptWorld::error).
-    def("addHandler", &ScriptWorld::addHandler),
+    def("addHandler", &ScriptWorld::addHandler).
+    def("setDecisionHandler", &ScriptWorld::setDecisionHandler),
 
     register_utility(),
 

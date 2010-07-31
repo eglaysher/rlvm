@@ -119,6 +119,15 @@ bool SelectLongOperation::selectOption(const std::string& str) {
   return false;
 }
 
+std::vector<std::string> SelectLongOperation::options() const {
+  std::vector<std::string> opt;
+  for (size_t i = 0; i < options_.size(); i++) {
+    opt.push_back(options_[i].str);
+  }
+
+  return opt;
+}
+
 bool SelectLongOperation::operator()(RLMachine& machine) {
   if (return_value_ != -1) {
     machine.setStoreRegister(return_value_);

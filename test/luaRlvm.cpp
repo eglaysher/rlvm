@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
 
-    ScriptMachine rlmachine(sdlSystem, arc);
+    ScriptMachine rlmachine(world, sdlSystem, arc);
     addAllModules(rlmachine);
     addGameHacks(rlmachine);
     world.initializeMachine(rlmachine);

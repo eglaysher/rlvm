@@ -64,3 +64,14 @@ function LB:clickThroughMinigames ()
         end
     end)
 end
+
+function LB:installRandomDecisionHandler ()
+    World:setDecisionHandler(
+        function (decisions)
+            if string.sub(decisions[0], 1, string.len("＃")) == "＃" then
+                return decisions[0]
+            else
+                return nil
+            end
+        end)
+end

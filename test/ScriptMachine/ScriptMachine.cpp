@@ -35,6 +35,7 @@
 
 #include "LongOperations/SelectLongOperation.hpp"
 #include "MachineBase/Serialization.hpp"
+#include "ScriptMachine/ScriptWorld.hpp"
 #include "libReallive/intmemref.h"
 
 using namespace std;
@@ -44,8 +45,9 @@ using libReallive::IntMemRef;
 // ScriptMachine
 // -----------------------------------------------------------------------
 ScriptMachine::ScriptMachine(
-  System& in_system, libReallive::Archive& in_archive)
+    ScriptWorld& world, System& in_system, libReallive::Archive& in_archive)
   : RLMachine(in_system, in_archive),
+    world_(world),
     current_decision_(0),
     save_on_decision_slot_(-1),
     increment_on_save_(false) {
@@ -64,55 +66,70 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   SelectLongOperation* sel =
       dynamic_cast<SelectLongOperation*>(long_operation);
   if (sel) {
+    // Try our optional, script provided matching behaviour.
+    std::string choice = world_.makeDecision(sel->options());
     bool optionFound = false;
-    int offset = 0;
-    for (; offset < 4; ++offset) {
-      if (current_decision_ + offset >= decisions_.size()) {
-        cerr << "WARNING! Ran out of options on decision list." << endl;
-        break;
-      }
-
-      std::string to_select = decisions_.at(current_decision_ + offset);
-      optionFound = sel->selectOption(to_select);
-
-      if (optionFound) {
-        cerr << "Selected '" << to_select << "'";
-        if (offset > 0)
-          cerr << "(Skipped " << offset << " selections)";
-        cerr << endl;
-
-        if (save_on_decision_slot_ != -1) {
-          cerr << "(Automatically saving to slot " << save_on_decision_slot_
-               << ")" << endl;
-          Serialization::saveGameForSlot(*this, save_on_decision_slot_);
-
-          if (increment_on_save_) {
-            save_on_decision_slot_++;
-            if (save_on_decision_slot_ > 98) {
-              cerr << "Warning: Overflowing save count." << endl;
-              save_on_decision_slot_ = 0;
-            }
-          }
-        }
-
-        break;
+    if (choice != "") {
+      optionFound = sel->selectOption(choice);
+      if (!optionFound) {
+        cerr << "WTF? Script decision handler returned invalid choice" << endl;
+      } else {
+        cerr << "Selected '" << choice << "' (Chosen by decision handler)"
+             << endl;
       }
     }
 
+    // Try our normal matching behaviour.
     if (!optionFound) {
-      cerr << "WARNING! Couldn't call option " << current_decision_
-           << ". Options are: " << endl;
+      int offset = 0;
+      for (; offset < 4; ++offset) {
+        if (current_decision_ + offset >= decisions_.size()) {
+          cerr << "WARNING! Ran out of options on decision list." << endl;
+          break;
+        }
 
-      // Dear C++: I can't wait for the 'auto' keyword:
-      const std::vector<SelectLongOperation::Option>& options = sel->options();
-      for (std::vector<SelectLongOperation::Option>::const_iterator it =
-               options.begin(); it != options.end(); ++it) {
-        cerr << "- \"" << it->str << "\"" << endl;
+        std::string to_select = decisions_.at(current_decision_ + offset);
+        optionFound = sel->selectOption(to_select);
+
+        if (optionFound) {
+          cerr << "Selected '" << to_select << "'";
+          if (offset > 0)
+            cerr << "(Skipped " << offset << " selections)";
+          cerr << endl;
+
+          if (save_on_decision_slot_ != -1) {
+            cerr << "(Automatically saving to slot " << save_on_decision_slot_
+                 << ")" << endl;
+            Serialization::saveGameForSlot(*this, save_on_decision_slot_);
+
+            if (increment_on_save_) {
+              save_on_decision_slot_++;
+              if (save_on_decision_slot_ > 98) {
+                cerr << "Warning: Overflowing save count." << endl;
+                save_on_decision_slot_ = 0;
+              }
+            }
+          }
+
+          break;
+        }
       }
 
-      current_decision_++;
-    } else {
-      current_decision_ += offset + 1;
+      if (!optionFound) {
+        cerr << "WARNING! Couldn't call option " << current_decision_
+             << ". Options are: " << endl;
+
+        // Dear C++: I can't wait for the 'auto' keyword:
+        std::vector<std::string> options = sel->options();
+        for (std::vector<std::string>::const_iterator it =
+                 options.begin(); it != options.end(); ++it) {
+          cerr << "- \"" << *it << "\"" << endl;
+        }
+
+        current_decision_++;
+      } else {
+        current_decision_ += offset + 1;
+      }
     }
   }
 

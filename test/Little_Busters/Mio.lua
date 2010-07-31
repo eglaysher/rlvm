@@ -1,9 +1,10 @@
 World:import("LB_lib.lua")
 LB:installMainMenuHandler()
 LB:clickThroughMinigames()
+LB:installRandomDecisionHandler()
 
 -- Mio Nishizono
--- Adapted from http://gamerssquare.kanpaku.jp/littlebusters.htm#r4
+-- Adapted from http://gamerssquare.kanpaku.jp/littlebusters.htm#r5
 decisions = {
     -- May 14th
     "しばらく見守る",
@@ -86,7 +87,6 @@ decisions = {
     "みんなを呼ぶ",
     -- May 24th
     "真人と遊ぶ",
-    "＃Ａ０４プロテイン", --- ??? Wasn't in the walkthrough. Chose randomly.
     "中庭にいく",
     "教室に戻る",
     "何を話しているか聞きにいく",

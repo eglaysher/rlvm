@@ -68,9 +68,7 @@ class SelectLongOperation : public LongOperation {
   bool selectOption(const std::string& str);
 
   // Returns the underlying list of options.
-  const std::vector<Option>& options() const {
-    return options_;
-  }
+  std::vector<std::string> options() const;
 
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);

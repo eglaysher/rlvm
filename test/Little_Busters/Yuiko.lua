@@ -3,7 +3,7 @@ LB:installMainMenuHandler()
 LB:clickThroughMinigames()
 
 -- Yuiko's path. Copied and reworked from
--- http://gamerssquare.kanpaku.jp/littlebusters.htm
+-- http://gamerssquare.kanpaku.jp/littlebusters.htm#r2
 decisions = {
     -- May 14th
     "しばらく見守る",
