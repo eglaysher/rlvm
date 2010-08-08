@@ -183,18 +183,28 @@ class GraphicsSystem : public EventListener {
   // Whether we display a cursor at all
   void setShowCursor(const int in) { show_curosr_ = in; }
 
-  // Graphics Stack
-  GraphicsStackFrame& addGraphicsStackFrame(const std::string& name);
+  // Graphics stack implementation
+  //
+  // The RealLive virtual machine keeps track of recent graphics commands so
+  // that when the game is restored, these graphics commands can be replayed to
+  // recreate the screen state.
 
-  std::vector<GraphicsStackFrame>& graphicsStack();
+  // Adds |command|, the serialized form of a bytecode used by calling the
+  // BytecodeElement::data().
+  void addGraphicsStackCommand(const std::string& command);
 
+  // Returns the number of entries in the stack.
   int stackSize() const;
+
+  // Clears the graphics stack.
   void clearStack();
 
+  // Removes (up to) |num_items| from the stack. (Stops when the stack is
+  // empty).
   void stackPop(int num_items);
 
   // Replays the graphics stack. This is called after we've reloaded
-  // a saved game.
+  // a saved game and deals with both old style and the new stack system.
   void replayGraphicsStack(RLMachine& machine);
 
   // Sets the current hik script. GraphicsSystem takes ownership, freeing the
@@ -478,6 +488,8 @@ class GraphicsSystem : public EventListener {
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
+
+BOOST_CLASS_VERSION(GraphicsSystem, 1)
 
 #endif  // SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
 

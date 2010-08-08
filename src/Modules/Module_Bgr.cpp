@@ -194,7 +194,10 @@ struct bgrMulti_1 : public RLOp_Void_3<
       }
     }
 
-    graphics.clearAndPromoteObjects();
+    // Promote the objects if we're in normal mode. If we're restoring the
+    // graphics stack, we already have our layers promoted.
+    if (!machine.replaying_graphics_stack())
+      graphics.clearAndPromoteObjects();
 
     shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* effect =
@@ -226,7 +229,7 @@ struct bgrSetYOffset : public RLOp_Void_1< IntConstant_T > {
 // -----------------------------------------------------------------------
 
 BgrModule::BgrModule()
-    : RLModule("Bgr", 1, 40) {
+    : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
   addOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
   addOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
   addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);

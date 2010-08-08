@@ -28,17 +28,30 @@
 #ifndef SRC_MODULES_MODULE_GRP_HPP_
 #define SRC_MODULES_MODULE_GRP_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "MachineBase/MappedRLModule.hpp"
+#include "MachineBase/RLOperation.hpp"
+
+#include <deque>
 #include <string>
 #include <vector>
 
 class GraphicsStackFrame;
 
 // Contains functions for mod<1:33>, Grp.
-class GrpModule : public RLModule {
+class GrpModule : public MappedRLModule {
  public:
   GrpModule();
 };
+
+// An adapter for MappedRLModules that records the incoming command into the
+// graphics stack.
+RLOperation* graphicsStackMappingFun(RLOperation* op);
+
+// -----------------------------------------------------------------------
+
+// Replays the new Graphics stack, string representations of reallive bytecode.
+void replayGraphicsStackCommand(RLMachine& machine,
+                                const std::deque<std::string>& stack);
 
 // Replays the serialized graphics stack; this should put the graphics
 // DCs in the same state as they were before the game was saved.
@@ -47,13 +60,8 @@ class GrpModule : public RLModule {
 // we often have to call the implementation function so that we don't
 // display all the transition effects that happened since the last
 // stackTrunc on load.
-void replayGraphicsStackVector(
+void replayDepricatedGraphicsStackVector(
   RLMachine& machine,
   const std::vector<GraphicsStackFrame>& serializedStack);
-
-// -----------------------------------------------------------------------
-
-// Because I have no clue at all.
-RLOperation* makeBgrMulti1();
 
 #endif  // SRC_MODULES_MODULE_GRP_HPP_

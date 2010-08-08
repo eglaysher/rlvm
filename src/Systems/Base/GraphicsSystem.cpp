@@ -32,8 +32,10 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/vector.hpp>
+#include <deque>
 #include <iostream>
 #include <iterator>
 #include <list>
@@ -62,6 +64,7 @@
 #include "Utilities/File.hpp"
 #include "Utilities/LazyArray.hpp"
 #include "libReallive/gameexe.h"
+#include "libReallive/expression.h"
 
 using boost::iends_with;
 using boost::lexical_cast;
@@ -86,8 +89,6 @@ struct GraphicsSystem::GraphicsObjectSettings {
   boost::scoped_array<unsigned char> position;
 
   std::vector<ObjectSettings> data;
-
-  std::vector<GraphicsStackFrame> graphics_stack;
 
   explicit GraphicsObjectSettings(Gameexe& gameexe);
 
@@ -183,13 +184,31 @@ struct GraphicsSystem::GraphicsObjectImpl {
 
   /// Background objects (at the time of the last save)
   LazyArray<GraphicsObject> saved_background_objects;
+
+  // Whether we restore |old_graphics_stack| using the old method instead of
+  // replaying the new graphics stack format.
+  bool use_old_graphics_stack;
+
+  // List of commands in RealLive bytecode to rebuild the graphics stack at the
+  // current moment.
+  std::deque<std::string> graphics_stack;
+
+  // Commands to rebuild the graphics stack (at the time of the last savepoint)
+  std::deque<std::string> saved_graphics_stack;
+
+  // Old style graphics stack implementation.
+  std::vector<GraphicsStackFrame> old_graphics_stack;
 };
 
 // -----------------------------------------------------------------------
 
 GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl(int size)
-  : foreground_objects(size), background_objects(size),
-    saved_foreground_objects(size), saved_background_objects(size) {}
+    : foreground_objects(size),
+      background_objects(size),
+      saved_foreground_objects(size),
+      saved_background_objects(size),
+      use_old_graphics_stack(false) {
+}
 
 // -----------------------------------------------------------------------
 // GraphicsSystem
@@ -276,36 +295,40 @@ void GraphicsSystem::setCursor(int cursor) {
 
 // -----------------------------------------------------------------------
 
-GraphicsStackFrame& GraphicsSystem::addGraphicsStackFrame(
-  const std::string& name) {
-  graphics_object_settings_->graphics_stack.push_back(GraphicsStackFrame(name));
-  return graphics_object_settings_->graphics_stack.back();
-}
+void GraphicsSystem::addGraphicsStackCommand(const std::string& command) {
+  graphics_object_impl_->graphics_stack.push_back(command);
 
-// -----------------------------------------------------------------------
-
-vector<GraphicsStackFrame>& GraphicsSystem::graphicsStack() {
-  return graphics_object_settings_->graphics_stack;
+  // RealLive only allows 127 commands to be on the stack so game programmers
+  // can be lazy and not clear it.
+  if (graphics_object_impl_->graphics_stack.size() > 127)
+    graphics_object_impl_->graphics_stack.pop_front();
 }
 
 // -----------------------------------------------------------------------
 
 int GraphicsSystem::stackSize() const {
-  return graphics_object_settings_->graphics_stack.size();
+  // I don't think this will ever be accurate in the face of multi()
+  // commands. I'm not sure if this matters because the only use of stackSize()
+  // appears to be this recurring pattern in RL bytecode:
+  //
+  //   x = stackSize()
+  //   ... large graphics demo
+  //   stackTrunk(x)
+  return graphics_object_impl_->graphics_stack.size();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearStack() {
-  graphics_object_settings_->graphics_stack.clear();
+  graphics_object_impl_->graphics_stack.clear();
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::stackPop(int items) {
   for (int i = 0; i < items; ++i) {
-    if (graphics_object_settings_->graphics_stack.size()) {
-      graphics_object_settings_->graphics_stack.pop_back();
+    if (graphics_object_impl_->graphics_stack.size()) {
+      graphics_object_impl_->graphics_stack.pop_back();
     }
   }
 }
@@ -313,11 +336,21 @@ void GraphicsSystem::stackPop(int items) {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::replayGraphicsStack(RLMachine& machine) {
-  // The actual act of replaying the graphics stack will recreate the graphics
-  // stack, so clear it.
-  vector<GraphicsStackFrame> stack_to_replay;
-  stack_to_replay.swap(graphics_object_settings_->graphics_stack);
-  replayGraphicsStackVector(machine, stack_to_replay);
+  if (graphics_object_impl_->use_old_graphics_stack) {
+    // The actual act of replaying the graphics stack will recreate the graphics
+    // stack, so clear it.
+    vector<GraphicsStackFrame> stack_to_replay;
+    stack_to_replay.swap(graphics_object_impl_->old_graphics_stack);
+    replayDepricatedGraphicsStackVector(machine, stack_to_replay);
+    graphics_object_impl_->use_old_graphics_stack = false;
+  } else {
+    std::deque<std::string> stack_to_replay;
+    stack_to_replay.swap(graphics_object_impl_->graphics_stack);
+
+    machine.set_replaying_graphics_stack(true);
+    replayGraphicsStackCommand(machine, stack_to_replay);
+    machine.set_replaying_graphics_stack(false);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -425,12 +458,8 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
       // Display DC0
       getDC(0)->renderToScreen(screenRect(), screenRect(), 255);
       if (tree) {
-        *tree << "Graphic Stack:" << endl;
-        const vector<GraphicsStackFrame>& gstack = graphicsStack();
-        for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
-             it != gstack.end(); ++it) {
-          *tree << "  " << *it << endl;
-        }
+        // TODO(erg): How do we print the new graphics stack?
+        *tree << "Graphic Stack: UNDER CONSTRUCTION" << endl;
       }
       break;
     }
@@ -564,6 +593,8 @@ LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() {
 void GraphicsSystem::takeSavepointSnapshot() {
   foregroundObjects().copyTo(graphics_object_impl_->saved_foreground_objects);
   backgroundObjects().copyTo(graphics_object_impl_->saved_background_objects);
+  graphics_object_impl_->saved_graphics_stack =
+      graphics_object_impl_->graphics_stack;
 }
 
 // -----------------------------------------------------------------------
@@ -665,7 +696,9 @@ template<class Archive>
 void GraphicsSystem::save(Archive& ar, unsigned int version) const {
   ar
     & subtitle_
-    & graphics_object_settings_->graphics_stack
+    & default_grp_name_
+    & default_bgr_name_
+    & graphics_object_impl_->saved_graphics_stack
     & graphics_object_impl_->saved_background_objects
     & graphics_object_impl_->saved_foreground_objects;
 }
@@ -674,11 +707,19 @@ void GraphicsSystem::save(Archive& ar, unsigned int version) const {
 
 template<class Archive>
 void GraphicsSystem::load(Archive& ar, unsigned int version) {
-  ar
-    & subtitle_
-    & graphicsStack()
-    & graphics_object_impl_->background_objects
-    & graphics_object_impl_->foreground_objects;
+  ar & subtitle_;
+  if (version > 0) {
+    ar & default_grp_name_;
+    ar & default_bgr_name_;
+    graphics_object_impl_->use_old_graphics_stack = false;
+    ar & graphics_object_impl_->graphics_stack;
+  } else {
+    graphics_object_impl_->use_old_graphics_stack = true;
+    ar & graphics_object_impl_->old_graphics_stack;
+  }
+
+  ar & graphics_object_impl_->background_objects
+     & graphics_object_impl_->foreground_objects;
 
   // Now alert all subclasses that we've set the subtitle
   setWindowSubtitle(subtitle_,

@@ -192,6 +192,9 @@ class RLMachine {
   // Returns the current Archive we are attached to.
   libReallive::Archive& archive() { return archive_; }
 
+  void set_replaying_graphics_stack(bool in) { replaying_graphics_stack_ = in; }
+  bool replaying_graphics_stack() { return replaying_graphics_stack_; }
+
   // ------------------------------------------------ [ Execuion interface ]
   // Normally, execute_next_instruction will call runOnMachine() on
   // whatever BytecodeElement is currently pointed to by the
@@ -374,7 +377,12 @@ class RLMachine {
   // be placed in |delay_modifications_| for execution later.
   bool delay_stack_modifications_;
 
-  // The actions that were delayed when |delay_stack_modifications_| is on.
+  // Whether we are currently replaying the graphics stack. While replaying the
+  // graphics stack, we shouldn't advance the instruction pointer and do other
+  // stuff.
+  bool replaying_graphics_stack_;
+
+  /// The actions that were delayed when |delay_stack_modifications_| is on.
   std::vector<boost::function<void(void)> > delayed_modifications_;
 
   // An optional set of game specific hacks that run at certain SEEN/line

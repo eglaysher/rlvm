@@ -109,7 +109,8 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
       line_(0),
       system_(in_system),
       mark_savepoints_(true),
-      delay_stack_modifications_(false) {
+      delay_stack_modifications_(false),
+      replaying_graphics_stack_(false) {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libReallive::Scenario* scenario = NULL;
@@ -315,14 +316,16 @@ void RLMachine::executeUntilHalted() {
 }
 
 void RLMachine::advanceInstructionPointer() {
-  std::vector<StackFrame>::reverse_iterator it =
-      find_if(call_stack_.rbegin(), call_stack_.rend(),
-              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+  if (!replaying_graphics_stack()) {
+    std::vector<StackFrame>::reverse_iterator it =
+        find_if(call_stack_.rbegin(), call_stack_.rend(),
+                bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
 
-  if (it != call_stack_.rend()) {
-    it->ip++;
-    if (it->ip == it->scenario->end())
-      halted_ = true;
+    if (it != call_stack_.rend()) {
+      it->ip++;
+      if (it->ip == it->scenario->end())
+        halted_ = true;
+    }
   }
 }
 

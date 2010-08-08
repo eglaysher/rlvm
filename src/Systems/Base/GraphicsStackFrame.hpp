@@ -37,11 +37,10 @@
 
 // -----------------------------------------------------------------------
 
-/**
- * Represents one frame in the graphics stack.
- *
- * @todo Move the serialization code into this class
- */
+// The old way rlvm serialized graphics commands. Deprecated and only kept
+// around to read old save files.
+//
+// TODO(erg): Remove this class around 0.10.
 class GraphicsStackFrame {
  public:
   GraphicsStackFrame();

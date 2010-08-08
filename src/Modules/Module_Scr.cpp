@@ -42,7 +42,7 @@ struct stackNop : public RLOp_Void_1< IntConstant_T > {
     GraphicsSystem& sys = machine.system().graphics();
 
     for (int i = 0; i < numberOfNops; ++i) {
-      sys.addGraphicsStackFrame("Nop");
+      sys.addGraphicsStackCommand("");
     }
   }
 };

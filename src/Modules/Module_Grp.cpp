@@ -27,6 +27,7 @@
 
 #include "Modules/Module_Grp.hpp"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <iostream>
 #include <string>
@@ -51,7 +52,9 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Graphics.hpp"
+#include "libReallive/bytecode.h"
 #include "libReallive/gameexe.h"
+#include "libReallive/expression.h"
 
 using namespace std;
 using namespace boost;
@@ -82,8 +85,10 @@ void blitDC1toDC0(RLMachine& machine) {
   // Mark that the background should be DC0 instead of the Haikei.
   graphics.setGraphicsBackground(BACKGROUND_DC0);
 
-  // Promote the objects
-  graphics.clearAndPromoteObjects();
+  // Promote the objects if we're in normal mode. If we're restoring the
+  // graphics stack, we already have our layers promoted.
+  if (!machine.replaying_graphics_stack())
+    graphics.clearAndPromoteObjects();
 }
 
 // Performs half the grunt work of a recOpen command; Copies DC0 to DC1, loads
@@ -119,11 +124,12 @@ void loadImageToDC1(RLMachine& machine,
   }
 }
 
-void loadDCToDC1(GraphicsSystem& graphics,
+void loadDCToDC1(RLMachine& machine,
                  int srcDc,
                  const Rect& srcRect,
                  const Point& dest,
                  int opacity) {
+  GraphicsSystem& graphics = machine.system().graphics();
   shared_ptr<Surface> dc1 = graphics.getDC(1);
   shared_ptr<Surface> src = graphics.getDC(srcDc);
 
@@ -140,9 +146,11 @@ void performEffect(RLMachine& machine,
                    const shared_ptr<Surface>& src,
                    const shared_ptr<Surface>& dst,
                    int selnum) {
-  LongOperation* lop =
-      EffectFactory::buildFromSEL(machine, src, dst, selnum);
-  machine.pushLongOperation(lop);
+  if (!machine.replaying_graphics_stack()) {
+    LongOperation* lop =
+        EffectFactory::buildFromSEL(machine, src, dst, selnum);
+    machine.pushLongOperation(lop);
+  }
 }
 
 void performEffect(RLMachine& machine,
@@ -150,10 +158,31 @@ void performEffect(RLMachine& machine,
                    const shared_ptr<Surface>& dst,
                    int time, int style, int direction, int interpolation,
                    int xsize, int ysize, int a, int b, int c) {
-  LongOperation* lop =
-      EffectFactory::build(machine, src, dst, time, style, direction,
-                           interpolation, xsize, ysize, a, b, c);
-  machine.pushLongOperation(lop);
+  if (!machine.replaying_graphics_stack()) {
+    LongOperation* lop =
+        EffectFactory::build(machine, src, dst, time, style, direction,
+                             interpolation, xsize, ysize, a, b, c);
+    machine.pushLongOperation(lop);
+  }
+}
+
+// We don't hide text windows when replaying the stack because hiding the
+// window won't be undone like it normally is!
+void performHideAllTextWindows(RLMachine& machine) {
+  if (!machine.replaying_graphics_stack()) {
+    machine.system().text().hideAllTextWindows();
+  }
+}
+
+// Common code to all the openBg commands.
+void OpenBgPrelude(RLMachine& machine, const std::string& filename) {
+  if (!boost::starts_with(filename, "?")) {
+    GraphicsSystem& graphics = machine.system().graphics();
+    graphics.setDefaultGrpName(filename);
+
+    // Only clear the stack when we are the command setting the background.
+    graphics.clearStack();
+  }
 }
 
 // Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
@@ -164,8 +193,6 @@ void performEffect(RLMachine& machine,
 struct allocDC : public RLOp_Void_3<IntConstant_T, IntConstant_T,
                                     IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int width, int height) {
-    machine.system().graphics().addGraphicsStackFrame(GRP_ALLOC)
-      .setTargetDC(dc).setTargetCoordinates(Point(width, height));
     machine.system().graphics().allocateDC(dc, Size(width, height));
   }
 };
@@ -176,9 +203,6 @@ struct allocDC : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 struct wipe : public RLOp_Void_4<IntConstant_T, IntConstant_T,
                                  IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    machine.system().graphics().addGraphicsStackFrame(GRP_WIPE)
-      .setTargetDC(dc).setRGB(r, g, b);
-
     machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b));
   }
 };
@@ -201,10 +225,6 @@ struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-
-    graphics.addGraphicsStackFrame(GRP_LOAD)
-      .setFilename(filename).setTargetDC(dc).setOpacity(opacity)
-      .setMask(use_alpha_);
 
     shared_ptr<Surface> surface(
         graphics.loadSurfaceFromFile(machine, filename));
@@ -237,14 +257,6 @@ struct load_3 : public RLOp_Void_5<
     shared_ptr<Surface> surface(
         graphics.loadSurfaceFromFile(machine, filename));
 
-    graphics.addGraphicsStackFrame(GRP_LOAD)
-        .setFilename(filename)
-        .setTargetDC(dc)
-        .setSourceCoordinates(srcRect)
-        .setTargetCoordinates(dest)
-        .setOpacity(opacity)
-        .setMask(use_alpha_);
-
     Rect destRect = Rect(dest, srcRect.size());
 
     if (dc != 0 && dc != 1) {
@@ -269,15 +281,9 @@ struct display_1
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    graphics.addGraphicsStackFrame(GRP_DISPLAY)
-      .setSourceCoordinates(src)
-      .setSourceDC(dc)
-      .setTargetCoordinates(dest)
-      .setOpacity(opacity);
-
     shared_ptr<Surface> before = graphics.renderToSurface();
 
-    loadDCToDC1(graphics, dc, src, dest, opacity);
+    loadDCToDC1(machine, dc, src, dest, opacity);
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
@@ -302,15 +308,9 @@ struct display_3
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    graphics.addGraphicsStackFrame(GRP_DISPLAY)
-      .setSourceDC(dc)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(dest)
-      .setOpacity(opacity);
-
     shared_ptr<Surface> before = graphics.renderToSurface();
 
-    loadDCToDC1(graphics, dc, srcRect, dest, opacity);
+    loadDCToDC1(machine, dc, srcRect, dest, opacity);
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
@@ -340,15 +340,9 @@ struct display_4
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    graphics.addGraphicsStackFrame(GRP_DISPLAY)
-      .setSourceDC(dc)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(dest)
-      .setOpacity(opacity);
-
     shared_ptr<Surface> before = graphics.renderToSurface();
 
-    loadDCToDC1(graphics, dc, srcRect, dest, opacity);
+    loadDCToDC1(machine, dc, srcRect, dest, opacity);
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
@@ -382,19 +376,12 @@ struct open_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
     GraphicsSystem& graphics = machine.system().graphics();
     shared_ptr<Surface> before = graphics.renderToSurface();
 
-    graphics.addGraphicsStackFrame(GRP_OPEN)
-      .setFilename(filename)
-      .setSourceCoordinates(src)
-      .setTargetCoordinates(dest)
-      .setOpacity(opacity)
-      .setMask(use_alpha_);
-
     loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
     shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
-    machine.system().text().hideAllTextWindows();
+    performHideAllTextWindows(machine);
   }
 };
 
@@ -423,13 +410,6 @@ struct open_3 : public RLOp_Void_5<
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    graphics.addGraphicsStackFrame(GRP_OPEN)
-      .setFilename(filename)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(dest)
-      .setOpacity(opacity)
-      .setMask(use_alpha_);
-
     shared_ptr<Surface> before = graphics.renderToSurface();
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
@@ -439,7 +419,7 @@ struct open_3 : public RLOp_Void_5<
 
     shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
-    machine.system().text().hideAllTextWindows();
+    performHideAllTextWindows(machine);
   }
 };
 
@@ -476,13 +456,6 @@ struct open_4 : public RLOp_Void_13<
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    graphics.addGraphicsStackFrame(GRP_OPEN)
-      .setFilename(fileName)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(dest)
-      .setOpacity(opacity)
-      .setMask(use_alpha_);
-
     shared_ptr<Surface> before = graphics.renderToSurface();
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
@@ -493,12 +466,10 @@ struct open_4 : public RLOp_Void_13<
     shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, time, style, direction,
                   interpolation, xsize, ysize, a, b, c);
-    machine.system().text().hideAllTextWindows();
+    performHideAllTextWindows(machine);
   }
 };
 
-// TODO(erg): I don't appear to be setting the default '???' filename! Handle
-// that next?
 struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
                                      IntConstant_T > {
   void operator()(RLMachine& machine, string fileName, int effectNum,
@@ -508,14 +479,7 @@ struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
     Point destPoint;
     getSELPointAndRect(machine, effectNum, srcRect, destPoint);
 
-    // openBg commands clears the graphics stack.
-    graphics.clearStack();
-
-    graphics.addGraphicsStackFrame(GRP_OPENBG)
-      .setFilename(fileName)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(destPoint)
-      .setOpacity(opacity);
+    OpenBgPrelude(machine, fileName);
 
     shared_ptr<Surface> before = graphics.renderToSurface();
 
@@ -524,7 +488,7 @@ struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
     shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
-    machine.system().text().hideAllTextWindows();
+    performHideAllTextWindows(machine);
   }
 };
 
@@ -546,15 +510,7 @@ struct openBg_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string fileName, int effectNum,
                   Rect srcRect, Point destPt, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-
-    // openBg commands clears the graphics stack.
-    graphics.clearStack();
-
-    graphics.addGraphicsStackFrame(GRP_OPENBG)
-      .setFilename(fileName)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(destPt)
-      .setOpacity(opacity);
+    OpenBgPrelude(machine, fileName);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> before = graphics.renderToSurface();
@@ -564,7 +520,7 @@ struct openBg_3 : public RLOp_Void_5<
 
     shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
-    machine.system().text().hideAllTextWindows();
+    performHideAllTextWindows(machine);
   }
 };
 
@@ -595,15 +551,7 @@ struct openBg_4 : public RLOp_Void_13<
                   int time, int style, int direction, int interpolation,
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
-
-    // openBg commands clears the graphics stack.
-    graphics.clearStack();
-
-    graphics.addGraphicsStackFrame(GRP_OPENBG)
-      .setFilename(fileName)
-      .setSourceCoordinates(srcRect)
-      .setTargetCoordinates(destPt)
-      .setOpacity(opacity);
+    OpenBgPrelude(machine, fileName);
 
     // Set the long operation for the correct transition long operation
     shared_ptr<Surface> before = graphics.renderToSurface();
@@ -615,8 +563,7 @@ struct openBg_4 : public RLOp_Void_13<
     shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, time, style, direction,
                   interpolation, xsize, ysize, a, b, c);
-
-    machine.system().text().hideAllTextWindows();
+    performHideAllTextWindows(machine);
   }
 };
 
@@ -637,13 +584,6 @@ struct copy_3
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.addGraphicsStackFrame(GRP_COPY)
-      .setSourceCoordinates(srcRect)
-      .setSourceDC(src)
-      .setTargetCoordinates(destPoint)
-      .setTargetDC(dst)
-      .setOpacity(opacity)
-      .setMask(use_alpha_);
 
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
@@ -668,11 +608,6 @@ struct copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.addGraphicsStackFrame(GRP_COPY)
-      .setSourceDC(src)
-      .setTargetDC(dst)
-      .setOpacity(opacity)
-      .setMask(use_alpha_);
 
     shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
@@ -1027,10 +962,32 @@ struct multi_dc_0
   }
 };
 
-} // namespace
+// Special case adapter to record every graphics command onto the "graphics
+// stack"
+class GrpStackAdapter : public RLOp_SpecialCase {
+ public:
+  explicit GrpStackAdapter(RLOperation* in) : operation(in) { }
+
+  void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
+    operation->dispatchFunction(machine, ff);
+
+    // Record this command's reallive bytecode form onto the graphics stack.
+    machine.system().graphics().addGraphicsStackCommand(
+        ff.serializableData(machine));
+  }
+
+ private:
+  scoped_ptr<RLOperation> operation;
+};
+
+}  // namespace
+
+RLOperation* graphicsStackMappingFun(RLOperation* op) {
+  return new GrpStackAdapter(op);
+}
 
 GrpModule::GrpModule()
-    : RLModule("Grp", 1, 33) {
+    : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
   using namespace rect_impl;
 
   addOpcode(15, 0, "allocDC", new allocDC);
@@ -1270,14 +1227,37 @@ GrpModule::GrpModule()
   addOpcode(1409, 1, "recMaskStretchBlt", new stretchBlit_1<REC>(true));
 }
 
-void replayOpenBg(RLMachine& machine, const GraphicsStackFrame& f) {
-  loadImageToDC1(machine, f.filename(), f.sourceRect(), f.targetPoint(),
-                 f.opacity(), false);
+// @}
 
-  blitDC1toDC0(machine);
+// -----------------------------------------------------------------------
+
+void replayGraphicsStackCommand(RLMachine& machine,
+                                const std::deque<std::string>& stack) {
+  try {
+    for (deque<std::string>::const_iterator it = stack.begin();
+         it != stack.end(); ++it) {
+      if (*it != "") {
+        // Parse the string as a chunk of Reallive bytecode.
+        libReallive::ConstructionData cdata(0, libReallive::pointer_t());
+        libReallive::BytecodeElement* element =
+            libReallive::BytecodeElement::read(
+                it->c_str(), it->c_str() + it->size(), cdata);
+        libReallive::CommandElement* command =
+            dynamic_cast<libReallive::CommandElement*>(element);
+        if (command) {
+          machine.executeCommand(*command);
+        }
+      }
+    }
+  } catch (std::exception& e) {
+    cerr << "Error while replaying graphics stack: " << e.what() << endl;
+    return;
+  }
 }
 
-void replayGraphicsStackVector(
+// -----------------------------------------------------------------------
+
+void replayDepricatedGraphicsStackVector(
     RLMachine& machine,
     const std::vector<GraphicsStackFrame>& gstack) {
   for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
@@ -1313,13 +1293,14 @@ void replayGraphicsStackVector(
               machine, it->sourceDC(), it->targetDC(), it->opacity());
         }
       } else if (it->name() == GRP_DISPLAY) {
-        GraphicsSystem& graphics = machine.system().graphics();
-        loadDCToDC1(graphics,
+        loadDCToDC1(machine,
                     it->sourceDC(), it->sourceRect(),
                     it->targetPoint(), it->opacity());
         blitDC1toDC0(machine);
       } else if (it->name() == GRP_OPENBG) {
-        replayOpenBg(machine, *it);
+        loadImageToDC1(machine, it->filename(), it->sourceRect(),
+                       it->targetPoint(), it->opacity(), false);
+        blitDC1toDC0(machine);
       } else if (it->name() == GRP_ALLOC) {
         Point target = it->targetPoint();
         allocDC()(machine, it->targetDC(), target.x(), target.y());
