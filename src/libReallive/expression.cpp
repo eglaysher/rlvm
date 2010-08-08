@@ -60,15 +60,11 @@ std::string IntToBytecode(int val) {
 
 namespace libReallive {
 
-/**
- * @name Expression Tokenization
- *
- * Functions that tokenize expression data while parsing the bytecode
- * to create the BytecodeElements. These functions simply tokenize and
- * mark boundaries; they do not perform any parsing.
- *
- * @{
- */
+// Expression Tokenization
+//
+// Functions that tokenize expression data while parsing the bytecode
+// to create the BytecodeElements. These functions simply tokenize and
+// mark boundaries; they do not perform any parsing.
 
 size_t next_token(const char* src) {
   if (*src++ != '$') return 0;
@@ -131,12 +127,6 @@ size_t next_string(const char* src) {
   return end - src;
 }
 
-/**
- * @note This still isn't a robust solution. While it takes care of
- *       the CLANNAD errors, it's not general. What's really needed is
- *       a way to tell if something should be a complex parameter or a
- *       parenthisized expression at tokenization time.
- */
 size_t next_data(const char* src) {
   if (*src == ',')
     return 1 + next_data(src + 1);
@@ -164,30 +154,19 @@ size_t next_data(const char* src) {
   } else return next_expr(src);
 }
 
-//@}
-
 // -----------------------------------------------------------------------
 
-/**
- * @name Expression Parsing
- *
- * @author Elliot, but really Haeleth.
- *
- * Functions used at runtime to parse expressions, both as
- * ExpressionPieces, parameters in function calls, and other uses in
- * some special cases. These functions form a recursive descent parser
- * that parses expressions and parameters in Reallive byte code into
- * ExpressionPieces, which are executed with the current RLMachine.
- *
- * These functions were translated from the O'Caml implementation in
- * dissassembler.ml in RLDev, so really, while I coded this, Haeleth
- * really gets all the credit.
- *
- * @see libReallive::ExpressionElement::parsedExpression()
- * @see RLOperation::parseParameters()
- *
- * @{
- */
+// Expression Parsing
+//
+// Functions used at runtime to parse expressions, both as
+// ExpressionPieces, parameters in function calls, and other uses in
+// some special cases. These functions form a recursive descent parser
+// that parses expressions and parameters in Reallive byte code into
+// ExpressionPieces, which are executed with the current RLMachine.
+//
+// These functions were translated from the O'Caml implementation in
+// dissassembler.ml in RLDev, so really, while I coded this, Haeleth
+// really gets all the credit.
 
 ExpressionPiece* get_expr_token(const char*& src) {
   if (src[0] == 0xff) {
@@ -216,7 +195,8 @@ ExpressionPiece* get_expr_token(const char*& src) {
     throw Error("Unexpected end of buffer in get_expr_token");
   } else {
     ostringstream err;
-    err << "Unknown toke type 0x" << hex << (short)src[0] << " in get_expr_token" << endl;
+    err << "Unknown toke type 0x" << hex << (short)src[0]
+        << " in get_expr_token" << endl;
     throw Error(err.str());
   }
 }
@@ -247,7 +227,8 @@ ExpressionPiece* get_expr_term(const char*& src) {
     throw Error("Unexpected end of buffer in get_expr_term");
   } else {
     ostringstream err;
-    err << "Unknown token type 0x" << hex << (short)src[0] << " in get_expr_term";
+    err << "Unknown token type 0x" << hex << (short)src[0]
+        << " in get_expr_term";
     throw Error(err.str());
   }
 }
@@ -267,7 +248,8 @@ static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
   }
 }
 
-static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* tok) {
+static ExpressionPiece* get_expr_arith_loop(const char*& src,
+                                            ExpressionPiece* tok) {
   if (src[0] == '\\' && (src[1] == 0x00 || src[1] == 0x01)) {
     char op = src[1];
     src += 2;
@@ -281,10 +263,12 @@ static ExpressionPiece* get_expr_arith_loop(const char*& src, ExpressionPiece* t
 }
 
 ExpressionPiece* get_expr_arith(const char*& src) {
-  return get_expr_arith_loop(src, get_expr_arith_loop_hi_prec(src, get_expr_term(src)));
+  return get_expr_arith_loop(src, get_expr_arith_loop_hi_prec(
+      src, get_expr_term(src)));
 }
 
-static ExpressionPiece* get_expr_cond_loop(const char*& src, ExpressionPiece* tok) {
+static ExpressionPiece* get_expr_cond_loop(const char*& src,
+                                           ExpressionPiece* tok) {
   if (src[0] == '\\' && (src[1] >= 0x28 && src[1] <= 0x2d)) {
     char op = src[1];
     src += 2;
@@ -300,41 +284,41 @@ ExpressionPiece* get_expr_cond(const char*& src) {
   return get_expr_cond_loop(src, get_expr_arith(src));
 }
 
-static ExpressionPiece* get_expr_bool_loop_and(const char*& src, ExpressionPiece* tok) {
+static ExpressionPiece* get_expr_bool_loop_and(const char*& src,
+                                               ExpressionPiece* tok) {
   if (src[0] == '\\' && src[1] == '<') {
     src += 2;
     ExpressionPiece* rhs = get_expr_cond(src);
-    return get_expr_bool_loop_and(src, new BinaryExpressionOperator(0x3c, tok, rhs));
+    return get_expr_bool_loop_and(
+        src, new BinaryExpressionOperator(0x3c, tok, rhs));
   } else {
     return tok;
   }
 }
 
-static ExpressionPiece* get_expr_bool_loop_or(const char*& src, ExpressionPiece* tok) {
+static ExpressionPiece* get_expr_bool_loop_or(const char*& src,
+                                              ExpressionPiece* tok) {
   if (src[0] == '\\' && src[1] == '=') {
     src += 2;
     ExpressionPiece* innerTerm = get_expr_cond(src);
     ExpressionPiece* rhs = get_expr_bool_loop_and(src, innerTerm);
-    return get_expr_bool_loop_or(src, new BinaryExpressionOperator(0x3d, tok, rhs));
+    return get_expr_bool_loop_or(
+        src, new BinaryExpressionOperator(0x3d, tok, rhs));
   } else {
     return tok;
   }
 }
 
 ExpressionPiece* get_expr_bool(const char*& src) {
-  return get_expr_bool_loop_or(src, get_expr_bool_loop_and(src, get_expr_cond(src)));
+  return get_expr_bool_loop_or(
+      src, get_expr_bool_loop_and(src, get_expr_cond(src)));
 }
 
 ExpressionPiece* get_expression(const char*& src) {
   return get_expr_bool(src);
 }
 
-/**
- * Parses an expression of the form [dest] = [source expression];
- *
- * @param src Current location in string to parse
- * @return The parsed ExpressionPiece
- */
+// Parses an expression of the form [dest] = [source expression];
 ExpressionPiece* get_assignment(const char*& src) {
   auto_ptr<ExpressionPiece> itok(get_expr_term(src));
   int op = src[1];
@@ -347,12 +331,7 @@ ExpressionPiece* get_assignment(const char*& src) {
   }
 }
 
-/**
- * Parses a string in the parameter list.
- *
- * @param src Current location in input string to parse
- * @return A StringConstant ExpressionPiece* containg the string.
- */
+// Parses a string in the parameter list.
 static ExpressionPiece* get_string(const char*& src) {
   // Get the length of this string in the bytecode:
   size_t length = next_string(src);
@@ -370,15 +349,10 @@ static ExpressionPiece* get_string(const char*& src) {
   return new StringConstant(s);
 }
 
-/**
- * Parses a parameter in the parameter list. This is the only method
- * of all the get_*(const char*& src) functions that can parse
- * strings. It also deals with things like special and complex
- * parameters.
- *
- * @param src Current location in string to parse
- * @return The parsed ExpressionPiece
- */
+// Parses a parameter in the parameter list. This is the only method
+// of all the get_*(const char*& src) functions that can parse
+// strings. It also deals with things like special and complex
+// parameters.
 ExpressionPiece* get_data(const char*& src) {
   if (*src == ',') {
     ++src;
@@ -419,8 +393,6 @@ ExpressionPiece* get_data(const char*& src) {
     return get_expression(src);
 }
 
-// -----------------------------------------------------------------------
-
 ExpressionPiece* get_complex_param(const char*& src) {
   if (*src == ',') {
     ++src;
@@ -438,8 +410,6 @@ ExpressionPiece* get_complex_param(const char*& src) {
     return get_expression(src);
 }
 
-// -----------------------------------------------------------------------
-
 std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
   // Currently, this doesn't evaluate the # commands inline. See 5.12.11 of the
   // rldev manual.
@@ -456,20 +426,11 @@ std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
 
     return piece->getStringValue(machine);
   } else {
-    /// Just a normal string we can ignore
+    // Just a normal string we can ignore
     return in;
   }
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Converts a parameter string (as read from the binary SEEN.TXT file)
- * into a human readable (and printable) format.
- *
- * @param src Raw string to turn into a printable string
- * @return Printable string
- */
 std::string parsableToPrintableString(const std::string& src) {
   string output;
 
@@ -496,13 +457,6 @@ std::string parsableToPrintableString(const std::string& src) {
 
 // -----------------------------------------------------------------------
 
-/**
- * Converts a printable string (i.e., "$ 05 [ $ FF EE 03 00 00 ]")
- * into one that can be parsed by all the get_expr family of functions.
- *
- * @param src Printable string
- * @return Parsable string
- */
 std::string printableToParsableString(const std::string& src) {
   typedef boost::tokenizer<boost::char_separator<char> > ttokenizer;
 
@@ -513,7 +467,8 @@ std::string printableToParsableString(const std::string& src) {
   for (ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it) {
     const std::string& tok = *it;
     if (tok.size() > 2)
-      throw libReallive::Error("Invalid string given to printableToParsableString");
+      throw libReallive::Error(
+          "Invalid string given to printableToParsableString");
 
     if (tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
       output.push_back(tok[0]);
@@ -528,12 +483,9 @@ std::string printableToParsableString(const std::string& src) {
   return output;
 }
 
-//@}
-
 // ----------------------------------------------------------------------
 
-ExpressionPiece::~ExpressionPiece() {
-}
+ExpressionPiece::~ExpressionPiece()              {}
 bool ExpressionPiece::isMemoryReference() const  { return false; }
 bool ExpressionPiece::isOperator() const         { return false; }
 bool ExpressionPiece::isComplexParameter() const { return false; }
@@ -543,30 +495,45 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
   return ValueTypeInteger;
 }
 
-/// A default implementation is provided since not everything will have assign
-/// semantics.
-void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
-int ExpressionPiece::integerValue(RLMachine& machine) const { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
+// A default implementation is provided since not everything will have assign
+// semantics.
+void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {
+}
+
+int ExpressionPiece::integerValue(RLMachine& machine) const {
+  throw libReallive::Error(
+      "ExpressionPiece::getStringValue() invalid on this object");
+}
 
 void ExpressionPiece::assignStringValue(RLMachine& machine) {}
-const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const { throw libReallive::Error("ExpressionPiece::getStringValue() invalid on this object"); }
+const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {
+  throw libReallive::Error(
+      "ExpressionPiece::getStringValue() invalid on this object");
+}
 
 IntReferenceIterator ExpressionPiece::getIntegerReferenceIterator(
     RLMachine& machine) const {
-  throw libReallive::Error("ExpressionPiece::getIntegerReferenceIterator() invalid on this object");
+  throw libReallive::Error(
+      "ExpressionPiece::getIntegerReferenceIterator() invalid on this object");
 }
 
 StringReferenceIterator ExpressionPiece::getStringReferenceIterator(
     RLMachine& machine) const {
-  throw libReallive::Error("ExpressionPiece::getStringReferenceIterator() invalid on this object");
+  throw libReallive::Error(
+      "ExpressionPiece::getStringReferenceIterator() invalid on this object");
 }
 
 // -----------------------------------------------------------------------
 
-bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
-void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {
+bool StoreRegisterExpressionPiece::isMemoryReference() const {
+  return true;
+}
+
+void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine,
+                                                  int rvalue) {
   machine.setStoreRegister(rvalue);
 }
+
 int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
 }
@@ -588,10 +555,15 @@ ExpressionPiece* StoreRegisterExpressionPiece::clone() const {
 // -----------------------------------------------------------------------
 
 // IntegerConstant
-IntegerConstant::IntegerConstant(const int in) : constant(in) {}
-IntegerConstant::~IntegerConstant() {}
+IntegerConstant::IntegerConstant(const int in) : constant(in) {
+}
 
-int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
+IntegerConstant::~IntegerConstant() {
+}
+
+int IntegerConstant::integerValue(RLMachine& machine) const {
+  return constant;
+}
 
 std::string IntegerConstant::serializedValue(RLMachine& machine) const {
   return IntToBytecode(constant);
@@ -604,8 +576,13 @@ ExpressionPiece* IntegerConstant::clone() const {
 // -----------------------------------------------------------------------
 
 // StringConstant
-StringConstant::StringConstant(const std::string& in) : constant(in) {}
-ExpressionValueType StringConstant::expressionValueType() const { return ValueTypeString; }
+StringConstant::StringConstant(const std::string& in) : constant(in) {
+}
+
+ExpressionValueType StringConstant::expressionValueType() const {
+  return ValueTypeString;
+}
+
 const std::string& StringConstant::getStringValue(RLMachine& machine) const {
   return constant;
 }
@@ -622,10 +599,16 @@ ExpressionPiece* StringConstant::clone() const {
 
 // MemoryReference
 MemoryReference::MemoryReference(int inType, ExpressionPiece* target)
-  : type(inType), location(target) {}
-MemoryReference::~MemoryReference() {}
+    : type(inType), location(target) {
+}
 
-bool MemoryReference::isMemoryReference() const { return true; }
+MemoryReference::~MemoryReference() {
+}
+
+bool MemoryReference::isMemoryReference() const {
+  return true;
+}
+
 ExpressionValueType MemoryReference::expressionValueType() const {
   if (isStringLocation(type)) {
     return ValueTypeString;
@@ -638,6 +621,7 @@ void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) {
   return machine.setIntValue(IntMemRef(type, location->integerValue(machine)),
                              rvalue);
 }
+
 int MemoryReference::integerValue(RLMachine& machine) const {
   return machine.getIntValue(IntMemRef(type, location->integerValue(machine)));
 }
@@ -659,22 +643,28 @@ std::string MemoryReference::serializedValue(RLMachine& machine) const {
   }
 }
 
-IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& machine) const {
+IntReferenceIterator MemoryReference::getIntegerReferenceIterator(
+    RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
   if (isStringLocation(type)) {
-    throw Error("Request to getIntegerReferenceIterator() on a string reference!");
+    throw Error(
+        "Request to getIntegerReferenceIterator() on a string reference!");
   }
 
-  return IntReferenceIterator(&machine.memory(), type, location->integerValue(machine));
+  return IntReferenceIterator(&machine.memory(), type,
+                              location->integerValue(machine));
 }
 
-StringReferenceIterator MemoryReference::getStringReferenceIterator(RLMachine& machine) const {
+StringReferenceIterator MemoryReference::getStringReferenceIterator(
+    RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
   if (!isStringLocation(type)) {
-    throw Error("Request to getStringReferenceIterator() on an integer reference!");
+    throw Error(
+        "Request to getStringReferenceIterator() on an integer reference!");
   }
 
-  return StringReferenceIterator(&machine.memory(), type, location->integerValue(machine));
+  return StringReferenceIterator(&machine.memory(), type,
+                                 location->integerValue(machine));
 }
 
 ExpressionPiece* MemoryReference::clone() const {
@@ -685,9 +675,11 @@ ExpressionPiece* MemoryReference::clone() const {
 
 UniaryExpressionOperator::UniaryExpressionOperator(char inOperation,
                                                    ExpressionPiece* inOperand)
-  : operand(inOperand), operation(inOperation) {}
+    : operand(inOperand), operation(inOperation) {
+}
 
-UniaryExpressionOperator::~UniaryExpressionOperator() {}
+UniaryExpressionOperator::~UniaryExpressionOperator() {
+}
 
 int UniaryExpressionOperator::performOperationOn(int int_operand) const {
   int result = int_operand;
@@ -720,9 +712,11 @@ ExpressionPiece* UniaryExpressionOperator::clone() const {
 BinaryExpressionOperator::BinaryExpressionOperator(char inOperation,
                                                    ExpressionPiece* lhs,
                                                    ExpressionPiece* rhs)
-  : operation(inOperation), leftOperand(lhs), rightOperand(rhs) {}
+    : operation(inOperation), leftOperand(lhs), rightOperand(rhs) {
+}
 
-BinaryExpressionOperator::~BinaryExpressionOperator() {}
+BinaryExpressionOperator::~BinaryExpressionOperator() {
+}
 
 // Stolen from xclannad
 int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const {
@@ -793,7 +787,8 @@ ExpressionPiece* BinaryExpressionOperator::clone() const {
 AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
                                                            ExpressionPiece* lhs,
                                                            ExpressionPiece* rhs)
-  : BinaryExpressionOperator(op, lhs, rhs) {}
+    : BinaryExpressionOperator(op, lhs, rhs) {
+}
 
 AssignmentExpressionOperator::~AssignmentExpressionOperator() {
 }
@@ -816,27 +811,15 @@ ExpressionPiece* AssignmentExpressionOperator::clone() const {
                                           rightOperand->clone());
 }
 
-
 // -----------------------------------------------------------------------
 
 bool ComplexExpressionPiece::isComplexParameter() const {
   return true;
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * Adds an ExpressionPiece to this complex expressionPiece. This
- * instance of ComplexExpressionPiece takes ownership of any
- * ExpressionPiece passed in this way.
- *
- * @param piece Piece to pass take ownership of
- */
 void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece) {
   containedPieces.push_back(piece);
 }
-
-// -----------------------------------------------------------------------
 
 std::string ComplexExpressionPiece::serializedValue(
     RLMachine& machine) const {
@@ -851,8 +834,6 @@ std::string ComplexExpressionPiece::serializedValue(
   return s;
 }
 
-// -----------------------------------------------------------------------
-
 ExpressionPiece* ComplexExpressionPiece::clone() const {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
   cep->containedPieces = containedPieces.clone();
@@ -862,9 +843,8 @@ ExpressionPiece* ComplexExpressionPiece::clone() const {
 // -----------------------------------------------------------------------
 
 SpecialExpressionPiece::SpecialExpressionPiece(int tag)
-  : overloadTag(tag) {}
-
-// -----------------------------------------------------------------------
+    : overloadTag(tag) {
+}
 
 bool SpecialExpressionPiece::isSpecialParamater() const {
   return true;
@@ -892,4 +872,4 @@ ExpressionPiece* SpecialExpressionPiece::clone() const {
   return cep;
 }
 
-}
+}  // namespace libReallive

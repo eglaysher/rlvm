@@ -232,6 +232,9 @@ protected:
 public:
   virtual bool isComplexParameter() const;
 
+  // Adds an ExpressionPiece to this complex expressionPiece. This
+  // instance of ComplexExpressionPiece takes ownership of any
+  // ExpressionPiece passed in this way.
   void addContainedPiece(ExpressionPiece* piece);
 
   const boost::ptr_vector<ExpressionPiece>& getContainedPieces() const

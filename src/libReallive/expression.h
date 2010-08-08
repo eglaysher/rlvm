@@ -64,7 +64,12 @@ ExpressionPiece* get_complex_param(const char*& src);
 
 std::string evaluatePRINT(RLMachine& machine, const std::string& in);
 
+// Converts a parameter string (as read from the binary SEEN.TXT file)
+// into a human readable (and printable) format.
 std::string parsableToPrintableString(const std::string& src);
+
+// Converts a printable string (i.e., "$ 05 [ $ FF EE 03 00 00 ]")
+// into one that can be parsed by all the get_expr family of functions.
 std::string printableToParsableString(const std::string& src);
 
 enum ExpressionValueType {
@@ -119,15 +124,16 @@ public:
   /// MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
   /// rlBabel library instead uses the store register as an argument to a
   /// function that takes a integer reference. So this needs to be here now.
-  virtual IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
-  virtual StringReferenceIterator getStringReferenceIterator(RLMachine& machine) const;
+  virtual IntReferenceIterator getIntegerReferenceIterator(
+      RLMachine& machine) const;
+  virtual StringReferenceIterator getStringReferenceIterator(
+      RLMachine& machine) const;
 
   virtual ExpressionPiece* clone() const = 0;
 };
 
 // Boost helper
-inline ExpressionPiece* new_clone( const ExpressionPiece& a )
-{
+inline ExpressionPiece* new_clone( const ExpressionPiece& a ) {
     return a.clone();
 }
 
