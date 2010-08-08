@@ -37,6 +37,7 @@
 #include <utility>
 #include <iostream>
 #include <sstream>
+#include <boost/scoped_ptr.hpp>
 
 #include "bytecode.h"
 #include "scenario.h"
@@ -86,6 +87,13 @@ const string BytecodeElement::data() const { return string(); }
 // -----------------------------------------------------------------------
 
 const size_t BytecodeElement::length() const { return 0; }
+
+// -----------------------------------------------------------------------
+
+string BytecodeElement::serializableData(RLMachine& machine) const {
+  throw Error(
+      "Can't call serializableData() on things other than FunctionElements");
+}
 
 // -----------------------------------------------------------------------
 
@@ -688,6 +696,24 @@ FunctionElement::length() const {
   } else {
     return repr.size();
   }
+}
+
+// -----------------------------------------------------------------------
+
+std::string FunctionElement::serializableData(RLMachine& machine) const {
+  string rv(repr);
+  if (params.size() > 0) {
+    rv.push_back('(');
+    for (std::vector<string>::const_iterator it = params.begin();
+         it != params.end(); ++it) {
+      const char* data = it->c_str();
+      boost::scoped_ptr<ExpressionPiece> expression(get_data(data));
+      rv.append(expression->serializedValue(machine));
+    }
+    rv.push_back(')');
+  }
+  return rv;
+
 }
 
 // -----------------------------------------------------------------------

@@ -111,6 +111,10 @@ public:
   virtual void assignStringValue(RLMachine& machine);
   virtual const std::string& getStringValue(RLMachine& machine) const;
 
+  // A persistable version of this value. This method should return RealLive
+  // bytecode equal to this ExpressionPiece with all references returned.
+  virtual std::string serializedValue(RLMachine& machine) const = 0;
+
   /// I used to be able to just static cast any ExpressionPiece to a
   /// MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
   /// rlBabel library instead uses the store register as an argument to a
@@ -129,6 +133,12 @@ inline ExpressionPiece* new_clone( const ExpressionPiece& a )
 
 // -----------------------------------------------------------------------
 
-}
+// Taking |bytecode|, raw RealLive bytecode, change all instances of memory
+// references into raw integers or strings. Used by the grpahics system to
+// serialize raw commands. Returns the input on error.
+std::string changeToConstantData(RLMachine& machine,
+                                 const std::string& bytecode);
+
+}  // namespace libReallive
 
 #endif

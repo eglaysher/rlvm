@@ -50,7 +50,7 @@ struct ConstructionData {
   pointer_t null;
   typedef std::map<unsigned long, pointer_t> offsets_t;
   offsets_t offsets;
-private:
+
   friend class Script;
   ConstructionData(size_t kt, pointer_t pt);
   ~ConstructionData();
@@ -93,6 +93,11 @@ public:
 
   virtual const string data() const;
   virtual const size_t length() const;
+
+  // Fat interface: takes a FunctionElement and returns all data serialized for
+  // writing to disk so the exact command can be replayed later. Throws in all
+  // other cases.
+  virtual string serializableData(RLMachine& machine) const;
 
   virtual Pointers* get_pointers();
   virtual void set_pointers(ConstructionData& cdata);
@@ -321,11 +326,12 @@ public:
   virtual const ElementType type() const;
   FunctionElement(const char* src);
 
-  const string data() const;
-  const size_t length() const;
+  virtual const string data() const;
+  virtual const size_t length() const;
+  virtual string serializableData(RLMachine& machine) const;
 
-  const size_t param_count() const;
-  string get_param(int i) const;
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
 
   virtual FunctionElement* clone() const;
 };

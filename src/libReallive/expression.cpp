@@ -48,6 +48,16 @@
 
 using namespace std;
 
+namespace {
+
+std::string IntToBytecode(int val) {
+  std::string prefix("$\xFF");
+  libReallive::append_i32(prefix, val);
+  return prefix;
+}
+
+}  // namespace
+
 namespace libReallive {
 
 /**
@@ -561,6 +571,11 @@ int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
 }
 
+std::string StoreRegisterExpressionPiece::serializedValue(
+    RLMachine& machine) const {
+  return IntToBytecode(machine.getStoreRegisterValue());
+}
+
 IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
     RLMachine& machine) const {
   return IntReferenceIterator(machine.storeRegisterAddress());
@@ -578,6 +593,10 @@ IntegerConstant::~IntegerConstant() {}
 
 int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
 
+std::string IntegerConstant::serializedValue(RLMachine& machine) const {
+  return IntToBytecode(constant);
+}
+
 ExpressionPiece* IntegerConstant::clone() const {
   return new IntegerConstant(constant);
 }
@@ -589,6 +608,10 @@ StringConstant::StringConstant(const std::string& in) : constant(in) {}
 ExpressionValueType StringConstant::expressionValueType() const { return ValueTypeString; }
 const std::string& StringConstant::getStringValue(RLMachine& machine) const {
   return constant;
+}
+
+std::string StringConstant::serializedValue(RLMachine& machine) const {
+  return string("\"") + constant + string("\"");
 }
 
 ExpressionPiece* StringConstant::clone() const {
@@ -623,8 +646,17 @@ void MemoryReference::assignStringValue(RLMachine& machine,
                                         const std::string& rvalue) {
   return machine.setStringValue(type, location->integerValue(machine), rvalue);
 }
+
 const std::string& MemoryReference::getStringValue(RLMachine& machine) const {
   return machine.getStringValue(type, location->integerValue(machine));
+}
+
+std::string MemoryReference::serializedValue(RLMachine& machine) const {
+  if (isStringLocation(type)) {
+    return string("\"") + getStringValue(machine) + string("\"");
+  } else {
+    return IntToBytecode(integerValue(machine));
+  }
 }
 
 IntReferenceIterator MemoryReference::getIntegerReferenceIterator(RLMachine& machine) const {
@@ -672,6 +704,11 @@ int UniaryExpressionOperator::performOperationOn(int int_operand) const {
 
 int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
   return performOperationOn(operand->integerValue(machine));
+}
+
+std::string UniaryExpressionOperator::serializedValue(
+    RLMachine& machine) const {
+  return IntToBytecode(integerValue(machine));
 }
 
 ExpressionPiece* UniaryExpressionOperator::clone() const {
@@ -741,6 +778,11 @@ int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
                             rightOperand->integerValue(machine));
 }
 
+std::string BinaryExpressionOperator::serializedValue(
+    RLMachine& machine) const {
+  return IntToBytecode(integerValue(machine));
+}
+
 ExpressionPiece* BinaryExpressionOperator::clone() const {
   return new BinaryExpressionOperator(operation, leftOperand->clone(),
                                       rightOperand->clone());
@@ -796,6 +838,21 @@ void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece) {
 
 // -----------------------------------------------------------------------
 
+std::string ComplexExpressionPiece::serializedValue(
+    RLMachine& machine) const {
+  string s("(");
+  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
+           containedPieces.begin(); it != containedPieces.end(); ++it) {
+    s += "(";
+    s += it->serializedValue(machine);
+    s += ")";
+  }
+  s += ")";
+  return s;
+}
+
+// -----------------------------------------------------------------------
+
 ExpressionPiece* ComplexExpressionPiece::clone() const {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
   cep->containedPieces = containedPieces.clone();
@@ -813,11 +870,26 @@ bool SpecialExpressionPiece::isSpecialParamater() const {
   return true;
 }
 
+std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
+  string s("a");
+  s += char(overloadTag);
+
+  if (containedPieces.size() > 1)
+    s.append("(");
+  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
+           containedPieces.begin(); it != containedPieces.end(); ++it) {
+    s += it->serializedValue(machine);
+  }
+  if (containedPieces.size() > 1)
+    s.append(")");
+
+  return s;
+}
+
 ExpressionPiece* SpecialExpressionPiece::clone() const {
   SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
   cep->containedPieces = containedPieces.clone();
   return cep;
 }
-
 
 }
