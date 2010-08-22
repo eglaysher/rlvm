@@ -39,6 +39,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
+#include "Modules/Module_Sys_Save.hpp"
 #include "ScriptMachine/ScriptMachine.hpp"
 #include "ScriptMachine/ScriptWorld.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -111,6 +112,7 @@ int main(int argc, char* argv[]) {
     ("version", "Display version and license information")
     ("font", po::value<string>(), "Specifies TrueType font to use.")
     ("undefined-opcodes", "Display a message on undefined opcodes")
+    ("load-save", po::value<int>(), "Load a saved game on start")
     ("count-undefined",
      "On exit, present a summary table about how many times each undefined "
      "opcode was called")
@@ -242,6 +244,10 @@ int main(int argc, char* argv[]) {
 
     Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);
+
+    if (vm.count("load-save")) {
+      Sys_load()(rlmachine, vm["load-save"].as<int>());
+    }
 
     while (!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,

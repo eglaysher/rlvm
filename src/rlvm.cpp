@@ -40,6 +40,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
+#include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
@@ -226,6 +227,7 @@ int main(int argc, char* argv[]) {
       ("gameexe", po::value<string>(), "Override location of Gameexe.ini")
       ("seen", po::value<string>(), "Override location of SEEN.TXT")
       ("start-seen", po::value<int>(), "Force start at SEEN#")
+      ("load-save", po::value<int>(), "Load a saved game on start")
       ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
       ("undefined-opcodes", "Display a message on undefined opcodes")
       ("count-undefined",
@@ -374,6 +376,10 @@ int main(int argc, char* argv[]) {
 
     Serialization::loadGlobalMemory(rlmachine);
     rlmachine.setHaltOnException(false);
+
+    if (vm.count("load-save")) {
+      Sys_load()(rlmachine, vm["load-save"].as<int>());
+    }
 
     while (!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
