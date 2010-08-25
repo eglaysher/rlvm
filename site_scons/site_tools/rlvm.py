@@ -116,7 +116,7 @@ def BuildSubcomponent(env, component_name):
   )
 
   component_env.SConscript("vendor/" + component_name + "/SConscript",
-                           build_dir="build/libraries/" + component_name,
+                           variant_dir="build/libraries/" + component_name,
                            duplicate=0,
                            exports=["component_env", "env"])
 

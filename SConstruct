@@ -337,36 +337,36 @@ else:
   )
 
 env.SConscript("SConscript",
-               build_dir="$BUILD_DIR/",
+               variant_dir="$BUILD_DIR/",
                duplicate=0,
                exports='env')
 
 if env['BUILD_RLC_TESTS'] == True:
   # Build the platform independent SEEN.TXT files.
   env.SConscript("test/SConscript.rlc",
-                 build_dir="build/test",
+                 variant_dir="build/test",
                  duplicate=0,
                  exports='env')
 
   # Build the rlvmTests binary that uses those SEEN.TXT files.
   env.SConscript("SConscript.test",
-                 build_dir="$BUILD_DIR/",
+                 variant_dir="$BUILD_DIR/",
                  duplicate=0,
                  exports='env')
 
 env.SConscript("SConscript.luarlvm",
-               build_dir="$BUILD_DIR/",
+               variant_dir="$BUILD_DIR/",
                duplicate=0,
                exports='env')
 
 if GetOption("fullstatic") and env['PLATFORM'] == 'darwin':
   env.SConscript("SConscript.cocoa",
-                 build_dir="$BUILD_DIR/",
+                 variant_dir="$BUILD_DIR/",
                  duplicate=0,
                  exports='env')
 
 if GetOption("coverage"):
   env.SConscript("SConscript.coverage",
-                 build_dir="$BUILD_DIR/",
+                 variant_dir="$BUILD_DIR/",
                  duplicate=0,
                  exports='env')
