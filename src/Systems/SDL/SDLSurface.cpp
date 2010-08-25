@@ -60,10 +60,12 @@ class ColourTransformer {
 class InvertColourTransformer : public ColourTransformer {
  public:
   virtual SDL_Color operator()(const SDL_Color& colour) const {
-    SDL_Color out;
-    out.r = 255 - colour.r;
-    out.g = 255 - colour.g;
-    out.b = 255 - colour.b;
+    SDL_Color out = {
+        255 - colour.r,
+        255 - colour.g,
+        255 - colour.b,
+        0
+    };
     return out;
   }
 };
@@ -73,10 +75,12 @@ class MonoColourTransformer : public ColourTransformer {
   virtual SDL_Color operator()(const SDL_Color& colour) const {
     float grayscale = 0.3 * colour.r + 0.59 * colour.g + 0.11 * colour.b;
     clamp(grayscale, 0, 255);
-    SDL_Color out;
-    out.r = grayscale;
-    out.g = grayscale;
-    out.b = grayscale;
+    SDL_Color out = {
+        grayscale,
+        grayscale,
+        grayscale,
+        0
+    };
     return out;
   }
 };
@@ -100,10 +104,12 @@ class ApplyColourTransformer : public ColourTransformer {
   }
 
   virtual SDL_Color operator()(const SDL_Color& colour) const {
-    SDL_Color out;
-    out.r = compose(colour_.r(), colour.r);
-    out.g = compose(colour_.g(), colour.g);
-    out.b = compose(colour_.b(), colour.b);
+    SDL_Color out = {
+        compose(colour_.r(), colour.r),
+        compose(colour_.g(), colour.g),
+        compose(colour_.b(), colour.b),
+	0
+    };
     return out;
   }
 
