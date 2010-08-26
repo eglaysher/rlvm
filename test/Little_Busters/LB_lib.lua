@@ -75,3 +75,41 @@ function LB:installRandomDecisionHandler ()
             end
         end)
 end
+
+function LB:handleTimedChoices (options)
+    -- I hate this.
+    --
+    -- So SEEN9072 is a big implementation of timed choices. It randomizes the
+    -- order of the options, and gives the player a short amount of time to
+    -- answer, after which you fail the choice.
+    --
+    -- The three choices are three text object (152, {4,5,6}). To make this
+    -- work, we need to scan those objects for whatever text string,
+    mashingState = 0
+    World:addHandler(9072, 452, function()
+        g = System:graphics()
+        objs = { g:getChildFgObject(152, 4),
+                 g:getChildFgObject(152, 5),
+                 g:getChildFgObject(152, 6) }
+        for i,v in ipairs(objs) do
+            if v:text() == options[1] then
+                if mashingState == 0 then
+                    origin = v:getClickPointHack()
+                    System:event():injectMouseMovement(origin)
+                    mashingState = 1
+                elseif mashingState == 1 then
+                    System:event():injectMouseDown()
+                    mashingState = 2
+                elseif mashingState == 2 then
+                    System:event():injectMouseUp()
+                    mashingState = 0
+                end
+            end
+        end
+    end)
+
+    -- Removes the option in front.
+    World:addHandler(9072, 749, function()
+                                    table.remove(options, 1)
+                                end)
+end
