@@ -50,6 +50,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Exception.hpp"
+#include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 
 using namespace std;
@@ -285,7 +286,10 @@ std::string System::regname() {
   Gameexe& gexe = gameexe();
   string regname = gexe("REGNAME");
   replace_all(regname, "\\", "_");
-  return regname;
+
+  // Note that we assume the Gameexe file is written in Shift-JIS. I don't
+  // think you can write it in anyhting else.
+  return cp932toUTF8(regname, 0);
 }
 
 boost::filesystem::path System::gameSaveDirectory() {
@@ -366,7 +370,6 @@ void System::addPath(GameexeInterpretObject gio) {
   gamepath /= gio.to_string();
   cached_search_paths.push_back(gamepath);
 }
-
 
 std::string rlvm_version() {
   return "Version 0.8";

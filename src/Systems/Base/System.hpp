@@ -199,7 +199,9 @@ class System {
   // Returns the global state for saving/restoring
   SystemGlobals& globals() { return globals_; }
 
-  // Cleans the regname entry from the gameexe and makes it filesystem safe.
+  // Cleans the regname entry from the gameexe and makes it filesystem
+  // safe. This translates it to UTF-8, as Gameexe files are written in
+  // Shift-JIS.
   std::string regname();
 
   // Returns a boost::filesystem object which points to the directory
