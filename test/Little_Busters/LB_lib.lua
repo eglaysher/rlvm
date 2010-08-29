@@ -49,18 +49,44 @@ function LB:clickThroughMinigames ()
             throwState = 1
         elseif throwState == 1 then
             System:event():injectMouseUp()
-            throwState = 2
+            throwState = 0
         end
     end)
 
-    creditState = 0
-    World:addHandler(9503, 245, function ()
-        if creditState == 0 then
+    -- Rin/Yuiko's ending theme.
+    songForFriendsState = 0
+    World:addHandler(9501, 130, function ()
+        if songForFriendsState == 0 then
             System:event():injectMouseDown()
-            creditState = 1
-        elseif creditState == 1 then
+            songForFriendsState = 1
+        elseif songForFriendsState == 1 then
             System:event():injectMouseUp()
-            creditState = 2
+            songForFriendsState = 0
+        end
+    end)
+
+    -- Kudryavka/Mio's ending theme.
+    clearWeatherAfterTheRain = 0
+    World:addHandler(9502, 140, function ()
+        if clearWeatherAfterTheRain == 0 then
+            System:event():injectMouseDown()
+            clearWeatherAfterTheRain = 1
+        elseif clearWeatherAfterTheRain == 1 then
+            System:event():injectMouseUp()
+            clearWeatherAfterTheRain = 0
+        end
+    end)
+
+    -- Komari/Saigusa's ending theme.
+    -- 245 doesn't work the first time.
+    aliceMagicState = 0
+    World:addHandler(9503, 219, function ()
+        if aliceMagicState == 0 then
+            System:event():injectMouseDown()
+            aliceMagicState = 1
+        elseif aliceMagicState == 1 then
+            System:event():injectMouseUp()
+            aliceMagicState = 0
         end
     end)
 end
