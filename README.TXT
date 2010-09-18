@@ -33,22 +33,22 @@ RealLive system.
 
 rlvm currently plays the following games to their completion:
 
-|----------------------------+--------------------+------------------------|
-| Game                       | Original Japanese  | With English Fan Patch |
-|----------------------------+--------------------+------------------------|
-| Kanon Standard Edition     | OK                 | Get from NDT           |
-| Air Standard Edition       | OK                 | (None)                 |
-| CLANNAD (Original Edition) | OK                 | (Not supported)        |
-| CLANNAD (Full Voice)       | OK                 | Get from Baka-Tsuki    |
-| Planetarian CD             | OK (No voices)     | (Broken)               |
-|----------------------------+--------------------+------------------------|
-| Tomoyo After               | Works? (No voices) | (None)                 |
-| Little Busters             | Breaks at baseball | (Broken)               |
-| Princess Bride             | Mostly works       | (None)                 |
-| Princess Brave             | Works?             | (None)                 |
-| ALMA ~zutto soba ni~       | Reported to work   | (None)                 |
-| SNOW                       | (Broken)           | (None)                 |
-|----------------------------+--------------------+------------------------|
+|------------------------+--------------------+---------------------|
+| Game                   | Original Japanese  |  English Fan Patch  |
+|------------------------+--------------------+---------------------|
+| Kanon Standard Edition | OK                 | Get from NDT        |
+| Air Standard Edition   | OK                 | (None)              |
+| CLANNAD                | OK                 | (Not supported)     |
+| CLANNAD (Full Voice)   | OK                 | Get from Baka-Tsuki |
+| Planetarian CD         | OK (No voices)     | (Broken)            |
+| Little Busters         | OK (Some glitches) | (Broken)            |
+| Princess Bride         | Mostly works       | (None)              |
+|------------------------+--------------------+---------------------|
+| Tomoyo After           | Works? (No voices) | (None)              |
+| Princess Brave         | Works?             | (None)              |
+| ALMA ~zutto soba ni~   | Reported to work   | (None)              |
+| SNOW                   | (Broken)           | (None)              |
+|------------------------+--------------------+---------------------|
 
 For more details, please read STATUS.TXT.
 

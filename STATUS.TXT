@@ -34,10 +34,10 @@ Planetarian CD
 
 Little Busters (Ex)
 -------------------
-- Both Little Busters and Little Busters Ecstasy start up and are playable for
-  a while.
-  - Battle system slow and graphically buggy.
-  - Breaks hard at baseball. I assume it'll break at the shooting, too.
+- The original edition is clearable, including the Refrain. There are many
+  graphical glitches and blank screens during CG events, but all text displays.
+- No testing has been done with Little Busters Ecstasy past making sure the
+  game starts.
 
 Princess Bride
 --------------

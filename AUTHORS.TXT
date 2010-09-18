@@ -13,6 +13,8 @@ Haeleth
 Kazunori "jagarl" Ueno
 - Wrote file decoders for the majority of formats that RealLive and AVG32 use,
   which I have blatantly stolen, as they had BSDish licenses.
+- Wrote the EF00 DLL emulation for Little Busters, which I have adapted for use
+  in rlvm.
 
 Rasqual Twilight
 - Provided Win32 build files and several small bugfixes
