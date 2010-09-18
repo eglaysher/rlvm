@@ -23,7 +23,7 @@ function runPath() {
 
 # r1 is the common route.
 runPath "Yuiko.lua" # r2.
-# r3 is a bad ending?
+runPath "Rin-bad.lua" # r3.
 runPath "Komari.lua" # r4
 runPath "Mio.lua" # r5
 runPath "Kudryavka.lua" # r6
