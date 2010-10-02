@@ -296,3 +296,8 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
   // Pass this on to the implementation of this functor.
   operator()(machine, ff);
 }
+
+void RLOp_Void_Void::dispatch(RLMachine& machine,
+                              const ExpressionPiecesVector& parameters) {
+  operator()(machine);
+}

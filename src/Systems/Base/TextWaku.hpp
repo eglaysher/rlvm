@@ -52,11 +52,9 @@ class TextWaku {
   // screen.
   virtual bool getSize(Size& out) const = 0;
 
-  virtual void setMousePosition(const Point& pos) { }
+  virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
-                                bool pressed) {
-    return false;
-  }
+                                bool pressed);
 };
 
 #endif  // SRC_SYSTEMS_BASE_TEXTWAKU_HPP_

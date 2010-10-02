@@ -41,28 +41,6 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/filesystem/path.hpp>
 
-// #ifdef __GNUC__
-// // Can't read STL error messages.
-// #include <ext/hash_map>
-// using namespace __gnu_cxx;
-
-// // How many programers have written this exact piece of code?
-// // namespace __gnu_cxx {
-// // template<>
-// // struct hash<std::string> {
-// //   size_t operator()(const std::string s) const {
-// //     return __stl_hash_string(s.c_str());
-// //   }
-// // };
-// // }
-
-// // #include <map>
-// // #define hash_map std::map
-// #else
-// #include <hash_map>
-// using stdext::hash_map;
-// #endif
-
 #include <map>
 
 class Gameexe;
@@ -120,6 +98,7 @@ private:
                          Gameexe& objectToLookupOn);
 
 public:
+  ~GameexeInterpretObject();
 
   /**
    * Extend a key by one key piece

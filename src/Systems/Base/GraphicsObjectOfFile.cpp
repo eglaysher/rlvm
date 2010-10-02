@@ -84,6 +84,10 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(
 
 // -----------------------------------------------------------------------
 
+GraphicsObjectOfFile::~GraphicsObjectOfFile() {}
+
+// -----------------------------------------------------------------------
+
 void GraphicsObjectOfFile::loadFile() {
   surface_ = system_.graphics().loadNonCGSurfaceFromFile(filename_);
 }

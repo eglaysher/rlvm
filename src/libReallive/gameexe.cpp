@@ -281,6 +281,10 @@ GameexeInterpretObject::GameexeInterpretObject(
 
 // -----------------------------------------------------------------------
 
+GameexeInterpretObject::~GameexeInterpretObject() {}
+
+// -----------------------------------------------------------------------
+
 const int GameexeInterpretObject::to_int(const int defaultValue) const {
   const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
   if (ints.size() == 0)

@@ -96,7 +96,7 @@ class ActionTextWindowButton : public TextWindowButton {
   ActionTextWindowButton(System& system, bool use,
                          GameexeInterpretObject location_box,
                          CallbackFunction action);
-  ~ActionTextWindowButton();
+  virtual ~ActionTextWindowButton();
 
   virtual void buttonReleased(RLMachine& machine);
 
@@ -116,7 +116,7 @@ class ActivationTextWindowButton : public TextWindowButton,
                              GameexeInterpretObject location_box,
                              CallbackFunction start,
                              CallbackFunction end);
-  ~ActivationTextWindowButton();
+  virtual ~ActivationTextWindowButton();
 
   virtual void buttonReleased(RLMachine& machine);
 
@@ -140,11 +140,12 @@ class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
 
  public:
   RepeatActionWhileHoldingWindowButton(
-    System& system,
-    bool use, GameexeInterpretObject location_box,
-    CallbackFunction callback,
-    unsigned int time_between_invocations);
-  ~RepeatActionWhileHoldingWindowButton();
+      System& system,
+      bool use,
+      GameexeInterpretObject location_box,
+      CallbackFunction callback,
+      unsigned int time_between_invocations);
+  virtual ~RepeatActionWhileHoldingWindowButton();
 
   virtual void buttonPressed();
   virtual void execute();
@@ -164,7 +165,7 @@ class ExbtnWindowButton : public TextWindowButton {
   ExbtnWindowButton(System& system, bool use,
                     GameexeInterpretObject location_box,
                     GameexeInterpretObject to_call);
-  ~ExbtnWindowButton();
+  virtual ~ExbtnWindowButton();
 
   virtual void buttonReleased(RLMachine& machine);
 

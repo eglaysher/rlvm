@@ -56,6 +56,7 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
  public:
   explicit GraphicsObjectOfFile(System& system);
   GraphicsObjectOfFile(System& system, const std::string& filename);
+  virtual ~GraphicsObjectOfFile();
 
   const std::string& filename() const { return filename_; }
 

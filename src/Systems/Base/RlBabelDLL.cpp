@@ -113,6 +113,8 @@ RlBabelDLL::RlBabelDLL(RLMachine& machine)
     : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0),
       machine_(machine) {}
 
+RlBabelDLL::~RlBabelDLL() {}
+
 int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
                         int arg3, int arg4) {
   switch (func) {

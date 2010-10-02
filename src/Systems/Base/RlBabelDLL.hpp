@@ -122,6 +122,7 @@ class Gloss {
 class RlBabelDLL : public RealLiveDLL {
  public:
   explicit RlBabelDLL(RLMachine& machine);
+  virtual ~RlBabelDLL();
 
   // Overridden from RealLiveDLL:
 
