@@ -1,6 +1,19 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.9:
+
+- Preliminary support for Little Busters! No support for Ecstasy yet.
+  - There are significant graphics glitches, but the entire game is completable
+    to the end of the Refrain.
+- Fixes saving the current graphics state in most games. Previously created
+  save games can't be fixed, but new saved games should save their graphics
+  state correctly.
+- Fix regression in the original edition of CLANNAD's main menu.
+- Hide unavailable options in select() calls.
+
+-------------------------------------------------------------------------
+
 Version 0.8:
 
 - HIK animations have been reverse engineered and implemented:
