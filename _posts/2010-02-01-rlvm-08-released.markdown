@@ -18,3 +18,14 @@ chips with the release of Snow Leopard, and difficulties with several libraries
 I use on the PPC platform, rlvm 0.8 and future releases will be Intel only on
 the Mac.
 
+<div class="downloadinfo">
+<h2>Downloads</h2>
+<ul>
+  <li class="sourceicon">
+    <a href="http://github.com/eglaysher/rlvm/tarball/release-0.08"
+       onClick="_gaq.push(['_trackEvent', 'Download', 'source-0.8']);">
+      Source code (0.08)
+    </a>
+  </li>
+</ul>
+</div>
