@@ -15,13 +15,13 @@ Several other regressions were also fixed.
   <li class="ubuntuicon">
     <a href="http://www.elliotglaysher.org/Releases/rlvm_0.9_i386.deb"
      onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.9_i386.deb']);">
-      Ubuntu (Karmic) package for x86 machines (version 0.09)
+      Ubuntu (Lucid) package for x86 machines (version 0.09)
     </a>
   </li>
   <li class="ubuntuicon">
     <a href="http://www.elliotglaysher.org/Releases/rlvm_0.9_amd64.deb"
      onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.9_amd64.deb']);">
-      Ubuntu (Karmic) package for amd64 machines (version 0.09)
+      Ubuntu (Lucid) package for amd64 machines (version 0.09)
     </a>
   </li>
   <li class="macicon">
