@@ -100,7 +100,7 @@ def AddStaticLibraryTo(env, name, type):
   Adds a library to one of the internal STATIC_name_LIBS tables.
   """
   path = env['LIBRARY_DIR'] + "/" + env['LIBPREFIX'] + name + env['LIBSUFFIX']
-  env[_MakeStaticName(type)].append(path)
+  env[_MakeStaticName(type)].insert(0, path)
 
 
 def BuildSubcomponent(env, component_name):

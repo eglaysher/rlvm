@@ -47,7 +47,7 @@
 
 #include "guichan/sdl/sdlimage.hpp"
 
-#include "SDL_image.h"
+#include "SDL/SDL_image.h"
 
 #include "guichan/exception.hpp"
 #include "guichan/sdl/sdlimageloader.hpp"

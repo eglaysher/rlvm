@@ -2,7 +2,7 @@
 Import('component_env', 'env')
 
 component_env.Append(
-  CPATH = [
+  CPPPATH = [
     "#/vendor/SDL_image/include/SDL/",
   ],
 
