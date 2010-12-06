@@ -79,16 +79,24 @@ void getSELPointAndRect(RLMachine& machine, int selNum, Rect& rect,
 }
 
 Size getScreenSize(Gameexe& gameexe) {
-  int graphicsMode = gameexe("SCREENSIZE_MOD");
-  if (graphicsMode == 0) {
-    return Size(640, 480);
-  } else if (graphicsMode == 1) {
-    return Size(800, 600);
-  } else {
-    ostringstream oss;
-    oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode << endl;
-    throw SystemError(oss.str());
+  std::vector<int> graphicsMode = gameexe("SCREENSIZE_MOD");
+  if (graphicsMode.size()) {
+    if (graphicsMode[0] == 0) {
+      return Size(640, 480);
+    } else if (graphicsMode[0] == 1) {
+      return Size(800, 600);
+    } else if (graphicsMode[0] == 999 && graphicsMode.size() >= 3) {
+      return Size(graphicsMode[1], graphicsMode[2]);
+    } else {
+      ostringstream oss;
+      oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode[0] << endl;
+      throw SystemError(oss.str());
+    }
   }
+
+  ostringstream oss;
+  oss << "Missing #SCREENSIZE_MOD key";
+  throw SystemError(oss.str());
 }
 
 void clamp(float& var, float min, float max) {

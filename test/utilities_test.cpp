@@ -28,6 +28,7 @@
 
 #include "Systems/Base/Rect.hpp"
 #include "Utilities/Graphics.hpp"
+#include "libReallive/gameexe.h"
 
 TEST(UtilitiesTest, ClipDestination_Superset) {
   Rect clip(Point(5, 5), Size(5, 5));
@@ -45,4 +46,21 @@ TEST(UtilitiesTest, ClipDestination_Overlap) {
 
   ClipDestination(clip, src, dest);
   EXPECT_EQ(clip, dest);
+}
+
+TEST(UtilitiesTest, ScreenSizeModKey) {
+  // Old games
+  Gameexe old;
+  old.parseLine("#SCREENSIZE_MOD=0");
+  EXPECT_EQ(Size(640, 480), getScreenSize(old));
+
+  // Newer games
+  Gameexe newer;
+  newer.parseLine("#SCREENSIZE_MOD=1");
+  EXPECT_EQ(Size(800, 600), getScreenSize(newer));
+
+  // Used in Memorial Edition games
+  Gameexe me;
+  me.parseLine("#SCREENSIZE_MOD=999,800,600");
+  EXPECT_EQ(Size(800, 600), getScreenSize(me));
 }
