@@ -26,11 +26,10 @@ Tomoyo After
 ------------
 - I have verified that the game starts. (No other testing has happened)
 - I assume that the dungeon crawler parts are broken.
-- Requires unwritten NWK support for voices.
 
 Planetarian CD
 --------------
-- Requires unwritten NWK support for voices. Otherwise works.
+- Playable to the end, voice is now supported.
 
 Little Busters (Ex)
 -------------------

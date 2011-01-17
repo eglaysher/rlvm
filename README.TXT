@@ -40,11 +40,11 @@ rlvm currently plays the following games to their completion:
 | Air Standard Edition   | OK                 | (None)              |
 | CLANNAD                | OK                 | (Not supported)     |
 | CLANNAD (Full Voice)   | OK                 | Get from Baka-Tsuki |
-| Planetarian CD         | OK (No voices)     | (Broken)            |
+| Planetarian CD         | OK                 | (Broken)            |
 | Little Busters         | OK (Some glitches) | (Broken)            |
 | Princess Bride         | Mostly works       | (None)              |
 |------------------------+--------------------+---------------------|
-| Tomoyo After           | Works? (No voices) | (None)              |
+| Tomoyo After           | Works?             | (None)              |
 | Princess Brave         | Works?             | (None)              |
 | ALMA ~zutto soba ni~   | Reported to work   | (None)              |
 | SNOW                   | (Broken)           | (None)              |
@@ -60,9 +60,8 @@ rlvm has an implementation of rlBabel; English patches compiled with Haeleth's
 rlBabel should line break correctly. I've successfully tested it with the Kanon
 patch from NDT and the beta CLANNAD patches from Baka-Tsuki's Assembla page.
 
-rlvm supports KOE and OVK archives for voices, along with ogg vorbis voice
+rlvm supports KOE, NWK and OVK archives for voices, along with ogg vorbis voice
 patches which follow the convention <packnumber>/z<packnumber><sampleid>.ogg.
-NWK voice archive files are not supported at this time.
 
 Fullscreen can be entered by pressing Alt+{F,Enter} on Linux and
 Command+{F,Enter} on Mac.
@@ -148,12 +147,8 @@ The interpreter currently lacks the following features:
  - TCC shading data used to give character images a certain tint in some
    scenes. To my knowledge, the file format has not been reverse
    engineered.
- - NWK voice file support is missing.
 
-In addition, the current indentation system is extremely naive and does
-not produce the same results as the official interpreter, though it's
-sufficient for Japanese text as line breaks can occur essentially
-anywhere. Using rlvm with insani's English translation of Planetarian is
+Using rlvm with insani's English translation of Planetarian is
 currently not recommended as the indentation behaviour *will* break in
 the middle of words.
 
@@ -161,11 +156,6 @@ the middle of words.
 -------------------------------------------------------------------------
 rlvm needs several file formats reverse engineered:
 
-- rlvm contains jagarl's nwatowav, which doesn't currently decode the
-  NWK voice files included with the Planetarian CD edition. I need a
-  working decoding library before I can start work on voice support and
-  I'm sure jagarl would like nwatowav to be able to read even more
-  files.
 - The TCC file format hasn't been reverse engineered. TCC files (called
   "tonecurve" files in the GAMEEXE file) are tint definitions that are
   applied to graphics objects. Tones are applied to objects by loading
