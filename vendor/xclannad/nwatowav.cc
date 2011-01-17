@@ -225,7 +225,7 @@ public:
 		bps=b;
 		complevel=cl;
 		use_runlength = false;
-		if (cl == 5) {
+		if (cl == 4 || cl == 5) {
 			use_runlength = true; // Tomoyo After (.nwk koe file)
 			if (channels == 2) use_runlength = false; // BGM*.nwa in Little Busters!
 		}
