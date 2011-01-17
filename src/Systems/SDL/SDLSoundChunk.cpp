@@ -83,7 +83,8 @@ Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
 
 // -----------------------------------------------------------------------
 
-void SDLSoundChunk::playChunkOn(int channel, int loops) { {
+void SDLSoundChunk::playChunkOn(int channel, int loops) {
+  {
     SDLAudioLocker locker;
     s_playing_table[channel] = shared_from_this();
   }
@@ -95,7 +96,8 @@ void SDLSoundChunk::playChunkOn(int channel, int loops) { {
 
 // -----------------------------------------------------------------------
 
-void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) { {
+void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) {
+  {
     SDLAudioLocker locker;
     s_playing_table[channel] = shared_from_this();
   }

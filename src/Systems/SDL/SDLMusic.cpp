@@ -69,13 +69,12 @@ SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
 
 // -----------------------------------------------------------------------
 
-SDLMusic::~SDLMusic() { {
-    SDLAudioLocker locker;
-    delete file_;
+SDLMusic::~SDLMusic() {
+  SDLAudioLocker locker;
+  delete file_;
 
-    if (s_currently_playing.get() == this)
-      s_currently_playing.reset();
-  }
+  if (s_currently_playing.get() == this)
+    s_currently_playing.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -94,20 +93,18 @@ bool SDLMusic::isFading() const {
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::play(bool loop) { {
-    SDLAudioLocker locker;
-    setLoopPoint(loop);
-    s_currently_playing = shared_from_this();
-  }
+void SDLMusic::play(bool loop) {
+  SDLAudioLocker locker;
+  setLoopPoint(loop);
+  s_currently_playing = shared_from_this();
 }
 
 // -----------------------------------------------------------------------
 
-void SDLMusic::stop() { {
-    SDLAudioLocker locker;
-    if (s_currently_playing.get() == this)
-      s_currently_playing.reset();
-  }
+void SDLMusic::stop() {
+  SDLAudioLocker locker;
+  if (s_currently_playing.get() == this)
+    s_currently_playing.reset();
 }
 
 // -----------------------------------------------------------------------
