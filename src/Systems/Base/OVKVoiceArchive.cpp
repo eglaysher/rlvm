@@ -70,8 +70,6 @@
 #include "xclannad/endian.hpp"
 
 using boost::shared_ptr;
-using std::ifstream;
-using std::ostringstream;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -80,7 +78,7 @@ namespace fs = boost::filesystem;
 OVKVoiceArchive::OVKVoiceArchive(fs::path file, int file_no)
     : VoiceArchive(file_no),
       file_(file) {
-  readTable(file);
+  readVisualArtsTable(file, 16, entries_);
 }
 
 // -----------------------------------------------------------------------
@@ -99,30 +97,4 @@ shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
   }
 
   throw rlvm::Exception("Couldn't find sample in OVKVoiceArchive");
-}
-
-// -----------------------------------------------------------------------
-
-void OVKVoiceArchive::readTable(boost::filesystem::path file) {
-  fs::ifstream ifs(file, ifstream::in | ifstream::binary);
-  if (!ifs) {
-    ostringstream oss;
-    oss << "Could not open file \"" << file << "\".";
-    throw rlvm::Exception(oss.str());
-  }
-
-  // Copied from koedec.
-  char head[0x20];
-  ifs.read(head, 4);
-  int table_len = read_little_endian_int(head);
-  entries_.reserve(table_len);
-
-  for (int i = 0; i < table_len; ++i) {
-    ifs.read(head, 16);
-    int length = read_little_endian_int(head);
-    int offset = read_little_endian_int(head+4);
-    int koe_num = read_little_endian_int(head+8);
-    entries_.push_back(Entry(koe_num, length, offset));
-  }
-  sort(entries_.begin(), entries_.end());
 }

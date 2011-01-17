@@ -24,11 +24,17 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include <cstring>
-
 #include "Systems/Base/VoiceArchive.hpp"
 
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <boost/filesystem/fstream.hpp>
+
+#include "Utilities/Exception.hpp"
 #include "xclannad/endian.hpp"
+
+namespace fs = boost::filesystem;
 
 namespace {
 
@@ -78,6 +84,32 @@ VoiceArchive::VoiceArchive(int file_no)
 }
 
 VoiceArchive::~VoiceArchive() {
+}
+
+void VoiceArchive::readVisualArtsTable(boost::filesystem::path file,
+                                       int entry_length,
+                                       std::vector<Entry>& entries) {
+  fs::ifstream ifs(file, fs::ifstream::in | fs::ifstream::binary);
+  if (!ifs) {
+    std::ostringstream oss;
+    oss << "Could not open file \"" << file << "\".";
+    throw rlvm::Exception(oss.str());
+  }
+
+  // Copied from koedec.
+  char head[0x20];
+  ifs.read(head, 4);
+  int table_len = read_little_endian_int(head);
+  entries.reserve(table_len);
+
+  for (int i = 0; i < table_len; ++i) {
+    ifs.read(head, entry_length);
+    int length = read_little_endian_int(head);
+    int offset = read_little_endian_int(head+4);
+    int koe_num = read_little_endian_int(head+8);
+    entries.push_back(Entry(koe_num, length, offset));
+  }
+  sort(entries.begin(), entries.end());
 }
 
 VoiceArchive::Entry::Entry(int ikoe_num, int ilength, int ioffset)

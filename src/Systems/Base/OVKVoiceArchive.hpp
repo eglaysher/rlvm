@@ -43,8 +43,6 @@ class OVKVoiceArchive : public VoiceArchive {
   virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
 
  private:
-  void readTable(boost::filesystem::path file);
-
   // The file to read from
   boost::filesystem::path file_;
 

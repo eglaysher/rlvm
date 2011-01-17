@@ -27,7 +27,9 @@
 #ifndef SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
 #define SRC_SYSTEMS_BASE_VOICEARCHIVE_HPP_
 
+#include <vector>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/shared_ptr.hpp>
 
 class VoiceArchive;
@@ -53,9 +55,9 @@ class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
   explicit VoiceArchive(int file_no);
   ~VoiceArchive();
 
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) = 0;
-
   int fileNumber() const { return file_no_; }
+
+  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) = 0;
 
  protected:
   // A sortable list with metadata pointing into an archive.
@@ -74,6 +76,12 @@ class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
       return koe_num < rhs;
     }
   };
+
+  // Reads and parses' VisualArt's simple audio table format into a
+  // vector<Entry>.
+  void readVisualArtsTable(boost::filesystem::path file,
+                           int entry_length,
+                           std::vector<Entry>& entries);
 
  private:
   int file_no_;
