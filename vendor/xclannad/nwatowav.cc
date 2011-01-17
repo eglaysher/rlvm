@@ -823,14 +823,12 @@ char* NWAFILE::ReadAll(FILE* in, int& total_size) {
 	return d;
 }
 
-/*
-#include"music.h"
-
-char* decode_koe_nwa(AvgKoeInfo info, int* data_len) {
+// Declared in wavfile.h.
+char* decode_koe_nwa(FILE* stream, int offset, int length, int* data_len) {
 	NWAData h;
-	if (info.stream == 0) return 0;
-	fseek(info.stream, info.offset, 0);
-	h.ReadHeader(info.stream, info.length);
+	if (stream == 0) return 0;
+	fseek(stream, offset, 0);
+	h.ReadHeader(stream, length);
 	if (h.CheckHeader() == false) return 0;
 	int bs = h.BlockLength();
 	int total = h.datasize + 0x2c;
@@ -838,7 +836,7 @@ char* decode_koe_nwa(AvgKoeInfo info, int* data_len) {
 	int dcur = 0;
 	int err;
 	int skip = 0;
-	while(dcur < total+bs && (err=h.Decode(info.stream, d+dcur, skip)) != 0) {
+	while(dcur < total+bs && (err=h.Decode(stream, d+dcur, skip)) != 0) {
 		if (err == -1) break;
 		if (err == -2) continue;
 		dcur += err;
@@ -849,6 +847,5 @@ char* decode_koe_nwa(AvgKoeInfo info, int* data_len) {
 	}
 	return d;
 }
-*/
 
 #endif

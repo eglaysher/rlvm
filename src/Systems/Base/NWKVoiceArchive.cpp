@@ -1,0 +1,92 @@
+// -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+// vi:tw=80:et:ts=2:sts=2
+//
+// -----------------------------------------------------------------------
+//
+// This file is part of RLVM, a RealLive virtual machine clone.
+//
+// -----------------------------------------------------------------------
+//
+// Copyright (C) 2011 Elliot Glaysher
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+// -----------------------------------------------------------------------
+
+#include "Systems/Base/NWKVoiceArchive.hpp"
+
+#include <cstdio>
+
+#include "Utilities/Exception.hpp"
+#include "xclannad/endian.hpp"
+#include "xclannad/wavfile.h"
+
+namespace fs = boost::filesystem;
+
+namespace {
+
+// A VoiceSample that reads from a NWKVoiceArchive, which is just a bunch of
+// NWA files thrown together with
+class NWKVoiceSample : public VoiceSample {
+ public:
+  NWKVoiceSample(boost::filesystem::path file, int offset, int length);
+  ~NWKVoiceSample();
+
+  // Overridden from VoiceSample:
+  virtual char* decode(int* size);
+
+ private:
+  FILE* stream_;
+  int offset_;
+  int length_;
+};
+
+NWKVoiceSample::NWKVoiceSample(boost::filesystem::path file,
+                               int offset,
+                               int length)
+    : stream_(std::fopen(file.external_file_string().c_str(), "rb")),
+      offset_(offset), length_(length) {
+}
+
+NWKVoiceSample::~NWKVoiceSample() {
+  if (stream_)
+    fclose(stream_);
+}
+
+char* NWKVoiceSample::decode(int* size) {
+  // Defined in nwatowav.cc
+  return decode_koe_nwa(stream_, offset_, length_, size);
+}
+
+}  // namespace
+
+NWKVoiceArchive::NWKVoiceArchive(fs::path file, int file_no)
+    : VoiceArchive(file_no),
+      file_(file) {
+  readVisualArtsTable(file, 12, entries_);
+}
+
+NWKVoiceArchive::~NWKVoiceArchive() {
+}
+
+boost::shared_ptr<VoiceSample> NWKVoiceArchive::findSample(int sample_num) {
+  std::vector<Entry>::const_iterator it =
+      std::lower_bound(entries_.begin(), entries_.end(), sample_num);
+  if (it != entries_.end()) {
+    return boost::shared_ptr<VoiceSample>(
+        new NWKVoiceSample(file_, it->offset, it->length));
+  }
+
+  throw rlvm::Exception("Couldn't find sample in NWKVoiceArchive");
+}

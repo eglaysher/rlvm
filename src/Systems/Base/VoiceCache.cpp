@@ -33,12 +33,16 @@
 #include <string>
 
 #include "Systems/Base/KOEPACVoiceArchive.hpp"
+#include "Systems/Base/NWKVoiceArchive.hpp"
 #include "Systems/Base/OVKVoiceArchive.hpp"
 #include "Systems/Base/OVKVoiceSample.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/VoiceArchive.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
+
+#include <iostream>
+using namespace std;
 
 const int ID_RADIX = 100000;
 
@@ -95,6 +99,8 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   string file_str = file.file_string();
   if (iends_with(file_str, "ovk")) {
     return shared_ptr<VoiceArchive>(new OVKVoiceArchive(file, file_no));
+  } else if (iends_with(file_str, "nwk")) {
+    return shared_ptr<VoiceArchive>(new NWKVoiceArchive(file, file_no));
   } else if (iends_with(file_str, "koe")) {
     return shared_ptr<VoiceArchive>(new KOEPACVoiceArchive(file, file_no));
   }

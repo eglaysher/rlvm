@@ -118,4 +118,8 @@ struct MP3FILE : WAVFILE {
 	int Read(char* buf, int blksize, int blklen);
 };
 
+// erg addition: Modified jagarl's method to take what's wrapped in AvgKoeInfo
+// as parameters instead.
+char* decode_koe_nwa(FILE* stream, int offset, int length, int* data_len);
+
 #endif /* !__WAVEFILE__ */

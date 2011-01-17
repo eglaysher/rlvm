@@ -137,7 +137,7 @@ const std::vector<std::string> HIK_FILETYPES =
 const std::vector<std::string> SOUND_FILETYPES =
   list_of("wav")("ogg")("nwa")("mp3");
 const std::vector<std::string> KOE_ARCHIVE_FILETYPES =
-    list_of("ovk")("koe");
+    list_of("ovk")("koe")("nwk");
 const std::vector<std::string> KOE_LOOSE_FILETYPES =
   list_of("ogg");
 
