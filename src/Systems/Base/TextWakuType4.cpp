@@ -165,8 +165,8 @@ void TextWakuType4::setMousePosition(const Point& pos) {
 
 bool TextWakuType4::handleMouseClick(RLMachine& machine, const Point& pos,
                                      bool pressed) {
-  // Noop
-  return true;
+  // Noop; this window won't do anything with mouse clicks.
+  return false;
 }
 
 // -----------------------------------------------------------------------
