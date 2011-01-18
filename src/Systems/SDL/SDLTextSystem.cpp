@@ -61,7 +61,8 @@ SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
 }
 
 SDLTextSystem::~SDLTextSystem() {
-  TTF_Quit();
+  // We should be calling TTF_Quit() here, but somebody is holding on to a font
+  // reference so we'll just leak the FreeType structures.
 }
 
 boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
