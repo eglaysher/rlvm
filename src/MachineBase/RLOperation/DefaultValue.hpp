@@ -58,7 +58,6 @@ struct DefaultIntValue_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
@@ -92,7 +91,6 @@ struct DefaultStrValue_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };

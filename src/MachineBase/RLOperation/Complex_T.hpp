@@ -68,7 +68,6 @@ struct Complex2_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = true
   };
 };
@@ -111,7 +110,6 @@ struct Complex3_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = true
   };
 };
@@ -157,7 +155,6 @@ struct Complex4_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = true
   };
 };
@@ -212,7 +209,6 @@ struct Complex7_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = true
   };
 };
@@ -268,7 +264,6 @@ struct Complex8_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = true
   };
 };

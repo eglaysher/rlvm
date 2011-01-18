@@ -252,23 +252,6 @@ void StrReference_T::parseParameters(
   position++;
 }
 
-// -----------------------------------------------------------------------
-// Empty_T
-// -----------------------------------------------------------------------
-
-Empty_T::type Empty_T::getData(
-    RLMachine& machine,
-    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
-    unsigned int& position) {
-  return empty_struct();
-}
-
-void Empty_T::parseParameters(
-  unsigned int& position,
-  const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output) {
-}
-
 void RLOp_SpecialCase::dispatch(
   RLMachine& machine,
   const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {}

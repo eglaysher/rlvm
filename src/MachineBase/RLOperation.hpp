@@ -178,7 +178,6 @@ struct IntConstant_T {
                               ExpressionPiecesVector& output);
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
@@ -205,7 +204,6 @@ struct StrConstant_T {
                               ExpressionPiecesVector& output);
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
@@ -219,15 +217,17 @@ struct Empty_T {
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const ExpressionPiecesVector& p,
-                      unsigned int& position);
+                      unsigned int& position) {
+    return empty_struct();
+  }
 
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              ExpressionPiecesVector& output);
+                              ExpressionPiecesVector& output) {
+  }
 
   enum {
-    is_real_typestruct = false,
     is_complex = false
   };
 };
@@ -289,15 +289,6 @@ template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
          typename V = Empty_T, typename W = Empty_T, typename X = Empty_T,
          typename Y = Empty_T, typename Z = Empty_T>
 struct RLOp_NormalOperation : public RLOperation {
- private:
-  template<typename TYPE>
-  void addTypeTo(unsigned int& position, const std::vector<std::string>& input,
-                 ExpressionPiecesVector& output) {
-    if (TYPE::is_real_typestruct) {
-      TYPE::parseParameters(position, input, output);
-    }
-  }
-
  public:
   void parseParameters(const std::vector<std::string>& input,
                        ExpressionPiecesVector& output);
@@ -329,32 +320,32 @@ void RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
                               const std::vector<std::string>& input,
                               ExpressionPiecesVector& output) {
   unsigned int position = 0;
-  addTypeTo<A>(position, input, output);
-  addTypeTo<B>(position, input, output);
-  addTypeTo<C>(position, input, output);
-  addTypeTo<D>(position, input, output);
-  addTypeTo<E>(position, input, output);
-  addTypeTo<F>(position, input, output);
-  addTypeTo<G>(position, input, output);
-  addTypeTo<H>(position, input, output);
-  addTypeTo<I>(position, input, output);
-  addTypeTo<J>(position, input, output);
-  addTypeTo<K>(position, input, output);
-  addTypeTo<L>(position, input, output);
-  addTypeTo<M>(position, input, output);
-  addTypeTo<N>(position, input, output);
-  addTypeTo<O>(position, input, output);
-  addTypeTo<P>(position, input, output);
-  addTypeTo<Q>(position, input, output);
-  addTypeTo<R>(position, input, output);
-  addTypeTo<S>(position, input, output);
-  addTypeTo<T>(position, input, output);
-  addTypeTo<U>(position, input, output);
-  addTypeTo<V>(position, input, output);
-  addTypeTo<W>(position, input, output);
-  addTypeTo<X>(position, input, output);
-  addTypeTo<Y>(position, input, output);
-  addTypeTo<Z>(position, input, output);
+  A::parseParameters(position, input, output);
+  B::parseParameters(position, input, output);
+  C::parseParameters(position, input, output);
+  D::parseParameters(position, input, output);
+  E::parseParameters(position, input, output);
+  F::parseParameters(position, input, output);
+  G::parseParameters(position, input, output);
+  H::parseParameters(position, input, output);
+  I::parseParameters(position, input, output);
+  J::parseParameters(position, input, output);
+  K::parseParameters(position, input, output);
+  L::parseParameters(position, input, output);
+  M::parseParameters(position, input, output);
+  N::parseParameters(position, input, output);
+  O::parseParameters(position, input, output);
+  P::parseParameters(position, input, output);
+  Q::parseParameters(position, input, output);
+  R::parseParameters(position, input, output);
+  S::parseParameters(position, input, output);
+  T::parseParameters(position, input, output);
+  U::parseParameters(position, input, output);
+  V::parseParameters(position, input, output);
+  W::parseParameters(position, input, output);
+  X::parseParameters(position, input, output);
+  Y::parseParameters(position, input, output);
+  Z::parseParameters(position, input, output);
 }
 
 struct RLOp_Void_Void : public RLOp_NormalOperation<> {

@@ -54,7 +54,6 @@ struct RGBColour_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
@@ -96,7 +95,6 @@ struct RGBMaybeAColour_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };

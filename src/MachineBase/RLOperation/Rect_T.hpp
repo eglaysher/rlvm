@@ -52,7 +52,6 @@ struct Point_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
@@ -98,7 +97,6 @@ struct Rect_T {
   }
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };

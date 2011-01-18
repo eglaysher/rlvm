@@ -53,7 +53,6 @@ struct IntReference_T {
       boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
@@ -81,7 +80,6 @@ struct StrReference_T {
       boost::ptr_vector<libReallive::ExpressionPiece>& output);
 
   enum {
-    is_real_typestruct = true,
     is_complex = false
   };
 };
