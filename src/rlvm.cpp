@@ -247,10 +247,22 @@ int main(int argc, char* argv[]) {
   commandLineOpts.add(opts).add(hidden).add(debugOpts);
 
   po::variables_map vm;
-  po::store(po::basic_command_line_parser<char>(argc, argv).
-            options(commandLineOpts).positional(p).run(),
-            vm);
-  po::notify(vm);
+  try {
+    po::store(po::basic_command_line_parser<char>(argc, argv).
+              options(commandLineOpts).positional(p).run(),
+              vm);
+    po::notify(vm);
+  } catch (boost::program_options::multiple_occurrences& e) {
+    cerr << "Couldn't parse command line: multiple_occurances." << endl
+         << " (Hint: this can happen when your shell doesn't escape properly,"
+         << endl
+         << "  e.g. \"/path/to/Clannad Full Voice/\" without the quotes.)"
+         << endl;
+    return -1;
+  } catch (boost::program_options::error& e) {
+    cerr << "Couldn't parse command line: " << e.what() << endl;
+    return -1;
+  }
 
   // -----------------------------------------------------------------------
 
