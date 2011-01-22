@@ -96,9 +96,10 @@ struct doruby_display : public RLOp_Void_1< StrConstant_T > {
 
 struct msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
   void operator()(RLMachine& machine, int unknown) {
-    int winNum = machine.system().text().activeWindow();
-    machine.system().text().hideTextWindow(winNum);
-    machine.system().text().newPageOnWindow(winNum);
+    TextSystem& text = machine.system().text();
+    int winNum = text.activeWindow();
+    text.hideTextWindow(winNum);
+    text.newPageOnWindow(winNum);
   }
 };
 
