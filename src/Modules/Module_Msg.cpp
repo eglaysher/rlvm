@@ -119,6 +119,7 @@ struct msgClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int activeWindow = text.activeWindow();
+    text.snapshot();
     text.textWindow(activeWindow)->clearWin();
     text.newPageOnWindow(activeWindow);
   }
@@ -130,6 +131,7 @@ struct msgClearAll : public RLOp_Void_Void {
     vector<int> activeWindows = text.activeWindows();
     int activeWindow = text.activeWindow();
 
+    text.snapshot();
     for (vector<int>::const_iterator it = activeWindows.begin();
         it != activeWindows.end(); ++it) {
       text.textWindow(activeWindow)->clearWin();
