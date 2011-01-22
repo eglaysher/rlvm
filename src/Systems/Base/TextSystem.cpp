@@ -465,6 +465,11 @@ bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
   return false;
 }
 
+void TextSystem::takeSavepointSnapshot() {
+  savepoint_active_window_ = activeWindow();
+  savepoint_cursor_number_ = cursorNumber();
+}
+
 bool parseInteger(std::string::const_iterator& begin,
                   std::string::const_iterator end,
                   int& out_value) {
@@ -680,9 +685,7 @@ void TextSystem::load(Archive& ar, unsigned int version) {
 
 template<class Archive>
 void TextSystem::save(Archive& ar, unsigned int version) const {
-  int win = activeWindow();
-  int cursor_num = cursorNumber();
-  ar & win & cursor_num;
+  ar & savepoint_active_window_ & savepoint_cursor_number_;
 }
 
 // -----------------------------------------------------------------------

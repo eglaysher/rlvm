@@ -212,6 +212,9 @@ class TextSystem : public EventListener {
   void setMousePosition(const Point& pos);
   bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
+  // Save pieces of state that would be saved to disk.
+  void takeSavepointSnapshot();
+
   // Returns a surface with |utf8str| rendered with the other specified
   // properties. Will search |utf8str| for object text syntax and will change
   // various properties based on that syntax.
@@ -343,6 +346,11 @@ class TextSystem : public EventListener {
 
   // Our parent system object.
   System& system_;
+
+  // This state can change after the last savepoint marker. These are the
+  // values that should be saved to disk.
+  int savepoint_active_window_;
+  int savepoint_cursor_number_;
 
   // boost::serialization support
   friend class boost::serialization::access;
