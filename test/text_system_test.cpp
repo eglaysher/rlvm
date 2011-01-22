@@ -210,8 +210,8 @@ TEST_F(TextSystemTest, TextPageFontColorRepeats) {
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
-  // Replay it:
-  EXPECT_CALL(win, setFontColor(_)).Times(1);
+  // The scrollback shouldn't be colored.
+  EXPECT_CALL(win, setFontColor(_)).Times(0);
   getTextSystem().backPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }

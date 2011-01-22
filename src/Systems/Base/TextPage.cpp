@@ -335,8 +335,10 @@ void TextPage::reset_indentation_impl(bool is_active_page) {
 // -----------------------------------------------------------------------
 
 void TextPage::font_colour_impl(int colour, bool is_active_page) {
-  system_->text().textWindow(window_num_)
-    ->setFontColor(system_->gameexe()("COLOR_TABLE", colour));
+  if (is_active_page) {
+    system_->text().textWindow(window_num_)
+        ->setFontColor(system_->gameexe()("COLOR_TABLE", colour));
+  }
 }
 
 // -----------------------------------------------------------------------
