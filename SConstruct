@@ -65,9 +65,6 @@ env = Environment(
   # Debug or Release.
   BUILD_TYPE = "Debug",
 
-  # Whether we build the tests that require rlc to compile them.
-  BUILD_RLC_TESTS = False,
-
   # Whether we build the test binary that requires lua.
   BUILD_LUA_TESTS = False,
 )
@@ -261,9 +258,6 @@ config.CheckLibWithHeader('png', 'png.h', "cpp")
 config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
 config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 
-if config.TryAction('rlc --version')[0] == 1:
-  env['BUILD_RLC_TESTS'] = True
-
 env = config.Finish()
 
 ### HACK! Until I make my own version of CheckLibWithHeader, just assume that
@@ -341,18 +335,18 @@ env.SConscript("SConscript",
                duplicate=0,
                exports='env')
 
-if env['BUILD_RLC_TESTS'] == True:
-  # Build the platform independent SEEN.TXT files.
-  env.SConscript("test/SConscript.rlc",
-                 variant_dir="build/test",
-                 duplicate=0,
-                 exports='env')
+# Copy the platform independent SEEN.TXT files to output (we no longer depend
+# on rldev because I can no longer reliably compile it).
+env.SConscript("test/SConscript.rlc",
+               variant_dir="build/test",
+               duplicate=0,
+               exports='env')
 
-  # Build the rlvmTests binary that uses those SEEN.TXT files.
-  env.SConscript("SConscript.test",
-                 variant_dir="$BUILD_DIR/",
-                 duplicate=0,
-                 exports='env')
+# Build the rlvmTests binary that uses those SEEN.TXT files.
+env.SConscript("SConscript.test",
+               variant_dir="$BUILD_DIR/",
+               duplicate=0,
+               exports='env')
 
 env.SConscript("SConscript.luarlvm",
                variant_dir="$BUILD_DIR/",

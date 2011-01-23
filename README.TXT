@@ -82,9 +82,6 @@ You will need the following libraries/utilities:
   installed.)
 - freetype
 
-Optionally, you may want:
-- Haeleth's rldev package (which builds the unit tests)
-
 3a) Compiling under Linux
 -------------------------------------------------------------------------
 
@@ -95,8 +92,8 @@ build system refined. You should be able to type:
 
  $ scons --release
 
-in the root and have a complete build. If you have rldev installed, the
-unit tests will automatically be built and can be run by typing:
+in the root and have a complete build. The unit tests will automatically
+be built and can be run by typing:
 
  $ ./build/rlvmTest
 
