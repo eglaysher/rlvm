@@ -29,6 +29,7 @@
 #define SRC_MACHINEBASE_MEMORY_HPP_
 
 #include <boost/dynamic_bitset.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
 #include <iostream>
@@ -106,11 +107,53 @@ struct LocalMemory {
   // Local string bank
   std::string strS[SIZE_OF_MEM_BANK];
 
+  // When one of our values is changed, we put the original value in here. Why?
+  // So that we can save the state of string memory at the time of the last
+  // Savepoint(). Instead of doing some sort of copying entire memory banks
+  // whenever we hit a Savepoint() call, only reconstruct the original memory
+  // when we save.
+  std::map<int, int> original_intA;
+  std::map<int, int> original_intB;
+  std::map<int, int> original_intC;
+  std::map<int, int> original_intD;
+  std::map<int, int> original_intE;
+  std::map<int, int> original_intF;
+  std::map<int, std::string> original_strS;
+
   std::string local_names[SIZE_OF_NAME_BANK];
+
+  // Combines an array with a log of original values and writes the de-modified
+  // array to |ar|.
+  template<class Archive, typename T>
+  void saveArrayRevertingChanges(Archive& ar,
+                                 const T (&a)[SIZE_OF_MEM_BANK],
+                                 const std::map<int, T>& original) const {
+    T merged[SIZE_OF_MEM_BANK];
+    std::copy(a, a + SIZE_OF_MEM_BANK, merged);
+    for (typename std::map<int, T>::const_iterator it = original.begin();
+         it != original.end(); ++it) {
+      merged[it->first] = it->second;
+    }
+    ar & merged;
+  }
 
   // boost::serialization support
   template<class Archive>
-  void serialize(Archive & ar, unsigned int version) {
+  void save(Archive& ar, unsigned int version) const {
+    saveArrayRevertingChanges(ar, intA, original_intA);
+    saveArrayRevertingChanges(ar, intB, original_intB);
+    saveArrayRevertingChanges(ar, intC, original_intC);
+    saveArrayRevertingChanges(ar, intD, original_intD);
+    saveArrayRevertingChanges(ar, intE, original_intE);
+    saveArrayRevertingChanges(ar, intF, original_intF);
+
+    saveArrayRevertingChanges(ar, strS, original_strS);
+
+    ar & local_names;
+  }
+
+  template<class Archive>
+  void load(Archive& ar, unsigned int version) {
     ar & intA & intB & intC & intD & intE & intF & strS;
 
     // Starting in version 2, we no longer have the intL and strK in
@@ -128,9 +171,11 @@ struct LocalMemory {
     if (version > 0)
       ar & local_names;
   }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-BOOST_CLASS_VERSION(LocalMemory, 1)
+BOOST_CLASS_VERSION(LocalMemory, 2)
 
 // Class that encapsulates access to all integer and string
 // memory. Multiple instances of this class will probably exist if
@@ -203,6 +248,11 @@ class Memory {
   LocalMemory& local() { return local_; }
   const LocalMemory& local() const { return local_; }
 
+  // Commit changes in local memory. Unlike the code in src/Systems/ which
+  // copies current values to shadow values, Memory clears a list of changes
+  // that have been made since.
+  void takeSavepointSnapshot();
+
   // Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
   // equivalent. These letter indexies are used in \#NAME definitions.
   static int ConvertLetterIndexToInt(const std::string& value);
@@ -235,6 +285,9 @@ class Memory {
   // memory (as the case may be) allows us to overlay new views of
   // local memory without copying global memory.
   int* int_var[NUMBER_OF_INT_LOCATIONS];
+
+  // Change records for original.
+  std::map<int, int>* original_int_var[NUMBER_OF_INT_LOCATIONS];
 };  // end of class Memory
 
 // Implementation of getting an integer out of an array. Global because we need

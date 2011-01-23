@@ -47,7 +47,49 @@ using namespace libReallive;
 using boost::lexical_cast;
 using boost::assign::list_of;
 
-class RLMachineTest : public FullSystemTest {};
+class RLMachineTest : public FullSystemTest {
+ protected:
+  void setIntMemoryCountingFrom(RLMachine& saveMachine,
+                                const vector<pair<int, char> >& banks,
+                                int count) {
+    for (vector<pair<int, char> >::const_iterator it = banks.begin();
+         it != banks.end(); ++it) {
+      for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
+        saveMachine.setIntValue(IntMemRef(it->second, i), count);
+        count++;
+      }
+    }
+  }
+
+  void setStrMemoryCountingFrom(RLMachine& saveMachine, int type, int count) {
+    for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
+      saveMachine.setStringValue(type, i, lexical_cast<string>(count));
+      count++;
+    }
+  }
+
+  void verifyIntMemoryCountingFrom(RLMachine& loadMachine,
+                                   const vector<pair<int, char> >& banks,
+                                   int count) {
+    for (vector<pair<int, char> >::const_iterator it = banks.begin();
+         it != banks.end(); ++it) {
+      for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
+        EXPECT_EQ(count, loadMachine.getIntValue(IntMemRef(it->second, i)));
+        count++;
+      }
+    }
+  }
+
+  void verifyStrMemoryCountingFrom(RLMachine& loadMachine,
+                                   int type,
+                                   int count) {
+    for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
+      EXPECT_EQ(lexical_cast<string>(count),
+                loadMachine.getStringValue(type, i));
+      count++;
+    }
+  }
+};
 
 TEST_F(RLMachineTest, RejectsDoubleAttachs) {
   rlmachine.attachModule(new StrModule);
@@ -167,19 +209,8 @@ TEST_F(RLMachineTest, Serialization) {
   // Save data
   {
     RLMachine saveMachine(system, arc);
-
-    int count = 0;
-    for (vector<pair<int, char> >::const_iterator it =
-             GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end();
-         ++it) {
-      for (int i = 0; i < 2000; ++i) {
-        saveMachine.setIntValue(IntMemRef(it->second, i), count);
-        count++;
-      }
-    }
-
-    for (int i = 0; i < 2000; ++i)
-      saveMachine.setStringValue(STRM_LOCATION, i, lexical_cast<string>(i));
+    setIntMemoryCountingFrom(saveMachine, GLOBAL_INTEGER_BANKS, 0);
+    setStrMemoryCountingFrom(saveMachine, STRM_LOCATION, 0);
 
     Serialization::saveGlobalMemoryTo(ss, saveMachine);
   }
@@ -188,21 +219,8 @@ TEST_F(RLMachineTest, Serialization) {
   {
     RLMachine loadMachine(system, arc);
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
-
-    int count = 0;
-    for (vector<pair<int, char> >::const_iterator it =
-             GLOBAL_INTEGER_BANKS.begin(); it != GLOBAL_INTEGER_BANKS.end();
-         ++it) {
-      for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-        EXPECT_EQ(count, loadMachine.getIntValue(IntMemRef(it->second, i)));
-        count++;
-      }
-    }
-
-    for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-      EXPECT_EQ(lexical_cast<string>(i),
-                loadMachine.getStringValue(STRM_LOCATION, i));
-    }
+    verifyIntMemoryCountingFrom(loadMachine, GLOBAL_INTEGER_BANKS, 0);
+    verifyStrMemoryCountingFrom(loadMachine, STRM_LOCATION, 0);
   }
 }
 
@@ -231,5 +249,40 @@ TEST_F(RLMachineTest, SerializationOfKidoku) {
       EXPECT_EQ(!(i % 2), loadMachine.memory().hasBeenRead(5, i))
           << "Didn't save kidoku table correctly!";
     }
+  }
+}
+
+TEST_F(RLMachineTest, SerializationOfSavepointValues) {
+  stringstream ss;
+  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+  // Save data
+  {
+    RLMachine saveMachine(system, arc);
+
+    // Write the values we're going to check for.
+    setIntMemoryCountingFrom(saveMachine, LOCAL_INTEGER_BANKS, 0);
+    setStrMemoryCountingFrom(saveMachine, STRS_LOCATION, 0);
+    saveMachine.markSavepoint();
+
+    // Verify that those values are written.
+    verifyIntMemoryCountingFrom(saveMachine, LOCAL_INTEGER_BANKS, 0);
+    verifyStrMemoryCountingFrom(saveMachine, STRS_LOCATION, 0);
+
+    // Scribble different values on top, immediately check to make sure we can
+    // still read them, but don't commit them.
+    setIntMemoryCountingFrom(saveMachine, LOCAL_INTEGER_BANKS, 5);
+    setStrMemoryCountingFrom(saveMachine, STRS_LOCATION, 5);
+    verifyIntMemoryCountingFrom(saveMachine, LOCAL_INTEGER_BANKS, 5);
+    verifyStrMemoryCountingFrom(saveMachine, STRS_LOCATION, 5);
+
+    Serialization::saveGameTo(ss, saveMachine);
+  }
+
+  // Load data. Assure that we only have the committed values.
+  {
+    RLMachine loadMachine(system, arc);
+    Serialization::loadGameFrom(ss, loadMachine);
+    verifyIntMemoryCountingFrom(loadMachine, LOCAL_INTEGER_BANKS, 0);
+    verifyStrMemoryCountingFrom(loadMachine, STRS_LOCATION, 0);
   }
 }

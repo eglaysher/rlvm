@@ -116,6 +116,15 @@ void Memory::connectIntVarPointers() {
   int_var[5] = local_.intF;
   int_var[6] = global_->intG;
   int_var[7] = global_->intZ;
+
+  original_int_var[0] = &local_.original_intA;
+  original_int_var[1] = &local_.original_intB;
+  original_int_var[2] = &local_.original_intC;
+  original_int_var[3] = &local_.original_intD;
+  original_int_var[4] = &local_.original_intE;
+  original_int_var[5] = &local_.original_intF;
+  original_int_var[6] = NULL;
+  original_int_var[7] = NULL;
 }
 
 const std::string& Memory::getStringValue(int type, int location) {
@@ -159,9 +168,15 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
   case STRM_LOCATION:
     global_->strM[number] = value;
     break;
-  case STRS_LOCATION:
+  case STRS_LOCATION: {
+    // Possibly record the orriginal value for a piece of local memory.
+    std::map<int, std::string>::iterator it = local_.original_strS.find(number);
+    if (it == local_.original_strS.end()) {
+      local_.original_strS.insert(std::make_pair(number, local_.strS[number]));
+    }
     local_.strS[number] = value;
     break;
+  }
   default:
     throw rlvm::Exception("Invalid type in RLMachine::set_string_value");
   }
@@ -212,6 +227,16 @@ void Memory::recordKidoku(int scenario, int kidoku) {
     bitset.resize(kidoku + 1, false);
 
   bitset[kidoku] = true;
+}
+
+void Memory::takeSavepointSnapshot() {
+  local_.original_intA.clear();
+  local_.original_intB.clear();
+  local_.original_intC.clear();
+  local_.original_intD.clear();
+  local_.original_intE.clear();
+  local_.original_intF.clear();
+  local_.original_strS.clear();
 }
 
 // static

@@ -52,13 +52,28 @@
 using namespace std;
 using libReallive::IntMemRef;
 
+namespace {
+
 // Helper function that throws errors for illegal memory access
-static void throwIllegalIndex(const IntMemRef& ref,
-                              const std::string& function) {
+void throwIllegalIndex(const IntMemRef& ref,
+                       const std::string& function) {
   ostringstream ss;
   ss << "Invalid memory access " << ref << " in " << function;
   throw rlvm::Exception(ss.str());
 }
+
+void saveOriginalValue(int* bank,
+                       std::map<int, int>* original_bank,
+                       int location) {
+  if (bank && original_bank) {
+    std::map<int, int>::iterator it = original_bank->find(location);
+    if (it == original_bank->end()) {
+      original_bank->insert(std::make_pair(location, bank[location]));
+    }
+  }
+}
+
+}  // namespace
 
 int Memory::getIntValue(const IntMemRef& ref) {
   int type = ref.type();
@@ -98,18 +113,21 @@ void Memory::setIntValue(const IntMemRef& ref, int value) {
   int location = ref.location();
 
   int* bank = NULL;
+  std::map<int, int>* original_bank = NULL;
   if (index == 8) {
     bank = machine_.currentIntLBank();
   } else if (index < 0 || index > NUMBER_OF_INT_LOCATIONS) {
     throwIllegalIndex(ref, "RLMachine::setIntValue()");
   } else {
     bank = int_var[index];
+    original_bank = original_int_var[index];
   }
 
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
     if ((unsigned int)(location) >= 2000)
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
+    saveOriginalValue(bank, original_bank, location);
     bank[location] = value;
   } else {
     // Ab[]..G4b[], Z8b[] などを書く
@@ -120,6 +138,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value) {
     if ((unsigned int)(location) >= (64000u / factor))
       throwIllegalIndex(ref, "RLMachine::setIntValue()");
 
+    saveOriginalValue(bank, original_bank, location / eltsize);
     bank[location / eltsize] =
       (bank[location / eltsize] & ~(eltmask << shift))
       | (value & eltmask) << shift;
