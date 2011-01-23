@@ -30,6 +30,35 @@
 
 class RLModule;
 
+#include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/Argc_T.hpp"
+#include "MachineBase/RLOperation/Complex_T.hpp"
+#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "MachineBase/RLOperation/Special_T.hpp"
+
+// Defines index_series's input pattern.
+typedef IntConstant_T ValOnly;
+typedef Complex3_T< IntConstant_T, IntConstant_T, IntConstant_T > StartEndval;
+typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T,
+                    IntConstant_T > StartEndvalMode;
+typedef Special_T< ValOnly, StartEndval, StartEndvalMode > IndexSeriesEntry;
+typedef Argc_T< IndexSeriesEntry > IndexList;
+
+// Implementation of the math performing index_series command. Exposed through
+// the header for testing.
+struct Sys_index_series
+    : public RLOp_Store_4<IntConstant_T, IntConstant_T, IntConstant_T,
+                          IndexList> {
+  // Main entrypoint
+  int operator()(RLMachine& machine, int index, int offset, int init,
+                 IndexList::type index_list);
+
+  // Implementations of the individual things that can be computed.
+  void mode0(int index, int start, int end, int endval, int& value, int& init);
+  void mode1(int index, int start, int end, int endval, int& value, int& init);
+  void mode2(int index, int start, int end, int endval, int& value, int& init);
+};
+
 // index_series has its own file.
 void addIndexSeriesOpcode(RLModule& module);
 

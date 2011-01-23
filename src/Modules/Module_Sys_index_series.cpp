@@ -33,105 +33,111 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
-#include "MachineBase/RLOperation/Special_T.hpp"
+
+using namespace std;
 
 // -----------------------------------------------------------------------
 
-typedef IntConstant_T ValOnly;
-typedef Complex3_T< IntConstant_T, IntConstant_T, IntConstant_T > StartEndval;
-typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T,
-                    IntConstant_T > StartEndvalMode;
-typedef Argc_T< Special_T< ValOnly, StartEndval, StartEndvalMode > > IndexList;
+int Sys_index_series::operator()(RLMachine& machine,
+                                 int index,
+                                 int offset,
+                                 int init,
+                                 IndexList::type index_list) {
+  index = index + offset;
+  int value = init;
 
-struct Sys_index_series
-    : public RLOp_Store_4<IntConstant_T, IntConstant_T, IntConstant_T,
-                          IndexList> {
-  int operator()(RLMachine& machine, int index, int offset, int init,
-                 IndexList::type index_list) {
-    index = index + offset;
-    int value = init;
-
-    for (IndexList::type::iterator it = index_list.begin();
-         it != index_list.end(); ++it) {
-      switch (it->type) {
-        case 0:
-          throw rlvm::Exception(
-              "Don't know how to handle type 0 index_series statements");
-          break;
-        case 1: {
-          // This is the only thing we reliably can do.
-          int start = it->second.get<0>();
-          int end = it->second.get<1>();
-          int endval = it->second.get<2>();
+  for (IndexList::type::iterator it = index_list.begin();
+       it != index_list.end(); ++it) {
+    switch (it->type) {
+      case 0: {
+        throw rlvm::Exception(
+            "Don't know how to handle type 0 index_series statements");
+        break;
+      }
+      case 1: {
+        // This is the only thing we reliably can do.
+        int start = it->second.get<0>();
+        int end = it->second.get<1>();
+        int endval = it->second.get<2>();
+        mode0(index, start, end, endval, value, init);
+        break;
+      }
+      case 2: {
+        int start = it->third.get<0>();
+        int end = it->third.get<1>();
+        int endval = it->third.get<2>();
+        if (it->third.get<3>() == 0) {
           mode0(index, start, end, endval, value, init);
-          break;
+        } else if (it->third.get<3>() == 1) {
+          mode1(index, start, end, endval, value, init);
+        } else if (it->third.get<3>() == 2) {
+          mode2(index, start, end, endval, value, init);
+        } else {
+          std::ostringstream oss;
+          oss << "Don't know how to handle type " << it->third.get<3>()
+              << " index_series statements";
+          throw rlvm::Exception(oss.str());
         }
-        case 2: {
-          int start = it->third.get<0>();
-          int end = it->third.get<1>();
-          int endval = it->third.get<2>();
-          if (it->third.get<3>() == 0) {
-            mode0(index, start, end, endval, value, init);
-          } else if (it->third.get<3>() == 1) {
-            mode1(index, start, end, endval, value, init);
-          } else if (it->third.get<3>() == 2) {
-            mode2(index, start, end, endval, value, init);
-          } else {
-            std::ostringstream oss;
-            oss << "Don't know how to handle type " << it->third.get<3>()
-                << " index_series statements";
-            throw rlvm::Exception(oss.str());
-          }
-          break;
-        }
+        break;
       }
     }
-
-    return value;
   }
 
-  void mode0(int index, int start, int end, int endval, int& value, int& init) {
-    if (index > start && index < end) {
-      double percentage = double(index - start) / double(end - start);
-      int amount = endval - init;
-      value += (percentage * amount);
-    } else if (index >= end) {
-      // Prevent us from going over the endval.
-      value = endval;
-      init = endval;
-    }
-  }
+  return value;
+}
 
-  void mode1(int index, int start, int end, int endval, int& value, int& init) {
-    if (index > start && index < end) {
-      double percentage = double(index - start) / double(end - start);
-      double log_percentage = std::log(percentage + 1) / std::log(2);
-      int amount = endval - init;
-      value += (amount - ((1 - log_percentage) * amount));
-    } else if (index >= end) {
-      // Prevent us from going over the endval.
-      value = endval;
-      init = endval;
-    }
+void Sys_index_series::mode0(int index,
+                             int start,
+                             int end,
+                             int endval,
+                             int& value,
+                             int& init) {
+  if (index > start && index < end) {
+    double percentage = double(index - start) / double(end - start);
+    int amount = endval - init;
+    value += (percentage * amount);
+  } else if (index >= end) {
+    // Prevent us from going over the endval.
+    value = endval;
+    init = endval;
   }
+}
 
-  void mode2(int index, int start, int end, int endval, int& value, int& init) {
-    if (index > start && index < end) {
-      double percentage = double(index - start) / double(end - start);
-      double log_percentage = std::log(percentage + 1) / std::log(2);
-      int amount = endval - init;
-      value += (log_percentage * amount);
-    } else if (index >= end) {
-      // Prevent us from going over the endval.
-      value = endval;
-      init = endval;
-    }
+void Sys_index_series::mode1(int index,
+                             int start,
+                             int end,
+                             int endval,
+                             int& value,
+                             int& init) {
+  if (index > start && index < end) {
+    double percentage = double(index - start) / double(end - start);
+    double log_percentage = std::log(percentage + 1) / std::log(2);
+    int amount = endval - init;
+    value += (amount - ((1 - log_percentage) * amount));
+  } else if (index >= end) {
+    // Prevent us from going over the endval.
+    value = endval;
+    init = endval;
   }
-};
+}
+
+void Sys_index_series::mode2(int index,
+                             int start,
+                             int end,
+                             int endval,
+                             int& value,
+                             int& init) {
+  if (index > start && index < end) {
+    double percentage = double(index - start) / double(end - start);
+    double log_percentage = std::log(percentage + 1) / std::log(2);
+    int amount = endval - init;
+    value += (log_percentage * amount);
+  } else if (index >= end) {
+    // Prevent us from going over the endval.
+    value = endval;
+    init = endval;
+  }
+}
 
 // -----------------------------------------------------------------------
 
