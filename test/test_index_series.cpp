@@ -47,6 +47,12 @@ class IndexSeriesTest : public FullSystemTest {
     }
   }
 
+  IndexList::type addValue(IndexList::type orig, int val) {
+    IndexSeriesEntry::type a = { 0, val };
+    orig.push_back(a);
+    return orig;
+  }
+
   IndexList::type addMode0(IndexList::type orig,
                            int start,
                            int end,
@@ -74,4 +80,14 @@ TEST_F(IndexSeriesTest, RldevExample) {
                     0, 5,
                     tuple_list_of(0, 5)(1, 6)(2, 7)(3, 8)(4, 9)(5, 10)
                     (6, 10)(7, 10)(8, 10)(9, 5)(10, 0));
+}
+
+TEST_F(IndexSeriesTest, RawValueTest) {
+  // NOTE: Reallive.exe thinks its (9, 19). (9, 20) is what rlvm says, probably
+  // due to rounding error.
+  verifyIndexSeries(
+      addMode0(addValue(addMode0(IndexList::type(), 0, 5, 10), 40), 8, 10, 0),
+      0, 5,
+      tuple_list_of(0, 5)(1, 6)(2, 7)(3, 8)(4, 9)(5, 40)
+      (6, 40)(7, 40)(8, 40)(9, 20)(10, 0));
 }

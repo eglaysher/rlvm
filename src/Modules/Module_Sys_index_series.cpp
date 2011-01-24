@@ -45,13 +45,16 @@ int Sys_index_series::operator()(RLMachine& machine,
                                  IndexList::type index_list) {
   index = index + offset;
   int value = init;
+  bool previous_term_finished = false;
 
   for (IndexList::type::iterator it = index_list.begin();
        it != index_list.end(); ++it) {
     switch (it->type) {
       case 0: {
-        throw rlvm::Exception(
-            "Don't know how to handle type 0 index_series statements");
+        if (previous_term_finished) {
+          value = it->first;
+          init = it->first;
+        }
         break;
       }
       case 1: {
@@ -59,7 +62,7 @@ int Sys_index_series::operator()(RLMachine& machine,
         int start = it->second.get<0>();
         int end = it->second.get<1>();
         int endval = it->second.get<2>();
-        mode0(index, start, end, endval, value, init);
+        mode0(index, start, end, endval, value, init, previous_term_finished);
         break;
       }
       case 2: {
@@ -67,11 +70,11 @@ int Sys_index_series::operator()(RLMachine& machine,
         int end = it->third.get<1>();
         int endval = it->third.get<2>();
         if (it->third.get<3>() == 0) {
-          mode0(index, start, end, endval, value, init);
+          mode0(index, start, end, endval, value, init, previous_term_finished);
         } else if (it->third.get<3>() == 1) {
-          mode1(index, start, end, endval, value, init);
+          mode1(index, start, end, endval, value, init, previous_term_finished);
         } else if (it->third.get<3>() == 2) {
-          mode2(index, start, end, endval, value, init);
+          mode2(index, start, end, endval, value, init, previous_term_finished);
         } else {
           std::ostringstream oss;
           oss << "Don't know how to handle type " << it->third.get<3>()
@@ -91,15 +94,18 @@ void Sys_index_series::mode0(int index,
                              int end,
                              int endval,
                              int& value,
-                             int& init) {
+                             int& init,
+                             bool& previous_term_finished) {
   if (index > start && index < end) {
     double percentage = double(index - start) / double(end - start);
     int amount = endval - init;
     value += (percentage * amount);
+    previous_term_finished = false;
   } else if (index >= end) {
     // Prevent us from going over the endval.
     value = endval;
     init = endval;
+    previous_term_finished = true;
   }
 }
 
@@ -108,16 +114,19 @@ void Sys_index_series::mode1(int index,
                              int end,
                              int endval,
                              int& value,
-                             int& init) {
+                             int& init,
+                             bool& previous_term_finished) {
   if (index > start && index < end) {
     double percentage = double(index - start) / double(end - start);
     double log_percentage = std::log(percentage + 1) / std::log(2);
     int amount = endval - init;
     value += (amount - ((1 - log_percentage) * amount));
+    previous_term_finished = false;
   } else if (index >= end) {
     // Prevent us from going over the endval.
     value = endval;
     init = endval;
+    previous_term_finished = true;
   }
 }
 
@@ -126,16 +135,19 @@ void Sys_index_series::mode2(int index,
                              int end,
                              int endval,
                              int& value,
-                             int& init) {
+                             int& init,
+                             bool& previous_term_finished) {
   if (index > start && index < end) {
     double percentage = double(index - start) / double(end - start);
     double log_percentage = std::log(percentage + 1) / std::log(2);
     int amount = endval - init;
     value += (log_percentage * amount);
+    previous_term_finished = false;
   } else if (index >= end) {
     // Prevent us from going over the endval.
     value = endval;
     init = endval;
+    previous_term_finished = true;
   }
 }
 

@@ -54,9 +54,12 @@ struct Sys_index_series
                  IndexList::type index_list);
 
   // Implementations of the individual things that can be computed.
-  void mode0(int index, int start, int end, int endval, int& value, int& init);
-  void mode1(int index, int start, int end, int endval, int& value, int& init);
-  void mode2(int index, int start, int end, int endval, int& value, int& init);
+  void mode0(int index, int start, int end, int endval, int& value, int& init,
+                             bool& previous_term_finished);
+  void mode1(int index, int start, int end, int endval, int& value, int& init,
+                             bool& previous_term_finished);
+  void mode2(int index, int start, int end, int endval, int& value, int& init,
+                             bool& previous_term_finished);
 };
 
 // index_series has its own file.
