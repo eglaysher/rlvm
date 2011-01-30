@@ -191,7 +191,7 @@ PcmModule::PcmModule()
   addOpcode(13, 1, "wavUnMute", new wavUnMute_1);
 
   addOpcode(14, 0, "wavMute", new wavMute_0);
-  addOpcode(14, 1, "wavMute", new wavMute_0);
+  addOpcode(14, 1, "wavMute", new wavMute_1);
 
   addOpcode(20, 0, "wavStopAll", callFunction(&SoundSystem::wavStopAll));
 
