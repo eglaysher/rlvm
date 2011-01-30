@@ -45,6 +45,12 @@ FrameCounter::FrameCounter(EventSystem& event_system, int frame_min,
     time_at_start_(event_system.getTicks()),
     total_time_(milliseconds) {
   beginTimer();
+
+  if (milliseconds == 0) {
+    // Prevent us from dividing by zero (OH SHI-)
+    value_ = frame_max;
+    is_active_ = false;
+  }
 }
 
 FrameCounter::~FrameCounter() {
