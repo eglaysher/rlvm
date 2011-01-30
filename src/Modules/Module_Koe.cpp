@@ -94,6 +94,26 @@ struct koeDoPlay2 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
+// We ignore fadein because we'll never get that effect with the
+// current mixing library.
+struct koeSetVolume_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int level) {
+    machine.system().sound().setKoeVolume(level, 0);
+  }
+};
+
+struct koeUnMute_1 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int fadein) {
+    machine.system().sound().setKoeVolume(255, fadein);
+  }
+};
+
+struct koeMute_1 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int fadein) {
+    machine.system().sound().setKoeVolume(0, fadein);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -126,14 +146,16 @@ KoeModule::KoeModule()
   addUnsupportedOpcode(10, 0, "koeDoPlayExC");
   addUnsupportedOpcode(10, 1, "koeDoPlayExC");
 
-  addUnsupportedOpcode(11, 0, "koeVolume");
+  addOpcode(11, 0, "koeVolume", returnIntValue(&SoundSystem::koeVolume));
 
-  addUnsupportedOpcode(12, 0, "koeSetVolume");
-  addUnsupportedOpcode(12, 1, "koeSetVolume");
+  addOpcode(12, 0, "koeSetVolume", new koeSetVolume_0);
+  addOpcode(12, 1, "koeSetVolume", callFunction(&SoundSystem::setKoeVolume));
 
-  addUnsupportedOpcode(13, 0, "koeUnMute");
-  addUnsupportedOpcode(13, 1, "koeUnMute");
+  addOpcode(13, 0, "koeUnMute",
+            callFunctionWith(&SoundSystem::setKoeVolume, 255, 0));
+  addOpcode(13, 1, "koeUnMute", new koeUnMute_1);
 
-  addUnsupportedOpcode(14, 0, "koeMute");
-  addUnsupportedOpcode(14, 1, "koeMute");
+  addOpcode(14, 0, "koeMute",
+            callFunctionWith(&SoundSystem::setKoeVolume, 0, 0));
+  addOpcode(14, 1, "koeMute", new koeMute_1);
 }
