@@ -3,39 +3,51 @@
    Memcheck:Param
    ioctl(generic)
    fun:ioctl
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
+}
+{
+   Some weird thing in ati driver
+   Memcheck:Param
+   ioctl(generic)
+   fun:ioctl
+   fun:ukiCreateContext
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
+   obj:*
+   obj:*
+   obj:*
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    Suppress uninitialized value jumps
    Memcheck:Cond
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    Suppress invalid memcpys (lots of these!)
    Memcheck:Addr1
    fun:memcpy
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    Invalid write of size 4
    Memcheck:Addr4
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    Invalid write of size 8
    Memcheck:Addr8
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    WTF, fglrx!
    Memcheck:Addr1
    fun:memset
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    And general access.
    Memcheck:Addr1
-   obj:/usr/lib/dri/fglrx_dri.so
+   obj:/usr/lib/fglrx/dri/fglrx_dri.so
 }
 {
    asound!?
@@ -77,4 +89,11 @@
    fun:malloc
    obj:/lib/libc-2.8.90.so
    fun:__nss_database_lookup
+}
+{
+   Uninitialized condition in how boost calls zlib.
+   Memcheck:Cond
+   fun:inflateReset2
+   fun:inflateInit2_
+   fun:_ZN5boost9iostreams6detail9zlib_base7do_initERKNS0_11zlib_paramsEbPFPvS6_jjEPFvS6_S6_ES6_
 }
