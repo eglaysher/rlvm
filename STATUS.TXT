@@ -22,10 +22,11 @@ CLANNAD FULL VOICE
 - Voices work.
 - Partially playable with the Baka-Tsuki English patch (currently beta)
 
-Tomoyo After
-------------
-- I have verified that the game starts. (No other testing has happened)
-- I assume that the dungeon crawler parts are broken.
+Tomoyo After Memorial Edition
+-----------------------------
+- The entire game is playable through the end.
+- The dungeon crawler parts are implemented as a Win32 DLL, don't work, and
+  will never work.
 
 Planetarian CD
 --------------

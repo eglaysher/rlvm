@@ -41,10 +41,10 @@ rlvm currently plays the following games to their completion:
 | CLANNAD                | OK                 | (Not supported)     |
 | CLANNAD (Full Voice)   | OK                 | Get from Baka-Tsuki |
 | Planetarian CD         | OK                 | (Broken)            |
+| Tomoyo After           | OK                 | (None)              |
 | Little Busters         | OK (Some glitches) | (Broken)            |
 | Princess Bride         | Mostly works       | (None)              |
 |------------------------+--------------------+---------------------|
-| Tomoyo After           | Works?             | (None)              |
 | Princess Brave         | Works?             | (None)              |
 | ALMA ~zutto soba ni~   | Reported to work   | (None)              |
 | SNOW                   | (Broken)           | (None)              |
