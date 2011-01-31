@@ -1,6 +1,14 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.10:
+
+- Support for Tomoyo After Memorial Edition.
+- Voice support for Planetarian.
+- Fix multiple errors in the handling of glosses.
+
+-------------------------------------------------------------------------
+
 Version 0.9:
 
 - Preliminary support for Little Busters! No support for Ecstasy yet.

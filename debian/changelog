@@ -1,3 +1,12 @@
+rlvm (0.10) maverick; urgency=low
+
+  * Tomoyo After Memorial Edition support.
+  * Planetarian voice support.
+  * Fix multiple errors in the handling of glosses.
+  * Multiple crashers/graphics fixes.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sun, 30 Jan 2011 18:20:51 -0800
+
 rlvm (0.9) unstable; urgency=low
 
   * Preliminary support for Little Busters! (No support for Ectasy yet.)

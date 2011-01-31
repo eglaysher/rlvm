@@ -168,7 +168,7 @@ namespace fs = boost::filesystem;
 void printVersionInformation() {
   cout
     << "rlvm (" << rlvm_version() <<  ")" << endl
-    << "Copyright (C) 2006-2010 Elliot Glaysher, et all." << endl
+    << "Copyright (C) 2006-2011 Elliot Glaysher, et all." << endl
     << endl
     << "Contains code that is: " << endl
     << "  Copyright (C) 2006-2007 Peter \"Haeleth\" Jolly" << endl

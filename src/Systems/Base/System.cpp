@@ -372,5 +372,5 @@ void System::addPath(GameexeInterpretObject gio) {
 }
 
 std::string rlvm_version() {
-  return "Version 0.9";
+  return "Version 0.10";
 }

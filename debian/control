@@ -10,6 +10,6 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: RealLive virtual machine clone
  rlvm is a Free Software reimplementation of VisualArt's KK's
- RealLive interpreter, used in the games Kanon, Air, CLANNAD,
- Little Busters and Planetarian, among many others.
+ RealLive interpreter, used in the games Kanon, Air, CLANNAD, Planetarian,
+ Tomoyo After and Little Busters, among many others.
 
