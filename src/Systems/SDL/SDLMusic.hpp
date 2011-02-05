@@ -108,11 +108,16 @@ class SDLMusic : public boost::noncopyable,
     return s_currently_playing;
   }
 
-  /// Whether music is currently playing.
+  // Whether music is currently playing.
   static bool IsCurrentlyPlaying() { return s_currently_playing; }
 
-  /// Whether we should output music.
+  // Whether we should output music.
   static void SetBgmEnabled(const int in) { s_bgm_enabled = in; }
+
+  // What volume we should play this at normally.
+  static void SetComputedBgmVolume(const int in) {
+    s_computed_bgm_vol = in / 2;
+  }
 
  private:
   /**
@@ -173,6 +178,9 @@ class SDLMusic : public boost::noncopyable,
 
   /// Whether we should even be playing music.
   static bool s_bgm_enabled;
+
+  // The volume we should play music at as a [0,128] range.
+  static int s_computed_bgm_vol;
 };
 
 // -----------------------------------------------------------------------

@@ -483,9 +483,9 @@ SysModule::SysModule()
             returnIntValue(&SoundSystem::bgmKoeFade));
   addUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
   addOpcode(2230, 0, "SetBgmVolMod",
-            callFunction(&SoundSystem::setBgmVolume));
+            callFunction(&SoundSystem::setBgmVolumeMod));
   addOpcode(2330, 0, "BgmVolMod",
-            returnIntValue(&SoundSystem::bgmVolume));
+            returnIntValue(&SoundSystem::bgmVolumeMod));
   addOpcode(2231, 0, "SetKoeVolMod",
             callFunction(&SoundSystem::setKoeVolume));
   addOpcode(2331, 0, "KoeVolMod",

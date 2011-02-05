@@ -43,11 +43,6 @@ class SDLMusic;
 
 // -----------------------------------------------------------------------
 
-/**
- *
- * TODO: All of my volume calculations are WRONG. I don't take the difference
- * between say, bgmSetVolume and SetBgmVolMod().
- */
 class SDLSoundSystem : public SoundSystem {
  public:
   explicit SDLSoundSystem(System& system);
@@ -56,6 +51,8 @@ class SDLSoundSystem : public SoundSystem {
   virtual void executeSoundSystem();
 
   virtual void setBgmEnabled(const int in);
+  virtual void setBgmVolumeMod(const int in);
+  virtual void setBgmVolumeScript(const int in);
   virtual void setChannelVolume(const int channel, const int level);
 
   virtual void wavPlay(const std::string& wav_file, bool loop);

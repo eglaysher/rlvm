@@ -68,7 +68,7 @@ struct SoundSystemGlobals {
   bool bgm_enabled;
 
   // Volume for the music
-  int bgm_volume;
+  int bgm_volume_mod;
 
   // Whether the Wav functions are enabled
   bool pcm_enabled;
@@ -104,7 +104,7 @@ struct SoundSystemGlobals {
   // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & sound_quality & bgm_enabled & bgm_volume & pcm_enabled &
+    ar & sound_quality & bgm_enabled & bgm_volume_mod & pcm_enabled &
       pcm_volume & se_enabled & se_volume;
 
     if (version >= 1) {
@@ -205,8 +205,14 @@ class SoundSystem {
   // BGM functions
   virtual void setBgmEnabled(const int in);
   int bgmEnabled() const;
-  virtual void setBgmVolume(const int in);
-  int bgmVolume() const;
+
+  // User configured volume setting
+  virtual void setBgmVolumeMod(const int in);
+  int bgmVolumeMod() const;
+
+  // Programmer configured volume setting
+  virtual void setBgmVolumeScript(const int in);
+  int bgmVolumeScript() const;
 
   // Status of the music subsystem
   //
@@ -373,6 +379,9 @@ class SoundSystem {
 
   // Defined music tracks (cd tracks)
   CDTable cd_tracks_;
+
+  // The programmer controlled volume know for music.
+  int bgm_volume_script_;
 
   // ---------------------------------------------------------------------
 

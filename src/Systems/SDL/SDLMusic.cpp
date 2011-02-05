@@ -55,6 +55,7 @@ const int STOP_NOW = -2;
 
 boost::shared_ptr<SDLMusic> SDLMusic::s_currently_playing;
 bool SDLMusic::s_bgm_enabled = true;
+int SDLMusic::s_computed_bgm_vol = 128;
 
 // -----------------------------------------------------------------------
 // SDLMusic
@@ -184,6 +185,9 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
       music->file_->Read( (char*)(stream+count*4), 4, len/4-count);
     }
   }
+
+  int cur_vol = s_computed_bgm_vol;
+  // Compute in fadetime results.
   if (music->fadetime_total_) {
     int count_total = music->fadetime_total_*(WAVFILE::freq/1000);
     if (music->fade_count_ > count_total ||
@@ -194,14 +198,15 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
       return;
     }
 
-    int cur_vol =
-        SDL_MIX_MAXVOLUME * (count_total - music->fade_count_) /
-        count_total;
+    cur_vol = cur_vol * (count_total - music->fade_count_) / count_total;
+    music->fade_count_ += len/4;
+  }
+
+  if (cur_vol != SDL_MIX_MAXVOLUME) {
     char stream_dup[len];  // NOLINT
     memcpy(stream_dup, stream, len);
     memset(stream, 0, len);
     SDL_MixAudio(stream, (Uint8*)stream_dup, len, cur_vol);
-    music->fade_count_ += len/4;
   }
 }
 

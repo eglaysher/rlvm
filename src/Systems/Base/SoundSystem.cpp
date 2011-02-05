@@ -51,14 +51,14 @@ using namespace std;
 // SoundSystemGlobals
 // -----------------------------------------------------------------------
 SoundSystemGlobals::SoundSystemGlobals()
-  : sound_quality(5), bgm_enabled(true), bgm_volume(255), pcm_enabled(true),
+  : sound_quality(5), bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
     pcm_volume(255), se_enabled(true), se_volume(255),
     koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
   : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
-    bgm_enabled(true), bgm_volume(255), pcm_enabled(true),
+    bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
     pcm_volume(255), se_enabled(true), se_volume(255),
     koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
@@ -117,6 +117,7 @@ SoundSystem::CDTrack::CDTrack(
 SoundSystem::SoundSystem(System& system)
     : voice_cache_(*this),
       system_(system),
+      bgm_volume_script_(255),
       globals_(system.gameexe()) {
   Gameexe& gexe = system_.gameexe();
 
@@ -214,7 +215,7 @@ void SoundSystem::executeSoundSystem() {
 
 void SoundSystem::restoreFromGlobals() {
   setBgmEnabled(bgmEnabled());
-  setBgmVolume(bgmVolume());
+  setBgmVolumeMod(bgmVolumeMod());
 
   setPcmEnabled(pcmEnabled());
   setPcmVolume(pcmVolume());
@@ -231,12 +232,22 @@ int SoundSystem::bgmEnabled() const {
   return globals_.bgm_enabled;
 }
 
-void SoundSystem::setBgmVolume(const int in) {
-  globals_.bgm_volume = in;
+void SoundSystem::setBgmVolumeMod(const int in) {
+  checkVolume(in, "setBgmVolumeMod");
+  globals_.bgm_volume_mod = in;
 }
 
-int SoundSystem::bgmVolume() const {
-  return globals_.bgm_volume;
+int SoundSystem::bgmVolumeMod() const {
+  return globals_.bgm_volume_mod;
+}
+
+void SoundSystem::setBgmVolumeScript(const int in) {
+  checkVolume(in, "setBgmVolumeScript");
+  bgm_volume_script_ = in;
+}
+
+int SoundSystem::bgmVolumeScript() const {
+  return bgm_volume_script_;
 }
 
 void SoundSystem::setPcmEnabled(const int in) {

@@ -200,6 +200,20 @@ void SDLSoundSystem::setBgmEnabled(const int in) {
 
 // -----------------------------------------------------------------------
 
+void SDLSoundSystem::setBgmVolumeMod(const int in) {
+  SoundSystem::setBgmVolumeMod(in);
+  SDLMusic::SetComputedBgmVolume(computeChannelVolume(in, bgmVolumeScript()));
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::setBgmVolumeScript(const int in) {
+  SoundSystem::setBgmVolumeScript(in);
+  SDLMusic::SetComputedBgmVolume(computeChannelVolume(bgmVolumeMod(), in));
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSoundSystem::setChannelVolume(const int channel, const int level) {
   int adjusted_volume = computeChannelVolume(channel, pcmVolume());
   Mix_Volume(realLiveVolumeToSDLMixerVolume(adjusted_volume), level);
