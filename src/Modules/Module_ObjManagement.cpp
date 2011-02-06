@@ -28,6 +28,7 @@
 #include "Module_Obj.hpp"
 #include "Module_ObjManagement.hpp"
 
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -56,12 +57,6 @@ struct objCopyFgToBg_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
       GraphicsObject& go = sys.getObject(OBJ_FG, i);
       sys.setObject(OBJ_BG, i, go);
     }
-  }
-};
-
-struct objClearAll : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.system().graphics().clearAllObjects();
   }
 };
 
@@ -159,7 +154,8 @@ ObjCopyFgToBg::ObjCopyFgToBg()
   addOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);
   addOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
 
-  addOpcode(100, 0, "objClearAll", new objClearAll);
+  addOpcode(100, 0, "objClearAll",
+            callFunction(&GraphicsSystem::clearAllObjects));
 }
 
 // -----------------------------------------------------------------------

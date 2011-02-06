@@ -84,6 +84,14 @@ RLOperation* callFunctionWith(void(OBJTYPE::*s)(VALTYPE), VALTYPE val) {
   return new binderImpl::Op_CallWithConstant<OBJTYPE, VALTYPE>(s, val);
 }
 
+template<typename OBJTYPE, typename VALONE, typename VALTWO>
+RLOperation* callFunctionWith(void(OBJTYPE::*s)(VALONE, VALTWO),
+                              VALONE one,
+                              VALTWO two) {
+  return new binderImpl::Op_CallWithConstantConstant<OBJTYPE, VALONE, VALTWO>(
+      s, one, two);
+}
+
 // Returns the int value of the passed in function as the store register.
 template<typename RETTYPE>
 RLOperation* returnIntValue(RETTYPE(*s)()) {
@@ -96,7 +104,7 @@ RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)() const) {
 }
 
 template<typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(const int) const) {
+RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(int) const) {
   return new binderImpl::Op_ReturnIntValueWithInt<OBJTYPE, RETTYPE>(s);
 }
 

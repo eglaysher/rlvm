@@ -43,15 +43,6 @@ struct setOverride : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-struct setOverrideAll : public RLOp_Void_Void {
-  bool value_;
-  explicit setOverrideAll(int value) : value_(value) { }
-
-  void operator()(RLMachine& machine) {
-    machine.system().text().setVisualOverrideAll(value_);
-  }
-};
-
 }  // namespace
 
 EventLoopModule::EventLoopModule()
@@ -75,9 +66,11 @@ EventLoopModule::EventLoopModule()
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
   // system; no idea what they do.
   addOpcode(1200, 0, "TextwindowOverrideShow", new setOverride(true));
-  addOpcode(1200, 2, "TextwindowOverrideShow", new setOverrideAll(true));
+  addOpcode(1200, 2, "TextwindowOverrideShow",
+            callFunctionWith(&TextSystem::setVisualOverrideAll, true));
   addOpcode(1201, 0, "TextwindowOverrideHide", new setOverride(false));
-  addOpcode(1201, 2, "TextwindowOverrideHide", new setOverrideAll(false));
+  addOpcode(1201, 2, "TextwindowOverrideHide",
+            callFunctionWith(&TextSystem::setVisualOverrideAll, false));
   addOpcode(1202, 0, "ClearTextwindowOverrides",
             callFunction(&TextSystem::clearVisualOverrides));
 }

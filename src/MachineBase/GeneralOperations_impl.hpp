@@ -225,6 +225,25 @@ class Op_CallWithConstant : public RLOp_Void_Void {
   VALTYPE value;
 };
 
+template<typename OBJTYPE, typename VALONE, typename VALTWO>
+class Op_CallWithConstantConstant : public RLOp_Void_Void {
+ public:
+  typedef void(OBJTYPE::*Setter)(VALONE, VALTWO);
+
+  Op_CallWithConstantConstant(Setter s, VALONE in_valone, VALTWO in_valtwo)
+      : setter(s), valone(in_valone), valtwo(in_valtwo) {
+  }
+
+  void operator()(RLMachine& machine) {
+    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(valone, valtwo);
+  }
+
+ private:
+  Setter setter;
+  VALONE valone;
+  VALTWO valtwo;
+};
+
 template<typename RETTYPE>
 class Op_ReturnFunctionIntValue : public RLOp_Store_Void {
  public:
