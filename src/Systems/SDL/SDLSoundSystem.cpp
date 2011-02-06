@@ -68,9 +68,6 @@ static RealLiveSoundQualities s_real_live_sound_qualities[] = {
   {48000, AUDIO_S16}    // 48 h_kz, 16 bit stereo
 };
 
-// The koe channel is the last one.
-const int KOE_CHANNEL = NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS;
-
 // -----------------------------------------------------------------------
 // SDLSoundSystem (private)
 // -----------------------------------------------------------------------
@@ -105,10 +102,17 @@ void SDLSoundSystem::wavPlayImpl(const std::string& wav_file,
                                  const int channel, bool loop) {
   if (pcmEnabled()) {
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
-    Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
+    setChannelVolumeImpl(channel);
     int loop_num = loop ? -1 : 0;
     sample->playChunkOn(channel, loop_num);
   }
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSoundSystem::setChannelVolumeImpl(int channel) {
+  int adjusted = computeChannelVolume(channelVolume(channel), pcmVolumeMod());
+  Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(adjusted));
 }
 
 // -----------------------------------------------------------------------
@@ -163,8 +167,7 @@ SDLSoundSystem::SDLSoundSystem(System& system)
     WAVFILE::channels = channels;
   }
 
-  Mix_AllocateChannels(NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS +
-                       NUM_KOE_CHANNELS);
+  Mix_AllocateChannels(NUM_TOTAL_CHANNELS);
 
   Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
 
@@ -215,8 +218,8 @@ void SDLSoundSystem::setBgmVolumeScript(const int in) {
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::setChannelVolume(const int channel, const int level) {
-  int adjusted_volume = computeChannelVolume(channel, pcmVolume());
-  Mix_Volume(realLiveVolumeToSDLMixerVolume(adjusted_volume), level);
+  SoundSystem::setChannelVolume(channel, level);
+  setChannelVolumeImpl(channel);
 }
 
 // -----------------------------------------------------------------------
@@ -248,7 +251,7 @@ void SDLSoundSystem::wavPlay(const std::string& wav_file, bool loop,
 
   if (pcmEnabled()) {
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
-    Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(pcmVolume()));
+    setChannelVolumeImpl(channel);
 
     int loop_num = loop ? -1 : 0;
     sample->fadeInChunkOn(channel, loop_num, fadein_ms);

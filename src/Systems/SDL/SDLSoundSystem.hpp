@@ -130,6 +130,9 @@ class SDLSoundSystem : public SoundSystem {
   void wavPlayImpl(const std::string& wav_file,
                    const int channel, bool loop);
 
+  // Computes and passes a volume to SDL_mixer for |channel|.
+  void setChannelVolumeImpl(int channel);
+
   /**
    * Creates an SDLMusic object from a name. Throws if the bgm isn't
    * found.

@@ -43,6 +43,11 @@ class System;
 const int NUM_BASE_CHANNELS = 16;
 const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
 const int NUM_KOE_CHANNELS = 1;
+const int NUM_TOTAL_CHANNELS = NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS +
+                               NUM_KOE_CHANNELS;
+
+// The koe channel is the last one.
+const int KOE_CHANNEL = NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS;
 
 // Global sound settings and data, saved and restored when rlvm is shutdown and
 // started up.
@@ -74,7 +79,7 @@ struct SoundSystemGlobals {
   bool pcm_enabled;
 
   // Volume of wave files relative to other sound playback.
-  int pcm_volume;
+  int pcm_volume_mod;
 
   // Whether the Se functions are enabled
   bool se_enabled;
@@ -105,7 +110,7 @@ struct SoundSystemGlobals {
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & sound_quality & bgm_enabled & bgm_volume_mod & pcm_enabled &
-      pcm_volume & se_enabled & se_volume;
+      pcm_volume_mod & se_enabled & se_volume;
 
     if (version >= 1) {
       ar & koe_mode & koe_enabled & koe_volume & bgm_koe_fade &
@@ -244,8 +249,8 @@ class SoundSystem {
   // Whether the wav* functions play
   int pcmEnabled() const;
 
-  virtual void setPcmVolume(const int in);
-  int pcmVolume() const;
+  virtual void setPcmVolumeMod(const int in);
+  int pcmVolumeMod() const;
 
   // Sets an individual channel volume
   virtual void setChannelVolume(const int channel, const int level);
@@ -388,7 +393,7 @@ class SoundSystem {
   // PCM/Wave sound effect data
 
   // Per channel volume
-  unsigned char channel_volume_[NUM_BASE_CHANNELS];
+  unsigned char channel_volume_[NUM_TOTAL_CHANNELS];
 
   // Open tasks that adjust the volume of a wave channel. We do this
   // because SDL_mixer doesn't provide this functionality and I'm

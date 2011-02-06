@@ -52,14 +52,14 @@ using namespace std;
 // -----------------------------------------------------------------------
 SoundSystemGlobals::SoundSystemGlobals()
   : sound_quality(5), bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
-    pcm_volume(255), se_enabled(true), se_volume(255),
+    pcm_volume_mod(255), se_enabled(true), se_volume(255),
     koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
   : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
     bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
-    pcm_volume(255), se_enabled(true), se_volume(255),
+    pcm_volume_mod(255), se_enabled(true), se_volume(255),
     koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
@@ -121,7 +121,7 @@ SoundSystem::SoundSystem(System& system)
       globals_(system.gameexe()) {
   Gameexe& gexe = system_.gameexe();
 
-  std::fill_n(channel_volume_, NUM_BASE_CHANNELS, 255);
+  std::fill_n(channel_volume_, NUM_TOTAL_CHANNELS, 255);
 
   // Read the \#SE.xxx entries from the Gameexe
   GameexeFilteringIterator se = gexe.filtering_begin("SE.");
@@ -218,7 +218,7 @@ void SoundSystem::restoreFromGlobals() {
   setBgmVolumeMod(bgmVolumeMod());
 
   setPcmEnabled(pcmEnabled());
-  setPcmVolume(pcmVolume());
+  setPcmVolumeMod(pcmVolumeMod());
 
   setSeEnabled(seEnabled());
   setSeVolume(seVolume());
@@ -258,12 +258,12 @@ int SoundSystem::pcmEnabled() const {
   return globals_.pcm_enabled;
 }
 
-void SoundSystem::setPcmVolume(const int in) {
-  globals_.pcm_volume = in;
+void SoundSystem::setPcmVolumeMod(const int in) {
+  globals_.pcm_volume_mod = in;
 }
 
-int SoundSystem::pcmVolume() const {
-  return globals_.pcm_volume;
+int SoundSystem::pcmVolumeMod() const {
+  return globals_.pcm_volume_mod;
 }
 
 void SoundSystem::setChannelVolume(const int channel, const int level) {
@@ -404,7 +404,7 @@ void SoundSystem::reset() {
 
 // static
 void SoundSystem::checkChannel(int channel, const char* function_name) {
-  if (channel < 0 || channel > NUM_BASE_CHANNELS) {
+  if (channel < 0 || channel > NUM_TOTAL_CHANNELS) {
     ostringstream oss;
     oss << "Invalid channel number " << channel << " in " << function_name;
     throw std::runtime_error(oss.str());
