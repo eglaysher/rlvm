@@ -94,7 +94,7 @@ struct SoundSystemGlobals {
   bool koe_enabled;
 
   // Volume of the koe relative to other sound playback.
-  int koe_volume;
+  int koe_volume_mod;
 
   // Whether we fade the background music when a voiceover is playing.
   bool bgm_koe_fade;
@@ -113,7 +113,7 @@ struct SoundSystemGlobals {
       pcm_volume_mod & se_enabled & se_volume;
 
     if (version >= 1) {
-      ar & koe_mode & koe_enabled & koe_volume & bgm_koe_fade &
+      ar & koe_mode & koe_enabled & koe_volume_mod & bgm_koe_fade &
           bgm_koe_fade_vol & character_koe_enabled;
     }
   }
@@ -261,7 +261,7 @@ class SoundSystem {
                         const int fade_time_in_ms);
 
   // Fetches an individual channel volume
-  int channelVolume(const int channel);
+  int channelVolume(const int channel) const;
 
   virtual void wavPlay(const std::string& wav_file,
                        bool loop) = 0;
@@ -324,6 +324,10 @@ class SoundSystem {
   // function is tied to UseKoe() family of functions and should not be queried
   // from within rlvm; use the |globals_.character_koe_enabled| map instead.
   int useKoeForCharacter(const int usekoe_id) const;
+
+  virtual void setKoeVolumeMod(const int level);
+
+  int koeVolumeMod() const;
 
   // Sets the volume for all voice levels (0-255). If |fadetime| is non-zero,
   // the volume will change smoothly, with the change taking |fadetime| ms,

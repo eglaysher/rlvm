@@ -111,7 +111,8 @@ void SDLSoundSystem::wavPlayImpl(const std::string& wav_file,
 // -----------------------------------------------------------------------
 
 void SDLSoundSystem::setChannelVolumeImpl(int channel) {
-  int adjusted = computeChannelVolume(channelVolume(channel), pcmVolumeMod());
+  int base = channel == KOE_CHANNEL ? koeVolumeMod() : pcmVolumeMod();
+  int adjusted = computeChannelVolume(channelVolume(channel), base);
   Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(adjusted));
 }
 
@@ -449,7 +450,7 @@ void SDLSoundSystem::koePlayImpl(int id) {
   char* data = sample->decode(&length);
 
   SDLSoundChunkPtr koe = buildKoeChunk(data, length);
-  Mix_Volume(KOE_CHANNEL, realLiveVolumeToSDLMixerVolume(koeVolume()));
+  setChannelVolumeImpl(KOE_CHANNEL);
   koe->playChunkOn(KOE_CHANNEL, 0);
 }
 

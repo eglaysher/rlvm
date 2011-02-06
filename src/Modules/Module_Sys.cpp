@@ -487,9 +487,9 @@ SysModule::SysModule()
   addOpcode(2330, 0, "BgmVolMod",
             returnIntValue(&SoundSystem::bgmVolumeMod));
   addOpcode(2231, 0, "SetKoeVolMod",
-            callFunction(&SoundSystem::setKoeVolume));
+            callFunction(&SoundSystem::setKoeVolumeMod));
   addOpcode(2331, 0, "KoeVolMod",
-            returnIntValue(&SoundSystem::koeVolume));
+            returnIntValue(&SoundSystem::koeVolumeMod));
   addOpcode(2232, 0, "SetPcmVolMod",
             callFunction(&SoundSystem::setPcmVolumeMod));
   addOpcode(2332, 0, "PcmVolMod",

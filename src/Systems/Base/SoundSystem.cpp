@@ -53,14 +53,14 @@ using namespace std;
 SoundSystemGlobals::SoundSystemGlobals()
   : sound_quality(5), bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
     pcm_volume_mod(255), se_enabled(true), se_volume(255),
-    koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
+    koe_mode(0), koe_enabled(true), koe_volume_mod(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
   : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
     bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
     pcm_volume_mod(255), se_enabled(true), se_volume(255),
-    koe_mode(0), koe_enabled(true), koe_volume(255), bgm_koe_fade(true),
+    koe_mode(0), koe_enabled(true), koe_volume_mod(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
 // -----------------------------------------------------------------------
@@ -220,6 +220,9 @@ void SoundSystem::restoreFromGlobals() {
   setPcmEnabled(pcmEnabled());
   setPcmVolumeMod(pcmVolumeMod());
 
+  setKoeEnabled(koeEnabled());
+  setKoeVolumeMod(koeVolumeMod());
+
   setSeEnabled(seEnabled());
   setSeVolume(seVolume());
 }
@@ -285,7 +288,7 @@ void SoundSystem::setChannelVolume(const int channel, const int level,
                                         level, fade_time_in_ms)));
 }
 
-int SoundSystem::channelVolume(const int channel) {
+int SoundSystem::channelVolume(const int channel) const {
   checkChannel(channel, "channel_volume");
   return channel_volume_[channel];
 }
@@ -337,7 +340,7 @@ void SoundSystem::setUseKoeForCharacter(const int character,
 }
 
 int SoundSystem::useKoeForCharacter(const int character) const {
-  std::multimap<int, int>::const_iterator it =
+   std::multimap<int, int>::const_iterator it =
       usekoe_to_koeplay_mapping_.find(character);
   if (it != usekoe_to_koeplay_mapping_.end()) {
     // We can sample only the first id because they should all be equivalent.
@@ -354,14 +357,25 @@ int SoundSystem::useKoeForCharacter(const int character) const {
   return 1;
 }
 
+void SoundSystem::setKoeVolumeMod(const int level) {
+  checkVolume(level, "setKoeVolumeMod");
+  globals_.koe_volume_mod = level;
+}
+
+int SoundSystem::koeVolumeMod() const {
+  return globals_.koe_volume_mod;
+}
+
 void SoundSystem::setKoeVolume(const int level, const int fadetime) {
-  checkVolume(level, "setKoeVolume");
-  globals_.koe_volume = level;
-  // TODO: Gradually transition the volume with |fadetime|.
+  if (fadetime == 0) {
+    setChannelVolume(KOE_CHANNEL, level);
+  } else {
+    setChannelVolume(KOE_CHANNEL, level, fadetime);
+  }
 }
 
 int SoundSystem::koeVolume() const {
-  return globals_.koe_volume;
+  return channelVolume(KOE_CHANNEL);
 }
 
 void SoundSystem::setBgmKoeFade(const int in) {
