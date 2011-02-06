@@ -85,7 +85,7 @@ struct SoundSystemGlobals {
   bool se_enabled;
 
   // Volume of interface sound effects relative to other sound playback.
-  int se_volume;
+  int se_volume_mod;
 
   // Voice playback mode (see setKoeMode() for details).
   int koe_mode;
@@ -110,7 +110,7 @@ struct SoundSystemGlobals {
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & sound_quality & bgm_enabled & bgm_volume_mod & pcm_enabled &
-      pcm_volume_mod & se_enabled & se_volume;
+      pcm_volume_mod & se_enabled & se_volume_mod;
 
     if (version >= 1) {
       ar & koe_mode & koe_enabled & koe_volume_mod & bgm_koe_fade &
@@ -286,10 +286,10 @@ class SoundSystem {
 
   // Sets the volume of interface sound effects relative to other
   // sound playback. (0-255)
-  virtual void setSeVolume(const int in);
+  virtual void setSeVolumeMod(const int in);
 
   // Gets the current sound effect volume.
-  int seVolume() const;
+  int seVolumeMod() const;
 
   // Plays an interface sound effect. |se_num| is an index into the #SE table.
   virtual void playSe(const int se_num) = 0;

@@ -495,9 +495,9 @@ SysModule::SysModule()
   addOpcode(2332, 0, "PcmVolMod",
             returnIntValue(&SoundSystem::pcmVolumeMod));
   addOpcode(2233, 0, "SetSeVolMod",
-            callFunction(&SoundSystem::setSeVolume));
+            callFunction(&SoundSystem::setSeVolumeMod));
   addOpcode(2333, 0, "SeVolMod",
-            returnIntValue(&SoundSystem::seVolume));
+            returnIntValue(&SoundSystem::seVolumeMod));
   addOpcode(2240, 0, "SetBgmEnabled",
             callFunction(&SoundSystem::setBgmEnabled));
   addOpcode(2340, 0, "BgmEnabled",

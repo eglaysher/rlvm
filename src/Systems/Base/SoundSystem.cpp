@@ -52,14 +52,14 @@ using namespace std;
 // -----------------------------------------------------------------------
 SoundSystemGlobals::SoundSystemGlobals()
   : sound_quality(5), bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
-    pcm_volume_mod(255), se_enabled(true), se_volume(255),
+    pcm_volume_mod(255), se_enabled(true), se_volume_mod(255),
     koe_mode(0), koe_enabled(true), koe_volume_mod(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
   : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
     bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
-    pcm_volume_mod(255), se_enabled(true), se_volume(255),
+    pcm_volume_mod(255), se_enabled(true), se_volume_mod(255),
     koe_mode(0), koe_enabled(true), koe_volume_mod(255), bgm_koe_fade(true),
     bgm_koe_fade_vol(128) {}
 
@@ -224,7 +224,7 @@ void SoundSystem::restoreFromGlobals() {
   setKoeVolumeMod(koeVolumeMod());
 
   setSeEnabled(seEnabled());
-  setSeVolume(seVolume());
+  setSeVolumeMod(seVolumeMod());
 }
 
 void SoundSystem::setBgmEnabled(const int in) {
@@ -301,13 +301,13 @@ int SoundSystem::seEnabled() const {
   return globals_.se_enabled;
 }
 
-void SoundSystem::setSeVolume(const int level) {
+void SoundSystem::setSeVolumeMod(const int level) {
   checkVolume(level, "set_se_volume");
-  globals_.se_volume = level;
+  globals_.se_volume_mod = level;
 }
 
-int SoundSystem::seVolume() const {
-  return globals_.se_volume;
+int SoundSystem::seVolumeMod() const {
+  return globals_.se_volume_mod;
 }
 
 void SoundSystem::setKoeMode(const int in) {

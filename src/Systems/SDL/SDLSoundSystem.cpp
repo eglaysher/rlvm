@@ -317,8 +317,8 @@ void SDLSoundSystem::playSe(const int se_num) {
 
     SDLSoundChunkPtr sample = getSoundChunk(file_name, wav_cache_);
 
-    // SE chunks have no per channel volume...
-    Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(seVolume()));
+    // SE chunks have no volume other than the modifier.
+    Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(seVolumeMod()));
     sample->playChunkOn(channel, 0);
   }
 }
