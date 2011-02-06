@@ -461,12 +461,31 @@ SysModule::SysModule()
 
   addOpcode(2224, 0, "SetMessageNoWait",
             callFunction(&TextSystem::setMessageNoWait));
+  addOpcode(2324, 0, "MessageNoWait",
+            returnIntValue(&TextSystem::messageNoWait));
+  addOpcode(2601, 0, "DefMessageNoWait",
+            new ReturnGameexeInt("INIT_MESSAGE_SPEED_MOD", 0));
+
   addOpcode(2250, 0, "SetAutoMode",
             callFunction(&TextSystem::setAutoMode));
+  addOpcode(2350, 0, "AutoMode",
+            returnIntValue(&TextSystem::autoMode));
+  addOpcode(2604, 0, "DefAutoMode",
+            new ReturnGameexeInt("MESSAGE_KEY_WAIT_USE", 0));
+
   addOpcode(2251, 0, "SetAutoCharTime",
             callFunction(&TextSystem::setAutoCharTime));
+  addOpcode(2351, 0, "AutoCharTime",
+            returnIntValue(&TextSystem::autoCharTime));
+  addOpcode(2605, 0, "DefAutoCharTime",
+            new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
+
   addOpcode(2252, 0, "SetAutoBaseTime",
             callFunction(&TextSystem::setAutoCharTime));
+  addOpcode(2352, 0, "AutoBaseTime",
+            returnIntValue(&TextSystem::autoBaseTime));
+  addOpcode(2606, 0, "DefAutoBaseTime",
+            new ReturnGameexeInt("MESSAGE_KEY_WAIT_TIME", 0));
 
   addOpcode(2225, 0, "SetKoeMode",
             callFunction(&SoundSystem::setKoeMode));
@@ -570,13 +589,6 @@ SysModule::SysModule()
   addOpcode(2375, 0, "ScreenMode",
             returnIntValue(&GraphicsSystem::screenMode));
 
-  addOpcode(2350, 0, "AutoMode",
-            returnIntValue(&TextSystem::autoMode));
-  addOpcode(2351, 0, "AutoCharTime",
-            returnIntValue(&TextSystem::autoCharTime));
-  addOpcode(2352, 0, "AutoBaseTime",
-            returnIntValue(&TextSystem::autoBaseTime));
-
   addOpcode(2360, 0, "WindowAttrR", returnIntValue(&TextSystem::windowAttrR));
   addOpcode(2361, 0, "WindowAttrG", returnIntValue(&TextSystem::windowAttrG));
   addOpcode(2362, 0, "WindowAttrB", returnIntValue(&TextSystem::windowAttrB));
@@ -606,8 +618,6 @@ SysModule::SysModule()
   addOpcode(2372, 0, "ShowWeather",
             returnIntValue(&GraphicsSystem::showWeather));
 
-  addOpcode(2324, 0, "MessageNoWait",
-            returnIntValue(&TextSystem::messageNoWait));
   addOpcode(2350, 0, "AutoMode", returnIntValue(&TextSystem::autoMode));
 
   // Sys is hueg liek xbox, so lets group some of the operations by

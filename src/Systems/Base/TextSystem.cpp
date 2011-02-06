@@ -75,8 +75,8 @@ TextSystemGlobals::TextSystemGlobals()
 // -----------------------------------------------------------------------
 
 TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
-    : auto_mode_base_time(100),
-      auto_mode_char_time(100),
+    : auto_mode_base_time(gexe("MESSAGE_KEY_WAIT_TIME").to_int(1500)),
+      auto_mode_char_time(gexe("INIT_MESSAGE_SPEED").to_int(30)),
       message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30)),
       font_weight(0), font_shadow(1) {
   GameexeInterpretObject in_window_attr(gexe("WINDOW_ATTR"));
