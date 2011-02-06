@@ -82,14 +82,14 @@ ScrModule::ScrModule()
   addOpcode(4, 0, "stackTrunc", new stackTrunc);
 
   addOpcode(20, 0, "DrawAuto",
-            setToConstant(&GraphicsSystem::setScreenUpdateMode,
-                          GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC));
+            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+                             GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC));
   addOpcode(21, 0, "DrawSemiAuto",
-            setToConstant(&GraphicsSystem::setScreenUpdateMode,
-                          GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC));
+            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+                             GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC));
   addOpcode(22, 0, "DrawManual",
-            setToConstant(&GraphicsSystem::setScreenUpdateMode,
-                          GraphicsSystem::SCREENUPDATEMODE_MANUAL));
+            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+                             GraphicsSystem::SCREENUPDATEMODE_MANUAL));
 
   addOpcode(31, 0, "GetDCPixel", new GetDCPixel);
 }

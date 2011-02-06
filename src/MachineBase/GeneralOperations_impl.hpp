@@ -208,11 +208,11 @@ class Op_CallMethod : public RLOp_Void_Void {
 // Sets an internal variable to a specific value set at compile time,
 // and exposes this as an operation to Reallive scripts.
 template<typename OBJTYPE, typename VALTYPE>
-class Op_SetToConstant : public RLOp_Void_Void {
+class Op_CallWithConstant : public RLOp_Void_Void {
  public:
   typedef void(OBJTYPE::*Setter)(VALTYPE);
 
-  Op_SetToConstant(Setter s, VALTYPE in_val)
+  Op_CallWithConstant(Setter s, VALTYPE in_val)
       : setter(s), value(in_val) {
   }
 

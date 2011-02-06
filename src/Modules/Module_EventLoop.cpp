@@ -67,9 +67,9 @@ EventLoopModule::EventLoopModule()
 
   addUnsupportedOpcode(1000, 0, "ShowBackground");
   addOpcode(1100, 0, "SetSkipMode",
-            setToConstant(&TextSystem::setSkipMode, 1));
+            callFunctionWith(&TextSystem::setSkipMode, 1));
   addOpcode(1101, 0, "ClearSkipMode",
-            setToConstant(&TextSystem::setSkipMode, 0));
+            callFunctionWith(&TextSystem::setSkipMode, 0));
   addOpcode(1102, 0, "SkipMode", returnIntValue(&TextSystem::skipMode));
 
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu

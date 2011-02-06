@@ -339,9 +339,9 @@ SysModule::SysModule()
   addUnsupportedOpcode(324, 0, "CallStackTrunc");
 
   addOpcode(204, 0, "ShowCursor",
-            setToConstant(&GraphicsSystem::setShowCursor, 1));
+            callFunctionWith(&GraphicsSystem::setShowCursor, 1));
   addOpcode(205, 0, "HideCursor",
-            setToConstant(&GraphicsSystem::setShowCursor, 0));
+            callFunctionWith(&GraphicsSystem::setShowCursor, 0));
   addOpcode(206, 0, "GetMouseCursor", returnIntValue(&GraphicsSystem::cursor));
   addOpcode(207, 0, "MouseCursor", callFunction(&GraphicsSystem::setCursor));
 
@@ -349,16 +349,16 @@ SysModule::SysModule()
   addUnsupportedOpcode(331, 0, "DisableSkipMode");
   addOpcode(332, 0, "LocalSkipMode", returnIntValue(&TextSystem::skipMode));
   addOpcode(333, 0, "SetLocalSkipMode",
-            setToConstant(&TextSystem::setSkipMode, 1));
+            callFunctionWith(&TextSystem::setSkipMode, 1));
   addOpcode(334, 0, "ClearLocalSkipMode",
-            setToConstant(&TextSystem::setSkipMode, 0));
+            callFunctionWith(&TextSystem::setSkipMode, 0));
 
   addOpcode(350, 0, "CtrlKeyShip",
             returnIntValue(&TextSystem::ctrlKeySkip));
   addOpcode(351, 0, "CtrlKeySkipOn",
-            setToConstant(&TextSystem::setCtrlKeySkip, 1));
+            callFunctionWith(&TextSystem::setCtrlKeySkip, 1));
   addOpcode(352, 0, "CtrlKeySkipOff",
-            setToConstant(&TextSystem::setCtrlKeySkip, 0));
+            callFunctionWith(&TextSystem::setCtrlKeySkip, 0));
   addOpcode(353, 0, "CtrlPressed",
             returnIntValue(&EventSystem::ctrlPressed));
   addOpcode(354, 0, "ShiftPressed",

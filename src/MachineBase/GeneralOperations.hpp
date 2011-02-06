@@ -80,8 +80,8 @@ RLOperation* callFunction(void(OBJTYPE::*s)()) {
 
 // Calls the incoming function with value.
 template<typename OBJTYPE, typename VALTYPE>
-RLOperation* setToConstant(void(OBJTYPE::*s)(VALTYPE), VALTYPE val) {
-  return new binderImpl::Op_SetToConstant<OBJTYPE, VALTYPE>(s, val);
+RLOperation* callFunctionWith(void(OBJTYPE::*s)(VALTYPE), VALTYPE val) {
+  return new binderImpl::Op_CallWithConstant<OBJTYPE, VALTYPE>(s, val);
 }
 
 // Returns the int value of the passed in function as the store register.

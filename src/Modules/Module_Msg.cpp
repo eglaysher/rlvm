@@ -214,9 +214,10 @@ MsgModule::MsgModule()
   addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
   addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
-  addOpcode(103, 0, "FastText", setToConstant(&TextSystem::setFastTextMode, 1));
+  addOpcode(103, 0, "FastText",
+            callFunctionWith(&TextSystem::setFastTextMode, 1));
   addOpcode(104, 0, "NormalText",
-            setToConstant(&TextSystem::setFastTextMode, 0));
+            callFunctionWith(&TextSystem::setFastTextMode, 0));
 
   addOpcode(105, 0, "FontColor", new FontColour);
   addOpcode(105, 1, "FontColor", new FontColour);
