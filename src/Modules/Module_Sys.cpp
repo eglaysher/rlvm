@@ -481,7 +481,7 @@ SysModule::SysModule()
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
 
   addOpcode(2252, 0, "SetAutoBaseTime",
-            callFunction(&TextSystem::setAutoCharTime));
+            callFunction(&TextSystem::setAutoBaseTime));
   addOpcode(2352, 0, "AutoBaseTime",
             returnIntValue(&TextSystem::autoBaseTime));
   addOpcode(2606, 0, "DefAutoBaseTime",
