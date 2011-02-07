@@ -177,9 +177,23 @@ class UndefinedFunction : public RLOp_SpecialCase {
   UndefinedFunction(const std::string& name,
                     int modtype, int module, int opcode, int overload);
 
+  // A note on UGLY HACKS: We need to override RLOp_SpecialCase::dispatch()
+  // because that's the entry point when using ChildObjAdapter. So we overload
+  // all these methods so we error as early as possible when trying to use this
+  // invalid opcode.
+
+  // RLOp_SpecialCase:
+  virtual void dispatch(RLMachine& machine,
+                        const ExpressionPiecesVector& parameters);
+  virtual void dispatchFunction(RLMachine& machine,
+                                const libReallive::CommandElement& f);
+  virtual void parseParameters(const std::vector<std::string>& input,
+                               ExpressionPiecesVector& output);
   virtual void operator()(RLMachine&, const libReallive::CommandElement&);
 
  private:
+  void throwError();
+
   std::string name_;
   int modtype_;
   int module_;

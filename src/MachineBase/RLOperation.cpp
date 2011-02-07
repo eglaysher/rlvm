@@ -254,7 +254,10 @@ void StrReference_T::parseParameters(
 
 void RLOp_SpecialCase::dispatch(
   RLMachine& machine,
-  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {}
+  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+  throw rlvm::Exception(
+      "Tried to call empty RLOp_SpecialCase::dispatch().");
+}
 
 void RLOp_SpecialCase::parseParameters(
   const std::vector<std::string>& input,
