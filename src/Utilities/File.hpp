@@ -49,7 +49,7 @@ boost::filesystem::path correctPathCase(boost::filesystem::path Path);
 // These constant, externed vectors are passed as parameters to
 // findFile to control which file types are searched for. Defaults to
 // all.
-extern const std::vector<std::string> ALL_FILETYPES;
+extern const std::vector<std::string> OBJ_FILETYPES;
 extern const std::vector<std::string> IMAGE_FILETYPES;
 extern const std::vector<std::string> PDT_IMAGE_FILETYPES;
 extern const std::vector<std::string> GAN_FILETYPES;
@@ -65,7 +65,7 @@ extern const std::vector<std::string> KOE_LOOSE_FILETYPES;
 boost::filesystem::path findFile(
     System& system,
     const std::string& fileName,
-    const std::vector<std::string>& extensions = ALL_FILETYPES);
+    const std::vector<std::string>& extensions);
 
 // Reads the entire contents of a file into the passed in |data| and
 // |size|. Returns true if there were no problems.

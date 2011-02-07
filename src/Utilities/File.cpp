@@ -122,8 +122,9 @@ fs::path correctPathCase(fs::path Path) {
 
 // -----------------------------------------------------------------------
 
-const std::vector<std::string> ALL_FILETYPES =
-  list_of("g00")("pdt")("anm")("gan")("wav")("ogg")("nwa")("mp3");
+// I assume GAN files can't go through the OBJ_FILETYPES path.
+const std::vector<std::string> OBJ_FILETYPES =
+    list_of("g00")("pdt")("anm");
 const std::vector<std::string> IMAGE_FILETYPES =
   list_of("g00")("pdt");
 const std::vector<std::string> PDT_IMAGE_FILETYPES =
