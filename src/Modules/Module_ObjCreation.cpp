@@ -25,26 +25,28 @@
 //
 // -----------------------------------------------------------------------
 
-#include <string>
-
-#include "MachineBase/RLMachine.hpp"
-#include "Modules/Module_Obj.hpp"
 #include "Modules/Module_ObjCreation.hpp"
-#include "MachineBase/Properties.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "Systems/Base/DriftGraphicsObject.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GanGraphicsObjectData.hpp"
-#include "Systems/Base/GraphicsTextObject.hpp"
-#include "Utilities/StringUtilities.hpp"
 
+#include <string>
 #include <cmath>
+#include <iostream>
 
 #include <boost/shared_ptr.hpp>
+
+#include "MachineBase/Properties.hpp"
+#include "MachineBase/RLMachine.hpp"
+#include "MachineBase/RLModule.hpp"
+#include "MachineBase/RLOperation.hpp"
+#include "Modules/Module_Obj.hpp"
+#include "Systems/Base/DigitsGraphicsObject.hpp"
+#include "Systems/Base/DriftGraphicsObject.hpp"
+#include "Systems/Base/GanGraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/GraphicsTextObject.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
+#include "Utilities/StringUtilities.hpp"
 
 using namespace std;
 using namespace boost;
@@ -87,6 +89,11 @@ void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj,
 void objOfDriftLoader(RLMachine& machine, GraphicsObject& obj,
                       const string& value) {
   obj.setObjectData(new DriftGraphicsObject(machine.system(), value));
+}
+
+void objOfDigitsLoader(RLMachine& machine, GraphicsObject& obj,
+                       const string& value) {
+  obj.setObjectData(new DigitsGraphicsObject(machine.system(), value));
 }
 
 struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
@@ -245,10 +252,10 @@ void addObjectCreationFunctions(RLModule& m) {
   m.addOpcode(1300, 2, "objDriftOfFile", new objGeneric_2(objOfDriftLoader));
   m.addOpcode(1300, 3, "objDriftOfFile", new objGeneric_3(objOfDriftLoader));
 
-  m.addUnsupportedOpcode(1400, 0, "objOfDigits");
-  m.addUnsupportedOpcode(1400, 1, "objOfDigits");
-  m.addUnsupportedOpcode(1400, 2, "objOfDigits");
-  m.addUnsupportedOpcode(1400, 3, "objOfDigits");
+  m.addOpcode(1400, 0, "objOfDigits", new objGeneric_0(objOfDigitsLoader));
+  m.addOpcode(1400, 1, "objOfDigits", new objGeneric_1(objOfDigitsLoader));
+  m.addOpcode(1400, 2, "objOfDigits", new objGeneric_2(objOfDigitsLoader));
+  m.addOpcode(1400, 3, "objOfDigits", new objGeneric_3(objOfDigitsLoader));
 }
 
 // -----------------------------------------------------------------------

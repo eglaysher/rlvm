@@ -165,8 +165,18 @@ struct objDriftOpts
                   Rect drift_area) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setDriftOpts(count, use_animation, start_pattern, end_pattern,
-                     total_animaton_time_ms, yspeed, period, amplitude, use_drift,
-                     unknown, driftspeed, drift_area);
+                     total_animaton_time_ms, yspeed, period, amplitude,
+                     use_drift, unknown, driftspeed, drift_area);
+  }
+};
+
+struct objNumOpts
+    : public RLOp_Void_6<IntConstant_T, IntConstant_T, IntConstant_T,
+                         IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int buf, int digits, int zero,
+                  int sign, int pack, int space) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setDigitOpts(digits, zero, sign, pack, space);
   }
 };
 
@@ -293,8 +303,9 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1035, 1, "objDispCorner", new dispCorner_1);
   m.addOpcode(1036, 0, "objAdjustVert",
               new Obj_SetOneIntOnObj(&GraphicsObject::setVert));
-  m.addUnsupportedOpcode(1037, 0, "objSetDigits");
-  m.addUnsupportedOpcode(1038, 0, "objNumOpts");
+  m.addOpcode(1037, 0, "objSetDigits",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setDigitValue));
+  m.addOpcode(1038, 0, "objNumOpts", new objNumOpts);
   m.addOpcode(1039, 0, "objPattNo",
               new Obj_SetOneIntOnObj(&GraphicsObject::setPattNo));
 

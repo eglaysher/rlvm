@@ -209,6 +209,17 @@ class GraphicsObject {
   int driftDriftSpeed() const;
   Rect driftArea() const;
 
+  // Digit object accessors
+  void setDigitValue(int value);
+  void setDigitOpts(int digits, int zero, int sign, int pack, int space);
+
+  int digitValue() const;
+  int digitDigits() const;
+  int digitZero() const;
+  int digitSign() const;
+  int digitPack() const;
+  int digitSpace() const;
+
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.
   int32_t referenceCount() const { return impl_.use_count(); }
@@ -338,6 +349,26 @@ class GraphicsObject {
     void makeSureHaveDriftProperties();
     boost::scoped_ptr<DriftProperties> drift_properties_;
 
+    // Digit Object properties
+    struct DigitProperties {
+      DigitProperties();
+
+      int value;
+
+      int digits;
+      int zero;
+      int sign;
+      int pack;
+      int space;
+
+      // boost::serialization support
+      template<class Archive>
+      void serialize(Archive& ar, unsigned int version);
+    };
+
+    void makeSureHaveDigitProperties();
+    boost::scoped_ptr<DigitProperties> digit_properties_;
+
     // The wipe_copy bit
     int wipe_copy_;
 
@@ -366,7 +397,7 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-BOOST_CLASS_VERSION(GraphicsObject::Impl, 1)
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 2)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

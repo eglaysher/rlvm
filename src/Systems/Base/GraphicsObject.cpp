@@ -63,6 +63,13 @@ const int DEFAULT_DRIFT_UNKNOWN_PROP = 0;
 const int DEFAULT_DRIFT_DRIFTSPEED = 0;
 const Rect DEFAULT_DRIFT_AREA = Rect(Point(-1, -1), Size(-1, -1));
 
+const int DEFAULT_DIGITS_VALUE = 0;
+const int DEFAULT_DIGITS_DIGITS = 0;
+const int DEFAULT_DIGITS_ZERO = 0;
+const int DEFAULT_DIGITS_SIGN = 0;
+const int DEFAULT_DIGITS_PACK = 0;
+const int DEFAULT_DIGITS_SPACE = 0;
+
 const Rect EMPTY_CLIP = Rect(Point(0, 0), Size(-1, -1));
 
 const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_empty_impl(
@@ -93,6 +100,15 @@ GraphicsObject::Impl::DriftProperties::DriftProperties()
       unknown_drift_property(DEFAULT_DRIFT_UNKNOWN_PROP),
       driftspeed(DEFAULT_DRIFT_DRIFTSPEED),
       drift_area(DEFAULT_DRIFT_AREA) {
+}
+
+GraphicsObject::Impl::DigitProperties::DigitProperties()
+    : value(DEFAULT_DIGITS_VALUE),
+      digits(DEFAULT_DIGITS_DIGITS),
+      zero(DEFAULT_DIGITS_ZERO),
+      sign(DEFAULT_DIGITS_SIGN),
+      pack(DEFAULT_DIGITS_PACK),
+      space(DEFAULT_DIGITS_SPACE) {
 }
 
 // -----------------------------------------------------------------------
@@ -506,6 +522,66 @@ Rect GraphicsObject::driftArea() const {
     return Rect();
 }
 
+void GraphicsObject::setDigitValue(int value) {
+  makeImplUnique();
+  impl_->makeSureHaveDigitProperties();
+  impl_->digit_properties_->value = value;
+}
+
+void GraphicsObject::setDigitOpts(int digits, int zero, int sign,
+                                  int pack, int space) {
+  makeImplUnique();
+
+  impl_->makeSureHaveDigitProperties();
+  impl_->digit_properties_->digits = digits;
+  impl_->digit_properties_->zero = zero;
+  impl_->digit_properties_->sign = sign;
+  impl_->digit_properties_->pack = pack;
+  impl_->digit_properties_->space = space;
+}
+
+int GraphicsObject::digitValue() const {
+  if (impl_->digit_properties_)
+    return impl_->digit_properties_->value;
+  else
+    return DEFAULT_DIGITS_VALUE;
+}
+
+int GraphicsObject::digitDigits() const {
+  if (impl_->digit_properties_)
+    return impl_->digit_properties_->digits;
+  else
+    return DEFAULT_DIGITS_DIGITS;
+}
+
+int GraphicsObject::digitZero() const {
+  if (impl_->digit_properties_)
+    return impl_->digit_properties_->zero;
+  else
+    return DEFAULT_DIGITS_ZERO;
+}
+
+int GraphicsObject::digitSign() const {
+  if (impl_->digit_properties_)
+    return impl_->digit_properties_->sign;
+  else
+    return DEFAULT_DIGITS_SIGN;
+}
+
+int GraphicsObject::digitPack() const {
+  if (impl_->digit_properties_)
+    return impl_->digit_properties_->pack;
+  else
+    return DEFAULT_DIGITS_PACK;
+}
+
+int GraphicsObject::digitSpace() const {
+  if (impl_->digit_properties_)
+    return impl_->digit_properties_->space;
+  else
+    return DEFAULT_DIGITS_SPACE;
+}
+
 void GraphicsObject::makeImplUnique() {
   if (!impl_.unique()) {
     impl_.reset(new Impl(*impl_));
@@ -597,6 +673,8 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     text_properties_.reset(new TextProperties(*rhs.text_properties_));
   if (rhs.drift_properties_)
     drift_properties_.reset(new DriftProperties(*rhs.drift_properties_));
+  if (rhs.digit_properties_)
+    digit_properties_.reset(new DigitProperties(*rhs.digit_properties_));
 
   copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
   copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
@@ -641,6 +719,8 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
       text_properties_.reset(new TextProperties(*rhs.text_properties_));
     if (rhs.drift_properties_)
       drift_properties_.reset(new DriftProperties(*rhs.drift_properties_));
+    if (rhs.digit_properties_)
+      digit_properties_.reset(new DigitProperties(*rhs.digit_properties_));
 
     wipe_copy_ = rhs.wipe_copy_;
   }
@@ -660,6 +740,12 @@ void GraphicsObject::Impl::makeSureHaveDriftProperties() {
   }
 }
 
+void GraphicsObject::Impl::makeSureHaveDigitProperties() {
+  if (!digit_properties_) {
+    digit_properties_.reset(new Impl::DigitProperties());
+  }
+}
+
 // boost::serialization support
 template<class Archive>
 void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
@@ -671,6 +757,10 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
 
   if (version > 0) {
     ar & drift_properties_;
+  }
+
+  if (version > 1) {
+    ar & digit_properties_;
   }
 }
 
@@ -727,6 +817,25 @@ template void GraphicsObject::Impl::DriftProperties::serialize
   boost::archive::text_oarchive & ar, unsigned int version);
 
 template void GraphicsObject::Impl::DriftProperties::serialize
+<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
+// -----------------------------------------------------------------------
+// GraphicsObject::Impl::DigitProperties
+// -----------------------------------------------------------------------
+template<class Archive>
+void GraphicsObject::Impl::DigitProperties::serialize(
+    Archive& ar, unsigned int version) {
+  ar & value & digits & zero & sign & pack & space;
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsObject::Impl::DigitProperties::serialize
+<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);
+
+template void GraphicsObject::Impl::DigitProperties::serialize
 <boost::archive::text_iarchive>(
   boost::archive::text_iarchive & ar, unsigned int version);
 
