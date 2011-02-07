@@ -21,29 +21,23 @@ function Air:installMainMenuHandler (gameType)
             -- Object 20 is always the new game button.
             origin = System:graphics():getFgObject(20):getClickPointHack()
             System:event():injectMouseMovement(origin)
-            print ("state = 1")
             state = 1
         elseif state == 1 then
             System:event():injectMouseDown()
-            print ("state = 2")
             state = 2
         elseif state == 2 then
             System:event():injectMouseUp()
-            print ("state = 3")
             state = 3
         elseif state == 6 then
             -- Object 24 is the Exit button
             origin = System:graphics():getFgObject(24):getClickPointHack()
             System:event():injectMouseMovement(origin)
-            print ("state = 7")
             state = 7
         elseif state == 7 then
             System:event():injectMouseDown()
-            print ("state = 8")
             state = 8
         elseif state == 8 then
             System:event():injectMouseUp()
-            print ("state = 9")
             state = 9
         end
     end)
@@ -64,15 +58,12 @@ function Air:installMainMenuHandler (gameType)
             end
             origin = System:graphics():getFgObject(objNum):getClickPointHack()
             System:event():injectMouseMovement(origin)
-            print ("state = 4")
             state = 4
         elseif state == 4 then
             System:event():injectMouseDown()
-            print ("state = 5")
             state = 5
         elseif state == 5 then
             System:event():injectMouseUp()
-            print ("state = 6")
             state = 6
         end
     end)
