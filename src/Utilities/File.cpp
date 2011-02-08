@@ -122,57 +122,6 @@ fs::path correctPathCase(fs::path Path) {
 
 // -----------------------------------------------------------------------
 
-// I assume GAN files can't go through the OBJ_FILETYPES path.
-const std::vector<std::string> OBJ_FILETYPES =
-    list_of("g00")("pdt")("anm");
-const std::vector<std::string> IMAGE_FILETYPES =
-  list_of("g00")("pdt");
-const std::vector<std::string> PDT_IMAGE_FILETYPES =
-  list_of("pdt");
-const std::vector<std::string> GAN_FILETYPES =
-  list_of("gan");
-const std::vector<std::string> ANM_FILETYPES =
-  list_of("anm");
-const std::vector<std::string> HIK_FILETYPES =
-  list_of("hik")("g00")("pdt");
-const std::vector<std::string> SOUND_FILETYPES =
-  list_of("wav")("ogg")("nwa")("mp3");
-const std::vector<std::string> KOE_ARCHIVE_FILETYPES =
-    list_of("ovk")("koe")("nwk");
-const std::vector<std::string> KOE_LOOSE_FILETYPES =
-  list_of("ogg");
-
-// -----------------------------------------------------------------------
-
-boost::filesystem::path findFile(System& system,
-                                 const std::string& fileName,
-                                 const vector<string>& extensions) {
-  using namespace boost;
-
-  // Hack to get around fileNames like "REALNAME?010", where we only
-  // want REALNAME.
-  string newName =
-    string(fileName.begin(), find(fileName.begin(), fileName.end(), '?'));
-
-  // Iterate across the search paths in the order they were specified.
-  const vector<boost::filesystem::path>& blah = system.getSearchPaths();
-  for (vector<boost::filesystem::path>::const_iterator it = blah.begin();
-       it != blah.end(); ++it) {
-    for (vector<string>::const_iterator ext = extensions.begin();
-         ext != extensions.end(); ++ext) {
-      string fileWithExt = newName + "." + *ext;
-      fs::path path = *it / fileWithExt;
-      fs::path correctFile = correctPathCase(path);
-      if (!correctFile.empty()) {
-        return correctFile;
-      }
-    }
-  }
-
-  // Error.
-  return boost::filesystem::path();
-}
-
 bool loadFileData(const boost::filesystem::path& path,
                   scoped_array<char>& fileData,
                   int& fileSize) {

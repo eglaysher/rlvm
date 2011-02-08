@@ -37,9 +37,9 @@
 #include "Systems/Base/OVKVoiceArchive.hpp"
 #include "Systems/Base/OVKVoiceSample.hpp"
 #include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/VoiceArchive.hpp"
 #include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 
 #include <iostream>
 using namespace std;
@@ -91,7 +91,7 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   oss << "z" << std::setw(4) << std::setfill('0') << file_no;
 
   fs::path file =
-      findFile(sound_system_.system(), oss.str(), KOE_ARCHIVE_FILETYPES);
+      sound_system_.system().findFile(oss.str(), KOE_ARCHIVE_FILETYPES);
   if (file.empty()) {
     return shared_ptr<VoiceArchive>();
   }
@@ -111,15 +111,14 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
 shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
     int file_no, int index) const {
   // Loose voice files are packed into directories, like:
-  // /KOE/0008/z000800073.ogg.
+  // /KOE/0008/z000800073.ogg. We only need to search for the filename though.
   std::ostringstream oss;
-  oss << std::setw(4) << std::setfill('0') << file_no << "/"
-      << "z"
+  oss << "z"
       << std::setw(4) << std::setfill('0') << file_no
       << std::setw(5) << std::setfill('0') << index;
 
   fs::path file =
-      findFile(sound_system_.system(), oss.str(), KOE_LOOSE_FILETYPES);
+      sound_system_.system().findFile(oss.str(), KOE_LOOSE_FILETYPES);
   string file_str = file.file_string();
 
   if (iends_with(file_str, "ogg")) {

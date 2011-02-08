@@ -61,7 +61,6 @@
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Texture.hpp"
 #include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 #include "Utilities/Graphics.hpp"
 #include "Utilities/LazyArray.hpp"
 #include "Utilities/StringUtilities.hpp"
@@ -622,7 +621,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
     return cached_surface;
 
   boost::filesystem::path filename =
-      findFile(system(), short_filename, IMAGE_FILETYPES);
+      system().findFile(short_filename, IMAGE_FILETYPES);
   if (filename.empty()) {
     ostringstream oss;
     oss << "Could not find image file \"" << short_filename << "\".";

@@ -28,6 +28,7 @@
 #ifndef SRC_SYSTEMS_BASE_SYSTEM_HPP_
 #define SRC_SYSTEMS_BASE_SYSTEM_HPP_
 
+#include <map>
 #include <vector>
 #include <string>
 #include <boost/serialization/access.hpp>
@@ -83,6 +84,22 @@ const int SYSCOM_MENU_RETURN = 28;
 const int SYSCOM_EXIT_GAME = 29;
 const int SYSCOM_HIDE_MENU = 30;
 const int SYSCOM_SHOW_BACKGROUND = 31;
+
+// File type constants.
+//
+// These constant, externed vectors are passed as parameters to
+// findFile to control which file types are searched for. Defaults to
+// all.
+extern const std::vector<std::string> OBJ_FILETYPES;
+extern const std::vector<std::string> IMAGE_FILETYPES;
+extern const std::vector<std::string> PDT_IMAGE_FILETYPES;
+extern const std::vector<std::string> GAN_FILETYPES;
+extern const std::vector<std::string> ANM_FILETYPES;
+extern const std::vector<std::string> HIK_FILETYPES;
+extern const std::vector<std::string> SOUND_FILETYPES;
+extern const std::vector<std::string> KOE_ARCHIVE_FILETYPES;
+extern const std::vector<std::string> KOE_LOOSE_FILETYPES;
+
 
 // Struct containing the global memory to get serialized to disk with
 // global memory.
@@ -186,8 +203,11 @@ class System {
   bool lowPriority() const { return globals_.low_priority_; }
   void setLowPriority(const int in) { globals_.low_priority_ = in; }
 
-  // Returns the paths we should search for files in.
-  const std::vector<boost::filesystem::path>& getSearchPaths();
+  // Finds a file on disk based on its basename with a list of possible
+  // extensions, or empty() if file not found.
+  boost::filesystem::path findFile(
+      const std::string& fileName,
+      const std::vector<std::string>& extensions);
 
   // Resets the present values of the system; this doesn't clear user settings,
   // but clears things like the current graphics state and the status of all
@@ -249,6 +269,11 @@ class System {
   boost::shared_ptr<Platform> platform_;
 
  private:
+  typedef std::multimap<
+   std::string,
+   std::pair<std::string, boost::filesystem::path> > FileSystemCache;
+
+
   boost::filesystem::path getHomeDirectory();
 
   // Invokes a custom dialog or the standard one if none present.
@@ -260,8 +285,13 @@ class System {
   // Verify that |index| is valid and throw if it isn't.
   void checkSyscomIndex(int index, const char* function);
 
-  // Adds a path to the list of places to search for a file.
-  void addPath(GameexeInterpretObject gio);
+  // Builds a list of all files that are in a directory specified in the
+  // #FOLDNAME part of the Gameexe.ini file.
+  void buildFileSystemCache();
+
+  // Recursese on |directory| and adds all filetypes that we can read to our
+  // FileSystemCache.
+  void addDirectoryToCache(const boost::filesystem::path& directory);
 
   // The visibility status for all syscom entries
   int syscom_status_[NUM_SYSCOM_ENTRIES];
@@ -277,8 +307,9 @@ class System {
   // CPU usage during manual redrawing.
   bool force_wait_;
 
-  // Paths to search for files in.
-  std::vector<boost::filesystem::path> cached_search_paths;
+  // Cached view of the filesystem, mapping a lowercase filename to an
+  // extension and the local file path for that file.
+  FileSystemCache filesystem_cache_;
 
   SystemGlobals globals_;
 

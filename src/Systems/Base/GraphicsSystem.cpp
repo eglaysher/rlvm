@@ -61,7 +61,6 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 #include "Utilities/LazyArray.hpp"
 #include "libReallive/gameexe.h"
 #include "libReallive/expression.h"
@@ -671,7 +670,7 @@ void GraphicsSystem::mouseMotion(const Point& new_location) {
 GraphicsObjectData* GraphicsSystem::buildObjOfFile(
     const std::string& filename) {
   // Get the path to get the file type (which won't be in filename)
-  fs::path full_path = findFile(system(), filename, OBJ_FILETYPES);
+  fs::path full_path = system().findFile(filename, OBJ_FILETYPES);
   if (full_path.empty()) {
     ostringstream oss;
     oss << "Could not find Object compatible file \"" << filename << "\".";

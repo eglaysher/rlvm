@@ -38,9 +38,9 @@
 #include <string>
 #include <vector>
 
+#include "Systems/Base/System.hpp"
 #include "Systems/SDL/SDLAudioLocker.hpp"
 #include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 
 using namespace std;
 using namespace boost;
@@ -229,7 +229,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
       ("mp3", &buildMusicImplementation<MP3FILE>)
       ("ogg", &buildMusicImplementation<OggFILE>);
 
-  fs::path file_path = findFile(system, track.file, SOUND_FILETYPES);
+  fs::path file_path = system.findFile(track.file, SOUND_FILETYPES);
   if (file_path.empty()) {
     ostringstream oss;
     oss << "Could not find music file \"" << track.file << "\".";

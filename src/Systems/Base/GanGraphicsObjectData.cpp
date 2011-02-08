@@ -90,7 +90,7 @@ GanGraphicsObjectData::~GanGraphicsObjectData() {}
 void GanGraphicsObjectData::load() {
   image = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
 
-  fs::path gan_file_path = findFile(system_, gan_filename_, GAN_FILETYPES);
+  fs::path gan_file_path = system_.findFile(gan_filename_, GAN_FILETYPES);
   if (gan_file_path.empty()) {
     ostringstream oss;
     oss << "Could not find GAN file \"" << gan_filename_ << "\".";

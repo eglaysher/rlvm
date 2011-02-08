@@ -44,7 +44,6 @@
 #include "Systems/Base/HIKScript.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
-#include "Utilities/File.hpp"
 #include "Utilities/Graphics.hpp"
 
 using namespace std;
@@ -88,7 +87,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
     // bgrLoadHaikei clears the stack.
     graphics.clearStack();
 
-    fs::path path = findFile(system, filename, HIK_FILETYPES);
+    fs::path path = system.findFile(filename, HIK_FILETYPES);
     if (path.empty()) {
       ostringstream oss;
       oss << "Could not find background file: " << filename;

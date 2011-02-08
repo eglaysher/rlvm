@@ -34,12 +34,12 @@
 #include <sstream>
 #include <string>
 
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/VoiceArchive.hpp"
 #include "Systems/SDL/SDLMusic.hpp"
 #include "Systems/SDL/SDLSoundChunk.hpp"
 #include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 
 using boost::shared_ptr;
 using namespace std;
@@ -75,7 +75,7 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
     const std::string& file_name, SoundChunkCache& cache) {
   SDLSoundChunkPtr sample = cache.fetch(file_name);
   if (sample == NULL) {
-    fs::path file_path = findFile(system(), file_name, SOUND_FILETYPES);
+    fs::path file_path = system().findFile(file_name, SOUND_FILETYPES);
     if (file_path.empty()) {
       ostringstream oss;
       oss << "Could not find sound file \"" << file_name << "\".";
