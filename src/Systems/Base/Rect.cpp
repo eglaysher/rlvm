@@ -86,6 +86,18 @@ Rect Rect::intersection(const Rect& rhs) const {
   return Rect();
 }
 
+Rect Rect::rectUnion(const Rect& rhs) const {
+  if (isEmpty()) {
+    return rhs;
+  } else if (rhs.isEmpty()) {
+    return *this;
+  } else {
+    return Rect::GRP(
+        std::min(x(), rhs.x()), std::min(y(), rhs.y()),
+        std::max(x2(), rhs.x2()), std::max(y2(), rhs.y2()));
+  }
+}
+
 std::ostream& operator<<(std::ostream& os, const Rect& r) {
   os << "Rect(" << r.x() << ", " << r.y() << ", " << r.size() << ")";
   return os;

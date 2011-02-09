@@ -192,7 +192,9 @@ char* Texture::uploadBuffer(unsigned int size) {
 
 // -----------------------------------------------------------------------
 
-void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
+void Texture::reupload(SDL_Surface* surface,
+                       int offset_x, int offset_y,
+                       int x, int y, int w, int h,
                        unsigned int bytes_per_pixel, int byte_order,
                        int byte_type) {
   glBindTexture(GL_TEXTURE_2D, texture_id_);
@@ -224,7 +226,7 @@ void Texture::reupload(SDL_Surface* surface, int x, int y, int w, int h,
     }
     SDL_UnlockSurface(surface);
 
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
+    glTexSubImage2D(GL_TEXTURE_2D, 0, offset_x, offset_y, w, h,
                     byte_order, byte_type, pixel_data);
     ShowGLErrors();
   }

@@ -56,7 +56,12 @@ class Texture {
   Texture(render_to_texture, int screen_width, int screen_height);
   ~Texture();
 
-  void reupload(SDL_Surface* surface, int x, int y, int w, int h,
+  // Uploads Rect(x, y, w, h) offset by (offset_x, offset_y) onto our texture
+  // backend. We work like this so we can cut out dirty rectangles and upload
+  // only what has changed.
+  void reupload(SDL_Surface* surface,
+                int offset_x, int offset_y,
+                int x, int y, int w, int h,
                 unsigned int bytes_per_pixel, int byte_order, int byte_type);
 
   int width() { return logical_width_; }

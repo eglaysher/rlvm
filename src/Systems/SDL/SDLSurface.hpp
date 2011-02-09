@@ -77,7 +77,7 @@ class SDLSurface : public SurfaceInvalidatable,
      * Reuploads this current piece of surface from the supplied
      * surface without allocating a new texture.
      */
-    void reupload(SDL_Surface* surface);
+    void reupload(SDL_Surface* surface, const Rect& dirty);
 
     /// Clears |texture|. Called before a switch between windowed and
     /// fullscreen mode, so that we aren't holding stale references.
@@ -104,6 +104,10 @@ class SDLSurface : public SurfaceInvalidatable,
   /// from surfaces to surfaces invalidate the target surfaces's
   /// texture.
   bool texture_is_valid_;
+
+  /// When a chunk of the surface is invalidated, we only want to upload the
+  /// smallest possible area, but for simplicity, we only keep one dirty area.
+  Rect dirty_rectangle_;
 
   /// Whether this surface is DC0 and needs special treatment.
   bool is_dc0_;
@@ -196,10 +200,6 @@ class SDLSurface : public SurfaceInvalidatable,
                                       const Rect& dst,
                                       int alpha);
 
-  /// Called after each change to surface_. Marks the texture as
-  /// invalid and notifies SDLGraphicsSystem when appropriate.
-  void markWrittenTo();
-
   virtual int numPatterns() const;
 
   /// Returns pattern information.
@@ -224,9 +224,11 @@ class SDLSurface : public SurfaceInvalidatable,
 
   virtual Surface* clone() const;
 
-
-
   void interpretAsColorMask(int r, int g, int b, int alpha);
+
+  // Called after each change to surface_. Marks the texture as
+  // invalid and notifies SDLGraphicsSystem when appropriate.
+  void markWrittenTo(const Rect& written_rect);
 };
 
 

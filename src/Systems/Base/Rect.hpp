@@ -196,6 +196,9 @@ class Rect {
   // Contains the intersection of two overlapping (or subsumed) rectangles.
   Rect intersection(const Rect& rhs) const;
 
+  // Contains the union of two overlapping rectangles.
+  Rect rectUnion(const Rect& rhs) const;
+
   bool operator==(const Rect& rhs) const {
     return origin_ == rhs.origin_ && size_ == rhs.size_;
   }

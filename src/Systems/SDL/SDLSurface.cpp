@@ -159,7 +159,7 @@ void TransformSurface(SDLSurface* our_surface, const Rect& area,
   SDL_UnlockSurface(surface);
 
   // If we are the main screen, then we want to update the screen
-  our_surface->markWrittenTo();
+  our_surface->markWrittenTo(our_surface->rect());
 }
 
 }  // namespace
@@ -213,10 +213,16 @@ SDLSurface::TextureRecord::TextureRecord(
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::TextureRecord::reupload(SDL_Surface* surface) {
+void SDLSurface::TextureRecord::reupload(SDL_Surface* surface,
+                                         const Rect& dirty) {
   if (texture) {
-    texture->reupload(surface, x_, y_, w_, h_, bytes_per_pixel_, byte_order_,
-                      byte_type_);
+    Rect i = Rect::REC(x_, y_, w_, h_).intersection(dirty);
+    if (!i.isEmpty()) {
+      texture->reupload(surface,
+                        i.x() - x_, i.y() - y_,
+                        i.x(), i.y(), i.width(), i.height(),
+                        bytes_per_pixel_, byte_order_, byte_type_);
+    }
   } else {
     texture.reset(new Texture(surface, x_, y_, w_, h_, bytes_per_pixel_,
                               byte_order_, byte_type_));
@@ -314,6 +320,7 @@ void SDLSurface::invalidate() {
     it->forceUnload();
   }
 
+  dirty_rectangle_ = rect();
   texture_is_valid_ = false;
 }
 
@@ -407,7 +414,7 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
                        &dest_rect))
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
-  sdl_dest_surface.markWrittenTo();
+  sdl_dest_surface.markWrittenTo(dst);
 }
 
 // -----------------------------------------------------------------------
@@ -432,7 +439,7 @@ void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
       reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
   }
 
-  markWrittenTo();
+  markWrittenTo(dst);
 }
 
 // -----------------------------------------------------------------------
@@ -526,9 +533,10 @@ void SDLSurface::uploadTextureIfNeeded() {
     } else {
       // Reupload the textures without reallocating them.
       for_each(textures_.begin(), textures_.end(),
-               bind(&TextureRecord::reupload, _1, surface_));
+               bind(&TextureRecord::reupload, _1, surface_, dirty_rectangle_));
     }
 
+    dirty_rectangle_ = Rect();
     texture_is_valid_ = true;
   }
 }
@@ -590,7 +598,7 @@ void SDLSurface::fill(const RGBAColour& colour) {
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
-  markWrittenTo();
+  markWrittenTo(rect());
 }
 
 // -----------------------------------------------------------------------
@@ -606,7 +614,7 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
     reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
-  markWrittenTo();
+  markWrittenTo(area);
 }
 
 // -----------------------------------------------------------------------
@@ -629,18 +637,6 @@ void SDLSurface::mono(const Rect& rect) {
 void SDLSurface::applyColour(const RGBColour& colour, const Rect& area) {
   ApplyColourTransformer apply(colour);
   TransformSurface(this, area, apply);
-}
-
-// -----------------------------------------------------------------------
-
-void SDLSurface::markWrittenTo() {
-  // If we are marked as dc0, alert the SDLGraphicsSystem.
-  if (is_dc0_ && graphics_system_) {
-    graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
-  }
-
-  // Mark that the texture needs reuploading
-  texture_is_valid_ = false;
 }
 
 // -----------------------------------------------------------------------
@@ -768,4 +764,17 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
   SDL_FreeSurface(tmp_surface);
 
   return boost::shared_ptr<Surface>(new SDLSurface(graphics_system_, surface));
+}
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::markWrittenTo(const Rect& written_rect) {
+  // If we are marked as dc0, alert the SDLGraphicsSystem.
+  if (is_dc0_ && graphics_system_) {
+    graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
+  }
+
+  // Mark that the texture needs reuploading
+  dirty_rectangle_ = dirty_rectangle_.rectUnion(written_rect);
+  texture_is_valid_ = false;
 }
