@@ -175,7 +175,8 @@ bool PauseLongOperation::operator()(RLMachine& machine) {
   // Check to see if we're done because of the auto mode timer
   if (machine.system().text().autoMode()) {
     unsigned int curTime = machine.system().event().getTicks();
-    if (start_time_ + automode_time_ < curTime)
+    if (start_time_ + automode_time_ < curTime &&
+        !machine.system().sound().koePlaying())
       is_done_ = true;
   }
 
