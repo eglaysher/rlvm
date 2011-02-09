@@ -31,6 +31,7 @@
 #include <string>
 
 #include <SDL/SDL_ttf.h>
+#include <boost/shared_ptr.hpp>
 
 #include "guichan/color.hpp"
 #include "guichan/font.hpp"
