@@ -20,6 +20,8 @@ files_to_copy = [
   'ExpressionTest_SEEN/logicalOperators.TXT',
   'ExpressionTest_SEEN/previousErrors.TXT',
   'Gameexe_data/Gameexe.ini',
+  'Gameexe_data/Gameexe_koeonoff.ini',
+  'Gameexe_data/Gameexe_tokenization.ini',
   'Gameroot/g00/doesntmatter.g00',
   'Module_Jmp_SEEN/farcallTest_0.TXT',
   'Module_Jmp_SEEN/farcall_withTest.TXT',
