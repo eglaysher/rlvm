@@ -36,23 +36,6 @@
 class RLMachine;
 
 class TextoutLongOperation : public LongOperation {
- private:
-  std::string m_utf8string;
-
-  int current_codepoint_;
-  std::string current_char_;
-  std::string::iterator current_position_;
-
-  /// Sets whether we should display as much text as we can immediately.
-  bool no_wait_;
-
-  bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
-
-  // Extract a name and send it to the text system as an automic
-  // operation.
-  bool displayName(RLMachine& machine);
-  bool displayOneMoreCharacter(RLMachine& machine, bool& paused);
-
  public:
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
   ~TextoutLongOperation();
@@ -66,6 +49,23 @@ class TextoutLongOperation : public LongOperation {
   // Overriden from LongOperation:
   virtual bool operator()(RLMachine& machine);
   virtual bool sleepEveryTick();
+
+ private:
+  bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
+
+  // Extract a name and send it to the text system as an automic
+  // operation.
+  bool displayName(RLMachine& machine);
+  bool displayOneMoreCharacter(RLMachine& machine, bool& paused);
+
+  std::string m_utf8string;
+
+  int current_codepoint_;
+  std::string current_char_;
+  std::string::iterator current_position_;
+
+  // Sets whether we should display as much text as we can immediately.
+  bool no_wait_;
 };
 
 #endif  // SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_

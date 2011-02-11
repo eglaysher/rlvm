@@ -34,31 +34,21 @@
 #include "Systems/SDL/SDLAudioLocker.hpp"
 #include "xclannad/wavfile.h"
 
-// -----------------------------------------------------------------------
-
 SDLSoundChunk::PlayingTable SDLSoundChunk::s_playing_table;
-
-// -----------------------------------------------------------------------
 
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
     : sample_(loadSample(path)) {
 }
-
-// -----------------------------------------------------------------------
 
 SDLSoundChunk::SDLSoundChunk(char* data, int length)
     : sample_(Mix_LoadWAV_RW(SDL_RWFromMem(data, length+0x2c), 1)),
       data_(data) {
 }
 
-// -----------------------------------------------------------------------
-
 SDLSoundChunk::~SDLSoundChunk() {
   Mix_FreeChunk(sample_);
   data_.reset();
 }
-
-// -----------------------------------------------------------------------
 
 Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
   if (boost::iequals(path.extension(), ".nwa")) {
@@ -81,8 +71,6 @@ Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void SDLSoundChunk::playChunkOn(int channel, int loops) {
   {
     SDLAudioLocker locker;
@@ -93,8 +81,6 @@ void SDLSoundChunk::playChunkOn(int channel, int loops) {
     // TODO: Throw something here.
   }
 }
-
-// -----------------------------------------------------------------------
 
 void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) {
   {
@@ -107,8 +93,6 @@ void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 // static
 void SDLSoundChunk::SoundChunkFinishedPlayback(int channel) {
   // Don't need an SDLAudioLocker because we're in the audio callback right
@@ -118,8 +102,6 @@ void SDLSoundChunk::SoundChunkFinishedPlayback(int channel) {
   // playing.
   s_playing_table[channel].reset();
 }
-
-// -----------------------------------------------------------------------
 
 // static
 int SDLSoundChunk::FindNextFreeExtraChannel() {
@@ -134,20 +116,14 @@ int SDLSoundChunk::FindNextFreeExtraChannel() {
   return -1;
 }
 
-// -----------------------------------------------------------------------
-
 // static
 void SDLSoundChunk::StopChannel(int channel) {
   Mix_HaltChannel(channel);
 }
 
-// -----------------------------------------------------------------------
-
 void SDLSoundChunk::StopAllChannels() {
   Mix_HaltChannel(-1);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLSoundChunk::FadeOut(const int channel, const int fadetime) {
   Mix_FadeOutChannel(channel, fadetime);

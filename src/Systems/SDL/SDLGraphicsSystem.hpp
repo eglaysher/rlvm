@@ -57,6 +57,7 @@ class Texture;
  */
 class SDLGraphicsSystem : public GraphicsSystem {
  public:
+  // SDL should be initialized before you create an SDLGraphicsSystem.
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();
 

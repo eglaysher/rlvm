@@ -36,29 +36,28 @@
 class SDLGraphicsSystem;
 class Texture;
 
-/**
- * Fake SDLSurface used to
- */
+// Fake SDLSurface that holds on to an OpenGL screenshot. Used for composing
+// the screenstate with another.
 class SDLRenderToTextureSurface : public SurfaceInvalidatable,
                                   public Surface {
  public:
   SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLRenderToTextureSurface();
 
-  /// Overridden from SurfaceInvalidatable:
+  // Overridden from SurfaceInvalidatable:
 
-  /// Clears |texture|. Called before a switch between windowed and
-  /// fullscreen mode, so that we aren't holding stale references.
+  // Clears |texture|. Called before a switch between windowed and
+  // fullscreen mode, so that we aren't holding stale references.
   virtual void invalidate();
 
-  /// Unregisters this object from the GraphicsSystem.
+  // Unregisters this object from the GraphicsSystem.
   virtual void unregisterFromGraphicsSystem();
 
   void registerWithGraphicsSystem();
 
   virtual void dump();
 
-  /// Blits to another surface
+  // Blits to another surface
   virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
                              int alpha = 255, bool use_src_alpha = true);
@@ -90,10 +89,10 @@ class SDLRenderToTextureSurface : public SurfaceInvalidatable,
   virtual Surface* clone() const;
 
  private:
-  /// The SDLTexture which wraps one or more OpenGL textures
+  // The SDLTexture which wraps one or more OpenGL textures
   boost::scoped_ptr<Texture> texture_;
 
-  /// A pointer to the graphics_system.
+  // A pointer to the graphics_system.
   SDLGraphicsSystem* graphics_system_;
 };
 

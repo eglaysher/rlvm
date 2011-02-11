@@ -37,6 +37,17 @@ class RLMachine;
 class Surface;
 
 class ZoomLongOperation : public LongOperation {
+ public:
+  ZoomLongOperation(
+    RLMachine& machine,
+    const boost::shared_ptr<Surface>& orig_surface_,
+    const boost::shared_ptr<Surface>& src_surface_,
+    const Rect& frect_, const Rect& trect_, const Rect& drect_,
+    const int time);
+  virtual ~ZoomLongOperation();
+
+  virtual bool operator()(RLMachine& machine);
+
  private:
   RLMachine& machine_;
 
@@ -49,17 +60,6 @@ class ZoomLongOperation : public LongOperation {
   const unsigned int duration_;
 
   unsigned int start_time_;
-
- public:
-  ZoomLongOperation(
-    RLMachine& machine,
-    const boost::shared_ptr<Surface>& orig_surface_,
-    const boost::shared_ptr<Surface>& src_surface_,
-    const Rect& frect_, const Rect& trect_, const Rect& drect_,
-    const int time);
-  ~ZoomLongOperation();
-
-  virtual bool operator()(RLMachine& machine);
 };
 
 #endif  // SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_

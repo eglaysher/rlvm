@@ -50,13 +50,9 @@ SDLRenderToTextureSurface::SDLRenderToTextureSurface(SDLGraphicsSystem* system,
   registerWithGraphicsSystem();
 }
 
-// -----------------------------------------------------------------------
-
 SDLRenderToTextureSurface::~SDLRenderToTextureSurface() {
   unregisterFromGraphicsSystem();
 }
-
-// -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::invalidate() {
   // We regretfully can't restore the state here. Oh well. Since
@@ -77,18 +73,10 @@ void SDLRenderToTextureSurface::registerWithGraphicsSystem() {
     graphics_system_->registerSurface(this);
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::dump() {
   cerr << "Attempting to dump a remembered texture." << endl;
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * @todo This function doesn't ignore alpha blending when use_src_alpha
- *       is false; thus, grp_open and grp_mask_open are really grp_mask_open.
- */
 void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,
                                               const Rect& src, const Rect& dst,
                                               int alpha, bool use_src_alpha) {
@@ -96,15 +84,11 @@ void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,
                     "SDLRenderToTextureSurface!");
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::renderToScreen(
     const Rect& src, const Rect& dst, int opacity) {
   if (texture_)
     texture_->renderToScreen(src, dst, opacity);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreen(
     const Rect& src, const Rect& dst, const int opacity[4]) {
@@ -112,15 +96,11 @@ void SDLRenderToTextureSurface::renderToScreen(
     texture_->renderToScreen(src, dst, opacity);
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::renderToScreenAsColorMask(
   const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) {
   throw rlvm::Exception(
     "SDLRenderToTextureSurface::render_to_screen_as_colour_mask unimplemented");
 }
-
-// -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::renderToScreenAsObject(
   const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha) {
@@ -128,46 +108,32 @@ void SDLRenderToTextureSurface::renderToScreenAsObject(
     "SDLRenderToTextureSurface::render_to_screen_as_object unimplemented");
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::fill(const RGBAColour& colour) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
-
-// -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::fill(const RGBAColour& colour,
                                      const Rect& rect) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::invert(const Rect& rect) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::mono(const Rect& rect) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
-
-// -----------------------------------------------------------------------
 
 void SDLRenderToTextureSurface::applyColour(
     const RGBColour& colour, const Rect& area) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
 
-// -----------------------------------------------------------------------
-
 void SDLRenderToTextureSurface::getDCPixel(const Point& pos,
                                            int& r, int& g, int& b) {
   throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
 }
-
-// -----------------------------------------------------------------------
 
 Size SDLRenderToTextureSurface::size() const {
   if (texture_)
@@ -175,8 +141,6 @@ Size SDLRenderToTextureSurface::size() const {
   else
     return Size();
 }
-
-// -----------------------------------------------------------------------
 
 Surface* SDLRenderToTextureSurface::clone() const {
   throw SystemError("Unsupported operation clone on "

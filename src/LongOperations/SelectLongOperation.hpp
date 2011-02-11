@@ -90,7 +90,7 @@ class NormalSelectLongOperation : public SelectLongOperation {
  public:
   NormalSelectLongOperation(RLMachine& machine,
                             const libReallive::SelectElement& commandElement);
-  ~NormalSelectLongOperation();
+  virtual ~NormalSelectLongOperation();
 
   // Overridden from EventListener:
   virtual void mouseMotion(const Point&);
@@ -113,7 +113,7 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   ButtonSelectLongOperation(RLMachine& machine,
                             const libReallive::SelectElement& commandElement,
                             int selbtn_set);
-  ~ButtonSelectLongOperation();
+  virtual ~ButtonSelectLongOperation();
 
   // Overridden from EventListener:
   virtual void mouseMotion(const Point&);

@@ -102,8 +102,6 @@ void SDLGraphicsSystem::beginFrame() {
   ShowGLErrors();
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
   if (isResponsibleForUpdate() &&
       screenUpdateMode() == SCREENUPDATEMODE_MANUAL &&
@@ -112,8 +110,6 @@ void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
   else
     GraphicsSystem::markScreenAsDirty(type);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::endFrame() {
   FinalRenderers::iterator it = renderer_begin();
@@ -142,8 +138,6 @@ void SDLGraphicsSystem::endFrame() {
   SDL_GL_SwapBuffers();
   ShowGLErrors();
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::redrawLastFrame() {
   // We won't redraw the screen between when the DrawManual() command is issued
@@ -184,8 +178,6 @@ void SDLGraphicsSystem::redrawLastFrame() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::drawCursor() {
   if (useCustomCursor()) {
     boost::shared_ptr<MouseCursor> cursor;
@@ -199,8 +191,6 @@ void SDLGraphicsSystem::drawCursor() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
   return shared_ptr<Surface>(new SDLRenderToTextureSurface(this, screenSize()));
 }
@@ -209,10 +199,6 @@ shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
 // Public Interface
 // -----------------------------------------------------------------------
 
-/**
- *
- * @pre SDL is initialized.
- */
 SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   : GraphicsSystem(system, gameexe), redraw_last_frame_(false),
     display_data_in_titlebar_(false), time_of_last_titlebar_update_(0),
@@ -262,26 +248,26 @@ void SDLGraphicsSystem::setupVideo() {
 
   int bpp = info->vfmt->BitsPerPixel;
 
-  /* the flags to pass to SDL_SetVideoMode */
+  // the flags to pass to SDL_SetVideoMode
   int video_flags;
-  video_flags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
-  video_flags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-  video_flags |= SDL_HWPALETTE;       /* Store the palette in hardware */
+  video_flags  = SDL_OPENGL;          // Enable OpenGL in SDL
+  video_flags |= SDL_GL_DOUBLEBUFFER; // Enable double buffering
+  video_flags |= SDL_HWPALETTE;       // Store the palette in hardware
 
-  /* This checks to see if surfaces can be stored in memory */
+  // This checks to see if surfaces can be stored in memory
   if ( info->hw_available )
     video_flags |= SDL_HWSURFACE;
   else
     video_flags |= SDL_SWSURFACE;
 
-  /* This checks if hardware blits can be done */
+  // This checks if hardware blits can be done
   if ( info->blit_hw )
     video_flags |= SDL_HWACCEL;
 
   if (screenMode() == 0)
     video_flags |= SDL_FULLSCREEN;
 
-  /* Sets up OpenGL double buffering */
+  // Sets up OpenGL double buffering
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -309,30 +295,30 @@ void SDLGraphicsSystem::setupVideo() {
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  /* Enable Texture Mapping ( NEW ) */
+  // Enable Texture Mapping ( NEW )
   glEnable(GL_TEXTURE_2D);
 
-  /* Enable smooth shading */
+  // Enable smooth shading
   glShadeModel(GL_SMOOTH);
 
-  /* Set the background black */
+  // Set the background black
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-  /* Depth buffer setup */
+  // Depth buffer setup
   glClearDepth(1.0f);
 
-  /* Enables Depth Testing */
+  // Enables Depth Testing
   glEnable(GL_DEPTH_TEST);
 
   glEnable(GL_BLEND);
 
-  /* The Type Of Depth Test To Do */
+  // The Type Of Depth Test To Do
   glDepthFunc(GL_LEQUAL);
 
-  /* Really Nice Perspective Calculations */
+  // Really Nice Perspective Calculations
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-  /* Full Brightness, 50% Alpha ( NEW ) */
+  // Full Brightness, 50% Alpha ( NEW )
   glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
   // Create a small 32x32 texture for storing what's behind the mouse
@@ -349,8 +335,6 @@ void SDLGraphicsSystem::setupVideo() {
   ShowGLErrors();
 }
 
-// -----------------------------------------------------------------------
-
 SDLGraphicsSystem::~SDLGraphicsSystem() {
   // Force all surfaces to unregister from us now, because otherwise they'll
   // access our unresolved memory.
@@ -359,8 +343,6 @@ SDLGraphicsSystem::~SDLGraphicsSystem() {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::registerSurface(SurfaceInvalidatable* surface) {
   alive_surfaces_.insert(surface);
 }
@@ -368,8 +350,6 @@ void SDLGraphicsSystem::registerSurface(SurfaceInvalidatable* surface) {
 void SDLGraphicsSystem::unregisterSurface(SurfaceInvalidatable* surface) {
   alive_surfaces_.erase(surface);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // For now, nothing, but later, we need to put all code each cycle
@@ -405,8 +385,6 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   GraphicsSystem::executeGraphicsSystem(machine);
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::setWindowTitle() {
   ostringstream oss;
   oss << caption_title_;
@@ -423,8 +401,6 @@ void SDLGraphicsSystem::setWindowTitle() {
   SDL_WM_SetCaption(oss.str().c_str(), NULL);
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
                                           int text_encoding) {
   // @todo Still not restoring title correctly!
@@ -432,8 +408,6 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
 
   GraphicsSystem::setWindowSubtitle(cp932str, text_encoding);
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::setScreenMode(const int in) {
   for (std::set<SurfaceInvalidatable*>::iterator it = alive_surfaces_.begin();
@@ -445,8 +419,6 @@ void SDLGraphicsSystem::setScreenMode(const int in) {
 
   setupVideo();
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16) {
@@ -472,8 +444,6 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size) {
   display_contexts_[dc]->allocate(size);
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::setMinimumSizeForDC(int dc, Size size) {
   if (display_contexts_[dc] == NULL || !display_contexts_[dc]->allocated()) {
     allocateDC(dc, size);
@@ -496,8 +466,6 @@ void SDLGraphicsSystem::setMinimumSizeForDC(int dc, Size size) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void SDLGraphicsSystem::freeDC(int dc) {
   if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
@@ -508,8 +476,6 @@ void SDLGraphicsSystem::freeDC(int dc) {
     display_contexts_[dc]->deallocate();
   }
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
   if (dc >= 16) {
@@ -524,8 +490,6 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
     throw rlvm::Exception(ss.str());
   }
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller) {
   if (display_contexts_[dc] == NULL) {
@@ -574,12 +538,9 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
   return surf;
 };
 
-// -----------------------------------------------------------------------
-
-/**
- * Helper function for load_surface_from_file; invoked in a stl loop.
- */
-SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region) {
+// Helper function for load_surface_from_file; invoked in a stl loop.
+static SDLSurface::GrpRect xclannadRegionToGrpRect(
+    const GRPCONV::REGION& region) {
   SDLSurface::GrpRect rect;
   rect.rect = Rect(Point(region.x1, region.y1),
                    Point(region.x2 + 1, region.y2 + 1));
@@ -588,31 +549,18 @@ SDLSurface::GrpRect xclannadRegionToGrpRect(const GRPCONV::REGION& region) {
   return rect;
 }
 
-// -----------------------------------------------------------------------
-
-/**
- * @author Jagarl
- * @author Elliot Glaysher
- *
- * Loads a file from disk into a Surface object. The file loaded
- * should be a type 0 or type 1 g00 bitmap.
- *
- * Jagarl's original implementation used an inline, intrusive caching
- * system. I've substituted this with an LRU cache class.
- *
- * @param filename File to load (a full filename, not the basename)
- * @return A Surface object with the data from this file
- *
- * @todo Considering that I really don't understand this whole section
- * of the code, I'll probably *NEED* to come back and rewrite this,
- * simply because I'll find out that this doesn't do what I think it does.
- *
- * @warning This function probably isn't basic exception safe.
- *
- * @note The surface returned by this function will never be
- * modified; it will either be put in an object, which is immutable,
- * or it will be copied into the DC.
- */
+// @author Jagarl
+// @author Elliot Glaysher
+//
+// Loads a file from disk into a Surface object. The file loaded
+// should be a type 0 or type 1 g00 bitmap.
+//
+// Jagarl's original implementation used an inline, intrusive caching
+// system. I've substituted this with an LRU cache class.
+//
+// @note The surface returned by this function will never be
+// modified; it will either be put in an object, which is immutable,
+// or it will be copied into the DC.
 boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename) {
   // First check to see if this surface is already in our internal cache
@@ -692,8 +640,6 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   return surface_to_ret;
 }
 
-// -----------------------------------------------------------------------
-
 boost::shared_ptr<Surface> SDLGraphicsSystem::getHaikei() {
   if (haikei_->rawSurface() == NULL) {
     haikei_->allocate(screenSize(), true);
@@ -712,13 +658,9 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc) {
   return display_contexts_[dc];
 }
 
-// -----------------------------------------------------------------------
-
 boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
   return shared_ptr<Surface>(new SDLSurface(this, size));
 }
-
-// -----------------------------------------------------------------------
 
 void SDLGraphicsSystem::reset() {
   last_seen_number_ = 0;

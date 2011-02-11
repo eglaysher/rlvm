@@ -37,8 +37,6 @@ SDLAudioLocker::SDLAudioLocker() {
   SDL_LockAudio();
 }
 
-// -----------------------------------------------------------------------
-
 SDLAudioLocker::~SDLAudioLocker() {
   SDL_UnlockAudio();
 }

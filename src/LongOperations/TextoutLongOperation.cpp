@@ -46,8 +46,10 @@
 
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
-    : m_utf8string(utf8string), current_codepoint_(0),
-      current_position_(m_utf8string.begin()), no_wait_(false) {
+    : m_utf8string(utf8string),
+      current_codepoint_(0),
+      current_position_(m_utf8string.begin()),
+      no_wait_(false) {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
   if (tmp == m_utf8string.end()) {
