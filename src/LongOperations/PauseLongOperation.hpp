@@ -46,18 +46,27 @@ class PauseLongOperation : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 
  private:
-  RLMachine& machine;
+  // Has this pause timed out?
+  bool AutomodeTimerFired();
+
+  RLMachine& machine_;
 
   bool is_done_;
 
   // Used in automode:
-  // Keeps track of when PauseLongOperation was constructed (in ticks from
-  // start)
-  unsigned int start_time_;
-
   // How long after start_time_ to automatically break out of this
   // Longoperation if auto mode is enabled
   unsigned int automode_time_;
+
+  // How long it's been since the last time we've added time to |total_time_|.
+  unsigned int time_at_last_pass_;
+
+  // When this hits |automode_time_|, we fire.
+  unsigned int total_time_;
+
+  // The time of the last mouse movement. We don't add time to |total_time_| if
+  // this is within two seconds of now.
+  unsigned int time_of_last_mouse_movement_;
 };
 
 // -----------------------------------------------------------------------

@@ -45,38 +45,42 @@ using namespace std;
 // PauseLongOperation
 // -----------------------------------------------------------------------
 
-PauseLongOperation::PauseLongOperation(RLMachine& imachine)
-    : LongOperation(), machine(imachine), is_done_(false) {
-  TextSystem& text = machine.system().text();
-  EventSystem& event = machine.system().event();
+PauseLongOperation::PauseLongOperation(RLMachine& machine)
+    : LongOperation(), machine_(machine), is_done_(false) {
+  TextSystem& text = machine_.system().text();
+  EventSystem& event = machine_.system().event();
 
   // Initialize Auto Mode (in case it's activated, or in case it gets
   // activated)
   int numChars = text.currentPage().numberOfCharsOnPage();
   automode_time_ = text.getAutoTime(numChars);
-  start_time_ = event.getTicks();
+  time_at_last_pass_ = event.getTicks();
+  total_time_ = 0;
+  time_of_last_mouse_movement_ = 0;
 
-  machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+  machine_.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
   // We undo this in the destructor
   text.setInPauseState(true);
 }
 
 PauseLongOperation::~PauseLongOperation() {
-  machine.system().text().setInPauseState(false);
+  machine_.system().text().setInPauseState(false);
 }
 
 void PauseLongOperation::mouseMotion(const Point& p) {
   // Tell the text system about the move
-  machine.system().text().setMousePosition(p);
+  machine_.system().text().setMousePosition(p);
+
+  time_of_last_mouse_movement_ = machine_.system().event().getTicks();
 }
 
 bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                  bool pressed) {
-  GraphicsSystem& graphics = machine.system().graphics();
-  EventSystem& es = machine.system().event();
+  GraphicsSystem& graphics = machine_.system().graphics();
+  EventSystem& es = machine_.system().event();
 
-  TextSystem& text = machine.system().text();
+  TextSystem& text = machine_.system().text();
 
   switch (mouseButton) {
     case MOUSE_LEFT: {
@@ -87,7 +91,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
           graphics.toggleInterfaceHidden();
           return true;
         }
-      } else if (!text.handleMouseClick(machine, pos, pressed)) {
+      } else if (!text.handleMouseClick(machine_, pos, pressed)) {
         // We *must* only respond on mouseups! This detail matters because in
         // rlBabel, if glosses are enabled, an spause() is called and then the
         // mouse button value returned by GetCursorPos needs to be "2" for the
@@ -108,7 +112,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     }
     case MOUSE_RIGHT:
       if (!pressed) {
-        machine.system().showSyscomMenu(machine);
+        machine_.system().showSyscomMenu(machine_);
         return true;
       }
       break;
@@ -135,13 +139,13 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   bool handled = false;
 
   if (pressed) {
-    GraphicsSystem& graphics = machine.system().graphics();
+    GraphicsSystem& graphics = machine_.system().graphics();
 
     if (graphics.interfaceHidden()) {
       graphics.toggleInterfaceHidden();
       handled = true;
     } else {
-      TextSystem& text = machine.system().text();
+      TextSystem& text = machine_.system().text();
       bool ctrlKeySkips = text.ctrlKeySkip();
 
       if (ctrlKeySkips &&
@@ -173,24 +177,36 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
 
 bool PauseLongOperation::operator()(RLMachine& machine) {
   // Check to see if we're done because of the auto mode timer
-  if (machine.system().text().autoMode()) {
-    unsigned int curTime = machine.system().event().getTicks();
-    if (start_time_ + automode_time_ < curTime &&
-        !machine.system().sound().koePlaying())
+  if (machine_.system().text().autoMode()) {
+    if (AutomodeTimerFired() && !machine_.system().sound().koePlaying())
       is_done_ = true;
   }
 
   // Check to see if we're done because we're being asked to pause on a piece
   // of text we've already hit.
-  if (machine.system().fastForward())
+  if (machine_.system().fastForward())
     is_done_ = true;
 
   if (is_done_) {
     // Stop all voices before continuing.
-    machine.system().sound().koeStop();
+    machine_.system().sound().koeStop();
   }
 
   return is_done_;
+}
+
+bool PauseLongOperation::AutomodeTimerFired() {
+  int current_time = machine_.system().event().getTicks();
+  int time_since_last_pass = current_time - time_at_last_pass_;
+  time_at_last_pass_ = current_time;
+
+  if (time_of_last_mouse_movement_ < (current_time - 2000)) {
+    // If the mouse has been moved within the last two seconds, don't advance
+    // the timer so the user has a chance to click on buttons.
+    total_time_ += time_since_last_pass;
+  }
+
+  return total_time_ >= automode_time_;
 }
 
 // -----------------------------------------------------------------------
