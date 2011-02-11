@@ -52,16 +52,18 @@ rlvm currently plays the following games to their completion:
 
 For more details, please read STATUS.TXT.
 
-rlvm is now at the point where enough commands are implemented that other games
-*may* work. The above is only a list of what I've tested first hand or what
-I've been told.
+rlvm is now at the point where enough commands are implemented that
+other games *may* work. The above is only a list of what I've tested
+first hand or what I've been told.
 
-rlvm has an implementation of rlBabel; English patches compiled with Haeleth's
-rlBabel should line break correctly. I've successfully tested it with the Kanon
-patch from NDT and the beta CLANNAD patches from Baka-Tsuki's Assembla page.
+rlvm has an implementation of rlBabel; English patches compiled with
+Haeleth's rlBabel should line break correctly. I've successfully tested
+it with the Kanon patch from NDT and the beta CLANNAD patches from
+Baka-Tsuki's Assembla page.
 
-rlvm supports KOE, NWK and OVK archives for voices, along with ogg vorbis voice
-patches which follow the convention <packnumber>/z<packnumber><sampleid>.ogg.
+rlvm supports KOE, NWK and OVK archives for voices, along with ogg
+vorbis voice patches which follow the convention
+<packnumber>/z<packnumber><sampleid>.ogg.
 
 Fullscreen can be entered by pressing Alt+{F,Enter} on Linux and
 Command+{F,Enter} on Mac.
@@ -72,7 +74,8 @@ Please report bugs and discrepancies to <glaysher at umich dot edu>.
 -------------------------------------------------------------------------
 You will need the following libraries/utilities:
 
-- The scons build system
+- The scons build system (Note: the scons in MacPorts has been reported
+  to not work)
 - boost 1.40 or higher (1.35 has a subtle corruption bug; if you are
   upgrading from a copy of rlvm 0.7 that was compiled with 1.35, you may
   need to delete your save files. My Ubuntu packages and Mac applications
@@ -86,8 +89,8 @@ You will need the following libraries/utilities:
 -------------------------------------------------------------------------
 
 Make sure that freetype-config and sdl-config are in your $PATH. The
-current SConscripts are fairly naive and may need editing to point to the
-correct location of some header files. Future versions will have the
+current SConscripts are fairly naive and may need editing to point to
+the correct location of some header files. Future versions will have the
 build system refined. You should be able to type:
 
  $ scons --release
@@ -145,9 +148,9 @@ The interpreter currently lacks the following features:
    scenes. To my knowledge, the file format has not been reverse
    engineered.
 
-Using rlvm with insani's English translation of Planetarian is
-currently not recommended as the indentation behaviour *will* break in
-the middle of words.
+Using rlvm with insani's English translation of Planetarian is currently
+not recommended as the indentation behaviour *will* break in the middle
+of words.
 
 5) GETTING INVOLVED
 -------------------------------------------------------------------------
