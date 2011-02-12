@@ -45,9 +45,24 @@ using namespace std;
 
 using ::testing::_;
 
+// Increments everytime you ask for ticks to simulate time going by in the real
+// world. Neccessary because textout measures ticks so it knows how fast to
+// print out characters.
+class IncrementingTickCounter : public EventSystemMockHandler {
+ public:
+  IncrementingTickCounter() : ticks(0) {}
+  virtual unsigned int getTicks() const { return ticks++; }
+ private:
+  mutable unsigned int ticks;
+};
+
 class TextSystemTest : public FullSystemTest {
  protected:
   TextSystemTest() {
+    event_mock.reset(new IncrementingTickCounter);
+    dynamic_cast<TestEventSystem&>(system.event())
+        .setMockHandler(event_mock);
+
     system.text().setActiveWindow(0);
   }
 
@@ -79,6 +94,8 @@ class TextSystemTest : public FullSystemTest {
     text.textWindow(0)->clearWin();
     text.newPageOnWindow(0);
   }
+
+  boost::shared_ptr<EventSystemMockHandler> event_mock;
 };
 
 TEST_F(TextSystemTest, NormalTextDisplay) {

@@ -32,6 +32,7 @@
 
 #include "LongOperations/PauseLongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
@@ -49,7 +50,8 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
     : m_utf8string(utf8string),
       current_codepoint_(0),
       current_position_(m_utf8string.begin()),
-      no_wait_(false) {
+      no_wait_(false),
+      next_character_countdown_(0) {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
   if (tmp == m_utf8string.end()) {
@@ -59,6 +61,8 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
     current_char_ = string(current_position_, tmp);
     current_position_ = tmp;
   }
+
+  time_at_last_pass_ = machine.system().event().getTicks();
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
@@ -194,11 +198,30 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
   if (no_wait_) {
     return displayAsMuchAsWeCanThenPause(machine);
   } else {
-    bool paused = false;
-    return displayOneMoreCharacter(machine, paused);
+    int current_time = machine.system().event().getTicks();
+    int time_since_last_pass = current_time - time_at_last_pass_;
+    time_at_last_pass_ = current_time;
+
+    next_character_countdown_ -= time_since_last_pass;
+    if (next_character_countdown_ <= 0) {
+      bool paused = false;
+      next_character_countdown_ = machine.system().text().messageSpeed();
+      return displayOneMoreCharacter(machine, paused);
+    } else {
+      // Let's sleep a bit and then try again.
+      return false;
+    }
   }
 }
 
 int TextoutLongOperation::sleepTime() {
-  return no_wait_ ? 0 : 10;
+  if (no_wait_) {
+    return 0;
+  } else {
+    // Subtract one from when we're due next to sleep so we don't overshoot too
+    // often (we can just busyloop for the last ms). We need to make sure we
+    // don't ask the OS to sleep a negative number though because it'll
+    // interpret the int as unsigned.
+    return std::max(next_character_countdown_ - 1, 0);
+  }
 }

@@ -38,7 +38,7 @@ class RLMachine;
 class TextoutLongOperation : public LongOperation {
  public:
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
-  ~TextoutLongOperation();
+  virtual ~TextoutLongOperation();
 
   void setNoWait(bool in = true) { no_wait_ = in; }
 
@@ -66,6 +66,12 @@ class TextoutLongOperation : public LongOperation {
 
   // Sets whether we should display as much text as we can immediately.
   bool no_wait_;
+
+  // How long it's been since the last time we've added time to |total_time_|.
+  unsigned int time_at_last_pass_;
+
+  // A countdown in milliseconds until we display the next character.
+  int next_character_countdown_;
 };
 
 #endif  // SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_
