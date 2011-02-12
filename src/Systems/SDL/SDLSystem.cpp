@@ -27,7 +27,6 @@
 
 #include "Systems/SDL/SDLSystem.hpp"
 
-#include <iostream>
 #include <sstream>
 #include <SDL/SDL.h>
 

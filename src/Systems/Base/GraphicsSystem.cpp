@@ -36,7 +36,6 @@
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/vector.hpp>
 #include <deque>
-#include <iostream>
 #include <iterator>
 #include <list>
 #include <sstream>
@@ -67,7 +66,6 @@
 
 using boost::iends_with;
 using boost::lexical_cast;
-using std::cerr;
 using std::cout;
 using std::endl;
 using std::fill;

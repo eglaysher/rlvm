@@ -26,8 +26,6 @@
 
 #include "Systems/Base/TextWaku.hpp"
 
-#include <iostream>
-
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextWakuNormal.hpp"
 #include "Systems/Base/TextWakuType4.hpp"

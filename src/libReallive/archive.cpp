@@ -35,8 +35,6 @@
 #include "compression.h"
 #include "string.h"
 
-#include <iostream>
-
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>

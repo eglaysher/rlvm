@@ -31,7 +31,6 @@
 
 #include "Systems/Base/DriftGraphicsObject.hpp"
 
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -42,8 +41,6 @@
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/Graphics.hpp"
-
-using namespace std;
 
 namespace {
 
@@ -209,7 +206,7 @@ boost::shared_ptr<Surface> DriftGraphicsObject::currentSurface(
 }
 
 void DriftGraphicsObject::objectInfo(std::ostream& tree) {
-  tree << "  Drift image: " << filename_ << endl;
+  tree << "  Drift image: " << filename_ << std::endl;
 }
 
 

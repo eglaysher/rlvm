@@ -28,7 +28,6 @@
 #include "Systems/SDL/SDLEventSystem.hpp"
 
 #include <boost/bind.hpp>
-#include <iostream>
 #include <SDL/SDL.h>
 
 #include "MachineBase/RLMachine.hpp"

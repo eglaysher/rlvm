@@ -27,7 +27,7 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
-#include <iostream>
+#include <ostream>
 
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/Surface.hpp"

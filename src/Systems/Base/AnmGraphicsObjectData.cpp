@@ -46,7 +46,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <iostream>
 
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -63,7 +62,6 @@ using boost::shared_ptr;
 
 using libReallive::read_i32;
 
-using namespace std;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -97,7 +95,7 @@ bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anm_data) {
 void AnmGraphicsObjectData::loadAnmFile() {
   fs::path file = system_.findFile(filename_, ANM_FILETYPES);
   if (file.empty()) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not find ANM file \"" << filename_ << "\".";
     throw rlvm::Exception(oss.str());
   }
@@ -105,13 +103,13 @@ void AnmGraphicsObjectData::loadAnmFile() {
   int file_size = 0;
   scoped_array<char> anm_data;
   if (loadFileData(file, anm_data, file_size)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());
   }
 
   if (testFileMagic(anm_data)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "File \"" << file << "\" does not appear to be in ANM format.";
     throw rlvm::Exception(oss.str());
   }
@@ -166,7 +164,7 @@ void AnmGraphicsObjectData::readIntegerList(
   for (int i = 0; i < iterations; ++i) {
     int list_length = read_i32(start + 4);
     const char* tmpbuf = start + 8;
-    vector<int> intlist;
+    std::vector<int> intlist;
     for (int j = 0; j < list_length; ++j) {
       intlist.push_back(read_i32(tmpbuf));
       tmpbuf += 4;
@@ -290,7 +288,7 @@ Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go) {
 }
 
 void AnmGraphicsObjectData::objectInfo(std::ostream& tree) {
-  tree << "  ANM file: " << filename_ << endl;
+  tree << "  ANM file: " << filename_ << std::endl;
 }
 
 template<class Archive>

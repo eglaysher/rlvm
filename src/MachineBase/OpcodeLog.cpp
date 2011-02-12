@@ -29,7 +29,7 @@
 
 #include <algorithm>
 #include <iomanip>
-#include <iostream>
+#include <ostream>
 #include <string>
 #include <boost/bind.hpp>
 

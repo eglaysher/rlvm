@@ -31,7 +31,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iomanip>
-#include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -53,7 +53,6 @@
 using boost::bind;
 using boost::ref;
 using boost::shared_ptr;
-using std::cerr;
 using std::endl;
 using std::ostringstream;
 using std::setfill;

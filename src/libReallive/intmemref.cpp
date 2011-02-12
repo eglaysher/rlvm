@@ -28,7 +28,7 @@
 #include "intmemref.h"
 
 #include <cstring>
-#include <iostream>
+#include <ostream>
 #include <stdexcept>
 
 using namespace std;

@@ -29,7 +29,6 @@
 
 #include <string>
 #include <cmath>
-#include <iostream>
 
 #include <boost/shared_ptr.hpp>
 
@@ -48,7 +47,6 @@
 #include "Systems/Base/System.hpp"
 #include "Utilities/StringUtilities.hpp"
 
-using namespace std;
 using namespace boost;
 using namespace libReallive;
 

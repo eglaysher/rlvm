@@ -27,7 +27,7 @@
 
 #include "Systems/Base/GraphicsStackFrame.hpp"
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 // -----------------------------------------------------------------------

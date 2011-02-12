@@ -26,8 +26,9 @@
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/Colour.hpp"
+
+#include <ostream>
 #include <vector>
-#include <iostream>
 
 // -----------------------------------------------------------------------
 // RGBColour

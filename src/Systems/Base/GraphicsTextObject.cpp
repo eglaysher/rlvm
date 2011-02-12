@@ -32,7 +32,7 @@
 
 #include "Systems/Base/GraphicsTextObject.hpp"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "Systems/Base/GraphicsObject.hpp"
@@ -40,8 +40,6 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "libReallive/gameexe.h"
-
-using std::endl;
 
 // -----------------------------------------------------------------------
 
@@ -96,7 +94,7 @@ boost::shared_ptr<Surface> GraphicsTextObject::currentSurface(
 // -----------------------------------------------------------------------
 
 void GraphicsTextObject::objectInfo(std::ostream& tree) {
-  tree << "  Text: \"" << cached_utf8_str_ << "\"" << endl;
+  tree << "  Text: \"" << cached_utf8_str_ << "\"" << std::endl;
 }
 
 // -----------------------------------------------------------------------

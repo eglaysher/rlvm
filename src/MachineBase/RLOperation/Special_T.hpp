@@ -35,7 +35,6 @@
 #include "libReallive/expression_pieces.h"
 
 #include <sstream>
-#include <iostream>
 
 // Type definition that implements the special parameter concept; the
 // way to expect multiple different types in a parameter slot.

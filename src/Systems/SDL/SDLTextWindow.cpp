@@ -27,7 +27,6 @@
 
 #include "Systems/SDL/SDLTextWindow.hpp"
 
-#include <iostream>
 #include <string>
 #include <vector>
 

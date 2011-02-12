@@ -27,7 +27,6 @@
 
 #include "Systems/Base/TextWindowButton.hpp"
 
-#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -41,8 +40,6 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
-
-using namespace std;
 
 /**
  * Describes the state of a Waku button
@@ -326,7 +323,7 @@ ExbtnWindowButton::ExbtnWindowButton(
     : TextWindowButton(system, use, location_box),
       scenario_(0), entrypoint_(0) {
   if (location_box.exists() && to_call.exists()) {
-    vector<int> farcall = to_call;
+    std::vector<int> farcall = to_call;
     scenario_ = farcall.at(0);
     entrypoint_ = farcall.at(1);
   }

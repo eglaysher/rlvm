@@ -38,7 +38,6 @@
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <cstdio>
-#include <iostream>
 #include <set>
 #include <sstream>
 #include <string>

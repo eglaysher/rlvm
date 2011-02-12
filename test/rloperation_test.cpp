@@ -45,7 +45,6 @@
 #include <vector>
 #include <boost/assign/list_of.hpp>
 #include <boost/bind.hpp>
-#include <iostream>
 
 using boost::assign::list_of;
 

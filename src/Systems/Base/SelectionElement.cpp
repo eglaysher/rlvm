@@ -27,14 +27,11 @@
 
 #include "Systems/Base/SelectionElement.hpp"
 
-#include <iostream>
-
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"
 
-using namespace std;
 using boost::shared_ptr;
 
 // -----------------------------------------------------------------------

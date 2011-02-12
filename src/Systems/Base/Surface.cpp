@@ -27,11 +27,7 @@
 
 #include "Systems/Base/Surface.hpp"
 
-#include <iostream>
-
 #include "Utilities/Exception.hpp"
-
-using namespace std;
 
 // -----------------------------------------------------------------------
 

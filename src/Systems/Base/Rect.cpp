@@ -28,7 +28,7 @@
 #include "Systems/Base/Rect.hpp"
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 // -----------------------------------------------------------------------
 // Point

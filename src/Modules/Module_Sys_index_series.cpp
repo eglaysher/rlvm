@@ -29,12 +29,9 @@
 
 #include <cmath>
 #include <sstream>
-#include <iostream>
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
-
-using namespace std;
 
 // -----------------------------------------------------------------------
 

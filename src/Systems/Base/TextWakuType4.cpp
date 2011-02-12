@@ -26,7 +26,7 @@
 
 #include "Systems/Base/TextWakuType4.hpp"
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 #include "Systems/Base/Colour.hpp"

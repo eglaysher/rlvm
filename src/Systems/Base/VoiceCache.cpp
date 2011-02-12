@@ -41,9 +41,6 @@
 #include "Systems/Base/VoiceArchive.hpp"
 #include "Utilities/Exception.hpp"
 
-#include <iostream>
-using namespace std;
-
 const int ID_RADIX = 100000;
 
 using boost::iends_with;

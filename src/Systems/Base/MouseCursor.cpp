@@ -27,8 +27,6 @@
 
 #include "Systems/Base/MouseCursor.hpp"
 
-#include <iostream>
-
 #include "Systems/Base/Surface.hpp"
 
 const int CURSOR_SIZE_INT = 32;

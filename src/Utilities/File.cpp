@@ -29,36 +29,27 @@
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <boost/assign/list_of.hpp>  // for 'list_of()'
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <cctype>
 #include <fstream>
-#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <stack>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
-#include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Utilities/Exception.hpp"
 
 using boost::to_upper;
 using boost::scoped_array;
-using boost::assign::list_of;
 using std::stack;
-using std::cerr;
-using std::endl;
 using std::ostringstream;
 using std::string;
-using std::vector;
 using std::ifstream;
 using std::ios;
-using std::ostream_iterator;
 
 namespace fs = boost::filesystem;
 

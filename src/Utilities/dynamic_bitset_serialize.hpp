@@ -34,7 +34,7 @@
 // portable. This representation isn't that bad once you think about
 // how the data is going to be pumped through gzip.
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 #include <boost/dynamic_bitset.hpp>

@@ -32,8 +32,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -45,7 +45,6 @@
 
 using namespace std;
 using boost::lexical_cast;
-using namespace std;
 
 // -----------------------------------------------------------------------
 // SoundSystemGlobals

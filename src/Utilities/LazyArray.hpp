@@ -24,7 +24,7 @@
 #define SRC_UTILITIES_LAZYARRAY_HPP_
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 #include <stdexcept>
 #include <boost/scoped_array.hpp>
 #include <boost/iterator/iterator_facade.hpp>

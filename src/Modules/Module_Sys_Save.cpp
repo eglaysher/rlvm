@@ -35,7 +35,6 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
-#include <iostream>
 #include <limits>
 #include <string>
 
@@ -66,7 +65,6 @@
 // OSX.
 #include <boost/multi_array/algorithm.hpp>
 
-using namespace std;
 using namespace libReallive;
 using boost::lexical_cast;
 using boost::starts_with;
@@ -255,7 +253,7 @@ struct LatestSave : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     fs::path saveDir = machine.system().gameSaveDirectory();
     int latestSlot = -1;
-    time_t latestTime = numeric_limits<time_t>::min();
+    time_t latestTime = std::numeric_limits<time_t>::min();
 
     if (fs::exists(saveDir)) {
       fs::directory_iterator end;

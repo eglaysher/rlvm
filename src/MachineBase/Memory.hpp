@@ -32,7 +32,6 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
-#include <iostream>
 #include <map>
 #include <string>
 #include <vector>

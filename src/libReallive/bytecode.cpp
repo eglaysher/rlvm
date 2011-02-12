@@ -35,7 +35,6 @@
 
 #include <exception>
 #include <utility>
-#include <iostream>
 #include <sstream>
 #include <boost/scoped_ptr.hpp>
 

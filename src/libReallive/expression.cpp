@@ -38,7 +38,6 @@
 #include "MachineBase/reference.hpp"
 #include "MachineBase/RLMachine.hpp"
 
-#include <iostream>
 #include <iomanip>
 #include <sstream>
 

@@ -103,7 +103,6 @@ extern "C" {
 #include "file_impl.h"
 #include "endian.hpp"
 
-#include <iostream>
 using namespace std;
 
 // -----------------------------------------------------------------------

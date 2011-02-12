@@ -28,6 +28,7 @@
 #include "MachineBase/Memory.hpp"
 
 #include <boost/assign/list_of.hpp>
+#include <iostream>
 #include <map>
 #include <string>
 
