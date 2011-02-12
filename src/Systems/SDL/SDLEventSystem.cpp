@@ -47,6 +47,7 @@ SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
       m_button1State(0),
       m_button2State(0),
       last_get_currsor_time_(0),
+      last_mouse_move_time_(0),
       system_(sys),
       raw_handler_(NULL) {
 }
@@ -119,6 +120,10 @@ void SDLEventSystem::getCursorPos(Point& position, int& button1,
 void SDLEventSystem::flushMouseClicks() {
   m_button1State = 0;
   m_button2State = 0;
+}
+
+unsigned int SDLEventSystem::timeOfLastMouseMove() {
+  return last_mouse_move_time_;
 }
 
 unsigned int SDLEventSystem::getTicks() const {
@@ -230,8 +235,8 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
 
 void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
   if (mouse_inside_window_) {
-    // Handle this somehow.
     mouse_pos_ = Point(event.motion.x, event.motion.y);
+    last_mouse_move_time_ = getTicks();
 
     // Handle this somehow.
     broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));

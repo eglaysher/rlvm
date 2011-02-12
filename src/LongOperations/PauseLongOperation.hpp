@@ -63,10 +63,6 @@ class PauseLongOperation : public LongOperation {
 
   // When this hits |automode_time_|, we fire.
   unsigned int total_time_;
-
-  // The time of the last mouse movement. We don't add time to |total_time_| if
-  // this is within two seconds of now.
-  unsigned int time_of_last_mouse_movement_;
 };
 
 // -----------------------------------------------------------------------

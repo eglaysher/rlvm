@@ -56,7 +56,6 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
   automode_time_ = text.getAutoTime(numChars);
   time_at_last_pass_ = event.getTicks();
   total_time_ = 0;
-  time_of_last_mouse_movement_ = 0;
 
   machine_.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
 
@@ -71,8 +70,6 @@ PauseLongOperation::~PauseLongOperation() {
 void PauseLongOperation::mouseMotion(const Point& p) {
   // Tell the text system about the move
   machine_.system().text().setMousePosition(p);
-
-  time_of_last_mouse_movement_ = machine_.system().event().getTicks();
 }
 
 bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
@@ -200,13 +197,15 @@ bool PauseLongOperation::AutomodeTimerFired() {
   int time_since_last_pass = current_time - time_at_last_pass_;
   time_at_last_pass_ = current_time;
 
-  if (time_of_last_mouse_movement_ < (current_time - 2000)) {
+  if (machine_.system().event().timeOfLastMouseMove() <
+      (current_time - 2000)) {
     // If the mouse has been moved within the last two seconds, don't advance
     // the timer so the user has a chance to click on buttons.
     total_time_ += time_since_last_pass;
+    return total_time_ >= automode_time_;
   }
 
-  return total_time_ >= automode_time_;
+  return false;
 }
 
 // -----------------------------------------------------------------------

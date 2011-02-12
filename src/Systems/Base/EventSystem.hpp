@@ -159,6 +159,9 @@ class EventSystem : public boost::noncopyable {
   // Resets the state of the mouse buttons.
   virtual void flushMouseClicks() = 0;
 
+  // Returns the time in ticks of the last mouse movement.
+  virtual unsigned int timeOfLastMouseMove() = 0;
+
   // Testing
   //
   // Allows test systems like luaRlvm to inject mouse movement and clicks.

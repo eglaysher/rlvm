@@ -58,6 +58,7 @@ class TestEventSystem : public EventSystem {
   virtual Point getCursorPos() { return Point(0, 0); }
   virtual void getCursorPos(Point& position, int& button1, int& button2) {}
   virtual void flushMouseClicks() {}
+  virtual unsigned int timeOfLastMouseMove() { return 0; }
   virtual void injectMouseMovement(RLMachine& machine, const Point& loc) {}
   virtual void injectMouseDown(RLMachine& machine) {}
   virtual void injectMouseUp(RLMachine& machine) {}

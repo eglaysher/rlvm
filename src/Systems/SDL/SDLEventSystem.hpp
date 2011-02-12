@@ -65,6 +65,7 @@ class SDLEventSystem : public EventSystem {
   virtual Point getCursorPos();
   virtual void getCursorPos(Point& position, int& button1, int& button2);
   virtual void flushMouseClicks();
+  virtual unsigned int timeOfLastMouseMove();
   virtual void injectMouseMovement(RLMachine& machine, const Point& loc);
   virtual void injectMouseDown(RLMachine& machine);
   virtual void injectMouseUp(RLMachine& machine);
@@ -92,6 +93,9 @@ class SDLEventSystem : public EventSystem {
 
   // The last time a getCursorPos() function was called.
   unsigned int last_get_currsor_time_;
+
+  // The last time we received a mouse move notification.
+  unsigned int last_mouse_move_time_;
 
   // Our owning system.
   SDLSystem& system_;
