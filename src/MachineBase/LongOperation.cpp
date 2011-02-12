@@ -40,8 +40,8 @@ LongOperation::LongOperation()
 
 LongOperation::~LongOperation() {}
 
-bool LongOperation::sleepEveryTick() {
-  return true;
+int LongOperation::sleepTime() {
+  return 10;
 }
 
 // -----------------------------------------------------------------------

@@ -56,9 +56,9 @@ class LongOperation : public EventListener {
   // completed, and normal interpretation should be resumed, false otherwise.
   virtual bool operator()(RLMachine& machine) = 0;
 
-  // Whether we should sleep(10) every time we go through the
-  // gameloop. Defaults to true.
-  virtual bool sleepEveryTick();
+  // How long this operation should sleep between invocations so that we don't
+  // busyloop too much. Defaults to 10ms.
+  virtual int sleepTime();
 };
 
 // LongOperator decorator that simply invokes the included

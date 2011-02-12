@@ -199,6 +199,6 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
   }
 }
 
-bool TextoutLongOperation::sleepEveryTick() {
-  return !no_wait_;
+int TextoutLongOperation::sleepTime() {
+  return no_wait_ ? 0 : 10;
 }

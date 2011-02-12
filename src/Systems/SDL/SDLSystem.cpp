@@ -101,9 +101,24 @@ void SDLSystem::run(RLMachine& machine) {
 
   boost::shared_ptr<LongOperation> longop = machine.currentLongOperation();
 
-  if (!forceFastForward() &&
-      ((longop && longop->sleepEveryTick()) || forceWait())) {
-    event_system_->wait(10);
+  int sleep_time = longop ? longop->sleepTime() : 0;
+
+  // If forceWait is set, we've detected that the RealLive bytecode is trying
+  // to call refresh() really fast in a loop and that we should inject some
+  // sleep so the CPU doesn't burn.
+  if (forceWait() && sleep_time < 10)
+    sleep_time = 10;
+
+  // If the longop wants us to sleep for a really long time, we also have a
+  // problem because we cant't handle mouse input smoothly. So we have a
+  // different maximum sleep time depending on whether the mouse is in the
+  // window.
+  int max_time = event_system_->mouseInsideWindow() ? 20 : 50;
+  if (sleep_time > max_time)
+    sleep_time = max_time;
+
+  if (!forceFastForward() && sleep_time) {
+    event_system_->wait(sleep_time);
     setForceWait(false);
   }
 }
