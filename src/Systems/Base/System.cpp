@@ -72,7 +72,7 @@ const std::vector<std::string> ALL_FILETYPES =
 
 // I assume GAN files can't go through the OBJ_FILETYPES path.
 const std::vector<std::string> OBJ_FILETYPES =
-    list_of("g00")("pdt")("anm");
+    list_of("anm")("g00")("pdt");
 const std::vector<std::string> IMAGE_FILETYPES =
     list_of("g00")("pdt");
 const std::vector<std::string> PDT_IMAGE_FILETYPES =
@@ -305,8 +305,7 @@ boost::filesystem::path System::findFile(
        ext != extensions.end(); ++ext) {
     for (FileSystemCache::const_iterator it = ret.first;
          it != ret.second; ++it) {
-      if (find(extensions.begin(), extensions.end(), it->second.first) !=
-          extensions.end()) {
+      if (*ext == it->second.first) {
         return it->second.second;
       }
     }
