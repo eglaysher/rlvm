@@ -231,6 +231,9 @@ void addObjectCreationFunctions(RLModule& m) {
   m.addOpcode(1000, 3, "objOfFile", new objGeneric_3(objOfFileLoader));
   m.addOpcode(1000, 4, "objOfFile", new objGeneric_4(objOfFileLoader));
 
+  m.addOpcode(1001, 0, "objOfFile2", new objGeneric_0(objOfFileLoader));
+  m.addOpcode(1001, 1, "objOfFile2", new objGeneric_2(objOfFileLoader));
+
   m.addOpcode(1003, 0, "objOfFileGan", new objOfFileGan_0);
   m.addOpcode(1003, 1, "objOfFileGan", new objOfFileGan_1);
   m.addOpcode(1003, 2, "objOfFileGan", new objOfFileGan_2);
