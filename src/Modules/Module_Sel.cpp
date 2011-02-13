@@ -42,6 +42,7 @@
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/bytecode.h"
+#include "libReallive/gameexe.h"
 
 using boost::bind;
 using libReallive::SelectElement;
@@ -84,16 +85,55 @@ struct Sel_select_s : public RLOp_SpecialCase {
   }
 };
 
+struct ClearAndRestoreWindow : public LongOperation {
+  int to_restore_;
+  ClearAndRestoreWindow(int in) : to_restore_(in) {}
+
+  bool operator()(RLMachine& machine) {
+    machine.system().text().hideAllTextWindows();
+    machine.system().text().setActiveWindow(to_restore_);
+    return true;
+  }
+};
+
+struct Sel_select_w : public RLOp_SpecialCase {
+  // Prevent us from trying to parse the parameters to the CommandElement as
+  // RealLive expressions (because they are not).
+  virtual void parseParameters(
+    const std::vector<std::string>& input,
+    boost::ptr_vector<libReallive::ExpressionPiece>& output) {}
+
+  void operator()(RLMachine& machine, const CommandElement& ce) {
+    if (machine.shouldSetSelcomSavepoint())
+      machine.markSavepoint();
+
+    const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
+
+    // Sometimes the RL bytecode will override DEFAULT_SEL_WINDOW.
+    int window = machine.system().gameexe()("DEFAULT_SEL_WINDOW").to_int(-1);
+    libReallive::ExpressionElement window_exp = element.window();
+    int computed = window_exp.valueOnly(machine);
+    if (computed != -1)
+      window = computed;
+
+    // Restore the previous text state after the select operation completes.
+    TextSystem& text = machine.system().text();
+    int active_window = text.activeWindow();
+    text.hideAllTextWindows();
+    text.setActiveWindow(window);
+    machine.pushLongOperation(new ClearAndRestoreWindow(active_window));
+
+    machine.pushLongOperation(new NormalSelectLongOperation(machine, element));
+    machine.advanceInstructionPointer();
+  }
+};
+
 }  // namespace
 
 SelModule::SelModule()
     : RLModule("Sel", 0, 2) {
+  addOpcode(0, 0, "select_w", new Sel_select_w);
   addOpcode(1, 0, "select", new Sel_select);
-
-  // TODO: These are wrong! These have different implementations which do more
-  // graphical fun. Refer to the rldev manual once I get off my lazy ass to
-  // implement them!
-  addOpcode(0, 0, "select_w", new Sel_select);
   addOpcode(2, 0, "select_s2", new Sel_select_s);
   addOpcode(3, 0, "select_s", new Sel_select_s);
 }

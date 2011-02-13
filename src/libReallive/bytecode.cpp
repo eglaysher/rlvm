@@ -392,6 +392,14 @@ ExpressionElement* ExpressionElement::clone() const {
 
 // -----------------------------------------------------------------------
 
+int ExpressionElement::valueOnly(RLMachine& machine) const {
+  const char* location = repr.c_str();
+  boost::scoped_ptr<ExpressionPiece> e(get_expression(location));
+  return e->integerValue(machine);
+}
+
+// -----------------------------------------------------------------------
+
 const ExpressionPiece& ExpressionElement::parsedExpression() const {
   if (parsed_expression_.get() == 0) {
     const char* location = repr.c_str();
@@ -566,8 +574,7 @@ const ElementType SelectElement::type() const {
 
 // -----------------------------------------------------------------------
 
-ExpressionElement
-SelectElement::window() {
+ExpressionElement SelectElement::window() const {
   return repr[8] == '('
     ? ExpressionElement(repr.data() + 9)
     : ExpressionElement(-1);

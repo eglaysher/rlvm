@@ -208,6 +208,9 @@ public:
   ExpressionElement(const ExpressionElement& rhs);
   ExpressionElement* clone() const;
 
+  // Assumes the expression isn't an assignment and returns the integer value.
+  int valueOnly(RLMachine& machine) const;
+
   /**
    * Returns an ExpressionPiece representing this expression. This
    * function lazily parses the expression and stores the tree for
@@ -305,7 +308,7 @@ private:
   int uselessjunk;
 public:
   virtual const ElementType type() const;
-  ExpressionElement window();
+  ExpressionElement window() const;
   const string text(const int index) const;
 
   const string data() const;
