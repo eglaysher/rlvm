@@ -210,6 +210,16 @@ void SoundSystem::executeSoundSystem() {
       ++it;
     }
   }
+
+  if (bgm_adjustment_task_) {
+    if (cur_time >= bgm_adjustment_task_->end_time) {
+      setBgmVolumeScript(bgm_adjustment_task_->final_volume, 0);
+      bgm_adjustment_task_.reset();
+    } else {
+      int volume = it->second.calculateVolumeFor(cur_time);
+      setBgmVolumeScript(volume, 0);
+    }
+  }
 }
 
 void SoundSystem::restoreFromGlobals() {
@@ -243,9 +253,17 @@ int SoundSystem::bgmVolumeMod() const {
   return globals_.bgm_volume_mod;
 }
 
-void SoundSystem::setBgmVolumeScript(const int in) {
-  checkVolume(in, "setBgmVolumeScript");
-  bgm_volume_script_ = in;
+void SoundSystem::setBgmVolumeScript(const int level, const int fade_in_ms) {
+  checkVolume(level, "setBgmVolumeScript");
+
+  if (fade_in_ms == 0) {
+    bgm_volume_script_ = level;
+  } else {
+    unsigned int cur_time = system().event().getTicks();
+
+    bgm_adjustment_task_.reset(new VolumeAdjustTask(
+        cur_time, bgm_volume_script_, level, fade_in_ms));
+  }
 }
 
 int SoundSystem::bgmVolumeScript() const {

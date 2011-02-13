@@ -98,10 +98,28 @@ struct bgmPlaying : public RLOp_Store_Void {
   }
 };
 
+struct bgmSetVolume_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int vol) {
+    machine.system().sound().setBgmVolumeScript(vol, 0);
+  }
+};
+
 struct bgmFadeOutEx : public RLOp_Void_1<DefaultIntValue_T<1000> > {
   void operator()(RLMachine& machine, int fadeout) {
     machine.system().sound().bgmFadeOut(fadeout);
     machine.pushLongOperation(new LongOp_bgmWait);
+  }
+};
+
+struct bgmUnMute_1 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int fadein) {
+    machine.system().sound().setBgmVolumeScript(255, fadein);
+  }
+};
+
+struct bgmMute_1 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int fadein) {
+    machine.system().sound().setBgmVolumeScript(0, fadein);
   }
 };
 
@@ -133,11 +151,15 @@ BgmModule::BgmModule()
   addOpcode(10, 0, "bgmUnPause", callFunction(&SoundSystem::bgmUnPause));
   addOpcode(11, 0, "bgmVolume", returnIntValue(&SoundSystem::bgmVolumeScript));
 
-  addUnsupportedOpcode(12, 0, "bgmSetVolume");
-  addUnsupportedOpcode(13, 0, "bgmUnMute");
-  addUnsupportedOpcode(13, 1, "bgmUnMute");
-  addUnsupportedOpcode(14, 0, "bgmMute");
-  addUnsupportedOpcode(14, 1, "bgmMute");
+  addOpcode(12, 0, "bgmSetVolume", new bgmSetVolume_0);
+  addOpcode(12, 1, "bgmSetVolume",
+            callFunction(&SoundSystem::setBgmVolumeScript));
+  addOpcode(13, 0, "bgmUnMute",
+            callFunctionWith(&SoundSystem::setBgmVolumeScript, 255, 0));
+  addOpcode(13, 1, "bgmUnMute", new bgmUnMute_1);
+  addOpcode(14, 0, "bgmMute",
+            callFunctionWith(&SoundSystem::setBgmVolumeScript, 0, 0));
+  addOpcode(14, 1, "bgmMute", new bgmMute_1);
 
   addOpcode(105, 0, "bgmFadeOut", callFunction(&SoundSystem::bgmFadeOut));
 

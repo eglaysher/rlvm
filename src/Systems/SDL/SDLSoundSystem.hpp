@@ -48,7 +48,7 @@ class SDLSoundSystem : public SoundSystem {
 
   virtual void setBgmEnabled(const int in);
   virtual void setBgmVolumeMod(const int in);
-  virtual void setBgmVolumeScript(const int in);
+  virtual void setBgmVolumeScript(const int level, int fade_in_ms);
   virtual void setChannelVolume(const int channel, const int level);
 
   virtual void wavPlay(const std::string& wav_file, bool loop);

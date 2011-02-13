@@ -191,9 +191,14 @@ void SDLSoundSystem::setBgmVolumeMod(const int in) {
   SDLMusic::SetComputedBgmVolume(computeChannelVolume(in, bgmVolumeScript()));
 }
 
-void SDLSoundSystem::setBgmVolumeScript(const int in) {
-  SoundSystem::setBgmVolumeScript(in);
-  SDLMusic::SetComputedBgmVolume(computeChannelVolume(bgmVolumeMod(), in));
+void SDLSoundSystem::setBgmVolumeScript(const int level, int fade_in_ms) {
+  SoundSystem::setBgmVolumeScript(level, fade_in_ms);
+  if (fade_in_ms == 0) {
+    // If a fade was requested by the script, we don't want to set the volume
+    // here right now. This is only slightly cleaner than having separate
+    // methods because of the function casting in the modules.
+    SDLMusic::SetComputedBgmVolume(computeChannelVolume(bgmVolumeMod(), level));
+  }
 }
 
 void SDLSoundSystem::setChannelVolume(const int channel, const int level) {

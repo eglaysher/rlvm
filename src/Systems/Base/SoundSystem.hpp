@@ -28,6 +28,7 @@
 #ifndef SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_
 #define SRC_SYSTEMS_BASE_SOUNDSYSTEM_HPP_
 
+#include <boost/scoped_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/split_member.hpp>
@@ -216,7 +217,7 @@ class SoundSystem {
   int bgmVolumeMod() const;
 
   // Programmer configured volume setting
-  virtual void setBgmVolumeScript(const int in);
+  virtual void setBgmVolumeScript(const int level, const int fade_in_ms);
   int bgmVolumeScript() const;
 
   // Status of the music subsystem
@@ -406,6 +407,8 @@ class SoundSystem {
   // @note Depending on features in other systems, I may push this
   //       down to SDLSoundSystem later.
   ChannelAdjustmentMap pcm_adjustment_tasks_;
+
+  boost::scoped_ptr<VolumeAdjustTask> bgm_adjustment_task_;
 
   // ---------------------------------------------------------------------
 
