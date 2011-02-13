@@ -39,10 +39,13 @@
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
+#include "Systems/Base/ColourFilterObjectData.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
+#include "Systems/Base/System.hpp"
 #include "Utilities/Exception.hpp"
+#include "Utilities/Graphics.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
@@ -55,6 +58,7 @@
 
 #include "libReallive/bytecode.h"
 
+using namespace std;
 using namespace boost;
 using namespace libReallive;
 
@@ -129,6 +133,28 @@ struct colour : RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setColour(RGBAColour(r, g, b, level));
+  }
+};
+
+struct objSetRect_1
+    : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP> > {
+  void operator()(RLMachine& machine, int buf, Rect rect) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    if (obj.hasObjectData()) {
+      ColourFilterObjectData* data = dynamic_cast<ColourFilterObjectData*>(
+          &obj.objectData());
+      if (data) {
+        data->setRect(rect);
+      }
+    }
+  }
+};
+
+struct objSetRect_0
+    : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int buf) {
+    Rect rect(0, 0, getScreenSize(machine.system().gameexe()));
+    objSetRect_1()(machine, buf, rect);
   }
 };
 
@@ -281,6 +307,9 @@ void addObjectFunctions(RLModule& m) {
               new Obj_SetOneIntOnObj(&GraphicsObject::setColourLevel));
   m.addOpcode(1021, 0, "objComposite",
               new Obj_SetOneIntOnObj(&GraphicsObject::setCompositeMode));
+
+  m.addOpcode(1022, 0, "objSetRect", new objSetRect_0);
+  m.addOpcode(1022, 1, "objSetRect", new objSetRect_1);
 
   m.addOpcode(1024, 0, "objSetText", new objSetText);
   m.addOpcode(1024, 1, "objSetText", new objSetText);

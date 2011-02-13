@@ -51,6 +51,7 @@ class GraphicsStackFrame;
 class HIKScript;
 class MouseCursor;
 class Renderable;
+class RGBAColour;
 class RLMachine;
 class Size;
 class Surface;
@@ -327,6 +328,8 @@ class GraphicsSystem : public EventListener {
   virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
 
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size) = 0;
+
+  virtual void fillScreenArea(const Rect& rect, const RGBAColour& colour) = 0;
 
   // Clears and promotes objects.
   void clearAndPromoteObjects();

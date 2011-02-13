@@ -36,7 +36,10 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
+#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "MachineBase/RLOperation/Rect_T.hpp"
 #include "Modules/Module_Obj.hpp"
+#include "Systems/Base/ColourFilterObjectData.hpp"
 #include "Systems/Base/DigitsGraphicsObject.hpp"
 #include "Systems/Base/DriftGraphicsObject.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
@@ -45,6 +48,7 @@
 #include "Systems/Base/GraphicsTextObject.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
+#include "Utilities/Graphics.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 using namespace boost;
@@ -218,6 +222,80 @@ struct objOfFileGan_3
   }
 };
 
+void setObjectDataToRect(RLMachine& machine, RLOperation* op, int buf,
+                         const Rect& r) {
+  GraphicsObject& obj = getGraphicsObject(machine, op, buf);
+  obj.setObjectData(new ColourFilterObjectData(machine.system().graphics(), r));
+}
+
+struct objOfArea_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int buf) {
+    Rect rect(0, 0, getScreenSize(machine.system().gameexe()));
+    setObjectDataToRect(machine, this, buf, rect);
+  }
+};
+
+struct objOfArea_1
+    : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP> > {
+  void operator()(RLMachine& machine, int buf, Rect rect) {
+    setObjectDataToRect(machine, this, buf, rect);
+  }
+};
+
+struct objOfArea_2
+    : public RLOp_Void_3<IntConstant_T, Rect_T<rect_impl::GRP>,
+                         IntConstant_T> {
+  void operator()(RLMachine& machine, int buf, Rect rect, int visible) {
+    setObjectDataToRect(machine, this, buf, rect);
+
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setVisible(visible);
+  }
+};
+
+struct objOfRect_1
+    : public RLOp_Void_5<IntConstant_T, IntConstant_T, IntConstant_T,
+                         DefaultIntValue_T<INT_MIN>,
+                         DefaultIntValue_T<INT_MIN> > {
+  void operator()(RLMachine& machine, int buf, int x, int y, int width,
+                  int height) {
+    // Because of the screwed up optionality here, (x and y are optional while
+    // width height are not, we hack with the INT_MIN value).
+    if (width == INT_MIN) {
+      Rect screen(0, 0, getScreenSize(machine.system().gameexe()));
+      setObjectDataToRect(machine, this, buf,
+                          Size(x, y).centeredIn(screen));
+    } else {
+      setObjectDataToRect(machine, this, buf, Rect(x, y, Size(width, height)));
+    }
+  }
+};
+
+struct objOfRect_2 : public RLOp_Void_6<IntConstant_T, IntConstant_T,
+                                        IntConstant_T, IntConstant_T,
+                                        DefaultIntValue_T<INT_MIN>,
+                                        DefaultIntValue_T<INT_MIN> > {
+  void operator()(RLMachine& machine, int buf, int x, int y, int width,
+                  int height, int visible) {
+    Rect data_rect;
+    if (height == INT_MIN) {
+      Rect screen(0, 0, getScreenSize(machine.system().gameexe()));
+      data_rect = Size(x, y).centeredIn(screen);
+      // Crazy optionality here.
+      visible = width;
+    } else {
+      data_rect = Rect(x, y, Size(width, height));
+    }
+
+    setObjectDataToRect(machine, this, buf, data_rect);
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setVisible(visible);
+  }
+};
+
+// reallive.kfn and the rldev docs disagree about whether there's an
+// objOfRect_4. Blank until I see it in the wild.
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -238,9 +316,13 @@ void addObjectCreationFunctions(RLModule& m) {
   m.addOpcode(1003, 3, "objOfFileGan", new objOfFileGan_3);
   m.addUnsupportedOpcode(1003, 4, "objOfFileGan");
 
-  m.addUnsupportedOpcode(1101, 0, "objOfRect");
-  m.addUnsupportedOpcode(1101, 1, "objOfRect");
-  m.addUnsupportedOpcode(1101, 2, "objOfRect");
+  m.addOpcode(1100, 0, "objOfArea", new objOfArea_0);
+  m.addOpcode(1100, 1, "objOfArea", new objOfArea_1);
+  m.addOpcode(1100, 2, "objOfArea", new objOfArea_2);
+
+  m.addOpcode(1101, 0, "objOfRect", new objOfArea_0);
+  m.addOpcode(1101, 1, "objOfRect", new objOfRect_1);
+  m.addOpcode(1101, 2, "objOfRect", new objOfRect_2);
   m.addUnsupportedOpcode(1101, 3, "objOfRect");
 
   m.addOpcode(1200, 0, "objOfText", new objGeneric_0(objOfTextBuilder));

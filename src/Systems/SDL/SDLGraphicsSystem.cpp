@@ -661,6 +661,26 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
   return shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
+void SDLGraphicsSystem::fillScreenArea(const Rect& rect,
+                                       const RGBAColour& colour) {
+  if (colour.a()) {
+    glDisable(GL_TEXTURE_2D);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBegin(GL_QUADS); {
+      glColorRGBA(colour);
+      glVertex2f(rect.x(), rect.y());
+      glVertex2f(rect.x(), rect.y() + rect.height());
+      glVertex2f(rect.x() + rect.width(), rect.y() + rect.height());
+      glVertex2f(rect.x() + rect.width(), rect.y());
+    }
+    glEnd();
+
+    glEnable(GL_TEXTURE_2D);
+    glBlendFunc(GL_ONE, GL_ZERO);
+  }
+}
+
 void SDLGraphicsSystem::reset() {
   last_seen_number_ = 0;
   last_line_number_ = 0;
