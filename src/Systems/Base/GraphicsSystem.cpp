@@ -569,6 +569,22 @@ void GraphicsSystem::clearAllObjects() {
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::resetAllObjectsProperties() {
+  AllocatedLazyArrayIterator<GraphicsObject> it =
+    graphics_object_impl_->foreground_objects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end =
+    graphics_object_impl_->foreground_objects.allocated_end();
+  for (; it != end; ++it)
+    it->resetProperties();
+
+  it = graphics_object_impl_->background_objects.allocated_begin();
+  end = graphics_object_impl_->background_objects.allocated_end();
+  for (; it != end; ++it)
+    it->resetProperties();
+}
+
+// -----------------------------------------------------------------------
+
 int GraphicsSystem::objectLayerSize() {
   return graphics_object_settings_->objects_in_a_layer;
 }

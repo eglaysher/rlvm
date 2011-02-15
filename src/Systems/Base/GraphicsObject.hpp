@@ -165,6 +165,9 @@ class GraphicsObject {
   // Deletes the object data. Corresponds to the RLAPI command obj_delete.
   void deleteObject();
 
+  // Clears the impl data without deleting the loaded graphics object.
+  void resetProperties();
+
   // Deletes the object data and resets all values in this
   // GraphicsObject. Corresponds to the RLAPI command obj_clear.
   void clearObject();

@@ -156,6 +156,8 @@ ObjCopyFgToBg::ObjCopyFgToBg()
 
   addOpcode(100, 0, "objClearAll",
             callFunction(&GraphicsSystem::clearAllObjects));
+  addOpcode(110, 0, "objResetPropertiesAll",
+            callFunction(&GraphicsSystem::resetAllObjectsProperties));
 }
 
 // -----------------------------------------------------------------------

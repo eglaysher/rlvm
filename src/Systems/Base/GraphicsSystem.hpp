@@ -350,6 +350,9 @@ class GraphicsSystem : public EventListener {
   // Deallocates all graphics objects.
   void clearAllObjects();
 
+  // Resets the object properties for all graphics objects.
+  void resetAllObjectsProperties();
+
   // The number of objects in a layer for this game. Defaults to 256 and can be
   // overridden with #OBJECT_MAX.
   int objectLayerSize();

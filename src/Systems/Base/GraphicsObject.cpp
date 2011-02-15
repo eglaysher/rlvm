@@ -602,6 +602,10 @@ void GraphicsObject::deleteObject() {
   object_data_.reset();
 }
 
+void GraphicsObject::resetProperties() {
+  impl_ = s_empty_impl;
+}
+
 void GraphicsObject::clearObject() {
   impl_ = s_empty_impl;
   object_data_.reset();
