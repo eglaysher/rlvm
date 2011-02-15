@@ -103,6 +103,12 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
                             source->rect(),
                             source->rect(),
                             255, true);
+
+      // Promote the objects if we're in normal mode. If we're restoring the
+      // graphics stack, we already have our layers promoted.
+      if (!machine.replaying_graphics_stack())
+        graphics.clearAndPromoteObjects();
+
       boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
       LongOperation* effect =
