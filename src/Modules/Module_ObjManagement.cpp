@@ -158,6 +158,11 @@ ObjCopyFgToBg::ObjCopyFgToBg()
             callFunction(&GraphicsSystem::clearAllObjects));
   addOpcode(110, 0, "objResetPropertiesAll",
             callFunction(&GraphicsSystem::resetAllObjectsProperties));
+
+  // Experimentation shows that op<1:60:111, 0> looks like a synonmy for
+  // op<1:60:100, 0>. May have differences?
+  addOpcode(111, 0, "objClearAll2",
+            callFunction(&GraphicsSystem::clearAllObjects));
 }
 
 // -----------------------------------------------------------------------
