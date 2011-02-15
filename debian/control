@@ -1,9 +1,15 @@
 Source: rlvm
 Section: games
-Priority: extra
+Priority: optional
 Maintainer: Elliot Glaysher <glaysher@umich.edu>
-Build-Depends: debhelper (>= 5), libsdl1.2-dev, libfreetype6-dev, zlib1g-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libgl1-mesa-dev, libboost-date-time1.40-dev, libboost-filesystem1.40-dev, libboost-iostreams1.40-dev, libboost-program-options1.40-dev, libboost-serialization1.40-dev, libboost-signals1.40-dev, libboost-thread1.40-dev, libboost1.40-dev, libglew1.5-dev, scons, libguichan-dev
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 7.0.50~), libsdl1.2-dev, libfreetype6-dev,
+               libsdl-image1.2-dev, libsdl-mixer1.2-dev, libgl1-mesa-dev,
+               libboost-dev, libglew1.5-dev, scons, libboost-filesystem-dev, 
+               libboost-serialization-dev, libboost-date-time-dev, 
+               libboost-iostreams-dev, libboost-program-options-dev,
+               libboost-signals-dev, libboost-thread-dev, libguichan-dev,
+               zlib1g-dev, libsdl-ttf2.0-dev,
+Standards-Version: 3.9.1
 
 Package: rlvm
 Architecture: any

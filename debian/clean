@@ -1,0 +1,3 @@
+site_scons/site_tools/*.pyc
+.sconsign.dblite
+config.log
