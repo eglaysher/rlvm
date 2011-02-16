@@ -73,16 +73,9 @@ SoundSystem::VolumeAdjustTask::VolumeAdjustTask(
 
 int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time) {
   int end_offset = end_time - start_time;
-  int cur_offset = in_time - start_time;
-  double percent = double(cur_offset) / end_offset;
-
-  int candidate_vol = start_volume + (percent * (final_volume - start_volume));
-  if (candidate_vol < start_volume)
-    candidate_vol = start_volume;
-  else if (candidate_vol > final_volume)
-    candidate_vol = final_volume;
-
-  return candidate_vol;
+  int cur_offset = end_time - in_time;
+  double percent = 1 - (double(cur_offset) / end_offset);
+  return start_volume + (percent * (final_volume - start_volume));
 }
 
 // -----------------------------------------------------------------------
@@ -216,7 +209,7 @@ void SoundSystem::executeSoundSystem() {
       setBgmVolumeScript(bgm_adjustment_task_->final_volume, 0);
       bgm_adjustment_task_.reset();
     } else {
-      int volume = it->second.calculateVolumeFor(cur_time);
+      int volume = bgm_adjustment_task_->calculateVolumeFor(cur_time);
       setBgmVolumeScript(volume, 0);
     }
   }
@@ -446,7 +439,8 @@ void SoundSystem::checkChannel(int channel, const char* function_name) {
 void SoundSystem::checkVolume(int level, const char* function_name) {
   if (level < 0 || level > 255) {
     ostringstream oss;
-    oss << "Invalid volume \"" << level << "\". Valid values are 0-255.";
+    oss << "Invalid volume \"" << level << "\" in " << function_name
+        << ". Valid values are 0-255.";
     throw std::runtime_error(oss.str());
   }
 }
