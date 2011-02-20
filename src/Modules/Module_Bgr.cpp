@@ -128,9 +128,21 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
 struct bgrLoadHaikei_wtf
     : RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int sel, int a, int b) {
-    cerr << "Filename: " << filename
-         << "(a: " << a << ", b: " << b << ")" << endl;
-    machine.system().graphics().setDefaultBgrName(filename);
+    // cerr << "Filename: " << filename
+    //      << "(a: " << a << ", b: " << b << ")" << endl;
+    bgrLoadHaikei_main()(machine, filename, sel);
+  }
+};
+
+struct bgrLoadHaikei_wtf2
+    : RLOp_Void_6<StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+                  IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, string filename, int sel, int a, int b,
+                  int c, int d) {
+    // cerr << "Filename: " << filename
+    //      << "(a: " << a << ", b: " << b << ", c: " << c << ", d: " << d << ")"
+    //      << endl;
+    bgrLoadHaikei_main()(machine, filename, sel);
   }
 };
 
@@ -245,6 +257,7 @@ BgrModule::BgrModule()
   addOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
   addOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
   addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
+  addOpcode(10, 3, "bgrLoadHaikei", new bgrLoadHaikei_wtf2);
 
   addUnsupportedOpcode(100, 0, "bgrMulti");
   addOpcode(100, 1, "bgrMulti", new bgrMulti_1);
