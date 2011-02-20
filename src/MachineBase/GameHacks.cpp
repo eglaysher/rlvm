@@ -58,7 +58,7 @@ void addGameHacks(RLMachine& machine) {
   if (diskmark == "P_BRIDE_SE.ENV") {
     machine.addLineAction(310, 446, bind(PBRIDE_ResetAutoMode,
                                          boost::ref(machine)));
-  } else if (diskmark == "LB.ENV") {
+  } else if (diskmark == "LB.ENV" || diskmark == "LB_EX.ENV") {
     machine.addLineAction(7030, 15, bind(LB_SkipBaseball,
                                          boost::ref(machine)));
   }
