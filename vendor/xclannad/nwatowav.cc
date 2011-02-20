@@ -220,15 +220,11 @@ class NWAInfo {
 	int complevel;
 	bool use_runlength;
 public:
-	NWAInfo(int c,int b,int cl) {
+	NWAInfo(int c,int b,int cl,bool rl) {
 		channels=c;
 		bps=b;
 		complevel=cl;
-		use_runlength = false;
-		if (cl == 4 || cl == 5) {
-			use_runlength = true; // Tomoyo After (.nwk koe file)
-			if (channels == 2) use_runlength = false; // BGM*.nwa in Little Busters!
-		}
+		use_runlength = rl;
 	}
 	int Channels(void) const{return channels;}
 	int Bps(void) const { return bps;}
@@ -329,7 +325,7 @@ public:
 	int freq; /* samples per second */
 private:
 	int complevel; /* compression level */
-	int dummy; /* ? : 0x00 */
+	int use_runlength; /* run length encoding */
 public:
 	int blocks; /* block count */
 	int datasize; /* all data size */
@@ -397,7 +393,7 @@ void NWAData::ReadHeader(FILE* in, int _file_size) {
 	bps = read_little_endian_short(header+0x02);
 	freq = read_little_endian_int(header+0x04);
 	complevel = read_little_endian_int(header+0x08);
-	dummy = read_little_endian_int(header+0x0c);
+	use_runlength = read_little_endian_int(header+0x0c);
 	blocks = read_little_endian_int(header+0x10);
 	datasize = read_little_endian_int(header+0x14);
 	compdatasize = read_little_endian_int(header+0x18);
@@ -566,7 +562,7 @@ int NWAData::Decode(FILE* in, char* data, int& skip_count) {
 		NWAInfo_sw2 info;
 		NWADecode(info, tmpdata, data, curcompsize, curblocksize);
 	} else {
-		NWAInfo info(channels, bps, complevel);
+		NWAInfo info(channels, bps, complevel, use_runlength);
 		NWADecode(info, tmpdata, data, curcompsize, curblocksize);
 	}
 	int retsize = curblocksize;
