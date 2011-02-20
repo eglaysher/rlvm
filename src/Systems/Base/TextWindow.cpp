@@ -377,7 +377,8 @@ Point TextWindow::keycursorPosition(const Size& cursor_size) const {
   case 0:
     return textSurfaceRect().lowerRight() - cursor_size;
   case 1:
-    return Point(text_insertion_point_x_, text_insertion_point_y_);
+    return textSurfaceRect().origin() +
+        Point(text_insertion_point_x_, text_insertion_point_y_);
   case 2:
     return textSurfaceRect().origin() + keycursor_pos_;
   default:
