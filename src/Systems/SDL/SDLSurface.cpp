@@ -314,19 +314,25 @@ SDLSurface::~SDLSurface() {
 }
 
 void SDLSurface::invalidate() {
-  // Force unloading of all OpenGL resources
-  for (std::vector<TextureRecord>::iterator it = textures_.begin();
-       it != textures_.end(); ++it) {
-    it->forceUnload();
+  if (surface_) {
+    // Force unloading of all OpenGL resources
+    for (std::vector<TextureRecord>::iterator it = textures_.begin();
+         it != textures_.end(); ++it) {
+      it->forceUnload();
+    }
+
+    dirty_rectangle_ = rect();
   }
 
-  dirty_rectangle_ = rect();
   texture_is_valid_ = false;
 }
 
 // -----------------------------------------------------------------------
 
-Size SDLSurface::size() const { return Size(surface_->w, surface_->h); }
+Size SDLSurface::size() const {
+  assert(surface_);
+  return Size(surface_->w, surface_->h);
+}
 
 // -----------------------------------------------------------------------
 
