@@ -29,6 +29,7 @@
 
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 
@@ -56,7 +57,8 @@ EventLoopModule::EventLoopModule()
   addOpcode(301, 0, "rtlCancel", callFunction(&RLMachine::returnFromFarcall));
   addOpcode(302, 0, "rtlSystem", callFunction(&RLMachine::returnFromFarcall));
 
-  addUnsupportedOpcode(1000, 0, "ShowBackground");
+  addOpcode(1000, 0, "ShowBackground",
+            callFunction(&GraphicsSystem::toggleInterfaceHidden));
   addOpcode(1100, 0, "SetSkipMode",
             callFunctionWith(&TextSystem::setSkipMode, 1));
   addOpcode(1101, 0, "ClearSkipMode",
