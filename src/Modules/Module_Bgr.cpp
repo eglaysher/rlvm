@@ -69,6 +69,10 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
 
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
     graphics.getHaikei()->fill(RGBAColour::Clear());
+
+    if (!machine.replaying_graphics_stack())
+      graphics.clearAndPromoteObjects();
+
     boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
     LongOperation* effect =
@@ -93,6 +97,9 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
       oss << "Could not find background file: " << filename;
       throw rlvm::Exception(oss.str());
     } else if (iends_with(path.string(), "hik")) {
+      if (!machine.replaying_graphics_stack())
+        graphics.clearAndPromoteObjects();
+
       graphics.setHikScript(new HIKScript(system, path));
     } else {
       boost::shared_ptr<Surface> before = graphics.renderToSurface();
