@@ -176,18 +176,21 @@ GTEST_DECLARE_string_(death_test_style);
 // Two predicate classes that can be used in {ASSERT,EXPECT}_EXIT*:
 
 // Tests that an exit code describes a normal exit with a given exit code.
-class ExitedWithCode {
+class GTEST_API_ ExitedWithCode {
  public:
   explicit ExitedWithCode(int exit_code);
   bool operator()(int exit_status) const;
  private:
+  // No implementation - assignment is unsupported.
+  void operator=(const ExitedWithCode& other);
+
   const int exit_code_;
 };
 
 #if !GTEST_OS_WINDOWS
 // Tests that an exit code describes an exit due to termination by a
 // given signal.
-class KilledBySignal {
+class GTEST_API_ KilledBySignal {
  public:
   explicit KilledBySignal(int signum);
   bool operator()(int exit_status) const;
@@ -242,10 +245,10 @@ class KilledBySignal {
 #ifdef NDEBUG
 
 #define EXPECT_DEBUG_DEATH(statement, regex) \
-  do { statement; } while (false)
+  do { statement; } while (::testing::internal::AlwaysFalse())
 
 #define ASSERT_DEBUG_DEATH(statement, regex) \
-  do { statement; } while (false)
+  do { statement; } while (::testing::internal::AlwaysFalse())
 
 #else
 
@@ -257,6 +260,24 @@ class KilledBySignal {
 
 #endif  // NDEBUG for EXPECT_DEBUG_DEATH
 #endif  // GTEST_HAS_DEATH_TEST
+
+// EXPECT_DEATH_IF_SUPPORTED(statement, regex) and
+// ASSERT_DEATH_IF_SUPPORTED(statement, regex) expand to real death tests if
+// death tests are supported; otherwise they just issue a warning.  This is
+// useful when you are combining death test assertions with normal test
+// assertions in one test.
+#if GTEST_HAS_DEATH_TEST
+#define EXPECT_DEATH_IF_SUPPORTED(statement, regex) \
+    EXPECT_DEATH(statement, regex)
+#define ASSERT_DEATH_IF_SUPPORTED(statement, regex) \
+    ASSERT_DEATH(statement, regex)
+#else
+#define EXPECT_DEATH_IF_SUPPORTED(statement, regex) \
+    GTEST_UNSUPPORTED_DEATH_TEST_(statement, regex, )
+#define ASSERT_DEATH_IF_SUPPORTED(statement, regex) \
+    GTEST_UNSUPPORTED_DEATH_TEST_(statement, regex, return)
+#endif
+
 }  // namespace testing
 
 #endif  // GTEST_INCLUDE_GTEST_GTEST_DEATH_TEST_H_

@@ -43,6 +43,7 @@
 #include <errno.h>
 #endif
 
+#include <gmock/gmock-printers.h>
 #include <gmock/internal/gmock-internal-utils.h>
 #include <gmock/internal/gmock-port.h>
 
@@ -116,40 +117,19 @@ GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(void, );  // NOLINT
 #if GTEST_HAS_GLOBAL_STRING
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(::string, "");
 #endif  // GTEST_HAS_GLOBAL_STRING
-#if GTEST_HAS_STD_STRING
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(::std::string, "");
-#endif  // GTEST_HAS_STD_STRING
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(bool, false);
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(unsigned char, '\0');
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(signed char, '\0');
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(char, '\0');
 
-// signed wchar_t and unsigned wchar_t are NOT in the C++ standard.
-// Using them is a bad practice and not portable.  So don't use them.
-//
-// Still, Google Mock is designed to work even if the user uses signed
-// wchar_t or unsigned wchar_t (obviously, assuming the compiler
-// supports them).
-//
-// To gcc,
-//
-//   wchar_t == signed wchar_t != unsigned wchar_t == unsigned int
-//
-// MSVC does not recognize signed wchar_t or unsigned wchar_t.  It
-// treats wchar_t as a native type usually, but treats it as the same
-// as unsigned short when the compiler option /Zc:wchar_t- is
-// specified.
-//
-// Therefore we provide a default action for wchar_t when compiled
-// with gcc or _NATIVE_WCHAR_T_DEFINED is defined.
-//
 // There's no need for a default action for signed wchar_t, as that
 // type is the same as wchar_t for gcc, and invalid for MSVC.
 //
 // There's also no need for a default action for unsigned wchar_t, as
 // that type is the same as unsigned int for gcc, and invalid for
 // MSVC.
-#if defined(__GNUC__) || defined(_NATIVE_WCHAR_T_DEFINED)
+#if GMOCK_WCHAR_T_IS_NATIVE_
 GMOCK_DEFINE_DEFAULT_ACTION_FOR_RETURN_TYPE_(wchar_t, 0U);  // NOLINT
 #endif
 
@@ -288,6 +268,7 @@ class ActionInterface {
 
   // Returns true iff this is the DoDefault() action.
   bool IsDoDefault() const { return is_do_default_; }
+
  private:
   template <typename Function>
   friend class internal::MonomorphicDoDefaultActionImpl;
@@ -299,6 +280,8 @@ class ActionInterface {
 
   // True iff this action is DoDefault().
   const bool is_do_default_;
+
+  GTEST_DISALLOW_COPY_AND_ASSIGN_(ActionInterface);
 };
 
 // An Action<F> is a copyable and IMMUTABLE (except by assignment)
@@ -328,7 +311,7 @@ class Action {
 
   // This constructor allows us to turn an Action<Func> object into an
   // Action<F>, as long as F's arguments can be implicitly converted
-  // to Func's and Func's return type cann be implicitly converted to
+  // to Func's and Func's return type can be implicitly converted to
   // F's.
   template <typename Func>
   explicit Action(const Action<Func>& action);
@@ -345,6 +328,7 @@ class Action {
   Result Perform(const ArgumentTuple& args) const {
     return impl_->Perform(args);
   }
+
  private:
   template <typename F1, typename F2>
   friend class internal::ActionAdaptor;
@@ -382,6 +366,7 @@ class PolymorphicAction {
   operator Action<F>() const {
     return Action<F>(new MonomorphicImpl<F>(impl_));
   }
+
  private:
   template <typename F>
   class MonomorphicImpl : public ActionInterface<F> {
@@ -397,9 +382,13 @@ class PolymorphicAction {
 
    private:
     Impl impl_;
+
+    GTEST_DISALLOW_ASSIGN_(MonomorphicImpl);
   };
 
   Impl impl_;
+
+  GTEST_DISALLOW_ASSIGN_(PolymorphicAction);
 };
 
 // Creates an Action from its implementation and returns it.  The
@@ -436,13 +425,37 @@ class ActionAdaptor : public ActionInterface<F1> {
   virtual Result Perform(const ArgumentTuple& args) {
     return impl_->Perform(args);
   }
+
  private:
   const internal::linked_ptr<ActionInterface<F2> > impl_;
+
+  GTEST_DISALLOW_ASSIGN_(ActionAdaptor);
 };
 
 // Implements the polymorphic Return(x) action, which can be used in
 // any function that returns the type of x, regardless of the argument
 // types.
+//
+// Note: The value passed into Return must be converted into
+// Function<F>::Result when this action is cast to Action<F> rather than
+// when that action is performed. This is important in scenarios like
+//
+// MOCK_METHOD1(Method, T(U));
+// ...
+// {
+//   Foo foo;
+//   X x(&foo);
+//   EXPECT_CALL(mock, Method(_)).WillOnce(Return(x));
+// }
+//
+// In the example above the variable x holds reference to foo which leaves
+// scope and gets destroyed.  If copying X just copies a reference to foo,
+// that copy will be left with a hanging reference.  If conversion to T
+// makes a copy of foo, the above code is safe. To support that scenario, we
+// need to make sure that the type conversion happens inside the EXPECT_CALL
+// statement, and conversion of the result of Return to Action<T(U)> is a
+// good place for that.
+//
 template <typename R>
 class ReturnAction {
  public:
@@ -469,6 +482,7 @@ class ReturnAction {
         use_ReturnRef_instead_of_Return_to_return_a_reference);
     return Action<F>(new Impl<F>(value_));
   }
+
  private:
   // Implements the Return(x) action for a particular function type F.
   template <typename F>
@@ -477,15 +491,29 @@ class ReturnAction {
     typedef typename Function<F>::Result Result;
     typedef typename Function<F>::ArgumentTuple ArgumentTuple;
 
-    explicit Impl(R value) : value_(value) {}
+    // The implicit cast is necessary when Result has more than one
+    // single-argument constructor (e.g. Result is std::vector<int>) and R
+    // has a type conversion operator template.  In that case, value_(value)
+    // won't compile as the compiler doesn't known which constructor of
+    // Result to call.  implicit_cast forces the compiler to convert R to
+    // Result without considering explicit constructors, thus resolving the
+    // ambiguity. value_ is then initialized using its copy constructor.
+    explicit Impl(R value)
+        : value_(::testing::internal::implicit_cast<Result>(value)) {}
 
     virtual Result Perform(const ArgumentTuple&) { return value_; }
 
    private:
-    R value_;
+    GMOCK_COMPILE_ASSERT_(!internal::is_reference<Result>::value,
+                          Result_cannot_be_a_reference_type);
+    Result value_;
+
+    GTEST_DISALLOW_ASSIGN_(Impl);
   };
 
   R value_;
+
+  GTEST_DISALLOW_ASSIGN_(ReturnAction);
 };
 
 // Implements the ReturnNull() action.
@@ -531,6 +559,7 @@ class ReturnRefAction {
                           use_Return_instead_of_ReturnRef_to_return_a_value);
     return Action<F>(new Impl<F>(ref_));
   }
+
  private:
   // Implements the ReturnRef(x) action for a particular function type F.
   template <typename F>
@@ -544,11 +573,16 @@ class ReturnRefAction {
     virtual Result Perform(const ArgumentTuple&) {
       return ref_;
     }
+
    private:
     T& ref_;
+
+    GTEST_DISALLOW_ASSIGN_(Impl);
   };
 
   T& ref_;
+
+  GTEST_DISALLOW_ASSIGN_(ReturnRefAction);
 };
 
 // Implements the DoDefault() action for a particular function type F.
@@ -597,15 +631,18 @@ class AssignAction {
   AssignAction(T1* ptr, T2 value) : ptr_(ptr), value_(value) {}
 
   template <typename Result, typename ArgumentTuple>
-  void Perform(const ArgumentTuple &args) const {
+  void Perform(const ArgumentTuple& /* args */) const {
     *ptr_ = value_;
   }
+
  private:
   T1* const ptr_;
   const T2 value_;
+
+  GTEST_DISALLOW_ASSIGN_(AssignAction);
 };
 
-#ifndef _WIN32_WCE
+#if !GTEST_OS_WINDOWS_MOBILE
 
 // Implements the SetErrnoAndReturn action to simulate return from
 // various system calls and libc functions.
@@ -616,16 +653,19 @@ class SetErrnoAndReturnAction {
       : errno_(errno_value),
         result_(result) {}
   template <typename Result, typename ArgumentTuple>
-  Result Perform(const ArgumentTuple &args) const {
+  Result Perform(const ArgumentTuple& /* args */) const {
     errno = errno_;
     return result_;
   }
+
  private:
   const int errno_;
   const T result_;
+
+  GTEST_DISALLOW_ASSIGN_(SetErrnoAndReturnAction);
 };
 
-#endif  // _WIN32_WCE
+#endif  // !GTEST_OS_WINDOWS_MOBILE
 
 // Implements the SetArgumentPointee<N>(x) action for any function
 // whose N-th argument (0-based) is a pointer to x's type.  The
@@ -646,6 +686,8 @@ class SetArgumentPointeeAction {
 
  private:
   const A value_;
+
+  GTEST_DISALLOW_ASSIGN_(SetArgumentPointeeAction);
 };
 
 template <size_t N, typename Proto>
@@ -664,41 +706,11 @@ class SetArgumentPointeeAction<N, Proto, true> {
     CompileAssertTypesEqual<void, Result>();
     ::std::tr1::get<N>(args)->CopyFrom(*proto_);
   }
+
  private:
   const internal::linked_ptr<Proto> proto_;
-};
 
-// Implements the SetArrayArgument<N>(first, last) action for any function
-// whose N-th argument (0-based) is a pointer or iterator to a type that can be
-// implicitly converted from *first.
-template <size_t N, typename InputIterator>
-class SetArrayArgumentAction {
- public:
-  // Constructs an action that sets the variable pointed to by the
-  // N-th function argument to 'value'.
-  explicit SetArrayArgumentAction(InputIterator first, InputIterator last)
-      : first_(first), last_(last) {
-  }
-
-  template <typename Result, typename ArgumentTuple>
-  void Perform(const ArgumentTuple& args) const {
-    CompileAssertTypesEqual<void, Result>();
-
-    // Microsoft compiler deprecates ::std::copy, so we want to suppress warning
-    // 4996 (Function call with parameters that may be unsafe) there.
-#if GTEST_OS_WINDOWS
-#pragma warning(push)          // Saves the current warning state.
-#pragma warning(disable:4996)  // Temporarily disables warning 4996.
-#endif  // GTEST_OS_WINDOWS
-    ::std::copy(first_, last_, ::std::tr1::get<N>(args));
-#if GTEST_OS_WINDOWS
-#pragma warning(pop)           // Restores the warning state.
-#endif  // GTEST_OS_WINDOWS
-  }
-
- private:
-  const InputIterator first_;
-  const InputIterator last_;
+  GTEST_DISALLOW_ASSIGN_(SetArgumentPointeeAction);
 };
 
 // Implements the InvokeWithoutArgs(f) action.  The template argument
@@ -718,8 +730,11 @@ class InvokeWithoutArgsAction {
   // compatible with f.
   template <typename Result, typename ArgumentTuple>
   Result Perform(const ArgumentTuple&) { return function_impl_(); }
+
  private:
   FunctionImpl function_impl_;
+
+  GTEST_DISALLOW_ASSIGN_(InvokeWithoutArgsAction);
 };
 
 // Implements the InvokeWithoutArgs(object_ptr, &Class::Method) action.
@@ -733,9 +748,12 @@ class InvokeMethodWithoutArgsAction {
   Result Perform(const ArgumentTuple&) const {
     return (obj_ptr_->*method_ptr_)();
   }
+
  private:
   Class* const obj_ptr_;
   const MethodPtr method_ptr_;
+
+  GTEST_DISALLOW_ASSIGN_(InvokeMethodWithoutArgsAction);
 };
 
 // Implements the IgnoreResult(action) action.
@@ -761,6 +779,7 @@ class IgnoreResultAction {
 
     return Action<F>(new Impl<F>(action_));
   }
+
  private:
   template <typename F>
   class Impl : public ActionInterface<F> {
@@ -782,9 +801,85 @@ class IgnoreResultAction {
         OriginalFunction;
 
     const Action<OriginalFunction> action_;
+
+    GTEST_DISALLOW_ASSIGN_(Impl);
   };
 
   const A action_;
+
+  GTEST_DISALLOW_ASSIGN_(IgnoreResultAction);
+};
+
+// A ReferenceWrapper<T> object represents a reference to type T,
+// which can be either const or not.  It can be explicitly converted
+// from, and implicitly converted to, a T&.  Unlike a reference,
+// ReferenceWrapper<T> can be copied and can survive template type
+// inference.  This is used to support by-reference arguments in the
+// InvokeArgument<N>(...) action.  The idea was from "reference
+// wrappers" in tr1, which we don't have in our source tree yet.
+template <typename T>
+class ReferenceWrapper {
+ public:
+  // Constructs a ReferenceWrapper<T> object from a T&.
+  explicit ReferenceWrapper(T& l_value) : pointer_(&l_value) {}  // NOLINT
+
+  // Allows a ReferenceWrapper<T> object to be implicitly converted to
+  // a T&.
+  operator T&() const { return *pointer_; }
+ private:
+  T* pointer_;
+};
+
+// Allows the expression ByRef(x) to be printed as a reference to x.
+template <typename T>
+void PrintTo(const ReferenceWrapper<T>& ref, ::std::ostream* os) {
+  T& value = ref;
+  UniversalPrinter<T&>::Print(value, os);
+}
+
+// Does two actions sequentially.  Used for implementing the DoAll(a1,
+// a2, ...) action.
+template <typename Action1, typename Action2>
+class DoBothAction {
+ public:
+  DoBothAction(Action1 action1, Action2 action2)
+      : action1_(action1), action2_(action2) {}
+
+  // This template type conversion operator allows DoAll(a1, ..., a_n)
+  // to be used in ANY function of compatible type.
+  template <typename F>
+  operator Action<F>() const {
+    return Action<F>(new Impl<F>(action1_, action2_));
+  }
+
+ private:
+  // Implements the DoAll(...) action for a particular function type F.
+  template <typename F>
+  class Impl : public ActionInterface<F> {
+   public:
+    typedef typename Function<F>::Result Result;
+    typedef typename Function<F>::ArgumentTuple ArgumentTuple;
+    typedef typename Function<F>::MakeResultVoid VoidResult;
+
+    Impl(const Action<VoidResult>& action1, const Action<F>& action2)
+        : action1_(action1), action2_(action2) {}
+
+    virtual Result Perform(const ArgumentTuple& args) {
+      action1_.Perform(args);
+      return action2_.Perform(args);
+    }
+
+   private:
+    const Action<VoidResult> action1_;
+    const Action<F> action2_;
+
+    GTEST_DISALLOW_ASSIGN_(Impl);
+  };
+
+  Action1 action1_;
+  Action2 action2_;
+
+  GTEST_DISALLOW_ASSIGN_(DoBothAction);
 };
 
 }  // namespace internal
@@ -870,23 +965,13 @@ SetArgumentPointee(const T& x) {
       N, T, internal::IsAProtocolMessage<T>::value>(x));
 }
 
-// Creates an action that sets the elements of the array pointed to by the N-th
-// (0-based) function argument, which can be either a pointer or an iterator,
-// to the values of the elements in the source range [first, last).
-template <size_t N, typename InputIterator>
-PolymorphicAction<internal::SetArrayArgumentAction<N, InputIterator> >
-SetArrayArgument(InputIterator first, InputIterator last) {
-  return MakePolymorphicAction(internal::SetArrayArgumentAction<
-      N, InputIterator>(first, last));
-}
-
 // Creates an action that sets a pointer referent to a given value.
 template <typename T1, typename T2>
 PolymorphicAction<internal::AssignAction<T1, T2> > Assign(T1* ptr, T2 val) {
   return MakePolymorphicAction(internal::AssignAction<T1, T2>(ptr, val));
 }
 
-#ifndef _WIN32_WCE
+#if !GTEST_OS_WINDOWS_MOBILE
 
 // Creates an action that sets errno and returns the appropriate error.
 template <typename T>
@@ -896,7 +981,7 @@ SetErrnoAndReturn(int errval, T result) {
       internal::SetErrnoAndReturnAction<T>(errval, result));
 }
 
-#endif  // _WIN32_WCE
+#endif  // !GTEST_OS_WINDOWS_MOBILE
 
 // Various overloads for InvokeWithoutArgs().
 
@@ -924,6 +1009,18 @@ InvokeWithoutArgs(Class* obj_ptr, MethodPtr method_ptr) {
 template <typename A>
 inline internal::IgnoreResultAction<A> IgnoreResult(const A& an_action) {
   return internal::IgnoreResultAction<A>(an_action);
+}
+
+// Creates a reference wrapper for the given L-value.  If necessary,
+// you can explicitly specify the type of the reference.  For example,
+// suppose 'derived' is an object of type Derived, ByRef(derived)
+// would wrap a Derived&.  If you want to wrap a const Base& instead,
+// where Base is a base class of Derived, just write:
+//
+//   ByRef<const Base>(derived)
+template <typename T>
+inline internal::ReferenceWrapper<T> ByRef(T& l_value) {  // NOLINT
+  return internal::ReferenceWrapper<T>(l_value);
 }
 
 }  // namespace testing

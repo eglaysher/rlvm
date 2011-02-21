@@ -47,91 +47,38 @@
 
 // To avoid conditional compilation everywhere, we make it
 // gmock-port.h's responsibility to #include the header implementing
-// tr1/tuple.
-#if defined(__GNUC__)
-// GCC implements tr1/tuple in the <tr1/tuple> header.  This does not
-// conform to the TR1 spec, which requires the header to be <tuple>.
-#include <tr1/tuple>
-#else
-// If the compiler is not GCC, we assume the user is using a
-// spec-conforming TR1 implementation.
-#include <tuple>
-#endif  // __GNUC__
+// tr1/tuple.  gmock-port.h does this via gtest-port.h, which is
+// guaranteed to pull in the tuple header.
 
 #if GTEST_OS_LINUX
 
-// On some platforms, <regex.h> needs someone to define size_t, and
-// won't compile otherwise.  We can #include it here as we already
-// included <stdlib.h>, which is guaranteed to define size_t through
-// <stddef.h>.
-#include <regex.h>  // NOLINT
-
-// Defines this iff Google Mock uses the enhanced POSIX regular
-// expression syntax.  This is public as it affects how a user uses
-// regular expression matchers.
-#define GMOCK_USES_POSIX_RE 1
-
 #endif  // GTEST_OS_LINUX
-
-#if defined(GMOCK_USES_PCRE) || defined(GMOCK_USES_POSIX_RE)
-// Defines this iff regular expression matchers are supported.  This
-// is public as it tells a user whether he can use regular expression
-// matchers.
-#define GMOCK_HAS_REGEX 1
-#endif  // defined(GMOCK_USES_PCRE) || defined(GMOCK_USES_POSIX_RE)
 
 namespace testing {
 namespace internal {
 
-// For Windows, check the compiler version. At least VS 2005 SP1 is
+// For MS Visual C++, check the compiler version. At least VS 2003 is
 // required to compile Google Mock.
-#if GTEST_OS_WINDOWS
+#if defined(_MSC_VER) && _MSC_VER < 1310
+#error "At least Visual C++ 2003 (7.1) is required to compile Google Mock."
+#endif
 
-#if _MSC_VER < 1400
-#error "At least Visual Studio 2005 SP1 is required to compile Google Mock."
-#elif _MSC_VER == 1400
-
-// Unfortunately there is no unique _MSC_VER number for SP1. So for VS 2005
-// we have to check if it has SP1 by checking whether a bug fixed in SP1
-// is present. The bug in question is
-// http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=101702
-// where the compiler incorrectly reports sizeof(poiter to an array).
-
-class TestForSP1 {
- private:  // GCC complains if x_ is used by sizeof before defining it.
-  static char x_[100];
-  // VS 2005 RTM incorrectly reports sizeof(&x) as 100, and that value
-  // is used to trigger 'invalid negative array size' error. If you
-  // see this error, upgrade to VS 2005 SP1 since Google Mock will not
-  // compile in VS 2005 RTM.
-  static char Google_Mock_requires_Visual_Studio_2005_SP1_or_later_to_compile_[
-      sizeof(&x_) != 100 ? 1 : -1];
-};
-
-#endif  // _MSC_VER
-#endif  // GTEST_OS_WINDOWS
-
-// Use implicit_cast as a safe version of static_cast or const_cast
-// for upcasting in the type hierarchy (i.e. casting a pointer to Foo
-// to a pointer to SuperclassOfFoo or casting a pointer to Foo to
-// a const pointer to Foo).
-// When you use implicit_cast, the compiler checks that the cast is safe.
-// Such explicit implicit_casts are necessary in surprisingly many
-// situations where C++ demands an exact type match instead of an
-// argument type convertable to a target type.
+// Use implicit_cast as a safe version of static_cast for upcasting in
+// the type hierarchy (e.g. casting a Foo* to a SuperclassOfFoo* or a
+// const Foo*).  When you use implicit_cast, the compiler checks that
+// the cast is safe.  Such explicit implicit_casts are necessary in
+// surprisingly many situations where C++ demands an exact type match
+// instead of an argument type convertable to a target type.
 //
-// The From type can be inferred, so the preferred syntax for using
-// implicit_cast is the same as for static_cast etc.:
+// The syntax for using implicit_cast is the same as for static_cast:
 //
 //   implicit_cast<ToType>(expr)
 //
 // implicit_cast would have been part of the C++ standard library,
 // but the proposal was submitted too late.  It will probably make
 // its way into the language in the future.
-template<typename To, typename From>
-inline To implicit_cast(From const &f) {
-  return f;
-}
+template<typename To>
+inline To implicit_cast(To x) { return x; }
 
 // When you upcast (that is, cast a pointer from type Foo to type
 // SuperclassOfFoo), it's fine to use implicit_cast<>, since upcasts
@@ -157,23 +104,26 @@ inline To down_cast(From* f) {  // so we only accept pointers
   // optimized build at run-time, as it will be optimized away
   // completely.
   if (false) {
-    implicit_cast<From*, To>(0);
+    const To to = NULL;
+    ::testing::internal::implicit_cast<From*>(to);
   }
 
+#if GTEST_HAS_RTTI
   assert(f == NULL || dynamic_cast<To>(f) != NULL);  // RTTI: debug mode only!
+#endif
   return static_cast<To>(f);
 }
 
-// The GMOCK_COMPILE_ASSERT macro can be used to verify that a compile time
+// The GMOCK_COMPILE_ASSERT_ macro can be used to verify that a compile time
 // expression is true. For example, you could use it to verify the
 // size of a static array:
 //
-//   GMOCK_COMPILE_ASSERT(ARRAYSIZE(content_type_names) == CONTENT_NUM_TYPES,
-//                        content_type_names_incorrect_size);
+//   GMOCK_COMPILE_ASSERT_(ARRAYSIZE(content_type_names) == CONTENT_NUM_TYPES,
+//                         content_type_names_incorrect_size);
 //
 // or to make sure a struct is smaller than a certain size:
 //
-//   GMOCK_COMPILE_ASSERT(sizeof(foo) < 128, foo_too_large);
+//   GMOCK_COMPILE_ASSERT_(sizeof(foo) < 128, foo_too_large);
 //
 // The second argument to the macro is the name of the variable. If
 // the expression is false, most compilers will issue a warning/error
@@ -230,10 +180,8 @@ struct CompileAssert {
 
 #if GTEST_HAS_GLOBAL_STRING
 typedef ::string string;
-#elif GTEST_HAS_STD_STRING
-typedef ::std::string string;
 #else
-#error "Google Mock requires ::std::string to compile."
+typedef ::std::string string;
 #endif  // GTEST_HAS_GLOBAL_STRING
 
 #if GTEST_HAS_GLOBAL_WSTRING
@@ -241,54 +189,6 @@ typedef ::wstring wstring;
 #elif GTEST_HAS_STD_WSTRING
 typedef ::std::wstring wstring;
 #endif  // GTEST_HAS_GLOBAL_WSTRING
-
-// INTERNAL IMPLEMENTATION - DO NOT USE.
-//
-// GMOCK_CHECK_ is an all mode assert. It aborts the program if the condition
-// is not satisfied.
-//  Synopsys:
-//    GMOCK_CHECK_(boolean_condition);
-//     or
-//    GMOCK_CHECK_(boolean_condition) << "Additional message";
-//
-//    This checks the condition and if the condition is not satisfied
-//    it prints message about the condition violation, including the
-//    condition itself, plus additional message streamed into it, if any,
-//    and then it aborts the program. It aborts the program irrespective of
-//    whether it is built in the debug mode or not.
-
-class GMockCheckProvider {
- public:
-  GMockCheckProvider(const char* condition, const char* file, int line) {
-    FormatFileLocation(file, line);
-    ::std::cerr << " ERROR: Condition " << condition << " failed. ";
-  }
-  ~GMockCheckProvider() {
-    ::std::cerr << ::std::endl;
-    abort();
-  }
-  void FormatFileLocation(const char* file, int line) {
-    if (file == NULL)
-      file = "unknown file";
-    if (line < 0) {
-      ::std::cerr << file << ":";
-    } else {
-#if _MSC_VER
-      ::std::cerr << file << "(" << line << "):";
-#else
-      ::std::cerr << file << ":" << line << ":";
-#endif
-    }
-  }
-  ::std::ostream& GetStream() { return ::std::cerr; }
-};
-#define GMOCK_CHECK_(condition) \
-    GTEST_AMBIGUOUS_ELSE_BLOCKER_ \
-    if (condition) \
-      ; \
-    else \
-      ::testing::internal::GMockCheckProvider(\
-          #condition, __FILE__, __LINE__).GetStream()
 
 }  // namespace internal
 }  // namespace testing

@@ -39,14 +39,14 @@
 // This file implements the following syntax:
 //
 //   ON_CALL(mock_object.Method(...))
-//     .WithArguments(...) ?
+//     .With(...) ?
 //     .WillByDefault(...);
 //
-// where WithArguments() is optional and WillByDefault() must appear
-// exactly once.
+// where With() is optional and WillByDefault() must appear exactly
+// once.
 //
 //   EXPECT_CALL(mock_object.Method(...))
-//     .WithArguments(...) ?
+//     .With(...) ?
 //     .Times(...) ?
 //     .InSequence(...) *
 //     .WillOnce(...) *
@@ -60,6 +60,7 @@
 #include <gmock/gmock-generated-actions.h>
 #include <gmock/gmock-generated-function-mockers.h>
 #include <gmock/gmock-generated-matchers.h>
+#include <gmock/gmock-more-actions.h>
 #include <gmock/gmock-generated-nice-strict.h>
 #include <gmock/gmock-matchers.h>
 #include <gmock/gmock-printers.h>
@@ -68,6 +69,7 @@
 namespace testing {
 
 // Declares Google Mock flags that we want a user to use programmatically.
+GMOCK_DECLARE_bool_(catch_leaked_mocks);
 GMOCK_DECLARE_string_(verbose);
 
 // Initializes Google Mock.  This must be called before running the
