@@ -40,7 +40,6 @@ env = Environment(
   ],
 
   CPPFLAGS = [
-    "--ansi",
     "-funsigned-char"
   ],
 

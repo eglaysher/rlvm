@@ -14,6 +14,7 @@ root_env.Append(
   ],
 
   CXXFLAGS = [
+    "--ansi",
     "-Wall",
     "-Wno-sign-compare"
   ]

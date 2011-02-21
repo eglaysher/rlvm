@@ -12,6 +12,9 @@ test_env.Append(
     "CASE_SENSITIVE_FILESYSTEM",
     "_THREAD_SAFE"
   ],
+  CXXFLAGS = [
+    "--ansi",
+  ]
 )
 
 test_env.Append(CPPPATH = ["#/test"])
