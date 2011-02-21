@@ -38,7 +38,7 @@
 class KOEPACVoiceArchive : public VoiceArchive {
  public:
   KOEPACVoiceArchive(boost::filesystem::path file, int file_no);
-  ~KOEPACVoiceArchive();
+  virtual ~KOEPACVoiceArchive();
 
   virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
 

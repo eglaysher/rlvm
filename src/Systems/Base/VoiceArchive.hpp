@@ -53,7 +53,7 @@ class VoiceSample {
 class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
  public:
   explicit VoiceArchive(int file_no);
-  ~VoiceArchive();
+  virtual ~VoiceArchive();
 
   int fileNumber() const { return file_no_; }
 

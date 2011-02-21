@@ -37,7 +37,7 @@
 class NWKVoiceArchive : public VoiceArchive {
  public:
   NWKVoiceArchive(boost::filesystem::path file, int file_no);
-  ~NWKVoiceArchive();
+  virtual ~NWKVoiceArchive();
 
   virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
 

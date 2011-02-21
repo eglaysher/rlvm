@@ -38,7 +38,7 @@
 class OVKVoiceArchive : public VoiceArchive {
  public:
   OVKVoiceArchive(boost::filesystem::path file, int file_no);
-  ~OVKVoiceArchive();
+  virtual ~OVKVoiceArchive();
 
   virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
 
