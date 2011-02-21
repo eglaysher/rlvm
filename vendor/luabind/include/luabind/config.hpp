@@ -91,29 +91,6 @@ namespace std
 // multiple lua states and use coroutines, but only
 // one of your real threads may run lua code.
 
-// If you don't want to use the rtti supplied by C++
-// you can supply your own type-info structure with the
-// LUABIND_TYPE_INFO define. Your type-info structure
-// must be copyable and it must be able to compare itself
-// against other type-info structures. You supply the compare
-// function through the LUABIND_TYPE_INFO_EQUAL()
-// define. It should compare the two type-info structures
-// it is given and return true if they represent the same type
-// and false otherwise. You also have to supply a function
-// to generate your type-info structure. You do this through
-// the LUABIND_TYPEID() define. It takes a type as it's
-// parameter. That is, a compile time parameter. To use it
-// you probably have to make a traits class with specializations
-// for all classes that you have type-info for.
-
-#ifndef LUABIND_TYPE_INFO
-	#define LUABIND_TYPE_INFO const std::type_info*
-	#define LUABIND_TYPEID(t) &typeid(t)
-	#define LUABIND_TYPE_INFO_EQUAL(i1, i2) *i1 == *i2
-	#define LUABIND_INVALID_TYPE_INFO &typeid(detail::null_type)
-#include <typeinfo>
-#endif
-
 // LUABIND_NO_EXCEPTIONS
 // this define will disable all usage of try, catch and throw in
 // luabind. This will in many cases disable runtime-errors, such
@@ -123,33 +100,29 @@ namespace std
 // by luabind throws an exception (throwing exceptions through
 // C code has undefined behavior, lua is written in C).
 
-// LUABIND_EXPORT
-// LUABIND_IMPORT
-// If you're building luabind as a dll on windows with devstudio
-// you can set LUABIND_EXPORT to __declspec(dllexport)
-// and LUABIND_IMPORT to __declspec(dllimport)
-
-#if _GNUC_ >= 4
-#define LUABIND_API __attribute__ ((visibility("default")))
-#else
-
-// this define is set if we're currently building a luabind file
-// select import or export depending on it
-#ifdef LUABIND_BUILDING
-	#ifdef LUABIND_EXPORT
-		#define LUABIND_API LUABIND_EXPORT
-	#else
-		#define LUABIND_API
-	#endif
-#else
-	#ifdef LUABIND_IMPORT
-		#define LUABIND_API LUABIND_IMPORT
-	#else
-		#define LUABIND_API
-	#endif
+#ifdef LUABIND_DYNAMIC_LINK
+# ifdef BOOST_WINDOWS
+#  ifdef LUABIND_BUILDING
+#   define LUABIND_API __declspec(dllexport)
+#  else
+#   define LUABIND_API __declspec(dllimport)
+#  endif
+# else
+#  if defined(_GNUC_) && _GNUC_ >=4
+#   define LUABIND_API __attribute__ ((visibility("default")))
+#  endif
+# endif
 #endif
 
+#ifndef LUABIND_API
+# define LUABIND_API
 #endif
+
+namespace luabind {
+
+LUABIND_API void disable_super_deprecation();
+
+} // namespace luabind
 
 #endif // LUABIND_CONFIG_HPP_INCLUDED
 

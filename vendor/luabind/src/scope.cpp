@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#define LUABIND_BUILDING
+
 #include <luabind/lua_include.hpp>
 
 #include <luabind/scope.hpp>
@@ -55,6 +57,14 @@ namespace luabind { namespace detail {
         : m_chain(other.m_chain)
     {
         const_cast<scope&>(other).m_chain = 0;
+    }
+
+    scope& scope::operator=(scope const& other_)
+    {
+        delete m_chain;
+        m_chain = other_.m_chain;
+        const_cast<scope&>(other_).m_chain = 0;
+        return *this;
     }
 
     scope::~scope()

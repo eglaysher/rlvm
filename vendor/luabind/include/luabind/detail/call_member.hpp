@@ -37,6 +37,7 @@
 
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
 
 #include <boost/mpl/apply_wrap.hpp>
 
@@ -138,10 +139,10 @@ namespace luabind
 					{
 						assert(lua_gettop(L) == top + 1);
 #ifndef LUABIND_NO_EXCEPTIONS
-						throw cast_failed(L, LUABIND_TYPEID(Ret));
+						throw cast_failed(L, typeid(Ret));
 #else
 						cast_failed_callback_fun e = get_cast_failed_callback();
-						if (e) e(L, LUABIND_TYPEID(Ret));
+						if (e) e(L, typeid(Ret));
 
 						assert(0 && "the lua function's return value could not be converted."
 							"If you want to handle this error use luabind::set_error_callback()");
@@ -192,10 +193,10 @@ namespace luabind
 					{
 						assert(lua_gettop(L) == top + 1);
 #ifndef LUABIND_NO_EXCEPTIONS
-						throw cast_failed(L, LUABIND_TYPEID(Ret));
+						throw cast_failed(L, typeid(Ret));
 #else
 						cast_failed_callback_fun e = get_cast_failed_callback();
-						if (e) e(L, LUABIND_TYPEID(Ret));
+						if (e) e(L, typeid(Ret));
 
 						assert(0 && "the lua function's return value could not be converted."
 							"If you want to handle this error use luabind::set_error_callback()");

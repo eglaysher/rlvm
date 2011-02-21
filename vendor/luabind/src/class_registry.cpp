@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#define LUABIND_BUILDING
+
 #include <luabind/lua_include.hpp>
 
 #include <luabind/luabind.hpp>
@@ -29,16 +31,9 @@
 
 namespace luabind { namespace detail {
 
-    namespace {
+    LUABIND_API void push_instance_metatable(lua_State* L);
 
-        void add_operator_to_metatable(lua_State* L, int op_index)
-        {
-            lua_pushstring(L, get_operator_name(op_index));
-            lua_pushstring(L, get_operator_name(op_index));
-            lua_pushboolean(L, op_index == op_unm);
-            lua_pushcclosure(L, &class_rep::operator_dispatcher, 2);
-            lua_settable(L, -3);
-        }
+    namespace {
 
         int create_cpp_class_metatable(lua_State* L)
         {
@@ -73,47 +68,7 @@ namespace luabind { namespace detail {
             lua_pushcclosure(L, &class_rep::lua_settable_dispatcher, 0);
             lua_rawset(L, -3);
 
-            return detail::ref(L);
-        }
-
-        int create_cpp_instance_metatable(lua_State* L)
-        {
-            lua_newtable(L);
-
-            // just indicate that this really is a class and not just 
-            // any user data
-            lua_pushstring(L, "__luabind_class");
-            lua_pushboolean(L, 1);
-            lua_rawset(L, -3);
-
-            // __index and __newindex will simply be references to the 
-            // class_rep which in turn has it's own metamethods for __index
-            // and __newindex
-            lua_pushstring(L, "__index");
-            lua_pushcclosure(L, &class_rep::gettable_dispatcher, 0);
-            lua_rawset(L, -3);
-
-            lua_pushstring(L, "__newindex");
-            lua_pushcclosure(L, &class_rep::settable_dispatcher, 0);
-            lua_rawset(L, -3);
-
-            lua_pushstring(L, "__gc");
-
-            lua_pushcclosure(L, detail::object_rep::garbage_collector, 0);
-            lua_rawset(L, -3);
-
-            lua_pushstring(L, "__gettable");
-            lua_pushcclosure(L, &class_rep::static_class_gettable, 0);
-            lua_rawset(L, -3);
-
-            for (int i = 0; i < number_of_operators; ++i) 
-                add_operator_to_metatable(L, i);
-
-            // store a reference to the instance-metatable in our class_rep
-            assert((lua_type(L, -1) == LUA_TTABLE) 
-                && "internal error, please report");
-
-            return detail::ref(L);
+            return luaL_ref(L, LUA_REGISTRYINDEX);
         }
 
         int create_lua_class_metatable(lua_State* L)
@@ -139,60 +94,14 @@ namespace luabind { namespace detail {
             lua_rawset(L, -3);
 
             lua_pushstring(L, "__call");
-            lua_pushcclosure(L, &class_rep::construct_lua_class_callback, 0);
+            lua_pushcclosure(L, &class_rep::constructor_dispatcher, 0);
             lua_rawset(L, -3);
 
             lua_pushstring(L, "__index");
             lua_pushcclosure(L, &class_rep::static_class_gettable, 0);
             lua_rawset(L, -3);
 
-            return detail::ref(L);
-        }
-
-        int create_lua_instance_metatable(lua_State* L)
-        {
-            lua_newtable(L);
-
-            // just indicate that this really is a class and not just 
-            // any user data
-            lua_pushstring(L, "__luabind_class");
-            lua_pushboolean(L, 1);
-            lua_rawset(L, -3);
-
-            lua_pushstring(L, "__index");
-            lua_pushcclosure(L, &class_rep::lua_class_gettable, 0);
-            lua_rawset(L, -3);
-
-            lua_pushstring(L, "__newindex");
-            lua_pushcclosure(L, &class_rep::lua_class_settable, 0);
-            lua_rawset(L, -3);
-
-            lua_pushstring(L, "__gc");
-            lua_pushcclosure(L, detail::object_rep::garbage_collector, 0);
-            lua_rawset(L, -3);
-
-            for (int i = 0; i < number_of_operators; ++i) 
-                add_operator_to_metatable(L, i);
-
-            // store a reference to the instance-metatable in our class_rep
-            return detail::ref(L);
-        }
-
-        int create_lua_function_metatable(lua_State* L)
-        {
-            lua_newtable(L);
-
-            lua_pushstring(L, "__gc");
-            lua_pushcclosure(
-                L 
-              , detail::garbage_collector_s<
-                    detail::free_functions::function_rep
-                >::apply
-              , 0);
-
-            lua_rawset(L, -3);
-
-            return detail::ref(L);
+            return luaL_ref(L, LUA_REGISTRYINDEX);
         }
 
     } // namespace unnamed
@@ -200,12 +109,11 @@ namespace luabind { namespace detail {
     class class_rep;
 
     class_registry::class_registry(lua_State* L)
-        : m_cpp_instance_metatable(create_cpp_instance_metatable(L))
-        , m_cpp_class_metatable(create_cpp_class_metatable(L))
-        , m_lua_instance_metatable(create_lua_instance_metatable(L))
+        : m_cpp_class_metatable(create_cpp_class_metatable(L))
         , m_lua_class_metatable(create_lua_class_metatable(L))
-        , m_lua_function_metatable(create_lua_function_metatable(L))
     {
+        push_instance_metatable(L);
+        m_instance_metatable = luaL_ref(L, LUA_REGISTRYINDEX);
     }
 
     class_registry* class_registry::get_registry(lua_State* L)
@@ -237,7 +145,7 @@ namespace luabind { namespace detail {
         return p;
     }
 
-    void class_registry::add_class(LUABIND_TYPE_INFO info, class_rep* crep)
+    void class_registry::add_class(type_id const& info, class_rep* crep)
     {
         // class is already registered
         assert((m_classes.find(info) == m_classes.end()) 
@@ -245,9 +153,9 @@ namespace luabind { namespace detail {
         m_classes[info] = crep;
     }
 
-    class_rep* class_registry::find_class(LUABIND_TYPE_INFO info) const
+    class_rep* class_registry::find_class(type_id const& info) const
     {
-        std::map<LUABIND_TYPE_INFO, class_rep*, cmp>::const_iterator i(
+        std::map<type_id, class_rep*>::const_iterator i(
             m_classes.find(info));
 
         if (i == m_classes.end()) return 0; // the type is not registered

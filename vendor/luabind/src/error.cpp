@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#define LUABIND_BUILDING
+
 #include <luabind/error.hpp>
 
 
@@ -39,7 +41,7 @@ namespace luabind
 #ifdef LUABIND_NO_EXCEPTIONS
 
 	typedef void(*error_callback_fun)(lua_State*);
-	typedef void(*cast_failed_callback_fun)(lua_State*, LUABIND_TYPE_INFO);
+	typedef void(*cast_failed_callback_fun)(lua_State*, type_id const&);
 
 	void set_error_callback(error_callback_fun e)
 	{

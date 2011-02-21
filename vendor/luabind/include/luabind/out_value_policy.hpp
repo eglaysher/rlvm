@@ -83,7 +83,12 @@ namespace luabind { namespace detail
 	template<int Size, class Policies = detail::null_type>
 	struct out_value_converter
 	{
-		template<class T>
+        int const consumed_args(...)
+        {
+            return 1;
+        }
+
+        template<class T>
 		T& apply(lua_State* L, by_reference<T>, int index)
 		{
 			typedef typename find_conversion_policy<1, Policies>::type converter_policy;
@@ -163,15 +168,20 @@ namespace luabind { namespace detail
 	template<int Size, class Policies = detail::null_type>
 	struct pure_out_value_converter
 	{
-		template<class T>
-		T& apply(lua_State* L, by_reference<T>, int index)
+        int const consumed_args(...)
+        {
+            return 0;
+        }
+
+        template<class T>
+		T& apply(lua_State*, by_reference<T>, int)
 		{
 			new (m_storage) T();
 			return *reinterpret_cast<T*>(m_storage);
 		}
 
 		template<class T>
-		static int match(lua_State* L, by_reference<T>, int index)
+		static int match(lua_State*, by_reference<T>, int)
 		{
 			return 0;
 		}
@@ -186,14 +196,14 @@ namespace luabind { namespace detail
 		}
 
 		template<class T>
-		T* apply(lua_State* L, by_pointer<T>, int index)
+		T* apply(lua_State*, by_pointer<T>, int)
 		{
 			new (m_storage) T();
 			return reinterpret_cast<T*>(m_storage);
 		}
 
 		template<class T>
-		static int match(lua_State* L, by_pointer<T>, int index)
+		static int match(lua_State*, by_pointer<T>, int)
 		{
 			return 0;
 		}

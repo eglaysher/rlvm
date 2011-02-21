@@ -34,8 +34,7 @@ struct iterator
 
     static int destroy(lua_State* L)
     {
-        iterator* self = static_cast<iterator*>(
-            lua_touserdata(L, lua_upvalueindex(1)));
+        iterator* self = static_cast<iterator*>(lua_touserdata(L, 1));
         self->~iterator();
         return 0;
     }
@@ -70,7 +69,6 @@ int make_range(lua_State* L, Container& container)
 
 struct iterator_converter
 {
-    typedef boost::mpl::bool_<false> is_value_converter;
     typedef iterator_converter type;
 
     template <class Container>

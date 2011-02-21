@@ -20,47 +20,90 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#define LUABIND_BUILDING
+
 #include <luabind/lua_include.hpp>
 
 #include <luabind/luabind.hpp>
 #include <luabind/class_info.hpp>
+#include <luabind/detail/class_registry.hpp>
 
 namespace luabind
 {
-	class_info get_class_info(const object& o)
+	LUABIND_API class_info get_class_info(argument const& o)
 	{
 		lua_State* L = o.interpreter();
 	
-		class_info result;
-	
 		o.push(L);
-		detail::object_rep* obj = static_cast<detail::object_rep*>(lua_touserdata(L, -1));
-		lua_pop(L, 1);
+        detail::object_rep* obj = detail::get_instance(L, -1);
 
-		result.name = obj->crep()->name();
-		obj->crep()->get_table(L);
+        if (!obj)
+        {
+            class_info result;
+            result.name = lua_typename(L, lua_type(L, -1));
+            lua_pop(L, 1);
+            result.methods = newtable(L);
+            result.attributes = newtable(L);
+            return result;
+        }
 
-		object methods(from_stack(L, -1));
-		
-		methods.swap(result.methods);
-		lua_pop(L, 1);
-		
-		result.attributes = newtable(L);
+        lua_pop(L, 1);
 
-		typedef detail::class_rep::property_map map_type;
-		
-		std::size_t index = 1;
-		
-		for (map_type::const_iterator i = obj->crep()->properties().begin();
-				i != obj->crep()->properties().end(); ++i, ++index)
-		{
-			result.attributes[index] = i->first;
-		}
+        obj->crep()->get_table(L);
+        object table(from_stack(L, -1));
+        lua_pop(L, 1);
 
-		return result;
+        class_info result;
+        result.name = obj->crep()->name();
+        result.methods = newtable(L);
+        result.attributes = newtable(L);
+
+        std::size_t index = 1;
+
+        for (iterator i(table), e; i != e; ++i)
+        {
+            if (type(*i) != LUA_TFUNCTION)
+                continue;
+
+            // We have to create a temporary `object` here, otherwise the proxy
+            // returned by operator->() will mess up the stack. This is a known
+            // problem that probably doesn't show up in real code very often.
+            object member(*i);
+            member.push(L);
+            detail::stack_pop pop(L, 1);
+
+            if (lua_tocfunction(L, -1) == &detail::property_tag)
+            {
+                result.attributes[index++] = i.key();
+            }
+            else
+            {
+                result.methods[i.key()] = *i;
+            }
+        }
+
+        return result;
 	}
 
-	void bind_class_info(lua_State* L)
+    LUABIND_API object get_class_names(lua_State* L)
+    {
+        detail::class_registry* reg = detail::class_registry::get_registry(L);
+
+        std::map<type_id, detail::class_rep*> const& classes = reg->get_classes();
+
+        object result = newtable(L);
+        std::size_t index = 1;
+
+        for (std::map<type_id, detail::class_rep*>::const_iterator iter = classes.begin();
+            iter != classes.end(); ++iter)
+        {
+            result[index++] = iter->second->name();
+        }
+
+        return result;
+    }
+
+	LUABIND_API void bind_class_info(lua_State* L)
 	{
 		module(L)
 		[
@@ -69,7 +112,8 @@ namespace luabind
 				.def_readonly("methods", &class_info::methods)
 				.def_readonly("attributes", &class_info::attributes),
 		
-			def("class_info", &get_class_info)
+            def("class_info", &get_class_info),
+            def("class_names", &get_class_names)
 		];
 	}
 }

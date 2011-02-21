@@ -1,169 +1,136 @@
-// Copyright (c) 2003 Daniel Wallin and Arvid Norberg
+// Copyright Daniel Wallin 2008. Use, modification and distribution is
+// subject to the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
+#define LUABIND_BUILDING
 
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
+#include <luabind/make_function.hpp>
 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-// ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-// TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-// PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-// SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-// ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-// OR OTHER DEALINGS IN THE SOFTWARE.
+namespace luabind { namespace detail {
 
-#include <luabind/lua_include.hpp>
+namespace
+{
 
-#include <luabind/config.hpp>
-#include <luabind/luabind.hpp>
+  int function_destroy(lua_State* L)
+  {
+      function_object* fn = *(function_object**)lua_touserdata(L, 1);
+      delete fn;
+      return 0;
+  }
 
-namespace luabind { namespace detail { namespace free_functions {
+  void push_function_metatable(lua_State* L)
+  {
+      lua_pushstring(L, "luabind.function");
+      lua_rawget(L, LUA_REGISTRYINDEX);
 
-    void function_rep::add_overload(overload_rep const& o)
+      if (lua_istable(L, -1))
+          return;
+
+      lua_pop(L, 1);
+
+      lua_newtable(L);
+
+      lua_pushstring(L, "__gc");
+      lua_pushcclosure(L, &function_destroy, 0);
+      lua_rawset(L, -3);
+
+      lua_pushstring(L, "luabind.function");
+      lua_pushvalue(L, -2);
+      lua_rawset(L, LUA_REGISTRYINDEX);
+  }
+
+  // A pointer to this is used as a tag value to identify functions exported
+  // by luabind.
+  int function_tag = 0;
+
+} // namespace unnamed
+
+LUABIND_API bool is_luabind_function(lua_State* L, int index)
+{
+    if (!lua_getupvalue(L, index, 2))
+        return false;
+    bool result = lua_touserdata(L, -1) == &function_tag;
+    lua_pop(L, 1);
+    return result;
+}
+
+namespace
+{
+
+  inline bool is_luabind_function(object const& obj)
+  {
+      obj.push(obj.interpreter());
+      bool result = detail::is_luabind_function(obj.interpreter(), -1);
+      lua_pop(obj.interpreter(), 1);
+      return result;
+  }
+
+} // namespace unnamed
+
+LUABIND_API void add_overload(
+    object const& context, char const* name, object const& fn)
+{
+    function_object* f = *touserdata<function_object*>(getupvalue(fn, 1));
+    f->name = name;
+
+    if (object overloads = context[name])
     {
-        std::vector<overload_rep>::iterator i = std::find(
-            m_overloads.begin(), m_overloads.end(), o);
-
-        // if the overload already exists, overwrite the existing function
-        if (i != m_overloads.end())
+        if (is_luabind_function(overloads) && is_luabind_function(fn))
         {
-            *i = o;
-        }
-        else
-        {
-            m_overloads.push_back(o);
+            f->next = *touserdata<function_object*>(getupvalue(overloads, 1));
+            f->keepalive = overloads;
         }
     }
 
-    int function_dispatcher(lua_State* L)
+    context[name] = fn;
+}
+
+LUABIND_API object make_function_aux(lua_State* L, function_object* impl)
+{
+    void* storage = lua_newuserdata(L, sizeof(function_object*));
+    push_function_metatable(L);
+    *(function_object**)storage = impl;
+    lua_setmetatable(L, -2);
+
+    lua_pushlightuserdata(L, &function_tag);
+    lua_pushcclosure(L, impl->entry, 2);
+    stack_pop pop(L, 1);
+
+    return object(from_stack(L, -1));
+}
+
+void invoke_context::format_error(
+    lua_State* L, function_object const* overloads) const
+{
+    char const* function_name =
+        overloads->name.empty() ? "<unknown>" : overloads->name.c_str();
+
+    if (candidate_index == 0)
     {
-        function_rep* rep = static_cast<function_rep*>(
-            lua_touserdata(L, lua_upvalueindex(1))
-        );
-
-        bool ambiguous = false;
-        int min_match = std::numeric_limits<int>::max();
-        int match_index = -1;
-        bool ret;
-
-#ifdef LUABIND_NO_ERROR_CHECKING
-        if (rep->overloads().size() == 1)
+        lua_pushstring(L, "No matching overload found, candidates:\n");
+        int count = 0;
+        for (function_object const* f = overloads; f != 0; f = f->next)
         {
-            match_index = 0;
+            if (count != 0)
+                lua_pushstring(L, "\n");
+            f->format_signature(L, function_name);
+            ++count;
         }
-        else
-        {
-#endif
-            int num_params = lua_gettop(L);
-            ret = find_best_match(
-                L
-              , &rep->overloads().front()
-              , (int)rep->overloads().size()
-              , sizeof(overload_rep)
-              , ambiguous
-              , min_match
-              , match_index
-              , num_params
-            );
-#ifdef LUABIND_NO_ERROR_CHECKING
-        }
-#else
-        if (!ret)
-        {
-            // this bock is needed to make sure the std::string is destructed
-            {
-                std::string msg = "no match for function call '";
-                msg += rep->name();
-                msg += "' with the parameters (";
-                msg += stack_content_by_name(L, 1);
-                msg += ")\ncandidates are:\n";
-
-                msg += get_overload_signatures(
-                    L
-                  , rep->overloads().begin()
-                  , rep->overloads().end()
-                  , rep->name()
-                );
-
-                lua_pushstring(L, msg.c_str());
-            }
-
-            lua_error(L);
-        }
-
-        if (ambiguous)
-        {
-            // this bock is needed to make sure the std::string is destructed
-            {
-                std::string msg = "call of overloaded function '";
-                msg += rep->name();
-                msg += "(";
-                msg += stack_content_by_name(L, 1);
-                msg += ") is ambiguous\nnone of the overloads "
-                       "have a best conversion:";
-
-                std::vector<overload_rep_base const*> candidates;
-                find_exact_match(
-                    L
-                  , &rep->overloads().front()
-                  , (int)rep->overloads().size()
-                  , sizeof(overload_rep)
-                  , min_match
-                  , num_params
-                  , candidates
-                );
-
-                msg += get_overload_signatures_candidates(
-                    L
-                  , candidates.begin()
-                  , candidates.end()
-                  , rep->name()
-                );
-
-                lua_pushstring(L, msg.c_str());
-            }
-            lua_error(L);
-        }
-#endif
-        overload_rep const& ov_rep = rep->overloads()[match_index];
-
-#ifndef LUABIND_NO_EXCEPTIONS
-        try
-        {
-#endif
-            return ov_rep.call(L, ov_rep.fun);
-#ifndef LUABIND_NO_EXCEPTIONS
-        }
-        catch(const luabind::error&)
-        {
-        }
-        catch(const std::exception& e)
-        {
-            lua_pushstring(L, e.what());
-        }
-        catch (const char* s)
-        {
-            lua_pushstring(L, s);
-        }
-        catch(...)
-        {
-            std::string msg = rep->name();
-            msg += "() threw an exception";
-            lua_pushstring(L, msg.c_str());
-        }
-        // we can only reach this line if an exception was thrown
-        lua_error(L);
-        return 0; // will never be reached
-#endif
+        lua_concat(L, count * 2);
     }
+    else
+    {
+        // Ambiguous
+        lua_pushstring(L, "Ambiguous, candidates:\n");
+        for (int i = 0; i < candidate_index; ++i)
+        {
+            if (i != 0)
+                lua_pushstring(L, "\n");
+            candidates[i]->format_signature(L, function_name);
+        }
+        lua_concat(L, candidate_index * 2);
+    }
+}
 
-}}} // namespace luabind::detail::free_functions
+}} // namespace luabind::detail
 
