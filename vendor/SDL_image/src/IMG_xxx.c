@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ int IMG_isXXX(SDL_RWops *src)
 
 	/* Detect the image here */
 
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	return(is_XXX);
 }
 
@@ -61,7 +61,7 @@ SDL_Surface *IMG_LoadXXX_RW(SDL_RWops *src)
 	/* Load the image here */
 
 	if ( error ) {
-		SDL_RWseek(src, start, SEEK_SET);
+		SDL_RWseek(src, start, RW_SEEK_SET);
 		if ( surface ) {
 			SDL_FreeSurface(surface);
 			surface = NULL;

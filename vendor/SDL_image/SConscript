@@ -21,8 +21,9 @@ component_env.Append(
 )
 
 libsdl_image_files = [
-  "src/IMG_bmp.c",
   "src/IMG.c",
+  "src/IMG_ImageIO.c",
+  "src/IMG_bmp.c",
   "src/IMG_gif.c",
   "src/IMG_jpg.c",
   "src/IMG_lbm.c",

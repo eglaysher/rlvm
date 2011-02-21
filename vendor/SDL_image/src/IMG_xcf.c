@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -222,7 +222,7 @@ int IMG_isXCF(SDL_RWops *src)
 			is_XCF = 1;
 		}
 	}
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	return(is_XCF);
 }
 
@@ -251,7 +251,7 @@ static Uint32 Swap32 (Uint32 v) {
     |  ((v & 0xFF000000));
 }
 
-void xcf_read_property (SDL_RWops * src, xcf_prop * prop) {
+static void xcf_read_property (SDL_RWops * src, xcf_prop * prop) {
   prop->id = SDL_ReadBE32 (src);
   prop->length = SDL_ReadBE32 (src);
 
@@ -282,18 +282,18 @@ void xcf_read_property (SDL_RWops * src, xcf_prop * prop) {
     break;
   default:
     //    SDL_RWread (src, &prop->data, prop->length, 1);
-    SDL_RWseek (src, prop->length, SEEK_CUR);
+    SDL_RWseek (src, prop->length, RW_SEEK_CUR);
   }
 }
 
-void free_xcf_header (xcf_header * h) {
+static void free_xcf_header (xcf_header * h) {
   if (h->cm_num)
     free (h->cm_map);
 
   free (h);
 }
 
-xcf_header * read_xcf_header (SDL_RWops * src) {
+static xcf_header * read_xcf_header (SDL_RWops * src) {
   xcf_header * h;
   xcf_prop prop;
 
@@ -326,12 +326,12 @@ xcf_header * read_xcf_header (SDL_RWops * src) {
   return h;
 }
 
-void free_xcf_layer (xcf_layer * l) {
+static void free_xcf_layer (xcf_layer * l) {
   free (l->name);
   free (l);
 }
 
-xcf_layer * read_xcf_layer (SDL_RWops * src) {
+static xcf_layer * read_xcf_layer (SDL_RWops * src) {
   xcf_layer * l;
   xcf_prop    prop;
 
@@ -358,12 +358,12 @@ xcf_layer * read_xcf_layer (SDL_RWops * src) {
   return l;
 }
 
-void free_xcf_channel (xcf_channel * c) {
+static void free_xcf_channel (xcf_channel * c) {
   free (c->name);
   free (c);
 }
 
-xcf_channel * read_xcf_channel (SDL_RWops * src) {
+static xcf_channel * read_xcf_channel (SDL_RWops * src) {
   xcf_channel * l;
   xcf_prop    prop;
 
@@ -401,12 +401,12 @@ xcf_channel * read_xcf_channel (SDL_RWops * src) {
   return l;
 }
 
-void free_xcf_hierarchy (xcf_hierarchy * h) {
+static void free_xcf_hierarchy (xcf_hierarchy * h) {
   free (h->level_file_offsets);
   free (h);
 }
 
-xcf_hierarchy * read_xcf_hierarchy (SDL_RWops * src) {
+static xcf_hierarchy * read_xcf_hierarchy (SDL_RWops * src) {
   xcf_hierarchy * h;
   int i;
 
@@ -425,12 +425,12 @@ xcf_hierarchy * read_xcf_hierarchy (SDL_RWops * src) {
   return h;
 }
 
-void free_xcf_level (xcf_level * l) {
+static void free_xcf_level (xcf_level * l) {
   free (l->tile_file_offsets);
   free (l);
 }
 
-xcf_level * read_xcf_level (SDL_RWops * src) {
+static xcf_level * read_xcf_level (SDL_RWops * src) {
   xcf_level * l;
   int i;
 
@@ -448,11 +448,11 @@ xcf_level * read_xcf_level (SDL_RWops * src) {
   return l;
 }
 
-void free_xcf_tile (unsigned char * t) {
+static void free_xcf_tile (unsigned char * t) {
   free (t);
 }
 
-unsigned char * load_xcf_tile_none (SDL_RWops * src, Uint32 len, int bpp, int x, int y) {
+static unsigned char * load_xcf_tile_none (SDL_RWops * src, Uint32 len, int bpp, int x, int y) {
   unsigned char * load;
 
   load = (unsigned char *) malloc (len); // expect this is okay
@@ -461,7 +461,7 @@ unsigned char * load_xcf_tile_none (SDL_RWops * src, Uint32 len, int bpp, int x,
   return load;
 }
 
-unsigned char * load_xcf_tile_rle (SDL_RWops * src, Uint32 len, int bpp, int x, int y) {
+static unsigned char * load_xcf_tile_rle (SDL_RWops * src, Uint32 len, int bpp, int x, int y) {
   unsigned char * load, * t, * data, * d;
   Uint32 reallen;
   int i, size, count, j, length;
@@ -528,7 +528,7 @@ static Uint32 rgb2grey (Uint32 a) {
   return (l << 16) | (l << 8) | l;
 }
 
-void create_channel_surface (SDL_Surface * surf, xcf_image_type itype, Uint32 color, Uint32 opacity) {
+static void create_channel_surface (SDL_Surface * surf, xcf_image_type itype, Uint32 color, Uint32 opacity) {
   Uint32 c = 0;
 
   switch (itype) {
@@ -543,7 +543,7 @@ void create_channel_surface (SDL_Surface * surf, xcf_image_type itype, Uint32 co
   SDL_FillRect (surf, NULL, c);
 }
 
-int do_layer_surface (SDL_Surface * surface, SDL_RWops * src, xcf_header * head, xcf_layer * layer, load_tile_type load_tile) {
+static int do_layer_surface (SDL_Surface * surface, SDL_RWops * src, xcf_header * head, xcf_layer * layer, load_tile_type load_tile) {
   xcf_hierarchy * hierarchy;
   xcf_level     * level;
   unsigned char * tile;
@@ -553,17 +553,17 @@ int do_layer_surface (SDL_Surface * surface, SDL_RWops * src, xcf_header * head,
   int x, y, tx, ty, ox, oy, i, j;
   Uint32 *row;
 
-  SDL_RWseek (src, layer->hierarchy_file_offset, SEEK_SET);
+  SDL_RWseek (src, layer->hierarchy_file_offset, RW_SEEK_SET);
   hierarchy = read_xcf_hierarchy (src);
 
   level = NULL;
   for (i = 0; hierarchy->level_file_offsets [i]; i++) {
-    SDL_RWseek (src, hierarchy->level_file_offsets [i], SEEK_SET);
+    SDL_RWseek (src, hierarchy->level_file_offsets [i], RW_SEEK_SET);
     level = read_xcf_level (src);
 
     ty = tx = 0;
     for (j = 0; level->tile_file_offsets [j]; j++) {
-      SDL_RWseek (src, level->tile_file_offsets [j], SEEK_SET);
+      SDL_RWseek (src, level->tile_file_offsets [j], RW_SEEK_SET);
       ox = tx+64 > level->width ? level->width % 64 : 64;
       oy = ty+64 > level->height ? level->height % 64 : 64;
 
@@ -739,7 +739,7 @@ SDL_Surface *IMG_LoadXCF_RW(SDL_RWops *src)
   // Blit layers backwards, because Gimp saves them highest first
   for (i = offsets; i > 0; i--) {
     SDL_Rect rs, rd;
-    SDL_RWseek (src, head->layer_file_offsets [i-1], SEEK_SET);
+    SDL_RWseek (src, head->layer_file_offsets [i-1], RW_SEEK_SET);
 
     layer = read_xcf_layer (src);
     do_layer_surface (lays, src, head, layer, load_tile);
@@ -759,7 +759,7 @@ SDL_Surface *IMG_LoadXCF_RW(SDL_RWops *src)
 
   SDL_FreeSurface (lays);
 
-  SDL_RWseek (src, fp, SEEK_SET);
+  SDL_RWseek (src, fp, RW_SEEK_SET);
 
   // read channels
   channel = NULL;
@@ -767,9 +767,9 @@ SDL_Surface *IMG_LoadXCF_RW(SDL_RWops *src)
   while ((offset = SDL_ReadBE32 (src))) {
     channel = (xcf_channel **) realloc (channel, sizeof (xcf_channel *) * (chnls+1));
     fp = SDL_RWtell (src);
-    SDL_RWseek (src, offset, SEEK_SET);
+    SDL_RWseek (src, offset, RW_SEEK_SET);
     channel [chnls++] = (read_xcf_channel (src));
-    SDL_RWseek (src, fp, SEEK_SET);    
+    SDL_RWseek (src, fp, RW_SEEK_SET);    
   }
 
   if (chnls) {
@@ -797,7 +797,7 @@ SDL_Surface *IMG_LoadXCF_RW(SDL_RWops *src)
 done:
   free_xcf_header (head);
   if ( error ) {
-    SDL_RWseek(src, start, SEEK_SET);
+    SDL_RWseek(src, start, RW_SEEK_SET);
     if ( surface ) {
       SDL_FreeSurface(surface);
       surface = NULL;

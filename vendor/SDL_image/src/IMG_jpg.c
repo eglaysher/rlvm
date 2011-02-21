@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+#if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
 
 /* This is a JPEG image file loading framework */
 
@@ -195,7 +197,7 @@ int IMG_isJPG(SDL_RWops *src)
 				} else if( (magic[0] != 0xFF) || (magic[1] == 0xFF) ) {
 					/* Extra padding in JPEG (legal) */
 					/* or this is data and we are scanning */
-					SDL_RWseek(src, -1, SEEK_CUR);
+					SDL_RWseek(src, -1, RW_SEEK_CUR);
 				} else if(magic[1] == 0xD9) {
 					/* Got to end of good JPEG */
 					break;
@@ -212,7 +214,7 @@ int IMG_isJPG(SDL_RWops *src)
 					Uint32 end;
 					start = SDL_RWtell(src);
 					size = (magic[2] << 8) + magic[3];
-					end = SDL_RWseek(src, size-2, SEEK_CUR);
+					end = SDL_RWseek(src, size-2, RW_SEEK_CUR);
 					if ( end != start + size - 2 ) is_JPG = 0;
 					if ( magic[1] == 0xDA ) {
 						/* Now comes the actual JPEG meat */
@@ -228,7 +230,7 @@ int IMG_isJPG(SDL_RWops *src)
 			}
 		}
 	}
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	return(is_JPG);
 }
 
@@ -379,7 +381,7 @@ SDL_Surface *IMG_LoadJPG_RW(SDL_RWops *src)
 	}
 	start = SDL_RWtell(src);
 
-	if ( IMG_InitJPG() < 0 ) {
+	if ( !IMG_Init(IMG_INIT_JPG) ) {
 		return NULL;
 	}
 
@@ -393,8 +395,7 @@ SDL_Surface *IMG_LoadJPG_RW(SDL_RWops *src)
 		if ( surface != NULL ) {
 			SDL_FreeSurface(surface);
 		}
-		SDL_RWseek(src, start, SEEK_SET);
-		IMG_QuitJPG();
+		SDL_RWseek(src, start, RW_SEEK_SET);
 		IMG_SetError("JPEG loading error");
 		return NULL;
 	}
@@ -442,8 +443,7 @@ SDL_Surface *IMG_LoadJPG_RW(SDL_RWops *src)
 
 	if ( surface == NULL ) {
 		lib.jpeg_destroy_decompress(&cinfo);
-		SDL_RWseek(src, start, SEEK_SET);
-		IMG_QuitJPG();
+		SDL_RWseek(src, start, RW_SEEK_SET);
 		IMG_SetError("Out of memory");
 		return NULL;
 	}
@@ -458,12 +458,20 @@ SDL_Surface *IMG_LoadJPG_RW(SDL_RWops *src)
 	lib.jpeg_finish_decompress(&cinfo);
 	lib.jpeg_destroy_decompress(&cinfo);
 
-	IMG_QuitJPG();
-
 	return(surface);
 }
 
 #else
+
+int IMG_InitJPG()
+{
+	IMG_SetError("JPEG images are not supported");
+	return(-1);
+}
+
+void IMG_QuitJPG()
+{
+}
 
 /* See if an image is contained in a data source */
 int IMG_isJPG(SDL_RWops *src)
@@ -478,3 +486,5 @@ SDL_Surface *IMG_LoadJPG_RW(SDL_RWops *src)
 }
 
 #endif /* LOAD_JPG */
+
+#endif /* !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND) */

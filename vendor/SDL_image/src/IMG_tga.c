@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,10 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+#if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
+
+/* This is a Targa image file loading framework */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -189,7 +193,7 @@ SDL_Surface *IMG_LoadTGA_RW(SDL_RWops *src)
         goto unsupported;
     }
     
-    SDL_RWseek(src, hdr.infolen, SEEK_CUR); /* skip info field */
+    SDL_RWseek(src, hdr.infolen, RW_SEEK_CUR); /* skip info field */
 
     w = LE16(hdr.width);
     h = LE16(hdr.height);
@@ -235,7 +239,7 @@ SDL_Surface *IMG_LoadTGA_RW(SDL_RWops *src)
 		SDL_SetColorKey(img, SDL_SRCCOLORKEY, ckey);
 	} else {
 	    /* skip unneeded colormap */
-	    SDL_RWseek(src, palsiz, SEEK_CUR);
+	    SDL_RWseek(src, palsiz, RW_SEEK_CUR);
 	}
     }
 
@@ -312,7 +316,7 @@ unsupported:
     error = "Unsupported TGA format";
 
 error:
-    SDL_RWseek(src, start, SEEK_SET);
+    SDL_RWseek(src, start, RW_SEEK_SET);
     if ( img ) {
         SDL_FreeSurface(img);
     }
@@ -329,3 +333,5 @@ SDL_Surface *IMG_LoadTGA_RW(SDL_RWops *src)
 }
 
 #endif /* LOAD_TGA */
+
+#endif /* !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND) */

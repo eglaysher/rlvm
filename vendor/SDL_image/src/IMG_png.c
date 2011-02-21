@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+#if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
 
 /* This is a PNG image file loading framework */
 
@@ -281,7 +283,7 @@ int IMG_isPNG(SDL_RWops *src)
 			is_PNG = 1;
 		}
 	}
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	return(is_PNG);
 }
 
@@ -318,7 +320,7 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 	}
 	start = SDL_RWtell(src);
 
-	if ( IMG_InitPNG() < 0 ) {
+	if ( !IMG_Init(IMG_INIT_PNG) ) {
 		return NULL;
 	}
 
@@ -492,20 +494,27 @@ done:	/* Clean up and return */
 		free(row_pointers);
 	}
 	if ( error ) {
-		SDL_RWseek(src, start, SEEK_SET);
+		SDL_RWseek(src, start, RW_SEEK_SET);
 		if ( surface ) {
 			SDL_FreeSurface(surface);
 			surface = NULL;
 		}
-		IMG_QuitPNG();
 		IMG_SetError(error);
-	} else {
-		IMG_QuitPNG();
 	}
 	return(surface); 
 }
 
 #else
+
+int IMG_InitPNG()
+{
+	IMG_SetError("PNG images are not supported");
+	return(-1);
+}
+
+void IMG_QuitPNG()
+{
+}
 
 /* See if an image is contained in a data source */
 int IMG_isPNG(SDL_RWops *src)
@@ -520,3 +529,5 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 }
 
 #endif /* LOAD_PNG */
+
+#endif /* !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND) */

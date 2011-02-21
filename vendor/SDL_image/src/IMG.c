@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,8 @@ static struct {
 } supported[] = {
 	/* keep magicless formats first */
 	{ "TGA", NULL,      IMG_LoadTGA_RW },
+	{ "CUR", IMG_isCUR, IMG_LoadCUR_RW },
+	{ "ICO", IMG_isICO, IMG_LoadICO_RW },
 	{ "BMP", IMG_isBMP, IMG_LoadBMP_RW },
 	{ "GIF", IMG_isGIF, IMG_LoadGIF_RW },
 	{ "JPG", IMG_isJPG, IMG_LoadJPG_RW },
@@ -58,6 +60,54 @@ const SDL_version *IMG_Linked_Version(void)
 	return(&linked_version);
 }
 
+extern int IMG_InitJPG();
+extern void IMG_QuitJPG();
+extern int IMG_InitPNG();
+extern void IMG_QuitPNG();
+extern int IMG_InitTIF();
+extern void IMG_QuitTIF();
+
+static int initialized = 0;
+
+int IMG_Init(int flags)
+{
+	int result = 0;
+
+	if (flags & IMG_INIT_JPG) {
+		if ((initialized & IMG_INIT_JPG) || IMG_InitJPG() == 0) {
+			result |= IMG_INIT_JPG;
+		}
+	}
+	if (flags & IMG_INIT_PNG) {
+		if ((initialized & IMG_INIT_PNG) || IMG_InitPNG() == 0) {
+			result |= IMG_INIT_PNG;
+		}
+	}
+	if (flags & IMG_INIT_TIF) {
+		if ((initialized & IMG_INIT_TIF) || IMG_InitTIF() == 0) {
+			result |= IMG_INIT_TIF;
+		}
+	}
+	initialized |= result;
+
+	return (result);
+}
+
+void IMG_Quit()
+{
+	if (initialized & IMG_INIT_JPG) {
+		IMG_QuitJPG();
+	}
+	if (initialized & IMG_INIT_PNG) {
+		IMG_QuitPNG();
+	}
+	if (initialized & IMG_INIT_TIF) {
+		IMG_QuitTIF();
+	}
+	initialized = 0;
+}
+
+#if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
 /* Load an image from a file */
 SDL_Surface *IMG_Load(const char *file)
 {
@@ -72,6 +122,7 @@ SDL_Surface *IMG_Load(const char *file)
     }
     return IMG_LoadTyped_RW(src, 1, ext);
 }
+#endif
 
 /* Load an image from an SDL datasource (for compatibility) */
 SDL_Surface *IMG_Load_RW(SDL_RWops *src, int freesrc)
@@ -105,7 +156,7 @@ SDL_Surface *IMG_LoadTyped_RW(SDL_RWops *src, int freesrc, char *type)
 	}
 
 	/* See whether or not this data source can handle seeking */
-	if ( SDL_RWseek(src, 0, SEEK_CUR) < 0 ) {
+	if ( SDL_RWseek(src, 0, RW_SEEK_CUR) < 0 ) {
 		IMG_SetError("Can't seek in this data source");
 		if(freesrc)
 			SDL_RWclose(src);

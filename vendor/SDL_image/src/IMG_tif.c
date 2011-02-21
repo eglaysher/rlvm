@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+#if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
 
 /* This is a TIFF image file loading framework */
 
@@ -168,9 +170,9 @@ static toff_t tiff_size(thandle_t fd)
 	toff_t size;
 
 	save_pos = SDL_RWtell((SDL_RWops*)fd);
-	SDL_RWseek((SDL_RWops*)fd, 0, SEEK_END);
+	SDL_RWseek((SDL_RWops*)fd, 0, RW_SEEK_END);
         size = SDL_RWtell((SDL_RWops*)fd);
-	SDL_RWseek((SDL_RWops*)fd, save_pos, SEEK_SET);
+	SDL_RWseek((SDL_RWops*)fd, save_pos, RW_SEEK_SET);
 	return size;
 }
 
@@ -196,7 +198,7 @@ int IMG_isTIF(SDL_RWops* src)
 			is_TIF = 1;
 		}
 	}
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	return(is_TIF);
 }
 
@@ -216,7 +218,7 @@ SDL_Surface* IMG_LoadTIF_RW(SDL_RWops* src)
 	}
 	start = SDL_RWtell(src);
 
-	if ( IMG_InitTIF() < 0 ) {
+	if ( !IMG_Init(IMG_INIT_TIF) ) {
 		return NULL;
 	}
 
@@ -257,20 +259,28 @@ SDL_Surface* IMG_LoadTIF_RW(SDL_RWops* src)
 		}
 	}
 	lib.TIFFClose(tiff);
-	IMG_QuitTIF();
 	
 	return surface;
 
 error:
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	if ( surface ) {
 		SDL_FreeSurface(surface);
 	}
-	IMG_QuitTIF();
 	return NULL;
 }
 
 #else
+
+int IMG_InitTIF()
+{
+	IMG_SetError("TIFF images are not supported");
+	return(-1);
+}
+
+void IMG_QuitTIF()
+{
+}
 
 /* See if an image is contained in a data source */
 int IMG_isTIF(SDL_RWops *src)
@@ -285,3 +295,5 @@ SDL_Surface *IMG_LoadTIF_RW(SDL_RWops *src)
 }
 
 #endif /* LOAD_TIF */
+
+#endif /* !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND) */

@@ -1,6 +1,6 @@
 /*
     SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+#if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
 
 /* This is a GIF image file loading framework */
 
@@ -47,7 +49,7 @@ int IMG_isGIF(SDL_RWops *src)
 			is_GIF = 1;
 		}
 	}
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	return(is_GIF);
 }
 
@@ -266,7 +268,7 @@ IMG_LoadGIF_RW(SDL_RWops *src)
 
 done:
     if ( image == NULL ) {
-        SDL_RWseek(src, start, SEEK_SET);
+        SDL_RWseek(src, start, RW_SEEK_SET);
     }
     return image;
 }
@@ -620,3 +622,5 @@ SDL_Surface *IMG_LoadGIF_RW(SDL_RWops *src)
 }
 
 #endif /* LOAD_GIF */
+
+#endif /* !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND) */
