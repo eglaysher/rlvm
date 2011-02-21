@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -27,7 +27,7 @@
         (http://www.freshmeat.net/projects/sox/)
 */
 
-/* $Id: load_voc.h 2936 2007-01-15 16:14:04Z icculus $ */
+/* $Id: load_voc.h 4211 2008-12-08 00:27:32Z slouken $ */
 
 /* Don't call this directly; use Mix_LoadWAV_RW() for now. */
 SDL_AudioSpec *Mix_LoadVOC_RW (SDL_RWops *src, int freesrc,

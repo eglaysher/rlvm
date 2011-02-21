@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: music_ogg.c 3275 2007-07-15 04:08:44Z slouken $ */
+/* $Id: music_ogg.c 5211 2009-11-08 16:35:36Z slouken $ */
 
 #ifdef OGG_MUSIC
 
@@ -105,13 +105,12 @@ OGG_music *OGG_new_RW(SDL_RWops *rw)
 		OGG_setvolume(music, MIX_MAX_VOLUME);
 		music->section = -1;
 
-		if ( Mix_InitOgg() < 0 ) {
+		if ( !Mix_Init(MIX_INIT_OGG) ) {
 			return(NULL);
 		}
 		if ( vorbis.ov_open_callbacks(rw, &music->vf, NULL, 0, callbacks) < 0 ) {
 			free(music);
 			SDL_RWclose(rw);
-			Mix_QuitOgg();
 			SDL_SetError("Not an Ogg Vorbis audio stream");
 			return(NULL);
 		}
@@ -224,7 +223,6 @@ void OGG_delete(OGG_music *music)
 		}
 		vorbis.ov_clear(&music->vf);
 		free(music);
-		Mix_QuitOgg();
 	}
 }
 

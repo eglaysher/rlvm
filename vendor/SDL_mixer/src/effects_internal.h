@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: effects_internal.h 3359 2007-07-21 06:37:58Z slouken $ */
+/* $Id: effects_internal.h 5045 2009-10-11 02:59:12Z icculus $ */
 
 #ifndef _INCLUDE_EFFECTS_INTERNAL_H_
 #define _INCLUDE_EFFECTS_INTERNAL_H_
@@ -44,6 +44,12 @@ void *_Eff_build_volume_table_s8(void);
 void _Mix_InitEffects(void);
 void _Mix_DeinitEffects(void);
 void _Eff_PositionDeinit(void);
+
+int _Mix_RegisterEffect_locked(int channel, Mix_EffectFunc_t f,
+                               Mix_EffectDone_t d, void *arg);
+int _Mix_UnregisterEffect_locked(int channel, Mix_EffectFunc_t f);
+int _Mix_UnregisterAllEffects_locked(int channel);
+
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus

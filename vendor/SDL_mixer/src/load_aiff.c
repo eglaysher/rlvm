@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -26,7 +26,7 @@
     in december 2002.
 */
 
-/* $Id: load_aiff.c 1192 2004-01-04 17:41:55Z slouken $ */
+/* $Id: load_aiff.c 5214 2009-11-08 17:11:09Z slouken $ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -177,7 +177,7 @@ SDL_AudioSpec *Mix_LoadAIFF_RW (SDL_RWops *src, int freesrc,
 			next_chunk++;
 	} while ( ( ( (AIFFmagic == AIFF) && ( !found_SSND || !found_COMM ) )
 		  || ( (AIFFmagic == _8SVX ) && ( !found_VHDR || !found_BODY ) ) )
-		  && SDL_RWseek(src, next_chunk, SEEK_SET) != 1 );
+		  && SDL_RWseek(src, next_chunk, RW_SEEK_SET) != 1 );
 
 	if ( (AIFFmagic == AIFF) && !found_SSND ) {
 		SDL_SetError("Bad AIFF (no SSND chunk)");
@@ -227,7 +227,7 @@ SDL_AudioSpec *Mix_LoadAIFF_RW (SDL_RWops *src, int freesrc,
 		SDL_SetError("Out of memory");
 		return(NULL);
 	}
-	SDL_RWseek(src, start, SEEK_SET);
+	SDL_RWseek(src, start, RW_SEEK_SET);
 	if ( SDL_RWread(src, *audio_buf, *audio_len, 1) != 1 ) {
 		SDL_SetError("Unable to read audio data");
 		return(NULL);

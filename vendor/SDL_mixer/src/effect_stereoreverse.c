@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -22,7 +22,7 @@
     effect callback API. They are meant for speed over quality.  :)
 */
 
-/* $Id: effect_stereoreverse.c 2936 2007-01-15 16:14:04Z icculus $ */
+/* $Id: effect_stereoreverse.c 4211 2008-12-08 00:27:32Z slouken $ */
 
 #include <stdio.h>
 #include <stdlib.h>

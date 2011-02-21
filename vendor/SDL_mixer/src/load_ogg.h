@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
     This file by Vaclav Slavik (vaclav.slavik@matfyz.cz).
 */
 
-/* $Id: load_ogg.h 1192 2004-01-04 17:41:55Z slouken $ */
+/* $Id: load_ogg.h 4211 2008-12-08 00:27:32Z slouken $ */
 
 #ifdef OGG_MUSIC
 /* Don't call this directly; use Mix_LoadWAV_RW() for now. */

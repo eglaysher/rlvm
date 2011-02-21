@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -27,7 +27,7 @@
         (http://www.freshmeat.net/projects/sox/)
 */
 
-/* $Id: load_voc.c 2936 2007-01-15 16:14:04Z icculus $ */
+/* $Id: load_voc.c 5214 2009-11-08 17:11:09Z slouken $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,7 +92,7 @@ static int voc_check_header(SDL_RWops *src)
     Uint8  signature[20];  /* "Creative Voice File\032" */
     Uint16 datablockofs;
 
-    SDL_RWseek(src, 0, SEEK_SET);
+    SDL_RWseek(src, 0, RW_SEEK_SET);
 
     if (SDL_RWread(src, signature, sizeof (signature), 1) != 1)
         return(0);
@@ -108,7 +108,7 @@ static int voc_check_header(SDL_RWops *src)
 
     datablockofs = SDL_SwapLE16(datablockofs);
 
-    if (SDL_RWseek(src, datablockofs, SEEK_SET) != datablockofs)
+    if (SDL_RWseek(src, datablockofs, RW_SEEK_SET) != datablockofs)
         return(0);
 
     return(1);  /* success! */
@@ -448,7 +448,7 @@ done:
         if (freesrc)
             SDL_RWclose(src);
         else
-            SDL_RWseek(src, 0, SEEK_SET);
+            SDL_RWseek(src, 0, RW_SEEK_SET);
     }
 
     if ( was_error )

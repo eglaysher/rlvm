@@ -1,4 +1,4 @@
-This is a subset of the SDL_mixer 1.2.8 source. Support for the libmad mp3
-player, MIDI playing, among other things has been removed.
+This is a subset of the SDL_mixer 1.2.11 source. Support for the libmad mp3
+player, MIDI playing, FLAC support, among other things has been removed.
 
 Entire source files have been left out (which are controlled with #ifdefs).

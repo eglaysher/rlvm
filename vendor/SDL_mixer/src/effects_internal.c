@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -21,7 +21,7 @@
     These are some helper functions for the internal mixer special effects.
 */
 
-/* $Id: effects_internal.c 3288 2007-07-15 15:43:02Z icculus $ */
+/* $Id: effects_internal.c 4211 2008-12-08 00:27:32Z slouken $ */
 
 
      /* ------ These are used internally only. Don't touch. ------ */

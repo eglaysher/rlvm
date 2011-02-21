@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: music_ogg.h 3274 2007-07-15 03:38:33Z slouken $ */
+/* $Id: music_ogg.h 4211 2008-12-08 00:27:32Z slouken $ */
 
 #ifdef OGG_MUSIC
 

@@ -1,6 +1,6 @@
 /*
     SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2004 Sam Lantinga
+    Copyright (C) 1997-2009 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
     This file by Vaclav Slavik (vaclav.slavik@matfyz.cz).
 */
 
-/* $Id: load_ogg.c 3274 2007-07-15 03:38:33Z slouken $ */
+/* $Id: load_ogg.c 5214 2009-11-08 17:11:09Z slouken $ */
 
 #ifdef OGG_MUSIC
 
@@ -53,7 +53,7 @@ static int sdl_close_func_freesrc(void *datasource)
 
 static int sdl_close_func_nofreesrc(void *datasource)
 {
-    return SDL_RWseek((SDL_RWops*)datasource, 0, SEEK_SET);
+    return SDL_RWseek((SDL_RWops*)datasource, 0, RW_SEEK_SET);
 }
 
 static long sdl_tell_func(void *datasource)
@@ -80,7 +80,7 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     if ( (!src) || (!audio_buf) || (!audio_len) )   /* sanity checks. */
         goto done;
 
-    if ( Mix_InitOgg() < 0 )
+    if ( !Mix_Init(MIX_INIT_OGG) )
         goto done;
 
     callbacks.read_func = sdl_read_func;
@@ -147,13 +147,11 @@ done:
         if (freesrc)
             SDL_RWclose(src);
         else
-            SDL_RWseek(src, 0, SEEK_SET);
+            SDL_RWseek(src, 0, RW_SEEK_SET);
     }
 
     if ( was_error )
         spec = NULL;
-
-    Mix_QuitOgg();
 
     return(spec);
 } /* Mix_LoadOGG_RW */
