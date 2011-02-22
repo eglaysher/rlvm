@@ -47,7 +47,7 @@ rlvm currently plays the following games to their completion:
 |------------------------+--------------------+---------------------|
 | Princess Brave         | Works?             | (None)              |
 | ALMA ~zutto soba ni~   | Reported to work   | (None)              |
-| SNOW                   | (Broken)           | (None)              |
+| SNOW                   | Works?             | (None)              |
 |------------------------+--------------------+---------------------|
 
 For more details, please read STATUS.TXT.

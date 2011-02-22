@@ -57,8 +57,7 @@ ALMA ~Zutto soba ni~
 
 SNOW Standard Edition
 ---------------------
-- Displays copyright/disclaimer screen.
-- Main menu doesn't show due to large number of haikei commands not written.
+- First several days play, with major graphical glitches.
 
 UNOFFICIAL "ONE" DEMO
 ---------------------
