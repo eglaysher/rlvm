@@ -332,22 +332,35 @@ Rect TextWindow::textSurfaceRect() const {
   return Rect(textOrigin, rectSize);
 }
 
-int TextWindow::nameboxX1() const {
-  return windowRect().origin().x() + namebox_x_offset_;
+Rect TextWindow::nameboxWakuRect() const {
+  // Like the main windowRect(), we need to ask the waku what size it wants to
+  // be.
+  Size boxSize;
+  if (!namebox_waku_->getSize(boxSize)) {
+    boxSize = Size(2 * horizontal_namebox_padding_ +
+                   namebox_characters_ * name_size_,
+                   2 * vertical_namebox_padding_ + name_size_);
+  }
+
+  // The waku is offset from the top left corner of the text window.
+  Rect r = windowRect();
+  return Rect(Point(r.x() + namebox_x_offset_,
+                    r.y() + namebox_y_offset_ - boxSize.height()),
+              boxSize);
 }
 
-int TextWindow::nameboxY1() const {
-  // We cheat with the size calculation here.
-  return windowRect().origin().y() + namebox_y_offset_ -
-      (2 * vertical_namebox_padding_ + name_size_);
-}
+Point TextWindow::nameboxTextSurfaceInsertionPoint(const Rect& waku_rect) {
+  Point insertion_point =
+      waku_rect.origin() +
+      Point(horizontal_namebox_padding_,
+            vertical_namebox_padding_);
+  if (namebox_centering_) {
+    int half_width = (waku_rect.width() - 2 * horizontal_namebox_padding_) / 2;
+    int half_text_width = nameSurface()->size().width() / 2;
+    insertion_point += Point(half_width - half_text_width, 0);
+  }
 
-// THIS IS A HACK! THIS IS SUCH AN UGLY HACK. ALL OF THE NAMEBOX POSITIONING
-// CODE SIMPLY NEEDS TO BE REDONE.
-Size TextWindow::nameboxSize() {
-  return Size(2 * horizontal_namebox_padding_ +
-              namebox_characters_ * name_size_,
-              2 * vertical_namebox_padding_ + name_size_);
+  return insertion_point;
 }
 
 void TextWindow::setNameSpacingBetweenCharacters(
@@ -434,29 +447,22 @@ void TextWindow::render(std::ostream* tree) {
     } else {
       shared_ptr<Surface> name_surface = nameSurface();
       if (name_surface) {
-        Point namebox_location(nameboxX1(), nameboxY1());
-        Size namebox_size = nameboxSize();
+        Rect r = nameboxWakuRect();
 
         if (namebox_waku_) {
           // TODO(erg): The waku needs to be adjusted to be the minimum size of
           // the window in characters
-          namebox_waku_->render(tree, namebox_location, namebox_size);
+          namebox_waku_->render(tree, r.origin(), r.size());
         }
 
-        Point insertion_point =
-            namebox_location +
-            Point((namebox_size.width() / 2) -
-                  (name_surface->size().width() / 2),
-                  (namebox_size.height() / 2) -
-                  (name_surface->size().height() / 2));
+        Point insertion_point = nameboxTextSurfaceInsertionPoint(r);
         name_surface->renderToScreen(
             name_surface->rect(),
             Rect(insertion_point, name_surface->size()),
             255);
 
         if (tree) {
-          *tree << "    Name Area: " << Rect(namebox_location, namebox_size)
-                << endl;
+          *tree << "    Name Area: " << r << endl;
         }
       }
 

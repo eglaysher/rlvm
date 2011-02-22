@@ -125,9 +125,13 @@ class TextWindow {
   Rect windowRect() const;
   Rect textSurfaceRect() const;
 
-  int nameboxX1() const;
-  int nameboxY1() const;
-  Size nameboxSize();
+  // Locations of the namebox waku (will be a relative calculation to
+  // windowRect()) and the name text surface (will be a relative calculation to
+  // the waku).
+  Rect nameboxWakuRect() const;
+
+  // Insertion point for the text surface drawn on top of the namebox waku rect.
+  Point nameboxTextSurfaceInsertionPoint(const Rect& waku_rect);
 
   // TODO: What's setMousePosition and how does it differ from mouse listeners?
   virtual void setMousePosition(const Point& pos);
