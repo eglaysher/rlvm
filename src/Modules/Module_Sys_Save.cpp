@@ -38,7 +38,7 @@
 #include <limits>
 #include <string>
 
-#include "Effects/FadeEffect.hpp"
+#include "LongOperations/LoadGameLongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Memory.hpp"
@@ -53,11 +53,8 @@
 #include "MachineBase/SaveGameHeader.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Systems/Base/Colour.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
-#include "Systems/Base/TextSystem.hpp"
 #include "libReallive/intmemref.h"
 #include "utf8cpp/utf8.h"
 
@@ -281,61 +278,23 @@ struct save : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
+struct LoadingGameFromSlot : public LoadGameLongOperation {
+  int slot_;
+  explicit LoadingGameFromSlot(RLMachine& machine, int slot)
+      : LoadGameLongOperation(machine), slot_(slot) {}
+
+  virtual void load(RLMachine& machine) {
+    Serialization::loadGameForSlot(machine, slot_);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
 
-// Implementation of fun load<1:Sys:03009, 0> ('slot'): Loads data
-// from a save game slot.
-//
-// Internally, load is fairly complex, consisting of several
-// LongOperations because we can't rely on normal flow control because
-// we're going to nuke the call stack and system memory in
-// LoadingGame.
-bool Sys_load::LoadingGame::operator()(RLMachine& machine) {
-  Serialization::loadGameForSlot(machine, slot_);
-
-  // Render the current state of the screen
-  GraphicsSystem& graphics = machine.system().graphics();
-
-  shared_ptr<Surface> currentWindow = graphics.renderToSurface();
-  Size s = currentWindow->size();
-
-  // Blank dc0 (because we won't be using it anyway) for the image
-  // we're going to render to
-  shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
-  blankScreen->fill(RGBAColour::Black());
-
-  machine.pushLongOperation(
-      new FadeEffect(machine, currentWindow, blankScreen, s, 250));
-
-  // At this point, the stack has been nuked, and this current
-  // object has already been deleted, leaving an invalid
-  // *this. Returning false is the correct thing to do since
-  // *returning true will pop an unrelated stack frame.
-  return false;
-}
-
 void Sys_load::operator()(RLMachine& machine, int slot) {
-  // Render the current state of the screen
-  GraphicsSystem& graphics = machine.system().graphics();
-
-  shared_ptr<Surface> currentWindow = graphics.renderToSurface();
-  Size s = currentWindow->size();
-
-  // Blank dc0 (because we won't be using it anyway) for the image
-  // we're going to render to
-  shared_ptr<Surface> dc0 = graphics.getDC(0);
-  dc0->fill(RGBAColour::Black());
-
-  machine.pushLongOperation(new LoadingGame(slot));
-  machine.pushLongOperation(
-      new FadeEffect(machine, dc0, currentWindow, s, 250));
-
-  // We have our before and after images to use as a transition now. Reset the
-  // system to prevent a brief flash of the previous contents of the screen for
-  // whatever number of user preceivable milliseconds.
-  machine.system().reset();
+  // LoadGameLongOperation will add self to |machine|'s stack.
+  new LoadingGameFromSlot(machine, slot);
 }
 
 // -----------------------------------------------------------------------

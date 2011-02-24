@@ -29,7 +29,6 @@
 #define SRC_MODULES_MODULE_SYS_SAVE_HPP_
 
 #include "MachineBase/RLOperation.hpp"
-#include "MachineBase/LongOperation.hpp"
 
 class RLMachine;
 class RLModule;
@@ -50,13 +49,6 @@ void addSysSaveOpcodes(RLModule& module);
 // LoadingGame.
 struct Sys_load : public RLOp_Void_1< IntConstant_T > {
   bool advanceInstructionPointer() { return false; }
-
-  struct LoadingGame : public LongOperation {
-    int slot_;
-    explicit LoadingGame(int slot) : slot_(slot) {}
-
-    virtual bool operator()(RLMachine& machine);
-  };
 
   // Main entrypoint into the load command. Simply sets the callstack
   // up so that we will fade to black, clear the screen and render,
