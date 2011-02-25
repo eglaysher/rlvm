@@ -73,23 +73,23 @@ fs::path buildGlobalMemoryFilename(RLMachine& machine) {
 
 void saveGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
-  fs::ofstream file(home);
+  fs::ofstream file(home, ios::binary);
   if (!file) {
     ostringstream oss;
     oss << "Could not open global memory file.";
     throw rlvm::Exception(oss.str());
   }
 
-  using namespace boost::iostreams;
-  filtering_stream<output> filtered_output;
-  filtered_output.push(zlib_compressor());
-  filtered_output.push(file);
-
-  saveGlobalMemoryTo(filtered_output, machine);
+  saveGlobalMemoryTo(file, machine);
 }
 
 void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
-  text_oarchive oa(oss);
+  using namespace boost::iostreams;
+  filtering_stream<output> filtered_output;
+  filtered_output.push(zlib_compressor());
+  filtered_output.push(oss);
+
+  text_oarchive oa(filtered_output);
   System& sys = machine.system();
 
   oa << CURRENT_GLOBAL_VERSION
@@ -103,19 +103,14 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
 
 void loadGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
-  fs::ifstream file(home);
+  fs::ifstream file(home, ios::binary);
 
   // If we were able to open the file for reading, load it. Don't
   // complain if we're unable to, since this may be the first run on
   // this certain game and it may not exist yet.
   if (file) {
     try {
-      using namespace boost::iostreams;
-      filtering_stream<input> filtered_input;
-      filtered_input.push(zlib_decompressor());
-      filtered_input.push(file);
-
-      loadGlobalMemoryFrom(filtered_input, machine);
+      loadGlobalMemoryFrom(file, machine);
     } catch(...) {
       // Swallow ALL exceptions during file reading. If loading the global
       // memory file fails in any way, something is EXTREMELY wrong. Either
@@ -137,7 +132,12 @@ void loadGlobalMemory(RLMachine& machine) {
 }
 
 void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
-  text_iarchive ia(iss);
+  using namespace boost::iostreams;
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(iss);
+
+  text_iarchive ia(filtered_input);
   System& sys = machine.system();
   int version;
   ia >> version;

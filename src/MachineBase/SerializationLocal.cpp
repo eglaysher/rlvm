@@ -95,24 +95,24 @@ namespace Serialization {
 
 void saveGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ofstream file(path);
+  fs::ofstream file(path, ios::binary);
   checkInFileOpened(file, path);
 
-  using namespace boost::iostreams;
-  filtering_stream<output> filtered_output;
-  filtered_output.push(zlib_compressor());
-  filtered_output.push(file);
-
-  return saveGameTo(filtered_output, machine);
+  saveGameTo(file, machine);
 }
 
 void saveGameTo(std::ostream& oss, RLMachine& machine) {
+  using namespace boost::iostreams;
+  filtering_stream<output> filtered_output;
+  filtered_output.push(zlib_compressor());
+  filtered_output.push(oss);
+
   const SaveGameHeader header(machine.system().graphics().windowSubtitle());
 
   g_current_machine = &machine;
 
   try {
-    text_oarchive oa(oss);
+    text_oarchive oa(filtered_output);
     oa << CURRENT_LOCAL_VERSION
        << header
        << const_cast<const LocalMemory&>(machine.memory().local())
@@ -142,23 +142,23 @@ fs::path buildSaveGameFilename(RLMachine& machine, int slot) {
 
 SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ifstream file(path);
+  fs::ifstream file(path, ios::binary);
   checkInFileOpened(file, path);
 
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
-  filtered_input.push(file);
-
-  return loadHeaderFrom(filtered_input);
+  return loadHeaderFrom(file);
 }
 
 SaveGameHeader loadHeaderFrom(std::istream& iss) {
+  using namespace boost::iostreams;
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(iss);
+
   int version;
   SaveGameHeader header;
 
   // Only load the header
-  text_iarchive ia(iss);
+  text_iarchive ia(filtered_input);
   ia >> version >> header;
 
   return header;
@@ -166,23 +166,23 @@ SaveGameHeader loadHeaderFrom(std::istream& iss) {
 
 void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ifstream file(path);
+  fs::ifstream file(path, ios::binary);
   checkInFileOpened(file, path);
 
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
-  filtered_input.push(file);
-
-  loadLocalMemoryFrom(filtered_input, memory);
+  loadLocalMemoryFrom(file, memory);
 }
 
 void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
+  using namespace boost::iostreams;
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(iss);
+
   int version;
   SaveGameHeader header;
 
   // Only load the header
-  text_iarchive ia(iss);
+  text_iarchive ia(filtered_input);
   ia >> version
      >> header
      >> memory.local();
@@ -190,18 +190,18 @@ void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
 
 void loadGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ifstream file(path);
+  fs::ifstream file(path, ios::binary);
   checkInFileOpened(file, path);
 
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
-  filtered_input.push(file);
-
-  loadGameFrom(filtered_input, machine);
+  loadGameFrom(file, machine);
 }
 
 void loadGameFrom(std::istream& iss, RLMachine& machine) {
+  using namespace boost::iostreams;
+  filtering_stream<input> filtered_input;
+  filtered_input.push(zlib_decompressor());
+  filtered_input.push(iss);
+
   int version;
   SaveGameHeader header;
 
@@ -212,7 +212,7 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
     // often hold references to objects in the System heiarchy.
     machine.reset();
 
-    text_iarchive ia(iss);
+    text_iarchive ia(filtered_input);
     ia >> version
        >> header
        >> machine.memory().local()
