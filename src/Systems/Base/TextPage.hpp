@@ -70,6 +70,10 @@ class TextPage : public boost::noncopyable {
   // TextoutLongOperation.
   void name(const std::string& name, const std::string& next_char);
 
+  // Puts a koe marker in the TextPage. This is only displayed during
+  // scrollback.
+  void koeMarker(int id);
+
   // Forces a hard line brake.
   void hardBrake();
 
@@ -156,6 +160,8 @@ class TextPage : public boost::noncopyable {
 
   void name_impl(const std::string& name, const std::string& next_char,
                  bool is_active_page);
+
+  void koeMarkerImpl(int id, bool is_active_page);
 
   void hard_brake_impl(bool is_active_page);
 

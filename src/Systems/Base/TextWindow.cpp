@@ -39,6 +39,7 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SelectionElement.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
@@ -467,6 +468,7 @@ void TextWindow::render(std::ostream* tree) {
       }
 
       renderFaces(tree, 0);
+      renderKoeReplayButtons(tree);
 
       text_surface->renderToScreen(
         Rect(Point(0, 0), surface_size),
@@ -499,6 +501,17 @@ void TextWindow::renderFaces(std::ostream* tree, int behind) {
   }
 }
 
+void TextWindow::renderKoeReplayButtons(std::ostream* tree) {
+  for (std::vector<std::pair<Point, int> >::const_iterator it =
+           koe_replay_button_.begin(); it != koe_replay_button_.end(); ++it) {
+    koe_replay_info_->icon->renderToScreen(
+        Rect(Point(0, 0), koe_replay_info_->icon->size()),
+        Rect(textSurfaceRect().origin() + it->first,
+             koe_replay_info_->icon->size()),
+        255);
+  }
+}
+
 void TextWindow::clearWin() {
   text_insertion_point_x_ = 0;
   text_insertion_point_y_ = rubyTextSize();
@@ -506,6 +519,7 @@ void TextWindow::clearWin() {
   current_line_number_ = 0;
   ruby_begin_point_ = -1;
   font_colour_ = default_colour_;
+  koe_replay_button_.clear();
 }
 
 bool TextWindow::character(const std::string& current,
@@ -627,6 +641,24 @@ bool TextWindow::isFull() const {
   return current_line_number_ >= y_window_size_in_chars_;
 }
 
+void TextWindow::koeMarker(int id) {
+  if (!koe_replay_info_) {
+    koe_replay_info_.reset(new KoeReplayInfo);
+    Gameexe& gexe = system_.gameexe();
+    GameexeInterpretObject replay_icon(gexe("KOEREPLAYICON"));
+
+    koe_replay_info_->icon =
+        system_.graphics().loadNonCGSurfaceFromFile(replay_icon("NAME"));
+    std::vector<int> reppos = replay_icon("REPPOS");
+    if (reppos.size() == 2)
+      koe_replay_info_->repos = Size(reppos[0], reppos[1]);
+  }
+
+  Point p = Point(text_insertion_point_x_, text_insertion_point_y_) +
+            koe_replay_info_->repos;
+  koe_replay_button_.push_back(std::make_pair(p, id));
+}
+
 void TextWindow::hardBrake() {
   text_insertion_point_x_ = current_indentation_in_pixels_;
   text_insertion_point_y_ += lineHeight();
@@ -675,6 +707,18 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
       return true;
   }
 
+  for (std::vector<std::pair<Point, int> >::const_iterator it =
+           koe_replay_button_.begin(); it != koe_replay_button_.end(); ++it) {
+    Rect r = Rect(textSurfaceRect().origin() + it->first,
+                  koe_replay_info_->icon->size());
+    if (r.contains(pos)) {
+      // We only want to actually replay the voice clip once, but we want to
+      // catch both clicks.
+      if (pressed)
+        system_.sound().koePlay(it->second);
+      return true;
+    }
+  }
 
   if (isVisible() && !machine.system().graphics().interfaceHidden()) {
     return textbox_waku_->handleMouseClick(machine, pos, pressed);

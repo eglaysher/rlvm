@@ -37,8 +37,14 @@
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/System.hpp"
+#include "Systems/Base/TextPage.hpp"
+#include "Systems/Base/TextSystem.hpp"
 
 namespace {
+
+void addKoeIcon(RLMachine& machine, int id) {
+  machine.system().text().currentPage().koeMarker(id);
+}
 
 bool koeIsPlaying(RLMachine& machine) {
   return !machine.system().sound().koePlaying();
@@ -58,9 +64,24 @@ struct LongOp_koeWait : public LongOperation {
   }
 };
 
+struct koePlay_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int koe) {
+    machine.system().sound().koePlay(koe);
+    addKoeIcon(machine, koe);
+  }
+};
+
+struct koePlay_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int koe, int character) {
+    machine.system().sound().koePlay(koe, character);
+    addKoeIcon(machine, koe);
+  }
+};
+
 struct koePlayEx_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int koe) {
     machine.system().sound().koePlay(koe);
+    addKoeIcon(machine, koe);
     machine.pushLongOperation(new LongOp_koeWait);
   }
 };
@@ -68,6 +89,7 @@ struct koePlayEx_0 : public RLOp_Void_1<IntConstant_T> {
 struct koePlayEx_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe, character);
+    addKoeIcon(machine, koe);
     machine.pushLongOperation(new LongOp_koeWait);
   }
 };
@@ -75,6 +97,7 @@ struct koePlayEx_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct koeDoPlayEx_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe);
+    addKoeIcon(machine, koe);
     machine.pushLongOperation(new LongOp_koeWait);
   }
 };
@@ -82,6 +105,7 @@ struct koeDoPlayEx_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct koePlayExC_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int koe) {
     machine.system().sound().koePlay(koe);
+    addKoeIcon(machine, koe);
     addKoeWaitC(machine);
   }
 };
@@ -89,6 +113,7 @@ struct koePlayExC_0 : public RLOp_Void_1<IntConstant_T> {
 struct koePlayExC_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe, character);
+    addKoeIcon(machine, koe);
     machine.pushLongOperation(new LongOp_koeWait);
   }
 };
@@ -96,6 +121,7 @@ struct koePlayExC_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct koeDoPlayExC_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe);
+    addKoeIcon(machine, koe);
     addKoeWaitC(machine);
   }
 };
@@ -113,7 +139,7 @@ struct koeWaitC : public RLOp_Void_Void {
 };
 
 // Play the voice not taking |character| into account.
-struct koeDoPlay2 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct koeDoPlay_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe);
   }
@@ -145,10 +171,8 @@ struct koeMute_1 : public RLOp_Void_1<IntConstant_T> {
 
 KoeModule::KoeModule()
   : RLModule("Koe", 1, 23) {
-  addOpcode(0, 0, "koePlay", callFunction(
-      static_cast<void(SoundSystem::*)(int)>(&SoundSystem::koePlay)));
-  addOpcode(0, 1, "koePlay", callFunction(
-      static_cast<void(SoundSystem::*)(int, int)>(&SoundSystem::koePlay)));
+  addOpcode(0, 0, "koePlay", new koePlay_0);
+  addOpcode(0, 1, "koePlay", new koePlay_1);
 
   addOpcode(1, 0, "koePlayEx", new koePlayEx_0);
   addOpcode(1, 1, "koePlayEx", new koePlayEx_1);
@@ -161,9 +185,8 @@ KoeModule::KoeModule()
   addOpcode(7, 0, "koePlayExC", new koePlayExC_0);
   addOpcode(7, 1, "koePlayExC", new koePlayExC_1);
 
-  addOpcode(8, 0, "koeDoPlay", callFunction(
-      static_cast<void(SoundSystem::*)(int)>(&SoundSystem::koePlay)));
-  addOpcode(8, 1, "koeDoPlay", new koeDoPlay2);
+  addOpcode(8, 0, "koeDoPlay", new koePlay_0);
+  addOpcode(8, 1, "koeDoPlay", new koeDoPlay_1);
 
   addOpcode(9, 0, "koeDoPlayEx", new koePlayEx_0);
   addOpcode(9, 1, "koeDoPlayEx", new koeDoPlayEx_1);

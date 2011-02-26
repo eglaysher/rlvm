@@ -204,6 +204,12 @@ void TextPage::name(const string& name, const string& next_char) {
 
 // -----------------------------------------------------------------------
 
+void TextPage::koeMarker(int id) {
+  addAction(bind(&TextPage::koeMarkerImpl, _1, id, _2));
+}
+
+// -----------------------------------------------------------------------
+
 void TextPage::hardBrake() {
   addAction(bind(&TextPage::hard_brake_impl, _1, _2));
 }
@@ -310,6 +316,14 @@ void TextPage::name_impl(const string& name,
                          const string& next_char,
                          bool is_active_page) {
   system_->text().textWindow(window_num_)->setName(name, next_char);
+}
+
+// -----------------------------------------------------------------------
+
+void TextPage::koeMarkerImpl(int id, bool is_active_page) {
+  if (!is_active_page) {
+    system_->text().textWindow(window_num_)->koeMarker(id);
+  }
 }
 
 // -----------------------------------------------------------------------

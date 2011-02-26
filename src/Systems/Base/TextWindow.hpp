@@ -236,6 +236,7 @@ class TextWindow {
 
   virtual void renderNameInBox(const std::string& utf8str) = 0;
 
+  virtual void koeMarker(int id);
   virtual void hardBrake();
   virtual void resetIndentation();
   virtual void markRubyBegin();
@@ -266,6 +267,8 @@ class TextWindow {
 
   // Render faces implementation.
   void renderFaces(std::ostream* tree, int behind);
+
+  void renderKoeReplayButtons(std::ostream* tree);
 
  protected:
   // We cache the size of the screen so we don't need the machine in
@@ -403,6 +406,17 @@ class TextWindow {
 
   struct FaceSlot;
   boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];
+
+  // A list of visible koe replay buttons. The Point is the top left corner of
+  // the button and int is the corresponding id number.
+  std::vector<std::pair<Point, int> > koe_replay_button_;
+
+  // We lazily parse and load data about displaying the koe icon on demand.
+  struct KoeReplayInfo {
+    boost::shared_ptr<Surface> icon;
+    Size repos;
+  };
+  boost::scoped_ptr<KoeReplayInfo> koe_replay_info_;
 
   System& system_;
   TextSystem& text_system_;
