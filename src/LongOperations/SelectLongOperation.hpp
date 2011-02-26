@@ -74,6 +74,8 @@ class SelectLongOperation : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 
  protected:
+  RLMachine& machine_;
+
   // A list of the string literals of the options.
   std::vector<Option> options_;
 
@@ -97,8 +99,6 @@ class NormalSelectLongOperation : public SelectLongOperation {
   virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
 
  private:
-  RLMachine& machine_;
-
   boost::shared_ptr<TextWindow> text_window_;
 };
 
@@ -137,8 +137,6 @@ class ButtonSelectLongOperation : public SelectLongOperation,
 
   void renderTextSurface(const boost::shared_ptr<Surface>& text_surface,
                          const Rect& bounding_rect);
-
-  RLMachine& machine_;
 
   // ????
   int basepos_x_, basepos_y_;

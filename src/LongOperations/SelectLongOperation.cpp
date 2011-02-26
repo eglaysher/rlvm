@@ -64,7 +64,8 @@ using libReallive::CommandElement;
 // -----------------------------------------------------------------------
 SelectLongOperation::SelectLongOperation(RLMachine& machine,
                                          const SelectElement& commandElement)
-    : return_value_(-1) {
+    : machine_(machine),
+      return_value_(-1) {
   const vector<SelectElement::Param>& params = commandElement.getRawParams();
   for (unsigned int i = 0; i < params.size(); ++i) {
     Option o;
@@ -104,6 +105,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
 }
 
 void SelectLongOperation::selected(int num) {
+  machine_.system().takeSelectionSnapshot(machine_);
   return_value_ = num;
 }
 
@@ -144,7 +146,6 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     RLMachine& machine,
     const libReallive::SelectElement& commandElement)
     : SelectLongOperation(machine, commandElement),
-      machine_(machine),
       text_window_(machine.system().text().currentWindow()) {
   machine.system().text().setInSelectionMode(true);
   text_window_->setVisible(true);
@@ -205,7 +206,6 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
     const libReallive::SelectElement& commandElement,
     int selbtn_set)
     : SelectLongOperation(machine, commandElement),
-      machine_(machine),
       highlighted_item_(-1),
       normal_frame_(0),
       select_frame_(0) {

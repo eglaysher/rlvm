@@ -247,6 +247,14 @@ struct ReturnMenu : public RLOp_Void_Void {
   }
 };
 
+struct ReturnPrevSelect : public RLOp_Void_Void {
+  virtual bool advanceInstructionPointer() { return false; }
+
+  void operator()(RLMachine& machine) {
+    machine.system().restoreSelectionSnapshot(machine);
+  }
+};
+
 struct SetWindowAttr : public RLOp_Void_5<
   IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
   IntConstant_T> {
@@ -417,8 +425,8 @@ SysModule::SysModule()
   addOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
   addOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
   addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
-  addUnsupportedOpcode(1204, 0, "ReturnPrevSelect");
-  addUnsupportedOpcode(1205, 0, "ReturnPrevSelect2");
+  addOpcode(1204, 0, "ReturnPrevSelect", new ReturnPrevSelect);
+  addOpcode(1205, 0, "ReturnPrevSelect2", new ReturnPrevSelect);
   addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
 
   addOpcode(1130, 0, "DefaultGrp",

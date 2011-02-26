@@ -40,8 +40,10 @@
 #include <string>
 #include <vector>
 
+#include "LongOperations/LoadGameLongOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Sys.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -67,6 +69,23 @@ namespace {
 const std::vector<std::string> ALL_FILETYPES =
     list_of("g00")("pdt")("anm")("gan")("hik")("wav")("ogg")("nwa")("mp3")
     ("ovk")("koe")("nwk");
+
+struct LoadingGameFromStream : public LoadGameLongOperation {
+  LoadingGameFromStream(RLMachine& machine,
+                        const boost::shared_ptr<std::stringstream>& selection)
+      : LoadGameLongOperation(machine),
+        selection_(selection) {}
+
+  virtual void load(RLMachine& machine) {
+    // We need to copy data here onto the stack because the action of loading
+    // will deallocate this object.
+    boost::shared_ptr<std::stringstream> s = selection_;
+    Serialization::loadGameFrom(*s, machine);
+    // Warning: |this| is an invalid pointer now.
+  }
+
+  boost::shared_ptr<std::stringstream> selection_;
+};
 
 }  // namespace
 
@@ -123,6 +142,23 @@ System::System()
 System::~System() {
 }
 
+void System::takeSelectionSnapshot(RLMachine& machine) {
+  previous_selection_.reset(new std::stringstream);
+  Serialization::saveGameTo(*previous_selection_, machine);
+}
+
+void System::restoreSelectionSnapshot(RLMachine& machine) {
+  // We need to reference this on the stack because it will call
+  // System::reset() to get the black screen. (We'll reset again inside
+  // LoadingGameFromStream.)
+  boost::shared_ptr<std::stringstream> s = previous_selection_;
+  if (s) {
+    // LoadingGameFromStream adds itself to the callstack of |machine| due to
+    // subtle timing issues.
+    new LoadingGameFromStream(machine, s);
+  }
+}
+
 int System::isSyscomEnabled(int syscom) {
   checkSyscomIndex(syscom, "System::is_syscom_enabled");
 
@@ -133,10 +169,8 @@ int System::isSyscomEnabled(int syscom) {
     if (syscom_status_[syscom] == SYSCOM_VISIBLE)
       return SYSCOM_GREYED_OUT;
   } else if (syscom == SYSCOM_RETURN_TO_PREVIOUS_SELECTION) {
-    // So far, we don't have an implementation for this, so grey it out all the
-    // time.
     if (syscom_status_[syscom] == SYSCOM_VISIBLE)
-      return SYSCOM_GREYED_OUT;
+      return previous_selection_.get() ? SYSCOM_VISIBLE : SYSCOM_GREYED_OUT;
   }
 
   return syscom_status_[syscom];
@@ -217,7 +251,7 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
     break;
   }
   case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
-    cerr << "Implement return to previous selection later!" << endl;
+    restoreSelectionSnapshot(machine);
     break;
   case SYSCOM_SHOW_WEATHER:
     graphics().setShowWeather(!graphics().showWeather());
@@ -317,6 +351,7 @@ boost::filesystem::path System::findFile(
 
 void System::reset() {
   in_menu_ = false;
+  previous_selection_.reset();
 
   enableSyscom();
 

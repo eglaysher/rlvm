@@ -30,6 +30,7 @@
 
 #include <map>
 #include <vector>
+#include <sstream>
 #include <string>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/version.hpp>
@@ -142,6 +143,12 @@ class System {
     platform_ = platform;
   }
   boost::shared_ptr<Platform> platform() { return platform_; }
+
+  // Takes and restores the previous selection snapshot; a special emphemeral
+  // save game slot that autosaves on selections and is restored through a
+  // special kepago method/syscom call.
+  void takeSelectionSnapshot(RLMachine& machine);
+  void restoreSelectionSnapshot(RLMachine& machine);
 
   // Syscom related functions
   //
@@ -312,6 +319,10 @@ class System {
   FileSystemCache filesystem_cache_;
 
   SystemGlobals globals_;
+
+  // A stream with the save game data at the time of the last selection. Used
+  // for the Return to Previous Selection feature.
+  boost::shared_ptr<std::stringstream> previous_selection_;
 
   // Implementation detail which resets in_menu_;
   friend class MenuReseter;
