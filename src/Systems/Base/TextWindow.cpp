@@ -264,20 +264,7 @@ Rect TextWindow::windowRect() const {
   // pixels. The image is still centered perfectly, even though it's supposed
   // to be shifted 78 pixels right since the origin is the bottom
   // left. Expanding this number didn't change the position offscreen.
-  Size boxSize;
-  if (!textbox_waku_->getSize(boxSize)) {
-    // This is an estimate; it was what I was using before and worked fine for
-    // all the KEY games I originally targeted, but broke on ALMA.
-    //
-    // This should work as long as the background image is fully on screen or
-    // doesn't exist.
-    //
-    // TODO(erg): This looks wrong maybe. Shouldn't I be adding the paddings to
-    // both sides or deleting from all sides? (Or just not add it here in the
-    // first place?
-    boxSize = textSurfaceSize() + Size(left_box_padding_ - right_box_padding_,
-                                      upper_box_padding_ - lower_box_padding_);
-  }
+  Size boxSize = textbox_waku_->getSize(textSurfaceSize());
 
   int x, y;
   switch (origin_) {
@@ -336,12 +323,7 @@ Rect TextWindow::textSurfaceRect() const {
 Rect TextWindow::nameboxWakuRect() const {
   // Like the main windowRect(), we need to ask the waku what size it wants to
   // be.
-  Size boxSize;
-  if (!namebox_waku_->getSize(boxSize)) {
-    boxSize = Size(2 * horizontal_namebox_padding_ +
-                   namebox_characters_ * name_size_,
-                   2 * vertical_namebox_padding_ + name_size_);
-  }
+  Size boxSize = namebox_waku_->getSize(nameboxTextArea());
 
   // The waku is offset from the top left corner of the text window.
   Rect r = windowRect();
@@ -350,18 +332,11 @@ Rect TextWindow::nameboxWakuRect() const {
               boxSize);
 }
 
-Point TextWindow::nameboxTextSurfaceInsertionPoint(const Rect& waku_rect) {
-  Point insertion_point =
-      waku_rect.origin() +
-      Point(horizontal_namebox_padding_,
-            vertical_namebox_padding_);
-  if (namebox_centering_) {
-    int half_width = (waku_rect.width() - 2 * horizontal_namebox_padding_) / 2;
-    int half_text_width = nameSurface()->size().width() / 2;
-    insertion_point += Point(half_width - half_text_width, 0);
-  }
-
-  return insertion_point;
+Size TextWindow::nameboxTextArea() const {
+  // TODO: This seems excessively wide.
+  return Size(2 * horizontal_namebox_padding_ +
+              namebox_characters_ * name_size_,
+              vertical_namebox_padding_ + name_size_);
 }
 
 void TextWindow::setNameSpacingBetweenCharacters(
@@ -453,10 +428,15 @@ void TextWindow::render(std::ostream* tree) {
         if (namebox_waku_) {
           // TODO(erg): The waku needs to be adjusted to be the minimum size of
           // the window in characters
-          namebox_waku_->render(tree, r.origin(), r.size());
+          namebox_waku_->render(tree, r.origin(), nameboxTextArea());
         }
 
-        Point insertion_point = nameboxTextSurfaceInsertionPoint(r);
+        Point insertion_point = namebox_waku_->insertionPoint(
+            r,
+            Size(horizontal_namebox_padding_,
+                 vertical_namebox_padding_),
+            name_surface->size(),
+            namebox_centering_);
         name_surface->renderToScreen(
             name_surface->rect(),
             Rect(insertion_point, name_surface->size()),

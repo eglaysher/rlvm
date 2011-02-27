@@ -46,7 +46,11 @@ class TextWakuType4 : public TextWaku {
 
   // We have no size other than what is passed to |namebox_size|. Always
   // returns false and resets |out|.
-  virtual bool getSize(Size& out) const;
+  virtual Size getSize(const Size& text_surface) const;
+  virtual Point insertionPoint(const Rect& waku_rect,
+                               const Size& padding,
+                               const Size& surface_size,
+                               bool center) const;
 
   /**
    * @todo These two methods shouldn't really exist; I need to redo plumbing of
@@ -72,6 +76,9 @@ class TextWakuType4 : public TextWaku {
   TextWindow& window_;
 
   int setno_, no_;
+
+  // Additional area that adds to the filter backing in four directions.
+  int area_top_, area_bottom_, area_left_, area_right_;
 
   /// The surface that we pick pieces of our textbox against.
   boost::shared_ptr<Surface> waku_main_;

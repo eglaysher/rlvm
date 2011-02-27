@@ -146,17 +146,31 @@ void TextWakuNormal::renderButtons() {
 
 // -----------------------------------------------------------------------
 
-bool TextWakuNormal::getSize(Size& out) const {
-  if (waku_main_) {
-    out = waku_main_->size();
-    return true;
-  } else if (waku_backing_) {
-    out = waku_backing_->size();
-    return true;
+Size TextWakuNormal::getSize(const Size& text_surface) const {
+  if (waku_main_)
+    return waku_main_->size();
+  else if (waku_backing_)
+    return waku_backing_->size();
+  else
+    return text_surface;
+}
+
+// -----------------------------------------------------------------------
+
+Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
+                                     const Size& padding,
+                                     const Size& surface_size,
+                                     bool center) const {
+  // In normal type 5 wakus, we just offset from the top left corner by padding
+  // amounts.
+  Point insertion_point = waku_rect.origin() + padding;
+  if (center) {
+    int half_width = (waku_rect.width() - 2 * padding.width()) / 2;
+    int half_text_width = surface_size.width() / 2;
+    insertion_point += Point(half_width - half_text_width, 0);
   }
 
-  out = Size();
-  return false;
+  return insertion_point;
 }
 
 // -----------------------------------------------------------------------

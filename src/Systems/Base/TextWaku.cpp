@@ -35,11 +35,10 @@
 TextWaku* TextWaku::Create(System& system, TextWindow& window,
                            int setno, int no) {
   GameexeInterpretObject waku(system.gameexe()("WAKU", setno, "TYPE"));
-  if (waku.to_int(5) == 4) {
-    return new TextWakuType4(system, window, setno, no);
-  } else {
-    // Old style used everywhere is treated as the default.
+  if (waku.to_int(5) == 5) {
     return new TextWakuNormal(system, window, setno, no);
+  } else {
+    return new TextWakuType4(system, window, setno, no);
   }
 }
 

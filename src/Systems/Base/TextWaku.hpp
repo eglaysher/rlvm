@@ -30,6 +30,7 @@
 #include <iosfwd>
 
 class Point;
+class Rect;
 class RLMachine;
 class Size;
 class System;
@@ -50,7 +51,11 @@ class TextWaku {
 
   // Possibly returns the size if this TextWaku object has a known size on
   // screen.
-  virtual bool getSize(Size& out) const = 0;
+  virtual Size getSize(const Size& text_surface) const = 0;
+  virtual Point insertionPoint(const Rect& waku_rect,
+                               const Size& padding,
+                               const Size& surface_size,
+                               bool center) const = 0;
 
   virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,

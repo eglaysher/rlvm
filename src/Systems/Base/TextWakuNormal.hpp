@@ -56,7 +56,11 @@ class TextWakuNormal : public TextWaku {
   virtual void execute();
   virtual void render(std::ostream* tree, Point box_location,
                       Size namebox_size);
-  virtual bool getSize(Size& out) const;
+  virtual Size getSize(const Size& text_surface) const;
+  virtual Point insertionPoint(const Rect& waku_rect,
+                               const Size& padding,
+                               const Size& surface_size,
+                               bool center) const;
 
   /**
    * @todo These two methods shouldn't really exist; I need to redo plumbing of
