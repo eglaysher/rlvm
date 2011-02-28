@@ -43,8 +43,6 @@ class Surface;
 class System;
 class TextWindow;
 
-// -----------------------------------------------------------------------
-
 class TextWindowButton : public boost::noncopyable {
  public:
   explicit TextWindowButton(System& system);
@@ -52,13 +50,13 @@ class TextWindowButton : public boost::noncopyable {
                    GameexeInterpretObject location_box);
   virtual ~TextWindowButton();
 
-  /// Returns the absolute screen coordinate of this button.
+  // Returns the absolute screen coordinate of this button.
   Rect location(TextWindow& window);
 
-  /// Checks to see if this is a valid, used button
+  // Checks to see if this is a valid, used button
   bool isValid() const;
 
-  /// Track the mouse position to see if we need to alter our state
+  // Track the mouse position to see if we need to alter our state
   void setMousePosition(TextWindow& window, const Point& pos);
 
   bool handleMouseClick(RLMachine& machine, TextWindow& window,
@@ -69,14 +67,14 @@ class TextWindowButton : public boost::noncopyable {
               const boost::shared_ptr<Surface>& buttons,
               int base_pattern);
 
-  /// Called when the button is pressed
+  // Called when the button is pressed
   virtual void buttonPressed() {}
 
-  /// Called by other execute() calls while the System object has its
-  /// turn to do any updating
+  // Called by other execute() calls while the System object has its
+  // turn to do any updating
   virtual void execute() {}
 
-  /// Called when the button is released
+  // Called when the button is released
   virtual void buttonReleased(RLMachine& machine) {}
 
  protected:

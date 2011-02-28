@@ -77,23 +77,17 @@ class TextTextPageElement : public TextPageElement {
   }
 };
 
-// -----------------------------------------------------------------------
-
 TextTextPageElement::TextTextPageElement() {
 }
-
-// -----------------------------------------------------------------------
 
 void TextTextPageElement::replayElement(TextPage& page, bool is_active_page) {
   // Sometimes there are empty TextTextPageElements. I hypothesize these happen
   // because of empty strings which just set the speaker's name.
   if (list_of_chars_to_print_.size()) {
-    printTextToFunction(bind(&TextPage::character_impl, ref(page), _1, _2),
+    printTextToFunction(bind(&TextPage::CharacterImpl, ref(page), _1, _2),
                         list_of_chars_to_print_, "");
   }
 }
-
-// -----------------------------------------------------------------------
 
 void TextTextPageElement::append(const string& c) {
   list_of_chars_to_print_.append(c);
@@ -132,8 +126,6 @@ TextPage::TextPage(System& system, int window_num)
   addSetToRightStartingColorElement();
 }
 
-// -----------------------------------------------------------------------
-
 TextPage::TextPage(const TextPage& rhs)
     : system_(rhs.system_),
       window_num_(rhs.window_num_),
@@ -145,20 +137,14 @@ TextPage::TextPage(const TextPage& rhs)
     rhs.elements_to_replay_.end());
 }
 
-// -----------------------------------------------------------------------
-
 TextPage::~TextPage() {
 }
-
-// -----------------------------------------------------------------------
 
 TextPage& TextPage::operator=(const TextPage& rhs) {
   TextPage tmp(rhs);
   swap(tmp);
   return *this;
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::swap(TextPage& rhs) {
   elements_to_replay_.swap(rhs.elements_to_replay_);
@@ -167,8 +153,6 @@ void TextPage::swap(TextPage& rhs) {
   std::swap(number_of_chars_on_page_, rhs.number_of_chars_on_page_);
   std::swap(in_ruby_gloss_, rhs.in_ruby_gloss_);
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::replay(bool is_active_page) {
   for_each(elements_to_replay_.begin(), elements_to_replay_.end(),
@@ -179,7 +163,7 @@ void TextPage::replay(bool is_active_page) {
 // ------------------------------------------------- [ Public operations ]
 
 bool TextPage::character(const string& current, const string& rest) {
-  bool rendered = character_impl(current, rest);
+  bool rendered = CharacterImpl(current, rest);
 
   if (rendered) {
     if (elements_to_replay_.size() == 0 ||
@@ -195,108 +179,80 @@ bool TextPage::character(const string& current, const string& rest) {
   return rendered;
 }
 
-// -----------------------------------------------------------------------
-
 void TextPage::name(const string& name, const string& next_char) {
-  addAction(bind(&TextPage::name_impl, _1, name, next_char, _2));
+  addAction(bind(&TextPage::NameImpl, _1, name, next_char, _2));
   number_of_chars_on_page_++;
 }
 
-// -----------------------------------------------------------------------
-
 void TextPage::koeMarker(int id) {
-  addAction(bind(&TextPage::koeMarkerImpl, _1, id, _2));
+  addAction(bind(&TextPage::KoeMarkerImpl, _1, id, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::hardBrake() {
-  addAction(bind(&TextPage::hard_brake_impl, _1, _2));
+  addAction(bind(&TextPage::HardBrakeImpl, _1, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::setIndentation() {
-  addAction(bind(&TextPage::set_indentation_impl, _1, _2));
+  addAction(bind(&TextPage::SetIndentationImpl, _1, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::resetIndentation() {
-  addAction(bind(&TextPage::reset_indentation_impl, _1, _2));
+  addAction(bind(&TextPage::ResetIndentationImpl, _1, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::fontColour(int colour) {
-  addAction(bind(&TextPage::font_colour_impl, _1, colour, _2));
+  addAction(bind(&TextPage::FontColourImpl, _1, colour, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::defaultFontSize() {
-  addAction(bind(&TextPage::default_font_size_impl, _1, _2));
+  addAction(bind(&TextPage::DefaultFontSizeImpl, _1, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::fontSize(const int size) {
-  addAction(bind(&TextPage::font_size_impl, _1, size, _2));
+  addAction(bind(&TextPage::FontSizeImpl, _1, size, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::markRubyBegin() {
-  addAction(bind(&TextPage::mark_ruby_begin_impl, _1, _2));
+  addAction(bind(&TextPage::MarkRubyBeginImpl, _1, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::displayRubyText(const std::string& utf8str) {
-  addAction(bind(&TextPage::display_ruby_text_impl, _1, utf8str, _2));
+  addAction(bind(&TextPage::DisplayRubyTextImpl, _1, utf8str, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::setInsertionPointX(int x) {
-  addAction(bind(&TextPage::set_insertion_point_x_impl, _1, x, _2));
+  addAction(bind(&TextPage::SetInsertionPointXImpl, _1, x, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::setInsertionPointY(int y) {
-  addAction(bind(&TextPage::set_insertion_point_y_impl, _1, y, _2));
+  addAction(bind(&TextPage::SetInsertionPointYImpl, _1, y, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::offsetInsertionPointX(int offset) {
-  addAction(bind(&TextPage::offset_insertion_point_x_impl, _1, offset, _2));
+  addAction(bind(&TextPage::OffsetInsertionPointXImpl, _1, offset, _2));
 }
 
-// -----------------------------------------------------------------------
-
 void TextPage::offsetInsertionPointY(int offset) {
-  addAction(bind(&TextPage::offset_insertion_point_y_impl, _1, offset, _2));
+  addAction(bind(&TextPage::OffsetInsertionPointYImpl, _1, offset, _2));
 }
 
 void TextPage::faceOpen(const std::string& filename, int index) {
-  addAction(bind(&TextPage::faceOpenImpl, _1, filename, index, _2));
+  addAction(bind(&TextPage::FaceOpenImpl, _1, filename, index, _2));
 }
 
 void TextPage::faceClose(int index) {
-  addAction(bind(&TextPage::faceCloseImpl, _1, index, _2));
+  addAction(bind(&TextPage::FaceCloseImpl, _1, index, _2));
 }
-
-// -----------------------------------------------------------------------
 
 void TextPage::addSetToRightStartingColorElement() {
   elements_to_replay_.push_back(
       new ActionElement(
-          bind(&TextPage::set_to_right_starting_colour_impl, _1, _2)));
+          bind(&TextPage::SetToRightStartingColourImpl, _1, _2)));
 }
 
-// -----------------------------------------------------------------------
+bool TextPage::isFull() const {
+  return system_->text().textWindow( window_num_)->isFull();
+}
 
 void TextPage::addAction(
     const boost::function<void(TextPage&, bool)>& action) {
@@ -304,118 +260,87 @@ void TextPage::addAction(
   elements_to_replay_.push_back(new ActionElement(action));
 }
 
-// -----------------------------------------------------------------------
-
-bool TextPage::character_impl(const string& c, const string& rest) {
+bool TextPage::CharacterImpl(const string& c, const string& rest) {
   return system_->text().textWindow(window_num_)->character(c, rest);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::name_impl(const string& name,
-                         const string& next_char,
-                         bool is_active_page) {
+void TextPage::NameImpl(const string& name,
+                        const string& next_char,
+                        bool is_active_page) {
   system_->text().textWindow(window_num_)->setName(name, next_char);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::koeMarkerImpl(int id, bool is_active_page) {
+void TextPage::KoeMarkerImpl(int id, bool is_active_page) {
   if (!is_active_page) {
     system_->text().textWindow(window_num_)->koeMarker(id);
   }
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::hard_brake_impl(bool is_active_page) {
+void TextPage::HardBrakeImpl(bool is_active_page) {
   system_->text().textWindow(window_num_)->hardBrake();
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::set_indentation_impl(bool is_active_page) {
+void TextPage::SetIndentationImpl(bool is_active_page) {
   system_->text().textWindow(window_num_)->setIndentation();
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::reset_indentation_impl(bool is_active_page) {
+void TextPage::ResetIndentationImpl(bool is_active_page) {
   system_->text().textWindow(window_num_)->resetIndentation();
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::font_colour_impl(int colour, bool is_active_page) {
+void TextPage::FontColourImpl(int colour, bool is_active_page) {
   if (is_active_page) {
     system_->text().textWindow(window_num_)
         ->setFontColor(system_->gameexe()("COLOR_TABLE", colour));
   }
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::default_font_size_impl(bool is_active_page) {
+void TextPage::DefaultFontSizeImpl(bool is_active_page) {
   system_->text().textWindow(window_num_)->setFontSizeToDefault();
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::font_size_impl(int size, bool is_active_page) {
+void TextPage::FontSizeImpl(int size, bool is_active_page) {
   system_->text().textWindow(window_num_)->setFontSizeInPixels(size);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::mark_ruby_begin_impl(bool is_active_page) {
+void TextPage::MarkRubyBeginImpl(bool is_active_page) {
   system_->text().textWindow(window_num_)->markRubyBegin();
   in_ruby_gloss_ = true;
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::display_ruby_text_impl(const std::string& utf8str,
-                                      bool is_active_page) {
+void TextPage::DisplayRubyTextImpl(const std::string& utf8str,
+                                   bool is_active_page) {
   system_->text().textWindow(window_num_)->displayRubyText(utf8str);
   in_ruby_gloss_ = false;
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::set_insertion_point_x_impl(int x, bool is_active_page) {
+void TextPage::SetInsertionPointXImpl(int x, bool is_active_page) {
   system_->text().textWindow(window_num_)->setInsertionPointX(x);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::set_insertion_point_y_impl(int y, bool is_active_page) {
+void TextPage::SetInsertionPointYImpl(int y, bool is_active_page) {
   system_->text().textWindow(window_num_)->setInsertionPointY(y);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::offset_insertion_point_x_impl(int offset, bool is_active_page) {
+void TextPage::OffsetInsertionPointXImpl(int offset, bool is_active_page) {
   system_->text().textWindow(window_num_)->offsetInsertionPointX(offset);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::offset_insertion_point_y_impl(int offset, bool is_active_page) {
+void TextPage::OffsetInsertionPointYImpl(int offset, bool is_active_page) {
   system_->text().textWindow(window_num_)->offsetInsertionPointY(offset);
 }
 
-void TextPage::faceOpenImpl(std::string filename, int index,
+void TextPage::FaceOpenImpl(std::string filename,
+                            int index,
                             bool is_active_page) {
   system_->text().textWindow(window_num_)->faceOpen(filename, index);
 }
 
-void TextPage::faceCloseImpl(int index, bool is_active_page) {
+void TextPage::FaceCloseImpl(int index, bool is_active_page) {
   system_->text().textWindow(window_num_)->faceClose(index);
 }
 
-// -----------------------------------------------------------------------
-
-void TextPage::set_to_right_starting_colour_impl(bool is_active_page) {
+void TextPage::SetToRightStartingColourImpl(bool is_active_page) {
   Gameexe& gexe = system_->gameexe();
   boost::shared_ptr<TextWindow> window = system_->text().textWindow(
     window_num_);
@@ -424,10 +349,4 @@ void TextPage::set_to_right_starting_colour_impl(bool is_active_page) {
     if (colour.exists())
       window->setFontColor(colour);
   }
-}
-
-// -----------------------------------------------------------------------
-
-bool TextPage::isFull() const {
-  return system_->text().textWindow( window_num_)->isFull();
 }

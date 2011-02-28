@@ -52,12 +52,10 @@ class TextWakuType4 : public TextWaku {
                                const Size& surface_size,
                                bool center) const;
 
-  /**
-   * @todo These two methods shouldn't really exist; I need to redo plumbing of
-   *       events so that these aren't routed through TextWindow, but are
-   *       instead some sort of listener. I'm currently thinking that the
-   *       individual buttons that need to handle events should be listeners.
-   */
+  // TODO(erg): These two methods shouldn't really exist; I need to redo
+  // plumbing of events so that these aren't routed through TextWindow, but are
+  // instead some sort of listener. I'm currently thinking that the individual
+  // buttons that need to handle events should be listeners.
   virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed);
@@ -65,14 +63,14 @@ class TextWakuType4 : public TextWaku {
  private:
   void setWakuMain(const std::string& name);
 
-  /// Returns |cached_backing_|, shrinking or enlarging it to |size|.
+  // Returns |cached_backing_|, shrinking or enlarging it to |size|.
   const boost::shared_ptr<Surface>& getWakuBackingOfSize(Size size);
 
-  /// The system we are a part of.
+  // The system we are a part of.
   System& system_;
 
-  /// The text window we decorate. TODO: Figure out how wrong this is when we
-  /// are a name box.
+  // The text window we decorate. TODO: Figure out how wrong this is when we
+  // are a name box.
   TextWindow& window_;
 
   int setno_, no_;
@@ -80,13 +78,13 @@ class TextWakuType4 : public TextWaku {
   // Additional area that adds to the filter backing in four directions.
   int area_top_, area_bottom_, area_left_, area_right_;
 
-  /// The surface that we pick pieces of our textbox against.
+  // The surface that we pick pieces of our textbox against.
   boost::shared_ptr<Surface> waku_main_;
 
-  /// A cached backing regenerated whenever the namebox size changes
+  // A cached backing regenerated whenever the namebox size changes
   boost::shared_ptr<Surface> cached_backing_;
 
-  /// G00 regions in |waku_main_|.
+  // G00 regions in |waku_main_|.
   Surface::GrpRect top_left;
   Surface::GrpRect top_center;
   Surface::GrpRect top_right;

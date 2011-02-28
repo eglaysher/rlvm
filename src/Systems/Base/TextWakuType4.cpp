@@ -79,17 +79,11 @@ TextWakuType4::TextWakuType4(System& system, TextWindow& window, int setno,
     area_right_ = area[3];
 }
 
-// -----------------------------------------------------------------------
-
 TextWakuType4::~TextWakuType4() {
 }
 
-// -----------------------------------------------------------------------
-
 void TextWakuType4::execute() {
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuType4::render(std::ostream* tree, Point box_location,
                            Size content_size) {
@@ -176,15 +170,11 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
   }
 }
 
-// -----------------------------------------------------------------------
-
 Size TextWakuType4::getSize(const Size& text_surface) const {
   Size padding = Size(left_side.rect.width() + right_side.rect.width(),
                       top_center.rect.height() + bottom_center.rect.height());
   return text_surface + padding;
 }
-
-// -----------------------------------------------------------------------
 
 Point TextWakuType4::insertionPoint(const Rect& waku_rect,
                                     const Size& padding,
@@ -207,21 +197,15 @@ Point TextWakuType4::insertionPoint(const Rect& waku_rect,
   return insertion_point;
 }
 
-// -----------------------------------------------------------------------
-
 void TextWakuType4::setMousePosition(const Point& pos) {
   // Noop
 }
-
-// -----------------------------------------------------------------------
 
 bool TextWakuType4::handleMouseClick(RLMachine& machine, const Point& pos,
                                      bool pressed) {
   // Noop; this window won't do anything with mouse clicks.
   return false;
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuType4::setWakuMain(const std::string& name) {
   if (name != "") {
@@ -241,8 +225,6 @@ void TextWakuType4::setWakuMain(const std::string& name) {
     waku_main_.reset();
   }
 }
-
-// -----------------------------------------------------------------------
 
 const boost::shared_ptr<Surface>& TextWakuType4::getWakuBackingOfSize(
     Size size) {

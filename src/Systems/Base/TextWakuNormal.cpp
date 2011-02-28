@@ -45,15 +45,13 @@ using std::ostringstream;
 using std::setfill;
 using std::setw;
 
-// -----------------------------------------------------------------------
+namespace {
 
-/**
- * Definitions for the location and Gameexe.ini keys describing various text
- * window buttons.
- *
- * Previously was using a map keyed on strings. In rendering code. With keys
- * that had similar prefixes. WTF was I smoking...
- */
+// Definitions for the location and Gameexe.ini keys describing various text
+// window buttons.
+//
+// Previously was using a map keyed on strings. In rendering code. With keys
+// that had similar prefixes. WTF was I smoking...
 static struct ButtonInfo {
   int index;
   const char* button_name;
@@ -74,6 +72,8 @@ static struct ButtonInfo {
   {-1, NULL, -1}
 };
 
+}  // namespace
+
 // -----------------------------------------------------------------------
 // TextWakuNormal
 // -----------------------------------------------------------------------
@@ -83,12 +83,8 @@ TextWakuNormal::TextWakuNormal(System& system, TextWindow& window, int setno,
   loadWindowWaku();
 }
 
-// -----------------------------------------------------------------------
-
 TextWakuNormal::~TextWakuNormal() {
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuNormal::execute() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
@@ -97,8 +93,6 @@ void TextWakuNormal::execute() {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuNormal::render(std::ostream* tree, Point box_location,
                             Size namebox_size) {
@@ -134,8 +128,6 @@ void TextWakuNormal::render(std::ostream* tree, Point box_location,
     renderButtons();
 }
 
-// -----------------------------------------------------------------------
-
 void TextWakuNormal::renderButtons() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
@@ -143,8 +135,6 @@ void TextWakuNormal::renderButtons() {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 Size TextWakuNormal::getSize(const Size& text_surface) const {
   if (waku_main_)
@@ -154,8 +144,6 @@ Size TextWakuNormal::getSize(const Size& text_surface) const {
   else
     return text_surface;
 }
-
-// -----------------------------------------------------------------------
 
 Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
                                      const Size& padding,
@@ -173,8 +161,6 @@ Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
   return insertion_point;
 }
 
-// -----------------------------------------------------------------------
-
 void TextWakuNormal::setMousePosition(const Point& pos) {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
@@ -182,8 +168,6 @@ void TextWakuNormal::setMousePosition(const Point& pos) {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 bool TextWakuNormal::handleMouseClick(RLMachine& machine, const Point& pos,
                                 bool pressed) {
@@ -196,8 +180,6 @@ bool TextWakuNormal::handleMouseClick(RLMachine& machine, const Point& pos,
 
   return false;
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuNormal::loadWindowWaku() {
   using namespace boost;
@@ -286,16 +268,12 @@ void TextWakuNormal::loadWindowWaku() {
   */
 }
 
-// -----------------------------------------------------------------------
-
 void TextWakuNormal::setWakuMain(const std::string& name) {
   if (name != "")
     waku_main_ = system_.graphics().loadNonCGSurfaceFromFile(name);
   else
     waku_main_.reset();
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuNormal::setWakuBacking(const std::string& name) {
   if (name != "") {
@@ -305,8 +283,6 @@ void TextWakuNormal::setWakuBacking(const std::string& name) {
     waku_backing_.reset();
   }
 }
-
-// -----------------------------------------------------------------------
 
 void TextWakuNormal::setWakuButton(const std::string& name) {
   if (name != "")

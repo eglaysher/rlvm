@@ -133,6 +133,28 @@ class TextPage : public boost::noncopyable {
   // Performs the passed in action and then adds it to |elements_to_replay_|.
   void addAction(const boost::function<void(TextPage&, bool)>& action);
 
+  // Private implementations; These methods are what actually does things. They
+  // output to the screen, etc.
+  bool CharacterImpl(const std::string& c, const std::string& rest);
+  void NameImpl(const std::string& name, const std::string& next_char,
+                bool is_active_page);
+  void KoeMarkerImpl(int id, bool is_active_page);
+  void HardBrakeImpl(bool is_active_page);
+  void SetIndentationImpl(bool is_active_page);
+  void ResetIndentationImpl(bool is_active_page);
+  void FontColourImpl(const int colour, bool is_active_page);
+  void DefaultFontSizeImpl(bool is_active_page);
+  void FontSizeImpl(int size, bool is_active_page);
+  void MarkRubyBeginImpl(bool is_active_page);
+  void DisplayRubyTextImpl(const std::string& utf8str, bool is_active_page);
+  void SetInsertionPointXImpl(int x, bool is_active_page);
+  void SetInsertionPointYImpl(int y, bool is_active_page);
+  void OffsetInsertionPointXImpl(int offset, bool is_active_page);
+  void OffsetInsertionPointYImpl(int offset, bool is_active_page);
+  void FaceOpenImpl(std::string filename, int index, bool is_active_page);
+  void FaceCloseImpl(int index, bool is_active_page);
+  void SetToRightStartingColourImpl(bool is_active_page);
+
   boost::ptr_vector<TextPageElement> elements_to_replay_;
 
   System* system_;
@@ -146,46 +168,6 @@ class TextPage : public boost::noncopyable {
   // Whether markRubyBegin() was called but displayRubyText() hasn't yet been
   // called.
   bool in_ruby_gloss_;
-
-  /**
-   * @name Private implementations
-   *
-   * These methods are what actually does things. They output to the
-   * screen, etc.
-   *
-   * @{
-   */
-
-  bool character_impl(const std::string& c, const std::string& rest);
-
-  void name_impl(const std::string& name, const std::string& next_char,
-                 bool is_active_page);
-
-  void koeMarkerImpl(int id, bool is_active_page);
-
-  void hard_brake_impl(bool is_active_page);
-
-  void set_indentation_impl(bool is_active_page);
-
-  void reset_indentation_impl(bool is_active_page);
-
-  void font_colour_impl(const int colour, bool is_active_page);
-  void default_font_size_impl(bool is_active_page);
-  void font_size_impl(int size, bool is_active_page);
-  void mark_ruby_begin_impl(bool is_active_page);
-
-  void display_ruby_text_impl(const std::string& utf8str, bool is_active_page);
-
-  void set_insertion_point_x_impl(int x, bool is_active_page);
-  void set_insertion_point_y_impl(int y, bool is_active_page);
-  void offset_insertion_point_x_impl(int offset, bool is_active_page);
-  void offset_insertion_point_y_impl(int offset, bool is_active_page);
-
-  void faceOpenImpl(std::string filename, int index, bool is_active_page);
-  void faceCloseImpl(int index, bool is_active_page);
-
-  void set_to_right_starting_colour_impl(bool is_active_page);
-  /// @}
 };
 
 #endif  // SRC_SYSTEMS_BASE_TEXTPAGE_HPP_

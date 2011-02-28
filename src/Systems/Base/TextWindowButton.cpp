@@ -41,9 +41,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 
-/**
- * Describes the state of a Waku button
- */
+// Describes the state of a Waku button
 enum ButtonState {
   BUTTONSTATE_BUTTON_NOT_USED = -1,
   BUTTONSTATE_NORMAL = 0,
@@ -61,8 +59,6 @@ TextWindowButton::TextWindowButton(System& system)
     : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
 }
 
-// -----------------------------------------------------------------------
-
 TextWindowButton::TextWindowButton(System& system, bool use_this_button,
                                    GameexeInterpretObject location_box)
     : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
@@ -73,12 +69,8 @@ TextWindowButton::TextWindowButton(System& system, bool use_this_button,
   }
 }
 
-// -----------------------------------------------------------------------
-
 TextWindowButton::~TextWindowButton() {
 }
-
-// -----------------------------------------------------------------------
 
 Rect TextWindowButton::location(TextWindow& window) {
   int type = location_.at(0);
@@ -123,15 +115,11 @@ Rect TextWindowButton::location(TextWindow& window) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 bool TextWindowButton::isValid() const {
   return state_ != BUTTONSTATE_BUTTON_NOT_USED && location_.size() == 5 &&
     !(location_[0] == 0 && location_[1] == 0 && location_[2] == 0 &&
       location_[3] == 0 && location_[4] == 0);
 }
-
-// -----------------------------------------------------------------------
 
 void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
   if (state_ == BUTTONSTATE_DISABLED)
@@ -151,8 +139,6 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
       system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
   }
 }
-
-// -----------------------------------------------------------------------
 
 bool TextWindowButton::handleMouseClick(
     RLMachine& machine, TextWindow& window, const Point& pos, bool pressed) {
@@ -181,8 +167,6 @@ bool TextWindowButton::handleMouseClick(
   return false;
 }
 
-// -----------------------------------------------------------------------
-
 void TextWindowButton::render(TextWindow& window,
                               const boost::shared_ptr<Surface>& buttons,
                               int base_pattern) {
@@ -207,12 +191,8 @@ ActionTextWindowButton::ActionTextWindowButton(
     : TextWindowButton(system, use, location_box), action_(action) {
 }
 
-// -----------------------------------------------------------------------
-
 ActionTextWindowButton::~ActionTextWindowButton() {
 }
-
-// -----------------------------------------------------------------------
 
 void ActionTextWindowButton::buttonReleased(RLMachine& machine) {
   action_();
@@ -229,12 +209,8 @@ ActivationTextWindowButton::ActivationTextWindowButton(
       on_end_(end), on_(false), enabled_(true) {
 }
 
-// -----------------------------------------------------------------------
-
 ActivationTextWindowButton::~ActivationTextWindowButton() {
 }
-
-// -----------------------------------------------------------------------
 
 void ActivationTextWindowButton::buttonReleased(RLMachine& machine) {
   if (enabled_) {
@@ -245,21 +221,15 @@ void ActivationTextWindowButton::buttonReleased(RLMachine& machine) {
   }
 }
 
-// -----------------------------------------------------------------------
-
 void ActivationTextWindowButton::setEnabled(bool enabled) {
   enabled_ = enabled;
   setState();
 }
 
-// -----------------------------------------------------------------------
-
 void ActivationTextWindowButton::setActivated(bool on) {
   on_ = on;
   setState();
 }
-
-// -----------------------------------------------------------------------
 
 void ActivationTextWindowButton::setState() {
   if (enabled_)
@@ -280,12 +250,8 @@ RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
       time_between_invocations_(time_between_invocations) {
 }
 
-// -----------------------------------------------------------------------
-
 RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton() {
 }
-
-// -----------------------------------------------------------------------
 
 void RepeatActionWhileHoldingWindowButton::buttonPressed() {
   held_down_ = true;
@@ -293,8 +259,6 @@ void RepeatActionWhileHoldingWindowButton::buttonPressed() {
   callback_();
   last_invocation_ = system_.event().getTicks();
 }
-
-// -----------------------------------------------------------------------
 
 void RepeatActionWhileHoldingWindowButton::execute() {
   if (held_down_) {
@@ -306,8 +270,6 @@ void RepeatActionWhileHoldingWindowButton::execute() {
     }
   }
 }
-
-// -----------------------------------------------------------------------
 
 void RepeatActionWhileHoldingWindowButton::buttonReleased(RLMachine& machine) {
   held_down_ = false;
@@ -329,12 +291,8 @@ ExbtnWindowButton::ExbtnWindowButton(
   }
 }
 
-// -----------------------------------------------------------------------
-
 ExbtnWindowButton::~ExbtnWindowButton() {
 }
-
-// -----------------------------------------------------------------------
 
 void ExbtnWindowButton::buttonReleased(RLMachine& machine) {
   /// Hide all text boxes when entering an Exbtn
