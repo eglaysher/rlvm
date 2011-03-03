@@ -193,14 +193,23 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
+struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int obj_num) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, obj_num);
+    if (obj.hasObjectData())
+      obj.objectData().setCurrentlyPlaying(false);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
 
 void addGanOperationsTo(RLModule& m) {
+  m.addOpcode(0, 0, "objStop2", new objStop_0);
   m.addOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
 
-  m.addUnsupportedOpcode(1000, 0, "objStop");
+  m.addOpcode(1000, 0, "objStop", new objStop_0);
   m.addUnsupportedOpcode(1000, 1, "objStop");
 
   m.addOpcode(1001, 0, "ganLoop",
@@ -228,6 +237,9 @@ void addGanOperationsTo(RLModule& m) {
               new ganPlay(true, GraphicsObjectData::AFTER_NONE));
   m.addOpcode(3007, 0, "ganPlayOnceEx2",
               new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
+
+  m.addOpcode(3103, 0, "ganPlay3",
+              new ganPlay(false, GraphicsObjectData::AFTER_NONE));
 }
 
 // -----------------------------------------------------------------------
