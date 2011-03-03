@@ -27,6 +27,8 @@
 #include "Systems/Base/ColourFilterObjectData.hpp"
 
 #include <ostream>
+#include <iostream>
+using namespace std;
 
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -43,14 +45,22 @@ ColourFilterObjectData::~ColourFilterObjectData() {}
 
 void ColourFilterObjectData::render(const GraphicsObject& go,
                                     std::ostream* tree) {
-  RGBAColour colour = go.colour();
-  colour.setAlpha(
-      static_cast<int>(colour.a_float() * go.alpha()));
+  if (go.mono() == 0) {
+    RGBAColour colour = go.colour();
+    colour.setAlpha(
+        static_cast<int>(colour.a_float() * go.alpha()));
 
-  graphics_system_.fillScreenArea(screen_rect_, colour);
+    graphics_system_.fillScreenArea(screen_rect_, colour);
 
-  if (tree)
-    objectInfo(*tree);
+    if (tree)
+      objectInfo(*tree);
+  } else {
+    static bool printed = false;
+    if (!printed) {
+      printed = true;
+      cerr << "We don't yet deal with objMono() and colour filters." << endl;
+    }
+  }
 }
 
 int ColourFilterObjectData::pixelWidth(
