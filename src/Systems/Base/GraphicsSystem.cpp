@@ -603,6 +603,24 @@ LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() {
 
 // -----------------------------------------------------------------------
 
+bool GraphicsSystem::animationsPlaying() const {
+  AllocatedLazyArrayIterator<GraphicsObject> it =
+    graphics_object_impl_->foreground_objects.allocated_begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end =
+    graphics_object_impl_->foreground_objects.allocated_end();
+  for (; it != end; ++it) {
+    if (it->hasObjectData()) {
+      GraphicsObjectData& data = it->objectData();
+      if (data.isAnimation() && data.currentlyPlaying())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::takeSavepointSnapshot() {
   foregroundObjects().copyTo(graphics_object_impl_->saved_foreground_objects);
   backgroundObjects().copyTo(graphics_object_impl_->saved_background_objects);

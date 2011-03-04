@@ -360,6 +360,9 @@ class GraphicsSystem : public EventListener {
   LazyArray<GraphicsObject>& backgroundObjects();
   LazyArray<GraphicsObject>& foregroundObjects();
 
+  // Returns true if there's a currently playing animation.
+  bool animationsPlaying() const;
+
   // Takes a snapshot of the current object state. This snapshot is saved
   // instead of the current state of the graphics, since RealLive is a savepoint
   // based system.

@@ -50,6 +50,21 @@ using namespace libReallive;
 
 namespace {
 
+struct objWaitAll : public RLOp_Void_Void {
+  struct WaitUntilAllDone : public LongOperation {
+    bool operator()(RLMachine& machine) {
+      // Clannad puts us in DrawManual() right before calling us so we force
+      // refreshes.
+      machine.system().graphics().forceRefresh();
+      return !machine.system().graphics().animationsPlaying();
+    }
+  };
+
+  void operator()(RLMachine& machine) {
+    machine.pushLongOperation(new WaitUntilAllDone);
+  }
+};
+
 struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   struct WaitForGanToFinish : public LongOperation {
     /**
@@ -211,6 +226,8 @@ void addGanOperationsTo(RLModule& m) {
 
   m.addOpcode(1000, 0, "objStop", new objStop_0);
   m.addUnsupportedOpcode(1000, 1, "objStop");
+
+  m.addOpcode(104, 0, "objWaitAll", new objWaitAll);
 
   m.addOpcode(1001, 0, "ganLoop",
               new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
