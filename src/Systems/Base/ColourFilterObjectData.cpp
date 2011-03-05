@@ -24,6 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/export.hpp>
+
 #include "Systems/Base/ColourFilterObjectData.hpp"
 
 #include <ostream>
@@ -33,6 +37,7 @@ using namespace std;
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/System.hpp"
 #include "Utilities/Exception.hpp"
 
 ColourFilterObjectData::ColourFilterObjectData(GraphicsSystem& system,
@@ -97,3 +102,25 @@ boost::shared_ptr<Surface> ColourFilterObjectData::currentSurface(
 void ColourFilterObjectData::objectInfo(std::ostream& tree) {
   tree << "ColourFilterObjectData(" << screen_rect_ << ")" << std::endl;
 }
+
+ColourFilterObjectData::ColourFilterObjectData(System& system)
+    : graphics_system_(system.graphics()) {
+}
+
+template<class Archive>
+void ColourFilterObjectData::serialize(Archive& ar, unsigned int version) {
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar & screen_rect_;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void ColourFilterObjectData::serialize<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive& ar, unsigned int version);
+template void ColourFilterObjectData::serialize<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive& ar, unsigned int version);
+
+BOOST_CLASS_EXPORT(ColourFilterObjectData);

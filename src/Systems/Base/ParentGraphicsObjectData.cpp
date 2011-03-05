@@ -24,6 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/export.hpp>
+
 #include "Systems/Base/ParentGraphicsObjectData.hpp"
 
 #include "Systems/Base/GraphicsObject.hpp"
@@ -100,3 +104,26 @@ void ParentGraphicsObjectData::playSet(int set) {
 void ParentGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "ParentGraphicsObjectData::objectInfo is a TODO";
 }
+
+ParentGraphicsObjectData::ParentGraphicsObjectData() : objects_(0) {}
+
+template<class Archive>
+void ParentGraphicsObjectData::serialize(Archive& ar, unsigned int version) {
+  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar & objects_;
+}
+
+// -----------------------------------------------------------------------
+
+// Explicit instantiations for text archives (since we hide the
+// implementation)
+
+template void ParentGraphicsObjectData::serialize<
+  boost::archive::text_iarchive>(
+      boost::archive::text_iarchive& ar, unsigned int version);
+template void ParentGraphicsObjectData::serialize<
+  boost::archive::text_oarchive>(
+      boost::archive::text_oarchive& ar, unsigned int version);
+
+BOOST_CLASS_EXPORT(ParentGraphicsObjectData);
+

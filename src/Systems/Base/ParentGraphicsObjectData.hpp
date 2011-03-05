@@ -27,6 +27,8 @@
 #ifndef SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_
 #define SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_
 
+#include <boost/serialization/access.hpp>
+
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Utilities/LazyArray.hpp"
 
@@ -39,7 +41,7 @@ class GraphicsObject;
 class ParentGraphicsObjectData : public GraphicsObjectData {
  public:
   ParentGraphicsObjectData(int size);
-  ~ParentGraphicsObjectData();
+  virtual ~ParentGraphicsObjectData();
 
   GraphicsObject& getObject(int obj_number);
   void setObject(int obj_number, GraphicsObject& object);
@@ -62,8 +64,14 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   virtual void objectInfo(std::ostream& tree);
 
  private:
+  ParentGraphicsObjectData();
+
   // 256 child objects.
   LazyArray<GraphicsObject> objects_;
+
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int file_version);
 };  // class ParentGraphicsObjectData
 
 #endif  // SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_
