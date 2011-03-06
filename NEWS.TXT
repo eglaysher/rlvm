@@ -1,23 +1,23 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
-Version 0.11:
+Version 0.11:                                                [2011-03-06]
 
 - Fix graphical defects in Clannad
 - Implement voice replay buttons in scrollback
 - Implement the "Return to Previous Selection" feature
-- Fix volume controls. Each channel has both a user controlled and a programmer
-  controlled volume knob; these are different and should be multiplies
-  together.
-- Several efficiency fixes. rlvm no longer spends 10% of its runtime searching
-  the disk for files and only uploads dirty rectangles to the graphics card
-  instead of sending the whole surface on every change.
+- Fix volume controls. Each channel has both a user controlled and a
+  programmer controlled volume knob; these are different and should be
+  multiplies together.
+- Several efficiency fixes. rlvm no longer spends 10% of its runtime
+  searching the disk for files and only uploads dirty rectangles to the
+  graphics card instead of sending the whole surface on every change.
 - Fix the location of the name window in most games.
 - Multiple fixes to automode and configuring automode.
 
 -------------------------------------------------------------------------
 
-Version 0.10:
+Version 0.10:                                                [2011-01-30]
 
 - Support for Tomoyo After Memorial Edition.
 - Voice support for Planetarian.
@@ -25,36 +25,37 @@ Version 0.10:
 
 -------------------------------------------------------------------------
 
-Version 0.9:
+Version 0.9:                                                 [2010-10-16]
 
 - Preliminary support for Little Busters! No support for Ecstasy yet.
-  - There are significant graphics glitches, but the entire game is completable
-    to the end of the Refrain.
-- Fixes saving the current graphics state in most games. Previously created
-  save games can't be fixed, but new saved games should save their graphics
-  state correctly.
+  - There are significant graphics glitches, but the entire game is
+    completable to the end of the Refrain.
+- Fixes saving the current graphics state in most games. Previously
+  created save games can't be fixed, but new saved games should save
+  their graphics state correctly.
 - Fix regression in the original edition of CLANNAD's main menu.
 - Hide unavailable options in select() calls.
 
 -------------------------------------------------------------------------
 
-Version 0.8:
+Version 0.8:                                                 [2010-01-31]
 
 - HIK animations have been reverse engineered and implemented:
   - Opening pan of the city in Planetarian now displays.
   - Many things that use HIK animations in the ALMA opening work.
-- Weather objects have been reverse engineered and implemented and are used in
-  pretty much every game I can find. They're used for snow, sakura petals,
-  rain, balls of light, etc.
+- Weather objects have been reverse engineered and implemented and are
+  used in pretty much every game I can find. They're used for snow,
+  sakura petals, rain, balls of light, etc.
 - Implement better line breaking for Japanese text.
-- Fix color issues (blue displayed as red and vice versa) on some displays.
-- Fixed multiple compatibility issues with the free demos on the Kinetic Novel
-  website. Some demos are almost playable now; fully supporting them is an
-  ongoing project.
+- Fix color issues (blue displayed as red and vice versa) on some
+  displays.
+- Fixed multiple compatibility issues with the free demos on the Kinetic
+  Novel website. Some demos are almost playable now; fully supporting
+  them is an ongoing project.
 
 -------------------------------------------------------------------------
 
-Version 0.7:
+Version 0.7:                                                 [2009-11-07]
 
 - AIR Standard Edition can be completed.
 - Princess Bride can be completed and Princess Brave maybe works.
@@ -63,36 +64,42 @@ Version 0.7:
 - Prevent text boxes from being positioned offscreen.
 - Implement shadows on text.
 - Support KOE voice archives.
-- Support loose ogg vorbis file voice patches (such as the one for KANON).
-- Chinese and Korean rlBabel support compiled in by default. (I can't find any
-  patches so this is untested).
-- Large number of small graphical fixes, including faces in text boxes, visual
-  appearance of #SELBTNs (such as in Fuuko's route), and various shading
-  effects.
+- Support loose ogg vorbis file voice patches (such as the one for
+  KANON).
+- Chinese and Korean rlBabel support compiled in by default. (I can't
+  find any patches so this is untested).
+- Large number of small graphical fixes, including faces in text boxes,
+  visual appearance of #SELBTNs (such as in Fuuko's route), and various
+  shading effects.
 
 -------------------------------------------------------------------------
 
-Version 0.6.3:
-- Add fullscreen mode. Can be entered from game's interface or by hitting
-  Alt+{F,Enter}.
-- Internal changes to unit testing. (Now uses Google C++ Testing Framework,
-  has code coverage, etc.)
+Version 0.6.3:                                               [2009-08-15]
+
+- Add fullscreen mode. Can be entered from game's interface or by
+  hitting Alt+{F,Enter}.
+- Internal changes to unit testing. (Now uses Google C++ Testing
+  Framework, has code coverage, etc.)
 
 -------------------------------------------------------------------------
 
-Version 0.6.2:
+Version 0.6.2:                                               [2009-06-21]
+
 - Bugfix release:
   - Fixes regression where G00 animations weren't being played (Seen in
     Planetarian.)
-  - Fixes regression where Yumemi's face in the final scene in Planetarian
-    was being drawn twice because of poor clip rect handling.
-  - Support for English patches compiled with debugging symbols stripped.
-  - Temporarily disables scrollback due to crash that will be invasive to
-    fix.
+  - Fixes regression where Yumemi's face in the final scene in
+    Planetarian was being drawn twice because of poor clip rect
+    handling.
+  - Support for English patches compiled with debugging symbols
+    stripped.
+  - Temporarily disables scrollback due to crash that will be invasive
+    to fix.
 
 -------------------------------------------------------------------------
 
-Version 0.6.1:
+Version 0.6.1:                                               [2009-05-22]
+
 - Preliminary support of the CLANNAD_FV English patch:
   - Fixed multiple tokenization errors in rlvm's bytecode tokenizer.
   - Add support for floating name boxes.
@@ -102,72 +109,80 @@ Version 0.6.1:
 
 -------------------------------------------------------------------------
 
-Version 0.6:
+Version 0.6:                                                 [2009-03-01]
+
 - Lots of improvements to CLANNAD_FV:
   - Support newer mouse cursors
   - Support hierarchical objects (used in menus)
-  - Implement support for voice in OVK archives. rlvm still does not read the
-    older KOE and NWK archives.
-- Support selection buttons (used during Fuuko's "donna itazura wo?" selections
-  in CLANNAD)
-- Note: rlvm currently doesn't work with the English patches released by the
-  Baka-Tsuki CLANNAD translation wiki. There appears to be a problem parsing
-  the bytecode.
+  - Implement support for voice in OVK archives. rlvm still does not
+    read the older KOE and NWK archives.
+- Support selection buttons (used during Fuuko's "donna itazura wo?"
+  selections in CLANNAD)
+- Note: rlvm currently doesn't work with the English patches released by
+  the Baka-Tsuki CLANNAD translation wiki. There appears to be a problem
+  parsing the bytecode.
 
 -------------------------------------------------------------------------
 
-Version 0.5:
-- There's now an implementation of rlBabel. This has only been tested with
-  NDT's Kanon preview patch. It has not been tested with any of the patches
-  from the Key Fan Club or any other Chinese or Korean patches.
-- Fix a large number of graphical glitches including the calendar in Kanon
-  blinking in and out and the CGs at the end of routes in CLANNAD not always
-  clearing as the end credits are displayed.
+Version 0.5:                                                 [2009-01-17]
+
+- There's now an implementation of rlBabel. This has only been tested
+  with NDT's Kanon preview patch. It has not been tested with any of the
+  patches from the Key Fan Club or any other Chinese or Korean patches.
+- Fix a large number of graphical glitches including the calendar in
+  Kanon blinking in and out and the CGs at the end of routes in CLANNAD
+  not always clearing as the end credits are displayed.
 - New Kanon save games will restore the graphical contents of the screen
   properly; old Kanon save files will show a black background. I wasn't
   recording the status of the graphics stack properly.
 - Game info can be brought up by hitting [F1].
-- Fix OpenGL 1.4 support; Version 0.4 only worked on OpenGL 2.0 or higher
-  graphics cards.
+- Fix OpenGL 1.4 support; Version 0.4 only worked on OpenGL 2.0 or
+  higher graphics cards.
 
 -------------------------------------------------------------------------
 
-Version 0.4:
-- CLANNAD is playable from a clean file to the end of After Story True End;
-  side routes and bad ends have not been tested.
+Version 0.4:                                                 [2008-12-17]
+
+- CLANNAD is playable from a clean file to the end of After Story True
+  End; side routes and bad ends have not been tested.
 - All routes in Kanon SE ALL are playable.
-- There's now a partial default interface, allowing basic operations and a
-  default save/load interface in games that don't provide their own (such as
-  Kanon).
-- NOTE: There is still no support for rlBabel; text in translation patches
-  still won't display correctly.
+- There's now a partial default interface, allowing basic operations and
+  a default save/load interface in games that don't provide their own
+  (such as Kanon).
+- NOTE: There is still no support for rlBabel; text in translation
+  patches still won't display correctly.
 
 -------------------------------------------------------------------------
 
-Version 0.3:
-- CLANNAD is playable through the end of Nagisa's route. CLANNAD Full Voice is
-  still not supported; it uses new opcodes in the new menu system.
-- Support for newer RealLive games that have individual XOR keys; CLANNAD Full
-  Voice edition now boots up (though does little else).
+Version 0.3:                                                 [2008-10-02]
+
+- CLANNAD is playable through the end of Nagisa's route. CLANNAD Full
+  Voice is still not supported; it uses new opcodes in the new menu
+  system.
+- Support for newer RealLive games that have individual XOR keys;
+  CLANNAD Full Voice edition now boots up (though does little else).
 - Replace name variables in text, such as '*A' as 'Tomoya' in CLANNAD.
-- index_series: The function is now partially implemented; Kanon SE no longer
-  enters an infinite loop during 'Last Regrets,' and CLANNAD Full Voice will
-  get past the copyright screen.
-- Reduce the memory footprint by keeping the last 100 pages of text in the
-  scrollback buffer. Previously, the scrollback buffer was unbounded.
+- index_series: The function is now partially implemented; Kanon SE no
+  longer enters an infinite loop during 'Last Regrets,' and CLANNAD Full
+  Voice will get past the copyright screen.
+- Reduce the memory footprint by keeping the last 100 pages of text in
+  the scrollback buffer. Previously, the scrollback buffer was
+  unbounded.
 - Support CG commands; any game that includes a CGM file should now
   automatically track which CG images were viewed.
-- Scrolling through previous pages of text no longer crashes Planetarian.
+- Scrolling through previous pages of text no longer crashes
+  Planetarian.
 - Support for skipping previously read text.
 - Fix performance on the CLANNAD main menu.
-- Fix rare race condition between the audio thread and the main thread by
-  grabbing the global SDL audio lock when 
+- Fix rare race condition between the audio thread and the main thread
+  by grabbing the global SDL audio lock when
 
 -------------------------------------------------------------------------
 
-Version 0.2:
-- WARNING: rlvm 0.2 breaks compatibility with version 0.1's save
-  files! rlvm 0.2 will write save files in a different location.
+Version 0.2:                                                 [2008-06-24]
+
+- WARNING: rlvm 0.2 breaks compatibility with version 0.1's save files!
+  rlvm 0.2 will write save files in a different location.
 - Support for background music and sound effects
   - Note: Character voices are still unsupported.
 - Support for custom cursors
@@ -178,7 +193,14 @@ Version 0.2:
 
 -------------------------------------------------------------------------
 
-Version 0.1: (The first one!)
+Version 0.1: (The first one!)                                [2008-04-16]
+
 - Initial public release
 - Planetarian is playable through the end.
 - Missing sound support and HIK animation support
+
+-------------------------------------------------------------------------
+
+;; Local Variables: **
+;; fill-column: 72 **
+;; End: **
