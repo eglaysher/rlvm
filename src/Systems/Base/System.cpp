@@ -496,5 +496,5 @@ void System::addDirectoryToCache(const fs::path& directory) {
 }
 
 std::string rlvm_version() {
-  return "Version 0.10";
+  return "Version 0.11";
 }

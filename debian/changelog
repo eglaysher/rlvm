@@ -1,3 +1,14 @@
+rlvm (0.11) maverick; urgency=low
+
+  * Fix graphical defects in Clannad
+  * Implement voice replay buttons in scrollback
+  * Implement the "Return to Previous Selection" feature
+  * Several efficiency fixes.
+  * Fix the location of the name window in most games.
+  * Fix graphical defects in Clannad
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 05 Mar 2011 10:40:33 -0800
+
 rlvm (0.10) maverick; urgency=low
 
   * Tomoyo After Memorial Edition support.
