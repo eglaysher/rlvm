@@ -8,7 +8,7 @@ Version 0.11:                                                [2011-03-06]
 - Implement the "Return to Previous Selection" feature
 - Fix volume controls. Each channel has both a user controlled and a
   programmer controlled volume knob; these are different and should be
-  multiplies together.
+  multiplied together.
 - Several efficiency fixes. rlvm no longer spends 10% of its runtime
   searching the disk for files and only uploads dirty rectangles to the
   graphics card instead of sending the whole surface on every change.
