@@ -46,6 +46,10 @@ env = Environment(
   CPPDEFINES = [
     "HAVE_CONFIG_H",
 
+    # boost made a large non-backwards compatible change to their filesystem
+    # library. Specify version 2 explicitly.
+    ["BOOST_FILESYSTEM_VERSION", 2],
+
     # This prevents conflicts between SDL and GLEW. I shouldn't have to do
     # this, but the SDL_opengl.h and glew.h differ in const correctness...
     "NO_SDL_GLEXT"
