@@ -58,7 +58,7 @@ static size_t ogg_readfunc(void* ptr, size_t size, size_t nmemb, void* datasourc
 	return fread(ptr, size, nmemb, info->stream);
 }
 static int ogg_seekfunc(void* datasource, ogg_int64_t new_offset, int whence) {
-	int pt;
+	int pt = 0;
 	OggInfo* info = (OggInfo*)datasource;
 	if (whence == SEEK_SET) pt = info->offset + new_offset;
 	else if (whence == SEEK_CUR) pt = ftell(info->stream) + new_offset;
