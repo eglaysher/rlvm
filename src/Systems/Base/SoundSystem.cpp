@@ -405,20 +405,23 @@ int SoundSystem::bgmKoeFadeVolume() const {
 }
 
 void SoundSystem::koePlay(int id) {
-  koePlayImpl(id);
+  if (!system_.fastForward())
+    koePlayImpl(id);
 }
 
 void SoundSystem::koePlay(int id, int charid) {
-  bool play_voice = true;
+  if (!system_.fastForward()) {
+    bool play_voice = true;
 
-  std::map<int, int>::const_iterator koe_it =
-      globals_.character_koe_enabled.find(charid);
-  if (koe_it != globals_.character_koe_enabled.end()) {
-    play_voice = koe_it->second;
-  }
+    std::map<int, int>::const_iterator koe_it =
+        globals_.character_koe_enabled.find(charid);
+    if (koe_it != globals_.character_koe_enabled.end()) {
+      play_voice = koe_it->second;
+    }
 
-  if (play_voice) {
-    koePlayImpl(id);
+    if (play_voice) {
+      koePlayImpl(id);
+    }
   }
 }
 
