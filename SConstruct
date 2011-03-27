@@ -210,6 +210,7 @@ if not config.CheckBoost('1.40'):
   print "Boost version >= 1.40 needed to compile rlvm!"
   Exit(1)
 
+VerifyLibrary(config, 'pthread', 'pthread.h')
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/codec.h')
 VerifyLibrary(config, 'vorbisfile', 'vorbis/vorbisfile.h')
