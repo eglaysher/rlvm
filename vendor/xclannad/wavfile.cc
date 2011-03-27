@@ -457,7 +457,7 @@ static int conv_wave_rate(short* in_buf, int length, int in_rate, int out_rate, 
 		write_little_endian_short((char*)out,
 			((time-prev_time)*next_sample2 +
 			(input_rate-time+prev_time)*prev_sample2) / input_rate);
-		*out++;
+		out++;
 	}
 	prev_time += output_rate; prev_time -= input_rate * outlen;
 	prev_sample1 = next_sample1; prev_sample2 = next_sample2;
