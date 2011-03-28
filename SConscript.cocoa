@@ -28,7 +28,7 @@ cocoa_platform = [
 static_env.RlvmProgram('rlvm-static', ["src/rlvm.o", cocoa_platform],
                 use_lib_set = ["SDL"],
                 full_static_build = True,
-                rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
+                rlvm_libs = ["system_sdl", "rlvm"])
 
 static_env.InstallAs(target='$OUTPUT_DIR/rlvm.app/Contents/Info.plist',
                      source='src/Platforms/osx/Info.plist.in')

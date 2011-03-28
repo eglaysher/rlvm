@@ -1,7 +1,0 @@
-Included version of guichan: 0.8.2, released October 2009.
-
-The included copy strips out support for backends other than OpenGL and SDL,
-along with some of the contrib/ folder.
-
-Care should be taken when updating since the guichan API isn't stable, and may
-require porting on the rlvm side of things.

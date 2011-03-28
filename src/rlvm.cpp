@@ -41,7 +41,6 @@
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
 #include "Modules/Module_Sys_Save.hpp"
-#include "Platforms/gcn/GCNPlatform.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
@@ -373,12 +372,6 @@ int main(int argc, char* argv[]) {
            << "3) Specify an alternate font with the --font option." << endl;
       return -2;
     }
-
-    // Initialize our platform dialogs (we have to do this after
-    // looking for a font because we use that font internally).
-    boost::shared_ptr<Platform> platform(
-        new GCNPlatform(sdlSystem, sdlSystem.graphics().screenRect()));
-    sdlSystem.setPlatform(platform);
 
     if (vm.count("undefined-opcodes"))
       rlmachine.setPrintUndefinedOpcodes(true);
