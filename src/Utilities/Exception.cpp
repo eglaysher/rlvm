@@ -32,29 +32,39 @@
 
 using std::ostringstream;
 
+namespace rlvm {
+
 // -----------------------------------------------------------------------
-// rlvm::Exception
+// Exception
 // -----------------------------------------------------------------------
 
-namespace rlvm {
+Exception::Exception(const std::string& what)
+  : description(what),
+    operation_(NULL) {
+}
+
+Exception::~Exception() throw() {}
 
 const char* Exception::what() const throw() {
   return description.c_str();
 }
 
 // -----------------------------------------------------------------------
-
-Exception::Exception(std::string what)
-  : description(what),
-    operation_(NULL) {
+// UserPresentableError
+// -----------------------------------------------------------------------
+UserPresentableError::UserPresentableError(
+    const std::string& message_text,
+    const std::string& informative_text)
+    : Exception(message_text + ": " + informative_text),
+      message_text_(message_text),
+      informative_text_(informative_text) {
 }
 
-// -----------------------------------------------------------------------
-
-Exception::~Exception() throw() {}
+UserPresentableError::~UserPresentableError() throw() {}
 
 // -----------------------------------------------------------------------
-
+// UnimplementedOpcode
+// -----------------------------------------------------------------------
 UnimplementedOpcode::UnimplementedOpcode(
     const std::string& funName,
     int modtype, int module, int opcode, int overload)
@@ -66,8 +76,6 @@ UnimplementedOpcode::UnimplementedOpcode(
   setDescription();
 }
 
-// -----------------------------------------------------------------------
-
 UnimplementedOpcode::UnimplementedOpcode(
     int modtype, int module, int opcode, int overload)
     : Exception("") {
@@ -78,20 +86,14 @@ UnimplementedOpcode::UnimplementedOpcode(
   setDescription();
 }
 
-// -----------------------------------------------------------------------
-
 UnimplementedOpcode::~UnimplementedOpcode() throw() {
 }
-
-// -----------------------------------------------------------------------
 
 void UnimplementedOpcode::setDescription() {
   ostringstream oss;
   oss << "Undefined: " << name_;
   description = oss.str();
 }
-
-// -----------------------------------------------------------------------
 
 }  // namespace rlvm
 

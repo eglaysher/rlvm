@@ -26,141 +26,22 @@
 // -----------------------------------------------------------------------
 
 #include <boost/program_options.hpp>
-#include <boost/filesystem/operations.hpp>
 
 // We include this here because SDL is retarded and works by #define
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
 #include <iostream>
-#include <sstream>
 #include <string>
 
-#include "MachineBase/GameHacks.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
-#include "Modules/Modules.hpp"
-#include "Modules/Module_Sys_Save.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/SoundSystem.hpp"
-#include "Systems/Base/SystemError.hpp"
-#include "Systems/SDL/SDLSystem.hpp"
-#include "Utilities/Exception.hpp"
+#include "MachineBase/RLVMInstance.hpp"
+#include "Systems/Base/System.hpp"
 #include "Utilities/File.hpp"
-#include "Utilities/findFontFile.h"
-#include "libReallive/gameexe.h"
-#include "libReallive/reallive.h"
 
 using namespace std;
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
-
-/**
- * @mainpage RLVM, a Reallive virtual machine clone
- *
- * @section Introduction
- *
- * RLVM is a clone of the official Reallive virtual machine, produced
- * by VisualArt's KK, meant to provide Linux and Macintosh users with
- * a compatible, portable interpreter for Realive games.
- *
- * RLVM would not exist if it weren't for the help of Haeleth, and,
- * indirectly, Jagarl, both of who have done amazing jobs documenting
- * the fine details of the RealLive system, along with doing most of
- * the really hard reverse engineering work that I'd rather not do.
- *
- * @section Table Table of Contents
- *
- * The documentation is divided into the following sections.
- *
- * - @subpage theProblemDomainOfVisualNovels "The problem Domain of Visual Novels"
- * - @subpage architectureReview "RLVM Architecture"
- */
-
-// -----------------------------------------------------------------------
-
-/**
- * @page theProblemDomainOfVisualNovels The problem Domain of Visual Novels
- *
- * @section Overview
- *
- * Visual Novels (referred to as NVL, AVG or ADV games in Japanese) are
- * a form of interactive fiction in Japan which never really became
- * popular in most English speaking countries. They are simple, plot
- * and character oriented games which are very text-heavy. Gameplay
- * wise, they are comparable to a large slide show with text, images
- * and sound, and can be thought of as massive, more serious, mature
- * versions of the Choose-Your-Own-Adventure series of children's books.
- *
- * @section IsAndIsnt What RLVM is and isn't
- *
- * RLVM is a clone of a specific visual novel interpreter, the
- * RealLive system developed by VisualArts KK. It aims to (eventually)
- * become a compatible, portable interpreter for non-Windows users
- * that will play a large variety of commercial visual novels written
- * in Reallive.
- *
- * RLVM is not intended to compete with VisualArts KK as a development
- * toolkit. While someone could theoretically combine RLVM with <a
- * href="http://www.haeleth.net">Haeleth</a>'s <a
- * href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler
- * toolkit to produce games (at least after RLVM supports a base set
- * of operations), it would be overly cumbersome and I would recommend
- * one of the many free visual novel development systems, which would
- * be both easier to use and more featurefull.
- *
- * RLVM is not meant to facilitate piracy. Please buy these games;
- * many people put their hearts into writing these stories and they
- * deserve to be rewarded financially.
- *
- * Finally, RLVM is not a big truck...It's a series of tubes.
- */
-
-// -----------------------------------------------------------------------
-
-/**
- * @page architectureReview RLVM Architecture
- *
- * RLVM is divided into several high level directories:
- *
- * - A modified version of Haeleth's @c libReallive, which is
- *   responsible for reading and parsing the SEEN.TXT file and
- *   creating the corresponding object representation. There is also a
- *   class Gameexe which parses the Gameexe.ini file in every RealLive
- *   game.
- * - The Opcode Definitions / Modules, which can be found in the
- *   subidrectory @c src/Modules/ . These files contain the
- *   definitions for the individual Opcodes.
- * - The core of the virtual machine found in @c src/MachineBase/ :
- *   - RLMachine: the main class which contains all execution state
- *   - RLOperation: the base class of every opcode definition.
- *   - LongOperation: the base class for all operations that persist
- *     for multiple cycles through the game loop.
- * - The Base System classes found in @c src/Systems/Base , which define the
- *   generalized interface for system dependent operations like sound and
- *   graphics. It was originally meant to only define abstract interface which
- *   would be implemented in System/ specific directories. Said base classes
- *   have grown to hold significant cross-platform logic, implemented per
- *   system by subclassing. It has also grown to contain a whole lot of
- *   non-subclassed, cross platform code.
- * - The System subclasses, such as @c src/Systems/SDL , which
- *   implement the Base System interface for SDL. Additional
- *   subclasses could be written for DirectX, or some other game
- *   interface.
- *
- * The above was part of the original version of this document. In the
- * intervening time, I've also added:
- *
- * - LongOperations and Effects: LongOperations are functors that get run
- *   during the mainloop instead of a RealLive instruction. Sometimes execution
- *   of RealLive code needs to stop so a command that would run longer than a
- *   single run through the gameloop can take all the time it needs while still
- *   updating the screen. Effects are graphical LongOperations that transition
- *   between two images.
- * - Encodings: A combination of Haeleth's encoding functions from rlBabel and
- *   various encoding utility functions I've written.
- */
 
 // -----------------------------------------------------------------------
 
@@ -195,14 +76,10 @@ void printVersionInformation() {
     << endl << endl;
 }
 
-// -----------------------------------------------------------------------
-
 void printUsage(const string& name, po::options_description& opts) {
   cout << "Usage: " << name << " [options] <game root>" << endl;
   cout << opts << endl;
 }
-
-// -----------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
   srand(time(NULL));
@@ -218,13 +95,10 @@ int main(int argc, char* argv[]) {
   opts.add_options()
       ("help", "Produce help message")
       ("help-debug", "Print help message for people working on rlvm")
-      ("version", "Display version and license information")
-      ("font", po::value<string>(), "Specifies TrueType font to use.");
+      ("version", "Display version and license information");
 
   po::options_description debugOpts("Debugging Options");
   debugOpts.add_options()
-      ("gameexe", po::value<string>(), "Override location of Gameexe.ini")
-      ("seen", po::value<string>(), "Override location of SEEN.TXT")
       ("start-seen", po::value<int>(), "Force start at SEEN#")
       ("load-save", po::value<int>(), "Load a saved game on start")
       ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
@@ -270,7 +144,7 @@ int main(int argc, char* argv[]) {
 
   // -----------------------------------------------------------------------
   // Process command line options
-  fs::path gamerootPath, gameexePath, seenPath;
+  fs::path gamerootPath;
 
   if (vm.count("help")) {
     printUsage(argv[0], opts);
@@ -320,98 +194,24 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  // --gameexe
-  if (vm.count("gameexe"))
-    gameexePath = correctPathCase(vm["gameexe"].as<string>());
-  else
-    gameexePath = correctPathCase(gamerootPath / "Gameexe.ini");
+  RLVMInstance instance;
 
-  // --seen
-  if (vm.count("seen"))
-    seenPath = correctPathCase(vm["seen"].as<string>());
-  else
-    seenPath = correctPathCase(gamerootPath / "Seen.txt");
+  if (vm.count("start-seen"))
+    instance.set_seen_start(vm["start-seen"].as<int>());
 
-  try {
-    cerr << "gameexePath: " << gameexePath << endl;
-    Gameexe gameexe(gameexePath);
-    gameexe("__GAMEPATH") = gamerootPath.file_string();
+  if (vm.count("memory"))
+    instance.set_memory();
 
-    if (vm.count("font")) {
-      string font = vm["font"].as<string>();
-      if (fs::exists(font)) {
-        gameexe("__GAMEFONT") = font;
-        cerr << "Using custom font " << vm["font"].as<string>() << endl;
-      } else {
-        cerr << "Couldn't open font file \"" << font << "\"" << endl;
-        return -1;
-      }
-    }
+  if (vm.count("undefined-opcodes"))
+    instance.set_undefined_opcodes();
 
-    // Possibly force starting at a different seen
-    if (vm.count("start-seen"))
-      gameexe("SEEN_START") = vm["start-seen"].as<int>();
+  if (vm.count("count-undefined"))
+    instance.set_count_undefined();
 
-    if (vm.count("memory"))
-      gameexe("MEMORY") = 1;
+  if (vm.count("load-save"))
+    instance.set_load_save(vm["load-save"].as<int>());
 
-    SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
-    RLMachine rlmachine(sdlSystem, arc);
-    addAllModules(rlmachine);
-    addGameHacks(rlmachine);
-
-    // Validate our font file
-    fs::path fontFile = findFontFile(sdlSystem);
-    if (fontFile.empty() || !fs::exists(fontFile)) {
-      cerr << "Could not open font file. Please either: " << endl
-           << endl
-           << "1) Place a copy of msgothic.ttc in your home directory." << endl
-           << "2) Place a copy of msgothic.ttc in \""
-           << gamerootPath.file_string() << "\"" << endl
-           << "3) Specify an alternate font with the --font option." << endl;
-      return -2;
-    }
-
-    if (vm.count("undefined-opcodes"))
-      rlmachine.setPrintUndefinedOpcodes(true);
-
-    if (vm.count("count-undefined"))
-      rlmachine.recordUndefinedOpcodeCounts();
-
-    Serialization::loadGlobalMemory(rlmachine);
-    rlmachine.setHaltOnException(false);
-
-    if (vm.count("load-save")) {
-      Sys_load()(rlmachine, vm["load-save"].as<int>());
-    }
-
-    while (!rlmachine.halted()) {
-      // Give SDL a chance to respond to events, redraw the screen,
-      // etc.
-      sdlSystem.run(rlmachine);
-
-      // Run the rlmachine through another instruction
-      rlmachine.executeNextInstruction();
-    }
-
-    Serialization::saveGlobalMemory(rlmachine);
-  } catch (rlvm::Exception& e) {
-    cerr << "Fatal RLVM error: " << e.what() << endl;
-    return 1;
-  } catch (libReallive::Error& e) {
-    cerr << "Fatal libReallive error: " << e.what() << endl;
-    return 1;
-  } catch (SystemError& e) {
-    cerr << "Fatal local system error: " << e.what() << endl;
-    return 1;
-  } catch (std::exception& e) {
-    cout << "Uncaught exception: " << e.what() << endl;
-    return 1;
-  } catch (const char* e) {
-    cout << "Uncaught exception: " << e << endl;
-    return 1;
-  }
+  instance.Run(gamerootPath);
 
   return 0;
 }

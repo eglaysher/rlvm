@@ -37,7 +37,7 @@ namespace rlvm {
 
 class Exception : public std::exception {
  public:
-  explicit Exception(std::string what);
+  explicit Exception(const std::string& what);
   virtual ~Exception() throw();
   virtual const char* what() const throw();
 
@@ -50,6 +50,23 @@ class Exception : public std::exception {
 
   // Optionally, the operation that we were in when we threw.
   RLOperation* operation_;
+};
+
+// An exception that rlvm can't internally recover from which should trigger a
+// message alert box.
+class UserPresentableError : public Exception {
+ public:
+  explicit UserPresentableError(const std::string& message_text,
+                                const std::string& informative_text);
+  virtual ~UserPresentableError() throw();
+
+  const std::string& message_text() { return message_text_; }
+  const std::string& informative_text() { return informative_text_; }
+
+ protected:
+  // The two lines in the alert dialog.
+  std::string message_text_;
+  std::string informative_text_;
 };
 
 class UnimplementedOpcode : public Exception {
