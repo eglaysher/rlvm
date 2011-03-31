@@ -25,16 +25,15 @@
 //
 // -----------------------------------------------------------------------
 
-#include <boost/program_options.hpp>
-
 // We include this here because SDL is retarded and works by #define
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
+#include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
 
-#include "MachineBase/RLVMInstance.hpp"
+#include "Platforms/gtk/GtkRLVMInstance.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/File.hpp"
 
@@ -86,6 +85,8 @@ int main(int argc, char* argv[]) {
 
   // Set global state: allow spaces in game paths
   fs::path::default_name_check(fs::native);
+
+  GtkRLVMInstance instance(&argc, &argv);
 
   // -----------------------------------------------------------------------
   // Parse command line options
@@ -190,11 +191,10 @@ int main(int argc, char* argv[]) {
       }
     }
   } else {
-    printUsage(argv[0], opts);
-    return -1;
+    gamerootPath = instance.SelectGameDirectory();
+    if (gamerootPath.empty())
+      return -1;
   }
-
-  RLVMInstance instance;
 
   if (vm.count("start-seen"))
     instance.set_seen_start(vm["start-seen"].as<int>());

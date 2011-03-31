@@ -135,11 +135,18 @@ SystemGlobals::SystemGlobals()
 // -----------------------------------------------------------------------
 
 System::System()
-    : in_menu_(false), force_fast_forward_(false), force_wait_(false) {
+    : in_menu_(false),
+      force_fast_forward_(false),
+      force_wait_(false),
+      platform_(NULL) {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
 System::~System() {
+}
+
+void System::setPlatform(Platform* platform) {
+  platform_.reset(platform);
 }
 
 void System::takeSelectionSnapshot(RLMachine& machine) {

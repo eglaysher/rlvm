@@ -234,6 +234,8 @@ config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 
 env = config.Finish()
 
+env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
+
 ### HACK! Until I make my own version of CheckLibWithHeader, just assume that
 ### we have the right libraries. This needs to be done after config.Finish() is
 ### called or else we get a really confusing error.

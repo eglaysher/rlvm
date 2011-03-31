@@ -32,6 +32,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <boost/scoped_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/filesystem/path.hpp>
@@ -139,10 +140,8 @@ class System {
   System();
   virtual ~System();
 
-  void setPlatform(const boost::shared_ptr<Platform>& platform) {
-    platform_ = platform;
-  }
-  boost::shared_ptr<Platform> platform() { return platform_; }
+  void setPlatform(Platform* platform);
+  Platform* platform() { return platform_.get(); }
 
   // Takes and restores the previous selection snapshot; a special emphemeral
   // save game slot that autosaves on selections and is restored through a
@@ -270,11 +269,6 @@ class System {
   virtual TextSystem& text() = 0;
   virtual SoundSystem& sound() = 0;
 
- protected:
-  // Native widget drawer. Can be NULL. This field is protected instead of
-  // private because we need to be destroy the Platform before we destroy SDL.
-  boost::shared_ptr<Platform> platform_;
-
  private:
   typedef std::multimap<
    std::string,
@@ -323,6 +317,9 @@ class System {
   // A stream with the save game data at the time of the last selection. Used
   // for the Return to Previous Selection feature.
   boost::shared_ptr<std::stringstream> previous_selection_;
+
+  // Native widget drawer. Can be NULL.
+  boost::scoped_ptr<Platform> platform_;
 
   // Implementation detail which resets in_menu_;
   friend class MenuReseter;

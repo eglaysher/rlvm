@@ -29,11 +29,15 @@
 
 #include <boost/filesystem/operations.hpp>
 
+class Platform;
+class System;
+
 // The main, cross platform emulator class. Has template methods for
 // implementing platform specific GUI.
 class RLVMInstance {
  public:
   RLVMInstance();
+  virtual ~RLVMInstance();
 
   // Runs the main emulation loop.
   void Run(const boost::filesystem::path& gamepath);
@@ -44,11 +48,23 @@ class RLVMInstance {
   void set_count_undefined() { count_undefined_copcodes_ = true; }
   void set_load_save(int in) { load_save_ = in; }
 
- private:
+  // Optionally brings up a file selection dialog to get the game directory. In
+  // case this isn't implemented or the user clicks cancel, returns an empty
+  // path.
+  virtual boost::filesystem::path SelectGameDirectory();
+
+ protected:
   // Should bring up a platform native dialog box to report the message.
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
 
+  // Gives the native subclass a chance to do work during the main loop.
+  virtual void DoNativeWork() {}
+
+  // Returns a Platform object that displays native UI.
+  virtual Platform* BuildNativePlatform(System& system);
+
+ private:
   // Which SEEN# we should start execution from (-1 if we shouldn't set this).
   int seen_start_;
 

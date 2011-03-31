@@ -192,8 +192,10 @@ libsystemsdl_files = [
 
 root_env.StaticLibrary('system_sdl', libsystemsdl_files)
 
-root_env.RlvmProgram('rlvm', ["src/rlvm.cpp",
-                              "src/MachineBase/RLVMInstance.cpp"],
+root_env.RlvmProgram('rlvm', ["src/Platforms/gtk/rlvm.cpp",
+                              "src/MachineBase/RLVMInstance.cpp",
+                              "src/Platforms/gtk/GtkRLVMInstance.cpp",
+                              "src/Platforms/gtk/GtkPlatform.cpp"],
                      use_lib_set = ["SDL"],
                      rlvm_libs = ["system_sdl", "rlvm"])
 root_env.Install('$OUTPUT_DIR', 'rlvm')

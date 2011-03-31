@@ -46,9 +46,6 @@ class Platform {
   // Returns a game specific string from the Gameexe.ini file.
   std::string syscomString(const std::string& key) const;
 
-  // Called every cycle.
-  virtual void run(RLMachine& machine) = 0;
-
   // Called on a right click where the game doesn't have its own syscom
   // handler.
   virtual void showNativeSyscomMenu(RLMachine& machine) = 0;

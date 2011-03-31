@@ -81,7 +81,7 @@ Platform::Platform(Gameexe& gameexe) {
   }
 }
 
-Platform::~Platform() { }
+Platform::~Platform() {}
 
 std::string Platform::syscomString(const std::string& key) const {
   std::map<std::string, std::string>::const_iterator it =

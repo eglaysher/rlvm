@@ -48,7 +48,6 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/MouseCursor.hpp"
-#include "Systems/Base/Platform.hpp"
 #include "Systems/Base/Renderable.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
