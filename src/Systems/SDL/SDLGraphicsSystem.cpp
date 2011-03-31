@@ -30,7 +30,6 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
