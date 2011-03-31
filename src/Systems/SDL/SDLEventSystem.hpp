@@ -35,15 +35,6 @@
 
 class SDLSystem;
 
-// Hack to ferry SDL_Events over to something like Guichan which wants to take
-// control of the input.
-class RawSDLInputHandler {
- public:
-  virtual ~RawSDLInputHandler() {}
-
-  virtual void pushInput(SDL_Event event) = 0;
-};
-
 class SDLEventSystem : public EventSystem {
  public:
   SDLEventSystem(SDLSystem& sys, Gameexe& gexe);
@@ -51,10 +42,6 @@ class SDLEventSystem : public EventSystem {
   // We provide this accessor to let the Graphics system querry what
   // to do when redrawing the mouse.
   bool mouseInsideWindow() const { return mouse_inside_window_; }
-
-  void setRawSDLInputHandler(RawSDLInputHandler* handler) {
-    raw_handler_ = handler;
-  }
 
   // Implementation of EventSystem:
   virtual void executeEventSystem(RLMachine& machine);
@@ -99,10 +86,6 @@ class SDLEventSystem : public EventSystem {
 
   // Our owning system.
   SDLSystem& system_;
-
-  // Handles raw SDL events when appropriate. (Used for things like Guichan,
-  // et cetera who want to suck raw SDL events).
-  RawSDLInputHandler* raw_handler_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDLEVENTSYSTEM_HPP_
